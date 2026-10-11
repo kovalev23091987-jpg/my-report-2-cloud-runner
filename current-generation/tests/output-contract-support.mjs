@@ -11,6 +11,7 @@ export async function loadEffectivePresentationModules(){
     'poloniex-native-four-hour-flow.mjs':'current-generation/files/src/poloniex-native-four-hour-flow.mjs',
     'backpack-four-hour-flow.mjs':'current-generation/files/src/backpack-four-hour-flow.mjs',
     'kraken-four-hour-flow.mjs':'current-generation/files/src/kraken-four-hour-flow.mjs',
+    'bitfinex-native-four-hour-flow.mjs':'current-generation/files/src/bitfinex-native-four-hour-flow.mjs',
     'kraken-public-taker-reference.mjs':'current-generation/files/src/kraken-public-taker-reference.mjs',
     'binance-native-four-hour-flow.mjs':'current-generation/files/src/binance-native-four-hour-flow.mjs',
     'gate-four-hour-flow.mjs':'current-generation/files/src/gate-four-hour-flow.mjs',
