@@ -9,8 +9,8 @@ if(!root){
  test('assembled runtime is required for shared spot/futures context', {skip:'encrypted production runtime not assembled'},()=>{});
 }else{
  const src=pathToFileURL(path.resolve(root)+'/');
- const [{buildSpotFuturesMarketContext},{formatManualReport},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest}]=await Promise.all(
-  ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js'].map(name=>import(new URL(name,src)))
+ const [{buildSpotFuturesMarketContext},{formatManualReport},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact}]=await Promise.all(
+  ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs'].map(name=>import(new URL(name,src)))
  );
  const fixture=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
  const T=fixture.observed_ts,contract=fixture.metadata.contract;
@@ -33,15 +33,21 @@ if(!root){
   const canonical=structuredClone(fixture);
   canonical.state='OBSERVE';canonical.direction='LONG';
   canonical.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:T+600_000,next_recheck_ts:T+60_000,cancel_condition:'price<1'};
-  canonical.metadata.supporting_context={facts:[receipt.fact]};
+  canonical.metadata.supporting_context={facts:[]};
+  canonical.analytical_fingerprint=canonicalFingerprint(canonical);
+  const baselineCompact=formatTelegramCompact(canonical);
+  assert.equal(baselineCompact.ok,true,baselineCompact.status);
+  const baselineTelegram=['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007'].map(context_policy=>renderCanonicalTelegram({canonical,lifecycle_event:'OBSERVE',context_policy}));
+  canonical.metadata.supporting_context.facts.push(receipt.fact);
   canonical.analytical_fingerprint=canonicalFingerprint(canonical);
   const manual=formatManualReport(canonical);
   assert.equal(manual.ok,true,manual.status);
   assert.match(manual.text,/Сверка спота и фьючерсов/);
-  for(const context_policy of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007']){
+  assert.equal(formatTelegramCompact(canonical).message,baselineCompact.message);
+  for(const [i,context_policy] of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007'].entries()){
    const telegram=renderCanonicalTelegram({canonical,lifecycle_event:'OBSERVE',context_policy});
    assert.equal(telegram.ok,true,telegram.status);
-   assert.match(telegram.text,/Сверка спота и фьючерсов/);
+   assert.equal(telegram.text,baselineTelegram[i].text,'approved Telegram wording stays unchanged');
   }
  });
  test('foreign, stale, future, incomplete and unsynchronized books never create a comparison fact',()=>{

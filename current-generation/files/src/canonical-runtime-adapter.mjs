@@ -70,7 +70,7 @@ export function buildSpotFuturesMarketContext({contract,spot_component,futures_c
  const basisPct=(futures.mid/spot.mid-1)*100;
  const comparison={futures_over_spot_price_pct:basisPct,spot_spread_bps:spot.spread_bps,futures_spread_bps:futures.spread_bps,source_skew_ms:skew};
  const signed=basisPct>=0?'+':'';
- const fact={source:'HTX',label:'Сверка спота и фьючерсов',value:`разница средних цен ${signed}${basisPct.toFixed(2)}%; спреды ${spot.spread_bps.toFixed(1)} и ${futures.spread_bps.toFixed(1)} б.п.; одна биржа`,unit:'',field:'SPOT_FUTURES_PRICE_SPREAD_CONTEXT',source_ts:Math.min(spot.source_ts,futures.source_ts),observed_ts:now,score_contribution:0,entry_authorized:false};
+ const fact={source:'HTX',label:'Сверка спота и фьючерсов',value:`разница средних цен ${signed}${basisPct.toFixed(2)}%; спреды ${spot.spread_bps.toFixed(1)} и ${futures.spread_bps.toFixed(1)} б.п.; одна биржа`,unit:'',field:'SPOT_FUTURES_PRICE_SPREAD_CONTEXT',source_ts:Math.min(spot.source_ts,futures.source_ts),observed_ts:now,score_contribution:0,entry_authorized:false,telegram_eligible:false};
  return{...base,status:'CLOSED_COMPARABLE_PRICE_AND_SPREAD',spot,futures,comparison,fact};
 }
 const NATIVE_LIQUIDATION_SOURCE_IDS=Object.freeze(['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS','DYDX_PINNED_NATIVE']);
