@@ -1,0 +1,63 @@
+{
+  "schema": "N05_GEMINI_OFFICIAL_PILOT_RESULT_20261011_V1",
+  "recorded_ts": 1791719993151,
+  "recorded_utc": "2026-10-11T11:59:53.151Z",
+  "main_with_original_responses": "179e93954340c8f6a9ab8099ca949079835d00e5",
+  "source_run": 38137447901,
+  "source_summary": "checkpoints/n05-gemini-pilot-38137447901/batch-summary.json",
+  "sourceHTTP": 7,
+  "D1": {
+    "requests": 79,
+    "rows_read": 231,
+    "rows_written": 55,
+    "unknown_ops": 0
+  },
+  "current_symbol_overlap": [
+    "FIL",
+    "HYPE"
+  ],
+  "assets": [
+    {
+      "symbol": "FIL",
+      "original_HTX_exact_native": true,
+      "gemini_market_status": "open",
+      "gemini_product_type": "spot",
+      "gemini_network": [
+        "filecoin"
+      ],
+      "expected_network": "filecoin",
+      "exact_current_market_network": true,
+      "candle_rows": 1439,
+      "trade_rows": 0,
+      "status": "ORIGINAL_WINDOW_DATA_RETAINED_NOT_RECONCILED"
+    },
+    {
+      "symbol": "HYPE",
+      "original_HTX_exact_native": true,
+      "gemini_market_status": "open",
+      "gemini_product_type": "spot",
+      "gemini_network": [
+        "hyperevm"
+      ],
+      "expected_network": "hyperliquid",
+      "exact_current_market_network": false,
+      "status": "CURRENT_GEMINI_EXACT_MARKET_NETWORK_REQUIRED"
+    }
+  ],
+  "full_240min_qualified_assets": [],
+  "new_venue_connected": false,
+  "reason": "FIL_EXACT_MARKET_AND_NETWORK_BUT_ZERO_PUBLIC_TRADES_FOR_WINDOW;HYPE_NETWORK_DIFFERENT_FROM_PRIMARY_HTX_NATIVE_ALIAS;NO_FULL_USEFUL_FLOW",
+  "no_repeat_without_new_defect": true,
+  "score_contribution": 0,
+  "MAIN_during_pilot": 0,
+  "Telegram_during_pilot": 0,
+  "coverage_unchanged": {
+    "HTX_assets": 104,
+    "individual_full_240min_external_flow_assets_ever": 34,
+    "structurally_exact_connected_external_route_assets": 73,
+    "no_exact_connected_route_assets": 31,
+    "simultaneous_two_independent_venue_agreements_proven": 0
+  },
+  "N05_complete": false,
+  "next_action": "CONTINUE_N05;QUALIFY_LIGHTER_DASH_FROM_RETAINED_FULL-SPAN_TRADES_AND_CURRENT_OFFICIAL_CANDLES_WITH_EXACT_PRIMARY_BINDING;AT_NEXT_SOURCE_DAY_EXECUTE_SAVED_COMMON_MULTI_SOURCE_PLAN;KEEP_CAPS"
+}

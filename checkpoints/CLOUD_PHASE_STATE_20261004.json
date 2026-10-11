@@ -328,13 +328,8 @@
       }
     }
   ],
-  "lease": {
-    "owner": "CODEX:LOCAL_N05_NEW_VENUE:1791718957493",
-    "acquired_ts": 1791718957493,
-    "expires_ts": 1791720757493,
-    "scope": "OWNER_AUTHORIZED_N05_ONLY;NEW_INDEPENDENT_VENUE_QUALIFICATION;NO_CAP_RESETS"
-  },
-  "next_action": "CONTINUE_N05;DO_NOT_REPEAT_COINBASE_UNCHANGED_MISMATCH;QUALIFY_ANOTHER_INDEPENDENT_PRIMARY_VENUE_WITH_REAL_FULL_WINDOWS_AND_EXACT_IDENTITY;KEEP_CURRENT_CAPS",
+  "lease": null,
+  "next_action": "CONTINUE_N05;QUALIFY_LIGHTER_DASH_FROM_RETAINED_FULL-SPAN_TRADES_AND_CURRENT_OFFICIAL_CANDLES_WITH_EXACT_PRIMARY_BINDING;AT_NEXT_SOURCE_DAY_EXECUTE_SAVED_COMMON_MULTI_SOURCE_PLAN;KEEP_CAPS",
   "common_future_universe": {
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
     "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
@@ -347,7 +342,7 @@
   },
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791719653539,
+  "updated_ts": 1791719993151,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -398,12 +393,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:LOCAL_N05_RESIDUAL:1791717858522",
-    "acquired_ts": 1791717858522,
-    "expires_ts": 1791719658522,
-    "scope": "OWNER_AUTHORIZED_N05_ONLY;RESIDUAL_HEADROOM_AND_NEW_SOURCE_RESEARCH;NO_CAP_RESETS",
-    "released_ts": 1791718888432,
-    "reason": "N05 Kraken ALGO XMR qualified, assembled and saved to main; continue N05 only under a new bounded own lease"
+    "owner": "CODEX:LOCAL_N05_NEW_VENUE:1791718957493",
+    "acquired_ts": 1791718957493,
+    "expires_ts": 1791720757493,
+    "scope": "OWNER_AUTHORIZED_N05_ONLY;NEW_INDEPENDENT_VENUE_QUALIFICATION;NO_CAP_RESETS",
+    "released_ts": 1791719993151,
+    "reason": "N05 Gemini pilot saved to main; continue remaining N05 under new bounded owned lease"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -6888,7 +6883,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-11T11:54:13.539Z",
+  "updated_utc": "2026-10-11T11:59:53.151Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -10456,6 +10451,16 @@
     "replay_run": 38137158855,
     "sourceHTTP": 11,
     "qualified_assets": 0,
+    "new_venue_connected": false,
+    "N05_complete": false
+  },
+  "latest_n05_gemini_pilot_result": {
+    "schema": "N05_GEMINI_OFFICIAL_PILOT_RESULT_20261011_V1",
+    "proof": "checkpoints/N05_GEMINI_OFFICIAL_PILOT_RESULT_20261011.json",
+    "recorded_ts": 1791719993151,
+    "status": "NO_VERIFIED_GEMINI_FULL_WINDOW;N05_OPEN",
+    "source_run": 38137447901,
+    "sourceHTTP": 7,
     "new_venue_connected": false,
     "N05_complete": false
   }
