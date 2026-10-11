@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
+import {planN05NativeHeadroom} from './n05-native-headroom-plan.mjs';
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const manifestPath='checkpoints/htx-current-crypto-futures-universe-20261010.json.gz',z=await fs.readFile(manifestPath);
 if(hash(z)!=='ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c')throw Error('CURRENT104_MANIFEST_HASH');
@@ -48,10 +49,13 @@ try{
  out.daily_admission=guard.evaluateDailyReservationBudget({daily:await guard.loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});
  if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_DENIED');
  await guard.reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
- const used=await roleUsed('N05_OFFICIAL_FLOW:POLONIEX'),primaryUsed=await roleUsed('HTX_ASSET_REFERENCE');out.source_preflight={Poloniex_used:used,Poloniex_required:15,Poloniex_cap:16,HTX_identity_used:primaryUsed,HTX_identity_cap:8};
+ const used=await roleUsed('N05_OFFICIAL_FLOW:POLONIEX'),primaryUsed=await roleUsed('HTX_ASSET_REFERENCE');
+ const headroom=planN05NativeHeadroom({candidates,poloniex_used:used,htx_identity_used:primaryUsed});
+ out.source_preflight={...headroom,Poloniex_used:used,HTX_identity_used:primaryUsed};
  // Refuse the whole planned acquisition before metadata when its native role
  // cannot fund this batch. Never reset, alias or refund earlier reservations.
- if(used+15>16||primaryUsed+1>8)throw Error('ENTIRE_BATCH_SOURCE_HEADROOM_REQUIRED');
+ if(!headroom.allowed)throw Error(headroom.reason);
+ out.candidate_contracts=headroom.selected_contracts;out.deferred_contracts=headroom.deferred_contracts;
  const htx=await get('HTX-CURRENT-IDENTITIES','HTX','https://api.huobi.pro/v2/reference/currencies','HTX_ASSET_REFERENCE',8);
  const entries=normalizeHtxAssetReferences(htx);if(entries.status!=='CLOSED')throw Error('CURRENT_PRIMARY_IDENTITIES_REQUIRED');out.primary_identity_received_ts=out.sources.at(-1).received_ts;
  const assets=await get('POLONIEX-ALL-ASSETS','POLONIEX','https://api.poloniex.com/v2/currencies');
@@ -59,7 +63,7 @@ try{
  const activity=await get('POLONIEX-ALL-ACTIVITY','POLONIEX','https://api.poloniex.com/markets/ticker24h');
  if(![assets,markets,activity].every(Array.isArray))throw Error('SHARED_NATIVE_METADATA_REQUIRED');
  const end=Math.floor(Date.now()/60000)*60000;out.window_end_ts=end;out.window_start_ts=end-14400000;
- for(const contract of candidates){
+ for(const contract of headroom.selected_contracts){
   if(Date.now()-end>300000){out.windows.push({contract,status:'ANCHOR_AGED_DURING_BATCH',check_completed:false});continue;}
   const symbol=contract.slice(0,-5),e=entries.entries[symbol],override=FUTURES_ONLY_EXACT_ASSET_BINDINGS[symbol],identity=e?.status==='CLOSED'?e.identities[0]:override?.identity;
   if(!identity||!exactPoloniexBinding({contract,identity,assets,markets})){out.windows.push({contract,status:'CURRENT_EXACT_ASSET_BINDING_REQUIRED',check_completed:false});continue;}
