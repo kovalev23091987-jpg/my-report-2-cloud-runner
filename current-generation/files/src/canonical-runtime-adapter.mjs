@@ -64,7 +64,12 @@ export function buildSpotFuturesMarketContext({contract,spot_component,futures_c
  if(!/^[A-Z0-9]{1,32}-USDT$/.test(exact)||now===null)return{...base,status:'EXACT_USDT_CONTRACT_AND_CLOCK_REQUIRED',spot:null,futures:null,comparison:null,fact:null};
  const spot=exactDepthMarket(spot_component,exact,'HTX Spot',now);
  const futures=exactDepthMarket(futures_component,exact,'HTX USDT-M Futures',now);
- if(!spot||!futures)return{...base,status:spot?'SPOT_ONLY':futures?'FUTURES_ONLY':'NO_FRESH_EXACT_DEPTH_PAIR',spot,futures,comparison:null,fact:null};
+ if(!spot||!futures){
+  const available=spot||futures,side=spot?'спот':'фьючерсы',missing=spot?'фьючерсная':'спотовая';
+  const value=available?`${side}: средняя котировка ${Number(available.mid.toPrecision(8))} USDT, спред ${available.spread_bps.toFixed(1)} б.п.; ${missing} котировка не подтверждена; одна биржа, общего вывода по двум рынкам нет`:null;
+  const fact=available?{source:'HTX',label:'Котировка доступного рынка HTX',value,unit:'',field:'SPOT_FUTURES_SINGLE_MARKET_CONTEXT',source_ts:available.source_ts,observed_ts:now,score_contribution:0,directional_vote:false,entry_authorized:false,telegram_eligible:false}:null;
+  return{...base,status:spot?'SPOT_ONLY':futures?'FUTURES_ONLY':'NO_FRESH_EXACT_DEPTH_PAIR',spot,futures,comparison:null,fact};
+ }
  const skew=Math.abs(spot.source_ts-futures.source_ts);
  if(skew>SPOT_FUTURES_CONTEXT_MAX_SKEW_MS)return{...base,status:'SOURCE_CLOCKS_NOT_ALIGNED',spot,futures,source_skew_ms:skew,comparison:null,fact:null};
  const basisPct=(futures.mid/spot.mid-1)*100;

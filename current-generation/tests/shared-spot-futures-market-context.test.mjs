@@ -9,7 +9,7 @@ if(!root){
  test('assembled runtime is required for shared spot/futures context', {skip:'encrypted production runtime not assembled'},()=>{});
 }else{
  const src=pathToFileURL(path.resolve(root)+'/');
- const [{buildSpotFuturesMarketContext},{formatManualReport},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact}]=await Promise.all(
+ const [{buildSpotFuturesMarketContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact}]=await Promise.all(
   ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs'].map(name=>import(new URL(name,src)))
  );
  const fixture=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
@@ -53,19 +53,31 @@ if(!root){
    assert.equal(telegram.text,baselineTelegram[i].text,'approved Telegram wording stays unchanged');
   }
  });
- test('foreign, stale, future, incomplete and unsynchronized books never create a comparison fact',()=>{
+ test('foreign, stale, future and incomplete books retain only the verified market; skewed pairs do not compare',()=>{
   const changes=[
-   a=>a.spot_component.data.symbol='otherusdt',
-   a=>a.futures_component.data.contract_info.contract_code='OTHER-USDT',
-   a=>a.spot_component.data.depth_bbo.source_ts=T-300_001,
-   a=>a.spot_component.data.depth_bbo.source_ts=T+1,
-   a=>a.spot_component.data.health.depth=false,
-   a=>a.spot_component.data.depth_bbo.best_ask=99,
-   a=>a.spot_component.data.depth_bbo.source_ts=T-80_000,
+   [a=>a.spot_component.data.symbol='otherusdt','FUTURES_ONLY'],
+   [a=>a.futures_component.data.contract_info.contract_code='OTHER-USDT','SPOT_ONLY'],
+   [a=>a.spot_component.data.depth_bbo.source_ts=T-300_001,'FUTURES_ONLY'],
+   [a=>a.spot_component.data.depth_bbo.source_ts=T+1,'FUTURES_ONLY'],
+   [a=>a.spot_component.data.health.depth=false,'FUTURES_ONLY'],
+   [a=>a.spot_component.data.depth_bbo.best_ask=99,'FUTURES_ONLY'],
   ];
-  for(const change of changes){const input=args();change(input);const receipt=buildSpotFuturesMarketContext(input);assert.equal(receipt.fact,null,receipt.status);assert.equal(receipt.comparison,null);}
+  for(const [change,expected] of changes){const input=args();change(input);const receipt=buildSpotFuturesMarketContext(input);assert.equal(receipt.status,expected);assert.equal(receipt.comparison,null);assert.match(receipt.fact.value,/котировка не подтверждена/);assert.equal(receipt.fact.score_contribution,0);}
+  const skewed=args();skewed.spot_component.data.depth_bbo.source_ts=T-80_000;
+  const skew=buildSpotFuturesMarketContext(skewed);
+  assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.equal(skew.fact,null);
   const noSpot=buildSpotFuturesMarketContext({...args(),spot_component:null});
-  assert.equal(noSpot.status,'FUTURES_ONLY');assert.equal(noSpot.fact,null);
+  assert.equal(noSpot.status,'FUTURES_ONLY');assert.match(noSpot.fact.value,/спотовая котировка не подтверждена/);
+  const noFutures=buildSpotFuturesMarketContext({...args(),futures_component:null});
+  assert.equal(noFutures.status,'SPOT_ONLY');assert.match(noFutures.fact.value,/фьючерсная котировка не подтверждена/);
+  const missing=buildSpotFuturesMarketContext({...args(),spot_component:null,futures_component:null});
+  assert.equal(missing.status,'NO_FRESH_EXACT_DEPTH_PAIR');assert.equal(missing.fact,null);
+  const canonical=structuredClone(fixture);canonical.metadata.supporting_context={facts:[noSpot.fact]};
+  const manual=formatManualReport(canonical);
+  assert.equal(manual.ok,true,manual.status);assert.match(manual.text,/Котировка доступного рынка HTX/);
+  const crowded=Array.from({length:25},(_,i)=>({source:'test',label:`Факт ${i}`,value:'проверен'}));crowded.push(noSpot.fact);
+  const selected=selectSupportingContextFacts(crowded);
+  assert.equal(selected.length,24);assert.ok(selected.includes(noSpot.fact),'existing 24-line report budget retains useful single-market fact');
  });
  test('spot original depth prices are kept separate from a disagreeing ticker without extra HTTP',async()=>{
   const now=Date.now(),depthTs=now-10_000;
