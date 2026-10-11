@@ -10,6 +10,8 @@ import fs from 'node:fs';
 import {canonicalFingerprint,renderCanonicalTelegram} from '../files/src/canonical-publication.mjs';
 import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 import {auditRenderedBlockResults} from '../files/src/block-result-context.mjs';
+import {reviewBoundedMoneyFlow,verifyBoundedMoneyFlowReviews} from '../files/src/bounded-money-flow-diagnostic.mjs';
+import {auditCanonicalBlockDecisionUse} from '../files/src/block-decision-use-audit.mjs';
 
 const now=Date.parse('2026-10-11T19:00:00Z'),contract='SOL-USDT';
 const future=(side='buy',tradeId='101')=>({status:'ok',ch:'market.SOL-USDT.trade.detail',ts:now-1000,data:[{data:[{id:tradeId,price:100,amount:1,quantity:1,trade_turnover:100,ts:now-2000,direction:side}]}]});
@@ -25,10 +27,17 @@ test('opposite HTX markets stay separate and do not create a common directional 
  const r=reconcileN12HtxMarkets({contract,futures:normalizeHtxLargeTrades(future(),{contract,observed_ts:now}),spot_payload:spot('sell'),observed_ts:now});
  const joint=r.evidence.find(e=>e.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET');
  assert.equal(joint.coverage_fraction,0);assert.equal(joint.directional_strength,null);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:now}).adjustment,0);
+ const args={evidence:r.evidence,contract,run_id:'R',snapshot_id:`S392:${contract}:${now}`,decision_ts:now},review=reviewBoundedMoneyFlow(args);
+ assert.equal(review.receipts.length,1);assert.equal(review.receipts[0].sample_flow,'NO_COMMON_DIRECTION');assert.equal(review.receipts[0].score_contribution,0);
+ assert.equal(verifyBoundedMoneyFlowReviews(review,args).length,1);
+ const tampered=structuredClone(joint);tampered.components[1].imbalance=.5;
+ assert.equal(reviewBoundedMoneyFlow({...args,evidence:[tampered]}).receipts.length,0);
 });
 test('spot-only is labeled as one market and not independent venue agreement',()=>{
  const r=reconcileN12HtxMarkets({contract,futures:{status:'FUTURES_RESPONSE_UNAVAILABLE',evidence:[]},spot_payload:spot(),observed_ts:now});
  assert.equal(r.status,'CLOSED_BOUNDED_PARTIAL_MARKET');assert.equal(r.summary.independent_venue_count,1);assert.equal(r.evidence[0].market,'SPOT');
+ const args={evidence:r.evidence,contract,run_id:'R',snapshot_id:`S392:${contract}:${now}`,decision_ts:now},review=reviewBoundedMoneyFlow(args);
+ assert.equal(review.receipts.length,1);assert.equal(review.receipts[0].scope,'ONLY_RETURNED_VERIFIED_HTX_SPOT_TRADES');assert.equal(verifyBoundedMoneyFlowReviews(review,args).length,1);
 });
 test('stale, foreign-channel and duplicate spot records are not useful evidence',()=>{
  for(const p of [{...spot(),ch:'market.btcusdt.trade.detail'},{...spot(),ts:now-61000},{...spot(),data:[{data:[spot().data[0].data[0],spot().data[0].data[0]]}]}])assert.equal(normalizeHtxSpotTradeSample(p,{contract,observed_ts:now}).evidence.length,0);
@@ -57,7 +66,9 @@ test('the joint N12 fact reaches manual and Telegram output with source receipts
  const joint=jointSpotFuturesFlow({now:T,primary:{check_completed:true,evidence:[{block_id:'N05',metric_family:'EXACT_FUTURES_TAKER_FLOW_4H',provider_id:'HTX_FUTURES_RAW_FLOW',upstream_id:'HTX_OFFICIAL_RAW_FILLS',source_clock_policy:'IMMUTABLE_EXACT_RAW_MINUTES',score_contribution:0,entry_authorized:false,factual_1m_trade_count:240,raw_trade_count:240,window_start_ts:S,window_end_ts:E,buy_quote_turnover_usdt:60,sell_quote_turnover_usdt:40,htx_contract:k,asset_id:'HTX:USDT_M_PERPETUAL:'+k}]},external:{components:[{version:BITGET_FLOW_VERSION,status:'CLOSED_VOLUME_RECONCILED_FOUR_HOURS',check_completed:true,exact_asset_binding:true,contract:k,window_start_ts:S,window_end_ts:E,observed_ts:T,verified_minutes:240,venue:'BITGET',physical_root:'BITGET_OFFICIAL_PUBLIC_TRADES',market:'SPOT',quote:'USDT',buy_quote:62,sell_quote:38}]}});
  assert.equal(joint.check_completed,true);
  const evidence=[...joint.evidence,...recent.evidence],facts=consumeBlockResultContext({contract:k,now:T,evidence}).facts;
- c.metadata.internal_market_context.evidence_v2.evidence=evidence;c.metadata.supporting_context={facts};c.direction='LONG';c.state='OBSERVE';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:T+600000,next_recheck_ts:T+60000,cancel_condition:'price<1'};c.analytical_fingerprint=canonicalFingerprint(c);
+ c.metadata.internal_market_context.evidence_v2.evidence=evidence;c.metadata.internal_market_context.decision_ts=T;c.metadata.supporting_context={facts};c.direction='LONG';c.state='OBSERVE';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:T+600000,next_recheck_ts:T+60000,cancel_condition:'price<1'};
+ const reviewArgs={evidence,contract:k,run_id:c.run_id,snapshot_id:c.snapshot_id,decision_ts:T};c.metadata.bounded_money_flow_diagnostic=reviewBoundedMoneyFlow(reviewArgs);assert.equal(c.metadata.bounded_money_flow_diagnostic.receipts.length,1);assert.equal(verifyBoundedMoneyFlowReviews(c.metadata.bounded_money_flow_diagnostic,reviewArgs).length,1);c.analytical_fingerprint=canonicalFingerprint(c);
  const manual=formatManualReport(c);assert.equal(manual.ok,true);assert.match(manual.text,/Направление последних сделок HTX/);assert.match(manual.text,/BITGET/);
  for(const policy of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007']){const telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:policy});assert.equal(telegram.ok,true);const audit=auditRenderedBlockResults({canonical:c,manual,telegram});assert.ok(audit.used_context_block_ids.includes('N12'));assert.ok(audit.telegram_used_context_block_ids.includes('N12'));assert.ok(audit.telegram_used_context_block_ids.includes('N05'));}
+ const use=auditCanonicalBlockDecisionUse(c,{manual});assert.equal(use.blocks.N12.participating,true);assert.equal(use.blocks.N12.unscored_diagnostic_receipt_count,1);
 });
