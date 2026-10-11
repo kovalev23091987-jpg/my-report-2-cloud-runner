@@ -1,0 +1,160 @@
+{
+  "schema": "N05_SAVED12_SHARED_NATIVE_BATCH_ACTUAL_V1",
+  "approved_assets": 104,
+  "candidate_contracts": [
+    "FLOKI-USDT",
+    "LINK-USDT",
+    "LSK-USDT",
+    "NEAR-USDT",
+    "PEPE-USDT",
+    "QNT-USDT",
+    "RLC-USDT",
+    "SHIB-USDT",
+    "SOL-USDT",
+    "SUI-USDT",
+    "XLM-USDT",
+    "ZEC-USDT"
+  ],
+  "common_closed_anchor": true,
+  "shared_poloniex_metadata_HTTP": 3,
+  "maximum_poloniex_native_HTTP": 12,
+  "maximum_poloniex_HTTP": 15,
+  "maximum_primary_identity_HTTP": 1,
+  "maximum_source_HTTP": 16,
+  "Poloniex_daily_cap": 16,
+  "HTX_ASSET_REFERENCE_daily_cap": 8,
+  "provider_minute_cap": 6,
+  "background_HTTP_cap": 28,
+  "D1_reservation": {
+    "rows_read": 16000,
+    "rows_written": 500
+  },
+  "caps_changed": false,
+  "requires_fresh_owned_cloud_guard_before_execution": true,
+  "not_scheduled_or_executed": false,
+  "run": "38126227557",
+  "head": "ae553a88ce4119b9bffbc192daab9622fefbf151",
+  "cloud_owner_guard": {
+    "main": "2c3b9ac61a20d20e8112ef61abd761a3a9aa26fa",
+    "lease_owner": "CODEX:N05_CONTINUE_20261011:1791708551464",
+    "fence_active": false,
+    "GitHub_control_reads": 3
+  },
+  "started_ts": 1791708638107,
+  "status": "BATCH_NOT_CLOSED",
+  "sourceHTTP": 0,
+  "sources": [],
+  "windows": [],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 34,
+      "reserved_rows_read": 554000,
+      "reserved_rows_written": 11432,
+      "measured_rows_read": 344284,
+      "measured_rows_written": 3932,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 570000,
+      "rows_written": 11932
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "Poloniex_used": 7,
+    "Poloniex_required": 15,
+    "Poloniex_cap": 16,
+    "HTX_identity_used": 2,
+    "HTX_identity_cap": 8
+  },
+  "reason": "ENTIRE_BATCH_SOURCE_HEADROOM_REQUIRED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 0,
+      "statistics": 0
+    },
+    "total": 0,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 164
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_PLANNED_NATIVE:38126227557:1",
+    "source_run_id": "38126227557",
+    "measured_rows_read": 37,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 6,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 6,
+    "rows_read": 38,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 35,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791708639541,
+  "raw_batch": {
+    "body_sha256": "118391b88fec4eb454b38a718ab960c242924b0693a1db2cfa6d65b3d015e2d1",
+    "gzip_sha256": "bbd3884f395fe1f1285a5efd8b6f0bfd222fc0f655bb8251cb2588a3aee49e19",
+    "file": "original-batch.json.gz"
+  },
+  "individual_full_windows": 0,
+  "simultaneous_continuous_coverage": false
+}

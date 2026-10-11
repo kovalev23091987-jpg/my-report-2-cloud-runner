@@ -1,0 +1,105 @@
+{
+  "schema": "N05_CLOUD_CONTINUATION_HANDOFF_V1",
+  "recorded_ts": 1791709072265,
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "source_main": "2c3b9ac61a20d20e8112ef61abd761a3a9aa26fa",
+  "status": "READY_FOR_OWNER_TO_START_CODEX_CLOUD_TASK;NOT_STARTED_OR_TRANSFERRED",
+  "current_task": "N05_MAXIMUM_USEFUL_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS",
+  "owner_instructions": [
+    "Общее ТЗ на паузе до последовательной проверки и настройки всех блоков; сейчас N05.",
+    "Максимум монет и полезных источников: биржи и отдельные сервисы. Один доказанный источник допустим, если других нет.",
+    "Крупный связанный пакет, затем одна общая проверка затронутых цепочек. Короткие сообщения по делу.",
+    "Источник засчитывать по полезным проверенным данным и реальному consumer, не по HTTP200. Один upstream не считать дважды."
+  ],
+  "accepted_baseline": {
+    "latest_runtime_PR": 311,
+    "cloud_run": "38075401232",
+    "unit": 1339,
+    "assembled": 41,
+    "delivery": 35,
+    "integration": 37,
+    "individual_full_window_assets": 22,
+    "approved_assets": 104,
+    "crypto_contracts": 121,
+    "simultaneous_or_continuous_coverage": false,
+    "N05_score": 0,
+    "new_fresh_SENT": false
+  },
+  "actual_attempt": {
+    "run": "38126227557",
+    "head": "ae553a88ce4119b9bffbc192daab9622fefbf151",
+    "retained_commit": "d86ea60cf81049dc4e31a2df1f58411420d12ecd",
+    "retained_branch": "n05-saved12-continuation-20261011",
+    "proof": "checkpoints/n05-saved12-qualification-38126227557/batch-summary.json",
+    "status": "BATCH_NOT_CLOSED",
+    "reason": "ENTIRE_BATCH_SOURCE_HEADROOM_REQUIRED",
+    "Poloniex_used_at_attempt": 7,
+    "Poloniex_required": 15,
+    "Poloniex_cap": 16,
+    "sourceHTTP": 0,
+    "new_windows": 0,
+    "D1": {
+      "requests": 6,
+      "rows_read": 38,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "Telegram": 0,
+    "MAIN": 0
+  },
+  "next_connected_batch": [
+    "Read fresh main/phase/fence, startup/current status/generation; acquire and read back a bounded own CAS lease before edits/tests/live calls.",
+    "Replan the saved12 Poloniex acquisition to the ACTUAL remaining allowance. Do not rerun an unchanged 15-call package if less than15 available. Reuse still-valid exact metadata with original times; otherwise common metadata once + affordable windows. All-or-none preflight/reservations, no cap resets or aliases.",
+    "Reconcile retained exact source routes for all104 assets offline before new provider HTTP; record source-specific complete/partial/missing and original clocks.",
+    "Investigate available-flow fallback truncation in current-generation/files/src/joint-spot-futures-flow.mjs: slice(0,2), validator maximum2, and two-venue wording in block-result-context.mjs hide any third qualified component. This is static inspection only: no fix/tests performed yet. Retain all admitted aligned distinct markets in bounded common consumer, preserve disagreements, relative per-venue flow, score0 and noENTRY; check manual and Telegram in combined validation.",
+    "Qualify Bitfinex (or a demonstrably better service) only after a bounded admission plan. Official signed taker trades and shared metadata look promising, but no actual data acquired/adapter enabled. Do not equate candles-only OHLCV to taker flow or sparse minutes to zero.",
+    "After connected code/source batch, run one collective meaningful qualification/assembly/delivery check, reuse unchanged hash-bound proofs; update status/phase/register/resume and release only owned lease."
+  ],
+  "research_only_sources": [
+    {
+      "name": "Bitfinex",
+      "status": "OFFICIAL_DOCUMENTATION_REVIEWED_ONLY;NOT_CONNECTED",
+      "urls": [
+        "https://docs.bitfinex.com/reference/rest-public-trades",
+        "https://docs.bitfinex.com/reference/ws-public-trades",
+        "https://docs.bitfinex.com/reference/rest-public-conf",
+        "https://docs.bitfinex.com/reference/rest-public-candles"
+      ],
+      "notes": "Signed trade amount is taker direction; multi-conf can share metadata. Need exact identity, full240 closed minutes, pagination completeness, trade/candle volume reconciliation and durable admission."
+    },
+    {
+      "name": "Coinalyze",
+      "status": "CANDIDATE_NOT_QUALIFIED",
+      "url": "https://api.coinalyze.net/v1/doc/",
+      "notes": "Check actual buy/sell data availability, API access and upstream independence before enabling."
+    },
+    {
+      "name": "CoinGlass",
+      "status": "CANDIDATE_NOT_QUALIFIED",
+      "notes": "Requires checking available authorized API access and actual useful original venue data."
+    },
+    {
+      "name": "Tardis",
+      "status": "HISTORICAL_CANDIDATE_NOT_QUALIFIED",
+      "url": "https://docs.tardis.dev/downloadable-csv-files",
+      "notes": "Possible historical trade calibration. Delayed/historical data are not freshN05; duplicate same-exchange upstream is not extra independent source."
+    }
+  ],
+  "unchanged_guards": {
+    "N01_N02_N03": "PAUSED",
+    "N04": "ACTIVE_PARTIAL",
+    "general_TZ": "PAUSED_FOR_SEQUENTIAL_BLOCK_REVIEW",
+    "N05_required_closed_minutes": 240,
+    "N05_score": 0,
+    "threshold": 70,
+    "HTTP_job_cap": 164,
+    "external_collector_HTTP_cap": 5,
+    "caps_reserves_cadence_weights_entry_freshness": "UNCHANGED",
+    "new_chat_automation": false,
+    "Telegram_test_messages": false
+  },
+  "code_changes_this_continuation": false,
+  "new_cloud_agent_task_started": false,
+  "agent_background_development_process_running": false,
+  "startup_prompt": "Продолжи N05 по checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json. Сначала прочитай AGENTS.md, свежие main/phase/fence и текущий статус. Работай крупными связанными пакетами с общей проверкой. Максимизируй полезное покрытие монет и источников, допускай один доказанный источник. Не повторяй отказавший пакет без нового расчёта доступных лимитов. Общее ТЗ остаётся на паузе до проверки всех блоков. Сохраняй результаты и точку продолжения в GitHub."
+}
