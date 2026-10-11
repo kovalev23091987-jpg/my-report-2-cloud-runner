@@ -1,0 +1,118 @@
+{
+  "schema": "n10-previous-saved-report-offline-replay-v1",
+  "status": "HISTORICAL_SAME_WINDOW_THREE_UPSTREAM_PRICE_PATHS_VERIFIED;NATURAL_POST_PR316_USE_PENDING",
+  "checked_utc": "2026-10-11 18:28:29 UTC",
+  "source_main_runtime_merge": "63243c4260a2d69df8e1c274317c4ebfff4effa1",
+  "source_runtime_blob_sha": "48cfc46c28ecc234339bf023a5a7b89e0852bd00",
+  "source_snapshot": {
+    "d1_database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "table": "canonical_publication_shadow",
+    "snapshot_id": "S392:ZEC-USDT:1791710691023",
+    "run_id": "1791710620336-1791710630453",
+    "publication_id": "PUB:90b3eb038d31bafa24e0714d9b94c3d30b2c0f52",
+    "observed_ts": 1791710691023,
+    "lifecycle_event": "OBSERVE",
+    "canonical_state": "OBSERVE",
+    "shadow_only": true,
+    "presentation_hash": "29b0b97b875be88cf04e600c9464b5fdddc3a5ea74a9c667847a371d5f0b291f",
+    "historical_manual_text_sha256": "b28ff7245858df8cc1eec992002536413718462c3d06bc196f6e55229b60d048",
+    "historical_telegram_text_sha256": "9c3b6377812dcb501777906a11b406f172a73a410a5d33342f201f9b406ffebf",
+    "historical_manual_contains_new_15m_venue_lines": false,
+    "telegram_contains_n10_path": false
+  },
+  "input_archive": {
+    "path": "checkpoints/N10_PREVIOUS_SAVED_ZEC_INPUT_20261011.json.gz",
+    "sha256": "cf3df453932d223cf0d55697f7df3794998ee35aa9a2021d0cd089f25c8061cf",
+    "uncompressed_sha256": "a72375479debcb2ca0eff76c41f6a80ba11325a358a8b313498d13e28e93c314",
+    "contents": "Original 240 closed one-minute bars each from N05 Binance and Poloniex D1 cache, exact original N05 components and HTX technical receipt, prior saved manual and Telegram text. No synthetic market bars.",
+    "source_cache_keys": [
+      "N05_OFFICIAL_FLOW:BINANCE|NATIVE_FLOW:ZEC-USDT:1791710640000",
+      "N05_OFFICIAL_FLOW:POLONIEX|NATIVE_FLOW:ZEC-USDT:1791710640000"
+    ]
+  },
+  "replay_script": "checkpoints/N10_PREVIOUS_SAVED_ZEC_REPLAY_20261011.mjs",
+  "result": {
+    "snapshot_id": "S392:ZEC-USDT:1791710691023",
+    "observed_ts": 1791710691023,
+    "window_start": 1791709740000,
+    "window_end": 1791710640000,
+    "route_status": "CLOSED",
+    "cache_reads": 2,
+    "provider_http": 0,
+    "evidence": [
+      {
+        "venue": "BINANCE",
+        "source_ts": 1791710640000,
+        "first_known_ts": 1791710667567,
+        "active_minute_count": 15,
+        "path_open": 1234.38,
+        "path_high": 1244.9,
+        "path_low": 1232.62,
+        "path_close": 1238.06,
+        "change_pct": 0.2981253746820123,
+        "htx_close_gap_pct": 0.022621144306733676,
+        "comparison_status": "SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION",
+        "evidence_id": "EV2:3c73be4a66fbcee95212751aaa6c020c998321a4832538c05cdaca0edef906b7",
+        "raw_hash": "c8ee81a6740be71c25b669623cc67eccb206323dafa6044368e0355e874aee7f"
+      },
+      {
+        "venue": "POLONIEX",
+        "source_ts": 1791710640000,
+        "first_known_ts": 1791710673196,
+        "active_minute_count": 15,
+        "path_open": 1223.9,
+        "path_high": 1235.4,
+        "path_low": 1221.64,
+        "path_close": 1229.04,
+        "change_pct": 0.41996895171172444,
+        "htx_close_gap_pct": -0.7061028615747533,
+        "comparison_status": "SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION",
+        "evidence_id": "EV2:a03d35365205b1f1f9e14be3ffcc28cd01047313fbc272b615b7afd681b9be16",
+        "raw_hash": "0ec33a8bd27eb64df08b01b4b844deca507683bf8a575ec9e7cdbf88f36269f8"
+      }
+    ],
+    "htx": {
+      "source_ts": 1791710640000,
+      "change_pct": 0.37057759830037007,
+      "evidence_id": "EV2:c524f70f4bf83c8025d380efdb6517dde24961bb840092102b87d494c2e1ddb2"
+    },
+    "facts": [
+      {
+        "source": "HTX / закрытые минутные свечи",
+        "label": "Фактический путь цены за 15 минут",
+        "value": "15 закрытых минутных свечей: 1 233,21 → 1 237,78 USDT (+0,37%); минимум 1 232,41, максимум 1 243,6 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+        "physical_root_key": "htx-futures:ZEC-USDT|ZEC-USDT:15m:1791710640000"
+      },
+      {
+        "source": "Binance / спотовые закрытые свечи",
+        "label": "Цена за 15 минут на Binance",
+        "value": "15 закрытых минутных свечей, активных минут 15: 1 234,38 → 1 238,06 USDT (+0,3%); минимум 1 232,62, максимум 1 244,9 USDT; закрытие относительно HTX +0,02%. Направление совпало с HTX и ценовые диапазоны пересеклись; это отдельный рынок, цены не усреднялись. Цель, баллы и разрешение входа этим не меняются",
+        "physical_root_key": "htx-futures:ZEC-USDT|BINANCE:ZEC-USDT:1791710640000"
+      },
+      {
+        "source": "Poloniex / спотовые закрытые свечи",
+        "label": "Цена за 15 минут на Poloniex",
+        "value": "15 закрытых минутных свечей, активных минут 15: 1 223,9 → 1 229,04 USDT (+0,42%); минимум 1 221,64, максимум 1 235,4 USDT; закрытие относительно HTX -0,71%. Направление совпало с HTX и ценовые диапазоны пересеклись; это отдельный рынок, цены не усреднялись. Цель, баллы и разрешение входа этим не меняются",
+        "physical_root_key": "htx-futures:ZEC-USDT|POLONIEX:ZEC-USDT:1791710640000"
+      }
+    ],
+    "score_unchanged": true,
+    "offline_only": true,
+    "manual_report_after_pr316_rendered_from_full_historical_canonical": false,
+    "actual_post_pr316_report_observed": false,
+    "actual_post_pr316_telegram_sent": false
+  },
+  "interpretation": {
+    "useful_for": "Historical N10 three-root same-window 15m price context and separate independent venue facts for ZEC",
+    "insufficient_for": "N10 completion across 104 assets, current freshness, natural production use, exact approved SENT/message_id, price target or entry validation",
+    "telegram_policy": "Approved brief intentionally excludes N10 diagnostic price path; keep Telegram format unchanged",
+    "n05_status": "OPEN",
+    "n06_n09_status": "PAUSED",
+    "n11_started": false,
+    "source_caps_changed": false,
+    "provider_http_added": 0,
+    "score_or_strategy_changed": false
+  },
+  "next_action": "Release N10 replay lease after GitHub readback; begin N11 under a separate bounded lease and current main; on next natural report inspect same-run N10 and N11 source→fact→consumer→manual/Telegram/delivery.",
+  "owner_next_block_authorization": "Owner authorized proceeding to N11 after saving N10 replay, with both blocks to be checked when next natural report arrives."
+}

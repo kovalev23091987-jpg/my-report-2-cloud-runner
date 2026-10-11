@@ -2845,7 +2845,9 @@
     "price_window_alignment": "EXACT_SAME_CLOSED_15M_MINUTE_GRID",
     "conflicting_venue_prices": "SEPARATE_NO_COMBINED_CONCLUSION",
     "n05_complete": false,
-    "n11_started": false
+    "n11_started": false,
+    "historical_same_window_three_root_replay": "checkpoints/N10_PREVIOUS_SAVED_REPORT_OFFLINE_REPLAY_20261011.json",
+    "historical_same_window_three_root_profiles_replayed": 1
   },
   "latest_n10_d1_audit": {
     "source": "READ_ONLY_CLOUDFLARE_D1",
@@ -2855,5 +2857,24 @@
   },
   "latest_actual_report_scope_note": "Pre-current104 historical accepted report; no natural post-PR315 manual line or new SENT claimed.",
   "n10_complete": false,
-  "latest_n10_post_pr315_natural_readback": "checkpoints/N10_POST_PR315_NATURAL_READBACK_20261011.json"
+  "latest_n10_post_pr315_natural_readback": "checkpoints/N10_POST_PR315_NATURAL_READBACK_20261011.json",
+  "latest_n10_previous_saved_snapshot_replay": {
+    "proof": "checkpoints/N10_PREVIOUS_SAVED_REPORT_OFFLINE_REPLAY_20261011.json",
+    "checked_utc": "2026-10-11 18:28:29 UTC",
+    "snapshot_id": "S392:ZEC-USDT:1791710691023",
+    "source_run_id": "1791710620336-1791710630453",
+    "three_same_window_price_roots": [
+      "HTX",
+      "BINANCE",
+      "POLONIEX"
+    ],
+    "derived_independent_venue_facts": 2,
+    "cache_reads": 2,
+    "provider_http": 0,
+    "offline_replay": true,
+    "natural_post_pr316_use_verified": false,
+    "actual_sent_verified": false,
+    "n10_complete": false,
+    "n11_authorized_next": true
+  }
 }
