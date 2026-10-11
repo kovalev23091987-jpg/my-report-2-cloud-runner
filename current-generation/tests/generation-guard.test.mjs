@@ -27,14 +27,17 @@ test('multi-source comparison remains bounded for schedule, burst checks and man
  assert.ok(generation.multi_source_provider_monthly_caps.GTRADE<=4000);
  assert.ok(generation.multi_source_provider_monthly_caps.GMX<=8000);
 });
-test('only authoritative report workflow remains manually runnable',()=>{
+test('manual source qualification workflows cannot become report or Telegram publishers',()=>{
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','report2.yml']);
+ assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2.yml']);
  const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
+ const n05=fs.readFileSync(new URL('n05-post-reset-common-source-batch-20261011.yml',root),'utf8');
+ assert.match(n05,/tools\/acquire-n05-post-reset-/);
+ assert.doesNotMatch(n05,/runner-main|sendLifecycleRelay|manual-requests|REPORT2_TELEGRAM_BOT_TOKEN/);
 });
 test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
