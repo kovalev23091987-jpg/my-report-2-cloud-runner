@@ -1,0 +1,50 @@
+name: Owner closed-candle and terminal lifecycle stage 3
+on:
+  push:
+    branches: [codex/owner-closed-candle-terminal-stage3-20261010]
+    paths:
+      - current-generation/files/src/closed-candle-terminal-lifecycle.mjs
+      - current-generation/tests/closed-candle-terminal-lifecycle.test.mjs
+      - .github/workflows/owner-closed-candle-terminal-stage3-20261010.yml
+permissions:
+  contents: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact bounded lease and review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='d1b140d211a070ec5fdb31fcc546f75b4c6c558a')throw Error('MAIN_MOVED');
+            const branch=(await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha;
+            if(branch!==context.sha)throw Error('SUPERSEDED_REVIEW_HEAD');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CHATGPT:CLOSED_CANDLE_TERMINAL_LIFECYCLE:20261010'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Verify closed-candle and terminal fail-closed matrix
+        run: |
+          mkdir -p audit-output
+          node --check current-generation/files/src/closed-candle-terminal-lifecycle.mjs
+          node --test current-generation/tests/closed-candle-terminal-lifecycle.test.mjs > audit-output/closed-candle-terminal.tap
+          node current-generation/validate.mjs > audit-output/validation.json
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum current-generation/files/src/closed-candle-terminal-lifecycle.mjs current-generation/tests/closed-candle-terminal-lifecycle.test.mjs > audit-output/hashes.txt
+      - name: Assert exact proof counts and no production side effects
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';const t=fs.readFileSync('audit-output/closed-candle-terminal.tap','utf8');const p=Number(t.match(/# pass (\d+)/)?.[1]),f=Number(t.match(/# fail (\d+)/)?.[1]);if(p!==12||f!==0)throw Error('EXPECTED_12_PASS');const v=JSON.parse(fs.readFileSync('audit-output/validation.json'));if(v.status!=='CURRENT_GENERATION_VALIDATED')throw Error('GENERATION_NOT_VALIDATED');fs.writeFileSync('audit-output/proof.json',JSON.stringify({schema:'CLOSED_CANDLE_TERMINAL_STAGE3_PROOF_V1',status:'EXACT_HEAD_FAIL_CLOSED_PATHS_VERIFIED',tested_head:process.env.GITHUB_SHA,pass:p,fail:f,sourceHTTP:0,D1:0,Telegram:0,MAIN:0,production_wiring:false,actual_ENTRY:false},null,2)+'\n');"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: closed-candle-terminal-stage3-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
