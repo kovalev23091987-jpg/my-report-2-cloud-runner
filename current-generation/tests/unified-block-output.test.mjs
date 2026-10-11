@@ -24,8 +24,8 @@ test('same genuine historical context retains historical V5 slots and full manua
  const c=control(),before=JSON.stringify(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}),manual=formatManualReport(c);
  assert.equal(tg.ok,true,tg.status);assert.equal(manual.ok,true,manual.status);
  const proof=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
- assert.equal(proof.used_context_block_ids.length,4);assert.equal(proof.telegram_used_context_block_ids.length,3);
- assert.equal(proof.telegram_available_not_rendered_evidence_ids.length,1);
+ assert.equal(proof.used_context_block_ids.length,2);assert.equal(proof.telegram_used_context_block_ids.length,2);
+ assert.equal(proof.telegram_available_not_rendered_evidence_ids.length,0);
  assert.equal(proof.telegram_delivery_proven,false);assert.equal(proof.telegram_message_id,null);
  assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);
  assert.equal(JSON.stringify(c),before);
@@ -56,7 +56,7 @@ test('N07 requires an actual nonempty headline and shares exact dated facts with
  c.metadata.supporting_context.facts=consumeBlockResultContext({contract:c.metadata.contract,now,evidence:result.evidence}).facts;
  c.analytical_fingerprint=canonicalFingerprint(c);
  const proof=auditRenderedBlockResults({canonical:c,manual:formatManualReport(c),telegram:renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'})});
- assert.deepEqual(proof.used_context_block_ids,['N07']);assert.deepEqual(proof.telegram_used_context_block_ids,['N07']);
+ assert.deepEqual(proof.used_context_block_ids,[]);assert.deepEqual(proof.telegram_used_context_block_ids,[]);
  assert.equal(normalizeOfficialFeed({...p,body:body.replace('Обновление протокола','')}).evidence.length,0);
  const ics='BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:E\nDTSTAMP:20261004T080000Z\nDTSTART:20261005T080000Z\nURL:https://issuer.example/event\nEND:VEVENT\nEND:VCALENDAR';
  assert.equal(parseOfficialFeed({body:ics,feed_url:p.feed_url,official_domains:['issuer.example'],now}).events.length,0);

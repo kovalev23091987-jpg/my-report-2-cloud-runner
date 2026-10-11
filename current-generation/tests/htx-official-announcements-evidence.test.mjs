@@ -15,12 +15,12 @@ const facts=(evidence,contract)=>consumeBlockResultContext({evidence,contract,no
 
 test('shared official HTX catalog gives exact-contract N07 context without a score',()=>{
  const catalog=parseHtxAnnouncementCatalog({body:HTML,observed_ts:NOW}),out=normalizeHtxAnnouncements({contract:'ZEC-USDT',catalog,observed_ts:NOW,response_sha256:'a'.repeat(64)});
- assert.equal(catalog.status,'CLOSED');assert.equal(out.status,'CLOSED');assert.equal(out.evidence.length,1);assert.equal(facts(out.evidence,'ZEC-USDT').length,1);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);assert.equal(out.evidence[0].common_upstream_not_independent_vote,true);
+ assert.equal(catalog.status,'CLOSED');assert.equal(out.status,'CLOSED');assert.equal(out.evidence.length,1);assert.equal(facts(out.evidence,'ZEC-USDT').length,0);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);assert.equal(out.evidence[0].common_upstream_not_independent_vote,true);
 });
 test('a closed catalog can state only its own bounded absence, never all-channel absence',()=>{
  const catalog=parseHtxAnnouncementCatalog({body:HTML,observed_ts:NOW}),out=normalizeHtxAnnouncements({contract:'ETC-USDT',catalog,observed_ts:NOW,response_sha256:'b'.repeat(64)}),fact=facts(out.evidence,'ETC-USDT')[0];
- assert.equal(out.status,'CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK');assert.equal(out.evidence[0].all_htx_announcement_channels_checked,false);assert.match(fact.value,/только эта лента/);
- const audit=auditCandidateBlocks({sources:{HTX_OFFICIAL_ANNOUNCEMENTS:out},evidence:out.evidence,decision_ts:NOW});assert.equal(audit.blocks.N07.checked,true);assert.equal(audit.blocks.N07.observed_facts,1);assert.equal(audit.blocks.N07.usable_facts,0);assert.equal(audit.blocks.N07.decision_path,'ADMITTED_NEUTRAL_CONTEXT');
+ assert.equal(out.status,'CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK');assert.equal(out.evidence[0].all_htx_announcement_channels_checked,false);assert.equal(fact,undefined);
+ const audit=auditCandidateBlocks({sources:{HTX_OFFICIAL_ANNOUNCEMENTS:out},evidence:out.evidence,decision_ts:NOW});assert.equal(audit.blocks.N07.checked,false);assert.equal(audit.blocks.N07.observed_facts,0);assert.equal(audit.blocks.N07.usable_facts,0);assert.equal(audit.blocks.N07.decision_path,'EXCLUDED_PAUSED_BLOCK');
 });
 test('truncated, sparse, redirected and wrong-market catalogs never close N07',async()=>{
  for(const body of [HTML.slice(0,-7),'<html><a href="/support/1">one</a></html>',HTML.replaceAll('/support/','https://evil.example/support/')])assert.notEqual(parseHtxAnnouncementCatalog({body,observed_ts:NOW}).status,'CLOSED');
@@ -30,7 +30,7 @@ test('truncated, sparse, redirected and wrong-market catalogs never close N07',a
 test('one admitted six-hour catalog request is shared by every exact futures contract',async()=>{
  const db=new DB();let calls=0,admissions=0;const base={db,now:NOW,run_id:'JOINT',request_admit:()=>{admissions++;return{allowed:true};},fetch_impl:async()=>{calls++;return{ok:true,status:200,url:HTX_OFFICIAL_ANNOUNCEMENTS_URL,text:async()=>HTML};}};
  const first=await collectHtxOfficialAnnouncements({...base,contract:'ZEC-USDT'}),second=await collectHtxOfficialAnnouncements({...base,contract:'ETC-USDT'});assert.equal(first.network_calls,1);assert.equal(second.network_calls,0);assert.equal(second.cache_status,'CURRENT_RUN_SHARED_HIT');assert.equal(calls,1);assert.equal(admissions,1);
- assert.equal(planCandidateEvidenceRoutes({contract:'任意-USDT'}).routes.some(row=>row.name==='HTX_ANNOUNCEMENTS'),true);
+ assert.equal(planCandidateEvidenceRoutes({contract:'任意-USDT'}).routes.some(row=>row.name==='HTX_ANNOUNCEMENTS'),false);
 });
 test('failed shared catalog preserves its actual cause for the second candidate without a redispatch or false absence',async()=>{
  const db=new DB();let calls=0,admissions=0;

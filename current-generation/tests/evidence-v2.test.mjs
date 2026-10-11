@@ -28,18 +28,18 @@ test('K16: validation exposes the exact rejection reason',()=>{
 });
 
 test('K16: one event through multiple transports owns one score family',()=>{
-  const base=make(templates.find(x=>x.block_id==='N06'));
+  const base=make(templates.find(x=>x.block_id==='N15'));
   const result=consumeEvidenceV2([base,{...base,evidence_id:'OTHER',provider_id:'AGGREGATOR'}],{base_interest:70,decision_ts:1500});
   assert.equal(result.receipts.filter(x=>x.reason==='CONSUMED').length,1);assert.equal(result.receipts.filter(x=>x.reason==='DUPLICATE_UPSTREAM_EVENT').length,1);
 });
 
 test('K16: news and social retain separate 0.2 caps and missing families are not redistributed',()=>{
   const social=make({...templates.find(x=>x.block_id==='N06'),directional_strength:1}),news=make({...templates.find(x=>x.block_id==='N07'),directional_strength:1});
-  const result=consumeEvidenceV2([social,news],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<=.4);assert.equal(result.threshold_unchanged,70);
+  const result=consumeEvidenceV2([social,news],{base_interest:70,decision_ts:1500});assert.equal(result.receipts.find(r=>r.block_id==='N06').reason,'BLOCK_PAUSED_BY_OWNER');assert.ok(result.adjustment<=.2);assert.equal(result.threshold_unchanged,70);
 });
 test('K30: nine independent N07 events remain capped to 0.2 points',()=>{
  const template=templates.find(x=>x.block_id==='N07'),rows=Array.from({length:9},(_,i)=>make({...template,directional_strength:1},i));
- const result=consumeEvidenceV2(rows,{base_interest:70,decision_ts:1500});assert.ok(Math.abs(result.block_contributions.N07)<=.2);assert.ok(Math.abs(result.adjustment)<=.2);
+ const result=consumeEvidenceV2(rows,{base_interest:70,decision_ts:1500});assert.equal(result.block_contributions.N07,undefined);assert.equal(result.adjustment,0);assert.ok(result.receipts.every(r=>r.reason==='BLOCK_PAUSED_BY_OWNER'));
 });
 test('K31-K33 base-owned roots, missing expiry and future source time never contribute',()=>{
  const row=make(templates.find(x=>x.block_id==='N06')),root='ROOT:BASE';
@@ -49,7 +49,7 @@ test('K31-K33 base-owned roots, missing expiry and future source time never cont
 });
 
 test('K16: risk strength can only reduce suitability and never becomes a bullish direction',()=>{
-  const risk={...make(templates.find(row=>row.block_id==='N07')),directional_strength:null,risk_strength:.8};
+  const risk={...make(templates.find(row=>row.block_id==='N11')),directional_strength:null,risk_strength:.8};
   const result=consumeEvidenceV2([risk],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<0);assert.ok(result.final_interest<70);
 });
 

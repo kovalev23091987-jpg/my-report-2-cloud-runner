@@ -15,7 +15,7 @@ test('K16 HTX risk: explicit opening restriction is adverse risk and never a Sho
  const out=normalizeHtxPublicRisk({contract:'SOL-USDT',state_payload:payload([{contract_code:'SOL-USDT',margin_mode:'isolated',margin_account:'SOL-USDT',open:0}]),isolated_payload:payload([{contract_code:'SOL-USDT',lever_rate:20}]),cross_payload:payload([]),observed_ts:1100});
  assert.equal(out.status,'CLOSED');assert.equal(out.evidence[0].block_id,'N08');assert.equal(out.evidence[0].directional_strength,null);assert.equal(out.evidence[0].risk_strength,1);
  assert.equal(out.evidence[0].execution_open_field,'open');assert.equal(out.evidence[0].execution_open_scope,'HTX_ISOLATED_MARGIN');
- assert.ok(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:1100}).adjustment<0);
+ assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:1100}).adjustment,0);
 });
 
 test('K16 HTX risk: exact official response is cached and consumes only three rate-limited attempts',async()=>{
@@ -86,7 +86,7 @@ test('strict manual two-candidate cycle reuses newly fetched HTX rows with separ
  assert.equal(second.evidence[0].source_ts,1000);assert.equal(second.evidence[0].risk_strength,1);
  assert.equal(first.evidence[0].risk_strength,null);
  const audit=auditCandidateBlocks({sources:{HTX_PUBLIC_RISK:second},evidence:second.evidence,decision_ts:1200,strict_fresh:true});
- assert.equal(audit.blocks.N08.checked,true);assert.equal(audit.blocks.N09.checked,true);
+ assert.equal(audit.blocks.N08.checked,false);assert.equal(audit.blocks.N09.checked,false);
  // A later manual command must fetch again even though the shared TTL is live.
  const third=await collectHtxPublicRiskEvidence({...params,contract:'SECOND-USDT',run_id:'NEW_MANUAL',now:1300});
  assert.equal(third.network_calls,3);assert.equal(calls,6);assert.equal(budget.summary().total,6);

@@ -30,7 +30,7 @@ test('general HTX market attention is Unicode-safe and never confuses BR with BO
  const payload={posts:[post('a','did:plc:1','BR/USDT listed on HTX'),post('b','did:plc:2','BOHR/USDT listed on HTX'),post('c','did:plc:3','BR/USDT elsewhere'),post('d','did:plc:4','龙虾-USDT HTX')]};
  const br=normalizeBlueskyAttention({contract:'BR-USDT',payload,window_start:0,window_end:1000,observed_ts:1100}),unicode=normalizeBlueskyAttention({contract:'龙虾-USDT',payload,window_start:0,window_end:1000,observed_ts:1100});
  assert.equal(br.summary.original_posts,1);assert.equal(unicode.summary.original_posts,1);
- const fact=consumeBlockResultContext({evidence:br.evidence,contract:'BR-USDT',now:1200}).facts[0];assert.equal(fact.label,'Публичные сообщения с точной парой HTX');assert.match(fact.value,/BR\/USDT вместе с HTX/);
+ assert.equal(consumeBlockResultContext({evidence:br.evidence,contract:'BR-USDT',now:1200}).facts.length,0);
 });
 
 test('native attention uses one verified official domain and never ticker matching',()=>{
@@ -39,7 +39,7 @@ test('native attention uses one verified official domain and never ticker matchi
  const row=normalizeBlueskyAttention({contract:'ADA-USDT',identity:native,asset_metadata:metadata,payload,window_start:0,window_end:1000,observed_ts:1100});
  assert.equal(row.status,'CLOSED');assert.equal(row.summary.unique_authors,1);assert.equal(row.evidence[0].asset_id,'cardano:native:mainnet');assert.equal(row.evidence[0].query_identity,'EXACT_OFFICIAL_DOMAIN_NATIVE');assert.equal(row.evidence[0].directional_strength,null);
  const context=consumeBlockResultContext({evidence:row.evidence,contract:'ADA-USDT',now:1200});
- assert.equal(context.status,'CLOSED');assert.equal(context.facts.length,1);assert.equal(context.facts[0].block_id,'N06');assert.equal(context.facts[0].label,'Публичные сообщения с официальным доменом проекта');assert.match(context.facts[0].value,/подтверждённому домену cardano\.org/);
+ assert.equal(context.status,'NOT_CLOSED');assert.equal(context.facts.length,0);
  for(const fallback of [normalizeBlueskyAttention({contract:'ADA-USDT',identity:native,asset_metadata:{official_domains:['cardano.org','example.org']},payload,window_start:0,window_end:1000,observed_ts:1100}),normalizeBlueskyAttention({contract:'NEAR-USDT',identity:native,asset_metadata:metadata,payload,window_start:0,window_end:1000,observed_ts:1100})]){assert.equal(fallback.status,'CLOSED');assert.equal(fallback.evidence[0].query_identity,'EXACT_HTX_MARKET_PAIR');assert.equal(fallback.summary.original_posts,0);}
 });
 

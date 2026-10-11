@@ -85,7 +85,7 @@ test('all 15 blocks and market routes remain assigned for arbitrary HTX futures'
  }
  for(const chain of ['ethereum','bsc','arbitrum','base','polygon','optimism','avalanche','solana']){
   const identity={chain,contract_or_mint:chain==='solana'?'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn':address},plan=planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity});
-  for(const route of ['CHAIN_EVENTS','BLUESKY','SECTOR_COINGECKO'])assert.ok(plan.routes.some(r=>r.name===route),`${chain}:${route}`);
+  for(const route of ['CHAIN_EVENTS','SECTOR_COINGECKO'])assert.ok(plan.routes.some(r=>r.name===route),`${chain}:${route}`);
  }
 });
 
@@ -97,8 +97,8 @@ test('official registry accepts exact native networks and rejects another market
 test('shared route planner admits native Bluesky only with exact binding and one official domain',()=>{
  const identity={chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null};
  const good=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']},run_id:'NATIVE_SOCIAL'});
- assert.ok(good.routes.some(r=>r.name==='BLUESKY'));
- for(const params of [{contract:'NEAR-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:[]}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org','example.org']}}])assert.equal(planCandidateEvidenceRoutes({...params,run_id:'GENERAL'}).routes.some(r=>r.name==='BLUESKY'),true);
+ assert.equal(good.routes.some(r=>r.name==='BLUESKY'),false);
+ for(const params of [{contract:'NEAR-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:[]}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org','example.org']}}])assert.equal(planCandidateEvidenceRoutes({...params,run_id:'GENERAL'}).routes.some(r=>r.name==='BLUESKY'),false);
 });
 
 test('real HTX wire bodies preserve no-prefix addresses and native chain type without substituting wrappers',()=>{

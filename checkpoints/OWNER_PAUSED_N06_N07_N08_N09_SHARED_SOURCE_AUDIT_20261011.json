@@ -1,0 +1,160 @@
+{
+  "schema": "OWNER_PAUSED_N06_N07_N08_N09_SHARED_SOURCE_AUDIT_20261011_V1",
+  "recorded_ts": 1791732681727,
+  "basis_main": "839f25dd04923fd14acfadf913a273c3e47d481f",
+  "owner_instruction": "Pause N06, N07, N08 and N09; exclude block facts from score, active coverage, manual report and Telegram. Keep any source used by another active block.",
+  "paused_block_ids": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09"
+  ],
+  "active_block_count": 8,
+  "shared_source_audit": [
+    {
+      "source": "OFFICIAL_EVENTS",
+      "roles": [
+        "N01",
+        "N07",
+        "N08",
+        "N09"
+      ],
+      "route_retained": true,
+      "active_role": null,
+      "paused_facts_filtered": true
+    },
+    {
+      "source": "HTX_PUBLIC_RISK",
+      "roles": [
+        "N08",
+        "N09",
+        "N11",
+        "N16"
+      ],
+      "route_retained": true,
+      "active_roles": [
+        "N11",
+        "N16"
+      ],
+      "paused_facts_filtered": true
+    },
+    {
+      "source": "CHAIN_RPC",
+      "roles": [
+        "N02",
+        "N03",
+        "N04",
+        "N05"
+      ],
+      "active_routes_retained": [
+        "CHAIN_EVENTS"
+      ],
+      "paused_supply_route": "skipped except existing exact XRP dependency for N04",
+      "paused_facts_filtered": true
+    },
+    {
+      "source": "BLOCKSCOUT_INDEX",
+      "roles": [
+        "N02",
+        "N04",
+        "N05"
+      ],
+      "route_retained": true,
+      "active_roles": [
+        "N04",
+        "N05"
+      ],
+      "paused_facts_filtered": true
+    },
+    {
+      "source": "COINPAPRIKA_SECTOR",
+      "roles": [
+        "N02",
+        "N15"
+      ],
+      "route_retained": true,
+      "active_role": "N15",
+      "paused_facts_filtered": true
+    },
+    {
+      "source": "COINGECKO_SECTOR",
+      "roles": [
+        "N06",
+        "N15"
+      ],
+      "route_retained": true,
+      "active_role": "N15",
+      "paused_facts_filtered": true
+    },
+    {
+      "source": "HTX_OFFICIAL_ANNOUNCEMENTS",
+      "roles": [
+        "N07"
+      ],
+      "route_paused": true
+    },
+    {
+      "source": "GDELT_NEWS_DISCOVERY",
+      "roles": [
+        "N07"
+      ],
+      "route_paused": true
+    },
+    {
+      "source": "BLUESKY_PUBLIC",
+      "roles": [
+        "N06"
+      ],
+      "route_paused": true
+    },
+    {
+      "source": "WIKIMEDIA_ATTENTION",
+      "roles": [
+        "N06"
+      ],
+      "route_paused": true
+    },
+    {
+      "source": "OFFICIAL_TOKEN_SCHEDULE",
+      "roles": [
+        "N01"
+      ],
+      "route_paused": true
+    },
+    {
+      "source": "DEFILLAMA_PUBLISHED_CALENDAR",
+      "roles": [
+        "N01"
+      ],
+      "route_paused": true
+    },
+    {
+      "source": "COINMETRICS_SUPPLY",
+      "roles": [
+        "N02"
+      ],
+      "route_paused": true
+    }
+  ],
+  "source_http_in_validation": 0,
+  "local_test_result": {
+    "tests": 1355,
+    "passed": 1352,
+    "failed": 0,
+    "skipped": 3,
+    "exclusions": [
+      "supplemental-supporting-bridge.test.mjs",
+      "early-evidence-repair/repair.test.mjs"
+    ],
+    "exclusion_reason": "encrypted runtime unavailable in source archive; assembled cloud validation required"
+  },
+  "assembled_cloud_validation": "PENDING",
+  "production_or_telegram_delivery_proof": false,
+  "strategy_weights_threshold_cadence_caps_changed": false,
+  "N05_complete": false,
+  "next_block": "N10",
+  "next_block_started": false
+}
