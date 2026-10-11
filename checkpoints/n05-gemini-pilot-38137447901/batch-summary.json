@@ -1,0 +1,498 @@
+{
+  "schema": "N05_GEMINI_NEW_VENUE_PILOT_ACTUAL_V1",
+  "maximum_assets": 3,
+  "maximum_source_HTTP": 13,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 12000,
+    "rows_written": 400
+  },
+  "caps_changed": false,
+  "qualification_only": true,
+  "run": "38137447901",
+  "head": "628ce7d842d7187aa9f3e86771de34b5c36956c7",
+  "main": "af73d40fa2eb204571e07dbecc30c5b12019defd",
+  "lease_owner": "CODEX:LOCAL_N05_NEW_VENUE:1791718957493",
+  "original_HTX_identity_file": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+  "original_HTX_identity_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+  "started_ts": 1791719846959,
+  "status": "GEMINI_CURRENT_CATALOG_AND_PER_ASSET_PILOT_RETAINED_NOT_QUALIFIED",
+  "sourceHTTP": 7,
+  "sources": [
+    {
+      "name": "GEMINI-CURRENT-SYMBOLS",
+      "url": "https://api.gemini.com/v1/symbols",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719820000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-CURRENT-SYMBOLS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719848416,
+      "http_status": 200,
+      "received_ts": 1791719848541,
+      "body_sha256": "60cf54f29ee8327894d932226773247fb328381706d69fbe9c5863f23a4fd106",
+      "gzip_sha256": "030b1753893b5f45ce1478c199ca271129704e3a3355e3f8ab9359173a4abdea",
+      "bytes": 3720,
+      "file": "GEMINI-CURRENT-SYMBOLS.json.gz"
+    },
+    {
+      "name": "GEMINI-FIL-DETAILS",
+      "url": "https://api.gemini.com/v1/symbols/details/filusd",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719820000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-FIL-DETAILS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719849304,
+      "http_status": 200,
+      "received_ts": 1791719849317,
+      "body_sha256": "b635260bbdbd82af91b4ed762a816479cd13e411c6e8e16d3139063e16fc1486",
+      "gzip_sha256": "1f08a9e8b120baedfc0fb375d44613efffda2d3714ac9d01d9c671545f356fd8",
+      "bytes": 250,
+      "file": "GEMINI-FIL-DETAILS.json.gz"
+    },
+    {
+      "name": "GEMINI-FIL-NETWORK",
+      "url": "https://api.gemini.com/v1/network/fil",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719820000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-FIL-NETWORK",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719850085,
+      "http_status": 200,
+      "received_ts": 1791719850093,
+      "body_sha256": "d1fcaa7de795a34741b43195a0683031e11e2a3f822c9c8880eca02628ee47af",
+      "gzip_sha256": "0a357df66a539d66a6010d4980364202788d2d73611893fb5e3b22d800e1395a",
+      "bytes": 38,
+      "file": "GEMINI-FIL-NETWORK.json.gz"
+    },
+    {
+      "name": "GEMINI-FIL-CANDLES1M",
+      "url": "https://api.gemini.com/v2/candles/filusd/1m",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719820000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-FIL-CANDLES1M",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719850858,
+      "http_status": 200,
+      "received_ts": 1791719850886,
+      "body_sha256": "f4fe3fa20f33ebac5bc53a348267bbe7228b104d58d85cf35008e7767aec6abc",
+      "gzip_sha256": "927a4d85294ce0c9b44bbf0ce178573569eee119ca3dee8d4386bcecd3e2837f",
+      "bytes": 66157,
+      "file": "GEMINI-FIL-CANDLES1M.json.gz"
+    },
+    {
+      "name": "GEMINI-FIL-TRADES500",
+      "url": "https://api.gemini.com/v1/trades/filusd?timestamp=1791705420000&limit_trades=500",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719820000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-FIL-TRADES500",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719851651,
+      "http_status": 200,
+      "received_ts": 1791719851673,
+      "body_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "gzip_sha256": "21947b02ead137acb20e602e9448c7c453b2836d1a755aadd5e1c61ecd2eb034",
+      "bytes": 2,
+      "file": "GEMINI-FIL-TRADES500.json.gz"
+    },
+    {
+      "name": "GEMINI-HYPE-DETAILS",
+      "url": "https://api.gemini.com/v1/symbols/details/hypeusd",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719820000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-HYPE-DETAILS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719852442,
+      "http_status": 200,
+      "received_ts": 1791719852456,
+      "body_sha256": "76b17e4ba4f90f322a3d880ca820694d269874ecc8f99703f78415803518e598",
+      "gzip_sha256": "79ea0a75801a61d2a5c0c65849ed421aa62eac40a3e7dc1208be28629e30d1e2",
+      "bytes": 254,
+      "file": "GEMINI-HYPE-DETAILS.json.gz"
+    },
+    {
+      "name": "GEMINI-HYPE-NETWORK",
+      "url": "https://api.gemini.com/v1/network/hype",
+      "source": "N05_OFFICIAL_FLOW:GEMINI",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GEMINI",
+        "minute_bucket": 1791719880000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_GEMINI_PILOT:38137447901:1:GEMINI-HYPE-NETWORK",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GEMINI",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719915530,
+      "http_status": 200,
+      "received_ts": 1791719915634,
+      "body_sha256": "f3c56fadfd10070b6451b0e54775edcc31600b67ab93cc5472b2534c766bd367",
+      "gzip_sha256": "2a85fc1749616c8db056e863e09c427ec553f5f88fd203fe1ed7f066bec7092a",
+      "bytes": 39,
+      "file": "GEMINI-HYPE-NETWORK.json.gz"
+    }
+  ],
+  "assets": [
+    {
+      "symbol": "FIL",
+      "pair": "filusd",
+      "htx_native_alias": "fil",
+      "expected_network": "filecoin",
+      "original_HTX_exact_native": true,
+      "status": "ORIGINAL_WINDOW_DATA_RETAINED_NOT_RECONCILED",
+      "full_240min_proven": false,
+      "details": {
+        "symbol": "FILUSD",
+        "quote_currency": "USD",
+        "tick_size": 0.000001,
+        "quote_increment": 0.0001,
+        "min_order_size": "0.1",
+        "status": "open",
+        "wrap_enabled": false,
+        "product_type": "spot",
+        "contract_type": "vanilla",
+        "contract_price_currency": "USD",
+        "base_currency": "FIL"
+      },
+      "network": {
+        "token": "FIL",
+        "network": [
+          "filecoin"
+        ]
+      },
+      "exact_current_market_network": true,
+      "candle_rows": 1439,
+      "trade_rows": 0,
+      "trade_oldest_ts": null
+    },
+    {
+      "symbol": "HYPE",
+      "pair": "hypeusd",
+      "htx_native_alias": "hyperlqd",
+      "expected_network": "hyperliquid",
+      "original_HTX_exact_native": true,
+      "status": "CURRENT_GEMINI_EXACT_MARKET_NETWORK_REQUIRED",
+      "full_240min_proven": false,
+      "details": {
+        "symbol": "HYPEUSD",
+        "quote_currency": "USD",
+        "tick_size": 0.000001,
+        "quote_increment": 0.0001,
+        "min_order_size": "0.002",
+        "status": "open",
+        "wrap_enabled": false,
+        "product_type": "spot",
+        "contract_type": "vanilla",
+        "contract_price_currency": "USD",
+        "base_currency": "HYPE"
+      },
+      "network": {
+        "token": "HYPE",
+        "network": [
+          "hyperevm"
+        ]
+      }
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 53,
+      "reserved_rows_read": 847000,
+      "reserved_rows_written": 18168,
+      "measured_rows_read": 482473,
+      "measured_rows_written": 5590,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 12000,
+      "rows_written": 400
+    },
+    "projected_reserved": {
+      "rows_read": 859000,
+      "rows_written": 18568
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 0,
+    "required": 13,
+    "cap": 16,
+    "remaining": 16,
+    "allowed": true
+  },
+  "symbol_overlap": [
+    "FIL",
+    "HYPE"
+  ],
+  "window_end_ts": 1791719820000,
+  "window_start_ts": 1791705420000,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 7,
+      "statistics": 0
+    },
+    "total": 7,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 157
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_GEMINI_PILOT:38137447901:1",
+    "source_run_id": "38137447901",
+    "measured_rows_read": 230,
+    "measured_rows_written_accounted": 55,
+    "measured_requests_accounted": 79,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 79,
+    "rows_read": 231,
+    "rows_written": 55,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 54,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 13,
+        "rows_read": 77,
+        "rows_written": 28,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 26,
+        "rows_read": 78,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 14,
+        "rows_read": 7,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791719915781
+}
