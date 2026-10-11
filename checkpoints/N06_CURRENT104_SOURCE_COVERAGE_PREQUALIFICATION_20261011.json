@@ -1,5 +1,5 @@
 {
-  "schema": "N06_CURRENT104_COVERAGE_RECONCILIATION_V6",
+  "schema": "N06_CURRENT104_COVERAGE_RECONCILIATION_V7",
   "source_scope": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
   "source_scope_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
   "actual_native10_run": 38144019618,
@@ -25,10 +25,11 @@
     "bluesky_exact_address_positive_original_posts_assets": 0,
     "bluesky_exact_address_zero_original_posts_1h_assets": 12,
     "bluesky_exact_address_not_probed_assets": 92,
-    "coingecko_exact_search_trending_actual_controlled_report_assets": 1,
+    "coingecko_exact_search_trending_actual_controlled_report_assets": 4,
     "any_actual_source_fact_and_controlled_report_assets": 17,
     "assets_without_any_actual_source_fact_and_controlled_report": 87,
-    "assets_with_two_independent_actual_report_sources": 0
+    "assets_with_two_independent_actual_report_sources": 3,
+    "coingecko_top15_ticker_matches_not_exact_qualified": 4
   },
   "rows": [
     {
@@ -339,7 +340,11 @@
       "bluesky_fresh_useful_fact_this_reconciliation": false,
       "wikimedia_native_page": "Ethereum",
       "wikimedia_status": "PRIOR_ACTUAL_REPORT_PROOF",
-      "other_independent_social_source_status": "NO_QUALIFIED_EXACT_FACT"
+      "other_independent_social_source_status": "COINGECKO_EXACT_SEARCH_TRENDING_ACTUAL_CONTROLLED_REPORT_PROOF",
+      "coingecko_trending_run": 38147765446,
+      "coingecko_saved_replay_run": 38148528837,
+      "coingecko_trending_rank": 10,
+      "coingecko_trending_controlled_report_verified": true
     },
     {
       "symbol": "ETHFI",
@@ -536,7 +541,11 @@
       "bluesky_fresh_useful_fact_this_reconciliation": false,
       "wikimedia_native_page": "NEAR_(blockchain_platform)",
       "wikimedia_status": "ACTUAL_ORIGINAL_FACT_AND_CONTROLLED_REPORT_PROOF",
-      "other_independent_social_source_status": "NO_QUALIFIED_EXACT_FACT"
+      "other_independent_social_source_status": "COINGECKO_EXACT_SEARCH_TRENDING_ACTUAL_CONTROLLED_REPORT_PROOF",
+      "coingecko_trending_run": 38147765446,
+      "coingecko_saved_replay_run": 38148528837,
+      "coingecko_trending_rank": 9,
+      "coingecko_trending_controlled_report_verified": true
     },
     {
       "symbol": "NIL",
@@ -614,7 +623,9 @@
       "coingecko_trending_run": 38147765446,
       "coingecko_trending_rank": 14,
       "coingecko_trending_returned_list_length": 15,
-      "coingecko_trending_original_hashes_verified": true
+      "coingecko_trending_original_hashes_verified": true,
+      "coingecko_saved_replay_run": 38148528837,
+      "coingecko_trending_controlled_report_verified": true
     },
     {
       "symbol": "PEOPLE",
@@ -746,7 +757,11 @@
       "bluesky_fresh_useful_fact_this_reconciliation": false,
       "wikimedia_native_page": "Solana_(blockchain_platform)",
       "wikimedia_status": "PRIOR_ACTUAL_REPORT_PROOF",
-      "other_independent_social_source_status": "NO_QUALIFIED_EXACT_FACT"
+      "other_independent_social_source_status": "COINGECKO_EXACT_SEARCH_TRENDING_ACTUAL_CONTROLLED_REPORT_PROOF",
+      "coingecko_trending_run": 38147765446,
+      "coingecko_saved_replay_run": 38148528837,
+      "coingecko_trending_rank": 15,
+      "coingecko_trending_controlled_report_verified": true
     },
     {
       "symbol": "STEEM",
@@ -1011,5 +1026,9 @@
   "actual_coingecko_trending_run": 38147765446,
   "actual_coingecko_trending_artifact_id": 11705248989,
   "actual_coingecko_trending_artifact_digest": "sha256:4c95f05a7dc90005c41aab9cffd5c29efff8828309cd9e39a44b20ef037a1687",
-  "actual_coingecko_trending_summary": "checkpoints/n06-coingecko-trending-pengu-38147765446/batch-summary.json"
+  "actual_coingecko_trending_summary": "checkpoints/n06-coingecko-trending-pengu-38147765446/batch-summary.json",
+  "actual_coingecko_saved_replay_run": 38148528837,
+  "actual_coingecko_saved_replay_artifact_id": 11706360273,
+  "actual_coingecko_saved_replay_artifact_digest": "sha256:9dbd827e8babadcc9f3e63a9c4b8c96ac9cbf97714999edcf203c698ca0ac726",
+  "actual_coingecko_saved_replay_summary": "checkpoints/n06-coingecko-top15-saved-replay-38148528837/batch-summary.json"
 }

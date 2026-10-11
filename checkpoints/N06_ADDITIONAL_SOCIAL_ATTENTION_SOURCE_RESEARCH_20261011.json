@@ -1,5 +1,5 @@
 {
-  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V3",
+  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V4",
   "observed_utc": "2026-10-11T14:13:03.783099Z",
   "target": "104 current HTX crypto assets; usefulness requires exact asset, original clock, actual data, N06 consumer and controlled report",
   "candidates": [
@@ -19,11 +19,11 @@
         "nervos-network"
       ],
       "htx_exact_candidate": "PENGU-USDT only among returned items has retained Solana mint; official CoinGecko article references same mint, but direct original API and report consumer not yet verified",
-      "status": "ACTUAL_EXACT_PENGU_ORIGINAL_AND_CONTROLLED_REPORT_PROOF",
-      "coverage_limit": "One PENGU fact only, list top15; absence from list does not establish no interest. Natural production run not proved.",
+      "status": "ACTUAL_SHARED_TOP15_ORIGINAL;FOUR_EXACT_CONTROLLED_REPORT_PROOFS",
+      "coverage_limit": "Four current-snapshot presence facts, one upstream; unique union with Wikimedia 17/104, three overlap. No natural production or Telegram proof.",
       "official_reference": "https://docs.coingecko.com/changelog/10122018",
-      "actual_proof": "checkpoints/N06_COINGECKO_EXACT_PENGU_CONTROLLED_REPORT_PROOF_20261011.json",
-      "actual_rank": "PENGU 14 of 15 at 2026-10-11T14:35:17Z"
+      "actual_proof": "checkpoints/N06_COINGECKO_SHARED_TOP15_SAVED_ORIGINAL_REPLAY_PROOF_20261011.json",
+      "actual_rank": "PENGU14, NEAR9, ETH10, SOL15 of 15 at original 2026-10-11T14:35:17Z"
     },
     {
       "source": "CoinMarketCap Community Trending Token",
@@ -92,6 +92,15 @@
       "access": "Official changelog documents sentiment vote percentages and community reports on supported pool endpoints; exact token address may permit binding but liquidity-pool selection and actual values not tested",
       "status": "SAME_COINGECKO_UPSTREAM;ACTUAL_FACT_UNVERIFIED",
       "official_reference": "https://docs.coingecko.com/changelog/10122018"
+    },
+    {
+      "source": "CoinGecko Coins List with Platforms",
+      "upstream": "CoinGecko asset catalog",
+      "independence_group": "COINGECKO_SITE_ACTIVITY_IDENTITY_ONLY_NOT_NEW_ATTENTION_SOURCE",
+      "access": "Official /coins/list?include_platform=true returns active coin IDs and platform contract addresses in one unpaginated response; source call not yet made because current CoinGecko pilot daily cap2 was spent",
+      "status": "OFFICIAL_ONE_CALL_EXACT_BINDING_PLAN_ONLY;NO_ACTUAL_CATALOG_RESPONSE",
+      "useful_potential": "One guarded shared catalog can exact-bind TRUMP/RAY/QNT and other HTX tokens before consuming future trending snapshots; catalog alone adds zero attention facts",
+      "official_reference": "https://docs.coingecko.com/reference/coins-list"
     }
   ],
   "not_counted_as_independent": [
@@ -101,9 +110,10 @@
     "CoinDesk Reddit and a separate Reddit API or Santiment Reddit metric share Reddit as original platform; count independent original corpora, not provider wrappers."
   ],
   "next_source_priority": [
-    "Use exact retained identities to prequalify all104 against one shared CoinGecko Trending list before next admitted call; avoid per-coin repeat calls.",
-    "Seek additional independent current primary sources; CoinDesk requires verified subscription and exact asset fact.",
-    "Retain 17 controlled report assets; no natural fresh SENT proof or N06 completion."
+    "After existing CoinGecko source daily headroom, one admitted /coins/list?include_platform=true response to bind all104 exact identities in one batch; never count catalog alone as attention.",
+    "Reuse shared trending response once per admitted collection and fan out to exact assets; no ticker-only or HYPE inferred identity.",
+    "Seek independent current social corpora beyond CoinGecko and Wikimedia; retain Santiment entitlement and CoinDesk access limitations.",
+    "N06 remains open; no natural fresh SENT or N07 work."
   ],
-  "updated_utc": "2026-10-11T14:38:28.844Z"
+  "updated_utc": "2026-10-11T14:49:44.135Z"
 }
