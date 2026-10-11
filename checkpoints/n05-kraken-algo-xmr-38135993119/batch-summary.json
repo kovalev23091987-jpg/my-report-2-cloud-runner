@@ -1,0 +1,501 @@
+{
+  "schema": "N05_KRAKEN_ALGO_XMR_ACTUAL_V1",
+  "symbols": [
+    "ALGO",
+    "XMR"
+  ],
+  "approved_assets": 104,
+  "shared_catalog_HTTP": 1,
+  "maximum_per_asset_HTTP": 4,
+  "maximum_source_HTTP": 9,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 12000,
+    "rows_written": 400
+  },
+  "caps_changed": false,
+  "requires_current_owned_lease": true,
+  "run": "38135993119",
+  "head": "6a118f8b182d782b74c17042422c0c662424cdb8",
+  "main": "d4cd232b43572809f242b9f737d0e7c30fd899e7",
+  "lease_owner": "CODEX:LOCAL_N05_RESIDUAL:1791717858522",
+  "original_HTX_identity_file": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+  "original_HTX_identity_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+  "started_ts": 1791718410247,
+  "status": "KRAKEN_NATIVE_BATCH_RETAINED_WITH_PER_COIN_QUALIFICATION",
+  "sourceHTTP": 5,
+  "sources": [
+    {
+      "name": "KRAKEN-CURRENT-ASSET-PAIRS",
+      "url": "https://api.kraken.com/0/public/AssetPairs",
+      "source": "N05_OFFICIAL_FLOW:KRAKEN",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791718380000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_KRAKEN_ALGO_XMR:38135993119:1:KRAKEN-CURRENT-ASSET-PAIRS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791718411910,
+      "http_status": 200,
+      "received_ts": 1791718411990,
+      "body_sha256": "dcb0496ba245597a2c4989056a8c0f2afcd722a496e00b545d1762e5c6a05e34",
+      "gzip_sha256": "5479afa1b4ceb420183983602b73cdfb6e8618af70a6f5b0860ac7b4306255be",
+      "bytes": 678579,
+      "file": "KRAKEN-CURRENT-ASSET-PAIRS.json.gz"
+    },
+    {
+      "name": "KRAKEN-ALGO-NATIVE240",
+      "url": "https://api.kraken.com/0/public/OHLC?pair=ALGOUSDT&interval=1&since=1791703980",
+      "source": "N05_OFFICIAL_FLOW:KRAKEN",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791718380000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_KRAKEN_ALGO_XMR:38135993119:1:KRAKEN-ALGO-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791718412828,
+      "http_status": 200,
+      "received_ts": 1791718412937,
+      "body_sha256": "6afd2e722380885b8ca780c511cba6dcb3b6c6592dd6400962407eddf532438f",
+      "gzip_sha256": "4c0b63d190934cfc4c0ef0a0beeaff2ccfdecb93e4a2381f2ad1584345d4a1ed",
+      "bytes": 18925,
+      "file": "KRAKEN-ALGO-NATIVE240.json.gz"
+    },
+    {
+      "name": "KRAKEN-ALGO-HISTORY-1",
+      "url": "https://api.kraken.com/0/public/Trades?pair=ALGOUSDT&since=1791703979999999999&count=1000",
+      "source": "N05_OFFICIAL_FLOW:KRAKEN",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791718380000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_KRAKEN_ALGO_XMR:38135993119:1:KRAKEN-ALGO-HISTORY-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791718413767,
+      "http_status": 200,
+      "received_ts": 1791718413870,
+      "body_sha256": "bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008",
+      "gzip_sha256": "af743f300a36fd29df0ccaf686f8bb22b0f9cff2e31852f056a45a0137d8c7d0",
+      "bytes": 5721,
+      "file": "KRAKEN-ALGO-HISTORY-1.json.gz"
+    },
+    {
+      "name": "KRAKEN-XMR-NATIVE240",
+      "url": "https://api.kraken.com/0/public/OHLC?pair=XMRUSDT&interval=1&since=1791703980",
+      "source": "N05_OFFICIAL_FLOW:KRAKEN",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791718380000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_KRAKEN_ALGO_XMR:38135993119:1:KRAKEN-XMR-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791718414699,
+      "http_status": 200,
+      "received_ts": 1791718414808,
+      "body_sha256": "2eff0afad9be39176579b71d2248422eef118041a61b08f88c146a2d8c8ea251",
+      "gzip_sha256": "7330a623d3273748a8b232760ef39d6849b8ed51be5bb97bb66347ff53419702",
+      "bytes": 17499,
+      "file": "KRAKEN-XMR-NATIVE240.json.gz"
+    },
+    {
+      "name": "KRAKEN-XMR-HISTORY-1",
+      "url": "https://api.kraken.com/0/public/Trades?pair=XMRUSDT&since=1791703979999999999&count=1000",
+      "source": "N05_OFFICIAL_FLOW:KRAKEN",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791718380000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_KRAKEN_ALGO_XMR:38135993119:1:KRAKEN-XMR-HISTORY-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791718415641,
+      "http_status": 200,
+      "received_ts": 1791718415754,
+      "body_sha256": "771b40d863ea281b778aa118a66a4b6e81def7f821ff678ef3f7215f72e47e81",
+      "gzip_sha256": "05bd4a20deeaa2b5ced077906fc4d71829473f16b76eabd1fa2372a70a97e48b",
+      "bytes": 60806,
+      "file": "KRAKEN-XMR-HISTORY-1.json.gz"
+    }
+  ],
+  "windows": [
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "ALGO-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791703980000,
+      "window_end_ts": 1791718380000,
+      "observed_ts": 1791718413870,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 6689.711710463964,
+      "sell_quote": 19478.442839871946,
+      "trade_count": 83,
+      "imbalance": -0.4887135279183766,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "algorand",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "algorand:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken",
+      "direction_reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "PAIRED_OFFICIAL_PUBLIC_TAKER_SIDE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "native_quote_volume_available": false,
+      "native_vwap_verified": true,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791717480000,
+          "window_end_ts": 1791718380000,
+          "buy_quote": 0,
+          "sell_quote": 28.7134249465478,
+          "trade_count": 2,
+          "imbalance": -1
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791714780000,
+          "window_end_ts": 1791718380000,
+          "buy_quote": 5756.269072695766,
+          "sell_quote": 41.5773948397576,
+          "trade_count": 20,
+          "imbalance": 0.985657641997743
+        }
+      ],
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "not_onchain_exchange_flows": true,
+      "symbol": "ALGO",
+      "raw_files": [
+        "KRAKEN-ALGO-NATIVE240.json.gz",
+        "KRAKEN-ALGO-HISTORY-1.json.gz"
+      ],
+      "source_receipt_hashes": [
+        "6afd2e722380885b8ca780c511cba6dcb3b6c6592dd6400962407eddf532438f",
+        "bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008"
+      ]
+    },
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "XMR-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791703980000,
+      "window_end_ts": 1791718380000,
+      "observed_ts": 1791718415754,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 154757.4822581297,
+      "sell_quote": 228559.284271407,
+      "trade_count": 918,
+      "imbalance": -0.19253476095361582,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "monero",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "monero:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken",
+      "direction_reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "PAIRED_OFFICIAL_PUBLIC_TAKER_SIDE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "native_quote_volume_available": false,
+      "native_vwap_verified": true,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791717480000,
+          "window_end_ts": 1791718380000,
+          "buy_quote": 9096.2088854612,
+          "sell_quote": 40539.935220793,
+          "trade_count": 144,
+          "imbalance": -0.633484467851117
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791714780000,
+          "window_end_ts": 1791718380000,
+          "buy_quote": 47372.02480107339,
+          "sell_quote": 100041.37516951459,
+          "trade_count": 416,
+          "imbalance": -0.3572901132390259
+        }
+      ],
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "not_onchain_exchange_flows": true,
+      "symbol": "XMR",
+      "raw_files": [
+        "KRAKEN-XMR-NATIVE240.json.gz",
+        "KRAKEN-XMR-HISTORY-1.json.gz"
+      ],
+      "source_receipt_hashes": [
+        "2eff0afad9be39176579b71d2248422eef118041a61b08f88c146a2d8c8ea251",
+        "771b40d863ea281b778aa118a66a4b6e81def7f821ff678ef3f7215f72e47e81"
+      ]
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 50,
+      "reserved_rows_read": 821500,
+      "reserved_rows_written": 17352,
+      "measured_rows_read": 481517,
+      "measured_rows_written": 5461,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 12000,
+      "rows_written": 400
+    },
+    "projected_reserved": {
+      "rows_read": 833500,
+      "rows_written": 17752
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 0,
+    "required": 9,
+    "cap": 16,
+    "remaining": 16,
+    "allowed": true
+  },
+  "window_end_ts": 1791718380000,
+  "window_start_ts": 1791703980000,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 5,
+      "statistics": 0
+    },
+    "total": 5,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 159
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_KRAKEN_ALGO_XMR:38135993119:1",
+    "source_run_id": "38135993119",
+    "measured_rows_read": 111,
+    "measured_rows_written_accounted": 41,
+    "measured_requests_accounted": 45,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 45,
+    "rows_read": 112,
+    "rows_written": 41,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 51,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 5,
+        "rows_read": 20,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 10,
+        "rows_read": 25,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 10,
+        "rows_read": 5,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791718415924,
+  "individual_full_windows": 2,
+  "simultaneous_continuous_coverage": false
+}
