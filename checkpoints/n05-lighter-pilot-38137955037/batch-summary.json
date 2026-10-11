@@ -1,0 +1,333 @@
+{
+  "schema": "N05_LIGHTER_NEW_VENUE_PILOT_ACTUAL_V1",
+  "asset": "DASH",
+  "market_id": 127,
+  "maximum_source_HTTP": 4,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 6000,
+    "rows_written": 250
+  },
+  "caps_changed": false,
+  "qualification_only": true,
+  "run": "38137955037",
+  "head": "7b8c0e1d74407683161606d545e1e3eb31edeb94",
+  "main": "71ef0b0a8418c110a428321f7a88866787f25aec",
+  "lease_owner": "CODEX:LOCAL_N05_LIGHTER:1791720049439",
+  "started_ts": 1791720336418,
+  "status": "ORIGINAL_LIGHTER_DASH_WINDOW_RETAINED_NOT_QUALIFIED",
+  "sourceHTTP": 4,
+  "sources": [
+    {
+      "name": "LIGHTER-DASH-BOOK",
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/orderBooks?market_id=127",
+      "source": "N05_OFFICIAL_FLOW:LIGHTER",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "LIGHTER",
+        "minute_bucket": 1791720300000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_LIGHTER_PILOT:38137955037:1:LIGHTER-DASH-BOOK",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:LIGHTER",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720338126,
+      "http_status": 200,
+      "received_ts": 1791720338380,
+      "body_sha256": "1fc3982a37524a8fde7c7c7b7b6638dbce234a87aa7c1b2ec7a2a53ec3d7cbb4",
+      "gzip_sha256": "4b98194b2fab4d88aedaa9ae1cc0ca19e65a865f64ac5029ada92511d4b5dbc6",
+      "bytes": 710,
+      "file": "LIGHTER-DASH-BOOK.json.gz"
+    },
+    {
+      "name": "LIGHTER-DASH-DETAILS",
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/orderBookDetails?market_id=127",
+      "source": "N05_OFFICIAL_FLOW:LIGHTER",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "LIGHTER",
+        "minute_bucket": 1791720300000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_LIGHTER_PILOT:38137955037:1:LIGHTER-DASH-DETAILS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:LIGHTER",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720339337,
+      "http_status": 200,
+      "received_ts": 1791720339521,
+      "body_sha256": "b6bdfc5fc04aac2759d877b300104637d31d94aa828446caf271cead93491be2",
+      "gzip_sha256": "0c06f1ffaf6cc5803869d42d244918089ce48c73f2d8f858e8f572b990275bd6",
+      "bytes": 1604,
+      "file": "LIGHTER-DASH-DETAILS.json.gz"
+    },
+    {
+      "name": "LIGHTER-DASH-CANDLES1M",
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/candles?market_id=127&resolution=1m&start_timestamp=1791705900000&end_timestamp=1791720300000&count_back=0",
+      "source": "N05_OFFICIAL_FLOW:LIGHTER",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "LIGHTER",
+        "minute_bucket": 1791720300000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_LIGHTER_PILOT:38137955037:1:LIGHTER-DASH-CANDLES1M",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:LIGHTER",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720340478,
+      "http_status": 200,
+      "received_ts": 1791720340652,
+      "body_sha256": "8cadc3c8a13c62c679310087c102fd3a35fb0c05a7304169b5b67800d6f62789",
+      "gzip_sha256": "b230a621a61a18e6d9df31cb609a2e26e46cb4e68e43459392e02b5a4e055906",
+      "bytes": 32459,
+      "file": "LIGHTER-DASH-CANDLES1M.json.gz"
+    },
+    {
+      "name": "LIGHTER-DASH-TRADES500",
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/recentTrades?market_id=127&limit=500",
+      "source": "N05_OFFICIAL_FLOW:LIGHTER",
+      "status": "HTTP_400",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "LIGHTER",
+        "minute_bucket": 1791720300000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_LIGHTER_PILOT:38137955037:1:LIGHTER-DASH-TRADES500",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:LIGHTER",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720341615,
+      "http_status": 400,
+      "received_ts": 1791720341781,
+      "body_sha256": "62898d45b61eebf2ca6c1f85c3046843ae45e2975fdc87de4c5ef2c190eab530",
+      "gzip_sha256": "3a90c1e2d339e773385c7382fdb6c62d1dff6ca513c722782a332ea2d6e090c5",
+      "bytes": 41,
+      "file": "LIGHTER-DASH-TRADES500.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 55,
+      "reserved_rows_read": 860500,
+      "reserved_rows_written": 18584,
+      "measured_rows_read": 483255,
+      "measured_rows_written": 5650,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 6000,
+      "rows_written": 250
+    },
+    "projected_reserved": {
+      "rows_read": 866500,
+      "rows_written": 18834
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 0,
+    "required": 4,
+    "cap": 16,
+    "remaining": 16,
+    "allowed": true
+  },
+  "window_start_ts": 1791705900000,
+  "window_end_ts": 1791720300000,
+  "book_match": 1,
+  "details_top_keys": [
+    "code",
+    "order_book_details",
+    "spot_order_book_details"
+  ],
+  "candles_top_keys": [
+    "code",
+    "r",
+    "c"
+  ],
+  "trades_top_keys": null,
+  "candle_rows": null,
+  "trade_rows": null,
+  "trade_oldest_ts": null,
+  "trade_newest_ts": null,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 4,
+      "statistics": 0
+    },
+    "total": 4,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 160
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_LIGHTER_PILOT:38137955037:1",
+    "source_run_id": "38137955037",
+    "measured_rows_read": 100,
+    "measured_rows_written_accounted": 34,
+    "measured_requests_accounted": 37,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 37,
+    "rows_read": 101,
+    "rows_written": 34,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 56,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 4,
+        "rows_read": 14,
+        "rows_written": 16,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 8,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 8,
+        "rows_read": 4,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791720341954
+}
