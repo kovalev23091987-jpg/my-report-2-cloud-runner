@@ -1,0 +1,298 @@
+file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:15
+ if(result.status!==0)throw new Error(`FAILED node ${args[0]} status=${result.status} signal=${result.signal||''} error=${result.error?.code||''}\n${String(result.stdout||'').slice(-24000)}\n${String(result.stderr||'').slice(-24000)}`);
+                            ^
+
+Error: FAILED node --test status=1 signal= error=
+0.293628ms)
+✔ unknown funding settlement interval is not equivalent across venues (0.379998ms)
+✔ early publication needs HTX execution proof plus a usable distinct origin (1.612968ms)
+✔ old or tampered capability-only metadata is revalidated before publication (0.303035ms)
+✔ already-bound legacy OBSERVE cannot bypass source proof at delivery (2.498488ms)
+✔ audit distinguishes missing exact HTX execution, insufficient distinct origins and a closed measured role view without changing the decision (7.100751ms)
+✔ freshness, identity and known-origin exclusions survive into the artifact instead of a capability label or false source success (0.860885ms)
+✔ diagnostic field bounds never truncate eligibility, duplicate same origins remain one and unknown metadata stays unclosed (5.481881ms)
+✔ shared providers and physical roots never multiply route counts into independent confirmations (2.941975ms)
+✔ actual bounded BR/FIL receipts preserve unscored use and exact provider/source identities (29.158197ms)
+✔ K16 Sourcify exact verified ABI becomes N17 schema context only (3.608087ms)
+✔ K16 Sourcify wrong address, wrong chain or absent ABI fails closed (0.346506ms)
+✔ K16 Sourcify never guesses from a Solana mint or ticker (0.254595ms)
+✔ publication consumer assigns fields to their blocks and rechecks cache freshness and price (2.877965ms)
+✔ closed minute, exact symbol and price checks; null is not zero (0.272267ms)
+✔ Nansen never invents source time, sums cohorts or grants decision authority (0.262801ms)
+✔ maximum available slots, missing keys and fresh caches cause no extra HTTP (28.874785ms)
+✔ Nansen daily attempt cap is durable across invocations; VYX continues (6.279358ms)
+✔ quota cooldown covers all symbols, retains classification and does not leak secrets (2.030986ms)
+✔ optional supplemental collector preserves VYX without spending manual primary Nansen allowance (4.745918ms)
+✔ exchange flows require exact token and complete contiguous hours; amounts stay in tokens (1.733653ms)
+✔ flows and positions share Nansen daily cap and provider-wide quota cooldown (4.095366ms)
+✔ actual supplemental path carries flows using existing slots and reuses their cache (3.864065ms)
+✔ captured production schema accepts only V12 prepared proof before exact ACK (4.614884ms)
+✔ needed futures confirmation always precedes optional DEX protocol and spot context (2.148024ms)
+✔ all retained source responses suppress repeat HTTP until their existing TTL (3.090212ms)
+✔ DEX refresh reuses the longer token-security cache (35.273045ms)
+✔ missing derivative confirmation is collected before unrelated asset discovery (3.746976ms)
+✔ required futures confirmation leaves bounded room for unique DEX and security facts (6.493266ms)
+✔ bad or missing contract identity never opens DEX lane (0.281395ms)
+✔ liquidation venue identities are accepted only in exact native formats (0.252711ms)
+✔ official source metadata is admitted only from the exact manual registry (2.348198ms)
+✔ strict 17 mode admits the fixed official HTML parser and keeps exact CoinGecko binding (1.266431ms)
+✔ automatic ticker identity discovery never invents official domains feeds or governance space (2.533845ms)
+✔ one selected lane never exceeds five network calls and caches exact identities (1.310112ms)
+✔ without registry only conditional Bitget can run and other identity sources make zero calls (0.367956ms)
+✔ strong move or manual coin reserves the entire five-call lane for native liquidations (0.29479ms)
+✔ full manual strict 17 mode keeps the specialist flow chain active (3.065696ms)
+✔ Gecko JSON:API relationship ids must bind the exact requested token (1.122092ms)
+✔ automatic discovery remains a candidate even when two providers agree (0.533916ms)
+✔ missing manual registry caches a candidate but never upgrades it to exact identity (1.230143ms)
+✔ the optional periodic lane cannot spend the scarce manual Nansen flow allowance (2.974707ms)
+✔ verified useful sources change the score inside existing fixed blocks (5.081976ms)
+✔ stale, unidentified and duplicate-family facts cannot distort the result (0.334163ms)
+✔ supplemental influence is bounded by every fixed chain and by ten points total (0.765898ms)
+✔ one physical fact copied into two groups is consumed once and cannot exceed its chain cap (0.36472ms)
+✔ verified dynamic liquidation panel participates in the fixed derivatives block (0.491346ms)
+✔ every candidate-context provider has an explicit useful evidence path (0.869882ms)
+✔ cross-exchange depth, live liquidations and history enter bounded evidence families (0.3753ms)
+✔ cross-exchange quality stays factor one until explicit T16.5 activation (0.40763ms)
+✔ Full Evidence keeps 35/30/20/15 while supplemental scoring keeps 32/30/20/18 (4.38209ms)
+✔ EvidenceV2 reaches the same bounded manual and Telegram score path without a second scorer (1.506989ms)
+✔ legacy and EvidenceV2 copies sharing one physical root are consumed once (0.445291ms)
+✔ 31 day budget includes 72 scheduled checks, six manual full checks, five coin checks and three burst checks daily (1.137571ms)
+✔ rotating liquidation lanes preserve the 50 request hot envelope (1.154533ms)
+✔ 0xArchive requires its key and then uses the official one-credit bounded route (0.271235ms)
+✔ CoinLobster keyless layer is admitted while paid worst-case credit use is explicit (0.351345ms)
+✔ supplemental D1 rows fit both per-run burst and 86-check daily budget with wide margin (0.271426ms)
+✔ Deribit hourly background uses four calls and 2976 monthly calls at 31 days (0.245688ms)
+✔ onchain and DEX sources require exact asset identity (0.209531ms)
+✔ Bitget remains conditional instead of duplicating every run (0.153386ms)
+✔ rotation uses LiqFlow during the public pilot or with its later key (0.398032ms)
+✔ all seventeen active source families have exactly one primary responsibility (0.721796ms)
+✔ new cross-exchange family shares the five-call envelope and Coinalyze keeps minute headroom (0.23561ms)
+✔ same-family duplicate facts cannot multiply influence (0.245117ms)
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime/src/bitfinex-native-four-hour-flow.mjs' imported from /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime/src/joint-spot-futures-flow.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime/src/bitfinex-native-four-hour-flow.mjs'
+}
+
+Node.js v24.21.0
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/supplemental-supporting-bridge.test.mjs (66.139676ms)
+✔ one busy block cannot evict other factual blocks from the unchanged 24-line section (24.289727ms)
+✔ all 12 active block positions survive overflow without creating missing-block facts (0.609517ms)
+✔ under-bound output and relative ordering are unchanged; unassigned facts cannot starve blocks (0.47191ms)
+✔ actual FIL native table yields seventeen bounded hints and selects the freshly proven nearest wallet (5.698064ms)
+✔ eligible keyless discovery alternates and remains available after LiqFlow public-pilot expiry (0.281695ms)
+✔ retained actual discovery → original native FIL level → bound consumer/report; failed NEAR discovery preserves fresh same-run position (89.93792ms)
+✔ unknown native time and denied discovery scope do not count as useful new levels (8.616274ms)
+✔ confirmed exhausted discovery scope uses an admitted alternative without another source HTTP or raising five-request cap (7.125515ms)
+✔ one retained multi-asset account can qualify another earlier weekly market without discovery or budget (5.604109ms)
+✔ the one retained official account qualifies36 exact linear assets at its original clock without ticker aliases or current-market activation (19.63006ms)
+✔ delivered TAO bucket and cross-margin observations stay useful context and do not prove a target (23.038253ms)
+✔ valid observation score is a score out of 100 and target is conditional on entry (1.735806ms)
+✔ actual producer timing receipt closes a measured target without invented timely field (4.391699ms)
+✔ stale or future producer clocks and retrospective receipts cannot be overridden by legacy timely flag (0.544244ms)
+✔ foreign, inverse, incomplete or inconsistent actual source windows reject measured targets (0.489292ms)
+✔ original event and receipt expiry remain strict at decision time (0.374068ms)
+✔ a bare five-percent wish is rejected without technical evidence (0.340003ms)
+✔ measured candle range can prove more than five percent (0.422417ms)
+✔ only a separately admitted fresh native liquidation level can prove a target (0.438258ms)
+✔ calculated zone never becomes a decision target from generic confirmations (0.278078ms)
+✔ the nearest favorable measured structure is used without a fixed percentage (1.134034ms)
+✔ estimated or conditional account levels cannot override the target proof gate (0.495664ms)
+✔ primary SOL supply integer is preserved exactly above the safe Number limit (3.205297ms)
+✔ native SOL route verifies mainnet, finalized supply reconciliation and the exact source slot clock in two transports (37.663412ms)
+✔ wrong Solana genesis, missing native integer and inconsistent supply cannot request a source clock (3.07315ms)
+✔ all fresh exact crypto rolling market rows can supply neutral N10 facts without targets or signed-flow claims (33.209401ms)
+✔ rolling N10 rejects duplicate, stale, foreign and impossible price summaries (1.92186ms)
+✔ closed candle N10 uses exactly 20 complete minutes and does not authorize an entry (1.133674ms)
+✔ primary HTX empty isolated mode is accepted only with exact default/all/cross reconciliation (18.63847ms)
+✔ post-v7 uses one canonical sender for OBSERVE WAIT and ENTRY (2.27928ms)
+✔ backlog dispatch binds its own publication when delivery executes in a later run (30.585445ms)
+✔ manual refusal records its failing status when Telegram text is READY and leaves no binding (4.351203ms)
+✔ legacy early publication repairs its wave id from canonical evidence and binds (5.328455ms)
+✔ fresh LTC OBSERVE repairs only a missing wave from the same exact production run and binds (4.553861ms)
+✔ missing publication wave is never repaired across executor runs (2.413229ms)
+✔ fresh bound signal is sent before stale unbound backlog and stale row is never delivered (8.689834ms)
+✔ removal after the binding grace period uses only its previously delivered exact wave (10.094149ms)
+✔ removal without a previously delivered exact wave is finalized without network retry (2.626988ms)
+✔ two equally recent canonical publications fail closed instead of guessing (3.417171ms)
+✔ technical health remains in the journal and never reaches owner Telegram (2.789912ms)
+✔ close prices cannot merge different clocks, references, units or calculation methods (2.641224ms)
+✔ actual saved Lighter close ZEC thresholds from different account responses remain two honest untimed positions (32.989568ms)
+✔ exact kicked task cannot admit another otherwise eligible SENT publication (10.945698ms)
+✔ exact kicked task uses the original admission and unchanged new-analysis-only authority (27.773502ms)
+✔ production retained-history adapter accepts empty NOT_DUE trigger admission without source requests (28.958301ms)
+✔ production retained-history adapter separates mutable JSON selection from exact canonical restoration (30.938684ms)
+✔ retained history JSON SQL guard still rejects the original mixed query and unsafe canonical parsing (1.130207ms)
+✔ original SENT155 has a reachable analysis window before the original30-minute TTL (16.545759ms)
+✔ receipt cannot authorize entry, execution or invented settlement (35.106655ms)
+✔ changed identity, canonical payload, absent SENT id and stale future receipts cannot enter the burst lane (101.504481ms)
+✔ price below trigger, cancellation, expiration and exact expiry are rejected (65.692021ms)
+✔ SHORT uses its own threshold and cancellation without reversing native conditions (41.506848ms)
+✔ exact SENT trigger admits one candidate without consuming or renewing ordinary cadence (22.282304ms)
+✔ the actual runner NOT_DUE branch continues into a fresh exact full recheck and preserves the regular clock (48.296727ms)
+✔ the actual exact-kick runner bypasses only the regular cadence claim and preserves its clock (41.66393ms)
+✔ all72 possible admission ledgers still fit the unchanged daily D1 allowance (0.121607ms)
+✔ duplicate attempts and concurrent executors cannot charge or launch a fourth daily burst (60.643307ms)
+✔ unsent or foreign-wave lifecycle cannot admit full analysis (22.114622ms)
+✔ a foreign actor and exhausted D1 budget create no admission tables or source calls (0.532403ms)
+✔ targeted scheduler selects the admitted task even when an older waiting task exists (21.543998ms)
+✔ cancellation or expiry between admission and worker claim never falls back to another coin (55.751577ms)
+✔ the effective deep planner rechecks the exact contract inside the30-minute cooldown at one slot (2.894858ms)
+✔ an expired prior analytical context cannot shorten the exact SENT task window for a new full analysis (15.047786ms)
+✔ original task expiry and changed lifecycle still reject analysis even when the prior context has expired (19.346701ms)
+✔ original SENT159 canonical and retained reached price reproduce the old clock veto; SENT160 unreached price stays blocked (66.241892ms)
+✔ two real checks fit the unchanged monthly allowance and eight manual commands (1.277823ms)
+✔ two checks require admitted Node execution, while an exact coin and Worker stay at one (4.144127ms)
+✔ both candidates share 164 attempts and retain real capacity for their additional sources (0.655221ms)
+✔ funding and legacy direction priority cannot replace a better measured market rank (0.175116ms)
+✔ full manual exact top-two order cannot be replaced by a higher enrichment score (4.625925ms)
+✔ hot maintenance drains hundreds of expired rows in bounded batches and preserves fresh rows (21.848215ms)
+✔ attempted automatic cycles consume a 40-minute slot even if later analysis fails (1.2547ms)
+✔ scheduled provider spending cannot consume the protected owner reserve, enforced by SQL too (1.78642ms)
+✔ scheduled execution cannot acquire full-manual freshness or cooldown bypass (1.273565ms)
+✔ ordinary hot retention is bounded without changing freshness or retention dates (3.546202ms)
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime/src/bitfinex-native-four-hour-flow.mjs' imported from /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime/src/joint-spot-futures-flow.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime/src/bitfinex-native-four-hour-flow.mjs'
+}
+
+Node.js v24.21.0
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/unified-block-output.test.mjs (53.02639ms)
+✔ K15: 31-day worst case is 13,330 and scheduled plus burst is 11,625 (1.638959ms)
+✔ K15: liquidation-only spends zero BYK but shares five manual-coin admissions (1.343285ms)
+✔ K15: cache and statistics lanes cannot bypass the 164-request whole-job cap (0.523225ms)
+✔ K15: two actors competing for last project units admit at most one and duplicate request does not spend twice (2.165558ms)
+✔ K15: timeout remains conservatively charged and UTC month creates a new accounting period (1.616745ms)
+✔ official Lighter and GMX catalogs build exact venue identities once per day (2.598916ms)
+✔ structural gTrade hints are returned separately from exact Lighter/GMX market identities (1.214865ms)
+✔ 5% relative-price merge shows original farthest price, distance and amount without mutating raw map (2.695736ms)
+✔ merge below selects lower original price; no transitive chaining, side, quote, asset or source-age mixing (0.743707ms)
+✔ additional source collection admission does not inflate accepted coverage or independent votes (3.395621ms)
+✔ gTrade variable clock cannot become position snapshot clock; receipt-only estimate is labelled and never scored as a fresh map (20.42449ms)
+✔ gTrade exact crypto routing rejects ticker collisions with stocks and ambiguous native markets (0.338912ms)
+✔ binds only ready 15m coverage and retains the unwindowed sample and 24h gap (1.778305ms)
+✔ rejects wrong identity, scale, source, stale or future clocks and misbound windows (2.171639ms)
+✔ a coverage label or reliable flag cannot bypass factual counts and payload integrity (0.792658ms)
+✔ the actual deep consumer binds after both components settle, before sufficiency (4.233703ms)
+✔ HTTP 200 candles for a different requested session cannot validate a volume research dataset (1.126671ms)
+✔ retained real NEAR account supplies exact BTC capability with zero new HTTP and original native clock (6.034011ms)
+✔ no native source clock or expired original account cannot become zero-request coverage (1.189798ms)
+✔ native catalog has durable source admission and denied scope makes no transport call (0.688243ms)
+✔ additional native pageview context reaches consumer without replacing primary or assigning scores (16.025729ms)
+✔ pageview route rejects wrapped, foreign native or ambiguous page bindings (0.723038ms)
+✔ admitted one-request collector caches, retains exact timestamps and caps minute bursts (30.72196ms)
+✔ 429 installs shared backoff and incomplete responses do not become zero views (2.996578ms)
+✔ K02: disabled execution gates the whole working job before checkout/decrypt (1.966477ms)
+✔ K02: runtime preflight precedes decrypt and runner preflight precedes worker/network setup (1.271391ms)
+✔ successful native payments use delivered_amount even when DeliverMax is larger; consumer and score remain neutral (19.277002ms)
+✔ issued currencies, failed or unavailable delivery amounts and stated Amount never become native payments (0.789011ms)
+✔ exact ledger hash, header clock, parent proof and fresh source bound are compulsory (0.564994ms)
+✔ native route depends on supply first and collects one admitted exact ledger without renewing source clocks (28.235294ms)
+ℹ tests 1278
+ℹ suites 0
+ℹ pass 1269
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12206.430579
+
+✖ failing tests:
+
+test at current-generation/tests/joint-main-admission-repair.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/joint-main-admission-repair.test.mjs (126.549322ms)
+  'test failed'
+
+test at current-generation/tests/joint-spot-futures-flow.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/joint-spot-futures-flow.test.mjs (65.797126ms)
+  'test failed'
+
+test at current-generation/tests/liquidation-complete-chain.test.mjs:31:1
+✖ the main manual report displays factual history while the Telegram rendering stays unchanged (17.766811ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/report2-output-contract-6X1XoS/bitfinex-native-four-hour-flow.mjs' imported from /tmp/report2-output-contract-6X1XoS/joint-spot-futures-flow.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+      at #resolve (node:internal/modules/esm/loader:687:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///tmp/report2-output-contract-6X1XoS/bitfinex-native-four-hour-flow.mjs'
+  }
+
+test at current-generation/tests/n05-broad-exchanges.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/n05-broad-exchanges.test.mjs (49.413393ms)
+  'test failed'
+
+test at current-generation/tests/n05-poloniex-native.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/n05-poloniex-native.test.mjs (64.808947ms)
+  'test failed'
+
+test at current-generation/tests/output-contract-freeze.test.mjs:13:1
+✖ K01: approved V4 user output is byte-for-byte frozen for identical canonical input (15.895721ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/report2-output-contract-n7yJ3x/bitfinex-native-four-hour-flow.mjs' imported from /tmp/report2-output-contract-n7yJ3x/joint-spot-futures-flow.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+      at #resolve (node:internal/modules/esm/loader:687:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///tmp/report2-output-contract-n7yJ3x/bitfinex-native-four-hour-flow.mjs'
+  }
+
+test at current-generation/tests/paused-block-report-chains.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/paused-block-report-chains.test.mjs (63.709922ms)
+  'test failed'
+
+test at current-generation/tests/supplemental-supporting-bridge.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/supplemental-supporting-bridge.test.mjs (66.139676ms)
+  'test failed'
+
+test at current-generation/tests/unified-block-output.test.mjs:1:1
+✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/unified-block-output.test.mjs (53.02639ms)
+  'test failed'
+
+
+    at run (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:15:29)
+    at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:58:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
