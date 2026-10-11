@@ -62,3 +62,12 @@ test('an admitted target cannot move to the center of a nearby estimated bucket'
  assert.deepEqual(out.clusters[0].target_providers,['A']);assert.equal(out.clusters[0].target_exact_notional_usd,100);
  assert.equal(out.clusters[0].target_source_ts,999);assert.deepEqual(out.clusters[0].target_price_semantics,['EXCHANGE_ACCOUNT_LIQUIDATION_PRICE']);
 });
+test('multiple admitted positions retain the nearest actual level and its own provenance',()=>{
+ const out=buildDynamicLiquidationPanel({reference_price:100,observed_ts:1000,contexts:[
+  {status:'USABLE_NATIVE_SAMPLE',provider:'A',above:[{native_price:110,side:'SHORT',notional:100,native_reference_price:100,source_ts:998,decision_target_eligible:true,price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'}]},
+  {status:'USABLE_NATIVE_SAMPLE',provider:'B',above:[{native_price:110.5,side:'SHORT',notional:10000,native_reference_price:100,source_ts:999,decision_target_eligible:true,price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'}]},
+ ]});
+ assert.equal(out.clusters.length,1);assert.equal(out.clusters[0].center_price,110.25);
+ assert.equal(out.clusters[0].target_price,110);assert.deepEqual(out.clusters[0].target_providers,['A']);
+ assert.equal(out.clusters[0].target_source_ts,998);assert.equal(out.clusters[0].target_exact_notional_usd,100);
+});
