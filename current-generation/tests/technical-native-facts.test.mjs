@@ -10,8 +10,9 @@ import {planCandidateEvidenceRoutes} from '../files/src/candidate-evidence-v2-ru
 import {normalizeHtxTechnicalStructure,normalizeHtxRollingRange,clearHtxTechnicalSnapshots,readHtxTechnicalStructure,deriveHtxRecentPathEvidence,observeHtxTechnicalSnapshot,buildHtxPrimaryTechnicalReceipt} from '../files/src/htx-technical-structure.mjs';
 import {mergeHtxLinearCatalogModes} from '../files/src/htx-crypto-universe.mjs';
 import {parseHtxMarketJson} from '../files/src/htx-trade-json.mjs';
-import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
+import {consumeBlockResultContext,auditRenderedBlockResults} from '../files/src/block-result-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
+import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 const fixture=new URL('../../audit-fixes/technical-native-facts-20261004/fixtures/',import.meta.url),proof=JSON.parse(fs.readFileSync(new URL('provenance.json',fixture)));
 function body(name){const r=proof.responses.find(r=>r.name===name),s=gunzipSync(fs.readFileSync(new URL(name+'.json.gz',fixture))).toString();assert.equal(crypto.createHash('sha256').update(s).digest('hex'),r.body_sha256);assert.equal(r.synthetic,false);return s;}
 const clock=JSON.parse(body('solana-slot-clock')).result*1000,NOW=clock+10000,identity={chain:'solana',asset_kind:'NATIVE',native_asset_id:'solana:mainnet',contract_or_mint:null};
@@ -82,6 +83,21 @@ test('primary N10 uses both saved closed ranges and exact recent path without an
  const facts=consumeBlockResultContext({contract,evidence:receipt.evidence,now}).facts;
  assert.equal(facts.length,2);assert.equal(facts[1].label,'Фактический путь цены за 15 минут');
  clearHtxTechnicalSnapshots();
+});
+
+test('the existing manual report section prints and audits the verified path fact',()=>{
+ const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/output-contract/short-wait-coin.json',import.meta.url),'utf8'));
+ const canonical=fixture.canonical,contract=canonical.metadata.contract,now=canonical.observed_ts,end=now-60000;
+ const window={label:'15m',window_start_ts:end-900000,window_end_ts:end,candle_count:15,open:5.323,high:5.331,low:5.315,close:5.315};
+ const evidence=deriveHtxRecentPathEvidence({contract,window,source_ts:end,observed_ts:now});
+ const fact=consumeBlockResultContext({contract,evidence,now}).facts[0];
+ canonical.metadata.supporting_context={...(canonical.metadata.supporting_context||{}),facts:[...(canonical.metadata.supporting_context?.facts||[]),fact]};
+ canonical.metadata.internal_market_context={evidence_v2:{evidence}};
+ const manual=formatManualReport(canonical);
+ assert.equal(manual.ok,true);assert.match(manual.text,/Фактический путь цены за 15 минут/);
+ const audit=auditRenderedBlockResults({canonical,manual});
+ assert.equal(audit.context_receipts.filter(r=>r.evidence_id===evidence[0].evidence_id).length,1);
+ assert.equal(audit.context_receipts.find(r=>r.evidence_id===evidence[0].evidence_id).score_contribution,0);
 });
 
 test('primary HTX empty isolated mode is accepted only with exact default/all/cross reconciliation',()=>{
