@@ -4,7 +4,7 @@ import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} f
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';
 
-export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v4-primary-native-chain-20261008';
+export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v5-fil-xpl-native-chain-20261011';
 const SOURCE='HTX_ASSET_REFERENCE',CACHE_KEY='ALL_CURRENCIES_CHAIN_ADDRESSES_V1',TTL=6*60*60_000,DAILY_CAP=8;
 export const HTX_ASSET_REFERENCE_URL='https://api.huobi.pro/v2/reference/currencies';
 /* HTX can keep a futures market after the asset disappears from its spot
