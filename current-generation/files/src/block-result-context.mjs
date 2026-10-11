@@ -17,6 +17,7 @@ import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
+import {deriveHtxRecentPathEvidence} from './htx-technical-structure.mjs';
 
 export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v11-verified-native-evm-20261007';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
@@ -118,6 +119,14 @@ function describe(row,now){
   const declared=row.option_risk_context,risk=deriveDeltaOptionRisk({samples:declared?.samples,base_currency:row.base_currency,observed_ts:row.observed_ts});
   if(!risk||risk.status!==declared.status||risk.source_ts!==row.source_ts||!['sample_count','call_count','put_count','expiration_timestamp','mark_iv_median_pct','mark_iv_min_pct','mark_iv_max_pct'].every(k=>eq(risk[k],declared[k])))return null;
   return{source:'Delta Exchange',label:'Опционная волатильность актива на Delta',value:`медиана волатильности по котировкам ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} колл и ${risk.put_count} пут около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().replace('T',' ').slice(0,16)} UTC, расчёты в USD; данные этой площадки, направление и разрешение сделки не назначены`};
+ }
+ if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_PRICE_PATH_CONTEXT'){
+  const rebuilt=deriveHtxRecentPathEvidence({contract:row.htx_contract,window:{label:'15m',window_start_ts:row.window_start,window_end_ts:row.window_end,candle_count:row.candle_count,open:row.path_open,high:row.path_high,low:row.path_low,close:row.path_close},source_ts:row.source_ts,observed_ts:row.observed_ts})[0];
+  if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||
+   row.source_clock_policy!=='HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M'||row.same_htx_upstream_not_independent!==true||
+   row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
+  const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v),sign=row.change_pct>0?'+':'';
+  return{source:'HTX / закрытые минутные свечи',label:'Фактический путь цены за 15 минут',value:`15 закрытых минутных свечей: ${price(row.path_open)} → ${price(row.path_close)} USDT (${sign}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены`};
  }
  if(row.block_id==='N10'&&row.metric_family==='ROLLING_24H_PRICE_RANGE_CONTEXT'){
   if(row.upstream_id!=='HTX_OFFICIAL_ROLLING_MARKET_SUMMARY'||row.source_clock_policy!=='HTX_PRIMARY_ROLLING_24H_SUMMARY'||row.closed_candle_claim!==false||row.signed_trade_flow_claim!==false||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||![row.range_low,row.range_high,row.last_price,row.range_pct].every(v=>number(v)!==null)||!(row.range_low>0&&row.range_high>=row.range_low&&row.last_price>=row.range_low&&row.last_price<=row.range_high)||!eq(row.range_pct,(row.range_high/row.range_low-1)*100))return null;
@@ -336,3 +345,4 @@ export function auditRenderedBlockResults({canonical,manual,telegram}={}){
  const telegramReceipts=confirmedBlockContextFacts(canonical).filter(row=>(payload?.includes(`• ${row.label}: ${row.value}`)||payload?.includes(`• ${plainContextFact(row,canonical)}`)||payload?.includes(`• ${omitTelegramCurrencies(plainContextFact(row,canonical))}`))).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(row=>row.block_id))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.map(row=>row.block_id))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
 }
+

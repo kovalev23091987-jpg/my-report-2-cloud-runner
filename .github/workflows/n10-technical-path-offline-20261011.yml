@@ -28,7 +28,7 @@ jobs:
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
-            if(phase.lease?.owner!=='CODEX:OWNER_N10_TECHNICAL_PATH:1791734298983'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if(phase.lease?.owner!=='CODEX:OWNER_N10_FACTUAL_TEXT_COVERAGE:1791736892618'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Assemble current encrypted runtime
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -45,10 +45,12 @@ jobs:
           REPORT2_UNIFIED_MODULE_ROOT: runtime/src
           NODE_OPTIONS: --import ${{ github.workspace }}/current-generation/tests/early-evidence-repair/no-network.mjs
         run: |
+          cmp current-generation/files/src/htx-technical-structure.mjs runtime/src/htx-technical-structure.mjs
+          cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
           cmp current-generation/files/src/technical-move-potential.mjs runtime/src/technical-move-potential.mjs
           cmp current-generation/files/src/dynamic-liquidation-panel.mjs runtime/src/dynamic-liquidation-panel.mjs
           cmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs
-          node --test current-generation/tests/technical-move-potential.test.mjs current-generation/tests/dynamic-liquidation-panel.test.mjs current-generation/tests/htx-volume-profile.test.mjs > audit-output/n10-technical-path/target-unit.tap
+          node --test current-generation/tests/technical-move-potential.test.mjs current-generation/tests/dynamic-liquidation-panel.test.mjs current-generation/tests/htx-volume-profile.test.mjs current-generation/tests/technical-native-facts.test.mjs > audit-output/n10-technical-path/target-unit.tap
           node --test current-generation/tests/technical-target-producer.runtime.mjs current-generation/tests/observation-technical-range.runtime.mjs > audit-output/n10-technical-path/target-runtime.tap
           node --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n10-technical-path/current-report-telegram.tap
           node current-generation/validate.mjs > audit-output/n10-technical-path/generation.log 2>&1

@@ -59,6 +59,27 @@ export function readHtxClosedTriggerCandles({contract,now=Date.now()}={}){
  return out;
 }
 
+// A recent path is useful context when the trajectory already contains the
+// exact fifteen closed one-minute candles. It is the same HTX upstream as the
+// longer range and never supplies a target, score or entry permission.
+export function deriveHtxRecentPathEvidence({contract,window,source_ts,observed_ts}={}){
+ const w=window,M=60000,positive=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
+ if(!isExactHtxUsdtSwapKey(contract)||w?.label!=='15m'||w.candle_count!==15||
+  ![w.window_start_ts,w.window_end_ts,source_ts,observed_ts].every(Number.isSafeInteger)||
+  w.window_end_ts-w.window_start_ts!==15*M||w.window_end_ts%M!==0||
+  w.window_end_ts>source_ts||source_ts>observed_ts||observed_ts-source_ts>TTL||
+  ![w.open,w.high,w.low,w.close].every(positive)||w.low>w.high||
+  w.open<w.low||w.open>w.high||w.close<w.low||w.close>w.high)return[];
+ return[buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:'HTX_OFFICIAL_CLOSED_1M_CANDLES',
+  asset_id:`htx-futures:${contract}`,htx_contract:contract,block_id:'N10',metric_family:'CLOSED_15M_PRICE_PATH_CONTEXT',
+  origin_event_id:`${contract}:15m:${w.window_end_ts}`,dependency_group:`HTX_CLOSED_CANDLES:${contract}:${w.window_end_ts}`,
+  source_ts,observed_ts,expires_at:source_ts+TTL,coverage_status:'EXACT_FIFTEEN_CLOSED_1M_CANDLES',coverage_fraction:0,
+  directional_strength:null,risk_strength:null,extra:{window_start:w.window_start_ts,window_end:w.window_end_ts,candle_count:15,
+   path_open:w.open,path_high:w.high,path_low:w.low,path_close:w.close,change_pct:(w.close/w.open-1)*100,
+   range_pct:(w.high/w.low-1)*100,source_clock_policy:'HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M',
+   same_htx_upstream_not_independent:true,entry_authorized_by_context:false,liquidation_as_target:false}})];
+}
+
 // A completed promise is not proof that its provider returned useful data.
 // Check the existing snapshot AND trajectory; a rolling price summary alone
 // cannot admit the primary technical pipeline. Flow coverage is independent.
@@ -83,5 +104,7 @@ export function buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,ref
  const evidence=readHtxTechnicalStructure({contract,now}).filter(r=>r.metric_family==='CLOSED_CANDLE_RANGE_CONTEXT');
  if(!evidence.length)failures.push('VALIDATED_CLOSED_CANDLE_CONTEXT_REQUIRED');
  const closed=failures.length===0;
- return {status:closed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:closed,network_calls:0,evidence:closed?evidence:[],receipts:[{check_completed:closed,status:route_state||'NO_ENTRY_STATE',contract,futures_status:states[0],trajectory_status:states[1],reference_price_status:reference_price?.status||'NOT_EVALUATED',reference_source_ts:reference_price?.source_ts??null,trajectory_source_ts:t?.provider_source_ts??null,actual_price_windows:windows,failures,source_transport:'EXISTING_SAME_CANDIDATE_SNAPSHOT_AND_TRAJECTORY',signed_raw_24h_verified:false,entry_authorized_by_context:false}],entry_rules_changed:false};
+ const recentPath=closed?deriveHtxRecentPathEvidence({contract,window:windows.find(w=>w.label==='15m'),source_ts:t.provider_source_ts,observed_ts:now}):[];
+ return {status:closed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:closed,network_calls:0,evidence:closed?[...evidence,...recentPath]:[],receipts:[{check_completed:closed,status:route_state||'NO_ENTRY_STATE',contract,futures_status:states[0],trajectory_status:states[1],reference_price_status:reference_price?.status||'NOT_EVALUATED',reference_source_ts:reference_price?.source_ts??null,trajectory_source_ts:t?.provider_source_ts??null,actual_price_windows:windows,failures,source_transport:'EXISTING_SAME_CANDIDATE_SNAPSHOT_AND_TRAJECTORY',signed_raw_24h_verified:false,entry_authorized_by_context:false}],entry_rules_changed:false};
 }
+
