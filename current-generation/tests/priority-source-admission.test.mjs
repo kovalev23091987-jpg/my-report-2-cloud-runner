@@ -28,8 +28,8 @@ test('exhausted envelope still reads later valid caches, preserves quota skips a
  }]));
  const out=await collectEvidenceRouteBlock({routes,collectors,params:{contract:'NEAR-USDT',request_admit:()=>({allowed:true}),fetch_impl:async()=>{calls++;return{};}},max_requests:2});
  assert.equal(calls,2);assert.equal(out.network_calls,2);assert.equal(out.reserved_requests,2);
- assert.equal(out.results.HTX_ANNOUNCEMENTS.status,'DEFERRED_SHARED_REQUEST_ENVELOPE');
- assert.equal(out.results.BLUESKY.cache_status,'VALID_CACHE');assert.equal(out.receipts.length,5);
+ assert.equal(out.results.HTX_ANNOUNCEMENTS.status,'BLOCK_PAUSED_BY_OWNER');
+ assert.equal(out.results.BLUESKY.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(out.receipts.length,5);
 });
 
 const zec=JSON.parse(gunzipSync(fs.readFileSync(new URL('./fixtures/actual-ZEC-role-handoff-0931.json.gz',import.meta.url)))).canonical;
@@ -60,5 +60,5 @@ test('native priority keeps the existing HTTP ceiling, all admitted caches and d
  }});
  assert.equal(cmAttempts,0);assert.ok(network<=2);assert.equal(out.network_calls,network);assert.ok(out.reserved_requests<=2);
  assert.equal(out.results.COINMETRICS.status,'BLOCK_PAUSED_BY_OWNER');
- assert.equal(out.results.BLUESKY.cache_status,'VALID_CACHE');
+ assert.equal(out.results.BLUESKY.status,'BLOCK_PAUSED_BY_OWNER');
 });

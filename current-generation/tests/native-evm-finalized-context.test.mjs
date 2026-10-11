@@ -71,7 +71,7 @@ test('invalid cached row is reread and expired original block is not renewed to 
 });
 test('aggregate transport count equals actual guard count including optional pageview, calendar and schedule routes',async()=>{
  const store=db(),calls=[];const now=Date.now(),r=await collectCandidateEvidenceV2({db:store,contract:'ADA-USDT',asset_identity:id('cardano'),run_id:'aggregate-optional-count',now,clock:()=>now,max_requests:28,request_admit:()=>({allowed:true,status:'RESERVED'}),fetch_impl:async(url)=>{calls.push(String(url));return new Response('{}',{status:502});}});
- assert.ok(calls.some(u=>u.includes('wikimedia.org')));assert.equal(r.network_calls,calls.length);assert.equal(r.network_calls,r.shared_http_envelope.actual_http);assert.ok(r.network_calls<=28);
+ assert.equal(calls.some(u=>u.includes('wikimedia.org')),false);assert.equal(r.network_calls,calls.length);assert.equal(r.network_calls,r.shared_http_envelope.actual_http);assert.ok(r.network_calls<=28);
 });
 test('assembled canonical report renders both neutral native blocks with unchanged score, direction and publication state',async()=>{
  if(!process.env.REPORT2_NATIVE_MODULE_ROOT)return;

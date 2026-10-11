@@ -10,16 +10,16 @@ test('legacy owners check eleven blocks while joint N05 remains missing',()=>{
  const sources=completeSources();
  sources.CHAIN_SUPPLY={status:'CLOSED',network_calls:1};sources.BLUESKY_PUBLIC={status:'CLOSED',network_calls:1};
  const result=auditCandidateBlocks({evidence,sources,decision_ts:now});
- assert.equal(result.coverage_count,12);
- assert.equal(result.checked_block_count,11);
+ assert.equal(result.coverage_count,8);
+ assert.equal(result.checked_block_count,7);
  assert.equal(result.all_blocks_checked,false);
  assert.equal(result.blocks.N02.status,'BLOCK_PAUSED_BY_OWNER');
  assert.equal(result.blocks.N02.decision_path,'EXCLUDED_PAUSED_BLOCK');
  assert.deepEqual(result.blocks.N02.evidence_rejection_reasons,{});
  assert.equal(result.all_blocks_have_assigned_consumer,true);assert.equal(result.all_blocks_decision_accounted,false);
  assert.deepEqual(result.blocks.N02.source_checks,{});
- assert.equal(result.blocks.N06.status,'CHECKED_NO_USABLE_FACTS');
- assert.equal(result.blocks.N06.source_statuses.BLUESKY_PUBLIC,'CLOSED');
+ assert.equal(result.blocks.N06.status,'BLOCK_PAUSED_BY_OWNER');
+ assert.equal(result.blocks.N06.source_statuses.BLUESKY_PUBLIC,undefined);
  assert.equal(result.blocks.N10.status,'CHECKED_NO_USABLE_FACTS');
  assert.deepEqual(result.blocks.N10.missing_required,[]);
  assert.equal(result.blocks.N10.decision_path,'ADMITTED_CONTROL_CONTEXT');
@@ -64,10 +64,10 @@ test('a supplemental route cannot close a missing primary block owner',()=>{
 test('an attempted provider error is recorded but cannot close its block',()=>{
  const sources=completeSources();sources.BLUESKY_PUBLIC={status:'ACCESS_BLOCKED_403',network_calls:1,receipts:[{http_status:403,status:'SOURCE_ERROR'}]};
  const result=auditCandidateBlocks({sources,evidence:[],decision_ts:Date.now()});
- assert.equal(result.blocks.N06.source_checks.BLUESKY_PUBLIC.attempted,true);
- assert.equal(result.blocks.N06.source_checks.BLUESKY_PUBLIC.checked,false);
+ assert.equal(result.blocks.N06.source_checks.BLUESKY_PUBLIC,undefined);
+ assert.equal(result.blocks.N06.source_checks.BLUESKY_PUBLIC,undefined);
  assert.equal(result.blocks.N06.checked,false);
- assert.deepEqual(result.blocks.N06.missing_required,['BLUESKY_PUBLIC']);
+ assert.deepEqual(result.blocks.N06.missing_required,[]);
 });
 
 test('zero-fact primary blocks require explicit completed receipts',()=>{

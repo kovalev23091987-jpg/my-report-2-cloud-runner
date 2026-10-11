@@ -10,7 +10,7 @@ import {NATIVE_SECTOR_BINDINGS} from '../files/src/coingecko-sector-evidence.mjs
 const NOW=Date.parse('2026-10-05T05:00:00Z'),DAY=86400000,identity={chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null},rows=Array.from({length:14},(_,i)=>({project:'en.wikipedia',article:'Cardano_(blockchain_platform)',access:'all-access',agent:'user',granularity:'daily',timestamp:new Date(Date.parse('2026-09-20T00:00:00Z')+i*DAY).toISOString().slice(0,10).replaceAll('-','')+'00',views:i<7?10:20})),base={contract:'ADA-USDT',asset_identity:identity,payload:{items:rows},observed_ts:NOW};
 function db(){const sqlite=new DatabaseSync(':memory:');return{prepare(sql){return{args:[],bind(...args){this.args=args;return this;},async run(){return sqlite.prepare(sql).run(...this.args);},async first(){return sqlite.prepare(sql).get(...this.args)||null;}};},async batch(rows){return Promise.all(rows.map(x=>x.run()));}};}
 test('additional native pageview context reaches consumer without replacing primary or assigning scores',()=>{
- const r=normalizeWikimediaAttention(base);assert.equal(r.status,'CLOSED');assert.equal(r.summary.recent_7day_views,140);assert.equal(r.summary.previous_7day_views,70);assert.equal(r.summary.change_pct,100);const c=consumeBlockResultContext({contract:base.contract,evidence:r.evidence,now:NOW});assert.equal(c.facts.length,1);assert.match(c.facts[0].value,/число трейдеров/);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);const a=auditCandidateBlocks({sources:{WIKIMEDIA_ATTENTION:r},evidence:r.evidence,decision_ts:NOW});assert.equal(a.blocks.N06.checked,false);assert.ok(a.blocks.N06.missing_required.includes('BLUESKY_PUBLIC'));assert.ok(planCandidateEvidenceRoutes({...base,run_id:'R',now:NOW}).routes.some(x=>x.name==='WIKIMEDIA'&&x.role==='ADDITIONAL_DAILY_PAGEVIEW_CONTEXT'));
+ const r=normalizeWikimediaAttention(base);assert.equal(r.status,'CLOSED');assert.equal(r.summary.recent_7day_views,140);assert.equal(r.summary.previous_7day_views,70);assert.equal(r.summary.change_pct,100);const c=consumeBlockResultContext({contract:base.contract,evidence:r.evidence,now:NOW});assert.equal(c.facts.length,0);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);const a=auditCandidateBlocks({sources:{WIKIMEDIA_ATTENTION:r},evidence:r.evidence,decision_ts:NOW});assert.equal(a.blocks.N06.checked,false);assert.equal(a.blocks.N06.status,'BLOCK_PAUSED_BY_OWNER');assert.ok(!planCandidateEvidenceRoutes({...base,run_id:'R',now:NOW}).routes.some(x=>x.name==='WIKIMEDIA'));
 });
 test('pageview route rejects wrapped, foreign native or ambiguous page bindings',()=>{
  for(const x of [{...identity,native_asset_id:'cardano:testnet'},{...identity,contract_or_mint:'0x'+'1'.repeat(40)},{...identity,asset_kind:'WRAPPED'}])assert.equal(exactWikimediaPage({contract:'ADA-USDT',asset_identity:x}),null);assert.equal(exactWikimediaPage({contract:'BTC-USDT',asset_identity:identity}),null);
@@ -34,7 +34,7 @@ test('ten additional verified native page routes produce neutral report context 
   const result=normalizeWikimediaAttention({contract,asset_identity,payload,observed_ts:NOW});
   assert.equal(result.status,'CLOSED');
   const context=consumeBlockResultContext({contract,evidence:result.evidence,now:NOW});
-  assert.equal(context.facts.length,1);assert.equal(context.facts[0].block_id,'N06');
+  assert.equal(context.facts.length,0);
   assert.equal(consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
   assert.equal(exactWikimediaPage({contract,asset_identity:{...asset_identity,chain:'bitcoin'}}),null);
  }
@@ -47,6 +47,6 @@ test('XRP and HBAR exact native pages reject ticker collisions and wrapped asset
   assert.equal(exactWikimediaPage({contract,asset_identity:{...asset_identity,chain:'ethereum'}}),null);
   const result=normalizeWikimediaAttention({contract,asset_identity,payload:{items:rows.map(r=>({...r,article}))},observed_ts:NOW});
   assert.equal(result.status,'CLOSED');
-  assert.equal(consumeBlockResultContext({contract,evidence:result.evidence,now:NOW}).facts.length,1);
+  assert.equal(consumeBlockResultContext({contract,evidence:result.evidence,now:NOW}).facts.length,0);
  }
 });

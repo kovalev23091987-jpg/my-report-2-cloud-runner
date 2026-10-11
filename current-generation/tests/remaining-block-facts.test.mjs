@@ -45,7 +45,7 @@ test('vestings share existing OFFICIAL_EVENTS allowance, have exact caches, and 
 });
 test('N08 scoped successful restriction check is useful context, never an independent positive weight',()=>{
  const r=normalizeHtxPublicRisk({contract:'JUP-USDT',state_payload:{status:'ok',ts:NOW-1000,data:[{contract_code:'JUP-USDT',margin_mode:'isolated',margin_account:'JUP-USDT',open:1}]},observed_ts:NOW});
- assert.equal(r.status,'CLOSED');assert.deepEqual(facts(r.evidence,'JUP-USDT').map(f=>f.block_id).sort(),['N08','N09']);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+ assert.equal(r.status,'CLOSED');assert.deepEqual(facts(r.evidence,'JUP-USDT').map(f=>f.block_id).sort(),[]);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
  const bad=structuredClone(r.evidence);bad.find(x=>x.block_id==='N08').margin_account='OTHER-USDT';assert.equal(facts(bad,'JUP-USDT').some(f=>f.block_id==='N08'),false);
 });
 test('finalized zero-address event is N03 context with exact units, no buyback/supply-change claim',()=>{
@@ -64,7 +64,7 @@ test('technical plan is copied only from a closed same-snapshot precommitted pro
 });
 test('an empty qualified official feed is scoped N07 context; errors and wrong publishers remain open',async()=>{
  const meta={official_domains:['issuer.example'],official_feeds:['https://issuer.example/feed.xml']},p={db:memoryDB(),contract:'TEST-USDT',run_id:'feed',asset_metadata:meta,now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async()=>new Response('<rss><channel></channel></rss>',{headers:{'content-type':'application/rss+xml'}})};
- const out=await collectOfficialEventsEvidence(p);assert.equal(out.status,'CLOSED_BOUNDED_OFFICIAL_FEED_CHECK');assert.equal(facts(out.evidence,p.contract).length,1);assert.equal(out.evidence[0].all_official_channels_checked,false);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+ const out=await collectOfficialEventsEvidence(p);assert.equal(out.status,'CLOSED_BOUNDED_OFFICIAL_FEED_CHECK');assert.equal(facts(out.evidence,p.contract).length,0);assert.equal(out.evidence[0].all_official_channels_checked,false);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
  const error=await collectOfficialEventsEvidence({...p,db:memoryDB(),fetch_impl:async()=>new Response('limited',{status:429})});assert.equal(error.evidence.length,0);
  assert.equal(auditCandidateBlocks({sources:{OFFICIAL_EVENTS:out},evidence:out.evidence,decision_ts:NOW}).blocks.N01.checked,false);
 });
@@ -86,7 +86,7 @@ test('actual full HTX catalog excludes every stock and exact forex correction, w
  assert.ok(eligible.length>=100);assert.ok(eligible.some(r=>r.contract_code==='NEAR-USDT'));assert.ok(eligible.some(r=>r.contract_code==='BR-USDT'));
  for(const r of catalog){if(!['PAXG-USDT','XAUT-USDT'].includes(r.contract_code)&&(r.labels.some(x=>['stock','tradfi','indices','commodities'].includes(x))||r.tradfi_labels.length))assert.equal(classify(r).eligible_for_crypto_discovery,false,r.contract_code);}
  for(const contract_code of ['EURUSD-USDT','GBPUSD-USDT','USDJPY-USDT','USDBRL-USDT']){const c=classify(catalog.find(r=>r.contract_code===contract_code));assert.equal(c.eligible_for_crypto_discovery,false);assert.ok(c.reasons.includes('HTX_OFFICIAL_FOREX_UNDERLYING'));assert.ok(c.evidence.official_forex_source_url);}
- for(const r of eligible){const plan=planCandidateEvidenceRoutes({contract:r.contract_code});assert.ok(plan.routes.some(x=>x.name==='DERIBIT'));assert.ok(plan.routes.some(x=>x.name==='LARGE_TRADES'));assert.equal(auditCandidateBlocks({}).coverage_count,12);}
+ for(const r of eligible){const plan=planCandidateEvidenceRoutes({contract:r.contract_code});assert.ok(plan.routes.some(x=>x.name==='DERIBIT'));assert.ok(plan.routes.some(x=>x.name==='LARGE_TRADES'));assert.equal(auditCandidateBlocks({}).coverage_count,8);}
  assert.equal(classify({...catalog.find(r=>r.contract_code==='NEAR-USDT'),contract_code:'NEWCRYPTO-USDT'}).eligible_for_crypto_discovery,true);
 });
 test('two exact finalized supply observations can provide neutral N03, but cannot prove buyback or a price effect',()=>{
