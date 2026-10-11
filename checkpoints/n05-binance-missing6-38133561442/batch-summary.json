@@ -1,0 +1,793 @@
+{
+  "schema": "N05_BINANCE_MISSING6_ACTUAL_V1",
+  "symbols": [
+    "ZEC",
+    "XLM",
+    "NEAR",
+    "SOL",
+    "SUI",
+    "HBAR"
+  ],
+  "approved_assets": 104,
+  "source": "N05_OFFICIAL_FLOW:BINANCE",
+  "shared_catalog_HTTP": 1,
+  "maximum_window_HTTP": 6,
+  "maximum_source_HTTP": 7,
+  "source_cap": 16,
+  "provider_rolling_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 12000,
+    "rows_written": 400
+  },
+  "caps_changed": false,
+  "run": "38133561442",
+  "head": "e4dd121427660ae98c43e19694855eef1c2e7f80",
+  "main": "f1f86e3d1d630863a05dffa5150b2f1aae0a0282",
+  "lease_owner": "CODEX:LOCAL_N05:20261011:1791715474614",
+  "started_ts": 1791716011246,
+  "status": "BINANCE_NATIVE_BATCH_RETAINED_WITH_PER_COIN_QUALIFICATION",
+  "sourceHTTP": 7,
+  "sources": [
+    {
+      "name": "BINANCE-CURRENT-NATIVE-CATALOG",
+      "url": "https://data-api.binance.vision/api/v3/exchangeInfo?showPermissionSets=false&symbolStatus=TRADING&permissions=SPOT",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791715980000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-CURRENT-NATIVE-CATALOG",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716013334,
+      "http_status": 200,
+      "received_ts": 1791716014414,
+      "body_sha256": "28863d7e71ed896debbad1ea55e7c2a121a5f510c54be3c5ac5c845b297dde8c",
+      "gzip_sha256": "cc88f606eef4a0a89a5111db7149ca38048132aa2a0558e2fd832b05ef9d54e3",
+      "bytes": 2495845,
+      "file": "BINANCE-CURRENT-NATIVE-CATALOG.json.gz"
+    },
+    {
+      "name": "BINANCE-ZEC-NATIVE240",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=ZECUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791715980000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-ZEC-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716015574,
+      "http_status": 200,
+      "received_ts": 1791716015716,
+      "body_sha256": "a77291c6eef221f532ea078df0da7008da69202b0d026acea190376344fb2541",
+      "gzip_sha256": "c99ba82011c967b78e688b2a89b83bfa519780bebf0bde525e54cf7750eda9a7",
+      "bytes": 39640,
+      "file": "BINANCE-ZEC-NATIVE240.json.gz"
+    },
+    {
+      "name": "BINANCE-XLM-NATIVE240",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XLMUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791715980000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-XLM-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716016890,
+      "http_status": 200,
+      "received_ts": 1791716017035,
+      "body_sha256": "604aef67af161722d2ea6b73aa0d84552acf865b761006ff7aeb3254d2d3ef26",
+      "gzip_sha256": "1961dcb1f1f478b3c5613b6baca8b93877b3074f181d7165d89d05fb61371e8e",
+      "bytes": 36175,
+      "file": "BINANCE-XLM-NATIVE240.json.gz"
+    },
+    {
+      "name": "BINANCE-NEAR-NATIVE240",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791715980000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-NEAR-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716018164,
+      "http_status": 200,
+      "received_ts": 1791716018306,
+      "body_sha256": "2c41a07740a66d0ff5a79779892b4e88432c5fbac5c08479d26c28cee9b9e1de",
+      "gzip_sha256": "d5c3f84750bd9bfef68aa975fb65262c94726aa705d5e436ed1dc89e39d58173",
+      "bytes": 37264,
+      "file": "BINANCE-NEAR-NATIVE240.json.gz"
+    },
+    {
+      "name": "BINANCE-SOL-NATIVE240",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791715980000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-SOL-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716019382,
+      "http_status": 200,
+      "received_ts": 1791716019524,
+      "body_sha256": "7260591e8617235d9c6cfe8a128ecc3ade7d4c0b3f51142628906e6b00d48c40",
+      "gzip_sha256": "a22b7407cc0bdbf487896f26444fef057b2e4ce39f2c352b543bb534b8c3150e",
+      "bytes": 38569,
+      "file": "BINANCE-SOL-NATIVE240.json.gz"
+    },
+    {
+      "name": "BINANCE-SUI-NATIVE240",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=SUIUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791715980000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-SUI-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716020584,
+      "http_status": 200,
+      "received_ts": 1791716020724,
+      "body_sha256": "062d45f2856cc9a011e364bc15fc27aeee042b8b3f4f10032a38ca2b0089ae21",
+      "gzip_sha256": "610953f2d5ce1d2a199f37023c2dade56a07ede249bba1805ed05ab145c6d532",
+      "bytes": 37030,
+      "file": "BINANCE-SUI-NATIVE240.json.gz"
+    },
+    {
+      "name": "BINANCE-HBAR-NATIVE240",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=HBARUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "source": "N05_OFFICIAL_FLOW:BINANCE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791716040000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BINANCE_MISSING6:38133561442:1:BINANCE-HBAR-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716074546,
+      "http_status": 200,
+      "received_ts": 1791716075131,
+      "body_sha256": "47b227d1bdd6d7c8274d05c1a82e1583e0abf515cd28e5436a2d21a2cca4d2aa",
+      "gzip_sha256": "8caddbc2c42540c13144b4869d96ebe21e7f20606c66ff2d9a5bd09994aa9629",
+      "bytes": 36913,
+      "file": "BINANCE-HBAR-NATIVE240.json.gz"
+    }
+  ],
+  "windows": [
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "ZEC-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791701580000,
+      "window_end_ts": 1791715980000,
+      "observed_ts": 1791716015716,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 20999722.52495,
+      "sell_quote": 15595899.00381,
+      "trade_count": 327314,
+      "imbalance": 0.14766311638929833,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "zcash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "zcash:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_ZEC_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791715080000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 523592.85861,
+          "sell_quote": 451069.08362,
+          "trade_count": 2647,
+          "imbalance": 0.07440915854790388
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791712380000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 4931377.05805,
+          "sell_quote": 4708279.25127,
+          "trade_count": 52803,
+          "imbalance": 0.02314375114850311
+        }
+      ],
+      "native_aggregate_not_individual_trades": true,
+      "identity_original_received_ts": 1791632635640,
+      "raw_file": "BINANCE-ZEC-NATIVE240.json.gz",
+      "raw_body_sha256": "a77291c6eef221f532ea078df0da7008da69202b0d026acea190376344fb2541"
+    },
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "XLM-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791701580000,
+      "window_end_ts": 1791715980000,
+      "observed_ts": 1791716017035,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 1665094.2141999998,
+      "sell_quote": 896821.3878,
+      "trade_count": 11380,
+      "imbalance": 0.2998821763684314,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "stellar",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "stellar:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_XLM_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791715080000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 25392.758,
+          "sell_quote": 22796.451299999997,
+          "trade_count": 225,
+          "imbalance": 0.053877345939353276
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791712380000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 878386.1576,
+          "sell_quote": 509609.88029999996,
+          "trade_count": 7178,
+          "imbalance": 0.26568971901241767
+        }
+      ],
+      "native_aggregate_not_individual_trades": true,
+      "identity_original_received_ts": 1791632635640,
+      "raw_file": "BINANCE-XLM-NATIVE240.json.gz",
+      "raw_body_sha256": "604aef67af161722d2ea6b73aa0d84552acf865b761006ff7aeb3254d2d3ef26"
+    },
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "NEAR-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791701580000,
+      "window_end_ts": 1791715980000,
+      "observed_ts": 1791716018306,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 5631888.8461,
+      "sell_quote": 4512933.835,
+      "trade_count": 48874,
+      "imbalance": 0.11029813396193063,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "near",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "near:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_NEAR_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791715080000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 259397.05430000002,
+          "sell_quote": 103861.01899999999,
+          "trade_count": 1634,
+          "imbalance": 0.428169521153489
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791712380000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 1452868.7611999998,
+          "sell_quote": 930815.1854000001,
+          "trade_count": 10811,
+          "imbalance": 0.21901123953309257
+        }
+      ],
+      "native_aggregate_not_individual_trades": true,
+      "identity_original_received_ts": 1791632635640,
+      "raw_file": "BINANCE-NEAR-NATIVE240.json.gz",
+      "raw_body_sha256": "2c41a07740a66d0ff5a79779892b4e88432c5fbac5c08479d26c28cee9b9e1de"
+    },
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "SOL-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791701580000,
+      "window_end_ts": 1791715980000,
+      "observed_ts": 1791716019524,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 5743369.95995,
+      "sell_quote": 7390204.00057,
+      "trade_count": 30545,
+      "imbalance": -0.12539115746943238,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "solana",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "solana:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_SOL_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791715080000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 175261.76255,
+          "sell_quote": 318002.42657999997,
+          "trade_count": 1392,
+          "imbalance": -0.2893797424900445
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791712380000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 956197.01379,
+          "sell_quote": 981737.99989,
+          "trade_count": 5715,
+          "imbalance": -0.013179485338623141
+        }
+      ],
+      "native_aggregate_not_individual_trades": true,
+      "identity_original_received_ts": 1791632635640,
+      "raw_file": "BINANCE-SOL-NATIVE240.json.gz",
+      "raw_body_sha256": "7260591e8617235d9c6cfe8a128ecc3ade7d4c0b3f51142628906e6b00d48c40"
+    },
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "SUI-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791701580000,
+      "window_end_ts": 1791715980000,
+      "observed_ts": 1791716020724,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 1507809.94822,
+      "sell_quote": 2421361.90687,
+      "trade_count": 30323,
+      "imbalance": -0.23250496347380423,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "sui",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "sui:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_SUI_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791715080000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 126347.76407,
+          "sell_quote": 241095.57035,
+          "trade_count": 3620,
+          "imbalance": -0.31228708083962525
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791712380000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 399865.3568,
+          "sell_quote": 943588.79363,
+          "trade_count": 9332,
+          "imbalance": -0.40472050099809526
+        }
+      ],
+      "native_aggregate_not_individual_trades": true,
+      "identity_original_received_ts": 1791632635640,
+      "raw_file": "BINANCE-SUI-NATIVE240.json.gz",
+      "raw_body_sha256": "062d45f2856cc9a011e364bc15fc27aeee042b8b3f4f10032a38ca2b0089ae21"
+    },
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "HBAR-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791701580000,
+      "window_end_ts": 1791715980000,
+      "observed_ts": 1791716075131,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 592343.09121,
+      "sell_quote": 649349.89558,
+      "trade_count": 8718,
+      "imbalance": -0.04591054711307733,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_HBAR_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791715080000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 88849.17483999999,
+          "sell_quote": 86900.13567,
+          "trade_count": 1265,
+          "imbalance": 0.011089882312164755
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791712380000,
+          "window_end_ts": 1791715980000,
+          "buy_quote": 205197.80909000002,
+          "sell_quote": 405364.04725999996,
+          "trade_count": 4484,
+          "imbalance": -0.327839409043031
+        }
+      ],
+      "native_aggregate_not_individual_trades": true,
+      "identity_original_received_ts": 1791632635640,
+      "raw_file": "BINANCE-HBAR-NATIVE240.json.gz",
+      "raw_body_sha256": "47b227d1bdd6d7c8274d05c1a82e1583e0abf515cd28e5436a2d21a2cca4d2aa"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 43,
+      "reserved_rows_read": 705000,
+      "reserved_rows_written": 14576,
+      "measured_rows_read": 436764,
+      "measured_rows_written": 4832,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 12000,
+      "rows_written": 400
+    },
+    "projected_reserved": {
+      "rows_read": 717000,
+      "rows_written": 14976
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 2,
+    "required": 7,
+    "cap": 16,
+    "remaining": 14,
+    "allowed": true
+  },
+  "window_end_ts": 1791715980000,
+  "window_start_ts": 1791701580000,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 7,
+      "statistics": 0
+    },
+    "total": 7,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 157
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_BINANCE_MISSING6:38133561442:1",
+    "source_run_id": "38133561442",
+    "measured_rows_read": 223,
+    "measured_rows_written_accounted": 53,
+    "measured_requests_accounted": 76,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 76,
+    "rows_read": 224,
+    "rows_written": 53,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 44,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 12,
+        "rows_read": 74,
+        "rows_written": 28,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 24,
+        "rows_read": 76,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 14,
+        "rows_read": 7,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791716075332,
+  "individual_full_windows": 6,
+  "simultaneous_continuous_coverage": false
+}
