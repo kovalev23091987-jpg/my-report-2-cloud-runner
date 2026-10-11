@@ -1316,6 +1316,7 @@ async function futuresSnapshot(params) {
   // Internal factual source material is persisted inside the existing proof
   // bundle, not duplicated in every public endpoint/scan serialization.
   Object.defineProperty(snapshot, "_tz101_execution_quote", {value:factualExecution, enumerable:false});
+  Object.defineProperty(snapshot, "_n12_raw_trades", {value:{market:"FUTURES",contract,payload:tradesR.ok?tradesR.data:null,received_ts:Date.now()}, enumerable:false});
   return snapshot;
 }
 
@@ -1448,7 +1449,7 @@ async function spotSnapshot(params) {
     qualityStatus = "YELLOW";
   }
 
-  return {
+  const snapshot = {
     source: "HTX official public API",
     market: "HTX Spot",
     version: "2.1",
@@ -1513,6 +1514,8 @@ async function spotSnapshot(params) {
       kline_1m: kline1mR.ok ? null : kline1mR.error,
     },
   };
+  Object.defineProperty(snapshot, "_n12_raw_trades", {value:{market:"SPOT",contract:inputSymbol,payload:tradesR.ok?tradesR.data:null,received_ts:Date.now()}, enumerable:false});
+  return snapshot;
 }/* =========================================================
    FUTURES TRAJECTORY — НОВЫЙ МОДУЛЬ ДЛЯ CHAIN 6
    Синхронизирует цену, поток и OI по фактическим временным окнам.
@@ -16480,7 +16483,7 @@ async function buildDeepCheckInput(params, env) {
     console.log('PUBLIC_ASSET_BINDING_RECEIPT',JSON.stringify({contract,status:assetBinding.status,reason:assetBinding.reason,network_calls:assetBinding.network_calls,binding:assetBinding.binding||null}));
   }catch(error){console.log('PUBLIC_ASSET_BINDING_UNAVAILABLE',JSON.stringify({contract,reason:String(error.message).slice(0,120)}));}
   try{
-    if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now(),strict_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)});
+    if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,same_run_htx_trades:{futures:results[0].status==="fulfilled"?results[0].value?._n12_raw_trades:null,spot:results[1].status==="fulfilled"?results[1].value?._n12_raw_trades:null},now:Date.now(),strict_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)});
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
   if(signedTapeReceipt.evidence?.length)candidateEvidenceV2={...candidateEvidenceV2,evidence:[...(candidateEvidenceV2.evidence||[]),...signedTapeReceipt.evidence]};
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
