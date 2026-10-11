@@ -328,12 +328,7 @@
       }
     }
   ],
-  "lease": {
-    "owner": "CODEX:OWNER_N12_VERIFIED_ADDITIONAL_TRADE_CONNECTORS:1791748869387",
-    "acquired_ts": 1791748869387,
-    "expires_ts": 1791752169387,
-    "scope": "N12_ONLY_VERIFIED_SPOT_FUTURES_SOURCE_CONNECTORS_AND_ASSEMBLED_TESTS;EXISTING_VENUE_CAPS_SHARED;NO_UNADMITTED_PROVIDER_HTTP_OR_STRATEGY_WEIGHT_FORMAT_CHANGE"
-  },
+  "lease": null,
   "next_action": "N12 remains open. Use the saved all-source audit and 104-coin route matrix. First prove fresh exact HTX spot rows and same-run report use; then reuse already connected Bitget spot/futures and qualify Gate futures against exact-bound assets while sharing its existing venue cap. Evaluate KuCoin/OKX spot+futures with exact identity, original trade clocks and contract multipliers; MEXC/dYdX/Lighter/Hyperliquid remain conditional. Before any provider batch, read fresh source/D1 admission, use one bounded large batch, retain hashes, and verify canonical/manual/approved Telegram SENT. No strategy, cap, weight or format change. N14 awaits owner review.",
   "common_future_universe": {
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
@@ -398,12 +393,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:OWNER_N12_ALL_SOURCE_OFFLINE_AUDIT:1791748685247",
-    "acquired_ts": 1791748685247,
-    "expires_ts": 1791750185247,
-    "scope": "N12_ONLY_HISTORICAL_SOURCE_CATALOG_AND_REAL_TRADE_PAGE_AUDIT;NO_PROVIDER_HTTP;NO_RUNTIME_STRATEGY_CAP_OR_FORMAT_CHANGE",
-    "released_ts": 1791748766610,
-    "reason": "N12 all-source historical market and trade-page audit saved after matching 22 original GitHub blobs; no provider HTTP; all104 fresh source/report proof remains open."
+    "owner": "CODEX:OWNER_N12_VERIFIED_ADDITIONAL_TRADE_CONNECTORS:1791748869387",
+    "acquired_ts": 1791748869387,
+    "expires_ts": 1791752169387,
+    "scope": "N12_ONLY_VERIFIED_SPOT_FUTURES_SOURCE_CONNECTORS_AND_ASSEMBLED_TESTS;EXISTING_VENUE_CAPS_SHARED;NO_UNADMITTED_PROVIDER_HTTP_OR_STRATEGY_WEIGHT_FORMAT_CHANGE",
+    "released_ts": 1791749948382,
+    "reason": "N12 Gate futures candidate PR320 saved and target cloud validation passed; main merge stopped by auto-review pending explicit owner approval."
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -9769,7 +9764,7 @@
           "price": 0.30749,
           "oi_contracts": 8753,
           "oi_value_usdt": 26893.5925,
-          "funding_rate": 0.00005,
+          "funding_rate": 5e-05,
           "missing": [],
           "fresh_at_read": true
         },
@@ -10767,5 +10762,25 @@
     "source_http": 0,
     "existing_cap_shared": true,
     "n12_complete": false
+  },
+  "latest_n12_gate_futures_candidate": {
+    "proof": "checkpoints/N12_GATE_FUTURES_PR320_CLOUD_VERIFICATION_20261011.json",
+    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/320",
+    "candidate_head": "903149bbcfb3f58e190a291fa8cd721c18b9b8a4",
+    "base_main": "8dc21ce68624df74bf2bc7f4a6e317e0491a9479",
+    "status": "CANDIDATE_PR_CLOUD_ASSEMBLED_VERIFIED_MERGE_PERMISSION_REQUIRED",
+    "cloud_run": 38171533791,
+    "cloud_artifact_id": 11713744832,
+    "cloud_artifact_digest": "sha256:c7fcf694f91c6d1ab4fe2a76c6a2aed5b969a48d48ac04ff57c7f57a2e00c01f",
+    "target_unit_tests_passed": 39,
+    "full_cloud_generation": "PASS",
+    "original_v4_golden_bytes": "UNCHANGED",
+    "new_provider_http": 0,
+    "live_gate_futures_report_use": false,
+    "historical_gate_futures_symbol_hits": 102,
+    "historical_exact_gate_spot_identity_plus_future_symbol_candidates": 45,
+    "n12_complete": false,
+    "merge_blocked_by": "AUTO_REVIEW_REQUIRES_EXPLICIT_USER_APPROVAL_FOR_MAIN_MERGE",
+    "next_action": "Owner approval for PR320 merge; then fresh main/lease/fence, reverify candidate if base moved, merge, inspect natural actual source/report and Telegram."
   }
 }
