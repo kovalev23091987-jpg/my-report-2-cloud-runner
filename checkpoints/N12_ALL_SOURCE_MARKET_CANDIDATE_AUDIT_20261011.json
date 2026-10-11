@@ -1,0 +1,2448 @@
+{
+  "schema": "N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011_V1",
+  "recorded_utc": "2026-10-11T19:57:57.800Z",
+  "basis_main": "0630e9d770885b458af04aab6613ea68daed0c5e",
+  "scope": "N12 only: 104 approved HTX futures assets, spot and futures market route and actual retained trade-page audit. Historical catalog symbol hits are discovery candidates, never proof of exact token identity, fresh trades, report use, independent agreement or all104 coverage.",
+  "source_roots": {
+    "existing_production_same_run": [
+      "HTX_SPOT",
+      "HTX_FUTURES"
+    ],
+    "existing_production_n05_context": [
+      "BINANCE_SPOT",
+      "GATE_SPOT",
+      "BACKPACK_SPOT",
+      "POLONIEX_SPOT",
+      "KRAKEN_SPOT",
+      "BITFINEX_SPOT",
+      "BITGET_FUTURES"
+    ],
+    "new_n12_market_candidates": [
+      "BITGET_SPOT",
+      "GATE_FUTURES",
+      "KUCOIN_SPOT",
+      "KUCOIN_FUTURES",
+      "OKX_SPOT",
+      "OKX_FUTURES",
+      "MEXC_SPOT",
+      "MEXC_FUTURES",
+      "DYDX_FUTURES",
+      "LIGHTER_FUTURES",
+      "HYPERLIQUID_FUTURES"
+    ],
+    "catalog_is_not_connection": true,
+    "venue_market_pairs_not_independent_venue_roots": true,
+    "aggregators_not_counted_as_original_independent_exchanges": true
+  },
+  "counts": {
+    "approved_assets": 104,
+    "existing_exact_retained_external_spot_route_assets": 72,
+    "existing_exact_retained_external_futures_route_assets": 56,
+    "without_existing_exact_external_route_assets": 28,
+    "htx_spot_historical_symbol_hit_assets": 89,
+    "any_historical_spot_symbol_hit_assets": 104,
+    "any_historical_external_future_symbol_hit_assets": 102,
+    "original_catalog_and_trade_pages_matched_to_github_blob_shas": 22,
+    "current_n12_per_coin_all104_spot_and_futures_proven": false,
+    "current_n12_cross_venue_same_window_agreement_proven": false
+  },
+  "catalog_inputs": [
+    {
+      "source": "HTX_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-HTX-SPOT.json.gz",
+      "gzip_sha256": "68a93728de84a9e9cbe246cb26568c2d5f14b89947f75373e27809e8f1fc83d4",
+      "approved_symbol_hits": 89,
+      "github_blob_sha": "1d8c03d80e9562ff14301168cf5701f0f8578583",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "GATE_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-FUTURES.json.gz",
+      "gzip_sha256": "0d1e1ea617b52ecb684278f4e856254aed78e3e317dc4bcd9323c3a55d4f1925",
+      "approved_symbol_hits": 102,
+      "github_blob_sha": "b5b98ca64334ce5251658ad481b349982fdb0747",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "BITGET_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-BITGET-SPOT.json.gz",
+      "gzip_sha256": "ea648da32f536084d9eb24f879acd07856d0af1b338d54a7964d974ff7e4f6c8",
+      "approved_symbol_hits": 85,
+      "github_blob_sha": "15d2a9b930dcbb6b188424075349029dd478a37e",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "KUCOIN_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-KUCOIN-SPOT.json.gz",
+      "gzip_sha256": "a4c2ded3e398637a46b2b74b420069db3fbbb09eb1a17b16c2bd08a50b2ce5e3",
+      "approved_symbol_hits": 92,
+      "github_blob_sha": "064cb2d9035ddeed35d978554f9942c78df6dca4",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "KUCOIN_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-KUCOIN-FUTURES.json.gz",
+      "gzip_sha256": "befa82776727e656c0a95e96884d9ea64fd6aa8ff4058bce8de68df6634d5ec0",
+      "approved_symbol_hits": 91,
+      "github_blob_sha": "667fb79c443b134ef14e012da69cd626b494c171",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "OKX_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-OKX-SPOT.json.gz",
+      "gzip_sha256": "25fa21339c5066b3410ca4f4e3c49581dd630b9dc4210d94b8dfaf2aff8e59c8",
+      "approved_symbol_hits": 65,
+      "github_blob_sha": "216e43c4f6e55564afb96f50506c5f7200372a72",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "OKX_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-OKX-FUTURES.json.gz",
+      "gzip_sha256": "39fd10474a8e5213d736ddf486cd6022b51b41836e9e830ad9e83786a3360f3b",
+      "approved_symbol_hits": 75,
+      "github_blob_sha": "4459dd11848467bb1856ac0bf5e357482f9c52b7",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "MEXC_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-MEXC-SPOT.json.gz",
+      "gzip_sha256": "44be30e52e7ac42be790863ed061126b2480c7326e0ea1657366b97392428e05",
+      "approved_symbol_hits": 100,
+      "github_blob_sha": "30463e8b020548773ae6c24b0249901f3a171d26",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "MEXC_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-MEXC-FUTURES.json.gz",
+      "gzip_sha256": "27ef6d3ef9c116cfc9308b2d05e12d39cdcdecef0b0bb37f135d0657b8c0e598",
+      "approved_symbol_hits": 94,
+      "github_blob_sha": "4015427a60a88c93a423c1772231d576787281f6",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "DYDX_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-DYDX-FUTURES.json.gz",
+      "gzip_sha256": "5ca3b2796a645ed2c5ca9e6cba1780b2d71b1a89377c19a52f5cc49b2ef9777a",
+      "approved_symbol_hits": 47,
+      "github_blob_sha": "728c453c060301e68edafb2ead497407c643ac01",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "LIGHTER_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-LIGHTER-FUTURES.json.gz",
+      "gzip_sha256": "0950bd9940f23bb805c82373f8472d211578523520125468323a075f9599e601",
+      "approved_symbol_hits": 53,
+      "github_blob_sha": "614e0fb6ff120813f59b9a2774fbc1e63e5ba63d",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    },
+    {
+      "source": "HYPERLIQUID_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-HYPERLIQUID-FUTURES.json.gz",
+      "gzip_sha256": "f83b1027dd9424fe454d8bc08d4704d7cf178ee61deaaf903a2a03576f53ac08",
+      "approved_symbol_hits": 59,
+      "github_blob_sha": "e118a028517319a6b77a10820597e0028285fd39",
+      "original_catalog_not_current": true,
+      "symbol_hit_not_exact_identity": true
+    }
+  ],
+  "original_trade_page_checks": [
+    {
+      "source": "GATE_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-GATE-FUTURES-AAVE.json.gz",
+      "github_blob_sha": "d764166f894c10295769d9a8e6c40f7edf3e7d51",
+      "rows_returned": 1000,
+      "sample_span_minutes": 30.5,
+      "note": "signed size and IDs present; contract multiplier and taker-side interpretation require strict normalization",
+      "proves_current_n12": false
+    },
+    {
+      "source": "BITGET_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-BITGET-SPOT-TRX.json.gz",
+      "github_blob_sha": "894ab0f903b7b5a00efe5c25b0afeb61a1349f09",
+      "rows_returned": 1000,
+      "sample_span_minutes": 204.66,
+      "note": "tradeId, side, base size, price, millisecond source time present",
+      "proves_current_n12": false
+    },
+    {
+      "source": "KUCOIN_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-KUCOIN-SPOT-XMR.json.gz",
+      "github_blob_sha": "20bea02195503077be78c0e7bd1bd5e6bdd3df1f",
+      "rows_returned": 100,
+      "sample_span_minutes": 5.99,
+      "note": "tradeId, side, base size, price, nanosecond source time present",
+      "proves_current_n12": false
+    },
+    {
+      "source": "KUCOIN_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-KUCOIN-FUTURES-ETH.json.gz",
+      "github_blob_sha": "2f625fb111161a91b376065fb1f865cf14f3dbf1",
+      "rows_returned": 100,
+      "sample_span_minutes": 4.54,
+      "note": "tradeId, side, contract size, price, nanosecond source time present; multiplier required",
+      "proves_current_n12": false
+    },
+    {
+      "source": "OKX_SPOT",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-OKX-SPOT-BTC.json.gz",
+      "github_blob_sha": "c48f56a1296773dae9e86656dd9127a19fc08b4c",
+      "rows_returned": 100,
+      "sample_span_minutes": 1.13,
+      "note": "tradeId, taker side, base size, price, millisecond source time present",
+      "proves_current_n12": false
+    },
+    {
+      "source": "OKX_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-OKX-FUTURES-BTC.json.gz",
+      "github_blob_sha": "00855e4d05efe73e6e5ba6387add6ddc9f5a1a3c",
+      "rows_returned": 100,
+      "sample_span_minutes": 0.36,
+      "note": "tradeId, taker side, contract size, price, millisecond source time present; ctVal/ctValCcy required",
+      "proves_current_n12": false
+    },
+    {
+      "source": "MEXC_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-MEXC-FUTURES-BTC.json.gz",
+      "github_blob_sha": "4cc0b00af393769995ace0b14749d89f8c354c4b",
+      "rows_returned": 100,
+      "sample_span_minutes": 0.5,
+      "note": "trade ID and time present; integer trade type/side requires verified semantics",
+      "proves_current_n12": false
+    },
+    {
+      "source": "HYPERLIQUID_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-HYPERLIQUID-FUTURES-BTC.json.gz",
+      "github_blob_sha": "dc008e852887adf0290b877373be86766a4cfcd8",
+      "rows_returned": 10,
+      "sample_span_minutes": 0.03,
+      "note": "tid, B/A side, price, size and millisecond source time present; exact asset binding pending",
+      "proves_current_n12": false
+    },
+    {
+      "source": "LIGHTER_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-LIGHTER-FUTURES-DASH.json.gz",
+      "github_blob_sha": "c51805980d721ce0d8a6709cf484b350a6038c6e",
+      "rows_returned": 100,
+      "sample_span_minutes": null,
+      "note": "trade ID, market ID, market kind, USD amount present; source time and taker-side semantics still to qualify",
+      "proves_current_n12": false
+    },
+    {
+      "source": "DYDX_FUTURES",
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-DYDX-FUTURES-BTC.json.gz",
+      "github_blob_sha": "a5e51e01cde17fdd15fa1418bd91e42807140625",
+      "rows_returned": 100,
+      "sample_span_minutes": 152.74,
+      "note": "trade ID, BUY/SELL, price, size, ISO source time present; exact asset binding pending",
+      "proves_current_n12": false
+    }
+  ],
+  "known_rejections_and_gaps": [
+    "MEXC spot first aggregate endpoint returned HTTP400; alternative saved individual pages have null trade IDs, so deduplicated exact N12 sample is not yet established.",
+    "OKX N05 240-minute pilot did not close full windows for NEAR/ATOM/ETC; its retained recent trade pages can be separately qualified only as bounded short-window N12 samples.",
+    "Bybit HTTP403 and Binance futures HTTP451 have retained backoff; do not retry by alias or count as useful sources.",
+    "Coinbase and Gemini N05 pilots did not yield verified full-window trade flows. They remain unconnected for this N12 decision.",
+    "Lighter and dYdX original futures pages are useful candidate schemas but exact HTX asset identity, fresh same-window comparison and production consumer use remain unproven.",
+    "Hyperliquid spot uses indexed market tokens and is not counted from ticker strings without exact token/pair binding.",
+    "N05 external role caps of 16/day, shared caller and whole-job HTTP/D1 budgets must be read back before any new calls; no cap reset, alias or increase is authorized.",
+    "HTX futures approved market membership for 104 is structural; N12 recent raw fills for all104 were not collected. HTX spot catalog is historical, current per-asset listing and raw trade use require proof."
+  ],
+  "priority_next": [
+    "Reuse HTX spot and futures from the same run; qualify current exact market and source rows without duplicate N12 futures HTTP.",
+    "Use already exact-bound N05 assets to qualify Bitget spot and Gate futures; share their existing venue source ledgers and provider-minute budgets, retain venue independence and separate spot/futures clocks.",
+    "Qualify KuCoin and OKX spot/futures on a bounded set with exact identity and contract-multiplier checks; compare their actual recent source rows and report effect before expanding.",
+    "Investigate MEXC deduplication and futures taker-side semantics, then native/exact identity for dYdX, Hyperliquid and Lighter; reject symbol-only matches.",
+    "At next admissible live window read fresh main/phase/fence/current source ledger/D1, reserve a bounded source batch, retain body hashes/original timestamps, and check canonical/manual/approved Telegram use."
+  ],
+  "owner_output_policy": "Use verified available one-market facts as explicitly bounded fallback; spot and futures across independent exchanges are ideal. Opposing source directions are shown separately without common directional conclusion. Existing strategy, weights, limits and formats unchanged.",
+  "new_provider_http": 0,
+  "new_live_source_connected": false,
+  "n12_complete": false,
+  "rows": [
+    {
+      "asset": "AAVE",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ACE",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ADA",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "AKE",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ALGO",
+      "exact_retained_external_spot_routes": [
+        "KRAKEN",
+        "BITFINEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "APR",
+      "exact_retained_external_spot_routes": [
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "APT",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ARB",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ASTER",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ATOM",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "AVAX",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "AVNT",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BANK",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BCH",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BEAT",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BILL",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BNB",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BOME",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BONK",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BR",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BTC",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BTR",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BTT",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "KUCOIN_SPOT",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "BTW",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "CASHCAT",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "CHZ",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "CT",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "DASH",
+      "exact_retained_external_spot_routes": [
+        "BITFINEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "DOGE",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "DOS",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "DOT",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ENA",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ETC",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ETH",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ETHFI",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "EUL",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "FARTCOIN",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "FIL",
+      "exact_retained_external_spot_routes": [
+        "BITFINEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "FLOKI",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "GPS",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "GRAM",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "HBAR",
+      "exact_retained_external_spot_routes": [
+        "BINANCE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "HYPE",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ICP",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "JST",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "JUP",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "LAB",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "LINK",
+      "exact_retained_external_spot_routes": [
+        "BACKPACK",
+        "BITFINEX",
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "LIT",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "LSK",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "LTC",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "MARSCOIN",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "MUBARAK",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "MYX",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "NEAR",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "NIL",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "OKB",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ONDO",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ONG",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "OP",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ORDI",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PAXG",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PENGU",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PEOPLE",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PEPE",
+      "exact_retained_external_spot_routes": [
+        "BACKPACK",
+        "BITFINEX",
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PIPPIN",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PONS",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "PUMP",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "QNT",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "RAVE",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "RAY",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "RIVER",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "RLC",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SHIB",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SKR",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SKYAI",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SOL",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "STEEM",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SUI",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SUN",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "SUSHI",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "TAO",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "TIA",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "TRUMP",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "TRX",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "TUT",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "UB",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "UNI",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "USELESS",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "VELVET",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "WIF",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "WIN",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "KUCOIN_SPOT",
+        "MEXC_SPOT",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "WLD",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "BACKPACK"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "XAUT",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "XLM",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "XMR",
+      "exact_retained_external_spot_routes": [
+        "KRAKEN",
+        "BITFINEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "XPL",
+      "exact_retained_external_spot_routes": [
+        "BITFINEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "XRP",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "KRAKEN",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ZEC",
+      "exact_retained_external_spot_routes": [
+        "BINANCE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "DYDX_FUTURES",
+        "GATE_FUTURES",
+        "HYPERLIQUID_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "LIGHTER_FUTURES",
+        "MEXC_FUTURES",
+        "MEXC_SPOT",
+        "OKX_FUTURES",
+        "OKX_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "ZKC",
+      "exact_retained_external_spot_routes": [
+        "GATE"
+      ],
+      "exact_retained_external_futures_routes": [
+        "BITGET"
+      ],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "BITGET_SPOT",
+        "GATE_FUTURES",
+        "KUCOIN_FUTURES",
+        "KUCOIN_SPOT",
+        "MEXC_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "哈基米",
+      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": false,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "币安人生",
+      "exact_retained_external_spot_routes": [
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "牛来",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    },
+    {
+      "asset": "龙虾",
+      "exact_retained_external_spot_routes": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "exact_retained_external_futures_routes": [],
+      "htx_spot_historical_catalog_symbol_hit": true,
+      "additional_historical_catalog_symbol_hits": [
+        "GATE_FUTURES",
+        "MEXC_SPOT"
+      ],
+      "current_trade_use_proven": false
+    }
+  ],
+  "official_public_api_references": [
+    {
+      "venue": "OKX",
+      "url": "https://app.okx.com/docs-v5/en/",
+      "fact": "Public recent trades and history expose tradeId, taker side, size, price, ts. Spot size is base asset, swap/futures size is contracts; exact instId and ctVal conversion required."
+    },
+    {
+      "venue": "KUCOIN_SPOT",
+      "url": "https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-trade-history",
+      "fact": "Public last100 market trades, documented public pool weight3 and nanosecond event time."
+    },
+    {
+      "venue": "KUCOIN_FUTURES",
+      "url": "https://www.kucoin.com/docs-new/rest/futures-trading/market-data/get-trade-history",
+      "fact": "Public last100 futures market trades, documented public pool weight5; contracts require multiplier."
+    },
+    {
+      "venue": "BITGET",
+      "url": "https://www.bitget.com/docs/catalog/market/market-data",
+      "fact": "Public market fills documented; existing 16/day project venue cap remains shared."
+    },
+    {
+      "venue": "GATE",
+      "url": "https://www.gate.com/docs/developers/apiv4/en/",
+      "fact": "Public futures trade market routes documented; saved Gate futures rows contain signed size but interpretation/contract multiplier must be verified."
+    },
+    {
+      "venue": "MEXC",
+      "url": "https://mexcdevelop.github.io/apidocs/spot_v3_en/",
+      "fact": "Public spot recent trades documented; saved responses have null trade IDs, so exact dedupe is unresolved."
+    },
+    {
+      "venue": "HYPERLIQUID",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits",
+      "fact": "Weighted public info requests and per-IP limit documented; recentTrades cost depends on returned items."
+    }
+  ]
+}

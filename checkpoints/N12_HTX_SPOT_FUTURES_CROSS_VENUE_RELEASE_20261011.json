@@ -40,10 +40,10 @@
     "N11 post-PR317 natural proof remains pending; N05 remains open; N06-N09 remain paused; N10 natural proof remains pending.",
     "The saved N05 map has 39/104 assets with at least one historical exact external four-hour window, 76 with structural candidate routes, and 28 without retained exact external routes. These are not simultaneous N12 coverage."
   ],
-  "next_action": "N12 remains open. Use the saved 104-asset spot/futures route matrix to select missing facts, verify exact current HTX spot and independent market listings from original source responses, read current source admission/caps, then run one bounded targeted provider batch. Verify actual same-run source→canonical→manual and approved Telegram SENT/message_id when available. Keep one-market fallback explicitly partial and conflicting markets separate. Do not change caps, weights or format; do not start N14 before owner review.",
+  "next_action": "N12 remains open. Use the saved all-source audit and 104-coin route matrix. First prove fresh exact HTX spot rows and same-run report use; then qualify Bitget spot/Gate futures against already exact-bound assets while sharing their existing venue caps. Evaluate KuCoin/OKX spot+futures with exact identity, original trade clocks and contract multipliers; MEXC/dYdX/Lighter/Hyperliquid remain conditional. Before any provider batch, read fresh source/D1 admission, use one bounded large batch, retain hashes, and verify canonical/manual/approved Telegram SENT. No strategy, cap, weight or format change. N14 awaits owner review.",
   "n12_complete": false,
   "project_complete": false,
-  "updated_utc": "2026-10-11T19:49:55.254Z",
+  "updated_utc": "2026-10-11T19:59:26.610Z",
   "followup": {
     "merged_pr": 319,
     "merged_main": "e31daa119e4a7ac18fad2f96fa4a332602605684",
@@ -68,7 +68,11 @@
     "both_external_market_types_structural_assets": 52,
     "external_spot_full_window_ever_assets": 36,
     "external_futures_full_window_ever_assets": 3,
-    "htx_spot_exact_current_asset_routes_unmeasured": true
+    "htx_spot_exact_current_asset_routes_unmeasured": true,
+    "htx_spot_historical_catalog_symbol_candidates": 89,
+    "additional_historical_spot_symbol_hits": 104,
+    "additional_historical_future_symbol_hits": 102,
+    "all_are_candidate_not_current_exact_data": true
   },
   "owner_latest_clarification": {
     "received_utc": "2026-10-11T19:44:56.855Z",
@@ -97,5 +101,20 @@
     "provider_http": 0,
     "all_104_current_spot_futures_proven": false,
     "natural_same_run_sent_proven": false
+  },
+  "additional_source_audit": {
+    "schema": "N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011_V1",
+    "proof": "checkpoints/N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011.json",
+    "status": "22_RETAINED_ORIGINAL_CATALOG_AND_TRADE_PAGE_BLOBS_MATCHED;104_COIN_SYMBOL_ROUTE_AUDIT_ONLY;EXACT_FRESH_USE_PENDING",
+    "approved_assets": 104,
+    "htx_spot_historical_symbol_hit_assets": 89,
+    "existing_exact_external_spot_routes": 72,
+    "existing_exact_external_futures_routes": 56,
+    "no_exact_external_routes": 28,
+    "additional_catalog_spot_symbol_hits": 104,
+    "additional_catalog_futures_symbol_hits": 102,
+    "source_http": 0,
+    "new_live_source_connected": false,
+    "n12_complete": false
   }
 }
