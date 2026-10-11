@@ -1,0 +1,76 @@
+{
+  "schema": "N05_BITFINEX_THREE_ASSET_CONNECTED_RELEASE_20261011_V1",
+  "recorded_utc": "2026-10-11T12:31:36Z",
+  "scope": "OWNER_AUTHORIZED_N05_ONLY",
+  "source_branch": "n05-bitfinex-catalog-20261011",
+  "source_head": "d2742d42324d9a44dacad2ba5e1843ffd2fc260a",
+  "main_integration_head": "d2742d42324d9a44dacad2ba5e1843ffd2fc260a",
+  "new_independent_venue": "BITFINEX",
+  "status": "PRODUCTION_SOURCE_ADAPTER_AND_LIMITED_CONSUMER_CONNECTED;N05_OPEN",
+  "assets": [
+    "DASH",
+    "ALGO",
+    "XMR"
+  ],
+  "exact_original_source_runs": [
+    38138499328,
+    38138608166
+  ],
+  "exact_original_source_http": 7,
+  "source_budget_D1": {
+    "requests": 66,
+    "read": 206,
+    "written": 59,
+    "unknown": 0
+  },
+  "original_replay": "checkpoints/N05_BITFINEX_THREE_ASSET_ORIGINAL_REPLAY_20261011.json",
+  "consumer_replay": "checkpoints/N05_BITFINEX_THREE_ASSET_CONSUMER_REPLAY_20261011.json",
+  "cloud_assembled_run": 38139464079,
+  "cloud_assembled_proof_directory": "checkpoints/n05-bitfinex-assembly-38139464079",
+  "cloud_checks": {
+    "runtime_assembly": "PASS",
+    "runtime_binding": "PASS",
+    "n05_tests": {
+      "passed": 27,
+      "failed": 0
+    },
+    "approved_delivery_tests": {
+      "passed": 12,
+      "failed": 0
+    },
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    }
+  },
+  "coverage_map": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_BITFINEX_20261011.json",
+  "coverage": {
+    "current_HTX_assets": 104,
+    "actual_individual_full_external_window_assets_ever": 35,
+    "assets_with_at_least_one_structural_exact_external_route": 74,
+    "assets_without_retained_exact_external_route": 30,
+    "actual_full_window_venue_histogram": {
+      "0": 69,
+      "1": 33,
+      "2": 2
+    },
+    "same_window_two_venue_agreement_proven": 0
+  },
+  "consumer": {
+    "available_flow_context": "PASS",
+    "evidence_validation": "PASS",
+    "block_result_context": "PASS",
+    "manual_and_both_approved_telegram_renderers_original_DASH": "PASS",
+    "actual_fresh_sent_or_live_report": false
+  },
+  "constraints": {
+    "N05_score_contribution": 0,
+    "strategy_weights_limits_format_changed": false,
+    "HTTP_200_or_catalog_alone_counted": false,
+    "one_venue_only_limited_information": true,
+    "cross_venue_disagreement_not_joint_conclusion": true,
+    "continuous_all104_proven": false,
+    "N05_complete": false
+  },
+  "next_action": "CONTINUE_N05_WITH_SAVED_BITFINEX_CODE_AND_PROOFS;QUALIFY_REMAINING_EXACT_SOURCES_AND_USE_ORIGINAL_SHARED_BATCH_PLAN_WITH_UNCHANGED_CAPS_AFTER_REAL_HEADROOM;VERIFY_SAME_WINDOW_CROSS_VENUE_AGREEMENT_AND_FRESH_REPORT_USE;DO_NOT_START_N06"
+}
