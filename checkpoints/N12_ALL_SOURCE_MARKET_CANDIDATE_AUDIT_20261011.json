@@ -15,10 +15,9 @@
       "POLONIEX_SPOT",
       "KRAKEN_SPOT",
       "BITFINEX_SPOT",
-      "BITGET_FUTURES"
+      "BITGET_SPOT_AND_FUTURES"
     ],
     "new_n12_market_candidates": [
-      "BITGET_SPOT",
       "GATE_FUTURES",
       "KUCOIN_SPOT",
       "KUCOIN_FUTURES",
@@ -36,15 +35,21 @@
   },
   "counts": {
     "approved_assets": 104,
-    "existing_exact_retained_external_spot_route_assets": 72,
-    "existing_exact_retained_external_futures_route_assets": 56,
+    "existing_exact_retained_external_spot_route_assets": 76,
+    "existing_exact_retained_external_futures_route_assets": 53,
     "without_existing_exact_external_route_assets": 28,
     "htx_spot_historical_symbol_hit_assets": 89,
     "any_historical_spot_symbol_hit_assets": 104,
     "any_historical_external_future_symbol_hit_assets": 102,
     "original_catalog_and_trade_pages_matched_to_github_blob_shas": 22,
     "current_n12_per_coin_all104_spot_and_futures_proven": false,
-    "current_n12_cross_venue_same_window_agreement_proven": false
+    "current_n12_cross_venue_same_window_agreement_proven": false,
+    "bitget_historical_exact_spot_assets": 53,
+    "bitget_historical_exact_futures_assets": 53,
+    "bitget_historical_exact_both_assets": 50,
+    "external_spot_full_240m_ever_assets": 39,
+    "external_futures_full_240m_ever_assets": 2,
+    "external_both_market_types_full_240m_ever_assets": 2
   },
   "catalog_inputs": [
     {
@@ -260,7 +265,7 @@
   ],
   "priority_next": [
     "Reuse HTX spot and futures from the same run; qualify current exact market and source rows without duplicate N12 futures HTTP.",
-    "Use already exact-bound N05 assets to qualify Bitget spot and Gate futures; share their existing venue source ledgers and provider-minute budgets, retain venue independence and separate spot/futures clocks.",
+    "Reuse exact-bound Bitget spot and futures from the existing N05 collector and common cap, and qualify Gate futures against already exact-bound Gate spot assets; do not duplicate Bitget calls.",
     "Qualify KuCoin and OKX spot/futures on a bounded set with exact identity and contract-multiplier checks; compare their actual recent source rows and report effect before expanding.",
     "Investigate MEXC deduplication and futures taker-side semantics, then native/exact identity for dYdX, Hyperliquid and Lighter; reject symbol-only matches.",
     "At next admissible live window read fresh main/phase/fence/current source ledger/D1, reserve a bounded source batch, retain body hashes/original timestamps, and check canonical/manual/approved Telegram use."
@@ -273,8 +278,9 @@
     {
       "asset": "AAVE",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -294,11 +300,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ACE",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -316,7 +327,11 @@
         "MEXC_SPOT",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ADA",
@@ -340,7 +355,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "AKE",
@@ -355,13 +374,17 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ALGO",
       "exact_retained_external_spot_routes": [
-        "KRAKEN",
-        "BITFINEX"
+        "BITFINEX",
+        "KRAKEN"
       ],
       "exact_retained_external_futures_routes": [],
       "htx_spot_historical_catalog_symbol_hit": true,
@@ -377,11 +400,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "APR",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -397,7 +425,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "APT",
@@ -420,7 +452,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ARB",
@@ -440,11 +476,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ASTER",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -465,12 +506,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ATOM",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -490,12 +536,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "AVAX",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -516,11 +567,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "AVNT",
-      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_spot_routes": [
+        "BITGET"
+      ],
       "exact_retained_external_futures_routes": [
         "BITGET"
       ],
@@ -537,11 +594,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BANK",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE"
       ],
       "exact_retained_external_futures_routes": [
@@ -556,7 +618,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BCH",
@@ -580,7 +646,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BEAT",
@@ -598,11 +668,17 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BILL",
-      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_spot_routes": [
+        "BITGET"
+      ],
       "exact_retained_external_futures_routes": [
         "BITGET"
       ],
@@ -616,12 +692,17 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BNB",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN"
       ],
       "exact_retained_external_futures_routes": [
@@ -641,11 +722,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BOME",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -664,18 +750,21 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BONK",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
-      "exact_retained_external_futures_routes": [
-        "BITGET"
-      ],
+      "exact_retained_external_futures_routes": [],
       "htx_spot_historical_catalog_symbol_hit": true,
       "additional_historical_catalog_symbol_hits": [
         "BITGET_SPOT",
@@ -686,7 +775,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": false
+      }
     },
     {
       "asset": "BR",
@@ -701,12 +794,17 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BTC",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -726,7 +824,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BTR",
@@ -740,7 +842,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BTT",
@@ -752,11 +858,16 @@
         "KUCOIN_SPOT",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BTW",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -771,7 +882,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "CASHCAT",
@@ -788,7 +903,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "CHZ",
@@ -806,11 +925,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "CT",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE"
       ],
       "exact_retained_external_futures_routes": [
@@ -827,7 +951,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "DASH",
@@ -847,12 +975,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "DOGE",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -873,11 +1006,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "DOS",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -895,7 +1033,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "DOT",
@@ -919,13 +1061,18 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ENA",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -945,7 +1092,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ETC",
@@ -967,12 +1118,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ETH",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -993,11 +1149,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ETHFI",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1017,7 +1178,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "EUL",
@@ -1035,11 +1200,16 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": true
+      }
     },
     {
       "asset": "FARTCOIN",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1058,7 +1228,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "FIL",
@@ -1079,11 +1253,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "FLOKI",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1101,7 +1280,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "GPS",
@@ -1117,7 +1300,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "GRAM",
@@ -1136,12 +1323,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "HBAR",
       "exact_retained_external_spot_routes": [
-        "BINANCE"
+        "BINANCE",
+        "BITGET"
       ],
       "exact_retained_external_futures_routes": [
         "BITGET"
@@ -1160,7 +1352,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "HYPE",
@@ -1180,7 +1376,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ICP",
@@ -1200,7 +1400,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "JST",
@@ -1214,13 +1418,18 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "JUP",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -1240,7 +1449,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "LAB",
@@ -1256,13 +1469,18 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "LINK",
       "exact_retained_external_spot_routes": [
         "BACKPACK",
         "BITFINEX",
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1283,11 +1501,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "LIT",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1308,7 +1531,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "LSK",
@@ -1326,12 +1553,17 @@
         "MEXC_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": true
+      }
     },
     {
       "asset": "LTC",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -1352,7 +1584,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "MARSCOIN",
@@ -1368,11 +1604,16 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "MUBARAK",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1389,7 +1630,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "MYX",
@@ -1403,7 +1648,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "NEAR",
@@ -1426,11 +1675,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "NIL",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE"
       ],
       "exact_retained_external_futures_routes": [
@@ -1446,7 +1700,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "OKB",
@@ -1462,13 +1720,18 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ONDO",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -1488,7 +1751,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ONG",
@@ -1500,11 +1767,17 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "OP",
-      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_spot_routes": [
+        "BITGET"
+      ],
       "exact_retained_external_futures_routes": [
         "BITGET"
       ],
@@ -1522,7 +1795,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ORDI",
@@ -1541,7 +1818,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "PAXG",
@@ -1559,13 +1840,18 @@
         "MEXC_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "PENGU",
       "exact_retained_external_spot_routes": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "exact_retained_external_futures_routes": [
         "BITGET"
@@ -1584,11 +1870,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "PEOPLE",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1607,13 +1898,18 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "PEPE",
       "exact_retained_external_spot_routes": [
         "BACKPACK",
         "BITFINEX",
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1632,7 +1928,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "PIPPIN",
@@ -1651,7 +1951,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": true
+      }
     },
     {
       "asset": "PONS",
@@ -1670,13 +1974,18 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "PUMP",
       "exact_retained_external_spot_routes": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "exact_retained_external_futures_routes": [
         "BITGET"
@@ -1694,11 +2003,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "QNT",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1716,7 +2030,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "RAVE",
@@ -1731,13 +2049,18 @@
         "MEXC_FUTURES",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "RAY",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -1755,11 +2078,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "RIVER",
-      "exact_retained_external_spot_routes": [],
+      "exact_retained_external_spot_routes": [
+        "BITGET"
+      ],
       "exact_retained_external_futures_routes": [
         "BITGET"
       ],
@@ -1773,17 +2102,20 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "RLC",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
-      "exact_retained_external_futures_routes": [
-        "BITGET"
-      ],
+      "exact_retained_external_futures_routes": [],
       "htx_spot_historical_catalog_symbol_hit": true,
       "additional_historical_catalog_symbol_hits": [
         "BITGET_SPOT",
@@ -1792,13 +2124,18 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": false
+      }
     },
     {
       "asset": "SHIB",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -1815,13 +2152,18 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "SKR",
       "exact_retained_external_spot_routes": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "exact_retained_external_futures_routes": [
         "BITGET"
@@ -1837,11 +2179,16 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "SKYAI",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1856,12 +2203,17 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "SOL",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -1882,7 +2234,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "STEEM",
@@ -1895,7 +2251,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "SUI",
@@ -1918,7 +2278,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "SUN",
@@ -1933,11 +2297,16 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "SUSHI",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1956,7 +2325,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "TAO",
@@ -1976,7 +2349,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "TIA",
@@ -1996,13 +2373,18 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "TRUMP",
       "exact_retained_external_spot_routes": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "exact_retained_external_futures_routes": [
         "BITGET"
@@ -2020,12 +2402,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "TRX",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -2045,11 +2432,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "TUT",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -2065,7 +2457,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "UB",
@@ -2080,13 +2476,18 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "UNI",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -2106,7 +2507,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "USELESS",
@@ -2123,7 +2528,11 @@
         "MEXC_SPOT",
         "OKX_FUTURES"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "VELVET",
@@ -2138,13 +2547,18 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "WIF",
       "exact_retained_external_spot_routes": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "exact_retained_external_futures_routes": [
@@ -2164,7 +2578,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "WIN",
@@ -2177,13 +2595,18 @@
         "MEXC_SPOT",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "WLD",
       "exact_retained_external_spot_routes": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "exact_retained_external_futures_routes": [
         "BITGET"
@@ -2202,16 +2625,19 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "XAUT",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE"
       ],
-      "exact_retained_external_futures_routes": [
-        "BITGET"
-      ],
+      "exact_retained_external_futures_routes": [],
       "htx_spot_historical_catalog_symbol_hit": true,
       "additional_historical_catalog_symbol_hits": [
         "BITGET_SPOT",
@@ -2221,7 +2647,11 @@
         "MEXC_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": false
+      }
     },
     {
       "asset": "XLM",
@@ -2244,13 +2674,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "XMR",
       "exact_retained_external_spot_routes": [
-        "KRAKEN",
-        "BITFINEX"
+        "BITFINEX",
+        "KRAKEN"
       ],
       "exact_retained_external_futures_routes": [],
       "htx_spot_historical_catalog_symbol_hit": true,
@@ -2264,7 +2698,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "XPL",
@@ -2285,12 +2723,17 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "XRP",
       "exact_retained_external_spot_routes": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -2311,7 +2754,11 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ZEC",
@@ -2334,11 +2781,16 @@
         "OKX_FUTURES",
         "OKX_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ZKC",
       "exact_retained_external_spot_routes": [
+        "BITGET",
         "GATE"
       ],
       "exact_retained_external_futures_routes": [
@@ -2353,7 +2805,11 @@
         "MEXC_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "哈基米",
@@ -2364,7 +2820,11 @@
         "GATE_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "币安人生",
@@ -2377,7 +2837,11 @@
         "GATE_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "牛来",
@@ -2391,7 +2855,11 @@
         "GATE_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "龙虾",
@@ -2405,7 +2873,11 @@
         "GATE_FUTURES",
         "MEXC_SPOT"
       ],
-      "current_trade_use_proven": false
+      "current_trade_use_proven": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     }
   ],
   "official_public_api_references": [
@@ -2444,5 +2916,6 @@
       "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits",
       "fact": "Weighted public info requests and per-IP limit documented; recentTrades cost depends on returned items."
     }
-  ]
+  ],
+  "bitget_market_classification_correction": "checkpoints/N12_BITGET_MARKET_CLASSIFICATION_CORRECTION_20261011.json"
 }

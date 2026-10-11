@@ -6,7 +6,7 @@
   "scope": "Approved 104 HTX futures assets. N12 market route prequalification using retained N05 exact identity/market catalog and historical original 240-minute windows. This is not current N12 recent-trade coverage, full all104 reporting, or live cross-venue agreement.",
   "market_classification": {
     "HTX": "FUTURES approved for all104; spot to be verified per exact current public market and fresh raw trade rows",
-    "BITGET": "FUTURES",
+    "BITGET": "SPOT and FUTURES are separate exact-bound markets under one Bitget venue and one shared N05 source cap; historical catalog: 53 spot, 53 futures, 50 both",
     "BINANCE": "SPOT",
     "GATE": "SPOT",
     "BACKPACK": "SPOT",
@@ -18,15 +18,15 @@
     "approved_assets": 104,
     "htx_futures_structural": 104,
     "htx_spot_individual_exact_current_markets_proven": 0,
-    "external_spot_structural_assets": 72,
-    "external_futures_structural_assets": 56,
-    "both_external_market_types_structural_assets": 52,
-    "external_futures_only_structural_assets": 4,
-    "external_spot_only_structural_assets": 20,
+    "external_spot_structural_assets": 76,
+    "external_futures_structural_assets": 53,
+    "both_external_market_types_structural_assets": 53,
+    "external_futures_only_structural_assets": 0,
+    "external_spot_only_structural_assets": 23,
     "no_external_structural_route_assets": 28,
-    "external_spot_full_240m_ever_assets": 36,
-    "external_futures_full_240m_ever_assets": 3,
-    "external_both_market_types_full_240m_ever_assets": 0,
+    "external_spot_full_240m_ever_assets": 39,
+    "external_futures_full_240m_ever_assets": 2,
+    "external_both_market_types_full_240m_ever_assets": 2,
     "htx_spot_historical_catalog_symbol_candidate_assets": 89
   },
   "venue_structural_counts": {
@@ -58,8 +58,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -71,7 +72,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ACE",
@@ -79,6 +84,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -89,7 +95,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ADA",
@@ -108,7 +118,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "AKE",
@@ -121,7 +135,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ALGO",
@@ -129,8 +147,8 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "KRAKEN",
-        "BITFINEX"
+        "BITFINEX",
+        "KRAKEN"
       ],
       "external_futures_structural_venues": [],
       "external_spot_full_240m_venue_ever": [
@@ -140,7 +158,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "APR",
@@ -148,6 +170,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -157,7 +180,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "APT",
@@ -175,7 +202,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ARB",
@@ -188,7 +219,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ASTER",
@@ -196,6 +231,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -206,7 +242,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ATOM",
@@ -215,6 +255,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -227,7 +268,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "AVAX",
@@ -236,6 +281,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -248,14 +294,20 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "AVNT",
       "htx_futures_contract": "AVNT-USDT",
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
-      "external_spot_structural_venues": [],
+      "external_spot_structural_venues": [
+        "BITGET"
+      ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
@@ -263,7 +315,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BANK",
@@ -271,18 +327,25 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE"
       ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
-      "external_spot_full_240m_venue_ever": [],
+      "external_spot_full_240m_venue_ever": [
+        "BITGET"
+      ],
       "external_futures_full_240m_venue_ever": [
         "BITGET"
       ],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BCH",
@@ -301,7 +364,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BEAT",
@@ -317,14 +384,20 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BILL",
       "htx_futures_contract": "BILL-USDT",
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
-      "external_spot_structural_venues": [],
+      "external_spot_structural_venues": [
+        "BITGET"
+      ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
@@ -332,7 +405,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BNB",
@@ -341,6 +418,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN"
       ],
       "external_futures_structural_venues": [
@@ -352,7 +430,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BOME",
@@ -360,6 +442,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -370,7 +453,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BONK",
@@ -378,18 +465,21 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
-      "external_futures_structural_venues": [
-        "BITGET"
-      ],
+      "external_futures_structural_venues": [],
       "external_spot_full_240m_venue_ever": [],
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": false
+      }
     },
     {
       "asset": "BR",
@@ -402,7 +492,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BTC",
@@ -411,6 +505,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -423,7 +518,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "BTR",
@@ -436,7 +535,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BTT",
@@ -449,7 +552,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "BTW",
@@ -457,6 +564,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -469,7 +577,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "CASHCAT",
@@ -482,7 +594,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "CHZ",
@@ -495,7 +611,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "CT",
@@ -503,6 +623,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE"
       ],
       "external_futures_structural_venues": [
@@ -512,7 +633,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "DASH",
@@ -529,7 +654,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "DOGE",
@@ -538,6 +667,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -550,7 +680,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "DOS",
@@ -558,6 +692,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -568,7 +703,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "DOT",
@@ -587,7 +726,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ENA",
@@ -595,8 +738,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -608,7 +752,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ETC",
@@ -626,7 +774,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ETH",
@@ -635,6 +787,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -647,7 +800,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ETHFI",
@@ -655,6 +812,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -665,7 +823,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "EUL",
@@ -682,7 +844,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": true
+      }
     },
     {
       "asset": "FARTCOIN",
@@ -690,6 +856,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -700,7 +867,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "FIL",
@@ -717,7 +888,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "FLOKI",
@@ -725,6 +900,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -735,7 +911,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "GPS",
@@ -748,7 +928,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "GRAM",
@@ -761,7 +945,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "HBAR",
@@ -769,7 +957,8 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "BINANCE"
+        "BINANCE",
+        "BITGET"
       ],
       "external_futures_structural_venues": [
         "BITGET"
@@ -780,7 +969,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "HYPE",
@@ -793,7 +986,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ICP",
@@ -806,7 +1003,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "JST",
@@ -819,7 +1020,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "JUP",
@@ -827,8 +1032,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -840,7 +1046,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "LAB",
@@ -853,7 +1063,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "LINK",
@@ -863,6 +1077,7 @@
       "external_spot_structural_venues": [
         "BACKPACK",
         "BITFINEX",
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -875,7 +1090,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "LIT",
@@ -883,6 +1102,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -893,7 +1113,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "LSK",
@@ -911,7 +1135,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": true
+      }
     },
     {
       "asset": "LTC",
@@ -920,6 +1148,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -932,7 +1161,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "MARSCOIN",
@@ -947,7 +1180,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "MUBARAK",
@@ -955,6 +1192,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -965,7 +1203,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "MYX",
@@ -978,7 +1220,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "NEAR",
@@ -996,7 +1242,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "NIL",
@@ -1004,6 +1254,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE"
       ],
       "external_futures_structural_venues": [
@@ -1013,7 +1264,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "OKB",
@@ -1028,7 +1283,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ONDO",
@@ -1036,8 +1295,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -1049,7 +1309,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ONG",
@@ -1062,14 +1326,20 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "OP",
       "htx_futures_contract": "OP-USDT",
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
-      "external_spot_structural_venues": [],
+      "external_spot_structural_venues": [
+        "BITGET"
+      ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
@@ -1077,7 +1347,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ORDI",
@@ -1090,7 +1364,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "PAXG",
@@ -1103,7 +1381,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "PENGU",
@@ -1111,8 +1393,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "external_futures_structural_venues": [
         "BITGET"
@@ -1123,7 +1406,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "PEOPLE",
@@ -1131,6 +1418,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1143,7 +1431,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "PEPE",
@@ -1153,6 +1445,7 @@
       "external_spot_structural_venues": [
         "BACKPACK",
         "BITFINEX",
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1165,7 +1458,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "PIPPIN",
@@ -1183,7 +1480,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": true
+      }
     },
     {
       "asset": "PONS",
@@ -1196,7 +1497,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "PUMP",
@@ -1204,8 +1509,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "external_futures_structural_venues": [
         "BITGET"
@@ -1214,7 +1520,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "QNT",
@@ -1222,6 +1532,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1232,7 +1543,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "RAVE",
@@ -1245,7 +1560,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "RAY",
@@ -1253,8 +1572,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -1266,14 +1586,20 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "RIVER",
       "htx_futures_contract": "RIVER-USDT",
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
-      "external_spot_structural_venues": [],
+      "external_spot_structural_venues": [
+        "BITGET"
+      ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
@@ -1281,7 +1607,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "RLC",
@@ -1289,17 +1619,20 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
-      "external_futures_structural_venues": [
-        "BITGET"
-      ],
+      "external_futures_structural_venues": [],
       "external_spot_full_240m_venue_ever": [],
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": false
+      }
     },
     {
       "asset": "SHIB",
@@ -1307,8 +1640,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -1318,7 +1652,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "SKR",
@@ -1326,8 +1664,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "external_futures_structural_venues": [
         "BITGET"
@@ -1336,7 +1675,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "SKYAI",
@@ -1344,6 +1687,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1354,7 +1698,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "SOL",
@@ -1363,6 +1711,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -1375,7 +1724,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "STEEM",
@@ -1388,7 +1741,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "SUI",
@@ -1406,7 +1763,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "SUN",
@@ -1419,7 +1780,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "SUSHI",
@@ -1427,19 +1792,26 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
-      "external_spot_full_240m_venue_ever": [],
+      "external_spot_full_240m_venue_ever": [
+        "BITGET"
+      ],
       "external_futures_full_240m_venue_ever": [
         "BITGET"
       ],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "TAO",
@@ -1452,7 +1824,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "TIA",
@@ -1465,7 +1841,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "TRUMP",
@@ -1473,8 +1853,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
-        "BACKPACK"
+        "BACKPACK",
+        "BITGET",
+        "GATE"
       ],
       "external_futures_structural_venues": [
         "BITGET"
@@ -1485,7 +1866,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "TRX",
@@ -1494,18 +1879,23 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
         "BITGET"
       ],
-      "external_spot_full_240m_venue_ever": [],
-      "external_futures_full_240m_venue_ever": [
+      "external_spot_full_240m_venue_ever": [
         "BITGET"
       ],
+      "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "TUT",
@@ -1513,6 +1903,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE",
         "POLONIEX"
       ],
@@ -1523,7 +1914,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "UB",
@@ -1536,7 +1931,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "UNI",
@@ -1544,8 +1943,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -1557,7 +1957,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "USELESS",
@@ -1570,7 +1974,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "VELVET",
@@ -1583,7 +1991,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "WIF",
@@ -1591,8 +2003,9 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
         "BACKPACK",
+        "BITGET",
+        "GATE",
         "POLONIEX"
       ],
       "external_futures_structural_venues": [
@@ -1602,7 +2015,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "WIN",
@@ -1615,7 +2032,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "WLD",
@@ -1623,24 +2044,8 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "GATE",
-        "BACKPACK"
-      ],
-      "external_futures_structural_venues": [
-        "BITGET"
-      ],
-      "external_spot_full_240m_venue_ever": [],
-      "external_futures_full_240m_venue_ever": [],
-      "n12_recent_spot_futures_same_run_verified": false,
-      "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
-    },
-    {
-      "asset": "XAUT",
-      "htx_futures_contract": "XAUT-USDT",
-      "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
-      "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
-      "external_spot_structural_venues": [
+        "BACKPACK",
+        "BITGET",
         "GATE"
       ],
       "external_futures_structural_venues": [
@@ -1650,7 +2055,31 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
+    },
+    {
+      "asset": "XAUT",
+      "htx_futures_contract": "XAUT-USDT",
+      "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
+      "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
+      "external_spot_structural_venues": [
+        "BITGET",
+        "GATE"
+      ],
+      "external_futures_structural_venues": [],
+      "external_spot_full_240m_venue_ever": [],
+      "external_futures_full_240m_venue_ever": [],
+      "n12_recent_spot_futures_same_run_verified": false,
+      "n12_recent_independent_venue_same_window_verified": false,
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": false
+      }
     },
     {
       "asset": "XLM",
@@ -1668,7 +2097,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "XMR",
@@ -1676,8 +2109,8 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
-        "KRAKEN",
-        "BITFINEX"
+        "BITFINEX",
+        "KRAKEN"
       ],
       "external_futures_structural_venues": [],
       "external_spot_full_240m_venue_ever": [
@@ -1687,7 +2120,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "XPL",
@@ -1704,7 +2141,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "XRP",
@@ -1713,6 +2154,7 @@
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
         "BINANCE",
+        "BITGET",
         "KRAKEN",
         "POLONIEX"
       ],
@@ -1725,7 +2167,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "ZEC",
@@ -1743,7 +2189,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "ZKC",
@@ -1751,6 +2201,7 @@
       "htx_futures_market": "APPROVED_STRUCTURAL_MARKET;N12_FRESH_TRADES_NOT_PROVEN_FOR_ALL_104",
       "htx_spot_market": "EXACT_CURRENT_MARKET_AND_FRESH_TRADES_UNPROVEN_FOR_THIS_ASSET",
       "external_spot_structural_venues": [
+        "BITGET",
         "GATE"
       ],
       "external_futures_structural_venues": [
@@ -1760,7 +2211,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": true,
+        "futures": true
+      }
     },
     {
       "asset": "哈基米",
@@ -1773,7 +2228,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": false
+      "htx_spot_historical_catalog_symbol_candidate": false,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "币安人生",
@@ -1788,7 +2247,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "牛来",
@@ -1804,7 +2267,11 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     },
     {
       "asset": "龙虾",
@@ -1820,9 +2287,15 @@
       "external_futures_full_240m_venue_ever": [],
       "n12_recent_spot_futures_same_run_verified": false,
       "n12_recent_independent_venue_same_window_verified": false,
-      "htx_spot_historical_catalog_symbol_candidate": true
+      "htx_spot_historical_catalog_symbol_candidate": true,
+      "bitget_historical_exact_market_binding": {
+        "spot": false,
+        "futures": false
+      }
     }
   ],
   "method_extension": "HTX spot historical original catalog symbol hits added by cross-checking exact 104 manifest; they are not exact current same-asset trade facts.",
-  "additional_source_audit": "checkpoints/N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011.json"
+  "additional_source_audit": "checkpoints/N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011.json",
+  "bitget_market_classification_correction": "checkpoints/N12_BITGET_MARKET_CLASSIFICATION_CORRECTION_20261011.json",
+  "basis_correction": "Saved N05 Bitget collector loops both SPOT and FUTURES; prior market split counted the venue as futures only."
 }

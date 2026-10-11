@@ -1,0 +1,73 @@
+{
+  "schema": "N12_BITGET_MARKET_CLASSIFICATION_CORRECTION_20261011_V1",
+  "recorded_utc": "2026-10-11T20:04:35.934Z",
+  "basis_main": "37c9cf016b1fa9aa6a984c48779fd20fb2946a14",
+  "reason": "Previous N12 matrix incorrectly classified BITGET as futures-only although the existing N05 collector loops SPOT and FUTURES under one source ledger.",
+  "code": "current-generation/files/src/bitget-flow-collector.mjs",
+  "binding_code": "current-generation/files/src/bitget-four-hour-flow.mjs",
+  "original_sources": [
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/identity-BITGET.json.gz",
+      "github_blob_sha": "0302e250bfb825dca0818a54f6f5e33bed177382"
+    },
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-BITGET-SPOT.json.gz",
+      "github_blob_sha": "15d2a9b930dcbb6b188424075349029dd478a37e"
+    },
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-BITGET-FUTURES.json.gz",
+      "github_blob_sha": "f296b7a19c44f07f23b026966063881a7b7ed21b"
+    }
+  ],
+  "exact_historical_catalog_bindings": {
+    "spot": 53,
+    "futures": 53,
+    "both": 50
+  },
+  "full_240m_original_market_receipts": [
+    {
+      "asset": "BANK",
+      "markets": [
+        "SPOT",
+        "FUTURES"
+      ],
+      "proof": "checkpoints/N05_FULL_WINDOW_QUALIFICATION_20261010.json",
+      "same_direction": true
+    },
+    {
+      "asset": "SUSHI",
+      "markets": [
+        "SPOT",
+        "FUTURES"
+      ],
+      "proof": "checkpoints/N05_FULL_WINDOW_QUALIFICATION_20261010.json",
+      "same_direction": false
+    },
+    {
+      "asset": "TRX",
+      "markets": [
+        "SPOT"
+      ],
+      "proof": "checkpoints/N05_JOINT_FLOW_CONNECTED_RELEASE_20261010.json"
+    }
+  ],
+  "corrected_104_route_counts": {
+    "approved_assets": 104,
+    "htx_futures_structural": 104,
+    "htx_spot_individual_exact_current_markets_proven": 0,
+    "external_spot_structural_assets": 76,
+    "external_futures_structural_assets": 53,
+    "both_external_market_types_structural_assets": 53,
+    "external_futures_only_structural_assets": 0,
+    "external_spot_only_structural_assets": 23,
+    "no_external_structural_route_assets": 28,
+    "external_spot_full_240m_ever_assets": 39,
+    "external_futures_full_240m_ever_assets": 2,
+    "external_both_market_types_full_240m_ever_assets": 2,
+    "htx_spot_historical_catalog_symbol_candidate_assets": 89
+  },
+  "n05_venue_cap_still_shared": true,
+  "new_provider_http": 0,
+  "current_simultaneous_n12_report_use_proven": false,
+  "n12_complete": false
+}
