@@ -1,7 +1,7 @@
 {
   "schema": "N10_TECHNICAL_PATH_REVIEW_20261011_V1",
   "block": "N10",
-  "status": "FIRST_CONNECTED_RELEASE_MERGED;FORWARD_SCENARIO_TARGET_GUARD_AWAITING_CLOUD_PROOF",
+  "status": "TWO_CONNECTED_RELEASES_MERGED;ACTUAL_TEXT_COVERAGE_PARTIAL",
   "first_release": {
     "pr": 313,
     "merged_main": "2fd34babeae54784cecf3e5444d0a8113cba31a6",
@@ -29,13 +29,17 @@
     {
       "source": "BINANCE_BYBIT_OKX_EXACT_VOLUME_PROFILES",
       "role": "Только свежий сверенный независимый ценовой конфликт может скрыть запасную цель N10; сравнение POC и объёмный score принадлежат своему прежнему блоку",
-      "proof": ["current-generation/tests/htx-volume-profile.test.mjs"],
+      "proof": [
+        "current-generation/tests/htx-volume-profile.test.mjs"
+      ],
       "actual_coverage_limit": "Точный каталог или HTTP 200 не доказывают полезный профиль; нужны совпавшие полные минуты сделок и свечей, одинаковое окно и оригинальные часы. Сквозное покрытие всех 104 не доказано"
     },
     {
       "source": "ADMITTED_NATIVE_POSITION_LEVELS",
       "role": "Только свежие фактические уровни с явным разрешением на цель или препятствие; оценочные и условные уровни остаются контекстом",
-      "proof": ["current-generation/tests/dynamic-liquidation-panel.test.mjs"],
+      "proof": [
+        "current-generation/tests/dynamic-liquidation-panel.test.mjs"
+      ],
       "actual_coverage_limit": "Нет доказательства пригодных уровней по всем 104; разные подключения к одному upstream не считаются независимыми"
     }
   ],
@@ -55,10 +59,30 @@
     "provider_http": 0
   },
   "acceptance_remaining": [
-    "Собрать кандидат в encrypted runtime и проверить исходный producer, canonical consumer, approved delivery, generation и binding в GitHub Actions без provider HTTP",
-    "Сверить фактический результат N10 по сохранённым исходным активам и не распространять один пример на 104 монеты",
-    "Для 104/104 полезного N10 покрытия отдельно подтвердить наличие свежей точной цены, закрытых окон и факт использования в report/Telegram; если нет цели, сохранить точную причину, не выдумывать её",
-    "Сохранить cloud run/head и точную точку продолжения в status, phase, register, resume; при отсутствии доказательства fresh approved SENT не объявлять полную приёмку"
+    "Expand exact useful N10 factual and textual coverage within existing source budgets",
+    "Prove fresh closed candles, scenario/denial and actual approved report use by asset; preserve approved format",
+    "Qualify complete matched peer profile before counting independent corroboration",
+    "Obtain natural approved SENT binding after both changes; shadow and offline assembly do not prove SENT"
   ],
-  "other_blocks_unchanged": "N05 открыт; N01–N03 и N06–N09 на паузе; следующий блок без согласования не начинать"
+  "other_blocks_unchanged": "N05 открыт; N01–N03 и N06–N09 на паузе; N11 без согласования не начинать",
+  "second_release": {
+    "pr": 314,
+    "merged_main": "c40bbaa653ed458447de5c1890440c626d3ff875",
+    "validated_candidate_head": "bc4e80bfeb769f8d2202cf208ba1a418af6b61ac",
+    "cloud_run": 38155220766,
+    "artifact_id": 11708112390,
+    "artifact_digest": "sha256:392efe708372cff7c019fea8ee57b89809944a8ad76a680ec0f4b5291ba2813d",
+    "validation": "ASSEMBLED_PRODUCER_CONSUMER_CURRENT_REPORT_TELEGRAM_OUTPUT_FREEZE_GENERATION_BINDING_PASS",
+    "provider_http": 0,
+    "fresh_approved_sent": false
+  },
+  "actual_source_use_audit": "checkpoints/N10_ACTUAL_SOURCE_USE_AUDIT_20261011.json",
+  "actual_coverage": {
+    "approved": 104,
+    "htx_basic": 104,
+    "n10_analytical_assets_24h": 16,
+    "published_manual_n10_range_rows_24h": 6,
+    "current_independent_n10_profiles": 0,
+    "complete": false
+  }
 }

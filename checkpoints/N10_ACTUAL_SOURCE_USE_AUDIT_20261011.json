@@ -1,0 +1,1106 @@
+{
+  "schema": "N10_ACTUAL_SOURCE_USE_AUDIT_20261011_V1",
+  "block": "N10",
+  "status": "PARTIAL_FACTUAL_TEXT_COVERAGE",
+  "audit_utc": "2026-10-11T16:39:01.162Z",
+  "window_utc": [
+    "2026-10-10T16:30:00Z",
+    "2026-10-11T16:30:00Z"
+  ],
+  "method": "READ_ONLY_CLOUDFLARE_D1_NO_PROVIDER_HTTP_NO_D1_WRITE",
+  "d1_database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+  "approved_contracts": 104,
+  "htx_basic_collector": {
+    "bucket_ts": 1791735600000,
+    "source_ts": 1791735602841,
+    "shards": 6,
+    "approved_rows_with_closed_positive_price_oi_funding": 104,
+    "n10_scope_proven": false
+  },
+  "n10": {
+    "analytical_snapshots": 48,
+    "assets_with_analytical_snapshots": 16,
+    "assets_without": 88,
+    "canonical_closed_candle_range_facts": 48,
+    "published_observe_snapshots_with_manual_and_telegram_text": 6,
+    "published_manual_range_texts": 6,
+    "telegram_range_texts": 0,
+    "unpublished_analytical_without_both_texts": 42,
+    "unpublished_rejected": 32,
+    "unpublished_observe": 10,
+    "administrative_removal_rows_with_both_texts_excluded": 5,
+    "interpretation": "48 internal facts versus 6 published manual texts reflect publication selection. Both manual and Telegram text exist for all 6 published OBSERVE; Telegram uses approved compact format. Never count internal facts as delivered text."
+  },
+  "actual_target_example": {
+    "contract": "ZEC-USDT",
+    "publication_id": "PUB:90b3eb038d31bafa24e0714d9b94c3d30b2c0f52",
+    "snapshot_id": "S392:ZEC-USDT:1791710691023",
+    "run_id": "1791710620336-1791710630453",
+    "state": "OBSERVE",
+    "direction": "LONG",
+    "target_price": 1254.6,
+    "technical_potential_move_pct": 0.8845287873914476,
+    "source": "technically_proven_move_potential",
+    "manual_target_present": true,
+    "telegram_target_present": false,
+    "shadow_only": true,
+    "predates_pr313_pr314": true
+  },
+  "independent": {
+    "okx_exact_catalog_routes_structural_only": 74,
+    "okx_catalog_status": "CLOSED",
+    "binance_catalog_status": "HTTP_451",
+    "bybit_catalog_status": "HTTP_403",
+    "okx_volume_profile_cache_rows": 7,
+    "unexpired_okx_profiles": 0,
+    "current_useful_independent_n10_profiles": 0,
+    "old_cex_v3_catalog_expired_ts": 1790809585879
+  },
+  "limits": "No new provider HTTP. Catalog and 104 basic rows do not establish full 20-candle N10 facts or publication. Reuse admitted cache/budgets; require fresh exact profile and actual consumer use before counting independent source.",
+  "per_contract": [
+    {
+      "contract": "AAVE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ACE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ADA-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "AKE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ALGO-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "APR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 2,
+      "n10_closed_candle_fact_rows_24h": 2,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "APT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 2,
+      "n10_closed_candle_fact_rows_24h": 2,
+      "published_manual_range_rows_24h": 1,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ARB-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 1,
+      "n10_closed_candle_fact_rows_24h": 1,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ASTER-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ATOM-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "AVAX-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "AVNT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BANK-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BCH-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BEAT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BILL-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BNB-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BOME-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BONK-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 3,
+      "n10_closed_candle_fact_rows_24h": 3,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BTC-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BTR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 2,
+      "n10_closed_candle_fact_rows_24h": 2,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BTT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "BTW-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 4,
+      "n10_closed_candle_fact_rows_24h": 4,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "CASHCAT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "CHZ-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "CT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 2,
+      "n10_closed_candle_fact_rows_24h": 2,
+      "published_manual_range_rows_24h": 1,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "DASH-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "DOGE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "DOS-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "DOT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ENA-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ETC-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ETH-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ETHFI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "EUL-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "FARTCOIN-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "FIL-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "FLOKI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "GPS-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "GRAM-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "HBAR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "HYPE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ICP-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "JST-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "JUP-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "LAB-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "LINK-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "LIT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "LSK-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "LTC-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "MARSCOIN-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "MUBARAK-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "MYX-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "NEAR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 2,
+      "n10_closed_candle_fact_rows_24h": 2,
+      "published_manual_range_rows_24h": 2,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "NIL-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 1,
+      "n10_closed_candle_fact_rows_24h": 1,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "OKB-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ONDO-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ONG-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "OP-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ORDI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PAXG-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PENGU-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PEOPLE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PEPE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PIPPIN-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PONS-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "PUMP-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "QNT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "RAVE-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "RAY-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "RIVER-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "RLC-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 10,
+      "n10_closed_candle_fact_rows_24h": 10,
+      "published_manual_range_rows_24h": 1,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SHIB-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SKR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SKYAI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SOL-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "STEEM-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SUI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SUN-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "SUSHI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "TAO-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "TIA-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 5,
+      "n10_closed_candle_fact_rows_24h": 5,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "TRUMP-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "TRX-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "TUT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "UB-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "UNI-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "USELESS-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "VELVET-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "WIF-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "WIN-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "WLD-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 6,
+      "n10_closed_candle_fact_rows_24h": 6,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "XAUT-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "XLM-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "XMR-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "XPL-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "XRP-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ZEC-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 2,
+      "n10_closed_candle_fact_rows_24h": 2,
+      "published_manual_range_rows_24h": 1,
+      "target_rows_24h": 1,
+      "okx_exact_catalog_route_only": true,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "ZKC-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "哈基米-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 0,
+      "n10_closed_candle_fact_rows_24h": 0,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "币安人生-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 1,
+      "n10_closed_candle_fact_rows_24h": 1,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "牛来-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 1,
+      "n10_closed_candle_fact_rows_24h": 1,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    },
+    {
+      "contract": "龙虾-USDT",
+      "htx_basic_market_row": true,
+      "n10_analytical_rows_24h": 4,
+      "n10_closed_candle_fact_rows_24h": 4,
+      "published_manual_range_rows_24h": 0,
+      "target_rows_24h": 0,
+      "okx_exact_catalog_route_only": false,
+      "fresh_independent_n10_profile_proven": false
+    }
+  ],
+  "n10_complete": false,
+  "n05_open": true,
+  "n11_not_started": true,
+  "continuation_document_warning": "CURRENT_PROJECT_STATUS.json and OWNER_REVIEW_RESUME_POINT_20261010.json remain at their prior main versions because automatic review rejected proposed replacements as carrying stale/contradictory fields. Treat this audit and the current phase/register N10 fields as newer; reconcile those two status files from fresh main before relying on their N10 current_task, counts, or main pointers."
+}
