@@ -1,0 +1,11 @@
+file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/tools/replay-n05-coinbase-pilot-20261011.mjs:29
+ let checked=0,occupied=0,maxVolumeDifference=0n;for(let i=0;i<240;i++){const ts=start+i*60000,c=bar.get(ts),m=minutes.get(ts);if(Boolean(c)!==Boolean(m))throw Error('CANDLE_RAW_PRESENCE_MISMATCH:'+symbol+':'+ts);if(c){occupied++;const source=fixed(c[5]),difference=abs(source-m.base);if(difference>maxVolumeDifference)maxVolumeDifference=difference;if(difference>10000000000n)throw Error('CANDLE_BASE_VOLUME_MISMATCH:'+symbol+':'+ts+':'+difference);if(fixed(c[1])!==m.low||fixed(c[2])!==m.high)throw Error('CANDLE_PRICE_RANGE_MISMATCH:'+symbol+':'+ts);}checked++;}
+                                                                                                                                                                                                                                                                                                                                                                                               ^
+
+Error: CANDLE_BASE_VOLUME_MISMATCH:DASH:1791705000000:33142739730000000000
+    at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/tools/replay-n05-coinbase-pilot-20261011.mjs:29:384
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
