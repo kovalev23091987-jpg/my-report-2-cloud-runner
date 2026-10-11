@@ -122,9 +122,12 @@ export function verifyExecutionFacts(prepared,{contract_code,observed_ts}={}) {
   } catch {return failure('MALFORMED_EXECUTION_FACTS');}
 }
 /** Current freshness only: not permission to publish, trade or bypass another gate. */
-export function checkExecutionHandoff(gate,{contract_code,checked_ts}={}) {
-  if(!stamp(checked_ts)||gate?.contract_code!==contract_code) return {ok:false,reason:'EXECUTION_HANDOFF_IDENTITY_OR_TIME_INVALID'};
+export function checkExecutionHandoff(gate,{contract_code,checked_ts,direction=null}={}) {
+  if(!stamp(checked_ts)||gate?.contract_code!==contract_code||
+    (direction!==null&&!['LONG','SHORT'].includes(direction))) return {ok:false,status:'NOT_CLOSED',reason:'EXECUTION_HANDOFF_IDENTITY_OR_TIME_INVALID'};
   const p=verifyExecutionFacts(gate?.factual_basis,{contract_code,observed_ts:checked_ts});
-  if(!p.plans || !['LONG','SHORT'].some(d=>p.plans[d]?.status==='CLOSED')) return {ok:false,reason:p.reasons[0]||'EXECUTION_HANDOFF_NOT_CLOSED'};
-  return {ok:true,reason:null,checked_ts,valid_until_ts:p.facts.valid_until_ts};
+  if(!p.plans) return {ok:false,status:'NOT_CLOSED',reason:p.reasons[0]||'EXECUTION_HANDOFF_NOT_CLOSED'};
+  const closed=direction?p.plans[direction]?.status==='CLOSED':['LONG','SHORT'].some(d=>p.plans[d]?.status==='CLOSED');
+  if(!closed) return {ok:false,status:'NOT_CLOSED',reason:direction?`EXECUTION_${direction}_CAPACITY_NOT_CLOSED`:'EXECUTION_HANDOFF_NOT_CLOSED',direction};
+  return {ok:true,status:'CLOSED',reason:null,checked_ts,valid_until_ts:p.facts.valid_until_ts,direction};
 }
