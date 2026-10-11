@@ -1,0 +1,91 @@
+name: N05 guarded post-reset source qualification
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main:
+        description: Fresh exact main SHA after acquiring the N05 lease
+        required: true
+        type: string
+      lease_owner:
+        description: Exact bounded N05 CAS lease owner read back from phase
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  anchor:
+    runs-on: ubuntu-latest
+    outputs:
+      window_end_ts: ${{ steps.closed.outputs.window_end_ts }}
+    steps:
+      - id: closed
+        run: echo "window_end_ts=$(( $(date -u +%s) / 60 * 60000 ))" >> "$GITHUB_OUTPUT"
+  acquire:
+    needs: anchor
+    strategy:
+      fail-fast: false
+      matrix:
+        venue: [poloniex, backpack, bitget, gate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check offline plan and source scripts
+        run: |
+          node tools/prepare-n05-post-reset-plan-20261011.mjs | cmp - checkpoints/N05_POST_LINK_PEPE_OFFLINE_RESET_READY_20261011.json
+          node --check tools/acquire-n05-post-reset-${{ matrix.venue }}-20261011.mjs
+          node tools/acquire-n05-post-reset-${{ matrix.venue }}-20261011.mjs --plan
+      - name: Acquire guarded missing source windows
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
+          REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          N05_WINDOW_END_TS: ${{ needs.anchor.outputs.window_end_ts }}
+        run: node tools/acquire-n05-post-reset-${{ matrix.venue }}-20261011.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n05-post-reset-${{ matrix.venue }}-${{ github.run_id }}
+          path: audit-output/n05-post-reset-${{ matrix.venue }}/
+          retention-days: 30
+  same_window_cross_venue:
+    needs: anchor
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - venue: kraken
+            suffix: algo-xmr
+          - venue: bitfinex
+            suffix: algo-xmr-shib
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check exact ALGO XMR source script
+        run: |
+          node --check tools/acquire-n05-post-reset-${{ matrix.venue }}-${{ matrix.suffix }}-20261011.mjs
+          node tools/acquire-n05-post-reset-${{ matrix.venue }}-${{ matrix.suffix }}-20261011.mjs --plan
+      - name: Acquire same closed 240 minute ALGO XMR window
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
+          REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          N05_WINDOW_END_TS: ${{ needs.anchor.outputs.window_end_ts }}
+        run: node tools/acquire-n05-post-reset-${{ matrix.venue }}-${{ matrix.suffix }}-20261011.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n05-post-reset-${{ matrix.venue }}-${{ matrix.suffix }}-${{ github.run_id }}
+          path: audit-output/n05-post-reset-${{ matrix.venue }}-${{ matrix.suffix }}/
+          retention-days: 30

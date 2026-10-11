@@ -1,0 +1,113 @@
+{
+  "schema": "N05_POST_RESET_EXECUTOR_PREPARED_20261011_V1",
+  "phase": "N05_ONLY",
+  "basis_main_before_preparation": "31b82e5e76de3290ef2fd7ec0885f2815e1759d2",
+  "status": "GUARDED_EXECUTOR_PREPARED_OFFLINE;NO_NEW_PROVIDER_DATA;N05_OPEN",
+  "coverage_plan": "checkpoints/N05_POST_LINK_PEPE_OFFLINE_RESET_READY_20261011.json",
+  "current_coverage": {
+    "approved_assets": 104,
+    "individual_full_240m_window_ever": 39,
+    "exact_external_route": 76,
+    "without_exact_external_route": 28,
+    "first_reset_distinct_missing_window_targets": 32,
+    "conditional_total_full_windows_if_all_qualify": 71,
+    "simultaneous_continuous_coverage_proven": false
+  },
+  "workflow": ".github/workflows/n05-post-reset-common-source-batch-20261011.yml",
+  "workflow_trigger": "MANUAL_ONLY_AFTER_2026-10-12T00:00:00Z",
+  "source_jobs": [
+    {
+      "venue": "POLONIEX",
+      "script": "tools/acquire-n05-post-reset-poloniex-20261011.mjs",
+      "target_assets": 13,
+      "maximum_HTTP": 17
+    },
+    {
+      "venue": "BACKPACK",
+      "script": "tools/acquire-n05-post-reset-backpack-20261011.mjs",
+      "target_assets": 6,
+      "maximum_HTTP": 14
+    },
+    {
+      "venue": "BITGET",
+      "script": "tools/acquire-n05-post-reset-bitget-20261011.mjs",
+      "target_assets": 6,
+      "maximum_HTTP": 15
+    },
+    {
+      "venue": "GATE",
+      "script": "tools/acquire-n05-post-reset-gate-20261011.mjs",
+      "target_assets": 7,
+      "maximum_HTTP": 16
+    },
+    {
+      "venue": "KRAKEN",
+      "script": "tools/acquire-n05-post-reset-kraken-algo-xmr-20261011.mjs",
+      "same_window_assets": [
+        "ALGO",
+        "XMR"
+      ],
+      "maximum_HTTP": 9
+    },
+    {
+      "venue": "BITFINEX",
+      "script": "tools/acquire-n05-post-reset-bitfinex-algo-xmr-shib-20261011.mjs",
+      "same_window_assets": [
+        "ALGO",
+        "XMR",
+        "SHIB"
+      ],
+      "maximum_HTTP": 6
+    }
+  ],
+  "maximum_source_HTTP_across_six_jobs": 77,
+  "planned_D1_reservations_across_six_jobs": {
+    "rows_read": 88000,
+    "rows_written": 2800
+  },
+  "same_closed_minute_anchor": [
+    "KRAKEN:ALGO,XMR",
+    "BITFINEX:ALGO,XMR,SHIB",
+    "BACKPACK:SHIB"
+  ],
+  "shared_primary_metadata_once_per_source_job": true,
+  "all_jobs_require_fresh_exact_main_owned_unexpired_lease_inactive_fence_day_guard_D1_and_source_admission": true,
+  "original_response_body_hash_and_clock_retained_per_request": true,
+  "offline_validation": {
+    "planner_output_byte_matches_saved_checkpoint": true,
+    "all_six_scripts_node_syntax_and_plan_pass": true,
+    "all_six_scripts_block_before_source_day_reset": true,
+    "workflow_yaml_parses": true,
+    "source_HTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "after_reset_order": [
+    "Read fresh main, phase, fence, current status, exact route plan, and D1/source counters; obtain and read back a new bounded N05 CAS lease.",
+    "Recompute batch affordability from actual durable counters and in-flight reservations; do not dispatch a job whose whole useful package is not admitted.",
+    "Dispatch the manual workflow with exact main and lease owner; retain run ID, six original artifact digests, response bodies and per-coin status. Do not assume artifact presence proves useful data.",
+    "Reconcile each original 240 closed minute window against source-specific trade/candle volume, exact identity and original timestamps; compare independent venues only at the same window and show disagreements separately.",
+    "Replay qualified source facts through existing N05 consumer and approved report/Telegram rendering in one collective check. Preserve score, weights, strategy, caps and format; do not claim fresh SENT without actual message ID.",
+    "Commit original proof, updated per-coin coverage and exact run/head/artifacts to GitHub; update status, phase, register and resume; release only owned lease."
+  ],
+  "known_limits": [
+    "All 32 new windows and three overlap checks remain conditional on live source data and unchanged exact routes.",
+    "Five additional routable assets are scheduled for a later admitted source day if still missing.",
+    "Twenty-eight assets have no retained exact external route; new venue candidates require primary identity and useful 240 minute transport proof.",
+    "No new source or fresh report was accepted in this offline preparation."
+  ],
+  "N05_complete": false,
+  "next_block_started": false,
+  "prepared_file_sha256": {
+    "tools/prepare-n05-post-reset-plan-20261011.mjs": "d4242bd11e29505b5718d47f6578242cb49f8eec6cbe798193877882fc724dbb",
+    "tools/acquire-n05-post-reset-poloniex-20261011.mjs": "b655edcb771c5b585eb3f19a45c35e80db8dfc2122f8e8924877469624255291",
+    "tools/acquire-n05-post-reset-backpack-20261011.mjs": "11a49ad200b435e499bc3a9727afba5b62ad24b02a071e8cfaeb7019045fe0c7",
+    "tools/acquire-n05-post-reset-bitget-20261011.mjs": "108b23011d42dc4dc8edbc558f9a65b49ce3a0f782cbc0340afc92b6bbc03871",
+    "tools/acquire-n05-post-reset-gate-20261011.mjs": "12dcb958e33f0c610c9ef290e927d52392b70d485f1033e10f78a5150d176fc8",
+    "tools/acquire-n05-post-reset-kraken-algo-xmr-20261011.mjs": "39d607eb1df6bcdd861a4c2129d4c0d709e20d38f480dbfe51f8e7a9a9bf60bb",
+    "tools/acquire-n05-post-reset-bitfinex-algo-xmr-shib-20261011.mjs": "369b15b4ec82a7e795b3698f60329bb91467478d78caf42bcb8527b5a2656be6",
+    ".github/workflows/n05-post-reset-common-source-batch-20261011.yml": "c1eb08665ec2e29e0978e9ab1ae409fb2882341297f454665612fd518f0c6756"
+  },
+  "recorded_ts": 1791725051232
+}

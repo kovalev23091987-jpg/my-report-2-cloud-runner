@@ -7,6 +7,8 @@ const sourcePath='checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_
 const bytes=readFileSync(sourcePath);
 const map=JSON.parse(bytes);
 const rows=new Map(map.rows.map(row=>[row.symbol,row]));
+const routeFile=JSON.parse(readFileSync('checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json'));
+const routeRows=new Map(routeFile.rows.map(row=>[row.symbol,row]));
 const assigned={
   POLONIEX:['币安人生','APR','BEAT','龙虾','ACE','ASTER','BOME','DOS','ETHFI','FARTCOIN','FLOKI','LIT','LSK'],
   BACKPACK:['PUMP','SKR','WLD','BONK','SHIB','WIF'],
@@ -24,6 +26,8 @@ for(const [venue,symbols] of Object.entries(assigned)){
     if(used.has(symbol))throw Error(`DUPLICATE_ASSIGNMENT:${symbol}`);
     if(row.actual_full_window_venue_count_ever!==0)throw Error(`ALREADY_FULL:${symbol}`);
     if(!row.structurally_candidate_venues_from_retained_catalogs.includes(venue))throw Error(`NO_EXACT_ROUTE:${venue}:${symbol}`);
+    const route=routeRows.get(symbol);
+    if(!route||route.identity_status!=='CLOSED'||route.prior_individual_full_window!==false||!route.identity)throw Error(`RETAINED_PRIMARY_IDENTITY_MISSING:${symbol}`);
     used.add(symbol);
   }
 }
