@@ -329,12 +329,12 @@
     }
   ],
   "lease": {
-    "owner": "CODEX:OWNER_N12_APPROVED_SPOT_SCOPE:1791752278018",
-    "acquired_ts": 1791752278018,
-    "expires_ts": 1791755878018,
-    "scope": "N12_PR321_APPROVED_104_ASSET_SPOT_SCOPE_AND_OFFLINE_CLOUD_VERIFICATION;NO_PROVIDER_HTTP_OR_MAIN_CODE_MERGE"
+    "owner": "CODEX:OWNER_N12_SPOT_FUTURES_INTEGRATION:1791752765291",
+    "acquired_ts": 1791752765291,
+    "expires_ts": 1791756365291,
+    "scope": "N12_APPROVED_104_SPOT_FUTURES_INTEGRATION_AND_CONNECTED_REPORT_VERIFICATION;ALL_ACTIVE_BLOCK_SHARED_FACT_ONLY;NO_CAP_WEIGHT_FORMAT_CHANGE"
   },
-  "next_action": "PR 321 head 3d0c4f4 passed N10/N11/N12 assembled offline checks including exact single-market fallback; main code remains unchanged and explicit owner merge approval is required. After approval, acquire a new bounded lease, verify exact head, merge normally, then measure natural same-run source→manual/approved Telegram use and 104-asset coverage under admission. N12 remains open; PR 320 is separate and unmerged. N14 awaits owner discussion.",
+  "next_action": "PR321 head 9839d30 is cloud assembled and restricted to the approved 104 HTX analysis assets; code is not merged. The prior auto-review rejected merging without explicit owner approval. After approval, check fresh main/fence/new own lease and exact PR head, merge normally, then verify actual same-run spot/futures source→manual/approved Telegram and measure per-coin coverage within admission. PR320 remains separate and unmerged. N12 remains open; N14 awaits owner discussion.",
   "common_future_universe": {
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
     "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
@@ -398,12 +398,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:OWNER_N12_VERIFIED_ADDITIONAL_TRADE_CONNECTORS:1791748869387",
-    "acquired_ts": 1791748869387,
-    "expires_ts": 1791752169387,
-    "scope": "N12_ONLY_VERIFIED_SPOT_FUTURES_SOURCE_CONNECTORS_AND_ASSEMBLED_TESTS;EXISTING_VENUE_CAPS_SHARED;NO_UNADMITTED_PROVIDER_HTTP_OR_STRATEGY_WEIGHT_FORMAT_CHANGE",
-    "released_ts": 1791749948382,
-    "reason": "N12 Gate futures candidate PR320 saved and target cloud validation passed; main merge stopped by auto-review pending explicit owner approval."
+    "owner": "CODEX:OWNER_N12_APPROVED_SPOT_SCOPE:1791752278018",
+    "acquired_ts": 1791752278018,
+    "expires_ts": 1791755878018,
+    "scope": "N12_PR321_APPROVED_104_ASSET_SPOT_SCOPE_AND_OFFLINE_CLOUD_VERIFICATION;NO_PROVIDER_HTTP_OR_MAIN_CODE_MERGE",
+    "released_ts": 1791752654104,
+    "reason": "PR321 approved 104-asset scope saved and N10/N11/N12 assembled cloud checks passed; candidate remains unmerged pending explicit owner approval."
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -6386,10 +6386,10 @@
     "project_complete": false
   },
   "latest_development_lease_release": {
-    "owner": "CODEX:OWNER_ACTIVE_BLOCK_SPOT_RETROFIT:1791750567305",
-    "released_ts": 1791751428370,
+    "owner": "CODEX:OWNER_N12_APPROVED_SPOT_SCOPE:1791752278018",
+    "released_ts": 1791752654104,
     "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
-    "scope": "OWN_SPOT_RETROFIT_CANDIDATE_ONLY"
+    "scope": "OWN_N12_APPROVED_104_ASSET_SPOT_CANDIDATE_ONLY"
   },
   "latest_rules_and_completed_work_reconciliation": {
     "proof": "checkpoints/CLOUD_RULES_AND_COMPLETED_WORK_RECONCILIATION_20261009.json",
@@ -10801,17 +10801,20 @@
   },
   "latest_active_block_spot_futures_candidate": {
     "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
-    "status": "OFFLINE_ASSEMBLED_AND_REPORT_VERIFIED;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
+    "status": "OFFLINE_ASSEMBLED_VERIFIED_APPROVED_104_SCOPE;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
     "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
-    "candidate_head": "3d0c4f4c92d172ed52ab9adbb112e49701387cee",
+    "candidate_head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
     "cloud_runs": [
-      38174058864,
-      38174058894,
-      38174058929
+      38174584667,
+      38174584647,
+      38174584651
     ],
-    "single_market_fallback_offline_verified": true,
-    "main_merge_approval_required": true,
+    "approved_104_exact_scope_offline_verified": true,
+    "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+    "nonapproved_spot_fact_rejected": true,
+    "non_ascii_spot_query_preserved": true,
     "actual_104_coverage_pending": true,
+    "main_merge_approval_required": true,
     "pr320_unmerged": true
   }
 }

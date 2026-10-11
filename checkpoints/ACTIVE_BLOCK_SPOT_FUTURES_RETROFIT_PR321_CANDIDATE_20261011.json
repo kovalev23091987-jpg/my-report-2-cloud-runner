@@ -1,16 +1,20 @@
 {
-  "schema": "ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011_V2",
-  "recorded_ts": 1791752092086,
-  "recorded_utc": "2026-10-11T20:54:52.086Z",
-  "base_main": "4761da9bc5c6e5de1134b9948214142df93e1efd",
+  "schema": "ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011_V3",
+  "recorded_ts": 1791752654104,
+  "recorded_utc": "2026-10-11T21:04:14.104Z",
+  "base_main": "1a96133f9b76b42f605fd5d86f50c4dbecff50e5",
   "candidate_branch": "codex/active-block-spot-futures-companion-20261011",
-  "candidate_head": "3d0c4f4c92d172ed52ab9adbb112e49701387cee",
+  "candidate_head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
   "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
-  "status": "OFFLINE_ASSEMBLED_AND_REPORT_VERIFIED;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
+  "status": "OFFLINE_ASSEMBLED_VERIFIED_APPROVED_104_SCOPE;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
   "previous_candidate": {
-    "head": "c064fd4d85e9fc267538016fb4fc4eaa567d6eec",
-    "base_main": "f4a8bee2fddd1859be3b710b99ba33d184a80ec0",
-    "cloud_runs": [38173293375, 38173293378, 38173293383]
+    "head": "3d0c4f4c92d172ed52ab9adbb112e49701387cee",
+    "base_main": "4761da9bc5c6e5de1134b9948214142df93e1efd",
+    "cloud_runs": [
+      38174058864,
+      38174058894,
+      38174058929
+    ]
   },
   "merge_attempt_auto_review": {
     "decision": "REJECTED",
@@ -19,28 +23,30 @@
   },
   "cloud_verification": {
     "n10": {
-      "run_id": 38174058864,
-      "artifact_id": 11714852398,
-      "artifact_zip_sha256": "8ddfd8e5e5fab74168e282f3856addea162c0d6d8aa5d9ea1a6a84fbcb230702",
+      "run_id": 38174584667,
+      "artifact_id": 11715322315,
+      "artifact_digest": "sha256:167f70a6d466d9b2e4ff70e9c3be3588d37cc7b816db6cc101174e8ecf83dd55",
       "target_tests_passed": 49,
+      "runtime_tests_passed": 11,
       "result": "PASS"
     },
     "n11": {
-      "run_id": 38174058894,
-      "artifact_id": 11715500539,
-      "artifact_zip_sha256": "11e9ca61a569e3fb4ffa80fe4dc6fa7a7b390467b9f9bdc34153cbbf7c6698eb",
+      "run_id": 38174584647,
+      "artifact_id": 11715386990,
+      "artifact_digest": "sha256:efa5af46a7089c005ef0996d2cc42b237cd933bbd70009560f6cc6836295821e",
       "target_tests_passed": 10,
       "result": "PASS"
     },
     "n12": {
-      "run_id": 38174058929,
-      "artifact_id": 11714902316,
-      "artifact_zip_sha256": "1939bc40210300addf1a0ef0fb5dd090cf2166fca03481f39b3746238ba0f75a",
-      "target_tests_passed": 36,
+      "run_id": 38174584651,
+      "artifact_id": 11715550883,
+      "artifact_digest": "sha256:4322ee4b30de511c3260a5b0fef5116c8e1ae17868ea1ac9b856edd3e7ec0548",
+      "target_tests_passed": 38,
       "paused_chain_tests_passed": 8,
       "result": "PASS"
     },
     "assembled_runtime": true,
+    "full_generation": "PASS",
     "frozen_output_hash_guard": "PASS",
     "worker_integrity_pin": "PASS",
     "new_provider_http": 0,
@@ -70,7 +76,13 @@
     "score_contribution": 0,
     "directional_vote": false,
     "entry_authorized": false,
-    "strategy_weights_caps_cadence_changed": false
+    "strategy_weights_caps_cadence_changed": false,
+    "approved_htx_analysis_assets": 104,
+    "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+    "spot_collection_for_nonapproved_deep_check": false,
+    "report_fact_for_nonapproved_contract": false,
+    "approved_non_ascii_spot_symbol_preserved": true,
+    "actual_non_ascii_spot_market_response_verified": false
   },
   "active_block_scope": {
     "N04": "on-chain transfers remain independent; only shared market context, no transfer direction inference",
@@ -91,7 +103,8 @@
     "N10_complete": false,
     "N12_complete": false,
     "PR320_merged": false,
-    "paused_N01_N03_N06_N09_unchanged": true
+    "paused_N01_N03_N06_N09_unchanged": true,
+    "approved_104_test_data": "CONTROLLED_OFFLINE_COMPONENTS_NOT_ACTUAL_SPOT_MARKET_COVERAGE"
   },
-  "next_action": "Wait for explicit owner approval to merge PR 321 into main; auto-review rejected the earlier unapproved merge and must not be bypassed. Then recheck fresh main/fence/new own lease and exact tested head, merge normally, run bounded natural same-run source→fact→manual/approved Telegram verification subject to admission, and measure actual 104-asset coverage. PR 320 is separate and unmerged; N12 remains open; N14 awaits owner discussion."
+  "next_action": "PR321 head 9839d30 is cloud assembled and restricted to the approved 104 HTX analysis assets; code is not merged. The prior auto-review rejected merging without explicit owner approval. After approval, check fresh main/fence/new own lease and exact PR head, merge normally, then verify actual same-run spot/futures source→manual/approved Telegram and measure per-coin coverage within admission. PR320 remains separate and unmerged. N12 remains open; N14 awaits owner discussion."
 }
