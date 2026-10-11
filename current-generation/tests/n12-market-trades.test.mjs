@@ -40,6 +40,15 @@ test('N12 context connects same-run HTX markets with validated independent four-
  const recent=reconcileN12HtxMarkets({contract,futures:normalizeHtxLargeTrades(future(),{contract,observed_ts:now}),spot_payload:spot(),observed_ts:now});
  const facts=consumeBlockResultContext({contract,now,evidence:[...joint.evidence,...recent.evidence]}).facts,n12=facts.find(f=>f.block_id==='N12');
  assert.ok(n12);assert.match(n12.value,/BITGET/);assert.match(n12.value,/окно 4 часа/);assert.match(n12.value,/последние сделки не складывались/);assert.equal(n12.evidence_ids.length,2);
+ assert.match(n12.value,/направления двух разновременных выборок в целом совпадают/);
+});
+test('opposite recent and four-hour directions cannot become one market conclusion',()=>{
+ const end=now,start=end-14400000;
+ const joint=jointSpotFuturesFlow({now,primary:{check_completed:true,evidence:[{block_id:'N05',metric_family:'EXACT_FUTURES_TAKER_FLOW_4H',provider_id:'HTX_FUTURES_RAW_FLOW',upstream_id:'HTX_OFFICIAL_RAW_FILLS',source_clock_policy:'IMMUTABLE_EXACT_RAW_MINUTES',score_contribution:0,entry_authorized:false,factual_1m_trade_count:240,raw_trade_count:240,window_start_ts:start,window_end_ts:end,buy_quote_turnover_usdt:40,sell_quote_turnover_usdt:60,htx_contract:contract,asset_id:'HTX:USDT_M_PERPETUAL:'+contract}]},external:{components:[{version:BITGET_FLOW_VERSION,status:'CLOSED_VOLUME_RECONCILED_FOUR_HOURS',check_completed:true,exact_asset_binding:true,contract,window_start_ts:start,window_end_ts:end,observed_ts:now,verified_minutes:240,venue:'BITGET',physical_root:'BITGET_OFFICIAL_PUBLIC_TRADES',market:'SPOT',quote:'USDT',buy_quote:38,sell_quote:62}]}});
+ assert.equal(joint.check_completed,true);
+ const recent=reconcileN12HtxMarkets({contract,futures:normalizeHtxLargeTrades(future(),{contract,observed_ts:now}),spot_payload:spot(),observed_ts:now});
+ const n12=consumeBlockResultContext({contract,now,evidence:[...joint.evidence,...recent.evidence]}).facts.find(f=>f.block_id==='N12');
+ assert.match(n12.value,/направления двух разновременных выборок расходятся; общего направленного вывода нет/);
 });
 test('the joint N12 fact reaches manual and Telegram output with source receipts',()=>{
  const c=structuredClone(JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical),T=c.observed_ts,E=Math.floor(T/60000)*60000,S=E-14400000,k=c.metadata.contract,symbol=k.slice(0,-5).toLowerCase()+'usdt';

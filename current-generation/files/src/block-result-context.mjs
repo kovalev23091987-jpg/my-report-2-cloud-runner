@@ -327,7 +327,10 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
   let fact=describe(row,now);const root=evidenceDedupKey(row);
   if(!fact||seen.has(root))continue;
   const related=row.block_id==='N12'&&row.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'&&n12Cross?[n12Cross.row.evidence_id]:[];
-  if(related.length)fact={...fact,source:`${fact.source} / ${[...new Set(list(n12Cross.row.components).map(c=>c.venue))].join(' / ')}`,value:`${fact.value}; ${n12Cross.text}`};
+  if(related.length){
+   const recentSign=Math.sign(number(row.directional_strength)||0),longSign=n12Cross.row.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'?Math.sign(number(n12Cross.row.components?.[0]?.imbalance)||0):0,crossWindow=recentSign&&longSign?(recentSign===longSign?'направления двух разновременных выборок в целом совпадают':'направления двух разновременных выборок расходятся; общего направленного вывода нет'):'общий направленный вывод по разным окнам не установлен';
+   fact={...fact,source:`${fact.source} / ${[...new Set(list(n12Cross.row.components).map(c=>c.venue))].join(' / ')}`,value:`${fact.value}; ${n12Cross.text}; ${crossWindow}`};
+  }
   seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
  }
  // Group event logs by transaction. Serial transfers are never summed as flow.
