@@ -8852,7 +8852,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "PR321_OFFLINE_ASSEMBLED_PASS_MERGE_APPROVAL_REQUIRED;N12_OPEN;PR320_UNMERGED",
-  "next_action": "PR321 head 9839d30 is cloud assembled and restricted to the approved 104 HTX analysis assets; code is not merged. The prior auto-review rejected merging without explicit owner approval. After approval, check fresh main/fence/new own lease and exact PR head, merge normally, then verify actual same-run spot/futures source→manual/approved Telegram and measure per-coin coverage within admission. PR320 remains separate and unmerged. N12 remains open; N14 awaits owner discussion.",
+  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -15018,20 +15018,21 @@
   },
   "latest_active_block_spot_futures_candidate": {
     "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
-    "status": "OFFLINE_ASSEMBLED_VERIFIED_APPROVED_104_SCOPE;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
+    "status": "PR321_SQUASH_MERGED_MAIN;N10_N11_N12_ASSEMBLED_PASS;NATURAL_SOURCE_USE_PENDING",
     "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
-    "candidate_head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
+    "candidate_head": "1bab143fff2bd05b68deb609449a3baebb3c9848",
+    "merged_main": "a0d5389cb633e73d467a76adf8318ab8aa6c0d83",
     "cloud_runs": [
-      38174584667,
-      38174584647,
-      38174584651
+      38175007083,
+      38175007087,
+      38175007076
     ],
     "approved_104_exact_scope_offline_verified": true,
     "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
     "nonapproved_spot_fact_rejected": true,
     "non_ascii_spot_query_preserved": true,
     "actual_104_coverage_pending": true,
-    "main_merge_approval_required": true,
+    "shared_context_only": true,
     "pr320_unmerged": true
   }
 }

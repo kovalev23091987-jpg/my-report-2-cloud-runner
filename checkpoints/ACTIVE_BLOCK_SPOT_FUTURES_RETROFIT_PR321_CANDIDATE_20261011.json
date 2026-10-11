@@ -1,19 +1,19 @@
 {
-  "schema": "ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011_V3",
-  "recorded_ts": 1791752654104,
-  "recorded_utc": "2026-10-11T21:04:14.104Z",
-  "base_main": "1a96133f9b76b42f605fd5d86f50c4dbecff50e5",
+  "schema": "ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_RELEASE_20261012_V4",
+  "recorded_ts": 1791753026726,
+  "recorded_utc": "2026-10-11T21:10:26.726Z",
+  "base_main": "e904635028f3784143c27e966440b7934d1b3584",
   "candidate_branch": "codex/active-block-spot-futures-companion-20261011",
-  "candidate_head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
+  "candidate_head": "1bab143fff2bd05b68deb609449a3baebb3c9848",
   "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
-  "status": "OFFLINE_ASSEMBLED_VERIFIED_APPROVED_104_SCOPE;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
+  "status": "PR321_SQUASH_MERGED_MAIN;N10_N11_N12_ASSEMBLED_PASS;NATURAL_SOURCE_USE_PENDING",
   "previous_candidate": {
-    "head": "3d0c4f4c92d172ed52ab9adbb112e49701387cee",
-    "base_main": "4761da9bc5c6e5de1134b9948214142df93e1efd",
+    "head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
+    "base_main": "1a96133f9b76b42f605fd5d86f50c4dbecff50e5",
     "cloud_runs": [
-      38174058864,
-      38174058894,
-      38174058929
+      38174584667,
+      38174584647,
+      38174584651
     ]
   },
   "merge_attempt_auto_review": {
@@ -23,24 +23,23 @@
   },
   "cloud_verification": {
     "n10": {
-      "run_id": 38174584667,
-      "artifact_id": 11715322315,
-      "artifact_digest": "sha256:167f70a6d466d9b2e4ff70e9c3be3588d37cc7b816db6cc101174e8ecf83dd55",
+      "run_id": 38175007083,
+      "artifact_id": 11714723796,
+      "artifact_digest": "sha256:79eb4e31ed23904a9accd5066eb329ce21c01aa41ba6c39c0fb49df46810f6e8",
       "target_tests_passed": 49,
-      "runtime_tests_passed": 11,
       "result": "PASS"
     },
     "n11": {
-      "run_id": 38174584647,
-      "artifact_id": 11715386990,
-      "artifact_digest": "sha256:efa5af46a7089c005ef0996d2cc42b237cd933bbd70009560f6cc6836295821e",
+      "run_id": 38175007087,
+      "artifact_id": 11714933400,
+      "artifact_digest": "sha256:818e2d014d3bf992afb9dc29ef68f42e853885788c5d9163604d81582783b440",
       "target_tests_passed": 10,
       "result": "PASS"
     },
     "n12": {
-      "run_id": 38174584651,
-      "artifact_id": 11715550883,
-      "artifact_digest": "sha256:4322ee4b30de511c3260a5b0fef5116c8e1ae17868ea1ac9b856edd3e7ec0548",
+      "run_id": 38175007076,
+      "artifact_id": 11715272912,
+      "artifact_digest": "sha256:2ea128cbe95e31fdf74bdb0b3ef215ae42e0205586f1baa90414f5a34f99f810",
       "target_tests_passed": 38,
       "paused_chain_tests_passed": 8,
       "result": "PASS"
@@ -82,7 +81,10 @@
     "spot_collection_for_nonapproved_deep_check": false,
     "report_fact_for_nonapproved_contract": false,
     "approved_non_ascii_spot_symbol_preserved": true,
-    "actual_non_ascii_spot_market_response_verified": false
+    "actual_non_ascii_spot_market_response_verified": false,
+    "main_shared_context_connected": true,
+    "all_active_blocks_market_context_only": true,
+    "per_block_spot_futures_source_coverage_accepted": false
   },
   "active_block_scope": {
     "N04": "on-chain transfers remain independent; only shared market context, no transfer direction inference",
@@ -95,7 +97,7 @@
     "N16": "spot spread context only; no substitute for exact futures execution cost"
   },
   "limits": {
-    "current_104_asset_exact_live_spot_pair_coverage": "NOT_MEASURED_BY_THIS_OFFLINE_CANDIDATE",
+    "current_104_asset_exact_live_spot_pair_coverage": "NOT_MEASURED",
     "natural_post_merge_manual_fact": "PENDING",
     "natural_post_merge_approved_Telegram": "PENDING",
     "fresh_same_run_SENT_message_id": "PENDING",
@@ -106,5 +108,7 @@
     "paused_N01_N03_N06_N09_unchanged": true,
     "approved_104_test_data": "CONTROLLED_OFFLINE_COMPONENTS_NOT_ACTUAL_SPOT_MARKET_COVERAGE"
   },
-  "next_action": "PR321 head 9839d30 is cloud assembled and restricted to the approved 104 HTX analysis assets; code is not merged. The prior auto-review rejected merging without explicit owner approval. After approval, check fresh main/fence/new own lease and exact PR head, merge normally, then verify actual same-run spot/futures source→manual/approved Telegram and measure per-coin coverage within admission. PR320 remains separate and unmerged. N12 remains open; N14 awaits owner discussion."
+  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
+  "merged_main": "a0d5389cb633e73d467a76adf8318ab8aa6c0d83",
+  "merged_utc": "2026-10-11T21:08:55Z"
 }

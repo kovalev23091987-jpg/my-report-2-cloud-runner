@@ -70,8 +70,8 @@
     },
     {
       "id": "N12_CURRENT",
-      "status": "PR318_PR319_MERGED;PR321_APPROVED_104_SCOPE_CANDIDATE_CLOUD_PASS_UNMERGED;NATURAL_AND_FULL104_PENDING",
-      "action": "PR321 head 9839d30 is cloud assembled and restricted to the approved 104 HTX analysis assets; code is not merged. The prior auto-review rejected merging without explicit owner approval. After approval, check fresh main/fence/new own lease and exact PR head, merge normally, then verify actual same-run spot/futures source→manual/approved Telegram and measure per-coin coverage within admission. PR320 remains separate and unmerged. N12 remains open; N14 awaits owner discussion.",
+      "status": "PR321_SHARED_APPROVED_104_CONTEXT_MERGED;PR320_GATE_FUTURES_PENDING;NATURAL_AND_FULL104_PENDING",
+      "action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
       "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json"
     },
     {
@@ -1039,7 +1039,7 @@
     ],
     "next_action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES"
   },
-  "next_action": "PR321 head 9839d30 is cloud assembled and restricted to the approved 104 HTX analysis assets; code is not merged. The prior auto-review rejected merging without explicit owner approval. After approval, check fresh main/fence/new own lease and exact PR head, merge normally, then verify actual same-run spot/futures source→manual/approved Telegram and measure per-coin coverage within admission. PR320 remains separate and unmerged. N12 remains open; N14 awaits owner discussion.",
+  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
   "latest_package_accounting": {
     "catalog_HTTP": 6,
     "catalog_D1": {
@@ -3021,20 +3021,21 @@
   },
   "latest_active_block_spot_futures_candidate": {
     "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
-    "status": "OFFLINE_ASSEMBLED_VERIFIED_APPROVED_104_SCOPE;NOT_MERGED;EXPLICIT_OWNER_MERGE_APPROVAL_REQUIRED",
+    "status": "PR321_SQUASH_MERGED_MAIN;N10_N11_N12_ASSEMBLED_PASS;NATURAL_SOURCE_USE_PENDING",
     "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
-    "candidate_head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
+    "candidate_head": "1bab143fff2bd05b68deb609449a3baebb3c9848",
+    "merged_main": "a0d5389cb633e73d467a76adf8318ab8aa6c0d83",
     "cloud_runs": [
-      38174584667,
-      38174584647,
-      38174584651
+      38175007083,
+      38175007087,
+      38175007076
     ],
     "approved_104_exact_scope_offline_verified": true,
     "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
     "nonapproved_spot_fact_rejected": true,
     "non_ascii_spot_query_preserved": true,
     "actual_104_coverage_pending": true,
-    "main_merge_approval_required": true,
+    "shared_context_only": true,
     "pr320_unmerged": true
   }
 }
