@@ -1,12 +1,12 @@
 {
   "schema": "OWNER_REVIEW_RESUME_POINT_20261010_V1",
-  "recorded_ts": 1791742099065,
+  "recorded_ts": 1791747363629,
   "owner_instruction_local": "2026-10-10T14:32:56+03:00",
-  "source_main": "63243c4260a2d69df8e1c274317c4ebfff4effa1",
+  "source_main": "ffc03c3899391a23e994c06da5db1ccd4a03293b",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "main",
-  "current_task": "OWNER_N11_HTX_EXECUTION_500_POSTMERGE_NATURAL_VERIFICATION",
-  "continuation_policy": "PERSIST_EACH_VERIFIED_N10_PACKAGE_IN_GITHUB;N05_REMAINS_OPEN;N06_N09_PAUSED;N10_ONLY_CURRENT;N11_REQUIRES_OWNER_DISCUSSION",
+  "current_task": "OWNER_N12_MAXIMUM_USEFUL_REAL_TRADE_COVERAGE",
+  "continuation_policy": "N12_ONLY_OPEN;PR318_MERGED_AND_OFFLINE_VERIFIED;NATURAL_SAME_RUN_AND_FULL104_COVERAGE_PENDING;N05_OPEN;N06_N09_PAUSED;N11_NATURAL_PENDING;NO_N14_WITHOUT_OWNER_REVIEW",
   "completed_and_verified": [
     {
       "scope": "N01,N02,N03 pause",
@@ -63,9 +63,21 @@
       "action": "Continue only when owner selects N05 again; prior exact work retained in register and N05 checkpoints."
     },
     {
-      "id": "N11_NEXT_BLOCK",
-      "status": "NOT_STARTED_REQUIRES_OWNER_DISCUSSION",
-      "action": "Do not start before owner reviews N10 result and agrees next block."
+      "id": "N11_NATURAL_PROOF",
+      "status": "OPEN_AFTER_PR317",
+      "action": "Read ordinary postmerge report and verify exact HTX 500 quote, gate, manual and Telegram technical use without changing user-facing text.",
+      "proof": "checkpoints/N11_HTX_EXECUTION_500_RELEASE_20261011.json"
+    },
+    {
+      "id": "N12_CURRENT",
+      "status": "PR318_MERGED_OFFLINE_VERIFIED;NATURAL_AND_ALL104_COVERAGE_OPEN",
+      "action": "N12 remains open: verify the next natural same-run HTX spot/futures and validated independent venue facts through manual and approved Telegram receipts, then map exact useful routes for all 104 assets and admit one bounded missing-source batch. Preserve current caps/weights/layout; N05 and N11 pending; do not start N14 before owner discussion.",
+      "proof": "checkpoints/N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011.json"
+    },
+    {
+      "id": "NEXT_OWNER_BLOCK_REVIEW",
+      "status": "AFTER_N12_OWNER_DISCUSSION",
+      "action": "Discuss N14 option risk; do not start implementation."
     }
   ],
   "preserve": {
@@ -1027,7 +1039,7 @@
     ],
     "next_action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES"
   },
-  "next_action": "At next ordinary report after PR317, verify exact run/head/HTX 500 quote→N11 gate→manual facts→Telegram technical gate and approved SENT/message_id; keep N11 partial until this is proven. Do not start N12 before owner discussion.",
+  "next_action": "N12 remains open: verify the next natural same-run HTX spot/futures and validated independent venue facts through manual and approved Telegram receipts, then map exact useful routes for all 104 assets and admit one bounded missing-source batch. Preserve current caps/weights/layout; N05 and N11 pending; do not start N14 before owner discussion.",
   "latest_package_accounting": {
     "catalog_HTTP": 6,
     "catalog_D1": {
@@ -2901,5 +2913,24 @@
     "n05_complete": false,
     "n10_complete": false,
     "n06_n09_paused": true
+  },
+  "latest_n12_cross_venue_release": {
+    "schema": "N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011_V1",
+    "proof": "checkpoints/N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011.json",
+    "status": "PR318_MERGED_OFFLINE_ASSEMBLED_VERIFIED_NATURAL_104_COVERAGE_PENDING",
+    "complete": false,
+    "pr": 318,
+    "merged_main": "ffc03c3899391a23e994c06da5db1ccd4a03293b",
+    "tested_head": "107185f6b5bd4d01659676396402dea904ae9611",
+    "cloud_run": 38168525204,
+    "approved_assets": 104,
+    "same_run_htx_spot_futures": true,
+    "independent_n05_context_reuse": true,
+    "new_provider_http": 0,
+    "natural_sent_verified": false,
+    "all_104_recent_trade_coverage_verified": false,
+    "n05_complete": false,
+    "n06_n09_paused": true,
+    "n11_postmerge_pending": true
   }
 }

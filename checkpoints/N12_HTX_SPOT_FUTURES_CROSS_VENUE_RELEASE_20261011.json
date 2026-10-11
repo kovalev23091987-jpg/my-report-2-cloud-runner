@@ -1,0 +1,43 @@
+{
+  "schema": "N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011_V1",
+  "recorded_utc": "2026-10-11T19:35:51.810Z",
+  "owner_scope": "N12 only: maximize useful exact-asset trade evidence across spot, futures and independent venues; broad directional agreement is sufficient, exact numerical equality is not required; discordant evidence yields no common directional conclusion.",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "merged_pr": 318,
+  "merged_main": "ffc03c3899391a23e994c06da5db1ccd4a03293b",
+  "tested_pr_head": "107185f6b5bd4d01659676396402dea904ae9611",
+  "cloud_offline_run": 38168525204,
+  "cloud_offline_result": "PASS",
+  "cloud_artifact": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38168525204/artifacts/11713295366",
+  "implementation": {
+    "same_run_htx_futures_http_reused": true,
+    "htx_spot_exact_raw_trades_connected": true,
+    "htx_spot_and_futures_one_physical_venue": true,
+    "spot_and_futures_agreement_guard": "SAME_SIGN_ABS_IMBALANCE_GTE_0_05_ABS_STRENGTH_SPREAD_LTE_0_15",
+    "information_windows": "N12 recent bounded trades and N05 exact four-hour flows remain separately timed and are never summed as one interval",
+    "independent_cross_venue": "validated same-canonical N05 available/joint four-hour flow reused as source context, not a new N12 provider call",
+    "conflict_handling": "opposite N12 markets have zero common directional score; opposite N12 recent versus N05 four-hour directions explicitly suppress a common directional conclusion",
+    "manual_and_telegram": "same confirmed canonical fact and source receipts reach manual and both approved Telegram forms; approved layout retained",
+    "caps_weights_strategy_threshold_unchanged": true,
+    "new_provider_http_this_package": 0
+  },
+  "verification": {
+    "targeted_and_paused_unit": "PASS",
+    "current_generation_full_validation": "PASS",
+    "runtime_assembly_and_worker_pin": "PASS",
+    "output_contract_immutable_fixtures": "PASS",
+    "natural_postmerge_same_run_source_to_manual_and_sent": "PENDING",
+    "current_104_asset_trade_coverage": "UNPROVEN"
+  },
+  "limitations": [
+    "No new live provider response was collected in this package. Saved/controlled source-to-report and runtime proofs are not a fresh production report.",
+    "Deep checks select a small subset of the approved 104 assets each cycle; this release does not establish recent-trade coverage for all 104 at one run.",
+    "N05 four-hour external source coverage and exact routes remain incomplete and capacity-bound; its independent venue facts appear only where validated, fresh and present in the same canonical.",
+    "The historical bounded N12 trade sample is not a 24-hour full raw fill history or a verified large-trade/whale series.",
+    "A natural postmerge report and approved Telegram SENT/message_id have not yet been verified for this release.",
+    "N11 post-PR317 natural proof remains pending; N05 remains open; N06-N09 remain paused; N10 natural proof remains pending."
+  ],
+  "next_action": "Keep N12 open. Read the next ordinary report and original source clocks for exact HTX futures plus spot trade samples and N05 venue context, verify manual and approved Telegram source receipts and actual SENT when present. Build the 104-asset per-source exact route/use matrix from saved primary responses; only then plan one bounded admitted provider batch for missing independently useful spot/futures venues without raising caps. Do not start N14 until owner review.",
+  "n12_complete": false,
+  "project_complete": false
+}

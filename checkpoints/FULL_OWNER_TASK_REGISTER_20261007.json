@@ -4103,8 +4103,8 @@
       "task_id": "BLOCK_N12",
       "block": "N12",
       "name": "Реальные сделки и bounded flow",
-      "status": "SCOPED_LIVE_SAMPLE_WITH_FULL_WINDOW_GAPS",
-      "remaining_action": "Сохранить реальные bounded trade sample, различать actual rendering/neutral/nonzero receipts. Не выдавать sample за24h; расширение истории только фактическими fills в лимитах.",
+      "status": "PR318_MERGED_OFFLINE_VERIFIED_NATURAL_AND_FULL104_PENDING",
+      "remaining_action": "N12 remains open: verify the next natural same-run HTX spot/futures and validated independent venue facts through manual and approved Telegram receipts, then map exact useful routes for all 104 assets and admit one bounded missing-source batch. Preserve current caps/weights/layout; N05 and N11 pending; do not start N14 before owner discussion.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -4254,6 +4254,25 @@
         "actual_score_contribution": 0.0224,
         "scope": "ONE_ORIGINAL_GRAM_SNAPSHOT_CURRENT_MANUAL_AND_SENT171_EXACT",
         "all_assets_complete": false
+      },
+      "latest_cross_venue_release": {
+        "schema": "N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011_V1",
+        "proof": "checkpoints/N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011.json",
+        "status": "PR318_MERGED_OFFLINE_ASSEMBLED_VERIFIED_NATURAL_104_COVERAGE_PENDING",
+        "complete": false,
+        "pr": 318,
+        "merged_main": "ffc03c3899391a23e994c06da5db1ccd4a03293b",
+        "tested_head": "107185f6b5bd4d01659676396402dea904ae9611",
+        "cloud_run": 38168525204,
+        "approved_assets": 104,
+        "same_run_htx_spot_futures": true,
+        "independent_n05_context_reuse": true,
+        "new_provider_http": 0,
+        "natural_sent_verified": false,
+        "all_104_recent_trade_coverage_verified": false,
+        "n05_complete": false,
+        "n06_n09_paused": true,
+        "n11_postmerge_pending": true
       }
     },
     {
@@ -8831,7 +8850,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "N11_PR317_MERGED_ASSEMBLED_PASS;NATURAL_POSTMERGE_TELEGRAM_PENDING;N11_PARTIAL;N05_OPEN;N10_PARTIAL",
-  "next_action": "At next ordinary report after PR317, verify exact run/head/HTX 500 quote→N11 gate→manual facts→Telegram technical gate and approved SENT/message_id; keep N11 partial until this is proven. Do not start N12 before owner discussion.",
+  "next_action": "N12 remains open: verify the next natural same-run HTX spot/futures and validated independent venue facts through manual and approved Telegram receipts, then map exact useful routes for all 104 assets and admit one bounded missing-source batch. Preserve current caps/weights/layout; N05 and N11 pending; do not start N14 before owner discussion.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -12367,7 +12386,7 @@
       "next_action": "QUALIFY_BINANCE_SMALLER_OFFICIAL_CATALOG_AND_NATIVE_TAKER_CANDLES;QUALIFY_GATE_OKX_AND_REMAINING_VENUES_WITHIN_EXISTING_CAPS;DO_NOT_REPEAT_BITGET_ON_EXHAUSTED_DAY"
     }
   },
-  "current_task": "OWNER_N11_HTX_EXECUTION_500_POSTMERGE_NATURAL_VERIFICATION",
+  "current_task": "OWNER_N12_MAXIMUM_USEFUL_REAL_TRADE_COVERAGE",
   "latest_n05_actual_source_discovery": {
     "proof": "checkpoints/N05_ACTUAL_SOURCE_DISCOVERY_20261010.json",
     "schema": "N05_ACTUAL_SOURCE_DISCOVERY_20261010_V1",
@@ -14889,5 +14908,24 @@
     "n05_complete": false,
     "n10_complete": false,
     "n06_n09_paused": true
+  },
+  "latest_n12_cross_venue_release": {
+    "schema": "N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011_V1",
+    "proof": "checkpoints/N12_HTX_SPOT_FUTURES_CROSS_VENUE_RELEASE_20261011.json",
+    "status": "PR318_MERGED_OFFLINE_ASSEMBLED_VERIFIED_NATURAL_104_COVERAGE_PENDING",
+    "complete": false,
+    "pr": 318,
+    "merged_main": "ffc03c3899391a23e994c06da5db1ccd4a03293b",
+    "tested_head": "107185f6b5bd4d01659676396402dea904ae9611",
+    "cloud_run": 38168525204,
+    "approved_assets": 104,
+    "same_run_htx_spot_futures": true,
+    "independent_n05_context_reuse": true,
+    "new_provider_http": 0,
+    "natural_sent_verified": false,
+    "all_104_recent_trade_coverage_verified": false,
+    "n05_complete": false,
+    "n06_n09_paused": true,
+    "n11_postmerge_pending": true
   }
 }
