@@ -1,0 +1,449 @@
+{
+  "schema": "N05_BITFINEX_NEW_VENUE_PILOT_ACTUAL_V1",
+  "maximum_assets": 3,
+  "maximum_source_HTTP": 6,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 12000,
+    "rows_written": 400
+  },
+  "caps_changed": false,
+  "qualification_only": true,
+  "retained_catalog_run": 38138499328,
+  "run": "38138608166",
+  "head": "0b88237f6db7ffb16d6bb672a3ac69c4e48b5f31",
+  "main": "746d6ac7834ce8ed0631d215d776384e26703c8b",
+  "lease_owner": "CODEX:LOCAL_N05_BITFINEX:1791720752802",
+  "original_HTX_identity_file": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+  "original_HTX_identity_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+  "started_ts": 1791720968334,
+  "status": "BITFINEX_THREE_ASSET_ORIGINAL_WINDOW_RETAINED_NOT_QUALIFIED",
+  "sourceHTTP": 6,
+  "sources": [
+    {
+      "name": "BITFINEX-DASH-CANDLES1M",
+      "url": "https://api-pub.bitfinex.com/v2/candles/trade:1m:tDSHUSD/hist?start=1791706560000&end=1791720959999&limit=240&sort=1",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720960000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138608166:1:BITFINEX-DASH-CANDLES1M",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720970339,
+      "http_status": 200,
+      "received_ts": 1791720970601,
+      "body_sha256": "54b8d1d67d8402e50fad6bbac90af3d6f65074f74de538fa17b994100da0a908",
+      "gzip_sha256": "dca89cc323e3bcd7c78ec22d61bd340f6847659166e4d009ec4691a109ed850a",
+      "bytes": 821,
+      "file": "BITFINEX-DASH-CANDLES1M.json.gz"
+    },
+    {
+      "name": "BITFINEX-DASH-TRADES10000",
+      "url": "https://api-pub.bitfinex.com/v2/trades/tDSHUSD/hist?start=1791706560000&end=1791720959999&limit=10000&sort=1",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720960000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138608166:1:BITFINEX-DASH-TRADES10000",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720971770,
+      "http_status": 200,
+      "received_ts": 1791720971979,
+      "body_sha256": "3417b696ab15426ac150e93e0df621115b76731fc410330ed08f682f1b877641",
+      "gzip_sha256": "8997947163d691ce6cdec3ea2c8aa0e894b8739ba185d444f25ffa7f740b2194",
+      "bytes": 851,
+      "file": "BITFINEX-DASH-TRADES10000.json.gz"
+    },
+    {
+      "name": "BITFINEX-ALGO-CANDLES1M",
+      "url": "https://api-pub.bitfinex.com/v2/candles/trade:1m:tALGUSD/hist?start=1791706560000&end=1791720959999&limit=240&sort=1",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720960000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138608166:1:BITFINEX-ALGO-CANDLES1M",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720973156,
+      "http_status": 200,
+      "received_ts": 1791720973344,
+      "body_sha256": "6eaa16497ae42139b5fd98427111efb880540d63515c51617356abb5c506a939",
+      "gzip_sha256": "1ba0ebf81a0ed7ddf4f7e02b00cd1fae15b963a22c7e90739d49fb578cfb2b44",
+      "bytes": 257,
+      "file": "BITFINEX-ALGO-CANDLES1M.json.gz"
+    },
+    {
+      "name": "BITFINEX-ALGO-TRADES10000",
+      "url": "https://api-pub.bitfinex.com/v2/trades/tALGUSD/hist?start=1791706560000&end=1791720959999&limit=10000&sort=1",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720960000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138608166:1:BITFINEX-ALGO-TRADES10000",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720974504,
+      "http_status": 200,
+      "received_ts": 1791720974692,
+      "body_sha256": "49207b858143a13fba0e9f482bd52f4e624a06d8d295960bd8819efe209a9104",
+      "gzip_sha256": "b1633258d56b701419d614d1f725bd129d4a84bb73990aa1fb92ab975cd0cc90",
+      "bytes": 199,
+      "file": "BITFINEX-ALGO-TRADES10000.json.gz"
+    },
+    {
+      "name": "BITFINEX-XMR-CANDLES1M",
+      "url": "https://api-pub.bitfinex.com/v2/candles/trade:1m:tXMRUSD/hist?start=1791706560000&end=1791720959999&limit=240&sort=1",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720960000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138608166:1:BITFINEX-XMR-CANDLES1M",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720975837,
+      "http_status": 200,
+      "received_ts": 1791720976095,
+      "body_sha256": "d903a039713fa76bcd8ca7d1cb8554aa129e2fe4a963e493c395f7f477316718",
+      "gzip_sha256": "c2ea73a57e218c4fa2707b76293d2fff8583425ba71eb97109fc70e5d79801af",
+      "bytes": 12665,
+      "file": "BITFINEX-XMR-CANDLES1M.json.gz"
+    },
+    {
+      "name": "BITFINEX-XMR-TRADES10000",
+      "url": "https://api-pub.bitfinex.com/v2/trades/tXMRUSD/hist?start=1791706560000&end=1791720959999&limit=10000&sort=1",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720960000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138608166:1:BITFINEX-XMR-TRADES10000",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720977248,
+      "http_status": 200,
+      "received_ts": 1791720977667,
+      "body_sha256": "8cc0a66f5c2f7aebe181d9c31b0f7339784d69ed13ad84be28ec0ec8a6eeb738",
+      "gzip_sha256": "deadc954682fb3ef3256c65e6d4e4f9f4accaa4457c0297b779541ebb5c99bcc",
+      "bytes": 186386,
+      "file": "BITFINEX-XMR-TRADES10000.json.gz"
+    }
+  ],
+  "assets": [
+    {
+      "symbol": "DASH",
+      "market": "DSHUSD",
+      "api": "DSH",
+      "label": "Dash",
+      "htx": "dash1",
+      "exact_original_HTX_native": true,
+      "official_current_pair": true,
+      "official_symbol_mapping": true,
+      "official_label": "Dash",
+      "status": "ORIGINAL_WINDOW_RETAINED_NOT_RECONCILED",
+      "candle_rows": 18,
+      "trade_rows": 22,
+      "trade_oldest_ts": 1791708431156,
+      "trade_newest_ts": 1791720946502
+    },
+    {
+      "symbol": "ALGO",
+      "market": "ALGUSD",
+      "api": "ALG",
+      "label": "Algorand",
+      "htx": "algo",
+      "exact_original_HTX_native": true,
+      "official_current_pair": true,
+      "official_symbol_mapping": true,
+      "official_label": "Algorand",
+      "status": "ORIGINAL_WINDOW_RETAINED_NOT_RECONCILED",
+      "candle_rows": 5,
+      "trade_rows": 5,
+      "trade_oldest_ts": 1791706660719,
+      "trade_newest_ts": 1791720131585
+    },
+    {
+      "symbol": "XMR",
+      "market": "XMRUSD",
+      "api": "XMR",
+      "label": "Monero",
+      "htx": "xmr2",
+      "exact_original_HTX_native": true,
+      "official_current_pair": true,
+      "official_symbol_mapping": true,
+      "official_label": "Monero",
+      "status": "ORIGINAL_WINDOW_RETAINED_NOT_RECONCILED",
+      "candle_rows": 232,
+      "trade_rows": 4556,
+      "trade_oldest_ts": 1791706563226,
+      "trade_newest_ts": 1791720958899
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 58,
+      "reserved_rows_read": 884500,
+      "reserved_rows_written": 19484,
+      "measured_rows_read": 483487,
+      "measured_rows_written": 5708,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 12000,
+      "rows_written": 400
+    },
+    "projected_reserved": {
+      "rows_read": 896500,
+      "rows_written": 19884
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 1,
+    "required": 6,
+    "cap": 16,
+    "remaining": 15,
+    "allowed": true
+  },
+  "window_start_ts": 1791706560000,
+  "window_end_ts": 1791720960000,
+  "retained_catalog": {
+    "path": "checkpoints/n05-bitfinex-pilot-38138499328/BITFINEX-CURRENT-CATALOG.json.gz",
+    "gzip_sha256": "d67c9a7951a45edff51a770bac05f00efc6fc01b02a11d557d003ad04e8e3e53"
+  },
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 6,
+      "statistics": 0
+    },
+    "total": 6,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 158
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_BITFINEX_PILOT:38138608166:1",
+    "source_run_id": "38138608166",
+    "measured_rows_read": 138,
+    "measured_rows_written_accounted": 46,
+    "measured_requests_accounted": 53,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 53,
+    "rows_read": 139,
+    "rows_written": 46,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 59,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 6,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 6,
+        "rows_read": 27,
+        "rows_written": 24,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 12,
+        "rows_read": 33,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 12,
+        "rows_read": 6,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 6,
+        "rows_read": 6,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 6,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791720977875
+}
