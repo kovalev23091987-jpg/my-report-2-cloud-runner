@@ -1,0 +1,178 @@
+{
+  "schema": "N05_SAVED12_SHARED_NATIVE_BATCH_ACTUAL_V1",
+  "approved_assets": 104,
+  "candidate_contracts": [
+    "FLOKI-USDT",
+    "LINK-USDT",
+    "LSK-USDT",
+    "NEAR-USDT",
+    "PEPE-USDT",
+    "QNT-USDT",
+    "RLC-USDT",
+    "SHIB-USDT",
+    "SOL-USDT",
+    "SUI-USDT",
+    "XLM-USDT",
+    "ZEC-USDT"
+  ],
+  "common_closed_anchor": true,
+  "shared_poloniex_metadata_HTTP": 3,
+  "maximum_poloniex_native_HTTP": 12,
+  "maximum_poloniex_HTTP": 15,
+  "maximum_primary_identity_HTTP": 1,
+  "maximum_source_HTTP": 16,
+  "Poloniex_daily_cap": 16,
+  "HTX_ASSET_REFERENCE_daily_cap": 8,
+  "provider_minute_cap": 6,
+  "background_HTTP_cap": 28,
+  "D1_reservation": {
+    "rows_read": 16000,
+    "rows_written": 500
+  },
+  "caps_changed": false,
+  "requires_fresh_owned_cloud_guard_before_execution": true,
+  "not_scheduled_or_executed": false,
+  "run": "38132370750",
+  "head": "d22e62a007a95ecf9eaa3ffbc691c9b841f170d1",
+  "cloud_owner_guard": {
+    "main": "c5ee19df5dc7b48d5d84921f49d0789e0e3dfeab",
+    "lease_owner": "CODEX:CLOUD_FULL_TZ:20261011:1791714420611",
+    "fence_active": false,
+    "GitHub_control_reads": 3
+  },
+  "started_ts": 1791714839739,
+  "status": "BATCH_NOT_CLOSED",
+  "sourceHTTP": 0,
+  "sources": [],
+  "windows": [],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 41,
+      "reserved_rows_read": 687500,
+      "reserved_rows_written": 14060,
+      "measured_rows_read": 436180,
+      "measured_rows_written": 4823,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 703500,
+      "rows_written": 14560
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "allowed": false,
+    "Poloniex_cap": 16,
+    "HTX_identity_cap": 8,
+    "shared_metadata_HTTP": 3,
+    "primary_identity_HTTP": 1,
+    "selected_contracts": [],
+    "deferred_contracts": [
+      "FLOKI-USDT",
+      "LINK-USDT",
+      "LSK-USDT",
+      "NEAR-USDT",
+      "PEPE-USDT",
+      "QNT-USDT",
+      "RLC-USDT",
+      "SHIB-USDT",
+      "SOL-USDT",
+      "SUI-USDT",
+      "XLM-USDT",
+      "ZEC-USDT"
+    ],
+    "reason": "ENTIRE_USEFUL_BATCH_SOURCE_HEADROOM_REQUIRED",
+    "Poloniex_used": 13,
+    "HTX_identity_used": 2
+  },
+  "reason": "ENTIRE_USEFUL_BATCH_SOURCE_HEADROOM_REQUIRED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 0,
+      "statistics": 0
+    },
+    "total": 0,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 164
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_PLANNED_NATIVE:38132370750:1",
+    "source_run_id": "38132370750",
+    "measured_rows_read": 44,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 6,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 6,
+    "rows_read": 45,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 42,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791714840980,
+  "raw_batch": {
+    "body_sha256": "b4f17d61a674595e11f3c3fd7b11df2f2186b141a28ec67ef05de353fa23d4c8",
+    "gzip_sha256": "521afdb42701043ab5b977bface49826768fd26a7aa7e83484f8691fef1fce17",
+    "file": "original-batch.json.gz"
+  },
+  "individual_full_windows": 0,
+  "simultaneous_continuous_coverage": false
+}
