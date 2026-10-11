@@ -1,6 +1,6 @@
 {
   "schema": "OWNER_PAUSED_N06_N07_N08_N09_SHARED_SOURCE_AUDIT_20261011_V1",
-  "recorded_ts": 1791732681727,
+  "recorded_ts": 1791733705976,
   "basis_main": "839f25dd04923fd14acfadf913a273c3e47d481f",
   "owner_instruction": "Pause N06, N07, N08 and N09; exclude block facts from score, active coverage, manual report and Telegram. Keep any source used by another active block.",
   "paused_block_ids": [
@@ -153,10 +153,19 @@
     ],
     "exclusion_reason": "encrypted runtime unavailable in source archive; assembled cloud validation required"
   },
-  "assembled_cloud_validation": "PENDING",
+  "assembled_cloud_validation": {
+    "status": "PASS",
+    "run_id": 38152646598,
+    "artifact_id": 11706788412,
+    "artifact_digest": "sha256:b7ae41982ea106e3a9adda49d1c050cc2aee53abd3741a824b584eb15b2739d0",
+    "provider_http": 0,
+    "head": "1a1b44e41dbb5231802cbca333bddf0f1debe9b4"
+  },
   "production_or_telegram_delivery_proof": false,
   "strategy_weights_threshold_cadence_caps_changed": false,
   "N05_complete": false,
   "next_block": "N10",
-  "next_block_started": false
+  "next_block_started": false,
+  "merged_main": "5915dbf5c8f04b795439637a49f366642d9a784f",
+  "validated_candidate_head": "1a1b44e41dbb5231802cbca333bddf0f1debe9b4"
 }
