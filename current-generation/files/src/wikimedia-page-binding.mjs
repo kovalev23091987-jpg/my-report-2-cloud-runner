@@ -17,9 +17,14 @@ export const WIKIMEDIA_NATIVE_PAGES=Object.freeze({
  stellar:Object.freeze({article:'Stellar_(payment_network)',label:'Stellar'}),
  tron:Object.freeze({article:'Tron_(blockchain)',label:'TRON'}),
  zcash:Object.freeze({article:'Zcash',label:'Zcash'}),
+ xrp:Object.freeze({article:'XRP_Ledger',label:'XRP Ledger'}),
+ hedera:Object.freeze({article:'Hedera_(distributed_ledger)',label:'Hedera'}),
 });
+function exactHederaNativeIdentity(identity,contract){
+ return contract==='HBAR-USDT'&&identity?.chain==='hedera'&&identity?.asset_kind==='NATIVE'&&identity?.native_asset_id==='hedera:mainnet'&&identity?.contract_or_mint==null?{chain:'hedera'}:null;
+}
 export function exactWikimediaPageBinding({contract,asset_identity}={}){
- const native=exactNativeSectorBinding(asset_identity,contract),page=native&&WIKIMEDIA_NATIVE_PAGES[native.chain];
+ const native=exactNativeSectorBinding(asset_identity,contract)||exactHederaNativeIdentity(asset_identity,contract),page=native&&WIKIMEDIA_NATIVE_PAGES[native.chain];
  return page?{...page,chain:native.chain,asset_id:`${native.chain}:native:mainnet`,page_url:`https://en.wikipedia.org/wiki/${page.article}`}:null;
 }
 export function verifiedWikimediaEvidencePage(row){

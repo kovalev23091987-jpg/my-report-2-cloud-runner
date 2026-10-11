@@ -1,0 +1,119 @@
+{
+  "schema": "N06_SOURCE_INDEPENDENCE_AND_ACCESS_AUDIT_20261011_V1",
+  "scope": "104 current HTX assets; social activity and attention only",
+  "rule": "A route, HTTP 200, provider catalog, empty exact search, or a second connector to the same original corpus is not a useful independent fact.",
+  "sources": [
+    {
+      "id": "BLUESKY_PUBLIC",
+      "upstream": "Bluesky public post corpus",
+      "status": "CONNECTED_PRIMARY_BUT_ASSET_FACT_COVERAGE_UNPROVEN",
+      "route_assets": 104,
+      "useful_fresh_asset_count": null,
+      "consumer": "N06 conditional source evidence; original post createdAt and independent authors; 30 windows/7 days baseline remains required",
+      "caveat": "Exact HTX market-pair search can return zero and cannot prove broad social absence; no directional vote"
+    },
+    {
+      "id": "WIKIMEDIA_ATTENTION",
+      "upstream": "Wikimedia AQS pageviews",
+      "status": "CONNECTED_NEUTRAL_SUPPLEMENT",
+      "exact_page_assets_before_current_batch": 15,
+      "prior_actual_report_proof_assets": [
+        "ADA",
+        "BTC",
+        "ETH",
+        "SOL",
+        "DOGE"
+      ],
+      "new_route_assets_awaiting_live": [
+        "AVAX",
+        "BCH",
+        "ATOM",
+        "ETC",
+        "LTC",
+        "NEAR",
+        "DOT",
+        "XLM",
+        "TRX",
+        "ZEC"
+      ],
+      "consumer": "Neutral 14 complete UTC day pageviews in N06 report context; no score, direction, unique trader claim",
+      "caveat": "Project article views, not coin trading or social participants"
+    },
+    {
+      "id": "GDELT_NEWS_DISCOVERY",
+      "upstream": "GDELT news index",
+      "status": "CONNECTED_DISCOVERY_ONLY_NOT_QUALIFIED_BROAD_ATTENTION",
+      "useful_fresh_asset_count": null,
+      "consumer": "Official domain/name link discovery only",
+      "caveat": "Prior actual 429 and no exact metadata for many assets; not a substitute for original independent social counts"
+    },
+    {
+      "id": "REDDIT_DATA_API",
+      "upstream": "Reddit posts",
+      "status": "NOT_CONNECTED_ACCESS_REQUIRED",
+      "required_access": "Registered Reddit OAuth client/token and Data API permission under current Reddit policy",
+      "source": "https://support.reddithelp.com/hc/en-us/articles/16160319875092-Reddit-Data-API-Wiki",
+      "qualification": "Require original created timestamp, exact contract/native project binding, useful nonempty posts and report consumer before counting"
+    },
+    {
+      "id": "MASTODON_STATUS_SEARCH",
+      "upstream": "Federated Mastodon statuses",
+      "status": "NOT_CONNECTED_NO_RELIABLE_PUBLIC_GLOBAL_FULLTEXT",
+      "required_access": "Authenticated instance with status full-text search backend; still not a global corpus",
+      "source": "https://docs.joinmastodon.org/methods/search/"
+    },
+    {
+      "id": "GOOGLE_TRENDS_API",
+      "upstream": "Google search interest",
+      "status": "NOT_CONNECTED_ALPHA_ACCESS_REQUIRED",
+      "required_access": "Accepted Google Trends API alpha tester access",
+      "source": "https://developers.google.com/search/apis/trends",
+      "qualification": "Exact project identity and enough nonzero comparable data before report use"
+    },
+    {
+      "id": "FARCASTER_NEYNAR",
+      "upstream": "Farcaster casts via Neynar",
+      "status": "NOT_CONNECTED_API_KEY_REQUIRED",
+      "required_access": "Neynar API key and documented quota; original cast timestamps and exact identity still need validation",
+      "source": "https://docs.neynar.com/nodejs-sdk/channel-apis/searchChannels"
+    },
+    {
+      "id": "SANTIMENT_SOCIAL_VOLUME",
+      "upstream": "Santiment aggregated original social document corpus, including Reddit/Twitter/Telegram",
+      "status": "CODEX_CONNECTOR_ACTUAL_DATA_VERIFIED;AUTOMATIC_GITHUB_RUNNER_ACCESS_PENDING_OWNER_SANAPI_KEY",
+      "catalog_metric": "social_volume_total",
+      "catalog_assets": 493,
+      "htx_ticker_matches": 80,
+      "unique_ticker_matches": 74,
+      "ambiguous_ticker_matches": 6,
+      "not_in_catalog_by_ticker": 24,
+      "actual_dated_pilot_assets": [
+        "BTC",
+        "HBAR",
+        "PEPE",
+        "WIF",
+        "AVNT"
+      ],
+      "complete_utc_days_in_pilot": 7,
+      "preliminary_current_day_excluded": true,
+      "report_consumer_verified": false,
+      "required_access": "REPORT2_SANTIMENT_API_KEY GitHub Actions secret with SanAPI social_volume_total entitlement",
+      "source": "https://academy.santiment.net/metrics/social-volume/",
+      "api_access_source": "https://academy.santiment.net/sanapi/accessing-the-api/",
+      "independence_caveat": "All Santiment social submetrics share the same underlying Santiment corpus; count as one provider, not separate independent Reddit/Twitter/Telegram sources."
+    }
+  ],
+  "independence_groups": {
+    "BLUESKY_PUBLIC": "BLUESKY_POSTS",
+    "WIKIMEDIA_ATTENTION": "WIKIMEDIA_PAGEVIEWS",
+    "GDELT_NEWS_DISCOVERY": "GDELT_NEWS_INDEX",
+    "REDDIT_DATA_API": "REDDIT_POSTS",
+    "MASTODON_STATUS_SEARCH": "MASTODON_INSTANCE_SEARCH",
+    "GOOGLE_TRENDS_API": "GOOGLE_SEARCH_INTEREST",
+    "FARCASTER_NEYNAR": "FARCASTER_CASTS",
+    "SANTIMENT_SOCIAL_VOLUME": "SANTIMENT_SOCIAL_CORPUS"
+  },
+  "N06_complete": false,
+  "report_format_changed": false,
+  "strategy_or_weights_changed": false
+}

@@ -5,10 +5,11 @@ import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import * as guard from '../runner/d1-preaction-budget-guard.mjs';
 
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner';
-const targets=['AVAX','BCH','ATOM','ETC','LTC','NEAR','DOT','XLM','TRX','ZEC'];
+const groups={native10:['AVAX','BCH','ATOM','ETC','LTC','NEAR','DOT','XLM','TRX','ZEC'],extra2:['XRP','HBAR']};
+const batch=process.env.REPORT2_N06_BATCH||'native10',targets=groups[batch];if(!targets)throw Error('EXACT_N06_BATCH_REQUIRED');
 const source='WIKIMEDIA_ATTENTION',cap=12,reservation={rows_read:10000,rows_written:1000};
 const root='audit-output/n06-wikimedia-native10',digest=b=>createHash('sha256').update(b).digest('hex');
-const plan={schema:'N06_WIKIMEDIA_NATIVE10_PLAN_V1',targets,source,maximum_source_HTTP:10,existing_manual_source_daily_cap:cap,existing_provider_minute_cap:2,whole_job_background_cap:28,D1_reservation:reservation,primary_bluesky_substituted:false,score_or_format_changed:false};
+const plan={schema:'N06_WIKIMEDIA_NATIVE_PAGE_BATCH_PLAN_V1',batch,targets,source,maximum_source_HTTP:targets.length,existing_manual_source_daily_cap:cap,existing_provider_minute_cap:2,whole_job_background_cap:28,D1_reservation:reservation,primary_bluesky_substituted:false,score_or_format_changed:false};
 if(process.argv.includes('--plan')){console.log(JSON.stringify(plan,null,2));process.exit(0);}
 for(const k of ['GITHUB_RUN_ID','GITHUB_SHA','GITHUB_TOKEN','GITHUB_REPOSITORY','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN'])if(!process.env[k])throw Error(k+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repository)throw Error('EXACT_REPOSITORY_REQUIRED');
@@ -37,7 +38,7 @@ try{
  const row=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind(source,new Date(now).toISOString().slice(0,10)).first();
  const used=row==null?0:Number(row.attempts);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_SOURCE_COUNTER');
  const affordable=Math.max(0,Math.min(targets.length,cap-used));out.source_preflight={used,cap,affordable,selected:targets.slice(0,affordable)};
- if(affordable<4)throw Error('USEFUL_NATIVE_BATCH_SOURCE_HEADROOM_REQUIRED');
+ if(affordable<Math.min(4,targets.length))throw Error('USEFUL_NATIVE_BATCH_SOURCE_HEADROOM_REQUIRED');
  for(const symbol of out.source_preflight.selected){
   if(out.sourceHTTP>0&&out.sourceHTTP%2===0&&out.sourceHTTP!==lastWaitAfter){await new Promise(r=>setTimeout(r,61000));lastWaitAfter=out.sourceHTTP;}
   if(!guard.evaluateWithinRunReservation({reservation,currentUsage:db.usageSnapshot(),extraRowsRead:500,extraRowsWritten:60}).allowed){out.results.push({symbol,status:'D1_HEADROOM_DENIED'});break;}

@@ -39,3 +39,14 @@ test('ten additional verified native page routes produce neutral report context 
   assert.equal(exactWikimediaPage({contract,asset_identity:{...asset_identity,chain:'bitcoin'}}),null);
  }
 });
+test('XRP and HBAR exact native pages reject ticker collisions and wrapped assets',()=>{
+ for(const [symbol,chain,article] of [['XRP','xrp','XRP_Ledger'],['HBAR','hedera','Hedera_(distributed_ledger)']]){
+  const contract=symbol+'-USDT',asset_identity={chain,asset_kind:'NATIVE',native_asset_id:chain+':mainnet',contract_or_mint:null};
+  assert.equal(exactWikimediaPage({contract,asset_identity}),article);
+  assert.equal(exactWikimediaPage({contract,asset_identity:{...asset_identity,asset_kind:'WRAPPED'}}),null);
+  assert.equal(exactWikimediaPage({contract,asset_identity:{...asset_identity,chain:'ethereum'}}),null);
+  const result=normalizeWikimediaAttention({contract,asset_identity,payload:{items:rows.map(r=>({...r,article}))},observed_ts:NOW});
+  assert.equal(result.status,'CLOSED');
+  assert.equal(consumeBlockResultContext({contract,evidence:result.evidence,now:NOW}).facts.length,1);
+ }
+});

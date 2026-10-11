@@ -36,6 +36,7 @@ jobs:
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
       - name: One collective offline validation of N06 route and report consumer
         env:
+          REPORT2_N06_BATCH: extra2
           REPORT2_TEST_RUNTIME: runtime
           REPORT2_UNIFIED_MODULE_ROOT: runtime/src
           NODE_OPTIONS: --import ${{ github.workspace }}/current-generation/tests/early-evidence-repair/no-network.mjs
@@ -47,6 +48,7 @@ jobs:
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/n06-wikimedia-native10/binding.json
       - name: Obtain bounded original pageview facts and check report use
         env:
+          REPORT2_N06_BATCH: extra2
           GITHUB_TOKEN: ${{ github.token }}
           REPORT2_EXPECTED_MAIN: ${{ github.sha }}
           REPORT2_EXPECTED_LEASE_OWNER: CODEX:LOCAL_N06_MAX_COVERAGE:1791725240977
