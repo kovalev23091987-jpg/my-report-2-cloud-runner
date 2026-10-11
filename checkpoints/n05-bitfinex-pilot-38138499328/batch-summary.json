@@ -1,0 +1,225 @@
+{
+  "schema": "N05_BITFINEX_NEW_VENUE_PILOT_ACTUAL_V1",
+  "maximum_assets": 0,
+  "maximum_source_HTTP": 1,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 12000,
+    "rows_written": 400
+  },
+  "caps_changed": false,
+  "qualification_only": true,
+  "run": "38138499328",
+  "head": "a26260c2f5a230442c859eec0908d977b6929c10",
+  "main": "746d6ac7834ce8ed0631d215d776384e26703c8b",
+  "lease_owner": "CODEX:LOCAL_N05_BITFINEX:1791720752802",
+  "original_HTX_identity_file": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+  "original_HTX_identity_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+  "started_ts": 1791720867017,
+  "status": "BITFINEX_CURRENT_CATALOG_RETAINED_NOT_QUALIFIED",
+  "sourceHTTP": 1,
+  "sources": [
+    {
+      "name": "BITFINEX-CURRENT-CATALOG",
+      "url": "https://api-pub.bitfinex.com/v2/conf/pub:list:pair:exchange,pub:map:currency:sym,pub:map:currency:label,pub:map:currency:pool",
+      "source": "N05_OFFICIAL_FLOW:BITFINEX",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITFINEX",
+        "minute_bucket": 1791720840000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BITFINEX_PILOT:38138499328:1:BITFINEX-CURRENT-CATALOG",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720869147,
+      "http_status": 200,
+      "received_ts": 1791720869429,
+      "body_sha256": "13404655b75ab9df0bb9b209efb03417ea13677cdf94259d57fa64f2f46b20fc",
+      "gzip_sha256": "d67c9a7951a45edff51a770bac05f00efc6fc01b02a11d557d003ad04e8e3e53",
+      "bytes": 8271,
+      "file": "BITFINEX-CURRENT-CATALOG.json.gz"
+    }
+  ],
+  "assets": [],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 57,
+      "reserved_rows_read": 872500,
+      "reserved_rows_written": 19084,
+      "measured_rows_read": 483421,
+      "measured_rows_written": 5695,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 12000,
+      "rows_written": 400
+    },
+    "projected_reserved": {
+      "rows_read": 884500,
+      "rows_written": 19484
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 0,
+    "required": 1,
+    "cap": 16,
+    "remaining": 16,
+    "allowed": true
+  },
+  "catalog_shapes": [
+    {
+      "array": true,
+      "length": 194,
+      "first": "A"
+    },
+    {
+      "array": true,
+      "length": 83,
+      "first": "ALG"
+    },
+    {
+      "array": true,
+      "length": 155,
+      "first": "AAVE"
+    },
+    {
+      "array": true,
+      "length": 69,
+      "first": "AAVE"
+    }
+  ],
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 1,
+      "statistics": 0
+    },
+    "total": 1,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 163
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_BITFINEX_PILOT:38138499328:1",
+    "source_run_id": "38138499328",
+    "measured_rows_read": 66,
+    "measured_rows_written_accounted": 13,
+    "measured_requests_accounted": 13,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 13,
+    "rows_read": 67,
+    "rows_written": 13,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 58,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791720869616
+}
