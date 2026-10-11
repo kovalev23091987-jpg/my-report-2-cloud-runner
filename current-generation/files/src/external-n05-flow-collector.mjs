@@ -3,6 +3,7 @@ import {collectBackpackFlow} from './backpack-flow-collector.mjs';
 import {collectKrakenFlow} from './kraken-flow-collector.mjs';
 import {collectBitfinexNativeFlow} from './bitfinex-native-flow-collector.mjs';
 import {collectGateFlow} from './gate-flow-collector.mjs';
+import {collectGateFuturesTradeSample} from './gate-futures-trade-collector.mjs';
 import {collectTurnoverBaseline} from './flow-turnover-collector.mjs';
 import {collectBitgetFlow} from './bitget-flow-collector.mjs';
 import {collectBinanceNativeFlow} from './binance-native-flow-collector.mjs';
@@ -47,5 +48,8 @@ export async function collectExternalN05Flow(params={}){
  if(params.asset_identity?.asset_kind==='NATIVE')routes.push(['KRAKEN',collectKrakenFlow]);
  if(params.asset_identity?.contract_or_mint)routes.push(['GATE',collectGateFlow],['BACKPACK',collectBackpackFlow]);
  routes.push(['BITGET',collectBitgetFlow],['POLONIEX',collectPoloniexFlow]);
+ // N12 can reuse Gate's already exact-bound spot metadata. This optional
+ // futures sample is last and shares the same five-call/Gate ledgers as N05.
+ if(params.asset_identity?.contract_or_mint)routes.push(['GATE_FUTURES_N12',collectGateFuturesTradeSample]);
  return collectN05VenueRoutes(params,routes);
 }

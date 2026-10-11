@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {pathToFileURL} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 
-const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'../..');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 
 export async function loadEffectivePresentationModules(){
   const target=fs.mkdtempSync(path.join(os.tmpdir(),'report2-output-contract-'));
@@ -15,6 +15,7 @@ export async function loadEffectivePresentationModules(){
     'kraken-public-taker-reference.mjs':'current-generation/files/src/kraken-public-taker-reference.mjs',
     'binance-native-four-hour-flow.mjs':'current-generation/files/src/binance-native-four-hour-flow.mjs',
     'gate-four-hour-flow.mjs':'current-generation/files/src/gate-four-hour-flow.mjs',
+    'gate-futures-trade-sample.mjs':'current-generation/files/src/gate-futures-trade-sample.mjs',
     'gate-public-taker-reference.mjs':'current-generation/files/src/gate-public-taker-reference.mjs',
     'joint-spot-futures-flow.mjs':'current-generation/files/src/joint-spot-futures-flow.mjs',
     'bitget-four-hour-flow.mjs':'current-generation/files/src/bitget-four-hour-flow.mjs',

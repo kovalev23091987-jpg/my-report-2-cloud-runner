@@ -1,0 +1,71 @@
+{
+  "schema": "N12_GATE_FUTURES_BOUNDED_SOURCE_RELEASE_20261011_V1",
+  "recorded_utc": "2026-10-11T20:16:07.044767+00:00",
+  "base_main": "8dc21ce68624df74bf2bc7f4a6e317e0491a9479",
+  "scope": "N12 ONLY; optional bounded Gate futures taker trades for exact token, reused existing Gate/N05 metadata, daily/minute/caller limits and approved manual/Telegram context slots; no strategy, weight, score, entry or output layout change.",
+  "status": "CODE_CANDIDATE_LOCAL_SOURCE_TO_REPORT_VERIFIED;ASSEMBLED_CLOUD_AND_NATURAL_PRODUCTION_PENDING",
+  "original_saved_source": {
+    "trade_gzip": "checkpoints/n05-actual-qualification-38049404414/flow-GATE-FUTURES-AAVE.json.gz",
+    "trade_gzip_sha256": "1f3d892edf1ad2a62513a3a484513ba956b1745320ac2a231bada34024267ed3",
+    "contract_catalog_gzip": "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-FUTURES.json.gz",
+    "contract_catalog_gzip_sha256": "0d1e1ea617b52ecb684278f4e856254aed78e3e317dc4bcd9323c3a55d4f1925",
+    "asset": "AAVE",
+    "returned_rows": 1000,
+    "selected_last_five_minutes_rows": 144,
+    "contract_multiplier": 0.01,
+    "bounded_buy_quote_usdt": 1719.2106,
+    "bounded_sell_quote_usdt": 2124.9888,
+    "bounded_imbalance": -0.10555597089994828,
+    "whole_five_minute_window_proven": false,
+    "original_clock_not_current": true,
+    "exact_cross_venue_identity_catalogs_for_this_saved_trade_page": "CONTROLLED_FIXTURE_ONLY;CURRENT_CATALOG_PRODUCTION_VALIDATION_REQUIRED"
+  },
+  "structural_potential": {
+    "approved_htx_assets": 104,
+    "historical_gate_futures_trading_direct_positive_multiplier_symbol_hits": 102,
+    "historical_gate_exact_token_spot_binding_and_futures_symbol_candidates": 45,
+    "structural_not_fresh_or_actual_report_coverage": true
+  },
+  "source_to_report_path": [
+    "current-generation/files/src/gate-futures-trade-sample.mjs",
+    "current-generation/files/src/gate-futures-trade-collector.mjs",
+    "current-generation/files/src/external-n05-flow-collector.mjs",
+    "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+    "current-generation/files/src/block-result-context.mjs",
+    "current-generation/files/src/telegram-plain-facts.mjs"
+  ],
+  "admission": {
+    "source_ledger": "N05_OFFICIAL_FLOW:GATE",
+    "daily_cap": 16,
+    "minute_provider": "GATE",
+    "minute_cap": 4,
+    "same_caller_five_request_cap": true,
+    "request_body_limit_bytes": 2097152,
+    "bounded_fresh_metadata_and_trades_requests": 2,
+    "if_previous_N05_routes_spend_cap": "NO_GATE_FUTURES_HTTP",
+    "durable_gate_backoff_shared": true,
+    "new_source_alias_or_cap": false
+  },
+  "local_verification": {
+    "original_raw_page_replay": "PASS; 144 actual eligible source rows, both taker sides, original multiplier",
+    "gate_collector_and_shared_ledger": "PASS; two mocked transports spend existing Gate ledger, cache zero transport, daily16 denial zero transport",
+    "source_to_manual_and_approved_telegram": "PASS; evidence IDs present in both formatter audits, disagreement blocks combined conclusion",
+    "targeted_tests": "56 PASS, 0 FAIL including original V4 golden byte freeze",
+    "full_local_generation": "NOT_CLOSED_IN_SPARSE_CHECKOUT; baseline runtime files missing; assembled GitHub workflow required",
+    "provider_http": 0,
+    "natural_MAIN": 0,
+    "fresh_SENT_message_id": null
+  },
+  "remaining": [
+    "Cloud assembled generation/producer/consumer validation on candidate head, then postmerge natural exact source-to-report and Telegram readback.",
+    "Fresh Gate currency/spot/futures identity and trades under current quota must be observed; historical symbol routes and controlled replay are not 45 current covered coins.",
+    "All104 spot+futures fresh per-coin coverage and same-window multi-exchange comparison remain open; KuCoin/OKX and other candidates from N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011.json still need qualification.",
+    "Gate N05 cap16/day shared; frequent all-asset sampling through this source alone is impossible."
+  ],
+  "official_references": [
+    "https://www.gate.com/docs/developers/apiv4/en/futures/",
+    "https://www.gate.com/docs/developers/futures/ws/en/"
+  ],
+  "n12_complete": false,
+  "next_block_started": false
+}
