@@ -1,0 +1,173 @@
+{
+  "schema": "N06_COINGECKO_PENGU_ATTENTION_PILOT_V1",
+  "target": "PENGU-USDT",
+  "max_source_http": 2,
+  "daily_source_pilot_cap": 2,
+  "shared_coingecko_minute_cap": 9,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 10000,
+    "rows_written": 1000
+  },
+  "score_or_format_changed": false,
+  "new_fresh_SENT": false,
+  "run": "38147765446",
+  "head": "6e9aedf50ba8928384f32111db5c1729eb1acf93",
+  "lease_owner": "CODEX:LOCAL_N06_COINGECKO_TRENDING:1791729037952",
+  "route_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
+  "started_ts": 1791729315640,
+  "status": "ACTUAL_EXACT_ATTENTION_FACT_IN_CONTROLLED_REPORT",
+  "sourceHTTP": 2,
+  "originals": [
+    {
+      "label": "exact-token-metadata",
+      "url": "https://api.coingecko.com/api/v3/coins/solana/contract/2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "http_status": 200,
+      "received_ts": 1791729317816,
+      "body_sha256": "3ba6afc254e10a8c1a309849790515fb34adc6955f243caea1c27aa937a94735",
+      "gzip_sha256": "862e5e9e456bbb8f27b2e5982b78b55f9deab0f8c80c549620c8f3c9d878a297",
+      "bytes": 5015,
+      "file": "exact-token-metadata.json.gz"
+    },
+    {
+      "label": "trending-search-list",
+      "url": "https://api.coingecko.com/api/v3/search/trending",
+      "http_status": 200,
+      "received_ts": 1791729317842,
+      "body_sha256": "406ff8e687231e504029bcebf2e4761c43ae270a0aeacecfb67d3f10fecba962",
+      "gzip_sha256": "c675d6904bd20a943c6fea1eeb9face46eb0fe536f2663da63f590d0a5c7a386",
+      "bytes": 74506,
+      "file": "trending-search-list.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "N06_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 71,
+      "reserved_rows_read": 1118000,
+      "reserved_rows_written": 26352,
+      "measured_rows_read": 611735,
+      "measured_rows_written": 7312,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 10000,
+      "rows_written": 1000
+    },
+    "projected_reserved": {
+      "rows_read": 1128000,
+      "rows_written": 27352
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "consumer_checked": true,
+  "report_excerpt": "на момент проверки 2026-10-11 14:35:17 UTC монета была на месте 14 в списке популярных поисков CoinGecko; это интерес пользователей сайта, число трейдеров и направление цены не установлены",
+  "rank": 14,
+  "returned_list_length": 15,
+  "score_adjustment": 0,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 2,
+      "statistics": 0
+    },
+    "total": 2,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 162
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N06_COINGECKO_PENGU:38147765446:1",
+    "source_run_id": "38147765446",
+    "measured_rows_read": 80,
+    "measured_rows_written_accounted": 13,
+    "measured_requests_accounted": 19,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 19,
+    "rows_read": 81,
+    "rows_written": 13,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 72,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791729318031
+}

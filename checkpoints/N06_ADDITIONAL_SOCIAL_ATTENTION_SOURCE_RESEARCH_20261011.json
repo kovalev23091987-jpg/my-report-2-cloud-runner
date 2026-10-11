@@ -1,5 +1,5 @@
 {
-  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V2",
+  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V3",
   "observed_utc": "2026-10-11T14:13:03.783099Z",
   "target": "104 current HTX crypto assets; usefulness requires exact asset, original clock, actual data, N06 consumer and controlled report",
   "candidates": [
@@ -19,9 +19,11 @@
         "nervos-network"
       ],
       "htx_exact_candidate": "PENGU-USDT only among returned items has retained Solana mint; official CoinGecko article references same mint, but direct original API and report consumer not yet verified",
-      "status": "ACTUAL_CATALOG_RETRIEVED_NOT_N06_REPORT_QUALIFIED",
-      "coverage_limit": "Top-list presence only; absence from truncated list does not mean zero interest or inactivity",
-      "official_reference": "https://docs.coingecko.com/changelog/10122018"
+      "status": "ACTUAL_EXACT_PENGU_ORIGINAL_AND_CONTROLLED_REPORT_PROOF",
+      "coverage_limit": "One PENGU fact only, list top15; absence from list does not establish no interest. Natural production run not proved.",
+      "official_reference": "https://docs.coingecko.com/changelog/10122018",
+      "actual_proof": "checkpoints/N06_COINGECKO_EXACT_PENGU_CONTROLLED_REPORT_PROOF_20261011.json",
+      "actual_rank": "PENGU 14 of 15 at 2026-10-11T14:35:17Z"
     },
     {
       "source": "CoinMarketCap Community Trending Token",
@@ -99,10 +101,9 @@
     "CoinDesk Reddit and a separate Reddit API or Santiment Reddit metric share Reddit as original platform; count independent original corpora, not provider wrappers."
   ],
   "next_source_priority": [
-    "Use existing exact CoinGecko identities to calculate address/ID-qualified candidate coverage offline, then one guarded source-to-report pilot for observed PENGU Trending or separate votes only if current original response is available.",
-    "If owner has a CoinDesk subscription, test one exact asset daily social original before building a batch; no subscription assumption.",
-    "Do not use retired CoinGecko community_data or mistake CoinGecko/GeckoTerminal endpoints for separate independent platforms.",
-    "Keep Wikimedia16 as the only controlled report-qualified N06 coverage; preserve N05 open and no N07."
+    "Use exact retained identities to prequalify all104 against one shared CoinGecko Trending list before next admitted call; avoid per-coin repeat calls.",
+    "Seek additional independent current primary sources; CoinDesk requires verified subscription and exact asset fact.",
+    "Retain 17 controlled report assets; no natural fresh SENT proof or N06 completion."
   ],
-  "updated_utc": "2026-10-11T14:27:50.503Z"
+  "updated_utc": "2026-10-11T14:38:28.844Z"
 }

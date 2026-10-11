@@ -1,5 +1,5 @@
 {
-  "schema": "N06_CURRENT104_COVERAGE_RECONCILIATION_V5",
+  "schema": "N06_CURRENT104_COVERAGE_RECONCILIATION_V6",
   "source_scope": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
   "source_scope_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
   "actual_native10_run": 38144019618,
@@ -24,7 +24,11 @@
     "assets_without_prior_or_new_wikimedia_report_proof": 88,
     "bluesky_exact_address_positive_original_posts_assets": 0,
     "bluesky_exact_address_zero_original_posts_1h_assets": 12,
-    "bluesky_exact_address_not_probed_assets": 92
+    "bluesky_exact_address_not_probed_assets": 92,
+    "coingecko_exact_search_trending_actual_controlled_report_assets": 1,
+    "any_actual_source_fact_and_controlled_report_assets": 17,
+    "assets_without_any_actual_source_fact_and_controlled_report": 87,
+    "assets_with_two_independent_actual_report_sources": 0
   },
   "rows": [
     {
@@ -604,9 +608,13 @@
       "bluesky_fresh_useful_fact_this_reconciliation": false,
       "wikimedia_native_page": null,
       "wikimedia_status": "NO_EXACT_NATIVE_PAGE",
-      "other_independent_social_source_status": "NO_QUALIFIED_EXACT_FACT",
+      "other_independent_social_source_status": "COINGECKO_EXACT_SEARCH_TRENDING_ACTUAL_CONTROLLED_REPORT_PROOF",
       "bluesky_actual_exact_address_1h_status": "ZERO_ORIGINAL_POSTS_IN_EXACT_ADDRESS_SEARCH",
-      "bluesky_actual_run": 38146564579
+      "bluesky_actual_run": 38146564579,
+      "coingecko_trending_run": 38147765446,
+      "coingecko_trending_rank": 14,
+      "coingecko_trending_returned_list_length": 15,
+      "coingecko_trending_original_hashes_verified": true
     },
     {
       "symbol": "PEOPLE",
@@ -999,5 +1007,9 @@
   "actual_extra2_summary": "checkpoints/n06-wikimedia-extra2-38144720142/batch-summary.json",
   "actual_bluesky_exact12_run": 38146564579,
   "actual_bluesky_exact12_artifact_id": 11704503106,
-  "actual_bluesky_exact12_artifact_digest": "sha256:7582db9a0af0b9853edcca846f196549fb00f04d7b742825484e9e6bb76eef91"
+  "actual_bluesky_exact12_artifact_digest": "sha256:7582db9a0af0b9853edcca846f196549fb00f04d7b742825484e9e6bb76eef91",
+  "actual_coingecko_trending_run": 38147765446,
+  "actual_coingecko_trending_artifact_id": 11705248989,
+  "actual_coingecko_trending_artifact_digest": "sha256:4c95f05a7dc90005c41aab9cffd5c29efff8828309cd9e39a44b20ef037a1687",
+  "actual_coingecko_trending_summary": "checkpoints/n06-coingecko-trending-pengu-38147765446/batch-summary.json"
 }
