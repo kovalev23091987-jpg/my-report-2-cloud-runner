@@ -1,7 +1,18 @@
 {
   "schema": "N10_TECHNICAL_PATH_REVIEW_20261011_V1",
   "block": "N10",
-  "status": "CONNECTED_CANDIDATE_AWAITING_ASSEMBLED_CLOUD_PROOF",
+  "status": "FIRST_CONNECTED_RELEASE_MERGED;FORWARD_SCENARIO_TARGET_GUARD_AWAITING_CLOUD_PROOF",
+  "first_release": {
+    "pr": 313,
+    "merged_main": "2fd34babeae54784cecf3e5444d0a8113cba31a6",
+    "validated_candidate_head": "c0be9fab2542f5445fc5a63cbe66db9a3f5d402c",
+    "cloud_run": 38154845151,
+    "artifact_id": 11707957590,
+    "artifact_digest": "sha256:af9dcd2ea69fc047145efbac739ebe4034c49f6c3bbe67b3fe0e0c4435241cd9",
+    "validation": "ASSEMBLED_PRODUCER_CONSUMER_CURRENT_REPORT_TELEGRAM_OUTPUT_FREEZE_GENERATION_BINDING_PASS",
+    "provider_http": 0,
+    "fresh_approved_sent": false
+  },
   "scope": "Технический путь, фактический триггер, цель и отмена; без изменения весов, порога, стратегии, формы отчёта и Telegram",
   "current_universe_assets": 104,
   "source_use": [
@@ -33,7 +44,8 @@
     "Цель, которую уже прошла текущая цена, не показывается как предстоящий потенциал",
     "Точный пригодный уровень перед целью закрывает claim о свободном пути; уже пройденный уровень, оценочный bucket и условная cross-margin цена этого не делают",
     "При сверенном конфликте текущей цены с независимой биржей запасная цель N10 удерживается с точной причиной; триггер, отмена, score и ENTRY не повышаются",
-    "Для цели смешанного native cluster используется ближайший реально наблюдавшийся допущенный уровень с его собственными провайдерами, временем и notional; средняя цена соседних позиций не превращается в вымышленную цель"
+    "Для цели смешанного native cluster используется ближайший реально наблюдавшийся допущенный уровень с его собственными провайдерами, временем и notional; средняя цена соседних позиций не превращается в вымышленную цель",
+    "Дополнительная проверка после первого выпуска: цель заранее зафиксированного сценария, уже пройденная текущей ценой, удерживается с точной причиной; start-closing не публикуется"
   ],
   "local_offline_test": {
     "tests": 32,
