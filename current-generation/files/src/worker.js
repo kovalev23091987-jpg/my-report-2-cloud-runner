@@ -17133,8 +17133,14 @@ async function buildDeepCheckInput(params, env) {
     :htxObservationReferencePrice;
   const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.discovery_direction_hint??params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.snapshot_ts??params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts??params?.discovery_row?.scan_ts,confirmation_state:'DISCOVERY_ONLY'});
   const entryDirectionAuthorization=authorizeEntryDirection({candidate:directionCandidate,final_route_state:finalRouteState,final_direction:finalRouteDirection,hard_veto:finalDecisionPublicationShadow?.entry_signal?.hard_veto===true});
-  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:executionHandoff?.ok===true?'SUCCESS':executionHandoff?.status,reason:executionHandoff?.reason},reference_price:htxReferencePrice});
-  const entryState=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState),strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
+  const entryState=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState);
+  // The preliminary handoff accepts either side. A routed ENTRY must prove
+  // capacity for its own side on the same original HTX book, at this clock.
+  const routedExecutionHandoff=entryState&&executionHandoff.ok===true
+    ?checkExecutionHandoff(sealedFullEvidenceProof?.bundle?.execution_gate,{contract_code:contract,checked_ts:Date.now(),direction:finalRouteDirection})
+    :executionHandoff;
+  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:routedExecutionHandoff?.ok===true?'SUCCESS':routedExecutionHandoff?.status,reason:routedExecutionHandoff?.reason},reference_price:htxReferencePrice});
+  const strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
   const canonicalPublicationShadow={...finalDecisionPublicationShadow,entry_signal:{...(finalDecisionPublicationShadow?.entry_signal||{}),state:strictRouteState,direction:entryState?(entryDirectionAuthorization.authorized?entryDirectionAuthorization.direction:null):finalDecisionPublicationShadow?.entry_signal?.direction}};
   const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
   const canonicalFuturesComponent=futures?.data?{...futures,data:{...futures.data,mark_price:null,ticker:null,ticker_24h:null}}:futures;
@@ -17204,7 +17210,7 @@ async function buildDeepCheckInput(params, env) {
       futures_component:
         canonicalFuturesComponent,
       execution_handoff:
-        executionHandoff,
+        routedExecutionHandoff,
       data_sufficiency:
         dataSufficiency,
       free_source_summary:
@@ -17290,7 +17296,7 @@ return {
     stage392_shadow_integration: {
       version: "stage392-shadow-integration-v2-tz101-execution-r3",
       decision_evidence_producer: tz101DecisionEvidence,
-      execution_handoff: executionHandoff,
+      execution_handoff: routedExecutionHandoff,
       mode: "SHADOW_ONLY_NO_EXECUTION",
       proof_status:
         sealedFullEvidenceProof?.status || "FAIL_CLOSED",
@@ -17324,7 +17330,7 @@ return {
       analysis_observed_ts: decisionTs,
       decision_ts: decisionTs,
       evidence_committed_ts: fullEvidencePersistence?.committed_ts ?? null,
-      execution_checked_ts: executionHandoff?.checked_ts ?? null,
+      execution_checked_ts: routedExecutionHandoff?.checked_ts ?? null,
       execution_refresh: {
         status: executionRefresh?.status ?? null,
         attempted_requests: Number(executionRefresh?.attempted_requests ?? 0),

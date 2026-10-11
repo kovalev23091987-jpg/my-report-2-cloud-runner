@@ -132,11 +132,11 @@ function microCompact(discovery){
  if(discovery?.early_candidate_bridge!==true)return null;
  return {status:discovery.microstructure_priority_confirmed===true?'CLOSED':'NOT_CLOSED',domains:arr(discovery.microstructure_priority_domains),continuous_coverage:'PARTIAL_REALTIME_COVERAGE'};
 }
-function hardGates({discovery,publication,executionHandoff}={}){
+export function hardGates({discovery,publication,executionHandoff}={}){
  const gates=[];
  if(discovery?.htx_futures_turnover_gate)gates.push(discovery.htx_futures_turnover_gate);
  if(publication?.publication_gate)gates.push({gate:'TZ101_PUBLICATION',status:publication.publication_gate.status??null,reason:publication.publication_gate.reason??null});
- if(executionHandoff)gates.push({gate:'HTX_EXECUTION_HANDOFF',status:executionHandoff.status??null,reason:executionHandoff.reason??null});
+ if(executionHandoff)gates.push({gate:'HTX_EXECUTION_HANDOFF',status:executionHandoff.ok===true?'CLOSED':'NOT_CLOSED',reason:executionHandoff.reason??null});
  return gates;
 }
 export function resolveCanonicalDirection({route=null,discovery=null,decision_ts=Date.now()}={}){
