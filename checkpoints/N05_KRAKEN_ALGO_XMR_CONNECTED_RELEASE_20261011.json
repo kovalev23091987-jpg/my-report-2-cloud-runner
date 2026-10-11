@@ -1,0 +1,184 @@
+{
+  "schema": "N05_KRAKEN_ALGO_XMR_CONNECTED_RELEASE_20261011_V1",
+  "recorded_ts": 1791718888432,
+  "recorded_utc": "2026-10-11T11:41:28.432Z",
+  "status": "MERGED_EXACT_KRAKEN_ALGO_XMR_NATIVE_WINDOWS_ASSEMBLED_VERIFIED;N05_OPEN",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "main_with_code_and_original_sources": "3744ec2aa6317c255172d9c0cf4d5164bb9c9dd8",
+  "source_run": 38135993119,
+  "source_summary": "checkpoints/n05-kraken-algo-xmr-38135993119/batch-summary.json",
+  "original_source_bodies": 5,
+  "original_source_bodies_sha256": [
+    {
+      "name": "KRAKEN-CURRENT-ASSET-PAIRS",
+      "body_sha256": "dcb0496ba245597a2c4989056a8c0f2afcd722a496e00b545d1762e5c6a05e34",
+      "gzip_sha256": "5479afa1b4ceb420183983602b73cdfb6e8618af70a6f5b0860ac7b4306255be"
+    },
+    {
+      "name": "KRAKEN-ALGO-NATIVE240",
+      "body_sha256": "6afd2e722380885b8ca780c511cba6dcb3b6c6592dd6400962407eddf532438f",
+      "gzip_sha256": "4c0b63d190934cfc4c0ef0a0beeaff2ccfdecb93e4a2381f2ad1584345d4a1ed"
+    },
+    {
+      "name": "KRAKEN-ALGO-HISTORY-1",
+      "body_sha256": "bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008",
+      "gzip_sha256": "af743f300a36fd29df0ccaf686f8bb22b0f9cff2e31852f056a45a0137d8c7d0"
+    },
+    {
+      "name": "KRAKEN-XMR-NATIVE240",
+      "body_sha256": "2eff0afad9be39176579b71d2248422eef118041a61b08f88c146a2d8c8ea251",
+      "gzip_sha256": "7330a623d3273748a8b232760ef39d6849b8ed51be5bb97bb66347ff53419702"
+    },
+    {
+      "name": "KRAKEN-XMR-HISTORY-1",
+      "body_sha256": "771b40d863ea281b778aa118a66a4b6e81def7f821ff678ef3f7215f72e47e81",
+      "gzip_sha256": "05bd4a20deeaa2b5ced077906fc4d71829473f16b76eabd1fa2372a70a97e48b"
+    }
+  ],
+  "actual_windows": [
+    {
+      "contract": "ALGO-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "verified_minutes": 240,
+      "trade_count": 83,
+      "window_start_ts": 1791703980000,
+      "window_end_ts": 1791718380000,
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "score_contribution": 0
+    },
+    {
+      "contract": "XMR-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "verified_minutes": 240,
+      "trade_count": 918,
+      "window_start_ts": 1791703980000,
+      "window_end_ts": 1791718380000,
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "score_contribution": 0
+    }
+  ],
+  "consumer_replay": "checkpoints/N05_KRAKEN_ALGO_XMR_CONSUMER_REPLAY_20261011.json",
+  "replay_script": "tools/replay-n05-kraken-algo-xmr-20261011.mjs",
+  "assembled_run": 38136350128,
+  "assembled_proof_directory": "checkpoints/n05-algo-xmr-assembly-38136350128",
+  "checks": {
+    "generation": "PASS",
+    "runtime_binding": "PASS",
+    "N05_assembled_pass": 23,
+    "N05_assembled_fail": 0,
+    "approved_delivery_pass": 12,
+    "approved_delivery_fail": 0,
+    "integration_pass": 37,
+    "integration_fail": 0,
+    "source_http_replay": 0,
+    "telegram_network_calls": 0
+  },
+  "coverage_map": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_KRAKEN_20261011.json",
+  "coverage": {
+    "HTX_assets": 104,
+    "all104_HTX_basic_price_OI_funding_original_verified": true,
+    "individual_full_240min_external_flow_assets_ever": 34,
+    "structurally_exact_external_route_assets": 73,
+    "no_retained_exact_external_route_assets": 31,
+    "simultaneous_two_independent_venue_agreements_proven": 0,
+    "continuous_all104_external_flow": false
+  },
+  "accounting": {
+    "sourceHTTP": 5,
+    "D1": {
+      "requests": 45,
+      "rows_read": 112,
+      "rows_written": 41,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 51,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 5,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 5,
+          "rows_read": 20,
+          "rows_written": 20,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 10,
+          "rows_read": 25,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 10,
+          "rows_read": 5,
+          "rows_written": 7,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 5,
+          "rows_read": 5,
+          "rows_written": 10,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 5,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "MAIN_during_qualification": 0,
+    "Telegram_during_qualification": 0,
+    "score_contribution": 0
+  },
+  "limits": {
+    "source_daily_cap_unchanged": 16,
+    "provider_minute_cap_unchanged": 6,
+    "whole_job_cap_unchanged": 164,
+    "shared_hub_daily_cap_unchanged": 900
+  },
+  "use_in_report": "EACH_AS_LIMITED_SINGLE_VENUE_INFORMATION_ONLY;REPLAY_CONSUMER_PROVEN;ACTUAL_FRESH_SAME_RUN_REPORT_OR_TELEGRAM_NOT_PROVEN",
+  "new_venue_connected": false,
+  "existing_Kraken_venue_extended_to_two_new_exact_assets": true,
+  "remaining": [
+    "70_CURRENT_ASSETS_WITHOUT_HISTORICALLY_FULL_EXTERNAL_FLOW_WINDOW",
+    "31_NO_EXACT_RETAINED_EXTERNAL_ROUTE",
+    "NO_SAME_WINDOW_TWO_INDEPENDENT_VENUE_AGREEMENT",
+    "NO_FRESH_SAME_RUN_REPORT_TELEGRAM_PROOF_FOR_ALGO_XMR",
+    "LARGE_FLOW_SIGNIFICANCE_AND_MARKET_IMPACT_CALIBRATION_OPEN",
+    "SOURCE_DAILY_CAPS_PREVENT_ALL104_CONTINUOUS_40MIN_COVERAGE"
+  ],
+  "next_action": "CONTINUE_N05;VERIFY_NEW_INDEPENDENT_VENUE_CANDIDATES_WITH_PRIMARY_IDENTITY_AND_ACTUAL_FULL_WINDOWS;AT_NEXT_FRESH_SOURCE_DAY_RUN_PREQUALIFIED_COMMON_MULTI_SOURCE_BATCH_WITH_CURRENT_CAPS;THEN_ONE_AGGREGATE_REPORT_CONSUMER_CHECK",
+  "N05_complete": false,
+  "project_complete": false
+}
