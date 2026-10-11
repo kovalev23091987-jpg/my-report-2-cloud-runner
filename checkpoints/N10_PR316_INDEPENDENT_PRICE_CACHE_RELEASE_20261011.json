@@ -1,0 +1,102 @@
+{
+  "schema": "N10_PR316_INDEPENDENT_PRICE_CACHE_RELEASE_20261011_V1",
+  "recorded_ts": 1791742099065,
+  "recorded_utc": "2026-10-11T18:08:19.065Z",
+  "scope": "N10_ONLY;N05_OPEN;N06_N09_PAUSED;N11_NOT_STARTED",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "pr": 316,
+  "pr_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/316",
+  "merged_main": "63243c4260a2d69df8e1c274317c4ebfff4effa1",
+  "ci": {
+    "head": "979a79b6a3a9688dc701a6351c10b14c11ae8503",
+    "run_id": 38162354686,
+    "status": "SUCCESS",
+    "artifact_id": 11710798484,
+    "artifact_digest": "sha256:39b1ed3000822663387e5f48a4b602d071745aa66ab07936e55b546079fc3ef4",
+    "assembly": "PASS",
+    "targeted_tests": "49_OF_49_PASS",
+    "full_generation": "PASS",
+    "network_in_validation": 0
+  },
+  "actual_original_cache_samples": [
+    {
+      "contract": "ZEC-USDT",
+      "venue": "BINANCE",
+      "window_end_ts": 1791735840000,
+      "cache_observed_ts": 1791735868951,
+      "cache_key": "N05_OFFICIAL_FLOW:BINANCE/NATIVE_FLOW:ZEC-USDT:1791735840000",
+      "raw_closed_minutes": 240,
+      "aligned_recent_minutes": 15,
+      "active_recent_minutes": 15
+    },
+    {
+      "contract": "ZEC-USDT",
+      "venue": "POLONIEX",
+      "window_end_ts": 1791710640000,
+      "cache_observed_ts": 1791710673196,
+      "cache_key": "N05_OFFICIAL_FLOW:POLONIEX/NATIVE_FLOW:ZEC-USDT:1791710640000",
+      "raw_closed_minutes": 240,
+      "aligned_recent_minutes": 15,
+      "active_recent_minutes": 15
+    },
+    {
+      "contract": "RLC-USDT",
+      "venue": "BITGET",
+      "window_end_ts": 1791703500000,
+      "cache_observed_ts": 1791703547472,
+      "cache_key": "N05_OFFICIAL_FLOW:BITGET/FLOW:RLC-USDT:SPOT:1791703500000",
+      "raw_closed_minutes": 240,
+      "aligned_recent_minutes": 15,
+      "active_recent_minutes": 13
+    }
+  ],
+  "excluded_original_sample": {
+    "contract": "WLD-USDT",
+    "venue": "BACKPACK",
+    "reason": "15_OF_15_RECENT_MINUTES_NO_TRADES;USDC_QUOTE_NOT_USDT",
+    "counted_as_useful": false
+  },
+  "source_independence": "Binance, Poloniex, Bitget and Gate each represent a physical venue root; two connectors to one venue are one root. Historical Binance/ZEC and Poloniex/ZEC are different windows, so no simultaneous three-source assertion.",
+  "implementation": {
+    "root": "current-generation/files/src/htx-technical-structure.mjs",
+    "worker": "current-generation/files/src/worker.js",
+    "consumer": "current-generation/files/src/block-result-context.mjs",
+    "source_cache_reads_per_candidate_max": 4,
+    "additional_provider_http": 0,
+    "uses_only_completed_exact_N05_components": true,
+    "requires_same_htx_closed_15m_window": true,
+    "neutral_score_fraction": 0,
+    "target_entry_trigger_unchanged": true,
+    "comparison_disagreement": "NO_COMBINED_PRICE_CONCLUSION"
+  },
+  "existing_internal_source_guards": {
+    "BINANCE": {
+      "n05_daily_cap": 16,
+      "provider_minute_cap": 6
+    },
+    "POLONIEX": {
+      "n05_daily_cap": 16,
+      "provider_minute_cap": 6
+    },
+    "BITGET": {
+      "n05_daily_cap": 16,
+      "provider_minute_cap": 6
+    },
+    "GATE": {
+      "n05_daily_cap": 16,
+      "provider_minute_cap": 4
+    },
+    "whole_job_request_admission": true,
+    "durable_backoff": true,
+    "caps_raised": false
+  },
+  "limitations": {
+    "all_104_full_n10_data_proven": false,
+    "current_natural_post_pr316_data_proven": false,
+    "first_postmerge_approved_sent_proven": false,
+    "n05_complete": false,
+    "independent_source_on_every_asset": false,
+    "simultaneous_multiple_independent_venues_on_one_asset_proven": false
+  },
+  "next_exact_action": "Wait for an actual scheduled run on PR316-or-later main; read its source head and original D1 N10 evidence/renderer/Telegram receipts. Count useful independent price paths only when same candidate snapshot/window and natural text are verified. Diagnose cache misses and remaining source coverage within existing admission and caps. Do not start N11 before owner discussion."
+}
