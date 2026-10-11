@@ -27,17 +27,14 @@ test('multi-source comparison remains bounded for schedule, burst checks and man
  assert.ok(generation.multi_source_provider_monthly_caps.GTRADE<=4000);
  assert.ok(generation.multi_source_provider_monthly_caps.GMX<=8000);
 });
-test('manual source qualification workflows cannot become report or Telegram publishers',()=>{
+test('only authoritative report workflow remains manually runnable',()=>{
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2.yml']);
+ assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','report2.yml']);
  const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
- const n05=fs.readFileSync(new URL('n05-post-reset-common-source-batch-20261011.yml',root),'utf8');
- assert.match(n05,/tools\/acquire-n05-post-reset-/);
- assert.doesNotMatch(n05,/runner-main|sendLifecycleRelay|manual-requests|REPORT2_TELEGRAM_BOT_TOKEN/);
 });
 test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
@@ -99,7 +96,7 @@ test('workflow worker pin equals the effective V13 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'98095698fd89c43b49f4d167f7600da33b424443204b7a4eeadf2362dd4e5efe');
+ assert.equal(hash,'343745ade30aaddf390e7142fb36bf75c6708b0925d07f84774b36db28fa2eb0');
  assert.match(workflow,new RegExp(hash));
 });
 test('controlled T15 measurements upload an exact sanitized receipt',()=>{

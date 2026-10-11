@@ -2,7 +2,7 @@ import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAna
 import {bindApprovedHtxAnalysisScope} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
-import {buildHtxPrimaryTechnicalReceipt,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
+import {buildHtxPrimaryTechnicalReceipt,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
 import {buildHtxFuturesFlowPrimary} from './candidate-evidence-v2-runtime.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence,rankedEarlyPersistenceContracts} from './selected-early-evidence.mjs';
@@ -17145,6 +17145,11 @@ async function buildDeepCheckInput(params, env) {
   const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
   const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
   const primaryTechnicalReceipt=buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price:htxObservationReferencePrice,now,route_state:technicalState});
+  const reusedVenuePaths=await loadN10ReusedVenuePaths({db:env?.DATA_DB,contract,flow_result:candidateEvidenceV2?.sources?.EXTERNAL_N05_FLOW,primary_receipt:primaryTechnicalReceipt,now});
+  if(reusedVenuePaths.evidence.length){
+    primaryTechnicalReceipt.evidence.push(...reusedVenuePaths.evidence);
+    primaryTechnicalReceipt.receipts.push({source:'N05_ORIGINAL_VENUE_CANDLE_CACHE',status:reusedVenuePaths.status,cache_reads:reusedVenuePaths.cache_reads,provider_http:0,venues:reusedVenuePaths.receipts});
+  }
   const primaryHtxFuturesFlow=buildHtxFuturesFlowPrimary({contract,trajectory:trajectory?.data,now});
   if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
     candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
