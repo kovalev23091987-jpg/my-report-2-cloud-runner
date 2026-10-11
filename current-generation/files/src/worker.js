@@ -1295,6 +1295,13 @@ async function futuresSnapshot(params) {
       sell_market_impact: sellImpact,
       depth_timestamp: iso(depthTick?.ts) || iso(depthR.data?.ts),
     },
+    // These two prices and their clock come from the same original depth reply.
+    // The display BBO above may instead come from the separate ticker endpoint.
+    depth_bbo: {
+      best_bid: num(bids?.[0]?.[0]),
+      best_ask: num(asks?.[0]?.[0]),
+      source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(depthR.data?.ts),
+    },
     order_flow: orderFlow,
     htx_open_interest: openInterest,
     open_interest: openInterest,
@@ -1500,6 +1507,11 @@ async function spotSnapshot(params) {
       buy_market_impact: buyImpact,
       sell_market_impact: sellImpact,
       depth_timestamp: iso(depthTick?.ts) || iso(depthR.data?.ts),
+    },
+    depth_bbo: {
+      best_bid: num(bids?.[0]?.[0]),
+      best_ask: num(asks?.[0]?.[0]),
+      source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(depthR.data?.ts),
     },
     order_flow: orderFlow,
     health,
@@ -17214,6 +17226,8 @@ async function buildDeepCheckInput(params, env) {
         canonicalLiquidationIntelligence,
       futures_component:
         canonicalFuturesComponent,
+      spot_component:
+        spot,
       execution_handoff:
         routedExecutionHandoff,
       data_sufficiency:
@@ -20262,6 +20276,7 @@ export {
   loadHistoryTargets as loadStage0HistoryTargetsForTest,
   htxStage0History as htxStage0HistoryForTest,
   futuresSnapshot as futuresSnapshotForTest,
+  spotSnapshot as spotSnapshotForTest,
   refreshHtxExecutionQuoteIfNeeded as refreshHtxExecutionQuoteIfNeededForTest,
   createPerDeepCheckFetchCache as createPerDeepCheckFetchCacheForTest,
 };

@@ -43,6 +43,36 @@ const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
 const validState=v=>['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED','WAIT_FOR_TRIGGER','OBSERVE','REJECTED'].includes(text(v));
 const firstFinite=(...values)=>{for(const v of values){const n=finite(v);if(n!==null)return n;}return null;};
+const SPOT_FUTURES_CONTEXT_MAX_AGE_MS=5*60_000;
+const SPOT_FUTURES_CONTEXT_MAX_SKEW_MS=60_000;
+function exactDepthMarket(component,contract,market,now){
+ const data=component?.data,book=data?.depth_bbo;
+ if(component?.execution_status!=='FULFILLED'||data?.health?.depth!==true||data?.market!==market)return null;
+ if(market==='HTX Spot'){
+  if(text(data?.requested_symbol).toUpperCase()!==contract||text(data?.symbol).toUpperCase()!==contract.replace('-',''))return null;
+ }else if(text(data?.contract).toUpperCase()!==contract||data?.health?.info!==true||text(data?.contract_info?.contract_code).toUpperCase()!==contract)return null;
+ const bid=finite(book?.best_bid),ask=finite(book?.best_ask),sourceTs=finite(book?.source_ts);
+ if(bid===null||ask===null||bid<=0||ask<bid||sourceTs===null||!Number.isSafeInteger(sourceTs)||sourceTs>now||now-sourceTs>SPOT_FUTURES_CONTEXT_MAX_AGE_MS)return null;
+ const mid=(bid+ask)/2;
+ return{market,source_ts:sourceTs,best_bid:bid,best_ask:ask,mid,spread_bps:(ask-bid)/mid*10_000};
+}
+export function buildSpotFuturesMarketContext({contract,spot_component,futures_component,observed_ts}={}){
+ const exact=text(contract).toUpperCase(),now=finite(observed_ts);
+ const base={schema:'htx-spot-futures-shared-market-context-v1',contract:exact,observed_ts:now,physical_root_key:'HTX_OFFICIAL_PUBLIC_MARKET',independent_venue_count:1,network_calls:0,score_contribution:0,directional_vote:false,entry_authorized:false,
+  applicability_not_block_coverage:{N04:'MARKET_CONTEXT_NOT_ONCHAIN_DIRECTION',N05:'EXISTING_JOINT_FLOW_UNCHANGED',N10:'PRICE_CONTEXT_NOT_TECHNICAL_TARGET',N11:'SPOT_SPREAD_CONTEXT_NOT_FUTURES_EXECUTION_GATE',N12:'EXISTING_TAKER_RECONCILIATION_UNCHANGED',N14:'UNDERLYING_PRICE_CONTEXT_NOT_OPTIONS_IV',N15:'PRICE_CONTEXT_NOT_SECTOR_RELATIVE_STRENGTH',N16:'SPOT_SPREAD_CONTEXT_NOT_FUTURES_EXECUTION_COST'},
+  metric_scope:'PRICE_AND_RELATIVE_SPREAD_ONLY;NOT_TAKER_FLOW_EXECUTION_SIZE_ONCHAIN_OPTIONS_IV_OR_SECTOR_STRENGTH'};
+ if(!/^[A-Z0-9]{1,32}-USDT$/.test(exact)||now===null)return{...base,status:'EXACT_USDT_CONTRACT_AND_CLOCK_REQUIRED',spot:null,futures:null,comparison:null,fact:null};
+ const spot=exactDepthMarket(spot_component,exact,'HTX Spot',now);
+ const futures=exactDepthMarket(futures_component,exact,'HTX USDT-M Futures',now);
+ if(!spot||!futures)return{...base,status:spot?'SPOT_ONLY':futures?'FUTURES_ONLY':'NO_FRESH_EXACT_DEPTH_PAIR',spot,futures,comparison:null,fact:null};
+ const skew=Math.abs(spot.source_ts-futures.source_ts);
+ if(skew>SPOT_FUTURES_CONTEXT_MAX_SKEW_MS)return{...base,status:'SOURCE_CLOCKS_NOT_ALIGNED',spot,futures,source_skew_ms:skew,comparison:null,fact:null};
+ const basisPct=(futures.mid/spot.mid-1)*100;
+ const comparison={futures_over_spot_price_pct:basisPct,spot_spread_bps:spot.spread_bps,futures_spread_bps:futures.spread_bps,source_skew_ms:skew};
+ const signed=basisPct>=0?'+':'';
+ const fact={source:'HTX',label:'Сверка спота и фьючерсов',value:`разница средних цен ${signed}${basisPct.toFixed(2)}%; спреды ${spot.spread_bps.toFixed(1)} и ${futures.spread_bps.toFixed(1)} б.п.; одна биржа`,unit:'',field:'SPOT_FUTURES_PRICE_SPREAD_CONTEXT',source_ts:Math.min(spot.source_ts,futures.source_ts),observed_ts:now,score_contribution:0,entry_authorized:false};
+ return{...base,status:'CLOSED_COMPARABLE_PRICE_AND_SPREAD',spot,futures,comparison,fact};
+}
 const NATIVE_LIQUIDATION_SOURCE_IDS=Object.freeze(['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS','DYDX_PINNED_NATIVE']);
 function nativeLiquidationSourceId(value){
  const provider=text(value?.provider??value?.venue).toUpperCase();
@@ -229,7 +259,7 @@ function entryFrom(publication,observation){
 }
 export function buildRuntimeCanonicalBundle({
  contract,run_id,snapshot_id,observed_ts,discovery_row=null,publication_shadow=null,opportunity=null,
- public_evidence=null,liquidation_intelligence=null,futures_component=null,execution_handoff=null,data_sufficiency=null,free_source_summary=null,smart_money_raw=null,shadow_decision=null,
+ public_evidence=null,liquidation_intelligence=null,futures_component=null,spot_component=null,execution_handoff=null,data_sufficiency=null,free_source_summary=null,smart_money_raw=null,shadow_decision=null,
  existing_source_receipts=null,previous_snapshot_context=null,oi_window_receipts=null,native_liquidation_acquisition=null,
  internal_market_context=null,execution_context_source=null,liquidation_source_acquisition_audit=null,original_idea_recheck=null,
 }={}){
@@ -328,14 +358,15 @@ export function buildRuntimeCanonicalBundle({
  supportingContext.supplemental_supporting_use=supplementalSupportingUse;
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
+ const spotFuturesMarketContext=buildSpotFuturesMarketContext({contract,spot_component,futures_component,observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});
  const sectorContext=consumeSectorContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,asset_identity:internal_market_context?.candidate_context?.asset_identity,now:observed_ts});
- supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus};
+ supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus,spot_futures_market:spotFuturesMarketContext};
  const profileFacts=volumeProfileFacts(volumeProfile,{contract,now:observed_ts,reference_price:price,direction}).slice(0,1);
  if(profileFacts.length){const vpReceipt=supplementalScoreAdjustment.receipts.find(r=>r.source_id==='HTX_VOLUME_PROFILE');const state=volumeConsensus.status==='MULTI_VENUE_CONFIRMED'?`совпадение HTX+${volumeConsensus.confirmations.map(r=>r.source).join('+')}`:volumeConsensus.status==='CONFLICT'?'расхождение; вес 0':'одна площадка';profileFacts[0].value+=`; ${vpReceipt?.score_contribution??0} балла; ${state}`;profileFacts[0].unit='';}
- supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f))];
+ supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f)),...(spotFuturesMarketContext.fact?[spotFuturesMarketContext.fact]:[])];
  supportingContext.specialist_context_status=specialistContext.status;
- if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length)supportingContext.status='CLOSED';
+ if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length||spotFuturesMarketContext.fact)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
   ...sourceReceipts(public_evidence),
   ...buildCanonicalExecutionRoleFacts({contract,run_id,snapshot_id,observed_ts,execution_context_source}).map(row=>({...normalizeInheritedFactEnvelope([row]).facts[0],evidence_ids:row.evidence_ids,snapshot_id:row.snapshot_id,run_id:row.run_id,physical_root_key:row.physical_root_key,proof_purpose:row.proof_purpose,entry_authorized:false,score_contribution:0})),
