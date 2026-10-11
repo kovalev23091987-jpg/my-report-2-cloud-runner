@@ -1,5 +1,5 @@
 {
-  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V1",
+  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V2",
   "observed_utc": "2026-10-11T14:13:03.783099Z",
   "target": "104 current HTX crypto assets; usefulness requires exact asset, original clock, actual data, N06 consumer and controlled report",
   "candidates": [
@@ -62,17 +62,47 @@
       "access": "GitHub secret now authenticated; SANAPI FREE latest allowed to 2026-09-11 at 2026-10-11 run, about 30-day delay",
       "status": "ACTUAL_CURRENT_SOURCE_DENIED_BY_SUBSCRIPTION;CODEX_CONNECTOR_PILOT_ONLY",
       "actual_proof": "checkpoints/N06_SANTIMENT_SANAPI_ACCESS_AND_ACTUAL_PILOT_20261011.json"
+    },
+    {
+      "source": "CoinDesk Data API historical social metrics",
+      "upstream": "Reddit, Telegram, Discord, X platform activity consolidated by CoinDesk",
+      "independence_group": "UNDERLYING_PLATFORM_PER_METRIC_NOT_PROVIDER_ENDPOINT",
+      "access": "CoinDesk 2026-04-17 announcement says free API tier retired 2026-05-21 and active subscription required; legacy docs still label some endpoints 'free role required', so rely on latest entitlement notice",
+      "status": "DOCUMENTED_CANDIDATE;NO_ENTITLEMENT_OR_ACTUAL_HTX_FACT_VERIFIED",
+      "useful_potential": "Daily timestamped historical social activity for exact CoinDesk asset IDs, but actual per-asset coverage and report consumer unverified",
+      "official_references": [
+        "https://developers.coindesk.com/documentation/data-api/asset",
+        "https://data.coindesk.com/blogs/changes-to-coindesk-data-indices-api-free-tier-access"
+      ]
+    },
+    {
+      "source": "CoinGecko per-coin community fields",
+      "upstream": "CoinGecko site votes and watchlist",
+      "independence_group": "COINGECKO_SITE_ACTIVITY",
+      "access": "Official /coins/{id} docs say community_data/developer_data no longer returned from 2026-08-28; separate sentiment_votes_up_percentage, sentiment_votes_down_percentage and watchlist_portfolio_users still documented in response schema but actual current values, freshness and exact HTX binding not tested",
+      "status": "COMMUNITY_DATA_RETIRED;SEPARATE_FIELDS_CANDIDATE_ONLY",
+      "official_reference": "https://docs.coingecko.com/reference/coins-id"
+    },
+    {
+      "source": "GeckoTerminal pool community votes",
+      "upstream": "CoinGecko/GeckoTerminal website users",
+      "independence_group": "COINGECKO_SITE_ACTIVITY",
+      "access": "Official changelog documents sentiment vote percentages and community reports on supported pool endpoints; exact token address may permit binding but liquidity-pool selection and actual values not tested",
+      "status": "SAME_COINGECKO_UPSTREAM;ACTUAL_FACT_UNVERIFIED",
+      "official_reference": "https://docs.coingecko.com/changelog/10122018"
     }
   ],
   "not_counted_as_independent": [
     "Multiple Santiment platform submetrics share one corpus.",
     "CoinGecko community link metadata and CoinGecko trending are one provider ecosystem; individual endpoint routes are not separate independent votes.",
-    "HTTP 200 with GraphQL errors is no useful current fact."
+    "HTTP 200 with GraphQL errors is no useful current fact.",
+    "CoinDesk Reddit and a separate Reddit API or Santiment Reddit metric share Reddit as original platform; count independent original corpora, not provider wrappers."
   ],
   "next_source_priority": [
-    "Retain and qualify current Bluesky facts across exact assets within existing daily cap and shared HTTP budget.",
-    "At next admitted Wikimedia day, expand exact native/project pages only with complete 14-day published rows.",
-    "Check CoinGecko Trending Search original direct API and exact PENGU binding; do not infer 104 coverage from top list.",
-    "Request Reddit/CMC/Mastodon access only if a concrete exact/clocked fact can be shown; avoid unused connections."
-  ]
+    "Use existing exact CoinGecko identities to calculate address/ID-qualified candidate coverage offline, then one guarded source-to-report pilot for observed PENGU Trending or separate votes only if current original response is available.",
+    "If owner has a CoinDesk subscription, test one exact asset daily social original before building a batch; no subscription assumption.",
+    "Do not use retired CoinGecko community_data or mistake CoinGecko/GeckoTerminal endpoints for separate independent platforms.",
+    "Keep Wikimedia16 as the only controlled report-qualified N06 coverage; preserve N05 open and no N07."
+  ],
+  "updated_utc": "2026-10-11T14:27:50.503Z"
 }
