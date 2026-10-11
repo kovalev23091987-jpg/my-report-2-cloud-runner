@@ -328,13 +328,8 @@
       }
     }
   ],
-  "lease": {
-    "owner": "CODEX:LOCAL_N05_LIGHTER:1791720049439",
-    "acquired_ts": 1791720049439,
-    "expires_ts": 1791721849439,
-    "scope": "OWNER_AUTHORIZED_N05_ONLY;LIGHTER_INDEPENDENT_VENUE_QUALIFICATION;NO_CAP_RESETS"
-  },
-  "next_action": "CONTINUE_N05;QUALIFY_LIGHTER_DASH_FROM_RETAINED_FULL-SPAN_TRADES_AND_CURRENT_OFFICIAL_CANDLES_WITH_EXACT_PRIMARY_BINDING;AT_NEXT_SOURCE_DAY_EXECUTE_SAVED_COMMON_MULTI_SOURCE_PLAN;KEEP_CAPS",
+  "lease": null,
+  "next_action": "CONTINUE_N05;DO_NOT_COUNT_LIGHTER_UNTIL_EXACT_NATIVE_ASSET_BINDING_AND_PRODUCTION_CONSUMER_ARE_PROVEN;REUSE_ORIGINAL_WINDOW_AND_DO_NOT_REPEAT_PILOT;QUALIFY_OTHER_EXACT_SOURCES_AND_RUN_SAVED_COMMON_SOURCE_PLAN_AFTER_UTC_DAY_RESET_WITH_UNCHANGED_CAPS;DO_NOT_START_N06",
   "common_future_universe": {
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
     "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
@@ -398,12 +393,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:LOCAL_N05_NEW_VENUE:1791718957493",
-    "acquired_ts": 1791718957493,
-    "expires_ts": 1791720757493,
-    "scope": "OWNER_AUTHORIZED_N05_ONLY;NEW_INDEPENDENT_VENUE_QUALIFICATION;NO_CAP_RESETS",
-    "released_ts": 1791719993151,
-    "reason": "N05 Gemini pilot saved to main; continue remaining N05 under new bounded owned lease"
+    "owner": "CODEX:LOCAL_N05_LIGHTER:1791720049439",
+    "acquired_ts": 1791720049439,
+    "expires_ts": 1791721849439,
+    "scope": "OWNER_AUTHORIZED_N05_ONLY;LIGHTER_INDEPENDENT_VENUE_QUALIFICATION;NO_CAP_RESETS",
+    "released_ts": 1791720657056,
+    "reason": "Lighter original DASH pilot and replay retained in main; N05 still open"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -10466,6 +10461,19 @@
     "status": "NO_VERIFIED_GEMINI_FULL_WINDOW;N05_OPEN",
     "source_run": 38137447901,
     "sourceHTTP": 7,
+    "new_venue_connected": false,
+    "N05_complete": false
+  },
+  "latest_n05_lighter_pilot_result": {
+    "schema": "N05_LIGHTER_INDEPENDENT_VENUE_PILOT_RESULT_20261011_V1",
+    "proof": "checkpoints/N05_LIGHTER_INDEPENDENT_VENUE_PILOT_RESULT_20261011.json",
+    "recorded_ts": 1791720657056,
+    "status": "ORIGINAL_240MIN_DASH_TRADE_CANDLE_RECONCILED;EXACT_NATIVE_BINDING_UNPROVEN;NEW_VENUE_NOT_CONNECTED;N05_OPEN",
+    "source_runs": [
+      38137955037,
+      38138046656
+    ],
+    "sourceHTTP": 5,
     "new_venue_connected": false,
     "N05_complete": false
   }

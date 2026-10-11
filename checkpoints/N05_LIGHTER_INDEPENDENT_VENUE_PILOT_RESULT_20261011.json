@@ -1,0 +1,78 @@
+{
+  "schema": "N05_LIGHTER_INDEPENDENT_VENUE_PILOT_RESULT_20261011_V1",
+  "recorded_ts": 1791720657056,
+  "status": "ORIGINAL_240MIN_DASH_TRADE_CANDLE_RECONCILED;EXACT_NATIVE_BINDING_UNPROVEN;NEW_VENUE_NOT_CONNECTED;N05_OPEN",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "source_main_before_pilot": "71ef0b0a8418c110a428321f7a88866787f25aec",
+  "pilot_branch": "n05-lighter-pilot-20261011",
+  "pilot_branch_merged_main": "dfd1cb6b9751212d345c7d366cf1abbcc45106c3",
+  "source_runs": [
+    {
+      "run": 38137955037,
+      "sourceHTTP": 4,
+      "original_path": "checkpoints/n05-lighter-pilot-38137955037/",
+      "trade500_status": 400
+    },
+    {
+      "run": 38138046656,
+      "sourceHTTP": 1,
+      "original_path": "checkpoints/n05-lighter-pilot-38138046656/",
+      "trade100_status": 200
+    }
+  ],
+  "replay_path": "checkpoints/N05_LIGHTER_DASH_ORIGINAL_REPLAY_20261011.json",
+  "replay": {
+    "closed_minutes": 240,
+    "trade_count": 3,
+    "nonzero_minutes": 2,
+    "base_volume": 45.131,
+    "quote_volume": 2312.215575,
+    "taker_buy_quote": 0,
+    "taker_sell_quote": 2312.215575,
+    "minute_base_quote_reconciled": true,
+    "original_gzip_sha256": {
+      "book": "4b98194b2fab4d88aedaa9ae1cc0ca19e65a865f64ac5029ada92511d4b5dbc6",
+      "details": "0c06f1ffaf6cc5803869d42d244918089ce48c73f2d8f858e8f572b990275bd6",
+      "candles": "b230a621a61a18e6d9df31cb609a2e26e46cb4e68e43459392e02b5a4e055906",
+      "trades": "9a83983a6df4de2327179628225bc81c9f016d40efc2d56d4b0d0373f9fdee4c"
+    }
+  },
+  "official_sources": {
+    "market_and_candle_api": "https://github.com/elliottech/lighter-python/blob/main/docs/OrderApi.md",
+    "candle_api": "https://github.com/elliottech/lighter-python/blob/main/docs/CandlestickApi.md",
+    "taker_side_semantics": "https://github.com/elliottech/lighter-agent-kit/blob/main/references/schemas-read.md"
+  },
+  "qualification": {
+    "exact_htx_dash_primary_reference": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+    "htx_dash_native_alias": "dash1",
+    "lighter_market_id": 127,
+    "lighter_symbol": "DASH",
+    "lighter_primary_chain_or_contract_binding": false,
+    "exact_cross_venue_asset_binding_proven": false,
+    "full_window_reconciliation_proven": true,
+    "official_taker_direction_proven": true,
+    "new_independent_venue_connected": false,
+    "production_consumer_uses_lighter": false,
+    "report_or_telegram_use_proven": false,
+    "score": 0
+  },
+  "guards": {
+    "sourceHTTP_total": 5,
+    "D1_requests_total": 50,
+    "D1_rows_read_total": 168,
+    "D1_rows_written_total": 45,
+    "D1_unknown_ops": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "caps_reset": false
+  },
+  "unchanged_coverage": {
+    "historical_full_window_assets": 34,
+    "approved_assets": 104,
+    "structural_exact_existing_external_routes": 73,
+    "without_exact_existing_external_route": 31,
+    "same_window_two_independent_venues_proven": 0
+  },
+  "N05_complete": false,
+  "next_action": "CONTINUE_N05;DO_NOT_COUNT_LIGHTER_UNTIL_EXACT_NATIVE_ASSET_BINDING_AND_PRODUCTION_CONSUMER_ARE_PROVEN;REUSE_ORIGINAL_WINDOW_AND_DO_NOT_REPEAT_PILOT;QUALIFY_OTHER_EXACT_SOURCES_AND_RUN_SAVED_COMMON_SOURCE_PLAN_AFTER_UTC_DAY_RESET_WITH_UNCHANGED_CAPS;DO_NOT_START_N06"
+}
