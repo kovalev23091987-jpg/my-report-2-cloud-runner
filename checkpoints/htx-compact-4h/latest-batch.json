@@ -1,0 +1,65 @@
+{
+  "schema": "HTX_COMPACT_90D_4H_ACTUAL_BATCH_V1",
+  "source": "HTX_DELAYED_KLINE_ARCHIVE_QUALIFICATION",
+  "cloud_run": 38098892033,
+  "head": "564fb8e60169457895e0aef5ff37d8b4026f7f41",
+  "started_ts": 1791678897275,
+  "finished_ts": 1791678899527,
+  "anchor_end_ts": 1791590400000,
+  "sourceHTTP": 1,
+  "source_http_reserved": 1,
+  "D1": {
+    "requests": 7,
+    "rows_read": 5,
+    "rows_written": 8,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "results": [
+    {
+      "contract": "NEAR-USDT",
+      "status": "COMPLETE_90D_4H_PRICE_ONLY",
+      "sourceHTTP": 1,
+      "http_status": 200,
+      "observed_bars": 540,
+      "missing_bars": 0,
+      "complete_90d_4h_price_only": true,
+      "native_1m_complete": false,
+      "entry_authorized": false
+    }
+  ],
+  "native_1m_complete": false,
+  "actual_ENTRY": false,
+  "project_complete": false
+}
