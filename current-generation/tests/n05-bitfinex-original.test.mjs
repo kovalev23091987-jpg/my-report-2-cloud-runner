@@ -6,6 +6,9 @@ import {DatabaseSync} from 'node:sqlite';
 import {normalizeHtxAssetReferences} from '../files/src/htx-asset-identity.mjs';
 import {normalizeBitfinexNativeFlow,qualifiedBitfinexNativeComponent} from '../files/src/bitfinex-native-four-hour-flow.mjs';
 import {availableFlowContext,validateAvailableFlowEvidence} from '../files/src/joint-spot-futures-flow.mjs';
+import {consumeBlockResultContext,auditRenderedBlockResults} from '../files/src/block-result-context.mjs';
+import {canonicalFingerprint,renderCanonicalTelegram} from '../files/src/canonical-publication.mjs';
+import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 import {collectBitfinexNativeFlow} from '../files/src/bitfinex-native-flow-collector.mjs';
 import {installEvidenceSourceStore} from '../files/src/evidence-source-store.mjs';
 import {installProviderMinuteLedger} from '../files/src/provider-minute-ledger.mjs';
@@ -27,6 +30,12 @@ test('foreign identity, missing trade and unclosed source clock cannot become N0
  const x=setup('DASH');assert.equal(normalizeBitfinexNativeFlow({...x,identity:{chain:'ethereum',asset_kind:'NATIVE',native_asset_id:'ethereum:mainnet'}}).check_completed,false);
  assert.equal(normalizeBitfinexNativeFlow({...x,trades:x.trades.slice(1)}).check_completed,false);
  assert.equal(normalizeBitfinexNativeFlow({...x,observed_ts:end-1}).check_completed,false);
+});
+test('original DASH Bitfinex flow reaches manual and both approved Telegram renderers without score',()=>{
+ const c=structuredClone(JSON.parse(fs.readFileSync('checkpoints/btw-preserved-block-result-input-20261004.json')).canonical),x=setup('DASH'),now=observed+1,component=normalizeBitfinexNativeFlow(x),flow=availableFlowContext({primary:null,external:{components:[component]},contract:x.contract,now});
+ assert.equal(flow.check_completed,true);c.observed_ts=now;c.metadata.contract=x.contract;c.metadata.internal_market_context.evidence_v2.evidence=flow.evidence;c.metadata.supporting_context={facts:consumeBlockResultContext({contract:x.contract,now,evidence:flow.evidence}).facts};c.direction='LONG';c.state='OBSERVE';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:now+600000,next_recheck_ts:now+60000,cancel_condition:'price<1'};c.analytical_fingerprint=canonicalFingerprint(c);
+ const manual=formatManualReport(c);assert.equal(manual.ok,true);assert.match(manual.text,/BITFINEX/);assert.match(manual.text,/данные одной биржи/);
+ for(const context_policy of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007']){const tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy});assert.equal(tg.ok,true,tg.status);assert.match(tg.text,/BITFINEX/);const audit=auditRenderedBlockResults({canonical:c,manual,telegram:tg});assert.deepEqual(audit.used_context_block_ids,['N05']);assert.deepEqual(audit.telegram_used_context_block_ids,['N05']);assert.equal(audit.telegram_delivery_proven,false);}
 });
 const database=()=>{const n=new DatabaseSync(':memory:');return{prepare(sql){const st=n.prepare(sql);return{bind(...p){this.p=Object.fromEntries(p.map((v,i)=>[String(i+1),v]));return this;},async first(){return st.get(this.p||{});},async all(){return{results:st.all(this.p||{})};},async run(){return st.run(this.p||{});}};},async batch(ss){n.exec('BEGIN');try{const r=[];for(const s of ss)r.push(await s.run());n.exec('COMMIT');return r;}catch(e){n.exec('ROLLBACK');throw e;}},close(){n.close();}};};
 test('production Bitfinex adapter uses three admitted calls and reuses original clocks without repeat HTTP',async()=>{
