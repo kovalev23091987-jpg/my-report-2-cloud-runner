@@ -1,9 +1,9 @@
 {
-  "schema": "N12_GATE_FUTURES_BOUNDED_SOURCE_RELEASE_20261011_V1",
+  "schema": "N12_GATE_FUTURES_BOUNDED_SOURCE_RELEASE_20261011_V2",
   "recorded_utc": "2026-10-11T20:16:07.044767+00:00",
   "base_main": "8dc21ce68624df74bf2bc7f4a6e317e0491a9479",
   "scope": "N12 ONLY; optional bounded Gate futures taker trades for exact token, reused existing Gate/N05 metadata, daily/minute/caller limits and approved manual/Telegram context slots; no strategy, weight, score, entry or output layout change.",
-  "status": "CODE_CANDIDATE_LOCAL_SOURCE_TO_REPORT_VERIFIED;ASSEMBLED_CLOUD_AND_NATURAL_PRODUCTION_PENDING",
+  "status": "PR320_SQUASH_MERGED_MAIN;N10_N11_N12_CLOUD_ASSEMBLED_PASS;NATURAL_SOURCE_USE_PENDING",
   "original_saved_source": {
     "trade_gzip": "checkpoints/n05-actual-qualification-38049404414/flow-GATE-FUTURES-AAVE.json.gz",
     "trade_gzip_sha256": "1f3d892edf1ad2a62513a3a484513ba956b1745320ac2a231bada34024267ed3",
@@ -57,7 +57,7 @@
     "fresh_SENT_message_id": null
   },
   "remaining": [
-    "Cloud assembled generation/producer/consumer validation on candidate head, then postmerge natural exact source-to-report and Telegram readback.",
+    "Cloud N10/N11/N12 assembled verification passed on combined head 3846cba; postmerge natural exact source-to-report and approved Telegram readback remains.",
     "Fresh Gate currency/spot/futures identity and trades under current quota must be observed; historical symbol routes and controlled replay are not 45 current covered coins.",
     "All104 spot+futures fresh per-coin coverage and same-window multi-exchange comparison remain open; KuCoin/OKX and other candidates from N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011.json still need qualification.",
     "Gate N05 cap16/day shared; frequent all-asset sampling through this source alone is impossible."
@@ -67,5 +67,9 @@
     "https://www.gate.com/docs/developers/futures/ws/en/"
   ],
   "n12_complete": false,
-  "next_block_started": false
+  "next_block_started": false,
+  "merged_main": "96398e92ced4ee3fa98e94f7090293fa6ae26886",
+  "merged_utc": "2026-10-11T21:16:20Z",
+  "combined_verification": "checkpoints/N12_GATE_FUTURES_PR320_CLOUD_VERIFICATION_20261011.json",
+  "next_action": "Inspect first admissible natural same-run N12 source/report/approved Telegram, measure exact spot/futures coverage and Gate shared ledger headroom; then qualify next independent N12 sources from the saved candidate audit."
 }

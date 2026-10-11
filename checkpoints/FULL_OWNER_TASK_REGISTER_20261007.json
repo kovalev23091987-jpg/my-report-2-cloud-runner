@@ -5601,7 +5601,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791752092086,
+  "updated_ts": 1791753534066,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -8851,8 +8851,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "PR321_OFFLINE_ASSEMBLED_PASS_MERGE_APPROVAL_REQUIRED;N12_OPEN;PR320_UNMERGED",
-  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
+  "latest_status": "PR321_PR320_MERGED_CLOUD_N10_N11_N12_PASS_N12_NATURAL_AND_ALL104_COVERAGE_PENDING",
+  "next_action": "PR321 shared HTX spot/futures context and PR320 bounded Gate futures are merged. At the next admissible natural run, read exact source clocks/identity, N12 per-asset spot/futures participation, manual and approved Telegram evidence IDs, and shared Gate ledger. Then qualify KuCoin/OKX or other missing independent N12 sources with bounded saved-evidence-first batches; keep N12 open and other blocks sequential.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -11403,7 +11403,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-11T20:54:52.086Z",
+  "updated_utc": "2026-10-11T21:18:54.066069Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -14987,26 +14987,32 @@
   "latest_n12_gate_futures_candidate": {
     "proof": "checkpoints/N12_GATE_FUTURES_PR320_CLOUD_VERIFICATION_20261011.json",
     "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/320",
-    "candidate_head": "903149bbcfb3f58e190a291fa8cd721c18b9b8a4",
-    "base_main": "8dc21ce68624df74bf2bc7f4a6e317e0491a9479",
-    "status": "CANDIDATE_PR_CLOUD_ASSEMBLED_VERIFIED_MERGE_PERMISSION_REQUIRED",
-    "cloud_run": 38171533791,
-    "cloud_artifact_id": 11713744832,
-    "cloud_artifact_digest": "sha256:c7fcf694f91c6d1ab4fe2a76c6a2aed5b969a48d48ac04ff57c7f57a2e00c01f",
-    "target_unit_tests_passed": 39,
-    "full_cloud_generation": "PASS",
-    "original_v4_golden_bytes": "UNCHANGED",
+    "candidate_head": "3846cba7b6667f97c3004205ea23db129c31ad04",
+    "base_main": "49c2b61b0ecbb44e0a33ea76560a532b5880e37e",
+    "merged_main": "96398e92ced4ee3fa98e94f7090293fa6ae26886",
+    "status": "PR320_SQUASH_MERGED_MAIN_CLOUD_N10_N11_N12_PASS_NATURAL_PENDING",
+    "cloud_runs": [
+      38175381330,
+      38175381282,
+      38175381285
+    ],
+    "artifact_ids": [
+      11715691869,
+      11715751793,
+      11714968954
+    ],
     "new_provider_http": 0,
-    "live_gate_futures_report_use": false,
+    "current_gate_futures_n12_assets_proven": 0,
     "historical_gate_futures_symbol_hits": 102,
     "historical_exact_gate_spot_identity_plus_future_symbol_candidates": 45,
+    "natural_same_run_report_and_telegram_verified": false,
+    "all104_spot_futures_coverage_verified": false,
     "n12_complete": false,
-    "merge_blocked_by": "AUTO_REVIEW_REQUIRES_EXPLICIT_USER_APPROVAL_FOR_MAIN_MERGE",
-    "next_action": "Owner approval for PR320 merge; then fresh main/lease/fence, reverify candidate if base moved, merge, inspect natural actual source/report and Telegram."
+    "next_action": "PR321 shared HTX spot/futures context and PR320 bounded Gate futures are merged. At the next admissible natural run, read exact source clocks/identity, N12 per-asset spot/futures participation, manual and approved Telegram evidence IDs, and shared Gate ledger. Then qualify KuCoin/OKX or other missing independent N12 sources with bounded saved-evidence-first batches; keep N12 open and other blocks sequential."
   },
   "latest_owner_all_block_spot_futures_source_rule": {
     "proof": "checkpoints/OWNER_ALL_BLOCK_SPOT_FUTURES_SOURCE_SEARCH_RULE_20261011.json",
-    "status": "RULE_RECORDED_NO_RUNTIME_CHANGE",
+    "status": "RULE_RECORDED_SHARED_ACTIVE_MARKET_CONTEXT_MERGED_METRIC_SPECIFIC_REVIEW_PENDING",
     "scope": "ALL_BLOCKS_WHEN_SEQUENTIALLY_REVIEWED;CURRENT_N12",
     "spot_and_futures_search_required": true,
     "exact_actual_report_use_required": true,
@@ -15014,7 +15020,7 @@
     "same_exchange_one_independent_root": true,
     "paused_blocks_unchanged": true,
     "n12_complete": false,
-    "pr320_merge_permission_still_required": true
+    "pr320_merge_permission_still_required": false
   },
   "latest_active_block_spot_futures_candidate": {
     "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
@@ -15033,6 +15039,7 @@
     "non_ascii_spot_query_preserved": true,
     "actual_104_coverage_pending": true,
     "shared_context_only": true,
-    "pr320_unmerged": true
+    "pr320_unmerged": false,
+    "pr320_merged_main": "96398e92ced4ee3fa98e94f7090293fa6ae26886"
   }
 }

@@ -91,7 +91,7 @@
     "N05": "existing exact spot/futures flow comparison retained, no duplicate venue vote",
     "N10": "existing external spot price path retained; shared HTX price/spread context added",
     "N11": "spot spread context only; exact 500 USDT futures execution gate unchanged and technical receipt stays out of approved Telegram",
-    "N12": "existing actual spot/futures taker comparison retained, PR320 Gate futures candidate still separate and unmerged",
+    "N12": "existing exact spot/futures taker comparison retained; bounded Gate futures context merged in PR320; natural per-asset use pending",
     "N14": "spot/perp underlying price context only; no spot implied-volatility claim",
     "N15": "market price context only; aggregate sector data not relabeled exact spot or futures strength",
     "N16": "spot spread context only; no substitute for exact futures execution cost"
@@ -104,11 +104,12 @@
     "N05_complete": false,
     "N10_complete": false,
     "N12_complete": false,
-    "PR320_merged": false,
+    "PR320_merged": true,
     "paused_N01_N03_N06_N09_unchanged": true,
-    "approved_104_test_data": "CONTROLLED_OFFLINE_COMPONENTS_NOT_ACTUAL_SPOT_MARKET_COVERAGE"
+    "approved_104_test_data": "CONTROLLED_OFFLINE_COMPONENTS_NOT_ACTUAL_SPOT_MARKET_COVERAGE",
+    "PR320_merged_main": "96398e92ced4ee3fa98e94f7090293fa6ae26886"
   },
-  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
+  "next_action": "PR321 shared approved-104 HTX spot/futures market context and PR320 bounded Gate futures source are in main. Inspect natural same-run source-to-manual/approved Telegram, measure actual exact per-asset coverage under admission, and qualify missing N12 sources. Metric-specific per-block review remains sequential.",
   "merged_main": "a0d5389cb633e73d467a76adf8318ab8aa6c0d83",
   "merged_utc": "2026-10-11T21:08:55Z"
 }
