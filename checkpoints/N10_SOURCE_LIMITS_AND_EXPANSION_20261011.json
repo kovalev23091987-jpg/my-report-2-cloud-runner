@@ -1,6 +1,6 @@
 {
   "schema": "N10_SOURCE_LIMITS_AND_EXPANSION_20261011_V1",
-  "status": "PREQUALIFICATION_ONLY_NOT_USEFUL_SOURCE_COVERAGE",
+  "status": "PARTIAL_PR316_EXISTING_N05_ORIGINAL_PRICE_CACHE_CONNECTED;NATURAL_CURRENT_USE_PENDING",
   "audited_utc": "2026-10-11T17:04:49.122Z",
   "scope": "N10 technical price path and text; no N05 flow source is automatically an N10 price source",
   "approved_assets": 104,
@@ -41,7 +41,19 @@
     "binance_catalog": "HTTP_451",
     "bybit_catalog": "HTTP_403",
     "gate_current_exact_contract_identity_rows": 6,
-    "gate_rows_are_not_n10_candles": true
+    "gate_rows_are_not_n10_candles": true,
+    "historical_original_qualified_price_paths": 3,
+    "historical_qualified_assets": [
+      "ZEC-USDT",
+      "RLC-USDT"
+    ],
+    "code_connected_cache_reuse_venue_roots": [
+      "BINANCE",
+      "POLONIEX",
+      "BITGET",
+      "GATE"
+    ],
+    "post_pr316_natural_independent_price_paths_verified": 0
   },
   "budget": {
     "own_provider_http_this_package": 0,
@@ -52,7 +64,22 @@
     "cross_venue_existing_shared_http_maximum_per_candidate": 4,
     "okx_existing_minute_cap_units": 100,
     "extra_104_per_asset_calls_admitted": false,
-    "do_not_reset_or_alias_caps": true
+    "do_not_reset_or_alias_caps": true,
+    "pr316_additional_provider_http_per_candidate": 0,
+    "pr316_indexed_D1_cache_reads_per_candidate_max": 4,
+    "existing_n05_daily_caps_per_venue": {
+      "BINANCE": 16,
+      "POLONIEX": 16,
+      "BITGET": 16,
+      "GATE": 16
+    },
+    "existing_n05_minute_caps": {
+      "BINANCE": 6,
+      "POLONIEX": 6,
+      "BITGET": 6,
+      "GATE": 4
+    },
+    "caps_raised": false
   },
   "official_candidate": {
     "source": "OKX V5 public SWAP candles",
@@ -1191,5 +1218,6 @@
   ],
   "n10_complete": false,
   "n05_open": true,
-  "n11_not_started": true
+  "n11_not_started": true,
+  "latest_release": "checkpoints/N10_PR316_INDEPENDENT_PRICE_CACHE_RELEASE_20261011.json"
 }
