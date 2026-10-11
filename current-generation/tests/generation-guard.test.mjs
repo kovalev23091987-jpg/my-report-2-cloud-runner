@@ -27,11 +27,11 @@ test('multi-source comparison remains bounded for schedule, burst checks and man
  assert.ok(generation.multi_source_provider_monthly_caps.GTRADE<=4000);
  assert.ok(generation.multi_source_provider_monthly_caps.GMX<=8000);
 });
-test('only authoritative report workflow remains manually runnable',()=>{
+test('only authorized report and bounded source workflows remain manually runnable',()=>{
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','report2.yml']);
+ assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2.yml']);
  const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
