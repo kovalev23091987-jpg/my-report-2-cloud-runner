@@ -1,0 +1,109 @@
+{
+  "schema": "N05_BITFINEX_LINK_PEPE_CONNECTED_RELEASE_20261011_V1",
+  "recorded_utc": "2026-10-11T12:58:07Z",
+  "scope": "OWNER_AUTHORIZED_N05_ONLY",
+  "status": "BITFINEX_LINK_PEPE_EXACT_ERC20_SOURCE_AND_LIMITED_REPORT_CONSUMER_CONNECTED;N05_OPEN",
+  "source_run": 38140937694,
+  "final_cloud_assembled_run": 38141202239,
+  "source_branch": "n05-bitfinex-link-pepe-20261011",
+  "integrated_main_head": "8e4e5799723327cb3ed3a311d4aa1d4c9f4093c6",
+  "sourceHTTP": 4,
+  "source_daily_cap_observed_after_run": {
+    "source": "N05_OFFICIAL_FLOW:BITFINEX",
+    "used": 15,
+    "cap": 16,
+    "remaining": 1,
+    "observed_at_run": 38140937694
+  },
+  "D1": {
+    "requests": 37,
+    "rows_read": 108,
+    "rows_written": 32,
+    "unknown_ops": 0
+  },
+  "source_summary": "checkpoints/n05-bitfinex-link-pepe-38140937694/batch-summary.json",
+  "original_replay": "checkpoints/N05_BITFINEX_LINK_PEPE_ORIGINAL_REPLAY_20261011.json",
+  "consumer_replay": "checkpoints/N05_BITFINEX_LINK_PEPE_CONSUMER_REPLAY_20261011.json",
+  "cloud_proof_directory": "checkpoints/n05-bitfinex-link-pepe-assembly-38141202239",
+  "cloud_checks": {
+    "runtime_assembly": "PASS",
+    "runtime_binding": "PASS",
+    "N05_tests": {
+      "passed": 29,
+      "failed": 0
+    },
+    "approved_delivery_tests": {
+      "passed": 12,
+      "failed": 0
+    },
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    }
+  },
+  "assets": [
+    {
+      "symbol": "LINK",
+      "htx_ethereum_contract": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "bitfinex_official_asset_reference": "https://support.bitfinex.com/hc/en-us/articles/900002231406-Chainlink-LINK",
+      "bitfinex_official_contract_reference": "https://etherscan.io/token/0x514910771af9ca656af840dff83e8264ecf986ca",
+      "trade_count": 15,
+      "buy_quote_usd": 1142.22422543594,
+      "sell_quote_usd": 574.28337037748,
+      "verified_minutes": 240
+    },
+    {
+      "symbol": "PEPE",
+      "htx_ethereum_contract": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+      "bitfinex_official_asset_reference": "https://support.bitfinex.com/hc/en-us/articles/18781842069273-Pepe-PEPE",
+      "bitfinex_official_contract_reference": "https://etherscan.io/token/0x6982508145454ce325ddbe47a25d4ec3d2311933",
+      "trade_count": 14,
+      "buy_quote_usd": 603.7505206518744,
+      "sell_quote_usd": 4289.593345062345,
+      "verified_minutes": 240
+    }
+  ],
+  "source_window_end_ts": 1791723120000,
+  "one_venue_sample_limited": true,
+  "available_flow_context_proven": true,
+  "evidence_validation_proven": true,
+  "manual_and_both_approved_telegram_forms_controlled_render_proven": true,
+  "new_fresh_report_or_SENT": false,
+  "coverage_map": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json",
+  "coverage": {
+    "current_HTX_assets": 104,
+    "actual_individual_full_external_window_assets_ever": 39,
+    "assets_with_at_least_one_retained_exact_external_route": 76,
+    "assets_without_retained_exact_external_route": 28,
+    "assets_without_ever_full_external_window": 65,
+    "actual_independent_full_window_venue_histogram": {
+      "0": 65,
+      "1": 37,
+      "2": 2
+    },
+    "two_venue_histories_same_window_proven": false
+  },
+  "constraints": {
+    "N05_score_contribution": 0,
+    "strategy_weights_limits_approved_format_changed": false,
+    "catalog_or_HTTP_200_alone_counted": false,
+    "independent_physical_venue_root": "BITFINEX_OFFICIAL_PUBLIC_TRADES",
+    "one_venue_information_only": true,
+    "conflicting_sources_not_joint_conclusion": true,
+    "continuous_all104_proven": false,
+    "N05_complete": false
+  },
+  "retained_next_candidates": {
+    "SHIB": {
+      "status": "OFFICIAL_BITFINEX_ETHEREUM_CONTRACT_MATCHES_ORIGINAL_HTX;NO_FULL_WINDOW_OR_PRODUCTION_ROUTE_YET",
+      "contract": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+      "reference": "https://support.bitfinex.com/hc/en-us/articles/4408425471129-Shiba-Inu-SHIB",
+      "reason_not_queried": "BITFINEX_ONLY_ONE_OF_SIXTEEN_DAILY_REQUESTS_REMAINS;TWO_NEEDED_FOR_CANDLE_AND_TRADE"
+    },
+    "ARB": "Bitfinex Arbitrum One market and original HTX contract need exact official token contract comparison before qualification; not counted",
+    "SUN": "TRON contract requires exact primary comparison; not counted",
+    "CHZ": "Bitfinex Ethereum versus HTX native chz2 mismatch; not counted",
+    "HYPE": "Bitfinex HyperEVM versus HTX hyperlqd native alias; not counted"
+  },
+  "next_action": "CONTINUE_N05_ONLY;DO_NOT_SPEND_LAST_BITFINEX_REQUEST_ON_INCOMPLETE_WINDOW_OR_RESET_CAPS;AFTER_REAL_UTC_SOURCE_RESET_QUALIFY_SAVED_SHIB_AND_RUN_REPLANNED_COMMON_104_SOURCE_BATCH_WITH_UNCHANGED_CAPS;REUSE_ALL_ORIGINAL_RESPONSES;VERIFY_SAME_WINDOW_INDEPENDENT_AGREEMENT_AND_FRESH_NATURAL_REPORT_USE;DO_NOT_START_NEXT_BLOCK"
+}
