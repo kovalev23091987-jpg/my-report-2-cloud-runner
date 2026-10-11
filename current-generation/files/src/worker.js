@@ -1,5 +1,5 @@
 import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAnalysis} from './original-idea-recheck.mjs';
-import {bindApprovedHtxAnalysisScope} from './approved-htx-analysis-scope.mjs';
+import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
@@ -285,7 +285,7 @@ function normalizeSpotSymbol(value) {
   return String(value || "ETHFI-USDT")
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
+    .replace(/[^\p{L}\p{N}]/gu, "");
 }
 
 async function fetchJson(url) {
@@ -15968,7 +15968,7 @@ async function buildDeepCheckInput(params, env) {
   const results =
     await Promise.allSettled([
       futuresSnapshot(futuresParams),
-      spotSnapshot(spotParams),
+      approvedHtxAnalysisAssetForContract(contract) ? spotSnapshot(spotParams) : Promise.resolve(null),
       futuresTrajectory(trajectoryParams),
       htxStage0History(
         historyParams,
@@ -16014,7 +16014,9 @@ async function buildDeepCheckInput(params, env) {
   });
 
   const spot =
-    settled(results[1]);
+    approvedHtxAnalysisAssetForContract(contract)
+      ? settled(results[1])
+      : { execution_status: "NOT_APPLICABLE", data: null, error: "NOT_IN_APPROVED_HTX_ANALYSIS_UNIVERSE" };
 
   const trajectory =
     settled(results[2]);

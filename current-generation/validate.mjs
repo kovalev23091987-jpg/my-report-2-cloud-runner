@@ -8,7 +8,7 @@ import {proveTwoCandidateBudget} from './files/src/two-candidate-policy.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='5e4d745f50d14d3a3e539480a7b027b864bd75f80f9782da0405997f658de224';
+const expectedWorker='8299e6a7cfadd9eae9e6fafcfafd2eade09c1696c63c541e7c224ddca176f054';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe',maxBuffer:16*1024*1024});
  if(args[0]==='--test'&&process.env.REPORT2_VALIDATION_RECEIPT_DIR){fs.mkdirSync(process.env.REPORT2_VALIDATION_RECEIPT_DIR,{recursive:true});fs.writeFileSync(path.join(process.env.REPORT2_VALIDATION_RECEIPT_DIR,'current-generation-unit-tests.tap'),result.stdout||'');}

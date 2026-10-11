@@ -36,6 +36,7 @@ import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from '.
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
+import {APPROVED_HTX_SCOPE,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 
 export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v17-forward-technical-observation-20261006';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
@@ -59,9 +60,11 @@ function exactDepthMarket(component,contract,market,now){
 export function buildSpotFuturesMarketContext({contract,spot_component,futures_component,observed_ts}={}){
  const exact=text(contract).toUpperCase(),now=finite(observed_ts);
  const base={schema:'htx-spot-futures-shared-market-context-v1',contract:exact,observed_ts:now,physical_root_key:'HTX_OFFICIAL_PUBLIC_MARKET',independent_venue_count:1,network_calls:0,score_contribution:0,directional_vote:false,entry_authorized:false,
+  approved_generation:APPROVED_HTX_SCOPE.generation,approved_manifest_sha256:APPROVED_HTX_SCOPE.manifest_sha256,
   applicability_not_block_coverage:{N04:'MARKET_CONTEXT_NOT_ONCHAIN_DIRECTION',N05:'EXISTING_JOINT_FLOW_UNCHANGED',N10:'PRICE_CONTEXT_NOT_TECHNICAL_TARGET',N11:'SPOT_SPREAD_CONTEXT_NOT_FUTURES_EXECUTION_GATE',N12:'EXISTING_TAKER_RECONCILIATION_UNCHANGED',N14:'UNDERLYING_PRICE_CONTEXT_NOT_OPTIONS_IV',N15:'PRICE_CONTEXT_NOT_SECTOR_RELATIVE_STRENGTH',N16:'SPOT_SPREAD_CONTEXT_NOT_FUTURES_EXECUTION_COST'},
   metric_scope:'PRICE_AND_RELATIVE_SPREAD_ONLY;NOT_TAKER_FLOW_EXECUTION_SIZE_ONCHAIN_OPTIONS_IV_OR_SECTOR_STRENGTH'};
- if(!/^[A-Z0-9]{1,32}-USDT$/.test(exact)||now===null)return{...base,status:'EXACT_USDT_CONTRACT_AND_CLOCK_REQUIRED',spot:null,futures:null,comparison:null,fact:null};
+ if(!approvedHtxAnalysisAssetForContract(exact))return{...base,status:'NOT_IN_APPROVED_HTX_ANALYSIS_UNIVERSE',spot:null,futures:null,comparison:null,fact:null};
+ if(now===null)return{...base,status:'EXACT_USDT_CONTRACT_AND_CLOCK_REQUIRED',spot:null,futures:null,comparison:null,fact:null};
  const spot=exactDepthMarket(spot_component,exact,'HTX Spot',now);
  const futures=exactDepthMarket(futures_component,exact,'HTX USDT-M Futures',now);
  if(!spot||!futures){

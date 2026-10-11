@@ -9,8 +9,8 @@ if(!root){
  test('assembled runtime is required for shared spot/futures context', {skip:'encrypted production runtime not assembled'},()=>{});
 }else{
  const src=pathToFileURL(path.resolve(root)+'/');
- const [{buildSpotFuturesMarketContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact}]=await Promise.all(
-  ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs'].map(name=>import(new URL(name,src)))
+ const [{buildSpotFuturesMarketContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact},{APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS,approvedHtxAnalysisAssetForContract}]=await Promise.all(
+  ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs','approved-htx-analysis-scope.mjs'].map(name=>import(new URL(name,src)))
  );
  const fixture=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
  const T=fixture.observed_ts,contract=fixture.metadata.contract;
@@ -19,6 +19,30 @@ if(!root){
   health:{depth:true,info:true},depth_bbo:{best_bid:100,best_ask:100.2,source_ts:clock},
  }});
  const args=()=>({contract,observed_ts:T,spot_component:component('HTX Spot'),futures_component:component('HTX USDT-M Futures',T-12_000)});
+
+ test('spot comparison is limited to the exact approved 104-asset HTX analysis universe',()=>{
+  assert.equal(APPROVED_HTX_SCOPE.approved_assets,104);
+  assert.equal(APPROVED_HTX_ANALYSIS_CONTRACTS.length,104);
+  for(const row of APPROVED_HTX_ANALYSIS_CONTRACTS){
+   const exact=row.contract_code;
+   assert.equal(approvedHtxAnalysisAssetForContract(exact),row.asset_symbol);
+   const approved={contract:exact,observed_ts:T,spot_component:{...component('HTX Spot'),data:{...component('HTX Spot').data,contract:exact,requested_symbol:exact,symbol:exact.replace('-','').toLowerCase()}},futures_component:{...component('HTX USDT-M Futures'),data:{...component('HTX USDT-M Futures').data,contract:exact,requested_symbol:exact,contract_info:{contract_code:exact}}}};
+   const receipt=buildSpotFuturesMarketContext(approved);
+   assert.equal(receipt.status,'CLOSED_COMPARABLE_PRICE_AND_SPREAD',exact);
+   assert.equal(receipt.approved_manifest_sha256,APPROVED_HTX_SCOPE.manifest_sha256);
+  }
+  for(const foreign of ['FAKE-USDT','STOCK-USDT','AAVEUSDT','']){
+   const wrong={...args(),contract:foreign};
+   wrong.spot_component.data.requested_symbol=foreign;
+   wrong.spot_component.data.symbol=foreign.replace('-','').toLowerCase();
+   wrong.futures_component.data.contract=foreign;
+   wrong.futures_component.data.contract_info.contract_code=foreign;
+   const receipt=buildSpotFuturesMarketContext(wrong);
+   assert.equal(receipt.status,'NOT_IN_APPROVED_HTX_ANALYSIS_UNIVERSE',foreign);
+   assert.equal(receipt.fact,null);
+   assert.equal(receipt.network_calls,0);
+  }
+ });
 
  test('original same-depth clocks yield one neutral HTX comparison and approved report text',()=>{
   const input=args(),before=structuredClone(input),receipt=buildSpotFuturesMarketContext(input);
@@ -93,5 +117,15 @@ if(!root){
   assert.equal(spot.depth_bbo.best_bid,100);
   assert.equal(spot.depth_bbo.best_ask,100.2);
   assert.equal(spot.depth_bbo.source_ts,depthTs);
+ });
+ test('approved non-ASCII contract retains its exact spot query symbol',async()=>{
+  const exact='哈基米-USDT',calls=[];
+  assert.equal(approvedHtxAnalysisAssetForContract(exact),'哈基米');
+  const spot=await spotSnapshotForTest({symbol:exact,_fetch_json:async url=>{calls.push(url);return{ok:false,data:null,error:'CONTROLLED_NO_SAVED_MARKET_RESPONSE'};}});
+  assert.equal(calls.length,4);
+  for(const url of calls)assert.equal(new URL(url).searchParams.get('symbol'),'哈基米usdt');
+  assert.equal(spot.requested_symbol,exact);
+  assert.equal(spot.symbol,'哈基米usdt');
+  assert.equal(spot.health.depth,false);
  });
 }
