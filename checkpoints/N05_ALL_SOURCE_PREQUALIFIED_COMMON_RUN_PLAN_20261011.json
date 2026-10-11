@@ -1,0 +1,152 @@
+{
+  "schema": "N05_ALL_SOURCE_PREQUALIFIED_COMMON_RUN_PLAN_20261011_V1",
+  "basis_main": "f3575b859032bffbc14c9529b48c89b43565a237",
+  "scope_assets": 104,
+  "phase": "N05_ONLY",
+  "status": "OFFLINE_ROUTE_AND_BUDGET_PLAN_NOT_LIVE_RESULT",
+  "policy": "FIRST_PREQUALIFY_ALL_SAVED_EXACT_ROUTES_THEN_ONE_COMMON_GUARDED_LIVE_BATCH_WHEN_SOURCE_ROLES_OPEN",
+  "existing_source_caps_unchanged": true,
+  "latest_verified": {
+    "binance_run": 38133561442,
+    "backpack_run": 38134543735,
+    "gate_refusal_run": 38133916381,
+    "bitget_refusal_run": 38134213066,
+    "source_ledger_run": 38134391836,
+    "individual_full_window_assets_ever": 32,
+    "at_least_two_independent_full_window_venues_ever": 0,
+    "actual_current_simultaneous_all_asset_coverage_proven": false,
+    "actual_new_same_run_report_or_telegram_proven": false
+  },
+  "offline_route_basis": "checkpoints/N05_CURRENT104_OFFLINE_SOURCE_COVERAGE_MAP_20261011.json",
+  "retained_metadata_is_not_live_market_or_flow": true,
+  "available_structural_external_assets": 71,
+  "no_retained_exact_external_route_assets": 33,
+  "remaining_without_ever_full_external_window": 72,
+  "remaining_with_structural_route": 39,
+  "current_utc_day": "2026-10-11",
+  "source_role_usage_after_last_batch": {
+    "BACKPACK": 16,
+    "BINANCE": 9,
+    "BITGET": 16,
+    "GATE": 16,
+    "POLONIEX": 13,
+    "KRAKEN": 0
+  },
+  "next_utc_day_source_reset_earliest": "2026-10-12T00:00:00Z",
+  "single_open_day_optimistic_capacity": {
+    "POLONIEX": {
+      "role_cap": 16,
+      "shared_metadata_min": 3,
+      "minimum_window_HTTP": 1,
+      "max_one_window_assets": 13
+    },
+    "GATE": {
+      "role_cap": 16,
+      "separate_asset_reference_call": 1,
+      "spot_metadata_min": 1,
+      "minimum_window_HTTP": 2,
+      "max_one_window_assets": 7
+    },
+    "BACKPACK": {
+      "role_cap": 16,
+      "shared_metadata_min": 2,
+      "minimum_window_HTTP": 2,
+      "max_one_window_assets": 7
+    },
+    "BITGET": {
+      "role_cap": 16,
+      "shared_metadata_min": 3,
+      "minimum_window_HTTP": 2,
+      "max_one_window_assets": 6
+    },
+    "BINANCE": {
+      "role_cap": 16,
+      "exact_native_20_already_individually_covered": true,
+      "new_unique_assets_from_saved_identity": 0
+    },
+    "KRAKEN": {
+      "role_cap": 16,
+      "exact_native_12_already_individually_covered": true,
+      "new_unique_assets_from_saved_identity": 0
+    }
+  },
+  "one_open_day_assignment_upper_bound": {
+    "new_unique_assets": 33,
+    "possible_total_ever_full_assets_if_all_requests_qualify": 65,
+    "still_without_full_even_in_optimistic_case": 39,
+    "assigned": {
+      "POLONIEX": [
+        "币安人生",
+        "APR",
+        "BEAT",
+        "龙虾",
+        "ACE",
+        "ASTER",
+        "BOME",
+        "DOS",
+        "ETHFI",
+        "FARTCOIN",
+        "FLOKI",
+        "LIT",
+        "LSK"
+      ],
+      "BACKPACK": [
+        "PUMP",
+        "SKR",
+        "WLD",
+        "BONK",
+        "LINK",
+        "PEPE",
+        "SHIB"
+      ],
+      "BITGET": [
+        "AVNT",
+        "BILL",
+        "OP",
+        "RIVER",
+        "ZKC",
+        "CT"
+      ],
+      "GATE": [
+        "MARSCOIN",
+        "OKB",
+        "MUBARAK",
+        "EUL",
+        "NIL",
+        "XAUT",
+        "牛来"
+      ]
+    },
+    "unassigned_structurally_routable": [
+      "PIPPIN",
+      "QNT",
+      "RLC",
+      "SKYAI",
+      "TUT",
+      "WIF"
+    ]
+  },
+  "live_admission_and_validation": [
+    "Fresh main, phase, inactive foreign fence and newly owned bounded CAS lease",
+    "D1 daily reservation and per-source daily/minute plus whole-job caps before HTTP",
+    "Refresh each primary identity and market catalog once per source, compare exact asset address or native network before any window request",
+    "Use one common closed minute anchor; skip stale, zero-activity or structurally mismatched candidates without claiming a completed window",
+    "Store original bodies and hashes for every actual provider response; validate all 240 minutes, quote, trade count and source clock",
+    "Use qualified one-venue context as descriptive fact with score 0; require independent physical venues, same window and agreed direction/strength for joint conclusion",
+    "If sources disagree, keep separate scoped facts only, never emit a joint directional conclusion",
+    "Replay actual source responses through N05 consumer and manual/Telegram formatting; distinguish controlled rendering from live SENT"
+  ],
+  "limitations": [
+    "Structural source candidates are historical and may disappear or change before a later run",
+    "Optimistic 33 assumes one history page per market and every requested 240-minute window closes; actual output may be lower",
+    "33 assets have no saved exact external route, mostly unresolved HTX identity, requiring official primary identity research and possibly new independent venues",
+    "Current source caps cannot provide continuous fresh coverage of all104; 104 ideal one-call windows per pass exceed one role cap16 and 40-minute cadence would require 3744 requests/day before metadata versus hub900/day",
+    "Full N05 source agreement, large-trade calibration and actual fresh same-run report/Telegram use remain open"
+  ],
+  "no_new_source_HTTP_in_this_plan": true,
+  "score_changed": false,
+  "weights_changed": false,
+  "report_or_telegram_format_changed": false,
+  "N05_complete": false,
+  "next_block_not_started": true
+}
