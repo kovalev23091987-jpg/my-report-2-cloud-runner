@@ -36,6 +36,12 @@ export function plainContextFact(f,c){
  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return `${f.label}: ${f.value} — ${f.source}.`;
  // Only a previously confirmed same-snapshot fact reaches this helper.
  const r=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
+ if(r?.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'&&Array.isArray(r.components)&&r.components.length===2){
+  const [future,spot]=r.components,market=p=>`${p.market==='SPOT'?'спот':'фьючерсы'}: ${p.valid_recent_rows} ${p.valid_recent_rows===1?'сделка':p.valid_recent_rows%10>=2&&p.valid_recent_rows%10<=4&&(p.valid_recent_rows%100<12||p.valid_recent_rows%100>14)?'сделки':'сделок'}, покупки ${money(p.buy_quote_turnover_usdt)}, продажи ${money(p.sell_quote_turnover_usdt)} USDT`;
+  const n05=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(row=>Array.isArray(f.evidence_ids)&&f.evidence_ids.includes(row.evidence_id)&&row.block_id==='N05');
+  const cross=n05&&((n05.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'&&validateJointFlowEvidence(n05,c.observed_ts))||(n05.metric_family==='AVAILABLE_VENUE_TAKER_FLOW_4H'&&validateAvailableFlowEvidence(n05,c.observed_ts)))?` За отдельные четыре часа: ${[...new Set(n05.components.map(x=>x.venue))].join(' и ')} — ${n05.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'?'направление в споте и фьючерсах согласуется':'общего подтверждения направления нет'}.`:'';
+  return `Последние сделки HTX: ${market(future)}; ${market(spot)}. ${r.coverage_status==='BOUNDED_MULTIMARKET_AGREEMENT'?'Оба рынка показывают сходный перевес':'Общего направления по двум рынкам нет'}; выборки неполные.${cross}`;
+ }
  const n=r?.valid_recent_rows,buy=number(r?.buy_quote_turnover_usdt),sell=number(r?.sell_quote_turnover_usdt);
  if(!Number.isSafeInteger(n)||n<=0||buy===null||sell===null||buy<0||sell<0)return `${f.label}: ${f.value} — ${f.source}.`;
  const count=n===4?'четырёх':String(n);
@@ -49,6 +55,10 @@ export function isApprovedTelegramContextFact(f,c){
  if(f?.block_id==='N05'&&f.field==='JOINT_SPOT_FUTURES_AGREEMENT_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateJointFlowEvidence(row,c.observed_ts);}
  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return false;
  const r=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
+ if(r?.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'){
+  const parts=r.components;
+  return Array.isArray(parts)&&parts.length===2&&r.independent_venue_count===1&&parts[0].venue==='HTX'&&parts[0].market==='FUTURES'&&parts[1].venue==='HTX'&&parts[1].market==='SPOT'&&parts.every(p=>Number.isSafeInteger(p.valid_recent_rows)&&p.valid_recent_rows>0&&number(p.buy_quote_turnover_usdt)!==null&&number(p.sell_quote_turnover_usdt)!==null&&p.buy_quote_turnover_usdt>=0&&p.sell_quote_turnover_usdt>=0);
+ }
  const buy=number(r?.buy_quote_turnover_usdt),sell=number(r?.sell_quote_turnover_usdt);
  return Number.isSafeInteger(r?.valid_recent_rows)&&r.valid_recent_rows>0&&buy!==null&&sell!==null&&buy>=0&&sell>=0;
 }
