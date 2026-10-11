@@ -1,0 +1,314 @@
+{
+  "schema": "N05_COINBASE_NEW_INDEPENDENT_VENUE_REPLAY_20261011_V1",
+  "source_run": 38136755764,
+  "source_main": "9975f2ed9a9ede9a1bb979c3a73505434d4964d6",
+  "sourceHTTP_replay": 0,
+  "D1_replay": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "original_source_bodies_verified": 11,
+  "components": [
+    {
+      "version": "coinbase-usd-reconciled-flow-v1-20261011",
+      "contract": "DASH-USDT",
+      "coinbase_product": "DASH-USD",
+      "venue": "COINBASE",
+      "market": "SPOT",
+      "quote": "USD",
+      "physical_root": "COINBASE_EXCHANGE_OFFICIAL_PUBLIC_TRADES",
+      "status": "COINBASE_ORIGINAL_CANDLE_TRADE_MISMATCH",
+      "check_completed": false,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "dash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dash:mainnet",
+        "contract_or_mint": null
+      },
+      "window_start_ts": 1791704760000,
+      "window_end_ts": 1791719160000,
+      "observed_ts": 1791719168344,
+      "checked_minutes": 240,
+      "verified_minutes": 0,
+      "occupied_minutes": 52,
+      "trade_count": 226,
+      "buy_quote": null,
+      "sell_quote": null,
+      "imbalance": null,
+      "maker_side_inverted_to_taker": true,
+      "raw_candle_base_volume_max_difference": 234.18982056,
+      "mismatch_count": 113,
+      "mismatch_examples": [
+        {
+          "minute_ts": 1791705000000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 33.33777519,
+          "trade_base": 0.19503546,
+          "trade_count": 1
+        },
+        {
+          "minute_ts": 1791705000000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 50.74,
+          "candle_high": 50.76,
+          "trade_low": 50.76,
+          "trade_high": 50.76
+        },
+        {
+          "minute_ts": 1791705060000,
+          "kind": "PRESENCE",
+          "candle_present": false,
+          "trade_present": true
+        },
+        {
+          "minute_ts": 1791705120000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 75.11138194,
+          "trade_base": 75.04219372,
+          "trade_count": 8
+        },
+        {
+          "minute_ts": 1791705360000,
+          "kind": "PRESENCE",
+          "candle_present": false,
+          "trade_present": true
+        },
+        {
+          "minute_ts": 1791705420000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 6.04379188,
+          "trade_base": 6,
+          "trade_count": 1
+        },
+        {
+          "minute_ts": 1791705420000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 50.7,
+          "candle_high": 50.71,
+          "trade_low": 50.71,
+          "trade_high": 50.71
+        },
+        {
+          "minute_ts": 1791705660000,
+          "kind": "PRESENCE",
+          "candle_present": false,
+          "trade_present": true
+        }
+      ],
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "absolute_cross_quote_turnover_summed": false,
+      "not_onchain_exchange_flows": true,
+      "raw_files": [
+        "COINBASE-DASH-CANDLES240.json.gz",
+        "COINBASE-DASH-TRADES-1.json.gz"
+      ]
+    },
+    {
+      "version": "coinbase-usd-reconciled-flow-v1-20261011",
+      "contract": "FIL-USDT",
+      "coinbase_product": "FIL-USD",
+      "venue": "COINBASE",
+      "market": "SPOT",
+      "quote": "USD",
+      "physical_root": "COINBASE_EXCHANGE_OFFICIAL_PUBLIC_TRADES",
+      "status": "COINBASE_ORIGINAL_CANDLE_TRADE_MISMATCH",
+      "check_completed": false,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "filecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "filecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "window_start_ts": 1791704760000,
+      "window_end_ts": 1791719160000,
+      "observed_ts": 1791719224634,
+      "checked_minutes": 240,
+      "verified_minutes": 0,
+      "occupied_minutes": 174,
+      "trade_count": 1319,
+      "buy_quote": null,
+      "sell_quote": null,
+      "imbalance": null,
+      "maker_side_inverted_to_taker": true,
+      "raw_candle_base_volume_max_difference": 4904.071,
+      "mismatch_count": 254,
+      "mismatch_examples": [
+        {
+          "minute_ts": 1791704760000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 3307.295,
+          "trade_base": 1603.643,
+          "trade_count": 12
+        },
+        {
+          "minute_ts": 1791704760000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 1.1062,
+          "candle_high": 1.1085,
+          "trade_low": 1.1065,
+          "trade_high": 1.1085
+        },
+        {
+          "minute_ts": 1791704880000,
+          "kind": "PRESENCE",
+          "candle_present": false,
+          "trade_present": true
+        },
+        {
+          "minute_ts": 1791704940000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 429.442,
+          "trade_base": 244.899,
+          "trade_count": 3
+        },
+        {
+          "minute_ts": 1791704940000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 1.1058,
+          "candle_high": 1.1064,
+          "trade_low": 1.1062,
+          "trade_high": 1.1064
+        },
+        {
+          "minute_ts": 1791705000000,
+          "kind": "PRESENCE",
+          "candle_present": false,
+          "trade_present": true
+        },
+        {
+          "minute_ts": 1791705120000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 2756.293,
+          "trade_base": 1359.8919999999998,
+          "trade_count": 1
+        },
+        {
+          "minute_ts": 1791705120000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 1.1048,
+          "candle_high": 1.1058,
+          "trade_low": 1.1058,
+          "trade_high": 1.1058
+        }
+      ],
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "absolute_cross_quote_turnover_summed": false,
+      "not_onchain_exchange_flows": true,
+      "raw_files": [
+        "COINBASE-FIL-CANDLES240.json.gz",
+        "COINBASE-FIL-TRADES-1.json.gz",
+        "COINBASE-FIL-TRADES-2.json.gz"
+      ]
+    },
+    {
+      "version": "coinbase-usd-reconciled-flow-v1-20261011",
+      "contract": "TAO-USDT",
+      "coinbase_product": "TAO-USD",
+      "venue": "COINBASE",
+      "market": "SPOT",
+      "quote": "USD",
+      "physical_root": "COINBASE_EXCHANGE_OFFICIAL_PUBLIC_TRADES",
+      "status": "COINBASE_ORIGINAL_CANDLE_TRADE_MISMATCH",
+      "check_completed": false,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "bittensor",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bittensor:mainnet",
+        "contract_or_mint": null
+      },
+      "window_start_ts": 1791704760000,
+      "window_end_ts": 1791719160000,
+      "observed_ts": 1791719229642,
+      "checked_minutes": 240,
+      "verified_minutes": 0,
+      "occupied_minutes": 210,
+      "trade_count": 2088,
+      "buy_quote": null,
+      "sell_quote": null,
+      "imbalance": null,
+      "maker_side_inverted_to_taker": true,
+      "raw_candle_base_volume_max_difference": 89.2686,
+      "mismatch_count": 310,
+      "mismatch_examples": [
+        {
+          "minute_ts": 1791704760000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 2.9432,
+          "trade_base": 3.2801,
+          "trade_count": 10
+        },
+        {
+          "minute_ts": 1791704820000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 0.1695,
+          "trade_base": 0.4337,
+          "trade_count": 4
+        },
+        {
+          "minute_ts": 1791704820000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 282.44,
+          "candle_high": 282.51,
+          "trade_low": 282.45,
+          "trade_high": 282.51
+        },
+        {
+          "minute_ts": 1791704880000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 1.8625,
+          "trade_base": 1.0683,
+          "trade_count": 2
+        },
+        {
+          "minute_ts": 1791704880000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 282.39,
+          "candle_high": 282.51,
+          "trade_low": 282.39,
+          "trade_high": 282.44
+        },
+        {
+          "minute_ts": 1791704940000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 0.004,
+          "trade_base": 0.8787,
+          "trade_count": 2
+        },
+        {
+          "minute_ts": 1791704940000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 282.6,
+          "candle_high": 282.6,
+          "trade_low": 282.51,
+          "trade_high": 282.6
+        },
+        {
+          "minute_ts": 1791705000000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 1.864,
+          "trade_base": 0.8044,
+          "trade_count": 1
+        }
+      ],
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "absolute_cross_quote_turnover_summed": false,
+      "not_onchain_exchange_flows": true,
+      "raw_files": [
+        "COINBASE-TAO-CANDLES240.json.gz",
+        "COINBASE-TAO-TRADES-1.json.gz",
+        "COINBASE-TAO-TRADES-2.json.gz",
+        "COINBASE-TAO-TRADES-3.json.gz"
+      ]
+    }
+  ],
+  "full_240min_assets": [],
+  "new_venue_verified_for_use": false,
+  "production_connected": false,
+  "same_run_actual_report_or_telegram_proven": false,
+  "N05_complete": false
+}
