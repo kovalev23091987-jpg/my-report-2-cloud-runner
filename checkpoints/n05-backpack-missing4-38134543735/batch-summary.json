@@ -1,0 +1,802 @@
+{
+  "schema": "N05_BACKPACK_MISSING4_ACTUAL_V1",
+  "symbols": [
+    "ENA",
+    "JUP",
+    "ONDO",
+    "PENGU"
+  ],
+  "approved_assets": 104,
+  "source": "N05_OFFICIAL_FLOW:BACKPACK",
+  "shared_metadata_HTTP": 2,
+  "maximum_window_HTTP": 8,
+  "maximum_source_HTTP": 10,
+  "source_cap": 16,
+  "provider_rolling_minute_cap": 6,
+  "background_HTTP_cap": 28,
+  "D1_reservation": {
+    "rows_read": 16000,
+    "rows_written": 500
+  },
+  "caps_changed": false,
+  "one_trade_page_per_market": true,
+  "run": "38134543735",
+  "head": "464d95f193907112c025c973217ef4d2b50e6dcd",
+  "main": "9c727ab4aba8bad0bb2531ce05dee565d1b2b8ef",
+  "lease_owner": "CODEX:LOCAL_N05:20261011:1791715474614",
+  "started_ts": 1791716989887,
+  "status": "BACKPACK_SPOT_BATCH_RETAINED_WITH_PER_COIN_QUALIFICATION",
+  "sourceHTTP": 10,
+  "originals": [
+    {
+      "name": "BACKPACK-ASSETS",
+      "url": "https://api.backpack.exchange/api/v1/assets",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791716940000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:1:BACKPACK-ASSETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716991488,
+      "http_status": 200,
+      "received_ts": 1791716991708,
+      "body_sha256": "831439a4702f4957ee2b9b22bfa5ca1687a7fbbb750130124bd1001da5946c49",
+      "gzip_sha256": "097f57dccacdf31559353686b382b81cd0d67105754248f46b9433fcca2f452e",
+      "bytes": 2154456,
+      "file": "BACKPACK-ASSETS.json.gz"
+    },
+    {
+      "name": "BACKPACK-MARKETS",
+      "url": "https://api.backpack.exchange/api/v1/markets",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791716940000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:2:BACKPACK-MARKETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716992595,
+      "http_status": 200,
+      "received_ts": 1791716992616,
+      "body_sha256": "80def488230e5cea02e0a712c8b20adb900984f307d5a5f27ffdd05962667251",
+      "gzip_sha256": "fcfad5708852967c952b34ba5e9ffd2c178ce315658bc5f5fffaf205c780ee19",
+      "bytes": 178398,
+      "file": "BACKPACK-MARKETS.json.gz"
+    },
+    {
+      "name": "BACKPACK-ENA-CANDLES",
+      "url": "https://api.backpack.exchange/api/v1/klines?symbol=ENA_USDC&interval=1m&startTime=1791702540&endTime=1791716940&priceType=Last&source=Venue",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791716940000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:3:BACKPACK-ENA-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716993485,
+      "http_status": 200,
+      "received_ts": 1791716993650,
+      "body_sha256": "870690eddb1561b4fddbac6f063760f1059de7027d3794b8e17af1763e767127",
+      "gzip_sha256": "82fa171ff8c69b36724de71d76ea2146cd3a1deab4a601590e40b1c0bc024fa9",
+      "bytes": 41291,
+      "file": "BACKPACK-ENA-CANDLES.json.gz"
+    },
+    {
+      "name": "BACKPACK-ENA-TRADES",
+      "url": "https://api.backpack.exchange/api/v1/trades/history?symbol=ENA_USDC&limit=1000&offset=0",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791716940000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:4:BACKPACK-ENA-TRADES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716994512,
+      "http_status": 200,
+      "received_ts": 1791716994845,
+      "body_sha256": "977cf73baade691a88b17ede7385d4f577c16320f8411bbc035b2df7f79774fd",
+      "gzip_sha256": "f10015822412d18fc3eaa47e0d864eab9a2bb7097a5e7da384b8049a5a9f8526",
+      "bytes": 123297,
+      "file": "BACKPACK-ENA-TRADES.json.gz"
+    },
+    {
+      "name": "BACKPACK-JUP-CANDLES",
+      "url": "https://api.backpack.exchange/api/v1/klines?symbol=JUP_USDC&interval=1m&startTime=1791702540&endTime=1791716940&priceType=Last&source=Venue",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791716940000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:5:BACKPACK-JUP-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716995719,
+      "http_status": 200,
+      "received_ts": 1791716995885,
+      "body_sha256": "66d6716361e54dd877e2c97b2946de6c83583ca6dc767a3eaba1a5562f01d774",
+      "gzip_sha256": "d4d9152631defef2233fbe5b4cb077b19c6f5ba46e55738f2e42033a1a1939c6",
+      "bytes": 41087,
+      "file": "BACKPACK-JUP-CANDLES.json.gz"
+    },
+    {
+      "name": "BACKPACK-JUP-TRADES",
+      "url": "https://api.backpack.exchange/api/v1/trades/history?symbol=JUP_USDC&limit=1000&offset=0",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791716940000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:6:BACKPACK-JUP-TRADES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791716996743,
+      "http_status": 200,
+      "received_ts": 1791716997559,
+      "body_sha256": "fc9214f9bfd408b4e3126a8875a7f4ab9d128da23de532099edc5e567af230f2",
+      "gzip_sha256": "4ec5f272e058ae14950e235cde7eb496bfb3d6fca84da69cb10fba9b00206d0f",
+      "bytes": 125311,
+      "file": "BACKPACK-JUP-TRADES.json.gz"
+    },
+    {
+      "name": "BACKPACK-ONDO-CANDLES",
+      "url": "https://api.backpack.exchange/api/v1/klines?symbol=ONDO_USDC&interval=1m&startTime=1791702540&endTime=1791716940&priceType=Last&source=Venue",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791717060000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:7:BACKPACK-ONDO-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791717061009,
+      "http_status": 200,
+      "received_ts": 1791717061380,
+      "body_sha256": "45887daacef5151b8adf8e583e61afa8319e6bd89e1d9b1f1c3863e5aa5f5199",
+      "gzip_sha256": "8536fa5f55022080926f23f3929a6cb8fdac1a054f2bb515f15d23437495eaa5",
+      "bytes": 41318,
+      "file": "BACKPACK-ONDO-CANDLES.json.gz"
+    },
+    {
+      "name": "BACKPACK-ONDO-TRADES",
+      "url": "https://api.backpack.exchange/api/v1/trades/history?symbol=ONDO_USDC&limit=1000&offset=0",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791717060000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:8:BACKPACK-ONDO-TRADES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791717062252,
+      "http_status": 200,
+      "received_ts": 1791717062478,
+      "body_sha256": "f6120392a1fd167ad0b3baa89fac12f92c4f987eebe769424b81f8b61596d683",
+      "gzip_sha256": "7d170fccc8a969892ffbb201e5287d0caf51d844bd41982017494679436598cc",
+      "bytes": 123713,
+      "file": "BACKPACK-ONDO-TRADES.json.gz"
+    },
+    {
+      "name": "BACKPACK-PENGU-CANDLES",
+      "url": "https://api.backpack.exchange/api/v1/klines?symbol=PENGU_USDC&interval=1m&startTime=1791702540&endTime=1791716940&priceType=Last&source=Venue",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791717060000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:9:BACKPACK-PENGU-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791717063344,
+      "http_status": 200,
+      "received_ts": 1791717063506,
+      "body_sha256": "75a6506c6f9892a13694c614b069bdc846310826c5f602c0bc92a342de827021",
+      "gzip_sha256": "99b7473fa30da5a2bc48653bdd0001d630ca9667c9eb3aeaf455af7448751a7e",
+      "bytes": 41824,
+      "file": "BACKPACK-PENGU-CANDLES.json.gz"
+    },
+    {
+      "name": "BACKPACK-PENGU-TRADES",
+      "url": "https://api.backpack.exchange/api/v1/trades/history?symbol=PENGU_USDC&limit=1000&offset=0",
+      "source": "N05_OFFICIAL_FLOW:BACKPACK",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BACKPACK",
+        "minute_bucket": 1791717060000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_BACKPACK_MISSING4:38134543735:1:10:BACKPACK-PENGU-TRADES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791717064357,
+      "http_status": 200,
+      "received_ts": 1791717064546,
+      "body_sha256": "5d4bfb1986c84a6cd69e44dba7764236501778d422f66fbc59710c2f33256bd4",
+      "gzip_sha256": "fa310b1b5d97cfd5dbdb240cdc15fdbd17980e784f3ce419a181e69a85fd7492",
+      "bytes": 121910,
+      "file": "BACKPACK-PENGU-TRADES.json.gz"
+    }
+  ],
+  "results": [
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "ENA-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791702540000,
+      "window_end_ts": 1791716940000,
+      "observed_ts": 1791716994845,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 354.60690099999994,
+      "sell_quote": 0,
+      "trade_count": 3,
+      "imbalance": 1,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791716040000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791713340000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 354.60690099999994,
+          "sell_quote": 0,
+          "trade_count": 3,
+          "imbalance": 1
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "symbol": "ENA",
+      "identity_original_received_ts": 1791632635640,
+      "receipt_hashes": [
+        "870690eddb1561b4fddbac6f063760f1059de7027d3794b8e17af1763e767127",
+        "977cf73baade691a88b17ede7385d4f577c16320f8411bbc035b2df7f79774fd"
+      ],
+      "one_page_bounded": true
+    },
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "JUP-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791702540000,
+      "window_end_ts": 1791716940000,
+      "observed_ts": 1791716997559,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 20.281643999999996,
+      "sell_quote": 78.97307799999999,
+      "trade_count": 8,
+      "imbalance": -0.5913213277651415,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791716040000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791713340000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "symbol": "JUP",
+      "identity_original_received_ts": 1791632635640,
+      "receipt_hashes": [
+        "66d6716361e54dd877e2c97b2946de6c83583ca6dc767a3eaba1a5562f01d774",
+        "fc9214f9bfd408b4e3126a8875a7f4ab9d128da23de532099edc5e567af230f2"
+      ],
+      "one_page_bounded": true
+    },
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "ONDO-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791702540000,
+      "window_end_ts": 1791716940000,
+      "observed_ts": 1791717062478,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 348.95557,
+      "sell_quote": 0.532906,
+      "trade_count": 7,
+      "imbalance": 0.9969503658255101,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791716040000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791713340000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 348.95557,
+          "sell_quote": 0,
+          "trade_count": 6,
+          "imbalance": 1
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "symbol": "ONDO",
+      "identity_original_received_ts": 1791632635640,
+      "receipt_hashes": [
+        "45887daacef5151b8adf8e583e61afa8319e6bd89e1d9b1f1c3863e5aa5f5199",
+        "f6120392a1fd167ad0b3baa89fac12f92c4f987eebe769424b81f8b61596d683"
+      ],
+      "one_page_bounded": true
+    },
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "PENGU-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791702540000,
+      "window_end_ts": 1791716940000,
+      "observed_ts": 1791717064546,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 11.3463,
+      "sell_quote": 376.4737999999999,
+      "trade_count": 9,
+      "imbalance": -0.9414867873016382,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791716040000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791713340000,
+          "window_end_ts": 1791716940000,
+          "buy_quote": 11.3463,
+          "sell_quote": 3.2476000000000003,
+          "trade_count": 3,
+          "imbalance": 0.5549373368325122
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "symbol": "PENGU",
+      "identity_original_received_ts": 1791632635640,
+      "receipt_hashes": [
+        "75a6506c6f9892a13694c614b069bdc846310826c5f602c0bc92a342de827021",
+        "5d4bfb1986c84a6cd69e44dba7764236501778d422f66fbc59710c2f33256bd4"
+      ],
+      "one_page_bounded": true
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 48,
+      "reserved_rows_read": 751500,
+      "reserved_rows_written": 16012,
+      "measured_rows_read": 437897,
+      "measured_rows_written": 4902,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 767500,
+      "rows_written": 16512
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 6,
+    "required": 10,
+    "cap": 16,
+    "remaining": 10,
+    "allowed": true
+  },
+  "window_end_ts": 1791716940000,
+  "window_start_ts": 1791702540000,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 10,
+      "statistics": 0
+    },
+    "total": 10,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 154
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_BACKPACK_MISSING4:38134543735:1",
+    "source_run_id": "38134543735",
+    "measured_rows_read": 262,
+    "measured_rows_written_accounted": 74,
+    "measured_requests_accounted": 103,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 103,
+    "rows_read": 263,
+    "rows_written": 74,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 49,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 16,
+        "rows_read": 89,
+        "rows_written": 40,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 32,
+        "rows_read": 93,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 20,
+        "rows_read": 10,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 10,
+        "rows_read": 10,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 10,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791717064717,
+  "individual_full_windows": 4,
+  "simultaneous_continuous_coverage": false
+}
