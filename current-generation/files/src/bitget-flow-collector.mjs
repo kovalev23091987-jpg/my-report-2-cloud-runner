@@ -3,6 +3,7 @@ import {createHash} from 'node:crypto';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 import {exactBitgetBinding,acquireBitgetFourHourFlow,BITGET_FLOW_VERSION,reconcileBitgetFlow} from './bitget-four-hour-flow.mjs';
+import {normalizeBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
 const SOURCE='N05_OFFICIAL_FLOW:BITGET',VERSION='bitget-flow-collector-v1-20261010';
 const metadata={coins:'https://api.bitget.com/api/v2/spot/public/coins',spot:'https://api.bitget.com/api/v2/spot/public/symbols',futures:'https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES'};
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -35,15 +36,17 @@ export async function collectBitgetFlow(params={}){
    if(cached?.version===VERSION&&cached.observed_ts<=now&&now-cached.observed_ts<=21600000){catalogs[kind]=cached.payload;receipts.push({...cached.receipt,cache_status:'HIT',actual_http:0});continue;}
    const p=await get(metadata[kind],{kind});if(!p)return{...root,status:receipts.at(-1)?.status||'METADATA_NOT_RECEIVED',network_calls:calls};catalogs[kind]=compact(kind,p);const receipt=receipts.at(-1),ts=receipt.received_ts;await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:ts+21600000,payload:{version:VERSION,observed_ts:ts,payload:catalogs[kind],receipt}});
   }
-  const end=Math.floor(now/60000)*60000,components=[];for(const market of ['SPOT','FUTURES']){
+  const end=Math.floor(now/60000)*60000,components=[],evidence=[];for(const market of ['SPOT','FUTURES']){
    const rows=catalogs[market==='SPOT'?'spot':'futures'].data.filter(r=>r.symbol===contract.replace(/-USDT$/,'USDT'));
    if(rows.length!==1||!exactBitgetBinding({contract,identity,coins:catalogs.coins,instrument:rows[0],market})){components.push({venue:'BITGET',market,status:'EXACT_ASSET_BINDING_NOT_CLOSED',check_completed:false});continue;}
    const key=`FLOW:${contract}:${market}:${end}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true});let flow;
    if(cached?.version===VERSION&&cached.observed_ts<=now&&cached.payloads){flow={...reconcileBitgetFlow({contract,market,...cached.payloads,window_end_ts:end,observed_ts:cached.observed_ts}),payloads:cached.payloads,cache_status:'HIT'};}
    else{flow=await acquireBitgetFourHourFlow({get,contract,market,window_end_ts:end,max_pages:3,clock});if(flow.check_completed&&admitDb()){const payload={version:VERSION,observed_ts:flow.observed_ts,payloads:flow.payloads};if(Buffer.byteLength(JSON.stringify(payload))<=900000)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:flow.observed_ts,expires_ts:end+300000,payload});}}
-   const {payloads,...component}=flow;components.push({...component,exact_asset_binding:true,identity,physical_root:'BITGET_OFFICIAL_PUBLIC_TRADES',receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256)});
+   const sample=normalizeBitgetN12BoundedTradeSample({contract,market,identity,identity_method,exact_asset_binding:true,pages:flow.payloads?.pages,window_end_ts:end,observed_ts:flow.observed_ts});
+   evidence.push(...sample.evidence);
+   const {payloads,...component}=flow;components.push({...component,exact_asset_binding:true,identity,physical_root:'BITGET_OFFICIAL_PUBLIC_TRADES',receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256),n12_bounded_sample_status:sample.status});
   }
-  return{...root,status:components.some(c=>c.check_completed)?'CLOSED_QUALIFIED_FLOW_COMPONENTS':'PARTIAL_FOUR_HOUR_FLOW',components,network_calls:calls};
+  return{...root,status:components.some(c=>c.check_completed)?'CLOSED_QUALIFIED_FLOW_COMPONENTS':'PARTIAL_FOUR_HOUR_FLOW',components,evidence,network_calls:calls};
  }catch(e){return{...root,status:'FLOW_COLLECTOR_ERROR',reason:e.message,network_calls:calls};}
 }
 
