@@ -1,0 +1,251 @@
+{
+  "schema": "N05_LIGHTER_NEW_VENUE_PILOT_ACTUAL_V1",
+  "asset": "DASH",
+  "market_id": 127,
+  "maximum_source_HTTP": 1,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 6000,
+    "rows_written": 250
+  },
+  "caps_changed": false,
+  "qualification_only": true,
+  "prior_run": 38137955037,
+  "run": "38138046656",
+  "head": "60a4b9aacde0dd5122d18eafe79e39a9bef618a8",
+  "main": "71ef0b0a8418c110a428321f7a88866787f25aec",
+  "lease_owner": "CODEX:LOCAL_N05_LIGHTER:1791720049439",
+  "started_ts": 1791720426316,
+  "status": "ORIGINAL_LIGHTER_DASH_WINDOW_RETAINED_NOT_QUALIFIED",
+  "sourceHTTP": 1,
+  "sources": [
+    {
+      "name": "LIGHTER-DASH-TRADES100",
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/recentTrades?market_id=127&limit=100",
+      "source": "N05_OFFICIAL_FLOW:LIGHTER",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "LIGHTER",
+        "minute_bucket": 1791720420000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_LIGHTER_PILOT:38138046656:1:LIGHTER-DASH-TRADES100",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:LIGHTER",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791720428339,
+      "http_status": 200,
+      "received_ts": 1791720428488,
+      "body_sha256": "ed6410d8bd2156b60c1b011283b033c102149a9954e8cef4ad79cafee6595e8c",
+      "gzip_sha256": "9a83983a6df4de2327179628225bc81c9f016d40efc2d56d4b0d0373f9fdee4c",
+      "bytes": 3187,
+      "file": "LIGHTER-DASH-TRADES100.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 56,
+      "reserved_rows_read": 866500,
+      "reserved_rows_written": 18834,
+      "measured_rows_read": 483355,
+      "measured_rows_written": 5684,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 6000,
+      "rows_written": 250
+    },
+    "projected_reserved": {
+      "rows_read": 872500,
+      "rows_written": 19084
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 4,
+    "required": 1,
+    "cap": 16,
+    "remaining": 12,
+    "allowed": true
+  },
+  "window_start_ts": 1791705900000,
+  "window_end_ts": 1791720300000,
+  "book_match": 1,
+  "details_top_keys": [
+    "code",
+    "order_book_details",
+    "spot_order_book_details"
+  ],
+  "candles_top_keys": [
+    "code",
+    "r",
+    "c"
+  ],
+  "trades_top_keys": [
+    "code",
+    "trades"
+  ],
+  "candle_rows": 240,
+  "candle_first": {
+    "t": 1791705900000,
+    "o": 50.87,
+    "h": 50.87,
+    "l": 50.87,
+    "c": 50.87,
+    "O": 50.87,
+    "H": 50.87,
+    "L": 50.87,
+    "C": 50.87,
+    "v": 0,
+    "V": 0,
+    "i": 34095086821
+  },
+  "candle_last": {
+    "t": 1791720240000,
+    "o": 51.285,
+    "h": 51.285,
+    "l": 51.285,
+    "c": 51.285,
+    "O": 51.285,
+    "H": 51.285,
+    "L": 51.285,
+    "C": 51.285,
+    "v": 0,
+    "V": 0,
+    "i": 34106936787
+  },
+  "trade_rows": 3,
+  "trade_oldest_ts": 1791707053486,
+  "trade_newest_ts": 1791719259418,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 1,
+      "statistics": 0
+    },
+    "total": 1,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 163
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_LIGHTER_PILOT:38138046656:1",
+    "source_run_id": "38138046656",
+    "measured_rows_read": 66,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 13,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 13,
+    "rows_read": 67,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 57,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791720428697
+}
