@@ -1,0 +1,690 @@
+{
+  "schema": "N05_COINBASE_NEW_INDEPENDENT_VENUE_PILOT_ACTUAL_V1",
+  "assets": [
+    "DASH",
+    "FIL",
+    "TAO"
+  ],
+  "maximum_source_HTTP": 14,
+  "source_cap": 16,
+  "provider_minute_cap": 6,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 12000,
+    "rows_written": 400
+  },
+  "caps_changed": false,
+  "requires_current_owned_lease": true,
+  "qualification_only": true,
+  "run": "38136755764",
+  "head": "0be5de849353e6d6b19b32fd2e0d5c2841ccb928",
+  "main": "9975f2ed9a9ede9a1bb979c3a73505434d4964d6",
+  "lease_owner": "CODEX:LOCAL_N05_NEW_VENUE:1791718957493",
+  "original_HTX_identity_file": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+  "original_HTX_identity_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+  "started_ts": 1791719162315,
+  "status": "COINBASE_ORIGINAL_CATALOG_AND_PER_ASSET_PILOT_RETAINED_NOT_QUALIFIED",
+  "sourceHTTP": 11,
+  "sources": [
+    {
+      "name": "COINBASE-CURRENT-PRODUCTS",
+      "url": "https://api.exchange.coinbase.com/products",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719160000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-CURRENT-PRODUCTS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719164421,
+      "http_status": 200,
+      "received_ts": 1791719164568,
+      "body_sha256": "ad24d8895a951974f22aca6bf984b37ef879983e7b948764e113085b0b9bf67b",
+      "gzip_sha256": "2a02c54458eeaeeed00c224bd1d9bdd6f3a2498150b72addad286b54f4f16032",
+      "bytes": 355056,
+      "file": "COINBASE-CURRENT-PRODUCTS.json.gz",
+      "cb_after": null
+    },
+    {
+      "name": "COINBASE-CURRENT-CURRENCIES",
+      "url": "https://api.exchange.coinbase.com/currencies",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719160000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-CURRENT-CURRENCIES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719165689,
+      "http_status": 200,
+      "received_ts": 1791719165754,
+      "body_sha256": "d41a2005fa6d9a4aebc1e2c4a703069dbc4011d1741a812e642b5a3e35e85556",
+      "gzip_sha256": "f0206c67b5cda94e64e6de1111e50771bbcebf2d88e9049344618b2bd3c14ea7",
+      "bytes": 560029,
+      "file": "COINBASE-CURRENT-CURRENCIES.json.gz",
+      "cb_after": null
+    },
+    {
+      "name": "COINBASE-DASH-CANDLES240",
+      "url": "https://api.exchange.coinbase.com/products/DASH-USD/candles?granularity=60&start=2026-10-11T07%3A46%3A00.000Z&end=2026-10-11T11%3A46%3A00.000Z",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719160000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-DASH-CANDLES240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719166949,
+      "http_status": 200,
+      "received_ts": 1791719167169,
+      "body_sha256": "4e8726cbdf6c7e0b298e39da483c160e243cbe2419997beca77626570945e717",
+      "gzip_sha256": "38b63cd7cf7a4381314c8f62d77fe59edb4726650a0e9ae3908e7966db598a1b",
+      "bytes": 2431,
+      "file": "COINBASE-DASH-CANDLES240.json.gz",
+      "cb_after": null
+    },
+    {
+      "name": "COINBASE-DASH-TRADES-1",
+      "url": "https://api.exchange.coinbase.com/products/DASH-USD/trades?limit=1000",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719160000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-DASH-TRADES-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719168264,
+      "http_status": 200,
+      "received_ts": 1791719168344,
+      "body_sha256": "723ef971c29fde27ea21f18aaeb99037c5b2573157043d701a0c252c2c8c4bd1",
+      "gzip_sha256": "d91a6920ba8226675e282ea8eb8f3d5a079ebf49dcdc44c68472f67255a8015e",
+      "bytes": 114269,
+      "file": "COINBASE-DASH-TRADES-1.json.gz",
+      "cb_after": "18955209"
+    },
+    {
+      "name": "COINBASE-FIL-CANDLES240",
+      "url": "https://api.exchange.coinbase.com/products/FIL-USD/candles?granularity=60&start=2026-10-11T07%3A46%3A00.000Z&end=2026-10-11T11%3A46%3A00.000Z",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719160000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-FIL-CANDLES240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719169430,
+      "http_status": 200,
+      "received_ts": 1791719169506,
+      "body_sha256": "1c58c438bd40bc819044e147228c5c8e91233eea7e5cc408c25de788db66be67",
+      "gzip_sha256": "0435b226017c1b3c108658c7413bc0e0b83e8bc79537aa982f333997a8a69a9f",
+      "bytes": 8408,
+      "file": "COINBASE-FIL-CANDLES240.json.gz",
+      "cb_after": null
+    },
+    {
+      "name": "COINBASE-FIL-TRADES-1",
+      "url": "https://api.exchange.coinbase.com/products/FIL-USD/trades?limit=1000",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719160000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-FIL-TRADES-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719170560,
+      "http_status": 200,
+      "received_ts": 1791719170658,
+      "body_sha256": "1fcb25494d49324a5919f676d8c255866d2d159b629df079b620ec0a6e4bb211",
+      "gzip_sha256": "fa6d3f41efaf9ae17a648c9c14e65722a47a56fa7334d80209ea5e12df7de6ac",
+      "bytes": 114997,
+      "file": "COINBASE-FIL-TRADES-1.json.gz",
+      "cb_after": "36824715"
+    },
+    {
+      "name": "COINBASE-FIL-TRADES-2",
+      "url": "https://api.exchange.coinbase.com/products/FIL-USD/trades?limit=1000&after=36824715",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719220000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-FIL-TRADES-2",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719224520,
+      "http_status": 200,
+      "received_ts": 1791719224634,
+      "body_sha256": "ec3197ff1c5ea9d9691da6086974563c079d6179c1ed3f39abcff5939617b4d7",
+      "gzip_sha256": "c8cd78209446a35b66775e0a89880487b80ce140a08e401172e24b3b4b8425c8",
+      "bytes": 114944,
+      "file": "COINBASE-FIL-TRADES-2.json.gz",
+      "cb_after": "36823715"
+    },
+    {
+      "name": "COINBASE-TAO-CANDLES240",
+      "url": "https://api.exchange.coinbase.com/products/TAO-USD/candles?granularity=60&start=2026-10-11T07%3A46%3A00.000Z&end=2026-10-11T11%3A46%3A00.000Z",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719220000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-TAO-CANDLES240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719225727,
+      "http_status": 200,
+      "received_ts": 1791719225807,
+      "body_sha256": "4e8f02af43275b43c8d2fa8b38ee7deed61dfc22741c6e6a7699e9a488429ed2",
+      "gzip_sha256": "ead5396edef428a2ef70847a49da04c5ea0fe670186b94d67541a44b035732cf",
+      "bytes": 9980,
+      "file": "COINBASE-TAO-CANDLES240.json.gz",
+      "cb_after": null
+    },
+    {
+      "name": "COINBASE-TAO-TRADES-1",
+      "url": "https://api.exchange.coinbase.com/products/TAO-USD/trades?limit=1000",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719220000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-TAO-TRADES-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719227095,
+      "http_status": 200,
+      "received_ts": 1791719227198,
+      "body_sha256": "b82ed5b915c8c6ca267ff0c8d992ebd1c89324629cc6252cc4efd69c993b8390",
+      "gzip_sha256": "849a06e8b2bf3797a15ee9060f4f6707a6baa39217af41e1ae31cd4e8dc1100c",
+      "bytes": 115460,
+      "file": "COINBASE-TAO-TRADES-1.json.gz",
+      "cb_after": "27476370"
+    },
+    {
+      "name": "COINBASE-TAO-TRADES-2",
+      "url": "https://api.exchange.coinbase.com/products/TAO-USD/trades?limit=1000&after=27476370",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719220000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-TAO-TRADES-2",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719228296,
+      "http_status": 200,
+      "received_ts": 1791719228376,
+      "body_sha256": "7715f66a337fbfde3d9271f42c37b0abb0f049175ea4d3999e625488b892e78a",
+      "gzip_sha256": "044deaea852f58e3ac702d78a13bc494878cd55463515bada19c088b4b007021",
+      "bytes": 115403,
+      "file": "COINBASE-TAO-TRADES-2.json.gz",
+      "cb_after": "27475370"
+    },
+    {
+      "name": "COINBASE-TAO-TRADES-3",
+      "url": "https://api.exchange.coinbase.com/products/TAO-USD/trades?limit=1000&after=27475370",
+      "source": "N05_OFFICIAL_FLOW:COINBASE",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE_EXCHANGE",
+        "minute_bucket": 1791719220000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_COINBASE_PILOT:38136755764:1:COINBASE-TAO-TRADES-3",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-11",
+        "attempts": 1
+      },
+      "attempt_ts": 1791719229557,
+      "http_status": 200,
+      "received_ts": 1791719229642,
+      "body_sha256": "83a69a638fe19d57d3e3832553c5aa7fed26eb28be0f351c125c62c8b1e0ce5c",
+      "gzip_sha256": "161b53e4b0fb77a573ed9155a26643ba6950aac31d2f09e58941140802f7754c",
+      "bytes": 115446,
+      "file": "COINBASE-TAO-TRADES-3.json.gz",
+      "cb_after": "27474370"
+    }
+  ],
+  "candidates": [
+    {
+      "symbol": "DASH",
+      "contract": "DASH-USDT",
+      "coinbase_product": "DASH-USD",
+      "htx_native_alias": "dash1",
+      "coinbase_native_network": "dash",
+      "exact_primary_identity": true,
+      "status": "RAW_TRADE_PAGES_REACH_WINDOW_START;CANDLE_RECONCILIATION_PENDING",
+      "window_start_ts": 1791704760000,
+      "window_end_ts": 1791719160000,
+      "pages": [
+        {
+          "file": "COINBASE-DASH-TRADES-1.json.gz",
+          "count": 1000,
+          "newest_ts": 1791719167351,
+          "oldest_ts": 1791694230277,
+          "cb_after": "18955209"
+        }
+      ],
+      "full_240min_proven": false,
+      "candle_rows": 52
+    },
+    {
+      "symbol": "FIL",
+      "contract": "FIL-USDT",
+      "coinbase_product": "FIL-USD",
+      "htx_native_alias": "fil",
+      "coinbase_native_network": "filecoin",
+      "exact_primary_identity": true,
+      "status": "RAW_TRADE_PAGES_REACH_WINDOW_START;CANDLE_RECONCILIATION_PENDING",
+      "window_start_ts": 1791704760000,
+      "window_end_ts": 1791719160000,
+      "pages": [
+        {
+          "file": "COINBASE-FIL-TRADES-1.json.gz",
+          "count": 1000,
+          "newest_ts": 1791719105524,
+          "oldest_ts": 1791708542577,
+          "cb_after": "36824715"
+        },
+        {
+          "file": "COINBASE-FIL-TRADES-2.json.gz",
+          "count": 1000,
+          "newest_ts": 1791708518787,
+          "oldest_ts": 1791696186119,
+          "cb_after": "36823715"
+        }
+      ],
+      "full_240min_proven": false,
+      "candle_rows": 174
+    },
+    {
+      "symbol": "TAO",
+      "contract": "TAO-USDT",
+      "coinbase_product": "TAO-USD",
+      "htx_native_alias": "bitao",
+      "coinbase_native_network": "bittensor",
+      "exact_primary_identity": true,
+      "status": "RAW_TRADE_PAGES_REACH_WINDOW_START;CANDLE_RECONCILIATION_PENDING",
+      "window_start_ts": 1791704760000,
+      "window_end_ts": 1791719160000,
+      "pages": [
+        {
+          "file": "COINBASE-TAO-TRADES-1.json.gz",
+          "count": 1000,
+          "newest_ts": 1791719195660,
+          "oldest_ts": 1791710539731,
+          "cb_after": "27476370"
+        },
+        {
+          "file": "COINBASE-TAO-TRADES-2.json.gz",
+          "count": 1000,
+          "newest_ts": 1791710539420,
+          "oldest_ts": 1791705603034,
+          "cb_after": "27475370"
+        },
+        {
+          "file": "COINBASE-TAO-TRADES-3.json.gz",
+          "count": 1000,
+          "newest_ts": 1791705600580,
+          "oldest_ts": 1791698583041,
+          "cb_after": "27474370"
+        }
+      ],
+      "full_240min_proven": false,
+      "candle_rows": 211
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "N05_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 52,
+      "reserved_rows_read": 835000,
+      "reserved_rows_written": 17768,
+      "measured_rows_read": 482177,
+      "measured_rows_written": 5507,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 12000,
+      "rows_written": 400
+    },
+    "projected_reserved": {
+      "rows_read": 847000,
+      "rows_written": 18168
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 0,
+    "required": 14,
+    "cap": 16,
+    "remaining": 16,
+    "allowed": true
+  },
+  "window_end_ts": 1791719160000,
+  "window_start_ts": 1791704760000,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 11,
+      "statistics": 0
+    },
+    "total": 11,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 153
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_COINBASE_PILOT:38136755764:1",
+    "source_run_id": "38136755764",
+    "measured_rows_read": 296,
+    "measured_rows_written_accounted": 83,
+    "measured_requests_accounted": 108,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 108,
+    "rows_read": 297,
+    "rows_written": 83,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 53,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 11,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 16,
+        "rows_read": 102,
+        "rows_written": 44,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 32,
+        "rows_read": 108,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 22,
+        "rows_read": 11,
+        "rows_written": 13,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 11,
+        "rows_read": 11,
+        "rows_written": 22,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 11,
+        "rows_read": 11,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791719229838
+}
