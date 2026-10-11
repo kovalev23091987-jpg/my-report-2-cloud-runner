@@ -1,0 +1,28 @@
+{
+  "schema": "OWNER_ALL_BLOCK_SPOT_FUTURES_SOURCE_SEARCH_RULE_20261011_V1",
+  "recorded_utc": "2026-10-11T20:25:47Z",
+  "basis_main_with_owned_lease": "2e6644fafe8bc7d1f399ef2adf25a75d41a6ed32",
+  "owner_instruction": "For every block, actively look for both spot and futures information, including existing and new useful sources.",
+  "applies_to": "N12 now and each later block when its sequential review is authorized; paused blocks remain paused until separately agreed.",
+  "requirements": [
+    "For every approved HTX asset, investigate useful spot and futures data from existing and feasible new original sources.",
+    "Verify exact asset and market binding, original source clocks, actual response content, units, comparable window, quota/admission and source-to-consumer-to-report/Telegram use.",
+    "Compare compatible spot and futures components; preserve differing metrics and disagreements. No common directional conclusion from conflicting facts.",
+    "If only one useful market side is available, retain its bounded information with the missing side identified; do not invent or silently discard data.",
+    "Spot and futures on one exchange are distinct market components but not independent exchange roots.",
+    "For derivatives-only metrics such as funding, open interest and liquidations, seek relevant spot context without inventing a spot counterpart."
+  ],
+  "unchanged": [
+    "N01-N03 and N06-N09 pauses",
+    "N12 current block and PR320 still open",
+    "strategy",
+    "weights",
+    "score",
+    "report and Telegram format",
+    "approved source caps and whole-job admission",
+    "cadence"
+  ],
+  "implementation_scope": "Documentation and owner rule only; no runtime, source HTTP, D1, Telegram or report generation.",
+  "N12_complete": false,
+  "next_step": "Continue N12 source qualification under this rule. PR320 main merge remains subject to separate explicit approval and fresh lease/fence checks."
+}
