@@ -1,0 +1,64 @@
+{
+  "schema": "N05_ADDITIONAL_INDEPENDENT_VENUE_RESEARCH_20261011_V1",
+  "phase": "N05_ONLY",
+  "basis_main_before_research": "67c0e6eeefe54bbc0401e772db3b1dc33b22a973",
+  "method": "Offline re-read of original 2026-10-10 source catalogs and trade pages plus primary official API documentation; no additional provider HTTP or production flow acceptance.",
+  "original_catalog_root": "checkpoints/n05-actual-qualification-38049404414/",
+  "current_htx_assets": 104,
+  "assets_without_six_venue_exact_external_route": 33,
+  "new_independent_venue_research": {
+    "DYDX_FUTURES": {
+      "active_symbol_hits_among_104": 47,
+      "symbol_hits_among_33_no_exact_route": ["ALGO", "ARB", "CHZ", "FIL", "HYPE", "ICP", "ORDI", "PAXG", "TAO", "TIA", "XMR"],
+      "original_catalog": "checkpoints/n05-actual-qualification-38049404414/catalog-DYDX-FUTURES.json.gz",
+      "original_trade_page": "checkpoints/n05-actual-qualification-38049404414/flow-DYDX-FUTURES-BTC.json.gz",
+      "original_BTC_page_trades": 100,
+      "original_BTC_page_span_minutes_approx": 152.74,
+      "official_indexer_client_docs": "https://docs.dydx.exchange/api_integration-clients/indexer_client",
+      "official_indexer_api": "https://indexer.dydx.trade/docs/",
+      "assessment": "Real public trades include side, size, price and original time, but one retained BTC page covers less than 240 minutes. Bounded pagination, exact underlying identity, closed minute reconciliation and guarded actual consumer use remain unproven."
+    },
+    "LIGHTER_FUTURES": {
+      "active_symbol_hits_among_104": 53,
+      "symbol_hits_among_33_no_exact_route": ["ARB", "CASHCAT", "DASH", "FIL", "GRAM", "HYPE", "ICP", "PAXG", "PONS", "TAO", "TIA", "USELESS", "XMR", "XPL"],
+      "original_catalog": "checkpoints/n05-actual-qualification-38049404414/catalog-LIGHTER-FUTURES.json.gz",
+      "original_trade_page": "checkpoints/n05-actual-qualification-38049404414/flow-LIGHTER-FUTURES-DASH.json.gz",
+      "original_DASH_page_trades": 100,
+      "original_DASH_page_span_minutes_approx": 618.19,
+      "official_sdk_reference": "https://github.com/elliottech/lighter-python",
+      "assessment": "The retained DASH page reaches beyond 240 minutes and may be useful for a quiet market. Exact underlying identity, unambiguous taker-side semantics, native full-window count or volume reconciliation and same-run report use are not established."
+    },
+    "HYPERLIQUID_FUTURES": {
+      "active_symbol_hits_among_104": 59,
+      "symbol_hits_among_33_no_exact_route": ["ALGO", "ARB", "CASHCAT", "DASH", "FIL", "GRAM", "HYPE", "ICP", "ORDI", "PAXG", "PONS", "TAO", "TIA", "USELESS", "XMR", "XPL"],
+      "original_catalog": "checkpoints/n05-actual-qualification-38049404414/catalog-HYPERLIQUID-FUTURES.json.gz",
+      "original_trade_page": "checkpoints/n05-actual-qualification-38049404414/flow-HYPERLIQUID-FUTURES-BTC.json.gz",
+      "original_BTC_page_trades": 10,
+      "original_BTC_page_span_minutes_approx": 0.027,
+      "official_api_reference": "https://hyperliquid.gitbook.io/Hyperliquid-docs/for-developers/api/info-endpoint",
+      "assessment": "A ten-trade recent page is insufficient for BTC's 240-minute directional flow; the documented candle snapshot has count and volume but no verified buy/sell split. Historical directional transport is not qualified."
+    }
+  },
+  "no_exact_route_33_with_a_symbol_hit_in_at_least_one_of_three": ["ALGO", "ARB", "CASHCAT", "CHZ", "DASH", "FIL", "GRAM", "HYPE", "ICP", "ORDI", "PAXG", "PONS", "TAO", "TIA", "USELESS", "XMR", "XPL"],
+  "no_exact_route_33_with_no_symbol_hit_in_any_of_three": ["AKE", "BR", "BTR", "BTT", "GPS", "JST", "LAB", "MYX", "ONG", "RAVE", "STEEM", "SUN", "UB", "VELVET", "WIN", "哈基米"],
+  "new_external_api_candidates_without_saved_catalog_or_original_response": {
+    "COINBASE_EXCHANGE": {
+      "official_trades_docs": "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-trades",
+      "capability": "Public paginated trades include original timestamp, size, price and maker side; taker side requires explicit inversion. Potential independent spot venue after exact primary identity and bounded pagination qualification.",
+      "actual_104_coin_coverage_proven": 0
+    },
+    "GEMINI": {
+      "official_trades_docs": "https://docs.gemini.com/rest-api/",
+      "capability": "Public trades expose taker direction and timestamp, with 500 trades per response and a documented seven-day historical range. A complete 240-minute window and exact identity are not yet tested.",
+      "actual_104_coin_coverage_proven": 0
+    }
+  },
+  "retained_access_failures_do_not_retry_to_spend_quota": {"BYBIT": "HTTP403", "BINANCE_FUTURES": "HTTP451"},
+  "qualifying_priority": ["Use existing admitted source headroom only for a prequalified same-anchor independent-venue package that can fit its complete call budget", "Resolve exact HTX identity for the 17 no-route assets with dYdX/Lighter/Hyperliquid symbol hints; symbol alone never qualifies", "Evaluate dYdX bounded trade pagination and Lighter closed-window reconciliation from primary data before any production source claim", "Qualify Coinbase Exchange and Gemini from actual market catalog and guarded original trade pages, then integrate only a source that supplies useful 240-minute evidence"],
+  "new_venue_connected_to_production": false,
+  "new_full_240m_asset_proven": false,
+  "symbol_hits_are_not_exact_asset_bindings": true,
+  "catalogs_are_historical_not_current": true,
+  "source_caps_strategy_weights_and_formats_changed": false,
+  "N05_complete": false
+}
