@@ -1,0 +1,73 @@
+name: N05 Bitfinex three-asset assembled consumer verification
+on:
+  push:
+    branches: [n05-bitfinex-catalog-20261011]
+    paths: ['.github/workflows/n05-bitfinex-assembly-20261011.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require fresh main owner and inactive fence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='746d6ac7834ce8ed0631d215d776384e26703c8b')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:LOCAL_N05_BITFINEX:1791720752802'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Assemble current runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/n05-bitfinex-assembly
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/n05-bitfinex-assembly/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Restore immutable retained delivery fixtures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const qnt={artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'};
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:qnt.artifact_id,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!==qnt.sha256)throw Error('QNT_RETAINED_ZIP_HASH');
+            fs.mkdirSync('batch-source/qnt1826',{recursive:true});fs.writeFileSync('batch-source/qnt1826.zip',b);
+            cp.execFileSync('unzip',['-q','batch-source/qnt1826.zip','-d','batch-source/qnt1826']);
+            fs.copyFileSync('checkpoints/actual-zec-sent150-original-input-20261007.json.gz','audit-output/exact-current-data.json.gz');
+      - name: Validate generation exact identity N05 and report consumer chains
+        env:
+          REPORT2_TEST_RUNTIME: runtime
+          REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+          REPORT2_JOINT_REPAIR_RUNTIME_ROOT: runtime
+          NODE_OPTIONS: --import ${{ github.workspace }}/current-generation/tests/early-evidence-repair/no-network.mjs
+        run: |
+          node tools/replay-n05-bitfinex-three-assets-20261011.mjs > audit-output/n05-bitfinex-assembly/original-replay.log
+          node tools/replay-n05-bitfinex-consumer-20261011.mjs > audit-output/n05-bitfinex-assembly/consumer-replay.log
+          node current-generation/validate.mjs > audit-output/n05-bitfinex-assembly/generation.log 2>&1
+          REPORT2_NATIVE_MODULE_ROOT=runtime/src node --test current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/joint-spot-futures-flow.test.mjs current-generation/tests/n05-algo-xmr-exact-binding.test.mjs current-generation/tests/n05-bitfinex-original.test.mjs > audit-output/n05-bitfinex-assembly/assembled-n05.tap
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/n05-bitfinex-assembly/binding.json
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/n05-bitfinex-assembly/integration.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs > audit-output/n05-bitfinex-assembly/delivery.tap
+      - name: Retain exact validation result on branch
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/',''),dir='audit-output/n05-bitfinex-assembly';if(!fs.existsSync(dir))return;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(main!=='746d6ac7834ce8ed0631d215d776384e26703c8b')throw Error('MAIN_MOVED');
+            const phase=JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:'checkpoints/CLOUD_PHASE_STATE_20261004.json',ref:main})).data.content,'base64').toString());if(phase.lease?.owner!=='CODEX:LOCAL_N05_BITFINEX:1791720752802'||phase.lease.expires_ts<=Date.now())throw Error('OWNER_BLOCKED');
+            const current=(await github.rest.git.getRef({owner,repo,ref})).data.object.sha;if(current!==context.sha)throw Error('SUPERSEDED_HEAD');
+            const base=(await github.rest.git.getCommit({owner,repo,commit_sha:current})).data.tree.sha,tree=[];
+            for(const name of fs.readdirSync(dir)){const b=fs.readFileSync(dir+'/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;tree.push({path:'checkpoints/n05-bitfinex-assembly-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
+            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain N05 Bitfinex assembly proof '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});

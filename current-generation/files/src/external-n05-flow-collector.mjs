@@ -1,11 +1,13 @@
 import {collectPoloniexFlow} from './poloniex-native-flow-collector.mjs';
 import {collectBackpackFlow} from './backpack-flow-collector.mjs';
 import {collectKrakenFlow} from './kraken-flow-collector.mjs';
+import {collectBitfinexNativeFlow} from './bitfinex-native-flow-collector.mjs';
 import {collectGateFlow} from './gate-flow-collector.mjs';
 import {collectTurnoverBaseline} from './flow-turnover-collector.mjs';
 import {collectBitgetFlow} from './bitget-flow-collector.mjs';
 import {collectBinanceNativeFlow} from './binance-native-flow-collector.mjs';
 import {exactBinanceNativeIdentity} from './binance-native-four-hour-flow.mjs';
+import {exactBitfinexNativeIdentity} from './bitfinex-native-four-hour-flow.mjs';
 
 // Internal orchestration seam: production routes are fixed below. Every route
 // shares one caller envelope; each adapter retains its own durable admission.
@@ -40,6 +42,7 @@ export async function collectN05VenueRoutes(params={},routes=[],turnoverCollecto
 
 export async function collectExternalN05Flow(params={}){
  const routes=[];
+ if(exactBitfinexNativeIdentity(params.contract,params.asset_identity))routes.push(['BITFINEX',collectBitfinexNativeFlow]);
  if(exactBinanceNativeIdentity(params.contract,params.asset_identity))routes.push(['BINANCE',collectBinanceNativeFlow]);
  if(params.asset_identity?.asset_kind==='NATIVE')routes.push(['KRAKEN',collectKrakenFlow]);
  if(params.asset_identity?.contract_or_mint)routes.push(['GATE',collectGateFlow],['BACKPACK',collectBackpackFlow]);
