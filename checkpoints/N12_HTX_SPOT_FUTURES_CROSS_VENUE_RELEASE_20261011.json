@@ -40,10 +40,10 @@
     "N11 post-PR317 natural proof remains pending; N05 remains open; N06-N09 remain paused; N10 natural proof remains pending.",
     "The saved N05 map has 39/104 assets with at least one historical exact external four-hour window, 76 with structural candidate routes, and 28 without retained exact external routes. These are not simultaneous N12 coverage."
   ],
-  "next_action": "N12 remains open. Verify fresh ordinary same-run HTX spot/futures and exact N05 independent venue facts through manual, diagnostic audit and approved Telegram SENT when present. Map 104 asset routes from saved primary responses, then plan one bounded admitted missing-source batch; no cap or format changes. N14 waits for owner review.",
+  "next_action": "N12 remains open. Use the saved 104-asset spot/futures route matrix to select missing facts, verify exact current HTX spot and independent market listings from original source responses, read current source admission/caps, then run one bounded targeted provider batch. Verify actual same-run source→canonical→manual and approved Telegram SENT/message_id when available. Keep one-market fallback explicitly partial and conflicting markets separate. Do not change caps, weights or format; do not start N14 before owner review.",
   "n12_complete": false,
   "project_complete": false,
-  "updated_utc": "2026-10-11T19:43:53.744Z",
+  "updated_utc": "2026-10-11T19:49:55.254Z",
   "followup": {
     "merged_pr": 319,
     "merged_main": "e31daa119e4a7ac18fad2f96fa4a332602605684",
@@ -61,7 +61,14 @@
     "actual_full_window_independent_venue_assets_ever": 39,
     "structural_candidate_external_route_assets": 76,
     "no_retained_exact_external_route_assets": 28,
-    "simultaneous_fresh_cross_venue_agreement_proven": false
+    "simultaneous_fresh_cross_venue_agreement_proven": false,
+    "spot_futures_matrix": "checkpoints/N12_104_SPOT_FUTURES_OFFLINE_ROUTE_MATRIX_20261011.json",
+    "external_spot_structural_assets": 72,
+    "external_futures_structural_assets": 56,
+    "both_external_market_types_structural_assets": 52,
+    "external_spot_full_window_ever_assets": 36,
+    "external_futures_full_window_ever_assets": 3,
+    "htx_spot_exact_current_asset_routes_unmeasured": true
   },
   "owner_latest_clarification": {
     "received_utc": "2026-10-11T19:44:56.855Z",
@@ -69,5 +76,26 @@
     "fallback": "If one market or venue genuinely lacks obtainable verified data, use available exact-source data with an explicit bounded/partial label; never imply absent data is zero or claim independent consensus from one venue.",
     "conflict": "When available sources point in materially different directions, describe the separate facts but do not publish a common directional conclusion.",
     "execution_priority": "First reuse current connections and retained original-clock evidence, then qualify missing spot/futures routes for the 104 assets with one bounded admitted batch; current caps and shared source budgets remain."
+  },
+  "offline_104_market_route_matrix": {
+    "path": "checkpoints/N12_104_SPOT_FUTURES_OFFLINE_ROUTE_MATRIX_20261011.json",
+    "scope": "OFFLINE_STRUCTURAL_AND_HISTORICAL_PREQUALIFICATION_ONLY",
+    "counts": {
+      "approved_assets": 104,
+      "htx_futures_structural": 104,
+      "htx_spot_individual_exact_current_markets_proven": 0,
+      "external_spot_structural_assets": 72,
+      "external_futures_structural_assets": 56,
+      "both_external_market_types_structural_assets": 52,
+      "external_futures_only_structural_assets": 4,
+      "external_spot_only_structural_assets": 20,
+      "no_external_structural_route_assets": 28,
+      "external_spot_full_240m_ever_assets": 36,
+      "external_futures_full_240m_ever_assets": 3,
+      "external_both_market_types_full_240m_ever_assets": 0
+    },
+    "provider_http": 0,
+    "all_104_current_spot_futures_proven": false,
+    "natural_same_run_sent_proven": false
   }
 }
