@@ -24,7 +24,11 @@ const text=v=>String(v??'').trim(),evm=/^0x[0-9a-f]{40}$/i,solana=/^[1-9A-HJ-NP-
 const chains=Object.freeze({ETH:'ethereum',ETHEREUM:'ethereum',SOL:'solana',SOLANA:'solana',BSC:'bsc',BNB:'bsc',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',BASE:'base',POLYGON:'polygon',MATIC:'polygon',OPTIMISM:'optimism',AVAX:'avalanche',AVALANCHE:'avalanche'});
 const chainOf=row=>chains[text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'')]||null;
 // Identity only: this adds no unverified sector/provider coin mapping.
-const additionalNativeBindings=Object.freeze({HBAR:Object.freeze({chain:'hedera'})});
+const additionalNativeBindings=Object.freeze({
+ ALGO:Object.freeze({chain:'algorand'}),
+ HBAR:Object.freeze({chain:'hedera'}),
+ XMR:Object.freeze({chain:'monero'}),
+});
 export function normalizeHtxAssetReferences(payload){
  if(payload?.code!==200||!Array.isArray(payload.data))return{status:'INVALID_HTX_REFERENCE_RESPONSE',entries:{}};
  const grouped=new Map();
@@ -38,7 +42,7 @@ export function normalizeHtxAssetReferences(payload){
   const ids=new Map(),nativeIds=new Map(),explicitNativeIds=new Map();let native=false,unsupportedNative=false;
   for(const row of Array.isArray(rows[0]?.chains)?rows[0].chains:[]){
    const chain=chainOf(row),rawAddress=text(row?.contractAddress),address=chain&&chain!=='solana'&&/^[0-9a-f]{40}$/i.test(rawAddress)?`0x${rawAddress}`:rawAddress;
-   if(!address){native=true;const def=NATIVE_SECTOR_BINDINGS[currency]||additionalNativeBindings[currency],nativeAliases={BTC:['btc'],LTC:['ltc'],BCH:['bcc'],DOGE:['doge'],ZEC:['zec1'],XLM:['xlm1'],ETC:['etc'],NEAR:['near'],ETH:['eth'],SOL:['sol'],BNB:['bnb1'],AVAX:['avax','cchainavax'],ADA:['ada'],DOT:['dot1'],TRX:['trx1'],ATOM:['atom1'],XRP:['xrp'],SUI:['sui'],APT:['apt'],HBAR:['hbar']};if(def&&row.chainType===0&&nativeAliases[currency]?.includes(text(row.chain).toLowerCase()))explicitNativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});const network=text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'');const accepted=def&&(network===currency||network===def.chain.toUpperCase()||chain===def.chain);if(accepted)nativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});else unsupportedNative=true;continue;}
+   if(!address){native=true;const def=NATIVE_SECTOR_BINDINGS[currency]||additionalNativeBindings[currency],nativeAliases={ALGO:['algo'],BTC:['btc'],LTC:['ltc'],BCH:['bcc'],DOGE:['doge'],ZEC:['zec1'],XLM:['xlm1'],ETC:['etc'],NEAR:['near'],ETH:['eth'],SOL:['sol'],BNB:['bnb1'],AVAX:['avax','cchainavax'],ADA:['ada'],DOT:['dot1'],TRX:['trx1'],ATOM:['atom1'],XMR:['xmr2'],XRP:['xrp'],SUI:['sui'],APT:['apt'],HBAR:['hbar']};if(def&&row.chainType===0&&nativeAliases[currency]?.includes(text(row.chain).toLowerCase()))explicitNativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});const network=text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'');const accepted=def&&(network===currency||network===def.chain.toUpperCase()||chain===def.chain);if(accepted)nativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});else unsupportedNative=true;continue;}
    if(!chain||(chain==='solana'?!solana.test(address):!evm.test(address)))continue;
    const canonical=chain==='solana'?address:address.toLowerCase();ids.set(`${chain}:${canonical}`,{chain,contract_or_mint:canonical});
   }

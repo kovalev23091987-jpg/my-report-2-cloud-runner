@@ -1,0 +1,56 @@
+name: N05 exact Kraken ALGO XMR guarded batch
+on:
+  push:
+    branches: [n05-kraken-algo-xmr-20261011]
+    paths:
+      - 'tools/acquire-n05-kraken-algo-xmr-20261011.mjs'
+      - 'current-generation/files/src/htx-asset-identity.mjs'
+      - 'current-generation/files/src/kraken-four-hour-flow.mjs'
+      - 'current-generation/tests/n05-algo-xmr-exact-binding.test.mjs'
+      - '.github/workflows/n05-kraken-algo-xmr-20261011.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check exact original identity binding and bounded acquisition code
+        run: |
+          node --test current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/joint-spot-futures-flow.test.mjs current-generation/tests/n05-algo-xmr-exact-binding.test.mjs
+          node --check tools/acquire-n05-kraken-algo-xmr-20261011.mjs
+          node tools/acquire-n05-kraken-algo-xmr-20261011.mjs --plan
+      - name: Acquire only with fresh main owner fence D1 and full source allowance
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: d4cd232b43572809f242b9f737d0e7c30fd899e7
+          REPORT2_EXPECTED_LEASE_OWNER: CODEX:LOCAL_N05_RESIDUAL:1791717858522
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/acquire-n05-kraken-algo-xmr-20261011.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n05-kraken-algo-xmr-${{ github.run_id }}
+          path: audit-output/n05-kraken-algo-xmr/
+          retention-days: 30
+      - name: Retain exact original responses on review branch
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/','');
+            const dir='audit-output/n05-kraken-algo-xmr';if(!fs.existsSync(dir))return;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='d4cd232b43572809f242b9f737d0e7c30fd899e7')throw Error('MAIN_MOVED');
+            const phase=JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:'checkpoints/CLOUD_PHASE_STATE_20261004.json',ref:main})).data.content,'base64').toString());
+            if(phase.lease?.owner!=='CODEX:LOCAL_N05_RESIDUAL:1791717858522'||phase.lease.expires_ts<=Date.now())throw Error('OWNER_BLOCKED');
+            const current=(await github.rest.git.getRef({owner,repo,ref})).data.object.sha;if(current!==context.sha)throw Error('SUPERSEDED_HEAD');
+            const base=(await github.rest.git.getCommit({owner,repo,commit_sha:current})).data.tree.sha,tree=[];
+            for(const name of fs.readdirSync(dir)){const b=fs.readFileSync(dir+'/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;tree.push({path:'checkpoints/n05-kraken-algo-xmr-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
+            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain exact Kraken ALGO XMR N05 outcome '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});
