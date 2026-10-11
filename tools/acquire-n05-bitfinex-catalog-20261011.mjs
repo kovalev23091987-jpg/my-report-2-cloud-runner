@@ -10,7 +10,7 @@ import {reserveProviderMinuteUnits} from '../current-generation/files/src/provid
 const repo='kovalev23091987-jpg/my-report-2-cloud-runner',source='N05_OFFICIAL_FLOW:BITFINEX',provider='BITFINEX',cap=16;
 const root='audit-output/n05-bitfinex-pilot',reservation={rows_read:12000,rows_written:400},hash=b=>createHash('sha256').update(b).digest('hex');
 
-const plan={schema:'N05_BITFINEX_NEW_VENUE_PILOT_PLAN_V1',maximum_assets:0,maximum_source_HTTP:1,source_cap:16,provider_minute_cap:6,whole_job_background_cap:28,D1_reservation:reservation,caps_changed:false,qualification_only:true};
+const plan={schema:'N05_BITFINEX_NEW_VENUE_WINDOW_PLAN_V1',maximum_assets:3,maximum_source_HTTP:6,source_cap:16,provider_minute_cap:6,whole_job_background_cap:28,D1_reservation:reservation,caps_changed:false,qualification_only:true,retained_catalog_run:38138499328};
 if(process.argv.includes('--plan')){console.log(JSON.stringify(plan,null,2));process.exit(0);}
 for(const n of ['GITHUB_RUN_ID','GITHUB_SHA','GITHUB_TOKEN','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER'])if(!process.env[n])throw Error(n+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repo)throw Error('EXACT_REPOSITORY_REQUIRED');
@@ -39,10 +39,21 @@ async function acquire(name,url){const receipt={name,url,source,status:'NOT_ATTE
 try{
  out.daily_admission=guard.evaluateDailyReservationBudget({daily:await guard.loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_DENIED');
  await guard.reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
- const counter=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind(source,new Date(Date.now()).toISOString().slice(0,10)).first();const used=counter==null?0:Number(counter.attempts);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_SOURCE_COUNTER');out.source_preflight={used,required:1,cap,remaining:cap-used,allowed:cap-used>=1};if(cap-used<1)throw Error('ENTIRE_PILOT_SOURCE_HEADROOM_REQUIRED');
- const conf=await acquire('BITFINEX-CURRENT-CATALOG','https://api-pub.bitfinex.com/v2/conf/pub:list:pair:exchange,pub:map:currency:sym,pub:map:currency:label,pub:map:currency:pool');
- if(!Array.isArray(conf)||conf.length!==4)throw Error('CURRENT_BITFINEX_CATALOG_REQUIRED');
- out.catalog_shapes=conf.map(x=>({array:Array.isArray(x),length:Array.isArray(x)?x.length:null,first:Array.isArray(x)?x[0]?.[0]:null}));
- out.status='BITFINEX_CURRENT_CATALOG_RETAINED_NOT_QUALIFIED';
+ const counter=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind(source,new Date(Date.now()).toISOString().slice(0,10)).first();const used=counter==null?0:Number(counter.attempts);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_SOURCE_COUNTER');out.source_preflight={used,required:6,cap,remaining:cap-used,allowed:cap-used>=6};if(cap-used<6)throw Error('ENTIRE_PILOT_SOURCE_HEADROOM_REQUIRED');
+ const catalogPath='checkpoints/n05-bitfinex-pilot-38138499328/BITFINEX-CURRENT-CATALOG.json.gz',catalogBytes=await fs.readFile(catalogPath);
+ if(hash(catalogBytes)!=='d67c9a7951a45edff51a770bac05f00efc6fc01b02a11d557d003ad04e8e3e53')throw Error('RETAINED_CATALOG_HASH_MISMATCH');
+ const conf=JSON.parse(gunzipSync(catalogBytes));if(!Array.isArray(conf)||conf.length!==4)throw Error('CURRENT_BITFINEX_CATALOG_REQUIRED');
+ const pairs=new Set(conf[0]),symbols=new Map(conf[1]),labels=new Map(conf[2]);
+ const targets=[{symbol:'DASH',market:'DSHUSD',api:'DSH',label:'Dash',htx:'dash1'},{symbol:'ALGO',market:'ALGUSD',api:'ALG',label:'Algorand',htx:'algo'},{symbol:'XMR',market:'XMRUSD',api:'XMR',label:'Monero',htx:'xmr2'}];
+ const end=Math.floor(Date.now()/60000)*60000,start=end-14400000;out.window_start_ts=start;out.window_end_ts=end;out.retained_catalog={path:catalogPath,gzip_sha256:hash(catalogBytes)};
+ for(const x of targets){
+  const htxRows=htx.filter(r=>String(r.currency).toUpperCase()===x.symbol),native=htxRows.flatMap(r=>r.chains||[]).filter(c=>c.chainType===0&&c.chain===x.htx),otherNative=htxRows.flatMap(r=>r.chains||[]).filter(c=>c.chainType===0&&c.chain!==x.htx);
+  const entry={...x,exact_original_HTX_native:native.length===1&&otherNative.length===0,official_current_pair:pairs.has(x.market),official_symbol_mapping:x.api===x.symbol||symbols.get(x.api)===x.symbol,official_label:labels.get(x.api),status:'NOT_QUALIFIED'};out.assets.push(entry);
+  if(!entry.exact_original_HTX_native||!entry.official_current_pair||!entry.official_symbol_mapping||entry.official_label!==x.label){entry.status='EXACT_CURRENT_BINDING_MISSING';continue;}
+  const candles=await acquire('BITFINEX-'+x.symbol+'-CANDLES1M',`https://api-pub.bitfinex.com/v2/candles/trade:1m:t${x.market}/hist?start=${start}&end=${end-1}&limit=240&sort=1`);
+  const trades=await acquire('BITFINEX-'+x.symbol+'-TRADES10000',`https://api-pub.bitfinex.com/v2/trades/t${x.market}/hist?start=${start}&end=${end-1}&limit=10000&sort=1`);
+  entry.candle_rows=Array.isArray(candles)?candles.length:null;entry.trade_rows=Array.isArray(trades)?trades.length:null;entry.trade_oldest_ts=Array.isArray(trades)&&trades.length?Math.min(...trades.map(r=>r[1])):null;entry.trade_newest_ts=Array.isArray(trades)&&trades.length?Math.max(...trades.map(r=>r[1])):null;entry.status=Array.isArray(candles)&&Array.isArray(trades)?'ORIGINAL_WINDOW_RETAINED_NOT_RECONCILED':'WINDOW_RESPONSE_NOT_RECEIVED';
+ }
+ out.status='BITFINEX_THREE_ASSET_ORIGINAL_WINDOW_RETAINED_NOT_QUALIFIED';
 }catch(e){out.status='PILOT_NOT_CLOSED';out.reason=e.message;}
 finally{out.http_budget=budget.summary();if(admitted)out.finalized_usage=await guard.finalizeRunUsage(db,{reservationId:id,sourceRunId:run,usage:db.usageSnapshot()});out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>reservation.rows_read||out.D1.rows_written>reservation.rows_written)out.status='D1_ENVELOPE_NOT_CLOSED';out.completed_ts=Date.now();await fs.writeFile(root+'/batch-summary.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,sourceHTTP:out.sourceHTTP,catalog_shapes:out.catalog_shapes,D1:out.D1}));}
