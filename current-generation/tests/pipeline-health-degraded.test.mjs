@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {pathToFileURL} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 
 test('worker technical failure cannot be persisted as healthy no-idea',()=>{
   const source=fs.readFileSync(new URL('../files/src/v3-pipeline-health-sidecar.mjs',import.meta.url),'utf8');
@@ -15,7 +15,7 @@ test('worker technical failure cannot be persisted as healthy no-idea',()=>{
 test('worker degraded result is classified as degraded by the real health runtime',async(t)=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'report2-health-'));
   t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
-  const sourceRoot=path.resolve(new URL('../../post-v7-consolidated/liquidation/unified-delivery-base/src/',import.meta.url).pathname);
+  const sourceRoot=fileURLToPath(new URL('../../post-v7-consolidated/liquidation/unified-delivery-base/src/',import.meta.url));
   for(const name of ['v3-pipeline-health-runtime.mjs','v3-telegram-lifecycle.mjs']){
     fs.copyFileSync(path.join(sourceRoot,name),path.join(dir,name));
   }
