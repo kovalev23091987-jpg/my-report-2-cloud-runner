@@ -329,10 +329,10 @@
     }
   ],
   "lease": {
-    "owner": "CODEX:CLOUD_FULL_TZ:20261011:1791714420611",
-    "acquired_ts": 1791714420611,
-    "expires_ts": 1791719820611,
-    "scope": "OWNER_AUTHORIZED_FULL_TZ_RESUMPTION;N05_FIRST;NO_CAP_RESETS"
+    "owner": "CODEX:LOCAL_N05:20261011:1791715474614",
+    "acquired_ts": 1791715474614,
+    "expires_ts": 1791718174614,
+    "scope": "OWNER_AUTHORIZED_N05_ONLY;TRANSFER_FROM_INTERRUPTED_CLOUD;NO_CAP_RESETS"
   },
   "next_action": "CONTINUE_N05_FROM_20261011_HANDOFF;REPLAN_SAVED12_TO_ACTUAL_SOURCE_HEADROOM;QUALIFY_ADDITIONAL_USEFUL_SOURCES;KEEP_ALL_CAPS",
   "common_future_universe": {
@@ -347,7 +347,7 @@
   },
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791714420611,
+  "updated_ts": 1791715474614,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -9767,7 +9767,7 @@
           "price": 0.30749,
           "oi_contracts": 8753,
           "oi_value_usdt": 26893.5925,
-          "funding_rate": 5e-05,
+          "funding_rate": 0.00005,
           "missing": [],
           "fresh_at_read": true
         },
@@ -10376,5 +10376,13 @@
     "sourceHTTP": 0,
     "new_windows": 0,
     "agent_background_development_process_running": false
+  },
+  "latest_lease_transfer": {
+    "previous_owner": "CODEX:CLOUD_FULL_TZ:20261011:1791714420611",
+    "previous_expires_ts": 1791719820611,
+    "reason": "OWNER_EXPLICITLY_AUTHORIZED_LOCAL_TAKEOVER_AFTER_CLOUD_THREAD_INTERRUPTED",
+    "transferred_ts": 1791715474614,
+    "cloud_branch": "codex/n05-cloud-continuation-20261011",
+    "cloud_head": "2e8d3517a37950ed229b53b4634ee5b32154d5ae"
   }
 }
