@@ -1,0 +1,123 @@
+{
+  "schema": "N05_COINBASE_EXCHANGE_PILOT_RESULT_20261011_V1",
+  "recorded_ts": 1791719653539,
+  "recorded_utc": "2026-10-11T11:54:13.539Z",
+  "main_with_original_responses": "237600d7f855ccfa7164f2ccf1181a06d3906775",
+  "source_run": 38136755764,
+  "source_summary": "checkpoints/n05-coinbase-pilot-38136755764/batch-summary.json",
+  "replay_run": 38137158855,
+  "replay_source": "checkpoints/n05-coinbase-replay-38137158855/proof.json",
+  "replay_proof": "checkpoints/N05_COINBASE_PILOT_CONSUMER_REPLAY_20261011.json",
+  "original_source_bodies_verified": 11,
+  "sourceHTTP": 11,
+  "D1": {
+    "requests": 108,
+    "rows_read": 297,
+    "rows_written": 83,
+    "unknown_ops": 0
+  },
+  "exact_primary_assets_tested": [
+    "DASH",
+    "FIL",
+    "TAO"
+  ],
+  "all_trade_pages_reached_before_window_start": true,
+  "candle_trade_reconciliation": [
+    {
+      "contract": "DASH-USDT",
+      "status": "COINBASE_ORIGINAL_CANDLE_TRADE_MISMATCH",
+      "trade_count": 226,
+      "checked_minutes": 240,
+      "mismatch_count": 113,
+      "max_base_volume_difference": 234.18982056,
+      "mismatch_examples": [
+        {
+          "minute_ts": 1791705000000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 33.33777519,
+          "trade_base": 0.19503546,
+          "trade_count": 1
+        },
+        {
+          "minute_ts": 1791705000000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 50.74,
+          "candle_high": 50.76,
+          "trade_low": 50.76,
+          "trade_high": 50.76
+        }
+      ]
+    },
+    {
+      "contract": "FIL-USDT",
+      "status": "COINBASE_ORIGINAL_CANDLE_TRADE_MISMATCH",
+      "trade_count": 1319,
+      "checked_minutes": 240,
+      "mismatch_count": 254,
+      "max_base_volume_difference": 4904.071,
+      "mismatch_examples": [
+        {
+          "minute_ts": 1791704760000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 3307.295,
+          "trade_base": 1603.643,
+          "trade_count": 12
+        },
+        {
+          "minute_ts": 1791704760000,
+          "kind": "PRICE_RANGE",
+          "candle_low": 1.1062,
+          "candle_high": 1.1085,
+          "trade_low": 1.1065,
+          "trade_high": 1.1085
+        }
+      ]
+    },
+    {
+      "contract": "TAO-USDT",
+      "status": "COINBASE_ORIGINAL_CANDLE_TRADE_MISMATCH",
+      "trade_count": 2088,
+      "checked_minutes": 240,
+      "mismatch_count": 310,
+      "max_base_volume_difference": 89.2686,
+      "mismatch_examples": [
+        {
+          "minute_ts": 1791704760000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 2.9432,
+          "trade_base": 3.2801,
+          "trade_count": 10
+        },
+        {
+          "minute_ts": 1791704820000,
+          "kind": "BASE_VOLUME",
+          "candle_volume": 0.1695,
+          "trade_base": 0.4337,
+          "trade_count": 4
+        }
+      ]
+    }
+  ],
+  "full_240min_qualified_assets": [],
+  "new_venue_connected": false,
+  "source_catalog_only_not_counted": true,
+  "one_source_fallback_used": false,
+  "reason": "ORIGINAL_COINBASE_CANDLES_AND_PUBLIC_TRADE_PAGES_DISAGREE_IN_SAME_MINUTES;DO_NOT_PROMOTE_COINBASE_FLOW_TO_REPORT_OR_CONSENSUS",
+  "coinbase_docs": {
+    "trades": "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-trades",
+    "candles": "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-candles",
+    "pagination": "https://docs.cdp.coinbase.com/exchange/rest-api/pagination"
+  },
+  "current_coverage_unchanged": {
+    "HTX_assets": 104,
+    "individual_full_240min_external_flow_assets_ever": 34,
+    "structurally_exact_connected_external_route_assets": 73,
+    "no_exact_connected_route_assets": 31,
+    "simultaneous_two_independent_venue_agreements_proven": 0
+  },
+  "score_contribution": 0,
+  "MAIN_during_pilot": 0,
+  "Telegram_during_pilot": 0,
+  "N05_complete": false,
+  "next_action": "CONTINUE_N05;DO_NOT_REPEAT_COINBASE_UNCHANGED_MISMATCH;QUALIFY_ANOTHER_INDEPENDENT_PRIMARY_VENUE_WITH_REAL_FULL_WINDOWS_AND_EXACT_IDENTITY;KEEP_CURRENT_CAPS"
+}
