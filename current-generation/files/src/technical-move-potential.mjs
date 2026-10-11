@@ -13,12 +13,12 @@ function liquidationCandidates({direction,entry,zones}){
   const target=finite(row?.price??row?.level_price),potential=target===null?null:move(direction,entry,target);
   if(target===null||!correctSide(direction,entry,target))continue;
   const observed=row?.kind!=='CALCULATED'&&(finite(row?.exact_notional_usdt)!==null||finite(row?.strength_score_0_100)!==null||finite(row?.relative_strength_value)!==null);
-  if(observed&&row?.path_obstacle_eligible!==false)obstacles.push({price:target,move_pct:potential,kind:row.kind??null,source:row.source??null});
   // Calculated display bands and generic OI/funding/volume confirmations never
   // prove a tradable target. Only a separately admitted native/scenario level
   // can enter the target set.
   const estimated=/BUCKET|CLUSTER_CENTER|MODEL_PRICE_BIN|SDK_ESTIMATE/.test(text(row?.price_semantics).toUpperCase());
   const conditional=row?.conditional_cross===true||row?.conditional_on_other_positions===true||text(row?.margin_mode).toUpperCase()==='CROSS';
+  if(observed&&row?.path_obstacle_eligible===true&&!estimated&&!conditional)obstacles.push({price:target,move_pct:potential,kind:row.kind??null,source:row.source??null});
   if(row?.decision_target_eligible!==true||row?.kind==='CALCULATED'||estimated||conditional||potential<=0)continue;
   out.push({target_price:target,potential_move_pct:potential,basis:'FRESH_SCOPED_NATIVE_LEVEL',basis_ru:'свежий проверенный уровень позиции',target_proof_admitted:true,strength_label_ru:text(row?.strength_label_ru)||null,exact_notional_usdt:finite(row?.exact_notional_usdt),source:text(row?.source)||null,source_ts:finite(row?.source_ts),evidence_count:1});
  }
@@ -26,9 +26,8 @@ function liquidationCandidates({direction,entry,zones}){
 }
 function producerTimingClosed(event,{contract,decision_ts}={}){
  const timing=event?.observation_timing;
- // Retain the inherited explicit contract for existing callers. When the
- // real producer supplies a timing receipt, that receipt takes precedence.
- if(timing==null)return event?.timely===true;
+ // A legacy timely flag has no original source clock or exact market proof.
+ if(timing==null)return false;
  const d=event?.minute_decomposition,first=timing.first_seen_ts,close=event?.event_close_ts,start=event?.timestamp;
  return isExactHtxUsdtSwapKey(contract)&&event?.contract===contract&&event?.exchange==='HTX'&&
   timing.timely_for_precommitted_funnel===true&&timing.retrospective_promotion_forbidden===false&&
@@ -57,8 +56,13 @@ export function evaluateTechnicalMovePotential({direction,current_price,trigger_
  const liquidation=liquidationCandidates({direction:d,entry:trigger,zones:liquidation_zones});
  const candidates=[candleCandidate({direction:d,entry:trigger,opportunity,contract,decision_ts}),...liquidation.candidates].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
  if(!candidates.length)return base;
- const chosen=candidates[0];
- const obstacles=liquidation.obstacles.filter(row=>row.move_pct>0&&row.move_pct<chosen.potential_move_pct).sort((a,b)=>a.move_pct-b.move_pct);
+ const forward=candidates.filter(row=>correctSide(d,current,row.target_price));
+ if(!forward.length)return {...base,reason:'TARGET_ALREADY_REACHED_OR_BEHIND_CURRENT_PRICE'};
+ const chosen=forward[0];
+ // Only a level still ahead of both the snapshot price and the trigger can
+ // obstruct the remaining path. A crossed level is historical context.
+ const obstacles=liquidation.obstacles.filter(row=>correctSide(d,current,row.price)&&row.move_pct>0&&row.move_pct<chosen.potential_move_pct).sort((a,b)=>a.move_pct-b.move_pct);
+ if(obstacles.length)return {...base,reason:'OBSERVED_PATH_OBSTACLE_BEFORE_TARGET',all_candidates:forward.slice(0,8),path_obstacles:obstacles.slice(0,8)};
  return {...base,...chosen,status:'CLOSED',reason:null,all_candidates:candidates.slice(0,8),path_obstacles:obstacles.slice(0,8),begin_close_price:chosen.target_price,favorable_move_proven:true};
 }
 

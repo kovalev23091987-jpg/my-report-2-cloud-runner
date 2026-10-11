@@ -1,0 +1,67 @@
+name: N10 technical path offline connected verification
+on:
+  pull_request:
+    paths:
+      - .github/workflows/n10-technical-path-offline-20261011.yml
+      - current-generation/**
+      - checkpoints/N10_TECHNICAL_PATH_REVIEW_20261011.json
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require unchanged main, N10 owner lease and inactive fence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!==context.payload.pull_request.base.sha)throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:OWNER_N10_TECHNICAL_PATH:1791734298983'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Assemble current encrypted runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/n10-technical-path
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/n10-technical-path/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Verify exact N10 files, original producer, consumers and approved delivery offline
+        env:
+          REPORT2_TEST_RUNTIME: runtime
+          REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+          NODE_OPTIONS: --import ${{ github.workspace }}/current-generation/tests/early-evidence-repair/no-network.mjs
+        run: |
+          cmp current-generation/files/src/technical-move-potential.mjs runtime/src/technical-move-potential.mjs
+          cmp current-generation/files/src/dynamic-liquidation-panel.mjs runtime/src/dynamic-liquidation-panel.mjs
+          cmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs
+          node --test current-generation/tests/technical-move-potential.test.mjs current-generation/tests/dynamic-liquidation-panel.test.mjs current-generation/tests/htx-volume-profile.test.mjs > audit-output/n10-technical-path/target-unit.tap
+          node --test current-generation/tests/technical-target-producer.runtime.mjs current-generation/tests/observation-technical-range.runtime.mjs > audit-output/n10-technical-path/target-runtime.tap
+          node --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n10-technical-path/current-report-telegram.tap
+          node current-generation/validate.mjs > audit-output/n10-technical-path/generation.log 2>&1
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/n10-technical-path/binding.json
+      - name: Show failure locations
+        if: failure()
+        run: |
+          for file in audit-output/n10-technical-path/*.tap audit-output/n10-technical-path/generation.log; do
+            if test -f "$file"; then echo "FAILED_LOG: $file"; tail -90 "$file"; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n10-technical-path-${{ github.run_id }}
+          path: audit-output/n10-technical-path/
+          retention-days: 30
