@@ -1,0 +1,50 @@
+node:fs:621
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open 'batch-source/qnt1826/exact-current-data.json.gz'
+    at Object.openSync (node:fs:621:18)
+    at Object.readFileSync (node:fs:487:35)
+    at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/approved-telegram-plain.runtime.mjs:11:39 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'batch-source/qnt1826/exact-current-data.json.gz'
+}
+
+Node.js v24.21.0
+✖ current-generation/tests/approved-telegram-plain.runtime.mjs (84.785878ms)
+node:fs:621
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open 'audit-output/exact-current-data.json.gz'
+    at Object.openSync (node:fs:621:18)
+    at Object.readFileSync (node:fs:487:35)
+    at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/brief-telegram-facts.runtime.mjs:12:38 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'audit-output/exact-current-data.json.gz'
+}
+
+Node.js v24.21.0
+✖ current-generation/tests/brief-telegram-facts.runtime.mjs (80.788536ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.001147
+
+✖ failing tests:
+
+test at current-generation/tests/approved-telegram-plain.runtime.mjs:1:1
+✖ current-generation/tests/approved-telegram-plain.runtime.mjs (84.785878ms)
+  'test failed'
+
+test at current-generation/tests/brief-telegram-facts.runtime.mjs:1:1
+✖ current-generation/tests/brief-telegram-facts.runtime.mjs (80.788536ms)
+  'test failed'
