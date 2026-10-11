@@ -1,0 +1,24 @@
+name: N06 Santiment credential availability check
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/n06-santiment-access-check-20261011.yml
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      REPORT2_NAME_PRESENT: ${{ secrets.REPORT2_SANTIMENT_API_KEY != '' }}
+      LEGACY_NAME_PRESENT: ${{ secrets.SANTIMENT_API_KEY != '' }}
+      SANAPI_NAME_PRESENT: ${{ secrets.SANAPI_KEY != '' }}
+    steps:
+      - name: Record only credential-name presence
+        run: |
+          printf '{"schema":"N06_SANTIMENT_GITHUB_SECRET_PRESENCE_V1","report2_name_present":%s,"legacy_name_present":%s,"sanapi_name_present":%s,"source_http":0,"secret_value_exposed":false}\n' "$REPORT2_NAME_PRESENT" "$LEGACY_NAME_PRESENT" "$SANAPI_NAME_PRESENT" > credential-presence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n06-santiment-credential-presence-${{ github.run_id }}
+          path: credential-presence.json
+          retention-days: 7

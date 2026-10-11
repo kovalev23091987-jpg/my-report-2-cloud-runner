@@ -1,0 +1,131 @@
+{
+  "schema": "N06_WIKIMEDIA_ADDITIONAL_NATIVE_PAGEVIEW_CONNECTED_RELEASE_V1",
+  "date_utc": "2026-10-11",
+  "phase": "N06_PARTIAL",
+  "source_scope": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+  "scope_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
+  "native10": {
+    "run": 38144019618,
+    "head": "8487b876bd5e4565e624493a4325c3c485f4d488",
+    "artifact_id": 11704152711,
+    "artifact_digest": "sha256:77316b410081c64b3bf050816d23a3d9e5459d0ef9719f28848f417498b078de",
+    "summary": "checkpoints/n06-wikimedia-native10-38144019618/batch-summary.json",
+    "qualified_count": 9,
+    "incomplete": [
+      "DOT"
+    ]
+  },
+  "extra2": {
+    "run": 38144720142,
+    "head": "500cb1cf0ab16bed0bc4419ae734071205632f41",
+    "artifact_id": 11704118536,
+    "artifact_digest": "sha256:f242241a6c251c57a3f7942809771c83d6f2f777a8f8ef328b1629a03aabeca3",
+    "summary": "checkpoints/n06-wikimedia-extra2-38144720142/batch-summary.json",
+    "qualified_count": 2,
+    "sourceHTTP": 2,
+    "D1": {
+      "requests": 53,
+      "rows_read": 86,
+      "rows_written": 22,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 67,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 7,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:OTHER": {
+          "requests": 20,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 6,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 4,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_evidence_source_cache": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "source_limits_unchanged": true
+  },
+  "counts": {
+    "htx_assets": 104,
+    "bluesky_structural_pair_routes": 104,
+    "bluesky_new_fresh_useful_facts": 0,
+    "wikimedia_exact_native_page_routes": 17,
+    "wikimedia_prior_actual_report_proofs": 5,
+    "wikimedia_new_actual_original_fact_and_controlled_report_proofs": 11,
+    "wikimedia_total_prior_plus_new_controlled_report_proofs": 16,
+    "wikimedia_incomplete_actual_series": 1,
+    "wikimedia_exact_routes_awaiting_live": 0,
+    "assets_without_prior_or_new_wikimedia_report_proof": 88
+  },
+  "original_sha256_verified": true,
+  "actual_contolled_report_consumer": true,
+  "new_fresh_SENT": false,
+  "N06_complete": false,
+  "no_strategy_weight_format_change": true,
+  "limitations": [
+    "Bluesky pair routes cover 104 structurally, current useful facts and natural same-run report use not proven for all.",
+    "Wikimedia pageview context is neutral and secondary; DOT partial rows are unqualified.",
+    "Santiment existing Codex connector returned pilot social-volume data; GitHub runner credential or secret entitlement remains unverified.",
+    "Current control report proof is not production SENT or Telegram acceptance."
+  ]
+}

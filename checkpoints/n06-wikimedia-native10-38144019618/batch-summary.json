@@ -1,0 +1,661 @@
+{
+  "schema": "N06_WIKIMEDIA_NATIVE10_ACTUAL_V1",
+  "targets": [
+    "AVAX",
+    "BCH",
+    "ATOM",
+    "ETC",
+    "LTC",
+    "NEAR",
+    "DOT",
+    "XLM",
+    "TRX",
+    "ZEC"
+  ],
+  "source": "WIKIMEDIA_ATTENTION",
+  "maximum_source_HTTP": 10,
+  "existing_manual_source_daily_cap": 12,
+  "existing_provider_minute_cap": 2,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 10000,
+    "rows_written": 1000
+  },
+  "primary_bluesky_substituted": false,
+  "score_or_format_changed": false,
+  "run": "38144019618",
+  "head": "8487b876bd5e4565e624493a4325c3c485f4d488",
+  "lease_owner": "CODEX:LOCAL_N06_MAX_COVERAGE:1791725240977",
+  "started_ts": 1791725968098,
+  "route_file": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+  "route_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
+  "status": "ACTUAL_NATIVE_PAGEVIEW_FACTS_RETAINED_WITH_NEUTRAL_REPORT_USE",
+  "sourceHTTP": 10,
+  "originals": [
+    {
+      "symbol": "AVAX",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Avalanche_(blockchain_platform)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791725970804,
+      "body_sha256": "a0bcd9a0aa86060216a392ef2e11cbc460d787b3ee1b89c04e00fb6cf9917516",
+      "gzip_sha256": "3c66f13d0e594ac8a7fd2113d609f9cbeeb9874a699d1ea9d83a36cc0374cd41",
+      "bytes": 2335,
+      "file": "AVAX.json.gz"
+    },
+    {
+      "symbol": "BCH",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Bitcoin_Cash/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791725973075,
+      "body_sha256": "53a234f6d57db9d107f54828136e507debfb350e691c300c0d633c0d896b9e54",
+      "gzip_sha256": "dc2a37825eb0541a998d994aac0a897e054e7d6ae2008486011a51623689519a",
+      "bytes": 2071,
+      "file": "BCH.json.gz"
+    },
+    {
+      "symbol": "ATOM",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Cosmos_(network)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726036707,
+      "body_sha256": "c34a293804bc99b25ef8db438255917e4c3126150fe51517b97d204062aa3cbc",
+      "gzip_sha256": "fbfb74c179f9767fd1c946173c440b70ce962ceb80134f7cffa8401542a4260e",
+      "bytes": 2112,
+      "file": "ATOM.json.gz"
+    },
+    {
+      "symbol": "ETC",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Ethereum_Classic/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726039318,
+      "body_sha256": "17c6917ea070b0fb2432af7f96715566cc6cf19608e6fc362d3ecb4a53c582f2",
+      "gzip_sha256": "67d86c44e52dbe475bb110561597520fe2fd7eba65aa6384f7a82142ed914b78",
+      "bytes": 2125,
+      "file": "ETC.json.gz"
+    },
+    {
+      "symbol": "LTC",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Litecoin/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726102767,
+      "body_sha256": "6004f0252498984f32ce054a0c3ae1a7b5ceb9ee5a44242c86a3b1ba8c8f72e2",
+      "gzip_sha256": "83ddd41986166277fb155711db629791b4db6d6d805e27fa66b0686cffcf62e4",
+      "bytes": 2023,
+      "file": "LTC.json.gz"
+    },
+    {
+      "symbol": "NEAR",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/NEAR_(blockchain_platform)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726105022,
+      "body_sha256": "e1e9540ad37eacac439e9631f9114b4b622211fd3cee20d58587bb48cf87d720",
+      "gzip_sha256": "0b136605228b53dd75d694941cb3e83924d54f7436dd27233be5e713af560b19",
+      "bytes": 2270,
+      "file": "NEAR.json.gz"
+    },
+    {
+      "symbol": "DOT",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Polkadot_(blockchain)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726168495,
+      "body_sha256": "17b0fcf9b810cf1b42d19295dcffa037dd5eb9467f87ee36c2bf25635e9db43f",
+      "gzip_sha256": "c234f79efceb1d05230259702b40efe17c6b862e674a2ac76afb6de6f27ade63",
+      "bytes": 1561,
+      "file": "DOT.json.gz"
+    },
+    {
+      "symbol": "XLM",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Stellar_(payment_network)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726170284,
+      "body_sha256": "279c70832efbf82b1ccf1b5749c0ca08bb24c987aba1e3af37e403d91452d921",
+      "gzip_sha256": "c217019823c1dbaa9502b7d032e0efebfae387db96750df65b135e342479f1ac",
+      "bytes": 2251,
+      "file": "XLM.json.gz"
+    },
+    {
+      "symbol": "TRX",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Tron_(blockchain)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726233687,
+      "body_sha256": "390b12ab7846314301b05f4e166e13aeef2cd8349580363885d053714a1b22b2",
+      "gzip_sha256": "e38c28e380e7c53cabde05a73dccca8db045c680fdcc698d2a408942bbab56ab",
+      "bytes": 2140,
+      "file": "TRX.json.gz"
+    },
+    {
+      "symbol": "ZEC",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Zcash/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726235957,
+      "body_sha256": "8eb1f5171fadf8e0f2839ab3eee0b2b58334af1fd9fb914151b6d7d4ac1679f3",
+      "gzip_sha256": "a7467e85b93b6e1d2df1f8b9ffe2ce9d1f7a40f4d4d67fe964a3d9ed9c3c75ef",
+      "bytes": 1985,
+      "file": "ZEC.json.gz"
+    }
+  ],
+  "results": [
+    {
+      "symbol": "AVAX",
+      "contract": "AVAX-USDT",
+      "page": "Avalanche_(blockchain_platform)",
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 281,
+        "previous_7day_views": 376,
+        "change_pct": -25.265957446808507,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "AVAX",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Avalanche_(blockchain_platform)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791725970804,
+        "body_sha256": "a0bcd9a0aa86060216a392ef2e11cbc460d787b3ee1b89c04e00fb6cf9917516",
+        "gzip_sha256": "3c66f13d0e594ac8a7fd2113d609f9cbeeb9874a699d1ea9d83a36cc0374cd41",
+        "bytes": 2335,
+        "file": "AVAX.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "281 просмотров за последние 7 опубликованных полных дней против 376 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "BCH",
+      "contract": "BCH-USDT",
+      "page": "Bitcoin_Cash",
+      "identity": {
+        "chain": "bitcoin-cash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin-cash:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 482,
+        "previous_7day_views": 608,
+        "change_pct": -20.723684210526315,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "BCH",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Bitcoin_Cash/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791725973075,
+        "body_sha256": "53a234f6d57db9d107f54828136e507debfb350e691c300c0d633c0d896b9e54",
+        "gzip_sha256": "dc2a37825eb0541a998d994aac0a897e054e7d6ae2008486011a51623689519a",
+        "bytes": 2071,
+        "file": "BCH.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "482 просмотров за последние 7 опубликованных полных дней против 608 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "ATOM",
+      "contract": "ATOM-USDT",
+      "page": "Cosmos_(network)",
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 33,
+        "previous_7day_views": 31,
+        "change_pct": 6.451612903225801,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "ATOM",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Cosmos_(network)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726036707,
+        "body_sha256": "c34a293804bc99b25ef8db438255917e4c3126150fe51517b97d204062aa3cbc",
+        "gzip_sha256": "fbfb74c179f9767fd1c946173c440b70ce962ceb80134f7cffa8401542a4260e",
+        "bytes": 2112,
+        "file": "ATOM.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "33 просмотров за последние 7 опубликованных полных дней против 31 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "ETC",
+      "contract": "ETC-USDT",
+      "page": "Ethereum_Classic",
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 239,
+        "previous_7day_views": 262,
+        "change_pct": -8.778625954198471,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "ETC",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Ethereum_Classic/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726039318,
+        "body_sha256": "17c6917ea070b0fb2432af7f96715566cc6cf19608e6fc362d3ecb4a53c582f2",
+        "gzip_sha256": "67d86c44e52dbe475bb110561597520fe2fd7eba65aa6384f7a82142ed914b78",
+        "bytes": 2125,
+        "file": "ETC.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "239 просмотров за последние 7 опубликованных полных дней против 262 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "LTC",
+      "contract": "LTC-USDT",
+      "page": "Litecoin",
+      "identity": {
+        "chain": "litecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "litecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 750,
+        "previous_7day_views": 934,
+        "change_pct": -19.700214132762316,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "LTC",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Litecoin/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726102767,
+        "body_sha256": "6004f0252498984f32ce054a0c3ae1a7b5ceb9ee5a44242c86a3b1ba8c8f72e2",
+        "gzip_sha256": "83ddd41986166277fb155711db629791b4db6d6d805e27fa66b0686cffcf62e4",
+        "bytes": 2023,
+        "file": "LTC.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "750 просмотров за последние 7 опубликованных полных дней против 934 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "NEAR",
+      "contract": "NEAR-USDT",
+      "page": "NEAR_(blockchain_platform)",
+      "identity": {
+        "chain": "near",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "near:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 511,
+        "previous_7day_views": 885,
+        "change_pct": -42.25988700564972,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "NEAR",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/NEAR_(blockchain_platform)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726105022,
+        "body_sha256": "e1e9540ad37eacac439e9631f9114b4b622211fd3cee20d58587bb48cf87d720",
+        "gzip_sha256": "0b136605228b53dd75d694941cb3e83924d54f7436dd27233be5e713af560b19",
+        "bytes": 2270,
+        "file": "NEAR.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "511 просмотров за последние 7 опубликованных полных дней против 885 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "DOT",
+      "contract": "DOT-USDT",
+      "page": "Polkadot_(blockchain)",
+      "identity": {
+        "chain": "polkadot",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "polkadot:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "COMPLETE_DAILY_PAGEVIEW_WINDOW_REQUIRED",
+      "network_calls": 1,
+      "summary": null,
+      "receipt": {
+        "symbol": "DOT",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Polkadot_(blockchain)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726168495,
+        "body_sha256": "17b0fcf9b810cf1b42d19295dcffa037dd5eb9467f87ee36c2bf25635e9db43f",
+        "gzip_sha256": "c234f79efceb1d05230259702b40efe17c6b862e674a2ac76afb6de6f27ade63",
+        "bytes": 1561,
+        "file": "DOT.json.gz"
+      },
+      "consumer_checked": false
+    },
+    {
+      "symbol": "XLM",
+      "contract": "XLM-USDT",
+      "page": "Stellar_(payment_network)",
+      "identity": {
+        "chain": "stellar",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "stellar:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 401,
+        "previous_7day_views": 422,
+        "change_pct": -4.976303317535546,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "XLM",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Stellar_(payment_network)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726170284,
+        "body_sha256": "279c70832efbf82b1ccf1b5749c0ca08bb24c987aba1e3af37e403d91452d921",
+        "gzip_sha256": "c217019823c1dbaa9502b7d032e0efebfae387db96750df65b135e342479f1ac",
+        "bytes": 2251,
+        "file": "XLM.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "401 просмотров за последние 7 опубликованных полных дней против 422 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "TRX",
+      "contract": "TRX-USDT",
+      "page": "Tron_(blockchain)",
+      "identity": {
+        "chain": "tron",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "tron:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 465,
+        "previous_7day_views": 524,
+        "change_pct": -11.259541984732824,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "TRX",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Tron_(blockchain)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726233687,
+        "body_sha256": "390b12ab7846314301b05f4e166e13aeef2cd8349580363885d053714a1b22b2",
+        "gzip_sha256": "e38c28e380e7c53cabde05a73dccca8db045c680fdcc698d2a408942bbab56ab",
+        "bytes": 2140,
+        "file": "TRX.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "465 просмотров за последние 7 опубликованных полных дней против 524 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "ZEC",
+      "contract": "ZEC-USDT",
+      "page": "Zcash",
+      "identity": {
+        "chain": "zcash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "zcash:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 1017,
+        "previous_7day_views": 1352,
+        "change_pct": -24.77810650887574,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "ZEC",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Zcash/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726235957,
+        "body_sha256": "8eb1f5171fadf8e0f2839ab3eee0b2b58334af1fd9fb914151b6d7d4ac1679f3",
+        "gzip_sha256": "a7467e85b93b6e1d2df1f8b9ffe2ce9d1f7a40f4d4d67fe964a3d9ed9c3c75ef",
+        "bytes": 1985,
+        "file": "ZEC.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "1017 просмотров за последние 7 опубликованных полных дней против 1352 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "N06_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 64,
+      "reserved_rows_read": 1030000,
+      "reserved_rows_written": 22380,
+      "measured_rows_read": 564686,
+      "measured_rows_written": 6678,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 10000,
+      "rows_written": 1000
+    },
+    "projected_reserved": {
+      "rows_read": 1040000,
+      "rows_written": 23380
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 0,
+    "cap": 12,
+    "affordable": 10,
+    "selected": [
+      "AVAX",
+      "BCH",
+      "ATOM",
+      "ETC",
+      "LTC",
+      "NEAR",
+      "DOT",
+      "XLM",
+      "TRX",
+      "ZEC"
+    ]
+  },
+  "qualified_assets": [
+    "AVAX",
+    "BCH",
+    "ATOM",
+    "ETC",
+    "LTC",
+    "NEAR",
+    "XLM",
+    "TRX",
+    "ZEC"
+  ],
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 10,
+      "statistics": 0
+    },
+    "total": 10,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 154
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N06_WIKIMEDIA_NATIVE10:38144019618:1",
+    "source_run_id": "38144019618",
+    "measured_rows_read": 149,
+    "measured_rows_written_accounted": 94,
+    "measured_requests_accounted": 238,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 238,
+    "rows_read": 150,
+    "rows_written": 94,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 65,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 31,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 95,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 29,
+        "rows_read": 9,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 20,
+        "rows_read": 10,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 10,
+        "rows_read": 10,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 10,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 10,
+        "rows_read": 20,
+        "rows_written": 40,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 20,
+        "rows_read": 25,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 9,
+        "rows_read": 0,
+        "rows_written": 18,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791726236623,
+  "source_limits_unchanged": true
+}

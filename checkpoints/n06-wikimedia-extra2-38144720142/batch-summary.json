@@ -1,0 +1,281 @@
+{
+  "schema": "N06_WIKIMEDIA_NATIVE10_ACTUAL_V1",
+  "batch": "extra2",
+  "targets": [
+    "XRP",
+    "HBAR"
+  ],
+  "source": "WIKIMEDIA_ATTENTION",
+  "maximum_source_HTTP": 2,
+  "existing_manual_source_daily_cap": 12,
+  "existing_provider_minute_cap": 2,
+  "whole_job_background_cap": 28,
+  "D1_reservation": {
+    "rows_read": 10000,
+    "rows_written": 1000
+  },
+  "primary_bluesky_substituted": false,
+  "score_or_format_changed": false,
+  "run": "38144720142",
+  "head": "500cb1cf0ab16bed0bc4419ae734071205632f41",
+  "lease_owner": "CODEX:LOCAL_N06_MAX_COVERAGE:1791725240977",
+  "started_ts": 1791726610123,
+  "route_file": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+  "route_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
+  "status": "ACTUAL_NATIVE_PAGEVIEW_FACTS_RETAINED_WITH_NEUTRAL_REPORT_USE",
+  "sourceHTTP": 2,
+  "originals": [
+    {
+      "symbol": "XRP",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/XRP_Ledger/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726613081,
+      "body_sha256": "42f28b4e35da8c1b4feeb700610728476d1bc710cc929ad7a7747de9c1bf5b68",
+      "gzip_sha256": "f23e2e25033c5dbb8446a29092de4a6c4657361c4d175f4e195269f9ea05a86c",
+      "bytes": 2055,
+      "file": "XRP.json.gz"
+    },
+    {
+      "symbol": "HBAR",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Hedera_(distributed_ledger)/daily/2026092600/2026100900",
+      "http_status": 200,
+      "received_ts": 1791726615798,
+      "body_sha256": "73b43355d2a0dace9930844533227013ee9c0f8a4b45f5b46e5b3cbb98e4dc89",
+      "gzip_sha256": "a3870721275449f695a39d058061606e7f216f87b014cf8f38035b66fa96a94e",
+      "bytes": 2279,
+      "file": "HBAR.json.gz"
+    }
+  ],
+  "results": [
+    {
+      "symbol": "XRP",
+      "contract": "XRP-USDT",
+      "page": "XRP_Ledger",
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 1002,
+        "previous_7day_views": 1267,
+        "change_pct": -20.91554853985793,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "XRP",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/XRP_Ledger/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726613081,
+        "body_sha256": "42f28b4e35da8c1b4feeb700610728476d1bc710cc929ad7a7747de9c1bf5b68",
+        "gzip_sha256": "f23e2e25033c5dbb8446a29092de4a6c4657361c4d175f4e195269f9ea05a86c",
+        "bytes": 2055,
+        "file": "XRP.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "1002 просмотров за последние 7 опубликованных полных дней против 1267 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    },
+    {
+      "symbol": "HBAR",
+      "contract": "HBAR-USDT",
+      "page": "Hedera_(distributed_ledger)",
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_original_received_ts": 1791632635640,
+      "status": "CLOSED",
+      "network_calls": 1,
+      "summary": {
+        "recent_7day_views": 141,
+        "previous_7day_views": 233,
+        "change_pct": -39.48497854077253,
+        "day_count": 14,
+        "window_end": 1791590400000
+      },
+      "receipt": {
+        "symbol": "HBAR",
+        "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Hedera_(distributed_ledger)/daily/2026092600/2026100900",
+        "http_status": 200,
+        "received_ts": 1791726615798,
+        "body_sha256": "73b43355d2a0dace9930844533227013ee9c0f8a4b45f5b46e5b3cbb98e4dc89",
+        "gzip_sha256": "a3870721275449f695a39d058061606e7f216f87b014cf8f38035b66fa96a94e",
+        "bytes": 2279,
+        "file": "HBAR.json.gz"
+      },
+      "consumer_checked": true,
+      "report_excerpt": "141 просмотров за последние 7 опубликованных полных дней против 233 за предыдущие 7; окно заканчивается 2026-10-10 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+      "primary_bluesky_substituted": false,
+      "score_adjustment": 0,
+      "cache_hit_original_clocks_unchanged": true
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "N06_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 66,
+      "reserved_rows_read": 1041500,
+      "reserved_rows_written": 23396,
+      "measured_rows_read": 565398,
+      "measured_rows_written": 6777,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 10000,
+      "rows_written": 1000
+    },
+    "projected_reserved": {
+      "rows_read": 1051500,
+      "rows_written": 24396
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "used": 10,
+    "cap": 12,
+    "affordable": 2,
+    "selected": [
+      "XRP",
+      "HBAR"
+    ]
+  },
+  "qualified_assets": [
+    "XRP",
+    "HBAR"
+  ],
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 2,
+      "statistics": 0
+    },
+    "total": 2,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 162
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N06_WIKIMEDIA_NATIVE10:38144720142:1",
+    "source_run_id": "38144720142",
+    "measured_rows_read": 85,
+    "measured_rows_written_accounted": 22,
+    "measured_requests_accounted": 53,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 53,
+    "rows_read": 86,
+    "rows_written": 22,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 67,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 20,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 6,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 4,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791726616581,
+  "source_limits_unchanged": true
+}
