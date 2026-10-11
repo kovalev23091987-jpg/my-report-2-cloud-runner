@@ -3,12 +3,12 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "1910b64f6a106b22e0b4203b428b3cc9455a144ef9b07869d46ae708c2ab1737",
-    "current-generation/files/src/telegram-compact-formatter.mjs": "6820fd2dd398e3dab90d6d298783901f1f3ee3b33a16a5c4d2163d0e395454c4",
+    "current-generation/files/src/manual-report-formatter.mjs": "40661b4c8d71a840efdc37511e6997f58bb08687b8404b15d9dee763214bbe7e",
+    "current-generation/files/src/telegram-compact-formatter.mjs": "033a7bcf327be5ea8092425191cbd8f6140b7220c78035edfd5b601b1cdc053d",
     "current-generation/files/src/canonical-display.mjs": "83c8ed20fb44b239bb557d32df1129aec75609eaac93a58922edbd643f87ba43",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "8558978a9598d727a8f1e3b7395fc5b8d68f2e7e120376d61fe92355b89f6770",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "985294fc5c13cff15a884127abdb0f76522311cf9751197e3b1ce88f59da257e",
     "current-generation/files/src/canonical-publication.mjs": "e832b45431062ead0cff5f261f463b57e7feb54afc1dc1a44a2a3d1fac2400c4",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
@@ -28,6 +28,63 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-12",
+      "scope": "N12_APPROVED_104_ASSET_SPOT_SCOPE",
+      "authorization": "Owner clarified that spot context must use only the approved HTX coin list. The exact approved generation now gates collection and report facts; four approved non-ASCII contracts retain their exact spot symbol. No strategy, score, entry, or Telegram format change.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "f938e81e80c35425c1d600d72d2292f09b9b976a5682ffa4bac6010c8ad87088",
+          "after": "985294fc5c13cff15a884127abdb0f76522311cf9751197e3b1ce88f59da257e"
+        },
+        "current-generation/files/src/worker.js": {
+          "before": "5e4d745f50d14d3a3e539480a7b027b864bd75f80f9782da0405997f658de224",
+          "after": "8299e6a7cfadd9eae9e6fafcfafd2eade09c1696c63c541e7c224ddca176f054"
+        },
+        "current-generation/files/src/approved-htx-analysis-scope.mjs": {
+          "after": "46a3dde916024ceee393d0a8b1686ecd55ddac0f993423388c6a995fe06f14b4"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
+    {
+      "date": "2026-10-11",
+      "scope": "N12_VERIFIED_SINGLE_MARKET_SPOT_FUTURES_FALLBACK",
+      "authorization": "Owner requested the widest useful spot and futures information, with an explicit bounded conclusion when only one market has verified data. The existing 24-line manual context budget reserves that factual fallback; approved Telegram and frozen fixtures for identical canonical inputs remain unchanged.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "b801172854690dbfc5ff7b8e96eb3b5bb13059e4e6e9b13785e989f381846a4f",
+          "after": "f938e81e80c35425c1d600d72d2292f09b9b976a5682ffa4bac6010c8ad87088"
+        },
+        "current-generation/files/src/manual-report-formatter.mjs": {
+          "before": "1910b64f6a106b22e0b4203b428b3cc9455a144ef9b07869d46ae708c2ab1737",
+          "after": "40661b4c8d71a840efdc37511e6997f58bb08687b8404b15d9dee763214bbe7e"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
+    {
+      "date": "2026-10-11",
+      "scope": "OWNER_ACTIVE_BLOCK_SHARED_SPOT_FUTURES_MARKET_CONTEXT",
+      "authorization": "Owner requested additional spot information and comparison in already configured active blocks. The existing approved layout and saved golden output for identical canonical inputs remain unchanged. A bounded same-run neutral price/spread fact is added only for exact fresh aligned HTX depth books; one HTX venue, no score, entry or execution gate change.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "8558978a9598d727a8f1e3b7395fc5b8d68f2e7e120376d61fe92355b89f6770",
+          "after": "b801172854690dbfc5ff7b8e96eb3b5bb13059e4e6e9b13785e989f381846a4f"
+        },
+        "current-generation/files/src/telegram-compact-formatter.mjs": {
+          "before": "6820fd2dd398e3dab90d6d298783901f1f3ee3b33a16a5c4d2163d0e395454c4",
+          "after": "033a7bcf327be5ea8092425191cbd8f6140b7220c78035edfd5b601b1cdc053d"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-11",
       "scope": "OWNER_AUTHORIZED_N10_FORWARD_SCENARIO_TARGET_INTEGRITY",

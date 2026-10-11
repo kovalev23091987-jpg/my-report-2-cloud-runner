@@ -26,6 +26,10 @@ export function selectSupportingContextFacts(facts=[]){
   if(/^N(?:0[1-9]|1[0-2]|1[4-6])$/.test(block||'')&&!firstByBlock.has(block))firstByBlock.set(block,i);
  }
  for(const i of firstByBlock.values())selected.add(i);
+ // Keep one verified spot/futures market fact inside the existing 24-line
+ // budget even when many unrelated supporting facts preceded it.
+ const marketIndex=rows.findIndex(f=>['SPOT_FUTURES_PRICE_SPREAD_CONTEXT','SPOT_FUTURES_SINGLE_MARKET_CONTEXT'].includes(f.field)&&f.telegram_eligible===false);
+ if(marketIndex>=0)selected.add(marketIndex);
  for(let i=0;i<rows.length&&selected.size<24;i++)selected.add(i);
  return rows.filter((_,i)=>selected.has(i));
 }
