@@ -1,0 +1,106 @@
+{
+  "schema": "N05_BITFINEX_FIL_XPL_CONNECTED_RELEASE_20261011_V1",
+  "recorded_utc": "2026-10-11T12:48:04Z",
+  "scope": "OWNER_AUTHORIZED_N05_ONLY",
+  "status": "BITFINEX_FIL_XPL_EXACT_NATIVE_SOURCE_AND_LIMITED_REPORT_CONSUMER_CONNECTED;N05_OPEN",
+  "source_run": 38140143266,
+  "final_cloud_assembled_run": 38140554131,
+  "source_branch": "n05-bitfinex-native-fil-xpl-20261011",
+  "integrated_main_head": "285a5a0d29f6e406e3ee686ddc8aee583d6c34fa",
+  "sourceHTTP": 4,
+  "source_daily_cap_observed_after_run": {
+    "source": "N05_OFFICIAL_FLOW:BITFINEX",
+    "used": 11,
+    "cap": 16,
+    "remaining": 5,
+    "observed_at_run": 38140143266
+  },
+  "D1": {
+    "requests": 37,
+    "rows_read": 107,
+    "rows_written": 32,
+    "unknown_ops": 0
+  },
+  "source_summary": "checkpoints/n05-bitfinex-fil-xpl-38140143266/batch-summary.json",
+  "original_replay": "checkpoints/N05_BITFINEX_FIL_XPL_ORIGINAL_REPLAY_20261011.json",
+  "consumer_replay": "checkpoints/N05_BITFINEX_FIL_XPL_CONSUMER_REPLAY_20261011.json",
+  "cloud_proof_directory": "checkpoints/n05-bitfinex-fil-xpl-assembly-38140554131",
+  "cloud_checks": {
+    "runtime_assembly": "PASS",
+    "runtime_binding": "PASS",
+    "N05_tests": {
+      "passed": 28,
+      "failed": 0
+    },
+    "approved_delivery_tests": {
+      "passed": 12,
+      "failed": 0
+    },
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    }
+  },
+  "assets": [
+    {
+      "symbol": "FIL",
+      "htx_native_chain": "filecoin",
+      "htx_native_alias": "fil",
+      "wrapped_htx_binding_excluded": 1,
+      "bitfinex_official_network_reference": "https://support.bitfinex.com/hc/en-us/articles/900003214926-Filecoin-FIL",
+      "trade_count": 4,
+      "buy_quote_usd": 251.280313150907,
+      "sell_quote_usd": 0.5999999876440001,
+      "verified_minutes": 240
+    },
+    {
+      "symbol": "XPL",
+      "htx_native_chain": "plasma",
+      "htx_native_alias": "xpl",
+      "bitfinex_official_network_reference": "https://support.bitfinex.com/hc/en-us/articles/51038467350937-Plasma-XPL",
+      "trade_count": 3,
+      "buy_quote_usd": 0.1986403748602,
+      "sell_quote_usd": 19.344383074896427,
+      "verified_minutes": 240
+    }
+  ],
+  "source_window_end_ts": 1791722400000,
+  "identity_cache_version": "htx-official-asset-identity-v5-fil-xpl-native-chain-20261011",
+  "identity_cache_invalidated_for_new_bindings": true,
+  "one_venue_sample_small": true,
+  "available_flow_context_proven": true,
+  "evidence_validation_proven": true,
+  "manual_and_both_approved_telegram_forms_controlled_render_proven": true,
+  "new_fresh_report_or_SENT": false,
+  "coverage_map": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_FIL_XPL_20261011.json",
+  "coverage": {
+    "current_HTX_assets": 104,
+    "actual_individual_full_external_window_assets_ever": 37,
+    "assets_with_at_least_one_retained_exact_external_route": 76,
+    "assets_without_retained_exact_external_route": 28,
+    "assets_without_ever_full_external_window": 67,
+    "actual_independent_full_window_venue_histogram": {
+      "0": 67,
+      "1": 35,
+      "2": 2
+    },
+    "two_venue_histories_same_window_proven": false
+  },
+  "constraints": {
+    "N05_score_contribution": 0,
+    "strategy_weights_limits_approved_format_changed": false,
+    "catalog_or_HTTP_200_alone_counted": false,
+    "independent_physical_venue_root": "BITFINEX_OFFICIAL_PUBLIC_TRADES",
+    "one_venue_information_only": true,
+    "conflicting_sources_not_joint_conclusion": true,
+    "continuous_all104_proven": false,
+    "N05_complete": false
+  },
+  "other_research": {
+    "ARB": "Official Bitfinex ARB market and Arbitrum Foundation token contract match is a candidate for exact token qualification; not yet counted or queried for a full window",
+    "CHZ": "Bitfinex catalog ETH pool and HTX native chz2 chain differ; not counted",
+    "HYPE": "Bitfinex supports HyperEVM while saved HTX native alias is hyperlqd; not counted",
+    "SUN": "TRON contract and current Bitfinex asset require exact primary contract comparison; not counted"
+  },
+  "next_action": "CONTINUE_N05_ONLY;REUSE_RETAINED_BITFINEX_AND_OTHER_ORIGINALS;QUALIFY_ARB_TOKEN_AND_REEVALUATE_FIL_XPL_AGAINST_SAVED_INDEPENDENT_CATALOGS_WITHOUT_SPECULATIVE_HTTP;AFTER_REAL_SOURCE_DAY_HEADROOM_RUN_SAVED_COMMON_BATCH_WITH_UNCHANGED_CAPS;VERIFY_SAME_WINDOW_INDEPENDENT_AGREEMENT_AND_FRESH_NATURAL_REPORT_USE;DO_NOT_START_NEXT_BLOCK"
+}
