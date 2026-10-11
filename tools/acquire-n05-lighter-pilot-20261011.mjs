@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {gzipSync} from 'node:zlib';
+import {gzipSync,gunzipSync} from 'node:zlib';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import * as guard from '../runner/d1-preaction-budget-guard.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
@@ -9,7 +9,7 @@ import {reserveProviderMinuteUnits} from '../current-generation/files/src/provid
 
 const repo='kovalev23091987-jpg/my-report-2-cloud-runner',source='N05_OFFICIAL_FLOW:LIGHTER',provider='LIGHTER',cap=16;
 const root='audit-output/n05-lighter-pilot',reservation={rows_read:6000,rows_written:250},hash=b=>createHash('sha256').update(b).digest('hex');
-const plan={schema:'N05_LIGHTER_NEW_VENUE_PILOT_PLAN_V1',asset:'DASH',market_id:127,maximum_source_HTTP:4,source_cap:cap,provider_minute_cap:6,whole_job_background_cap:28,D1_reservation:reservation,caps_changed:false,qualification_only:true};
+const plan={schema:'N05_LIGHTER_NEW_VENUE_PILOT_COMPLETION_PLAN_V1',asset:'DASH',market_id:127,maximum_source_HTTP:1,source_cap:cap,provider_minute_cap:6,whole_job_background_cap:28,D1_reservation:reservation,caps_changed:false,qualification_only:true,prior_run:38137955037};
 if(process.argv.includes('--plan')){console.log(JSON.stringify(plan,null,2));process.exit(0);}
 for(const n of ['GITHUB_RUN_ID','GITHUB_SHA','GITHUB_TOKEN','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER'])if(!process.env[n])throw Error(n+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repo)throw Error('EXACT_REPOSITORY_REQUIRED');
@@ -36,15 +36,17 @@ async function acquire(name,path){const url='https://mainnet.zklighter.elliot.ai
 try{
  out.daily_admission=guard.evaluateDailyReservationBudget({daily:await guard.loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_DENIED');
  await guard.reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
- const counter=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind(source,new Date(Date.now()).toISOString().slice(0,10)).first();const used=counter==null?0:Number(counter.attempts);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_SOURCE_COUNTER');out.source_preflight={used,required:4,cap,remaining:cap-used,allowed:cap-used>=4};if(cap-used<4)throw Error('ENTIRE_PILOT_SOURCE_HEADROOM_REQUIRED');
- const end=Math.floor(Date.now()/60000)*60000,start=end-14400000;out.window_start_ts=start;out.window_end_ts=end;
- const books=await acquire('LIGHTER-DASH-BOOK','orderBooks?market_id=127');
- const details=await acquire('LIGHTER-DASH-DETAILS','orderBookDetails?market_id=127');
- const candles=await acquire('LIGHTER-DASH-CANDLES1M',`candles?market_id=127&resolution=1m&start_timestamp=${start}&end_timestamp=${end}&count_back=0`);
- const trades=await acquire('LIGHTER-DASH-TRADES500','recentTrades?market_id=127&limit=500');
+ const counter=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind(source,new Date(Date.now()).toISOString().slice(0,10)).first();const used=counter==null?0:Number(counter.attempts);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_SOURCE_COUNTER');out.source_preflight={used,required:1,cap,remaining:cap-used,allowed:cap-used>=1};if(cap-used<1)throw Error('ENTIRE_PILOT_SOURCE_HEADROOM_REQUIRED');
+ const prior='checkpoints/n05-lighter-pilot-38137955037/';
+ const retained=async(name,sha)=>{const bytes=await fs.readFile(prior+name+'.json.gz');if(hash(bytes)!==sha)throw Error('RETAINED_ORIGINAL_HASH_MISMATCH');return JSON.parse(gunzipSync(bytes));};
+ const books=await retained('LIGHTER-DASH-BOOK','4b98194b2fab4d88aedaa9ae1cc0ca19e65a865f64ac5029ada92511d4b5dbc6');
+ const details=await retained('LIGHTER-DASH-DETAILS','0c06f1ffaf6cc5803869d42d244918089ce48c73f2d8f858e8f572b990275bd6');
+ const candles=await retained('LIGHTER-DASH-CANDLES1M','b230a621a61a18e6d9df31cb609a2e26e46cb4e68e43459392e02b5a4e055906');
+ const priorSummary=JSON.parse(await fs.readFile(prior+'batch-summary.json','utf8'));out.window_start_ts=priorSummary.window_start_ts;out.window_end_ts=priorSummary.window_end_ts;
+ const trades=await acquire('LIGHTER-DASH-TRADES100','recentTrades?market_id=127&limit=100');
  out.book_match=Array.isArray(books?.order_books)?books.order_books.filter(x=>x.market_id===127&&x.symbol==='DASH'&&x.market_type==='perp'&&x.status==='active').length:0;
  out.details_top_keys=details&&typeof details==='object'?Object.keys(details):null;out.candles_top_keys=candles&&typeof candles==='object'?Object.keys(candles):null;out.trades_top_keys=trades&&typeof trades==='object'?Object.keys(trades):null;
- out.candle_rows=Array.isArray(candles?.candles)?candles.candles.length:null;out.trade_rows=Array.isArray(trades?.trades)?trades.trades.length:null;
+ out.candle_rows=Array.isArray(candles?.c)?candles.c.length:null;out.candle_first=candles?.c?.[0]??null;out.candle_last=candles?.c?.at(-1)??null;out.trade_rows=Array.isArray(trades?.trades)?trades.trades.length:null;
  out.trade_oldest_ts=Array.isArray(trades?.trades)&&trades.trades.length?Math.min(...trades.trades.map(x=>Number(x.timestamp))):null;
  out.trade_newest_ts=Array.isArray(trades?.trades)&&trades.trades.length?Math.max(...trades.trades.map(x=>Number(x.timestamp))):null;
  out.status='ORIGINAL_LIGHTER_DASH_WINDOW_RETAINED_NOT_QUALIFIED';
