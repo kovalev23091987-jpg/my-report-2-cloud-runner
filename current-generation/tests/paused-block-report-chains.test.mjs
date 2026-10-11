@@ -45,11 +45,10 @@ test('paused N06 never plans or dispatches social and pageview HTTP, even for ex
 test('paused N07 skips sole-block feeds and filters old official facts',async()=>{
  const forbidden=()=>{throw Error('PAUSED_N07_SOURCE_MUST_NOT_EXECUTE');};
  const params={contract:'ADA-USDT',asset_identity:{chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null},asset_metadata:{official_domains:['cardano.org'],official_feeds:['https://cardano.org/feed.xml'],official_name:'Cardano'},strict_fresh_manual:true,request_admit:forbidden,fetch_impl:forbidden};
- assert.equal(planCandidateEvidenceRoutes(params).routes.some(r=>['HTX_ANNOUNCEMENTS','GDELT'].includes(r.name)),false);
- const r=await collectEvidenceRouteBlock({routes:[{name:'HTX_ANNOUNCEMENTS'},{name:'GDELT'}],params,collectors:{HTX_ANNOUNCEMENTS:forbidden,GDELT:forbidden},max_requests:5});
+ assert.equal(planCandidateEvidenceRoutes(params).routes.some(r=>['HTX_ANNOUNCEMENTS','GDELT','OFFICIAL'].includes(r.name)),false);
+ const r=await collectEvidenceRouteBlock({routes:[{name:'HTX_ANNOUNCEMENTS'},{name:'GDELT'},{name:'OFFICIAL'}],params,collectors:{HTX_ANNOUNCEMENTS:forbidden,GDELT:forbidden,OFFICIAL:forbidden},max_requests:5});
  assert.equal(r.network_calls,0);assert.equal(r.reserved_requests,0);assert.ok(Object.values(r.results).every(x=>x.status==='BLOCK_PAUSED_BY_OWNER'));
- const original=saved.metadata.internal_market_context.evidence_v2.evidence.find(x=>x.block_id==='N02');const rows=[{...original,htx_contract:'ADA-USDT',block_id:'N07'},{...original,htx_contract:'ADA-USDT',block_id:'N09'}];
- const shared=await collectEvidenceRouteBlock({routes:[{name:'OFFICIAL'}],params:{contract:'ADA-USDT'},collectors:{OFFICIAL:async()=>({status:'CLOSED',network_calls:0,evidence:rows})},max_requests:5});assert.deepEqual(shared.results.OFFICIAL.evidence,[]);assert.equal(shared.results.OFFICIAL.paused_block_rows_excluded,2);
+ assert.equal(r.results.OFFICIAL.status,'BLOCK_PAUSED_BY_OWNER');assert.deepEqual(r.results.OFFICIAL.evidence,[]);
 });
 
 test('shared HTX risk source stays available while N08 and N09 facts are excluded',async()=>{

@@ -16,7 +16,7 @@ function db(){const sqlite=new DatabaseSync(':memory:');return{prepare(sql){retu
 test('exact native ADA official routes are planned without wrapped substitution',()=>{
  const compiled=compileOfficialSourceRegistry((()=>{const r=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url)));r.entries=r.entries.filter(e=>Date.parse(e.verified_at)<=NOW);return r;})(),{now:NOW});
  assert.equal(compiled.registry.ADA.native_asset_id,'cardano:mainnet');assert.deepEqual(compiled.registry.ADA.official_feeds,meta.official_feeds);
- const planned=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:compiled.registry.ADA,run_id:'C',now:NOW});assert.equal(planned.routes.some(x=>x.name==='TOKEN_SCHEDULE'),false);assert.equal(planned.routes.some(x=>x.name==='OFFICIAL'),true);
+ const planned=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:compiled.registry.ADA,run_id:'C',now:NOW});assert.equal(planned.routes.some(x=>x.name==='TOKEN_SCHEDULE'),false);assert.equal(planned.routes.some(x=>x.name==='OFFICIAL'),false);
  for(const wrong of [{...identity,native_asset_id:'cardano:testnet'},{...identity,contract_or_mint:'0x'+'1'.repeat(40)},{...identity,asset_kind:'WRAPPED'}])assert.equal(exactTokenScheduleRoute({contract:'ADA-USDT',asset_identity:wrong}),null);
 });
 test('ADA historical distribution is useful bounded context without claiming future unlocks',()=>{

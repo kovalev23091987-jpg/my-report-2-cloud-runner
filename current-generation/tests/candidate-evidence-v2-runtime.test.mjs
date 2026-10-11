@@ -32,7 +32,7 @@ test('provider quota denial preserves the next active source while N07 is paused
  const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls.push(url);if(String(url).includes('/market/history/trade'))return new Response(JSON.stringify({status:'ok',ch:'market.ABC-USDT.trade.detail',ts:Date.now(),data:[]}));if(String(url).startsWith('https://api.bsky.app/'))return new Response(JSON.stringify({posts:[]}));assert.equal(url,'https://abc.example/feed.xml');return new Response(rss,{headers:{'content-type':'application/rss+xml'}});},asset_metadata:{official_domains:['abc.example'],official_feeds:['https://abc.example/feed.xml']}});
  assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'DAILY_CAP_OR_DUPLICATE');
  assert.equal(out.sources.COINPAPRIKA_SECTOR.status,'DAILY_CAP_OR_DUPLICATE');
- assert.equal(out.sources.OFFICIAL_EVENTS.status,'CLOSED');assert.equal(out.block_coverage.blocks.N07.observed_facts,0);
- assert.equal(out.network_calls,2);assert.equal(calls.length,2);assert.equal(out.sources.BLUESKY_PUBLIC.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(out.sources.HTX_LARGE_TRADES.status,'CLOSED_EMPTY_BOUNDED_SAMPLE');assert.ok(out.shared_http_envelope.reserved_attempts<=5);
+ assert.equal(out.sources.OFFICIAL_EVENTS.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(out.block_coverage.blocks.N07.observed_facts,0);
+ assert.equal(out.network_calls,1);assert.equal(calls.length,1);assert.equal(out.sources.BLUESKY_PUBLIC.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(out.sources.HTX_LARGE_TRADES.status,'CLOSED_EMPTY_BOUNDED_SAMPLE');assert.ok(out.shared_http_envelope.reserved_attempts<=5);
  assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
 });
