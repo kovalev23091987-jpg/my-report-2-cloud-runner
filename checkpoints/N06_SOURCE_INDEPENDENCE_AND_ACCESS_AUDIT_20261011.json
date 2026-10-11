@@ -80,7 +80,7 @@
     {
       "id": "SANTIMENT_SOCIAL_VOLUME",
       "upstream": "Santiment aggregated original social document corpus, including Reddit/Twitter/Telegram",
-      "status": "CODEX_CONNECTOR_ACTUAL_DATA_VERIFIED;AUTOMATIC_GITHUB_RUNNER_ACCESS_PENDING_OWNER_SANAPI_KEY",
+      "status": "CODEX_CONNECTOR_ACTUAL_DATA_VERIFIED;GITHUB_ACTIONS_SECRET_ABSENT_IN_THREE_CHECKED_NAMES",
       "catalog_metric": "social_volume_total",
       "catalog_assets": 493,
       "htx_ticker_matches": 80,
@@ -100,7 +100,9 @@
       "required_access": "REPORT2_SANTIMENT_API_KEY GitHub Actions secret with SanAPI social_volume_total entitlement",
       "source": "https://academy.santiment.net/metrics/social-volume/",
       "api_access_source": "https://academy.santiment.net/sanapi/accessing-the-api/",
-      "independence_caveat": "All Santiment social submetrics share the same underlying Santiment corpus; count as one provider, not separate independent Reddit/Twitter/Telegram sources."
+      "independence_caveat": "All Santiment social submetrics share the same underlying Santiment corpus; count as one provider, not separate independent Reddit/Twitter/Telegram sources.",
+      "access_check": "checkpoints/N06_SANTIMENT_GITHUB_ACCESS_CHECK_20261011.json",
+      "pilot_observation": "checkpoints/N06_SANTIMENT_CONNECTOR_PILOT_OBSERVATION_20261011.json"
     }
   ],
   "independence_groups": {

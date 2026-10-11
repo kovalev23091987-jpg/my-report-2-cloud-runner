@@ -1,0 +1,65 @@
+{
+  "schema": "N06_SANTIMENT_CONNECTOR_PILOT_OBSERVATION_V1",
+  "metric": "social_volume_total",
+  "provider": "Santiment",
+  "connection": "existing authenticated Codex connector",
+  "source_day_policy": "seven completed UTC days 2026-10-04 through 2026-10-10; exclude 2026-10-11 preliminary row",
+  "series_data_provenance": "values observed in prior connector tool response in this task; original complete response not retained as file; not consumer or report acceptance",
+  "values_by_slug": {
+    "bitcoin": [
+      926,
+      2085,
+      1941,
+      2243,
+      2468,
+      2089,
+      1577
+    ],
+    "hedera-hashgraph": [
+      21,
+      52,
+      64,
+      61,
+      41,
+      58,
+      46
+    ],
+    "pepe": [
+      12,
+      25,
+      14,
+      9,
+      33,
+      18,
+      18
+    ],
+    "dogwifhat": [
+      1,
+      4,
+      4,
+      4,
+      2,
+      3,
+      3
+    ],
+    "avantis": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ]
+  },
+  "exact_htx_identity_note": "BTC/bitcoin and HBAR/Hedera native identity is corroborated by exact HTX route bindings; PEPE/WIF/AVNT token contract or mint to provider slug has not been closed and must not be counted as exact HTX coverage.",
+  "report_use_verified": false,
+  "new_fresh_SENT": false,
+  "automated_github_access": "ABSENT_IN_THREE_CHECKED_SECRET_NAMES",
+  "access_proof": "checkpoints/N06_SANTIMENT_GITHUB_ACCESS_CHECK_20261011.json",
+  "limitations": [
+    "Seven-day count is one Santiment corpus, not independent social platforms.",
+    "Provider warns current day is preliminary and recent data can revise.",
+    "No runtime adapter or canonical report consumer is connected to this metric."
+  ]
+}
