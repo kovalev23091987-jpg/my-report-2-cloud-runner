@@ -1109,6 +1109,7 @@ async function futuresSnapshot(params) {
   );
 
   const notional = clamp(params.notional_usdt ?? params.notional, 10, 1000000, 1000);
+  const executionNotional = clamp(params.execution_notional_usdt ?? notional, 10, 1000000, notional);
   const tradesRequested = Math.round(clamp(params.trades ?? params.size, 1, 2000, 500));
 
   const endpoints = {
@@ -1252,7 +1253,7 @@ async function futuresSnapshot(params) {
   };
 
   const factualExecution = prepareHtxExecutionFacts({
-    contract_code: contract, requested_notional_usdt: notional,
+    contract_code: contract, requested_notional_usdt: executionNotional,
     info_response: infoR, depth_response: depthR, received_ts: Date.now(),
   });
   const snapshot = {
@@ -15921,6 +15922,7 @@ async function buildDeepCheckInput(params, env) {
   const futuresParams = {
     contract,
     notional_usdt: 1000,
+    execution_notional_usdt: 500,
     trades: 2000,
     _fetch_json: sharedFetch.fetch,
   };
@@ -16789,7 +16791,7 @@ async function buildDeepCheckInput(params, env) {
 
   const executionRefresh = await refreshHtxExecutionQuoteIfNeeded({
     contract,
-    notional_usdt: futuresParams.notional_usdt,
+    notional_usdt: futuresParams.execution_notional_usdt,
     current_quote: futures?.data?._tz101_execution_quote ?? null,
     now_ts: Date.now(),
     request_json: sharedFetch.refresh,
@@ -20256,6 +20258,7 @@ export {
   htxUniverseScan as loadApprovedStage0ScanForTest,
   loadHistoryTargets as loadStage0HistoryTargetsForTest,
   htxStage0History as htxStage0HistoryForTest,
+  futuresSnapshot as futuresSnapshotForTest,
   refreshHtxExecutionQuoteIfNeeded as refreshHtxExecutionQuoteIfNeededForTest,
   createPerDeepCheckFetchCache as createPerDeepCheckFetchCacheForTest,
 };

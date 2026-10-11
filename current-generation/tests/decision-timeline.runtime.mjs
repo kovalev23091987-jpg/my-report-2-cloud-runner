@@ -7,7 +7,7 @@ const worker=await import(`${pathToFileURL(path.join(runtime,'src/worker.js')).h
 const {prepareHtxExecutionFacts,checkExecutionHandoff}=await import(pathToFileURL(path.join(runtime,'src/tz101-execution-facts.mjs')).href);
 const {hardGates}=await import(pathToFileURL(path.join(runtime,'src/canonical-runtime-adapter.mjs')).href);
 const EARLY=1790604862614,LATE=1790604878385,CONTRACT='BOME-USDT';
-const response=(received,book)=>({contract_code:CONTRACT,requested_notional_usdt:1000,received_ts:received,info_response:{ok:true,data:{status:'ok',ts:EARLY-1000,data:[{contract_code:CONTRACT,contract_size:1,price_tick:.000001,contract_status:1}]}},depth_response:{ok:true,data:{status:'ok',ch:`market.${CONTRACT}.depth.step0`,ts:book+10,tick:{ts:book,bids:[[.01,200000]],asks:[[.010001,200000]]}}}});
+const response=(received,book,notional=1000)=>({contract_code:CONTRACT,requested_notional_usdt:notional,received_ts:received,info_response:{ok:true,data:{status:'ok',ts:EARLY-1000,data:[{contract_code:CONTRACT,contract_size:1,price_tick:.000001,contract_status:1}]}},depth_response:{ok:true,data:{status:'ok',ch:`market.${CONTRACT}.depth.step0`,ts:book+10,tick:{ts:book,bids:[[.01,200000]],asks:[[.010001,200000]]}}}});
 
 const earlyUsingLateData=prepareHtxExecutionFacts(response(EARLY,LATE-100));
 assert.equal(earlyUsingLateData.status,'NOT_CLOSED');
@@ -33,6 +33,17 @@ try{
  const rejected=checkExecutionHandoff(asymmetricGate,{contract_code:CONTRACT,checked_ts:LATE,direction:'SHORT'});
  assert.equal(rejected.ok,false);assert.equal(rejected.status,'NOT_CLOSED');
  assert.deepEqual(hardGates({executionHandoff:rejected}),[{gate:'HTX_EXECUTION_HANDOFF',status:'NOT_CLOSED',reason:'EXECUTION_SHORT_CAPACITY_NOT_CLOSED'}]);
+ const smallBook=response(LATE,LATE-100,500);
+ smallBook.depth_response.data.tick.bids=[[.01,60000]];
+ smallBook.depth_response.data.tick.asks=[[.010001,60000]];
+ assert.equal(prepareHtxExecutionFacts({...smallBook,requested_notional_usdt:1000}).status,'NOT_CLOSED');
+ const snapshot=await worker.futuresSnapshotForTest({contract:CONTRACT,notional_usdt:1000,execution_notional_usdt:500,_fetch_json:async url=>url.includes('swap_contract_info')?smallBook.info_response:url.includes('/market/depth')?smallBook.depth_response:{ok:false,data:null,error:'TEST_OMITTED'}});
+ assert.equal(snapshot.requested_notional_usdt,1000);
+ assert.equal(snapshot._tz101_execution_quote.facts.requested_reference_notional_usdt,500);
+ assert.equal(snapshot._tz101_execution_quote.plans.LONG.status,'CLOSED');
+ assert.equal(snapshot._tz101_execution_quote.plans.SHORT.status,'CLOSED');
+ const refreshedSmall=await worker.refreshHtxExecutionQuoteIfNeededForTest({contract:CONTRACT,notional_usdt:500,current_quote:stale,now_ts:LATE,request_json:async url=>url.includes('/market/depth')?smallBook.depth_response:smallBook.info_response});
+ assert.equal(refreshedSmall.quote.facts.requested_reference_notional_usdt,500);
 }finally{Date.now=realNow;}
 
 let network=0;const cache=worker.createPerDeepCheckFetchCacheForTest(async url=>{network++;return{ok:true,url};},39,2);
