@@ -7,7 +7,7 @@ import {BITFINEX_FLOW_VERSION,exactBitfinexNativeIdentity,exactBitfinexNativeMar
 const SOURCE='N05_OFFICIAL_FLOW:BITFINEX',VERSION='bitfinex-native-flow-collector-v1-20261011',hash=b=>createHash('sha256').update(b).digest('hex');
 export async function collectBitfinexNativeFlow(params={}){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[];
- const root={version:VERSION,status:'EXACT_BITFINEX_NATIVE_ASSET_BINDING_REQUIRED',check_completed:false,network_calls:0,evidence:[],components:[],receipts,internal_only:true};let calls=0,sequence=0;
+ const root={version:VERSION,status:'EXACT_BITFINEX_ASSET_BINDING_REQUIRED',check_completed:false,network_calls:0,evidence:[],components:[],receipts,internal_only:true};let calls=0,sequence=0;
  if(!db?.prepare||!run_id||!exactBitfinexNativeIdentity(contract,identity)||!['HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK','HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(identity_method))return root;
  const admitDb=()=>source_health_admit?.({rows_read:500,rows_written:22})?.allowed===true;
  const get=async(url)=>{

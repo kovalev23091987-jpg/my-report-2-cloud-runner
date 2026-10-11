@@ -57,3 +57,16 @@ test('FIL and XPL use one shared catalog and four original windows calls with ex
  }
  assert.equal(calls,5);assert.equal(grants,5);db.close();
 });
+test('LINK and PEPE use exact official ERC20 contracts and one shared Bitfinex catalog',async()=>{
+ const dir='checkpoints/n05-bitfinex-link-pepe-38140937694',summary=JSON.parse(fs.readFileSync(dir+'/batch-summary.json'));
+ const db=database();await installEvidenceSourceStore(db);await installProviderMinuteLedger(db);
+ const windows=Object.fromEntries(['LINK','PEPE'].map(symbol=>[symbol,{candles:raw(dir+'/BITFINEX-'+symbol+'-CANDLES1M.json.gz'),trades:raw(dir+'/BITFINEX-'+symbol+'-TRADES10000.json.gz')}]));
+ let calls=0,grants=0;const now=summary.window_end_ts+1000;
+ for(const symbol of ['LINK','PEPE']){
+  const original=summary.assets.find(a=>a.symbol===symbol),identity=htx.entries[symbol].identities[0];assert.equal(identity.contract_or_mint,original.contract);
+  const params={db,contract:symbol+'-USDT',asset_identity:identity,identity_method:'HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS',run_id:'BITFINEX_TOKEN_TEST',now,clock:()=>now,request_admit:()=>{grants++;return{allowed:true};},source_health_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;return new Response(JSON.stringify(url.includes('/conf/')?catalog:url.includes('/candles/')?windows[symbol].candles:windows[symbol].trades));}};
+  const first=await collectBitfinexNativeFlow(params);assert.equal(first.check_completed,true,first.reason||first.status);assert.equal(qualifiedBitfinexNativeComponent(first.components[0]),true);assert.equal(first.components[0].asset_kind,'TOKEN');assert.equal(first.components[0].token_contract_reference_url,original.official_contract_reference);
+  const cached=await collectBitfinexNativeFlow({...params,run_id:'BITFINEX_TOKEN_CACHE'});assert.equal(cached.check_completed,true,cached.reason||cached.status);
+ }
+ assert.equal(calls,5);assert.equal(grants,5);db.close();
+});
