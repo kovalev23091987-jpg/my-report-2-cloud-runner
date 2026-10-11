@@ -1,0 +1,1450 @@
+{
+  "schema": "N06_SANTIMENT_104_EXACT_BINDING_AND_BATCH_PLAN_V1",
+  "observed_utc": "2026-10-11T14:02:20.869850Z",
+  "htx_assets": 104,
+  "native_unique_catalog_candidate_count": 20,
+  "unique_ticker_match_count": 74,
+  "ambiguous_ticker_match_count": 6,
+  "no_match_count": 24,
+  "actual_connector_pilot_values_observed_for_slugs": [
+    "bitcoin",
+    "hedera-hashgraph",
+    "pepe",
+    "dogwifhat",
+    "avantis"
+  ],
+  "exact_htx_native_pilot_candidates": [
+    "BTC",
+    "HBAR"
+  ],
+  "pilot_report_use_verified": false,
+  "provider_corpus_independence": "ONE_SANTIMENT_CORPUS_DESPITE_MULTI_PLATFORM_INPUTS",
+  "runner_access": "NO_GITHUB_SECRET_IN_CHECKED_NAMES",
+  "batch_plan": [
+    "After owner adds REPORT2_SANTIMENT_API_KEY, run one guarded BTC/HBAR entitlement and original clock pilot; check GraphQL errors even on HTTP 200 and rate headers.",
+    "Cross-check 20 native asset slugs against provider project identity, not ticker alone; use completed UTC daily series and neutral report context only.",
+    "Cross-check token chain and exact contract/mint before any additional HTX binding; ambiguous and missing catalog matches remain unqualified.",
+    "Within observed account rate limits and unchanged project budgets, collect selected source originals in large admission-checked batches, then one collective source-to-report validation."
+  ],
+  "next_work_requires_key": true,
+  "source_catalog": "checkpoints/N06_SANTIMENT_CATALOG_PREQUALIFICATION_20261011.json",
+  "access_proof": "checkpoints/N06_SANTIMENT_GITHUB_ACCESS_CHECK_20261011.json",
+  "rows": [
+    {
+      "symbol": "AAVE",
+      "htx_contract": "AAVE-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "aave",
+        "o-aave",
+        "p-aave"
+      ],
+      "catalog_match_status": "AMBIGUOUS",
+      "next_binding_action": "RESOLVE_PROVIDER_AMBIGUITY",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ACE",
+      "htx_contract": "ACE-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ADA",
+      "htx_contract": "ADA-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "cardano",
+      "provider_slugs": [
+        "cardano"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "AKE",
+      "htx_contract": "AKE-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "akedo"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ALGO",
+      "htx_contract": "ALGO-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "algorand"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "APR",
+      "htx_contract": "APR-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "APT",
+      "htx_contract": "APT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "aptos",
+      "provider_slugs": [
+        "aptos"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ARB",
+      "htx_contract": "ARB-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "arb-arbitrum"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ASTER",
+      "htx_contract": "ASTER-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bnb-aster"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ATOM",
+      "htx_contract": "ATOM-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "cosmos",
+      "provider_slugs": [
+        "cosmos"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "AVAX",
+      "htx_contract": "AVAX-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "avalanche",
+      "provider_slugs": [
+        "avalanche"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "AVNT",
+      "htx_contract": "AVNT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "avantis"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BANK",
+      "htx_contract": "BANK-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BCH",
+      "htx_contract": "BCH-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "bitcoin-cash",
+      "provider_slugs": [
+        "bitcoin-cash"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BEAT",
+      "htx_contract": "BEAT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BILL",
+      "htx_contract": "BILL-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BNB",
+      "htx_contract": "BNB-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "bsc",
+      "provider_slugs": [
+        "binance-coin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BOME",
+      "htx_contract": "BOME-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "book-of-meme"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BONK",
+      "htx_contract": "BONK-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bonk1"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BR",
+      "htx_contract": "BR-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bnb-bedrock-dao"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BTC",
+      "htx_contract": "BTC-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "bitcoin",
+      "provider_slugs": [
+        "bitcoin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": true,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BTR",
+      "htx_contract": "BTR-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BTT",
+      "htx_contract": "BTT-USDT",
+      "htx_identity_status": "NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bittorrent-new"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "BTW",
+      "htx_contract": "BTW-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "CASHCAT",
+      "htx_contract": "CASHCAT-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "cash-cat"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "CHZ",
+      "htx_contract": "CHZ-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "chiliz"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "CT",
+      "htx_contract": "CT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "DASH",
+      "htx_contract": "DASH-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "dash"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "DOGE",
+      "htx_contract": "DOGE-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "dogecoin",
+      "provider_slugs": [
+        "dogecoin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "DOS",
+      "htx_contract": "DOS-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "DOT",
+      "htx_contract": "DOT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "polkadot",
+      "provider_slugs": [
+        "polkadot-new"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ENA",
+      "htx_contract": "ENA-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "ethena"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ETC",
+      "htx_contract": "ETC-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "ethereum-classic",
+      "provider_slugs": [
+        "ethereum-classic"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ETH",
+      "htx_contract": "ETH-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "ethereum",
+      "provider_slugs": [
+        "ethereum"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ETHFI",
+      "htx_contract": "ETHFI-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "ether-fi-ethfi"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "EUL",
+      "htx_contract": "EUL-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "FARTCOIN",
+      "htx_contract": "FARTCOIN-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "fartcoin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "FIL",
+      "htx_contract": "FIL-USDT",
+      "htx_identity_status": "NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "file-coin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "FLOKI",
+      "htx_contract": "FLOKI-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bnb-floki-inu",
+        "floki-inu-v2"
+      ],
+      "catalog_match_status": "AMBIGUOUS",
+      "next_binding_action": "RESOLVE_PROVIDER_AMBIGUITY",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "GPS",
+      "htx_contract": "GPS-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "goplus-security"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "GRAM",
+      "htx_contract": "GRAM-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "toncoin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "HBAR",
+      "htx_contract": "HBAR-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "hedera",
+      "provider_slugs": [
+        "hedera-hashgraph"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": true,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "HYPE",
+      "htx_contract": "HYPE-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "hyperliquid"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ICP",
+      "htx_contract": "ICP-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "internet-computer"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "JST",
+      "htx_contract": "JST-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "just"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "JUP",
+      "htx_contract": "JUP-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "jupiter-ag"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "LAB",
+      "htx_contract": "LAB-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "LINK",
+      "htx_contract": "LINK-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "chainlink"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "LIT",
+      "htx_contract": "LIT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "lighter"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "LSK",
+      "htx_contract": "LSK-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "lisk"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "LTC",
+      "htx_contract": "LTC-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "litecoin",
+      "provider_slugs": [
+        "litecoin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "MARSCOIN",
+      "htx_contract": "MARSCOIN-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bnb-marscoin-meme-bsc"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "MUBARAK",
+      "htx_contract": "MUBARAK-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bnb-mubarak"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "MYX",
+      "htx_contract": "MYX-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "NEAR",
+      "htx_contract": "NEAR-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "near",
+      "provider_slugs": [
+        "near-protocol"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "NIL",
+      "htx_contract": "NIL-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "nillion"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "OKB",
+      "htx_contract": "OKB-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "okb"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ONDO",
+      "htx_contract": "ONDO-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "ondo-finance"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ONG",
+      "htx_contract": "ONG-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "ontology-gas"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "OP",
+      "htx_contract": "OP-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "o-optimism"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ORDI",
+      "htx_contract": "ORDI-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "ordi"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PAXG",
+      "htx_contract": "PAXG-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "pax-gold"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PENGU",
+      "htx_contract": "PENGU-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "pudgy-penguins"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PEOPLE",
+      "htx_contract": "PEOPLE-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "constitutiondao"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PEPE",
+      "htx_contract": "PEPE-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "pepe"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PIPPIN",
+      "htx_contract": "PIPPIN-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PONS",
+      "htx_contract": "PONS-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "pons"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "PUMP",
+      "htx_contract": "PUMP-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "sol-pump-fun"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "QNT",
+      "htx_contract": "QNT-USDT",
+      "htx_identity_status": "VERSIONED_EXPLORER_EXACT_TOKEN_BINDING",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "quant"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "RAVE",
+      "htx_contract": "RAVE-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "RAY",
+      "htx_contract": "RAY-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "raydium",
+        "sol-raydium"
+      ],
+      "catalog_match_status": "AMBIGUOUS",
+      "next_binding_action": "RESOLVE_PROVIDER_AMBIGUITY",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "RIVER",
+      "htx_contract": "RIVER-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "river"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "RLC",
+      "htx_contract": "RLC-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "rlc"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SHIB",
+      "htx_contract": "SHIB-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "shiba-inu"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SKR",
+      "htx_contract": "SKR-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "sol-solana-mobile-seeker"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SKYAI",
+      "htx_contract": "SKYAI-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SOL",
+      "htx_contract": "SOL-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "solana",
+      "provider_slugs": [
+        "solana"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "STEEM",
+      "htx_contract": "STEEM-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SUI",
+      "htx_contract": "SUI-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "sui",
+      "provider_slugs": [
+        "sui"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SUN",
+      "htx_contract": "SUN-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "sun-token"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "SUSHI",
+      "htx_contract": "SUSHI-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "arb-sushi",
+        "bnb-sushi",
+        "sushi"
+      ],
+      "catalog_match_status": "AMBIGUOUS",
+      "next_binding_action": "RESOLVE_PROVIDER_AMBIGUITY",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "TAO",
+      "htx_contract": "TAO-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bittensor"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "TIA",
+      "htx_contract": "TIA-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "celestia"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "TRUMP",
+      "htx_contract": "TRUMP-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "official-trump"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "TRX",
+      "htx_contract": "TRX-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "tron",
+      "provider_slugs": [
+        "tron"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "TUT",
+      "htx_contract": "TUT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "UB",
+      "htx_contract": "UB-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "unibase"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "UNI",
+      "htx_contract": "UNI-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "p-uniswap",
+        "uniswap"
+      ],
+      "catalog_match_status": "AMBIGUOUS",
+      "next_binding_action": "RESOLVE_PROVIDER_AMBIGUITY",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "USELESS",
+      "htx_contract": "USELESS-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "sol-theuselesscoin"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "VELVET",
+      "htx_contract": "VELVET-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "WIF",
+      "htx_contract": "WIF-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "dogwifhat"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "WIN",
+      "htx_contract": "WIN-USDT",
+      "htx_identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "wink"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "WLD",
+      "htx_contract": "WLD-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "o-worldcoin-org",
+        "worldcoin-org"
+      ],
+      "catalog_match_status": "AMBIGUOUS",
+      "next_binding_action": "RESOLVE_PROVIDER_AMBIGUITY",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "XAUT",
+      "htx_contract": "XAUT-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "XLM",
+      "htx_contract": "XLM-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "stellar",
+      "provider_slugs": [
+        "stellar"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "XMR",
+      "htx_contract": "XMR-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "monero"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "XPL",
+      "htx_contract": "XPL-USDT",
+      "htx_identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "htx_native_chain": null,
+      "provider_slugs": [
+        "bnb-plasma-xpl"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "TOKEN_CHAIN_CONTRACT_OR_MINT_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "XRP",
+      "htx_contract": "XRP-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "xrp",
+      "provider_slugs": [
+        "xrp"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ZEC",
+      "htx_contract": "ZEC-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": "zcash",
+      "provider_slugs": [
+        "zcash"
+      ],
+      "catalog_match_status": "UNIQUE_TICKER_MATCH",
+      "next_binding_action": "NATIVE_CHAIN_PROJECT_SLUG_CROSSCHECK",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "ZKC",
+      "htx_contract": "ZKC-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "哈基米",
+      "htx_contract": "哈基米-USDT",
+      "htx_identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "币安人生",
+      "htx_contract": "币安人生-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "牛来",
+      "htx_contract": "牛来-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    },
+    {
+      "symbol": "龙虾",
+      "htx_contract": "龙虾-USDT",
+      "htx_identity_status": "CLOSED",
+      "htx_native_chain": null,
+      "provider_slugs": [],
+      "catalog_match_status": "NO_MATCH",
+      "next_binding_action": "SEARCH_ADDITIONAL_SOURCE",
+      "exact_provider_identity_verified": false,
+      "actual_social_metric_verified": false,
+      "report_use_verified": false
+    }
+  ]
+}
