@@ -1,0 +1,140 @@
+{
+  "schema": "N05_GATE_MISSING3_ACTUAL_V1",
+  "symbols": [
+    "CT",
+    "RLC",
+    "EUL"
+  ],
+  "approved_assets": 104,
+  "source": "N05_OFFICIAL_FLOW:GATE",
+  "source_cap": 16,
+  "asset_reference_source": "GATE_ASSET_REFERENCE",
+  "asset_reference_cap": 8,
+  "provider_rolling_minute_cap": 4,
+  "maximum_source_HTTP": 13,
+  "maximum_asset_reference_HTTP": 1,
+  "background_HTTP_cap": 28,
+  "D1_reservation": {
+    "rows_read": 16000,
+    "rows_written": 500
+  },
+  "caps_changed": false,
+  "run": "38133916381",
+  "head": "b68e4164c9c03d5ce20089de65b331e9c4cb0a9d",
+  "main": "16acd4699c44547348ec5a550b1d2bb077ca30df",
+  "lease_owner": "CODEX:LOCAL_N05:20261011:1791715474614",
+  "started_ts": 1791716373558,
+  "status": "BATCH_NOT_CLOSED",
+  "sourceHTTP": 0,
+  "originals": [],
+  "results": [],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 45,
+      "reserved_rows_read": 718500,
+      "reserved_rows_written": 14992,
+      "measured_rows_read": 437529,
+      "measured_rows_written": 4890,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 734500,
+      "rows_written": 15492
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "Gate_used": 16,
+    "Gate_required": 13,
+    "Gate_cap": 16,
+    "Gate_asset_reference_used": 2,
+    "Gate_asset_reference_required": 1,
+    "Gate_asset_reference_cap": 8,
+    "allowed": false
+  },
+  "reason": "ENTIRE_USEFUL_BATCH_SOURCE_HEADROOM_REQUIRED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 0,
+      "statistics": 0
+    },
+    "total": 0,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 164
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_GATE_MISSING3:38133916381:1",
+    "source_run_id": "38133916381",
+    "measured_rows_read": 48,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 6,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 6,
+    "rows_read": 49,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 46,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791716374910,
+  "individual_full_windows": 0,
+  "simultaneous_continuous_coverage": false
+}
