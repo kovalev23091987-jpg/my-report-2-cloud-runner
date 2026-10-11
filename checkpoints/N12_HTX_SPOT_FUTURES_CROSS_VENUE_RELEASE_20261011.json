@@ -19,7 +19,8 @@
     "conflict_handling": "opposite N12 markets have zero common directional score; opposite N12 recent versus N05 four-hour directions explicitly suppress a common directional conclusion",
     "manual_and_telegram": "same confirmed canonical fact and source receipts reach manual and both approved Telegram forms; approved layout retained",
     "caps_weights_strategy_threshold_unchanged": true,
-    "new_provider_http_this_package": 0
+    "new_provider_http_this_package": 0,
+    "diagnostic_source_use_proven_in_controlled_manual_and_telegram": true
   },
   "verification": {
     "targeted_and_paused_unit": "PASS",
@@ -27,7 +28,8 @@
     "runtime_assembly_and_worker_pin": "PASS",
     "output_contract_immutable_fixtures": "PASS",
     "natural_postmerge_same_run_source_to_manual_and_sent": "PENDING",
-    "current_104_asset_trade_coverage": "UNPROVEN"
+    "current_104_asset_trade_coverage": "UNPROVEN",
+    "n12_diagnostic_source_use_and_runtime_assembly": "PASS_PR319"
   },
   "limitations": [
     "No new live provider response was collected in this package. Saved/controlled source-to-report and runtime proofs are not a fresh production report.",
@@ -35,9 +37,37 @@
     "N05 four-hour external source coverage and exact routes remain incomplete and capacity-bound; its independent venue facts appear only where validated, fresh and present in the same canonical.",
     "The historical bounded N12 trade sample is not a 24-hour full raw fill history or a verified large-trade/whale series.",
     "A natural postmerge report and approved Telegram SENT/message_id have not yet been verified for this release.",
-    "N11 post-PR317 natural proof remains pending; N05 remains open; N06-N09 remain paused; N10 natural proof remains pending."
+    "N11 post-PR317 natural proof remains pending; N05 remains open; N06-N09 remain paused; N10 natural proof remains pending.",
+    "The saved N05 map has 39/104 assets with at least one historical exact external four-hour window, 76 with structural candidate routes, and 28 without retained exact external routes. These are not simultaneous N12 coverage."
   ],
-  "next_action": "Keep N12 open. Read the next ordinary report and original source clocks for exact HTX futures plus spot trade samples and N05 venue context, verify manual and approved Telegram source receipts and actual SENT when present. Build the 104-asset per-source exact route/use matrix from saved primary responses; only then plan one bounded admitted provider batch for missing independently useful spot/futures venues without raising caps. Do not start N14 until owner review.",
+  "next_action": "N12 remains open. Verify fresh ordinary same-run HTX spot/futures and exact N05 independent venue facts through manual, diagnostic audit and approved Telegram SENT when present. Map 104 asset routes from saved primary responses, then plan one bounded admitted missing-source batch; no cap or format changes. N14 waits for owner review.",
   "n12_complete": false,
-  "project_complete": false
+  "project_complete": false,
+  "updated_utc": "2026-10-11T19:43:53.744Z",
+  "followup": {
+    "merged_pr": 319,
+    "merged_main": "e31daa119e4a7ac18fad2f96fa4a332602605684",
+    "tested_pr_head": "80d64c6b52e220b4240be0d05d58ec58c144a60d",
+    "cloud_offline_run": 38169164524,
+    "cloud_offline_result": "PASS",
+    "implementation": "N12 bounded diagnostic validates same-run HTX spot/futures composite and spot-only fallback, proves unscored source use through the existing canonical audit, and rejects conflicting or tampered components.",
+    "historical_futures_receipts_unchanged": true,
+    "new_provider_http": 0
+  },
+  "coverage_context": {
+    "basis": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json",
+    "scope": "Historical independent four-hour N05 route context that N12 can only reuse when fresh and present in the same canonical, not current N12 trade coverage.",
+    "approved_assets": 104,
+    "actual_full_window_independent_venue_assets_ever": 39,
+    "structural_candidate_external_route_assets": 76,
+    "no_retained_exact_external_route_assets": 28,
+    "simultaneous_fresh_cross_venue_agreement_proven": false
+  },
+  "owner_latest_clarification": {
+    "received_utc": "2026-10-11T19:44:56.855Z",
+    "ideal": "For each approved HTX asset, obtain useful exact-asset spot and futures trade evidence across multiple independent exchanges, then compare broadly matching direction and strength. Numerical equality is not required.",
+    "fallback": "If one market or venue genuinely lacks obtainable verified data, use available exact-source data with an explicit bounded/partial label; never imply absent data is zero or claim independent consensus from one venue.",
+    "conflict": "When available sources point in materially different directions, describe the separate facts but do not publish a common directional conclusion.",
+    "execution_priority": "First reuse current connections and retained original-clock evidence, then qualify missing spot/futures routes for the 104 assets with one bounded admitted batch; current caps and shared source budgets remain."
+  }
 }
