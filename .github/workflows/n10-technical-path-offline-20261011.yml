@@ -56,7 +56,7 @@ jobs:
         if: failure()
         run: |
           for file in audit-output/n10-technical-path/*.tap audit-output/n10-technical-path/generation.log; do
-            if test -f "$file"; then grep -n -E 'not ok|ERR_|AssertionError|error:' "$file" | head -30 || true; fi
+            if test -f "$file"; then echo "FAILED_LOG: $file"; tail -90 "$file"; fi
           done
       - uses: actions/upload-artifact@v4
         if: always()
