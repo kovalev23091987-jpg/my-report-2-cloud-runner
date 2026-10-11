@@ -44,3 +44,16 @@ test('production Bitfinex adapter uses three admitted calls and reuses original 
  const first=await collectBitfinexNativeFlow(params);assert.equal(first.check_completed,true,first.reason||first.status);assert.equal(calls,3);assert.equal(grants,3);
  const cached=await collectBitfinexNativeFlow({...params,run_id:'BITFINEX_CACHE'});assert.equal(cached.check_completed,true,cached.reason||cached.status);assert.equal(calls,3);assert.equal(cached.components[0].observed_ts,now);db.close();
 });
+test('FIL and XPL use one shared catalog and four original windows calls with exact native scope',async()=>{
+ const dir='checkpoints/n05-bitfinex-fil-xpl-38140143266',summary=JSON.parse(fs.readFileSync(dir+'/batch-summary.json'));
+ const db=database();await installEvidenceSourceStore(db);await installProviderMinuteLedger(db);
+ const windows=Object.fromEntries(['FIL','XPL'].map(symbol=>[symbol,{candles:raw(dir+'/BITFINEX-'+symbol+'-CANDLES1M.json.gz'),trades:raw(dir+'/BITFINEX-'+symbol+'-TRADES10000.json.gz')}]));
+ let calls=0,grants=0;const now=summary.window_end_ts+1000;
+ for(const symbol of ['FIL','XPL']){
+  const identityEntry=htx.entries[symbol];assert.equal(identityEntry.status,'CLOSED');assert.equal(identityEntry.binding_scope,'EXACT_NATIVE_CHAIN_TYPE_0');
+  const params={db,contract:symbol+'-USDT',asset_identity:identityEntry.identities[0],identity_method:'HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK',run_id:'BITFINEX_FIL_XPL_TEST',now,clock:()=>now,request_admit:()=>{grants++;return{allowed:true};},source_health_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;return new Response(JSON.stringify(url.includes('/conf/')?catalog:url.includes('/candles/')?windows[symbol].candles:windows[symbol].trades));}};
+  const first=await collectBitfinexNativeFlow(params);assert.equal(first.check_completed,true,first.reason||first.status);assert.equal(qualifiedBitfinexNativeComponent(first.components[0]),true);
+  const cached=await collectBitfinexNativeFlow({...params,run_id:'BITFINEX_FIL_XPL_CACHE'});assert.equal(cached.check_completed,true,cached.reason||cached.status);
+ }
+ assert.equal(calls,5);assert.equal(grants,5);db.close();
+});
