@@ -1,0 +1,78 @@
+{
+  "schema": "N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_V1",
+  "observed_utc": "2026-10-11T14:13:03.783099Z",
+  "target": "104 current HTX crypto assets; usefulness requires exact asset, original clock, actual data, N06 consumer and controlled report",
+  "candidates": [
+    {
+      "source": "CoinGecko Trending Search",
+      "upstream": "CoinGecko website search attention",
+      "independence_group": "COINGECKO_SEARCH_ACTIVITY",
+      "access": "Existing Codex connector returned eight current top items; official API supports up to 15 Demo, 30 paid",
+      "actual_connector_items": [
+        "starknet",
+        "quantus",
+        "derive",
+        "hyperliquid",
+        "pudgy-penguins",
+        "aerodrome-finance",
+        "pearl-2",
+        "nervos-network"
+      ],
+      "htx_exact_candidate": "PENGU-USDT only among returned items has retained Solana mint; official CoinGecko article references same mint, but direct original API and report consumer not yet verified",
+      "status": "ACTUAL_CATALOG_RETRIEVED_NOT_N06_REPORT_QUALIFIED",
+      "coverage_limit": "Top-list presence only; absence from truncated list does not mean zero interest or inactivity",
+      "official_reference": "https://docs.coingecko.com/changelog/10122018"
+    },
+    {
+      "source": "CoinMarketCap Community Trending Token",
+      "upstream": "CoinMarketCap Community site activity",
+      "independence_group": "CMC_COMMUNITY_ACTIVITY",
+      "access": "Pro API key and eligible plan required; existing Codex CMC connector does not expose this endpoint",
+      "status": "ACCESS_AND_ACTUAL_FACT_UNVERIFIED",
+      "official_reference": "https://coinmarketcap.com/api/documentation/pro-api-reference/community"
+    },
+    {
+      "source": "Reddit Data API",
+      "upstream": "Reddit posts",
+      "independence_group": "REDDIT_POSTS",
+      "access": "OAuth/app registration and permitted access; no approved credentials in GitHub",
+      "status": "ACCESS_AND_ACTUAL_FACT_UNVERIFIED",
+      "official_reference": "https://redditinc.com/policies/data-api-terms"
+    },
+    {
+      "source": "Mastodon search",
+      "upstream": "Federated Mastodon posts",
+      "independence_group": "MASTODON_POSTS",
+      "access": "Full-text status search depends on server search backend and authentication",
+      "status": "ACCESS_AND_ACTUAL_FACT_UNVERIFIED",
+      "official_reference": "https://docs.joinmastodon.org/methods/search/"
+    },
+    {
+      "source": "Google Trends API alpha",
+      "upstream": "Google search interest",
+      "independence_group": "GOOGLE_SEARCH_INTEREST",
+      "access": "Alpha application/invite required; 0-100 normalized term data may be ambiguous for short tickers",
+      "status": "ACCESS_AND_EXACT_BINDING_UNVERIFIED",
+      "official_reference": "https://developers.google.com/search/apis/trends"
+    },
+    {
+      "source": "Santiment SanAPI social_volume_total",
+      "upstream": "Santiment one multi-platform social corpus",
+      "independence_group": "SANTIMENT_SOCIAL_CORPUS",
+      "access": "GitHub secret now authenticated; SANAPI FREE latest allowed to 2026-09-11 at 2026-10-11 run, about 30-day delay",
+      "status": "ACTUAL_CURRENT_SOURCE_DENIED_BY_SUBSCRIPTION;CODEX_CONNECTOR_PILOT_ONLY",
+      "actual_proof": "checkpoints/N06_SANTIMENT_SANAPI_ACCESS_AND_ACTUAL_PILOT_20261011.json"
+    }
+  ],
+  "not_counted_as_independent": [
+    "Multiple Santiment platform submetrics share one corpus.",
+    "CoinGecko community link metadata and CoinGecko trending are one provider ecosystem; individual endpoint routes are not separate independent votes.",
+    "HTTP 200 with GraphQL errors is no useful current fact."
+  ],
+  "next_source_priority": [
+    "Retain and qualify current Bluesky facts across exact assets within existing daily cap and shared HTTP budget.",
+    "At next admitted Wikimedia day, expand exact native/project pages only with complete 14-day published rows.",
+    "Check CoinGecko Trending Search original direct API and exact PENGU binding; do not infer 104 coverage from top list.",
+    "Request Reddit/CMC/Mastodon access only if a concrete exact/clocked fact can be shown; avoid unused connections."
+  ]
+}

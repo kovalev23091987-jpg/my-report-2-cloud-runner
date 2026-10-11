@@ -1,0 +1,166 @@
+{
+  "schema": "N06_SANTIMENT_SANAPI_BOUNDED_PILOT_RESULT_V1",
+  "targets": [
+    {
+      "symbol": "BTC",
+      "slug": "bitcoin",
+      "chain": "bitcoin"
+    },
+    {
+      "symbol": "HBAR",
+      "slug": "hedera-hashgraph",
+      "chain": "hedera"
+    }
+  ],
+  "max_source_http": 2,
+  "metric": "social_volume_total",
+  "source": "SANTIMENT_SOCIAL_CORPUS",
+  "D1_reservation": {
+    "rows_read": 1000,
+    "rows_written": 100
+  },
+  "existing_shared_http_budget": true,
+  "score_or_format_changed": false,
+  "primary_bluesky_substituted": false,
+  "run": "38145887158",
+  "head": "f71dffd6f6a5b52b1885aea81f75e907ba5c1b56",
+  "started_ts": 1791727640100,
+  "status": "PILOT_PARTIAL_OR_ACCESS_LIMITED",
+  "sourceHTTP": 1,
+  "originals": [
+    {
+      "symbol": "BTC",
+      "slug": "bitcoin",
+      "file": "BTC.json.gz",
+      "http_status": 200,
+      "received_ts": 1791727641985,
+      "body_sha256": "b5e0fa465afa060548ab4d7abf2dd7dc5cd7e4bd9a25b97b13e36ab701977a09",
+      "gzip_sha256": "cf68309a6b183ae4590656102cfec6263ace8fa69ceb3709d36a451db13e18f7",
+      "bytes": 466,
+      "rate_limit_remaining": "100"
+    }
+  ],
+  "results": [
+    {
+      "symbol": "BTC",
+      "slug": "bitcoin",
+      "status": "GRAPHQL_ERROR",
+      "errors": [
+        "Both `from` and `to` parameters are outside the allowed interval you can query social_volume_total with your current subscription SANAPI FREE. Upgrade to a high"
+      ],
+      "complete_days": 0,
+      "series": null,
+      "receipt": {
+        "symbol": "BTC",
+        "slug": "bitcoin",
+        "file": "BTC.json.gz",
+        "http_status": 200,
+        "received_ts": 1791727641985,
+        "body_sha256": "b5e0fa465afa060548ab4d7abf2dd7dc5cd7e4bd9a25b97b13e36ab701977a09",
+        "gzip_sha256": "cf68309a6b183ae4590656102cfec6263ace8fa69ceb3709d36a451db13e18f7",
+        "bytes": 466,
+        "rate_limit_remaining": "100"
+      },
+      "exact_htx_native_identity": true,
+      "report_use_verified": false,
+      "score_adjustment": 0
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "N06_complete": false,
+  "lease_owner": "CODEX:LOCAL_N06_MAX_COVERAGE:1791725240977",
+  "route_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-11",
+      "run_count": 68,
+      "reserved_rows_read": 1053000,
+      "reserved_rows_written": 24412,
+      "measured_rows_read": 566048,
+      "measured_rows_written": 6804,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1054000,
+      "rows_written": 24512
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "window": {
+    "from": "2026-10-04T00:00:00.000Z",
+    "to": "2026-10-11T00:00:00.000Z",
+    "completed_UTC_days": 7
+  },
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 1,
+      "statistics": 0
+    },
+    "total": 1,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 163
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N06_SANTIMENT_PILOT:38145887158:1",
+    "source_run_id": "38145887158",
+    "measured_rows_read": 69,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 4,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 4,
+    "rows_read": 70,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 69,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791727642140
+}

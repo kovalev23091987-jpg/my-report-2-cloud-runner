@@ -80,7 +80,7 @@
     {
       "id": "SANTIMENT_SOCIAL_VOLUME",
       "upstream": "Santiment aggregated original social document corpus, including Reddit/Twitter/Telegram",
-      "status": "CODEX_CONNECTOR_ACTUAL_DATA_VERIFIED;GITHUB_ACTIONS_SECRET_ABSENT_IN_THREE_CHECKED_NAMES",
+      "status": "GITHUB_SECRET_AUTHENTICATED_BUT_SANAPI_FREE_CURRENT_SOCIAL_VOLUME_GRAPHQL_DENIED;CODEX_CONNECTOR_PILOT_ONLY",
       "catalog_metric": "social_volume_total",
       "catalog_assets": 493,
       "htx_ticker_matches": 80,
@@ -101,7 +101,7 @@
       "source": "https://academy.santiment.net/metrics/social-volume/",
       "api_access_source": "https://academy.santiment.net/sanapi/accessing-the-api/",
       "independence_caveat": "All Santiment social submetrics share the same underlying Santiment corpus; count as one provider, not separate independent Reddit/Twitter/Telegram sources.",
-      "access_check": "checkpoints/N06_SANTIMENT_GITHUB_ACCESS_CHECK_20261011.json",
+      "access_check": "checkpoints/N06_SANTIMENT_SANAPI_ACCESS_AND_ACTUAL_PILOT_20261011.json",
       "pilot_observation": "checkpoints/N06_SANTIMENT_CONNECTOR_PILOT_OBSERVATION_20261011.json"
     }
   ],
@@ -117,5 +117,6 @@
   },
   "N06_complete": false,
   "report_format_changed": false,
-  "strategy_or_weights_changed": false
+  "strategy_or_weights_changed": false,
+  "additional_source_research": "checkpoints/N06_ADDITIONAL_SOCIAL_ATTENTION_SOURCE_RESEARCH_20261011.json"
 }

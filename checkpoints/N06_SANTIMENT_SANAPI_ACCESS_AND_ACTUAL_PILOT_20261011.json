@@ -1,0 +1,78 @@
+{
+  "schema": "N06_SANTIMENT_SANAPI_ACCESS_AND_ACTUAL_PILOT_V1",
+  "observed_utc": "2026-10-11T14:09:45.748168Z",
+  "run": 38145887158,
+  "head": "f71dffd6f6a5b52b1885aea81f75e907ba5c1b56",
+  "artifact_id": 11705400272,
+  "artifact_digest": "sha256:624088e82956d308a862a7667b961ea0c703d406c6c9e12cb15d8f727e5b97ef",
+  "original_zip": "checkpoints/n06-santiment-pilot-38145887158.zip",
+  "summary": "checkpoints/n06-santiment-pilot-38145887158/pilot-summary.json",
+  "source_body_hashes_verified": true,
+  "github_secret_present": true,
+  "secret_value_exposed": false,
+  "actual_sourceHTTP": 1,
+  "HTTP_status": 200,
+  "GraphQL_error": "GRAPHQL_ERROR",
+  "account_tier": "SANAPI FREE",
+  "observed_allowed_interval": {
+    "from_not_earlier_than": "2025-10-11T14:07:21.938967Z",
+    "to_not_later_than": "2026-09-11T14:07:21.938967Z"
+  },
+  "requested_interval": {
+    "from": "2026-10-04T00:00:00.000Z",
+    "to": "2026-10-11T00:00:00.000Z",
+    "completed_UTC_days": 7
+  },
+  "current_N06_useful_social_fact": false,
+  "report_use_verified": false,
+  "second_coin_called": false,
+  "reason": "Free key is authenticated but social_volume_total has about 30-day delay; no current completed daily seven-day series. HTTP 200 is not source success.",
+  "next_action": "Do not repeat current-data calls on this tier; continue independent free N06 sources. If account entitlement changes, rerun one guarded exact BTC pilot before expanding.",
+  "D1": {
+    "requests": 4,
+    "rows_read": 70,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 69,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "whole_job_http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 1,
+      "statistics": 0
+    },
+    "total": 1,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 163
+  },
+  "new_fresh_SENT": false,
+  "N06_complete": false
+}
