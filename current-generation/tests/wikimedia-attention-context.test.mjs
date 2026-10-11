@@ -5,6 +5,8 @@ import {normalizeWikimediaAttention,collectWikimediaAttention,exactWikimediaPage
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 import {planCandidateEvidenceRoutes,auditCandidateBlocks} from '../files/src/candidate-evidence-v2-runtime.mjs';
+import {WIKIMEDIA_NATIVE_PAGES} from '../files/src/wikimedia-page-binding.mjs';
+import {NATIVE_SECTOR_BINDINGS} from '../files/src/coingecko-sector-evidence.mjs';
 const NOW=Date.parse('2026-10-05T05:00:00Z'),DAY=86400000,identity={chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null},rows=Array.from({length:14},(_,i)=>({project:'en.wikipedia',article:'Cardano_(blockchain_platform)',access:'all-access',agent:'user',granularity:'daily',timestamp:new Date(Date.parse('2026-09-20T00:00:00Z')+i*DAY).toISOString().slice(0,10).replaceAll('-','')+'00',views:i<7?10:20})),base={contract:'ADA-USDT',asset_identity:identity,payload:{items:rows},observed_ts:NOW};
 function db(){const sqlite=new DatabaseSync(':memory:');return{prepare(sql){return{args:[],bind(...args){this.args=args;return this;},async run(){return sqlite.prepare(sql).run(...this.args);},async first(){return sqlite.prepare(sql).get(...this.args)||null;}};},async batch(rows){return Promise.all(rows.map(x=>x.run()));}};}
 test('additional native pageview context reaches consumer without replacing primary or assigning scores',()=>{
@@ -21,4 +23,19 @@ test('admitted one-request collector caches, retains exact timestamps and caps m
 test('429 installs shared backoff and incomplete responses do not become zero views',async()=>{
  let calls=0;const b={db:db(),contract:base.contract,asset_identity:identity,now:NOW,clock:()=>NOW,request_admit:()=>({allowed:true}),fetch_impl:async()=>{calls++;return new Response('rate limited',{status:429,headers:{'retry-after':'7200'}});}};
  assert.equal((await collectWikimediaAttention({...b,run_id:'E'})).status,'PROVIDER_RATE_LIMITED');assert.equal((await collectWikimediaAttention({...b,run_id:'F',now:NOW+60000})).network_calls,0);assert.equal(calls,1);assert.equal(normalizeWikimediaAttention({...base,payload:{items:[]}}).evidence.length,0);
+});
+test('ten additional verified native page routes produce neutral report context only for the matching HTX chain',()=>{
+ const symbols=['AVAX','BCH','ATOM','ETC','LTC','NEAR','DOT','XLM','TRX','ZEC'];
+ for(const symbol of symbols){
+  const chain=NATIVE_SECTOR_BINDINGS[symbol].chain,page=WIKIMEDIA_NATIVE_PAGES[chain];
+  const contract=symbol+'-USDT',asset_identity={chain,asset_kind:'NATIVE',native_asset_id:chain+':mainnet',contract_or_mint:null};
+  assert.equal(exactWikimediaPage({contract,asset_identity}),page.article);
+  const payload={items:rows.map(r=>({...r,article:page.article}))};
+  const result=normalizeWikimediaAttention({contract,asset_identity,payload,observed_ts:NOW});
+  assert.equal(result.status,'CLOSED');
+  const context=consumeBlockResultContext({contract,evidence:result.evidence,now:NOW});
+  assert.equal(context.facts.length,1);assert.equal(context.facts[0].block_id,'N06');
+  assert.equal(consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+  assert.equal(exactWikimediaPage({contract,asset_identity:{...asset_identity,chain:'bitcoin'}}),null);
+ }
 });
