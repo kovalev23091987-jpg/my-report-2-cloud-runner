@@ -329,12 +329,12 @@
     }
   ],
   "lease": {
-    "owner": "CODEX:OWNER_N12_VERIFIED_ADDITIONAL_TRADE_CONNECTORS:1791748869387",
-    "acquired_ts": 1791748869387,
-    "expires_ts": 1791752169387,
-    "scope": "N12_ONLY_VERIFIED_SPOT_FUTURES_SOURCE_CONNECTORS_AND_ASSEMBLED_TESTS;EXISTING_VENUE_CAPS_SHARED;NO_UNADMITTED_PROVIDER_HTTP_OR_STRATEGY_WEIGHT_FORMAT_CHANGE"
+    "owner": "CODEX:OWNER_N12_SPOT_FUTURES_INTEGRATION:1791752765291",
+    "acquired_ts": 1791752765291,
+    "expires_ts": 1791756365291,
+    "scope": "N12_APPROVED_104_SPOT_FUTURES_CONTEXT_AND_VERIFIED_GATE_FUTURES_CONNECTOR_INTEGRATION;EXISTING_CAPS_SHARED;NO_UNADMITTED_PROVIDER_HTTP_OR_WEIGHT_FORMAT_CHANGE"
   },
-  "next_action": "N12 remains open. Use the saved all-source audit and 104-coin route matrix. First prove fresh exact HTX spot rows and same-run report use; then reuse already connected Bitget spot/futures and qualify Gate futures against exact-bound assets while sharing its existing venue cap. Evaluate KuCoin/OKX spot+futures with exact identity, original trade clocks and contract multipliers; MEXC/dYdX/Lighter/Hyperliquid remain conditional. Before any provider batch, read fresh source/D1 admission, use one bounded large batch, retain hashes, and verify canonical/manual/approved Telegram SENT. No strategy, cap, weight or format change. N14 awaits owner review.",
+  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
   "common_future_universe": {
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
     "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
@@ -347,7 +347,7 @@
   },
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791748869387,
+  "updated_ts": 1791752092086,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -398,12 +398,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:OWNER_N12_ALL_SOURCE_OFFLINE_AUDIT:1791748685247",
-    "acquired_ts": 1791748685247,
-    "expires_ts": 1791750185247,
-    "scope": "N12_ONLY_HISTORICAL_SOURCE_CATALOG_AND_REAL_TRADE_PAGE_AUDIT;NO_PROVIDER_HTTP;NO_RUNTIME_STRATEGY_CAP_OR_FORMAT_CHANGE",
-    "released_ts": 1791748766610,
-    "reason": "N12 all-source historical market and trade-page audit saved after matching 22 original GitHub blobs; no provider HTTP; all104 fresh source/report proof remains open."
+    "owner": "CODEX:OWNER_N12_APPROVED_SPOT_SCOPE:1791752278018",
+    "acquired_ts": 1791752278018,
+    "expires_ts": 1791755878018,
+    "scope": "N12_PR321_APPROVED_104_ASSET_SPOT_SCOPE_AND_OFFLINE_CLOUD_VERIFICATION;NO_PROVIDER_HTTP_OR_MAIN_CODE_MERGE",
+    "released_ts": 1791752654104,
+    "reason": "PR321 approved 104-asset scope saved and N10/N11/N12 assembled cloud checks passed; candidate remains unmerged pending explicit owner approval."
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -529,7 +529,7 @@
     "approved_example": "current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt",
     "superseded_by": "checkpoints/OWNER_BRIEF_TELEGRAM_AMENDMENT_20261007.md"
   },
-  "latest_status": "N10_PR315_MERGED_OFFLINE_PASS;48_OF_48_PRIOR_WINDOWS;NATURAL_POSTMERGE_TEXT_PENDING;N10_PARTIAL",
+  "latest_status": "PR321_OFFLINE_ASSEMBLED_PASS_MERGE_APPROVAL_REQUIRED;N12_OPEN;PR320_UNMERGED",
   "latest_actual_readback": {
     "evidence": "checkpoints/post244-production-readback-20261008/37853236004/summary.json",
     "workflow_run": 37853236004,
@@ -823,7 +823,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "OWNER_N10_TECHNICAL_PATH_PARTIAL",
+  "current_execution_block": "OWNER_N12_MAXIMUM_USEFUL_REAL_TRADE_COVERAGE",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -6386,11 +6386,10 @@
     "project_complete": false
   },
   "latest_development_lease_release": {
-    "owner": "CODEX:LOCAL_N05_EXECUTOR_PREP:20261011:1791724464741",
-    "release_reason": "N05_POST_RESET_EXECUTOR_PREPARATION_SAVED",
-    "prepared_main": "5f42e3f",
-    "proof": "checkpoints/N05_POST_RESET_EXECUTOR_PREPARED_20261011.json",
-    "released_ts": 1791725108371
+    "owner": "CODEX:OWNER_N12_APPROVED_SPOT_SCOPE:1791752278018",
+    "released_ts": 1791752654104,
+    "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
+    "scope": "OWN_N12_APPROVED_104_ASSET_SPOT_CANDIDATE_ONLY"
   },
   "latest_rules_and_completed_work_reconciliation": {
     "proof": "checkpoints/CLOUD_RULES_AND_COMPLETED_WORK_RECONCILIATION_20261009.json",
@@ -6889,7 +6888,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-11T20:04:46.578Z",
+  "updated_utc": "2026-10-11T20:54:52.086Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -7179,7 +7178,7 @@
     "project_complete": false,
     "updated_ts": 1791625374004
   },
-  "phase": "OWNER_N05_MULTI_VENUE_FLOW_REQUIREMENTS_REVIEW",
+  "phase": "OWNER_ACTIVE_BLOCK_SPOT_FUTURES_PR321_CANDIDATE_PENDING_MERGE_APPROVAL",
   "latest_owner_block_review_pause": {
     "schema": "OWNER_BLOCK_REQUIREMENTS_REVIEW_PAUSE_20261010_V1",
     "status": "DEVELOPMENT_PAUSED_BY_OWNER_FOR_SEQUENTIAL_BLOCK_REVIEW",
@@ -10767,5 +10766,56 @@
     "source_http": 0,
     "existing_cap_shared": true,
     "n12_complete": false
+  },
+  "latest_n12_gate_futures_candidate": {
+    "proof": "checkpoints/N12_GATE_FUTURES_PR320_CLOUD_VERIFICATION_20261011.json",
+    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/320",
+    "candidate_head": "903149bbcfb3f58e190a291fa8cd721c18b9b8a4",
+    "base_main": "8dc21ce68624df74bf2bc7f4a6e317e0491a9479",
+    "status": "CANDIDATE_PR_CLOUD_ASSEMBLED_VERIFIED_MERGE_PERMISSION_REQUIRED",
+    "cloud_run": 38171533791,
+    "cloud_artifact_id": 11713744832,
+    "cloud_artifact_digest": "sha256:c7fcf694f91c6d1ab4fe2a76c6a2aed5b969a48d48ac04ff57c7f57a2e00c01f",
+    "target_unit_tests_passed": 39,
+    "full_cloud_generation": "PASS",
+    "original_v4_golden_bytes": "UNCHANGED",
+    "new_provider_http": 0,
+    "live_gate_futures_report_use": false,
+    "historical_gate_futures_symbol_hits": 102,
+    "historical_exact_gate_spot_identity_plus_future_symbol_candidates": 45,
+    "n12_complete": false,
+    "merge_blocked_by": "AUTO_REVIEW_REQUIRES_EXPLICIT_USER_APPROVAL_FOR_MAIN_MERGE",
+    "next_action": "Owner approval for PR320 merge; then fresh main/lease/fence, reverify candidate if base moved, merge, inspect natural actual source/report and Telegram."
+  },
+  "latest_owner_all_block_spot_futures_source_rule": {
+    "proof": "checkpoints/OWNER_ALL_BLOCK_SPOT_FUTURES_SOURCE_SEARCH_RULE_20261011.json",
+    "status": "RULE_RECORDED_NO_RUNTIME_CHANGE",
+    "scope": "ALL_BLOCKS_WHEN_SEQUENTIALLY_REVIEWED;CURRENT_N12",
+    "spot_and_futures_search_required": true,
+    "exact_actual_report_use_required": true,
+    "one_market_bounded_fallback": true,
+    "same_exchange_one_independent_root": true,
+    "paused_blocks_unchanged": true,
+    "n12_complete": false,
+    "pr320_merge_permission_still_required": true
+  },
+  "latest_active_block_spot_futures_candidate": {
+    "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_CANDIDATE_20261011.json",
+    "status": "PR321_SQUASH_MERGED_MAIN;N10_N11_N12_ASSEMBLED_PASS;NATURAL_SOURCE_USE_PENDING",
+    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
+    "candidate_head": "1bab143fff2bd05b68deb609449a3baebb3c9848",
+    "merged_main": "a0d5389cb633e73d467a76adf8318ab8aa6c0d83",
+    "cloud_runs": [
+      38175007083,
+      38175007087,
+      38175007076
+    ],
+    "approved_104_exact_scope_offline_verified": true,
+    "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+    "nonapproved_spot_fact_rejected": true,
+    "non_ascii_spot_query_preserved": true,
+    "actual_104_coverage_pending": true,
+    "shared_context_only": true,
+    "pr320_unmerged": true
   }
 }

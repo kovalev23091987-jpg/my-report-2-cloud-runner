@@ -1,0 +1,114 @@
+{
+  "schema": "ACTIVE_BLOCK_SPOT_FUTURES_RETROFIT_PR321_RELEASE_20261012_V4",
+  "recorded_ts": 1791753026726,
+  "recorded_utc": "2026-10-11T21:10:26.726Z",
+  "base_main": "e904635028f3784143c27e966440b7934d1b3584",
+  "candidate_branch": "codex/active-block-spot-futures-companion-20261011",
+  "candidate_head": "1bab143fff2bd05b68deb609449a3baebb3c9848",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/321",
+  "status": "PR321_SQUASH_MERGED_MAIN;N10_N11_N12_ASSEMBLED_PASS;NATURAL_SOURCE_USE_PENDING",
+  "previous_candidate": {
+    "head": "9839d308e653ac7d058043a01d2fbc79beffce8d",
+    "base_main": "1a96133f9b76b42f605fd5d86f50c4dbecff50e5",
+    "cloud_runs": [
+      38174584667,
+      38174584647,
+      38174584651
+    ]
+  },
+  "merge_attempt_auto_review": {
+    "decision": "REJECTED",
+    "action": "merge PR 321 into default/main",
+    "reason": "Owner requested retrofit and GitHub candidate preservation but had not explicitly authorized this default/main merge. Do not bypass the rejection."
+  },
+  "cloud_verification": {
+    "n10": {
+      "run_id": 38175007083,
+      "artifact_id": 11714723796,
+      "artifact_digest": "sha256:79eb4e31ed23904a9accd5066eb329ce21c01aa41ba6c39c0fb49df46810f6e8",
+      "target_tests_passed": 49,
+      "result": "PASS"
+    },
+    "n11": {
+      "run_id": 38175007087,
+      "artifact_id": 11714933400,
+      "artifact_digest": "sha256:818e2d014d3bf992afb9dc29ef68f42e853885788c5d9163604d81582783b440",
+      "target_tests_passed": 10,
+      "result": "PASS"
+    },
+    "n12": {
+      "run_id": 38175007076,
+      "artifact_id": 11715272912,
+      "artifact_digest": "sha256:2ea128cbe95e31fdf74bdb0b3ef215ae42e0205586f1baa90414f5a34f99f810",
+      "target_tests_passed": 38,
+      "paused_chain_tests_passed": 8,
+      "result": "PASS"
+    },
+    "assembled_runtime": true,
+    "full_generation": "PASS",
+    "frozen_output_hash_guard": "PASS",
+    "worker_integrity_pin": "PASS",
+    "new_provider_http": 0,
+    "new_D1_reads": 0,
+    "new_Telegram_messages": 0
+  },
+  "implementation": {
+    "source": "HTX_OFFICIAL_PUBLIC_MARKET",
+    "independent_venue_count": 1,
+    "spot_and_futures_same_run_reused": true,
+    "extra_provider_http": 0,
+    "exact_contract_and_quote_required": true,
+    "original_depth_bbo_source_clocks_preserved": true,
+    "max_source_age_ms": 300000,
+    "max_pair_skew_ms": 60000,
+    "single_fresh_exact_market_fallback": "SPOT_ONLY_OR_FUTURES_ONLY_MANUAL_FACT_WITH_OTHER_SIDE_EXPLICITLY_UNCONFIRMED",
+    "single_market_comparison": null,
+    "manual_24_fact_budget_market_slot_reserved": true,
+    "comparison": [
+      "futures_over_spot_mid_pct",
+      "spot_spread_bps",
+      "futures_spread_bps"
+    ],
+    "manual_context_fact_controlled_rendering": "PASS",
+    "approved_brief_Telegram_text_unchanged": "PASS",
+    "compact_Telegram_text_unchanged": "PASS",
+    "score_contribution": 0,
+    "directional_vote": false,
+    "entry_authorized": false,
+    "strategy_weights_caps_cadence_changed": false,
+    "approved_htx_analysis_assets": 104,
+    "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+    "spot_collection_for_nonapproved_deep_check": false,
+    "report_fact_for_nonapproved_contract": false,
+    "approved_non_ascii_spot_symbol_preserved": true,
+    "actual_non_ascii_spot_market_response_verified": false,
+    "main_shared_context_connected": true,
+    "all_active_blocks_market_context_only": true,
+    "per_block_spot_futures_source_coverage_accepted": false
+  },
+  "active_block_scope": {
+    "N04": "on-chain transfers remain independent; only shared market context, no transfer direction inference",
+    "N05": "existing exact spot/futures flow comparison retained, no duplicate venue vote",
+    "N10": "existing external spot price path retained; shared HTX price/spread context added",
+    "N11": "spot spread context only; exact 500 USDT futures execution gate unchanged and technical receipt stays out of approved Telegram",
+    "N12": "existing actual spot/futures taker comparison retained, PR320 Gate futures candidate still separate and unmerged",
+    "N14": "spot/perp underlying price context only; no spot implied-volatility claim",
+    "N15": "market price context only; aggregate sector data not relabeled exact spot or futures strength",
+    "N16": "spot spread context only; no substitute for exact futures execution cost"
+  },
+  "limits": {
+    "current_104_asset_exact_live_spot_pair_coverage": "NOT_MEASURED",
+    "natural_post_merge_manual_fact": "PENDING",
+    "natural_post_merge_approved_Telegram": "PENDING",
+    "fresh_same_run_SENT_message_id": "PENDING",
+    "N05_complete": false,
+    "N10_complete": false,
+    "N12_complete": false,
+    "PR320_merged": false,
+    "paused_N01_N03_N06_N09_unchanged": true,
+    "approved_104_test_data": "CONTROLLED_OFFLINE_COMPONENTS_NOT_ACTUAL_SPOT_MARKET_COVERAGE"
+  },
+  "next_action": "PR321 shared approved-104 spot/futures price context is in main. Verify natural same-run source→manual/approved Telegram and measure actual per-asset coverage under admission. PR320 Gate futures remains separate; refresh onto current main, rerun N10/N11/N12, then consider integration. For each block, keep metric-specific spot/futures source checks; do not infer funding/OI/liquidations from spot.",
+  "merged_main": "a0d5389cb633e73d467a76adf8318ab8aa6c0d83",
+  "merged_utc": "2026-10-11T21:08:55Z"
+}
