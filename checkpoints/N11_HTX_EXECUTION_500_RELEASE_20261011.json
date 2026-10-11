@@ -1,0 +1,107 @@
+{
+  "schema": "N11_HTX_EXECUTION_500_RELEASE_20261011_V1",
+  "proof": "checkpoints/N11_HTX_EXECUTION_500_RELEASE_20261011.json",
+  "status": "PR317_MERGED_OFFLINE_ASSEMBLED_VERIFIED_POSTMERGE_NATURAL_PENDING",
+  "complete": false,
+  "pr": 317,
+  "merged_main": "8cd403c13ccb035d938bb034d704f2f1e6da8e9e",
+  "tested_head": "99a0ad0afabe53b662ee17557d8be282e1a4cccf",
+  "cloud_run": 38165678007,
+  "reference_notional_usdt": 500,
+  "legacy_other_block_liquidity_notional_usdt": 1000,
+  "manual_n11_facts_enabled": true,
+  "telegram_n11_numeric_facts_enabled": false,
+  "telegram_n11_technical_gate_enabled": true,
+  "prior_24h_execution_snapshots": 44,
+  "prior_24h_distinct_assets": 16,
+  "approved_assets": 104,
+  "prior_saved_exact_source_to_manual_replays": 5,
+  "prior_exact_sent_telegram_receipts": 4,
+  "post_pr317_natural_same_run_verified": false,
+  "new_provider_http": 0,
+  "n05_complete": false,
+  "n10_complete": false,
+  "n06_n09_paused": true,
+  "recorded_utc": "2026-10-11T18:55:00Z",
+  "owner_instruction": "Small trading size: lower N11 reference to 500 USDT; retain strategy, weights, Telegram format and provider caps.",
+  "source_proof": {
+    "scope": "PRE_PR317_SAVED_PUBLIC_HTX_BOOKS_NOT_NEW_500_PRODUCTION_EVIDENCE",
+    "five_exact_snapshots": [
+      [
+        "APT-USDT",
+        "1791732159086-1791732167541",
+        "S392:APT-USDT:1791732264938",
+        "e1d1e24e0b6902c734214d322b443b5fb11ba26976f9ba781f27a1de370f0477"
+      ],
+      [
+        "RLC-USDT",
+        "1791714181090-1791714191275",
+        "S392:RLC-USDT:1791714244853",
+        "cf8011bf483fd3ea9b30932a2d840911b1450dfb7f26ee757fa67e8003a91838"
+      ],
+      [
+        "ZEC-USDT",
+        "1791710620336-1791710630453",
+        "S392:ZEC-USDT:1791710691023",
+        "7724a834e24104fd6031a28ebb88600858bb0fef15e27ff27d61d7d53f0f949a"
+      ],
+      [
+        "CT-USDT",
+        "1791700148818-1791700160336",
+        "S392:CT-USDT:1791700266890",
+        "12da092d5b200b4ad0a356c25ee1b0636216690ef1e563b4b4aa2b227032cbf6"
+      ],
+      [
+        "NEAR-USDT",
+        "1791689086347-1791689095669",
+        "S392:NEAR-USDT:1791689149412",
+        "19ea3adaa461b86d6ecb87d84aa4f59a8f1f5af27e2e9354dc26d586bc3e3c47"
+      ]
+    ],
+    "hash_semantics": "SHA256 of canonical sort-key compact UTF-8 JSON of execution_context_source rows",
+    "replay": "5/5 three N11 facts recomputed from saved source and matched stored manual facts; public HTX depth with original timestamps; no provider HTTP",
+    "telegram_receipts": {
+      "sent_message_ids": [
+        "179",
+        "181",
+        "183",
+        "185"
+      ],
+      "zec": "FAILED_RETRYABLE_NO_MESSAGE_ID",
+      "numeric_n11_in_sent_text": 0
+    }
+  },
+  "implementation": {
+    "source": "HTX official public futures contract info and step0 depth",
+    "check": "whole contracts sized from 500 USDT at entry best price; selected direction entry and same-contract exit book depth; exact contract, original timestamps and canonical source digest",
+    "bugs_fixed": [
+      "Canonical hard gate previously consumed absent handoff.status and could refuse valid facts",
+      "Preliminary either-side capacity could pass when selected routed side had insufficient depth"
+    ],
+    "unchanged": [
+      "spot 1000 USDT legacy metric",
+      "futures 1000 USDT legacy liquidity metric",
+      "strategy, score, weights, threshold, freshness, quotas, cadence, approved Telegram presentation"
+    ],
+    "limits": [
+      "Book snapshot is not a fill guarantee",
+      "Fees and funding are excluded from N11 book measurement",
+      "No newly approved spread or slippage threshold",
+      "Natural report and actual Telegram delivery on merged main remain to verify"
+    ]
+  },
+  "verification": {
+    "n11_workflow_run": 38165678007,
+    "conclusion": "success",
+    "checks": [
+      "unchanged main and own bounded lease",
+      "encrypted runtime assembled and exact changed files matched",
+      "execution context and Telegram output tests",
+      "routed direction and 500 vs 1000 insufficient-book regression",
+      "generation and runtime binding"
+    ],
+    "n10_scoped_workflow_run": 38165678001,
+    "n10_conclusion": "failure at N10 lease prerequisite; tests skipped; unrelated to N11 runtime result"
+  },
+  "next_action": "At next ordinary report after PR317, verify exact run/head/HTX 500 quote→N11 gate→manual facts→Telegram technical gate and approved SENT/message_id; keep N11 partial until this is proven. Do not start N12 before owner discussion."
+}
