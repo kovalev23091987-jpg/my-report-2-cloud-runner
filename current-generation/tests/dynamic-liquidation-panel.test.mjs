@@ -59,4 +59,6 @@ test('an admitted target cannot move to the center of a nearby estimated bucket'
  ]});
  assert.equal(out.clusters.length,1);assert.equal(out.clusters[0].decision_target_eligible,true);
  assert.equal(out.clusters[0].target_price,110);assert.equal(out.clusters[0].center_price,110.25);
+ assert.deepEqual(out.clusters[0].target_providers,['A']);assert.equal(out.clusters[0].target_exact_notional_usd,100);
+ assert.equal(out.clusters[0].target_source_ts,999);assert.deepEqual(out.clusters[0].target_price_semantics,['EXCHANGE_ACCOUNT_LIQUIDATION_PRICE']);
 });
