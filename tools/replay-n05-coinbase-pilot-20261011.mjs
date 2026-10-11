@@ -9,7 +9,7 @@ function original(name){const r=summary.sources.find(x=>x.name===name);if(!r||r.
 const originalHTX=fs.readFileSync('checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz');
 if(digest(originalHTX)!=='f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c')throw Error('HTX_ORIGINAL_HASH');
 const htx=JSON.parse(gunzipSync(originalHTX)).data,products=original('COINBASE-CURRENT-PRODUCTS'),currencies=original('COINBASE-CURRENT-CURRENCIES');
-const fixed=x=>{let s=String(x);if(/^\d+(?:\.\d+)?e-\d+$/i.test(s))s=Number(s).toFixed(18).replace(/0+$/,'').replace(/\.$/,'');if(!/^\d+(?:\.\d+)?$/.test(s))throw Error('INVALID_DECIMAL:'+s);const [a,b='']=s.split('.');if(b.length>18)throw Error('PRECISION_TOO_HIGH');return BigInt(a+b.padEnd(18,'0'));};
+const fixed=x=>{let s=String(x);if(/^\d+(?:\.\d+)?e-\d+$/i.test(s))s=Number(s).toFixed(18).replace(/0+$/,'').replace(/\.$/,'');if(!/^\d+(?:\.\d+)?$/.test(s))throw Error('INVALID_DECIMAL:'+s);const [a,b='']=s.split('.');if(b.length>18)throw Error('PRECISION_TOO_HIGH');return BigInt(a)*10n**18n+BigInt(b.padEnd(18,'0')||'0');};
 const abs=x=>x<0n?-x:x;
 const expected={DASH:{alias:'dash1',network:'dash',name:'Dash'},FIL:{alias:'fil',network:'filecoin',name:'Filecoin'},TAO:{alias:'bitao',network:'bittensor',name:'Bittensor'}};
 const results=[];
