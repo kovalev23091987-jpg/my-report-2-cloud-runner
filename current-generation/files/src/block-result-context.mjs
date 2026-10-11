@@ -225,7 +225,7 @@ function describe(row,now){
   if(row.metric_family==='AVAILABLE_VENUE_TAKER_FLOW_4H'){
    if(!validateAvailableFlowEvidence(row,now))return null;
    const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: покупки ${fmt(c.buy_quote)}, продажи ${fmt(c.sell_quote)} ${c.quote}; ${c.imbalance===0?'равные объёмы':`перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`}`).join('; ');
-   return{source:[...new Set(row.components.map(c=>c.venue))].join(' / '),label:'Поток сделок по доступным площадкам за четыре часа',value:`${parts}; ${row.venue_count===1?'данные одной биржи':'две доступные биржи'}, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены`};
+   return{source:[...new Set(row.components.map(c=>c.venue))].join(' / '),label:'Поток сделок по доступным площадкам за четыре часа',value:`${parts}; ${row.venue_count===1?'данные одной биржи':row.venue_count===2?'две доступные биржи':`доступных бирж: ${row.venue_count}`}, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены`};
   }
   if(!validateJointFlowEvidence(row,now))return null;
   const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`).join('; ');
