@@ -1,5 +1,6 @@
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
 // Owner-approved presentation only. Receipts and analysis values remain unchanged.
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const pct=v=>Math.abs(v).toFixed(1).replace('.',',');
@@ -34,6 +35,10 @@ export function plainOpenInterest(c){
  return `Открытые позиции — сделки, которые трейдеры ещё не закрыли. Их общий объём на HTX ${parts.join(' и ')}. Сам по себе этот показатель не определяет направление цены.`;
 }
 export function plainContextFact(f,c){
+ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){
+  const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
+  return validateBitgetN12BoundedTradeSample(row,c.observed_ts)?`Последние сделки Bitget на ${row.market==='SPOT'?'споте':'фьючерсах'}: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usdt)}, продажи ${money(row.sell_quote_turnover_usdt)} USDT. Выборка неполная, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
+ }
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){
   const g=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
   return validateGateFuturesTradeSample(g,c.observed_ts)?`Последние сделки Gate на фьючерсах: ${g.valid_recent_rows} сделок, покупки ${money(g.buy_quote_turnover_usdt)}, продажи ${money(g.sell_quote_turnover_usdt)} USDT. Это неполная выборка одной биржи, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
@@ -43,21 +48,25 @@ export function plainContextFact(f,c){
  const r=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
  const gate=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(row=>Array.isArray(f.evidence_ids)&&f.evidence_ids.includes(row.evidence_id)&&validateGateFuturesTradeSample(row,c.observed_ts));
  const gateText=gate?` Gate фьючерсы: ${gate.valid_recent_rows} сделок, покупки ${money(gate.buy_quote_turnover_usdt)}, продажи ${money(gate.sell_quote_turnover_usdt)} USDT. ${r?.directional_strength!==null&&Math.abs(r.directional_strength)>=.05&&Math.abs(gate.taker_imbalance)>=.05&&Math.sign(r.directional_strength)===Math.sign(gate.taker_imbalance)?'Направления двух бирж совпадают только в неполных выборках.':'Общего межбиржевого направления по этим выборкам нет.'}`:'';
+ const bitget=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.filter(row=>Array.isArray(f.evidence_ids)&&f.evidence_ids.includes(row.evidence_id)&&validateBitgetN12BoundedTradeSample(row,c.observed_ts))||[];
+ const all=[r,...(gate?[gate]:[]),...bitget],signs=all.map(row=>number(row?.directional_strength)??number(row?.taker_imbalance)),allAgree=signs.length===all.length&&signs.every(x=>x!==null&&Math.abs(x)>=.05&&Math.sign(x)===Math.sign(signs[0]));
+ const bitgetText=bitget.length?` ${bitget.map(row=>`Bitget ${row.market==='SPOT'?'спот':'фьючерсы'}: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usdt)}, продажи ${money(row.sell_quote_turnover_usdt)} USDT`).join('; ')}. ${allAgree?'Направления площадок совпадают только в этих неполных выборках.':'Общего направления по всем доступным неполным выборкам нет.'} Спот и фьючерсы Bitget относятся к одной бирже.`:'';
  if(r?.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'&&Array.isArray(r.components)&&r.components.length===2){
   const [future,spot]=r.components,market=p=>`${p.market==='SPOT'?'спот':'фьючерсы'}: ${p.valid_recent_rows} ${p.valid_recent_rows===1?'сделка':p.valid_recent_rows%10>=2&&p.valid_recent_rows%10<=4&&(p.valid_recent_rows%100<12||p.valid_recent_rows%100>14)?'сделки':'сделок'}, покупки ${money(p.buy_quote_turnover_usdt)}, продажи ${money(p.sell_quote_turnover_usdt)} USDT`;
   const n05=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(row=>Array.isArray(f.evidence_ids)&&f.evidence_ids.includes(row.evidence_id)&&row.block_id==='N05');
   const cross=n05&&((n05.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'&&validateJointFlowEvidence(n05,c.observed_ts))||(n05.metric_family==='AVAILABLE_VENUE_TAKER_FLOW_4H'&&validateAvailableFlowEvidence(n05,c.observed_ts)))?` За отдельные четыре часа: ${[...new Set(n05.components.map(x=>x.venue))].join(' и ')} — ${n05.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'?'направление в споте и фьючерсах согласуется':'общего подтверждения направления нет'}.`:'';
-  return `Последние сделки HTX: ${market(future)}; ${market(spot)}. ${r.coverage_status==='BOUNDED_MULTIMARKET_AGREEMENT'?'Оба рынка показывают сходный перевес':'Общего направления по двум рынкам нет'}; выборки неполные.${cross}${gateText}`;
+  return `Последние сделки HTX: ${market(future)}; ${market(spot)}. ${r.coverage_status==='BOUNDED_MULTIMARKET_AGREEMENT'?'Оба рынка показывают сходный перевес':'Общего направления по двум рынкам нет'}; выборки неполные.${cross}${gateText}${bitgetText}`;
  }
  const n=r?.valid_recent_rows,buy=number(r?.buy_quote_turnover_usdt),sell=number(r?.sell_quote_turnover_usdt);
  if(!Number.isSafeInteger(n)||n<=0||buy===null||sell===null||buy<0||sell<0)return `${f.label}: ${f.value} — ${f.source}.`;
  const count=n===4?'четырёх':String(n);
- return `В последних ${count} полученных сделках покупки составили ${money(buy)} USDT, продажи — ${money(sell)} USDT. Выборка маленькая, по ней нельзя судить обо всём рынке.${gateText}`;
+ return `В последних ${count} полученных сделках покупки составили ${money(buy)} USDT, продажи — ${money(sell)} USDT. Выборка маленькая, по ней нельзя судить обо всём рынке.${gateText}${bitgetText}`;
 }
 // Only the explanatory facts in the owner's approved brief form belong in
 // Telegram. Historical supply and other raw diagnostic context stay in the
 // canonical analysis and manual report; they cannot occupy a spare bullet.
 export function isApprovedTelegramContextFact(f,c){
+ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitgetN12BoundedTradeSample(row,c.observed_ts);}
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateGateFuturesTradeSample(row,c.observed_ts);}
  if(f?.block_id==='N05'&&f.field==='AVAILABLE_VENUE_TAKER_FLOW_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateAvailableFlowEvidence(row,c.observed_ts);}
  if(f?.block_id==='N05'&&f.field==='JOINT_SPOT_FUTURES_AGREEMENT_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateJointFlowEvidence(row,c.observed_ts);}

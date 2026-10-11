@@ -1,5 +1,6 @@
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
 import {normalizePublishedMonthlySchedule,SUI_MONTHLY_SCHEDULE_ROUTE} from './published-monthly-supply-schedule.mjs';
 import {verifiedWikimediaEvidencePage} from './wikimedia-page-binding.mjs';
 import {verifiedNativeEvmContextRow,NATIVE_EVM_NETWORKS} from './native-evm-finalized-context.mjs';
@@ -270,6 +271,10 @@ function describe(row,now){
   if(!validateGateFuturesTradeSample(row,now))return null;
   return{source:'Gate / исходные фьючерсные сделки',label:'Направление последних сделок Gate',value:`Gate фьючерсы: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и размер контракта проверены; выборка неполная, спот и общий межбиржевой вывод не подтверждены`};
  }
+ if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITGET_TAKER_TRADES_BOUNDED'){
+  if(!validateBitgetN12BoundedTradeSample(row,now))return null;
+  return{source:`Bitget / исходные ${row.market==='SPOT'?'спотовые':'фьючерсные'} сделки`,label:'Направление последних сделок Bitget',value:`Bitget ${row.market==='SPOT'?'спот':'фьючерсы'}: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета проверена; выборка неполная, общий межбиржевой вывод не подтверждён`};
+ }
  if(['N08','N09'].includes(row.block_id)&&['HTX_OPENING_RESTRICTED','HTX_MARGIN_RISK_CONTEXT'].includes(row.metric_family)){
   if(typeof row.execution_open_allowed!=='boolean'||row.execution_open_scope!=='HTX_ISOLATED_MARGIN'||row.source_clock_closed!==true)return null;
   return{source:'HTX',label:'Разрешение открытия по правилам HTX',value:`изолированная маржа: ${row.execution_open_allowed?'открытие разрешено':'открытие запрещено'}; направление сделки этим не подтверждается`};
@@ -328,20 +333,28 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
  if(!/^[^\s-]+-USDT$/.test(String(contract))||number(now)===null)return{status:'NOT_CLOSED',facts,internal_only:true};
  const n12Cross=n12FourHourCrossVenueContext(evidence,contract,now);
  const gate=list(evidence).find(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateGateFuturesTradeSample(row,now));
- const hasAlignedHtxN12=list(evidence).some(row=>row?.htx_contract===contract&&row?.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family)&&validateEvidenceV2(row,{decision_ts:now}).usable&&gate&&Math.abs(gate.observed_ts-row.observed_ts)<=60000);
+ const bitget=list(evidence).filter(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateBitgetN12BoundedTradeSample(row,now));
+ const htxN12Rows=list(evidence).filter(row=>row?.htx_contract===contract&&row?.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family)&&validateEvidenceV2(row,{decision_ts:now}).usable);
+ const aligned=(a,b)=>a&&b&&Math.abs(a.observed_ts-b.observed_ts)<=60000;
+ const hasAlignedHtxN12=row=>htxN12Rows.some(htx=>aligned(row,htx));
  for(const row of list(evidence)){
   if(PAUSED_BLOCKS[row?.block_id]||row?.htx_contract!==contract||!validateEvidenceV2(row,{decision_ts:now}).usable||number(row.observed_ts)===null||row.source_ts>row.observed_ts||row.observed_ts>now)continue;
-  if(row===gate&&hasAlignedHtxN12)continue;
+  if((row===gate||bitget.includes(row))&&hasAlignedHtxN12(row))continue;
   let fact=describe(row,now);const root=evidenceDedupKey(row);
   if(!fact||seen.has(root))continue;
   const htxN12=row.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family);
-  const gateAligned=htxN12&&gate&&Math.abs(gate.observed_ts-row.observed_ts)<=60000;
-  const related=[...(htxN12&&n12Cross?[n12Cross.row.evidence_id]:[]),...(gateAligned?[gate.evidence_id]:[])];
+  const gateAligned=htxN12&&aligned(gate,row),bitgetAligned=htxN12?bitget.filter(sample=>aligned(sample,row)):[];
+  const related=[...(htxN12&&n12Cross?[n12Cross.row.evidence_id]:[]),...(gateAligned?[gate.evidence_id]:[]),...bitgetAligned.map(sample=>sample.evidence_id)];
   if(htxN12&&n12Cross){
    const recentSign=Math.sign(number(row.directional_strength)||0),longSign=n12Cross.row.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'?Math.sign(number(n12Cross.row.components?.[0]?.imbalance)||0):0,crossWindow=recentSign&&longSign?(recentSign===longSign?'направления двух разновременных выборок в целом совпадают':'направления двух разновременных выборок расходятся; общего направленного вывода нет'):'общий направленный вывод по разным окнам не установлен';
    fact={...fact,source:`${fact.source} / ${[...new Set(list(n12Cross.row.components).map(c=>c.venue))].join(' / ')}`,value:`${fact.value}; ${n12Cross.text}; ${crossWindow}`};
   }
   if(gateAligned){const h=Math.sign(number(row.directional_strength)||0),g=Math.sign(number(gate.taker_imbalance)||0),verdict=h&&g&&Math.abs(row.directional_strength)>=.05&&Math.abs(gate.taker_imbalance)>=.05?(h===g?'направления HTX и Gate совпадают лишь в этих неполных выборках':'направления HTX и Gate расходятся; общего направленного вывода нет'):'общий межбиржевой направленный вывод по неполным выборкам не установлен';fact={...fact,source:`${fact.source} / Gate`,value:`${fact.value}; Gate фьючерсы: ${gate.valid_recent_rows} сделок, покупки ${fmt(gate.buy_quote_turnover_usdt)}, продажи ${fmt(gate.sell_quote_turnover_usdt)} USDT; ${verdict}; Gate — отдельная биржа, сделки не складывались`};}
+  if(bitgetAligned.length){
+   const parts=bitgetAligned.map(sample=>`Bitget ${sample.market==='SPOT'?'спот':'фьючерсы'}: ${sample.valid_recent_rows} сделок, покупки ${fmt(sample.buy_quote_turnover_usdt)}, продажи ${fmt(sample.sell_quote_turnover_usdt)} USDT`),signs=[row,...(gateAligned?[gate]:[]),...bitgetAligned].map(sample=>number(sample.directional_strength)??number(sample.taker_imbalance)).filter(x=>x!==null&&Math.abs(x)>=.05),all=[row,...(gateAligned?[gate]:[]),...bitgetAligned];
+   const agreement=signs.length===all.length&&signs.every(x=>Math.sign(x)===Math.sign(signs[0]));
+   fact={...fact,source:`${fact.source} / Bitget`,value:`${fact.value}; ${parts.join('; ')}; ${agreement?'направления площадок совпадают лишь в этих неполных выборках':'общего направления по всем доступным неполным выборкам нет'}; Bitget — одна отдельная биржа, её спот и фьючерсы не считались двумя независимыми площадками`};
+  }
   seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
  }
  // Group event logs by transaction. Serial transfers are never summed as flow.

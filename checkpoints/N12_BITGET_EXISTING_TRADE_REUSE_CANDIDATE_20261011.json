@@ -1,0 +1,41 @@
+{
+  "schema": "N12_BITGET_EXISTING_TRADE_REUSE_CANDIDATE_20261011_V1",
+  "status": "CANDIDATE_OFFLINE_VERIFIED_CLOUD_AND_NATURAL_PENDING",
+  "current_block": "N12",
+  "scope": "Use exact-bound original Bitget spot and futures trade pages already acquired by the N05 collector as bounded five-minute N12 context for approved HTX assets. Preserve the separate markets, original clocks, physical venue root, conflicting directions, incomplete-window status and evidence identifiers in manual and approved Telegram output.",
+  "source": {
+    "venue": "BITGET",
+    "independent_venue_roots": 1,
+    "market_components": ["SPOT", "FUTURES"],
+    "new_provider_http": 0,
+    "new_d1_reads": 0,
+    "admission": "EXISTING_N05_BITGET_DAILY_16_MINUTE_6_AND_SHARED_CALLER_5_ONLY",
+    "original_saved_futures_btc": {
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-BITGET-FUTURES-BTC.json.gz",
+      "sha256": "132af796b95c2c39e09cd997552ce82f6e73199c93015ad750ad78c51ff5ff99",
+      "valid_bounded_rows": 334
+    },
+    "original_saved_spot_trx": {
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-BITGET-SPOT-TRX.json.gz",
+      "sha256": "987fc7a908276ebc5ff8c5a31f35852f4f2c412cd4fbd2c1747a50eb9fef4bcf",
+      "valid_bounded_rows": 29
+    }
+  },
+  "local_verification": {
+    "n12_and_related_tests": {"pass": 45, "fail": 0, "skip": 1, "skip_reason": "Encrypted assembled runtime available only in cloud"},
+    "frozen_output_tests": {"pass": 12, "fail": 0, "approved_existing_scenarios_byte_identical": 8},
+    "manual_and_approved_telegram_controlled_source_to_output": true,
+    "same_venue_spot_futures_independent_count": 1,
+    "score_contribution": 0,
+    "entry_authorized": false,
+    "full_five_minute_coverage_claimed": false,
+    "git_diff_check": "PASS"
+  },
+  "not_yet_proven": [
+    "Assembled cloud check on exact candidate head",
+    "Natural postmerge Bitget N12 source-to-fact-to-manual-to-approved SENT Telegram",
+    "Fresh usable spot/futures coverage across all 104 approved HTX assets",
+    "N12 completion"
+  ],
+  "owner_rule": "For every reviewed block, inspect suitable spot and futures facts for the approved HTX asset list, preserve source and market distinctions, compare aligned facts without forcing agreement, and keep current provider and whole-job limits. Funding, open interest and liquidation metrics remain derivative-specific. Apply this rule in the sequential block review; do not reopen paused blocks or change scores, weights or approved output format by this candidate."
+}
