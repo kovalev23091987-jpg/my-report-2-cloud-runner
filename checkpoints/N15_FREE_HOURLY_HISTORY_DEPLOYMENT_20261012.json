@@ -1,0 +1,216 @@
+{
+  "schema": "N15_FREE_HOURLY_HISTORY_DEPLOYMENT_V1",
+  "recorded_utc": "2026-10-12T14:49:49.268145+00:00",
+  "owner_scope": "Long-term free spot and futures history and N15 BTC/ETH relative dynamics; 15 assets missing HTX spot checked on other existing venues",
+  "state": "DEPLOYED_FIRST_SCHEDULED_READBACK_PENDING",
+  "github_code_head": "9c6a9f42",
+  "worker": {
+    "name": "my-report-2-free-history",
+    "etag": "9992d21b5b0bec5f3ea7e0bb9f28f497b870d6715714631639fedcabf11463a8",
+    "cron": "35 * * * *",
+    "data_db": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "archive_db": "82dad15b-00ef-485f-862a-7746fae49444",
+    "archive_db_created": true,
+    "schema_applied": true,
+    "binding_and_schedule_readback": true,
+    "first_actual_run": null
+  },
+  "bounds": {
+    "target_assets": 104,
+    "retention_days": 270,
+    "max_archive_db_bytes": 400000000,
+    "max_spot_source_http_per_hour": 2,
+    "max_spot_source_http_per_day": 48,
+    "report_http_cap_unchanged": 164,
+    "r2_enabled": false,
+    "paid_storage_enabled": false,
+    "source_is_closed_candle_for_spot": false,
+    "spot_ticker_source_trade_clock_verified": false
+  },
+  "source_checks": {
+    "htx_spot_exact_pairs_current": 89,
+    "htx_spot_missing": [
+      "AKE",
+      "BR",
+      "BTR",
+      "CASHCAT",
+      "GPS",
+      "LAB",
+      "MYX",
+      "OKB",
+      "ONG",
+      "PAXG",
+      "RAVE",
+      "UB",
+      "USELESS",
+      "VELVET",
+      "哈基米"
+    ],
+    "gate_spot_same_ticker_candidates_current": 15,
+    "bybit_spot_candidates": [
+      "BR",
+      "GPS"
+    ],
+    "okx_spot_candidates": [
+      "OKB",
+      "PAXG"
+    ],
+    "bitget_spot_candidates": [
+      "BR",
+      "GPS",
+      "LAB",
+      "MYX",
+      "PAXG",
+      "RAVE",
+      "VELVET"
+    ],
+    "candidate_note": "Bulk public ticker probes established pairs and prices, not same-asset identity or report consumption. Gate and Bitget RAVE prices materially disagreed in probe; no automatic corroboration."
+  },
+  "saved_primary_identity_inputs": [
+    {
+      "path": "checkpoints/n05-alias-route-batch-38245108128/HTX-CURRENT-IDENTITIES.json.gz",
+      "sha256": "bff469a15b735ccc4c6859f6bb956a917d688169c60d4c54c7ee2fc0811689f8"
+    },
+    {
+      "path": "checkpoints/n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz",
+      "sha256": "b74ef586f4951455382b336b1abe998df295ce54ff10643e503f9b0f157c9b8b"
+    }
+  ],
+  "identity_analysis": [
+    {
+      "asset": "AKE",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "BR",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "BTR",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "CASHCAT",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "GPS",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "LAB",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "MYX",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "OKB",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [
+        {
+          "address": "0x75231f58b43240c9718dd58b4967c5114342a86c",
+          "htx_chain": "ETH",
+          "gate_chain": "ETH"
+        }
+      ],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "ONG",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "PAXG",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "RAVE",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "UB",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "USELESS",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "VELVET",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    },
+    {
+      "asset": "哈基米",
+      "htx_spot_catalog": "ABSENT",
+      "htx_futures": "PRESENT_IN_104_TARGETS",
+      "gate_spot": "CURRENT_PAIR_OBSERVED_CANDIDATE",
+      "saved_official_same_address": [],
+      "identity_for_live_consumer": "UNVERIFIED_PENDING_FRESH_BINDING"
+    }
+  ],
+  "history_consumer": "BOUNDED_READ_AND_DESCRIPTIVE_RELATIVE_PATTERN_CODE_ONLY;NO_MANUAL_OR_TELEGRAM_USE",
+  "tests": "11/11 local; first natural cloud row pending",
+  "phase_completion": false,
+  "remaining": [
+    "First scheduled Worker invocation with D1 row readback and payload hash",
+    "Fresh official external asset binding, especially LAB and RAVE",
+    "Wire qualified history into N15 source→fact→consumer→manual/Telegram with unchanged score",
+    "Multi-day gap/storage and free usage observation"
+  ]
+}
