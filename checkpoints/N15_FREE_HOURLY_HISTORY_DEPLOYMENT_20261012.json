@@ -1,6 +1,6 @@
 {
   "schema": "N15_FREE_HOURLY_HISTORY_DEPLOYMENT_V1",
-  "recorded_utc": "2026-10-12T15:24:31.086882+00:00",
+  "recorded_utc": "2026-10-12T15:28:32.927661+00:00",
   "owner_scope": "Long-term free spot and futures history and N15 BTC/ETH relative dynamics; 15 assets missing HTX spot checked on other existing venues",
   "state": "DEPLOYED_FIRST_SCHEDULED_READBACK_PENDING",
   "github_code_head": "9c6a9f42",
@@ -14,19 +14,21 @@
     "schema_applied": true,
     "binding_and_schedule_readback": true,
     "first_actual_run": null,
-    "gate_target_expansion": "LOCAL_TESTED_104_TARGETS_PENDING_CLOUD_DEPLOY_AND_CRON_READBACK"
+    "gate_target_expansion": "LOCAL_TESTED_104_TARGETS_PENDING_CLOUD_DEPLOY_AND_CRON_READBACK",
+    "bitget_rave_route": "LOCAL_TESTED_2H_CADENCE_PENDING_CLOUD_DEPLOY_AND_CRON_READBACK"
   },
   "bounds": {
     "target_assets": 104,
     "retention_days": 270,
     "max_archive_db_bytes": 400000000,
-    "max_spot_source_http_per_hour": 2,
-    "max_spot_source_http_per_day": 48,
+    "max_spot_source_http_per_hour": 3,
+    "max_spot_source_http_per_day": 60,
     "report_http_cap_unchanged": 164,
     "r2_enabled": false,
     "paid_storage_enabled": false,
     "source_is_closed_candle_for_spot": false,
-    "spot_ticker_source_trade_clock_verified": false
+    "spot_ticker_source_trade_clock_verified": false,
+    "bitget_rave_spot_cadence_hours": 2
   },
   "source_checks": {
     "htx_spot_exact_pairs_current": 89,
@@ -206,7 +208,7 @@
     }
   ],
   "history_consumer": "BOUNDED_READ_AND_DESCRIPTIVE_RELATIVE_PATTERN_CODE_ONLY;NO_MANUAL_OR_TELEGRAM_USE",
-  "tests": "11/11 local; first natural cloud row pending",
+  "tests": "12/12 local; real bulk adapter replay HTX89/88 Gate99/98 after RAVE exclusion Bitget RAVE1/1; first natural cloud row pending",
   "phase_completion": false,
   "remaining": [
     "First scheduled Worker invocation with D1 row readback and payload hash",
@@ -238,6 +240,27 @@
       "https://huobiapi.github.io/docs/spot/v1/en/",
       "https://www.gate.com/docs/developers/apiv4/en/",
       "https://www.bitget.com/docs/catalog/market/market-data"
-    ]
+    ],
+    "live_adapter_replay": {
+      "HTX": {
+        "target": 104,
+        "present": 89,
+        "bounded": 88,
+        "payload_sha256": "9928b1bb7a142d6b6edcd7b110df62ba3193c860dbdb38c12130958bceb9b7b3"
+      },
+      "GATE": {
+        "target": 104,
+        "present": 99,
+        "bounded_after_RAVE_conflict": 98,
+        "payload_sha256": "a2de35a541a305b663aad1e07c6d0cf54d25914258c633b3d88a0c2d6debc333"
+      },
+      "BITGET": {
+        "target": 1,
+        "present": 1,
+        "bounded": 1,
+        "payload_sha256": "6c3569a99701d70ed8c7dc9524d2b5437e5e2acf87ecfc43701da9d25541e895"
+      }
+    },
+    "bounded_union_after_RAVE_conflict": 104
   }
 }

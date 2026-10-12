@@ -35,11 +35,24 @@ test('Gate bulk covers the approved 104 targets without promoting identity candi
   const r=await buildSpotRecord({venue:'GATE',hour_bucket:T,body:gateRows,received_ts:now});
   assert.equal(r.target_count,104);
   assert.equal(r.present_count,104);
-  assert.equal(r.quote_checked_count,104);
+  assert.equal(r.quote_checked_count,103);
   assert.equal(r.source_ts,null);
   assert.equal(r.identity_scope,'GATE_PAIR_CANDIDATE_UNBOUND');
   assert.ok(Buffer.byteLength(r.payload_json)<100_000);
-  assert.ok(JSON.parse(r.payload_json).samples.every(x=>x.asset_identity_status==='EXTERNAL_PAIR_IDENTITY_UNVERIFIED'));
+  assert.ok(JSON.parse(r.payload_json).samples.every(x=>x.asset_identity_status==='EXTERNAL_PAIR_IDENTITY_UNVERIFIED'||x.asset_identity_status==='EXTERNAL_PAIR_PRICE_CONFLICT'));
+});
+
+test('Gate RAVE price conflict is retained but not qualified; Bitget RAVE keeps exchange clock',async()=>{
+  const gate=await buildSpotRecord({venue:'GATE',hour_bucket:T,body:gateRows,received_ts:now});
+  const rave=JSON.parse(gate.payload_json).samples.find(x=>x.contract==='RAVE-USDT');
+  assert.equal(rave.source_status,'CROSS_VENUE_PRICE_CONFLICT');
+  assert.equal(rave.asset_identity_status,'EXTERNAL_PAIR_PRICE_CONFLICT');
+  const bitget=await buildSpotRecord({venue:'BITGET',hour_bucket:T,body:{code:'00000',requestTime:now-500,data:[{symbol:'RAVEUSDT',lastPrice:'0.173',bid1Price:'0.1729',ask1Price:'0.1731',turnover24h:'10000',ts:String(now-900)}]},received_ts:now});
+  assert.equal(bitget.present_count,1);
+  assert.equal(bitget.quote_checked_count,1);
+  assert.equal(JSON.parse(bitget.payload_json).samples[0].source_ts,now-900);
+  const stale=await buildSpotRecord({venue:'BITGET',hour_bucket:T,body:{code:'00000',requestTime:now-500,data:[{symbol:'RAVEUSDT',lastPrice:'0.173',bid1Price:'0.1729',ask1Price:'0.1731',turnover24h:'10000',ts:String(now-70_000)}]},received_ts:now});
+  assert.equal(stale.quote_checked_count,0);
 });
 
 test('one charged HTX request per hour, immutable write, and no retry after source error',async()=>{
