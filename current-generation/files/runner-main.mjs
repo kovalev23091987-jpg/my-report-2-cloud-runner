@@ -72,7 +72,7 @@ import {bindGateOfficialAssetIdentity} from './src/gate-official-asset-binding.m
 import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
-import {runtimeLiquidationCollectionAdmission,loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage,alignFuturesCoverageToApprovedScope} from './src/liquidation-futures-coverage.mjs';
+import {runtimeLiquidationCollectionAdmission,addGTradePinnedCollectionPermission,loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage,alignFuturesCoverageToApprovedScope} from './src/liquidation-futures-coverage.mjs';
 import {APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS} from './src/approved-htx-analysis-scope.mjs';
 import {deliverExactSavedRunTelegram,acceptedJointForTelegramRetrieval} from './src/exact-saved-run-telegram.mjs';
 
@@ -702,7 +702,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const liquidationCoverageDatabase=alignFuturesCoverageToApprovedScope(storedLiquidationCoverageDatabase,{approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS,universe_sha256:APPROVED_HTX_SCOPE.manifest_sha256,universe_observed_ts:APPROVED_HTX_SCOPE.catalog_observed_ts,now:started});
   const liquidationCoverageSummary=summarizeFuturesCoverage(liquidationCoverageDatabase,{now:started});
   const dydxCryptoAssets=new Set(APPROVED_HTX_ANALYSIS_CONTRACTS.map(a=>a.asset_symbol));
-  const liquidationCoverageFor=contract=>{const exact=String(contract||'').trim().toUpperCase(),now=Date.now(),base=runtimeLiquidationCollectionAdmission(liquidationCoverageDatabase,{contract:exact,now});return addDydxCollectionPermission(base,{contract:exact,crypto_assets:dydxCryptoAssets,routing:env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.dydx_routing,now,automatic_discovery_enabled:true});};
+  const liquidationCoverageFor=contract=>{const exact=String(contract||'').trim().toUpperCase(),now=Date.now(),base=runtimeLiquidationCollectionAdmission(liquidationCoverageDatabase,{contract:exact,now}),gtrade=addGTradePinnedCollectionPermission(base,{database:liquidationCoverageDatabase,contract:exact,routing:env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.gtrade_position_routing,now});return addDydxCollectionPermission(gtrade,{contract:exact,crypto_assets:dydxCryptoAssets,routing:env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.dydx_routing,now,automatic_discovery_enabled:true});};
   env.REPORT2_LIQUIDATION_COVERAGE_FOR=liquidationCoverageFor;
   console.log('LIQUIDATION_FUTURES_COVERAGE_DATABASE',JSON.stringify(liquidationCoverageSummary));
   if(commandIntent.matched&&commandIntent.contract){

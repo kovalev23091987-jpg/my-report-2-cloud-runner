@@ -6,9 +6,10 @@ import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 const root=process.env.REPORT2_COVERAGE_MODULE_ROOT,load=rel=>import(root?pathToFileURL(root+'/'+rel):new URL('../files/src/'+rel,import.meta.url));
-const {createFuturesCoverageDatabase,validateFuturesCoverageDatabase,qualifyNumericFutureReceipt,applyFuturesCoverageCheck,futuresLiquidationAdmission,runtimeLiquidationCollectionAdmission,saveFuturesCoverageDatabase,loadFuturesCoverageDatabase,saveFuturesCoverageRefreshDatabase,loadFuturesCoverageRefreshDatabase,resetFuturesCoverageForWeeklyRefresh,alignFuturesCoverageToApprovedScope,WEEK}=await load('liquidation-futures-coverage.mjs');
+const {createFuturesCoverageDatabase,validateFuturesCoverageDatabase,qualifyNumericFutureReceipt,applyFuturesCoverageCheck,futuresLiquidationAdmission,runtimeLiquidationCollectionAdmission,addGTradePinnedCollectionPermission,saveFuturesCoverageDatabase,loadFuturesCoverageDatabase,saveFuturesCoverageRefreshDatabase,loadFuturesCoverageRefreshDatabase,resetFuturesCoverageForWeeklyRefresh,alignFuturesCoverageToApprovedScope,WEEK}=await load('liquidation-futures-coverage.mjs');
 const {APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS}=await load('approved-htx-analysis-scope.mjs');
-const {seal}=await load('liquidation-extension/core.mjs');
+const {seal,fingerprint}=await load('liquidation-extension/core.mjs');
+const {GTRADE_DIAMOND}=await load('liquidation-extension/gtrade-pinned-position-snapshot.mjs');
 const bytes=fs.readFileSync(new URL('../../checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz',import.meta.url)),universe=JSON.parse(zlib.gunzipSync(bytes)),T=universe.observed_ts+1000;
 const matrix=()=>createFuturesCoverageDatabase({universe,universe_sha256:createHash('sha256').update(bytes).digest('hex'),now:T});
 const receipt=(provider='Hyperliquid official',extra={})=>seal({provider,native_symbol:'NEAR',usable_for_context:true,source_ts:T,evidence_class:'NATIVE_ACCOUNT_LIQUIDATION_PRICES',zones:[{native_price:2,liquidated_side:'SHORT',price_quote:'USDC',source_ts:T,price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'}],...extra});
@@ -30,6 +31,20 @@ test('retained 102-asset LIQ matrix aligns to exact approved 104 without refresh
  const stale=runtimeLiquidationCollectionAdmission(aligned,{contract:'NEAR-USDT',now:T+WEEK+1});
  assert.equal(futuresLiquidationAdmission(aligned,{contract:'NEAR-USDT',now:T+WEEK+1}).eligible,false);
  assert.equal(stale.eligible,true);assert.deepEqual(stale.proven_level_source_ids,[]);assert.deepEqual(stale.source_ids,['HYPERLIQUID_NATIVE']);
+});
+test('fresh pinned gTrade route permits only its exact asset reread without inventing live level coverage',()=>{
+ const now=T+WEEK+1,db=matrix(),base=runtimeLiquidationCollectionAdmission(db,{contract:'RAY-USDT',now});
+ const position={user:'0x'+'a'.repeat(40),index:1,pairIndex:20,collateralIndex:1,symbol:'RAY',verified_source_ts:now-1000,verified_receipt_ts:now-500,original_response_sha256:'b'.repeat(64)};
+ const body={schema:'GTRADE_STRUCTURAL_POSITION_ROUTING_V1',scope:'POSITION_ID_HINTS_ONLY_FRESH_NATIVE_REREAD_REQUIRED',chain_id:42161,contract:GTRADE_DIAMOND,source_ts:now-1000,positions:[position]};
+ const routing={...body,routing_fingerprint:fingerprint(body)};
+ const admitted=addGTradePinnedCollectionPermission(base,{database:db,contract:'RAY-USDT',routing,now});
+ assert.equal(admitted.eligible,true);assert.deepEqual(admitted.source_ids,['GTRADE_NATIVE']);assert.deepEqual(admitted.proven_level_source_ids,[]);assert.equal(admitted.fresh_live_levels_confirmed,false);assert.equal(admitted.network_calls,0);
+ assert.equal(futuresLiquidationAdmission(db,{contract:'RAY-USDT',now}).eligible,false);
+ for(const contract of ['ZEC-USDT','NOT-A-PAIR','RAY-USDT']){
+  const hint=contract==='RAY-USDT'?{...routing,routing_fingerprint:'0'.repeat(64)}:routing;
+  assert.deepEqual(addGTradePinnedCollectionPermission(base,{database:db,contract,routing:hint,now}),base);
+ }
+ assert.deepEqual(addGTradePinnedCollectionPermission(base,{database:db,contract:'RAY-USDT',routing,now:now+WEEK+1}),base);
 });
 test('all common crypto futures and all eight source cells are retained, including unsupported/unverified assets',()=>{
  const d=matrix();assert.equal(d.crypto_future_assets,102);assert.equal(d.crypto_future_contracts,119);assert.equal(d.assets.reduce((n,a)=>n+Object.keys(a.source_checks).length,0),816);assert.equal(validateFuturesCoverageDatabase(d),true);assert.equal(d.source_checks_complete,false);

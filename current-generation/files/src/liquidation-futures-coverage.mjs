@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import {LIQUIDATION_REQUIRED_FRESH_EXTERNAL_CONNECTIONS as SOURCES} from './liquidation-source-chain.mjs';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {fingerprint} from './liquidation-extension/core.mjs';
+import {selectGTradePositionRouting} from './liquidation-extension/gtrade-position-routing.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 export const LIQUIDATION_COVERAGE_VERSION='htx-crypto-futures-eight-source-capability-v1-20261004';
 export const COVERAGE_SOURCE_IDS=Object.freeze([...SOURCES]);
@@ -125,6 +126,17 @@ export function runtimeLiquidationCollectionAdmission(database,{contract,now}={}
   structural_market_source_ids:additional.filter(id=>id==='HYPERLIQUID_NATIVE'&&['REAL_NUMERIC_LEVELS','NO_REAL_NUMERIC_LEVELS'].includes(asset.source_checks[id].status)),
   coverage_scope:'ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE',fresh_live_levels_confirmed:false,
   receipt_only_context_score_eligible:false,receipt_only_context_target_eligible:false,leaders_may_be_replaced:false};
+}
+// A retained, source-proven position ID is permission for a fresh native reread,
+// never proof that the position is still open or that a level exists now.
+export function addGTradePinnedCollectionPermission(admission,{database,contract,routing,now}={}){
+ if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||!isExactHtxUsdtSwapKey(contract)||!database.assets.some(a=>a.analysis_contract===contract)||!selectGTradePositionRouting(routing,{symbol:contract.slice(0,-5),now}).length)return admission;
+ const ids=[...new Set([...(admission?.source_ids||[]),'GTRADE_NATIVE'])];
+ return {...admission,status:admission?.eligible?'PROVEN_OR_BOUNDED_SOURCE_PLUS_GTRADE_PINNED_REREAD':'BOUNDED_GTRADE_PINNED_REREAD_ALLOWED',eligible:true,contract,source_ids:ids,
+  proven_level_source_ids:admission?.proven_level_source_ids??(admission?.eligible?admission?.source_ids||[]:[]),
+  additional_context_check_source_ids:[...new Set([...(admission?.additional_context_check_source_ids||[]),'GTRADE_NATIVE'])],
+  fresh_live_levels_confirmed:false,coverage_scope:'VERIFIED_STRUCTURAL_POSITION_ID_ONLY_FRESH_NATIVE_REREAD_REQUIRED',
+  receipt_only_context_score_eligible:false,receipt_only_context_target_eligible:false,network_calls:0};
 }
 async function saveCoverageDatabaseAtKey({db,database,db_admit,now,expected_previous_assets_sha256=null,key}={}){
  const grant=db_admit?.({rows_read:8,rows_written:4});if(grant?.allowed!==true)return{status:'COVERAGE_DB_ADMISSION_REQUIRED',saved:false,network_calls:0};
