@@ -4,7 +4,7 @@ import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} f
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';
 
-export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v6-network-aliases-20261012';
+export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v7-native-brc20-20261012';
 const SOURCE='HTX_ASSET_REFERENCE',CACHE_KEY='ALL_CURRENCIES_CHAIN_ADDRESSES_V1',TTL=6*60*60_000,DAILY_CAP=8;
 export const HTX_ASSET_REFERENCE_URL='https://api.huobi.pro/v2/reference/currencies';
 /* HTX can keep a futures market after the asset disappears from its spot
@@ -27,6 +27,17 @@ export const FUTURES_ONLY_EXACT_ASSET_BINDINGS=Object.freeze({
   official_domain:'paxos.com',
   verified_at:'2026-10-12T11:45:00.000Z',
  }),
+ AKE:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0x2c3a8ee94ddd97244a93bc48298f97d2c412f7db'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/es-es/price/AKE/',issuer_evidence_url:'https://t.me/s/akedofun?before=603',official_domain:'akedo.fun',verified_at:'2026-10-12T12:25:00.000Z'}),
+ BR:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0xff7d6a96ae471bbcd7713af9cb1feeb16cf56b41'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/ru-ru/feed/community/20580947/',issuer_evidence_url:'https://github.com/Bedrock-Technology/BR#3-deployments',official_domain:'bedrock.technology',verified_at:'2026-10-12T12:25:00.000Z'}),
+ BTR:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0xfed13d0c40790220fbde712987079eda1ed75c51'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://docs.bitlayer.org/docs/Learn/Introduction/BTRToken/en/',issuer_evidence_url:'https://docs.bitlayer.org/docs/Learn/Introduction/BTRToken/en/',official_domain:'bitlayer.org',verified_at:'2026-10-12T12:25:00.000Z'}),
+ GPS:Object.freeze({identity:Object.freeze({chain:'base',contract_or_mint:'0x0c1dc73159e30c4b06170f2593d3118968a0dca5'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/uk-ua/price/GPS/',issuer_evidence_url:'https://www.binance.com/en/support/announcement/detail/63c1fcf1009e4bf08dc486c0ef10917b',official_domain:'gopluslabs.io',verified_at:'2026-10-12T12:25:00.000Z'}),
+ MYX:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0xd82544bf0dfe8385ef8fa34d67e6e4940cc63e16'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/es-la/tokens/MYX/',issuer_evidence_url:'https://myxfinance.gitbook.io/myx/protocol/tokenomics',official_domain:'myx.finance',verified_at:'2026-10-12T12:25:00.000Z'}),
+ RAVE:Object.freeze({identity:Object.freeze({chain:'ethereum',contract_or_mint:'0x17205fab260a7a6383a81452ce6315a39370db97'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/it-it/support/95030381102440/',issuer_evidence_url:'https://ravedao.gitbook.io/ravedao-whitepaper/readme/ravedao-tokenomics/usdrave-official-contract-addresses',official_domain:'ravedao.com',verified_at:'2026-10-12T12:25:00.000Z'}),
+ UB:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0x40b8129b786d766267a7a118cf8c07e31cdb6fde'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/ru-ru/support/105011979010219/',issuer_evidence_url:'https://www.unibase.com/token',official_domain:'unibase.com',verified_at:'2026-10-12T12:25:00.000Z'}),
+ CASHCAT:Object.freeze({identity:Object.freeze({chain:'robinhood-chain',contract_or_mint:'0x020bfc650a365f8bb26819deaabf3e21291018b4'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/en-in/price/cashcat/cashcat-to-inr/',issuer_evidence_url:'https://cashcat.cc/',official_domain:'cashcat.cc',corroborating_evidence_url:'https://robinhood.com/ca/en/support/articles/crypto-asset-statements-cashcat/',verified_at:'2026-10-12T12:26:00.000Z'}),
+ USELESS:Object.freeze({identity:Object.freeze({chain:'solana',contract_or_mint:'Dz9mQ9NzkBcCsuGPFJ3r1bS4wgqKMHBPiVuniW8Mbonk'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/zh-cn/support/65009471146782',issuer_evidence_url:'https://www.gate.com/id/announcements/article/46060',official_domain:'gate.com',verified_at:'2026-10-12T12:26:00.000Z'}),
+ VELVET:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0x8b194370825e37b33373e74a41009161808c1488'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.htx.com/uk-ua/tokens/velvet/',issuer_evidence_url:'https://www.bitget.com/support/articles/12560603840560',official_domain:'velvet.capital',verified_at:'2026-10-12T12:26:00.000Z'}),
+ 哈基米:Object.freeze({identity:Object.freeze({chain:'bsc',contract_or_mint:'0x82ec31d69b3c289e541b50e30681fd1acad24444'}),method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',evidence_url:'https://www.gate.com/zh/help/annlist/others/101570',issuer_evidence_url:'https://www.hajimi.world/',official_domain:'hajimi.world',verified_at:'2026-10-12T12:26:00.000Z'}),
 });
 const text=v=>String(v??'').trim(),evm=/^0x[0-9a-f]{40}$/i,solana=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const chains=Object.freeze({ETH:'ethereum',ETHEREUM:'ethereum',SOL:'solana',SOLANA:'solana',BSC:'bsc',BNB:'bsc',ARB:'arbitrum',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',TRX:'tron',ROBINHOODCHAIN:'robinhood-chain',BASE:'base',POLYGON:'polygon',MATIC:'polygon',OPTIMISM:'optimism',AVAX:'avalanche',AVALANCHE:'avalanche'});
@@ -44,6 +55,9 @@ const additionalNativeBindings=Object.freeze({
  TAO:Object.freeze({chain:'bittensor'}),
  TIA:Object.freeze({chain:'celestia'}),
  STEEM:Object.freeze({chain:'steem'}),
+ GRAM:Object.freeze({chain:'ton'}),
+ HYPE:Object.freeze({chain:'hyperliquid'}),
+ ONG:Object.freeze({chain:'ontology'}),
 });
 export function normalizeHtxAssetReferences(payload){
  if(payload?.code!==200||!Array.isArray(payload.data))return{status:'INVALID_HTX_REFERENCE_RESPONSE',entries:{}};
@@ -58,7 +72,7 @@ export function normalizeHtxAssetReferences(payload){
   const ids=new Map(),nativeIds=new Map(),explicitNativeIds=new Map();let native=false,unsupportedNative=false;
   for(const row of Array.isArray(rows[0]?.chains)?rows[0].chains:[]){
    const chain=chainOf(row),rawAddress=text(row?.contractAddress),address=chain&&chain!=='solana'&&/^[0-9a-f]{40}$/i.test(rawAddress)?`0x${rawAddress}`:rawAddress;
-   if(!address){native=true;const def=NATIVE_SECTOR_BINDINGS[currency]||additionalNativeBindings[currency],nativeAliases={ALGO:['algo'],DASH:['dash1'],FIL:['fil'],XPL:['xpl'],CHZ:['chz2'],ICP:['icp'],TAO:['bitao'],TIA:['tia'],STEEM:['steem1'],BTC:['btc'],LTC:['ltc'],BCH:['bcc'],DOGE:['doge'],ZEC:['zec1'],XLM:['xlm1'],ETC:['etc'],NEAR:['near'],ETH:['eth'],SOL:['sol'],BNB:['bnb1'],AVAX:['avax','cchainavax'],ADA:['ada'],DOT:['dot1'],TRX:['trx1'],ATOM:['atom1'],XMR:['xmr2'],XRP:['xrp'],SUI:['sui'],APT:['apt'],HBAR:['hbar']};if(def&&row.chainType===0&&nativeAliases[currency]?.includes(text(row.chain).toLowerCase()))explicitNativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});const network=text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'');const accepted=def&&(network===currency||network===def.chain.toUpperCase()||chain===def.chain);if(accepted)nativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});else unsupportedNative=true;continue;}
+   if(!address){native=true;const def=NATIVE_SECTOR_BINDINGS[currency]||additionalNativeBindings[currency],nativeAliases={ALGO:['algo'],DASH:['dash1'],FIL:['fil'],XPL:['xpl'],CHZ:['chz2'],ICP:['icp'],TAO:['bitao'],TIA:['tia'],STEEM:['steem1'],GRAM:['ton'],HYPE:['hyperlqd'],ONG:['ong1'],BTC:['btc'],LTC:['ltc'],BCH:['bcc'],DOGE:['doge'],ZEC:['zec1'],XLM:['xlm1'],ETC:['etc'],NEAR:['near'],ETH:['eth'],SOL:['sol'],BNB:['bnb1'],AVAX:['avax','cchainavax'],ADA:['ada'],DOT:['dot1'],TRX:['trx1'],ATOM:['atom1'],XMR:['xmr2'],XRP:['xrp'],SUI:['sui'],APT:['apt'],HBAR:['hbar']};if(def&&row.chainType===0&&nativeAliases[currency]?.includes(text(row.chain).toLowerCase()))explicitNativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});const network=text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'');const accepted=def&&(network===currency||network===def.chain.toUpperCase()||chain===def.chain);if(accepted)nativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});else unsupportedNative=true;continue;}
    if(!chain||(chain==='solana'?!solana.test(address):chain==='tron'?!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address):!evm.test(address)))continue;
    const canonical=chain==='solana'||chain==='tron'?address:address.toLowerCase();ids.set(`${chain}:${canonical}`,{chain,contract_or_mint:canonical});
   }
@@ -68,6 +82,9 @@ export function normalizeHtxAssetReferences(payload){
   // catalogues; keep that one network scoped without guessing from ticker.
   const bttTron='TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4';
   if(currency==='BTT'&&ids.has(`tron:${bttTron}`)){entries[currency]={status:'CLOSED',identities:[ids.get(`tron:${bttTron}`)],binding_scope:'EXACT_PROJECT_TRON_TOKEN',wrapped_bindings_excluded:ids.size-1};continue;}
+  if(currency==='ORDI'&&rows[0].chains?.length===1&&rows[0].chains[0].chainType===1&&text(rows[0].chains[0].baseChain).toUpperCase()==='BTC'&&text(rows[0].chains[0].contractAddress)==='ordi'&&text(rows[0].chains[0].chain).toLowerCase()==='ordi'){
+   entries[currency]={status:'CLOSED',identities:[{chain:'bitcoin-brc20',contract_or_mint:'ordi'}],binding_scope:'EXACT_HTX_BRC20_TICK_AND_BITCOIN_CHAIN'};continue;
+  }
   const nativeIdentities=[...nativeIds.values()];if(!ids.size&&nativeIdentities.length===1&&!unsupportedNative){entries[currency]={status:'CLOSED',identities:nativeIdentities};continue;}
   const identities=[...ids.values()];entries[currency]={status:identities.length&&native?'NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE':identities.length===1?'CLOSED':identities.length>1?'AMBIGUOUS_HTX_CHAIN_ADDRESSES':native?'NATIVE_OR_UNSUPPORTED_HTX_ASSET':'SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND',identities};
  }
@@ -83,7 +100,7 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
  const market=text(contract).toUpperCase();
  if(!db?.prepare||!/^\S+-USDT$/u.test(market)||!text(run_id))return{status:'EXACT_HTX_MARKET_AND_RUN_REQUIRED',identity:null,network_calls:0};
  const override=FUTURES_ONLY_EXACT_ASSET_BINDINGS[market.slice(0,-5)];
- if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_EXACT_ASSET_BINDING',receipt:{evidence_url:override.evidence_url,issuer_evidence_url:override.issuer_evidence_url||null,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
+ if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_EXACT_ASSET_BINDING',receipt:{evidence_url:override.evidence_url,issuer_evidence_url:override.issuer_evidence_url||null,corroborating_evidence_url:override.corroborating_evidence_url||null,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
  await installEvidenceSourceStore(db);
  const withFallback=async primary=>{
   if(primary.status==='CLOSED')return primary;

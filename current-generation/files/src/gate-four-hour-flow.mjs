@@ -1,7 +1,7 @@
 import {reconcileBitgetFlow} from './bitget-four-hour-flow.mjs';
 export const GATE_FLOW_VERSION='gate-exact-taker-flow-v1-20261010';
-const chains={ETH:'ethereum',ERC20:'ethereum',SOL:'solana',TRX:'tron',ROBINHOOD:'robinhood-chain',BSC:'bsc',BEP20:'bsc',ARBEVM:'arbitrum',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',BASE:'base',OP:'optimism',OPTIMISM:'optimism',MATIC:'polygon',POLYGON:'polygon',AVAX_C:'avalanche'};
-const address=(chain,v)=>typeof v==='string'&&(chain==='solana'?/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v):chain==='tron'?/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(v):/^0x[0-9a-fA-F]{40}$/.test(v))?(chain==='solana'||chain==='tron'?v:v.toLowerCase()):null;
+const chains={ETH:'ethereum',ERC20:'ethereum',SOL:'solana',TRX:'tron',ROBINHOOD:'robinhood-chain',BTCBRC:'bitcoin-brc20',BSC:'bsc',BEP20:'bsc',ARBEVM:'arbitrum',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',BASE:'base',BASEEVM:'base',OP:'optimism',OPTIMISM:'optimism',MATIC:'polygon',POLYGON:'polygon',AVAX_C:'avalanche'};
+const address=(chain,v)=>typeof v==='string'&&(chain==='bitcoin-brc20'?v==='ordi':chain==='solana'?/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v):chain==='tron'?/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(v):/^0x[0-9a-fA-F]{40}$/.test(v))?(chain==='solana'||chain==='tron'||chain==='bitcoin-brc20'?v:v.toLowerCase()):null;
 const decimal=v=>{if(typeof v!=='string'||!/^\d+(\.\d+)?$/.test(v))throw Error('INVALID_DECIMAL');const [a,b='']=v.split('.');if(b.length>18)throw Error('DECIMAL_PRECISION_UNSUPPORTED');return BigInt(a+b)*10n**BigInt(18-b.length);};
 const id=v=>typeof v==='string'&&/^\d+$/.test(v)?v:typeof v==='number'&&Number.isSafeInteger(v)&&v>=0?String(v):null;
 export function exactGateTokenBinding({contract,identity,currencies,spot}={}){

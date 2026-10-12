@@ -29,12 +29,12 @@ test('ambiguous provider IDs, symbols and supported chain addresses stay closed'
 
 test('one shared fallback catalog is cached and the exact identity reaches the supplemental consumer',async()=>{
  const db=new D1(),budget=createUnifiedHttpBudget();let calls=0;
- const fetch_impl=async url=>{calls++;if(String(url).includes('/v2/reference/currencies'))return new Response(JSON.stringify({code:200,data:[]}));if(String(url).includes('/exchanges/htx/markets'))return new Response(JSON.stringify([row('BR','br-project')]));if(String(url).includes('/coins/br-project'))return new Response(JSON.stringify(metadata()));throw Error(`unexpected ${url}`);};
+ const fetch_impl=async url=>{calls++;if(String(url).includes('/v2/reference/currencies'))return new Response(JSON.stringify({code:200,data:[]}));if(String(url).includes('/exchanges/htx/markets'))return new Response(JSON.stringify([row('TBR','tbr-project')]));if(String(url).includes('/coins/tbr-project'))return new Response(JSON.stringify(metadata('tbr-project','TBR')));throw Error(`unexpected ${url}`);};
  const params={db,request_admit:budget.reserve,run_id:'GENERAL',now:NOW,clock:()=>NOW,fetch_impl};
- const first=await collectHtxAssetIdentity({...params,contract:'BR-USDT'}),second=await collectHtxAssetIdentity({...params,contract:'BR-USDT',now:NOW+1000});
+ const first=await collectHtxAssetIdentity({...params,contract:'TBR-USDT'}),second=await collectHtxAssetIdentity({...params,contract:'TBR-USDT',now:NOW+1000});
  assert.equal(first.status,'CLOSED');assert.equal(first.identity_method,'COINPAPRIKA_EXACT_HTX_SPOT_MARKET_AND_CHAIN_ADDRESS');assert.equal(first.htx_asset_reference_status,'HTX_CURRENCY_NOT_FOUND');assert.equal(first.network_calls,3);
  assert.equal(second.status,'CLOSED');assert.equal(second.network_calls,0);assert.equal(calls,3);
  let captured;
- const context=await collectHtxBoundSupplementalContext({...params,contract:'BR-USDT',now:NOW+2000,registry:{},supplemental_collect:async input=>{captured=input;return{status:'CLOSED',network_calls:0,asset_identity:input.registry.BR,asset_metadata:{}};}});
- assert.equal(captured.registry.BR.contract_or_mint,ADDRESS);assert.equal(captured.registry.BR.coinpaprika_id,'br-project');assert.equal(context.identity_method,'COINPAPRIKA_EXACT_HTX_SPOT_MARKET_AND_CHAIN_ADDRESS');assert.equal(calls,3);
+ const context=await collectHtxBoundSupplementalContext({...params,contract:'TBR-USDT',now:NOW+2000,registry:{},supplemental_collect:async input=>{captured=input;return{status:'CLOSED',network_calls:0,asset_identity:input.registry.TBR,asset_metadata:{}};}});
+ assert.equal(captured.registry.TBR.contract_or_mint,ADDRESS);assert.equal(captured.registry.TBR.coinpaprika_id,'tbr-project');assert.equal(context.identity_method,'COINPAPRIKA_EXACT_HTX_SPOT_MARKET_AND_CHAIN_ADDRESS');assert.equal(calls,3);
 });

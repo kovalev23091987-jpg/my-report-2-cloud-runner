@@ -2,7 +2,7 @@ export const POLONIEX_FLOW_VERSION='poloniex-native-taker-flow-v1-20261010';
 export const POLONIEX_ASSET_REFERENCE='https://api.poloniex.com/v2/currencies';
 export const POLONIEX_CANDLE_REFERENCE='https://api-docs.poloniex.com/spot/api/public/market-data';
 const tokenChains={ETH:'ethereum',ERC20:'ethereum',BSC:'bsc',BEP20:'bsc',SOL:'solana',SOLANA:'solana',TRX:'tron',ETHROB:'robinhood-chain',ETHARB:'arbitrum',ARBITRUM:'arbitrum',BASE:'base',OPTIMISM:'optimism',POLYGON:'polygon',AVAX:'avalanche'};
-const nativeChains={BTC:'bitcoin',ETH:'ethereum',DOGE:'dogecoin',LTC:'litecoin',BCH:'bitcoin-cash',ZEC:'zcash',ETC:'ethereum-classic',XLM:'stellar',NEAR:'near',ADA:'cardano',ATOM:'cosmos',SOL:'solana',BNB:'bsc',BSC:'bsc',AVAX:'avalanche',DOT:'polkadot',TRX:'tron',XRP:'xrp',HBAR:'hedera',APT:'aptos',SUI:'sui',CHZ:'chiliz',ICP:'internet-computer',STEEM:'steem'};
+const nativeChains={BTC:'bitcoin',ETH:'ethereum',DOGE:'dogecoin',LTC:'litecoin',BCH:'bitcoin-cash',ZEC:'zcash',ETC:'ethereum-classic',XLM:'stellar',NEAR:'near',ADA:'cardano',ATOM:'cosmos',SOL:'solana',BNB:'bsc',BSC:'bsc',AVAX:'avalanche',DOT:'polkadot',TRX:'tron',XRP:'xrp',HBAR:'hedera',APT:'aptos',SUI:'sui',CHZ:'chiliz',ICP:'internet-computer',STEEM:'steem',GRAM:'ton',TON:'ton'};
 const evm=/^0x[0-9a-f]{40}$/i,sol=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 export function eligiblePoloniexIdentity(contract,identity){
  const base=String(contract||'').replace(/-USDT$/,'');
