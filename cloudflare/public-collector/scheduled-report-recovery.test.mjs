@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {inspectScheduledReportGap,dispatchScheduledReportRecovery} from './scheduled-report-recovery.mjs';
+import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal} from './scheduled-report-recovery.mjs';
 
 const NOW=Date.parse('2026-10-12T10:00:00Z');
 const run=(time,display_title='Report 2 Cloud Runner')=>({created_at:new Date(time).toISOString(),display_title,head_branch:'main'});
@@ -68,4 +68,30 @@ test('workflow recovery uses scheduled source, caps and Telegram admission witho
   assert.match(backup,/REPORT2_SCHEDULED_RECOVERY_ENABLED:.*REPORT2_RUNNER_ENABLED/);
   assert.match(worker,/durationMinutes>0/);
   assert.match(worker,/inspectScheduledReportGap/);
+  assert.match(workflow,/Verify exact recovery delivery artifact without network\n\s*if:.*scheduled_recovery_run == true.*full_report\.outcome == 'success'/);
+  assert.match(workflow,/runtime\/automatic-delivery-audit\.json/);
+  assert.match(backup,/workflow_dispatch:\n\s*inputs:/);
+  assert.match(backup,/current-generation\/files\/\*\*/);
+  assert.match(worker,/dispatchContinuousBackupRenewal/);
+});
+
+test('only a normally closed, current-main guarded backup worker may renew its bounded window',async()=>{
+  const worker={status:'WORKER_WINDOW_CLOSED',cycles:3};
+  const code_guard={allowed:true,status:'CURRENT_MAIN_CODE_VERIFIED'};
+  let calls=0;
+  const fetch_impl=async(url,options)=>{
+    calls++;
+    assert.equal(url,'https://api.github.com/repos/owner/repo/actions/workflows/report2-public-collector-backup.yml/dispatches');
+    assert.equal(options.method,'POST');
+    assert.deepEqual(JSON.parse(options.body),{ref:'main',inputs:{reason:'CONTINUOUS_BACKUP_RENEWAL'}});
+    return new Response(null,{status:204});
+  };
+  const args={worker,code_guard,repository:'owner/repo',token:'TEST',fetch_impl};
+  assert.equal((await dispatchContinuousBackupRenewal(args)).dispatched,true);
+  assert.equal(calls,1);
+  for(const patch of [{worker:{status:'ORIGINAL_SOURCE_JOB_HTTP_CAP_REACHED',cycles:3}},{worker:{status:'WORKER_WINDOW_CLOSED',cycles:0}},{code_guard:{allowed:false,status:'CURRENT_MAIN_CODE_CHANGED'}},{token:''}]){
+    assert.equal((await dispatchContinuousBackupRenewal({...args,...patch})).dispatched,false);
+  }
+  assert.equal(calls,1);
+  assert.equal((await dispatchContinuousBackupRenewal({...args,fetch_impl:async()=>new Response(null,{status:403})})).status,'BACKUP_RENEWAL_DISPATCH_FAILED');
 });

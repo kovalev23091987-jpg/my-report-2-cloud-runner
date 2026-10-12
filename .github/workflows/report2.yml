@@ -411,6 +411,10 @@ jobs:
           node ../tools/report2-no-work-receipt.mjs report2-run-console.log report2-no-work-receipt.json "$GITHUB_SHA" "$GITHUB_RUN_ID"
           rm -f report2-run-console.log
 
+      - name: Verify exact recovery delivery artifact without network
+        if: ${{ inputs.scheduled_recovery_run == true && steps.full_report.outcome == 'success' }}
+        run: node tools/verify-same-run-delivery-artifact.mjs runtime "$GITHUB_SHA" "$GITHUB_RUN_ID"
+
       - name: Admit weekly liquidation maintenance after exact no-work receipt
         if: ${{ github.event_name == 'schedule' && steps.full_report.outcome == 'success' }}
         id: weekly_slot
@@ -446,6 +450,7 @@ jobs:
             runtime/report2-run-result.json
             runtime/same-run-delivery-proof.json
             runtime/report2-no-work-receipt.json
+            runtime/automatic-delivery-audit.json
             runtime/known-d1-day-guard.json
             runtime/raw24h-control-readback.json
           if-no-files-found: warn

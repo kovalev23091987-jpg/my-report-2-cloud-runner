@@ -3,11 +3,24 @@ name: Report 2 Public Collector Backup
 on:
   schedule:
     - cron: "1-56/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "internal bounded backup worker renewal"
+        required: false
+        default: "manual"
   push:
     branches:
       - main
     paths:
       - "cloudflare/public-collector/backup-request.json"
+      - "cloudflare/public-collector/*.mjs"
+      - "cloudflare/public-collector/injected-worker-tail.js"
+      - "runner/report2-d1-adapter.mjs"
+      - "runner/retained-history.mjs"
+      - "current-generation/files/**"
+      - ".github/workflows/report2.yml"
+      - ".github/workflows/report2-public-collector-backup.yml"
 
 permissions:
   contents: read

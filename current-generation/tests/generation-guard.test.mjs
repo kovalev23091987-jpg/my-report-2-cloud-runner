@@ -31,10 +31,15 @@ test('only authorized report and bounded source workflows remain manually runnab
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2.yml']);
+ assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
  const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
+ const backup=fs.readFileSync(new URL('report2-public-collector-backup.yml',root),'utf8');
+ assert.match(backup,/REPORT2_BACKUP_WORKER_MINUTES: "300"/);
+ assert.match(backup,/REPORT2_BACKUP_WORKER_MINUTES: "0"/);
+ assert.match(backup,/cloudflare\/public-collector\/github-backup\.mjs/);
+ assert.doesNotMatch(backup,/runner-main|sendLifecycleRelay|manual-requests/);
 });
 test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
