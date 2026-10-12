@@ -10,10 +10,10 @@ const body={success:true,ts:now-1000,data:{total_positions:4,rows:[row('LONG',80
 
 test('Orderly public positions provide labelled estimates backed by reported open notional in both outputs',()=>{
  const result=normalizeOrderlyPublicPositions(body,{contract:'HYPE-USDT',reference_price:83.46,now});
- assert.equal(result.status,'CLOSED');assert.equal(result.levels.length,2);assert.equal(result.independent_primary_source,true);
+ assert.equal(result.status,'CLOSED');assert.equal(result.levels.length,3);assert.equal(result.independent_primary_source,true);
  assert.ok(result.levels.every(x=>x.estimated&&x.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&x.decision_target_eligible===false&&x.position_key&&!('address' in x)));
  const map=buildPumpLiquidationZones({contract:'HYPE-USDT',current_price:83.46,observed_ts:now,projected:result.levels});
- assert.equal(map.status,'CLOSED');assert.equal(map.above.length,1);assert.equal(map.below.length,1);
+ assert.equal(map.status,'CLOSED');assert.equal(map.above.length,1);assert.equal(map.below.length,2);
  assert.equal(map.calculated_scenario_count,0);assert.equal(map.independent_source_count,undefined);
  const lines=displayBriefTelegramLiquidations(map,x=>String(x),{policy:RELEVANT_LIQUIDATION_PRESENTATION});
  assert.ok(lines.some(x=>x.includes('расчётный')));assert.ok(lines.some(x=>x.includes('крупная')));

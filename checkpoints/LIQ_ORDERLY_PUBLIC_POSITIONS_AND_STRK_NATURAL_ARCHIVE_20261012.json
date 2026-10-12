@@ -1,6 +1,6 @@
 {
   "schema": "LIQ_ORDERLY_PUBLIC_POSITIONS_AND_STRK_NATURAL_ARCHIVE_V1",
-  "recorded_utc": "2026-10-12T18:46:32.198006+00:00",
+  "recorded_utc": "2026-10-12T18:51:28.927142+00:00",
   "status": "ORDERLY_LIVE_FACTS_AND_LOCAL_CONSUMER_VERIFIED;CLOUD_ASSEMBLY_AND_NATURAL_REPORT_PENDING",
   "scope": "LIQ_ONLY; 105 approved HTX futures assets; BTC/ETH liquidation-level search excluded; no strategy/score/Telegram format change",
   "base_main": "8c8e4d80e36685135d225ff97ede7a795ebf15e3",
@@ -22,17 +22,29 @@
     "position_census": {
       "response_ts": 1791830073566,
       "total_platform_positions_min_notional_500": 1546,
-      "page_rows": 1546,
+      "page_rows": 4759,
       "next_cursor": false,
       "approved_ex_btc_eth_assets_with_positions": 38,
       "assets_with_numeric_estimated_price": 38,
-      "assets_with_level_within_5pct": 3,
+      "assets_with_level_within_5pct": 9,
       "assets_with_level_within_5pct_names": [
         "AVAX",
+        "BNB",
+        "DOGE",
         "HYPE",
-        "SOL"
+        "JUP",
+        "RAY",
+        "SOL",
+        "XRP",
+        "ZEC"
       ],
-      "note": "Source research snapshot. Current production requests use min_notional=0 and only selected exact markets; actual output coverage not inferred from census."
+      "note": "Source research snapshot. Current production requests use min_notional=0 and only selected exact markets; actual output coverage not inferred from census.",
+      "corrected_response_ts": 1791831043747,
+      "min_notional_usdc": 0,
+      "total_platform_positions": 4759,
+      "approved_assets_with_numeric_positions": 38,
+      "approved_assets_with_valid_side_and_price": 38,
+      "interpretation": "All 38 exact markets have valid future estimated price levels on the public-position snapshot. The nine close-to-market assets are a descriptive subset, not the source coverage or display admission cutoff. Other levels may be distant and conditional."
     },
     "hype_example": {
       "response_ts": 1791830239542,
@@ -53,8 +65,14 @@
       "position_margin_mode": "CROSS",
       "meaning": "Real open positions and reported notionals; liquidation prices estimated by Orderly and mutable with account collateral/other positions."
     },
-    "consumer": "One admitted request per selected exact-market asset, max existing LIQ 5-call shared envelope and unified HTTP budget. Current HTX reference required; response clock <=120s; source mark within5% HTX and level within5% HTX; wrong side/null/stale rejected. Same normalized levels feed main/manual and Telegram; labeled estimated, no score or target eligibility; only actual position notional used for size tier. Static exact-market intersection needs later refresh when Orderly lists new assets.",
-    "privacy": "Wallet addresses/account IDs omitted from saved report evidence and normalized output."
+    "consumer": "One admitted request per selected exact-market asset, max existing LIQ 5-call shared envelope and unified HTTP budget. Current HTX reference required; response clock <=120s; source mark within5% of HTX as cross-market identity check; valid price/side/null/stale checks. No distance-to-current-price cutoff. The owner 5% rule merges nearby LEVELS with one another. Same normalized levels feed main/manual and Telegram; labeled estimated, no score or target eligibility; reported open-position notional determines size tier. Static exact-market intersection needs later refresh when Orderly lists new assets.",
+    "privacy": "Wallet addresses/account IDs omitted from saved report evidence and normalized output.",
+    "first_assembled_cloud_run": {
+      "run": 38293280785,
+      "head": "398e70a1a4d99f0055408cd7604f87733a500001",
+      "conclusion": "success",
+      "scope": "First integration before correction of mistaken 5% distance cutoff; superseded for acceptance"
+    }
   },
   "other_global_checks": [
     {
@@ -105,14 +123,72 @@
     "report_consumer_claim": false
   },
   "local_verification": {
-    "orderly_and_liq_tests": "Targeted source, manual/Telegram parity, output fixture, generation guard and LIQ contract suites pass; full local current-generation validation has only preexisting assembled-runtime-only supplemental-supporting-bridge failure after LIQ test expectation update.",
+    "orderly_and_liq_tests": "37/37 targeted LIQ, source, generation pin and immutable output fixture checks passed after correcting the 5% semantics. Full local assembled-only supplemental-supporting-bridge remains unavailable locally; first integrated candidate cloud assembly 38293280785 succeeded, correction needs new cloud run.",
     "source_to_fact_to_consumer": "Synthetic exact HYPE position payload traverses normalizer, shared LIQ map and compact Telegram formatter. Natural report/Telegram output for Orderly still pending."
   },
   "acceptance_pending": [
-    "Cloud assembled test on exact committed head",
+    "Cloud assembled test on the exact corrected committed head; first integrated candidate 398e70a1 cloud passed but had too narrow 5% distance filter and is superseded.",
     "Natural full report with actual admitted Orderly levels if selected coin overlaps and has nearby positions, or honest absence/defer",
     "Same-run manual/Telegram and exact SENT message_id if a publication occurs",
     "Longitudinal forecast outcome evaluator, source reliability measurement and all-asset actual future-level coverage"
   ],
-  "next_action": "Push and cloud-assemble candidate, inspect next natural main report and source clocks, then continue bounded free source research only where new distinct primary facts are possible. Keep LIQ open and preserve paused blocks."
+  "next_action": "Push and cloud-assemble candidate, inspect next natural main report and source clocks, then continue bounded free source research only where new distinct primary facts are possible. Keep LIQ open and preserve paused blocks.",
+  "prior_saved_full_reports": [
+    {
+      "cloud_run": 38279117107,
+      "head": "96505b3089bc5cad1f13659829330f0f07cc33e4",
+      "run_id": "1791823287012-1791823297334",
+      "status": "CLOSED",
+      "selected": [
+        "BTR-USDT",
+        "BTW-USDT"
+      ],
+      "future_external_levels": [
+        0,
+        0
+      ],
+      "htx_model_scenarios": [
+        0,
+        0
+      ]
+    },
+    {
+      "cloud_run": 38284199046,
+      "head": "7d92dac3b772db9444d284c09f456d0c6c07f707",
+      "run_id": "1791826003057-1791826014281",
+      "status": "CLOSED",
+      "selected": [
+        "ZEC-USDT",
+        "FIL-USDT"
+      ],
+      "future_external_levels": [
+        4,
+        4
+      ],
+      "htx_model_scenarios": [
+        73,
+        55
+      ],
+      "details": "ZEC: gTrade estimated SDK prices and Hyperliquid public position prices, original source clocks 1791826020033 and 1791826045409. FIL: gTrade SDK estimates only, source clock 1791826020033. Some levels far beyond 5% from current price were displayed; this proves 5% is not a radius-to-current-price rule."
+    },
+    {
+      "cloud_run": 38289195550,
+      "head": "6a9da07db4c3a7119dcf31e889feda640f414749",
+      "run_id": "1791828692193-1791828704693",
+      "status": "CLOSED",
+      "selected": [
+        "SUI-USDT",
+        "FIL-USDT"
+      ],
+      "future_external_levels": [
+        0,
+        0
+      ],
+      "htx_model_scenarios": [
+        68,
+        64
+      ],
+      "delivery": "NO_EXACT_SAME_RUN_SENT; 0 Telegram; no actual ENTRY"
+    }
+  ]
 }

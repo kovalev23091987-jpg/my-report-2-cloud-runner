@@ -16,10 +16,12 @@ export function normalizeOrderlyPublicPositions(raw,{contract,reference_price,no
   if(!mark||!price||!notional||mark<=0||price<=0||notional<=0||!['LONG','SHORT'].includes(side)||price===mark)continue;
   numericPositions++;
   if(Math.abs(mark/reference-1)>0.05){excludedPriceDivergence++;continue;}
-  if((side==='LONG'&&price>=mark)||(side==='SHORT'&&price<=mark)||Math.abs(price/reference-1)>0.05)continue;
+  // The owner's 5% rule merges nearby levels with one another. It is not a
+  // distance-to-market cutoff: a distant open position is still a future level.
+  if((side==='LONG'&&price>=mark)||(side==='SHORT'&&price<=mark))continue;
   levels.push({source:'Orderly',venue:'ORDERLY',independence_group:'ORDERLY_PUBLIC_POSITIONS',evidence_class:'PUBLIC_OPEN_POSITION_WITH_ESTIMATED_LIQUIDATION_PRICE',status:'CLOSED',source_ts:sourceTs,native_price:price,native_reference_price:mark,price_quote:'USDC',notional_usd:notional,notional_unit:'USDC',liquidated_side:side,price_semantics:'ORDERLY_ESTIMATED_POSITION_LIQUIDATION_PRICE',amount_semantics:'REPORTED_OPEN_POSITION_NOTIONAL',estimated:true,conditional_cross:row.margin_mode==='CROSS',position_count:1,position_key:`ORDERLY_PUBLIC_ROW_${index}`,decision_target_eligible:false});
  }
- return{source:'ORDERLY_PUBLIC_POSITIONS',contract,status:levels.length?'CLOSED':'NO_NEARBY_ESTIMATED_POSITION_LEVELS',source_ts:sourceTs,reference_price:reference,reported_positions:finite(raw.data.total_positions),page_rows:rows.length,has_next_page:Boolean(raw.data.next_cursor),numeric_positions:numericPositions,excluded_price_divergence:excludedPriceDivergence,levels,network_calls:0,exact_market:true,independent_primary_source:true,price_estimated:true,position_notional_reported:true,internal_only:true};
+ return{source:'ORDERLY_PUBLIC_POSITIONS',contract,status:levels.length?'CLOSED':'NO_VALID_ESTIMATED_POSITION_LEVELS',source_ts:sourceTs,reference_price:reference,reported_positions:finite(raw.data.total_positions),page_rows:rows.length,has_next_page:Boolean(raw.data.next_cursor),numeric_positions:numericPositions,excluded_price_divergence:excludedPriceDivergence,levels,network_calls:0,exact_market:true,independent_primary_source:true,price_estimated:true,position_notional_reported:true,internal_only:true};
 }
 
 export async function collectOrderlyPublicPositions({contract,reference_price,run_id,fetch_impl=globalThis.fetch,request_admit=null,max_http=1,now=Date.now()}={}){
