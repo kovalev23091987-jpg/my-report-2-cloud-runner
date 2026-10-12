@@ -1,0 +1,98 @@
+{
+  "schema": "LIQ_SOURCE_CAPABILITY_AND_104_BASE_CENSUS_V1",
+  "recorded_utc": "2026-10-12T17:22:41.225906+00:00",
+  "code_head": "72ffe46b4e5eb16dfb6ad2fc2903a837b52bda7b",
+  "cloud_assembled_gate": {
+    "run": 38283635845,
+    "head": "72ffe46b4e5eb16dfb6ad2fc2903a837b52bda7b",
+    "conclusion": "success",
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38283635845"
+  },
+  "scope": "LIQ future factual levels and separately labelled calculations for the approved 104 HTX futures assets; paused blocks, score, target, entry, source caps and publication cadence unchanged",
+  "current_htx_d1_readback": {
+    "database": "report2-data-plane",
+    "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "table": "report2_market_snapshot_batch_v1",
+    "bucket": 1791825000000,
+    "received_ts": 1791825063531,
+    "approved_assets_exact_matched": 104,
+    "positive_price": 104,
+    "positive_open_interest_value_usdt": 104,
+    "turnover_present": 104,
+    "all_three_base_inputs_and_closed_status": 104,
+    "query_scope": "exact approved 104 asset_analysis_contracts from checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
+    "interpretation": "Current bulk input availability, not 104 observed liquidation levels or proof every asset has model volatility, displayed output or Telegram delivery"
+  },
+  "factual_and_position_based_historical_opportunity": {
+    "hyperliquid_numeric_assets_oct04": 55,
+    "hyperliquid_denominator_oct04": 102,
+    "dydx_pinned_conditional_level_assets_oct07": 18,
+    "dydx_unique_over_hyperliquid": 0,
+    "gtrade_pinned_fee_aware_level_assets_oct07": 7,
+    "gtrade_unique_over_hyperliquid_and_dydx": [
+      "BNB",
+      "HYPE",
+      "RAY",
+      "ZEC"
+    ],
+    "historical_union_with_exact_104": 59,
+    "historical_uncovered_without_htx_model": 45,
+    "not_current_live_coverage": true,
+    "dydx_current_role_observations": "In D1 since 2026-10-11: 1 usable ZEC role, 19 empty bounded samples; role receipt is not proof of final delivery",
+    "proofs": [
+      "checkpoints/liquidation-coverage-audit-release-evidence-20261004.json",
+      "checkpoints/DYDX_ACTUAL_DENSE_NATIVE_PAGE_20261007.json",
+      "checkpoints/GTRADE_ACTUAL_THREE_READ_AND_HINTS_20261007.json",
+      "checkpoints/GTRADE_ACTUAL_ADDITIONAL_ASSET_LEVELS_20261007.json"
+    ]
+  },
+  "gtrade_current_routing": {
+    "table": "report2_liq_venue_catalog_cache",
+    "source": "GTRADE_NATIVE_POSITION_ROUTING",
+    "saved_position_id_hints": 128,
+    "approved_exact_asset_symbols_with_hints": 35,
+    "oldest_verified_source_ts": 1791595675000,
+    "newest_verified_source_ts": 1791735882000,
+    "expires_ts": 1792340682000,
+    "interpretation": "Structural original-position IDs only; every use must reread native position, margin and fee state at a current block",
+    "change": "An exact, fingerprint-validated retained hint now permits an already capped gTrade reread despite the stale eight-source capability matrix; unsupported/tampered/expired hints make no call, and a hint never closes numeric coverage or affects score/target"
+  },
+  "matrix_d1_readback": {
+    "active_assets": 102,
+    "active_observed_ts": 1791152098374,
+    "weekly_staging_assets": 102,
+    "weekly_staging_observed_ts": 1791818026626,
+    "staging_complete": false,
+    "runtime_alignment": "104 in memory, CT and RLC unverified; active D1 matrix not rewritten"
+  },
+  "controlled_display_probe": {
+    "fixture": "checkpoints/post-pr229-bome-sent-read-37682711022/exact-current-data.json.gz",
+    "policy": "OWNER_RELEVANT_LEVELS_20261008",
+    "three_above_three_below_with_nearby_fact_and_model": "READY",
+    "telegram_characters": 1344,
+    "telegram_limit": 1800,
+    "synthetic_not_live_delivery": true
+  },
+  "verification": {
+    "top_level_tests": 1418,
+    "passed": 1414,
+    "failed": 0,
+    "skipped": 4,
+    "cloud_assembled_run": 38283635845,
+    "cloud_conclusion": "success",
+    "new_exchange_source_http": 0,
+    "new_source_quota_reservations": 0,
+    "natural_full_run_after_code": false,
+    "fresh_same_run_manual_and_telegram": false,
+    "sent_message_id": null
+  },
+  "not_proven": [
+    "Current live numeric future-level count across approved 104",
+    "All 104 model volatility inputs and actual scenario output",
+    "Natural same-run LIQ source to canonical to manual and Telegram after head 72ffe46b",
+    "Actual gTrade native reread from new admission for a selected asset",
+    "Every 3+3 Telegram variation within 1800 characters",
+    "Fresh SENT with message_id"
+  ],
+  "next_action": "At next natural full report on this or later head, inspect exact selected assets, HTX model closure, factual source clocks, gTrade reread receipts, manual/Telegram text and SENT id if published. Then use admitted missing facts to decide any further independent free source work. Keep LIQ open and all other paused blocks paused."
+}
