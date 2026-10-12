@@ -31,7 +31,7 @@ test('only authorized report and bounded source workflows remain manually runnab
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
+ assert.deepEqual(manual,['deploy-free-history-20261012.yml','htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
  const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
@@ -101,7 +101,7 @@ test('workflow worker pin equals the effective V13 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'047f952b3fdb82a591b66ed89cd35266ff3864fabce3f43f58ff10bcde5d90ee');
+ assert.equal(hash,'9b4e9432fb5fabf50ab6a1ec563ce5fd12c8aa406d0d5e6452096bb2f5294788');
  assert.match(workflow,new RegExp(hash));
 });
 test('controlled T15 measurements upload an exact sanitized receipt',()=>{

@@ -1,0 +1,118 @@
+{
+  "schema": "LIQ_ORDERLY_PUBLIC_POSITIONS_AND_STRK_NATURAL_ARCHIVE_V1",
+  "recorded_utc": "2026-10-12T18:46:32.198006+00:00",
+  "status": "ORDERLY_LIVE_FACTS_AND_LOCAL_CONSUMER_VERIFIED;CLOUD_ASSEMBLY_AND_NATURAL_REPORT_PENDING",
+  "scope": "LIQ_ONLY; 105 approved HTX futures assets; BTC/ETH liquidation-level search excluded; no strategy/score/Telegram format change",
+  "base_main": "8c8e4d80e36685135d225ff97ede7a795ebf15e3",
+  "lease_owner": "CODEX:LIQ_COVERAGE_BATCH:1791825970396",
+  "orderly": {
+    "official_docs": [
+      "https://orderly.network/docs/build-on-omnichain/public-info-api/overview",
+      "https://orderly.network/docs/build-on-omnichain/public-info-api/platform/platform-positions"
+    ],
+    "access": "Official zero-auth read-only POST /v1/public/query; anonymous 1200 weight/min, marketSummary weight1, platformPositions weight20, separate REST/WS pool, documented platformPositions freshness <5s; exact response ts required",
+    "market_census": {
+      "response_ts": 1791830012937,
+      "all_public_markets": 138,
+      "exact_htx_overlap_including_btc_eth": 40,
+      "eligible_exact_markets_excluding_btc_eth": 38,
+      "strk_exact_market": false,
+      "fil_only_suffix_market": "PERP_FIL_USDC_mythos; rejected as non-exact"
+    },
+    "position_census": {
+      "response_ts": 1791830073566,
+      "total_platform_positions_min_notional_500": 1546,
+      "page_rows": 1546,
+      "next_cursor": false,
+      "approved_ex_btc_eth_assets_with_positions": 38,
+      "assets_with_numeric_estimated_price": 38,
+      "assets_with_level_within_5pct": 3,
+      "assets_with_level_within_5pct_names": [
+        "AVAX",
+        "HYPE",
+        "SOL"
+      ],
+      "note": "Source research snapshot. Current production requests use min_notional=0 and only selected exact markets; actual output coverage not inferred from census."
+    },
+    "hype_example": {
+      "response_ts": 1791830239542,
+      "mark_usdc": 83.228,
+      "htx_saved_futures_price_usdt": 83.46,
+      "htx_source_ts": 1791829555890,
+      "nearby_estimated_liquidation_prices_usdc": [
+        80.0944114,
+        82.24270219,
+        79.07434512
+      ],
+      "reported_open_position_notionals_usdc": [
+        6824.696,
+        744.8906,
+        832.28
+      ],
+      "side": "LONG",
+      "position_margin_mode": "CROSS",
+      "meaning": "Real open positions and reported notionals; liquidation prices estimated by Orderly and mutable with account collateral/other positions."
+    },
+    "consumer": "One admitted request per selected exact-market asset, max existing LIQ 5-call shared envelope and unified HTTP budget. Current HTX reference required; response clock <=120s; source mark within5% HTX and level within5% HTX; wrong side/null/stale rejected. Same normalized levels feed main/manual and Telegram; labeled estimated, no score or target eligibility; only actual position notional used for size tier. Static exact-market intersection needs later refresh when Orderly lists new assets.",
+    "privacy": "Wallet addresses/account IDs omitted from saved report evidence and normalized output."
+  },
+  "other_global_checks": [
+    {
+      "name": "Coinversa Pulse",
+      "official": "https://github.com/Coinversaa/mcp-server",
+      "fact": "Configured free connector live_liquidation_heatmap request for FIL was refused with Pro entitlement; no retry or premium bypass.",
+      "status": "NOT_FREE_FUTURE_MAP"
+    },
+    {
+      "name": "DEXLiquid",
+      "official": "https://dexliquid.ai/docs.html",
+      "fact": "Official docs advertise public market/account endpoints; single public market-list request returned HTTP403. No exact overlap or future price-level response proven.",
+      "status": "ACCESS_BLOCKED_NOT_CONNECTED"
+    },
+    {
+      "name": "Other public positions and maps",
+      "fact": "Orderly was the only new worldwide lead in this batch with independently verified numerical, clocked, multi-asset position data. Earlier checked sources and paid/trial/HL wrappers remain documented in the prior checkpoint.",
+      "status": "NO_GLOBAL_NONEXISTENCE_CLAIM"
+    }
+  ],
+  "natural_hourly_htx_archive": {
+    "worker_deploy_run": 38290826106,
+    "hour_bucket": 1791828000000,
+    "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+    "futures_target": 105,
+    "futures_present": 105,
+    "futures_qualified": 105,
+    "futures_payload_sha256": "45e35b6f9e8c1f74cd625617a86c04008fcc9d095b2917e9ff3487b390a90911",
+    "futures_source_ts": 1791829555890,
+    "strk_futures": {
+      "status": "CLOSED",
+      "price": 0.09855,
+      "turnover_24h_usdt": 78959.8354,
+      "oi_value_usdt": 11574.6975,
+      "source_ts": 1791829555890
+    },
+    "htx_spot_target": 105,
+    "htx_spot_present": 90,
+    "htx_spot_quote_checked": 88,
+    "spot_payload_sha256": "18cbc2c4391d51c2e71bfbd8ba1ac45c7eba06813e9c11f80efce1a466574da3",
+    "strk_spot": {
+      "status": "BOUNDED_TICKER",
+      "price": 0.0932,
+      "source_ts": 1791830157450
+    },
+    "spot_futures_clock_gap_ms": 601560,
+    "same_time_cross_market_agreement_claim": false,
+    "report_consumer_claim": false
+  },
+  "local_verification": {
+    "orderly_and_liq_tests": "Targeted source, manual/Telegram parity, output fixture, generation guard and LIQ contract suites pass; full local current-generation validation has only preexisting assembled-runtime-only supplemental-supporting-bridge failure after LIQ test expectation update.",
+    "source_to_fact_to_consumer": "Synthetic exact HYPE position payload traverses normalizer, shared LIQ map and compact Telegram formatter. Natural report/Telegram output for Orderly still pending."
+  },
+  "acceptance_pending": [
+    "Cloud assembled test on exact committed head",
+    "Natural full report with actual admitted Orderly levels if selected coin overlaps and has nearby positions, or honest absence/defer",
+    "Same-run manual/Telegram and exact SENT message_id if a publication occurs",
+    "Longitudinal forecast outcome evaluator, source reliability measurement and all-asset actual future-level coverage"
+  ],
+  "next_action": "Push and cloud-assemble candidate, inspect next natural main report and source clocks, then continue bounded free source research only where new distinct primary facts are possible. Keep LIQ open and preserve paused blocks."
+}

@@ -43,7 +43,7 @@ test('main and standalone production consumers enforce durable real-level covera
  assert.ok(solo.indexOf('acquisition=await collectFor(candidate)')<solo.indexOf('crossExchangeRisk=await'));
  assert.match(solo,/max_http_for_candidate:Math.max\(0,8-bykFutureCalls\)/);
  assert.ok(main.indexOf('await env.REPORT2_LIQUIDATION_NATIVE_COLLECT')<main.indexOf('await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT'));
- assert.match(solo,/projected:\[\]/);assert.match(solo,/futureMapSource=null/);
+ assert.match(solo,/projected:manualOrderly\?\.status==='CLOSED'\?manualOrderly\.levels:\[\]/);assert.match(solo,/futureMapSource=null/);
  assert.match(runner,/5-\(futureHttpByContract.get\(params.contract\)\?\?5\)/);
  const formatter=read('../files/src/manual-report-formatter.mjs');assert.ok(formatter.indexOf('...nativeLines')<formatter.indexOf('lines.push(...formatLiquidationHistoryFacts'));
 });

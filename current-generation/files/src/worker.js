@@ -16582,6 +16582,11 @@ async function buildDeepCheckInput(params, env) {
   }
 
   if(typeof env?.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT==='function')try{futureProviderModels=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});}catch{futureProviderModels={status:'SOURCE_ERROR',network_calls:1,levels:[]};}
+  let orderlyPublicPositions=null;
+  if(typeof env?.REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT==='function'&&!['BTC-USDT','ETH-USDT'].includes(contract)){
+    try{orderlyPublicPositions=await env.REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now()});}
+    catch(error){orderlyPublicPositions={source:'ORDERLY_PUBLIC_POSITIONS',contract,status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160),levels:[],network_calls:0,internal_only:true};}
+  }
   let coinBossLiquidation=null;
   if(typeof env?.REPORT2_COINBOSS_LIQUIDATION_COLLECT==='function'&&!['BTC-USDT','ETH-USDT'].includes(contract)){
     try{coinBossLiquidation=await env.REPORT2_COINBOSS_LIQUIDATION_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now()});}
@@ -17214,7 +17219,7 @@ async function buildDeepCheckInput(params, env) {
     });
   }
   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,coinboss_liquidation:coinBossLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
   let canonicalExecutionContextSource=null;
   // One bounded indexed read of the source already saved by this exact cycle;

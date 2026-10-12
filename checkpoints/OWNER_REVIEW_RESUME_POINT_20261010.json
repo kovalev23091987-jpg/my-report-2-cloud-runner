@@ -1239,7 +1239,7 @@
   },
   "latest_status": "N15_HTX_ONLY_HISTORY_PARTIAL_N14_REMAINS_PAUSED",
   "updated_ts": 1791812643958,
-  "updated_utc": "2026-10-12T17:22:41.225906+00:00",
+  "updated_utc": "2026-10-12T18:46:32.198006+00:00",
   "owner_latest_continuation_instruction": {
     "received_local": "2026-10-10T19:24:00+03:00",
     "owner_text": "Выполняй без остановок дальше. И без моих команд.",
@@ -3282,7 +3282,7 @@
   "latest_liq_spot_context_and_source_gap_audit": "checkpoints/LIQ_SPOT_CONTEXT_AND_SOURCE_GAP_AUDIT_20261012.json",
   "latest_liq_104_admission_audit": "checkpoints/LIQ_104_ADMISSION_AND_STALE_SOURCE_RECHECK_20261012.json",
   "latest_liq_fact_model_proof": "checkpoints/LIQ_FUTURE_FACT_MODEL_5PCT_THREE_LEVELS_20261012.json",
-  "exact_next_action": "On exact committed LIQ candidate head, inspect assembled cloud workflow and repair any failure; deploy/test the updated HTX-only hourly archive Worker, then inspect the next natural full run for STRK Stage0 and exact LIQ source clocks, factual vs modeled levels, manual/Telegram use, and SENT message_id if published. Keep LIQ open; no other block starts.",
+  "exact_next_action": "Push and cloud-assemble candidate, inspect next natural main report and source clocks, then continue bounded free source research only where new distinct primary facts are possible. Keep LIQ open and preserve paused blocks.",
   "latest_liq_source_capability_and_104_base_census": "checkpoints/LIQ_SOURCE_CAPABILITY_AND_104_BASE_CENSUS_20261012.json",
   "latest_liq_105_coverage_and_new_source_research": {
     "proof": "checkpoints/LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_20261012.json",
@@ -3295,5 +3295,17 @@
     "cloud_assembled_run": 38290510907,
     "history_worker_deploy_run": 38290826106,
     "natural_report_use_verified": false
+  },
+  "latest_liq_orderly_public_positions_and_strk_archive": {
+    "proof": "checkpoints/LIQ_ORDERLY_PUBLIC_POSITIONS_AND_STRK_NATURAL_ARCHIVE_20261012.json",
+    "status": "ORDERLY_LIVE_FACTS_AND_LOCAL_CONSUMER_VERIFIED;CLOUD_ASSEMBLY_AND_NATURAL_REPORT_PENDING",
+    "approved_assets": 105,
+    "orderly_exact_markets_ex_btc_eth": 38,
+    "orderly_nearby_research_assets": 3,
+    "natural_htx_futures_archive_qualified": 105,
+    "natural_htx_spot_present": 90,
+    "natural_report_use_verified": false,
+    "factual_level_coverage_claim": false,
+    "forecast_outcomes_established": false
   }
 }
