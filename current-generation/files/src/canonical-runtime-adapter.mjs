@@ -61,7 +61,8 @@ export function buildSpotFuturesMarketContext({contract,spot_component,futures_c
  const exact=text(contract).toUpperCase(),now=finite(observed_ts);
  const base={schema:'htx-spot-futures-shared-market-context-v1',contract:exact,observed_ts:now,physical_root_key:'HTX_OFFICIAL_PUBLIC_MARKET',independent_venue_count:1,network_calls:0,score_contribution:0,directional_vote:false,entry_authorized:false,
   approved_generation:APPROVED_HTX_SCOPE.generation,approved_manifest_sha256:APPROVED_HTX_SCOPE.manifest_sha256,
-  applicability_not_block_coverage:{N04:'MARKET_CONTEXT_NOT_ONCHAIN_DIRECTION',N05:'EXISTING_JOINT_FLOW_UNCHANGED',N10:'PRICE_CONTEXT_NOT_TECHNICAL_TARGET',N11:'SPOT_SPREAD_CONTEXT_NOT_FUTURES_EXECUTION_GATE',N12:'EXISTING_TAKER_RECONCILIATION_UNCHANGED',N14:'UNDERLYING_PRICE_CONTEXT_NOT_OPTIONS_IV',N15:'PRICE_CONTEXT_NOT_SECTOR_RELATIVE_STRENGTH',N16:'SPOT_SPREAD_CONTEXT_NOT_FUTURES_EXECUTION_COST'},
+  applicability_not_block_coverage:{N04:'MARKET_CONTEXT_NOT_ONCHAIN_DIRECTION',N05:'EXISTING_JOINT_FLOW_UNCHANGED',N10:'PRICE_CONTEXT_NOT_TECHNICAL_TARGET',N12:'EXISTING_TAKER_RECONCILIATION_UNCHANGED',N14:'UNDERLYING_PRICE_CONTEXT_NOT_OPTIONS_IV',N15:'PRICE_CONTEXT_NOT_SECTOR_RELATIVE_STRENGTH',N16:'SPOT_REFERENCE_NOT_FUTURES_EXECUTION_COST'},
+  spot_exempt_blocks:['N11'],
   metric_scope:'PRICE_AND_RELATIVE_SPREAD_ONLY;NOT_TAKER_FLOW_EXECUTION_SIZE_ONCHAIN_OPTIONS_IV_OR_SECTOR_STRENGTH'};
  if(!approvedHtxAnalysisAssetForContract(exact))return{...base,status:'NOT_IN_APPROVED_HTX_ANALYSIS_UNIVERSE',spot:null,futures:null,comparison:null,fact:null};
  if(now===null)return{...base,status:'EXACT_USDT_CONTRACT_AND_CLOCK_REQUIRED',spot:null,futures:null,comparison:null,fact:null};
@@ -80,6 +81,21 @@ export function buildSpotFuturesMarketContext({contract,spot_component,futures_c
  const signed=basisPct>=0?'+':'';
  const fact={source:'HTX',label:'Сверка спота и фьючерсов',value:`разница средних цен ${signed}${basisPct.toFixed(2)}%; спреды ${spot.spread_bps.toFixed(1)} и ${futures.spread_bps.toFixed(1)} б.п.; одна биржа`,unit:'',field:'SPOT_FUTURES_PRICE_SPREAD_CONTEXT',source_ts:Math.min(spot.source_ts,futures.source_ts),observed_ts:now,score_contribution:0,entry_authorized:false,telegram_eligible:false};
  return{...base,status:'CLOSED_COMPARABLE_PRICE_AND_SPREAD',spot,futures,comparison,fact};
+}
+export function buildSpotExecutionCostContext({contract,spot_component,market_context,observed_ts}={}){
+ const now=finite(observed_ts),market=market_context?.spot,data=spot_component?.data,reference=data?.spot_execution_reference;
+ const base={schema:'htx-spot-500-usdt-execution-reference-v1',block_id:'N16',contract:text(contract).toUpperCase(),status:'SPOT_EXECUTION_REFERENCE_NOT_CLOSED',source:'HTX_OFFICIAL_PUBLIC_MARKET',physical_root_key:'HTX_OFFICIAL_PUBLIC_MARKET',independent_venue_count:1,network_calls:0,score_contribution:0,entry_authorized:false,fact:null};
+ if(!market||market.market!=='HTX Spot'||now===null||spot_component?.execution_status!=='FULFILLED'||reference?.source_scope!=='HTX_SPOT_STEP0_SAME_DEPTH_REPLY'||reference.entry_authorized!==false||reference.source_ts!==market.source_ts||reference.best_bid!==market.best_bid||reference.best_ask!==market.best_ask||reference.requested_notional_usdt!==500)return base;
+ const validImpact=(impact,side)=>{
+  const request=finite(impact?.requested_notional_usdt),filled=finite(impact?.filled_notional_usdt),vwap=finite(impact?.vwap),bps=finite(impact?.impact_bps),baseQty=finite(impact?.base_quantity),fillPct=finite(impact?.fill_ratio_pct);
+  if(impact?.fully_filled!==true||request!==500||filled===null||filled<499.5||filled>500.001||vwap===null||vwap<=0||baseQty===null||baseQty<=0||fillPct===null||fillPct<99.9||fillPct>100.001||bps===null||bps<-.000001)return false;
+  const expected=(side==='buy'?vwap/reference.best_ask-1:1-vwap/reference.best_bid)*10_000;
+  return Math.abs(expected-bps)<.00001&&Math.abs(filled/baseQty-vwap)<.000001*Math.max(1,vwap);
+ };
+ if(!validImpact(reference.buy,'buy')||!validImpact(reference.sell,'sell'))return base;
+ const buy=reference.buy.impact_bps,sell=reference.sell.impact_bps;
+ const fact={source:'HTX / спот',block_id:'N16',label:'Спотовый ориентир издержек для 500 USDT',value:`по одному снимку стакана: покупка ${buy.toFixed(1)} б.п. от лучшей цены продажи, продажа ${sell.toFixed(1)} б.п. от лучшей цены покупки; каждая сторона рассчитана отдельно на 500 USDT; комиссии и будущие изменения стакана не включены; издержки фьючерсов проверяются отдельно`,unit:'',field:'SPOT_EXECUTION_REFERENCE_500',source_ts:market.source_ts,observed_ts:now,score_contribution:0,directional_vote:false,entry_authorized:false,telegram_eligible:false};
+ return{...base,status:'SPOT_EXECUTION_REFERENCE_CLOSED',source_ts:market.source_ts,requested_notional_usdt:500,buy_impact_bps:buy,sell_impact_bps:sell,fact};
 }
 const NATIVE_LIQUIDATION_SOURCE_IDS=Object.freeze(['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS','DYDX_PINNED_NATIVE']);
 function nativeLiquidationSourceId(value){
@@ -367,14 +383,15 @@ export function buildRuntimeCanonicalBundle({
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
  const spotFuturesMarketContext=buildSpotFuturesMarketContext({contract,spot_component,futures_component,observed_ts});
+ const spotExecutionCostContext=buildSpotExecutionCostContext({contract,spot_component,market_context:spotFuturesMarketContext,observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});
  const sectorContext=consumeSectorContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,asset_identity:internal_market_context?.candidate_context?.asset_identity,now:observed_ts});
- supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus,spot_futures_market:spotFuturesMarketContext};
+ supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus,spot_futures_market:spotFuturesMarketContext,spot_execution_cost:spotExecutionCostContext};
  const profileFacts=volumeProfileFacts(volumeProfile,{contract,now:observed_ts,reference_price:price,direction}).slice(0,1);
  if(profileFacts.length){const vpReceipt=supplementalScoreAdjustment.receipts.find(r=>r.source_id==='HTX_VOLUME_PROFILE');const state=volumeConsensus.status==='MULTI_VENUE_CONFIRMED'?`совпадение HTX+${volumeConsensus.confirmations.map(r=>r.source).join('+')}`:volumeConsensus.status==='CONFLICT'?'расхождение; вес 0':'одна площадка';profileFacts[0].value+=`; ${vpReceipt?.score_contribution??0} балла; ${state}`;profileFacts[0].unit='';}
- supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f)),...(spotFuturesMarketContext.fact?[spotFuturesMarketContext.fact]:[])];
+ supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f)),...(spotFuturesMarketContext.fact?[spotFuturesMarketContext.fact]:[]),...(spotExecutionCostContext.fact?[spotExecutionCostContext.fact]:[])];
  supportingContext.specialist_context_status=specialistContext.status;
- if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length||spotFuturesMarketContext.fact)supportingContext.status='CLOSED';
+ if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length||spotFuturesMarketContext.fact||spotExecutionCostContext.fact)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
   ...sourceReceipts(public_evidence),
   ...buildCanonicalExecutionRoleFacts({contract,run_id,snapshot_id,observed_ts,execution_context_source}).map(row=>({...normalizeInheritedFactEnvelope([row]).facts[0],evidence_ids:row.evidence_ids,snapshot_id:row.snapshot_id,run_id:row.run_id,physical_root_key:row.physical_root_key,proof_purpose:row.proof_purpose,entry_authorized:false,score_contribution:0})),

@@ -1,0 +1,65 @@
+{
+  "schema": "ACTIVE_CHAIN_SPOT_SCOPE_AND_N16_REFERENCE_20261012_V1",
+  "owner_clarification": "Spot is useful for every retained active block where a genuine same-asset companion can be verified, except N11 futures orderbook execution stress, which needs no spot input.",
+  "base_main_with_owner_lease": "d410b21dbe623acaf0106ed282a42f2958fcac6e",
+  "owner_lease": "CODEX:OWNER_ACTIVE_CHAIN_SPOT_REVIEW:1791781134539",
+  "status": "PR327_CANDIDATE_ASSEMBLED_N10_N11_N12_CLOUD_PASS_MAIN_MERGE_PENDING_NATURAL_COVERAGE_PENDING",
+  "candidate_head_tested": "600e73324243c727081ec1482053009dd4c8db87",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/327",
+  "active_blocks": ["N04", "N05", "N10", "N11", "N12", "N14", "N15", "N16"],
+  "spot_exempt_blocks": ["N11"],
+  "paused_blocks_unchanged": ["N01", "N02", "N03", "N06", "N07", "N08", "N09"],
+  "existing_pr321_scope": {
+    "same_run_htx_spot_and_futures_depth_bbo": true,
+    "approved_htx_asset_count": 104,
+    "exact_current_live_spot_pair_count": "NOT_MEASURED",
+    "shared_market_context_is_metric_specific_block_coverage": false,
+    "independent_exchange_roots_from_htx_spot_and_futures": 1
+  },
+  "block_spot_use": {
+    "N04": "Verified spot quote provides price context only; on-chain transfer identity, amount and direction remain separate.",
+    "N05": "Existing exact four-hour spot and futures taker flow paths retained; no duplicate HTX venue vote.",
+    "N10": "Existing exact external spot closed-candle price paths and HTX spot/futures price context retained; target and invalidation stay futures-specific.",
+    "N11": "Spot exempt; futures-only 500 USDT orderbook gate remains unchanged.",
+    "N12": "Existing bounded exact spot and futures trade comparisons retained; current per-asset natural coverage still unproven.",
+    "N14": "HTX spot underlying quote is context, not spot implied volatility or proof of an options market.",
+    "N15": "CoinGecko and CoinPaprika aggregated spot-price sector comparisons stay separate from HTX spot/futures current quotes; no false exact-market sector-strength claim.",
+    "N16": "New verified 500 USDT spot buy and sell impact reference reuses the same HTX spot step0 depth response; futures execution cost and N11 gate stay separate."
+  },
+  "n16_candidate": {
+    "extra_provider_http": 0,
+    "extra_d1_reads": 0,
+    "spot_reference_notional_usdt": 500,
+    "separate_buy_sell_not_round_trip": true,
+    "same_depth_source_clock_and_exact_contract_required": true,
+    "fully_filled_and_arithmetic_reverified": true,
+    "score_contribution": 0,
+    "directional_vote": false,
+    "entry_authorized": false,
+    "approved_telegram_text_changed": false,
+    "manual_format_changed": false,
+    "manual_existing_24_fact_bound_retained": true
+  },
+  "local_verification": {
+    "golden_output_contract_tests": "PASS_8_FROZEN_SCENARIOS",
+    "generation_guard_and_formatter_hash": "PASS",
+    "assembled_spot_context_test": "SKIPPED_ENCRYPTED_RUNTIME_NOT_LOCAL",
+    "full_validate": "INITIAL_1393_PASS_2_FAIL_4_SKIP;_FORMATTER_HASH_PIN_FIXED;ONE_UNRELATED_LOCAL_ENCRYPTED_RUNTIME_MODULE_MISSING",
+    "full_validate_unrelated_missing_module": "runtime/src/existing-source-consumer.mjs",
+    "cloud_assembled_verification": {
+      "candidate_head": "600e73324243c727081ec1482053009dd4c8db87",
+      "N10": {"run_id": 38206652808, "conclusion": "success", "artifact_id": 11727956016, "artifact_digest": "sha256:93b1603dd961440ecbadc8142bf2d9f4ca2639620de3d93a2ec58bae1d0d6734"},
+      "N11": {"run_id": 38206652796, "conclusion": "success", "artifact_id": 11727497619, "artifact_digest": "sha256:f03947733ad24e4e1d5693f7889d7c132054484ab03243bf66985fc2b087b544"},
+      "N12": {"run_id": 38206652866, "conclusion": "success", "artifact_id": 11727288071, "artifact_digest": "sha256:edbee19bc9390b201bc1ab9a5afec9aa60c85f6dd869183e5a760924dc9998ce"}
+    }
+  },
+  "limits": {
+    "all_104_current_spot_data_verified": false,
+    "per_block_spot_metric_coverage_verified": false,
+    "natural_same_run_report_and_telegram_source_use": "PENDING",
+    "new_provider_http_used_for_this_candidate": 0,
+    "N05_complete": false,
+    "N12_complete": false
+  },
+  "next_action": "Run assembled offline cloud tests for impacted active chains, inspect natural exact 104-asset spot/futures coverage under existing admission, then update status/phase/register/resume without claiming unmeasured block coverage."
+}
