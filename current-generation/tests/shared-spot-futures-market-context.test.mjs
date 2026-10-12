@@ -101,7 +101,7 @@ if(!root){
   const row={evidence_id,htx_contract:contract,block_id:'N12',metric_family:'ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET',independent_venue_count:1,coverage_status:'BOUNDED_MULTIMARKET_DISAGREEMENT',observed_ts:T,source_ts:T-5000,components:[{venue:'HTX',market:'FUTURES'},{venue:'HTX',market:'SPOT'}]};
   const conclusion=buildSpotFuturesJointConclusion({market_context:market,block_context:{facts:[{block_id:'N12',field:row.metric_family,evidence_id,observed_ts:T}]},evidence:[row],contract,observed_ts:T});
   assert.match(conclusion.value,/последние сделки двух рынков расходятся/);
-  assert.match(conclusion.value,/общий рыночный вывод по этим данным не установлен/);
+  assert.match(conclusion.value,/общего сигнала нет/);
   assert.equal(conclusion.score_contribution,0);
   assert.equal(conclusion.entry_authorized,false);
  });
