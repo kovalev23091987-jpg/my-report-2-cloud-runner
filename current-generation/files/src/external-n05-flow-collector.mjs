@@ -6,6 +6,7 @@ import {collectGateFlow} from './gate-flow-collector.mjs';
 import {collectGateFuturesTradeSample} from './gate-futures-trade-collector.mjs';
 import {collectTurnoverBaseline} from './flow-turnover-collector.mjs';
 import {collectBitgetFlow} from './bitget-flow-collector.mjs';
+import {collectOkxN12NativeTrades,collectKucoinN12NativeTrades} from './n12-native-public-trade-collector.mjs';
 import {collectBinanceNativeFlow} from './binance-native-flow-collector.mjs';
 import {exactBinanceNativeIdentity} from './binance-native-four-hour-flow.mjs';
 import {exactBitfinexNativeIdentity} from './bitfinex-native-four-hour-flow.mjs';
@@ -51,5 +52,8 @@ export async function collectExternalN05Flow(params={}){
  // N12 can reuse Gate's already exact-bound spot metadata. This optional
  // futures sample is last and shares the same five-call/Gate ledgers as N05.
  if(params.asset_identity?.contract_or_mint)routes.push(['GATE_FUTURES_N12',collectGateFuturesTradeSample]);
+ // Optional native-only N12 pages use any room left in the existing five-call
+ // N05 envelope. They cannot displace an established four-hour flow route.
+ if(params.asset_identity?.asset_kind==='NATIVE')routes.push(['OKX_N12_NATIVE',collectOkxN12NativeTrades],['KUCOIN_N12_NATIVE',collectKucoinN12NativeTrades]);
  return collectN05VenueRoutes(params,routes);
 }

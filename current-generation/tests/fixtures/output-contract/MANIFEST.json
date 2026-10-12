@@ -12,10 +12,11 @@
     "current-generation/files/src/canonical-publication.mjs": "e832b45431062ead0cff5f261f463b57e7feb54afc1dc1a44a2a3d1fac2400c4",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "3576ce059b337b9a3bc9412b99182c1c339c41214773a7bd33422498d10801a0",
-    "current-generation/files/src/telegram-plain-facts.mjs": "c488dd256e414ce57b3dd3bfd8dd63e4d4ab874af7d0c67e6d40db51b862ef11",
+    "current-generation/files/src/block-result-context.mjs": "426aed84ce315eba664b1f70ae998f19b2bb3aed4f7b2fa13f8da1d432054805",
+    "current-generation/files/src/telegram-plain-facts.mjs": "79a5baedb2e140387638e689f853fc2d5bc5bf44372f7407b984db464357d9b7",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
-    "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236"
+    "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236",
+    "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -29,6 +30,27 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-12",
+      "scope": "N12_OKX_KUCOIN_BOUNDED_NATIVE_TRADE_FACTS",
+      "authorization": "Owner authorized continued N12 work and maximum useful spot and futures coverage with exact actual data, existing admission and approved report forms. The new optional original trade facts are shown only when validated; the frozen eight canonical inputs and outputs remain unchanged.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "3576ce059b337b9a3bc9412b99182c1c339c41214773a7bd33422498d10801a0",
+          "after": "426aed84ce315eba664b1f70ae998f19b2bb3aed4f7b2fa13f8da1d432054805"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "c488dd256e414ce57b3dd3bfd8dd63e4d4ab874af7d0c67e6d40db51b862ef11",
+          "after": "79a5baedb2e140387638e689f853fc2d5bc5bf44372f7407b984db464357d9b7"
+        },
+        "current-generation/files/src/n12-native-public-trade-sample.mjs": {
+          "after": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-12",
       "scope": "N12_APPROVED_104_ASSET_SPOT_SCOPE",
