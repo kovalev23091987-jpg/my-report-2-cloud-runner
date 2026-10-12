@@ -18,6 +18,7 @@ import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {PAUSED_BLOCKS,validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {deriveBybitOptionRisk} from './bybit-options-evidence.mjs';
+import {deriveBinanceOptionInterest} from './binance-options-interest-evidence.mjs';
 import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
@@ -124,6 +125,12 @@ function describe(row,now){
   const declared=row.option_risk_context,risk=deriveBybitOptionRisk({samples:declared?.samples,base_currency:row.base_currency,source_ts:row.source_ts,observed_ts:row.observed_ts});
   if(!risk||risk.status!==declared.status||!['sample_count','call_count','put_count','expiration_timestamp','mark_iv_median_pct','mark_iv_min_pct','mark_iv_max_pct','spread_median_pct','active_quote_count'].every(k=>eq(risk[k],declared[k])))return null;
   return{source:'Bybit',label:'Опционная волатильность актива на Bybit',value:`медиана mark IV ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} колл и ${risk.put_count} пут около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().slice(0,10)}, медианный спред ${fmt(risk.spread_median_pct)}%; на снимке есть открытый интерес или сделки за 24 часа у каждого инструмента; время ответа биржи известно, отдельное время каждой котировки не опубликовано; данные этой площадки не заменяют спот и фьючерсы, направление и разрешение сделки не назначены`};
+ }
+ if(row.block_id==='N14'&&row.metric_family==='BINANCE_SCOPED_OPTION_OPEN_INTEREST'){
+  if(row.provider_id!=='BINANCE_OPTION_INTEREST'||row.upstream_id!=='BINANCE_PUBLIC_OPTIONS'||row.htx_contract!=='BNB-USDT'||row.base_currency!=='BNB'||row.source_clock_policy!=='PROVIDER_INDEX_AND_OPEN_INTEREST_TIMESTAMPS'||row.source_is_htx_execution_price!==false||row.option_quotes_available!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
+  const declared=row.option_risk_context,risk=deriveBinanceOptionInterest({samples:declared?.samples,base_currency:row.base_currency,index_price:declared?.index_price,index_ts:declared?.index_ts,source_ts:row.source_ts,observed_ts:row.observed_ts,expiration_timestamp:declared?.expiration_timestamp});
+  if(!risk||risk.status!==declared.status||!['sample_count','call_count','put_count','expiration_timestamp','index_price','open_interest_usd'].every(k=>eq(risk[k],declared[k])))return null;
+  return{source:'Binance Options',label:'Открытый интерес по опционам BNB',value:`в проверенной выборке ${risk.call_count} колл и ${risk.put_count} пут около индекса BNB (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().slice(0,10)}, суммарный открытый интерес ${fmt(risk.open_interest_usd)} USD; индекс и интерес имеют отметки времени биржи, котировки и IV не подтверждены; эти данные не заменяют спот и фьючерсы, направление и разрешение сделки не назначены`};
  }
  if(row.block_id==='N14'&&row.metric_family==='DELTA_SCOPED_OPTION_IV'){
   if(row.provider_id!=='DELTA_OPTIONS'||row.upstream_id!=='DELTA_EXCHANGE_INDIA_PUBLIC_OPTIONS'||row.base_currency!==row.htx_contract.slice(0,-5)||row.source_clock_policy!=='PROVIDER_MICROSECOND_TIMESTAMP_ONLY'||row.source_is_htx_execution_price!==false)return null;

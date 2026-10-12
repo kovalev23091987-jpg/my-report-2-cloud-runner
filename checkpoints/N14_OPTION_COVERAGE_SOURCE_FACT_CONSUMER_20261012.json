@@ -1,5 +1,5 @@
 {
-  "schema": "N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012_V1",
+  "schema": "N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012_V2",
   "working_head": "08e883acc68852958f2224d4956bee0959c4d39c",
   "lease_owner": "CODEX:N14_OPTION_COVERAGE:1791808766064",
   "as_of_utc": "2026-10-12T13:03:04.225319+00:00",
@@ -27,6 +27,7 @@
   "new_unique_asset": "DOGE",
   "historical_union_useful_assets": [
     "AVAX",
+    "BNB",
     "BTC",
     "DOGE",
     "ETH",
@@ -36,12 +37,12 @@
     "XAUT",
     "XRP"
   ],
-  "historical_union_count": 9,
+  "historical_union_count": 10,
   "current_simultaneous_9_assets_proven": false,
   "structural_option_asset_ceiling_from_saved_catalogs": 13,
   "gate_quality": "ADA/BNB/LTC/SUI near-ATM baskets had zero trade/open-interest activity and wide spreads; DOGE had activity but source REST quote age is not published; no Gate production fact admitted",
   "crypto_com_options_catalog_count": 0,
-  "binance_bnb_actual_open_interest": "BNB 16 Oct and 30 Oct option contracts had timestamped positive open interest and matching 12 Oct underlying index; research only, not connected to report or counted in nine",
+  "binance_bnb_actual_open_interest": "Original Binance BNB 16 Oct option OI plus source-timestamped index replay closes 6 call and 6 put contracts near the index (±10%), combined sample OI 1,895,445.65 USD. N14 neutral consumer and controlled manual/Telegram binding are implemented on candidate PR #335; natural production report and delivery remain unproven.",
   "source_calls": {
     "total_public_http": 30,
     "global_job_cap": 164,
@@ -62,9 +63,10 @@
     "spot_futures": "Bybit options are an additional derivative overlay; existing exact spot and futures facts remain independent and are not replaced by options"
   },
   "proof": {
-    "test_command": "node --test current-generation/tests/bybit-options-evidence.test.mjs current-generation/tests/unified-block-output.test.mjs current-generation/tests/paused-block-report-chains.test.mjs current-generation/tests/delta-options-evidence.test.mjs current-generation/tests/deribit-alt-options-evidence.test.mjs",
-    "targeted_result": "31 pass, 1 assembled-only skip, 0 fail",
-    "manual_telegram": "controlled DOGE canonical replay: same N14 evidence_id in both renderers, delivery_proven false; not natural SENT"
+    "test_command": "node --test current-generation/tests/output-contract-freeze.test.mjs current-generation/tests/binance-options-interest-evidence.test.mjs current-generation/tests/bybit-options-evidence.test.mjs current-generation/tests/unified-block-output.test.mjs current-generation/tests/paused-block-report-chains.test.mjs current-generation/tests/delta-options-evidence.test.mjs current-generation/tests/deribit-alt-options-evidence.test.mjs",
+    "targeted_result": "47 pass, 1 assembled-only skip, 0 fail",
+    "manual_telegram": "Controlled DOGE and BNB canonical replays: same respective N14 evidence_id reaches manual and Telegram renderers; delivery_proven false; not natural SENT",
+    "cloud_assembled_result": "PENDING_PR335_NEW_BINANCE_CANDIDATE"
   },
   "receipts": [
     "checkpoints/n14-option-catalog-batch-1791808981122/receipt.json",
@@ -225,5 +227,27 @@
     "N14 remains low-coverage and cannot be marked complete or removed without owner decision.",
     "Natural post-merge full report and Telegram SENT/message_id remain unverified."
   ],
-  "next_action": "Finish cloud assembled validation and natural report readback for new Bybit N14 route; if owner wants additional limited N14 context, qualify/connect Binance BNB OI with exact provider clocks and bounded catalog; then discuss retention or pause of N14 based on useful coverage. Do not start another block."
+  "next_action": "Finish cloud assembled validation and natural report readback for new Bybit N14 route; if owner wants additional limited N14 context, qualify/connect Binance BNB OI with exact provider clocks and bounded catalog; then discuss retention or pause of N14 based on useful coverage. Do not start another block.",
+  "current_simultaneous_10_assets_proven": false,
+  "binance_runtime": {
+    "source_daily_cap": 96,
+    "ordinary_daily_cap": 80,
+    "manual_protected_attempts": 16,
+    "first_refresh_http": 3,
+    "catalog_cached_refresh_http": 2,
+    "catalog_ttl_ms": 21600000,
+    "interest_ttl_ms": 1200000,
+    "provider_weights": {
+      "exchangeInfo": 1,
+      "index": 1,
+      "openInterest": 0
+    },
+    "requires_exact_BNB_USDT_catalog_index_and_timestamped_2_calls_2_puts_positive_OI_near_atm": true,
+    "iv_available": false,
+    "directional_score_added": 0,
+    "strategy_or_report_format_changed": false,
+    "consumer": "current-generation/files/src/block-result-context.mjs",
+    "source": "current-generation/files/src/binance-options-interest-evidence.mjs"
+  },
+  "coverage_scope_note": "10/104 is historical union of useful exact option-context assets at different timestamps and unequal depth, not simultaneous current coverage or 10 assets with IV. Binance BNB contributes open interest only, no quote or IV. Options do not replace spot/futures."
 }
