@@ -9,10 +9,12 @@ on:
       - current-generation/tests/liquidation-futures-coverage.test.mjs
       - current-generation/files/src/pump-liquidation-zones.mjs
       - current-generation/files/src/coinboss-liquidation-levels.mjs
+      - current-generation/files/src/orderly-public-liquidation-positions.mjs
       - current-generation/files/src/liquidation-forecast-memory.mjs
       - current-generation/files/src/canonical-runtime-adapter.mjs
       - current-generation/files/src/worker.js
       - current-generation/tests/coinboss-liquidation-levels.test.mjs
+      - current-generation/tests/orderly-public-liquidation-positions.test.mjs
       - current-generation/tests/liquidation-forecast-memory.test.mjs
       - current-generation/tests/liquidation-zone-policy.test.mjs
       - current-generation/files/src/approved-htx-analysis-scope.mjs
@@ -60,11 +62,12 @@ jobs:
           cmp current-generation/files/src/pump-liquidation-zones.mjs runtime/src/pump-liquidation-zones.mjs
           cmp current-generation/files/src/htx-source-backed-liquidation-model.mjs runtime/src/htx-source-backed-liquidation-model.mjs
           cmp current-generation/files/src/coinboss-liquidation-levels.mjs runtime/src/coinboss-liquidation-levels.mjs
+          cmp current-generation/files/src/orderly-public-liquidation-positions.mjs runtime/src/orderly-public-liquidation-positions.mjs
           cmp current-generation/files/src/liquidation-forecast-memory.mjs runtime/src/liquidation-forecast-memory.mjs
           cmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs
           cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
-          node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
+          node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
       - name: Show failure locations
         if: failure()
