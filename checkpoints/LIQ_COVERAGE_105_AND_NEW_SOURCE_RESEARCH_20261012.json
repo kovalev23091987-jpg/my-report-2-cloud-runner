@@ -1,7 +1,7 @@
 {
   "schema": "LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_V1",
   "recorded_utc": "2026-10-12T18:21:00Z",
-  "status": "CANDIDATE_LOCAL_VALIDATION; CLOUD_ASSEMBLY_AND_NATURAL_RUN_PENDING",
+  "status": "CLOUD_ASSEMBLY_PASSED_AND_HISTORY_WORKER_DEPLOYED_NATURAL_RUN_PENDING",
   "scope": "LIQ_ONLY; FUTURE_FUTURES_LIQUIDATION_LEVELS; NO_BTC_ETH_LEVEL_SEARCH; NO_SCORE_OR_STRATEGY_CHANGE",
   "fresh_main_before_package": "6a9da07db4c3a7119dcf31e889feda640f414749",
   "lease_owner": "CODEX:LIQ_COVERAGE_BATCH:1791825970396",
@@ -17,7 +17,10 @@
     "strk_official_market_source_ts": 1791827517244,
     "strk_official_market_receipt_sha256": "653e6b4e35407c1a54931366486c3d65e719e89ef840241fcf7df08c9d1b2a3a",
     "strk_old_archive": "HONEST_GAP_UNTIL_NEXT_NATURAL_HTX_ARCHIVE",
-    "new_archive_worker_deployed": false
+    "new_archive_worker_deployed": true,
+    "archive_deploy_run": 38290826106,
+    "archive_worker_source_readback_has_strk": true,
+    "archive_worker_cron": "35 * * * *"
   },
   "coinboss_bounded_probe": {
     "target": "102 approved non-BTC/ETH coins from previous 104 universe",
@@ -101,6 +104,62 @@
       "role": "liquidation map research alpha",
       "access": "free authenticated fixed Bybit BTC snapshot",
       "status": "BTC_EXCLUDED; NOT_LIVE_OR_BROAD"
+    },
+    {
+      "name": "CoinMarketCap liquidation map",
+      "url": "https://coinmarketcap.com/charts/liquidation-map/",
+      "role": "actual Hyperliquid public position levels",
+      "access": "free UI, no official machine-readable map API proved",
+      "status": "SAME_HYPERLIQUID_PRIMARY_UPSTREAM; not independent"
+    },
+    {
+      "name": "GateData.AI",
+      "url": "https://gatedata.ai/docs/api-reference/markets-liquidation-heatmap",
+      "role": "modeled asset heatmap",
+      "access": "free 1500 credits/month but only six sample assets BTC ETH SOL NVDA AAPL TSLA and basic endpoints; map entitlement unproved",
+      "status": "NO_BROAD_FREE_COVERAGE"
+    },
+    {
+      "name": "Blave",
+      "url": "https://blave.org/docs/en/liquidation_map",
+      "role": "Binance OI-based modeled future map",
+      "access": "map and map change are Pro; past realized exchange totals public",
+      "status": "PAID_FUTURE_MAP; SAME_PUBLIC_BINANCE_INPUT_FAMILY"
+    },
+    {
+      "name": "Daggi",
+      "url": "https://daggi.co/",
+      "role": "free UI liquidation heatmap on Hyperliquid",
+      "access": "100+ pairs claimed; no public stable API documented",
+      "status": "UI_LEAD_ONLY; SAME_HYPERLIQUID_PRIMARY_UPSTREAM"
+    },
+    {
+      "name": "Jupiter Perps",
+      "url": "https://perps-api.jup.ag/v1/docs",
+      "role": "public on-chain per-wallet position liquidationPriceUsd",
+      "access": "walletAddress required for positions; wallet discovery and approved asset overlap unverified",
+      "status": "NEW_PRIMARY_PROTOCOL_LEAD; no full asset census or consumer yet"
+    },
+    {
+      "name": "Paradex",
+      "url": "https://docs.paradex.trade/api/prod/account/get-positions",
+      "role": "position liquidation prices",
+      "access": "authenticated current-user positions only; docs explicitly say positions hidden publicly",
+      "status": "NOT_PUBLIC_THIRD_PARTY_FUTURE_LEVELS"
+    },
+    {
+      "name": "Aster",
+      "url": "https://asterdex.github.io/aster-api-website/futures/account%26trades/",
+      "role": "positionRisk liquidationPrice",
+      "access": "HMAC signed account data",
+      "status": "NOT_PUBLIC_THIRD_PARTY_FUTURE_LEVELS"
+    },
+    {
+      "name": "Drift Velocity",
+      "url": "https://data.api.drift.trade/playground",
+      "role": "possible public user positions",
+      "access": "user account id required; price-level field, wallet discovery, rate and 105 asset overlap unverified",
+      "status": "NEW_PRIMARY_PROTOCOL_LEAD_ONLY"
     }
   ],
   "prior_sources_preserved_without_repeat_probe": [
@@ -121,14 +180,24 @@
   "tests": {
     "targeted": "79/79 targeted local tests passed, including immutable output fixtures, pins, STRK archive compatibility, LIQ display, CoinBoss model, D1 forecast snapshots",
     "full_local_validation": "1417 pass, 5 fail before pin/fixture fixes; remaining supplemental-supporting-bridge requires assembled encrypted runtime and is cloud-only",
-    "cloud_assembled": "PENDING"
+    "cloud_assembled": {
+      "run": 38290510907,
+      "head": "ae3c04b48d58909fce7369bee5f1cefa40a7aaf0",
+      "conclusion": "success"
+    },
+    "worker_deploy": {
+      "run": 38290826106,
+      "head": "756052b47cfe83469fa21f3cd0a026bd69c4405e",
+      "conclusion": "success",
+      "code_readback_strk": true,
+      "cron_readback": "35 * * * *"
+    }
   },
   "acceptance_pending": [
-    "assembled cloud test on exact committed head",
     "new main natural full run with STRK Stage0 and selected candidate LIQ source-to-report/Telegram path",
     "one honest per-asset factual versus modeled future-level coverage census on actual data",
-    "new HTX hourly archive Worker deploy and natural STRK row",
-    "historical forecast outcome evaluator and reliability statistics before any source weight change"
+    "historical forecast outcome evaluator and reliability statistics before any source weight change",
+    "natural STRK row in deployed HTX archive after next 35-minute UTC slot"
   ],
-  "next_action": "Commit this bounded LIQ package under current lease, run assembled cloud workflow and fix failures, update exact status and resume, then release lease; keep LIQ open until natural report and coverage receipts prove it."
+  "next_action": "Continue global source discovery without repeating completed probes; validate any new protocol on approved assets, cost and actual clocks; inspect natural full report and STRK hourly archive, preserve no-claim boundary for factual coverage and accuracy weights."
 }
