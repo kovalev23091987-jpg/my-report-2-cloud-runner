@@ -30,7 +30,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "BR",
@@ -50,7 +53,10 @@
         "spot_price": 0.4379,
         "spot_vs_futures_pct": -0.2597,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "BTR",
@@ -70,7 +76,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "CASHCAT",
@@ -90,7 +99,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "GPS",
@@ -110,7 +122,10 @@
         "spot_price": 0.010122,
         "spot_vs_futures_pct": 0.4665,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "LAB",
@@ -130,7 +145,10 @@
         "spot_price": 0.05094,
         "spot_vs_futures_pct": 0.3942,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "MYX",
@@ -150,7 +168,10 @@
         "spot_price": 0.0668,
         "spot_vs_futures_pct": -0.1942,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "OKB",
@@ -170,7 +191,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "ONG",
@@ -190,7 +214,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "PAXG",
@@ -210,7 +237,10 @@
         "spot_price": 4170.85,
         "spot_vs_futures_pct": 0.0163,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "RAVE",
@@ -230,7 +260,10 @@
         "spot_price": 0.17286,
         "spot_vs_futures_pct": -0.179,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "BITGET",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "UB",
@@ -250,7 +283,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "USELESS",
@@ -270,7 +306,10 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "VELVET",
@@ -290,7 +329,10 @@
         "spot_price": 0.07214,
         "spot_vs_futures_pct": -0.8385,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     },
     {
       "asset": "哈基米",
@@ -310,12 +352,21 @@
         "spot_price": null,
         "spot_vs_futures_pct": null,
         "source_clock_kind": "EXCHANGE_TICKER"
-      }
+      },
+      "preferred_spot_candidate": "GATE",
+      "preferred_candidate_identity_verified": false,
+      "eligible_for_report_fusion": false
     }
   ],
   "limits": [
     "Ticker price agreement alone does not prove token identity.",
     "RAVE Gate spot diverges materially from HTX futures and Bitget spot; exclude Gate RAVE from fusion.",
     "Other 14 Gate observations are candidate corroboration, pending accepted exact binding and consumer checks."
-  ]
+  ],
+  "routing_choice": "OWNER_DECISION_HTX_FUTURES_104_AND_HTX_SPOT_AVAILABLE_ONLY;NO_EXTERNAL_SPOT_FOR_15",
+  "source_http_per_hour_design": "HTX spot one bulk HTTP/hour, max24 attempts/UTC day; futures archive reuses closed HTX collector snapshot",
+  "historical_routing_choice_before_owner_htx_only": "HTX for its 89 spot pairs; Gate for 14 of 15 HTX-missing pairs; Bitget for RAVE because Gate RAVE conflicts with HTX futures and Bitget",
+  "historical_source_http_per_hour_design_before_owner_htx_only": "HTX 1 + Gate 1 + Bitget RAVE 1 on odd UTC hours; 60/day maximum; independent of full-report 164 cap",
+  "owner_decision_recorded_utc": "2026-10-12T15:55:29.438595+00:00",
+  "historical_external_candidate_only": true
 }

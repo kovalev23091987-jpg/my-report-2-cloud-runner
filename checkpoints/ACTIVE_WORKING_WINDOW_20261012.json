@@ -1,37 +1,29 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T13:44:03.949563+00:00",
+  "recorded_utc": "2026-10-12T15:55:29.438595+00:00",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
-  "main_at_recording": "b94a5109a9bf5d945fb4bc9cdc47d1f5327a80b7",
+  "main_at_recording": "8b7a03c1a05ad0c8c41f8fc0d33e08e49f514399",
   "work_in_progress_branch": null,
-  "current_task": "OWNER_N15_DISCUSSION_PENDING",
+  "current_task": "N15_HTX_ONLY_HISTORY_NEXT_NATURAL_VALIDATION_PENDING",
   "last_three": [
     {
       "rank": 1,
-      "kind": "N14_OWNER_PAUSE",
-      "proof": "checkpoints/N14_OWNER_PAUSE_20261012.json",
-      "status": "PR336_MERGED_MAIN_N14_PAUSED",
-      "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/336",
-      "merged_main": "b94a5109a9bf5d945fb4bc9cdc47d1f5327a80b7",
-      "cloud_run_ids": [
-        38257414080,
-        38257414049
-      ]
+      "kind": "N15_HTX_ONLY_HISTORY_FIRST_ACTUAL_D1_READBACK",
+      "proof": "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json",
+      "status": "HTX_FUTURES_104_QUALIFIED_HTX_SPOT_89_PRESENT_88_QUOTE_QUALIFIED;NEXT_NATURAL_PENDING",
+      "github_code_head": "8b7a03c1a05ad0c8c41f8fc0d33e08e49f514399"
     },
     {
       "rank": 2,
-      "kind": "N14_BYBIT_BINANCE_SOURCE_FACT_CONSUMER_MERGED_MAIN",
-      "proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json",
-      "status": "N14_BYBIT_AND_BINANCE_BNB_MERGED_MAIN_NATURAL_READBACK_PENDING",
-      "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/335",
-      "merged_main": "d7e67fa2d1269014c42ebac6d200f591c368cefd"
+      "kind": "N15_RAVE_EXTERNAL_PRICE_DISLOCATION_HISTORICAL_ONLY",
+      "proof": "checkpoints/n15-spot-coverage-20261012/RAVE_SPOT_FUTURES_DISLOCATION_20261012.json",
+      "status": "OWNER_EXCLUDED_EXTERNAL_SPOT_FOR_15"
     },
     {
       "rank": 3,
-      "kind": "OWNER_DEFERRED_N12_COVERAGE_RESEARCH",
-      "proof": "checkpoints/N12_REMAINING_16_ROUTE_RESEARCH_HANDOFF_20261012.json",
-      "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/333",
-      "status": "DRAFT_UNMERGED_CANDIDATE_NOT_PRODUCTION"
+      "kind": "N14_OWNER_PAUSE",
+      "proof": "checkpoints/N14_OWNER_PAUSE_20261012.json",
+      "status": "PAUSED_UNTIL_EXPLICIT_OWNER_RESTORE"
     }
   ],
   "coverage_reconciliation": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
@@ -48,9 +40,9 @@
   "paused_restore_requires_explicit_owner_command": true,
   "source_reuse": "Shared sources remain available to active blocks.",
   "not_proven": [
-    "Current simultaneous useful N14 coverage or natural post-PR335 N14 report and Telegram SENT before owner pause",
-    "Current all-104 exact useful coverage for N05/N10/N11/N12",
-    "N15 all-104 exact asset/category/peer coverage and both report chains"
+    "Next natural HTX-only Cron run and sustained free D1 retention",
+    "N15 source→fact→consumer→manual/Telegram use of enough real history",
+    "Current all-104 exact useful coverage for N05/N10/N11/N12 and 104→24→2 end-to-end verification"
   ],
-  "next_action": "Discuss N15 sector/peer/relative-strength block with the owner and agree scope before any N15 implementation. N14 is owner-paused across collection, score, denominators, saved rows, manual and Telegram until explicit restoration; its historical PR #335 facts remain archived. Shared sources remain available to active blocks. N12 and shared N05/N10/N11/N12 coverage and 104-to-24-to-2 joint verification remain deferred, not complete."
+  "next_action": "N15: после 2026-10-12 16:35 UTC (19:35 МСК) проверить следующий естественный запуск HTX-only Worker по D1 run, payload SHA и исходным часам; затем наблюдать пропуски и объём, накопить достаточную реальную историю и отдельно проверить её безопасный путь в анализ N15 и ручной отчёт/Telegram без изменения согласованных весов и формата. Внешний спот для 15 пар без спота HTX не собирать и не использовать. N05/N10/N11/N12 и проверка 104→24→2 остаются отдельными незавершёнными задачами; N01–N03,N06–N09,N14 остаются на паузе."
 }
