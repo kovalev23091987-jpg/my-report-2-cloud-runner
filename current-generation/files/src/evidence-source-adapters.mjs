@@ -18,6 +18,8 @@ export const SOURCE_POLICIES=Object.freeze({
  GDELT_NEWS_DISCOVERY:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N07']},
  BLUESKY_PUBLIC:{daily_cap:240,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N06']},
  DERIBIT_ALT_OPTIONS:{daily_cap:168,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N14']},
+ BYBIT_OPTIONS:{daily_cap:64,ordinary_daily_cap:48,protected_manual_attempts:16,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N14'],retries:0,provider_response_clock_not_per_quote_clock:true},
+ BINANCE_OPTION_INTEREST:{daily_cap:96,ordinary_daily_cap:80,protected_manual_attempts:16,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N14'],retries:0,provider_endpoint_weights:{exchangeInfo:1,index:1,openInterest:0}},
  // Legacy collectors remain parseable for historical receipts, but are not
  // routed by the active 15-block candidate runtime.
  SNAPSHOT_GOVERNANCE:{daily_cap:96,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N13']},

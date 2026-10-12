@@ -1,0 +1,253 @@
+{
+  "schema": "N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012_V2",
+  "working_head": "08e883acc68852958f2224d4956bee0959c4d39c",
+  "lease_owner": "CODEX:N14_OPTION_COVERAGE:1791808766064",
+  "as_of_utc": "2026-10-12T13:03:04.225319+00:00",
+  "universe_assets": 104,
+  "historical_preexisting_useful_exact_option_assets": [
+    "AVAX",
+    "BTC",
+    "ETH",
+    "HYPE",
+    "SOL",
+    "TRX",
+    "XRP",
+    "XAUT"
+  ],
+  "new_primary_source": "BYBIT_PUBLIC_CRYPTO_OPTIONS",
+  "new_original_useful_assets": [
+    "BTC",
+    "DOGE",
+    "ETH",
+    "HYPE",
+    "SOL",
+    "XAUT",
+    "XRP"
+  ],
+  "new_unique_asset": "DOGE",
+  "historical_union_useful_assets": [
+    "AVAX",
+    "BNB",
+    "BTC",
+    "DOGE",
+    "ETH",
+    "HYPE",
+    "SOL",
+    "TRX",
+    "XAUT",
+    "XRP"
+  ],
+  "historical_union_count": 10,
+  "current_simultaneous_9_assets_proven": false,
+  "structural_option_asset_ceiling_from_saved_catalogs": 13,
+  "gate_quality": "ADA/BNB/LTC/SUI near-ATM baskets had zero trade/open-interest activity and wide spreads; DOGE had activity but source REST quote age is not published; no Gate production fact admitted",
+  "crypto_com_options_catalog_count": 0,
+  "binance_bnb_actual_open_interest": "Original Binance BNB 16 Oct option OI plus source-timestamped index replay closes 6 call and 6 put contracts near the index (±10%), combined sample OI 1,895,445.65 USD. N14 neutral consumer and controlled manual/Telegram binding are implemented on candidate PR #335; natural production report and delivery remain unproven.",
+  "source_calls": {
+    "total_public_http": 30,
+    "global_job_cap": 164,
+    "d1_calls": 0,
+    "retries": 0,
+    "binance_750_ticker_raw_unretained_due_to_research_filename_collision": 2
+  },
+  "bybit_runtime": {
+    "source_daily_cap": 64,
+    "ordinary_daily_cap": 48,
+    "manual_protected": 16,
+    "per_asset_ticker_http": 1,
+    "ttl_ms": 1200000,
+    "uses_provider_response_clock_not_per_quote_clock": true,
+    "requires_2_calls_2_puts_positive_bidask_sizes_open_interest_or_24h_volume_spread_at_most_50_pct_near_atm_and_1_to_45_days": true,
+    "directional_score_added": 0,
+    "strategy_or_report_format_changed": false,
+    "spot_futures": "Bybit options are an additional derivative overlay; existing exact spot and futures facts remain independent and are not replaced by options"
+  },
+  "proof": {
+    "test_command": "node --test current-generation/tests/output-contract-freeze.test.mjs current-generation/tests/binance-options-interest-evidence.test.mjs current-generation/tests/bybit-options-evidence.test.mjs current-generation/tests/unified-block-output.test.mjs current-generation/tests/paused-block-report-chains.test.mjs current-generation/tests/delta-options-evidence.test.mjs current-generation/tests/deribit-alt-options-evidence.test.mjs",
+    "targeted_result": "47 pass, 1 assembled-only skip, 0 fail",
+    "manual_telegram": "Controlled DOGE and BNB canonical replays: same respective N14 evidence_id reaches manual and Telegram renderers; delivery_proven false; not natural SENT",
+    "cloud_assembled_result": "PENDING_PR335_NEW_BINANCE_CANDIDATE"
+  },
+  "receipts": [
+    "checkpoints/n14-option-catalog-batch-1791808981122/receipt.json",
+    "checkpoints/n14-gate-option-samples-1791809052959/receipt.json",
+    "checkpoints/n14-crypto-com-catalog-1791809223324/receipt.json",
+    "checkpoints/n14-bybit-binance-samples-1791809275477/receipt.json",
+    "checkpoints/n14-bybit-option-other-bases-1791809581526/receipt.json",
+    "checkpoints/n14-binance-bnb-interest-1791809914132/receipt.json",
+    "checkpoints/n14-binance-bnb-index-1791809976508/receipt.json"
+  ],
+  "verified_raw_bodies": [
+    {
+      "path": "checkpoints/n14-option-catalog-batch-1791808981122/GATE_OPTIONS_UNDERLYINGS.json.gz",
+      "body_sha256": "31f30272ad6600d611c62136a3d7a4ef0d073201821fdccad36b5b0bcb47a9db",
+      "received_ts": 1791808983485
+    },
+    {
+      "path": "checkpoints/n14-option-catalog-batch-1791808981122/BYBIT_OPTION_BASE_COINS.json.gz",
+      "body_sha256": "a93081dd4a16e78eb5279bf71918dd50b9280e165cecfe4b8cf691062914b0d0",
+      "received_ts": 1791808984592
+    },
+    {
+      "path": "checkpoints/n14-option-catalog-batch-1791808981122/BINANCE_OPTION_EXCHANGE_INFO.json.gz",
+      "body_sha256": "dfeb6c37d4213d40a64f5b2dca7871f2743e99af1a444cd9b294f1bf886a1ef1",
+      "received_ts": 1791808986621
+    },
+    {
+      "path": "checkpoints/n14-option-catalog-batch-1791808981122/OKX_OPTION_UNDERLYINGS.json.gz",
+      "body_sha256": "544ed28331de8150539f7f5a96ff0be8712c36d84d033b4cab50571f0753abea",
+      "received_ts": 1791808989216
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/ADA-contracts.json.gz",
+      "body_sha256": "7c72468946b5a1cabac7c0c09a0fb937cd99545b6360f2e10d34fefab230f7bc",
+      "received_ts": 1791809055082
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/ADA-tickers.json.gz",
+      "body_sha256": "26fe5e2f591c086bb5b7a1d502c8e3156d34f0fa7a5b9d535040913918e3476a",
+      "received_ts": 1791809058968
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/BNB-contracts.json.gz",
+      "body_sha256": "6d1a6c3ee07a7b6f012ee897c2dcb6416d02c2ebc8e776f155f36572ff399ca8",
+      "received_ts": 1791809062463
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/BNB-tickers.json.gz",
+      "body_sha256": "571cb6ff1303058cd7e0620b3bf27a7c8f4c5eb76d453c7bfb55abaea40b2f20",
+      "received_ts": 1791809065659
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/DOGE-contracts.json.gz",
+      "body_sha256": "bc9f7d481f22dcd13244efc710cf30c94006d8eccf3c427cf1750f73ab885a51",
+      "received_ts": 1791809069353
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/DOGE-tickers.json.gz",
+      "body_sha256": "0cb254373399a6f55fb656050bf650dc414a2c2c39cec48da3aebbc5ac8d971f",
+      "received_ts": 1791809073557
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/LTC-contracts.json.gz",
+      "body_sha256": "8c32222ff0c1795b3e162692df813eb1680c6611f24fd79ce5ded857bcc1a68f",
+      "received_ts": 1791809076797
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/LTC-tickers.json.gz",
+      "body_sha256": "9c4ab6203f306d39b34a9e549ba0a94aed763b7adeed01b754737f70afeda131",
+      "received_ts": 1791809080510
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/SUI-contracts.json.gz",
+      "body_sha256": "d90a317d303045c97b9162d43b0b2d5c2f1678f324eb0d573575cc3a494b20fe",
+      "received_ts": 1791809084035
+    },
+    {
+      "path": "checkpoints/n14-gate-option-samples-1791809052959/SUI-tickers.json.gz",
+      "body_sha256": "a5b75c95332c51d839c4017e0a9a0870688bb7fde0ec86588fb9f52557416981",
+      "received_ts": 1791809087826
+    },
+    {
+      "path": "checkpoints/n14-crypto-com-catalog-1791809223324/CRYPTO_COM_INSTRUMENTS.json.gz",
+      "body_sha256": "f43ebec4b8d1ff743dd9b0901aad4e2be4a36803ac68077c1bd8dc79ff5bcb1e",
+      "received_ts": 1791809225800
+    },
+    {
+      "path": "checkpoints/n14-bybit-binance-samples-1791809275477/BYBIT_DOGE_OPTION_TICKERS.json.gz",
+      "body_sha256": "37a905516a091298d18005798a3be6f9ad64b346befce27ce00fff39b730d32e",
+      "received_ts": 1791809276936
+    },
+    {
+      "path": "checkpoints/n14-bybit-binance-samples-1791809275477/BINANCE_BNB_745_C.json.gz",
+      "body_sha256": "b81f5d0e6440aa025326c0d287add38036805c249fb393cd192eabeec6b82b0a",
+      "received_ts": 1791809282581
+    },
+    {
+      "path": "checkpoints/n14-bybit-binance-samples-1791809275477/BINANCE_BNB_745_P.json.gz",
+      "body_sha256": "051d7c7e14dca384c512b1535527cdf76ea6ddcddfc4329cf06a1fcaa8237ac1",
+      "received_ts": 1791809284385
+    },
+    {
+      "path": "checkpoints/n14-bybit-binance-samples-1791809275477/BINANCE_OPTION_MARK_ALL.json.gz",
+      "body_sha256": "21f98ead0456fd74a3788aa39c943420d7ddcfdd21711942e7323d79b8c41588",
+      "received_ts": 1791809286549
+    },
+    {
+      "path": "checkpoints/n14-bybit-option-other-bases-1791809581526/BYBIT_BTC_OPTION_TICKERS.json.gz",
+      "body_sha256": "e18a682da55336a161160a94b33e6ea14af7804f52d7eaee801a3195e5afc13a",
+      "received_ts": 1791809583198
+    },
+    {
+      "path": "checkpoints/n14-bybit-option-other-bases-1791809581526/BYBIT_ETH_OPTION_TICKERS.json.gz",
+      "body_sha256": "956fd932e0bdb20c181297e2d8b3eff9329b6ba693b9569d90d21bacbfc0b4e2",
+      "received_ts": 1791809585567
+    },
+    {
+      "path": "checkpoints/n14-bybit-option-other-bases-1791809581526/BYBIT_SOL_OPTION_TICKERS.json.gz",
+      "body_sha256": "455e5e47a18043c7116e2f0db512c69a680ecabcfa72747f7eb09a63fc85b47c",
+      "received_ts": 1791809587820
+    },
+    {
+      "path": "checkpoints/n14-bybit-option-other-bases-1791809581526/BYBIT_XAUT_OPTION_TICKERS.json.gz",
+      "body_sha256": "0d9ed33c46103264379ae000ac2586dbfe517a68ea6187c87d171398a319e53d",
+      "received_ts": 1791809589979
+    },
+    {
+      "path": "checkpoints/n14-bybit-option-other-bases-1791809581526/BYBIT_HYPE_OPTION_TICKERS.json.gz",
+      "body_sha256": "4b6df58f0351435fc984bea267bf1b9bb33e125b6d3838ef125fbd428cc5ddb8",
+      "received_ts": 1791809592211
+    },
+    {
+      "path": "checkpoints/n14-bybit-option-other-bases-1791809581526/BYBIT_XRP_OPTION_TICKERS.json.gz",
+      "body_sha256": "bb99bcfdea335fd6484e6bb79b692bd9cc7ba12ebe6638132e79799352146f40",
+      "received_ts": 1791809594723
+    },
+    {
+      "path": "checkpoints/n14-binance-bnb-interest-1791809914132/BNB_261016_OPEN_INTEREST.json.gz",
+      "body_sha256": "d6f90808ceeda8cb99509c48eb0449acc49f2d37bd0a7a6dbae589a068bb2a73",
+      "received_ts": 1791809915372
+    },
+    {
+      "path": "checkpoints/n14-binance-bnb-interest-1791809914132/BNB_261030_OPEN_INTEREST.json.gz",
+      "body_sha256": "d6f90c15be5cd7d6c606d18a9344f60ac48083edd686737891370cd0afee18b3",
+      "received_ts": 1791809917029
+    },
+    {
+      "path": "checkpoints/n14-binance-bnb-index-1791809976508/BNB_INDEX.json.gz",
+      "body_sha256": "cd20d03d53da46d2ce5f521d3ea00f4bcd22bc54ff11d08011f9b4bbf08c4599",
+      "received_ts": 1791809977248
+    }
+  ],
+  "limitations": [
+    "Only seven Bybit assets had fresh original option baskets in one 12 Oct snapshot. Those quotes expire after 20 minutes and are not all-104 simultaneous operational coverage.",
+    "Bybit supplies response time, not individual quote update times; report labels this limitation.",
+    "Existing Deribit and Delta proof is historical and cannot be combined into a current same-run nine-asset claim.",
+    "BNB Binance positive option open interest is not wired to consumer.",
+    "N14 remains low-coverage and cannot be marked complete or removed without owner decision.",
+    "Natural post-merge full report and Telegram SENT/message_id remain unverified."
+  ],
+  "next_action": "Finish cloud assembled validation and natural report readback for new Bybit N14 route; if owner wants additional limited N14 context, qualify/connect Binance BNB OI with exact provider clocks and bounded catalog; then discuss retention or pause of N14 based on useful coverage. Do not start another block.",
+  "current_simultaneous_10_assets_proven": false,
+  "binance_runtime": {
+    "source_daily_cap": 96,
+    "ordinary_daily_cap": 80,
+    "manual_protected_attempts": 16,
+    "first_refresh_http": 3,
+    "catalog_cached_refresh_http": 2,
+    "catalog_ttl_ms": 21600000,
+    "interest_ttl_ms": 1200000,
+    "provider_weights": {
+      "exchangeInfo": 1,
+      "index": 1,
+      "openInterest": 0
+    },
+    "requires_exact_BNB_USDT_catalog_index_and_timestamped_2_calls_2_puts_positive_OI_near_atm": true,
+    "iv_available": false,
+    "directional_score_added": 0,
+    "strategy_or_report_format_changed": false,
+    "consumer": "current-generation/files/src/block-result-context.mjs",
+    "source": "current-generation/files/src/binance-options-interest-evidence.mjs"
+  },
+  "coverage_scope_note": "10/104 is historical union of useful exact option-context assets at different timestamps and unequal depth, not simultaneous current coverage or 10 assets with IV. Binance BNB contributes open interest only, no quote or IV. Options do not replace spot/futures."
+}

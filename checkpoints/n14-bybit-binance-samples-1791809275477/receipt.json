@@ -1,0 +1,96 @@
+{
+  "schema": "N14_BYBIT_BINANCE_BOUNDED_SAMPLES_V1",
+  "head": "08e883acc68852958f2224d4956bee0959c4d39c",
+  "lease_owner": "CODEX:N14_OPTION_COVERAGE:1791808766064",
+  "started_ts": 1791809275477,
+  "admission": {
+    "missing_facts": [
+      "DOGE_OPTION_LIQUIDITY_BYBIT",
+      "BNB_OPTION_LIQUIDITY_IV_BINANCE"
+    ],
+    "max_http": 6,
+    "provider_attempt_caps": {
+      "BYBIT": 1,
+      "BINANCE": 5
+    },
+    "binance_weight_max": 9,
+    "d1_calls": 0,
+    "retries": 0,
+    "global_job_http_cap": 164
+  },
+  "requests": [
+    {
+      "name": "BYBIT_DOGE_OPTION_TICKERS",
+      "url": "https://api.bybit.com/v5/market/tickers?category=option&baseCoin=DOGE",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809276936,
+      "response_date": "Mon, 12 Oct 2026 12:47:56 GMT",
+      "bytes": 148844,
+      "body_sha256": "37a905516a091298d18005798a3be6f9ad64b346befce27ce00fff39b730d32e",
+      "rows": 278,
+      "file": "BYBIT_DOGE_OPTION_TICKERS.json.gz"
+    },
+    {
+      "name": "BINANCE_BNB_750_C",
+      "url": "https://eapi.binance.com/eapi/v1/ticker?symbol=BNB-261014-750-C",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809278856,
+      "response_date": "Mon, 12 Oct 2026 12:47:58 GMT",
+      "bytes": 277,
+      "body_sha256": "f3bc6701fb094a6a6735689b4404bd16a75b55c8668bee4c60511eb2ffc50d4b",
+      "rows": 1,
+      "raw_body_unretained_due_to_name_collision": true
+    },
+    {
+      "name": "BINANCE_BNB_750_P",
+      "url": "https://eapi.binance.com/eapi/v1/ticker?symbol=BNB-261014-750-P",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809280576,
+      "response_date": "Mon, 12 Oct 2026 12:48:00 GMT",
+      "bytes": 279,
+      "body_sha256": "d2b7a5033c3bd0efad574e172e401a7e7ab17b129623d72062c5ad5729dcfe7c",
+      "rows": 1,
+      "raw_body_unretained_due_to_name_collision": true
+    },
+    {
+      "name": "BINANCE_BNB_745_C",
+      "url": "https://eapi.binance.com/eapi/v1/ticker?symbol=BNB-261014-745-C",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809282581,
+      "response_date": "Mon, 12 Oct 2026 12:48:02 GMT",
+      "bytes": 279,
+      "body_sha256": "b81f5d0e6440aa025326c0d287add38036805c249fb393cd192eabeec6b82b0a",
+      "rows": 1,
+      "file": "BINANCE_BNB_745_C.json.gz"
+    },
+    {
+      "name": "BINANCE_BNB_745_P",
+      "url": "https://eapi.binance.com/eapi/v1/ticker?symbol=BNB-261014-745-P",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809284385,
+      "response_date": "Mon, 12 Oct 2026 12:48:04 GMT",
+      "bytes": 279,
+      "body_sha256": "051d7c7e14dca384c512b1535527cdf76ea6ddcddfc4329cf06a1fcaa8237ac1",
+      "rows": 1,
+      "file": "BINANCE_BNB_745_P.json.gz"
+    },
+    {
+      "name": "BINANCE_OPTION_MARK_ALL",
+      "url": "https://eapi.binance.com/eapi/v1/mark",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809286549,
+      "response_date": "Mon, 12 Oct 2026 12:48:06 GMT",
+      "bytes": 425712,
+      "body_sha256": "21f98ead0456fd74a3788aa39c943420d7ddcfdd21711942e7323d79b8c41588",
+      "rows": 1574,
+      "file": "BINANCE_OPTION_MARK_ALL.json.gz"
+    }
+  ],
+  "finished_ts": 1791809287606
+}

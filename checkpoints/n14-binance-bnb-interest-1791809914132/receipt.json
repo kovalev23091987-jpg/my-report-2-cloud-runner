@@ -1,0 +1,41 @@
+{
+  "schema": "N14_BINANCE_BNB_ZERO_WEIGHT_INTEREST_V1",
+  "head": "08e883acc68852958f2224d4956bee0959c4d39c",
+  "lease_owner": "CODEX:N14_OPTION_COVERAGE:1791808766064",
+  "started_ts": 1791809914132,
+  "admission": {
+    "missing_fact": "BNB_NEAR_ATM_REAL_OPEN_INTEREST",
+    "max_http": 2,
+    "official_endpoint_weight_each": 0,
+    "d1_calls": 0,
+    "retries": 0,
+    "global_job_http_cap": 164
+  },
+  "requests": [
+    {
+      "expiry": "261016",
+      "url": "https://eapi.binance.com/eapi/v1/openInterest?underlyingAsset=BNB&expiration=261016",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809915372,
+      "response_date": "Mon, 12 Oct 2026 12:58:35 GMT",
+      "bytes": 3636,
+      "body_sha256": "d6f90808ceeda8cb99509c48eb0449acc49f2d37bd0a7a6dbae589a068bb2a73",
+      "rows": 30,
+      "file": "BNB_261016_OPEN_INTEREST.json.gz"
+    },
+    {
+      "expiry": "261030",
+      "url": "https://eapi.binance.com/eapi/v1/openInterest?underlyingAsset=BNB&expiration=261030",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791809917029,
+      "response_date": "Mon, 12 Oct 2026 12:58:36 GMT",
+      "bytes": 3298,
+      "body_sha256": "d6f90c15be5cd7d6c606d18a9344f60ac48083edd686737891370cd0afee18b3",
+      "rows": 26,
+      "file": "BNB_261030_OPEN_INTEREST.json.gz"
+    }
+  ],
+  "finished_ts": 1791809918034
+}

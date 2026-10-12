@@ -1,0 +1,84 @@
+{
+  "schema": "N14_OPTION_CATALOG_BOUNDED_DISCOVERY_V1",
+  "started_ts": 1791808981122,
+  "head": "08e883acc68852958f2224d4956bee0959c4d39c",
+  "lease_owner": "CODEX:N14_OPTION_COVERAGE:1791808766064",
+  "admission": {
+    "missing_facts": [
+      "GATE_OPTIONS_UNDERLYINGS",
+      "BYBIT_OPTION_BASE_COINS",
+      "BINANCE_OPTION_EXCHANGE_INFO",
+      "OKX_OPTION_UNDERLYINGS"
+    ],
+    "source_http_max": 4,
+    "source_http_per_provider_max": 1,
+    "d1_calls": 0,
+    "retries": 0,
+    "global_job_http_cap": 164,
+    "reason": "catalog-only prequalification before requesting any option quotes"
+  },
+  "sources": [
+    {
+      "name": "GATE_OPTIONS_UNDERLYINGS",
+      "url": "https://api.gateio.ws/api/v4/options/underlyings",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791808983485,
+      "bytes": 818,
+      "body_sha256": "31f30272ad6600d611c62136a3d7a4ef0d073201821fdccad36b5b0bcb47a9db",
+      "file": "GATE_OPTIONS_UNDERLYINGS.json.gz",
+      "top_level": "list"
+    },
+    {
+      "name": "BYBIT_OPTION_BASE_COINS",
+      "url": "https://api.bybit.com/v5/market/option-base-coins?underlyingType=0",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791808984592,
+      "bytes": 1335,
+      "body_sha256": "a93081dd4a16e78eb5279bf71918dd50b9280e165cecfe4b8cf691062914b0d0",
+      "file": "BYBIT_OPTION_BASE_COINS.json.gz",
+      "top_level": [
+        "retCode",
+        "retMsg",
+        "result",
+        "retExtInfo",
+        "time"
+      ]
+    },
+    {
+      "name": "BINANCE_OPTION_EXCHANGE_INFO",
+      "url": "https://eapi.binance.com/eapi/v1/exchangeInfo",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791808986621,
+      "bytes": 997322,
+      "body_sha256": "dfeb6c37d4213d40a64f5b2dca7871f2743e99af1a444cd9b294f1bf886a1ef1",
+      "file": "BINANCE_OPTION_EXCHANGE_INFO.json.gz",
+      "top_level": [
+        "timezone",
+        "serverTime",
+        "optionContracts",
+        "optionAssets",
+        "optionSymbols",
+        "rateLimits"
+      ]
+    },
+    {
+      "name": "OKX_OPTION_UNDERLYINGS",
+      "url": "https://www.okx.com/api/v5/public/underlying?instType=OPTION",
+      "attempts": 1,
+      "http_status": 200,
+      "received_ts": 1791808989216,
+      "bytes": 72,
+      "body_sha256": "544ed28331de8150539f7f5a96ff0be8712c36d84d033b4cab50571f0753abea",
+      "file": "OKX_OPTION_UNDERLYINGS.json.gz",
+      "top_level": [
+        "code",
+        "data",
+        "msg"
+      ]
+    }
+  ],
+  "finished_ts": 1791808989222
+}
