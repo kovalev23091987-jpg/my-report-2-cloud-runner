@@ -1,4 +1,4 @@
-name: LIQ assembled spot and 104 admission offline
+name: LIQ assembled spot and 105 admission offline
 on:
   push:
     branches: [main]
@@ -8,6 +8,17 @@ on:
       - current-generation/files/src/liquidation-futures-coverage.mjs
       - current-generation/tests/liquidation-futures-coverage.test.mjs
       - current-generation/files/src/pump-liquidation-zones.mjs
+      - current-generation/files/src/coinboss-liquidation-levels.mjs
+      - current-generation/files/src/liquidation-forecast-memory.mjs
+      - current-generation/files/src/canonical-runtime-adapter.mjs
+      - current-generation/files/src/worker.js
+      - current-generation/tests/coinboss-liquidation-levels.test.mjs
+      - current-generation/tests/liquidation-forecast-memory.test.mjs
+      - current-generation/tests/liquidation-zone-policy.test.mjs
+      - current-generation/files/src/approved-htx-analysis-scope.mjs
+      - checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz
+      - cloudflare/free-history/hourly-archive.mjs
+      - cloudflare/free-history/history-read.mjs
       - current-generation/files/src/canonical-display.mjs
       - current-generation/files/src/liquidation-source-chain.mjs
 permissions:
@@ -31,7 +42,7 @@ jobs:
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
-            if(!/^CODEX:LIQ_LIVE_CLOCK_AUDIT:/.test(phase.lease?.owner||'')||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if(!/^CODEX:LIQ_COVERAGE_BATCH:/.test(phase.lease?.owner||'')||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Assemble encrypted runtime and verify LIQ report path
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -48,10 +59,12 @@ jobs:
           cmp current-generation/files/src/canonical-display.mjs runtime/src/canonical-display.mjs
           cmp current-generation/files/src/pump-liquidation-zones.mjs runtime/src/pump-liquidation-zones.mjs
           cmp current-generation/files/src/htx-source-backed-liquidation-model.mjs runtime/src/htx-source-backed-liquidation-model.mjs
+          cmp current-generation/files/src/coinboss-liquidation-levels.mjs runtime/src/coinboss-liquidation-levels.mjs
+          cmp current-generation/files/src/liquidation-forecast-memory.mjs runtime/src/liquidation-forecast-memory.mjs
           cmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs
           cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
-          node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs > audit-output/liq-assembled/target.tap
+          node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
       - name: Show failure locations
         if: failure()

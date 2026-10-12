@@ -1,0 +1,134 @@
+{
+  "schema": "LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_V1",
+  "recorded_utc": "2026-10-12T18:21:00Z",
+  "status": "CANDIDATE_LOCAL_VALIDATION; CLOUD_ASSEMBLY_AND_NATURAL_RUN_PENDING",
+  "scope": "LIQ_ONLY; FUTURE_FUTURES_LIQUIDATION_LEVELS; NO_BTC_ETH_LEVEL_SEARCH; NO_SCORE_OR_STRATEGY_CHANGE",
+  "fresh_main_before_package": "6a9da07db4c3a7119dcf31e889feda640f414749",
+  "lease_owner": "CODEX:LIQ_COVERAGE_BATCH:1791825970396",
+  "approved_universe": {
+    "assets": 105,
+    "contracts": 122,
+    "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+    "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+    "lineage": "previous 104-asset manifest remains immutable; STRK appended with exact official HTX contract and market receipts; full catalog not re-collected",
+    "strk_contract_code": "STRK-USDT",
+    "strk_official_contract_source_ts": 1791827516363,
+    "strk_official_contract_receipt_sha256": "8fcc67952cb3072265c018a4b122feb11a5352f4984a52218419b3048bdd0f42",
+    "strk_official_market_source_ts": 1791827517244,
+    "strk_official_market_receipt_sha256": "653e6b4e35407c1a54931366486c3d65e719e89ef840241fcf7df08c9d1b2a3a",
+    "strk_old_archive": "HONEST_GAP_UNTIL_NEXT_NATURAL_HTX_ARCHIVE",
+    "new_archive_worker_deployed": false
+  },
+  "coinboss_bounded_probe": {
+    "target": "102 approved non-BTC/ETH coins from previous 104 universe",
+    "fresh_exact_numeric_within_5pct_htx": 56,
+    "stale": 21,
+    "unavailable": 21,
+    "invalid_symbol_default": 4,
+    "meaning": "Source research potential only; not actual report participation or independent factual future positions",
+    "original_raw_local_only": "/private/tmp/coinboss-liq-levels-102-20261012.json",
+    "consumer": "bounded optional modeled scenarios with exact symbol, source clock, HTX price and OI gates; scenario-only; no position amount or decision target; one call only when the existing LIQ HTTP envelope and unified budget admit it",
+    "official_docs": "https://www.coinboss.com/api-docs",
+    "pricing": "https://www.coinboss.com/pricing"
+  },
+  "new_candidates_without_duplicate_live_probe": [
+    {
+      "name": "n0brains",
+      "url": "https://n0brains.com/docs/",
+      "role": "CEX modeled map and DEX actual public position map",
+      "access": "free key 60 requests/min with 15 minute signal delay and limited fields",
+      "status": "DOCS_ONLY_NOT_INTEGRATED; exact free map payload, source clock, asset coverage and original Hyperliquid overlap unverified"
+    },
+    {
+      "name": "Buildix",
+      "url": "https://www.buildix.trade/docs",
+      "role": "Hyperliquid cluster map",
+      "access": "WHALE paid map; free no-key mode is screener/pair only, 20 requests/day",
+      "status": "NO_FREE_FUTURE_MAP_PROVEN"
+    },
+    {
+      "name": "BBX",
+      "url": "https://api-docs.bbx.com/en/apis/coins",
+      "role": "estimated liquidation map",
+      "access": "signed key with futures:LIQUIDATION_MAP permission; docs list BTC, ETH, SOL on Binance/OKX",
+      "status": "NO_BROAD_FREE_COVERAGE_PROVEN; overlaps earlier Hyperbot-style route"
+    },
+    {
+      "name": "SkynetX",
+      "url": "https://skynetx.io/docs/api",
+      "role": "recent realized liquidation events",
+      "access": "free Hobbyist key 30 requests/min; liquidations endpoint is past forced closes",
+      "status": "NOT_FUTURE_LEVELS"
+    },
+    {
+      "name": "PerpInfo",
+      "url": "https://perpinfo.com/markets",
+      "role": "free UI liquidation map",
+      "access": "email account for map; no documented machine-readable map API established",
+      "status": "UI_LEAD_ONLY"
+    },
+    {
+      "name": "MyPosition",
+      "url": "https://myposition.dev/en/about",
+      "role": "free UI estimated Binance map",
+      "access": "documented public exchange raw inputs, no documented map API established",
+      "status": "SAME_RAW_INPUT_FAMILY; UI_LEAD_ONLY"
+    },
+    {
+      "name": "CryptoLiqMap open source",
+      "url": "https://github.com/MYMDO/CryptoTradingLiquidationMap",
+      "role": "estimated browser map",
+      "access": "MIT source using public Binance, Bybit and OKX raw data",
+      "status": "20 listed pairs and same raw exchange inputs; method research, not independent provider"
+    },
+    {
+      "name": "CoinAnk",
+      "url": "https://test.coinank.com/openApi",
+      "role": "possible liquidation map trial",
+      "access": "7-day VIP trial advertised; relevant API entitlement and sustainable free use unverified",
+      "status": "TRIAL_LEAD_ONLY"
+    },
+    {
+      "name": "Kiyotaka",
+      "url": "https://kiyotaka.ai/docs",
+      "role": "heatmap API candidate",
+      "access": "documentation discovered; free future map entitlement and payload unverified",
+      "status": "LEAD_ONLY"
+    },
+    {
+      "name": "KnownAt",
+      "url": "https://knownat.com/docs",
+      "role": "liquidation map research alpha",
+      "access": "free authenticated fixed Bybit BTC snapshot",
+      "status": "BTC_EXCLUDED; NOT_LIVE_OR_BROAD"
+    }
+  ],
+  "prior_sources_preserved_without_repeat_probe": [
+    "Hyperliquid direct native positions; gTrade; GMX; Lighter; dYdX; LiqFlow",
+    "ByKaranteli, Coinfuty, SmartMoneyAPI, MarginPad, Coinglass, Hyblock, Trading Different, CoinBoss",
+    "Do not count multiple connectors backed by one primary venue as independent sources"
+  ],
+  "forecast_memory": {
+    "state": "LOCAL_CANDIDATE_ONLY",
+    "purpose": "record original future source clocks and proposed prices for later outcome statistics only",
+    "decision_effect": false,
+    "report_effect": false,
+    "d1_capacity_guard_bytes": 400000000,
+    "current_outcome_evaluator": false,
+    "current_source_weight_change": false,
+    "reason": "No empirical success window exists yet; never use retrospective levels as current future levels"
+  },
+  "tests": {
+    "targeted": "79/79 targeted local tests passed, including immutable output fixtures, pins, STRK archive compatibility, LIQ display, CoinBoss model, D1 forecast snapshots",
+    "full_local_validation": "1417 pass, 5 fail before pin/fixture fixes; remaining supplemental-supporting-bridge requires assembled encrypted runtime and is cloud-only",
+    "cloud_assembled": "PENDING"
+  },
+  "acceptance_pending": [
+    "assembled cloud test on exact committed head",
+    "new main natural full run with STRK Stage0 and selected candidate LIQ source-to-report/Telegram path",
+    "one honest per-asset factual versus modeled future-level coverage census on actual data",
+    "new HTX hourly archive Worker deploy and natural STRK row",
+    "historical forecast outcome evaluator and reliability statistics before any source weight change"
+  ],
+  "next_action": "Commit this bounded LIQ package under current lease, run assembled cloud workflow and fix failures, update exact status and resume, then release lease; keep LIQ open until natural report and coverage receipts prove it."
+}

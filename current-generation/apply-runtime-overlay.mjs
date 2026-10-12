@@ -47,6 +47,8 @@ const files=[
  'src/reason-registry.mjs',
  'src/pump-liquidation-zones.mjs',
  'src/htx-source-backed-liquidation-model.mjs',
+ 'src/coinboss-liquidation-levels.mjs',
+ 'src/liquidation-forecast-memory.mjs',
  'src/future-liquidation-map-source.mjs','src/byk-tracked-future-map.mjs',
  'src/canonical-runtime-adapter.mjs','src/early-direction-receipt.mjs','src/observation-technical-range.mjs',
  'src/opportunity-intelligence-engine.mjs','src/prospective-opportunity-view.mjs',

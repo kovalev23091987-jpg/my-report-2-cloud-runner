@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {webcrypto} from 'node:crypto';
+import {webcrypto,createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {buildSpotRecord} from './spot-archive.mjs';
 import {readHourlyHistory} from './history-read.mjs';
+import {PREVIOUS_MANIFEST_SHA256} from './hourly-archive.mjs';
 
 globalThis.crypto ||= webcrypto;
 const HOUR=3_600_000,T=1_791_810_000_000-1_791_810_000_000%HOUR;
@@ -22,5 +23,19 @@ test('bounded archive read returns source-clocked HTX spot, gap and no decision 
     db.exec("UPDATE report2_hourly_spot_archive_v1 SET payload_sha256='tampered'");
     await assert.rejects(readHourlyHistory({archive_db:adapter,contract:'BTC-USDT',market:'SPOT',from_hour:T,to_hour:T}),/HASH_INVALID/);
     await assert.rejects(readHourlyHistory({archive_db:adapter,contract:'BTC-USDT',market:'SPOT',from_hour:T,to_hour:T+8*24*HOUR}),/ARGUMENTS_INVALID/);
+  }finally{db.close();}
+});
+test('pre-STRK 104-asset futures archive remains readable and STRK has an honest gap',async()=>{
+  const db=new DatabaseSync(':memory:');
+  try{
+    db.exec(fs.readFileSync(new URL('./001_hourly_archive.sql',import.meta.url),'utf8'));
+    const source=T+25*60_000,payload=JSON.stringify({schema:'report2-hourly-market-archive-v1',source:'HTX_OFFICIAL_COLLECTOR',source_bucket:source,source_market_ts:source+1000,received_ts:source+2000,samples:[{contract:'ADA-USDT',market:'HTX_LINEAR_PERPETUAL',source_status:'CLOSED',price:1,observed_ts:source+1000}]});
+    const digest=createHash('sha256').update(payload).digest('hex');
+    db.prepare('INSERT INTO report2_hourly_market_archive_v1 VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run(T,source,'OLD',source+1000,source+2000,PREVIOUS_MANIFEST_SHA256,104,1,1,digest,payload,T);
+    const adapter={prepare(sql){const s=db.prepare(sql);return{bind(...p){return{all(){return{results:s.all(...p)}}}}}}};
+    const old=await readHourlyHistory({archive_db:adapter,contract:'ADA-USDT',market:'FUTURES',from_hour:T,to_hour:T});
+    const newCoin=await readHourlyHistory({archive_db:adapter,contract:'STRK-USDT',market:'FUTURES',from_hour:T,to_hour:T});
+    assert.equal(old.status,'CLOSED');assert.equal(old.samples[0].price,1);
+    assert.equal(newCoin.status,'PARTIAL');assert.equal(newCoin.samples.length,0);assert.deepEqual(newCoin.gaps,[T]);
   }finally{db.close();}
 });

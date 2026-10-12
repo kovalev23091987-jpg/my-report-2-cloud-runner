@@ -38,18 +38,19 @@ export function validateFuturesCoverageDatabase(db){
 // Add newly approved HTX futures to a retained matrix without refreshing any
 // old source check. This is an in-memory admission view, not a new D1 receipt.
 export function alignFuturesCoverageToApprovedScope(database,{approved_analysis_contracts,universe_sha256,universe_observed_ts,now}={}){
- if(!validateFuturesCoverageDatabase(database)||!Array.isArray(approved_analysis_contracts)||approved_analysis_contracts.length!==104||!/^[a-f0-9]{64}$/.test(universe_sha256||'')||!Number.isSafeInteger(universe_observed_ts)||!Number.isSafeInteger(now)||now<database.updated_ts||now<universe_observed_ts)return null;
+ if(!validateFuturesCoverageDatabase(database)||!Array.isArray(approved_analysis_contracts)||approved_analysis_contracts.length!==105||!/^[a-f0-9]{64}$/.test(universe_sha256||'')||!Number.isSafeInteger(universe_observed_ts)||!Number.isSafeInteger(now)||now<database.updated_ts||now<universe_observed_ts)return null;
  const approved=new Map(approved_analysis_contracts.map(x=>[x?.asset_symbol,x?.contract_code]));
- if(approved.size!==104||[...approved].some(([symbol,contract])=>contract!==`${symbol}-USDT`||!isExactHtxUsdtSwapKey(contract)))return null;
- if(database.crypto_future_assets===104){
-  return database.universe_sha256===universe_sha256&&database.crypto_future_contracts===121&&database.assets.every(a=>approved.get(a.symbol)===a.analysis_contract)?database:null;
+ if(approved.size!==105||[...approved].some(([symbol,contract])=>contract!==`${symbol}-USDT`||!isExactHtxUsdtSwapKey(contract)))return null;
+ if(database.crypto_future_assets===105){
+  return database.universe_sha256===universe_sha256&&database.crypto_future_contracts===122&&database.assets.every(a=>approved.get(a.symbol)===a.analysis_contract)?database:null;
  }
- if(database.crypto_future_assets!==102||database.crypto_future_contracts!==119||database.assets.some(a=>approved.get(a.symbol)!==a.analysis_contract))return null;
+ if(![[102,119],[104,121]].some(([assets,contracts])=>database.crypto_future_assets===assets&&database.crypto_future_contracts===contracts)||database.assets.some(a=>approved.get(a.symbol)!==a.analysis_contract))return null;
  const missing=[...approved].filter(([symbol])=>!database.assets.some(a=>a.symbol===symbol));
- if(JSON.stringify(missing.map(([symbol])=>symbol).sort())!==JSON.stringify(['CT','RLC']))return null;
+ const expectedMissing=database.crypto_future_assets===102?['CT','RLC','STRK']:['STRK'];
+ if(JSON.stringify(missing.map(([symbol])=>symbol).sort())!==JSON.stringify(expectedMissing))return null;
  const added=missing.map(([symbol,contract])=>({symbol,analysis_contract:contract,contracts:[{family:'linear',contract_code:contract}],source_checks:Object.fromEntries(SOURCES.map(source_id=>[source_id,{source_id,upstream_id:upstream[source_id],status:'UNVERIFIED',checked_ts:null,real_numeric_level_count:null,proof_sha256:null}]))}));
  const old=new Map(database.assets.map(a=>[a.symbol,a]));
- const aligned={...database,assets:[...approved.keys()].map(symbol=>old.get(symbol)||added.find(a=>a.symbol===symbol)),crypto_future_assets:104,crypto_future_contracts:121,universe_sha256,universe_observed_ts,updated_ts:now,source_checks_complete:false,alignment:{status:'IN_MEMORY_NEW_ASSETS_UNVERIFIED',source_assets:102,added_assets:['CT','RLC'],old_source_clocks_preserved:true,network_calls:0,d1_writes:0}};
+ const aligned={...database,assets:[...approved.keys()].map(symbol=>old.get(symbol)||added.find(a=>a.symbol===symbol)),crypto_future_assets:105,crypto_future_contracts:122,universe_sha256,universe_observed_ts,updated_ts:now,source_checks_complete:false,alignment:{status:'IN_MEMORY_NEW_ASSETS_UNVERIFIED',source_assets:database.crypto_future_assets,added_assets:expectedMissing,old_source_clocks_preserved:true,network_calls:0,d1_writes:0}};
  return validateFuturesCoverageDatabase(aligned)?aligned:null;
 }
 // Require the exact internally normalized source receipt, not a catalog entry,

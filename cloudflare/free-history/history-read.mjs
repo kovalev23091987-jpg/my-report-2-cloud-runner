@@ -1,4 +1,4 @@
-import {MANIFEST_SHA256,TARGETS} from './hourly-archive.mjs';
+import {MANIFEST_SHA256,PREVIOUS_MANIFEST_SHA256,TARGETS} from './hourly-archive.mjs';
 
 const HOUR=3_600_000;
 const encoder=new TextEncoder();
@@ -20,7 +20,8 @@ export async function readHourlyHistory({archive_db,contract,market,venue='HTX',
     if(await digest(row.payload_json)!==row.payload_sha256) throw Error('HISTORY_READ_HASH_INVALID');
     const payload=JSON.parse(row.payload_json);
     if(futures){
-      if(payload.schema!=='report2-hourly-market-archive-v1'||row.manifest_sha256!==MANIFEST_SHA256||row.target_count!==104||payload.source_bucket!==row.source_bucket||payload.source_market_ts!==row.source_market_ts) throw Error('HISTORY_READ_FUTURES_PROVENANCE_INVALID');
+      const generationValid=(row.manifest_sha256===MANIFEST_SHA256&&row.target_count===105)||(row.manifest_sha256===PREVIOUS_MANIFEST_SHA256&&row.target_count===104);
+      if(payload.schema!=='report2-hourly-market-archive-v1'||!generationValid||payload.source_bucket!==row.source_bucket||payload.source_market_ts!==row.source_market_ts) throw Error('HISTORY_READ_FUTURES_PROVENANCE_INVALID');
     }else{
       if(payload.schema!=='report2-hourly-spot-archive-v1'||row.venue!==venue||payload.venue!==venue||payload.source_url!==row.source_url||payload.source_ts!==row.source_ts||payload.identity_scope!==row.identity_scope) throw Error('HISTORY_READ_SPOT_PROVENANCE_INVALID');
     }

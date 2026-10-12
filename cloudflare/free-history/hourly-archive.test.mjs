@@ -13,8 +13,8 @@ const bucket=T+25*60_000;
 const received=bucket+2_000;
 const sha=value=>createHash('sha256').update(value).digest('hex');
 
-test('frozen targets are exactly the approved 104 HTX linear perpetuals',()=>{
-  const compressed=fs.readFileSync(new URL('../../checkpoints/htx-current-crypto-futures-universe-20261010.json.gz',import.meta.url));
+test('frozen targets are exactly the approved 105 HTX linear perpetuals',()=>{
+  const compressed=fs.readFileSync(new URL('../../checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz',import.meta.url));
   assert.equal(sha(compressed),MANIFEST_SHA256);
   const manifest=JSON.parse(gunzipSync(compressed));
   const expected=manifest.contracts.filter(x=>x.market_kind==='LINEAR_PERPETUAL').map(x=>x.contract_code).sort();
@@ -28,11 +28,11 @@ function fixture(mutate=()=>{}) {
   return [{bucket,generation:SOURCE_GENERATION,shard:0,source_timestamps_json:JSON.stringify({expected_shards:1,universe_total:data.length,market:bucket+1_000}),received_ts:received,status:'COMPLETE',payload_hash:sha(payload),payload,contract_count:data.length}];
 }
 
-test('exact 104-asset sampled futures archive retains clocks and remains compact',async()=>{
+test('exact 105-asset sampled futures archive retains clocks and remains compact',async()=>{
   const record=await buildHourlyRecord({hour_bucket:T,source_rows:fixture()});
-  assert.equal(record.target_count,104);
-  assert.equal(record.present_count,104);
-  assert.equal(record.qualified_count,104);
+  assert.equal(record.target_count,105);
+  assert.equal(record.present_count,105);
+  assert.equal(record.qualified_count,105);
   assert.equal(record.manifest_sha256,MANIFEST_SHA256);
   assert.equal(record.source_market_ts,bucket+1_000);
   assert.ok(Buffer.byteLength(record.payload_json)<100_000);
@@ -43,10 +43,10 @@ test('source tampering, duplicate contracts, missing shards and stale prices fai
   const corrupted=fixture();corrupted[0].payload_hash='0'.repeat(64);
   await assert.rejects(buildHourlyRecord({hour_bucket:T,source_rows:corrupted}),/HASH_INVALID/);
   await assert.rejects(buildHourlyRecord({hour_bucket:T,source_rows:fixture(rows=>rows.push({...rows[0]}))}),/DUPLICATE_CONTRACT/);
-  const missing=fixture();missing[0].source_timestamps_json=JSON.stringify({expected_shards:2,universe_total:104,market:bucket+1_000});
+  const missing=fixture();missing[0].source_timestamps_json=JSON.stringify({expected_shards:2,universe_total:105,market:bucket+1_000});
   await assert.rejects(buildHourlyRecord({hour_bucket:T,source_rows:missing}),/SHARDS_INVALID/);
   const partial=await buildHourlyRecord({hour_bucket:T,source_rows:fixture(rows=>rows[0].observed_ts=bucket-10*60_000)});
-  assert.equal(partial.qualified_count,103);
+  assert.equal(partial.qualified_count,104);
   assert.equal(JSON.parse(partial.payload_json).samples[0].price,null);
 });
 
@@ -64,14 +64,14 @@ test('hourly lane inserts once into separate D1 and never calls a source',async(
   const source=new D1(fs.readFileSync(new URL('../../current-generation/migrations/004_market_snapshot_batch.sql',import.meta.url),'utf8'));
   const archive=new D1(fs.readFileSync(new URL('./001_hourly_archive.sql',import.meta.url),'utf8'));
   const rows=fixture();
-  source.db.prepare(`INSERT INTO report2_market_snapshot_batch_v1(bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`).run(bucket,'HUB_PUBLIC_COLLECTOR',SOURCE_GENERATION,'report2-market-snapshot-batch-v1',0,rows[0].source_timestamps_json,received,'COMPLETE',rows[0].payload_hash,rows[0].payload,104,Buffer.byteLength(rows[0].payload));
+  source.db.prepare(`INSERT INTO report2_market_snapshot_batch_v1(bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`).run(bucket,'HUB_PUBLIC_COLLECTOR',SOURCE_GENERATION,'report2-market-snapshot-batch-v1',0,rows[0].source_timestamps_json,received,'COMPLETE',rows[0].payload_hash,rows[0].payload,105,Buffer.byteLength(rows[0].payload));
   const previousFetch=globalThis.fetch;
   globalThis.fetch=()=>{throw Error('NO_EXCHANGE_HTTP_ALLOWED');};
   try {
     const first=await archiveHour({source_db:source,archive_db:archive,scheduled_ts:T+28*60_000});
     assert.equal(first.status,'ARCHIVED');
     assert.equal(first.source_http,0);
-    assert.equal(first.qualified_count,104);
+    assert.equal(first.qualified_count,105);
     const second=await archiveHour({source_db:source,archive_db:archive,scheduled_ts:T+38*60_000});
     assert.equal(second.status,'ALREADY_ARCHIVED');
     assert.equal(archive.db.prepare('SELECT COUNT(*) AS n FROM report2_hourly_market_archive_v1').get().n,1);

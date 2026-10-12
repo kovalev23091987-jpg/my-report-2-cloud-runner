@@ -141,7 +141,7 @@ export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}=
    const px=displayPriceRange(z),d=displayDistanceRange(z),n=displayNumber(z.notional);
    if(!current)return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&z.estimated?'открытые позиции':z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
    const nearby=z.display_near_calculated_scenario,size=z.strength_label_ru||'не определён',sizeKind=z.scenario_only?'расчётный':'по данным источника';
-   return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — размер возможной ликвидации: ${size} (${sizeKind})${n!==null?`; объём позиции ${n} ${z.notional_unit}`:''}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${nearby?`; рядом расчёт HTX ≈${displayNumber(nearby.price)} ${z.price_quote} (расхождение ${displayNumber(Number(z.display_fact_model_within_pct.toFixed(2)))}%, расчётный размер ${nearby.scenario_estimated_size_tier||'не определён'}, объёмы не сложены)`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+   return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — размер возможной ликвидации: ${size} (${sizeKind})${n!==null?`; объём позиции ${n} ${z.notional_unit}`:''}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${nearby?`; рядом расчёт ${nearby.source||'источника'} ≈${displayNumber(nearby.price)} ${z.price_quote} (расхождение ${displayNumber(Number(z.display_fact_model_within_pct.toFixed(2)))}%, расчётный размер ${nearby.scenario_estimated_size_tier||'не определён'}, объёмы не сложены)`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
   });lines.push(`${label}: ${parts.length?parts.join('; '):current?'подходящие уровни не подтверждены':'уровни будущих ликвидаций не получены'}.`);
  }
  if(compact&&[...selectLiquidationDisplayZones(liq,'ABOVE',{policy}),...selectLiquidationDisplayZones(liq,'BELOW',{policy})].some(z=>z.estimated||z.display_contains_estimates))lines.push('≈ — расчётный уровень.');
@@ -152,7 +152,7 @@ export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}=
   lines.push('Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.');
   lines.push(`Покрытие: только доступные площадки и диапазон источника; время снимка ${displayTime(Math.min(...[...liq.above,...liq.below].map(z=>z.source_ts)))} МСК.`);
  }
- if(liq?.calculated_scenario_count>0)lines.push('Расчётные зоны HTX — сценарии по рыночным данным, а не наблюдаемые позиции или подтверждённые объёмы будущих ликвидаций.');
+ if(liq?.calculated_scenario_count>0)lines.push(`Расчётные зоны ${[...new Set((liq.calculated_scenarios||[]).map(z=>z.source).filter(Boolean))].join(' и ')} — сценарии по рыночным данным, а не наблюдаемые позиции или подтверждённые объёмы будущих ликвидаций.`);
  const spotLine=liquidationSpotReferenceLine(liq);if(spotLine)lines.push(spotLine);
  return lines;
 }
@@ -182,7 +182,7 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
   if(used.some(z=>z.conditional_cross||z.conditional_on_other_positions))lines.push('Зависят от других позиций счёта.');
   if(used.some(z=>z.source_clock_closed===false))lines.push('Время исходного состояния неизвестно.');
  }
- if(used.some(z=>z.scenario_only||z.display_near_calculated_scenario))lines.push('Расчёт HTX — сценарий, не известная позиция или подтверждённый объём.');
+ if(used.some(z=>z.scenario_only||z.display_near_calculated_scenario))lines.push(`Расчёт ${[...new Set(used.filter(z=>z.scenario_only).map(z=>z.source).concat(used.some(z=>z.display_near_calculated_scenario)?['HTX']:[]))].join(', ')} — сценарий, не известная позиция или подтверждённый объём.`);
  const absent=liquidationAbsenceLine(liq,policy);if(absent)lines.push(absent);
  const spotLine=liquidationSpotReferenceLine(liq);if(spotLine&&used.length)lines.push(spotLine);
  return lines;

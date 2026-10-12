@@ -16,10 +16,10 @@ class D1 {
   close(){this.db.close();}
 }
 
-test('HTX spot bulk keeps 104 targets separate from 89 returned pairs and no individual trade clock',async()=>{
+test('HTX spot bulk keeps 105 targets separate from 89 returned pairs and no individual trade clock',async()=>{
   const rows=htxRows.slice(0,89);
   const r=await buildSpotRecord({venue:'HTX',hour_bucket:T,body:{status:'ok',ts:now-1_000,data:rows},received_ts:now});
-  assert.equal(r.target_count,104);
+  assert.equal(r.target_count,105);
   assert.equal(r.present_count,89);
   assert.equal(r.quote_checked_count,89);
   const sample=JSON.parse(r.payload_json).samples[0];
@@ -41,7 +41,7 @@ test('one charged HTX request per hour, immutable write, and no retry after sour
   try{
     const first=await archiveSpot({venue:'HTX',archive_db:db,scheduled_ts:now,clock:()=>now,fetch_impl});
     assert.equal(first.status,'ARCHIVED');
-    assert.equal(first.present_count,104);
+    assert.equal(first.present_count,105);
     assert.equal((await archiveSpot({venue:'HTX',archive_db:db,scheduled_ts:now,clock:()=>now,fetch_impl})).status,'ALREADY_ARCHIVED');
     assert.equal(calls,1);
     const failed=new D1();try{

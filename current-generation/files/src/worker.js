@@ -16566,7 +16566,7 @@ async function buildDeepCheckInput(params, env) {
   const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:{network_calls:futureProviderModels?.network_calls??0}});
   let nativeLiquidationCollectionError=null;
   const nativeLiquidationMode=nativeLiquidationCollectionMode({contract,http_cap:liquidationCandidateHttpCap,lane_reserved:supplementalCandidateContext?.liquidation_lane_reserved,collector:env?.REPORT2_LIQUIDATION_NATIVE_COLLECT});
-  if (nativeLiquidationMode) {
+  if (nativeLiquidationMode && !['BTC-USDT','ETH-USDT'].includes(contract)) {
     try {
       nativeLiquidationAcquisition = await env.REPORT2_LIQUIDATION_NATIVE_COLLECT({
         contract, native_symbol: contract.slice(0,-5), run_id: String(params?.run_id || "").trim() || `manual-shadow-${cycleStartedTs}`,
@@ -16582,6 +16582,11 @@ async function buildDeepCheckInput(params, env) {
   }
 
   if(typeof env?.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT==='function')try{futureProviderModels=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});}catch{futureProviderModels={status:'SOURCE_ERROR',network_calls:1,levels:[]};}
+  let coinBossLiquidation=null;
+  if(typeof env?.REPORT2_COINBOSS_LIQUIDATION_COLLECT==='function'&&!['BTC-USDT','ETH-USDT'].includes(contract)){
+    try{coinBossLiquidation=await env.REPORT2_COINBOSS_LIQUIDATION_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now()});}
+    catch(error){coinBossLiquidation={source:'COINBOSS_CEX_MODEL',contract,status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160),scenarios:[],network_calls:0,internal_only:true};}
+  }
 
   // Historical liquidation tape is secondary to the future map.
 
@@ -17209,7 +17214,7 @@ async function buildDeepCheckInput(params, env) {
     });
   }
   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,coinboss_liquidation:coinBossLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
   let canonicalExecutionContextSource=null;
   // One bounded indexed read of the source already saved by this exact cycle;
@@ -17270,6 +17275,10 @@ async function buildDeepCheckInput(params, env) {
         previousSnapshotContext,
     });
   console.log('SUPPLEMENTAL_SCORE_RECEIPT',JSON.stringify({contract,run_id:String(params?.run_id||''),status:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.status,base_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.base_score,adjustment:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.adjustment,final_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.final_score,receipts:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.receipts||[]}));
+  if(typeof env?.REPORT2_LIQUIDATION_FORECAST_RECORD==='function'){
+    try{console.log('LIQUIDATION_FORECAST_MEMORY',JSON.stringify(await env.REPORT2_LIQUIDATION_FORECAST_RECORD({contract,run_id:String(params?.run_id||''),liquidations:canonicalAnalyticalBundle?.canonical?.liquidations,observed_ts:now,reference_price:canonicalAnalyticalBundle?.canonical?.current_price??params?.discovery_row?.current_price??null})));}
+    catch(error){console.log('LIQUIDATION_FORECAST_MEMORY',JSON.stringify({status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160)}));}
+  }
   if(typeof env?.REPORT2_LIQUIDATION_SIGNAL_RECORD==='function'){
     try{console.log('LIQUIDATION_SIGNAL_CALIBRATION_RECORD',JSON.stringify(await env.REPORT2_LIQUIDATION_SIGNAL_RECORD({contract,panel:canonicalAnalyticalBundle?.canonical?.metadata?.dynamic_liquidation_panel,cross_exchange_risk:crossExchangeRiskContext,reference_price:canonicalAnalyticalBundle?.canonical?.metadata?.dynamic_liquidation_panel?.reference_price??params?.discovery_row?.current_price??null,observed_ts:now})));}catch{}
   }
