@@ -2,34 +2,28 @@ import {MANIFEST_SHA256,TARGETS} from './hourly-archive.mjs';
 
 const HOUR=3_600_000,DAY=24*HOUR,RETAIN=270*DAY;
 const MAX_DB_BYTES=400_000_000,MAX_RESPONSE_BYTES=2_000_000,MAX_PAYLOAD_BYTES=100_000;
-const DAILY_HTTP_CAP=60;
+const DAILY_HTTP_CAP=24;
 const encoder=new TextEncoder();
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const validPrice=value=>{const x=finite(value);return x!==null&&x>0?x:null;};
 const sha=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(text))),b=>b.toString(16).padStart(2,'0')).join('');
 export const SPOT_SOURCES=Object.freeze({
-  HTX:Object.freeze({url:'https://api.huobi.pro/market/tickers',identity_scope:'HTX_EXACT_PAIR_ONLY',target_contracts:TARGETS}),
-  GATE:Object.freeze({url:'https://api.gateio.ws/api/v4/spot/tickers',identity_scope:'GATE_PAIR_CANDIDATE_UNBOUND',target_contracts:TARGETS}),
-  KUCOIN:Object.freeze({url:'https://api.kucoin.com/api/v1/market/stats?symbol=RAVE-USDT',identity_scope:'KUCOIN_RAVE_PAIR_CANDIDATE_UNBOUND',target_contracts:Object.freeze(['RAVE-USDT'])})
+  HTX:Object.freeze({url:'https://api.huobi.pro/market/tickers',identity_scope:'HTX_EXACT_PAIR_ONLY',target_contracts:TARGETS})
 });
 
-const symbolFor=(venue,contract)=>{
-  const base=contract.slice(0,-5);
-  return venue==='HTX'?`${base.toLowerCase()}usdt`:venue==='KUCOIN'?`${base}-USDT`:`${base}_USDT`;
-};
+const symbolFor=contract=>`${contract.slice(0,-5).toLowerCase()}usdt`;
 
 export async function buildSpotRecord({venue,hour_bucket,body,received_ts}) {
   const config=SPOT_SOURCES[venue];
   if (!config||!Number.isSafeInteger(hour_bucket)||hour_bucket%HOUR!==0||!Number.isSafeInteger(received_ts)||received_ts<hour_bucket||received_ts>hour_bucket+45*60_000) throw Error('SPOT_ARCHIVE_ARGUMENTS_INVALID');
-  if (venue==='HTX'&&body?.status!=='ok') throw Error('HTX_SPOT_STATUS_INVALID');
-  if (venue==='KUCOIN'&&body?.code!=='200000') throw Error('KUCOIN_SPOT_STATUS_INVALID');
-  const rows=venue==='HTX'?body?.data:venue==='KUCOIN'?[body?.data]:body;
+  if (body?.status!=='ok') throw Error('HTX_SPOT_STATUS_INVALID');
+  const rows=body?.data;
   if (!Array.isArray(rows)||rows.length<1||rows.length>10_000) throw Error('SPOT_ARCHIVE_ROWS_INVALID');
-  const source_ts=venue==='HTX'?Number(body?.ts):venue==='KUCOIN'?Number(body?.data?.time):null;
-  if (venue!=='GATE'&&(!Number.isSafeInteger(source_ts)||source_ts>received_ts||received_ts-source_ts>60_000)) throw Error('SPOT_SOURCE_CLOCK_INVALID');
+  const source_ts=Number(body?.ts);
+  if (!Number.isSafeInteger(source_ts)||source_ts>received_ts||received_ts-source_ts>60_000) throw Error('SPOT_SOURCE_CLOCK_INVALID');
   const bySymbol=new Map();
   for (const row of rows) {
-    const symbol=String(venue==='GATE'?row?.currency_pair:row?.symbol??'');
+    const symbol=String(row?.symbol??'');
     if (!symbol) continue;
     if (bySymbol.has(symbol)) throw Error('SPOT_ARCHIVE_DUPLICATE_SYMBOL');
     bySymbol.set(symbol,row);
@@ -37,21 +31,18 @@ export async function buildSpotRecord({venue,hour_bucket,body,received_ts}) {
   let checked=0;
   const samples=[];
   for (const contract of config.target_contracts) {
-    const symbol=symbolFor(venue,contract),row=bySymbol.get(symbol);
+    const symbol=symbolFor(contract),row=bySymbol.get(symbol);
     if (!row) continue;
-    const price=validPrice(venue==='HTX'?row.close:row.last);
-    const bid=validPrice(venue==='HTX'?row.bid:venue==='GATE'?row.highest_bid:row.buy);
-    const ask=validPrice(venue==='HTX'?row.ask:venue==='GATE'?row.lowest_ask:row.sell);
-    const quoteVolume=validPrice(venue==='HTX'?row.vol:venue==='GATE'?row.quote_volume:row.volValue);
-    const ticker_ts=venue==='KUCOIN'?Number(row.time):null;
-    const clockGood=venue!=='KUCOIN'||Number.isSafeInteger(ticker_ts)&&ticker_ts<=source_ts&&source_ts-ticker_ts<=60_000;
-    const priceConflict=venue==='GATE'&&contract==='RAVE-USDT';
-    const bounded=!priceConflict&&clockGood&&price!==null&&bid!==null&&ask!==null&&bid<=ask&&(ask-bid)/((ask+bid)/2)<=0.05&&quoteVolume!==null;
+    const price=validPrice(row.close);
+    const bid=validPrice(row.bid);
+    const ask=validPrice(row.ask);
+    const quoteVolume=validPrice(row.vol);
+    const bounded=price!==null&&bid!==null&&ask!==null&&bid<=ask&&(ask-bid)/((ask+bid)/2)<=0.05&&quoteVolume!==null;
     if (bounded) checked++;
-    samples.push({contract,pair:symbol,venue,market:'SPOT',price:price,price_basis:'LAST_TICKER_NOT_CANDLE',bid,ask,quote_volume_24h:quoteVolume,source_status:priceConflict?'CROSS_VENUE_PRICE_CONFLICT':bounded?'BOUNDED_TICKER':'QUOTE_NOT_QUALIFIED',source_ts:ticker_ts??source_ts,individual_trade_clock_verified:false,asset_identity_status:venue==='HTX'?'EXACT_HTX_SPOT_PAIR':priceConflict?'EXTERNAL_PAIR_PRICE_CONFLICT':'EXTERNAL_PAIR_IDENTITY_UNVERIFIED'});
+    samples.push({contract,pair:symbol,venue,market:'SPOT',price,price_basis:'LAST_TICKER_NOT_CANDLE',bid,ask,quote_volume_24h:quoteVolume,source_status:bounded?'BOUNDED_TICKER':'QUOTE_NOT_QUALIFIED',source_ts,individual_trade_clock_verified:false,asset_identity_status:'EXACT_HTX_SPOT_PAIR'});
   }
   if (!samples.length) throw Error('SPOT_ARCHIVE_NO_TARGET_PAIRS');
-  const payload=JSON.stringify({schema:'report2-hourly-spot-archive-v1',venue,source_url:config.url,source_ts,received_ts,source_clock_policy:venue==='HTX'?'BATCH_RESPONSE_ONLY':venue==='KUCOIN'?'MARKET_STATS_EXCHANGE_TIME':'RECEIPT_ONLY_NO_EXCHANGE_CLOCK',identity_scope:config.identity_scope,samples});
+  const payload=JSON.stringify({schema:'report2-hourly-spot-archive-v1',venue,source_url:config.url,source_ts,received_ts,source_clock_policy:'BATCH_RESPONSE_ONLY',identity_scope:config.identity_scope,samples});
   if (encoder.encode(payload).length>MAX_PAYLOAD_BYTES) throw Error('SPOT_ARCHIVE_PAYLOAD_TOO_LARGE');
   return {hour_bucket,venue,source_url:config.url,source_ts,received_ts,identity_scope:config.identity_scope,target_count:config.target_contracts.length,present_count:samples.length,quote_checked_count:checked,payload_sha256:await sha(payload),payload_json:payload};
 }

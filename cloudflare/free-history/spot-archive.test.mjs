@@ -8,9 +8,7 @@ import {buildSpotRecord,archiveSpot,SPOT_SOURCES} from './spot-archive.mjs';
 globalThis.crypto ||= webcrypto;
 const HOUR=3_600_000,T=1_791_810_000_000-1_791_810_000_000%HOUR,now=T+28*60_000;
 const htxPair=contract=>contract.slice(0,-5).toLowerCase()+'usdt';
-const gatePair=contract=>contract.slice(0,-5)+'_USDT';
 const htxRows=SPOT_SOURCES.HTX.target_contracts.map(contract=>({symbol:htxPair(contract),close:1,bid:.999,ask:1.001,vol:100,count:100}));
-const gateRows=SPOT_SOURCES.GATE.target_contracts.map(contract=>({currency_pair:gatePair(contract),last:'1',highest_bid:'.999',lowest_ask:'1.001',quote_volume:'100'}));
 
 class D1 {
   constructor(){this.db=new DatabaseSync(':memory:');this.db.exec(fs.readFileSync(new URL('./001_hourly_archive.sql',import.meta.url),'utf8'));this.bytes=16_384;}
@@ -31,27 +29,10 @@ test('HTX spot bulk keeps 104 targets separate from 89 returned pairs and no ind
   assert.ok(Buffer.byteLength(r.payload_json)<100_000);
 });
 
-test('Gate bulk covers the approved 104 targets without promoting identity candidates',async()=>{
-  const r=await buildSpotRecord({venue:'GATE',hour_bucket:T,body:gateRows,received_ts:now});
-  assert.equal(r.target_count,104);
-  assert.equal(r.present_count,104);
-  assert.equal(r.quote_checked_count,103);
-  assert.equal(r.source_ts,null);
-  assert.equal(r.identity_scope,'GATE_PAIR_CANDIDATE_UNBOUND');
-  assert.ok(Buffer.byteLength(r.payload_json)<100_000);
-  assert.ok(JSON.parse(r.payload_json).samples.every(x=>x.asset_identity_status==='EXTERNAL_PAIR_IDENTITY_UNVERIFIED'||x.asset_identity_status==='EXTERNAL_PAIR_PRICE_CONFLICT'));
-});
-
-test('Gate RAVE price conflict is retained but not qualified; KuCoin RAVE keeps exchange clock',async()=>{
-  const gate=await buildSpotRecord({venue:'GATE',hour_bucket:T,body:gateRows,received_ts:now});
-  const rave=JSON.parse(gate.payload_json).samples.find(x=>x.contract==='RAVE-USDT');
-  assert.equal(rave.source_status,'CROSS_VENUE_PRICE_CONFLICT');
-  assert.equal(rave.asset_identity_status,'EXTERNAL_PAIR_PRICE_CONFLICT');
-  const kucoin=await buildSpotRecord({venue:'KUCOIN',hour_bucket:T,body:{code:'200000',data:{symbol:'RAVE-USDT',last:'0.173',buy:'0.172',sell:'0.174',volValue:'10000',time:now-900}},received_ts:now});
-  assert.equal(kucoin.present_count,1);
-  assert.equal(kucoin.quote_checked_count,1);
-  assert.equal(JSON.parse(kucoin.payload_json).samples[0].source_ts,now-900);
-  await assert.rejects(buildSpotRecord({venue:'KUCOIN',hour_bucket:T,body:{code:'200000',data:{symbol:'RAVE-USDT',last:'0.173',buy:'0.172',sell:'0.174',volValue:'10000',time:now-70_000}},received_ts:now}),/SPOT_SOURCE_CLOCK_INVALID/);
+test('external spot sources are absent from the active HTX-only archive',async()=>{
+  assert.deepEqual(Object.keys(SPOT_SOURCES),['HTX']);
+  await assert.rejects(buildSpotRecord({venue:'GATE',hour_bucket:T,body:[],received_ts:now}),/SPOT_ARCHIVE_ARGUMENTS_INVALID/);
+  await assert.rejects(buildSpotRecord({venue:'KUCOIN',hour_bucket:T,body:{},received_ts:now}),/SPOT_ARCHIVE_ARGUMENTS_INVALID/);
 });
 
 test('one charged HTX request per hour, immutable write, and no retry after source error',async()=>{

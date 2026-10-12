@@ -8,11 +8,7 @@ export default {
     const results=[];
     for (const [lane,run] of [
       ['HTX_FUTURES',()=>archiveHour({source_db:env?.DATA_DB,archive_db:env?.ARCHIVE_DB,scheduled_ts})],
-      ['HTX_SPOT',()=>archiveSpot({venue:'HTX',archive_db:env?.ARCHIVE_DB,scheduled_ts})],
-      ['GATE_SPOT_CANDIDATE',()=>archiveSpot({venue:'GATE',archive_db:env?.ARCHIVE_DB,scheduled_ts})],
-      ...(new Date(scheduled_ts).getUTCHours()%2===1?[
-        ['KUCOIN_RAVE_SPOT_CANDIDATE',()=>archiveSpot({venue:'KUCOIN',archive_db:env?.ARCHIVE_DB,scheduled_ts})]
-      ]:[])
+      ['HTX_SPOT',()=>archiveSpot({venue:'HTX',archive_db:env?.ARCHIVE_DB,scheduled_ts})]
     ]) {
       try { results.push({lane,...await run()}); }
       catch(error) { results.push({lane,status:'ERROR',reason:String(error?.message??error).slice(0,160)}); }

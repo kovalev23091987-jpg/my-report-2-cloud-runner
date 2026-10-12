@@ -1,0 +1,77 @@
+{
+  "schema": "N15_RAVE_CROSS_VENUE_DISLOCATION_V1",
+  "recorded_utc": "2026-10-12T15:49:09.881254+00:00",
+  "scope": "Investigate abnormal Gate RAVE spot premium; no report or Telegram consumer change",
+  "htx_futures_saved_collector": {
+    "source": "report2-data-plane / HUB_PUBLIC_COLLECTOR",
+    "bucket": 1791819000000,
+    "market_ts": 1791819073005,
+    "price_usdt": 0.17267,
+    "funding_rate_decimal_per_exchange_period": 0.000482352648758954,
+    "funding_rate_percent_per_exchange_period": 0.0482352648758954,
+    "funding_interval_hours": null
+  },
+  "gate_spot_direct_public": {
+    "url": "https://api.gateio.ws/api/v4/spot/tickers?currency_pair=RAVE_USDT",
+    "http": 200,
+    "source_trade_clock": null,
+    "last_usdt": 0.2241,
+    "bid_usdt": 0.224,
+    "ask_usdt": 0.2255,
+    "best_bid_size_rave": 5.3,
+    "quote_volume_24h_usdt": 6170.04445
+  },
+  "bitget_spot_direct_public": {
+    "url": "https://api.bitget.com/api/v2/spot/market/tickers?symbol=RAVEUSDT",
+    "http": 200,
+    "ticker_ts": 1791819248547,
+    "last_usdt": 0.17255,
+    "quote_volume_24h_usdt": 29589.99,
+    "cloud_worker_result": "HTTP_403_2026-10-12T15:35Z"
+  },
+  "kucoin_spot_direct_public": {
+    "url": "https://api.kucoin.com/api/v1/market/stats?symbol=RAVE-USDT",
+    "http": 200,
+    "ticker_ts": 1791819444744,
+    "last_usdt": 0.172,
+    "bid_usdt": 0.172,
+    "ask_usdt": 0.173,
+    "quote_volume_24h_usdt": 351638.4344,
+    "cloud_worker_result": "PENDING_SCHEDULED_READBACK"
+  },
+  "gate_currency_direct_public": {
+    "url": "https://api.gateio.ws/api/v4/spot/currencies/RAVE",
+    "http": 200,
+    "currency": "RAVE",
+    "name": "RaveDAO",
+    "chain": "ETH",
+    "contract_address": "0x17205fab260a7a6383a81452ce6315a39370db97",
+    "deposit_disabled": true,
+    "withdraw_disabled": false,
+    "trade_disabled": false
+  },
+  "kucoin_saved_official_currency": {
+    "path": "checkpoints/n12-kucoin-token-38193724806/KUCOIN-CURRENCIES.json.gz",
+    "currency": "RAVE",
+    "full_name": "RaveDAO",
+    "chain": "ERC20",
+    "contract_address": "0x17205fab260a7a6383a81452ce6315a39370db97"
+  },
+  "analysis": {
+    "gate_premium_vs_near_time_htx_futures_pct": 29.785,
+    "kucoin_vs_near_time_htx_futures_pct": -0.388,
+    "causal_assessment": "Gate deposit suspension is a plausible arbitrage barrier, not proof of sole cause. Gate exchange-clocked order book confirms premium is not solely a stale last-trade quote. Gate liquidity is limited versus KuCoin. Funding magnitude does not explain this premium. Quotes across venues are not exact same-second or closed candles.",
+    "safety": "GATE_RAVE_EXCLUDED_FROM_QUALIFIED_SPOT_AND_FUSION;KUCOIN_RAVE_EXTERNAL_IDENTITY_STILL_UNVERIFIED_FOR_HTX_FUTURES;NO_MANUAL_OR_TELEGRAM_CONSUMER_USE"
+  },
+  "gate_order_book_direct_public": {
+    "url": "https://api.gateio.ws/api/v4/spot/order_book?currency_pair=RAVE_USDT&limit=5&with_id=true",
+    "http": 200,
+    "exchange_current_ts": 1791820180873,
+    "exchange_update_ts": 1791820174851,
+    "best_bid_usdt": 0.2241,
+    "best_bid_size_rave": 223.1,
+    "best_ask_usdt": 0.2255,
+    "best_ask_size_rave": 55.2,
+    "finding": "Current exchange-clocked order book also shows the premium; it is not solely a stale last-trade ticker."
+  }
+}

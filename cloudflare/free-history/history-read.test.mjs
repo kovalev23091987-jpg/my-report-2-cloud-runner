@@ -17,14 +17,8 @@ test('bounded archive read returns source-clocked HTX spot, gap and no decision 
     const adapter={prepare(sql){const s=db.prepare(sql);return{bind(...p){return{all(){return{results:s.all(...p)}}}}}}};
     const result=await readHourlyHistory({archive_db:adapter,contract:'BTC-USDT',market:'SPOT',from_hour:T,to_hour:T+HOUR});
     assert.equal(result.status,'PARTIAL');assert.equal(result.samples.length,1);assert.equal(result.gaps.length,1);assert.equal(result.samples[0].price,100);assert.equal(result.samples[0].individual_trade_clock_verified,false);assert.equal(result.decision_usable,false);
-    const gate=await readHourlyHistory({archive_db:adapter,contract:'RAVE-USDT',market:'SPOT',venue:'GATE',from_hour:T,to_hour:T});
-    assert.equal(gate.status,'IDENTITY_UNVERIFIED');assert.equal(gate.samples.length,0);
-    const kucoinRecord=await buildSpotRecord({venue:'KUCOIN',hour_bucket:T,received_ts:T+30*60_000,body:{code:'200000',data:{symbol:'RAVE-USDT',last:'0.173',buy:'0.172',sell:'0.174',volValue:'10000',time:T+30*60_000-900}}});
-    db.prepare('INSERT INTO report2_hourly_spot_archive_v1 VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run(kucoinRecord.hour_bucket,kucoinRecord.venue,kucoinRecord.source_url,kucoinRecord.source_ts,kucoinRecord.received_ts,kucoinRecord.identity_scope,kucoinRecord.target_count,kucoinRecord.present_count,kucoinRecord.quote_checked_count,kucoinRecord.payload_sha256,kucoinRecord.payload_json,T);
-    const blocked=await readHourlyHistory({archive_db:adapter,contract:'RAVE-USDT',market:'SPOT',venue:'KUCOIN',from_hour:T,to_hour:T});
-    assert.equal(blocked.status,'IDENTITY_UNVERIFIED');
-    const shadow=await readHourlyHistory({archive_db:adapter,contract:'RAVE-USDT',market:'SPOT',venue:'KUCOIN',from_hour:T,to_hour:T,allow_unbound_candidates:true});
-    assert.equal(shadow.samples.length,1);assert.equal(shadow.decision_usable,false);
+    await assert.rejects(readHourlyHistory({archive_db:adapter,contract:'RAVE-USDT',market:'SPOT',venue:'GATE',from_hour:T,to_hour:T}),/ARGUMENTS_INVALID/);
+    await assert.rejects(readHourlyHistory({archive_db:adapter,contract:'RAVE-USDT',market:'SPOT',venue:'KUCOIN',from_hour:T,to_hour:T}),/ARGUMENTS_INVALID/);
     db.exec("UPDATE report2_hourly_spot_archive_v1 SET payload_sha256='tampered'");
     await assert.rejects(readHourlyHistory({archive_db:adapter,contract:'BTC-USDT',market:'SPOT',from_hour:T,to_hour:T}),/HASH_INVALID/);
     await assert.rejects(readHourlyHistory({archive_db:adapter,contract:'BTC-USDT',market:'SPOT',from_hour:T,to_hour:T+8*24*HOUR}),/ARGUMENTS_INVALID/);
