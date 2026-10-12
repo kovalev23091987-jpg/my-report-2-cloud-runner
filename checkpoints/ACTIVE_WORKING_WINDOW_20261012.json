@@ -1,0 +1,82 @@
+{
+  "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
+  "recorded_utc": "2026-10-12T10:54:23.915153+00:00",
+  "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
+  "main_at_recording": "54b0756af9b6d6b4bd10ac889e369641a5b9834b",
+  "work_in_progress_branch": "codex/funding-selection-intensity-20261012",
+  "current_task": "N12_AND_SHARED_SELECTION_SCHEDULE_DELIVERY_VERIFICATION",
+  "last_three": [
+    {
+      "rank": 1,
+      "kind": "ACTUAL_FULL_REPORT_AND_DELIVERY_AUDIT",
+      "github_run": 38237861445,
+      "head": "54b0756af9b6d6b4bd10ac889e369641a5b9834b",
+      "run_id": "1791801689066-1791801697078",
+      "result_artifact_id": 11741218589,
+      "result_artifact_digest": "sha256:41018dc897e87605204957068e18332048e08c7c29e5f2d62d1a96243baf9655",
+      "delivery_artifact_id": 11741298495,
+      "delivery_artifact_digest": "sha256:c1bf165b2743bb8381db509f60788a773e31b4dec48af965a0e5ad6b42441f08",
+      "delivery_audit_file_sha256": "85447e94a0673f4d282c4f8a2cdce06f8170be20a81c21ed3f8893cf0818a286",
+      "same_run_proof_file_sha256": "93c33b389866229fcc60d96cab97c42b944d3efd58fd61058a6dca9026b83c81",
+      "top_two": [
+        "BTR-USDT",
+        "龙虾-USDT"
+      ],
+      "scan": "104/104, errors0, stale0",
+      "telegram": "NO_EXACT_SAME_RUN_SENT",
+      "n12_qualified_both_markets": [
+        "龙虾-USDT"
+      ],
+      "n12_partial_futures_only": [
+        "BTR-USDT"
+      ]
+    },
+    {
+      "rank": 2,
+      "kind": "SCHEDULE_RECOVERY_AND_AUTOMATIC_AUDIT_RELEASE",
+      "main_commit": "90391cc35b4ee8d0f4dd1b6e877c39e515560ad7",
+      "status": "MERGED;FOLLOWING_AUTOMATIC_RUN_SUCCEEDED_WITH_NO_EXACT_SAME_RUN_SENT",
+      "related_pull_requests": [
+        329,
+        330
+      ]
+    },
+    {
+      "rank": 3,
+      "kind": "ACTUAL_FULL_REPORT_BEFORE_DELIVERY_AUDIT_RELEASE",
+      "github_run": 38233280841,
+      "head": "a7d565cec4f96da510c512ca643f49533f2c9f2b",
+      "run_id": "1791799098799-1791799109983",
+      "result_artifact_id": 11739805794,
+      "result_artifact_digest": "sha256:f3f6c851c7a2c60e096acf191518fff8934e5f85606899eae66100fedfa28482",
+      "top_two": [
+        "ZEC-USDT",
+        "龙虾-USDT"
+      ],
+      "scan": "104/104, errors0, stale0",
+      "n12_qualified_both_markets": [
+        "ZEC-USDT",
+        "龙虾-USDT"
+      ],
+      "telegram": "NO_EXACT_SAME_RUN_SENT_PROVEN"
+    }
+  ],
+  "coverage_reconciliation": "checkpoints/ACTIVE_CONFIGURED_BLOCKS_104_COVERAGE_RECONCILIATION_20261012.json",
+  "paused_block_ids": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09"
+  ],
+  "paused_restore_requires_explicit_owner_command": true,
+  "source_reuse": "Shared sources remain available to active blocks.",
+  "not_proven": [
+    "Fresh all-104 simultaneous source coverage for N05/N10/N11/N12",
+    "Same-run Telegram SENT/message_id on latest two recovered runs",
+    "Native GitHub scheduled event recovered; backup dispatch currently filled missed windows"
+  ],
+  "next_action": "Validate current candidate code and saved-run Telegram 104 guard in assembled runtime, reconcile scheduled full-run evidence and then save exact candidate/main proof. Keep N12 open and do not start a new block."
+}

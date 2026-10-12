@@ -9,8 +9,8 @@ if(!root){
  test('assembled runtime is required for shared spot/futures context', {skip:'encrypted production runtime not assembled'},()=>{});
 }else{
  const src=pathToFileURL(path.resolve(root)+'/');
- const [{buildSpotFuturesMarketContext,buildSpotExecutionCostContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact},{APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS,approvedHtxAnalysisAssetForContract}]=await Promise.all(
-  ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs','approved-htx-analysis-scope.mjs'].map(name=>import(new URL(name,src)))
+ const [{buildSpotFuturesMarketContext,buildSpotFuturesJointConclusion,buildSpotExecutionCostContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact},{APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS,approvedHtxAnalysisAssetForContract},{plainSpotFuturesJointConclusion}]=await Promise.all(
+  ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs','approved-htx-analysis-scope.mjs','telegram-plain-facts.mjs'].map(name=>import(new URL(name,src)))
  );
  const fixture=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
  const T=fixture.observed_ts,contract=fixture.metadata.contract;
@@ -44,7 +44,7 @@ if(!root){
   }
  });
 
- test('original same-depth clocks yield one neutral HTX comparison and approved report text',()=>{
+ test('original same-depth clocks yield one neutral HTX comparison and the same bounded conclusion in manual and Telegram',()=>{
   const input=args(),before=structuredClone(input),receipt=buildSpotFuturesMarketContext(input);
   assert.equal(receipt.status,'CLOSED_COMPARABLE_PRICE_AND_SPREAD');
   assert.equal(receipt.independent_venue_count,1);
@@ -66,18 +66,44 @@ if(!root){
   const baselineCompact=formatTelegramCompact(compactCanonical);
   assert.equal(baselineCompact.ok,true,baselineCompact.status);
   const baselineTelegram=['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007'].map(context_policy=>renderCanonicalTelegram({canonical,lifecycle_event:'OBSERVE',context_policy}));
-  canonical.metadata.supporting_context.facts.push(receipt.fact);
+  const summary=buildSpotFuturesJointConclusion({market_context:receipt,block_context:{facts:[]},evidence:[],contract,observed_ts:T});
+  assert.equal(summary.field,'SPOT_FUTURES_JOINT_CONCLUSION');
+  assert.match(summary.value,/совместная выборка последних сделок не подтверждена/);
+  canonical.metadata.canonical_runtime_adapter='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
+  canonical.metadata.supporting_context.blocks={spot_futures_market:receipt};
+  canonical.metadata.supporting_context.facts.push(receipt.fact,summary);
   canonical.analytical_fingerprint=canonicalFingerprint(canonical);
   const manual=formatManualReport(canonical);
   assert.equal(manual.ok,true,manual.status);
   assert.match(manual.text,/Сверка спота и фьючерсов/);
-  compactCanonical.metadata.supporting_context.facts.push(receipt.fact);
-  assert.equal(formatTelegramCompact(compactCanonical).message,baselineCompact.message);
+  assert.match(manual.text,/Сводный вывод по споту и фьючерсам/);
+  compactCanonical.metadata.canonical_runtime_adapter=canonical.metadata.canonical_runtime_adapter;
+  compactCanonical.metadata.supporting_context.blocks={spot_futures_market:receipt};
+  compactCanonical.metadata.supporting_context.facts.push(receipt.fact,summary);
+  compactCanonical.observed_ts=T;
+  const compact=formatTelegramCompact(compactCanonical);
+  assert.equal(compact.ok,true,compact.status);
+  assert.match(compact.message,/Сводный вывод по споту и фьючерсам/);
+  assert.notEqual(compact.message,baselineCompact.message);
   for(const [i,context_policy] of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007'].entries()){
    const telegram=renderCanonicalTelegram({canonical,lifecycle_event:'OBSERVE',context_policy});
    assert.equal(telegram.ok,true,telegram.status);
-   assert.equal(telegram.text,baselineTelegram[i].text,'approved Telegram wording stays unchanged');
+   assert.match(telegram.text,/Сводный вывод по споту и фьючерсам/);
+   assert.ok(telegram.text.includes(`${summary.label}: ${summary.value} — ХТХ.`));
+   assert.notEqual(telegram.text,baselineTelegram[i].text);
   }
+  const altered=structuredClone(canonical);
+  altered.metadata.supporting_context.facts.find(f=>f.field==='SPOT_FUTURES_JOINT_CONCLUSION').source_ts=T-301_000;
+  assert.equal(plainSpotFuturesJointConclusion(altered),null,'stale summary cannot reach Telegram');
+ });
+ test('disagreeing recent spot/futures trades produce a cautious shared conclusion',()=>{
+  const market=buildSpotFuturesMarketContext(args()),evidence_id='N12:CONTROLLED:HTX';
+  const row={evidence_id,htx_contract:contract,block_id:'N12',metric_family:'ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET',independent_venue_count:1,coverage_status:'BOUNDED_MULTIMARKET_DISAGREEMENT',observed_ts:T,source_ts:T-5000,components:[{venue:'HTX',market:'FUTURES'},{venue:'HTX',market:'SPOT'}]};
+  const conclusion=buildSpotFuturesJointConclusion({market_context:market,block_context:{facts:[{block_id:'N12',field:row.metric_family,evidence_id,observed_ts:T}]},evidence:[row],contract,observed_ts:T});
+  assert.match(conclusion.value,/последние сделки двух рынков расходятся/);
+  assert.match(conclusion.value,/общий рыночный вывод по этим данным не установлен/);
+  assert.equal(conclusion.score_contribution,0);
+  assert.equal(conclusion.entry_authorized,false);
  });
  test('foreign, stale, future and incomplete books retain only the verified market; skewed pairs do not compare',()=>{
   const changes=[
@@ -94,6 +120,8 @@ if(!root){
   assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.equal(skew.fact,null);
   const noSpot=buildSpotFuturesMarketContext({...args(),spot_component:null});
   assert.equal(noSpot.status,'FUTURES_ONLY');assert.match(noSpot.fact.value,/спотовая котировка не подтверждена/);
+  const bounded=buildSpotFuturesJointConclusion({market_context:noSpot,block_context:{facts:[]},contract,observed_ts:T});
+  assert.match(bounded.value,/свежая котировка есть только для фьючерсов/);
   const noFutures=buildSpotFuturesMarketContext({...args(),futures_component:null});
   assert.equal(noFutures.status,'SPOT_ONLY');assert.match(noFutures.fact.value,/фьючерсная котировка не подтверждена/);
   const missing=buildSpotFuturesMarketContext({...args(),spot_component:null,futures_component:null});

@@ -1,11 +1,9 @@
 # Мой отчёт 2
 
-Рабочая версия — **актуальный `main`** этого репозитория. Имена старых веток, даты generation и зелёные проверки не определяют принятую версию.
+Рабочая версия — свежий `main` репозитория. **Проект не завершён.** Для нового чата действуют ровно три рабочие записи: [правила](AGENTS.md), [текущий статус](checkpoints/CURRENT_PROJECT_STATUS.json) и [точка продолжения](checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json). [Три последние доказательные точки](checkpoints/ACTIVE_WORKING_WINDOW_20261012.json) перечислены отдельно.
 
-Начало нового чата: [действующий контракт](MY_REPORT_2_STARTUP_CONTRACT.md), [актуальный статус и незавершённые задачи](checkpoints/CURRENT_PROJECT_STATUS.json), [поколение и исполняемые пути](REPORT2_CURRENT_GENERATION.json). Сначала читать свежие main/phase/execution-lock одним пакетом.
+До любых изменений проверяйте свежий main, [phase/lease](checkpoints/CLOUD_PHASE_STATE_20261004.json) и [fence](audit-fixes/source-optimization-20260930/execution-lock.json). Короткий [порядок входа](MY_REPORT_2_STARTUP_CONTRACT.md) описывает ограничения. Исторические инструкции и доказательства сохранены в `checkpoints/archive` и Git; они не являются альтернативным рабочим планом.
 
-**Проект не завершён. Свежая утверждённая Telegram-доставка пока не принята.** Последние фактические числа и причины находятся в current status; история не текущая приёмка.
+Текущая работа — N12 и проверка цепочки отбора 104 → 24 → 2 вместе с обоими форматами отчёта. N01–N03 и N06–N09 остаются исключёнными до явной команды владельца восстановить конкретный блок. Общие источники активных блоков сохраняются. Следующий блок начнётся после обсуждения с владельцем.
 
-Рабочий scheduled runner: `.github/workflows/report2.yml`; сборка использует зашифрованный runtime payload и актуальный overlay `current-generation/apply-runtime-overlay.mjs`. Исправления overlay сохранены в репозитории. Учётные данные остаются в GitHub Actions Secrets.
-
-[Исторические версии и ветки](checkpoints/archive/cloud-version-inventory-20261006.json) сохраняются для доказательств и не являются альтернативным рабочим main.
+Штатный runner: `.github/workflows/report2.yml`; runtime overlay: `current-generation/apply-runtime-overlay.mjs`. Учётные данные хранятся в GitHub Actions Secrets.

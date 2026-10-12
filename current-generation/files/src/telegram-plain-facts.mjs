@@ -9,6 +9,13 @@ const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const pct=v=>Math.abs(v).toFixed(1).replace('.',',');
 const money=v=>v.toFixed(2).replace('.',',');
 export const omitTelegramCurrencies=s=>String(s).replace(/\s*\bUSD(?:T|C)?\b/gi,'');
+export function plainSpotFuturesJointConclusion(c){
+ const m=c?.metadata,context=m?.supporting_context?.blocks?.spot_futures_market;
+ if(m?.canonical_runtime_adapter!=='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012'||context?.schema!=='htx-spot-futures-shared-market-context-v1'||context.contract!==m.contract||context.observed_ts!==c.observed_ts||context.independent_venue_count!==1||context.network_calls!==0||context.score_contribution!==0||context.entry_authorized!==false)return null;
+ const facts=Array.isArray(m?.supporting_context?.facts)?m.supporting_context.facts:[];
+ const f=facts.find(row=>row?.field==='SPOT_FUTURES_JOINT_CONCLUSION'&&row.contract===m.contract&&row.market_pair_status===context.status&&row.source==='HTX'&&row.label==='Сводный вывод по споту и фьючерсам'&&row.score_contribution===0&&row.entry_authorized===false&&row.directional_vote===false&&row.observed_ts===c.observed_ts&&Number.isSafeInteger(row.source_ts)&&row.source_ts<=c.observed_ts&&c.observed_ts-row.source_ts<=300000&&typeof row.value==='string'&&row.value.length<240&&!/[\r\n]/u.test(row.value));
+ return f?`${f.label}: ${f.value} — ХТХ.`:null;
+}
 export function telegramPrice(v,{zone=false}={}){
  const n=number(v);if(n===null)return null;
  if(n!==0&&Math.abs(n)<1)return n.toLocaleString('ru-RU',{maximumSignificantDigits:3,useGrouping:false});
