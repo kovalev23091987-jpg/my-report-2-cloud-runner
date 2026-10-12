@@ -1,7 +1,7 @@
 {
   "schema": "LIQ_NEAR_SYNC_FULL_REPORT_AND_3X3_DISPLAY_20261012_V1",
-  "recorded_utc": "2026-10-12T19:45:26.942407+00:00",
-  "status": "EXACT_SCHEDULED_RECOVERY_REPORT_SPOT_FUTURES_AND_LOCAL_3X3_VERIFIED_CLOUD_PENDING",
+  "recorded_utc": "2026-10-12T19:53:53.618221+00:00",
+  "status": "NATURAL_ARCHIVE_AND_RECOVERY_MANUAL_NEAR_SYNC_VERIFIED_3X3_AND_CROSSED_QUOTES_CLOUD_PASS_POSTCHANGE_NATURAL_PENDING",
   "scope": "LIQ display and exact HTX spot/futures synchronization on two selected assets; 105 approved HTX futures assets remain the universe; factual liquidation coverage and Telegram SENT remain open",
   "scheduled_recovery": {
     "github_run": 38298723340,
@@ -56,7 +56,10 @@
       "liq_calculated_scenarios": 68,
       "liq_status": "CALCULATED_CONTEXT_ONLY",
       "telegram_transition": "CURRENT_RUN_CANONICAL_IDENTITY_MISMATCH",
-      "telegram_transition_reason": "source handoff and canonical wave_id are null; fail closed, not a synchronization failure"
+      "telegram_transition_reason": "source handoff and canonical wave_id are null; fail closed, not a synchronization failure",
+      "n10_spot_and_futures_closed_15m_window_end_ts": 1791833760000,
+      "n12_bounded_trade_sample_source_ts": 1791833802306,
+      "n12_bounded_trade_sample_observed_ts": 1791833821663
     },
     {
       "contract": "RLC-USDT",
@@ -74,7 +77,10 @@
       "liq_factual_future_levels": 0,
       "liq_calculated_scenarios": 77,
       "liq_status": "CALCULATED_CONTEXT_ONLY",
-      "telegram_transition": "CANONICAL_DIRECTION_NOT_CLOSED"
+      "telegram_transition": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "n10_spot_and_futures_closed_15m_window_end_ts": 1791833820000,
+      "n12_bounded_trade_sample_source_ts": 1791833822267,
+      "n12_bounded_trade_sample_observed_ts": 1791833850069
     }
   ],
   "source_to_consumer_readback": {
@@ -89,14 +95,47 @@
     "change": "Current presentation selection is capped at 3 per side for both manual and Telegram; historical ORIGINAL selection remains at 4, prior canonical and delivered texts not rewritten. New canonical display_max_per_side=3; analysis retains raw scenarios.",
     "saved_report_replay": "Using exact saved FIL and RLC canonical liquidation maps: both forms render 3 above / 3 below; 68 and 77 raw calculated scenarios remain, no factual levels invented.",
     "local_test": "node --test current-generation/tests/htx-source-backed-liquidation-model.test.mjs: 9/9 pass",
-    "full_local_validation": "1427 pass, 4 skipped, 1 assembled-runtime-only failure because encrypted runtime/src/existing-source-consumer.mjs is absent locally; cloud assembled validation pending",
+    "full_local_validation": "1427 pass, 4 skipped, 1 assembled-runtime-only local import failure due encrypted runtime not present; cloud assembled validation passed on exact code head.",
     "strategy_weights_limits_changed": false,
-    "report_layout_other_than_owner_three_per_side_changed": false
+    "report_layout_other_than_owner_three_per_side_changed": false,
+    "assembled_cloud": {
+      "run": 38300494775,
+      "head": "095d6318e3cb5335a6601dbc131962addb5423a2",
+      "conclusion": "success",
+      "target_tests": "70/70 passed",
+      "full_generation_validation": "PASS",
+      "runtime_binding": "VERIFIED",
+      "target_tap_sha256": "dda059c41e2bf0bccfebffd0badeb11a41252f3c76c29f17c0a499d86fc977c3",
+      "validation_log_sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+      "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38300494775",
+      "new_provider_http_in_validation": 0,
+      "actual_post_change_scheduled_manual_or_sent": false
+    }
   },
   "unresolved": [
     "Factual future liquidation levels missing for both selected assets; current source diagnostics: RLC Hyperliquid symbol unsupported and dYdX bounded sample empty; FIL same-snapshot dYdX cache skip, later Hyperliquid acquisition returned but did not yield accepted factual level.",
     "No exact Telegram SENT on this run because neither candidate had a publishable direction/identity.",
     "All-105 factual level usefulness, longer-term future-level outcome calibration and sustained archive retention are not established."
   ],
-  "next_action": "Run one assembled cloud verification on exact candidate head, then observe a later natural report for actual 3/3 manual/Telegram use and further factual LIQ source coverage. Do not start another block."
+  "next_action": "Continue LIQ factual future-level source coverage for approved 105 assets and calibrate future levels with timestamped realized events. Verify current 3/3 display, crossed-book wording and Telegram exact SENT on a later naturally admissible publishable report; no new report triggered merely for this check. Preserve paused blocks and caps.",
+  "crossed_quote_correction": {
+    "original_run": "RLC spot bid 0.9496, ask 0.9625; futures bid 0.9462, ask 0.9496. Midpoints differed -0.85%, but opposite quote edges touch, so a robust futures discount was not proven. FIL spot bid 1.1385, ask 1.1386 and futures bid 1.1350, ask 1.1351 are separated.",
+    "corrected_rule": "Current manual and Telegram supporting price fact may retain the signed midpoint difference. Joint conclusion only says futures dearer/cheaper when opposite bid/ask bounds separate; overlapping books get explicit overlap and no common signal. Zero scoring, direction or entry effect.",
+    "exact_saved_clock_replay": "Assembled controlled test uses the exact RLC and FIL bid/ask values from production D1, with one near-synchronous source clock.",
+    "cloud_proof_run": 38300494775,
+    "post_change_natural_report_observed": false
+  },
+  "block_alignment": {
+    "FIL-USDT": {
+      "n10_spot_and_futures_closed_15m_window_end_ts": 1791833760000,
+      "n12_bounded_recent_trade_source_ts": 1791833802306,
+      "n12_common_direction_claim": false
+    },
+    "RLC-USDT": {
+      "n10_spot_and_futures_closed_15m_window_end_ts": 1791833820000,
+      "n12_bounded_recent_trade_source_ts": 1791833822267,
+      "n12_common_direction_claim": false
+    },
+    "interpretation": "N10 uses same closed 15m window per candidate for spot and futures. N12 recent trade samples are bounded and the two candidates did not assert a common direction. Their price snapshots are separate same-run market context, not substitutes for exact candle windows or trade freshness."
+  }
 }
