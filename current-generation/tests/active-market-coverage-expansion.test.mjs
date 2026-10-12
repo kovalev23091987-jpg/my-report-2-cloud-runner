@@ -41,14 +41,57 @@ test('twelve HTX assets recover exact routes from saved original chain, issuer a
  const sun=entries.SUN.identities[0];
  assert.equal(exactGateTokenBinding({contract:'SUN-USDT',identity:{...sun,contract_or_mint:sun.contract_or_mint.toLowerCase()},currencies:gateCurrencies,spot:gateMarkets}),false);
  assert.equal(entries.BTT.binding_scope,'EXACT_PROJECT_TRON_TOKEN');
- assert.notEqual(entries.HYPE.status,'CLOSED');
- assert.notEqual(entries.GRAM.status,'CLOSED');
- assert.notEqual(entries.ORDI.status,'CLOSED');
+ assert.equal(entries.HYPE.status,'CLOSED');
+ assert.equal(entries.GRAM.status,'CLOSED');
+ assert.equal(entries.ORDI.status,'CLOSED');
  assert.notEqual(entries.PAXG.status,'CLOSED');
  assert.equal(entries.AKE,undefined);
  const routes=[['GATE',1],['BITGET',2],['POLONIEX',3]];
  assert.deepEqual(orderN05VenueRoutes('ARB-USDT',entries.ARB.identities[0],routes).map(r=>r[0]),['POLONIEX','GATE','BITGET']);
  assert.deepEqual(orderN05VenueRoutes('CHZ-USDT',entries.CHZ.identities[0],routes),routes);
+});
+
+test('four remaining HTX native or Bitcoin inscription identities bind only their exact original external markets',()=>{
+ const htx=original('n05-alias-route-batch-38245108128/HTX-CURRENT-IDENTITIES.json.gz');
+ const entries=normalizeHtxAssetReferences(htx).entries;
+ const base='n05-actual-qualification-38049404414/';
+ const coins=original(base+'identity-BITGET.json.gz');
+ const spot=original(base+'catalog-BITGET-SPOT.json.gz');
+ const futures=original(base+'catalog-BITGET-FUTURES.json.gz');
+ const gateCurrencies=original('n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz');
+ const gateMarkets=original(base+'catalog-GATE-SPOT.json.gz');
+ const poloniexAssets=original('n05-alias-route-batch-38245108128/POLONIEX-ALL-ASSETS.json.gz');
+ const poloniexMarkets=original('n05-alias-route-batch-38245108128/POLONIEX-ALL-MARKETS.json.gz');
+ const expected={GRAM:[true,true,false,true],HYPE:[true,true,false,false],ONG:[false,true,false,false],ORDI:[false,false,true,false]};
+ for(const [asset,flags] of Object.entries(expected)){
+  const contract=`${asset}-USDT`,identity=entries[asset]?.identities?.[0],symbol=`${asset}USDT`;
+  assert.equal(entries[asset]?.status,'CLOSED',asset);
+  const actual=[exactBitgetBinding({contract,identity,coins,instrument:row(spot,'symbol',symbol),market:'SPOT'}),exactBitgetBinding({contract,identity,coins,instrument:row(futures,'symbol',symbol),market:'FUTURES'}),exactGateTokenBinding({contract,identity,currencies:gateCurrencies,spot:gateMarkets}),exactPoloniexBinding({contract,identity,assets:poloniexAssets,markets:poloniexMarkets})];
+  assert.deepEqual(actual,flags,asset);
+ }
+ assert.equal(entries.ORDI.binding_scope,'EXACT_HTX_BRC20_TICK_AND_BITCOIN_CHAIN');
+ const fakeGate=structuredClone(gateCurrencies);
+ const ordi=fakeGate.find(r=>r.currency==='ORDI');
+ ordi.chains.find(r=>r.name==='BTCBRC').addr='ordi2';
+ assert.equal(exactGateTokenBinding({contract:'ORDI-USDT',identity:entries.ORDI.identities[0],currencies:fakeGate,spot:gateMarkets}),false);
+});
+
+test('issuer-bound futures-only identities match saved exact external contract and market records',()=>{
+ const coins=original('n05-actual-qualification-38049404414/identity-BITGET.json.gz');
+ const spot=original('n05-actual-qualification-38049404414/catalog-BITGET-SPOT.json.gz');
+ const futures=original('n05-actual-qualification-38049404414/catalog-BITGET-FUTURES.json.gz');
+ const gateCurrencies=original('n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz');
+ const gateMarkets=original('n05-actual-qualification-38049404414/catalog-GATE-SPOT.json.gz');
+ const poloniexAssets=original('n05-alias-route-batch-38245108128/POLONIEX-ALL-ASSETS.json.gz');
+ const poloniexMarkets=original('n05-alias-route-batch-38245108128/POLONIEX-ALL-MARKETS.json.gz');
+ const expected={AKE:[false,false,true,false],BR:[true,true,true,false],BTR:[false,false,true,false],CASHCAT:[false,false,true,true],GPS:[true,true,true,false],MYX:[true,true,true,false],RAVE:[true,true,true,false],UB:[false,false,true,true],USELESS:[false,false,true,true],VELVET:[true,true,true,true],哈基米:[false,false,true,true]};
+ for(const [asset,flags] of Object.entries(expected)){
+  const binding=FUTURES_ONLY_EXACT_ASSET_BINDINGS[asset],contract=`${asset}-USDT`,symbol=`${asset}USDT`,identity=binding?.identity;
+  assert.ok(binding?.issuer_evidence_url,asset);
+  const actual=[exactBitgetBinding({contract,identity,coins,instrument:row(spot,'symbol',symbol),market:'SPOT'}),exactBitgetBinding({contract,identity,coins,instrument:row(futures,'symbol',symbol),market:'FUTURES'}),exactGateTokenBinding({contract,identity,currencies:gateCurrencies,spot:gateMarkets}),exactPoloniexBinding({contract,identity,assets:poloniexAssets,markets:poloniexMarkets})];
+  assert.deepEqual(actual,flags,asset);
+  if(identity.chain!=='solana')assert.equal(exactGateTokenBinding({contract,identity:{...identity,contract_or_mint:'0x0000000000000000000000000000000000000001'},currencies:gateCurrencies,spot:gateMarkets}),false);
+ }
 });
 
 test('same-run HTX spot candles supply N10 factual path, with one-sided fallback and conflict guard',()=>{
