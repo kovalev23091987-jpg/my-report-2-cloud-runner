@@ -1,0 +1,68 @@
+{
+  "schema": "N12_KUCOIN_EXACT_TOKEN_SPOT_FUTURES_RELEASE_20261012_V1",
+  "recorded_utc": "2026-10-12T02:08:00Z",
+  "candidate_proof": "checkpoints/N12_KUCOIN_EXACT_TOKEN_SPOT_FUTURES_CANDIDATE_20261012.json",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/325",
+  "candidate_head": "0f2edff74928b1030886eca6e71a11464293af44",
+  "base_main": "eaba65ab6e3bbeadcc4061beecdf2396bc3feb48",
+  "merged_main": "22ec062070b1a27e7638d0ae3571180b0fbfb7e1",
+  "status": "PR325_SQUASH_MERGED_MAIN_FULL_ASSEMBLED_N10_N11_N12_CLOUD_PASS_NATURAL_PENDING",
+  "cloud_checks": {
+    "N12": {
+      "run": 38194438023,
+      "head": "0f2edff74928b1030886eca6e71a11464293af44",
+      "artifact_id": 11722009964,
+      "artifact_digest": "sha256:f125340f2f4c9ac1d8ecfb020a65b307f743aaad218c8dc9cd4ea58d31c3d874",
+      "assembly": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+      "runtime_binding": "CURRENT_RUNTIME_BINDING_VERIFIED",
+      "target_tests": {"pass": 60, "fail": 0, "skip": 0},
+      "paused_chain_tests": {"pass": 8, "fail": 0, "skip": 0},
+      "generation_validation": "PASS"
+    },
+    "N11": {"run": 38194438009, "head": "0f2edff74928b1030886eca6e71a11464293af44", "artifact_id": 11723066053, "artifact_digest": "sha256:531290b28acaffc52a4a35d424113b075ad76bf38093169c7bd5db5697f08ecd", "status": "SUCCESS"},
+    "N10": {"run": 38194437997, "head": "0f2edff74928b1030886eca6e71a11464293af44", "artifact_id": 11722209590, "artifact_digest": "sha256:30e4c9f275a5aa8d0ec25dbc6c532d679e1389335317537cfcf50636a38a531f", "status": "SUCCESS"}
+  },
+  "official_original_token_proof": {
+    "cloud_run": 38193724806,
+    "artifact_id": 11722198324,
+    "artifact_digest": "sha256:c51ae97f90c34dd82f7a9d9142b635bd8c4c8c972bccd757c6a1a9c97b1e8469",
+    "saved_originals": "checkpoints/n12-kucoin-token-38193724806",
+    "asset": "PEPE-USDT",
+    "exact_chain_and_address": "ethereum / 0x6982508145454ce325ddbe47a25d4ec3d2311933",
+    "spot_valid_recent_trades": 51,
+    "futures_valid_recent_trades": 100,
+    "futures_contract_multiplier": 520000,
+    "spot_and_futures_direction_conflict": true,
+    "common_direction_claimed": false,
+    "whole_five_minute_window_proven": false
+  },
+  "historical_structural_prequalification": {
+    "exact_kucoin_token_spot_candidates": 42,
+    "exact_kucoin_token_futures_candidates": 39,
+    "kucoin_native_both_market_candidates": 21,
+    "kucoin_token_plus_native_union_candidates": 63,
+    "all_external_structural_candidate_assets_before_and_after": 76,
+    "counted_as_current_actual_trade_coverage": false
+  },
+  "limits_and_delivery": {
+    "kucoin_source_daily_cap": 16,
+    "kucoin_probe_source_http_used_on_2026_10_12": 5,
+    "kucoin_provider_minute_units_used_in_probe": 18,
+    "kucoin_provider_minute_cap": 20,
+    "shared_n05_caller_cap": 5,
+    "whole_job_http_cap": 164,
+    "production_score_contribution": 0,
+    "new_provider_http_in_pr325_runtime_verification": 0,
+    "new_telegram_send": 0,
+    "approved_report_telegram_format_strategy_weights_or_existing_caps_changed": false
+  },
+  "n12_complete": false,
+  "natural_source_to_manual_and_approved_telegram_sent_proven": false,
+  "remaining": [
+    "At the next admissible normal report on merged main, inspect exact per-asset original source clocks, source IDs, spot and futures use, shared caller/source/provider/D1 ledgers, and manual plus approved Telegram evidence IDs.",
+    "If the report publishes an idea, verify the actual fresh Telegram SENT/message_id; no such post-PR325 proof exists in this release.",
+    "The saved PEPE pages prove current source utility for one exact token and a disagreement, while 42/39 historical token and 21 native matches are structural candidates, not sustained 104-asset actual N12 coverage.",
+    "Continue only N12 exact source coverage and limit audit inside the existing admission. Do not treat one KuCoin spot and futures pair as two independent exchanges."
+  ],
+  "next_block_after_n12_discussion": {"id": "N14", "name": "Опционный риск поддерживаемых контрактов", "state": "EXISTING_SCOPED_DERIBIT_IV_EVIDENCE;NATURAL_SENT_AND_BROADER_COVERAGE_OPEN", "start_requires_owner_discussion": true}
+}
