@@ -1,0 +1,31 @@
+name: Deploy HTX-only free history Worker
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check exact main owner lease and fence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!==context.sha)throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(!/^CODEX:LIQ_COVERAGE_BATCH:/.test(phase.lease?.owner||'')||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Verify hourly archive and reader
+        run: node --test cloudflare/free-history/*.test.mjs
+      - name: Deploy pinned HTX-only Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4 deploy --config cloudflare/free-history/wrangler.json
