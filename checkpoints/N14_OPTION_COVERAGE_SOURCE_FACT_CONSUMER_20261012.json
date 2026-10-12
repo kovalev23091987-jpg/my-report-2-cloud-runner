@@ -2,7 +2,7 @@
   "schema": "N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012_V2",
   "working_head": "08e883acc68852958f2224d4956bee0959c4d39c",
   "lease_owner": "CODEX:N14_OPTION_COVERAGE:1791808766064",
-  "as_of_utc": "2026-10-12T13:21:51.428000Z",
+  "as_of_utc": "2026-10-12T13:25:48.008690+00:00",
   "universe_assets": 104,
   "historical_preexisting_useful_exact_option_assets": [
     "AVAX",
@@ -44,11 +44,17 @@
   "crypto_com_options_catalog_count": 0,
   "binance_bnb_actual_open_interest": "Original Binance BNB 16 Oct option OI plus source-timestamped index replay closes 6 call and 6 put contracts near the index (±10%), combined sample OI 1,895,445.65 USD. N14 neutral consumer and controlled manual/Telegram binding are implemented on candidate PR #335; natural production report and delivery remain unproven.",
   "source_calls": {
-    "total_public_http": 30,
+    "total_public_http": 32,
     "global_job_cap": 164,
     "d1_calls": 0,
     "retries": 0,
-    "binance_750_ticker_raw_unretained_due_to_research_filename_collision": 2
+    "binance_750_ticker_raw_unretained_due_to_research_filename_collision": 2,
+    "additional_after_merged_release": {
+      "derive_catalog_http_403": 1,
+      "aevo_catalog_http_200": 1,
+      "d1_calls": 0,
+      "retries": 0
+    }
   },
   "bybit_runtime": {
     "source_daily_cap": 64,
@@ -83,7 +89,9 @@
     "checkpoints/n14-bybit-binance-samples-1791809275477/receipt.json",
     "checkpoints/n14-bybit-option-other-bases-1791809581526/receipt.json",
     "checkpoints/n14-binance-bnb-interest-1791809914132/receipt.json",
-    "checkpoints/n14-binance-bnb-index-1791809976508/receipt.json"
+    "checkpoints/n14-binance-bnb-index-1791809976508/receipt.json",
+    "checkpoints/n14-derive-currencies-1791811417454/receipt.json",
+    "checkpoints/n14-aevo-markets-1791811445029/receipt.json"
   ],
   "verified_raw_bodies": [
     {
@@ -225,6 +233,11 @@
       "path": "checkpoints/n14-binance-bnb-index-1791809976508/BNB_INDEX.json.gz",
       "body_sha256": "cd20d03d53da46d2ce5f521d3ea00f4bcd22bc54ff11d08011f9b4bbf08c4599",
       "received_ts": 1791809977248
+    },
+    {
+      "path": "checkpoints/n14-aevo-markets-1791811445029/AEVO_MARKETS.json.gz",
+      "body_sha256": "aad938e536fb498c6b39f5a1a678df3b1d4964783953eaaf28eeba7a1e650a73",
+      "received_ts": 1791811450418
     }
   ],
   "limitations": [
@@ -257,5 +270,27 @@
     "consumer": "current-generation/files/src/block-result-context.mjs",
     "source": "current-generation/files/src/binance-options-interest-evidence.mjs"
   },
-  "coverage_scope_note": "10/104 is historical union of useful exact option-context assets at different timestamps and unequal depth, not simultaneous current coverage or 10 assets with IV. Binance BNB contributes open interest only, no quote or IV. Options do not replace spot/futures."
+  "coverage_scope_note": "10/104 is historical union of useful exact option-context assets at different timestamps and unequal depth, not simultaneous current coverage or 10 assets with IV. Binance BNB contributes open interest only, no quote or IV. Options do not replace spot/futures.",
+  "other_public_option_venues": {
+    "Derive": {
+      "status": "ACCESS_BLOCKED_HTTP_403",
+      "useful_facts_added": 0,
+      "receipt": "checkpoints/n14-derive-currencies-1791811417454/receipt.json"
+    },
+    "Aevo": {
+      "status": "CATALOG_ONLY_NO_EXTRA_HTX_ASSETS_OR_LIVE_BID_ASK_OI",
+      "active_option_bases": [
+        "BTC",
+        "ETH",
+        "HYPE",
+        "SOL"
+      ],
+      "active_option_rows": 2782,
+      "positive_mark_iv_rows": 2776,
+      "row_bid_ask_oi_volume_fields": 0,
+      "new_unique_assets": 0,
+      "useful_facts_added": 0,
+      "receipt": "checkpoints/n14-aevo-markets-1791811445029/receipt.json"
+    }
+  }
 }
