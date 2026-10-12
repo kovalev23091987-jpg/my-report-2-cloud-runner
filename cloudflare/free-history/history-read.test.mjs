@@ -40,18 +40,18 @@ test('pre-STRK 104-asset futures archive remains readable and STRK has an honest
   }finally{db.close();}
 });
 
-test('legacy ten-minute spot and futures snapshots remain separate facts without a price comparison',async()=>{
+test('legacy ten-minute spot and futures snapshots become bounded-lag context only',async()=>{
   const db=new DatabaseSync(':memory:');
   try{
     db.exec(fs.readFileSync(new URL('./001_hourly_archive.sql',import.meta.url),'utf8'));
-    const futureTs=T+25*60_000,spotTs=T+35*60_000;
+    const futureTs=T+25*60_000,spotTs=T+35*60_000+1_560;
     const fp=JSON.stringify({schema:'report2-hourly-market-archive-v1',source:'HTX_OFFICIAL_COLLECTOR',source_bucket:futureTs,source_market_ts:futureTs,received_ts:futureTs+1000,samples:[{contract:'ADA-USDT',market:'HTX_LINEAR_PERPETUAL',source_status:'CLOSED',price:1.05,observed_ts:futureTs}]});
     db.prepare('INSERT INTO report2_hourly_market_archive_v1 VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run(T,futureTs,'OLD',futureTs,futureTs+1000,PREVIOUS_MANIFEST_SHA256,104,1,1,createHash('sha256').update(fp).digest('hex'),fp,T);
     const spot=await buildSpotRecord({venue:'HTX',hour_bucket:T,received_ts:spotTs+1000,body:{status:'ok',ts:spotTs,data:[{symbol:'adausdt',close:1,bid:.999,ask:1.001,vol:1000}]}});
     db.prepare('INSERT INTO report2_hourly_spot_archive_v1 VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run(spot.hour_bucket,spot.venue,spot.source_url,spot.source_ts,spot.received_ts,spot.identity_scope,spot.target_count,spot.present_count,spot.quote_checked_count,spot.payload_sha256,spot.payload_json,T);
     const adapter={prepare(sql){const s=db.prepare(sql);return{bind(...p){return{all(){return{results:s.all(...p)}}}}}}};
     const pair=await readAlignedHourlyPair({archive_db:adapter,contract:'ADA-USDT',from_hour:T,to_hour:T});
-    assert.equal(pair.status,'PARTIAL');assert.equal(pair.hours[0].status,'BOTH_ASYNC');assert.equal(pair.hours[0].source_skew_ms,600_000);
-    assert.equal(pair.hours[0].spot.price,1);assert.equal(pair.hours[0].futures.price,1.05);assert.equal(pair.hours[0].comparison_usable,false);
+    assert.equal(pair.status,'CLOSED');assert.equal(pair.hours[0].status,'BOUNDED_LAG_PAIR');assert.equal(pair.hours[0].source_skew_ms,601_560);
+    assert.equal(pair.hours[0].spot.price,1);assert.equal(pair.hours[0].futures.price,1.05);assert.equal(pair.hours[0].comparison_usable,true);assert.equal(pair.hours[0].decision_usable,false);
   }finally{db.close();}
 });

@@ -1,8 +1,8 @@
 {
   "schema": "LIQ_SPOT_FUTURES_CLOCK_ALIGNMENT_20261012_V1",
-  "recorded_utc": "2026-10-12T19:03:18.383825+00:00",
-  "basis_main": "460203b25db21cb929772a2a1259a408c1b790a4",
-  "status": "LOCAL_IMPLEMENTED_CLOUD_ASSEMBLY_AND_NATURAL_ARCHIVE_PENDING",
+  "recorded_utc": "2026-10-12T19:16:47.120454+00:00",
+  "basis_main": "fb37a9f4c7daadbb60bd961e635a01a4c281f21c",
+  "status": "OWNER_10M_MAXIMUM_LOCAL_VERIFIED_NEW_CLOUD_AND_NATURAL_PENDING",
   "owner_instruction": "Keep both HTX spot and futures in each applicable coin conclusion, synchronize their snapshot times or keep the gap very small, apply across active blocks; preserve original source clocks and paused blocks.",
   "observed_old_archive": {
     "hour_bucket": 1791828000000,
@@ -30,10 +30,10 @@
     "one_additional_archive_call_per_hour": true
   },
   "implementation": {
-    "archive": "Spot and futures batch tickers fetched concurrently in the same hourly Worker invocation; separate original clocks and prices retained; aligned pair requires <=30000 ms batch and per-contract source skew. Previous futures collector snapshot remains immutable. Legacy ten-minute records read as BOTH_ASYNC, both prices present with comparison_usable=false.",
-    "report": "Shared HTX spot/futures context uses <=30000 ms for a price comparison. If both fresh quotes are farther apart, both prices and gap remain visible in manual and Telegram conclusion without numeric price spread.",
-    "n12": "Same-run recent trade sample agreement requires <=30000 ms between original latest trade clocks. If farther apart, both factual samples remain in one context line, no joint directional signal, no score contribution.",
-    "liq": "Spot price reference to actual future levels requires <=30000 ms; spot never becomes a liquidation level.",
+    "archive": "Concurrent same-hour HTX spot and futures batch requests remain the near-sync target; reader labels <=30s ALIGNED_PAIR and up to 630s BOUNDED_LAG_PAIR. Legacy :25/:35 pair at 601560ms is usable only as bounded-lag price context with exact clocks, never decision evidence.",
+    "report": "Shared HTX spot/futures price context permits <=630000ms including timestamp jitter, labels any >30s lag in manual and Telegram joint conclusion; context remains non-scoring and non-entry.",
+    "n12": "Recent trade samples keep their stricter original <=60s freshness and <=30s joint directional clock rule; older or mismatched samples remain separate context, without an artificial common direction.",
+    "liq": "Spot reference to existing future levels permits <=630000ms market source gap, explicitly prints any >30s lag, and never treats spot as a liquidation level or new source.",
     "unchanged": "N05 exact four-hour closed windows; N10 same closed 15-minute candle window; N11 futures-only exemption; N04 on-chain facts and N15 sector facts do not acquire false spot/futures consensus."
   },
   "limits": {
@@ -48,7 +48,9 @@
     "free_history_tests": "14 pass including old 10-minute fallback and new exact pair",
     "n12_and_liq_target_tests": "25 pass",
     "output_contract_freeze": "12 pass, golden report bytes unchanged",
-    "full_local_validation": "1424 pass, one frozen hash corrected afterward, one assembled-runtime-only test cannot run without decrypted runtime"
+    "full_local_validation": "1424 pass, one frozen hash corrected afterward, one assembled-runtime-only test cannot run without decrypted runtime",
+    "owner_10m_targeted_tests": "26 passed, one assembled-runtime-only test skipped; old 601560ms archive bound and ten-minute LIQ context verified.",
+    "owner_10m_frozen_output": "12 passed; golden output unchanged for identical canonical inputs."
   },
   "first_cloud_attempt": {
     "run": 38295144826,
@@ -59,10 +61,22 @@
     "repair": "Corrected 68-second fixture expectation and updated an old N16 cost assertion to the owner's current paused-block rule; runtime checks before target tests passed."
   },
   "pending": [
-    "Exact cloud assembled validation of all changed runtime paths",
-    "Deploy new free-history Worker on exact main with lease and fence gate",
-    "Natural hourly D1 readback with actual source skew and useful per-contract paired quotes",
-    "Natural full report plus Telegram/manual exact source-to-conclusion evidence after corrected head",
+    "Cloud assembled validation on 10-minute policy exact head",
+    "Deploy updated HTX-only free-history Worker before next natural hourly run",
+    "Natural hourly D1 readback with actual spot/futures original clock gap and qualified contract pairs",
+    "Natural full report and Telegram/manual exact source-to-conclusion evidence after corrected head",
     "LIQ future-level natural use and outcome calibration remain open"
-  ]
+  ],
+  "owner_clarification": "Aim for maximum synchronization. About ten minutes is the outer contextual tolerance; +30 seconds allows scheduling timestamp jitter. Preserve exact original clocks, label delayed comparisons, never turn delay into score or entry.",
+  "prior_cloud_30s_proof": {
+    "assembled_run": 38295431419,
+    "exact_head": "fb37a9f4c7daadbb60bd961e635a01a4c281f21c",
+    "result": "SUCCESS",
+    "target_tests_passed": 67,
+    "full_generation_validate": "SUCCESS",
+    "artifact_target_tap_sha256": "e9d8b67a2bc1d370f82f27669ddc4f6674176569884a5277dc7e011753e183ee",
+    "worker_deploy_run": 38295543096,
+    "worker_version": "26cbf056-906f-4474-a15d-4ac0d812c40f",
+    "scope": "SUPERSEDED_30S_POLICY;DO_NOT_USE_AS_10M_ACCEPTANCE"
+  }
 }

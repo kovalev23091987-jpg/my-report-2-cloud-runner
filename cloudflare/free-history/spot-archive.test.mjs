@@ -64,7 +64,7 @@ test('ten-minute old futures quote stays available separately and never becomes 
   const futures={status:'ok',ts:now-10*60_000,ticks:[{contract_code:'STRK-USDT',business_type:'swap',ts:now-10*60_000,close:1.01,bid:[1.009,1],ask:[1.011,1]}]};
   try{
     const r=await buildSpotRecord({venue:'HTX',hour_bucket:T,body:{status:'ok',ts:now-1_000,data:htxRows},received_ts:now,futures_body:futures,futures_received_ts:now});
-    assert.notEqual(r.pair_status,'PAIRED_WITHIN_30S');
+    assert.notEqual(r.pair_status,'PAIRED_WITHIN_10M');
     db.prepare('INSERT INTO report2_hourly_spot_archive_v1 VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(r.hour_bucket,r.venue,r.source_url,r.source_ts,r.received_ts,r.identity_scope,r.target_count,r.present_count,r.quote_checked_count,r.payload_sha256,r.payload_json,now).run();
     const pair=await readAlignedHourlyPair({archive_db:db,contract:'STRK-USDT',from_hour:T,to_hour:T});
     assert.equal(pair.status,'PARTIAL');assert.equal(pair.hours[0].comparison_usable,false);

@@ -109,21 +109,21 @@ if(!root){
   const changes=[
    [a=>a.spot_component.data.symbol='otherusdt','FUTURES_ONLY'],
    [a=>a.futures_component.data.contract_info.contract_code='OTHER-USDT','SPOT_ONLY'],
-   [a=>a.spot_component.data.depth_bbo.source_ts=T-300_001,'FUTURES_ONLY'],
+   [a=>a.spot_component.data.depth_bbo.source_ts=T-630_001,'FUTURES_ONLY'],
    [a=>a.spot_component.data.depth_bbo.source_ts=T+1,'FUTURES_ONLY'],
    [a=>a.spot_component.data.health.depth=false,'FUTURES_ONLY'],
    [a=>a.spot_component.data.depth_bbo.best_ask=99,'FUTURES_ONLY'],
   ];
   for(const [change,expected] of changes){const input=args();change(input);const receipt=buildSpotFuturesMarketContext(input);assert.equal(receipt.status,expected);assert.equal(receipt.comparison,null);assert.match(receipt.fact.value,/котировка не подтверждена/);assert.equal(receipt.fact.score_contribution,0);}
-  const skewed=args();skewed.spot_component.data.depth_bbo.source_ts=T-80_000;
-  const skew=buildSpotFuturesMarketContext(skewed);
-  assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.match(skew.fact.value,/снимки разделяют 68 с/);assert.match(skew.fact.value,/процентную разницу цен не рассчитываем/);
-  const asyncConclusion=buildSpotFuturesJointConclusion({market_context:skew,block_context:{facts:[]},contract,observed_ts:T});
-  assert.match(asyncConclusion.value,/спот.*фьючерсы.*68 с/);assert.doesNotMatch(asyncConclusion.value,/дороже|дешевле/);
-  const asyncCanonical=structuredClone(fixture);asyncCanonical.metadata.canonical_runtime_adapter='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
-  asyncCanonical.metadata.supporting_context={blocks:{spot_futures_market:skew},facts:[skew.fact,asyncConclusion]};
-  const asyncManual=formatManualReport(asyncCanonical);assert.equal(asyncManual.ok,true);assert.match(asyncManual.text,/Разновременные котировки спота и фьючерсов/);assert.match(asyncManual.text,/спот.*фьючерсы.*68 с/);
-  const asyncTelegram=plainSpotFuturesJointConclusion(asyncCanonical);assert.match(asyncTelegram,/спот.*фьючерсы.*68 с/);
+  const delayed=args();delayed.spot_component.data.depth_bbo.source_ts=T-80_000;
+  const lag=buildSpotFuturesMarketContext(delayed);
+  assert.equal(lag.status,'CLOSED_COMPARABLE_PRICE_AND_SPREAD');assert.equal(lag.comparison.source_skew_ms,68_000);assert.match(lag.fact.value,/снимки с разницей 68 с/);
+  const lagConclusion=buildSpotFuturesJointConclusion({market_context:lag,block_context:{facts:[]},contract,observed_ts:T});
+  assert.match(lagConclusion.value,/дороже|дешевле/);assert.match(lagConclusion.value,/снимки с разницей 68 с/);
+  const lagCanonical=structuredClone(fixture);lagCanonical.metadata.canonical_runtime_adapter='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
+  lagCanonical.metadata.supporting_context={blocks:{spot_futures_market:lag},facts:[lag.fact,lagConclusion]};
+  const lagManual=formatManualReport(lagCanonical);assert.equal(lagManual.ok,true);assert.match(lagManual.text,/снимки с разницей 68 с/);
+  const lagTelegram=plainSpotFuturesJointConclusion(lagCanonical);assert.match(lagTelegram,/снимки с разницей 68 с/);
   const noSpot=buildSpotFuturesMarketContext({...args(),spot_component:null});
   assert.equal(noSpot.status,'FUTURES_ONLY');assert.match(noSpot.fact.value,/спотовая котировка не подтверждена/);
   const bounded=buildSpotFuturesJointConclusion({market_context:noSpot,block_context:{facts:[]},contract,observed_ts:T});

@@ -41,8 +41,8 @@ export async function readHourlyHistory({archive_db,contract,market,venue='HTX',
 }
 
 // Read the two HTX ticker batches captured by the same Worker invocation.
-// Legacy :25 futures samples stay in readHourlyHistory and are never promoted
-// to a synchronous price pair with the :35 spot sample.
+// Legacy :25 futures samples stay in readHourlyHistory. They may be compared
+// only as bounded-lag context with their original ten-minute clock gap shown.
 export async function readAlignedHourlyPair({archive_db,contract,from_hour,to_hour}={}){
   if(!archive_db||!TARGETS.includes(contract)||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR)throw Error('PAIR_HISTORY_ARGUMENTS_INVALID');
   const fetched=await archive_db.prepare('SELECT * FROM report2_hourly_spot_archive_v1 WHERE venue=?1 AND hour_bucket BETWEEN ?2 AND ?3 ORDER BY hour_bucket').bind('HTX',from_hour,to_hour).all();
@@ -59,8 +59,10 @@ export async function readAlignedHourlyPair({archive_db,contract,from_hour,to_ho
     const s=spot[0],f=futures?.[0],spotValid=s?.market==='SPOT'&&s.source_status==='BOUNDED_TICKER'&&Number.isSafeInteger(s.source_ts)&&s.source_ts===payload.source_ts&&Number.isFinite(s.price)&&s.price>0;
     const futureValid=f?.market==='HTX_LINEAR_PERPETUAL'&&f.source_status==='BOUNDED_TICKER'&&Number.isSafeInteger(f.source_ts)&&Number.isFinite(f.price)&&f.price>0;
     const skew=spotValid&&futureValid?Math.abs(s.source_ts-f.source_ts):null;
-    const aligned=spotValid&&futureValid&&paired?.status==='PAIRED_WITHIN_30S'&&paired.source_url==='https://api.hbdm.com/linear-swap-ex/market/detail/batch_merged'&&skew<=30_000;
-    byHour.set(h,{hour_bucket:h,status:aligned?'ALIGNED_PAIR':spotValid&&futureValid?'BOTH_ASYNC':spotValid?'SPOT_ONLY':futureValid?'FUTURES_ONLY':'NO_QUALIFIED_PAIR',spot:spotValid?s:null,futures:futureValid?f:null,source_skew_ms:skew,comparison_usable:!!aligned,decision_usable:false});
+    const pairedSource=paired?.source_url==='https://api.hbdm.com/linear-swap-ex/market/detail/batch_merged'&&['PAIRED_WITHIN_30S','PAIRED_WITHIN_10M'].includes(paired?.status);
+    const bounded=spotValid&&futureValid&&pairedSource&&skew<=630_000;
+    const aligned=bounded&&skew<=30_000;
+    byHour.set(h,{hour_bucket:h,status:aligned?'ALIGNED_PAIR':bounded?'BOUNDED_LAG_PAIR':spotValid&&futureValid?'BOTH_ASYNC':spotValid?'SPOT_ONLY':futureValid?'FUTURES_ONLY':'NO_QUALIFIED_PAIR',spot:spotValid?s:null,futures:futureValid?f:null,source_skew_ms:skew,comparison_usable:!!bounded,decision_usable:false});
   }
   const previousFutures=await readHourlyHistory({archive_db,contract,market:'FUTURES',from_hour,to_hour});
   const priorByHour=new Map(previousFutures.samples.map(s=>[s.hour_bucket,s]));
@@ -70,7 +72,8 @@ export async function readAlignedHourlyPair({archive_db,contract,from_hour,to_ho
     if(!pairedRow){hours.push({hour_bucket:h,status:fallback?'FUTURES_ONLY':'GAP',spot:null,futures:fallback,source_skew_ms:null,comparison_usable:false,decision_usable:false});continue;}
     if(pairedRow.futures||!fallback){hours.push(pairedRow);continue;}
     const skew=pairedRow.spot?Math.abs(pairedRow.spot.source_ts-fallback.source_ts):null;
-    hours.push({...pairedRow,status:pairedRow.spot?'BOTH_ASYNC':'FUTURES_ONLY',futures:fallback,source_skew_ms:skew,comparison_usable:false});
+    const bounded=pairedRow.spot&&skew<=630_000;
+    hours.push({...pairedRow,status:pairedRow.spot?(bounded?'BOUNDED_LAG_PAIR':'BOTH_ASYNC'):'FUTURES_ONLY',futures:fallback,source_skew_ms:skew,comparison_usable:!!bounded});
   }
-  return{status:hours.every(r=>r.status==='ALIGNED_PAIR')?'CLOSED':'PARTIAL',contract,venue:'HTX',market_pair:'SPOT_AND_LINEAR_PERPETUAL',max_source_skew_ms:30_000,decision_usable:false,hours};
+  return{status:hours.every(r=>r.comparison_usable)?'CLOSED':'PARTIAL',contract,venue:'HTX',market_pair:'SPOT_AND_LINEAR_PERPETUAL',near_sync_target_ms:30_000,max_source_skew_ms:630_000,decision_usable:false,hours};
 }

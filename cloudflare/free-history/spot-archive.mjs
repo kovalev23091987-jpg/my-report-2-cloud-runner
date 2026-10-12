@@ -1,6 +1,6 @@
 import {MANIFEST_SHA256,TARGETS} from './hourly-archive.mjs';
 
-const HOUR=3_600_000,DAY=24*HOUR,RETAIN=270*DAY,MAX_PAIR_SKEW_MS=30_000;
+const HOUR=3_600_000,DAY=24*HOUR,RETAIN=270*DAY,MAX_PAIR_SKEW_MS=10*60_000+30_000;
 const MAX_DB_BYTES=400_000_000,MAX_RESPONSE_BYTES=2_000_000,MAX_PAYLOAD_BYTES=100_000;
 const DAILY_HTTP_CAP=24;
 export const FUTURES_QUOTE_URL='https://api.hbdm.com/linear-swap-ex/market/detail/batch_merged';
@@ -30,7 +30,7 @@ export function buildPairedFuturesQuotes({body,received_ts,spot_source_ts}){
   }
   if(!samples.length)throw Error('FUTURES_PAIR_NO_TARGET_CONTRACTS');
   const skew=Math.abs(source_ts-spot_source_ts);
-  return{status:skew<=MAX_PAIR_SKEW_MS?'PAIRED_WITHIN_30S':'SOURCE_CLOCKS_NOT_ALIGNED',source_url:FUTURES_QUOTE_URL,source_ts,received_ts,spot_futures_source_skew_ms:skew,target_count:TARGETS.length,present_count:samples.length,quote_checked_count:samples.filter(row=>row.source_status==='BOUNDED_TICKER').length,samples};
+  return{status:skew<=MAX_PAIR_SKEW_MS?'PAIRED_WITHIN_10M':'SOURCE_CLOCKS_NOT_ALIGNED',near_sync:skew<=30_000,source_url:FUTURES_QUOTE_URL,source_ts,received_ts,spot_futures_source_skew_ms:skew,target_count:TARGETS.length,present_count:samples.length,quote_checked_count:samples.filter(row=>row.source_status==='BOUNDED_TICKER').length,samples};
 }
 
 export async function buildSpotRecord({venue,hour_bucket,body,received_ts,futures_body=null,futures_received_ts=null,futures_error=null}) {
@@ -95,7 +95,7 @@ export async function archiveSpot({venue,archive_db,scheduled_ts=Date.now(),fetc
     const stored=await archive_db.prepare('SELECT payload_sha256 FROM report2_hourly_spot_archive_v1 WHERE hour_bucket=?1 AND venue=?2').bind(hour_bucket,venue).first();
     if (stored?.payload_sha256!==record.payload_sha256) throw Error('SPOT_ARCHIVE_IMMUTABLE_READBACK_FAILED');
     await archive_db.prepare("UPDATE report2_spot_archive_attempt_v1 SET status='CLOSED' WHERE hour_bucket=?1 AND venue=?2").bind(hour_bucket,venue).run();
-    return {status:record.pair_status==='PAIRED_WITHIN_30S'?'ARCHIVED':'PAIR_PARTIAL',venue,hour_bucket,present_count:record.present_count,quote_checked_count:record.quote_checked_count,paired_futures_count:record.paired_futures_count,pair_status:record.pair_status,source_http:2,db_bytes:Number(inserted?.meta?.size_after??dbBytes),identity_scope:record.identity_scope};
+    return {status:record.pair_status==='PAIRED_WITHIN_10M'?'ARCHIVED':'PAIR_PARTIAL',venue,hour_bucket,present_count:record.present_count,quote_checked_count:record.quote_checked_count,paired_futures_count:record.paired_futures_count,pair_status:record.pair_status,source_http:2,db_bytes:Number(inserted?.meta?.size_after??dbBytes),identity_scope:record.identity_scope};
   } catch(error) {
     await archive_db.prepare("UPDATE report2_spot_archive_attempt_v1 SET status='ERROR' WHERE hour_bucket=?1 AND venue=?2").bind(hour_bucket,venue).run();
     throw error;

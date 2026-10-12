@@ -26,7 +26,7 @@ test('an original same-run spot price accompanies an actual futures level in man
 test('missing level, stale or foreign markets, future clocks and forged stored reference add no spot liquidation claim',()=>{
  const variants=[
   {market_context:{...market(),contract:'ETH-USDT'}},
-  {market_context:{...market(),spot:{mid:100,source_ts:T-300_001}}},
+  {market_context:{...market(),spot:{mid:100,source_ts:T-630_001}}},
   {market_context:{...market(),futures:{mid:100.2,source_ts:T+1}}},
   {liquidations:{...liquidations(),above:[]}},
   {liquidations:{...liquidations(),above:[{...zone,source_ts:T-300_001}]}},
@@ -36,6 +36,13 @@ test('missing level, stale or foreign markets, future clocks and forged stored r
  for(const mutate of [x=>x.spot_reference.contract='ETH-USDT',x=>x.spot_reference.futures_over_spot_pct=10,x=>x.spot_reference.source_skew_ms=600_000,x=>x.observed_ts=T+301_000,x=>x.above=[]]){
   const bad=structuredClone(liq);mutate(bad);assert.equal(liquidationSpotReferenceLine(bad),null);
  }
+});
+
+test('ten-minute market clock gap is labeled price context and remains non-scoring',()=>{
+ const liq=liquidations(),m=market();m.spot.source_ts=T-610_000;
+ const r=buildLiquidationSpotReference({contract,market_context:m,liquidations:liq,observed_ts:T});
+ assert.equal(r.status,'CLOSED');assert.equal(r.score_contribution,0);assert.equal(r.source_skew_ms,594_000);
+ liq.spot_reference=r;assert.match(liquidationSpotReferenceLine(liq),/снимки разделяют 594 с/);
 });
 
 test('the same canonical fact reaches full manual and approved Telegram output',()=>{
