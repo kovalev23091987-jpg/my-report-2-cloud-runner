@@ -1,0 +1,105 @@
+{
+  "schema": "REPORT2_PR331_POSTMERGE_N12_WORKING_HANDOFF_V1",
+  "recorded_utc": "2026-10-12T11:05:02.612Z",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/331",
+  "candidate_head": "e2226fcf9fff3e1c3a13e33dd60de17436a4af0b",
+  "squash_merged_main": "1bab9daf1da9f3f3f259a1ef4da88b9587390e93",
+  "merged_at_utc": "2026-10-12T11:02:30Z",
+  "cloud_checks_same_candidate_head": [
+    {
+      "role": "N10",
+      "run": 38239741599,
+      "conclusion": "success",
+      "artifact_id": 11741862088,
+      "artifact_digest": "sha256:47560060a9dcbb30c8dbe5d25e8f633b892933cef339dfa9765e2cc110c436d7"
+    },
+    {
+      "role": "N11",
+      "run": 38239741543,
+      "conclusion": "success",
+      "artifact_id": 11742071709,
+      "artifact_digest": "sha256:691e03aac51a4429370fc18b6d4737c8032ec34e3ce273f567d19b941f2cbeae"
+    },
+    {
+      "role": "N12",
+      "run": 38239741604,
+      "conclusion": "success",
+      "artifact_id": 11741799287,
+      "artifact_digest": "sha256:6ecb337b89fda293d9fcbb88c8c4e5c624892cb2b7229a9c1f3e0660ab6f5006"
+    },
+    {
+      "role": "scheduled_recovery_offline",
+      "run": 38239741536,
+      "conclusion": "success"
+    }
+  ],
+  "latest_actual_full_report_before_merge": {
+    "run": 38237861445,
+    "head": "54b0756af9b6d6b4bd10ac889e369641a5b9834b",
+    "scanned": 104,
+    "errors": 0,
+    "stale": 0,
+    "top_two": [
+      "BTR-USDT",
+      "龙虾-USDT"
+    ],
+    "n12_both_htx_markets": [
+      "龙虾-USDT"
+    ],
+    "n12_futures_only": [
+      "BTR-USDT"
+    ],
+    "exact_same_run_sent": false,
+    "result_artifact_id": 11741218589,
+    "result_artifact_digest": "sha256:41018dc897e87605204957068e18332048e08c7c29e5f2d62d1a96243baf9655",
+    "delivery_artifact_id": 11741298495,
+    "delivery_artifact_digest": "sha256:c1bf165b2743bb8381db509f60788a773e31b4dec48af965a0e5ad6b42441f08"
+  },
+  "other_saved_full_report": {
+    "run": 38233280841,
+    "top_two": [
+      "ZEC-USDT",
+      "龙虾-USDT"
+    ],
+    "n12_both_htx_markets": [
+      "ZEC-USDT",
+      "龙虾-USDT"
+    ],
+    "exact_same_run_sent_proven": false
+  },
+  "funding_bonus": "Absolute >=0.1% per actual payout; +10 at interval <=4h, +15 at <=1h; only after independent price/OI direction, opposite sign, 100-point cap. Cloud verified; natural postmerge effect pending.",
+  "active_blocks": [
+    "N04",
+    "N05",
+    "N10",
+    "N11",
+    "N12",
+    "N14",
+    "N15",
+    "N16"
+  ],
+  "paused_blocks": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09"
+  ],
+  "paused_restore_requires_explicit_owner_command": true,
+  "shared_sources_remain_available_to_active_blocks": true,
+  "historical_104_coverage_proof": "checkpoints/ACTIVE_CONFIGURED_BLOCKS_104_COVERAGE_RECONCILIATION_20261012.json",
+  "limits": [
+    "N05 external complete-window assets historically 39/104; this is not fresh simultaneous coverage.",
+    "N10 and N11 prior-24h factual assets historically 16/104 each; N11 spot exempt.",
+    "N12 saved selected-coin both-market proof is limited to ZEC/龙虾; BTR was futures-only in latest run.",
+    "No exact same-run Telegram SENT/message_id in the latest recovered report.",
+    "Postmerge natural report and all-104 actual fact-to-output coverage remain unverified."
+  ],
+  "next_action": "At the next actual full scheduled report, verify the exact post-PR331 run/head, 104-to-24-to-2 selection, N05/N10/N11/N12 useful facts and spot/futures use for both selected coins, paused-block exclusion, and the exact manual/Telegram outcome. Record SENT/message_id only if it occurred in the same run. Continue closing N12 and all-104 actual source coverage within existing caps. Do not start another block until the owner discusses and agrees.",
+  "next_block_started": false,
+  "historical_instruction_archive": "checkpoints/archive/working-instructions-20261012/",
+  "historical_data_deleted": false
+}

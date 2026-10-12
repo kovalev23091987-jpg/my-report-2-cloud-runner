@@ -1,13 +1,28 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T10:54:23.915153+00:00",
+  "recorded_utc": "2026-10-12T11:05:02.612Z",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
-  "main_at_recording": "54b0756af9b6d6b4bd10ac889e369641a5b9834b",
-  "work_in_progress_branch": "codex/funding-selection-intensity-20261012",
+  "main_at_recording": "1bab9daf1da9f3f3f259a1ef4da88b9587390e93",
+  "work_in_progress_branch": null,
   "current_task": "N12_AND_SHARED_SELECTION_SCHEDULE_DELIVERY_VERIFICATION",
   "last_three": [
     {
       "rank": 1,
+      "kind": "PR331_MERGED_N12_SELECTION_AND_WORKING_HANDOFF",
+      "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/331",
+      "candidate_head": "e2226fcf9fff3e1c3a13e33dd60de17436a4af0b",
+      "merged_main": "1bab9daf1da9f3f3f259a1ef4da88b9587390e93",
+      "cloud_runs": [
+        38239741599,
+        38239741543,
+        38239741604,
+        38239741536
+      ],
+      "release_receipt": "checkpoints/PR331_POSTMERGE_N12_WORKING_HANDOFF_20261012.json",
+      "status": "MERGED;CLOUD_PASS;POSTMERGE_NATURAL_AND_EXACT_SENT_PENDING"
+    },
+    {
+      "rank": 2,
       "kind": "ACTUAL_FULL_REPORT_AND_DELIVERY_AUDIT",
       "github_run": 38237861445,
       "head": "54b0756af9b6d6b4bd10ac889e369641a5b9834b",
@@ -32,7 +47,7 @@
       ]
     },
     {
-      "rank": 2,
+      "rank": 3,
       "kind": "SCHEDULE_RECOVERY_AND_AUTOMATIC_AUDIT_RELEASE",
       "main_commit": "90391cc35b4ee8d0f4dd1b6e877c39e515560ad7",
       "status": "MERGED;FOLLOWING_AUTOMATIC_RUN_SUCCEEDED_WITH_NO_EXACT_SAME_RUN_SENT",
@@ -40,25 +55,6 @@
         329,
         330
       ]
-    },
-    {
-      "rank": 3,
-      "kind": "ACTUAL_FULL_REPORT_BEFORE_DELIVERY_AUDIT_RELEASE",
-      "github_run": 38233280841,
-      "head": "a7d565cec4f96da510c512ca643f49533f2c9f2b",
-      "run_id": "1791799098799-1791799109983",
-      "result_artifact_id": 11739805794,
-      "result_artifact_digest": "sha256:f3f6c851c7a2c60e096acf191518fff8934e5f85606899eae66100fedfa28482",
-      "top_two": [
-        "ZEC-USDT",
-        "龙虾-USDT"
-      ],
-      "scan": "104/104, errors0, stale0",
-      "n12_qualified_both_markets": [
-        "ZEC-USDT",
-        "龙虾-USDT"
-      ],
-      "telegram": "NO_EXACT_SAME_RUN_SENT_PROVEN"
     }
   ],
   "coverage_reconciliation": "checkpoints/ACTIVE_CONFIGURED_BLOCKS_104_COVERAGE_RECONCILIATION_20261012.json",
@@ -78,5 +74,5 @@
     "Same-run Telegram SENT/message_id on latest two recovered runs",
     "Native GitHub scheduled event recovered; backup dispatch currently filled missed windows"
   ],
-  "next_action": "Validate current candidate code and saved-run Telegram 104 guard in assembled runtime, reconcile scheduled full-run evidence and then save exact candidate/main proof. Keep N12 open and do not start a new block."
+  "next_action": "At the next actual full scheduled report, verify the exact post-PR331 run/head, 104-to-24-to-2 selection, N05/N10/N11/N12 useful facts and spot/futures use for both selected coins, paused-block exclusion, and the exact manual/Telegram outcome. Record SENT/message_id only if it occurred in the same run. Continue closing N12 and all-104 actual source coverage within existing caps. Do not start another block until the owner discusses and agrees."
 }
