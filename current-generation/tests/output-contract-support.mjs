@@ -25,6 +25,7 @@ export async function loadEffectivePresentationModules(){
     'bitget-four-hour-flow.mjs':'current-generation/files/src/bitget-four-hour-flow.mjs',
     'evidence-source-adapters.mjs':'current-generation/files/src/evidence-source-adapters.mjs',
     'liquidation-source-acquisition-audit.mjs':'current-generation/files/src/liquidation-source-acquisition-audit.mjs',
+    'liquidation-spot-reference.mjs':'current-generation/files/src/liquidation-spot-reference.mjs',
     'htx-contract-key.mjs':'current-generation/files/src/htx-contract-key.mjs',
     'idea-basis-facts.mjs':'current-generation/files/src/idea-basis-facts.mjs',
     'telegram-plain-facts.mjs':'current-generation/files/src/telegram-plain-facts.mjs',

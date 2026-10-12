@@ -66,7 +66,7 @@ const files=[
  'src/supplemental-candidate-context.mjs',
  'src/specialist-candidate-context.mjs',
  'src/candidate-source-routing.mjs',
- 'src/dynamic-liquidation-panel.mjs',
+ 'src/dynamic-liquidation-panel.mjs','src/liquidation-spot-reference.mjs',
  'src/liquidation-source-weighting.mjs',
  'src/cross-exchange-risk-context.mjs',
  'src/gate-liquidation-history.mjs','src/htx-realized-liquidations.mjs','src/liquidation-source-chain.mjs','src/liquidation-futures-coverage.mjs','src/coinlobster-future-model.mjs',

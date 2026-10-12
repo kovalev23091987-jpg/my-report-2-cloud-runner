@@ -1,5 +1,6 @@
 // Presentation only: never computes direction, scores, gates or targets.
 import {liquidationAcquisitionAbsenceText} from './liquidation-source-acquisition-audit.mjs';
+import {liquidationSpotReferenceLine} from './liquidation-spot-reference.mjs';
 const text=v=>v==null?'':String(v).trim();
 export const LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT=5;
 export const LIQUIDATION_DISPLAY_MAX_PER_SIDE=4;
@@ -133,6 +134,7 @@ export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}=
   lines.push('Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.');
   lines.push(`Покрытие: только доступные площадки и диапазон источника; время снимка ${displayTime(Math.min(...[...liq.above,...liq.below].map(z=>z.source_ts)))} МСК.`);
  }
+ const spotLine=liquidationSpotReferenceLine(liq);if(spotLine)lines.push(spotLine);
  return lines;
 }
 // Owner's brief Telegram view. Exact prices, quotes, amounts, source clocks and
@@ -160,6 +162,7 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
   if(used.some(z=>z.source_clock_closed===false))lines.push('Время исходного состояния неизвестно.');
  }
  const absent=liquidationAbsenceLine(liq,policy);if(absent)lines.push(absent);
+ const spotLine=liquidationSpotReferenceLine(liq);if(spotLine&&used.length)lines.push(spotLine);
  return lines;
 }
 export function displayLegacyLiquidations(liq,{policy='ORIGINAL'}={}){

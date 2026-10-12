@@ -1,0 +1,115 @@
+{
+  "schema": "LIQ_SPOT_CONTEXT_AND_SOURCE_GAP_AUDIT_V1",
+  "recorded_utc": "2026-10-12T16:41:49.111658+00:00",
+  "status": "PARTIAL_CONNECTED_CANDIDATE_NOT_NATURAL_REPORT_VERIFIED",
+  "code_head_before_change": "96505b3089bc5cad1f13659829330f0f07cc33e4",
+  "scope": "LIQ only; N16 and other paused blocks remain paused. No change to score, target admission, entry, approved report headings, source caps or HTX-only N15 archive.",
+  "existing_source_audit": {
+    "historical_eight_future_level_sources": [
+      "HYPERLIQUID_NATIVE",
+      "BYK_TRACKED_HL_BANDS",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "GTRADE_NATIVE",
+      "BYKARANTELI_FUTURE_MAP",
+      "COINLOBSTER_FUTURE_MODEL",
+      "OXARCHIVE_HL_BUCKETS"
+    ],
+    "historical_distinct_future_level_upstreams": {
+      "HYPERLIQUID_NATIVE": "HYPERLIQUID",
+      "BYK_TRACKED_HL_BANDS": "HYPERLIQUID",
+      "OXARCHIVE_HL_BUCKETS": "HYPERLIQUID",
+      "LIGHTER_NATIVE": "LIGHTER",
+      "GMX_NATIVE": "GMX",
+      "GTRADE_NATIVE": "GTRADE",
+      "BYKARANTELI_FUTURE_MAP": "BYK_PROVIDER_FUTURE_LEVELS",
+      "COINLOBSTER_FUTURE_MODEL": "COINLOBSTER"
+    },
+    "historical_checked_assets": 102,
+    "historical_numeric_future_level_assets": 55,
+    "historical_uncovered_assets": 47,
+    "historical_qualifying_real_level_sources": {
+      "HYPERLIQUID_NATIVE": 55,
+      "BYK_TRACKED_HL_BANDS": 0,
+      "LIGHTER_NATIVE": 0,
+      "GMX_NATIVE": 0,
+      "GTRADE_NATIVE": 0,
+      "BYKARANTELI_FUTURE_MAP": 0,
+      "COINLOBSTER_FUTURE_MODEL": 0,
+      "OXARCHIVE_HL_BUCKETS": 0
+    },
+    "current_approved_assets": 104,
+    "added_since_historical_coverage": [
+      "CT",
+      "RLC"
+    ],
+    "current_live_future_level_coverage": "NOT_MEASURED_FROM_CURRENT_D1; historical 55/102 cannot be called current 55/104",
+    "runtime_coverage_database_loaded_without_104_migration": "current-generation/files/runner-main.mjs loads stored 102-asset coverage database; CT and RLC have no proven source admission from old database",
+    "htx_spot_bounded_bulk_ticker_assets": 88,
+    "historical_future_level_and_htx_spot_ticker_overlap": 51,
+    "historical_level_assets_without_bounded_htx_spot": [
+      "ACE",
+      "CASHCAT",
+      "PAXG",
+      "USELESS"
+    ],
+    "same_run_depth_plus_live_level_overlap": "NOT_MEASURED; bulk ticker and old level capability are different clocks and not a current joint fact",
+    "realized_feeds_already_in_code": [
+      "HTX_REALIZED_LIQUIDATIONS",
+      "GATE_LIQUIDATION_HISTORY",
+      "COINALYZE",
+      "BINANCE_FORCE_ORDER_STREAM",
+      "BYBIT_ALL_LIQUIDATION_STREAM",
+      "OKX_LIQUIDATION_ORDERS_STREAM"
+    ],
+    "realized_feeds_not_future_level_sources": true,
+    "default_cross_exchange_lane": "HISTORY forced by runner-main; short websocket realized samples are implemented but not the default full-report path",
+    "provider_docs": {
+      "bybit_all_liquidation": "https://bybit-exchange.github.io/docs/v5/websocket/public/all-liquidation",
+      "gate_public_liquidation_stream": "https://www.gate.com/docs/developers/futures/ws/en/",
+      "gate_rest_liquidation_history_requires_authentication": "https://www.gate.com/docs/developers/apiv4/en/futures/",
+      "okx_public_api": "https://www.okx.com/docs-v5/en/"
+    },
+    "new_independent_future_level_source_admitted": false,
+    "reason": "No new free candidate has passed exact asset, current numeric level, source clock, budget and consumer checks; documentation or HTTP200 alone is not admission."
+  },
+  "spot_context_candidate": {
+    "source": "Existing same-run HTX spot and futures depth already collected for chosen candidates",
+    "additional_http": 0,
+    "additional_d1": 0,
+    "independent_liquidation_source_added": 0,
+    "score_contribution": 0,
+    "entry_or_target_permission": false,
+    "requires": "Exact approved contract, synchronous fresh spot and futures depth, current already qualified future level and source clock, then revalidated at display",
+    "manual_and_telegram": "Controlled same-canonical manual and approved Telegram rendering passed; assembled natural report and SENT still pending",
+    "files": [
+      "current-generation/files/src/liquidation-spot-reference.mjs",
+      "current-generation/files/src/canonical-runtime-adapter.mjs",
+      "current-generation/files/src/canonical-display.mjs",
+      "current-generation/apply-runtime-overlay.mjs"
+    ],
+    "historical_frozen_output": "8 canonical scenarios byte-identical"
+  },
+  "verification": {
+    "local_tests": 1415,
+    "passed": 1411,
+    "failed": 0,
+    "skipped": 4,
+    "assembly_only_test_excluded": "supplemental-supporting-bridge.test.mjs requires missing runtime/src/existing-source-consumer.mjs in portable checkout",
+    "source_http": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "natural_run": false,
+    "controlled_same_canonical_manual_and_approved_telegram": true
+  },
+  "remaining": [
+    "Read current D1 LIQ coverage and compare to exact approved 104 universe; old 55/102 is expired historical capability, not current live levels",
+    "Repair bounded coverage admission for CT and RLC without declaring unverified levels or spending 104 x provider probes",
+    "Verify source -> numeric level -> canonical -> manual and Telegram on same natural run, then actual SENT only with message_id",
+    "Check whether existing Bybit/OKX/Binance realized samples add events under runtime caps; do not equate short empty stream to no market liquidations",
+    "Search more independent free future-level sources only where exact useful numeric data, source clock and free limits can be proven",
+    "Check LIQ spot reference in assembled runtime and natural report; distinguish it from N15 bulk ticker history"
+  ],
+  "next_action": "Continue LIQ under a fresh lease: current D1/source audit, exact 104 coverage migration, controlled assembled path and only then budgeted live qualification of truly missing sources. Do not call LIQ complete."
+}

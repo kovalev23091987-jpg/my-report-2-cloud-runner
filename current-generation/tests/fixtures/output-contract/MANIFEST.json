@@ -5,10 +5,10 @@
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
     "current-generation/files/src/manual-report-formatter.mjs": "1bf336f7989b6a7c7bfad1a85a70083590bc28e25b796f04d457a40b1ee3cd37",
     "current-generation/files/src/telegram-compact-formatter.mjs": "625d0d464d926ccd113109bfe4908c598a6ab8b6bafef883807e66d290511552",
-    "current-generation/files/src/canonical-display.mjs": "83c8ed20fb44b239bb557d32df1129aec75609eaac93a58922edbd643f87ba43",
+    "current-generation/files/src/canonical-display.mjs": "4c31db6d1043340d340bc89108d0d6a9076a3a912e6156e6e08bdda382eb563a",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "4a3cc81049f9db7e2f16b5396d0f66a06f591e5f6c72e87fcaf086201e9316b1",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "c7962a37fc7c766a9b2592ce7b09f486518230144d4d37d3f96c5c2079b95504",
     "current-generation/files/src/canonical-publication.mjs": "61d9317cfd725d07b722be468c2f7a6a412e3479899bae496c4b6d2beddf739f",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
@@ -31,6 +31,25 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-12",
+      "scope": "LIQ_SAME_RUN_SPOT_PRICE_REFERENCE_FOR_VERIFIED_FUTURES_LEVEL",
+      "authorization": "Owner requested spot context in important liquidation block; existing exact same-run HTX depth reused with zero HTTP, score or entry change. Spot is explicitly not a liquidation level or independent liquidation source.",
+      "module_changes": {
+        "current-generation/files/src/canonical-display.mjs": {
+          "after": "4c31db6d1043340d340bc89108d0d6a9076a3a912e6156e6e08bdda382eb563a"
+        },
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "after": "c7962a37fc7c766a9b2592ce7b09f486518230144d4d37d3f96c5c2079b95504"
+        },
+        "current-generation/files/src/liquidation-spot-reference.mjs": {
+          "after": "c49c49c491cdca3ddc1761496539ab50c79cdc792e1b9a93b1215caecaeb429e"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-12",
       "scope": "N14_BYBIT_EXACT_NEUTRAL_OPTION_IV_CONTEXT",

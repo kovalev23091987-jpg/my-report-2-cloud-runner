@@ -35,6 +35,7 @@ import { buildEvidenceDomainContract } from './evidence-domain-contract.mjs';
 import { liquidationMapPriority } from './liquidation-extension/htx-liquidation-route.mjs';
 import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from './supplemental-score-evidence.mjs';
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
+import {buildLiquidationSpotReference} from './liquidation-spot-reference.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
 import {APPROVED_HTX_SCOPE,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
@@ -403,6 +404,8 @@ export function buildRuntimeCanonicalBundle({
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
  const spotFuturesMarketContext=buildSpotFuturesMarketContext({contract,spot_component,futures_component,observed_ts});
+ const liquidationSpotReference=buildLiquidationSpotReference({contract,market_context:spotFuturesMarketContext,liquidations:renderedLiquidationView,observed_ts});
+ if(liquidationSpotReference.status==='CLOSED'){renderedLiquidationView.contract=contract;renderedLiquidationView.observed_ts=observed_ts;renderedLiquidationView.spot_reference=liquidationSpotReference;}
  const spotFuturesJointConclusion=buildSpotFuturesJointConclusion({market_context:spotFuturesMarketContext,block_context:blockResultContext,evidence:internal_market_context?.evidence_v2?.evidence||[],contract,observed_ts});
  const spotExecutionCostContext=buildSpotExecutionCostContext({contract,spot_component,market_context:spotFuturesMarketContext,observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});

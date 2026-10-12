@@ -1,28 +1,28 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T16:28:42.024789+00:00",
+  "recorded_utc": "2026-10-12T16:41:49.111658+00:00",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
   "main_at_recording": "8b7a03c1a05ad0c8c41f8fc0d33e08e49f514399",
   "work_in_progress_branch": null,
-  "current_task": "LIQ_OWNER_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
+  "current_task": "LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
   "last_three": [
     {
       "rank": 1,
+      "kind": "LIQ_SPOT_CONTEXT_AND_SOURCE_GAP_AUDIT",
+      "proof": "checkpoints/LIQ_SPOT_CONTEXT_AND_SOURCE_GAP_AUDIT_20261012.json",
+      "status": "PARTIAL_CONNECTED_CANDIDATE_NOT_NATURAL_REPORT_VERIFIED"
+    },
+    {
+      "rank": 2,
       "kind": "N16_OWNER_PAUSE_LIQ_HANDOFF",
       "proof": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json",
       "status": "N16_PAUSED_LIQ_IN_PROGRESS"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "kind": "OWNER_N15_TO_N16_AND_FINAL_INTEGRATION",
       "proof": "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json",
       "status": "N15_PARTIAL_PRESERVED_N16_REVIEW_NEXT"
-    },
-    {
-      "rank": 3,
-      "kind": "N15_PRIOR_REPORT_AUDIT",
-      "proof": "checkpoints/N15_PRIOR_REPORT_AUDIT_20261012.json",
-      "status": "OLD_REPORTS_AUDITED_NEW_ARCHIVE_NATURAL_AND_CONSUMER_PENDING"
     }
   ],
   "coverage_reconciliation": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
@@ -44,5 +44,5 @@
     "N15 source→fact→consumer→manual/Telegram use of enough real history",
     "Current all-104 exact useful coverage for N05/N10/N11/N12 and 104→24→2 end-to-end verification"
   ],
-  "next_action": "LIQ: владелец поручил максимально расширить полезные фактические и расчётные сведения о ликвидациях по 104 активам, включая спот как контекст и фьючерсы, проверить сохранённые первичные данные, уже подключённые и новые бесплатные источники, точную привязку, независимость, лимиты и реальное использование в ручном отчёте/Telegram. Сначала пользоваться сохранёнными фактами и не объявлять покрытие без полного пути source→fact→consumer→render. N16 поставлен на бессрочную паузу; N11 и общие источники сохранены. N15 остаётся частичным: архив HTX есть, его использование и устойчивость ещё не доказаны. После настройки оставшихся блоков провести общую проверку действующей стратегии 104→24→2, обоих рынков, лимитов и доставки."
+  "next_action": "Continue LIQ under a fresh lease: current D1/source audit, exact 104 coverage migration, controlled assembled path and only then budgeted live qualification of truly missing sources. Do not call LIQ complete."
 }
