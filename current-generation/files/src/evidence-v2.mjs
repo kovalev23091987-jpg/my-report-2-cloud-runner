@@ -4,7 +4,10 @@ export const BLOCKS=Object.freeze({
  N01:{family:'RISK_EVENTS',cap:.3,consumer:'SUPPORTING_RISK_RECHECK'},N02:{family:'ONCHAIN',cap:.3,consumer:'SUPPLY_RISK'},N03:{family:'ONCHAIN',cap:.3,consumer:'MONEY_FLOW_CONTEXT'},N04:{family:'ONCHAIN',cap:.3,consumer:'TRANSFER_INVESTIGATION'},N05:{family:'ONCHAIN',cap:.5,consumer:'MARKET_FLOW_CONFIRMATION'},N06:{family:'MARKET_DEMAND',cap:.2,consumer:'EARLY_INTEREST_PRIORITY'},N07:{family:'RISK_EVENTS',cap:.2,consumer:'OFFICIAL_EVENT_RISK'},N08:{family:'RISK_EVENTS',cap:.2,consumer:'EXECUTION_GATE'},N09:{family:'RISK_EVENTS',cap:.2,consumer:'EXECUTION_ELIGIBILITY'},N10:{family:'TECHNICAL_EXISTING',cap:.2,consumer:'TARGET_PATH_INVALIDATION'},N11:{family:'MARKET_DEMAND',cap:.4,consumer:'EXECUTION_STRESS'},N12:{family:'MARKET_DEMAND',cap:.6,consumer:'MONEY_FLOW_DIAGNOSTIC'},N14:{family:'DERIVATIVES',cap:.3,consumer:'OPTIONS_RISK_CONTEXT'},N15:{family:'MARKET_DEMAND',cap:.6,consumer:'SECTOR_RELATIVE_STRENGTH'},N16:{family:'RISK_EVENTS',cap:.3,consumer:'EXECUTION_COST_GATE'},
 });
 export const CHAIN_CAPS=Object.freeze({DERIVATIVES:3.2,MARKET_DEMAND:3,ONCHAIN:2,RISK_EVENTS:1.8,TECHNICAL_EXISTING:.2});
-// Owner 10.10.2026: historical rows remain readable; the paused block is no penalty.
+// Owner 12.10.2026: keep these blocks excluded until the owner explicitly
+// commands restoration. Historical rows remain readable, without a penalty.
+// Shared physical sources may still serve active blocks; never disable a source
+// globally merely because one of its former consumers is paused.
 export const PAUSED_BLOCKS=Object.freeze({N01:'OWNER_PAUSED_NO_QUALIFIED_INDEPENDENT_RELEASE_PAIR',N02:'OWNER_PAUSED_SUPPLY_BLOCK_EXCLUDED_FROM_BOTH_REPORT_CHAINS',N03:'OWNER_PAUSED_SUPPLY_REDUCTION_BLOCK_EXCLUDED_FROM_BOTH_REPORT_CHAINS',N06:'OWNER_PAUSED_SOCIAL_ATTENTION_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS',N07:'OWNER_PAUSED_OFFICIAL_PROJECT_EVENTS_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS',N08:'OWNER_PAUSED_LISTING_AND_EXECUTION_GATE_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS',N09:'OWNER_PAUSED_HTX_MARGIN_RISK_LIMITS_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS'});
 export const ACTIVE_BLOCK_IDS=Object.freeze(Object.keys(BLOCKS).filter(id=>!PAUSED_BLOCKS[id]));
 

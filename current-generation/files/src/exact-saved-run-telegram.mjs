@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import {BLOCKS,ACTIVE_BLOCK_IDS,PAUSED_BLOCKS} from './evidence-v2.mjs';
+import {APPROVED_HTX_SCOPE} from './approved-htx-analysis-scope.mjs';
 import {renderCanonicalTelegram,CANONICAL_PUBLICATION_VERSION} from './canonical-publication.mjs';
 
 export const EXACT_SAVED_RUN_TELEGRAM_VERSION='exact-saved-run-telegram-v2-approved-layout-20261005';
@@ -13,11 +14,10 @@ async function sendRelay({relay_url,relay_key,message,fetch_impl=globalThis.fetc
 function candidateContract(c){return text(c?.contract||c?.contract_code||c?.canonical?.contract);}
 function candidateCoverageAccounted(c){
  const a=c?.block_coverage,usage=c?.block_decision_use,ids=usage?.participating_block_ids;
- const fullActive=a?.status==='CLOSED_ALL_ACTIVE_BLOCKS_CHECKED'&&a?.all_blocks_checked===true&&a?.coverage_count===ACTIVE_BLOCK_IDS.length&&a?.checked_block_count===ACTIVE_BLOCK_IDS.length;
- const fullLegacy=a?.status==='CLOSED_ALL_15_CHECKED'&&a?.all_blocks_checked===true&&Number(a?.coverage_count)===15&&Number(a?.checked_block_count)===15;
- const bound=usage?.schema==='report2-block-decision-use-audit-v2-same-run-assessments'&&usage.run_id===c.run_id&&usage.snapshot_id===c.snapshot_id&&usage.contract===candidateContract(c)&&usage.decision_ts===c.observed_ts&&Array.isArray(ids)&&new Set(ids).size===ids.length&&ids.every(id=>BLOCKS[id]&&!PAUSED_BLOCKS[id]&&usage.blocks?.[id]?.participating===true)&&usage.participating_block_count===ids.length&&Object.entries(usage.blocks||{}).filter(([,r])=>r.participating===true).length===ids.length;
+ const bound=['report2-block-decision-use-audit-v2-same-run-assessments','report2-block-decision-use-audit-v3-explicit-unscored-diagnostics'].includes(usage?.schema)&&usage.run_id===c.run_id&&usage.snapshot_id===c.snapshot_id&&usage.contract===candidateContract(c)&&usage.decision_ts===c.observed_ts&&Array.isArray(ids)&&new Set(ids).size===ids.length&&ids.every(id=>BLOCKS[id]&&!PAUSED_BLOCKS[id]&&usage.blocks?.[id]?.participating===true)&&usage.participating_block_count===ids.length&&Object.entries(usage.blocks||{}).filter(([,r])=>r.participating===true).length===ids.length;
  const accounted=a?.coverage_count===ACTIVE_BLOCK_IDS.length&&ACTIVE_BLOCK_IDS.every(id=>typeof a.blocks?.[id]?.status==='string'&&a.blocks[id].source_statuses&&a.blocks[id].source_checks);
- return fullActive||fullLegacy||bound&&accounted;
+ const pausedExcluded=Object.keys(PAUSED_BLOCKS).every(id=>a?.blocks?.[id]?.status==='BLOCK_PAUSED_BY_OWNER'&&a.blocks[id].included_in_active_coverage===false&&usage?.blocks?.[id]?.participating===false&&usage.blocks[id].participation_status==='BLOCK_PAUSED_BY_OWNER');
+ return bound&&accounted&&pausedExcluded;
 }
 function noCalculatedLiquidations(c){const l=c?.canonical?.liquidations||{};return l.calculated_fallback_enabled===false&&Number(l.calculated_zone_count||0)===0&&!(Array.isArray(l.all_zones)&&l.all_zones.some(z=>String(z?.kind||'').toUpperCase()==='CALCULATED'));}
 function displayView(c){const canonical=c.canonical||{};return {...canonical,contract:candidateContract(c),snapshot_time_utc:new Date(Number(c.observed_ts||canonical.observed_ts)).toISOString(),candidates:[{contract:candidateContract(c),ticker:candidateContract(c)}],metadata:{...(canonical.metadata||{}),contract:candidateContract(c)}};}
@@ -28,7 +28,7 @@ export function validateExactSavedRunTelegram({saved_output,requested_run_id,now
  if(!run||text(output.run_id)!==run)return fail('SAVED_RUN_ID_MISMATCH');
  if(output.status!=='CLOSED'||output.reason!==null)return fail('SAVED_RUN_NOT_CLOSED');
  if(output.secrets_included!==false||output.alternative_manual_recalculation!==false)return fail('SAVED_RUN_PROVENANCE_NOT_CLOSED');
- const scan=output.market_scan_audit||{};if(scan.complete!==true||Number(scan.universe_total)!==102||Number(scan.scanned)!==102||Number(scan.errors)!==0||Number(scan.stale)!==0)return fail('MARKET_SCAN_NOT_CLOSED');
+ const scan=output.market_scan_audit||{},scope=scan.approved_scope||{};if(scan.complete!==true||Number(scan.universe_total)!==APPROVED_HTX_SCOPE.approved_assets||Number(scan.scanned)!==APPROVED_HTX_SCOPE.approved_assets||Number(scan.errors)!==0||Number(scan.stale)!==0||scope.status!=='CLOSED'||scope.manifest_sha256!==APPROVED_HTX_SCOPE.manifest_sha256||Number(scope.accepted_analysis_contracts)!==APPROVED_HTX_SCOPE.approved_assets)return fail('MARKET_SCAN_NOT_CLOSED');
  const selection=output.candidate_selection_audit||{},top=Array.isArray(selection.top_two_contracts)?selection.top_two_contracts.map(text):[],deep=Array.isArray(selection.deep_check_selected)?selection.deep_check_selected.map(text):[];
  if(top.length!==2||JSON.stringify(top)!==JSON.stringify(deep)||selection.registry_did_not_change_rank!==true)return fail('TOP_TWO_BINDING_NOT_CLOSED');
  const candidates=Array.isArray(output.candidates)?output.candidates:[];if(candidates.length!==2||!candidates.every(c=>text(c.run_id||c?.canonical?.run_id)===run&&top.includes(candidateContract(c))&&candidateCoverageAccounted(c)&&noCalculatedLiquidations(c)))return fail('CANDIDATE_ACCEPTANCE_NOT_CLOSED');

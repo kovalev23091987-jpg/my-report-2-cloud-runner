@@ -4,7 +4,7 @@ import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
 import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations,displayBriefTelegramLiquidations,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
-import {plainOpenInterest,plainContextFact,plainCancellation,isApprovedTelegramContextFact,plainRelativeComparison,omitTelegramCurrencies,telegramPrice} from './telegram-plain-facts.mjs';
+import {plainOpenInterest,plainContextFact,plainCancellation,isApprovedTelegramContextFact,plainRelativeComparison,plainSpotFuturesJointConclusion,omitTelegramCurrencies,telegramPrice} from './telegram-plain-facts.mjs';
 import {earlySourceRolesClosed} from './observation-source-role-gate.mjs';
 import {confirmedBlockContextFacts,auditRenderedBlockResults} from './block-result-context.mjs';
 export const CANONICAL_PUBLICATION_VERSION='approved-user-layout-v5-plain-language-20261006';
@@ -173,6 +173,8 @@ export function renderCanonicalTelegram({canonical,lifecycle_event,context_polic
  const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007'||context_policy===RELEVANT_LIQUIDATION_PRESENTATION;
  const liquidationPolicy=context_policy===RELEVANT_LIQUIDATION_PRESENTATION?context_policy:liquidationPresentationPolicy(canonical.observed_ts);
  const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${factual?factualIdeaBasis(canonical):basisLabel(canonical)}.`];
+ const marketSummary=plainSpotFuturesJointConclusion(canonical);
+ if(marketSummary)lines.push('',marketSummary);
  const brief=context_policy!=='ORIGINAL_V5_20261006';
  const relative=brief?plainRelativeComparison(canonical):relativeLine(d,relativeConfirmed(canonical));
  if(relative&&!factual)lines.push('',relative);

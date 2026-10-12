@@ -22,6 +22,9 @@ on:
       - current-generation/files/src/manual-report-formatter.mjs
       - current-generation/files/src/canonical-runtime-adapter.mjs
       - current-generation/files/src/worker.js
+      - current-generation/files/src/discovery-candidate-score.mjs
+      - current-generation/files/src/exact-saved-run-telegram.mjs
+      - current-generation/files/src/evidence-v2.mjs
       - current-generation/tests/n12-market-trades.test.mjs
       - current-generation/tests/n12-gate-futures-trades.test.mjs
       - current-generation/tests/n12-bitget-bounded-reuse.test.mjs
@@ -29,6 +32,8 @@ on:
       - current-generation/tests/n12-native-public-trades.test.mjs
       - current-generation/tests/n12-kucoin-token-trades.test.mjs
       - current-generation/tests/shared-spot-futures-market-context.test.mjs
+      - current-generation/tests/discovery-candidate-score.test.mjs
+      - current-generation/tests/exact-saved-run-telegram.test.mjs
 permissions:
   contents: read
 jobs:
@@ -42,7 +47,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Require unchanged main and owned bounded N12 lease
+      - name: Require unchanged main and matching owned bounded lease
         uses: actions/github-script@v7
         with:
           script: |
@@ -53,7 +58,7 @@ jobs:
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',main);
             const branch=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',context.payload.pull_request.head.sha);
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json',main);
-            if(!/^CODEX:OWNER_/.test(phase.lease?.owner||'')||branch.lease?.owner!==phase.lease.owner||branch.lease?.acquired_ts!==phase.lease.acquired_ts||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if(!/^CODEX:/.test(phase.lease?.owner||'')||branch.lease?.owner!==phase.lease.owner||branch.lease?.acquired_ts!==phase.lease.acquired_ts||branch.lease?.expires_ts!==phase.lease.expires_ts||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Assemble current encrypted runtime
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -71,6 +76,9 @@ jobs:
           NODE_OPTIONS: --import ${{ github.workspace }}/current-generation/tests/early-evidence-repair/no-network.mjs
         run: |
           cmp current-generation/files/src/worker.js runtime/src/worker.js
+          cmp current-generation/files/src/discovery-candidate-score.mjs runtime/src/discovery-candidate-score.mjs
+          cmp current-generation/files/src/exact-saved-run-telegram.mjs runtime/src/exact-saved-run-telegram.mjs
+          cmp current-generation/files/src/evidence-v2.mjs runtime/src/evidence-v2.mjs
           cmp current-generation/files/src/n12-market-trades.mjs runtime/src/n12-market-trades.mjs
           cmp current-generation/files/src/htx-large-trades-evidence.mjs runtime/src/htx-large-trades-evidence.mjs
           cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
@@ -91,6 +99,7 @@ jobs:
           cmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs
           node --test current-generation/tests/n12-market-trades.test.mjs current-generation/tests/n12-gate-futures-trades.test.mjs current-generation/tests/n12-bitget-bounded-reuse.test.mjs current-generation/tests/n12-native-public-trades.test.mjs current-generation/tests/n12-kucoin-token-trades.test.mjs current-generation/tests/bitget-flow-collector.test.mjs current-generation/tests/htx-large-trades-evidence.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/joint-spot-futures-flow.test.mjs current-generation/tests/shared-spot-futures-market-context.test.mjs > audit-output/n12-cross-venue/target-unit.tap
           node --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n12-cross-venue/paused-chains.tap
+          node --test current-generation/tests/discovery-candidate-score.test.mjs current-generation/tests/two-candidate-budget.test.mjs current-generation/tests/exact-saved-run-telegram.test.mjs > audit-output/n12-cross-venue/selection-delivery.tap
           node current-generation/validate.mjs > audit-output/n12-cross-venue/generation.log 2>&1
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/n12-cross-venue/binding.json
       - name: Show failure locations

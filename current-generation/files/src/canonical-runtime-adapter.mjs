@@ -38,7 +38,7 @@ import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
 import {APPROVED_HTX_SCOPE,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v17-forward-technical-observation-20261006';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -81,6 +81,24 @@ export function buildSpotFuturesMarketContext({contract,spot_component,futures_c
  const signed=basisPct>=0?'+':'';
  const fact={source:'HTX',label:'Сверка спота и фьючерсов',value:`разница средних цен ${signed}${basisPct.toFixed(2)}%; спреды ${spot.spread_bps.toFixed(1)} и ${futures.spread_bps.toFixed(1)} б.п.; одна биржа`,unit:'',field:'SPOT_FUTURES_PRICE_SPREAD_CONTEXT',source_ts:Math.min(spot.source_ts,futures.source_ts),observed_ts:now,score_contribution:0,entry_authorized:false,telegram_eligible:false};
  return{...base,status:'CLOSED_COMPARABLE_PRICE_AND_SPREAD',spot,futures,comparison,fact};
+}
+export function buildSpotFuturesJointConclusion({market_context,block_context,evidence=[],contract,observed_ts}={}){
+ const market=market_context,now=finite(observed_ts);
+ if(now===null||market?.contract!==text(contract).toUpperCase()||market?.observed_ts!==now||!market.spot&&!market.futures)return null;
+ const exactJoint=arr(block_context?.facts).find(f=>f.block_id==='N12'&&f.field==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'&&f.observed_ts===now);
+ const trade=exactJoint?arr(evidence).find(row=>row?.evidence_id===exactJoint.evidence_id&&row?.htx_contract===market.contract&&row?.block_id==='N12'&&row?.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'):null;
+ const jointTrade=trade?.independent_venue_count===1&&arr(trade?.components).length===2&&trade.components[0].venue==='HTX'&&trade.components[0].market==='FUTURES'&&trade.components[1].venue==='HTX'&&trade.components[1].market==='SPOT'&&['BOUNDED_MULTIMARKET_AGREEMENT','BOUNDED_MULTIMARKET_DISAGREEMENT'].includes(trade.coverage_status)&&trade.observed_ts===now&&finite(trade.source_ts)!==null&&trade.source_ts<=now?trade:null;
+ const price=market.status==='CLOSED_COMPARABLE_PRICE_AND_SPREAD'&&market.comparison&&market.spot&&market.futures
+  ?`фьючерсы ${market.comparison.futures_over_spot_price_pct>=0?'дороже':'дешевле'} спота на ${Math.abs(market.comparison.futures_over_spot_price_pct).toFixed(2).replace('.',',')}%`
+  :market.status==='SOURCE_CLOCKS_NOT_ALIGNED'?'котировки рынков не сопоставимы по времени':`свежая котировка есть только для ${market.spot?'спота':'фьючерсов'}`;
+ const trades=jointTrade?.coverage_status==='BOUNDED_MULTIMARKET_AGREEMENT'
+  ?'последние сделки сходятся только в неполной выборке'
+  :jointTrade?.coverage_status==='BOUNDED_MULTIMARKET_DISAGREEMENT'
+    ?'последние сделки двух рынков расходятся'
+    :'совместная выборка последних сделок не подтверждена';
+ const sourceTs=Math.min(...[market.spot?.source_ts,market.futures?.source_ts,jointTrade?.source_ts].filter(v=>Number.isSafeInteger(v)));
+ if(!Number.isSafeInteger(sourceTs)||sourceTs>now||now-sourceTs>SPOT_FUTURES_CONTEXT_MAX_AGE_MS)return null;
+ return{source:'HTX',label:'Сводный вывод по споту и фьючерсам',value:`${price}; ${trades}; общий рыночный вывод по этим данным не установлен; одна биржа`,unit:'',field:'SPOT_FUTURES_JOINT_CONCLUSION',contract:market.contract,source_ts:sourceTs,observed_ts:now,score_contribution:0,directional_vote:false,entry_authorized:false,telegram_eligible:false,market_pair_status:market.status,n12_joint_status:jointTrade?.coverage_status??null};
 }
 export function buildSpotExecutionCostContext({contract,spot_component,market_context,observed_ts}={}){
  const now=finite(observed_ts),market=market_context?.spot,data=spot_component?.data,reference=data?.spot_execution_reference;
@@ -383,13 +401,14 @@ export function buildRuntimeCanonicalBundle({
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
  const spotFuturesMarketContext=buildSpotFuturesMarketContext({contract,spot_component,futures_component,observed_ts});
+ const spotFuturesJointConclusion=buildSpotFuturesJointConclusion({market_context:spotFuturesMarketContext,block_context:blockResultContext,evidence:internal_market_context?.evidence_v2?.evidence||[],contract,observed_ts});
  const spotExecutionCostContext=buildSpotExecutionCostContext({contract,spot_component,market_context:spotFuturesMarketContext,observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});
  const sectorContext=consumeSectorContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,asset_identity:internal_market_context?.candidate_context?.asset_identity,now:observed_ts});
  supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus,spot_futures_market:spotFuturesMarketContext,spot_execution_cost:spotExecutionCostContext};
  const profileFacts=volumeProfileFacts(volumeProfile,{contract,now:observed_ts,reference_price:price,direction}).slice(0,1);
  if(profileFacts.length){const vpReceipt=supplementalScoreAdjustment.receipts.find(r=>r.source_id==='HTX_VOLUME_PROFILE');const state=volumeConsensus.status==='MULTI_VENUE_CONFIRMED'?`совпадение HTX+${volumeConsensus.confirmations.map(r=>r.source).join('+')}`:volumeConsensus.status==='CONFLICT'?'расхождение; вес 0':'одна площадка';profileFacts[0].value+=`; ${vpReceipt?.score_contribution??0} балла; ${state}`;profileFacts[0].unit='';}
- supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f)),...(spotFuturesMarketContext.fact?[spotFuturesMarketContext.fact]:[]),...(spotExecutionCostContext.fact?[spotExecutionCostContext.fact]:[])];
+ supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f)),...(spotFuturesMarketContext.fact?[spotFuturesMarketContext.fact]:[]),...(spotFuturesJointConclusion?[spotFuturesJointConclusion]:[]),...(spotExecutionCostContext.fact?[spotExecutionCostContext.fact]:[])];
  supportingContext.specialist_context_status=specialistContext.status;
  if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length||spotFuturesMarketContext.fact||spotExecutionCostContext.fact)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
