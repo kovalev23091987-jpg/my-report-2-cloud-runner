@@ -72,7 +72,8 @@ import {bindGateOfficialAssetIdentity} from './src/gate-official-asset-binding.m
 import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
-import {runtimeLiquidationCollectionAdmission,loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage} from './src/liquidation-futures-coverage.mjs';
+import {runtimeLiquidationCollectionAdmission,loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage,alignFuturesCoverageToApprovedScope} from './src/liquidation-futures-coverage.mjs';
+import {APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS} from './src/approved-htx-analysis-scope.mjs';
 import {deliverExactSavedRunTelegram,acceptedJointForTelegramRetrieval} from './src/exact-saved-run-telegram.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v13-current-cycle-20260929";
@@ -697,9 +698,10 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const cacheMaintenance=await maintainExpiredProviderCache({db:env.DATA_DB,now:started,admit:budget=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:budget.rows_read,extraRowsWritten:budget.rows_written})});
     console.log('BOUNDED_EXPIRED_PROVIDER_CACHE_MAINTENANCE',JSON.stringify(cacheMaintenance));
   }
-  const liquidationCoverageDatabase=await loadFuturesCoverageDatabase({db:env.DATA_DB,now:started});
+  const storedLiquidationCoverageDatabase=await loadFuturesCoverageDatabase({db:env.DATA_DB,now:started});
+  const liquidationCoverageDatabase=alignFuturesCoverageToApprovedScope(storedLiquidationCoverageDatabase,{approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS,universe_sha256:APPROVED_HTX_SCOPE.manifest_sha256,universe_observed_ts:APPROVED_HTX_SCOPE.catalog_observed_ts,now:started});
   const liquidationCoverageSummary=summarizeFuturesCoverage(liquidationCoverageDatabase,{now:started});
-  const dydxCryptoAssets=new Set(liquidationCoverageSummary.assets===102?(liquidationCoverageDatabase?.assets||[]).map(a=>a.symbol):[]);
+  const dydxCryptoAssets=new Set(APPROVED_HTX_ANALYSIS_CONTRACTS.map(a=>a.asset_symbol));
   const liquidationCoverageFor=contract=>{const exact=String(contract||'').trim().toUpperCase(),now=Date.now(),base=runtimeLiquidationCollectionAdmission(liquidationCoverageDatabase,{contract:exact,now});return addDydxCollectionPermission(base,{contract:exact,crypto_assets:dydxCryptoAssets,routing:env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.dydx_routing,now,automatic_discovery_enabled:true});};
   env.REPORT2_LIQUIDATION_COVERAGE_FOR=liquidationCoverageFor;
   console.log('LIQUIDATION_FUTURES_COVERAGE_DATABASE',JSON.stringify(liquidationCoverageSummary));

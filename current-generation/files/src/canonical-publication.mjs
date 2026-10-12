@@ -2,6 +2,7 @@ import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {formatManualReport} from './manual-report-formatter.mjs';
 import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
 import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations,displayBriefTelegramLiquidations,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
+import {liquidationSpotReferenceLine} from './liquidation-spot-reference.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
 import {plainOpenInterest,plainContextFact,plainCancellation,isApprovedTelegramContextFact,plainRelativeComparison,plainSpotFuturesJointConclusion,omitTelegramCurrencies,telegramPrice} from './telegram-plain-facts.mjs';
@@ -192,7 +193,10 @@ export function renderCanonicalTelegram({canonical,lifecycle_event,context_polic
  } else if(event==='ENTRY'){
    const e=canonical.entry||{},target=reportableTarget(canonical);lines.push(`Зона входа: ${text(e.area)||`${price(e.min_price)}–${price(e.max_price)} USDT`}.`,`Начинать закрывать позицию: ${price(target?.price??target)} USDT.`,`Отмена идеи: ${displayInvalidation(canonical.invalidation)||''}.`);
  } else lines.push('Причина: ранее отправленная идея больше не соответствует обязательным условиям.');
- lines.push('',...(brief?displayBriefTelegramLiquidations(canonical.liquidations,telegramPrice,{policy:liquidationPolicy}):liquidationLines(canonical)));const joined=lines.filter(x=>x!==null&&x!==undefined).join('\n');const textOut=brief?omitTelegramCurrencies(joined):joined;const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
+ lines.push('',...(brief?displayBriefTelegramLiquidations(canonical.liquidations,telegramPrice,{policy:liquidationPolicy}):liquidationLines(canonical)));const joined=lines.filter(x=>x!==null&&x!==undefined).join('\n');let textOut=brief?omitTelegramCurrencies(joined):joined;const max=1800;
+ // A price cross-check must never block delivery of the actual LIQ levels.
+ if(textOut.length>max){const spotLine=liquidationSpotReferenceLine(canonical.liquidations),renderedSpot=spotLine?(brief?omitTelegramCurrencies(spotLine):spotLine):null;if(renderedSpot)textOut=textOut.split('\n').filter(line=>line!==renderedSpot).join('\n');}
+ if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
 export function renderCanonicalManual({canonical,liquidation_policy=liquidationPresentationPolicy(canonical?.observed_ts)}={}){return canonical?.metadata?.lifecycle_removal?renderRemovalNotice(canonical,{manual:true}):formatManualReport(canonical,{liquidation_policy});}
 

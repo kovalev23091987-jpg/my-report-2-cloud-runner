@@ -34,6 +34,23 @@ export function validateFuturesCoverageDatabase(db){
   return r.status==='REAL_NUMERIC_LEVELS'?Number.isSafeInteger(r.real_numeric_level_count)&&r.real_numeric_level_count>0:r.real_numeric_level_count===null;
  }));
 }
+// Add newly approved HTX futures to a retained matrix without refreshing any
+// old source check. This is an in-memory admission view, not a new D1 receipt.
+export function alignFuturesCoverageToApprovedScope(database,{approved_analysis_contracts,universe_sha256,universe_observed_ts,now}={}){
+ if(!validateFuturesCoverageDatabase(database)||!Array.isArray(approved_analysis_contracts)||approved_analysis_contracts.length!==104||!/^[a-f0-9]{64}$/.test(universe_sha256||'')||!Number.isSafeInteger(universe_observed_ts)||!Number.isSafeInteger(now)||now<database.updated_ts||now<universe_observed_ts)return null;
+ const approved=new Map(approved_analysis_contracts.map(x=>[x?.asset_symbol,x?.contract_code]));
+ if(approved.size!==104||[...approved].some(([symbol,contract])=>contract!==`${symbol}-USDT`||!isExactHtxUsdtSwapKey(contract)))return null;
+ if(database.crypto_future_assets===104){
+  return database.universe_sha256===universe_sha256&&database.crypto_future_contracts===121&&database.assets.every(a=>approved.get(a.symbol)===a.analysis_contract)?database:null;
+ }
+ if(database.crypto_future_assets!==102||database.crypto_future_contracts!==119||database.assets.some(a=>approved.get(a.symbol)!==a.analysis_contract))return null;
+ const missing=[...approved].filter(([symbol])=>!database.assets.some(a=>a.symbol===symbol));
+ if(JSON.stringify(missing.map(([symbol])=>symbol).sort())!==JSON.stringify(['CT','RLC']))return null;
+ const added=missing.map(([symbol,contract])=>({symbol,analysis_contract:contract,contracts:[{family:'linear',contract_code:contract}],source_checks:Object.fromEntries(SOURCES.map(source_id=>[source_id,{source_id,upstream_id:upstream[source_id],status:'UNVERIFIED',checked_ts:null,real_numeric_level_count:null,proof_sha256:null}]))}));
+ const old=new Map(database.assets.map(a=>[a.symbol,a]));
+ const aligned={...database,assets:[...approved.keys()].map(symbol=>old.get(symbol)||added.find(a=>a.symbol===symbol)),crypto_future_assets:104,crypto_future_contracts:121,universe_sha256,universe_observed_ts,updated_ts:now,source_checks_complete:false,alignment:{status:'IN_MEMORY_NEW_ASSETS_UNVERIFIED',source_assets:102,added_assets:['CT','RLC'],old_source_clocks_preserved:true,network_calls:0,d1_writes:0}};
+ return validateFuturesCoverageDatabase(aligned)?aligned:null;
+}
 // Require the exact internally normalized source receipt, not a catalog entry,
 // HTTP200, a directional headline, an HTX leverage scenario or a replay.
 export function qualifyNumericFutureReceipt({source_id,receipt,contract,now}={}){
@@ -98,12 +115,14 @@ export function runtimeLiquidationCollectionAdmission(database,{contract,now}={}
  // searchable. Only fresh native positions can supply levels; a previous empty
  // sample is neither an unsupported market nor a week-long ban on discovery.
  const additional=['HYPERLIQUID_NATIVE','GTRADE_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','COINLOBSTER_FUTURE_MODEL'].filter(id=>{
-  const r=asset.source_checks[id];return r.status==='NO_REAL_NUMERIC_LEVELS'&&r.checked_ts<=now&&now-r.checked_ts<WEEK&&/^[a-f0-9]{64}$/.test(r.proof_sha256||'');
+  const r=asset.source_checks[id];
+  if(id==='HYPERLIQUID_NATIVE')return r.status==='UNVERIFIED'&&database.alignment?.added_assets?.includes(asset.symbol)||(['REAL_NUMERIC_LEVELS','NO_REAL_NUMERIC_LEVELS'].includes(r.status)&&Number.isSafeInteger(r.checked_ts)&&r.checked_ts<=now&&/^[a-f0-9]{64}$/.test(r.proof_sha256||'')&&(r.status==='NO_REAL_NUMERIC_LEVELS'||now-r.checked_ts>=WEEK));
+  return r.status==='NO_REAL_NUMERIC_LEVELS'&&r.checked_ts<=now&&now-r.checked_ts<WEEK&&/^[a-f0-9]{64}$/.test(r.proof_sha256||'');
  });
  if(!additional.length)return proven;
  return {...proven,status:proven.eligible?'PROVEN_LEVEL_ROUTE_PLUS_ADDITIONAL_CONTEXT_CHECKS':'BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED',eligible:true,contract,
   source_ids:[...new Set([...proven.source_ids,...additional])],proven_level_source_ids:proven.source_ids,additional_context_check_source_ids:additional,
-  structural_market_source_ids:additional.filter(id=>id==='HYPERLIQUID_NATIVE'),
+  structural_market_source_ids:additional.filter(id=>id==='HYPERLIQUID_NATIVE'&&['REAL_NUMERIC_LEVELS','NO_REAL_NUMERIC_LEVELS'].includes(asset.source_checks[id].status)),
   coverage_scope:'ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE',fresh_live_levels_confirmed:false,
   receipt_only_context_score_eligible:false,receipt_only_context_target_eligible:false,leaders_may_be_replaced:false};
 }
