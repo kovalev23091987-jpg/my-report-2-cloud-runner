@@ -1,13 +1,21 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T11:05:02.612Z",
+  "recorded_utc": "2026-10-12T11:15:40.727Z",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
-  "main_at_recording": "1bab9daf1da9f3f3f259a1ef4da88b9587390e93",
+  "main_at_recording": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8",
   "work_in_progress_branch": null,
   "current_task": "N12_AND_SHARED_SELECTION_SCHEDULE_DELIVERY_VERIFICATION",
   "last_three": [
     {
       "rank": 1,
+      "kind": "SAVED_SPOT_FUTURES_COVERAGE_AUDIT",
+      "proof": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
+      "basis_main": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8",
+      "scope": "NO_NEW_REPORT_SOURCE_HTTP_OR_D1",
+      "status": "EIGHT_ACTIVE_BLOCKS_RECONCILED;ACTUAL_ALL104_STILL_OPEN"
+    },
+    {
+      "rank": 2,
       "kind": "PR331_MERGED_N12_SELECTION_AND_WORKING_HANDOFF",
       "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/331",
       "candidate_head": "e2226fcf9fff3e1c3a13e33dd60de17436a4af0b",
@@ -22,7 +30,7 @@
       "status": "MERGED;CLOUD_PASS;POSTMERGE_NATURAL_AND_EXACT_SENT_PENDING"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "kind": "ACTUAL_FULL_REPORT_AND_DELIVERY_AUDIT",
       "github_run": 38237861445,
       "head": "54b0756af9b6d6b4bd10ac889e369641a5b9834b",
@@ -45,19 +53,9 @@
       "n12_partial_futures_only": [
         "BTR-USDT"
       ]
-    },
-    {
-      "rank": 3,
-      "kind": "SCHEDULE_RECOVERY_AND_AUTOMATIC_AUDIT_RELEASE",
-      "main_commit": "90391cc35b4ee8d0f4dd1b6e877c39e515560ad7",
-      "status": "MERGED;FOLLOWING_AUTOMATIC_RUN_SUCCEEDED_WITH_NO_EXACT_SAME_RUN_SENT",
-      "related_pull_requests": [
-        329,
-        330
-      ]
     }
   ],
-  "coverage_reconciliation": "checkpoints/ACTIVE_CONFIGURED_BLOCKS_104_COVERAGE_RECONCILIATION_20261012.json",
+  "coverage_reconciliation": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
   "paused_block_ids": [
     "N01",
     "N02",

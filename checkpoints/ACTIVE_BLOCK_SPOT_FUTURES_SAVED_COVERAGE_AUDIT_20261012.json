@@ -1,0 +1,219 @@
+{
+  "schema": "REPORT2_ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_V1",
+  "recorded_utc": "2026-10-12T11:14:55.000Z",
+  "basis_main_with_owned_lease": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8",
+  "method": "OFFLINE_SAVED_RECEIPTS_AND_TWO_OLD_FULL_REPORTS_ONLY",
+  "new_report_run": false,
+  "new_provider_http": 0,
+  "new_production_d1_reads": 0,
+  "universe_assets": 104,
+  "active_blocks": [
+    "N04",
+    "N05",
+    "N10",
+    "N11",
+    "N12",
+    "N14",
+    "N15",
+    "N16"
+  ],
+  "paused_blocks": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09"
+  ],
+  "source_proofs": {
+    "configured": {
+      "path": "checkpoints/ACTIVE_CONFIGURED_BLOCKS_104_COVERAGE_RECONCILIATION_20261012.json",
+      "sha256": "ac95eeabd94a7ee82e78eac19961ae2b102fafa7935b40e5581a32a559c432e6",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "n05": {
+      "path": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json",
+      "sha256": "c78b8c55bc79289ea1d6bec805887aef40ca5209d6b15934ff01e1942d9a7f5e",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "n10": {
+      "path": "checkpoints/N10_ACTUAL_SOURCE_USE_AUDIT_20261011.json",
+      "sha256": "afc52e33124ac6c8f21ab3a26ed760a6857ba5f3308dd70174466f1d1d3b3ac8",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "n11": {
+      "path": "checkpoints/N11_HTX_EXECUTION_500_RELEASE_20261011.json",
+      "sha256": "43497b6a44afd33ea1bbc70cd804c3041a1af5a2650ea672cf82ab28b297c724",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "n12": {
+      "path": "checkpoints/N12_104_SPOT_FUTURES_OFFLINE_ROUTE_MATRIX_20261011.json",
+      "sha256": "9b5441e172decf640b6248ffdd7ecd42efb4b7a0d675992a374e3bfa570a4e61",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "spot_scope": {
+      "path": "checkpoints/ACTIVE_CHAIN_SPOT_SCOPE_AND_N16_REFERENCE_20261012.json",
+      "sha256": "0ad9e4863f70b0265107739ad0a3efeebaf8355a4199837854e238b516c1a3db",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "pr327": {
+      "path": "checkpoints/ACTIVE_CHAIN_SPOT_N16_PR327_RELEASE_20261012.json",
+      "sha256": "f82b1139f3739a625f809091d9d798dc3e8e313c231e1b27648a67896bd0de80",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "register": {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "sha256": "4c20bbf7c67723cce4f20942b5f632c70eff0f5a5aed6a9a5a0de97d2c5ea5da",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "deribit": {
+      "path": "checkpoints/options-risk-release-evidence-20261004.json",
+      "sha256": "51574feb9c743e38a789b43c3974e43579cb5227d587edd3983851705f17ed45",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    },
+    "delta": {
+      "path": "checkpoints/delta-options-release-evidence-20261004.json",
+      "sha256": "4629c4997d293fa6cf245abbce3621c611203a520937c1c6ee124912a54e81d8",
+      "ref": "4e1a9d4326425eb7b720abbe1a2e1e225c2295e8"
+    }
+  },
+  "common_market_baseline": {
+    "htx_futures_approved_structural_assets": 104,
+    "htx_basic_price_oi_funding_original_rows_saved": 104,
+    "htx_spot_historical_symbol_candidates": 89,
+    "external_exact_spot_structural_route_assets": 76,
+    "external_exact_futures_structural_route_assets": 53,
+    "combined_external_exact_spot_or_historical_htx_symbol_leads": 90,
+    "outside_those_two_spot_route_leads": 14,
+    "warning": "Basic futures facts, instrument listings, ticker-only spot hits and price context are not full metric-specific facts or actual report use."
+  },
+  "coverage_by_block": {
+    "N04": {
+      "metric": "On-chain transfers and address attribution",
+      "spot_metric_coverage": "NOT_APPLICABLE",
+      "futures_metric_coverage": "NOT_APPLICABLE",
+      "old_evidence": "Native ETH and BNB transfer facts were scoped; a shared spot or futures price is context, not an N04 transfer.",
+      "quantified_market_coverage": null
+    },
+    "N05": {
+      "metric": "Exact 240-minute taker flow",
+      "saved_external_full_spot_assets_ever": 39,
+      "saved_external_full_futures_assets_ever": 2,
+      "saved_external_both_market_assets_ever": 2,
+      "saved_external_spot_only_assets_ever": 37,
+      "saved_external_future_only_assets_ever": 0,
+      "external_spot_structural_routes": 76,
+      "external_futures_structural_routes": 53,
+      "htx_futures_structural_assets": 104,
+      "htx_240m_flow_all104_proven": false,
+      "latest_two_full_report_candidates_n05_participating": 0,
+      "warning": "Historical windows occurred at different times; one venue is limited informational context, not independent agreement."
+    },
+    "N10": {
+      "metric": "Closed-candle technical path, trigger, target and invalidation",
+      "saved_futures_primary_analytical_assets_prior_24h": 16,
+      "saved_futures_primary_analytical_rows_prior_24h": 48,
+      "saved_published_manual_range_texts_prior_24h": 6,
+      "spot_specific_closed_candle_assets_proven_in_that_audit": 0,
+      "fresh_independent_price_profiles_in_that_audit": 0,
+      "htx_futures_basic_structural_assets": 104,
+      "warning": "Generic spot/futures market context in selected reports does not prove N10 spot closed-candle target calculations."
+    },
+    "N11": {
+      "metric": "Futures execution order book and 500 USDT gate",
+      "spot_metric_coverage": "EXEMPT_BY_OWNER",
+      "saved_futures_execution_assets_prior_24h": 16,
+      "saved_futures_execution_snapshots_prior_24h": 44,
+      "htx_futures_structural_assets": 104,
+      "warning": "The old 16-asset observation is not current all-104 book coverage."
+    },
+    "N12": {
+      "metric": "Bounded recent exact trades and market direction",
+      "old_full_report_run_ids": [
+        38233280841,
+        38237861445
+      ],
+      "selected_distinct_htx_spot_useful_assets": [
+        "ZEC-USDT",
+        "龙虾-USDT"
+      ],
+      "selected_distinct_htx_futures_useful_assets": [
+        "BTR-USDT",
+        "ZEC-USDT",
+        "龙虾-USDT"
+      ],
+      "selected_distinct_both_htx_market_assets": [
+        "ZEC-USDT",
+        "龙虾-USDT"
+      ],
+      "selected_spot_count": 2,
+      "selected_futures_count": 3,
+      "selected_both_count": 2,
+      "selected_futures_only_partial": [
+        "BTR-USDT"
+      ],
+      "htx_futures_structural_assets": 104,
+      "external_exact_spot_structural_assets": 76,
+      "external_exact_futures_structural_assets": 53,
+      "htx_spot_historical_symbol_candidates": 89,
+      "warning": "Two old reports prove these selected-coin samples only; archived external trade pages and structural routes occurred in other windows and cannot be added as same-run report coverage."
+    },
+    "N14": {
+      "metric": "Options implied-volatility risk",
+      "spot_metric_coverage": "NOT_AN_OPTIONS_IV_METRIC",
+      "futures_metric_coverage": "NOT_AN_OPTIONS_IV_METRIC",
+      "old_options_underlying_assets": [
+        "AVAX",
+        "BTC",
+        "ETH",
+        "HYPE",
+        "SOL",
+        "TRX",
+        "XAUT",
+        "XRP"
+      ],
+      "old_options_underlying_count": 8,
+      "warning": "A spot underlying price may be context. Option IV cannot be counted as spot or perpetual-futures IV, and old 102-universe evidence is not fresh 104 coverage."
+    },
+    "N15": {
+      "metric": "Sector and peer relative strength",
+      "exact_htx_spot_metric_asset_count": "NOT_MEASURED",
+      "futures_metric_asset_count": "NOT_MEASURED",
+      "old_participating_asset_examples": [
+        "FIL-USDT",
+        "NEAR-USDT",
+        "NIL-USDT",
+        "RAY-USDT",
+        "ZEC-USDT"
+      ],
+      "old_participating_distinct_assets": 5,
+      "warning": "CoinGecko/CoinPaprika aggregate spot-price sector context is not the exact HTX spot market or a futures-side sector measurement."
+    },
+    "N16": {
+      "metric": "Execution cost and feasibility",
+      "spot_500_usdt_reference": "OFFLINE_CONTROLLED_PROOF_ONLY",
+      "spot_natural_asset_count": "NOT_MEASURED",
+      "futures_natural_asset_count": "NOT_MEASURED",
+      "htx_futures_structural_assets": 104,
+      "htx_spot_historical_symbol_candidates": 89,
+      "warning": "PR327 verified the 500 USDT spot buy/sell arithmetic and manual rendering in an assembled control; no old all-104 natural per-market N16 census exists. Futures cost remains separate."
+    }
+  },
+  "owner_one_market_rule": {
+    "if_both_qualified": "Compare aligned exact same-asset facts and preserve provenance; materially conflicting sides have no common directional conclusion.",
+    "if_one_qualified": "Use the qualified market as a clearly limited informational result; do not mark the missing side as zero or require two markets to show a useful fact.",
+    "if_neither_qualified": "Omit that block fact for the coin from the report; do not fabricate a market conclusion.",
+    "market_sides_same_venue_are_one_independent_source": true,
+    "applies_only_where_spot_and_futures_make_metric_sense": true,
+    "all_active_blocks_implementation_and_natural_coverage_proven": false
+  },
+  "limits": [
+    "No new report was generated; counts refer to distinct saved windows and scopes.",
+    "Only N05,N10,N11,N12 have old 104-denominator market-specific audits.",
+    "For N04,N14,N15,N16 the old evidence does not support an honest per-market 104-asset count.",
+    "A current exact spot market and same-run consumer use are not established for all 104.",
+    "The latest two full reports had no exact same-run Telegram SENT/message_id."
+  ],
+  "next_action": "Continue N12 and shared chain audit from saved evidence and a later ordinary report when available; qualify actual same-window facts, not catalogs, within existing caps. Do not start another block before owner discussion."
+}
