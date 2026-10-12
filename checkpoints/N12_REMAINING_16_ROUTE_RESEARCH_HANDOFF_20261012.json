@@ -1,0 +1,187 @@
+{
+  "schema": "N12_REMAINING_16_ROUTE_RESEARCH_HANDOFF_V1",
+  "recorded_utc": "2026-10-12T12:33:00.000Z",
+  "owner_decision": "STOP_THIS_COVERAGE_EXPANSION_NOW;PRESERVE_FINDINGS;DISCUSS_N14;REVISIT_SHARED_COVERAGE_AFTER_ALL_BLOCKS",
+  "base_main": "779d7c19598bb5c608d9a67159966e256a2d7109",
+  "draft_pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/333",
+  "candidate_commit": "7b177992",
+  "candidate_merged": false,
+  "candidate_code_executing_in_main": false,
+  "scope": "16 previously unbound assets in the 104-asset HTX crypto universe",
+  "original_catalogs": [
+    "checkpoints/n05-alias-route-batch-38245108128/HTX-CURRENT-IDENTITIES.json.gz",
+    "checkpoints/n05-alias-route-batch-38245108128/POLONIEX-ALL-ASSETS.json.gz",
+    "checkpoints/n05-alias-route-batch-38245108128/POLONIEX-ALL-MARKETS.json.gz",
+    "checkpoints/n05-actual-qualification-38049404414/identity-BITGET.json.gz",
+    "checkpoints/n05-actual-qualification-38049404414/catalog-BITGET-SPOT.json.gz",
+    "checkpoints/n05-actual-qualification-38049404414/catalog-BITGET-FUTURES.json.gz",
+    "checkpoints/n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz",
+    "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-SPOT.json.gz"
+  ],
+  "route_candidates": {
+    "GRAM": {
+      "spot": [
+        "BITGET",
+        "POLONIEX"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "HTX_NATIVE"
+    },
+    "HYPE": {
+      "spot": [
+        "BITGET"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "HTX_NATIVE"
+    },
+    "ONG": {
+      "spot": [],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "HTX_NATIVE"
+    },
+    "ORDI": {
+      "spot": [
+        "GATE"
+      ],
+      "futures": [],
+      "kind": "HTX_BRC20"
+    },
+    "AKE": {
+      "spot": [
+        "GATE"
+      ],
+      "futures": [],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "BR": {
+      "spot": [
+        "BITGET",
+        "GATE"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "BTR": {
+      "spot": [
+        "GATE"
+      ],
+      "futures": [],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "CASHCAT": {
+      "spot": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "futures": [],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "GPS": {
+      "spot": [
+        "BITGET",
+        "GATE"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "MYX": {
+      "spot": [
+        "BITGET",
+        "GATE"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "RAVE": {
+      "spot": [
+        "BITGET",
+        "GATE"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "UB": {
+      "spot": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "futures": [],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "USELESS": {
+      "spot": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "futures": [],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "VELVET": {
+      "spot": [
+        "BITGET",
+        "GATE",
+        "POLONIEX"
+      ],
+      "futures": [
+        "BITGET"
+      ],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "哈基米": {
+      "spot": [
+        "GATE",
+        "POLONIEX"
+      ],
+      "futures": [],
+      "kind": "ISSUER_CANDIDATE"
+    },
+    "LAB": {
+      "spot": [],
+      "futures": [],
+      "kind": "UNRESOLVED_TICKER_COLLISION"
+    }
+  },
+  "candidate_counts": {
+    "any_external_route": 15,
+    "spot": 14,
+    "futures": 8,
+    "both_spot_and_futures": 7,
+    "futures_only": 1,
+    "spot_only": 7,
+    "unresolved": 1
+  },
+  "baseline_saved_structural_104": {
+    "spot": 88,
+    "futures": 61,
+    "no_exact_external_route": 16
+  },
+  "potential_saved_structural_104_after_reviewed_implementation": {
+    "spot": 102,
+    "futures": 69,
+    "any_route": 103
+  },
+  "qualification": "Only saved original catalog identity and market matching. Eleven static issuer candidates need stronger same-project HTX evidence and cloud assembly before merge. LAB has a ticker collision; no binding was made.",
+  "test_evidence": {
+    "targeted_node_tests": "43 passed / 43",
+    "full_local_validate": "1400 passed, 4 skipped, 2 failed before fixture correction; coinpaprika fixture corrected and targeted retest passed; supplemental-supporting-bridge requires assembled cloud runtime file absent locally",
+    "cloud_assembled": "NOT_RUN_FOR_PR333"
+  },
+  "actual_data": "NO_NEW_LIVE_SOURCE_CALLS;NO_NEW_FULL_WINDOWS;NO_CONSUMER_OR_MANUAL_OR_TELEGRAM_PROOF_FROM_PR333",
+  "limits": "No source caps, scoring, report format, Telegram format or paused-block status changed.",
+  "remaining": "At later shared coverage phase, verify primary identity for each static candidate, cloud assembly, current market availability, useful fresh window, consumer use and same-run report/Telegram. Resolve LAB separately. Assess need for new independent sources based on actual gaps.",
+  "next_block": "N14_OPTION_RISK_PENDING_OWNER_DISCUSSION;NO_IMPLEMENTATION_STARTED"
+}
