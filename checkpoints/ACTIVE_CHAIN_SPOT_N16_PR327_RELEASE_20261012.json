@@ -1,0 +1,49 @@
+{
+  "schema": "ACTIVE_CHAIN_SPOT_N16_PR327_RELEASE_20261012_V1",
+  "status": "PR327_SQUASH_MERGED_MAIN_ASSEMBLED_CLOUD_PASS_NATURAL_COVERAGE_PENDING",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/327",
+  "candidate_head": "8769e0445acf9ee927a5386843f6537005f1735b",
+  "merged_main": "383b8bfad0cc1d77cbb1107482f9ca9a337b55ee",
+  "base_main": "d410b21dbe623acaf0106ed282a42f2958fcac6e",
+  "owner_lease_released_from": "CODEX:OWNER_ACTIVE_CHAIN_SPOT_REVIEW:1791781134539",
+  "scope": "Active N04,N05,N10,N12,N14,N15,N16 use verified spot where relevant; N11 futures orderbook is spot exempt. Paused blocks remain paused.",
+  "implementation": {
+    "n11_spot_required": false,
+    "n11_futures_execution_gate_500_usdt_unchanged": true,
+    "n16_spot_execution_reference_notional_usdt": 500,
+    "n16_reference_buy_and_sell_separate_not_round_trip": true,
+    "n16_reference_source": "HTX spot step0 depth already collected in the same deep check",
+    "n16_exact_approved_asset_original_clock_full_fill_arithmetic_checked": true,
+    "n16_futures_cost_gate_unchanged": true,
+    "n05_n10_n12_existing_metric_specific_spot_paths_retained": true,
+    "n04_n14_n15_spot_price_context_only_not_metric_specific_acceptance": true,
+    "extra_provider_http": 0,
+    "extra_d1_reads": 0,
+    "new_independent_venue_votes": 0,
+    "score_weights_strategy_caps_cadence_changed": false,
+    "approved_telegram_text_changed": false,
+    "manual_report_layout_changed": false,
+    "manual_24_supporting_fact_bound_retained": true
+  },
+  "verification": {
+    "local_output_goldens": "PASS_8_UNCHANGED_SCENARIOS",
+    "local_generation_guard": "PASS",
+    "assembled_cloud_candidate_head": "8769e0445acf9ee927a5386843f6537005f1735b",
+    "n10": {"run_id": 38206832323, "conclusion": "success", "artifact_id": 11727746927, "artifact_digest": "sha256:70b2ff1100a07ef2ad7fc3ea17de7f90861a0b9c24963b4167b1bff60f77408c"},
+    "n11": {"run_id": 38206832342, "conclusion": "success", "artifact_id": 11727702034, "artifact_digest": "sha256:b9703a137a2c322c8511d32c9d510390b21a720718eaa7121492a4e0cb670fa8"},
+    "n12": {"run_id": 38206832321, "conclusion": "success", "artifact_id": 11727068597, "artifact_digest": "sha256:ba79d44e0c728e86ee61897c8378ccce7aa1e90f612186e9656aa43ca3f8f980"},
+    "controlled_n16_fact_in_manual": true,
+    "controlled_n16_fact_excluded_from_telegram": true,
+    "controlled_invalid_impact_or_spot_clock_fails_closed": true
+  },
+  "unresolved": {
+    "natural_postmerge_104_asset_spot_pair_coverage": "NOT_MEASURED",
+    "per_block_spot_metric_coverage_for_all_104": "NOT_ACCEPTED",
+    "n04_n14_n15_metric_specific_spot_use": "OPEN_WHERE_MEANINGFUL_AND_VALIDATABLE",
+    "n12_maximum_real_trade_coverage": "OPEN",
+    "n05_maximum_full_window_coverage": "OPEN",
+    "natural_same_run_source_to_report_to_telegram_proof": "PENDING",
+    "fresh_same_run_SENT_message_id": "PENDING"
+  },
+  "next_action": "Use the next admissible natural approved-104 run to count exact spot and futures observations, original source clocks and actual N04/N05/N10/N12/N14/N15/N16 use in manual/approved Telegram. Continue current N12 source coverage without exceeding existing admission and with no N11 spot work; do not start a different block without owner discussion."
+}
