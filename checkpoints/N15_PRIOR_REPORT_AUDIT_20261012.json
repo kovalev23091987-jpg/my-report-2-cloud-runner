@@ -1,0 +1,64 @@
+{
+  "schema": "N15_PRIOR_REPORT_AUDIT_V1",
+  "recorded_utc": "2026-10-12T16:14:32.046529+00:00",
+  "purpose": "Audit saved full-report artifacts before the next natural HTX-only hourly archive run; no new exchange HTTP or report run",
+  "lease_owner": "CODEX:N15_PRIOR_REPORT_AUDIT:1791821266019",
+  "saved_runs": [
+    {
+      "cloud_run": 38237861445,
+      "event": "schedule via bounded backup recovery",
+      "generated_utc": "2026-10-12T10:42:46.304Z",
+      "run_id": "1791801689066-1791801697078",
+      "artifact_sha256": "95525219add9f5564d5af416b6849be442b51c9d4d3c8af1ffe54db6f3d677a5",
+      "status": "CLOSED",
+      "stage0": "104/104;errors0;stale0",
+      "deep_checked": [
+        "BTR-USDT",
+        "龙虾-USDT"
+      ],
+      "spot_futures_observation": "N12 龙虾 HTX spot+futures bounded agreement; BTR futures-only partial market",
+      "n15_sector_observation": "龙虾 one CoinGecko sector fact rendered; BTR no usable N15 sector fact"
+    },
+    {
+      "cloud_run": 38271056693,
+      "event": "workflow_dispatch",
+      "generated_utc": "2026-10-12T15:34:38.526Z",
+      "run_id": "1791819205482-1791819216545",
+      "artifact_sha256": "560b77c219586f4f4655c7de2495f742288d4e0f4aa568cda251d22df7a2a214",
+      "status": "CLOSED",
+      "stage0": "104/104;errors0;stale0",
+      "deep_checked": [
+        "BOME-USDT"
+      ],
+      "report_observation": "BOME HTX 15-minute futures and spot closed candles both rendered; directions agreed but were not counted as independent venues; CoinPaprika sector context rendered"
+    },
+    {
+      "cloud_run": 38273808949,
+      "event": "workflow_dispatch",
+      "generated_utc": "2026-10-12T15:58:12.479Z",
+      "run_id": "1791820588556-1791820598645",
+      "artifact_sha256": "de2b6ba77001765c6950ed60a9d49b8674c5e042c6beac49ef3ec9d481564a33",
+      "status": "CLOSED",
+      "stage0": "104/104;errors0;stale0",
+      "deep_checked": [
+        "RLC-USDT",
+        "NIL-USDT"
+      ],
+      "report_observation": "Both had HTX 15-minute futures and spot paths rendered, with coincident price directions; N12 recent-trade directions disagreed across markets and stayed neutral; CoinGecko and CoinPaprika sector context rendered",
+      "automatic_delivery_audit": "NO_EXACT_SAME_RUN_SENT",
+      "automatic_delivery_audit_sha256": "753c1a8c7dccff157956469024667b4cf8cff6bbec0f98cb6b102ae0692f73ba"
+    }
+  ],
+  "scheduled_no_work": {
+    "cloud_run": 38268624014,
+    "created_utc": "2026-10-12T15:13:16Z",
+    "artifact_sha256": "a57e2512d173e2cc6f467b0458ac2b11f0da0cfe2e72ec17364ceb304ccffcd2",
+    "status": "NO_WORK_NOT_DUE_NO_FRESH_TRIGGER",
+    "market_conditions_evaluated": false
+  },
+  "old_report_scope": "Confirms old production scan, selected spot/futures facts, N15 sector output, and lack of exact same-run Telegram SENT for the latest audited manual run; not a census of all 104 spot paths",
+  "new_hourly_archive_scope": "The new isolated archive started on 2026-10-12 and is not wired into report/Telegram/score. Older reports cannot prove its 19:35 HTX-only Cron, long-term retention, or consumer use. The first archived 18:35 Moscow HTX facts remain separately proved in N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json; that whole run had retired Bitget lane ERROR.",
+  "source_budget": "No new exchange HTTP, D1 write, report execution, or Telegram send for this audit; only GitHub artifact reads and local inspection",
+  "conclusion": "PRIOR_REPORTS_AUDITED_NEW_ARCHIVE_NATURAL_AND_CONSUMER_PENDING",
+  "next_action": "After 2026-10-12 16:35 UTC / 19:35 Moscow, read exact new HTX-only archive Cron D1 run and source hashes. Keep archive consumer integration and sustained retention unproven until separately checked."
+}
