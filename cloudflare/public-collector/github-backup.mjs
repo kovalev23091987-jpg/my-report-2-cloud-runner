@@ -3,6 +3,7 @@ import path from 'node:path';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 import {claimTriggerKick,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
 import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,createCollectorJobBudget} from './continuous-backup-worker.mjs';
+import {inspectScheduledReportGap,dispatchScheduledReportRecovery} from './scheduled-report-recovery.mjs';
 
 const SLOT=5*60_000;
 const ACTOR='HUB_PUBLIC_COLLECTOR';
@@ -46,13 +47,23 @@ async function main(){
   const sourceBudget=createCollectorJobBudget({used:previousBudget?.attempted_source_http||0,on_charge:used=>fs.writeFileSync(budgetFile,JSON.stringify({schema:'COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1',cloud_run:cloudRun,attempted_source_http:used,maximum_source_http:164}))});
   const collector=loadExactCollector(source,sourceBudget.fetch);
   const token=required('GITHUB_TOKEN'),repository=required('GITHUB_REPOSITORY'),manifest=codeManifest(),receipts=[];
-  await runContinuousBackup({duration_minutes:Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0),should_continue:()=>sourceBudget.can_collect,source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
+  const durationMinutes=Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0);
+  const recoveryEnabled=['1','true','yes','on'].includes(String(process.env.REPORT2_SCHEDULED_RECOVERY_ENABLED||'').toLowerCase());
+  let lastAcceptedRecoveryTs=0;
+  await runContinuousBackup({duration_minutes:durationMinutes,should_continue:()=>sourceBudget.can_collect,source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
+    let recovery={dispatched:false,status:'RECOVERY_DISABLED_OR_BOOTSTRAP',source_http:0,D1:0};
+    if(recoveryEnabled&&durationMinutes>0){
+      const now=Date.now();
+      const gap=await inspectScheduledReportGap({repository,token,now,local_last_accepted_ts:lastAcceptedRecoveryTs});
+      recovery=gap.allowed?await dispatchScheduledReportRecovery({gap,repository,token}):gap;
+      if(recovery.dispatched)lastAcceptedRecoveryTs=now;
+    }
     const result=await runBackupCollector({db,collector});let kick={dispatch:false,status:'TRIGGER_KICK_DISABLED'};
     if(['1','true','yes','on'].includes(String(process.env.REPORT2_TRIGGER_KICK_ENABLED||'').toLowerCase())){
       try{kick=await claimTriggerKick(db);}catch{kick={dispatch:false,status:'KICK_NOT_CLOSED',source_http:0,entry_authorized:false};}
     }
     if(kick.dispatch){const dispatched=await dispatchExactTriggerKick({kick,repository,token});kick={...kick,dispatch_status:dispatched.status,github_dispatch_http_status:dispatched.http_status};}
-    return {schema:'report2-public-collector-backup-v3-continuous-trigger-kick',source_code_head:process.env.GITHUB_SHA||null,cloud_run:process.env.GITHUB_RUN_ID||null,...result,kick,kick_budget:proveTriggerKickBudget(),usage:db.usageSnapshot(),completed_at:new Date().toISOString(),telegram:false,analytical_decision:false};
+    return {schema:'report2-public-collector-backup-v4-scheduled-recovery',source_code_head:process.env.GITHUB_SHA||null,cloud_run:process.env.GITHUB_RUN_ID||null,...result,recovery,kick,kick_budget:proveTriggerKickBudget(),usage:db.usageSnapshot(),completed_at:new Date().toISOString(),telegram:false,analytical_decision:false};
   },on_receipt:async receipt=>{
     receipt.source_job_budget=sourceBudget.snapshot;
     receipts.push(receipt);if(receipts.length>64)receipts.shift();
