@@ -1,13 +1,19 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T13:21:51.428000Z",
+  "recorded_utc": "2026-10-12T13:37:41.944229+00:00",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
-  "main_at_recording": "d7e67fa2d1269014c42ebac6d200f591c368cefd",
-  "work_in_progress_branch": "codex/n14-option-coverage-20261012",
-  "current_task": "OWNER_N14_OPTION_COVERAGE_OPEN",
+  "main_at_recording": "d23abcc0671ba8baa155eeedd801d11f0d16db8c",
+  "work_in_progress_branch": "codex/n14-owner-pause-20261012",
+  "current_task": "OWNER_N15_DISCUSSION_PENDING",
   "last_three": [
     {
       "rank": 1,
+      "kind": "N14_OWNER_PAUSE",
+      "proof": "checkpoints/N14_OWNER_PAUSE_20261012.json",
+      "status": "N14_OWNER_PAUSED_EXCLUDED_N15_DISCUSSION_PENDING"
+    },
+    {
+      "rank": 2,
       "kind": "N14_BYBIT_BINANCE_SOURCE_FACT_CONSUMER_MERGED_MAIN",
       "proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json",
       "status": "N14_BYBIT_AND_BINANCE_BNB_MERGED_MAIN_NATURAL_READBACK_PENDING",
@@ -15,18 +21,11 @@
       "merged_main": "d7e67fa2d1269014c42ebac6d200f591c368cefd"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "kind": "OWNER_DEFERRED_N12_COVERAGE_RESEARCH",
       "proof": "checkpoints/N12_REMAINING_16_ROUTE_RESEARCH_HANDOFF_20261012.json",
       "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/333",
       "status": "DRAFT_UNMERGED_CANDIDATE_NOT_PRODUCTION"
-    },
-    {
-      "rank": 3,
-      "kind": "PR332_MERGED_MAIN_EXACT_ALIAS_RELEASE",
-      "proof": "checkpoints/ACTIVE_MARKET_EXACT_ALIAS_RELEASE_CANDIDATE_20261012.json",
-      "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/332",
-      "merged_main": "4fcec03ff6b623689bde61723b36177eb7d7b316"
     }
   ],
   "coverage_reconciliation": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
@@ -37,15 +36,15 @@
     "N06",
     "N07",
     "N08",
-    "N09"
+    "N09",
+    "N14"
   ],
   "paused_restore_requires_explicit_owner_command": true,
   "source_reuse": "Shared sources remain available to active blocks.",
   "not_proven": [
-    "Natural same-run post-integration N14 report and Telegram SENT/message_id",
-    "Current simultaneous useful N14 coverage for all nine historically observed assets",
-    "Binance BNB N14 consumer and other low-liquidity catalog assets",
-    "Deferred N12 and shared spot/futures full-104 coverage"
+    "Current simultaneous useful N14 coverage or natural post-PR335 N14 report and Telegram SENT before owner pause",
+    "Current all-104 exact useful coverage for N05/N10/N11/N12",
+    "N15 all-104 exact asset/category/peer coverage and both report chains"
   ],
-  "next_action": "N14 remains open: inspect the next natural full scheduled report on merged main d7e67fa2, exact selected-coin N14 source clocks/receipts and shared HTTP/D1/provider caps, then verify the same facts in manual and Telegram and a fresh message_id only if actually SENT. Historical useful union is 10/104 at different times and depths (BNB interest only), not simultaneous live coverage. Do not start another block; N12 and shared N05/N10/N11/N12 coverage remain deferred by owner."
+  "next_action": "Discuss N15 sector/peer/relative-strength block with the owner and agree scope before any N15 implementation. N14 is owner-paused across collection, score, denominators, saved rows, manual and Telegram until explicit restoration; its historical PR #335 facts remain archived. Shared sources remain available to active blocks. N12 and shared N05/N10/N11/N12 coverage and 104-to-24-to-2 joint verification remain deferred, not complete."
 }

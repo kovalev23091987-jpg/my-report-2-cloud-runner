@@ -10,8 +10,8 @@ test('legacy owners check eleven blocks while joint N05 remains missing',()=>{
  const sources=completeSources();
  sources.CHAIN_SUPPLY={status:'CLOSED',network_calls:1};sources.BLUESKY_PUBLIC={status:'CLOSED',network_calls:1};
  const result=auditCandidateBlocks({evidence,sources,decision_ts:now});
- assert.equal(result.coverage_count,8);
- assert.equal(result.checked_block_count,7);
+ assert.equal(result.coverage_count,7);
+ assert.equal(result.checked_block_count,6);
  assert.equal(result.all_blocks_checked,false);
  assert.equal(result.blocks.N02.status,'BLOCK_PAUSED_BY_OWNER');
  assert.equal(result.blocks.N02.decision_path,'EXCLUDED_PAUSED_BLOCK');

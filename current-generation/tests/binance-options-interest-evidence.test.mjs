@@ -22,9 +22,9 @@ const normalize=(input={})=>normalizeBinanceOptionInterest({contract:'BNB-USDT',
 test('saved independent Binance option interest and index close only exact BNB context',()=>{
  const out=normalize();assert.equal(out.status,'CLOSED');assert.equal(out.summary.call_count,6);assert.equal(out.summary.put_count,6);assert.ok(out.summary.open_interest_usd>1_800_000);
  assert.equal(out.evidence[0].directional_strength,null);assert.equal(out.evidence[0].risk_strength,null);
- const fact=consumeBlockResultContext({contract:'BNB-USDT',evidence:out.evidence,now}).facts[0];assert.equal(fact.field,'BINANCE_SCOPED_OPTION_OPEN_INTEREST');assert.equal(fact.score_contribution,0);assert.match(fact.value,/котировки и IV не подтверждены/);
+ assert.equal(consumeBlockResultContext({contract:'BNB-USDT',evidence:out.evidence,now}).facts.length,0);
  assert.ok(BLOCK_SOURCE_REQUIREMENTS.N14.any.includes('BINANCE_OPTION_INTEREST'));
- assert.ok(planCandidateEvidenceRoutes({contract:'BNB-USDT',run_id:'replay',now}).routes.some(r=>r.name==='BINANCE_OPTION_INTEREST'));
+ assert.ok(!planCandidateEvidenceRoutes({contract:'BNB-USDT',run_id:'replay',now}).routes.some(r=>r.name==='BINANCE_OPTION_INTEREST'));
 });
 
 test('wrong market, stale clocks, empty activity, absent put side and tampering fail closed',()=>{
@@ -36,14 +36,14 @@ test('wrong market, stale clocks, empty activity, absent put side and tampering 
  assert.equal(consumeBlockResultContext({contract:'BNB-USDT',evidence:[bad],now}).facts.length,0);
 });
 
-test('the same controlled N14 BNB fact reaches manual and Telegram rendering',()=>{
+test('paused N14 BNB source fact is withheld from manual and Telegram rendering',()=>{
  const out=normalize(),c=structuredClone(JSON.parse(fs.readFileSync('checkpoints/btw-preserved-block-result-input-20261004.json')).canonical);
  c.metadata.contract='BNB-USDT';c.observed_ts=now;c.direction='LONG';c.state='OBSERVE';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:now+600000,next_recheck_ts:now+60000,cancel_condition:'price<1'};
  c.metadata.internal_market_context.evidence_v2.evidence=out.evidence;c.metadata.supporting_context={facts:consumeBlockResultContext({contract:'BNB-USDT',evidence:out.evidence,now}).facts};c.analytical_fingerprint=canonicalFingerprint(c);
  const manual=formatManualReport(c),telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'});
  assert.equal(manual.ok,true);assert.equal(telegram.ok,true);
- const audit=auditRenderedBlockResults({canonical:c,manual,telegram});assert.deepEqual(audit.used_context_block_ids,['N14']);assert.deepEqual(audit.telegram_used_context_block_ids,['N14']);assert.equal(audit.telegram_delivery_proven,false);
- assert.match(manual.text,/Открытый интерес по опционам BNB/);assert.match(telegram.text,/Открытый интерес по опционам BNB/);
+ const audit=auditRenderedBlockResults({canonical:c,manual,telegram});assert.deepEqual(audit.used_context_block_ids,[]);assert.deepEqual(audit.telegram_used_context_block_ids,[]);assert.equal(audit.telegram_delivery_proven,false);
+ assert.doesNotMatch(manual.text,/Открытый интерес по опционам BNB/);assert.doesNotMatch(telegram.text,/Открытый интерес по опционам BNB/);
 });
 
 test('collector applies whole-job and durable admission before exact three-call path',async()=>{

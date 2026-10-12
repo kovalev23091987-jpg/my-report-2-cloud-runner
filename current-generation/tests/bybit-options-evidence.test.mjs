@@ -25,10 +25,7 @@ test('seven original provider responses close exact scoped call/put baskets, inc
   assert.equal(result.summary.put_count,8,base);
   assert.equal(result.evidence[0].directional_strength,null,base);
   assert.equal(result.evidence[0].risk_strength,null,base);
-  const fact=consumeBlockResultContext({evidence:result.evidence,contract:`${base}-USDT`,now}).facts.find(f=>f.field==='BYBIT_SCOPED_OPTION_IV');
-  assert.ok(fact,base);
-  assert.equal(fact.score_contribution,0,base);
-  assert.match(fact.value,/время ответа биржи известно, отдельное время каждой котировки не опубликовано/);
+  assert.equal(consumeBlockResultContext({evidence:result.evidence,contract:`${base}-USDT`,now}).facts.length,0,base);
  }
 });
 
@@ -45,7 +42,7 @@ test('unknown quote age, stale response, wrong base and inactive baskets cannot 
  assert.equal(consumeBlockResultContext({evidence:[tampered],contract:'DOGE-USDT',now}).facts.length,0);
 });
 
-test('one bounded DOGE source fact is bound to the same controlled manual and Telegram report',()=>{
+test('paused N14 DOGE source fact is withheld from both manual and Telegram reports',()=>{
  const payload=source('DOGE'),now=payload.time+1000,result=normalizeBybitOptions({contract:'DOGE-USDT',payload,observed_ts:now});
  const c=structuredClone(JSON.parse(fs.readFileSync('checkpoints/btw-preserved-block-result-input-20261004.json')).canonical);
  c.metadata.contract='DOGE-USDT';c.observed_ts=now;c.direction='LONG';c.state='OBSERVE';
@@ -56,9 +53,9 @@ test('one bounded DOGE source fact is bound to the same controlled manual and Te
  const manual=formatManualReport(c),telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'});
  assert.equal(manual.ok,true);assert.equal(telegram.ok,true);
  const audit=auditRenderedBlockResults({canonical:c,manual,telegram});
- assert.deepEqual(audit.used_context_block_ids,['N14']);assert.deepEqual(audit.telegram_used_context_block_ids,['N14']);
- assert.match(manual.text,/Опционная волатильность актива на Bybit/);
- assert.match(telegram.text,/Опционная волатильность актива на Bybit/);
+ assert.deepEqual(audit.used_context_block_ids,[]);assert.deepEqual(audit.telegram_used_context_block_ids,[]);
+ assert.doesNotMatch(manual.text,/Опционная волатильность актива на Bybit/);
+ assert.doesNotMatch(telegram.text,/Опционная волатильность актива на Bybit/);
  assert.equal(audit.telegram_delivery_proven,false);
 });
 

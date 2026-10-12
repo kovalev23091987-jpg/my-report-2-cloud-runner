@@ -4282,8 +4282,8 @@
       "task_id": "BLOCK_N14",
       "block": "N14",
       "name": "Опционный риск поддерживаемых контрактов",
-      "status": "N14_BYBIT_AND_BINANCE_BNB_MERGED_MAIN_NATURAL_READBACK_PENDING",
-      "remaining_action": "N14 remains open: inspect the next natural full scheduled report on merged main d7e67fa2, exact selected-coin N14 source clocks/receipts and shared HTTP/D1/provider caps, then verify the same facts in manual and Telegram and a fresh message_id only if actually SENT. Historical useful union is 10/104 at different times and depths (BNB interest only), not simultaneous live coverage. Do not start another block; N12 and shared N05/N10/N11/N12 coverage remain deferred by owner.",
+      "status": "PAUSED_BY_OWNER_EXCLUDED_FROM_COLLECTION_SCORE_MANUAL_TELEGRAM",
+      "remaining_action": "Remain paused until explicit owner restoration. Historical PR #335 and 10/104 cross-clock proof remain archival; no natural postmerge N14 acceptance.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -4434,14 +4434,15 @@
         "no_BTC_ETH_extrapolation": true
       },
       "next_sequential_review": "N14_NATURAL_READBACK_PENDING_NO_NEXT_BLOCK_STARTED",
-      "latest_source_fact_consumer_proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json"
+      "latest_source_fact_consumer_proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json",
+      "owner_pause_proof": "checkpoints/N14_OWNER_PAUSE_20261012.json"
     },
     {
       "task_id": "BLOCK_N15",
       "block": "N15",
       "name": "Сектор, сопоставимые монеты и относительная сила",
       "status": "EXACT_TARGET_CATEGORY_QUOTES_AND_N15_CANONICAL_RENDERED_USE_ACTUALLY_VERIFIED_POST_PR226",
-      "remaining_action": "Extend exact verified supported asset coverage; no all-asset or entry acceptance claimed.",
+      "remaining_action": "Next sequential discussion with owner; agree scope before implementation. Existing exact target/category/peer quote and rendered use proof is partial, not 104-asset acceptance.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -5604,7 +5605,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791811311428,
+  "updated_ts": 1791812261957,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -8854,8 +8855,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "N14_BYBIT_AND_BINANCE_BNB_MERGED_MAIN_NATURAL_READBACK_PENDING",
-  "next_action": "N14 remains open: inspect the next natural full scheduled report on merged main d7e67fa2, exact selected-coin N14 source clocks/receipts and shared HTTP/D1/provider caps, then verify the same facts in manual and Telegram and a fresh message_id only if actually SENT. Historical useful union is 10/104 at different times and depths (BNB interest only), not simultaneous live coverage. Do not start another block; N12 and shared N05/N10/N11/N12 coverage remain deferred by owner.",
+  "latest_status": "N14_OWNER_PAUSED_EXCLUDED_N15_DISCUSSION_PENDING",
+  "next_action": "Discuss N15 sector/peer/relative-strength block with the owner and agree scope before any N15 implementation. N14 is owner-paused across collection, score, denominators, saved rows, manual and Telegram until explicit restoration; its historical PR #335 facts remain archived. Shared sources remain available to active blocks. N12 and shared N05/N10/N11/N12 coverage and 104-to-24-to-2 joint verification remain deferred, not complete.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -10387,7 +10388,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "N14_OPTION_COVERAGE_OPEN",
+  "current_execution_block": "N15_DISCUSSION_PENDING",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -11406,7 +11407,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-12T13:21:51.428000Z",
+  "updated_utc": "2026-10-12T13:37:41.944229+00:00",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -12391,7 +12392,7 @@
       "next_action": "QUALIFY_BINANCE_SMALLER_OFFICIAL_CATALOG_AND_NATIVE_TAKER_CANDLES;QUALIFY_GATE_OKX_AND_REMAINING_VENUES_WITHIN_EXISTING_CAPS;DO_NOT_REPEAT_BITGET_ON_EXHAUSTED_DAY"
     }
   },
-  "current_task": "OWNER_N14_OPTION_COVERAGE_OPEN",
+  "current_task": "OWNER_N15_DISCUSSION_PENDING",
   "latest_n05_actual_source_discovery": {
     "proof": "checkpoints/N05_ACTUAL_SOURCE_DISCOVERY_20261010.json",
     "schema": "N05_ACTUAL_SOURCE_DISCOVERY_20261010_V1",
@@ -15159,12 +15160,9 @@
   "previous_next_action_before_20261012_working_window": "First verify the next natural scheduled report after PR328: exact full cycle or no-work receipt, passing delivery audit, and no weekly maintenance preemption. PR325 exact KuCoin token spot/futures source and original PEPE pages are merged after full assembled N10/N11/N12 checks. N12 remains open. At the next admissible normal report on merged main, inspect source timestamps/IDs, exact asset chain/address and active instruments, HTX/Bitget/Gate/OKX/KuCoin spot/futures participation, shared five-call/164HTTP/source/provider/D1 ledgers, and manual plus approved Telegram evidence IDs; if an idea publishes, verify fresh SENT/message_id. Five saved PEPE pages prove one token source utility and conflicting spot/futures directions, not all-104 live coverage. Historical KuCoin 42 spot/39 futures token matches and 21 native matches are structural only; keep maximizing exact useful N12 coverage inside existing limits. Do not begin N14 before owner discussion.",
   "active_working_state": {
     "schema": "REPORT2_ACTIVE_WORKING_STATE_V1",
-    "recorded_utc": "2026-10-12T13:21:51.428000Z",
+    "recorded_utc": "2026-10-12T13:37:41.944229+00:00",
     "main_verified_at_package_start": "08e883acc68852958f2224d4956bee0959c4d39c",
-    "candidate_branch": "codex/n14-option-coverage-20261012",
-    "candidate_state": "PR335_MERGED_MAIN_N14_NATURAL_READBACK_PENDING",
-    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/335",
-    "candidate_commit": "87c0b8494275933e5d01b51b1ac6d5a1712a52fb",
+    "candidate_state": "N14_OWNER_PAUSED_EXCLUDED_N15_DISCUSSION_PENDING",
     "active_entrypoints": [
       "AGENTS.md",
       "checkpoints/CURRENT_PROJECT_STATUS.json",
@@ -15177,7 +15175,6 @@
       "N10",
       "N11",
       "N12",
-      "N14",
       "N15",
       "N16"
     ],
@@ -15188,21 +15185,23 @@
       "N06",
       "N07",
       "N08",
-      "N09"
+      "N09",
+      "N14"
     ],
     "paused_restore_requires_explicit_owner_command": true,
     "shared_sources_for_active_blocks_allowed": true,
-    "scope": "Owner authorized N14 useful option-source expansion; spot and futures facts remain independent; N12 deferred",
-    "source_proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json",
-    "coverage_limits": "Original Bybit quote baskets useful for 7/104 on 12 Oct; Binance BNB original timestamped open-interest basket is useful but has no IV or quote; historical union with Deribit/Delta is 10/104 across different clocks and depth. Catalog structural ceiling 13/104 is not useful coverage. No current simultaneous 10/104 or natural SENT proof.",
+    "scope": "Owner paused N14; only N15 scope discussion authorized; N12 and common coverage verification deferred",
+    "source_proof": "checkpoints/N14_OWNER_PAUSE_20261012.json",
+    "coverage_limits": "N14 historical useful union 10/104 from different clocks and depths, now inactive. No post-PR335 natural N14 report/SENT acceptance. N12 and shared exact current coverage not established.",
     "one_market_fallback_rule": "Use one qualified spot or futures side as limited block information; omit metric if neither side is qualified; compare both only with exact same-asset clocks and units. N11 spot exempt.",
     "owner_deferral": "Coverage expansion after all blocks; N12 not accepted as complete.",
-    "next_action": "N14 remains open: inspect the next natural full scheduled report on merged main d7e67fa2, exact selected-coin N14 source clocks/receipts and shared HTTP/D1/provider caps, then verify the same facts in manual and Telegram and a fresh message_id only if actually SENT. Historical useful union is 10/104 at different times and depths (BNB interest only), not simultaneous live coverage. Do not start another block; N12 and shared N05/N10/N11/N12 coverage remain deferred by owner.",
+    "next_action": "Discuss N15 sector/peer/relative-strength block with the owner and agree scope before any N15 implementation. N14 is owner-paused across collection, score, denominators, saved rows, manual and Telegram until explicit restoration; its historical PR #335 facts remain archived. Shared sources remain available to active blocks. N12 and shared N05/N10/N11/N12 coverage and 104-to-24-to-2 joint verification remain deferred, not complete.",
     "release_receipt": "checkpoints/N12_REMAINING_16_ROUTE_RESEARCH_HANDOFF_20261012.json",
-    "merged_main": "d7e67fa2d1269014c42ebac6d200f591c368cefd",
     "deferred_n12_pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/333",
     "deferred_n12_coverage_limits": "Existing main remains at saved structural 88/104 spot and 61/104 futures, with 16 without external route. Draft PR333 adds 15 route candidates from saved catalogs, not deployed or useful current source proof. N05 historical full spot 46/104 ever, futures 2/104 ever; current simultaneous coverage remains unproven.",
-    "current_execution_block": "N14"
+    "current_execution_block": "N15_DISCUSSION_PENDING",
+    "n14_owner_pause_proof": "checkpoints/N14_OWNER_PAUSE_20261012.json",
+    "n14_historical_source_proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json"
   },
   "latest_pr331_working_release": {
     "proof": "checkpoints/PR331_POSTMERGE_N12_WORKING_HANDOFF_20261012.json",
@@ -15239,5 +15238,6 @@
   },
   "latest_remaining_16_route_research_handoff": "checkpoints/N12_REMAINING_16_ROUTE_RESEARCH_HANDOFF_20261012.json",
   "latest_n14_option_coverage_candidate": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json",
-  "latest_n14_option_coverage_pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/335"
+  "latest_n14_option_coverage_pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/335",
+  "latest_n14_owner_pause": "checkpoints/N14_OWNER_PAUSE_20261012.json"
 }

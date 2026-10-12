@@ -3,9 +3,9 @@ const root=process.env.REPORT2_UNIFIED_MODULE_ROOT?pathToFileURL(path.resolve(pr
 const [{consumeEvidenceV2,PAUSED_BLOCKS,ACTIVE_BLOCK_IDS,evidenceDedupKey},{consumeBlockResultContext,confirmedBlockContextFacts,auditRenderedBlockResults},{canonicalFingerprint,renderCanonicalTelegram,loadExactManual,sha256},{formatManualReport},{buildSupplementalScoreEvidence,applySupplementalScoreAdjustment},{auditCanonicalBlockDecisionUse},{collectEvidenceRouteBlock,planCandidateEvidenceRoutes}]=await Promise.all(['evidence-v2.mjs','block-result-context.mjs','canonical-publication.mjs','manual-report-formatter.mjs','supplemental-score-evidence.mjs','block-decision-use-audit.mjs','candidate-evidence-v2-runtime.mjs'].map(n=>import(new URL(n,root))));
 const saved=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
 test('owner-paused blocks are inactive and cannot score either direction or claim the physical root',()=>{
- assert.deepEqual(Object.keys(PAUSED_BLOCKS),['N01','N02','N03','N06','N07','N08','N09']);assert.equal(ACTIVE_BLOCK_IDS.length,8);
+ assert.deepEqual(Object.keys(PAUSED_BLOCKS),['N01','N02','N03','N06','N07','N08','N09','N14']);assert.equal(ACTIVE_BLOCK_IDS.length,7);
  const original=saved.metadata.internal_market_context.evidence_v2.evidence.find(r=>r.block_id==='N02'),T=saved.observed_ts;
- for(const block_id of ['N01','N02','N03','N06','N07','N08','N09'])for(const direction of ['LONG','SHORT',null]){const rows=[{...original,block_id,coverage_fraction:1,reliability:1,directional_strength:1,risk_strength:1}],market={decision_ts:T,evidence_v2:{evidence:rows}};const score=consumeEvidenceV2(rows,{base_interest:70,decision_ts:T});assert.equal(score.adjustment,0);assert.equal(score.final_interest,70);assert.equal(score.receipts[0].reason,'BLOCK_PAUSED_BY_OWNER');assert.equal(score.block_contributions[block_id],undefined);assert.equal(applySupplementalScoreAdjustment(70,buildSupplementalScoreEvidence({direction,internal_market_context:market})).final_score,70);}
+ for(const block_id of ['N01','N02','N03','N06','N07','N08','N09','N14'])for(const direction of ['LONG','SHORT',null]){const rows=[{...original,block_id,coverage_fraction:1,reliability:1,directional_strength:1,risk_strength:1}],market={decision_ts:T,evidence_v2:{evidence:rows}};const score=consumeEvidenceV2(rows,{base_interest:70,decision_ts:T});assert.equal(score.adjustment,0);assert.equal(score.final_interest,70);assert.equal(score.receipts[0].reason,'BLOCK_PAUSED_BY_OWNER');assert.equal(score.block_contributions[block_id],undefined);assert.equal(applySupplementalScoreAdjustment(70,buildSupplementalScoreEvidence({direction,internal_market_context:market})).final_score,70);}
 });
 test('sole supply/calendar routes are blocked while a shared source preserves active N04 evidence',async()=>{
  const original={...saved.metadata.internal_market_context.evidence_v2.evidence.find(r=>r.block_id==='N02'),htx_contract:'XRP-USDT'},active={...original,block_id:'N04',evidence_id:'ACTIVE-N04'};
@@ -18,10 +18,10 @@ test('manual and Telegram exclude paused facts, including previously stored fact
  const c=structuredClone(saved),T=c.observed_ts,contract=c.metadata.contract;c.direction='LONG';c.state='OBSERVE';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:T+600000,next_recheck_ts:T+60000,cancel_condition:'price<1'};
  const row=c.metadata.internal_market_context.evidence_v2.evidence.find(r=>r.block_id==='N02');c.metadata.internal_market_context.evidence_v2.evidence.push({...row,block_id:'N01',evidence_id:'PAUSED-N01'});
  const permitted=consumeBlockResultContext({evidence:c.metadata.internal_market_context.evidence_v2.evidence,contract,now:T}).facts;
- c.metadata.supporting_context={facts:[...permitted,...['N01','N02','N03','N06','N07','N08','N09'].map(block_id=>({label:'Запрещённый факт '+block_id,value:'PAUSED-BLOCK-MARKER',block_id,evidence_id:block_id==='N02'?row.evidence_id:'PAUSED-'+block_id,physical_root_key:evidenceDedupKey(row),source_ts:row.source_ts,observed_ts:row.observed_ts}))]};c.analytical_fingerprint=canonicalFingerprint(c);
+ c.metadata.supporting_context={facts:[...permitted,...['N01','N02','N03','N06','N07','N08','N09','N14'].map(block_id=>({label:'Запрещённый факт '+block_id,value:'PAUSED-BLOCK-MARKER',block_id,evidence_id:block_id==='N02'?row.evidence_id:'PAUSED-'+block_id,physical_root_key:evidenceDedupKey(row),source_ts:row.source_ts,observed_ts:row.observed_ts}))]};c.analytical_fingerprint=canonicalFingerprint(c);
  const before=JSON.stringify(c),manual=formatManualReport(c);assert.equal(manual.ok,true);
  for(const context_policy of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007']){const telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy});assert.equal(telegram.ok,true,telegram.status);assert.doesNotMatch(manual.text,/PAUSED-BLOCK-MARKER|Запрещённый факт|Наблюдение предложения токена/);assert.doesNotMatch(telegram.text,/PAUSED-BLOCK-MARKER|Запрещённый факт|Наблюдение предложения токена/);const audit=auditRenderedBlockResults({canonical:c,manual,telegram});for(const ids of [audit.used_context_block_ids,audit.telegram_used_context_block_ids])assert.equal(ids.some(id=>PAUSED_BLOCKS[id]),false);}
- assert.equal(confirmedBlockContextFacts(c).some(f=>PAUSED_BLOCKS[f.block_id]),false);const use=auditCanonicalBlockDecisionUse(c,{manual});for(const id of ['N01','N02','N03','N06','N07','N08','N09']){assert.equal(use.blocks[id].participating,false);assert.equal(use.blocks[id].participation_status,'BLOCK_PAUSED_BY_OWNER');}assert.equal(use.required_block_count,8);assert.equal(JSON.stringify(c),before);
+ assert.equal(confirmedBlockContextFacts(c).some(f=>PAUSED_BLOCKS[f.block_id]),false);const use=auditCanonicalBlockDecisionUse(c,{manual});for(const id of ['N01','N02','N03','N06','N07','N08','N09','N14']){assert.equal(use.blocks[id].participating,false);assert.equal(use.blocks[id].participation_status,'BLOCK_PAUSED_BY_OWNER');}assert.equal(use.required_block_count,7);assert.equal(JSON.stringify(c),before);
 });
 
 test('exact stored manual hash is verified before paused facts are suppressed, without rewriting the archive',async()=>{
@@ -56,4 +56,15 @@ test('shared HTX risk source stays available while N08 and N09 facts are exclude
  const n08={...row,htx_contract:'ADA-USDT',block_id:'N08',evidence_id:'PAUSED-N08'},n09={...row,htx_contract:'ADA-USDT',block_id:'N09',evidence_id:'ACTIVE-N09'};
  const r=await collectEvidenceRouteBlock({routes:[{name:'HTX_PUBLIC_RISK'}],params:{contract:'ADA-USDT'},collectors:{HTX_PUBLIC_RISK:async()=>({status:'CLOSED',network_calls:0,evidence:[n08,n09]})},max_requests:5});
  assert.equal(r.results.HTX_PUBLIC_RISK.status,'CLOSED');assert.deepEqual(r.results.HTX_PUBLIC_RISK.evidence,[]);assert.equal(r.results.HTX_PUBLIC_RISK.paused_block_rows_excluded,2);
+});
+
+test('paused N14 cannot dispatch any option-only source or revive saved facts',async()=>{
+ const optionRoutes=['DERIBIT','DELTA','BYBIT_OPTIONS','BINANCE_OPTION_INTEREST'];
+ const forbidden=()=>{throw Error('PAUSED_N14_MUST_NOT_SPEND_HTTP');};
+ for(const contract of ['BNB-USDT','DOGE-USDT','BTC-USDT'])assert.equal(planCandidateEvidenceRoutes({contract}).routes.some(row=>optionRoutes.includes(row.name)),false);
+ const r=await collectEvidenceRouteBlock({routes:optionRoutes.map(name=>({name})),params:{contract:'BNB-USDT',strict_fresh_manual:true,request_admit:forbidden,fetch_impl:forbidden},collectors:Object.fromEntries(optionRoutes.map(name=>[name,forbidden])),max_requests:5});
+ assert.equal(r.network_calls,0);assert.equal(r.reserved_requests,0);assert.ok(optionRoutes.every(name=>r.results[name].status==='BLOCK_PAUSED_BY_OWNER'));
+ const original=saved.metadata.internal_market_context.evidence_v2.evidence[0],paused={...original,block_id:'N14',evidence_id:'OLD-N14'};
+ assert.equal(consumeBlockResultContext({contract:original.htx_contract,evidence:[paused],now:saved.observed_ts}).facts.length,0);
+ assert.equal(consumeEvidenceV2([paused],{base_interest:70,decision_ts:saved.observed_ts}).adjustment,0);
 });

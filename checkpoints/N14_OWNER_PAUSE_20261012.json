@@ -1,0 +1,49 @@
+{
+  "schema": "N14_OWNER_PAUSE_20261012_V1",
+  "recorded_utc": "2026-10-12T13:37:41.944229+00:00",
+  "owner_instruction": "Pause this block and move to the next; N15 discussion only",
+  "effective_block": "N14",
+  "status": "N14_OWNER_PAUSED_EXCLUDED_N15_DISCUSSION_PENDING",
+  "paused_blocks": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09",
+    "N14"
+  ],
+  "active_blocks": [
+    "N04",
+    "N05",
+    "N10",
+    "N11",
+    "N12",
+    "N15",
+    "N16"
+  ],
+  "exclusion_scope": [
+    "N14-only collection and route reservation",
+    "calculation and score",
+    "active/required block denominator",
+    "manual report",
+    "Telegram rendering",
+    "old saved N14 rows and archive replay"
+  ],
+  "shared_sources": "Available to other active blocks; pause is block-specific",
+  "historical_source_proof": "checkpoints/N14_OPTION_COVERAGE_SOURCE_FACT_CONSUMER_20261012.json",
+  "historical_pr": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/335",
+  "historical_useful_union": "10/104 across distinct source clocks and depths; Binance BNB open interest only",
+  "natural_postmerge_N14_acceptance": false,
+  "restore_requires_explicit_owner_command": true,
+  "next_block": "N15 — Сектор, сопоставимые монеты и относительная сила",
+  "next_block_state": "Existing exact target/category/peer quote and canonical rendered use proof is partial. Scope discussion pending; no implementation authorized yet.",
+  "verification": {
+    "local_top_level_command": "node --test $(rg --files current-generation/tests -g '*.test.mjs' | rg '^current-generation/tests/[^/]+\\.test\\.mjs$' | rg -v 'supplemental-supporting-bridge.test.mjs')",
+    "local_result": "1412 tests; 1408 pass; 4 skip; 0 fail",
+    "local_unassembled_test_limit": "supplemental-supporting-bridge.test.mjs requires generated runtime absent from raw checkout; early-evidence-repair/repair.test.mjs likewise. Cloud assembled checks pending.",
+    "cloud_pr_checks": "PENDING"
+  },
+  "next_action": "Discuss N15 sector/peer/relative-strength block with the owner and agree scope before any N15 implementation. N14 is owner-paused across collection, score, denominators, saved rows, manual and Telegram until explicit restoration; its historical PR #335 facts remain archived. Shared sources remain available to active blocks. N12 and shared N05/N10/N11/N12 coverage and 104-to-24-to-2 joint verification remain deferred, not complete."
+}
