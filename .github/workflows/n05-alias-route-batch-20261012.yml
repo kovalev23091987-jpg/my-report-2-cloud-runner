@@ -39,6 +39,7 @@ jobs:
           node current-generation/validate.mjs > alias-route-generation.log 2>&1
           node runner/current-runtime-binding.mjs --runtime runtime > alias-route-binding.json
       - name: Acquire only with current main, owned lease and all budget guards
+        if: ${{ github.sha == '83ea2cc2a52f913a80b43f2f775d16e6d6967fbf' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           REPORT2_EXPECTED_MAIN: 4e6d70920a9aee4c71f98ab9e33e5ace521b3345

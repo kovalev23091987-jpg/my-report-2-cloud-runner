@@ -1,0 +1,1177 @@
+{
+  "schema": "N05_ALIAS_ROUTE_POLONIEX_ACTUAL_V1",
+  "approved_assets": 104,
+  "candidate_contracts": [
+    "ARB-USDT",
+    "BTT-USDT",
+    "CHZ-USDT",
+    "ICP-USDT",
+    "JST-USDT",
+    "PONS-USDT",
+    "STEEM-USDT",
+    "SUN-USDT",
+    "WIN-USDT"
+  ],
+  "common_closed_anchor": true,
+  "shared_poloniex_metadata_HTTP": 3,
+  "maximum_poloniex_native_HTTP": 9,
+  "maximum_poloniex_HTTP": 12,
+  "maximum_primary_identity_HTTP": 1,
+  "maximum_source_HTTP": 13,
+  "Poloniex_daily_cap": 16,
+  "HTX_ASSET_REFERENCE_daily_cap": 8,
+  "provider_minute_cap": 6,
+  "background_HTTP_cap": 28,
+  "D1_reservation": {
+    "rows_read": 16000,
+    "rows_written": 500
+  },
+  "caps_changed": false,
+  "requires_fresh_owned_cloud_guard_before_execution": true,
+  "not_scheduled_or_executed": false,
+  "run": "38245108128",
+  "head": "83ea2cc2a52f913a80b43f2f775d16e6d6967fbf",
+  "cloud_owner_guard": {
+    "main": "4e6d70920a9aee4c71f98ab9e33e5ace521b3345",
+    "executing_head": "83ea2cc2a52f913a80b43f2f775d16e6d6967fbf",
+    "lease_owner": "CODEX:ACTIVE_COVERAGE_EXPANSION:1791804106755",
+    "fence_active": false,
+    "GitHub_control_reads": 4
+  },
+  "started_ts": 1791805785482,
+  "status": "SHARED_NATIVE_BATCH_RETAINED_WITH_EXPLICIT_PER_COIN_QUALIFICATION",
+  "sourceHTTP": 13,
+  "sources": [
+    {
+      "name": "HTX-CURRENT-IDENTITIES",
+      "venue": "HTX",
+      "source": "HTX_ASSET_REFERENCE",
+      "url": "https://api.huobi.pro/v2/reference/currencies",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:HTX-CURRENT-IDENTITIES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "HTX_ASSET_REFERENCE",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "HTX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "attempt_ts": 1791805787458,
+      "http_status": 200,
+      "received_ts": 1791805788113,
+      "body_sha256": "447a26c7c10c60a232b32258b5ee6bfebd6d371e97bdad35327d1e47d8ffdb93",
+      "gzip_sha256": "bff469a15b735ccc4c6859f6bb956a917d688169c60d4c54c7ee2fc0811689f8",
+      "bytes": 1041442,
+      "file": "HTX-CURRENT-IDENTITIES.json.gz"
+    },
+    {
+      "name": "POLONIEX-ALL-ASSETS",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/v2/currencies",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-ALL-ASSETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "attempt_ts": 1791805789067,
+      "http_status": 200,
+      "received_ts": 1791805789728,
+      "body_sha256": "65f90d28f9cfa6dd1d01a808eb262d54e8a65186ea462ceb90f808cb60d4d6a9",
+      "gzip_sha256": "66e02b183ff7b056e8807e8e3ffb6771a879d3a723345d6bb9ef4c3bce06f2f3",
+      "bytes": 682727,
+      "file": "POLONIEX-ALL-ASSETS.json.gz"
+    },
+    {
+      "name": "POLONIEX-ALL-MARKETS",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-ALL-MARKETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "attempt_ts": 1791805790712,
+      "http_status": 200,
+      "received_ts": 1791805791053,
+      "body_sha256": "438c9e04ec365875d77ae3e0426c6825afd5ab2a14fee0e586e817b6d4ed3324",
+      "gzip_sha256": "2975800ffbad7da658566791a9f243331aa4eee6063bbfa5c00e37b4a36b00cd",
+      "bytes": 501297,
+      "file": "POLONIEX-ALL-MARKETS.json.gz"
+    },
+    {
+      "name": "POLONIEX-ALL-ACTIVITY",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/ticker24h",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-ALL-ACTIVITY",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "attempt_ts": 1791805792027,
+      "http_status": 200,
+      "received_ts": 1791805792360,
+      "body_sha256": "8e5f9a4d83825f3b474e5873b2bc018efe9501cdf998d2709f9557c169a01782",
+      "gzip_sha256": "fe3a5029bb0c9fb81ca1dfd2205b7708efc3da9647e41bc676d76370cdd14ad7",
+      "bytes": 311584,
+      "file": "POLONIEX-ALL-ACTIVITY.json.gz"
+    },
+    {
+      "name": "POLONIEX-ARB-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/ARB_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-ARB-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "attempt_ts": 1791805793341,
+      "http_status": 200,
+      "received_ts": 1791805793505,
+      "body_sha256": "62cdeea47cc76d08ad0919127bd6b61e69a30ee0fd5ec6cf1e813719e4d42e36",
+      "gzip_sha256": "bd0326eec9a61ed1a96b78a2d53cdc55064b78fcd2adfbc7d61dc0ed6bd203b6",
+      "bytes": 35629,
+      "file": "POLONIEX-ARB-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-BTT-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/BTT_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-BTT-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "attempt_ts": 1791805794436,
+      "http_status": 200,
+      "received_ts": 1791805794600,
+      "body_sha256": "910ff41a2900eefdf961e61cc7a1b518796c0204b4d8dae0cadcfacd4780ff77",
+      "gzip_sha256": "99a171047b09e80346119d1ee77f10ac06ac45ea7c0dacea215d68c706f519eb",
+      "bytes": 45246,
+      "file": "POLONIEX-BTT-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-CHZ-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/CHZ_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-CHZ-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805740000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805795578,
+      "http_status": 200,
+      "received_ts": 1791805795738,
+      "body_sha256": "d2143bdcd408e65c3abefb0994feb7c540373e00c69f93aca31bc5f16c645f31",
+      "gzip_sha256": "6043f246fb55962ac24b078607c6e7794dad05a4e7fa7e2d27ffaba35147f54a",
+      "bytes": 28321,
+      "file": "POLONIEX-CHZ-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-ICP-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/ICP_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-ICP-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805800000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805850184,
+      "http_status": 200,
+      "received_ts": 1791805850431,
+      "body_sha256": "46f10973ae4d9faf59169761d2f297c2e168304a732987e4eea8320175d3e6e9",
+      "gzip_sha256": "f50581f57c7a88044f3cd19bae603c8084097b9d6a6a3618532ce89f775f8c73",
+      "bytes": 34356,
+      "file": "POLONIEX-ICP-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-JST-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/JST_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-JST-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805800000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805851746,
+      "http_status": 200,
+      "received_ts": 1791805851909,
+      "body_sha256": "44583b3a37c34ae6d714d00c06d14e8a331a7ee2da893770121fc10e9fb4e43c",
+      "gzip_sha256": "a86950ed57a405ecdaac8e888ad5e820d67c40d467bb99eda7d2dc61f37f7225",
+      "bytes": 38453,
+      "file": "POLONIEX-JST-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-PONS-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/PONS_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-PONS-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805800000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805853013,
+      "http_status": 200,
+      "received_ts": 1791805853178,
+      "body_sha256": "b2de813100937805f96464496348923f61fdabaa310e363a56f700b646bab574",
+      "gzip_sha256": "51a55c60b264e9a974de918ac674ca9582fd15ddee1dc797ea72f7dcad5b5312",
+      "bytes": 29521,
+      "file": "POLONIEX-PONS-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-STEEM-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/STEEM_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-STEEM-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805800000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805854338,
+      "http_status": 200,
+      "received_ts": 1791805854498,
+      "body_sha256": "50b727b858c941873aebcb4c20de22eb359abe83dcc9b77368cd1c3bed3e039c",
+      "gzip_sha256": "c1ae2ba7299964514a28a58ef0e7207c902cce570be19303f90b41ace63e680b",
+      "bytes": 37069,
+      "file": "POLONIEX-STEEM-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-SUN-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/SUN_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-SUN-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805800000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805855604,
+      "http_status": 200,
+      "received_ts": 1791805855771,
+      "body_sha256": "8ae57fe217b0bc231e291e8f4d7cc1521f352121c0ebe8cd6ced23076a6c1a07",
+      "gzip_sha256": "72cec9bdb716869623f1e531245caa9b88fdb2233ec9e3c86cd8682cf6c77d98",
+      "bytes": 40173,
+      "file": "POLONIEX-SUN-NATIVE240.json.gz"
+    },
+    {
+      "name": "POLONIEX-WIN-NATIVE240",
+      "venue": "POLONIEX",
+      "source": "N05_OFFICIAL_FLOW:POLONIEX",
+      "url": "https://api.poloniex.com/markets/WIN_USDT/candles?interval=MINUTE_1&startTime=1791791340000&endTime=1791805739999&limit=240",
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "actual_http": 1,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1:POLONIEX-WIN-NATIVE240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-12",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791805800000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "attempt_ts": 1791805856699,
+      "http_status": 200,
+      "received_ts": 1791805856864,
+      "body_sha256": "f15a23319c8ef84f8e6b3d7811b70d5d15b4363d7259c8a68e2aa99761db5200",
+      "gzip_sha256": "e3352038ae4baba691ef7b3befc19bf0d4ef66e0e676dbeaa6bdcc58c6668ec9",
+      "bytes": 42360,
+      "file": "POLONIEX-WIN-NATIVE240.json.gz"
+    }
+  ],
+  "windows": [
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "ARB-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805793505,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 150891.7651,
+      "sell_quote": 161726.61579999997,
+      "trade_count": 18138,
+      "imbalance": -0.0346583929863863,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "arbitrum",
+        "contract_or_mint": "0x912ce59144191c1204e64559fe8253a0e49e6548"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 11167.7961,
+          "sell_quote": 12321.228,
+          "trade_count": 1366,
+          "imbalance": -0.04910514353808339
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 36093.040199999996,
+          "sell_quote": 38737.7638,
+          "trade_count": 4310,
+          "imbalance": -0.03534271260803238
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-ARB-NATIVE240.json.gz",
+      "raw_body_sha256": "62cdeea47cc76d08ad0919127bd6b61e69a30ee0fd5ec6cf1e813719e4d42e36"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "BTT-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805794600,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 156313.99218904,
+      "sell_quote": 145338.46845138998,
+      "trade_count": 3869,
+      "imbalance": 0.03638466503587662,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "tron",
+        "contract_or_mint": "TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 20468.99947265,
+          "sell_quote": 18701.09158025,
+          "trade_count": 483,
+          "imbalance": 0.04513412772036717
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 56574.92339318,
+          "sell_quote": 52921.960335580006,
+          "trade_count": 1382,
+          "imbalance": 0.03336134265381407
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-BTT-NATIVE240.json.gz",
+      "raw_body_sha256": "910ff41a2900eefdf961e61cc7a1b518796c0204b4d8dae0cadcfacd4780ff77"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "CHZ-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "POLONIEX_NATIVE_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805795738,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "NO_TRADED_VOLUME",
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-CHZ-NATIVE240.json.gz",
+      "raw_body_sha256": "d2143bdcd408e65c3abefb0994feb7c540373e00c69f93aca31bc5f16c645f31"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "ICP-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805850431,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 432458.759,
+      "sell_quote": 421532.09,
+      "trade_count": 15989,
+      "imbalance": 0.012794831481853503,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "internet-computer",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "internet-computer:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 38328.316999999995,
+          "sell_quote": 37135.549999999996,
+          "trade_count": 1359,
+          "imbalance": 0.01580580279566113
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 120569.578,
+          "sell_quote": 116553.852,
+          "trade_count": 4412,
+          "imbalance": 0.016935171695180017
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-ICP-NATIVE240.json.gz",
+      "raw_body_sha256": "46f10973ae4d9faf59169761d2f297c2e168304a732987e4eea8320175d3e6e9"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "JST-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805851909,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 312881.63834,
+      "sell_quote": 309265.11739,
+      "trade_count": 10772,
+      "imbalance": 0.005812970841190889,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "tron",
+        "contract_or_mint": "TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 23828.66761,
+          "sell_quote": 24381.903870000002,
+          "trade_count": 830,
+          "imbalance": -0.011475413856678886
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 82834.93907,
+          "sell_quote": 84369.25931,
+          "trade_count": 2890,
+          "imbalance": -0.009176326042441807
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-JST-NATIVE240.json.gz",
+      "raw_body_sha256": "44583b3a37c34ae6d714d00c06d14e8a331a7ee2da893770121fc10e9fb4e43c"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "PONS-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "POLONIEX_NATIVE_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805853178,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "NO_TRADED_VOLUME",
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-PONS-NATIVE240.json.gz",
+      "raw_body_sha256": "b2de813100937805f96464496348923f61fdabaa310e363a56f700b646bab574"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "STEEM-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805854498,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 155997.2792,
+      "sell_quote": 176134.82849999997,
+      "trade_count": 5785,
+      "imbalance": -0.06063114294926688,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "steem",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "steem:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 8964.9275,
+          "sell_quote": 10843.543000000001,
+          "trade_count": 343,
+          "imbalance": -0.09483899829620869
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 41331.7992,
+          "sell_quote": 48417.5757,
+          "trade_count": 1550,
+          "imbalance": -0.07895070587282721
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-STEEM-NATIVE240.json.gz",
+      "raw_body_sha256": "50b727b858c941873aebcb4c20de22eb359abe83dcc9b77368cd1c3bed3e039c"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "SUN-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805855771,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 453817.86305199994,
+      "sell_quote": 416837.85036800004,
+      "trade_count": 15010,
+      "imbalance": 0.042473749513156904,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "tron",
+        "contract_or_mint": "TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 13769.388331999999,
+          "sell_quote": 10454.639049,
+          "trade_count": 440,
+          "imbalance": 0.1368372496804519
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 62293.261381,
+          "sell_quote": 55622.852653999995,
+          "trade_count": 2054,
+          "imbalance": 0.0565691023791717
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-SUN-NATIVE240.json.gz",
+      "raw_body_sha256": "8ae57fe217b0bc231e291e8f4d7cc1521f352121c0ebe8cd6ced23076a6c1a07"
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "WIN-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791791340000,
+      "window_end_ts": 1791805740000,
+      "observed_ts": 1791805856864,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 238768.8152832,
+      "sell_quote": 240039.32055459998,
+      "trade_count": 11428,
+      "imbalance": -0.002653474693317228,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "tron",
+        "contract_or_mint": "TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791804840000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 13648.5518655,
+          "sell_quote": 14940.885453199999,
+          "trade_count": 710,
+          "imbalance": -0.04520318372459539
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791802140000,
+          "window_end_ts": 1791805740000,
+          "buy_quote": 78740.9074538,
+          "sell_quote": 80741.5058613,
+          "trade_count": 3760,
+          "imbalance": -0.012544319877749057
+        }
+      ],
+      "not_onchain_exchange_flows": true,
+      "identity_method": "CURRENT_PRIMARY_HTX_REFERENCE",
+      "identity_original_ts": 1791805788113,
+      "raw_file": "POLONIEX-WIN-NATIVE240.json.gz",
+      "raw_body_sha256": "f15a23319c8ef84f8e6b3d7811b70d5d15b4363d7259c8a68e2aa99761db5200"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-12",
+      "run_count": 7,
+      "reserved_rows_read": 179500,
+      "reserved_rows_written": 3452,
+      "measured_rows_read": 120992,
+      "measured_rows_written": 1690,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 195500,
+      "rows_written": 3952
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_preflight": {
+    "allowed": true,
+    "Poloniex_cap": 16,
+    "HTX_identity_cap": 8,
+    "shared_metadata_HTTP": 3,
+    "primary_identity_HTTP": 1,
+    "selected_contracts": [
+      "ARB-USDT",
+      "BTT-USDT",
+      "CHZ-USDT",
+      "ICP-USDT",
+      "JST-USDT",
+      "PONS-USDT",
+      "STEEM-USDT",
+      "SUN-USDT",
+      "WIN-USDT"
+    ],
+    "deferred_contracts": [],
+    "Poloniex_required": 12,
+    "maximum_source_HTTP": 13,
+    "Poloniex_used": 0,
+    "HTX_identity_used": 1
+  },
+  "deferred_contracts": [],
+  "primary_identity_received_ts": 1791805788113,
+  "window_end_ts": 1791805740000,
+  "window_start_ts": 1791791340000,
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 13,
+      "statistics": 0
+    },
+    "total": 13,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 151
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_ALIAS_ROUTE_POLONIEX:38245108128:1",
+    "source_run_id": "38245108128",
+    "measured_rows_read": 215,
+    "measured_rows_written_accounted": 97,
+    "measured_requests_accounted": 123,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 123,
+    "rows_read": 216,
+    "rows_written": 97,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 15,
+        "rows_read": 13,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 13,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 26,
+        "rows_read": 13,
+        "rows_written": 15,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 13,
+        "rows_read": 13,
+        "rows_written": 26,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 13,
+        "rows_read": 13,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 13,
+        "rows_read": 71,
+        "rows_written": 52,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 26,
+        "rows_read": 84,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791805857018,
+  "raw_batch": {
+    "body_sha256": "0a0f7bfbec6eee62a6c3f28933fe5c2589d93ab6790f18df61b6ddd3fa672f8a",
+    "gzip_sha256": "3bbd79c69201d670efd04003f63fe6e4a7d747669a6a6c251d03488aaca8385f",
+    "file": "original-batch.json.gz"
+  },
+  "individual_full_windows": 7,
+  "simultaneous_continuous_coverage": false
+}
