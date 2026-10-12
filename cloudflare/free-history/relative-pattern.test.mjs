@@ -18,4 +18,5 @@ test('missing adjacent hours or wrong venue cannot make a comparative pattern',(
   coin.samples.splice(3,1);
   assert.equal(summarizeBtcEthRelativePattern({coin,btc,eth}).status,'INSUFFICIENT_BOTH_REGIMES');
   assert.equal(summarizeBtcEthRelativePattern({coin:series('ADA-USDT',[100,101], 'GATE'),btc,eth}).status,'EXACT_SAME_MARKET_SERIES_REQUIRED');
+  assert.equal(summarizeBtcEthRelativePattern({coin:{...series('ADA-USDT',[100,99.5,99,98.5,101,104,107]),identity_scope:'EXTERNAL_PAIR_IDENTITY_UNVERIFIED'},btc,eth}).status,'EXACT_SAME_MARKET_SERIES_REQUIRED');
 });

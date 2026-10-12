@@ -4,7 +4,7 @@ const finitePrice=s=>typeof s?.price==='number'&&Number.isFinite(s.price)&&s.pri
 // Descriptive hourly pattern only. Same venue, market, hourly buckets and valid adjacent prices.
 export function summarizeBtcEthRelativePattern({coin,btc,eth}={}){
   const failure=reason=>({status:reason,score_contribution:0,entry_authorized:false,report_ready:false});
-  if(!coin||!btc||!eth||[coin,btc,eth].some(x=>x.status==='IDENTITY_UNVERIFIED'||x.decision_usable!==false)||new Set([coin.market,btc.market,eth.market]).size!==1||new Set([coin.venue,btc.venue,eth.venue]).size!==1||coin.contract==='BTC-USDT'||coin.contract==='ETH-USDT'||btc.contract!=='BTC-USDT'||eth.contract!=='ETH-USDT')return failure('EXACT_SAME_MARKET_SERIES_REQUIRED');
+  if(!coin||!btc||!eth||[coin,btc,eth].some(x=>x.status==='IDENTITY_UNVERIFIED'||x.identity_scope==='EXTERNAL_PAIR_IDENTITY_UNVERIFIED'||x.decision_usable!==false)||new Set([coin.market,btc.market,eth.market]).size!==1||new Set([coin.venue,btc.venue,eth.venue]).size!==1||coin.contract==='BTC-USDT'||coin.contract==='ETH-USDT'||btc.contract!=='BTC-USDT'||eth.contract!=='ETH-USDT')return failure('EXACT_SAME_MARKET_SERIES_REQUIRED');
   const map=series=>new Map(series.samples.filter(finitePrice).map(s=>[s.hour_bucket,s.price]));
   const c=map(coin),b=map(btc),e=map(eth),hours=[...c.keys()].filter(h=>b.has(h)&&e.has(h)).sort((x,y)=>x-y),down=[],up=[];
   for(let i=1;i<hours.length;i++){
