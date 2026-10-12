@@ -160,6 +160,27 @@
       "role": "possible public user positions",
       "access": "user account id required; price-level field, wallet discovery, rate and 105 asset overlap unverified",
       "status": "NEW_PRIMARY_PROTOCOL_LEAD_ONLY"
+    },
+    {
+      "name": "Manifold perps",
+      "url": "https://docs.manifold.markets/api",
+      "role": "Public future position liquidationPrice endpoint",
+      "access": "No auth, 500 requests/min per official docs",
+      "status": "NO_USEFUL_HTX_ALTCOIN_USD_LIQUIDATION_NOTIONAL: only 27 perp markets on visible platform, positions trade in mana and size is mana notional; BTC/ETH excluded from this project; no source HTTP used"
+    },
+    {
+      "name": "Pinax Perp Exchange API",
+      "url": "https://app.pinax.network/docs/perp-exchanges/getV1HyperliquidUsersPositions",
+      "role": "Hyperliquid per-user reconstructed positions",
+      "access": "Bearer token and required wallet address; free tier advertised",
+      "status": "SAME_HYPERLIQUID_PRIMARY_UPSTREAM_NOT_INDEPENDENT; funding-snapshot reconstruction can omit intermediate positions; no source HTTP used"
+    },
+    {
+      "name": "Extended Exchange private positions",
+      "url": "https://api.docs.extended.exchange/",
+      "role": "Liquidation price in open positions",
+      "access": "Authenticated sub-account only",
+      "status": "NO_PUBLIC_CROSS_ACCOUNT_FUTURE_LEVELS; no source HTTP used"
     }
   ],
   "prior_sources_preserved_without_repeat_probe": [

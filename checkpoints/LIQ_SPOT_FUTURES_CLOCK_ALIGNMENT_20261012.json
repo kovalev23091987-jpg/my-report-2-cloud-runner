@@ -1,8 +1,8 @@
 {
   "schema": "LIQ_SPOT_FUTURES_CLOCK_ALIGNMENT_20261012_V1",
-  "recorded_utc": "2026-10-12T19:26:39.672727+00:00",
+  "recorded_utc": "2026-10-12T19:37:46.816863+00:00",
   "basis_main": "fb37a9f4c7daadbb60bd961e635a01a4c281f21c",
-  "status": "OWNER_10M_MAXIMUM_WORKER_DEPLOYED_FRESHNESS_LABEL_CLOUD_PENDING",
+  "status": "OWNER_10M_POLICY_CLOUD_PASS_NATURAL_3P248S_ARCHIVE_VERIFIED_REPORT_PENDING",
   "owner_instruction": "Keep both HTX spot and futures in each applicable coin conclusion, synchronize their snapshot times or keep the gap very small, apply across active blocks; preserve original source clocks and paused blocks.",
   "observed_old_archive": {
     "hour_bucket": 1791828000000,
@@ -62,10 +62,8 @@
     "repair": "Corrected 68-second fixture expectation and updated an old N16 cost assertion to the owner's current paused-block rule; runtime checks before target tests passed."
   },
   "pending": [
-    "Cloud assembled validation on 10-minute policy exact head",
-    "Deploy updated HTX-only free-history Worker before next natural hourly run",
-    "Natural hourly D1 readback with actual spot/futures original clock gap and qualified contract pairs",
-    "Natural full report and Telegram/manual exact source-to-conclusion evidence after corrected head",
+    "Natural full report and Telegram/manual exact source-to-conclusion evidence on final main",
+    "Why no natural full report after 18:51 UTC still requires scheduled-run observation/diagnosis",
     "LIQ future-level natural use and outcome calibration remain open"
   ],
   "owner_clarification": "Aim for maximum synchronization. About ten minutes is the outer contextual tolerance; +30 seconds allows scheduling timestamp jitter. Preserve exact original clocks, label delayed comparisons, never turn delay into score or entry.",
@@ -94,5 +92,45 @@
     "result": "SUCCESS",
     "version": "6e5f4b9d-b2a2-4a08-9f4d-bf3d9f0adf03",
     "deployed_utc": "2026-10-12T19:19:11Z"
+  },
+  "final_cloud_10m_with_freshness_label": {
+    "run": 38297706168,
+    "exact_head": "4e3075dd5fd3c1edcd20df2e70eb6096b0901b2b",
+    "result": "SUCCESS",
+    "target_tests_passed": 68,
+    "full_generation_validate": "SUCCESS",
+    "target_tap_sha256": "c15498dabe974fcc60e2596bb863b1a93c73df401d75bafe501ea9dbf96549e1"
+  },
+  "natural_hourly_archive": {
+    "scheduled_ts": 1791833752000,
+    "hour_bucket": 1791831600000,
+    "run_status": "CLOSED",
+    "worker_version": "6e5f4b9d-b2a2-4a08-9f4d-bf3d9f0adf03",
+    "spot_source_ts": 1791833756679,
+    "spot_received_ts": 1791833759891,
+    "futures_source_ts": 1791833759927,
+    "futures_received_ts": 1791833760020,
+    "batch_source_skew_ms": 3248,
+    "qualified_joint_sample_skew_ms_min_median_max": [
+      3248,
+      3248,
+      3248
+    ],
+    "near_sync_target_ms": 30000,
+    "futures_target_count": 105,
+    "futures_qualified_count": 105,
+    "spot_present_count": 90,
+    "spot_qualified_count": 87,
+    "joint_quote_qualified_count": 87,
+    "strk_spot_and_futures_qualified": true,
+    "archive_source_http": 2,
+    "full_report_source_budget_unchanged": true,
+    "report_triggered": false,
+    "telegram": false,
+    "d1_size_after_bytes": 380928,
+    "payload_bytes": 51774,
+    "payload_sha256": "9d080d326fd38d4b86b0d55fab4234eb1208b21ffa8788275bc05830ca4fecc3",
+    "independent_readback_sha256_match": true,
+    "cloud_d1_database_id": "82dad15b-00ef-485f-862a-7746fae49444"
   }
 }
