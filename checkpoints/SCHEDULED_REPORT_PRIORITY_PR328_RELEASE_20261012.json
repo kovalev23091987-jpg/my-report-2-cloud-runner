@@ -1,0 +1,45 @@
+{
+  "schema": "SCHEDULED_REPORT_PRIORITY_PR328_RELEASE_20261012_V1",
+  "recorded_ts": 1791797448060,
+  "status": "PR328_SQUASH_MERGED_MAIN_CLOUD_OFFLINE_PASS_NATURAL_SCHEDULED_REPORT_PENDING",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/328",
+  "candidate_head": "45ccae0503b3469f615bf09467355e7134665db3",
+  "merged_main": "0c4968943b8b17268f011a28cbc083049740432f",
+  "incident": {
+    "scheduled_run": 38209536559,
+    "scheduled_head": "455507530c3e23f95d1b30a88dbb3df57fadfc71",
+    "started_utc": "2026-10-12T05:48:08Z",
+    "weekly_liquidation_status": "WEEKLY_REFRESH_IN_PROGRESS",
+    "full_report_step": "SKIPPED_BY_MAINTENANCE_ACTIVE",
+    "canonical_report_generated": false,
+    "telegram_same_run_proven": false,
+    "delivery_artifact_audit_run": 38209596657,
+    "delivery_artifact_audit_failure": "CANONICAL_OR_EXACT_NO_WORK_RECEIPT_REQUIRED"
+  },
+  "correction": {
+    "scheduled_full_cycle_before_weekly_maintenance": true,
+    "weekly_maintenance_only_after_exact_same_run_not_due_no_fresh_trigger_receipt": true,
+    "full_report_or_refusal_blocks_weekly_maintenance": true,
+    "d1_same_day_unknown_cost_guard_preserved": true,
+    "analysis_40_minute_admission_unchanged": true,
+    "weekly_maintenance_http_cap_unchanged": 120,
+    "score_strategy_source_caps_report_telegram_changed": false,
+    "stale_early_repair_hash_pin_aligned_to_merged_N10_PR313": true,
+    "runtime_technical_move_module_changed": false
+  },
+  "verification": {
+    "local_targeted_offline_tests_passed": 40,
+    "yaml_parsed": true,
+    "git_diff_check": "PASS",
+    "cloud_run": 38229686880,
+    "cloud_head": "45ccae0503b3469f615bf09467355e7134665db3",
+    "cloud_conclusion": "success",
+    "assembled_runtime_validation": "PASS",
+    "provider_http": 0,
+    "D1": 0,
+    "Telegram": 0,
+    "natural_postmerge_report": "PENDING",
+    "natural_postmerge_same_run_SENT": "PENDING"
+  },
+  "next_action": "At the next admitted natural scheduled run on main, verify Full Report 2 cycle executes before any weekly maintenance; when due, inspect exact approved-104 source clocks, spot/futures use, canonical/manual and Telegram receipts. When not due, require same-run no-work receipt and a passing delivery audit before maintenance. Investigate GitHub schedule gaps separately; do not infer cadence from cron YAML. Continue N12 source work; do not begin N14 without owner discussion."
+}
