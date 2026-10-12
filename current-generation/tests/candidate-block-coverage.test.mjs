@@ -10,8 +10,8 @@ test('legacy owners check eleven blocks while joint N05 remains missing',()=>{
  const sources=completeSources();
  sources.CHAIN_SUPPLY={status:'CLOSED',network_calls:1};sources.BLUESKY_PUBLIC={status:'CLOSED',network_calls:1};
  const result=auditCandidateBlocks({evidence,sources,decision_ts:now});
- assert.equal(result.coverage_count,7);
- assert.equal(result.checked_block_count,6);
+ assert.equal(result.coverage_count,6);
+ assert.equal(result.checked_block_count,5);
  assert.equal(result.all_blocks_checked,false);
  assert.equal(result.blocks.N02.status,'BLOCK_PAUSED_BY_OWNER');
  assert.equal(result.blocks.N02.decision_path,'EXCLUDED_PAUSED_BLOCK');
@@ -75,7 +75,9 @@ test('zero-fact primary blocks require explicit completed receipts',()=>{
  for(const block of ['N10','N11','N16'])assert.equal(absent.blocks[block].checked,false);
  const sources=Object.fromEntries(['PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST'].map(name=>[name,{status:'CHECKED_NO_EVENT',check_completed:true,network_calls:0}]));
  const present=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000});
- for(const block of ['N10','N11','N16'])assert.equal(present.blocks[block].checked,true);
+ for(const block of ['N10','N11'])assert.equal(present.blocks[block].checked,true);
+ assert.equal(present.blocks.N16.checked,false);
+ assert.equal(present.blocks.N16.status,'BLOCK_PAUSED_BY_OWNER');
 });
 
 test('strict fresh manual audit rejects cache-only external owners but accepts fresh internal checks',()=>{

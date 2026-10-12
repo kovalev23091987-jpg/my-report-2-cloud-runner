@@ -74,10 +74,10 @@ test('immutable BR/NEAR book facts reach approved Russian manual and Telegram fo
   const c=executionControl(i),before=JSON.stringify(c),manual=formatManualReport(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'});
   assert.equal(manual.ok,true,manual.status);assert.equal(tg.ok,true,tg.status);
   const audit=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
-  assert.deepEqual(audit.used_context_block_ids,['N11','N16']);assert.deepEqual(audit.telegram_used_context_block_ids,['N11','N16']);
-  assert.equal(audit.context_receipts.length,5);assert.equal(audit.telegram_context_receipts.length,3);
-  assert.match(manual.text,/комиссии и периодические платежи не включены/);assert.doesNotMatch(manual.text,/\bLONG\b|\bSHORT\b|\bfunding\b/);
-  assert.match(tg.text,i===0?/6\.28575 USDT для 2081 одинаковых контрактов/:/1\.553 USDT для 203 одинаковых контрактов/);
+  assert.deepEqual(audit.used_context_block_ids,['N11']);assert.deepEqual(audit.telegram_used_context_block_ids,['N11']);
+  assert.equal(audit.context_receipts.length,3);assert.equal(audit.telegram_context_receipts.length,3);
+  assert.doesNotMatch(manual.text,/Издержки входа и выхода/);assert.doesNotMatch(manual.text,/\bLONG\b|\bSHORT\b|\bfunding\b/);
+  assert.doesNotMatch(tg.text,/Издержки входа и выхода/);
   assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);assert.equal(audit.telegram_delivery_proven,false);
   assert.equal(JSON.stringify(c),before);
  }
@@ -95,8 +95,8 @@ test('exact assembled runtime canonical producer joins source facts without crea
  const before=buildRuntimeCanonicalBundle(input),after=buildRuntimeCanonicalBundle({...input,execution_context_source:source});
  assert.deepEqual(after.canonical.scores,before.canonical.scores);assert.equal(after.canonical.state,before.canonical.state);assert.equal(after.canonical.direction,before.canonical.direction);
  assert.deepEqual(after.canonical.targets,before.canonical.targets);assert.deepEqual(after.canonical.hard_gates,before.canonical.hard_gates);
- assert.deepEqual(after.block_rendered_results.used_context_block_ids,['N11','N16']);
- assert.equal(after.canonical.metadata.supporting_context.facts.length,5);
+ assert.deepEqual(after.block_rendered_results.used_context_block_ids,['N11']);
+ assert.equal(after.canonical.metadata.supporting_context.facts.length,3);
  assert.deepEqual(after.canonical.metadata.execution_context_source,source);
- assert.match(after.manual.text,/6\.28575 USDT для 2081 одинаковых контрактов/);
+ assert.doesNotMatch(after.manual.text,/Издержки входа и выхода/);
 });

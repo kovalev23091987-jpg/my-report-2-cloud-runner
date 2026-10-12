@@ -4,7 +4,7 @@
  */
 import {verifyExecutionFacts} from './tz101-execution-facts.mjs';
 import {digest} from './upstream-proof-utils.mjs';
-import {validateEvidenceV2} from './evidence-v2.mjs';
+import {PAUSED_BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const EXECUTION_REPORT_CONTEXT_VERSION='execution-report-context-v2-canonical-20261004';
 const stamp=n=>Number.isSafeInteger(n)&&n>=1_000_000_000_000;
@@ -32,9 +32,9 @@ export function consumeExecutionReportContext(row,runId){
   if(!f.bids.length||!f.asks.length)return failure('TWO_SIDED_BOOK_MISSING');
   const clock=new Date(f.book_source_ts).toISOString();
   const facts=[];
-  const add=(block_id,label,value)=>facts.push({block_id,label,value,source:'HTX_USDT_M_PERPETUAL_STEP0',source_ts:f.book_source_ts,observed_ts:row.observed_ts,
+  const add=(block_id,label,value)=>{if(PAUSED_BLOCKS[block_id])return;facts.push({block_id,label,value,source:'HTX_USDT_M_PERPETUAL_STEP0',source_ts:f.book_source_ts,observed_ts:row.observed_ts,
    evidence_ids:[s.full_evidence_id,r.receipt_id],physical_roots:[`${f.depth_channel}:${f.book_source_ts}`],consumer:'RUN_REPORT_CONFIRMED_CONTEXT',
-   score_contribution:0,directional_vote:false,hard_gate:false,entry_authorized:false});
+   score_contribution:0,directional_vote:false,hard_gate:false,entry_authorized:false});};
   const depth=levels=>levels.reduce((sum,[price,quantity])=>sum+price*quantity*f.contract_size_base,0);
   const bid=depth(f.bids),ask=depth(f.asks),spread=(f.asks[0][0]/f.bids[0][0]-1)*10000;
   if(![bid,ask,spread].every(Number.isFinite))return failure('BOOK_DEPTH_ARITHMETIC_INVALID');
@@ -88,7 +88,7 @@ export function buildCanonicalExecutionEvidence(identity={}){
  const basis=identity.execution_context_source?.bundle?.execution_gate?.factual_basis;
  const f=basis?.facts;
  if(!stamp(f?.received_ts)||f.received_ts>identity.observed_ts||!stamp(f.valid_until_ts)||f.valid_until_ts<identity.observed_ts)return [];
- return ['N11','N16'].flatMap(block=>{
+ return ['N11','N16'].filter(block=>!PAUSED_BLOCKS[block]).flatMap(block=>{
   const facts=context.facts.filter(row=>row.block_id===block);if(!facts.length)return [];
   return [buildEvidenceV2({provider_id:block==='N11'?'PRIMARY_EXECUTION_STRESS':'PRIMARY_EXECUTION_COST',upstream_id:'HTX_IMMUTABLE_EXECUTION_BOOK',asset_id:`htx-futures:${identity.contract}`,htx_contract:identity.contract,block_id:block,metric_family:block==='N11'?'VERIFIED_EXECUTION_SIZE_CONTEXT':'VERIFIED_EXECUTION_COST_CONTEXT',origin_event_id:`${identity.snapshot_id}:${block}`,dependency_group:`HTX_EXECUTION_BOOK:${identity.snapshot_id}`,source_ts:f.book_source_ts,observed_ts:f.received_ts,first_known_ts:f.received_ts,expires_at:f.valid_until_ts,coverage_status:'EXACT_IMMUTABLE_BOOK_ASSESSMENT',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{source_clock_policy:'EXACT_IMMUTABLE_EXECUTION_SNAPSHOT',immutable_evidence_ids:facts[0].evidence_ids,book_physical_roots:facts[0].physical_root_keys,common_upstream_not_independent_vote:true,entry_authorized:false,score_contribution:0}})];
  });

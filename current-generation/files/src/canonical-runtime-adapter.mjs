@@ -25,6 +25,7 @@ import {consumeSectorContext} from './sector-context.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from './block-result-context.mjs';
 import {precommittedTechnicalPlanEvidence} from './technical-plan-context.mjs';
 import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence,buildCanonicalExecutionRoleFacts,bindVerifiedPrimarySourceFacts} from './execution-report-context.mjs';
+import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {auditCandidateBlocks} from './candidate-evidence-v2-runtime.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
@@ -103,6 +104,7 @@ export function buildSpotFuturesJointConclusion({market_context,block_context,ev
 export function buildSpotExecutionCostContext({contract,spot_component,market_context,observed_ts}={}){
  const now=finite(observed_ts),market=market_context?.spot,data=spot_component?.data,reference=data?.spot_execution_reference;
  const base={schema:'htx-spot-500-usdt-execution-reference-v1',block_id:'N16',contract:text(contract).toUpperCase(),status:'SPOT_EXECUTION_REFERENCE_NOT_CLOSED',source:'HTX_OFFICIAL_PUBLIC_MARKET',physical_root_key:'HTX_OFFICIAL_PUBLIC_MARKET',independent_venue_count:1,network_calls:0,score_contribution:0,entry_authorized:false,fact:null};
+ if(PAUSED_BLOCKS.N16)return {...base,status:'BLOCK_PAUSED_BY_OWNER'};
  if(!market||market.market!=='HTX Spot'||now===null||spot_component?.execution_status!=='FULFILLED'||reference?.source_scope!=='HTX_SPOT_STEP0_SAME_DEPTH_REPLY'||reference.entry_authorized!==false||reference.source_ts!==market.source_ts||reference.best_bid!==market.best_bid||reference.best_ask!==market.best_ask||reference.requested_notional_usdt!==500)return base;
  const validImpact=(impact,side)=>{
   const request=finite(impact?.requested_notional_usdt),filled=finite(impact?.filled_notional_usdt),vwap=finite(impact?.vwap),bps=finite(impact?.impact_bps),baseQty=finite(impact?.base_quantity),fillPct=finite(impact?.fill_ratio_pct);

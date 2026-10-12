@@ -12,9 +12,9 @@ const signed=row=>{const b=row.execution_context_source.bundle;b.safety_gate_rec
 test('real immutable BR and NEAR facts become actual partial report text; no canonical or score mutation',()=>{
  const rows=[candidate(0),candidate(1)],before=JSON.stringify(rows.map(r=>r.canonical));
  const output={run_id:run,status:'PARTIAL_DATA_UNAVAILABLE',candidates:rows};output.report_text=formatManualRunSummary(output);
- const audit=auditExecutionReportRendering(output);assert.deepEqual(audit.used_context_block_ids,['N11','N16']);assert.equal(audit.context_receipts.length,10);
- assert.match(output.report_text,/6\.28575 USDT для 2081 одинаковых контрактов/);assert.match(output.report_text,/1\.553 USDT для 203 одинаковых контрактов/);
- assert.match(output.report_text,/комиссии и funding не включены/);assert.match(output.report_text,/Действие сейчас: не входить/);
+ const audit=auditExecutionReportRendering(output);assert.deepEqual(audit.used_context_block_ids,['N11']);assert.equal(audit.context_receipts.length,6);
+ assert.doesNotMatch(output.report_text,/Издержки входа и выхода/);
+ assert.match(output.report_text,/Действие сейчас: не входить/);
  assert.equal(JSON.stringify(rows.map(r=>r.canonical)),before);assert.equal(audit.entry_authorized,false);
  assert.ok(audit.context_receipts.every(f=>f.score_contribution===0&&!f.hard_gate&&!f.directional_vote));
 });

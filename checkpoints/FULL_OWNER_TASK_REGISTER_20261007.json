@@ -4590,8 +4590,8 @@
       "task_id": "BLOCK_N16",
       "block": "N16",
       "name": "Стоимость и исполнимость",
-      "status": "SCOPED_EXECUTION_AND_CONSERVATIVE_POLICY_RECHECK",
-      "remaining_action": "Сохранить утверждённую conservative fee/holding policy и HTX-specific book/costs, unknown future funding не0. Новая чужая fee API не персональная HTX fee.",
+      "status": "PAUSED_BY_OWNER_UNTIL_EXPLICIT_RESTORE",
+      "remaining_action": "Не собирать, не начислять и не показывать N16 до явной команды владельца; N11 и общие источники сохранить.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -4633,13 +4633,14 @@
         "actual_score_contribution": 0,
         "scope": "ONE_ORIGINAL_GRAM_SNAPSHOT_CURRENT_MANUAL_AND_SENT171_EXACT",
         "all_assets_complete": false
-      }
+      },
+      "owner_pause_proof": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json"
     },
     {
       "task_id": "BLOCK_LIQ",
       "block": "LIQ",
       "name": "Будущие ликвидационные уровни",
-      "status": "ACTUAL_POST244_FIL_NATIVE_HYPERLIQUID_LEVEL_AND_EXACT_SAME_RUN_SENT164_VERIFIED",
+      "status": "OWNER_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
       "remaining_action": "Retain verified native/estimated/conditional level semantics and original clocks. PR256 binds concrete native acquisition refusals through canonical and both report formats; no fresh SENT of new diagnostics yet. Continue broader useful bounded native search, exact source coverage and natural ENTRY; one-account threshold or large position is not market cluster.",
       "previous_exact_proofs": [
         {
@@ -4975,7 +4976,16 @@
         "no_original_ttl_extension": true
       },
       "latest_proof": "checkpoints/POST244_ACTUAL_REPORT_SENT_20261008.json",
-      "latest_refusal_consumer_release": "checkpoints/LIQUIDATION_REFUSALS_CONNECTED_20261009.json"
+      "latest_refusal_consumer_release": "checkpoints/LIQUIDATION_REFUSALS_CONNECTED_20261009.json",
+      "owner_current_requirement": [
+        "audit all current liquidation sources and real usage",
+        "maximize facts and useful calculated context for approved 104 assets",
+        "spot and futures integration with exact identity and original clocks",
+        "search and verify beneficial free sources",
+        "budget and source independence audit",
+        "manual and Telegram validation"
+      ],
+      "latest_owner_handoff": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json"
     }
   ],
   "owner_tasks": [
@@ -8857,7 +8867,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "N15_HTX_ONLY_HISTORY_PARTIAL_N14_REMAINS_PAUSED",
-  "next_action": "N16: изучить актуальное ТЗ, сохранённые оригинальные снимки и фактическую цепочку стоимости/исполнимости; определить конкретные недостающие проверки и согласовать изменение политики при необходимости. N15 оставлен частично выполненным: HTX-only почасовой Worker внедрён, 104 фьючерса и существующий спот HTX подтверждены первым архивом, но следующий естественный запуск, длительное бесплатное хранение и использование новой истории в отчёте/Telegram не доказаны. После настройки оставшихся блоков провести общую фактическую проверку активной стратегии 104→24→2, спота и фьючерсов, лимитов, данных и вывода ручного отчёта/Telegram; N01–N03,N06–N09,N14 не включать без явной команды владельца.",
+  "next_action": "LIQ: владелец поручил максимально расширить полезные фактические и расчётные сведения о ликвидациях по 104 активам, включая спот как контекст и фьючерсы, проверить сохранённые первичные данные, уже подключённые и новые бесплатные источники, точную привязку, независимость, лимиты и реальное использование в ручном отчёте/Telegram. Сначала пользоваться сохранёнными фактами и не объявлять покрытие без полного пути source→fact→consumer→render. N16 поставлен на бессрочную паузу; N11 и общие источники сохранены. N15 остаётся частичным: архив HTX есть, его использование и устойчивость ещё не доказаны. После настройки оставшихся блоков провести общую проверку действующей стратегии 104→24→2, обоих рынков, лимитов и доставки.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -10389,7 +10399,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "N16_OWNER_REVIEW_NEXT",
+  "current_execution_block": "LIQ",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -12393,7 +12403,7 @@
       "next_action": "QUALIFY_BINANCE_SMALLER_OFFICIAL_CATALOG_AND_NATIVE_TAKER_CANDLES;QUALIFY_GATE_OKX_AND_REMAINING_VENUES_WITHIN_EXISTING_CAPS;DO_NOT_REPEAT_BITGET_ON_EXHAUSTED_DAY"
     }
   },
-  "current_task": "N16_OWNER_REVIEW_NEXT",
+  "current_task": "LIQ_OWNER_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
   "latest_n05_actual_source_discovery": {
     "proof": "checkpoints/N05_ACTUAL_SOURCE_DISCOVERY_20261010.json",
     "schema": "N05_ACTUAL_SOURCE_DISCOVERY_20261010_V1",
@@ -15161,9 +15171,9 @@
   "previous_next_action_before_20261012_working_window": "First verify the next natural scheduled report after PR328: exact full cycle or no-work receipt, passing delivery audit, and no weekly maintenance preemption. PR325 exact KuCoin token spot/futures source and original PEPE pages are merged after full assembled N10/N11/N12 checks. N12 remains open. At the next admissible normal report on merged main, inspect source timestamps/IDs, exact asset chain/address and active instruments, HTX/Bitget/Gate/OKX/KuCoin spot/futures participation, shared five-call/164HTTP/source/provider/D1 ledgers, and manual plus approved Telegram evidence IDs; if an idea publishes, verify fresh SENT/message_id. Five saved PEPE pages prove one token source utility and conflicting spot/futures directions, not all-104 live coverage. Historical KuCoin 42 spot/39 futures token matches and 21 native matches are structural only; keep maximizing exact useful N12 coverage inside existing limits. Do not begin N14 before owner discussion.",
   "active_working_state": {
     "schema": "REPORT2_ACTIVE_WORKING_STATE_V1",
-    "recorded_utc": "2026-10-12T16:16:39.685270+00:00",
+    "recorded_utc": "2026-10-12T16:28:42.024789+00:00",
     "main_verified_at_package_start": "1c1998efc4fb2c99558f36afdaa38d06b3082fc6",
-    "candidate_state": "N15_PARTIAL_DEFERRED_OWNER_MOVED_TO_N16_REVIEW",
+    "candidate_state": "N16_PAUSED_LIQ_OWNER_AUTHORIZED_IN_PROGRESS",
     "active_entrypoints": [
       "AGENTS.md",
       "checkpoints/CURRENT_PROJECT_STATUS.json",
@@ -15176,8 +15186,7 @@
       "N10",
       "N11",
       "N12",
-      "N15",
-      "N16"
+      "N15"
     ],
     "paused_blocks": [
       "N01",
@@ -15187,7 +15196,8 @@
       "N07",
       "N08",
       "N09",
-      "N14"
+      "N14",
+      "N16"
     ],
     "paused_restore_requires_explicit_owner_command": true,
     "shared_sources_for_active_blocks_allowed": true,
@@ -15197,15 +15207,16 @@
     "coverage_limits": "Actual first D1 archive: futures 104/104 qualified, HTX spot 89 present and 88 quote-qualified. ACE quote rejected; 15 HTX spot pairs absent. Earlier Gate/Bitget probe historical only. First whole run ERROR due retired Bitget403; next natural HTX-only run pending. No N15 report/Telegram consumer yet.",
     "one_market_fallback_rule": "For an asset without HTX spot, retain qualified HTX futures only as limited information; never fabricate spot or cross-market agreement. For HTX spot with failed quote, omit spot metric. N11 remains futures-only.",
     "owner_deferral": "External spot for the 15 HTX-missing pairs excluded by explicit owner command; no next block begun.",
-    "next_action": "N16: изучить актуальное ТЗ, сохранённые оригинальные снимки и фактическую цепочку стоимости/исполнимости; определить конкретные недостающие проверки и согласовать изменение политики при необходимости. N15 оставлен частично выполненным: HTX-only почасовой Worker внедрён, 104 фьючерса и существующий спот HTX подтверждены первым архивом, но следующий естественный запуск, длительное бесплатное хранение и использование новой истории в отчёте/Telegram не доказаны. После настройки оставшихся блоков провести общую фактическую проверку активной стратегии 104→24→2, спота и фьючерсов, лимитов, данных и вывода ручного отчёта/Telegram; N01–N03,N06–N09,N14 не включать без явной команды владельца.",
+    "next_action": "LIQ: владелец поручил максимально расширить полезные фактические и расчётные сведения о ликвидациях по 104 активам, включая спот как контекст и фьючерсы, проверить сохранённые первичные данные, уже подключённые и новые бесплатные источники, точную привязку, независимость, лимиты и реальное использование в ручном отчёте/Telegram. Сначала пользоваться сохранёнными фактами и не объявлять покрытие без полного пути source→fact→consumer→render. N16 поставлен на бессрочную паузу; N11 и общие источники сохранены. N15 остаётся частичным: архив HTX есть, его использование и устойчивость ещё не доказаны. После настройки оставшихся блоков провести общую проверку действующей стратегии 104→24→2, обоих рынков, лимитов и доставки.",
     "release_receipt": "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json",
-    "current_execution_block": "N16_OWNER_REVIEW_NEXT",
+    "current_execution_block": "LIQ",
     "cloud_worker": "my-report-2-free-history",
     "cloud_worker_etag": "c58eba6d7925c8a2cc1870e798c0005de76069da81b7f1e6ba86c1355ac5e321",
     "lease_released": true,
     "prior_saved_report_audit": "checkpoints/N15_PRIOR_REPORT_AUDIT_20261012.json",
     "prior_saved_report_audit_result": "104/104 stage0 in three saved CLOSED reports; selected spot/futures and sector facts rendered; new hourly archive not consumed",
-    "owner_transition_proof": "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json"
+    "owner_transition_proof": "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json",
+    "latest_n16_owner_pause_and_liq_handoff": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json"
   },
   "latest_pr331_working_release": {
     "proof": "checkpoints/PR331_POSTMERGE_N12_WORKING_HANDOFF_20261012.json",
@@ -15255,5 +15266,6 @@
     "proof": "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json"
   },
   "latest_n15_prior_report_audit": "checkpoints/N15_PRIOR_REPORT_AUDIT_20261012.json",
-  "latest_owner_n15_to_n16_and_final_integration": "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json"
+  "latest_owner_n15_to_n16_and_final_integration": "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json",
+  "latest_n16_owner_pause_and_liq_handoff": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json"
 }

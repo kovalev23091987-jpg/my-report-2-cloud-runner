@@ -1,0 +1,54 @@
+{
+  "schema": "N16_OWNER_PAUSE_AND_LIQ_HANDOFF_V1",
+  "recorded_utc": "2026-10-12T16:28:42.024789+00:00",
+  "owner_instruction": "Поставить N16 на паузу, сохранить остальные источники и перейти к важному LIQ; добавить спот, собрать максимально много полезных фактических и расчётных сведений, искать и проверять бесплатные источники.",
+  "N16": {
+    "status": "PAUSED_UNTIL_EXPLICIT_OWNER_RESTORE",
+    "excluded_from": [
+      "own_source_collection",
+      "score",
+      "active_denominator",
+      "manual",
+      "telegram",
+      "archived_saved_fact_replay"
+    ],
+    "shared_N11_execution_book_and_sources_preserved": true,
+    "frozen_output_golden_scenarios_changed": false,
+    "code": [
+      "current-generation/files/src/evidence-v2.mjs",
+      "current-generation/files/src/execution-report-context.mjs",
+      "current-generation/files/src/canonical-runtime-adapter.mjs",
+      "current-generation/files/src/block-score-policy.mjs"
+    ]
+  },
+  "test": {
+    "local_node_tests": 1412,
+    "passed": 1408,
+    "failed": 0,
+    "skipped": 4,
+    "excluded_runtime_assembly_only_test": "supplemental-supporting-bridge.test.mjs requires assembled runtime/src/existing-source-consumer.mjs, absent in portable checkout",
+    "source_http": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "LIQ": {
+    "status": "OWNER_AUTHORIZED_NEXT_IN_PROGRESS",
+    "work_requested": [
+      "audit all current liquidation sources and real usage",
+      "maximize facts and useful calculated context for approved 104 assets",
+      "spot and futures integration with exact identity and original clocks",
+      "search and verify beneficial free sources",
+      "budget and source independence audit",
+      "manual and Telegram validation"
+    ],
+    "not_claimed_complete": true
+  },
+  "source_and_strategy_constraints": [
+    "N11 futures execution gate retained",
+    "no strategy, weight, format or limit changes from N16 pause",
+    "N15 HTX-only history restriction retained for that archive",
+    "N01–N03,N06–N09,N14 remain paused"
+  ],
+  "next_action": "LIQ: владелец поручил максимально расширить полезные фактические и расчётные сведения о ликвидациях по 104 активам, включая спот как контекст и фьючерсы, проверить сохранённые первичные данные, уже подключённые и новые бесплатные источники, точную привязку, независимость, лимиты и реальное использование в ручном отчёте/Telegram. Сначала пользоваться сохранёнными фактами и не объявлять покрытие без полного пути source→fact→consumer→render. N16 поставлен на бессрочную паузу; N11 и общие источники сохранены. N15 остаётся частичным: архив HTX есть, его использование и устойчивость ещё не доказаны. После настройки оставшихся блоков провести общую проверку действующей стратегии 104→24→2, обоих рынков, лимитов и доставки."
+}

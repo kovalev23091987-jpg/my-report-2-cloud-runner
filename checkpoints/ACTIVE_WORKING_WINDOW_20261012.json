@@ -1,29 +1,28 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T16:16:39.685270+00:00",
+  "recorded_utc": "2026-10-12T16:28:42.024789+00:00",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
   "main_at_recording": "8b7a03c1a05ad0c8c41f8fc0d33e08e49f514399",
   "work_in_progress_branch": null,
-  "current_task": "N16_OWNER_REVIEW_NEXT_N15_PARTIAL_PRESERVED",
+  "current_task": "LIQ_OWNER_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
   "last_three": [
     {
       "rank": 1,
+      "kind": "N16_OWNER_PAUSE_LIQ_HANDOFF",
+      "proof": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json",
+      "status": "N16_PAUSED_LIQ_IN_PROGRESS"
+    },
+    {
+      "rank": 2,
       "kind": "OWNER_N15_TO_N16_AND_FINAL_INTEGRATION",
       "proof": "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json",
       "status": "N15_PARTIAL_PRESERVED_N16_REVIEW_NEXT"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "kind": "N15_PRIOR_REPORT_AUDIT",
       "proof": "checkpoints/N15_PRIOR_REPORT_AUDIT_20261012.json",
       "status": "OLD_REPORTS_AUDITED_NEW_ARCHIVE_NATURAL_AND_CONSUMER_PENDING"
-    },
-    {
-      "rank": 3,
-      "kind": "N15_HTX_ONLY_HISTORY_FIRST_ACTUAL_D1_READBACK",
-      "proof": "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json",
-      "status": "HTX_FUTURES_104_QUALIFIED_HTX_SPOT_89_PRESENT_88_QUOTE_QUALIFIED;NEXT_NATURAL_PENDING",
-      "github_code_head": "8b7a03c1a05ad0c8c41f8fc0d33e08e49f514399"
     }
   ],
   "coverage_reconciliation": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
@@ -35,7 +34,8 @@
     "N07",
     "N08",
     "N09",
-    "N14"
+    "N14",
+    "N16"
   ],
   "paused_restore_requires_explicit_owner_command": true,
   "source_reuse": "Shared sources remain available to active blocks.",
@@ -44,5 +44,5 @@
     "N15 source→fact→consumer→manual/Telegram use of enough real history",
     "Current all-104 exact useful coverage for N05/N10/N11/N12 and 104→24→2 end-to-end verification"
   ],
-  "next_action": "N16: изучить актуальное ТЗ, сохранённые оригинальные снимки и фактическую цепочку стоимости/исполнимости; определить конкретные недостающие проверки и согласовать изменение политики при необходимости. N15 оставлен частично выполненным: HTX-only почасовой Worker внедрён, 104 фьючерса и существующий спот HTX подтверждены первым архивом, но следующий естественный запуск, длительное бесплатное хранение и использование новой истории в отчёте/Telegram не доказаны. После настройки оставшихся блоков провести общую фактическую проверку активной стратегии 104→24→2, спота и фьючерсов, лимитов, данных и вывода ручного отчёта/Telegram; N01–N03,N06–N09,N14 не включать без явной команды владельца."
+  "next_action": "LIQ: владелец поручил максимально расширить полезные фактические и расчётные сведения о ликвидациях по 104 активам, включая спот как контекст и фьючерсы, проверить сохранённые первичные данные, уже подключённые и новые бесплатные источники, точную привязку, независимость, лимиты и реальное использование в ручном отчёте/Telegram. Сначала пользоваться сохранёнными фактами и не объявлять покрытие без полного пути source→fact→consumer→render. N16 поставлен на бессрочную паузу; N11 и общие источники сохранены. N15 остаётся частичным: архив HTX есть, его использование и устойчивость ещё не доказаны. После настройки оставшихся блоков провести общую проверку действующей стратегии 104→24→2, обоих рынков, лимитов и доставки."
 }

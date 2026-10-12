@@ -14,10 +14,10 @@ test('actual same-run primary GMX receipt-only context validates and shows all t
 });
 test('primary exact execution receipt binds N11/N16 source counts without another HTTP or new vote',()=>{
  const identity={contract:c.contract,run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:c.observed_ts,execution_context_source:c.execution_context_source};
- const evidence=buildCanonicalExecutionEvidence(identity);assert.deepEqual(evidence.map(r=>r.block_id),['N11','N16']);
+ const evidence=buildCanonicalExecutionEvidence(identity);assert.deepEqual(evidence.map(r=>r.block_id),['N11']);
  const before={PRIMARY_EXECUTION_STRESS:{status:'CHECKED_HTX_ORDERBOOK_STRESS',network_calls:0},PRIMARY_EXECUTION_COST:{status:'CHECKED_HTX_EXECUTION_COST',network_calls:0}};
  const sources=bindVerifiedPrimarySourceFacts({...identity,sources:before,evidence,decision_ts:c.observed_ts});const audit=auditCandidateBlocks({evidence,sources,decision_ts:c.observed_ts});
- for(const [block,name] of [['N11','PRIMARY_EXECUTION_STRESS'],['N16','PRIMARY_EXECUTION_COST']]){assert.equal(audit.blocks[block].source_checks[name].valid_evidence_ids.length,1);assert.equal(audit.blocks[block].source_checks[name].network_calls,0);assert.equal(audit.blocks[block].source_checks[name].declared_upstream_ids[0],'HTX_IMMUTABLE_EXECUTION_BOOK');assert.equal(sources[name].evidence[0].coverage_fraction,0);}
+ for(const [block,name] of [['N11','PRIMARY_EXECUTION_STRESS']]){assert.equal(audit.blocks[block].source_checks[name].valid_evidence_ids.length,1);assert.equal(audit.blocks[block].source_checks[name].network_calls,0);assert.equal(audit.blocks[block].source_checks[name].declared_upstream_ids[0],'HTX_IMMUTABLE_EXECUTION_BOOK');assert.equal(sources[name].evidence[0].coverage_fraction,0);}
  assert.equal(before.PRIMARY_EXECUTION_STRESS.evidence,undefined);
  for(const patch of [{htx_contract:'OTHER-USDT'},{block_id:'N12'},{first_known_ts:c.observed_ts+1}]){const invalid=bindVerifiedPrimarySourceFacts({...identity,sources:before,evidence:evidence.map(r=>({...r,...patch})),decision_ts:c.observed_ts});assert.equal(invalid.PRIMARY_EXECUTION_STRESS.evidence,undefined);}
 });
