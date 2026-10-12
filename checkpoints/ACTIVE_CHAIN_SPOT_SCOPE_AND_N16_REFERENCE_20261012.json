@@ -3,7 +3,9 @@
   "owner_clarification": "Spot is useful for every retained active block where a genuine same-asset companion can be verified, except N11 futures orderbook execution stress, which needs no spot input.",
   "base_main_with_owner_lease": "d410b21dbe623acaf0106ed282a42f2958fcac6e",
   "owner_lease": "CODEX:OWNER_ACTIVE_CHAIN_SPOT_REVIEW:1791781134539",
-  "status": "CANDIDATE_LOCAL_VALIDATION_PARTIAL_CLOUD_ASSEMBLY_PENDING",
+  "status": "PR327_CANDIDATE_ASSEMBLED_N10_N11_N12_CLOUD_PASS_MAIN_MERGE_PENDING_NATURAL_COVERAGE_PENDING",
+  "candidate_head_tested": "600e73324243c727081ec1482053009dd4c8db87",
+  "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/327",
   "active_blocks": ["N04", "N05", "N10", "N11", "N12", "N14", "N15", "N16"],
   "spot_exempt_blocks": ["N11"],
   "paused_blocks_unchanged": ["N01", "N02", "N03", "N06", "N07", "N08", "N09"],
@@ -42,9 +44,14 @@
     "golden_output_contract_tests": "PASS_8_FROZEN_SCENARIOS",
     "generation_guard_and_formatter_hash": "PASS",
     "assembled_spot_context_test": "SKIPPED_ENCRYPTED_RUNTIME_NOT_LOCAL",
-    "full_validate": "BLOCKED_BY_PREEXISTING_MISSING_LOCAL_RUNTIME_MODULE_after_1393_pass_2_fail_4_skip",
+    "full_validate": "INITIAL_1393_PASS_2_FAIL_4_SKIP;_FORMATTER_HASH_PIN_FIXED;ONE_UNRELATED_LOCAL_ENCRYPTED_RUNTIME_MODULE_MISSING",
     "full_validate_unrelated_missing_module": "runtime/src/existing-source-consumer.mjs",
-    "cloud_assembled_verification": "PENDING"
+    "cloud_assembled_verification": {
+      "candidate_head": "600e73324243c727081ec1482053009dd4c8db87",
+      "N10": {"run_id": 38206652808, "conclusion": "success", "artifact_id": 11727956016, "artifact_digest": "sha256:93b1603dd961440ecbadc8142bf2d9f4ca2639620de3d93a2ec58bae1d0d6734"},
+      "N11": {"run_id": 38206652796, "conclusion": "success", "artifact_id": 11727497619, "artifact_digest": "sha256:f03947733ad24e4e1d5693f7889d7c132054484ab03243bf66985fc2b087b544"},
+      "N12": {"run_id": 38206652866, "conclusion": "success", "artifact_id": 11727288071, "artifact_digest": "sha256:edbee19bc9390b201bc1ab9a5afec9aa60c85f6dd869183e5a760924dc9998ce"}
+    }
   },
   "limits": {
     "all_104_current_spot_data_verified": false,
