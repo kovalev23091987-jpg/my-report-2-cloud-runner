@@ -1,28 +1,28 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-12T16:49:38.631701+00:00",
+  "recorded_utc": "2026-10-12T17:09:28.127651+00:00",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
-  "main_at_recording": "03c466fb72536aa4ba0c4c5fd9f1d78135633b60",
+  "main_at_recording": "1b85194694f9295fc976cc402e59ba38fa4da293",
   "work_in_progress_branch": null,
   "current_task": "LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
   "last_three": [
     {
       "rank": 1,
+      "kind": "LIQ_FUTURE_FACT_MODEL_5PCT_THREE_LEVELS",
+      "proof": "checkpoints/LIQ_FUTURE_FACT_MODEL_5PCT_THREE_LEVELS_20261012.json",
+      "status": "LOCAL_CANDIDATE_CLOUD_AND_NATURAL_USE_PENDING"
+    },
+    {
+      "rank": 2,
       "kind": "LIQ_104_ADMISSION_AND_STALE_SOURCE_RECHECK",
       "proof": "checkpoints/LIQ_104_ADMISSION_AND_STALE_SOURCE_RECHECK_20261012.json",
       "status": "LOCAL_CANDIDATE_LIVE_LEVEL_AND_NATURAL_DELIVERY_NOT_VERIFIED"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "kind": "LIQ_SPOT_CONTEXT_AND_SOURCE_GAP_AUDIT",
       "proof": "checkpoints/LIQ_SPOT_CONTEXT_AND_SOURCE_GAP_AUDIT_20261012.json",
       "status": "PARTIAL_CONNECTED_CANDIDATE_NOT_NATURAL_REPORT_VERIFIED"
-    },
-    {
-      "rank": 3,
-      "kind": "N16_OWNER_PAUSE_LIQ_HANDOFF",
-      "proof": "checkpoints/N16_OWNER_PAUSE_AND_LIQ_HANDOFF_20261012.json",
-      "status": "N16_PAUSED_LIQ_IN_PROGRESS"
     }
   ],
   "coverage_reconciliation": "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
@@ -44,5 +44,5 @@
     "N15 source→fact→consumer→manual/Telegram use of enough real history",
     "Current all-104 exact useful coverage for N05/N10/N11/N12 and 104→24→2 end-to-end verification"
   ],
-  "next_action": "Continue LIQ under a fresh lease: inspect current D1/source clocks, assembled exact-104 admission and same-run manual/Telegram; then only budgeted live source qualification. Do not call LIQ complete."
+  "next_action": "Push candidate, run assembled cloud gate, inspect exact new run and preserve admission limits; release lease. LIQ remains open."
 }

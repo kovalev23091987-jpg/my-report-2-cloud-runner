@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - .github/workflows/liq-assembled-offline-20261012.yml
+      - current-generation/files/src/pump-liquidation-zones.mjs
+      - current-generation/files/src/canonical-display.mjs
+      - current-generation/files/src/liquidation-source-chain.mjs
 permissions:
   contents: read
 jobs:
@@ -40,9 +43,12 @@ jobs:
           cmp current-generation/files/src/liquidation-spot-reference.mjs runtime/src/liquidation-spot-reference.mjs
           cmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs
           cmp current-generation/files/src/canonical-display.mjs runtime/src/canonical-display.mjs
+          cmp current-generation/files/src/pump-liquidation-zones.mjs runtime/src/pump-liquidation-zones.mjs
+          cmp current-generation/files/src/htx-source-backed-liquidation-model.mjs runtime/src/htx-source-backed-liquidation-model.mjs
+          cmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs
           cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
-          node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs > audit-output/liq-assembled/target.tap
+          node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
       - name: Show failure locations
         if: failure()

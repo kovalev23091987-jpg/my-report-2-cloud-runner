@@ -100,7 +100,23 @@ export function auditLiquidationPresentation(liq,{policy='ORIGINAL'}={}){
 export function selectLiquidationDisplayZones(liq,side,{limit=LIQUIDATION_DISPLAY_MAX_PER_SIDE,policy='ORIGINAL'}={}){
  const fallback=side==='ABOVE'?liq?.above:liq?.below,all=Array.isArray(liq?.display_source_zones)&&liq.display_source_zones.length?liq.display_source_zones:Array.isArray(liq?.all_zones)&&liq.all_zones.length?liq.all_zones:fallback;
  const eligible=policy===RELEVANT_LIQUIDATION_PRESENTATION?auditLiquidationPresentation({...liq,display_source_zones:all},{policy}).rows.filter(r=>r.status==='DISPLAY_ELIGIBLE').map(r=>r.zone):all;
- return mergeLiquidationDisplayZones(eligible,side).sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1)||Math.abs(finite(a.distance_pct)??Infinity)-Math.abs(finite(b.distance_pct)??Infinity)).slice(0,limit).sort((a,b)=>Math.abs(finite(a.display_distance_min)??finite(a.distance_pct)??Infinity)-Math.abs(finite(b.display_distance_min)??finite(b.distance_pct)??Infinity));
+ const facts=mergeLiquidationDisplayZones(eligible,side);
+ const rawScenarios=Array.isArray(liq?.calculated_scenarios)?liq.calculated_scenarios.filter(z=>z?.scenario_only===true&&z?.source_backed_calculated===true&&z?.kind==='PROJECTED'&&z?.notional===null&&z?.exact_amount_available===false):[];
+ const scenarios=(rawScenarios.length?(policy===RELEVANT_LIQUIDATION_PRESENTATION?auditLiquidationPresentation({display_source_zones:rawScenarios},{policy}).rows.filter(r=>r.status==='DISPLAY_ELIGIBLE').map(r=>r.zone):rawScenarios):[]).filter(z=>z.side===side);
+ const remaining=[];
+ for(const model of scenarios){
+  const match=model.price_quote==='USDT'?facts.filter(z=>z.price_quote==='USDT'&&Number.isSafeInteger(z.source_ts)&&Number.isSafeInteger(model.source_ts)&&Math.abs(z.source_ts-model.source_ts)<=300000&&
+   (Math.max(z.price,model.price)/Math.min(z.price,model.price)-1)*100<=LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT+1e-10).sort((a,b)=>Math.abs(a.price-model.price)-Math.abs(b.price-model.price))[0]:null;
+  if(match){
+   const old=match.display_near_calculated_scenario;
+   if(!old||Math.abs(match.price-model.price)<Math.abs(match.price-old.price)){
+    match.display_near_calculated_scenario={price:model.price,distance_pct:model.distance_pct,source_ts:model.source_ts,source:model.source,model_version:model.model_version,scenario_estimated_size_tier:model.scenario_estimated_size_tier};
+    match.display_fact_model_within_pct=(Math.max(match.price,model.price)/Math.min(match.price,model.price)-1)*100;
+   }
+  }else remaining.push(model);
+ }
+ const standalone=mergeLiquidationDisplayZones(remaining,side);
+ return [...facts,...standalone].sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1)||Math.abs(finite(a.distance_pct)??Infinity)-Math.abs(finite(b.distance_pct)??Infinity)).slice(0,limit).sort((a,b)=>Math.abs(finite(a.display_distance_min)??finite(a.distance_pct)??Infinity)-Math.abs(finite(b.display_distance_min)??finite(b.distance_pct)??Infinity));
 }
 function displayPriceRange(z){return displayNumber(z?.price);}
 function displayDistanceRange(z){const d=finite(z?.distance_pct);return d===null?null:`${d>0?'+':d<0?'−':''}${displayNumber(Math.abs(Number(d.toFixed(2))))}%`;}
@@ -120,10 +136,12 @@ export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}=
  const lines=[];
  const current=policy===RELEVANT_LIQUIDATION_PRESENTATION;
  for(const [side,label] of [['ABOVE',current?'Ликвидационные уровни выше':'Сильные ликвидации выше'],['BELOW',current?'Ликвидационные уровни ниже':'Сильные ликвидации ниже']]){
-  const available=selectLiquidationDisplayZones(liq,side,{policy}),shown=compact?available.slice(0,2):available;
+  const available=selectLiquidationDisplayZones(liq,side,{policy}),shown=compact?available.slice(0,current?3:2):available;
   const parts=shown.filter(Boolean).map(z=>{
    const px=displayPriceRange(z),d=displayDistanceRange(z),n=displayNumber(z.notional);
-   return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&z.estimated?'открытые позиции':z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+   if(!current)return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&z.estimated?'открытые позиции':z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+   const nearby=z.display_near_calculated_scenario,size=z.strength_label_ru||'не определён',sizeKind=z.scenario_only?'расчётный':'по данным источника';
+   return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — размер возможной ликвидации: ${size} (${sizeKind})${n!==null?`; объём позиции ${n} ${z.notional_unit}`:''}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${nearby?`; рядом расчёт HTX ≈${displayNumber(nearby.price)} ${z.price_quote} (расхождение ${displayNumber(Number(z.display_fact_model_within_pct.toFixed(2)))}%, расчётный размер ${nearby.scenario_estimated_size_tier||'не определён'}, объёмы не сложены)`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
   });lines.push(`${label}: ${parts.length?parts.join('; '):current?'подходящие уровни не подтверждены':'уровни будущих ликвидаций не получены'}.`);
  }
  if(compact&&[...selectLiquidationDisplayZones(liq,'ABOVE',{policy}),...selectLiquidationDisplayZones(liq,'BELOW',{policy})].some(z=>z.estimated||z.display_contains_estimates))lines.push('≈ — расчётный уровень.');
@@ -134,6 +152,7 @@ export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}=
   lines.push('Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.');
   lines.push(`Покрытие: только доступные площадки и диапазон источника; время снимка ${displayTime(Math.min(...[...liq.above,...liq.below].map(z=>z.source_ts)))} МСК.`);
  }
+ if(liq?.calculated_scenario_count>0)lines.push('Расчётные зоны HTX — сценарии по рыночным данным, а не наблюдаемые позиции или подтверждённые объёмы будущих ликвидаций.');
  const spotLine=liquidationSpotReferenceLine(liq);if(spotLine)lines.push(spotLine);
  return lines;
 }
@@ -143,7 +162,7 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
  const lines=[],used=[];
  const current=policy===RELEVANT_LIQUIDATION_PRESENTATION;
  for(const [side,label] of [['ABOVE',current?'Ликвидационные уровни выше':'Сильные ликвидации выше'],['BELOW',current?'Ликвидационные уровни ниже':'Сильные ликвидации ниже']]){
-  const rows=selectLiquidationDisplayZones(liq,side,{policy}).filter(z=>['NATIVE_FUTURE_LEVEL','PROVIDER_ESTIMATE','PROJECTED'].includes(z.kind)).slice(0,2);
+  const rows=selectLiquidationDisplayZones(liq,side,{policy}).filter(z=>['NATIVE_FUTURE_LEVEL','PROVIDER_ESTIMATE','PROJECTED'].includes(z.kind)).slice(0,current?3:2);
   const parts=rows.map(z=>{
    used.push(z);
    const estimated=z.estimated===true||z.display_contains_estimates===true||z.kind!=='NATIVE_FUTURE_LEVEL'||/BUCKET_CENTER|MODEL_PRICE_BIN|SDK_ESTIMATE/.test(z.price_semantics||'');
@@ -151,7 +170,9 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
    const distance=d===null?'':` (${d>0?'+':d<0?'−':''}${rounded===0&&d!==0?'<1':rounded}%)`;
    const account=current&&!estimated&&(/ACCOUNT_LIQUIDATION_PRICE/.test(z.price_semantics||'')||z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'||/ACCOUNT_SAMPLE/.test(z.coverage||''));
    const kind=estimated?'расчётный':account?(z.conditional_cross||z.conditional_on_other_positions?'порог счёта':'порог позиции'):current?'уровень источника':'фактический';
-   return `${formatPrice(z.price,{zone:true})}${distance} — ${z.strength_label_ru||'размер неизвестен'}${account?' позиция':''} (${kind})`;
+   const near=z.display_near_calculated_scenario;
+   if(!current)return `${formatPrice(z.price,{zone:true})}${distance} — ${z.strength_label_ru||'размер неизвестен'}${account?' позиция':''} (${kind})`;
+   return `${formatPrice(z.price,{zone:true})}${distance} — размер возможной ликвидации: ${z.strength_label_ru||'не определён'} (${kind}${near?`; расчёт HTX ≈${formatPrice(near.price,{zone:true})}, ≤5%, размер ${near.scenario_estimated_size_tier||'не определён'}`:''})`;
   });
   lines.push(`${label}: ${parts.length?parts.join('; '):current?'подходящие уровни не подтверждены':'уровни не получены'}.`);
  }
@@ -161,6 +182,7 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
   if(used.some(z=>z.conditional_cross||z.conditional_on_other_positions))lines.push('Зависят от других позиций счёта.');
   if(used.some(z=>z.source_clock_closed===false))lines.push('Время исходного состояния неизвестно.');
  }
+ if(used.some(z=>z.scenario_only||z.display_near_calculated_scenario))lines.push('Расчёт HTX — сценарий, не известная позиция или подтверждённый объём.');
  const absent=liquidationAbsenceLine(liq,policy);if(absent)lines.push(absent);
  const spotLine=liquidationSpotReferenceLine(liq);if(spotLine&&used.length)lines.push(spotLine);
  return lines;

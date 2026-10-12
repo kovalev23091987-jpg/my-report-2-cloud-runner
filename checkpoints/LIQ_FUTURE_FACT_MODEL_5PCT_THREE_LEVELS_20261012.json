@@ -1,0 +1,46 @@
+{
+  "schema": "LIQ_FUTURE_FACT_MODEL_5PCT_THREE_LEVELS_V1",
+  "recorded_utc": "2026-10-12T17:09:28.127651+00:00",
+  "base_main": "1b85194694f9295fc976cc402e59ba38fa4da293",
+  "owner_instruction": "Only future liquidations, both factual and calculated; combine same-side levels within 5%; Telegram up to three above and three below, each with possible liquidation size tier. Historical realized events excluded.",
+  "implementation": {
+    "factual_external_map": "Preserved separately; no new factual level fabricated",
+    "calculated_model": "Existing HTX source-backed model reenabled as separate informational futures scenario only when existing fresh HTX price, OI, turnover and price-volatility inputs close",
+    "same_side_union": "Display-only within 5% absolute price spread, same USDT quote and source clocks within 5min; factual price preferred, both original prices retained, sizes not summed",
+    "size": "Source position notional tier for factual; model OI allocation tier explicitly calculated; no exact model size claimed",
+    "telegram": "Up to three above and three below, original historical messages remain byte-identical",
+    "score_target_entry": "unchanged",
+    "new_source_HTTP": 0,
+    "additional_D1": 0,
+    "existing_limits": "164 whole job, 5 external LIQ HTTP per candidate, 40min full schedule, 5min collector unchanged"
+  },
+  "evidence": {
+    "historical_matrix": "checkpoints/liquidation-coverage-seed-20261004.json.gz",
+    "approved_104_alignment": "checkpoints/LIQ_104_ADMISSION_AND_STALE_SOURCE_RECHECK_20261012.json",
+    "last_full_run": {
+      "run": 38271056693,
+      "head": "9fc0b217",
+      "active_level_coverage": "0 of old 102 admitted at 15:33 because stored checks expired; not a fresh 104 market census"
+    },
+    "previous_cloud_assembled_gate": {
+      "run": 38281057866,
+      "head": "1b85194694f9295fc976cc402e59ba38fa4da293",
+      "conclusion": "success on preceding admission/spot code only"
+    },
+    "local_tests": {
+      "tests": 1417,
+      "passed": 1413,
+      "failed": 0,
+      "skipped": 4,
+      "exclusion": "supplemental-supporting-bridge.test.mjs requires absent portable runtime module"
+    }
+  },
+  "not_proven": [
+    "New calculated scenario actually rendered in natural full report and Telegram",
+    "Three-per-side Telegram fits every future 1800-character message",
+    "Fresh factual future-level count over 104",
+    "Exact SENT/message_id for this change",
+    "Production cost and data utility for a new independent factual future-level source"
+  ],
+  "next_action": "Push candidate, run assembled cloud gate, inspect exact new run and preserve admission limits; release lease. LIQ remains open."
+}

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildHtxSourceBackedLiquidationModel,reconcileLiquidationZones} from '../files/src/htx-source-backed-liquidation-model.mjs';
 import {buildPumpLiquidationZones} from '../files/src/pump-liquidation-zones.mjs';
-import {displayFutureLiquidations,selectLiquidationDisplayZones} from '../files/src/canonical-display.mjs';
+import {displayFutureLiquidations,displayBriefTelegramLiquidations,selectLiquidationDisplayZones,RELEVANT_LIQUIDATION_PRESENTATION} from '../files/src/canonical-display.mjs';
 
 const T=Date.UTC(2026,9,1,5,0,0);
 const context=(extra={})=>({source_ts:T-1000,open_interest_value_usdt:2_000_000,turnover_24h_usdt:8_000_000,funding_rate_pct:0.035,market_24h:{open:96,high:115,low:88},price_tick:0.001,price_change_pct:{'5m':1.2,'15m':3.5,'1h':8,'4h':22,'24h':35},oi_change_pct:{'15m':2,'1h':7,'4h':18},...extra});
@@ -42,9 +42,23 @@ test('independent sources are reconciled near one zone and their notionals are n
  const [zone]=reconcileLiquidationZones(rows,{reference_price:100,volatility_pct:3});assert.equal(zone.independent_source_count,3);assert.equal(zone.consensus_confidence_ru,'высокая');assert.equal(zone.notional,3_000_000);assert.equal(zone.amount_semantics,'BEST_SINGLE_SOURCE_NOTIONAL_NOT_SUMMED');
 });
 
-test('production pump map never calls or compares a calculated HTX fallback even with fresh complete inputs',()=>{
+test('fresh HTX inputs provide separately labelled scenarios without closing factual level coverage',()=>{
  const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
- assert.equal(map.status,'NOT_CLOSED');assert.equal(map.future_levels_status,'NOT_AVAILABLE');assert.equal(map.calculated_fallback_enabled,false);assert.equal(map.provider_zone_count,0);assert.equal(map.htx_source_backed_model.status,'DISABLED_BY_OWNER');assert.equal(map.calculated_zone_count,0);
+ assert.equal(map.status,'CALCULATED_CONTEXT_ONLY');assert.equal(map.future_levels_status,'CALCULATED_SCENARIOS_ONLY');assert.equal(map.calculated_fallback_enabled,false);assert.equal(map.provider_zone_count,0);assert.equal(map.htx_source_backed_model.status,'CLOSED');assert.equal(map.calculated_zone_count,0);
+ assert.ok(map.calculated_scenario_count>0);assert.ok(map.calculated_scenarios.some(z=>z.side==='ABOVE'));assert.ok(map.calculated_scenarios.some(z=>z.side==='BELOW'));
+ assert.ok(map.calculated_scenarios.every(z=>z.notional===null&&z.scenario_only&&z.decision_target_eligible===false&&z.strength_label_ru));
+ const lines=displayBriefTelegramLiquidations(map,v=>String(v),{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');assert.match(lines,/расчётный/);assert.match(lines,/размер возможной ликвидации/);assert.doesNotMatch(lines,/фактический/);
+});
+
+test('factual and HTX calculated future levels join only on the same side within five percent',()=>{
+ const model=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
+ const scenario=model.calculated_scenarios.find(z=>z.side==='ABOVE'&&Math.abs(z.distance_pct)<100);assert.ok(scenario);
+ const fact={...scenario,kind:'NATIVE_FUTURE_LEVEL',source:'Hyperliquid',venue:'Hyperliquid',independence_group:'HYPERLIQUID_NATIVE',scenario_only:false,source_backed_calculated:false,estimated:false,notional:150000,notional_unit:'USDT',strength_label_ru:'крупная',price_semantics:'ACCOUNT_LIQUIDATION_PRICE',source_ts:scenario.source_ts-1000,price:scenario.price*1.04,distance_pct:(scenario.price*1.04/100-1)*100};
+ const joined={...model,status:'CLOSED',future_levels_status:'EXTERNAL_SOURCE_LEVELS_AVAILABLE',all_zones:[fact],display_source_zones:[fact],above:[fact],provider_zone_count:1};
+ const chosen=selectLiquidationDisplayZones(joined,'ABOVE',{policy:RELEVANT_LIQUIDATION_PRESENTATION});assert.ok(chosen.some(z=>z.display_near_calculated_scenario&&z.display_fact_model_within_pct<=5));assert.ok(chosen.every(z=>z.notional_summed_across_providers!==true));
+ const manual=displayFutureLiquidations(joined,{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');assert.match(manual,/расхождение/);assert.match(manual,/расчётный размер/);
+ const telegram=displayBriefTelegramLiquidations(joined,v=>String(v),{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');assert.match(telegram,/расчёт HTX/);assert.match(telegram,/≤5%/);
+ const distant={...fact,price:scenario.price*1.06,distance_pct:(scenario.price*1.06/100-1)*100};const separate=selectLiquidationDisplayZones({...joined,all_zones:[distant],display_source_zones:[distant],above:[distant],calculated_scenarios:[scenario]},'ABOVE',{policy:RELEVANT_LIQUIDATION_PRESENTATION});assert.ok(separate.every(z=>!z.display_near_calculated_scenario));
 });
 
 test('owner-approved display merges within5% and retains original farther price and its amount',()=>{
