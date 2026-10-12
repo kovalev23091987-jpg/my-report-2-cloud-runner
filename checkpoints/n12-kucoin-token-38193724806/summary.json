@@ -1,0 +1,235 @@
+{
+  "schema": "N12_KUCOIN_PEPE_TOKEN_SAVED_ACTUAL_20261012_V1",
+  "run": "38193724806",
+  "head": "807ad7f81029ce760db45c127dbdf7355487a04b",
+  "contract": "PEPE-USDT",
+  "started_ts": 1791770097380,
+  "status": "EXACT_ORIGINAL_TOKEN_TRADE_DATA_USEFUL",
+  "sourceHTTP": 5,
+  "D1": {
+    "requests": 49,
+    "rows_read": 68,
+    "rows_written": 41,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 5,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 10,
+        "rows_read": 5,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 5,
+        "rows_read": 20,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 10,
+        "rows_read": 25,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "Telegram": 0,
+  "MAIN": 0,
+  "score": 0,
+  "entry_authorized": false,
+  "source_catalog_only_is_not_coverage": true,
+  "receipts": [
+    {
+      "name": "KUCOIN-CURRENCIES",
+      "url": "https://api.kucoin.com/api/v3/currencies",
+      "status": "RECEIVED",
+      "actual_http": 1,
+      "http_status": 200,
+      "retry_after": null,
+      "received_ts": 1791770099710,
+      "body_sha256": "9491f1fb600061c171371521cc0df0f22726e0d23f40f8e430e7426bdb3cc580",
+      "bytes": 1491824,
+      "file": "KUCOIN-CURRENCIES.json.gz"
+    },
+    {
+      "name": "KUCOIN-SPOT-CATALOG",
+      "url": "https://api.kucoin.com/api/v2/symbols",
+      "status": "RECEIVED",
+      "actual_http": 1,
+      "http_status": 200,
+      "retry_after": null,
+      "received_ts": 1791770101213,
+      "body_sha256": "f3f0f7b72315c4d9b986b1a7aee936d3c5d68c0a27c0a8f0ff5a9a675904cdac",
+      "bytes": 692634,
+      "file": "KUCOIN-SPOT-CATALOG.json.gz"
+    },
+    {
+      "name": "KUCOIN-FUTURES-CATALOG",
+      "url": "https://api-futures.kucoin.com/api/v1/contracts/active",
+      "status": "RECEIVED",
+      "actual_http": 1,
+      "http_status": 200,
+      "retry_after": null,
+      "received_ts": 1791770102690,
+      "body_sha256": "4dfb52250372174a364d7f0280f9a1df3d819352060882202f561339c3b5bf1b",
+      "bytes": 1416255,
+      "file": "KUCOIN-FUTURES-CATALOG.json.gz"
+    },
+    {
+      "name": "KUCOIN-SPOT-PEPE",
+      "url": "https://api.kucoin.com/api/v1/market/histories?symbol=PEPE-USDT",
+      "status": "RECEIVED",
+      "actual_http": 1,
+      "http_status": 200,
+      "retry_after": null,
+      "received_ts": 1791770104067,
+      "body_sha256": "3cac1368c4518c95bd1e3e36e65ce6fd75d772eca30b2608c7b45b0e4a08f506",
+      "bytes": 14347,
+      "file": "KUCOIN-SPOT-PEPE.json.gz"
+    },
+    {
+      "name": "KUCOIN-FUTURES-PEPE",
+      "url": "https://api-futures.kucoin.com/api/v1/trade/history?symbol=PEPEUSDTM",
+      "status": "RECEIVED",
+      "actual_http": 1,
+      "http_status": 200,
+      "retry_after": null,
+      "received_ts": 1791770105412,
+      "body_sha256": "327221ced6692f4b2929d2451858f148cc93375e3aa05aef57670401e53ee098",
+      "bytes": 21437,
+      "file": "KUCOIN-FUTURES-PEPE.json.gz"
+    }
+  ],
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-12",
+      "run_count": 2,
+      "reserved_rows_read": 5500,
+      "reserved_rows_written": 432,
+      "measured_rows_read": 318,
+      "measured_rows_written": 108,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 7000,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 12500,
+      "rows_written": 532
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "exact_token_binding": true,
+  "samples": [
+    {
+      "market": "SPOT",
+      "returned_rows": 100,
+      "valid_closed_five_minute_rows": 51,
+      "rejected_rows": 49,
+      "original_latest_trade_ts": 1791770098454,
+      "buy_quote_usdt": 7034.274652375,
+      "sell_quote_usdt": 6577.445035502,
+      "imbalance": 0.03356149166661625,
+      "contract_multiplier": 1,
+      "window_end_ts": 1791770100000,
+      "whole_window_coverage_proven": false,
+      "score": 0
+    },
+    {
+      "market": "FUTURES",
+      "returned_rows": 100,
+      "valid_closed_five_minute_rows": 100,
+      "rejected_rows": 0,
+      "original_latest_trade_ts": 1791770099289,
+      "buy_quote_usdt": 6664.93074,
+      "sell_quote_usdt": 16725.578844000003,
+      "imbalance": -0.43011667051845115,
+      "contract_multiplier": 520000,
+      "window_end_ts": 1791770100000,
+      "whole_window_coverage_proven": false,
+      "score": 0
+    }
+  ],
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 5,
+      "statistics": 0
+    },
+    "total": 5,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 159
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N12_KUCOIN_TOKEN:38193724806:1",
+    "source_run_id": "38193724806",
+    "measured_rows_read": 67,
+    "measured_rows_written_accounted": 41,
+    "measured_requests_accounted": 49,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791770105595
+}

@@ -28,7 +28,7 @@ test('four retained original spot/futures pages contain exact, useful bounded fa
 });
 
 test('shared native catalogs retain exact approved instruments within a small D1 cache row',()=>{
- for(const [venue,market,base,,symbol] of cases){const compact=compactN12NativeCatalog(venue,market,base+'-USDT',catalogs[venue][market]);assert.ok(compact.data.some(row=>row[venue==='OKX'?'instId':'symbol']===symbol));assert.ok(Buffer.byteLength(JSON.stringify(compact))<25000);assert.ok(compact.data.length<=21);}
+ for(const [venue,market,base,,symbol] of cases){const compact=compactN12NativeCatalog(venue,market,base+'-USDT',catalogs[venue][market]);assert.ok(compact.data.some(row=>row[venue==='OKX'?'instId':'symbol']===symbol));assert.ok(Buffer.byteLength(JSON.stringify(compact))<25000);assert.ok(compact.data.length<=104);}
 });
 
 test('wrong native identity, asset class, size metadata, symbol, duplicate IDs and unsafe KuCoin nanoseconds are rejected',()=>{

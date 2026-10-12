@@ -2,6 +2,7 @@ import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-s
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
 import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
 import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
+import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
 import {normalizePublishedMonthlySchedule,SUI_MONTHLY_SCHEDULE_ROUTE} from './published-monthly-supply-schedule.mjs';
 import {verifiedWikimediaEvidencePage} from './wikimedia-page-binding.mjs';
 import {verifiedNativeEvmContextRow,NATIVE_EVM_NETWORKS} from './native-evm-finalized-context.mjs';
@@ -276,10 +277,10 @@ function describe(row,now){
   if(!validateBitgetN12BoundedTradeSample(row,now))return null;
   return{source:`Bitget / исходные ${row.market==='SPOT'?'спотовые':'фьючерсные'} сделки`,label:'Направление последних сделок Bitget',value:`Bitget ${row.market==='SPOT'?'спот':'фьючерсы'}: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета проверена; выборка неполная, общий межбиржевой вывод не подтверждён`};
  }
- if(row.block_id==='N12'&&row.metric_family==='ACTUAL_NATIVE_PUBLIC_TAKER_TRADES_BOUNDED'){
-  if(!validateN12NativePublicTrade(row,now))return null;
+ if(row.block_id==='N12'&&['ACTUAL_NATIVE_PUBLIC_TAKER_TRADES_BOUNDED','ACTUAL_KUCOIN_TOKEN_TAKER_TRADES_BOUNDED'].includes(row.metric_family)){
+  if(!validateN12NativePublicTrade(row,now)&&!validateN12KucoinTokenTrade(row,now))return null;
   const venue=row.venue==='OKX'?'OKX':'KuCoin',market=row.market==='SPOT'?'спот':'фьючерсы';
-  return{source:`${venue} / исходные ${row.market==='SPOT'?'спотовые':'фьючерсные'} сделки`,label:`Направление последних сделок ${venue}`,value:`${venue} ${market}: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная нативная монета и размер контракта проверены; выборка неполная, общий межбиржевой вывод не подтверждён`};
+  return{source:`${venue} / исходные ${row.market==='SPOT'?'спотовые':'фьючерсные'} сделки`,label:`Направление последних сделок ${venue}`,value:`${venue} ${market}: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; ${row.metric_family==='ACTUAL_KUCOIN_TOKEN_TAKER_TRADES_BOUNDED'?'адрес токена, сеть и размер контракта проверены':'точная нативная монета и размер контракта проверены'}; выборка неполная, общий межбиржевой вывод не подтверждён`};
  }
  if(['N08','N09'].includes(row.block_id)&&['HTX_OPENING_RESTRICTED','HTX_MARGIN_RISK_CONTEXT'].includes(row.metric_family)){
   if(typeof row.execution_open_allowed!=='boolean'||row.execution_open_scope!=='HTX_ISOLATED_MARGIN'||row.source_clock_closed!==true)return null;
@@ -340,7 +341,7 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
  const n12Cross=n12FourHourCrossVenueContext(evidence,contract,now);
  const gate=list(evidence).find(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateGateFuturesTradeSample(row,now));
  const bitget=list(evidence).filter(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateBitgetN12BoundedTradeSample(row,now));
- const nativePublic=list(evidence).filter(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateN12NativePublicTrade(row,now));
+ const nativePublic=list(evidence).filter(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&(validateN12NativePublicTrade(row,now)||validateN12KucoinTokenTrade(row,now)));
  const htxN12Rows=list(evidence).filter(row=>row?.htx_contract===contract&&row?.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family)&&validateEvidenceV2(row,{decision_ts:now}).usable);
  const aligned=(a,b)=>a&&b&&Math.abs(a.observed_ts-b.observed_ts)<=60000;
  const hasAlignedHtxN12=row=>htxN12Rows.some(htx=>aligned(row,htx));

@@ -43,6 +43,7 @@ test('full external route preserves the Gate futures sample under the shared fiv
  const d=await seeded(),end=Math.floor(observed/60000)*60000;
  await writeEvidenceSourceCache(d,{source:'N05_OFFICIAL_FLOW:GATE',asset_key:`TOKEN_FLOW:AAVE-USDT:${end}`,observed_ts:observed,expires_ts:end+300000,payload:{version:'gate-flow-collector-v1-20261010',observed_ts:observed,currencies,spot,pages:[],candles:[]}});
  for(const venue of ['BACKPACK','BITGET','POLONIEX'])await d.prepare('INSERT INTO report2_evidence_source_daily VALUES(?1,?2,16,NULL,?3)').bind('N05_OFFICIAL_FLOW:'+venue,new Date(observed).toISOString().slice(0,10),observed).run();
+ await d.prepare('INSERT INTO report2_evidence_source_daily VALUES(?1,?2,16,NULL,?3)').bind('N12_OFFICIAL_TRADES:KUCOIN',new Date(observed).toISOString().slice(0,10),observed).run();
  let calls=0,grants=0;const result=await collectExternalN05Flow({db:d,contract:'AAVE-USDT',asset_identity:identity,identity_method:'HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS',run_id:'GATE_N12_ROUTED',now:observed,clock:()=>observed,request_admit:()=>{grants++;return{allowed:true};},source_health_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;assert.ok(url.includes('/futures/usdt/'));return new Response(JSON.stringify(url.includes('/contracts/')?actualContract:actualTrades));}});
  assert.equal(result.evidence.filter(row=>row.provider_id==='GATE_FUTURES_TRADES').length,1);assert.equal(result.caller_reserved_requests,2);assert.equal(result.network_calls,2);assert.equal(calls,2);assert.equal(grants,2);d.close();
 });
