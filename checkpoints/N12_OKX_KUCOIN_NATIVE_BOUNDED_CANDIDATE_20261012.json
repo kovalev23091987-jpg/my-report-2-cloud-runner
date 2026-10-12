@@ -1,0 +1,56 @@
+{
+  "schema": "N12_OKX_KUCOIN_NATIVE_BOUNDED_CANDIDATE_20261012_V1",
+  "recorded_utc": "2026-10-12T01:33:00Z",
+  "base_main": "b909927bc0806e00abe687fb2906be113c17c81a",
+  "scope": "N12 only: additional exact native asset spot/futures recent public taker samples from OKX and KuCoin, within existing job admission and five-call N05 caller envelope",
+  "original_saved_pages": [
+    {"venue":"OKX","market":"SPOT","contract":"BTC-USDT","path":"checkpoints/n05-actual-qualification-38049404414/flow-OKX-SPOT-BTC.json.gz","sha256":"9d3df23ed973941ac29f34003698cd28dad52f86399734c5b9b073ddd26bca98","returned_rows":100,"valid_closed_five_minute_rows":100,"latest_original_trade_ts":1791632654924},
+    {"venue":"OKX","market":"FUTURES","contract":"BTC-USDT","path":"checkpoints/n05-actual-qualification-38049404414/flow-OKX-FUTURES-BTC.json.gz","sha256":"978a61c9ec4e3a6993aa4c396e8865b5f9f6ade7d5e428ff20d6c47983076f11","returned_rows":100,"valid_closed_five_minute_rows":100,"latest_original_trade_ts":1791632657726,"contract_size_btc":0.01},
+    {"venue":"KUCOIN","market":"SPOT","contract":"XMR-USDT","path":"checkpoints/n05-actual-qualification-38049404414/flow-KUCOIN-SPOT-XMR.json.gz","sha256":"b76aee11730c9ed1917614291775213a7498e927fed5db2254759d767c8aede6","returned_rows":100,"valid_closed_five_minute_rows":81,"latest_original_trade_ts":1791632660872},
+    {"venue":"KUCOIN","market":"FUTURES","contract":"ETH-USDT","path":"checkpoints/n05-actual-qualification-38049404414/flow-KUCOIN-FUTURES-ETH.json.gz","sha256":"6c09b08364f70d165f1df7755d4d0f72ceacaa98079b5486f77e76d133168d41","returned_rows":100,"valid_closed_five_minute_rows":99,"latest_original_trade_ts":1791632663009,"contract_size_eth":0.01}
+  ],
+  "verified_offline_behavior": {
+    "exact_htx_native_chain_identity_required_before_http": true,
+    "official_live_instrument_and_market_category_required": true,
+    "kucoin_nanosecond_timestamp_digits_preserved": true,
+    "original_trade_id_side_price_size_and_contract_multiplier_checked": true,
+    "closed_five_minute_sample_only": true,
+    "full_window_or_large_trade_coverage_claimed": false,
+    "shared_original_clock_cache_and_provider_backoff": true,
+    "shared_existing_whole_job_and_caller_admission": true,
+    "new_source_daily_cap_each": 16,
+    "provider_minute_units": {"OKX":100,"KUCOIN":20},
+    "score_or_entry_contribution": 0,
+    "one_venue_spot_and_futures_count_as_one_independent_origin": true,
+    "conflicting_directions_make_no_common_directional_conclusion": true,
+    "manual_and_approved_telegram_exact_evidence_ids_proven_offline": true,
+    "catalog_cache_reduced_to_approved_native_instruments": true,
+    "targeted_n12_and_paused_chain_tests": {"pass":59,"skip":1,"fail":0},
+    "frozen_output_contract": {"pass":12,"fail":0}
+  },
+  "post_pr322_natural_readback": {
+    "workflow_run":38186418332,
+    "head":"3514f340e9bc0cbfd898d2df4f3bb1f3a03f4f0b",
+    "artifact_id":11719816759,
+    "artifact_digest":"sha256:3855d9ecef323d79a92c132945f34ce9c6027821e9f9f8601cba0c7357cd25b8",
+    "status":"NATIVE_ADMISSION_REQUIRED",
+    "reason":"ORIGINAL_REFUSAL_NOT_THIS_UTC_DAY",
+    "scheduled_cycle_skipped_for_weekly_liquidation_maintenance":true,
+    "source_http":0,
+    "production_d1":0,
+    "telegram":0,
+    "n12_source_to_report_to_sent_proof":false
+  },
+  "limitations": [
+    "Four saved original pages establish historical utility for BTC, ETH and XMR only; they do not establish current coverage of 104 assets or simultaneous multi-exchange agreement.",
+    "The full local generation suite requires the encrypted assembled runtime and fails before one unrelated supplemental bridge test when it is absent; the cloud N12 workflow will assemble that runtime.",
+    "A full scheduled N12 source-to-manual-to-approved Telegram SENT/message_id proof is still pending, and the first post-PR322 scheduled job ran weekly maintenance instead of a full report.",
+    "Optional public trade requests may be deferred by existing whole-job, five-call, source-day, provider-minute or D1 admission; a structural instrument match is not counted as useful data."
+  ],
+  "provider_http_this_package":0,
+  "production_d1_this_package":0,
+  "telegram_this_package":0,
+  "strategy_weights_threshold_caps_existing_approved_format_changed":false,
+  "n12_complete":false,
+  "next_action":"Run cloud assembled N12/paused-chain/output checks on this exact candidate. If they pass, merge without changing caps, read the next admissible natural report and exact per-asset source/use/SENT receipts. Keep N12 open until accepted production evidence, then discuss N14 before starting it."
+}
