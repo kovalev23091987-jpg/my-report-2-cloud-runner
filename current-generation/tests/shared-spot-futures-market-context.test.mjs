@@ -111,7 +111,7 @@ if(!root){
   assert.equal(overlapping.comparison.quote_relation,'QUOTES_OVERLAP');
   assert.match(overlapping.fact.value,/встречные цены пересекаются/);
   const cautious=buildSpotFuturesJointConclusion({market_context:overlapping,block_context:{facts:[]},contract,observed_ts:T});
-  assert.match(cautious.value,/рыночная разница не подтверждена/);
+  assert.match(cautious.value,/встречные цены пересекаются/);
   assert.doesNotMatch(cautious.value,/фьючерсы дешевле|фьючерсы дороже/);
   const fil=args();fil.spot_component.data.depth_bbo={best_bid:1.1385,best_ask:1.1386,source_ts:T-10_000};fil.futures_component.data.depth_bbo={best_bid:1.135,best_ask:1.1351,source_ts:T-10_500};
   const separated=buildSpotFuturesMarketContext(fil);
@@ -132,7 +132,7 @@ if(!root){
   const lag=buildSpotFuturesMarketContext(delayed);
   assert.equal(lag.status,'CLOSED_COMPARABLE_PRICE_AND_SPREAD');assert.equal(lag.comparison.source_skew_ms,68_000);assert.match(lag.fact.value,/снимки с разницей 68 с/);
   const lagConclusion=buildSpotFuturesJointConclusion({market_context:lag,block_context:{facts:[]},contract,observed_ts:T});
-  assert.match(lagConclusion.value,/рыночная разница не подтверждена/);assert.match(lagConclusion.value,/снимки с разницей 68 с/);
+  assert.match(lagConclusion.value,/встречные цены пересекаются/);assert.match(lagConclusion.value,/снимки с разницей 68 с/);
   const lagCanonical=structuredClone(fixture);lagCanonical.metadata.canonical_runtime_adapter='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
   lagCanonical.metadata.supporting_context={blocks:{spot_futures_market:lag},facts:[lag.fact,lagConclusion]};
   const lagManual=formatManualReport(lagCanonical);assert.equal(lagManual.ok,true);assert.match(lagManual.text,/снимки с разницей 68 с/);
