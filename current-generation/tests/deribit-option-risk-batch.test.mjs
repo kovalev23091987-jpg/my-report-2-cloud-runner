@@ -18,7 +18,7 @@ function normalized(base){const all=selectExactAltOptionInstruments(catalog,base
 test('actual primary quotes yield scoped IV for all five assets, BTC/ETH mixed catalog is explicitly partitioned',()=>{
  for(const base of ['BTC','ETH','SOL','AVAX','XRP']){
   const out=normalized(base);assert.equal(out.status,'CLOSED',base);const row=out.evidence[0],risk=row.option_risk_context;assert.ok(risk,base);assert.ok(risk.mark_iv_median_pct>0);assert.ok(risk.sample_count>=4&&risk.sample_count<=16);assert.ok(risk.call_count>=2&&risk.put_count>=2);assert.equal(risk.settlement_currency,'USDC');
-  const context=consumeBlockResultContext({evidence:out.evidence,contract:base+'-USDT',now});assert.equal(context.facts.length,1);assert.match(context.facts[0].value,/mark IV: медиана/u);assert.equal(context.facts[0].score_contribution,0);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:now}).adjustment,0);
+  const context=consumeBlockResultContext({evidence:out.evidence,contract:base+'-USDT',now});assert.equal(context.facts.length,0,'owner-paused N14 facts stay historical and out of reports');assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:now}).adjustment,0);
   if(['BTC','ETH'].includes(base)){assert.ok(row.scoped_instrument_count<row.open_instrument_count);assert.ok(row.coverage_fraction<1);assert.notEqual(row.coverage_status,'COMPLETE');}
  }
 });
@@ -36,7 +36,7 @@ test('risk consumer recomputes the sample and refuses future clocks, foreign ide
   const risk=structuredClone(row.option_risk_context);mutate(risk);assert.equal(deriveDeribitOptionRisk({...risk,observed_ts:now}),null);
   const context=consumeBlockResultContext({evidence:[{...row,option_risk_context:risk}],contract:'SOL-USDT',now});assert.doesNotMatch(context.facts[0]?.value||'',/mark IV: медиана/u);
  }
- const mismatch=structuredClone(row);mismatch.option_risk_context.mark_iv_median_pct+=10;assert.doesNotMatch(consumeBlockResultContext({evidence:[mismatch],contract:'SOL-USDT',now}).facts[0].value,/mark IV: медиана/u);
+ const mismatch=structuredClone(row);mismatch.option_risk_context.mark_iv_median_pct+=10;assert.equal(consumeBlockResultContext({evidence:[mismatch],contract:'SOL-USDT',now}).facts.length,0);
 });
 test('missing volume and OI stay unknown; mixed settlements and stale quote risk do not become complete',()=>{
  const all=selectExactAltOptionInstruments(catalog,'BTC');assert.equal(normalizeDeribitAltOptions({contract:'BTC-USDT',instruments:all,summary_payload:summary,observed_ts:now}).status,'MIXED_SETTLEMENT_NOT_CLOSED');

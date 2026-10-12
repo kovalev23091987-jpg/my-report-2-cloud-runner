@@ -81,7 +81,7 @@ test('all supported native networks pass through the same production sector plan
 test('all 15 blocks and market routes remain assigned for arbitrary HTX futures',()=>{
  assert.equal(Object.keys(BLOCK_SOURCE_REQUIREMENTS).length,15);
  for(const contract of ['BTC-USDT','BR-USDT','OTHER-USDT','PEPE-USDT']){
-  const plan=planCandidateEvidenceRoutes({contract});for(const name of ['LARGE_TRADES','DERIBIT'])assert.ok(plan.routes.some(r=>r.name===name));assert.equal(plan.nativeSectorEligible,false);
+  const plan=planCandidateEvidenceRoutes({contract});for(const name of ['LARGE_TRADES'])assert.ok(plan.routes.some(r=>r.name===name));assert.equal(plan.routes.some(r=>r.name==='DERIBIT'),false);assert.equal(plan.nativeSectorEligible,false);
  }
  for(const chain of ['ethereum','bsc','arbitrum','base','polygon','optimism','avalanche','solana']){
   const identity={chain,contract_or_mint:chain==='solana'?'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn':address},plan=planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity});
