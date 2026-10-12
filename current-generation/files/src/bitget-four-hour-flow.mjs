@@ -1,12 +1,12 @@
 // Official fixed-window pagination. Listing/HTTP200 never establishes complete flow.
 export const BITGET_FLOW_VERSION='bitget-four-hour-flow-v1-20261010';
-const tokenChains={ERC20:'ethereum',SOL:'solana',BEP20:'bsc',ArbitrumOne:'arbitrum',Optimism:'optimism',BASE:'base','AVAXC-Chain':'avalanche',Polygon:'polygon'};
-const nativeChains={bitcoin:'BTC',ethereum:'ETH',solana:'SOL',bsc:'BEP20',avalanche:'AVAXC-Chain',cardano:'ADA',xrp:'XRP',stellar:'XLM',polkadot:'DOT',dogecoin:'DOGE',litecoin:'LTC',near:'NEAR',sui:'SUI',aptos:'APT',hedera:'HBAR',tron:'TRX',cosmos:'ATOM'};
+const tokenChains={ERC20:'ethereum',SOL:'solana',BEP20:'bsc',TRC20:'tron',Robinhood:'robinhood-chain',ArbitrumOne:'arbitrum',Optimism:'optimism',BASE:'base','AVAXC-Chain':'avalanche',Polygon:'polygon'};
+const nativeChains={bitcoin:'BTC',ethereum:'ETH',solana:'SOL',bsc:'BEP20',avalanche:'AVAXC-Chain',cardano:'ADA',xrp:'XRP',stellar:'XLM',polkadot:'DOT',dogecoin:'DOGE',litecoin:'LTC',near:'NEAR',sui:'SUI',aptos:'APT',hedera:'HBAR',tron:'TRX',cosmos:'ATOM',chiliz:'CAP20','internet-computer':'ICP',bittensor:'TAO',celestia:'Celestia'};
 export function exactBitgetBinding({contract,identity,coins,instrument,market}={}){
  const base=String(contract||'').replace(/-USDT$/,'');
  if(!identity||contract!==base+'-USDT'||!['SPOT','FUTURES'].includes(market)||instrument?.baseCoin!==base||instrument.quoteCoin!=='USDT'||instrument.symbol!==base+'USDT'||(market==='SPOT'?instrument.status!=='online':instrument.symbolStatus!=='normal'||instrument.symbolType!=='perpetual'||instrument.isRwa==='YES'))return false;
  const rows=coins?.code==='00000'&&Array.isArray(coins.data)?coins.data.filter(r=>r.coin===base):[];if(rows.length!==1)return false;
- const matches=(rows[0].chains||[]).filter(r=>identity.asset_kind==='NATIVE'?r.chain===nativeChains[identity.chain]&&!r.contractAddress&&identity.native_asset_id===identity.chain+':mainnet':tokenChains[r.chain]===identity.chain&&typeof r.contractAddress==='string'&&(identity.chain==='solana'?r.contractAddress===identity.contract_or_mint:r.contractAddress.toLowerCase()===String(identity.contract_or_mint).toLowerCase()));
+ const matches=(rows[0].chains||[]).filter(r=>identity.asset_kind==='NATIVE'?r.chain===nativeChains[identity.chain]&&!r.contractAddress&&identity.native_asset_id===identity.chain+':mainnet':tokenChains[r.chain]===identity.chain&&typeof r.contractAddress==='string'&&(['solana','tron'].includes(identity.chain)?r.contractAddress===identity.contract_or_mint:r.contractAddress.toLowerCase()===String(identity.contract_or_mint).toLowerCase()));
  return matches.length===1;
 }
 const dec=v=>{if(typeof v!=='string'||!/^\d+(\.\d+)?$/.test(v))throw Error('INVALID_DECIMAL');const parts=v.split('.'),scale=(parts[1]||'').length;if(scale>18)throw Error('DECIMAL_PRECISION_UNSUPPORTED');return{n:BigInt(parts.join('')),scale};};

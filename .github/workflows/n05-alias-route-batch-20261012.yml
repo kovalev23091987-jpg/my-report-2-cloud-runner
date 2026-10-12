@@ -1,0 +1,62 @@
+name: N05 exact alias route and same-run spot batch
+on:
+  push:
+    branches: [codex/active-market-coverage-20261012]
+    paths:
+      - 'current-generation/**'
+      - 'tools/acquire-n05-alias-route-batch-20261012.mjs'
+      - '.github/workflows/n05-alias-route-batch-20261012.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-and-acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate exact original metadata and same-run spot context
+        run: |
+          node --check tools/acquire-n05-alias-route-batch-20261012.mjs
+          node tools/acquire-n05-alias-route-batch-20261012.mjs --plan > alias-route-plan.json
+          node --test current-generation/tests/active-market-coverage-expansion.test.mjs current-generation/tests/n05-broad-exchanges.test.mjs current-generation/tests/n10-primary-pipeline.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/n12-bitget-bounded-reuse.test.mjs current-generation/tests/joint-spot-futures-flow.test.mjs > alias-route-tests.tap
+      - name: Assemble and validate current runtime before source calls
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+          REPORT2_TEST_RUNTIME: runtime
+          REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+          REPORT2_JOINT_REPAIR_RUNTIME_ROOT: runtime
+        run: |
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > alias-route-assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          node current-generation/validate.mjs > alias-route-generation.log 2>&1
+          node runner/current-runtime-binding.mjs --runtime runtime > alias-route-binding.json
+      - name: Acquire only with current main, owned lease and all budget guards
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: 4e6d70920a9aee4c71f98ab9e33e5ace521b3345
+          REPORT2_EXPECTED_LEASE_OWNER: CODEX:ACTIVE_COVERAGE_EXPANSION:1791804106755
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/acquire-n05-alias-route-batch-20261012.mjs
+      - name: Collect validation logs
+        if: always()
+        run: |
+          mkdir -p audit-output/n05-alias-route-batch
+          for f in alias-route-plan.json alias-route-tests.tap alias-route-assembly.json alias-route-generation.log alias-route-binding.json; do
+            if test -f "$f"; then cp "$f" audit-output/n05-alias-route-batch/; fi
+          done
+          if test -f alias-route-generation.log; then tail -80 alias-route-generation.log; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n05-alias-route-batch-${{ github.run_id }}
+          path: audit-output/n05-alias-route-batch/
+          retention-days: 30
