@@ -1,6 +1,6 @@
 {
   "schema": "N14_OWNER_PAUSE_20261012_V1",
-  "recorded_utc": "2026-10-12T13:37:41.944229+00:00",
+  "recorded_utc": "2026-10-12T13:44:03.949563+00:00",
   "owner_instruction": "Pause this block and move to the next; N15 discussion only",
   "effective_block": "N14",
   "status": "N14_OWNER_PAUSED_EXCLUDED_N15_DISCUSSION_PENDING",
@@ -43,7 +43,22 @@
     "local_top_level_command": "node --test $(rg --files current-generation/tests -g '*.test.mjs' | rg '^current-generation/tests/[^/]+\\.test\\.mjs$' | rg -v 'supplemental-supporting-bridge.test.mjs')",
     "local_result": "1412 tests; 1408 pass; 4 skip; 0 fail",
     "local_unassembled_test_limit": "supplemental-supporting-bridge.test.mjs requires generated runtime absent from raw checkout; early-evidence-repair/repair.test.mjs likewise. Cloud assembled checks pending.",
-    "cloud_pr_checks": "PENDING"
+    "cloud_pr_checks": [
+      {
+        "run_id": 38257414080,
+        "status": "SUCCESS",
+        "head": "e63356b68a6a0077690cd224885dab3c21f2aed5",
+        "job": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38257414080/job/114838940345"
+      },
+      {
+        "run_id": 38257414049,
+        "status": "SUCCESS",
+        "head": "e63356b68a6a0077690cd224885dab3c21f2aed5",
+        "job": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38257414049/job/114838940542"
+      }
+    ],
+    "merged_main": "b94a5109a9bf5d945fb4bc9cdc47d1f5327a80b7",
+    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/336"
   },
   "next_action": "Discuss N15 sector/peer/relative-strength block with the owner and agree scope before any N15 implementation. N14 is owner-paused across collection, score, denominators, saved rows, manual and Telegram until explicit restoration; its historical PR #335 facts remain archived. Shared sources remain available to active blocks. N12 and shared N05/N10/N11/N12 coverage and 104-to-24-to-2 joint verification remain deferred, not complete."
 }
