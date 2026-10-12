@@ -33,6 +33,16 @@ test('opposite HTX markets stay separate and do not create a common directional 
  const tampered=structuredClone(joint);tampered.components[1].imbalance=.5;
  assert.equal(reviewBoundedMoneyFlow({...args,evidence:[tampered]}).receipts.length,0);
 });
+test('two fresh trade samples separated by a minute stay available without a joint direction',()=>{
+ const f=future();f.data[0].data[0].ts=now-58_000;
+ const r=reconcileN12HtxMarkets({contract,futures:normalizeHtxLargeTrades(f,{contract,observed_ts:now}),spot_payload:spot(),observed_ts:now});
+ assert.equal(r.status,'CLOSED_BOUNDED_ASYNC_MARKETS');assert.equal(r.summary.source_skew_ms,56_000);
+ assert.equal(r.evidence.length,2);assert.deepEqual(new Set(r.evidence.map(e=>e.provider_id)),new Set(['HTX_LARGE_TRADES','HTX_SPOT_TRADES']));
+ assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:now}).adjustment,0);
+ assert.equal(r.evidence.some(e=>e.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET'),false);
+ const facts=consumeBlockResultContext({contract,now,evidence:r.evidence}).facts.filter(x=>x.block_id==='N12');
+ assert.equal(facts.length,1);assert.match(facts[0].value,/фьючерсы.*спот.*56 с/);assert.match(facts[0].value,/общего направления по двум рынкам не устанавливаем/);
+});
 test('spot-only is labeled as one market and not independent venue agreement',()=>{
  const r=reconcileN12HtxMarkets({contract,futures:{status:'FUTURES_RESPONSE_UNAVAILABLE',evidence:[]},spot_payload:spot(),observed_ts:now});
  assert.equal(r.status,'CLOSED_BOUNDED_PARTIAL_MARKET');assert.equal(r.summary.independent_venue_count,1);assert.equal(r.evidence[0].market,'SPOT');

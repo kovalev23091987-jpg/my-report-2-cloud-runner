@@ -47,7 +47,7 @@ const arr=v=>Array.isArray(v)?v:[];
 const validState=v=>['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED','WAIT_FOR_TRIGGER','OBSERVE','REJECTED'].includes(text(v));
 const firstFinite=(...values)=>{for(const v of values){const n=finite(v);if(n!==null)return n;}return null;};
 const SPOT_FUTURES_CONTEXT_MAX_AGE_MS=5*60_000;
-const SPOT_FUTURES_CONTEXT_MAX_SKEW_MS=60_000;
+const SPOT_FUTURES_CONTEXT_MAX_SKEW_MS=30_000;
 function exactDepthMarket(component,contract,market,now){
  const data=component?.data,book=data?.depth_bbo;
  if(component?.execution_status!=='FULFILLED'||data?.health?.depth!==true||data?.market!==market)return null;
@@ -77,7 +77,11 @@ export function buildSpotFuturesMarketContext({contract,spot_component,futures_c
   return{...base,status:spot?'SPOT_ONLY':futures?'FUTURES_ONLY':'NO_FRESH_EXACT_DEPTH_PAIR',spot,futures,comparison:null,fact};
  }
  const skew=Math.abs(spot.source_ts-futures.source_ts);
- if(skew>SPOT_FUTURES_CONTEXT_MAX_SKEW_MS)return{...base,status:'SOURCE_CLOCKS_NOT_ALIGNED',spot,futures,source_skew_ms:skew,comparison:null,fact:null};
+ if(skew>SPOT_FUTURES_CONTEXT_MAX_SKEW_MS){
+  const value=`спот ${Number(spot.mid.toPrecision(8))} USDT, фьючерсы ${Number(futures.mid.toPrecision(8))} USDT; снимки разделяют ${Math.ceil(skew/1000)} с, процентную разницу цен не рассчитываем; одна биржа`;
+  const fact={source:'HTX',label:'Разновременные котировки спота и фьючерсов',value,unit:'',field:'SPOT_FUTURES_ASYNC_MARKET_CONTEXT',source_ts:Math.min(spot.source_ts,futures.source_ts),observed_ts:now,score_contribution:0,directional_vote:false,entry_authorized:false,telegram_eligible:false};
+  return{...base,status:'SOURCE_CLOCKS_NOT_ALIGNED',spot,futures,source_skew_ms:skew,comparison:null,fact};
+ }
  const basisPct=(futures.mid/spot.mid-1)*100;
  const comparison={futures_over_spot_price_pct:basisPct,spot_spread_bps:spot.spread_bps,futures_spread_bps:futures.spread_bps,source_skew_ms:skew};
  const signed=basisPct>=0?'+':'';
@@ -92,7 +96,7 @@ export function buildSpotFuturesJointConclusion({market_context,block_context,ev
  const jointTrade=trade?.independent_venue_count===1&&arr(trade?.components).length===2&&trade.components[0].venue==='HTX'&&trade.components[0].market==='FUTURES'&&trade.components[1].venue==='HTX'&&trade.components[1].market==='SPOT'&&['BOUNDED_MULTIMARKET_AGREEMENT','BOUNDED_MULTIMARKET_DISAGREEMENT'].includes(trade.coverage_status)&&trade.observed_ts===now&&finite(trade.source_ts)!==null&&trade.source_ts<=now?trade:null;
  const price=market.status==='CLOSED_COMPARABLE_PRICE_AND_SPREAD'&&market.comparison&&market.spot&&market.futures
   ?`фьючерсы ${market.comparison.futures_over_spot_price_pct>=0?'дороже':'дешевле'} спота на ${Math.abs(market.comparison.futures_over_spot_price_pct).toFixed(2).replace('.',',')}%`
-  :market.status==='SOURCE_CLOCKS_NOT_ALIGNED'?'котировки рынков не сопоставимы по времени':`свежая котировка есть только для ${market.spot?'спота':'фьючерсов'}`;
+  :market.status==='SOURCE_CLOCKS_NOT_ALIGNED'?`спот ${Number(market.spot.mid.toPrecision(8))} USDT, фьючерсы ${Number(market.futures.mid.toPrecision(8))} USDT получены с разницей ${Math.ceil(market.source_skew_ms/1000)} с; ценовая разница не рассчитана`:`свежая котировка есть только для ${market.spot?'спота':'фьючерсов'}`;
  const trades=jointTrade?.coverage_status==='BOUNDED_MULTIMARKET_AGREEMENT'
   ?'последние сделки сходятся только в неполной выборке'
   :jointTrade?.coverage_status==='BOUNDED_MULTIMARKET_DISAGREEMENT'

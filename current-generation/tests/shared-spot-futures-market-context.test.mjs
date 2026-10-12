@@ -117,7 +117,13 @@ if(!root){
   for(const [change,expected] of changes){const input=args();change(input);const receipt=buildSpotFuturesMarketContext(input);assert.equal(receipt.status,expected);assert.equal(receipt.comparison,null);assert.match(receipt.fact.value,/котировка не подтверждена/);assert.equal(receipt.fact.score_contribution,0);}
   const skewed=args();skewed.spot_component.data.depth_bbo.source_ts=T-80_000;
   const skew=buildSpotFuturesMarketContext(skewed);
-  assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.equal(skew.fact,null);
+  assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.match(skew.fact.value,/снимки разделяют 70 с/);assert.match(skew.fact.value,/процентную разницу цен не рассчитываем/);
+  const asyncConclusion=buildSpotFuturesJointConclusion({market_context:skew,block_context:{facts:[]},contract,observed_ts:T});
+  assert.match(asyncConclusion.value,/спот.*фьючерсы.*70 с/);assert.doesNotMatch(asyncConclusion.value,/дороже|дешевле/);
+  const asyncCanonical=structuredClone(fixture);asyncCanonical.metadata.canonical_runtime_adapter='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
+  asyncCanonical.metadata.supporting_context={blocks:{spot_futures_market:skew},facts:[skew.fact,asyncConclusion]};
+  const asyncManual=formatManualReport(asyncCanonical);assert.equal(asyncManual.ok,true);assert.match(asyncManual.text,/Разновременные котировки спота и фьючерсов/);assert.match(asyncManual.text,/спот.*фьючерсы.*70 с/);
+  const asyncTelegram=plainSpotFuturesJointConclusion(asyncCanonical);assert.match(asyncTelegram,/спот.*фьючерсы.*70 с/);
   const noSpot=buildSpotFuturesMarketContext({...args(),spot_component:null});
   assert.equal(noSpot.status,'FUTURES_ONLY');assert.match(noSpot.fact.value,/спотовая котировка не подтверждена/);
   const bounded=buildSpotFuturesJointConclusion({market_context:noSpot,block_context:{facts:[]},contract,observed_ts:T});

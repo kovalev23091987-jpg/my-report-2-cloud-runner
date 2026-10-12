@@ -1,0 +1,60 @@
+{
+  "schema": "LIQ_SPOT_FUTURES_CLOCK_ALIGNMENT_20261012_V1",
+  "recorded_utc": "2026-10-12T19:03:18.383825+00:00",
+  "basis_main": "460203b25db21cb929772a2a1259a408c1b790a4",
+  "status": "LOCAL_IMPLEMENTED_CLOUD_ASSEMBLY_AND_NATURAL_ARCHIVE_PENDING",
+  "owner_instruction": "Keep both HTX spot and futures in each applicable coin conclusion, synchronize their snapshot times or keep the gap very small, apply across active blocks; preserve original source clocks and paused blocks.",
+  "observed_old_archive": {
+    "hour_bucket": 1791828000000,
+    "futures_source_market_ts": 1791829555890,
+    "spot_source_ts": 1791830157450,
+    "source_gap_ms": 601560,
+    "futures_qualified_assets": 105,
+    "spot_present_assets": 90,
+    "spot_quote_checked_assets": 88,
+    "meaning": "both retained, no synchronous price spread"
+  },
+  "official_futures_batch": {
+    "url": "https://api.hbdm.com/linear-swap-ex/market/detail/batch_merged",
+    "documentation": "https://huobiapi.github.io/docs/usdt_swap/v1/en/#general-get-a-batch-of-market-data-overview",
+    "live_probe_ts": 1791831360079,
+    "http_status": 200,
+    "bytes": 115527,
+    "returned_contracts": 403,
+    "sample_exact": [
+      "BTC-USDT",
+      "FIL-USDT",
+      "STRK-USDT"
+    ],
+    "public_no_key": true,
+    "one_additional_archive_call_per_hour": true
+  },
+  "implementation": {
+    "archive": "Spot and futures batch tickers fetched concurrently in the same hourly Worker invocation; separate original clocks and prices retained; aligned pair requires <=30000 ms batch and per-contract source skew. Previous futures collector snapshot remains immutable. Legacy ten-minute records read as BOTH_ASYNC, both prices present with comparison_usable=false.",
+    "report": "Shared HTX spot/futures context uses <=30000 ms for a price comparison. If both fresh quotes are farther apart, both prices and gap remain visible in manual and Telegram conclusion without numeric price spread.",
+    "n12": "Same-run recent trade sample agreement requires <=30000 ms between original latest trade clocks. If farther apart, both factual samples remain in one context line, no joint directional signal, no score contribution.",
+    "liq": "Spot price reference to actual future levels requires <=30000 ms; spot never becomes a liquidation level.",
+    "unchanged": "N05 exact four-hour closed windows; N10 same closed 15-minute candle window; N11 futures-only exemption; N04 on-chain facts and N15 sector facts do not acquire false spot/futures consensus."
+  },
+  "limits": {
+    "archive_http_per_hour": 2,
+    "archive_http_per_utc_day_max": 48,
+    "full_report_http_d1_cap_unchanged": 164,
+    "archive_free_d1_guard_bytes": 400000000,
+    "archive_payload_max_bytes": 100000,
+    "no_new_external_spot_pairs": true
+  },
+  "local_proof": {
+    "free_history_tests": "14 pass including old 10-minute fallback and new exact pair",
+    "n12_and_liq_target_tests": "25 pass",
+    "output_contract_freeze": "12 pass, golden report bytes unchanged",
+    "full_local_validation": "1424 pass, one frozen hash corrected afterward, one assembled-runtime-only test cannot run without decrypted runtime"
+  },
+  "pending": [
+    "Exact cloud assembled validation of all changed runtime paths",
+    "Deploy new free-history Worker on exact main with lease and fence gate",
+    "Natural hourly D1 readback with actual source skew and useful per-contract paired quotes",
+    "Natural full report plus Telegram/manual exact source-to-conclusion evidence after corrected head",
+    "LIQ future-level natural use and outcome calibration remain open"
+  ]
+}

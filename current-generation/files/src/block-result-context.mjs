@@ -355,7 +355,7 @@ function n12FourHourCrossVenueContext(evidence,contract,now){
  return null;
 }
 export function consumeBlockResultContext({evidence=[],contract,now}={}){
- const facts=[],seen=new Set(),pairedNativeIds=new Set();
+ const facts=[],seen=new Set(),pairedNativeIds=new Set(),pairedHtxAsyncIds=new Set();
  evidence=list(evidence).filter(row=>!PAUSED_BLOCKS[row?.block_id]);
  if(!/^[^\s-]+-USDT$/.test(String(contract))||number(now)===null)return{status:'NOT_CLOSED',facts,internal_only:true};
  const n12Cross=n12FourHourCrossVenueContext(evidence,contract,now);
@@ -367,7 +367,7 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
  const hasAlignedHtxN12=row=>htxN12Rows.some(htx=>aligned(row,htx));
  for(const row of list(evidence)){
   if(PAUSED_BLOCKS[row?.block_id]||row?.htx_contract!==contract||!validateEvidenceV2(row,{decision_ts:now}).usable||number(row.observed_ts)===null||row.source_ts>row.observed_ts||row.observed_ts>now)continue;
-  if(pairedNativeIds.has(row.evidence_id))continue;
+  if(pairedNativeIds.has(row.evidence_id)||pairedHtxAsyncIds.has(row.evidence_id))continue;
   if((row===gate||bitget.includes(row)||nativePublic.includes(row))&&hasAlignedHtxN12(row))continue;
   let fact=describe(row,now);const root=evidenceDedupKey(row);
   if(!fact||seen.has(root))continue;
@@ -375,6 +375,13 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
   const gateAligned=htxN12&&aligned(gate,row),bitgetAligned=htxN12?bitget.filter(sample=>aligned(sample,row)):[],nativeAligned=htxN12?nativePublic.filter(sample=>aligned(sample,row)):[];
   const nativePair=nativePublic.includes(row)&&!hasAlignedHtxN12(row)?nativePublic.find(sample=>sample!==row&&sample.venue===row.venue&&sample.market!==row.market&&aligned(sample,row)):null;
   const related=[...(htxN12&&n12Cross?[n12Cross.row.evidence_id]:[]),...(gateAligned?[gate.evidence_id]:[]),...bitgetAligned.map(sample=>sample.evidence_id),...nativeAligned.map(sample=>sample.evidence_id),...(nativePair?[nativePair.evidence_id]:[])];
+  const asyncHtxPair=row.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'&&['HTX_LARGE_TRADES','HTX_SPOT_TRADES'].includes(row.provider_id)?htxN12Rows.find(sample=>sample!==row&&sample.metric_family===row.metric_family&&sample.provider_id===(row.provider_id==='HTX_LARGE_TRADES'?'HTX_SPOT_TRADES':'HTX_LARGE_TRADES')&&sample.observed_ts===row.observed_ts&&Math.abs(sample.source_ts-row.source_ts)>30_000):null;
+  if(asyncHtxPair){
+   const future=row.provider_id==='HTX_LARGE_TRADES'?row:asyncHtxPair,spot=row.provider_id==='HTX_SPOT_TRADES'?row:asyncHtxPair;
+   const phrase=(sample,name)=>`${name}: ${sample.valid_recent_rows} сделок, покупки ${fmt(sample.buy_quote_turnover_usdt)}, продажи ${fmt(sample.sell_quote_turnover_usdt)} USDT`;
+   fact={source:'HTX / разновременные спот и фьючерсы',label:'Направление последних сделок HTX',value:`${phrase(future,'фьючерсы')}; ${phrase(spot,'спот')}; последние сделки разделяют ${Math.ceil(Math.abs(future.source_ts-spot.source_ts)/1000)} с, общего направления по двум рынкам не устанавливаем; одна биржа, выборки неполные`};
+   related.push(asyncHtxPair.evidence_id);pairedHtxAsyncIds.add(asyncHtxPair.evidence_id);
+  }
   if(nativePair){
    const same=Math.abs(row.taker_imbalance)>=.05&&Math.abs(nativePair.taker_imbalance)>=.05&&Math.sign(row.taker_imbalance)===Math.sign(nativePair.taker_imbalance),venue=row.venue==='OKX'?'OKX':'KuCoin';
    fact={...fact,source:`${venue} / исходные спотовые и фьючерсные сделки`,value:`${fact.value}; ${venue} ${nativePair.market==='SPOT'?'спот':'фьючерсы'}: ${nativePair.valid_recent_rows} сделок, покупки ${fmt(nativePair.buy_quote_turnover_usdt)}, продажи ${fmt(nativePair.sell_quote_turnover_usdt)} USDT; ${same?'направления двух рынков совпадают лишь в этих неполных выборках':'общего направления по двум неполным выборкам нет'}; одна биржа — один независимый первоисточник`};

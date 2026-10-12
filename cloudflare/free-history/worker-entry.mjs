@@ -13,7 +13,7 @@ export default {
       try { results.push({lane,...await run()}); }
       catch(error) { results.push({lane,status:'ERROR',reason:String(error?.message??error).slice(0,160)}); }
     }
-    const status=results.some(r=>r.status==='ERROR')?'ERROR':results.some(r=>r.status==='SOURCE_MISSING'||r.status==='FREE_STORAGE_GUARD'||r.status==='SOURCE_DAILY_CAP')?'PARTIAL':'CLOSED';
+    const status=results.some(r=>r.status==='ERROR')?'ERROR':results.some(r=>r.status==='SOURCE_MISSING'||r.status==='FREE_STORAGE_GUARD'||r.status==='SOURCE_DAILY_CAP'||r.status==='PAIR_PARTIAL')?'PARTIAL':'CLOSED';
     const outcomes_json=JSON.stringify({scheduled_ts,results,report_triggered:false,telegram:false});
     await env.ARCHIVE_DB.prepare('DELETE FROM report2_archive_run_v1 WHERE scheduled_ts IN (SELECT scheduled_ts FROM report2_archive_run_v1 WHERE scheduled_ts<?1 ORDER BY scheduled_ts LIMIT 8)').bind(scheduled_ts-270*24*3_600_000).run();
     await env.ARCHIVE_DB.prepare('INSERT INTO report2_archive_run_v1(scheduled_ts,status,outcomes_json,created_ts) VALUES(?1,?2,?3,?4) ON CONFLICT(scheduled_ts) DO NOTHING').bind(scheduled_ts,status,outcomes_json,Date.now()).run();

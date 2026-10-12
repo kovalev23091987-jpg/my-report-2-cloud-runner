@@ -33,7 +33,7 @@ test('missing level, stale or foreign markets, future clocks and forged stored r
  ];
  for(const change of variants)assert.equal(buildLiquidationSpotReference({contract,market_context:market(),liquidations:liquidations(),observed_ts:T,...change}).status,'NOT_CLOSED');
  const liq=liquidations();liq.spot_reference=buildLiquidationSpotReference({contract,market_context:market(),liquidations:liq,observed_ts:T});
- for(const mutate of [x=>x.spot_reference.contract='ETH-USDT',x=>x.spot_reference.futures_over_spot_pct=10,x=>x.observed_ts=T+301_000,x=>x.above=[]]){
+ for(const mutate of [x=>x.spot_reference.contract='ETH-USDT',x=>x.spot_reference.futures_over_spot_pct=10,x=>x.spot_reference.source_skew_ms=600_000,x=>x.observed_ts=T+301_000,x=>x.above=[]]){
   const bad=structuredClone(liq);mutate(bad);assert.equal(liquidationSpotReferenceLine(bad),null);
  }
 });

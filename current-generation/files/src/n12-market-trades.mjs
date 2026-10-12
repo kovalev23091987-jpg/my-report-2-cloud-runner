@@ -1,9 +1,10 @@
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 
-const WINDOW=5*60_000,TTL=60_000,LIMIT=2000;
+const WINDOW=5*60_000,TTL=60_000,LIMIT=2000,MAX_MARKET_SAMPLE_SKEW=30_000;
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const id=v=>typeof v==='string'&&/^\d{1,32}$/.test(v)?v:typeof v==='number'&&Number.isSafeInteger(v)&&v>0?String(v):null;
 const sample=r=>r?.evidence?.find(e=>e.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE');
+const asyncContext=row=>buildEvidenceV2({provider_id:row.provider_id,upstream_id:row.upstream_id,asset_id:row.asset_id,htx_contract:row.htx_contract,block_id:'N12',metric_family:row.metric_family,origin_event_id:row.origin_event_id,dependency_group:row.dependency_group,source_ts:row.source_ts,observed_ts:row.observed_ts,first_known_ts:row.first_known_ts,expires_at:row.expires_at,coverage_status:'BOUNDED_ASYNC_SINGLE_MARKET',coverage_fraction:0,directional_strength:null,risk_strength:null,unit:'USDT',value:row.value,extra:{market:row.provider_id==='HTX_SPOT_TRADES'?'SPOT':'FUTURES',physical_root_key:row.physical_root_key,valid_recent_rows:row.valid_recent_rows,buy_quote_turnover_usdt:row.buy_quote_turnover_usdt,sell_quote_turnover_usdt:row.sell_quote_turnover_usdt,whole_window_coverage_proven:false,entry_eligible:false,is_htx_price:false,htx_execution_target_eligible:false,direction_policy:'ASYNC_MARKET_CONTEXT_ONLY',score_contribution:0}});
 
 export function normalizeHtxSpotTradeSample(payload,{contract,observed_ts=Date.now()}={}){
  const symbol=String(contract||'').replace(/-USDT$/,'').toLowerCase()+'usdt';
@@ -23,12 +24,14 @@ export function normalizeHtxSpotTradeSample(payload,{contract,observed_ts=Date.n
 export function reconcileN12HtxMarkets({contract,futures,spot_payload,observed_ts=Date.now()}={}){
  const spot=spot_payload?normalizeHtxSpotTradeSample(spot_payload,{contract,observed_ts}):{status:'SPOT_RESPONSE_UNAVAILABLE',evidence:[],summary:null},f=sample(futures),s=sample(spot);
  const evidence=[...(futures?.evidence||[]).filter(row=>row!==f),...(spot.evidence||[]).filter(row=>row!==s)];let agreement=null;
- if(f&&s){
+ const source_skew_ms=f&&s?Math.abs(f.source_ts-s.source_ts):null;
+ if(f&&s&&source_skew_ms<=MAX_MARKET_SAMPLE_SKEW){
   const fi=Number(f.directional_strength),si=Number(s.directional_strength);
   agreement=Math.abs(fi)>=.05&&Math.abs(si)>=.05&&Math.sign(fi)===Math.sign(si)&&Math.abs(Math.abs(fi)-Math.abs(si))<=.15;
   const root=`HTX_SPOT_FUTURES_TRADE_SAMPLE:${contract}:${f.origin_event_id}:${s.origin_event_id}`,source_ts=Math.min(f.source_ts,s.source_ts),direction=agreement?Math.sign(fi)*Math.min(Math.abs(fi),Math.abs(si)):null;
   evidence.push(buildEvidenceV2({provider_id:'HTX_SPOT_FUTURES_TRADES',upstream_id:'HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS',asset_id:`HTX:${contract}`,htx_contract:contract,block_id:'N12',metric_family:'ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET',origin_event_id:root,dependency_group:root,source_ts,observed_ts,expires_at:Math.min(f.expires_at,s.expires_at),coverage_status:agreement?'BOUNDED_MULTIMARKET_AGREEMENT':'BOUNDED_MULTIMARKET_DISAGREEMENT',coverage_fraction:agreement?Math.min(f.coverage_fraction,s.coverage_fraction):0,directional_strength:direction,unit:'RATIO',value:direction,extra:{physical_root_key:root,components:[{venue:'HTX',market:'FUTURES',buy_quote_turnover_usdt:f.buy_quote_turnover_usdt,sell_quote_turnover_usdt:f.sell_quote_turnover_usdt,valid_recent_rows:f.valid_recent_rows,imbalance:fi,source_ts:f.source_ts},{venue:'HTX',market:'SPOT',buy_quote_turnover_usdt:s.buy_quote_turnover_usdt,sell_quote_turnover_usdt:s.sell_quote_turnover_usdt,valid_recent_rows:s.valid_recent_rows,imbalance:si,source_ts:s.source_ts}],independent_venue_count:1,whole_window_coverage_proven:false,entry_eligible:false,is_htx_price:false,htx_execution_target_eligible:false,agreement_policy:'SAME_SIGN_ABS_IMBALANCE_GTE_0_05_ABS_STRENGTH_SPREAD_LTE_0_15'}}));
- }else evidence.push(...(f?[f]:[]),...(s?[s]:[]));
+ }else if(f&&s) evidence.push(asyncContext(f),asyncContext(s));
+ else evidence.push(...(f?[f]:[]),...(s?[s]:[]));
  const checked=[futures,spot].some(r=>String(r?.status||'').startsWith('CLOSED'));
- return{status:f&&s?(agreement?'CLOSED_BOUNDED_MULTIMARKET_AGREEMENT':'CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT'):checked?'CLOSED_BOUNDED_PARTIAL_MARKET':'EXACT_FRESH_TRADE_BATCH_REQUIRED',evidence,summary:{futures:futures?.summary||null,spot:spot.summary,agreement,independent_venue_count:checked?1:0},receipts:[{route:'HTX_FUTURES_SAME_RUN',status:futures?.status||'UNAVAILABLE'},{route:'HTX_SPOT_SAME_RUN',status:spot.status}],network_calls:0,check_completed:checked,cache_status:'SAME_RUN_REUSED',internal_only:true};
+ return{status:f&&s?(source_skew_ms>MAX_MARKET_SAMPLE_SKEW?'CLOSED_BOUNDED_ASYNC_MARKETS':agreement?'CLOSED_BOUNDED_MULTIMARKET_AGREEMENT':'CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT'):checked?'CLOSED_BOUNDED_PARTIAL_MARKET':'EXACT_FRESH_TRADE_BATCH_REQUIRED',evidence,summary:{futures:futures?.summary||null,spot:spot.summary,agreement,source_skew_ms,max_joint_skew_ms:MAX_MARKET_SAMPLE_SKEW,independent_venue_count:checked?1:0},receipts:[{route:'HTX_FUTURES_SAME_RUN',status:futures?.status||'UNAVAILABLE'},{route:'HTX_SPOT_SAME_RUN',status:spot.status}],network_calls:0,check_completed:checked,cache_status:'SAME_RUN_REUSED',internal_only:true};
 }
