@@ -11737,7 +11737,7 @@
     "schema": "REPORT2_ACTIVE_WORKING_STATE_V1",
     "recorded_utc": "2026-10-12T19:16:47.120454+00:00",
     "main_verified_at_package_start": "460203b25db21cb929772a2a1259a408c1b790a4",
-    "candidate_state": "OWNER_10M_MAXIMUM_LOCAL_VERIFIED_NEW_CLOUD_AND_NATURAL_PENDING",
+    "candidate_state": "OWNER_10M_MAXIMUM_WORKER_DEPLOYED_FRESHNESS_LABEL_CLOUD_PENDING",
     "active_entrypoints": [
       "AGENTS.md",
       "checkpoints/CURRENT_PROJECT_STATUS.json",
@@ -11953,13 +11953,15 @@
   "exact_next_action": "Cloud validate and deploy the owner-corrected 10-minute outer price-context tolerance, then inspect the next natural hourly D1 pair and full report/Telegram on exact head; continue LIQ without reopening paused blocks.",
   "latest_liq_spot_futures_clock_alignment": {
     "proof": "checkpoints/LIQ_SPOT_FUTURES_CLOCK_ALIGNMENT_20261012.json",
-    "status": "OWNER_10M_MAXIMUM_LOCAL_VERIFIED_NEW_CLOUD_AND_NATURAL_PENDING",
+    "status": "OWNER_10M_MAXIMUM_WORKER_DEPLOYED_FRESHNESS_LABEL_CLOUD_PENDING",
     "near_sync_target_ms": 30000,
     "max_price_context_skew_ms": 630000,
     "recent_trade_freshness_ms": 60000,
     "recent_trade_joint_skew_ms": 30000,
     "old_601560ms_archive_bounded_lag_only": true,
     "both_markets_retained": true,
-    "decision_or_score_added": false
+    "decision_or_score_added": false,
+    "worker_deploy_run": 38296813214,
+    "cloud_run_before_freshness_label": 38296652516
   }
 }

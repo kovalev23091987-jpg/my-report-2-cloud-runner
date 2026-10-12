@@ -42,7 +42,7 @@ test('ten-minute market clock gap is labeled price context and remains non-scori
  const liq=liquidations(),m=market();m.spot.source_ts=T-610_000;
  const r=buildLiquidationSpotReference({contract,market_context:m,liquidations:liq,observed_ts:T});
  assert.equal(r.status,'CLOSED');assert.equal(r.score_contribution,0);assert.equal(r.source_skew_ms,594_000);
- liq.spot_reference=r;assert.match(liquidationSpotReferenceLine(liq),/снимки разделяют 594 с/);
+ liq.spot_reference=r;assert.match(liquidationSpotReferenceLine(liq),/снимки разделяют 594 с/);assert.match(liquidationSpotReferenceLine(liq),/котировки старше 5 мин/);
 });
 
 test('the same canonical fact reaches full manual and approved Telegram output',()=>{

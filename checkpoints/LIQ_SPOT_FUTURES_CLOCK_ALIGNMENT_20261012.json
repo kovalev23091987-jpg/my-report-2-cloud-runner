@@ -1,8 +1,8 @@
 {
   "schema": "LIQ_SPOT_FUTURES_CLOCK_ALIGNMENT_20261012_V1",
-  "recorded_utc": "2026-10-12T19:16:47.120454+00:00",
+  "recorded_utc": "2026-10-12T19:26:39.672727+00:00",
   "basis_main": "fb37a9f4c7daadbb60bd961e635a01a4c281f21c",
-  "status": "OWNER_10M_MAXIMUM_LOCAL_VERIFIED_NEW_CLOUD_AND_NATURAL_PENDING",
+  "status": "OWNER_10M_MAXIMUM_WORKER_DEPLOYED_FRESHNESS_LABEL_CLOUD_PENDING",
   "owner_instruction": "Keep both HTX spot and futures in each applicable coin conclusion, synchronize their snapshot times or keep the gap very small, apply across active blocks; preserve original source clocks and paused blocks.",
   "observed_old_archive": {
     "hour_bucket": 1791828000000,
@@ -31,9 +31,9 @@
   },
   "implementation": {
     "archive": "Concurrent same-hour HTX spot and futures batch requests remain the near-sync target; reader labels <=30s ALIGNED_PAIR and up to 630s BOUNDED_LAG_PAIR. Legacy :25/:35 pair at 601560ms is usable only as bounded-lag price context with exact clocks, never decision evidence.",
-    "report": "Shared HTX spot/futures price context permits <=630000ms including timestamp jitter, labels any >30s lag in manual and Telegram joint conclusion; context remains non-scoring and non-entry.",
+    "report": "Shared HTX spot/futures price context permits <=630000ms including timestamp jitter, labels any >30s lag in manual and Telegram joint conclusion; context remains non-scoring and non-entry. Context older than five minutes is explicitly labeled in both manual and Telegram; single-market quote is never called fresh solely because it is within the ten-minute outer cap.",
     "n12": "Recent trade samples keep their stricter original <=60s freshness and <=30s joint directional clock rule; older or mismatched samples remain separate context, without an artificial common direction.",
-    "liq": "Spot reference to existing future levels permits <=630000ms market source gap, explicitly prints any >30s lag, and never treats spot as a liquidation level or new source.",
+    "liq": "Spot reference to existing future levels permits <=630000ms market source gap, explicitly prints any >30s lag, and never treats spot as a liquidation level or new source. Context older than five minutes is explicitly labeled.",
     "unchanged": "N05 exact four-hour closed windows; N10 same closed 15-minute candle window; N11 futures-only exemption; N04 on-chain facts and N15 sector facts do not acquire false spot/futures consensus."
   },
   "limits": {
@@ -50,7 +50,8 @@
     "output_contract_freeze": "12 pass, golden report bytes unchanged",
     "full_local_validation": "1424 pass, one frozen hash corrected afterward, one assembled-runtime-only test cannot run without decrypted runtime",
     "owner_10m_targeted_tests": "26 passed, one assembled-runtime-only test skipped; old 601560ms archive bound and ten-minute LIQ context verified.",
-    "owner_10m_frozen_output": "12 passed; golden output unchanged for identical canonical inputs."
+    "owner_10m_frozen_output": "12 passed; golden output unchanged for identical canonical inputs.",
+    "owner_10m_freshness_label_targeted_tests": "38 pass; one assembled-runtime-only test skipped; frozen output 12 pass."
   },
   "first_cloud_attempt": {
     "run": 38295144826,
@@ -78,5 +79,20 @@
     "worker_deploy_run": 38295543096,
     "worker_version": "26cbf056-906f-4474-a15d-4ac0d812c40f",
     "scope": "SUPERSEDED_30S_POLICY;DO_NOT_USE_AS_10M_ACCEPTANCE"
+  },
+  "cloud_10m_pre_freshness_label": {
+    "run": 38296652516,
+    "head": "d057d217be14900b819bd12d46f6f662756f0f74",
+    "result": "SUCCESS",
+    "target_tests_passed": 68,
+    "full_generation_validate": "SUCCESS",
+    "target_tap_sha256": "d883d6145f7cf212068cf80a722a468076fcdcff04dd0674eadf5cbfd43684e1"
+  },
+  "worker_10m_deploy": {
+    "run": 38296813214,
+    "head": "d057d217be14900b819bd12d46f6f662756f0f74",
+    "result": "SUCCESS",
+    "version": "6e5f4b9d-b2a2-4a08-9f4d-bf3d9f0adf03",
+    "deployed_utc": "2026-10-12T19:19:11Z"
   }
 }

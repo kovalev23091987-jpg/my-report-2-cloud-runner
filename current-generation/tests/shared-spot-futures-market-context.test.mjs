@@ -124,10 +124,14 @@ if(!root){
   lagCanonical.metadata.supporting_context={blocks:{spot_futures_market:lag},facts:[lag.fact,lagConclusion]};
   const lagManual=formatManualReport(lagCanonical);assert.equal(lagManual.ok,true);assert.match(lagManual.text,/снимки с разницей 68 с/);
   const lagTelegram=plainSpotFuturesJointConclusion(lagCanonical);assert.match(lagTelegram,/снимки с разницей 68 с/);
+  const oldInput=args();oldInput.spot_component.data.depth_bbo.source_ts=T-610_000;
+  const oldContext=buildSpotFuturesMarketContext(oldInput);
+  assert.equal(oldContext.status,'CLOSED_COMPARABLE_PRICE_AND_SPREAD');assert.match(oldContext.fact.value,/котировки старше 5 мин/);
+  assert.match(buildSpotFuturesJointConclusion({market_context:oldContext,block_context:{facts:[]},contract,observed_ts:T}).value,/котировки старше 5 мин/);
   const noSpot=buildSpotFuturesMarketContext({...args(),spot_component:null});
   assert.equal(noSpot.status,'FUTURES_ONLY');assert.match(noSpot.fact.value,/спотовая котировка не подтверждена/);
   const bounded=buildSpotFuturesJointConclusion({market_context:noSpot,block_context:{facts:[]},contract,observed_ts:T});
-  assert.match(bounded.value,/свежая котировка есть только для фьючерсов/);
+  assert.match(bounded.value,/котировка доступна только для фьючерсов/);
   const noFutures=buildSpotFuturesMarketContext({...args(),futures_component:null});
   assert.equal(noFutures.status,'SPOT_ONLY');assert.match(noFutures.fact.value,/фьючерсная котировка не подтверждена/);
   const missing=buildSpotFuturesMarketContext({...args(),spot_component:null,futures_component:null});
