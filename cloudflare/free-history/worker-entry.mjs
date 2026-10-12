@@ -11,7 +11,7 @@ export default {
       ['HTX_SPOT',()=>archiveSpot({venue:'HTX',archive_db:env?.ARCHIVE_DB,scheduled_ts})],
       ['GATE_SPOT_CANDIDATE',()=>archiveSpot({venue:'GATE',archive_db:env?.ARCHIVE_DB,scheduled_ts})],
       ...(new Date(scheduled_ts).getUTCHours()%2===1?[
-        ['BITGET_RAVE_SPOT_CANDIDATE',()=>archiveSpot({venue:'BITGET',archive_db:env?.ARCHIVE_DB,scheduled_ts})]
+        ['KUCOIN_RAVE_SPOT_CANDIDATE',()=>archiveSpot({venue:'KUCOIN',archive_db:env?.ARCHIVE_DB,scheduled_ts})]
       ]:[])
     ]) {
       try { results.push({lane,...await run()}); }

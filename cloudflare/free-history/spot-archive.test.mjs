@@ -42,17 +42,16 @@ test('Gate bulk covers the approved 104 targets without promoting identity candi
   assert.ok(JSON.parse(r.payload_json).samples.every(x=>x.asset_identity_status==='EXTERNAL_PAIR_IDENTITY_UNVERIFIED'||x.asset_identity_status==='EXTERNAL_PAIR_PRICE_CONFLICT'));
 });
 
-test('Gate RAVE price conflict is retained but not qualified; Bitget RAVE keeps exchange clock',async()=>{
+test('Gate RAVE price conflict is retained but not qualified; KuCoin RAVE keeps exchange clock',async()=>{
   const gate=await buildSpotRecord({venue:'GATE',hour_bucket:T,body:gateRows,received_ts:now});
   const rave=JSON.parse(gate.payload_json).samples.find(x=>x.contract==='RAVE-USDT');
   assert.equal(rave.source_status,'CROSS_VENUE_PRICE_CONFLICT');
   assert.equal(rave.asset_identity_status,'EXTERNAL_PAIR_PRICE_CONFLICT');
-  const bitget=await buildSpotRecord({venue:'BITGET',hour_bucket:T,body:{code:'00000',requestTime:now-500,data:[{symbol:'RAVEUSDT',lastPrice:'0.173',bid1Price:'0.1729',ask1Price:'0.1731',turnover24h:'10000',ts:String(now-900)}]},received_ts:now});
-  assert.equal(bitget.present_count,1);
-  assert.equal(bitget.quote_checked_count,1);
-  assert.equal(JSON.parse(bitget.payload_json).samples[0].source_ts,now-900);
-  const stale=await buildSpotRecord({venue:'BITGET',hour_bucket:T,body:{code:'00000',requestTime:now-500,data:[{symbol:'RAVEUSDT',lastPrice:'0.173',bid1Price:'0.1729',ask1Price:'0.1731',turnover24h:'10000',ts:String(now-70_000)}]},received_ts:now});
-  assert.equal(stale.quote_checked_count,0);
+  const kucoin=await buildSpotRecord({venue:'KUCOIN',hour_bucket:T,body:{code:'200000',data:{symbol:'RAVE-USDT',last:'0.173',buy:'0.172',sell:'0.174',volValue:'10000',time:now-900}},received_ts:now});
+  assert.equal(kucoin.present_count,1);
+  assert.equal(kucoin.quote_checked_count,1);
+  assert.equal(JSON.parse(kucoin.payload_json).samples[0].source_ts,now-900);
+  await assert.rejects(buildSpotRecord({venue:'KUCOIN',hour_bucket:T,body:{code:'200000',data:{symbol:'RAVE-USDT',last:'0.173',buy:'0.172',sell:'0.174',volValue:'10000',time:now-70_000}},received_ts:now}),/SPOT_SOURCE_CLOCK_INVALID/);
 });
 
 test('one charged HTX request per hour, immutable write, and no retry after source error',async()=>{

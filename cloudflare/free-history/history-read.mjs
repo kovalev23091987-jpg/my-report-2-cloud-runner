@@ -6,8 +6,8 @@ const digest=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('S
 
 // An explicit bounded read for future N15 analysis. No report or Telegram side effect.
 export async function readHourlyHistory({archive_db,contract,market,venue='HTX',from_hour,to_hour,allow_unbound_candidates=false}={}) {
-  if(!archive_db||!TARGETS.includes(contract)||!['SPOT','FUTURES'].includes(market)||!['HTX','GATE'].includes(venue)||market==='FUTURES'&&venue!=='HTX'||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR) throw Error('HISTORY_READ_ARGUMENTS_INVALID');
-  if(venue==='GATE'&&!allow_unbound_candidates) return {status:'IDENTITY_UNVERIFIED',contract,market,venue,samples:[],gaps:[]};
+  if(!archive_db||!TARGETS.includes(contract)||!['SPOT','FUTURES'].includes(market)||!['HTX','GATE','KUCOIN'].includes(venue)||market==='FUTURES'&&venue!=='HTX'||venue==='KUCOIN'&&contract!=='RAVE-USDT'||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR) throw Error('HISTORY_READ_ARGUMENTS_INVALID');
+  if(venue!=='HTX'&&!allow_unbound_candidates) return {status:'IDENTITY_UNVERIFIED',contract,market,venue,samples:[],gaps:[]};
   const futures=market==='FUTURES';
   const sql=futures?'SELECT * FROM report2_hourly_market_archive_v1 WHERE hour_bucket BETWEEN ?1 AND ?2 ORDER BY hour_bucket':'SELECT * FROM report2_hourly_spot_archive_v1 WHERE venue=?1 AND hour_bucket BETWEEN ?2 AND ?3 ORDER BY hour_bucket';
   const query=archive_db.prepare(sql);
@@ -37,5 +37,5 @@ export async function readHourlyHistory({archive_db,contract,market,venue='HTX',
     if(!s||typeof s.price!=='number'||!Number.isFinite(s.price)||s.price<=0||futures&&s.source_status!=='CLOSED'||!futures&&s.source_status!=='BOUNDED_TICKER') {gaps.push(h);continue;}
     samples.push(s);
   }
-  return {status:gaps.length?'PARTIAL':'CLOSED',contract,market,venue,source_venue:venue,identity_scope:venue==='GATE'?'EXTERNAL_PAIR_IDENTITY_UNVERIFIED':futures?'HTX_LINEAR_PERPETUAL':'HTX_EXACT_PAIR_ONLY',price_basis:futures?'COLLECTOR_MARKET_SNAPSHOT':'LAST_TICKER_NOT_CANDLE',decision_usable:false,samples,gaps};
+  return {status:gaps.length?'PARTIAL':'CLOSED',contract,market,venue,source_venue:venue,identity_scope:venue==='HTX'?(futures?'HTX_LINEAR_PERPETUAL':'HTX_EXACT_PAIR_ONLY'):'EXTERNAL_PAIR_IDENTITY_UNVERIFIED',price_basis:futures?'COLLECTOR_MARKET_SNAPSHOT':'LAST_TICKER_NOT_CANDLE',decision_usable:false,samples,gaps};
 }
