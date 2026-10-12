@@ -12,11 +12,12 @@
     "current-generation/files/src/canonical-publication.mjs": "e832b45431062ead0cff5f261f463b57e7feb54afc1dc1a44a2a3d1fac2400c4",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "426aed84ce315eba664b1f70ae998f19b2bb3aed4f7b2fa13f8da1d432054805",
-    "current-generation/files/src/telegram-plain-facts.mjs": "79a5baedb2e140387638e689f853fc2d5bc5bf44372f7407b984db464357d9b7",
+    "current-generation/files/src/block-result-context.mjs": "ef0f13eb0a41102d9ff52743dff96fa67c39b17a4f95b6e7e56020e24c89fbdb",
+    "current-generation/files/src/telegram-plain-facts.mjs": "2d39c910db4925b519356af091e98b37a6b1c81d2744829d01cc8ac106175328",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
     "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236",
-    "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4"
+    "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4",
+    "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": "5d170ef476fea3edf21774632ad79d13c71f88576efdd50d08e857ac17c0d17d"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -30,6 +31,19 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-12",
+      "scope": "N12_KUCOIN_EXACT_TOKEN_SPOT_FUTURES_ACTUAL_PEPE",
+      "authorization": "Owner authorized maximum useful N12 spot and futures coverage with new exact sources under existing admission. Current original KuCoin PEPE currency, market and trade responses prove a bounded token route; conflicting markets produce no common directional conclusion. The approved frozen presentation for identical canonical inputs remains unchanged.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {"before":"426aed84ce315eba664b1f70ae998f19b2bb3aed4f7b2fa13f8da1d432054805","after":"ef0f13eb0a41102d9ff52743dff96fa67c39b17a4f95b6e7e56020e24c89fbdb"},
+        "current-generation/files/src/telegram-plain-facts.mjs": {"before":"79a5baedb2e140387638e689f853fc2d5bc5bf44372f7407b984db464357d9b7","after":"2d39c910db4925b519356af091e98b37a6b1c81d2744829d01cc8ac106175328"},
+        "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": {"after":"5d170ef476fea3edf21774632ad79d13c71f88576efdd50d08e857ac17c0d17d"}
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-12",
       "scope": "N12_OKX_KUCOIN_BOUNDED_NATIVE_TRADE_FACTS",

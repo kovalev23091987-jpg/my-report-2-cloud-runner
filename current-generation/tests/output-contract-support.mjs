@@ -18,6 +18,8 @@ export async function loadEffectivePresentationModules(){
     'gate-futures-trade-sample.mjs':'current-generation/files/src/gate-futures-trade-sample.mjs',
     'bitget-n12-bounded-trade-sample.mjs':'current-generation/files/src/bitget-n12-bounded-trade-sample.mjs',
     'n12-native-public-trade-sample.mjs':'current-generation/files/src/n12-native-public-trade-sample.mjs',
+    'n12-kucoin-token-trade-sample.mjs':'current-generation/files/src/n12-kucoin-token-trade-sample.mjs',
+    'approved-htx-analysis-scope.mjs':'current-generation/files/src/approved-htx-analysis-scope.mjs',
     'gate-public-taker-reference.mjs':'current-generation/files/src/gate-public-taker-reference.mjs',
     'joint-spot-futures-flow.mjs':'current-generation/files/src/joint-spot-futures-flow.mjs',
     'bitget-four-hour-flow.mjs':'current-generation/files/src/bitget-four-hour-flow.mjs',
