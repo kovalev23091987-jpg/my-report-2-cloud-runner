@@ -36,3 +36,10 @@ CREATE TABLE IF NOT EXISTS report2_spot_archive_attempt_v1 (
   status TEXT NOT NULL,
   PRIMARY KEY(hour_bucket,venue)
 );
+
+CREATE TABLE IF NOT EXISTS report2_archive_run_v1 (
+  scheduled_ts INTEGER NOT NULL PRIMARY KEY,
+  status TEXT NOT NULL,
+  outcomes_json TEXT NOT NULL,
+  created_ts INTEGER NOT NULL
+);
