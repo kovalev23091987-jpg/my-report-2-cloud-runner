@@ -13,8 +13,9 @@ test('actual workflow gate admits only enabled exact trigger jobs and uses sched
  const gate=workflow.slice(workflow.indexOf('          normalize_true()'),workflow.indexOf('  enqueue-manual-command:'));
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'exact-trigger-gate-'));
  try{for(const [enabled,id,expected] of [['false','RCHK:'+ 'a'.repeat(40),false],['true','',false],['true','RCHK:'+ 'a'.repeat(40),true]]){const out=path.join(dir,'out');fs.writeFileSync(out,'');const r=spawnSync('bash',['-c',gate],{env:{...process.env,EVENT_NAME:'workflow_dispatch',LEGACY_RUNNER_ENABLED:enabled,TRIGGER_ONLY_RUN:'true',TRIGGER_TASK_ID:id,MANUAL_AUTHORIZED:'false',GITHUB_OUTPUT:out},encoding:'utf8'});assert.equal(r.status,0);assert.equal(fs.readFileSync(out,'utf8').trim(),'admitted='+expected);}
- assert.match(workflow,/Verify early evidence repair and frozen policy\n\s*if: \$\{\{ github.event_name != 'schedule' && inputs.trigger_only_run != true/);
- assert.match(workflow,/Scheduled runtime integrity check\n\s*if: \$\{\{ github.event_name == 'schedule' \|\| inputs.trigger_only_run == true/);
+ for(const [enabled,reason,manual,expected] of [['true','SCHEDULED_CADENCE_RECOVERY','false',true],['false','SCHEDULED_CADENCE_RECOVERY','false',false],['true','manual','false',false],['true','SCHEDULED_CADENCE_RECOVERY','true',false]]){const out=path.join(dir,'out');fs.writeFileSync(out,'');const r=spawnSync('bash',['-c',gate],{env:{...process.env,EVENT_NAME:'workflow_dispatch',LEGACY_RUNNER_ENABLED:enabled,SCHEDULED_RECOVERY_RUN:'true',RECOVERY_REASON:reason,TRIGGER_ONLY_RUN:'false',TRIGGER_TASK_ID:'',MANUAL_AUTHORIZED:manual,GITHUB_OUTPUT:out},encoding:'utf8'});assert.equal(r.status,0);assert.equal(fs.readFileSync(out,'utf8').trim(),'admitted='+expected);}
+ assert.match(workflow,/Verify early evidence repair and frozen policy\n\s*if: \$\{\{ github.event_name != 'schedule' && inputs.scheduled_recovery_run != true && inputs.trigger_only_run != true/);
+ assert.match(workflow,/Scheduled runtime integrity check\n\s*if: \$\{\{ github.event_name == 'schedule' \|\| inputs.scheduled_recovery_run == true \|\| inputs.trigger_only_run == true/);
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
 function row(id=fixture.original.task.task_id){
