@@ -329,11 +329,9 @@
     }
   ],
   "lease": {
-    "owner": "GH_ACTIONS:HTX_COMPACT_4H:38188729201:undefined",
-    "acquired_ts": 1791765479517,
-    "expires_ts": 1791766979517,
-    "expected_main": "9b1ebe17353dc6fb65370647a283798159b49bcc",
-    "scope": "HTX_COMPACT_4H_SAME_SOURCE_6_PER_DAY_PRICE_ONLY_NO_TELEGRAM"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "PR321 shared HTX spot/futures context, PR320 bounded Gate futures and PR322 Bitget bounded spot/futures reuse are merged with N10/N11/N12 assembled checks. At the next admissible natural report, inspect exact source clocks/identity, per-asset HTX/Bitget/Gate spot/futures participation, manual and approved Telegram evidence IDs, shared ledgers and SENT/message_id. Then qualify KuCoin/OKX or other missing independent N12 sources with saved-evidence-first batches and existing admission; keep N12 open and other blocks sequential.",
   "common_future_universe": {
@@ -399,11 +397,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:HISTORY:38188608832",
-    "acquired_ts": 1791765357692,
-    "expires_ts": 1791765837692,
-    "released_ts": 1791765393681,
-    "reason": "Bounded retained-history maintenance finished"
+    "owner": "GH_ACTIONS:HTX_COMPACT_4H:38188729201:undefined",
+    "acquired_ts": 1791765479517,
+    "expires_ts": 1791766979517,
+    "released_ts": 1791765489679,
+    "reason": "HTX_COMPACT_4H_DAILY_BOUNDED_RUN"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -10314,16 +10312,41 @@
   },
   "latest_N05_coverage_bottleneck_and_shared_batch_plan": "checkpoints/N05_COVERAGE_BOTTLENECK_AND_SHARED_BATCH_PLAN_20261010.json",
   "latest_htx_compact_4h_daily": {
-    "cloud_run": 38098892033,
-    "head": "564fb8e60169457895e0aef5ff37d8b4026f7f41",
+    "cloud_run": 38188729201,
+    "head": "9b1ebe17353dc6fb65370647a283798159b49bcc",
     "status": "BOUNDED_ACTUAL_COMPACT_SOURCE_ATTEMPTS_FINISHED",
-    "sourceHTTP": 1,
-    "source_http_reserved": 1,
+    "sourceHTTP": 6,
+    "source_http_reserved": 6,
     "results": [
       {
-        "contract": "NEAR-USDT",
+        "contract": "AAVE-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
+      },
+      {
+        "contract": "ACE-USDT",
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "observed_bars": 334
+      },
+      {
+        "contract": "ADA-USDT",
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "observed_bars": 540
+      },
+      {
+        "contract": "AKE-USDT",
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "observed_bars": 514
+      },
+      {
+        "contract": "ALGO-USDT",
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "observed_bars": 540
+      },
+      {
+        "contract": "APR-USDT",
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "observed_bars": 347
       }
     ],
     "D1": {
