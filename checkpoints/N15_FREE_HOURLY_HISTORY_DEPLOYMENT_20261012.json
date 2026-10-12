@@ -1,6 +1,6 @@
 {
   "schema": "N15_FREE_HOURLY_HISTORY_DEPLOYMENT_V1",
-  "recorded_utc": "2026-10-12T14:49:49.268145+00:00",
+  "recorded_utc": "2026-10-12T15:24:31.086882+00:00",
   "owner_scope": "Long-term free spot and futures history and N15 BTC/ETH relative dynamics; 15 assets missing HTX spot checked on other existing venues",
   "state": "DEPLOYED_FIRST_SCHEDULED_READBACK_PENDING",
   "github_code_head": "9c6a9f42",
@@ -13,7 +13,8 @@
     "archive_db_created": true,
     "schema_applied": true,
     "binding_and_schedule_readback": true,
-    "first_actual_run": null
+    "first_actual_run": null,
+    "gate_target_expansion": "LOCAL_TESTED_104_TARGETS_PENDING_CLOUD_DEPLOY_AND_CRON_READBACK"
   },
   "bounds": {
     "target_assets": 104,
@@ -211,6 +212,32 @@
     "First scheduled Worker invocation with D1 row readback and payload hash",
     "Fresh official external asset binding, especially LAB and RAVE",
     "Wire qualified history into N15 source→fact→consumer→manual/Telegram with unchanged score",
-    "Multi-day gap/storage and free usage observation"
-  ]
+    "Multi-day gap/storage and free usage observation",
+    "Confirm 104-target Gate cloud deployment and an actual scheduled D1 row",
+    "Resolve RAVE Gate/Bitget disagreement and exact external asset binding before consumer use"
+  ],
+  "all104_spot_coverage": {
+    "receipt": "checkpoints/n15-spot-coverage-20261012/ALL104-SPOT-BULK-RECEIPT.json",
+    "fifteen_futures_comparison": "checkpoints/n15-spot-coverage-20261012/FIFTEEN-SPOT-FUTURES-COMPARISON.json",
+    "fresh_public_bulk_http": 3,
+    "HTX_spot_present": 89,
+    "HTX_spot_bounded": 88,
+    "Gate_spot_present": 99,
+    "Gate_spot_bounded": 99,
+    "Bitget_spot_present": 85,
+    "Bitget_spot_bounded": 85,
+    "bounded_ticker_union": 104,
+    "HTX_missing_15_Gate_quote_present": 15,
+    "Gate_near_HTX_futures_14": 14,
+    "Gate_RAVE_conflict_pct": 29.4104,
+    "Bitget_RAVE_vs_HTX_futures_pct": -0.179,
+    "exact_external_identity_for_report_all15": false,
+    "report_telegram_consumer_use": false,
+    "source_clock_scope": "HTX_BATCH_AND_BITGET_TICKER;GATE_RECEIPT_ONLY",
+    "official_api_docs": [
+      "https://huobiapi.github.io/docs/spot/v1/en/",
+      "https://www.gate.com/docs/developers/apiv4/en/",
+      "https://www.bitget.com/docs/catalog/market/market-data"
+    ]
+  }
 }

@@ -31,12 +31,14 @@ test('HTX spot bulk keeps 104 targets separate from 89 returned pairs and no ind
   assert.ok(Buffer.byteLength(r.payload_json)<100_000);
 });
 
-test('Gate 15 pairs remain identity candidates despite valid prices',async()=>{
+test('Gate bulk covers the approved 104 targets without promoting identity candidates',async()=>{
   const r=await buildSpotRecord({venue:'GATE',hour_bucket:T,body:gateRows,received_ts:now});
-  assert.equal(r.present_count,15);
-  assert.equal(r.quote_checked_count,15);
+  assert.equal(r.target_count,104);
+  assert.equal(r.present_count,104);
+  assert.equal(r.quote_checked_count,104);
   assert.equal(r.source_ts,null);
   assert.equal(r.identity_scope,'GATE_PAIR_CANDIDATE_UNBOUND');
+  assert.ok(Buffer.byteLength(r.payload_json)<100_000);
   assert.ok(JSON.parse(r.payload_json).samples.every(x=>x.asset_identity_status==='EXTERNAL_PAIR_IDENTITY_UNVERIFIED'));
 });
 

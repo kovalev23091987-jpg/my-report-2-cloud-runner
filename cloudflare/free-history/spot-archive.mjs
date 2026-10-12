@@ -7,11 +7,9 @@ const encoder=new TextEncoder();
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const validPrice=value=>{const x=finite(value);return x!==null&&x>0?x:null;};
 const sha=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(text))),b=>b.toString(16).padStart(2,'0')).join('');
-const MISSING_HTX_SPOT=Object.freeze(['AKE','BR','BTR','CASHCAT','GPS','LAB','MYX','OKB','ONG','PAXG','RAVE','UB','USELESS','VELVET','哈基米']);
-
 export const SPOT_SOURCES=Object.freeze({
   HTX:Object.freeze({url:'https://api.huobi.pro/market/tickers',identity_scope:'HTX_EXACT_PAIR_ONLY',target_contracts:TARGETS}),
-  GATE:Object.freeze({url:'https://api.gateio.ws/api/v4/spot/tickers',identity_scope:'GATE_PAIR_CANDIDATE_UNBOUND',target_contracts:MISSING_HTX_SPOT.map(base=>`${base}-USDT`)})
+  GATE:Object.freeze({url:'https://api.gateio.ws/api/v4/spot/tickers',identity_scope:'GATE_PAIR_CANDIDATE_UNBOUND',target_contracts:TARGETS})
 });
 
 const symbolFor=(venue,contract)=>{

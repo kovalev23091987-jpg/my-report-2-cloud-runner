@@ -1,0 +1,3779 @@
+{
+  "schema": "N15_ALL104_SPOT_BULK_RECEIPT_V1",
+  "recorded_utc": "2026-10-12T15:21:25.691392+00:00",
+  "source_http": 3,
+  "basis": "THREE_FRESH_PUBLIC_BULK_TICKER_RESPONSES;NO_INDIVIDUAL_TRADES_OR_CANDLES",
+  "sources": {
+    "HTX": {
+      "path": "checkpoints/n15-spot-coverage-20261012/HTX-SPOT-TICKERS.json.gz",
+      "url": "https://api.huobi.pro/market/tickers",
+      "response_sha256": "639d0d65aa114f48468542c41642f14ac711449cdfb937644c1ab35945625e61",
+      "response_bytes": 123608,
+      "response_rows": 602,
+      "file_write_completed_utc": "2026-10-12T15:19:53.727878+00:00",
+      "exchange_batch_ts": 1791818390422
+    },
+    "GATE": {
+      "path": "checkpoints/n15-spot-coverage-20261012/GATE-SPOT-TICKERS.json.gz",
+      "url": "https://api.gateio.ws/api/v4/spot/tickers",
+      "response_sha256": "9bcf1257a38e9f36f6db84b8ab92aca95ed451cdc5b8e476f0afe176f115a947",
+      "response_bytes": 538496,
+      "response_rows": 2204,
+      "file_write_completed_utc": "2026-10-12T15:18:59.767656+00:00",
+      "exchange_batch_ts": null
+    },
+    "BITGET": {
+      "path": "checkpoints/n15-spot-coverage-20261012/BITGET-SPOT-TICKERS.json.gz",
+      "url": "https://api.bitget.com/api/v3/market/tickers?category=SPOT",
+      "response_sha256": "9e0198301cb487967ecc770124016911cd85c51b120235ca10e49e13756eecb3",
+      "response_bytes": 1125154,
+      "response_rows": 3389,
+      "file_write_completed_utc": "2026-10-12T15:22:10.956256+00:00",
+      "exchange_batch_ts": 1791818530273
+    }
+  },
+  "summary": {
+    "approved_futures_assets": 104,
+    "htx_spot_pair_present": 89,
+    "htx_spot_bounded": 88,
+    "gate_spot_pair_present": 99,
+    "gate_spot_bounded": 99,
+    "pair_union": 104,
+    "bounded_union": 104,
+    "htx_missing": [
+      "AKE",
+      "BR",
+      "BTR",
+      "CASHCAT",
+      "GPS",
+      "LAB",
+      "MYX",
+      "OKB",
+      "ONG",
+      "PAXG",
+      "RAVE",
+      "UB",
+      "USELESS",
+      "VELVET",
+      "哈基米"
+    ],
+    "gate_missing": [
+      "APR",
+      "BILL",
+      "RIVER",
+      "XMR",
+      "币安人生"
+    ],
+    "bitget_spot_pair_present": 85,
+    "bitget_spot_bounded": 85,
+    "three_venue_bounded_union": 104,
+    "rave_gate_vs_bitget_conflict": true
+  },
+  "rows": [
+    {
+      "asset": "AAVE",
+      "htx_futures_contract": "AAVE-USDT",
+      "htx": {
+        "pair": "aaveusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 163.435,
+        "bid": 163.3169,
+        "ask": 163.518,
+        "quote_volume_24h": 1743820.9337301669,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "AAVE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 163.42,
+        "bid": 163.4,
+        "ask": 163.46,
+        "quote_volume_24h": 6225392.60932,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "AAVEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 163.55,
+        "bid": 163.66,
+        "ask": 163.69,
+        "quote_volume_24h": 884579.9586,
+        "exchange_ticker_ts": 1791818528458,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ACE",
+      "htx_futures_contract": "ACE-USDT",
+      "htx": {
+        "pair": "aceusdt",
+        "present": true,
+        "bounded_ticker": false,
+        "last_price": 0.0701,
+        "bid": 0.0876,
+        "ask": 0.1754,
+        "quote_volume_24h": 0.0,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ACE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.18252,
+        "bid": 0.1825,
+        "ask": 0.18288,
+        "quote_volume_24h": 47536.88149,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ACEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.18309,
+        "bid": 0.18273,
+        "ask": 0.18304,
+        "quote_volume_24h": 31242.0,
+        "exchange_ticker_ts": 1791818529065,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ADA",
+      "htx_futures_contract": "ADA-USDT",
+      "htx": {
+        "pair": "adausdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.243071,
+        "bid": 0.24291,
+        "ask": 0.243232,
+        "quote_volume_24h": 1731919.4355098663,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ADA_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.24311,
+        "bid": 0.24308,
+        "ask": 0.24309,
+        "quote_volume_24h": 5779216.66208,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ADAUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2427,
+        "bid": 0.2429,
+        "ask": 0.243,
+        "quote_volume_24h": 2113578.085,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "AKE",
+      "htx_futures_contract": "AKE-USDT",
+      "htx": {
+        "pair": "akeusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "AKE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.023516,
+        "bid": 0.023513,
+        "ask": 0.023521,
+        "quote_volume_24h": 2061004.397948,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "AKEUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "ALGO",
+      "htx_futures_contract": "ALGO-USDT",
+      "htx": {
+        "pair": "algousdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1257,
+        "bid": 0.1256,
+        "ask": 0.1257,
+        "quote_volume_24h": 2505455.095780491,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ALGO_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.12582,
+        "bid": 0.12576,
+        "ask": 0.1258,
+        "quote_volume_24h": 431389.4169772,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ALGOUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1258,
+        "bid": 0.12572,
+        "ask": 0.12582,
+        "quote_volume_24h": 816285.62,
+        "exchange_ticker_ts": 1791818529069,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "APR",
+      "htx_futures_contract": "APR-USDT",
+      "htx": {
+        "pair": "aprusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0725,
+        "bid": 0.0721,
+        "ask": 0.073,
+        "quote_volume_24h": 618627.94528008,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "APR_USDT",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "bitget": {
+        "pair": "APRUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.07302,
+        "bid": 0.07287,
+        "ask": 0.07293,
+        "quote_volume_24h": 1065337.47,
+        "exchange_ticker_ts": 1791818529073,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "APT",
+      "htx_futures_contract": "APT-USDT",
+      "htx": {
+        "pair": "aptusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.8461,
+        "bid": 0.8448,
+        "ask": 0.8474,
+        "quote_volume_24h": 56935.75573993707,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "APT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.8471,
+        "bid": 0.847,
+        "ask": 0.8472,
+        "quote_volume_24h": 2770031.659178,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "APTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.8481,
+        "bid": 0.8485,
+        "ask": 0.849,
+        "quote_volume_24h": 628162.93,
+        "exchange_ticker_ts": 1791818529061,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ARB",
+      "htx_futures_contract": "ARB-USDT",
+      "htx": {
+        "pair": "arbusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1892,
+        "bid": 0.1892,
+        "ask": 0.1893,
+        "quote_volume_24h": 929808.948922091,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ARB_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1893,
+        "bid": 0.18922,
+        "ask": 0.1893,
+        "quote_volume_24h": 6120209.76215,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ARBUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.18991,
+        "bid": 0.18982,
+        "ask": 0.18992,
+        "quote_volume_24h": 1019540.69,
+        "exchange_ticker_ts": 1791818529062,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ASTER",
+      "htx_futures_contract": "ASTER-USDT",
+      "htx": {
+        "pair": "asterusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.7017,
+        "bid": 0.7015,
+        "ask": 0.702,
+        "quote_volume_24h": 211763.28517309087,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ASTER_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.7015,
+        "bid": 0.7014,
+        "ask": 0.7017,
+        "quote_volume_24h": 3163627.49042,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ASTERUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.7019,
+        "bid": 0.7023,
+        "ask": 0.7027,
+        "quote_volume_24h": 329006.27,
+        "exchange_ticker_ts": 1791818529073,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ATOM",
+      "htx_futures_contract": "ATOM-USDT",
+      "htx": {
+        "pair": "atomusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.8469,
+        "bid": 1.8437,
+        "ask": 1.8488,
+        "quote_volume_24h": 1407501.9692869508,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ATOM_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.847,
+        "bid": 1.847,
+        "ask": 1.848,
+        "quote_volume_24h": 303318.14141,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ATOMUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.853,
+        "bid": 1.85,
+        "ask": 1.851,
+        "quote_volume_24h": 435944.8244,
+        "exchange_ticker_ts": 1791818528461,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "AVAX",
+      "htx_futures_contract": "AVAX-USDT",
+      "htx": {
+        "pair": "avaxusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 10.7381,
+        "bid": 10.7241,
+        "ask": 10.7438,
+        "quote_volume_24h": 2818153.534007839,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "AVAX_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 10.72,
+        "bid": 10.721,
+        "ask": 10.722,
+        "quote_volume_24h": 8750890.056177,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "AVAXUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 10.734,
+        "bid": 10.73,
+        "ask": 10.732,
+        "quote_volume_24h": 2152475.3442,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "AVNT",
+      "htx_futures_contract": "AVNT-USDT",
+      "htx": {
+        "pair": "avntusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1364,
+        "bid": 0.1343,
+        "ask": 0.136,
+        "quote_volume_24h": 31613.15502168826,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "AVNT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.13475,
+        "bid": 0.13468,
+        "ask": 0.13486,
+        "quote_volume_24h": 62217.10956,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "AVNTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.13468,
+        "bid": 0.13477,
+        "ask": 0.13501,
+        "quote_volume_24h": 81930.04,
+        "exchange_ticker_ts": 1791818529072,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BANK",
+      "htx_futures_contract": "BANK-USDT",
+      "htx": {
+        "pair": "bankusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.028874,
+        "bid": 0.028805,
+        "ask": 0.028927,
+        "quote_volume_24h": 105042.13886355297,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BANK_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.02888,
+        "bid": 0.02882,
+        "ask": 0.02886,
+        "quote_volume_24h": 61878.7032278,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BANKUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.02885,
+        "bid": 0.02888,
+        "ask": 0.02891,
+        "quote_volume_24h": 19616.03,
+        "exchange_ticker_ts": 1791818529363,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BCH",
+      "htx_futures_contract": "BCH-USDT",
+      "htx": {
+        "pair": "bchusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 276.85,
+        "bid": 276.52,
+        "ask": 277.12,
+        "quote_volume_24h": 3617921.64324158,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BCH_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 276.58,
+        "bid": 276.6,
+        "ask": 276.62,
+        "quote_volume_24h": 2809564.82021,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BCHUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 276.8,
+        "bid": 276.8,
+        "ask": 276.9,
+        "quote_volume_24h": 719451.0612,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BEAT",
+      "htx_futures_contract": "BEAT-USDT",
+      "htx": {
+        "pair": "beatusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.083,
+        "bid": 0.0829,
+        "ask": 0.0833,
+        "quote_volume_24h": 368376.52974742337,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BEAT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08313,
+        "bid": 0.083,
+        "ask": 0.08307,
+        "quote_volume_24h": 750504.60969,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BEATUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "BILL",
+      "htx_futures_contract": "BILL-USDT",
+      "htx": {
+        "pair": "billusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.010311,
+        "bid": 0.010251,
+        "ask": 0.010371,
+        "quote_volume_24h": 117755.08446681671,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BILL_USDT",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "bitget": {
+        "pair": "BILLUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.010325,
+        "bid": 0.01031,
+        "ask": 0.010325,
+        "quote_volume_24h": 439130.78,
+        "exchange_ticker_ts": 1791818529076,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BNB",
+      "htx_futures_contract": "BNB-USDT",
+      "htx": {
+        "pair": "bnbusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 747.12,
+        "bid": 746.89,
+        "ask": 747.26,
+        "quote_volume_24h": 3367962.4055632497,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BNB_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 746.5,
+        "bid": 746.4,
+        "ask": 746.5,
+        "quote_volume_24h": 11452895.4406,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BNBUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 746.89,
+        "bid": 747.13,
+        "ask": 747.18,
+        "quote_volume_24h": 646317.169,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BOME",
+      "htx_futures_contract": "BOME-USDT",
+      "htx": {
+        "pair": "bomeusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.000841,
+        "bid": 0.000841,
+        "ask": 0.000866,
+        "quote_volume_24h": 15909.41325726,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BOME_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0008361,
+        "bid": 0.000836,
+        "ask": 0.0008363,
+        "quote_volume_24h": 660213.7564073,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BOMEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0008386,
+        "bid": 0.0008375,
+        "ask": 0.0008385,
+        "quote_volume_24h": 186462.4,
+        "exchange_ticker_ts": 1791818529065,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BONK",
+      "htx_futures_contract": "BONK-USDT",
+      "htx": {
+        "pair": "bonkusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.3277e-06,
+        "bid": 3.3183e-06,
+        "ask": 3.3361e-06,
+        "quote_volume_24h": 1604324.812048767,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BONK_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.324e-06,
+        "bid": 3.319e-06,
+        "ask": 3.321e-06,
+        "quote_volume_24h": 189070.956123862,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BONKUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.324e-06,
+        "bid": 3.322e-06,
+        "ask": 3.323e-06,
+        "quote_volume_24h": 121061.0,
+        "exchange_ticker_ts": 1791818529063,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BR",
+      "htx_futures_contract": "BR-USDT",
+      "htx": {
+        "pair": "brusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "BR_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.43783,
+        "bid": 0.43704,
+        "ask": 0.43711,
+        "quote_volume_24h": 342880.597248,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BRUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.4379,
+        "bid": 0.4374,
+        "ask": 0.438,
+        "quote_volume_24h": 231231.48,
+        "exchange_ticker_ts": 1791818529069,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BTC",
+      "htx_futures_contract": "BTC-USDT",
+      "htx": {
+        "pair": "btcusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 82690.06,
+        "bid": 82685.79,
+        "ask": 82693.59,
+        "quote_volume_24h": 159286127.39992976,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BTC_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 82719.8,
+        "bid": 82715.4,
+        "ask": 82715.5,
+        "quote_volume_24h": 630036669.509272,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BTCUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 82796.18,
+        "bid": 82796.18,
+        "ask": 82796.19,
+        "quote_volume_24h": 197260834.94942,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BTR",
+      "htx_futures_contract": "BTR-USDT",
+      "htx": {
+        "pair": "btrusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "BTR_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.05607,
+        "bid": 0.05603,
+        "ask": 0.05611,
+        "quote_volume_24h": 1182578.77717,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BTRUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "BTT",
+      "htx_futures_contract": "BTT-USDT",
+      "htx": {
+        "pair": "bttusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.722e-07,
+        "bid": 3.722e-07,
+        "ask": 3.733e-07,
+        "quote_volume_24h": 4156895.4920108463,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BTT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.718e-07,
+        "bid": 3.715e-07,
+        "ask": 3.718e-07,
+        "quote_volume_24h": 2636246.300844664,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BTTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.71e-07,
+        "bid": 3.712e-07,
+        "ask": 3.717e-07,
+        "quote_volume_24h": 64903.0,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "BTW",
+      "htx_futures_contract": "BTW-USDT",
+      "htx": {
+        "pair": "btwusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.763223,
+        "bid": 1.761027,
+        "ask": 1.76541,
+        "quote_volume_24h": 1846351.6228269313,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "BTW_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.7636,
+        "bid": 1.7636,
+        "ask": 1.7637,
+        "quote_volume_24h": 17496834.25623,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "BTWUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.769707,
+        "bid": 1.769707,
+        "ask": 1.769708,
+        "quote_volume_24h": 6926260.07,
+        "exchange_ticker_ts": 1791818529075,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "CASHCAT",
+      "htx_futures_contract": "CASHCAT-USDT",
+      "htx": {
+        "pair": "cashcatusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "CASHCAT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.11201,
+        "bid": 0.11197,
+        "ask": 0.11206,
+        "quote_volume_24h": 2244575.19336,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "CASHCATUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "CHZ",
+      "htx_futures_contract": "CHZ-USDT",
+      "htx": {
+        "pair": "chzusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.015354,
+        "bid": 0.015277,
+        "ask": 0.01536,
+        "quote_volume_24h": 1218355.1501009122,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "CHZ_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.015296,
+        "bid": 0.015269,
+        "ask": 0.015277,
+        "quote_volume_24h": 71104.818467,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "CHZUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.01532,
+        "bid": 0.0153,
+        "ask": 0.01533,
+        "quote_volume_24h": 42364.3163,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "CT",
+      "htx_futures_contract": "CT-USDT",
+      "htx": {
+        "pair": "ctusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.3334,
+        "bid": 0.3323,
+        "ask": 0.3345,
+        "quote_volume_24h": 3083299.91471295,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "CT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.33247,
+        "bid": 0.33218,
+        "ask": 0.33243,
+        "quote_volume_24h": 367314.23877,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "CTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.3329,
+        "bid": 0.33224,
+        "ask": 0.33326,
+        "quote_volume_24h": 261561.63,
+        "exchange_ticker_ts": 1791818528532,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "DASH",
+      "htx_futures_contract": "DASH-USDT",
+      "htx": {
+        "pair": "dashusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 51.04,
+        "bid": 50.99,
+        "ask": 51.1,
+        "quote_volume_24h": 1844737.2852496055,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "DASH_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 51.05,
+        "bid": 50.98,
+        "ask": 51.03,
+        "quote_volume_24h": 321282.50091,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "DASHUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "DOGE",
+      "htx_futures_contract": "DOGE-USDT",
+      "htx": {
+        "pair": "dogeusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.085227,
+        "bid": 0.085178,
+        "ask": 0.085311,
+        "quote_volume_24h": 1769999.4046913441,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "DOGE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08512,
+        "bid": 0.08511,
+        "ask": 0.08512,
+        "quote_volume_24h": 21878101.179951,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "DOGEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08526,
+        "bid": 0.08525,
+        "ask": 0.08526,
+        "quote_volume_24h": 11994372.8759,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "DOS",
+      "htx_futures_contract": "DOS-USDT",
+      "htx": {
+        "pair": "dosusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2948,
+        "bid": 0.2902,
+        "ask": 0.2982,
+        "quote_volume_24h": 334807.54367218,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "DOS_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2959,
+        "bid": 0.296,
+        "ask": 0.2962,
+        "quote_volume_24h": 1546114.17517,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "DOSUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2965,
+        "bid": 0.2961,
+        "ask": 0.2963,
+        "quote_volume_24h": 2253905.89,
+        "exchange_ticker_ts": 1791818528491,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "DOT",
+      "htx_futures_contract": "DOT-USDT",
+      "htx": {
+        "pair": "dotusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.243,
+        "bid": 1.2436,
+        "ask": 1.2448,
+        "quote_volume_24h": 874122.4233653616,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "DOT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.2425,
+        "bid": 1.2422,
+        "ask": 1.2425,
+        "quote_volume_24h": 1880417.08897,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "DOTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.2495,
+        "bid": 1.2491,
+        "ask": 1.2496,
+        "quote_volume_24h": 663046.949,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ENA",
+      "htx_futures_contract": "ENA-USDT",
+      "htx": {
+        "pair": "enausdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.22261,
+        "bid": 0.22223,
+        "ask": 0.22296,
+        "quote_volume_24h": 369349.8556291414,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ENA_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2224,
+        "bid": 0.22233,
+        "ask": 0.22238,
+        "quote_volume_24h": 8010554.13542,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ENAUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.223,
+        "bid": 0.22298,
+        "ask": 0.22299,
+        "quote_volume_24h": 13252625.03,
+        "exchange_ticker_ts": 1791818529066,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ETC",
+      "htx_futures_contract": "ETC-USDT",
+      "htx": {
+        "pair": "etcusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 8.2934,
+        "bid": 8.2853,
+        "ask": 8.3012,
+        "quote_volume_24h": 574871.2583598134,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ETC_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 8.295,
+        "bid": 8.294,
+        "ask": 8.297,
+        "quote_volume_24h": 349437.605966,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ETCUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 8.31,
+        "bid": 8.307,
+        "ask": 8.31,
+        "quote_volume_24h": 84173.0299,
+        "exchange_ticker_ts": 1791818528458,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ETH",
+      "htx_futures_contract": "ETH-USDT",
+      "htx": {
+        "pair": "ethusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2530.35,
+        "bid": 2530.42,
+        "ask": 2530.43,
+        "quote_volume_24h": 18971684.116541248,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ETH_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2530.08,
+        "bid": 2529.98,
+        "ask": 2529.99,
+        "quote_volume_24h": 404573605.242813,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ETHUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2533.59,
+        "bid": 2533.59,
+        "ask": 2533.6,
+        "quote_volume_24h": 140387233.031,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ETHFI",
+      "htx_futures_contract": "ETHFI-USDT",
+      "htx": {
+        "pair": "ethfiusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.694,
+        "bid": 0.7001,
+        "ask": 0.7046,
+        "quote_volume_24h": 1737.78984839,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ETHFI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.7018,
+        "bid": 0.6998,
+        "ask": 0.6999,
+        "quote_volume_24h": 335078.645756,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ETHFIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.7005,
+        "bid": 0.7003,
+        "ask": 0.7007,
+        "quote_volume_24h": 250910.17,
+        "exchange_ticker_ts": 1791818529065,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "EUL",
+      "htx_futures_contract": "EUL-USDT",
+      "htx": {
+        "pair": "eulusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.3881,
+        "bid": 1.3749,
+        "ask": 1.3949,
+        "quote_volume_24h": 33162.01958435852,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "EUL_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.3876,
+        "bid": 1.3875,
+        "ask": 1.3901,
+        "quote_volume_24h": 41136.80499,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "EULUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "FARTCOIN",
+      "htx_futures_contract": "FARTCOIN-USDT",
+      "htx": {
+        "pair": "fartcoinusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1642,
+        "bid": 0.16396,
+        "ask": 0.16446,
+        "quote_volume_24h": 2725234.1067731525,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "FARTCOIN_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.16413,
+        "bid": 0.1641,
+        "ask": 0.16417,
+        "quote_volume_24h": 1389075.8072419,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "FARTCOINUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1647,
+        "bid": 0.1645,
+        "ask": 0.1647,
+        "quote_volume_24h": 766852.42,
+        "exchange_ticker_ts": 1791818529067,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "FIL",
+      "htx_futures_contract": "FIL-USDT",
+      "htx": {
+        "pair": "filusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.2054,
+        "bid": 1.2046,
+        "ask": 1.2055,
+        "quote_volume_24h": 3977314.8151957737,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "FIL_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.2033,
+        "bid": 1.2031,
+        "ask": 1.2033,
+        "quote_volume_24h": 11081792.976907,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "FILUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.2084,
+        "bid": 1.2078,
+        "ask": 1.2083,
+        "quote_volume_24h": 2433353.1148,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "FLOKI",
+      "htx_futures_contract": "FLOKI-USDT",
+      "htx": {
+        "pair": "flokiusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2.676e-05,
+        "bid": 2.665e-05,
+        "ask": 2.688e-05,
+        "quote_volume_24h": 1511288.1048606073,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "FLOKI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2.674e-05,
+        "bid": 2.667e-05,
+        "ask": 2.668e-05,
+        "quote_volume_24h": 96327.37735289,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "FLOKIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2.669e-05,
+        "bid": 2.67e-05,
+        "ask": 2.672e-05,
+        "quote_volume_24h": 36149.42,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "GPS",
+      "htx_futures_contract": "GPS-USDT",
+      "htx": {
+        "pair": "gpsusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "GPS_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.010082,
+        "bid": 0.010084,
+        "ask": 0.010094,
+        "quote_volume_24h": 12941.436347,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "GPSUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.010122,
+        "bid": 0.0101,
+        "ask": 0.01013,
+        "quote_volume_24h": 4002.21,
+        "exchange_ticker_ts": 1791818529070,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "GRAM",
+      "htx_futures_contract": "GRAM-USDT",
+      "htx": {
+        "pair": "gramusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.3919,
+        "bid": 1.3852,
+        "ask": 1.3879,
+        "quote_volume_24h": 139673.45627938226,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "GRAM_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.385,
+        "bid": 1.3847,
+        "ask": 1.385,
+        "quote_volume_24h": 3139677.89709,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "GRAMUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.385,
+        "bid": 1.387,
+        "ask": 1.388,
+        "quote_volume_24h": 628798.38,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "HBAR",
+      "htx_futures_contract": "HBAR-USDT",
+      "htx": {
+        "pair": "hbarusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.090764,
+        "bid": 0.090764,
+        "ask": 0.090765,
+        "quote_volume_24h": 2322450.6982942657,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "HBAR_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0907,
+        "bid": 0.09062,
+        "ask": 0.09063,
+        "quote_volume_24h": 504446.8056366,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "HBARUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0907,
+        "bid": 0.09075,
+        "ask": 0.0908,
+        "quote_volume_24h": 610762.22,
+        "exchange_ticker_ts": 1791818529068,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "HYPE",
+      "htx_futures_contract": "HYPE-USDT",
+      "htx": {
+        "pair": "hypeusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 84.3307,
+        "bid": 84.3606,
+        "ask": 84.4272,
+        "quote_volume_24h": 669895.4717891437,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "HYPE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 84.41,
+        "bid": 84.41,
+        "ask": 84.43,
+        "quote_volume_24h": 18027559.12503,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "HYPEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 84.625,
+        "bid": 84.622,
+        "ask": 84.624,
+        "quote_volume_24h": 6069376.67,
+        "exchange_ticker_ts": 1791818528467,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ICP",
+      "htx_futures_contract": "ICP-USDT",
+      "htx": {
+        "pair": "icpusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.32,
+        "bid": 3.31,
+        "ask": 3.33,
+        "quote_volume_24h": 139433.14471524497,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ICP_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.325,
+        "bid": 3.323,
+        "ask": 3.324,
+        "quote_volume_24h": 6027391.31502,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ICPUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.323,
+        "bid": 3.322,
+        "ask": 3.324,
+        "quote_volume_24h": 1314539.2941,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "JST",
+      "htx_futures_contract": "JST-USDT",
+      "htx": {
+        "pair": "jstusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.140563,
+        "bid": 0.140562,
+        "ask": 0.140568,
+        "quote_volume_24h": 6632723.87826212,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "JST_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.14065,
+        "bid": 0.14048,
+        "ask": 0.14061,
+        "quote_volume_24h": 65072.3589607,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "JSTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.14038,
+        "bid": 0.14034,
+        "ask": 0.14041,
+        "quote_volume_24h": 27483.1933,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "JUP",
+      "htx_futures_contract": "JUP-USDT",
+      "htx": {
+        "pair": "jupusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.3456,
+        "bid": 0.3441,
+        "ask": 0.3457,
+        "quote_volume_24h": 1940475.66023387,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "JUP_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.34546,
+        "bid": 0.34511,
+        "ask": 0.34559,
+        "quote_volume_24h": 555331.20945,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "JUPUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.3456,
+        "bid": 0.3456,
+        "ask": 0.3458,
+        "quote_volume_24h": 335263.2,
+        "exchange_ticker_ts": 1791818529066,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "LAB",
+      "htx_futures_contract": "LAB-USDT",
+      "htx": {
+        "pair": "labusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "LAB_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0507,
+        "bid": 0.05065,
+        "ask": 0.05069,
+        "quote_volume_24h": 1935654.1974,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "LABUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.05094,
+        "bid": 0.05091,
+        "ask": 0.05094,
+        "quote_volume_24h": 365395.83,
+        "exchange_ticker_ts": 1791818529073,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "LINK",
+      "htx_futures_contract": "LINK-USDT",
+      "htx": {
+        "pair": "linkusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 13.0183,
+        "bid": 13.0098,
+        "ask": 13.0205,
+        "quote_volume_24h": 2711409.761506452,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "LINK_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 13.025,
+        "bid": 13.021,
+        "ask": 13.022,
+        "quote_volume_24h": 9481721.25176,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "LINKUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 13.033,
+        "bid": 13.046,
+        "ask": 13.047,
+        "quote_volume_24h": 1730159.4198,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "LIT",
+      "htx_futures_contract": "LIT-USDT",
+      "htx": {
+        "pair": "litusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.6457,
+        "bid": 3.6369,
+        "ask": 3.654,
+        "quote_volume_24h": 774260.4767782115,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "LIT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.644,
+        "bid": 3.644,
+        "ask": 3.646,
+        "quote_volume_24h": 8363554.52687,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "LITUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 3.6488,
+        "bid": 3.6501,
+        "ask": 3.652,
+        "quote_volume_24h": 572407.5,
+        "exchange_ticker_ts": 1791818529075,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "LSK",
+      "htx_futures_contract": "LSK-USDT",
+      "htx": {
+        "pair": "lskusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2126,
+        "bid": 0.2114,
+        "ask": 0.2136,
+        "quote_volume_24h": 108759.72274943347,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "LSK_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.21272,
+        "bid": 0.21268,
+        "ask": 0.21282,
+        "quote_volume_24h": 156950.71205,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "LSKUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "LTC",
+      "htx_futures_contract": "LTC-USDT",
+      "htx": {
+        "pair": "ltcusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 63.5,
+        "bid": 63.39,
+        "ask": 63.62,
+        "quote_volume_24h": 4249484.784784658,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "LTC_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 63.35,
+        "bid": 63.33,
+        "ask": 63.34,
+        "quote_volume_24h": 6075150.92189,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "LTCUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 63.39,
+        "bid": 63.36,
+        "ask": 63.38,
+        "quote_volume_24h": 1104954.8884,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "MARSCOIN",
+      "htx_futures_contract": "MARSCOIN-USDT",
+      "htx": {
+        "pair": "marscoinusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08842,
+        "bid": 0.08838,
+        "ask": 0.08846,
+        "quote_volume_24h": 6452435.485139271,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "MARSCOIN_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08906,
+        "bid": 0.0891,
+        "ask": 0.08923,
+        "quote_volume_24h": 253139.39107,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "MARSCOINUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "MUBARAK",
+      "htx_futures_contract": "MUBARAK-USDT",
+      "htx": {
+        "pair": "mubarakusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.07127,
+        "bid": 0.07116,
+        "ask": 0.07147,
+        "quote_volume_24h": 2505651.290250631,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "MUBARAK_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.071352,
+        "bid": 0.071257,
+        "ask": 0.071357,
+        "quote_volume_24h": 983729.255499,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "MUBARAKUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.07142,
+        "bid": 0.07149,
+        "ask": 0.07156,
+        "quote_volume_24h": 961164.47,
+        "exchange_ticker_ts": 1791818529071,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "MYX",
+      "htx_futures_contract": "MYX-USDT",
+      "htx": {
+        "pair": "myxusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "MYX_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.06661,
+        "bid": 0.06656,
+        "ask": 0.0667,
+        "quote_volume_24h": 24274.46394,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "MYXUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0668,
+        "bid": 0.0669,
+        "ask": 0.067,
+        "quote_volume_24h": 86045.97,
+        "exchange_ticker_ts": 1791818529070,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "NEAR",
+      "htx_futures_contract": "NEAR-USDT",
+      "htx": {
+        "pair": "nearusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.5013,
+        "bid": 5.4784,
+        "ask": 5.5246,
+        "quote_volume_24h": 3018482.666124039,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "NEAR_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.61,
+        "bid": 5.609,
+        "ask": 5.611,
+        "quote_volume_24h": 53122856.06326,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "NEARUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.628,
+        "bid": 5.626,
+        "ask": 5.628,
+        "quote_volume_24h": 10317890.12,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "NIL",
+      "htx_futures_contract": "NIL-USDT",
+      "htx": {
+        "pair": "nilusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0835,
+        "bid": 0.0835,
+        "ask": 0.0836,
+        "quote_volume_24h": 1005872.8454101402,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "NIL_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08329,
+        "bid": 0.08318,
+        "ask": 0.08334,
+        "quote_volume_24h": 191284.48252,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "NILUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08342,
+        "bid": 0.08315,
+        "ask": 0.08325,
+        "quote_volume_24h": 442678.86,
+        "exchange_ticker_ts": 1791818529070,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "OKB",
+      "htx_futures_contract": "OKB-USDT",
+      "htx": {
+        "pair": "okbusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "OKB_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 124.2,
+        "bid": 124.2,
+        "ask": 124.21,
+        "quote_volume_24h": 3881133.20662,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "OKBUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "ONDO",
+      "htx_futures_contract": "ONDO-USDT",
+      "htx": {
+        "pair": "ondousdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.502995,
+        "bid": 0.502401,
+        "ask": 0.503595,
+        "quote_volume_24h": 4574737.324880859,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ONDO_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5025,
+        "bid": 0.5025,
+        "ask": 0.5026,
+        "quote_volume_24h": 11916552.51252,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ONDOUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.503,
+        "bid": 0.5027,
+        "ask": 0.5028,
+        "quote_volume_24h": 6702050.53,
+        "exchange_ticker_ts": 1791818529066,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ONG",
+      "htx_futures_contract": "ONG-USDT",
+      "htx": {
+        "pair": "ongusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "ONG_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08596,
+        "bid": 0.08607,
+        "ask": 0.08611,
+        "quote_volume_24h": 8226.586914,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ONGUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "OP",
+      "htx_futures_contract": "OP-USDT",
+      "htx": {
+        "pair": "opusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1339,
+        "bid": 0.1331,
+        "ask": 0.1349,
+        "quote_volume_24h": 824327.7024964987,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "OP_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.13521,
+        "bid": 0.13523,
+        "ask": 0.13529,
+        "quote_volume_24h": 2097459.49712,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "OPUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1357,
+        "bid": 0.1356,
+        "ask": 0.1357,
+        "quote_volume_24h": 670311.97,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ORDI",
+      "htx_futures_contract": "ORDI-USDT",
+      "htx": {
+        "pair": "ordiusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4.2421,
+        "bid": 4.2413,
+        "ask": 4.2468,
+        "quote_volume_24h": 1437581.5568513675,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ORDI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4.24,
+        "bid": 4.235,
+        "ask": 4.237,
+        "quote_volume_24h": 75975.432403,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ORDIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4.243,
+        "bid": 4.245,
+        "ask": 4.249,
+        "quote_volume_24h": 56166.294,
+        "exchange_ticker_ts": 1791818529062,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "PAXG",
+      "htx_futures_contract": "PAXG-USDT",
+      "htx": {
+        "pair": "paxgusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "PAXG_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4166.9,
+        "bid": 4171.5,
+        "ask": 4171.54,
+        "quote_volume_24h": 280688.55272,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PAXGUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4170.85,
+        "bid": 4170.85,
+        "ask": 4170.86,
+        "quote_volume_24h": 263746.021,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "PENGU",
+      "htx_futures_contract": "PENGU-USDT",
+      "htx": {
+        "pair": "penguusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0079,
+        "bid": 0.00789,
+        "ask": 0.0079,
+        "quote_volume_24h": 853129.9704437533,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "PENGU_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.007869,
+        "bid": 0.007864,
+        "ask": 0.007868,
+        "quote_volume_24h": 2298839.4806071,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PENGUUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.007898,
+        "bid": 0.007896,
+        "ask": 0.007902,
+        "quote_volume_24h": 638314.49,
+        "exchange_ticker_ts": 1791818529069,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "PEOPLE",
+      "htx_futures_contract": "PEOPLE-USDT",
+      "htx": {
+        "pair": "peopleusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.008163,
+        "bid": 0.008075,
+        "ask": 0.008255,
+        "quote_volume_24h": 131094.2434563432,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "PEOPLE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.00812,
+        "bid": 0.008108,
+        "ask": 0.008125,
+        "quote_volume_24h": 44540.152514,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PEOPLEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.008107,
+        "bid": 0.008107,
+        "ask": 0.008123,
+        "quote_volume_24h": 45490.167,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "PEPE",
+      "htx_futures_contract": "PEPE-USDT",
+      "htx": {
+        "pair": "pepeusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4.121263e-06,
+        "bid": 4.122243e-06,
+        "ask": 4.125208e-06,
+        "quote_volume_24h": 463306.2877495992,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "PEPE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4.126e-06,
+        "bid": 4.125e-06,
+        "ask": 4.126e-06,
+        "quote_volume_24h": 7546802.763730373,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PEPEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4.121e-06,
+        "bid": 4.121e-06,
+        "ask": 4.122e-06,
+        "quote_volume_24h": 2287914.0,
+        "exchange_ticker_ts": 1791818529064,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "PIPPIN",
+      "htx_futures_contract": "PIPPIN-USDT",
+      "htx": {
+        "pair": "pippinusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0169,
+        "bid": 0.01686,
+        "ask": 0.01694,
+        "quote_volume_24h": 363756.4559309747,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "PIPPIN_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.016895,
+        "bid": 0.016887,
+        "ask": 0.0169,
+        "quote_volume_24h": 101489.517224,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PIPPINUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "PONS",
+      "htx_futures_contract": "PONS-USDT",
+      "htx": {
+        "pair": "ponsusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.296,
+        "bid": 0.2959,
+        "ask": 0.2963,
+        "quote_volume_24h": 4078336.7617576052,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "PONS_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2944,
+        "bid": 0.2942,
+        "ask": 0.2943,
+        "quote_volume_24h": 6139307.80488,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PONSUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2942,
+        "bid": 0.294,
+        "ask": 0.2943,
+        "quote_volume_24h": 1153468.82,
+        "exchange_ticker_ts": 1791818528502,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "PUMP",
+      "htx_futures_contract": "PUMP-USDT",
+      "htx": {
+        "pair": "pumpusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.005388,
+        "bid": 0.005379,
+        "ask": 0.005396,
+        "quote_volume_24h": 1782931.010786994,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "PUMP_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0053974,
+        "bid": 0.0053924,
+        "ask": 0.0053934,
+        "quote_volume_24h": 5152406.484574,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "PUMPUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.005378,
+        "bid": 0.005377,
+        "ask": 0.00538,
+        "quote_volume_24h": 2361397.39,
+        "exchange_ticker_ts": 1791818529071,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "QNT",
+      "htx_futures_contract": "QNT-USDT",
+      "htx": {
+        "pair": "qntusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 229.7,
+        "bid": 229.12,
+        "ask": 230.28,
+        "quote_volume_24h": 3137733.8588674,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "QNT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 229.37,
+        "bid": 229.31,
+        "ask": 229.34,
+        "quote_volume_24h": 2681864.50616,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "QNTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 230.34,
+        "bid": 230.17,
+        "ask": 230.27,
+        "quote_volume_24h": 1265796.4991,
+        "exchange_ticker_ts": 1791818529061,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "RAVE",
+      "htx_futures_contract": "RAVE-USDT",
+      "htx": {
+        "pair": "raveusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "RAVE_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2241,
+        "bid": 0.224,
+        "ask": 0.2255,
+        "quote_volume_24h": 6247.81712,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "RAVEUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.17286,
+        "bid": 0.17321,
+        "ask": 0.17334,
+        "quote_volume_24h": 29723.22,
+        "exchange_ticker_ts": 1791818529076,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "RAY",
+      "htx_futures_contract": "RAY-USDT",
+      "htx": {
+        "pair": "rayusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2.2157,
+        "bid": 2.2071,
+        "ask": 2.2243,
+        "quote_volume_24h": 1854606.08105241,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "RAY_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2.226,
+        "bid": 2.2209,
+        "ask": 2.2222,
+        "quote_volume_24h": 582904.503079,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "RAYUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 2.2231,
+        "bid": 2.2219,
+        "ask": 2.2232,
+        "quote_volume_24h": 981832.78,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "RIVER",
+      "htx_futures_contract": "RIVER-USDT",
+      "htx": {
+        "pair": "riverusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.1387,
+        "bid": 1.1332,
+        "ask": 1.1426,
+        "quote_volume_24h": 44249.64609833629,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "RIVER_USDT",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "bitget": {
+        "pair": "RIVERUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.139,
+        "bid": 1.1373,
+        "ask": 1.1388,
+        "quote_volume_24h": 468555.12,
+        "exchange_ticker_ts": 1791818529072,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "RLC",
+      "htx_futures_contract": "RLC-USDT",
+      "htx": {
+        "pair": "rlcusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.0207,
+        "bid": 1.0186,
+        "ask": 1.0234,
+        "quote_volume_24h": 526165.9688964037,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "RLC_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.0266,
+        "bid": 1.0243,
+        "ask": 1.0254,
+        "quote_volume_24h": 913152.64704,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "RLCUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.0235,
+        "bid": 1.0202,
+        "ask": 1.0209,
+        "quote_volume_24h": 892878.289,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "SHIB",
+      "htx_futures_contract": "SHIB-USDT",
+      "htx": {
+        "pair": "shibusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.37e-06,
+        "bid": 5.35e-06,
+        "ask": 5.37e-06,
+        "quote_volume_24h": 35642.23726411161,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SHIB_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.361e-06,
+        "bid": 5.357e-06,
+        "ask": 5.359e-06,
+        "quote_volume_24h": 229008.356832809,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SHIBUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.367e-06,
+        "bid": 5.366e-06,
+        "ask": 5.368e-06,
+        "quote_volume_24h": 358339.4527,
+        "exchange_ticker_ts": 1791818528463,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "SKR",
+      "htx_futures_contract": "SKR-USDT",
+      "htx": {
+        "pair": "skrusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.016994,
+        "bid": 0.016997,
+        "ask": 0.017097,
+        "quote_volume_24h": 514763.3800864732,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SKR_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.017079,
+        "bid": 0.017062,
+        "ask": 0.017077,
+        "quote_volume_24h": 327148.034835,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SKRUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.017088,
+        "bid": 0.017037,
+        "ask": 0.017133,
+        "quote_volume_24h": 74596.91,
+        "exchange_ticker_ts": 1791818529074,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "SKYAI",
+      "htx_futures_contract": "SKYAI-USDT",
+      "htx": {
+        "pair": "skyaiusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.03325,
+        "bid": 0.03316,
+        "ask": 0.033398,
+        "quote_volume_24h": 705217.2430429116,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SKYAI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.03327,
+        "bid": 0.03324,
+        "ask": 0.03327,
+        "quote_volume_24h": 149138.68189,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SKYAIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.03329,
+        "bid": 0.03332,
+        "ask": 0.03334,
+        "quote_volume_24h": 80630.45,
+        "exchange_ticker_ts": 1791818529070,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "SOL",
+      "htx_futures_contract": "SOL-USDT",
+      "htx": {
+        "pair": "solusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 108.9385,
+        "bid": 108.9138,
+        "ask": 108.9818,
+        "quote_volume_24h": 24098520.10146896,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SOL_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 109.02,
+        "bid": 109.02,
+        "ask": 109.03,
+        "quote_volume_24h": 84744321.62781,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SOLUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 109.23,
+        "bid": 109.23,
+        "ask": 109.24,
+        "quote_volume_24h": 32047956.4984,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "STEEM",
+      "htx_futures_contract": "STEEM-USDT",
+      "htx": {
+        "pair": "steemusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0585,
+        "bid": 0.0584,
+        "ask": 0.0587,
+        "quote_volume_24h": 26197.59959085,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "STEEM_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.05835,
+        "bid": 0.05861,
+        "ask": 0.05864,
+        "quote_volume_24h": 25366.61971,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "STEEMUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "SUI",
+      "htx_futures_contract": "SUI-USDT",
+      "htx": {
+        "pair": "suiusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.0883,
+        "bid": 1.0876,
+        "ask": 1.0892,
+        "quote_volume_24h": 2531093.6338234884,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SUI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.0886,
+        "bid": 1.0884,
+        "ask": 1.0885,
+        "quote_volume_24h": 20589368.757873,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SUIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.0905,
+        "bid": 1.0904,
+        "ask": 1.0906,
+        "quote_volume_24h": 16874488.65,
+        "exchange_ticker_ts": 1791818529062,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "SUN",
+      "htx_futures_contract": "SUN-USDT",
+      "htx": {
+        "pair": "sunusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.016727,
+        "bid": 0.016704,
+        "ask": 0.016728,
+        "quote_volume_24h": 12748348.077477202,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SUN_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.01669,
+        "bid": 0.01668,
+        "ask": 0.0167,
+        "quote_volume_24h": 3581.058592,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SUNUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0167,
+        "bid": 0.0167,
+        "ask": 0.01672,
+        "quote_volume_24h": 23009.0,
+        "exchange_ticker_ts": 1791818529059,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "SUSHI",
+      "htx_futures_contract": "SUSHI-USDT",
+      "htx": {
+        "pair": "sushiusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.237,
+        "bid": 0.2361,
+        "ask": 0.2379,
+        "quote_volume_24h": 131190.30817558,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "SUSHI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2377,
+        "bid": 0.2373,
+        "ask": 0.2375,
+        "quote_volume_24h": 22252.095042,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "SUSHIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2377,
+        "bid": 0.2376,
+        "ask": 0.2379,
+        "quote_volume_24h": 13638.6864,
+        "exchange_ticker_ts": 1791818528458,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "TAO",
+      "htx_futures_contract": "TAO-USDT",
+      "htx": {
+        "pair": "taousdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 286.89,
+        "bid": 285.53,
+        "ask": 288.22,
+        "quote_volume_24h": 475404.0817238114,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "TAO_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 287.72,
+        "bid": 287.45,
+        "ask": 287.55,
+        "quote_volume_24h": 4818872.93421,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "TAOUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 288.0,
+        "bid": 287.9,
+        "ask": 288.0,
+        "quote_volume_24h": 1956881.595,
+        "exchange_ticker_ts": 1791818529062,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "TIA",
+      "htx_futures_contract": "TIA-USDT",
+      "htx": {
+        "pair": "tiausdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5619,
+        "bid": 0.5606,
+        "ask": 0.5633,
+        "quote_volume_24h": 1156025.4091372164,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "TIA_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5624,
+        "bid": 0.5622,
+        "ask": 0.5627,
+        "quote_volume_24h": 4051978.2962,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "TIAUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5645,
+        "bid": 0.5644,
+        "ask": 0.5647,
+        "quote_volume_24h": 712147.2,
+        "exchange_ticker_ts": 1791818529063,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "TRUMP",
+      "htx_futures_contract": "TRUMP-USDT",
+      "htx": {
+        "pair": "trumpusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.909,
+        "bid": 1.9084,
+        "ask": 1.9107,
+        "quote_volume_24h": 2957659.8527159877,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "TRUMP_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.9095,
+        "bid": 1.9091,
+        "ask": 1.9096,
+        "quote_volume_24h": 4893337.74287,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "TRUMPUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.911,
+        "bid": 1.912,
+        "ask": 1.913,
+        "quote_volume_24h": 2440628.84,
+        "exchange_ticker_ts": 1791818529069,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "TRX",
+      "htx_futures_contract": "TRX-USDT",
+      "htx": {
+        "pair": "trxusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.331347,
+        "bid": 0.331347,
+        "ask": 0.331348,
+        "quote_volume_24h": 15976357.932545222,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "TRX_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.3311,
+        "bid": 0.331,
+        "ask": 0.3311,
+        "quote_volume_24h": 1955966.76116,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "TRXUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.33116,
+        "bid": 0.33114,
+        "ask": 0.33115,
+        "quote_volume_24h": 1248290.3759,
+        "exchange_ticker_ts": 1791818528458,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "TUT",
+      "htx_futures_contract": "TUT-USDT",
+      "htx": {
+        "pair": "tutusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.021343,
+        "bid": 0.021279,
+        "ask": 0.021403,
+        "quote_volume_24h": 29443.140850135,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "TUT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.02135,
+        "bid": 0.02133,
+        "ask": 0.02135,
+        "quote_volume_24h": 99901.3275,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "TUTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.021402,
+        "bid": 0.021445,
+        "ask": 0.021461,
+        "quote_volume_24h": 62929.0,
+        "exchange_ticker_ts": 1791818529069,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "UB",
+      "htx_futures_contract": "UB-USDT",
+      "htx": {
+        "pair": "ubusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "UB_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.12846,
+        "bid": 0.1283,
+        "ask": 0.12851,
+        "quote_volume_24h": 92653.56308,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "UBUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "UNI",
+      "htx_futures_contract": "UNI-USDT",
+      "htx": {
+        "pair": "uniusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 7.4621,
+        "bid": 7.4599,
+        "ask": 7.4622,
+        "quote_volume_24h": 1957266.0365038195,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "UNI_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 7.462,
+        "bid": 7.461,
+        "ask": 7.463,
+        "quote_volume_24h": 10501312.85306,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "UNIUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 7.484,
+        "bid": 7.48,
+        "ask": 7.482,
+        "quote_volume_24h": 2021900.2981,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "USELESS",
+      "htx_futures_contract": "USELESS-USDT",
+      "htx": {
+        "pair": "uselessusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "USELESS_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.18178,
+        "bid": 0.18167,
+        "ask": 0.18174,
+        "quote_volume_24h": 1940160.02246,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "USELESSUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "VELVET",
+      "htx_futures_contract": "VELVET-USDT",
+      "htx": {
+        "pair": "velvetusdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "VELVET_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.07267,
+        "bid": 0.07262,
+        "ask": 0.07267,
+        "quote_volume_24h": 203543.607476,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "VELVETUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.07214,
+        "bid": 0.07223,
+        "ask": 0.07226,
+        "quote_volume_24h": 217815.89,
+        "exchange_ticker_ts": 1791818529075,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "WIF",
+      "htx_futures_contract": "WIF-USDT",
+      "htx": {
+        "pair": "wifusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2154,
+        "bid": 0.2132,
+        "ask": 0.2176,
+        "quote_volume_24h": 3154071.4717596094,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "WIF_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2135,
+        "bid": 0.2132,
+        "ask": 0.2133,
+        "quote_volume_24h": 354900.416637,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "WIFUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.2135,
+        "bid": 0.2137,
+        "ask": 0.2139,
+        "quote_volume_24h": 313253.49,
+        "exchange_ticker_ts": 1791818529065,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "WIN",
+      "htx_futures_contract": "WIN-USDT",
+      "htx": {
+        "pair": "winusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.672e-05,
+        "bid": 5.665e-05,
+        "ask": 5.679e-05,
+        "quote_volume_24h": 4746508.60478683,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "WIN_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.655e-05,
+        "bid": 5.661e-05,
+        "ask": 5.67e-05,
+        "quote_volume_24h": 35058.09459039,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "WINUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 5.62e-05,
+        "bid": 5.625e-05,
+        "ask": 5.723e-05,
+        "quote_volume_24h": 1109.0,
+        "exchange_ticker_ts": 1791818529061,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "WLD",
+      "htx_futures_contract": "WLD-USDT",
+      "htx": {
+        "pair": "wldusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.526,
+        "bid": 0.526,
+        "ask": 0.527,
+        "quote_volume_24h": 42165.1330290494,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "WLD_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5268,
+        "bid": 0.5267,
+        "ask": 0.5268,
+        "quote_volume_24h": 10403529.1651903,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "WLDUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5273,
+        "bid": 0.5271,
+        "ask": 0.5273,
+        "quote_volume_24h": 7719904.02,
+        "exchange_ticker_ts": 1791818529064,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "XAUT",
+      "htx_futures_contract": "XAUT-USDT",
+      "htx": {
+        "pair": "xautusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4170.13,
+        "bid": 4167.21,
+        "ask": 4172.52,
+        "quote_volume_24h": 6063159.383903133,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "XAUT_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4170.8,
+        "bid": 4170.5,
+        "ask": 4170.6,
+        "quote_volume_24h": 7353487.4755,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "XAUTUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 4169.29,
+        "bid": 4168.33,
+        "ask": 4168.34,
+        "quote_volume_24h": 12695746.6926,
+        "exchange_ticker_ts": 1791818529061,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "XLM",
+      "htx_futures_contract": "XLM-USDT",
+      "htx": {
+        "pair": "xlmusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.196982,
+        "bid": 0.196655,
+        "ask": 0.197346,
+        "quote_volume_24h": 1702178.7889974543,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "XLM_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.197,
+        "bid": 0.19692,
+        "ask": 0.19697,
+        "quote_volume_24h": 2664502.625628,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "XLMUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.19731,
+        "bid": 0.19727,
+        "ask": 0.1973,
+        "quote_volume_24h": 638734.26,
+        "exchange_ticker_ts": 1791818529064,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "XMR",
+      "htx_futures_contract": "XMR-USDT",
+      "htx": {
+        "pair": "xmrusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 532.88,
+        "bid": 532.76,
+        "ask": 533.0,
+        "quote_volume_24h": 37116677.45436401,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "XMR_USDT",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "bitget": {
+        "pair": "XMRUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "XPL",
+      "htx_futures_contract": "XPL-USDT",
+      "htx": {
+        "pair": "xplusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0846,
+        "bid": 0.0843,
+        "ask": 0.0849,
+        "quote_volume_24h": 183214.40833820472,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "XPL_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08458,
+        "bid": 0.0846,
+        "ask": 0.08461,
+        "quote_volume_24h": 461960.15561,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "XPLUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.08463,
+        "bid": 0.08462,
+        "ask": 0.08467,
+        "quote_volume_24h": 442396.28,
+        "exchange_ticker_ts": 1791818529073,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "XRP",
+      "htx_futures_contract": "XRP-USDT",
+      "htx": {
+        "pair": "xrpusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.37869,
+        "bid": 1.37838,
+        "ask": 1.37955,
+        "quote_volume_24h": 1335919.9002088879,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "XRP_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.3773,
+        "bid": 1.3771,
+        "ask": 1.3772,
+        "quote_volume_24h": 33386071.64981,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "XRPUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1.3802,
+        "bid": 1.3801,
+        "ask": 1.3802,
+        "quote_volume_24h": 27729367.4823,
+        "exchange_ticker_ts": 1791818529058,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ZEC",
+      "htx_futures_contract": "ZEC-USDT",
+      "htx": {
+        "pair": "zecusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1270.47,
+        "bid": 1269.2,
+        "ask": 1271.06,
+        "quote_volume_24h": 2612804.4904230493,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ZEC_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1270.49,
+        "bid": 1269.83,
+        "ask": 1269.98,
+        "quote_volume_24h": 18588083.57529,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ZECUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 1273.41,
+        "bid": 1273.25,
+        "ask": 1273.37,
+        "quote_volume_24h": 26515589.167,
+        "exchange_ticker_ts": 1791818529060,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "ZKC",
+      "htx_futures_contract": "ZKC-USDT",
+      "htx": {
+        "pair": "zkcusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.0392,
+        "bid": 0.0391,
+        "ask": 0.0392,
+        "quote_volume_24h": 11580.59315898,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ZKC_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.03907,
+        "bid": 0.03909,
+        "ask": 0.03915,
+        "quote_volume_24h": 65803.80804,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ZKCUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.03917,
+        "bid": 0.03925,
+        "ask": 0.0393,
+        "quote_volume_24h": 45241.88,
+        "exchange_ticker_ts": 1791818529074,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "哈基米",
+      "htx_futures_contract": "哈基米-USDT",
+      "htx": {
+        "pair": "哈基米usdt",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "gate": {
+        "pair": "哈基米_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.02661,
+        "bid": 0.0266,
+        "ask": 0.02665,
+        "quote_volume_24h": 10785.94286,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "哈基米USDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "币安人生",
+      "htx_futures_contract": "币安人生-USDT",
+      "htx": {
+        "pair": "币安人生usdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.5974,
+        "bid": 0.5957,
+        "ask": 0.6004,
+        "quote_volume_24h": 200577.90225136105,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "币安人生_USDT",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "bitget": {
+        "pair": "币安人生USDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "牛来",
+      "htx_futures_contract": "牛来-USDT",
+      "htx": {
+        "pair": "牛来usdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.072161,
+        "bid": 0.071743,
+        "ask": 0.072204,
+        "quote_volume_24h": 172880.6403267915,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "牛来_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.07207,
+        "bid": 0.0721,
+        "ask": 0.07213,
+        "quote_volume_24h": 232325.06635,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "牛来USDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    },
+    {
+      "asset": "龙虾",
+      "htx_futures_contract": "龙虾-USDT",
+      "htx": {
+        "pair": "龙虾usdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.041829,
+        "bid": 0.041705,
+        "ask": 0.041953,
+        "quote_volume_24h": 1606392.1220356855,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "龙虾_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.04182,
+        "bid": 0.04177,
+        "ask": 0.04179,
+        "quote_volume_24h": 1398103.59086,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "龙虾USDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    }
+  ],
+  "limits": [
+    "Gate ticker symbols and prices do not by themselves prove identical underlying assets to HTX futures.",
+    "Batch ticker clock is available for HTX only; Gate has local receipt time only.",
+    "Quote volume is rolling 24h, not hourly volume.",
+    "No report or Telegram consumer use is established by this receipt."
+  ]
+}
