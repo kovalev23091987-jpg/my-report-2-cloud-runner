@@ -12,7 +12,7 @@
     "current-generation/files/src/canonical-publication.mjs": "61d9317cfd725d07b722be468c2f7a6a412e3479899bae496c4b6d2beddf739f",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "ef0f13eb0a41102d9ff52743dff96fa67c39b17a4f95b6e7e56020e24c89fbdb",
+    "current-generation/files/src/block-result-context.mjs": "b8d445f3c87d2672bac20532bc1716cd421da32526b8f6f4daba5e65d7bf47af",
     "current-generation/files/src/telegram-plain-facts.mjs": "aa03a621974e86caec86d5a2b6b7577900bd51f2c890140fc0d2729bd8861689",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
     "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236",
@@ -31,6 +31,20 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-12",
+      "scope": "N10_SAME_RUN_HTX_SPOT_CLOSED_PRICE_PATH",
+      "authorization": "Owner requested maximum useful spot and futures coverage in active configured blocks, while preserving existing weights and approved report format. This factual N10 spot path is added only from already collected exact closed candles; it has zero score and does not authorize an entry. Golden outputs for identical canonical inputs remain byte-for-byte unchanged.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "ef0f13eb0a41102d9ff52743dff96fa67c39b17a4f95b6e7e56020e24c89fbdb",
+          "after": "b8d445f3c87d2672bac20532bc1716cd421da32526b8f6f4daba5e65d7bf47af"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-12",
       "scope": "N12_KUCOIN_EXACT_TOKEN_SPOT_FUTURES_ACTUAL_PEPE",
