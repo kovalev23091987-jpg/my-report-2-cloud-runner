@@ -44,3 +44,15 @@ export async function dispatchScheduledReportRecovery({gap,repository,token,fetc
     return{dispatched:response.status===204,status:response.status===204?'RECOVERY_DISPATCH_ACCEPTED':'RECOVERY_DISPATCH_FAILED',github_http_status:response.status,source_http:0,D1:0};
   }catch{return{dispatched:false,status:'RECOVERY_DISPATCH_FAILED',source_http:0,D1:0};}
 }
+
+export async function dispatchContinuousBackupRenewal({worker,repository,token,code_guard,fetch_impl=fetch}={}){
+  if(worker?.status!=='WORKER_WINDOW_CLOSED'||!Number.isSafeInteger(worker.cycles)||worker.cycles<1||code_guard?.allowed!==true||code_guard.status!=='CURRENT_MAIN_CODE_VERIFIED'||!repositoryValid(repository)||!token)return{dispatched:false,status:'BACKUP_RENEWAL_NOT_ADMITTED',source_http:0,D1:0};
+  try{
+    const response=await fetch_impl(`https://api.github.com/repos/${repository}/actions/workflows/report2-public-collector-backup.yml/dispatches`,{
+      method:'POST',headers:{...headers(token),'Content-Type':'application/json'},
+      body:JSON.stringify({ref:'main',inputs:{reason:'CONTINUOUS_BACKUP_RENEWAL'}}),
+      signal:AbortSignal.timeout(30000),
+    });
+    return{dispatched:response.status===204,status:response.status===204?'BACKUP_RENEWAL_DISPATCH_ACCEPTED':'BACKUP_RENEWAL_DISPATCH_FAILED',github_http_status:response.status,source_http:0,D1:0};
+  }catch{return{dispatched:false,status:'BACKUP_RENEWAL_DISPATCH_FAILED',source_http:0,D1:0};}
+}

@@ -3,7 +3,7 @@ import path from 'node:path';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 import {claimTriggerKick,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
 import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,createCollectorJobBudget} from './continuous-backup-worker.mjs';
-import {inspectScheduledReportGap,dispatchScheduledReportRecovery} from './scheduled-report-recovery.mjs';
+import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal} from './scheduled-report-recovery.mjs';
 
 const SLOT=5*60_000;
 const ACTOR='HUB_PUBLIC_COLLECTOR';
@@ -50,7 +50,7 @@ async function main(){
   const durationMinutes=Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0);
   const recoveryEnabled=['1','true','yes','on'].includes(String(process.env.REPORT2_SCHEDULED_RECOVERY_ENABLED||'').toLowerCase());
   let lastAcceptedRecoveryTs=0;
-  await runContinuousBackup({duration_minutes:durationMinutes,should_continue:()=>sourceBudget.can_collect,source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
+  const worker=await runContinuousBackup({duration_minutes:durationMinutes,should_continue:()=>sourceBudget.can_collect,source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
     let recovery={dispatched:false,status:'RECOVERY_DISABLED_OR_BOOTSTRAP',source_http:0,D1:0};
     if(recoveryEnabled&&durationMinutes>0){
       const now=Date.now();
@@ -70,6 +70,13 @@ async function main(){
     fs.writeFileSync('report2-collector-backup-proof.json',JSON.stringify({...receipt,receipts},null,2)+'\n');
     console.log('REPORT2_PUBLIC_COLLECTOR_BACKUP',JSON.stringify(receipt));
   }});
+  if(recoveryEnabled&&durationMinutes>0&&worker.status==='WORKER_WINDOW_CLOSED'){
+    const codeGuard=await verifyCurrentMainCode({repository,token,manifest});
+    const renewal=await dispatchContinuousBackupRenewal({worker,repository,token,code_guard:codeGuard});
+    const final={...receipts.at(-1),worker_status:worker.status,worker_result:worker,renewal,source_guard:codeGuard,source_job_budget:sourceBudget.snapshot,receipts};
+    fs.writeFileSync('report2-collector-backup-proof.json',JSON.stringify(final,null,2)+'\n');
+    console.log('REPORT2_PUBLIC_COLLECTOR_BACKUP_RENEWAL',JSON.stringify({worker,renewal}));
+  }
 }
 if(process.argv[1]&&new URL(import.meta.url).pathname===path.resolve(process.argv[1]))main().catch(error=>{console.error('REPORT2_PUBLIC_COLLECTOR_BACKUP_ERROR',String(error?.message||error).slice(0,240));process.exitCode=1;});
 
