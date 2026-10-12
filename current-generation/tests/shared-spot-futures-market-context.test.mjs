@@ -117,13 +117,13 @@ if(!root){
   for(const [change,expected] of changes){const input=args();change(input);const receipt=buildSpotFuturesMarketContext(input);assert.equal(receipt.status,expected);assert.equal(receipt.comparison,null);assert.match(receipt.fact.value,/котировка не подтверждена/);assert.equal(receipt.fact.score_contribution,0);}
   const skewed=args();skewed.spot_component.data.depth_bbo.source_ts=T-80_000;
   const skew=buildSpotFuturesMarketContext(skewed);
-  assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.match(skew.fact.value,/снимки разделяют 70 с/);assert.match(skew.fact.value,/процентную разницу цен не рассчитываем/);
+  assert.equal(skew.status,'SOURCE_CLOCKS_NOT_ALIGNED');assert.equal(skew.comparison,null);assert.match(skew.fact.value,/снимки разделяют 68 с/);assert.match(skew.fact.value,/процентную разницу цен не рассчитываем/);
   const asyncConclusion=buildSpotFuturesJointConclusion({market_context:skew,block_context:{facts:[]},contract,observed_ts:T});
-  assert.match(asyncConclusion.value,/спот.*фьючерсы.*70 с/);assert.doesNotMatch(asyncConclusion.value,/дороже|дешевле/);
+  assert.match(asyncConclusion.value,/спот.*фьючерсы.*68 с/);assert.doesNotMatch(asyncConclusion.value,/дороже|дешевле/);
   const asyncCanonical=structuredClone(fixture);asyncCanonical.metadata.canonical_runtime_adapter='canonical-runtime-adapter-v18-spot-futures-joint-output-20261012';
   asyncCanonical.metadata.supporting_context={blocks:{spot_futures_market:skew},facts:[skew.fact,asyncConclusion]};
-  const asyncManual=formatManualReport(asyncCanonical);assert.equal(asyncManual.ok,true);assert.match(asyncManual.text,/Разновременные котировки спота и фьючерсов/);assert.match(asyncManual.text,/спот.*фьючерсы.*70 с/);
-  const asyncTelegram=plainSpotFuturesJointConclusion(asyncCanonical);assert.match(asyncTelegram,/спот.*фьючерсы.*70 с/);
+  const asyncManual=formatManualReport(asyncCanonical);assert.equal(asyncManual.ok,true);assert.match(asyncManual.text,/Разновременные котировки спота и фьючерсов/);assert.match(asyncManual.text,/спот.*фьючерсы.*68 с/);
+  const asyncTelegram=plainSpotFuturesJointConclusion(asyncCanonical);assert.match(asyncTelegram,/спот.*фьючерсы.*68 с/);
   const noSpot=buildSpotFuturesMarketContext({...args(),spot_component:null});
   assert.equal(noSpot.status,'FUTURES_ONLY');assert.match(noSpot.fact.value,/спотовая котировка не подтверждена/);
   const bounded=buildSpotFuturesJointConclusion({market_context:noSpot,block_context:{facts:[]},contract,observed_ts:T});
@@ -139,7 +139,7 @@ if(!root){
   const selected=selectSupportingContextFacts(crowded);
   assert.equal(selected.length,24);assert.ok(selected.includes(noSpot.fact),'existing 24-line report budget retains useful single-market fact');
  });
- test('spot original depth prices are kept separate from a disagreeing ticker without extra HTTP',async()=>{
+ test('spot original depth prices remain separate from a ticker and paused N16 emits no cost fact',async()=>{
   const now=Date.now(),depthTs=now-10_000;
   const calls=[];
   const spot=await spotSnapshotForTest({symbol:contract,_fetch_json:async url=>{
@@ -159,26 +159,23 @@ if(!root){
   assert.equal(spot.spot_execution_reference.sell.fully_filled,true);
   const pair=buildSpotFuturesMarketContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},futures_component:component('HTX USDT-M Futures',depthTs)});
   const cost=buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},market_context:pair});
-  assert.equal(cost.status,'SPOT_EXECUTION_REFERENCE_CLOSED');
-  assert.equal(cost.fact.block_id,'N16');
-  assert.equal(cost.fact.telegram_eligible,false);
-  assert.equal(cost.fact.source_ts,depthTs);
+  assert.equal(cost.status,'BLOCK_PAUSED_BY_OWNER');
+  assert.equal(cost.fact,null);
   assert.equal(cost.network_calls,0);
   assert.equal(cost.score_contribution,0);
-  const crowdedFacts=[...Array.from({length:28},(_,i)=>({source:'test',label:`Факт ${i}`,value:'проверен'})),pair.fact,cost.fact];
+  const crowdedFacts=[...Array.from({length:28},(_,i)=>({source:'test',label:`Факт ${i}`,value:'проверен'})),pair.fact];
   const reserved=selectSupportingContextFacts(crowdedFacts);
   assert.equal(reserved.length,24);
   assert.ok(reserved.includes(pair.fact));
-  assert.ok(reserved.includes(cost.fact));
-  const manualCanonical=structuredClone(fixture);manualCanonical.metadata.supporting_context={facts:[cost.fact]};
+  const manualCanonical=structuredClone(fixture);manualCanonical.metadata.supporting_context={facts:[pair.fact]};
   const manual=formatManualReport(manualCanonical);
   assert.equal(manual.ok,true,manual.status);
-  assert.match(manual.text,/Спотовый ориентир издержек для 500 USDT/);
-  assert.equal(manual.text.includes('Измеренная глубина стакана'),false);
+  assert.match(manual.text,/Сверка спота и фьючерсов/);
+  assert.equal(manual.text.includes('Спотовый ориентир издержек'),false);
   const tampered=structuredClone(spot);
   tampered.spot_execution_reference.buy.impact_bps=100;
-  assert.equal(buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:tampered},market_context:pair}).status,'SPOT_EXECUTION_REFERENCE_NOT_CLOSED');
-  assert.equal(buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},market_context:{...pair,spot:null}}).status,'SPOT_EXECUTION_REFERENCE_NOT_CLOSED');
+  assert.equal(buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:tampered},market_context:pair}).status,'BLOCK_PAUSED_BY_OWNER');
+  assert.equal(buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},market_context:{...pair,spot:null}}).status,'BLOCK_PAUSED_BY_OWNER');
  });
  test('approved non-ASCII contract retains its exact spot query symbol',async()=>{
   const exact='哈基米-USDT',calls=[];
