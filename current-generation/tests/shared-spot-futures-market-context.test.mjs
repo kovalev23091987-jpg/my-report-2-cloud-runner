@@ -9,7 +9,7 @@ if(!root){
  test('assembled runtime is required for shared spot/futures context', {skip:'encrypted production runtime not assembled'},()=>{});
 }else{
  const src=pathToFileURL(path.resolve(root)+'/');
- const [{buildSpotFuturesMarketContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact},{APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS,approvedHtxAnalysisAssetForContract}]=await Promise.all(
+ const [{buildSpotFuturesMarketContext,buildSpotExecutionCostContext},{formatManualReport,selectSupportingContextFacts},{renderCanonicalTelegram,canonicalFingerprint},{spotSnapshotForTest},{formatTelegramCompact},{APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS,approvedHtxAnalysisAssetForContract}]=await Promise.all(
   ['canonical-runtime-adapter.mjs','manual-report-formatter.mjs','canonical-publication.mjs','worker.js','telegram-compact-formatter.mjs','approved-htx-analysis-scope.mjs'].map(name=>import(new URL(name,src)))
  );
  const fixture=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
@@ -52,6 +52,8 @@ if(!root){
   assert.equal(receipt.score_contribution,0);
   assert.equal(receipt.directional_vote,false);
   assert.equal(receipt.entry_authorized,false);
+  assert.deepEqual(receipt.spot_exempt_blocks,['N11']);
+  assert.equal(Object.hasOwn(receipt.applicability_not_block_coverage,'N11'),false);
   assert.equal(receipt.comparison.source_skew_ms,2_000);
   assert.equal(JSON.stringify(input),JSON.stringify(before));
   const canonical=structuredClone(fixture);
@@ -117,6 +119,32 @@ if(!root){
   assert.equal(spot.depth_bbo.best_bid,100);
   assert.equal(spot.depth_bbo.best_ask,100.2);
   assert.equal(spot.depth_bbo.source_ts,depthTs);
+  assert.equal(spot.spot_execution_reference.requested_notional_usdt,500);
+  assert.equal(spot.spot_execution_reference.source_ts,depthTs);
+  assert.equal(spot.spot_execution_reference.buy.fully_filled,true);
+  assert.equal(spot.spot_execution_reference.sell.fully_filled,true);
+  const pair=buildSpotFuturesMarketContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},futures_component:component('HTX USDT-M Futures',depthTs)});
+  const cost=buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},market_context:pair});
+  assert.equal(cost.status,'SPOT_EXECUTION_REFERENCE_CLOSED');
+  assert.equal(cost.fact.block_id,'N16');
+  assert.equal(cost.fact.telegram_eligible,false);
+  assert.equal(cost.fact.source_ts,depthTs);
+  assert.equal(cost.network_calls,0);
+  assert.equal(cost.score_contribution,0);
+  const crowdedFacts=[...Array.from({length:28},(_,i)=>({source:'test',label:`Факт ${i}`,value:'проверен'})),pair.fact,cost.fact];
+  const reserved=selectSupportingContextFacts(crowdedFacts);
+  assert.equal(reserved.length,24);
+  assert.ok(reserved.includes(pair.fact));
+  assert.ok(reserved.includes(cost.fact));
+  const manualCanonical=structuredClone(fixture);manualCanonical.metadata.supporting_context={facts:[cost.fact]};
+  const manual=formatManualReport(manualCanonical);
+  assert.equal(manual.ok,true,manual.status);
+  assert.match(manual.text,/Спотовый ориентир издержек для 500 USDT/);
+  assert.equal(manual.text.includes('Измеренная глубина стакана'),false);
+  const tampered=structuredClone(spot);
+  tampered.spot_execution_reference.buy.impact_bps=100;
+  assert.equal(buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:tampered},market_context:pair}).status,'SPOT_EXECUTION_REFERENCE_NOT_CLOSED');
+  assert.equal(buildSpotExecutionCostContext({contract,observed_ts:now,spot_component:{execution_status:'FULFILLED',data:spot},market_context:{...pair,spot:null}}).status,'SPOT_EXECUTION_REFERENCE_NOT_CLOSED');
  });
  test('approved non-ASCII contract retains its exact spot query symbol',async()=>{
   const exact='哈基米-USDT',calls=[];

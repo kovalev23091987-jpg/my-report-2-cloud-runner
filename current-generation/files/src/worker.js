@@ -1360,6 +1360,7 @@ async function spotSnapshot(params) {
   const inputSymbol = params.symbol || params.pair || params.contract || "ETHFI-USDT";
   const symbol = normalizeSpotSymbol(inputSymbol);
   const notional = clamp(params.notional_usdt ?? params.notional, 10, 1000000, 1000);
+  const executionNotional = clamp(params.execution_notional_usdt, 10, 1000000, 500);
   const tradesRequested = Math.round(clamp(params.trades ?? params.size, 1, 2000, 2000));
   const freshnessSec = Math.round(clamp(params.freshness_sec, 60, 3600, 900));
   const min1h = Math.round(clamp(params.min_trades_1h, 1, 10000, 20));
@@ -1406,6 +1407,12 @@ async function spotSnapshot(params) {
     bestAsk !== null ? marketImpact(asks, notional, bestAsk, "buy", 1) : null;
   const sellImpact =
     bestBid !== null ? marketImpact(bids, notional, bestBid, "sell", 1) : null;
+  // Reuse this exact spot depth reply for a separate 500 USDT reference.
+  // It is informational and never substitutes for the futures execution gate.
+  const depthBid = num(bids?.[0]?.[0]);
+  const depthAsk = num(asks?.[0]?.[0]);
+  const executionBuy = depthAsk !== null ? marketImpact(asks, executionNotional, depthAsk, "buy", 1) : null;
+  const executionSell = depthBid !== null ? marketImpact(bids, executionNotional, depthBid, "sell", 1) : null;
 
   const tradeList = flattenTrades(tradesR.data?.data);
   const closedSpotMinuteKlines = normalizeKlines(kline1mR.data).filter(
@@ -1509,9 +1516,19 @@ async function spotSnapshot(params) {
       depth_timestamp: iso(depthTick?.ts) || iso(depthR.data?.ts),
     },
     depth_bbo: {
-      best_bid: num(bids?.[0]?.[0]),
-      best_ask: num(asks?.[0]?.[0]),
+      best_bid: depthBid,
+      best_ask: depthAsk,
       source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(depthR.data?.ts),
+    },
+    spot_execution_reference: {
+      requested_notional_usdt: executionNotional,
+      source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(depthR.data?.ts),
+      best_bid: depthBid,
+      best_ask: depthAsk,
+      buy: executionBuy,
+      sell: executionSell,
+      source_scope: "HTX_SPOT_STEP0_SAME_DEPTH_REPLY",
+      entry_authorized: false,
     },
     order_flow: orderFlow,
     health,
@@ -15945,6 +15962,7 @@ async function buildDeepCheckInput(params, env) {
   const spotParams = {
     symbol: contract,
     notional_usdt: 1000,
+    execution_notional_usdt: 500,
     trades: 2000,
     freshness_sec: 900,
     _fetch_json: sharedFetch.fetch,
