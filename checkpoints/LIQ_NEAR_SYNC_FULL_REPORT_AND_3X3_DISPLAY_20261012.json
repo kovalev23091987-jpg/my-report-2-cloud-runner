@@ -1,0 +1,102 @@
+{
+  "schema": "LIQ_NEAR_SYNC_FULL_REPORT_AND_3X3_DISPLAY_20261012_V1",
+  "recorded_utc": "2026-10-12T19:45:26.942407+00:00",
+  "status": "EXACT_SCHEDULED_RECOVERY_REPORT_SPOT_FUTURES_AND_LOCAL_3X3_VERIFIED_CLOUD_PENDING",
+  "scope": "LIQ display and exact HTX spot/futures synchronization on two selected assets; 105 approved HTX futures assets remain the universe; factual liquidation coverage and Telegram SENT remain open",
+  "scheduled_recovery": {
+    "github_run": 38298723340,
+    "event": "workflow_dispatch",
+    "display_title": "Report 2 scheduled recovery",
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38298723340",
+    "conclusion": "success",
+    "head": "4e3075dd5fd3c1edcd20df2e70eb6096b0901b2b",
+    "run_id": "1791833786521-1791833797219",
+    "report_status": "CLOSED",
+    "pipeline_health": "HEALTHY_NO_IDEA",
+    "report_generated_at": "2026-10-12T19:38:08.487Z",
+    "report_json_sha256": "d83a1a613b31e20043b07b7c233fa59e79e2fed4de58eb31f7aadacb4bbdfafe",
+    "telegram_info_proof_sha256": "e504b267a228b10cbc7270a0e2f630c8ce0e54345b49d1e44f833451b91a6798",
+    "same_run_delivery_proof_sha256": "093f2b8ac316ed976f510316e293b24c94663a54c51633c383527e462a212256",
+    "automatic_delivery_audit_sha256": "97e7891822793ccd0075bde93681c9d7fc822868dcdc59b6abdec9c5cbacb213",
+    "scan_assets": 105,
+    "scan_errors": 0,
+    "scan_stale": 0,
+    "top_two": [
+      "FIL-USDT",
+      "RLC-USDT"
+    ],
+    "source": "schedule via scheduled recovery dispatch"
+  },
+  "natural_hourly_archive": {
+    "proof": "checkpoints/LIQ_SPOT_FUTURES_CLOCK_ALIGNMENT_20261012.json",
+    "futures_quote_qualified": 105,
+    "spot_pairs_present": 90,
+    "spot_quote_qualified": 87,
+    "joint_quote_qualified": 87,
+    "spot_futures_batch_source_skew_ms": 3248,
+    "near_sync_target_ms": 30000,
+    "source_http": 2,
+    "report_triggered": false
+  },
+  "exact_final_candidate_clocks": [
+    {
+      "contract": "FIL-USDT",
+      "snapshot_id": "S392:FIL-USDT:1791833836189",
+      "observed_ts": 1791833836189,
+      "spot_source_ts": 1791833811438,
+      "futures_source_ts": 1791833811016,
+      "source_skew_ms": 422,
+      "spot_age_at_snapshot_ms": 24751,
+      "futures_age_at_snapshot_ms": 25173,
+      "context_status": "CLOSED_COMPARABLE_PRICE_AND_SPREAD",
+      "futures_vs_spot_pct": -0.31,
+      "both_markets_in_manual": true,
+      "joint_conclusion_in_manual": true,
+      "liq_factual_future_levels": 0,
+      "liq_calculated_scenarios": 68,
+      "liq_status": "CALCULATED_CONTEXT_ONLY",
+      "telegram_transition": "CURRENT_RUN_CANONICAL_IDENTITY_MISMATCH",
+      "telegram_transition_reason": "source handoff and canonical wave_id are null; fail closed, not a synchronization failure"
+    },
+    {
+      "contract": "RLC-USDT",
+      "snapshot_id": "S392:RLC-USDT:1791833880996",
+      "observed_ts": 1791833880996,
+      "spot_source_ts": 1791833839638,
+      "futures_source_ts": 1791833840191,
+      "source_skew_ms": 553,
+      "spot_age_at_snapshot_ms": 41358,
+      "futures_age_at_snapshot_ms": 40805,
+      "context_status": "CLOSED_COMPARABLE_PRICE_AND_SPREAD",
+      "futures_vs_spot_pct": -0.85,
+      "both_markets_in_manual": true,
+      "joint_conclusion_in_manual": true,
+      "liq_factual_future_levels": 0,
+      "liq_calculated_scenarios": 77,
+      "liq_status": "CALCULATED_CONTEXT_ONLY",
+      "telegram_transition": "CANONICAL_DIRECTION_NOT_CLOSED"
+    }
+  ],
+  "source_to_consumer_readback": {
+    "source": "Production Cloudflare D1 canonical_publication_shadow on same run; canonical.metadata.supporting_context.blocks.spot_futures_market spot/futures source_ts; HTX reference price cross-checked with manual market lines",
+    "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "manual": "Both selected candidates show HTX spot and futures price comparison plus limited joint conclusion. Same HTX primary upstream counts once. N10 and N12 retain their own closed-window/freshness rules.",
+    "telegram": "No exact same-run SENT. Both candidates REJECTED; info proof SHADOW_ONLY and output disabled. A rendered offline path exists but natural Telegram use is not accepted.",
+    "paused_blocks": "N01–N03,N06–N09,N14,N16 show BLOCK_PAUSED_BY_OWNER and are excluded from active coverage; no restoration."
+  },
+  "owner_three_per_side_repair": {
+    "before_current_manual": "4 above / 4 below for FIL and RLC in saved natural report; Telegram current compact branch already limited to 3",
+    "change": "Current presentation selection is capped at 3 per side for both manual and Telegram; historical ORIGINAL selection remains at 4, prior canonical and delivered texts not rewritten. New canonical display_max_per_side=3; analysis retains raw scenarios.",
+    "saved_report_replay": "Using exact saved FIL and RLC canonical liquidation maps: both forms render 3 above / 3 below; 68 and 77 raw calculated scenarios remain, no factual levels invented.",
+    "local_test": "node --test current-generation/tests/htx-source-backed-liquidation-model.test.mjs: 9/9 pass",
+    "full_local_validation": "1427 pass, 4 skipped, 1 assembled-runtime-only failure because encrypted runtime/src/existing-source-consumer.mjs is absent locally; cloud assembled validation pending",
+    "strategy_weights_limits_changed": false,
+    "report_layout_other_than_owner_three_per_side_changed": false
+  },
+  "unresolved": [
+    "Factual future liquidation levels missing for both selected assets; current source diagnostics: RLC Hyperliquid symbol unsupported and dYdX bounded sample empty; FIL same-snapshot dYdX cache skip, later Hyperliquid acquisition returned but did not yield accepted factual level.",
+    "No exact Telegram SENT on this run because neither candidate had a publishable direction/identity.",
+    "All-105 factual level usefulness, longer-term future-level outcome calibration and sustained archive retention are not established."
+  ],
+  "next_action": "Run one assembled cloud verification on exact candidate head, then observe a later natural report for actual 3/3 manual/Telegram use and further factual LIQ source coverage. Do not start another block."
+}

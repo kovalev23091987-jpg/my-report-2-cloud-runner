@@ -50,6 +50,21 @@ test('fresh HTX inputs provide separately labelled scenarios without closing fac
  const lines=displayBriefTelegramLiquidations(map,v=>String(v),{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');assert.match(lines,/расчётный/);assert.match(lines,/размер возможной ликвидации/);assert.doesNotMatch(lines,/фактический/);
 });
 
+test('current manual and Telegram presentation each cap both sides at three while retaining all calculated scenarios',()=>{
+ const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
+ const before=map.calculated_scenario_count;
+ assert.ok(before>6);
+ assert.equal(map.display_max_per_side,3);
+ for(const side of ['ABOVE','BELOW'])assert.equal(selectLiquidationDisplayZones(map,side,{policy:RELEVANT_LIQUIDATION_PRESENTATION}).length,3);
+ const manual=displayFutureLiquidations(map,{policy:RELEVANT_LIQUIDATION_PRESENTATION});
+ const telegram=displayBriefTelegramLiquidations(map,v=>String(v),{policy:RELEVANT_LIQUIDATION_PRESENTATION});
+ for(const lines of [manual,telegram])for(const side of ['выше','ниже']){
+  const line=lines.find(x=>x.startsWith(`Ликвидационные уровни ${side}:`));
+  assert.equal((line.match(/размер возможной ликвидации:/gu)||[]).length,3);
+ }
+ assert.equal(map.calculated_scenario_count,before);
+});
+
 test('factual and HTX calculated future levels join only on the same side within five percent',()=>{
  const model=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
  const scenario=model.calculated_scenarios.find(z=>z.side==='ABOVE'&&Math.abs(z.distance_pct)<100);assert.ok(scenario);

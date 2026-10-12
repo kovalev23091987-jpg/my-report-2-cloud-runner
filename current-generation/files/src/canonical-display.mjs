@@ -4,6 +4,7 @@ import {liquidationSpotReferenceLine} from './liquidation-spot-reference.mjs';
 const text=v=>v==null?'':String(v).trim();
 export const LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT=5;
 export const LIQUIDATION_DISPLAY_MAX_PER_SIDE=4;
+export const CURRENT_LIQUIDATION_DISPLAY_MAX_PER_SIDE=3;
 export const LIQUIDATION_PRESENTATION_CUTOVER=Date.parse('2026-10-07T21:54:00Z');
 export const RELEVANT_LIQUIDATION_PRESENTATION='OWNER_RELEVANT_LEVELS_20261008';
 // An intentionally generous display bound, not a forecast, trade threshold or
@@ -97,7 +98,8 @@ export function auditLiquidationPresentation(liq,{policy='ORIGINAL'}={}){
  });
  return {policy,maximum_distance_pct:policy===RELEVANT_LIQUIDATION_PRESENTATION?LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT:null,raw_level_count:rows.length,omitted_level_count:rows.filter(r=>!['ORIGINAL','DISPLAY_ELIGIBLE'].includes(r.status)).length,rows,analysis_recomputed:false,source_clocks_refreshed:false};
 }
-export function selectLiquidationDisplayZones(liq,side,{limit=LIQUIDATION_DISPLAY_MAX_PER_SIDE,policy='ORIGINAL'}={}){
+export function selectLiquidationDisplayZones(liq,side,{limit=null,policy='ORIGINAL'}={}){
+ const displayLimit=limit??(policy===RELEVANT_LIQUIDATION_PRESENTATION?CURRENT_LIQUIDATION_DISPLAY_MAX_PER_SIDE:LIQUIDATION_DISPLAY_MAX_PER_SIDE);
  const fallback=side==='ABOVE'?liq?.above:liq?.below,all=Array.isArray(liq?.display_source_zones)&&liq.display_source_zones.length?liq.display_source_zones:Array.isArray(liq?.all_zones)&&liq.all_zones.length?liq.all_zones:fallback;
  const eligible=policy===RELEVANT_LIQUIDATION_PRESENTATION?auditLiquidationPresentation({...liq,display_source_zones:all},{policy}).rows.filter(r=>r.status==='DISPLAY_ELIGIBLE').map(r=>r.zone):all;
  const facts=mergeLiquidationDisplayZones(eligible,side);
@@ -116,7 +118,7 @@ export function selectLiquidationDisplayZones(liq,side,{limit=LIQUIDATION_DISPLA
   }else remaining.push(model);
  }
  const standalone=mergeLiquidationDisplayZones(remaining,side);
- return [...facts,...standalone].sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1)||Math.abs(finite(a.distance_pct)??Infinity)-Math.abs(finite(b.distance_pct)??Infinity)).slice(0,limit).sort((a,b)=>Math.abs(finite(a.display_distance_min)??finite(a.distance_pct)??Infinity)-Math.abs(finite(b.display_distance_min)??finite(b.distance_pct)??Infinity));
+ return [...facts,...standalone].sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1)||Math.abs(finite(a.distance_pct)??Infinity)-Math.abs(finite(b.distance_pct)??Infinity)).slice(0,displayLimit).sort((a,b)=>Math.abs(finite(a.display_distance_min)??finite(a.distance_pct)??Infinity)-Math.abs(finite(b.display_distance_min)??finite(b.distance_pct)??Infinity));
 }
 function displayPriceRange(z){return displayNumber(z?.price);}
 function displayDistanceRange(z){const d=finite(z?.distance_pct);return d===null?null:`${d>0?'+':d<0?'−':''}${displayNumber(Math.abs(Number(d.toFixed(2))))}%`;}
