@@ -12,7 +12,7 @@
     "current-generation/files/src/canonical-publication.mjs": "61d9317cfd725d07b722be468c2f7a6a412e3479899bae496c4b6d2beddf739f",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "7574cefd04d8a151345c51a7e0d78e8385ab1bc8840387b110d9b50541dadf6c",
+    "current-generation/files/src/block-result-context.mjs": "96a5440e8346e1d51139492bba8007c859d262a7c35ea1383bfc25d0c002a94e",
     "current-generation/files/src/telegram-plain-facts.mjs": "aa03a621974e86caec86d5a2b6b7577900bd51f2c890140fc0d2729bd8861689",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
     "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236",
@@ -31,6 +31,20 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-12",
+      "scope": "N14_BYBIT_EXACT_NEUTRAL_OPTION_IV_CONTEXT",
+      "authorization": "Owner requested maximum useful N14 source coverage while preserving strategy, weights and approved forms. The added Bybit fact is neutral, original-clock bounded and uses the existing common manual and Telegram context path; historical golden outputs for identical canonical inputs are unchanged.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "7574cefd04d8a151345c51a7e0d78e8385ab1bc8840387b110d9b50541dadf6c",
+          "after": "96a5440e8346e1d51139492bba8007c859d262a7c35ea1383bfc25d0c002a94e"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-12",
       "scope": "N10_SPOT_FLAT_MARKET_CONFLICT_GUARD",
