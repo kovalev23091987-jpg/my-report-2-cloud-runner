@@ -4,11 +4,11 @@ import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} f
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';
 
-export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v5-fil-xpl-native-chain-20261011';
+export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v6-network-aliases-20261012';
 const SOURCE='HTX_ASSET_REFERENCE',CACHE_KEY='ALL_CURRENCIES_CHAIN_ADDRESSES_V1',TTL=6*60*60_000,DAILY_CAP=8;
 export const HTX_ASSET_REFERENCE_URL='https://api.huobi.pro/v2/reference/currencies';
 /* HTX can keep a futures market after the asset disappears from its spot
- * currency catalogue. Such a contract must not lose all exact-source checks.
+ * currency catalogue or its chain list is empty. Such a contract must not lose all exact-source checks.
  * Every override is a versioned, independently inspectable chain binding;
  * ticker similarity alone is never sufficient. */
 export const FUTURES_ONLY_EXACT_ASSET_BINDINGS=Object.freeze({
@@ -19,9 +19,17 @@ export const FUTURES_ONLY_EXACT_ASSET_BINDINGS=Object.freeze({
   official_domain:'quant.network',
   verified_at:'2026-10-04T23:50:00.000Z',
  }),
+ PAXG:Object.freeze({
+  identity:Object.freeze({chain:'ethereum',contract_or_mint:'0x45804880de22913dafe09f4980848ece6ecbaf78'}),
+  method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',
+  evidence_url:'https://etherscan.io/token/0x45804880de22913dafe09f4980848ece6ecbaf78',
+  issuer_evidence_url:'https://github.com/paxosglobal/paxos-gold-contract#abi-address-and-verification',
+  official_domain:'paxos.com',
+  verified_at:'2026-10-12T11:45:00.000Z',
+ }),
 });
 const text=v=>String(v??'').trim(),evm=/^0x[0-9a-f]{40}$/i,solana=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-const chains=Object.freeze({ETH:'ethereum',ETHEREUM:'ethereum',SOL:'solana',SOLANA:'solana',BSC:'bsc',BNB:'bsc',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',BASE:'base',POLYGON:'polygon',MATIC:'polygon',OPTIMISM:'optimism',AVAX:'avalanche',AVALANCHE:'avalanche'});
+const chains=Object.freeze({ETH:'ethereum',ETHEREUM:'ethereum',SOL:'solana',SOLANA:'solana',BSC:'bsc',BNB:'bsc',ARB:'arbitrum',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',TRX:'tron',ROBINHOODCHAIN:'robinhood-chain',BASE:'base',POLYGON:'polygon',MATIC:'polygon',OPTIMISM:'optimism',AVAX:'avalanche',AVALANCHE:'avalanche'});
 const chainOf=row=>chains[text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'')]||null;
 // Identity only: this adds no unverified sector/provider coin mapping.
 const additionalNativeBindings=Object.freeze({
@@ -31,6 +39,11 @@ const additionalNativeBindings=Object.freeze({
  HBAR:Object.freeze({chain:'hedera'}),
  XMR:Object.freeze({chain:'monero'}),
  XPL:Object.freeze({chain:'plasma'}),
+ CHZ:Object.freeze({chain:'chiliz'}),
+ ICP:Object.freeze({chain:'internet-computer'}),
+ TAO:Object.freeze({chain:'bittensor'}),
+ TIA:Object.freeze({chain:'celestia'}),
+ STEEM:Object.freeze({chain:'steem'}),
 });
 export function normalizeHtxAssetReferences(payload){
  if(payload?.code!==200||!Array.isArray(payload.data))return{status:'INVALID_HTX_REFERENCE_RESPONSE',entries:{}};
@@ -45,11 +58,16 @@ export function normalizeHtxAssetReferences(payload){
   const ids=new Map(),nativeIds=new Map(),explicitNativeIds=new Map();let native=false,unsupportedNative=false;
   for(const row of Array.isArray(rows[0]?.chains)?rows[0].chains:[]){
    const chain=chainOf(row),rawAddress=text(row?.contractAddress),address=chain&&chain!=='solana'&&/^[0-9a-f]{40}$/i.test(rawAddress)?`0x${rawAddress}`:rawAddress;
-   if(!address){native=true;const def=NATIVE_SECTOR_BINDINGS[currency]||additionalNativeBindings[currency],nativeAliases={ALGO:['algo'],DASH:['dash1'],FIL:['fil'],XPL:['xpl'],BTC:['btc'],LTC:['ltc'],BCH:['bcc'],DOGE:['doge'],ZEC:['zec1'],XLM:['xlm1'],ETC:['etc'],NEAR:['near'],ETH:['eth'],SOL:['sol'],BNB:['bnb1'],AVAX:['avax','cchainavax'],ADA:['ada'],DOT:['dot1'],TRX:['trx1'],ATOM:['atom1'],XMR:['xmr2'],XRP:['xrp'],SUI:['sui'],APT:['apt'],HBAR:['hbar']};if(def&&row.chainType===0&&nativeAliases[currency]?.includes(text(row.chain).toLowerCase()))explicitNativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});const network=text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'');const accepted=def&&(network===currency||network===def.chain.toUpperCase()||chain===def.chain);if(accepted)nativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});else unsupportedNative=true;continue;}
-   if(!chain||(chain==='solana'?!solana.test(address):!evm.test(address)))continue;
-   const canonical=chain==='solana'?address:address.toLowerCase();ids.set(`${chain}:${canonical}`,{chain,contract_or_mint:canonical});
+   if(!address){native=true;const def=NATIVE_SECTOR_BINDINGS[currency]||additionalNativeBindings[currency],nativeAliases={ALGO:['algo'],DASH:['dash1'],FIL:['fil'],XPL:['xpl'],CHZ:['chz2'],ICP:['icp'],TAO:['bitao'],TIA:['tia'],STEEM:['steem1'],BTC:['btc'],LTC:['ltc'],BCH:['bcc'],DOGE:['doge'],ZEC:['zec1'],XLM:['xlm1'],ETC:['etc'],NEAR:['near'],ETH:['eth'],SOL:['sol'],BNB:['bnb1'],AVAX:['avax','cchainavax'],ADA:['ada'],DOT:['dot1'],TRX:['trx1'],ATOM:['atom1'],XMR:['xmr2'],XRP:['xrp'],SUI:['sui'],APT:['apt'],HBAR:['hbar']};if(def&&row.chainType===0&&nativeAliases[currency]?.includes(text(row.chain).toLowerCase()))explicitNativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});const network=text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'');const accepted=def&&(network===currency||network===def.chain.toUpperCase()||chain===def.chain);if(accepted)nativeIds.set(def.chain,{chain:def.chain,asset_kind:'NATIVE',native_asset_id:`${def.chain}:mainnet`,contract_or_mint:null});else unsupportedNative=true;continue;}
+   if(!chain||(chain==='solana'?!solana.test(address):chain==='tron'?!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address):!evm.test(address)))continue;
+   const canonical=chain==='solana'||chain==='tron'?address:address.toLowerCase();ids.set(`${chain}:${canonical}`,{chain,contract_or_mint:canonical});
   }
   if(explicitNativeIds.size===1){entries[currency]={status:'CLOSED',identities:[...explicitNativeIds.values()],binding_scope:'EXACT_NATIVE_CHAIN_TYPE_0',wrapped_bindings_excluded:ids.size};continue;}
+  // BTT has three bridge addresses in HTX. Its exact TRON address is also
+  // published by the project and matches the retained Bitget/Gate/Poloniex
+  // catalogues; keep that one network scoped without guessing from ticker.
+  const bttTron='TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4';
+  if(currency==='BTT'&&ids.has(`tron:${bttTron}`)){entries[currency]={status:'CLOSED',identities:[ids.get(`tron:${bttTron}`)],binding_scope:'EXACT_PROJECT_TRON_TOKEN',wrapped_bindings_excluded:ids.size-1};continue;}
   const nativeIdentities=[...nativeIds.values()];if(!ids.size&&nativeIdentities.length===1&&!unsupportedNative){entries[currency]={status:'CLOSED',identities:nativeIdentities};continue;}
   const identities=[...ids.values()];entries[currency]={status:identities.length&&native?'NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE':identities.length===1?'CLOSED':identities.length>1?'AMBIGUOUS_HTX_CHAIN_ADDRESSES':native?'NATIVE_OR_UNSUPPORTED_HTX_ASSET':'SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND',identities};
  }
@@ -65,7 +83,7 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
  const market=text(contract).toUpperCase();
  if(!db?.prepare||!/^\S+-USDT$/u.test(market)||!text(run_id))return{status:'EXACT_HTX_MARKET_AND_RUN_REQUIRED',identity:null,network_calls:0};
  const override=FUTURES_ONLY_EXACT_ASSET_BINDINGS[market.slice(0,-5)];
- if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_FUTURES_ONLY_BINDING',receipt:{evidence_url:override.evidence_url,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
+ if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_EXACT_ASSET_BINDING',receipt:{evidence_url:override.evidence_url,issuer_evidence_url:override.issuer_evidence_url||null,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
  await installEvidenceSourceStore(db);
  const withFallback=async primary=>{
   if(primary.status==='CLOSED')return primary;

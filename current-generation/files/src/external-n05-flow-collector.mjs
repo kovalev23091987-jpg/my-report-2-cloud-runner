@@ -1,4 +1,5 @@
 import {collectPoloniexFlow} from './poloniex-native-flow-collector.mjs';
+import {eligiblePoloniexIdentity} from './poloniex-native-four-hour-flow.mjs';
 import {collectBackpackFlow} from './backpack-flow-collector.mjs';
 import {collectKrakenFlow} from './kraken-flow-collector.mjs';
 import {collectBitfinexNativeFlow} from './bitfinex-native-flow-collector.mjs';
@@ -10,6 +11,16 @@ import {collectOkxN12NativeTrades,collectKucoinN12NativeTrades,collectKucoinN12E
 import {collectBinanceNativeFlow} from './binance-native-flow-collector.mjs';
 import {exactBinanceNativeIdentity} from './binance-native-four-hour-flow.mjs';
 import {exactBitfinexNativeIdentity} from './bitfinex-native-four-hour-flow.mjs';
+
+// These seven exact markets yielded original 240 closed one-minute Poloniex
+// candles with native buy-taker amounts in cloud run 38245108128. Prefer the
+// proven four-hour route within the unchanged five-call envelope; later
+// venues can still supply further facts from the remaining admitted calls.
+const poloniexWindowProven=new Set(['ARB-USDT','BTT-USDT','ICP-USDT','JST-USDT','STEEM-USDT','SUN-USDT','WIN-USDT']);
+export function orderN05VenueRoutes(contract,identity,routes){
+ if(!poloniexWindowProven.has(contract)||!eligiblePoloniexIdentity(contract,identity))return routes;
+ return [...routes.filter(([venue])=>venue==='POLONIEX'),...routes.filter(([venue])=>venue!=='POLONIEX')];
+}
 
 // Internal orchestration seam: production routes are fixed below. Every route
 // shares one caller envelope; each adapter retains its own durable admission.
@@ -56,5 +67,5 @@ export async function collectExternalN05Flow(params={}){
  // N05 envelope. They cannot displace an established four-hour flow route.
  if(params.asset_identity?.asset_kind==='NATIVE')routes.push(['OKX_N12_NATIVE',collectOkxN12NativeTrades],['KUCOIN_N12_NATIVE',collectKucoinN12NativeTrades]);
  if(params.asset_identity?.contract_or_mint)routes.push(['KUCOIN_N12_EXACT_TOKEN',collectKucoinN12ExactTrades]);
- return collectN05VenueRoutes(params,routes);
+ return collectN05VenueRoutes(params,orderN05VenueRoutes(params.contract,params.asset_identity,routes));
 }

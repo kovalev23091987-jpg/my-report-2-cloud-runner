@@ -85,6 +85,36 @@ export function deriveHtxRecentPathEvidence({contract,window,source_ts,observed_
    same_htx_upstream_not_independent:true,entry_authorized_by_context:false,liquidation_as_target:false}})];
 }
 
+// The existing HTX spot snapshot already requests one-minute candles. Use its
+// original response for a factual second market path without another HTTP call.
+// Spot and futures from HTX are two markets, never independent venue votes.
+export function deriveHtxSpotSameRunPathEvidence({contract,spot_kline,htx_window,now=Date.now()}={}){
+ const p=spot_kline?.payload,received=spot_kline?.received_ts,base=String(contract||'').slice(0,-5).toLowerCase();
+ if(!isExactHtxUsdtSwapKey(contract)||spot_kline?.market!=='SPOT'||spot_kline.contract!==contract||
+  p?.status!=='ok'||p.ch!==`market.${base}usdt.kline.1min`||!Number.isSafeInteger(p.ts)||
+  !Number.isSafeInteger(received)||!Number.isSafeInteger(now)||p.ts>received||received>now||now-p.ts>TTL||!Array.isArray(p.data))return[];
+ const latestEnd=Math.floor(p.ts/60000)*60000,anchor=htx_window?.window_end_ts;
+ const end=Number.isSafeInteger(anchor)&&anchor<=latestEnd&&latestEnd-anchor<=120000?anchor:latestEnd,start=end-15*60000;
+ if(end>now||now-end>TTL)return[];
+ const raw=p.data.filter(r=>Number.isSafeInteger(r?.id)&&r.id*1000>=start&&r.id*1000<end).sort((a,b)=>a.id-b.id);
+ if(raw.length!==15||!raw.every((r,i)=>r.id*1000===start+i*60000&&['open','high','low','close'].every(k=>typeof r[k]==='number'&&Number.isFinite(r[k])&&r[k]>0)&&
+  r.low<=r.high&&r.open>=r.low&&r.open<=r.high&&r.close>=r.low&&r.close<=r.high&&Number.isSafeInteger(r.count)&&r.count>=0))return[];
+ const active=raw.filter(r=>r.count>0).length;if(!active)return[];
+ const bars=raw.map(r=>({id:r.id,open:r.open,high:r.high,low:r.low,close:r.close,count:r.count}));
+ const open=bars[0].open,high=Math.max(...bars.map(r=>r.high)),low=Math.min(...bars.map(r=>r.low)),close=bars.at(-1).close;
+ const h=htx_window?.window_end_ts===end&&[htx_window.open,htx_window.high,htx_window.low,htx_window.close].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>0)&&htx_window.low<=htx_window.high&&htx_window.open>=htx_window.low&&htx_window.open<=htx_window.high&&htx_window.close>=htx_window.low&&htx_window.close<=htx_window.high?htx_window:null;
+ const overlap=h?!(high<h.low||low>h.high):null;
+ const spotMove=close-open,futuresMove=h?h.close-h.open:null;
+ const comparison=h?(overlap?(spotMove===0||futuresMove===0?'DIRECTION_UNCONFIRMED':spotMove*futuresMove>0?'SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION':'DIRECTION_CONFLICT'):'DISJOINT_PRICE_RANGES'):'SPOT_ONLY';
+ return[buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:'HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES',asset_id:`htx-spot:${contract}`,htx_contract:contract,block_id:'N10',metric_family:'CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT',origin_event_id:`HTX_SPOT:${contract}:${end}`,dependency_group:`HTX_SPOT_CLOSED_CANDLES:${contract}:${end}`,source_ts:end,observed_ts:now,first_known_ts:received,expires_at:Math.min(end+TTL,received+TTL),coverage_status:'EXACT_FIFTEEN_CLOSED_ACTIVE_SPOT_MINUTE_CANDLES',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{venue:'HTX',market:'SPOT',quote:'USDT',window_start:start,window_end:end,candle_count:15,active_minute_count:active,path_open:open,path_high:high,path_low:low,path_close:close,change_pct:(close/open-1)*100,comparison_status:comparison,htx_futures_window:h?{open:h.open,high:h.high,low:h.low,close:h.close,window_end_ts:end}:null,raw_spot_bars:bars,provider_response_ts:p.ts,spot_received_ts:received,source_clock_policy:'SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M',same_htx_upstream_not_independent:true,entry_authorized_by_context:false,liquidation_as_target:false,score_contribution:0}})];
+}
+
+export function verifyHtxSpotSameRunPathEvidence(row,{now=row?.observed_ts}={}){
+ if(row?.block_id!=='N10'||row.metric_family!=='CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT'||row.provider_id!=='PRIMARY_TECHNICAL_CONTEXT'||row.upstream_id!=='HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES'||row.market!=='SPOT'||row.venue!=='HTX'||row.same_htx_upstream_not_independent!==true||row.score_contribution!==0||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||!Array.isArray(row.raw_spot_bars)||row.raw_spot_bars.length!==15)return false;
+ const rebuilt=deriveHtxSpotSameRunPathEvidence({contract:row.htx_contract,spot_kline:{market:'SPOT',contract:row.htx_contract,received_ts:row.spot_received_ts,payload:{status:'ok',ch:`market.${row.htx_contract.slice(0,-5).toLowerCase()}usdt.kline.1min`,ts:row.provider_response_ts,data:row.raw_spot_bars}},htx_window:row.htx_futures_window,now});
+ return rebuilt.length===1&&rebuilt[0].evidence_id===row.evidence_id&&rebuilt[0].raw_hash===row.raw_hash&&rebuilt[0].source_ts===row.source_ts&&rebuilt[0].expires_at===row.expires_at;
+}
+
 // N05 has already paid for and validated these *original* 240 closed minute
 // candles. Reuse its exact same-window cache without provider HTTP. A venue is
 // an independent price root only when its N05 component has an exact asset

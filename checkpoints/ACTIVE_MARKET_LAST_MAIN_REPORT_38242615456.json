@@ -1,0 +1,108 @@
+{
+  "schema": "REPORT2_ACTIVE_MARKET_LAST_MAIN_REPORT_V1",
+  "recorded_utc": "2026-10-12T12:00:36.000Z",
+  "github_run": 38242615456,
+  "head": "4e6d70920a9aee4c71f98ab9e33e5ace521b3345",
+  "run_id": "1791804390906-1791804402387",
+  "source": "schedule",
+  "github_event": "workflow_dispatch",
+  "status": "CLOSED",
+  "scan": {
+    "universe_total": 104,
+    "scanned": 104,
+    "errors": 0,
+    "stale": 0
+  },
+  "qualified_candidates": 23,
+  "top_two": [
+    "BTR-USDT",
+    "GRAM-USDT"
+  ],
+  "candidate_states": {
+    "GRAM-USDT": "REJECTED",
+    "BTR-USDT": "REJECTED"
+  },
+  "active_block_statuses": {
+    "GRAM-USDT": {
+      "N05": {
+        "status": "CHECKED_NEUTRAL_CONTEXT",
+        "source_statuses": {
+          "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+          "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+          "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+          "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "NANSEN_FLOWS": "NOT_EVALUATED",
+          "EXTERNAL_N05_FLOW": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+          "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+        }
+      },
+      "N10": {
+        "status": "CHECKED_NEUTRAL_CONTEXT",
+        "source_statuses": {
+          "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+        }
+      },
+      "N11": {
+        "status": "CHECKED_NEUTRAL_CONTEXT",
+        "source_statuses": {
+          "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+        }
+      },
+      "N12": {
+        "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+        "source_statuses": {
+          "HTX_LARGE_TRADES": "CLOSED_BOUNDED_PARTIAL_MARKET"
+        }
+      }
+    },
+    "BTR-USDT": {
+      "N05": {
+        "status": "CHECKED_NEUTRAL_CONTEXT",
+        "source_statuses": {
+          "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+          "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+          "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+          "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "NANSEN_FLOWS": "NOT_EVALUATED",
+          "EXTERNAL_N05_FLOW": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+          "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+        }
+      },
+      "N10": {
+        "status": "CHECKED_NEUTRAL_CONTEXT",
+        "source_statuses": {
+          "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+        }
+      },
+      "N11": {
+        "status": "CHECKED_NEUTRAL_CONTEXT",
+        "source_statuses": {
+          "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+        }
+      },
+      "N12": {
+        "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+        "source_statuses": {
+          "HTX_LARGE_TRADES": "CLOSED_BOUNDED_PARTIAL_MARKET"
+        }
+      }
+    }
+  },
+  "same_run_telegram_sent": false,
+  "run_artifact": {
+    "id": 11744111311,
+    "digest": "sha256:6f95007b4e620776828d0ac584cb0705179022777a0972ac267aeb8030d62bf9"
+  },
+  "delivery_artifact": {
+    "id": 11743172522,
+    "digest": "sha256:fc1493d2a404e82ca581bc31dd951edfeb5058cbd440e506bafc2a6a7be700bc"
+  },
+  "original_files": {
+    "known-d1-day-guard.json": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605",
+    "same-run-delivery-proof.json": "7dedca2738b5f9994ea773d8461073590e26b919617087a086312ee0b6d1ce10",
+    "report2-run-result.json": "f106487b23f0b8c0fc12ba2572dad4728c7db96f68359a40d426fbe0443a979f",
+    "automatic-delivery-audit.json": "5fe5ac874bbbb9f29f735da3d921529b4bce2597cb26f33852f861d989bf3fce",
+    "telegram-info-proof.json": "3c44ce3636f7fb4ebfa7a6ebe981453ef967358b4a756894218ed1385623312f"
+  },
+  "note": "This run preceded PR332. It proves old-main natural selected candidates but not new alias-route/N10 production use."
+}

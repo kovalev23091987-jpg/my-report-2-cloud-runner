@@ -21,7 +21,7 @@ import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
-import {deriveHtxRecentPathEvidence,verifyN10ReusedVenuePathEvidence} from './htx-technical-structure.mjs';
+import {deriveHtxRecentPathEvidence,verifyHtxSpotSameRunPathEvidence,verifyN10ReusedVenuePathEvidence} from './htx-technical-structure.mjs';
 
 export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v11-verified-native-evm-20261007';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
@@ -131,6 +131,12 @@ function describe(row,now){
    row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
   const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v),sign=row.change_pct>0?'+':'';
   return{source:'HTX / закрытые минутные свечи',label:'Фактический путь цены за 15 минут',value:`15 закрытых минутных свечей: ${price(row.path_open)} → ${price(row.path_close)} USDT (${sign}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены`};
+ }
+ if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT'){
+  if(!verifyHtxSpotSameRunPathEvidence(row,{now}))return null;
+  const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v),sign=row.change_pct>0?'+':'';
+  const comparison=row.comparison_status==='SPOT_ONLY'?'Доступен только спотовый путь; общее направление со срочным рынком не подтверждено':row.comparison_status==='SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION'?'Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника':row.comparison_status==='DIRECTION_CONFLICT'?'Направления спота и фьючерса HTX расходятся; общего вывода нет':row.comparison_status==='DIRECTION_UNCONFIRMED'?'В одном из рынков цена не изменилась; общее направление не подтверждено':'Ценовые диапазоны спота и фьючерса HTX не пересекаются; общего вывода нет';
+  return{source:'HTX / спотовые закрытые свечи',label:'Фактический путь цены на споте за 15 минут',value:`15 закрытых минутных свечей, активных минут ${row.active_minute_count}: ${price(row.path_open)} → ${price(row.path_close)} USDT (${sign}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT. ${comparison}. Цель и разрешение входа этим не подтверждены`};
  }
  if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT'){
   if(!verifyN10ReusedVenuePathEvidence(row,{now}))return null;

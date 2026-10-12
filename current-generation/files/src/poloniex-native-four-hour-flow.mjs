@@ -1,20 +1,20 @@
 export const POLONIEX_FLOW_VERSION='poloniex-native-taker-flow-v1-20261010';
 export const POLONIEX_ASSET_REFERENCE='https://api.poloniex.com/v2/currencies';
 export const POLONIEX_CANDLE_REFERENCE='https://api-docs.poloniex.com/spot/api/public/market-data';
-const tokenChains={ETH:'ethereum',ERC20:'ethereum',BSC:'bsc',BEP20:'bsc',SOL:'solana',SOLANA:'solana',ARBITRUM:'arbitrum',BASE:'base',OPTIMISM:'optimism',POLYGON:'polygon',AVAX:'avalanche'};
-const nativeChains={BTC:'bitcoin',ETH:'ethereum',DOGE:'dogecoin',LTC:'litecoin',BCH:'bitcoin-cash',ZEC:'zcash',ETC:'ethereum-classic',XLM:'stellar',NEAR:'near',ADA:'cardano',ATOM:'cosmos',SOL:'solana',BNB:'bsc',BSC:'bsc',AVAX:'avalanche',DOT:'polkadot',TRX:'tron',XRP:'xrp',HBAR:'hedera',APT:'aptos',SUI:'sui'};
+const tokenChains={ETH:'ethereum',ERC20:'ethereum',BSC:'bsc',BEP20:'bsc',SOL:'solana',SOLANA:'solana',TRX:'tron',ETHROB:'robinhood-chain',ETHARB:'arbitrum',ARBITRUM:'arbitrum',BASE:'base',OPTIMISM:'optimism',POLYGON:'polygon',AVAX:'avalanche'};
+const nativeChains={BTC:'bitcoin',ETH:'ethereum',DOGE:'dogecoin',LTC:'litecoin',BCH:'bitcoin-cash',ZEC:'zcash',ETC:'ethereum-classic',XLM:'stellar',NEAR:'near',ADA:'cardano',ATOM:'cosmos',SOL:'solana',BNB:'bsc',BSC:'bsc',AVAX:'avalanche',DOT:'polkadot',TRX:'tron',XRP:'xrp',HBAR:'hedera',APT:'aptos',SUI:'sui',CHZ:'chiliz',ICP:'internet-computer',STEEM:'steem'};
 const evm=/^0x[0-9a-f]{40}$/i,sol=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 export function eligiblePoloniexIdentity(contract,identity){
  const base=String(contract||'').replace(/-USDT$/,'');
  if(!base||contract!==base+'-USDT'||!identity)return false;
  if(identity.asset_kind==='NATIVE')return nativeChains[base]===identity.chain&&identity.native_asset_id===identity.chain+':mainnet'&&!identity.contract_or_mint;
- return Object.values(tokenChains).includes(identity.chain)&&(identity.chain==='solana'?sol.test(identity.contract_or_mint||''):evm.test(identity.contract_or_mint||''));
+ return Object.values(tokenChains).includes(identity.chain)&&(identity.chain==='solana'?sol.test(identity.contract_or_mint||''):identity.chain==='tron'?/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(identity.contract_or_mint||''):evm.test(identity.contract_or_mint||''));
 }
 export function exactPoloniexBinding({contract,identity,assets,markets}={}){
  if(!eligiblePoloniexIdentity(contract,identity)||!Array.isArray(assets)||!Array.isArray(markets))return false;
  const base=contract.slice(0,-5),a=assets.filter(r=>r.coin===base),m=markets.filter(r=>r.symbol===base+'_USDT');
  if(a.length!==1||m.length!==1||a[0].delisted!==false||a[0].tradeEnable!==true||m[0].state!=='NORMAL'||m[0].baseCurrencyName!==base||m[0].quoteCurrencyName!=='USDT'||m[0].symbolTradeLimit?.symbol!==base+'_USDT')return false;
- const matches=(a[0].networkList||[]).filter(r=>identity.asset_kind==='NATIVE'?nativeChains[r.blockchain]===identity.chain&&!r.contractAddress:tokenChains[r.blockchain]===identity.chain&&typeof r.contractAddress==='string'&&(identity.chain==='solana'?r.contractAddress===identity.contract_or_mint:r.contractAddress.toLowerCase()===identity.contract_or_mint.toLowerCase()));
+ const matches=(a[0].networkList||[]).filter(r=>identity.asset_kind==='NATIVE'?nativeChains[r.blockchain]===identity.chain&&!r.contractAddress:tokenChains[r.blockchain]===identity.chain&&typeof r.contractAddress==='string'&&(['solana','tron'].includes(identity.chain)?r.contractAddress===identity.contract_or_mint:r.contractAddress.toLowerCase()===identity.contract_or_mint.toLowerCase()));
  return matches.length===1;
 }
 const dec=v=>{if(typeof v!=='string'||!/^\d+(\.\d+)?$/.test(v))throw Error('INVALID_DECIMAL');const[a,b='']=v.split('.');if(b.length>18)throw Error('DECIMAL_PRECISION_UNSUPPORTED');return{n:BigInt(a+b)*10n**BigInt(18-b.length),unit:10n**BigInt(18-b.length)};};

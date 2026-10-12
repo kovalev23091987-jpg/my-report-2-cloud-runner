@@ -2,7 +2,7 @@ import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAna
 import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
-import {buildHtxPrimaryTechnicalReceipt,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
+import {buildHtxPrimaryTechnicalReceipt,deriveHtxSpotSameRunPathEvidence,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
 import {buildHtxFuturesFlowPrimary} from './candidate-evidence-v2-runtime.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence,rankedEarlyPersistenceContracts} from './selected-early-evidence.mjs';
@@ -1544,6 +1544,7 @@ async function spotSnapshot(params) {
     },
   };
   Object.defineProperty(snapshot, "_n12_raw_trades", {value:{market:"SPOT",contract:inputSymbol,payload:tradesR.ok?tradesR.data:null,received_ts:Date.now()}, enumerable:false});
+  Object.defineProperty(snapshot, "_n10_spot_kline", {value:{market:"SPOT",contract:inputSymbol,payload:kline1mR.ok?kline1mR.data:null,received_ts:Date.now()}, enumerable:false});
   return snapshot;
 }/* =========================================================
    FUTURES TRAJECTORY — НОВЫЙ МОДУЛЬ ДЛЯ CHAIN 6
@@ -17181,6 +17182,14 @@ async function buildDeepCheckInput(params, env) {
   const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
   const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
   const primaryTechnicalReceipt=buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price:htxObservationReferencePrice,now,route_state:technicalState});
+  const htxTechnicalWindow=primaryTechnicalReceipt.receipts?.[0]?.actual_price_windows?.find(w=>w.label==='15m');
+  const spotTechnicalPath=deriveHtxSpotSameRunPathEvidence({contract,spot_kline:spot?.data?._n10_spot_kline,htx_window:htxTechnicalWindow,now});
+  if(spotTechnicalPath.length){
+    primaryTechnicalReceipt.evidence.push(...spotTechnicalPath);
+    primaryTechnicalReceipt.check_completed=true;
+    if(primaryTechnicalReceipt.status!=='CHECKED_PRIMARY_TECHNICAL_CONTEXT')primaryTechnicalReceipt.status='CHECKED_SPOT_ONLY_TECHNICAL_CONTEXT';
+    primaryTechnicalReceipt.receipts.push({source:'SAME_RUN_HTX_SPOT_CLOSED_CANDLES',status:'CLOSED_SPOT_PRICE_PATH',provider_http_delta:0,market:'SPOT',same_htx_upstream_not_independent:true,check_completed:true});
+  }
   const reusedVenuePaths=await loadN10ReusedVenuePaths({db:env?.DATA_DB,contract,flow_result:candidateEvidenceV2?.sources?.EXTERNAL_N05_FLOW,primary_receipt:primaryTechnicalReceipt,now});
   if(reusedVenuePaths.evidence.length){
     primaryTechnicalReceipt.evidence.push(...reusedVenuePaths.evidence);
