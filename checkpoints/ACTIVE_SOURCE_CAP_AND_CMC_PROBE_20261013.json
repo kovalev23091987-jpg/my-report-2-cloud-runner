@@ -1,0 +1,45 @@
+{
+  "schema": "REPORT2_ACTIVE_SOURCE_CAP_AND_CMC_PROBE_V1",
+  "readback_utc": "2026-10-13T12:52:30Z",
+  "main_at_readback": "76531a5ffe66253e6e3a769bdb5f97536d1c498e",
+  "d1": {
+    "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "query": "SELECT source, day_utc, attempts, updated_at FROM report2_evidence_source_daily WHERE day_utc='2026-10-13' AND source IN ('COINGECKO_SECTOR','COINPAPRIKA_SECTOR') ORDER BY source",
+    "rows": [
+      {"source": "COINGECKO_SECTOR", "day_utc": "2026-10-13", "attempts": 48, "updated_at": 1791893869278},
+      {"source": "COINPAPRIKA_SECTOR", "day_utc": "2026-10-13", "attempts": 48, "updated_at": 1791893821549}
+    ],
+    "meta": {"rows_read": 4, "rows_written": 0, "changed_db": false, "total_attempts": 1},
+    "configured_daily_cap_each": 48,
+    "configured_cap_source": "current-generation/files/src/evidence-source-adapters.mjs",
+    "conclusion": "Both N15 sector provider budgets are exhausted for this UTC day; no further provider HTTP should be admitted for those routes. This does not prove no cached valid fact exists, but cannot guarantee fresh sector evidence for every 40-minute full report.",
+    "limits_changed": false
+  },
+  "new_source_candidate": {
+    "provider": "CoinMarketCap Keyless Public API",
+    "official_documentation": [
+      "https://coinmarketcap.com/api/documentation/pro-api-reference/keyless-public-api",
+      "https://coinmarketcap.com/api/documentation/pro-api-reference/cryptocurrency"
+    ],
+    "probe_scope": "Two bounded HTTP requests; no production integration or source alias",
+    "category_list_request": "GET https://pro-api.coinmarketcap.com/public-api/v1/cryptocurrency/categories?symbol=FARTCOIN&limit=20",
+    "category_list_http": 200,
+    "category_list_source_ts": "2026-10-13T12:51:34.518Z",
+    "category_list_count": 10,
+    "category_list_body": "checkpoints/n15-cmc-keyless-probe-20261013/fartcoin-categories.json",
+    "category_list_sha256": "88d6741bdf7beba70ea62efbaa623260185c9990b6883ed93d3ccff04301b5db",
+    "category_detail_request": "GET https://pro-api.coinmarketcap.com/public-api/v1/cryptocurrency/category?id=67198e5c8fd30952c38c3fa1&limit=165&convert=USD",
+    "category_detail_http": 429,
+    "category_detail_source_ts": "2026-10-13T12:51:59.809Z",
+    "category_detail_body": "checkpoints/n15-cmc-keyless-probe-20261013/ai-memes-rate-limit.json",
+    "category_detail_sha256": "84eb9fbc2260071ab2c38b4174f8be56f7c0b25298b40fc12f7803d5e4e4d764",
+    "provider_error": "You've reached the limit for anonymous access. Sign in to activate a free API plan or upgrade for higher limits.",
+    "numeric_target_and_peer_quotes_obtained": false,
+    "exact_asset_identity_verified": false,
+    "sustainable_free_40_minute_budget_verified": false,
+    "production_eligible": false,
+    "next_step": "Do not integrate or count this candidate. A free named API plan would need a key, confirmed quota, exact token binding and one useful target/peer numeric payload before a separate admitted implementation batch. Do not retry the anonymous endpoint today."
+  },
+  "strategy_weights_format_telegram_unchanged": true,
+  "spot_futures_rule_unchanged": "Use HTX futures plus available HTX spot on the same asset with original source clocks in applicable blocks; never treat two HTX markets as independent providers. N11 and liquidation levels are futures-specific, with spot only possible price context."
+}
