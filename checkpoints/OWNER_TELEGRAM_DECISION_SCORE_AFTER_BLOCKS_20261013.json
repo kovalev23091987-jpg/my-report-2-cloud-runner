@@ -1,0 +1,34 @@
+{
+  "schema": "REPORT2_OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_V1",
+  "recorded_utc": "2026-10-13T13:00:17Z",
+  "scope": "Required Telegram work after completing the current block-by-block source and limit work; do not begin the broader Telegram change during the block phase.",
+  "owner_requirement": "The single numeric score shown in Telegram must be the score that actually affects the entry decision. Do not substitute an internal early-interest or discovery score. This restates the owner's original Telegram task and is mandatory after blocks.",
+  "additional_owner_requirement": "Actual Telegram messages have again departed from the owner-approved form. After block work, compare real sent messages against the approved form and correct presentation only after the owner restates the exact desired Telegram message requirements.",
+  "owner_sequence": "Finish block work first. Then tell the owner that Telegram presentation work is ready and receive the owner's precise restated form before changing it. The score semantics and format incident remain mandatory backlog, not a license for an unreviewed format change now.",
+  "observed_incident": {
+    "contract": "FARTCOIN-USDT",
+    "full_run": 38396042005,
+    "run_id": "1791893790818-1791893800260",
+    "snapshot_id": "S392:FARTCOIN-USDT:1791893895729",
+    "telegram_message_id": "191",
+    "telegram_display": "Оценка: 100 из 100.",
+    "canonical_state": "OBSERVE",
+    "canonical_scores": {"overall_0_100": null, "coin_interest_0_100": 100, "entry_readiness_0_100": null, "is_probability": false},
+    "data_quality": "PARTIAL",
+    "source": "Saved exact run result from workflow 38396042005 and owner screenshot of actual Telegram message",
+    "reproducer_in_current_code": "current-generation/files/src/canonical-publication.mjs: shownScore = overall_0_100 ?? coin_interest_0_100; Telegram prints generic 'Оценка'.",
+    "meaning": "The visible 100 was an early-interest fallback, not a confirmed overall or entry-readiness score. The spot/futures joint conclusion and trade sample were unconfirmed; entry awaited a later full check. This presentation can mislead the owner about entry readiness even though the backend did not approve ENTRY.",
+    "score_weights_or_entry_decision_changed": false
+  },
+  "post_blocks_acceptance": [
+    "Trace the approved entry-decision score through source, scoring, canonical publication, manual report and Telegram for OBSERVE, WAIT, ENTRY and removal.",
+    "For OBSERVE where the entry-decision score is absent, display an honest unconfirmed state rather than the early-interest 100; do not invent a numeric score.",
+    "Use one owner-approved concise Telegram score label and preserve the approved form, liquidations, thresholds, weights and entry guards unless separately agreed.",
+    "Verify saved replay first, both report paths, then a fresh same-run Telegram SENT/message_id when a naturally admitted event occurs."
+  ],
+  "implementation_now": "DEFERRED_BY_OWNER_UNTIL_BLOCK_WORK_FINISHED_AND_PRECISE_TELEGRAM_FORM_RESTATED",
+  "historical_tz": [
+    "checkpoints/OWNER_BRIEF_TELEGRAM_AMENDMENT_20261007.md",
+    "checkpoints/CURRENT_TZ_RECONCILIATION_86_20261007.md"
+  ]
+}
