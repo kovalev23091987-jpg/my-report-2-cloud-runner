@@ -31,7 +31,11 @@ test('only authorized report and bounded source workflows remain manually runnab
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['deploy-free-history-20261012.yml','htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
+ assert.deepEqual(manual,['deploy-free-history-20261012.yml','deploy-liq-forecast-history-20261013.yml','htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
+ const liquidationArchive=fs.readFileSync(new URL('deploy-liq-forecast-history-20261013.yml',root),'utf8');
+ assert.match(liquidationArchive,/Check exact main owner lease and fence/);
+ assert.match(liquidationArchive,/wrangler@4 deploy --config cloudflare\/free-history\/wrangler-liq\.json/);
+ assert.doesNotMatch(liquidationArchive,/runner-main|sendLifecycleRelay|manual-requests/);
  const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
