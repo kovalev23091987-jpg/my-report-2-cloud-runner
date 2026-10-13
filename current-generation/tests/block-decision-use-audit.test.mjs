@@ -6,6 +6,15 @@ const fixture=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserve
 const saved=JSON.parse(fs.readFileSync(new URL('../../checkpoints/main-all15-live-audit-20261004.json',import.meta.url)));
 function canonical(){const c=structuredClone(fixture.canonical);c.metadata.internal_market_context.evidence_v2.block_coverage=saved.candidates[0].block_coverage;return c;}
 
+test('shared source transport diagnostic survives canonical audit without changing score or participation',()=>{
+ const c=canonical(),before=auditCanonicalBlockDecisionUse(c),allocation={status:'RECONCILED_ADAPTER_TRANSPORT',total_http:5,n05_http:1,n12_http:4,no_double_count:true};
+ c.metadata.internal_market_context.evidence_v2.block_coverage.shared_n05_n12_http_attribution=allocation;
+ const after=auditCanonicalBlockDecisionUse(c);
+ assert.deepEqual(after.shared_n05_n12_http_attribution,allocation);
+ assert.equal(after.score_applied_block_count,before.score_applied_block_count);
+ assert.deepEqual(after.participating_block_ids,before.participating_block_ids);
+});
+
 test('same actual BTW snapshot separates four eligible facts from zero applied score blocks',()=>{
  const c=canonical(),before=JSON.stringify(c),r=auditCanonicalBlockDecisionUse(c);
  assert.equal(r.checked_block_count,6);assert.equal(r.directional_eligible_block_count,3);

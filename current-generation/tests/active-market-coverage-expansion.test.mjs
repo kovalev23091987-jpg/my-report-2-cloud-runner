@@ -9,13 +9,28 @@ import {exactGateTokenBinding} from '../files/src/gate-four-hour-flow.mjs';
 import {exactPoloniexBinding} from '../files/src/poloniex-native-four-hour-flow.mjs';
 import {normalizePoloniexNativeFlow,qualifiedPoloniexNativeComponent} from '../files/src/poloniex-native-four-hour-flow.mjs';
 import {deriveHtxSpotSameRunPathEvidence,verifyHtxSpotSameRunPathEvidence} from '../files/src/htx-technical-structure.mjs';
-import {finalizeCandidateBlockCoverage} from '../files/src/candidate-evidence-v2-runtime.mjs';
+import {finalizeCandidateBlockCoverage,attributeSharedN05N12Http} from '../files/src/candidate-evidence-v2-runtime.mjs';
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 import {orderN05VenueRoutes} from '../files/src/external-n05-flow-collector.mjs';
 import {availableFlowContext,validateAvailableFlowEvidence} from '../files/src/joint-spot-futures-flow.mjs';
 
 const original=path=>JSON.parse(gunzipSync(readFileSync(new URL(`../../checkpoints/${path}`,import.meta.url))));
 const row=(list,key,value)=>(Array.isArray(list)?list:list.data).find(item=>item[key]===value);
+
+test('shared N05 envelope attributes optional N12 transport without counting it twice',()=>{
+ const flow={network_calls:5,adapter_results:[
+  {venue:'BINANCE',network_calls:1,status:'CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS'},
+  {venue:'OKX_N12_NATIVE',network_calls:4,status:'CLOSED_BOUNDED_N12_PUBLIC_TRADES'},
+  {venue:'POLONIEX',network_calls:0,status:'SOURCE_DAILY_CAP_DENIED'}
+ ]};
+ const a=attributeSharedN05N12Http(flow);
+ assert.deepEqual([a.status,a.total_http,a.n05_http,a.n12_http,a.no_double_count],['RECONCILED_ADAPTER_TRANSPORT',5,1,4,true]);
+ assert.equal(a.n05_http+a.n12_http,a.total_http);
+ const coverage=finalizeCandidateBlockCoverage({decision_ts:Date.now(),evidence_result:{contract:'ZEC-USDT',sources:{EXTERNAL_N05_FLOW:flow}}});
+ assert.deepEqual(coverage.block_coverage.shared_n05_n12_http_attribution,a);
+ assert.equal(attributeSharedN05N12Http({network_calls:1,adapter_results:[{venue:'OKX_N12_NATIVE',network_calls:2}]}).status,'UNRECONCILED_SHARED_HTTP');
+ assert.deepEqual([attributeSharedN05N12Http({network_calls:5}).status,attributeSharedN05N12Http({network_calls:5}).n05_http],['NO_ADAPTER_DETAIL',null]);
+});
 
 test('twelve HTX assets recover exact routes from saved original chain, issuer and market records',()=>{
  const htx=original('primary-native-supply-tests-37854297470/primary-source/htx-currencies.json.gz');

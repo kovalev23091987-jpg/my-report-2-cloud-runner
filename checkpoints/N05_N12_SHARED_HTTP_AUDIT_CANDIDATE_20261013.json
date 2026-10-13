@@ -1,0 +1,29 @@
+{
+  "schema": "N05_N12_SHARED_HTTP_AUDIT_CANDIDATE_V1",
+  "recorded_utc": "2026-10-13T13:29:07.612332+00:00",
+  "main_verified_at_package_start": "07d6dd0265d36036ebf86741c4c4c7a97a6a85c8",
+  "finding": "The external N05 wrapper includes optional N12 routes under one five-request envelope. In full run 38401653274 ZEC ledger showed N05 Binance 1 plus N12 OKX 4, and the latter rendered 181 spot trades. Existing per-block audit placed all five under EXTERNAL_N05_FLOW and N12 source_accounting did not include OKX transport.",
+  "original_proof": "checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json",
+  "code_changes": [
+    "candidate-evidence-v2-runtime.mjs computes a separate diagnostic from adapter_results; reports total_http, n05_http and n12_http once, or null on missing/inconsistent detail.",
+    "block-decision-use-audit.mjs carries the diagnostic to the canonical audit."
+  ],
+  "policy": {
+    "scoring_changed": false,
+    "weights_changed": false,
+    "route_order_changed": false,
+    "provider_caps_changed": false,
+    "source_http_added": 0,
+    "rendered_manual_or_telegram_text_changed": false,
+    "paused_blocks_changed": false
+  },
+  "tests": {
+    "command": "node --test current-generation/tests/active-market-coverage-expansion.test.mjs current-generation/tests/block-decision-use-audit.test.mjs current-generation/tests/n12-market-trades.test.mjs",
+    "passed": 17,
+    "failed": 0,
+    "provider_http": 0
+  },
+  "verification_state": "LOCAL_TESTED_CLOUD_ASSEMBLED_AND_NATURAL_REPORT_READBACK_PENDING",
+  "acceptance_limit": "The historical ZEC split is proven from D1 reservation rows; this candidate has not yet produced a new cloud artifact with the diagnostic field. Do not call it deployed or production accepted before exact-head readback.",
+  "next_action": "Save to main and inspect one naturally admitted full report on this head; verify shared diagnostic equals per-source D1 reservations and total HTTP without double-counting."
+}

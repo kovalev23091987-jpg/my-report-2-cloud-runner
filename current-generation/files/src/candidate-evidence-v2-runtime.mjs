@@ -247,6 +247,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
  }
  const values=Object.values(result).filter(row=>row.included_in_active_coverage!==false);
  return {status:values.every(row=>row.checked)?'CLOSED_ALL_ACTIVE_BLOCKS_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,paused_block_ids:Object.keys(PAUSED_BLOCKS),paused_blocks_excluded_from_coverage:true,
+  shared_n05_n12_http_attribution:attributeSharedN05N12Http(sources.EXTERNAL_N05_FLOW),
   checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,
   score_or_risk_input_block_count:values.filter(row=>row.decision_path==='ADMITTED_SCORE_OR_RISK_INPUT').length,
   admitted_control_context_block_count:values.filter(row=>row.decision_path==='ADMITTED_CONTROL_CONTEXT').length,
@@ -257,6 +258,20 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   all_blocks_have_assigned_consumer:values.every(row=>Boolean(row.decision_consumer)&&Boolean(row.decision_path)),
   all_blocks_decision_accounted:false,actual_use_is_measured_in_canonical_result:true,
   all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),strict_fresh_required:strict_fresh,internal_only:true};
+}
+
+const OPTIONAL_N12_VENUES=new Set(['GATE_FUTURES_N12','OKX_N12_NATIVE','KUCOIN_N12_NATIVE','KUCOIN_N12_EXACT_TOKEN']);
+// The N05 wrapper also runs optional N12 adapters under the same five-call
+// envelope. Attribute transport by the adapter that reserved it; do not add
+// this diagnostic to the whole-job HTTP total or treat a shared venue twice.
+export function attributeSharedN05N12Http(flow){
+ const total=Number(flow?.network_calls||0),adapters=Array.isArray(flow?.adapter_results)?flow.adapter_results:[];
+ if(!Number.isSafeInteger(total)||total<0)return{status:'UNRECONCILED_SHARED_HTTP',total_http:null,n05_http:null,n12_http:null,no_double_count:true};
+ if(!adapters.length)return{status:total?'NO_ADAPTER_DETAIL':'NO_SHARED_HTTP',total_http:total,n05_http:total?null:0,n12_http:total?null:0,no_double_count:true};
+ const n12=adapters.filter(row=>OPTIONAL_N12_VENUES.has(row?.venue));
+ const n12Calls=n12.reduce((sum,row)=>sum+Number(row.network_calls||0),0);
+ if(!Number.isSafeInteger(n12Calls)||n12Calls<0||n12Calls>total)return{status:'UNRECONCILED_SHARED_HTTP',total_http:total,n05_http:null,n12_http:null,no_double_count:true};
+ return{status:'RECONCILED_ADAPTER_TRANSPORT',total_http:total,n05_http:total-n12Calls,n12_http:n12Calls,n12_routes:n12.map(row=>({venue:row.venue,http:Number(row.network_calls||0),status:row.status||null})),no_double_count:true,score_changed:false};
 }
 
 export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={},contract=evidence_result.contract,decision_ts=evidence_result?.decision_ts??Date.now()}={}){
