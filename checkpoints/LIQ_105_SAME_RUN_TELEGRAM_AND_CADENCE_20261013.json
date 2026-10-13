@@ -124,5 +124,37 @@
     "GitHub's natural schedule cadence remains unreliable; the D1-based backup fix still needs cloud readback and a later due-cycle observation."
   ],
   "next_action": "Verify the new backup job on fix head and a later due/no-work cycle, then continue the saved 35-asset LIQ queue and all-active source efficiency plan without resetting provider caps or changing weights/format.",
-  "spot_futures_rule": "For every applicable active block, retain original spot and futures timestamps and join only within the accepted ten-minute maximum; compare independent facts when available, use one genuinely useful side with limited wording when the other is unavailable. Do not invent spot liquidation levels. HTX spot is absent for 15 eligible assets by owner decision; no external spot substitution for those assets."
+  "spot_futures_rule": "For every applicable active block, retain original spot and futures timestamps and join only within the accepted ten-minute maximum; compare independent facts when available, use one genuinely useful side with limited wording when the other is unavailable. Do not invent spot liquidation levels. HTX spot is absent for 15 eligible assets by owner decision; no external spot substitution for those assets.",
+  "active_blocks_spot_futures_evidence": {
+    "baseline": "checkpoints/ACTIVE_BLOCKS_SAVED_EFFICIENCY_BASELINE_20261013.json",
+    "N10_fartcoin_spot_futures_15m_clock_gap_ms": 0,
+    "N10_fartcoin_market_directions": "CONFLICT; no joint direction",
+    "N10_ct_spot_futures_15m_clock_gap_ms": 0,
+    "N10_ct_market_directions": "ALIGN; HTX spot and futures are still one venue",
+    "N12_both_assets": "Both HTX spot and futures bounded trade sample receipts present; combined trade direction not confirmed; no false consensus or score",
+    "N11": "Futures execution book only by owner decision",
+    "LIQ": "Future liquidation levels are futures positions/models only; spot shown as price context."
+  },
+  "new_source_review": {
+    "candidate": "n0brains",
+    "source": "https://n0brains.com/docs/",
+    "reviewed_utc": "2026-10-13T12:41:00Z",
+    "official_documentation_claims": [
+      "Free REST tier 60 requests per minute and 15-minute signal delay with limited fields",
+      "CEX estimated liquidation-map endpoint uses OI and leverage tiers",
+      "DEX liqmap endpoint reports Hyperliquid and GMX actual public positions"
+    ],
+    "candidate_value": "Could add a modeled CEX source if numeric payload, original clock, exact asset coverage and sustainable free entitlement pass. DEX positions overlap existing Hyperliquid/GMX roots and are not independent confirmation.",
+    "not_yet_proven": [
+      "Exact approved-coin numeric payload",
+      "Whether map endpoint itself has a 15-minute free delay",
+      "Original position/model source clock",
+      "Distinct CEX upstream and exact coverage",
+      "Persistent free key and usage"
+    ],
+    "source_http_used": 0,
+    "provider_connected": false,
+    "report_effect": "NONE",
+    "next_step": "Do not count it or spend a new source request until the existing gaps and shared budget identify a specific asset where it could be material; then use a bounded, admitted sample with a free account key if needed."
+  }
 }

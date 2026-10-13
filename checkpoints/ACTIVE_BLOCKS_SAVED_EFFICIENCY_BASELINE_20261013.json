@@ -487,5 +487,389 @@
       }
     },
     "interpretation": "Exclusive means no other saved numeric source/window for that asset in this union. These windows differ in time, and role-specific value remains even when the exclusive asset count is zero. Do not convert historical counts into present run coverage or a source rank without measured useful facts per HTTP."
+  },
+  "latest_same_run_spot_futures_and_block_use": {
+    "github_run": 38396042005,
+    "head": "1579b25915e4d6e45a8299242e60e58ccb6ff6f5",
+    "run_id": "1791893790818-1791893800260",
+    "artifact_digest": "sha256:a86747831e3d7905d9b722f6f399794e92c2fe0fa4f6986051d79791bc8ad5b6",
+    "scope": "Two selected assets only; same-run source-to-decision sample, not all-105 coverage",
+    "candidates": {
+      "FARTCOIN-USDT": {
+        "snapshot_id": "S392:FARTCOIN-USDT:1791893895729",
+        "lifecycle_event": "OBSERVE",
+        "blocks": {
+          "N04": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 2,
+            "attempted_routes": 1,
+            "live_contacted_routes": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "CHAIN_RPC"
+            ],
+            "used_upstream_ids": [
+              "SOLANA_MAINNET_RPC"
+            ],
+            "route_status_and_http": {
+              "CHAIN_EVENTS": {
+                "status": "CLOSED",
+                "actual_http": 2
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "actual_http": 0
+              }
+            }
+          },
+          "N05": {
+            "participation_status": "USE_NOT_PROVEN",
+            "configured_routes": 7,
+            "attempted_routes": 4,
+            "live_contacted_routes": 2,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [],
+            "used_upstream_ids": [],
+            "route_status_and_http": {
+              "JOINT_SPOT_FUTURES_FLOW": {
+                "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+                "actual_http": 0
+              },
+              "AVAILABLE_N05_FLOW_CONTEXT": {
+                "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+                "actual_http": 0
+              },
+              "CHAIN_EVENTS": {
+                "status": "CLOSED",
+                "actual_http": 2
+              },
+              "PRIMARY_HTX_FUTURES_FLOW": {
+                "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                "actual_http": 0
+              },
+              "NANSEN_FLOWS": {
+                "status": "NOT_EVALUATED",
+                "actual_http": 0
+              },
+              "EXTERNAL_N05_FLOW": {
+                "status": "SOURCE_DAILY_CAP_DENIED",
+                "actual_http": 2
+              },
+              "BITGET_FOUR_HOUR_FLOW": {
+                "status": "NOT_EVALUATED",
+                "actual_http": 0
+              }
+            }
+          },
+          "N10": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 1,
+            "attempted_routes": 1,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "used_upstream_ids": [
+              "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+              "HTX_OFFICIAL_CLOSED_CANDLES",
+              "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES"
+            ],
+            "route_status_and_http": {
+              "PRIMARY_TECHNICAL_CONTEXT": {
+                "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                "actual_http": 0
+              }
+            }
+          },
+          "N11": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 1,
+            "attempted_routes": 1,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "used_upstream_ids": [
+              "HTX_IMMUTABLE_EXECUTION_BOOK"
+            ],
+            "route_status_and_http": {
+              "PRIMARY_EXECUTION_STRESS": {
+                "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+                "actual_http": 0
+              }
+            }
+          },
+          "N12": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 1,
+            "attempted_routes": 1,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "HTX_SPOT_FUTURES_TRADES"
+            ],
+            "used_upstream_ids": [
+              "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+            ],
+            "route_status_and_http": {
+              "HTX_LARGE_TRADES": {
+                "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+                "actual_http": 0
+              }
+            }
+          },
+          "N15": {
+            "participation_status": "SCORE_EFFECT_PROVEN",
+            "configured_routes": 2,
+            "attempted_routes": 2,
+            "live_contacted_routes": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 1,
+            "used_provider_ids": [
+              "COINGECKO_SECTOR"
+            ],
+            "used_upstream_ids": [
+              "COINGECKO_AGGREGATED_VENUES"
+            ],
+            "route_status_and_http": {
+              "COINGECKO_SECTOR": {
+                "status": "CLOSED",
+                "actual_http": 2
+              },
+              "COINPAPRIKA_SECTOR": {
+                "status": "DAILY_CAP_OR_DUPLICATE",
+                "actual_http": 0
+              }
+            }
+          }
+        },
+        "N10_spot_futures_15m": {
+          "futures_source_ts": 1791893820000,
+          "spot_source_ts": 1791893820000,
+          "clock_gap_ms": 0,
+          "spot_value": "15 закрытых минутных свечей, активных минут 15: 0,15912 → 0,1595 USDT (+0,24%); минимум 0,1588, максимум 0,15953 USDT. Направления спота и фьючерса HTX расходятся; общего вывода нет. Цель и разрешение входа этим не подтверждены",
+          "futures_value": "15 закрытых минутных свечей: 0,15988 → 0,15919 USDT (-0,43%); минимум 0,15895, максимум 0,15998 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+          "both_same_htx_upstream_not_independent": true
+        },
+        "N12_spot_futures_sample": {
+          "futures_route_status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+          "both_market_receipts_present": true,
+          "joint_trade_direction_proven": false,
+          "limited_same_htx_context_only": true
+        }
+      },
+      "CT-USDT": {
+        "snapshot_id": "S392:CT-USDT:1791893854833",
+        "lifecycle_event": null,
+        "blocks": {
+          "N04": {
+            "participation_status": "USE_NOT_PROVEN",
+            "configured_routes": 2,
+            "attempted_routes": 0,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [],
+            "used_upstream_ids": [],
+            "route_status_and_http": {
+              "CHAIN_EVENTS": {
+                "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                "actual_http": 0
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                "actual_http": 0
+              }
+            }
+          },
+          "N05": {
+            "participation_status": "USE_NOT_PROVEN",
+            "configured_routes": 7,
+            "attempted_routes": 3,
+            "live_contacted_routes": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [],
+            "used_upstream_ids": [],
+            "route_status_and_http": {
+              "JOINT_SPOT_FUTURES_FLOW": {
+                "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+                "actual_http": 0
+              },
+              "AVAILABLE_N05_FLOW_CONTEXT": {
+                "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+                "actual_http": 0
+              },
+              "CHAIN_EVENTS": {
+                "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                "actual_http": 0
+              },
+              "PRIMARY_HTX_FUTURES_FLOW": {
+                "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                "actual_http": 0
+              },
+              "NANSEN_FLOWS": {
+                "status": "NOT_EVALUATED",
+                "actual_http": 0
+              },
+              "EXTERNAL_N05_FLOW": {
+                "status": "SOURCE_DAILY_CAP_DENIED",
+                "actual_http": 2
+              },
+              "BITGET_FOUR_HOUR_FLOW": {
+                "status": "NOT_EVALUATED",
+                "actual_http": 0
+              }
+            }
+          },
+          "N10": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 1,
+            "attempted_routes": 1,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "used_upstream_ids": [
+              "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+              "HTX_OFFICIAL_CLOSED_CANDLES",
+              "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES"
+            ],
+            "route_status_and_http": {
+              "PRIMARY_TECHNICAL_CONTEXT": {
+                "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                "actual_http": 0
+              }
+            }
+          },
+          "N11": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 1,
+            "attempted_routes": 1,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "used_upstream_ids": [
+              "HTX_IMMUTABLE_EXECUTION_BOOK"
+            ],
+            "route_status_and_http": {
+              "PRIMARY_EXECUTION_STRESS": {
+                "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+                "actual_http": 0
+              }
+            }
+          },
+          "N12": {
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "configured_routes": 1,
+            "attempted_routes": 1,
+            "live_contacted_routes": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "HTX_SPOT_FUTURES_TRADES"
+            ],
+            "used_upstream_ids": [
+              "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+            ],
+            "route_status_and_http": {
+              "HTX_LARGE_TRADES": {
+                "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+                "actual_http": 0
+              }
+            }
+          },
+          "N15": {
+            "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+            "configured_routes": 2,
+            "attempted_routes": 2,
+            "live_contacted_routes": 2,
+            "routes_with_valid_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "used_provider_ids": [
+              "COINGECKO_SECTOR"
+            ],
+            "used_upstream_ids": [
+              "COINGECKO_AGGREGATED_VENUES"
+            ],
+            "route_status_and_http": {
+              "COINGECKO_SECTOR": {
+                "status": "CLOSED",
+                "actual_http": 4
+              },
+              "COINPAPRIKA_SECTOR": {
+                "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                "actual_http": 1
+              }
+            }
+          }
+        },
+        "N10_spot_futures_15m": {
+          "futures_source_ts": 1791893760000,
+          "spot_source_ts": 1791893760000,
+          "clock_gap_ms": 0,
+          "spot_value": "15 закрытых минутных свечей, активных минут 15: 0,3658 → 0,3682 USDT (+0,66%); минимум 0,3629, максимум 0,3682 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены",
+          "futures_value": "15 закрытых минутных свечей: 0,36558 → 0,36709 USDT (+0,41%); минимум 0,3634, максимум 0,36739 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+          "both_same_htx_upstream_not_independent": true
+        },
+        "N12_spot_futures_sample": {
+          "futures_route_status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+          "both_market_receipts_present": true,
+          "joint_trade_direction_proven": false,
+          "limited_same_htx_context_only": true
+        }
+      }
+    },
+    "same_upstream_not_independent": "N10 spot and futures are both HTX; N12 spot and futures are both HTX; CoinGecko sector aggregates venues, not an independent HTX spot price."
+  },
+  "current105_htx_spot_historical_catalog": {
+    "source": "checkpoints/n15-spot-coverage-20261012/HTX-SPOT-TICKERS.json.gz",
+    "source_ts": 1791818390422,
+    "current_approved_futures_assets": 105,
+    "htx_spot_pair_present_in_saved_bulk_ticker": 90,
+    "htx_spot_pair_absent_in_saved_bulk_ticker": 15,
+    "absent_contracts": [
+      "AKE-USDT",
+      "BR-USDT",
+      "BTR-USDT",
+      "CASHCAT-USDT",
+      "GPS-USDT",
+      "LAB-USDT",
+      "MYX-USDT",
+      "OKB-USDT",
+      "ONG-USDT",
+      "PAXG-USDT",
+      "RAVE-USDT",
+      "UB-USDT",
+      "USELESS-USDT",
+      "VELVET-USDT",
+      "哈基米-USDT"
+    ],
+    "owner_rule": "Keep HTX futures and available HTX spot; do not substitute external spot for these 15 assets.",
+    "boundary": "One prior bulk ticker is market availability evidence at its original time, not current candles/trades/use/coin identity across other exchanges or current all-105 same-run coverage. N11 and future liquidation levels are futures-only metrics; spot may be price context."
   }
 }
