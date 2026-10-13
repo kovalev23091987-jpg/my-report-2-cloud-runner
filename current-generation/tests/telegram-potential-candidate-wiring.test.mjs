@@ -14,6 +14,8 @@ test('post-v7 uses one canonical sender for OBSERVE WAIT and ENTRY',()=>{
  assert.match(workflow,/REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"/);
  assert.match(workflow,/REPORT2_TELEGRAM_INFO_ENABLED: "1"/);
  assert.match(workflow,/REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"/);
- assert.match(workflow,/REPORT2_EVIDENCE_HTTP_CAP: \$\{\{ \(github\.event_name == 'schedule' \|\| inputs\.scheduled_recovery_run == true \|\| inputs\.trigger_only_run == true\) && '10' \|\| '24' \}\}/);
+ // The operational envelope is owner-calculated; all Telegram switches above
+ // remain independently pinned. The18/164 allocation has its own budget proof.
+ assert.match(workflow,/REPORT2_EVIDENCE_HTTP_CAP: \$\{\{ \(github\.event_name == 'schedule' \|\| inputs\.scheduled_recovery_run == true \|\| inputs\.trigger_only_run == true\) && '18' \|\| '24' \}\}/);
 });
 

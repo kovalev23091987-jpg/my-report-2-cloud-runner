@@ -123,5 +123,20 @@
   },
   "saved_LIQ_gap_reconciliation": "checkpoints/LIQ_SAVED_EXTERNAL_ORIGINAL_REPORT_CENSUS_20261013.json",
   "strategy_weights_forms_pauses_changed": false,
-  "project_complete": false
+  "project_complete": false,
+  "first_cloud_attempt": {
+    "run": 38477962541,
+    "head": "d8833a7f4d4005607312723e104783a08cae197b",
+    "conclusion": "failure",
+    "reason": "Existing Telegram wiring test pinned the former10 operational evidence cap; the operational budget test passed locally. All Telegram switches and output golden contracts unchanged.",
+    "artifact_id": 11856225473,
+    "artifact_digest": "sha256:b12559e6cda24abe1df84e968acfb9c5693c2b179baa1f516dd08212f4db5e42",
+    "runtime_provider_probe_performed": false,
+    "repair": "Update only the operational quota expectation to18; preserve the independent Telegram assertions.",
+    "repair_local_tests": {
+      "pass": 4,
+      "fail": 0,
+      "tap_sha256": "f3bd3cd049bfa66938d908ef9e8172be4ba4ac1f808c6032d6c40a192244a816"
+    }
+  }
 }
