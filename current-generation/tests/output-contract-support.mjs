@@ -39,6 +39,7 @@ export async function loadEffectivePresentationModules(){
     'gate-liquidation-history.mjs':'current-generation/files/src/gate-liquidation-history.mjs',
     'coinlobster-future-model.mjs':'current-generation/files/src/coinlobster-future-model.mjs',
     'provider-minute-ledger.mjs':'current-generation/files/src/provider-minute-ledger.mjs',
+    'evidence-source-store.mjs':'current-generation/files/src/evidence-source-store.mjs',
     'telegram-compact-formatter.mjs':'current-generation/files/src/telegram-compact-formatter.mjs',
     'canonical-display.mjs':'current-generation/files/src/canonical-display.mjs',
     'native-liquidation-guard.mjs':'current-generation/files/src/native-liquidation-guard.mjs',
