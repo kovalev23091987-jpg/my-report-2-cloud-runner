@@ -331,9 +331,9 @@
   "lease": {
     "owner": "CODEX:LIQ_NATURAL_LIMIT_AUDIT:1791889745299",
     "acquired_ts": 1791889745299,
-    "expires_ts": 1791897290524
+    "expires_ts": 1791898960637
   },
-  "next_action": "LIQ/full cadence: full recovery run 38396042005 on head 1579b259 scanned 105/105 and sent exact same-run FARTCOIN OBSERVE Telegram message 191; D1 reconciliation used 225/288 rows. D1-anchored backup fix 714ca212 is in main; verify its cloud 5-minute cycle and one later due/no-work cycle. LIQ 35/103 archived numeric future-level gaps, current all-105 block/source/spot/futures fact-to-consumer matrix and deduplicated per-source HTTP/D1 ledger remain open. Continue saved-first admitted batches under existing caps, preserve all paused blocks, weights, format and 10-minute spot/futures maximum. N05: 19 previously trailing exact full-window source routes now prioritized inside the unchanged five-call envelope; await naturally admitted full-run actual fact/use readback; proof checkpoints/N05_SAVED_PROVEN_ROUTE_PRIORITY_20261013.json.",
+  "next_action": "Later due full backup run 38401653274 on head 6a8aa87a scanned 105/105, selected ZEC/BTR, both REJECTED, no approved idea or same-run SENT. One D1-anchored recovery due cycle is proven (12:16 to 13:01 UTC), not exact 40-minute cadence. ZEC N05 rendered one-venue Binance context, but five supplemental external HTTP produced no new qualified flow; BTR external was deferred. ZEC N15 CoinGecko/CoinPaprika were daily-cap denied, BTR lacked exact routes. Diagnose N05 route qualification from saved receipts and build current all-105 active-block/source-use/cap matrix before new admitted source requests. Keep LIQ 35/103 archived numeric gaps, CMC keyless 429, external spot exclusion, paused blocks, weights, caps, format, and Telegram owner deferral visible. Proof: checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json.",
   "common_future_universe": {
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
     "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
@@ -968,23 +968,19 @@
     "natural_production_acceptance": "PENDING"
   },
   "latest_actual_report": {
-    "proof": "checkpoints/LIQ_105_SAME_RUN_TELEGRAM_AND_CADENCE_20261013.json",
-    "cloud_run": 38396042005,
-    "head": "1579b25915e4d6e45a8299242e60e58ccb6ff6f5",
-    "run_id": "1791893790818-1791893800260",
+    "proof": "checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json",
+    "cloud_run": 38401653274,
+    "head": "6a8aa87aa25b75df167310db2317e86565532b7b",
+    "run_id": "1791896489024-1791896501358",
     "status": "CLOSED",
-    "source": "workflow_dispatch recovery, artifact source=schedule, not natural GitHub cron",
+    "source": "workflow_dispatch backup; artifact source=schedule",
     "market_scan": "105/105;errors0;stale0",
     "top_two_contracts": [
-      "FARTCOIN-USDT",
-      "CT-USDT"
+      "ZEC-USDT",
+      "BTR-USDT"
     ],
-    "automatic_delivery_audit": "EXACT_SAME_RUN_SENT_CAPTURED",
-    "telegram_message_id": "191",
-    "telegram_event": "FARTCOIN OBSERVE, not ENTRY",
-    "d1_reconciliation_rows_read": 225,
-    "d1_reconciliation_cap": 288,
-    "complete": false
+    "automatic_delivery_audit": "NO_EXACT_SAME_RUN_SENT;HEALTHY_NO_IDEA",
+    "previous_verified_same_run_telegram_proof": "checkpoints/LIQ_105_SAME_RUN_TELEGRAM_AND_CADENCE_20261013.json"
   },
   "latest_official_trade_native_capability": {
     "path": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json",
@@ -6827,7 +6823,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-13T12:36:49.721832+00:00",
+  "updated_utc": "2026-10-13T13:12:40.626309+00:00",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -10903,9 +10899,9 @@
   "previous_next_action_before_20261012_working_window": "First verify the next natural scheduled report after PR328: exact full cycle or no-work receipt, passing delivery audit, and no weekly maintenance preemption. PR325 exact KuCoin token spot/futures source and original PEPE pages are merged after full assembled N10/N11/N12 checks. N12 remains open. At the next admissible normal report on merged main, inspect source timestamps/IDs, exact asset chain/address and active instruments, HTX/Bitget/Gate/OKX/KuCoin spot/futures participation, shared five-call/164HTTP/source/provider/D1 ledgers, and manual plus approved Telegram evidence IDs; if an idea publishes, verify fresh SENT/message_id. Five saved PEPE pages prove one token source utility and conflicting spot/futures directions, not all-104 live coverage. Historical KuCoin 42 spot/39 futures token matches and 21 native matches are structural only; keep maximizing exact useful N12 coverage inside existing limits. Do not begin N14 before owner discussion.",
   "active_working_state": {
     "schema": "REPORT2_ACTIVE_WORKING_STATE_V1",
-    "recorded_utc": "2026-10-13T12:54:26.940603+00:00",
-    "main_verified_at_package_start": "76531a5ffe66253e6e3a769bdb5f97536d1c498e",
-    "candidate_state": "LIQ_SAME_RUN_SENT_PROVEN;BACKUP_CADENCE_LATER_DUE_CYCLE_OPEN;N15_DAILY_SECTOR_CAP_EXHAUSTED",
+    "recorded_utc": "2026-10-13T13:12:40.626309+00:00",
+    "main_verified_at_package_start": "00504a9ef87dab166c215fcc08281f005c6022e0",
+    "candidate_state": "LIQ_SAME_RUN_SENT_PROVEN;LATER_DUE_BACKUP_CYCLE_PROVEN;N05_EXTERNAL_GAIN_OPEN;N15_DAILY_SECTOR_CAP_EXHAUSTED",
     "active_entrypoints": [
       "AGENTS.md",
       "checkpoints/CURRENT_PROJECT_STATUS.json",
@@ -10934,12 +10930,12 @@
     "paused_restore_requires_explicit_owner_command": true,
     "shared_sources_for_active_blocks_allowed": true,
     "scope": "LIQ future levels plus owner-required synchronous HTX spot/futures handling in all applicable active blocks",
-    "source_proof": "checkpoints/LIQ_105_SAME_RUN_TELEGRAM_AND_CADENCE_20261013.json",
+    "source_proof": "checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json",
     "incident_proof": "checkpoints/n15-spot-coverage-20261012/RAVE_SPOT_FUTURES_DISLOCATION_20261012.json",
     "coverage_limits": "103 LIQ-eligible assets: old numeric union 68, position-origin old numeric union 58, 35 old numeric proof gaps; 41 historical 2+ primary venue opportunities not time aligned; scheduled LIQ max8, native4, supplemental2 per selected coin; no current all-103 proof.",
     "one_market_fallback_rule": "For an asset without HTX spot, retain qualified HTX futures only as limited information; never fabricate spot or cross-market agreement. For HTX spot with failed quote, omit spot metric. N11 remains futures-only.",
     "owner_deferral": "External spot for the 15 HTX-missing pairs excluded by explicit owner command; no next block begun.",
-    "next_action": "LIQ/full cadence: full recovery run 38396042005 on head 1579b259 scanned 105/105 and sent exact same-run FARTCOIN OBSERVE Telegram message 191; D1 reconciliation used 225/288 rows. Verify D1-anchored backup cadence fix 714ca212 in a later due/no-work cloud cycle and inspect the next naturally admitted full run for N05 route gain, spot/futures original clocks and Telegram binding. N15 CoinGecko and CoinPaprika both reached configured daily 48/48 on 13OctUTC; keep admission and caps unchanged. CMC keyless gave only a category list then 429, so no quote source added. LIQ 35/103 archived numeric future-level gaps and all-105 per-block fact-to-consumer/source budget matrix remain open. Continue saved-first admitted batches; no changes to paused blocks, weights, format or 10-minute spot/futures maximum. Proof: checkpoints/ACTIVE_SOURCE_CAP_AND_CMC_PROBE_20261013.json; checkpoints/ACTIVE_BLOCKS_SAVED_EFFICIENCY_BASELINE_20261013.json; checkpoints/N05_SAVED_PROVEN_ROUTE_PRIORITY_20261013.json. After block completion, request the owner's precise Telegram form before implementing score/form correction; proof checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json.",
+    "next_action": "Later due full backup run 38401653274 on head 6a8aa87a scanned 105/105, selected ZEC/BTR, both REJECTED, no approved idea or same-run SENT. One D1-anchored recovery due cycle is proven (12:16 to 13:01 UTC), not exact 40-minute cadence. ZEC N05 rendered one-venue Binance context, but five supplemental external HTTP produced no new qualified flow; BTR external was deferred. ZEC N15 CoinGecko/CoinPaprika were daily-cap denied, BTR lacked exact routes. Diagnose N05 route qualification from saved receipts and build current all-105 active-block/source-use/cap matrix before new admitted source requests. Keep LIQ 35/103 archived numeric gaps, CMC keyless 429, external spot exclusion, paused blocks, weights, caps, format, and Telegram owner deferral visible. Proof: checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json.",
     "release_receipt": "checkpoints/LIQ_RECOVERY_AND_TELEGRAM_BUDGET_FIX_20261013.json",
     "current_execution_block": "LIQ",
     "cloud_worker": "my-report-2-free-history",
@@ -10980,11 +10976,12 @@
     "all_active_blocks_source_efficiency_plan": "checkpoints/ALL_ACTIVE_BLOCKS_SOURCE_EFFICIENCY_PLAN_20261013.md",
     "owned_lease": "CODEX:LIQ_NATURAL_LIMIT_AUDIT:1791889745299",
     "active_blocks_saved_efficiency_baseline": "checkpoints/ACTIVE_BLOCKS_SAVED_EFFICIENCY_BASELINE_20261013.json",
-    "latest_actual_full_run": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38396042005",
-    "latest_actual_full_run_head": "1579b25915e4d6e45a8299242e60e58ccb6ff6f5",
+    "latest_actual_full_run": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38401653274",
+    "latest_actual_full_run_head": "6a8aa87aa25b75df167310db2317e86565532b7b",
     "latest_actual_same_run_telegram_message_id": "191",
     "active_source_cap_and_cmc_probe": "checkpoints/ACTIVE_SOURCE_CAP_AND_CMC_PROBE_20261013.json",
-    "owner_telegram_decision_score_and_form_after_blocks": "checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json"
+    "owner_telegram_decision_score_and_form_after_blocks": "checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json",
+    "latest_due_105_run_readback": "checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json"
   },
   "latest_pr331_working_release": {
     "proof": "checkpoints/PR331_POSTMERGE_N12_WORKING_HANDOFF_20261012.json",
@@ -11065,7 +11062,7 @@
     "first_cloud_assembled_run": 38293280785
   },
   "latest_liq_near_sync_full_report_and_3x3_display": "checkpoints/LIQ_NEAR_SYNC_FULL_REPORT_AND_3X3_DISPLAY_20261012.json",
-  "exact_next_action": "LIQ/full cadence: full recovery run 38396042005 on head 1579b259 scanned 105/105 and sent exact same-run FARTCOIN OBSERVE Telegram message 191; D1 reconciliation used 225/288 rows. Verify D1-anchored backup cadence fix 714ca212 in a later due/no-work cloud cycle and inspect the next naturally admitted full run for N05 route gain, spot/futures original clocks and Telegram binding. N15 CoinGecko and CoinPaprika both reached configured daily 48/48 on 13OctUTC; keep admission and caps unchanged. CMC keyless gave only a category list then 429, so no quote source added. LIQ 35/103 archived numeric future-level gaps and all-105 per-block fact-to-consumer/source budget matrix remain open. Continue saved-first admitted batches; no changes to paused blocks, weights, format or 10-minute spot/futures maximum. Proof: checkpoints/ACTIVE_SOURCE_CAP_AND_CMC_PROBE_20261013.json; checkpoints/ACTIVE_BLOCKS_SAVED_EFFICIENCY_BASELINE_20261013.json; checkpoints/N05_SAVED_PROVEN_ROUTE_PRIORITY_20261013.json. After block completion, request the owner's precise Telegram form before implementing score/form correction; proof checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json.",
+  "exact_next_action": "Later due full backup run 38401653274 on head 6a8aa87a scanned 105/105, selected ZEC/BTR, both REJECTED, no approved idea or same-run SENT. One D1-anchored recovery due cycle is proven (12:16 to 13:01 UTC), not exact 40-minute cadence. ZEC N05 rendered one-venue Binance context, but five supplemental external HTTP produced no new qualified flow; BTR external was deferred. ZEC N15 CoinGecko/CoinPaprika were daily-cap denied, BTR lacked exact routes. Diagnose N05 route qualification from saved receipts and build current all-105 active-block/source-use/cap matrix before new admitted source requests. Keep LIQ 35/103 archived numeric gaps, CMC keyless 429, external spot exclusion, paused blocks, weights, caps, format, and Telegram owner deferral visible. Proof: checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json.",
   "latest_liq_natural_archive_and_new_reports": "checkpoints/LIQ_NATURAL_ARCHIVE_AND_NEW_REPORTS_READBACK_20261013.json",
   "latest_liq_natural_audit": "checkpoints/LIQ_NATURAL_ARCHIVE_AND_NEW_REPORTS_READBACK_20261013.json",
   "latest_liq_external_provider_only_candidate": "checkpoints/LIQ_EXTERNAL_PROVIDER_ONLY_CANDIDATE_20261013.json",
@@ -11080,5 +11077,6 @@
   "latest_liq_105_same_run_telegram_and_cadence": "checkpoints/LIQ_105_SAME_RUN_TELEGRAM_AND_CADENCE_20261013.json",
   "latest_n05_saved_proven_route_priority": "checkpoints/N05_SAVED_PROVEN_ROUTE_PRIORITY_20261013.json",
   "active_source_cap_and_cmc_probe": "checkpoints/ACTIVE_SOURCE_CAP_AND_CMC_PROBE_20261013.json",
-  "owner_telegram_decision_score_and_form_after_blocks": "checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json"
+  "owner_telegram_decision_score_and_form_after_blocks": "checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json",
+  "latest_due_105_run_readback": "checkpoints/ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_20261013.json"
 }

@@ -1,0 +1,86 @@
+{
+  "schema": "REPORT2_ACTIVE_DUE_105_RUN_AND_N05_N15_READBACK_V1",
+  "recorded_utc": "2026-10-13T13:12:40.626309+00:00",
+  "main_verified_at_package_start": "00504a9ef87dab166c215fcc08281f005c6022e0",
+  "cloud_run": {
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38401653274",
+    "run_number": 38401653274,
+    "event": "workflow_dispatch",
+    "created_at": "2026-10-13T13:01:06Z",
+    "completed_at": "2026-10-13T13:03:41Z",
+    "conclusion": "success",
+    "head": "6a8aa87aa25b75df167310db2317e86565532b7b",
+    "run_id": "1791896489024-1791896501358",
+    "artifact_sha256": {
+      "report2-run-result.json": "64047a342caf83d3d638d5350b852bfdd4c94526abd565ed09e72a5e034a28bc",
+      "same-run-delivery-proof.json": "8e07a7ac0809d8409b0367429c2ab53a09e60a2d0dc8594079806a4fe71c6d0c",
+      "automatic-delivery-audit.json": "bbd2c58e08daa86bfd94ac73f897cc02a306897cdfd676ac9ec98c81c44c3f15"
+    }
+  },
+  "actual_full_cycle": {
+    "scanned": 105,
+    "universe_total": 105,
+    "errors": 0,
+    "stale": 0,
+    "qualified": 24,
+    "deep_selected": [
+      "ZEC-USDT",
+      "BTR-USDT"
+    ],
+    "canonical_states": {
+      "ZEC-USDT": "REJECTED",
+      "BTR-USDT": "REJECTED"
+    },
+    "pipeline_health": "HEALTHY_NO_IDEA",
+    "same_run_delivery": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "telegram_interpretation": "No approved idea in this cycle; prior full run 38396042005 independently proves same-run FARTCOIN OBSERVE SENT message 191. Do not treat this run as a fresh Telegram SENT acceptance."
+  },
+  "cadence_readback": {
+    "earlier_full_cloud_run": 38396042005,
+    "earlier_full_started_utc": "2026-10-13T12:16:05Z",
+    "later_full_started_utc": "2026-10-13T13:01:06Z",
+    "gap_minutes": 45.02,
+    "interpretation": "One later due cycle executed through the D1-anchored backup path. This proves recovery in this case, not exact 40-minute starts or universal future cadence."
+  },
+  "source_facts": {
+    "ZEC-USDT": {
+      "N05": "Existing Binance full four-hour spot flow rendered as limited one-venue manual context; no directional score. Supplemental external collector spent five network calls; returned receipts include RECEIVED_NOT_QUALIFIED and SOURCE_DAILY_CAP_DENIED, adding no second qualified flow. Do not read CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS as a usable external fact.",
+      "N10": "HTX 15-minute futures and spot closed candle source_ts both 1791896460000; same upstream HTX, not two independent sources.",
+      "N12": "HTX spot and futures bounded samples both available, but market sides disagree and no joint direction admitted.",
+      "N15": "CoinGecko and CoinPaprika both DAILY_CAP_OR_DUPLICATE with zero new network calls and no fresh sector fact.",
+      "LIQ": "Provider levels available, 6 above and 5 below before three-per-side display cap; futures-only estimate semantics."
+    },
+    "BTR-USDT": {
+      "N05": "HTX futures exact four-hour flow rendered as limited one-venue manual context, score0; external collector deferred within shared request envelope.",
+      "N10": "HTX futures technical context only; no exact HTX spot pair in saved catalog.",
+      "N12": "Bounded HTX futures trade sample; HTX spot response unavailable.",
+      "N15": "No exact CoinGecko sector route and no exact HTX spot market in CoinPaprika reference.",
+      "LIQ": "No admitted future levels in this run."
+    }
+  },
+  "guards": {
+    "active_blocks": [
+      "N04",
+      "N05",
+      "N10",
+      "N11",
+      "N12",
+      "N15"
+    ],
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "weights_threshold_caps_report_form_unchanged": true,
+    "no_new_provider_http_for_this_checkpoint": true,
+    "telegram_score_and_format_owner_deferred": "checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json"
+  },
+  "remaining": "Source-by-source all-105 fact-to-consumer matrix, N05 qualified external route gain, N15 affordable fresh sector route, archived LIQ 35/103 numeric future-level gaps and outcome calibration are open. Continue saved-first; do not imply all-105 coverage or complete blocks."
+}
