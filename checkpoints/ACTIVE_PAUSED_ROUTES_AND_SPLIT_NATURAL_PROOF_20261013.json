@@ -1,0 +1,231 @@
+{
+  "schema": "ACTIVE_PAUSED_ROUTES_N05_N12_NATURAL_PROOF_V1",
+  "recorded_utc": "2026-10-13T14:57:58.562836+00:00",
+  "status": "EXACT_SCHEDULED_105_SCAN_PAUSED_ONLY_ZERO_SOURCE_RESERVATIONS_N05_N12_4_PLUS_1_RENDERED_SENT193",
+  "cloud_run": 38414047304,
+  "head": "5f021f79bf9c9070330646b789577d93a2ab7d4e",
+  "run_id": "1791901891621-1791901909245",
+  "artifact_id": 11822419555,
+  "artifact_digest": "sha256:1bb5d2cc303ab5de7532cb07800b39e56138212928739bc8e2211f6fac6436d0",
+  "market_scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "approved_scope": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1791901909582,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 105,
+      "missing_approved_analysis_contracts": [],
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "candidates": [
+    {
+      "contract": "BTW-USDT",
+      "snapshot_id": "S392:BTW-USDT:1791902039022",
+      "observed_ts": 1791902039022,
+      "state": "REJECTED",
+      "shared_http": {
+        "status": "NO_SHARED_HTTP",
+        "total_http": 0,
+        "n05_http": 0,
+        "n12_http": 0,
+        "no_double_count": true
+      },
+      "paused_blocks": [
+        "N01",
+        "N02",
+        "N03",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N14",
+        "N16"
+      ],
+      "active_context": {
+        "N10": "CHECKED_NEUTRAL_CONTEXT",
+        "N11": "CHECKED_NEUTRAL_CONTEXT",
+        "N12": "CHECKED_NEUTRAL_CONTEXT",
+        "N15": "NOT_CHECKED"
+      },
+      "n12_kucoin_rendered_lines": [],
+      "future_level_status": "CALCULATED_SCENARIOS_ONLY"
+    },
+    {
+      "contract": "UNI-USDT",
+      "snapshot_id": "S392:UNI-USDT:1791901995703",
+      "observed_ts": 1791901995703,
+      "state": "OBSERVE",
+      "shared_http": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 4,
+        "n12_http": 1,
+        "n12_routes": [
+          {
+            "venue": "GATE_FUTURES_N12",
+            "http": 0,
+            "status": "EXACT_GATE_IDENTITY_AND_SHARED_METADATA_REQUIRED"
+          },
+          {
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "http": 1,
+            "status": "CLOSED_BOUNDED_N12_PUBLIC_TRADES"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "paused_blocks": [
+        "N01",
+        "N02",
+        "N03",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N14",
+        "N16"
+      ],
+      "active_context": {
+        "N10": "CHECKED_NEUTRAL_CONTEXT",
+        "N11": "CHECKED_NEUTRAL_CONTEXT",
+        "N12": "CHECKED_NEUTRAL_CONTEXT",
+        "N15": "NOT_CHECKED"
+      },
+      "n12_kucoin_rendered_lines": [
+        "- Направление последних сделок HTX: HTX фьючерсы: 47 сделок, покупки 1 948,58, продажи 49 795,92 USDT; спот: 481 сделок, покупки 13 883,04, продажи 13 630,42 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки BACKPACK; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; KuCoin спот: 51 сделок, покупки 10 492,37, продажи 9 575,88 USDT; общего направления по всем доступным неполным выборкам нет; спот и фьючерсы одной биржи не считались двумя независимыми площадками — HTX / спот и фьючерсы / BACKPACK / KuCoin."
+      ],
+      "future_level_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE"
+    }
+  ],
+  "exact_same_run_delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "5f021f79bf9c9070330646b789577d93a2ab7d4e",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1791901891621-1791901909245",
+    "source": "schedule",
+    "recorded_at": 1791902059877,
+    "status": "EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [
+      {
+        "publication_id": "PUB:89c8ba458443e3f93c2dd32ea9800667c6ee387c",
+        "contract": "UNI-USDT",
+        "direction": "LONG",
+        "wave_id": "EDW:UNI-USDT:1791899212006:G8",
+        "lifecycle_event": "OBSERVE",
+        "run_id": "1791901891621-1791901909245",
+        "snapshot_id": "S392:UNI-USDT:1791901995703",
+        "observed_ts": 1791901995703,
+        "analytical_fingerprint": "1366957d1f14c15b6be849316cb430096428ba4032f85c04fc6eeb99af18bb67",
+        "presentation_hash": "79dac8fa55aee1d4f9a14611c12f7586fa37afc87bf84280c30c250f73964356",
+        "same_run_binding_verified": true,
+        "exact_SENT": true,
+        "telegram_message_id": "193",
+        "dispatch_finalized": true,
+        "task_at_delivery": {
+          "state": "PENDING",
+          "run_id": "1791901891621-1791901909245",
+          "snapshot_id": "S392:UNI-USDT:1791901995703",
+          "due_ts": 1791902295703,
+          "expires_ts": 1791903795703
+        },
+        "task_at_delivery_verified": true,
+        "task_state_after_delivery_known": false,
+        "actual_ENTRY": false,
+        "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+      }
+    ],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "source_ledger_readback": {
+    "database": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "filter": "reservation_id contains exact run_id",
+    "rows_read": 4061,
+    "rows_written": 0,
+    "reservations": [
+      {
+        "source": "BLOCKSCOUT_INDEX",
+        "attempts": 1
+      },
+      {
+        "source": "CHAIN_RPC",
+        "attempts": 8
+      },
+      {
+        "source": "N05_OFFICIAL_FLOW:BACKPACK",
+        "attempts": 4
+      },
+      {
+        "source": "N12_OFFICIAL_TRADES:KUCOIN",
+        "attempts": 1
+      }
+    ],
+    "HTX_PUBLIC_RISK_reservations": 0,
+    "CoinPaprika_supply_only_reservations": 0,
+    "scope": "SOURCE_RESERVATIONS_ARE_NOT_UNIVERSAL_HTTP_PROOF;4_PLUS_1_MATCHES_ADAPTER_ACTUAL_HTTP_DIAGNOSTIC"
+  },
+  "saved_artifacts": [
+    {
+      "path": "checkpoints/active-source-budget-natural-38414047304/report2-run-result.json.gz",
+      "uncompressed_sha256": "4db808e64b081afd0fa6d9f5abfe5fb73f019d5d316f4ed2d87e2befea717428",
+      "compressed_sha256": "c717776cf678841724ba91e5d31c00a311ae19b8815b450971b54ab220d8b34a"
+    },
+    {
+      "path": "checkpoints/active-source-budget-natural-38414047304/same-run-delivery-proof.json.gz",
+      "uncompressed_sha256": "553640018f130b7e731f60b8bf0cf9b62adc56185b7b47ce5d3e41e40f4c1465",
+      "compressed_sha256": "4b33a969457dd19d36cd72aa67e7ae2352f9becaad8bca410b0886f2d30c32de"
+    },
+    {
+      "path": "checkpoints/active-source-budget-natural-38414047304/automatic-delivery-audit.json.gz",
+      "uncompressed_sha256": "bb37449a556cb2c3c2097e5d03057fbfce714e1ced5bec0d6712cbfc05d2c1e1",
+      "compressed_sha256": "95b20a39930e1b8e8b62de65aa87bede1129adc80a6e01dadd60e3004fa7ac28"
+    }
+  ],
+  "new_source_http_for_verification": 0,
+  "limits": {
+    "CoinPaprika_512_not_in_this_head": true,
+    "N05_N12_new_caps_not_in_this_head": true,
+    "full_daily_sustainability_not_proven": true,
+    "all_105_deep_coverage_not_proven": true,
+    "LIQ_complete": false
+  }
+}

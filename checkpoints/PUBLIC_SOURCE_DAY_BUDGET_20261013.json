@@ -1,0 +1,124 @@
+{
+  "schema": "OWNER_CALCULATED_PUBLIC_SOURCE_DAILY_BUDGET_V1",
+  "recorded_utc": "2026-10-13T14:57:58.562836+00:00",
+  "status": "IMPLEMENTED_LOCAL_83_PASS_NATURAL_EXACT_HEAD_PENDING",
+  "owner_authorization": [
+    "пусть лимитф везде будут максимально доступные для нас ?",
+    "или это времдно может быть для нас как то",
+    "понял тога расчитывай сам"
+  ],
+  "authorization_scope": "Calculate safe internal public-source allowances independently within free access; preserve whole-job, D1, strategy, manual and provider frequency guards. This does not authorize local HTX liquidation-price models.",
+  "previous_daily_cap": 16,
+  "new_daily_cap": 512,
+  "daily_bound": {
+    "scheduled_cycles": 36,
+    "conservative_manual_full_invocations": 6,
+    "manual_coin_invocations": 5,
+    "burst_invocations": 3,
+    "invocations": 50,
+    "all_assumed_two_finalists": true,
+    "shared_http_per_finalist": 5,
+    "maximum_aggregate_http": 500,
+    "daily_headroom": 12,
+    "cache_savings_required": false,
+    "separate_LIQ_invocations_share_current_manual_category_but_do_not_fetch_N05_N12": true
+  },
+  "sources": {
+    "GATE": {
+      "official_url": "https://www.gate.com/docs/developers/apiv4/en/",
+      "published_rate": "200 per 10 seconds per public endpoint/IP",
+      "internal_rolling_60s_units": 4
+    },
+    "BITGET": {
+      "official_url": "https://www.bitget.com/docs/classic/rest-api",
+      "published_rate": "20 public market calls/second; 6000/IP/minute aggregate",
+      "internal_rolling_60s_units": 6
+    },
+    "POLONIEX": {
+      "official_url": "https://api-docs.poloniex.com/spot/api/",
+      "published_rate": "30/s public bulk catalogs; 200/s symbol market routes",
+      "internal_rolling_60s_units": 6
+    },
+    "BACKPACK": {
+      "official_url": "https://support.backpack.exchange/exchange/api-and-developer-docs/faqs",
+      "published_rate": "30/minute historical market endpoints per subaccount; unauthenticated IP scope is not specified here",
+      "internal_rolling_60s_units": 6
+    },
+    "BINANCE": {
+      "official_url": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/limits",
+      "published_rate": "IP REQUEST_WEIGHT determined by exchangeInfo; existing restrictive transport cap retained",
+      "internal_rolling_60s_units": 6
+    },
+    "KRAKEN": {
+      "official_url": "https://support.kraken.com/gb/articles/206548367-what-are-the-api-rate-limits-",
+      "published_rate": "public calls at 1/second or less remain within rate limits",
+      "internal_rolling_60s_units": 6
+    },
+    "BITFINEX": {
+      "official_url": "https://docs.bitfinex.com/docs/requirements-and-limitations",
+      "published_rate": "10-90 REST calls/minute according to endpoint",
+      "internal_rolling_60s_units": 6
+    },
+    "OKX": {
+      "official_url": "https://www.okx.com/docs-v5/en/#rest-api-market-data-get-trades",
+      "published_rate": "trades 100/2 seconds/IP; existing 100-unit/60-second ledger retained",
+      "internal_rolling_60s_units": 100
+    },
+    "KUCOIN": {
+      "official_url": "https://www.kucoin.com/docs-new/rate-limit-rule-classic",
+      "published_rate": "public pool 2000/30 seconds; current documentation also describes 1-second weighted accounting; preserve current conservative 20 units/60s",
+      "internal_rolling_60s_units": 20
+    }
+  },
+  "source_ids": [
+    "N05_OFFICIAL_FLOW:GATE",
+    "N05_OFFICIAL_FLOW:BITGET",
+    "N05_OFFICIAL_FLOW:POLONIEX",
+    "N05_OFFICIAL_FLOW:BACKPACK",
+    "N05_OFFICIAL_FLOW:BINANCE",
+    "N05_OFFICIAL_FLOW:KRAKEN",
+    "N05_OFFICIAL_FLOW:BITFINEX",
+    "N12_OFFICIAL_TRADES:OKX",
+    "N12_OFFICIAL_TRADES:KUCOIN"
+  ],
+  "not_nine_times_spending": "Nine source ceilings are fallback capacities. One shared queue permits at most five reserved requests per selected candidate.",
+  "whole_job_http": 164,
+  "source_ledgers_reset": false,
+  "provider_minute_caps_changed": false,
+  "D1_caps_changed": false,
+  "catalog_source_caps_changed": false,
+  "source_backoff_changed": false,
+  "freshness_weights_format_changed": false,
+  "validation": {
+    "tests": 83,
+    "passed": 83,
+    "source_http": 0,
+    "saved_original_source_pages_replayed": true,
+    "tap_sha256": "743494d8ca7fca5ae38730cac9d8bafde89173081592db64bb4a5b159c91448f",
+    "known_16_attempt_usage_now_receives_four_qualified_Bitget_transports": true,
+    "512_durable_limit_and_cross_venue_fallback_checked": true,
+    "overlay_manifest_includes_new_budget_module": true
+  },
+  "other_limits": {
+    "COINPAPRIKA_SECTOR": {
+      "approved_daily_cap": 512,
+      "all_project_31_day_ceiling": 16244,
+      "official_free_monthly_cap": 20000,
+      "natural_after_cap_change_pending": true
+    },
+    "COINGECKO_SECTOR": {
+      "daily_cap": 48,
+      "changed": false,
+      "reason": "Current route has no Demo key. Official keyless API is dynamic shared IP and explicitly unsuitable for scheduled production polling; do not call increased internal cap a guaranteed free allowance.",
+      "official_url": "https://docs.coingecko.com/docs/keyless-public-api",
+      "required_for_dedicated_free_quota": "Owner-owned free CoinGecko Demo key, verified plan allowance and original useful response."
+    }
+  },
+  "not_guaranteed": [
+    "Useful complete windows for every asset",
+    "Identical independent venue direction",
+    "Provider uptime or absence of IP restrictions",
+    "24-hour actual stability until natural cycles reviewed",
+    "Final closure of LIQ or all active blocks"
+  ]
+}

@@ -1,3 +1,4 @@
+import {N05_N12_PUBLIC_SOURCE_DAILY_CAP} from './public-venue-source-budget.mjs';
 import {createHash} from 'node:crypto';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
@@ -27,10 +28,10 @@ export async function collectGateFuturesTradeSample(params={}){
   const id=`N12_GATE_FUTURES:${run_id}:${contract}:${++sequence}`,receipt={url,status:'NOT_ATTEMPTED',actual_http:0,http_status:null};receipts.push(receipt);
   if(!dbGrant()){receipt.status='FLOW_DB_HEADROOM_REQUIRED';return null;}
   if(await readEvidenceSourceCache(db,{source:'N05_PROVIDER_BACKOFF:GATE',asset_key:'SHARED',now:clock()})){receipt.status='DURABLE_VENUE_BACKOFF';return null;}
-  if(!await n05SourceHasHeadroom(db,SOURCE,16,clock())){receipt.status='SOURCE_DAILY_CAP_DENIED';return null;}
+  if(!await n05SourceHasHeadroom(db,SOURCE,N05_N12_PUBLIC_SOURCE_DAILY_CAP,clock())){receipt.status='SOURCE_DAILY_CAP_DENIED';return null;}
   const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});
   if(grant?.allowed!==true||grant.duplicate){receipt.status=grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED';return null;}
-  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:id,attempts:1,daily_cap:16,now:clock()});
+  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:id,attempts:1,daily_cap:N05_N12_PUBLIC_SOURCE_DAILY_CAP,now:clock()});
   if(!admission.allowed){receipt.status=admission.status;return null;}
   const minute=await reserveProviderMinuteUnits(db,{provider:'GATE',reservation_id:id,units:1,cap:4,now:clock()});
   if(!minute.allowed){receipt.status=minute.status;return null;}

@@ -1,3 +1,4 @@
+import {N05_N12_PUBLIC_SOURCE_DAILY_CAP} from './public-venue-source-budget.mjs';
 import {createHash} from 'node:crypto';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
@@ -32,7 +33,8 @@ export function compactN12NativeCatalog(venue,market,contract,payload){
 }
 
 // Both venues are optional N12 routes inside N05's existing five-request
-// caller envelope. Their new conservative ledgers never relax an old cap.
+// caller envelope. Daily allowance covers the owner-approved day plan;
+// provider minute weights, durable backoff and original source clocks remain.
 export async function collectN12NativePublicVenue(params={},venue){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),source=`N12_OFFICIAL_TRADES:${venue}`,receipts=[];
  const root={version:N12_NATIVE_PUBLIC_COLLECTOR_VERSION,venue,status:'EXACT_ASSET_AND_ADMISSION_REQUIRED',check_completed:false,evidence:[],components:[],network_calls:0,receipts,internal_only:true};let calls=0,sequence=0;
@@ -44,10 +46,10 @@ export async function collectN12NativePublicVenue(params={},venue){
   const id=`N12_${venue}:${run_id}:${contract}:${++sequence}`,receipt={url,kind,market,status:'NOT_ATTEMPTED',actual_http:0};receipts.push(receipt);
   if(!dbGrant()){receipt.status='SOURCE_DB_HEADROOM_REQUIRED';return null;}
   if(await readEvidenceSourceCache(db,{source:`N12_PROVIDER_BACKOFF:${venue}`,asset_key:'SHARED',now:clock()})){receipt.status='DURABLE_VENUE_BACKOFF';return null;}
-  if(!await n05SourceHasHeadroom(db,source,16,clock())){receipt.status='SOURCE_DAILY_CAP_DENIED';return null;}
+  if(!await n05SourceHasHeadroom(db,source,N05_N12_PUBLIC_SOURCE_DAILY_CAP,clock())){receipt.status='SOURCE_DAILY_CAP_DENIED';return null;}
   const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});
   if(grant?.allowed!==true||grant.duplicate){receipt.status=grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED';return null;}
-  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:id,attempts:1,daily_cap:16,now:clock()});if(!daily.allowed){receipt.status=daily.status;return null;}
+  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:id,attempts:1,daily_cap:N05_N12_PUBLIC_SOURCE_DAILY_CAP,now:clock()});if(!daily.allowed){receipt.status=daily.status;return null;}
   const units=venue==='KUCOIN'?kind==='CURRENCIES'?3:kind==='CATALOG'?(market==='SPOT'?4:3):(market==='SPOT'?3:5):1;
   const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id,units,cap:venue==='OKX'?100:20,now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}
   try{
