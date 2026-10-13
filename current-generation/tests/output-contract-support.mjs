@@ -17,6 +17,7 @@ export async function loadEffectivePresentationModules(){
     'gate-four-hour-flow.mjs':'current-generation/files/src/gate-four-hour-flow.mjs',
     'gate-futures-trade-sample.mjs':'current-generation/files/src/gate-futures-trade-sample.mjs',
     'bitget-n12-bounded-trade-sample.mjs':'current-generation/files/src/bitget-n12-bounded-trade-sample.mjs',
+    'verified-asset-route-identity.mjs':'current-generation/files/src/verified-asset-route-identity.mjs',
     'n12-native-public-trade-sample.mjs':'current-generation/files/src/n12-native-public-trade-sample.mjs',
     'n12-kucoin-token-trade-sample.mjs':'current-generation/files/src/n12-kucoin-token-trade-sample.mjs',
     'approved-htx-analysis-scope.mjs':'current-generation/files/src/approved-htx-analysis-scope.mjs',

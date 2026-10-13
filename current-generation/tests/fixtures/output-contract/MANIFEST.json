@@ -15,9 +15,10 @@
     "current-generation/files/src/block-result-context.mjs": "3c571712a2028297f70b6071ce432f14c51ebcf7aa3d4cd5d4cf1c04d7d9afc5",
     "current-generation/files/src/telegram-plain-facts.mjs": "aa03a621974e86caec86d5a2b6b7577900bd51f2c890140fc0d2729bd8861689",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
-    "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236",
+    "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461",
     "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4",
-    "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": "5d170ef476fea3edf21774632ad79d13c71f88576efdd50d08e857ac17c0d17d"
+    "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": "a1150019d0d516cda87a0568e85da46c80dbc533e21ede1809d756b922bf0161",
+    "current-generation/files/src/verified-asset-route-identity.mjs": "ddb6bbdefd26a32d2e21d6444000d63483765500259b0768e45833d913003eb3"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -31,6 +32,28 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-13",
+      "scope": "CLOSED_EXACT_IDENTITY_METHOD_PROPAGATION",
+      "authorization": "Owner authorized improving all active blocks and correcting missing exact-bound source routes; this maintains static identity provenance and changes no formatter or golden canonical input/output.",
+      "module_changes": {
+        "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": {
+          "before": "166847a3c80a2af75b174ac83d43c924dc9a0cf612fd26a15a55c82a2d0cb236",
+          "after": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461"
+        },
+        "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": {
+          "before": "5d170ef476fea3edf21774632ad79d13c71f88576efdd50d08e857ac17c0d17d",
+          "after": "a1150019d0d516cda87a0568e85da46c80dbc533e21ede1809d756b922bf0161"
+        },
+        "current-generation/files/src/verified-asset-route-identity.mjs": {
+          "before": null,
+          "after": "ddb6bbdefd26a32d2e21d6444000d63483765500259b0768e45833d913003eb3"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
     {
       "date": "2026-10-12",
       "scope": "LIQ_SAME_RUN_SPOT_PRICE_REFERENCE_FOR_VERIFIED_FUTURES_LEVEL",

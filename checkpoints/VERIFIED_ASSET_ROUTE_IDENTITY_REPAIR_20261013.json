@@ -57,11 +57,25 @@
       "passed": 17,
       "tap_sha256": "2ae02ef4953855e3cad3917f91738ffbec73d06aa4da0f8c411bca0a7524d31a",
       "provider_http": 0
+    },
+    "frozen_presentation": {
+      "passed": 18,
+      "tests": 18,
+      "tap_sha256": "1f7a30e851438a387113c2b00f37b218ce51034caf69cfa0e293c6e87f0b945b",
+      "golden_fixtures_changed": false,
+      "provider_http": 0
     }
   },
   "cloud_assembly_pending": true,
   "natural_route_gain_pending": true,
   "all_105_coverage_complete": false,
   "paused_blocks_restored": false,
-  "telegram_format_or_score_changed": false
+  "telegram_format_or_score_changed": false,
+  "cloud_initial_failure": {
+    "run": 38425365668,
+    "head": "6420e0d5c35f9f542ebc83741b598ca352b33a68",
+    "cause": "Presentation freeze isolated-copy harness missed the new shared identity dependency; manifest retained pre-repair helper hashes.",
+    "corrected": "Add only dependency and authorized module hashes; preserve every golden fixture byte.",
+    "provider_http": 0
+  }
 }
