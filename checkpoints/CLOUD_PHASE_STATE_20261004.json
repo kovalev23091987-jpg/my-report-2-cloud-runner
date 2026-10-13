@@ -329,11 +329,9 @@
     }
   ],
   "lease": {
-    "owner": "GH_ACTIONS:HTX_COMPACT_4H:38358282884:undefined",
-    "acquired_ts": 1791873800487,
-    "expires_ts": 1791875300487,
-    "expected_main": "0dbfa735cd9d2572b312bebb3463f6691c8a141d",
-    "scope": "HTX_COMPACT_4H_SAME_SOURCE_6_PER_DAY_PRICE_ONLY_NO_TELEGRAM"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "LIQ: after the next 06:36 UTC Cloudflare cron window, read dedicated forecast archive D1 and Workers invocation analytics; validate exact publication, source clocks and payload. If no invocation, diagnose cron. Compare later HTX official events with HTX model only; do not change weights. Verify exact same-run Telegram SENT on a publishable report. Continue 105-asset factual coverage only with admitted useful new facts; paused blocks and shared caps remain.",
   "common_future_universe": {
@@ -399,11 +397,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:LIQ_NATURAL_AUDIT:1791867483724",
-    "acquired_ts": 1791867483724,
-    "expires_ts": 1791871356057,
-    "released_ts": 1791870350595,
-    "reason": "LIQ old-report audit and first archive-window observation saved to main; next natural cron pending"
+    "owner": "GH_ACTIONS:HTX_COMPACT_4H:38358282884:undefined",
+    "acquired_ts": 1791873800487,
+    "expires_ts": 1791875300487,
+    "released_ts": 1791873811956,
+    "reason": "HTX_COMPACT_4H_DAILY_BOUNDED_RUN"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -10314,52 +10312,52 @@
   },
   "latest_N05_coverage_bottleneck_and_shared_batch_plan": "checkpoints/N05_COVERAGE_BOTTLENECK_AND_SHARED_BATCH_PLAN_20261010.json",
   "latest_htx_compact_4h_daily": {
-    "cloud_run": 38188729201,
-    "head": "9b1ebe17353dc6fb65370647a283798159b49bcc",
+    "cloud_run": 38358282884,
+    "head": "0dbfa735cd9d2572b312bebb3463f6691c8a141d",
     "status": "BOUNDED_ACTUAL_COMPACT_SOURCE_ATTEMPTS_FINISHED",
     "sourceHTTP": 6,
     "source_http_reserved": 6,
     "results": [
       {
-        "contract": "AAVE-USDT",
+        "contract": "APT-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "ACE-USDT",
-        "status": "PARTIAL_90D_4H_PRICE_ONLY",
-        "observed_bars": 334
-      },
-      {
-        "contract": "ADA-USDT",
+        "contract": "ARB-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "AKE-USDT",
-        "status": "PARTIAL_90D_4H_PRICE_ONLY",
-        "observed_bars": 514
-      },
-      {
-        "contract": "ALGO-USDT",
+        "contract": "ASTER-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "APR-USDT",
-        "status": "PARTIAL_90D_4H_PRICE_ONLY",
-        "observed_bars": 347
+        "contract": "ATOM-USDT",
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "observed_bars": 540
+      },
+      {
+        "contract": "AVAX-USDT",
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "observed_bars": 540
+      },
+      {
+        "contract": "AVNT-USDT",
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "observed_bars": 540
       }
     ],
     "D1": {
       "requests": 7,
-      "rows_read": 5,
+      "rows_read": 15,
       "rows_written": 8,
       "unknown_ops": 0,
       "targets": {
         "first:report2_runner_budget_ledger_shadow": {
           "requests": 2,
-          "rows_read": 2,
+          "rows_read": 12,
           "rows_written": 0,
           "unknown_ops": 0
         },
