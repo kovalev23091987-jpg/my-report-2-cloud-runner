@@ -3,7 +3,7 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 
-export const COINGECKO_SECTOR_VERSION='coingecko-sector-v6-exact-missing-or-stale-target-20261007';
+export const COINGECKO_SECTOR_VERSION='coingecko-sector-v7-optional-free-demo-header-20261013';
 const SOURCE='COINGECKO_SECTOR',MAX_AGE=900000,clean=v=>String(v??'').trim();
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -85,7 +85,26 @@ export function normalizeCoingeckoSector({metadata,categories,quotes,identity,co
  return{status:'CLOSED',evidence:[evidence],summary};
 }
 
-export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false}={}){
+export function coingeckoAccessPolicy(api_key,{strict_fresh_manual=false}={}){
+ const key=clean(api_key),policy=SOURCE_POLICIES[SOURCE];
+ if(key&&!/^[\x21-\x7e]{10,200}$/.test(key))return{status:'DEMO_KEY_FORMAT_INVALID',allowed:false};
+ return{allowed:true,auth_mode:key?'DEMO_HEADER':'KEYLESS_PUBLIC',daily_cap:key?(strict_fresh_manual?policy.demo_daily_cap:policy.demo_ordinary_daily_cap):policy.daily_cap,monthly_module_bound:key?policy.demo_monthly_module_bound:policy.monthly_module_bound,minute_cap:9};
+}
+// Credentials travel only to the documented Demo origin in a header. They are
+// never part of URLs, receipts, cache keys, payloads or transport error text.
+export function coingeckoDemoTransport(fetch_impl,api_key){
+ const key=clean(api_key);
+ if(!coingeckoAccessPolicy(key).allowed)throw Error('DEMO_KEY_FORMAT_INVALID');
+ return async(url,options={})=>{
+  const u=new URL(url);
+  if(u.origin!=='https://api.coingecko.com'||!u.pathname.startsWith('/api/v3/')||u.username||u.password||[...u.searchParams.keys()].some(k=>/key|token/i.test(k)))throw Error('COINGECKO_DEMO_ORIGIN_REQUIRED');
+  const headers=new Headers(options.headers);headers.delete('x-cg-pro-api-key');headers.delete('x-cg-demo-api-key');if(key)headers.set('x-cg-demo-api-key',key);
+  try{return await fetch_impl(url,{...options,headers,redirect:'error'});}catch{throw Error('COINGECKO_TRANSPORT_FAILED');}
+ };
+}
+export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null}={}){
+ const access=coingeckoAccessPolicy(coingecko_demo_api_key,{strict_fresh_manual});
+ if(!access.allowed)return{status:access.status,evidence:[],network_calls:0};
  let coin_id=clean(asset_metadata?.coingecko_id),category_id=clean(asset_metadata?.coingecko_category_id),category_name=clean(asset_metadata?.coingecko_category_name);const identity=asset_identity;
  const native=exactNativeSectorBinding(identity,contract);if(native&&!coin_id)coin_id=native.coin_id;
  const pinned=Boolean(category_id||category_name),platform=COINGECKO_ASSET_PLATFORMS[identity?.chain],validAddress=native||Boolean(platform)&&(identity?.chain==='solana'?/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(identity.contract_or_mint):/^0x[0-9a-f]{40}$/i.test(identity.contract_or_mint));
@@ -95,7 +114,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(!strict_fresh_manual&&cached?.version===COINGECKO_SECTOR_VERSION&&cached.status==='CLOSED'&&cached.evidence?.length&&cached.evidence.every(r=>r.htx_contract===contract&&r.source_ts<=now&&r.first_known_ts<=now&&r.expires_at>=now))return cached;
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,minute_provider:'COINGECKO',minute_cap:9});
+ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap});
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
  const asset_platforms=native?.platform?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
  const get=(route,url,options)=>reader.get(route,url,options);
@@ -121,7 +140,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
   }
  }
  const transport=reader.summary(),providerBackoff=transport.provider_backoff;
- const result={version:COINGECKO_SECTOR_VERSION,...normalized,...(transport.admission.allowed===false?{status:transport.admission.status}:{}),...(transport.receipts.some(r=>!['RECEIVED','VALIDATED_REFERENCE_CACHE'].includes(r.status))?{status:'SOURCE_NOT_CLOSED'}:{}),...(providerBackoff?{status:providerBackoff.status}:{}),...transport,internal_only:true,free_only:true,monthly_module_bound:1488};
+ const result={version:COINGECKO_SECTOR_VERSION,...normalized,...(transport.admission.allowed===false?{status:transport.admission.status}:{}),...(transport.receipts.some(r=>!['RECEIVED','VALIDATED_REFERENCE_CACHE','VALIDATED_RUN_MEMORY_REFERENCE'].includes(r.status))?{status:'SOURCE_NOT_CLOSED'}:{}),...(providerBackoff?{status:providerBackoff.status}:{}),...transport,internal_only:true,free_only:true,auth_mode:access.auth_mode,daily_cap:access.daily_cap,monthly_module_bound:access.monthly_module_bound};
  const expires=normalized.status==='CLOSED'?normalized.evidence[0].expires_at:now+900000;
  await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:expires,payload:result});
  if(providerBackoff)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',observed_ts:now,expires_ts:providerBackoff.backoff_until,payload:providerBackoff});

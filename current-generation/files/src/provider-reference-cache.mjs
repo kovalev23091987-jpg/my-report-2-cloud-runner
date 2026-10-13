@@ -40,13 +40,17 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
   const day_utc=new Date(readTs).toISOString().slice(0,10);
   const usage=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(source,day_utc).first();
   if(Number(usage?.attempts)>=daily_cap){denied={allowed:false,status:'DAILY_CAP_OR_DUPLICATE',source,day_utc,attempts:0};return null;}
+  if(minute_provider){
+   await installProviderMinuteLedger(db);
+   const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind(String(minute_provider).toUpperCase(),readTs-60000,readTs).first();
+   if(!Number.isSafeInteger(Number(rolling?.units))||Number(rolling.units)>=minute_cap){denied={allowed:false,status:'PROVIDER_RATE_LIMIT_LOCAL',source,attempts:0};return null;}
+  }
   const reservation_id=`EV2:${source}:${run_id}:${await digest(url)}:${sequence++}`;
   const whole=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:1});
   if(whole?.allowed!==true||whole?.duplicate===true){denied={...whole,allowed:false,status:whole?.duplicate===true?'ALREADY_RESERVED_NO_REDISPATCH':whole?.status||'ADMISSION_REQUIRED'};return null;}
   const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts:1,daily_cap,now:readTs});
   if(!daily.allowed){denied=daily;return null;}
   if(minute_provider){
-   await installProviderMinuteLedger(db);
    const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now:readTs,cap:minute_cap});
    if(!minute.allowed){denied={...minute,status:'PROVIDER_RATE_LIMIT_LOCAL'};return null;}
   }

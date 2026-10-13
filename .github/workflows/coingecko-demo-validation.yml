@@ -1,0 +1,40 @@
+name: CoinGecko bounded free Demo sector validation
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main:
+        required: true
+        type: string
+      lease_owner:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: my-report-2-production-cycle
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify one missing exact sector fact under existing daily admission
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
+          REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
+          REPORT2_COINGECKO_DEMO_API_KEY: ${{ secrets.REPORT2_COINGECKO_DEMO_API_KEY }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/validate-coingecko-demo-sector-20261013.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coingecko-demo-sector-${{ github.run_id }}
+          path: audit-output/coingecko-demo-sector/validation.json
+          if-no-files-found: error
+          retention-days: 30
