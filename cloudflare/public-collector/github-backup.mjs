@@ -54,7 +54,12 @@ async function main(){
     let recovery={dispatched:false,status:'RECOVERY_DISABLED_OR_BOOTSTRAP',source_http:0,D1:0};
     if(recoveryEnabled&&durationMinutes>0){
       const now=Date.now();
-      const gap=await inspectScheduledReportGap({repository,token,now,local_last_accepted_ts:lastAcceptedRecoveryTs});
+      let cadence=null;
+      try{cadence=await db.prepare(`SELECT last_success_ts,lease_expires_ts FROM v3_maintenance_cadence_shadow
+        WHERE job_key=?1 LIMIT 1`).bind('TWO_CANDIDATE_ANALYTICS_40M').first();}
+      catch{recovery={dispatched:false,status:'RECOVERY_CADENCE_READ_FAILED',source_http:0,D1:0};}
+      const gap=recovery.status==='RECOVERY_CADENCE_READ_FAILED'?recovery:await inspectScheduledReportGap({repository,token,now,local_last_accepted_ts:lastAcceptedRecoveryTs,
+        cadence_last_success_ts:cadence?.last_success_ts??null,cadence_lease_expires_ts:cadence?.lease_expires_ts??null});
       recovery=gap.allowed?await dispatchScheduledReportRecovery({gap,repository,token}):gap;
       if(recovery.dispatched)lastAcceptedRecoveryTs=now;
     }

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal} from './scheduled-report-recovery.mjs';
 
 const NOW=Date.parse('2026-10-12T10:00:00Z');
-const run=(time,display_title='Report 2 Cloud Runner')=>({created_at:new Date(time).toISOString(),display_title,head_branch:'main'});
+const run=(time,display_title='Report 2 Cloud Runner',status='completed')=>({created_at:new Date(time).toISOString(),display_title,head_branch:'main',status});
 const mockLists=({scheduled=[],dispatched=[],http_status=200}={})=>async(url,options)=>{
   assert.equal(options.headers.Authorization,'Bearer TEST');
   if(http_status!==200)return new Response('{}',{status:http_status});
@@ -13,10 +13,23 @@ const mockLists=({scheduled=[],dispatched=[],http_status=200}={})=>async(url,opt
 };
 const inspect=(fetch_impl,extra={})=>inspectScheduledReportGap({repository:'owner/repo',token:'TEST',now:NOW,fetch_impl,...extra});
 
-test('recent scheduled report suppresses recovery even when no report was published',async()=>{
-  const gap=await inspect(mockLists({scheduled:[run(NOW-20*60_000)]}));
-  assert.equal(gap.allowed,false);
-  assert.equal(gap.status,'SCHEDULED_REPORT_RECENT');
+test('a recent no-work schedule event cannot hide an overdue D1 full-cycle cadence',async()=>{
+  const gap=await inspect(mockLists({scheduled:[run(NOW-10*60_000)]}),{cadence_last_success_ts:NOW-41*60_000});
+  assert.equal(gap.allowed,true);
+  assert.equal(gap.status,'SCHEDULED_REPORT_GAP_CONFIRMED');
+  const fallback=await inspect(mockLists({scheduled:[run(NOW-20*60_000)]}));
+  assert.equal(fallback.status,'SCHEDULED_REPORT_RECENT');
+});
+
+test('D1 cadence, live schedule, lease and settlement grace suppress duplicate recovery',async()=>{
+  const recent=await inspect(mockLists({scheduled:[run(NOW-90*60_000)]}),{cadence_last_success_ts:NOW-20*60_000});
+  assert.equal(recent.status,'SCHEDULED_REPORT_RECENT');
+  const inProgress=await inspect(mockLists({scheduled:[run(NOW-10*60_000,'Report 2 Cloud Runner','in_progress')]}),{cadence_last_success_ts:NOW-41*60_000});
+  assert.equal(inProgress.status,'SCHEDULED_RUN_IN_PROGRESS');
+  const grace=await inspect(mockLists({scheduled:[run(NOW-2*60_000)]}),{cadence_last_success_ts:NOW-41*60_000});
+  assert.equal(grace.status,'SCHEDULED_RUN_SETTLEMENT_GRACE');
+  const lease=await inspect(mockLists({scheduled:[run(NOW-90*60_000)]}),{cadence_last_success_ts:NOW-41*60_000,cadence_lease_expires_ts:NOW+60_000});
+  assert.equal(lease.status,'CADENCE_LEASE_ACTIVE_OR_INVALID');
 });
 
 test('confirmed forty-minute schedule gap dispatches the same bounded report path',async()=>{
@@ -68,6 +81,8 @@ test('workflow recovery uses scheduled source, caps and Telegram admission witho
   assert.match(backup,/REPORT2_SCHEDULED_RECOVERY_ENABLED:.*REPORT2_RUNNER_ENABLED/);
   assert.match(worker,/durationMinutes>0/);
   assert.match(worker,/inspectScheduledReportGap/);
+  assert.match(worker,/SELECT last_success_ts,lease_expires_ts FROM v3_maintenance_cadence_shadow/);
+  assert.match(worker,/RECOVERY_CADENCE_READ_FAILED/);
   assert.match(workflow,/Verify exact recovery delivery artifact without network\n\s*if:.*scheduled_recovery_run == true.*full_report\.outcome == 'success'/);
   assert.match(workflow,/runtime\/automatic-delivery-audit\.json/);
   assert.match(backup,/workflow_dispatch:\n\s*inputs:/);

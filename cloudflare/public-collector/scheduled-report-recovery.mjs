@@ -9,9 +9,10 @@ const validTime=value=>{
   return Number.isSafeInteger(time)?time:null;
 };
 
-export async function inspectScheduledReportGap({repository,token,now=Date.now(),local_last_accepted_ts=0,fetch_impl=fetch}={}){
+export async function inspectScheduledReportGap({repository,token,now=Date.now(),local_last_accepted_ts=0,cadence_last_success_ts=null,cadence_lease_expires_ts=null,fetch_impl=fetch}={}){
   if(!repositoryValid(repository)||!token||!Number.isSafeInteger(now)||now<=0)return{allowed:false,status:'RECOVERY_CONTROL_REQUIRED'};
   if(local_last_accepted_ts>0&&now-local_last_accepted_ts<GAP_MS)return{allowed:false,status:'LOCAL_RECOVERY_ALREADY_ACCEPTED',last_attempt_ts:local_last_accepted_ts};
+  if(cadence_lease_expires_ts!==null&&(!Number.isSafeInteger(cadence_lease_expires_ts)||cadence_lease_expires_ts>now))return{allowed:false,status:'CADENCE_LEASE_ACTIVE_OR_INVALID'};
   const base=`https://api.github.com/repos/${repository}/actions/workflows/${WORKFLOW}/runs`;
   const read=async event=>{
     const perPage=event==='schedule'?1:100;
@@ -25,7 +26,16 @@ export async function inspectScheduledReportGap({repository,token,now=Date.now()
     const [scheduled,dispatched]=await Promise.all([read('schedule'),read('workflow_dispatch')]);
     const recovery=dispatched.filter(run=>run?.display_title===RECOVERY_TITLE&&run?.head_branch==='main');
     if(dispatched.length===100&&recovery.length===0)return{allowed:false,status:'RECOVERY_HISTORY_NOT_CLOSED'};
-    const latest=[...scheduled,...recovery].map(run=>validTime(run?.created_at)).filter(Number.isSafeInteger).sort((a,b)=>b-a)[0]??null;
+    const latestScheduled=scheduled[0]||null;
+    const scheduledTime=latestScheduled?validTime(latestScheduled.created_at):null;
+    if(latestScheduled&&latestScheduled.status!=='completed')return{allowed:false,status:'SCHEDULED_RUN_IN_PROGRESS',last_attempt_ts:scheduledTime};
+    if(cadence_last_success_ts!==null&&(!Number.isSafeInteger(cadence_last_success_ts)||cadence_last_success_ts<0||cadence_last_success_ts>now))return{allowed:false,status:'CADENCE_TIME_INVALID'};
+    // A GitHub schedule event can be admitted as NOT_DUE. Its creation time is
+    // not a full report. Give a just-finished run time to settle the D1 cadence,
+    // then use the actual charged full-cycle attempt as the recovery anchor.
+    if(cadence_last_success_ts!==null&&scheduledTime!==null&&scheduledTime>cadence_last_success_ts&&now-scheduledTime<5*60_000)return{allowed:false,status:'SCHEDULED_RUN_SETTLEMENT_GRACE',last_attempt_ts:scheduledTime};
+    const times=cadence_last_success_ts===null?[...scheduled,...recovery].map(run=>validTime(run?.created_at)):[cadence_last_success_ts,...recovery.map(run=>validTime(run?.created_at))];
+    const latest=times.filter(Number.isSafeInteger).sort((a,b)=>b-a)[0]??null;
     if([...scheduled,...recovery].some(run=>validTime(run?.created_at)===null))return{allowed:false,status:'RECOVERY_RUN_TIME_INVALID'};
     if(latest!==null&&latest>now)return{allowed:false,status:'RECOVERY_RUN_TIME_FUTURE',last_attempt_ts:latest};
     if(latest!==null&&now-latest<GAP_MS)return{allowed:false,status:'SCHEDULED_REPORT_RECENT',last_attempt_ts:latest};
