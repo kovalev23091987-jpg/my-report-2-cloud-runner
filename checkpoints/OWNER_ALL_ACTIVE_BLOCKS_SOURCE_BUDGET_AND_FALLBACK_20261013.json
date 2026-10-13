@@ -1,7 +1,7 @@
 {
   "schema": "OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_V1",
   "recorded_utc": "2026-10-13T11:19:24.064534+00:00",
-  "owner_instruction": "Apply the LIQ source usefulness, fallback and rate-budget discipline to every active report block. Search for additional free sources when current sources do not provide strong useful coverage, and connect them only after exact-asset factual validation and report-consumer proof.",
+  "owner_instruction": "Apply the LIQ source usefulness, fallback and rate-budget discipline to every active report block. Search for additional free sources when current sources do not provide strong useful coverage, and connect them only after exact-asset factual validation and report-consumer proof. Maximize useful information per source and block, remove sources from a block when they add no useful information, and reuse already verified earlier block audits unless a new defect or changed source/data requires rechecking.",
   "scope": {
     "active_supplemental_blocks": [
       "N04",
@@ -44,5 +44,15 @@
     "rate-safe forever based solely on a static budget",
     "source connected merely because it returned HTTP 200"
   ],
-  "strategy_constraints": "Existing score weights, threshold, approved report and Telegram forms remain unchanged unless the owner separately agrees."
+  "strategy_constraints": "Existing score weights, threshold, approved report and Telegram forms remain unchanged unless the owner separately agrees.",
+  "source_efficiency_measurements": [
+    "exact approved assets with current usable facts per source and block",
+    "useful source-backed facts reaching consumer and rendered output per admitted provider HTTP",
+    "source freshness, schema, HTTP failures and 429 outcomes",
+    "independent primary venue overlap, avoiding duplicate upstream counting",
+    "incremental coverage and quality beyond existing sources for the same block",
+    "daily and monthly quota headroom after all shared block usage"
+  ],
+  "block_local_exclusion_rule": "Remove a source only from a block where it is proven unhelpful. Never disable a shared source for other active blocks solely because one block does not use it.",
+  "prior_proof_reuse": "Reuse exact prior head/hash/artifact of already checked blocks; repeat source probes or tests only for a new defect, changed upstream behavior or missing fact."
 }
