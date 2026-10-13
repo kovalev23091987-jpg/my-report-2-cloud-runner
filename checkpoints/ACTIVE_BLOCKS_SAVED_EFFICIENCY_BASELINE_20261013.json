@@ -1,6 +1,6 @@
 {
   "schema": "ACTIVE_BLOCKS_SAVED_EFFICIENCY_BASELINE_V1",
-  "recorded_utc": "2026-10-13T11:49:44.010288+00:00",
+  "recorded_utc": "2026-10-13T12:36:49.707788+00:00",
   "purpose": "Stage-2 saved-only baseline while LIQ live acceptance remains open; no provider calls, no code or score changes",
   "latest_approved_universe": 105,
   "historical_market_baseline_universe": 104,
@@ -340,7 +340,7 @@
     "N14",
     "N16"
   ],
-  "next_action": "Finish LIQ on a naturally admitted full report with exact Telegram message_id. Then extend this saved-only baseline to 105 per-block actual source/use matrix and total provider HTTP/D1 accounting, prioritizing proven gaps; do not disable shared sources globally.",
+  "next_action": "LIQ same-run SENT/message_id and D1 225/288 proved in run 38396042005; backup D1-cadence fix awaits next due-cycle readback. N05 exact historical route order changed within unchanged five-call envelope and awaits a natural full run. Continue all-105 active-block source/use and spot/futures audit, then admitted probes only for specific missing facts.",
   "static_budget_precheck": {
     "status": "INTERNAL_CAPS_ONLY_NOT_OFFICIAL_PROVIDER_LIMITS_OR_MEASURED_USAGE",
     "assumed_max_admitted_analytical_runs_per_day": 47,
@@ -404,24 +404,46 @@
   },
   "route_scheduler_readback": {
     "N05_code": "current-generation/files/src/external-n05-flow-collector.mjs",
-    "N05_behavior": "All eligible venue adapters are traversed after a failure; a shared five-grant envelope prevents extra network calls while cache hits can still contribute. Seven historically proven Poloniex markets are prioritized; remaining venue order is static after exact identity checks. This is fallback behavior, not proof of complete current coverage.",
-    "N05_current_run": "RIVER external N05 flow was daily-cap denied; STRK external route deferred by shared envelope. Their HTX flow context rendered but N05 decision-source use was not proven in the block audit.",
+    "N05_behavior": "All eligible venue adapters are traversed after a failure under one shared five-grant envelope; validated cache hits can still contribute. Seven exact Poloniex windows and nineteen other exact contracts with saved full 240-minute windows now receive first route preference. All historical windows require current identity, data and clock validation; no new current coverage is claimed.",
+    "N05_current_run": "Full recovery run 38396042005: FARTCOIN and CT had HTX 4h futures flow rendered; neither had N05 decision use. External route attempted two provider HTTP per coin, finished SOURCE_DAILY_CAP_DENIED and no accepted full external component.",
     "cross_block_code": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
     "cross_block_behavior": "A priority-ticket rotation can place one eligible role first, followed by fixed priority sorting. Review saved marginal useful-fact yield before changing order; keep weight and score policy fixed.",
-    "action": "Reconcile actual per-source facts and unique HTTP ledgers for all 105 before route reprioritization. Do not remove a provider globally because one block or one coin was empty."
+    "action": "Observe the next naturally admitted full run on the reordered route code and measure source→fact→consumer→manual/Telegram plus unique provider HTTP. Continue saved-only all-105 inventory without disabling shared sources.",
+    "N05_route_preference_proof": "checkpoints/N05_SAVED_PROVEN_ROUTE_PRIORITY_20261013.json"
   },
   "saved_marginal_asset_yield": {
     "status": "HISTORICAL_ASSET_SET_ONLY_NO_FRESHNESS_OR_PER_CALL_COST_CLAIM",
     "n05_proof": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json",
     "n05_old_104_ever_full_window_union": 39,
     "n05_old_104_ever_full_window_per_venue": {
-      "BACKPACK": {"assets": 7, "exclusive_assets_in_saved_union": 7},
-      "BINANCE": {"assets": 12, "exclusive_assets_in_saved_union": 12},
-      "BITFINEX": {"assets": 7, "exclusive_assets_in_saved_union": 5},
-      "BITGET": {"assets": 3, "exclusive_assets_in_saved_union": 3},
-      "GATE": {"assets": 1, "exclusive_assets_in_saved_union": 1},
-      "KRAKEN": {"assets": 7, "exclusive_assets_in_saved_union": 5},
-      "POLONIEX": {"assets": 4, "exclusive_assets_in_saved_union": 4}
+      "BACKPACK": {
+        "assets": 7,
+        "exclusive_assets_in_saved_union": 7
+      },
+      "BINANCE": {
+        "assets": 12,
+        "exclusive_assets_in_saved_union": 12
+      },
+      "BITFINEX": {
+        "assets": 7,
+        "exclusive_assets_in_saved_union": 5
+      },
+      "BITGET": {
+        "assets": 3,
+        "exclusive_assets_in_saved_union": 3
+      },
+      "GATE": {
+        "assets": 1,
+        "exclusive_assets_in_saved_union": 1
+      },
+      "KRAKEN": {
+        "assets": 7,
+        "exclusive_assets_in_saved_union": 5
+      },
+      "POLONIEX": {
+        "assets": 4,
+        "exclusive_assets_in_saved_union": 4
+      }
     },
     "n05_old_104_retained_exact_structural_union": 76,
     "n05_structural_only_not_numeric_or_current": true,
@@ -433,12 +455,36 @@
     "liq_eligible_excluding_btc_eth": 103,
     "liq_historical_numeric_union": 68,
     "liq_historical_numeric_per_source": {
-      "HYPERLIQUID_NATIVE": {"assets": 53, "exclusive_assets_in_saved_union": 9, "role": "sampled_public_positions"},
-      "ORDERLY_PUBLIC_POSITIONS": {"assets": 38, "exclusive_assets_in_saved_union": 0, "role": "public_positions_estimated_liquidation_price"},
-      "DYDX_PINNED_NATIVE": {"assets": 16, "exclusive_assets_in_saved_union": 0, "role": "bounded_conditional_estimate"},
-      "GTRADE_NATIVE": {"assets": 5, "exclusive_assets_in_saved_union": 0, "role": "pinned_position_estimate"},
-      "COINBOSS_MODEL": {"assets": 56, "exclusive_assets_in_saved_union": 9, "role": "aggregated_cex_model_not_primary_position_source"},
-      "SWOLECHARTS_MODEL": {"assets": 2, "exclusive_assets_in_saved_union": 1, "role": "aggregated_model"}
+      "HYPERLIQUID_NATIVE": {
+        "assets": 53,
+        "exclusive_assets_in_saved_union": 9,
+        "role": "sampled_public_positions"
+      },
+      "ORDERLY_PUBLIC_POSITIONS": {
+        "assets": 38,
+        "exclusive_assets_in_saved_union": 0,
+        "role": "public_positions_estimated_liquidation_price"
+      },
+      "DYDX_PINNED_NATIVE": {
+        "assets": 16,
+        "exclusive_assets_in_saved_union": 0,
+        "role": "bounded_conditional_estimate"
+      },
+      "GTRADE_NATIVE": {
+        "assets": 5,
+        "exclusive_assets_in_saved_union": 0,
+        "role": "pinned_position_estimate"
+      },
+      "COINBOSS_MODEL": {
+        "assets": 56,
+        "exclusive_assets_in_saved_union": 9,
+        "role": "aggregated_cex_model_not_primary_position_source"
+      },
+      "SWOLECHARTS_MODEL": {
+        "assets": 2,
+        "exclusive_assets_in_saved_union": 1,
+        "role": "aggregated_model"
+      }
     },
     "interpretation": "Exclusive means no other saved numeric source/window for that asset in this union. These windows differ in time, and role-specific value remains even when the exclusive asset count is zero. Do not convert historical counts into present run coverage or a source rank without measured useful facts per HTTP."
   }

@@ -17,9 +17,27 @@ import {exactBitfinexNativeIdentity} from './bitfinex-native-four-hour-flow.mjs'
 // proven four-hour route within the unchanged five-call envelope; later
 // venues can still supply further facts from the remaining admitted calls.
 const poloniexWindowProven=new Set(['ARB-USDT','BTT-USDT','ICP-USDT','JST-USDT','STEEM-USDT','SUN-USDT','WIN-USDT']);
+// The retained exact 240-minute windows in
+// N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011 are historical,
+// not current coverage. Where a proven route trails an unproven route in the
+// five-call queue, try it first and still validate its current response.
+// This is an operational ordering only; it does not alter score or admission.
+const savedFullWindowRoutePreference=Object.freeze({
+ 'AAVE-USDT':['POLONIEX'],'AVAX-USDT':['KRAKEN'],'BANK-USDT':['BITGET'],
+ 'BCH-USDT':['KRAKEN'],'BTW-USDT':['POLONIEX'],'DOGE-USDT':['POLONIEX'],
+ 'DOT-USDT':['KRAKEN'],'ENA-USDT':['BACKPACK'],'ETC-USDT':['POLONIEX'],
+ 'JUP-USDT':['BACKPACK'],'LTC-USDT':['KRAKEN'],'ONDO-USDT':['BACKPACK'],
+ 'PENGU-USDT':['BACKPACK'],'RAY-USDT':['BACKPACK'],'SUSHI-USDT':['BITGET'],
+ 'TRUMP-USDT':['BACKPACK'],'TRX-USDT':['BITGET'],'UNI-USDT':['BACKPACK'],
+ 'XRP-USDT':['KRAKEN'],
+});
 export function orderN05VenueRoutes(contract,identity,routes){
- if(!poloniexWindowProven.has(contract)||!eligiblePoloniexIdentity(contract,identity))return routes;
- return [...routes.filter(([venue])=>venue==='POLONIEX'),...routes.filter(([venue])=>venue!=='POLONIEX')];
+ const poloniexEligible=eligiblePoloniexIdentity(contract,identity);
+ const preferred=[...(poloniexWindowProven.has(contract)&&poloniexEligible?['POLONIEX']:[]),
+  ...(savedFullWindowRoutePreference[contract]||[]).filter(venue=>venue!=='POLONIEX'||poloniexEligible)];
+ if(!preferred.length)return routes;
+ const preferredRoutes=preferred.flatMap(venue=>routes.filter(route=>route[0]===venue));
+ return [...preferredRoutes,...routes.filter(route=>!preferred.includes(route[0]))];
 }
 
 // Internal orchestration seam: production routes are fixed below. Every route

@@ -51,6 +51,29 @@ test('twelve HTX assets recover exact routes from saved original chain, issuer a
  assert.deepEqual(orderN05VenueRoutes('CHZ-USDT',entries.CHZ.identities[0],routes),routes);
 });
 
+test('saved exact N05 windows receive first place without adding or removing venue routes',()=>{
+ const htx=original('primary-native-supply-tests-37854297470/primary-source/htx-currencies.json.gz');
+ const entries=normalizeHtxAssetReferences(htx).entries;
+ const saved=JSON.parse(readFileSync(new URL('../../checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json',import.meta.url)));
+ const baseline=['BITFINEX','BINANCE','KRAKEN','GATE','BACKPACK','BITGET','POLONIEX'];
+ let proven=0,formerlyLater=0;
+ for(const row of saved.rows){
+  const full=row.actual_individual_full_window_venues_ever;
+  if(!full.length)continue;
+  proven++;
+  const identity=FUTURES_ONLY_EXACT_ASSET_BINDINGS[row.symbol]?.identity||entries[row.symbol]?.identities?.[0];
+  const routes=baseline.filter(venue=>row.structurally_candidate_venues_from_retained_catalogs.includes(venue)).map(venue=>[venue,{venue}]);
+  if(!full.includes(routes[0][0]))formerlyLater++;
+  const ordered=orderN05VenueRoutes(row.contract,identity,routes);
+  assert.equal(full.includes(ordered[0][0]),true,row.contract);
+  assert.deepEqual(new Set(ordered),new Set(routes),row.contract);
+ }
+ assert.equal(proven,39);
+ assert.equal(formerlyLater,19);
+ const routes=[['GATE',1],['POLONIEX',2],['BITGET',3]];
+ assert.deepEqual(orderN05VenueRoutes('AAVE-USDT',{chain:'ethereum',contract_or_mint:'invalid'},routes),routes);
+});
+
 test('same-run HTX spot candles supply N10 factual path, with one-sided fallback and conflict guard',()=>{
  const end=1_800_000_000_000,now=end+42_000,start=end-15*60_000;
  const bars=Array.from({length:15},(_,i)=>({id:(start+i*60_000)/1000,open:100+i,high:101+i,low:99+i,close:100.5+i,count:2}));

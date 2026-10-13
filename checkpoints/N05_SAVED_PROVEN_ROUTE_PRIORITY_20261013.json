@@ -1,0 +1,178 @@
+{
+  "schema": "N05_SAVED_PROVEN_ROUTE_PRIORITY_V1",
+  "recorded_utc": "2026-10-13T12:36:29.060101+00:00",
+  "scope": "Operational priority only; current 105 universe; source evidence refers to old 104 asset universe and must be revalidated in a new full report",
+  "source_proof": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json",
+  "historical_full_window_assets": 39,
+  "formerly_trailing_proven_route_assets": 19,
+  "route_reprioritizations": [
+    {
+      "contract": "AAVE-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "POLONIEX",
+      "historically_full_window_venues": [
+        "POLONIEX"
+      ]
+    },
+    {
+      "contract": "AVAX-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "KRAKEN",
+      "historically_full_window_venues": [
+        "KRAKEN"
+      ]
+    },
+    {
+      "contract": "BANK-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BITGET",
+      "historically_full_window_venues": [
+        "BITGET"
+      ]
+    },
+    {
+      "contract": "BCH-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "KRAKEN",
+      "historically_full_window_venues": [
+        "KRAKEN"
+      ]
+    },
+    {
+      "contract": "BTW-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "POLONIEX",
+      "historically_full_window_venues": [
+        "POLONIEX"
+      ]
+    },
+    {
+      "contract": "DOGE-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "POLONIEX",
+      "historically_full_window_venues": [
+        "POLONIEX"
+      ]
+    },
+    {
+      "contract": "DOT-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "KRAKEN",
+      "historically_full_window_venues": [
+        "KRAKEN"
+      ]
+    },
+    {
+      "contract": "ENA-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "ETC-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "POLONIEX",
+      "historically_full_window_venues": [
+        "POLONIEX"
+      ]
+    },
+    {
+      "contract": "JUP-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "LTC-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "KRAKEN",
+      "historically_full_window_venues": [
+        "KRAKEN"
+      ]
+    },
+    {
+      "contract": "ONDO-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "PENGU-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "RAY-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "SUSHI-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BITGET",
+      "historically_full_window_venues": [
+        "BITGET"
+      ]
+    },
+    {
+      "contract": "TRUMP-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "TRX-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "BITGET",
+      "historically_full_window_venues": [
+        "BITGET"
+      ]
+    },
+    {
+      "contract": "UNI-USDT",
+      "previous_first_structural_route": "GATE",
+      "historically_full_window_route": "BACKPACK",
+      "historically_full_window_venues": [
+        "BACKPACK"
+      ]
+    },
+    {
+      "contract": "XRP-USDT",
+      "previous_first_structural_route": "BINANCE",
+      "historically_full_window_route": "KRAKEN",
+      "historically_full_window_venues": [
+        "KRAKEN"
+      ]
+    }
+  ],
+  "behavior": "For the 19 exact contracts, a route with saved original complete 240-minute flow runs before routes without such proof, if its current identity is eligible. All original routes still run within the shared five-request caller envelope; actual fresh responses, timestamps, provider ledgers and distinct upstreams still decide useful coverage. The seven already favored Poloniex contracts remain favored.",
+  "spot_futures": "Saved external full windows are historical and mainly spot; keep spot and futures separate with original clocks, one-sided limited context if only one is useful, and no synthetic agreement.",
+  "score_changed": false,
+  "strategy_weights_changed": false,
+  "report_format_changed": false,
+  "source_caps_changed": false,
+  "provider_http_for_validation": 0,
+  "production_d1_for_validation": 0,
+  "tests": {
+    "saved_exact_map_priority": "39/39 eligible saved full-window assets placed first; 19 had trailing proof; current-generation/tests/active-market-coverage-expansion.test.mjs 4/4 PASS",
+    "shared_cap_and_fallback": "current-generation/tests/n05-broad-exchanges.test.mjs 22/22 PASS",
+    "broad_local": "1437 PASS, 4 SKIP; runtime-dependent supplemental-supporting-bridge.test.mjs excluded because local decrypted runtime/src/existing-source-consumer.mjs is absent",
+    "cloud_assembled": "PENDING",
+    "next_live_full_report": "PENDING; no coverage increment claimed until exact source→consumer→manual/Telegram readback"
+  },
+  "next_action": "Observe naturally admitted full report on this code head without extra provider probe; compare N05 route actual HTTP and useful 240-minute windows for selected coins, then continue all-active-block spot/futures source and deduplicated quota audit."
+}
