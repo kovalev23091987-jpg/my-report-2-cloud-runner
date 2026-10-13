@@ -6,7 +6,8 @@ test('manual Russian command is wired to a bounded liquidation-only runner path'
   const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
   assert.match(runner,/parseLiquidationCommand\(env\.REPORT2_MANUAL_COMMAND\)/);
   assert.match(runner,/scanLiquidationCandidates\(\{env,max_candidates:5/);
-  assert.match(runner,/max_http_per_run:5/);
+  assert.match(runner,/max_http_per_run:LIQ_NATIVE_HTTP_ALLOCATION/);
+  assert.match(runner,/max_http_per_run:6/);
   assert.match(runner,/full_report_started:false/);
   assert.match(runner,/telegram_started:false/);
   const branch=runner.indexOf('if(commandIntent.matched){');

@@ -1,0 +1,44 @@
+{
+  "schema": "LIQ_SOURCE_PRIORITY_AND_105_ARCHIVE_CENSUS_V1",
+  "recorded_utc": "2026-10-13T10:38:41.253047+00:00",
+  "scope": "LIQ only; no new strategy, weight, output template or shared HTTP cap",
+  "owned_lease": "CODEX:LIQ_SOURCE_FALLBACK:1791886278678",
+  "implementation": {
+    "native_scheduled_allocation_within_shared_five": 4,
+    "native_manual_allocation_within_manual_eight": 6,
+    "model_priority": "per asset historical exact numeric evidence, then catalog route, with provider fallback only if remaining HTTP",
+    "models": [
+      "COINBOSS_CEX_MODEL",
+      "SWOLECHARTS_CEX_MODEL"
+    ],
+    "swole_actual_numeric_payload_assets": [
+      "FIL",
+      "STRK"
+    ],
+    "ordinary_report_local_htx_model_disabled": true,
+    "orderly_factual_positions_kept_as_remaining_budget_fallback": true,
+    "same_primary_overlap_not_independent": true
+  },
+  "historical_105_matrix": "checkpoints/LIQ_105_SAVED_SOURCE_EVIDENCE_MATRIX_20261013.json",
+  "historical_matrix_scope": "11 sources x 105 assets, saved evidence only; native eight-source seed is UNVERIFIED for all 102 old assets; 56 CoinBoss old exact numeric potential; two Swole exact numeric payloads, 40 route hints; 38 Orderly market routes; old reports selected seven unique assets across eight occurrences. No source HTTP for census.",
+  "verification": {
+    "focused_tests": "77/77",
+    "guard_tests": "35/35",
+    "full_unassembled_local_suite": "1431 pass, 6 failures before guard refresh; after guard refresh runtime-only tests require assembled encrypted runtime; frozen output scenarios passed unchanged",
+    "cloud_assembled": "NOT_YET_RUN",
+    "natural_full_report": "NOT_YET_VERIFIED",
+    "same_run_telegram_sent": "NOT_YET_VERIFIED"
+  },
+  "source_provenance": [
+    "checkpoints/source-inputs/coinboss-model-priority-hints-20261013.json",
+    "checkpoints/source-inputs/swolecharts-liq-levels-bounded-20261013.json",
+    "checkpoints/source-inputs/swolecharts-liq-levels-catalog-20261013.json"
+  ],
+  "limitations": [
+    "Historical archive cannot prove current coverage for all 105 assets.",
+    "Five shared LIQ HTTP requests cannot guarantee distinct live model calls for both selected coins after four native calls; prioritization remains evidence based.",
+    "Swolecharts provider rate limit for liquidation-level endpoint is not explicitly published; one admitted request per candidate at most, under global budget.",
+    "No actual new-head cloud report or Telegram delivery readback yet."
+  ],
+  "next_action": "Cloud assembled validation on exact head, then natural full report and same-run Telegram receipt; inspect model/position contribution for both selected coins; continue no-provider-HTTP archive census and only bounded missing-fact live probes; retain LIQ open."
+}

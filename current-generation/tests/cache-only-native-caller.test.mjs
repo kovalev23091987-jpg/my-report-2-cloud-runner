@@ -28,7 +28,7 @@ export function workerCaller(env,{contract,cap=0,reserved=false,run_id=run}={}){
 export function wire(service,contracts=selected,selectedRun=run){
  const env={REPORT2_LIQUIDATION_SELECTED_CONTRACTS:{run_id:selectedRun,contracts}},runner=fs.readFileSync(path.join(root,'runner-main.mjs'),'utf8'),start=runner.indexOf('    env.REPORT2_LIQUIDATION_NATIVE_COLLECT=async params=>'),end=runner.indexOf('\n',start);
  assert.ok(start>=0&&end>start);
- new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console','collectSelectedNativeBatch','orderlyHttpUsed','coinbossHttpUsed',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}},opts=>collectSelectedNativeBatch({...opts,clock:()=>T+44000}),0,0);
+ new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console','collectSelectedNativeBatch','orderlyHttpUsed','coinbossHttpUsed','swoleHttpUsed',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}},opts=>collectSelectedNativeBatch({...opts,clock:()=>T+44000}),0,0,0);
  return env;
 }
 export {replay,params,selected,run,T,snapshot,levels,last,bytes,lastBytes,assets};
