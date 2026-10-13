@@ -1,0 +1,282 @@
+{
+  "scope": "Active source-code references only; not an assertion that every matched line executes or every dynamic SQL was found.",
+  "references": [
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "line": 221,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>`?${i+2}`).join(',')}) ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||''),...co"
+    },
+    {
+      "path": "current-generation/files/src/execution-report-context.mjs",
+      "line": 53,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const found=await db.prepare('SELECT full_evidence_id,shadow_id,contract_code,observed_ts,persisted_ts,stage392_proof_bundle_json FROM full_evidence_shadow_log INDEXED BY idx_full_evidence_shadow_cont"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 173,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "FROM full_evidence_shadow_log"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 12108,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "FROM full_evidence_shadow_log"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 12133,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "FROM full_evidence_shadow_log"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 14614,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "INSERT INTO full_evidence_shadow_log"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 14752,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "DELETE FROM full_evidence_shadow_log"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 14754,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "SELECT full_evidence_id FROM full_evidence_shadow_log"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "line": 19315,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const saved=await env.DATA_DB.prepare('SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(task.publication_id).first();"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 46,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "? await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts FROM canonical_publication_shadow WHERE con"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 47,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": ": await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts FROM canonical_publication_shadow WHERE con"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 56,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const fallback=await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts,wave_id FROM canonical_publica"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 62,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const repair=await db.prepare(`UPDATE canonical_publication_shadow SET wave_id=?2 WHERE publication_id=?1 AND (wave_id IS NULL OR wave_id!=?2)`).bind(exactWave[0].publication_id,text(row.wave_id)).run"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 75,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const currentRun=await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts,wave_id FROM canonical_publi"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 92,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const repair=await db.prepare(`UPDATE canonical_publication_shadow SET wave_id=?2 WHERE publication_id=?1 AND (wave_id IS NULL OR wave_id='')`).bind(exactCurrent[0].publication_id,text(row.wave_id)).r"
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "line": 105,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const priorVisible=await db.prepare(`SELECT p.publication_id,p.canonical_json,p.presentation_inputs_json,p.decision_id,p.actionability_status,p.run_id,p.snapshot_id,p.observed_ts,p.created_ts,p.wave_i"
+    },
+    {
+      "path": "current-generation/files/src/recheck-scheduler.mjs",
+      "line": 18,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "AND (?2!='DONE' OR EXISTS(SELECT 1 FROM canonical_publication_shadow p WHERE p.publication_id=?7 AND p.publication_id!=v3_recheck_task_shadow.publication_id AND p.contract_code=v3_recheck_task_shadow."
+    },
+    {
+      "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "line": 246,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "if(canonical_required)queries.push(db.prepare(`SELECT publication_id,contract_code,run_id,snapshot_id,wave_id,direction,canonical_state,analytical_fingerprint,observed_ts,created_ts,canonical_json FRO"
+    },
+    {
+      "path": "current-generation/files/src/original-idea-terminal.mjs",
+      "line": 15,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const saved=await db.prepare('SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(task.publication_id).first();"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 251,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const r=await db.prepare(`INSERT INTO canonical_publication_shadow(publication_id,contract_code,direction,run_id,snapshot_id,wave_id,decision_id,observed_ts,valid_until_ts,lifecycle_event,canonical_st"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 252,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const changes=Number(r?.meta?.changes??r?.changes??0);const row=await db.prepare(`SELECT publication_id,analytical_fingerprint,canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 "
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 259,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const row=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(text(publication_id)).first();if(!row)return {status:'PUBLICATION_NOT_FOUND',deliver:false"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 264,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "if(action.deliver!==true){await db.prepare(`UPDATE canonical_publication_shadow SET lifecycle_event=?2,actionability_status='INTERNAL_ONLY',actionability_reason=?3,bound_ts=?4 WHERE publication_id=?1`"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 267,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const u=await db.prepare(`UPDATE canonical_publication_shadow SET direction=?2,lifecycle_event=?3,valid_until_ts=?4,manual_text=?5,telegram_text=?6,presentation_hash=?7,actionability_status='ACTIONABL"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 273,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const pub=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(text(publication_id)).first();if(!pub)return {status:'PUBLICATION_NOT_FOUND',bound:false};"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 282,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const p=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(b.publication_id).first();if(!p)return {status:'PUBLICATION_NOT_FOUND',ok:false};"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "line": 300,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const p=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND actionability_status='ACTIONABLE' LIMIT 1`).bind(text(publication_id)).first();"
+    },
+    {
+      "path": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "line": 67,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "FROM canonical_publication_shadow WHERE publication_id=?1 AND contract_code=?2 AND direction=?3 AND wave_id=?4 AND run_id=?5 AND snapshot_id=?6 AND observed_ts=?7 LIMIT 1`)"
+    },
+    {
+      "path": "current-generation/files/src/retained-history.mjs",
+      "line": 8,
+      "table": "full_evidence_shadow_log",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "full_evidence_shadow_log:{key:'full_evidence_id',archive:'report2_full_evidence_archive_v1',view:'report2_full_evidence_retained_v1'},"
+    },
+    {
+      "path": "current-generation/files/src/retained-history.mjs",
+      "line": 9,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "canonical_publication_shadow:{key:'publication_id',archive:'report2_canonical_archive_v1',view:'report2_canonical_retained_v1'},"
+    },
+    {
+      "path": "runner/r8-20-prospective-validation-sidecar.mjs",
+      "line": 425,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "JOIN canonical_publication_shadow p ON p.decision_id=f.decision_id"
+    },
+    {
+      "path": "runner/canonical-cold-copy.mjs",
+      "line": 42,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "HOST_RETAINED_READER",
+      "query_excerpt": "const row=await source_db.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND run_id=?2 LIMIT 1').bind(binding.publication_id,binding.run_id).first();if(!row)throw Error('A"
+    },
+    {
+      "path": "cloudflare/free-history/liquidation-forecast-archive.mjs",
+      "line": 29,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "DIRECT_WORKER_D1",
+      "query_excerpt": "FROM canonical_publication_shadow"
+    },
+    {
+      "path": "cloudflare/public-collector/injected-worker-tail.js",
+      "line": 257,
+      "table": "canonical_publication_shadow",
+      "SQL_JSON_ON_LINE": false,
+      "adapter": "DIRECT_WORKER_D1",
+      "query_excerpt": "JOIN canonical_publication_shadow p ON p.publication_id=t.publication_id AND p.contract_code=t.contract_code AND p.direction=t.direction AND p.run_id=t.run_id AND p.snapshot_id=t.snapshot_id AND p.wav"
+    }
+  ],
+  "files": 14,
+  "reference_count": 34,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "hot_pruning_authorized_by_this_census": false
+}

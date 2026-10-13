@@ -1,9 +1,11 @@
 import fs from 'node:fs/promises';
+import {gunzipSync} from 'node:zlib';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import * as guard from '../runner/d1-preaction-budget-guard.mjs';
 import {encodeCanonicalPublicationRow,decodeCanonicalPublicationRow,retainCanonicalPublicationRow,readCanonicalPublicationArchive} from '../runner/canonical-cold-archive.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
-const repo='kovalev23091987-jpg/my-report-2-cloud-runner',reservation={rows_read:5000,rows_written:32};
+import {canonicalCopyCandidates,copyCanonicalReport} from '../runner/canonical-cold-copy.mjs';
+const repo='kovalev23091987-jpg/my-report-2-cloud-runner',reservation={rows_read:5000,rows_written:80};
 const publications=['PUB:6b3554505482fa8bc5d52a8c386dfa5605b151b4'];
 for(const k of ['GITHUB_TOKEN','GITHUB_RUN_ID','GITHUB_SHA','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN'])if(!process.env[k])throw Error(k+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repo)throw Error('EXACT_REPOSITORY_REQUIRED');
@@ -23,7 +25,16 @@ try{
  out.daily_admission=guard.evaluateDailyReservationBudget({daily:await guard.loadDailyUsageAggregate(db,now),nextReservation:reservation});if(!out.daily_admission.allowed)throw Error('D1_DAY_HEADROOM_DENIED');
  await guard.reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
  if(archive){await archive.query(await fs.readFile('cloudflare/free-history/003_canonical_cold_archive.sql','utf8'));await archive.query('SELECT 1 AS size_marker');}
- for(const publication of publications){
+ if(process.env.REPORT2_ARCHIVE_SOURCE_CASE==='FULL_38462813197'){
+  if(!archive)throw Error('PRIVATE_DURABLE_COPY_REQUIRED');
+  const report=JSON.parse(gunzipSync(await fs.readFile('checkpoints/schema-natural-38462813197/report2-run-result.json.gz')));
+  if(report.run_id!=='1791923208609-1791923250486'||report.head!=='3427897416d7aa8afd7c48d117d5837d2faee193')throw Error('EXACT_RETAINED_FULL_REPORT_REQUIRED');
+  const selection=canonicalCopyCandidates(report,report.head);if(selection.candidates.length!==2)throw Error('EXACT_TWO_SOURCE_PUBLICATIONS_REQUIRED');
+  const originalDay=new Date(selection.candidates[0].observed_ts).toISOString().slice(0,10);
+  out.original_cycle_budget=await db.prepare('SELECT source_run_id,state,reserve_rows_read,reserve_rows_written,measured_rows_read,measured_rows_written,measured_requests,unknown_ops FROM report2_runner_budget_ledger_shadow WHERE day_utc=?1 AND source_run_id=?2 LIMIT 1').bind(originalDay,report.run_id).first();
+  if(out.original_cycle_budget?.state!=='FINALIZED'||out.original_cycle_budget.unknown_ops!==0)throw Error('ORIGINAL_CYCLE_NATIVE_USAGE_NOT_CLOSED');
+  out.source_run_id=report.run_id;out.source_head=report.head;Object.assign(out,await copyCanonicalReport({source_db:db,archive_db:archive,candidates:selection.candidates}));
+ }else if(!process.env.REPORT2_ARCHIVE_SOURCE_CASE||process.env.REPORT2_ARCHIVE_SOURCE_CASE==='APR_ORIGINAL')for(const publication of publications){
   if(!guard.evaluateWithinRunReservation({reservation,currentUsage:usage(),extraRowsRead:4,extraRowsWritten:1}).allowed)throw Error('D1_RUN_HEADROOM_DENIED');
   const row=await db.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND run_id=?2 LIMIT 1').bind(publication,out.source_run_id).first();if(!row)throw Error('ORIGINAL_PUBLICATION_MISSING');
   const record=encodeCanonicalPublicationRow(row),decoded=decodeCanonicalPublicationRow(record);if(JSON.stringify(row)!==JSON.stringify(decoded))throw Error('ORIGINAL_ROW_READBACK_MISMATCH');
@@ -33,7 +44,7 @@ try{
    const stored=await retainCanonicalPublicationRow(archive,record,{db_admit,storage_bytes:archive.storage_bytes});if(!stored.retained)throw Error(stored.status);
    const restored=await readCanonicalPublicationArchive(archive,{publication_id:record.publication_id,raw_sha256:record.raw_sha256,db_admit});if(JSON.stringify(restored.row)!==JSON.stringify(row))throw Error('DURABLE_PRIVATE_ORIGINAL_ROW_MISMATCH');out.records.at(-1).durable_private_receipt=stored;out.records.at(-1).private_reader_verified=true;
   }
- }
+ }else throw Error('EXACT_SOURCE_CASE_REQUIRED');
  out.status='EXACT_FULL_ORIGINAL_ROW_COMPRESSION_VERIFIED_PRIVATE_PAYLOAD_NOT_EXPORTED';
  if(archive)out.status='DURABLE_PRIVATE_FULL_ORIGINAL_ROW_AND_READER_VERIFIED_NO_MAIN_DELETION';
 }catch(e){out.status='VALIDATION_NOT_CLOSED';out.reason=/^[A-Z0-9_]+$/.test(e.message)?e.message:e.name;}

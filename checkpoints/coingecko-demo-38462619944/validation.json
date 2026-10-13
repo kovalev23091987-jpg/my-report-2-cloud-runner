@@ -1,0 +1,628 @@
+{
+  "schema": "REPORT2_COINGECKO_DEMO_SECTOR_VALIDATION_V1",
+  "head": "3427897416d7aa8afd7c48d117d5837d2faee193",
+  "cloud_run": "38462619944",
+  "run_id": "COINGECKO_DEMO_SECTOR:38462619944:1",
+  "contract": "QNT-USDT",
+  "identity": {
+    "chain": "ethereum",
+    "contract_or_mint": "0x4a220e6096b25eadb88358cb44068a3248254675"
+  },
+  "source_identity_record": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+  "missing_fact": "QNT_USEFUL_SECTOR_AFTER_ACTUAL_D1_SCHEMA_TRANSPORT_FAILURE",
+  "status": "CLOSED",
+  "maximum_source_HTTP": 4,
+  "D1_reservation": {
+    "rows_read": 8000,
+    "rows_written": 200
+  },
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-13",
+      "run_count": 43,
+      "reserved_rows_read": 1573524,
+      "reserved_rows_written": 25148,
+      "measured_rows_read": 1033843,
+      "measured_rows_written": 12756,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 8000,
+      "rows_written": 200
+    },
+    "projected_reserved": {
+      "rows_read": 1581524,
+      "rows_written": 25348
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "auth_mode": "DEMO_HEADER",
+  "actual_HTTP": 2,
+  "receipts": [
+    {
+      "route": "EXACT_COIN_METADATA",
+      "url": "https://api.coingecko.com/api/v3/coins/ethereum/contract/0x4a220e6096b25eadb88358cb44068a3248254675",
+      "status": "VALIDATED_REFERENCE_CACHE",
+      "http_status": 200,
+      "received_ts": 1791917904822,
+      "expires_ts": 1791939504822,
+      "body_sha256": "9a7da5cc13fa357703bbca29d3346ceea1b83b48cddd28f6101b3b23bb790ec2",
+      "actual_http": 0,
+      "cache_owner_source": "COINGECKO_SECTOR",
+      "shared_provider": null
+    },
+    {
+      "route": "EXACT_CATEGORY_DIRECTORY",
+      "url": "https://api.coingecko.com/api/v3/coins/categories/list",
+      "http_status": 200,
+      "status": "RECEIVED",
+      "received_ts": 1791923111762,
+      "body_sha256": "86ee17c3f730e9c88dcfa501e4288c20ccc0d567ec34344764a76f35db07c64b",
+      "actual_http": 1
+    },
+    {
+      "route": "CATEGORY_QUOTES",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=real-world-assets-rwa&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "http_status": 200,
+      "status": "RECEIVED",
+      "received_ts": 1791923113385,
+      "body_sha256": "ae082b699f8d4600f1257f3d2fca9cc7c263690f1ac889a9ea855dcb8f9ba202",
+      "actual_http": 1
+    }
+  ],
+  "summary": {
+    "coin_id": "quant-network",
+    "tag_id": "real-world-assets-rwa",
+    "category_name": "Real World Assets (RWA)",
+    "target_source_ts": 1791923094000,
+    "target_change_24h_pct": -5.02548,
+    "peer_median_change_24h_pct": -0.233985,
+    "relative_strength_pct_points": -4.791495,
+    "eligible_peers": 50,
+    "returned_category_rows": 100,
+    "full_sector_coverage": false,
+    "source_ts": 1791923094000,
+    "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+    "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+    "direction_neutral": false,
+    "entry_eligible": false,
+    "is_htx_price": false
+  },
+  "admission": {
+    "allowed": true,
+    "status": "PER_TRANSPORT_RESERVED"
+  },
+  "provider_backoff": null,
+  "backoff_until": null,
+  "evidence": [
+    {
+      "evidence_id": "EV2:47bcc737fe058d8b88d3dc1b83f3229779078fddd1bf9bb7fb1619529c34b9f0",
+      "asset_id": "ethereum:0x4a220e6096b25eadb88358cb44068a3248254675",
+      "htx_contract": "QNT-USDT",
+      "block_id": "N15",
+      "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+      "provider_id": "COINGECKO_SECTOR",
+      "upstream_id": "COINGECKO_AGGREGATED_VENUES",
+      "origin_event_id": "quant-network:real-world-assets-rwa:1791923094000",
+      "dependency_group": "SECTOR:quant-network:real-world-assets-rwa:1791923094000",
+      "source_ts": 1791923094000,
+      "observed_ts": 1791923113658,
+      "first_known_ts": 1791923113658,
+      "effective_from": null,
+      "effective_to": null,
+      "window_start": null,
+      "window_end": null,
+      "coverage_status": "PARTIAL_PROVIDER_DIRECTIONAL_CONTEXT",
+      "coverage_fraction": 0.75,
+      "unit": null,
+      "value": null,
+      "directional_strength": -0.4791495,
+      "risk_strength": null,
+      "identity_status": "EXACT",
+      "finality_status": "FINAL",
+      "schema_version": "EvidenceV2.1",
+      "raw_hash": "5483ff89168b9cc838e7be28841896c732048d3a9950925550b22e9e8980b20f",
+      "expires_at": 1791923413658,
+      "cost_receipt_id": null,
+      "validation_status": "VALID",
+      "validation_reason": null,
+      "coin_id": "quant-network",
+      "tag_id": "real-world-assets-rwa",
+      "category_name": "Real World Assets (RWA)",
+      "target_source_ts": 1791923094000,
+      "target_change_24h_pct": -5.02548,
+      "peer_median_change_24h_pct": -0.233985,
+      "relative_strength_pct_points": -4.791495,
+      "eligible_peers": 50,
+      "returned_category_rows": 100,
+      "full_sector_coverage": false,
+      "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+      "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+      "direction_neutral": false,
+      "entry_eligible": false,
+      "is_htx_price": false,
+      "peers": [
+        {
+          "id": "algorand",
+          "symbol": "ALGO",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -2.11229,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "alphabet-bstocks-tokenized-stock",
+          "symbol": "GOOGLB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.27859,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "alphabet-xstock",
+          "symbol": "GOOGLX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.30307,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "casper-network",
+          "symbol": "CSPR",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 2.95333,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "centrifuge-2",
+          "symbol": "CFG",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -5.58316,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "chainlink",
+          "symbol": "LINK",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -1.28853,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "circle-internet-group-bstock",
+          "symbol": "CRCLB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.63272,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "circle-internet-group-ondo-tokenized-stock",
+          "symbol": "CRCLON",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.65883,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "circle-xstock",
+          "symbol": "CRCLX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.7876,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "collector-crypt",
+          "symbol": "CARDS",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -3.32901,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "creditcoin-2",
+          "symbol": "CTC",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -1.11235,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "dusk-network",
+          "symbol": "DUSK",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 11.48507,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "figure-heloc",
+          "symbol": "FIGR_HELOC",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -3.06221,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "goldfish-gold",
+          "symbol": "GGBR",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.336,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "injective-protocol",
+          "symbol": "INJ",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 6.16981,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "invesco-qqq-etf-ondo-tokenized-etf",
+          "symbol": "QQQON",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.32526,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "keeta",
+          "symbol": "KTA",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -3.83578,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "kinesis-gold",
+          "symbol": "KAU",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.13693,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "kinesis-silver",
+          "symbol": "KAG",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -1.191,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "lcx",
+          "symbol": "LCX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -8.92279,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "matrixdock-gold",
+          "symbol": "XAUM",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.69917,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "micron-technology-bstock",
+          "symbol": "MUB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -3.46531,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "micron-technology-ondo-tokenized-stock",
+          "symbol": "MUON",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -3.78322,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "microstrategy-xstock",
+          "symbol": "MSTRX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.7728,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "nasdaq-xstock",
+          "symbol": "QQQX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.34585,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "nvidia-bstocks",
+          "symbol": "NVDAB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 1.34205,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "nvidia-ondo-tokenized-stock",
+          "symbol": "NVDAON",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 1.45724,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "nvidia-xstock",
+          "symbol": "NVDAX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 1.29985,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "ondo-finance",
+          "symbol": "ONDO",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -5.44469,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "ondo-us-dollar-yield",
+          "symbol": "USDY",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.00307,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "onyc",
+          "symbol": "ONYC",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.06691,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "origintrail",
+          "symbol": "TRAC",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 4.64509,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "pax-gold",
+          "symbol": "PAXG",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.24197,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "plume",
+          "symbol": "PLUME",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -3.76374,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "polymesh",
+          "symbol": "POLYX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -1.93888,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "propy",
+          "symbol": "PRO",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 1.45912,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "re",
+          "symbol": "RE",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.17858,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "redstone-oracles",
+          "symbol": "RED",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -1.32894,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "reserve-rights-token",
+          "symbol": "RSR",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -9.0951,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "sandisk-bstocks-tokenized-stock",
+          "symbol": "SNDKB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.09846,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "sharex-2",
+          "symbol": "SHARE",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 2.92721,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "sp500-xstock",
+          "symbol": "SPYX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.00515,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "spacex-bstocks-tokenized-stock",
+          "symbol": "SPCXB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -4.33389,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "spacex-xstocks",
+          "symbol": "SPCXX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -4.41608,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "spdr-s-p-500-etf-ondo-tokenized-etf",
+          "symbol": "SPYON",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.15048,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "stellar",
+          "symbol": "XLM",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -2.82733,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "strategy-pp-variable-xstock",
+          "symbol": "STRCX",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.06158,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "strategy-stretch-preferred-ondo-tokenized",
+          "symbol": "STRCON",
+          "source_ts": 1791923094000,
+          "change_24h_pct": 0.61618,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "strategy-tokenized-bstocks",
+          "symbol": "MSTRB",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.96221,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "syrup",
+          "symbol": "SYRUP",
+          "source_ts": 1791923094000,
+          "change_24h_pct": -0.226,
+          "quote": "USD_AGGREGATED"
+        }
+      ],
+      "sector_proof": "EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1",
+      "direction_policy": "RELATIVE_STRENGTH_SUPPORTS_LONG_RELATIVE_WEAKNESS_SUPPORTS_SHORT_LOW_WEIGHT"
+    }
+  ],
+  "consumer_status": "CLOSED",
+  "consumer_facts": [
+    {
+      "advisory_only": true,
+      "directional_vote": false,
+      "hard_gate": false,
+      "score_contribution": 0,
+      "block_id": "N15",
+      "source": "CoinGecko",
+      "decision_block": "MARKET_STRENGTH_SPOT",
+      "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+      "label": "Сектор «реальные активы» за 24 часа, выборка 50 монет",
+      "value": "монета -5,03%, медиана -0,23%, разница -4,79 п.п.; сводные цены площадок",
+      "unit": "",
+      "source_ts": 1791923094000,
+      "observed_ts": 1791923113658,
+      "evidence_id": "EV2:47bcc737fe058d8b88d3dc1b83f3229779078fddd1bf9bb7fb1619529c34b9f0",
+      "physical_root_key": "ethereum:0x4a220e6096b25eadb88358cb44068a3248254675|quant-network:real-world-assets-rwa:1791923094000"
+    }
+  ],
+  "production_use_claim": false,
+  "monthly_source_bound": 7936,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "COINGECKO_DEMO_SECTOR:38462619944:1",
+    "source_run_id": "38462619944",
+    "measured_rows_read": 74,
+    "measured_rows_written_accounted": 21,
+    "measured_requests_accounted": 37,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 37,
+    "rows_read": 75,
+    "rows_written": 21,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 44,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 6,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791923114019
+}

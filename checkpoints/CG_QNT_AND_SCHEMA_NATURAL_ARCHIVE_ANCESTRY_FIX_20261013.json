@@ -1,0 +1,180 @@
+{
+  "schema": "REPORT2_CG_QNT_SCHEMA_NATURAL_AND_ARCHIVE_ANCESTRY_V1",
+  "recorded_utc": "2026-10-13T20:42:09.277396+00:00",
+  "base_main": "02f602b190c34cb73070de421f8c6bd594d33ed1",
+  "status": "QNT_FACT_CONSUMER_AND_CLOUD37_NATURAL105_VERIFIED_COPY_ANCESTRY_REPAIR_NEXT",
+  "CG_QNT": {
+    "cloud_run": 38462619944,
+    "head": "3427897416d7aa8afd7c48d117d5837d2faee193",
+    "artifact_id": 11846781122,
+    "artifact_digest": "sha256:cc218562d80609da363566512e580d4f845340926d638d5063094bc5977299e0",
+    "receipt": "checkpoints/coingecko-demo-38462619944/validation.json",
+    "actual_HTTP": 2,
+    "eligible_sector_peers": 50,
+    "original_quote_ts": 1791923094000,
+    "consumer_status": "CLOSED",
+    "D1": {
+      "requests": 37,
+      "rows_read": 75,
+      "rows_written": 21,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 44,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 4,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:OTHER": {
+          "requests": 5,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 6,
+          "rows_read": 10,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 2,
+          "rows_read": 5,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "run:report2_evidence_source_cache": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "no_all105_claim": true
+  },
+  "schema_cloud37": {
+    "cloud_run": 38463134356,
+    "head": "02f602b190c34cb73070de421f8c6bd594d33ed1",
+    "status": "PASS37",
+    "artifact_id": 11847321629,
+    "artifact_digest": "sha256:c1b74d89257c927fbe1ad40d8dc515ed105b76895e264bd3af04aa7f8a4965a5",
+    "receipt": "checkpoints/schema-cloud-38463134356/report2-v13-final-37.json",
+    "first_failed_fixture_run": 38462416348,
+    "first_failure": "Two isolated output tests omitted new evidence-source-store dependency;18 local output/LIQ tests then passed without changing frozen fixtures."
+  },
+  "natural_full": {
+    "cloud_run": 38462813197,
+    "head": "3427897416d7aa8afd7c48d117d5837d2faee193",
+    "run_id": "1791923208609-1791923250486",
+    "status": "CLOSED",
+    "workflow_conclusion": "success",
+    "artifact_id": 11847666221,
+    "artifact_digest": "sha256:92b2506ecb2fc3d8c345df76885ed295b65368f7e33755a47d63d84513d0c94f",
+    "saved_directory": "checkpoints/schema-natural-38462813197",
+    "scanned": 105,
+    "lane": "LIVE_DISCOVERY",
+    "candidates": [
+      {
+        "contract": "龙虾-USDT",
+        "snapshot_id": "S392:龙虾-USDT:1791923419916",
+        "publication_id": "PUB:ee7d081cef5fc49ef70a831e4dee3cd0b85d9b20",
+        "observed_ts": 1791923419916,
+        "state": "OBSERVE",
+        "checked_active_blocks": 5,
+        "usable_active_blocks": 1
+      },
+      {
+        "contract": "FIL-USDT",
+        "snapshot_id": "S392:FIL-USDT:1791923323504",
+        "publication_id": "PUB:2bb49404210f321c165f5d31f098934200567ad1",
+        "observed_ts": 1791923323504,
+        "state": "REJECTED",
+        "checked_active_blocks": 5,
+        "usable_active_blocks": 1
+      }
+    ],
+    "paused_excluded": true,
+    "new_exact_same_run_SENT": false,
+    "not_all_active_block_useful_coverage": true
+  },
+  "archive_skip": {
+    "reason": "ARCHIVE_MAIN_MOVED_KEEP_SOURCE",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "main_originals_preserved": true,
+    "cause": "Producer34278974 was followed by confirmed main ancestor02f602b1 while full calculation continued; ancestry was not previously checked."
+  },
+  "repair": {
+    "producer_ancestry_proof_required": true,
+    "GitHub_compare_verified": {
+      "status": "ahead",
+      "merge_base": "3427897416d7aa8afd7c48d117d5837d2faee193",
+      "ahead_by": 1
+    },
+    "foreign_fork_or_unknown_head_blocked": true,
+    "source_current_main_phase_and_fence_still_checked": true,
+    "copied_run_and_snapshot_never_refreshed": true,
+    "bounded_saved_full_copy_repair_case": "FULL_38462813197",
+    "D1_shared_reservation": {
+      "rows_read": 5000,
+      "rows_written": 80
+    },
+    "main_pruning": false
+  },
+  "local_ancestry_storage_tests": {
+    "pass": 32,
+    "tap_sha256": "cb92910e6a09c2c721fdd20a06428bd6353ba24f33df13b28d53e481ffdbc279",
+    "provider_HTTP": 0
+  },
+  "consumer_compatibility_census": "checkpoints/PRIVATE_CANONICAL_CONSUMER_COMPATIBILITY_CENSUS_20261013.json",
+  "remaining": [
+    "Exact two-row durable saved full copy and original cycle native usage readback",
+    "Natural automatic copying with moved producer head",
+    "Backlog/rolling capacity and consumer restoration before pruning",
+    "All105 useful sources and LIQ103 gaps",
+    "Deferred entry score and final Telegram form"
+  ]
+}

@@ -4,6 +4,10 @@ import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 
 export const CANONICAL_COPY_POLICY=Object.freeze({max_rows:2,max_runs_day:47,reservation:Object.freeze({rows_read:5000,rows_written:80}),max_daily_reads:3500000,max_daily_writes:70000});
 const PUB=/^PUB:[a-f0-9]{40,64}$/,HEX=/^[a-f0-9]{64}$/;
+export function canonicalProducerInMainHistory({producer_head,main_head,comparison}={}){
+ if(!/^[a-f0-9]{40}$/.test(producer_head||'')||!/^[a-f0-9]{40}$/.test(main_head||''))return false;
+ return producer_head===main_head||comparison?.merge_base_commit?.sha===producer_head&&comparison?.status==='ahead';
+}
 export function canonicalCopyCandidates(report,expected_head){
  if(report?.status!=='CLOSED'||report.head!==expected_head||!/^[a-f0-9]{40}$/.test(String(expected_head||''))||!report.run_id||!Array.isArray(report.candidates))return{status:'NO_EXACT_CLOSED_REPORT',candidates:[]};
  if(report.candidates.length>CANONICAL_COPY_POLICY.max_rows)return{status:'ARCHIVE_CANDIDATE_BOUND',candidates:[]};
