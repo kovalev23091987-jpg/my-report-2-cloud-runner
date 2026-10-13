@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalizeCoinBossLiquidationLevels,collectCoinBossLiquidationLevels} from '../files/src/coinboss-liquidation-levels.mjs';
 import {buildPumpLiquidationZones} from '../files/src/pump-liquidation-zones.mjs';
-import {displayBriefTelegramLiquidations,RELEVANT_LIQUIDATION_PRESENTATION} from '../files/src/canonical-display.mjs';
+import {displayBriefTelegramLiquidations,displayFutureLiquidations,RELEVANT_LIQUIDATION_PRESENTATION} from '../files/src/canonical-display.mjs';
 
 const t=1_791_826_200_000;
 const body={success:true,data:{symbol:'FIL',price:1.1534,updatedAt:t-60_000,oiUsd:207_092_670,tiers:{
@@ -21,6 +21,16 @@ test('exact fresh CoinBoss model remains separate from factual positions and rea
  const lines=displayBriefTelegramLiquidations(map,x=>String(x),{policy:RELEVANT_LIQUIDATION_PRESENTATION});
  assert.ok(lines.some(line=>line.includes('CoinBoss')));assert.ok(lines.some(line=>line.includes('расчётный')));
  assert.equal(lines.filter(line=>line.startsWith('Ликвидационные уровни')).length,2);
+});
+
+test('provider calculations and an observed position coexist without an automatic HTX model',()=>{
+ const source=normalize();
+ const map=buildPumpLiquidationZones({contract:'FIL-USDT',current_price:1.1534,observed_ts:t,calculation_context:{source_ts:t-1000,open_interest_value_usdt:2_000_000,turnover_24h_usdt:8_000_000,price_change_pct:{'1h':4}},external_calculated_scenarios:source.scenarios,native_contexts:[{status:'USABLE_NATIVE_SAMPLE',binding:{contract:'FIL-USDT'},provider:'Hyperliquid official',source_ts:t-1000,below:[{native_price:1.04,notional:6000,notional_unit:'USDC',native_reference_price:1.1534,price_quote:'USDC',price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'}]}]});
+ assert.equal(map.htx_source_backed_model.status,'DISABLED_BY_OWNER_ON_REQUEST_ONLY');
+ assert.equal(map.provider_zone_count,1);assert.equal(map.calculated_scenario_count,8);
+ const manual=displayFutureLiquidations(map,{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');
+ const telegram=displayBriefTelegramLiquidations(map,x=>String(x),{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');
+ for(const output of [manual,telegram]){assert.match(output,/CoinBoss/);assert.match(output,/Hyperliquid/);assert.doesNotMatch(output,/Расчётная модель HTX/);}
 });
 
 test('stale, mismatched, divergent and malformed responses fail closed',()=>{

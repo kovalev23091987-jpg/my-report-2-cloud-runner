@@ -1,0 +1,71 @@
+{
+  "schema": "LIQ_EXTERNAL_PROVIDER_ONLY_CANDIDATE_V1",
+  "recorded_utc": "2026-10-13T09:55:52.483590Z",
+  "base_main": "f18cb2b879c7964b7568e7b690ce46967e900f22",
+  "lease_owner": "CODEX:LIQ_EXTERNAL_LEVELS_ONLY:1791884625102",
+  "lease_expires_ts": 1791886425102,
+  "scope": "LIQ_ONLY; OWNER_EXTERNAL_PROVIDER_CALCULATED_LEVELS_AND_FACTUAL_POSITION_LEVELS; NO_AUTOMATIC_LOCAL_HTX_MODEL",
+  "owner_instruction": "Ordinary scheduled/manual report and Telegram may show verified external provider calculated future liquidation levels and original-position levels. Local HTX scenario calculation is on explicit separate owner request only.",
+  "implementation": {
+    "automatic_local_htx_model_disabled": true,
+    "explicit_owner_manual_calculation_available": true,
+    "coinboss_external_scenarios_retained": true,
+    "position_sources_retained": true,
+    "shared_liq_http_cap": 5,
+    "shared_http_accounting_counts_coinboss_and_orderly": true,
+    "score_weights_strategy_format_changed": false
+  },
+  "saved_evidence": {
+    "four_full_report_runs": [
+      38355301985,
+      38359565215,
+      38364228905,
+      38369225565
+    ],
+    "approved_asset_count": 105,
+    "selected_candidate_occurrences": 8,
+    "external_calculated_provider_display_occurrences": 1,
+    "coinboss_closed_candidate": "STRK-USDT",
+    "coinboss_bounded_older_102_exact_fresh_potential": 56,
+    "coinboss_potential_is_not_live_report_coverage": true,
+    "prior_automatic_htx_model_occurrences": 8,
+    "prior_external_position_level_occurrences": 3,
+    "prior_external_position_display_occurrences": 1,
+    "source_readback": "checkpoints/LIQ_NATURAL_ARCHIVE_AND_NEW_REPORTS_READBACK_20261013.json"
+  },
+  "new_provider_research": {
+    "forecandle": {
+      "docs": "https://www.forecandle.com/developers",
+      "published_free_limit": "60/min; free key; liq-heatmap latest and 24h history advertised",
+      "required_secret_name": "REPORT2_FORECANDLE_API_KEY",
+      "status": "KEY_AND_ORIGINAL_PAYLOAD_NOT_YET_VERIFIED; NOT_CONNECTED_OR_COUNTED"
+    },
+    "n0brains": {
+      "docs": "https://n0brains.com/docs/",
+      "published_free_limit": "60/min with 15-minute delay",
+      "status": "NOT_CURRENT_UNDER_EXISTING_5MIN_LIQ_CLOCK; NOT_CONNECTED_OR_COUNTED"
+    },
+    "buildix": {
+      "docs": "https://www.buildix.trade/docs",
+      "status": "LIQUIDATION_MAP_MARKED_WHALE; FREE_LEVEL_ROLE_NOT_VERIFIED; NOT_CONNECTED_OR_COUNTED"
+    }
+  },
+  "verification": {
+    "targeted_command": "node --test current-generation/tests/cache-only-native-caller.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs",
+    "targeted_pass": 32,
+    "targeted_fail": 0,
+    "full_local_validation": "INCOMPLETE_ENCRYPTED_RUNTIME_ABSENT_LOCAL; CLOUD_ASSEMBLED_REQUIRED",
+    "cloud_assembled": "PENDING_MAIN_PUSH",
+    "source_http_this_package": 0,
+    "main_report_this_package": 0,
+    "telegram_this_package": 0,
+    "fresh_same_run_sent": false
+  },
+  "acceptance": {
+    "production_deployed": false,
+    "new_provider_connected": false,
+    "all_105_external_level_coverage_proven": false,
+    "block_complete": false
+  },
+  "next_action": "LIQ: verify the assembled cloud gate for the provider-only policy and shared HTTP accounting; obtain and qualify a free Forecandle key on exact asset, original clock, numeric levels, free entitlement and actual consumer use before connecting it. Reuse prior CoinBoss/ByK/native evidence; inspect a new natural report for same-run Telegram SENT and source levels, and a new RECORDED forecast archive row for primary source group. Preserve 105 assets, cap5, all other limits, paused blocks and prior strategy."
+}

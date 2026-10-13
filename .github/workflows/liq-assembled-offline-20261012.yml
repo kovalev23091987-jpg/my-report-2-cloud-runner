@@ -54,7 +54,7 @@ jobs:
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
-            if(!/^CODEX:LIQ_(?:COVERAGE_BATCH|NATURAL_AUDIT):/.test(phase.lease?.owner||'')||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if(!/^CODEX:LIQ_(?:COVERAGE_BATCH|NATURAL_AUDIT|EXTERNAL_LEVELS_ONLY):/.test(phase.lease?.owner||'')||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Assemble encrypted runtime and verify LIQ report path
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}

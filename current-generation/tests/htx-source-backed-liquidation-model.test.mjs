@@ -42,16 +42,23 @@ test('independent sources are reconciled near one zone and their notionals are n
  const [zone]=reconcileLiquidationZones(rows,{reference_price:100,volatility_pct:3});assert.equal(zone.independent_source_count,3);assert.equal(zone.consensus_confidence_ru,'высокая');assert.equal(zone.notional,3_000_000);assert.equal(zone.amount_semantics,'BEST_SINGLE_SOURCE_NOTIONAL_NOT_SUMMED');
 });
 
-test('fresh HTX inputs provide separately labelled scenarios without closing factual level coverage',()=>{
+test('fresh HTX inputs do not create automatic report or Telegram levels',()=>{
  const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
+ assert.equal(map.status,'NOT_CLOSED');assert.equal(map.calculated_scenario_count,0);assert.equal(map.htx_source_backed_model.status,'DISABLED_BY_OWNER_ON_REQUEST_ONLY');
+ const lines=displayBriefTelegramLiquidations(map,v=>String(v),{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');
+ assert.doesNotMatch(lines,/Расчётная модель HTX|расчётный уровень/);
+});
+
+test('an explicit separate owner calculation retains labelled HTX scenarios without closing factual coverage',()=>{
+ const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context(),explicit_owner_manual_calculation:true});
  assert.equal(map.status,'CALCULATED_CONTEXT_ONLY');assert.equal(map.future_levels_status,'CALCULATED_SCENARIOS_ONLY');assert.equal(map.calculated_fallback_enabled,false);assert.equal(map.provider_zone_count,0);assert.equal(map.htx_source_backed_model.status,'CLOSED');assert.equal(map.calculated_zone_count,0);
  assert.ok(map.calculated_scenario_count>0);assert.ok(map.calculated_scenarios.some(z=>z.side==='ABOVE'));assert.ok(map.calculated_scenarios.some(z=>z.side==='BELOW'));
  assert.ok(map.calculated_scenarios.every(z=>z.notional===null&&z.scenario_only&&z.decision_target_eligible===false&&z.strength_label_ru));
  const lines=displayBriefTelegramLiquidations(map,v=>String(v),{policy:RELEVANT_LIQUIDATION_PRESENTATION}).join('\n');assert.match(lines,/расчётный/);assert.match(lines,/размер возможной ликвидации/);assert.doesNotMatch(lines,/фактический/);
 });
 
-test('current manual and Telegram presentation each cap both sides at three while retaining all calculated scenarios',()=>{
- const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
+test('an explicitly requested calculation still caps both sides at three',()=>{
+ const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context(),explicit_owner_manual_calculation:true});
  const before=map.calculated_scenario_count;
  assert.ok(before>6);
  assert.equal(map.display_max_per_side,3);
@@ -65,8 +72,8 @@ test('current manual and Telegram presentation each cap both sides at three whil
  assert.equal(map.calculated_scenario_count,before);
 });
 
-test('factual and HTX calculated future levels join only on the same side within five percent',()=>{
- const model=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
+test('explicit factual and HTX calculated future levels join only on the same side within five percent',()=>{
+ const model=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context(),explicit_owner_manual_calculation:true});
  const scenario=model.calculated_scenarios.find(z=>z.side==='ABOVE'&&Math.abs(z.distance_pct)<100);assert.ok(scenario);
  const fact={...scenario,kind:'NATIVE_FUTURE_LEVEL',source:'Hyperliquid',venue:'Hyperliquid',independence_group:'HYPERLIQUID_NATIVE',scenario_only:false,source_backed_calculated:false,estimated:false,notional:150000,notional_unit:'USDT',strength_label_ru:'крупная',price_semantics:'ACCOUNT_LIQUIDATION_PRICE',source_ts:scenario.source_ts-1000,price:scenario.price*1.04,distance_pct:(scenario.price*1.04/100-1)*100};
  const joined={...model,status:'CLOSED',future_levels_status:'EXTERNAL_SOURCE_LEVELS_AVAILABLE',all_zones:[fact],display_source_zones:[fact],above:[fact],provider_zone_count:1};
