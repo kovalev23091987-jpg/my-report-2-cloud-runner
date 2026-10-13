@@ -25,10 +25,8 @@ jobs:
             if(!/^CODEX:LIQ_NATURAL_AUDIT:/.test(phase.lease?.owner||'')||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Verify isolated archive and source-clock guards
         run: node --test cloudflare/free-history/*.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs
-      - name: Install idempotent LIQ forecast archive schema
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx --yes wrangler@4 d1 execute ARCHIVE_DB --config cloudflare/free-history/wrangler-liq.json --remote --file cloudflare/free-history/002_liq_forecast_archive.sql --yes
+      # The schema is provisioned separately through the Cloudflare D1 query API.
+      # The repository deploy token can publish Workers but lacks D1 import scope.
       - name: Deploy independent free history Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
