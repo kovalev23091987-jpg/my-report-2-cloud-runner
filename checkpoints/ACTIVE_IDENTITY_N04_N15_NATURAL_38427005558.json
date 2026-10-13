@@ -1,0 +1,158 @@
+{
+  "schema": "REPORT2_ACTIVE_SOURCE_EXACT_NATURAL_READBACK_V1",
+  "recorded_utc": "2026-10-13T16:24:49.007574+00:00",
+  "status": "105_SCAN_AND_SELECTED_SOURCE_USE_CONFIRMED_NEW_METHOD_GAIN_NOT_SAMPLED",
+  "cloud_run": 38427005558,
+  "head": "9b46f1f7eb43ccbfeb3d85fb47e69ceee8855ac3",
+  "run_id": "1791907287766-1791907301028",
+  "artifact_id": 11828634962,
+  "artifact_digest": "sha256:ba3aee3a46c02f5666a0a773b3c51d42d4beaddfc061caf7378b492980804438",
+  "scan": {
+    "universe": 105,
+    "scanned": 105,
+    "errors": 0
+  },
+  "candidates": [
+    {
+      "contract": "USELESS-USDT",
+      "publication_id": "PUB:9837e30305624bfe1608f95fd1342160877a3a92",
+      "snapshot_id": "S392:USELESS-USDT:1791907384191",
+      "state": "OBSERVE",
+      "manual_used_blocks": [
+        "N10",
+        "N11"
+      ],
+      "telegram_used_blocks": [],
+      "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+      "facts": [],
+      "active_block_participation": {
+        "N04": "USE_NOT_PROVEN",
+        "N05": "USE_NOT_PROVEN",
+        "N10": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "N11": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "N12": "USE_NOT_PROVEN",
+        "N15": "USE_NOT_PROVEN"
+      },
+      "paused_blocks_all_excluded": true
+    },
+    {
+      "contract": "UNI-USDT",
+      "publication_id": "PUB:b6edae656c7127e644de1ee700088a53b372838f",
+      "snapshot_id": "S392:UNI-USDT:1791907361320",
+      "state": "OBSERVE",
+      "manual_used_blocks": [
+        "N05",
+        "N12",
+        "N10",
+        "N04",
+        "N11"
+      ],
+      "telegram_used_blocks": [],
+      "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+      "facts": [
+        {
+          "block_id": "N05",
+          "evidence_id": "EV2:1649a5d82eaaf1ea936e03279fe29da7ed3d7b542ebe2d2b93cf09bac7533958",
+          "physical_root_key": "AVAILABLE_FLOW:UNI-USDT:1791892920000:1791907320000",
+          "evidence_ids": [
+            "EV2:1649a5d82eaaf1ea936e03279fe29da7ed3d7b542ebe2d2b93cf09bac7533958"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:UNI-USDT:1791892920000:1791907320000"
+          ],
+          "source_ts": 1791907320000,
+          "observed_ts": 1791907328001,
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "BACKPACK спот: покупки 184, продажи 35,37 USDC; перевес покупок 67,75%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "BACKPACK",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:7a3d67ac9b84ddcac8a989cc4ab0165ed774b2d093dd43c219083a287ee07037",
+          "physical_root_key": "ethereum|0xf88ba70b5a769a099d19f04aacfa6038f974870cda8710a9f5864d5d2319cf55|414",
+          "evidence_ids": [
+            "EV2:7a3d67ac9b84ddcac8a989cc4ab0165ed774b2d093dd43c219083a287ee07037"
+          ],
+          "physical_root_keys": [
+            "ethereum|0xf88ba70b5a769a099d19f04aacfa6038f974870cda8710a9f5864d5d2319cf55|414"
+          ],
+          "source_ts": 1791906203000,
+          "observed_ts": 1791907344694,
+          "label": "Подтверждённые переводы токена",
+          "value": "1 событий в одной транзакции; 2298743700000000000000 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена",
+          "source": "публичный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "active_block_participation": {
+        "N04": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "N05": "USE_NOT_PROVEN",
+        "N10": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "N11": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "N12": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "N15": "USE_NOT_PROVEN"
+      },
+      "paused_blocks_all_excluded": true
+    }
+  ],
+  "source_route_readback": {
+    "UNI": {
+      "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+      "JOINT_FLOW_http": 5,
+      "N12_HTX_reuse_http": 0,
+      "N15_CoinPaprika_http": 1,
+      "N15_CoinPaprika_status": "EXACT_FUNCTIONAL_SECTOR_NOT_FOUND",
+      "N04_chain_http": 4,
+      "Blockscout_http": 0,
+      "Blockscout_status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+      "reserved_shared_evidence_total": 10
+    },
+    "USELESS": {
+      "identity_method": null,
+      "JOINT_FLOW_planned": false,
+      "source_routes": "HTX paused0; HTX trade sample no exact fresh batch0; CoinPaprika no exact HTX market0",
+      "not_counted_external_coverage": true
+    }
+  },
+  "new_closed_registry_identity_method_natural_gain": "NOT_SAMPLED_BY_THIS_PAIR",
+  "N04_original_blockscout_clock_natural_use": "NOT_SAMPLED; PRIMARY_CHAIN_FACT_USED_FOR_UNI",
+  "delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "9b46f1f7eb43ccbfeb3d85fb47e69ceee8855ac3",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1791907287766-1791907301028",
+    "source": "schedule",
+    "recorded_at": 1791907393112,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "saved_artifacts": "checkpoints/active-identity-n04-natural-38427005558",
+  "new_provider_http_for_audit": 0,
+  "D1_readback": {
+    "successful_publication_point_queries_rows_read": 2,
+    "source_cache_sample_rows_read": 7,
+    "exact_reference_rows_read": 4,
+    "failed_column_query_usage": "UNKNOWN_NOT_RECONSTRUCTED",
+    "writes": 0
+  },
+  "UNI_source_metadata_gap": {
+    "url": "https://api.coinpaprika.com/v1/coins/uni-uniswap",
+    "body_sha256": "25a905859f186afe86db756ae778338b61c032824104c1fbe7bb64bc4acb99f5",
+    "original_received_ts": 1791907343042,
+    "tags": null,
+    "saved_original": "checkpoints/n15-uni-exact-metadata-38427005558.json",
+    "no_sector_fabricated": true
+  },
+  "all_105_deep_coverage_proven": false,
+  "all_103_future_levels_proven": false
+}

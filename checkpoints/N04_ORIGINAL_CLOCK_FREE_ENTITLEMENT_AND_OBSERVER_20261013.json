@@ -1,7 +1,7 @@
 {
   "schema": "REPORT2_N04_ORIGINAL_CLOCK_AND_ZERO_WASTE_OBSERVER_V1",
   "recorded_utc": "2026-10-13T15:56:23.501417+00:00",
-  "status": "LINKED_REPLAY_PASS_CLOUD_NATURAL_PENDING",
+  "status": "EXACT_CLOUD_AND_VALIDATION_OBSERVER_PASS_NATURAL_FACTS_PENDING",
   "base_main": "1adf8a9e",
   "repairs": [
     "N04 Blockscout rejects missing/invalid/future event timestamp, retains source clock and actual response observation clock; old normalization caches not reused as current.",
@@ -50,5 +50,27 @@
   "all_active_blocks_complete": false,
   "LIQ_complete": false,
   "score_form_pauses_changed": false,
-  "cloud_natural_pending": true
+  "cloud_natural_pending": false,
+  "exact_cloud_validation": {
+    "run": 38426391641,
+    "head": "9b46f1f7eb43ccbfeb3d85fb47e69ceee8855ac3",
+    "conclusion": "success",
+    "scenarios": 37,
+    "passed": 37,
+    "failed": 0,
+    "artifact_id": 11829515016,
+    "artifact_digest": "sha256:c02192a287efd3b725455b86bc2bab547e5188bcbaacb8b870183546322dc44f",
+    "provider_http": 0,
+    "D1": 0,
+    "Telegram": 0
+  },
+  "validation_only_observer": {
+    "run": 38426490716,
+    "conclusion": "success",
+    "source_cloud_run": 38426391641,
+    "status": "EXACT_VALIDATION_ONLY_NO_PRODUCTION_REPORT",
+    "production_report": false,
+    "exact_SENT": 0
+  },
+  "natural_use_pending": true
 }

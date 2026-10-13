@@ -1,0 +1,61 @@
+{
+  "schema": "REPORT2_QUOTA_AND_PROVIDER_EXACT_CATEGORY_REPAIR_V1",
+  "recorded_utc": "2026-10-13T16:24:49.007574+00:00",
+  "base_main": "9b46f1f7eb43ccbfeb3d85fb47e69ceee8855ac3",
+  "status": "52_LINKED_TESTS_PASS_CLOUD_AND_NEW_SOURCE_FACT_PENDING",
+  "repairs": [
+    "XRPL headers retain original binding remaining/limit/reset; no key/IP retained, missing quota remains unknown.",
+    "Supply dependency and N04 payment collector share exact provider backoff; quota/child/parent exhaustion checked before caller slot. No internal cap increase while no actual dynamic entitlement receipt exists.",
+    "A successful final response remains useful even if it exhausts quota; no subsequent calls are made until reset. Rate-limited failures are not cached as factual responses for30min.",
+    "CoinPaprika tags:null observed for exact UNI. Documented bulk categories with explicit coin IDs fill only exact provider-declared functional membership; named asset or ecosystem guessing remains disallowed.",
+    "Bulk membership replaces per-tag member call when explicit membership exists, shared within original TTL and five-per-finalist/common164 budget.",
+    "Optional reference cache-write failure retains validated original HTTP response and one transport receipt; wire payload capped at900000 bytes."
+  ],
+  "official_docs": [
+    "https://xrplcluster.com/",
+    "https://xrpl.org/docs/references/http-websocket-apis/api-conventions/rate-limiting",
+    "https://docs.coinpaprika.com/api-reference/tags/list-tags"
+  ],
+  "tests": {
+    "tests": 52,
+    "passed": 52,
+    "tap_sha256": "72d6c94489e4bd5a46d7d52e02f601334f5bc4844e1f7a1ccb3d4040a64ddc0a",
+    "source_http": 0,
+    "immutable_golden_output_changed": false
+  },
+  "current_limit_gaps": {
+    "XRPL_NATIVE_SUPPLY": {
+      "cap_per_day": 24,
+      "requests_per_cold_XRP_check": 4,
+      "conservative_50_checks_request_demand": 200,
+      "fixed_published_daily_quota": null,
+      "not_sustainable_for_repeated_XRP_selection_under_current_internal_cap": true
+    },
+    "COINGECKO_SECTOR": {
+      "cap_per_day": 48,
+      "keyless_dynamic_access": true,
+      "dedicated_free_key_not_confirmed_in_runtime": true
+    },
+    "BLOCKSCOUT_INDEX": {
+      "cap_per_day": 96,
+      "conservative_100_finalist_slots": 100,
+      "primary_RPC_remains_available": true
+    }
+  },
+  "storage": {
+    "main_db_bytes_at_readback": 455430144,
+    "free_database_limit_documented": "500 MB",
+    "official_url": "https://developers.cloudflare.com/d1/platform/limits/",
+    "no_history_deleted": true,
+    "Gate_cache_bounded_sample": {
+      "rows": 3,
+      "payload_bytes": 687318,
+      "expired": 2,
+      "not_global_storage_cause": true
+    }
+  },
+  "new_CoinPaprika_bulk_response_fact_pending": true,
+  "actual_XRPL_headers_pending": true,
+  "factual_source_gap_proof": "checkpoints/ACTIVE_IDENTITY_N04_N15_NATURAL_38427005558.json",
+  "score_threshold_strategy_format_or_pauses_changed": false
+}

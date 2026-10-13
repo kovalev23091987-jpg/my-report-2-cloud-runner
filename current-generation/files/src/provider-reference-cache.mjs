@@ -1,4 +1,4 @@
-import {readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts} from './evidence-source-store.mjs';
+import {readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts,evidenceSourceCacheWriteWireBytes} from './evidence-source-store.mjs';
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 
 export const PROVIDER_REFERENCE_CACHE_VERSION='provider-reference-cache-v1-20261004';
@@ -68,7 +68,12 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
     while(runMemory.size>4)runMemory.delete(runMemory.keys().next().value);
     receipt.cache_storage_status=body.length>max_cache_bytes?'BODY_EXCEEDS_STORAGE_BOUND_RUN_MEMORY_ONLY':'BOUNDED_REFERENCE_BODY';
    }
-   if(ttl_ms>0&&body.length<=max_cache_bytes)await writeEvidenceSourceCache(db,{source,asset_key:key,observed_ts:received_ts,expires_ts:received_ts+ttl_ms,payload:{version:PROVIDER_REFERENCE_CACHE_VERSION,url,received_ts,expires_ts:received_ts+ttl_ms,body_sha256,body}});
+   if(ttl_ms>0&&body.length<=max_cache_bytes){
+    const input={source,asset_key:key,observed_ts:received_ts,expires_ts:received_ts+ttl_ms,payload:{version:PROVIDER_REFERENCE_CACHE_VERSION,url,received_ts,expires_ts:received_ts+ttl_ms,body_sha256,body}};
+    if(evidenceSourceCacheWriteWireBytes(input)<=900000){
+     try{await writeEvidenceSourceCache(db,input);}catch{receipt.cache_storage_status='CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED';}
+    }else receipt.cache_storage_status='WIRE_EXCEEDS_STORAGE_BOUND_VALID_RESPONSE_RETAINED';
+   }
    return payload;
   }catch(error){receipts.push({route,url,status:'SOURCE_ERROR',error:String(error.message).slice(0,100),actual_http:1});return null;}
   finally{clearTimeout(timer);}

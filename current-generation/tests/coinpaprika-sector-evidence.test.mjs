@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';
 import {verifyCoinpaprikaIdentity,normalizeCoinpaprikaSector,collectCoinpaprikaSectorEvidence,selectCoinpaprikaFunctionalSector} from '../files/src/coinpaprika-sector-evidence.mjs';import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
+import fs from 'node:fs';
 const NOW=Date.now(),address='0x514910771AF9Ca656af840dff83E8264EcF986CA',identity={chain:'ethereum',contract_or_mint:address},metadata={id:'link-chainlink',symbol:'LINK',is_active:true,contracts:[{platform:'eth-ethereum',contract:address}],tags:[{id:'oracles'}]},tag={id:'oracles',type:'functional',coins:['link-chainlink','p1','p2','p3','missing']};
 const quote=(id,change,symbol=id,ts=NOW-60000)=>({id,symbol,last_updated:new Date(ts).toISOString(),quotes:{USD:{price:1,volume_24h:200000,percent_change_24h:change}}}),tickers=[quote('link-chainlink',5,'LINK'),quote('p1',-2),quote('p2',1),quote('p3',3)];
 const params={metadata,tag,tickers,identity,contract:'LINK-USDT',coin_id:'link-chainlink',tag_id:'oracles',observed_ts:NOW};
@@ -22,7 +23,7 @@ test('general metadata category discovery is exact, functional, deterministic an
 test('verified tokens discover a sector without per-coin sector registry and retain durable cache',async()=>{
  const database=db(),urls=[];
  const options={db:database,asset_identity:identity,asset_metadata:{coinpaprika_id:metadata.id},contract:'LINK-USDT',run_id:'AUTO',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{
-  urls.push(url);const body=url.endsWith('/tags')?[{id:'oracles',type:'functional'}]:url.includes('/coins/')?metadata:url.includes('/tags/')?tag:tickers;
+  urls.push(url);const body=new URL(url).pathname==='/v1/tags'?[{id:'oracles',type:'functional'}]:url.includes('/coins/')?metadata:url.includes('/tags/')?tag:tickers;
   return new Response(JSON.stringify(body));
  }};
  const first=await collectCoinpaprikaSectorEvidence(options),second=await collectCoinpaprikaSectorEvidence({...options,run_id:'NEXT',now:NOW+1000});
@@ -38,4 +39,18 @@ test('unverified metadata, missing functional category or exhausted admission ca
   assert.equal(out.evidence.length,0);assert.equal(urls.some(url=>url.includes('/tickers')),false);assert.ok(urls.length<=2);
   database.sqlite.close();
  }
+});
+test('original exact UNI metadata has null categories; only explicit unique functional membership can fill that gap',()=>{
+ const uni=JSON.parse(fs.readFileSync(new URL('../../checkpoints/n15-uni-exact-metadata-38427005558.json',import.meta.url)));
+ assert.equal(uni.tags,null);assert.equal(uni.id,'uni-uniswap');
+ const directory=[{id:'cryptocurrency',type:'functional',coins:[uni.id]},{id:'defi',type:'functional',coins:[uni.id,'p1','p2','p3']},{id:'pow',type:'technical',coins:[uni.id]}];
+ assert.equal(selectCoinpaprikaFunctionalSector(uni,directory).id,'defi');assert.equal(selectCoinpaprikaFunctionalSector(uni,directory.map(r=>({...r,coins:['foreign']}))),null);assert.equal(selectCoinpaprikaFunctionalSector(uni,[...directory,directory[1]]),null);
+ assert.equal(selectCoinpaprikaFunctionalSector({...uni,tags:[{id:'governance'}]},directory),null);
+});
+test('one shared exact membership directory replaces per-category calls and feeds the unchanged supporting consumer',async()=>{
+ const database=db(),urls=[],directory=[{...tag}],withoutTags={...metadata,tags:null};
+ const options={db:database,contract:'LINK-USDT',asset_identity:identity,asset_metadata:{coinpaprika_id:metadata.id},run_id:'EXACT_BULK_MEMBERSHIP',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{urls.push(url);return new Response(JSON.stringify(url.includes('/coins/')?withoutTags:new URL(url).pathname==='/v1/tags'?directory:tickers));}};
+ const a=await collectCoinpaprikaSectorEvidence(options),b=await collectCoinpaprikaSectorEvidence({...options,run_id:'EXACT_BULK_MEMBERSHIP_NEXT',now:NOW+1});
+ assert.equal(a.status,'CLOSED');assert.equal(a.network_calls,3);assert.equal(b.network_calls,0);assert(!urls.some(u=>u.includes('/tags/')));assert(urls.some(u=>u.endsWith('/tags?additional_fields=coins')));assert.equal(a.summary.tag_id,'oracles');assert.equal(consumeEvidenceV2(a.evidence,{base_interest:70,decision_ts:a.evidence[0].observed_ts}).receipts[0].reason,'CONSUMED');
+ database.sqlite.close();
 });

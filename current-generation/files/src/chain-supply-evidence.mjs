@@ -1,4 +1,4 @@
-import {NATIVE_LEDGER_FAMILIES,fetchNativeLedgerSupply,normalizeNativeLedgerPair} from './native-ledger-supply.mjs';
+import {NATIVE_LEDGER_FAMILIES,fetchNativeLedgerSupply,normalizeNativeLedgerPair,nativeRpcQuotaWait} from './native-ledger-supply.mjs';
 import {fetchStellarPublishedSupply,normalizeStellarPublishedSupply} from './stellar-primary-supply.mjs';
 import {fetchHederaPublishedSupply,normalizeHederaPublishedSupply} from './hedera-primary-supply.mjs';
 import {fetchSolanaNativeSupply,SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
@@ -131,14 +131,22 @@ export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch
   }
   return cached;
  }
+ if(id.chain==='xrp'){
+  const quota=await readEvidenceSourceCache(db,{source:'XRPL_PUBLIC_RATE_LIMIT',asset_key:'xrplcluster.com',now}),until=nativeRpcQuotaWait(quota?.provider_quota,now);
+  if(until)return{status:'PROVIDER_RATE_LIMIT_WAIT',evidence:[],network_calls:0,retry_after_ts:until,provider_quota:quota.provider_quota,internal_only:true};
+  const day=new Date(now).toISOString().slice(0,10),used=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(source,day).first(),parent=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(DEFAULT_SOURCE,day).first();
+  if(Number(used?.attempts||0)+3>dailyCap||Number(parent?.attempts||0)+3>SOURCE_POLICIES[DEFAULT_SOURCE].daily_cap)return{status:'SOURCE_DAILY_CAP_REACHED',evidence:[],network_calls:0,internal_only:true};
+ }
  const previousRow=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1`).bind(source,assetKey).first();let previous=null;try{const prior=JSON.parse(previousRow?.payload_json||'null');if([CHAIN_SUPPLY_EVIDENCE_VERSION,'chain-supply-evidence-v8-general-comparison-context-20261005','chain-supply-evidence-v7-cardano-koios-20261005','chain-supply-evidence-v6-native-solana-20261004','chain-supply-evidence-v5-native-chronology-20261004','chain-supply-evidence-v4-receipt-clock-20261004'].includes(prior?.version)&&prior.status==='CLOSED'&&prior.summary?.finalized===true&&prior.current_observation)previous={...prior.current_observation,finalized:true};}catch{}
  const attempts=publishedNative(id)?1:id.chain==='xrp'?3:id.chain==='cardano'?4:['solana','near'].includes(id.chain)?2:3,reservationId=`EV2:${source}:${run_id}:${assetKey}:${Math.floor(now/ttl)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source,reservation_id:reservationId,attempts,daily_cap:dailyCap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
  if(NATIVE_LEDGER_FAMILIES[id.chain]||id.chain==='hedera'){const parent=await reserveEvidenceSourceAttempts(db,{source:DEFAULT_SOURCE,reservation_id:reservationId+':PARENT',attempts,daily_cap:SOURCE_POLICIES[DEFAULT_SOURCE].daily_cap,now});if(!parent.allowed)return{status:parent.status,evidence:[],network_calls:0,admission:parent,internal_only:true};}
  const fetched=await fetchSupply(fetch_impl,id,clock),observed=clock(),normalized=id.chain==='hedera'?normalizeHederaPublishedSupply({contract:htxContract,identity:asset_identity,payload:fetched.payload,observed_ts:observed}):id.chain==='stellar'?normalizeStellarPublishedSupply({contract:htxContract,identity:asset_identity,payload:fetched.payload,observed_ts:observed}):normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous:id.chain==='xrp'?fetched.previous:fetched.previous||previous,observed_ts:observed});
- const result={version:CHAIN_SUPPLY_EVIDENCE_VERSION,...normalized,...(id.chain==='xrp'&&fetched.status!=='CLOSED'?{status:fetched.status}:{}),network_calls:fetched.attempts,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:fetched.receipts.map(({route,ok,http_status,error})=>({route,status:ok?'CLOSED':'SOURCE_ERROR',http_status,error:error??null})),internal_only:true};
- if(normalized.status==='CLOSED'||NATIVE_LEDGER_FAMILIES[id.chain])await writeEvidenceSourceCache(db,{source,asset_key:assetKey,observed_ts:observed,expires_ts:publishedNative(id)&&normalized.status==='CLOSED'?Math.min(observed+ttl,...normalized.evidence.map(row=>row.expires_at)):observed+(normalized.status==='CLOSED'?ttl:30*60_000),payload:result});return result;
+ const result={version:CHAIN_SUPPLY_EVIDENCE_VERSION,...normalized,...(id.chain==='xrp'&&fetched.status!=='CLOSED'?{status:fetched.status}:{}),network_calls:fetched.attempts,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:fetched.receipts.map(({route,ok,http_status,error,provider_quota})=>({route,status:ok?'CLOSED':'SOURCE_ERROR',http_status,error:error??null,...(provider_quota?{provider_quota}:{})})),internal_only:true};
+ const quota=(fetched.receipts||[]).map(r=>r.provider_quota).filter(q=>nativeRpcQuotaWait(q,observed)).sort((a,b)=>b.retry_after_ts-a.retry_after_ts)[0];
+ if(id.chain==='xrp'&&quota)await writeEvidenceSourceCache(db,{source:'XRPL_PUBLIC_RATE_LIMIT',asset_key:'xrplcluster.com',observed_ts:quota.observed_ts,expires_ts:quota.retry_after_ts,payload:{provider_quota:quota}});
+ if(fetched.status!=='PROVIDER_RATE_LIMIT_WAIT'&&(normalized.status==='CLOSED'||NATIVE_LEDGER_FAMILIES[id.chain]))await writeEvidenceSourceCache(db,{source,asset_key:assetKey,observed_ts:observed,expires_ts:publishedNative(id)&&normalized.status==='CLOSED'?Math.min(observed+ttl,...normalized.evidence.map(row=>row.expires_at)):observed+(normalized.status==='CLOSED'?ttl:30*60_000),payload:result});return result;
 }
 
 export default{normalizeChainSupply,collectChainSupplyEvidence};

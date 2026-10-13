@@ -4,7 +4,7 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 import {PAUSED_BLOCKS} from './evidence-v2.mjs';
-export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v8-project-activity-market-reference-20261005';
+export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v9-exact-bulk-category-membership-20261013';
 const SOURCE='COINPAPRIKA_SECTOR',MAX_AGE=15*60000,PLATFORMS={ethereum:'eth-ethereum',solana:'sol-solana'},clean=v=>String(v??'').trim(),finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export function verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}={}){
  const platform=PLATFORMS[identity?.chain],address=clean(identity?.contract_or_mint);if(!platform||!address||metadata?.id!==coin_id||metadata?.symbol!==base||metadata?.is_active!==true)return false;
@@ -19,10 +19,13 @@ export function comparableCoinpaprikaFunctionalTag(row){
  return row?.type==='functional'&&!/^(?:alleged-|made-in-|recently-|presale$|defunct$|wrapped-token$|personal-token$|celebrity-tokens$|binance-launch(?:pad|pool)$)/.test(id)&&!/(?:-portfolio|-holdings|-token$)/.test(id)&&!['cryptocurrency','pos','staking','restaking','liquid-restaking-tokens','sharding','scalable','high-transaction-speed-tps','feeless','open-source','governance','cosmos','substrate','metis-andromeda','wbet','dapps-token'].includes(id);
 }
 export function selectCoinpaprikaFunctionalSector(metadata,directory){
- if(!Array.isArray(metadata?.tags)||!Array.isArray(directory))return null;
- const declared=new Set(metadata.tags.map(row=>clean(row?.id)));
+ if(!Array.isArray(directory))return null;
+ const declared=new Set((Array.isArray(metadata?.tags)?metadata.tags:[]).map(row=>clean(row?.id)));
  const counts=new Map();for(const row of directory)counts.set(row?.id,(counts.get(row?.id)||0)+1);
- const eligible=directory.filter(row=>declared.has(row?.id)&&counts.get(row.id)===1&&comparableCoinpaprikaFunctionalTag(row)&&/^[a-z0-9-]{3,80}$/.test(row.id));
+ // Some real exact metadata (UNI) has tags:null. The documented bulk tag
+ // membership can supply a category, using its exact provider ID, not a name
+ // guess. Preserve metadata-declared category selection when tags are present.
+ const eligible=directory.filter(row=>(declared.size?declared.has(row?.id):typeof metadata?.id==='string'&&Array.isArray(row?.coins)&&row.coins.includes(metadata.id))&&counts.get(row.id)===1&&comparableCoinpaprikaFunctionalTag(row)&&/^[a-z0-9-]{3,80}$/.test(row.id));
  return eligible.sort((a,b)=>a.id.localeCompare(b.id))[0]||null;
 }
 export function normalizeCoinpaprikaSector({metadata,tag,tickers,identity,provider_reference=null,contract,coin_id,tag_id,observed_ts=Date.now()}={}){
@@ -47,7 +50,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION){const evidence=(cached.evidence||[]).filter(row=>!PAUSED_BLOCKS[row.block_id]);return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER',...(!evidence.length&&cached.status==='CLOSED'?{status:cached.sector_status||'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND'}:{})}:{})};}
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
- const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:6*1024*1024,same_run_batch:route==='FREE_AGGREGATED_QUOTES',bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
+ const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:['FUNCTIONAL_SECTOR_DIRECTORY','HTX_MARKET_CATALOG'].includes(route)?900000:6*1024*1024,same_run_batch:route==='FREE_AGGREGATED_QUOTES',bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
  const finish=async(result)=>{
   const summary=reader.summary(),final={version:COINPAPRIKA_SECTOR_VERSION,...result,...(!summary.admission.allowed?{status:summary.admission.status}:{}),...(summary.provider_backoff?{status:summary.provider_backoff.status}:{}),...summary,internal_only:true,free_only:true,monthly_module_bound:SOURCE_POLICIES[SOURCE].monthly_module_bound,official_free_monthly_requests:20000};
   if(summary.provider_backoff)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',observed_ts:now,expires_ts:summary.provider_backoff.backoff_until,payload:summary.provider_backoff});
@@ -55,7 +58,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
   if(expiry>now)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:expiry,payload:final});
   return final;
  };
- let catalog=null,metadata=null,reference=null;
+ let catalog=null,metadata=null,reference=null,directoryTag=null;
  if(marketDiscovery){
   catalog=await request('HTX_MARKET_CATALOG',COINPAPRIKA_HTX_MARKETS_URL,6*3600000);
   if(!Array.isArray(catalog))return finish({status:'COINPAPRIKA_HTX_MARKETS_NOT_CLOSED',evidence:[]});
@@ -73,12 +76,12 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
   if(!verifyCoinpaprikaProviderReference(reference,contract,Date.now()))return finish({status:reference.status==='CLOSED_PROVIDER_MARKET_REFERENCE'?'PROVIDER_REFERENCE_CLOCK_NOT_CLOSED':reference.status,evidence:[]});
  }else if(!verifyCoinpaprikaIdentity(metadata,{identity:asset_identity,base,coin_id,tag_id}))return finish({status:'EXACT_ASSET_AND_SECTOR_IDENTITY_NOT_CLOSED',evidence:[]});
  if(!pinned){
-  const directory=await request('FUNCTIONAL_SECTOR_DIRECTORY','https://api.coinpaprika.com/v1/tags',21600000);
-  const selected=selectCoinpaprikaFunctionalSector(metadata,directory);if(selected)tag_id=selected.id;
+  const directory=await request('FUNCTIONAL_SECTOR_DIRECTORY','https://api.coinpaprika.com/v1/tags?additional_fields=coins',3600000);
+  const selected=selectCoinpaprikaFunctionalSector(metadata,directory);if(selected){tag_id=selected.id;directoryTag=selected;}
  }
  let tag=null,tickers=null,sectorResult={status:'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND',evidence:[]};
  if(tag_id){
-  tag=await request('FUNCTIONAL_SECTOR_MEMBERS',`https://api.coinpaprika.com/v1/tags/${encodeURIComponent(tag_id)}?additional_fields=coins`,3600000);
+  tag=Array.isArray(directoryTag?.coins)&&directoryTag.coins.includes(coin_id)?directoryTag:await request('FUNCTIONAL_SECTOR_MEMBERS',`https://api.coinpaprika.com/v1/tags/${encodeURIComponent(tag_id)}?additional_fields=coins`,3600000);
   if(tag?.id===tag_id&&comparableCoinpaprikaFunctionalTag(tag)&&Array.isArray(tag.coins)&&tag.coins.includes(coin_id)){
    // One original bulk price response serves both finalists in this run.
    // Revalidate each asset, peer membership and the unchanged 15-minute

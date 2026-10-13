@@ -9,6 +9,21 @@ const clean=v=>String(v??'').trim(),hash=v=>/^[a-f0-9]{64}$/i.test(clean(v));
 const integer=v=>typeof v==='number'?Number.isSafeInteger(v)&&v>0?v:null:/^[1-9]\d*$/.test(clean(v))&&Number.isSafeInteger(Number(v))?Number(v):null;
 const clock=v=>typeof v==='string'&&/Z$/.test(v)&&Number.isSafeInteger(Date.parse(v))?Date.parse(v):null;
 const fail=status=>({status,current:null,previous:null});
+// Original public RPC quota headers contain no API key or client identity.
+// An absent/malformed limit stays unknown; it is never an unlimited quota.
+export function nativeRpcQuotaReceipt(response,payload,observed_ts){
+ const number=name=>{const value=response?.headers?.get?.(name);return typeof value==='string'&&/^\d{1,9}$/.test(value)&&Number.isSafeInteger(Number(value))?Number(value):null;};
+ if(!Number.isSafeInteger(observed_ts)||observed_ts<=0)return null;
+ const limit=number('ratelimit-limit'),remaining=number('ratelimit-remaining'),reset=number('ratelimit-reset'),retry=number('retry-after'),warning=payload?.warning==='load'||payload?.result?.warning==='load';
+ const validReset=reset!==null&&reset>0&&reset<=86400?reset:null,validRetry=retry!==null&&retry>0&&retry<=86400?retry:null;
+ const exhausted=remaining===0||[429,503].includes(response?.status)||warning;
+ const wait=exhausted?(validRetry??validReset??60):null;
+ if(limit===null&&remaining===null&&validReset===null&&validRetry===null&&!exhausted)return null;
+ return{schema:'XRPL_PUBLIC_RPC_QUOTA_RECEIPT_V1',observed_ts,http_status:response?.status??null,limit,remaining,reset_seconds:validReset,retry_after_seconds:validRetry,load_warning:warning,retry_after_ts:wait===null?null:observed_ts+wait*1000,wait_basis:wait===null?null:validRetry?'ORIGINAL_RETRY_AFTER':validReset?'ORIGINAL_BINDING_QUOTA_RESET':'CONSERVATIVE_60S_LOAD_BACKOFF',published_daily_allowance:null};
+}
+export function nativeRpcQuotaWait(quota,now){
+ return quota?.schema==='XRPL_PUBLIC_RPC_QUOTA_RECEIPT_V1'&&Number.isSafeInteger(now)&&Number.isSafeInteger(quota.observed_ts)&&quota.observed_ts<=now&&Number.isSafeInteger(quota.retry_after_ts)&&quota.retry_after_ts>now&&quota.retry_after_ts<=quota.observed_ts+86400000?quota.retry_after_ts:null;
+}
 export function xrplNodeHealthy(network){const r=network?.result,i=r?.info,v=i?.validated_ledger;if(r?.status!=='success'||!i||i.corruption_detected===true||i.amendment_blocked===true||i.network_id!==undefined&&Number(i.network_id)!==0||!Number.isSafeInteger(v?.age)||v.age<0||v.age>120||!hash(v.hash)||!integer(v.seq))return false;return ['full','validating','proposing'].includes(i.server_state)||typeof i.clio_version==='string'&&r.validated===true;}
 export function exactNativeLedgerIdentity(contract,identity){
  const d=NATIVE_LEDGER_FAMILIES[identity?.chain];
@@ -51,19 +66,25 @@ export function normalizeNativeLedgerPair({chain,network,current_payload,previou
  current.native_ledger_pair_payload={chain,network,current_payload,previous_payload,observed_ts};
  return{status:'CLOSED',current,previous,method:'ADJACENT_PRIMARY_FINALIZED_NATIVE_LEDGER_HEADERS',burn_or_buyback_cause_verified:false,directional_vote:false};
 }
-async function jsonRequest(fetch_impl,url,body=null){
+async function jsonRequest(fetch_impl,url,body=null,readClock=Date.now){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
- try{const response=await fetch_impl(url,{method:body?'POST':'GET',headers:{accept:'application/json','user-agent':'My-Report-2/native-ledger-supply-v1',...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'error',signal:controller.signal});const raw=await response.text();if(Buffer.byteLength(raw)>64*1024)return{network_calls:1,ok:false,http_status:response.status,payload:null,error:'RESPONSE_TOO_LARGE'};let payload;try{payload=JSON.parse(raw);}catch{return{network_calls:1,ok:false,http_status:response.status,payload:null,error:'SOURCE_SCHEMA_ERROR'};}return{network_calls:1,ok:response.ok&&!payload?.error&&!payload?.result?.error,http_status:response.status,payload,error:response.ok&&!payload?.error&&!payload?.result?.error?null:`HTTP_OR_RPC_${response.status}`};}catch(e){return{network_calls:1,ok:false,http_status:null,payload:null,error:e?.name==='AbortError'?'TIMEOUT':String(e?.message||e).slice(0,160)};}finally{clearTimeout(timer);}
+ try{const response=await fetch_impl(url,{method:body?'POST':'GET',headers:{accept:'application/json','user-agent':'My-Report-2/native-ledger-supply-v1',...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'error',signal:controller.signal});const raw=await response.text(),observed=readClock();let payload=null,error=null;
+  if(Buffer.byteLength(raw)>64*1024)error='RESPONSE_TOO_LARGE';else try{payload=JSON.parse(raw);}catch{error='SOURCE_SCHEMA_ERROR';}
+  const quota=url===NATIVE_LEDGER_FAMILIES.xrp.url?nativeRpcQuotaReceipt(response,payload,observed):null,ok=response.ok&&!payload?.error&&!payload?.result?.error&&!error;
+  return{network_calls:1,ok,http_status:response.status,payload,error:error||(!ok?`HTTP_OR_RPC_${response.status}`:null),...(quota?{provider_quota:quota}:{})};
+ }catch(e){return{network_calls:1,ok:false,http_status:null,payload:null,error:e?.name==='AbortError'?'TIMEOUT':String(e?.message||e).slice(0,160)};}finally{clearTimeout(timer);}
 }
 export async function fetchNativeLedgerSupply(fetch_impl,id,{clock:readClock=Date.now}={}){
  const d=NATIVE_LEDGER_FAMILIES[id?.chain];if(!d)return{attempts:0,receipts:[],current:null,previous:null,status:'UNSUPPORTED_NATIVE_LEDGER_FAMILY'};
  const receipts=[];let network,cur,prior;
  if(id.chain==='xrp'){
-  network=await jsonRequest(fetch_impl,d.url,{method:'server_info',params:[{}]});receipts.push({route:'XRPL_MAINNET_NETWORK',...network,payload:undefined});
+  network=await jsonRequest(fetch_impl,d.url,{method:'server_info',params:[{}]},readClock);receipts.push({route:'XRPL_MAINNET_NETWORK',...network,payload:undefined});
+  if(nativeRpcQuotaWait(network.provider_quota,readClock()))return{attempts:receipts.length,receipts,current:null,previous:null,status:'PROVIDER_RATE_LIMIT_WAIT'};
   const info=network.payload?.result?.info;if(!network.ok||!xrplNodeHealthy(network.payload))return{attempts:receipts.length,receipts,current:null,previous:null,status:'XRPL_MAINNET_NODE_NOT_CLOSED'};
-  cur=await jsonRequest(fetch_impl,d.url,{method:'ledger',params:[{ledger_index:'validated',transactions:false,expand:false,api_version:2}]});receipts.push({route:'XRPL_VALIDATED_LEDGER',...cur,payload:undefined});
+  cur=await jsonRequest(fetch_impl,d.url,{method:'ledger',params:[{ledger_index:'validated',transactions:false,expand:false,api_version:2}]},readClock);receipts.push({route:'XRPL_VALIDATED_LEDGER',...cur,payload:undefined});
+  if(nativeRpcQuotaWait(cur.provider_quota,readClock()))return{attempts:receipts.length,receipts,current:null,previous:null,status:'PROVIDER_RATE_LIMIT_WAIT'};
   const h=xrplHeader(cur.payload);if(!cur.ok||!h)return{attempts:receipts.length,receipts,current:null,previous:null,status:'FINALIZED_LEDGER_HEADER_SCHEMA_REQUIRED'};
-  prior=await jsonRequest(fetch_impl,d.url,{method:'ledger',params:[{ledger_hash:h.parent_hash,transactions:false,expand:false,api_version:2}]});receipts.push({route:'XRPL_EXACT_PARENT_LEDGER',...prior,payload:undefined});
+  prior=await jsonRequest(fetch_impl,d.url,{method:'ledger',params:[{ledger_hash:h.parent_hash,transactions:false,expand:false,api_version:2}]},readClock);receipts.push({route:'XRPL_EXACT_PARENT_LEDGER',...prior,payload:undefined});
  }else{
   network=await jsonRequest(fetch_impl,d.url);receipts.push({route:'STELLAR_MAINNET_NETWORK',...network,payload:undefined});
   if(!network.ok||network.payload?.network_passphrase!=='Public Global Stellar Network ; September 2015')return{attempts:receipts.length,receipts,current:null,previous:null,status:'STELLAR_MAINNET_NETWORK_REQUIRED'};
