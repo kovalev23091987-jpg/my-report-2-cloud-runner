@@ -370,7 +370,9 @@ jobs:
       - name: V13 P0 exact assembled-runtime dry run
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_DRY_RUN' }}
         shell: bash
-        run: node audit-fixes/v13/p0-integration-20.mjs runtime | tee report2-v13-p0-dry-run.json
+        run: |
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/original-idea-recheck.runtime.mjs
+          node audit-fixes/v13/p0-integration-20.mjs runtime | tee report2-v13-p0-dry-run.json
       - name: V13 isolated Kraken and dYdX shadow smoke
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_SHADOW_MARKET_SMOKE' }}
         shell: bash

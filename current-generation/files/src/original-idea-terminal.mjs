@@ -5,10 +5,10 @@ import {originalIdeaIdentity} from './original-idea-recheck.mjs';
 // No transport, new source request, new idea or entry is created here.
 export async function prepareOriginalIdeaTerminal(db,{now_ts=Date.now()}={}){
  const rows=await db.prepare(`SELECT t.*,b.rules_version,b.observed_ts AS sent_observed_ts,d.telegram_message_id,l.status AS lifecycle_status
-  FROM v3_recheck_task_shadow t
-  JOIN v3_dispatch_publication_binding_shadow b ON b.publication_id=t.publication_id AND b.contract_code=t.contract_code AND b.direction=t.direction AND b.wave_id=t.wave_id AND b.run_id=t.run_id AND b.snapshot_id=t.snapshot_id
-  JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND b.lifecycle_event IN ('OBSERVE','WAIT')
-  JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status IN ('OBSERVE','WAIT')
+  FROM v3_recheck_task_shadow t INDEXED BY idx_v3_recheck_due
+  CROSS JOIN v3_dispatch_publication_binding_shadow b ON b.publication_id=t.publication_id AND b.contract_code=t.contract_code AND b.direction=t.direction AND b.wave_id=t.wave_id AND b.run_id=t.run_id AND b.snapshot_id=t.snapshot_id
+  CROSS JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND b.lifecycle_event IN ('OBSERVE','WAIT')
+  CROSS JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status IN ('OBSERVE','WAIT')
   WHERE t.state IN ('CANCELLED','EXPIRED') AND t.updated_ts>=?1 AND t.updated_ts<=?2
   ORDER BY t.due_ts DESC LIMIT 2`).bind(Math.max(Date.parse('2026-10-10T09:20:00Z'),now_ts-10800000),now_ts).all();
  for(const task of rows?.results||[]){
