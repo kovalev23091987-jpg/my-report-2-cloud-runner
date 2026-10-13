@@ -23,7 +23,7 @@ for file in sorted(root.glob('checkpoints/**/report2-run-result.json*')):
     source=level.get('source');group=level.get('independence_group')
     if source=='CoinBoss' and group=='COINBOSS_AGGREGATED_CEX_MODEL' and level.get('source_backed_calculated') is True:provider='COINBOSS_MODEL';kind='VENDOR_CALCULATED'
     elif source=='Orderly' and group=='ORDERLY_PUBLIC_POSITIONS' and level.get('price_semantics')=='ORDERLY_ESTIMATED_POSITION_LIQUIDATION_PRICE':provider='ORDERLY_PUBLIC_POSITIONS';kind='REPORTED_POSITION_ESTIMATED_PRICE'
-    elif source=='Swolecharts' and group=='SWOLECHARTS_AGGREGATED_MODEL' and level.get('source_backed_calculated') is True:provider='SWOLECHARTS_MODEL';kind='VENDOR_CALCULATED'
+    elif source=='Swolecharts https://swolecharts.com' and group=='SWOLECHARTS_AGGREGATED_CEX_MODEL' and level.get('price_semantics')=='SWOLECHARTS_PROVIDER_MODEL_BIN_MID' and level.get('source_backed_calculated') is True:provider='SWOLECHARTS_MODEL';kind='VENDOR_CALCULATED'
     else:reject('NOT_ONE_OF_EXACT_EXTERNAL_PARSER_SHAPES');continue
     t=level.get('source_ts');p=level.get('price')
     if not finite(p) or p<=0 or not finite(t) or t<=0 or t>obs or level.get('side') not in ['ABOVE','BELOW']:reject('PRICE_CLOCK_OR_SIDE');continue

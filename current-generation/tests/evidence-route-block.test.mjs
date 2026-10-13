@@ -18,3 +18,13 @@ test('a later collector cannot spend an earlier unknown reservation',async()=>{
  let calls=0;const out=await collectEvidenceRouteBlock({routes:[{name:'UNKNOWN'},{name:'UNADMITTED'},{name:'OWN'}],max_requests:4,params:{request_admit:()=>({allowed:true}),fetch_impl:async()=>{calls++;return new Response('{}');}},collectors:{UNKNOWN:async({request_admit})=>{request_admit({attempts:3});throw Error('ACK_UNKNOWN');},UNADMITTED:async({fetch_impl})=>{await fetch_impl('https://source.example');return{status:'CLOSED'};},OWN:async({request_admit,fetch_impl})=>{request_admit({attempts:1});await fetch_impl('https://source.example');return{status:'CLOSED'};}}});
  assert.equal(calls,1);assert.equal(out.reserved_requests,4);assert.equal(out.results.UNADMITTED.status,'CODE_OR_STORE_ERROR');assert.equal(out.results.OWN.status,'CLOSED');
 });
+
+
+test('main skips only fresh index discovery after valid exact current finalized RPC; failure and LIQ retain the index route',async()=>{
+ const module=await import('../files/src/evidence-source-adapters.mjs'),now=Date.parse('2026-10-13T22:40:00Z');
+ const fact=module.buildEvidenceV2({provider_id:'CHAIN_RPC',upstream_id:'ethereum:mainnet',asset_id:'ethereum:0x1111111111111111111111111111111111111111',htx_contract:'ABC-USDT',block_id:'N04',metric_family:'TOKEN_TRANSFER_CHECK',origin_event_id:'exact',dependency_group:'ethereum:exact:transfer',source_ts:now-1000,observed_ts:now,expires_at:now+60000,coverage_status:'CONTEXT_ONLY',coverage_fraction:0,finality_status:'FINAL',validation_status:'VALID'});
+ const run=async(primary,main=true)=>{let allowed;await collectEvidenceRouteBlock({routes:[{name:'CHAIN_EVENTS'},{name:'BLOCKSCOUT'}],params:{contract:'ABC-USDT',now,clock:()=>now,main_index_failure_backoff:main},collectors:{CHAIN_EVENTS:async()=>primary,BLOCKSCOUT:async p=>{allowed=p.live_discovery_allowed;return{status:'NOT_EVALUATED',network_calls:0};}}});return allowed;};
+ assert.equal(await run({status:'CLOSED',evidence:[fact]}),false);
+ for(const patch of [{htx_contract:'OTHER-USDT'},{finality_status:'PROVISIONAL'},{source_ts:now+1},{expires_at:now-1}])assert.equal(await run({status:'CLOSED',evidence:[{...fact,...patch}]}),true);
+ assert.equal(await run({status:'SOURCE_ERROR',evidence:[fact]}),true);assert.equal(await run({status:'CLOSED',evidence:[]}),true);assert.equal(await run({status:'CLOSED',evidence:[fact]},false),true);
+});

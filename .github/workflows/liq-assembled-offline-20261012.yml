@@ -43,6 +43,10 @@ on:
       - current-generation/files/src/scheduled-evidence-budget.mjs
       - current-generation/tests/scheduled-evidence-budget.test.mjs
       - current-generation/tests/telegram-potential-candidate-wiring.test.mjs
+      - current-generation/files/src/candidate-evidence-v2-runtime.mjs
+      - current-generation/files/src/blockscout-index-evidence.mjs
+      - current-generation/tests/blockscout-index-evidence.test.mjs
+      - current-generation/tests/evidence-route-block.test.mjs
       - cloudflare/free-history/003_canonical_cold_archive.sql
 permissions:
   contents: read
@@ -100,6 +104,7 @@ jobs:
           node --test runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap
           node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
+          node --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap
       - name: Show failure locations
         if: failure()
         run: |

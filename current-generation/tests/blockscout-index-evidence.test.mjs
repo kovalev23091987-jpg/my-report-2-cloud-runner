@@ -84,3 +84,14 @@ test('known exhausted request/credit pools do not occupy the shared caller admis
   assert.equal(out.status,exhausted==='requests'?'SOURCE_DAILY_CAP_REACHED':'SOURCE_DAILY_CREDIT_CAP_REACHED');assert.equal(out.network_calls,0);assert.equal(grants,0);assert.equal(calls,0);
  }
 });
+
+
+test('verified current primary allows cached index hints but spends no fresh request or credits',async()=>{
+ const db=new DB(),base={db,request_admit:()=>{throw Error('NO_ADMISSION_NEEDED');},fetch_impl:()=>{throw Error('NO_INDEX_HTTP');},contract:'ABC-USDT',run_id:'R',asset_identity:IDENTITY,blockscout_api_key:'safe-key',now:NOW,clock:()=>NOW,live_discovery_allowed:false};
+ const denied=await collectBlockscoutIndexEvidence(base);assert.equal(denied.status,'INDEX_DISCOVERY_NOT_NEEDED_CURRENT_PRIMARY_CHECKED');assert.equal(denied.network_calls,0);assert.equal(denied.route_credit_cost,0);assert.equal(sourceWasActuallyChecked(denied),false);
+ assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM report2_evidence_source_daily').get().n,0);assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM report2_evidence_source_credit_daily').get().n,0);
+ const cached=normalizeBlockscoutTransfers({contract:'ABC-USDT',asset_identity:IDENTITY,payload,observed_ts:NOW});
+ const version=(await import('../files/src/blockscout-index-evidence.mjs')).BLOCKSCOUT_INDEX_EVIDENCE_VERSION;
+ await writeEvidenceSourceCache(db,{source:'BLOCKSCOUT_INDEX',asset_key:'1:'+ADDRESS,observed_ts:NOW,expires_ts:NOW+60000,payload:{...cached,version,network_calls:1}});
+ const original=await collectBlockscoutIndexEvidence({...base,now:NOW+1});assert.equal(original.network_calls,0);assert.equal(original.evidence[0].source_ts,cached.evidence[0].source_ts);assert.equal(original.evidence[0].finality_status,'PROVISIONAL');
+});

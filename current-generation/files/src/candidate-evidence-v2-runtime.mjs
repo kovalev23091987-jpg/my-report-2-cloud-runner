@@ -143,6 +143,9 @@ export function evidenceRouteObservationNow(route,params={}){
  if(!Number.isSafeInteger(current)||current<=0||Number.isFinite(prior)&&current<prior)throw Error('SOURCE_ROUTE_CLOCK_NOT_MONOTONIC');
  return current;
 }
+export function finalizedPrimaryTransferAvailable(source,{contract,decision_ts}={}){
+ return source?.status==='CLOSED'&&Number.isSafeInteger(decision_ts)&&Array.isArray(source.evidence)&&source.evidence.some(row=>row?.provider_id==='CHAIN_RPC'&&row.block_id==='N04'&&row.htx_contract===contract&&validateEvidenceV2(row,{decision_ts}).usable);
+}
 export async function collectEvidenceRouteBlock({routes=[],collectors={},params={},max_requests=5}={}){
  let reserved=0,actual=0,routeReserved=0;const results={},receipts=[];
  const request_admit=request=>{
@@ -155,7 +158,9 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
   // Collectors read valid cached facts before their request admission. Calling
   // every relevant role also reuses caches after the network envelope is full.
   const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(actual-beforeActual>=routeReserved||actual>=reserved||actual>=max_requests)throw Error('EVIDENCE_ROUTE_TRANSPORT_NOT_ADMITTED');actual++;return(params.fetch_impl||globalThis.fetch)(...args);};
-  try{result=await collect({...params,now:evidenceRouteObservationNow(route,params),request_admit,fetch_impl});}catch(error){result={status:'CODE_OR_STORE_ERROR',evidence:[],error:String(error?.message||error).slice(0,120)};}
+  const decisionClock=Math.max(Number(params.now)||0,Number((params.clock||Date.now)()));
+  const skipIndex=route.name==='BLOCKSCOUT'&&params.main_index_failure_backoff===true&&finalizedPrimaryTransferAvailable(results.CHAIN_EVENTS,{contract:params.contract,decision_ts:decisionClock});
+  try{result=await collect({...params,...(route.name==='BLOCKSCOUT'?{live_discovery_allowed:!skipIndex}:{}),now:evidenceRouteObservationNow(route,params),request_admit,fetch_impl});}catch(error){result={status:'CODE_OR_STORE_ERROR',evidence:[],error:String(error?.message||error).slice(0,120)};}
   const calls=actual-beforeActual,reported=Number(result?.network_calls);result={...result,network_calls:calls};
   // A shared upstream or cache never authorizes evidence for another market.
   if(params.contract&&Array.isArray(result.evidence)){
