@@ -1,0 +1,128 @@
+{
+  "schema": "LIQ_105_SAME_RUN_TELEGRAM_AND_CADENCE_V1",
+  "recorded_utc": "2026-10-13T12:28:24.234823+00:00",
+  "scope": "LIQ plus scheduled delivery and saved-only active-block budget audit; other block tuning remains open",
+  "lease_owner": "CODEX:LIQ_NATURAL_LIMIT_AUDIT:1791889745299",
+  "full_cycle": {
+    "github_run": 38396042005,
+    "event": "workflow_dispatch",
+    "source": "schedule",
+    "recovery_reason": "SCHEDULED_CADENCE_RECOVERY",
+    "head": "1579b25915e4d6e45a8299242e60e58ccb6ff6f5",
+    "run_id": "1791893790818-1791893800260",
+    "artifact_digest": "sha256:a86747831e3d7905d9b722f6f399794e92c2fe0fa4f6986051d79791bc8ad5b6",
+    "status": "CLOSED",
+    "market_scan": "105/105; errors 0; stale 0",
+    "selected": [
+      "FARTCOIN-USDT",
+      "CT-USDT"
+    ],
+    "not_a_natural_github_schedule_event": true
+  },
+  "liquidation_result": {
+    "native_original_http": 4,
+    "additional_provider_http": 3,
+    "combined_liq_http": 7,
+    "combined_liq_http_cap": 8,
+    "FARTCOIN-USDT": {
+      "state": "OBSERVE",
+      "direction": "SHORT",
+      "orderly_reported_positions": 32,
+      "orderly_numeric_positions": 23,
+      "orderly_admitted_zones": 22,
+      "orderly_source_ts": 1791893886570,
+      "orderly_role": "public observed positions with source-estimated liquidation prices; not full market census",
+      "coinboss_scenarios": 8,
+      "coinboss_source_ts": 1791893659725,
+      "coinboss_role": "external modeled scenarios, not observed positions or actual liquidation notional",
+      "manual_display_above": 2,
+      "manual_display_below": 3,
+      "spot_futures_text": "HTX spot 0.159495 USDT; HTX futures 0.15901 USDT; difference -0.30%; spot is price context, not source of liquidation levels"
+    },
+    "CT-USDT": {
+      "state": "REJECTED",
+      "direction": null,
+      "coinboss_scenarios": 8,
+      "coinboss_source_ts": 1791893657524,
+      "manual_display_above": 2,
+      "manual_display_below": 2,
+      "not_telegram_trade_idea": true
+    },
+    "independence_limit": "CoinBoss is an aggregate model; its upstream exchanges are not established as independent of any position venue. Do not turn provider count into consensus."
+  },
+  "telegram": {
+    "same_run_proof_status": "EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "publication_id": "PUB:28b1bb79595ccdbde725cbb1eeab0b2e2bb7ef1d",
+    "contract": "FARTCOIN-USDT",
+    "lifecycle_event": "OBSERVE",
+    "telegram_message_id": "191",
+    "snapshot_id": "S392:FARTCOIN-USDT:1791893895729",
+    "presentation_hash": "f3fc178f21177755798214ac460c639d5290b08f75862902673f4f5cfdc7e2a6",
+    "d1_reconciliation_rows_read": 225,
+    "d1_reconciliation_cap": 288,
+    "publication_readback": "One read-only production D1 row confirmed the exact run/snapshot/hash and stored Telegram text. That text includes two levels above, three below, CoinBoss/Orderly source labels, sizes, and a joint HTX spot/futures price comparison.",
+    "publication_readback_rows_read": 1,
+    "sent_is_observe_not_entry": true,
+    "task_state_after_delivery_known": false
+  },
+  "active_blocks_same_run": {
+    "FARTCOIN-USDT": {
+      "decision_participating": [
+        "N04",
+        "N10",
+        "N11",
+        "N12",
+        "N15"
+      ],
+      "N05": "HTX flow rendered; decision use not proven; score unchanged 0"
+    },
+    "CT-USDT": {
+      "decision_participating": [
+        "N10",
+        "N11",
+        "N12",
+        "N15"
+      ],
+      "N04": "no used fact",
+      "N05": "HTX flow rendered; decision use not proven; score unchanged 0"
+    },
+    "paused_excluded": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ]
+  },
+  "cadence": {
+    "prior_gap": "GitHub schedule events can be absent for hours; bounded backup dispatched this run at 12:16 UTC after previous full at 11:31 UTC.",
+    "production_d1_cadence_readback": {
+      "job_key": "TWO_CANDIDATE_ANALYTICS_40M",
+      "interval_ms": 2400000,
+      "last_success_ts": 1791893790818,
+      "lease_owner": null,
+      "lease_expires_ts": null,
+      "last_result": "ATTEMPT_ADMITTED",
+      "rows_read": 1
+    },
+    "empty_schedule_suppression_bug": "Old backup keyed on GitHub run creation time even when full analysis was NOT_DUE. A completed empty scheduled event could defer recovery past the D1 due time.",
+    "fix_main": "714ca212c1c1c251480e12c49270dbcf45ed2a90",
+    "fix_behavior": "Use charged D1 cadence timestamp, suppress while a full cadence lease or GitHub schedule run is active, allow five minutes for settlement, preserve recovery dispatch deduplication. One extra D1 row read per backup cycle; no provider HTTP or source caps changed.",
+    "local_test": "26/26 relevant backup and recovery tests PASS; git diff --check PASS",
+    "cloud_backup_runtime_proof": "PENDING_NEXT_BACKUP_JOB",
+    "next_full_on_fix_proven": false
+  },
+  "limits": [
+    "A same-run SENT proves this cycle and this message, not all future deliveries.",
+    "35 of 103 LIQ-eligible assets still have no saved historical numeric future-level proof; the current report selected only two assets.",
+    "A current all-105 source-by-block coverage matrix and a measured deduplicated cross-block provider HTTP/D1 ledger remain open.",
+    "GitHub's natural schedule cadence remains unreliable; the D1-based backup fix still needs cloud readback and a later due-cycle observation."
+  ],
+  "next_action": "Verify the new backup job on fix head and a later due/no-work cycle, then continue the saved 35-asset LIQ queue and all-active source efficiency plan without resetting provider caps or changing weights/format.",
+  "spot_futures_rule": "For every applicable active block, retain original spot and futures timestamps and join only within the accepted ten-minute maximum; compare independent facts when available, use one genuinely useful side with limited wording when the other is unavailable. Do not invent spot liquidation levels. HTX spot is absent for 15 eligible assets by owner decision; no external spot substitution for those assets."
+}
