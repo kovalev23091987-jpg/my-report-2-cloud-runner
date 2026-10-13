@@ -1,0 +1,9 @@
+import {archiveLiquidationForecasts} from './liquidation-forecast-archive.mjs';
+
+export default {
+  async fetch(){return new Response('Not found',{status:404});},
+  async scheduled(controller,env){
+    const result=await archiveLiquidationForecasts({source_db:env?.DATA_DB,archive_db:env?.ARCHIVE_DB,scheduled_ts:controller?.scheduledTime??Date.now()});
+    console.log('REPORT2_LIQ_FORECAST_ARCHIVE',JSON.stringify(result));
+  }
+};
