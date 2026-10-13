@@ -1,6 +1,6 @@
 {
   "schema": "LIQ_EXTERNAL_PROVIDER_ONLY_CANDIDATE_V1",
-  "recorded_utc": "2026-10-13T09:55:52.483590Z",
+  "recorded_utc": "2026-10-13T10:08:00.077299+00:00",
   "base_main": "f18cb2b879c7964b7568e7b690ce46967e900f22",
   "lease_owner": "CODEX:LIQ_EXTERNAL_LEVELS_ONLY:1791884625102",
   "lease_expires_ts": 1791886425102,
@@ -38,7 +38,8 @@
       "docs": "https://www.forecandle.com/developers",
       "published_free_limit": "60/min; free key; liq-heatmap latest and 24h history advertised",
       "required_secret_name": "REPORT2_FORECANDLE_API_KEY",
-      "status": "KEY_AND_ORIGINAL_PAYLOAD_NOT_YET_VERIFIED; NOT_CONNECTED_OR_COUNTED"
+      "status": "AUTH_BLOCKED_IN_OWNER_BROWSER; KEY_AND_ORIGINAL_PAYLOAD_NOT_VERIFIED; NOT_CONNECTED_OR_COUNTED",
+      "owner_browser_observation": "2026-10-13 13:00-13:04 MSK: Google OAuth origin_mismatch; email signup Request failed. Provider registration unavailable to owner in observed session; no key or payload."
     },
     "n0brains": {
       "docs": "https://n0brains.com/docs/",
@@ -64,7 +65,9 @@
       "docs": "https://chainvector.com/docs/liquidations",
       "free_plan_docs": "https://chainvector.com/docs/getting-started",
       "published_free_limit": "10/min; 10000/month; API key required",
-      "status": "DOCS_ONLY; NO_KEY_OR_ORIGINAL_PAYLOAD; NOT_CONNECTED_OR_COUNTED"
+      "status": "DOCS_ONLY; NO_KEY_OR_ORIGINAL_PAYLOAD; NOT_CONNECTED_OR_COUNTED",
+      "pricing_docs": "https://chainvector.com/pricing",
+      "free_heatmap_entitlement": "NOT_CONFIRMED_BY_PUBLIC_PLAN_MATRIX; DO_NOT_COUNT_OR_REQUEST_OWNER_REGISTRATION_UNTIL_CHECKED"
     }
   },
   "verification": {
@@ -91,9 +94,15 @@
     "new_provider_connected": false,
     "all_105_external_level_coverage_proven": false,
     "block_complete": false,
-    "main_saved_head": "827a2212727b8174d0220c806035b2ff3be2feec",
+    "main_saved_head": "2350c51df879f195700f5c51b4b3755b2ba7e7b6",
     "cloud_assembled_verified": true,
     "natural_full_report_new_policy_verified": false
   },
-  "next_action": "LIQ: obtain and qualify a free Forecandle key on exact asset, original clock, numeric levels, free entitlement and actual consumer use. Reuse prior CoinBoss/ByK/native evidence; exclude MarginPad after three exact HTTP403 probes. Inspect a new natural full report for provider-only manual and Telegram levels and exact same-run SENT/message_id; inspect new RECORDED forecast archive group and later outcomes. Preserve 105 assets, cap5, all other limits, paused blocks and prior strategy."
+  "next_action": "LIQ: Forecandle owner signup is blocked (Google origin_mismatch and email Request failed); stop asking owner to retry. ChainVector model heatmap and free key are documented, but free heatmap entitlement and original payload remain unverified; qualify only with permitted free access and exact asset/time/numeric/use proof. Reuse CoinBoss/ByK/native evidence; no MarginPad retry after Cloudflare 1010. Inspect next natural full report for provider-only manual and Telegram levels plus exact same-run SENT/message_id; inspect RECORDED archive group and later outcomes. Preserve 105 assets, cap5, paused blocks, limits and strategy.",
+  "release_receipt": {
+    "released_utc": "2026-10-13T10:08:00.077299+00:00",
+    "owner": "CODEX:LIQ_EXTERNAL_LEVELS_ONLY:1791884625102",
+    "saved_main_before_release": "2350c51df879f195700f5c51b4b3755b2ba7e7b6",
+    "reason": "SOURCE_AUTH_FAILURE_DOCUMENTED_AND_CLOUD_CANDIDATE_SAVED; NATURAL_USE_PENDING"
+  }
 }
