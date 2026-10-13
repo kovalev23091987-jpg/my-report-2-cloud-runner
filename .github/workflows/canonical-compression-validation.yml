@@ -8,6 +8,9 @@ on:
       lease_owner:
         required: true
         type: string
+      retain_private:
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -29,7 +32,8 @@ jobs:
           REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/validate-canonical-compression-20261013.mjs
+          CLOUDFLARE_API_TOKEN: ${{ inputs.retain_private == true && secrets.CLOUDFLARE_API_TOKEN || '' }}
+        run: node tools/validate-canonical-compression-20261013.mjs ${{ inputs.retain_private == true && '--retain-private' || '' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

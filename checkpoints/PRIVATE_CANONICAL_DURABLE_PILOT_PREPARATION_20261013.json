@@ -1,0 +1,70 @@
+{
+  "schema": "REPORT2_PRIVATE_CANONICAL_DURABLE_PILOT_V1",
+  "recorded_utc": "2026-10-13T18:52:25.631787+00:00",
+  "base_main": "a0e31302cbc67097625ac99278cf8b4a800b2a4d",
+  "status": "24_LOCAL_PASS_PRIVATE_DB_CREATED_DURABLE_ORIGINAL_ROW_PENDING",
+  "exact_source_compression": {
+    "cloud_run": 38449112847,
+    "head": "a0e31302cbc67097625ac99278cf8b4a800b2a4d",
+    "artifact_id": 11839263043,
+    "artifact_digest": "sha256:dded498e73e2d21ed48a8fc091a689a51b92e521e4a241190f8470ebf4acd349",
+    "proof": "checkpoints/private-canonical-compression-38449112847/validation.json",
+    "actual_D1_reads": 35,
+    "actual_D1_writes": 4,
+    "unknown_ops": 0,
+    "actual_source_row_bytes": 445924,
+    "compressed_bytes": 66808,
+    "ratio": 0.1498192517110539,
+    "full_private_payload_exported": false,
+    "not_months_of_full_archive_coverage": true
+  },
+  "cloud_assembly_after_guard_registration": {
+    "head": "a0e31302cbc67097625ac99278cf8b4a800b2a4d",
+    "cloud_run": 38449116435,
+    "artifact_id": 11839786678,
+    "artifact_digest": "sha256:9b9954542c8c6fcbf82a99e693428d5f3f3d6e161dca3a9510047d58f5a4ce61",
+    "assembled37": "PASS",
+    "observer_run": 38449226218,
+    "LIQ_run": 38449044790,
+    "LIQ_artifact_id": 11839746687,
+    "LIQ_artifact_digest": "sha256:234dca0f29503c76307dd891a9039890cb1c9ad23f38f021232b6edfd281ad48"
+  },
+  "private_database": {
+    "uuid": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+    "name": "report2-free-canonical-history",
+    "created_utc": "2026-10-13T18:48:17.721Z",
+    "created_bytes": 8192,
+    "prior_database_count": 4,
+    "new_database_count": 5,
+    "conservative_free_account_storage_upper_bound": 2500000000,
+    "free_account_bytes": 5000000000,
+    "replication": "disabled",
+    "public_endpoint_created": false,
+    "paid_plan_enabled": false
+  },
+  "pilot": {
+    "workflow": "canonical-compression-validation.yml",
+    "input": "retain_private=true",
+    "maximum_source_rows": 1,
+    "sourceHTTP": 0,
+    "main_deletions_or_updates": 0,
+    "D1_shared_reservation": {
+      "rows_read": 5000,
+      "rows_written": 32
+    },
+    "source_and_cold_native_usage_combined": true,
+    "pin_archive_database": true,
+    "both_original_content_hash_and_gzip_hash_durable_readback_required": true,
+    "exact_private_reader_required": true,
+    "collision_preserves_revisions": true,
+    "automatic_writes_enabled": false
+  },
+  "verification": {
+    "tests": 24,
+    "passed": 24,
+    "tap_sha256": "bcad06a98c9cdd7735c53c982fdcdc9d7c08f826e90313e8b44ebfa54e6863d7",
+    "provider_HTTP": 0,
+    "production_D1_writes": 0
+  },
+  "next": "Run one concrete private durable pilot after exact main/owner readback. Confirm GitHub Cloudflare token D1 access, exact schema+row and original private reader; retain main originals. Only then design bounded automated archive/rolling policy, checking reference restoration before any hot pruning."
+}

@@ -35,6 +35,8 @@ on:
       - current-generation/tests/generation-guard.test.mjs
       - runner/canonical-cold-archive.mjs
       - runner/canonical-cold-archive.test.mjs
+      - runner/private-archive-d1-api.mjs
+      - runner/private-archive-d1-api.test.mjs
       - cloudflare/free-history/003_canonical_cold_archive.sql
 permissions:
   contents: read
@@ -88,7 +90,7 @@ jobs:
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
           REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
-          node --test runner/canonical-cold-archive.test.mjs > audit-output/liq-assembled/cold-archive.tap
+          node --test runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs > audit-output/liq-assembled/cold-archive.tap
       - name: Show failure locations
         if: failure()
         run: |
