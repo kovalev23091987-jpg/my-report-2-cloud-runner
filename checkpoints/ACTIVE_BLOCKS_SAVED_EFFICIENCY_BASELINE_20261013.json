@@ -1,0 +1,344 @@
+{
+  "schema": "ACTIVE_BLOCKS_SAVED_EFFICIENCY_BASELINE_V1",
+  "recorded_utc": "2026-10-13T11:49:44.010288+00:00",
+  "purpose": "Stage-2 saved-only baseline while LIQ live acceptance remains open; no provider calls, no code or score changes",
+  "latest_approved_universe": 105,
+  "historical_market_baseline_universe": 104,
+  "current_full_run": {
+    "github_run": 38390819598,
+    "run_id": "1791891117348-1791891128942",
+    "head": "181b86ea547892ce87fe2b144a4a64df6b4474d2",
+    "selected": [
+      "STRK-USDT",
+      "RIVER-USDT"
+    ]
+  },
+  "source_proofs": [
+    "checkpoints/ACTIVE_BLOCK_SPOT_FUTURES_SAVED_COVERAGE_AUDIT_20261012.json",
+    "checkpoints/LIQ_RECOVERY_AND_TELEGRAM_BUDGET_FIX_20261013.json"
+  ],
+  "blocks": {
+    "N04": {
+      "metric": "On-chain transfers and address attribution",
+      "historical_104_baseline": {
+        "metric": "On-chain transfers and address attribution",
+        "spot_metric_coverage": "NOT_APPLICABLE",
+        "futures_metric_coverage": "NOT_APPLICABLE",
+        "old_evidence": "Native ETH and BNB transfer facts were scoped; a shared spot or futures price is context, not an N04 transfer.",
+        "quantified_market_coverage": null
+      },
+      "current_105_run_selected_pair": {
+        "RIVER-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "CHAIN_RPC"
+          ],
+          "route_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "SOURCE_ERROR"
+          }
+        },
+        "STRK-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "CHAIN_RPC"
+          ],
+          "route_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "CLOSED"
+          }
+        }
+      },
+      "current_all_105_metric_coverage": "NOT_PROVEN_BY_SELECTED_PAIR",
+      "preserve_and_next_check": "On-chain transfers are not spot/futures position metrics; keep source-specific roots and do not treat Blockscout HTTP success without used fact as coverage."
+    },
+    "N05": {
+      "metric": "Exact 240-minute taker flow",
+      "historical_104_baseline": {
+        "metric": "Exact 240-minute taker flow",
+        "saved_external_full_spot_assets_ever": 39,
+        "saved_external_full_futures_assets_ever": 2,
+        "saved_external_both_market_assets_ever": 2,
+        "saved_external_spot_only_assets_ever": 37,
+        "saved_external_future_only_assets_ever": 0,
+        "external_spot_structural_routes": 76,
+        "external_futures_structural_routes": 53,
+        "htx_futures_structural_assets": 104,
+        "htx_240m_flow_all104_proven": false,
+        "latest_two_full_report_candidates_n05_participating": 0,
+        "warning": "Historical windows occurred at different times; one venue is limited informational context, not independent agreement."
+      },
+      "current_105_run_selected_pair": {
+        "RIVER-USDT": {
+          "participation_status": "USE_NOT_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 0,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [],
+          "route_statuses": {
+            "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+            "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+            "CHAIN_EVENTS": "CLOSED",
+            "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "EXTERNAL_N05_FLOW": "SOURCE_DAILY_CAP_DENIED",
+            "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+          }
+        },
+        "STRK-USDT": {
+          "participation_status": "USE_NOT_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 0,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [],
+          "route_statuses": {
+            "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+            "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+            "CHAIN_EVENTS": "CLOSED",
+            "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "EXTERNAL_N05_FLOW": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+            "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+          }
+        }
+      },
+      "current_all_105_metric_coverage": "NOT_PROVEN_BY_SELECTED_PAIR",
+      "preserve_and_next_check": "Old exact 240-minute external spot/futures windows are not current same-run agreement. RIVER/STRK HTX flow appears in manual context, but block decision source accounting records use not proven; investigate this distinction before altering route or score."
+    },
+    "N10": {
+      "metric": "Closed-candle technical path, trigger, target and invalidation",
+      "historical_104_baseline": {
+        "metric": "Closed-candle technical path, trigger, target and invalidation",
+        "saved_futures_primary_analytical_assets_prior_24h": 16,
+        "saved_futures_primary_analytical_rows_prior_24h": 48,
+        "saved_published_manual_range_texts_prior_24h": 6,
+        "spot_specific_closed_candle_assets_proven_in_that_audit": 0,
+        "fresh_independent_price_profiles_in_that_audit": 0,
+        "htx_futures_basic_structural_assets": 104,
+        "warning": "Generic spot/futures market context in selected reports does not prove N10 spot closed-candle target calculations."
+      },
+      "current_105_run_selected_pair": {
+        "RIVER-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "route_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          }
+        },
+        "STRK-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "route_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          }
+        }
+      },
+      "current_all_105_metric_coverage": "NOT_PROVEN_BY_SELECTED_PAIR",
+      "preserve_and_next_check": "Selected coins render HTX technical facts, but old all-asset spot-specific analytical coverage is unproven; verify window alignment and actual target/invalidations before expansion."
+    },
+    "N11": {
+      "metric": "Futures execution order book and 500 USDT gate",
+      "historical_104_baseline": {
+        "metric": "Futures execution order book and 500 USDT gate",
+        "spot_metric_coverage": "EXEMPT_BY_OWNER",
+        "saved_futures_execution_assets_prior_24h": 16,
+        "saved_futures_execution_snapshots_prior_24h": 44,
+        "htx_futures_structural_assets": 104,
+        "warning": "The old 16-asset observation is not current all-104 book coverage."
+      },
+      "current_105_run_selected_pair": {
+        "RIVER-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "route_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          }
+        },
+        "STRK-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "route_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          }
+        }
+      },
+      "current_all_105_metric_coverage": "NOT_PROVEN_BY_SELECTED_PAIR",
+      "preserve_and_next_check": "Futures order book only by owner instruction; selected 500 USDT checks render, but all-105 live execution coverage is unproven."
+    },
+    "N12": {
+      "metric": "Bounded recent exact trades and market direction",
+      "historical_104_baseline": {
+        "metric": "Bounded recent exact trades and market direction",
+        "old_full_report_run_ids": [
+          38233280841,
+          38237861445
+        ],
+        "selected_distinct_htx_spot_useful_assets": [
+          "ZEC-USDT",
+          "龙虾-USDT"
+        ],
+        "selected_distinct_htx_futures_useful_assets": [
+          "BTR-USDT",
+          "ZEC-USDT",
+          "龙虾-USDT"
+        ],
+        "selected_distinct_both_htx_market_assets": [
+          "ZEC-USDT",
+          "龙虾-USDT"
+        ],
+        "selected_spot_count": 2,
+        "selected_futures_count": 3,
+        "selected_both_count": 2,
+        "selected_futures_only_partial": [
+          "BTR-USDT"
+        ],
+        "htx_futures_structural_assets": 104,
+        "external_exact_spot_structural_assets": 76,
+        "external_exact_futures_structural_assets": 53,
+        "htx_spot_historical_symbol_candidates": 89,
+        "warning": "Two old reports prove these selected-coin samples only; archived external trade pages and structural routes occurred in other windows and cannot be added as same-run report coverage."
+      },
+      "current_105_run_selected_pair": {
+        "RIVER-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "HTX_LARGE_TRADES"
+          ],
+          "route_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_ASYNC_MARKETS"
+          }
+        },
+        "STRK-USDT": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "HTX_SPOT_FUTURES_TRADES"
+          ],
+          "route_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT"
+          }
+        }
+      },
+      "current_all_105_metric_coverage": "NOT_PROVEN_BY_SELECTED_PAIR",
+      "preserve_and_next_check": "Selected HTX spot and futures trade samples render. RIVER source clocks differ by 55 seconds and STRK markets disagree, so neither may become false joint direction. Old external routes require current exact trade-page proof before reuse."
+    },
+    "N15": {
+      "metric": "Sector and peer relative strength",
+      "historical_104_baseline": {
+        "metric": "Sector and peer relative strength",
+        "exact_htx_spot_metric_asset_count": "NOT_MEASURED",
+        "futures_metric_asset_count": "NOT_MEASURED",
+        "old_participating_asset_examples": [
+          "FIL-USDT",
+          "NEAR-USDT",
+          "NIL-USDT",
+          "RAY-USDT",
+          "ZEC-USDT"
+        ],
+        "old_participating_distinct_assets": 5,
+        "warning": "CoinGecko/CoinPaprika aggregate spot-price sector context is not the exact HTX spot market or a futures-side sector measurement."
+      },
+      "current_105_run_selected_pair": {
+        "RIVER-USDT": {
+          "participation_status": "SCORE_EFFECT_PROVEN",
+          "valid_routes": 1,
+          "meaningful_routes": 1,
+          "decision_used_routes": 1,
+          "rendered_routes": 1,
+          "nonzero_score_routes": 1,
+          "used_provider_ids": [
+            "COINGECKO_SECTOR"
+          ],
+          "route_statuses": {
+            "COINGECKO_SECTOR": "CLOSED",
+            "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+          }
+        },
+        "STRK-USDT": {
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "valid_routes": 2,
+          "meaningful_routes": 2,
+          "decision_used_routes": 2,
+          "rendered_routes": 2,
+          "nonzero_score_routes": 0,
+          "used_provider_ids": [
+            "COINGECKO_SECTOR",
+            "COINPAPRIKA_SECTOR"
+          ],
+          "route_statuses": {
+            "COINGECKO_SECTOR": "CLOSED",
+            "COINPAPRIKA_SECTOR": "CLOSED"
+          }
+        }
+      },
+      "current_all_105_metric_coverage": "NOT_PROVEN_BY_SELECTED_PAIR",
+      "preserve_and_next_check": "CoinGecko contributes useful sector context for both; CoinPaprika is useful for STRK and no exact HTX spot market for RIVER. Keep CoinPaprika for STRK; do not globally disable."
+    }
+  },
+  "shared_budget_rule": "Per-block actual_http and provider roots overlap; do not sum block rows into total provider calls. Calculate unique per-run logical requests before any cap change.",
+  "provider_http_used_for_this_baseline": 0,
+  "production_d1_used_for_this_baseline": 0,
+  "pauses_unchanged": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09",
+    "N14",
+    "N16"
+  ],
+  "next_action": "Finish LIQ on a naturally admitted full report with exact Telegram message_id. Then extend this saved-only baseline to 105 per-block actual source/use matrix and total provider HTTP/D1 accounting, prioritizing proven gaps; do not disable shared sources globally."
+}
