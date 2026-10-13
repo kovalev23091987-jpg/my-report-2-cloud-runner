@@ -1,0 +1,104 @@
+{
+  "schema": "REPORT2_PRIVATE_CANONICAL_COMPRESSION_VALIDATION_V1",
+  "head": "2f675e5902aabcb9b48012a3a6805d5bb0e8294d",
+  "cloud_run": "38456219173",
+  "source_run_id": "1791912429923-1791912455480",
+  "status": "DURABLE_PRIVATE_FULL_ORIGINAL_ROW_AND_READER_VERIFIED_NO_MAIN_DELETION",
+  "D1_reservation": {
+    "rows_read": 5000,
+    "rows_written": 32
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "main_rows_modified": 0,
+  "private_payload_exported": false,
+  "records": [
+    {
+      "version": "private-canonical-lossless-gzip-v1",
+      "publication_id": "PUB:6b3554505482fa8bc5d52a8c386dfa5605b151b4",
+      "run_id": "1791912429923-1791912455480",
+      "snapshot_id": "S392:APR-USDT:1791912556674",
+      "contract_code": "APR-USDT",
+      "observed_ts": 1791912556674,
+      "analytical_fingerprint": "f27c108e71dbe1d43552164e4e83556b5945c013c2f0fd3d325fe67430948638",
+      "raw_sha256": "3118158e38f4f76a8dc4d7e03e6e1aec2ea0655ced4c0d9f05b580099b3c8ed6",
+      "gzip_sha256": "0826bbf4f6f51a7b32cb4c094c77d7913eeb4f8043fa91ff3d0fb7d07137c788",
+      "raw_bytes": 445924,
+      "gzip_bytes": 66808,
+      "full_original_source_row": true,
+      "exact_original_bytes_verified": true,
+      "source_clocks_refreshed": false,
+      "ratio": 0.1498192517110539,
+      "durable_private_receipt": {
+        "status": "ARCHIVE_IDENTICAL_RETAINED",
+        "retained": true,
+        "publication_id": "PUB:6b3554505482fa8bc5d52a8c386dfa5605b151b4",
+        "raw_sha256": "3118158e38f4f76a8dc4d7e03e6e1aec2ea0655ced4c0d9f05b580099b3c8ed6",
+        "stored_gzip_sha256": "0826bbf4f6f51a7b32cb4c094c77d7913eeb4f8043fa91ff3d0fb7d07137c788"
+      },
+      "private_reader_verified": true
+    }
+  ],
+  "automatic_writer_activated": false,
+  "private_retention_pilot": true,
+  "archive_token_role": "REPORT2_ISOLATED_D1_API_TOKEN",
+  "private_database": {
+    "database_id": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+    "name": "report2-free-canonical-history",
+    "descriptor_size_is_not_measured_query_size": true
+  },
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-13",
+      "run_count": 40,
+      "reserved_rows_read": 1509524,
+      "reserved_rows_written": 24256,
+      "measured_rows_read": 1033664,
+      "measured_rows_written": 12748,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 5000,
+      "rows_written": 32
+    },
+    "projected_reserved": {
+      "rows_read": 1514524,
+      "rows_written": 24288
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "CANONICAL_COMPRESSION:38456219173:1",
+    "source_run_id": "38456219173",
+    "measured_rows_read": 44,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 10,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 10,
+    "rows_read": 45,
+    "rows_written": 4,
+    "unknown_ops": 0
+  },
+  "private_archive_D1": {
+    "requests": 5,
+    "rows_read": 2,
+    "rows_written": 0,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791920222034
+}
