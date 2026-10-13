@@ -44,9 +44,9 @@
   },
   "source_facts": {
     "ZEC-USDT": {
-      "N05": "Existing Binance full four-hour spot flow rendered as limited one-venue manual context; no directional score. Supplemental external collector spent five network calls; returned receipts include RECEIVED_NOT_QUALIFIED and SOURCE_DAILY_CAP_DENIED, adding no second qualified flow. Do not read CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS as a usable external fact.",
+      "N05": "Qualified Binance full four-hour spot taker flow rendered as limited one-venue manual context, score0. Of the shared collector five HTTP, only one was N05 Binance; no independent second N05 venue became a usable joint fact. Source status alone is insufficient to claim cross-venue confirmation.",
       "N10": "HTX 15-minute futures and spot closed candle source_ts both 1791896460000; same upstream HTX, not two independent sources.",
-      "N12": "HTX spot and futures bounded samples both available, but market sides disagree and no joint direction admitted.",
+      "N12": "HTX spot and futures bounded samples plus OKX spot 181-trade sample were rendered; OKX cost four of the shared five HTTP. Market directions disagreed and no joint direction was admitted. OKX transport is not separately represented in current N12 source_accounting.",
       "N15": "CoinGecko and CoinPaprika both DAILY_CAP_OR_DUPLICATE with zero new network calls and no fresh sector fact.",
       "LIQ": "Provider levels available, 6 above and 5 below before three-per-side display cap; futures-only estimate semantics."
     },
@@ -82,5 +82,56 @@
     "no_new_provider_http_for_this_checkpoint": true,
     "telegram_score_and_format_owner_deferred": "checkpoints/OWNER_TELEGRAM_DECISION_SCORE_AFTER_BLOCKS_20261013.json"
   },
-  "remaining": "Source-by-source all-105 fact-to-consumer matrix, N05 qualified external route gain, N15 affordable fresh sector route, archived LIQ 35/103 numeric future-level gaps and outcome calibration are open. Continue saved-first; do not imply all-105 coverage or complete blocks."
+  "remaining": "Source-by-source all-105 fact-to-consumer matrix, N05 qualified second external route, N12 shared-call audit attribution, N15 sustainable fresh sector route, archived LIQ 35/103 numeric future-level gaps and outcome calibration are open. Continue saved-first; do not imply all-105 coverage or complete blocks.",
+  "corrected_utc": "2026-10-13T13:21:27.458960+00:00",
+  "correction": "The shared EXTERNAL_N05_FLOW wrapper reports five HTTP for ZEC, but D1 per-source reservations attribute one call to N05 Binance and four to optional N12 OKX. OKX produced 181 spot trades rendered as limited N12 context; the five calls must not be described as five failed N05 probes.",
+  "source_request_allocation": {
+    "read_only_d1_query": "report2_evidence_source_reservation filtered by exact run_id 1791896489024-1791896501358",
+    "data_db": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "run_id": "1791896489024-1791896501358",
+    "ZEC-USDT": {
+      "N05_OFFICIAL_FLOW:BINANCE": {
+        "attempts": 1,
+        "reservation_ids": [
+          "N05_BINANCE:1791896489024-1791896501358:ZEC-USDT:1"
+        ],
+        "fact": "exact 240-minute Binance spot taker flow rendered; one venue, no joint cross-venue conclusion"
+      },
+      "N12_OFFICIAL_TRADES:OKX": {
+        "attempts": 4,
+        "reservation_ids": [
+          "N12_OKX:1791896489024-1791896501358:ZEC-USDT:1",
+          "N12_OKX:1791896489024-1791896501358:ZEC-USDT:2",
+          "N12_OKX:1791896489024-1791896501358:ZEC-USDT:3",
+          "N12_OKX:1791896489024-1791896501358:ZEC-USDT:4"
+        ],
+        "fact": "181 OKX spot trades rendered in N12 limited context; no all-market directional agreement"
+      }
+    },
+    "shared_caller_cap": 5,
+    "same_run_d1_rows_written_by_audit": 0,
+    "source_health_daily_at_readback": {
+      "N05_OFFICIAL_FLOW:BINANCE": "6/16",
+      "N12_OFFICIAL_TRADES:OKX": "4/16",
+      "COINGECKO_SECTOR": "48/48",
+      "COINPAPRIKA_SECTOR": "48/48"
+    },
+    "caveat": "The N12 OKX four calls are embedded in the shared external-flow collector and should be attributed to N12 in budget analysis. The existing N12 block source_accounting counts only its assigned HTX route, so it does not show the OKX transport cost; do not add the wrapper five and the per-source one-plus-four again."
+  },
+  "N15_budget_math": {
+    "configured_per_source_daily_cap": 48,
+    "observed_at_2026_10_13_12_17_UTC": {
+      "COINGECKO_SECTOR": 48,
+      "COINPAPRIKA_SECTOR": 48
+    },
+    "prior_full_run_38396042005_reservations": {
+      "COINGECKO_SECTOR": 6,
+      "COINPAPRIKA_SECTOR": 1
+    },
+    "nominal_40_minute_full_cycles_per_day": 36,
+    "two_deep_candidates_per_cycle": 2,
+    "two_sources_one_call_each_minimum_per_day": 144,
+    "combined_current_daily_cap": 96,
+    "conclusion": "Even one call to each independent source for both candidates in every nominal cycle exceeds combined caps; current multi-request collectors consume more. Useful N15 coverage on every cycle is not demonstrated. Do not raise caps without owner-approved budget and verified provider policy."
+  }
 }
