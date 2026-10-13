@@ -1,4 +1,5 @@
-import {encodeCanonicalPublicationRow,retainCanonicalPublicationRow,readCanonicalPublicationArchive} from './canonical-cold-archive.mjs';
+import {encodeCanonicalPublicationRow,retainCanonicalPublicationRow} from './canonical-cold-archive.mjs';
+import {privateCanonicalHeader,createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
 import {combineMeasuredD1Usage} from './private-archive-d1-api.mjs';
 import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 
@@ -40,6 +41,7 @@ export async function copyCanonicalReport({source_db,archive_db,candidates,now=D
  const admit=e=>evaluateWithinRunReservation({reservation,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+1});
  if(!admit({rows_read:1,rows_written:0}).allowed)throw Error('ARCHIVE_RUN_HEADROOM_DENIED');
  await archive_db.query('SELECT 1 AS size_marker');
+ const reader=createPrivateCanonicalRestorer({archive_db,db_admit:admit,max_rows:2});
  const receipts=[];
  for(const binding of candidates){
   if(!admit({rows_read:5,rows_written:24}).allowed)throw Error('ARCHIVE_RUN_HEADROOM_DENIED');
@@ -47,10 +49,10 @@ export async function copyCanonicalReport({source_db,archive_db,candidates,now=D
   for(const [k,v] of Object.entries(binding))if(row[k]!==v)throw Error('ARCHIVE_SOURCE_REPORT_BINDING_MISMATCH');
   const record=encodeCanonicalPublicationRow(row),stored=await retainCanonicalPublicationRow(archive_db,record,{db_admit:admit,storage_bytes:archive_db.storage_bytes,now});
   if(!stored.retained)throw Error(stored.status);
-  const restored=await readCanonicalPublicationArchive(archive_db,{publication_id:record.publication_id,raw_sha256:record.raw_sha256,db_admit:admit});
-  if(JSON.stringify(restored.row)!==JSON.stringify(row))throw Error('ARCHIVE_PRIVATE_ORIGINAL_READBACK_MISMATCH');
+  const restored=await reader.restore(await privateCanonicalHeader(row,record));
+  if(JSON.stringify(restored)!==JSON.stringify(row))throw Error('ARCHIVE_PRIVATE_ORIGINAL_READBACK_MISMATCH');
   const {payload_gzip_base64,...manifest}=record;
-  receipts.push({...manifest,stored,private_reader_verified:true,original_clocks_unchanged:true});
+  receipts.push({...manifest,stored,private_reader_verified:true,portable_decoder_and_projected_header_verified:true,original_clocks_unchanged:true});
  }
  return{status:'PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED',records:receipts,sourceHTTP:0,main_rows_modified:0,private_payload_exported:false,report_effect:false,weight_effect:false};
 }

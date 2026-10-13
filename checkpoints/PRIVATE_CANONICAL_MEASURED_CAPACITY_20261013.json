@@ -1,0 +1,241 @@
+{
+  "schema": "D1_PRIMARY_PRIVATE_CAPACITY_MEASURED_20261013_V1",
+  "reservation": {
+    "id": "CODEX_PRIVATE_CAPACITY:1791928368736",
+    "rows_read": 5000,
+    "rows_written": 80
+  },
+  "capacity": {
+    "reservation_id": "CODEX_PRIVATE_CAPACITY:1791928368736",
+    "observed_ts": 1791928401216,
+    "receipts": [
+      {
+        "role": "PRIMARY_RESERVATION_READBACK",
+        "database": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+        "status": 200,
+        "success": true,
+        "result": [
+          {
+            "results": [
+              {
+                "reservation_id": "CODEX_PRIVATE_CAPACITY:1791928368736",
+                "state": "RESERVED",
+                "reserve_rows_read": 5000,
+                "reserve_rows_written": 80
+              }
+            ],
+            "success": true,
+            "meta": {
+              "served_by": "v3-prod",
+              "served_by_region": "EEUR",
+              "served_by_colo": "ARN",
+              "served_by_primary": true,
+              "timings": {
+                "sql_duration_ms": 0.204
+              },
+              "duration": 0.204,
+              "changes": 0,
+              "last_row_id": 0,
+              "changed_db": false,
+              "size_after": 460521472,
+              "rows_read": 1,
+              "rows_written": 0,
+              "total_attempts": 1
+            }
+          }
+        ],
+        "errors": []
+      },
+      {
+        "role": "PRIMARY_CAPACITY",
+        "database": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+        "status": 200,
+        "success": true,
+        "result": [
+          {
+            "results": [
+              {
+                "measured_capacity": 1
+              }
+            ],
+            "success": true,
+            "meta": {
+              "served_by": "v3-prod",
+              "served_by_region": "EEUR",
+              "served_by_colo": "ARN",
+              "served_by_primary": true,
+              "timings": {
+                "sql_duration_ms": 0.3156
+              },
+              "duration": 0.3156,
+              "changes": 0,
+              "last_row_id": 0,
+              "changed_db": false,
+              "size_after": 460521472,
+              "rows_read": 0,
+              "rows_written": 0,
+              "total_attempts": 1
+            }
+          }
+        ],
+        "errors": []
+      },
+      {
+        "role": "PRIVATE_REVISION_CENSUS",
+        "database": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+        "status": 200,
+        "success": true,
+        "result": [
+          {
+            "results": [
+              {
+                "publication_id": "PUB:77f1ee7f1b5282f7cde897bdcff16fa1ac96f70e",
+                "raw_sha256": "f6fb84387037ae0630936aa03059ad8354fd2bc2e7f7702262649e6f58610711",
+                "run_id": "1791925884435-1791925903764",
+                "contract_code": "OP-USDT",
+                "observed_ts": 1791925994337,
+                "wire_bytes": 119060
+              },
+              {
+                "publication_id": "PUB:12b295eeaafb89a98225a6ad04b7dc76af855f09",
+                "raw_sha256": "5785ea2317b86127dad650862f5b8b56f0e9ca6790c5d3541a7b5c8d86e39339",
+                "run_id": "1791925884435-1791925903764",
+                "contract_code": "CT-USDT",
+                "observed_ts": 1791925955707,
+                "wire_bytes": 111620
+              },
+              {
+                "publication_id": "PUB:ee7d081cef5fc49ef70a831e4dee3cd0b85d9b20",
+                "raw_sha256": "720e651cb3628a25173fd9981d0d3703029832a1fa1622205e1bcc9bf401c8c6",
+                "run_id": "1791923208609-1791923250486",
+                "contract_code": "龙虾-USDT",
+                "observed_ts": 1791923419916,
+                "wire_bytes": 63684
+              },
+              {
+                "publication_id": "PUB:2bb49404210f321c165f5d31f098934200567ad1",
+                "raw_sha256": "aaa902f920f6a07bb58b27b35ac1e82cd4b56968ed1238fa88020359a801fb83",
+                "run_id": "1791923208609-1791923250486",
+                "contract_code": "FIL-USDT",
+                "observed_ts": 1791923323504,
+                "wire_bytes": 68682
+              },
+              {
+                "publication_id": "PUB:6b3554505482fa8bc5d52a8c386dfa5605b151b4",
+                "raw_sha256": "3118158e38f4f76a8dc4d7e03e6e1aec2ea0655ced4c0d9f05b580099b3c8ed6",
+                "run_id": "1791912429923-1791912455480",
+                "contract_code": "APR-USDT",
+                "observed_ts": 1791912556674,
+                "wire_bytes": 89646
+              }
+            ],
+            "success": true,
+            "meta": {
+              "served_by": "v3-prod",
+              "served_by_region": "EEUR",
+              "served_by_colo": "FRA",
+              "served_by_primary": true,
+              "timings": {
+                "sql_duration_ms": 3.3549
+              },
+              "duration": 3.3549,
+              "changes": 0,
+              "last_row_id": 0,
+              "changed_db": false,
+              "size_after": 483328,
+              "rows_read": 10,
+              "rows_written": 0,
+              "total_attempts": 1
+            }
+          }
+        ],
+        "errors": []
+      },
+      {
+        "role": "LATEST_ORIGINAL_CYCLE_USAGE",
+        "database": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+        "status": 200,
+        "success": true,
+        "result": [
+          {
+            "results": [
+              {
+                "source_run_id": "1791925884435-1791925903764",
+                "state": "FINALIZED",
+                "reserve_rows_read": 54000,
+                "reserve_rows_written": 840,
+                "measured_rows_read": 34770,
+                "measured_rows_written": 459,
+                "measured_requests": 619,
+                "unknown_ops": 0
+              }
+            ],
+            "success": true,
+            "meta": {
+              "served_by": "v3-prod",
+              "served_by_region": "EEUR",
+              "served_by_colo": "ARN",
+              "served_by_primary": true,
+              "timings": {
+                "sql_duration_ms": 7.2885
+              },
+              "duration": 7.2885,
+              "changes": 0,
+              "last_row_id": 0,
+              "changed_db": false,
+              "size_after": 460521472,
+              "rows_read": 2245,
+              "rows_written": 0,
+              "total_attempts": 1
+            }
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "freelist_count": null,
+    "freelist_not_documented_in_D1_SQL_support": true,
+    "no_page_or_storage_mutation": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "finalization": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"status\": 200,\n  \"result\": [\n    {\n      \"results\": [],\n      \"success\": true,\n      \"meta\": {\n        \"served_by\": \"v3-prod\",\n        \"served_by_region\": \"EEUR\",\n        \"served_by_colo\": \"ARN\",\n        \"served_by_primary\": true,\n        \"timings\": {\n          \"sql_duration_ms\": 0.2795\n        },\n        \"duration\": 0.2795,\n        \"changes\": 1,\n        \"last_row_id\": 23136,\n        \"changed_db\": true,\n        \"size_after\": 460525568,\n        \"rows_read\": 1,\n        \"rows_written\": 1,\n        \"total_attempts\": 1\n      }\n    }\n  ],\n  \"errors\": []\n}"
+      }
+    ],
+    "isError": false
+  },
+  "pre_correction_reservation_readback": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"status\": 200,\n  \"result\": [\n    {\n      \"results\": [\n        {\n          \"reservation_id\": \"CODEX_PRIVATE_CAPACITY:1791928368736\",\n          \"state\": \"RESERVED\",\n          \"measured_rows_read\": null,\n          \"measured_rows_written\": null,\n          \"measured_requests\": null,\n          \"unknown_ops\": null\n        }\n      ],\n      \"success\": true,\n      \"meta\": {\n        \"served_by\": \"v3-prod\",\n        \"served_by_region\": \"EEUR\",\n        \"served_by_colo\": \"ARN\",\n        \"served_by_primary\": true,\n        \"timings\": {\n          \"sql_duration_ms\": 0.1528\n        },\n        \"duration\": 0.1528,\n        \"changes\": 0,\n        \"last_row_id\": 0,\n        \"changed_db\": false,\n        \"size_after\": 460521472,\n        \"rows_read\": 1,\n        \"rows_written\": 0,\n        \"total_attempts\": 1\n      }\n    }\n  ],\n  \"errors\": []\n}"
+      }
+    ],
+    "isError": false
+  },
+  "failed_finalize_note": {
+    "initial_timestamp_column": "finished_ts",
+    "correct_column": "completed_ts",
+    "initial_attempt_returned_tool_error": true,
+    "initial_raw_error_not_retained": true,
+    "state_before_correction": "RESERVED",
+    "no_ledger_reset": true,
+    "failed_attempt_native_counters_not_claimed": true
+  },
+  "measured_subtotal": {
+    "rr": 2453,
+    "rw": 3,
+    "req": 6,
+    "unknown": 0
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "hot_pruning_by_this_audit": false,
+  "free_pages": null
+}

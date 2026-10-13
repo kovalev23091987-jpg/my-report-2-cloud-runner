@@ -32,6 +32,7 @@ import crypto from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
+import {PrivateArchiveD1API} from './private-archive-d1-api.mjs';
 import { buildBudgetBlockedTelegramOutput, runTelegramOutputLayer } from "./telegram-output.mjs";
 import { INFO_D1_BUDGET } from "./telegram-info-runtime.mjs";
 import { deriveRunReservation, loadDailyUsageAggregate, reserveRunBudget, evaluateDailyReservationBudget, evaluateWithinRunReservation, finalizeRunUsage } from "./d1-preaction-budget-guard.mjs";
@@ -702,6 +703,11 @@ await enforceDailyAnalysisAdmission({admission:d1DayAdmission,context:{daily_usa
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
+  const privateHistoryToken=envText('REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN',{required:false});
+  if(privateHistoryToken&&envText('REPORT2_CANONICAL_PRIVATE_READER_ENABLED',{required:false})==='1'){
+    const archiveDB=new PrivateArchiveD1API({token:privateHistoryToken,fetch_impl:nativeFetch});
+    env.DATA_DB.enablePrivateCanonicalHistory({archive_db:archiveDB,max_rows:4,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written})});
+  }
   if(source==='schedule'){
     const cacheMaintenance=await maintainExpiredProviderCache({db:env.DATA_DB,now:started,admit:budget=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:budget.rows_read,extraRowsWritten:budget.rows_written})});
     console.log('BOUNDED_EXPIRED_PROVIDER_CACHE_MAINTENANCE',JSON.stringify(cacheMaintenance));

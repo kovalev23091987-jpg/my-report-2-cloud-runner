@@ -1,5 +1,6 @@
 import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
 import {createHash} from 'node:crypto';
+import {createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 function requiredText(value, label) {
@@ -92,6 +93,14 @@ export class RemoteD1Database {
     this._retainedHistory = createHistoryRestorer(options);
   }
 
+  enablePrivateCanonicalHistory(options = {}) {
+    if(this._privateRetainedHistory)throw Error('PRIVATE_HISTORY_READER_ALREADY_CONFIGURED');
+    if(typeof options.archive_db?.usageSnapshot!=='function')throw Error('PRIVATE_HISTORY_NATIVE_COUNTERS_REQUIRED');
+    this._privateRetainedHistory=createPrivateCanonicalRestorer(options);
+    this._privateRetainedDB=options.archive_db;
+    this._privateUsageStart=options.archive_db.usageSnapshot();
+  }
+
   prepare(sql) {
     return new RemoteD1PreparedStatement(this, sql);
   }
@@ -112,7 +121,16 @@ export class RemoteD1Database {
   }
 
   usageSnapshot() {
-    return JSON.parse(JSON.stringify({...this._usage,...(this._unmeasuredReceipts.length?{unmeasured_receipts:this._unmeasuredReceipts}: {})}));
+    const out=JSON.parse(JSON.stringify({...this._usage,...(this._unmeasuredReceipts.length?{unmeasured_receipts:this._unmeasuredReceipts}: {})}));
+    if(this._privateRetainedDB){
+      const usage=this._privateRetainedDB.usageSnapshot(),delta={};
+      for(const key of ['requests','rows_read','rows_written','unknown_ops']){
+        const n=usage[key]-this._privateUsageStart[key];if(!Number.isSafeInteger(n)||n<0)throw Error('PRIVATE_HISTORY_NATIVE_COUNTERS_INVALID');
+        delta[key]=n;out[key]+=n;
+      }
+      out.targets['private-canonical:report2_canonical_cold_archive_v1']=delta;
+    }
+    return out;
   }
 
   _recordSingle(op, sql, usage, diagnostic = {}) {
@@ -186,7 +204,11 @@ export class RemoteD1Database {
       }
       this._recordUsage(originalPayload, data?.usage,{http_status:httpStatus});
       nativeUsageRecorded = true;
-      return this._retainedHistory ? await this._retainedHistory.restore(data.result) : data.result;
+      const restored=this._retainedHistory ? await this._retainedHistory.restore(data.result) : data.result;
+      if(this._privateRetainedHistory&&originalPayload.op==='first'&&originalPayload.column&&typeof restored==='string'){
+        const row=await this._privateRetainedHistory.restore({[originalPayload.column]:restored});return row[originalPayload.column];
+      }
+      return this._privateRetainedHistory ? await this._privateRetainedHistory.restore(restored) : restored;
     } catch (error) {
       // A failed bridge response does not prove that the SQL was never run.
       // Retain every attempted statement as unknown, without inventing row

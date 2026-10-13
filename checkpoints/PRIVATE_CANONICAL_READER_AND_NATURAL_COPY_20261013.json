@@ -1,0 +1,352 @@
+{
+  "schema": "PRIVATE_CANONICAL_READER_AND_NATURAL_COPY_20261013_V1",
+  "recorded_utc": "2026-10-13T22:07:09.569243+00:00",
+  "status": "NATURAL_TWO_ROW_PRIVATE_COPY_CONFIRMED_PORTABLE_READER_LINKED_OFFLINE_CANDIDATE",
+  "natural": {
+    "cloud_run": 38468644125,
+    "head": "29ed15931f3971d6ff36df514df3dabc4268ef99",
+    "run_id": "1791925884435-1791925903764",
+    "source": "schedule",
+    "status": "CLOSED",
+    "artifact_id": 11851161035,
+    "artifact_digest": "sha256:0a4548ed992f13d561e1a557d98c434b715df3dea527a3cbde675c5ab5801204",
+    "telegram_artifact_id": 11851106114,
+    "telegram_artifact_digest": "sha256:343ac32b0dd3c85e15c88079f9164e557811b7ba70eb7d281394a75db0ef2ad3",
+    "scanned": 105,
+    "scan_errors": 0,
+    "selected": [
+      "OP-USDT",
+      "CT-USDT"
+    ],
+    "states": [
+      "REJECTED",
+      "REJECTED"
+    ],
+    "private_copy_status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+    "private_copy_records": [
+      {
+        "version": "private-canonical-lossless-gzip-v1",
+        "publication_id": "PUB:77f1ee7f1b5282f7cde897bdcff16fa1ac96f70e",
+        "run_id": "1791925884435-1791925903764",
+        "snapshot_id": "S392:OP-USDT:1791925994337",
+        "contract_code": "OP-USDT",
+        "observed_ts": 1791925994337,
+        "analytical_fingerprint": "a2810bd0a2b6115f038c867c6e693ccd64b0f0535e2f7e9f5c96f77748a95a53",
+        "raw_sha256": "f6fb84387037ae0630936aa03059ad8354fd2bc2e7f7702262649e6f58610711",
+        "gzip_sha256": "fbf8694eabcdbe750511d625d416b3e13aadd042415fe8388e3bdad441b3c4c8",
+        "raw_bytes": 827209,
+        "gzip_bytes": 88872,
+        "stored": {
+          "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+          "retained": true,
+          "publication_id": "PUB:77f1ee7f1b5282f7cde897bdcff16fa1ac96f70e",
+          "raw_sha256": "f6fb84387037ae0630936aa03059ad8354fd2bc2e7f7702262649e6f58610711",
+          "gzip_sha256": "fbf8694eabcdbe750511d625d416b3e13aadd042415fe8388e3bdad441b3c4c8",
+          "raw_bytes": 827209,
+          "gzip_bytes": 88872,
+          "original_observed_ts": 1791925994337,
+          "archived_ts": 1791926003079,
+          "main_deletion_authorized": false,
+          "report_or_score_effect": false
+        },
+        "private_reader_verified": true,
+        "original_clocks_unchanged": true
+      },
+      {
+        "version": "private-canonical-lossless-gzip-v1",
+        "publication_id": "PUB:12b295eeaafb89a98225a6ad04b7dc76af855f09",
+        "run_id": "1791925884435-1791925903764",
+        "snapshot_id": "S392:CT-USDT:1791925955707",
+        "contract_code": "CT-USDT",
+        "observed_ts": 1791925955707,
+        "analytical_fingerprint": "a953497b788a94234ca2d2bb96fb4a5935c4061f5d2aaa30ce87d04aa53a60dc",
+        "raw_sha256": "5785ea2317b86127dad650862f5b8b56f0e9ca6790c5d3541a7b5c8d86e39339",
+        "gzip_sha256": "35682fd943f7aa77942554c0585c6116a9ba3c6c1b9bc79348b034bb7260d12a",
+        "raw_bytes": 777107,
+        "gzip_bytes": 83290,
+        "stored": {
+          "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+          "retained": true,
+          "publication_id": "PUB:12b295eeaafb89a98225a6ad04b7dc76af855f09",
+          "raw_sha256": "5785ea2317b86127dad650862f5b8b56f0e9ca6790c5d3541a7b5c8d86e39339",
+          "gzip_sha256": "35682fd943f7aa77942554c0585c6116a9ba3c6c1b9bc79348b034bb7260d12a",
+          "raw_bytes": 777107,
+          "gzip_bytes": 83290,
+          "original_observed_ts": 1791925955707,
+          "archived_ts": 1791926003079,
+          "main_deletion_authorized": false,
+          "report_or_score_effect": false
+        },
+        "private_reader_verified": true,
+        "original_clocks_unchanged": true
+      }
+    ],
+    "private_copy_D1": {
+      "requests": 14,
+      "rows_read": 197,
+      "rows_written": 10,
+      "unknown_ops": 0
+    },
+    "same_run_SENT": false,
+    "no_forced_MAIN": true
+  },
+  "existing_hourly_relocation": {
+    "cloud_run": 38469632711,
+    "status": "EXACT_ARCHIVE_AND_READTHROUGH_VERIFIED",
+    "original_rows": 32,
+    "full_evidence_rows": 19,
+    "canonical_rows": 13,
+    "before_bytes": 469557248,
+    "after_bytes": 460521472,
+    "history_discarded": false,
+    "proof": "checkpoints/private-copy-natural-38468644125/retained-history-maintenance-38469632711.json.gz"
+  },
+  "capacity_proof": "checkpoints/PRIVATE_CANONICAL_MEASURED_CAPACITY_20261013.json",
+  "reader_candidate": {
+    "portable_Node_and_Worker_decoder": true,
+    "exact_pub_and_raw_sha_required": true,
+    "original_clocks_unchanged": true,
+    "compressed_and_original_hashes_verified": true,
+    "inflation_bound_bytes": 4000000,
+    "compressed_bound_bytes": 400000,
+    "mixed_revisions_rejected": true,
+    "host_adapter_counts_private_D1_once": true,
+    "reader_lazy_after_primary_run_reservation": true,
+    "host_unique_private_revision_read_bound": 4,
+    "production_copy_portable_readback_bound": 2,
+    "same_private_queries_as_previous_copy": true,
+    "no_provider_fallback": true,
+    "public_history_restorer_preserved": true,
+    "header_or_main_originals_modified": false,
+    "direct_Worker_consumers_wired": false,
+    "cloud_assembled_pending": true,
+    "changed_copy_natural_pending": true
+  },
+  "tests": {
+    "linked_38_pass": {
+      "pass": 38,
+      "fail": 0,
+      "sha256": "d15e57f9d76c19ca04489dcccbe53e3ea5638c3d2ec27c768b2a71cc0e45dee6"
+    },
+    "changed_copy_and_adapter_22_pass": {
+      "pass": 22,
+      "fail": 0,
+      "sha256": "87f8cbc506ac41e24d4744057dffbd0229f0583411b460890638db5ba8a9554d"
+    }
+  },
+  "source_facts_from_same_natural": [
+    {
+      "contract": "OP-USDT",
+      "active_block_context": {
+        "N04": {
+          "status": "FACTS_PRESENT_NOT_DECISION_ADMISSIBLE",
+          "checked": false,
+          "observed_facts": 50,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+            "BLOCKSCOUT_INDEX": "CLOSED"
+          },
+          "evidence_rejection_reasons": {
+            "FINALITY_NOT_FINAL": 50
+          }
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+            "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+            "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "EXTERNAL_N05_FLOW": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+            "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 2,
+          "valid_context_facts": 2,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_SPOT_ONLY_TECHNICAL_CONTEXT"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 2
+          }
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 2,
+          "valid_context_facts": 2,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 2
+          }
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 2,
+          "valid_context_facts": 2,
+          "usable_facts": 2,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "CLOSED",
+            "COINPAPRIKA_SECTOR": "CLOSED"
+          },
+          "evidence_rejection_reasons": {}
+        }
+      },
+      "paused_all_excluded": true,
+      "future_levels_internal": {
+        "above": 6,
+        "below": 0,
+        "calculated_scenarios": 8
+      },
+      "future_sources": [
+        "CoinBoss",
+        "Orderly"
+      ],
+      "manual_context_rendered": "RENDERED_OUTPUT_VERIFIED",
+      "CG_rendered": true,
+      "CT_CG_source_closed_is_not_Telegram_delivery": false,
+      "source_clock_refreshed_by_audit": false
+    },
+    {
+      "contract": "CT-USDT",
+      "active_block_context": {
+        "N04": {
+          "status": "FACTS_PRESENT_NOT_DECISION_ADMISSIBLE",
+          "checked": false,
+          "observed_facts": 50,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+            "BLOCKSCOUT_INDEX": "CLOSED"
+          },
+          "evidence_rejection_reasons": {
+            "FINALITY_NOT_FINAL": 50
+          }
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+            "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+            "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+            "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "EXTERNAL_N05_FLOW": "PARTIAL_FOUR_HOUR_FLOW",
+            "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 3,
+          "valid_context_facts": 3,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 3
+          }
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT"
+          },
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "CLOSED",
+            "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+          },
+          "evidence_rejection_reasons": {}
+        }
+      },
+      "paused_all_excluded": true,
+      "future_levels_internal": {
+        "above": 0,
+        "below": 0,
+        "calculated_scenarios": 8
+      },
+      "future_sources": [
+        "CoinBoss"
+      ],
+      "manual_context_rendered": "FORMATTER_OUTPUT_NOT_CONFIRMED",
+      "CG_rendered": false,
+      "CT_CG_source_closed_is_not_Telegram_delivery": true,
+      "source_clock_refreshed_by_audit": false
+    }
+  ],
+  "remaining": [
+    "Verify assembled private reader and natural changed automatic copy.",
+    "Finish exact direct Worker restoration before any private relocation or hot pruning.",
+    "Bound backlog and capacity retention; full private rolling retention not yet implemented.",
+    "Continue all active source utility and LIQ103 old numerical gaps, preserving pauses and owner exclusion of15 external spots.",
+    "Final entry decision score and Telegram form deferred for owner concrete instructions after blocks."
+  ],
+  "project_complete": false
+}
