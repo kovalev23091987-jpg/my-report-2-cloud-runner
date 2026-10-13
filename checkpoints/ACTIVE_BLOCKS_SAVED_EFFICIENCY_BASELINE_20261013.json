@@ -401,5 +401,45 @@
     },
     "not_an_additive_total": "Do not sum policy caps or per-block route actual_http; sources and saved facts overlap.",
     "next_check": "Obtain per-run deduplicated HTTP/D1 and provider rolling-window receipts for both selected coins before route changes. Preserve manual reserves."
+  },
+  "route_scheduler_readback": {
+    "N05_code": "current-generation/files/src/external-n05-flow-collector.mjs",
+    "N05_behavior": "All eligible venue adapters are traversed after a failure; a shared five-grant envelope prevents extra network calls while cache hits can still contribute. Seven historically proven Poloniex markets are prioritized; remaining venue order is static after exact identity checks. This is fallback behavior, not proof of complete current coverage.",
+    "N05_current_run": "RIVER external N05 flow was daily-cap denied; STRK external route deferred by shared envelope. Their HTX flow context rendered but N05 decision-source use was not proven in the block audit.",
+    "cross_block_code": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+    "cross_block_behavior": "A priority-ticket rotation can place one eligible role first, followed by fixed priority sorting. Review saved marginal useful-fact yield before changing order; keep weight and score policy fixed.",
+    "action": "Reconcile actual per-source facts and unique HTTP ledgers for all 105 before route reprioritization. Do not remove a provider globally because one block or one coin was empty."
+  },
+  "saved_marginal_asset_yield": {
+    "status": "HISTORICAL_ASSET_SET_ONLY_NO_FRESHNESS_OR_PER_CALL_COST_CLAIM",
+    "n05_proof": "checkpoints/N05_CURRENT104_SOURCE_COVERAGE_MAP_POST_LINK_PEPE_20261011.json",
+    "n05_old_104_ever_full_window_union": 39,
+    "n05_old_104_ever_full_window_per_venue": {
+      "BACKPACK": {"assets": 7, "exclusive_assets_in_saved_union": 7},
+      "BINANCE": {"assets": 12, "exclusive_assets_in_saved_union": 12},
+      "BITFINEX": {"assets": 7, "exclusive_assets_in_saved_union": 5},
+      "BITGET": {"assets": 3, "exclusive_assets_in_saved_union": 3},
+      "GATE": {"assets": 1, "exclusive_assets_in_saved_union": 1},
+      "KRAKEN": {"assets": 7, "exclusive_assets_in_saved_union": 5},
+      "POLONIEX": {"assets": 4, "exclusive_assets_in_saved_union": 4}
+    },
+    "n05_old_104_retained_exact_structural_union": 76,
+    "n05_structural_only_not_numeric_or_current": true,
+    "n12_proof": "checkpoints/N12_ALL_SOURCE_MARKET_CANDIDATE_AUDIT_20261011.json",
+    "n12_old_104_external_exact_structural_spot_union": 76,
+    "n12_old_104_external_exact_structural_futures_union": 53,
+    "n12_external_futures_structural_provider": "BITGET",
+    "liq_proof": "checkpoints/LIQ_105_SAVED_SOURCE_EVIDENCE_MATRIX_20261013.json",
+    "liq_eligible_excluding_btc_eth": 103,
+    "liq_historical_numeric_union": 68,
+    "liq_historical_numeric_per_source": {
+      "HYPERLIQUID_NATIVE": {"assets": 53, "exclusive_assets_in_saved_union": 9, "role": "sampled_public_positions"},
+      "ORDERLY_PUBLIC_POSITIONS": {"assets": 38, "exclusive_assets_in_saved_union": 0, "role": "public_positions_estimated_liquidation_price"},
+      "DYDX_PINNED_NATIVE": {"assets": 16, "exclusive_assets_in_saved_union": 0, "role": "bounded_conditional_estimate"},
+      "GTRADE_NATIVE": {"assets": 5, "exclusive_assets_in_saved_union": 0, "role": "pinned_position_estimate"},
+      "COINBOSS_MODEL": {"assets": 56, "exclusive_assets_in_saved_union": 9, "role": "aggregated_cex_model_not_primary_position_source"},
+      "SWOLECHARTS_MODEL": {"assets": 2, "exclusive_assets_in_saved_union": 1, "role": "aggregated_model"}
+    },
+    "interpretation": "Exclusive means no other saved numeric source/window for that asset in this union. These windows differ in time, and role-specific value remains even when the exclusive asset count is zero. Do not convert historical counts into present run coverage or a source rank without measured useful facts per HTTP."
   }
 }
