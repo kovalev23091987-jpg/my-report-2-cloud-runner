@@ -1,3 +1,4 @@
+import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {collectExternalN05Flow} from './external-n05-flow-collector.mjs';
 import {jointSpotFuturesFlow,availableFlowContext} from './joint-spot-futures-flow.mjs';
 import {exactNativeEvmNetwork} from './native-evm-finalized-context.mjs';
@@ -87,15 +88,8 @@ export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){
 // additional HTTP, and a quota/backoff skip must not suppress the next route.
  return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>(owner_priority?(Number(priorityNames.has(b.route.name))-Number(priorityNames.has(a.route.name))):0)||b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
 }
-export function exactCapabilityIdentity(params={}){
- const contract=String(params?.contract||'').trim().toUpperCase(),identity=params?.asset_identity,method=String(params?.identity_method||'').trim();
- if(!/^\S+-USDT$/u.test(contract)||!identity||!['HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK','HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(method))return null;
- const chain=String(identity.chain||'').trim().toLowerCase();if(!chain)return null;
- if(identity.asset_kind==='NATIVE'&&identity.contract_or_mint===null&&identity.native_asset_id===`${chain}:mainnet`&&method==='HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK')return{contract,chain,asset_kind:'NATIVE',native_asset_id:identity.native_asset_id,identity_method:method};
- const address=String(identity.contract_or_mint||'').trim();
- if(address&&['HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(method))return{contract,chain,asset_kind:'TOKEN',contract_or_mint:address,identity_method:method};
- return null;
-}
+export function exactCapabilityIdentity(params={}){return verifiedAssetRouteIdentity(params);}
+
 export function capabilityCheckedNoExactRoute(params,source_id,reason){
  const identity=exactCapabilityIdentity(params);if(!identity)return null;
  return{status:'CAPABILITY_CHECKED_NO_EXACT_ROUTE',check_completed:true,capability_registry_complete:true,source_id,reason,exact_identity:identity,network_calls:0,evidence:[],receipts:[{check_completed:true,status:'NO_EXACT_ROUTE',source_id,contract:identity.contract,identity_method:identity.identity_method}],observed_ts:Number(params?.now)||Date.now(),decision_effect:'MISSING_FACT_NO_ZERO_NO_GREEN',internal_only:true};

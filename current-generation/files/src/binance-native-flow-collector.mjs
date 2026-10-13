@@ -1,3 +1,4 @@
+import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {createHash} from 'node:crypto';
@@ -8,7 +9,7 @@ const SOURCE='N05_OFFICIAL_FLOW:BINANCE',VERSION='binance-native-flow-collector-
 export async function collectBinanceNativeFlow(params={}){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[];
  const root={version:VERSION,status:'EXACT_PRIMARY_NATIVE_ASSET_BINDING_REQUIRED',check_completed:false,network_calls:0,evidence:[],components:[],receipts,internal_only:true};let calls=0,sequence=0;
- if(!db?.prepare||!run_id||!exactBinanceNativeIdentity(contract,identity)||!['HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK','HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(identity_method))return root;
+ if(!db?.prepare||!run_id||!exactBinanceNativeIdentity(contract,identity)||!verifiedAssetRouteIdentity(params))return root;
  const admitDb=()=>source_health_admit?.({rows_read:500,rows_written:22})?.allowed===true;
  const get=async(url)=>{
   const id=`N05_BINANCE:${run_id}:${contract}:${++sequence}`,receipt={url,http_status:null,received_ts:null,actual_http:0,status:'NOT_ATTEMPTED'};receipts.push(receipt);

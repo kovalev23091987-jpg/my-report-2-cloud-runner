@@ -1,3 +1,4 @@
+import {withVerifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {collectPoloniexFlow} from './poloniex-native-flow-collector.mjs';
 import {eligiblePoloniexIdentity} from './poloniex-native-four-hour-flow.mjs';
 import {collectBackpackFlow} from './backpack-flow-collector.mjs';
@@ -72,6 +73,7 @@ export async function collectN05VenueRoutes(params={},routes=[],turnoverCollecto
 }
 
 export async function collectExternalN05Flow(params={}){
+ params=withVerifiedAssetRouteIdentity(params);
  const routes=[];
  if(exactBitfinexNativeIdentity(params.contract,params.asset_identity))routes.push(['BITFINEX',collectBitfinexNativeFlow]);
  if(exactBinanceNativeIdentity(params.contract,params.asset_identity))routes.push(['BINANCE',collectBinanceNativeFlow]);

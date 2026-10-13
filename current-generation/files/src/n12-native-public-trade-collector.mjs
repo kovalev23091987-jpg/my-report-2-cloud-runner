@@ -1,3 +1,4 @@
+import {withVerifiedAssetRouteIdentity,verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {createHash} from 'node:crypto';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
@@ -36,9 +37,10 @@ export function compactN12NativeCatalog(venue,market,contract,payload){
 // caller envelope. Daily allowance covers the owner-approved day plan;
 // provider minute weights, durable backoff and original source clocks remain.
 export async function collectN12NativePublicVenue(params={},venue){
+ params=withVerifiedAssetRouteIdentity(params);
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),source=`N12_OFFICIAL_TRADES:${venue}`,receipts=[];
  const root={version:N12_NATIVE_PUBLIC_COLLECTOR_VERSION,venue,status:'EXACT_ASSET_AND_ADMISSION_REQUIRED',check_completed:false,evidence:[],components:[],network_calls:0,receipts,internal_only:true};let calls=0,sequence=0;
- const native=identity_method==='HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK'&&exactN12NativeIdentity(contract,identity),token=venue==='KUCOIN'&&exactN12KucoinTokenIdentity(contract,identity,identity_method);
+ const asset_binding_proof=params.asset_binding_proof,native=Boolean(verifiedAssetRouteIdentity(params))&&exactN12NativeIdentity(contract,identity),token=venue==='KUCOIN'&&exactN12KucoinTokenIdentity(contract,identity,identity_method,asset_binding_proof);
  if(!['OKX','KUCOIN'].includes(venue)||!db?.prepare||!run_id||!native&&!token)return root;
  const dbGrant=()=>source_health_admit?.({rows_read:500,rows_written:22})?.allowed===true;
  if(!dbGrant())return{...root,status:'SOURCE_DB_HEADROOM_REQUIRED'};
@@ -66,7 +68,7 @@ export async function collectN12NativePublicVenue(params={},venue){
  let currencies=null;
  if(token){const key='N12:CURRENCIES:APPROVED',prior=await readEvidenceSourceCache(db,{source,asset_key:key,now,include_cache_clock:true});currencies=prior?.version===N12_NATIVE_PUBLIC_COLLECTOR_VERSION&&prior.observed_ts<=now&&now-prior.observed_ts<=21600000?prior.payload:null;
   if(!currencies){const received=await get('https://api.kucoin.com/api/v3/currencies','ALL','CURRENCIES');if(!received)return{...root,status:receipts.at(-1)?.status||'CURRENCIES_NOT_RECEIVED',network_calls:calls};currencies=compactN12KucoinTokenCurrencies(received);if(!currencies)return{...root,status:'INVALID_CURRENCIES',network_calls:calls};const stored={version:N12_NATIVE_PUBLIC_COLLECTOR_VERSION,observed_ts:receipts.at(-1).received_ts,payload:currencies};if(dbGrant()&&Buffer.byteLength(JSON.stringify(stored))<=900000)await writeEvidenceSourceCache(db,{source,asset_key:key,observed_ts:receipts.at(-1).received_ts,expires_ts:receipts.at(-1).received_ts+21600000,payload:stored});}
-  if(!exactN12KucoinTokenCurrency({contract,identity,identity_method,currencies}))return{...root,status:'EXACT_TOKEN_CHAIN_ADDRESS_NOT_CLOSED',network_calls:calls};
+  if(!exactN12KucoinTokenCurrency({contract,identity,identity_method,asset_binding_proof,currencies}))return{...root,status:'EXACT_TOKEN_CHAIN_ADDRESS_NOT_CLOSED',network_calls:calls};
  }
  for(const market of ['SPOT','FUTURES']){
   const key=catalogKey(venue,market,contract),prior=await readEvidenceSourceCache(db,{source,asset_key:key,now,include_cache_clock:true});
@@ -78,7 +80,7 @@ export async function collectN12NativePublicVenue(params={},venue){
   const valid=native?validateN12NativePublicTrade:validateN12KucoinTokenTrade;
   if(cached?.version===N12_NATIVE_PUBLIC_COLLECTOR_VERSION&&cached.result?.evidence?.length&&cached.result.evidence.every(row=>valid(row,now))){evidence.push(...cached.result.evidence);marketStatus.push({market,status:'HIT_ORIGINAL_SOURCE_CLOCKS'});continue;}
   const page=await get(tradesUrl(venue,market,contract),market,'TRADES');if(!page){marketStatus.push({market,status:receipts.at(-1)?.status||'TRADES_NOT_RECEIVED'});continue;}
-  const result=native?normalizeN12NativePublicTrades({venue,market,contract,identity,instrument:match,payload:page,window_end_ts:end,observed_ts:receipts.at(-1).received_ts}):normalizeN12KucoinTokenTrades({contract,market,identity,identity_method,currencies,instrument:match,payload:page,window_end_ts:end,observed_ts:receipts.at(-1).received_ts});evidence.push(...result.evidence);marketStatus.push({market,status:result.status,summary:result.summary});
+  const result=native?normalizeN12NativePublicTrades({venue,market,contract,identity,instrument:match,payload:page,window_end_ts:end,observed_ts:receipts.at(-1).received_ts}):normalizeN12KucoinTokenTrades({contract,market,identity,identity_method,asset_binding_proof,currencies,instrument:match,payload:page,window_end_ts:end,observed_ts:receipts.at(-1).received_ts});evidence.push(...result.evidence);marketStatus.push({market,status:result.status,summary:result.summary});
   if(result.evidence.length&&dbGrant())await writeEvidenceSourceCache(db,{source,asset_key:tradeKey,observed_ts:receipts.at(-1).received_ts,expires_ts:Math.min(receipts.at(-1).received_ts+60000,result.evidence[0].expires_at),payload:{version:N12_NATIVE_PUBLIC_COLLECTOR_VERSION,result}});
  }
  return{...root,status:evidence.length?'CLOSED_BOUNDED_N12_PUBLIC_TRADES':'NO_USEFUL_PUBLIC_TRADE_SAMPLE',check_completed:evidence.length>0,evidence,market_status:marketStatus,network_calls:calls};

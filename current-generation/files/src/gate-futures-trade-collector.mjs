@@ -1,3 +1,4 @@
+import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {createHash} from 'node:crypto';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
@@ -15,7 +16,7 @@ const digest=b=>createHash('sha256').update(b).digest('hex');
 export async function collectGateFuturesTradeSample(params={}){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[];
  const root={version:VERSION,status:'EXACT_GATE_IDENTITY_AND_SHARED_METADATA_REQUIRED',check_completed:false,evidence:[],network_calls:0,receipts,components:[],internal_only:true};let calls=0,sequence=0;
- if(!db?.prepare||!run_id||!/^\S+-USDT$/u.test(String(contract||''))||identity?.asset_kind==='NATIVE'||!identity?.contract_or_mint||!['HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(identity_method))return root;
+ if(!db?.prepare||!run_id||!/^\S+-USDT$/u.test(String(contract||''))||identity?.asset_kind==='NATIVE'||!identity?.contract_or_mint||!verifiedAssetRouteIdentity(params))return root;
  const dbGrant=()=>source_health_admit?.({rows_read:500,rows_written:22})?.allowed===true;
  if(!dbGrant())return{...root,status:'FLOW_DB_HEADROOM_REQUIRED'};
  const currenciesCache=await readEvidenceSourceCache(db,{source:'GATE_ASSET_REFERENCE',asset_key:'N05:CURRENCIES',now,include_cache_clock:true});

@@ -1,3 +1,4 @@
+import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {createHash} from 'node:crypto';
@@ -12,7 +13,7 @@ const compact=(kind,p)=>({code:p.code,data:p.data.map(r=>kind==='coins'?{coin:r.
 export async function collectBitgetFlow(params={}){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[];let calls=0;
  const root={version:VERSION,status:'EXACT_ASSET_IDENTITY_REQUIRED',check_completed:false,network_calls:0,evidence:[],components:[],receipts,internal_only:true};
- if(!db?.prepare||!identity||!['HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK','HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(identity_method)||!/^\S+-USDT$/u.test(String(contract||''))||!run_id)return root;
+ if(!db?.prepare||!identity||!verifiedAssetRouteIdentity(params)||!/^\S+-USDT$/u.test(String(contract||''))||!run_id)return root;
  const admitDb=()=>source_health_admit?.({rows_read:500,rows_written:22})?.allowed===true;
  if(!admitDb())return{...root,status:'FLOW_DB_HEADROOM_REQUIRED'};
  let sequence=0;
@@ -44,7 +45,7 @@ export async function collectBitgetFlow(params={}){
    const key=`FLOW:${contract}:${market}:${end}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true});let flow;
    if(cached?.version===VERSION&&cached.observed_ts<=now&&cached.payloads){flow={...reconcileBitgetFlow({contract,market,...cached.payloads,window_end_ts:end,observed_ts:cached.observed_ts}),payloads:cached.payloads,cache_status:'HIT'};}
    else{flow=await acquireBitgetFourHourFlow({get,contract,market,window_end_ts:end,max_pages:3,clock});if(flow.check_completed&&admitDb()){const payload={version:VERSION,observed_ts:flow.observed_ts,payloads:flow.payloads};if(Buffer.byteLength(JSON.stringify(payload))<=900000)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:flow.observed_ts,expires_ts:end+300000,payload});}}
-   const sample=normalizeBitgetN12BoundedTradeSample({contract,market,identity,identity_method,exact_asset_binding:true,pages:flow.payloads?.pages,window_end_ts:end,observed_ts:flow.observed_ts});
+   const sample=normalizeBitgetN12BoundedTradeSample({contract,market,identity,identity_method,asset_binding_proof:verifiedAssetRouteIdentity(params)?.asset_binding_proof,exact_asset_binding:true,pages:flow.payloads?.pages,window_end_ts:end,observed_ts:flow.observed_ts});
    evidence.push(...sample.evidence);
    const {payloads,...component}=flow;components.push({...component,exact_asset_binding:true,identity,physical_root:'BITGET_OFFICIAL_PUBLIC_TRADES',receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256),n12_bounded_sample_status:sample.status});
   }

@@ -1,0 +1,67 @@
+{
+  "schema": "REPORT2_VERIFIED_ASSET_ROUTE_IDENTITY_REPAIR_V1",
+  "recorded_utc": "2026-10-13T15:49:04.597791+00:00",
+  "status": "SAVED_FACT_REPLAY_AND_LINKED_TESTS_PASS_CLOUD_NATURAL_PENDING",
+  "base_main": "10b79058b0cbfc70013df0e6f389b887693a6b90",
+  "defect": {
+    "natural_run": 38420579995,
+    "head": "82fd1ac39e9986b7ae89fb0bd84c38a3d4c79895",
+    "run_id": "1791904593490-1791904601259",
+    "publication": "PUB:d11b092360b84a2c85f37af5847ff9cca6040227",
+    "contract": "BTW-USDT",
+    "closed_identity_method": "MANUAL_EXACT_REGISTRY",
+    "identity": {
+      "chain": "bsc",
+      "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+    },
+    "JOINT_FLOW_route_absent": true,
+    "cause": "Producer returns a closed exact owner registry or CoinPaprika reference, but external capability method allowlist accepted only three other methods."
+  },
+  "repair": [
+    "Common typed identity validator carries CLOSED owner registry or exact CoinPaprika reference receipts while preserving producer method.",
+    "Collector validates original address, chain and instrument on each external venue; a method label alone never qualifies.",
+    "Retained binding proof is rechecked by Bitget/KuCoin N12 normalizer and consumer validator; no changed-address proof reuse.",
+    "No extra shared HTTP allowance, no score, no independent vote created by static identity metadata."
+  ],
+  "saved_replay": {
+    "source_directory": "checkpoints/n05-poloniex-qualification-38069554249",
+    "original_pages": [
+      "POLONIEX-EXACT-ASSETS.json.gz",
+      "POLONIEX-SPOT-MARKETS.json.gz",
+      "POLONIEX-BTW-NATIVE-240.json.gz"
+    ],
+    "qualified_candle_rows": 240,
+    "original_clocks_retained": true,
+    "mock_transport_calls": 4,
+    "activity_ticker_only": "Controlled positive activity fixture; qualified flow uses original source candles.",
+    "not_current_coverage": true
+  },
+  "structural_registry_route_gain_only": [
+    "BTW-USDT",
+    "NEAR-USDT",
+    "ADA-USDT",
+    "APT-USDT",
+    "XRP-USDT",
+    "XLM-USDT",
+    "SOL-USDT"
+  ],
+  "tests": {
+    "linked_suite": {
+      "tests": 72,
+      "passed": 72,
+      "provider_http": 0,
+      "tap_sha256": "fc6b20bbae15a7398e246dec129bbd5e71c22d3265ababf46a39a77e9432bfe0"
+    },
+    "final_provenance_negative_cases": {
+      "tests": 17,
+      "passed": 17,
+      "tap_sha256": "2ae02ef4953855e3cad3917f91738ffbec73d06aa4da0f8c411bca0a7524d31a",
+      "provider_http": 0
+    }
+  },
+  "cloud_assembly_pending": true,
+  "natural_route_gain_pending": true,
+  "all_105_coverage_complete": false,
+  "paused_blocks_restored": false,
+  "telegram_format_or_score_changed": false
+}
