@@ -24,7 +24,7 @@ export const SOURCE_POLICIES=Object.freeze({
  // routed by the active 15-block candidate runtime.
  SNAPSHOT_GOVERNANCE:{daily_cap:96,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N13']},
  SOURCIFY_ABI:{daily_cap:48,ttl_ms:7*24*60*60_000,auth:'PUBLIC',blocks:['N17']},
- BLOCKSCOUT_INDEX:{daily_cap:96,daily_credit_cap:5000,ttl_ms:20*60_000,auth:'BLOCKSCOUT_PRO_API_KEY',blocks:['N02','N04','N05']},
+ BLOCKSCOUT_INDEX:{daily_cap:96,daily_credit_cap:5000,ttl_ms:20*60_000,auth:'BLOCKSCOUT_PRO_API_KEY',blocks:['N04']},
  MACRO_CALENDAR:{daily_cap:24,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N13']},
 });
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;

@@ -1,0 +1,54 @@
+{
+  "schema": "REPORT2_N04_ORIGINAL_CLOCK_AND_ZERO_WASTE_OBSERVER_V1",
+  "recorded_utc": "2026-10-13T15:56:23.501417+00:00",
+  "status": "LINKED_REPLAY_PASS_CLOUD_NATURAL_PENDING",
+  "base_main": "1adf8a9e",
+  "repairs": [
+    "N04 Blockscout rejects missing/invalid/future event timestamp, retains source clock and actual response observation clock; old normalization caches not reused as current.",
+    "Base and Polygon Blockscout PRO free routes unavailable from 2026-10-01: skip before D1, HTTP admission and credits. Primary RPC routes stay active.",
+    "Indexed request/credit ledger preflight skips known exhausted pool before shared slot, with original atomic reservation still authoritative.",
+    "Automatic delivery observer accepts only successful exact workflow_dispatch 37-scenario validation artifact with exact head/run/metadata/ZIP digest; normal canonical/no-work/refusal binding remains required.",
+    "Identity isolated presentation harness includes shared dependency and updated allowed helper hashes; all immutable golden outputs retained."
+  ],
+  "free_entitlement_primary_sources": [
+    {
+      "url": "https://t.me/s/blockscoutnews",
+      "claim": "Official October 1 notice: Base, Base Sepolia, Polygon Mainnet, zkSync Mainnet and zkSync Sepolia removed from Free; other chains remain Free."
+    },
+    {
+      "url": "https://www.blog.blockscout.com/going-pro-api/",
+      "claim": "Published general Free plan 100000 credits/day, 5 RPS."
+    }
+  ],
+  "budgets": {
+    "BLOCKSCOUT_INDEX_requests_per_day": 96,
+    "internal_credits_per_day": 5000,
+    "reserved_route_cost": 30,
+    "current_cap_not_increased": true,
+    "47_two_finalist_envelopes": 94,
+    "50_two_finalist_conservative_envelopes": 100,
+    "limitation": "96 internal request cap supports 47 two-finalist envelopes, not all 100 conservative slots; no current provider/account route-price proof used to raise it."
+  },
+  "verification": {
+    "linked_tests": 37,
+    "passed": 37,
+    "tap_sha256": "f15cff14abe700533b4e33eb09d06ca17f553cb6da39e28a1385809b21bd00d0",
+    "provider_http": 0,
+    "D1_live_writes": 0,
+    "new_telegram_messages": 0,
+    "original_37_cloud_report_used": 38420614605,
+    "original_refusal_zip": "checkpoints/natural-refusal-37968252442.zip",
+    "negative_cases": [
+      "Missing and one-millisecond-future source clock.",
+      "Old cache version with fabricated clock.",
+      "Known unavailable free chains with no DB/HTTP reservation.",
+      "Next shared primary route remains available.",
+      "Exhausted request and credit pools consume zero caller slots.",
+      "Scheduled/failed/wrong-run/foreign-head/corrupt-digest/incomplete37 validation cannot bypass normal observer."
+    ]
+  },
+  "all_active_blocks_complete": false,
+  "LIQ_complete": false,
+  "score_form_pauses_changed": false,
+  "cloud_natural_pending": true
+}

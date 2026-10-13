@@ -1,5 +1,10 @@
 import {verifySameRunDeliveryProof} from '../current-generation/files/src/same-run-delivery-proof.mjs';
 const count=v=>Number.isSafeInteger(v)&&v>=0?v:null;
+export function auditValidationOnlyArtifact({run,artifact,report,digest}={}){
+ if(!Number.isSafeInteger(run?.id)||run.id<1||run.event!=='workflow_dispatch'||run.conclusion!=='success'||!/^[a-f0-9]{40}$/.test(run.head_sha||'')||artifact?.name!==`report2-v13-final-37-${run.id}`||artifact.expired!==false||!Number.isSafeInteger(artifact.id)||artifact.id<1||artifact.workflow_run?.id!==run.id||artifact.workflow_run?.head_sha!==run.head_sha||!/^sha256:[a-f0-9]{64}$/.test(digest||'')||artifact.digest!==digest)throw Error('EXACT_VALIDATION_ONLY_ARTIFACT_BINDING_REQUIRED');
+ if(report?.schema!=='report2-v13-final-integration-37-v1'||report.status!=='PASS'||report.passed!==37||report.failed!==0||!Array.isArray(report.scenarios)||report.scenarios.length!==37||report.scenarios.some((s,i)=>s.number!==i+1||s.status!=='PASS'))throw Error('COMPLETE_VALIDATION_ONLY_PASS_REQUIRED');
+ return{schema:'AUTOMATIC_DELIVERY_ARTIFACT_AUDIT_V1',status:'EXACT_VALIDATION_ONLY_NO_PRODUCTION_REPORT',head:run.head_sha,source_cloud_run:run.id,source_artifact_id:artifact.id,source_artifact_digest:digest,production_report:false,exact_SENT:0,actual_ENTRY:0,sourceHTTP:0,D1:0,Telegram:0,project_complete:false,validation_scenarios:37};
+}
 export function auditProductionArtifact({output,proof,expected_head}={}){
  if(output?.schema!=='my-report-2-canonical-run-output-v1'||output.head!==expected_head||!/^[a-f0-9]{40}$/.test(expected_head)||typeof output.run_id!=='string'||!output.run_id)throw Error('SOURCE_ARTIFACT_BINDING_REQUIRED');
  const base={schema:'AUTOMATIC_DELIVERY_ARTIFACT_AUDIT_V1',head:output.head,run_id:output.run_id,exact_SENT:0,actual_ENTRY:0,sourceHTTP:0,D1:0,Telegram:0,project_complete:false};

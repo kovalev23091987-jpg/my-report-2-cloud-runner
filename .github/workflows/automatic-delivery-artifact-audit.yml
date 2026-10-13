@@ -17,11 +17,25 @@ jobs:
         with:
           node-version: '24'
       - name: Restore only exact existing canonical artifact, including refusal
+        id: restore
         uses: actions/github-script@v7
         with:
           script: |
             const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),run=context.payload.workflow_run;
-            const a=(await github.rest.actions.listWorkflowRunArtifacts({owner:context.repo.owner,repo:context.repo.repo,run_id:run.id})).data.artifacts.filter(a=>a.name==='report2-run-result'&&!a.expired);
+            const all=(await github.rest.actions.listWorkflowRunArtifacts({owner:context.repo.owner,repo:context.repo.repo,run_id:run.id})).data.artifacts;
+            const a=all.filter(a=>a.name==='report2-run-result'&&!a.expired);
+            if(a.length===0&&run.event==='workflow_dispatch'&&run.conclusion==='success'){
+              const validation=all.filter(a=>a.name===`report2-v13-final-37-${run.id}`&&!a.expired);
+              if(validation.length!==1)throw Error('EXACT_SINGLE_CANONICAL_OR_VALIDATION_ARTIFACT_REQUIRED');
+              const v=validation[0],bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:v.id,archive_format:'zip'})).data),digest='sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
+              if(digest!==v.digest)throw Error('ARTIFACT_DIGEST_REQUIRED');
+              fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('validation.zip',bytes);
+              const json=cp.execFileSync('python',['-c',"import zipfile; z=zipfile.ZipFile('validation.zip'); n='report2-v13-final-37.json'; assert z.namelist().count(n)==1 and z.getinfo(n).file_size<1024*1024; print(z.read(n).decode('utf-8'))"],{encoding:'utf8'});
+              const {auditValidationOnlyArtifact}=await import(process.cwd()+'/tools/production-artifact-outcome.mjs');
+              const audit=auditValidationOnlyArtifact({run,artifact:v,report:JSON.parse(json),digest});
+              fs.writeFileSync('audit-output/automatic-delivery-audit.json',JSON.stringify({...audit,observer_head:context.sha},null,2));
+              core.setOutput('validation_only','true');return;
+            }
             if(a.length!==1)throw Error('EXACT_SINGLE_CANONICAL_ARTIFACT_REQUIRED');
             const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:a[0].id,archive_format:'zip'})).data);
             const digest='sha256:'+crypto.createHash('sha256').update(b).digest('hex');if(digest!==a[0].digest)throw Error('ARTIFACT_DIGEST_REQUIRED');
@@ -29,6 +43,7 @@ jobs:
             cp.execFileSync('python',['-c',"import zipfile,pathlib; z=zipfile.ZipFile('source.zip'); names=['report2-run-result.json','same-run-delivery-proof.json','report2-no-work-receipt.json']; [(pathlib.Path('audit-output')/n).write_bytes(z.read(n)) for n in names if z.namelist().count(n)==1 and z.getinfo(n).file_size<32*1024*1024]"]);
             fs.writeFileSync('audit-output/source-artifact.json',JSON.stringify({source_cloud_run:run.id,source_head:run.head_sha,source_conclusion:run.conclusion,source_artifact_id:a[0].id,source_artifact_digest:digest,observer_head:context.sha,sourceHTTP:0,D1:0,Telegram:0,project_complete:false},null,2));
       - name: Verify delivery binding without sources, D1 or Telegram
+        if: ${{ steps.restore.outputs.validation_only != 'true' }}
         env:
           SOURCE_HEAD: ${{ github.event.workflow_run.head_sha }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
