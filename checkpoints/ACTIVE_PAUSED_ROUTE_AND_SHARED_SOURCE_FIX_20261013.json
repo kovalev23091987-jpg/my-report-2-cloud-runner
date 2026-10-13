@@ -1,0 +1,103 @@
+{
+  "schema": "ACTIVE_PAUSED_ROUTE_AND_SHARED_SOURCE_FIX_V1",
+  "recorded_utc": "2026-10-13T14:29:11.946765+00:00",
+  "base_main": "b094113c",
+  "owner_scope": "Strictly no HTTP/admission for owner-paused-only blocks; preserve physical sources used by active blocks; optimize actual deep-two daily request budget",
+  "confirmed_defects": {
+    "HTX_PUBLIC_RISK": {
+      "actual_consumers": [
+        "N08",
+        "N09"
+      ],
+      "catalog_incorrectly_declared": [
+        "N08",
+        "N09",
+        "N11",
+        "N16"
+      ],
+      "N11_actual_owner": "PRIMARY_EXECUTION_STRESS from immutable HTX futures book; not margin-rule adapter",
+      "today_health_journal": {
+        "observations": 10,
+        "actual_http": 30,
+        "valid_rows": 0,
+        "decision_usable_rows": 0,
+        "read_only_rows_read": 956,
+        "rows_written": 0
+      },
+      "fix": "Block HTX and HTX_PUBLIC_RISK routes before collector/admission while N08/N09 are both paused; leave HTX orderbook and all other HTX market collectors intact."
+    },
+    "COINPAPRIKA_SUPPLY": {
+      "defect": "Sector failure after provider-market binding could issue EXACT_ASSET_SUPPLY_TICKER only to create paused N02 evidence.",
+      "fix": "Skip supply-only HTTP and N02 normalization; filter retained N02 cache without falsely closing N15. Active sector identity and quote routes remain."
+    },
+    "EXHAUSTED_PROVIDER": {
+      "defect": "Reference reader reserved caller HTTP before discovering already exhausted daily source quota.",
+      "fix": "Read indexed day/source headroom before caller admission; retain final durable reservation for concurrency. No caps reset or reservation release."
+    },
+    "TWO_FINAL_QUOTE_BATCH": {
+      "defect": "CoinPaprika bulk quotes could be downloaded separately for two finalists after 60 seconds, including manual fresh runs.",
+      "fix": "One original bulk response may serve the same run for at most existing 5-minute source TTL; each exact asset/sector/peer basket still validates unchanged 15-minute source clocks and two-minute peer alignment. A new manual run requires a new quote response."
+    },
+    "UTC_ROLLOVER": {
+      "fix": "Reserve daily/minute provider units at the actual request read time, not a possibly prior-day collector start."
+    }
+  },
+  "validation": {
+    "targeted_initial_passed": 67,
+    "added_regressions_passed": 2,
+    "actual_provider_http_added": 0,
+    "broad_gate": {
+      "passed": 1442,
+      "skipped": 4,
+      "unexecuted_file": "supplemental-supporting-bridge.test.mjs",
+      "reason": "Local runtime/src/existing-source-consumer.mjs is absent; exact assembled cloud runtime check remains pending."
+    }
+  },
+  "pause_audit": {
+    "paused": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "excluded_before_admission": [
+      "TOKEN_CALENDAR",
+      "TOKEN_SCHEDULE",
+      "COINMETRICS",
+      "CHAIN_SUPPLY except exact XRP dependency for active N04",
+      "BLUESKY",
+      "WIKIMEDIA",
+      "HTX_ANNOUNCEMENTS",
+      "GDELT",
+      "OFFICIAL",
+      "DERIBIT",
+      "DELTA",
+      "BYBIT_OPTIONS",
+      "BINANCE_OPTION_INTEREST",
+      "HTX margin-rule adapter"
+    ],
+    "shared_active_dependencies_preserved": [
+      "XRP validated ledger required by N04 native payments",
+      "CHAIN_EVENTS for N04/N05",
+      "CoinPaprika taxonomy/prices for N15",
+      "HTX futures book for N11",
+      "HTX spot/futures candles and trades for N10/N12"
+    ]
+  },
+  "unchanged": {
+    "score": true,
+    "weights": true,
+    "threshold": 70,
+    "source_caps": true,
+    "whole_run_http_cap": 164,
+    "scheduled_cadence_minutes": 40,
+    "report_and_telegram_format": true
+  },
+  "status": "LOCAL_FIX_SAVED_CLOUD_NATURAL_PENDING;N15_SUSTAINABLE_DAILY_COVERAGE_NOT_PROVEN;LIQ_OPEN",
+  "next_action": "Verify natural exact-head full run after the paused-route/shared-source fix: HTX_PUBLIC_RISK must be BLOCK_PAUSED_BY_OWNER with zero HTTP, no CoinPaprika supply-only ticker, correct N05/N12 route attribution, both finalists still retain active N10/N11/N12 facts. N15 daily source cap is an internal policy bottleneck; prepare a documented free-provider monthly budget before requesting an explicit cap change. Continue LIQ and all-105 useful source matrix without old provider probes. No final all-block acceptance yet; Telegram score/form remains deferred."
+}

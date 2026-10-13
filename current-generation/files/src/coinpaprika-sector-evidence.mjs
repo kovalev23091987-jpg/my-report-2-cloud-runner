@@ -3,6 +3,7 @@ import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs'
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
+import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v8-project-activity-market-reference-20261005';
 const SOURCE='COINPAPRIKA_SECTOR',MAX_AGE=15*60000,PLATFORMS={ethereum:'eth-ethereum',solana:'sol-solana'},clean=v=>String(v??'').trim(),finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export function verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}={}){
@@ -43,10 +44,10 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  await installEvidenceSourceStore(db);
  const key=marketDiscovery?`${contract}:PROVIDER_MARKET_REFERENCE:${coin_id||'DISCOVERY'}:${tag_id}`:`${contract}:${asset_identity.chain}:${asset_identity.contract_or_mint}:${coin_id}:${tag_id}`;
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
- if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION)return{...cached,contract};
+ if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION){const evidence=(cached.evidence||[]).filter(row=>!PAUSED_BLOCKS[row.block_id]);return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER',...(!evidence.length&&cached.status==='CLOSED'?{status:cached.sector_status||'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND'}:{})}:{})};}
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
- const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:6*1024*1024,bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
+ const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:6*1024*1024,same_run_batch:route==='FREE_AGGREGATED_QUOTES',bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
  const finish=async(result)=>{
   const summary=reader.summary(),final={version:COINPAPRIKA_SECTOR_VERSION,...result,...(!summary.admission.allowed?{status:summary.admission.status}:{}),...(summary.provider_backoff?{status:summary.provider_backoff.status}:{}),...summary,internal_only:true,free_only:true,monthly_module_bound:48*31,official_free_monthly_requests:20000};
   if(summary.provider_backoff)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',observed_ts:now,expires_ts:summary.provider_backoff.backoff_until,payload:summary.provider_backoff});
@@ -79,15 +80,18 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  if(tag_id){
   tag=await request('FUNCTIONAL_SECTOR_MEMBERS',`https://api.coinpaprika.com/v1/tags/${encodeURIComponent(tag_id)}?additional_fields=coins`,3600000);
   if(tag?.id===tag_id&&comparableCoinpaprikaFunctionalTag(tag)&&Array.isArray(tag.coins)&&tag.coins.includes(coin_id)){
-   tickers=await request('FREE_AGGREGATED_QUOTES','https://api.coinpaprika.com/v1/tickers?quotes=USD',60000);
+   // One original bulk price response serves both finalists in this run.
+   // Revalidate each asset, peer membership and the unchanged 15-minute
+   // source-clock limit; a manual run never reuses another run's memory.
+   tickers=await request('FREE_AGGREGATED_QUOTES','https://api.coinpaprika.com/v1/tickers?quotes=USD',SOURCE_POLICIES[SOURCE].ttl_ms);
    sectorResult=normalizeCoinpaprikaSector({metadata,tag,tickers,identity:asset_identity,provider_reference:reference,contract,coin_id,tag_id,observed_ts:Date.now()});
   }else sectorResult={status:'EXACT_FUNCTIONAL_SECTOR_MEMBERS_NOT_CLOSED',evidence:[]};
  }
  let ticker=Array.isArray(tickers)?tickers.filter(r=>r?.id===coin_id):[];
  // No extra ticker call when a present basket explicitly lacks the target:
  // that is a provider/free-tier coverage gap, not permission to spend more.
- if(reference&&!tickers){const t=await request('EXACT_ASSET_SUPPLY_TICKER',`https://api.coinpaprika.com/v1/tickers/${encodeURIComponent(coin_id)}`,60000);ticker=t?[t]:[];}
- const supply=reference&&ticker.length===1?normalizeCoinpaprikaMarketSupply({reference,ticker:ticker[0],contract,observed_ts:Date.now()}):{status:'EXACT_PROVIDER_SUPPLY_RECORD_NOT_CLOSED',evidence:[]};
+ if(!PAUSED_BLOCKS.N02&&reference&&!tickers){const t=await request('EXACT_ASSET_SUPPLY_TICKER',`https://api.coinpaprika.com/v1/tickers/${encodeURIComponent(coin_id)}`,60000);ticker=t?[t]:[];}
+ const supply=PAUSED_BLOCKS.N02?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[]}:reference&&ticker.length===1?normalizeCoinpaprikaMarketSupply({reference,ticker:ticker[0],contract,observed_ts:Date.now()}):{status:'EXACT_PROVIDER_SUPPLY_RECORD_NOT_CLOSED',evidence:[]};
  const evidence=[...supply.evidence,...sectorResult.evidence];
  return finish({status:evidence.length?'CLOSED':sectorResult.status,evidence,summary:sectorResult.summary||null,provider_reference:reference,supply_status:supply.status,sector_status:sectorResult.status,chain_route_authorized:false});
 }

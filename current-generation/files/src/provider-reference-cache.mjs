@@ -9,14 +9,15 @@ const digest=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('
 // identity/category membership and quote clocks for each requested market.
 export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9}={}){
  const receipts=[];let calls=0,denied=null,backoff=null,sequence=0;
- async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes}={}){
+ async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes,same_run_batch=false}={}){
   if(denied||backoff)return null;
   const u=new URL(url),allowed=source==='COINGECKO_SECTOR'?u.hostname==='api.coingecko.com'&&u.pathname.startsWith('/api/v3/')
    :['COINPAPRIKA_SECTOR','COINPAPRIKA_HTX_IDENTITY'].includes(source)?u.hostname==='api.coinpaprika.com'&&u.pathname.startsWith('/v1/'):source==='GATE_ASSET_REFERENCE'?u.hostname==='api.gateio.ws'&&u.pathname==='/api/v4/wallet/currency_chains'&&[...u.searchParams.keys()].length===1&&/^[A-Z0-9][A-Z0-9]{0,31}$/.test(u.searchParams.get('currency')||''):false;
   if(!allowed||u.protocol!=='https:'||u.username||u.password)throw Error('PROVIDER_REFERENCE_ROUTE_NOT_ALLOWED');
   const readTs=clock();if(!Number.isSafeInteger(readTs)||readTs<now)throw Error('REFERENCE_READ_CLOCK_NOT_CLOSED');
   const memoryKey=`${source}:${run_id}:${url}`;
-  const memory=max_cache_bytes<max_bytes&&!bypass_cache&&ttl_ms>0?runMemory.get(memoryKey):null;
+  const shareThisRun=same_run_batch&&Boolean(run_id);
+  const memory=(max_cache_bytes<max_bytes||shareThisRun)&&(!bypass_cache||shareThisRun)&&ttl_ms>0?runMemory.get(memoryKey):null;
   if(memory&&memory.received_ts<=readTs&&readTs<Math.min(memory.expires_ts,memory.received_ts+ttl_ms)&&memory.body.length<=max_bytes&&shape(memory.payload)){
    receipts.push({...memory.receipt,route,status:'VALIDATED_RUN_MEMORY_REFERENCE',actual_http:0});return memory.payload;
   }
@@ -33,14 +34,20 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
     }
    }
   }
+  // A known exhausted source must not consume the caller's shared envelope.
+  // Durable reservation below remains the authority when concurrent callers
+  // compete for the last unit; this read never releases or resets a quota.
+  const day_utc=new Date(readTs).toISOString().slice(0,10);
+  const usage=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(source,day_utc).first();
+  if(Number(usage?.attempts)>=daily_cap){denied={allowed:false,status:'DAILY_CAP_OR_DUPLICATE',source,day_utc,attempts:0};return null;}
   const reservation_id=`EV2:${source}:${run_id}:${await digest(url)}:${sequence++}`;
   const whole=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:1});
   if(whole?.allowed!==true||whole?.duplicate===true){denied={...whole,allowed:false,status:whole?.duplicate===true?'ALREADY_RESERVED_NO_REDISPATCH':whole?.status||'ADMISSION_REQUIRED'};return null;}
-  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts:1,daily_cap,now});
+  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts:1,daily_cap,now:readTs});
   if(!daily.allowed){denied=daily;return null;}
   if(minute_provider){
    await installProviderMinuteLedger(db);
-   const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now,cap:minute_cap});
+   const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now:readTs,cap:minute_cap});
    if(!minute.allowed){denied={...minute,status:'PROVIDER_RATE_LIMIT_LOCAL'};return null;}
   }
   calls++;
@@ -56,7 +63,7 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
    if(!response.ok||body.length>max_bytes)return null;
    let payload;try{payload=JSON.parse(body);}catch{receipt.status='INVALID_JSON';return null;}
    if(!shape(payload)){receipt.status='INVALID_RESPONSE_SHAPE';return null;}
-   if(ttl_ms>0&&max_cache_bytes<max_bytes){
+   if(ttl_ms>0&&(max_cache_bytes<max_bytes||shareThisRun)){
     runMemory.set(memoryKey,{payload,body,received_ts,expires_ts:received_ts+ttl_ms,receipt});
     while(runMemory.size>4)runMemory.delete(runMemory.keys().next().value);
     receipt.cache_storage_status=body.length>max_cache_bytes?'BODY_EXCEEDS_STORAGE_BOUND_RUN_MEMORY_ONLY':'BOUNDED_REFERENCE_BODY';

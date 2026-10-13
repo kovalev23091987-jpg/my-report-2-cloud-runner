@@ -51,11 +51,10 @@ test('paused N07 skips sole-block feeds and filters old official facts',async()=
  assert.equal(r.results.OFFICIAL.status,'BLOCK_PAUSED_BY_OWNER');assert.deepEqual(r.results.OFFICIAL.evidence,[]);
 });
 
-test('shared HTX risk source stays available while N08 and N09 facts are excluded',async()=>{
- const row=saved.metadata.internal_market_context.evidence_v2.evidence.find(r=>r.block_id==='N02');
- const n08={...row,htx_contract:'ADA-USDT',block_id:'N08',evidence_id:'PAUSED-N08'},n09={...row,htx_contract:'ADA-USDT',block_id:'N09',evidence_id:'ACTIVE-N09'};
- const r=await collectEvidenceRouteBlock({routes:[{name:'HTX_PUBLIC_RISK'}],params:{contract:'ADA-USDT'},collectors:{HTX_PUBLIC_RISK:async()=>({status:'CLOSED',network_calls:0,evidence:[n08,n09]})},max_requests:5});
- assert.equal(r.results.HTX_PUBLIC_RISK.status,'CLOSED');assert.deepEqual(r.results.HTX_PUBLIC_RISK.evidence,[]);assert.equal(r.results.HTX_PUBLIC_RISK.paused_block_rows_excluded,2);
+test('HTX margin-rule adapter only serves paused N08 and N09, while the active futures book route remains available',async()=>{
+ const forbidden=()=>{throw Error('PAUSED_MARGIN_ADAPTER_MUST_NOT_EXECUTE');};let book=0;
+ const r=await collectEvidenceRouteBlock({routes:[{name:'HTX'},{name:'HTX_PUBLIC_RISK'},{name:'PRIMARY_EXECUTION_STRESS'}],params:{contract:'ADA-USDT',request_admit:forbidden,fetch_impl:forbidden},collectors:{HTX:forbidden,HTX_PUBLIC_RISK:forbidden,PRIMARY_EXECUTION_STRESS:async()=>{book++;return{status:'CLOSED',network_calls:0,evidence:[]};}},max_requests:5});
+ assert.equal(book,1);assert.equal(r.network_calls,0);assert.equal(r.reserved_requests,0);assert.equal(r.results.HTX.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(r.results.HTX_PUBLIC_RISK.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(r.results.PRIMARY_EXECUTION_STRESS.status,'CLOSED');
 });
 
 test('paused N14 cannot dispatch any option-only source or revive saved facts',async()=>{
