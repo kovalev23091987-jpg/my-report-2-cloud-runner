@@ -738,7 +738,43 @@
     "newest_observed_ts": 1791866574708,
     "source_db_bytes_at_readback": 433532928,
     "query_rows_read": 388,
-    "note": "Historical mixed revisions; selected candidates only. It does not establish all-105 factual source coverage. Native and provider estimated counts overlap."
+    "note": "Historical mixed revisions; selected candidates only. It does not establish all-105 factual source coverage. Native and provider estimated counts overlap.",
+    "source_breakdown": [
+      {
+        "source": "Hyperliquid official",
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "zones": 33,
+        "publications": 22,
+        "contracts": 8
+      },
+      {
+        "source": "gTrade official SDK",
+        "kind": "PROVIDER_ESTIMATE",
+        "zones": 26,
+        "publications": 7,
+        "contracts": 2
+      },
+      {
+        "source": "Orderly",
+        "kind": "PROVIDER_ESTIMATE",
+        "zones": 155,
+        "publications": 6,
+        "contracts": 2
+      },
+      {
+        "source": "dYdX pinned protocol model",
+        "kind": "PROVIDER_ESTIMATE",
+        "zones": 2,
+        "publications": 2,
+        "contracts": 2
+      }
+    ],
+    "source_clock_validation": {
+      "zones": 216,
+      "min_observed_minus_source_ms": 4592,
+      "max_observed_minus_source_ms": 76218,
+      "invalid_or_future_or_over_five_minutes": 0
+    }
   },
   "offline_compact_forecast_replay": {
     "source": "24 selected candidates in 12 retained schedule artifacts",
@@ -774,5 +810,146 @@
       "report2_liq_forecast_archive_clock_v1"
     ],
     "natural_archive_write_readback": "PENDING"
-  }
+  },
+  "historical_realized_event_availability": {
+    "main_d1_table": "liquidation_events",
+    "source": "HTX official public liquidation REST",
+    "events_last_72h": 176,
+    "distinct_contracts_last_72h": 21,
+    "invalid_price": 0,
+    "missing_side": 0,
+    "missing_notional": 0,
+    "older_total_events": 2634,
+    "oldest_event_ts": 1789290925306,
+    "newest_event_ts": 1791860273821,
+    "forecast_assets_with_actual_htx_event_in_following_four_hours": [
+      "ZEC-USDT",
+      "APR-USDT",
+      "FIL-USDT",
+      "RLC-USDT",
+      "BOME-USDT",
+      "CT-USDT",
+      "WLD-USDT",
+      "BTR-USDT",
+      "NEAR-USDT",
+      "TIA-USDT"
+    ],
+    "interpretation": "Technical basis for later HTX model calibration only. Observed HTX forced closes are not proof that positions on Hyperliquid, Orderly, gTrade or dYdX liquidated. Event sampling completeness and source-specific matching must be audited before any predictive weight changes."
+  },
+  "historical_fact_source_to_exact_telegram_sent": {
+    "method": "Same contract, direction, wave_id and lifecycle_event; SENT and message_id; sent_ts between canonical observed_ts and valid_until_ts; telegram text contains the indicated Hyperliquid levels. These are older release heads, not current 3x3 release proof.",
+    "cases": [
+      {
+        "publication_id": "PUB:e9e841bcd1850e3179c9d3fb13f9fc96a1d966da",
+        "run_id": "1791689086347-1791689095669",
+        "contract": "NEAR-USDT",
+        "observed_ts": 1791689149412,
+        "sent_ts": 1791689191764,
+        "telegram_message_id": "179",
+        "source_zones": 3
+      },
+      {
+        "publication_id": "PUB:0eeab3df2a4c74e65db4d8421e76fdf599f50f0f",
+        "run_id": "1791656719642-1791656727809",
+        "contract": "NEAR-USDT",
+        "observed_ts": 1791656822218,
+        "sent_ts": 1791656827151,
+        "telegram_message_id": "177",
+        "source_zones": 2
+      },
+      {
+        "publication_id": "PUB:662f7405f6005149097f2be89135bafe4c512f80",
+        "run_id": "1791617018883-1791617028325",
+        "contract": "FIL-USDT",
+        "observed_ts": 1791617086710,
+        "sent_ts": 1791617129463,
+        "telegram_message_id": "173",
+        "source_zones": 1
+      }
+    ]
+  },
+  "retained_route_resource_use": {
+    "scope": "12 saved schedule reports; route-level actual_http reported by acquisition audit, not full-job total",
+    "actual_http_by_lane": {
+      "DYDX_PINNED_NATIVE": 24,
+      "GTRADE_NATIVE": 10,
+      "HYPERLIQUID_NATIVE": 19
+    },
+    "route_records_by_lane": {
+      "DYDX_PINNED_NATIVE": 27,
+      "GTRADE_NATIVE": 12,
+      "HYPERLIQUID_NATIVE": 20
+    },
+    "actual_http_by_lane_and_outcome": [
+      {
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "actual_http": 24
+      },
+      {
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CACHE_ONLY_NO_VERIFIED_FRESH_SAME_RUN_SNAPSHOT",
+        "actual_http": 0
+      },
+      {
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "actual_http": 0
+      },
+      {
+        "lane": "GTRADE_NATIVE",
+        "status": "GTRADE_ACQUIRED_SCOPED_CONTEXT",
+        "actual_http": 6
+      },
+      {
+        "lane": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "actual_http": 2
+      },
+      {
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "actual_http": 0
+      },
+      {
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_GTRADE_MARKET_SNAPSHOT_BUDGET",
+        "actual_http": 2
+      },
+      {
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "actual_http": 15
+      },
+      {
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "actual_http": 0
+      },
+      {
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "UNSUPPORTED_NATIVE_SYMBOL",
+        "actual_http": 4
+      }
+    ],
+    "interpretation": "dYdX bounded pinned scans repeatedly returned no eligible level while consuming shared LIQ envelope; Hyperliquid native levels existed on other exact markets. Structural Hyperliquid hint now changes request order only and has an offline cloud-assembled test."
+  },
+  "source_health_counter_warning": {
+    "table": "report2_liquidation_source_health",
+    "readback_utc_approx": "2026-10-13T05:23:00Z",
+    "example": {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "attempts": 116,
+      "usable_runs": 113,
+      "last_status": "ROLE_NOT_USABLE:NATIVE_POSITION_CONTEXT:DYDX_NO_ELIGIBLE_SAMPLE_LEVEL"
+    },
+    "meaning": "Existing usable_runs/reliability are operational health, not a count of eligible future liquidation facts. Do not infer coverage or raise weights from this counter."
+  },
+  "calibration_protocol_pending": [
+    "Keep immutable forecast publication/run/source clocks, zone kind, venue, quote, price and reported position notional in separate archive.",
+    "For HTX-calculated scenarios compare later official HTX forced-close events only on the same contract, side, venue and event time; report raw price distance and event completeness before choosing a success threshold.",
+    "For Hyperliquid/Orderly/gTrade/dYdX levels, HTX liquidation events cannot prove those positions closed; require matching venue realized events or label only subsequent market-price proximity.",
+    "Deduplicate overlapping repeated forecasts, track a fixed forward horizon and no-event/incomplete-event cases separately; never treat a price touch alone as actual liquidation.",
+    "Keep this historical outcome research out of current reports, Telegram, source weights and trade decisions until enough independently verified observations and owner approval."
+  ]
 }
