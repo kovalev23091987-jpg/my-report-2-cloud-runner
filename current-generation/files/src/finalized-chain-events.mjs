@@ -9,6 +9,18 @@ export const TRANSFER_TOPIC='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a1162
 const SOURCE='CHAIN_RPC',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,ADDR=/^0x[0-9a-f]{40}$/i,BASE58=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/,BASE58_SIG=/^[1-9A-HJ-NP-Za-km-z]{64,88}$/,WORD=/^0x[0-9a-f]{64}$/i,HEX=/^0x[0-9a-f]+$/i,clean=x=>String(x??'').toLowerCase(),address=x=>WORD.test(String(x))&&/^0x0{24}/i.test(x)?'0x'+x.slice(-40).toLowerCase():null;
 const EVM_ENDPOINTS=Object.freeze({ethereum:'https://ethereum-rpc.publicnode.com',bsc:'https://bsc-rpc.publicnode.com',arbitrum:'https://arbitrum-one-rpc.publicnode.com',base:'https://base-rpc.publicnode.com',polygon:'https://polygon-bor-rpc.publicnode.com',optimism:'https://optimism-rpc.publicnode.com',avalanche:'https://avalanche-c-chain-rpc.publicnode.com'});
 const EVM_CHAIN_IDS=Object.freeze({ethereum:'0x1',bsc:'0x38',arbitrum:'0xa4b1',base:'0x2105',polygon:'0x89',optimism:'0xa',avalanche:'0xa86a'});
+const sharedFinalizedHeaders=new WeakMap(),SHARED_HEADER_TTL=120000;
+function sharedHeader(db,key,chain,now){
+ const cached=sharedFinalizedHeaders.get(db)?.get(key),block=cached?.block;
+ const source=HEX.test(block?.timestamp)?Number(BigInt(block.timestamp))*1000:null;
+ return cached?.chain===chain&&Number.isSafeInteger(cached.received_ts)&&cached.received_ts<=now&&now-cached.received_ts<=SHARED_HEADER_TTL&&Number.isSafeInteger(source)&&source<=cached.received_ts&&now-source<=TTL&&WORD.test(block?.hash)&&HEX.test(block?.number)?cached:null;
+}
+function retainSharedHeader(db,key,chain,head,received_ts){
+ const block=exactResult(head.payload,2),source=HEX.test(block?.timestamp)?Number(BigInt(block.timestamp))*1000:null;
+ if(!head.ok||clean(exactResult(head.payload,1))!==EVM_CHAIN_IDS[chain]||!HEX.test(block?.number)||!WORD.test(block?.hash)||!Number.isSafeInteger(source)||source>received_ts||received_ts-source>TTL)return;
+ let rows=sharedFinalizedHeaders.get(db);if(!rows){rows=new Map();sharedFinalizedHeaders.set(db,rows);}
+ rows.set(key,{chain,head,block,received_ts});while(rows.size>8)rows.delete(rows.keys().next().value);
+}
 export const SOLANA_SYSTEM_PROGRAM='11111111111111111111111111111111';
 export function decodeFinalizedChainEvent({log,mode,asset,block,observed_ts,contract,chain='ethereum'}={}){
  if(!['TOKEN_TRANSFER','AAVE_CREDIT'].includes(mode)||!ADDR.test(asset)||log?.removed!==false||!WORD.test(log?.transactionHash)||!WORD.test(log?.blockHash)||!HEX.test(log?.logIndex)||!block||clean(block.hash)!==clean(log.blockHash)||clean(block.number)!==clean(log.blockNumber)||!HEX.test(block.timestamp))return null;
@@ -90,10 +102,15 @@ export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetc
  if(chain==='solana'&&asset_identity?.asset_kind==='NATIVE'&&asset_identity?.native_asset_id==='solana:mainnet'&&asset_identity?.contract_or_mint===null&&mode==='TOKEN_TRANSFER')return collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual});
  if(chain==='solana'&&BASE58.test(token)&&mode==='TOKEN_TRANSFER')return collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,mint:token,now,clock,strict_fresh_manual});
  const endpoint=EVM_ENDPOINTS[chain];if(!endpoint||!ADDR.test(token)||mode==='AAVE_CREDIT'&&chain!=='ethereum')return{status:'EXACT_SUPPORTED_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
- const reservation_id=`EV2:CHAIN_EVENTS:${contract}:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:4});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
- const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:4,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
+ const readTs=Math.max(now,clock()),headerKey=run_id?`${run_id}:${chain}:${endpoint}`:null,shared=headerKey?sharedHeader(db,headerKey,chain,readTs):null,attempts=shared?3:4;
+ const used=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(SOURCE,new Date(readTs).toISOString().slice(0,10)).first();
+ if(Number(used?.attempts||0)+attempts>SOURCE_POLICIES[SOURCE].daily_cap)return{status:'SOURCE_DAILY_CAP_REACHED',evidence:[],network_calls:0,internal_only:true};
+ const reservation_id=`EV2:CHAIN_EVENTS:${contract}:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
+ const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now:readTs});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
  let calls=0;const send=body=>{calls++;return rpc(fetch_impl,endpoint,body);},receipts=[],evidence=[];let status='SOURCE_SCHEMA_NOT_CLOSED',summary={mode,chain,scope:'LAST_256_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK',quantity_units:'RAW_BASE_UNITS',direction_neutral:true};
- const head=await send([{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:['finalized',false]}]);receipts.push({route:'CHAIN_AND_FINALIZED_HEADER',http_status:head.http_status});
+ const head=shared?shared.head:await send([{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:['finalized',false]}]);
+ const headerReceived=shared?shared.received_ts:clock();if(!shared&&headerKey)retainSharedHeader(db,headerKey,chain,head,headerReceived);
+ receipts.push({route:'CHAIN_AND_FINALIZED_HEADER',http_status:head.http_status,actual_http:shared?0:1,shared_header_reused:Boolean(shared),original_received_ts:headerReceived,cache_scope:'SAME_DB_RUN_ENDPOINT_CHAIN_ONLY'});
  const block=exactResult(head.payload,2);if(head.ok&&clean(exactResult(head.payload,1))===EVM_CHAIN_IDS[chain]&&HEX.test(block?.number)&&HEX.test(block?.timestamp)){
   const end=BigInt(block.number);let start=end>255n?end-255n:0n;let raw=await send({jsonrpc:'2.0',id:3,method:'eth_getLogs',params:[{address:mode==='AAVE_CREDIT'?AAVE_POOL:token,fromBlock:'0x'+start.toString(16),toBlock:block.number,topics:[mode==='AAVE_CREDIT'?AAVE_TOPIC:TRANSFER_TOPIC]}]});receipts.push({route:'FINALIZED_LOGS',http_status:raw.http_status});
   let logs=exactResult(raw.payload,3),scopeNarrowed=false;
@@ -110,6 +127,6 @@ export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetc
    status=wanted&&timed===null?'EVENT_CLOCK_NOT_CLOSED':wanted&&evidence.length===0?'EVENT_VALIDATION_NOT_CLOSED':'CLOSED';summary={...summary,scope:scopeNarrowed?'LAST_16_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK':summary.scope,scope_narrowed:scopeNarrowed,finalized_block:block.number,window_start_block:'0x'+start.toString(16),matching_logs:matching.length,confirmed_timed_events:evidence.length,untimed_logs_excluded:matching.length-evidence.length,empty_sample:matching.length===0};
   }else status=Array.isArray(logs)&&logs.length>200?'LOG_SAMPLE_SATURATED':'SOURCE_LOG_SCHEMA_NOT_CLOSED';
  }
- const result={version:FINALIZED_CHAIN_EVENTS_VERSION,status,evidence,summary,network_calls:calls,logical_rpc_methods:calls+1,admission,whole_job_admission,receipts,internal_only:true};
+ const result={version:FINALIZED_CHAIN_EVENTS_VERSION,status,evidence,summary,network_calls:calls,logical_rpc_methods:shared?calls:calls+1,shared_header_reused:Boolean(shared),admission,whole_job_admission,receipts,internal_only:true};
  const observed=clock();if(status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:observed+TTL,payload:result});return result;
 }

@@ -1,0 +1,81 @@
+{
+  "schema": "REPORT2_N15_BULK_MEMBERSHIP_ACTUAL_SOURCE_READBACK_V1",
+  "head": "b94bbef54549c43af9c1df1c4e2321567d5d2646",
+  "cloud_run": 38433194863,
+  "run_id": "1791909990725-1791910012258",
+  "artifact_id": 11831967910,
+  "artifact_digest": "sha256:60006a793d77286d7980ccf4bcf04f95326faedc607682b46b213e897caaf2fe",
+  "source_rows": [
+    {
+      "publication_id": "PUB:5053820a9e8bfb43ffef7e3c36a72f2d056a194f",
+      "contract_code": "WLD-USDT",
+      "routes": "[{\"route\":\"HTX\",\"status\":\"BLOCK_PAUSED_BY_OWNER\",\"actual_http\":0,\"phase_reserved\":0},{\"route\":\"JOINT_FLOW\",\"status\":\"CALLER_FIVE_REQUEST_CAP\",\"actual_http\":5,\"reported_http\":5,\"phase_reserved\":5,\"role\":\"EXACT_SPOT_FUTURES_FLOW_COMPONENTS\"},{\"route\":\"LARGE_TRADES\",\"status\":\"CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT\",\"actual_http\":0,\"reported_http\":0,\"phase_reserved\":5,\"role\":\"ACTUAL_HTX_TRADE_CONTEXT\"},{\"route\":\"SECTOR\",\"status\":\"CLOSED\",\"actual_http\":2,\"reported_http\":2,\"phase_reserved\":7,\"role\":\"EXACT_PROVIDER_SECTOR_CONTEXT\"},{\"route\":\"SECTOR_COINGECKO\",\"status\":\"DAILY_CAP_OR_DUPLICATE\",\"actual_http\":0,\"reported_http\":0,\"phase_reserved\":7,\"role\":\"SECTOR_RELATIVE_STRENGTH_CONTEXT\"},{\"route\":\"CHAIN_EVENTS\",\"status\":\"DEFERRED_SHARED_REQUEST_ENVELOPE\",\"actual_http\":0,\"reported_http\":0,\"phase_reserved\":7,\"role\":\"FINALIZED_TRANSFER_CONTEXT\"},{\"route\":\"BLOCKSCOUT\",\"status\":\"CLOSED\",\"actual_http\":1,\"reported_http\":1,\"phase_reserved\":8,\"role\":\"INDEX_DISCOVERY\"}]",
+      "sector_status": "CLOSED",
+      "sector_receipts": "[{\"route\":\"HTX_MARKET_CATALOG\",\"url\":\"https://api.coinpaprika.com/v1/exchanges/htx/markets\",\"status\":\"VALIDATED_REFERENCE_CACHE\",\"http_status\":200,\"received_ts\":1791893835789,\"expires_ts\":1791915435789,\"body_sha256\":\"8851d3680f31da786c65a2e2795f8e5478076813eed5efe7f93b6f5d4cfab2cf\",\"actual_http\":0,\"cache_owner_source\":\"COINPAPRIKA_SECTOR\",\"shared_provider\":null},{\"route\":\"EXACT_COIN_METADATA\",\"url\":\"https://api.coinpaprika.com/v1/coins/wld-worldcoin\",\"http_status\":200,\"status\":\"RECEIVED\",\"received_ts\":1791910126275,\"body_sha256\":\"3389a439a9ac33ed77742fccb0d5531f0eb5724b3df07ef2992408d5e5a1f45b\",\"actual_http\":1},{\"route\":\"FUNCTIONAL_SECTOR_DIRECTORY\",\"url\":\"https://api.coinpaprika.com/v1/tags?additional_fields=coins\",\"http_status\":200,\"status\":\"VALIDATED_RUN_MEMORY_REFERENCE\",\"received_ts\":1791910058199,\"body_sha256\":\"64dd237da5226c9650e24efaed089b3eafe995715992b6d39f58c2c4f8cc46d6\",\"actual_http\":0,\"cache_storage_status\":\"BOUNDED_REFERENCE_BODY\"},{\"route\":\"FREE_AGGREGATED_QUOTES\",\"url\":\"https://api.coinpaprika.com/v1/tickers?quotes=USD\",\"http_status\":200,\"status\":\"RECEIVED\",\"received_ts\":1791910127189,\"body_sha256\":\"fc5f770e1b22c31dbbeb04adaaa7632565a9b2fa1fa4a61b6fc6e0d5206f61ba\",\"actual_http\":1,\"cache_storage_status\":\"BODY_EXCEEDS_STORAGE_BOUND_RUN_MEMORY_ONLY\"}]",
+      "sector_summary": "{\"coin_id\":\"wld-worldcoin\",\"tag_id\":\"privacy-security\",\"target_source_ts\":1791909974000,\"target_change_24h_pct\":-1.0099999904632568,\"peer_median_change_24h_pct\":-2.700000047683716,\"relative_strength_pct_points\":1.690000057220459,\"eligible_peers\":27,\"tag_members\":87,\"peer_coverage_fraction\":0.313953488372093,\"free_tier_assets_limited\":true,\"source_ts\":1791909974000,\"window\":\"PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES\",\"quote\":\"USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE\",\"direction_neutral\":false,\"entry_eligible\":false,\"is_htx_price\":false}"
+    },
+    {
+      "publication_id": "PUB:bf59b76e6f7d838683d2fbc1ed400898e144e492",
+      "contract_code": "UNI-USDT",
+      "routes": "[{\"route\":\"HTX\",\"status\":\"BLOCK_PAUSED_BY_OWNER\",\"actual_http\":0,\"phase_reserved\":0},{\"route\":\"SECTOR_COINGECKO\",\"status\":\"DAILY_CAP_OR_DUPLICATE\",\"actual_http\":0,\"reported_http\":0,\"phase_reserved\":0,\"role\":\"SECTOR_RELATIVE_STRENGTH_CONTEXT\"},{\"route\":\"JOINT_FLOW\",\"status\":\"CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS\",\"actual_http\":5,\"reported_http\":5,\"phase_reserved\":5,\"role\":\"EXACT_SPOT_FUTURES_FLOW_COMPONENTS\"},{\"route\":\"LARGE_TRADES\",\"status\":\"CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT\",\"actual_http\":0,\"reported_http\":0,\"phase_reserved\":5,\"role\":\"ACTUAL_HTX_TRADE_CONTEXT\"},{\"route\":\"SECTOR\",\"status\":\"EXACT_FUNCTIONAL_SECTOR_NOT_FOUND\",\"actual_http\":1,\"reported_http\":1,\"phase_reserved\":6,\"role\":\"EXACT_PROVIDER_SECTOR_CONTEXT\"},{\"route\":\"CHAIN_EVENTS\",\"status\":\"CLOSED\",\"actual_http\":4,\"reported_http\":4,\"phase_reserved\":10,\"role\":\"FINALIZED_TRANSFER_CONTEXT\"},{\"route\":\"BLOCKSCOUT\",\"status\":\"DEFERRED_SHARED_REQUEST_ENVELOPE\",\"actual_http\":0,\"reported_http\":0,\"phase_reserved\":10,\"role\":\"INDEX_DISCOVERY\"}]",
+      "sector_status": "EXACT_FUNCTIONAL_SECTOR_NOT_FOUND",
+      "sector_receipts": "[{\"route\":\"HTX_MARKET_CATALOG\",\"url\":\"https://api.coinpaprika.com/v1/exchanges/htx/markets\",\"status\":\"VALIDATED_REFERENCE_CACHE\",\"http_status\":200,\"received_ts\":1791893835789,\"expires_ts\":1791915435789,\"body_sha256\":\"8851d3680f31da786c65a2e2795f8e5478076813eed5efe7f93b6f5d4cfab2cf\",\"actual_http\":0,\"cache_owner_source\":\"COINPAPRIKA_SECTOR\",\"shared_provider\":null},{\"route\":\"EXACT_COIN_METADATA\",\"url\":\"https://api.coinpaprika.com/v1/coins/uni-uniswap\",\"status\":\"VALIDATED_REFERENCE_CACHE\",\"http_status\":200,\"received_ts\":1791907343042,\"expires_ts\":1791928943042,\"body_sha256\":\"25a905859f186afe86db756ae778338b61c032824104c1fbe7bb64bc4acb99f5\",\"actual_http\":0,\"cache_owner_source\":\"COINPAPRIKA_SECTOR\",\"shared_provider\":null},{\"route\":\"FUNCTIONAL_SECTOR_DIRECTORY\",\"url\":\"https://api.coinpaprika.com/v1/tags?additional_fields=coins\",\"http_status\":200,\"status\":\"RECEIVED\",\"received_ts\":1791910058199,\"body_sha256\":\"64dd237da5226c9650e24efaed089b3eafe995715992b6d39f58c2c4f8cc46d6\",\"actual_http\":1,\"cache_storage_status\":\"BOUNDED_REFERENCE_BODY\"}]",
+      "sector_summary": null
+    }
+  ],
+  "query_meta": {
+    "served_by": "v3-prod",
+    "served_by_region": "EEUR",
+    "served_by_colo": "ARN",
+    "served_by_primary": true,
+    "timings": {
+      "sql_duration_ms": 7.8321
+    },
+    "duration": 7.8321,
+    "changes": 0,
+    "last_row_id": 0,
+    "changed_db": false,
+    "size_after": 457891840,
+    "rows_read": 4,
+    "rows_written": 0,
+    "total_attempts": 1
+  },
+  "scan": {
+    "approved": 105,
+    "scanned": 105,
+    "errors": 0
+  },
+  "WLD_actual_N15_use": {
+    "source": "COINPAPRIKA",
+    "sector": "privacy-security",
+    "eligible_peers": 27,
+    "target_change_24h": -1.0099999904632568,
+    "peer_median_change_24h": -2.700000047683716,
+    "relative_strength_pp": 1.690000057220459,
+    "source_ts": 1791909974000,
+    "rendered_manual": true,
+    "actual_http": 2,
+    "bulk_membership_second_coin_reuse_http": 0,
+    "new_independent_upstream_claim": false
+  },
+  "UNI": {
+    "tags_null": true,
+    "sector_missing_from_actual_bulk_membership": true,
+    "sector_not_fabricated": true,
+    "actual_new_bulk_HTTP": 1
+  },
+  "queue_defect": {
+    "asset": "WLD-USDT",
+    "N05_actual_http": 5,
+    "N15_actual_http": 2,
+    "N04_max_reservation": 4,
+    "evidence_envelope": 10,
+    "N04_deferred": true,
+    "possible_same_run_header_saving": 1,
+    "natural_gain_after_saving_not_proven": true
+  },
+  "no_new_same_run_SENT": true,
+  "source_http_for_audit": 0,
+  "no_source_period_reset": true,
+  "new_CG_key_missing": true
+}

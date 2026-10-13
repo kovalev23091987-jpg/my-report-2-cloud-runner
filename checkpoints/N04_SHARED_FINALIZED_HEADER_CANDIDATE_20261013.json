@@ -1,0 +1,30 @@
+{
+  "schema": "REPORT2_N04_SHARED_FINALIZED_HEADER_CANDIDATE_V1",
+  "recorded_utc": "2026-10-13T17:12:04.049725+00:00",
+  "base_main": "b94bbef54549c43af9c1df1c4e2321567d5d2646",
+  "status": "57_LINKED_TESTS_PASS_CLOUD_AND_NATURAL_GAIN_PENDING",
+  "actual_defect_proof": "checkpoints/N15_BULK_MEMBERSHIP_ACTUAL_SOURCE_READBACK_20261013.json",
+  "repair": "Two exact EVM tokens in one DB/run/endpoint/chain share only the original valid finalized-network header, for at most120sec and within original20min source freshness. Each token still fetches its own logs and exact event-block clock. No event/coin evidence or independent vote is shared. Bounded eight-entry per-DB process memory; no extra persisted cache growth.",
+  "scope_guards": [
+    "Exact chain ID and valid original header hash/number/time.",
+    "No foreign DB/run/network, missing run ID, stale/future/invalid header reuse.",
+    "Network/header original receipt clock is preserved; event source clock still comes from its own exact original block.",
+    "Source daily720 atomic ledger and common10/whole164 budget stay unchanged; two-candidate cap unchanged."
+  ],
+  "controlled_queue_replay": {
+    "original_WLD_shape": "N05=5 + N15=2 + N04 reservation4 > common10",
+    "after_same_run_header": "5+2+3 fits10; actual9 because controlled event stream requires no narrowing",
+    "first_token_owns_original_header_request": true,
+    "not_current_natural_coverage": true
+  },
+  "verification": {
+    "tests": 57,
+    "passed": 57,
+    "tap_sha256": "3e1a13949b2000d5394aeacf725cd8076b696598b17d5fce2b39af0e4cfcff20",
+    "source_HTTP": 0,
+    "production_D1_writes": 0
+  },
+  "cloud_pending": true,
+  "natural_gain_pending": true,
+  "strategies_weights_forms_pauses_changed": false
+}
