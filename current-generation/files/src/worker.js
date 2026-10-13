@@ -16584,18 +16584,16 @@ async function buildDeepCheckInput(params, env) {
   if(typeof env?.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT==='function')try{futureProviderModels=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});}catch{futureProviderModels={status:'SOURCE_ERROR',network_calls:1,levels:[]};}
   let coinBossLiquidation=null,swoleLiquidation=null,orderlyPublicPositions=null;
   if(!['BTC-USDT','ETH-USDT'].includes(contract)){
-    const modelOrder=typeof env?.REPORT2_LIQUIDATION_MODEL_ORDER==='function'?env.REPORT2_LIQUIDATION_MODEL_ORDER(contract):['COINBOSS'];
+    const sourceOrder=typeof env?.REPORT2_LIQUIDATION_SOURCE_ORDER==='function'?env.REPORT2_LIQUIDATION_SOURCE_ORDER(contract):['ORDERLY','COINBOSS'];
     const sourceParams=()=>({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now()});
-    for(const source of modelOrder){
-      const collect=source==='SWOLE'?env?.REPORT2_SWOLE_LIQUIDATION_COLLECT:env?.REPORT2_COINBOSS_LIQUIDATION_COLLECT;
+    for(const source of sourceOrder){
+      const collect=source==='ORDERLY'?env?.REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT:source==='SWOLE'?env?.REPORT2_SWOLE_LIQUIDATION_COLLECT:env?.REPORT2_COINBOSS_LIQUIDATION_COLLECT;
       if(typeof collect!=='function')continue;
-      let result;try{result=await collect(sourceParams());}catch(error){result={source,contract,status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160),scenarios:[],network_calls:0,internal_only:true};}
-      if(source==='SWOLE')swoleLiquidation=result;else coinBossLiquidation=result;
-      if(result?.status==='CLOSED'&&result?.scenarios?.length)break;
-    }
-    if(typeof env?.REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT==='function'){
-      try{orderlyPublicPositions=await env.REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT(sourceParams());}
-      catch(error){orderlyPublicPositions={source:'ORDERLY_PUBLIC_POSITIONS',contract,status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160),levels:[],network_calls:0,internal_only:true};}
+      let result;try{result=await collect(sourceParams());}catch(error){result={source,contract,status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160),scenarios:[],levels:[],network_calls:0,internal_only:true};}
+      if(source==='ORDERLY')orderlyPublicPositions=result;
+      else if(source==='SWOLE')swoleLiquidation=result;
+      else coinBossLiquidation=result;
+      if(source!=='ORDERLY'&&result?.status==='CLOSED'&&result?.scenarios?.length)break;
     }
   }
 

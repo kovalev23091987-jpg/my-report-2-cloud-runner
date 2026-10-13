@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {LIQ_NATIVE_HTTP_ALLOCATION,LIQ_SHARED_HTTP_CAP,COINBOSS_RECENT_NUMERIC,SWOLE_CATALOG_ROUTE,liquidationModelOrder,liquidationSupplementAllowance} from '../files/src/liquidation-source-http-plan.mjs';
+import {LIQ_NATIVE_HTTP_ALLOCATION,LIQ_SHARED_HTTP_CAP,LIQ_SUPPLEMENT_PER_CANDIDATE_CAP,COINBOSS_RECENT_NUMERIC,SWOLE_CATALOG_ROUTE,ORDERLY_SAVED_NUMERIC,liquidationModelOrder,liquidationSourceOrder,liquidationSupplementAllowance} from '../files/src/liquidation-source-http-plan.mjs';
 import {normalizeSwolechartsLiquidationLevels,collectSwolechartsLiquidationLevels} from '../files/src/swolecharts-liquidation-levels.mjs';
 import {buildPumpLiquidationZones} from '../files/src/pump-liquidation-zones.mjs';
 import {selectLiquidationDisplayZones,displayFutureLiquidations,displayBriefTelegramLiquidations} from '../files/src/canonical-display.mjs';
@@ -11,7 +11,7 @@ const worker=readFileSync('current-generation/files/src/worker.js','utf8');
 const research=JSON.parse(readFileSync('checkpoints/source-inputs/swolecharts-liq-levels-bounded-20261013.json','utf8'));
 const sample=coin=>research.rows.find(row=>row.coin===coin)?.raw;
 
-const allowance=({native=4,coinboss=0,swole=0,orderly=0,candidate=native,source='SWOLE'}={})=>liquidationSupplementAllowance({source,native_http:native,coinboss_http:coinboss,swole_http:swole,orderly_http:orderly,candidate_http:candidate});
+const allowance=({native=4,coinboss=0,swole=0,orderly=0,candidate=native,supplement=0,source='SWOLE'}={})=>liquidationSupplementAllowance({source,native_http:native,coinboss_http:coinboss,swole_http:swole,orderly_http:orderly,candidate_http:candidate,supplement_http_for_candidate:supplement});
 
 test('source order uses exact numeric evidence before catalog-only routes',()=>{
  assert.equal(COINBOSS_RECENT_NUMERIC.size,56);
@@ -22,18 +22,26 @@ test('source order uses exact numeric evidence before catalog-only routes',()=>{
  assert.deepEqual(liquidationModelOrder('GRAM-USDT'),['SWOLE','COINBOSS']);
  assert.deepEqual(liquidationModelOrder('BTR-USDT'),['COINBOSS']);
  assert.deepEqual(liquidationModelOrder('BTC-USDT'),[]);
+ assert.equal(ORDERLY_SAVED_NUMERIC.size,38);
+ assert.deepEqual(liquidationSourceOrder('ADA-USDT'),['ORDERLY','COINBOSS','SWOLE']);
+ assert.deepEqual(liquidationSourceOrder('STRK-USDT'),['SWOLE','COINBOSS','ORDERLY']);
+ assert.deepEqual(liquidationSourceOrder('BTC-USDT'),[]);
 });
 
-test('actual scheduled wrappers reserve one model opportunity within the unchanged five call cap',()=>{
- assert.equal(LIQ_SHARED_HTTP_CAP,5);assert.equal(LIQ_NATIVE_HTTP_ALLOCATION,4);
+test('both selected coins get two bounded supplemental opportunities within the eight call LIQ cap',()=>{
+ assert.equal(LIQ_SHARED_HTTP_CAP,8);assert.equal(LIQ_NATIVE_HTTP_ALLOCATION,4);assert.equal(LIQ_SUPPLEMENT_PER_CANDIDATE_CAP,2);
  assert.match(runner,/candidate_slots:env\.REPORT2_DEEP_RUNTIME_OPTIONS\?\.max_per_run\|\|1,[^\n]*max_http_per_run:LIQ_NATIVE_HTTP_ALLOCATION/);
- assert.ok(worker.indexOf('for(const source of modelOrder)')<worker.indexOf('REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT(sourceParams())'));
+ assert.match(worker,/for\(const source of sourceOrder\)/);
+ assert.match(worker,/source==='ORDERLY'\?env\?\.REPORT2_ORDERLY_PUBLIC_POSITIONS_COLLECT/);
+ assert.match(runner,/for\(const source of liquidationSourceOrder\(candidate\.contract\)\)/);
  assert.equal(allowance({native:4}),1);
- assert.equal(allowance({native:4,swole:1,source:'ORDERLY',candidate:5}),0);
- assert.equal(allowance({native:3,coinboss:1,source:'ORDERLY',candidate:4}),1);
- assert.equal(allowance({native:5}),0);
- assert.equal(allowance({native:3,swole:1,coinboss:1,source:'ORDERLY',candidate:5}),0);
+ assert.equal(allowance({native:4,swole:1,source:'ORDERLY',candidate:5,supplement:1}),1);
+ assert.equal(allowance({native:4,swole:2,source:'ORDERLY',candidate:6,supplement:2}),0);
+ assert.equal(allowance({native:4,swole:2,orderly:1,source:'COINBOSS',candidate:4,supplement:0}),1);
+ assert.equal(allowance({native:4,swole:2,orderly:2,source:'COINBOSS',candidate:4,supplement:0}),0);
+ assert.equal(allowance({native:8}),0);
  assert.match(runner,/futureHttpByContract\.set\(params\.contract,perCandidate\+result\.network_calls\)/);
+ assert.match(runner,/supplementHttpByContract\.set\(params\.contract/);
 });
 
 test('saved FIL and STRK payloads yield provider supplied levels on both sides, never factual positions',()=>{

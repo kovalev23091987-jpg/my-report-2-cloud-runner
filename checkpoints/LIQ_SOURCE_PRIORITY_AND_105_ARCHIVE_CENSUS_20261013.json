@@ -1,12 +1,12 @@
 {
-  "schema": "LIQ_SOURCE_PRIORITY_AND_105_ARCHIVE_CENSUS_V1",
-  "recorded_utc": "2026-10-13T10:38:41.253047+00:00",
+  "schema": "LIQ_SOURCE_PRIORITY_AND_105_ARCHIVE_CENSUS_V2",
+  "recorded_utc": "2026-10-13T11:02:59.319319+00:00",
   "scope": "LIQ only; no new strategy, weight, output template or shared HTTP cap",
   "owned_lease": "CODEX:LIQ_SOURCE_FALLBACK:1791886278678",
   "implementation": {
     "native_scheduled_allocation_within_shared_five": 4,
     "native_manual_allocation_within_manual_eight": 6,
-    "model_priority": "per asset historical exact numeric evidence, then catalog route, with provider fallback only if remaining HTTP",
+    "model_priority": "For 38 saved numeric exact Orderly markets: source-reported public positions first, then provider model if admitted. Else saved numeric model route first; no catalog-only claim.",
     "models": [
       "COINBOSS_CEX_MODEL",
       "SWOLECHARTS_CEX_MODEL"
@@ -16,29 +16,73 @@
       "STRK"
     ],
     "ordinary_report_local_htx_model_disabled": true,
-    "orderly_factual_positions_kept_as_remaining_budget_fallback": true,
-    "same_primary_overlap_not_independent": true
+    "orderly_factual_positions_kept_as_remaining_budget_fallback": false,
+    "same_primary_overlap_not_independent": true,
+    "native_scheduled_allocation_within_shared_eight": 4,
+    "orderly_public_positions_first_for_38_saved_numeric_assets": true,
+    "supplement_http_per_selected_coin_cap": 2,
+    "scheduled_liq_total_http_cap": 8,
+    "manual_liq_total_http_cap": 8,
+    "shared_unified_job_http_cap": 164,
+    "unified_background_http_cap": 56
   },
   "historical_105_matrix": "checkpoints/LIQ_105_SAVED_SOURCE_EVIDENCE_MATRIX_20261013.json",
-  "historical_matrix_scope": "11 sources x 105 assets, saved evidence only; native eight-source seed is UNVERIFIED for all 102 old assets; 56 CoinBoss old exact numeric potential; two Swole exact numeric payloads, 40 route hints; 38 Orderly market routes; old reports selected seven unique assets across eight occurrences. No source HTTP for census.",
+  "historical_matrix_scope": "12 source columns x 105 assets; 103 LIQ-eligible excluding BTC/ETH; 58 old position-origin numeric union, 68 any old numeric union; 35 no archived numeric proof; 41 old 2+ distinct primary venues at different times, not same-run agreement.",
   "verification": {
-    "focused_tests": "77/77",
+    "focused_tests": "17/17 source and guard tests on updated budget; cloud assembly pending",
     "guard_tests": "35/35",
     "full_unassembled_local_suite": "1431 pass, 6 failures before guard refresh; after guard refresh runtime-only tests require assembled encrypted runtime; frozen output scenarios passed unchanged",
-    "cloud_assembled": "NOT_YET_RUN",
-    "natural_full_report": "NOT_YET_VERIFIED",
-    "same_run_telegram_sent": "NOT_YET_VERIFIED"
+    "cloud_assembled": "NOT_YET_RUN_ON_THIS_HEAD",
+    "natural_full_report": "NOT_YET_VERIFIED_ON_THIS_HEAD",
+    "same_run_telegram_sent": "NOT_YET_VERIFIED_ON_THIS_HEAD"
   },
   "source_provenance": [
     "checkpoints/source-inputs/coinboss-model-priority-hints-20261013.json",
     "checkpoints/source-inputs/swolecharts-liq-levels-bounded-20261013.json",
-    "checkpoints/source-inputs/swolecharts-liq-levels-catalog-20261013.json"
+    "checkpoints/source-inputs/swolecharts-liq-levels-catalog-20261013.json",
+    "checkpoints/liquidation-coverage-audit-release-evidence-20261004.json",
+    "checkpoints/DYDX_ACTUAL_DENSE_NATIVE_PAGE_20261007.json",
+    "checkpoints/GTRADE_ACTUAL_ADDITIONAL_ASSET_LEVELS_20261007.json",
+    "checkpoints/GTRADE_ACTUAL_THREE_READ_AND_HINTS_20261007.json",
+    "checkpoints/LIQ_ORDERLY_PUBLIC_POSITIONS_AND_STRK_NATURAL_ARCHIVE_20261012.json",
+    "https://www.coinboss.com/api-docs",
+    "https://orderly.network/docs/build-on-omnichain/public-info-api/overview"
   ],
   "limitations": [
-    "Historical archive cannot prove current coverage for all 105 assets.",
-    "Five shared LIQ HTTP requests cannot guarantee distinct live model calls for both selected coins after four native calls; prioritization remains evidence based.",
-    "Swolecharts provider rate limit for liquidation-level endpoint is not explicitly published; one admitted request per candidate at most, under global budget.",
-    "No actual new-head cloud report or Telegram delivery readback yet."
+    "Historical union is not current same-run 103-asset coverage.",
+    "35 assets need exact numeric qualification; do not request all 35 inside normal report.",
+    "Four native plus at most two supplemental requests for each of two selected coins is a maximum, not a guarantee that each source returns useful levels.",
+    "Archived cross-source evidence is not time-aligned and cannot be reported as agreement.",
+    "Swolecharts rate entitlement is undocumented; stay within admitted selected-candidate calls and watch HTTP 429.",
+    "CoinBoss free Professional tier is documented as temporary.",
+    "Cloud assembly and natural full report with same-run Telegram still pending."
   ],
-  "next_action": "Cloud assembled validation on exact head, then natural full report and same-run Telegram receipt; inspect model/position contribution for both selected coins; continue no-provider-HTTP archive census and only bounded missing-fact live probes; retain LIQ open."
+  "next_action": "Cloud assembled no-provider validation on exact head; natural full cycle and same-run Telegram; per-coin source receipt and HTTP/D1 headroom readback; then bounded prioritized fresh probes for 35 archival gaps under spare source budgets. LIQ remains open.",
+  "budget_analysis": {
+    "full_cycles_per_day": 36,
+    "manual_full_reserve_per_day": 3,
+    "manual_coin_or_liq_reserve_per_day": 5,
+    "burst_checks_per_day": 3,
+    "maximum_admitted_analytical_runs_per_day": 47,
+    "new_scheduled_liq_cap_per_run": 8,
+    "native_max_per_scheduled_run": 4,
+    "supplement_max_per_selected_candidate": 2,
+    "two_candidates": 2,
+    "scheduled_max_liq_http_per_day": 288,
+    "manual_full_and_burst_max_liq_http_per_day": 48,
+    "manual_coin_or_liq_max_liq_http_per_day": 40,
+    "total_max_liq_http_per_day": 376,
+    "thirty_one_day_total_max": 11656,
+    "conservative_generation_all_deep_check_31_day_bound": 21328,
+    "orderly_limit_documented_weight_per_minute": 1200,
+    "orderly_platform_positions_weight": 20,
+    "two_orderly_calls_weight": 40,
+    "coinboss_documented_current_free_requests_per_minute": 1200,
+    "swolecharts_provider_rate_limit": "NOT_PUBLISHED; only admitted selected-candidate requests, no bulk current probe",
+    "d1_read_worst_47_runs_day": 2538000,
+    "d1_read_daily_limit": 3500000,
+    "d1_write_worst_47_runs_day_plus_sidecar": 44952,
+    "d1_write_daily_limit": 70000,
+    "note": "HTTP and D1 limits are separate. Published CoinBoss free Professional tier is temporary; recheck entitlement before claiming permanent sustainability. No new provider requests used for this analysis."
+  }
 }

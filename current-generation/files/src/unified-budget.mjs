@@ -3,7 +3,7 @@ export const BYK_PLAN=Object.freeze({
   categories:Object.freeze({scheduled:{daily:72,monthly_units:11_160,scheduled:true},manual_full:{daily:6,monthly_units:930,scheduled:false},manual_coin:{daily:5,monthly_units:775,scheduled:false},burst:{daily:3,monthly_units:465,scheduled:true}}),
   planned_month_units:13_330,planned_scheduled_units:11_625,project_headroom:170,
 });
-export const HTTP_LIMITS=Object.freeze({whole_job:164,hot:120,background:28,statistics:16,full_deep:50,standard_supplemental:5,liquidation_only:8,hub_daily:900});
+export const HTTP_LIMITS=Object.freeze({whole_job:164,hot:120,background:28,statistics:16,full_deep:50,standard_supplemental:8,liquidation_only:8,hub_daily:900});
 export const D1_DAILY_LIMITS=Object.freeze({rows_read:3_500_000,rows_written:70_000,planned_rows_read:3_374_000,planned_rows_written:66_160});
 
 const int=(value,min=0)=>Number.isSafeInteger(Number(value))&&Number(value)>=min?Number(value):null;

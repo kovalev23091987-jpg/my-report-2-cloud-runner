@@ -26,6 +26,9 @@ test('multi-source comparison remains bounded for schedule, burst checks and man
  assert.equal(generation.multi_source_provider_monthly_caps.OXARCHIVE-2666,2334);
  assert.ok(generation.multi_source_provider_monthly_caps.GTRADE<=4000);
  assert.ok(generation.multi_source_provider_monthly_caps.GMX<=8000);
+ assert.equal(generation.full_report_liq_total_http_cap_including_supplements,8);
+ assert.equal(generation.full_report_liq_supplement_per_selected_coin_cap,2);
+ assert.equal((generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day+generation.manual_deep_checks_reserved_per_day)*31*8,generation.worst_case_31_day_liq_total_with_manual_and_burst);
 });
 test('only authorized report and bounded source workflows remain manually runnable',()=>{
  const root=new URL('../../.github/workflows/',import.meta.url);
@@ -105,7 +108,7 @@ test('workflow worker pin equals the effective V13 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'07035d9e16f8c7d53293fcab8433aa78ad479c31de4e0524be71479c21dbc23f');
+ assert.equal(hash,'1607f76e2dc691dfde9161b385d76dc564712abcd3c13fe2f73d0c8cab7e4cd1');
  assert.match(workflow,new RegExp(hash));
 });
 test('controlled T15 measurements upload an exact sanitized receipt',()=>{
