@@ -11,10 +11,11 @@ const main=(await api('git/ref/heads/main')).object.sha;if(main!==process.env.RE
 const read=async path=>JSON.parse(Buffer.from((await api('contents/'+path+'?ref='+main)).content,'base64').toString());
 const [phase,fence]=await Promise.all([read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),read('audit-fixes/source-optimization-20260930/execution-lock.json')]);
 if(phase.lease?.owner!==process.env.REPORT2_EXPECTED_LEASE_OWNER||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
-const routes=await read('checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json'),row=routes.rows?.find(r=>r.symbol==='UNI');
-if(row?.contract!=='UNI-USDT'||row.identity?.chain!=='ethereum'||!/^0x[a-f0-9]{40}$/i.test(row.identity.contract_or_mint))throw Error('ORIGINAL_EXACT_UNI_IDENTITY_REQUIRED');
+const symbol=process.env.REPORT2_VALIDATION_SYMBOL||'UNI';if(!['UNI','QNT'].includes(symbol))throw Error('EXACT_VALIDATION_SYMBOL_REQUIRED');
+const routes=await read('checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json'),row=routes.rows?.find(r=>r.symbol===symbol);
+if(row?.contract!==symbol+'-USDT'||row.identity?.chain!=='ethereum'||!/^0x[a-f0-9]{40}$/i.test(row.identity.contract_or_mint))throw Error('ORIGINAL_EXACT_VALIDATION_IDENTITY_REQUIRED');
 const now=Date.now(),id='COINGECKO_DEMO_SECTOR:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
-const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),out={schema:'REPORT2_COINGECKO_DEMO_SECTOR_VALIDATION_V1',head:main,cloud_run:process.env.GITHUB_RUN_ID,run_id:id,contract:row.contract,identity:row.identity,source_identity_record:'checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json',missing_fact:'UNI_CURRENT_FREE_DEMO_SECTOR_AFTER_CP_MEMBERSHIP_ABSENCE',status:'NOT_ADMITTED',maximum_source_HTTP:maxHTTP,D1_reservation:reservation,MAIN:0,Telegram:0,score:0,new_fresh_SENT:false,project_complete:false};
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),out={schema:'REPORT2_COINGECKO_DEMO_SECTOR_VALIDATION_V1',head:main,cloud_run:process.env.GITHUB_RUN_ID,run_id:id,contract:row.contract,identity:row.identity,source_identity_record:'checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json',missing_fact:symbol==='QNT'?'QNT_USEFUL_SECTOR_AFTER_ACTUAL_D1_SCHEMA_TRANSPORT_FAILURE':'UNI_CURRENT_FREE_DEMO_SECTOR_AFTER_CP_MEMBERSHIP_ABSENCE',status:'NOT_ADMITTED',maximum_source_HTTP:maxHTTP,D1_reservation:reservation,MAIN:0,Telegram:0,score:0,new_fresh_SENT:false,project_complete:false};
 let admitted=false,usedHTTP=0;
 await fs.mkdir('audit-output/coingecko-demo-sector',{recursive:true});
 try{

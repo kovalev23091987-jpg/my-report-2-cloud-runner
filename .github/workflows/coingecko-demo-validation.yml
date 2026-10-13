@@ -8,6 +8,11 @@ on:
       lease_owner:
         required: true
         type: string
+      symbol:
+        required: true
+        type: choice
+        options: [UNI, QNT]
+        default: UNI
 permissions:
   contents: read
 concurrency:
@@ -27,6 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
           REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
+          REPORT2_VALIDATION_SYMBOL: ${{ inputs.symbol }}
           REPORT2_COINGECKO_DEMO_API_KEY: ${{ secrets.REPORT2_COINGECKO_DEMO_API_KEY }}
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
