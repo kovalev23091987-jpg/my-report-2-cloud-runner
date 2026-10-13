@@ -52,6 +52,14 @@ test('only authorized report and bounded source workflows remain manually runnab
  assert.match(backup,/cloudflare\/public-collector\/github-backup\.mjs/);
  assert.doesNotMatch(backup,/runner-main|sendLifecycleRelay|manual-requests/);
 });
+
+test('private canonical copying is separate from provider and Telegram paths, with a scoped token and durable receipt',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ const start=workflow.indexOf('- name: Preserve exact new canonical rows in the free private archive'),end=workflow.indexOf('- name: Admit weekly liquidation maintenance',start),step=workflow.slice(start,end);
+ assert(start>0&&end>start);assert.match(step,/steps\.full_report\.outcome == 'success'/);assert.match(step,/REPORT2_CANONICAL_PRIVATE_COPY_ENABLED: "1"/);assert.match(step,/secrets\.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN \|\| secrets\.REPORT2_ISOLATED_D1_API_TOKEN/);assert.match(workflow,/runtime\/private-canonical-archive-receipt\.json/);
+ const script=fs.readFileSync(new URL('../../tools/retain-current-canonical-private.mjs',import.meta.url),'utf8');
+ assert.match(script,/reserveCanonicalCopyBudget/);assert.match(script,/finalizeRunUsage/);assert.match(script,/ARCHIVE_MAIN_MOVED_KEEP_SOURCE/);assert.match(script,/ARCHIVE_PHASE_OR_FENCE_BLOCKED/);assert.doesNotMatch(script,/DELETE FROM|sendLifecycleRelay|COINGECKO|BYKARANTELI/);
+});
 test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
  const cron=y.match(/cron: "([^"]+)"/)[1],guard=y.match(/github.event.schedule == '([^']+)'/)[1];

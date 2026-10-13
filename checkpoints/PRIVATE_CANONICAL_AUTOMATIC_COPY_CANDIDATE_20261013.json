@@ -1,0 +1,53 @@
+{
+  "schema": "REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_CANDIDATE_V1",
+  "recorded_utc": "2026-10-13T19:57:46.799927+00:00",
+  "base_main": "dfdd8e9185f98e194b5e02ed392dc9bd37ad4b10",
+  "status": "31_LOCAL_PASS_COPY_WIRED_CLOUD_AND_NATURAL_PENDING",
+  "existing_token_proof": "checkpoints/PRIVATE_CANONICAL_EXISTING_D1_TOKEN_VERIFIED_20261013.json",
+  "maximum_rows_per_report": 2,
+  "maximum_copy_runs_day": 47,
+  "shared_reservation_per_copy": {
+    "rows_read": 5000,
+    "rows_written": 80
+  },
+  "atomic_day_admission": true,
+  "readback_original_bytes_required": true,
+  "immutable_revisions_preserved": true,
+  "source_and_cold_measured_usage_combined": true,
+  "cold_database_soft_limit_bytes": 400000000,
+  "sourceHTTP": 0,
+  "MAIN_added": 0,
+  "Telegram_added": 0,
+  "source_rows_deleted_or_updated": 0,
+  "raw_payload_exported": false,
+  "day_reconciliation": {
+    "original_main_reservation_reads": 2538000,
+    "extra_copy_reads_upper": 235000,
+    "total_reads_upper": 2773000,
+    "guard_reads_limit": 3500000,
+    "original_main_and_worker_writes": 44952,
+    "extra_copy_writes_upper": 3760,
+    "total_writes_upper": 48712,
+    "guard_writes_limit": 70000,
+    "manual_slots_in_original_47_and86_deep_budget": true
+  },
+  "verification": {
+    "local_pass": 31,
+    "tap_sha256": "06364408736afc142738f18e87d5e540ecb8f39e3d767978a27b794d2680f37a",
+    "cases": [
+      "Two bound rows and later presentation revision",
+      "Wrong producer/run/snapshot and duplicate candidates rejected",
+      "Atomic simultaneous day admission, duplicate attempt and47-run guard",
+      "Unknown native use, writes and400MB storage limit",
+      "Originals unchanged, no raw export"
+    ]
+  },
+  "prior_reports_audit": "checkpoints/OLD_FULL_AND_TRIGGER_SOURCE_AUDIT_20261013.json",
+  "not_proven": [
+    "Natural automatic copy",
+    "Backlog transfer or hot capacity relief",
+    "Private reference restoration before removing hot originals",
+    "Months of full-history capacity",
+    "CG production coverage beyond controlledUNI"
+  ]
+}
