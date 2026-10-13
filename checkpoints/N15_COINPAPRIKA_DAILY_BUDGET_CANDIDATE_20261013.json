@@ -1,0 +1,56 @@
+{
+  "schema": "N15_COINPAPRIKA_DAILY_BUDGET_CANDIDATE_V1",
+  "status": "PREPARED_NOT_APPLIED_OWNER_CAP_APPROVAL_REQUIRED",
+  "source": "COINPAPRIKA_SECTOR",
+  "official_free_monthly_requests": 20000,
+  "official_source": "https://coinpaprika.com/api/pricing/",
+  "official_implementation_reference": "https://github.com/coinpaprika/skills/blob/main/coinpaprika-api/references/openapi.yml",
+  "verified_date": "2026-10-13",
+  "current_internal_daily_cap": 48,
+  "current_internal_monthly_bound": 1488,
+  "proposed_internal_daily_cap": 512,
+  "proposed_internal_monthly_bound": 15872,
+  "unchanged_identity_source_daily_cap": 12,
+  "all_known_project_coinpaprika_monthly_ceiling": 16244,
+  "remaining_official_monthly_margin": 3756,
+  "daily_conservative_model": {
+    "scheduled_full_cycles": 36,
+    "manual_full_upper_bound_conservative": 6,
+    "manual_coin_upper_bound": 5,
+    "burst_upper_bound": 3,
+    "invocations_total_conservative": 50,
+    "all_invocations_assumed_two_finalists": true,
+    "max_http_per_candidate_after_paused_supply_fix": 5,
+    "max_daily_http": 500,
+    "proposed_daily_margin": 12,
+    "planned_47_invocation_frame_margin": 42,
+    "batch_and_reference_cache_savings_not_required_for_the_bound": true
+  },
+  "max_five_routes": [
+    "HTX market catalog",
+    "exact target metadata",
+    "functional category directory",
+    "exact category members",
+    "one bulk ticker response"
+  ],
+  "excluded_consumers": [
+    "N02 supply ticker while paused",
+    "all other paused-only blocks"
+  ],
+  "preserved_caps": [
+    "164 whole-job HTTP",
+    "existing HTTP/D1 admission",
+    "40-minute full cycle",
+    "current manual/burst gates",
+    "CoinGecko 48/day",
+    "CoinPaprika identity 12/day"
+  ],
+  "not_guaranteed": [
+    "Every HTX asset in the free provider asset set",
+    "External provider IP/account consumption outside this project",
+    "All-105 exact category binding",
+    "No provider outage or 429",
+    "Independent two-source N15 confirmation every report"
+  ],
+  "approval_reason": "AGENTS.md forbids raising existing source caps without owner instruction. This candidate adjusts only our internal CoinPaprika guard within its documented free monthly allowance; no paid plan or cap reset."
+}
