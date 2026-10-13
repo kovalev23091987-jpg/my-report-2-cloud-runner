@@ -1,7 +1,7 @@
 {
   "schema": "ACTIVE_SOURCE_SHARED18_NATURAL_AND_INDEX_ECONOMY_20261013_V1",
   "recorded_utc": "2026-10-13T22:59:03.245209+00:00",
-  "status": "SHARED18_N04_BOTH_PRIMARY_AND_NIL_ALL6_RENDERED_PRIVATE_PORTABLE_TWO_ROW_NATURAL_VERIFIED_INDEX_ECONOMY_CANDIDATE",
+  "status": "SHARED18_N04_NATURAL_PRIVATE_PORTABLE_AND_INDEX_ECONOMY_CLOUD_VERIFIED_NEXT_REGULAR_SAVINGS",
   "natural": {
     "cloud_run": 38479419713,
     "head": "25abc982276c387d5c9ab6dea13140209ab1a209",
@@ -164,9 +164,74 @@
       "fail": 0,
       "tap_sha256": "bb716d4bbde3c0da5ea3758b356c5c1e6326e815fb929478fc619c1540732e22"
     },
-    "cloud_pending": true,
+    "cloud_pending": false,
     "natural_new_savings_pending": true,
-    "provider_or_project_caps_raised": false
+    "provider_or_project_caps_raised": false,
+    "cloud_verified": {
+      "run": 38481688752,
+      "head": "cfdc9b8df4e38ce0be69472e096a55fc42f80c77",
+      "conclusion": "success",
+      "artifact_id": 11857134844,
+      "artifact_digest": "sha256:ddf66ca81496c90ffab6cafcf9ac0f4e3bbc209a41e5b9e9ec3cba4d6d99e492",
+      "files": {
+        "assembly.json": {
+          "sha256": "e2ffcb52f920d80663c36a3a33225d2346eab74583cf73eaa1b3ae2dc2333c39",
+          "summary": []
+        },
+        "validation.log": {
+          "sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+          "summary": []
+        },
+        "cold-archive.tap": {
+          "sha256": "e91867e18c9faded2956dd8ce120eb8257764171a5a8d6fcd417d5fa5d75885d",
+          "summary": [
+            "ℹ tests 26",
+            "ℹ pass 26",
+            "ℹ fail 0"
+          ]
+        },
+        "binding.json": {
+          "sha256": "f8e5fe8bc360e1f127af4a196f3c508e2649cea11844da664d02fa612b75fff9",
+          "summary": []
+        },
+        "target.tap": {
+          "sha256": "6da6cadc0b5b4671f5bca4bca6e3280e4f5a83981b7f74e9af9b77150ff6359e",
+          "summary": [
+            "ℹ tests 74",
+            "ℹ pass 74",
+            "ℹ fail 0"
+          ]
+        },
+        "scheduled-evidence-budget.tap": {
+          "sha256": "1334a6b2b0ba9432a7be2d2dbb1e5c790d0b310249d271c364f576302c2fbfe6",
+          "summary": [
+            "ℹ tests 3",
+            "ℹ pass 3",
+            "ℹ fail 0"
+          ]
+        },
+        "index-useful-only.tap": {
+          "sha256": "26904f8f59a8ca99da07baa8881be26c644845287bbdcde3ca69329df86f71af",
+          "summary": [
+            "ℹ tests 21",
+            "ℹ pass 21",
+            "ℹ fail 0"
+          ]
+        },
+        "private-reader-runtime.tap": {
+          "sha256": "66abe5b39890acf6b00e504576d02631b25ab896530d627fdb0aff3e7cdd98ae",
+          "summary": [
+            "ℹ tests 17",
+            "ℹ pass 17",
+            "ℹ fail 0"
+          ]
+        }
+      },
+      "sourceHTTP": 0,
+      "D1": 0,
+      "MAIN": 0,
+      "Telegram": 0
+    }
   },
   "saved_LIQ_census": "checkpoints/LIQ_SAVED_EXTERNAL_ORIGINAL_REPORT_CENSUS_20261013.json",
   "historical_numeric_assets": 72,
@@ -189,5 +254,25 @@
   "Telegram_for_this_saved_audit": 0,
   "hot_pruning": false,
   "direct_Worker_private_restore_or_rolling_done": false,
-  "project_complete": false
+  "project_complete": false,
+  "metadata_reconciliation": {
+    "before": {
+      "liquidation_display_policy": "UP_TO_FOUR_COMPARABLE_LEVELS_PER_SIDE_MERGE_WITHIN_5_PERCENT_RELATIVE_PRICE_SHOW_FARTHEST_ORIGINAL_LEVEL_NO_VOLUME_SUM",
+      "telegram_liquidation_display_policy": "UP_TO_TWO_PER_SIDE; READABLE_ROUNDING; EACH_LEVEL_CALCULATED_OR_ACTUAL; KEEP_SOURCE_SCOPE",
+      "discovery_funding_policy": "OPTIONAL_SUPPORTIVE_BONUS_MAX_5_NEVER_REQUIRED",
+      "liquidation_future_policy": "FACTUAL_EXTERNAL_NUMERIC_LEVELS_AND_SEPARATE_LABELLED_HTX_FUTURES_SCENARIOS;MERGE_DISPLAY_WITHIN_5_PERCENT_SAME_SIDE;NO_VOLUME_SUM;NO_SCORE_OR_TARGET_CONTRIBUTION;UPSTREAM_DEDUP"
+    },
+    "after": {
+      "liquidation_display_policy": "UP_TO_THREE_COMPARABLE_LEVELS_PER_SIDE_MERGE_WITHIN_5_PERCENT_RELATIVE_PRICE_SHOW_FARTHEST_ORIGINAL_LEVEL_NO_VOLUME_SUM",
+      "telegram_liquidation_display_policy": "UP_TO_THREE_PER_SIDE; READABLE_ROUNDING; PROVIDER_CALCULATED_OR_REPORTED_POSITION_LEVEL; KEEP_SOURCE_SCOPE_AND_ESTIMATED_SIZE_TYPE",
+      "discovery_funding_policy": "SUPPORTIVE_BONUS_10_FROM_ABS_0_1_PERCENT_PER_PAYOUT_LE_4H;15_IF_LE_1H;CONFIRMED_INDEPENDENT_DIRECTION_AND_CONTRARIAN_SIGN_REQUIRED;NEVER_CREATES_ENTRY",
+      "liquidation_future_policy": "VERIFIED_EXTERNAL_VENDOR_MODELS_AND_ORIGIN_OPEN_POSITION_LEVELS;LOCAL_HTX_MODEL_EXPLICIT_OWNER_REQUEST_ONLY;MERGE_DISPLAY_WITHIN_5_PERCENT_SAME_SIDE;NO_VOLUME_SUM;NO_SCORE_OR_TARGET_CONTRIBUTION;UPSTREAM_DEDUP"
+    },
+    "reason": "Pointer descriptions retained earlier4/2 liquidation display, local HTX default and funding max5. Runtime already uses owner-approved3/3, external vendors/default opt-in HTX and funding10/15. Documentation only; no strategy or formatter implementation changed.",
+    "checked_runtime_files": {
+      "current-generation/files/src/canonical-display.mjs": "60fe28962fd2ef99dccc95f26c8478f8d7288cf355e4cb9e4ebd69e3e9bcc2e8",
+      "current-generation/files/src/pump-liquidation-zones.mjs": "b1ac690bfc8a39169c1ab975d4e9bcedf38578c1594d636dd8de784eccaabb59",
+      "current-generation/files/src/discovery-candidate-score.mjs": "8f11b8fee252bfe78ad87a6b1bb22db34947dbdc600706f03e246baf21725a75"
+    }
+  }
 }

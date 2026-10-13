@@ -34,7 +34,7 @@
   "latest_only": true,
   "startup_contract": "MY_REPORT_2_STARTUP_CONTRACT.md",
   "manual_report_layout": "manual-report-approved-layout-v1-20260927",
-  "liquidation_display_policy": "UP_TO_FOUR_COMPARABLE_LEVELS_PER_SIDE_MERGE_WITHIN_5_PERCENT_RELATIVE_PRICE_SHOW_FARTHEST_ORIGINAL_LEVEL_NO_VOLUME_SUM",
+  "liquidation_display_policy": "UP_TO_THREE_COMPARABLE_LEVELS_PER_SIDE_MERGE_WITHIN_5_PERCENT_RELATIVE_PRICE_SHOW_FARTHEST_ORIGINAL_LEVEL_NO_VOLUME_SUM",
   "manual_run_summary_layout": "manual-run-summary-ru-v4-owner-layout-11-blocks-20261004",
   "telegram_layout_policy": "OWNER_APPROVED_BRIEF_20261007",
   "required_analytical_blocks": 15,
@@ -59,7 +59,7 @@
     "COINLOBSTER_FUTURE_MODEL",
     "OXARCHIVE_HL_BUCKETS"
   ],
-  "liquidation_future_policy": "FACTUAL_EXTERNAL_NUMERIC_LEVELS_AND_SEPARATE_LABELLED_HTX_FUTURES_SCENARIOS;MERGE_DISPLAY_WITHIN_5_PERCENT_SAME_SIDE;NO_VOLUME_SUM;NO_SCORE_OR_TARGET_CONTRIBUTION;UPSTREAM_DEDUP",
+  "liquidation_future_policy": "VERIFIED_EXTERNAL_VENDOR_MODELS_AND_ORIGIN_OPEN_POSITION_LEVELS;LOCAL_HTX_MODEL_EXPLICIT_OWNER_REQUEST_ONLY;MERGE_DISPLAY_WITHIN_5_PERCENT_SAME_SIDE;NO_VOLUME_SUM;NO_SCORE_OR_TARGET_CONTRIBUTION;UPSTREAM_DEDUP",
   "telegram_liquidation_max_levels_per_side": 3,
   "liquidation_history_role": "SECONDARY_STATISTICS_ONLY_NEVER_CLOSES_FUTURE_MAP",
   "liquidation_candidate_sources_not_enabled": [
@@ -71,7 +71,7 @@
     "N13",
     "N17"
   ],
-  "discovery_funding_policy": "OPTIONAL_SUPPORTIVE_BONUS_MAX_5_NEVER_REQUIRED",
+  "discovery_funding_policy": "SUPPORTIVE_BONUS_10_FROM_ABS_0_1_PERCENT_PER_PAYOUT_LE_4H;15_IF_LE_1H;CONFIRMED_INDEPENDENT_DIRECTION_AND_CONTRARIAN_SIGN_REQUIRED;NEVER_CREATES_ENTRY",
   "discovery_market_turnover_floor_usdt": 100000,
   "full_manual_selection_policy": "MARKET_RANK_NO_REGISTRY_SUBSTITUTION",
   "scheduled_analytics_minimum_interval_minutes": 40,
@@ -92,7 +92,7 @@
   "economical_continuation_contract": "checkpoints/ECONOMICAL_CONTINUATION_20261004.md",
   "telegram_layout_approval": "checkpoints/OWNER_BRIEF_TELEGRAM_RELEASE_20261007.json",
   "telegram_brief_revision": "OWNER_APPROVED_BRIEF_20261007",
-  "telegram_liquidation_display_policy": "UP_TO_TWO_PER_SIDE; READABLE_ROUNDING; EACH_LEVEL_CALCULATED_OR_ACTUAL; KEEP_SOURCE_SCOPE",
+  "telegram_liquidation_display_policy": "UP_TO_THREE_PER_SIDE; READABLE_ROUNDING; PROVIDER_CALCULATED_OR_REPORTED_POSITION_LEVEL; KEEP_SOURCE_SCOPE_AND_ESTIMATED_SIZE_TYPE",
   "full_tz_reconciliation": "checkpoints/CURRENT_TZ_RECONCILIATION_86_20261007.json",
   "supplemental_block_weight_policy": "OWNER_USEFUL_BLOCK_CAPS_V1_20261007",
   "supplemental_block_weight_authorization": "checkpoints/OWNER_USEFUL_WEIGHTS_LIQUIDATION_PRIORITY_20261007.json",
@@ -1953,5 +1953,16 @@
   "liquidation_additional_public_connections": [
     "ORDERLY_PUBLIC_POSITIONS"
   ],
-  "liquidation_additional_public_connection_status": "38_EXACT_HTX_MARKETS_WITH_VALID_NUMERIC_PUBLIC_POSITION_ESTIMATES;CORRECTED_5PCT_MERGE_RULE_CLOUD_PENDING"
+  "liquidation_additional_public_connection_status": "38_EXACT_HTX_MARKETS_WITH_VALID_NUMERIC_PUBLIC_POSITION_ESTIMATES;CORRECTED_5PCT_MERGE_RULE_CLOUD_PENDING",
+  "current_source_request_plan": {
+    "scheduled_evidence_per_finalist": 18,
+    "manual_evidence_per_finalist": 24,
+    "N05_N12_shared_per_finalist": 5,
+    "whole_job": 164,
+    "hot": 96,
+    "background": 56,
+    "statistics": 12,
+    "proof": "checkpoints/ACTIVE_SOURCE_SHARED18_NATURAL_AND_INDEX_ECONOMY_20261013.json"
+  },
+  "current_runtime_policy_metadata_proof": "checkpoints/ACTIVE_SOURCE_SHARED18_NATURAL_AND_INDEX_ECONOMY_20261013.json"
 }
