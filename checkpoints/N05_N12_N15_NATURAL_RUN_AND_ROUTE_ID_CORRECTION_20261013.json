@@ -1,0 +1,105 @@
+{
+  "schema": "N05_N12_N15_NATURAL_RUN_AND_ROUTE_ID_CORRECTION_V1",
+  "recorded_utc": "2026-10-13T13:57:32.189878+00:00",
+  "source_run": {
+    "workflow_run": 38407665505,
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38407665505",
+    "head": "9adb6b876b04fb95737d199cd73634f794a18345",
+    "run_id": "1791899197358-1791899211784",
+    "artifact_id": 11819214534,
+    "artifact_digest": "sha256:61cc5895e965ea5d8e428d3d662c3bc3b8faf40c0fc68870fe8ea45252061647",
+    "conclusion": "success",
+    "universe_scanned": 105,
+    "universe_total": 105,
+    "selected_contracts": [
+      "UNI-USDT",
+      "BTW-USDT"
+    ],
+    "report_status": "CLOSED",
+    "same_run_telegram": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "publication": "NO_VERIFIED_IDEA"
+  },
+  "source_accounting_defect": {
+    "contract": "UNI-USDT",
+    "old_diagnostic": {
+      "total_http": 5,
+      "n05_http": 5,
+      "n12_http": 0
+    },
+    "exact_same_run_d1_reservations": {
+      "N05_OFFICIAL_FLOW:BACKPACK": 2,
+      "N12_OFFICIAL_TRADES:KUCOIN": 3
+    },
+    "cause": "The result payload venue KUCOIN overwrote the queue route key KUCOIN_N12_EXACT_TOKEN in adapter_results because the result spread came after the route venue. Classification missed the N12 route.",
+    "fix": "Preserve the queue route venue after spreading adapter result; no admission, cap, score, strategy, or report text change.",
+    "local_regression": {
+      "command": "node --test current-generation/tests/n05-broad-exchanges.test.mjs current-generation/tests/active-market-coverage-expansion.test.mjs current-generation/tests/block-decision-use-audit.test.mjs",
+      "passed": 32,
+      "failed": 0,
+      "mocked_split": {
+        "total_http": 5,
+        "n05_http": 2,
+        "n12_http": 3
+      }
+    },
+    "cloud_validation": "PENDING_NEXT_NATURAL_EXACT_HEAD_FULL_RUN",
+    "limitation": "D1 reservations prove admitted source attempts, not independently that each produced HTTP; verify adapter actual_http/receipts on the next cloud run."
+  },
+  "natural_run_block_facts": {
+    "UNI_N05": "CHECKED_NEUTRAL_CONTEXT; verified HTX futures and external flow, no joint agreement; zero score contribution",
+    "UNI_N12": "CHECKED_NEUTRAL_CONTEXT; HTX spot/futures bounded samples disagreed; no common directional conclusion",
+    "BTW_N05": "NOT_CHECKED; external route deferred and HTX exact 240-minute futures window not closed",
+    "BTW_N12": "ADMISSIBLE_FACTUAL_CONTEXT; HTX spot/futures bounded samples agreed; HTX is one source",
+    "N15_both": "NOT_CHECKED; both daily caps unavailable, zero new HTTP"
+  },
+  "N15_daily_source_health_readback": {
+    "scope_utc_day": "2026-10-13",
+    "table": "report2_evidence_source_health_observation",
+    "read_only_d1_rows_read": 480,
+    "rows_written": 0,
+    "COINGECKO_SECTOR": {
+      "context_available_observations": 21,
+      "context_available_http": 45,
+      "deferred_observations": 2,
+      "deferred_http": 3
+    },
+    "COINPAPRIKA_SECTOR": {
+      "context_available_observations": 17,
+      "context_available_http": 35,
+      "valid_no_event_observations": 4,
+      "valid_no_event_http": 9,
+      "deferred_observations": 1,
+      "deferred_http": 2,
+      "no_exact_htx_spot_observations": 2,
+      "no_exact_htx_spot_http": 2
+    },
+    "interpretation": "Observed usefulness is nonzero, but two internal 48/day source caps are exhausted before all scheduled 40-minute deep checks. Counts are journal observations, not unique asset coverage or forecast accuracy."
+  },
+  "constraints": {
+    "active_blocks": [
+      "N04",
+      "N05",
+      "N10",
+      "N11",
+      "N12",
+      "N15"
+    ],
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "score_weights_caps_text_changed": false,
+    "no_new_provider_http_for_this_audit": true,
+    "liq_status": "OPEN",
+    "all_105_active_block_coverage_status": "OPEN",
+    "telegram_score_and_form_change": "OWNER_DEFERRED"
+  },
+  "next_action": "N05/N12 route identity correction is locally tested (32/32) but awaits a natural exact-head cloud run. Verify the shared five-HTTP split against exact same-run D1 reservations and actual adapter receipts; do not equate reservation with HTTP when minute admission fails. N15 CoinGecko/CoinPaprika both reached 48/day and were unavailable in the 13:46 UTC full run; design a saved-first/batched route within existing caps, then verify fact to consumer. LIQ 35/103 archived future-level proof gaps and all-105 active-block source matrix remain open. Telegram score/form changes remain owner-deferred until blocks finish."
+}

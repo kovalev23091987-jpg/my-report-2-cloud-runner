@@ -68,7 +68,7 @@ export async function collectN05VenueRoutes(params={},routes=[],turnoverCollecto
   network_calls:flow_network_calls+(baseline?.network_calls||0),flow_network_calls,
   receipts:[...results.flatMap(({result})=>result.receipts||[]),...(baseline?.receipts||[])],
   selected_venue:first?.venue||null,selected_venues,source_selection:'MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP',
-  caller_reserved_requests:reserved,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({venue,...result}))};
+  caller_reserved_requests:reserved,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({...result,venue}))};
 }
 
 export async function collectExternalN05Flow(params={}){

@@ -49,6 +49,14 @@ test('later failures and opposite venue data survive after first success without
  const r=await ext.collectN05VenueRoutes({},[['BACKPACK',async()=>({status:'CLOSED',components:[component],network_calls:0,receipts:[{status:'CACHE'}]})],['FAIL',async()=>({status:'HTTP_429',components:[],network_calls:1,receipts:[{status:'HTTP_429'}]})],['SECOND',async()=>({status:'CLOSED',components:[other],network_calls:0})]]);
  assert.equal(r.check_completed,true);assert.equal(r.components.length,2);assert.equal(r.components[0],component);assert.equal(r.components[1],other);assert.deepEqual(r.selected_venues,['BACKPACK','TEST_SECOND']);assert.equal(r.network_calls,1);assert.equal(r.adapter_results[1].status,'HTTP_429');assert.equal(r.receipts.length,2);
 });
+test('shared adapter accounting retains N12 route identity when provider payload names its venue',async()=>{
+ const r=await ext.collectN05VenueRoutes({},[['BACKPACK',async()=>({venue:'BACKPACK',status:'CLOSED',components:[],network_calls:2})],['KUCOIN_N12_EXACT_TOKEN',async()=>({venue:'KUCOIN',status:'NO_USEFUL_PUBLIC_TRADE_SAMPLE',components:[],network_calls:3})]]);
+ assert.equal(r.network_calls,5);
+ assert.deepEqual(r.adapter_results.map(row=>[row.venue,row.network_calls]),[['BACKPACK',2],['KUCOIN_N12_EXACT_TOKEN',3]]);
+ const {attributeSharedN05N12Http}=await import(new URL('candidate-evidence-v2-runtime.mjs',root));
+ const split=attributeSharedN05N12Http(r);
+ assert.deepEqual([split.status,split.n05_http,split.n12_http],['RECONCILED_ADAPTER_TRANSPORT',2,3]);
+});
 test('five-request envelope continues cache-only routes after admission denial and defers optional baseline until all flow routes',async()=>{
  let grants=0,calls=0;const order=[],c=bn.normalizeBinanceNativeFlow({contract:'ATOM-USDT',identity:kin,catalog:{symbols:[{symbol:'ATOMUSDT',baseAsset:'ATOM',quoteAsset:'USDT',status:'TRADING',isSpotTradingAllowed:true}]},candles:nativeBars(),window_end_ts:end,observed_ts:end+1000});
  const route=(venue,n,component)=>[venue,async p=>{order.push(venue);let network_calls=0;for(let i=0;i<n;i++)if(p.request_admit({attempts:1,logical_request_id:venue+i})?.allowed){network_calls++;calls++;}return{status:component?'CLOSED':'DENIED_OR_PARTIAL',components:component?[component]:[],network_calls};}];
