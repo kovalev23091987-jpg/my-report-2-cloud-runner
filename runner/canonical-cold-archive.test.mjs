@@ -38,3 +38,8 @@ test('shared D1 admission and measured storage are required before any new archi
  for(const options of [{},{storage_bytes:0},{db_admit:allow},{db_admit:()=>({allowed:false}),storage_bytes:0},{db_admit:allow,storage_bytes:400000000}])assert.equal((await retainCanonicalPublicationRow(db,record,options)).retained,false);
  assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM report2_canonical_cold_archive_v1').get().n,0);assert.equal((await readCanonicalPublicationArchive(db,{publication_id:record.publication_id,raw_sha256:record.raw_sha256})).row,null);db.sqlite.close();
 });
+test('a different lossless gzip encoding keeps the immutable original row and never overwrites it',async()=>{
+ const db=database(),first=encodeCanonicalPublicationRow(row());await retainCanonicalPublicationRow(db,first,{db_admit:allow,storage_bytes:0});
+ const alternate=gzipSync(Buffer.from(JSON.stringify(row())),{level:1}),record={...first,gzip_sha256:createHash('sha256').update(alternate).digest('hex'),gzip_bytes:alternate.length,payload_gzip_base64:alternate.toString('base64')};assert.deepEqual(decodeCanonicalPublicationRow(record),row());
+ const r=await retainCanonicalPublicationRow(db,record,{db_admit:allow,storage_bytes:0});assert.equal(r.status,'ARCHIVE_IDENTICAL_RETAINED');assert.equal(r.stored_gzip_sha256,first.gzip_sha256);assert.equal(JSON.parse(db.sqlite.prepare('SELECT record_json FROM report2_canonical_cold_archive_v1').get().record_json).gzip_sha256,first.gzip_sha256);db.sqlite.close();
+});

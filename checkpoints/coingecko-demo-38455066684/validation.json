@@ -1,0 +1,627 @@
+{
+  "schema": "REPORT2_COINGECKO_DEMO_SECTOR_VALIDATION_V1",
+  "head": "c779c0c1f855f5aa1979e2cb31d919c718126b95",
+  "cloud_run": "38455066684",
+  "run_id": "COINGECKO_DEMO_SECTOR:38455066684:1",
+  "contract": "UNI-USDT",
+  "identity": {
+    "chain": "ethereum",
+    "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+  },
+  "source_identity_record": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+  "missing_fact": "UNI_CURRENT_FREE_DEMO_SECTOR_AFTER_CP_MEMBERSHIP_ABSENCE",
+  "status": "CLOSED",
+  "maximum_source_HTTP": 4,
+  "D1_reservation": {
+    "rows_read": 8000,
+    "rows_written": 200
+  },
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-13",
+      "run_count": 39,
+      "reserved_rows_read": 1501524,
+      "reserved_rows_written": 24056,
+      "measured_rows_read": 1033594,
+      "measured_rows_written": 12727,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 8000,
+      "rows_written": 200
+    },
+    "projected_reserved": {
+      "rows_read": 1509524,
+      "rows_written": 24256
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "auth_mode": "DEMO_HEADER",
+  "actual_HTTP": 2,
+  "receipts": [
+    {
+      "route": "EXACT_COIN_METADATA",
+      "url": "https://api.coingecko.com/api/v3/coins/ethereum/contract/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "http_status": 200,
+      "status": "RECEIVED",
+      "received_ts": 1791919710492,
+      "body_sha256": "28663d4206bbf1b29eb47cee00f99a5f9653d5c9b7566e8de7572ea915da1066",
+      "actual_http": 1
+    },
+    {
+      "route": "EXACT_CATEGORY_DIRECTORY",
+      "url": "https://api.coingecko.com/api/v3/coins/categories/list",
+      "status": "VALIDATED_REFERENCE_CACHE",
+      "http_status": 200,
+      "received_ts": 1791917907136,
+      "expires_ts": 1791921507136,
+      "body_sha256": "86ee17c3f730e9c88dcfa501e4288c20ccc0d567ec34344764a76f35db07c64b",
+      "actual_http": 0,
+      "cache_owner_source": "COINGECKO_SECTOR",
+      "shared_provider": null
+    },
+    {
+      "route": "CATEGORY_QUOTES",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized-finance-defi&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "http_status": 200,
+      "status": "RECEIVED",
+      "received_ts": 1791919717143,
+      "body_sha256": "8b563a5c234ce45102c819f41a6a2bb0405212e9c84c2c67096fb2250d6fe3eb",
+      "actual_http": 1
+    }
+  ],
+  "summary": {
+    "coin_id": "uniswap",
+    "tag_id": "decentralized-finance-defi",
+    "category_name": "Decentralized Finance (DeFi)",
+    "target_source_ts": 1791919675000,
+    "target_change_24h_pct": 2.61448,
+    "peer_median_change_24h_pct": -0.18512499999999998,
+    "relative_strength_pct_points": 2.7996049999999997,
+    "eligible_peers": 50,
+    "returned_category_rows": 100,
+    "full_sector_coverage": false,
+    "source_ts": 1791919675000,
+    "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+    "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+    "direction_neutral": false,
+    "entry_eligible": false,
+    "is_htx_price": false
+  },
+  "admission": {
+    "allowed": true,
+    "status": "PER_TRANSPORT_RESERVED"
+  },
+  "provider_backoff": null,
+  "evidence": [
+    {
+      "evidence_id": "EV2:794973db14ebc1c2bf81c13702a50426f5c2f6e5a85294e2082711a26ab9c300",
+      "asset_id": "ethereum:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "htx_contract": "UNI-USDT",
+      "block_id": "N15",
+      "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+      "provider_id": "COINGECKO_SECTOR",
+      "upstream_id": "COINGECKO_AGGREGATED_VENUES",
+      "origin_event_id": "uniswap:decentralized-finance-defi:1791919675000",
+      "dependency_group": "SECTOR:uniswap:decentralized-finance-defi:1791919675000",
+      "source_ts": 1791919675000,
+      "observed_ts": 1791919718610,
+      "first_known_ts": 1791919718610,
+      "effective_from": null,
+      "effective_to": null,
+      "window_start": null,
+      "window_end": null,
+      "coverage_status": "PARTIAL_PROVIDER_DIRECTIONAL_CONTEXT",
+      "coverage_fraction": 0.75,
+      "unit": null,
+      "value": null,
+      "directional_strength": 0.27996049999999995,
+      "risk_strength": null,
+      "identity_status": "EXACT",
+      "finality_status": "FINAL",
+      "schema_version": "EvidenceV2.1",
+      "raw_hash": "9ce299af3eefc9b43f2d663a1ad3c54e950b67e19bc6b56f8de7feff489591c6",
+      "expires_at": 1791920018610,
+      "cost_receipt_id": null,
+      "validation_status": "VALID",
+      "validation_reason": null,
+      "coin_id": "uniswap",
+      "tag_id": "decentralized-finance-defi",
+      "category_name": "Decentralized Finance (DeFi)",
+      "target_source_ts": 1791919675000,
+      "target_change_24h_pct": 2.61448,
+      "peer_median_change_24h_pct": -0.18512499999999998,
+      "relative_strength_pct_points": 2.7996049999999997,
+      "eligible_peers": 50,
+      "returned_category_rows": 100,
+      "full_sector_coverage": false,
+      "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+      "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+      "direction_neutral": false,
+      "entry_eligible": false,
+      "is_htx_price": false,
+      "peers": [
+        {
+          "id": "0x",
+          "symbol": "ZRX",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -2.37717,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "1inch",
+          "symbol": "1INCH",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.69523,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "aave",
+          "symbol": "AAVE",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.34186,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "aerodrome-finance",
+          "symbol": "AERO",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.691,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "amp-token",
+          "symbol": "AMP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 22.69134,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "anvil",
+          "symbol": "ANVL",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 1.67765,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "aster-2",
+          "symbol": "ASTER",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.16003,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "bedrock-token",
+          "symbol": "BR",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -5.77528,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "berachain-bera",
+          "symbol": "BERA",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 3.58839,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "binance-staked-sol",
+          "symbol": "BNSOL",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.04266,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "bitway",
+          "symbol": "BTW",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 16.33654,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "bybit-staked-sol",
+          "symbol": "BBSOL",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.03382,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "cap-4",
+          "symbol": "CAP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -5.44927,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "chainlink",
+          "symbol": "LINK",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.21022,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "chip-2",
+          "symbol": "CHIP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -2.23451,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "coinbase-wrapped-xrp",
+          "symbol": "CBXRP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.7423,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "compound-governance-token",
+          "symbol": "COMP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -3.81301,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "convex-finance",
+          "symbol": "CVX",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -3.29208,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "cow-protocol",
+          "symbol": "COW",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -1.70085,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "crvusd",
+          "symbol": "CRVUSD",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.10345,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "curve-dao-token",
+          "symbol": "CRV",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -1.45761,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "dai",
+          "symbol": "DAI",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.00069,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "derive",
+          "symbol": "DRV",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -1.42412,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "dexe",
+          "symbol": "DEXE",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.8041,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "dydx-chain",
+          "symbol": "DYDX",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 1.44367,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "edgex",
+          "symbol": "EDGE",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -5.2102,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "ethena",
+          "symbol": "ENA",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -2.3741,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "ethena-staked-ena",
+          "symbol": "SENA",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -2.37268,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "ether-fi",
+          "symbol": "ETHFI",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -3.82136,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "falcon-finance-ff",
+          "symbol": "FF",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.51915,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "flying-tulip",
+          "symbol": "FT",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -5.6607,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "frax",
+          "symbol": "FRAX",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.07522,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "frax-ether",
+          "symbol": "FRXETH",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -0.01268,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "gmx",
+          "symbol": "GMX",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 4.01527,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "gnosis",
+          "symbol": "GNO",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.68697,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "havven",
+          "symbol": "SNX",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -1.43891,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "hyperliquid",
+          "symbol": "HYPE",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -2.16734,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "injective-protocol",
+          "symbol": "INJ",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 8.07943,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "instadapp",
+          "symbol": "FLUID",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 3.28185,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "iota",
+          "symbol": "IOTA",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -1.32625,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "jito-governance-token",
+          "symbol": "JTO",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 4.39427,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "jupiter-exchange-solana",
+          "symbol": "JUP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -2.33257,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "jupiter-perpetuals-liquidity-provider-token",
+          "symbol": "JLP",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.02456,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "just",
+          "symbol": "JST",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -1.21046,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "kamino",
+          "symbol": "KMNO",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 8.6539,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "kinetiq",
+          "symbol": "KNTQ",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -6.5402,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "lido-dao",
+          "symbol": "LDO",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 2.7698,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "lighter",
+          "symbol": "LIT",
+          "source_ts": 1791919675000,
+          "change_24h_pct": -7.58142,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "mag7-ssi",
+          "symbol": "MAG7.SSI",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.60121,
+          "quote": "USD_AGGREGATED"
+        },
+        {
+          "id": "meteora",
+          "symbol": "MET",
+          "source_ts": 1791919675000,
+          "change_24h_pct": 0.00799,
+          "quote": "USD_AGGREGATED"
+        }
+      ],
+      "sector_proof": "EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1",
+      "direction_policy": "RELATIVE_STRENGTH_SUPPORTS_LONG_RELATIVE_WEAKNESS_SUPPORTS_SHORT_LOW_WEIGHT"
+    }
+  ],
+  "consumer_status": "CLOSED",
+  "consumer_facts": [
+    {
+      "advisory_only": true,
+      "directional_vote": false,
+      "hard_gate": false,
+      "score_contribution": 0,
+      "block_id": "N15",
+      "source": "CoinGecko",
+      "decision_block": "MARKET_STRENGTH_SPOT",
+      "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+      "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+      "value": "монета +2,61%, медиана -0,19%, разница +2,80 п.п.; сводные цены площадок",
+      "unit": "",
+      "source_ts": 1791919675000,
+      "observed_ts": 1791919718610,
+      "evidence_id": "EV2:794973db14ebc1c2bf81c13702a50426f5c2f6e5a85294e2082711a26ab9c300",
+      "physical_root_key": "ethereum:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984|uniswap:decentralized-finance-defi:1791919675000"
+    }
+  ],
+  "production_use_claim": false,
+  "monthly_source_bound": 7936,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "COINGECKO_DEMO_SECTOR:38455066684:1",
+    "source_run_id": "38455066684",
+    "measured_rows_read": 70,
+    "measured_rows_written_accounted": 21,
+    "measured_requests_accounted": 40,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 40,
+    "rows_read": 71,
+    "rows_written": 21,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 40,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 6,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791919719509
+}

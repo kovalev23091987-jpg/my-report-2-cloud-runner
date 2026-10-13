@@ -1,0 +1,50 @@
+{
+  "schema": "REPORT2_PRIVATE_CANONICAL_DURABLE_ACCESS_RECONCILIATION_V1",
+  "recorded_utc": "2026-10-13T19:33:39.623121+00:00",
+  "base_main": "c779c0c1f855f5aa1979e2cb31d919c718126b95",
+  "status": "APP_DURABLE_SOURCE_BYTES_VERIFIED_GITHUB_TOKEN_ROLE_PILOT_PENDING",
+  "app_durable_proof": "checkpoints/PRIVATE_CANONICAL_APP_DURABLE_READBACK_20261013.json",
+  "main_originals_unchanged": true,
+  "source_HTTP": 0,
+  "automatic_writer_activated": false,
+  "hot_pruning_activated": false,
+  "github_old_worker_token_probe": {
+    "cloud_run": 38450348940,
+    "artifact_id": 11840068070,
+    "artifact_digest": "sha256:9117ca9658fc39e5994477e2b49d53b1b0065c5016187b35bbfe718b956206f9",
+    "receipt": "checkpoints/private-canonical-durable-38450348940/validation.json",
+    "status": "VALIDATION_NOT_CLOSED",
+    "reason": "PRIVATE_ARCHIVE_D1_ACCESS_REQUIRED_HTTP_401",
+    "D1": {
+      "requests": 0,
+      "rows_read": 0,
+      "rows_written": 0,
+      "unknown_ops": 0
+    }
+  },
+  "existing_D1_token": {
+    "secret_name": "REPORT2_ISOLATED_D1_API_TOKEN",
+    "metadata_present": true,
+    "owner_screenshot_permission": "Account.D1, one account",
+    "new_token_not_requested_before_existing_token_test": true,
+    "new_private_archive_access_confirmed": false
+  },
+  "immutable_copy_fix": "Accept different validated gzip encodings of the same raw content, preserve stored original; report stored encoding hash. No overwrite or source deletion.",
+  "local_tests": {
+    "pass": 25,
+    "tap_sha256": "315913fde0bec437d8e47ca0901c6921c42aaf955693641732b0b1f40af84bc1",
+    "provider_HTTP": 0
+  },
+  "prior_cloud_LIQ": {
+    "cloud_run": 38450333603,
+    "artifact_id": 11839768307,
+    "artifact_digest": "sha256:b9c5efc14c52c7943c615e9a241d59ecffca783f45817534b3600b855b1a3972",
+    "receipt_directory": "checkpoints/private-canonical-liq-cloud-38450333603"
+  },
+  "not_proven": [
+    "Automatic continuous cold recording/rolling retention",
+    "Reference restoration before removal from main",
+    "Months of whole-history capacity",
+    "All105 useful source coverage or LIQ103 complete"
+  ]
+}

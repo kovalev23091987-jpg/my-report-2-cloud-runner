@@ -1,0 +1,187 @@
+{
+  "schema": "REPORT2_COINGECKO_UPDATED_DEMO_FACT_CONSUMER_V1",
+  "recorded_utc": "2026-10-13T19:33:39.623121+00:00",
+  "base_main": "c779c0c1f855f5aa1979e2cb31d919c718126b95",
+  "status": "FREE_DEMO_EXACT_UNI_SECTOR_FACT_AND_CONSUMER_VERIFIED",
+  "secret_metadata_only": {
+    "name": "REPORT2_COINGECKO_DEMO_API_KEY",
+    "updated_utc": "2026-10-13T19:15:16Z",
+    "value_read_or_exported": false
+  },
+  "cloud_run": 38455066684,
+  "artifact_id": 11842295163,
+  "artifact_digest": "sha256:201077c8857a6ba32c3abc796f74a5585a7dc5fba55c34dcecb784b15e9c04fa",
+  "receipt": "checkpoints/coingecko-demo-38455066684/validation.json",
+  "contract": "UNI-USDT",
+  "identity": {
+    "chain": "ethereum",
+    "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+  },
+  "actual_HTTP": 2,
+  "original_receipts": [
+    {
+      "route": "EXACT_COIN_METADATA",
+      "url": "https://api.coingecko.com/api/v3/coins/ethereum/contract/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "http_status": 200,
+      "status": "RECEIVED",
+      "received_ts": 1791919710492,
+      "body_sha256": "28663d4206bbf1b29eb47cee00f99a5f9653d5c9b7566e8de7572ea915da1066",
+      "actual_http": 1
+    },
+    {
+      "route": "EXACT_CATEGORY_DIRECTORY",
+      "url": "https://api.coingecko.com/api/v3/coins/categories/list",
+      "status": "VALIDATED_REFERENCE_CACHE",
+      "http_status": 200,
+      "received_ts": 1791917907136,
+      "expires_ts": 1791921507136,
+      "body_sha256": "86ee17c3f730e9c88dcfa501e4288c20ccc0d567ec34344764a76f35db07c64b",
+      "actual_http": 0,
+      "cache_owner_source": "COINGECKO_SECTOR",
+      "shared_provider": null
+    },
+    {
+      "route": "CATEGORY_QUOTES",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized-finance-defi&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "http_status": 200,
+      "status": "RECEIVED",
+      "received_ts": 1791919717143,
+      "body_sha256": "8b563a5c234ce45102c819f41a6a2bb0405212e9c84c2c67096fb2250d6fe3eb",
+      "actual_http": 1
+    }
+  ],
+  "summary": {
+    "coin_id": "uniswap",
+    "tag_id": "decentralized-finance-defi",
+    "category_name": "Decentralized Finance (DeFi)",
+    "target_source_ts": 1791919675000,
+    "target_change_24h_pct": 2.61448,
+    "peer_median_change_24h_pct": -0.18512499999999998,
+    "relative_strength_pct_points": 2.7996049999999997,
+    "eligible_peers": 50,
+    "returned_category_rows": 100,
+    "full_sector_coverage": false,
+    "source_ts": 1791919675000,
+    "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+    "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+    "direction_neutral": false,
+    "entry_eligible": false,
+    "is_htx_price": false
+  },
+  "consumer_status": "CLOSED",
+  "consumer_facts": [
+    {
+      "advisory_only": true,
+      "directional_vote": false,
+      "hard_gate": false,
+      "score_contribution": 0,
+      "block_id": "N15",
+      "source": "CoinGecko",
+      "decision_block": "MARKET_STRENGTH_SPOT",
+      "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+      "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+      "value": "монета +2,61%, медиана -0,19%, разница +2,80 п.п.; сводные цены площадок",
+      "unit": "",
+      "source_ts": 1791919675000,
+      "observed_ts": 1791919718610,
+      "evidence_id": "EV2:794973db14ebc1c2bf81c13702a50426f5c2f6e5a85294e2082711a26ab9c300",
+      "physical_root_key": "ethereum:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984|uniswap:decentralized-finance-defi:1791919675000"
+    }
+  ],
+  "D1": {
+    "requests": 40,
+    "rows_read": 71,
+    "rows_written": 21,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 40,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 6,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "monthly_source_bound": 7936,
+  "owner_free_plan_screenshot_confirmed": true,
+  "production_natural_use_verified": false,
+  "all105_coverage_claim": false,
+  "Telegram": 0,
+  "MAIN": 0,
+  "score_change": false,
+  "first_401_preserved": "checkpoints/COINGECKO_DEMO_ACTUAL_ACCESS_401_20261013.json",
+  "backoff_only_probe": {
+    "cloud_run": 38452140450,
+    "artifact_id": 11840996415,
+    "artifact_digest": "sha256:8eaca886bd60464953b5418359d1bbfc4e4706e8fd3b874089f75b823f0e834b",
+    "actual_HTTP": 0,
+    "receipt": "checkpoints/coingecko-demo-38452140450/validation.json",
+    "interpretation": "Saved provider backoff; no second live401 and no key conclusion"
+  }
+}

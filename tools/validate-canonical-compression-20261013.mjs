@@ -16,6 +16,7 @@ const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPO
 const retainPrivate=process.argv.includes('--retain-private'),archive=retainPrivate?new PrivateArchiveD1API({token:process.env.CLOUDFLARE_API_TOKEN}):null;
 const usage=()=>combineMeasuredD1Usage(db.usageSnapshot(),...(archive?[archive.usageSnapshot()]:[]));
 const out={schema:'REPORT2_PRIVATE_CANONICAL_COMPRESSION_VALIDATION_V1',head:main,cloud_run:process.env.GITHUB_RUN_ID,source_run_id:'1791912429923-1791912455480',status:'NOT_ADMITTED',D1_reservation:reservation,sourceHTTP:0,MAIN:0,Telegram:0,main_rows_modified:0,private_payload_exported:false,records:[],automatic_writer_activated:false,private_retention_pilot:retainPrivate};let admitted=false;
+if(archive&&['REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN','REPORT2_ISOLATED_D1_API_TOKEN'].includes(process.env.REPORT2_ARCHIVE_TOKEN_ROLE))out.archive_token_role=process.env.REPORT2_ARCHIVE_TOKEN_ROLE;
 await fs.mkdir('audit-output/canonical-compression',{recursive:true});
 try{
  if(archive)out.private_database=await archive.verifyDatabase();

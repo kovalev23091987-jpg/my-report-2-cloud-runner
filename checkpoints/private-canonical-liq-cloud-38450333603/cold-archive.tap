@@ -1,0 +1,20 @@
+✔ saved original report canonical and text survive byte-for-byte; unknown columns are preserved (5.363553ms)
+✔ full producer metadata identity is accepted without changing its original JSON (4.436499ms)
+✔ source/manifest identity, content bytes and compressed hash are all checked (4.768323ms)
+✔ large compressible source remains lossless; incompressible and decompression bombs are bounded (77.16463ms)
+✔ durable readback and exact revision reader preserve original source without latest-only guesses (10.395272ms)
+✔ shared D1 admission and measured storage are required before any new archival write (5.649722ms)
+✔ only the pinned private DB receives the header, and actual native usage is retained (34.152286ms)
+✔ main, foreign tables and destructive SQL cannot be requested by this writer (1.068059ms)
+✔ descriptor permission failure is explicit and precedes all D1 query execution (0.612082ms)
+✔ query auth rejection preserves zero native execution; unmeasured timeout fails closed (0.750743ms)
+✔ missing native counters and incomplete batch receipts cannot silently charge zero (1.152378ms)
+✔ both databases count against one shared reservation, including unknown operations (0.316816ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 193.735282
