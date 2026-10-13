@@ -120,5 +120,18 @@
     "Provider uptime or absence of IP restrictions",
     "24-hour actual stability until natural cycles reviewed",
     "Final closure of LIQ or all active blocks"
-  ]
+  ],
+  "first_cloud_validation": {
+    "run": 38418167605,
+    "head": "98a4d30d2ebc4b4a4892e0d4ef817900ead20d55",
+    "runtime_assembled": true,
+    "conclusion": "FAILURE_OLD_QUOTA_FIXTURE",
+    "failed_test": "candidate-evidence-v2-runtime.test.mjs: provider quota denial",
+    "cause": "Fixture seeded September 29 with old 48 cap; transport now correctly uses actual UTC date. Fix seeds the current policy cap and freezes the historical fixture clock.",
+    "local_repair_tests_passed": 2,
+    "full_report_started": false,
+    "provider_source_http": 0,
+    "Telegram": 0,
+    "exact_cloud_retry_pending": true
+  }
 }

@@ -1,3 +1,4 @@
+import {SOURCE_POLICIES} from '../files/src/evidence-source-adapters.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -24,10 +25,11 @@ async function cachedCore(db){
  await writeEvidenceSourceCache(db,{source:'HTX_PUBLIC_RISK',asset_key:'ABC-USDT',observed_ts:NOW,expires_ts:NOW+3600000,payload:{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,status:'CLOSED',evidence:[],network_calls:0}});
 }
 
-test('provider quota denial preserves the next active source while N07 is paused',async()=>{
+test('provider quota denial preserves the next active source while N07 is paused',async t=>{
+ t.mock.method(Date,'now',()=>NOW); // Historical quota and transport must use the same UTC day.
  const db=new DB();await cachedCore(db);
  await db.prepare("INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,updated_at) VALUES('DERIBIT_ALT_OPTIONS','2026-09-29',168,?1)").bind(NOW).run();
- await db.prepare("INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,updated_at) VALUES('COINPAPRIKA_SECTOR','2026-09-29',48,?1)").bind(NOW).run();
+ await db.prepare("INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,updated_at) VALUES('COINPAPRIKA_SECTOR','2026-09-29',?2,?1)").bind(NOW,SOURCE_POLICIES.COINPAPRIKA_SECTOR.daily_cap).run();
  const calls=[];
  const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls.push(url);if(String(url).includes('/market/history/trade'))return new Response(JSON.stringify({status:'ok',ch:'market.ABC-USDT.trade.detail',ts:Date.now(),data:[]}));if(String(url).startsWith('https://api.bsky.app/'))return new Response(JSON.stringify({posts:[]}));assert.equal(url,'https://abc.example/feed.xml');return new Response(rss,{headers:{'content-type':'application/rss+xml'}});},asset_metadata:{official_domains:['abc.example'],official_feeds:['https://abc.example/feed.xml']}});
  assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'BLOCK_PAUSED_BY_OWNER');
