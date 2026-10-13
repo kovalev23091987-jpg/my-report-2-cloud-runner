@@ -809,7 +809,15 @@
       "report2_liq_forecast_archive_v1",
       "report2_liq_forecast_archive_clock_v1"
     ],
-    "natural_archive_write_readback": "PENDING_FIRST_CRON",
+    "natural_archive_write_readback": "PENDING_FIRST_OBSERVED_INVOCATION",
+    "first_cron_window_observation": {
+      "scheduled_utc": "2026-10-13T05:36:00Z",
+      "cron_last_modified_utc": "2026-10-13T05:25:09.42772Z",
+      "checked_utc": "2026-10-13T05:40:00Z",
+      "dedicated_archive_rows": 0,
+      "workers_invocations_adaptive_0500_0541": 0,
+      "conclusion": "No first invocation observed. Cron setting was modified less than 15 minutes before this window; Cloudflare documents up to 15 minutes propagation. Recheck next 06:36 UTC window before diagnosing a Worker execution failure."
+    },
     "dedicated_archive_database": {
       "name": "report2-free-liq-forecast-history",
       "id": "68a85c40-41e8-4bcc-9599-5ea5da281126",
@@ -1004,6 +1012,20 @@
       "STRK"
     ],
     "pending_refresh_complete": false,
+    "eight_source_saved_matrix_counts": {
+      "HYPERLIQUID_NATIVE_REAL_NUMERIC_LEVELS": 58,
+      "HYPERLIQUID_NATIVE_UNSUPPORTED_MARKET": 43,
+      "HYPERLIQUID_NATIVE_NO_NUMERIC_LEVELS": 1,
+      "BYK_TRACKED_HL_BANDS_NO_REAL_NUMERIC_LEVELS": 98,
+      "BYK_TRACKED_HL_BANDS_QUOTA_DEFERRED": 4,
+      "LIGHTER_NATIVE_NO_REAL_NUMERIC_LEVELS": 102,
+      "GMX_NATIVE_NO_REAL_NUMERIC_LEVELS": 102,
+      "GTRADE_NATIVE_NO_REAL_NUMERIC_LEVELS": 102,
+      "BYKARANTELI_FUTURE_MAP_NO_REAL_NUMERIC_LEVELS": 102,
+      "COINLOBSTER_FUTURE_MODEL_NO_REAL_NUMERIC_LEVELS": 102,
+      "OXARCHIVE_HL_BUCKETS_NO_REAL_NUMERIC_LEVELS": 102,
+      "note": "Saved 102-asset capability cache readback, not fresh source calls or a claim of current report utility. BYK/0xArchive reuse Hyperliquid primary data and are not independent."
+    },
     "hyperliquid_real_numeric_historical_proof_assets": 58,
     "hyperliquid_real_numeric_eligible_excluding_btc_eth": 56,
     "hyperliquid_no_real_numeric": 1,
@@ -1088,6 +1110,26 @@
       "max_http_per_run": 5,
       "reserved_http": 5,
       "source": "liquidation_source_acquisition_audit.shared_budget"
-    }
+    },
+    "spot_futures_liq_context": [
+      {
+        "contract": "PONS-USDT",
+        "status": "CLOSED",
+        "spot_source_ts": 1791869243280,
+        "futures_source_ts": 1791869244238,
+        "skew_ms": 958,
+        "price_context_only": true,
+        "independent_liquidation_source_count_added": 0
+      },
+      {
+        "contract": "TIA-USDT",
+        "status": "CLOSED",
+        "spot_source_ts": 1791869208124,
+        "futures_source_ts": 1791869206048,
+        "skew_ms": 2076,
+        "price_context_only": true,
+        "independent_liquidation_source_count_added": 0
+      }
+    ]
   }
 }

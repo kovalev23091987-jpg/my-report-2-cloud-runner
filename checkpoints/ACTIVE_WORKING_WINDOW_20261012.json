@@ -1,8 +1,8 @@
 {
   "schema": "REPORT2_ACTIVE_WORKING_WINDOW_LAST_THREE_V1",
-  "recorded_utc": "2026-10-13T05:31:48.927556+00:00",
+  "recorded_utc": "2026-10-13T05:43:29.902574+00:00",
   "policy": "Exactly three most recent operational evidence pointers. Historical proofs remain stored, but are not a continuation instruction.",
-  "main_at_recording": "aa0db124",
+  "main_at_recording": "9ec29d1f",
   "work_in_progress_branch": null,
   "current_task": "LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
   "last_three": [
@@ -10,7 +10,7 @@
       "rank": 1,
       "kind": "LIQ_12_SAVED_REPORTS_AND_DEDICATED_FORECAST_ARCHIVE",
       "proof": "checkpoints/LIQ_12_SCHEDULED_REPORTS_AUDIT_20261013.json",
-      "status": "NEW_HEAD_FULL_REPORT_CLOUD_PASS_ARCHIVE_FIRST_CRON_PENDING"
+      "status": "CLOUD_PASS_OLD_REPORTS_CHECKED_FIRST_ARCHIVE_INVOCATION_PENDING"
     },
     {
       "rank": 2,
@@ -46,6 +46,6 @@
     "Source-specific realized outcome calibration and any predictive weight change.",
     "Regular GitHub schedule trigger: no schedule event after 03:12 UTC as of this checkpoint."
   ],
-  "next_action": "LIQ: verify first natural 36-minute dedicated forecast archive D1 write/readback, then compare later source-specific realized events without changing current score or report; continue factual coverage for approved 105 and exact Telegram SENT on a publishable post-change run. Diagnose missing GitHub schedule separately; keep paused blocks and shared caps.",
-  "updated_utc": "2026-10-13T05:31:48.927556+00:00"
+  "next_action": "LIQ: after the next 06:36 UTC Cloudflare cron window, read dedicated forecast archive D1 and Workers invocation analytics; validate exact publication, source clocks and payload. If no invocation, diagnose cron. Compare later HTX official events with HTX model only; do not change weights. Verify exact same-run Telegram SENT on a publishable report. Continue 105-asset factual coverage only with admitted useful new facts; paused blocks and shared caps remain.",
+  "updated_utc": "2026-10-13T05:43:29.902574+00:00"
 }
