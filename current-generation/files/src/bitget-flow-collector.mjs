@@ -1,4 +1,4 @@
-import {N05_N12_PUBLIC_SOURCE_DAILY_CAP} from './public-venue-source-budget.mjs';
+import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {createHash} from 'node:crypto';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
@@ -21,9 +21,10 @@ export async function collectBitgetFlow(params={}){
   if(!admitDb()){r.status='FLOW_DB_HEADROOM_REQUIRED';return null;}
   const backoff=await readEvidenceSourceCache(db,{source:'N05_PROVIDER_BACKOFF:BITGET',asset_key:'SHARED',now:clock()});if(backoff){r.status='DURABLE_VENUE_BACKOFF';return null;}
   if(!await n05SourceHasHeadroom(db,SOURCE,N05_N12_PUBLIC_SOURCE_DAILY_CAP,clock())){r.status='SOURCE_DAILY_CAP_DENIED';return null;}
+  if(!await publicVenueHasMinuteHeadroom(db,'BITGET',1,clock())){r.status='ROLLING_60S_CAP_REACHED';return null;}
   const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});if(grant?.allowed!==true||grant.duplicate){r.status=grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED';return null;}
   const daily=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:id,attempts:1,daily_cap:N05_N12_PUBLIC_SOURCE_DAILY_CAP,now:clock()});if(!daily.allowed){r.status='SOURCE_DAILY_CAP_DENIED';return null;}
-  const minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:id,units:1,cap:6,now:clock()});if(!minute.allowed){r.status=minute.status;return null;}
+  const minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:id,units:1,cap:publicVenueMinuteCap('BITGET'),now:clock()});if(!minute.allowed){r.status=minute.status;return null;}
   try{
    calls++;r.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});r.http_status=response.status;
    const chunks=[];let size=0;for await(const c of response.body){size+=c.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(c);}const bytes=Buffer.concat(chunks);r.received_ts=clock();r.body_sha256=hash(bytes);r.bytes=size;

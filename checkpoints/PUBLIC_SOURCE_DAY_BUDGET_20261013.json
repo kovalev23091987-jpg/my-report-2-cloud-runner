@@ -1,7 +1,7 @@
 {
   "schema": "OWNER_CALCULATED_PUBLIC_SOURCE_DAILY_BUDGET_V1",
   "recorded_utc": "2026-10-13T14:57:58.562836+00:00",
-  "status": "IMPLEMENTED_LOCAL_83_PASS_NATURAL_EXACT_HEAD_PENDING",
+  "status": "DAILY_CLOUD_ASSEMBLED_PASS;MINUTE_PAIR_AND_FALLBACK_LOCAL_86_PASS;NATURAL_PENDING",
   "owner_authorization": [
     "пусть лимитф везде будут максимально доступные для нас ?",
     "или это времдно может быть для нас как то",
@@ -27,17 +27,17 @@
     "GATE": {
       "official_url": "https://www.gate.com/docs/developers/apiv4/en/",
       "published_rate": "200 per 10 seconds per public endpoint/IP",
-      "internal_rolling_60s_units": 4
+      "internal_rolling_60s_units": 12
     },
     "BITGET": {
       "official_url": "https://www.bitget.com/docs/classic/rest-api",
       "published_rate": "20 public market calls/second; 6000/IP/minute aggregate",
-      "internal_rolling_60s_units": 6
+      "internal_rolling_60s_units": 12
     },
     "POLONIEX": {
       "official_url": "https://api-docs.poloniex.com/spot/api/",
       "published_rate": "30/s public bulk catalogs; 200/s symbol market routes",
-      "internal_rolling_60s_units": 6
+      "internal_rolling_60s_units": 12
     },
     "BACKPACK": {
       "official_url": "https://support.backpack.exchange/exchange/api-and-developer-docs/faqs",
@@ -67,7 +67,7 @@
     "KUCOIN": {
       "official_url": "https://www.kucoin.com/docs-new/rate-limit-rule-classic",
       "published_rate": "public pool 2000/30 seconds; current documentation also describes 1-second weighted accounting; preserve current conservative 20 units/60s",
-      "internal_rolling_60s_units": 20
+      "internal_rolling_60s_units": 32
     }
   },
   "source_ids": [
@@ -84,7 +84,7 @@
   "not_nine_times_spending": "Nine source ceilings are fallback capacities. One shared queue permits at most five reserved requests per selected candidate.",
   "whole_job_http": 164,
   "source_ledgers_reset": false,
-  "provider_minute_caps_changed": false,
+  "provider_minute_caps_changed": "INTERNAL_GUARDS_ADJUSTED_ONLY_FOR_DOCUMENTED_PUBLIC_POOLS;PUBLISHED_PROVIDER_LIMITS_NOT_CHANGED",
   "D1_caps_changed": false,
   "catalog_source_caps_changed": false,
   "source_backoff_changed": false,
@@ -97,7 +97,10 @@
     "tap_sha256": "743494d8ca7fca5ae38730cac9d8bafde89173081592db64bb4a5b159c91448f",
     "known_16_attempt_usage_now_receives_four_qualified_Bitget_transports": true,
     "512_durable_limit_and_cross_venue_fallback_checked": true,
-    "overlay_manifest_includes_new_budget_module": true
+    "overlay_manifest_includes_new_budget_module": true,
+    "minute_packet_tests": 86,
+    "minute_packet_passed": 86,
+    "minute_packet_tap_sha256": "fe38e8daa6b1d8903e6a2977ffa4af1397729d15d202ef7a3b6a029e76df82b6"
   },
   "other_limits": {
     "COINPAPRIKA_SECTOR": {
@@ -112,6 +115,25 @@
       "reason": "Current route has no Demo key. Official keyless API is dynamic shared IP and explicitly unsuitable for scheduled production polling; do not call increased internal cap a guaranteed free allowance.",
       "official_url": "https://docs.coingecko.com/docs/keyless-public-api",
       "required_for_dedicated_free_quota": "Owner-owned free CoinGecko Demo key, verified plan allowance and original useful response."
+    },
+    "CHAIN_RPC": {
+      "daily_cap": 720,
+      "changed": false,
+      "ordinary_bound": "one CHAIN_EVENTS route per finalist, at most four reservations = 400/day in the conservative 100-finalist model; XRP auxiliary parent allowance24 adds at most24",
+      "limit": "Native XRP child cap24 is an independent unresolved frequency bottleneck if repeatedly selected."
+    },
+    "HTX_LARGE_TRADES": {
+      "daily_cap": 144,
+      "changed": false,
+      "bound": "one fallback request per finalist <=100/day; normal same-run reuse is zero extra HTTP. Spot/futures primary collector has a separate shared whole-job accounting."
+    },
+    "BLOCKSCOUT_INDEX": {
+      "daily_cap": 96,
+      "daily_credit_cap": 5000,
+      "changed": false,
+      "bound": "current 47-run frame permits94 candidate slots, one request/slot gives2820 credits; 96 is below the conservative100-slot stress model and cannot be called guaranteed for that model",
+      "provider_free_chain_change": "Official Blockscout notice excludes Base and Polygon from Free since2026-10-01; paid-chain preflight and strict event source-clock repair still require implementation.",
+      "source": "https://t.me/s/blockscoutnews"
     }
   },
   "not_guaranteed": [
@@ -133,5 +155,39 @@
     "provider_source_http": 0,
     "Telegram": 0,
     "exact_cloud_retry_pending": true
+  },
+  "minute_internal_guard_adjustments": {
+    "GATE": {
+      "previous": 4,
+      "new": 12,
+      "demand": "two finalists times five shared HTTP = ten"
+    },
+    "BITGET": {
+      "previous": 6,
+      "new": 12
+    },
+    "POLONIEX": {
+      "previous": 6,
+      "new": 12
+    },
+    "KUCOIN": {
+      "previous": 20,
+      "new": 32,
+      "unit": "weighted provider units",
+      "demand": "cold token 18 units plus warm second finalist 8 = 26"
+    },
+    "remaining_minute_guards": "BACKPACK/BINANCE/KRAKEN/BITFINEX remain6; OKX100. No unverified provider rate increase."
+  },
+  "minute_preflight": "Indexed rolling-60-second usage is checked before consuming the shared caller HTTP slot; existing atomic provider reservation remains authoritative. No unknown D1 read grants or resets.",
+  "daily_cloud_validation": {
+    "run": 38419150952,
+    "head": "1fb96476c71e4bc78a42c1c8acf5be810c08526a",
+    "status": "SUCCESS",
+    "artifact_id": 11826410519,
+    "artifact_digest": "sha256:cd18e7f8cb80c3ad35c329aea92fed0914295f8eeed2aa6a005cbb73240f5bbf",
+    "provider_http": 0,
+    "full_report": 0,
+    "Telegram": 0,
+    "includes_latest_minute_packet": false
   }
 }

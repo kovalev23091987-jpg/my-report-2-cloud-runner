@@ -1,4 +1,4 @@
-import {N05_N12_PUBLIC_SOURCE_DAILY_CAP} from './public-venue-source-budget.mjs';
+import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {createHash} from 'node:crypto';
 import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
@@ -47,11 +47,12 @@ export async function collectN12NativePublicVenue(params={},venue){
   if(!dbGrant()){receipt.status='SOURCE_DB_HEADROOM_REQUIRED';return null;}
   if(await readEvidenceSourceCache(db,{source:`N12_PROVIDER_BACKOFF:${venue}`,asset_key:'SHARED',now:clock()})){receipt.status='DURABLE_VENUE_BACKOFF';return null;}
   if(!await n05SourceHasHeadroom(db,source,N05_N12_PUBLIC_SOURCE_DAILY_CAP,clock())){receipt.status='SOURCE_DAILY_CAP_DENIED';return null;}
+  const units=venue==='KUCOIN'?kind==='CURRENCIES'?3:kind==='CATALOG'?(market==='SPOT'?4:3):(market==='SPOT'?3:5):1;
+  if(!await publicVenueHasMinuteHeadroom(db,venue,units,clock())){receipt.status='ROLLING_60S_CAP_REACHED';return null;}
   const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});
   if(grant?.allowed!==true||grant.duplicate){receipt.status=grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED';return null;}
   const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:id,attempts:1,daily_cap:N05_N12_PUBLIC_SOURCE_DAILY_CAP,now:clock()});if(!daily.allowed){receipt.status=daily.status;return null;}
-  const units=venue==='KUCOIN'?kind==='CURRENCIES'?3:kind==='CATALOG'?(market==='SPOT'?4:3):(market==='SPOT'?3:5):1;
-  const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id,units,cap:venue==='OKX'?100:20,now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}
+  const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id,units,cap:publicVenueMinuteCap(venue),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}
   try{
    calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;
    const chunks=[];let size=0;for await(const chunk of response.body){size+=chunk.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks);receipt.received_ts=clock();receipt.body_sha256=sha(bytes);receipt.bytes=size;
