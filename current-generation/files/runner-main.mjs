@@ -1,6 +1,6 @@
 import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
 import {admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget} from './src/triggered-entry-recheck.mjs';
-import {enforcePeriodicOwnership,enforceDailyAnalysisAdmission} from './src/pre-analysis-failure-receipt.mjs';
+import {enforcePeriodicOwnership,enforceDailyAnalysisAdmission,markPostAnalysisControlFailure} from './src/pre-analysis-failure-receipt.mjs';
 import {buildLiquidationSourceAcquisitionAudit,bindLiquidationAcquisitionDiagnostics} from './src/liquidation-source-acquisition-audit.mjs';
 import {saveGTradePositionRouting} from './src/liquidation-extension/gtrade-position-routing.mjs';
 import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
@@ -498,6 +498,7 @@ function enforceD1Budget(db) {
   return report;
 }
 let cleanupClaimedAnalyticsLease=null;
+let canonicalOutputForFailure=null;
 async function main() {
   const preflight=evaluatePreflight(process.env);
   console.log('REPORT2_RUNTIME_PREFLIGHT',JSON.stringify(preflight));
@@ -1113,6 +1114,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.status==='CLOSED'&&Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
   if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};
+  canonicalOutputForFailure=canonicalRunOutput;
   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
   await fs.writeFile('same-run-delivery-proof.json',JSON.stringify(buildSameRunDeliveryProof({output:canonicalRunOutput,delivery:v3TelegramDeliverySidecar,recorded_at:Date.now()}),null,2));
   console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
@@ -1178,7 +1180,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
   const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
-  if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
+  if (!d1PostCycleBudget.allowed){const error=new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${d1PostCycleBudget.status}:${(d1PostCycleBudget.reasons||[]).join(",")}`);error.d1_usage=env.DATA_DB.usageSnapshot();throw error;}
   const d1Usage = enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
   const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
   const analyticsLeaseFinish=await releaseAnalyticsLease();
@@ -1201,6 +1203,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }
 }
 main().catch(async(error) => {
+  if(canonicalOutputForFailure){
+    try{const output=markPostAnalysisControlFailure(canonicalOutputForFailure,{head:process.env.GITHUB_SHA,error,usage:error?.d1_usage});await fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2));console.error('REPORT2_POST_ANALYSIS_CONTROL_FAILURE',JSON.stringify(output.post_analysis_control_failure));}catch{console.error('REPORT2_CONTROL_FAILURE_ARTIFACT_NOT_CLOSED');}
+  }
   if(error?.pre_analysis_failure)console.error('REPORT2_PRE_ANALYSIS_FAILURE',JSON.stringify(error.pre_analysis_failure));
   if(cleanupClaimedAnalyticsLease){
     try{

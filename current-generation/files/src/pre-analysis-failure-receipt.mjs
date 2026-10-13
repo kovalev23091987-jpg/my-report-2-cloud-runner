@@ -4,6 +4,11 @@ const stamp=v=>Number.isSafeInteger(v)&&v>=1e12?v:null;
 const statuses=new Set(['CLOSED','DEFAULT_OWNER','SOURCE_UNSUPPORTED','MIGRATION_REQUIRED','READ_FAILED']);
 const bridgeCodes=new Set(['UNAUTHORIZED','NOT_FOUND','POST_REQUIRED','DATA_DB_BINDING_MISSING','SQL_REQUIRED','BODY_TOO_LARGE','INVALID_JSON','INVALID_BATCH','UNSUPPORTED_OPERATION']);
 const count=v=>Number.isSafeInteger(v)&&v>=0?v:null;
+export function markPostAnalysisControlFailure(output,{head,failed_ts=Date.now(),error,usage=null}={}){
+ if(!output||!['my-report-2-canonical-run-output-v1','my-report-2-liquidation-run-output-v1'].includes(output.schema)||output.head!==head||!/^[a-f0-9]{40}$/.test(head||'')||!output.run_id||stamp(failed_ts)===null)throw Error('POST_ANALYSIS_ORIGINAL_RUN_REQUIRED');
+ const message=String(error?.message||error||''),prefix=message.split(':')[0],reason=/^[A-Z0-9_]{1,96}$/.test(prefix)?prefix:'RUN_CONTROL_FAILURE';
+ return{...output,status:'NOT_CLOSED',reason,analytical_status_before_control_failure:output.status,post_analysis_control_failure:{schema:'POST_ANALYSIS_CONTROL_FAILURE_V1',head,run_id:output.run_id,failed_ts,reason,error_fingerprint:createHash('sha256').update(message).digest('hex'),raw_error_exported:false,d1_attempt_usage:summarizeD1AttemptUsage(usage),unmeasured_operation_receipts:Array.isArray(usage?.unmeasured_receipts)?usage.unmeasured_receipts.slice(0,10):[],original_candidates_and_clocks_preserved:true,original_delivery_proof_not_rewritten:true,new_entry_authorized:false,sourceHTTP_added:0,D1_added:0,Telegram_added:0}};
+}
 export function summarizeD1AttemptUsage(usage){
  const values=['requests','rows_read','rows_written','unknown_ops'].map(k=>count(usage?.[k]));
  if(values.some(x=>x===null))return null;

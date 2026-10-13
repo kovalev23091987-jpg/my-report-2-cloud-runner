@@ -5,8 +5,14 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 const root=process.env.REPORT2_TEST_RUNTIME;
 const moduleURL=root?pathToFileURL(path.resolve(root,'src/pre-analysis-failure-receipt.mjs')):new URL('../files/src/pre-analysis-failure-receipt.mjs',import.meta.url);
-const {schedulerReadFailure,enforcePeriodicOwnership,summarizeD1AttemptUsage,enforceDailyAnalysisAdmission}=await import(moduleURL);
+const {schedulerReadFailure,enforcePeriodicOwnership,summarizeD1AttemptUsage,enforceDailyAnalysisAdmission,markPostAnalysisControlFailure}=await import(moduleURL);
 const context={generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',head:'211e3eb0df6adc9fa889efc33d787aadfac8a0a9',source_run_id:'37931650060',task_id:'RCHK:493dd8a27079e267c97e2fa638fee498babc3bb4',trigger_only:true,started_ts:1791549690264,failed_ts:1791549692035};
+test('a late control failure cannot leave a CLOSED artifact or rewrite original market facts and SENT evidence',()=>{
+ const candidate={publication_id:'original',snapshot_id:'original-snapshot',observed_ts:1791549690264,canonical:{scores:{interest:82}}},output={schema:'my-report-2-canonical-run-output-v1',head:context.head,run_id:'original-run',status:'CLOSED',candidates:[candidate],report_text:'original manual text',exact_SENT_receipt:{message_id:'196'}};
+ const marked=markPostAnalysisControlFailure(output,{head:context.head,failed_ts:context.failed_ts,error:Error('D1_POST_CYCLE_RESERVATION_EXCEEDED:UNMEASURED_D1_USAGE'),usage:{requests:469,rows_read:41266,rows_written:323,unknown_ops:1}});
+ assert.equal(marked.status,'NOT_CLOSED');assert.equal(marked.post_analysis_control_failure.d1_attempt_usage.total_rows_read,null);assert.equal(marked.analytical_status_before_control_failure,'CLOSED');assert.deepEqual(marked.candidates,output.candidates);assert.equal(marked.report_text,output.report_text);assert.deepEqual(marked.exact_SENT_receipt,output.exact_SENT_receipt);assert.equal(marked.post_analysis_control_failure.new_entry_authorized,false);assert.equal(output.status,'CLOSED');
+ assert.throws(()=>markPostAnalysisControlFailure(output,{head:'a'.repeat(40),error:Error('other')}),/ORIGINAL_RUN_REQUIRED/);
+});
 test('exact GRAM failure bindings persist without claiming a market decision',async()=>{
  let output;await assert.rejects(enforcePeriodicOwnership({ownership:{allowed:false,status:'READ_FAILED',owner:null,actor:'GITHUB_ACTIONS',error:'D1_BRIDGE_TIMEOUT'},context,write_result:async v=>{output=v;}}),e=>{assert.equal(e.pre_analysis_failure.artifact_persisted,true);return /:READ_FAILED$/.test(e.message);});
  assert.equal(output.pre_analysis_failure.task_id,context.task_id);assert.equal(output.pre_analysis_failure.source_run_id,'37931650060');assert.equal(output.pre_analysis_failure.read_failure.family,'D1_BRIDGE_TIMEOUT');assert.equal(output.pre_analysis_failure.market_conditions_evaluated,false);assert.equal(output.pre_analysis_failure.task_writes,0);assert.equal(output.pre_analysis_failure.entry_authorized,false);assert.deepEqual(output.candidates,[]);assert.equal(output.status,'NOT_CLOSED');

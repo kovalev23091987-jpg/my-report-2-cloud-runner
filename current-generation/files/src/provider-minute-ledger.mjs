@@ -1,9 +1,11 @@
 export const PROVIDER_MINUTE_LEDGER_VERSION='provider-minute-ledger-v1-20260928';
+import {ensureSourceSchemaOnce} from './evidence-source-store.mjs';
 
 const text=value=>String(value??'').trim().toUpperCase();
 
 export async function installProviderMinuteLedger(db){
  if(!db?.prepare)throw new Error('PROVIDER_MINUTE_LEDGER_DB_REQUIRED');
+ return ensureSourceSchemaOnce(db,PROVIDER_MINUTE_LEDGER_VERSION,async()=>{
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(
    provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,
    units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,
@@ -12,6 +14,7 @@ export async function installProviderMinuteLedger(db){
    ON report2_provider_minute_ledger_v1(provider,created_ts)`).run();
  await db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation
    ON report2_provider_minute_ledger_v1(provider,reservation_id)`).run();
+ });
 }
 
 export async function reserveProviderMinuteUnits(db,{provider,reservation_id,units,now=Date.now(),cap=30}={}){

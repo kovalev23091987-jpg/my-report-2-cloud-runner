@@ -1,4 +1,5 @@
 import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
+import {createHash} from 'node:crypto';
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 function requiredText(value, label) {
@@ -84,6 +85,7 @@ export class RemoteD1Database {
       ? Math.max(1_000, Number(options.timeoutMs))
       : DEFAULT_TIMEOUT_MS;
     this._usage = { requests: 0, rows_read: 0, rows_written: 0, unknown_ops: 0, targets: {} };
+    this._unmeasuredReceipts = [];
   }
 
   enableRetainedHistory(options = {}) {
@@ -110,10 +112,10 @@ export class RemoteD1Database {
   }
 
   usageSnapshot() {
-    return JSON.parse(JSON.stringify(this._usage));
+    return JSON.parse(JSON.stringify({...this._usage,...(this._unmeasuredReceipts.length?{unmeasured_receipts:this._unmeasuredReceipts}: {})}));
   }
 
-  _recordSingle(op, sql, usage) {
+  _recordSingle(op, sql, usage, diagnostic = {}) {
     this._usage.requests += 1;
     const target = `${String(op || "unknown")}:${targetFromSql(sql)}`;
     if (!this._usage.targets[target]) {
@@ -131,16 +133,21 @@ export class RemoteD1Database {
     } else {
       this._usage.unknown_ops += 1;
       bucket.unknown_ops += 1;
+      if(this._unmeasuredReceipts.length<10){
+        const normalized=String(sql||'').replace(/\s+/g,' ').trim();
+        const receipt={operation:String(op),target:targetFromSql(sql),sql_kind:normalized.match(/^[A-Za-z]+(?:\s+(?:TABLE|INDEX|UNIQUE INDEX))?/i)?.[0]?.toUpperCase()||'UNKNOWN',sql_sha256:createHash('sha256').update(normalized).digest('hex'),http_status:Number.isInteger(diagnostic.http_status)?diagnostic.http_status:null,failure_class:diagnostic.failure_class||'NATIVE_COUNTERS_NOT_CLOSED',observed_ts:Date.now(),params_or_SQL_text_exported:false};
+        this._unmeasuredReceipts.push(receipt);
+      }
     }
   }
 
-  _recordUsage(payload, usage) {
+  _recordUsage(payload, usage, diagnostic = {}) {
     if (payload?.op === "batch" && Array.isArray(payload.statements)) {
       const parts = Array.isArray(usage?.statements) ? usage.statements : [];
-      payload.statements.forEach((stmt, i) => this._recordSingle("batch", stmt?.sql, parts[i]));
+      payload.statements.forEach((stmt, i) => this._recordSingle("batch", stmt?.sql, parts[i],diagnostic));
       return;
     }
-    this._recordSingle(payload?.op, payload?.sql, usage);
+    this._recordSingle(payload?.op, payload?.sql, usage,diagnostic);
   }
 
   async _request(payload) {
@@ -152,6 +159,7 @@ export class RemoteD1Database {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     let nativeUsageRecorded = false;
+    let httpStatus = null;
     try {
       const response = await this.fetchImpl(this.url, {
         method: "POST",
@@ -164,6 +172,7 @@ export class RemoteD1Database {
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
+      httpStatus=response.status;
       const text = await response.text();
       let data = null;
       try {
@@ -175,7 +184,7 @@ export class RemoteD1Database {
         const code = String(data?.error || `HTTP_${response.status}`);
         throw new Error(`D1_BRIDGE_FAILURE:${code}`);
       }
-      this._recordUsage(originalPayload, data?.usage);
+      this._recordUsage(originalPayload, data?.usage,{http_status:httpStatus});
       nativeUsageRecorded = true;
       return this._retainedHistory ? await this._retainedHistory.restore(data.result) : data.result;
     } catch (error) {
@@ -184,7 +193,7 @@ export class RemoteD1Database {
       // counts or resetting reservations. Downstream budget guards stay closed.
       // A failure in retained-history restoration after a measured DB reply
       // must not charge the original SQL a second time.
-      if (!nativeUsageRecorded) this._recordUsage(originalPayload, null);
+      if (!nativeUsageRecorded) this._recordUsage(originalPayload, null,{http_status:httpStatus,failure_class:error?.name==='AbortError'?'BRIDGE_TIMEOUT':error?.name==='TypeError'?'BRIDGE_TRANSPORT_FAILURE':httpStatus!==null?'BRIDGE_RESPONSE_NOT_CLOSED':'BRIDGE_FAILURE'});
       if (error?.name === "AbortError") throw new Error("D1_BRIDGE_TIMEOUT");
       throw error;
     } finally {

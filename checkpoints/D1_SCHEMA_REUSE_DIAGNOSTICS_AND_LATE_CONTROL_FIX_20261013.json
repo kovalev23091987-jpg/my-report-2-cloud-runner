@@ -1,0 +1,98 @@
+{
+  "schema": "REPORT2_D1_SCHEMA_REUSE_AND_LATE_FAILURE_FIX_V1",
+  "recorded_utc": "2026-10-13T20:21:33.537277+00:00",
+  "base_main": "2b9bc61fe704d648620cdea72452b6d45b080116",
+  "status": "55_LOCAL_PASS_NATURAL_TRANSPORT_FAILURE_REDUCED_REDUNDANT_SCHEMA_AND_FIXED_REFUSAL_CLASSIFICATION_CLOUD_PENDING",
+  "actual_failed_run": {
+    "cloud_run": 38456789072,
+    "head": "2f675e5902aabcb9b48012a3a6805d5bb0e8294d",
+    "run_id": "1791920488804-1791920514110",
+    "workflow_conclusion": "failure",
+    "artifact_root_status_before_fix": "CLOSED",
+    "artifact_id": 11842602323,
+    "artifact_digest": "sha256:cd6b41f8658401b3b3b34bc4514a7e0034deb98627ae0ca487997ed2ac688807",
+    "saved_directory": "checkpoints/d1-failed-natural-38456789072",
+    "scanned": 105,
+    "selected": [
+      "QNT-USDT",
+      "OP-USDT"
+    ],
+    "native_usage_measured_subtotal": {
+      "requests": 469,
+      "rows_read": 41266,
+      "rows_written": 323,
+      "unknown_ops": 1
+    },
+    "original_reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "immediate_failure": "D1 transport fetch failed, one run:OTHER attempted statement unmeasured; not provider daily-cap exhaustion",
+    "exact_lost_SQL_not_retained": true,
+    "old_receipt_rewritten": false,
+    "no_new_SAME_RUN_SENT": true
+  },
+  "new_CG_production_fact": {
+    "contract": "OP-USDT",
+    "snapshot_id": "S392:OP-USDT:1791920615460",
+    "observed_ts": 1791920615460,
+    "context_receipts": [
+      {
+        "block_id": "N15",
+        "evidence_id": "EV2:80c1d614ecf836d7a4a93aef10d129800ff09d66c70be4d3e9b098ee17b13485",
+        "physical_root_key": "optimism:0x4200000000000000000000000000000000000042|optimism:layer-2:1791920573000",
+        "evidence_ids": [
+          "EV2:80c1d614ecf836d7a4a93aef10d129800ff09d66c70be4d3e9b098ee17b13485"
+        ],
+        "physical_root_keys": [
+          "optimism:0x4200000000000000000000000000000000000042|optimism:layer-2:1791920573000"
+        ],
+        "source_ts": 1791920573000,
+        "observed_ts": 1791920596289,
+        "label": "Сектор «сети второго уровня» за 24 часа, выборка 50 монет",
+        "value": "монета +12,23%, медиана -2,77%, разница +15,01 п.п.; сводные цены площадок",
+        "source": "CoinGecko",
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      }
+    ],
+    "useful_sector_peers": 50,
+    "other_CoinPaprika_sector_peers": 28,
+    "source_fact_and_rendering_confirmed": true,
+    "whole_run_success_claim": false,
+    "independent_primary_exchange_claim": false
+  },
+  "private_diagnostic": "checkpoints/D1_OLD_PRIVATE_FAILED_ROUTE_DIAGNOSTIC_20261013.json",
+  "changes": [
+    "Remember successfully installed evidence/minute schemas only within the same DB object and namespace; concurrent calls share the successful setup. Failed/ambiguous setups are not remembered.",
+    "Keep unmeasured attempts unknown, with bounded SQL fingerprints, operation kind and typed transport/response diagnosis. No params, SQL text or secrets exported.",
+    "Late post-analysis control failure changes the current inspection artifact to NOT_CLOSED, preserving original candidates, source clocks and existing delivery proofs."
+  ],
+  "verification": {
+    "local_pass": 55,
+    "tap_sha256": "103234fcda5dc83d7b405f5c42aeece8fbcdbcd7bd6ea65e11a98a2df10e2bc9",
+    "provider_HTTP": 0,
+    "source_daily_and_minute_caps_unchanged": true,
+    "weights_strategy_Telegram_form_unchanged": true,
+    "meaningful_tests": [
+      "Concurrent setup is single, while real source/minute reservations enforce original caps",
+      "Failed/ambiguous setup does not become remembered readiness or clear unknown ops",
+      "Lost schema response fingerprint contains no SQL literals/bound secrets",
+      "Late failure cannot keep CLOSED status or rewrite market facts/SENT proof"
+    ]
+  },
+  "private_copy_prior_cloud": {
+    "cloud_run": 38459136561,
+    "head": "2b9bc61fe704d648620cdea72452b6d45b080116",
+    "status": "PASS37",
+    "artifact_id": 11844857265,
+    "artifact_digest": "sha256:69dee5e0d1a2fb60c47b3fdaefb69d70b865612ea656cfc43962329425520b1b",
+    "receipt": "checkpoints/private-copy-cloud-38459136561/report2-v13-final-37.json"
+  },
+  "not_proven": [
+    "Exact lost SQL in old cycle; no claimed retroactive repair or zero cost",
+    "Natural use of new schema memoization and automatic archive copy",
+    "Freedom from future network failures",
+    "All105 coverage or LIQ103 completion"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "head": "2b9bc61fe704d648620cdea72452b6d45b080116",
+  "run_id": "CODEX_D1_UNKNOWN_CAUSE:1791922177223",
+  "status": "OLD_PRIVATE_ERROR_DIAGNOSTIC",
+  "findings": [
+    {
+      "publication_id": "PUB:455c3808f07c1b1f9fe940f0387756c0a5ce0e80",
+      "contract": "QNT-USDT",
+      "observed_ts": 1791920569721,
+      "CG": {
+        "status": "CODE_OR_STORE_ERROR",
+        "error": "fetch failed"
+      },
+      "errors": [
+        {
+          "path": "canonical.metadata.internal_market_context.evidence_v2.sources.COINGECKO_SECTOR",
+          "typed_reason": "NON_D1_ERROR",
+          "length": 12
+        }
+      ]
+    },
+    {
+      "publication_id": "PUB:d62e8eea0976361d5d72dc548caaf17b96a7666b",
+      "contract": "OP-USDT",
+      "observed_ts": 1791920615460,
+      "CG": {
+        "status": "CLOSED"
+      },
+      "errors": []
+    }
+  ],
+  "D1": {
+    "rows_read": 136,
+    "rows_written": 4,
+    "requests": 3,
+    "unknown_ops": 0
+  },
+  "native_receipts": [
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 1.0095
+      },
+      "duration": 1.0095,
+      "changes": 1,
+      "last_row_id": 2241,
+      "changed_db": true,
+      "size_after": 466149376,
+      "rows_read": 127,
+      "rows_written": 3,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 36.3586
+      },
+      "duration": 36.3586,
+      "changes": 0,
+      "last_row_id": 2241,
+      "changed_db": false,
+      "size_after": 466149376,
+      "rows_read": 8,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.3009
+      },
+      "duration": 0.3009,
+      "changes": 1,
+      "last_row_id": 2241,
+      "changed_db": true,
+      "size_after": 466149376,
+      "rows_read": 1,
+      "rows_written": 1,
+      "total_attempts": 1
+    }
+  ],
+  "finalized": true,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0
+}

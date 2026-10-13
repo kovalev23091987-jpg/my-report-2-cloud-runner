@@ -34,3 +34,12 @@ test('retained-history restore failure after measured native reply does not char
 test('actual scheduler consumer keeps failed ownership read and bound pre-analysis refusal',async()=>{
  const db=dbWith(async()=>new Response(JSON.stringify({ok:false,error:'HTTP_503'}),{status:503}));const ownership=await actorOwnsPeriodicAnalytics(db,{actor:'GITHUB_ACTIONS'});assert.equal(ownership.status,'READ_FAILED');assert.equal(ownership.allowed,false);let output;await assert.rejects(enforcePeriodicOwnership({ownership,context:{source_run_id:'37931650060',head:'a'.repeat(40),task_id:'RCHK:'+'b'.repeat(40),trigger_only:true,started_ts:1791549660000,failed_ts:1791549661000},write_result:async r=>{output=r;}}),/READ_FAILED/);assert.equal(output.pre_analysis_failure.read_failure.http_status,503);assert.equal(output.pre_analysis_failure.market_conditions_evaluated,false);assert.equal(output.pre_analysis_failure.entry_authorized,false);assert.equal(db.usageSnapshot().unknown_ops,1);
 });
+test('a lost schema reply retains a bounded operation fingerprint without SQL literals, bound values or credentials',async()=>{
+ const secret='CONTROLLED_PRIVATE_VALUE',db=dbWith(async()=>{throw new TypeError(secret);});
+ await assert.rejects(db.prepare("CREATE INDEX IF NOT EXISTS controlled_schema ON alpha(x)").bind(secret).run());
+ const usage=db.usageSnapshot(),r=usage.unmeasured_receipts[0];assert.equal(usage.unknown_ops,1);assert.equal(r.operation,'run');assert.equal(r.sql_kind,'CREATE INDEX');assert.equal(r.failure_class,'BRIDGE_TRANSPORT_FAILURE');assert.equal(r.http_status,null);assert.match(r.sql_sha256,/^[a-f0-9]{64}$/);assert.equal(r.params_or_SQL_text_exported,false);assert(!JSON.stringify(usage).includes(secret));assert(!JSON.stringify(usage).includes('controlled_schema'));
+ assert.equal(evaluateWithinRunReservation({reservation:{rows_read:100,rows_written:100},currentUsage:usage}).allowed,false);
+});
+test('successful unmeasured counters have a different diagnosis from HTTP failure and are never coerced into measured zero',async()=>{
+ const db=dbWith(async()=>ok(null,{measured:false,rows_read:0,rows_written:0}));await db.prepare('CREATE TABLE beta(x TEXT)').run();const r=db.usageSnapshot().unmeasured_receipts[0];assert.equal(r.failure_class,'NATIVE_COUNTERS_NOT_CLOSED');assert.equal(r.http_status,200);assert.equal(db.usageSnapshot().unknown_ops,1);
+});

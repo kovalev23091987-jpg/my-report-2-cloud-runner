@@ -1,16 +1,28 @@
 export const EVIDENCE_SOURCE_STORE_VERSION='evidence-source-store-v1-20260928';
 
 const text=value=>String(value??'').trim();
+const schemaReadiness=new WeakMap();
+export async function ensureSourceSchemaOnce(db,namespace,install){
+ let states=schemaReadiness.get(db);if(!states){states=new Map();schemaReadiness.set(db,states);}
+ if(states.has(namespace))return states.get(namespace);
+ const promise=Promise.resolve().then(async()=>{
+  const before=typeof db.usageSnapshot==='function'?db.usageSnapshot().unknown_ops:null;
+  const result=await install();
+  if(before!==null&&db.usageSnapshot().unknown_ops!==before)throw Error('SCHEMA_NATIVE_USAGE_NOT_CLOSED');
+  return result;
+ });states.set(namespace,promise);
+ try{return await promise;}catch(error){if(states.get(namespace)===promise)states.delete(namespace);throw error;}
+}
 
 export async function installEvidenceSourceStore(db){
  if(!db?.prepare||typeof db.batch!=='function')throw new Error('EVIDENCE_SOURCE_STORE_DB_REQUIRED');
- await db.batch([
+ return ensureSourceSchemaOnce(db,EVIDENCE_SOURCE_STORE_VERSION,()=>db.batch([
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))`),
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)`),
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))`),
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))`),
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)`),
- ]);
+ ]));
 }
 
 export async function reserveEvidenceSourceCredits(db,{source,reservation_id,credits,daily_credit_cap,now=Date.now()}={}){
