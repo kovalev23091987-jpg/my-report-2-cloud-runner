@@ -809,7 +809,20 @@
       "report2_liq_forecast_archive_v1",
       "report2_liq_forecast_archive_clock_v1"
     ],
-    "natural_archive_write_readback": "PENDING"
+    "natural_archive_write_readback": "PENDING_FIRST_CRON",
+    "dedicated_archive_database": {
+      "name": "report2-free-liq-forecast-history",
+      "id": "68a85c40-41e8-4bcc-9599-5ea5da281126",
+      "separate_from_hourly_htx_database_id": "82dad15b-00ef-485f-862a-7746fae49444",
+      "schema_and_index_readback": true,
+      "old_shared_archive_rows_at_migration": 0,
+      "new_archive_rows_before_first_cron": 0,
+      "worker_binding_readback": true,
+      "worker_cron_readback": "36 * * * *",
+      "deployment_run": 38351239348,
+      "deployment_head": "5a70b7e418d6e126c6df1c11f7cb6050ad0d4183",
+      "deployment_conclusion": "success"
+    }
   },
   "historical_realized_event_availability": {
     "main_d1_table": "liquidation_events",
@@ -951,5 +964,124 @@
     "For Hyperliquid/Orderly/gTrade/dYdX levels, HTX liquidation events cannot prove those positions closed; require matching venue realized events or label only subsequent market-price proximity.",
     "Deduplicate overlapping repeated forecasts, track a fixed forward horizon and no-event/incomplete-event cases separately; never treat a price touch alone as actual liquidation.",
     "Keep this historical outcome research out of current reports, Telegram, source weights and trade decisions until enough independently verified observations and owner approval."
-  ]
+  ],
+  "storage_projection": {
+    "observed_hourly_htx_payload_bytes_mean": {
+      "futures": 25265,
+      "spot": 44814
+    },
+    "observed_forecast_payload_bytes_mean": 3916,
+    "reason_for_dedicated_liq_d1": "The HTX hourly archive alone is about 70 KB per hour before SQLite overhead; sharing the same 400 MB guard would shorten available retention. Dedicated LIQ DB preserves forecast capacity without adding exchange calls or changing report/Telegram.",
+    "hourly_archive_270_day_retention_not_proven": "HTX hourly raw payload alone projects near 454 MB for 270 days; 400 MB guard can stop writing earlier. This belongs to N15 retention follow-up, not a claimed LIQ completion."
+  },
+  "additional_source_review_20261013": [
+    {
+      "source": "n0brains",
+      "official_docs": "https://n0brains.com/docs/",
+      "documented_endpoints": [
+        "/liquidation-map/{coin}: CEX OI/leverage model",
+        "/liqmap/{coin}: Hyperliquid/GMX real positions"
+      ],
+      "documented_access": "Free API key, 60 requests/min; docs list 15-minute signal delay, map clock and free fields not payload verified",
+      "existing_primary_overlap": "Hyperliquid and GMX primary sources already investigated; wrapper is not independent evidence for those venues. CEX modeled map may use the same OI inputs as current HTX model.",
+      "result": "LEAD_ONLY_NO_KEY_OR_EXACT_HTX_105_PAYLOAD; no sourceHTTP or report use; requires free account key and single bounded payload proof before admission"
+    },
+    {
+      "source": "Kiyotaka",
+      "official_docs": "https://kiyotaka.ai/docs",
+      "documented_endpoint": "HYPERLIQUID_LIQUIDATION_AGG",
+      "documented_access": "Advanced+ tier according to official API docs",
+      "result": "NOT_FREE_FUTURE_MAP; no integration"
+    }
+  ],
+  "saved_105_scope_source_capability_crosscheck": {
+    "source_table": "report2_evidence_source_cache",
+    "pending_refresh_assets": 102,
+    "approved_runtime_assets": 105,
+    "new_assets_without_completed_eight_source_matrix": [
+      "CT",
+      "RLC",
+      "STRK"
+    ],
+    "pending_refresh_complete": false,
+    "hyperliquid_real_numeric_historical_proof_assets": 58,
+    "hyperliquid_real_numeric_eligible_excluding_btc_eth": 56,
+    "hyperliquid_no_real_numeric": 1,
+    "hyperliquid_unsupported_market": 43,
+    "hyperliquid_checked_ts_range": [
+      1791751146907,
+      1791751157496
+    ],
+    "orderly_exact_htx_market_assets_excluding_btc_eth": 38,
+    "orderly_source": "current-generation/files/src/orderly-public-liquidation-positions.mjs plus prior verified public position census",
+    "overlap_hl_orderly": 36,
+    "union_hl_or_orderly_potential_assets": 58,
+    "orderly_only": [
+      "FARTCOIN",
+      "RAY"
+    ],
+    "interpretation": "Historical numeric source proof and exact listed markets only; this is not 58 fresh simultaneously usable levels, not actual participation for all 105, and Orderly prices are provider estimates. The newest 102-asset eight-source refresh is incomplete, and three newer approved assets remain unverified in this matrix."
+  },
+  "post_change_full_report_on_current_code": {
+    "github_run_id": 38351356086,
+    "github_event": "workflow_dispatch",
+    "report_source": "schedule",
+    "head": "5a70b7e418d6e126c6df1c11f7cb6050ad0d4183",
+    "run_id": "1791869187406-1791869197814",
+    "status": "CLOSED",
+    "report_artifact_sha256": "27174d32899b45b843e750ee09decd9519b5eea9ad22dfa7f22dc2ac7ecc70d9",
+    "same_run_delivery_proof_sha256": "d5b4eb9406449711a6b03d3c0a9d4ee66768a61f386c14c26dcb9567dea7c30c",
+    "scan_total": 105,
+    "scan_completed": 105,
+    "scan_errors": 0,
+    "selected": [
+      {
+        "contract": "PONS-USDT",
+        "publication_id": "PUB:0c5a44297833febe30a44e20d64948350e751edc",
+        "observed_ts": 1791869275723,
+        "external_levels": [
+          {
+            "source": "gTrade official SDK",
+            "kind": "PROVIDER_ESTIMATE",
+            "side": "ABOVE",
+            "source_ts": 1791869220094,
+            "notional": 103.24838921032358,
+            "notional_unit": "USD"
+          },
+          {
+            "source": "Hyperliquid official",
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "side": "BELOW",
+            "source_ts": 1791869230683,
+            "notional": 857295.49564,
+            "notional_unit": "USDC"
+          }
+        ],
+        "htx_calculated_scenarios": 77,
+        "manual_three_above_and_below": true
+      },
+      {
+        "contract": "TIA-USDT",
+        "publication_id": "PUB:a2e4bbed10d9de3612d13e7cff52c7b4c943d9cf",
+        "observed_ts": 1791869239681,
+        "external_levels": [
+          {
+            "source": "gTrade official SDK",
+            "kind": "PROVIDER_ESTIMATE",
+            "side": "BELOW",
+            "source_ts": 1791869220094,
+            "notional": 5232.570753014399,
+            "notional_unit": "USD"
+          }
+        ],
+        "htx_calculated_scenarios": 54,
+        "manual_three_above_and_below": true
+      }
+    ],
+    "same_run_delivery_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "telegram_message_id": null,
+    "interpretation": "Full report artifact on new code, but GitHub event was workflow_dispatch; no exact Telegram SENT. Not proof of a functioning GitHub schedule trigger.",
+    "strk_scan_rank": 3,
+    "strk_deep_analysis": "NOT_SELECTED_TOP_TWO_IN_THIS_RUN"
+  }
 }
