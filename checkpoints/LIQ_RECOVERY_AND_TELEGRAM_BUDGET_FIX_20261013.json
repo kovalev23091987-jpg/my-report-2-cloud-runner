@@ -1,0 +1,271 @@
+{
+  "schema": "LIQ_RECOVERY_AND_BLOCK_SOURCE_READBACK_V1",
+  "recorded_utc": "2026-10-13T11:46:21.157481+00:00",
+  "scope": "Readback of one scheduled-cadence recovery full report and one no-provider assembled dry run; LIQ remains open",
+  "full_run": {
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38390819598",
+    "head": "181b86ea547892ce87fe2b144a4a64df6b4474d2",
+    "run_id": "1791891117348-1791891128942",
+    "source": "schedule",
+    "event": "workflow_dispatch scheduled_recovery_run=true; not proof of natural GitHub cron delivery",
+    "status": "CLOSED",
+    "artifact_sha256": "cc1500494916a019966d82848f59f56de05b91d4ea9b1018192c1394d5ef3890",
+    "universe_scanned": 105,
+    "universe_total": 105,
+    "selected": [
+      "STRK-USDT",
+      "RIVER-USDT"
+    ],
+    "persisted": [
+      "RIVER-USDT",
+      "STRK-USDT"
+    ]
+  },
+  "liq": {
+    "native_actual_http": 4,
+    "native_max_http": 4,
+    "supplemental_observed_http_after_strk_swole": 5,
+    "supplemental_observed_http_after_river_coinboss": 6,
+    "scheduled_liq_cap": 8,
+    "STRK-USDT": {
+      "Swolecharts": "CLOSED; 20 provider scenarios; report displayed two model zones above and two below; not factual open positions",
+      "native": "No eligible observed position in bounded sample; no full market census",
+      "canonical_state": "REJECTED; model zones are context only"
+    },
+    "RIVER-USDT": {
+      "CoinBoss": "SOURCE_CLOCK_NOT_CURRENT; no usable scenarios",
+      "Orderly": "EXACT_MARKET_UNVERIFIED; zero network calls",
+      "manual_levels": "No confirmed suitable above or below",
+      "canonical_state": "OBSERVE; 91/100 early interest, no confirmed entry"
+    }
+  },
+  "telegram": {
+    "same_run_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+    "phase": "RECONCILIATION",
+    "d1_rows_read": 299,
+    "frozen_sidecar_rows_read_cap": 288,
+    "network_sent": 0,
+    "pending_observe": "RIVER-USDT",
+    "claim": "This run did not deliver Telegram; GitHub workflow success is not Telegram SENT"
+  },
+  "diagnosis": {
+    "production_d1_original_terminal_query_rows_read_in_readonly_equivalent": 174,
+    "production_d1_indexed_t_first_equivalent_rows_read": 52,
+    "result_set_equal": true,
+    "query_plan": "Original planner started at SENT dispatch and sorted; revised query uses existing idx_v3_recheck_due, t-first CROSS JOIN, same predicates and ORDER BY",
+    "new_provider_http_for_diagnosis": 0,
+    "production_d1_readonly_queries_used": true
+  },
+  "fix": {
+    "head": "d6b5da1aa2554ec623734bb860f14515fcca0d34",
+    "files": [
+      "current-generation/files/src/original-idea-terminal.mjs",
+      "current-generation/tests/original-idea-recheck.runtime.mjs",
+      ".github/workflows/report2.yml"
+    ],
+    "changes": "Force existing state/due index and task-first inner join order for original idea terminal lookup; unchanged predicates, source caps, 288-row Telegram cap, format and strategy",
+    "cloud_dry_run": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38392155042",
+    "cloud_head": "d6b5da1aa2554ec623734bb860f14515fcca0d34",
+    "cloud_status": "success",
+    "assembled_original_idea_tests": "18 pass, 0 fail",
+    "assembled_p0_scenarios": "20 pass, 0 fail",
+    "provider_http": "0 for this dry run"
+  },
+  "active_block_selected_pair_snapshot": {
+    "RIVER-USDT": {
+      "N04": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "CHAIN_RPC"
+        ],
+        "route_statuses": {
+          "CHAIN_EVENTS": "CLOSED",
+          "BLOCKSCOUT_INDEX": "SOURCE_ERROR"
+        }
+      },
+      "N05": {
+        "participation_status": "USE_NOT_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 0,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [],
+        "route_statuses": {
+          "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+          "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+          "CHAIN_EVENTS": "CLOSED",
+          "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "NANSEN_FLOWS": "NOT_EVALUATED",
+          "EXTERNAL_N05_FLOW": "SOURCE_DAILY_CAP_DENIED",
+          "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+        }
+      },
+      "N10": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "PRIMARY_TECHNICAL_CONTEXT"
+        ],
+        "route_statuses": {
+          "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+        }
+      },
+      "N11": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "PRIMARY_EXECUTION_STRESS"
+        ],
+        "route_statuses": {
+          "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+        }
+      },
+      "N12": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "HTX_LARGE_TRADES"
+        ],
+        "route_statuses": {
+          "HTX_LARGE_TRADES": "CLOSED_BOUNDED_ASYNC_MARKETS"
+        }
+      },
+      "N15": {
+        "participation_status": "SCORE_EFFECT_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 1,
+        "used_provider_ids": [
+          "COINGECKO_SECTOR"
+        ],
+        "route_statuses": {
+          "COINGECKO_SECTOR": "CLOSED",
+          "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+        }
+      }
+    },
+    "STRK-USDT": {
+      "N04": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "CHAIN_RPC"
+        ],
+        "route_statuses": {
+          "CHAIN_EVENTS": "CLOSED",
+          "BLOCKSCOUT_INDEX": "CLOSED"
+        }
+      },
+      "N05": {
+        "participation_status": "USE_NOT_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 0,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [],
+        "route_statuses": {
+          "JOINT_SPOT_FUTURES_FLOW": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+          "AVAILABLE_N05_FLOW_CONTEXT": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+          "CHAIN_EVENTS": "CLOSED",
+          "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "NANSEN_FLOWS": "NOT_EVALUATED",
+          "EXTERNAL_N05_FLOW": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+          "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+        }
+      },
+      "N10": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "PRIMARY_TECHNICAL_CONTEXT"
+        ],
+        "route_statuses": {
+          "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+        }
+      },
+      "N11": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "PRIMARY_EXECUTION_STRESS"
+        ],
+        "route_statuses": {
+          "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+        }
+      },
+      "N12": {
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+        "valid_routes": 1,
+        "meaningful_routes": 1,
+        "decision_used_routes": 1,
+        "rendered_routes": 1,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "route_statuses": {
+          "HTX_LARGE_TRADES": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT"
+        }
+      },
+      "N15": {
+        "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+        "valid_routes": 2,
+        "meaningful_routes": 2,
+        "decision_used_routes": 2,
+        "rendered_routes": 2,
+        "nonzero_score_routes": 0,
+        "used_provider_ids": [
+          "COINGECKO_SECTOR",
+          "COINPAPRIKA_SECTOR"
+        ],
+        "route_statuses": {
+          "COINGECKO_SECTOR": "CLOSED",
+          "COINPAPRIKA_SECTOR": "CLOSED"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "A model scenario is not an actual position or known liquidation order size.",
+    "Six observed LIQ source HTTP in this recovery is below cap eight, but the run is not proof of stable 40-minute source quotas.",
+    "The old full run failed Telegram before network delivery; new code has not yet produced exact SENT/message_id in a full natural run.",
+    "Per-block HTTP counts can refer to shared underlying requests; do not sum them as independent provider calls.",
+    "Selected pair source accounting does not establish 105-asset block coverage.",
+    "GitHub natural cron missed the earlier due interval; recovery run does not prove cron reliability."
+  ],
+  "next_action": "LIQ: observe the next naturally admitted full report on or after fix head, verify exact Telegram SENT/message_id and D1 rows_read<=288, confirm useful levels and fallback for both selected coins. Then qualify the 35 LIQ archival numeric gaps only via admitted batches and continue all-active-block source/budget plan; keep paused blocks paused."
+}
