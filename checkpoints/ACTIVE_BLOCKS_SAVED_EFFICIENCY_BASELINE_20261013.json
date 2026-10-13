@@ -340,5 +340,66 @@
     "N14",
     "N16"
   ],
-  "next_action": "Finish LIQ on a naturally admitted full report with exact Telegram message_id. Then extend this saved-only baseline to 105 per-block actual source/use matrix and total provider HTTP/D1 accounting, prioritizing proven gaps; do not disable shared sources globally."
+  "next_action": "Finish LIQ on a naturally admitted full report with exact Telegram message_id. Then extend this saved-only baseline to 105 per-block actual source/use matrix and total provider HTTP/D1 accounting, prioritizing proven gaps; do not disable shared sources globally.",
+  "static_budget_precheck": {
+    "status": "INTERNAL_CAPS_ONLY_NOT_OFFICIAL_PROVIDER_LIMITS_OR_MEASURED_USAGE",
+    "assumed_max_admitted_analytical_runs_per_day": 47,
+    "selected_coins_per_run": 2,
+    "deep_candidate_slots_per_day_upper_bound": 94,
+    "caps_from_runtime": {
+      "HTX_LARGE_TRADES": {
+        "internal_daily_cap": 144,
+        "caveat": "One request per selected coin would use 94/day; if separate spot and futures calls are required, 188/day exceeds this cap."
+      },
+      "COINGECKO_SECTOR": {
+        "internal_daily_cap": 48,
+        "caveat": "Fresh per-coin calls for 94 candidate slots cannot all fit; reuse valid cache or admit a subset."
+      },
+      "COINPAPRIKA_SECTOR": {
+        "internal_daily_cap": 48,
+        "caveat": "Shared with paused N02 policy but active N15 remains allowed; 94 fresh per-coin calls cannot all fit."
+      },
+      "CHAIN_RPC": {
+        "internal_daily_cap": 720,
+        "caveat": "Shared across N04/N05 and any remaining active use; actual multi-call methods and provider limits require deduplicated telemetry."
+      },
+      "BLOCKSCOUT_INDEX": {
+        "internal_daily_cap": 96,
+        "internal_daily_credit_cap": 5000,
+        "caveat": "94 one-call candidate slots leave only 2 requests for retries/other roles; no guarantee of usable N04/N05 facts."
+      },
+      "N05_EXTERNAL_PER_VENUE": {
+        "internal_daily_cap": 16,
+        "venues": [
+          "BINANCE",
+          "POLONIEX",
+          "BITGET",
+          "GATE",
+          "BITFINEX",
+          "KRAKEN",
+          "BACKPACK"
+        ],
+        "caveat": "These are code-level caps; not every venue has the same configured subroute. 16/day cannot supply every one of 94 deep candidate slots."
+      },
+      "LIQ_SHARED": {
+        "http_per_full_run": 8,
+        "native_allocation_max": 4,
+        "supplement_per_selected_coin_max": 2,
+        "caveat": "Observed recovery used 6; future report/provider entitlement remains unproven."
+      },
+      "UNIFIED_FULL_RUN": {
+        "shared_http_cap": 164,
+        "d1_daily_rows_read": 3500000,
+        "d1_daily_rows_written": 70000
+      },
+      "BYKARANTELI": {
+        "official_monthly_quota": 15000,
+        "operational_monthly_cap": 13500,
+        "conservative_31_day_bound": 13330,
+        "remaining_margin": 170
+      }
+    },
+    "not_an_additive_total": "Do not sum policy caps or per-block route actual_http; sources and saved facts overlap.",
+    "next_check": "Obtain per-run deduplicated HTTP/D1 and provider rolling-window receipts for both selected coins before route changes. Preserve manual reserves."
+  }
 }
