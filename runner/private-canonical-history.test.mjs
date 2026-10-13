@@ -79,3 +79,10 @@ test('private read rejection never turns a measured primary reply into an unmeas
  native.enablePrivateCanonicalHistory({archive_db:db,db_admit:allow});
  try{await assert.rejects(native.prepare('SELECT * FROM canonical_publication_shadow').first(),/EXACT_REVISION_MISSING/);assert.equal(native.usageSnapshot().unknown_ops,0);assert.equal(native.usageSnapshot().requests,2);}finally{db.sql.close();}
 });
+
+test('D1 first(column) returns the original scalar with one measured private read',async()=>{
+ const source=row(),record=encodeCanonicalPublicationRow(source),header=await privateCanonicalHeader(source,record),db=database([record]);
+ const native=new RemoteD1Database('https://example.invalid/bridge','test-token',{fetchImpl:async()=>new Response(JSON.stringify({ok:true,result:header.canonical_json,usage:{measured:true,rows_read:1,rows_written:0}}))});
+ native.enablePrivateCanonicalHistory({archive_db:db,db_admit:allow});
+ try{assert.equal(await native.prepare('SELECT canonical_json FROM canonical_publication_shadow').first('canonical_json'),source.canonical_json);assert.equal(native.usageSnapshot().requests,2);assert.equal(native.usageSnapshot().unknown_ops,0);}finally{db.sql.close();}
+});
