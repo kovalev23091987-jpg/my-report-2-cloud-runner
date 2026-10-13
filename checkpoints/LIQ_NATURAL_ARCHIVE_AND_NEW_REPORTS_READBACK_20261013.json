@@ -1,0 +1,301 @@
+{
+  "schema": "LIQ_NATURAL_ARCHIVE_AND_NEW_REPORTS_READBACK_V1",
+  "recorded_utc": "2026-10-13T09:18:32.775Z",
+  "current_task": "LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
+  "block_complete": false,
+  "source_http_added_for_audit": 0,
+  "archive_worker": {
+    "name": "my-report-2-liq-forecast-history",
+    "database": "report2-free-liq-forecast-history",
+    "actual_invocations": [
+      {
+        "utc": "2026-10-13T07:36:21Z",
+        "status": "success",
+        "errors": 0
+      },
+      {
+        "utc": "2026-10-13T08:36:21Z",
+        "status": "success",
+        "errors": 0
+      }
+    ],
+    "d1_rows": {
+      "recorded": 3,
+      "skipped_no_fresh_forecast": 13,
+      "total": 16,
+      "size_after_bytes": 32768
+    },
+    "recorded_publications": [
+      {
+        "publication_id": "PUB:ff4c6ab4440dbf7bcda10013d23d910089be4fc2",
+        "contract": "USELESS-USDT",
+        "zones": 1,
+        "source": "Hyperliquid official",
+        "source_lag_ms": [
+          12192,
+          12192
+        ]
+      },
+      {
+        "publication_id": "PUB:0eeab3df2a4c74e65db4d8421e76fdf599f50f0f",
+        "contract": "NEAR-USDT",
+        "zones": 2,
+        "source": "Hyperliquid official",
+        "source_lag_ms": [
+          50504,
+          50504
+        ],
+        "prior_exact_telegram_message_id": "177"
+      },
+      {
+        "publication_id": "PUB:e9e841bcd1850e3179c9d3fb13f9fc96a1d966da",
+        "contract": "NEAR-USDT",
+        "zones": 3,
+        "source": "Hyperliquid official",
+        "source_lag_ms": [
+          11016,
+          11217
+        ],
+        "prior_exact_telegram_message_id": "179"
+      }
+    ],
+    "integrity": {
+      "payload_sha256_match_all_recorded": true,
+      "contract_run_observed_match_canonical_all_recorded": true,
+      "source_clock_lag_under_5_minutes_all_recorded": true,
+      "prior_legacy_rows_have_blank_independence_group": true,
+      "btc_and_eth_excluded": true
+    },
+    "new_source_group_release": {
+      "code_head": "361a21d8",
+      "cloud_deploy_run": 38375064777,
+      "cloud_deploy_status": "success",
+      "effect": "Known exact primary aliases populate group for future archive rows only; old immutable rows retain their original payloads; no report, Telegram, score or weight effect.",
+      "natural_new_group_readback": "PENDING_NEW_RECORDED_ROW_AFTER_DEPLOY",
+      "cloud_script_readback": {
+        "script_get_status": 200,
+        "known_primary_group_code_present": true,
+        "schedule_get_status": 200,
+        "cron": "36 * * * *",
+        "schedule_modified_utc": "2026-10-13T09:16:21.450446Z",
+        "readback_utc": "2026-10-13T09:22:55.188Z",
+        "natural_new_row_group_still_pending": true
+      }
+    }
+  },
+  "latest_saved_full_reports": [
+    {
+      "github_run_id": 38355301985,
+      "github_event": "workflow_dispatch",
+      "artifact_head": "0dbfa735cd9d2572b312bebb3463f6691c8a141d",
+      "run_id": "1791871884761-1791871894364",
+      "status": "CLOSED",
+      "report_sha256": "4eb35d495ebfaf803cc902ad494dfa2e2bae2ab5520eae53ad9bee6074f280c1",
+      "same_run_delivery_proof_sha256": "8f7c4c8a105423726a989450e0affa004079fdce87b82171d255d3849ae56a2e",
+      "scan": {
+        "approved_assets": 105,
+        "scanned": 105,
+        "errors": 0
+      },
+      "liq_http": {
+        "reserved_http": 3,
+        "actual_http": 3,
+        "max_http_per_run": 5
+      },
+      "exact_sent_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+      "telegram_message_ids": [],
+      "candidates": [
+        {
+          "contract": "BTR-USDT",
+          "publication_id": "PUB:f2ffc8bfbb8711491662a88f60bb6d9ccdd50e7a",
+          "observed_ts": 1791871970552,
+          "canonical_external_zones": 0,
+          "external_presentation_statuses": [],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 73,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": []
+        },
+        {
+          "contract": "STRK-USDT",
+          "publication_id": "PUB:b83ef182a46c768c3ba6644ad224b278a8108a91",
+          "observed_ts": 1791871945972,
+          "canonical_external_zones": 0,
+          "external_presentation_statuses": [],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 68,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": [
+            "CoinBoss"
+          ]
+        }
+      ]
+    },
+    {
+      "github_run_id": 38359565215,
+      "github_event": "workflow_dispatch",
+      "artifact_head": "21e39556804c7bb4c24f45872107e5c66f740428",
+      "run_id": "1791874587426-1791874597779",
+      "status": "CLOSED",
+      "report_sha256": "1ea42db3286eaa9d286f77f3c1c21d1a624172e3b83f895fe2a66d45881c3d28",
+      "same_run_delivery_proof_sha256": "49b5a9d34ecf5d48ca38cb7e804b1fb1e31eed53e3a6b72e2f4f59b92f7b91e4",
+      "scan": {
+        "approved_assets": 105,
+        "scanned": 105,
+        "errors": 0
+      },
+      "liq_http": {
+        "reserved_http": 5,
+        "actual_http": 5,
+        "max_http_per_run": 5
+      },
+      "exact_sent_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+      "telegram_message_ids": [],
+      "candidates": [
+        {
+          "contract": "APT-USDT",
+          "publication_id": "PUB:1cb836e97802a8c2b78353dd86a260a85b1a0267",
+          "observed_ts": 1791874676662,
+          "canonical_external_zones": 1,
+          "external_presentation_statuses": [
+            "OUTSIDE_PRESENTATION_DISTANCE_BOUND"
+          ],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 65,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": []
+        },
+        {
+          "contract": "DOS-USDT",
+          "publication_id": "PUB:e868dd4c8130cba1eaa3eefb9162e8a05df4a00c",
+          "observed_ts": 1791874649539,
+          "canonical_external_zones": 0,
+          "external_presentation_statuses": [],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 68,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": []
+        }
+      ]
+    },
+    {
+      "github_run_id": 38364228905,
+      "github_event": "workflow_dispatch",
+      "artifact_head": "21e39556804c7bb4c24f45872107e5c66f740428",
+      "run_id": "1791877285169-1791877293784",
+      "status": "CLOSED",
+      "report_sha256": "7da0ac7aab0a1d58fc525c79a740925442844229d2d9a2ff4de5f6e0ed14c1d7",
+      "same_run_delivery_proof_sha256": "2ae12269c00886d0e144405d36fe7826efcdda32c0a7f67d0d9d2fabcb77ac96",
+      "scan": {
+        "approved_assets": 105,
+        "scanned": 105,
+        "errors": 0
+      },
+      "liq_http": {
+        "reserved_http": 5,
+        "actual_http": 5,
+        "max_http_per_run": 5
+      },
+      "exact_sent_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+      "telegram_message_ids": [],
+      "candidates": [
+        {
+          "contract": "UNI-USDT",
+          "publication_id": "PUB:b04d55c4e316cc7454095a12f8e335ad068b1827",
+          "observed_ts": 1791877375471,
+          "canonical_external_zones": 4,
+          "external_presentation_statuses": [
+            "OUTSIDE_PRESENTATION_DISTANCE_BOUND"
+          ],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 66,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": []
+        },
+        {
+          "contract": "FIL-USDT",
+          "publication_id": "PUB:c2724900351ed399b9993818f34f956b0058eeaf",
+          "observed_ts": 1791877333739,
+          "canonical_external_zones": 1,
+          "external_presentation_statuses": [
+            "DISPLAY_ELIGIBLE"
+          ],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 86,
+          "rendered_position_sources": [
+            "Hyperliquid official"
+          ],
+          "rendered_supplemental_calculated_models": []
+        }
+      ]
+    },
+    {
+      "github_run_id": 38369225565,
+      "github_event": "workflow_dispatch",
+      "artifact_head": "f949bc846bae2340b1952ef4cebb11aefb17823e",
+      "run_id": "1791879985213-1791879993390",
+      "status": "CLOSED",
+      "report_sha256": "88a184d3641edd37e312fa94cce2534e345e8d7e73c8b253c2cafe3fd0c0fcf1",
+      "same_run_delivery_proof_sha256": "27c1c77ee4e19e1317ee18f6f82fcc7d5d8843c576ab24a8dd5cb94b847f9966",
+      "scan": {
+        "approved_assets": 105,
+        "scanned": 105,
+        "errors": 0
+      },
+      "liq_http": {
+        "reserved_http": 3,
+        "actual_http": 3,
+        "max_http_per_run": 5
+      },
+      "exact_sent_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "CLOSED",
+      "telegram_message_ids": [],
+      "candidates": [
+        {
+          "contract": "BTR-USDT",
+          "publication_id": "PUB:ddbc023d92ec35b0f8a3c52905fcf3428af45058",
+          "observed_ts": 1791880062287,
+          "canonical_external_zones": 0,
+          "external_presentation_statuses": [],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 63,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": []
+        },
+        {
+          "contract": "APR-USDT",
+          "publication_id": "PUB:db1ce6f02b916d61fc21ef0e20782b65ad37ceed",
+          "observed_ts": 1791880042012,
+          "canonical_external_zones": 0,
+          "external_presentation_statuses": [],
+          "rendered_above": 3,
+          "rendered_below": 3,
+          "manual_text_present": true,
+          "htx_model_scenarios": 25,
+          "rendered_position_sources": [],
+          "rendered_supplemental_calculated_models": []
+        }
+      ]
+    }
+  ],
+  "coverage_interpretation": "All four full reports scanned 105/105. All eight selected candidates had HTX calculated scenarios. Three had canonical external position zones (APT, UNI, FIL); only FIL had an external position level eligible for and rendered in the liquidation section. STRK had two rendered CoinBoss calculated levels, which are supplemental model estimates, not factual position levels. APT Hyperliquid and UNI dYdX prices were thousands of percent from the same-run HTX reference and correctly omitted by the 100% presentation-distance bound. No exact same-run Telegram SENT was captured in these four reports.",
+  "github_schedule_observation": "No report2.yml event=schedule since 2026-10-13T03:12:22Z in the checked last 15 runs; subsequent full reports were workflow_dispatch with artifact source=schedule, so schedule trigger reliability is not established.",
+  "next_action": "After the next 09:36 UTC LIQ archive cron, verify that a newly written row on the deployed Worker has a nonempty exact primary group; continue source-specific historical outcome checks and report/Telegram exact delivery proof without altering weights, display or caps. Diagnose the missing GitHub schedule separately."
+}
