@@ -3,7 +3,17 @@ import {selectLiquidationDisplayZones,liquidationPresentationPolicy} from './can
 const number=x=>x!==null&&x!==undefined&&x!==''&&Number.isFinite(Number(x))?Number(x):null;
 const validClock=(x,now)=>Number.isSafeInteger(x)&&x<=now&&now-x<=300_000;
 const contractCode=x=>typeof x==='string'&&/^[^\s-]{1,32}-USDT$/u.test(x)&&!['BTC-USDT','ETH-USDT'].includes(x);
-const compactZone=z=>({source:String(z.source||'').slice(0,64),group:String(z.independence_group||'').slice(0,80),side:z.side,price:number(z.price),quote:z.price_quote,source_ts:z.source_ts,estimated:z.estimated===true,scenario_only:z.scenario_only===true,size_tier:z.scenario_estimated_size_tier??z.strength_label_ru??null,reported_notional:z.exact_amount_available===true||z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'?number(z.notional):null,notional_unit:String(z.notional_unit||'').slice(0,12)||null,price_semantics:String(z.price_semantics||'').slice(0,80)});
+// Older canonical rows have a null independence_group even when their exact
+// primary source is known. Keep that identity in the historical snapshot, but
+// leave unknown or composite labels ungrouped rather than inventing a source.
+const knownPrimaryGroups=new Map([
+ ['Hyperliquid official','HYPERLIQUID'],
+ ['gTrade official SDK','GTRADE'],
+ ['Orderly','ORDERLY_PUBLIC_POSITIONS'],
+ ['dYdX pinned protocol model','DYDX_MAINNET_CHAIN'],
+ ['Расчётная модель HTX','HTX_OFFICIAL_MODEL']
+]);
+const compactZone=z=>({source:String(z.source||'').slice(0,64),group:String(z.independence_group||knownPrimaryGroups.get(z.source)||'').slice(0,80),side:z.side,price:number(z.price),quote:z.price_quote,source_ts:z.source_ts,estimated:z.estimated===true,scenario_only:z.scenario_only===true,size_tier:z.scenario_estimated_size_tier??z.strength_label_ru??null,reported_notional:z.exact_amount_available===true||z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'?number(z.notional):null,notional_unit:String(z.notional_unit||'').slice(0,12)||null,price_semantics:String(z.price_semantics||'').slice(0,80)});
 
 export function buildLiquidationForecastSnapshot({contract,run_id,liquidations,observed_ts,reference_price}={}){
  if(!contractCode(contract)||!Number.isSafeInteger(observed_ts)||!(number(reference_price)>0)||!run_id)return{status:'NOT_RECORDED',reason:'CONTRACT_OR_CLOCK_OR_REFERENCE_REQUIRED',zones:[]};

@@ -16,6 +16,15 @@ test('forecast memory keeps original clocks and non-decision model levels',()=>{
  assert.equal(buildLiquidationForecastSnapshot({...input,liquidations:{current_price:1,calculated_scenarios:[zone('ABOVE',1.1,T-300_001)]}}).status,'NOT_RECORDED');
 });
 
+test('retained real Hyperliquid level keeps its independent primary identity',()=>{
+ const native={source:'Hyperliquid official',independence_group:null,kind:'NATIVE_FUTURE_LEVEL',side:'BELOW',price:0.95,price_quote:'USDC',source_ts:T-1_000,distance_pct:-5,distance_reference_price:1,distance_reference_basis:'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE',notional:120_000,notional_unit:'USDC',exact_amount_available:true,estimated:false,price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'};
+ const snapshot=buildLiquidationForecastSnapshot({...input,liquidations:{current_price:1,display_source_zones:[native],calculated_scenarios:[]}});
+ assert.equal(snapshot.status,'CLOSED');assert.equal(snapshot.zones.length,1);
+ assert.equal(snapshot.zones[0].group,'HYPERLIQUID');
+ assert.equal(snapshot.zones[0].reported_notional,120_000);
+ assert.equal(snapshot.zones[0].source_ts,T-1_000);
+});
+
 class D1{constructor(){this.db=new DatabaseSync(':memory:');this.bytes=16_384;}prepare(sql){const stmt=this.db.prepare(sql),args=[],self=this;return{bind(...values){args.push(...values);return this;},async run(){return stmt.run(...args);},async all(){return{results:stmt.all(...args),meta:{size_after:self.bytes}};}};}close(){this.db.close();}}
 
 test('record is idempotent and storage guard leaves existing archive untouched',async()=>{
