@@ -53,6 +53,10 @@ test('auth failure does not retry keyless, another host or another asset while b
  const database=db(),now=Date.now();let calls=0;const opts={fetch_impl:async(url,headers)=>{calls++;assert.equal(headers.headers.get('x-cg-demo-api-key'),KEY);return new Response('{}',{status:401});}};
  const a=await collectCoingeckoSectorEvidence(config(database,now,opts));assert.equal(a.status,'SOURCE_ACCESS_BLOCKED');const b=await collectCoingeckoSectorEvidence(config(database,now+1000,{...opts,run_id:'other'}));assert.equal(b.network_calls,0);assert.equal(calls,1);database.sqlite.close();
 });
+test('numeric vendor error is retained while its error message and key are excluded',async()=>{
+ const database=db(),now=Date.now(),result=await collectCoingeckoSectorEvidence(config(database,now,{fetch_impl:async()=>new Response(JSON.stringify({status:{error_code:10002,error_message:KEY}}),{status:401})}));
+ assert.equal(result.receipts[0].provider_error_code,10002);assert.equal(JSON.stringify(result).includes(KEY),false);database.sqlite.close();
+});
 test('production workflow supplies the optional secret to the authoritative runtime',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),r=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');assert.match(y,/REPORT2_COINGECKO_DEMO_API_KEY: \$\{\{ secrets\.REPORT2_COINGECKO_DEMO_API_KEY \}\}/);assert.match(r,/coingecko_demo_api_key:envText\('REPORT2_COINGECKO_DEMO_API_KEY',\{required:false\}\)/);
 });

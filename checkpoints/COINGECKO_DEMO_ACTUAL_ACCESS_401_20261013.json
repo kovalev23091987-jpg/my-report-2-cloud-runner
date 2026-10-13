@@ -1,0 +1,114 @@
+{
+  "schema": "REPORT2_CG_DEMO_ACTUAL_401_V1",
+  "recorded_utc": "2026-10-13T18:43:11.183284+00:00",
+  "head": "4c355dd7c6ead4f9efeb146c7676cf73e62d91ed",
+  "cloud_run": 38447392869,
+  "artifact_id": 11838124048,
+  "artifact_digest": "sha256:b2e196f7e2131603b332b76e65831a7078f4931d317b1cb4a11ddff2babf6a61",
+  "original_validation_path": "checkpoints/coingecko-demo-38447392869/validation.json",
+  "original_validation_sha256": "35e89372dea8abd55238529cbdc3ce1fba13093bd2419ded2ff335d797ec02dc",
+  "status": "ONE_AUTHENTICATED_REQUEST_REJECTED_401_NO_USEFUL_FACT",
+  "actual_source_HTTP": 1,
+  "original_receipts": [
+    {
+      "route": "EXACT_COIN_METADATA",
+      "url": "https://api.coingecko.com/api/v3/coins/ethereum/contract/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "http_status": 401,
+      "status": "HTTP_401",
+      "received_ts": 1791916284642,
+      "body_sha256": "b40132561cc0b7e6dde10511d682d8d5e19ab9d81f5ac4f148738330aeaae86a",
+      "actual_http": 1
+    }
+  ],
+  "backoff": {
+    "status": "SOURCE_ACCESS_BLOCKED",
+    "backoff_until": 1791917184642
+  },
+  "D1_actual": {
+    "requests": 26,
+    "rows_read": 46,
+    "rows_written": 14,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 32,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 3,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "source_fact_count": 0,
+  "consumer_fact_count": 0,
+  "production_use": false,
+  "credential_value_saved": false,
+  "owner_key_check_requested": true,
+  "not_paid_access_and_not_independent_source": true,
+  "new_numeric_error_capture": "Future responses retain only error_code; the first401 body was not persisted so its specific vendor subcode is unknown. No repeated source probe without corrected/confirmed owner key and backoff expiry."
+}

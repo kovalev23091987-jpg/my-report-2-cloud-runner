@@ -1,0 +1,79 @@
+{
+  "schema": "REPORT2_PRIVATE_CANONICAL_ARCHIVE_PREPARATION_V1",
+  "recorded_utc": "2026-10-13T18:43:11.183284+00:00",
+  "base_main": "4c355dd7c6ead4f9efeb146c7676cf73e62d91ed",
+  "status": "CODEC_PRIVATE_READER_AND_SCHEMA_READY_ACTUAL_FULL_ROW_PENDING",
+  "reason": "Main exact query meta457891840bytes at last natural read; bounded128canonicalrows56.6MB, full_evidence sample16.3MB. No global footprint extrapolation.",
+  "diagnosis": "checkpoints/STORAGE_BOUNDED_PAYLOAD_SAMPLE_20261013.json",
+  "free_limits_source": "https://developers.cloudflare.com/d1/platform/limits/",
+  "free_limits": {
+    "databases": 10,
+    "per_database_bytes": 500000000,
+    "account_bytes": 5000000000
+  },
+  "account_inventory": {
+    "confirmed_count": 4,
+    "ids": [
+      "057a2847-2cc4-4e52-8534-1be1596d21d5",
+      "68a85c40-41e8-4bcc-9599-5ea5da281126",
+      "82dad15b-00ef-485f-862a-7746fae49444",
+      "d764f32a-f8c2-4ce9-b7c8-0e472ed2f4d5"
+    ],
+    "inventory_sizes_not_exact_live_D1_size": true
+  },
+  "implementation": [
+    "runner/canonical-cold-archive.mjs",
+    "runner/canonical-cold-archive.test.mjs",
+    "cloudflare/free-history/003_canonical_cold_archive.sql"
+  ],
+  "properties": [
+    "Lossless complete original row including canonical JSON strings, presentation inputs, source metadata, both market clocks, texts and unknown future fields.",
+    "Immutable publication+content hash revisions; exact private reader has no latest-revision guess.",
+    "Independent original and compressed SHA256, byte lengths, local and durable readback.",
+    "Raw4MB/compressed400KB/wire900KB bounds; decompression bombs rejected; database400MB soft guard.",
+    "Measured storage and shared D1 admission required; no source deletion function.",
+    "Node compression avoids adding CPU to10ms free Workers; source provenance and original source clocks unchanged."
+  ],
+  "verification": {
+    "linked_tests": 81,
+    "passed": 81,
+    "tap_sha256": "b9d825b606ff4c48be2f0b6983987a90fc56b9054e827da178f50be6b8bad8fe",
+    "dedicated_codec_tests": 6,
+    "production_D1_writes": 0,
+    "source_HTTP": 0,
+    "controlled_saved_report_row_fixture_is_not_actual_full_private_row": true
+  },
+  "cloud_pilot": {
+    "workflow": "canonical-compression-validation.yml",
+    "exact_publication": "PUB:6b3554505482fa8bc5d52a8c386dfa5605b151b4",
+    "max_original_source_rows": 1,
+    "D1_reservation": {
+      "rows_read": 5000,
+      "rows_written": 32
+    },
+    "only_budget_ledger_writes": true,
+    "private_payload_exported": false,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "hypothetical_steady_state_envelope": {
+    "max47_invocations_x2_rows": 94,
+    "archive_writes_bound": 2256,
+    "existing_shared_plan_plus_writes": 47208,
+    "existing_daily_write_guard": 70000,
+    "not_activated": true
+  },
+  "remaining": [
+    "Measure actual full private row compression and caller/bridge behaviour under existing admission.",
+    "Create private cold store and verify free storage+actual native read/write metadata before writer activation.",
+    "Record bounded durable batches and prove original-row private reader on originals.",
+    "Define safe maintenance for old inactive rows only after every needed consumer/reference can restore from archive; no pruning now.",
+    "Rolling retention duration must derive from measured sizes; do not promise months based on one compressed row."
+  ],
+  "new_database_created": false,
+  "schema_installed": false,
+  "automatic_writer_activated": false,
+  "main_rows_deleted_or_replaced": 0,
+  "report_score_or_telegram_effect": false
+}

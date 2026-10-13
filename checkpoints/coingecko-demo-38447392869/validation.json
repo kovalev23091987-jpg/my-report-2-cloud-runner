@@ -1,0 +1,171 @@
+{
+  "schema": "REPORT2_COINGECKO_DEMO_SECTOR_VALIDATION_V1",
+  "head": "4c355dd7c6ead4f9efeb146c7676cf73e62d91ed",
+  "cloud_run": "38447392869",
+  "run_id": "COINGECKO_DEMO_SECTOR:38447392869:1",
+  "contract": "UNI-USDT",
+  "identity": {
+    "chain": "ethereum",
+    "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+  },
+  "source_identity_record": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+  "missing_fact": "UNI_CURRENT_FREE_DEMO_SECTOR_AFTER_CP_MEMBERSHIP_ABSENCE",
+  "status": "SOURCE_ACCESS_BLOCKED",
+  "maximum_source_HTTP": 4,
+  "D1_reservation": {
+    "rows_read": 8000,
+    "rows_written": 200
+  },
+  "MAIN": 0,
+  "Telegram": 0,
+  "score": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-13",
+      "run_count": 31,
+      "reserved_rows_read": 1365000,
+      "reserved_rows_written": 21880,
+      "measured_rows_read": 971358,
+      "measured_rows_written": 12098,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 8000,
+      "rows_written": 200
+    },
+    "projected_reserved": {
+      "rows_read": 1373000,
+      "rows_written": 22080
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "auth_mode": "DEMO_HEADER",
+  "actual_HTTP": 1,
+  "receipts": [
+    {
+      "route": "EXACT_COIN_METADATA",
+      "url": "https://api.coingecko.com/api/v3/coins/ethereum/contract/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "http_status": 401,
+      "status": "HTTP_401",
+      "received_ts": 1791916284642,
+      "body_sha256": "b40132561cc0b7e6dde10511d682d8d5e19ab9d81f5ac4f148738330aeaae86a",
+      "actual_http": 1
+    }
+  ],
+  "admission": {
+    "allowed": true,
+    "status": "PER_TRANSPORT_RESERVED"
+  },
+  "provider_backoff": {
+    "status": "SOURCE_ACCESS_BLOCKED",
+    "backoff_until": 1791917184642
+  },
+  "evidence": [],
+  "consumer_status": "NOT_CLOSED",
+  "consumer_facts": [],
+  "production_use_claim": false,
+  "monthly_source_bound": 7936,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "COINGECKO_DEMO_SECTOR:38447392869:1",
+    "source_run_id": "38447392869",
+    "measured_rows_read": 45,
+    "measured_rows_written_accounted": 14,
+    "measured_requests_accounted": 26,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 26,
+    "rows_read": 46,
+    "rows_written": 14,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 32,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 3,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791916285307
+}

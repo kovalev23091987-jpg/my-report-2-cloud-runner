@@ -60,6 +60,9 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
    const response=await fetch_impl(url,{headers:{accept:'application/json'},signal:c.signal,redirect:'error'}),body=await response.text(),received_ts=Date.now();
    const body_sha256=await digest(body);
    const receipt={route,url,http_status:response.status,status:response.ok?'RECEIVED':`HTTP_${response.status}`,received_ts,body_sha256,actual_http:1};receipts.push(receipt);
+   // Preserve only a numeric provider diagnostic, never an auth error body
+   // that might echo a credential. This is not evidence or a successful call.
+   if(!response.ok&&source==='COINGECKO_SECTOR'){try{const error=JSON.parse(body),code=error?.status?.error_code??error?.error_code;if(Number.isSafeInteger(code)&&code>0)receipt.provider_error_code=code;}catch{}}
    if([401,403,429,451].includes(response.status)){
     const raw=response.headers?.get?.('retry-after'),seconds=/^\d+$/.test(raw||'')?Number(raw):null,date=raw?Date.parse(raw):NaN;
     backoff={status:response.status===429?'PROVIDER_RATE_LIMITED':'SOURCE_ACCESS_BLOCKED',backoff_until:Math.max(received_ts+900000,seconds!==null?received_ts+seconds*1000:Number.isFinite(date)?date:0)};
