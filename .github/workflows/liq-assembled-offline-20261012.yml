@@ -40,6 +40,8 @@ on:
       - runner/report2-d1-adapter.mjs
       - current-generation/files/src/private-canonical-history.mjs
       - runner/private-canonical-history.test.mjs
+      - current-generation/files/src/scheduled-evidence-budget.mjs
+      - current-generation/tests/scheduled-evidence-budget.test.mjs
       - cloudflare/free-history/003_canonical_cold_archive.sql
 permissions:
   contents: read
@@ -96,6 +98,7 @@ jobs:
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
           node --test runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap
+          node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
       - name: Show failure locations
         if: failure()
         run: |
