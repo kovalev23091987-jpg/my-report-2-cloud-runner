@@ -35,7 +35,9 @@
     "cloud_assembled": "PASS: GitHub Actions run 38387730816, exact head 870306340f75ac753fa4d8546fa2d22847cc985e, completed success; controlled no-provider dry run; no full report or Telegram dispatch",
     "natural_full_report": "NOT_YET_VERIFIED_ON_THIS_HEAD",
     "same_run_telegram_sent": "NOT_YET_VERIFIED_ON_THIS_HEAD",
-    "cloud_run_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38387730816"
+    "cloud_run_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38387730816",
+    "previous_natural_schedule_38386365768": "10:52 UTC on old head 05667f4f: NO_WORK_NOT_DUE_NO_FRESH_TRIGGER, zero source HTTP; not a full-report verification for new head",
+    "previous_full_run_38384473895": "10:36 UTC on old head 50c2d4ea: 105/105 stage0, 2 candidates APR/GPS, native LIQ 3/5 HTTP, no eligible native level; historical contrast only"
   },
   "source_provenance": [
     "checkpoints/source-inputs/coinboss-model-priority-hints-20261013.json",
@@ -85,5 +87,26 @@
     "d1_write_worst_47_runs_day_plus_sidecar": 44952,
     "d1_write_daily_limit": 70000,
     "note": "HTTP and D1 limits are separate. Published CoinBoss free Professional tier is temporary; recheck entitlement before claiming permanent sustainability. No new provider requests used for this analysis."
+  },
+  "source_limit_documentation_check_20261013": {
+    "checked_without_provider_api_calls": true,
+    "coinboss": {
+      "official_url": "https://www.coinboss.com/api-docs",
+      "current_anonymous_limit": "1200 requests/minute; Professional free for limited time",
+      "stability": "TEMPORARY_FREE_ENTITLEMENT_NO_LONG_TERM_GUARANTEE"
+    },
+    "orderly": {
+      "official_url": "https://orderly.network/docs/build-on-omnichain/public-info-api/overview",
+      "anonymous_ip_pool": "1200 weight/minute",
+      "platform_positions_weight": 20,
+      "two_selected_coins_max_weight": 40,
+      "pool_separate_from_orderly_rest": true
+    },
+    "swolecharts": {
+      "official_url": "https://swolecharts.com/developers",
+      "published_fixed_rate_limit": null,
+      "terms": "fair use, cache where possible, no SLA; provider may return 503 Retry-After"
+    },
+    "implication": "These documented source limits do not by themselves prove uninterrupted 40-minute production reports. The just-passed exact-head cloud assembly had zero provider HTTP. Inspect the next natural full run for response status, useful payload, fallback, D1 and Telegram."
   }
 }

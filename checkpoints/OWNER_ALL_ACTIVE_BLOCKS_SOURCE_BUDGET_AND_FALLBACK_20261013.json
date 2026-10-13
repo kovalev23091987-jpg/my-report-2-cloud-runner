@@ -1,0 +1,48 @@
+{
+  "schema": "OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_V1",
+  "recorded_utc": "2026-10-13T11:19:24.064534+00:00",
+  "owner_instruction": "Apply the LIQ source usefulness, fallback and rate-budget discipline to every active report block. Search for additional free sources when current sources do not provide strong useful coverage, and connect them only after exact-asset factual validation and report-consumer proof.",
+  "scope": {
+    "active_supplemental_blocks": [
+      "N04",
+      "N05",
+      "N10",
+      "N11",
+      "N12",
+      "N15"
+    ],
+    "active_cross_cutting_block": "LIQ",
+    "also_includes": "core selection, shared market collectors and manual/Telegram consumers wherever the source contributes",
+    "paused_blocks_unchanged": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ]
+  },
+  "per_block_required_evidence": [
+    "approved exact asset and applicable spot/futures market",
+    "provider source clock, response status, numeric useful fact and identity",
+    "upstream-independence grouping; same primary venue is one source",
+    "actual consumer and manual/Telegram rendering, not catalog availability",
+    "historical saved evidence first, bounded fresh probe only for missing fact",
+    "fallback on unusable/stale/rate-limited response with explicit no-data outcome",
+    "source calls per 40-minute full cycle, each manual reserve and same-day overlap with other blocks",
+    "monthly/daily/minute provider and shared HTTP/D1 limits, source-specific 429 and temporary free entitlement",
+    "natural full-cycle and same-run Telegram proof before declaring stable"
+  ],
+  "implementation_order": "Finish LIQ natural full report and provider/Telegram verification; then apply the common accounting and fallback mechanism across every active block in large related packages, with one combined check after each package. Do not resume paused blocks.",
+  "current_state": "REQUIREMENT_RECORDED; LIQ EIGHT-HTTP PATH CLOUD-ASSEMBLED BUT NATURAL FULL CYCLE OPEN; CROSS-BLOCK IMPLEMENTATION NOT YET VERIFIED",
+  "prohibited_claims": [
+    "all blocks optimized",
+    "all 105 assets have useful data in every block",
+    "rate-safe forever based solely on a static budget",
+    "source connected merely because it returned HTTP 200"
+  ],
+  "strategy_constraints": "Existing score weights, threshold, approved report and Telegram forms remain unchanged unless the owner separately agrees."
+}
