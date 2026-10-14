@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import {oneUnusableFollowingReserveMayFinishPosition as may} from '../files/src/liquidation-extension/selected-native-reserve-policy.mjs';
 import {createGTradeRuntimeCollector} from '../files/src/liquidation-extension/gtrade-runtime-collector.mjs';
 import {collectSelectedNativeBatch} from '../files/src/liquidation-extension/selected-native-batch.mjs';
+import {classifyOperationalSourceOutcome} from '../files/src/liquidation-extension/combined-runner-service.mjs';
+import {gunzipSync} from 'node:zlib';
 const T=1790489990092,run_id='CONTROLLED_QNT_LSK_COST_SHAPE';
 const fixture=()=>({now:T,run_id,contract:'QNT-USDT',batch:['QNT-USDT'],current_allowed:['GTRADE_NATIVE','DYDX_PINNED_NATIVE'],current_coverage:{status:'SUPPORTED',run_id,source_ts:T-1000},following_costs:{DYDX_PINNED_NATIVE:3},plan:{schema:'SELECTED_NATIVE_SOURCE_PLAN_V1',run_id,entries:[{contract:'QNT-USDT',eligible:true,source_ids:['GTRADE_NATIVE','DYDX_PINNED_NATIVE']},{contract:'LSK-USDT',eligible:true,source_ids:['DYDX_PINNED_NATIVE']}]}});
 
@@ -33,4 +35,14 @@ test('unused first-candidate room reaches the following candidate inside the sam
   await collectSelectedNativeBatch({service,params:{contract:contracts[0],native_symbol:'QNT',run_id,deep_started_ts:T,max_http_for_candidate:callerCap},selection:{run_id,contracts},coverage_for:()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE']}),http_by_contract:new Map(),clock:()=>T});
   assert.equal(calls.length,2);assert.equal(calls[1].max_http_for_candidate,callerCap===2?2:3);assert(used<=4);
  }
+});
+
+test('original QNT local pinned-read refusal is not charged as provider failure or useful role evidence',()=>{
+ const saved=JSON.parse(gunzipSync(fs.readFileSync(new URL('../../checkpoints/index-economy-natural-38484212820/report2-run-result.json.gz',import.meta.url))));
+ const route=saved.liquidation_source_acquisition_audit.routes.find(r=>r.contract==='QNT-USDT'&&r.lane==='GTRADE_NATIVE');
+ assert.equal(route.position_proof.status,'SKIPPED_GTRADE_PINNED_POSITION_BUDGET');assert.equal(route.position_proof.reason,'CANDIDATE_HTTP_ENVELOPE');
+ const outcome=classifyOperationalSourceOutcome({status:route.status,source_state:route.position_proof,actual_http:route.source_outcome.actual_http,now:saved.candidates.find(c=>c.contract==='QNT-USDT').observed_ts});
+ assert.equal(outcome.evaluated,false);assert.equal(outcome.failure_origin,'INTERNAL_SCHEDULER');assert.equal(outcome.attempted_http_count,2);assert.equal(outcome.role_usable,false);
+ assert.equal(classifyOperationalSourceOutcome({status:'GTRADE_RECEIPT_WINDOW_NOT_CLOSED',source_state:{status:'GTRADE_PINNED_RPC_NETWORK_OR_TRANSPORT_ERROR'},actual_http:3}).failure_origin,'TRANSPORT');
+ assert.equal(classifyOperationalSourceOutcome({status:'HTTP_429',actual_http:1}).failure_origin,'PROVIDER_QUOTA');
 });
