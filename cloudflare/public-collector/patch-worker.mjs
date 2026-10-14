@@ -32,7 +32,16 @@ export function moduleFromMultipart(bytes,contentType){
   throw new Error('CLOUDFLARE_MAIN_MODULE_NOT_FOUND');
 }
 export function patchWorker(source,injected){
-  if(source.includes(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${VERSION}"`))return{source,status:'ALREADY_PATCHED'};
+  const currentMarker=`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${VERSION}"`;
+  const currentStart=source.indexOf(currentMarker);
+  if(currentStart>=0){
+    if(source.indexOf(currentMarker,currentStart+currentMarker.length)>=0)throw new Error('CLOUDFLARE_DUPLICATE_COLLECTOR_MARKER');
+    const currentExport='export {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+    const currentEnd=source.indexOf(currentExport,currentStart);
+    if(currentEnd<0)throw new Error('CLOUDFLARE_CURRENT_COLLECTOR_EXPORT_MISSING');
+    if(source.slice(currentStart,currentEnd).trim()===injected.trim())return{source,status:'ALREADY_PATCHED'};
+    return{source:`${source.slice(0,currentStart)}${injected.trim()}\n${source.slice(currentEnd)}`,status:'UPDATED'};
+  }
   const previousVersion=PREVIOUS_VERSIONS.find(version=>source.includes(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${version}"`));
   const previousStart=previousVersion?source.indexOf(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${previousVersion}"`):-1;
   if(previousStart>=0){
@@ -45,6 +54,13 @@ export function patchWorker(source,injected){
   const marker='export {\n  worker_default as default\n};';
   if(!source.includes(marker))throw new Error('CLOUDFLARE_HUB_EXPORT_MARKER_MISSING');
   return{source:source.replace(marker,`${injected}\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};`),status:'PATCHED'};
+}
+
+export function assertCollectorD1Bindings(bindings,expected){
+  for(const wanted of expected){
+    const matches=bindings.filter(row=>row?.name===wanted.binding);
+    if(matches.length!==1||matches[0].type!=='d1'||String(matches[0].id||matches[0].database_id||'')!==wanted.database_id)throw new Error(`CLOUDFLARE_D1_BINDING_NOT_EXACT:${wanted.binding}`);
+  }
 }
 
 async function main(){

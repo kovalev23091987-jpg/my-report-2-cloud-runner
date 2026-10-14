@@ -1,4 +1,4 @@
-import {moduleFromMultipart} from './patch-worker.mjs';
+import {moduleFromMultipart,assertCollectorD1Bindings} from './patch-worker.mjs';
 import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';
 const API='https://api.cloudflare.com/client/v4',SCRIPT='my-report-2-hub',here=path.dirname(new URL(import.meta.url).pathname),outDir=path.resolve(process.argv[2]||path.join(here,'dist'));
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
@@ -21,6 +21,7 @@ for(let attempt=0;attempt<10;attempt++){
 }
 if(crons.length!==2||!crons.includes('*/5 * * * *')||!crons.includes('3-58/5 * * * *'))throw Error(`PUBLIC_COLLECTOR_CRON_NOT_EXACT:${JSON.stringify(crons)}`);
 const settings=(await asJson(`${base}/settings`)).result||{},names=new Set((settings.bindings||[]).map(row=>String(row.name)));
+assertCollectorD1Bindings(settings.bindings||[],JSON.parse(fs.readFileSync(path.join(outDir,'wrangler.json'),'utf8')).d1_databases);
 for(const name of ['DATA_DB','CANONICAL_ARCHIVE_DB','ALERT_DISPATCH_KEY','BYKARANTELI_API_KEY','REPORT2_CLOUD_SOURCE_PROXY_TOKEN','TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID','TELEGRAM_TEST_KEY','PUBLIC_COLLECTOR_ENABLED','PRICE_RECHECK_ENABLED','ANALYTICS_ENABLED','DELIVERY_ENABLED','CALIBRATION_APPLY_ENABLED','REPORT2_CURRENT_GENERATION'])if(!names.has(name))throw Error(`CLOUDFLARE_BINDING_LOST:${name}`);
 const proof={status:'DEPLOYED_VERIFIED',script:SCRIPT,expected_module_sha256:sha(expected),response_sha256:sha(content.bytes),collector_marker:true,exact_module_matches:true,price_recheck_binding_present:true,crons:[...crons].sort(),binding_names:[...names].sort(),secret_values_exported:false,verified_at:new Date().toISOString()};
 fs.writeFileSync(path.join(outDir,'deployment-proof.json'),`${JSON.stringify(proof,null,2)}\n`);console.log(JSON.stringify(proof));
