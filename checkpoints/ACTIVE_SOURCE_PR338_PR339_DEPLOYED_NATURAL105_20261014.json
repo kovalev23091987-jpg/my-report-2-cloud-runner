@@ -1,0 +1,126 @@
+{
+  "schema": "REPORT2_APPROVED338_339_DEPLOYED_105_FUNDING_V1",
+  "recorded_utc": "2026-10-14T08:16:06.716849+00:00",
+  "main": "7369cafa7d289f3b60135a3ca5172ba391974b3d",
+  "PR338": {
+    "head": "7a470037bbc14c381f8dea28eb35cfaa788a6033",
+    "merge": "2190e9547045d821d69ed5211d6a9ccacb16ee0e",
+    "approved_by_owner": true
+  },
+  "PR339": {
+    "head": "da0384eff721d450c91935e99403fc7657772818",
+    "merge": "7369cafa7d289f3b60135a3ca5172ba391974b3d",
+    "approved_by_owner": true
+  },
+  "assembled_cloud": {
+    "run": 38530703756,
+    "artifact": 11878061813,
+    "digest": "980fb5a5b67e440f0b54c3d31e07a0f7aded38fe7b0199e239b4e07a681f470c",
+    "tests": 313,
+    "focused_private_price_funding_deploy_tests": 92,
+    "generation_validator": "PASS",
+    "syntax": "PASS"
+  },
+  "deployed": {
+    "status": "DEPLOYED_VERIFIED",
+    "script": "my-report-2-hub",
+    "expected_module_sha256": "23303c5fd5d3144b037864e055417b463cf9dada1ef3c435c2a031bba0c1860b",
+    "response_sha256": "74547695692317a1e682a4796d17ca3a4f50be65afff363e9aadb8994f68553d",
+    "collector_marker": true,
+    "exact_module_matches": true,
+    "price_recheck_binding_present": true,
+    "crons": [
+      "*/5 * * * *",
+      "3-58/5 * * * *"
+    ],
+    "binding_names": [
+      "ALERT_DISPATCH_KEY",
+      "ANALYTICS_ENABLED",
+      "BYKARANTELI_API_KEY",
+      "CALIBRATION_APPLY_ENABLED",
+      "CANONICAL_ARCHIVE_DB",
+      "DATA_DB",
+      "DELIVERY_ENABLED",
+      "PRICE_RECHECK_ENABLED",
+      "PUBLIC_COLLECTOR_ENABLED",
+      "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+      "REPORT2_CURRENT_GENERATION",
+      "TELEGRAM_BOT_TOKEN",
+      "TELEGRAM_CHAT_ID",
+      "TELEGRAM_TEST_KEY"
+    ],
+    "secret_values_exported": false,
+    "verified_at": "2026-10-14T07:53:36.964Z"
+  },
+  "first_sample": {
+    "status": "FIRST_LIVE_SAMPLE_CLOSED",
+    "actor": "HUB_PUBLIC_COLLECTOR",
+    "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+    "bucket": 1791964500000,
+    "completed_ts": 1791964529118,
+    "contracts": 386,
+    "shards": 7,
+    "external_requests": 4,
+    "rows_read": 91,
+    "rows_written": 24,
+    "payload_bytes": 114128,
+    "batch_contracts": 386,
+    "batch_shards": 7,
+    "analytical_decision": false,
+    "telegram": false,
+    "paid_source": false,
+    "verified_at": "2026-10-14T07:55:38.881Z"
+  },
+  "actual105": {
+    "path": "checkpoints/collector-v10-release-38531281231/approved105-first-natural-funding-coverage.json",
+    "sha256": "e5b21ea88962071f3c0826e567f181a8f3f06e075c4c4f2b4aea182d6fb89483",
+    "counts": {
+      "rows": 105,
+      "prices": 105,
+      "funding_rates": 105,
+      "known_periods": 105,
+      "periods": {
+        "1": 1,
+        "4": 63,
+        "8": 41
+      }
+    },
+    "scope": "Exact first natural7:55 sample; not a later full-report or funding bonus acceptance"
+  },
+  "transport_failures_preserved_not_data": {
+    "paths": [
+      "checkpoints/collector-v10-release-38531281231/original-first-snapshot-native-read.json",
+      "checkpoints/collector-v10-release-38531281231/original-first-snapshot-native-chunked-read.json",
+      "checkpoints/collector-v10-release-38531281231/exact105-first-snapshot-native-projection.json"
+    ],
+    "why": "MCP serializer truncates large fields and arrays over50; only compact40/40/25 pages accepted; no production data corruption inferred"
+  },
+  "deployment_reservation": {
+    "id": "CODEX_COLLECTOR_APPROVED338_DEPLOY:1791963704702",
+    "reads": 5000,
+    "writes": 160,
+    "state": "RESERVED",
+    "whole_budget_held": true,
+    "native_known_agent_reads": 1260,
+    "native_known_agent_writes": 3,
+    "unknown_compile_error": 1,
+    "compile_error": "CF D1 supports ?1.. ?100; corrected to one JSON parameter. Native cost missing, not zero; no cap reset. Workflow own verification costs not fully exported."
+  },
+  "retention": {
+    "hot_originals_preserved": true,
+    "pending_archive_header_production_consumer": true,
+    "current_file_size_native": 482119680,
+    "free_page_count_unknown": true,
+    "no_pruning_enabled": true
+  },
+  "project_complete": false,
+  "all_blocks_complete": false,
+  "remaining": [
+    "per-asset useful-role source order and complete monthly fallback",
+    "31 historical LIQ numerical gaps; no simultaneous103 proof",
+    "reference-safe backlog/rolling after all readers verified",
+    "natural deep consumer after new funding sample",
+    "exact40-minute cadence full-day proof",
+    "final Telegram decision score/form after blocks"
+  ]
+}

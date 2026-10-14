@@ -1,0 +1,175 @@
+{
+  "closed": true,
+  "reservation_id": "CODEX_COLLECTOR_APPROVED338_DEPLOY:1791963704702",
+  "sourceHTTP": 0,
+  "receipts": [
+    {
+      "query": {
+        "sql": "SELECT reservation_id,reserve_rows_read,reserve_rows_written,state FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1",
+        "params": [
+          "CODEX_COLLECTOR_APPROVED338_DEPLOY:1791963704702"
+        ]
+      },
+      "response": {
+        "result": [
+          {
+            "results": [
+              {
+                "reservation_id": "CODEX_COLLECTOR_APPROVED338_DEPLOY:1791963704702",
+                "reserve_rows_read": 5000,
+                "reserve_rows_written": 160,
+                "state": "RESERVED"
+              }
+            ],
+            "success": true,
+            "meta": {
+              "served_by": "v3-prod",
+              "served_by_region": "EEUR",
+              "served_by_colo": "ARN",
+              "served_by_primary": true,
+              "timings": {
+                "sql_duration_ms": 0.1732
+              },
+              "duration": 0.1732,
+              "changes": 0,
+              "last_row_id": 0,
+              "changed_db": false,
+              "size_after": 482111488,
+              "rows_read": 1,
+              "rows_written": 0,
+              "total_attempts": 1
+            }
+          }
+        ],
+        "errors": [],
+        "messages": [],
+        "success": true,
+        "status": 200
+      }
+    },
+    {
+      "query": {
+        "sql": "SELECT bucket,actor,generation,shard,status,payload_hash,payload,contract_count,received_ts,source_timestamps_json FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND generation=?2 AND bucket=?3 ORDER BY shard LIMIT 8",
+        "params": [
+          "HUB_PUBLIC_COLLECTOR",
+          "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          1791964500000
+        ]
+      },
+      "response": {
+        "result": [
+          {
+            "results": [
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 0,
+                "status": "COMPLETE",
+                "payload_hash": "b4def59ee4e21afe3ed44d0f1b43e886f091deec1b6bbf85dae9645d18efa2f9",
+                "payload": "[{\"contract\":\"AAL-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":12.53,\"turnover_24h_usdt\":63828.174,\"oi_contracts\":4013,\"oi_value_usdt\":5028.289,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"AAOI-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":97.58,\"turnover_24h_usdt\":43513.975,\"oi_contracts\":16841,\"oi_value_usdt\":16433.4478,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"AAPL-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":342.81,\"turnover_24h_usdt\":121116.5772,\"oi_contracts\":19434,\"oi_value_usdt\":66621.6954,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"AAVE-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":160.412,\"turnover_24h_usdt\":657746.7962,\"oi_contracts\":31972,\"oi_value_usdt\":512869.2464,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"ACE-USDT\",\"catalog_active\":true,\"contract_size\":10,\"price\":0.19302,\"turnover_24h_usdt\":59089.5134,\"oi_contracts\":7658,\"oi_value_usdt\":14781.4716,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"ACNSTOCK-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":215.02,\"turnover_24h_usdt\":42874.3442,\"oi_contracts\":4361,\"oi_value_usdt\":9377.0222,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"ADA-USDT\",\"catalog_active\":true,\"contract_size\":10,\"price\":0.235276,\"turnover_24h_usdt\":2632215.5975,\"oi_contracts\":581915,\"oi_value_usdt\":1369106.3354,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"ADBE-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":236.94,\"turnover_24h_usdt\":52472.9716,\"oi_contracts\":2818,\"oi_value_usdt\":6676.9692,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"ADI-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":414.8,\"turnover_24h_usdt\":172722.446,\"oi_contracts\":1206,\"oi_value_usdt\":5002.488,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"AEHR-USDT --- TRUNCATED --- 18,968 chars",
+                "contract_count": 64,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              },
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 1,
+                "status": "COMPLETE",
+                "payload_hash": "6bc1d781bb2b46079c6415c55c5aa7a427f195a089a7e5b46b693f03cd863c41",
+                "payload": "[{\"contract\":\"BX-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":110.64,\"turnover_24h_usdt\":42996.34,\"oi_contracts\":5709,\"oi_value_usdt\":6316.4376,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"BYD-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":9.38,\"turnover_24h_usdt\":96531.556,\"oi_contracts\":9608,\"oi_value_usdt\":9012.304,\"funding_rate\":0,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CASHCAT-USDT\",\"catalog_active\":true,\"contract_size\":10,\"price\":0.119155,\"turnover_24h_usdt\":39438.52602,\"oi_contracts\":9930,\"oi_value_usdt\":11832.0915,\"funding_rate\":0.0000125,\"funding_interval_hours\":1,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CATSTOCK-USDT\",\"catalog_active\":true,\"contract_size\":0.001,\"price\":774.39,\"turnover_24h_usdt\":63078.61048,\"oi_contracts\":3912,\"oi_value_usdt\":3029.41368,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CBRS-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":148.09,\"turnover_24h_usdt\":12755.627,\"oi_contracts\":13966,\"oi_value_usdt\":20682.2494,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CEG-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":294.8,\"turnover_24h_usdt\":296476.078,\"oi_contracts\":1777,\"oi_value_usdt\":5238.596,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CGNX-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":60.2,\"turnover_24h_usdt\":32089.8002,\"oi_contracts\":8692,\"oi_value_usdt\":5232.584,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CHZ-USDT\",\"catalog_active\":true,\"contract_size\":10,\"price\":0.01464,\"turnover_24h_usdt\":3174.1228,\"oi_contracts\":330320,\"oi_value_usdt\":48358.848,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CIEN-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":399.69,\"turnover_24h_usdt\":61904.4496,\"oi_contracts\":2272,\"oi_value_usdt\":9080.9568,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"CIFR-USDT\",\"catal --- TRUNCATED --- 18,805 chars",
+                "contract_count": 64,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              },
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 2,
+                "status": "COMPLETE",
+                "payload_hash": "09a60eaf0bdb7a0030953535d073184dc979c8a910dffbd62efba578b882950a",
+                "payload": "[{\"contract\":\"GIGADEV-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":45.3,\"turnover_24h_usdt\":46622.0246,\"oi_contracts\":17948,\"oi_value_usdt\":8130.444,\"funding_rate\":0,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GILD-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":148.07,\"turnover_24h_usdt\":186390.096,\"oi_contracts\":3402,\"oi_value_usdt\":5037.3414,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GLW-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":147.45,\"turnover_24h_usdt\":14494.36,\"oi_contracts\":10403,\"oi_value_usdt\":15339.2235,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GME-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":27.82,\"turnover_24h_usdt\":16889.548,\"oi_contracts\":3971,\"oi_value_usdt\":11047.322,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GOOGL-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":357.09,\"turnover_24h_usdt\":100748.7766,\"oi_contracts\":32378,\"oi_value_usdt\":115618.6002,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GPRO-USDT\",\"catalog_active\":true,\"contract_size\":1,\"price\":1.162,\"turnover_24h_usdt\":91614.004,\"oi_contracts\":7739,\"oi_value_usdt\":8992.718,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GPS-USDT\",\"catalog_active\":true,\"contract_size\":100,\"price\":0.008747,\"turnover_24h_usdt\":56041.4966,\"oi_contracts\":14212,\"oi_value_usdt\":12431.2364,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GRAM-USDT\",\"catalog_active\":true,\"contract_size\":1,\"price\":1.374,\"turnover_24h_usdt\":179196.1292,\"oi_contracts\":124816,\"oi_value_usdt\":171497.184,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GS-USDT\",\"catalog_active\":true,\"contract_size\":0.001,\"price\":895.47,\"turnover_24h_usdt\":66412.87124,\"oi_contracts\":12208,\"oi_value_usdt\":10931.89776,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"GTLB-USDT\",\"catalog_acti --- TRUNCATED --- 18,813 chars",
+                "contract_count": 64,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              },
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 3,
+                "status": "COMPLETE",
+                "payload_hash": "75bac9eaa8c0d9c59d5a00c8c1984c2e3455d06856783cebb506c7c91a0216cc",
+                "payload": "[{\"contract\":\"MARSCOIN-USDT\",\"catalog_active\":true,\"contract_size\":10,\"price\":0.08386,\"turnover_24h_usdt\":96375.1364,\"oi_contracts\":48841,\"oi_value_usdt\":40958.0626,\"funding_rate\":0.000247665715147573,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MCD-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":236.87,\"turnover_24h_usdt\":37019.0608,\"oi_contracts\":1186,\"oi_value_usdt\":2809.2782,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MDB-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":377.13,\"turnover_24h_usdt\":171457.482,\"oi_contracts\":685,\"oi_value_usdt\":2583.3405,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MEITUAN-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":9.76,\"turnover_24h_usdt\":10169.668,\"oi_contracts\":8238,\"oi_value_usdt\":8040.288,\"funding_rate\":0,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MELI-USDT\",\"catalog_active\":true,\"contract_size\":0.001,\"price\":1897.8,\"turnover_24h_usdt\":160534.6804,\"oi_contracts\":2777,\"oi_value_usdt\":5270.1906,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"META-USDT\",\"catalog_active\":true,\"contract_size\":0.001,\"price\":769.22,\"turnover_24h_usdt\":192125.05664,\"oi_contracts\":154238,\"oi_value_usdt\":118642.95436,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MINIMAX-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":26.042,\"turnover_24h_usdt\":7313.2245,\"oi_contracts\":150916,\"oi_value_usdt\":39301.54472,\"funding_rate\":0,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MO-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":71.96,\"turnover_24h_usdt\":183191.2858,\"oi_contracts\":6818,\"oi_value_usdt\":4906.2328,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"MOONSHOT-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":67.15,\"turnover_24h_usdt\":54724.5636,\"oi_contracts\":9716,\"oi_value_usdt\":6524.294,\"funding_rate\":0.00005,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract --- TRUNCATED --- 18,963 chars",
+                "contract_count": 64,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              },
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 4,
+                "status": "COMPLETE",
+                "payload_hash": "4b76093f934a65d6a06a42b78aff96683d8217a96e69c3c2791b34ec2fada3d7",
+                "payload": "[{\"contract\":\"PURR-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":10.316,\"turnover_24h_usdt\":144997.5142,\"oi_contracts\":5930,\"oi_value_usdt\":6117.388,\"funding_rate\":0,\"funding_interval_hours\":1,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"PYPL-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":56.31,\"turnover_24h_usdt\":48231.4336,\"oi_contracts\":13014,\"oi_value_usdt\":7328.1834,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"QCOM-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":176.48,\"turnover_24h_usdt\":5230.714,\"oi_contracts\":15870,\"oi_value_usdt\":28007.376,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"QNT-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":213.24,\"turnover_24h_usdt\":440306.539,\"oi_contracts\":16187,\"oi_value_usdt\":34517.1588,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"QNTX-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":36.96,\"turnover_24h_usdt\":1480.1666,\"oi_contracts\":19769,\"oi_value_usdt\":7306.6224,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"QQQ-USDT\",\"catalog_active\":true,\"contract_size\":0.001,\"price\":746.35,\"turnover_24h_usdt\":12031.38466,\"oi_contracts\":634767,\"oi_value_usdt\":473758.35045,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"RAM-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":10.056,\"turnover_24h_usdt\":9233.2238,\"oi_contracts\":5479,\"oi_value_usdt\":5509.6824,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"RAVE-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":0.17082,\"turnover_24h_usdt\":29999.85627,\"oi_contracts\":2624986,\"oi_value_usdt\":44840.010852,\"funding_rate\":0.000793455747194461,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"RAY-USDT\",\"catalog_active\":true,\"contract_size\":1,\"price\":2.0082,\"turnover_24h_usdt\":47877.3196,\"oi_contracts\":12820,\"oi_value_usdt\":25745.124,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"RDD --- TRUNCATED --- 18,972 chars",
+                "contract_count": 64,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              },
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 5,
+                "status": "COMPLETE",
+                "payload_hash": "3e69a4ef041063240e772135c6e4bafaffd17e45a5e9334637b5ccbcbe3a0a20",
+                "payload": "[{\"contract\":\"TIA-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":0.5573,\"turnover_24h_usdt\":189965.04078,\"oi_contracts\":1363215,\"oi_value_usdt\":75971.97195,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TLT-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":78.554,\"turnover_24h_usdt\":174927.94728,\"oi_contracts\":7073,\"oi_value_usdt\":5556.12442,\"funding_rate\":0,\"funding_interval_hours\":1,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TMF-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":26.54,\"turnover_24h_usdt\":126094.516,\"oi_contracts\":3537,\"oi_value_usdt\":9387.198,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TQQQ-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":78.99,\"turnover_24h_usdt\":13574.515,\"oi_contracts\":17059,\"oi_value_usdt\":13474.9041,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TRUMP-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":1.903,\"turnover_24h_usdt\":435327.9302,\"oi_contracts\":2616753,\"oi_value_usdt\":497968.0959,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TRX-USDT\",\"catalog_active\":true,\"contract_size\":100,\"price\":0.331674,\"turnover_24h_usdt\":383143.882,\"oi_contracts\":19288,\"oi_value_usdt\":639732.8112,\"funding_rate\":0.000025774700787388,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TSEM-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":224.03,\"turnover_24h_usdt\":52311.3992,\"oi_contracts\":2926,\"oi_value_usdt\":6555.1178,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TSLAX-USDT\",\"catalog_active\":true,\"contract_size\":0.01,\"price\":376.38,\"turnover_24h_usdt\":154553.0246,\"oi_contracts\":26058,\"oi_value_usdt\":98082.312,\"funding_rate\":0,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"TSLL-USDT\",\"catalog_active\":true,\"contract_size\":0.1,\"price\":10.038,\"turnover_24h_usdt\":54117.9018,\"oi_contracts\":5396,\"oi_value_usdt\":5416.5048,\"funding_rate\":0.0001,\"funding_interval_hours\":8,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"con --- TRUNCATED --- 18,988 chars",
+                "contract_count": 64,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              },
+              {
+                "bucket": 1791964500000,
+                "actor": "HUB_PUBLIC_COLLECTOR",
+                "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                "shard": 6,
+                "status": "COMPLETE",
+                "payload_hash": "f5075d18a69b1b96d0c33a36d08da87a51c22867227dfa9ede707f7c2271f490",
+                "payload": "[{\"contract\":\"牛来-USDT\",\"catalog_active\":true,\"contract_size\":10,\"price\":0.07891,\"turnover_24h_usdt\":280336.003,\"oi_contracts\":46303,\"oi_value_usdt\":36537.6973,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]},{\"contract\":\"龙虾-USDT\",\"catalog_active\":true,\"contract_size\":100,\"price\":0.041417,\"turnover_24h_usdt\":557624.377,\"oi_contracts\":25468,\"oi_value_usdt\":105475.722,\"funding_rate\":0.00005,\"funding_interval_hours\":4,\"observed_ts\":1791964526055,\"market_age_sec\":0.72,\"source_status\":\"CLOSED\",\"missing\":[]}]",
+                "contract_count": 2,
+                "received_ts": 1791964526775,
+                "source_timestamps_json": "{\"contracts\":1791964526643,\"market\":1791964526056,\"oi\":1791964526100,\"funding\":1791964526229,\"received\":1791964526775,\"expected_shards\":7,\"universe_total\":386}"
+              }
+            ],
+            "success": true,
+            "meta": {
+              "served_by": "v3-prod",
+              "served_by_region": "EEUR",
+              "served_by_colo": "ARN",
+              "served_by_primary": true,
+              "timings": {
+                "sql_duration_ms": 1.1807
+              },
+              "duration": 1.1807,
+              "changes": 0,
+              "last_row_id": 0,
+              "changed_db": false,
+              "size_after": 482111488,
+              "rows_read": 8,
+              "rows_written": 0,
+              "total_attempts": 1
+            }
+          }
+        ],
+        "errors": [],
+        "messages": [],
+        "success": true,
+        "status": 200
+      }
+    }
+  ]
+}
