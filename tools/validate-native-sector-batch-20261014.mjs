@@ -8,7 +8,7 @@ import {collectCoingeckoSectorEvidence} from '../current-generation/files/src/co
 import {consumeSectorContext} from '../current-generation/files/src/sector-context.mjs';
 
 import {nativeSectorValidationPlan,reserveNativeSectorValidationBatch} from './native-sector-validation-admission-20261014.mjs';
-const plan=nativeSectorValidationPlan(process.env.REPORT2_NATIVE_VALIDATION_BATCH||'INITIAL_NATIVE4'),{symbols}=plan,reservation=plan.D1_reservation,maxHTTP=plan.maximum_provider_HTTP,repo='kovalev23091987-jpg/my-report-2-cloud-runner';
+const plan=nativeSectorValidationPlan(process.env.REPORT2_VALIDATION_SYMBOL==='TRON_BATCH'?'TRON_TOKEN4':process.env.REPORT2_NATIVE_VALIDATION_BATCH||'INITIAL_NATIVE4'),{symbols}=plan,reservation=plan.D1_reservation,maxHTTP=plan.maximum_provider_HTTP,repo='kovalev23091987-jpg/my-report-2-cloud-runner';
 if(process.argv.includes('--plan')){
  console.log(JSON.stringify({...plan,live_use_claim:false}));process.exit(0);
 }
@@ -18,8 +18,8 @@ const api=async path=>{const r=await fetch('https://api.github.com/repos/'+repo+
 const main=(await api('git/ref/heads/main')).object.sha,head=process.env.GITHUB_SHA;
 if(main!==process.env.REPORT2_EXPECTED_MAIN)throw Error('MAIN_MOVED');
 if(head!==main){
- if(head!==process.env.REPORT2_EXPECTED_CANDIDATE||!['refs/heads/codex/native-sector-source-coverage-20261014','refs/heads/codex/native-sector-missing-rest-20261014'].includes(process.env.GITHUB_REF))throw Error('EXACT_CANDIDATE_REQUIRED');
- const compared=await api('compare/'+main+'...'+head),allowed=new Set(['current-generation/files/src/coingecko-sector-evidence.mjs','current-generation/tests/shared-sector-batch.test.mjs','current-generation/tests/native-sector-provider-binding.test.mjs','tools/validate-native-sector-batch-20261014.mjs','tools/native-sector-validation-admission-20261014.mjs','current-generation/tests/native-sector-validation-admission.test.mjs','tools/validate-coingecko-demo-sector-20261013.mjs','.github/workflows/coingecko-demo-validation.yml','.github/workflows/liq-assembled-offline-20261012.yml','checkpoints/NATIVE_SECTOR_PROVIDER_IDENTITY_CANDIDATE_20261014.json']);
+ if(head!==process.env.REPORT2_EXPECTED_CANDIDATE||!['refs/heads/codex/native-sector-source-coverage-20261014','refs/heads/codex/native-sector-missing-rest-20261014','refs/heads/codex/tron-sector-source-coverage-20261014'].includes(process.env.GITHUB_REF))throw Error('EXACT_CANDIDATE_REQUIRED');
+ const compared=await api('compare/'+main+'...'+head),allowed=new Set(['current-generation/files/src/coingecko-sector-evidence.mjs','current-generation/tests/shared-sector-batch.test.mjs','current-generation/tests/native-sector-provider-binding.test.mjs','tools/validate-native-sector-batch-20261014.mjs','tools/native-sector-validation-admission-20261014.mjs','current-generation/tests/native-sector-validation-admission.test.mjs','tools/validate-coingecko-demo-sector-20261013.mjs','.github/workflows/coingecko-demo-validation.yml','.github/workflows/liq-assembled-offline-20261012.yml','checkpoints/NATIVE_SECTOR_PROVIDER_IDENTITY_CANDIDATE_20261014.json','checkpoints/N15_TRON_TOKEN_PROVIDER_CANDIDATE_20261014.json','current-generation/tests/tron-sector-source.test.mjs']);
  if(compared.status!=='ahead'||compared.merge_base_commit?.sha!==main||!compared.files?.length||compared.files.length>allowed.size||compared.files.some(r=>!allowed.has(r.filename)||!['added','modified'].includes(r.status)))throw Error('CANDIDATE_SCOPE_NOT_CLOSED');
 }
 const read=async path=>JSON.parse(Buffer.from((await api('contents/'+path+'?ref='+main)).content,'base64').toString());
@@ -29,9 +29,9 @@ const raw=gunzipSync(await fs.readFile('checkpoints/n05-actual-qualification-380
 if(createHash('sha256').update(raw).digest('hex')!=='f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29')throw Error('ORIGINAL_HTX_IDENTITY_DIGEST');
 const original=JSON.parse(raw),identities=normalizeHtxAssetReferences(original.payload||original).entries;
 const approved=JSON.parse(gunzipSync(await fs.readFile('checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz'))).assets;
-for(const symbol of symbols)if(!approved.some(a=>a.symbol===symbol&&a.asset_analysis_contract===symbol+'-USDT')||identities[symbol]?.status!=='CLOSED'||identities[symbol].identities[0]?.asset_kind!=='NATIVE')throw Error('APPROVED_EXACT_NATIVE_REQUIRED');
-const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),day=new Date(now).toISOString().slice(0,10),id='NATIVE_SECTOR_VALIDATE:'+plan.batch+':'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
-const out={schema:'NATIVE_SECTOR_MISSING_FACT_BATCH_V1',head,expected_main:main,cloud_run:Number(process.env.GITHUB_RUN_ID),run_id:id,status:'NOT_ADMITTED',batch:plan.batch,symbols,maximum_provider_HTTP:maxHTTP,D1_reservation:reservation,original_HTX_binding_sha256:createHash('sha256').update(raw).digest('hex'),rows:[],responses:[],MAIN:0,Telegram:0,manual_reserve_consumed:false,score_changed:false,project_complete:false,production_use_claim:false};
+for(const symbol of symbols)if(!approved.some(a=>a.symbol===symbol&&a.asset_analysis_contract===symbol+'-USDT')||identities[symbol]?.status!=='CLOSED'||(plan.batch==='TRON_TOKEN4'?identities[symbol].identities[0]?.chain!=='tron'||!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(identities[symbol].identities[0]?.contract_or_mint):identities[symbol].identities[0]?.asset_kind!=='NATIVE'))throw Error('APPROVED_EXACT_VALIDATION_IDENTITY_REQUIRED');
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),day=new Date(now).toISOString().slice(0,10),id=plan.family+':'+plan.batch+':'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
+const out={schema:plan.batch==='TRON_TOKEN4'?'COINGECKO_EXACT_TRON_SECTOR_MISSING_BATCH_V1':'NATIVE_SECTOR_MISSING_FACT_BATCH_V1',head,expected_main:main,cloud_run:Number(process.env.GITHUB_RUN_ID),run_id:id,status:'NOT_ADMITTED',batch:plan.batch,symbols,maximum_provider_HTTP:maxHTTP,D1_reservation:reservation,original_HTX_binding_sha256:createHash('sha256').update(raw).digest('hex'),rows:[],responses:[],MAIN:0,Telegram:0,manual_reserve_consumed:false,score_changed:false,project_complete:false,production_use_claim:false};
 let admitted=false,wholeReserved=0;
 await fs.mkdir('audit-output/coingecko-demo-sector',{recursive:true});
 try{
@@ -51,7 +51,7 @@ try{
   out.rows.push({contract,identity,status:result.status,source_clock_unchanged:true,network_calls:result.network_calls,receipts:result.receipts,admission:result.admission,summary:result.summary,evidence:result.evidence,consumer_status:context.status,consumer_facts:context.facts,manual_Telegram_production_use:false});
   if(/SOURCE_ACCESS_BLOCKED|PROVIDER_RATE_LIMITED/.test(result.status))break;
  }
- out.status=out.rows.some(r=>r.status==='CLOSED'&&r.consumer_status==='CLOSED')?'USEFUL_NATIVE_SECTOR_FACT_AND_CONSUMER_PARTIAL':'NO_USEFUL_NATIVE_SECTOR_FACT';
+ out.status=out.rows.some(r=>r.status==='CLOSED'&&r.consumer_status==='CLOSED')?(plan.batch==='TRON_TOKEN4'?'USEFUL_TRON_SECTOR_FACT_AND_CONSUMER_PARTIAL':'USEFUL_NATIVE_SECTOR_FACT_AND_CONSUMER_PARTIAL'):'NO_USEFUL_SECTOR_FACT';
 }catch(error){out.status='VALIDATION_NOT_CLOSED';out.reason=/^[A-Z0-9_]+$/.test(error.message)?error.message:error.name;}
 finally{
  if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}catch{out.status='FINALIZATION_NOT_CLOSED';}
