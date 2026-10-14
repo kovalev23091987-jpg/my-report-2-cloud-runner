@@ -18,3 +18,12 @@ test('disabled weekly proposal gate imports the full acquisition program and spe
  const {spawnSync}=await import('node:child_process');const script="globalThis.fetch=()=>{throw Error('CONTROLLED_NETWORK_FORBIDDEN')};await import('./tools/weekly-htx-universe-refresh.mjs');";
  const run=spawnSync(process.execPath,['--input-type=module','--eval',script],{cwd:process.cwd(),env:{...process.env,GITHUB_REPOSITORY:'owner/repo',GITHUB_TOKEN:'test-only-token',GITHUB_SHA:'a'.repeat(40),GITHUB_RUN_ID:'CONTROLLED_DISABLED',REPORT2_WEEKLY_QUALIFIED_PROPOSALS_ENABLED:'false'},encoding:'utf8'});assert.equal(run.status,0,run.stderr);const proof=JSON.parse(fs.readFileSync('audit-output/htx-weekly/proof.json'));assert.equal(proof.reason,'ACTIONS_QUALIFIED_PROPOSAL_PERMISSION_REQUIRED');assert.equal(proof.sourceHTTP,0);assert.equal(proof.D1,undefined);assert.equal(proof.lease,undefined);assert.equal(proof.production_scope_changed,false);
 });
+test('a plan cannot render another original manifest or relabel the membership clock',()=>{
+ const p=planWeeklyHtxUniverse({previous,current:next(),now}),bad=next();bad.assets=bad.assets.slice(1);
+ assert.throws(()=>weeklyScopePackage({plan:p,manifest_bytes:Buffer.from(JSON.stringify(bad)),generation:'CURRENT',previous_scope:{}}),/PLAN_AND_ORIGINAL_MANIFEST/);
+ assert.throws(()=>weeklyScopePackage({plan:{...p,observed_ts:now+1},manifest_bytes:Buffer.from(JSON.stringify(previous)),generation:'CURRENT',previous_scope:{}}),/PLAN_AND_ORIGINAL_MANIFEST/);
+});
+test('an asset with only an unsupported inverse adapter is retained for review instead of receiving a fabricated USDT analysis market',()=>{
+ const current=next();current.assets.push({symbol:'TESTINVERSE',asset_analysis_contract:null,contracts:[{family:'coin_swap',contract_code:'TESTINVERSE-USD'}]});
+ const p=planWeeklyHtxUniverse({previous,current,now});assert.equal(p.status,'PRIMARY_ASSET_ADAPTER_REVIEW_REQUIRED');assert.equal(p.analysis_contracts.some(r=>r.asset_symbol==='TESTINVERSE'),false);assert.throws(()=>weeklyScopePackage({plan:p,manifest_bytes:Buffer.from(JSON.stringify(current)),generation:'CURRENT',previous_scope:{}}));
+});

@@ -1,0 +1,37 @@
+import fs from 'node:fs/promises';
+import vm from 'node:vm';
+import crypto from 'node:crypto';
+import {gunzipSync} from 'node:zlib';
+import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+import {checkWeeklyGithubProposal} from '../runner/htx-weekly-proposal-check.mjs';
+import {planWeeklyHtxUniverse} from '../runner/htx-weekly-universe-plan.mjs';
+import {renderWeeklyScopeFiles} from '../runner/htx-weekly-scope-package.mjs';
+import {mergeHtxLinearCatalogModes,buildHtxCryptoUniverse} from '../current-generation/files/src/htx-crypto-universe.mjs';
+import {N15_INITIAL_SOURCE_PREFERENCE} from '../current-generation/files/src/n15-initial-source-preference.mjs';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const control=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN});
+const checked=await checkWeeklyGithubProposal(control,{head:process.env.GITHUB_SHA,expected_main:process.env.WEEKLY_EXPECTED_MAIN,source_run:process.env.WEEKLY_SOURCE_RUN,branch:process.env.GITHUB_REF_NAME});
+const r=checked.receipt,catalogs={};
+for(const s of r.source_receipts){
+ const compressed=await fs.readFile(s.path),raw=gunzipSync(compressed,{maxOutputLength:8388608});
+ if(hash(compressed)!==s.compressed_sha256||hash(raw)!==s.body_sha256||raw.length!==s.bytes)throw Error('ORIGINAL_CATALOG_HASH_REQUIRED');
+ const body=JSON.parse(raw);if(body.ts!==s.source_ts)throw Error('ORIGINAL_CATALOG_CLOCK_REQUIRED');catalogs[s.name]=body;
+}
+const source=await fs.readFile('current-generation/files/src/worker.js','utf8'),a=source.indexOf('function classifyHtxInstrumentScope('),b=source.indexOf('function symbolFingerprint(',a);
+if(a<0||b<a)throw Error('CURRENT_PRIMARY_CLASSIFIER_REQUIRED');
+const classify=vm.runInNewContext(source.slice(a,b)+';classifyHtxInstrumentScope',{});
+const linear=mergeHtxLinearCatalogModes({base:catalogs['linear-default'],modes:{all:catalogs['linear-all'],cross:catalogs['linear-cross'],isolated:catalogs['linear-isolated']},observed_ts:r.observed_ts});if(linear.status!=='CLOSED')throw Error('ALL_ORIGINAL_MARGIN_MODES_REQUIRED');
+const current=buildHtxCryptoUniverse({catalogs:{linear:linear.payload,coin_swap:catalogs['coin-swap'],coin_delivery:catalogs['coin-delivery']},classify_linear:classify,observed_ts:r.observed_ts});
+const readBase=async path=>Buffer.from((await control.call('contents/'+path+'?ref='+r.proposal_base_sha)).content,'base64');
+const approved_source=(await readBase('current-generation/files/src/approved-htx-analysis-scope.mjs')).toString(),hourly_source=(await readBase('cloudflare/free-history/hourly-archive.mjs')).toString();
+const previous_scope=JSON.parse(approved_source.match(/APPROVED_HTX_SCOPE=Object.freeze\(([^\n]+)\);/)[1]),previousCompressed=await readBase(previous_scope.manifest);
+if(hash(previousCompressed)!==previous_scope.manifest_sha256)throw Error('ORIGINAL_PREVIOUS_SCOPE_REQUIRED');
+const previous=JSON.parse(gunzipSync(previousCompressed));
+const known=JSON.parse(JSON.stringify(vm.runInNewContext(hourly_source.replaceAll('export ', '')+';KNOWN_HISTORY_MANIFESTS',{TextEncoder})));
+const plan=planWeeklyHtxUniverse({previous,current,now:r.observed_ts,known_priorities:N15_INITIAL_SOURCE_PREFERENCE});
+if(JSON.stringify(plan)!==JSON.stringify(r.plan))throw Error('ORIGINAL_CATALOG_TO_PLAN_REQUIRED');
+const bytes=Buffer.from(JSON.stringify(current,null,2)+'\n'),rendered=renderWeeklyScopeFiles({plan,manifest_bytes:bytes,generation:previous_scope.generation,previous_scope,approved_source,hourly_source,known_manifests:known});
+if(JSON.stringify(rendered.required_rollout)!==JSON.stringify(r.required_rollout))throw Error('ALL_CONNECTED_ROLLOUTS_REQUIRED');
+for(const [path,expected] of Object.entries(rendered.files))if(!(await fs.readFile(path)).equals(expected))throw Error('SYNCHRONIZED_PROPOSAL_FILE_MISMATCH:'+path);
+const proof={...checked,receipt:undefined,source_receipts:undefined,status:'ORIGINAL_SIX_CATALOGS_PLAN_ALL_CONSUMERS_EXACTLY_BOUND',manifest_sha256:rendered.scope.manifest_sha256,analysis_assets:rendered.scope.approved_assets,added:plan.added,removed:plan.removed,source_clocks_unchanged:true,provider_HTTP:0,D1:0,production_scope_changed:false};
+await fs.mkdir('audit-output/liq-assembled',{recursive:true});await fs.writeFile('audit-output/liq-assembled/weekly-original-proposal-binding.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));

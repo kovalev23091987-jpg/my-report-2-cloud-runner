@@ -6,8 +6,11 @@ import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 const root=process.env.REPORT2_COVERAGE_MODULE_ROOT,load=rel=>import(root?pathToFileURL(root+'/'+rel):new URL('../files/src/'+rel,import.meta.url));
-const {createFuturesCoverageDatabase,validateFuturesCoverageDatabase,qualifyNumericFutureReceipt,applyFuturesCoverageCheck,futuresLiquidationAdmission,runtimeLiquidationCollectionAdmission,addGTradePinnedCollectionPermission,saveFuturesCoverageDatabase,loadFuturesCoverageDatabase,saveFuturesCoverageRefreshDatabase,loadFuturesCoverageRefreshDatabase,resetFuturesCoverageForWeeklyRefresh,alignFuturesCoverageToApprovedScope,WEEK}=await load('liquidation-futures-coverage.mjs');
-const {APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS}=await load('approved-htx-analysis-scope.mjs');
+const {createFuturesCoverageDatabase,validateFuturesCoverageDatabase,qualifyNumericFutureReceipt,applyFuturesCoverageCheck,futuresLiquidationAdmission,runtimeLiquidationCollectionAdmission,addGTradePinnedCollectionPermission,saveFuturesCoverageDatabase,loadFuturesCoverageDatabase,saveFuturesCoverageRefreshDatabase,loadFuturesCoverageRefreshDatabase,resetFuturesCoverageForWeeklyRefresh,alignFuturesCoverageToApprovedScope,alignFuturesCoverageWithScope,WEEK}=await load('liquidation-futures-coverage.mjs');
+const currentScope=await load('approved-htx-analysis-scope.mjs');
+const historical=JSON.parse(zlib.gunzipSync(fs.readFileSync(new URL('../../checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz',import.meta.url))));
+const APPROVED_HTX_SCOPE={approved_assets:105,approved_contracts:122,manifest_sha256:createHash('sha256').update(fs.readFileSync(new URL('../../checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz',import.meta.url))).digest('hex'),catalog_observed_ts:historical.observed_ts},APPROVED_HTX_ANALYSIS_CONTRACTS=historical.assets.map(a=>({contract_code:a.asset_analysis_contract,asset_symbol:a.symbol})),historicalNative=historical.contracts.map(({family,contract_code,asset_symbol})=>({family,contract_code,asset_symbol}));
+const alignHistorical=(db,args)=>alignFuturesCoverageWithScope(db,{...args,scope:APPROVED_HTX_SCOPE,native_contracts:historicalNative});
 const {seal,fingerprint}=await load('liquidation-extension/core.mjs');
 const {GTRADE_DIAMOND}=await load('liquidation-extension/gtrade-pinned-position-snapshot.mjs');
 const bytes=fs.readFileSync(new URL('../../checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz',import.meta.url)),universe=JSON.parse(zlib.gunzipSync(bytes)),T=universe.observed_ts+1000;
@@ -17,13 +20,13 @@ test('retained 102-asset LIQ matrix aligns to exact approved 105 without refresh
  const old=applyFuturesCoverageCheck(matrix(),{contract:'NEAR-USDT',source_id:'HYPERLIQUID_NATIVE',status:'REAL_NUMERIC_LEVELS',receipt:receipt(),now:T});
  const now=APPROVED_HTX_SCOPE.catalog_observed_ts+1000;
  const args={approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS,universe_sha256:APPROVED_HTX_SCOPE.manifest_sha256,universe_observed_ts:APPROVED_HTX_SCOPE.catalog_observed_ts,now};
- const aligned=alignFuturesCoverageToApprovedScope(old,args);
+ const aligned=alignHistorical(old,args);
  assert.equal(validateFuturesCoverageDatabase(aligned),true);
  assert.equal(aligned.crypto_future_assets,105);assert.equal(aligned.crypto_future_contracts,122);
  assert.equal(aligned.source_checks_complete,false);assert.deepEqual(aligned.alignment.added_assets,['CT','RLC','STRK']);
  assert.equal(aligned.assets.find(a=>a.symbol==='NEAR').source_checks.HYPERLIQUID_NATIVE.checked_ts,T);
  for(const symbol of ['CT','RLC','STRK'])assert.equal(futuresLiquidationAdmission(aligned,{contract:`${symbol}-USDT`,now}).status,'SOURCE_CHECKS_NOT_COMPLETE');
- assert.equal(old.crypto_future_assets,102);assert.equal(alignFuturesCoverageToApprovedScope(old,{...args,approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS.slice(1)}),null);
+ assert.equal(old.crypto_future_assets,102);assert.equal(alignHistorical(old,{...args,approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS.slice(1)}),null);
  const discover=runtimeLiquidationCollectionAdmission(aligned,{contract:'CT-USDT',now});
  assert.equal(discover.eligible,true);assert.deepEqual(discover.source_ids,['HYPERLIQUID_NATIVE']);
  assert.deepEqual(discover.proven_level_source_ids,[]);assert.deepEqual(discover.structural_market_source_ids,[]);
@@ -33,12 +36,12 @@ test('retained 102-asset LIQ matrix aligns to exact approved 105 without refresh
  assert.equal(stale.eligible,true);assert.deepEqual(stale.proven_level_source_ids,[]);assert.deepEqual(stale.source_ids,['HYPERLIQUID_NATIVE']);
 });
 test('retained 104-asset LIQ matrix adds only STRK as unverified',()=>{
- const old=matrix(),prior104=alignFuturesCoverageToApprovedScope(old,{approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS.filter(x=>x.asset_symbol!=='STRK').map(x=>x),universe_sha256:'a'.repeat(64),universe_observed_ts:old.universe_observed_ts,now:old.updated_ts});
+ const old=matrix(),prior104=alignHistorical(old,{approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS.filter(x=>x.asset_symbol!=='STRK').map(x=>x),universe_sha256:'a'.repeat(64),universe_observed_ts:old.universe_observed_ts,now:old.updated_ts});
  // Recreate the already retained 104-asset generation without touching its source clocks.
  const existing={...old,assets:[...old.assets,{symbol:'CT',analysis_contract:'CT-USDT',contracts:[{family:'linear',contract_code:'CT-USDT'}],source_checks:structuredClone(old.assets[0].source_checks)},{symbol:'RLC',analysis_contract:'RLC-USDT',contracts:[{family:'linear',contract_code:'RLC-USDT'}],source_checks:structuredClone(old.assets[0].source_checks)}],crypto_future_assets:104,crypto_future_contracts:121};
  assert.equal(prior104,null);assert.equal(validateFuturesCoverageDatabase(existing),true);
  const now=APPROVED_HTX_SCOPE.catalog_observed_ts+1000;
- const aligned=alignFuturesCoverageToApprovedScope(existing,{approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS,universe_sha256:APPROVED_HTX_SCOPE.manifest_sha256,universe_observed_ts:APPROVED_HTX_SCOPE.catalog_observed_ts,now});
+ const aligned=alignHistorical(existing,{approved_analysis_contracts:APPROVED_HTX_ANALYSIS_CONTRACTS,universe_sha256:APPROVED_HTX_SCOPE.manifest_sha256,universe_observed_ts:APPROVED_HTX_SCOPE.catalog_observed_ts,now});
  assert.equal(validateFuturesCoverageDatabase(aligned),true);assert.deepEqual(aligned.alignment.added_assets,['STRK']);
  assert.equal(aligned.assets.find(a=>a.symbol==='STRK').source_checks.HYPERLIQUID_NATIVE.status,'UNVERIFIED');
  assert.equal(aligned.assets.find(a=>a.symbol==='NEAR').source_checks.HYPERLIQUID_NATIVE.checked_ts,old.assets.find(a=>a.symbol==='NEAR').source_checks.HYPERLIQUID_NATIVE.checked_ts);
@@ -85,4 +88,14 @@ test('weekly refresh staging is durable and cannot replace the active matrix bef
  const activeRead=await loadFuturesCoverageDatabase({db,now:T+WEEK}),pending=await loadFuturesCoverageRefreshDatabase({db,now:T+WEEK});
  assert.equal(activeRead.source_checks_complete,false);assert.equal(activeRead.assets[0].source_checks.HYPERLIQUID_NATIVE.status,'UNVERIFIED');
  assert.equal(pending.refresh_from_updated_ts,active.updated_ts);assert.deepEqual(activeRead.assets,active.assets);
+});
+
+test('production alignment accepts only the exact currently deployed approved scope',()=>{
+ const args={approved_analysis_contracts:currentScope.APPROVED_HTX_ANALYSIS_CONTRACTS,universe_sha256:currentScope.APPROVED_HTX_SCOPE.manifest_sha256,universe_observed_ts:currentScope.APPROVED_HTX_SCOPE.catalog_observed_ts,now:currentScope.APPROVED_HTX_SCOPE.catalog_observed_ts+1000};
+ const view=alignFuturesCoverageToApprovedScope(matrix(),args);assert.ok(view);assert.equal(view.assets.length,currentScope.APPROVED_HTX_SCOPE.approved_assets);assert.equal(view.crypto_future_contracts,currentScope.APPROVED_HTX_SCOPE.approved_contracts);
+ assert.equal(alignFuturesCoverageToApprovedScope(matrix(),{...args,approved_analysis_contracts:args.approved_analysis_contracts.slice(1)}),null);assert.equal(alignFuturesCoverageToApprovedScope(matrix(),{...args,universe_sha256:'f'.repeat(64)}),null);
+});
+test('weekly additions and removals retain original checks while new assets start unverified under the same source caps',()=>{
+ const old=applyFuturesCoverageCheck(matrix(),{contract:'NEAR-USDT',source_id:'HYPERLIQUID_NATIVE',status:'REAL_NUMERIC_LEVELS',receipt:receipt(),now:T}),before=JSON.stringify(old),approved=APPROVED_HTX_ANALYSIS_CONTRACTS.filter(a=>a.asset_symbol!=='NEAR').concat({asset_symbol:'TESTNEW',contract_code:'TESTNEW-USDT'}),native=historicalNative.filter(c=>c.asset_symbol!=='NEAR').concat({family:'linear',asset_symbol:'TESTNEW',contract_code:'TESTNEW-USDT'}),clock=APPROVED_HTX_SCOPE.catalog_observed_ts+1000,scope={...APPROVED_HTX_SCOPE,approved_assets:approved.length,approved_contracts:native.length,manifest_sha256:'e'.repeat(64),catalog_observed_ts:clock};
+ const view=alignFuturesCoverageWithScope(old,{approved_analysis_contracts:approved,native_contracts:native,scope,universe_sha256:scope.manifest_sha256,universe_observed_ts:clock,now:clock+1000});assert.ok(view);assert.equal(JSON.stringify(old),before);assert.equal(view.assets.some(a=>a.symbol==='NEAR'),false);assert.deepEqual(view.alignment.removed_from_active_assets,['NEAR']);assert.ok(view.alignment.added_assets.includes('TESTNEW'));assert.equal(view.assets.find(a=>a.symbol==='TESTNEW').source_checks.HYPERLIQUID_NATIVE.status,'UNVERIFIED');assert.equal(old.assets.find(a=>a.symbol==='NEAR').source_checks.HYPERLIQUID_NATIVE.checked_ts,T);assert.equal(view.alignment.network_calls,0);assert.equal(view.alignment.d1_writes,0);assert.equal(futuresLiquidationAdmission(view,{contract:'NEAR-USDT',now:clock+1000}).eligible,false);assert.equal(view.source_checks_complete,false);
 });
