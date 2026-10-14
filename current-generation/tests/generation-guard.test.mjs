@@ -45,7 +45,7 @@ test('only authorized report and bounded source workflows remain manually runnab
  assert.match(liquidationArchive,/Check exact main owner lease and fence/);
  assert.match(liquidationArchive,/wrangler@4 deploy --config cloudflare\/free-history\/wrangler-liq\.json/);
  assert.doesNotMatch(liquidationArchive,/runner-main|sendLifecycleRelay|manual-requests/);
- const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml','htx-weekly-source-universe.yml',root),'utf8');
+ const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
  const backup=fs.readFileSync(new URL('report2-public-collector-backup.yml',root),'utf8');
