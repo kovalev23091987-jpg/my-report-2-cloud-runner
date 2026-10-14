@@ -1,0 +1,259 @@
+{
+  "schema": "PR343_ACTUAL_NATURAL_FULL_CYCLE_SOURCE_CONSUMER_V1",
+  "recorded_utc": "2026-10-14T12:23:22.490590+00:00",
+  "cloud_run": 38561918853,
+  "head": "bda7c8abe5b9e2b607552fbd764aff19b10a022f",
+  "canonical_run": "1791979888861-1791979898355",
+  "artifact_id": 11892716642,
+  "artifact_digest": "sha256:005b5a53a096ef07a98994d191cd75d6ec7b3a219eecbca6fcb716ed17d9a3c8",
+  "original_archive_digest_verified": true,
+  "originals_directory": "checkpoints/active-source-post343-natural-38561918853",
+  "scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "approved_scope": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1791979898537,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 105,
+      "missing_approved_analysis_contracts": [],
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "rows": [
+    {
+      "contract": "PONS-USDT",
+      "publication_id": "PUB:3c30cefa57ed8803f40bb7e633e61176ba32e5ec",
+      "snapshot_id": "S392:PONS-USDT:1791979988859",
+      "observed_ts": 1791979988859,
+      "state": "REJECTED",
+      "checked_blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "N15"
+      ],
+      "used_sources": {
+        "N04": [],
+        "N05": [],
+        "N10": [
+          "PRIMARY_TECHNICAL_CONTEXT"
+        ],
+        "N11": [
+          "PRIMARY_EXECUTION_STRESS"
+        ],
+        "N12": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "N15": []
+      },
+      "rendered_sources": {
+        "N04": [],
+        "N05": [
+          "AVAILABLE_VERIFIED_TAKER_FLOW"
+        ],
+        "N10": [
+          "PRIMARY_TECHNICAL_CONTEXT"
+        ],
+        "N11": [
+          "PRIMARY_EXECUTION_STRESS"
+        ],
+        "N12": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "N15": []
+      },
+      "provider_native_zones": [
+        {
+          "source": "gTrade official SDK",
+          "kind": "PROVIDER_ESTIMATE",
+          "source_ts": 1791979979798,
+          "price": 1.18030913845,
+          "quote": "USD",
+          "exact_amount_available": false
+        },
+        {
+          "source": "Hyperliquid official",
+          "kind": "NATIVE_FUTURE_LEVEL",
+          "source_ts": 1791979979950,
+          "price": 0.0006066733,
+          "quote": "USDC",
+          "exact_amount_available": true
+        }
+      ],
+      "vendor_scenarios": 8,
+      "local_HTX_model": false,
+      "paused_checked_or_participating": false
+    },
+    {
+      "contract": "MARSCOIN-USDT",
+      "publication_id": "PUB:0211123a78786ef92d9eec84b69523b1f1fd1924",
+      "snapshot_id": "S392:MARSCOIN-USDT:1791979951756",
+      "observed_ts": 1791979951756,
+      "state": "OBSERVE",
+      "checked_blocks": [
+        "N04",
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "N15"
+      ],
+      "used_sources": {
+        "N04": [
+          "CHAIN_RPC"
+        ],
+        "N05": [],
+        "N10": [
+          "PRIMARY_TECHNICAL_CONTEXT"
+        ],
+        "N11": [
+          "PRIMARY_EXECUTION_STRESS"
+        ],
+        "N12": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "N15": [
+          "COINGECKO_SECTOR"
+        ]
+      },
+      "rendered_sources": {
+        "N04": [
+          "CHAIN_RPC"
+        ],
+        "N05": [
+          "AVAILABLE_VERIFIED_TAKER_FLOW"
+        ],
+        "N10": [
+          "PRIMARY_TECHNICAL_CONTEXT"
+        ],
+        "N11": [
+          "PRIMARY_EXECUTION_STRESS"
+        ],
+        "N12": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "N15": [
+          "COINGECKO_SECTOR"
+        ]
+      },
+      "provider_native_zones": [],
+      "vendor_scenarios": 8,
+      "local_HTX_model": false,
+      "paused_checked_or_participating": false
+    }
+  ],
+  "native_budget": {
+    "reserved_http": 4,
+    "actual_http": 4,
+    "max_http_per_run": 4
+  },
+  "native_routes": [
+    {
+      "contract": "PONS-USDT",
+      "run_id": "1791979888861-1791979898355",
+      "lane": "HYPERLIQUID_NATIVE",
+      "status": "ACQUISITION_RETURNED",
+      "role_usable": true,
+      "attempt": 1,
+      "source_outcome": {
+        "evaluated": true,
+        "operational_success": true,
+        "actual_http": 1,
+        "transport_status": "CLOSED",
+        "schema_status": "CLOSED",
+        "coverage_status": "SUPPORTED",
+        "failure_origin": null
+      },
+      "position_proof": null
+    },
+    {
+      "contract": "PONS-USDT",
+      "run_id": "1791979888861-1791979898355",
+      "lane": "GTRADE_NATIVE",
+      "status": "GTRADE_ACQUIRED_SCOPED_CONTEXT",
+      "role_usable": false,
+      "attempt": 2,
+      "source_outcome": {
+        "evaluated": true,
+        "operational_success": true,
+        "actual_http": 3,
+        "transport_status": "CLOSED",
+        "schema_status": "CLOSED",
+        "coverage_status": "SUPPORTED",
+        "failure_origin": "ROLE_EVIDENCE_NOT_CLOSED"
+      },
+      "position_proof": {
+        "schema": null,
+        "source_clock_closed": true,
+        "native_snapshot_verified": false,
+        "source_ts": null,
+        "observed_ts": null,
+        "height": null,
+        "block_hash": null,
+        "receipt_sha256": [],
+        "status": "GTRADE_PINNED_OPEN_POSITIONS_CLOSED",
+        "reason": null,
+        "position_search": null,
+        "source_clocks_refreshed": false,
+        "diagnostic_only": true
+      }
+    }
+  ],
+  "same_run_delivery": {
+    "schema": "AUTOMATIC_DELIVERY_ARTIFACT_AUDIT_V1",
+    "head": "bda7c8abe5b9e2b607552fbd764aff19b10a022f",
+    "run_id": "1791979888861-1791979898355",
+    "status": "NO_EXACT_SAME_RUN_SENT",
+    "exact_SENT": 0,
+    "actual_ENTRY": 0,
+    "task_state_after_delivery_known": false,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "Telegram": 0,
+    "project_complete": false
+  },
+  "private_copy_status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+  "PR343_node_runtime_natural_assembled": true,
+  "failed_GTrade_transport_case_exercised": false,
+  "private_cold_headers_exercised": false,
+  "all105_deep_useful_coverage_claim": false,
+  "agent_verification_provider_HTTP": 0,
+  "agent_verification_D1": 0,
+  "agent_MAIN": 0,
+  "agent_Telegram": 0,
+  "strategy_weights_limits_pauses_or_form_changed": false,
+  "all_blocks_complete": false
+}

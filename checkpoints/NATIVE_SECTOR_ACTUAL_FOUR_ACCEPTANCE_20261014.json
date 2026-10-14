@@ -1,0 +1,252 @@
+{
+  "schema": "NATIVE_SECTOR_FOUR_ACTUAL_AND_COMMON433_ACCEPTANCE_V1",
+  "recorded_utc": "2026-10-14T12:30:37.416057+00:00",
+  "PR": 345,
+  "source_head": "e0a7718c2d4a7ca722ed3cc667883af4f19879a2",
+  "merged_main": "00f1f10d239d50f2c00b7820e1136bb09d77a7be",
+  "common_cloud": {
+    "run": 38562924732,
+    "artifact": 11892673026,
+    "digest": "sha256:10909ed973c711708167ade1da4d807f3fe7f402732bad72c4ecf1a24294bad7",
+    "checks": 433,
+    "failures": 0
+  },
+  "N10_cloud": 38563173604,
+  "actual_four": {
+    "run": 38563182999,
+    "artifact": 11893242900,
+    "digest": "sha256:3e6407f0fe035db36130929f8c0602562bfc7d73332d0a9fd048314092be6754",
+    "status": "USEFUL_NATIVE_SECTOR_FACT_AND_CONSUMER_PARTIAL",
+    "HTTP": 7,
+    "rows_read": 575,
+    "rows_written": 74,
+    "unknown_ops": 0,
+    "reserved_D1": {
+      "rows_read": 8000,
+      "rows_written": 400
+    },
+    "manual_reserve_used": false,
+    "rows": [
+      {
+        "contract": "FIL-USDT",
+        "identity": {
+          "chain": "filecoin",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "filecoin:mainnet",
+          "contract_or_mint": null
+        },
+        "status": "CLOSED",
+        "network_calls": 2,
+        "summary": {
+          "coin_id": "filecoin",
+          "tag_id": "layer-1",
+          "category_name": "Layer 1 (L1)",
+          "target_source_ts": 1791980451000,
+          "target_change_24h_pct": -1.38065,
+          "peer_median_change_24h_pct": 0.899095,
+          "relative_strength_pct_points": -2.279745,
+          "eligible_peers": 50,
+          "returned_category_rows": 100,
+          "full_sector_coverage": false,
+          "source_ts": 1791980451000,
+          "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+          "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+          "direction_neutral": false,
+          "entry_eligible": false,
+          "is_htx_price": false
+        },
+        "consumer_status": "CLOSED",
+        "consumer_facts": [
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "block_id": "N15",
+            "source": "CoinGecko",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+            "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+            "value": "монета -1,38%, медиана +0,90%, разница -2,28 п.п.; сводные цены площадок",
+            "unit": "",
+            "source_ts": 1791980451000,
+            "observed_ts": 1791980505935,
+            "evidence_id": "EV2:9e0369134dbfda0af9a37153e945cc932c044e3f05a9442fbdba929eaca553bb",
+            "physical_root_key": "filecoin:native:mainnet|filecoin:layer-1:1791980451000"
+          }
+        ]
+      },
+      {
+        "contract": "ALGO-USDT",
+        "identity": {
+          "chain": "algorand",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "algorand:mainnet",
+          "contract_or_mint": null
+        },
+        "status": "CLOSED",
+        "network_calls": 1,
+        "summary": {
+          "coin_id": "algorand",
+          "tag_id": "layer-1",
+          "category_name": "Layer 1 (L1)",
+          "target_source_ts": 1791980451000,
+          "target_change_24h_pct": 4.10943,
+          "peer_median_change_24h_pct": 0.861395,
+          "relative_strength_pct_points": 3.248035,
+          "eligible_peers": 50,
+          "returned_category_rows": 100,
+          "full_sector_coverage": false,
+          "source_ts": 1791980451000,
+          "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+          "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+          "direction_neutral": false,
+          "entry_eligible": false,
+          "is_htx_price": false
+        },
+        "consumer_status": "CLOSED",
+        "consumer_facts": [
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "block_id": "N15",
+            "source": "CoinGecko",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+            "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+            "value": "монета +4,11%, медиана +0,86%, разница +3,25 п.п.; сводные цены площадок",
+            "unit": "",
+            "source_ts": 1791980451000,
+            "observed_ts": 1791980508943,
+            "evidence_id": "EV2:ddf8d6184b7e36ba6330afe3ae70a1801e5d44ea79f8e33537ad504bffd9336f",
+            "physical_root_key": "algorand:native:mainnet|algorand:layer-1:1791980451000"
+          }
+        ]
+      },
+      {
+        "contract": "STEEM-USDT",
+        "identity": {
+          "chain": "steem",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "steem:mainnet",
+          "contract_or_mint": null
+        },
+        "status": "CLOSED",
+        "network_calls": 2,
+        "summary": {
+          "coin_id": "steem",
+          "tag_id": "socialfi",
+          "category_name": "SocialFi",
+          "target_source_ts": 1791980451000,
+          "target_change_24h_pct": 0.17501,
+          "peer_median_change_24h_pct": 0.66201,
+          "relative_strength_pct_points": -0.487,
+          "eligible_peers": 24,
+          "returned_category_rows": 100,
+          "full_sector_coverage": false,
+          "source_ts": 1791980451000,
+          "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+          "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+          "direction_neutral": false,
+          "entry_eligible": false,
+          "is_htx_price": false
+        },
+        "consumer_status": "CLOSED",
+        "consumer_facts": [
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "block_id": "N15",
+            "source": "CoinGecko",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+            "label": "Сектор «SocialFi» за 24 часа, выборка 24 монет",
+            "value": "монета +0,18%, медиана +0,66%, разница -0,49 п.п.; сводные цены площадок",
+            "unit": "",
+            "source_ts": 1791980451000,
+            "observed_ts": 1791980513658,
+            "evidence_id": "EV2:ba00f82c6cc09f096b197edc72d39aac81ba05089e5ce5f6adc2ce46d6a2b5ea",
+            "physical_root_key": "steem:native:mainnet|steem:socialfi:1791980451000"
+          }
+        ]
+      },
+      {
+        "contract": "DASH-USDT",
+        "identity": {
+          "chain": "dash",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "dash:mainnet",
+          "contract_or_mint": null
+        },
+        "status": "CLOSED",
+        "network_calls": 2,
+        "summary": {
+          "coin_id": "dash",
+          "tag_id": "payment-solutions",
+          "category_name": "Payment Solutions",
+          "target_source_ts": 1791980451000,
+          "target_change_24h_pct": 3.19551,
+          "peer_median_change_24h_pct": 0.16613,
+          "relative_strength_pct_points": 3.02938,
+          "eligible_peers": 28,
+          "returned_category_rows": 100,
+          "full_sector_coverage": false,
+          "source_ts": 1791980451000,
+          "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+          "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+          "direction_neutral": false,
+          "entry_eligible": false,
+          "is_htx_price": false
+        },
+        "consumer_status": "CLOSED",
+        "consumer_facts": [
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "block_id": "N15",
+            "source": "CoinGecko",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+            "label": "Сектор «Payment Solutions» за 24 часа, выборка 28 монет",
+            "value": "монета +3,20%, медиана +0,17%, разница +3,03 п.п.; сводные цены площадок",
+            "unit": "",
+            "source_ts": 1791980451000,
+            "observed_ts": 1791980518410,
+            "evidence_id": "EV2:ea5227a2c3ead5342796a4ce53582cac0c074881ff76e962dce4ca5bbabdd12f",
+            "physical_root_key": "dash:native:mainnet|dash:payment-solutions:1791980451000"
+          }
+        ]
+      }
+    ]
+  },
+  "source_code_sha256": "abb011756c0b4703735d69503db1c24c2bf68d788822d22b8416c3398bb9edd2",
+  "native_candidate_bindings": 30,
+  "new_API_consumer_qualified": [
+    "FIL",
+    "ALGO",
+    "STEEM",
+    "DASH"
+  ],
+  "new_remaining_API_consumer": [
+    "HBAR",
+    "XMR",
+    "XPL",
+    "CHZ",
+    "ICP",
+    "TAO",
+    "TIA"
+  ],
+  "production_natural_new_bindings_pending": true,
+  "original_artifact_bodies_verified": true,
+  "CG_aggregated_quote_not_HTX_execution": true,
+  "independent_vote_claim": false,
+  "score_weight_or_form_changed": false,
+  "latest_PR343_natural": "checkpoints/PR343_ACTUAL_NATURAL_FULL_CYCLE_20261014.json",
+  "all_blocks_complete": false
+}
