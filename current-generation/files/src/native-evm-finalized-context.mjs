@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
-import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom} from './evidence-source-store.mjs';
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 
 export const NATIVE_EVM_CONTEXT_VERSION='native-evm-finalized-context-v1-20261007';
@@ -67,10 +67,15 @@ export async function collectNativeEvmFinalizedContext({db,fetch_impl=globalThis
  await installEvidenceSourceStore(db);const key=NATIVE_EVM_CONTEXT_VERSION+':'+contract,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===NATIVE_EVM_CONTEXT_VERSION&&cached.contract===contract&&Number.isSafeInteger(cached.observed_ts)&&cached.observed_ts<=now&&cached.expires_at>=now){const rebuilt=deriveNativeEvmFacts({contract,asset_identity,proof:cached.native_evm_proof,observed_ts:cached.observed_ts});if(rebuilt.status==='CLOSED'&&rebuilt.source_ts===cached.source_ts&&rebuilt.expires_at===cached.expires_at&&JSON.stringify(rebuilt.evidence)===JSON.stringify(cached.evidence)&&(cached.evidence||[]).every(row=>verifiedNativeEvmContextRow(row,{now})))return{...cached,network_calls:0,cache_status:'VALIDATED_ORIGINAL_CLOCK_CACHE'};}
  const blocked=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,now});if(blocked)return{...blocked,network_calls:0,evidence:[],internal_only:true};
+ const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!headroom.allowed)return{status:headroom.status,network_calls:0,evidence:[],admission:headroom};
+ await installProviderMinuteLedger(db);
+ const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('PUBLICNODE_NATIVE_EVM',now-60000,now).first(),usedMinute=Number(rolling?.units);
+ const knownMinute=rolling?.units!==null&&rolling?.units!==''&&typeof rolling?.units!=='boolean'&&Number.isSafeInteger(usedMinute)&&usedMinute>=0;
+ if(!knownMinute||usedMinute+2>6)return{status:knownMinute?'ROLLING_60S_CAP_REACHED':'ADMISSION_LEDGER_UNAVAILABLE',network_calls:0,evidence:[],admission:{allowed:false,status:knownMinute?'PROVIDER_RATE_LIMIT_LOCAL':'ADMISSION_LEDGER_UNAVAILABLE',reserved_units:0,rolling_units:knownMinute?usedMinute:null,cap:6}};
  const reservation_id='EV2:NATIVE_EVM:'+run_id+':'+contract,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:2});
  if(!whole_job_admission?.allowed||whole_job_admission.duplicate)return{status:whole_job_admission?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED',network_calls:0,evidence:[],whole_job_admission};
  let admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,network_calls:0,evidence:[],admission};
- await installProviderMinuteLedger(db);admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id,units:2,cap:6,now});if(!admission.allowed)return{status:admission.status,network_calls:0,evidence:[],admission};
+ admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id,units:2,cap:6,now});if(!admission.allowed)return{status:admission.status,network_calls:0,evidence:[],admission};
  const reads=[],receipts=[],call=async messages=>{const r=await send(fetch_impl,network.endpoint,messages,clock);reads.push({...r,request:messages});receipts.push({route:messages.some(x=>x.method==='eth_chainId')?'EXACT_CHAIN_FINALIZED_FULL_BLOCK':'EXACT_SELECTED_NATIVE_RECEIPTS',http_status:r.http_status,status:r.ok?'RECEIVED':'SOURCE_ERROR',body_sha256:r.body_sha256||null,error:r.error||null,rpc_errors:r.errors||[]});return r;},message=(id,method,params)=>({jsonrpc:'2.0',id,method,params});
  const head=await call([message(1,'eth_chainId',[]),message(2,'eth_getBlockByNumber',['finalized',true])]),block=result(head.payload,2),chain_id=result(head.payload,1);
  let normalized={status:'EXACT_FRESH_FINALIZED_BLOCK_REQUIRED',evidence:[]},proof=null;

@@ -1,7 +1,7 @@
 import {collectNativeEvmFinalizedContext,exactNativeEvmNetwork} from './native-evm-finalized-context.mjs';
 import {collectXrplNativePayments} from './xrpl-native-payments.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
-import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v5-native-sol-transfer-20261005';
 export const AAVE_POOL='0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2';
 export const AAVE_TOPIC='0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286';
@@ -56,6 +56,7 @@ export function decodeFinalizedSolanaTransaction({transaction,mint,signature,obs
 
 async function collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,mint,now,clock,strict_fresh_manual=false}){
  const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:TOKEN_TRANSFER:${mint}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!headroom.allowed)return{status:headroom.status,evidence:[],network_calls:0,admission:headroom};
  const reservation_id=`EV2:CHAIN_EVENTS:${contract}:TOKEN_TRANSFER:${run_id}:${mint}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:2});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
  const endpoint='https://api.mainnet-beta.solana.com',sig=await rpc(fetch_impl,endpoint,{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[mint,{limit:20,commitment:'finalized'}]}),signatures=exactResult(sig.payload,1),receipts=[{route:'SOLANA_FINALIZED_SIGNATURES',status:sig.ok&&Array.isArray(signatures)?'CLOSED':'SOURCE_ERROR',http_status:sig.http_status,error:sig.error??null}];let calls=1,evidence=[],status='SOURCE_SCHEMA_NOT_CLOSED',sampled_signature=null;
@@ -82,6 +83,7 @@ export function decodeFinalizedNativeSolanaTransaction({transaction,signature,ob
 
 async function collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual=false}){
  const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:NATIVE_TRANSFER`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:4,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!headroom.allowed)return{status:headroom.status,evidence:[],network_calls:0,admission:headroom};
  const reservation_id=`EV2:CHAIN_EVENTS:${contract}:NATIVE_TRANSFER:${run_id}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:4});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:4,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
  const endpoint='https://api.mainnet-beta.solana.com',sig=await rpc(fetch_impl,endpoint,{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[SOLANA_SYSTEM_PROGRAM,{limit:20,commitment:'finalized'}]}),signatures=exactResult(sig.payload,1),receipts=[{route:'SOLANA_FINALIZED_NATIVE_SIGNATURES',status:sig.ok&&Array.isArray(signatures)?'CLOSED':'SOURCE_ERROR',http_status:sig.http_status,error:sig.error??null}];let calls=1,evidence=[],status='SOURCE_SCHEMA_NOT_CLOSED';const sampled_signatures=[];

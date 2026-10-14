@@ -1,0 +1,47 @@
+{
+  "schema": "ALL_ACTIVE_SOURCE_HEADROOM_BEFORE_SHARED_ADMISSION_V1",
+  "basis_main": "deec69207cf2a0638780084fc068bddc5545b16e",
+  "affected_routes": [
+    "HTX_ASSET_REFERENCE to exact COINPAPRIKA_HTX_IDENTITY fallback",
+    "N04 Solana token/native finalized events",
+    "N04 native EVM day/rolling-minute pool"
+  ],
+  "defect": "Known insufficient provider allowance was discovered after whole-job reservation; other useful routes could lose shared headroom despite zero provider transport.",
+  "fix": "Indexed readonly source preflight before shared admission; original atomic provider reservation remains authoritative under races. Never refund/reset/alias quotas. Cached facts still precede source headroom checks.",
+  "existing_caps": {
+    "HTX_ASSET_REFERENCE": 8,
+    "COINPAPRIKA_HTX_IDENTITY": 12,
+    "CHAIN_RPC": 720,
+    "PUBLICNODE_NATIVE_EVM_rolling60s": 6,
+    "whole_HTTP": 164,
+    "supplemental_finalist": 18
+  },
+  "local_connected_checks": 28,
+  "local_failed": 0,
+  "production_provider_HTTP": 0,
+  "production_D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "budget": {
+    "selected_asset_cases": 86,
+    "formula": "36*2 scheduled +3*2 manual full +5 manual single +3 burst single =86; worst16 additional indexed read units per case",
+    "extra_conservative_daily_reads": 1376,
+    "extra_one_time_schema_write_reserve": 24,
+    "previous_whole_plan_reads": 3365912,
+    "previous_whole_plan_writes": 67464,
+    "new_conservative_reads": 3367288,
+    "new_conservative_writes": 67488,
+    "daily_read_limit": 3500000,
+    "daily_write_limit": 70000,
+    "source_caps_and_HTTP_unchanged": true,
+    "no_claim_of_actual_rows_without_native_receipt": true
+  },
+  "cloud_assembled_pending": true,
+  "new_natural_known_exhaustion_fallback_pending": true,
+  "source_original_clocks_unchanged": true,
+  "pauses_strategy_weights_forms_unchanged": true,
+  "protected_hot_originals_retained": true,
+  "new_native_source_research": "checkpoints/ADDITIONAL_NATIVE_LIQ_PRIMARY_RESEARCH_20261014.json",
+  "all_blocks_complete": false,
+  "project_complete": false
+}
