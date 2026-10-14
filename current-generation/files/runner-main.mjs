@@ -71,7 +71,7 @@ import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-cal
 import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
 import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
-import {collectCandidateEvidenceV2,finalizeCandidateBlockCoverage} from './src/candidate-evidence-v2-runtime.mjs';
+import {sourceCollectionPriorityProof,collectCandidateEvidenceV2,finalizeCandidateBlockCoverage} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget,HTTP_LIMITS} from './src/unified-budget.mjs';
 import {TWO_CANDIDATE_PLAN,TWO_NODE_HTTP_LIMITS,proveTwoCandidateBudget,deepRuntimeOptions} from './src/two-candidate-policy.mjs';
 import {bindGateOfficialAssetIdentity} from './src/gate-official-asset-binding.mjs';
@@ -236,6 +236,7 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,cand
           observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
           actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||presentationInputs?.manual_text||null,
           block_coverage:blockCoverage,
+          source_collection_priority:sourceCollectionPriorityProof(canonical||{}),
           source_role_publication_audit:auditObservationSourceRoles(canonical),
           block_decision_use:auditCanonicalBlockDecisionUse(canonical||{},{manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),
           block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null},telegram:{ok:Boolean(row.telegram_text),text:row.telegram_text||null,analytical_fingerprint:canonical?.analytical_fingerprint}}),

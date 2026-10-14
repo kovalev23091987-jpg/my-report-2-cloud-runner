@@ -1,0 +1,37 @@
+name: HTX weekly exact universe and source proposal
+on:
+  schedule:
+    - cron: '17 0 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+concurrency:
+  group: report2-htx-weekly-universe
+  cancel-in-progress: false
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      REPORT2_WEEKLY_QUALIFIED_PROPOSALS_ENABLED: ${{ vars.REPORT2_WEEKLY_QUALIFIED_PROPOSALS_ENABLED || 'false' }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check synchronized plan, source caps, byte-preserving ownership and retained history
+        run: node --test runner/htx-weekly-universe-plan.test.mjs runner/github-bounded-phase-lease.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs
+      - name: Qualify original six catalogs once per week under existing shared budgets
+        run: node tools/weekly-htx-universe-refresh.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: htx-weekly-source-proposal-${{ github.run_id }}
+          path: audit-output/htx-weekly/
+          if-no-files-found: error
+          retention-days: 30

@@ -109,6 +109,20 @@ export function orderEvidenceRoutesBySourceHistory(routes=[],history={}, {contra
 }
 export function exactCapabilityIdentity(params={}){return verifiedAssetRouteIdentity(params);}
 
+// Explicit artifact-only projection. Never publish source cache bodies,
+// credentials, prior full responses, or claimed forecast accuracy here.
+export function sourceCollectionPriorityProof(canonical={}){
+ const contract=canonical?.metadata?.contract,ev=canonical?.metadata?.internal_market_context?.evidence_v2;
+ const project=r=>{
+  if(!r||r.contract!==contract)return null;
+  const names=rows=>(Array.isArray(rows)?rows:[]).filter(x=>typeof x==='string'&&/^[A-Z0-9_]{1,40}$/.test(x)).slice(0,17);
+  const statistics=Object.entries(r.source_statistics||{}).filter(([k,v])=>/^[A-Z0-9_]{1,40}$/.test(k)&&/^(COINGECKO_SECTOR|COINPAPRIKA_SECTOR|N(?:05|12)_PUBLIC_VENUE:[A-Z0-9_]{1,32})$/.test(v?.source_id||'')).slice(0,17).map(([route,v])=>({route,source_id:v.source_id,block_id:['N05','N12','N15'].includes(v.block_id)?v.block_id:null,observations:Number.isSafeInteger(v.observations)&&v.observations>=0&&v.observations<=4?v.observations:null,latest_observed_ts:Number.isSafeInteger(v.latest_observed_ts)?v.latest_observed_ts:null,latest_class:typeof v.latest_class==='string'&&/^[A-Z_]{1,40}$/.test(v.latest_class)?v.latest_class:null,useful:v.useful===true,valid_rows_per_http:Number.isFinite(v.valid_rows_per_http)&&v.valid_rows_per_http>=0?v.valid_rows_per_http:null,initial_historical_preference:v.initial_historical_preference===true}));
+  return{status:typeof r.status==='string'&&/^[A-Z0-9_]{1,80}$/.test(r.status)?r.status:'PRIORITY_RECEIPT_UNAVAILABLE',ordered_collectors:names(r.actual_route_order||r.ordered_routes),initial_order:names(r.original_order),source_statistics:statistics,includes_cached_or_quota_skipped_collectors:true,transport_counts_from_original_shared_receipts:true,score_changed:false,predictive_weight_changed:false};
+ };
+ const N15=project(ev?.source_priority),public_venues=project(ev?.sources?.EXTERNAL_N05_FLOW?.source_priority);
+ return{schema:'EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1',contract:contract||null,status:N15||public_venues?'CAPTURED_ORIGINAL_QUEUE':'NO_ORIGINAL_PRIORITY_RECEIPT',N15,public_venues,sourceHTTP:0,D1:0,Telegram_text_changed:false};
+}
+
 export function unavailableExternalN05Route(params={},result){
  if(result)return result;
  const identity=exactCapabilityIdentity(params);
