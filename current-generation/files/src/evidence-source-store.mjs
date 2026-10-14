@@ -77,10 +77,19 @@ export async function writeEvidenceSourceCache(db,input={}){
 // Operational observations, separate from forecast accuracy and strategy weights.
 // The caller must reserve DB headroom before this optional diagnostic work.
 export const SOURCE_PRIORITY_HISTORY_SQL=`SELECT contract,source_id,run_id,observed_ts,actual_http,status,operational_class,evidence_rows,valid_rows,decision_usable_rows FROM report2_evidence_source_health_observation INDEXED BY report2_evidence_source_health_recent WHERE source_id=?1 AND contract=?2 AND observed_ts>=?3 AND observed_ts<=?4 ORDER BY observed_ts DESC LIMIT 4`;
+export function sourceHistoryStatistics(observations=[],{contract,source_id,now=Date.now()}={}){
+ const rejected_observations=[];
+ const rows=(observations||[]).filter(r=>r.source_id===source_id).filter(r=>{
+  const valid=r.contract===contract&&typeof r.run_id==='string'&&r.run_id.length>0&&Number.isSafeInteger(r.observed_ts)&&r.observed_ts<=now&&r.observed_ts>=now-86400000&&Number.isSafeInteger(r.actual_http)&&r.actual_http>0&&['evidence_rows','valid_rows','decision_usable_rows'].every(k=>Number.isSafeInteger(r[k])&&r[k]>=0)&&r.valid_rows<=r.evidence_rows&&r.decision_usable_rows<=r.valid_rows;
+  if(!valid)rejected_observations.push({source_id:r.source_id,reason:'EXACT_MARKET_CLOCK_OR_COUNTER_INVALID'});return valid;
+ }).sort((a,b)=>b.observed_ts-a.observed_ts||b.run_id.localeCompare(a.run_id)).slice(0,4);
+ const latest=rows[0],useful=latest?.operational_class==='CONTEXT_AVAILABLE'&&latest.valid_rows>0;
+ return{source_id,observations:rows.length,latest_class:latest?.operational_class||null,latest_observed_ts:latest?.observed_ts||null,useful:!!useful,valid_rows_per_http:useful?rows.reduce((n,r)=>n+(r.operational_class==='CONTEXT_AVAILABLE'?r.valid_rows:0),0)/rows.reduce((n,r)=>n+r.actual_http,0):0,rejected_observations};
+}
 export async function readEvidenceSourcePriorityHistory(db,{contract,source_ids=[],admit,now=Date.now()}={}){
  const ids=[...new Set(source_ids)];
  const base={contract,observations:[],predictive_weight_changed:false,quarantine_activated:false,score_cap:0,read_only:true};
- if(!db?.prepare||!contract||!ids.length||ids.length>4||ids.some(id=>typeof id!=='string'||!id)||!Number.isSafeInteger(now)||now<=0)return{...base,status:'SOURCE_PRIORITY_SCOPE_REQUIRED'};
+ if(!db?.prepare||!contract||!ids.length||ids.length>8||ids.some(id=>typeof id!=='string'||!id)||!Number.isSafeInteger(now)||now<=0)return{...base,status:'SOURCE_PRIORITY_SCOPE_REQUIRED'};
  // Each query uses the existing source/contract/time index. No schema writes,
  // unrestricted contract scan, provider transport or source reservation.
  const grant=admit?.({rows_read:ids.length*32,rows_written:0});
