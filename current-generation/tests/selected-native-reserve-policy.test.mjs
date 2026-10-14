@@ -1,7 +1,14 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {oneUnusablePairReserveMayFinishPosition as may,SELECTED_NATIVE_SOURCE_PLAN} from '../files/src/liquidation-extension/selected-native-reserve-policy.mjs';
+import {oneUnusablePairReserveMayFinishPosition as may,SELECTED_NATIVE_SOURCE_PLAN,followingNativeReserveRequired} from '../files/src/liquidation-extension/selected-native-reserve-policy.mjs';
 const T=1791494765905,batch=['QNT-USDT','BR-USDT'],run_id='CONTROLLED_MIXED_SELECTED_PAIR';
 const fixture=()=>({now:T,run_id,contract:batch[0],batch,current_allowed:['GTRADE_NATIVE','DYDX_PINNED_NATIVE'],plan:{schema:SELECTED_NATIVE_SOURCE_PLAN,run_id,entries:batch.map(contract=>({contract,eligible:true,source_ids:['GTRADE_NATIVE','DYDX_PINNED_NATIVE']}))},coverage:{[batch[0]]:{status:'SUPPORTED',source_ts:T-1000,run_id},[batch[1]]:{status:'UNSUPPORTED',source_ts:T-1000,run_id}}});
+test('no source permission or only known external models releases native reserve, while native/unknown and malformed plans preserve it',()=>{
+ const f=fixture();assert.equal(followingNativeReserveRequired(f),true);
+ f.plan.entries[1].eligible=false;assert.equal(followingNativeReserveRequired(f),false);
+ f.plan.entries[1].eligible=true;f.plan.entries[1].source_ids=['COINLOBSTER_FUTURE_MODEL'];assert.equal(followingNativeReserveRequired(f),false);
+ for(const ids of [[],['FUTURE_UNKNOWN_NATIVE'],['DYDX_PINNED_NATIVE'],['COINLOBSTER_FUTURE_MODEL','HYPERLIQUID_NATIVE']]){f.plan.entries[1].source_ids=ids;assert.equal(followingNativeReserveRequired(f),true);}
+ assert.equal(followingNativeReserveRequired({...f,run_id:'FOREIGN'}),true);assert.equal(followingNativeReserveRequired({...f,contract:'FOREIGN-USDT'}),true);
+});
 test('a current exact unsupported following gTrade route and only zero-or-at-least-three-request alternatives authorize one reserve request',()=>{const f=fixture();assert.equal(may(f),true);f.plan.entries[1].source_ids.push('LIGHTER_NATIVE','GMX_NATIVE','COINLOBSTER_FUTURE_MODEL');assert.equal(may(f),true);});
 test('a following Hyperliquid, archive, or unknown route retains the two-request reserve',()=>{for(const id of ['HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS','FUTURE_UNKNOWN_NATIVE']){const f=fixture();f.plan.entries[1].source_ids.push(id);assert.equal(may(f),false);}});
 test('unknown, supported, stale, future and foreign catalog facts cannot release the reserve',()=>{for(const patch of [{status:'CATALOG_DISCOVERY_REQUIRED'},{status:'SUPPORTED'},{source_ts:T+1},{source_ts:T-300001},{run_id:'FOREIGN'},{source_ts:null},{source_ts:T-999}]){const f=fixture();Object.assign(f.coverage[batch[1]],patch);assert.equal(may(f),false);}});

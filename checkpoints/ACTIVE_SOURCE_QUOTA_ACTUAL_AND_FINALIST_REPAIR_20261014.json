@@ -1,0 +1,110 @@
+{
+  "schema": "ACTIVE_SOURCE_QUOTA_ACTUAL_AND_FINALIST_REPAIR_CANDIDATE_V1",
+  "recorded_utc": "2026-10-14T04:10:47.888579+00:00",
+  "base_main": "2338a42afc69c1f96275546c7b4a2b832410a511",
+  "read_only_cloud": 38509476208,
+  "read_only_exact_head": "2338a42afc69c1f96275546c7b4a2b832410a511",
+  "native_D1": {
+    "requests": 6,
+    "rows_read": 393,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 78,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 276,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_source_allowance_shadow": {
+        "requests": 1,
+        "rows_read": 34,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "active_native_monthly_caps": [
+    {
+      "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:DYDX_RPC",
+      "provider": "DYDX_RPC",
+      "unit": "REQUEST",
+      "window_start_ts": 1790812800000,
+      "window_end_ts": 1793491200000,
+      "allowance_units": 1000,
+      "used_units": 264,
+      "version": 88,
+      "active": 1,
+      "remaining": 736,
+      "is_source_ceiling_not_useful_coverage": true
+    },
+    {
+      "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:GTRADE",
+      "provider": "GTRADE",
+      "unit": "REQUEST",
+      "window_start_ts": 1790812800000,
+      "window_end_ts": 1793491200000,
+      "allowance_units": 4000,
+      "used_units": 270,
+      "version": 225,
+      "active": 1,
+      "remaining": 3730,
+      "is_source_ceiling_not_useful_coverage": true
+    },
+    {
+      "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:HYPERLIQUID",
+      "provider": "HYPERLIQUID",
+      "unit": "REQUEST",
+      "window_start_ts": 1790812800000,
+      "window_end_ts": 1793491200000,
+      "allowance_units": 10000,
+      "used_units": 386,
+      "version": 298,
+      "active": 1,
+      "remaining": 9614,
+      "is_source_ceiling_not_useful_coverage": true
+    }
+  ],
+  "research_scopes_not_added_to_remaining": true,
+  "native_sources_currently_exhausted": false,
+  "remaining_cold_monthly_limits": "DYDX1000/GTRADE4000 still do not guarantee every cold full-cycle scenario; unknown provider monthly cap not increased. Current supported catalog is structural-only.",
+  "cloud_failure": {
+    "run": 38509404183,
+    "head": "2338a42afc69c1f96275546c7b4a2b832410a511",
+    "reason": "New native catalog missing from explicit apply-runtime-overlay file list; assembled cmp caught it before provider calls",
+    "corrected_dependency": true
+  },
+  "main_write_auto_review": {
+    "direct_push_rejected": true,
+    "reason": "Separate explicit authorization required for this concrete direct default-branch push",
+    "safer_candidate_branch": "codex/active-source-finalist-and-quota-20261014",
+    "merge_pending_owner_approval": true
+  },
+  "new_reserve_rule": "No native reserve for an exact following candidate without native permission or with known external models only; unknown and permitted native routes retain prior reserve. This prevents supported3-request dYdX from losing unused pool when the other product is unsupported.",
+  "local_followup_tests": 18,
+  "local_followup_tap_sha256": "6c327ac5a0ffea1d402f4f94753e46443c164172e4a23a825f546af21acf7b71",
+  "pauses_weights_formats_caps_unchanged": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

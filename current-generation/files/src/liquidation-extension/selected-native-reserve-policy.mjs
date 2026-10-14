@@ -4,6 +4,16 @@
 export const SELECTED_NATIVE_SOURCE_PLAN='SELECTED_NATIVE_SOURCE_PLAN_V1';
 const code=v=>typeof v==='string'&&/^[^-\s]+-USDT$/u.test(v);
 const cannotUseTwo=new Set(['GTRADE_NATIVE','DYDX_PINNED_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','COINLOBSTER_FUTURE_MODEL','BYKARANTELI_FUTURE_MAP','BYK_TRACKED_HL_BANDS']);
+const nonNativeModels=new Set(['COINLOBSTER_FUTURE_MODEL','BYKARANTELI_FUTURE_MAP','BYK_TRACKED_HL_BANDS']);
+// Only an exact selected plan may establish that the other candidate has no
+// permitted native lane. Models keep their separate supplemental allowance.
+// Unknown/eligible native routes retain the normal two-request reservation.
+export function followingNativeReserveRequired({plan,run_id,contract}={}){
+ if(plan?.schema!==SELECTED_NATIVE_SOURCE_PLAN||plan.run_id!==run_id||typeof run_id!=='string'||!run_id.trim()||!code(contract)||!Array.isArray(plan.entries)||plan.entries.length!==2||new Set(plan.entries.map(e=>e?.contract)).size!==2||plan.entries.some(e=>!code(e?.contract)||typeof e.eligible!=='boolean'||!Array.isArray(e.source_ids)||e.source_ids.length>12||new Set(e.source_ids).size!==e.source_ids.length||e.source_ids.some(id=>typeof id!=='string')))return true;
+ const current=plan.entries.find(e=>e.contract===contract),other=plan.entries.find(e=>e.contract!==contract);
+ if(!current||current.eligible!==true||!other)return true;
+ return other.eligible===false||other.source_ids.length>0&&other.source_ids.every(id=>nonNativeModels.has(id))?false:true;
+}
 export function oneUnusablePairReserveMayFinishPosition({plan,run_id,contract,batch,current_allowed,coverage,now}={}){
  if(plan?.schema!==SELECTED_NATIVE_SOURCE_PLAN||plan.run_id!==run_id||typeof run_id!=='string'||!run_id.trim()||!code(contract)||!Number.isSafeInteger(now))return false;
  if(!Array.isArray(batch)||batch.length!==2||new Set(batch).size!==2||!batch.every(code)||!batch.includes(contract))return false;
