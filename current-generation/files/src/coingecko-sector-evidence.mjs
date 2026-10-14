@@ -3,7 +3,7 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 
-export const COINGECKO_SECTOR_VERSION='coingecko-sector-v10-exact-tron-addresses-20261014';
+export const COINGECKO_SECTOR_VERSION='coingecko-sector-v11-exact-target-refresh-20261014';
 const SOURCE='COINGECKO_SECTOR',MAX_AGE=900000,clean=v=>String(v??'').trim();
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -141,7 +141,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(!validAddress||!isExactHtxUsdtSwapKey(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!sectorCategoryLabel(category_name))))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
  const key=`${contract}:${identity.chain}:${native?identity.native_asset_id:identity.contract_or_mint}:${coin_id}:${category_id}:${category_name}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
- const compatibleCachedVersion=cached?.version===COINGECKO_SECTOR_VERSION||cached?.version==='coingecko-sector-v9-exact-native-denominations-20261014'||!['ICP-USDT','CHZ-USDT'].includes(contract)&&cached?.version==='coingecko-sector-v8-exact-native-provider-bindings-20261014'||!native?.provider_homepages&&cached?.version==='coingecko-sector-v7-optional-free-demo-header-20261013';
+ const compatibleCachedVersion=cached?.version===COINGECKO_SECTOR_VERSION||cached?.version==='coingecko-sector-v10-exact-tron-addresses-20261014'||cached?.version==='coingecko-sector-v9-exact-native-denominations-20261014'||!['ICP-USDT','CHZ-USDT'].includes(contract)&&cached?.version==='coingecko-sector-v8-exact-native-provider-bindings-20261014'||!native?.provider_homepages&&cached?.version==='coingecko-sector-v7-optional-free-demo-header-20261013';
  if(!strict_fresh_manual&&compatibleCachedVersion&&cached.status==='CLOSED'&&cached.evidence?.length&&cached.evidence.every(r=>r.htx_contract===contract&&r.source_ts<=now&&r.first_known_ts<=now&&r.expires_at>=now))return cached;
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
@@ -162,8 +162,12 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  // Resolve its missing or stale exact-ID quote under separate admission.
  // Duplicate identities, future clocks and same-symbol peers remain invalid;
  // refreshing the target never refreshes peers or creates extra peer votes.
- const targetRows=Array.isArray(quotes)?quotes.filter(r=>r?.id===coin_id):[],targetSymbol=contract.replace(/-USDT$/,''),targetTs=Date.parse(targetRows[0]?.last_updated),sameSymbolPeer=Array.isArray(quotes)&&quotes.some(r=>r?.id!==coin_id&&clean(r?.symbol).toUpperCase()===targetSymbol),refreshScope=targetRows.length===0?'EXACT_ID_OUTSIDE_CATEGORY_PAGE':targetRows.length===1&&clean(targetRows[0]?.symbol).toUpperCase()===targetSymbol&&Number.isFinite(targetTs)&&targetTs<=Date.now()&&Date.now()-targetTs>MAX_AGE?'EXACT_ID_REFRESH_STALE_CATEGORY_ROW':null;
- if(normalized.status==='EXACT_FRESH_TARGET_QUOTE_REQUIRED'&&Array.isArray(quotes)&&refreshScope&&!sameSymbolPeer){
+ const targetRows=Array.isArray(quotes)?quotes.filter(r=>r?.id===coin_id):[],targetSymbol=contract.replace(/-USDT$/,''),targetTs=Date.parse(targetRows[0]?.last_updated),refreshScope=targetRows.length===0?'EXACT_ID_OUTSIDE_CATEGORY_PAGE':targetRows.length===1&&clean(targetRows[0]?.symbol).toUpperCase()===targetSymbol&&Number.isFinite(targetTs)&&targetTs<=Date.now()&&Date.now()-targetTs>MAX_AGE?'EXACT_ID_REFRESH_STALE_CATEGORY_ROW':null;
+ // Metadata has already bound the exact provider ID and chain address. A
+ // different same-ticker coin is excluded from peers by the normalizer; it
+ // cannot veto this separately admitted exact-ID quote request. Duplicate
+ // target IDs, wrong symbols and future clocks still have no repair route.
+ if(normalized.status==='EXACT_FRESH_TARGET_QUOTE_REQUIRED'&&Array.isArray(quotes)&&refreshScope){
   const targetQuotes=await get('EXACT_TARGET_QUOTE',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(coin_id)}&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual});
   if(Array.isArray(targetQuotes)&&targetQuotes.length===1&&targetQuotes[0]?.id===coin_id){
    normalized=normalizeCoingeckoSector({metadata,categories,quotes:[...quotes.filter(r=>r?.id!==coin_id),targetQuotes[0]],identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});

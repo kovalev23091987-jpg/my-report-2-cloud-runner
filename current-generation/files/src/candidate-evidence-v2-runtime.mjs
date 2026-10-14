@@ -101,6 +101,14 @@ export function capabilityCheckedNoExactRoute(params,source_id,reason){
  const identity=exactCapabilityIdentity(params);if(!identity)return null;
  return{status:'CAPABILITY_CHECKED_NO_EXACT_ROUTE',check_completed:true,capability_registry_complete:true,source_id,reason,exact_identity:identity,network_calls:0,evidence:[],receipts:[{check_completed:true,status:'NO_EXACT_ROUTE',source_id,contract:identity.contract,identity_method:identity.identity_method}],observed_ts:Number(params?.now)||Date.now(),decision_effect:'MISSING_FACT_NO_ZERO_NO_GREEN',internal_only:true};
 }
+export function retainCheckedSectorAbsence(params,result){
+ if(!exactCapabilityIdentity(params)||!(Number(result?.network_calls)>0)||!['EXACT_ASSET_AND_CATEGORY_REQUIRED','EXACT_SECTOR_REGISTRY_REQUIRED'].includes(String(result?.status)))return result;
+ const absence=capabilityCheckedNoExactRoute(params,'COINGECKO_SECTOR','PROVIDER_CHECK_FOUND_NO_EXACT_FUNCTIONAL_CATEGORY_ROUTE');
+ // This provider check really used transport. Keep its original cost,
+ // receipts, admission and diagnostic status; a missing category remains a
+ // missing fact, never a successful zero or a fictitious free catalog check.
+ return{...result,...absence,network_calls:result.network_calls,original_provider_status:result.status,receipts:[...(Array.isArray(result.receipts)?result.receipts:[]),...absence.receipts]};
+}
 // A block is complete only when its assigned primary owner was actually
 // evaluated.  Supplemental and discovery routes remain visible, but they may
 // not close a block on behalf of a missing primary route.
@@ -322,8 +330,7 @@ export async function collectCandidateEvidenceV2(params={}){
  const binanceOptionInterest=PAUSED_BLOCKS.N14?pausedN14:routeBlock.results.BINANCE_OPTION_INTEREST||{status:'NOT_IN_VERIFIED_BINANCE_INTEREST_CAPABILITY',evidence:[],network_calls:0};
  const largeTrades=routeBlock.results.LARGE_TRADES||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
  const sector=routeBlock.results.SECTOR||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
- let cgSector=routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
- if(exactCapability&&Number(cgSector.network_calls)>0&&['EXACT_ASSET_AND_CATEGORY_REQUIRED','EXACT_SECTOR_REGISTRY_REQUIRED'].includes(String(cgSector.status)))cgSector=noRoute('COINGECKO_SECTOR','PROVIDER_CHECK_FOUND_NO_EXACT_FUNCTIONAL_CATEGORY_ROUTE');
+ const cgSector=retainCheckedSectorAbsence(params,routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0});
  const supplementalSources=params?.supplemental_context?.sources||{};
  const nansen=resolveNansenFlowPrimary(supplementalSources.NANSEN_FLOWS,params);
  const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(routeBlock.results.JOINT_FLOW?.evidence||[]).filter(row=>row?.block_id==='N12'&&['GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id)),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
