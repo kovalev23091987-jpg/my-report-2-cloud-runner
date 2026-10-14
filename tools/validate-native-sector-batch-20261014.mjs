@@ -7,9 +7,10 @@ import {normalizeHtxAssetReferences} from '../current-generation/files/src/htx-a
 import {collectCoingeckoSectorEvidence} from '../current-generation/files/src/coingecko-sector-evidence.mjs';
 import {consumeSectorContext} from '../current-generation/files/src/sector-context.mjs';
 
-const repo='kovalev23091987-jpg/my-report-2-cloud-runner',reservation={rows_read:8000,rows_written:400},maxHTTP=16,symbols=['FIL','ALGO','STEEM','DASH'];
+import {nativeSectorValidationPlan,reserveNativeSectorValidationBatch} from './native-sector-validation-admission-20261014.mjs';
+const plan=nativeSectorValidationPlan(process.env.REPORT2_NATIVE_VALIDATION_BATCH||'INITIAL_NATIVE4'),{symbols}=plan,reservation=plan.D1_reservation,maxHTTP=plan.maximum_provider_HTTP,repo='kovalev23091987-jpg/my-report-2-cloud-runner';
 if(process.argv.includes('--plan')){
- console.log(JSON.stringify({symbols,maximum_provider_HTTP:maxHTTP,D1_reservation:reservation,max_runs_day:1,ordinary_source_cap:224,manual_reserve_consumed:false,shared_minute_cap:9,MAIN:0,Telegram:0,cold_scheduled_D1_with_probe:{rows_read:3349912,rows_written:66664},live_use_claim:false}));process.exit(0);
+ console.log(JSON.stringify({...plan,live_use_claim:false}));process.exit(0);
 }
 for(const key of ['GITHUB_TOKEN','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER','REPORT2_COINGECKO_DEMO_API_KEY','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN'])if(!process.env[key])throw Error(key+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repo)throw Error('EXACT_REPOSITORY_REQUIRED');
@@ -17,8 +18,8 @@ const api=async path=>{const r=await fetch('https://api.github.com/repos/'+repo+
 const main=(await api('git/ref/heads/main')).object.sha,head=process.env.GITHUB_SHA;
 if(main!==process.env.REPORT2_EXPECTED_MAIN)throw Error('MAIN_MOVED');
 if(head!==main){
- if(head!==process.env.REPORT2_EXPECTED_CANDIDATE||process.env.GITHUB_REF!=='refs/heads/codex/native-sector-source-coverage-20261014')throw Error('EXACT_CANDIDATE_REQUIRED');
- const compared=await api('compare/'+main+'...'+head),allowed=new Set(['current-generation/files/src/coingecko-sector-evidence.mjs','current-generation/tests/shared-sector-batch.test.mjs','current-generation/tests/native-sector-provider-binding.test.mjs','tools/validate-native-sector-batch-20261014.mjs','tools/validate-coingecko-demo-sector-20261013.mjs','.github/workflows/coingecko-demo-validation.yml','.github/workflows/liq-assembled-offline-20261012.yml','checkpoints/NATIVE_SECTOR_PROVIDER_IDENTITY_CANDIDATE_20261014.json']);
+ if(head!==process.env.REPORT2_EXPECTED_CANDIDATE||!['refs/heads/codex/native-sector-source-coverage-20261014','refs/heads/codex/native-sector-missing-rest-20261014'].includes(process.env.GITHUB_REF))throw Error('EXACT_CANDIDATE_REQUIRED');
+ const compared=await api('compare/'+main+'...'+head),allowed=new Set(['current-generation/files/src/coingecko-sector-evidence.mjs','current-generation/tests/shared-sector-batch.test.mjs','current-generation/tests/native-sector-provider-binding.test.mjs','tools/validate-native-sector-batch-20261014.mjs','tools/native-sector-validation-admission-20261014.mjs','current-generation/tests/native-sector-validation-admission.test.mjs','tools/validate-coingecko-demo-sector-20261013.mjs','.github/workflows/coingecko-demo-validation.yml','.github/workflows/liq-assembled-offline-20261012.yml','checkpoints/NATIVE_SECTOR_PROVIDER_IDENTITY_CANDIDATE_20261014.json']);
  if(compared.status!=='ahead'||compared.merge_base_commit?.sha!==main||!compared.files?.length||compared.files.length>allowed.size||compared.files.some(r=>!allowed.has(r.filename)||!['added','modified'].includes(r.status)))throw Error('CANDIDATE_SCOPE_NOT_CLOSED');
 }
 const read=async path=>JSON.parse(Buffer.from((await api('contents/'+path+'?ref='+main)).content,'base64').toString());
@@ -29,18 +30,13 @@ if(createHash('sha256').update(raw).digest('hex')!=='f2bcb443ac8b167fa0b64709fa0
 const original=JSON.parse(raw),identities=normalizeHtxAssetReferences(original.payload||original).entries;
 const approved=JSON.parse(gunzipSync(await fs.readFile('checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz'))).assets;
 for(const symbol of symbols)if(!approved.some(a=>a.symbol===symbol&&a.asset_analysis_contract===symbol+'-USDT')||identities[symbol]?.status!=='CLOSED'||identities[symbol].identities[0]?.asset_kind!=='NATIVE')throw Error('APPROVED_EXACT_NATIVE_REQUIRED');
-const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),day=new Date(now).toISOString().slice(0,10),id='NATIVE_SECTOR_VALIDATE:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
-const out={schema:'NATIVE_SECTOR_MISSING_FACT_BATCH_V1',head,expected_main:main,cloud_run:Number(process.env.GITHUB_RUN_ID),run_id:id,status:'NOT_ADMITTED',symbols,maximum_provider_HTTP:maxHTTP,D1_reservation:reservation,original_HTX_binding_sha256:createHash('sha256').update(raw).digest('hex'),rows:[],responses:[],MAIN:0,Telegram:0,manual_reserve_consumed:false,score_changed:false,project_complete:false,production_use_claim:false};
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),day=new Date(now).toISOString().slice(0,10),id='NATIVE_SECTOR_VALIDATE:'+plan.batch+':'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
+const out={schema:'NATIVE_SECTOR_MISSING_FACT_BATCH_V1',head,expected_main:main,cloud_run:Number(process.env.GITHUB_RUN_ID),run_id:id,status:'NOT_ADMITTED',batch:plan.batch,symbols,maximum_provider_HTTP:maxHTTP,D1_reservation:reservation,original_HTX_binding_sha256:createHash('sha256').update(raw).digest('hex'),rows:[],responses:[],MAIN:0,Telegram:0,manual_reserve_consumed:false,score_changed:false,project_complete:false,production_use_claim:false};
 let admitted=false,wholeReserved=0;
 await fs.mkdir('audit-output/coingecko-demo-sector',{recursive:true});
 try{
- const grant=await db.prepare(`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
- SELECT ?1,?2,?3,?4,'RESERVED',?5 WHERE
- COALESCE((SELECT SUM(reserve_rows_read) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=3500000 AND
- COALESCE((SELECT SUM(reserve_rows_written) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=70000 AND
- NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND state='FINALIZED' AND COALESCE(unknown_ops,1)>0) AND
- (SELECT COUNT(*) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'NATIVE_SECTOR_VALIDATE:%')<1`).bind(id,day,reservation.rows_read,reservation.rows_written,now).run();
- if(Number(grant?.meta?.changes??grant?.changes)!==1)throw Error('ATOMIC_DAY_RESERVATION_NOT_ADMITTED');admitted=true;
+ const grant=await reserveNativeSectorValidationBatch(db,{batch:plan.batch,id,now});
+ if(!grant)throw Error('ATOMIC_DAY_RESERVATION_NOT_ADMITTED');admitted=true;
  const row=await db.prepare('SELECT state,reserve_rows_read,reserve_rows_written FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1').bind(id).first();
  if(row?.state!=='RESERVED'||Number(row.reserve_rows_read)!==reservation.rows_read||Number(row.reserve_rows_written)!==reservation.rows_written)throw Error('RESERVATION_READBACK_REQUIRED');
  const request_admit=()=>{if(wholeReserved>=maxHTTP||!evaluateWithinRunReservation({reservation,currentUsage:db.usageSnapshot(),extraRowsRead:500,extraRowsWritten:40}).allowed)return{allowed:false,status:'VALIDATION_HTTP_OR_D1_BOUND'};wholeReserved++;return{allowed:true,status:'RESERVED'};};

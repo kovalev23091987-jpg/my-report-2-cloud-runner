@@ -13,6 +13,11 @@ on:
         type: choice
         options: [UNI, QNT, NATIVE_BATCH]
         default: UNI
+      native_batch:
+        required: false
+        type: choice
+        options: [INITIAL_NATIVE4, REMAINING_NATIVE7]
+        default: INITIAL_NATIVE4
       candidate_sha:
         required: false
         type: string
@@ -31,6 +36,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Verify disjoint native missing-fact admission without source access
+        run: |
+          node --test current-generation/tests/native-sector-validation-admission.test.mjs
+          node tools/validate-native-sector-batch-20261014.mjs --plan
       - name: Verify one missing exact sector fact under existing daily admission
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -38,6 +47,7 @@ jobs:
           REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
           REPORT2_VALIDATION_SYMBOL: ${{ inputs.symbol }}
           REPORT2_EXPECTED_CANDIDATE: ${{ inputs.candidate_sha }}
+          REPORT2_NATIVE_VALIDATION_BATCH: ${{ inputs.native_batch }}
           REPORT2_COINGECKO_DEMO_API_KEY: ${{ secrets.REPORT2_COINGECKO_DEMO_API_KEY }}
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
