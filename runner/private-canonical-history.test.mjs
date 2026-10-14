@@ -49,7 +49,7 @@ test('private read needs exact revision, admission and a bounded number of uniqu
   const denied=createPrivateCanonicalRestorer({archive_db:db,db_admit:()=>({allowed:false})});await assert.rejects(denied.restore(header),/SHARED_D1_ADMISSION_REQUIRED/);assert.equal(db.usageSnapshot().requests,0);
   const r=createPrivateCanonicalRestorer({archive_db:db,db_admit:allow,max_rows:1});
   await assert.rejects(r.restore(header),/EXACT_REVISION_MISSING/);await assert.rejects(r.restore(header),/EXACT_REVISION_MISSING/);assert.equal(db.usageSnapshot().requests,1);
-  const other={...header,canonical_json:header.canonical_json.replace(record.raw_sha256,'0'.repeat(64))};await assert.rejects(r.restore(other),/READER_ROW_BOUND/);
+  const otherRow=row({telegram_text:'другая исходная ревизия\n'.repeat(30)}),other=await privateCanonicalHeader(otherRow,encodeCanonicalPublicationRow(otherRow));await assert.rejects(r.restore(other),/READER_ROW_BOUND/);
   await assert.rejects(r.restore(header.canonical_json),/COLUMN_CONTEXT_REQUIRED/);
  }finally{db.sql.close();}
 });
@@ -85,4 +85,22 @@ test('D1 first(column) returns the original scalar with one measured private rea
  const native=new RemoteD1Database('https://example.invalid/bridge','test-token',{fetchImpl:async()=>new Response(JSON.stringify({ok:true,result:header.canonical_json,usage:{measured:true,rows_read:1,rows_written:0}}))});
  native.enablePrivateCanonicalHistory({archive_db:db,db_admit:allow});
  try{assert.equal(await native.prepare('SELECT canonical_json FROM canonical_publication_shadow').first('canonical_json'),source.canonical_json);assert.equal(native.usageSnapshot().requests,2);assert.equal(native.usageSnapshot().unknown_ops,0);}finally{db.sql.close();}
+});
+
+test('an oversized whole result refuses before any partial archive read and preserves exact four-row reuse',async()=>{
+ const originals=Array.from({length:5},(_,i)=>row({telegram_text:`исходная ревизия ${i}\n`.repeat(30)})),records=originals.map(encodeCanonicalPublicationRow),headers=await Promise.all(originals.map((r,i)=>privateCanonicalHeader(r,records[i]))),db=database(records),grants=[];
+ try{
+  const restorer=createPrivateCanonicalRestorer({archive_db:db,db_admit:r=>{grants.push(r);return{allowed:true};}});
+  await assert.rejects(restorer.restore(headers),/READER_ROW_BOUND/);assert.equal(db.usageSnapshot().requests,0);assert.equal(grants.length,0);assert.equal(restorer.usage().private_revision_reads,0);
+  assert.deepEqual(await restorer.restore(headers.slice(0,4)),originals.slice(0,4));assert.equal(db.usageSnapshot().requests,4);
+  assert.deepEqual(await restorer.restore([headers[0],headers[0]]),[originals[0],originals[0]]);assert.equal(db.usageSnapshot().requests,4);
+  await assert.rejects(restorer.restore(headers[4]),/READER_ROW_BOUND/);assert.equal(db.usageSnapshot().requests,4);assert.equal(restorer.usage().source_clocks_refreshed,false);
+ }finally{db.sql.close();}
+});
+
+test('the real adapter keeps measured primary cost when archive preflight refuses the entire result',async()=>{
+ const originals=Array.from({length:5},(_,i)=>row({telegram_text:`исходный текст ${i}\n`.repeat(30)})),records=originals.map(encodeCanonicalPublicationRow),headers=await Promise.all(originals.map((r,i)=>privateCanonicalHeader(r,records[i]))),db=database(records);
+ const native=new RemoteD1Database('https://example.invalid/bridge','test-token',{fetchImpl:async()=>new Response(JSON.stringify({ok:true,result:{results:headers},usage:{measured:true,rows_read:5,rows_written:0}}))});
+ native.enablePrivateCanonicalHistory({archive_db:db,db_admit:allow});
+ try{await assert.rejects(native.prepare('SELECT * FROM canonical_publication_shadow LIMIT 12').all(),/READER_ROW_BOUND/);assert.equal(db.usageSnapshot().requests,0);assert.equal(native.usageSnapshot().requests,1);assert.equal(native.usageSnapshot().rows_read,5);assert.equal(native.usageSnapshot().unknown_ops,0);}finally{db.sql.close();}
 });
