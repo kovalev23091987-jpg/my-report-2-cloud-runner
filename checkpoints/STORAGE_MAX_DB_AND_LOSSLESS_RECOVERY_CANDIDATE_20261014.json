@@ -1,0 +1,102 @@
+{
+  "schema": "STORAGE_MAX_DB_AND_LOSSLESS_RECOVERY_CANDIDATE_V1",
+  "status": "DB_SIZE_FAILURE_EXACTLY_ESTABLISHED_LOCAL40_PASSED_CLOUD_AND_DURABLE_COPY_PENDING",
+  "base_main": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+  "owner_cloud_cleanup_authorized": true,
+  "original_failure": {
+    "cloud_run": 38625737082,
+    "head": "fdfc95db6c01d99b704bca451193eef38837924f",
+    "run_id": "1792006887707-1792006899383",
+    "artifact_id": 11923398035,
+    "artifact_digest": "sha256:5a794549357c903ac81b547c5c5d077682abdb4e4e13f134f0f4108d47f9843d",
+    "status": "NOT_CLOSED",
+    "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+    "scan": {
+      "approved": 105,
+      "scanned": 105,
+      "errors": 0
+    },
+    "candidate_persistence_failed": [
+      "龙虾-USDT",
+      "BTW-USDT"
+    ],
+    "native_error": "D1_ERROR: Exceeded maximum DB size",
+    "native_error_source": "Original masked workflow log, FULL_EVIDENCE_PERSISTENCE and canonical_persistence diagnostics. Original artifact keeps four HTTP500 INSERT fingerprints, unknown counters and all exact source/run clocks.",
+    "unknown_native_operations": 4,
+    "measured_read_subtotal": 45222,
+    "measured_write_subtotal": 295,
+    "subtotals_are_not_closed_totals": true,
+    "Telegram_SENT_claim": false
+  },
+  "prior_failed_run_same_step": 38619375662,
+  "PR361": {
+    "merged": "5d1c9aa27e880317989f756eaa4004795d680b62",
+    "cloud_run": 38626303459,
+    "head": "7799df5dfe76ece009a4a3e4d083ab8b6f04d2f7",
+    "artifact_id": 11923044510,
+    "artifact_digest": "sha256:857023c9e63282b0c9e2d348285e2f81bd46af29c224bbb8fb364e81ad264f49",
+    "tests_passed": 556,
+    "tests_failed": 0
+  },
+  "recovery_policy": {
+    "only_primary_table": "full_evidence_shadow_log",
+    "maximum_rows_per_run": 48,
+    "maximum_runs_day": 2,
+    "reserved_D1_per_run": {
+      "reads": 5000,
+      "writes": 400
+    },
+    "existing_reservation_family": "RETAINED_HISTORY:",
+    "legacy_spent_reservations_counted": true,
+    "whole_day_conservative": {
+      "reads": 3413280,
+      "writes": 69738
+    },
+    "whole_limits": {
+      "reads": 3500000,
+      "writes": 70000
+    },
+    "whole_HTTP_limit": 164,
+    "bounded_archive_payload_HTTP": 48,
+    "bounded_GitHub_control_HTTP": 40,
+    "manual_HTTP_reserve_not_changed": 24,
+    "protected": [
+      "All canonical publications and lifecycle/recheck/dispatch/calibration/forecast references",
+      "Full evidence from the last48h",
+      "Latest full evidence of every exact coin, including rarely selected coins",
+      "All immutable originals and historical source/statistical receipts"
+    ],
+    "durable_original_verification_before_first_change": true,
+    "transaction_delete_exact_revision_then_insert_small_header": true,
+    "transaction_failure_rolls_back_deletion": true,
+    "source_race_compare_every_original_column": true,
+    "current_reader_unchanged_fetch_bound": 4,
+    "automatic_feature_enabled": false,
+    "initial_cloud_run_is_copy_only_primary_modified": false,
+    "statistics_deleted": false,
+    "history_discarded": false,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "primary_reference": {
+    "transaction_url": "https://developers.cloudflare.com/d1/worker-api/d1-database/",
+    "transaction_support": "D1 batched statements form a transaction and roll back the sequence on failure.",
+    "cached_docs_at": "2026-10-14T15:59:53.112Z",
+    "scrape_id": "01a13c23-cbee-71bc-9244-b7322d059523",
+    "storage_limit_url": "https://developers.cloudflare.com/d1/platform/limits/",
+    "error_meaning_url": "https://developers.cloudflare.com/d1/observability/debug-d1/"
+  },
+  "local_tests": 40,
+  "local_failures_fixed_before_publishing": [
+    "The latest-per-coin selector initially used an inverted EXISTS; real SQLite tests rejected it. Changed to require a newer hot original. No source/D1 calls or production mutations occurred in these local tests."
+  ],
+  "remaining": [
+    "Prove original48 batch on actual native D1/Git without deleting hot rows.",
+    "After cloud/runtime/durable copy qualification, execute conditional relocation and verify exact current readthrough and natural report persistence.",
+    "Enable bounded automatic two-per-day retention only after actual acceptance.",
+    "Complete protected canonical/private retention and remaining source/weekly scope tasks."
+  ],
+  "strategy_weights_caps_pauses_forms_unchanged": true,
+  "project_complete": false
+}
