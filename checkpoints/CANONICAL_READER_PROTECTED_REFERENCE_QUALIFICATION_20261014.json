@@ -1,0 +1,400 @@
+{
+  "schema": "CANONICAL_READER_AND_PROTECTED_REFERENCE_QUALIFICATION_V1",
+  "recorded_utc": "2026-10-14T11:25:56.445430+00:00",
+  "basis_main": "d606c3efbde8ac16128b961881d8afd71079b874",
+  "deployed_hub_source_inventory": "checkpoints/DEPLOYED_HUB_CANONICAL_READER_INVENTORY_20261014.json",
+  "original_hub_literal_direct_canonical_reads": 0,
+  "node_adapter_revisions_per_instance": 4,
+  "hourly_forecast_wrapper_revision_bound": 8,
+  "price_wrapper_revision_bound": 2,
+  "actual_prospective_consumer_candidate_bound": 12,
+  "limit6_or12_is_not_a_global_four_revision_proof": true,
+  "known_SQL_queries": [
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "4a0b40836f1db8b9b31f98abb24fc30f76902be11e5dfef489269d0363613ed0",
+      "queries": [
+        {
+          "line": 221,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,presentation_inputs_json,manual_text,telegram_text,actionability_status,actionability_reason,created_ts,bound_ts\n      FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>",
+          "query_sha256": "a34d588af299baa52f460a800b92c5cb8cd3b805cb1994e4bde3c735e103fff0",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+      "queries": [
+        {
+          "line": 19326,
+          "operation": "SELECT",
+          "original_SQL": "SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1",
+          "query_sha256": "59b6cc09ab91b5b6421e2c6fd050ca2d2bf63ca16ae5f6bbd1ba30c4c5ae9e31",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/publication-reconciler.mjs",
+      "sha256": "5fd1363384c1cba60571485e0ec1e77c08c5faedc0c0f1cb89d82bb715207e20",
+      "queries": [
+        {
+          "line": 46,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts FROM canonical_publication_shadow WHERE contract_code=?1 AND direction=?2 AND wave_id=?3 AND decision_id=?4 AND created_ts BETWEEN ?5 AND ?6 ORDER BY created_ts DESC,publication_id ASC LIMIT 3",
+          "query_sha256": "06ab6e49bd0a37056abbff5af49bab39ab77e7afd15c430752f6ded5d32d4fd5",
+          "literal_limits": [
+            "3"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 47,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts FROM canonical_publication_shadow WHERE contract_code=?1 AND direction=?2 AND wave_id=?3 AND created_ts BETWEEN ?4 AND ?5 ORDER BY created_ts DESC,publication_id ASC LIMIT 3",
+          "query_sha256": "8b4c054966fb6dc9cb681bec30bd640b07da6f2f26119f52c8dd2f0de09709f6",
+          "literal_limits": [
+            "3"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 56,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts,wave_id FROM canonical_publication_shadow WHERE contract_code=?1 AND direction=?2 AND created_ts BETWEEN ?3 AND ?4 ORDER BY created_ts DESC,publication_id ASC LIMIT 3",
+          "query_sha256": "4a5510bf27708bcfeb0fd5e1cc129edefd856ce0689680a624642d24ef676031",
+          "literal_limits": [
+            "3"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 62,
+          "operation": "UPDATE",
+          "original_SQL": "UPDATE canonical_publication_shadow SET wave_id=?2 WHERE publication_id=?1 AND (wave_id IS NULL OR wave_id!=?2)",
+          "query_sha256": "daab797ff7f81a4f6b5ad212843820d207ff67fd48bb60c9a8533e3fbb64606f",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 75,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts,wave_id FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code=?2 AND direction=?3 AND created_ts BETWEEN ?4 AND ?5 ORDER BY created_ts DESC,publication_id ASC LIMIT 3",
+          "query_sha256": "fd8ef783d32918089354343de9bc0d5d64a6fd618c4c2388cd3630c36546ac54",
+          "literal_limits": [
+            "3"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 92,
+          "operation": "UPDATE",
+          "original_SQL": "UPDATE canonical_publication_shadow SET wave_id=?2 WHERE publication_id=?1 AND (wave_id IS NULL OR wave_id='')",
+          "query_sha256": "d83048673a69352a1eee528d449b50ff81629a8eec4edaa546efcf9c7d7528c4",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 105,
+          "operation": "SELECT",
+          "original_SQL": "SELECT p.publication_id,p.canonical_json,p.presentation_inputs_json,p.decision_id,p.actionability_status,p.run_id,p.snapshot_id,p.observed_ts,p.created_ts,p.wave_id FROM v3_telegram_dispatch_shadow d JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key JOIN canonical_publication_shadow p ON p.publication_id=b.publication_id WHERE d.contract=?1 AND d.direction=?2 AND d.wave_id=?3 AND d.rules_version=?4 AND d.lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND d.updated_ts<?5 AND p.contract_code=?1 AND p.direction=?2 AND p.wave_id=?3 ORDER BY d.updated_ts DESC,d.sent_ts DESC,d.idempotency_key ASC LIMIT 1",
+          "query_sha256": "5d30fe3829adb571d441aaf256a9231d82002eb1de0edc8e9434ef37afa19656",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/recheck-scheduler.mjs",
+      "sha256": "ba06136ae2efa0cf45826d54930b52548a2b6c9e9fc035536b31057298b34273",
+      "queries": [
+        {
+          "line": 15,
+          "operation": "UPDATE",
+          "original_SQL": "UPDATE v3_recheck_task_shadow SET state=?2,last_result=CASE WHEN ?2='PENDING' AND json_valid(last_result) AND json_extract(last_result,'$.schema')='LIGHT_PRICE_RECHECK_V1' THEN json_set(last_result,'$.full_recheck',json_object('publication_id',?7,'completed_ts',?4,'reason',?8,'authorizes_entry',json('false'))) ELSE json_object('schema','RECHECK_COMPLETION_V1','status',?2,'publication_id',?7,'completed_ts',?4,'reason',?8,'full_analysis_receipt',CASE WHEN json_valid(?9) THEN json(?9) ELSE NULL END,'original_light_price_receipt',CASE WHEN json_valid(last_result) AND json_extract(last_result,'$.schema')='LIGHT_PRICE_RECHECK_V1' THEN json(last_result) ELSE NULL END,'legacy_result',CASE WHEN json_valid(last_result) THEN NULL ELSE last_result END) END,lease_owner=NULL,lease_started_ts=NULL,lease_expires_ts=NULL,updated_ts=?4\n WHERE task_id=?1 AND state='CLAIMED' AND lease_owner=?5 AND lease_started_ts=?6 AND lease_expires_ts>=?4 AND ?4>=lease_started_ts\n AND (?2='EXPIRED' OR expires_ts>?4) AND (?2!='EXPIRED' OR expires_ts<=?4)\n AND (?2!='DONE' OR EXISTS(SELECT 1 FROM canonical_publication_shadow p WHERE p.publication_id=?7 AND p.publication_id!=v3_recheck_task_shadow.publication_id AND p.contract_code=v3_recheck_task_shadow.contract_code AND p.direction=v3_recheck_task_shadow.direction AND p.run_id!=v3_recheck_task_shadow.run_id AND p.observed_ts>=?6 AND p.observed_ts<=?4))",
+          "query_sha256": "98d23d7eee0971eb3da24c2225623ce54ecceda7eba8ba92086454be85abe3e1",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "sha256": "0c4f621540790a7f5aae95c1967ab51c73adca8f0510cc64b5f7932c37e5b59e",
+      "queries": [
+        {
+          "line": 246,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,contract_code,run_id,snapshot_id,wave_id,direction,canonical_state,analytical_fingerprint,observed_ts,created_ts,canonical_json FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>",
+          "query_sha256": "e13876b3b124d111f078509ca8dd5060646ce243e68b11bbb06bf9039c3b69e8",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/original-idea-terminal.mjs",
+      "sha256": "4f0dfeb56302d11f01e8675ba71683533c0ce5bf21deceeb41c1572aad450ed1",
+      "queries": [
+        {
+          "line": 15,
+          "operation": "SELECT",
+          "original_SQL": "SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1",
+          "query_sha256": "59b6cc09ab91b5b6421e2c6fd050ca2d2bf63ca16ae5f6bbd1ba30c4c5ae9e31",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "sha256": "8113b3540a9d85fd6b05ab5e64013242a270831101229bbf95f6985c11991407",
+      "queries": [
+        {
+          "line": 251,
+          "operation": "INSERT",
+          "original_SQL": "INSERT INTO canonical_publication_shadow(publication_id,contract_code,direction,run_id,snapshot_id,wave_id,decision_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,analytical_fingerprint,canonical_json,presentation_inputs_json,manual_text,telegram_text,presentation_hash,actionability_status,actionability_reason,created_ts,bound_ts,shadow_only) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,NULL,?10,?11,?12,?13,NULL,NULL,NULL,'UNASSESSED',NULL,?14,NULL,1) ON CONFLICT(publication_id) DO NOTHING",
+          "query_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 252,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,analytical_fingerprint,canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1",
+          "query_sha256": "4f37c8227253c7dab9c80680622e57cedb67e632ca9eaee814f318c2498a93d2",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 259,
+          "operation": "SELECT",
+          "original_SQL": "SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1",
+          "query_sha256": "eb58e4e239fb62042e9a6f45a57682a9b4079332f1608e8da15d97532268b2bd",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 264,
+          "operation": "UPDATE",
+          "original_SQL": "UPDATE canonical_publication_shadow SET lifecycle_event=?2,actionability_status='INTERNAL_ONLY',actionability_reason=?3,bound_ts=?4 WHERE publication_id=?1",
+          "query_sha256": "0573e53f515fba3e2935409f2f861e312294dd0e3f17f70ec6f550eca3b7445a",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 267,
+          "operation": "UPDATE",
+          "original_SQL": "UPDATE canonical_publication_shadow SET direction=?2,lifecycle_event=?3,valid_until_ts=?4,manual_text=?5,telegram_text=?6,presentation_hash=?7,actionability_status='ACTIONABLE',actionability_reason=?8,bound_ts=?9 WHERE publication_id=?1 AND analytical_fingerprint=?10",
+          "query_sha256": "6e908e564bc72906c9784600caab8b5274f1119b810765d81970f9d6694507dc",
+          "literal_limits": [],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 273,
+          "operation": "SELECT",
+          "original_SQL": "SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1",
+          "query_sha256": "eb58e4e239fb62042e9a6f45a57682a9b4079332f1608e8da15d97532268b2bd",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 282,
+          "operation": "SELECT",
+          "original_SQL": "SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1",
+          "query_sha256": "eb58e4e239fb62042e9a6f45a57682a9b4079332f1608e8da15d97532268b2bd",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        },
+        {
+          "line": 300,
+          "operation": "SELECT",
+          "original_SQL": "SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND actionability_status='ACTIONABLE' LIMIT 1",
+          "query_sha256": "372665d701134d2ab1e447d252360bd1d3b83db5b9b80d6932f2968f00cdb74f",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "sha256": "110b2709b1e581a6f996605079e23ec6612493286d6f5148665bd198e271ba0c",
+      "queries": [
+        {
+          "line": 66,
+          "operation": "SELECT",
+          "original_SQL": "SELECT canonical_json,analytical_fingerprint,actionability_status\n    FROM canonical_publication_shadow WHERE publication_id=?1 AND contract_code=?2 AND direction=?3 AND wave_id=?4 AND run_id=?5 AND snapshot_id=?6 AND observed_ts=?7 LIMIT 1",
+          "query_sha256": "2369d266fe607f232496a1aa13188fd963718ad2e2335186f01c0dda0c731a42",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/retained-history.mjs",
+      "sha256": "85c73d45bb78a49600b1dda6fd7ad2a15a7e42180eeffa97c8378848d73a64db",
+      "queries": []
+    },
+    {
+      "path": "runner/r8-20-prospective-validation-sidecar.mjs",
+      "sha256": "b02d9b8a7755b54621a98579e571ba3207383bf906e771523d576e36d14edaba",
+      "queries": [
+        {
+          "line": 404,
+          "operation": "SELECT",
+          "original_SQL": "SELECT\n      f.decision_id,f.snapshot_id,f.contract_code,f.direction,f.campaign_receipt_id,f.observation_ts,f.persisted_ts,\n      f.decision_status,f.shadow_only,f.live_probability,f.validated_signal,f.execution_authorized,f.telegram_eligible,\n      j.receipt_json,p.publication_id,p.wave_id AS publication_wave_id,p.canonical_json,\n      (SELECT td.dispatch_id FROM v3_dispatch_publication_binding_shadow b\n        JOIN v3_telegram_dispatch_shadow td ON td.idempotency_key=b.idempotency_key\n        WHERE b.publication_id=p.publication_id AND b.lifecycle_event='ENTRY' AND td.lifecycle_event='ENTRY'\n          AND td.state='SENT' AND CAST(td.telegram_message_id AS INTEGER)>0 AND td.sent_ts IS NOT NULL\n        ORDER BY td.sent_ts ASC,td.dispatch_id ASC LIMIT 1) AS telegram_dispatch_id,\n      (SELECT td.telegram_message_id FROM v3_dispatch_publication_binding_shadow b\n        JOIN v3_telegram_dispatch_shadow td ON td.idempotency_key=b.idempotency_key\n        WHERE b.publication_id=p.publication_id AND b.lifecycle_event='ENTRY' AND td.lifecycle_event='ENTRY'\n          AND td.state='SENT' AND CAST(td.telegram_message_id AS INTEGER)>0 AND td.sent_ts IS NOT NULL\n        ORDER BY td.sent_ts ASC,td.dispatch_id ASC LIMIT 1) AS telegram_message_id,\n      (SELECT td.sent_ts FROM v3_dispatch_publication_binding_shadow b\n        JOIN v3_telegram_dispatch_shadow td ON td.idempotency_key=b.idempotency_key\n        WHERE b.publication_id=p.publication_id AND b.lifecycle_event='ENTRY' AND td.lifecycle_event='ENTRY'\n          AND td.state='SENT' AND CAST(td.telegram_message_id AS INTEGER)>0 AND td.sent_ts IS NOT NULL\n        ORDER BY td.sent_ts ASC,td.dispatch_id ASC LIMIT 1) AS telegram_confirmed_ts\n    FROM final_decision_integration_shadow f\n    JOIN stage392_multi_wave_receipt_journal j ON j.receipt_id=f.campaign_receipt_id\n    JOIN canonical_publication_shadow p ON p.decision_id=f.decision_id\n      AND p.lifecycle_event='ENTRY' AND p.actionability_status='ACTIONABLE'\n    WHERE f.persisted_ts>=?1\n      AND f.decision_status='SHADOW_EVALUATED'\n      AND f.direction IN ('LONG','SHORT')\n      AND f.shadow_only=1 AND f.live_probability IS NULL AND f.validated_signal=0 AND f.execution_authorized=0 AND f.telegram_eligible=0\n      -- Anchor JSON is validated after the bounded retained-history reader\n      -- restores exact archived columns. SQL must not parse archive locators.\n      AND NOT EXISTS (SELECT 1 FROM tz101_entry_area_calibration_signal s WHERE s.decision_id=f.decision_id)\n    ORDER BY f.persisted_ts ASC,f.decision_id ASC\n    LIMIT ${R820_PROSPECTIVE_VALIDATION_BUDGET.max_capture_candidates}",
+          "query_sha256": "34191b004b45b9e7c3c2ad30485fb2aad0a921d07c791c588f184818983720e7",
+          "literal_limits": [
+            "1",
+            "1",
+            "1",
+            "${R820_PROSPECTIVE_VALIDATION_BUDGET.max_capture_candidates}"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "runner/canonical-cold-copy.mjs",
+      "sha256": "137d912c9d9f3e2935cb70e8fa4fe246370764b840a545c834aee8d8bfb64495",
+      "queries": [
+        {
+          "line": 48,
+          "operation": "SELECT",
+          "original_SQL": "SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND run_id=?2 LIMIT 1",
+          "query_sha256": "d1b313f0f4b3272f82036122b4877088a8bbe1ad3e033036a3029b8c16cedeee",
+          "literal_limits": [
+            "1"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "cloudflare/public-collector/injected-worker-tail.js",
+      "sha256": "c078e0faff304cb068ae9c86ae050db2e247981e2d51afbd6f1d5031a293a710",
+      "queries": [
+        {
+          "line": 264,
+          "operation": "SELECT",
+          "original_SQL": "SELECT t.*,p.canonical_json,p.analytical_fingerprint,p.observed_ts,d.telegram_message_id\n    FROM v3_recheck_task_shadow t\n    JOIN canonical_publication_shadow p ON p.publication_id=t.publication_id AND p.contract_code=t.contract_code AND p.direction=t.direction AND p.run_id=t.run_id AND p.snapshot_id=t.snapshot_id AND p.wave_id=t.wave_id\n    JOIN v3_dispatch_publication_binding_shadow b ON b.publication_id=t.publication_id AND b.contract_code=t.contract_code AND b.direction=t.direction AND b.wave_id=t.wave_id\n    JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.state='SENT' AND d.contract=t.contract_code AND d.direction=t.direction AND d.wave_id=t.wave_id\n    JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status=b.lifecycle_event AND l.observation_ts=p.observed_ts\n    WHERE t.state='PENDING' AND t.due_ts<=?1 AND b.lifecycle_event IN ('OBSERVE','WAIT')\n      AND (CASE WHEN json_valid(t.last_result) THEN COALESCE(json_extract(t.last_result,'$.last_bucket'),0) ELSE 0 END)<?2\n    ORDER BY t.updated_ts ASC,t.due_ts ASC LIMIT 2",
+          "query_sha256": "bf1d74ff564e0f69387302944e48dfbeaa2a7d2e806a23f7d568e9df62535a40",
+          "literal_limits": [
+            "2"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    },
+    {
+      "path": "cloudflare/free-history/liquidation-forecast-archive.mjs",
+      "sha256": "b68d5b4d43818a1b31249fb4cbed41699332c60a94e61955a3234ff006200544",
+      "queries": [
+        {
+          "line": 31,
+          "operation": "SELECT",
+          "original_SQL": "SELECT publication_id,run_id,snapshot_id,contract_code,observed_ts,analytical_fingerprint,canonical_json\n    FROM canonical_publication_shadow\n    WHERE observed_ts>=?1 AND observed_ts<=?2 AND (observed_ts>?3 OR (observed_ts=?3 AND publication_id>?4))\n    ORDER BY observed_ts,publication_id LIMIT 8",
+          "query_sha256": "33c8bad4ff972bdae5459dccc855843e7eb39305fdb6ce09c9d1580c49c81c17",
+          "literal_limits": [
+            "8"
+          ],
+          "SQL_parses_canonical_JSON": false,
+          "aliases_canonical_JSON": false
+        }
+      ]
+    }
+  ],
+  "known_reference_groups": {
+    "v3_recheck_task_shadow": [
+      "publication_id",
+      "PENDING/CLAIMED",
+      "recent CANCELLED/EXPIRED original terminal window3h"
+    ],
+    "v3_dispatch_publication_binding_shadow": [
+      "publication_id",
+      "exact SENT original / pending dispatch binding"
+    ],
+    "v3_telegram_dispatch_shadow": [
+      "PENDING",
+      "FAILED_RETRYABLE",
+      "unknown/outbox retry",
+      "IDEA_REMOVED prior original wave"
+    ],
+    "v3_user_lifecycle_shadow": [
+      "active OBSERVE/WAIT/ENTRY original wave and rules version"
+    ],
+    "final_decision_integration_shadow": [
+      "decision_id joined to canonical ENTRY before tz101 capture"
+    ],
+    "tz101_entry_area_calibration_signal": [
+      "uncaptured/uncalibrated prospective input and outcome originals"
+    ],
+    "canonical_publication_shadow": [
+      "mutable wave/event/presentation finalization",
+      "current original run output",
+      "current handoff snapshot",
+      "exact manual/Telegram readers"
+    ]
+  },
+  "candidate_safety_fix": "Preflight all locator contexts/distinct new revisions before the first archive read; preserve global load/admission guard for concurrent callers, no bound increase. This does not close a12-candidate cold consumer.",
+  "required_before_hot_replacement": [
+    "Bound/paginate each caller against its shared4 revision scope or keep all eligible caller references hot.",
+    "Take an admitted exact reference census and native cost receipt; existing diagnostic family is not reset or aliased.",
+    "Close actual cold-header production readbacks; every marker must retain exact original bytes/hash/identity/source times.",
+    "Only then prove backup/prune/rolling plans and preserve source clocks/guards."
+  ],
+  "no_originals_removed_or_replaced": true,
+  "backlog_rolling_not_enabled": true,
+  "all_cold_consumers_proven": false,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "project_complete": false
+}

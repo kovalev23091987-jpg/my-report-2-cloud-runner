@@ -69,8 +69,30 @@ export function createPrivateCanonicalRestorer({archive_db,db_admit,max_rows=PRI
   }
   return cache.get(key);
  };
- const restore=async value=>{
-  if(Array.isArray(value)){const out=[];for(const item of value)out.push(await restore(item));return out;}
+ const preflight=value=>{
+  const needed=new Set();
+  const scan=part=>{
+   if(Array.isArray(part)){part.forEach(scan);return;}
+   if(part&&typeof part==='object'){
+    let revision=null;
+    for(const [key,item] of Object.entries(part)){
+     if(typeof item==='string'&&item.startsWith(PRIVATE_CANONICAL_PREFIX)){
+      const m=item.match(marker);if(!m||m[3]!==key)throw Error('PRIVATE_HISTORY_COLUMN_LOCATOR_INVALID');
+      const selected=`${m[1]}:${m[2]}`;
+      if(revision!==null&&revision!==selected)throw Error('PRIVATE_HISTORY_MIXED_REVISIONS');revision=selected;
+      if(Object.hasOwn(part,'publication_id')&&part.publication_id!==m[1])throw Error('PRIVATE_HISTORY_QUERY_BINDING_MISMATCH');
+      if(!cache.has(selected))needed.add(selected);
+     }else scan(item);
+    }
+   }else if(typeof part==='string'&&part.startsWith(PRIVATE_CANONICAL_PREFIX))throw Error('PRIVATE_HISTORY_COLUMN_CONTEXT_REQUIRED');
+  };
+  scan(value);
+  // Refuse the whole result before reading its first four revisions. Existing
+  // global load/admission guards still handle concurrent callers and failures.
+  if(needed.size>max_rows-reads)throw Error('PRIVATE_HISTORY_READER_ROW_BOUND');
+ };
+ const restoreValue=async value=>{
+  if(Array.isArray(value)){const out=[];for(const item of value)out.push(await restoreValue(item));return out;}
   if(value&&typeof value==='object'){
    const entries=[];let revision=null;
    for(const [key,part] of Object.entries(value)){
@@ -81,12 +103,12 @@ export function createPrivateCanonicalRestorer({archive_db,db_admit,max_rows=PRI
      for(const binding of bindingKeys)if(Object.hasOwn(value,binding)&&value[binding]!==original[binding])throw Error('PRIVATE_HISTORY_QUERY_BINDING_MISMATCH');
      if(!Object.hasOwn(original,key)||typeof original[key]!=='string')throw Error('PRIVATE_HISTORY_ORIGINAL_COLUMN_MISSING');
      entries.push([key,original[key]]);
-    }else entries.push([key,await restore(part)]);
+    }else entries.push([key,await restoreValue(part)]);
    }
    return Object.fromEntries(entries);
   }
   if(typeof value==='string'&&value.startsWith(PRIVATE_CANONICAL_PREFIX))throw Error('PRIVATE_HISTORY_COLUMN_CONTEXT_REQUIRED');
   return value;
  };
- return {restore,usage:()=>({private_revision_reads:reads,cached_rows:cache.size,sourceHTTP:0,source_clocks_refreshed:false})};
+ return {restore:async value=>{preflight(value);return restoreValue(value);},usage:()=>({private_revision_reads:reads,cached_rows:cache.size,sourceHTTP:0,source_clocks_refreshed:false})};
 }

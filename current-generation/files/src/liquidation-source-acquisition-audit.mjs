@@ -1,6 +1,17 @@
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 const integer=x=>Number.isSafeInteger(x)&&x>=0?x:null;
 const label=x=>typeof x==='string'?x.replace(/[\x00-\x1f]/g,' ').slice(0,120):null;
+function operationalTransportDiagnostic(d,{contract,run_id,evaluated_ts,actual_http}){
+ if(d?.schema!=='GTRADE_ORIGINAL_HTTP_DIAGNOSTIC_V1'||d.contract!==contract||d.run_id!==run_id||d.actual_http!==actual_http||integer(d.observed_ts)===null||d.observed_ts>evaluated_ts||evaluated_ts-d.observed_ts>300000||d.diagnostic_only!==true||d.source_clock_closed!==false||d.entry_authorized!==false||!Array.isArray(d.entries)||!d.entries.length||d.entries.length>4)return null;
+ const endpoints=new Set(['CATALOG','OPEN_TRADES','REFERENCE_PRICES']),reasons=new Set(['RATE_LIMITED','ACCESS_REQUIRED','HTTP_ERROR','JSON_INVALID','RESPONSE_SIZE_LIMIT','TIMEOUT','NETWORK_OR_TRANSPORT_ERROR']);
+ const entries=[];
+ for(const r of d.entries){
+  if(!endpoints.has(r.endpoint)||!(r.http_status===null||Number.isSafeInteger(r.http_status)&&r.http_status>=100&&r.http_status<=599)||!(r.reason===null||reasons.has(r.reason))||integer(r.started_ts)===null||integer(r.received_ts)===null||r.received_ts<r.started_ts||r.received_ts>d.observed_ts||d.observed_ts-r.received_ts>300000)return null;
+  entries.push({endpoint:r.endpoint,http_status:r.http_status,reason:r.reason,started_ts:r.started_ts,received_ts:r.received_ts,response_sha256:typeof r.response_sha256==='string'&&/^[a-f0-9]{64}$/.test(r.response_sha256)?r.response_sha256:null});
+ }
+ const failed=entries.filter(r=>r.http_status!==200||r.reason!==null);
+ return{schema:d.schema,contract,run_id,observed_ts:d.observed_ts,actual_http,reused_original:d.reused_original===true,entries,provider_rate_limited:failed.length>0&&failed.every(r=>r.http_status===429),diagnostic_only:true,source_clock_closed:false,entry_authorized:false};
+}
 function originalPositionProof(p){
  if(!p||typeof p!=='object')return null;
  const search=p.position_search;
@@ -9,8 +20,10 @@ function originalPositionProof(p){
 export function buildLiquidationSourceAcquisitionAudit({summary,run_id,candidates=[],evaluated_ts}={}){
  if(typeof run_id!=='string'||!run_id||run_id.length>160||integer(evaluated_ts)===null||!Array.isArray(candidates)||candidates.length>2||candidates.some(c=>!isExactHtxUsdtSwapKey(c))||new Set(candidates).size!==candidates.length)return null;
  const rows=Array.isArray(summary?.routed)?summary.routed.filter(r=>r.run_id===run_id&&candidates.includes(r.contract)):[];if(rows.length>24)return null;
- const routes=rows.map(r=>({contract:r.contract,run_id,lane:label(r.lane),status:label(r.status),role_usable:r.usable===true,attempt:integer(r.attempt),source_outcome:{evaluated:r.source_outcome?.evaluated===true,operational_success:r.source_outcome?.operational_success===true,actual_http:integer(r.source_outcome?.attempted_http_count),transport_status:label(r.source_outcome?.transport_status),schema_status:label(r.source_outcome?.schema_status),coverage_status:label(r.source_outcome?.coverage_status),failure_origin:label(r.source_outcome?.failure_origin)},position_proof:originalPositionProof(r.position_proof)}));
+ const routes=rows.map(r=>{const transport=r.lane==='GTRADE_NATIVE'?operationalTransportDiagnostic(r.transport_diagnostic,{contract:r.contract,run_id,evaluated_ts,actual_http:integer(r.source_outcome?.attempted_http_count)}):null;return{contract:r.contract,run_id,lane:label(r.lane),status:label(r.status),role_usable:r.usable===true,attempt:integer(r.attempt),source_outcome:{evaluated:r.source_outcome?.evaluated===true,operational_success:r.source_outcome?.operational_success===true,actual_http:integer(r.source_outcome?.attempted_http_count),transport_status:label(r.source_outcome?.transport_status),schema_status:label(r.source_outcome?.schema_status),coverage_status:label(r.source_outcome?.coverage_status),failure_origin:label(r.source_outcome?.failure_origin)},position_proof:originalPositionProof(r.position_proof),...(transport?{transport_diagnostic:transport}:{})};});
  const budget=summary?.shared_budget??{},body={schema:'LIQUIDATION_SOURCE_ACQUISITION_AUDIT_V1',run_id,evaluated_ts,candidates:[...candidates],routes,shared_budget:{reserved_http:integer(budget.reserved_http),actual_http:integer(budget.actual_http),max_http_per_run:integer(summary?.total_http_cap)},source_clocks_refreshed:false,diagnostic_only:true,internal_only:true,network_calls:0,db_calls:0,entry_authorized:false};
+ // Optional operational detail must never evict a previously valid audit.
+ if(Buffer.byteLength(JSON.stringify(body))>16384)for(const r of routes)delete r.transport_diagnostic;
  return Buffer.byteLength(JSON.stringify(body))<=16384?body:null;
 }
 // Bind attempted-source diagnostics to the canonical asset/snapshot. This is
