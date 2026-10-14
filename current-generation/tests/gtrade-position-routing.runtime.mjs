@@ -85,7 +85,7 @@ test('retained QNT exact native positions finish in three of four HTTP when the 
   calls.push(String(url));let payload;
   if(String(url).endsWith('/trading-variables'))payload=oldVars;
   else if(String(url).endsWith('/charts'))payload=oldPrices;
-  else{assert.equal(String(url),pin.GTRADE_RPC);payload=nativeResponse(JSON.parse(init.body));}
+  else{assert.equal(String(url),pin.GTRADE_RPC);const body=JSON.parse(init.body),first=iface.parseTransaction({data:body.find(r=>r.method==='eth_call').params[0].data});if(first.name==='getAllTradesForTraders'){const fees=body.find(r=>r.method==='eth_call'&&iface.parseTransaction({data:r.params[0].data}).name==='getTradeFeesDataArray'),a=iface.decodeFunctionData('getTradeFeesDataArray',fees.params[0].data),selection=a[0].map((user,i)=>lookup(user,a[1][i]));assert.ok(selection.every(Boolean));payload=oldResponse(selection,oldRows.filter(r=>selection.some(s=>s.trade.user.toLowerCase()===r.trade.user.toLowerCase())));}else payload=nativeResponse(body);}
   return new Response(JSON.stringify(payload));
  }});
  const p={contract:pair[0],native_symbol:'QNT',run_id:run,deep_started_ts:OT,max_http_for_candidate:4,allowed_source_ids:sourceIds[pair[0]],position_batch_contracts:[pair[0]],selected_native_source_plan:plan};
