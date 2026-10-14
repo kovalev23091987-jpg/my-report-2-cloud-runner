@@ -55,6 +55,11 @@ on:
       - cloudflare/free-history/native-measured-d1.mjs
       - cloudflare/free-history/liquidation-archive-worker-entry.mjs
       - cloudflare/free-history/wrangler-liq.json
+      - current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs
+      - current-generation/files/src/liquidation-extension/selected-native-batch.mjs
+      - current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs
+      - current-generation/tests/native-useful-acquisition-budget.test.mjs
+      - current-generation/tests/gtrade-position-routing.runtime.mjs
 permissions:
   contents: read
 jobs:
@@ -80,6 +85,16 @@ jobs:
             const allActiveOwner=/^CODEX:ACTIVE_SOURCE_DAY_BUDGET:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.active_working_state?.owned_lease===phase.lease.owner&&phase.owner_all_active_blocks_source_budget_and_fallback==='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json';
             const privateOwner=/^CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner;
             if(!(liqOwner||allActiveOwner||privateOwner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Reuse immutable original gTrade source records
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            for(const [id,digest,dir] of [[11397777455,'8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0','original-source'],[11485584554,'6dacb2912f344cf08f84ad8ad4337dc57cbed898275440f61fa4d30291246d32','gtrade-current-source']]){
+              const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==digest)throw Error('ORIGINAL_GTRADE_ARTIFACT_DIGEST');
+              fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(dir+'.zip',b);cp.execFileSync('unzip',['-q',dir+'.zip','-d',dir]);
+            }
       - name: Assemble encrypted runtime and verify LIQ report path
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -89,6 +104,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/liq-assembled/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
           cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
           cmp current-generation/files/src/liquidation-futures-coverage.mjs runtime/src/liquidation-futures-coverage.mjs
           cmp current-generation/files/src/liquidation-spot-reference.mjs runtime/src/liquidation-spot-reference.mjs
@@ -113,6 +129,9 @@ jobs:
           node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
           node --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap
           node --test cloudflare/free-history/private-forecast-consumer.test.mjs cloudflare/free-history/liquidation-forecast-archive.test.mjs > audit-output/liq-assembled/private-forecast-consumer.tap
+          node --test current-generation/tests/native-useful-acquisition-budget.test.mjs current-generation/tests/selected-native-reserve-policy.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/gtrade-catalog-planning.test.mjs > audit-output/liq-assembled/native-useful-budget.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gtrade-position-routing.runtime.mjs current-generation/tests/native-source-batch.runtime.mjs > audit-output/liq-assembled/native-useful-runtime.tap
+          cp audit-output/qnt-lsk-native4-retained-proof.json audit-output/liq-assembled/
       - name: Show failure locations
         if: failure()
         run: |

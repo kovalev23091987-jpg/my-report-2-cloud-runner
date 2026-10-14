@@ -59,10 +59,39 @@ test('one otherwise unusable following reserve request completes retained QNT po
  fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/unused-native-pair-reserve-proof.json',JSON.stringify({schema:'UNUSED_NATIVE_PAIR_RESERVE_RETAINED_CONTROL_V1',scope:'CONTROLLED_MIXED_SELECTED_PAIR_FROM_ORIGINAL_PINNED_QNT_INPUTS_NOT_CURRENT_HTX_MAIN',original_asof:OT,original_pinned_head:oldProof.head,original_source_ts:bound.positions_source_ts,source_clock_refreshed:false,controlled_transport_calls:4,summary:f.service.summary(),context:bound,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,actual_ENTRY:false,new_fresh_SENT:false},null,2)+'\n');
 });
 test('viable following routes, missing or foreign plan, and the explicit smaller caller envelope retain the original first-candidate cap',async()=>{
- for(const change of ['PROTECT','NO_PLAN','FOREIGN_PLAN','SMALL_CALLER']){const f=mixedSelectedFixture({protect:change==='PROTECT'});if(change==='NO_PLAN')delete f.params.selected_native_source_plan;if(change==='FOREIGN_PLAN')f.plan.run_id='FOREIGN';if(change==='SMALL_CALLER')f.params.max_http_for_candidate=3;const a=await f.service.collect(f.params);assert.ok(a.gtrade);assert.equal(a.gtrade.source_clock_closed,false);assert.equal(f.calls.length,3);assert.ok(f.calls.every(u=>u.includes('gains.trade')));assert.equal(f.service.summary().shared_budget.reserved_http,3);}
+ for(const change of ['PROTECT','NO_PLAN','FOREIGN_PLAN','SMALL_CALLER']){const f=mixedSelectedFixture({protect:change==='PROTECT'});if(change==='NO_PLAN')delete f.params.selected_native_source_plan;if(change==='FOREIGN_PLAN')f.plan.run_id='FOREIGN';if(change==='SMALL_CALLER')f.params.max_http_for_candidate=3;const a=await f.service.collect(f.params);assert.equal(a,null);assert.equal(f.calls.length,1);assert.ok(f.calls.every(u=>u.endsWith('/trading-variables')));assert.equal(f.service.summary().shared_budget.reserved_http,1);const r=f.service.summary().routed.find(r=>r.lane==='GTRADE_NATIVE');assert.equal(r.status,'SKIPPED_GTRADE_USEFUL_CHAIN_BUDGET');assert.equal(r.source_outcome.evaluated,false);}
 });
 test('unknown pinned admission is charged once and never retries or promotes the backend receipt clock',async()=>{
  const f=mixedSelectedFixture({denyPin:true}),a=await f.service.collect(f.params);assert.ok(a.gtrade);assert.equal(a.gtrade.source_clock_closed,false);assert.equal(f.calls.length,3);assert.equal(f.service.summary().shared_budget.reserved_http,4);assert.equal(f.grants.filter(g=>g.reservation_id.includes('GTRADE_PINNED_POSITION')).length,1);await f.service.collect(f.params);assert.equal(f.calls.length,3);assert.equal(f.grants.filter(g=>g.reservation_id.includes('GTRADE_PINNED_POSITION')).length,1);
 });
 test('retained source proof is written only after producer and canonical verification',()=>{assert.ok(retainedProof);fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/gtrade-three-read-retained-proof.json',JSON.stringify(retainedProof,null,2)+'\n');});
+
+test('retained QNT exact native positions finish in three of four HTTP when the other selected asset has only a three-request dYdX lane',async()=>{
+ const calls=[],run='CONTROLLED_RETAINED_QNT_LSK_NATIVE4',pair=['QNT-USDT','LSK-USDT'];
+ const sourceIds={['QNT-USDT']:['GTRADE_NATIVE','DYDX_PINNED_NATIVE'],['LSK-USDT']:['DYDX_PINNED_NATIVE']};
+ const plan={schema:'SELECTED_NATIVE_SOURCE_PLAN_V1',run_id:run,entries:pair.map(contract=>({contract,eligible:true,source_ids:sourceIds[contract]}))};
+ const lookup=(user,index)=>oldRows.find(r=>id(r.trade)===user.toLowerCase()+':'+index.toString());
+ const nativeResponse=body=>body.map(req=>{
+  if(req.method==='eth_chainId')return{jsonrpc:'2.0',id:req.id,result:'0xa4b1'};
+  if(req.method==='eth_getBlockByNumber')return{jsonrpc:'2.0',id:req.id,result:{number:ethers.utils.hexValue(oldVars.currentBlock),timestamp:ethers.utils.hexValue(oldProof.source_clock.block_source_ts/1000),hash:oldProof.source_clock.block_hash}};
+  const call=iface.parseTransaction({data:req.params[0].data});let values;
+  if(['getTrade','getTradeInfo','getTradeLiquidationParams'].includes(call.name)){
+   const row=lookup(call.args[0],call.args[1]);assert.ok(row);values=[tuple(row[call.name==='getTrade'?'trade':call.name==='getTradeInfo'?'tradeInfo':'liquidationParams'],call.name)];
+  }else if(call.name==='getTradeFeesDataArray')values=[call.args[0].map((user,i)=>tuple(lookup(user,call.args[1][i]).tradeFeesData,call.name))];
+  else{assert.equal(call.name,'getBorrowingInitialAccFees');values=[tuple(lookup(call.args[1],call.args[2]).initialAccFees,call.name)];}
+  return{jsonrpc:'2.0',id:req.id,result:iface.encodeFunctionResult(call.name,values)};
+ });
+ const service=combined.createCombinedLiquidationService({mode:'SHADOW_ONLY',clock:()=>OT,candidate_slots:2,max_http_per_run:4,gtrade_position_routing:oldRouting,gtrade_crypto_assets:assets,dydx_enabled:true,dydx_crypto_assets:assets,sdk_loader:()=>({version:'1.8.10',sdk}),provider_admit:async()=>({allowed:true,new_reservation:true}),fetch_impl:async(url,init={})=>{
+  calls.push(String(url));let payload;
+  if(String(url).endsWith('/trading-variables'))payload=oldVars;
+  else if(String(url).endsWith('/charts'))payload=oldPrices;
+  else{assert.equal(String(url),pin.GTRADE_RPC);payload=nativeResponse(JSON.parse(init.body));}
+  return new Response(JSON.stringify(payload));
+ }});
+ const p={contract:pair[0],native_symbol:'QNT',run_id:run,deep_started_ts:OT,max_http_for_candidate:4,allowed_source_ids:sourceIds[pair[0]],position_batch_contracts:[pair[0]],selected_native_source_plan:plan};
+ const a=await service.collect(p);assert.ok(a?.gtrade);assert.equal(a.gtrade.source_clock_closed,true);assert.equal(calls.length,3);assert.equal(service.summary().shared_budget.reserved_http,3);
+ const bound=bridge.bindGTradeAcquisition(a.gtrade,{contract:pair[0],run_id:run,snapshot_id:'ORIGINAL_QNT_COST_SHAPE',observed_ts:OT});assert.equal(bound.status,'USABLE_SCOPED_NATIVE_CONTEXT');assert.equal(bound.positions_source_ts,oldProof.source_clock.block_source_ts);assert.equal(bound.entry_eligible,false);
+ const before=calls.length;assert.equal(await service.collect({...p,contract:pair[1],native_symbol:'LSK',allowed_source_ids:sourceIds[pair[1]],position_batch_contracts:[],max_http_for_candidate:1}),null);assert.equal(calls.length,before);
+ fs.writeFileSync('audit-output/qnt-lsk-native4-retained-proof.json',JSON.stringify({schema:'QNT_LSK_NATIVE4_RETAINED_PROOF_V1',scope:'Original retained QNT positions at original time; controlled selected LSK lane-cost scenario, not a new current market source response',original_source_ts:bound.positions_source_ts,source_clocks_refreshed:false,transport_calls:3,total_cap:4,summary:service.summary(),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,new_fresh_SENT:false},null,2)+'\n');
+});
 

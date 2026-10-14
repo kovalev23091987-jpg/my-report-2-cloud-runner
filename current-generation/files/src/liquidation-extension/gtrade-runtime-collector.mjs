@@ -23,7 +23,7 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   })();
   snapshots.set(run_id,promise);return promise;
  };
- async function collect({contract,native_symbol,run_id,acquisition_id,deadline_ts,snapshot_admitted=false,admit_market_snapshot=null,admit_position_snapshot=null,position_batch_contracts=[]}={}){
+ async function collect({contract,native_symbol,run_id,acquisition_id,deadline_ts,snapshot_admitted=false,admit_useful_snapshot=null,admit_market_snapshot=null,admit_position_snapshot=null,position_batch_contracts=[]}={}){
   if(!(Number(deadline_ts)>clock()))return{status:'GTRADE_DEADLINE_NOT_AVAILABLE',requests:0};
   const catalogCached=catalogs.has(run_id),catalog=await loadCatalog(run_id,deadline_ts),catalogCalls=catalogCached?0:1,sourceTs=timestamp(catalog.payload?.lastRefreshed);
   if(!catalog.ok)return{status:'GTRADE_HTTP_NOT_CLOSED',requests:catalogCalls,reused_catalog:catalogCached,reasons:[catalog.reason]};
@@ -34,6 +34,10 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   const hintMarkets=batchContracts.map(code=>{const symbol=code.replace(/-USDT$/,''),market=resolveGTradeCryptoMarket(catalog.payload,symbol);return{contract:code,symbol,market,selection:{selected:market.supported?hintSelection(symbol,market.pair_index):[],candidate_count:null}};});
   const useHintMarkets=typeof admit_position_snapshot==='function'&&hintMarkets.every(x=>x.selection.selected.length>0);
   const snapshotHttpCost=useHintMarkets?1:2;
+  if(!snapshots.has(run_id)&&typeof admit_position_snapshot==='function'&&typeof admit_useful_snapshot==='function'){
+   const grant=await admit_useful_snapshot({additional_requests:(snapshot_admitted?0:snapshotHttpCost)+1});
+   if(grant?.allowed!==true)return{status:'SKIPPED_GTRADE_USEFUL_CHAIN_BUDGET',reason:grant?.reason??'COMPLETE_POSITION_READ_NOT_ADMITTED',requests:catalogCalls,catalog_verified:true,exact_market_supported:true};
+  }
   if(!snapshots.has(run_id)&&!snapshot_admitted&&typeof admit_market_snapshot==='function'){const grant=await admit_market_snapshot({requests:snapshotHttpCost});if(grant?.allowed!==true||grant?.new_reservation!==true)return{status:'SKIPPED_GTRADE_MARKET_SNAPSHOT_BUDGET',reason:grant?.reason??'MARKET_SNAPSHOT_NOT_ADMITTED',requests:catalogCalls,catalog_verified:true,exact_market_supported:true};}
   const cached=snapshots.has(run_id),snapshot=await loadSnapshot(run_id,deadline_ts,catalog,useHintMarkets?hintMarkets:null),completed=clock(),requests=catalogCalls+(cached?0:snapshot.requests);
   if(snapshot.status!=='GTRADE_SHARED_SNAPSHOT_CLOSED')return{status:snapshot.status,requests,reused_snapshot:cached,reasons:snapshot.reasons};

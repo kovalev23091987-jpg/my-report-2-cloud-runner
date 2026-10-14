@@ -39,7 +39,11 @@ export async function collectSelectedNativeBatch({service,params,selection,cover
   // The following candidate keeps its existing two-request discovery reserve.
   // A current unsupported route may release only one unusable reserve request
   // to finish native position time; viable and unknown routes retain it.
-  const following={contract:other,native_symbol:other.replace(/-USDT$/,''),run_id:params.run_id,deep_started_ts:params.deep_started_ts,max_deep_ms:params.max_deep_ms,max_http_for_candidate:2,cache_only:false,manual_liquidation_request:false,source_identity:null,early_candidate_bridge:false,early_candidate_quality_0_100:null};
+  const summary=service.summary(),remaining=Number(summary.total_http_cap)-Number(summary.shared_budget.reserved_http),callerCap=Number(params.max_http_for_candidate);
+  // Unused first-candidate room belongs to this same selected pair, not to a
+  // new provider budget. Preserve an explicit smaller caller ceiling.
+  const followingCap=Number.isSafeInteger(remaining)&&remaining>=0?Math.min(remaining,Number.isSafeInteger(callerCap)&&callerCap>=0?callerCap:2):0;
+  const following={contract:other,native_symbol:other.replace(/-USDT$/,''),run_id:params.run_id,deep_started_ts:params.deep_started_ts,max_deep_ms:params.max_deep_ms,max_http_for_candidate:followingCap,cache_only:false,manual_liquidation_request:false,source_identity:null,early_candidate_bridge:false,early_candidate_quality_0_100:null};
   try{batch.results.set(other,await collect(following));}catch{batch.results.set(other,null);}
  }
  return first;

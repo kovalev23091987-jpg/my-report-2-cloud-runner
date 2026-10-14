@@ -1,0 +1,54 @@
+{
+  "schema": "LIQ_COMPLETE_ACQUISITION_BUDGET_CANDIDATE_20261014_V1",
+  "recorded_utc": "2026-10-14T00:27:32.270900+00:00",
+  "defect_source": "checkpoints/index-economy-natural-38484212820/report2-run-result.json.gz",
+  "defect_run": "1791933985754-1791934005017",
+  "defect_head": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+  "actual_original_defect": {
+    "QNT_gTrade_HTTP": 2,
+    "position_status": "SKIPPED_GTRADE_PINNED_POSITION_BUDGET",
+    "position_reason": "CANDIDATE_HTTP_ENVELOPE",
+    "following_LSK_lane": "DYDX_PINNED_NATIVE",
+    "following_status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+    "native_shared_cap": 4
+  },
+  "candidate_changes": [
+    "Before a new gTrade market snapshot, require room for its whole remaining position-clock chain; no extra reservation or speculative stage HTTP.",
+    "Only an exact current supported gTrade market and immutable selected pair may borrow one otherwise unusable following native request when every following planned lane has a current known cost zero or at least three. Unknown or one/two-request useful lanes preserve their reserve.",
+    "Return unused first-candidate room to the second candidate within the existing native total and explicit caller ceiling.",
+    "Internal useful-chain admission refusal is not a provider-health failure."
+  ],
+  "shared_native_HTTP_cap_unchanged": 4,
+  "overall_LIQ_HTTP_cap_unchanged": 8,
+  "supplemental_protected_slots_unchanged": true,
+  "whole_report_HTTP_cap_unchanged": 164,
+  "provider_day_minute_month_caps_unchanged": true,
+  "source_weights_and_core_scores_unchanged": true,
+  "native_position_source_time_unchanged": true,
+  "no_local_HTX_model_enabled": true,
+  "local_tests": {
+    "pass": 17,
+    "fail": 0,
+    "providerHTTP": 0,
+    "production_D1": 0
+  },
+  "cloud_actual_original_position_replay_pending": true,
+  "new_natural_current_level_coverage_confirmed": false,
+  "planned_exact_old_artifacts": [
+    {
+      "id": 11397777455,
+      "zip_sha256": "8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0"
+    },
+    {
+      "id": 11485584554,
+      "zip_sha256": "6dacb2912f344cf08f84ad8ad4337dc57cbed898275440f61fa4d30291246d32"
+    }
+  ],
+  "hashes": {
+    "current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs": "0f5f7b2ec08c0e3799efc9faede08548be2e6dd6c7e36e2ab6b64d956057ed54",
+    "current-generation/files/src/liquidation-extension/selected-native-batch.mjs": "c57f2458d0defa6fba2c5096b45227fefb32b29fe6b5635a91e70c3b8d4518b3",
+    "current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs": "b293a7e17e245ff5593b81e2c8e2470684b44512c6fff07ad0b810b8ed49c990",
+    "current-generation/files/src/liquidation-extension/combined-runner-service.mjs": "086eef88f1d416e413021aa1c8b9da0aed37e6b573e65417c0a3953b9dad930f"
+  },
+  "project_complete": false
+}

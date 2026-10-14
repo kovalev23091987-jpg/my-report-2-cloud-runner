@@ -20,3 +20,19 @@ export function oneUnusablePairReserveMayFinishPosition({plan,run_id,contract,ba
  // Hyperliquid, archive and unknown routes remain protected without guessing.
  return other.source_ids.includes('GTRADE_NATIVE')&&other.source_ids.every(id=>cannotUseTwo.has(id));
 }
+
+// A selected following market may have no gTrade route at all. Its remaining
+// lanes still cannot use a two-request native reserve when their CURRENT
+// complete acquisition costs are zero or at least three. Unknown/one/two costs
+// retain that reserve. This permission finishes one current pinned read only.
+export function oneUnusableFollowingReserveMayFinishPosition({plan,run_id,contract,batch,current_allowed,current_coverage,following_costs,now}={}){
+ if(plan?.schema!==SELECTED_NATIVE_SOURCE_PLAN||plan.run_id!==run_id||typeof run_id!=='string'||!run_id.trim()||!code(contract)||!Number.isSafeInteger(now))return false;
+ const entries=plan.entries;
+ if(!Array.isArray(entries)||entries.length!==2||new Set(entries.map(e=>e?.contract)).size!==2||entries.some(e=>!code(e?.contract)||e.eligible!==true||!Array.isArray(e.source_ids)||!e.source_ids.length||e.source_ids.length>12||new Set(e.source_ids).size!==e.source_ids.length||e.source_ids.some(id=>typeof id!=='string')))return false;
+ const current=entries.find(e=>e.contract===contract),other=entries.find(e=>e.contract!==contract);
+ if(!current||!other||!Array.isArray(batch)||batch.length!==1||batch[0]!==contract||!Array.isArray(current_allowed)||current_allowed.length!==current.source_ids.length||current.source_ids.some(id=>!current_allowed.includes(id))||!current.source_ids.includes('GTRADE_NATIVE')||other.source_ids.includes('GTRADE_NATIVE'))return false;
+ const c=current_coverage;
+ if(c?.status!=='SUPPORTED'||c.run_id!==run_id||!Number.isSafeInteger(c.source_ts)||c.source_ts>now||now-c.source_ts>300000)return false;
+ if(!following_costs||Object.keys(following_costs).length!==other.source_ids.length)return false;
+ return other.source_ids.every(id=>Object.hasOwn(following_costs,id)&&Number.isSafeInteger(following_costs[id])&&(following_costs[id]===0||following_costs[id]>=3));
+}
