@@ -1,3 +1,4 @@
+import {preparePublicVenuePriority} from './public-venue-source-priority.mjs';
 import {withVerifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {collectPoloniexFlow} from './poloniex-native-flow-collector.mjs';
 import {eligiblePoloniexIdentity} from './poloniex-native-four-hour-flow.mjs';
@@ -44,6 +45,7 @@ export function orderN05VenueRoutes(contract,identity,routes){
 // Internal orchestration seam: production routes are fixed below. Every route
 // shares one caller envelope; each adapter retains its own durable admission.
 export async function collectN05VenueRoutes(params={},routes=[],turnoverCollector=collectTurnoverBaseline){
+ const prioritized=await preparePublicVenuePriority(params,routes);routes=prioritized.routes;
  const results=[];let reserved=0;const originalAdmit=params.request_admit;
  params={...params,request_admit:request=>{
   const n=Number(request?.attempts);
@@ -69,10 +71,10 @@ export async function collectN05VenueRoutes(params={},routes=[],turnoverCollecto
   network_calls:flow_network_calls+(baseline?.network_calls||0),flow_network_calls,
   receipts:[...results.flatMap(({result})=>result.receipts||[]),...(baseline?.receipts||[])],
   selected_venue:first?.venue||null,selected_venues,source_selection:'MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP',
-  caller_reserved_requests:reserved,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({...result,venue}))};
+  caller_reserved_requests:reserved,source_priority:prioritized.receipt,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({...result,venue}))};
 }
 
-export async function collectExternalN05Flow(params={}){
+export function planPublicVenueRoutes(params={}){
  params=withVerifiedAssetRouteIdentity(params);
  const routes=[];
  if(exactBitfinexNativeIdentity(params.contract,params.asset_identity))routes.push(['BITFINEX',collectBitfinexNativeFlow]);
@@ -87,5 +89,9 @@ export async function collectExternalN05Flow(params={}){
  // N05 envelope. They cannot displace an established four-hour flow route.
  if(params.asset_identity?.asset_kind==='NATIVE')routes.push(['OKX_N12_NATIVE',collectOkxN12NativeTrades],['KUCOIN_N12_NATIVE',collectKucoinN12NativeTrades]);
  if(params.asset_identity?.contract_or_mint)routes.push(['KUCOIN_N12_EXACT_TOKEN',collectKucoinN12ExactTrades]);
- return collectN05VenueRoutes(params,orderN05VenueRoutes(params.contract,params.asset_identity,routes));
+ return{params,routes:orderN05VenueRoutes(params.contract,params.asset_identity,routes)};
+}
+
+export async function collectExternalN05Flow(params={}){
+ const plan=planPublicVenueRoutes(params);return collectN05VenueRoutes(plan.params,plan.routes);
 }

@@ -1,5 +1,7 @@
+import {N15_INITIAL_SOURCE_PREFERENCE} from './n15-initial-source-preference.mjs';
 import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {collectExternalN05Flow} from './external-n05-flow-collector.mjs';
+import {publicVenueHealthObservations} from './public-venue-source-priority.mjs';
 import {jointSpotFuturesFlow,availableFlowContext} from './joint-spot-futures-flow.mjs';
 import {exactNativeEvmNetwork} from './native-evm-finalized-context.mjs';
 import {capturedSignedTapeFourHourFlow} from './htx-signed-tape.mjs';
@@ -26,7 +28,7 @@ import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,PAUSED_BLOCKS,evidenceDedupKey,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
-import {recordEvidenceSourceHealth,readEvidenceSourcePriorityHistory} from './evidence-source-store.mjs';
+import {recordEvidenceSourceHealth,readEvidenceSourcePriorityHistory,sourceHistoryStatistics} from './evidence-source-store.mjs';
 
 export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v21-exact-flow-five-minute-publication-20261005';
 
@@ -91,21 +93,17 @@ export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){
 // Compare alternatives inside one block only. Row counts for sector facts
 // cannot displace a compulsory trade/flow/chain owner in another block.
 const PRIORITY_ALTERNATIVES=Object.freeze({SECTOR:{block:'N15',source:'COINPAPRIKA_SECTOR'},SECTOR_COINGECKO:{block:'N15',source:'COINGECKO_SECTOR'}});
-export function orderEvidenceRoutesBySourceHistory(routes=[],history={}, {contract,now=Date.now()}={}){
+export function orderEvidenceRoutesBySourceHistory(routes=[],history={}, {contract,now=Date.now(),use_initial_preference=false}={}){
  const out=[...routes],stats={},rejected=[];
  for(const route of routes){
   const binding=PRIORITY_ALTERNATIVES[route.name];if(!binding)continue;
-  const rows=(history.observations||[]).filter(r=>r.source_id===binding.source).filter(r=>{
-   const valid=r.contract===contract&&typeof r.run_id==='string'&&r.run_id.length>0&&Number.isSafeInteger(r.observed_ts)&&r.observed_ts<=now&&r.observed_ts>=now-86400000&&Number.isSafeInteger(r.actual_http)&&r.actual_http>0&&['evidence_rows','valid_rows','decision_usable_rows'].every(k=>Number.isSafeInteger(r[k])&&r[k]>=0)&&r.valid_rows<=r.evidence_rows&&r.decision_usable_rows<=r.valid_rows;
-   if(!valid)rejected.push({source_id:r.source_id,reason:'EXACT_MARKET_CLOCK_OR_COUNTER_INVALID'});return valid;
-  }).sort((a,b)=>b.observed_ts-a.observed_ts||b.run_id.localeCompare(a.run_id)).slice(0,4);
-  const latest=rows[0],useful=latest?.operational_class==='CONTEXT_AVAILABLE'&&latest.valid_rows>0;
-  // A new failure does not inherit an earlier healthy status. Neutral valid
-  // context is useful even when decision_usable_rows and score are both zero.
-  stats[route.name]={source_id:binding.source,block_id:binding.block,observations:rows.length,latest_class:latest?.operational_class||null,latest_observed_ts:latest?.observed_ts||null,useful:!!useful,valid_rows_per_http:useful?rows.reduce((n,r)=>n+(r.operational_class==='CONTEXT_AVAILABLE'?r.valid_rows:0),0)/rows.reduce((n,r)=>n+r.actual_http,0):0};
+  const measured=sourceHistoryStatistics(history.observations,{contract,source_id:binding.source,now});
+  rejected.push(...measured.rejected_observations);
+  const initial=use_initial_preference&&N15_INITIAL_SOURCE_PREFERENCE[contract]?.source_id===binding.source&&measured.observations===0?N15_INITIAL_SOURCE_PREFERENCE[contract]:null;
+  stats[route.name]={...measured,block_id:binding.block,initial_historical_preference:!!initial,initial_preference_proof:initial};
  }
  const slots=routes.map((r,i)=>PRIORITY_ALTERNATIVES[r.name]?i:-1).filter(i=>i>=0);
- const alternatives=slots.map(i=>routes[i]).sort((a,b)=>Number(stats[b.name].useful)-Number(stats[a.name].useful)||stats[b.name].valid_rows_per_http-stats[a.name].valid_rows_per_http);
+ const alternatives=slots.map(i=>routes[i]).sort((a,b)=>(stats[b.name].useful?2:Number(stats[b.name].initial_historical_preference))-(stats[a.name].useful?2:Number(stats[a.name].initial_historical_preference))||stats[b.name].valid_rows_per_http-stats[a.name].valid_rows_per_http);
  slots.forEach((slot,i)=>{out[slot]=alternatives[i];});
  return{routes:out,receipt:{status:history.status||'NO_SOURCE_PRIORITY_HISTORY',contract,scope:'EXACT_ASSET_WITHIN_N15_ALTERNATIVES_ONLY',original_order:routes.map(r=>r.name),ordered_routes:out.map(r=>r.name),source_statistics:stats,rejected_observations:rejected,sourceHTTP:0,score_changed:false,predictive_weight_changed:false,source_quarantine:false,all_eligible_routes_retained:true}};
 }
@@ -162,6 +160,10 @@ export function classifyEvidenceSourceHealth(result={},valid_rows=0){
  if(/INVALID_RESPONSE|SCHEMA|VALIDATION|IDENTITY|BINDING/.test(status))return calls>0?'INVALID_RESPONSE':'NOT_EVALUATED';
  if(/SOURCE_ERROR|HTTP_5\d\d|TIMEOUT|SOURCE_NOT_CLOSED/.test(status))return'EXTERNAL_FAILURE';
  return'NOT_CLOSED';
+}
+export function evidenceSourceHealthObservation(source_id,r={}, {contract,decision_ts=Date.now()}={}){
+ const rows=[...(Array.isArray(r?.evidence)?r.evidence:[]),...(source_id==='EXTERNAL_N05_FLOW'?availableFlowContext({external:r,contract,now:decision_ts}).evidence:[])],valid=rows.filter(row=>row.htx_contract===contract&&validateEvidenceV2(row,{decision_ts}).usable),status=String(r?.status||'NOT_EVALUATED');
+ return{source_id,status,actual_http:Number(r?.network_calls||0),operational_class:classifyEvidenceSourceHealth(r,valid.length),evidence_rows:rows.length,valid_rows:valid.length,decision_usable_rows:valid.filter(x=>Number(x.coverage_fraction)>0).length};
 }
 
 // Exact token calendars depend on already verified CoinGecko address metadata.
@@ -345,7 +347,7 @@ export async function collectCandidateEvidenceV2(params={}){
   gdelt=PAUSED_BLOCKS.N07?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
  const priorityIds=routes.flatMap(r=>PRIORITY_ALTERNATIVES[r.name]?[PRIORITY_ALTERNATIVES[r.name].source]:[]);
  const priorityHistory=priorityIds.length>1?await readEvidenceSourcePriorityHistory(params.db,{contract:params.contract,source_ids:priorityIds,admit:params.source_health_admit,now:params.now??Date.now()}):{status:'NO_ALTERNATIVE_SOURCE_PAIR',observations:[]};
- const prioritized=orderEvidenceRoutesBySourceHistory(rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),priorityHistory,{contract:params.contract,now:params.now??Date.now()});
+ const prioritized=orderEvidenceRoutesBySourceHistory(rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),priorityHistory,{contract:params.contract,now:params.now??Date.now(),use_initial_preference:true});
  const routeBlock=await collectEvidenceRouteBlock({routes:orderEvidenceDependencyRoutes(prioritized.routes,params.asset_identity),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{JOINT_FLOW:collectExternalN05Flow,TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,BYBIT_OPTIONS:collectBybitOptionsEvidence,BINANCE_OPTION_INTEREST:collectBinanceOptionInterestEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const coinmetrics=PAUSED_BLOCKS.N02?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.COINMETRICS||{status:'EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED',evidence:[],network_calls:0};
@@ -372,12 +374,9 @@ export async function collectCandidateEvidenceV2(params={}){
  // Fix the decision clock only after every asynchronous collector returns.
  // Responses received after params.now must not be rejected as future-known.
  const auditDecisionTs=Date.now();
- const healthRows=Object.entries(sources).filter(([source_id])=>(!PAUSED_BLOCKS.N14||!['DERIBIT_ALT_OPTIONS','DELTA_OPTIONS','BYBIT_OPTIONS','BINANCE_OPTION_INTEREST'].includes(source_id))&&(source_id!=='BITGET_FOUR_HOUR_FLOW'||!sources.EXTERNAL_N05_FLOW)).map(([source_id,r])=>{
-  const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:auditDecisionTs}).usable),status=String(r?.status||'NOT_EVALUATED');
-  const operational_class=classifyEvidenceSourceHealth(r,valid.length);
-  return{source_id,status,actual_http:Number(r?.network_calls||0),operational_class,evidence_rows:rows.length,valid_rows:valid.length,decision_usable_rows:valid.filter(x=>Number(x.coverage_fraction)>0).length};
- });
- const source_health=await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()});
+ const healthRows=Object.entries(sources).filter(([source_id])=>(!PAUSED_BLOCKS.N14||!['DERIBIT_ALT_OPTIONS','DELTA_OPTIONS','BYBIT_OPTIONS','BINANCE_OPTION_INTEREST'].includes(source_id))&&(source_id!=='BITGET_FOUR_HOUR_FLOW'||!sources.EXTERNAL_N05_FLOW)).map(([source_id,r])=>evidenceSourceHealthObservation(source_id,r,{contract:params.contract,decision_ts:auditDecisionTs}));
+ healthRows.push(...publicVenueHealthObservations(sources.EXTERNAL_N05_FLOW,{contract:params.contract,now:auditDecisionTs}).map(r=>({...r,operational_class:classifyEvidenceSourceHealth({...r,network_calls:r.actual_http},r.valid_rows)})));
+ const source_health={...await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()}),journal_rows_not_additive_HTTP:true,transport_authority:'ORIGINAL_SHARED_N05_N12_ENVELOPE'};
  const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:auditDecisionTs,strict_fresh:params?.strict_fresh_manual===true});
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,

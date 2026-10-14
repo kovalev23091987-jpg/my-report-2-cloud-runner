@@ -1,7 +1,7 @@
 name: LIQ assembled spot and 105 admission offline
 on:
   push:
-    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014]
+    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014, codex/public-venue-health-priority-20261014]
     paths:
       - .github/workflows/liq-assembled-offline-20261012.yml
       - current-generation/files/src/coingecko-sector-evidence.mjs
@@ -48,6 +48,12 @@ on:
       - current-generation/tests/scheduled-evidence-budget.test.mjs
       - current-generation/tests/telegram-potential-candidate-wiring.test.mjs
       - current-generation/files/src/candidate-evidence-v2-runtime.mjs
+      - current-generation/apply-runtime-overlay.mjs
+      - current-generation/validate.mjs
+      - current-generation/files/src/public-venue-source-priority.mjs
+      - current-generation/files/src/n15-initial-source-preference.mjs
+      - current-generation/tests/public-venue-health-priority.test.mjs
+      - current-generation/tests/source-health-priority.test.mjs
       - current-generation/files/src/supplemental-candidate-context.mjs
       - current-generation/tests/native-identity-source-handoff.test.mjs
       - current-generation/tests/native-transport-fallback.runtime.mjs
@@ -120,7 +126,8 @@ jobs:
             const exactTargetFallbackCandidate=context.ref==='refs/heads/codex/sector-exact-target-fallback-20261014'&&main==='da7f8ae66ca0183cf55a9681f3036a827b8d5140';
             const exactActivePreflightCandidate=context.ref==='refs/heads/codex/active-source-preflight-20261014'&&main==='deec69207cf2a0638780084fc068bddc5545b16e';
             const exactSourceHealthCandidate=context.ref==='refs/heads/codex/source-health-priority-20261014'&&main==='52c7520c7bf0faa22318fee2337ca7066843c309';
-            if(main!==context.sha&&!exactSourceHealthCandidate&&!exactActivePreflightCandidate&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
+            const exactPublicHealthCandidate=context.ref==='refs/heads/codex/public-venue-health-priority-20261014'&&main==='ccb82d056aaa2ac47799d20f4253b945d1936b25';
+            if(main!==context.sha&&!exactPublicHealthCandidate&&!exactSourceHealthCandidate&&!exactActivePreflightCandidate&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
@@ -186,6 +193,12 @@ jobs:
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/active-source-headroom.test.mjs current-generation/tests/evidence-source-store.test.mjs current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/coinpaprika-htx-identity.test.mjs current-generation/tests/native-evm-finalized-context.test.mjs current-generation/tests/finalized-chain-events.test.mjs current-generation/tests/htx-large-trades-evidence.test.mjs > audit-output/liq-assembled/active-source-headroom.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/source-health-priority.test.mjs current-generation/tests/evidence-route-block.test.mjs current-generation/tests/evidence-source-store.test.mjs > audit-output/liq-assembled/source-health-priority.tap
           cp audit-output/source-health-priority-retained-proof.json audit-output/liq-assembled/
+          cmp current-generation/files/src/public-venue-source-priority.mjs runtime/src/public-venue-source-priority.mjs
+          cmp current-generation/files/src/n15-initial-source-preference.mjs runtime/src/n15-initial-source-preference.mjs
+          cmp current-generation/files/src/external-n05-flow-collector.mjs runtime/src/external-n05-flow-collector.mjs
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/public-venue-health-priority.test.mjs current-generation/tests/public-venue-source-budget.test.mjs > audit-output/liq-assembled/public-venue-health-priority.tap
+          cp audit-output/public-venue-health-original-proof.json audit-output/liq-assembled/
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-active105-initial-source-priority-20261014.mjs > audit-output/liq-assembled/active105-initial-source-queues.json
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
           REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
