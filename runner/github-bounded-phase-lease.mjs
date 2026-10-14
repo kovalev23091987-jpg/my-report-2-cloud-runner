@@ -22,7 +22,7 @@ export async function acquireWeeklyPhaseLease(control,{now=Date.now(),run_id,exp
  const raw=patchRoot(phase.raw,{lease,latest_own_bounded_continuation_lease:{...lease,previous_own_lease:phase.value.latest_own_bounded_continuation_lease},active_working_state:{...phase.value.active_working_state,owned_lease:owner,owned_lease_expires_ts:lease.expires_ts,lease_released:false}});
  const written=await control.call('contents/'+PHASE,'PUT',{message:'chore: bounded weekly HTX own lease '+run_id,sha:phase.sha,branch:'main',content:Buffer.from(raw).toString('base64')});
  const newHead=written.commit.sha,checked=await control.read(PHASE,newHead);if(checked.raw!==raw)throw Error('WEEKLY_LEASE_CAS_READBACK_REQUIRED');
- return{allowed:true,status:'OWN_WEEKLY_LEASE_CAS_VERIFIED',head:newHead,lease,sourceHTTP:0};
+ return{allowed:true,status:'OWN_WEEKLY_LEASE_CAS_VERIFIED',head:newHead,lease,run_id:run_id??null,sourceHTTP:0};
 }
 export async function releaseWeeklyPhaseLease(control,receipt,{now=Date.now()}={}){
  if(!receipt?.allowed)return{status:'NO_OWN_LEASE'};
