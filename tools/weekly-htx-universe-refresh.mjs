@@ -9,9 +9,10 @@ import {APPROVED_HTX_SCOPE} from '../current-generation/files/src/approved-htx-a
 import {N15_INITIAL_SOURCE_PREFERENCE} from '../current-generation/files/src/n15-initial-source-preference.mjs';
 import {KNOWN_HISTORY_MANIFESTS} from '../cloudflare/free-history/hourly-archive.mjs';
 import {renderWeeklyScopeFiles} from '../runner/htx-weekly-scope-package.mjs';
-import {HTX_WEEKLY_POLICY,utcWeekKey,planWeeklyHtxUniverse,weeklyScopePackage} from '../runner/htx-weekly-universe-plan.mjs';
+import {HTX_WEEKLY_POLICY,utcWeekKey,qualifyWeeklyCatalogScope,planWeeklyHtxUniverse,weeklyScopePackage} from '../runner/htx-weekly-universe-plan.mjs';
 import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from '../runner/github-bounded-phase-lease.mjs';
 import {dispatchWeeklyConnectedCheck} from '../runner/htx-weekly-proposal-check.mjs';
+import {closeWeeklyQualification} from '../runner/htx-weekly-finalize.mjs';
 const dir='audit-output/htx-weekly',hash=b=>crypto.createHash('sha256').update(b).digest('hex'),started=Date.now(),week=utcWeekKey(started),policy=HTX_WEEKLY_POLICY;
 const out={schema:'HTX_WEEKLY_PRIMARY_UNIVERSE_REFRESH_V1',head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,week,started_ts:started,sourceHTTP:0,source_reservations_reset:false,MAIN:0,Telegram:0,production_scope_changed:false,receipts:[]};await fs.mkdir(dir,{recursive:true});
 const control=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN});let lease,db,admitted=false;const sourceId='HTX_WEEKLY_PRIMARY:'+week,id='HTX_WEEKLY_D1:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT,reservation={rows_read:policy.D1.reads,rows_written:policy.D1.writes},budget=createUnifiedHttpBudget();
@@ -44,7 +45,7 @@ try{
  }
  const base=await get('linear-default',HTX_CATALOG_URLS.linear),modes={};for(const [mode,url]of Object.entries(HTX_LINEAR_MARGIN_CATALOG_URLS))modes[mode]=await get('linear-'+mode,url);
  const coin_swap=await get('coin-swap',HTX_CATALOG_URLS.coin_swap),coin_delivery=await get('coin-delivery',HTX_CATALOG_URLS.coin_delivery),observed_ts=Date.now(),linear=mergeHtxLinearCatalogModes({base,modes,observed_ts});out.margin_modes=linear;if(linear.status!=='CLOSED')throw Error('ALL_PRIMARY_MARGIN_MODES_REQUIRED');
- const current=buildHtxCryptoUniverse({catalogs:{linear:linear.payload,coin_swap,coin_delivery},classify_linear:classify,observed_ts});const plan=planWeeklyHtxUniverse({previous,current,now:observed_ts,known_priorities:N15_INITIAL_SOURCE_PREFERENCE}),bytes=Buffer.from(JSON.stringify(current,null,2)+'\n'),pack=plan.status==='CLOSED'?weeklyScopePackage({plan,manifest_bytes:bytes,generation:APPROVED_HTX_SCOPE.generation,previous_scope:APPROVED_HTX_SCOPE}):null;
+ const rawUniverse=buildHtxCryptoUniverse({catalogs:{linear:linear.payload,coin_swap,coin_delivery},classify_linear:classify,observed_ts}),current=qualifyWeeklyCatalogScope({previous,current:rawUniverse});out.pending_new_asset_identity_review=current.pending_new_asset_identity_review;const plan=planWeeklyHtxUniverse({previous,current,now:observed_ts,known_priorities:N15_INITIAL_SOURCE_PREFERENCE}),bytes=Buffer.from(JSON.stringify(current,null,2)+'\n'),pack=plan.status==='CLOSED'?weeklyScopePackage({plan,manifest_bytes:bytes,generation:APPROVED_HTX_SCOPE.generation,previous_scope:APPROVED_HTX_SCOPE}):null;
  await fs.writeFile(dir+'/universe.json.gz',gzipSync(bytes,{mtime:0}));await fs.writeFile(dir+'/source-plan.json',JSON.stringify(plan,null,2)+'\n');if(pack)await fs.writeFile(dir+'/synchronized-scope-package.json',JSON.stringify(pack,null,2)+'\n');out.plan_status=plan.status;out.manifest_sha256=hash(bytes);out.added=plan.added;out.removed=plan.removed;out.status=plan.status==='CLOSED'?'PRIMARY_UNIVERSE_AND_SYNCHRONIZED_PROPOSAL_READY':plan.status;
  // The exact proposal is retained. Production requires its connected checks
  // and synchronized collector/history rollout; no isolated universe write.
@@ -79,5 +80,5 @@ try{
 
 }catch(error){out.status='WEEKLY_RECONCILIATION_NOT_ACTIVATED';out.reason=String(error?.message||error).split('\n')[0].slice(0,150);}
 finally{
- if(admitted)out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:out.run,usage:db.usageSnapshot()});if(db){out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>reservation.rows_read||out.D1.rows_written>reservation.rows_written){out.status='WEEKLY_D1_ENVELOPE_NOT_CLOSED';out.production_activation_status='DENIED_UNKNOWN_OR_EXCESS_NATIVE_D1';}}out.whole_http=budget.summary();if(lease?.allowed)out.lease_release=await releaseWeeklyPhaseLease(control,lease);out.completed_ts=Date.now();await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,sourceHTTP:out.sourceHTTP,added:out.added,removed:out.removed,production_scope_changed:false}));
+ const closed=await closeWeeklyQualification(out,{admitted,finalize_usage:()=>finalizeRunUsage(db,{reservationId:id,sourceRunId:out.run,usage:db.usageSnapshot()}),usage_snapshot:db?()=>db.usageSnapshot():undefined,whole_summary:()=>budget.summary(),has_own_lease:lease?.allowed===true,release_lease:()=>releaseWeeklyPhaseLease(control,lease),limits:policy.D1});process.exitCode=closed.exit_code;await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,sourceHTTP:out.sourceHTTP,added:out.added,removed:out.removed,production_scope_changed:false}));
 }

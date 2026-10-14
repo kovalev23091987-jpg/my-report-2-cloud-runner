@@ -1,0 +1,237 @@
+{
+  "schema": "HTX_WEEKLY_RETAINED_QUALIFICATION_REPAIR_V1",
+  "status": "LINKED_REPAIR_LOCAL73_PASSED_CLOUD_PENDING",
+  "base_main": "fdfc95db6c01d99b704bca451193eef38837924f",
+  "first_original_catalog_run": 38612734728,
+  "first_original_head": "1d0a4000843098e7f97bd4edd0a948f5b945e8b2",
+  "catalog_artifact": {
+    "id": 11918542861,
+    "sha256": "b90fe8c5550b4a0ce6ff9e74452c42310c957d3330ec44af51e9c7c3ed0418cd"
+  },
+  "first_data_proposal": {
+    "PR": 360,
+    "head": "9ae73f08d0b23598f3f1e84dbde5028d69883e0e",
+    "state": "DRAFT_NOT_ACTIVATED",
+    "raw_asset_count": 108,
+    "raw_contract_count": 125
+  },
+  "first_connected_check": {
+    "run": 38612812295,
+    "status": "FAILURE",
+    "artifact_id": 11919310034,
+    "sha256": "ba81cb492cf7cd00b7d76c454334831808bbec89f825d09961b4085b470d05fc",
+    "original_source_binding_passed": true,
+    "defect": "Historical readable target union test used fixed105 instead of the exact union of current and prior accepted targets."
+  },
+  "qualified_replay": {
+    "source": "SAME_SIX_ORIGINALS_NO_NEW_PROVIDER_CALLS",
+    "assets": 106,
+    "contracts": 123,
+    "added": [
+      "MAGIC-USDT"
+    ],
+    "removed": [],
+    "identity_pending": [
+      "SNPS-USDT",
+      "ZCSH-USDT"
+    ],
+    "reason": "New unlabelled assets lack positive native crypto classification. All105 previously approved exact assets remain. Empty TradFi arrays alone do not establish crypto.",
+    "source_clock_unchanged": true,
+    "all_new_asset_identities_qualified": false,
+    "production_scope_changed": false
+  },
+  "primary_listing_review": {
+    "url": "https://www.htx.com/en-us/support/95046181826762",
+    "publication": "2026-10-13T04:17:03Z",
+    "content_received_via": "Firecrawl cached official listing",
+    "cache_time": "2026-10-13T18:03:00.805Z",
+    "finding": "The listing and two contract tables establish the exact SNPS-USDT/ZCSH-USDT instruments, sizes and payout schedule. They do not positively establish a crypto token underlying. No such proof was inferred from secondary sites.",
+    "new_source_connected": false
+  },
+  "repairs": [
+    "Retain old and new exact history targets instead of fixed105.",
+    "Quarantine newly unlabelled identities without removing existing approved coins.",
+    "Rebuild all four consumers from the same qualified manifest.",
+    "Retain actual run_id in own lease release receipt.",
+    "Report failed connected checks as failed jobs; finalize native usage and attempt only own release even if finalization fails."
+  ],
+  "original_actual_cost": {
+    "provider_HTTP": 6,
+    "D1_rows_read": 211,
+    "D1_rows_written": 13,
+    "D1_requests": 22,
+    "D1_unknown_ops": 0,
+    "reserved_reads": 4000,
+    "reserved_writes": 160,
+    "reservation_not_reset_or_refunded": true
+  },
+  "this_repair_cost": {
+    "provider_HTTP": 0,
+    "D1": 0,
+    "forced_MAIN": 0,
+    "Telegram": 0,
+    "local_connected_tests_passed": 73
+  },
+  "limits": {
+    "whole_HTTP": 164,
+    "shared_N05_N12": 5,
+    "LIQ": 8,
+    "native_LIQ": 4,
+    "whole_D1_reads": 3403280,
+    "whole_D1_writes": 68938,
+    "limit_reads": 3500000,
+    "limit_writes": 70000
+  },
+  "required_before_changed_scope_activation": [
+    "Exact data-only106 proposal connected runtime check.",
+    "Public collector deployment and module/bindings/cron readback.",
+    "HTX-only spot/futures history deployment/readback.",
+    "LIQ forecast history deployment/readback.",
+    "Exact guards/current scope/save release verification."
+  ],
+  "paused_blocks_unchanged": [
+    "N01",
+    "N02",
+    "N03",
+    "N06",
+    "N07",
+    "N08",
+    "N09",
+    "N14",
+    "N16"
+  ],
+  "strategy_weights_forms_unchanged": true,
+  "all_blocks_complete": false,
+  "project_complete": false,
+  "original_files": [
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/coin-delivery.json.gz",
+      "bytes": 349,
+      "sha256": "cee26759daba6e46426b3f887aa7dbec33275baa933ab682faaaa1951d13161c"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/coin-swap.json.gz",
+      "bytes": 301,
+      "sha256": "7f9c3e3ff4683e5b1a73913da135e4e4cab9f1438b7c687c64a3a49e0834bfd7"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/linear-all.json.gz",
+      "bytes": 8533,
+      "sha256": "c819f1bd4522c59d13da10c2f0f793e594b98f9ff08567538f02ddea16d65ba1"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/linear-cross.json.gz",
+      "bytes": 414,
+      "sha256": "7d3e88700025a2b4d89432adff2f3e27cd7abdd322eebf3d05b9a55dd57c0164"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/linear-default.json.gz",
+      "bytes": 8687,
+      "sha256": "4291c9ec183d00ac926032b169c3d96cb9964b33c02014d7970be7e330f61239"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/linear-isolated.json.gz",
+      "bytes": 103,
+      "sha256": "0e44d1a92fe60b90ef9803072fef437b0a6397c45a7da1988bcc0d7117758931"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/proof.json.gz",
+      "bytes": 12254,
+      "sha256": "3922ef2c1722a5dd14ef7f64a2dbd3b1d0d8e61fe81a08e9ec023d3af39d60ad"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/source-plan.json.gz",
+      "bytes": 5418,
+      "sha256": "8c82aad97b1af1b13eb50c29dc05af27e0d94d0d98e2890949a6fdb6e905c3de"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/synchronized-scope-package.json.gz",
+      "bytes": 5243,
+      "sha256": "61be4d7d8b5c9934766e6cafc2f53ad633bf5ae5d1c1b2d98b0ca12e627c7384"
+    },
+    {
+      "path": "checkpoints/htx-weekly-live-38612734728/universe.json.gz",
+      "bytes": 12496,
+      "sha256": "bfcba9dfb9a4112adf08895220b83cb6c8e16c2767b89c764ffc7459f99c1deb"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/active-source-headroom.tap.gz",
+      "bytes": 1844,
+      "sha256": "b1966a8e85febb2bcb39418280222ba506743a3ea25ad35405abd918b50c4aa8"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/active105-initial-source-queues.json.gz",
+      "bytes": 20003,
+      "sha256": "4b0cf6eb511cdeef00e51446d4ba6d37dfc8a905555fb8ec50048540631a03a1"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/assembly.json.gz",
+      "bytes": 229,
+      "sha256": "4c4badab9cc67759620c084fad864b8ddeeb8c025f70ee91d19d087c7c6f1bf1"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/native-sector-denominations-retained-proof.json.gz",
+      "bytes": 3883,
+      "sha256": "61c6c978ba4b519a85806d15017291e543bd17c0009546bf86aac3a7941bc1a4"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/native-sector-provider-binding.tap.gz",
+      "bytes": 2977,
+      "sha256": "6a3352846d63a89884537efbd96e21ac23b22a74826c3560927613d4ea2db07f"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/native-sector-validation-plan.json.gz",
+      "bytes": 357,
+      "sha256": "baf56818a52a5380f4476bae92406440a15db774b72ef10a08335212d97dd615"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/public-venue-health-original-proof.json.gz",
+      "bytes": 833,
+      "sha256": "557d414666ab70e885fdcaf77b6a56dce72537623373e19ec039b888c6a76907"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/public-venue-health-priority.tap.gz",
+      "bytes": 869,
+      "sha256": "3fe5a1095a68b58a610493434546c18eb6b884745bf2f329954467ff41eb3fd6"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/sector-effective105-retained.json.gz",
+      "bytes": 15718,
+      "sha256": "5a52ded9066347c214f116fdca546c325c777b6a93d1f8a5e83558cec2793761"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/sector-exact-target-controlled-proof.json.gz",
+      "bytes": 729,
+      "sha256": "eaeb9c3f550c799d00431bbd1455ee324f37983aef8c3c9686c9c0b1ceb53a0b"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/source-health-priority-retained-proof.json.gz",
+      "bytes": 1295,
+      "sha256": "d70d29292333beb34993f15c1bb79aa96bbbb41a9152b05074d61b1d2ba52393"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/source-health-priority.tap.gz",
+      "bytes": 1042,
+      "sha256": "a6d4d104b9ec5bc44d27ea37a48db80fcfde2e81a5b3a1761612fe85f655bdff"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/tron-sector-retained-four-proof.json.gz",
+      "bytes": 4424,
+      "sha256": "a7febfb4fee6808a4fc824f137b5313314fb0dd96784b31b09e868283606a104"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/weekly-htx-synchronized-plan.tap.gz",
+      "bytes": 2135,
+      "sha256": "c785402457df1b9eade9483cd52d23e2b43e3176dd99e142470b7c366d56c48a"
+    },
+    {
+      "path": "checkpoints/htx-weekly-first-candidate-failure-38612812295/weekly-original-proposal-binding.json.gz",
+      "bytes": 474,
+      "sha256": "76d425aaf77f91e6c04e24d93057c7aa587810ea4edcce39083c119fa5dd24af"
+    }
+  ],
+  "local_test_artifact": {
+    "path": "checkpoints/htx-weekly-retained-local73-20261014.tap.gz",
+    "sha256": "82be8e396dee142fb5ad8b35b117e82c2aa4adb62a29f10db7c02be3984b6747"
+  }
+}

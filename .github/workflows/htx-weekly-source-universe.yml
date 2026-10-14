@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '24'
       - name: Check synchronized plan, source caps, byte-preserving ownership and retained history
-        run: node --test runner/htx-weekly-universe-plan.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs
+        run: node --test runner/htx-weekly-universe-plan.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs
       - name: Qualify original six catalogs once per week under existing shared budgets
         run: node tools/weekly-htx-universe-refresh.mjs
       - uses: actions/upload-artifact@v4
