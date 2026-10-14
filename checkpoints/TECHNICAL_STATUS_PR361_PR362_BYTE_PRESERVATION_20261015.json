@@ -8,28 +8,32 @@
       "unrelated_root_bytes_unchanged": 375,
       "historical_active_keys_removed": 0,
       "before_sha256": "430c700521e9932181720c011f8e236d669201ed87ea7cf31e60f6a81154015b",
-      "after_sha256": "67c7185ba4859725860755ed9abc717f798ff9a9a54490afa2852b678a3a44d7"
+      "after_sha256": "31eb67dcf2776b7490f78c15b283e2e2e23993c05f08113100cbf541e4165507",
+      "phase_lease_authority_unchanged_from_base": false
     },
     {
       "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
       "unrelated_root_bytes_unchanged": 152,
       "historical_active_keys_removed": 0,
       "before_sha256": "acad014e4913f94a1b04f6d25a65ff3f38b010e8eeb3f6c5072be6beef62b68c",
-      "after_sha256": "a5b41410cb2b1349653130e86fb541e3d525cfd381e10af8ceeee11cabb5e1dd"
+      "after_sha256": "790f7f3a3137cd81a8fc36e668b85880c6f26adb7138684d6b1d964cd1baf43e",
+      "phase_lease_authority_unchanged_from_base": false
     },
     {
       "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
       "unrelated_root_bytes_unchanged": 317,
       "historical_active_keys_removed": 0,
       "before_sha256": "6e543abd091daa63be5bb5556399df6c1b4f5f82eb947665467f8049ffbad128",
-      "after_sha256": "5a1848387cfedff210ff693253ebd1b5ca34026c7299ff1784a3954225476e8f"
+      "after_sha256": "b29817673f389bb2fe9ec3c10296803497c6f08191ef2aa4371eed16b2e20e0e",
+      "phase_lease_authority_unchanged_from_base": false
     },
     {
       "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
-      "unrelated_root_bytes_unchanged": 351,
+      "unrelated_root_bytes_unchanged": 352,
       "historical_active_keys_removed": 0,
       "before_sha256": "f9d89178e56e34e50487f1e50423d8e9c6ef22ca7967ee9b82a2475e440361de",
-      "after_sha256": "790a93e4f01b64afc6b409bbdf4c1c114b9478914514e8310217c212e6c4872d"
+      "after_sha256": "93e554f3e241f878dd13e7602c37ac780fb24bf2022b4fced6b42fe5770c52b7",
+      "phase_lease_authority_unchanged_from_base": true
     }
   ],
   "historical_originals_statistics_and_SENT208_preserved": true,
@@ -74,5 +78,36 @@
     }
   ],
   "phase_lease_release_effective_only_after_protected_main_reviewed_merge": false,
-  "live_lease_authorities_preserved_by_code_PR": "checkpoints/PR362_LIVE_LEASE_AUTHORITY_PRESERVATION_20261015.json"
+  "live_lease_authorities_preserved_by_code_PR": "checkpoints/PR362_LIVE_LEASE_AUTHORITY_PRESERVATION_20261015.json",
+  "checks_before_authority_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "unrelated_root_bytes_unchanged": 375,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "430c700521e9932181720c011f8e236d669201ed87ea7cf31e60f6a81154015b",
+      "after_sha256": "67c7185ba4859725860755ed9abc717f798ff9a9a54490afa2852b678a3a44d7"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "unrelated_root_bytes_unchanged": 152,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "acad014e4913f94a1b04f6d25a65ff3f38b010e8eeb3f6c5072be6beef62b68c",
+      "after_sha256": "a5b41410cb2b1349653130e86fb541e3d525cfd381e10af8ceeee11cabb5e1dd"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "unrelated_root_bytes_unchanged": 317,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "6e543abd091daa63be5bb5556399df6c1b4f5f82eb947665467f8049ffbad128",
+      "after_sha256": "5a1848387cfedff210ff693253ebd1b5ca34026c7299ff1784a3954225476e8f"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "unrelated_root_bytes_unchanged": 351,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "f9d89178e56e34e50487f1e50423d8e9c6ef22ca7967ee9b82a2475e440361de",
+      "after_sha256": "790a93e4f01b64afc6b409bbdf4c1c114b9478914514e8310217c212e6c4872d"
+    }
+  ],
+  "own_lease_released_inside_code_PR": false
 }
