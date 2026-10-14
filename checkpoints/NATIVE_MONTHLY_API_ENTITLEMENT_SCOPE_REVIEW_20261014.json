@@ -1,0 +1,61 @@
+{
+  "schema": "NATIVE_MONTHLY_API_ENTITLEMENT_SCOPE_REVIEW_V1",
+  "recorded_utc": "2026-10-14T11:31:01Z",
+  "basis_main": "d606c3efbde8ac16128b961881d8afd71079b874",
+  "original_audit": "checkpoints/NATIVE_INTERNAL_MONTHLY_CAP_AUDIT_20261014.json",
+  "source_review": [
+    {
+      "url": "https://docs.gains.trade/developer/integrators/backend",
+      "supported_scope": "Exact existing backend-arbitrum REST GET and event stream: authentication not required; rate limiting applies.",
+      "numeric_production_native_monthly_limit_confirmed": false
+    },
+    {
+      "url": "https://docs.gains.trade/developer/integrators/price-feed",
+      "supported_scope": "Existing backend-pricing.eu.gains.trade keyless GET, rate limiting applies. v4 separates mark/index; /charts is current OHLC snapshot, not historical OHLCV.",
+      "numeric_production_native_monthly_limit_confirmed": false
+    },
+    {
+      "url": "https://docs.gains.trade/developer/trading-api/errors",
+      "numeric_values": {
+        "per_IP_minute": 600,
+        "per_agent_minute": 300
+      },
+      "applicable_to_current_native_backend": false,
+      "reason": "Page explicitly identifies testnet launch values; production limits depend on mainnet release. Different Trading API scope; do not transfer600 to existing native backend."
+    },
+    {
+      "url": "https://docs.dydx.exchange/concepts-architecture/indexer",
+      "supported_scope": "Open-source indexer, account positions and fills from on-chain data; hosted service availability/throughput is operator dependent.",
+      "numeric_publicnode_production_monthly_limit_confirmed": false
+    },
+    {
+      "url": "https://dydx-rpc.publicnode.com/",
+      "supported_scope": "Public dYdX RPC service; aggregate gateway traffic is not per-user entitlement.",
+      "numeric_production_native_monthly_limit_confirmed": false
+    }
+  ],
+  "conditional_bounds": {
+    "scheduled_cycles_day": 36,
+    "manual_full": 3,
+    "manual_single": 5,
+    "burst_single": 3,
+    "days": 31,
+    "scheduled_only_single_provider_four_native_requests": 4464,
+    "max_same_native_pool_day": 188,
+    "max_same_native_pool_month": 5828,
+    "formula": "(36*4 + 3*4 + 5*4 + 3*4)*31; assumes4shared native slots for each full report and4for each single invocation, all admissions granted.",
+    "not_actual_current_usage": true
+  },
+  "retained_internal_caps": {
+    "HYPERLIQUID": 10000,
+    "GTRADE": 4000,
+    "DYDX_RPC": 1000
+  },
+  "no_unconfirmed_free_limit_increase": true,
+  "reused_cache_and_actual_fallback_may_reduce_traffic_but_do_not_prove_every_cold_month": true,
+  "remaining": "Use exact native diagnostic receipts and bounded alternatives; do not infer a free production monthly allowance from catalog, testnet API limits or aggregate gateway counts.",
+  "provider_HTTP": 0,
+  "D1": 0,
+  "project_complete": false
+}
+
