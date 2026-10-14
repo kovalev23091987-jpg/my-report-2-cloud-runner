@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 const load=name=>import(pathToFileURL(path.resolve(process.env.REPORT2_TEST_RUNTIME?path.join(process.env.REPORT2_TEST_RUNTIME,'src'):fileURLToPath(new URL('../files/src/',import.meta.url)),name)));
 const [{createGTradeRuntimeCollector},{createCombinedLiquidationService,createGTradeTransportDiagnostic,classifyOperationalSourceOutcome},{buildLiquidationSourceAcquisitionAudit}]=await Promise.all([load('liquidation-extension/gtrade-runtime-collector.mjs'),load('liquidation-extension/combined-runner-service.mjs'),load('liquidation-source-acquisition-audit.mjs')]);
@@ -22,10 +24,12 @@ test('the original gTrade 429 receipt survives a failed catalog and same-run reu
 });
 
 test('parallel market snapshot failure retains each original endpoint, HTTP status and reason',async()=>{
- const calls=[];const collect=createGTradeRuntimeCollector({sdk,clock:()=>T,fetch_impl:async url=>{calls.push(url);if(url.endsWith('/trading-variables'))return json({pairs:[{from:'ZEC',to:'USD'}],lastRefreshed:T,currentBlock:10});if(url.endsWith('/open-trades'))return json([]);return json({error:'bad gateway'},503);}});
- const r=await collect(args);assert.equal(r.status,'GTRADE_HTTP_NOT_CLOSED');assert.equal(r.requests,3);assert.equal(calls.length,3);
- const d=createGTradeTransportDiagnostic({contract,run_id,result:r,now:T});assert.deepEqual(d.entries.map(x=>[x.endpoint,x.http_status]),[['CATALOG',200],['OPEN_TRADES',200],['REFERENCE_PRICES',503]]);
- const outcome=classifyOperationalSourceOutcome({status:r.status,contract,run_id,actual_http:3,transport_diagnostic:d,now:T});assert.equal(outcome.failure_origin,'TRANSPORT');assert.equal(outcome.role_usable,false);
+ const original=fs.readFileSync(new URL('../../post-v7-consolidated/liquidation/liquidation-extension/evidence/gtrade_variables_v2.raw',import.meta.url)),originalClock=1790489990092,SHA='202c049a5e26b4c0332495cf94a2f92c32facc9c8619b7e42aa9c874291fb3d1';
+ assert.equal(createHash('sha256').update(original).digest('hex'),SHA);
+ const calls=[];const collect=createGTradeRuntimeCollector({sdk,clock:()=>originalClock,fetch_impl:async url=>{calls.push(url);if(url.endsWith('/trading-variables'))return new Response(original);if(url.endsWith('/open-trades'))return json([]);return json({error:'bad gateway'},503);}});
+ const r=await collect({...args,deadline_ts:originalClock+20000});assert.equal(r.status,'GTRADE_HTTP_NOT_CLOSED');assert.equal(r.requests,3);assert.equal(calls.length,3);
+ const d=createGTradeTransportDiagnostic({contract,run_id,result:r,now:originalClock});assert.deepEqual(d.entries.map(x=>[x.endpoint,x.http_status]),[['CATALOG',200],['OPEN_TRADES',200],['REFERENCE_PRICES',503]]);assert.equal(d.entries[0].response_sha256,SHA);
+ const outcome=classifyOperationalSourceOutcome({status:r.status,contract,run_id,actual_http:3,transport_diagnostic:d,now:originalClock});assert.equal(outcome.failure_origin,'TRANSPORT');assert.equal(outcome.role_usable,false);
 });
 
 test('serialized, foreign, stale or wrong-cost diagnostic cannot change operational classification',()=>{
@@ -34,6 +38,8 @@ test('serialized, foreign, stale or wrong-cost diagnostic cannot change operatio
  assert.equal(classifyOperationalSourceOutcome({status:'GTRADE_HTTP_NOT_CLOSED',contract,run_id,actual_http:0,transport_diagnostic:d,now:T}).failure_origin,'TRANSPORT');
  assert.equal(classifyOperationalSourceOutcome({status:'GTRADE_HTTP_NOT_CLOSED',contract,run_id,actual_http:1,transport_diagnostic:d,now:T+300001}).failure_origin,'TRANSPORT');
  assert.equal(classifyOperationalSourceOutcome({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,run_id,actual_http:1,transport_diagnostic:d,now:T}).evaluated,false);
+ assert.throws(()=>{d.contract='FIL-USDT';},TypeError);assert.throws(()=>{d.entries[0].http_status=200;},TypeError);
+ for(const requests of [null,undefined,-1,5])assert.equal(diagnostic(429,{requests}),null);
 });
 
 test('HTTP500 mixed with429 stays a transport failure; invalid JSON at200 stays a schema failure',()=>{

@@ -29,7 +29,7 @@ const transportReasons=new Set(['RATE_LIMITED','ACCESS_REQUIRED','HTTP_ERROR','J
 // Original HTTP receipts are operational diagnostics, never position clocks or
 // market votes. Raw URLs, bodies, accounts, free text and credentials stay out.
 export function createGTradeTransportDiagnostic({contract,run_id,result,now=Date.now()}={}){
- if(typeof contract!=='string'||!/^\S{1,40}-USDT$/u.test(contract)||typeof run_id!=='string'||!run_id||run_id.length>160||!Number.isSafeInteger(now)||!Array.isArray(result?.transport_receipts)||!result.transport_receipts.length||result.transport_receipts.length>4)return null;
+ if(typeof contract!=='string'||!/^\S{1,40}-USDT$/u.test(contract)||typeof run_id!=='string'||!run_id||run_id.length>160||!Number.isSafeInteger(now)||!Number.isSafeInteger(result?.requests)||result.requests<0||result.requests>4||!Array.isArray(result?.transport_receipts)||!result.transport_receipts.length||result.transport_receipts.length>4)return null;
  const entries=[];
  for(let i=0;i<result.transport_receipts.length;i++){
   const r=result.transport_receipts[i],endpoint=gtradeTransportRoutes.get(r?.url),reason=transportReasons.has(result?.reasons?.[i])?result.reasons[i]:null;
@@ -39,7 +39,7 @@ export function createGTradeTransportDiagnostic({contract,run_id,result,now=Date
   entries.push({endpoint,http_status:status,reason,started_ts:r.started_ts,received_ts:r.received_ts,response_sha256:typeof r.sha256==='string'&&/^[a-f0-9]{64}$/.test(r.sha256)?r.sha256:null});
  }
  const failed=entries.filter(r=>r.http_status!==200||r.reason!==null),proof={schema:'GTRADE_ORIGINAL_HTTP_DIAGNOSTIC_V1',contract,run_id,observed_ts:now,actual_http:Number.isSafeInteger(result.requests)&&result.requests>=0?result.requests:null,reused_original:result.reused_catalog===true||result.reused_snapshot===true,entries,provider_rate_limited:failed.length>0&&failed.every(r=>r.http_status===429),invalid_json_only:failed.length>0&&failed.every(r=>r.http_status===200&&r.reason==='JSON_INVALID'),diagnostic_only:true,source_clock_closed:false,entry_authorized:false};
- nativeTransportProofs.add(proof);return proof;
+ entries.forEach(Object.freeze);Object.freeze(entries);Object.freeze(proof);nativeTransportProofs.add(proof);return proof;
 }
 function currentTransportProof(proof,{contract,run_id,now,actual_http}){
  return Boolean(nativeTransportProofs.has(proof)&&proof.contract===contract&&proof.run_id===run_id&&proof.actual_http===actual_http&&proof.observed_ts<=now&&now-proof.observed_ts<=300000);
