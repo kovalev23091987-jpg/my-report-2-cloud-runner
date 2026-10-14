@@ -1,0 +1,42 @@
+name: Active sources exact budget read
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main:
+        required: true
+        type: string
+      lease_owner:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: my-report-2-production-cycle
+  cancel-in-progress: false
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify bounded source-free read plan
+        run: |
+          node --check tools/read-active-source-budgets-20261014.mjs
+          node tools/read-active-source-budgets-20261014.mjs --plan
+      - name: Read daily and monthly source balances after atomic shared D1 admission
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
+          REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.lease_owner }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-active-source-budgets-20261014.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-source-budget-read-${{ github.run_id }}
+          path: audit-output/active-source-budget-read/
+          retention-days: 30

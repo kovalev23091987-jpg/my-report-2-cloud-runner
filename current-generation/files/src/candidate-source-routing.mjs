@@ -1,11 +1,23 @@
-export const CANDIDATE_SOURCE_ROUTING_VERSION='candidate-source-routing-v1-high-interest-confirmation-20260929';
+export const CANDIDATE_SOURCE_ROUTING_VERSION='candidate-source-routing-v2-exact-selected-finalists-20261014';
 export const HIGH_INTEREST_SOURCE_THRESHOLD=70;
 export const CANDIDATE_CONFIRMATION_HTTP_ENVELOPE=5;
 
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 
+// Only the immutable selected pair grants this source-check priority. It is
+// independent of an entry score; the native producer still checks exact market,
+// quotas, clocks and its shared four-request allocation.
+export function selectedFinalistSourceCheck({selection,contract,run_id}={}){
+ const codes=selection?.contracts;
+ return typeof run_id==='string'&&run_id.trim()!==''&&selection?.run_id===run_id&&
+  Array.isArray(codes)&&codes.length===2&&new Set(codes).size===2&&
+  codes.every(c=>typeof c==='string'&&/^[^-\s]{1,32}-USDT$/u.test(c))&&
+  codes.includes(contract)&&!['BTC-USDT','ETH-USDT'].includes(contract);
+}
+
 export function buildCandidateSourceRoutingPlan({
  discovery_row=null,
+ selected_finalist=false,
  cross_exchange_turn=false,
  manual_coin=false,
  queued_coin=false,
@@ -16,20 +28,21 @@ export function buildCandidateSourceRoutingPlan({
  const highInterest=interest!==null&&interest>=HIGH_INTEREST_SOURCE_THRESHOLD;
  const explicitPriority=manual_coin===true||queued_coin===true;
  const ordinaryLiquidationPriority=(move!==null&&Math.abs(move)>=5)||discovery_row?.early_candidate_bridge===true;
- const reserveLiquidation=highInterest||explicitPriority||(cross_exchange_turn!==true&&ordinaryLiquidationPriority);
+ const reserveLiquidation=selected_finalist===true||highInterest||explicitPriority||(cross_exchange_turn!==true&&ordinaryLiquidationPriority);
  const envelope=Number.isSafeInteger(total_http_envelope)&&total_http_envelope>=1&&total_http_envelope<=8
   ?total_http_envelope:CANDIDATE_CONFIRMATION_HTTP_ENVELOPE;
  return {
   version:CANDIDATE_SOURCE_ROUTING_VERSION,
   interest_score_0_100:interest,
   high_interest:highInterest,
+  selected_finalist_source_check:selected_finalist===true,
   high_interest_threshold:HIGH_INTEREST_SOURCE_THRESHOLD,
   explicit_priority:explicitPriority,
   cross_exchange_turn:cross_exchange_turn===true,
   run_cross_exchange:cross_exchange_turn===true||reserveLiquidation,
   reserve_liquidation_lane:reserveLiquidation,
   total_http_envelope:envelope,
-  reason:highInterest?'HIGH_INTEREST_REQUIRES_CONFIRMATION':explicitPriority?'EXPLICIT_OR_QUEUED_CANDIDATE_REQUIRES_CONFIRMATION':ordinaryLiquidationPriority?'EARLY_OR_FAST_MOVE_LIQUIDATION_PRIORITY':'ORDINARY_ROTATION',
+  reason:selected_finalist===true?'EXACT_SELECTED_FINALIST_BOUNDED_SOURCE_CHECK':highInterest?'HIGH_INTEREST_REQUIRES_CONFIRMATION':explicitPriority?'EXPLICIT_OR_QUEUED_CANDIDATE_REQUIRES_CONFIRMATION':ordinaryLiquidationPriority?'EARLY_OR_FAST_MOVE_LIQUIDATION_PRIORITY':'ORDINARY_ROTATION',
   weights_changed:false,
   entry_rules_changed:false,
  };

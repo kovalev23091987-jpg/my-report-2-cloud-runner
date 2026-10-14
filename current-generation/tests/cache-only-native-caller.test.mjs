@@ -9,6 +9,7 @@ import {collectSelectedNativeBatch} from '../files/src/liquidation-extension/sel
 const root=path.resolve(process.env.REPORT2_TEST_RUNTIME||'current-generation/files');
 const load=n=>import(pathToFileURL(path.join(root,'src',n)));
 const [{createCombinedLiquidationService},{createDydxRuntimeCollector,verifyDydxSourceState},{decodeDydxPinnedSnapshot,calculateDydxConditionalLevels},{nativeLiquidationCollectionMode,remainingLiquidationHttpCap},{buildLiquidationSourceAcquisitionAudit}]=await Promise.all([load('liquidation-extension/combined-runner-service.mjs'),load('liquidation-extension/dydx-runtime-collector.mjs'),load('liquidation-extension/dydx-pinned-conditional-levels.mjs'),load('candidate-source-routing.mjs'),load('liquidation-source-acquisition-audit.mjs')]);
+const {nativeLiquidationHeadroom}=await load('liquidation-source-http-plan.mjs');
 const bytes=fs.readFileSync('checkpoints/source-inputs/dydx-native-dense-37625020734.json.gz'),raw=JSON.parse(gunzipSync(bytes)),T=Math.max(...raw.raw.map(r=>r.receipt.received_ts)),snapshot=decodeDydxPinnedSnapshot({raw,now:T});
 const universe=JSON.parse(gunzipSync(fs.readFileSync('checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz'))),assets=new Set(universe.assets.map(a=>a.symbol)),levels=calculateDydxConditionalLevels(snapshot,{crypto_assets:assets}).levels,selected=[...new Set(levels.map(l=>l.asset))].sort().slice(0,2).map(a=>a+'-USDT'),run='CONTROLLED_CACHE_ONLY_CALLER';
 const lastBytes=fs.readFileSync('checkpoints/source-inputs/post-pr227-natural-37663457675.json.gz'),last=JSON.parse(gunzipSync(lastBytes));
@@ -28,7 +29,7 @@ export function workerCaller(env,{contract,cap=0,reserved=false,run_id=run}={}){
 export function wire(service,contracts=selected,selectedRun=run){
  const env={REPORT2_LIQUIDATION_SELECTED_CONTRACTS:{run_id:selectedRun,contracts}},runner=fs.readFileSync(path.join(root,'runner-main.mjs'),'utf8'),start=runner.indexOf('    env.REPORT2_LIQUIDATION_NATIVE_COLLECT=async params=>'),end=runner.indexOf('\n',start);
  assert.ok(start>=0&&end>start);
- new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console','collectSelectedNativeBatch','orderlyHttpUsed','coinbossHttpUsed','swoleHttpUsed',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}},opts=>collectSelectedNativeBatch({...opts,clock:()=>T+44000}),0,0,0);
+ new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console','collectSelectedNativeBatch','orderlyHttpUsed','coinbossHttpUsed','swoleHttpUsed','nativeLiquidationHeadroom',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}},opts=>collectSelectedNativeBatch({...opts,clock:()=>T+44000}),0,0,0,nativeLiquidationHeadroom);
  return env;
 }
 export {replay,params,selected,run,T,snapshot,levels,last,bytes,lastBytes,assets};

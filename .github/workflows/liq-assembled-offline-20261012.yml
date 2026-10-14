@@ -59,6 +59,12 @@ on:
       - current-generation/files/src/liquidation-extension/selected-native-batch.mjs
       - current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs
       - current-generation/tests/native-useful-acquisition-budget.test.mjs
+      - current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs
+      - current-generation/files/src/liquidation-extension/dydx-runtime-collector.mjs
+      - current-generation/files/src/candidate-source-routing.mjs
+      - current-generation/files/src/liquidation-source-http-plan.mjs
+      - current-generation/tests/dydx-native-market-catalog.test.mjs
+      - current-generation/tests/selected-finalist-source-priority.test.mjs
       - current-generation/tests/gtrade-position-routing.runtime.mjs
       - current-generation/tests/native-source-batch.runtime.mjs
 permissions:
@@ -85,7 +91,8 @@ jobs:
             const liqOwner=/^CODEX:LIQ_(?:COVERAGE_BATCH|NATURAL_AUDIT|EXTERNAL_LEVELS_ONLY):/.test(phase.lease?.owner||'');
             const allActiveOwner=/^CODEX:ACTIVE_SOURCE_DAY_BUDGET:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.active_working_state?.owned_lease===phase.lease.owner&&phase.owner_all_active_blocks_source_budget_and_fallback==='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json';
             const privateOwner=/^CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner;
-            if(!(liqOwner||allActiveOwner||privateOwner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const coverageOwner=/^CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner&&phase.active_working_state?.owned_lease===phase.lease.owner;
+            if(!(liqOwner||allActiveOwner||privateOwner||coverageOwner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Reuse immutable original gTrade source records
         uses: actions/github-script@v7
         with:
@@ -122,6 +129,7 @@ jobs:
           cmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs
           cmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs
           cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
+          cmp current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs runtime/src/liquidation-extension/dydx-native-market-catalog.mjs
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
           REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
@@ -132,6 +140,7 @@ jobs:
           node --test cloudflare/free-history/private-forecast-consumer.test.mjs cloudflare/free-history/liquidation-forecast-archive.test.mjs > audit-output/liq-assembled/private-forecast-consumer.tap
           node --test current-generation/tests/native-useful-acquisition-budget.test.mjs current-generation/tests/selected-native-reserve-policy.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/gtrade-catalog-planning.test.mjs > audit-output/liq-assembled/native-useful-budget.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gtrade-position-routing.runtime.mjs current-generation/tests/native-source-batch.runtime.mjs > audit-output/liq-assembled/native-useful-runtime.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/dydx-native-market-catalog.test.mjs current-generation/tests/dydx-runtime-collector.test.mjs current-generation/tests/selected-finalist-source-priority.test.mjs current-generation/tests/cache-only-native-caller.test.mjs > audit-output/liq-assembled/active-source-finalist-and-markets.tap
           cp audit-output/qnt-lsk-native4-retained-proof.json audit-output/liq-assembled/
       - name: Show failure locations
         if: failure()

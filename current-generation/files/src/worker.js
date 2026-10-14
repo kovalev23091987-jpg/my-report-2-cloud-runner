@@ -8,7 +8,7 @@ import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence,rankedEarlyPersistenceContracts} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {observeHtxAcquisitionAttempt} from './htx-signed-tape.mjs';
-import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap,nativeLiquidationCollectionMode} from './candidate-source-routing.mjs';
+import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap,nativeLiquidationCollectionMode,selectedFinalistSourceCheck} from './candidate-source-routing.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
 import { persistCanonicalSnapshot } from './canonical-publication.mjs';
 import { claimDueRecheck, requeueExpiredLease } from './recheck-scheduler.mjs';
@@ -16483,6 +16483,7 @@ async function buildDeepCheckInput(params, env) {
   // sources instead of silently pushing the invocation above its proven cap.
   const crossExchangeFamilyTurn=Math.floor(Number(params?.cycle_started_ts??cycleStartedTs)/(20*60*1000))%3===0;
   const sourceRoutingPlan=buildCandidateSourceRoutingPlan({
+    selected_finalist:selectedFinalistSourceCheck({selection:env?.REPORT2_LIQUIDATION_SELECTED_CONTRACTS,contract,run_id:String(params?.run_id||'').trim()}),
     discovery_row:params?.discovery_row||null,
     cross_exchange_turn:crossExchangeFamilyTurn,
     manual_coin:String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract,
@@ -16565,7 +16566,7 @@ async function buildDeepCheckInput(params, env) {
   let nativeLiquidationAcquisition = null;
   const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:{network_calls:futureProviderModels?.network_calls??0}});
   let nativeLiquidationCollectionError=null;
-  const nativeLiquidationMode=nativeLiquidationCollectionMode({contract,http_cap:liquidationCandidateHttpCap,lane_reserved:supplementalCandidateContext?.liquidation_lane_reserved,collector:env?.REPORT2_LIQUIDATION_NATIVE_COLLECT});
+  const nativeLiquidationMode=nativeLiquidationCollectionMode({contract,http_cap:liquidationCandidateHttpCap,lane_reserved:sourceRoutingPlan.selected_finalist_source_check===true||supplementalCandidateContext?.liquidation_lane_reserved,collector:env?.REPORT2_LIQUIDATION_NATIVE_COLLECT});
   if (nativeLiquidationMode && !['BTC-USDT','ETH-USDT'].includes(contract)) {
     try {
       nativeLiquidationAcquisition = await env.REPORT2_LIQUIDATION_NATIVE_COLLECT({

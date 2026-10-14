@@ -4,6 +4,15 @@ export const LIQ_SHARED_HTTP_CAP=8;
 export const LIQ_NATIVE_HTTP_ALLOCATION=4;
 export const LIQ_SUPPLEMENT_PER_CANDIDATE_CAP=2;
 
+// Reading an external model first does not exhaust the independent native
+// allocation. Admit the remaining native pool only when the WHOLE pool still
+// fits; selected-pair batching can then use its existing shared ceiling safely.
+export function nativeLiquidationHeadroom({native_http,total_future_http}={}){
+ if(!Number.isSafeInteger(native_http)||native_http<0||native_http>LIQ_NATIVE_HTTP_ALLOCATION||!Number.isSafeInteger(total_future_http)||total_future_http<native_http||total_future_http>LIQ_SHARED_HTTP_CAP)return 0;
+ const remaining=LIQ_NATIVE_HTTP_ALLOCATION-native_http;
+ return total_future_http+remaining<=LIQ_SHARED_HTTP_CAP?remaining:0;
+}
+
 // Capability hints from the saved 2026-10-12 CoinBoss probe and 2026-10-13
 // Swolecharts catalog/payloads. Only a current exact numeric reply admits a level.
 export const COINBOSS_RECENT_NUMERIC=new Set('AAVE ACE ADA AKE ALGO APT ARB ASTER ATOM AVAX BCH BNB BOME BR CHZ DOGE DOT ENA ETC ETHFI EUL FARTCOIN FIL HBAR HYPE ICP JUP LINK LIT LTC MARSCOIN NEAR OKB ONDO OP PAXG PENGU PONS PUMP RIVER RLC SOL SUI TAO TIA TRUMP TRX UNI USELESS WLD XAUT XLM XMR XPL XRP ZEC'.split(' '));
