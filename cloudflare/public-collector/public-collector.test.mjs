@@ -6,6 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {patchWorker,assertCollectorD1Bindings} from './patch-worker.mjs';
+import {injectPrivatePriceRuntime} from './private-price-bundle.mjs';
 import {loadExactCollector} from './github-backup.mjs';
 
 const basePath=process.env.REPORT2_HUB_MODULE_PATH
@@ -46,9 +47,9 @@ class FakeD1{
 
 test('T03 Hub overlay replaces legacy scheduled analytics with bounded public collector',async()=>{
   const fallback='const worker_default={fetch(){return new Response("ok")}};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
-  const base=fs.existsSync(basePath)?fs.readFileSync(basePath,'utf8'):fallback,injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const base=fs.existsSync(basePath)?fs.readFileSync(basePath,'utf8'):fallback,injected=injectPrivatePriceRuntime(fs.readFileSync(injectedPath,'utf8')).source.trim();
   const patched=patchWorker(base,injected);
-  assert.ok(['PATCHED','UPGRADED','ALREADY_PATCHED'].includes(patched.status));
+  assert.ok(['PATCHED','UPGRADED','UPDATED','ALREADY_PATCHED'].includes(patched.status));
   assert.match(patched.source,/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/);
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'report2-public-collector-')),file=path.join(dir,'worker.mjs');
   fs.writeFileSync(file,patched.source);
