@@ -1,8 +1,41 @@
 {
   "schema": "TECHNICAL_STATUS_PR361_PR362_BYTE_PRESERVATION_V1",
   "base": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
-  "recorded_utc": "2026-10-14T21:35:01.098789+00:00",
+  "recorded_utc": "2026-10-14T21:59:57.546600+00:00",
   "checks": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "unrelated_root_bytes_unchanged": 375,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "430c700521e9932181720c011f8e236d669201ed87ea7cf31e60f6a81154015b",
+      "after_sha256": "67c7185ba4859725860755ed9abc717f798ff9a9a54490afa2852b678a3a44d7"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "unrelated_root_bytes_unchanged": 152,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "acad014e4913f94a1b04f6d25a65ff3f38b010e8eeb3f6c5072be6beef62b68c",
+      "after_sha256": "a5b41410cb2b1349653130e86fb541e3d525cfd381e10af8ceeee11cabb5e1dd"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "unrelated_root_bytes_unchanged": 317,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "6e543abd091daa63be5bb5556399df6c1b4f5f82eb947665467f8049ffbad128",
+      "after_sha256": "5a1848387cfedff210ff693253ebd1b5ca34026c7299ff1784a3954225476e8f"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "unrelated_root_bytes_unchanged": 351,
+      "historical_active_keys_removed": 0,
+      "before_sha256": "f9d89178e56e34e50487f1e50423d8e9c6ef22ca7967ee9b82a2475e440361de",
+      "after_sha256": "790a93e4f01b64afc6b409bbdf4c1c114b9478914514e8310217c212e6c4872d"
+    }
+  ],
+  "historical_originals_statistics_and_SENT208_preserved": true,
+  "strategy_weights_caps_pauses_and_Telegram_form_unchanged": true,
+  "phase_release_effective_only_after_protected_main_reviewed_merge": true,
+  "checks_before_all_transport_repair": [
     {
       "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
       "unchanged_root_bytes": 375,
@@ -39,8 +72,5 @@
       "after_sha256": "20d6f4e4afe6b03bf39281384658d40f8da3e2b2a1cd19c14d5cfdf136e3d89e",
       "own_lease_release_only": true
     }
-  ],
-  "historical_originals_statistics_and_SENT208_preserved": true,
-  "strategy_weights_caps_pauses_and_Telegram_form_unchanged": true,
-  "phase_release_effective_only_after_protected_main_reviewed_merge": true
+  ]
 }
