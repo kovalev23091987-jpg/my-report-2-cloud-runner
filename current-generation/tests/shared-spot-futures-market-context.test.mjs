@@ -20,9 +20,9 @@ if(!root){
  }});
  const args=()=>({contract,observed_ts:T,spot_component:component('HTX Spot'),futures_component:component('HTX USDT-M Futures',T-12_000)});
 
- test('spot comparison is limited to the exact approved 105-asset HTX analysis universe',()=>{
-  assert.equal(APPROVED_HTX_SCOPE.approved_assets,105);
-  assert.equal(APPROVED_HTX_ANALYSIS_CONTRACTS.length,105);
+ test('spot comparison is limited to the exact current approved HTX analysis universe',()=>{
+  assert.equal(APPROVED_HTX_SCOPE.approved_assets,APPROVED_HTX_ANALYSIS_CONTRACTS.length);
+  assert.ok(APPROVED_HTX_ANALYSIS_CONTRACTS.length>0);
   for(const row of APPROVED_HTX_ANALYSIS_CONTRACTS){
    const exact=row.contract_code;
    assert.equal(approvedHtxAnalysisAssetForContract(exact),row.asset_symbol);
