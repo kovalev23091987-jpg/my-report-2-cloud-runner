@@ -4,9 +4,14 @@
 Counts historical evidence, never current simultaneous all-asset coverage.
 Repeated copies of the same original publication/fingerprint count once.
 """
-import collections, datetime, gzip, hashlib, json, pathlib, re
+import argparse, collections, datetime, gzip, hashlib, json, pathlib, re
 
 root = pathlib.Path(__file__).resolve().parents[1]
+manifest_path = root/'checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz'
+manifest = json.loads(gzip.decompress(manifest_path.read_bytes()))
+approved = {a['asset_analysis_contract'] for a in manifest['assets']}
+if len(approved) != 105:
+    raise ValueError('EXACT_CURRENT105_UNIVERSE_REQUIRED')
 active = ['N04', 'N05', 'N10', 'N11', 'N12', 'N15']
 paused = ['N01', 'N02', 'N03', 'N06', 'N07', 'N08', 'N09', 'N14', 'N16']
 by_source = collections.defaultdict(lambda: {'contracts': set(), 'checks': 0, 'valid_source_checks': 0, 'source_check_HTTP': 0, 'statuses': collections.Counter()})
@@ -22,6 +27,8 @@ for path in sorted((root/'checkpoints').glob('**/report2-run-result.json*')):
         canonical = candidate.get('canonical', {})
         pub, run, snapshot, contract, ts = [candidate.get(k) for k in ['publication_id', 'run_id', 'snapshot_id', 'contract', 'observed_ts']]
         fingerprint = canonical.get('analytical_fingerprint')
+        if contract not in approved:
+            continue
         if not (re.fullmatch('PUB:[a-f0-9]{40,64}', str(pub)) and re.fullmatch('[a-f0-9]{64}', str(fingerprint)) and run == data.get('run_id') == canonical.get('run_id') and snapshot == canonical.get('snapshot_id') and contract == canonical.get('contract') and isinstance(ts, int) and ts > 0 and ts == canonical.get('observed_ts')):
             bad.append({'file': str(path.relative_to(root)), 'publication_id': pub, 'reason': 'EXACT_ORIGINAL_BINDING_REQUIRED'})
             continue
@@ -79,6 +86,11 @@ for (block, source), values in sorted(by_source.items()):
     values['contracts'] = sorted(values['contracts']); values['statuses'] = dict(values['statuses'])
     matrix.append({'block': block, 'source': source, **values, 'cost_is_source_check_attribution_not_independent_HTTP': True})
 proof = {'schema': 'ACTIVE_SAVED_SOURCE_USE_CENSUS_20261014_V1', 'recorded_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'active_blocks': active, 'paused_blocks': paused, 'exact_current_pause_policy_required_in_original_report': True, 'original_publications': len(publications), 'original_contracts': sorted({x['contract'] for x in publications}), 'files': files, 'blocks': by_block, 'source_block_matrix': matrix, 'original_records': publications, 'rejected_bindings': bad, 'issues': issues, 'deduplication': 'Only exact original publication/fingerprint once; shared CHAIN_EVENTS transport once per publication; N05/N12 public costs share one group. Vendor/RPC routes do not imply independent primary sources.', 'market_scope': 'Counts exact contract facts per block; spot/futures completeness and venue independence require typed original component proof, not a name, rendering phrase or HTTP count.', 'original_source_clocks_refreshed': False, 'all105_current_useful_coverage_proven': False, 'historical_distinct_venues_implies_current_convergence': False, 'sourceHTTP': 0, 'D1': 0, 'MAIN': 0, 'Telegram': 0, 'project_complete': False}
-path = root/'checkpoints/ACTIVE_SAVED_SOURCE_USE_CENSUS_20261014.json'
+parser=argparse.ArgumentParser()
+parser.add_argument('--output',required=True,help='New repository-relative immutable proof path')
+args=parser.parse_args()
+path=root/args.output
+if path.exists():
+    raise FileExistsError('IMMUTABLE_PROOF_EXISTS: use a new output path')
 path.write_text(json.dumps(proof, ensure_ascii=False, indent=2)+'\n')
 print(json.dumps({'output': str(path.relative_to(root)), 'original_publications': len(publications), 'original_contracts': len(proof['original_contracts']), 'blocks': {k: {'checked': v['checked_contracts']['historical_count'], 'useful_context': v['context_contracts']['historical_count'], 'manual_rendered': v['manual_rendered_contracts']['historical_count'], 'directional': v['directional_contracts']['historical_count']} for k, v in by_block.items()}, 'issues': len(issues), 'rejected_bindings': len(bad)}, ensure_ascii=False))

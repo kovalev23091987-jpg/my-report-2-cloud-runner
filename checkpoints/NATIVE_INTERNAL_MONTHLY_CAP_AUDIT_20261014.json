@@ -1,0 +1,33 @@
+{
+  "schema": "NATIVE_INTERNAL_MONTHLY_CAP_AUDIT_20261014_V1",
+  "recorded_utc": "2026-10-14T01:16:10.494504+00:00",
+  "scope": "Conditional source saturation scenarios, not actual exhausted allowance or assurance of free provider throughput.",
+  "code_source": "current-generation/files/src/liquidation-extension/install-source-allowances.mjs",
+  "source_caps": {
+    "GTRADE": 4000,
+    "DYDX_RPC": 1000,
+    "HYPERLIQUID": 10000
+  },
+  "scheduled_cycles_day": 36,
+  "month_days": 31,
+  "conditional_one_source_dominates_scheduled_native_pool": {
+    "gTrade_shared_4_HTTP_each_cycle": 4464,
+    "gTrade_three_HTTP_each_cycle": 3348,
+    "dYdX_three_HTTP_each_cycle": 3348,
+    "gTrade_full_four_HTTP_chain_exceeds_module_cap": true,
+    "dYdX_cold_three_HTTP_chain_exceeds_module_cap": true
+  },
+  "manual_reserve_only_increases_these_bounds": true,
+  "zero_HTTP_exact_same_run_reuse_not_assumed_across_40m_runs": true,
+  "role_selection_may_reduce_actual_traffic_but_not_prove_full_coverage": true,
+  "official_pages_reviewed": [
+    "https://publicnode.com/?network=Mainnet",
+    "https://docs.gains.trade/developer/api-reference/endpoint/core-open-trades"
+  ],
+  "official_numeric_free_monthly_cap_confirmed": false,
+  "no_unverified_provider_cap_raised": true,
+  "next_action": "Inspect current complete protocol market catalogs and useful acquisitions, avoid unsupported searches, keep model/other native fallback and shared upstream counters; verify free entitlement and sufficiently funded internal allowance before claiming stable full-day/month service. Do not treat a source cap increase as new primary-market coverage.",
+  "new_provider_HTTP": 0,
+  "D1": 0,
+  "source_clocks_refreshed": false
+}

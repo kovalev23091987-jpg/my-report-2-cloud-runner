@@ -1,0 +1,478 @@
+{
+  "schema": "ACTIVE_SOURCE_NATIVE_BUDGET_AND_PRIVATE_FORECAST_20261014_V1",
+  "recorded_utc": "2026-10-14T01:21:20.394314+00:00",
+  "prior_main": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+  "last_runtime_commit": "29b4ee19429af54c33f4f8f626ef7237182ae185",
+  "current_task": "LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS",
+  "own_lease": "CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:1791935767000",
+  "source_network_HTTP_added_by_agent": 0,
+  "forced_MAIN_runs": 0,
+  "new_Telegram_messages_sent_by_agent": 0,
+  "index_economy_natural": "checkpoints/ACTIVE_INDEX_ECONOMY_NATURAL_20261014.json",
+  "cloud_checks": [
+    {
+      "run": 38488191853,
+      "head": "d1a4a9738c4f55fe1617c691b5e38cb33681b25e",
+      "status": "SUCCESS",
+      "new_private_forecast_tests": 8
+    },
+    {
+      "run": 38492679468,
+      "head": "efb25f87e63cd9d3eb64e43e965239c388d49d59",
+      "status": "SUCCESS",
+      "native_budget_tests": 17,
+      "native_original_replay_and_batch_tests": 24
+    },
+    {
+      "run": 38493181614,
+      "head": "29b4ee19429af54c33f4f8f626ef7237182ae185",
+      "status": "SUCCESS",
+      "native_budget_tests": 18,
+      "native_original_replay_and_batch_tests": 24
+    }
+  ],
+  "cloud_failure_history": [
+    {
+      "run": 38490359488,
+      "head": "2b0ca405fa855fda1bf05b0b77937e893c4c2a87",
+      "reason": "New fixture disabled automatic dYdX capability; old wiring test omitted current guardedParams."
+    },
+    {
+      "run": 38492446337,
+      "head": "7bb83469f7e80aea9a2eafc7434720a649c31446",
+      "reason": "New fixture omitted actual bounded-trader-array native getter shape for four QNT IDs. Both original shapes now replayed."
+    }
+  ],
+  "native_acquisition_changes": {
+    "remaining_complete_chain_preflight_before_prices": true,
+    "one_unusable_following_reserve_can_finish_exact_current_position": true,
+    "unknown_and_viable_one_or_two_request_following_routes_keep_reserve": true,
+    "unused_first_room_passed_to_second_with_explicit_caller_ceiling": true,
+    "internal_local_budget_refusal_not_supplier_fault": true,
+    "source_weight_values_not_reset": true,
+    "native_total_HTTP_cap": 4,
+    "overall_LIQ_HTTP_cap": 8,
+    "whole_report_HTTP_cap": 164,
+    "no_local_HTX_model_enabled": true,
+    "old_QNT_original_source_ts": 1791273469000,
+    "old_source_control_replay_HTTP_calls": 3,
+    "old_source_control_replay_is_not_new_current_coverage": true
+  },
+  "native_monthly_cap_census": "checkpoints/NATIVE_INTERNAL_MONTHLY_CAP_AUDIT_20261014.json",
+  "private_forecast_consumer": {
+    "candidate": "checkpoints/PRIVATE_FORECAST_CONSUMER_CANDIDATE_20261014.json",
+    "deployed_run": 38488319372,
+    "deployed_head": "d1a4a9738c4f55fe1617c691b5e38cb33681b25e",
+    "worker_version_id": "20050415-61a2-48b7-bf4a-edcfe08e53c3",
+    "worker_name": "my-report-2-liq-forecast-history",
+    "private_binding": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+    "natural_first_scheduled_ts": 1791938160000,
+    "natural_reservation": "PRIVATE_FORECAST:497760",
+    "natural_reservation_finalized": true,
+    "native_ledger_measured_reads": 24,
+    "native_ledger_measured_writes": 13,
+    "native_ledger_requests": 13,
+    "unknown_ops": 0,
+    "natural_original_OP_CT_forecasts_recorded": true,
+    "actual_private_header_consumer_on_production_not_yet_proven": true,
+    "source_primary_kept_originals": true,
+    "retry_cursor_preserved_when_private_unavailable_or_corrupt": true,
+    "day_reserved_reads": 2893000,
+    "day_reserved_writes": 50632,
+    "max_daily_reads": 3500000,
+    "max_daily_writes": 70000
+  },
+  "canonical_clock_index": {
+    "DDL": "cloudflare/free-history/004_canonical_observation_index.sql",
+    "reservation": "CODEX_CANONICAL_INDEX:1791937788000",
+    "rows_before": 256,
+    "index": "report2_canonical_observed_pub_v1",
+    "query_plan_verified_uses_index": true,
+    "index_created_measured_reads": 519,
+    "index_created_measured_writes": 257,
+    "measured_successful_native_operations": {
+      "requests": 8,
+      "rows_read": 1187,
+      "rows_written": 261
+    },
+    "api_validation_failure_saved": "checkpoints/canonical-index-native-20261014/index_schema_raw.json",
+    "api_validation_failure_reason": "params with multiple statements is not supported",
+    "failed_API_native_usage_returned": false,
+    "no_claim_of_measured_zero_for_failed_API_request": true,
+    "native_statement_telemetry_and_API_validation_failure_are_separate": true,
+    "reservation_ceiling_retained_without_reset": {
+      "reads": 10000,
+      "writes": 8000
+    },
+    "original_rows_not_modified": true,
+    "primary_measured_bytes_after": 468975616,
+    "free_pages_known": false
+  },
+  "production_readback_extra_reservation": {
+    "id": "CODEX_FORECAST_READBACK:1791939098000",
+    "reserved_reads": 2000,
+    "reserved_writes": 32,
+    "measured_before_finalization": {
+      "requests": 4,
+      "rows_read": 28,
+      "rows_written": 3
+    },
+    "finalization_extra": {
+      "requests": 1,
+      "rows_read": 1,
+      "rows_written": 1
+    },
+    "status": "FINALIZED"
+  },
+  "latest_natural_full_report": {
+    "cloud_run": 38492931437,
+    "head": "efb25f87e63cd9d3eb64e43e965239c388d49d59",
+    "run_id": "1791939407858-1791939429672",
+    "status": "CLOSED",
+    "source": "schedule",
+    "scan": {
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0,
+      "complete": true
+    },
+    "candidates": [
+      {
+        "contract": "NEAR-USDT",
+        "publication_id": "PUB:c4b71d178bbeab27fdda0ba6105b97db99b4c86f",
+        "run_id": "1791939407858-1791939429672",
+        "snapshot_id": "S392:NEAR-USDT:1791939538812",
+        "observed_ts": 1791939538812,
+        "canonical_state": "REJECTED",
+        "active_blocks": {
+          "N04": {
+            "status": "NOT_CHECKED",
+            "checked": false,
+            "context_facts": 0
+          },
+          "N05": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 1
+          },
+          "N10": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 5
+          },
+          "N11": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 1
+          },
+          "N12": {
+            "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+            "checked": true,
+            "context_facts": 2
+          },
+          "N15": {
+            "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+            "checked": true,
+            "context_facts": 1
+          }
+        },
+        "manual_rendered": [
+          "N05",
+          "N12",
+          "N10",
+          "N11",
+          "N15"
+        ],
+        "paused_excluded": true,
+        "future_levels": {
+          "status": "CLOSED",
+          "provider_zone_count": 26,
+          "vendor_scenario_count": 8,
+          "source_rows": [
+            {
+              "source": "Hyperliquid official",
+              "kind": "NATIVE_FUTURE_LEVEL",
+              "count": 2
+            },
+            {
+              "source": "Orderly",
+              "kind": "PROVIDER_ESTIMATE",
+              "count": 24
+            }
+          ],
+          "models": [
+            "CoinBoss"
+          ]
+        }
+      },
+      {
+        "contract": "ZEC-USDT",
+        "publication_id": "PUB:246026686faee080e5a8cedb65f198a2f55bc96c",
+        "run_id": "1791939407858-1791939429672",
+        "snapshot_id": "S392:ZEC-USDT:1791939496296",
+        "observed_ts": 1791939496296,
+        "canonical_state": "REJECTED",
+        "active_blocks": {
+          "N04": {
+            "status": "NOT_CHECKED",
+            "checked": false,
+            "context_facts": 0
+          },
+          "N05": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 1
+          },
+          "N10": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 5
+          },
+          "N11": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 1
+          },
+          "N12": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "context_facts": 5
+          },
+          "N15": {
+            "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+            "checked": true,
+            "context_facts": 2
+          }
+        },
+        "manual_rendered": [
+          "N05",
+          "N12",
+          "N10",
+          "N11",
+          "N15"
+        ],
+        "paused_excluded": true,
+        "future_levels": {
+          "status": "CLOSED",
+          "provider_zone_count": 46,
+          "vendor_scenario_count": 8,
+          "source_rows": [
+            {
+              "source": "Hyperliquid official + Orderly",
+              "kind": "NATIVE_FUTURE_LEVEL",
+              "count": 1
+            },
+            {
+              "source": "Hyperliquid official",
+              "kind": "NATIVE_FUTURE_LEVEL",
+              "count": 1
+            },
+            {
+              "source": "Orderly",
+              "kind": "PROVIDER_ESTIMATE",
+              "count": 44
+            }
+          ],
+          "models": [
+            "CoinBoss"
+          ]
+        }
+      }
+    ],
+    "native_budget": {
+      "reserved_http": 4,
+      "actual_http": 4,
+      "max_http_per_run": 4
+    },
+    "new_QNT_gTrade_specific_case_naturally_verified": false,
+    "same_run_delivery": {
+      "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+      "head": "efb25f87e63cd9d3eb64e43e965239c388d49d59",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "run_id": "1791939407858-1791939429672",
+      "source": "schedule",
+      "recorded_at": 1791939547994,
+      "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "CLOSED",
+      "cases": [],
+      "sourceHTTP_added": 0,
+      "D1_added": 0,
+      "Telegram_added": 0,
+      "task_writes_added": 0,
+      "original_clocks_refreshed": false,
+      "project_complete": false
+    },
+    "private_copy": {
+      "schema": "REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_V1",
+      "head": "efb25f87e63cd9d3eb64e43e965239c388d49d59",
+      "cloud_run": "38492931437",
+      "status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "main_rows_modified": 0,
+      "private_payload_exported": false,
+      "report_effect": false,
+      "source_run_id": "1791939407858-1791939429672",
+      "selection_status": "EXACT_CLOSED_CANDIDATES",
+      "control": {
+        "main": "29b4ee19429af54c33f4f8f626ef7237182ae185",
+        "producer_head": "efb25f87e63cd9d3eb64e43e965239c388d49d59",
+        "producer_in_current_main_history": true,
+        "phase": "OWNER_SEQUENTIAL_BLOCK_REQUIREMENTS_REVIEW",
+        "fence_active": false
+      },
+      "private_database": {
+        "database_id": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+        "name": "report2-free-canonical-history",
+        "descriptor_size_is_not_measured_query_size": true
+      },
+      "admission": {
+        "allowed": true,
+        "status": "ATOMIC_SHARED_DAY_RESERVED",
+        "reservation": {
+          "rows_read": 5000,
+          "rows_written": 80
+        }
+      },
+      "records": [
+        {
+          "version": "private-canonical-lossless-gzip-v1",
+          "publication_id": "PUB:c4b71d178bbeab27fdda0ba6105b97db99b4c86f",
+          "run_id": "1791939407858-1791939429672",
+          "snapshot_id": "S392:NEAR-USDT:1791939538812",
+          "contract_code": "NEAR-USDT",
+          "observed_ts": 1791939538812,
+          "analytical_fingerprint": "ee063d596d05c505085dd24a629e39691ad4b1cd740a70036eb283fc8140a3bd",
+          "raw_sha256": "0dc030c5770d538bb598d95698df4de78502cb9a5a909c933d56df28732ae0f6",
+          "gzip_sha256": "fb3a0533a47d29b9e03e9b28949f55bf9b48064dcab2a754b9b7e80af9ffc2eb",
+          "raw_bytes": 581716,
+          "gzip_bytes": 64728,
+          "stored": {
+            "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+            "retained": true,
+            "publication_id": "PUB:c4b71d178bbeab27fdda0ba6105b97db99b4c86f",
+            "raw_sha256": "0dc030c5770d538bb598d95698df4de78502cb9a5a909c933d56df28732ae0f6",
+            "gzip_sha256": "fb3a0533a47d29b9e03e9b28949f55bf9b48064dcab2a754b9b7e80af9ffc2eb",
+            "raw_bytes": 581716,
+            "gzip_bytes": 64728,
+            "original_observed_ts": 1791939538812,
+            "archived_ts": 1791939558545,
+            "main_deletion_authorized": false,
+            "report_or_score_effect": false
+          },
+          "private_reader_verified": true,
+          "portable_decoder_and_projected_header_verified": true,
+          "original_clocks_unchanged": true
+        },
+        {
+          "version": "private-canonical-lossless-gzip-v1",
+          "publication_id": "PUB:246026686faee080e5a8cedb65f198a2f55bc96c",
+          "run_id": "1791939407858-1791939429672",
+          "snapshot_id": "S392:ZEC-USDT:1791939496296",
+          "contract_code": "ZEC-USDT",
+          "observed_ts": 1791939496296,
+          "analytical_fingerprint": "6259509450aaa61360b3cdb84989e73dafba89cfd0b963b7e64975f0c725b8f8",
+          "raw_sha256": "118f2039d6cf056ae8bd81ef25ae9af1a07217772345ab94d388753b1d7fa51c",
+          "gzip_sha256": "d73108b0d99e2dca87105c2ed18e1de0fabc20108cad062cb9886edea403fc06",
+          "raw_bytes": 734963,
+          "gzip_bytes": 78967,
+          "stored": {
+            "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+            "retained": true,
+            "publication_id": "PUB:246026686faee080e5a8cedb65f198a2f55bc96c",
+            "raw_sha256": "118f2039d6cf056ae8bd81ef25ae9af1a07217772345ab94d388753b1d7fa51c",
+            "gzip_sha256": "d73108b0d99e2dca87105c2ed18e1de0fabc20108cad062cb9886edea403fc06",
+            "raw_bytes": 734963,
+            "gzip_bytes": 78967,
+            "original_observed_ts": 1791939496296,
+            "archived_ts": 1791939558545,
+            "main_deletion_authorized": false,
+            "report_or_score_effect": false
+          },
+          "private_reader_verified": true,
+          "portable_decoder_and_projected_header_verified": true,
+          "original_clocks_unchanged": true
+        }
+      ],
+      "weight_effect": false,
+      "finalized_usage": {
+        "schema": "report2-d1-reservation-budget-v2",
+        "status": "FINALIZED",
+        "reservation_id": "CANONICAL_COLD_COPY:38492931437:1",
+        "source_run_id": "38492931437",
+        "measured_rows_read": 32,
+        "measured_rows_written_accounted": 10,
+        "measured_requests_accounted": 14,
+        "unknown_ops": 0
+      },
+      "D1": {
+        "requests": 14,
+        "rows_read": 33,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "completed_ts": 1791939562983
+    },
+    "report_artifact_id": 11863270018,
+    "report_artifact_digest": "sha256:2d836e5337c8c4f19fd0179f82605adebc2bc01c20cd3ec41931ac6678a7d03e"
+  },
+  "venue_independence": "Hyperliquid and Orderly are distinct primary venues; CoinBoss aggregate model is not an independent venue vote.",
+  "latest_confirmed_same_run_SENT": {
+    "cloud_run": 38484212820,
+    "head": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+    "run_id": "1791933985754-1791934005017",
+    "contract": "LSK-USDT",
+    "message_id": "200",
+    "actual_ENTRY": false,
+    "scope": "Original LSK OBSERVE; not latest NEAR/ZEC delivery"
+  },
+  "current_saved_use_census": "checkpoints/ACTIVE_SAVED_SOURCE_USE_CENSUS_20261014_FINAL29.json",
+  "saved_files": "checkpoints/ACTIVE_PACKAGE_SAVED_FILES_20261014.json",
+  "artifact_metadata": "checkpoints/ACTIVE_PACKAGE_ARTIFACT_METADATA_20261014.json",
+  "historical_numeric_LIQ": {
+    "eligible": 103,
+    "historical_any_numeric": 72,
+    "old_numerical_gaps": 31,
+    "position_origin_historical": 58,
+    "simultaneous_all103_current_coverage": false
+  },
+  "unchanged": {
+    "active_blocks": [
+      "N04",
+      "N05",
+      "N10",
+      "N11",
+      "N12",
+      "N15"
+    ],
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "missing15_HTX_spot_not_replaced": true,
+    "funding_10_15_policy": true,
+    "LIQ_display3_above3_below": true,
+    "core_strategy_and_weights": true,
+    "manual_Telegram_form": true
+  },
+  "remaining": [
+    "Exact cold-read path for direct price/cancellation Worker and backup, protected active references, rolling/backlog retention; no hot pruning enabled.",
+    "Native NEAR/ZEC N04 context unavailable in latest report; full current105 usefulness needs typed corpus/capability work.",
+    "31 LIQ numerical proof gaps; do not claim every possible free provider was exhausted.",
+    "Conditional GTRADE4000 and DYDX1000 monthly caps do not cover every cold scheduled scenario; quota, utility and fallback reconciliation remains. No cap raised without evidence.",
+    "Exact40-minute wall-clock start and full-day/month continuity including manual reserves unproven; observed natural spacing45min.",
+    "New gTrade-specific borrower case needs a qualifying natural pair; final classifier29b4 has cloud proof, latest naturalefb25 predates that attribution-only correction.",
+    "Entry-decision score and final Telegram form remain mandatory and deferred."
+  ],
+  "project_complete": false,
+  "all_blocks_complete": false,
+  "hot_originals_deleted_by_this_package": 0
+}
