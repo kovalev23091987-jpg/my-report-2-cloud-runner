@@ -1,0 +1,60 @@
+{
+  "schema": "ACTIVE_SOURCE_PR354_PR355_CURRENT_HANDOFF_V1",
+  "recorded_utc": "2026-10-14T16:17:01.589112+00:00",
+  "PR354": {
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/354",
+    "head": "7fcb48a3ab56e480ee17fb6f0c7f12767a7fa231",
+    "merge": "ccb82d056aaa2ac47799d20f4253b945d1936b25",
+    "common_cloud": 38590592123,
+    "tests": 500,
+    "artifact": 11908076528,
+    "digest": "d7340f761d6dd48e8075af239ccef1ef47cca5a5e31eac52de9844ca7a960ec8"
+  },
+  "PR355": {
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/355",
+    "head": "97c41682b5d8229fda75bf2de3025fc8ca7141f1",
+    "merge": "a24526abaff171048110490fb33c9c14b2d43d38",
+    "common_cloud": 38595861410,
+    "tests": 513,
+    "artifact": 11908564994,
+    "digest": "fb745f75d022799bfd6679d12241ca8a84331402dec0a0987d45d9a077f6f222",
+    "N10": 38595870425,
+    "N11": 38595870590,
+    "N12": 38595870519,
+    "initial_assembly_failure": "4a012cb8 missing two new imports; fixed in844f8437, trigger repair97c41682; no failed candidate merged"
+  },
+  "artifacts_digest_verified": true,
+  "initial_queues105": "checkpoints/ACTIVE105_INITIAL_SOURCE_QUEUES_20261014.json.gz",
+  "N15_exact_historical_preferences": 30,
+  "source_health_fixed_neutral_N05_not_empty": true,
+  "automatic_runtime_priority": {
+    "N15": "exact asset/sector source",
+    "N05_N12": "exact asset/venue/role; separate group slots",
+    "native_LIQ": "previous PR340 exact asset/role history retained",
+    "N04": "one exact finalized primary; skip unnecessary index discovery and source headroom; no arbitrary substitute",
+    "N10": "original closed HTX spot/futures plus reused qualified external candles",
+    "N11": "HTX futures-only exact depth500"
+  },
+  "conservative_whole_D1": {
+    "reads": 3399280,
+    "writes": 68778,
+    "limit_reads": 3500000,
+    "limit_writes": 70000
+  },
+  "new_market_provider_HTTP": 0,
+  "new_production_D1": 0,
+  "forced_MAIN": 0,
+  "new_Telegram": 0,
+  "latest_natural": "checkpoints/POST_PR351_PR352_NATURAL_READBACK_20261014.json",
+  "new_census": "checkpoints/ACTIVE_SAVED_SOURCE_USE_POST_PR355_20261014.json.gz",
+  "census_publications": 57,
+  "census_assets": 20,
+  "census_issues": 0,
+  "new_actual_current105_useful_coverage_claim": false,
+  "new_priority_natural_runtime_acceptance_pending": true,
+  "owner_new_weekly_HTX_request_authorized": true,
+  "weekly_HTX_sync_implemented": false,
+  "all_blocks_complete": false,
+  "project_complete": false,
+  "exact_next_action": "Implement weekly official HTX futures universe reconciliation and source initialization as one synchronized mechanism, preserving current source caps, spot exclusions, paused roles, strategy, weights and source clocks. Existing refresh script is historical one-shot, not scheduled. First qualify all catalog margin modes and metadata, source/caller/day/minute admissions and CAS ownership; consider repo/collector/history scope together before auto activation. Validate natural PR354–355 exact-asset priorities without forcing MAIN. Retain hot originals until all protected cold readers accepted. Continue residual useful source gaps and native monthly entitlement/Avantis checks. Final Telegram entry score/form and MESSAGE_TOO_LONG stay after active blocks."
+}

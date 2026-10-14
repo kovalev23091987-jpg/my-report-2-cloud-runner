@@ -1,0 +1,161 @@
+{
+  "schema": "POST_PR351_PR352_NATURAL105_BEFORE_PRIORITY_V1",
+  "cloud_run": 38587094643,
+  "head": "c79ca2789c6dceafbaa9402a919b60b8394df659",
+  "artifact_id": 11905328302,
+  "zip_sha256": "d7839ecfda7476df5c8af69e7559409990f319a838d54ffe3801602a49a9e679",
+  "digest_verified": true,
+  "run_id": "1791990692822-1791990706286",
+  "status": "CLOSED",
+  "scanned": 105,
+  "scan_errors": 0,
+  "scan_stale": 0,
+  "cases": [
+    {
+      "contract": "ENA-USDT",
+      "publication_id": "PUB:c6b0e7aa8ed359d8dd7b204fc44944f133bc5bbb",
+      "run_id": "1791990692822-1791990706286",
+      "snapshot_id": "S392:ENA-USDT:1791990842415",
+      "observed_ts": 1791990842415,
+      "fingerprint": "5c94de63a1bc5d67f74881ca029cc88007a0af3d2e661619015e397feb04e2fd",
+      "canonical_state": "OBSERVE",
+      "N15_sources_used": [
+        "COINGECKO_SECTOR",
+        "COINPAPRIKA_SECTOR"
+      ],
+      "N15_sources_rendered": [
+        "COINGECKO_SECTOR",
+        "COINPAPRIKA_SECTOR"
+      ],
+      "N15_actual_HTTP": {
+        "COINGECKO_SECTOR": 2,
+        "COINPAPRIKA_SECTOR": 1
+      },
+      "N04_actual_HTTP": 4,
+      "N04_valid_facts": 3,
+      "N05_N12_shared_attribution": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 5,
+        "n12_http": 0,
+        "n12_routes": [
+          {
+            "venue": "GATE_FUTURES_N12",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          },
+          {
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "N12_status": "CHECKED_NEUTRAL_CONTEXT",
+      "paused_checked_false": true,
+      "all_paused_status_exact": true
+    },
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:aeb16a2761a5cc36a9c11e2b1779c7d01852c8fb",
+      "run_id": "1791990692822-1791990706286",
+      "snapshot_id": "S392:ZEC-USDT:1791990785402",
+      "observed_ts": 1791990785402,
+      "fingerprint": "29f7faff21221074d9306b96e734a737a9f70b498ec0336ff8e343df9260cab6",
+      "canonical_state": "OBSERVE",
+      "N15_sources_used": [
+        "COINGECKO_SECTOR",
+        "COINPAPRIKA_SECTOR"
+      ],
+      "N15_sources_rendered": [
+        "COINGECKO_SECTOR",
+        "COINPAPRIKA_SECTOR"
+      ],
+      "N15_actual_HTTP": {
+        "COINGECKO_SECTOR": 2,
+        "COINPAPRIKA_SECTOR": 2
+      },
+      "N04_actual_HTTP": 0,
+      "N04_valid_facts": 0,
+      "N05_N12_shared_attribution": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": "CLOSED_BOUNDED_N12_PUBLIC_TRADES"
+          },
+          {
+            "venue": "KUCOIN_N12_NATIVE",
+            "http": 0,
+            "status": "NO_USEFUL_PUBLIC_TRADE_SAMPLE"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "N12_status": "CHECKED_NEUTRAL_CONTEXT",
+      "paused_checked_false": true,
+      "all_paused_status_exact": true
+    }
+  ],
+  "same_run_delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "c79ca2789c6dceafbaa9402a919b60b8394df659",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1791990692822-1791990706286",
+    "source": "schedule",
+    "recorded_at": 1791990857070,
+    "status": "EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [
+      {
+        "publication_id": "PUB:c6b0e7aa8ed359d8dd7b204fc44944f133bc5bbb",
+        "contract": "ENA-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:ENA-USDT:1791990706515:G7",
+        "lifecycle_event": "OBSERVE",
+        "run_id": "1791990692822-1791990706286",
+        "snapshot_id": "S392:ENA-USDT:1791990842415",
+        "observed_ts": 1791990842415,
+        "analytical_fingerprint": "5c94de63a1bc5d67f74881ca029cc88007a0af3d2e661619015e397feb04e2fd",
+        "presentation_hash": "c2e39a6a1f20e39f424571c34760f43228ea9f8b76775a5ec5957db1e3f49c20",
+        "same_run_binding_verified": true,
+        "exact_SENT": true,
+        "telegram_message_id": "208",
+        "dispatch_finalized": true,
+        "task_at_delivery": {
+          "state": "PENDING",
+          "run_id": "1791990692822-1791990706286",
+          "snapshot_id": "S392:ENA-USDT:1791990842415",
+          "due_ts": 1791991142415,
+          "expires_ts": 1791992642415
+        },
+        "task_at_delivery_verified": true,
+        "task_state_after_delivery_known": false,
+        "actual_ENTRY": false,
+        "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+      }
+    ],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "original_rows_private_durable": true,
+  "new_priority_PR354_PR355_natural_acceptance": false,
+  "specific_PR351_missing_target_and_PR352_source_cap_scenarios_selected": false,
+  "source_health_masked_values_not_reconstructed": true,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "project_complete": false
+}
