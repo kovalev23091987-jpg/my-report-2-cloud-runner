@@ -1,7 +1,7 @@
 name: LIQ assembled spot and 105 admission offline
 on:
   push:
-    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014]
+    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014]
     paths:
       - .github/workflows/liq-assembled-offline-20261012.yml
       - current-generation/files/src/coingecko-sector-evidence.mjs
@@ -117,7 +117,8 @@ jobs:
             const exactNativeSectorCandidate=context.ref==='refs/heads/codex/native-sector-source-coverage-20261014'&&main==='bda7c8abe5b9e2b607552fbd764aff19b10a022f';
             const exactNativeDenomCandidate=context.ref==='refs/heads/codex/native-sector-denominations-20261014'&&main==='fae8db8911331e4aa1e3333ebfca2670f0cf8ff2';
             const exactTronSectorCandidate=context.ref==='refs/heads/codex/tron-sector-source-coverage-20261014'&&main==='32271ab798121efe2e4baa5707bd9f3abc4ecaf1';
-            if(main!==context.sha&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
+            const exactTargetFallbackCandidate=context.ref==='refs/heads/codex/sector-exact-target-fallback-20261014'&&main==='da7f8ae66ca0183cf55a9681f3036a827b8d5140';
+            if(main!==context.sha&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
@@ -170,9 +171,11 @@ jobs:
           cmp current-generation/files/src/coingecko-sector-evidence.mjs runtime/src/coingecko-sector-evidence.mjs
           node --check tools/validate-native-sector-batch-20261014.mjs
           node tools/validate-native-sector-batch-20261014.mjs --plan > audit-output/liq-assembled/native-sector-validation-plan.json
-          REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
           cp audit-output/native-sector-denominations-retained-proof.json audit-output/liq-assembled/
           cp audit-output/tron-sector-retained-four-proof.json audit-output/liq-assembled/
+          cp audit-output/sector-exact-target-controlled-proof.json audit-output/liq-assembled/
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-sector-effective105-retained-20261014.mjs > audit-output/liq-assembled/sector-effective105-retained.json
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
           REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
