@@ -7,6 +7,7 @@ import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-b
 import {HTX_CATALOG_URLS,HTX_LINEAR_MARGIN_CATALOG_URLS,mergeHtxLinearCatalogModes,buildHtxCryptoUniverse} from '../current-generation/files/src/htx-crypto-universe.mjs';
 import {APPROVED_HTX_SCOPE} from '../current-generation/files/src/approved-htx-analysis-scope.mjs';
 import {N15_INITIAL_SOURCE_PREFERENCE} from '../current-generation/files/src/n15-initial-source-preference.mjs';
+import {KNOWN_HISTORY_MANIFESTS} from '../cloudflare/free-history/hourly-archive.mjs';
 import {renderWeeklyScopeFiles} from '../runner/htx-weekly-scope-package.mjs';
 import {HTX_WEEKLY_POLICY,utcWeekKey,planWeeklyHtxUniverse,weeklyScopePackage} from '../runner/htx-weekly-universe-plan.mjs';
 import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from '../runner/github-bounded-phase-lease.mjs';
@@ -42,7 +43,7 @@ try{
  out.production_activation_status='CONNECTED_SCOPE_AND_COLLECTOR_HISTORY_ACCEPTANCE_REQUIRED';
  if(pack){
   const approved_source=await fs.readFile('current-generation/files/src/approved-htx-analysis-scope.mjs','utf8'),hourly_source=await fs.readFile('cloudflare/free-history/hourly-archive.mjs','utf8');
-  const known=hourly_source.match(/export const KNOWN_HISTORY_MANIFESTS = Object\.freeze\((\[[^\n]*\])\);/),known_manifests=known?JSON.parse(known[1]):[{sha256:APPROVED_HTX_SCOPE.manifest_sha256,target_count:previous.assets.filter(a=>a.asset_analysis_contract).length},{sha256:'ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c',target_count:104}];
+  const known_manifests=KNOWN_HISTORY_MANIFESTS;
   const rendered=renderWeeklyScopeFiles({plan,manifest_bytes:bytes,generation:APPROVED_HTX_SCOPE.generation,previous_scope:APPROVED_HTX_SCOPE,approved_source,hourly_source,known_manifests});
   if(plan.added.length||plan.removed.length){
    if(Date.now()>=lease.lease.expires_ts||(await control.call('git/ref/heads/main')).object.sha!==lease.head)throw Error('CURRENT_OWN_LEASE_AND_MAIN_REQUIRED_BEFORE_PROPOSAL');

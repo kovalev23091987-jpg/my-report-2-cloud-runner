@@ -34,7 +34,7 @@ test('only authorized report and bounded source workflows remain manually runnab
  const root=new URL('../../.github/workflows/',import.meta.url);
  const files=fs.readdirSync(root).filter(x=>x.endsWith('.yml'));
  const manual=files.filter(f=>/workflow_dispatch\s*:/u.test(fs.readFileSync(new URL(f,root),'utf8')));
- assert.deepEqual(manual,['active-source-budget-read-20261014.yml','canonical-compression-validation.yml','coingecko-demo-validation.yml','deploy-free-history-20261012.yml','deploy-liq-forecast-history-20261013.yml','htx-compact-4h-daily-20261010.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
+ assert.deepEqual(manual,['active-source-budget-read-20261014.yml','canonical-compression-validation.yml','coingecko-demo-validation.yml','deploy-free-history-20261012.yml','deploy-liq-forecast-history-20261013.yml','htx-compact-4h-daily-20261010.yml','htx-weekly-source-universe.yml','n05-post-reset-common-source-batch-20261011.yml','report2-public-collector-backup.yml','report2.yml']);
  const activeRead=fs.readFileSync(new URL('active-source-budget-read-20261014.yml',root),'utf8');assert.match(activeRead,/inputs\.expected_main/);assert.match(activeRead,/inputs\.lease_owner/);assert.doesNotMatch(activeRead,/runner-main|manual-requests|sendLifecycleRelay|COINGECKO/);
  const activeScript=fs.readFileSync(new URL('../../tools/read-active-source-budgets-20261014.mjs',import.meta.url),'utf8');assert.match(activeScript,/OWNER_OR_FENCE_BLOCKED/);assert.match(activeScript,/INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow/);assert.match(activeScript,/evaluateWithinRunReservation/);assert.match(activeScript,/provider_HTTP:0,MAIN:0,Telegram:0/);assert.doesNotMatch(activeScript,/UPDATE report2_liq_source_allowance_shadow|DELETE FROM|fetch\([^)]*api\.(?:coingecko|coinpaprika)/);
  const compression=fs.readFileSync(new URL('canonical-compression-validation.yml',root),'utf8');assert.match(compression,/validate-canonical-compression-20261013\.mjs/);assert.match(compression,/inputs\.retain_private == true && \(secrets\.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN \|\| secrets\.REPORT2_ISOLATED_D1_API_TOKEN\)/);assert.doesNotMatch(compression,/COINGECKO|runner-main|sendLifecycleRelay|manual-requests/);
@@ -45,7 +45,7 @@ test('only authorized report and bounded source workflows remain manually runnab
  assert.match(liquidationArchive,/Check exact main owner lease and fence/);
  assert.match(liquidationArchive,/wrangler@4 deploy --config cloudflare\/free-history\/wrangler-liq\.json/);
  assert.doesNotMatch(liquidationArchive,/runner-main|sendLifecycleRelay|manual-requests/);
- const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml',root),'utf8');
+ const history=fs.readFileSync(new URL('htx-compact-4h-daily-20261010.yml','htx-weekly-source-universe.yml',root),'utf8');
  assert.match(history,/tools\/acquire-htx-compact-4h-history\.mjs/);
  assert.doesNotMatch(history,/runner-main|sendLifecycleRelay|manual-requests/);
  const backup=fs.readFileSync(new URL('report2-public-collector-backup.yml',root),'utf8');
