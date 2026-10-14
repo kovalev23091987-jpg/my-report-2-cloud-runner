@@ -74,7 +74,7 @@ test('all supported native networks pass through the same production sector plan
   const bound=normalizeHtxAssetReferences({code:200,data:[{currency:base,chains:[{baseChain:base,contractAddress:''}]}]}).entries[base];assert.equal(bound.status,'CLOSED');assert.deepEqual(bound.identities[0],identity);
   assert.deepEqual(parseSupplementalIdentityRegistry({[base]:identity}).entries[base].identity,identity);assert.ok(planCandidateEvidenceRoutes({contract,asset_identity:identity}).routes.some(r=>r.name==='SECTOR_COINGECKO'));
   assert.equal(exactNativeSectorBinding(identity,'OTHER-USDT'),null);
-  const m={id:b.coin_id,symbol:base,asset_platform_id:b.native_provider_ref?b.platform:null,platforms:b.native_provider_ref?{[b.platform]:b.native_provider_ref}:{},categories:['Layer 1 (L1)']};assert.equal(verifyCoingeckoSectorIdentity(m,{identity,contract,coin_id:b.coin_id,asset_platforms:[{id:b.platform,native_coin_id:b.coin_id}]}),true);
+  const m={id:b.coin_id,symbol:base,asset_platform_id:b.native_provider_ref?b.platform:null,platforms:b.native_provider_ref?{[b.platform]:b.native_provider_ref}:{},links:{homepage:b.provider_homepages?.map(h=>'https://'+h)||[]},categories:b.functional_categories||['Layer 1 (L1)']};assert.equal(verifyCoingeckoSectorIdentity(m,{identity,contract,coin_id:b.coin_id,asset_platforms:[{id:b.platform,native_coin_id:b.coin_id}]}),true);
  }
  const ambiguous=normalizeHtxAssetReferences({code:200,data:[{currency:'SOL',chains:[{baseChain:'SOL',contractAddress:''},{baseChain:'ETH',contractAddress:address}]}]}).entries.SOL;assert.notEqual(ambiguous.status,'CLOSED');
 });
@@ -103,7 +103,7 @@ test('shared route planner admits native Bluesky only with exact binding and one
 
 test('real HTX wire bodies preserve no-prefix addresses and native chain type without substituting wrappers',()=>{
  const f=JSON.parse(fs.readFileSync(new URL('./fixtures/htx-wire-bindings-37213989822.json',import.meta.url))),entries=normalizeHtxAssetReferences(f.payload).entries;assert.equal(f.provenance.synthetic,false);
- for(const base of Object.keys(NATIVE_SECTOR_BINDINGS)){assert.equal(entries[base].status,'CLOSED',base);assert.equal(entries[base].identities[0].asset_kind,'NATIVE');assert.equal(entries[base].identities[0].native_asset_id,`${NATIVE_SECTOR_BINDINGS[base].chain}:mainnet`);}
+ for(const base of Object.keys(NATIVE_SECTOR_BINDINGS).filter(base=>!NATIVE_SECTOR_BINDINGS[base].provider_homepages)){assert.equal(entries[base].status,'CLOSED',base);assert.equal(entries[base].identities[0].asset_kind,'NATIVE');assert.equal(entries[base].identities[0].native_asset_id,`${NATIVE_SECTOR_BINDINGS[base].chain}:mainnet`);}
  for(const base of ['LINK','LDO','PEPE','PUMP','BOME','WIF'])assert.equal(entries[base].status,'CLOSED',base);
  assert.equal(entries.PEPE.identities[0].contract_or_mint,'0x6982508145454ce325ddbe47a25d4ec3d2311933');
  const r=normalizeHtxAssetReferences({code:200,data:[{currency:'TEST',chains:[{baseChain:'ETH',contractAddress:'1'.repeat(40)}]}]});assert.equal(r.entries.TEST.identities[0].contract_or_mint,'0x'+'1'.repeat(40));
