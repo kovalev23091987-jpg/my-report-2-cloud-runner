@@ -48,5 +48,5 @@ test('provider denial and transport deadline keep the five-request and 45s bound
  const slow=fixture({latency:23000});await slow.collect(p(contracts[0]));assert.ok(slow.calls.length<=2);assert.equal(slow.service.summary().shared_budget.max_total_ms,45000);assert.equal(slow.service.summary().shared_budget.max_http,5);
 });
 test('frozen production runner calls the tested batch coordinator and retains per-contract accounting',()=>{
- const runner=fs.readFileSync(path.join(root,'runner-main.mjs'),'utf8');assert.match(runner,/collectSelectedNativeBatch\(\{service:liquidationSources,params,selection:env\.REPORT2_LIQUIDATION_SELECTED_CONTRACTS,coverage_for:liquidationCoverageFor,http_by_contract:futureHttpByContract\}\)/);
+ const runner=fs.readFileSync(path.join(root,'runner-main.mjs'),'utf8');assert.match(runner,/collectSelectedNativeBatch\(\{service:liquidationSources,params:guardedParams,selection:env\.REPORT2_LIQUIDATION_SELECTED_CONTRACTS,coverage_for:liquidationCoverageFor,http_by_contract:futureHttpByContract\}\)/);
 });
