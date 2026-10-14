@@ -1,0 +1,538 @@
+{
+  "schema": "NATURAL_SOURCE_PRIORITY_ORIGINAL_READBACK_20261014_V1",
+  "recorded_utc": "2026-10-14T17:59:45.145141+00:00",
+  "cloud_run": 38606768395,
+  "head": "e9eb29146fe0990f461f278c49caa1ea4b4e4c3d",
+  "run_id": "1791998856507-1791998868796",
+  "status": "CLOSED",
+  "original_report_sha256": "fcf1d7e162edb70fc6df2656cc381b68bf2102565461526deef517c853a9f370",
+  "market_scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "approved_scope": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1791998869024,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 105,
+      "missing_approved_analysis_contracts": [],
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "cases": [
+    {
+      "contract": "MUBARAK-USDT",
+      "snapshot_id": "S392:MUBARAK-USDT:1791998992775",
+      "publication_id": "PUB:f12a139e7d55552cd818500bf4ff8eec217b9b2a",
+      "observed_ts": 1791998992775,
+      "state": "REJECTED",
+      "priority": {
+        "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+        "contract": "MUBARAK-USDT",
+        "status": "CAPTURED_ORIGINAL_QUEUE",
+        "N15": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "public_venues": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": [
+            {
+              "route": "GATE",
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BACKPACK",
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BITGET",
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE_FUTURES_N12",
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "KUCOIN_N12_EXACT_TOKEN",
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram_text_changed": false
+      },
+      "N15_source_use": {
+        "COINGECKO_SECTOR": {
+          "status": "CLOSED",
+          "HTTP": 2,
+          "valid_evidence_ids": [
+            "EV2:4848259849e987a85f91d3c798b7aa1fbea726d6047d74c09ce78df6a01ce6ac"
+          ],
+          "original_physical_roots": [
+            "bsc:0x5c85d6c6825ab4032337f11ee92a72df936b46f6|mubarak:meme-token:1791998873000"
+          ]
+        },
+        "COINPAPRIKA_SECTOR": {
+          "status": "CLOSED",
+          "HTTP": 2,
+          "valid_evidence_ids": [
+            "EV2:d3860abdeb8981d8a04531c840a5901cb5697669397320e079146132dff37394"
+          ],
+          "original_physical_roots": [
+            "provider:coinpaprika:mubarak-mubarak|mubarak-mubarak:meme-coin:1791998833000"
+          ]
+        }
+      },
+      "N15_manual_rendered": true,
+      "pauses": {
+        "N01": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N02": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N03": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N06": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N07": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N08": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N09": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N14": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N16": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        }
+      }
+    },
+    {
+      "contract": "BTW-USDT",
+      "snapshot_id": "S392:BTW-USDT:1791998937039",
+      "publication_id": "PUB:0d22bde6dd3863994ab446a5812ae705988ba614",
+      "observed_ts": 1791998937039,
+      "state": "REJECTED",
+      "priority": {
+        "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+        "contract": "BTW-USDT",
+        "status": "CAPTURED_ORIGINAL_QUEUE",
+        "N15": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "SECTOR_COINGECKO",
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "SECTOR",
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 3,
+              "latest_observed_ts": 1791963737799,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1791963737799,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.6666666666666666,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "public_venues": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "POLONIEX",
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "POLONIEX",
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": [
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE",
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BACKPACK",
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BITGET",
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE_FUTURES_N12",
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "KUCOIN_N12_EXACT_TOKEN",
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram_text_changed": false
+      },
+      "N15_source_use": {
+        "COINGECKO_SECTOR": {
+          "status": "CLOSED",
+          "HTTP": 2,
+          "valid_evidence_ids": [
+            "EV2:b32cc7fe5dcaa25f6949519f2b4881e95022901a1d651ccc75a191d6d066cbd9"
+          ],
+          "original_physical_roots": [
+            "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa|bitway:decentralized-finance-defi:1791998873000"
+          ]
+        },
+        "COINPAPRIKA_SECTOR": {
+          "status": "EXACT_FUNCTIONAL_SECTOR_NOT_FOUND",
+          "HTTP": 1,
+          "valid_evidence_ids": [],
+          "original_physical_roots": []
+        }
+      },
+      "N15_manual_rendered": true,
+      "pauses": {
+        "N01": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N02": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N03": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N06": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N07": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N08": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N09": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N14": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        },
+        "N16": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "checked": false,
+          "usable_facts": 0,
+          "maximum_score_points": 0
+        }
+      }
+    }
+  ],
+  "delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "e9eb29146fe0990f461f278c49caa1ea4b4e4c3d",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1791998856507-1791998868796",
+    "source": "schedule",
+    "recorded_at": 1791999001232,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "exact_same_run_SENT": false,
+  "actual_ENTRY": false,
+  "source_HTTP_added_by_audit": 0,
+  "D1_added_by_audit": 0,
+  "source_clocks_refreshed": false,
+  "all105_current_useful_coverage_proven": false,
+  "project_complete": false
+}
