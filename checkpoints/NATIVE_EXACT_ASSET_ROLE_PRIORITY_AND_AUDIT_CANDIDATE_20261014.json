@@ -1,0 +1,51 @@
+{
+  "schema": "NATIVE_EXACT_ASSET_ROLE_PRIORITY_AND_COLLECTOR_AUDIT_CANDIDATE_V1",
+  "recorded_utc": "2026-10-14T09:17:17.121384+00:00",
+  "main": "d0898d037b20f07f73c0304968bf07b54119dc41",
+  "original_empty_role_evidence": "checkpoints/ACTIVE_SOURCE_STORAGE_AND_FUNDING_ORIGINAL_FACTS_20261014.json",
+  "sourceHTTP_new": 0,
+  "D1_current_index_changes": 0,
+  "future_index_maintenance": {
+    "sql": "runner/migrations/native-role-priority-index-20261014.sql",
+    "explicit_own_CAS_required": true,
+    "atomic_family_cap_day": 1,
+    "read_reservation": 10000,
+    "write_reservation": 5000,
+    "current_role_rows_check": "COUNT over LIMIT1801; refuse above1800 before DDL",
+    "maximum_expected_index_writes": 3856,
+    "existing_wrong_index_not_dropped": true,
+    "known_native_receipts_required": true
+  },
+  "planned_regular_extra_reads": 188512,
+  "conservative_total_reads": 3341912,
+  "conservative_total_writes": 65232,
+  "max_reads": 3500000,
+  "max_writes": 70000,
+  "within_previous_budget": true,
+  "source_utility_policy": {
+    "max_last_runs": 4,
+    "max_age_hours": 24,
+    "max_source_lanes": 12,
+    "schema_probe_limit": 2048,
+    "current_run_or_foreign_context_excluded": true,
+    "clock_capability_and_zero_HTTP_same_run_reuse_preserved": true,
+    "current_proven_market_not_displaced_by_unproven_empty_prior": true,
+    "no_provider_blacklist": true,
+    "no_current_level_or_independent_vote_from_history": true,
+    "no_raw_history_copied_into_profile": true,
+    "no_hidden_index_creation_in_deep_run": true,
+    "missing_wrong_index_safe_legacy_fallback": true
+  },
+  "local_targeted_tests_before_final_metadata_bound": 28,
+  "cloud_common_pending": true,
+  "runtime_not_merged": true,
+  "weights_strategy_threshold_pauses_form_unchanged": true,
+  "remaining_native_monthly_saturation": {
+    "GTRADE": 4000,
+    "DYDX_RPC": 1000,
+    "published_numeric_free_month_guarantee_not_yet_confirmed": true,
+    "caps_not_raised": true
+  },
+  "all_blocks_complete": false,
+  "project_complete": false
+}

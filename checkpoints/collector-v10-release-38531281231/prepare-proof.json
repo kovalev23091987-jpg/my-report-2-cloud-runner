@@ -1,0 +1,41 @@
+{
+  "status": "UPGRADED",
+  "script": "my-report-2-hub",
+  "base_sha256": "ac92a596f09720ddc88aa0b7d90ca864913f691c9a568a4608918b2c3934db34",
+  "output_sha256": "23303c5fd5d3144b037864e055417b463cf9dada1ef3c435c2a031bba0c1860b",
+  "collector_version": "report2-public-collector-v10-private-price-rechecks-20261014",
+  "private_runtime_manifest": [
+    {
+      "path": "current-generation/files/src/private-canonical-history.mjs",
+      "sha256": "043bd3be3c5f032bb92290860198bdc310b96f57daf69c9ca1a526dd689013f9"
+    },
+    {
+      "path": "cloudflare/free-history/native-measured-d1.mjs",
+      "sha256": "702b90b2edf84278e209cc86c00bc30f6bfc25a62469db3654b547d908618fd9"
+    },
+    {
+      "path": "runner/d1-preaction-budget-guard.mjs",
+      "sha256": "4391055f4dbc5a3e830059b38ca1e48704c32dcdeba67588358d04667dc76ab6"
+    },
+    {
+      "path": "cloudflare/public-collector/private-price-consumer.mjs",
+      "sha256": "087ea3371dd899748b40a386884de9621b4b52700d484693fda315e98f4fef9d"
+    }
+  ],
+  "binding_names": [
+    "ALERT_DISPATCH_KEY",
+    "ANALYTICS_ENABLED",
+    "BYKARANTELI_API_KEY",
+    "CALIBRATION_APPLY_ENABLED",
+    "DATA_DB",
+    "DELIVERY_ENABLED",
+    "PRICE_RECHECK_ENABLED",
+    "PUBLIC_COLLECTOR_ENABLED",
+    "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+    "REPORT2_CURRENT_GENERATION",
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_CHAT_ID",
+    "TELEGRAM_TEST_KEY"
+  ],
+  "secret_values_exported": false
+}
