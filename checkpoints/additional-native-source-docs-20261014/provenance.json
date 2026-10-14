@@ -1,0 +1,49 @@
+{
+  "schema": "AVANTIS_CURRENT_PUBLIC_SCHEMA_READBACK_V1",
+  "recorded_utc": "2026-10-14T14:54:42.530492+00:00",
+  "url": "https://core.avantisfi.com/api-json",
+  "http_status": 200,
+  "documentation_HTTP": 1,
+  "market_data_HTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "body_sha256": "8bbdb7bb9bffc8be50e5f440fda564c50832fd22f92d29e6f35c059cff7b1c6e",
+  "body_path": "checkpoints/additional-native-source-docs-20261014/avantis-core-openapi.json.gz",
+  "documented_paths": [
+    "/open-interests",
+    "/v2/open-interests",
+    "/mm-oi",
+    "/v2/hedgeable-mm-oi",
+    "/user-data/config",
+    "/user-data",
+    "/twaps",
+    "/refresh-positions",
+    "/price-triggers",
+    "/price-triggers/{entityId}",
+    "/v3/hedgeable-oi",
+    "/v3/hedgeable-oi/explain",
+    "/health",
+    "/metrics",
+    "/v2-onboarding/status",
+    "/v2-onboarding/invite-codes",
+    "/v2-onboarding/redeem-invite",
+    "/v2-onboarding/admin/whitelist-wallets",
+    "/v2-onboarding/admin/whitelist-wallets-csv"
+  ],
+  "position_bulk_paths_present": false,
+  "per_wallet_position_path": "/user-data",
+  "per_wallet_response_schema": {
+    "200": {
+      "description": ""
+    }
+  },
+  "no_current_bulk_endpoint_from_this_schema": true,
+  "old_official_bulk_docs": "https://github.com/Avantis-Labs/avantis-trading-skill/blob/main/core-backend.md",
+  "schema_and_old_docs_diverge": true,
+  "real_future_positions_or_105_overlap_or_provider_clock_proven": false,
+  "read_only_schema_not_new_source_connection": true,
+  "no_admin_or_refresh_or_trade_calls": true,
+  "future_next": "Resolve an officially supported bounded all-positions discovery interface and original current state time before admitting a market probe. Do not guess an omitted route, use openedAt as current state time, or fabricate all-asset coverage.",
+  "all_sources_exhausted_claim": false
+}
