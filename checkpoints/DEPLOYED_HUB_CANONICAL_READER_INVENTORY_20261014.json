@@ -1,0 +1,31 @@
+{
+  "status": "EXACT_DEPLOYED_CANONICAL_ACCESS_INVENTORY",
+  "module_sha256": "23303c5fd5d3144b037864e055417b463cf9dada1ef3c435c2a031bba0c1860b",
+  "module_bytes": 1179993,
+  "field_names": [
+    "worker.js"
+  ],
+  "canonical_access_sites": [
+    {
+      "line": 24661,
+      "region": "INJECTED_PRIVATE_OR_PRICE_RUNTIME",
+      "fragment": "await db.prepare(`SELECT t.*,p.canonical_json,p.analytical_fingerprint,p.observed_ts,d.telegram_message_id FROM v3_recheck_task_shadow t JOIN canonical_publication_shadow p ON p.publication_id=t.publication_id AND p.contract_code=t.contract_code AND p.direction=t.direction AND p.run_id=t.run_id AND p.snapshot_id=t.snapshot_id AND p.wave_id=t.wave_id JOIN v3_dispatch_publicati"
+    }
+  ],
+  "private_price_runtime_present": true,
+  "collector_v10_marker": true,
+  "script_or_secret_values_exported": false,
+  "D1": 0,
+  "provider_HTTP": 0,
+  "schema": "REPORT2_DEPLOYED_CANONICAL_READER_INVENTORY_V1",
+  "recorded_utc": "2026-10-14T10:50:13Z",
+  "basis_main": "f9f76f2cb5fe4ba6cd2340aaac271f07360b1237",
+  "module_is_exact_approved_deployment": true,
+  "original_hub_literal_canonical_accesses": 0,
+  "literal_inventory_is_not_generic_SQL_bridge_or_cold_header_live_acceptance": true,
+  "pending": [
+    "Qualify all generic SQL bridge callers and protected references before any hot replacement, backlog or rolling.",
+    "Price cold-header live acceptance still unproven; original hot rows retained."
+  ]
+}
+
