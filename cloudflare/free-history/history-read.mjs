@@ -1,4 +1,4 @@
-import {MANIFEST_SHA256,PREVIOUS_MANIFEST_SHA256,TARGETS} from './hourly-archive.mjs';
+import {KNOWN_HISTORY_MANIFESTS,HISTORY_TARGETS} from './hourly-archive.mjs';
 
 const HOUR=3_600_000;
 const encoder=new TextEncoder();
@@ -6,7 +6,7 @@ const digest=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('S
 
 // An explicit bounded read for future N15 analysis. No report or Telegram side effect.
 export async function readHourlyHistory({archive_db,contract,market,venue='HTX',from_hour,to_hour}={}) {
-  if(!archive_db||!TARGETS.includes(contract)||!['SPOT','FUTURES'].includes(market)||venue!=='HTX'||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR) throw Error('HISTORY_READ_ARGUMENTS_INVALID');
+  if(!archive_db||!HISTORY_TARGETS.includes(contract)||!['SPOT','FUTURES'].includes(market)||venue!=='HTX'||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR) throw Error('HISTORY_READ_ARGUMENTS_INVALID');
   const futures=market==='FUTURES';
   const sql=futures?'SELECT * FROM report2_hourly_market_archive_v1 WHERE hour_bucket BETWEEN ?1 AND ?2 ORDER BY hour_bucket':'SELECT * FROM report2_hourly_spot_archive_v1 WHERE venue=?1 AND hour_bucket BETWEEN ?2 AND ?3 ORDER BY hour_bucket';
   const query=archive_db.prepare(sql);
@@ -20,7 +20,7 @@ export async function readHourlyHistory({archive_db,contract,market,venue='HTX',
     if(await digest(row.payload_json)!==row.payload_sha256) throw Error('HISTORY_READ_HASH_INVALID');
     const payload=JSON.parse(row.payload_json);
     if(futures){
-      const generationValid=(row.manifest_sha256===MANIFEST_SHA256&&row.target_count===105)||(row.manifest_sha256===PREVIOUS_MANIFEST_SHA256&&row.target_count===104);
+      const generationValid=KNOWN_HISTORY_MANIFESTS.some(m=>row.manifest_sha256===m.sha256&&row.target_count===m.target_count);
       if(payload.schema!=='report2-hourly-market-archive-v1'||!generationValid||payload.source_bucket!==row.source_bucket||payload.source_market_ts!==row.source_market_ts) throw Error('HISTORY_READ_FUTURES_PROVENANCE_INVALID');
     }else{
       if(payload.schema!=='report2-hourly-spot-archive-v1'||row.venue!==venue||payload.venue!==venue||payload.source_url!==row.source_url||payload.source_ts!==row.source_ts||payload.identity_scope!==row.identity_scope) throw Error('HISTORY_READ_SPOT_PROVENANCE_INVALID');
@@ -44,7 +44,7 @@ export async function readHourlyHistory({archive_db,contract,market,venue='HTX',
 // Legacy :25 futures samples stay in readHourlyHistory. They may be compared
 // only as bounded-lag context with their original ten-minute clock gap shown.
 export async function readAlignedHourlyPair({archive_db,contract,from_hour,to_hour}={}){
-  if(!archive_db||!TARGETS.includes(contract)||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR)throw Error('PAIR_HISTORY_ARGUMENTS_INVALID');
+  if(!archive_db||!HISTORY_TARGETS.includes(contract)||!Number.isSafeInteger(from_hour)||!Number.isSafeInteger(to_hour)||from_hour%HOUR||to_hour%HOUR||to_hour<from_hour||to_hour-from_hour>7*24*HOUR)throw Error('PAIR_HISTORY_ARGUMENTS_INVALID');
   const fetched=await archive_db.prepare('SELECT * FROM report2_hourly_spot_archive_v1 WHERE venue=?1 AND hour_bucket BETWEEN ?2 AND ?3 ORDER BY hour_bucket').bind('HTX',from_hour,to_hour).all();
   if(!Array.isArray(fetched?.results)||fetched.results.length>169)throw Error('PAIR_HISTORY_ROW_BOUND_INVALID');
   const byHour=new Map();

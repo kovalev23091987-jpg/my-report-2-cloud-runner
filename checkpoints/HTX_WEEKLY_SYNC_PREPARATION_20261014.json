@@ -1,0 +1,62 @@
+{
+  "schema": "HTX_WEEKLY_SYNCHRONIZED_RECONCILIATION_CANDIDATE_V1",
+  "base": "a120a6e175531bd869e4437a6d053748746973f4",
+  "recorded_utc": "2026-10-14T16:57:39.947547+00:00",
+  "owner_weekly_request_authorized": true,
+  "scheduled_window": "Monday00:17UTC /03:17MSK",
+  "workflow": ".github/workflows/htx-weekly-source-universe.yml",
+  "provider_catalogs": 6,
+  "once_per_UTC_week_fixed_source_reservation_no_alias": true,
+  "source_family": "HTX_PUBLIC_RISK",
+  "source_daily_cap": 144,
+  "minute_pool": "HTX existing6",
+  "D1_reservation": {
+    "reads": 4000,
+    "writes": 160
+  },
+  "planned_whole_day": {
+    "reads": 3403280,
+    "writes": 68938
+  },
+  "limits": {
+    "reads": 3500000,
+    "writes": 70000
+  },
+  "local_connected_tests": 26,
+  "real_provider_probe_this_package": 0,
+  "production_D1_this_package": 0,
+  "own_CAS_lease_guard_and_byte_preservation": true,
+  "source_clock_and_all_margin_mode_validation": true,
+  "new_removed_crypto_and_inverse_delivery_separated": true,
+  "stock_homonyms_and_partial_catalogs_fail_closed": true,
+  "no_old_history_deleted_or_timestamps_refreshed": true,
+  "checked_package_consumer_targets": [
+    "Node approved HTX scope",
+    "HTX spot/futures history targets",
+    "LIQ forecast history targets",
+    "source queues/role budgets"
+  ],
+  "old_history_digest_and_target_count_registry_preserved": true,
+  "draft_proposal_before_connected_acceptance": true,
+  "production_scope_updated_in_this_package": false,
+  "automatic_connected_acceptance_rollout_and_activation_complete": false,
+  "required_remaining_rollout": [
+    "Connect generated weekly draft to assembled runtime qualification with correct historical scope handling",
+    "Public collector deploy/readback bound to exact new scope",
+    "HTX paired/futures hourly history deploy/readback",
+    "LIQ forecast archive deploy/readback",
+    "Atomic activation/current status readback under own CAS lease"
+  ],
+  "GitHub_observed_permissions": {
+    "default_workflow_permissions": "read",
+    "can_approve_pull_request_reviews": false,
+    "verified_at_UTC": "2026-10-14T16:24:00Z"
+  },
+  "missing_automatic_proposal_permission": "Allow GitHub Actions to create and approve pull requests; keep default workflow permissions read",
+  "runtime_gate_variable": "REPORT2_WEEKLY_QUALIFIED_PROPOSALS_ENABLED, presently unset/false",
+  "no_HTTP_D1_GitHub_writes_when_gate_disabled": true,
+  "source_useful_coverage_catalog_only_not_claimed": true,
+  "strategy_weights_pauses_Telegram_forms_unchanged": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}
