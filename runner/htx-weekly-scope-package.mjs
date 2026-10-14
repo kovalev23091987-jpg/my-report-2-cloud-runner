@@ -2,8 +2,8 @@
 // files are not an authorization to merge/deploy without connected acceptance.
 import {gzipSync} from 'node:zlib';
 import {weeklyScopePackage} from './htx-weekly-universe-plan.mjs';
-export function renderWeeklyScopeFiles({plan,manifest_bytes,generation,previous_scope,approved_source,hourly_source,known_manifests}={}){
- const pack=weeklyScopePackage({plan,manifest_bytes,generation,previous_scope});
+export function renderWeeklyScopeFiles({plan,manifest_bytes,manifest_gzip_bytes,generation,previous_scope,approved_source,hourly_source,known_manifests}={}){
+ const pack=weeklyScopePackage({plan,manifest_bytes,manifest_gzip_bytes,generation,previous_scope});
  if(typeof approved_source!=='string'||typeof hourly_source!=='string'||!Array.isArray(known_manifests)||!known_manifests.length)throw Error('ALL_EXISTING_CONSUMER_SOURCES_REQUIRED');
  const at=approved_source.indexOf('const approved=new Map(');if(at<0)throw Error('APPROVED_SCOPE_CONSUMER_SEAM_REQUIRED');
  const approved=`// Weekly exact official scope; membership is not a price, flow, source-usefulness or entry fact.\nexport const APPROVED_HTX_SCOPE=Object.freeze(${JSON.stringify(pack.scope)});\nexport const APPROVED_HTX_ANALYSIS_CONTRACTS=Object.freeze(${JSON.stringify(pack.analysis_contracts)}.map(x=>Object.freeze(x)));\nexport const APPROVED_HTX_NATIVE_CONTRACTS=Object.freeze(${JSON.stringify(pack.native_contracts)}.map(x=>Object.freeze(x)));\n`+approved_source.slice(at);
@@ -16,5 +16,5 @@ export function renderWeeklyScopeFiles({plan,manifest_bytes,generation,previous_
  // for history and calibration, while only current targets receive new rows.
  const registry=`export const KNOWN_HISTORY_MANIFESTS = Object.freeze(${JSON.stringify(registered)});\nexport const HISTORY_TARGETS = Object.freeze(${JSON.stringify(history_targets)});\n`;
  hourly=hourly.replace(/export const KNOWN_HISTORY_MANIFESTS[^\n]*\n/g,'').replace(/export const HISTORY_TARGETS[^\n]*\n/g,'');hourly=hourly.replace('const HOUR =',registry+'\nconst HOUR =');
- return{files:{[pack.scope.manifest]:gzipSync(manifest_bytes,{mtime:0}),'current-generation/files/src/approved-htx-analysis-scope.mjs':Buffer.from(approved),'cloudflare/free-history/hourly-archive.mjs':Buffer.from(hourly),[`checkpoints/HTX_WEEKLY_SOURCE_QUEUE_${plan.week_key}.json`]:Buffer.from(JSON.stringify(pack.source_queues,null,2)+'\n')},scope:pack.scope,registered_history_manifests:registered,history_readable_contracts:history_targets,required_rollout:['ASSEMBLED_RUNTIME_CONNECTED_CHECKS','PUBLIC_COLLECTOR_DEPLOY_AND_MODULE_READBACK','HTX_SPOT_FUTURES_HISTORY_WORKER_DEPLOY_READBACK','LIQ_FORECAST_HISTORY_WORKER_DEPLOY_READBACK'],isolated_manifest_update_allowed:false,production_scope_changed:false};
+ return{files:{[pack.scope.manifest]:manifest_gzip_bytes??gzipSync(manifest_bytes,{mtime:0}),'current-generation/files/src/approved-htx-analysis-scope.mjs':Buffer.from(approved),'cloudflare/free-history/hourly-archive.mjs':Buffer.from(hourly),[`checkpoints/HTX_WEEKLY_SOURCE_QUEUE_${plan.week_key}.json`]:Buffer.from(JSON.stringify(pack.source_queues,null,2)+'\n')},scope:pack.scope,registered_history_manifests:registered,history_readable_contracts:history_targets,required_rollout:['ASSEMBLED_RUNTIME_CONNECTED_CHECKS','PUBLIC_COLLECTOR_DEPLOY_AND_MODULE_READBACK','HTX_SPOT_FUTURES_HISTORY_WORKER_DEPLOY_READBACK','LIQ_FORECAST_HISTORY_WORKER_DEPLOY_READBACK'],isolated_manifest_update_allowed:false,production_scope_changed:false};
 }
