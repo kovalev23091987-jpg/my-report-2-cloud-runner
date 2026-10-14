@@ -2,13 +2,13 @@ import assert from 'node:assert/strict';
 import {packHistoryRow,unpackHistoryRow,archivedHeader,exactArchiveSql,createHistoryRestorer} from './retained-history.mjs';
 import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 
-export const LOSSLESS_RECOVERY_POLICY=Object.freeze({max_rows:48,max_runs_day:2,hot_window_ms:48*3600000,tree_bytes:6000000,reservation:{rows_read:5000,rows_written:400},http_limits:{whole_job:164,hot:96,background:56,statistics:12},planned_whole_day:{rows_read:3413280,rows_written:69738},limits:{rows_read:3500000,rows_written:70000}});
+export const LOSSLESS_RECOVERY_POLICY=Object.freeze({max_rows:48,max_runs_day:2,max_mutation_batches:6,max_rows_per_batch:8,bridge_wire_bytes:1400000,max_bridge_HTTP:16,max_control_HTTP:40,hot_window_ms:48*3600000,tree_bytes:6000000,reservation:{rows_read:5000,rows_written:400},http_limits:{whole_job:164,hot:96,background:56,statistics:12},planned_whole_day:{rows_read:3413280,rows_written:69738},limits:{rows_read:3500000,rows_written:70000}});
 const TABLE='full_evidence_shadow_log';
 // Canonical publications and all lifecycle/calibration/forecast references stay
 // hot. Preserve the latest original for every coin, including seldom selected
 // coins; a date cutoff alone is not sufficient protection.
 export const LOSSLESS_RECOVERY_SELECTION_SQL=`SELECT e.* FROM full_evidence_shadow_log e
- WHERE e.observed_ts<?1 AND EXISTS (
+ WHERE e.observed_ts<?1 AND NOT EXISTS(SELECT 1 FROM report2_full_evidence_archive_v1 a WHERE a.full_evidence_id=e.full_evidence_id) AND EXISTS (
   SELECT 1 FROM full_evidence_shadow_log newer INDEXED BY idx_full_evidence_shadow_contract_ts
   WHERE newer.contract_code=e.contract_code AND (newer.observed_ts>e.observed_ts OR (newer.observed_ts=e.observed_ts AND newer.full_evidence_id>e.full_evidence_id)))
  ORDER BY e.observed_ts,e.full_evidence_id LIMIT 48`;
@@ -62,19 +62,48 @@ export async function recoverLosslessFullEvidence({db,save_originals,fetch_archi
  for(const s of prepared){s.header=archivedHeader(s.row,{commit:saved.commit,path:s.path,raw_sha256:s.envelope.raw_sha256});assert.deepEqual(await reader.restore(s.header),s.row);}
  out.originals_verified=prepared.length;out.archive_HTTP=reader.usage().archive_http;
  if(!execute)return{...out,status:'DURABLE_ORIGINALS_VERIFIED_NO_PRIMARY_ROWS_MODIFIED',D1:db.usageSnapshot(),rows_readthrough_relocation_pending:true};
- try{for(const [index,s] of prepared.entries()){
-  if(index%8===0)await before_modify();
-  const plan=exactArchiveSql(TABLE,s.row,s.header);admit(5,16);
-  const existing=await db.prepare(plan.read.sql).bind(...plan.read.params).first();if(existing)assert.deepEqual(await reader.restore(existing),s.row);
-  // Compare every original column. A concurrent mutation leaves the hot row
-  // untouched; the verified copy is never used to erase a different revision.
-  // D1 batch is transactional. Delete the already durable exact revision
-  // before allocating its small header; a full database can reuse those pages.
-  // If header insertion fails, D1 rolls back the deletion as well.
-  const ack=await db.batch([db.prepare(plan.remove.sql).bind(...plan.remove.params),db.prepare(plan.insert.sql).bind(...plan.insert.params)]);
-  if(!Array.isArray(ack)||ack[0]?.meta?.changes!==1)throw Error('RETAINED_ORIGINAL_CHANGED_KEEP_HOT');
-  const found=await db.prepare('SELECT * FROM report2_full_evidence_retained_v1 WHERE full_evidence_id=?1 LIMIT 1').bind(s.row.full_evidence_id).first();assert.deepEqual(await reader.restore(found),s.row);
-  out.moved.push({id:s.row.full_evidence_id,contract:s.row.contract_code,observed_ts:s.row.observed_ts,raw_bytes:s.envelope.raw_bytes,raw_sha256:s.envelope.raw_sha256,path:s.path});
- }}catch(error){error.recovery_receipt={...out,status:'PARTIAL_RELOCATION_ORIGINALS_AND_VERIFIED_MOVES_RETAINED',D1:db.usageSnapshot(),archive_HTTP:reader.usage().archive_http};throw error;}
- return{...out,status:'LOSSLESS_RELOCATION_AND_CURRENT_READTHROUGH_VERIFIED',D1:db.usageSnapshot(),archive_HTTP:reader.usage().archive_http,partial_candidate_set:prepared.length<selected.length};
+ out.bridge_mutation_batches=0;out.conflicts_retained_hot=[];out.bridge_bound_retained_hot=[];
+ try{
+  admit(prepared.length,0);
+  const prior=(await db.prepare(`SELECT full_evidence_id FROM report2_full_evidence_archive_v1 WHERE full_evidence_id IN (${prepared.map((_,i)=>'?'+(i+1)).join(',')})`).bind(...prepared.map(s=>s.row.full_evidence_id)).all()).results||[];
+  const existing=new Set(prior.map(r=>r.full_evidence_id));
+  const planned=[];
+  for(const s of prepared){
+   if(existing.has(s.row.full_evidence_id)){out.conflicts_retained_hot.push(s.row.full_evidence_id);continue;}
+   const plan=exactArchiveSql(TABLE,s.row,s.header),extra=plan.remove.params.length+1;
+   // A racing archive header must not erase a different hot original.
+   const remove={sql:plan.remove.sql+` AND NOT EXISTS(SELECT 1 FROM report2_full_evidence_archive_v1 WHERE full_evidence_id=?${extra})`,params:[...plan.remove.params,s.row.full_evidence_id]};
+   // A failed exact DELETE leaves the hot row and does not create a stale
+   // header. Grouping keeps all native bridge HTTP within the same164 budget.
+   const insert={sql:plan.insert.sql.replace(/ VALUES \((.*?)\) ON CONFLICT/,` SELECT $1 WHERE NOT EXISTS(SELECT 1 FROM full_evidence_shadow_log WHERE full_evidence_id=?${plan.insert.params.length+1}) ON CONFLICT`),params:[...plan.insert.params,s.row.full_evidence_id]};
+   const read={sql:'SELECT * FROM report2_full_evidence_retained_v1 WHERE full_evidence_id=?1 LIMIT 1',params:[s.row.full_evidence_id]};
+   const statements=[remove,insert,read];
+   if(Buffer.byteLength(JSON.stringify({op:'batch',statements}))>p.bridge_wire_bytes){out.bridge_bound_retained_hot.push(s.row.full_evidence_id);continue;}
+   planned.push({s,statements});
+  }
+  let cursor=0;
+  while(cursor<planned.length&&out.bridge_mutation_batches<p.max_mutation_batches){
+   const group=[];let statements=[];
+   while(cursor+group.length<planned.length&&group.length<p.max_rows_per_batch){
+    const item=planned[cursor+group.length],next=[...statements,...item.statements];
+    if(Buffer.byteLength(JSON.stringify({op:'batch',statements:next}))>p.bridge_wire_bytes)break;
+    group.push(item);statements=next;
+   }
+   await before_modify();admit(group.length*5,group.length*16);
+   // One transactional native batch: deletion, conditional header allocation
+   // and exact readback for each row. Insertion failure rolls back the group.
+   const ack=await db.batch(statements.map(q=>db.prepare(q.sql).bind(...q.params)));out.bridge_mutation_batches++;
+   if(!Array.isArray(ack)||ack.length!==statements.length)throw Error('RETAINED_GROUP_ACK_REQUIRED');
+   let raced=false;
+   for(const [i,{s}] of group.entries()){
+    if(ack[i*3]?.meta?.changes!==1){out.conflicts_retained_hot.push(s.row.full_evidence_id);raced=true;continue;}
+    const found=ack[i*3+2]?.results?.[0];assert.deepEqual(await reader.restore(found),s.row);
+    out.moved.push({id:s.row.full_evidence_id,contract:s.row.contract_code,observed_ts:s.row.observed_ts,raw_bytes:s.envelope.raw_bytes,raw_sha256:s.envelope.raw_sha256,path:s.path});
+   }
+   cursor+=group.length;
+   if(raced)throw Error('RETAINED_ORIGINAL_CHANGED_KEEP_HOT');
+  }
+  out.bridge_bound_retained_hot.push(...planned.slice(cursor).map(({s})=>s.row.full_evidence_id));
+ }catch(error){error.recovery_receipt={...out,status:'PARTIAL_RELOCATION_ORIGINALS_AND_VERIFIED_MOVES_RETAINED',D1:db.usageSnapshot(),archive_HTTP:reader.usage().archive_http};throw error;}
+ return{...out,status:'LOSSLESS_RELOCATION_AND_CURRENT_READTHROUGH_VERIFIED',D1:db.usageSnapshot(),archive_HTTP:reader.usage().archive_http,partial_candidate_set:prepared.length<selected.length||out.bridge_bound_retained_hot.length>0||out.conflicts_retained_hot.length>0};
 }

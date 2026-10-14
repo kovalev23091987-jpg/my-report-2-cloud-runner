@@ -89,7 +89,8 @@
         "background": 56,
         "statistics": 12
       },
-      "remaining": 109
+      "remaining": 109,
+      "excludes_D1_bridge_transport_in_original_ledger": true
     },
     "sourceHTTP": 0,
     "MAIN": 0,
@@ -97,7 +98,18 @@
     "canonical_rows_modified": 0,
     "lifecycle_or_calibration_rows_modified": 0,
     "history_discarded": false,
-    "source_clocks_refreshed": false
+    "source_clocks_refreshed": false,
+    "all_transport_correction": {
+      "native_statements": 117,
+      "two_statement_batches": 28,
+      "bridge_HTTP_derived": 89,
+      "old_HTTP_ledger": 55,
+      "derived_all_transport_HTTP": 144,
+      "global164_satisfied": true,
+      "old_hot_lane_transport_admission_not_closed": true,
+      "sourceHTTP": 0,
+      "originals_statistics_preserved": true
+    }
   },
   "prior_preparation": {
     "run": 38634327237,
@@ -132,5 +144,6 @@
     "persisted": 2,
     "missing": 0,
     "exact_SENT": false
-  }
+  },
+  "subsequent_transport_repair": "checkpoints/LOSSLESS_ALL_TRANSPORT_ADMISSION_REPAIR_20261015.json"
 }

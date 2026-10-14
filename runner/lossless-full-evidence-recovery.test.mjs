@@ -2,6 +2,9 @@ import test from 'node:test';import assert from 'node:assert/strict';import {Dat
 import {recoverLosslessFullEvidence,reserveLosslessRecoveryBudget,LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 import {retainedSchemaSql,rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
+import {RemoteD1Database} from './report2-d1-adapter.mjs';
+import bridge from '../current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs';
+import {finalizeRunUsage} from './d1-preaction-budget-guard.mjs';
 const now=1792010000000,DAY=86400000,commit='a'.repeat(40);
 function fixture(){
  const raw=new DatabaseSync(':memory:');raw.exec(`CREATE TABLE full_evidence_shadow_log(full_evidence_id TEXT PRIMARY KEY,contract_code TEXT,observed_ts INTEGER,evidence_compact_json TEXT,persisted_ts INTEGER);
@@ -12,8 +15,8 @@ function fixture(){
  for(const [id,contract,ts] of [['OLD1','A-USDT',now-5*DAY],['OLD2','A-USDT',now-4*DAY],['CURRENT','A-USDT',now-1000],['LAST_RARE','RARE-USDT',now-5*DAY]])raw.prepare('INSERT INTO full_evidence_shadow_log VALUES(?,?,?,?,?)').run(id,contract,ts,JSON.stringify({original:'exact',data:'x'.repeat(900)}),ts);
  raw.prepare('INSERT INTO canonical_publication_shadow VALUES(?,?)').run('PROTECTED',JSON.stringify({original:'retain'}));
  let usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};const calls=[];
- const db={usageSnapshot:()=>({...usage}),prepare(sql){return{args:[],bind(...a){this.args=a;return this;},async all(){calls.push(sql);const results=raw.prepare(sql).all(...this.args).map(r=>({...r}));usage.requests++;usage.rows_read+=results.length;return{results};},async first(){return(await this.all()).results[0]??null;},async run(){calls.push(sql);const ack=raw.prepare(sql).run(...this.args);usage.requests++;usage.rows_written+=Number(ack.changes);return{meta:{changes:Number(ack.changes)}};}};}};
- const prepare=db.prepare.bind(db);db.prepare=sql=>({...prepare(sql),sql});db.batch=async statements=>{raw.exec('BEGIN');try{const result=[];for(const stmt of statements)result.push(await stmt.run());raw.exec('COMMIT');return result;}catch(error){raw.exec('ROLLBACK');throw error;}};
+ const db={usageSnapshot:()=>({...usage}),prepare(sql){return{args:[],bind(...a){this.args=a;return this;},async all(){calls.push(sql);const results=raw.prepare(sql).all(...this.args).map(r=>({...r}));usage.requests++;usage.rows_read+=results.length;return{results,meta:{rows_read:results.length,rows_written:0}};},async first(){return(await this.all()).results[0]??null;},async run(){calls.push(sql);const ack=raw.prepare(sql).run(...this.args);usage.requests++;usage.rows_written+=Number(ack.changes);return{meta:{changes:Number(ack.changes),rows_read:0,rows_written:Number(ack.changes)}};}};}};
+ const prepare=db.prepare.bind(db);db.prepare=sql=>({...prepare(sql),sql});db.batch=async statements=>{raw.exec('BEGIN');try{const result=[];for(const stmt of statements)result.push(await (/^\s*SELECT\b/i.test(stmt.sql)?stmt.all():stmt.run()));raw.exec('COMMIT');return result;}catch(error){raw.exec('ROLLBACK');throw error;}};
  const objects=new Map();let saves=0,fetches=0;const save_originals=async rows=>{saves++;for(const r of rows)objects.set(r.path,JSON.stringify(r.envelope));return{commit};};
  const fetch_archive=async url=>{fetches++;return new Response(objects.get(new URL(url).pathname.split('/'+commit+'/')[1]),{status:200});};
  return{raw,db,calls,objects,save_originals,fetch_archive,get saves(){return saves;},get fetches(){return fetches;},setUsage:value=>{usage={...usage,...value};}};
@@ -49,9 +52,30 @@ test('the transaction frees old-row capacity before header allocation and rolls 
   if(fail){await assert.rejects(run,/CONTROLLED_CAPACITY/);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM full_evidence_shadow_log').get().n,4);}else assert.equal((await run).moved.length,2);
  }
 });
-test('the actual whole HTTP factory admits the complete archive batch and bounded control without consuming the manual reserve',()=>{
- const b=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);
- assert.equal(b.reserve({logical_request_id:'CONTROL',lane:'hot',attempts:40}).allowed,true);assert.equal(b.reserve({logical_request_id:'ARCHIVE',lane:'background',attempts:48}).allowed,true);
- assert.equal(b.summary().total,88);assert.equal(b.summary().remaining,76);assert.ok(b.summary().limits.hot-b.summary().used.hot>=24);
- assert.equal(b.reserve({logical_request_id:'TOO_MANY',lane:'background',attempts:9}).allowed,false);
+test('all48 archive rows include the real bridge requests, finalization and bounded control in whole164, preserving manual24',async()=>{
+ const f=fixture(),p=LOSSLESS_RECOVERY_POLICY,b=createUnifiedHttpBudget(p.http_limits);let bridgeHTTP=0,wireMax=0;
+ for(let i=3;i<=48;i++)f.raw.prepare('INSERT INTO full_evidence_shadow_log VALUES(?,?,?,?,?)').run('OLD'+i,'A-USDT',now-(i+5)*DAY,JSON.stringify({data:'x'.repeat(900)}),now-(i+5)*DAY);
+ for(const column of ['source_run_id TEXT','measured_rows_read INTEGER','measured_rows_written INTEGER','measured_requests INTEGER','completed_ts INTEGER'])f.raw.exec('ALTER TABLE report2_runner_budget_ledger_shadow ADD COLUMN '+column);
+ assert.equal(b.reserve({logical_request_id:'ALL_GITHUB_CONTROL',lane:'hot',attempts:p.max_control_HTTP}).allowed,true);
+ const db=new RemoteD1Database('https://bridge.invalid/d1','fixture-token',{beforeRequest:e=>{assert.ok(bridgeHTTP<p.max_bridge_HTTP);assert.ok(e.wire_bytes<=p.bridge_wire_bytes);wireMax=Math.max(wireMax,e.wire_bytes);const g=b.reserve({logical_request_id:'D1:'+bridgeHTTP,lane:'hot',attempts:1});if(g.allowed)bridgeHTTP++;return g;},fetchImpl:(url,init)=>bridge.fetch(new Request(url,init),{DATA_DB:f.db,REPORT2_CLOUD_BRIDGE_TOKEN:'fixture-token'})});
+ const reservation_id='RETAINED_HISTORY:123:123';assert.equal((await reserveLosslessRecoveryBudget(db,{reservation_id,now})).allowed,true);
+ const result=await recoverLosslessFullEvidence({...f,db,request_admit:e=>b.reserve(e),before_modify:async()=>{},execute:true,now});
+ await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:'123',now,usage:db.usageSnapshot()});
+ assert.equal(result.moved.length,48);assert.equal(result.bridge_mutation_batches,6);assert.equal(bridgeHTTP,12);assert.equal(f.fetches,48);assert.ok(wireMax<p.bridge_wire_bytes);
+ // Actual acquire8, initial guard3, immutable save6, six guards3 and own
+ // release4: even the automatic owner path fits without borrowing release.
+ assert.ok(8+3+6+result.bridge_mutation_batches*3+4<=p.max_control_HTTP);
+ assert.equal(b.summary().total,100);assert.equal(b.summary().used.hot,52);assert.ok(b.summary().limits.hot-b.summary().used.hot>=24);assert.equal(db.usageSnapshot().unknown_ops,0);
+ assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM report2_full_evidence_archive_v1').get().n,48);
+ assert.ok(f.raw.prepare("SELECT * FROM full_evidence_shadow_log WHERE full_evidence_id='LAST_RARE'").get());
+});
+test('oversized bridge rows and the six-transaction cap retain untouched originals for a later admitted run',async()=>{
+ const f=fixture();for(let i=3;i<=12;i++)f.raw.prepare('INSERT INTO full_evidence_shadow_log VALUES(?,?,?,?,?)').run('OLD'+i,'A-USDT',now-(i+5)*DAY,JSON.stringify({data:'x'.repeat(800000)}),now-(i+5)*DAY);
+ f.raw.prepare("UPDATE full_evidence_shadow_log SET evidence_compact_json=? WHERE full_evidence_id='OLD1'").run(JSON.stringify({data:'x'.repeat(1500000)}));
+ const result=await recoverLosslessFullEvidence({...f,request_admit:()=>({allowed:true}),before_modify:async()=>{},execute:true,now});
+ assert.equal(result.bridge_mutation_batches,6);assert.ok(result.bridge_bound_retained_hot.length>0);assert.equal(result.partial_candidate_set,true);assert.ok(f.raw.prepare("SELECT * FROM full_evidence_shadow_log WHERE full_evidence_id='OLD1'").get());assert.equal(result.history_discarded,false);
+});
+test('a local pre-request refusal never spends native SQL or fabricates unknown operations',async()=>{
+ let sent=0;const db=new RemoteD1Database('https://bridge.invalid/d1','fixture-token',{beforeRequest:()=>({allowed:false}),fetchImpl:async()=>{sent++;throw Error('must not send');}});
+ await assert.rejects(db.prepare('SELECT 1').first(),/LOCAL_HTTP_ADMISSION_DENIED/);assert.equal(sent,0);assert.deepEqual(db.usageSnapshot(),{requests:0,rows_read:0,rows_written:0,unknown_ops:0,targets:{}});
 });

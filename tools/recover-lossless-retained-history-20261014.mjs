@@ -7,9 +7,10 @@ import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFu
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
 await fs.mkdir(dir,{recursive:true});
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
-const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,db,lease,admitted=false,reservation_id;
+const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,db,lease,admitted=false,reservation_id;
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
- const grant=whole.reserve({logical_request_id:'RETAINED_GITHUB_CONTROL:'+control_HTTP,lane:'hot',attempts:1});if(!grant.allowed||control_HTTP>=40)throw Error('RETAINED_GITHUB_CONTROL_BOUND');control_HTTP++;
+ if(control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETAINED_GITHUB_CONTROL_BOUND');
+ const grant=whole.reserve({logical_request_id:'RETAINED_GITHUB_CONTROL:'+control_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('RETAINED_GITHUB_CONTROL_BOUND');control_HTTP++;
  return fetch(url,{...options,redirect:'error'});
 }});
 let expected=process.env.EXPECTED_MAIN||process.env.GITHUB_SHA;
@@ -31,7 +32,10 @@ try{
   if(!lease.allowed)throw Error(lease.status);expected=lease.head;
  }
  await guard();out.control={expected_main:expected,owner:lease.lease.owner,borrowed:lease.borrowed===true,lease_expires_ts:lease.lease.expires_ts};
- db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
+ db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{beforeRequest:event=>{
+  if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
+  const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
+ }});
  reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveLosslessRecoveryBudget(db,{reservation_id});admitted=out.admission.allowed;if(!admitted)throw Error(out.admission.status);
  const save_originals=async rows=>{
   const branch='report2-retained-history',parent=(await control.call('git/ref/heads/'+branch)).object.sha,treeBase=(await control.call('git/commits/'+parent)).tree.sha;
@@ -50,6 +54,6 @@ try{
  if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:db.usageSnapshot()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
  if(db){out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
- out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
+ out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));
 }

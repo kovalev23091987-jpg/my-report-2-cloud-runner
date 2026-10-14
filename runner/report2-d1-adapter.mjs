@@ -82,6 +82,8 @@ export class RemoteD1Database {
     this.url = requiredText(url, "REPORT2_D1_BRIDGE_URL");
     this.token = requiredText(token, "REPORT2_D1_BRIDGE_TOKEN");
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch;
+    if(options.beforeRequest!==undefined&&typeof options.beforeRequest!=='function')throw Error('D1_BEFORE_REQUEST_CALLBACK_REQUIRED');
+    this.beforeRequest = options.beforeRequest;
     this.timeoutMs = Number.isFinite(Number(options.timeoutMs))
       ? Math.max(1_000, Number(options.timeoutMs))
       : DEFAULT_TIMEOUT_MS;
@@ -174,6 +176,14 @@ export class RemoteD1Database {
       if (payload.op === 'batch') payload = {...payload, statements:payload.statements.map(s => ({...s,sql:rewriteRetainedSelect(s.sql)}))};
       else if (payload.sql) payload = {...payload,sql:rewriteRetainedSelect(payload.sql)};
     }
+    const wireBody=JSON.stringify(payload);
+    // A local transport-budget refusal occurs before any SQL is sent. It is
+    // not an unmeasured native operation; real attempted replies retain the
+    // existing fail-closed accounting below.
+    if(this.beforeRequest){
+      const grant=await this.beforeRequest({operation:payload.op,statement_count:payload.op==='batch'?payload.statements.length:1,wire_bytes:Buffer.byteLength(wireBody)});
+      if(grant?.allowed!==true)throw Error('D1_LOCAL_HTTP_ADMISSION_DENIED');
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     let nativeUsageRecorded = false;
@@ -187,7 +197,7 @@ export class RemoteD1Database {
           authorization: `Bearer ${this.token}`,
           "user-agent": "My-Report-2-GitHub-D1-Adapter/4.3",
         },
-        body: JSON.stringify(payload),
+        body: wireBody,
         signal: controller.signal,
       });
       httpStatus=response.status;
