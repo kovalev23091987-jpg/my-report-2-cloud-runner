@@ -1,0 +1,457 @@
+{
+  "reservation": {
+    "id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+    "now": 1791970586524,
+    "day": "2026-10-14",
+    "sql": "INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts) SELECT ?1,?2,10000,5000,'RESERVED',?3 WHERE COALESCE((SELECT SUM(reserve_rows_read) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+10000<=3500000 AND COALESCE((SELECT SUM(reserve_rows_written) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+5000<=70000 AND NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND state='FINALIZED' AND COALESCE(unknown_ops,1)>0) AND (SELECT COUNT(*) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'CODEX_NATIVE_ROLE_INDEX:%')<1",
+    "params": [
+      "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+      "2026-10-14",
+      1791970586524
+    ],
+    "reads": 10000,
+    "writes": 5000,
+    "main": "ee6917f642fbcc1abdd9929a94d7064b37a3ee9a"
+  },
+  "verification_query": {
+    "sql": "SELECT h.source_id,h.attempts,h.usable_runs,h.not_closed_runs,h.reliability,h.last_status,h.updated_ts,p.observations AS predictive_observations,p.ewma_accuracy AS predictive_accuracy,p.predictive_weight_factor,p.eligible AS predictive_eligible,'SHADOW' AS activation_state,'LEGACY_DISABLED' AS eligibility_protocol,?1 AS role_prior_contract,CASE WHEN h.source_id='OXARCHIVE_HL_BUCKETS' THEN 'PROJECTED_BUCKET_CONTEXT' ELSE 'NATIVE_POSITION_CONTEXT' END AS role_prior_role,(SELECT json_group_array(json_object('contract',r.contract,'role',r.role,'source_id',r.source_id,'run_id',r.run_id,'status',r.status,'role_usable',r.role_usable,'actual_http',r.actual_http,'observed_ts',r.observed_ts)) FROM (SELECT contract,role,source_id,run_id,status,role_usable,actual_http,observed_ts FROM report2_liquidation_role_observation INDEXED BY idx_report2_liq_role_contract_source_time WHERE contract=?1 AND source_id=h.source_id AND role=CASE WHEN h.source_id='OXARCHIVE_HL_BUCKETS' THEN 'PROJECTED_BUCKET_CONTEXT' ELSE 'NATIVE_POSITION_CONTEXT' END AND observed_ts BETWEEN ?2 AND ?3 AND run_id<>?4 ORDER BY observed_ts DESC,run_id DESC LIMIT 4) r) AS role_prior_json FROM report2_liquidation_source_health h LEFT JOIN report2_liquidation_predictive_health p ON p.source_id=h.source_id WHERE h.source_id IN (SELECT value FROM json_each(?5))",
+    "params": [
+      "FIL-USDT",
+      1791884296087,
+      1791970696087,
+      "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+      "[\"HYPERLIQUID_NATIVE\",\"GTRADE_NATIVE\",\"DYDX_PINNED_NATIVE\"]"
+    ],
+    "now": 1791970696087
+  },
+  "receipts": [
+    {
+      "stage": "native_index_admission_raw",
+      "receipt": {
+        "admission_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+        "response": {
+          "result": [
+            {
+              "results": [],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.5088
+                },
+                "duration": 0.5088,
+                "changes": 1,
+                "last_row_id": 2319,
+                "changed_db": true,
+                "size_after": 486166528,
+                "rows_read": 253,
+                "rows_written": 3,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "stage": "native_index_preflight_raw",
+      "receipt": {
+        "admission_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "reservation_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+                  "day_utc": "2026-10-14",
+                  "reserve_rows_read": 10000,
+                  "reserve_rows_written": 5000,
+                  "state": "RESERVED"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.1996
+                },
+                "duration": 0.1996,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486166528,
+                "rows_read": 1,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            },
+            {
+              "results": [
+                {
+                  "n": 684
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 1.2825
+                },
+                "duration": 1.2825,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486166528,
+                "rows_read": 684,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            },
+            {
+              "results": [],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.3242
+                },
+                "duration": 0.3242,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486166528,
+                "rows_read": 403,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "stage": "native_index_install_raw",
+      "receipt": {
+        "admission_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+        "response": {
+          "result": [
+            {
+              "results": [],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 4.2672
+                },
+                "duration": 4.2672,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": true,
+                "size_after": 486236160,
+                "rows_read": 1398,
+                "rows_written": 685,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "stage": "native_index_readback_raw",
+      "receipt": {
+        "admission_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "name": "idx_report2_liq_role_contract_source_time",
+                  "sql": "CREATE INDEX idx_report2_liq_role_contract_source_time ON report2_liquidation_role_observation(contract,role,source_id,observed_ts DESC,run_id DESC)"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.3899
+                },
+                "duration": 0.3899,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486236160,
+                "rows_read": 404,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            },
+            {
+              "results": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 93,
+                  "detail": "SEARCH h USING INDEX sqlite_autoindex_report2_liquidation_source_health_1 (source_id=?)"
+                },
+                {
+                  "id": 9,
+                  "parent": 0,
+                  "notused": 0,
+                  "detail": "LIST SUBQUERY 3"
+                },
+                {
+                  "id": 11,
+                  "parent": 9,
+                  "notused": 0,
+                  "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+                },
+                {
+                  "id": 28,
+                  "parent": 0,
+                  "notused": 47,
+                  "detail": "SEARCH p USING INDEX sqlite_autoindex_report2_liquidation_predictive_health_1 (source_id=?) LEFT-JOIN"
+                },
+                {
+                  "id": 59,
+                  "parent": 0,
+                  "notused": 0,
+                  "detail": "CORRELATED SCALAR SUBQUERY 2"
+                },
+                {
+                  "id": 62,
+                  "parent": 59,
+                  "notused": 0,
+                  "detail": "CO-ROUTINE r"
+                },
+                {
+                  "id": 67,
+                  "parent": 62,
+                  "notused": 50,
+                  "detail": "SEARCH report2_liquidation_role_observation USING INDEX idx_report2_liq_role_contract_source_time (contract=? AND role=? AND source_id=? AND observed_ts>? AND observed_ts<?)"
+                },
+                {
+                  "id": 103,
+                  "parent": 59,
+                  "notused": 36,
+                  "detail": "SCAN r"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.2955
+                },
+                "duration": 0.2955,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486236160,
+                "rows_read": 0,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            },
+            {
+              "results": [
+                {
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "attempts": 141,
+                  "usable_runs": 138,
+                  "not_closed_runs": 3,
+                  "reliability": 0.999997,
+                  "last_status": "ROLE_NOT_USABLE:NATIVE_POSITION_CONTEXT:DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "updated_ts": 1791969123217,
+                  "predictive_observations": null,
+                  "predictive_accuracy": null,
+                  "predictive_weight_factor": null,
+                  "predictive_eligible": null,
+                  "activation_state": "SHADOW",
+                  "eligibility_protocol": "LEGACY_DISABLED",
+                  "role_prior_contract": "FIL-USDT",
+                  "role_prior_role": "NATIVE_POSITION_CONTEXT",
+                  "role_prior_json": "[{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"DYDX_PINNED_NATIVE\",\"run_id\":\"1791969087454-1791969097949\",\"status\":\"DYDX_NO_ELIGIBLE_SAMPLE_LEVEL\",\"role_usable\":0,\"actual_http\":3,\"observed_ts\":1791969123488},{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"DYDX_PINNED_NATIVE\",\"run_id\":\"1791923208609-1791923250486\",\"status\":\"DYDX_NO_ELIGIBLE_SAMPLE_LEVEL\",\"role_usable\":0,\"actual_http\":3,\"observed_ts\":1791923312562},{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"DYDX_PINNED_NATIVE\",\"run_id\":\"1791918399275-1791918430972\",\"status\":\"DYDX_NO_ELIGIBLE_SAMPLE_LEVEL\",\"role_usable\":0,\"actual_http\":3,\"observed_ts\":1791918496773}]"
+                },
+                {
+                  "source_id": "GTRADE_NATIVE",
+                  "attempts": 242,
+                  "usable_runs": 226,
+                  "not_closed_runs": 16,
+                  "reliability": 0.513095,
+                  "last_status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+                  "updated_ts": 1791966486102,
+                  "predictive_observations": null,
+                  "predictive_accuracy": null,
+                  "predictive_weight_factor": null,
+                  "predictive_eligible": null,
+                  "activation_state": "SHADOW",
+                  "eligibility_protocol": "LEGACY_DISABLED",
+                  "role_prior_contract": "FIL-USDT",
+                  "role_prior_role": "NATIVE_POSITION_CONTEXT",
+                  "role_prior_json": "[{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"GTRADE_NATIVE\",\"run_id\":\"1791917801179-1791917821984\",\"status\":\"GTRADE_ACQUIRED_SCOPED_CONTEXT\",\"role_usable\":1,\"actual_http\":3,\"observed_ts\":1791917863422}]"
+                },
+                {
+                  "source_id": "HYPERLIQUID_NATIVE",
+                  "attempts": 178,
+                  "usable_runs": 169,
+                  "not_closed_runs": 9,
+                  "reliability": 0.999997,
+                  "last_status": "ACQUISITION_RETURNED",
+                  "updated_ts": 1791969121789,
+                  "predictive_observations": null,
+                  "predictive_accuracy": null,
+                  "predictive_weight_factor": null,
+                  "predictive_eligible": null,
+                  "activation_state": "SHADOW",
+                  "eligibility_protocol": "LEGACY_DISABLED",
+                  "role_prior_contract": "FIL-USDT",
+                  "role_prior_role": "NATIVE_POSITION_CONTEXT",
+                  "role_prior_json": "[{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"HYPERLIQUID_NATIVE\",\"run_id\":\"1791969087454-1791969097949\",\"status\":\"ACQUISITION_RETURNED\",\"role_usable\":1,\"actual_http\":1,\"observed_ts\":1791969122061},{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"HYPERLIQUID_NATIVE\",\"run_id\":\"1791923208609-1791923250486\",\"status\":\"ACQUISITION_RETURNED\",\"role_usable\":1,\"actual_http\":1,\"observed_ts\":1791923308960},{\"contract\":\"FIL-USDT\",\"role\":\"NATIVE_POSITION_CONTEXT\",\"source_id\":\"HYPERLIQUID_NATIVE\",\"run_id\":\"1791918399275-1791918430972\",\"status\":\"ACQUISITION_RETURNED\",\"role_usable\":1,\"actual_http\":1,\"observed_ts\":1791918493201}]"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 1.0209
+                },
+                "duration": 1.0209,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486236160,
+                "rows_read": 19,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "stage": "native_index_finalize_raw",
+      "receipt": {
+        "admission_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+        "response": {
+          "result": [
+            {
+              "results": [],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.1714
+                },
+                "duration": 0.1714,
+                "changes": 1,
+                "last_row_id": 0,
+                "changed_db": true,
+                "size_after": 486236160,
+                "rows_read": 1,
+                "rows_written": 1,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "stage": "native_index_final_readback_raw",
+      "receipt": {
+        "admission_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "reservation_id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+                  "day_utc": "2026-10-14",
+                  "reserve_rows_read": 10000,
+                  "reserve_rows_written": 5000,
+                  "state": "FINALIZED",
+                  "source_run_id": "PR340_NATIVE_ROLE_INDEX:CODEX_NATIVE_ROLE_INDEX:1791970586524",
+                  "measured_rows_read": 3162,
+                  "measured_rows_written": 689,
+                  "measured_requests": 9,
+                  "unknown_ops": 0
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.2082
+                },
+                "duration": 0.2082,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 486236160,
+                "rows_read": 1,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    }
+  ]
+}
