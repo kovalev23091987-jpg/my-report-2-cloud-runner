@@ -1,7 +1,7 @@
 import {exactGithubReleaseSpec} from './github-official-releases.mjs';
 import {NATIVE_SECTOR_BINDINGS} from './coingecko-sector-evidence.mjs';
 import {collectSpecialistContext} from './specialist-candidate-context.mjs';
-export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v7-strict17-20261001';
+export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v8-retained-native-network-20261014';
 const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
 const clean=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -11,9 +11,13 @@ const chainId=chain=>({ethereum:'1',bsc:'56',arbitrum:'42161',base:'8453',polygo
 const geckoNetwork=chain=>({ethereum:'eth',bsc:'bsc',arbitrum:'arbitrum',base:'base',polygon:'polygon_pos',optimism:'optimism',avalanche:'avax',solana:'solana'}[clean(chain).toLowerCase()]||null);
 const canonicalChain=value=>({eth:'ethereum',ethereum:'ethereum',bsc:'bsc',arbitrum:'arbitrum',base:'base',polygon:'polygon',polygon_pos:'polygon',optimism:'optimism',avax:'avalanche',avalanche:'avalanche',solana:'solana'}[clean(value).toLowerCase()]||null);
 const stableSymbol=value=>['USDT','USDC','USD','DAI','FDUSD'].includes(clean(value).toUpperCase());
+// Identity eligibility is independent of a provider's sector registry. These
+// additional networks are already recognized by the exact HTX currency reader;
+// accepting their shape does not establish an identity or a provider mapping.
+const nativeIdentityNetworks=new Set([...Object.values(NATIVE_SECTOR_BINDINGS).map(r=>r.chain),'algorand','dash','filecoin','hedera','monero','plasma','chiliz','internet-computer','bittensor','celestia','steem']);
 const exactIdentity=row=>{
  const chain=clean(row?.chain).toLowerCase(),address=clean(row?.contract_or_mint);
- if(row?.asset_kind==='NATIVE'&&(Object.values(NATIVE_SECTOR_BINDINGS).some(r=>r.chain===chain)||chain==='hedera')&&row.native_asset_id===`${chain}:mainnet`&&!address)return{chain,asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`,contract_or_mint:null};
+ if(row?.asset_kind==='NATIVE'&&nativeIdentityNetworks.has(chain)&&row.native_asset_id===`${chain}:mainnet`&&!address)return{chain,asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`,contract_or_mint:null};
  if(!chain||!address)return null;
  if(chain==='solana'?!BASE58.test(address):!EVM.test(address))return null;
  return {chain,contract_or_mint:chain==='solana'?address:address.toLowerCase()};

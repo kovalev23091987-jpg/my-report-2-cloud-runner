@@ -1,0 +1,51 @@
+{
+  "schema": "NATIVE_IDENTITY_SOURCE_HANDOFF_CANDIDATE_V1",
+  "recorded_utc": "2026-10-14T09:54:44.863683+00:00",
+  "base_main": "ee6917f642fbcc1abdd9929a94d7064b37a3ee9a",
+  "original_HTX_reference": {
+    "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+    "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+    "approved_native_bindings_in_original": 30
+  },
+  "actual_loss_before_repair": [
+    "ALGO-USDT",
+    "CHZ-USDT",
+    "DASH-USDT",
+    "FIL-USDT",
+    "ICP-USDT",
+    "STEEM-USDT",
+    "TAO-USDT",
+    "TIA-USDT",
+    "XMR-USDT",
+    "XPL-USDT"
+  ],
+  "root_cause": "HTX exact native identities were parsed, then dropped by supplemental shape validation that was incorrectly coupled to CoinGecko sector bindings. Unplanned JOINT_FLOW then defaulted to a misleading exhausted-budget status.",
+  "fix": "Preserve all already supported HTX native network shapes; keep exact authoritative producer method; identify missing route/identity/admission separately. No sector/provider mapping is invented.",
+  "actual_failure_source": {
+    "cloud_run": 38540481016,
+    "head": "d0898d037b20f07f73c0304968bf07b54119dc41",
+    "artifact": 11882640876,
+    "digest": "sha256:ffbc37a4cb02ae6d1f8e1ce0bab62b6ccc715936d93ce8025dd5339ec30dd8b4",
+    "contract": "FIL-USDT",
+    "provider_calls": 3,
+    "configured_candidate_cap": 18,
+    "cap_exhaustion_not_the_cause": true,
+    "source_identity_log_is_sanitized_not_an_original_body_receipt": true
+  },
+  "local_connected_tests": {
+    "pass": 39,
+    "fail": 0,
+    "sha256": "9f29b6da3d6ded77ebcbbfc21d132e78253b7385caafe87bbe7d5237e7666e38"
+  },
+  "provider_HTTP_new": 0,
+  "D1_new": 0,
+  "cloud_common_pending": true,
+  "runtime_not_merged": true,
+  "source_daily_monthly_minute_caps_and_backoff_unchanged": true,
+  "paused_routes_not_restored": true,
+  "native_network_shape_not_useful_fact_or_current_coverage": true,
+  "N04_no_native_adapter_not_coerced_to_success": true,
+  "N15_no_new_sector_mapping_claim": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

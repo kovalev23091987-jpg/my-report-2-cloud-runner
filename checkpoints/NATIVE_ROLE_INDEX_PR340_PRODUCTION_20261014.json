@@ -1,0 +1,49 @@
+{
+  "schema": "NATIVE_EXACT_ASSET_ROLE_INDEX_PRODUCTION_V1",
+  "recorded_utc": "2026-10-14T09:41:14.629Z",
+  "pr": 340,
+  "tested_head": "ce01435b6f8ec6adec633e6eee0ee7799bd44e9a",
+  "merge_head": "ee6917f642fbcc1abdd9929a94d7064b37a3ee9a",
+  "common_cloud": {
+    "run": 38541256014,
+    "artifact": 11882776432,
+    "digest": "sha256:94146f2595376880222fb7a2fda3bd8acf3cfa2f037b9dfbbb3dce85b887b039",
+    "connected_pass": 341,
+    "fail": 0,
+    "runtime_binding": "CURRENT_RUNTIME_BINDING_VERIFIED"
+  },
+  "reservation": {
+    "id": "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+    "now": 1791970586524,
+    "day": "2026-10-14",
+    "sql": "INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts) SELECT ?1,?2,10000,5000,'RESERVED',?3 WHERE COALESCE((SELECT SUM(reserve_rows_read) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+10000<=3500000 AND COALESCE((SELECT SUM(reserve_rows_written) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+5000<=70000 AND NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND state='FINALIZED' AND COALESCE(unknown_ops,1)>0) AND (SELECT COUNT(*) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'CODEX_NATIVE_ROLE_INDEX:%')<1",
+    "params": [
+      "CODEX_NATIVE_ROLE_INDEX:1791970586524",
+      "2026-10-14",
+      1791970586524
+    ],
+    "reads": 10000,
+    "writes": 5000,
+    "main": "ee6917f642fbcc1abdd9929a94d7064b37a3ee9a"
+  },
+  "original_role_rows": 684,
+  "index": "idx_report2_liq_role_contract_source_time",
+  "exact_definition_verified": true,
+  "native_query_plan_uses_index": true,
+  "native_example_contract": "FIL-USDT",
+  "native_example_role_history_read_cost": 19,
+  "native_measured_cost_including_readbacks": {
+    "requests": 10,
+    "rows_read": 3164,
+    "rows_written": 689,
+    "unknown_ops": 0
+  },
+  "ledger_read_telemetry_excludes_final_UPDATE_self_read_and_following_readback": 2,
+  "reserved_amounts_not_refunded": true,
+  "sourceHTTP": 0,
+  "local_model": false,
+  "weights_strategy_pauses_form_unchanged": true,
+  "natural_current_routing_acceptance_pending": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

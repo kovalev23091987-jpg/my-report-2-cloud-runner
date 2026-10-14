@@ -90,6 +90,13 @@ export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){
 }
 export function exactCapabilityIdentity(params={}){return verifiedAssetRouteIdentity(params);}
 
+export function unavailableExternalN05Route(params={},result){
+ if(result)return result;
+ const identity=exactCapabilityIdentity(params);
+ const status=!identity?'EXACT_ASSET_IDENTITY_REQUIRED':typeof params.source_health_admit!=='function'?'SOURCE_HEALTH_ADMISSION_REQUIRED':'SOURCE_COLLECTOR_NOT_DISPATCHED';
+ return{status,components:[],evidence:[],network_calls:0,check_completed:false,internal_only:true,reason:'NO_CAPTURED_ROUTE_RESULT_NOT_AN_EXHAUSTED_QUOTA'};
+}
+
 export function capabilityCheckedNoExactRoute(params,source_id,reason){
  const identity=exactCapabilityIdentity(params);if(!identity)return null;
  return{status:'CAPABILITY_CHECKED_NO_EXACT_ROUTE',check_completed:true,capability_registry_complete:true,source_id,reason,exact_identity:identity,network_calls:0,evidence:[],receipts:[{check_completed:true,status:'NO_EXACT_ROUTE',source_id,contract:identity.contract,identity_method:identity.identity_method}],observed_ts:Number(params?.now)||Date.now(),decision_effect:'MISSING_FACT_NO_ZERO_NO_GREEN',internal_only:true};
@@ -330,7 +337,7 @@ export async function collectCandidateEvidenceV2(params={}){
  // may close N01; its static terms are not an observed future unlock transfer.
  evidence.push(...(publishedCalendar.evidence||[]),...(tokenSchedule.evidence||[]),...(wikimedia.evidence||[]),...(htxAnnouncements.evidence||[]));
  const comparison=chainSupply?.status==='CLOSED'&&chainSupply?.evidence?.some(r=>['SUPPLY_DECREASE','SUPPLY_INCREASE','SUPPLY_UNCHANGED','SUPPLY_REDUCTION_CHECK'].includes(r.metric_family))?{...chainSupply,check_completed:chainSupply.network_calls>0,scope:chainName==='cardano'?'EXACT_TWO_CLOSED_CARDANO_EPOCHS':'EXACT_FINALIZED_SUPPLY_COMPARISON',transfer_cause_verified:false}:{status:'TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED',network_calls:0,evidence:[]};
- const sources={EXTERNAL_N05_FLOW:routeBlock.results.JOINT_FLOW||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',components:[],network_calls:0,evidence:[]},DEFILLAMA_PUBLISHED_CALENDAR:publishedCalendar,WIKIMEDIA_ATTENTION:wikimedia,COINMETRICS_SUPPLY:coinmetrics,COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,HTX_OFFICIAL_ANNOUNCEMENTS:htxAnnouncements,DERIBIT_ALT_OPTIONS:deribit,DELTA_OPTIONS:delta,BYBIT_OPTIONS:bybitOptions,BINANCE_OPTION_INTEREST:binanceOptionInterest,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
+ const sources={EXTERNAL_N05_FLOW:unavailableExternalN05Route(params,routeBlock.results.JOINT_FLOW),DEFILLAMA_PUBLISHED_CALENDAR:publishedCalendar,WIKIMEDIA_ATTENTION:wikimedia,COINMETRICS_SUPPLY:coinmetrics,COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,HTX_OFFICIAL_ANNOUNCEMENTS:htxAnnouncements,DERIBIT_ALT_OPTIONS:deribit,DELTA_OPTIONS:delta,BYBIT_OPTIONS:bybitOptions,BINANCE_OPTION_INTEREST:binanceOptionInterest,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
  // Fix the decision clock only after every asynchronous collector returns.
  // Responses received after params.now must not be rejected as future-known.
  const auditDecisionTs=Date.now();
