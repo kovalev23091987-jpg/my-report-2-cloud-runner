@@ -4,7 +4,7 @@ import {createRunnerLiquidationExtension} from './runner-extension.mjs';
 import {createSharedSourceBudget} from './run-source-budget.mjs';
 import {createMultiVenueLiquidationExtension} from './multi-runner-extension.mjs';
 import {createGTradeRuntimeCollector} from './gtrade-runtime-collector.mjs';
-import {oneUnusablePairReserveMayFinishPosition,oneUnusableFollowingReserveMayFinishPosition} from './selected-native-reserve-policy.mjs';
+import {oneUnusablePairReserveMayFinishPosition,oneUnusableFollowingReserveMayFinishPosition,followingNativeReserveRequired} from './selected-native-reserve-policy.mjs';
 import {createLighterRuntimeCollector} from './lighter-runtime-collector.mjs';
 import {createGmxRuntimeCollector} from './gmx-runtime-collector.mjs';
 import {createMultiLiquidationAcquisition} from './gtrade-runtime-bridge.mjs';
@@ -89,7 +89,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   // a following selected candidate. One catalog request alone cannot
   // return a liquidation level (observed NEAR starvation at09:30). This is not promised level coverage.
   const visited=visitedByRun.get(params.run_id)||new Set();visited.add(params.contract);visitedByRun.set(params.run_id,visited);
-  const reserveForFollowingCandidate=2*Math.max(0,candidate_slots-visited.size);
+  const reserveForFollowingCandidate=followingNativeReserveRequired({plan:params.selected_native_source_plan,run_id:params.run_id,contract:params.contract})?2*Math.max(0,candidate_slots-visited.size):0;
   const candidateHttpCap=candidate_slots===1?requestedCap:Math.min(requestedCap,Math.max(0,max_http_per_run-budget.summary().reserved_http-reserveForFollowingCandidate));
   params={...params,max_http_for_candidate:candidateHttpCap};
   const candidateReservedStart=budget.summary().reserved_http;
