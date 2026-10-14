@@ -26,7 +26,7 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
  async function collect({contract,native_symbol,run_id,acquisition_id,deadline_ts,snapshot_admitted=false,admit_useful_snapshot=null,admit_market_snapshot=null,admit_position_snapshot=null,position_batch_contracts=[]}={}){
   if(!(Number(deadline_ts)>clock()))return{status:'GTRADE_DEADLINE_NOT_AVAILABLE',requests:0};
   const catalogCached=catalogs.has(run_id),catalog=await loadCatalog(run_id,deadline_ts),catalogCalls=catalogCached?0:1,sourceTs=timestamp(catalog.payload?.lastRefreshed);
-  if(!catalog.ok)return{status:'GTRADE_HTTP_NOT_CLOSED',requests:catalogCalls,reused_catalog:catalogCached,reasons:[catalog.reason]};
+  if(!catalog.ok)return{status:'GTRADE_HTTP_NOT_CLOSED',requests:catalogCalls,reused_catalog:catalogCached,reasons:[catalog.reason],transport_receipts:[catalog.receipt]};
   if((!Array.isArray(catalog.payload?.pairs)||!catalog.payload.pairs.length||catalog.payload.pairs.some(p=>typeof p?.from!=='string'||!p.from||typeof p?.to!=='string'||!p.to))||sourceTs===null||sourceTs>clock()||clock()-sourceTs>300000)return{status:'GTRADE_CATALOG_NOT_CLOSED',requests:catalogCalls,reused_catalog:catalogCached};
   const market=resolveGTradeCryptoMarket(catalog.payload,native_symbol);if(!market.supported)return{status:market.status,requests:catalogCalls,reused_catalog:catalogCached,catalog_verified:true};
   const batchContracts=Array.isArray(position_batch_contracts)&&position_batch_contracts.length?position_batch_contracts:[contract];
@@ -40,7 +40,7 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   }
   if(!snapshots.has(run_id)&&!snapshot_admitted&&typeof admit_market_snapshot==='function'){const grant=await admit_market_snapshot({requests:snapshotHttpCost});if(grant?.allowed!==true||grant?.new_reservation!==true)return{status:'SKIPPED_GTRADE_MARKET_SNAPSHOT_BUDGET',reason:grant?.reason??'MARKET_SNAPSHOT_NOT_ADMITTED',requests:catalogCalls,catalog_verified:true,exact_market_supported:true};}
   const cached=snapshots.has(run_id),snapshot=await loadSnapshot(run_id,deadline_ts,catalog,useHintMarkets?hintMarkets:null),completed=clock(),requests=catalogCalls+(cached?0:snapshot.requests);
-  if(snapshot.status!=='GTRADE_SHARED_SNAPSHOT_CLOSED')return{status:snapshot.status,requests,reused_snapshot:cached,reasons:snapshot.reasons};
+  if(snapshot.status!=='GTRADE_SHARED_SNAPSHOT_CLOSED')return{status:snapshot.status,requests,reused_snapshot:cached,reasons:snapshot.reasons,transport_receipts:snapshot.transport_receipts};
   if(completed-snapshot.completed_ts>300000)return{status:'GTRADE_SHARED_SNAPSHOT_STALE',requests:0,reused_snapshot:true};
   if(snapshot.hint_markets&&!snapshot.hint_markets.some(x=>x.contract===contract))return{status:'GTRADE_HINT_SNAPSHOT_EXACT_ASSET_NOT_SELECTED',requests,reused_snapshot:cached};
   const pinKey=run_id+':'+native_symbol;let pin=pinnedPositions.get(pinKey)??null,pinCalls=0;

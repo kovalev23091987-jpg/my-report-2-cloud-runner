@@ -1,0 +1,51 @@
+{
+  "schema": "NATIVE_HTTP_DIAGNOSTIC_AND_ACTIVE_SOURCE_CANDIDATE_V1",
+  "recorded_utc": "2026-10-14T11:14:17.815935+00:00",
+  "basis_main": "d606c3efbde8ac16128b961881d8afd71079b874",
+  "scope": "Fix lost gTrade failed transport receipts and distinguish native429 from failed transport in source availability journal; no strategy, source forecast weights, quota or form changes",
+  "new_defect": {
+    "saved_original_report": "checkpoints/active-source-native-pr340-natural-38545971395/report2-run-result.json",
+    "source_proof_ref": "7366d252538f8fc63ea81911bdbb531a23e94ad4",
+    "observed_status": "GTRADE_HTTP_NOT_CLOSED",
+    "exact_original_HTTP_status_not_in_saved_output": true,
+    "static_cause": "collector dropped original receipts before combined route/audit; generic status could not distinguish429/503/invalid JSON",
+    "claim_the_actual_past_failure_was429": false
+  },
+  "implementation": [
+    "Retain original failed catalog and snapshot HTTP receipts through collector.",
+    "Project fixed endpoint/status/reason/time/hash fields with no URLs, body, accounts, credentials or free text.",
+    "Only original in-memory same-contract/run/cost proof may classify generic429 as provider quota; JSON copies are diagnostics only.",
+    "Mixed429/5xx stays transport failure;200 invalid JSON stays schema failure.",
+    "Preserve fallback loop, reservations, native4/LIQ8/164 and source allowance counters.",
+    "Optional operational detail cannot evict the previous bounded acquisition audit."
+  ],
+  "saved_source_census": {
+    "path": "checkpoints/ACTIVE_SAVED_SOURCE_USE_POST_PR341_20261014.json.gz",
+    "raw_sha256": "18b3c361906732f39c940537e785fa40335aef2c896a5e83fa761a17247424a5",
+    "publications": 45,
+    "assets": 17,
+    "issues": 0,
+    "rejected_bindings": 0,
+    "N04_useful_context_assets": 12,
+    "all105_current_useful_coverage_proven": false
+  },
+  "tests": [
+    "Original429 catalog survives failed same-run reuse without anotherHTTP.",
+    "Parallel failure identifies each original endpoint/status.",
+    "Foreign, serialized, stale and wrong-cost proof cannot affect classification.",
+    "Mixed error and invalidJSON differ.",
+    "Unsafe URLs, times and payloads fail closed.",
+    "Quota failure keeps reliability unchanged and tries following eligible route within four.",
+    "Optional audit diagnostics preserve original audit bound."
+  ],
+  "common_cloud_pending": true,
+  "candidate_not_merged": true,
+  "new_provider_HTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "hot_original_rows_preserved": true,
+  "rolling_backlog_not_enabled": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}
