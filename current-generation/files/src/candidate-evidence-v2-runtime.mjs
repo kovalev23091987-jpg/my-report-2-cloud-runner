@@ -26,7 +26,7 @@ import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,PAUSED_BLOCKS,evidenceDedupKey,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
-import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
+import {recordEvidenceSourceHealth,readEvidenceSourcePriorityHistory} from './evidence-source-store.mjs';
 
 export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v21-exact-flow-five-minute-publication-20261005';
 
@@ -87,6 +87,27 @@ export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){
  // Each eligible route remains present exactly once: a cached fact costs no
 // additional HTTP, and a quota/backoff skip must not suppress the next route.
  return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>(owner_priority?(Number(priorityNames.has(b.route.name))-Number(priorityNames.has(a.route.name))):0)||b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
+}
+// Compare alternatives inside one block only. Row counts for sector facts
+// cannot displace a compulsory trade/flow/chain owner in another block.
+const PRIORITY_ALTERNATIVES=Object.freeze({SECTOR:{block:'N15',source:'COINPAPRIKA_SECTOR'},SECTOR_COINGECKO:{block:'N15',source:'COINGECKO_SECTOR'}});
+export function orderEvidenceRoutesBySourceHistory(routes=[],history={}, {contract,now=Date.now()}={}){
+ const out=[...routes],stats={},rejected=[];
+ for(const route of routes){
+  const binding=PRIORITY_ALTERNATIVES[route.name];if(!binding)continue;
+  const rows=(history.observations||[]).filter(r=>r.source_id===binding.source).filter(r=>{
+   const valid=r.contract===contract&&typeof r.run_id==='string'&&r.run_id.length>0&&Number.isSafeInteger(r.observed_ts)&&r.observed_ts<=now&&r.observed_ts>=now-86400000&&Number.isSafeInteger(r.actual_http)&&r.actual_http>0&&['evidence_rows','valid_rows','decision_usable_rows'].every(k=>Number.isSafeInteger(r[k])&&r[k]>=0)&&r.valid_rows<=r.evidence_rows&&r.decision_usable_rows<=r.valid_rows;
+   if(!valid)rejected.push({source_id:r.source_id,reason:'EXACT_MARKET_CLOCK_OR_COUNTER_INVALID'});return valid;
+  }).sort((a,b)=>b.observed_ts-a.observed_ts||b.run_id.localeCompare(a.run_id)).slice(0,4);
+  const latest=rows[0],useful=latest?.operational_class==='CONTEXT_AVAILABLE'&&latest.valid_rows>0;
+  // A new failure does not inherit an earlier healthy status. Neutral valid
+  // context is useful even when decision_usable_rows and score are both zero.
+  stats[route.name]={source_id:binding.source,block_id:binding.block,observations:rows.length,latest_class:latest?.operational_class||null,latest_observed_ts:latest?.observed_ts||null,useful:!!useful,valid_rows_per_http:useful?rows.reduce((n,r)=>n+(r.operational_class==='CONTEXT_AVAILABLE'?r.valid_rows:0),0)/rows.reduce((n,r)=>n+r.actual_http,0):0};
+ }
+ const slots=routes.map((r,i)=>PRIORITY_ALTERNATIVES[r.name]?i:-1).filter(i=>i>=0);
+ const alternatives=slots.map(i=>routes[i]).sort((a,b)=>Number(stats[b.name].useful)-Number(stats[a.name].useful)||stats[b.name].valid_rows_per_http-stats[a.name].valid_rows_per_http);
+ slots.forEach((slot,i)=>{out[slot]=alternatives[i];});
+ return{routes:out,receipt:{status:history.status||'NO_SOURCE_PRIORITY_HISTORY',contract,scope:'EXACT_ASSET_WITHIN_N15_ALTERNATIVES_ONLY',original_order:routes.map(r=>r.name),ordered_routes:out.map(r=>r.name),source_statistics:stats,rejected_observations:rejected,sourceHTTP:0,score_changed:false,predictive_weight_changed:false,source_quarantine:false,all_eligible_routes_retained:true}};
 }
 export function exactCapabilityIdentity(params={}){return verifiedAssetRouteIdentity(params);}
 
@@ -322,7 +343,10 @@ export async function collectCandidateEvidenceV2(params={}){
   bluesky=PAUSED_BLOCKS.N06?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:socialEligible?deferred:(exactCapability?noRoute('BLUESKY_PUBLIC','NO_EXACT_SOCIAL_ASSET_ROUTE_FOR_VERIFIED_IDENTITY'):{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   official=PAUSED_BLOCKS.N01&&PAUSED_BLOCKS.N07&&PAUSED_BLOCKS.N08&&PAUSED_BLOCKS.N09?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:officialEligible?deferred:(exactCapability?noRoute('OFFICIAL_EVENTS','NO_EXACT_OFFICIAL_FEED_IN_CAPABILITY_REGISTRY'):{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   gdelt=PAUSED_BLOCKS.N07?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routeBlock=await collectEvidenceRouteBlock({routes:orderEvidenceDependencyRoutes(rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),params.asset_identity),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{JOINT_FLOW:collectExternalN05Flow,TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,BYBIT_OPTIONS:collectBybitOptionsEvidence,BINANCE_OPTION_INTEREST:collectBinanceOptionInterestEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
+ const priorityIds=routes.flatMap(r=>PRIORITY_ALTERNATIVES[r.name]?[PRIORITY_ALTERNATIVES[r.name].source]:[]);
+ const priorityHistory=priorityIds.length>1?await readEvidenceSourcePriorityHistory(params.db,{contract:params.contract,source_ids:priorityIds,admit:params.source_health_admit,now:params.now??Date.now()}):{status:'NO_ALTERNATIVE_SOURCE_PAIR',observations:[]};
+ const prioritized=orderEvidenceRoutesBySourceHistory(rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),priorityHistory,{contract:params.contract,now:params.now??Date.now()});
+ const routeBlock=await collectEvidenceRouteBlock({routes:orderEvidenceDependencyRoutes(prioritized.routes,params.asset_identity),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{JOINT_FLOW:collectExternalN05Flow,TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,BYBIT_OPTIONS:collectBybitOptionsEvidence,BINANCE_OPTION_INTEREST:collectBinanceOptionInterestEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const coinmetrics=PAUSED_BLOCKS.N02?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.COINMETRICS||{status:'EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const delta=PAUSED_BLOCKS.N14?pausedN14:routeBlock.results.DELTA||{status:'NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY',evidence:[],network_calls:0};
@@ -358,6 +382,7 @@ export async function collectCandidateEvidenceV2(params={}){
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
   contract:params.contract,
+  source_priority:{...prioritized.receipt,actual_route_order:routeBlock.receipts.map(r=>r.route).filter(Boolean)},
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
   evidence,
   network_calls:core.network_calls+routeBlock.network_calls,

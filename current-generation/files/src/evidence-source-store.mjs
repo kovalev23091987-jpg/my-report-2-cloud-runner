@@ -76,6 +76,25 @@ export async function writeEvidenceSourceCache(db,input={}){
 
 // Operational observations, separate from forecast accuracy and strategy weights.
 // The caller must reserve DB headroom before this optional diagnostic work.
+export const SOURCE_PRIORITY_HISTORY_SQL=`SELECT contract,source_id,run_id,observed_ts,actual_http,status,operational_class,evidence_rows,valid_rows,decision_usable_rows FROM report2_evidence_source_health_observation INDEXED BY report2_evidence_source_health_recent WHERE source_id=?1 AND contract=?2 AND observed_ts>=?3 AND observed_ts<=?4 ORDER BY observed_ts DESC LIMIT 4`;
+export async function readEvidenceSourcePriorityHistory(db,{contract,source_ids=[],admit,now=Date.now()}={}){
+ const ids=[...new Set(source_ids)];
+ const base={contract,observations:[],predictive_weight_changed:false,quarantine_activated:false,score_cap:0,read_only:true};
+ if(!db?.prepare||!contract||!ids.length||ids.length>4||ids.some(id=>typeof id!=='string'||!id)||!Number.isSafeInteger(now)||now<=0)return{...base,status:'SOURCE_PRIORITY_SCOPE_REQUIRED'};
+ // Each query uses the existing source/contract/time index. No schema writes,
+ // unrestricted contract scan, provider transport or source reservation.
+ const grant=admit?.({rows_read:ids.length*32,rows_written:0});
+ if(grant?.allowed!==true)return{...base,status:grant?.status||'HEALTH_DB_ADMISSION_REQUIRED'};
+ const before=typeof db.usageSnapshot==='function'?db.usageSnapshot().unknown_ops:null,observations=[];
+ try{
+  for(const source_id of ids){
+   const q=await db.prepare(SOURCE_PRIORITY_HISTORY_SQL).bind(source_id,contract,now-86400000,now).all();
+   if(before!==null&&db.usageSnapshot().unknown_ops!==before)return{...base,status:'SOURCE_PRIORITY_NATIVE_USAGE_UNKNOWN'};
+   observations.push(...(q?.results||[]));
+  }
+  return{...base,status:'CLOSED_EXACT_SOURCE_PRIORITY_HISTORY',observations,source_ids:ids,scope:'LAST_FOUR_REAL_ATTEMPTS_PER_EXACT_SOURCE_MARKET_24H',admitted_rows_read:ids.length*32};
+ }catch(error){return{...base,status:'SOURCE_PRIORITY_HISTORY_UNAVAILABLE',error:String(error.message).slice(0,120)};}
+}
 export async function recordEvidenceSourceHealth(db,{contract,run_id,observations=[],admit,now=Date.now()}={}){
  const rows=observations.filter(r=>Number.isSafeInteger(r.actual_http)&&r.actual_http>0);
  if(!rows.length){
