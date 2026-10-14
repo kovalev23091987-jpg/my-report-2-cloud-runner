@@ -41,6 +41,14 @@ function __report2PublicCollectorIntervalHours(funding, info) {
   if (direct !== null && direct > 0) return direct > 60 ? direct / 60 : direct;
   var a = __report2PublicCollectorTimestamp(funding?.funding_time);
   var b = __report2PublicCollectorTimestamp(funding?.next_funding_time);
+  var settlement = __report2PublicCollectorFinite(info?.settlement_period);
+  var settlementDate = __report2PublicCollectorTimestamp(info?.settlement_date);
+  // HTX currently publishes null next_funding_time. Its original contract
+  // metadata supplies the hourly period; bind it to this exact USDT swap and
+  // the same advertised payment clock. Never infer eight hours by default.
+  if ([1,4,8].includes(settlement) && info?.contract_status===1 && info?.business_type==='swap' &&
+      funding?.contract_code===info?.contract_code && /^[^-\s]+-USDT$/u.test(info?.contract_code||'') &&
+      a!==null && a>0 && a===settlementDate) return settlement;
   return a !== null && b !== null && b > a ? (b - a) / 36e5 : null;
 }
 async function __report2PublicCollectorJson(url) {

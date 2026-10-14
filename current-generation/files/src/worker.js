@@ -3814,6 +3814,14 @@ function fundingIntervalHoursFromRaw(
       funding?.next_funding_time
     );
 
+  const settlementHours = num(info?.settlement_period);
+  const settlementDate = normalizeTs(info?.settlement_date);
+  if ([1,4,8].includes(settlementHours) && info?.contract_status===1 && info?.business_type==='swap' &&
+      funding?.contract_code===info?.contract_code && /^[^-\s]+-USDT$/u.test(info?.contract_code||'') &&
+      a!==null && a>0 && a===settlementDate) {
+    return {hours:settlementHours,source:'HTX_CONTRACT_SETTLEMENT_PERIOD_HOURS_MATCHED_FUNDING_CLOCK'};
+  }
+
   if (
     a !== null &&
     b !== null &&

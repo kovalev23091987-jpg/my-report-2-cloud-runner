@@ -1,0 +1,1404 @@
+{
+  "schema": "ACTIVE_SOURCE_STORAGE_AND_FUNDING_ORIGINAL_FACTS_V1",
+  "recorded_utc": "2026-10-14T06:56:19.400Z",
+  "main": "caa3ec4e9eb67a327ab662cbc0e5cf63b589b19a",
+  "sourceHTTP_new_actual": 2,
+  "new_independent_source_count": 0,
+  "MAIN_forced": 0,
+  "Telegram_by_agent": 0,
+  "source_fact_reservation": {
+    "id": "CODEX_SOURCE_STORAGE_FACTS:1791957222731",
+    "now": 1791957222731,
+    "day": "2026-10-14",
+    "rows_read": 5000,
+    "rows_written": 80
+  },
+  "source_fact_admission": {
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791957222731",
+    "recorded_utc": "2026-10-14T05:53:47.312Z",
+    "response": {
+      "result": [
+        {
+          "results": [],
+          "success": true,
+          "meta": {
+            "served_by": "v3-prod",
+            "served_by_region": "EEUR",
+            "served_by_colo": "ARN",
+            "served_by_primary": true,
+            "timings": {
+              "sql_duration_ms": 0.5724
+            },
+            "duration": 0.5724,
+            "changes": 1,
+            "last_row_id": 2280,
+            "changed_db": true,
+            "size_after": 477945856,
+            "rows_read": 25,
+            "rows_written": 3,
+            "total_attempts": 1
+          }
+        }
+      ],
+      "errors": [],
+      "messages": [],
+      "success": true,
+      "status": 200
+    },
+    "sourceHTTP": 0
+  },
+  "source_fact_schema": {
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791957222731",
+    "recorded_utc": "2026-10-14T05:54:40.505Z",
+    "receipts": [
+      {
+        "sql": "SELECT reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1",
+        "params": [
+          "CODEX_SOURCE_STORAGE_FACTS:1791957222731"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791957222731",
+                  "day_utc": "2026-10-14",
+                  "reserve_rows_read": 5000,
+                  "reserve_rows_written": 80,
+                  "state": "RESERVED"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.4231
+                },
+                "duration": 0.4231,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 1,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT name,sql FROM sqlite_master WHERE type='table' AND name IN ('report2_public_collector_health_v1','report2_market_snapshot_batch_v1','report2_liquidation_role_observation','v3_recheck_task_shadow','v3_telegram_dispatch_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','canonical_publication_shadow','v3_trigger_analysis_kick_shadow') LIMIT 16",
+        "params": [],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "name": "v3_user_lifecycle_shadow",
+                  "sql": "CREATE TABLE v3_user_lifecycle_shadow (\n  contract TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  rules_version TEXT NOT NULL,\n  status TEXT NOT NULL CHECK(status IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT')),\n  reason TEXT NOT NULL,\n  observation_ts INTEGER NOT NULL,\n  valid_until_ts INTEGER,\n  updated_ts INTEGER NOT NULL,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1),\n  PRIMARY KEY(contract,direction,wave_id,rules_version)\n)"
+                },
+                {
+                  "name": "v3_telegram_dispatch_shadow",
+                  "sql": "CREATE TABLE v3_telegram_dispatch_shadow (\n  dispatch_id TEXT PRIMARY KEY,\n  idempotency_key TEXT NOT NULL UNIQUE,\n  contract TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  lifecycle_event TEXT NOT NULL CHECK(lifecycle_event IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT')),\n  rules_version TEXT NOT NULL,\n  state TEXT NOT NULL CHECK(state IN ('PENDING','SENDING','SENT','FAILED_RETRYABLE','FAILED_FINAL','EXPIRED_NOT_SENT','SUPPRESSED_DEDUP')),\n  decision_id TEXT,\n  message_hash TEXT,\n  telegram_message_id TEXT,\n  last_error TEXT,\n  created_ts INTEGER NOT NULL,\n  updated_ts INTEGER NOT NULL,\n  sent_ts INTEGER,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1)\n)"
+                },
+                {
+                  "name": "canonical_publication_shadow",
+                  "sql": "CREATE TABLE canonical_publication_shadow (\n  publication_id TEXT PRIMARY KEY,\n  contract_code TEXT NOT NULL,\n  direction TEXT CHECK(direction IN ('LONG','SHORT') OR direction IS NULL),\n  run_id TEXT NOT NULL,\n  snapshot_id TEXT NOT NULL,\n  wave_id TEXT,\n  decision_id TEXT,\n  observed_ts INTEGER NOT NULL,\n  valid_until_ts INTEGER,\n  lifecycle_event TEXT CHECK(lifecycle_event IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT') OR lifecycle_event IS NULL),\n  canonical_state TEXT NOT NULL,\n  analytical_fingerprint TEXT NOT NULL,\n  canonical_json TEXT NOT NULL,\n  presentation_inputs_json TEXT NOT NULL DEFAULT '{}',\n  manual_text TEXT,\n  telegram_text TEXT,\n  presentation_hash TEXT,\n  actionability_status TEXT NOT NULL DEFAULT 'UNASSESSED',\n  actionability_reason TEXT,\n  created_ts INTEGER NOT NULL,\n  bound_ts INTEGER,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1),\n  UNIQUE(contract_code,run_id,snapshot_id,observed_ts,analytical_fingerprint)\n)"
+                },
+                {
+                  "name": "v3_dispatch_publication_binding_shadow",
+                  "sql": "CREATE TABLE v3_dispatch_publication_binding_shadow (\n  idempotency_key TEXT PRIMARY KEY,\n  publication_id TEXT NOT NULL,\n  contract_code TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  lifecycle_event TEXT NOT NULL CHECK(lifecycle_event IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT')),\n  rules_version TEXT NOT NULL,\n  decision_id TEXT,\n  snapshot_id TEXT NOT NULL,\n  run_id TEXT NOT NULL,\n  observed_ts INTEGER NOT NULL,\n  analytical_fingerprint TEXT NOT NULL,\n  presentation_hash TEXT NOT NULL,\n  created_ts INTEGER NOT NULL,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1)\n)"
+                },
+                {
+                  "name": "v3_recheck_task_shadow",
+                  "sql": "CREATE TABLE v3_recheck_task_shadow (\n  task_id TEXT PRIMARY KEY,\n  publication_id TEXT NOT NULL,\n  contract_code TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  snapshot_id TEXT NOT NULL,\n  run_id TEXT NOT NULL,\n  due_ts INTEGER NOT NULL,\n  expires_ts INTEGER NOT NULL,\n  state TEXT NOT NULL CHECK(state IN ('PENDING','CLAIMED','DONE','CANCELLED','EXPIRED')),\n  attempt_count INTEGER NOT NULL DEFAULT 0,\n  lease_owner TEXT,\n  lease_started_ts INTEGER,\n  lease_expires_ts INTEGER,\n  last_result TEXT,\n  created_ts INTEGER NOT NULL,\n  updated_ts INTEGER NOT NULL,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1)\n)"
+                },
+                {
+                  "name": "report2_market_snapshot_batch_v1",
+                  "sql": "CREATE TABLE report2_market_snapshot_batch_v1(bucket INTEGER NOT NULL,actor TEXT NOT NULL,generation TEXT NOT NULL,schema_version TEXT NOT NULL,shard INTEGER NOT NULL,source_timestamps_json TEXT NOT NULL,received_ts INTEGER NOT NULL,status TEXT NOT NULL,payload_hash TEXT NOT NULL,payload TEXT NOT NULL,contract_count INTEGER NOT NULL,payload_bytes INTEGER NOT NULL,PRIMARY KEY(actor,generation,bucket,shard))"
+                },
+                {
+                  "name": "report2_public_collector_health_v1",
+                  "sql": "CREATE TABLE report2_public_collector_health_v1(\n  actor TEXT NOT NULL,\n  generation TEXT NOT NULL,\n  last_bucket INTEGER NOT NULL,\n  last_started_ts INTEGER NOT NULL,\n  last_completed_ts INTEGER NOT NULL,\n  status TEXT NOT NULL,\n  contract_count INTEGER NOT NULL,\n  shard_count INTEGER NOT NULL,\n  external_requests INTEGER NOT NULL,\n  rows_read INTEGER NOT NULL,\n  rows_written INTEGER NOT NULL,\n  payload_bytes INTEGER NOT NULL,\n  error_text TEXT,\n  updated_ts INTEGER NOT NULL,\n  PRIMARY KEY(actor,generation)\n)"
+                },
+                {
+                  "name": "report2_liquidation_role_observation",
+                  "sql": "CREATE TABLE report2_liquidation_role_observation (run_id TEXT NOT NULL,contract TEXT NOT NULL,source_id TEXT NOT NULL,role TEXT NOT NULL,status TEXT NOT NULL,role_usable INTEGER NOT NULL,actual_http INTEGER,observed_ts INTEGER NOT NULL,PRIMARY KEY(run_id,contract,source_id))"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.3867
+                },
+                "duration": 0.3867,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 403,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT * FROM report2_public_collector_health_v1 WHERE actor=?1 AND generation=?2 LIMIT 1",
+        "params": [
+          "HUB_PUBLIC_COLLECTOR",
+          "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "actor": "HUB_PUBLIC_COLLECTOR",
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "last_bucket": 1791957000000,
+                  "last_started_ts": 1791957025336,
+                  "last_completed_ts": 1791957029081,
+                  "status": "CLOSED",
+                  "contract_count": 384,
+                  "shard_count": 6,
+                  "external_requests": 4,
+                  "rows_read": 42,
+                  "rows_written": 17,
+                  "payload_bytes": 115080,
+                  "error_text": null,
+                  "updated_ts": 1791957029081
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.4162
+                },
+                "duration": 0.4162,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 1,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT COUNT(*) AS rows FROM report2_liquidation_role_observation",
+        "params": [],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "rows": 676
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 1.5012
+                },
+                "duration": 1.5012,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 676,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    ],
+    "sourceHTTP": 0,
+    "source_calls": 0,
+    "data_rows_modified": 0
+  },
+  "source_fact_data": {
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791957222731",
+    "recorded_utc": "2026-10-14T05:56:11.820Z",
+    "receipts": [
+      {
+        "sql": "SELECT bucket,generation,shard,source_timestamps_json,payload,payload_hash,contract_count FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND generation=?2 AND bucket=?3 AND status='COMPLETE' ORDER BY shard ASC LIMIT 32",
+        "params": [
+          "HUB_PUBLIC_COLLECTOR",
+          "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "1791957000000"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "bucket": 1791957000000,
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "shard": 0,
+                  "source_timestamps_json": "{\"contracts\":1791957027982,\"market\":1791957027474,\"oi\":1791957027427,\"funding\":1791957027565,\"received\":1791957028179,\"expected_shards\":6,\"universe_total\":384}",
+                  "payload_hash": "bfd794f63af11364cf2fea24920d80ba41be7d9c54818c13b53aed8d5b337897",
+                  "contract_count": 64,
+                  "payload_summary": {
+                    "raw_bytes": 19200,
+                    "original_sha256": "bfd794f63af11364cf2fea24920d80ba41be7d9c54818c13b53aed8d5b337897",
+                    "contracts": 64
+                  }
+                },
+                {
+                  "bucket": 1791957000000,
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "shard": 1,
+                  "source_timestamps_json": "{\"contracts\":1791957027982,\"market\":1791957027474,\"oi\":1791957027427,\"funding\":1791957027565,\"received\":1791957028179,\"expected_shards\":6,\"universe_total\":384}",
+                  "payload_hash": "3ef05c129d596ed201579d0eb2453af46dd8239eec8d5b378dfdaff621ef9da5",
+                  "contract_count": 64,
+                  "payload_summary": {
+                    "raw_bytes": 19065,
+                    "original_sha256": "3ef05c129d596ed201579d0eb2453af46dd8239eec8d5b378dfdaff621ef9da5",
+                    "contracts": 64
+                  }
+                },
+                {
+                  "bucket": 1791957000000,
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "shard": 2,
+                  "source_timestamps_json": "{\"contracts\":1791957027982,\"market\":1791957027474,\"oi\":1791957027427,\"funding\":1791957027565,\"received\":1791957028179,\"expected_shards\":6,\"universe_total\":384}",
+                  "payload_hash": "59789d024c21c739a45cfc0f26b20e95cfacbd940b96fbf8f06c994395d5b1f7",
+                  "contract_count": 64,
+                  "payload_summary": {
+                    "raw_bytes": 19094,
+                    "original_sha256": "59789d024c21c739a45cfc0f26b20e95cfacbd940b96fbf8f06c994395d5b1f7",
+                    "contracts": 64
+                  }
+                },
+                {
+                  "bucket": 1791957000000,
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "shard": 3,
+                  "source_timestamps_json": "{\"contracts\":1791957027982,\"market\":1791957027474,\"oi\":1791957027427,\"funding\":1791957027565,\"received\":1791957028179,\"expected_shards\":6,\"universe_total\":384}",
+                  "payload_hash": "30e27df87c91d204ce42b79eda6de340b81c4d50f6fab766e7c7f55c83932f1b",
+                  "contract_count": 64,
+                  "payload_summary": {
+                    "raw_bytes": 19216,
+                    "original_sha256": "30e27df87c91d204ce42b79eda6de340b81c4d50f6fab766e7c7f55c83932f1b",
+                    "contracts": 64
+                  }
+                },
+                {
+                  "bucket": 1791957000000,
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "shard": 4,
+                  "source_timestamps_json": "{\"contracts\":1791957027982,\"market\":1791957027474,\"oi\":1791957027427,\"funding\":1791957027565,\"received\":1791957028179,\"expected_shards\":6,\"universe_total\":384}",
+                  "payload_hash": "3b9f7827612b1de005160354e96b935243388925b4aace2a26ac41f870d4986d",
+                  "contract_count": 64,
+                  "payload_summary": {
+                    "raw_bytes": 19244,
+                    "original_sha256": "3b9f7827612b1de005160354e96b935243388925b4aace2a26ac41f870d4986d",
+                    "contracts": 64
+                  }
+                },
+                {
+                  "bucket": 1791957000000,
+                  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+                  "shard": 5,
+                  "source_timestamps_json": "{\"contracts\":1791957027982,\"market\":1791957027474,\"oi\":1791957027427,\"funding\":1791957027565,\"received\":1791957028179,\"expected_shards\":6,\"universe_total\":384}",
+                  "payload_hash": "484daac37f24fa389f730156e789f8445991ab9b2b0b4536b96f3547ed5420c4",
+                  "contract_count": 64,
+                  "payload_summary": {
+                    "raw_bytes": 19239,
+                    "original_sha256": "484daac37f24fa389f730156e789f8445991ab9b2b0b4536b96f3547ed5420c4",
+                    "contracts": 64
+                  }
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 1.2458
+                },
+                "duration": 1.2458,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 7,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT run_id,contract,source_id,role,status,role_usable,actual_http,observed_ts FROM report2_liquidation_role_observation WHERE contract IN ('OP-USDT','BTW-USDT') ORDER BY observed_ts DESC,run_id DESC LIMIT 16",
+        "params": [],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "run_id": "1791955589005-1791955599564",
+                  "contract": "OP-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 0,
+                  "observed_ts": 1791955652097
+                },
+                {
+                  "run_id": "1791955589005-1791955599564",
+                  "contract": "BTW-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 3,
+                  "observed_ts": 1791955651321
+                },
+                {
+                  "run_id": "1791950184903-1791950192866",
+                  "contract": "BTW-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 3,
+                  "observed_ts": 1791950233808
+                },
+                {
+                  "run_id": "1791928586054-1791928605733",
+                  "contract": "OP-USDT",
+                  "source_id": "HYPERLIQUID_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "ACQUISITION_RETURNED",
+                  "role_usable": 0,
+                  "actual_http": 2,
+                  "observed_ts": 1791928654672
+                },
+                {
+                  "run_id": "1791915088548-1791915113316",
+                  "contract": "OP-USDT",
+                  "source_id": "HYPERLIQUID_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "ACQUISITION_RETURNED",
+                  "role_usable": 0,
+                  "actual_http": 2,
+                  "observed_ts": 1791915167494
+                },
+                {
+                  "run_id": "1791904593490-1791904601259",
+                  "contract": "BTW-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 3,
+                  "observed_ts": 1791904628434
+                },
+                {
+                  "run_id": "1791823287012-1791823297334",
+                  "contract": "BTW-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 3,
+                  "observed_ts": 1791823343421
+                },
+                {
+                  "run_id": "1791721723800-1791721735424",
+                  "contract": "BTW-USDT",
+                  "source_id": "GTRADE_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "GTRADE_HTTP_NOT_CLOSED",
+                  "role_usable": 0,
+                  "actual_http": 1,
+                  "observed_ts": 1791721805757
+                },
+                {
+                  "run_id": "1791717746928-1791717754880",
+                  "contract": "BTW-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 3,
+                  "observed_ts": 1791717808597
+                },
+                {
+                  "run_id": "1791717746928-1791717754880",
+                  "contract": "BTW-USDT",
+                  "source_id": "GTRADE_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "GTRADE_SYMBOL_UNSUPPORTED",
+                  "role_usable": 0,
+                  "actual_http": 1,
+                  "observed_ts": 1791717807095
+                },
+                {
+                  "run_id": "1791696198185-1791696208774",
+                  "contract": "BTW-USDT",
+                  "source_id": "GTRADE_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "GTRADE_SYMBOL_UNSUPPORTED",
+                  "role_usable": 0,
+                  "actual_http": 1,
+                  "observed_ts": 1791696259002
+                },
+                {
+                  "run_id": "1791660123414-1791660135297",
+                  "contract": "BTW-USDT",
+                  "source_id": "GTRADE_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "GTRADE_SYMBOL_UNSUPPORTED",
+                  "role_usable": 0,
+                  "actual_http": 1,
+                  "observed_ts": 1791660184682
+                },
+                {
+                  "run_id": "1791649353195-1791649364664",
+                  "contract": "BTW-USDT",
+                  "source_id": "GTRADE_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "GTRADE_SYMBOL_UNSUPPORTED",
+                  "role_usable": 0,
+                  "actual_http": 0,
+                  "observed_ts": 1791649410305
+                },
+                {
+                  "run_id": "1791649353195-1791649364664",
+                  "contract": "BTW-USDT",
+                  "source_id": "DYDX_PINNED_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+                  "role_usable": 0,
+                  "actual_http": 0,
+                  "observed_ts": 1791649409811
+                },
+                {
+                  "run_id": "1791606227816-1791606239491",
+                  "contract": "BTW-USDT",
+                  "source_id": "GTRADE_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "GTRADE_SYMBOL_UNSUPPORTED",
+                  "role_usable": 0,
+                  "actual_http": 1,
+                  "observed_ts": 1791606294862
+                },
+                {
+                  "run_id": "1791606227816-1791606239491",
+                  "contract": "OP-USDT",
+                  "source_id": "HYPERLIQUID_NATIVE",
+                  "role": "NATIVE_POSITION_CONTEXT",
+                  "status": "ACQUISITION_RETURNED",
+                  "role_usable": 0,
+                  "actual_http": 3,
+                  "observed_ts": 1791606292263
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 3.1219
+                },
+                "duration": 3.1219,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 749,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT publication_id,contract_code,run_id,snapshot_id,state,due_ts,expires_ts FROM v3_recheck_task_shadow WHERE state IN ('PENDING','CLAIMED') ORDER BY updated_ts DESC LIMIT 16",
+        "params": [],
+        "response": {
+          "result": [
+            {
+              "results": [],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.1816
+                },
+                "duration": 0.1816,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 3,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT b.publication_id,d.contract,d.state,d.lifecycle_event FROM v3_telegram_dispatch_shadow d JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key WHERE d.state IN ('PENDING','SENDING','FAILED_RETRYABLE') ORDER BY d.updated_ts DESC LIMIT 16",
+        "params": [],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "publication_id": "PUB:b04d55c4e316cc7454095a12f8e335ad068b1827",
+                  "contract": "UNI-USDT",
+                  "state": "FAILED_RETRYABLE",
+                  "lifecycle_event": "OBSERVE"
+                },
+                {
+                  "publication_id": "PUB:1cb836e97802a8c2b78353dd86a260a85b1a0267",
+                  "contract": "APT-USDT",
+                  "state": "FAILED_RETRYABLE",
+                  "lifecycle_event": "OBSERVE"
+                },
+                {
+                  "publication_id": "PUB:b83ef182a46c768c3ba6644ad224b278a8108a91",
+                  "contract": "STRK-USDT",
+                  "state": "PENDING",
+                  "lifecycle_event": "OBSERVE"
+                },
+                {
+                  "publication_id": "PUB:0c5a44297833febe30a44e20d64948350e751edc",
+                  "contract": "PONS-USDT",
+                  "state": "PENDING",
+                  "lifecycle_event": "OBSERVE"
+                },
+                {
+                  "publication_id": "PUB:90b3eb038d31bafa24e0714d9b94c3d30b2c0f52",
+                  "contract": "ZEC-USDT",
+                  "state": "FAILED_RETRYABLE",
+                  "lifecycle_event": "OBSERVE"
+                },
+                {
+                  "publication_id": "PUB:1f218be0973244384aef9921f324dcdfefec8fef",
+                  "contract": "FIL-USDT",
+                  "state": "FAILED_RETRYABLE",
+                  "lifecycle_event": "OBSERVE"
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.8386
+                },
+                "duration": 0.8386,
+                "changes": 0,
+                "last_row_id": 0,
+                "changed_db": false,
+                "size_after": 477945856,
+                "rows_read": 23,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    ],
+    "funding_summary": {
+      "total": 384,
+      "interval_known": 0,
+      "rate_known": 384,
+      "samples": [
+        {
+          "contract": "BTC-USDT",
+          "funding_rate": -0.000046942852865927,
+          "funding_interval_hours": null,
+          "observed_ts": 1791957027473,
+          "source_status": "CLOSED",
+          "missing": []
+        },
+        {
+          "contract": "BTW-USDT",
+          "funding_rate": 0.00005,
+          "funding_interval_hours": null,
+          "observed_ts": 1791957027473,
+          "source_status": "CLOSED",
+          "missing": []
+        },
+        {
+          "contract": "FARTCOIN-USDT",
+          "funding_rate": 0.000116113090586587,
+          "funding_interval_hours": null,
+          "observed_ts": 1791957027473,
+          "source_status": "CLOSED",
+          "missing": []
+        },
+        {
+          "contract": "OP-USDT",
+          "funding_rate": 0.0001,
+          "funding_interval_hours": null,
+          "observed_ts": 1791957027473,
+          "source_status": "CLOSED",
+          "missing": []
+        },
+        {
+          "contract": "STRK-USDT",
+          "funding_rate": 0.00005,
+          "funding_interval_hours": null,
+          "observed_ts": 1791957027473,
+          "source_status": "CLOSED",
+          "missing": []
+        }
+      ],
+      "original_metadata": {
+        "contracts": 1791957027982,
+        "market": 1791957027474,
+        "oi": 1791957027427,
+        "funding": 1791957027565,
+        "received": 1791957028179,
+        "expected_shards": 6,
+        "universe_total": 384
+      }
+    },
+    "sourceHTTP": 0,
+    "data_rows_modified": 0
+  },
+  "source_fact_finalization": {
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791957222731",
+    "response": {
+      "result": [
+        {
+          "results": [],
+          "success": true,
+          "meta": {
+            "served_by": "v3-prod",
+            "served_by_region": "EEUR",
+            "served_by_colo": "ARN",
+            "served_by_primary": true,
+            "timings": {
+              "sql_duration_ms": 0.292
+            },
+            "duration": 0.292,
+            "changes": 1,
+            "last_row_id": 0,
+            "changed_db": true,
+            "size_after": 477945856,
+            "rows_read": 1,
+            "rows_written": 1,
+            "total_attempts": 1
+          }
+        }
+      ],
+      "errors": [],
+      "messages": [],
+      "success": true,
+      "status": 200
+    },
+    "sourceHTTP": 0
+  },
+  "funding_fact_reservation": {
+    "id": "CODEX_SOURCE_STORAGE_FACTS:1791958687564",
+    "now": 1791958687564,
+    "day": "2026-10-14",
+    "rows_read": 5000,
+    "rows_written": 80
+  },
+  "funding_fact": {
+    "allowed": true,
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791958687564",
+    "recorded_utc": "2026-10-14T06:18:12.223Z",
+    "receipts": [
+      {
+        "sql": "INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)\nSELECT ?1,?2,5000,80,'RESERVED',?3 FROM (\nSELECT COALESCE(SUM(reserve_rows_read),0) AS r,COALESCE(SUM(reserve_rows_written),0) AS w,\nCOALESCE(SUM(CASE WHEN state='FINALIZED' AND COALESCE(unknown_ops,1)>0 THEN 1 ELSE 0 END),0) AS u,\nCOALESCE(SUM(CASE WHEN reservation_id LIKE 'CODEX_SOURCE_STORAGE_FACTS:%' THEN 1 ELSE 0 END),0) AS n\nFROM report2_runner_budget_ledger_shadow WHERE day_utc=?2)\nWHERE r+5000<=3500000 AND w+80<=70000 AND u=0 AND n<2",
+        "params": [
+          "CODEX_SOURCE_STORAGE_FACTS:1791958687564",
+          "2026-10-14",
+          "1791958687564"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.5507
+                },
+                "duration": 0.5507,
+                "changes": 1,
+                "last_row_id": 2283,
+                "changed_db": true,
+                "size_after": 480063488,
+                "rows_read": 28,
+                "rows_written": 3,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT state,reserve_rows_read,reserve_rows_written FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1",
+        "params": [
+          "CODEX_SOURCE_STORAGE_FACTS:1791958687564"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "state": "RESERVED",
+                  "reserve_rows_read": 5000,
+                  "reserve_rows_written": 80
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 0.4611
+                },
+                "duration": 0.4611,
+                "changes": 0,
+                "last_row_id": 2283,
+                "changed_db": false,
+                "size_after": 480063488,
+                "rows_read": 1,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT p.publication_id,j.key,j.type,CASE WHEN lower(j.key) LIKE '%fund%' THEN j.value ELSE NULL END AS funding_value FROM canonical_publication_shadow p,json_each(CASE WHEN json_valid(p.canonical_json) THEN p.canonical_json ELSE '{}' END,'$.metadata') j WHERE p.publication_id=?1 LIMIT 120",
+        "params": [
+          "PUB:f6c8bc000b2d411324f928c1993437e666a99b21"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "contract",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "idea_basis_receipt",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "oi_window_receipts",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "canonical_runtime_adapter",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "entry_readiness_score_status",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "live_probability",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "validated_signal",
+                  "type": "false",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "automatic_execution",
+                  "type": "false",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "minimum_reportable_move_pct",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "technical_move_potential",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "start_closing_price",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "idea_basis",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "supporting_context",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "bounded_money_flow_diagnostic",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "sector_relative_strength_review",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "execution_context_source",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "internal_market_context",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "dynamic_liquidation_panel",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "supplemental_score_adjustment",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "score_basis",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "direction_resolution",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "scenario_plan_transfer",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "source_role_view",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "snapshot_comparison",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "evidence_domain_contract",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+                  "key": "protective_filter",
+                  "type": "null",
+                  "funding_value": null
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 5.5756
+                },
+                "duration": 5.5756,
+                "changes": 0,
+                "last_row_id": 2283,
+                "changed_db": false,
+                "size_after": 480063488,
+                "rows_read": 27,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      },
+      {
+        "sql": "SELECT p.publication_id,j.key,j.type,CASE WHEN lower(j.key) LIKE '%fund%' THEN j.value ELSE NULL END AS funding_value FROM canonical_publication_shadow p,json_each(CASE WHEN json_valid(p.canonical_json) THEN p.canonical_json ELSE '{}' END,'$.metadata') j WHERE p.publication_id=?1 LIMIT 120",
+        "params": [
+          "PUB:a853752304fb3df460f2066b10171a33258f1d28"
+        ],
+        "response": {
+          "result": [
+            {
+              "results": [
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "contract",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "idea_basis_receipt",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "oi_window_receipts",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "canonical_runtime_adapter",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "entry_readiness_score_status",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "live_probability",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "validated_signal",
+                  "type": "false",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "automatic_execution",
+                  "type": "false",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "minimum_reportable_move_pct",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "technical_move_potential",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "start_closing_price",
+                  "type": "null",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "idea_basis",
+                  "type": "text",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "supporting_context",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "bounded_money_flow_diagnostic",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "sector_relative_strength_review",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "execution_context_source",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "internal_market_context",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "dynamic_liquidation_panel",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "supplemental_score_adjustment",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "score_basis",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "direction_resolution",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "scenario_plan_transfer",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "source_role_view",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "snapshot_comparison",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "evidence_domain_contract",
+                  "type": "object",
+                  "funding_value": null
+                },
+                {
+                  "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+                  "key": "protective_filter",
+                  "type": "null",
+                  "funding_value": null
+                }
+              ],
+              "success": true,
+              "meta": {
+                "served_by": "v3-prod",
+                "served_by_region": "EEUR",
+                "served_by_colo": "ARN",
+                "served_by_primary": true,
+                "timings": {
+                  "sql_duration_ms": 2.6654
+                },
+                "duration": 2.6654,
+                "changes": 0,
+                "last_row_id": 2283,
+                "changed_db": false,
+                "size_after": 480063488,
+                "rows_read": 27,
+                "rows_written": 0,
+                "total_attempts": 1
+              }
+            }
+          ],
+          "errors": [],
+          "messages": [],
+          "success": true,
+          "status": 200
+        }
+      }
+    ],
+    "sourceHTTP": 0
+  },
+  "source_HTTP_admission_error": "Orchestration return used undefined source variable after4 native replies succeeded; mutation sequence was not replayed.",
+  "source_HTTP_exact_readback": {
+    "allowed": true,
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791958687564:SOURCE2",
+    "source": "HTX_FUNDING_CLOCKS_QUALIFICATION",
+    "source_HTTP_reserved": 2,
+    "response": {
+      "result": [
+        {
+          "results": [
+            {
+              "source": "HTX_FUNDING_CLOCKS_QUALIFICATION",
+              "day_utc": "2026-10-14",
+              "attempts": 2
+            }
+          ],
+          "success": true,
+          "meta": {
+            "served_by": "v3-prod",
+            "served_by_region": "EEUR",
+            "served_by_colo": "ARN",
+            "served_by_primary": true,
+            "timings": {
+              "sql_duration_ms": 0.2615
+            },
+            "duration": 0.2615,
+            "changes": 0,
+            "last_row_id": 0,
+            "changed_db": false,
+            "size_after": 480063488,
+            "rows_read": 1,
+            "rows_written": 0,
+            "total_attempts": 1
+          }
+        }
+      ],
+      "errors": [],
+      "messages": [],
+      "success": true,
+      "status": 200
+    },
+    "native_prior_billing_receipts_not_exported_due_to_JS_return_error": true,
+    "prior_D1_reservation_kept_whole_without_refund": true
+  },
+  "funding_budget_conservative_hold": {
+    "reservation_id": "CODEX_SOURCE_STORAGE_FACTS:1791958687564",
+    "response": {
+      "result": [
+        {
+          "results": [],
+          "success": true,
+          "meta": {
+            "served_by": "v3-prod",
+            "served_by_region": "EEUR",
+            "served_by_colo": "ARN",
+            "served_by_primary": true,
+            "timings": {
+              "sql_duration_ms": 0.6115
+            },
+            "duration": 0.6115,
+            "changes": 1,
+            "last_row_id": 0,
+            "changed_db": true,
+            "size_after": 480067584,
+            "rows_read": 1,
+            "rows_written": 1,
+            "total_attempts": 1
+          }
+        }
+      ],
+      "errors": [],
+      "messages": [],
+      "success": true,
+      "status": 200
+    },
+    "state": "RESERVED_WHOLE_5000_80_NOT_REFUNDED",
+    "native_measurement_not_inferred_zero": true
+  },
+  "D1_first_package_actual": {
+    "requests": 10,
+    "rows_read": 1889,
+    "rows_written": 4,
+    "unknown_ops": 0
+  },
+  "D1_second_package_actual_incomplete": true,
+  "D1_second_package_reserved_whole": {
+    "rows_read": 5000,
+    "rows_written": 80,
+    "source_HTTP_reserved": 2,
+    "no_refund": true,
+    "unexported_reply_count": 4
+  },
+  "storage_descriptors": {
+    "recorded_utc": "2026-10-14T05:39:14.545Z",
+    "rows": [
+      {
+        "success": true,
+        "status": 200,
+        "id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+        "data": {
+          "uuid": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+          "name": "report2-data-plane",
+          "file_size": 477925376,
+          "version": "production"
+        },
+        "errors": []
+      },
+      {
+        "success": true,
+        "status": 200,
+        "id": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+        "data": {
+          "uuid": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+          "name": "report2-free-canonical-history",
+          "file_size": 2486272,
+          "version": "production"
+        },
+        "errors": []
+      },
+      {
+        "success": true,
+        "status": 200,
+        "id": "68a85c40-41e8-4bcc-9599-5ea5da281126",
+        "data": {
+          "uuid": "68a85c40-41e8-4bcc-9599-5ea5da281126",
+          "name": "report2-free-liq-forecast-history",
+          "file_size": 479232,
+          "version": "production"
+        },
+        "errors": []
+      }
+    ],
+    "D1_queries": 0,
+    "sourceHTTP": 0,
+    "metadata_size_not_query_measured": true
+  },
+  "unknown_primary_free_pages": true,
+  "raw_funding_qualification": "checkpoints/htx-funding-clock-raw-qualification-20261014",
+  "period_105_candidate": {
+    "h1": 1,
+    "h4": 63,
+    "h8": 41,
+    "payout_clock_matched": 105,
+    "runtime_natural_verified": false
+  },
+  "known_new_issue": "The current collector has384 current rate values but0 payment intervals. next_funding_time is null in original HTX batch; contract metadata settlement_period is present for every approved105 and matches all original payment clocks.",
+  "published_free_source_guarantee_caveat": {
+    "arbitrum": "Public RPC is free but explicitly without uptime/latency/rate guarantees",
+    "DYDX_PublicNode": "Free RPC described, numeric monthly guarantee not published; no native monthly cap raised"
+  },
+  "references": [
+    "https://raw.githubusercontent.com/ccxt/ccxt/refs/heads/master/ts/src/htx.ts",
+    "https://perpfinder.com/research",
+    "https://docs.arbitrum.io/chain-info",
+    "https://developers.cloudflare.com/workers/platform/pricing/",
+    "https://developers.cloudflare.com/d1/sql-api/sql-statements/"
+  ],
+  "all_blocks_complete": false,
+  "project_complete": false
+}
