@@ -1,0 +1,41 @@
+{
+  "schema": "ACTIVE_SOURCE_N15_OPERATIONAL_PRIORITY_CANDIDATE_V1",
+  "base": "52c7520c7bf0faa22318fee2337ca7066843c309",
+  "scope": "N15 exact-asset source alternatives, preserving slots of N04/N05/N12 and mandatory sources",
+  "history_window": "last four real transport observations/source/exact contract over24h",
+  "neutral_valid_facts_are_useful_without_score": true,
+  "new_failure_does_not_inherit_old_success": true,
+  "all_alternatives_attempted_once_cache_before_HTTP": true,
+  "provider_backoff_and_source_reservations_unchanged": true,
+  "new_D1_indexes_or_schema_writes": 0,
+  "maximum_additional_reads_per_finalist": 64,
+  "daily_selected_checks": 86,
+  "additional_conservative_daily_reads": 5504,
+  "previous_conservative_whole_D1": {
+    "reads": 3367632,
+    "writes": 67488
+  },
+  "planned_conservative_whole_D1": {
+    "reads": 3373136,
+    "writes": 67488
+  },
+  "D1_limits": {
+    "reads": 3500000,
+    "writes": 70000
+  },
+  "retained_replay": {
+    "publications": 55,
+    "assets": 19,
+    "assets_with_real_useful_attempt_receipt": 16,
+    "provider_HTTP": 0,
+    "production_D1": 0,
+    "source_clocks_changed": false,
+    "controlled_journal_reconstruction_not_actual_production_journal": true
+  },
+  "native_query_plan": "existing source/contract/observed index; explicit bounded query",
+  "general_N05_N12_adapter_per_venue_dynamic_priority": "still pending; existing exact saved N05 route preference retained",
+  "strategy_weights_forms_pauses_limits_unchanged": true,
+  "no_forced_MAIN_or_Telegram": true,
+  "natural_runtime_acceptance_pending": true,
+  "project_complete": false
+}
