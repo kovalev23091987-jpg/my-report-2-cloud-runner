@@ -1,0 +1,328 @@
+{
+  "schema": "NATIVE_SECTOR_NINE_OF_ELEVEN_ACTUAL_PROVIDER_CONSUMER_V1",
+  "recorded_utc": "2026-10-14T12:43:54.829509+00:00",
+  "common_code_cloud": 38562924732,
+  "common_checks": 433,
+  "same_source_bytes_as_PR345": true,
+  "source_sha256": "abb011756c0b4703735d69503db1c24c2bf68d788822d22b8416c3398bb9edd2",
+  "first4_proof_ref": "190f41b2",
+  "first4_HTTP": 7,
+  "remaining7_run": 38564913120,
+  "remaining7_head": "ccd9935b2569580e09b576df348711388dd87a15",
+  "remaining7_artifact": 11895330062,
+  "remaining7_digest": "sha256:bdc58910b79a466f61c87c75fc88e0e376f7c35c6aa3ed17abc6f255d9c87e1b",
+  "remaining7_HTTP": 9,
+  "remaining7_D1": {
+    "read": 880,
+    "write": 97,
+    "unknown": 0
+  },
+  "total_native11_HTTP": 16,
+  "accepted_new_native9": [
+    "FIL",
+    "ALGO",
+    "STEEM",
+    "DASH",
+    "HBAR",
+    "XMR",
+    "XPL",
+    "TAO",
+    "TIA"
+  ],
+  "gaps": [
+    {
+      "contract": "CHZ-USDT",
+      "reason": "Provider identifies exact CHZ through original Ethereum token while HTX binds native Chiliz Chain; do not guess equivalence."
+    },
+    {
+      "contract": "ICP-USDT",
+      "reason": "Provider native ledger canister representation is populated, rejected by empty-address native rule. Official ICP ledger docs confirm canonical denomination; repair under exact provider/native binding is pending."
+    }
+  ],
+  "rows": [
+    {
+      "contract": "HBAR-USDT",
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "CLOSED",
+      "network_calls": 3,
+      "consumer_status": "CLOSED",
+      "summary": {
+        "coin_id": "hedera-hashgraph",
+        "tag_id": "layer-1",
+        "category_name": "Layer 1 (L1)",
+        "target_source_ts": 1791981294000,
+        "target_change_24h_pct": -0.85436,
+        "peer_median_change_24h_pct": -0.551115,
+        "relative_strength_pct_points": -0.303245,
+        "eligible_peers": 50,
+        "returned_category_rows": 100,
+        "full_sector_coverage": false,
+        "source_ts": 1791981294000,
+        "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+        "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+        "direction_neutral": false,
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      "consumer_facts": [
+        {
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0,
+          "block_id": "N15",
+          "source": "CoinGecko",
+          "decision_block": "MARKET_STRENGTH_SPOT",
+          "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+          "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+          "value": "монета -0,85%, медиана -0,55%, разница -0,30 п.п.; сводные цены площадок",
+          "unit": "",
+          "source_ts": 1791981294000,
+          "observed_ts": 1791981321078,
+          "evidence_id": "EV2:35d339f09d181c81161c14dbba2adb96e2dfb52ba62d8769814c644c3157cc20",
+          "physical_root_key": "hedera:native:mainnet|hedera-hashgraph:layer-1:1791981294000"
+        }
+      ]
+    },
+    {
+      "contract": "XMR-USDT",
+      "identity": {
+        "chain": "monero",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "monero:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "CLOSED",
+      "network_calls": 1,
+      "consumer_status": "CLOSED",
+      "summary": {
+        "coin_id": "monero",
+        "tag_id": "layer-1",
+        "category_name": "Layer 1 (L1)",
+        "target_source_ts": 1791981294000,
+        "target_change_24h_pct": 4.73767,
+        "peer_median_change_24h_pct": -0.551115,
+        "relative_strength_pct_points": 5.288785,
+        "eligible_peers": 50,
+        "returned_category_rows": 100,
+        "full_sector_coverage": false,
+        "source_ts": 1791981294000,
+        "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+        "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+        "direction_neutral": false,
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      "consumer_facts": [
+        {
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0,
+          "block_id": "N15",
+          "source": "CoinGecko",
+          "decision_block": "MARKET_STRENGTH_SPOT",
+          "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+          "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+          "value": "монета +4,74%, медиана -0,55%, разница +5,29 п.п.; сводные цены площадок",
+          "unit": "",
+          "source_ts": 1791981294000,
+          "observed_ts": 1791981323767,
+          "evidence_id": "EV2:fa602507bbd851af207fddb5deb9d7b7e0b3b29f0701c3a62002d9428a4fcbaf",
+          "physical_root_key": "monero:native:mainnet|monero:layer-1:1791981294000"
+        }
+      ]
+    },
+    {
+      "contract": "XPL-USDT",
+      "identity": {
+        "chain": "plasma",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "plasma:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "CLOSED",
+      "network_calls": 1,
+      "consumer_status": "CLOSED",
+      "summary": {
+        "coin_id": "plasma",
+        "tag_id": "layer-1",
+        "category_name": "Layer 1 (L1)",
+        "target_source_ts": 1791981294000,
+        "target_change_24h_pct": -0.04048,
+        "peer_median_change_24h_pct": -0.551115,
+        "relative_strength_pct_points": 0.5106350000000001,
+        "eligible_peers": 50,
+        "returned_category_rows": 100,
+        "full_sector_coverage": false,
+        "source_ts": 1791981294000,
+        "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+        "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+        "direction_neutral": false,
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      "consumer_facts": [
+        {
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0,
+          "block_id": "N15",
+          "source": "CoinGecko",
+          "decision_block": "MARKET_STRENGTH_SPOT",
+          "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+          "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+          "value": "монета -0,04%, медиана -0,55%, разница +0,51 п.п.; сводные цены площадок",
+          "unit": "",
+          "source_ts": 1791981294000,
+          "observed_ts": 1791981326621,
+          "evidence_id": "EV2:2e79ba9060d7d41b568fde15b15aa8b04d3a720a0aa05b78e3fe461828ea7ba2",
+          "physical_root_key": "plasma:native:mainnet|plasma:layer-1:1791981294000"
+        }
+      ]
+    },
+    {
+      "contract": "CHZ-USDT",
+      "identity": {
+        "chain": "chiliz",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "chiliz:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "EXACT_ASSET_AND_CATEGORY_REQUIRED",
+      "network_calls": 1,
+      "consumer_status": "NOT_CLOSED",
+      "summary": null,
+      "consumer_facts": []
+    },
+    {
+      "contract": "ICP-USDT",
+      "identity": {
+        "chain": "internet-computer",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "internet-computer:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "EXACT_ASSET_AND_CATEGORY_REQUIRED",
+      "network_calls": 1,
+      "consumer_status": "NOT_CLOSED",
+      "summary": null,
+      "consumer_facts": []
+    },
+    {
+      "contract": "TAO-USDT",
+      "identity": {
+        "chain": "bittensor",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bittensor:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "CLOSED",
+      "network_calls": 1,
+      "consumer_status": "CLOSED",
+      "summary": {
+        "coin_id": "bittensor",
+        "tag_id": "layer-1",
+        "category_name": "Layer 1 (L1)",
+        "target_source_ts": 1791981294000,
+        "target_change_24h_pct": 0.28276,
+        "peer_median_change_24h_pct": -0.584265,
+        "relative_strength_pct_points": 0.867025,
+        "eligible_peers": 50,
+        "returned_category_rows": 100,
+        "full_sector_coverage": false,
+        "source_ts": 1791981294000,
+        "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+        "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+        "direction_neutral": false,
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      "consumer_facts": [
+        {
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0,
+          "block_id": "N15",
+          "source": "CoinGecko",
+          "decision_block": "MARKET_STRENGTH_SPOT",
+          "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+          "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+          "value": "монета +0,28%, медиана -0,58%, разница +0,87 п.п.; сводные цены площадок",
+          "unit": "",
+          "source_ts": 1791981294000,
+          "observed_ts": 1791981333169,
+          "evidence_id": "EV2:fbc5c887f6e1130945960e58ecad3511987106d793d5a8d30ce1e877fbeb6360",
+          "physical_root_key": "bittensor:native:mainnet|bittensor:layer-1:1791981294000"
+        }
+      ]
+    },
+    {
+      "contract": "TIA-USDT",
+      "identity": {
+        "chain": "celestia",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "celestia:mainnet",
+        "contract_or_mint": null
+      },
+      "status": "CLOSED",
+      "network_calls": 1,
+      "consumer_status": "CLOSED",
+      "summary": {
+        "coin_id": "celestia",
+        "tag_id": "layer-1",
+        "category_name": "Layer 1 (L1)",
+        "target_source_ts": 1791981294000,
+        "target_change_24h_pct": -7.22685,
+        "peer_median_change_24h_pct": -0.551115,
+        "relative_strength_pct_points": -6.6757349999999995,
+        "eligible_peers": 50,
+        "returned_category_rows": 100,
+        "full_sector_coverage": false,
+        "source_ts": 1791981294000,
+        "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+        "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+        "direction_neutral": false,
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      "consumer_facts": [
+        {
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0,
+          "block_id": "N15",
+          "source": "CoinGecko",
+          "decision_block": "MARKET_STRENGTH_SPOT",
+          "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+          "label": "Сектор «базовые блокчейны» за 24 часа, выборка 50 монет",
+          "value": "монета -7,23%, медиана -0,55%, разница -6,68 п.п.; сводные цены площадок",
+          "unit": "",
+          "source_ts": 1791981294000,
+          "observed_ts": 1791981335568,
+          "evidence_id": "EV2:75b0224037c35fa61240ba8b3b4c0f8096b3eab53ec82c7e7aa9c1fcfed45d27",
+          "physical_root_key": "celestia:native:mainnet|celestia:layer-1:1791981294000"
+        }
+      ]
+    }
+  ],
+  "old4_not_reprobed": true,
+  "manual_reserve_used": false,
+  "source_caps_changed": false,
+  "natural_new_native9_use_pending": true,
+  "original_zip_and_body_digests_verified": true,
+  "all30_native_actual_use_claim": false,
+  "all105_coverage_claim": false,
+  "canonical_census": "checkpoints/ACTIVE_SAVED_SOURCE_USE_POST_PR345_20261014.json.gz",
+  "canonical_census_publications": 49,
+  "canonical_census_assets": 19,
+  "project_complete": false
+}
