@@ -28,18 +28,18 @@ export function decodeCanonicalPublicationRow(record){
 }
 // This module has no timer, HTTP, provider calls, source deletion or score path.
 // A private D1 writer must supply its measured storage and shared account budget.
-export async function retainCanonicalPublicationRow(db,record,{db_admit,storage_bytes,now=Date.now()}={}){
+export async function retainCanonicalPublicationRow(db,record,{db_admit,storage_bytes,now=Date.now(),include_verified_record=false}={}){
  decodeCanonicalPublicationRow(record);
  if(!db?.prepare||!Number.isSafeInteger(storage_bytes)||storage_bytes<0||!positive(now)||typeof db_admit!=='function')return{status:'ARCHIVE_MEASURED_ADMISSION_REQUIRED',retained:false};
  if(db_admit({rows_read:3,rows_written:24})?.allowed!==true)return{status:'ARCHIVE_SHARED_D1_BUDGET_DENIED',retained:false};
  const existing=await db.prepare('SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1').bind(record.publication_id,record.raw_sha256).first();
- if(existing){const stored=JSON.parse(existing.record_json);decodeCanonicalPublicationRow(stored);if(stored.raw_sha256!==record.raw_sha256||stored.raw_bytes!==record.raw_bytes)throw Error('ARCHIVE_IMMUTABLE_COLLISION');return{status:'ARCHIVE_IDENTICAL_RETAINED',retained:true,publication_id:record.publication_id,raw_sha256:record.raw_sha256,stored_gzip_sha256:stored.gzip_sha256};}
+ if(existing){const stored=JSON.parse(existing.record_json);decodeCanonicalPublicationRow(stored);if(stored.raw_sha256!==record.raw_sha256||stored.raw_bytes!==record.raw_bytes)throw Error('ARCHIVE_IMMUTABLE_COLLISION');return{status:'ARCHIVE_IDENTICAL_RETAINED',retained:true,publication_id:record.publication_id,raw_sha256:record.raw_sha256,stored_gzip_sha256:stored.gzip_sha256,...(include_verified_record?{verified_record:stored}:{})};}
  const wire=JSON.stringify(record),projected=storage_bytes+Buffer.byteLength(wire)+16384;
  if(projected>CANONICAL_COLD_ARCHIVE_LIMITS.database_soft_bytes)return{status:'ARCHIVE_STORAGE_GUARD_REACHED',retained:false,projected_bytes:projected};
  await db.prepare('INSERT INTO report2_canonical_cold_archive_v1(publication_id,raw_sha256,run_id,snapshot_id,contract_code,observed_ts,record_json,created_ts) VALUES(?1,?2,?3,?4,?5,?6,?7,?8) ON CONFLICT(publication_id,raw_sha256) DO NOTHING').bind(record.publication_id,record.raw_sha256,record.run_id,record.snapshot_id,record.contract_code,record.observed_ts,wire,now).run();
  const readback=await db.prepare('SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1').bind(record.publication_id,record.raw_sha256).first();
  if(!readback)throw Error('ARCHIVE_DURABLE_READBACK_MISSING');const stored=JSON.parse(readback.record_json);decodeCanonicalPublicationRow(stored);if(stored.raw_sha256!==record.raw_sha256||stored.raw_bytes!==record.raw_bytes)throw Error('ARCHIVE_DURABLE_READBACK_MISMATCH');
- return{status:'ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED',retained:true,publication_id:record.publication_id,raw_sha256:stored.raw_sha256,gzip_sha256:stored.gzip_sha256,raw_bytes:stored.raw_bytes,gzip_bytes:stored.gzip_bytes,original_observed_ts:stored.observed_ts,archived_ts:now,main_deletion_authorized:false,report_or_score_effect:false};
+ return{status:'ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED',retained:true,publication_id:record.publication_id,raw_sha256:stored.raw_sha256,gzip_sha256:stored.gzip_sha256,raw_bytes:stored.raw_bytes,gzip_bytes:stored.gzip_bytes,original_observed_ts:stored.observed_ts,archived_ts:now,main_deletion_authorized:false,report_or_score_effect:false,...(include_verified_record?{verified_record:stored}:{})};
 }
 export async function readCanonicalPublicationArchive(db,{publication_id,raw_sha256,db_admit}={}){
  if(!db?.prepare||typeof db_admit!=='function'||db_admit({rows_read:1,rows_written:0})?.allowed!==true)return{status:'ARCHIVE_READ_ADMISSION_REQUIRED',row:null};

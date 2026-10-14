@@ -4,10 +4,14 @@ import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
 import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from '../runner/github-bounded-phase-lease.mjs';
 import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFullEvidence} from '../runner/lossless-full-evidence-recovery.mjs';
+import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
+import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
 await fs.mkdir(dir,{recursive:true});
-const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
-const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,db,lease,admitted=false,reservation_id;
+const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
+const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
+const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,lease,admitted=false,reservation_id;
+const nativeUsage=()=>archive_db?combineMeasuredD1Usage(db.usageSnapshot(),archive_db.usageSnapshot()):db.usageSnapshot();
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
  if(control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETAINED_GITHUB_CONTROL_BOUND');
  const grant=whole.reserve({logical_request_id:'RETAINED_GITHUB_CONTROL:'+control_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('RETAINED_GITHUB_CONTROL_BOUND');control_HTTP++;
@@ -21,6 +25,10 @@ async function guard(){
 }
 try{
  if(!/^\d+$/.test(String(out.run||''))||process.env.GITHUB_REPOSITORY!==repository)throw Error('EXACT_RETAINED_REPOSITORY_RUN_REQUIRED');
+ if(!['full_evidence','canonical'].includes(kind))throw Error('EXACT_RETAINED_HISTORY_KIND_REQUIRED');
+ // Preparation may retain originals. Hot-body replacement needs its own
+ // measured native qualification; a code merge never enables it implicitly.
+ if(kind==='canonical'&&out.execute&&process.env.REPORT2_CANONICAL_COMPACTION_ENABLED!=='true')throw Error('CANONICAL_COMPACTION_NATIVE_QUALIFICATION_NOT_ACTIVATED');
  if(process.env.BORROW_EXISTING_OWNER){
   const main=(await control.call('git/ref/heads/main')).object.sha;if(main!==expected)throw Error('RETAINED_MAIN_MOVED');
   const [p,f,s,r,g]=await Promise.all([control.read(PHASE,main),control.read(FENCE,main),control.read('checkpoints/CURRENT_PROJECT_STATUS.json',main),control.read('checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json',main),control.read('REPORT2_CURRENT_GENERATION.json',main)]);
@@ -37,6 +45,16 @@ try{
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
  }});
  reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveLosslessRecoveryBudget(db,{reservation_id});admitted=out.admission.allowed;if(!admitted)throw Error(out.admission.status);
+ if(kind==='canonical'){
+  archive_db=new PrivateArchiveD1API({token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN,beforeRequest:()=>{
+   const grant=whole.reserve({logical_request_id:'RETAINED_PRIVATE_D1:'+private_HTTP,lane:'background',attempts:1});if(grant.allowed)private_HTTP++;return grant;
+  }});
+  await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
+  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
+   const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
+  },before_modify:guard,execute:out.execute}));
+  out.canonical_rows_modified=out.compacted?.length||0;
+ }else{
  const save_originals=async rows=>{
   const branch='report2-retained-history',parent=(await control.call('git/ref/heads/'+branch)).object.sha,treeBase=(await control.call('git/commits/'+parent)).tree.sha;
   const tree=await control.call('git/trees','POST',{base_tree:treeBase,tree:rows.map(s=>({path:s.path,mode:'100644',type:'blob',content:JSON.stringify(s.envelope)+'\n'}))});
@@ -46,14 +64,17 @@ try{
  };
  const secrets=Object.entries(process.env).filter(([k])=>/TOKEN|SECRET|KEY/.test(k)).map(([,v])=>v);
  Object.assign(out,await recoverLosslessFullEvidence({db,save_originals,fetch_archive:fetch,request_admit:e=>whole.reserve(e),before_modify:guard,execute:out.execute,secrets}));
+ }
 }catch(error){
  if(error.recovery_receipt)Object.assign(out,error.recovery_receipt);
- out.status=error.recovery_receipt?.status||'RETAINED_RECOVERY_NOT_ACTIVATED';out.reason=/^[A-Z0-9_]+$/.test(error.message)?error.message:'RETAINED_RECOVERY_ERROR';out.error_fingerprint=crypto.createHash('sha256').update(String(error.message)).digest('hex');
+ if(error.compaction_receipt)Object.assign(out,error.compaction_receipt);
+ out.canonical_rows_modified=out.compacted?.length||0;
+ out.status=error.recovery_receipt?.status||error.compaction_receipt?.status||'RETAINED_RECOVERY_NOT_ACTIVATED';out.reason=/^[A-Z0-9_]+$/.test(error.message)?error.message:'RETAINED_RECOVERY_ERROR';out.error_fingerprint=crypto.createHash('sha256').update(String(error.message)).digest('hex');
  if(admitted)process.exitCode=1;
 }finally{
- if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:db.usageSnapshot()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
- if(db){out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
+ if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:nativeUsage()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
+ if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=archive_db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
- out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
+ out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));
 }
