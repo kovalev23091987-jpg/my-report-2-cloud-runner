@@ -47,6 +47,15 @@ export async function reserveEvidenceSourceAttempts(db,{source,reservation_id,at
  const allowed=row?.source===provider&&Number(row?.attempts)===count;
  return{allowed,status:allowed?'RESERVED':'DAILY_CAP_OR_DUPLICATE',source:provider,day_utc:day,attempts:allowed?count:0};
 }
+// Advisory preflight only. The unchanged atomic reservation remains the
+// authority under concurrency; this never resets/refunds source or job usage.
+export async function evidenceSourceAttemptHeadroom(db,{source,attempts,daily_cap,now=Date.now()}={}){
+ const provider=text(source),count=Number(attempts),cap=Number(daily_cap);
+ if(!db?.prepare||!provider||!Number.isSafeInteger(count)||count<1||!Number.isSafeInteger(cap)||cap<1||!Number.isSafeInteger(now)||now<=0)return{allowed:false,status:'INVALID_SOURCE_RESERVATION',attempts:0};
+ const day_utc=new Date(now).toISOString().slice(0,10),row=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(provider,day_utc).first(),used=row?Number(row.attempts):0;
+ if(row&&(row.attempts===null||row.attempts===''||typeof row.attempts==='boolean')||!Number.isSafeInteger(used)||used<0)return{allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE',attempts:0,source:provider,day_utc};
+ return{allowed:used+count<=cap,status:used+count<=cap?'SOURCE_ATTEMPT_HEADROOM_AVAILABLE':'SOURCE_DAILY_CAP_REACHED',attempts:0,requested_attempts:count,source:provider,day_utc,used,cap,read_only:true};
+}
 
 export async function readEvidenceSourceCache(db,{source,asset_key,now=Date.now(),include_cache_clock=false}={}){
  const row=await db.prepare(`SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1`).bind(text(source),text(asset_key),now).first();

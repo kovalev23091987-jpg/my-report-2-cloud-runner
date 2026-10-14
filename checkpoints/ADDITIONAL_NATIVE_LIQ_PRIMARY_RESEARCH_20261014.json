@@ -1,0 +1,54 @@
+{
+  "schema": "ADDITIONAL_PRIMARY_FUTURE_LEVEL_RESEARCH_V1",
+  "recorded_utc": "2026-10-14T14:45:00Z",
+  "scope": "New official-protocol documentation after retaining the earlier worldwide source reviews; no repetition of earlier provider probes.",
+  "prior_research": "checkpoints/LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_20261012.json",
+  "sources": [
+    {
+      "name": "Avantis / Veranta",
+      "primary_protocol": "BASE_AVANTIS_CONTRACTS",
+      "primary_urls": [
+        "https://github.com/Avantis-Labs/avantis-trading-skill/blob/main/core-backend.md",
+        "https://github.com/Avantis-Labs/avantis-trading-skill/blob/main/data-api.md",
+        "https://sdk.avantisfi.com/trade.html",
+        "https://github.com/Avantis-Labs/avantis-trades-indexer"
+      ],
+      "documentation_findings": "Official core docs describe keyless per-wallet open positions with provider liquidationPrice, paginated all-trader /positions and listed pair/Pyth feed references. SDK exposes liquidation_price and margin fees. The source would be a different native protocol, not another connector to Hyperliquid.",
+      "original_position_source_clock_proven": false,
+      "exact_HTX105_overlap_proven": false,
+      "free_numeric_rate_entitlement_proven": false,
+      "bulk_schema_page_completeness_proven": false,
+      "OpenAPI_doc_tool_result": "NOT_ACCESSIBLE_THROUGH_WEB_TOOL; no response body obtained; not an API entitlement denial",
+      "status": "DOCUMENTED_PUBLIC_NATIVE_POSITION_LEAD_ONLY",
+      "next": "Read the official bulk schema and source-state timestamps; calculate admission before the first market body. Then exact Pyth/asset identity and selected-position payload must reach the existing external-native LIQ consumer. Do not use position openedAt as current snapshot time or a sample wallet/limit order as existing open exposure."
+    },
+    {
+      "name": "Ostium",
+      "primary_protocol": "ARBITRUM_OSTIUM_CONTRACTS",
+      "primary_urls": [
+        "https://ostium-labs.gitbook.io/ostium-docs/developer/api-and-sdk",
+        "https://github.com/0xOstium/ostium-python-sdk",
+        "https://github.com/0xOstium/ostium-python-sdk/blob/main/CHANGELOG.md",
+        "https://github.com/0xOstium/ostium-python-sdk/issues/29"
+      ],
+      "documentation_findings": "Official SDK has subgraph open positions and source-based liquidation metrics; a historical May2025 pair table lists only SOL beyond excluded BTC/ETH. July2026 changelog moves the price endpoint and describes indexer delay. Current broader altcoin overlap, usable public subgraph and free quotas are unproved.",
+      "status": "CURRENT_EXACT_ALTCOIN_AND_FREE_ROUTE_NOT_PROVEN",
+      "next": "Do not query old hosts or infer coverage from the historical pair list. Resolve current public pair/indexer and numeric clock/cost contract first; a wallet SDK example does not authorize signing or trading."
+    },
+    {
+      "name": "Tigris",
+      "primary_urls": ["https://docs.tigris.trade"],
+      "status": "NO_CURRENT_AUTHORITATIVE_USEFUL_API_ESTABLISHED_BY_THIS_SEARCH",
+      "existence_or_exhaustive_worldwide_absence_claim": false
+    }
+  ],
+  "new_connected_future_level_sources": 0,
+  "new_provider_market_HTTP": 0,
+  "production_D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "local_liquidation_calculations_enabled": false,
+  "source_clocks_refreshed": false,
+  "all_free_sources_exhausted_claim": false,
+  "project_complete": false
+}

@@ -1,7 +1,7 @@
 import {NATIVE_SECTOR_BINDINGS} from './coingecko-sector-evidence.mjs';
 import crypto from 'node:crypto';
 import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} from './supplemental-candidate-context.mjs';
-import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';
 
 export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v6-network-aliases-20261012';
@@ -93,6 +93,8 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
  };
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,now});
  if(cached?.version===HTX_ASSET_IDENTITY_VERSION&&Number.isFinite(cached.observed_ts)&&cached.observed_ts<=now)return withFallback(selectReference(cached,market,{cache_status:'VALID_HTX_REFERENCE_CACHE'}));
+ const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:1,daily_cap:DAILY_CAP,now});
+ if(!headroom.allowed)return withFallback({status:headroom.status,identity:null,network_calls:0,admission:headroom});
  const id=`HTX_ASSET_REFERENCE:${run_id}`;
  const grant=typeof request_admit==='function'?request_admit({logical_request_id:id,lane:'background',attempts:1}):null;
  if(grant?.allowed!==true||grant.duplicate===true)return{status:grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED',identity:null,network_calls:0};
