@@ -1,7 +1,7 @@
 name: LIQ assembled spot and 105 admission offline
 on:
   push:
-    branches: [main, codex/active-source-finalist-and-quota-20261014]
+    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014]
     paths:
       - .github/workflows/liq-assembled-offline-20261012.yml
       - current-generation/files/runner-main.mjs
@@ -67,6 +67,16 @@ on:
       - current-generation/tests/selected-finalist-source-priority.test.mjs
       - current-generation/tests/gtrade-position-routing.runtime.mjs
       - current-generation/tests/native-source-batch.runtime.mjs
+      - cloudflare/public-collector/private-price-consumer.mjs
+      - cloudflare/public-collector/private-price-bundle.mjs
+      - cloudflare/public-collector/private-price-consumer.test.mjs
+      - cloudflare/public-collector/funding-period-coverage.test.mjs
+      - cloudflare/public-collector/injected-worker-tail.js
+      - cloudflare/public-collector/github-backup.mjs
+      - cloudflare/public-collector/patch-worker.mjs
+      - cloudflare/public-collector/verify-deployment.mjs
+      - cloudflare/public-collector/continuous-backup-worker.mjs
+      - .github/workflows/report2-public-collector-backup.yml
 permissions:
   contents: read
 jobs:
@@ -84,7 +94,7 @@ jobs:
           script: |
             const {owner,repo}=context.repo;
             const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
-            const exactCandidate=context.ref==='refs/heads/codex/active-source-finalist-and-quota-20261014'&&main==='2338a42afc69c1f96275546c7b4a2b832410a511';
+            const exactCandidate=(context.ref==='refs/heads/codex/active-source-finalist-and-quota-20261014'&&main==='2338a42afc69c1f96275546c7b4a2b832410a511')||(context.ref==='refs/heads/codex/active-source-typed-private-price-20261014'&&main==='caa3ec4e9eb67a327ab662cbc0e5cf63b589b19a');
             if(main!==context.sha&&!exactCandidate)throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
@@ -142,6 +152,7 @@ jobs:
           node --test current-generation/tests/native-useful-acquisition-budget.test.mjs current-generation/tests/selected-native-reserve-policy.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/gtrade-catalog-planning.test.mjs > audit-output/liq-assembled/native-useful-budget.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gtrade-position-routing.runtime.mjs current-generation/tests/native-source-batch.runtime.mjs > audit-output/liq-assembled/native-useful-runtime.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/dydx-native-market-catalog.test.mjs current-generation/tests/dydx-runtime-collector.test.mjs current-generation/tests/selected-finalist-source-priority.test.mjs current-generation/tests/cache-only-native-caller.test.mjs > audit-output/liq-assembled/active-source-finalist-and-markets.tap
+          node --test cloudflare/public-collector/funding-period-coverage.test.mjs current-generation/tests/discovery-candidate-score.test.mjs current-generation/tests/funding-directional-policy.test.mjs cloudflare/public-collector/private-price-consumer.test.mjs cloudflare/public-collector/light-price-recheck.test.mjs cloudflare/public-collector/public-collector.test.mjs cloudflare/public-collector/github-backup.test.mjs cloudflare/public-collector/continuous-backup-worker.test.mjs cloudflare/public-collector/trigger-analysis-kick.test.mjs cloudflare/free-history/private-forecast-consumer.test.mjs > audit-output/liq-assembled/private-price-connected.tap
           cp audit-output/qnt-lsk-native4-retained-proof.json audit-output/liq-assembled/
       - name: Show failure locations
         if: failure()

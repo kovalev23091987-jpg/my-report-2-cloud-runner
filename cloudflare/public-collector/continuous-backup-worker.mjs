@@ -11,6 +11,7 @@ export function createCollectorJobBudget({used=0,on_charge=()=>{},fetch_impl=(..
 const ROOT=new URL('../../',import.meta.url);
 export const GUARDED_CODE_PATHS=Object.freeze([
  'cloudflare/public-collector/github-backup.mjs','cloudflare/public-collector/continuous-backup-worker.mjs','cloudflare/public-collector/scheduled-report-recovery.mjs','cloudflare/public-collector/trigger-analysis-kick.mjs','cloudflare/public-collector/injected-worker-tail.js',
+ 'cloudflare/public-collector/private-price-consumer.mjs','cloudflare/public-collector/private-price-bundle.mjs','current-generation/files/src/private-canonical-history.mjs','cloudflare/free-history/native-measured-d1.mjs','runner/d1-preaction-budget-guard.mjs','runner/private-archive-d1-api.mjs',
  'runner/report2-d1-adapter.mjs','runner/retained-history.mjs','current-generation/files/src/triggered-entry-recheck.mjs','current-generation/files/src/two-candidate-policy.mjs','current-generation/files/src/unified-budget.mjs',
  'current-generation/files/runner-main.mjs','current-generation/files/src/worker.js','.github/workflows/report2.yml','.github/workflows/report2-public-collector-backup.yml',
 ]);

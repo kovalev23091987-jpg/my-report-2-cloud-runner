@@ -1,0 +1,231 @@
+{
+  "schema": "PRIVATE_PRICE_CLOUD_READY_AND_POST337_NATURAL_V1",
+  "recorded_utc": "2026-10-14T05:45:57.495055+00:00",
+  "candidate_PR": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/338",
+  "cloud_tested_head": "f2efd55691b799124797c7fc54ed790483acf4c6",
+  "cloud_run": 38516053066,
+  "cloud_artifact_digest": "sha256:ad121bc9b66f9041d0ac176f6325b7b5383540da6d8ac2a15d730449927aec0b",
+  "assembled_validator": {
+    "status": "CURRENT_GENERATION_VALIDATED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "tests": "PASS",
+    "syntax": "PASS",
+    "schedule_minutes": 20,
+    "scheduled_runs_per_day": 72,
+    "manual_runs_per_day": 8,
+    "burst_deep_checks_per_day": 3,
+    "scheduled_analytics_interval_minutes": 40,
+    "scheduled_analytics_cycles_per_day": 36,
+    "full_cycle_candidate_limit": 2,
+    "worst_case_31_day_requests": 13330,
+    "overlay": "NOT_REQUESTED"
+  },
+  "private_price_connected_tests": 74,
+  "private_price_connected_pass": 74,
+  "candidate_source_hashes": {
+    "cloudflare/public-collector/private-price-consumer.mjs": "087ea3371dd899748b40a386884de9621b4b52700d484693fda315e98f4fef9d",
+    "cloudflare/public-collector/private-price-bundle.mjs": "4dd7b7be70ca26bd23ab1ed98fc288083ab4b242f50d8c8b424db047adfb23a2",
+    "cloudflare/public-collector/injected-worker-tail.js": "4d105da3c52b0c3f0029bae724e904d4c5c831d21a9f95e7486cdcf0fd836c59",
+    "cloudflare/public-collector/patch-worker.mjs": "0b21c6c01b3c42384c2ccb4a347273aad1b91cbef75750227a223302f57e35dc",
+    "cloudflare/public-collector/github-backup.mjs": "736753a77a720986b2b982168e1fa5f158602644545ea05b82f10772dd0f3cbc",
+    "cloudflare/public-collector/continuous-backup-worker.mjs": "5a9f738e1b792e252b36947346549ee09f1a89df2fe6053e602f86c6309367b0"
+  },
+  "candidate_deployed": false,
+  "owner_merge_deploy_approval_pending": true,
+  "natural_after_PR337": {
+    "cloud_run": 38516613342,
+    "head": "75a86884b2935fa3c14e6b4334386b57efbfe209",
+    "run_id": "1791955589005-1791955599564",
+    "artifact_digest": "sha256:7af4726c79ff5e99e0ca7957a2b66e436f0e5f258a2de7b60dbf37a93770858f",
+    "market_scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0,
+      "approved_scope": {
+        "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+        "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+        "approved_contracts": 122,
+        "approved_assets": 105,
+        "catalog_families": 3,
+        "unsupported_inverse_delivery_contracts": 17,
+        "catalog_observed_ts": 1791827516363,
+        "observed_ts": 1791955599767,
+        "expected_analysis_contracts": 105,
+        "accepted_analysis_contracts": 105,
+        "missing_approved_analysis_contracts": [],
+        "outside_approved_crypto_contracts": [
+          {
+            "contract": "ZCSH-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "SNPS-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "MAGIC-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          }
+        ],
+        "identity_rejected": [],
+        "duplicate_rejected": [],
+        "status": "CLOSED",
+        "structural_membership_only": true,
+        "source_clocks_refreshed": false,
+        "approved_universe_changed": false
+      },
+      "stage0_coverage_pct": 100,
+      "complete": true
+    },
+    "health": {
+      "status": "HEALTHY_NO_IDEA",
+      "reason": null
+    },
+    "selected": [
+      {
+        "contract": "OP-USDT",
+        "publication_id": "PUB:f6c8bc000b2d411324f928c1993437e666a99b21",
+        "snapshot_id": "S392:OP-USDT:1791955709915",
+        "canonical_state": "REJECTED",
+        "future_level_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+        "external_position_zones": 11,
+        "vendor_model_scenarios": 8,
+        "native_diagnostics": {
+          "schema": "BOUND_LIQUIDATION_ACQUISITION_DIAGNOSTICS_V1",
+          "contract": "OP-USDT",
+          "run_id": "1791955589005-1791955599564",
+          "snapshot_id": "S392:OP-USDT:1791955709915",
+          "observed_ts": 1791955709915,
+          "evaluated_ts": 1791955709915,
+          "routes": [
+            {
+              "lane": "DYDX_PINNED_NATIVE",
+              "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+              "kind": "EMPTY_BOUNDED_LEVEL_SAMPLE",
+              "actual_http": 0,
+              "source_ts": 1791955648834,
+              "original_clock_retained": true,
+              "complete_accounts_read": 200,
+              "full_market_census": false
+            },
+            {
+              "lane": "HYPERLIQUID_NATIVE",
+              "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+              "kind": "REQUEST_LIMIT",
+              "actual_http": 0,
+              "source_ts": null,
+              "original_clock_retained": false,
+              "complete_accounts_read": null,
+              "full_market_census": false
+            }
+          ],
+          "status": "ATTEMPT_DIAGNOSTICS_RETAINED",
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true,
+          "source_state_proof": false,
+          "score_contribution": 0,
+          "entry_authorized": false
+        },
+        "spot_reference": {
+          "schema": "liquidation-spot-price-reference-v1",
+          "status": "CLOSED",
+          "contract": "OP-USDT",
+          "source": "HTX",
+          "physical_root_key": "HTX_OFFICIAL_PUBLIC_MARKET",
+          "independent_liquidation_source_count_added": 0,
+          "network_calls": 0,
+          "score_contribution": 0,
+          "entry_authorized": false,
+          "observed_ts": 1791955709915,
+          "source_ts": 1791955662138,
+          "spot_source_ts": 1791955662138,
+          "futures_source_ts": 1791955663369,
+          "source_skew_ms": 1231,
+          "spot_mid_usdt": 0.15139999999999998,
+          "futures_mid_usdt": 0.15365499999999999,
+          "futures_over_spot_pct": 1.4894319682959178,
+          "scope": "PRICE_CONTEXT_ONLY_NOT_A_SPOT_LIQUIDATION_OR_INDEPENDENT_LEVEL_SOURCE"
+        },
+        "N15_source_results": {
+          "COINGECKO_SECTOR": {
+            "status": "CLOSED",
+            "HTTP": 2,
+            "qualified_evidence_ids": [
+              "EV2:533ac419582cfd31b9e2411ead200fa3164a13456a1d855c6e87bfcc843c8c38"
+            ]
+          },
+          "COINPAPRIKA_SECTOR": {
+            "status": "CLOSED",
+            "HTTP": 2,
+            "qualified_evidence_ids": [
+              "EV2:c00d764aee5bb9bf1f6d82cf2deb963e53bc46efba379c9d16fd776c54370c50"
+            ]
+          }
+        }
+      },
+      {
+        "contract": "BTW-USDT",
+        "publication_id": "PUB:a853752304fb3df460f2066b10171a33258f1d28",
+        "snapshot_id": "S392:BTW-USDT:1791955660185",
+        "canonical_state": "REJECTED",
+        "future_level_status": "CALCULATED_SCENARIOS_ONLY",
+        "external_position_zones": 0,
+        "vendor_model_scenarios": 20,
+        "native_diagnostics": {
+          "schema": "BOUND_LIQUIDATION_ACQUISITION_DIAGNOSTICS_V1",
+          "contract": "BTW-USDT",
+          "run_id": "1791955589005-1791955599564",
+          "snapshot_id": "S392:BTW-USDT:1791955660185",
+          "observed_ts": 1791955660185,
+          "evaluated_ts": 1791955660185,
+          "routes": [
+            {
+              "lane": "DYDX_PINNED_NATIVE",
+              "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+              "kind": "EMPTY_BOUNDED_LEVEL_SAMPLE",
+              "actual_http": 3,
+              "source_ts": 1791955648834,
+              "original_clock_retained": true,
+              "complete_accounts_read": 200,
+              "full_market_census": false
+            }
+          ],
+          "status": "ATTEMPT_DIAGNOSTICS_RETAINED",
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true,
+          "source_state_proof": false,
+          "score_contribution": 0,
+          "entry_authorized": false
+        },
+        "spot_reference": null,
+        "N15_source_results": {
+          "COINGECKO_SECTOR": {
+            "status": "CLOSED",
+            "HTTP": 2,
+            "qualified_evidence_ids": [
+              "EV2:28b8c9a180d9a1f021f699c31ecb9e569b4dd53cf2d69848100312017f308f9c"
+            ]
+          },
+          "COINPAPRIKA_SECTOR": {
+            "status": "EXACT_FUNCTIONAL_SECTOR_NOT_FOUND",
+            "HTTP": 1,
+            "qualified_evidence_ids": []
+          }
+        }
+      }
+    ],
+    "paused_issues": 0,
+    "same_run_SENT": false,
+    "agent_forced_MAIN": 0,
+    "native_acquisition_priority_executed": true,
+    "native_order_usefulness_optimization_still_required": "dYdX took3 fresh HTTP for an empty200-account bounded sample and served the second asset at0 HTTP;1 remaining native unit could not complete Hyperliquid. A successful snapshot is not a useful level.",
+    "all105_deep_coverage_proven": false
+  },
+  "existing_hot_originals_preserved": true,
+  "cold_compaction_not_activated": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

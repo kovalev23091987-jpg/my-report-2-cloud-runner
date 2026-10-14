@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
-import {patchWorker} from './patch-worker.mjs';
+import {patchWorker,assertCollectorD1Bindings} from './patch-worker.mjs';
 import {loadExactCollector} from './github-backup.mjs';
 
 const basePath=process.env.REPORT2_HUB_MODULE_PATH
@@ -94,7 +94,7 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v9-retained-price-checks-20261009/);
+  assert.match(upgraded.source,/report2-public-collector-v10-private-price-rechecks-20261014/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });
@@ -105,7 +105,7 @@ test('T03 upgrades the deployed V3 collector and preserves the Hub prefix',()=>{
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v9-retained-price-checks-20261009/);
+  assert.match(upgraded.source,/report2-public-collector-v10-private-price-rechecks-20261014/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
 });
 
@@ -114,7 +114,7 @@ test('T03 upgrades V4 while retaining exact bounded claims and a shorter backup 
   const previous='const worker_default={};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
-  assert.match(upgraded.source,/report2-public-collector-v9-retained-price-checks-20261009/);
+  assert.match(upgraded.source,/report2-public-collector-v10-private-price-rechecks-20261014/);
   assert.doesNotMatch(upgraded.source,/now \+ 24e4/);
   assert.equal((upgraded.source.match(/now \+ 12e4/g)||[]).length,2);
 });
@@ -192,4 +192,30 @@ test('V6 upgrades to retention fix and preserves every byte of the Hub prefix',(
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');assert.ok(upgraded.source.startsWith(prefix));
   assert.equal(patchWorker(upgraded.source,injected).status,'ALREADY_PATCHED');
+});
+
+test('same collector version with changed bytes replaces its tail and preserves the Hub',()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim(),prefix='const worker_default={};\n';
+  const previous=prefix+injected.replace('var __REPORT2_PUBLIC_COLLECTOR_VERSION', 'const obsolete=true;\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION').replace('function __report2PublicCollectorIntervalHours','function __oldIntervalHours')+'\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const updated=patchWorker(previous,injected);
+  assert.equal(updated.status,'UPDATED');
+  assert.equal(updated.source,prefix+'const obsolete=true;\n'+injected+'\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};');
+  const changed=prefix+injected.replace('function __report2PublicCollectorIntervalHours','function __oldIntervalHours')+'\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const fixed=patchWorker(changed,injected);
+  assert.equal(fixed.status,'UPDATED');assert.equal(fixed.source,prefix+injected+'\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};');
+  assert.equal(patchWorker(fixed.source,injected).status,'ALREADY_PATCHED');
+});
+
+test('same version without its exact export or with duplicate markers fails closed',()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim();
+  assert.throws(()=>patchWorker(injected,injected),/CURRENT_COLLECTOR_EXPORT_MISSING/);
+  assert.throws(()=>patchWorker(injected+'\n'+injected,injected),/DUPLICATE_COLLECTOR_MARKER/);
+});
+
+test('database verification requires the exact archive and primary database identities',()=>{
+  const expected=[{binding:'DATA_DB',database_id:'primary'},{binding:'CANONICAL_ARCHIVE_DB',database_id:'archive'}];
+  const actual=[{name:'DATA_DB',type:'d1',id:'primary'},{name:'CANONICAL_ARCHIVE_DB',type:'d1',database_id:'archive'}];
+  assert.doesNotThrow(()=>assertCollectorD1Bindings(actual,expected));
+  assert.throws(()=>assertCollectorD1Bindings([actual[0],{...actual[1],database_id:'foreign'}],expected),/NOT_EXACT:CANONICAL_ARCHIVE_DB/);
+  assert.throws(()=>assertCollectorD1Bindings([...actual,actual[1]],expected),/NOT_EXACT:CANONICAL_ARCHIVE_DB/);
 });

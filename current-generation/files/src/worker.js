@@ -3777,6 +3777,35 @@ function fundingIntervalHoursFromRaw(
   funding,
   info
 ) {
+  const a =
+    normalizeTs(
+      funding?.funding_time
+    );
+
+  const b =
+    normalizeTs(
+      funding?.next_funding_time
+    );
+
+  if (
+    a !== null &&
+    a > 0 &&
+    b !== null &&
+    b > a &&
+    b-a <= 24*3600000
+  ) {
+    return {
+      hours:
+        (
+          b - a
+        ) /
+        3600000,
+
+      source:
+        "funding_timestamps",
+    };
+  }
+
   const explicitCandidates = [
     info?.funding_interval,
     info?.funding_interval_hours,
@@ -3804,31 +3833,12 @@ function fundingIntervalHoursFromRaw(
     }
   }
 
-  const a =
-    normalizeTs(
-      funding?.funding_time
-    );
-
-  const b =
-    normalizeTs(
-      funding?.next_funding_time
-    );
-
-  if (
-    a !== null &&
-    b !== null &&
-    b > a
-  ) {
-    return {
-      hours:
-        (
-          b - a
-        ) /
-        3600000,
-
-      source:
-        "funding_timestamps",
-    };
+  const settlementHours = num(info?.settlement_period);
+  const settlementDate = normalizeTs(info?.settlement_date);
+  if ([1,4,8].includes(settlementHours) && info?.contract_status===1 && info?.business_type==='swap' &&
+      funding?.contract_code===info?.contract_code && /^[^-\s]+-USDT$/u.test(info?.contract_code||'') &&
+      a!==null && a>0 && a===settlementDate) {
+    return {hours:settlementHours,source:'HTX_CONTRACT_SETTLEMENT_PERIOD_HOURS_MATCHED_FUNDING_CLOCK'};
   }
 
   return {

@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import {injectPrivatePriceRuntime} from './private-price-bundle.mjs';
 
 const API='https://api.cloudflare.com/client/v4';
 const SCRIPT='my-report-2-hub';
 const BASE_SHA='10da12a72dff2bbbdc18aba7273056c7cd894899c4949f2cbe67cfe38462f3af';
-const VERSION='report2-public-collector-v9-retained-price-checks-20261009';
-const PREVIOUS_VERSIONS=['report2-public-collector-v8-light-price-recheck-20261006','report2-public-collector-v7-retention-before-write-20261004','report2-public-collector-v6-once-pack-retry-20260929','report2-public-collector-v5-backup-lease-20260929','report2-public-collector-v4-linear-pack-20260929','report2-public-collector-v3-contract-integrity-20260928','report2-public-collector-v2-20260928','report2-public-collector-v1-20260928'];
+const VERSION='report2-public-collector-v10-private-price-rechecks-20261014';
+const PREVIOUS_VERSIONS=['report2-public-collector-v9-retained-price-checks-20261009','report2-public-collector-v8-light-price-recheck-20261006','report2-public-collector-v7-retention-before-write-20261004','report2-public-collector-v6-once-pack-retry-20260929','report2-public-collector-v5-backup-lease-20260929','report2-public-collector-v4-linear-pack-20260929','report2-public-collector-v3-contract-integrity-20260928','report2-public-collector-v2-20260928','report2-public-collector-v1-20260928'];
 const here=path.dirname(new URL(import.meta.url).pathname);
 const outDir=path.resolve(process.argv[2]||path.join(here,'dist'));
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
@@ -31,7 +32,16 @@ export function moduleFromMultipart(bytes,contentType){
   throw new Error('CLOUDFLARE_MAIN_MODULE_NOT_FOUND');
 }
 export function patchWorker(source,injected){
-  if(source.includes(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${VERSION}"`))return{source,status:'ALREADY_PATCHED'};
+  const currentMarker=`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${VERSION}"`;
+  const currentStart=source.indexOf(currentMarker);
+  if(currentStart>=0){
+    if(source.indexOf(currentMarker,currentStart+currentMarker.length)>=0)throw new Error('CLOUDFLARE_DUPLICATE_COLLECTOR_MARKER');
+    const currentExport='export {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+    const currentEnd=source.indexOf(currentExport,currentStart);
+    if(currentEnd<0)throw new Error('CLOUDFLARE_CURRENT_COLLECTOR_EXPORT_MISSING');
+    if(source.slice(currentStart,currentEnd).trim()===injected.trim())return{source,status:'ALREADY_PATCHED'};
+    return{source:`${source.slice(0,currentStart)}${injected.trim()}\n${source.slice(currentEnd)}`,status:'UPDATED'};
+  }
   const previousVersion=PREVIOUS_VERSIONS.find(version=>source.includes(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${version}"`));
   const previousStart=previousVersion?source.indexOf(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${previousVersion}"`):-1;
   if(previousStart>=0){
@@ -46,6 +56,13 @@ export function patchWorker(source,injected){
   return{source:source.replace(marker,`${injected}\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};`),status:'PATCHED'};
 }
 
+export function assertCollectorD1Bindings(bindings,expected){
+  for(const wanted of expected){
+    const matches=bindings.filter(row=>row?.name===wanted.binding);
+    if(matches.length!==1||matches[0].type!=='d1'||String(matches[0].id||matches[0].database_id||'')!==wanted.database_id)throw new Error(`CLOUDFLARE_D1_BINDING_NOT_EXACT:${wanted.binding}`);
+  }
+}
+
 async function main(){
   const token=required('CLOUDFLARE_API_TOKEN');
   const verification=await json(token,'/user/tokens/verify');
@@ -57,7 +74,8 @@ async function main(){
   const account=matches[0],base=`/accounts/${account.id}/workers/scripts/${SCRIPT}`;
   const [content,settings]=await Promise.all([cf(token,`${base}/content/v2`,'*/*'),json(token,`${base}/settings`)]);
   const original=moduleFromMultipart(content.bytes,content.content_type);
-  const injected=fs.readFileSync(path.join(here,'injected-worker-tail.js'),'utf8').trim();
+  const privateRuntime=injectPrivatePriceRuntime(fs.readFileSync(path.join(here,'injected-worker-tail.js'),'utf8'));
+  const injected=privateRuntime.source.trim();
   const patched=patchWorker(original,injected);
   const bindings=Array.isArray(settings?.result?.bindings)?settings.result.bindings:[];
   const d1=bindings.find(row=>row?.name==='DATA_DB'&&row?.type==='d1');
@@ -68,11 +86,11 @@ async function main(){
   const config={
     name:SCRIPT,main:'worker.js',account_id:account.id,compatibility_date:settings?.result?.compatibility_date||'2026-09-11',keep_vars:true,no_bundle:true,
     vars:{PRICE_RECHECK_ENABLED:'1',PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M'},
-    d1_databases:[{binding:'DATA_DB',database_id:d1.id||d1.database_id}],
+    d1_databases:[{binding:'DATA_DB',database_id:d1.id||d1.database_id},{binding:'CANONICAL_ARCHIVE_DB',database_id:'f66e7081-0e67-49a2-8f69-68af00cdaf92'}],
     triggers:{crons:['*/5 * * * *','3-58/5 * * * *']},
   };
   fs.writeFileSync(path.join(outDir,'wrangler.json'),`${JSON.stringify(config,null,2)}\n`);
-  fs.writeFileSync(path.join(outDir,'prepare-proof.json'),`${JSON.stringify({status:patched.status,script:SCRIPT,base_sha256:sha(original),output_sha256:sha(patched.source),collector_version:VERSION,binding_names:bindings.map(row=>String(row.name)).sort(),secret_values_exported:false},null,2)}\n`);
+  fs.writeFileSync(path.join(outDir,'prepare-proof.json'),`${JSON.stringify({status:patched.status,script:SCRIPT,base_sha256:sha(original),output_sha256:sha(patched.source),collector_version:VERSION,private_runtime_manifest:privateRuntime.manifest,binding_names:bindings.map(row=>String(row.name)).sort(),secret_values_exported:false},null,2)}\n`);
   console.log(JSON.stringify({status:patched.status,script:SCRIPT,base_sha256:sha(original),output_sha256:sha(patched.source),collector_version:VERSION,d1_binding:true,secret_values_exported:false}));
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){
