@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';
 import {recoverLosslessFullEvidence,reserveLosslessRecoveryBudget,LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 import {retainedSchemaSql,rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
+import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
 const now=1792010000000,DAY=86400000,commit='a'.repeat(40);
 function fixture(){
  const raw=new DatabaseSync(':memory:');raw.exec(`CREATE TABLE full_evidence_shadow_log(full_evidence_id TEXT PRIMARY KEY,contract_code TEXT,observed_ts INTEGER,evidence_compact_json TEXT,persisted_ts INTEGER);
@@ -47,4 +48,10 @@ test('the transaction frees old-row capacity before header allocation and rolls 
   const run=recoverLosslessFullEvidence({...f,request_admit:()=>({allowed:true}),before_modify:async()=>{},execute:true,now});
   if(fail){await assert.rejects(run,/CONTROLLED_CAPACITY/);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM full_evidence_shadow_log').get().n,4);}else assert.equal((await run).moved.length,2);
  }
+});
+test('the actual whole HTTP factory admits the complete archive batch and bounded control without consuming the manual reserve',()=>{
+ const b=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);
+ assert.equal(b.reserve({logical_request_id:'CONTROL',lane:'hot',attempts:40}).allowed,true);assert.equal(b.reserve({logical_request_id:'ARCHIVE',lane:'background',attempts:48}).allowed,true);
+ assert.equal(b.summary().total,88);assert.equal(b.summary().remaining,76);assert.ok(b.summary().limits.hot-b.summary().used.hot>=24);
+ assert.equal(b.reserve({logical_request_id:'TOO_MANY',lane:'background',attempts:9}).allowed,false);
 });

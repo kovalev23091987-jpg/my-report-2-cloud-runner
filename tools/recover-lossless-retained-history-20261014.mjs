@@ -7,7 +7,7 @@ import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFu
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
 await fs.mkdir(dir,{recursive:true});
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
-const whole=createUnifiedHttpBudget();let control_HTTP=0,db,lease,admitted=false,reservation_id;
+const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,db,lease,admitted=false,reservation_id;
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
  const grant=whole.reserve({logical_request_id:'RETAINED_GITHUB_CONTROL:'+control_HTTP,lane:'hot',attempts:1});if(!grant.allowed||control_HTTP>=40)throw Error('RETAINED_GITHUB_CONTROL_BOUND');control_HTTP++;
  return fetch(url,{...options,redirect:'error'});

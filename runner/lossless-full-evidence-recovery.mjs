@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {packHistoryRow,unpackHistoryRow,archivedHeader,exactArchiveSql,createHistoryRestorer} from './retained-history.mjs';
 import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 
-export const LOSSLESS_RECOVERY_POLICY=Object.freeze({max_rows:48,max_runs_day:2,hot_window_ms:48*3600000,tree_bytes:6000000,reservation:{rows_read:5000,rows_written:400},planned_whole_day:{rows_read:3413280,rows_written:69738},limits:{rows_read:3500000,rows_written:70000}});
+export const LOSSLESS_RECOVERY_POLICY=Object.freeze({max_rows:48,max_runs_day:2,hot_window_ms:48*3600000,tree_bytes:6000000,reservation:{rows_read:5000,rows_written:400},http_limits:{whole_job:164,hot:96,background:56,statistics:12},planned_whole_day:{rows_read:3413280,rows_written:69738},limits:{rows_read:3500000,rows_written:70000}});
 const TABLE='full_evidence_shadow_log';
 // Canonical publications and all lifecycle/calibration/forecast references stay
 // hot. Preserve the latest original for every coin, including seldom selected
