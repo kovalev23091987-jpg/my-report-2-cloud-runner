@@ -43,3 +43,7 @@ test('foreign contract, delivery metadata, unconfirmed clock, zero or unsupporte
 test('warmed same-venue normalized metadata retains the previously verified period without another provider call',()=>{
  for(const code of ['STRK-USDT','OP-USDT','FARTCOIN-USDT']){const f=fm.get(code),period=collect(f,im.get(code));assert.equal(collect(f,{contract:code,catalog_active:true,funding_interval_hours:period}),period);}
 });
+test('a valid native current/next payout clock remains authoritative over the new metadata fallback',()=>{
+ const f=fm.get('OP-USDT'),i=im.get('OP-USDT'),hourly={...f,next_funding_time:String(Number(f.funding_time)+3600000)};
+ assert.equal(collect(hourly,{...i,funding_interval_hours:8}),1);assert.deepEqual(deep(hourly,{...i,funding_interval_hours:8}),{hours:1,source:'funding_timestamps'});
+});

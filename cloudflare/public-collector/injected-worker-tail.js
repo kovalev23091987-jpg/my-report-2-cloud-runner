@@ -37,10 +37,11 @@ function __report2PublicCollectorMap(payload) {
   return map;
 }
 function __report2PublicCollectorIntervalHours(funding, info) {
-  var direct = __report2PublicCollectorFinite(funding?.funding_interval_hours ?? funding?.funding_interval ?? info?.funding_interval_hours ?? info?.funding_interval);
-  if (direct !== null && direct > 0) return direct > 60 ? direct / 60 : direct;
   var a = __report2PublicCollectorTimestamp(funding?.funding_time);
   var b = __report2PublicCollectorTimestamp(funding?.next_funding_time);
+  if (a!==null && a>0 && b!==null && b>a && (b-a)<=24*36e5) return (b-a)/36e5;
+  var direct = __report2PublicCollectorFinite(funding?.funding_interval_hours ?? funding?.funding_interval ?? info?.funding_interval_hours ?? info?.funding_interval);
+  if (direct !== null && direct > 0) return direct > 60 ? direct / 60 : direct;
   var settlement = __report2PublicCollectorFinite(info?.settlement_period);
   var settlementDate = __report2PublicCollectorTimestamp(info?.settlement_date);
   // HTX currently publishes null next_funding_time. Its original contract
@@ -49,7 +50,7 @@ function __report2PublicCollectorIntervalHours(funding, info) {
   if ([1,4,8].includes(settlement) && info?.contract_status===1 && info?.business_type==='swap' &&
       funding?.contract_code===info?.contract_code && /^[^-\s]+-USDT$/u.test(info?.contract_code||'') &&
       a!==null && a>0 && a===settlementDate) return settlement;
-  return a !== null && b !== null && b > a ? (b - a) / 36e5 : null;
+  return null;
 }
 async function __report2PublicCollectorJson(url) {
   var started = Date.now();
