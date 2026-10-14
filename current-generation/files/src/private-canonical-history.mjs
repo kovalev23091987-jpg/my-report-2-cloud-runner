@@ -1,7 +1,7 @@
 // Private history is an exact, immutable revision. Restoring it does not refresh
 // source clocks, grant an entry, or consult a provider. Works in Node and Workers.
 export const PRIVATE_CANONICAL_PREFIX='R2PRIVATE_CANONICAL_V1:';
-export const PRIVATE_CANONICAL_LIMITS=Object.freeze({raw_bytes:4_000_000,gzip_bytes:400_000,wire_bytes:900_000,max_rows:4});
+export const PRIVATE_CANONICAL_LIMITS=Object.freeze({raw_bytes:4_000_000,gzip_bytes:400_000,wire_bytes:900_000,max_rows:4,maximum_reader_rows:8});
 const HEX=/^[a-f0-9]{64}$/,PUB=/^PUB:[a-f0-9]{40,64}$/;
 const marker=/^R2PRIVATE_CANONICAL_V1:(PUB:[a-f0-9]{40,64}):([a-f0-9]{64}):([a-zA-Z_][a-zA-Z0-9_]*)$/;
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
@@ -51,7 +51,7 @@ export async function privateCanonicalHeader(row,record){
 }
 
 export function createPrivateCanonicalRestorer({archive_db,db_admit,max_rows=PRIVATE_CANONICAL_LIMITS.max_rows}={}){
- if(!archive_db?.prepare||typeof db_admit!=='function'||!Number.isSafeInteger(max_rows)||max_rows<1||max_rows>PRIVATE_CANONICAL_LIMITS.max_rows)throw Error('PRIVATE_HISTORY_MEASURED_READER_REQUIRED');
+ if(!archive_db?.prepare||typeof db_admit!=='function'||!Number.isSafeInteger(max_rows)||max_rows<1||max_rows>PRIVATE_CANONICAL_LIMITS.maximum_reader_rows)throw Error('PRIVATE_HISTORY_MEASURED_READER_REQUIRED');
  const cache=new Map();let reads=0;
  const load=async(publication_id,raw_sha256)=>{
   const key=`${publication_id}:${raw_sha256}`;

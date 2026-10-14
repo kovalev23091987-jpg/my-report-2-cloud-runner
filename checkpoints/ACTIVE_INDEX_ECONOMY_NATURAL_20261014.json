@@ -1,0 +1,742 @@
+{
+  "schema": "ACTIVE_INDEX_ECONOMY_NATURAL_20261014_V1",
+  "recorded_utc": "2026-10-14T00:05:03.369740+00:00",
+  "cloud_run": 38484212820,
+  "head": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+  "run_id": "1791933985754-1791934005017",
+  "status": "CLOSED",
+  "source": "schedule",
+  "scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "complete": true
+  },
+  "selection": {
+    "top_two_contracts": [
+      "QNT-USDT",
+      "LSK-USDT"
+    ],
+    "deep_check_selected": [
+      "QNT-USDT",
+      "LSK-USDT"
+    ],
+    "deep_check_capacity_this_invocation": 2,
+    "registry_did_not_change_rank": true
+  },
+  "source_request_code_commit": "cfdc9b8df4e38ce0be69472e096a55fc42f80c77",
+  "both_finalists_valid_N04": true,
+  "both_finalists_Blockscout_HTTP_zero": true,
+  "both_finalists_index_discovery_skipped_after_valid_primary": true,
+  "credits_no_new_index_request_not_independent_ledger_read": true,
+  "candidates": [
+    {
+      "contract": "LSK-USDT",
+      "publication_id": "PUB:415192efe1e82192a90f93eddb6f4f21f954a5e4",
+      "run_id": "1791933985754-1791934005017",
+      "snapshot_id": "S392:LSK-USDT:1791934092066",
+      "observed_ts": 1791934092066,
+      "state": "OBSERVE",
+      "active_blocks": {
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 0,
+          "sources": {
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "HTTP": 2,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:c7d729acc7b5bf4ab9c80966c38da6f4cfed5948a130568a4485257b2dbb10d8"
+              ]
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "INDEX_DISCOVERY_NOT_NEEDED_CURRENT_PRIMARY_CHECKED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            }
+          }
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 0,
+          "sources": {
+            "JOINT_SPOT_FUTURES_FLOW": {
+              "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            },
+            "AVAILABLE_N05_FLOW_CONTEXT": {
+              "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:0a8e211c252bb61a72718580397033dc7a2b11312ef80ed24883337f7ec11b2e"
+              ]
+            },
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "HTTP": 2,
+              "checked": true,
+              "valid_evidence_ids": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": []
+            },
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            },
+            "EXTERNAL_N05_FLOW": {
+              "status": "CLOSED_MULTIPLE_QUALIFIED_VENUE_COMPONENTS",
+              "HTTP": 5,
+              "checked": true,
+              "valid_evidence_ids": []
+            },
+            "BITGET_FOUR_HOUR_FLOW": {
+              "status": "NOT_EVALUATED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            }
+          }
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 4,
+          "usable_facts": 0,
+          "sources": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:1aba8cd7048de754309f9f2264c79f589e5c714b1baaa5ec35a57156fbabbf39",
+                "EV2:a9ee12a7f646c4e39dc1cd492a19270aaa03a689676c87d73bc8b511a3eaf2e1",
+                "EV2:5dace969404a5017bbc83bdbc3bd51ad3d2c4a15d87e4477b5192c1f46a2bd28",
+                "EV2:611731b320b7540572d74e8e0af32fc333ad1978a00ebbf6416c9b646831f55c"
+              ]
+            }
+          }
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 0,
+          "sources": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:1cb7710317ea6278d493df23903e6dcfe685d753bdc971668cad90716d2bd0a2"
+              ]
+            }
+          }
+        },
+        "N12": {
+          "status": "FACTS_PRESENT_NOT_DECISION_ADMISSIBLE",
+          "checked": true,
+          "context_facts": 2,
+          "usable_facts": 0,
+          "sources": {
+            "HTX_LARGE_TRADES": {
+              "status": "CLOSED_BOUNDED_ASYNC_MARKETS",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:52cef46418d11ef4cb92323bed16e5bb3aa06daedc03867ef9668bea10a4b591"
+              ]
+            }
+          }
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "context_facts": 2,
+          "usable_facts": 2,
+          "sources": {
+            "COINGECKO_SECTOR": {
+              "status": "CLOSED",
+              "HTTP": 2,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:74be2694dc3a68ea723014d89dc4ed7ce69f43bb352f33effa4892436d4c9ec0"
+              ]
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "CLOSED",
+              "HTTP": 2,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:142c3f7fdc53ee019562260ac012a7e8c935ba036538d7ffd8794e00b1c7cdc3"
+              ]
+            }
+          }
+        }
+      },
+      "paused": {
+        "N01": "BLOCK_PAUSED_BY_OWNER",
+        "N02": "BLOCK_PAUSED_BY_OWNER",
+        "N03": "BLOCK_PAUSED_BY_OWNER",
+        "N06": "BLOCK_PAUSED_BY_OWNER",
+        "N07": "BLOCK_PAUSED_BY_OWNER",
+        "N08": "BLOCK_PAUSED_BY_OWNER",
+        "N09": "BLOCK_PAUSED_BY_OWNER",
+        "N14": "BLOCK_PAUSED_BY_OWNER",
+        "N16": "BLOCK_PAUSED_BY_OWNER"
+      },
+      "manual_rendered": [
+        "N05",
+        "N12",
+        "N10",
+        "N04",
+        "N11",
+        "N15"
+      ],
+      "telegram_context_receipts": [],
+      "telegram_context_field_is_not_same_run_dispatch_receipt": true,
+      "future_liquidations": {
+        "status": "NOT_CLOSED",
+        "future_levels_status": "NOT_AVAILABLE",
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "calculated_scenario_count": 0,
+        "displayed_zone_count": 0
+      },
+      "external_shapes": []
+    },
+    {
+      "contract": "QNT-USDT",
+      "publication_id": "PUB:b2dc4529a9b80b5f01a9bbdb23b1bc9b39e661c0",
+      "run_id": "1791933985754-1791934005017",
+      "snapshot_id": "S392:QNT-USDT:1791934052108",
+      "observed_ts": 1791934052108,
+      "state": "REJECTED",
+      "active_blocks": {
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 0,
+          "sources": {
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "HTTP": 4,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:1e68fd82d1fc1ba9d2a17c5c6b1eef849ae8cb2b08e0e68d213f14869227ca61"
+              ]
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "INDEX_DISCOVERY_NOT_NEEDED_CURRENT_PRIMARY_CHECKED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            }
+          }
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 0,
+          "sources": {
+            "JOINT_SPOT_FUTURES_FLOW": {
+              "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            },
+            "AVAILABLE_N05_FLOW_CONTEXT": {
+              "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:7ab38be967e2747070b64fa1c56b35b41751b80c00a4169f9c3fcc5c3af30185"
+              ]
+            },
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "HTTP": 4,
+              "checked": true,
+              "valid_evidence_ids": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": []
+            },
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            },
+            "EXTERNAL_N05_FLOW": {
+              "status": "PARTIAL_FOUR_HOUR_FLOW",
+              "HTTP": 5,
+              "checked": true,
+              "valid_evidence_ids": []
+            },
+            "BITGET_FOUR_HOUR_FLOW": {
+              "status": "NOT_EVALUATED",
+              "HTTP": 0,
+              "checked": false,
+              "valid_evidence_ids": []
+            }
+          }
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 3,
+          "usable_facts": 0,
+          "sources": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:72f63c16aac0cde6eec76e4514b6631e223d8efd2422fbda7c249d649db0f24b",
+                "EV2:37644a336166468b711900a956ddcaf310826088729185293467e53608693d8d",
+                "EV2:28d007e9056b24e098d7b6eeb6501ef32593051c1dca155fafc93d1fad41cd8f"
+              ]
+            }
+          }
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 0,
+          "sources": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:1d2226c55d47c94961839beabef69168f5338ce0b932cffe401f8b8e31e3dec8"
+              ]
+            }
+          }
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "context_facts": 2,
+          "usable_facts": 0,
+          "sources": {
+            "HTX_LARGE_TRADES": {
+              "status": "CLOSED_BOUNDED_ASYNC_MARKETS",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:a7c4102240edcf5c892e797b540d6f2ebb659a0e7e09ec795c69c5a1b7817e4c",
+                "EV2:1500f32f2bb4c5952a3696a65e9517b9a59bffa37f3cac36720d12bf64900dcd"
+              ]
+            }
+          }
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "context_facts": 1,
+          "usable_facts": 1,
+          "sources": {
+            "COINGECKO_SECTOR": {
+              "status": "CLOSED",
+              "HTTP": 2,
+              "checked": true,
+              "valid_evidence_ids": [
+                "EV2:0f899706559694e1191fd87be454b176e83d9632912404665f0a9e01d15ba8bb"
+              ]
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+              "HTTP": 0,
+              "checked": true,
+              "valid_evidence_ids": []
+            }
+          }
+        }
+      },
+      "paused": {
+        "N01": "BLOCK_PAUSED_BY_OWNER",
+        "N02": "BLOCK_PAUSED_BY_OWNER",
+        "N03": "BLOCK_PAUSED_BY_OWNER",
+        "N06": "BLOCK_PAUSED_BY_OWNER",
+        "N07": "BLOCK_PAUSED_BY_OWNER",
+        "N08": "BLOCK_PAUSED_BY_OWNER",
+        "N09": "BLOCK_PAUSED_BY_OWNER",
+        "N14": "BLOCK_PAUSED_BY_OWNER",
+        "N16": "BLOCK_PAUSED_BY_OWNER"
+      },
+      "manual_rendered": [
+        "N05",
+        "N12",
+        "N10",
+        "N04",
+        "N11",
+        "N15"
+      ],
+      "telegram_context_receipts": [],
+      "telegram_context_field_is_not_same_run_dispatch_receipt": true,
+      "future_liquidations": {
+        "status": "CALCULATED_CONTEXT_ONLY",
+        "future_levels_status": "CALCULATED_SCENARIOS_ONLY",
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "calculated_scenario_count": 20,
+        "displayed_zone_count": 0
+      },
+      "external_shapes": [
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 198.391,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 197.333,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 196.275,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 195.217,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 194.159,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 193.101,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 192.043,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 190.985,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 189.926,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 188.868,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 223.785,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 224.843,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 230.134,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 231.192,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 232.25,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 233.308,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 234.366,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 235.424,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 236.482,
+          "kind": "PROJECTED"
+        },
+        {
+          "source": "Swolecharts https://swolecharts.com",
+          "upstream": "SWOLECHARTS_AGGREGATED_CEX_MODEL",
+          "source_ts": 1791933985677,
+          "price": 237.54,
+          "kind": "PROJECTED"
+        }
+      ]
+    }
+  ],
+  "same_run_delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1791933985754-1791934005017",
+    "source": "schedule",
+    "recorded_at": 1791934101851,
+    "status": "EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [
+      {
+        "publication_id": "PUB:415192efe1e82192a90f93eddb6f4f21f954a5e4",
+        "contract": "LSK-USDT",
+        "direction": "LONG",
+        "wave_id": "EDW:LSK-USDT:1791934005176:G5",
+        "lifecycle_event": "OBSERVE",
+        "run_id": "1791933985754-1791934005017",
+        "snapshot_id": "S392:LSK-USDT:1791934092066",
+        "observed_ts": 1791934092066,
+        "analytical_fingerprint": "2568701c3b0146c122ce2080065c9958ce876c4896363b60a1bbb704c30c6b06",
+        "presentation_hash": "f8888b1970a7e7a3db955275c2305c0619189a28be372f3e8afd4a24eda7aa0a",
+        "same_run_binding_verified": true,
+        "exact_SENT": true,
+        "telegram_message_id": "200",
+        "dispatch_finalized": true,
+        "task_at_delivery": null,
+        "task_at_delivery_verified": false,
+        "task_state_after_delivery_known": false,
+        "actual_ENTRY": false,
+        "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+      }
+    ],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "private_copy": {
+    "schema": "REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_V1",
+    "head": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+    "cloud_run": "38484212820",
+    "status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "main_rows_modified": 0,
+    "private_payload_exported": false,
+    "report_effect": false,
+    "source_run_id": "1791933985754-1791934005017",
+    "selection_status": "EXACT_CLOSED_CANDIDATES",
+    "control": {
+      "main": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+      "producer_head": "6426d4d0662bd4722b8287c6d4952f5e0236f89c",
+      "producer_in_current_main_history": true,
+      "phase": "OWNER_SEQUENTIAL_BLOCK_REQUIREMENTS_REVIEW",
+      "fence_active": false
+    },
+    "private_database": {
+      "database_id": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+      "name": "report2-free-canonical-history",
+      "descriptor_size_is_not_measured_query_size": true
+    },
+    "admission": {
+      "allowed": true,
+      "status": "ATOMIC_SHARED_DAY_RESERVED",
+      "reservation": {
+        "rows_read": 5000,
+        "rows_written": 80
+      }
+    },
+    "records": [
+      {
+        "version": "private-canonical-lossless-gzip-v1",
+        "publication_id": "PUB:415192efe1e82192a90f93eddb6f4f21f954a5e4",
+        "run_id": "1791933985754-1791934005017",
+        "snapshot_id": "S392:LSK-USDT:1791934092066",
+        "contract_code": "LSK-USDT",
+        "observed_ts": 1791934092066,
+        "analytical_fingerprint": "2568701c3b0146c122ce2080065c9958ce876c4896363b60a1bbb704c30c6b06",
+        "raw_sha256": "59e4561766a8ca7e204a49aeabc2b67cfe24d4a32ce05eb863ebc291c45e15d4",
+        "gzip_sha256": "8eb88ed27b543f8892bead3c30dd7b8c186aa15158daa199fa1eeea69d2a3c60",
+        "raw_bytes": 512255,
+        "gzip_bytes": 65366,
+        "stored": {
+          "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+          "retained": true,
+          "publication_id": "PUB:415192efe1e82192a90f93eddb6f4f21f954a5e4",
+          "raw_sha256": "59e4561766a8ca7e204a49aeabc2b67cfe24d4a32ce05eb863ebc291c45e15d4",
+          "gzip_sha256": "8eb88ed27b543f8892bead3c30dd7b8c186aa15158daa199fa1eeea69d2a3c60",
+          "raw_bytes": 512255,
+          "gzip_bytes": 65366,
+          "original_observed_ts": 1791934092066,
+          "archived_ts": 1791934105882,
+          "main_deletion_authorized": false,
+          "report_or_score_effect": false
+        },
+        "private_reader_verified": true,
+        "portable_decoder_and_projected_header_verified": true,
+        "original_clocks_unchanged": true
+      },
+      {
+        "version": "private-canonical-lossless-gzip-v1",
+        "publication_id": "PUB:b2dc4529a9b80b5f01a9bbdb23b1bc9b39e661c0",
+        "run_id": "1791933985754-1791934005017",
+        "snapshot_id": "S392:QNT-USDT:1791934052108",
+        "contract_code": "QNT-USDT",
+        "observed_ts": 1791934052108,
+        "analytical_fingerprint": "be3f0d7962dd09728043a024a3dfdb57510bd2bc749dbc46fc3cab48c293c61f",
+        "raw_sha256": "4e4ca953358bdb76d19b1e83ccb90b3990aa5034ca6601762ef107c81c97c79b",
+        "gzip_sha256": "850ce2eadc417403563ff96b2a47cd88b7d11dddb845189035c8a29a7a751b57",
+        "raw_bytes": 405002,
+        "gzip_bytes": 54296,
+        "stored": {
+          "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+          "retained": true,
+          "publication_id": "PUB:b2dc4529a9b80b5f01a9bbdb23b1bc9b39e661c0",
+          "raw_sha256": "4e4ca953358bdb76d19b1e83ccb90b3990aa5034ca6601762ef107c81c97c79b",
+          "gzip_sha256": "850ce2eadc417403563ff96b2a47cd88b7d11dddb845189035c8a29a7a751b57",
+          "raw_bytes": 405002,
+          "gzip_bytes": 54296,
+          "original_observed_ts": 1791934052108,
+          "archived_ts": 1791934105882,
+          "main_deletion_authorized": false,
+          "report_or_score_effect": false
+        },
+        "private_reader_verified": true,
+        "portable_decoder_and_projected_header_verified": true,
+        "original_clocks_unchanged": true
+      }
+    ],
+    "weight_effect": false,
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "CANONICAL_COLD_COPY:38484212820:1",
+      "source_run_id": "38484212820",
+      "measured_rows_read": 232,
+      "measured_rows_written_accounted": 10,
+      "measured_requests_accounted": 14,
+      "unknown_ops": 0
+    },
+    "D1": {
+      "requests": 14,
+      "rows_read": 233,
+      "rows_written": 10,
+      "unknown_ops": 0
+    },
+    "completed_ts": 1791934109472
+  },
+  "saved_files": [
+    {
+      "path": "checkpoints/index-economy-natural-38484212820/automatic-delivery-audit.json.gz",
+      "original_sha256": "86d98815f9844a1036cca1d98e26b2573b74b8489e0785395ffc3b4be59b7190"
+    },
+    {
+      "path": "checkpoints/index-economy-natural-38484212820/known-d1-day-guard.json.gz",
+      "original_sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605"
+    },
+    {
+      "path": "checkpoints/index-economy-natural-38484212820/private-canonical-archive-receipt.json.gz",
+      "original_sha256": "a44cf1699cf9ca8dbe2c009fe5f36f4b526fdf7fcd8ab0d1afd8ed844b095592"
+    },
+    {
+      "path": "checkpoints/index-economy-natural-38484212820/report2-run-result.json.gz",
+      "original_sha256": "78fe49ad81914b572ac1b4ce4ed00b84aa17b5bc112ffba4e3aa3e1315eed7b0"
+    },
+    {
+      "path": "checkpoints/index-economy-natural-38484212820/same-run-delivery-proof.json.gz",
+      "original_sha256": "6928b0056b6f734fafe7264217cdbccc9945d9146af41e0f2190558e56139121"
+    }
+  ],
+  "report_artifact": {
+    "id": 11858858998,
+    "digest": "sha256:4563db9c5df3e080a5aa0303b57c447111520337cca65e9b78db94070d7d8fd9"
+  },
+  "telegram_artifact": {
+    "id": 11859175198,
+    "digest": "sha256:f6e0b5dab99f7fd360a6718184ee9b21a3be58043f95e8806f5eee5d87ca7727"
+  },
+  "sourceHTTP_added_for_readback": 0,
+  "D1_added_for_readback": 0,
+  "MAIN_added": 0,
+  "Telegram_added": 0,
+  "no_all105_useful_block_coverage_claim": true,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

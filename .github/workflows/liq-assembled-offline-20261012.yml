@@ -48,6 +48,13 @@ on:
       - current-generation/tests/blockscout-index-evidence.test.mjs
       - current-generation/tests/evidence-route-block.test.mjs
       - cloudflare/free-history/003_canonical_cold_archive.sql
+      - cloudflare/free-history/liquidation-forecast-archive.mjs
+      - cloudflare/free-history/liquidation-forecast-archive.test.mjs
+      - cloudflare/free-history/private-forecast-consumer.mjs
+      - cloudflare/free-history/private-forecast-consumer.test.mjs
+      - cloudflare/free-history/native-measured-d1.mjs
+      - cloudflare/free-history/liquidation-archive-worker-entry.mjs
+      - cloudflare/free-history/wrangler-liq.json
 permissions:
   contents: read
 jobs:
@@ -105,6 +112,7 @@ jobs:
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap
           node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
           node --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap
+          node --test cloudflare/free-history/private-forecast-consumer.test.mjs cloudflare/free-history/liquidation-forecast-archive.test.mjs > audit-output/liq-assembled/private-forecast-consumer.tap
       - name: Show failure locations
         if: failure()
         run: |

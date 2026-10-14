@@ -1,0 +1,61 @@
+{
+  "schema": "PRIVATE_FORECAST_CONSUMER_CANDIDATE_20261014_V1",
+  "recorded_utc": "2026-10-14T00:05:39.554100+00:00",
+  "base_main": "bbe0e948a3e1573df2f299f59a59ddad6f695d04",
+  "implementation": "Direct historical Worker reads original canonical JSON only after exact private revision restore; no SQL json_extract on locator, no provider fetch. Missing/corrupt private source remains retryable and cannot be saved as a permanent no-forecast row.",
+  "source_row_bound": 8,
+  "ordinary_host_private_read_bound_unchanged": 4,
+  "hourly_shared_native_reservation": {
+    "reads": 5000,
+    "writes": 80,
+    "runs_day": 24,
+    "same_hour_race_atomic": true,
+    "unknown_previous_native_use_blocks": true,
+    "no_reset": true
+  },
+  "day_plan": {
+    "prior_reads": 2773000,
+    "prior_writes": 48712,
+    "extra_forecast_reserved_reads": 120000,
+    "extra_forecast_reserved_writes": 1920,
+    "new_conservative_reads": 2893000,
+    "new_conservative_writes": 50632,
+    "existing_daily_reads_cap": 3500000,
+    "existing_daily_writes_cap": 70000,
+    "read_margin": 607000,
+    "write_margin": 19368,
+    "previous_forecast_estimates_may_overlap_extra_so_sum_is_conservative": true
+  },
+  "max_processed_original_publications_day": 192,
+  "planned_deep_candidates_day": 86,
+  "active_primary_originals_modified": 0,
+  "original_time_preserved": true,
+  "private_DB_contents_exported": false,
+  "main_report_effect": false,
+  "entry_effect": false,
+  "telegram_form_changed": false,
+  "weight_changed": false,
+  "paused_changed": false,
+  "test_command": "node --test cloudflare/free-history/private-forecast-consumer.test.mjs cloudflare/free-history/liquidation-forecast-archive.test.mjs runner/private-canonical-history.test.mjs",
+  "local_tests": {
+    "pass": 15,
+    "fail": 0,
+    "providerHTTP": 0,
+    "native_production_D1": 0
+  },
+  "cloud_assembly_verified": false,
+  "deployed": false,
+  "new_natural_consumer_verified": false,
+  "private_rolling_retention_complete": false,
+  "private_direct_price_recheck_consumer_remaining": true,
+  "hot_header_relocation_not_enabled": true,
+  "source_hashes": {
+    "cloudflare/free-history/private-forecast-consumer.mjs": "ef676ef00a49d2f06629f996372e5117ffe496c42a233e609bad6b7cd3556e55",
+    "cloudflare/free-history/native-measured-d1.mjs": "702b90b2edf84278e209cc86c00bc30f6bfc25a62469db3654b547d908618fd9",
+    "cloudflare/free-history/liquidation-forecast-archive.mjs": "b68d5b4d43818a1b31249fb4cbed41699332c60a94e61955a3234ff006200544",
+    "cloudflare/free-history/liquidation-archive-worker-entry.mjs": "15e9e1550eb567e38d7aab2994364e27b6ec7ee76653419fe28d0309ece44dbe",
+    "cloudflare/free-history/wrangler-liq.json": "03719fce9ae296bd675d6bd45dc082c0050946c008f16f718dbf87bf8ff311eb",
+    "current-generation/files/src/private-canonical-history.mjs": "043bd3be3c5f032bb92290860198bdc310b96f57daf69c9ca1a526dd689013f9"
+  },
+  "project_complete": false
+}
