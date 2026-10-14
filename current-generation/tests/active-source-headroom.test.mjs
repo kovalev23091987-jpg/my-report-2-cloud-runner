@@ -8,6 +8,7 @@ const {installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(modu
 const {collectHtxAssetIdentity}=await import(modulePath('htx-asset-identity.mjs'));
 const {collectFinalizedChainEvents}=await import(modulePath('finalized-chain-events.mjs'));
 const {collectNativeEvmFinalizedContext}=await import(modulePath('native-evm-finalized-context.mjs'));
+const {collectHtxLargeTradesEvidence}=await import(modulePath('htx-large-trades-evidence.mjs'));
 const {SOURCE_POLICIES}=await import(modulePath('evidence-source-adapters.mjs'));
 const {createUnifiedHttpBudget}=await import(modulePath('unified-budget.mjs'));
 const NOW=Date.now(),mint='pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn';
@@ -36,4 +37,7 @@ test('headroom is indexed advisory state, never reservation/refund or authorizat
   const plan=d.sql.prepare('EXPLAIN QUERY PLAN SELECT attempts FROM report2_evidence_source_daily WHERE source=? AND day_utc=?').all('CHAIN_RPC',new Date(NOW).toISOString().slice(0,10));assert.ok(plan.every(r=>r.detail.includes('SEARCH')&&!r.detail.includes('SCAN')));
   for(const attempts of [0,NaN,-1,1.2])assert.equal((await evidenceSourceAttemptHeadroom(d,{source:'CHAIN_RPC',attempts,daily_cap:720,now:NOW})).allowed,false);
  }finally{d.sql.close();}
+});
+test('exhausted N12 recent-trade source preserves the common envelope for sector or another admitted source',async()=>{
+ const d=database(),whole=createUnifiedHttpBudget();let admissions=0,calls=0;try{await used(d,'HTX_LARGE_TRADES',144);const r=await collectHtxLargeTradesEvidence({db:d,contract:'ZEC-USDT',run_id:'controlled_n12_exhausted',now:NOW,request_admit:x=>{admissions++;return whole.reserve(x);},fetch_impl:async()=>{calls++;throw Error('NO_HTTP');}});assert.equal(r.status,'SOURCE_DAILY_CAP_REACHED');assert.equal(r.network_calls,0);assert.equal(admissions,0);assert.equal(calls,0);assert.equal(whole.summary().total,0);assert.equal(d.sql.prepare("SELECT attempts FROM report2_evidence_source_daily WHERE source='HTX_LARGE_TRADES'").get().attempts,144);assert.equal(whole.reserve({logical_request_id:'next_useful_source',lane:'background',attempts:4}).allowed,true);}finally{d.sql.close();}
 });
