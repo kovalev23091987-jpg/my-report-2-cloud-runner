@@ -1,0 +1,61 @@
+name: Report2 one bounded native storage qualification
+on:
+  workflow_dispatch:
+    inputs:
+      qualified_head:
+        description: Exact cloud-qualified code head; compared with fresh main before any SQL
+        required: true
+      qualified_run:
+        description: Successful general offline qualification run for that head
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: report2-retained-history-relocation
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.qualified_head }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Wait in GitHub without lease, SQL, provider requests or credentials
+        run: |
+          node --input-type=module <<'JS'
+          import {DATED_RETENTION_QUALIFICATION as p} from './runner/retention-self-qualification.mjs';
+          if(Date.now()>=p.expires||p.not_before-Date.now()>5*3600000)throw Error('DATED_QUALIFICATION_WAIT_WINDOW');
+          while(Date.now()<p.not_before)await new Promise(r=>setTimeout(r,Math.min(60000,p.not_before-Date.now())));
+          if(Date.now()>=p.expires)throw Error('DATED_QUALIFICATION_EXPIRED');
+          JS
+      - name: Verify saved schema and exact readers, then use at most one ordinary shared slot
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_CURRENT_GENERATION: MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ${{ secrets.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN || secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT2_SELF_NATIVE_QUALIFICATION_UTC_DAY: '2026-10-16'
+          REPORT2_NATIVE_QUALIFIED_HEAD: ${{ inputs.qualified_head }}
+          REPORT2_NATIVE_QUALIFIED_RUN: ${{ inputs.qualified_run }}
+          REPORT2_LOSSLESS_RETENTION_ENABLED: 'false'
+          REPORT2_CANONICAL_COMPACTION_ENABLED: 'false'
+          REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED: 'true'
+          REPORT2_PRIVATE_PREFETCH_QUALIFICATION: 'true'
+          REPORT2_NATIVE_CANONICAL_QUALIFICATION: 'true'
+          REPORT2_CANONICAL_SOURCE_CURSOR: auto
+          RETAINED_HISTORY_KIND: canonical
+          LOSSLESS_EXECUTE: 'true'
+        run: node tools/recover-lossless-retained-history-20261014.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dated-native-storage-${{ github.run_id }}
+          path: audit-output/lossless-retained-history/proof.json
+          if-no-files-found: error
+          retention-days: 30

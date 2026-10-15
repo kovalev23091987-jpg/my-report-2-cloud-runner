@@ -229,3 +229,8 @@ test('missing pinned reference index refuses without fallback to an unbounded sc
  const f=fixture(1,{v2:false}),before=get(f,f.old[0].publication_id);f.raw.exec('DROP INDEX idx_v3_dispatch_wave');
  await assert.rejects(compact(f,{execute:true}),/no such index/);assert.deepEqual(get(f,before.publication_id),before);assert.equal(f.archive_db.usageSnapshot().requests,0);assert(!f.source_db.calls.some(s=>s.includes('SELECT p.*')));
 });
+test('a smaller control-derived transaction count keeps the ordinary six-batch cap and all deferred originals',async()=>{
+ const f=fixture(20,{v2:false});archiveAll(f);const r=await compact(f,{execute:true,max_mutation_batches:1});assert.equal(r.mutation_batches,1);assert.equal(r.compacted.length,8);assert.equal(r.deferred_hot.length,12);
+ const moved=new Set(r.compacted.map(x=>x.publication_id));for(const row of f.old)if(!moved.has(row.publication_id))assert.deepEqual(get(f,row.publication_id),row);assert.equal(r.bounded_discovery.next_cursor,0);
+ await assert.rejects(compact(f,{max_mutation_batches:7}),/EXISTING_CANONICAL_BATCH_CAP_REQUIRED/);
+});
