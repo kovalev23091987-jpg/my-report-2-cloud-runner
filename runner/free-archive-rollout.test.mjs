@@ -1,5 +1,9 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {rolloutFreeArchiveReaders} from './free-archive-rollout.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {rolloutFreeArchiveReaders,requireArchiveWritersOff} from './free-archive-rollout.mjs';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`,h='a'.repeat(40),names=['my-report-2-hub','my-report-2-liq-forecast-history'];
+test('actual repository writer/rotation flags must be completely read and off before each deployment guard',()=>{
+ assert(requireArchiveWritersOff({total_count:0,variables:[]}));assert(requireArchiveWritersOff({total_count:1,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED',value:'false'}]}));
+ for(const r of [{total_count:1,variables:[]},{total_count:1,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED',value:'true'}]},{total_count:1,variables:[{name:'REPORT2_CANONICAL_COMPACTION_ENABLED',value:'true'}]}])assert.throws(()=>requireArchiveWritersOff(r));
+});
 function fixture(){
  const states=names.map((name,i)=>({version_id:id(i+1),deployment_id:id(i+11),module_sha256:String(i+1).repeat(64),settings_sha256:String(i+3).repeat(64),crons_sha256:String(i+5).repeat(64)})),original=structuredClone(states),events=[],receipts=[];
  const workers=names.map((name,i)=>({name,module_sha256:String(i+7).repeat(64),target_settings_sha256:String(i+8).repeat(64),required_before:original[i]}));

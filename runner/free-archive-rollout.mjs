@@ -1,4 +1,9 @@
 const NAMES=['my-report-2-hub','my-report-2-liq-forecast-history'],HEX=/^[a-f0-9]{64}$/,SHA=/^[a-f0-9]{40}$/,UUID=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
+export function requireArchiveWritersOff(result){
+ const rows=result?.variables;if(!Array.isArray(rows)||result.total_count!==rows.length||rows.length>100||new Set(rows.map(r=>r.name)).size!==rows.length)throw Error('FREE_ARCHIVE_COMPLETE_REPOSITORY_FLAGS_REQUIRED');
+ for(const name of ['REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED','REPORT2_LOSSLESS_RETENTION_ENABLED','REPORT2_CANONICAL_COMPACTION_ENABLED']){const row=rows.find(r=>r.name===name);if(row&&!['','false','0','off'].includes(String(row.value).toLowerCase()))throw Error('FREE_ARCHIVE_WRITER_OR_ROTATION_MUST_STAY_OFF');}
+ return true;
+}
 const same=(a,b)=>a?.version_id===b?.version_id&&a?.deployment_id===b?.deployment_id&&a?.module_sha256===b?.module_sha256&&a?.settings_sha256===b?.settings_sha256&&a?.crons_sha256===b?.crons_sha256;
 const target=(row,w)=>row?.version_id===w?.staged?.version_id&&row?.module_sha256===w?.expected_module_sha256&&row?.settings_sha256===w?.expected_settings_sha256&&row?.crons_sha256===w?.before?.crons_sha256;
 // Immutable uploads precede activation. Pool writers remain disabled throughout

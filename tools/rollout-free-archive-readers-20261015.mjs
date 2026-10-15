@@ -4,7 +4,7 @@ import {active105OfflineReviewOwner} from '../runner/offline-review-authority.mj
 import {createVersionBoundWorkerReader} from '../runner/cloudflare-version-bound-readback.mjs';
 import {rolloutDigest,workerSettingsFingerprint,collectorVersionMetadata,historyVersionMetadata,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
 import {freeArchiveBindingPlan} from '../runner/free-archive-bindings.mjs';
-import {rolloutFreeArchiveReaders} from '../runner/free-archive-rollout.mjs';
+import {rolloutFreeArchiveReaders,requireArchiveWritersOff} from '../runner/free-archive-rollout.mjs';
 import {patchWorker} from '../cloudflare/public-collector/patch-worker.mjs';
 import {injectPrivatePriceRuntime} from '../cloudflare/public-collector/private-price-bundle.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
@@ -28,6 +28,7 @@ try{
    const main=(await control.call('git/ref/heads/main')).object.sha;if(main!==request.expected_main)throw Error('FREE_ARCHIVE_READER_MAIN_MOVED');
    const [phase,fence]=await Promise.all([control.read('checkpoints/CLOUD_PHASE_STATE_20261004.json',main),control.read('audit-fixes/source-optimization-20260930/execution-lock.json',main)]),l=phase.value.lease;
    if(fence.value.active||!active105OfflineReviewOwner(phase.value)||l.owner!==request.expected_owner||!l.scope.includes('FREE_ARCHIVE_BINDINGS_ROLLOUT')||l.expires_ts-Date.now()<min_headroom_ms)throw Error('EXACT_FREE_ARCHIVE_BINDINGS_LEASE_REQUIRED');
+   requireArchiveWritersOff(await control.call('actions/variables?per_page=100'));out.repository_writer_and_rotation_flags_verified_off=true;
   };
   await guard({min_headroom_ms:600000});
   const run=await control.call('actions/runs/'+request.qualified_run);
