@@ -5,7 +5,14 @@ import {evaluateWithinRunReservation,finalizeRunUsage} from '../runner/d1-preact
 import {active105OfflineReviewOwner} from '../runner/offline-review-authority.mjs';
 import {NEW_LIQ_SOURCE_RESEARCH as policy,reserveNewLiquidationSourceResearch} from './liquidation-new-source-admission-20261015.mjs';
 const repo='kovalev23091987-jpg/my-report-2-cloud-runner',folder='audit-output/new-liquidation-source';
-if(process.argv.includes('--plan')){console.log(JSON.stringify({...policy,purpose:'Missing future-level source qualification only; no production enablement, MAIN or Telegram',targets:['PUMPGLASS_SYMBOLS','PUMPGLASS_龙虾USDT','PUMPGLASS_BANKUSDT']}));process.exit(0);}
+if(process.argv.includes('--plan')){console.log(JSON.stringify({...policy,status:'AUTOMATION_PERMISSION_REQUIRED',permission_source:'https://pumpglass.com/terms',purpose:'The completed one-off investigation is retained as evidence. PumpGlass terms prohibit automated collection; no further probe or production enablement is admitted.'}));process.exit(0);}
+// Read after the first qualification: current publisher terms prohibit
+// automated collection and redistribution. Stop before authority, D1 or HTTP;
+// a user's project permission does not supply the publisher's data permission.
+const stopped={status:'AUTOMATION_PERMISSION_REQUIRED',source:'PumpGlass',permission_source:'https://pumpglass.com/terms',provider_HTTP:0,D1:0,MAIN:0,Telegram:0,production_enabled:false};
+await fs.mkdir(folder,{recursive:true});await fs.writeFile(folder+'/qualification.json',JSON.stringify(stopped,null,2)+'\n');
+console.log(JSON.stringify(stopped));
+process.exit(0);
 for(const k of ['GITHUB_TOKEN','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN'])if(!process.env[k])throw Error(k+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main')throw Error('EXACT_MAIN_REPOSITORY_REQUIRED');
 const api=async path=>{const r=await fetch('https://api.github.com/repos/'+repo+'/'+path,{headers:{authorization:'Bearer '+process.env.GITHUB_TOKEN,accept:'application/vnd.github+json'},redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('GITHUB_CONTROL_NOT_CLOSED');return r.json();};
