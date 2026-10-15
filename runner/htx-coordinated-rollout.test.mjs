@@ -1,5 +1,5 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
-import {coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,historyVersionMetadata,collectorVersionMetadata,readSingleWorkerModule,verifySupersetHistory,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P} from './htx-coordinated-rollout.mjs';
+import test from 'node:test';import {gunzipSync} from 'node:zlib';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
+import {coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,runtimeSettingsSerializationHashes,historyVersionMetadata,collectorVersionMetadata,resumeOwnUnactivatedCollector,readSingleWorkerModule,verifySupersetHistory,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P} from './htx-coordinated-rollout.mjs';
 const id=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0'),head='a'.repeat(40),sha='b'.repeat(64);
 const base=n=>({deployment_id:id(n),version_id:id(n+10),module_sha256:'original'+n,settings_sha256:'settings'+n,crons_sha256:'cron'+n});
 function harness(options={}){
@@ -71,4 +71,12 @@ test('collector inherits every existing variable and secret only from the exact 
 test('single-module readback preserves bytes for multipart and plain responses and rejects extra executable modules',async()=>{
  const bytes=Buffer.from('var x="исходные часы";\n');assert.deepEqual(await readSingleWorkerModule(new Response(bytes,{headers:{'content-type':'application/javascript'}})),bytes);
  const body=new FormData();body.set('metadata','{}');body.set('worker.js',new Blob([bytes],{type:'application/javascript+module'}),'worker.js');assert.deepEqual(await readSingleWorkerModule(new Response(body)),bytes);body.set('other.js',new Blob(['code']),'other.js');await assert.rejects(readSingleWorkerModule(new Response(body)),/EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED/);
+});
+test('default serialization is compared to the immutable active runtime; an existing variable never disappears from comparison',()=>{
+ const old={bindings:[{name:'UNCHANGED',type:'plain_text',text:'0'}],compatibility_date:'2026-09-11'},runtime={compatibility_date:'2026-09-11T00:00:00Z',compatibility_flags:[],usage_model:'standard',limits:{cpu_ms:30000}},expanded={...old,compatibility_flags:[],usage_model:'standard',limits:runtime.limits};
+ assert.equal(workerSettingsFingerprint(old,runtime),workerSettingsFingerprint(expanded,runtime));assert.notEqual(workerSettingsFingerprint(old),workerSettingsFingerprint(expanded));assert.ok(runtimeSettingsSerializationHashes(expanded,runtime).includes(workerSettingsFingerprint(old)));assert.equal(runtimeSettingsSerializationHashes({...expanded,bindings:[{...old.bindings[0],text:'1'}]},runtime).includes(workerSettingsFingerprint(old)),false);
+});
+test('only the exact retained unactivated own version can resume and a real settings change cannot masquerade as default serialization',()=>{
+ const prior=JSON.parse(gunzipSync(fs.readFileSync(new URL('../checkpoints/coordinated-rollout-20261015/refused-collector369-38697736170/proof.json.gz',import.meta.url)))),w=prior.workers[0],current={...w.before,runtime_serialization_hashes:[w.before.settings_sha256]},args={prior,current,expected_module_sha256:w.expected_module_sha256,latest_uploaded_version:w.staged.version_id};
+ assert.equal(resumeOwnUnactivatedCollector(args).version_id,w.staged.version_id);assert.throws(()=>resumeOwnUnactivatedCollector({...args,latest_uploaded_version:id(99)}));assert.throws(()=>resumeOwnUnactivatedCollector({...args,current:{...current,runtime_serialization_hashes:['different-binding-values']}}));assert.throws(()=>resumeOwnUnactivatedCollector({...args,prior:{...prior,workers:[{...w,activation_intent:{ts:1}}]}}));
 });

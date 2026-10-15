@@ -12,11 +12,27 @@ export function singleActiveVersion(result){
  if(!UUID.test(d?.id||'')||d.strategy!=='percentage'||d.versions?.length!==1||d.versions[0]?.percentage!==100||!UUID.test(d.versions[0]?.version_id||''))throw Error('EXACT_SINGLE_ACTIVE_WORKER_VERSION_REQUIRED');
  return{deployment_id:d.id,version_id:d.versions[0].version_id};
 }
-export function workerSettingsFingerprint(settings){
+export function workerSettingsFingerprint(settings,runtime){
  if(!Array.isArray(settings?.bindings))throw Error('EXACT_WORKER_BINDINGS_REQUIRED');
  // Include values in the private fingerprint, never in an exported proof.
  const bindings=[...settings.bindings].map(b=>stable(b)).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
- return rolloutDigest({...settings,bindings});
+ // The settings endpoint may expand default runtime fields after an upload.
+ // Compare their effective values from the selected immutable version, while
+ // retaining every other settings field and every binding in the fingerprint.
+ const effective=runtime?{compatibility_date:runtime.compatibility_date?.slice(0,10),compatibility_flags:runtime.compatibility_flags||[],usage_model:runtime.usage_model,limits:runtime.limits||{}}:{};
+ return rolloutDigest({...settings,...effective,bindings});
+}
+export function runtimeSettingsSerializationHashes(settings,runtime){
+ const defaults={compatibility_date:runtime?.compatibility_date?.slice(0,10),compatibility_flags:runtime?.compatibility_flags||[],usage_model:runtime?.usage_model,limits:runtime?.limits||{}};let variants=[settings];
+ for(const [key,value] of Object.entries(defaults))if(value!==undefined&&Object.hasOwn(settings,key)&&rolloutDigest(settings[key])===rolloutDigest(value))variants=[...variants,...variants.map(v=>{const next={...v};delete next[key];return next;})];
+ // Only serialization of fields equal to the immutable active runtime varies.
+ // Bindings, variables, secrets, placement and other settings never vary.
+ return[...new Set(variants.map(v=>workerSettingsFingerprint(v)))];
+}
+export function resumeOwnUnactivatedCollector({prior,current,expected_module_sha256,latest_uploaded_version}={}){
+ const w=prior?.workers?.[0];
+ if(prior?.schema!=='CURRENT_PUBLIC_COLLECTOR_MODULE_REPAIR_V1'||prior.status!=='WEEKLY_NOT_ACTIVATED_OR_OWN_ACTIVATIONS_ROLLED_BACK'||prior.reason!=='WORKER_MOVED_BEFORE_ACTIVATION'||prior.sourceHTTP!==0||prior.D1!==0||prior.MAIN!==0||prior.Telegram!==0||prior.production_scope_changed!==false||prior.workers?.length!==1||w.name!==WEEKLY_ROLLOUT_POLICY.collector||w.activation_intent||w.staged?.activated!==false||!UUID.test(w.staged.version_id||'')||w.staged.version_id!==latest_uploaded_version||w.before?.version_id!==current.version_id||w.before?.deployment_id!==current.deployment_id||w.before?.module_sha256!==current.module_sha256||w.before?.crons_sha256!==current.crons_sha256||JSON.stringify(w.before?.binding_names)!==JSON.stringify(current.binding_names)||!current.runtime_serialization_hashes?.includes(w.before?.settings_sha256)||w.expected_module_sha256!==expected_module_sha256||prior.scope?.patched_module_sha256!==expected_module_sha256)throw Error('EXACT_OWN_UNACTIVATED_COLLECTOR_RECEIPT_REQUIRED');
+ return{version_id:w.staged.version_id,activated:false,reused_exact_unactivated_version:true,original_head:prior.head};
 }
 export function historyVersionMetadata({settings,runtime,config,main_module,head}={}){
  if(!/^[a-f0-9]{40}$/.test(head||'')||!/^[-a-zA-Z0-9_.]+\.js$/.test(main_module||'')||settings?.compatibility_date!==config?.compatibility_date)throw Error('EXACT_HISTORY_BUILD_METADATA_REQUIRED');
@@ -74,7 +90,7 @@ export async function coordinateWeeklyRollout({plan,adapter,guard,save=async()=>
   for(let i=0;i<plan.workers.length;i++){
    await guard();adapter.requireHeadroom(WEEKLY_ROLLOUT_POLICY.rollback_HTTP_reserved+6);
    const w=plan.workers[i],row=proof.workers[i];
-   if(!exactState(row.before,await adapter.snapshot(w)))throw Error('WORKER_MOVED_BEFORE_ACTIVATION');
+   const observed=await adapter.snapshot(w);if(!exactState(row.before,observed)){row.pre_activation_observed=observed;throw Error('WORKER_MOVED_BEFORE_ACTIVATION');}
    row.activation_intent={version_id:row.staged.version_id,ts:clock()};changed.push(i);await persist();
    // Persist intent before transport: an ambiguous response is read back and
    // may be rolled back only if our exact uploaded version is now active.

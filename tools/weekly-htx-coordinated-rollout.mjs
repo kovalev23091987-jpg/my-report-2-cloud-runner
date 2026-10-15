@@ -34,10 +34,11 @@ async function snapshot(worker){
   immutableModules.set(key,hash);
  }
  if(!originalSettings.has(name)){
-  originalSettings.set(name,settings);const version=await cf(name,'/versions/'+active.version_id);if(version.id!==active.version_id)throw Error('ROLLBACK_ORIGINAL_VERSION_REQUIRED');runtimeByVersion.set(key,version.resources?.script_runtime);
+  originalSettings.set(name,settings);
  }
+ if(!runtimeByVersion.has(key)){const version=await cf(name,'/versions/'+active.version_id);if(version.id!==active.version_id||!version.resources?.script_runtime)throw Error('ROLLBACK_ORIGINAL_VERSION_REQUIRED');runtimeByVersion.set(key,version.resources.script_runtime);}
  if(name!==P.collector)historyVersionMetadata({settings,runtime:runtimeByVersion.get(key)||[...runtimeByVersion.entries()].find(([k])=>k.startsWith(name+':'))?.[1],config:worker.config,main_module:worker.main_module,head:process.env.WEEKLY_HEAD});
- return{...active,module_sha256:hash,settings_sha256:workerSettingsFingerprint(settings),crons_sha256:rolloutDigest(crons),binding_names:settings.bindings.map(b=>b.name).sort(),crons};
+ return{...active,module_sha256:hash,settings_sha256:workerSettingsFingerprint(settings,runtimeByVersion.get(key)),crons_sha256:rolloutDigest(crons),binding_names:settings.bindings.map(b=>b.name).sort(),crons,settings_key_sha256:Object.fromEntries(Object.entries(settings).map(([k,v])=>[k,rolloutDigest(v)])),effective_runtime:runtimeByVersion.get(key)};
 }
 const expected_main=process.env.EXPECTED_MAIN,head=process.env.WEEKLY_HEAD,owner=process.env.BORROW_EXISTING_OWNER;
 async function guard({min_headroom_ms=30000}={}){

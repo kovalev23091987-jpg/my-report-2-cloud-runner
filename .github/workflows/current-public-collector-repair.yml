@@ -5,6 +5,7 @@ on:
       expected_main: {type: string, required: true}
       borrow_existing_owner: {type: string, required: true}
       connected_run: {type: string, required: true}
+      resume_proof: {type: string, default: ''}
       execute: {type: boolean, default: false}
 permissions:
   contents: read
@@ -29,6 +30,7 @@ jobs:
           EXPECTED_MAIN: ${{ inputs.expected_main }}
           BORROW_EXISTING_OWNER: ${{ inputs.borrow_existing_owner }}
           CONNECTED_RUN: ${{ inputs.connected_run }}
+          RESUME_COLLECTOR_PROOF: ${{ inputs.resume_proof }}
           EXECUTE_COLLECTOR_REPAIR: ${{ inputs.execute }}
         run: node tools/repair-current-public-collector.mjs
       - uses: actions/upload-artifact@v4
