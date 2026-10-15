@@ -12,6 +12,9 @@ try{
  if(process.env.GITHUB_REPOSITORY!==repository||!/^\d+$/.test(process.env.GITHUB_RUN_ID||''))throw Error('FREE_STORAGE_EXACT_REPOSITORY_RUN_REQUIRED');
  const request=JSON.parse(await fs.readFile(requestPath,'utf8'));
  if(request?.schema!=='FREE_STORAGE_METADATA_REQUEST_V1'||request.max_cloudflare_metadata_HTTP!==11||request.SQL!==0||request.create_databases!==false||!/^CODEX:ACTIVE105_FREE_STORAGE_ROLLING:\d+$/.test(request.expected_owner||'')||!/^[a-f0-9]{40}$/.test(request.expected_main||''))throw Error('FREE_STORAGE_EXACT_READ_ONLY_REQUEST_REQUIRED');
+ const prior=request.prior_cloudflare_metadata_HTTP??0;
+ if(!Number.isSafeInteger(prior)||prior<0||prior>=11)throw Error('FREE_STORAGE_PRIOR_HTTP_REQUIRED');
+ cloudflare_metadata_HTTP=prior;out.prior_cloudflare_metadata_HTTP=prior;
  const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
   if(++github_HTTP>8||options.method!=='GET')throw Error('FREE_STORAGE_CONTROL_GET_ONLY');
   return fetch(url,{...options,redirect:'error'});
@@ -25,7 +28,8 @@ try{
  const lease=phase.value.lease;
  if(fence.value.active||lease?.owner!==request.expected_owner||lease.expires_ts<=Date.now()||phase.value.latest_own_bounded_continuation_lease?.owner!==lease.owner||phase.value.active_working_state?.owned_lease!==lease.owner||!lease.scope.includes('at most11 Cloudflare metadata inventory requests')||status.value.active_working_state?.owner_authorized_sequential_continuation!==true||resume.value.active_working_state?.owner_authorized_sequential_continuation!==true||generation.value.latest_only!==true)throw Error('FREE_STORAGE_CURRENT_BOUNDED_OWNER_REQUIRED');
  out.control={main,owner:lease.owner,expires_ts:lease.expires_ts};
- const inventory=await inventoryFreeStorage({token:process.env.CLOUDFLARE_API_TOKEN,before_request:()=>{
+ out.token_role=process.env.REPORT2_FREE_STORAGE_TOKEN_ROLE;
+ const inventory=await inventoryFreeStorage({token:process.env.CLOUDFLARE_D1_READ_TOKEN,max_requests:11-prior,before_request:()=>{
   if(lease.expires_ts<=Date.now()||cloudflare_metadata_HTTP>=11||github_HTTP+cloudflare_metadata_HTTP>=164)return{allowed:false};
   cloudflare_metadata_HTTP++;return{allowed:true};
  }});

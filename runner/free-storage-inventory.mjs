@@ -4,11 +4,12 @@ const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 
 // Read-only control-plane inventory. No SQL/query/export, subscription changes,
 // database creation, provider calls, or credential text in the receipt.
-export async function inventoryFreeStorage({token,fetch_impl=fetch,before_request,clock=Date.now}={}){
+export async function inventoryFreeStorage({token,fetch_impl=fetch,before_request,clock=Date.now,max_requests=11}={}){
  if(!String(token||'').trim()||typeof before_request!=='function')throw Error('FREE_STORAGE_METADATA_ACCESS_REQUIRED');
+ if(!Number.isSafeInteger(max_requests)||max_requests<1||max_requests>11)throw Error('FREE_STORAGE_METADATA_HTTP_BOUND');
  let calls=0;
  const get=async suffix=>{
-  if(calls>=11)throw Error('FREE_STORAGE_METADATA_HTTP_BOUND');
+  if(calls>=max_requests)throw Error('FREE_STORAGE_METADATA_HTTP_BOUND');
   if((await before_request({method:'GET',suffix,SQL:0}))?.allowed!==true)throw Error('FREE_STORAGE_METADATA_ADMISSION_DENIED');
   calls++;
   const r=await fetch_impl('https://api.cloudflare.com/client/v4/accounts/'+ACCOUNT+suffix,{headers:{authorization:'Bearer '+String(token).trim()},redirect:'error',signal:AbortSignal.timeout(15000)});
@@ -19,6 +20,7 @@ export async function inventoryFreeStorage({token,fetch_impl=fetch,before_reques
  const list=await get('/d1/database?per_page=10&page=1');
  const rows=list.result,info=list.result_info;
  if(!Array.isArray(rows)||rows.length>10||!info||info.page!==1||info.count!==rows.length||info.total_count!==rows.length)throw Error('FREE_STORAGE_COMPLETE_ACCOUNT_LIST_REQUIRED');
+ if(rows.length+1>max_requests)throw Error('FREE_STORAGE_COMPLETE_DESCRIPTORS_HTTP_HEADROOM_REQUIRED');
  const seen=new Set(),databases=[];
  // Refuse an incomplete/foreign/malformed descriptor before using its bytes.
  for(const row of rows){

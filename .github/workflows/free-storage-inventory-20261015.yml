@@ -23,7 +23,8 @@ jobs:
       - name: Check exact owner then list database descriptors without SQL
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_D1_READ_TOKEN: ${{ secrets.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN || secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
+          REPORT2_FREE_STORAGE_TOKEN_ROLE: ${{ secrets.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN != '' && 'REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN' || 'REPORT2_ISOLATED_D1_API_TOKEN' }}
         run: node tools/free-storage-inventory-20261015.mjs
       - uses: actions/upload-artifact@v4
         if: always()

@@ -37,6 +37,16 @@ test('actual original QNT forecast is byte-identical through hot and exact priva
  }finally{globalThis.fetch=previous;hot.close();cold.close();}
 });
 
+test('forecast consumer restores an installed additional archive and includes its cost in the existing reservation',async()=>{
+ const s=setup(),extra=new D1(fs.readFileSync(new URL('./003_canonical_cold_archive.sql',import.meta.url),'utf8')),row=original(),record=encodeCanonicalPublicationRow(row);
+ try{
+  storeSource(s.source,await privateCanonicalHeader(row,record,{archive_slot:'A1'}));storePrivate(extra,record);
+  const r=await runPrivateForecastConsumer({source_db:s.source,archive_db:s.archive,private_db:s.privateDB,private_dbs:{A1:extra},scheduled_ts:T+60000,clock:()=>T+60000});
+  assert.equal(r.status,'ARCHIVED');assert.equal(r.private_rows_restored,1);assert.equal(r.private_D1.requests,1);assert.equal(r.D1.unknown_ops,0);assert.equal(s.privateDB.calls,0);assert.equal(extra.calls,1);
+  const saved=s.source.raw.prepare('SELECT measured_rows_read,reserve_rows_read FROM report2_runner_budget_ledger_shadow').get();assert.equal(saved.reserve_rows_read,5000);assert.equal(saved.measured_rows_read,r.finalized_usage.measured_rows_read);assert.equal(saved.measured_rows_read,r.D1.rows_read);
+ }finally{s.close();extra.close();}
+});
+
 test('unavailable private revision keeps cursor retryable; next hour restores rather than permanently skipping it',async()=>{
  const s=setup(),row=original(),record=encodeCanonicalPublicationRow(row);
  try{

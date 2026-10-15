@@ -37,3 +37,6 @@ test('metadata access denial is explicit and never falls back to SQL',async()=>{
  await assert.rejects(inventoryFreeStorage({token:'test',before_request:()=>({allowed:true}),fetch_impl:async()=>({ok:false,status:403})}),/METADATA_HTTP_403/);
  await assert.rejects(inventoryFreeStorage({token:'test',before_request:()=>({allowed:false}),fetch_impl:()=>{throw Error('unexpected transport')}}),/ADMISSION_DENIED/);
 });
+test('previous metadata attempts reduce the remaining bound before descriptor reads',async()=>{
+ let calls=0;await assert.rejects(inventoryFreeStorage({token:'test',max_requests:2,before_request:()=>({allowed:true}),fetch_impl:async()=>{calls++;return{ok:true,json:async()=>({success:true,result:[db(1),db(2)],result_info:{page:1,count:2,total_count:2}})}}}),/DESCRIPTORS_HTTP_HEADROOM/);assert.equal(calls,1);
+});
