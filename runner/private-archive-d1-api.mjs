@@ -24,7 +24,7 @@ export class PrivateArchiveD1API {
   let incomplete=false;
   // A malformed early acknowledgement must not discard known costs from a
   // later statement of the same DDL batch. Unknown work still fails closed.
-  for(const result of j.result){this._usage.requests++;const m=result?.meta;if(result?.success!==true||!nonnegative(m?.rows_read)||!nonnegative(m?.rows_written)){this._usage.unknown_ops++;incomplete=true;}if(nonnegative(m?.rows_read))this._usage.rows_read+=m.rows_read;if(nonnegative(m?.rows_written))this._usage.rows_written+=m.rows_written;if(nonnegative(m?.size_after))this.storage_bytes=m.size_after;}
+  for(const result of j.result){this._usage.requests++;const m=result?.meta;if(result?.success!==true||!nonnegative(m?.rows_read)||!nonnegative(m?.rows_written)){this._usage.unknown_ops++;incomplete=true;}if(nonnegative(m?.rows_read))this._usage.rows_read+=m.rows_read;if(nonnegative(m?.rows_written))this._usage.rows_written+=m.rows_written;this.storage_bytes=nonnegative(m?.size_after)?m.size_after:null;}
   if(incomplete)throw Error('PRIVATE_ARCHIVE_D1_USAGE_UNMEASURED');
   return j.result[j.result.length-1];
  }

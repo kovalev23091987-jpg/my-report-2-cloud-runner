@@ -29,6 +29,9 @@ test('an incomplete first batch receipt retains every known later native cost an
  const db=new PrivateArchiveD1API({location:'A4',token:TOKEN,fetch_impl:async url=>{assert(url.includes('4c15f527-0287-484a-9dd1-bf1bd5c4f7c6'));return new Response(JSON.stringify({success:true,result:[{success:true,results:[],meta:{rows_read:3}},{success:true,results:[],meta:{rows_read:7,rows_written:9,size_after:16384}}]}));}});
  await assert.rejects(db.query('SELECT 1; SELECT 1'),/USAGE_UNMEASURED/);assert.deepEqual(db.usageSnapshot(),{requests:2,rows_read:10,rows_written:9,unknown_ops:1});assert.throws(()=>new PrivateArchiveD1API({location:'foreign',token:TOKEN}),/EXACT_LOCATION/);
 });
+test('a latest native reply without size cannot inherit earlier apparent free capacity',async()=>{
+ let n=0;const db=new PrivateArchiveD1API({token:TOKEN,fetch_impl:async()=>++n===1?reply([],1,0,4096):new Response(JSON.stringify({success:true,result:[{success:true,results:[],meta:{rows_read:1,rows_written:0}}]}))});await db.query('SELECT 1');assert.equal(db.storage_bytes,4096);await db.query('SELECT 1');assert.equal(db.storage_bytes,null);assert.equal(db.usageSnapshot().unknown_ops,0);
+});
 test('local whole HTTP refusal happens before transport and never fabricates unknown native work',async()=>{
  let sent=0;const events=[],db=new PrivateArchiveD1API({token:TOKEN,beforeRequest:event=>{events.push(event);return{allowed:false};},fetch_impl:async()=>{sent++;throw Error('must not send');}});
  await assert.rejects(db.query('SELECT 1'),/LOCAL_HTTP_ADMISSION_DENIED/);await assert.rejects(db.verifyDatabase(),/LOCAL_HTTP_ADMISSION_DENIED/);
