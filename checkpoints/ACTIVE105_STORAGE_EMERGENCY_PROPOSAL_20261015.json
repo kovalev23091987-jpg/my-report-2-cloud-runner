@@ -1,0 +1,95 @@
+{
+  "schema": "ACTIVE105_STORAGE_EMERGENCY_PROPOSAL_V1",
+  "recorded_utc": "2026-10-15T12:46:01.957980+00:00",
+  "status": "AWAITING_SEPARATE_OWNER_APPROVAL_NO_EXCEPTION_EXECUTED",
+  "latest_merged_code": {
+    "PR": 383,
+    "main": "d520a568afbf0d1d99b75bac912dda83d1ab0a0c",
+    "candidate": "c692b44d223bb8b0470989cc3837d159198dc9a2",
+    "cloud_run": 38735399386,
+    "passed": 634,
+    "failed": 0,
+    "cloud_originals": "checkpoints/active105-source-research-20261015/cloud383-38735399386/members.json"
+  },
+  "collector_deployment": {
+    "run": 38736082579,
+    "proof": "checkpoints/active105-source-research-20261015/collector383-38736082579/members.json",
+    "status": "CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED",
+    "active_version": "709429a6-877e-4e7f-89cb-de1ed389cb3d",
+    "module_sha256": "5e11fa6722e4fd2992a248af8fc4b5e10ff9b5eb9b539b9311ff7c49b9bb50e6",
+    "settings_and_crons_exact": true,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "actual_regular_native_cost_readback_pending": true,
+    "observability_query_returned_no_events": true
+  },
+  "latest_failed_scheduled_full": {
+    "run": 38732787034,
+    "head": "45e78f96030617abdf48991c4c4a2998385f01aa",
+    "run_id": "1792066319727-1792066329649",
+    "status": "NOT_CLOSED",
+    "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+    "health": "DEGRADED_PIPELINE",
+    "canonical_persistence": "PARTIAL; AKE present; BTW missing",
+    "underlying_original_failure": "D1_ERROR: Exceeded maximum DB size",
+    "exchange_quota_exhaustion_claimed": false,
+    "exact_same_run_SENT": false,
+    "originals": "checkpoints/active105-source-research-20261015/failed-natural-38732787034/members.json",
+    "failed_log_sha256": "21ca4c229ec6bcdf886153ab3981864a3d9b2ced61016238fbb1f54efe217458",
+    "failed_log_contains_original_GitHub_redactions": true
+  },
+  "accepted_work_already_done": "checkpoints/ACTIVE105_VIKE_AND_NATIVE_COST_CANDIDATE_20261015.json",
+  "D1_whole_day_complete": false,
+  "D1_inventory": "checkpoints/ACTIVE105_D1_FAMILY_INVENTORY_20261015.json",
+  "proposal": {
+    "approval_required_by": "AGENTS.md forbids bypassing/resetting spent reservations and retains the two shared RETAINED_HISTORY slots. Both UTC15 slots were spent.",
+    "approval_received": false,
+    "one_off_UTC_day": "2026-10-15",
+    "shared_family": "RETAINED_HISTORY",
+    "existing_spent_slots_preserved": 2,
+    "one_additional_slot": 1,
+    "fourth_denied": true,
+    "ordinary_daily_cap_unchanged": 2,
+    "ordinary_automatic_flags_remain_false": true,
+    "per_job_D1": {
+      "reads": 5000,
+      "writes": 400
+    },
+    "same_aggregate_limits": {
+      "reads": 3500000,
+      "writes": 70000
+    },
+    "additional_protected_next_full_and_copy": {
+      "reads": 59000,
+      "writes": 920
+    },
+    "whole_HTTP": 164,
+    "manual_HTTP_preserved": 24,
+    "source_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "kind": "canonical",
+    "maximum_old_rejected_bodies": 48,
+    "minimum_hot_age_hours": 48,
+    "never_touch": [
+      "latest per coin",
+      "ENTRY/ACTIONABLE",
+      "SENT/recheck/lifecycle/command/publication/outcome references",
+      "statistics and source clocks"
+    ],
+    "before_first_primary_change": [
+      "exact private durable originals for the whole prepared set",
+      "up to four independent native private readthrough checks",
+      "native current primary database size",
+      "fresh exact main/own lease/fence"
+    ],
+    "after_change": "conditional body-only updates retain every row/scalar/id; native readbacks and physical size delta measured; original retained on race/failure; no guarantee of reclaim amount before selection",
+    "free_space_restored": false,
+    "local_tests_passed": 28,
+    "local_tests_failed": 0,
+    "local_test_sha256": "307385f55298b355653fa17e6daf8afc21782c38a57ef1741c5b69ae60465b23",
+    "cloud_verification_pending": true
+  },
+  "project_complete": false,
+  "next_action": "Verify the proposed exception in the assembled cloud. Request explicit owner approval for the one-off UTC15 third shared slot and its gated manual canonical execution. Do not merge/execute the exception before approval. If approval arrives, recheck main/lease/fence, native current aggregate and independent private originals before any hot-body change. No fourth slot or reset. Preserve future UTC16 qualification and the complete-day reconciliation as open tasks."
+}
