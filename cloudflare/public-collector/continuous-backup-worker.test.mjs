@@ -1,3 +1,4 @@
+import {matchesGlob} from 'node:path';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -37,3 +38,10 @@ test('current code changes or unclosed source guard stop the old worker before t
 test('a failed slot does not reset budgets and the next original slot may recover',async()=>{let clock=T,n=0;const r=await runContinuousBackup({duration_minutes:6,now:()=>clock,sleep:async ms=>{clock+=ms;},source_guard:async()=>({allowed:true}),cycle:async()=>{if(++n===1)throw Error('CONTROLLED');return {status:'PRIMARY_CLOSED'};}});assert.equal(r.cycles,2);assert.equal(r.failures,1);assert.equal(r.provider_http_added,0);});
 test('one-shot bootstrap stays bounded and worker windows cannot exceed five hours',async()=>{let n=0;assert.equal((await runContinuousBackup({duration_minutes:0,now:()=>T,source_guard:async()=>({allowed:true}),cycle:async()=>{n++;return {};}})).cycles,1);assert.equal(n,1);for(const minutes of [-1,301,NaN])await assert.rejects(()=>runContinuousBackup({duration_minutes:minutes,source_guard:async()=>({allowed:true}),cycle:async()=>({})}),/PLAN_INVALID/);assert.equal(CONTINUOUS_WORKER_PLAN.maximum_minutes,300);});
 test('public standard runner, initial immutable receipt and bounded self-renewing job are wired',()=>{const s=fs.readFileSync(new URL('../../.github/workflows/report2-public-collector-backup.yml',import.meta.url),'utf8');assert.match(s,/runs-on: ubuntu-latest/);assert.match(s,/timeout-minutes: 315/);assert.match(s,/r.private!==false/);assert.match(s,/REPORT2_BACKUP_WORKER_MINUTES: "300"/);assert.match(s,/REPORT2_BACKUP_WORKER_MINUTES: "0"/);assert.match(s,/report2-collector-backup-bootstrap-/);assert.match(s,/workflow_dispatch:/);assert.match(s,/actions: write/);});
+
+test('every code change that stops an old worker also requests its current replacement',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2-public-collector-backup.yml',import.meta.url),'utf8');
+ const section=workflow.slice(workflow.indexOf('    paths:')).split('\npermissions:')[0];
+ const patterns=[...section.matchAll(/- "([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(GUARDED_CODE_PATHS.filter(file=>!patterns.some(pattern=>matchesGlob(file,pattern))),[]);
+});

@@ -66,5 +66,12 @@
     "live_weekly_run_added": false,
     "scope_106_changed": false
   },
-  "cloud_assembled_verification": "PENDING_UPDATED_PHASE_GUARD"
+  "cloud_assembled_verification": "PENDING_UPDATED_PHASE_GUARD",
+  "continuous_worker_replacement_fix": {
+    "cause": "The code guard includes private archive API, D1 budget guard and measured native D1, but the backup push trigger omitted those three paths. Their changes could stop the old worker without immediately requesting a replacement.",
+    "fix": "Cover all guarded code paths in the existing replacement trigger; retain exact-source guard, existing schedule/concurrency and caps.",
+    "controlled_tests": 12,
+    "new_provider_calls": 0,
+    "forced_MAIN": 0
+  }
 }
