@@ -1,0 +1,870 @@
+{
+  "schema": "NATURAL_AFTER_LOSSLESS_CLEANUP_V1",
+  "recorded_utc": "2026-10-14T21:33:40.455497+00:00",
+  "cloud_run": 38638248237,
+  "head": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+  "run_id": "1792012291639-1792012302451",
+  "artifact": {
+    "id": 11929467356,
+    "digest": "sha256:7d48bfd98dd8e547d6c02a22feb4d10ac1571e5dd4e1b0ebdd3b678b0e668544"
+  },
+  "status": "CLOSED105_SCAN_BOTH_FINALISTS_PERSISTED_PRIVATE_ORIGINALS_VERIFIED",
+  "market_scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "complete": true
+  },
+  "persistence": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1792012291639-1792012302451",
+    "expected_contracts": [
+      "NIL-USDT",
+      "BTW-USDT"
+    ],
+    "present_contracts": [
+      "BTW-USDT",
+      "NIL-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "candidates": [
+    {
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:f55f71b803f713a221c74c009b222aa4cfd865fc",
+      "run_id": "1792012291639-1792012302451",
+      "snapshot_id": "S392:BTW-USDT:1792012427047",
+      "observed_ts": 1792012427047,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "25aae6492959b9f5b174fd6541e4ec654c710fecaedf5130b17276eb440076f0",
+      "coverage_status": "CLOSED_ALL_ACTIVE_BLOCKS_CHECKED",
+      "active_blocks": {
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 2,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "maximum_score_points": 0.3
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "maximum_score_points": 0.5
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 4,
+          "decision_path": "ADMITTED_CONTROL_CONTEXT",
+          "maximum_score_points": 0.2
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_CONTROL_CONTEXT",
+          "maximum_score_points": 0.4
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 2,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "maximum_score_points": 0.6
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 1,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+          "maximum_score_points": 0.6
+        }
+      },
+      "decision_use": {
+        "score_status": "BASE_SCORE_MISSING",
+        "direction_closed": false,
+        "required_block_count": 6,
+        "checked_block_count": 6,
+        "directional_eligible_block_count": 1,
+        "participating_block_ids": [
+          "N04",
+          "N10",
+          "N11",
+          "N12",
+          "N15"
+        ],
+        "score_or_strategy_changed": false
+      },
+      "manual_context_receipts": [
+        {
+          "block_id": "N05",
+          "source_ts": 1792012380000,
+          "observed_ts": 1792012399896,
+          "physical_root_key": "AVAILABLE_FLOW:BTW-USDT:1791997980000:1792012380000",
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "POLONIEX спот: покупки 2 626,72, продажи 2 226,35 USDT; перевес покупок 8,25%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "POLONIEX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N12",
+          "source_ts": 1792012346933,
+          "observed_ts": 1792012390905,
+          "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:1000003491071010000",
+          "label": "Направление последних сделок HTX",
+          "value": "фьючерсы: 33 сделок, покупки 813,34, продажи 812,17 USDT; спот: 44 сделок, покупки 1 568,62, продажи 1 205,81 USDT; последние сделки разделяют 35 с, общего направления по двум рынкам не устанавливаем; одна биржа, выборки неполные; за отдельное полное окно 4 часа доступны сделки POLONIEX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен",
+          "source": "HTX / разновременные спот и фьючерсы / POLONIEX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012381967,
+          "observed_ts": 1792012382456,
+          "physical_root_key": "htx-futures:BTW-USDT|BTW-USDT:60min:1792011600000",
+          "label": "Фактический ценовой диапазон",
+          "value": "20 закрытых свечей 60min: 2,058001–2,762954 USDT, ширина 34,25%; цена последней закрытой свечи 2,263539 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+          "source": "HTX / закрытые свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012380000,
+          "observed_ts": 1792012427047,
+          "physical_root_key": "htx-futures:BTW-USDT|BTW-USDT:15m:1792012380000",
+          "label": "Фактический путь цены за 15 минут",
+          "value": "15 закрытых минутных свечей: 2,263539 → 2,248924 USDT (-0,65%); минимум 2,234308, максимум 2,272728 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+          "source": "HTX / закрытые минутные свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012380000,
+          "observed_ts": 1792012427047,
+          "physical_root_key": "htx-spot:BTW-USDT|HTX_SPOT:BTW-USDT:1792012380000",
+          "label": "Фактический путь цены на споте за 15 минут",
+          "value": "15 закрытых минутных свечей, активных минут 15: 2,267907 → 2,267934 USDT (+0%); минимум 2,259999, максимум 2,275814 USDT. Направления спота и фьючерса HTX расходятся; общего вывода нет. Цель и разрешение входа этим не подтверждены",
+          "source": "HTX / спотовые закрытые свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012380000,
+          "observed_ts": 1792012427047,
+          "physical_root_key": "htx-futures:BTW-USDT|POLONIEX:BTW-USDT:1792012380000",
+          "label": "Цена за 15 минут на Poloniex",
+          "value": "15 закрытых минутных свечей, активных минут 13: 2,2608 → 2,2448 USDT (-0,71%); минимум 2,244, максимум 2,2724 USDT; закрытие относительно HTX -0,18%. Направление совпало с HTX и ценовые диапазоны пересеклись; это отдельный рынок, цены не усреднялись. Цель, баллы и разрешение входа этим не меняются",
+          "source": "Poloniex / спотовые закрытые свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N04",
+          "source_ts": 1792012406000,
+          "observed_ts": 1792012415856,
+          "physical_root_key": "bsc|0xa9ef662be0459a521395cfccc133cf48622ec4555df56165b1d148e63890f8aa|199",
+          "label": "Подтверждённые переводы токена",
+          "value": "2 событий в одной транзакции; 40000000000000000000 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена",
+          "source": "публичный RPC",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "source_ts": 1792012426455,
+          "observed_ts": 1792012427047,
+          "physical_root_key": "market.BTW-USDT.depth.step0:1792012426455",
+          "label": "Измеренная глубина стакана",
+          "value": "на снимке 2026-10-14T21:13:46.455Z: покупка 168901.68809 USDT (150 уровней), продажа 226778.45763 USDT (150 уровней), спред 0.004452 б.п.; только возвращённая выборка HTX, не вся ликвидность рынка",
+          "source": "HTX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "source_ts": 1792012426455,
+          "observed_ts": 1792012427047,
+          "physical_root_key": "market.BTW-USDT.depth.step0:1792012426455",
+          "label": "Проверка размера покупки",
+          "value": "ориентир 500 USDT: 22 целых контрактов; вход 22/22, выход 22/22 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "source_ts": 1792012426455,
+          "observed_ts": 1792012427047,
+          "physical_root_key": "market.BTW-USDT.depth.step0:1792012426455",
+          "label": "Проверка размера продажи",
+          "value": "ориентир 500 USDT: 22 целых контрактов; вход 22/22, выход 22/22 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N15",
+          "source_ts": 1792012375000,
+          "observed_ts": 1792012413350,
+          "physical_root_key": "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa|bitway:decentralized-finance-defi:1792012375000",
+          "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+          "value": "монета +15,39%, медиана -3,44%, разница +18,82 п.п.; сводные цены площадок",
+          "source": "CoinGecko",
+          "score_contribution": 0
+        }
+      ],
+      "source_collection_priority": {
+        "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+        "contract": "BTW-USDT",
+        "status": "CAPTURED_ORIGINAL_QUEUE",
+        "N15": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1791998894100,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1791998894100,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5714285714285714,
+              "initial_historical_preference": false
+            }
+          ],
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "public_venues": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "POLONIEX",
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "POLONIEX",
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": [
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 1,
+              "latest_observed_ts": 1791998894100,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE",
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "block_id": "N05",
+              "observations": 1,
+              "latest_observed_ts": 1791998894100,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BACKPACK",
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BITGET",
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE_FUTURES_N12",
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "KUCOIN_N12_EXACT_TOKEN",
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram_text_changed": false
+      },
+      "paused_blocks_checked_or_participating": false,
+      "telegram_delivery_proven": false
+    },
+    {
+      "contract": "NIL-USDT",
+      "publication_id": "PUB:63c5825c2f17e4dc32753d1e13d3ebbb234f7148",
+      "run_id": "1792012291639-1792012302451",
+      "snapshot_id": "S392:NIL-USDT:1792012376829",
+      "observed_ts": 1792012376829,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "2f358ee4951e4567409ffca7d15be4153b69018f863a4b86115d2b17c469431b",
+      "coverage_status": "CLOSED_ALL_ACTIVE_BLOCKS_CHECKED",
+      "active_blocks": {
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "maximum_score_points": 0.3
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "maximum_score_points": 0.5
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 3,
+          "decision_path": "ADMITTED_CONTROL_CONTEXT",
+          "maximum_score_points": 0.2
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_CONTROL_CONTEXT",
+          "maximum_score_points": 0.4
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 0,
+          "valid_context_facts": 1,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "maximum_score_points": 0.6
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "usable_facts": 2,
+          "valid_context_facts": 2,
+          "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+          "maximum_score_points": 0.6
+        }
+      },
+      "decision_use": {
+        "score_status": "BASE_SCORE_MISSING",
+        "direction_closed": false,
+        "required_block_count": 6,
+        "checked_block_count": 6,
+        "directional_eligible_block_count": 1,
+        "participating_block_ids": [
+          "N04",
+          "N10",
+          "N11",
+          "N12",
+          "N15"
+        ],
+        "score_or_strategy_changed": false
+      },
+      "manual_context_receipts": [
+        {
+          "block_id": "N05",
+          "source_ts": 1792012320000,
+          "observed_ts": 1792012339324,
+          "physical_root_key": "AVAILABLE_FLOW:NIL-USDT:1791997920000:1792012320000",
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "GATE спот: покупки 57 014,35, продажи 32 188,44 USDT; перевес покупок 27,83%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "GATE",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N12",
+          "source_ts": 1792012309877,
+          "observed_ts": 1792012331303,
+          "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:NIL-USDT:NIL-USDT:BOUNDED:1000002387549900000:HTX_SPOT_TRADE_SAMPLE:NIL-USDT:27920205",
+          "label": "Направление последних сделок HTX",
+          "value": "HTX фьючерсы: 11 сделок, покупки 44,43, продажи 143,9 USDT; спот: 655 сделок, покупки 15 909,57, продажи 18 445,09 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки GATE; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен",
+          "source": "HTX / спот и фьючерсы / GATE",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012318930,
+          "observed_ts": 1792012319250,
+          "physical_root_key": "htx-futures:NIL-USDT|NIL-USDT:60min:1792011600000",
+          "label": "Фактический ценовой диапазон",
+          "value": "20 закрытых свечей 60min: 0,07473–0,08966 USDT, ширина 19,98%; цена последней закрытой свечи 0,08923 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+          "source": "HTX / закрытые свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012260000,
+          "observed_ts": 1792012376829,
+          "physical_root_key": "htx-futures:NIL-USDT|NIL-USDT:15m:1792012260000",
+          "label": "Фактический путь цены за 15 минут",
+          "value": "15 закрытых минутных свечей: 0,08945 → 0,092 USDT (+2,85%); минимум 0,08915, максимум 0,09234 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+          "source": "HTX / закрытые минутные свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N10",
+          "source_ts": 1792012260000,
+          "observed_ts": 1792012376829,
+          "physical_root_key": "htx-spot:NIL-USDT|HTX_SPOT:NIL-USDT:1792012260000",
+          "label": "Фактический путь цены на споте за 15 минут",
+          "value": "15 закрытых минутных свечей, активных минут 15: 0,0893 → 0,0915 USDT (+2,46%); минимум 0,089, максимум 0,092 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены",
+          "source": "HTX / спотовые закрытые свечи",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N04",
+          "source_ts": 1792011479000,
+          "observed_ts": 1792012364562,
+          "physical_root_key": "ethereum|0xd30472fdcd665cfffc063f7801a9a599f8d4f930db3bb5e7496e636031d1ad53|550",
+          "label": "Подтверждённые переводы токена",
+          "value": "1 событий в одной транзакции; 2817937991 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена",
+          "source": "публичный RPC",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "source_ts": 1792012375993,
+          "observed_ts": 1792012376829,
+          "physical_root_key": "market.NIL-USDT.depth.step0:1792012375993",
+          "label": "Измеренная глубина стакана",
+          "value": "на снимке 2026-10-14T21:12:55.993Z: покупка 25307.6158 USDT (40 уровней), продажа 28924.7123 USDT (79 уровней), спред 51.976178 б.п.; только возвращённая выборка HTX, не вся ликвидность рынка",
+          "source": "HTX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "source_ts": 1792012375993,
+          "observed_ts": 1792012376829,
+          "physical_root_key": "market.NIL-USDT.depth.step0:1792012375993",
+          "label": "Проверка размера покупки",
+          "value": "ориентир 500 USDT: 538 целых контрактов; вход 538/538, выход 538/538 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "source_ts": 1792012375993,
+          "observed_ts": 1792012376829,
+          "physical_root_key": "market.NIL-USDT.depth.step0:1792012375993",
+          "label": "Проверка размера продажи",
+          "value": "ориентир 500 USDT: 541 целых контрактов; вход 541/541, выход 541/541 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N15",
+          "source_ts": 1792012312000,
+          "observed_ts": 1792012357546,
+          "physical_root_key": "ethereum:0x7cf9a80db3b29ee8efe3710aadb7b95270572d47|nillion:artificial-intelligence:1792012312000",
+          "label": "Сектор «искусственный интеллект» за 24 часа, выборка 50 монет",
+          "value": "монета +20,57%, медиана -3,68%, разница +24,24 п.п.; сводные цены площадок",
+          "source": "CoinGecko",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N15",
+          "source_ts": 1792012096000,
+          "observed_ts": 1792012362907,
+          "physical_root_key": "provider:coinpaprika:nil-nillion|nil-nillion:infrastructure:1792012096000",
+          "label": "Сектор «Infrastructure» за 24 часа, выборка 26 монет",
+          "value": "монета +17,33%, медиана -3,18%, разница +20,51 п.п.; сводные цены площадок",
+          "source": "CoinPaprika",
+          "score_contribution": 0
+        }
+      ],
+      "source_collection_priority": {
+        "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+        "contract": "NIL-USDT",
+        "status": "CAPTURED_ORIGINAL_QUEUE",
+        "N15": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 1,
+              "latest_observed_ts": 1791931366496,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.3333333333333333,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 1,
+              "latest_observed_ts": 1791931366496,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5,
+              "initial_historical_preference": false
+            }
+          ],
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "public_venues": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": [
+            {
+              "route": "GATE",
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BACKPACK",
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BITGET",
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE_FUTURES_N12",
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "KUCOIN_N12_EXACT_TOKEN",
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram_text_changed": false
+      },
+      "paused_blocks_checked_or_participating": false,
+      "telegram_delivery_proven": false
+    }
+  ],
+  "private_copy": {
+    "schema": "REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_V1",
+    "head": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+    "cloud_run": "38638248237",
+    "status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "main_rows_modified": 0,
+    "private_payload_exported": false,
+    "report_effect": false,
+    "source_run_id": "1792012291639-1792012302451",
+    "selection_status": "EXACT_CLOSED_CANDIDATES",
+    "control": {
+      "main": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+      "producer_head": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+      "producer_in_current_main_history": true,
+      "phase": "OWNER_SEQUENTIAL_BLOCK_REQUIREMENTS_REVIEW",
+      "fence_active": false
+    },
+    "private_database": {
+      "database_id": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+      "name": "report2-free-canonical-history",
+      "descriptor_size_is_not_measured_query_size": true
+    },
+    "admission": {
+      "allowed": true,
+      "status": "ATOMIC_SHARED_DAY_RESERVED",
+      "reservation": {
+        "rows_read": 5000,
+        "rows_written": 80
+      }
+    },
+    "records": [
+      {
+        "version": "private-canonical-lossless-gzip-v1",
+        "publication_id": "PUB:f55f71b803f713a221c74c009b222aa4cfd865fc",
+        "run_id": "1792012291639-1792012302451",
+        "snapshot_id": "S392:BTW-USDT:1792012427047",
+        "contract_code": "BTW-USDT",
+        "observed_ts": 1792012427047,
+        "analytical_fingerprint": "25aae6492959b9f5b174fd6541e4ec654c710fecaedf5130b17276eb440076f0",
+        "raw_sha256": "a4fa0768cb4bcb282e3dfebf4697756fed06b5b563b42fe4be77b5eefc8e6bbc",
+        "gzip_sha256": "0cbb3af16fa8b395e2f48fdde16cadfec723684ccb1d226e57bfa013a3fe2cb7",
+        "raw_bytes": 427440,
+        "gzip_bytes": 59864,
+        "stored": {
+          "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+          "retained": true,
+          "publication_id": "PUB:f55f71b803f713a221c74c009b222aa4cfd865fc",
+          "raw_sha256": "a4fa0768cb4bcb282e3dfebf4697756fed06b5b563b42fe4be77b5eefc8e6bbc",
+          "gzip_sha256": "0cbb3af16fa8b395e2f48fdde16cadfec723684ccb1d226e57bfa013a3fe2cb7",
+          "raw_bytes": 427440,
+          "gzip_bytes": 59864,
+          "original_observed_ts": 1792012427047,
+          "archived_ts": 1792012442351,
+          "main_deletion_authorized": false,
+          "report_or_score_effect": false
+        },
+        "private_reader_verified": true,
+        "portable_decoder_and_projected_header_verified": true,
+        "original_clocks_unchanged": true
+      },
+      {
+        "version": "private-canonical-lossless-gzip-v1",
+        "publication_id": "PUB:63c5825c2f17e4dc32753d1e13d3ebbb234f7148",
+        "run_id": "1792012291639-1792012302451",
+        "snapshot_id": "S392:NIL-USDT:1792012376829",
+        "contract_code": "NIL-USDT",
+        "observed_ts": 1792012376829,
+        "analytical_fingerprint": "2f358ee4951e4567409ffca7d15be4153b69018f863a4b86115d2b17c469431b",
+        "raw_sha256": "f4e659e306efa78f6ebf35d9dfbcce0a900a46cd9699063392593d8d75677e7d",
+        "gzip_sha256": "7ff9e4eefd2e4174d4a571d10d92817b8b9ffcd4cc0a5f06eb6f808a0438ee16",
+        "raw_bytes": 399231,
+        "gzip_bytes": 62322,
+        "stored": {
+          "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+          "retained": true,
+          "publication_id": "PUB:63c5825c2f17e4dc32753d1e13d3ebbb234f7148",
+          "raw_sha256": "f4e659e306efa78f6ebf35d9dfbcce0a900a46cd9699063392593d8d75677e7d",
+          "gzip_sha256": "7ff9e4eefd2e4174d4a571d10d92817b8b9ffcd4cc0a5f06eb6f808a0438ee16",
+          "raw_bytes": 399231,
+          "gzip_bytes": 62322,
+          "original_observed_ts": 1792012376829,
+          "archived_ts": 1792012442351,
+          "main_deletion_authorized": false,
+          "report_or_score_effect": false
+        },
+        "private_reader_verified": true,
+        "portable_decoder_and_projected_header_verified": true,
+        "original_clocks_unchanged": true
+      }
+    ],
+    "weight_effect": false,
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "CANONICAL_COLD_COPY:38638248237:1",
+      "source_run_id": "38638248237",
+      "measured_rows_read": 1000,
+      "measured_rows_written_accounted": 10,
+      "measured_requests_accounted": 14,
+      "unknown_ops": 0
+    },
+    "D1": {
+      "requests": 14,
+      "rows_read": 1001,
+      "rows_written": 10,
+      "unknown_ops": 0
+    },
+    "completed_ts": 1792012447682
+  },
+  "delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1792012291639-1792012302451",
+    "source": "schedule",
+    "recorded_at": 1792012435488,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "raw_originals": [
+    {
+      "path": "checkpoints/storage-recovery-natural-38638248237/automatic-delivery-audit.json.gz",
+      "raw_bytes": 350,
+      "raw_sha256": "395ff77a8309f713e77362189e592af2ae59525c73d9f82e1055ecc5fbe48f41",
+      "gzip_sha256": "cd42dc8edb9853ba5b73401d1fdfdb7f11fa889bb1345dcf8ddc19062dce3299"
+    },
+    {
+      "path": "checkpoints/storage-recovery-natural-38638248237/known-d1-day-guard.json.gz",
+      "raw_bytes": 135,
+      "raw_sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605",
+      "gzip_sha256": "81e3c02daacc0c1ca2cf7378c40400e57028647f945cb538efe48baab7da5b50"
+    },
+    {
+      "path": "checkpoints/storage-recovery-natural-38638248237/private-canonical-archive-receipt.json.gz",
+      "raw_bytes": 4335,
+      "raw_sha256": "5ae57f86872081f23da99e4c0ceccc9490fbd127a2e5e2fa76e8a0cf087477e6",
+      "gzip_sha256": "684679bb610d47afc22fe5563b921100e3428846486cc6ceb907e6544b6ae1d1"
+    },
+    {
+      "path": "checkpoints/storage-recovery-natural-38638248237/report2-run-result.json.gz",
+      "raw_bytes": 426812,
+      "raw_sha256": "0b839121a5a35fea8c106ed627f7caa631bef9b15b875a3872dd43257f5e5543",
+      "gzip_sha256": "c0655fe1aa52c8da34ee9bd699310c4816f3656bf44fbb4fc175940592a8be4c"
+    },
+    {
+      "path": "checkpoints/storage-recovery-natural-38638248237/same-run-delivery-proof.json.gz",
+      "raw_bytes": 518,
+      "raw_sha256": "b62180a1538d78924ce1a98076e13c7c2564303e9cd46afe6b64df045fbabb94",
+      "gzip_sha256": "1196cf54e66d79f62527ddf5db0fe263ea0168c68cace4d3645c09a55d622ca2"
+    }
+  ],
+  "all9_paused_excluded_from_block_checks_and_decision": true,
+  "provider_HTTP_added_for_this_saved_analysis": 0,
+  "forced_MAIN": 0,
+  "Telegram_added": 0,
+  "actual_SAME_RUN_SENT_confirmed": false,
+  "global105_useful_deep_coverage_proven": false,
+  "long_term_storage_complete": false,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

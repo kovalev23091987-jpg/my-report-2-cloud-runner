@@ -1,0 +1,354 @@
+{
+  "schema": "SAVED_WEEKLY106_PREPARED_ALL_CONSUMERS_V1",
+  "recorded_utc": "2026-10-14T21:58:21.769Z",
+  "source_run": 38612734728,
+  "original_source_head": "1d0a4000843098e7f97bd4edd0a948f5b945e8b2",
+  "original_catalog_observed_ts": 1792001381528,
+  "source_clocks_refreshed": false,
+  "raw_inferred_assets": 108,
+  "safe_qualified_assets": 106,
+  "safe_qualified_contracts": 123,
+  "previous105_all_preserved": true,
+  "added": [
+    {
+      "contract_code": "MAGIC-USDT",
+      "asset_symbol": "MAGIC"
+    }
+  ],
+  "removed": [],
+  "identity_pending": [
+    {
+      "contract": "SNPS-USDT",
+      "asset": "SNPS",
+      "status": "NEW_ASSET_CRYPTO_IDENTITY_NOT_CONFIRMED",
+      "reason": "EMPTY_OR_UNRECOGNIZED_NATIVE_ASSET_TAGS_DO_NOT_PROVE_CRYPTO",
+      "source_contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SNPS-USDT",
+          "asset_symbol": "SNPS",
+          "market_kind": "LINEAR_PERPETUAL",
+          "settlement_asset": "USDT",
+          "price_quote": "USDT",
+          "contract_size": 0.01,
+          "price_tick": 0.01,
+          "delivery_time": null,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+          "source_ts": 1792001380456,
+          "observed_ts": 1792001381528,
+          "scope": {
+            "classification": "CRYPTO_CONFIRMED",
+            "eligible_for_crypto_discovery": true,
+            "source": "HTX swap_contract_info labels/tradfi_labels",
+            "source_fields_present": {
+              "labels": true,
+              "tradfi_labels": true,
+              "business_type": true,
+              "contract_type": true,
+              "trade_partition": true
+            },
+            "evidence": {
+              "official_forex_source_url": null,
+              "official_crypto_token_source_url": null,
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [],
+              "tradfi_labels": []
+            },
+            "reasons": [
+              "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+            ]
+          },
+          "production_market_adapter_supported": true,
+          "market_adapter_status": "EXISTING_EXACT_LINEAR_PERPETUAL_ADAPTER"
+        }
+      ]
+    },
+    {
+      "contract": "ZCSH-USDT",
+      "asset": "ZCSH",
+      "status": "NEW_ASSET_CRYPTO_IDENTITY_NOT_CONFIRMED",
+      "reason": "EMPTY_OR_UNRECOGNIZED_NATIVE_ASSET_TAGS_DO_NOT_PROVE_CRYPTO",
+      "source_contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ZCSH-USDT",
+          "asset_symbol": "ZCSH",
+          "market_kind": "LINEAR_PERPETUAL",
+          "settlement_asset": "USDT",
+          "price_quote": "USDT",
+          "contract_size": 0.1,
+          "price_tick": 0.01,
+          "delivery_time": null,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+          "source_ts": 1792001380456,
+          "observed_ts": 1792001381528,
+          "scope": {
+            "classification": "CRYPTO_CONFIRMED",
+            "eligible_for_crypto_discovery": true,
+            "source": "HTX swap_contract_info labels/tradfi_labels",
+            "source_fields_present": {
+              "labels": true,
+              "tradfi_labels": true,
+              "business_type": true,
+              "contract_type": true,
+              "trade_partition": true
+            },
+            "evidence": {
+              "official_forex_source_url": null,
+              "official_crypto_token_source_url": null,
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [],
+              "tradfi_labels": []
+            },
+            "reasons": [
+              "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+            ]
+          },
+          "production_market_adapter_supported": true,
+          "market_adapter_status": "EXISTING_EXACT_LINEAR_PERPETUAL_ADAPTER"
+        }
+      ]
+    }
+  ],
+  "prepared_files": [
+    {
+      "target_path": "checkpoints/htx-weekly-universe-2026-10-12.json.gz",
+      "saved_path": "checkpoints/weekly106-preparation-20261015/files/checkpoints/htx-weekly-universe-2026-10-12.json.gz",
+      "bytes": 13009,
+      "sha256": "b4231f64c0bbc1ad07dfa717e5d07176defddb979942b6465e4942275e2277ad"
+    },
+    {
+      "target_path": "current-generation/files/src/approved-htx-analysis-scope.mjs",
+      "saved_path": "checkpoints/weekly106-preparation-20261015/files/current-generation/files/src/approved-htx-analysis-scope.mjs",
+      "bytes": 16653,
+      "sha256": "bb412ed90dbbf405fef684b56c66a72369795e4566f14a2852122732894b7a73"
+    },
+    {
+      "target_path": "cloudflare/free-history/hourly-archive.mjs",
+      "saved_path": "checkpoints/weekly106-preparation-20261015/files/cloudflare/free-history/hourly-archive.mjs",
+      "bytes": 10599,
+      "sha256": "826430cadfb8f669c05a5aa624beeec1ecb75eae980d9d8fa7fe9c184be892eb"
+    },
+    {
+      "target_path": "checkpoints/HTX_WEEKLY_SOURCE_QUEUE_2026-10-12.json",
+      "saved_path": "checkpoints/weekly106-preparation-20261015/files/checkpoints/HTX_WEEKLY_SOURCE_QUEUE_2026-10-12.json",
+      "bytes": 104124,
+      "sha256": "2b3df6ebd2a4091263e7ec071a243071cda3da91d8367897c3533731efb8d6f4"
+    }
+  ],
+  "source_receipts": [
+    {
+      "name": "linear-default",
+      "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+      "received_ts": 1792001379004,
+      "http_status": 200,
+      "body_sha256": "f239e9f15902d274ed46eaf53526025fafbaed7461821df3adb4877e37d95d15",
+      "bytes": 194851,
+      "file": "linear-default.json.gz",
+      "source_ts": 1792001378868,
+      "compressed_sha256": "4291c9ec183d00ac926032b169c3d96cb9964b33c02014d7970be7e330f61239",
+      "path": "checkpoints/htx-weekly-originals/2026-10-12/linear-default.json.gz"
+    },
+    {
+      "name": "linear-all",
+      "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all&support_margin_mode=all",
+      "received_ts": 1792001379552,
+      "http_status": 200,
+      "body_sha256": "8e86c31615e5e9928366f41488c41addc07bd683d85b964a999f344464c9942a",
+      "bytes": 192759,
+      "file": "linear-all.json.gz",
+      "source_ts": 1792001379414,
+      "compressed_sha256": "c819f1bd4522c59d13da10c2f0f793e594b98f9ff08567538f02ddea16d65ba1",
+      "path": "checkpoints/htx-weekly-originals/2026-10-12/linear-all.json.gz"
+    },
+    {
+      "name": "linear-cross",
+      "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all&support_margin_mode=cross",
+      "received_ts": 1792001380095,
+      "http_status": 200,
+      "body_sha256": "6007896e10215545818e06e687a39be48c81fba7fcc6432ea561c6bfbf575933",
+      "bytes": 2135,
+      "file": "linear-cross.json.gz",
+      "source_ts": 1792001379963,
+      "compressed_sha256": "7d3e88700025a2b4d89432adff2f3e27cd7abdd322eebf3d05b9a55dd57c0164",
+      "path": "checkpoints/htx-weekly-originals/2026-10-12/linear-cross.json.gz"
+    },
+    {
+      "name": "linear-isolated",
+      "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=swap&support_margin_mode=isolated",
+      "received_ts": 1792001380584,
+      "http_status": 200,
+      "body_sha256": "6d58b19f519275ca6a6f82435f8a770d4d6d556c07ddf82d15a69ed3ad4c4265",
+      "bytes": 93,
+      "file": "linear-isolated.json.gz",
+      "source_ts": 1792001380456,
+      "compressed_sha256": "0e44d1a92fe60b90ef9803072fef437b0a6397c45a7da1988bcc0d7117758931",
+      "path": "checkpoints/htx-weekly-originals/2026-10-12/linear-isolated.json.gz"
+    },
+    {
+      "name": "coin-swap",
+      "url": "https://api.hbdm.com/swap-api/v1/swap_contract_info",
+      "received_ts": 1792001381060,
+      "http_status": 200,
+      "body_sha256": "f321117dea2384707f641a72d1949af702997f1569e3555bc9b92816bf08afd4",
+      "bytes": 1361,
+      "file": "coin-swap.json.gz",
+      "source_ts": 1792001380925,
+      "compressed_sha256": "7f9c3e3ff4683e5b1a73913da135e4e4cab9f1438b7c687c64a3a49e0834bfd7",
+      "path": "checkpoints/htx-weekly-originals/2026-10-12/coin-swap.json.gz"
+    },
+    {
+      "name": "coin-delivery",
+      "url": "https://api.hbdm.com/api/v1/contract_contract_info",
+      "received_ts": 1792001381528,
+      "http_status": 200,
+      "body_sha256": "054f10689cb0ab87055b035067066e959b9300f5614032d90b26e3562a59250a",
+      "bytes": 2520,
+      "file": "coin-delivery.json.gz",
+      "source_ts": 1792001381395,
+      "compressed_sha256": "cee26759daba6e46426b3f887aa7dbec33275baa933ab682faaaa1951d13161c",
+      "path": "checkpoints/htx-weekly-originals/2026-10-12/coin-delivery.json.gz"
+    }
+  ],
+  "required_rollout": [
+    "ASSEMBLED_RUNTIME_CONNECTED_CHECKS",
+    "PUBLIC_COLLECTOR_DEPLOY_AND_MODULE_READBACK",
+    "HTX_SPOT_FUTURES_HISTORY_WORKER_DEPLOY_READBACK",
+    "LIQ_FORECAST_HISTORY_WORKER_DEPLOY_READBACK"
+  ],
+  "registered_history_manifests": [
+    {
+      "sha256": "b4231f64c0bbc1ad07dfa717e5d07176defddb979942b6465e4942275e2277ad",
+      "target_count": 106
+    },
+    {
+      "sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "target_count": 105
+    },
+    {
+      "sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+      "target_count": 104
+    }
+  ],
+  "history_readable_contracts": [
+    "AAVE-USDT",
+    "ACE-USDT",
+    "ADA-USDT",
+    "AKE-USDT",
+    "ALGO-USDT",
+    "APR-USDT",
+    "APT-USDT",
+    "ARB-USDT",
+    "ASTER-USDT",
+    "ATOM-USDT",
+    "AVAX-USDT",
+    "AVNT-USDT",
+    "BANK-USDT",
+    "BCH-USDT",
+    "BEAT-USDT",
+    "BILL-USDT",
+    "BNB-USDT",
+    "BOME-USDT",
+    "BONK-USDT",
+    "BR-USDT",
+    "BTC-USDT",
+    "BTR-USDT",
+    "BTT-USDT",
+    "BTW-USDT",
+    "CASHCAT-USDT",
+    "CHZ-USDT",
+    "CT-USDT",
+    "DASH-USDT",
+    "DOGE-USDT",
+    "DOS-USDT",
+    "DOT-USDT",
+    "ENA-USDT",
+    "ETC-USDT",
+    "ETH-USDT",
+    "ETHFI-USDT",
+    "EUL-USDT",
+    "FARTCOIN-USDT",
+    "FIL-USDT",
+    "FLOKI-USDT",
+    "GPS-USDT",
+    "GRAM-USDT",
+    "HBAR-USDT",
+    "HYPE-USDT",
+    "ICP-USDT",
+    "JST-USDT",
+    "JUP-USDT",
+    "LAB-USDT",
+    "LINK-USDT",
+    "LIT-USDT",
+    "LSK-USDT",
+    "LTC-USDT",
+    "MAGIC-USDT",
+    "MARSCOIN-USDT",
+    "MUBARAK-USDT",
+    "MYX-USDT",
+    "NEAR-USDT",
+    "NIL-USDT",
+    "OKB-USDT",
+    "ONDO-USDT",
+    "ONG-USDT",
+    "OP-USDT",
+    "ORDI-USDT",
+    "PAXG-USDT",
+    "PENGU-USDT",
+    "PEOPLE-USDT",
+    "PEPE-USDT",
+    "PIPPIN-USDT",
+    "PONS-USDT",
+    "PUMP-USDT",
+    "QNT-USDT",
+    "RAVE-USDT",
+    "RAY-USDT",
+    "RIVER-USDT",
+    "RLC-USDT",
+    "SHIB-USDT",
+    "SKR-USDT",
+    "SKYAI-USDT",
+    "SOL-USDT",
+    "STEEM-USDT",
+    "STRK-USDT",
+    "SUI-USDT",
+    "SUN-USDT",
+    "SUSHI-USDT",
+    "TAO-USDT",
+    "TIA-USDT",
+    "TRUMP-USDT",
+    "TRX-USDT",
+    "TUT-USDT",
+    "UB-USDT",
+    "UNI-USDT",
+    "USELESS-USDT",
+    "VELVET-USDT",
+    "WIF-USDT",
+    "WIN-USDT",
+    "WLD-USDT",
+    "XAUT-USDT",
+    "XLM-USDT",
+    "XMR-USDT",
+    "XPL-USDT",
+    "XRP-USDT",
+    "ZEC-USDT",
+    "ZKC-USDT",
+    "哈基米-USDT",
+    "币安人生-USDT",
+    "牛来-USDT",
+    "龙虾-USDT"
+  ],
+  "production_scope_changed": false,
+  "new_provider_HTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "proposal_receipt_binding_pending": "Requires a fresh own bounded weekly lease after reviewed362 merge, with candidate parent equal to its exact lease.expected_main. The present lease started before361 and must not be reused as a newer proposal base.",
+  "new_proposal_created": false,
+  "all_blocks_complete": false,
+  "project_complete": false
+}

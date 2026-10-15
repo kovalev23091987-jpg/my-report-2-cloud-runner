@@ -1,12 +1,19 @@
-name: Report2 Retained History Maintenance
+name: Report2 lossless retained history recovery
 on:
   schedule:
-    - cron: '17 * * * *'
-  push:
-    branches: [codex/retained-history-relocation-20261005]
-    paths:
-      - '.github/workflows/retained-history-maintenance.yml'
-      - 'audit-fixes/retained-history-20261005/maintenance-lease*'
+    - cron: '17 0,12 * * *'
+  workflow_dispatch:
+    inputs:
+      execute:
+        description: Relocate only byte-verified old full evidence after durable copy
+        type: boolean
+        default: false
+      expected_main:
+        description: Exact current main for an explicitly borrowed owner
+        default: ''
+      expected_owner:
+        description: Exact live parent owner; empty for own automatic acquisition
+        default: ''
 permissions:
   contents: write
 concurrency:
@@ -15,50 +22,29 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 6
+    timeout-minutes: 12
     env:
+      GITHUB_TOKEN: ${{ github.token }}
       REPORT2_CURRENT_GENERATION: MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_LOSSLESS_RETENTION_ENABLED: ${{ vars.REPORT2_LOSSLESS_RETENTION_ENABLED || 'false' }}
+      EXPECTED_MAIN: ${{ inputs.expected_main || github.sha }}
+      BORROW_EXISTING_OWNER: ${{ inputs.expected_owner || '' }}
+      LOSSLESS_EXECUTE: ${{ github.event_name == 'schedule' || inputs.execute == true }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Defer exact known same-day D1 block without native admission reads
-        if: ${{ github.event_name == 'schedule' }}
-        id: known_day_guard
-        run: |
-          mkdir -p audit-output
-          node tools/known-d1-day-guard.mjs . > audit-output/known-d1-day-guard.json
-          git rev-parse HEAD > audit-output/head.txt
-      - name: Acquire bounded owner after fresh main and fence read
-        if: ${{ steps.known_day_guard.outputs.blocked != 'true' }}
-        id: lease
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          EXPECTED_MAIN: ${{ github.event_name == 'push' && 'f4882b33d18eb6033cd89cf8df9dbf569cc06b5c' || github.sha }}
-          BORROW_EXISTING_OWNER: ${{ github.event_name == 'push' && 'HTX:20261005T215136067Z:source-storage' || '' }}
-        run: node audit-fixes/retained-history-20261005/maintenance-lease.mjs acquire
-      - name: Verify maintenance lease guards
-        if: steps.lease.outputs.allowed == 'true'
-        run: node --test audit-fixes/retained-history-20261005/maintenance-lease.test.mjs
-      - name: Preserve and verify exact cold history before conditional relocation
-        if: steps.lease.outputs.allowed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: |
-          node audit-fixes/retained-history-20261005/migrate-retained-history.mjs > audit-output/console.json
-          git rev-parse HEAD > audit-output/head.txt
-          git rev-parse HEAD^{tree} > audit-output/tree.txt
-      - name: Release only this maintenance owner
-        if: always() && steps.lease.outputs.allowed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node audit-fixes/retained-history-20261005/maintenance-lease.mjs release
+      - name: Verify lossless original bytes, source race, hot references and existing quotas
+        run: node --test runner/lossless-full-evidence-recovery.test.mjs runner/github-bounded-phase-lease.test.mjs
+      - name: Preserve original cold full evidence and prove exact current readthrough
+        run: node tools/recover-lossless-retained-history-20261014.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: retained-history-maintenance-${{ github.run_id }}
-          path: audit-output/
+          name: lossless-retained-history-${{ github.run_id }}
+          path: audit-output/lossless-retained-history/
+          if-no-files-found: error
           retention-days: 30

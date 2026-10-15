@@ -1,0 +1,51 @@
+{
+  "schema": "PR362_LIVE_LEASE_AUTHORITY_PRESERVATION_V1",
+  "old_owned_lease_release": {
+    "schema": "PR362_OWN_BOUNDED_LEASE_RELEASE_V1",
+    "owner": "CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:1792002919364",
+    "source_main": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+    "phase_blob_before": "22adf17d1a8cf60034e6225a6ebd05b74f7d9f3a",
+    "phase_blob_after": "3b1bc69bd225f022f1f67f2e157e55208bb3784a",
+    "phase_sha256_after": "fa42055b73992829cca84531696cce96daddf56ccbbfa88290b02b032cb4a328",
+    "unrelated_roots_byte_identical": 354,
+    "released_ts": 1792015473042,
+    "strategy_caps_statistics_or_code_modified": false,
+    "PR362_merged": false,
+    "status": "EXACT_CAS_AND_IMMUTABLE_MAIN_READBACK_VERIFIED",
+    "result_main": "5c951a6eddee975034f4c5ff03e635888ee316e9",
+    "phase_blob_readback": "3b1bc69bd225f022f1f67f2e157e55208bb3784a",
+    "not_a_PR362_merge": true
+  },
+  "code_PR_does_not_change_phase_lease_or_live_ownership_fields_from_its_base": true,
+  "phase_authority_fields_preserved_from_base": [
+    "owned_lease",
+    "owned_lease_expires_ts",
+    "lease_released",
+    "last_owned_lease_released"
+  ],
+  "fresh_actual_main_for_finalization": "ab66b7135bbb80596067c78a88a06d7790b8751c",
+  "new_bounded_metadata_owner": "CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:1792015614866",
+  "rule": "Before merge hold a fresh own bounded lease through main cloud acceptance; code PR keeps the actual target branch lease via three-way merge. Release only that owner separately after checks. Never merge a prospective lease release together with executable changes.",
+  "merge_projection_verification_pending": false,
+  "all_statistics_and_originals_preserved": true,
+  "project_complete": false,
+  "actual_git_three_way_merge": {
+    "main": "ab66b7135bbb80596067c78a88a06d7790b8751c",
+    "candidate": "fb4d79997053524c88e1fbc46dbd8780587231ae",
+    "tree": "c5d02020da0ef781cc556b8719526d85738eb064",
+    "conflicts": 0,
+    "current_target_owner_preserved": "CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:1792015614866",
+    "current_target_lease_expires": 1792016814866,
+    "source_proof_cloud566_retained": true,
+    "no_production_merge_or_deploy_performed": true
+  },
+  "finalization_release_prepared": {
+    "owner": "CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:1792015614866",
+    "expected_main": "ab66b7135bbb80596067c78a88a06d7790b8751c",
+    "before_phase_blob": "9a2c0b63ab3163c82ef3aa39252cd5d5332c59c2",
+    "after_phase_blob": "d7dfaac4cfcd9db14a3d92aa189fc012c7bbdd0e",
+    "unrelated_roots_byte_identical": 354,
+    "mutation": "Only lease=null and three active ownership fields; code and statistics untouched.",
+    "readback_required_after_final_PR_push": true
+  }
+}

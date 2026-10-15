@@ -1,0 +1,149 @@
+{
+  "schema": "ACTUAL_LOSSLESS28_RELOCATION_AND_CLOUD564_V1",
+  "status": "EXACT28_READTHROUGH_NATIVE_USAGE_CLOUD564_AND_NATURAL105_TWO_PERSISTED_VERIFIED",
+  "code_head": "ae4c8ea0a4966f37b8f14ac0970dfa33377c5ae7",
+  "PR": 362,
+  "PR_merged": false,
+  "cloud_check": {
+    "run": 38635736020,
+    "artifact_id": 11928216218,
+    "digest": "sha256:9e4cfb66e0235973b8f7607d1dd11d43128b4316db6026d3a0b64260c3e9e953",
+    "tests_passed": 564,
+    "failed": 0
+  },
+  "actual_relocation": {
+    "run": 38636313890,
+    "artifact_id": 11927444857,
+    "digest": "sha256:d9b2fffa588b91ac1a6ce6d1a7644c4701b66f4c9a31ea7b309266b686fc4160",
+    "archive_commit": "b311167b34dc33874c135932997af8bfc12ac83a",
+    "status": "LOSSLESS_RELOCATION_AND_CURRENT_READTHROUGH_VERIFIED",
+    "moved": 28,
+    "original_row_bytes": 5260217,
+    "original_row_bytes_is_not_an_actual_database_file_size_measurement": true,
+    "D1": {
+      "requests": 117,
+      "rows_read": 828,
+      "rows_written": 144,
+      "unknown_ops": 0,
+      "targets": {
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 245,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:sqlite_schema": {
+          "requests": 1,
+          "rows_read": 404,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:full_evidence_shadow_log": {
+          "requests": 1,
+          "rows_read": 94,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_full_evidence_archive_v1": {
+          "requests": 28,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:full_evidence_shadow_log": {
+          "requests": 28,
+          "rows_read": 56,
+          "rows_written": 28,
+          "unknown_ops": 0
+        },
+        "batch:report2_full_evidence_archive_v1": {
+          "requests": 28,
+          "rows_read": 0,
+          "rows_written": 112,
+          "unknown_ops": 0
+        },
+        "first:report2_full_evidence_retained_v1": {
+          "requests": 28,
+          "rows_read": 28,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "HTTP": {
+      "used": {
+        "hot": 27,
+        "background": 28,
+        "statistics": 0
+      },
+      "total": 55,
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "remaining": 109,
+      "excludes_D1_bridge_transport_in_original_ledger": true
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "canonical_rows_modified": 0,
+    "lifecycle_or_calibration_rows_modified": 0,
+    "history_discarded": false,
+    "source_clocks_refreshed": false,
+    "all_transport_correction": {
+      "native_statements": 117,
+      "two_statement_batches": 28,
+      "bridge_HTTP_derived": 89,
+      "old_HTTP_ledger": 55,
+      "derived_all_transport_HTTP": 144,
+      "global164_satisfied": true,
+      "old_hot_lane_transport_admission_not_closed": true,
+      "sourceHTTP": 0,
+      "originals_statistics_preserved": true
+    }
+  },
+  "prior_preparation": {
+    "run": 38634327237,
+    "archive_commit": "e9acdad2ee2743b6ff05f482d961465acea58da9",
+    "originals_verified": 28,
+    "primary_rows_modified": 0
+  },
+  "UTC_day_reservations_not_local_date": {
+    "day": "2026-10-14",
+    "RETAINED_HISTORY_runs_consumed": 2,
+    "spent_reservations_not_reset": true,
+    "next_day_requires_native_measured_admission": true
+  },
+  "protected": [
+    "Latest per-coin original",
+    "Last48h full evidence",
+    "All canonical/recheck/dispatch/calibration/forecast/operational source statistics"
+  ],
+  "automatic_retention_feature_enabled": false,
+  "next": [
+    "Merge qualified362 only with required protected-main approval; automatic feature remains off until activation is reviewed.",
+    "Continue protected canonical/cold rolling and weekly106 synchronized consumers.",
+    "Resolve remaining LIQ gaps and natural source fallback/reorder scenarios; final Telegram follows blocks."
+  ],
+  "all_blocks_complete": false,
+  "project_complete": false,
+  "recorded_utc": "2026-10-14T21:33:40.455497+00:00",
+  "natural_acceptance": {
+    "run": 38638248237,
+    "proof": "checkpoints/NATURAL_AFTER_LOSSLESS_CLEANUP_38638248237_20261015.json",
+    "scanned": 105,
+    "persisted": 2,
+    "missing": 0,
+    "exact_SENT": false
+  },
+  "subsequent_transport_repair": "checkpoints/LOSSLESS_ALL_TRANSPORT_ADMISSION_REPAIR_20261015.json"
+}

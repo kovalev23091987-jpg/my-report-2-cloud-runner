@@ -11,14 +11,14 @@ export function makeGithubControl({repository,token,fetch_impl=globalThis.fetch}
  const read=async(path,ref)=>{const j=await call('contents/'+path+'?ref='+ref),raw=Buffer.from(j.content,'base64').toString('utf8');return{sha:j.sha,raw,value:JSON.parse(raw)};};
  return{call,read};
 }
-export async function acquireWeeklyPhaseLease(control,{now=Date.now(),run_id,expected_main}={}){
+export async function acquireWeeklyPhaseLease(control,{now=Date.now(),run_id,expected_main,scope}={}){
  const ref=await control.call('git/ref/heads/main'),head=ref.object.sha;
  if(expected_main&&head!==expected_main)return{allowed:false,status:'CHECKOUT_MAIN_MOVED',sourceHTTP:0};
  const [phase,fence,status,resume,generation]=await Promise.all([control.read(PHASE,head),control.read(FENCE,head),control.read('checkpoints/CURRENT_PROJECT_STATUS.json',head),control.read('checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json',head),control.read('REPORT2_CURRENT_GENERATION.json',head)]);
  if(status.value.active_working_state?.owner_weekly_HTX_catalog_sync_authorized!==true||resume.value.active_working_state?.owner_weekly_HTX_catalog_sync_authorized!==true||generation.value.latest_only!==true)return{allowed:false,status:'LATEST_WEEKLY_AUTHORITY_REQUIRED',sourceHTTP:0};
  if(phase.value.lease||fence.value.active)return{allowed:false,status:'OWNER_OR_FENCE_BUSY',head,sourceHTTP:0};
  if(phase.value.current_task!=='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'||!phase.value.active_working_state?.owner_weekly_HTX_catalog_sync_authorized)return{allowed:false,status:'WEEKLY_OWNER_AUTHORIZATION_REQUIRED',sourceHTTP:0};
- const owner='CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:'+now,lease={owner,acquired_ts:now,expires_ts:now+20*60000,expected_main:head,scope:'Owner authorized weekly official HTX universe/source reconciliation, unchanged source caps, pauses, score and report form; GitHub run '+run_id};
+ const owner='CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:'+now,lease={owner,acquired_ts:now,expires_ts:now+20*60000,expected_main:head,scope:scope||'Owner authorized weekly official HTX universe/source reconciliation, unchanged source caps, pauses, score and report form; GitHub run '+run_id};
  const raw=patchRoot(phase.raw,{lease,latest_own_bounded_continuation_lease:{...lease,previous_own_lease:phase.value.latest_own_bounded_continuation_lease},active_working_state:{...phase.value.active_working_state,owned_lease:owner,owned_lease_expires_ts:lease.expires_ts,lease_released:false}});
  const written=await control.call('contents/'+PHASE,'PUT',{message:'chore: bounded weekly HTX own lease '+run_id,sha:phase.sha,branch:'main',content:Buffer.from(raw).toString('base64')});
  const newHead=written.commit.sha,checked=await control.read(PHASE,newHead);if(checked.raw!==raw)throw Error('WEEKLY_LEASE_CAS_READBACK_REQUIRED');

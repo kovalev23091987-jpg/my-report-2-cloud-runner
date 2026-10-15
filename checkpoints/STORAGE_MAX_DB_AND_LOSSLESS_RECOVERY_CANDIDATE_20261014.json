@@ -1,0 +1,129 @@
+{
+  "schema": "STORAGE_MAX_DB_AND_LOSSLESS_RECOVERY_CANDIDATE_V1",
+  "status": "ACTUAL28_DURABLE_PREPARATION_NATIVE_COST_CLOSED_CLOUD_GATE_REPAIR_PENDING_PRIMARY_UNCHANGED",
+  "base_main": "fbeea8a86acf2e2cc02689fc5fc8917389effd6b",
+  "owner_cloud_cleanup_authorized": true,
+  "original_failure": {
+    "cloud_run": 38625737082,
+    "head": "fdfc95db6c01d99b704bca451193eef38837924f",
+    "run_id": "1792006887707-1792006899383",
+    "artifact_id": 11923398035,
+    "artifact_digest": "sha256:5a794549357c903ac81b547c5c5d077682abdb4e4e13f134f0f4108d47f9843d",
+    "status": "NOT_CLOSED",
+    "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+    "scan": {
+      "approved": 105,
+      "scanned": 105,
+      "errors": 0
+    },
+    "candidate_persistence_failed": [
+      "龙虾-USDT",
+      "BTW-USDT"
+    ],
+    "native_error": "D1_ERROR: Exceeded maximum DB size",
+    "native_error_source": "Original masked workflow log, FULL_EVIDENCE_PERSISTENCE and canonical_persistence diagnostics. Original artifact keeps four HTTP500 INSERT fingerprints, unknown counters and all exact source/run clocks.",
+    "unknown_native_operations": 4,
+    "measured_read_subtotal": 45222,
+    "measured_write_subtotal": 295,
+    "subtotals_are_not_closed_totals": true,
+    "Telegram_SENT_claim": false
+  },
+  "prior_failed_run_same_step": 38619375662,
+  "PR361": {
+    "merged": "5d1c9aa27e880317989f756eaa4004795d680b62",
+    "cloud_run": 38626303459,
+    "head": "7799df5dfe76ece009a4a3e4d083ab8b6f04d2f7",
+    "artifact_id": 11923044510,
+    "artifact_digest": "sha256:857023c9e63282b0c9e2d348285e2f81bd46af29c224bbb8fb364e81ad264f49",
+    "tests_passed": 556,
+    "tests_failed": 0
+  },
+  "recovery_policy": {
+    "only_primary_table": "full_evidence_shadow_log",
+    "maximum_rows_per_run": 48,
+    "maximum_runs_day": 2,
+    "reserved_D1_per_run": {
+      "reads": 5000,
+      "writes": 400
+    },
+    "existing_reservation_family": "RETAINED_HISTORY:",
+    "legacy_spent_reservations_counted": true,
+    "whole_day_conservative": {
+      "reads": 3413280,
+      "writes": 69738
+    },
+    "whole_limits": {
+      "reads": 3500000,
+      "writes": 70000
+    },
+    "whole_HTTP_limit": 164,
+    "bounded_archive_payload_HTTP": 48,
+    "bounded_GitHub_control_HTTP": 40,
+    "manual_HTTP_reserve_not_changed": 24,
+    "protected": [
+      "All canonical publications and lifecycle/recheck/dispatch/calibration/forecast references",
+      "Full evidence from the last48h",
+      "Latest full evidence of every exact coin, including rarely selected coins",
+      "All immutable originals and historical source/statistical receipts"
+    ],
+    "durable_original_verification_before_first_change": true,
+    "transaction_delete_exact_revision_then_insert_small_header": true,
+    "transaction_failure_rolls_back_deletion": true,
+    "source_race_compare_every_original_column": true,
+    "current_reader_unchanged_fetch_bound": 4,
+    "automatic_feature_enabled": false,
+    "initial_cloud_run_is_copy_only_primary_modified": false,
+    "statistics_deleted": false,
+    "history_discarded": false,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "primary_reference": {
+    "transaction_url": "https://developers.cloudflare.com/d1/worker-api/d1-database/",
+    "transaction_support": "D1 batched statements form a transaction and roll back the sequence on failure.",
+    "cached_docs_at": "2026-10-14T15:59:53.112Z",
+    "scrape_id": "01a13c23-cbee-71bc-9244-b7322d059523",
+    "storage_limit_url": "https://developers.cloudflare.com/d1/platform/limits/",
+    "error_meaning_url": "https://developers.cloudflare.com/d1/observability/debug-d1/"
+  },
+  "local_tests": 40,
+  "local_failures_fixed_before_publishing": [
+    "The latest-per-coin selector initially used an inverted EXISTS; real SQLite tests rejected it. Changed to require a newer hot original. No source/D1 calls or production mutations occurred in these local tests."
+  ],
+  "remaining": [
+    "Prove original48 batch on actual native D1/Git without deleting hot rows.",
+    "After cloud/runtime/durable copy qualification, execute conditional relocation and verify exact current readthrough and natural report persistence.",
+    "Enable bounded automatic two-per-day retention only after actual acceptance.",
+    "Complete protected canonical/private retention and remaining source/weekly scope tasks."
+  ],
+  "strategy_weights_caps_pauses_forms_unchanged": true,
+  "project_complete": false,
+  "first_actual_preparation": {
+    "run": 38634327237,
+    "head": "8ca17fb4f766af0373e802b7d0853a6f691da7b8",
+    "artifact_id": 11927082698,
+    "artifact_digest": "sha256:04ba91aedc003afd76805beb83bfa7a8bc7e0285f7783b6c350e57f9858b2b00",
+    "archive_commit": "e9acdad2ee2743b6ff05f482d961465acea58da9",
+    "selected": 28,
+    "originals_verified": 28,
+    "D1_reads": 740,
+    "D1_writes": 4,
+    "D1_requests": 5,
+    "D1_unknown": 0,
+    "reserved_D1_reads": 5000,
+    "reserved_D1_writes": 400,
+    "whole_HTTP": 43,
+    "provider_HTTP": 0,
+    "primary_originals_modified": 0,
+    "statistics_discarded": false
+  },
+  "first_cloud_failure": {
+    "run": 38634327173,
+    "artifact_id": 11927642435,
+    "artifact_digest": "sha256:0accb2130eeefa8508919b69eb6a6b5a57c4ffe97a36e74b41dab8707c72d74c",
+    "reason": "The exact generation guard registration list omitted the new manually invokable retained-history workflow. Added only that workflow and required exact authority inputs, feature gate and bounded two-per-day cron."
+  },
+  "archive_HTTP_factory_correction": "This standalone maintenance explicitly uses the already established96/56/12 lane split within164, instead of the legacy factory120/28/16. The real first preparation used28archive+15control. A complete48archive+40control batch is now tested through the actual budget factory; no provider cap or manual24 reserve changed.",
+  "repeated_preparation_avoided": "Removed push acquisition trigger after the successful exact28 preparation. Subsequent code/CI repairs do not repeat native D1 or re-read the original28 from providers."
+}
