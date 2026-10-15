@@ -77,7 +77,16 @@ export function collectorVersionMetadata({settings,runtime,head,active_version,l
 export async function readSingleWorkerModule(response){
  if(response.headers.get('content-type')?.includes('multipart/')){
   const form=await response.formData(),files=[...form.values()].filter(v=>typeof v!=='string'&&/\.(?:m?js)$/.test(v.name));
-  if(files.length!==1||[...form.values()].some(v=>typeof v!=='string'&&!/\.(?:m?js)$/.test(v.name)&&v.name!=='metadata'))throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
+  if(files.length!==1)throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
+  let source_maps=0;
+  for(const [field,v] of form){
+   if(typeof v==='string'||v===files[0]||v.name==='metadata')continue;
+   // Native layout38788123301 contains exactly the JS entry and its matching
+   // non-executable Source Map. Debug metadata is not another runtime module.
+   if(field!==files[0].name+'.map'||v.name!==field||v.type!=='application/source-map'||v.size>2000000||++source_maps!==1)throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
+   let map;try{map=JSON.parse(await v.text());}catch{throw Error('EXACT_NONEXECUTABLE_SOURCE_MAP_REQUIRED');}
+   if(map?.version!==3||!Array.isArray(map.sources)||map.sources.some(s=>typeof s!=='string')||typeof map.mappings!=='string'||map.file!==undefined&&map.file!==files[0].name)throw Error('EXACT_NONEXECUTABLE_SOURCE_MAP_REQUIRED');
+  }
   return Buffer.from(await files[0].arrayBuffer());
  }
  return Buffer.from(await response.arrayBuffer());
