@@ -36,11 +36,68 @@
       "empty_creation_acknowledged": true
     }
   ],
-  "new_schemas_initialized": false,
+  "new_schemas_initialized": true,
   "new_runtime_writer_routes_installed": false,
   "new_Worker_bindings_installed": false,
   "new_resources_used_for_reports": false,
   "reserved_operating_ceiling_bytes": 1600000000,
   "spare_database_slots": 1,
-  "not_an_activation_instruction": true
+  "not_an_activation_instruction": true,
+  "schema_initialization_proof": {
+    "proof": "checkpoints/free-storage-20261015/schema-38781244995.json",
+    "run": 38781244995,
+    "head": "0e707711260f0d17b195150ae95a6878f7c251b1",
+    "artifact": 11996511450,
+    "digest": "sha256:5c859c88ac95851f4bfcc791702e2c6a6ba9477662e0908af2576cd7d036f7f9",
+    "locations": [
+      {
+        "location": "A1",
+        "database_id": "24d5c5e9-066d-4f3f-8486-38142ff57ba4",
+        "already_initialized": false,
+        "initialized": true
+      },
+      {
+        "location": "A2",
+        "database_id": "ee33406f-2a97-4f73-88ca-77b3dd7028ca",
+        "already_initialized": false,
+        "initialized": true
+      },
+      {
+        "location": "A3",
+        "database_id": "c1cceb87-c037-43e6-8314-c354c384581d",
+        "already_initialized": false,
+        "initialized": true
+      },
+      {
+        "location": "A4",
+        "database_id": "4c15f527-0287-484a-9dd1-bf1bd5c4f7c6",
+        "already_initialized": false,
+        "initialized": true
+      }
+    ],
+    "D1": {
+      "requests": 19,
+      "rows_read": 281,
+      "rows_written": 20,
+      "unknown_ops": 0
+    },
+    "HTTP": {
+      "used": {
+        "hot": 20,
+        "background": 16,
+        "statistics": 0
+      },
+      "total": 36,
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "remaining": 128
+    },
+    "existing_main_rows_modified": 0,
+    "retained_history_slots_used": 0
+  },
+  "new_report_payload_stored": false
 }
