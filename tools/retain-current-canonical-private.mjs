@@ -3,11 +3,18 @@ import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 import {CANONICAL_COPY_POLICY,canonicalCopyCandidates,reserveCanonicalCopyBudget,copyCanonicalReport,canonicalProducerInMainHistory} from '../runner/canonical-cold-copy.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
+import {auditNoWorkReceipt} from './report2-no-work-receipt.mjs';
 const path='runtime/private-canonical-archive-receipt.json';
 const out={schema:'REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_V1',head:process.env.GITHUB_SHA,cloud_run:process.env.GITHUB_RUN_ID,status:'NO_EXACT_CLOSED_REPORT',sourceHTTP:0,MAIN:0,Telegram:0,main_rows_modified:0,private_payload_exported:false,report_effect:false};
 let admitted=false,source,archive,id;
 try{
- const report=JSON.parse(await fs.readFile('runtime/report2-run-result.json','utf8')),selection=canonicalCopyCandidates(report,process.env.GITHUB_SHA);out.source_run_id=report.run_id;out.selection_status=selection.status;
+ const text=await fs.readFile('runtime/report2-run-result.json','utf8').catch(e=>{if(e.code==='ENOENT')return null;throw e;});
+ if(text===null){
+  const receipt=JSON.parse(await fs.readFile('runtime/report2-no-work-receipt.json','utf8'));
+  auditNoWorkReceipt({receipt,expected_head:process.env.GITHUB_SHA,expected_cloud_run:process.env.GITHUB_RUN_ID});
+  out.status='NO_CANONICAL_COPY_EXACT_NO_WORK';out.no_work_receipt_verified=true;out.D1={requests:0,rows_read:0,rows_written:0,unknown_ops:0};
+ }else{
+ const report=JSON.parse(text),selection=canonicalCopyCandidates(report,process.env.GITHUB_SHA);out.source_run_id=report.run_id;out.selection_status=selection.status;
  if(!selection.candidates.length)out.status=selection.status;
  else if(process.env.REPORT2_CANONICAL_PRIVATE_COPY_ENABLED!=='1')out.status='AUTOMATIC_COPY_NOT_ACTIVATED';
  else{
@@ -25,6 +32,7 @@ try{
   id='CANONICAL_COLD_COPY:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
   out.admission=await reserveCanonicalCopyBudget(source,{reservation_id:id});admitted=out.admission.allowed;
   if(admitted)Object.assign(out,await copyCanonicalReport({source_db:source,archive_db:archive,candidates:selection.candidates}));else out.status=out.admission.status;
+ }
  }
 }catch(e){out.status='PRIVATE_ARCHIVE_COPY_NOT_CLOSED';out.reason=/^[A-Z0-9_]+$/.test(e.message)?e.message:e.name;}
 finally{
