@@ -9,7 +9,9 @@ if(process.argv.includes('--plan')){console.log(JSON.stringify({...policy,status
 // Read after the first qualification: current publisher terms prohibit
 // automated collection and redistribution. Stop before authority, D1 or HTTP;
 // a user's project permission does not supply the publisher's data permission.
-console.log(JSON.stringify({status:'AUTOMATION_PERMISSION_REQUIRED',source:'PumpGlass',permission_source:'https://pumpglass.com/terms',provider_HTTP:0,D1:0,MAIN:0,Telegram:0,production_enabled:false}));
+const stopped={status:'AUTOMATION_PERMISSION_REQUIRED',source:'PumpGlass',permission_source:'https://pumpglass.com/terms',provider_HTTP:0,D1:0,MAIN:0,Telegram:0,production_enabled:false};
+await fs.mkdir(folder,{recursive:true});await fs.writeFile(folder+'/qualification.json',JSON.stringify(stopped,null,2)+'\n');
+console.log(JSON.stringify(stopped));
 process.exit(0);
 for(const k of ['GITHUB_TOKEN','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA','REPORT2_EXPECTED_MAIN','REPORT2_EXPECTED_LEASE_OWNER','REPORT2_D1_BRIDGE_URL','REPORT2_D1_BRIDGE_TOKEN'])if(!process.env[k])throw Error(k+'_REQUIRED');
 if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main')throw Error('EXACT_MAIN_REPOSITORY_REQUIRED');
