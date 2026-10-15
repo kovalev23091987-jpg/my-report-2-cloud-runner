@@ -1,0 +1,224 @@
+{
+  "schema": "SAVED_ORDINARY_STORAGE_FAILURE_REVIEW_V1",
+  "run": 38795421127,
+  "head": "c4a4e6b67a6b9102273cb9c5b0693a4f812df67c",
+  "run_id": "1792093072479-1792093080970",
+  "source": "schedule",
+  "status": "NOT_CLOSED",
+  "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+  "review_added_sourceHTTP": 0,
+  "review_added_D1": 0,
+  "review_added_MAIN": 0,
+  "scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "approved_scope": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1792093081146,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 105,
+      "missing_approved_analysis_contracts": [],
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "WAL-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "canonical_persistence": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "PARTIAL",
+    "run_id": "1792093072479-1792093080970",
+    "expected_contracts": [
+      "BR-USDT",
+      "RIVER-USDT"
+    ],
+    "present_contracts": [],
+    "missing_contracts": [
+      "BR-USDT",
+      "RIVER-USDT"
+    ],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 0,
+    "missing_is_technical_not_no_market_idea": true
+  },
+  "post_failure": {
+    "schema": "POST_ANALYSIS_CONTROL_FAILURE_V1",
+    "head": "c4a4e6b67a6b9102273cb9c5b0693a4f812df67c",
+    "run_id": "1792093072479-1792093080970",
+    "failed_ts": 1792093138172,
+    "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+    "error_fingerprint": "72476688c122b5b9337df20c804bdfbb66bc310c52d59c3df59b6a9a23be4e9f",
+    "raw_error_exported": false,
+    "d1_attempt_usage": {
+      "attempted_statements": 345,
+      "measured_rows_read_subtotal": 35086,
+      "measured_rows_written_subtotal": 240,
+      "unknown_operations": 12,
+      "row_totals_closed": false,
+      "total_rows_read": null,
+      "total_rows_written": null
+    },
+    "unmeasured_operation_receipts": [
+      {
+        "operation": "batch",
+        "target": "full_evidence_shadow_log",
+        "sql_kind": "INSERT",
+        "sql_sha256": "d07a8ee537fe06ec160baa684af937cec5876287200b761350cb5e97031a4809",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093110821,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "run",
+        "target": "canonical_publication_shadow",
+        "sql_kind": "INSERT",
+        "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093111860,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "run",
+        "target": "report2_evidence_source_cache",
+        "sql_kind": "INSERT",
+        "sql_sha256": "5daf30940f7494c53dd173bf78ed1fa79dd2381a18d42ab6bd13a1e7bc6ea2f8",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093124349,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "run",
+        "target": "report2_provider_minute_ledger_v1",
+        "sql_kind": "INSERT",
+        "sql_sha256": "3d2aeae73f33af44289ec4bbd41159ff163c7e51b5d1a74df2b94622fe0fde9d",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093131606,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_event",
+        "sql_kind": "INSERT",
+        "sql_sha256": "30a77ed201e113e0e9e88acdc7b6ccd5404c0780adb6e6ee495be658137df9cb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093134165,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_outcome",
+        "sql_kind": "INSERT",
+        "sql_sha256": "8d58d76d30e2a87ca04c68db55431b54ff4a8cd657535a62bcbf845d7bce82b0",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093134165,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_outcome",
+        "sql_kind": "INSERT",
+        "sql_sha256": "7bd101106e0817ba1382d349fe4800626283e1467b563e45da9f779ccb051041",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093134165,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_funnel",
+        "sql_kind": "INSERT",
+        "sql_sha256": "b07caf61ab2b03fc0b31926f6d7afd812b587e66c61365a38340a2e9028dbfc4",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093134165,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "OTHER",
+        "sql_kind": "INSERT",
+        "sql_sha256": "60edf45d489b876cc6a77c26fca1c7aeb13347f6ccc2401a53591a14c03c2729",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093134653,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "shadow_decision_log",
+        "sql_kind": "DELETE",
+        "sql_sha256": "d79eb76413bbe9afdbd35e5c02e15462d35f63e83b57b3a99a5cf4a02bc168eb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792093134653,
+        "params_or_SQL_text_exported": false
+      }
+    ],
+    "original_candidates_and_clocks_preserved": true,
+    "original_delivery_proof_not_rewritten": true,
+    "new_entry_authorized": false,
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0
+  },
+  "same_run_delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "c4a4e6b67a6b9102273cb9c5b0693a4f812df67c",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1792093072479-1792093080970",
+    "source": "schedule",
+    "recorded_at": 1792093137505,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "BUDGET_BLOCKED_FAIL_CLOSED",
+    "cases": [],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "artifact": 12001303128,
+  "digest": "sha256:1bce5960410c850f45a0caae7943d1cbca1e90ea77719702a010a5abc21389e7",
+  "original": "checkpoints/free-storage-20261015/natural-38795421127/report2-run-result.json.gz",
+  "original_raw_sha256": "ecdf0c762bbcf729d3b57206650557394f63d578f79d849d0c74486c5740a424",
+  "original_gzip_sha256": "03f7838165295cbdfd5df0d06b8a2006ee49649d025b8e648c67a9f2593f8a5e"
+}
