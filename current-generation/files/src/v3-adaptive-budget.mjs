@@ -1,5 +1,5 @@
 export const R88_BURST_RESERVATION = Object.freeze({ rows_read: 34000, rows_written: 560 });
-export const R88_BUDGET_MODE = 'ADAPTIVE_DAILY_ACTUAL_WITH_34K_BURST_CAP_V3_20260927';
+export const R88_BUDGET_MODE = 'PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015';
 
 function nonNegInt(value) {
   if (value === null || value === undefined || value === '') return null;
@@ -33,12 +33,17 @@ export function buildR88DailyAdmissionView(daily, reservation) {
   if (!daily?.ok) return { ...(daily || {}), ok:false, status:daily?.status || 'DAY_USAGE_NOT_CLOSED' };
   const unfinished=nonNegInt(daily.unfinished_count);
   const measuredRead=nonNegInt(daily.measured_rows_read), measuredWrite=nonNegInt(daily.measured_rows_written);
+  const chargedRead=nonNegInt(daily.reserved_rows_read), chargedWrite=nonNegInt(daily.reserved_rows_written);
   const capRead=posInt(reservation?.rows_read), capWrite=posInt(reservation?.rows_written);
-  if ([unfinished,measuredRead,measuredWrite,capRead,capWrite].some(v=>v===null)) {
+  if ([unfinished,measuredRead,measuredWrite,chargedRead,chargedWrite,capRead,capWrite].some(v=>v===null)) {
     return { ...daily, ok:false, status:'R88_DAILY_ADMISSION_VIEW_INVALID' };
   }
-  const effectiveRead=measuredRead + unfinished*capRead;
-  const effectiveWrite=measuredWrite + unfinished*capWrite;
+  // The shared ledger has already charged MAX(reserve, measured) per row,
+  // including failed/in-flight attempts and heterogeneous consumer families.
+  // Replacing it by measured + unfinished * the caller's cap both refunds
+  // completed reservations and misprices other families' in-flight slots.
+  const effectiveRead=Math.max(chargedRead,measuredRead);
+  const effectiveWrite=Math.max(chargedWrite,measuredWrite);
   return {
     ...daily,
     budget_mode:R88_BUDGET_MODE,
@@ -48,7 +53,8 @@ export function buildR88DailyAdmissionView(daily, reservation) {
     reserved_rows_written:effectiveWrite,
     adaptive_effective_rows_read:effectiveRead,
     adaptive_effective_rows_written:effectiveWrite,
-    unfinished_reservation_cap:{rows_read:capRead,rows_written:capWrite},
+    unfinished_reservations_charged_by_own_ledger_caps:true,
+    no_completed_reservation_refund:true,
   };
 }
 

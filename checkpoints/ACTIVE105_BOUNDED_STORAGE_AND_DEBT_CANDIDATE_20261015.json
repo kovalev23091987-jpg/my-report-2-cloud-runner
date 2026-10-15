@@ -1,8 +1,8 @@
 {
   "schema": "ACTIVE105_BOUNDED_CANONICAL_AND_NATIVE_DEBT_CANDIDATE_V1",
-  "recorded_utc": "2026-10-15T14:30:05.908334+00:00",
+  "recorded_utc": "2026-10-15T14:40:31.138110+00:00",
   "basis_main": "3cd974ac1d38a5e8c03581b275069d361c5faf92",
-  "status": "OFFLINE_REPAIR_67_PASS_CLOUD_PENDING_NOT_DEPLOYED",
+  "status": "PR387_OWNER_APPROVED_INITIAL_CLOUD655_PASS_ANALYTICS_OVERLAY_REPAIR_RECHECK_PENDING",
   "actual_fourth_cleanup": {
     "schema": "LOSSLESS_RETAINED_HISTORY_CONTROL_V1",
     "kind": "canonical",
@@ -163,7 +163,8 @@
     "update_races": "Complete bounded reference CTEs are reevaluated atomically; overflow, new namespace or changed/deleted witness keeps hot original.",
     "source_cursor": "Explicit exact input and continuation receipt, zero wraps bounded discovery; no ledger reset.",
     "debt_accounting": "Each active admission charges MAX(reservation,measured overrun + finalization-read padding) per row. Future finalization monotonically retains larger spend, never refunds. Legacy fourth-row debt is charged without rewriting old original.",
-    "new_HTTP": "No extra source/DB accounting requests; replacement bounded selection uses one additional bridge batch within existing16."
+    "new_HTTP": "No extra source/DB accounting requests; replacement bounded selection uses one additional bridge batch within existing16.",
+    "analytics_daily_overlay": "Preserve the charged shared ledger maximum. Never replace per-family in-flight reservations with the caller cap or refund completed reservations via a measured-only aggregate."
   },
   "controlled_validation": {
     "tests": 67,
@@ -183,6 +184,18 @@
     {
       "path": "checkpoints/active105-bounded-storage-20261015/natural-38743589702.zip",
       "sha256": "efb28da6936e12b8c44fd7c769a72e048177cd9e1f5783fdab879c79af589006"
+    },
+    {
+      "path": "checkpoints/active105-bounded-storage-20261015/cloud-ac871cb9-38752065087.zip",
+      "sha256": "69beea47efef832ea8b572495cd3a2d3e9e3bfc2cea092860dfa3b6c3561e923"
+    },
+    {
+      "path": "checkpoints/active105-bounded-storage-20261015/natural-38749445190.zip",
+      "sha256": "88a3d8fa8c3b0b384efe34fec99e5e1386679bdb25fc6466cf4cc48f1c01df23"
+    },
+    {
+      "path": "checkpoints/active105-bounded-storage-20261015/analytics-debt-overlay-local.tap",
+      "sha256": "579eb430881be9bc11b46fee37db922ec475b59d598b1ab4cb290e28d44a743a"
     }
   ],
   "boundaries": {
@@ -197,6 +210,311 @@
     "whole_day_budget_closed": false
   },
   "fixed_acceptance_checklist": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
-  "next_action": "One composed cloud check for exact candidate. Preserve all4 spent UTC15 retention slots. No fifth retry or cap reset. Candidate code approval/merge and separately admitted native qualification still required; do not call controlled tests actual production capacity recovery. Continue remaining fixed seven acceptance directions.",
-  "project_complete": false
+  "next_action": "PR387 merge authorized by owner. Run one composed cloud recheck for added analytics daily-view fix before merging exact verified code. No fifth UTC15 cleanup approved; all4 existing RETAINED_HISTORY slots remain spent. Native qualification and physical recovery still unproved. Preserve old SENT212 separately from latest failed full run38749445190.",
+  "project_complete": false,
+  "pull_request": 387,
+  "owner_merge_approval_received": true,
+  "fifth_cleanup_approved": false,
+  "prior_exact_cloud": {
+    "head": "ac871cb98d60d96faf0f97613bbab23e32bfde91",
+    "run": 38752065087,
+    "artifact_id": 11980624193,
+    "sha256": "69beea47efef832ea8b572495cd3a2d3e9e3bfc2cea092860dfa3b6c3561e923",
+    "tap_files": [
+      {
+        "file": "active-source-finalist-and-markets.tap",
+        "tests": 29,
+        "pass": 29,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "active-source-headroom.tap",
+        "tests": 34,
+        "pass": 34,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "cold-archive.tap",
+        "tests": 74,
+        "pass": 74,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "exact-asset-role-and-collector-audit.tap",
+        "tests": 28,
+        "pass": 28,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "index-useful-only.tap",
+        "tests": 21,
+        "pass": 21,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "native-identity-source-handoff.tap",
+        "tests": 39,
+        "pass": 39,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "native-sector-provider-binding.tap",
+        "tests": 60,
+        "pass": 60,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "native-transport-fallback.tap",
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "native-useful-budget.tap",
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "native-useful-runtime.tap",
+        "tests": 24,
+        "pass": 24,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "new-liq-research-admission.tap",
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "private-forecast-consumer.tap",
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "private-price-connected.tap",
+        "tests": 100,
+        "pass": 100,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "private-reader-runtime.tap",
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "public-venue-health-priority.tap",
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "scheduled-evidence-budget.tap",
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "source-health-priority.tap",
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "target.tap",
+        "tests": 83,
+        "pass": 83,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "file": "weekly-htx-synchronized-plan.tap",
+        "tests": 72,
+        "pass": 72,
+        "fail": 0,
+        "skipped": 0
+      }
+    ],
+    "total_pass": 655,
+    "total_fail": 0
+  },
+  "latest_verified_natural": {
+    "run": 38749445190,
+    "head": "3cd974ac1d38a5e8c03581b275069d361c5faf92",
+    "run_id": "1792073625227-1792073639005",
+    "status": "NOT_CLOSED",
+    "canonical_persistence_audit": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "PARTIAL",
+      "run_id": "1792073625227-1792073639005",
+      "expected_contracts": [
+        "ZEC-USDT",
+        "UNI-USDT"
+      ],
+      "present_contracts": [],
+      "missing_contracts": [
+        "ZEC-USDT",
+        "UNI-USDT"
+      ],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 0,
+      "missing_is_technical_not_no_market_idea": true
+    },
+    "post_analysis_control_failure": {
+      "schema": "POST_ANALYSIS_CONTROL_FAILURE_V1",
+      "head": "3cd974ac1d38a5e8c03581b275069d361c5faf92",
+      "run_id": "1792073625227-1792073639005",
+      "failed_ts": 1792073728542,
+      "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+      "error_fingerprint": "72476688c122b5b9337df20c804bdfbb66bc310c52d59c3df59b6a9a23be4e9f",
+      "raw_error_exported": false,
+      "d1_attempt_usage": {
+        "attempted_statements": 453,
+        "measured_rows_read_subtotal": 33069,
+        "measured_rows_written_subtotal": 184,
+        "unknown_operations": 24,
+        "row_totals_closed": false,
+        "total_rows_read": null,
+        "total_rows_written": null
+      },
+      "unmeasured_operation_receipts": [
+        {
+          "operation": "run",
+          "target": "report2_evidence_source_cache",
+          "sql_kind": "INSERT",
+          "sql_sha256": "5daf30940f7494c53dd173bf78ed1fa79dd2381a18d42ab6bd13a1e7bc6ea2f8",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073676337,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "run",
+          "target": "json_each",
+          "sql_kind": "INSERT",
+          "sql_sha256": "5177fd454dc22701bc12f5013163d07b2ebed146daf05b408acc08d19f335775",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073685384,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "run",
+          "target": "report2_provider_minute_ledger_v1",
+          "sql_kind": "INSERT",
+          "sql_sha256": "3d2aeae73f33af44289ec4bbd41159ff163c7e51b5d1a74df2b94622fe0fde9d",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073688755,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "opportunity_shadow_event",
+          "sql_kind": "INSERT",
+          "sql_sha256": "30a77ed201e113e0e9e88acdc7b6ccd5404c0780adb6e6ee495be658137df9cb",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073694012,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "opportunity_shadow_outcome",
+          "sql_kind": "INSERT",
+          "sql_sha256": "8d58d76d30e2a87ca04c68db55431b54ff4a8cd657535a62bcbf845d7bce82b0",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073694012,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "opportunity_shadow_outcome",
+          "sql_kind": "INSERT",
+          "sql_sha256": "7bd101106e0817ba1382d349fe4800626283e1467b563e45da9f779ccb051041",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073694012,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "opportunity_shadow_funnel",
+          "sql_kind": "INSERT",
+          "sql_sha256": "b07caf61ab2b03fc0b31926f6d7afd812b587e66c61365a38340a2e9028dbfc4",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073694012,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "OTHER",
+          "sql_kind": "INSERT",
+          "sql_sha256": "60edf45d489b876cc6a77c26fca1c7aeb13347f6ccc2401a53591a14c03c2729",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073694658,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "shadow_decision_log",
+          "sql_kind": "DELETE",
+          "sql_sha256": "d79eb76413bbe9afdbd35e5c02e15462d35f63e83b57b3a99a5cf4a02bc168eb",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073694658,
+          "params_or_SQL_text_exported": false
+        },
+        {
+          "operation": "batch",
+          "target": "full_evidence_shadow_log",
+          "sql_kind": "INSERT",
+          "sql_sha256": "d07a8ee537fe06ec160baa684af937cec5876287200b761350cb5e97031a4809",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792073695458,
+          "params_or_SQL_text_exported": false
+        }
+      ],
+      "original_candidates_and_clocks_preserved": true,
+      "original_delivery_proof_not_rewritten": true,
+      "new_entry_authorized": false,
+      "sourceHTTP_added": 0,
+      "D1_added": 0,
+      "Telegram_added": 0
+    },
+    "same_run_SENT": false,
+    "source_scan": {
+      "total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0
+    },
+    "retained_log_literal": "Exceeded maximum DB size",
+    "retained_log_zip_sha256": "28d24d7036cb401f7dc75f4ee344c4f0c2814849daad5330db389087a798a8e4",
+    "retained_log_text_exported": false
+  }
 }
