@@ -36,4 +36,8 @@ test('backup refuses expired and overlong leases',async()=>{
   const lease=await runBackupCollector({db:fake({state:'STARTED',lease_until:BUCKET+5*60_000}),now:()=>BUCKET+3*60_000,collector});
   assert.equal(late.status,'SLOT_TOO_LATE');assert.equal(lease.status,'PRIMARY_LEASE_UNSAFE');assert.equal(count,0);
 });
+test('the fallback collector receives the exact optional archive objects without an additional source request',async()=>{
+ const legacy={prepare(){}},a1={prepare(){}},a4={prepare(){}};let calls=0;
+ await runBackupCollector({db:fake(null),archive_db:legacy,archive_dbs:{A1:a1,A4:a4},now:()=>BUCKET+180000,collector:async(c,env)=>{calls++;assert.equal(env.CANONICAL_ARCHIVE_DB,legacy);assert.equal(env.CANONICAL_ARCHIVE_DB_A1,a1);assert.equal(env.CANONICAL_ARCHIVE_DB_A4,a4);assert.equal(env.DELIVERY_ENABLED,'0');}});assert.equal(calls,1);
+});
 

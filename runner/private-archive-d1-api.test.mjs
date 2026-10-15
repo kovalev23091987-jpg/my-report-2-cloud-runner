@@ -25,6 +25,10 @@ test('missing native counters and incomplete batch receipts cannot silently char
 test('both databases count against one shared reservation, including unknown operations',()=>{
  assert.deepEqual(combineMeasuredD1Usage({requests:4,rows_read:35,rows_written:3,unknown_ops:0},{requests:3,rows_read:2,rows_written:4,unknown_ops:0}),{requests:7,rows_read:37,rows_written:7,unknown_ops:0});assert.throws(()=>combineMeasuredD1Usage({rows_read:1}),/USAGE_INVALID/);
 });
+test('an incomplete first batch receipt retains every known later native cost and pins each new location',async()=>{
+ const db=new PrivateArchiveD1API({location:'A4',token:TOKEN,fetch_impl:async url=>{assert(url.includes('4c15f527-0287-484a-9dd1-bf1bd5c4f7c6'));return new Response(JSON.stringify({success:true,result:[{success:true,results:[],meta:{rows_read:3}},{success:true,results:[],meta:{rows_read:7,rows_written:9,size_after:16384}}]}));}});
+ await assert.rejects(db.query('SELECT 1; SELECT 1'),/USAGE_UNMEASURED/);assert.deepEqual(db.usageSnapshot(),{requests:2,rows_read:10,rows_written:9,unknown_ops:1});assert.throws(()=>new PrivateArchiveD1API({location:'foreign',token:TOKEN}),/EXACT_LOCATION/);
+});
 test('local whole HTTP refusal happens before transport and never fabricates unknown native work',async()=>{
  let sent=0;const events=[],db=new PrivateArchiveD1API({token:TOKEN,beforeRequest:event=>{events.push(event);return{allowed:false};},fetch_impl:async()=>{sent++;throw Error('must not send');}});
  await assert.rejects(db.query('SELECT 1'),/LOCAL_HTTP_ADMISSION_DENIED/);await assert.rejects(db.verifyDatabase(),/LOCAL_HTTP_ADMISSION_DENIED/);

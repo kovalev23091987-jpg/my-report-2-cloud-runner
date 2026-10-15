@@ -1,6 +1,26 @@
 // Private history is an exact, immutable revision. Restoring it does not refresh
 // source clocks, grant an entry, or consult a provider. Works in Node and Workers.
 export const PRIVATE_CANONICAL_PREFIX='R2PRIVATE_CANONICAL_V1:';
+// Exact resources independently verified in cloud run38770284536. Presence in
+// this map permits an addressed read, never schema creation or body relocation.
+export const PRIVATE_CANONICAL_DATABASES=Object.freeze({
+ LEGACY:Object.freeze({uuid:'f66e7081-0e67-49a2-8f69-68af00cdaf92',name:'report2-free-canonical-history',binding:'CANONICAL_ARCHIVE_DB'}),
+ A1:Object.freeze({uuid:'24d5c5e9-066d-4f3f-8486-38142ff57ba4',name:'report2-free-canonical-history-a1',binding:'CANONICAL_ARCHIVE_DB_A1'}),
+ A2:Object.freeze({uuid:'ee33406f-2a97-4f73-88ca-77b3dd7028ca',name:'report2-free-canonical-history-a2',binding:'CANONICAL_ARCHIVE_DB_A2'}),
+ A3:Object.freeze({uuid:'c1cceb87-c037-43e6-8314-c354c384581d',name:'report2-free-canonical-history-a3',binding:'CANONICAL_ARCHIVE_DB_A3'}),
+ A4:Object.freeze({uuid:'4c15f527-0287-484a-9dd1-bf1bd5c4f7c6',name:'report2-free-canonical-history-a4',binding:'CANONICAL_ARCHIVE_DB_A4'}),
+});
+export function privateCanonicalBindings(env,{require_all=false}={}){
+ const archive_db=env?.CANONICAL_ARCHIVE_DB,archive_dbs={};
+ for(const [slot,location] of Object.entries(PRIVATE_CANONICAL_DATABASES)){
+  if(slot==='LEGACY')continue;
+  const db=env?.[location.binding];
+  if(db!==undefined){if(typeof db?.prepare!=='function')throw Error('PRIVATE_HISTORY_ARCHIVE_BINDING_INVALID');archive_dbs[slot]=db;}
+  else if(require_all)throw Error('PRIVATE_HISTORY_ALL_ARCHIVE_BINDINGS_REQUIRED');
+ }
+ privateCanonicalArchivePool(archive_db,archive_dbs);
+ return{archive_db,archive_dbs};
+}
 export const PRIVATE_CANONICAL_LIMITS=Object.freeze({raw_bytes:4_000_000,gzip_bytes:400_000,wire_bytes:900_000,max_rows:4,maximum_reader_rows:8});
 const HEX=/^[a-f0-9]{64}$/,PUB=/^PUB:[a-f0-9]{40,64}$/;
 const marker=/^R2PRIVATE_CANONICAL_V1:(PUB:[a-f0-9]{40,64}):([a-f0-9]{64}):([a-zA-Z_][a-zA-Z0-9_]*)(?::(A[1-8]))?$/;

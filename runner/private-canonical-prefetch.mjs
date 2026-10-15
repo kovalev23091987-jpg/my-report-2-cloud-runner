@@ -56,5 +56,5 @@ export async function prefetchExactCanonicalRevisions({archive_db,revisions,db_a
   if(sql!==LOOKUP)return archive_db.prepare(sql);
   let params=[];return{bind(...a){params=a;return this;},async first(){const k=params[0]+':'+params[1];if(params.length===2&&cached.has(k))return{record_json:cached.get(k)};return archive_db.prepare(sql).bind(...params).first();}};
  },usageSnapshot:()=>archive_db.usageSnapshot(),get storage_bytes(){return archive_db.storage_bytes;}};
- return{archive_db:db,receipt:{status:'EXACT_PRIVATE_REVISION_GROUPS_VERIFIED',requested:revisions.length,cached:cached.size,missing,unprefetched,metadata_queries,body_queries,provider_HTTP:0,primary_rows_modified:0,source_clocks_refreshed:false,native_production_cost_qualified:false}};
+ return{archive_db:db,verifiedLookup:record=>cached.get(key(record))??null,receipt:{status:'EXACT_PRIVATE_REVISION_GROUPS_VERIFIED',requested:revisions.length,cached:cached.size,missing,unprefetched,metadata_queries,body_queries,provider_HTTP:0,primary_rows_modified:0,source_clocks_refreshed:false,native_production_cost_qualified:false}};
 }

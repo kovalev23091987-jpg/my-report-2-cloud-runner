@@ -157,6 +157,9 @@ fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.m
 fs.copyFileSync(path.join(here,'files/src/retained-history.mjs'),path.join(runtime,'retained-history.mjs'));
 fs.copyFileSync(path.join(here,'files/src/private-canonical-history.mjs'),path.join(runtime,'private-canonical-history.mjs'));
 fs.copyFileSync(path.join(here,'../runner/private-archive-d1-api.mjs'),path.join(runtime,'private-archive-d1-api.mjs'));
+fs.copyFileSync(path.join(here,'../runner/private-archive-pool.mjs'),path.join(runtime,'private-archive-pool.mjs'));
+fs.copyFileSync(path.join(here,'../runner/canonical-cold-archive.mjs'),path.join(runtime,'canonical-cold-archive.mjs'));
+fs.copyFileSync(path.join(here,'../runner/private-canonical-prefetch.mjs'),path.join(runtime,'private-canonical-prefetch.mjs'));
 const policyPatches=applyRuntimePolicyPatches(runtime);
 console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
 

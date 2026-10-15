@@ -4,6 +4,7 @@ import {encodeCanonicalPublicationRow} from './canonical-cold-archive.mjs';
 import {createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
 import {loadBoundedCanonicalCandidates} from './bounded-canonical-selection.mjs';
 import {PrivateArchiveD1API} from './private-archive-d1-api.mjs';import {RemoteD1Database} from './report2-d1-adapter.mjs';
+import {createPrivateArchivePool} from './private-archive-pool.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget} from './lossless-full-evidence-recovery.mjs';import {finalizeRunUsage} from './d1-preaction-budget-guard.mjs';
 import bridge from '../current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs';
 const now=1792026000000,DAY=86400000,allow=()=>({allowed:true}),headroom=()=>true;
@@ -29,6 +30,14 @@ function fixture(count=2,{v2=true}={}){
 const get=(f,id)=>({...f.raw.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?').get(id)});
 const compact=(f,options={})=>compactProtectedCanonical({...f,archive_headroom:headroom,before_modify:async()=>{},now,...options});
 function archiveAll(f){for(const row of f.old){const r=encodeCanonicalPublicationRow(row);f.coldraw.prepare('INSERT INTO report2_canonical_cold_archive_v1 VALUES(?,?,?,?,?,?,?,?)').run(r.publication_id,r.raw_sha256,r.run_id,r.snapshot_id,r.contract_code,r.observed_ts,JSON.stringify(r),now);}}
+test('protected conditional compaction addresses A1 exactly when legacy is full, retaining preflight and independent post-readbacks',async()=>{
+ const f=fixture(),databases={LEGACY:f.archive_db};f.archive_db.storage_bytes=400000000;
+ for(const slot of ['A1','A2','A3','A4']){const raw=new DatabaseSync(':memory:');raw.exec(fs.readFileSync(new URL('../cloudflare/free-history/003_canonical_cold_archive.sql',import.meta.url),'utf8'));databases[slot]=wrap(raw);databases[slot].storage_bytes=100000;}
+ const pool=createPrivateArchivePool({enabled:true,databases});
+ const out=await compact(f,{archive_pool:pool,execute:true,prefetch_private:true,require_native_preflight:true});assert.equal(out.compacted.length,2);assert(out.compacted.every(r=>r.archive_location==='A1'));assert.equal(out.native_preflight.length,2);assert.equal(out.native_readbacks.length,2);assert.equal(f.archive_db.usageSnapshot().rows_written,0);
+ const reader=createPrivateCanonicalRestorer({...pool.readerOptions(),db_admit:allow});for(const row of f.old){const header=get(f,row.publication_id);assert(header.canonical_json.endsWith(':A1'));assert.deepEqual(await reader.restore(header),row);}
+ assert.deepEqual(get(f,f.latest.publication_id),f.latest);assert.deepEqual(get(f,f.rare.publication_id),f.rare);
+});
 test('saved REJECTED bodies use exact private native originals; preparation leaves every primary byte unchanged',async()=>{
  const f=fixture(),before=f.raw.prepare('SELECT * FROM canonical_publication_shadow ORDER BY publication_id').all();const r=await compact(f);
  assert.equal(r.prepared,2);assert.equal(r.compacted.length,0);assert.deepEqual(f.raw.prepare('SELECT * FROM canonical_publication_shadow ORDER BY publication_id').all(),before);assert.equal(f.coldraw.prepare('SELECT COUNT(*) AS n FROM report2_canonical_cold_archive_v1').get().n,2);assert.equal(r.sourceHTTP,0);assert.equal(r.history_discarded,false);assert.ok(!JSON.stringify(r).includes('payload_gzip_base64'));

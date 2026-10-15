@@ -4,7 +4,8 @@ import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 import {claimTriggerKick,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
 import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,createCollectorJobBudget} from './continuous-backup-worker.mjs';
 import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal,waitForScheduledRecoveryBoundary,scheduledRecoveryBoundary} from './scheduled-report-recovery.mjs';
-import {PrivateArchiveD1API} from '../../runner/private-archive-d1-api.mjs';
+import {createPrivateArchivePool} from '../../runner/private-archive-pool.mjs';
+import {PRIVATE_CANONICAL_DATABASES,privateCanonicalBindings} from '../../runner/private-canonical-history.mjs';
 import {runPrivatePriceRechecks} from './private-price-consumer.mjs';
 import {observeCollectorD1} from './native-cost-observer.mjs';
 import {readCollectorPriorRows} from './prior-snapshot-read.mjs';
@@ -19,7 +20,7 @@ export function loadExactCollector(source,fetch_impl=(...args)=>globalThis.fetch
   return Function('worker_default','fetch','__report2InjectedPrivatePriceRuntime',`${source}\nreturn __report2PublicCollectorScheduled;`)({},fetch_impl,private_price_runtime);
 }
 
-export async function runBackupCollector({db,archive_db,now=Date.now,sleep=wait,collector}={}){
+export async function runBackupCollector({db,archive_db,archive_dbs={},now=Date.now,sleep=wait,collector}={}){
   const bucket=Math.floor(now()/SLOT)*SLOT;
   // Do not label a later market observation as an earlier five-minute slot.
   if(now()-bucket>=4*60_000+30_000)return{status:'SLOT_TOO_LATE',bucket,external_requests:0};
@@ -37,7 +38,9 @@ export async function runBackupCollector({db,archive_db,now=Date.now,sleep=wait,
     await sleep(Number(row.lease_until)-now()+1000);
   }
   if(now()-bucket>=4*60_000+30_000)return{status:'SLOT_TOO_LATE',bucket,external_requests:0};
-  await collector({scheduledTime:bucket},{DATA_DB:db,CANONICAL_ARCHIVE_DB:archive_db,PRICE_RECHECK_ENABLED:'1',PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:GENERATION},{waitUntil(){}});
+  const archiveBindings=Object.fromEntries(Object.entries(archive_dbs).map(([slot,value])=>[PRIVATE_CANONICAL_DATABASES[slot]?.binding,value]));
+  if(Object.hasOwn(archiveBindings,'undefined'))throw Error('EXACT_BACKUP_ARCHIVE_LOCATION_REQUIRED');
+  await collector({scheduledTime:bucket},{DATA_DB:db,CANONICAL_ARCHIVE_DB:archive_db,...archiveBindings,PRICE_RECHECK_ENABLED:'1',PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:GENERATION},{waitUntil(){}});
   return{status:'BACKUP_ATTEMPTED',bucket,external_requests:'COLLECTOR_BOUNDED_BY_EXISTING_CLAIM'};
 }
 
@@ -50,8 +53,8 @@ async function main(){
   if(previousBudget&&(previousBudget.schema!=='COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1'||previousBudget.cloud_run!==cloudRun))throw Error('COLLECTOR_JOB_SOURCE_BUDGET_IDENTITY_REQUIRED');
   const sourceBudget=createCollectorJobBudget({used:previousBudget?.attempted_source_http||0,on_charge:used=>fs.writeFileSync(budgetFile,JSON.stringify({schema:'COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1',cloud_run:cloudRun,attempted_source_http:used,maximum_source_http:164}))});
   const archiveToken=String(process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN||'').trim();
-  const archive=archiveToken?new PrivateArchiveD1API({token:archiveToken}):null;
-  const collector=loadExactCollector(source,sourceBudget.fetch,{runPrivatePriceRechecks,observeCollectorD1,readCollectorPriorRows});
+  const archive=archiveToken?createPrivateArchivePool({enabled:true,token:archiveToken}):null;
+  const collector=loadExactCollector(source,sourceBudget.fetch,{runPrivatePriceRechecks,privateCanonicalBindings,observeCollectorD1,readCollectorPriorRows});
   const token=required('GITHUB_TOKEN'),repository=required('GITHUB_REPOSITORY'),manifest=codeManifest(),receipts=[];
   const durationMinutes=Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0);
   const recoveryEnabled=['1','true','yes','on'].includes(String(process.env.REPORT2_SCHEDULED_RECOVERY_ENABLED||'').toLowerCase());
@@ -79,7 +82,7 @@ async function main(){
     // Already-due reports keep their original early dispatch. A future due
     // boundary waits only after the existing collector and trigger work.
     if(recoveryEnabledHere&&!recoveryDueLater)await recover();
-    const result=await runBackupCollector({db,archive_db:archive,collector});let kick={dispatch:false,status:'TRIGGER_KICK_DISABLED'};
+    const result=await runBackupCollector({db,...(archive?archive.readerOptions():{}),collector});let kick={dispatch:false,status:'TRIGGER_KICK_DISABLED'};
     if(['1','true','yes','on'].includes(String(process.env.REPORT2_TRIGGER_KICK_ENABLED||'').toLowerCase())){
       try{kick=await claimTriggerKick(db);}catch{kick={dispatch:false,status:'KICK_NOT_CLOSED',source_http:0,entry_authorized:false};}
     }

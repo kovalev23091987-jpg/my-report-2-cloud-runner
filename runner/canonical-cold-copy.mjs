@@ -2,6 +2,7 @@ import {encodeCanonicalPublicationRow,retainCanonicalPublicationRow} from './can
 import {privateCanonicalHeader,createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
 import {combineMeasuredD1Usage} from './private-archive-d1-api.mjs';
 import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
+import {retainCanonicalInPool} from './private-archive-pool.mjs';
 
 export const CANONICAL_COPY_POLICY=Object.freeze({max_rows:2,max_runs_day:47,reservation:Object.freeze({rows_read:5000,rows_written:80}),max_daily_reads:3500000,max_daily_writes:70000});
 const PUB=/^PUB:[a-f0-9]{40,64}$/,HEX=/^[a-f0-9]{64}$/;
@@ -35,24 +36,28 @@ export async function reserveCanonicalCopyBudget(db,{reservation_id,now=Date.now
  if(row?.state!=='RESERVED'||row.day_utc!==day||Number(row.reserve_rows_read)!==p.reservation.rows_read||Number(row.reserve_rows_written)!==p.reservation.rows_written)throw Error('ARCHIVE_RESERVATION_READBACK_REQUIRED');
  return{allowed:true,status:'ATOMIC_SHARED_DAY_RESERVED',reservation:p.reservation};
 }
-export async function copyCanonicalReport({source_db,archive_db,candidates,now=Date.now()}={}){
+export async function copyCanonicalReport({source_db,archive_db,archive_pool,candidates,request_headroom=()=>({allowed:true}),now=Date.now()}={}){
  if(!Array.isArray(candidates)||candidates.length>2||!candidates.length)throw Error('ARCHIVE_EXACT_CANDIDATES_REQUIRED');
- const usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),archive_db.usageSnapshot()),reservation=CANONICAL_COPY_POLICY.reservation;
+ const privateUsage=()=>archive_pool?archive_pool.usageSnapshot():archive_db.usageSnapshot();
+ const usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),privateUsage()),reservation=CANONICAL_COPY_POLICY.reservation;
  const admit=e=>evaluateWithinRunReservation({reservation,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+1});
  if(!admit({rows_read:1,rows_written:0}).allowed)throw Error('ARCHIVE_RUN_HEADROOM_DENIED');
- await archive_db.query('SELECT 1 AS size_marker');
- const reader=createPrivateCanonicalRestorer({archive_db,db_admit:admit,max_rows:2});
+ if(!archive_pool)await archive_db.query('SELECT 1 AS size_marker');
+ const reader=createPrivateCanonicalRestorer({...(archive_pool?archive_pool.readerOptions():{archive_db}),db_admit:admit,max_rows:2});
  const receipts=[];
  for(const binding of candidates){
   if(!admit({rows_read:5,rows_written:24}).allowed)throw Error('ARCHIVE_RUN_HEADROOM_DENIED');
   const row=await source_db.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND run_id=?2 LIMIT 1').bind(binding.publication_id,binding.run_id).first();if(!row)throw Error('ARCHIVE_SOURCE_ROW_MISSING');
   for(const [k,v] of Object.entries(binding))if(row[k]!==v)throw Error('ARCHIVE_SOURCE_REPORT_BINDING_MISMATCH');
-  const record=encodeCanonicalPublicationRow(row),stored=await retainCanonicalPublicationRow(archive_db,record,{db_admit:admit,storage_bytes:archive_db.storage_bytes,now});
+  const record=encodeCanonicalPublicationRow(row),stored=archive_pool
+   ?await retainCanonicalInPool(archive_pool,record,{db_admit:admit,request_headroom,now})
+   :await retainCanonicalPublicationRow(archive_db,record,{db_admit:admit,storage_bytes:archive_db.storage_bytes,now});
   if(!stored.retained)throw Error(stored.status);
-  const restored=await reader.restore(await privateCanonicalHeader(row,record));
+  const location=stored.location||'LEGACY';
+  const restored=await reader.restore(await privateCanonicalHeader(row,record,{archive_slot:location==='LEGACY'?null:location}));
   if(JSON.stringify(restored)!==JSON.stringify(row))throw Error('ARCHIVE_PRIVATE_ORIGINAL_READBACK_MISMATCH');
   const {payload_gzip_base64,...manifest}=record;
-  receipts.push({...manifest,stored,private_reader_verified:true,portable_decoder_and_projected_header_verified:true,original_clocks_unchanged:true});
+  receipts.push({...manifest,stored,archive_location:location,private_reader_verified:true,portable_decoder_and_projected_header_verified:true,original_clocks_unchanged:true});
  }
  return{status:'PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED',records:receipts,sourceHTTP:0,main_rows_modified:0,private_payload_exported:false,report_effect:false,weight_effect:false};
 }
