@@ -1,0 +1,60 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
+import {coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,historyVersionMetadata,verifySupersetHistory,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P} from './htx-coordinated-rollout.mjs';
+const id=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0'),head='a'.repeat(40),sha='b'.repeat(64);
+const base=n=>({deployment_id:id(n),version_id:id(n+10),module_sha256:'original'+n,settings_sha256:'settings'+n,crons_sha256:'cron'+n});
+function harness(options={}){
+ const original=[base(1),base(2)],states=structuredClone(original),collector={...base(3),status:'EXACT_CURRENT_UNIVERSE_NEUTRAL_COLLECTOR'},events=[],saved=[];let guards=0;
+ const workers=P.workers.map((name,i)=>({name,module_sha256:'c'.repeat(64-i)+('d'.repeat(i))}));
+ const plan={head,expected_main:'e'.repeat(40),connected:{head,run:42,status:'EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS'},scope:{status:'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED'},workers};
+ const index=w=>P.workers.indexOf(w.name);
+ const adapter={readCollector:async()=>{events.push('collector');return structuredClone(options.collectorDrift&&events.filter(e=>e==='collector').length>1?{...collector,version_id:id(99)}:collector);},snapshot:async w=>{const i=index(w);events.push('read'+i);return structuredClone(states[i]);},requireHeadroom:n=>{events.push('headroom'+n);if(options.noHeadroom)throw Error('HTTP_HEADROOM_REQUIRED');},stage:async w=>{const i=index(w);events.push('stage'+i);return{version_id:id(30+i)};},activate:async(w,version)=>{
+  const i=index(w);events.push('activate'+i+':'+version);
+  if(version===original[i].version_id){states[i]={...original[i],deployment_id:id(80+i)};return;}
+  states[i]={...original[i],deployment_id:id(60+i),version_id:version,module_sha256:w.module_sha256};
+  if(i===1&&options.badSecond)states[i].module_sha256='wrong';
+  if(i===1&&options.foreignSecond)states[i]={...states[i],version_id:id(99)};
+  if(i===1&&options.ambiguousSecond)throw Error('DEPLOYMENT_ACK_LOST');
+ }};
+ const run=execute=>coordinateWeeklyRollout({plan,adapter,guard:async()=>{guards++;if(options.expireAt===guards)throw Error('LEASE_EXPIRED');},save:async p=>saved.push(p),execute,clock:()=>123});
+ return{plan,adapter,run,events,saved,states,original};
+}
+test('read-only qualification never stages, activates or changes Node scope',async()=>{
+ const h=harness(),p=await h.run(false);assert.equal(p.status,'EXACT_CONNECTED_PLAN_AND_ROLLBACK_ORIGINALS_QUALIFIED');assert.equal(h.events.some(e=>/stage|activate/.test(e)),false);assert.deepEqual(h.states,h.original);assert.equal(p.production_scope_changed,false);
+});
+test('both versions stage before activation and all final states are read back',async()=>{
+ const h=harness(),p=await h.run(true);assert.equal(p.status,'ALL_CONNECTED_WORKERS_EXACT_NODE_SCOPE_MERGE_READY');assert.ok(h.events.indexOf('stage1')<h.events.findIndex(e=>e.startsWith('activate0:')));assert.equal(p.production_scope_changed,false);assert.equal(p.sourceHTTP,0);assert.equal(p.D1,0);assert.equal(p.Telegram,0);assert.equal(h.events.filter(e=>e==='collector').length,2);assert.ok(h.events.filter(e=>e==='read0').length>=4);assert.ok(h.saved.some(p=>p.workers[0].activation_intent&&!p.workers[0].after));
+});
+test('wrong exact module after second activation restores both original versions',async()=>{
+ const h=harness({badSecond:true});await assert.rejects(h.run(true),/EXACT_HISTORY_ACTIVATION_READBACK_REQUIRED/);assert.deepEqual(h.states.map(s=>s.version_id),h.original.map(s=>s.version_id));const p=h.saved.at(-1);assert.equal(p.status,'WEEKLY_NOT_ACTIVATED_OR_OWN_ACTIVATIONS_ROLLED_BACK');assert.equal(p.rollback.length,2);assert.equal(p.production_activation_allowed,false);
+});
+test('an unacknowledged activation is read back and only own active versions roll back',async()=>{
+ const h=harness({ambiguousSecond:true});await assert.rejects(h.run(true),/DEPLOYMENT_ACK_LOST/);assert.deepEqual(h.states.map(s=>s.version_id),h.original.map(s=>s.version_id));assert.equal(h.saved.at(-1).rollback.every(r=>r.status==='ORIGINAL_VERSION_AND_SETTINGS_RESTORED'),true);
+});
+test('foreign deployment is retained, requires exact resume and never gets overwritten',async()=>{
+ const h=harness({foreignSecond:true});await assert.rejects(h.run(true));assert.equal(h.states[1].version_id,id(99));assert.equal(h.states[0].version_id,h.original[0].version_id);assert.equal(h.saved.at(-1).status,'WEEKLY_PARTIAL_STATE_REQUIRES_EXACT_RESUME');assert.equal(h.events.filter(e=>e==='activate1:'+h.original[1].version_id).length,0);
+});
+test('collector drift after both archives causes compensation without changing collector',async()=>{
+ const h=harness({collectorDrift:true});await assert.rejects(h.run(true),/COLLECTOR_CHANGED_DURING_WEEKLY_ROLLOUT/);assert.deepEqual(h.states.map(s=>s.version_id),h.original.map(s=>s.version_id));
+});
+test('expired lease or unavailable rollback reserve stops before first mutation',async()=>{
+ for(const options of [{expireAt:4},{noHeadroom:true}]){const h=harness(options);await assert.rejects(h.run(true));assert.equal(h.events.some(e=>/stage|activate/.test(e)),false);}
+});
+test('wrong connected head cannot invoke a live adapter',async()=>{
+ const h=harness();h.plan.connected.head='f'.repeat(40);await assert.rejects(h.run(true),/EXACT_CONNECTED_WEEKLY_ROLLOUT_PLAN_REQUIRED/);assert.equal(h.events.length,0);
+});
+test('split traffic, missing deployment and invalid UUIDs cannot serve as rollback originals',()=>{
+ const d={deployments:[{id:id(1),strategy:'percentage',versions:[{version_id:id(2),percentage:100}]}]};assert.equal(singleActiveVersion(d).version_id,id(2));for(const bad of [{}, {deployments:[]}, {deployments:[{...d.deployments[0],versions:[{version_id:id(2),percentage:50}]}]}, {deployments:[{...d.deployments[0],id:'wrong'}]}])assert.throws(()=>singleActiveVersion(bad));
+});
+test('exact bindings, compatibility and free usage model survive; unknown settings are refused',()=>{
+ const config={compatibility_date:'2026-10-12',d1_databases:[{binding:'DATA_DB',database_id:id(1)}]},settings={compatibility_date:config.compatibility_date,bindings:[{name:'DATA_DB',type:'d1',id:id(1)}]},runtime={compatibility_date:'2026-10-12T00:00:00Z',usage_model:'standard',compatibility_flags:[],limits:{cpu_ms:50}},args={settings,runtime,config,head,main_module:'worker-entry.js'};
+ const m=historyVersionMetadata(args);assert.deepEqual(m.bindings,settings.bindings);assert.deepEqual(m.limits,runtime.limits);assert.equal(m.annotations['workers/commit_sha'],head);assert.equal(Object.hasOwn(m,'migrations'),false);
+ for(const patch of [{settings:{...settings,bindings:[...settings.bindings,{name:'KEEP_ME',type:'secret_text'}]}},{runtime:{...runtime,usage_model:'unbound'}},{runtime:{...runtime,compatibility_date:'2026-10-11'}},{settings:{...settings,bindings:[{...settings.bindings[0],id:id(2)}]}}])assert.throws(()=>historyVersionMetadata({...args,...patch}));
+ assert.equal(workerSettingsFingerprint(settings),workerSettingsFingerprint({...settings,bindings:[...settings.bindings]}));assert.notEqual(workerSettingsFingerprint(settings),workerSettingsFingerprint({...settings,limits:{cpu_ms:99}}));
+});
+test('retained106 scope preserves all production105 targets and every old history digest',()=>{
+ const old=fs.readFileSync('cloudflare/free-history/hourly-archive.mjs','utf8'),next=fs.readFileSync('checkpoints/weekly106-preparation-20261015/files/cloudflare/free-history/hourly-archive.mjs','utf8'),extract=s=>vm.runInNewContext(s.replaceAll('export ', '')+';({TARGETS,KNOWN_HISTORY_MANIFESTS,MANIFEST_SHA256})',{TextEncoder});
+ const a=extract(old),b=extract(next),args={previous_targets:Array.from(a.TARGETS),targets:Array.from(b.TARGETS),previous_manifests:JSON.parse(JSON.stringify(a.KNOWN_HISTORY_MANIFESTS)),manifests:JSON.parse(JSON.stringify(b.KNOWN_HISTORY_MANIFESTS)),manifest_sha256:b.MANIFEST_SHA256};assert.equal(verifySupersetHistory(args).target_count,106);assert.throws(()=>verifySupersetHistory({...args,targets:args.targets.filter(s=>s!=='FIL-USDT')}));assert.throws(()=>verifySupersetHistory({...args,manifests:[args.manifests[0]]}));
+});
+test('workflow admits only main-dispatched exact proposals; no historical owner alias, source or D1 credentials',()=>{
+ const y=fs.readFileSync('.github/workflows/weekly-htx-coordinated-rollout.yml','utf8'),s=fs.readFileSync('tools/weekly-htx-coordinated-rollout.mjs','utf8');assert.match(y,/github.ref == 'refs\/heads\/main'/);assert.match(y,/default: false/);assert.match(y,/wrangler@4\.151\.0 deploy --dry-run/g);assert.doesNotMatch(y,/D1_BRIDGE|TELEGRAM_BOT_TOKEN|runner-main|wrangler@4 /);assert.match(s,/verifyWeeklyOriginalProposal/);assert.equal(P.rollback_HTTP_reserved,16);assert.equal(P.max_control_HTTP+P.max_cloudflare_HTTP+P.manual_HTTP_reserved,P.http.whole_job);assert.equal(rolloutDigest('original'),rolloutDigest(Buffer.from('original')));
+});

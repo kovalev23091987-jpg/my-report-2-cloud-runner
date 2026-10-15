@@ -1,0 +1,76 @@
+name: Exact coordinated weekly HTX scope rollout
+on:
+  workflow_dispatch:
+    inputs:
+      weekly_head: {type: string, required: true}
+      weekly_branch: {type: string, required: true}
+      expected_main: {type: string, required: true}
+      source_run: {type: string, required: true}
+      connected_run: {type: string, required: true}
+      borrow_existing_owner: {type: string, required: true}
+      execute:
+        description: Activate only after exact plan, live owner and rollback originals qualify
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: report2-coordinated-weekly-rollout
+  cancel-in-progress: false
+jobs:
+  rollout:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.weekly_head }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Qualify exact data-only proposal before building its Workers
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          WEEKLY_HEAD: ${{ inputs.weekly_head }}
+          WEEKLY_BRANCH: ${{ inputs.weekly_branch }}
+          WEEKLY_SOURCE_RUN: ${{ inputs.source_run }}
+        run: |
+          node --input-type=module - <<'JS'
+          import {makeGithubControl} from './runner/github-bounded-phase-lease.mjs';
+          import {checkWeeklyGithubProposal} from './runner/htx-weekly-proposal-check.mjs';
+          const p=process.env;
+          if(p.GITHUB_SHA!==p.EXPECTED_MAIN)throw Error('EXACT_MAIN_WORKFLOW_REQUIRED');
+          await checkWeeklyGithubProposal(makeGithubControl({repository:p.GITHUB_REPOSITORY,token:p.GITHUB_TOKEN}),{head:p.WEEKLY_HEAD,expected_main:p.EXPECTED_MAIN,source_run:p.WEEKLY_SOURCE_RUN,branch:p.WEEKLY_BRANCH});
+          JS
+      - name: Compile both history Workers without source calls or activation
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+          CLOUDFLARE_SEND_METRICS: 'false'
+        run: |
+          npx --yes wrangler@4.151.0 deploy --dry-run --config cloudflare/free-history/wrangler.json --outdir "$GITHUB_WORKSPACE/audit-output/weekly-coordinated-rollout/htx" > /tmp/report2-weekly-htx-build.log
+          npx --yes wrangler@4.151.0 deploy --dry-run --config cloudflare/free-history/wrangler-liq.json --outdir "$GITHUB_WORKSPACE/audit-output/weekly-coordinated-rollout/liq" > /tmp/report2-weekly-liq-build.log
+      - name: Verify live exact collector and rollback originals; optionally activate archives
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          WEEKLY_HEAD: ${{ inputs.weekly_head }}
+          WEEKLY_BRANCH: ${{ inputs.weekly_branch }}
+          WEEKLY_SOURCE_RUN: ${{ inputs.source_run }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          BORROW_EXISTING_OWNER: ${{ inputs.borrow_existing_owner }}
+          EXECUTE_WEEKLY_ROLLOUT: ${{ inputs.execute }}
+          WEEKLY_PREFLIGHT_HTTP: '8'
+        run: node tools/weekly-htx-coordinated-rollout.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-coordinated-${{ github.run_id }}
+          path: |
+            audit-output/weekly-coordinated-rollout/proof.json
+            audit-output/liq-assembled/weekly-original-proposal-binding.json
+          if-no-files-found: error
+          retention-days: 30
