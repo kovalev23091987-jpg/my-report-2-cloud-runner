@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 const digest=b=>createHash('sha256').update(b).digest('hex');
 const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>[k,stable(v[k])])):v;
 export const rolloutDigest=v=>digest(typeof v==='string'||Buffer.isBuffer(v)?v:JSON.stringify(stable(v)));
-export const WEEKLY_ROLLOUT_POLICY=Object.freeze({account:'70ee0af85191ea470e74c7383fdec772',wrangler:'4.151.0',http:{whole_job:164,hot:96,background:56,statistics:12},manual_HTTP_reserved:24,max_control_HTTP:68,max_cloudflare_HTTP:72,rollback_HTTP_reserved:16,min_lease_headroom_ms:600000,collector:'my-report-2-hub',workers:['my-report-2-free-history','my-report-2-liq-forecast-history']});
+export const WEEKLY_ROLLOUT_POLICY=Object.freeze({account:'70ee0af85191ea470e74c7383fdec772',wrangler:'4.151.0',http:{whole_job:164,hot:96,background:56,statistics:12},manual_HTTP_reserved:24,max_control_HTTP:58,max_cloudflare_HTTP:82,rollback_HTTP_reserved:16,min_lease_headroom_ms:600000,collector:'my-report-2-hub',workers:['my-report-2-free-history','my-report-2-liq-forecast-history']});
 const UUID=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
 export function singleActiveVersion(result){
  const d=result?.deployments?.[0];
@@ -22,6 +22,20 @@ export function workerSettingsFingerprint(settings,runtime){
  const effective=runtime?{compatibility_date:runtime.compatibility_date?.slice(0,10),compatibility_flags:runtime.compatibility_flags||[],usage_model:runtime.usage_model,limits:runtime.limits||{}}:{};
  return rolloutDigest({...settings,...effective,bindings});
 }
+export function selectedVersionSettings(settings,version){
+ if(!UUID.test(version?.id||'')||!Array.isArray(version.resources?.bindings)||!version.resources?.script_runtime)throw Error('EXACT_SELECTED_VERSION_SETTINGS_REQUIRED');
+ const {bindings,compatibility_date,compatibility_flags,usage_model,limits,annotations,...nonVersioned}=settings,r=version.resources.script_runtime;
+ // /settings and /content/v2 describe the latest upload, which may be dormant.
+ // Version annotations are provenance, not operational settings. Every other
+ // non-versioned field is retained, including unknown future fields.
+ return{...nonVersioned,bindings:version.resources.bindings,compatibility_date:r.compatibility_date?.slice(0,10),compatibility_flags:r.compatibility_flags||[],usage_model:r.usage_model,limits:r.limits||{}};
+}
+export function bindWorkerModule({active_version,latest_uploaded_version,live_sha256,retained}={}){
+ if(!UUID.test(active_version||''))throw Error('EXACT_ACTIVE_MODULE_ID_REQUIRED');
+ if(active_version===latest_uploaded_version&&/^[a-f0-9]{64}$/.test(live_sha256||''))return{module_sha256:live_sha256,module_readback_basis:'ACTIVE_EQUALS_LATEST_UPLOAD_EXACT_BYTES'};
+ if(retained?.version_id===active_version&&/^[a-f0-9]{64}$/.test(retained.module_sha256||''))return{module_sha256:retained.module_sha256,module_readback_basis:'EXACT_IMMUTABLE_VERSION_PRIOR_NATIVE_DIGEST'};
+ throw Error('LATEST_UPLOAD_IS_NOT_ACTIVE_MODULE_PROOF');
+}
 export function runtimeSettingsSerializationHashes(settings,runtime){
  const defaults={compatibility_date:runtime?.compatibility_date?.slice(0,10),compatibility_flags:runtime?.compatibility_flags||[],usage_model:runtime?.usage_model,limits:runtime?.limits||{}};let variants=[settings];
  for(const [key,value] of Object.entries(defaults))if(value!==undefined&&Object.hasOwn(settings,key)&&rolloutDigest(settings[key])===rolloutDigest(value))variants=[...variants,...variants.map(v=>{const next={...v};delete next[key];return next;})];
@@ -29,9 +43,9 @@ export function runtimeSettingsSerializationHashes(settings,runtime){
  // Bindings, variables, secrets, placement and other settings never vary.
  return[...new Set(variants.map(v=>workerSettingsFingerprint(v)))];
 }
-export function resumeOwnUnactivatedCollector({prior,current,expected_module_sha256,latest_uploaded_version}={}){
+export function resumeOwnUnactivatedCollector({prior,current,expected_module_sha256,latest_uploaded_version,staged_operational_settings_sha256}={}){
  const w=prior?.workers?.[0];
- if(prior?.schema!=='CURRENT_PUBLIC_COLLECTOR_MODULE_REPAIR_V1'||prior.status!=='WEEKLY_NOT_ACTIVATED_OR_OWN_ACTIVATIONS_ROLLED_BACK'||prior.reason!=='WORKER_MOVED_BEFORE_ACTIVATION'||prior.sourceHTTP!==0||prior.D1!==0||prior.MAIN!==0||prior.Telegram!==0||prior.production_scope_changed!==false||prior.workers?.length!==1||w.name!==WEEKLY_ROLLOUT_POLICY.collector||w.activation_intent||w.staged?.activated!==false||!UUID.test(w.staged.version_id||'')||w.staged.version_id!==latest_uploaded_version||w.before?.version_id!==current.version_id||w.before?.deployment_id!==current.deployment_id||w.before?.module_sha256!==current.module_sha256||w.before?.crons_sha256!==current.crons_sha256||JSON.stringify(w.before?.binding_names)!==JSON.stringify(current.binding_names)||!current.runtime_serialization_hashes?.includes(w.before?.settings_sha256)||w.expected_module_sha256!==expected_module_sha256||prior.scope?.patched_module_sha256!==expected_module_sha256)throw Error('EXACT_OWN_UNACTIVATED_COLLECTOR_RECEIPT_REQUIRED');
+ if(prior?.schema!=='CURRENT_PUBLIC_COLLECTOR_MODULE_REPAIR_V1'||prior.status!=='WEEKLY_NOT_ACTIVATED_OR_OWN_ACTIVATIONS_ROLLED_BACK'||prior.reason!=='WORKER_MOVED_BEFORE_ACTIVATION'||prior.sourceHTTP!==0||prior.D1!==0||prior.MAIN!==0||prior.Telegram!==0||prior.production_scope_changed!==false||prior.workers?.length!==1||w.name!==WEEKLY_ROLLOUT_POLICY.collector||w.activation_intent||w.staged?.activated!==false||!UUID.test(w.staged.version_id||'')||w.staged.version_id!==latest_uploaded_version||w.before?.version_id!==current.version_id||w.before?.deployment_id!==current.deployment_id||w.before?.module_sha256!==current.module_sha256||w.before?.crons_sha256!==current.crons_sha256||JSON.stringify(w.before?.binding_names)!==JSON.stringify(current.binding_names)||!(current.runtime_serialization_hashes?.includes(w.before?.settings_sha256)||staged_operational_settings_sha256===current.settings_sha256&&/^[a-f0-9]{64}$/.test(staged_operational_settings_sha256||''))||w.expected_module_sha256!==expected_module_sha256||prior.scope?.patched_module_sha256!==expected_module_sha256)throw Error('EXACT_OWN_UNACTIVATED_COLLECTOR_RECEIPT_REQUIRED');
  return{version_id:w.staged.version_id,activated:false,reused_exact_unactivated_version:true,original_head:prior.head};
 }
 export function historyVersionMetadata({settings,runtime,config,main_module,head}={}){

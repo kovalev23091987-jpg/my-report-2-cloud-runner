@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';import path from 'node:path';import vm from 'node:vm';import {pathToFileURL} from 'node:url';
+import {createVersionBoundWorkerReader} from '../runner/cloudflare-version-bound-readback.mjs';
 import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
 import {verifyWeeklyOriginalProposal} from './verify-weekly-htx-proposal.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
@@ -21,24 +22,12 @@ async function cf(script,suffix,{method='GET',body,raw=false}={}){
  if(!response.ok)throw Error('CLOUDFLARE_HTTP_'+response.status);
  if(raw)return response;const j=await response.json();if(j.success!==true||!j.result)throw Error('CLOUDFLARE_ACK_REQUIRED');return j.result;
 }
-const originalSettings=new Map(),runtimeByVersion=new Map(),immutableModules=new Map();
+const originalSettings=new Map(),runtimeByVersion=new Map(),reader=createVersionBoundWorkerReader({call:cf});
 async function snapshot(worker){
- const name=worker.name,[deployment,settings,schedules]=await Promise.all([cf(name,'/deployments'),cf(name,'/settings'),cf(name,'/schedules')]),active=singleActiveVersion(deployment);
- const crons=(Array.isArray(schedules)?schedules:schedules.schedules)?.map(s=>s.cron).sort();
- if(!Array.isArray(crons)||JSON.stringify(crons)!==JSON.stringify([...worker.crons].sort()))throw Error('EXACT_WORKER_CRONS_REQUIRED');
- const key=name+':'+active.version_id;let hash=immutableModules.get(key);
- if(!hash){
-  hash=rolloutDigest(await moduleBytes(await cf(name,'/content/v2',{raw:true})));
-  const confirm=singleActiveVersion(await cf(name,'/deployments'));
-  if(confirm.version_id!==active.version_id||confirm.deployment_id!==active.deployment_id)throw Error('WORKER_MOVED_DURING_MODULE_READ');
-  immutableModules.set(key,hash);
- }
- if(!originalSettings.has(name)){
-  originalSettings.set(name,settings);
- }
- if(!runtimeByVersion.has(key)){const version=await cf(name,'/versions/'+active.version_id);if(version.id!==active.version_id||!version.resources?.script_runtime)throw Error('ROLLBACK_ORIGINAL_VERSION_REQUIRED');runtimeByVersion.set(key,version.resources.script_runtime);}
- if(name!==P.collector)historyVersionMetadata({settings,runtime:runtimeByVersion.get(key)||[...runtimeByVersion.entries()].find(([k])=>k.startsWith(name+':'))?.[1],config:worker.config,main_module:worker.main_module,head:process.env.WEEKLY_HEAD});
- return{...active,module_sha256:hash,settings_sha256:workerSettingsFingerprint(settings,runtimeByVersion.get(key)),crons_sha256:rolloutDigest(crons),binding_names:settings.bindings.map(b=>b.name).sort(),crons,settings_key_sha256:Object.fromEntries(Object.entries(settings).map(([k,v])=>[k,rolloutDigest(v)])),effective_runtime:runtimeByVersion.get(key)};
+ const state=await reader.read(worker),settings=reader.settings(worker.name,state.version_id),runtime=reader.version(worker.name,state.version_id).resources.script_runtime;
+ if(!originalSettings.has(worker.name)){originalSettings.set(worker.name,settings);runtimeByVersion.set(worker.name+':'+state.version_id,runtime);}
+ if(worker.name!==P.collector)historyVersionMetadata({settings,runtime,config:worker.config,main_module:worker.main_module,head:process.env.WEEKLY_HEAD});
+ return state;
 }
 const expected_main=process.env.EXPECTED_MAIN,head=process.env.WEEKLY_HEAD,owner=process.env.BORROW_EXISTING_OWNER;
 async function guard({min_headroom_ms=30000}={}){
@@ -75,7 +64,8 @@ try{
  const adapter={
   requireHeadroom:n=>{if(P.max_cloudflare_HTTP-cloudflare_HTTP<n||budget.summary().remaining-P.manual_HTTP_reserved<n)throw Error('WEEKLY_ROLLBACK_HTTP_HEADROOM_REQUIRED');},snapshot,
   readCollector:async()=>{
-   const worker={name:P.collector,crons:['*/5 * * * *','3-58/5 * * * *']},state=await snapshot(worker),bytes=await moduleBytes(await cf(P.collector,'/content/v2',{raw:true}));
+   const worker={name:P.collector,crons:['*/5 * * * *','3-58/5 * * * *']},state=await snapshot(worker),bytes=reader.module(P.collector,state.version_id)?.bytes;
+   if(!bytes)throw Error('EXACT_ACTIVE_COLLECTOR_BYTES_REQUIRED');
    if(rolloutDigest(bytes)!==state.module_sha256||patchWorker(bytes.toString(),injected).status!=='ALREADY_PATCHED'||/APPROVED_HTX_SCOPE|export const TARGETS/.test(injected)||!injected.includes('for (var [contract, info] of catalogMap)'))throw Error('UNIVERSE_NEUTRAL_COLLECTOR_EXACT_TAIL_REQUIRED');
    const settings=originalSettings.get(P.collector),byName=new Map(settings.bindings.map(b=>[b.name,b]));
    for(const [name,id] of [['DATA_DB','057a2847-2cc4-4e52-8534-1be1596d21d5'],['CANONICAL_ARCHIVE_DB','f66e7081-0e67-49a2-8f69-68af00cdaf92']])if(byName.get(name)?.type!=='d1'||(byName.get(name).id??byName.get(name).database_id)!==id)throw Error('COLLECTOR_EXACT_D1_BINDINGS_REQUIRED');
