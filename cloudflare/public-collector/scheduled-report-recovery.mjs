@@ -9,6 +9,28 @@ const validTime=value=>{
   return Number.isSafeInteger(time)?time:null;
 };
 
+// Reuse the cadence row already read by this collector cycle. A due time a
+// few seconds after the five-minute poll must not add another five minutes.
+// This is a timer only: the normal GitHub and durable runner gates still run.
+export function scheduledRecoveryBoundary({cadence_last_success_ts,cadence_lease_expires_ts=null,local_last_accepted_ts=0,not_after_ts,now=Date.now()}={}){
+  if(!Number.isSafeInteger(now)||!Number.isSafeInteger(cadence_last_success_ts)||cadence_last_success_ts<=0||cadence_last_success_ts>now||!Number.isSafeInteger(not_after_ts)||not_after_ts<=now)return null;
+  if(cadence_lease_expires_ts!==null&&(!Number.isSafeInteger(cadence_lease_expires_ts)||cadence_lease_expires_ts>now))return null;
+  if(!Number.isSafeInteger(local_last_accepted_ts)||local_last_accepted_ts<0||local_last_accepted_ts>now)return null;
+  const due=Math.max(cadence_last_success_ts+GAP_MS,local_last_accepted_ts?local_last_accepted_ts+GAP_MS:0);
+  return due>now&&due<not_after_ts&&due-now<=5*60_000?due:null;
+}
+export async function waitForScheduledRecoveryBoundary({cadence_last_success_ts,cadence_lease_expires_ts=null,local_last_accepted_ts=0,not_after_ts,now=Date.now,sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),verify_code}={}){
+  const started=now(),empty={allowed:true,status:'NO_IN_SLOT_RECOVERY_WAIT',wait_ms:0,source_http:0,D1:0};
+  const due=scheduledRecoveryBoundary({cadence_last_success_ts,cadence_lease_expires_ts,local_last_accepted_ts,not_after_ts,now:started});
+  if(due===null||typeof verify_code!=='function')return empty;
+  let slept=0;
+  while(now()<due){const delay=Math.min(60_000,due-now());if(slept+delay>5*60_000)return{...empty,allowed:false,status:'RECOVERY_WAIT_CLOCK_NOT_CLOSED',wait_ms:slept};await sleep(delay);slept+=delay;}
+  if(now()>=not_after_ts)return{...empty,allowed:false,status:'RECOVERY_WAIT_WINDOW_CLOSED',wait_ms:now()-started,next_due_ts:due};
+  const guard=await verify_code();
+  if(now()>=not_after_ts)return{...empty,allowed:false,status:'RECOVERY_WAIT_WINDOW_CLOSED',wait_ms:now()-started,next_due_ts:due,source_guard:guard};
+  return{...empty,allowed:guard?.allowed===true,status:guard?.allowed===true?'RECOVERY_DUE_WITHIN_ORIGINAL_COLLECTOR_SLOT':'RECOVERY_WAIT_CODE_NOT_CURRENT',wait_ms:now()-started,next_due_ts:due,source_guard:guard};
+}
+
 export async function inspectScheduledReportGap({repository,token,now=Date.now(),local_last_accepted_ts=0,cadence_last_success_ts=null,cadence_lease_expires_ts=null,fetch_impl=fetch}={}){
   if(!repositoryValid(repository)||!token||!Number.isSafeInteger(now)||now<=0)return{allowed:false,status:'RECOVERY_CONTROL_REQUIRED'};
   if(local_last_accepted_ts>0&&now-local_last_accepted_ts<GAP_MS)return{allowed:false,status:'LOCAL_RECOVERY_ALREADY_ACCEPTED',last_attempt_ts:local_last_accepted_ts};

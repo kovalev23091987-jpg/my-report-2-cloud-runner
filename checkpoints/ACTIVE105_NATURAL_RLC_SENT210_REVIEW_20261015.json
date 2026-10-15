@@ -1,0 +1,454 @@
+{
+  "schema": "ACTIVE105_NATURAL_RLC_SENT210_REVIEW_V1",
+  "recorded_utc": "2026-10-15T09:14:06.428450+00:00",
+  "cloud_run": 38707417112,
+  "head": "56f9265508c5ee7e737e34f7b46c2c0f9e3618cd",
+  "run_id": "1792053688543-1792053704847",
+  "original_artifact": "checkpoints/active105-reliability-20261015/natural-38707417112/members.json",
+  "status": "CLOSED",
+  "pipeline_health": {
+    "status": "HEALTHY_NO_IDEA",
+    "reason": null
+  },
+  "scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0
+  },
+  "nine_pauses_verified": true,
+  "rows": [
+    {
+      "contract": "RLC-USDT",
+      "publication_id": "PUB:229ec5c80bf4fae38547b1319d1c16320d394ad0",
+      "snapshot_id": "S392:RLC-USDT:1792053873959",
+      "observed_ts": 1792053873959,
+      "canonical_state": "OBSERVE",
+      "blocks": {
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 5,
+          "usable_facts": 0
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N12": {
+          "status": "FACTS_PRESENT_NOT_DECISION_ADMISSIBLE",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 2,
+          "usable_facts": 2
+        }
+      },
+      "future_levels_status": "CALCULATED_SCENARIOS_ONLY",
+      "source_position_zones": 0,
+      "external_model_levels": 8,
+      "model_sources": [
+        "CoinBoss"
+      ],
+      "source_clocks": [
+        1792053859290
+      ],
+      "local_HTX_model": {
+        "status": "DISABLED_BY_OWNER_ON_REQUEST_ONLY",
+        "volatility_1h_pct": null
+      },
+      "priority": {
+        "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+        "contract": "RLC-USDT",
+        "status": "CAPTURED_ORIGINAL_QUEUE",
+        "N15": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 2,
+              "latest_observed_ts": 1791996161259,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.3333333333333333,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 2,
+              "latest_observed_ts": 1791996161259,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.6666666666666666,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "public_venues": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": [
+            {
+              "route": "GATE",
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "block_id": "N05",
+              "observations": 1,
+              "latest_observed_ts": 1791996161259,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BACKPACK",
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BITGET",
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "block_id": "N05",
+              "observations": 1,
+              "latest_observed_ts": 1791996161259,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE_FUTURES_N12",
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "KUCOIN_N12_EXACT_TOKEN",
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram_text_changed": false
+      }
+    },
+    {
+      "contract": "龙虾-USDT",
+      "publication_id": "PUB:87671b325b672b3c3f66dd539a83d7565029b0ef",
+      "snapshot_id": "S392:龙虾-USDT:1792053783819",
+      "observed_ts": 1792053783819,
+      "canonical_state": "REJECTED",
+      "blocks": {
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 3,
+          "usable_facts": 0
+        },
+        "N11": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 0
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 2,
+          "usable_facts": 0
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "valid_context_facts": 1,
+          "usable_facts": 1
+        }
+      },
+      "future_levels_status": "NOT_AVAILABLE",
+      "source_position_zones": 0,
+      "external_model_levels": 0,
+      "model_sources": [],
+      "source_clocks": [],
+      "local_HTX_model": {
+        "status": "DISABLED_BY_OWNER_ON_REQUEST_ONLY",
+        "volatility_1h_pct": null
+      },
+      "priority": {
+        "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+        "contract": "龙虾-USDT",
+        "status": "CAPTURED_ORIGINAL_QUEUE",
+        "N15": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 2,
+              "latest_observed_ts": 1792006927572,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1792051036607,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.4444444444444444,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "public_venues": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": [
+            {
+              "route": "GATE",
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "block_id": "N05",
+              "observations": 4,
+              "latest_observed_ts": 1792051036607,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BACKPACK",
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "block_id": "N05",
+              "observations": 3,
+              "latest_observed_ts": 1792039011751,
+              "latest_class": "INVALID_RESPONSE",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "BITGET",
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "block_id": "N05",
+              "observations": 1,
+              "latest_observed_ts": 1792009614211,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 4,
+              "latest_observed_ts": 1792051036607,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "GATE_FUTURES_N12",
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "KUCOIN_N12_EXACT_TOKEN",
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "block_id": "N12",
+              "observations": 0,
+              "latest_observed_ts": null,
+              "latest_class": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        },
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram_text_changed": false
+      }
+    }
+  ],
+  "exact_same_run_delivery": {
+    "publication_id": "PUB:229ec5c80bf4fae38547b1319d1c16320d394ad0",
+    "contract": "RLC-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:RLC-USDT:1792053705166:G6",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792053688543-1792053704847",
+    "snapshot_id": "S392:RLC-USDT:1792053873959",
+    "observed_ts": 1792053873959,
+    "analytical_fingerprint": "8737c3a3ddeca076b2012dad142b6f2b7b30eaf7141eec453ee3d5d48ad868d9",
+    "presentation_hash": "3e7deb1e2c83fe811e632c9b356a3e221f949cfd4bfb9a01fbf8c906c60b3902",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "210",
+    "dispatch_finalized": true,
+    "task_at_delivery": null,
+    "task_at_delivery_verified": false,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+  },
+  "new_cadence_patch_not_tested_by_this_older_run": true,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "project_complete": false,
+  "all105_deep_current_coverage": false
+}

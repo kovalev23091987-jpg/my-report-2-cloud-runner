@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal} from './scheduled-report-recovery.mjs';
+import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal,waitForScheduledRecoveryBoundary,scheduledRecoveryBoundary} from './scheduled-report-recovery.mjs';
 
 const NOW=Date.parse('2026-10-12T10:00:00Z');
 const run=(time,display_title='Report 2 Cloud Runner',status='completed')=>({created_at:new Date(time).toISOString(),display_title,head_branch:'main',status});
@@ -12,6 +12,35 @@ const mockLists=({scheduled=[],dispatched=[],http_status=200}={})=>async(url,opt
   return new Response(JSON.stringify({workflow_runs:rows}),{status:200});
 };
 const inspect=(fetch_impl,extra={})=>inspectScheduledReportGap({repository:'owner/repo',token:'TEST',now:NOW,fetch_impl,...extra});
+
+test('saved forty-minute boundary waits seconds within the same poll and still verifies live schedule before dispatch',async()=>{
+  // Original run38702114607 began at07:56:28.697; the fixed08:36 poll
+  // previously saw NOT_DUE and could not return until08:41.
+  const last=1792050988697,poll=Date.parse('2026-10-15T08:36:04Z'),due=last+40*60_000;
+  let clock=poll,guards=0,http=0;const waits=[];
+  const boundary=await waitForScheduledRecoveryBoundary({cadence_last_success_ts:last,not_after_ts:Date.parse('2026-10-15T08:41:00Z'),now:()=>clock,sleep:async ms=>{waits.push(ms);clock+=ms;},verify_code:async()=>{guards++;return{allowed:true,status:'CURRENT_MAIN_CODE_VERIFIED'};}});
+  assert.equal(clock,due);assert.equal(boundary.wait_ms,24697);assert.equal(guards,1);assert.equal(boundary.source_http,0);assert.equal(boundary.D1,0);
+  assert.ok(waits.every(ms=>ms>0&&ms<=60_000));
+  const gap=await inspectScheduledReportGap({repository:'owner/repo',token:'TEST',now:clock,cadence_last_success_ts:last,fetch_impl:async(...a)=>{http++;return mockLists({dispatched:[run(last-22000,'Report 2 scheduled recovery')]})(...a);}});
+  assert.equal(gap.allowed,true);assert.equal(http,2);
+  const live=await inspectScheduledReportGap({repository:'owner/repo',token:'TEST',now:clock,cadence_last_success_ts:last,fetch_impl:mockLists({scheduled:[run(clock-1000,'Report 2 Cloud Runner','in_progress')]})});
+  assert.equal(live.allowed,false);assert.equal(live.status,'SCHEDULED_RUN_IN_PROGRESS');
+});
+
+test('timer never waits beyond its collector slot, uses no new database read, and respects the later local throttle',async()=>{
+  const args={cadence_last_success_ts:NOW-39*60_000,not_after_ts:NOW+5*60_000,now:NOW};
+  assert.equal(scheduledRecoveryBoundary(args),NOW+60_000);
+  assert.equal(scheduledRecoveryBoundary({...args,local_last_accepted_ts:NOW-38*60_000}),NOW+120_000);
+  for(const patch of [{cadence_last_success_ts:null},{cadence_last_success_ts:NOW+1},{cadence_last_success_ts:NOW-40*60_000},{cadence_lease_expires_ts:NOW+1},{not_after_ts:NOW+60_000},{local_last_accepted_ts:NOW+1}])assert.equal(scheduledRecoveryBoundary({...args,...patch}),null);
+  let clock=NOW;const stopped=await waitForScheduledRecoveryBoundary({...args,now:()=>clock,sleep:async ms=>{clock+=ms;},verify_code:async()=>({allowed:false,status:'CURRENT_MAIN_CODE_CHANGED'})});
+  assert.equal(stopped.allowed,false);assert.equal(stopped.status,'RECOVERY_WAIT_CODE_NOT_CURRENT');
+  clock=NOW;let guards=0;
+  const overslept=await waitForScheduledRecoveryBoundary({...args,now:()=>clock,sleep:async()=>{clock=NOW+5*60_000;},verify_code:async()=>{guards++;return{allowed:true};}});
+  assert.equal(overslept.allowed,false);assert.equal(guards,0);
+  clock=NOW;
+  const slowGuard=await waitForScheduledRecoveryBoundary({...args,now:()=>clock,sleep:async ms=>{clock+=ms;},verify_code:async()=>{clock=NOW+5*60_000;return{allowed:true};}});
+  assert.equal(slowGuard.allowed,false);assert.equal(slowGuard.status,'RECOVERY_WAIT_WINDOW_CLOSED');
+});
 
 test('a recent no-work schedule event cannot hide an overdue D1 full-cycle cadence',async()=>{
   const gap=await inspect(mockLists({scheduled:[run(NOW-10*60_000)]}),{cadence_last_success_ts:NOW-41*60_000});
