@@ -1,13 +1,14 @@
 // Repair only the exact current source overlay. Existing Hub prefix, bindings,
 // crons, database schema, source clocks, quotas and105 scope remain untouched.
 import fs from 'node:fs/promises';
+import {gunzipSync} from 'node:zlib';
 import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
-import {coordinateWeeklyRollout,rolloutDigest,singleActiveVersion,workerSettingsFingerprint,collectorVersionMetadata,readSingleWorkerModule,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
+import {coordinateWeeklyRollout,rolloutDigest,singleActiveVersion,workerSettingsFingerprint,runtimeSettingsSerializationHashes,collectorVersionMetadata,resumeOwnUnactivatedCollector,readSingleWorkerModule,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
 import {patchWorker} from '../cloudflare/public-collector/patch-worker.mjs';
 import {injectPrivatePriceRuntime} from '../cloudflare/public-collector/private-price-bundle.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',dir='audit-output/current-collector-repair',head=process.env.EXPECTED_MAIN,owner=process.env.BORROW_EXISTING_OWNER;
-await fs.mkdir(dir,{recursive:true});const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,proof,originalSettings,originalRuntime;const bytesByVersion=new Map();
+await fs.mkdir(dir,{recursive:true});const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,proof,originalSettings,originalRuntime;const bytesByVersion=new Map(),runtimeByVersion=new Map();
 const admit=kind=>{const used=kind==='github'?github_HTTP:cloudflare_HTTP,max=kind==='github'?P.max_control_HTTP:P.max_cloudflare_HTTP,s=budget.summary();if(used>=max||s.remaining<=P.manual_HTTP_reserved)throw Error('COLLECTOR_REPAIR_HTTP_BOUND');const lane=kind==='cloudflare'&&s.used.background<56?'background':'hot';if(!budget.reserve({logical_request_id:'COLLECTOR_CURRENT:'+kind+':'+used,lane,attempts:1}).allowed)throw Error('COLLECTOR_REPAIR_HTTP_BOUND');if(kind==='github')github_HTTP++;else cloudflare_HTTP++;};
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:(url,opt)=>{admit('github');return fetch(url,{...opt,redirect:'error'});}});
 async function cf(suffix,{method='GET',body,raw=false}={}){
@@ -24,8 +25,9 @@ async function snapshot(){
  if(JSON.stringify(crons)!==JSON.stringify(['*/5 * * * *','3-58/5 * * * *'].sort()))throw Error('COLLECTOR_EXACT_CRONS_REQUIRED');
  let bytes=bytesByVersion.get(active.version_id);
  if(!bytes){bytes=await readSingleWorkerModule(await cf('/content/v2',{raw:true}));const check=singleActiveVersion(await cf('/deployments'));if(check.deployment_id!==active.deployment_id||check.version_id!==active.version_id)throw Error('COLLECTOR_MOVED_DURING_READBACK');bytesByVersion.set(active.version_id,bytes);}
- if(!originalSettings){const v=await cf('/versions/'+active.version_id);if(v.id!==active.version_id)throw Error('COLLECTOR_ORIGINAL_VERSION_REQUIRED');originalSettings=settings;originalRuntime=v.resources?.script_runtime;}
- return{...active,module_sha256:rolloutDigest(bytes),settings_sha256:workerSettingsFingerprint(settings),crons_sha256:rolloutDigest(crons),crons,binding_names:settings.bindings.map(b=>b.name).sort()};
+ if(!runtimeByVersion.has(active.version_id)){const v=await cf('/versions/'+active.version_id);if(v.id!==active.version_id||!v.resources?.script_runtime)throw Error('COLLECTOR_ORIGINAL_VERSION_REQUIRED');runtimeByVersion.set(active.version_id,v.resources.script_runtime);}
+ const runtime=runtimeByVersion.get(active.version_id);if(!originalSettings){originalSettings=settings;originalRuntime=runtime;}
+ return{...active,module_sha256:rolloutDigest(bytes),settings_sha256:workerSettingsFingerprint(settings,runtime),crons_sha256:rolloutDigest(crons),crons,binding_names:settings.bindings.map(b=>b.name).sort(),settings_key_sha256:Object.fromEntries(Object.entries(settings).map(([k,v])=>[k,rolloutDigest(v)])),runtime_serialization_hashes:runtimeSettingsSerializationHashes(settings,runtime),effective_runtime:runtime};
 }
 const save=async p=>{proof=p;await fs.writeFile(dir+'/proof.json',JSON.stringify({...p,github_HTTP,cloudflare_HTTP,whole_HTTP:budget.summary(),manual_HTTP_reserved:24,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,secret_values_exported:false},null,2)+'\n');};
 try{
@@ -40,7 +42,15 @@ try{
   if(patched.status!=='UPDATED'||at<0||newAt!==at||original.slice(0,at)!==patched.source.slice(0,newAt))throw Error('EXACT_CURRENT_HUB_PREFIX_PATCH_REQUIRED');
   const expected=Buffer.from(patched.source),worker={name:P.collector,module_sha256:rolloutDigest(expected),required_before:before};
   const adapter={snapshot,requireHeadroom:n=>{if(P.max_cloudflare_HTTP-cloudflare_HTTP<n||budget.summary().remaining-24<n)throw Error('COLLECTOR_ROLLBACK_HTTP_HEADROOM_REQUIRED');},stage:async(w,before)=>{
-   const latest=await cf('/versions?per_page=1');const metadata=collectorVersionMetadata({settings:originalSettings,runtime:originalRuntime,head,active_version:before.version_id,latest_uploaded_version:latest.items?.[0]?.id});
+   const latest=await cf('/versions?per_page=1');
+   if(process.env.RESUME_COLLECTOR_PROOF){
+    const p=process.env.RESUME_COLLECTOR_PROOF;if(!/^checkpoints\/coordinated-rollout-20261015\/refused-collector369-38697736170\/proof\.json\.gz$/.test(p))throw Error('EXACT_RETAINED_COLLECTOR_PROOF_PATH_REQUIRED');
+    const compressed=await fs.readFile(p),members=JSON.parse(await fs.readFile(p.slice(0,p.lastIndexOf('/'))+'/members.json')),m=members.members.find(m=>m.saved_path===p),raw=gunzipSync(compressed,{maxOutputLength:100000});
+    if(members.run!==38697736170||members.artifact_sha256!=='919e081216acd0c5075f9c47b067890e64d3108cd7ccacb829b8b837bc7c51ac'||!m||rolloutDigest(compressed)!==m.gzip_sha256||rolloutDigest(raw)!==m.sha256)throw Error('ORIGINAL_COLLECTOR_NATIVE_RECEIPT_DIGEST_REQUIRED');
+    const reused=resumeOwnUnactivatedCollector({prior:JSON.parse(raw),current:before,expected_module_sha256:w.module_sha256,latest_uploaded_version:latest.items?.[0]?.id});
+    const v=await cf('/versions/'+reused.version_id);if(v.id!==reused.version_id||rolloutDigest(v.resources?.script_runtime)!==rolloutDigest(originalRuntime))throw Error('EXACT_STAGED_COLLECTOR_RUNTIME_REQUIRED');return reused;
+   }
+   const metadata=collectorVersionMetadata({settings:originalSettings,runtime:originalRuntime,head,active_version:before.version_id,latest_uploaded_version:latest.items?.[0]?.id});
    const form=new FormData();form.set('metadata',new Blob([JSON.stringify(metadata)],{type:'application/json'}));form.set('worker.js',new Blob([expected],{type:'application/javascript+module'}),'worker.js');const v=await cf('/versions?bindings_inherit=strict',{method:'POST',body:form});return{version_id:v.id,activated:false};
   },activate:(w,id)=>cf('/deployments',{method:'POST',body:{strategy:'percentage',versions:[{version_id:id,percentage:100}],annotations:{'workers/message':'Restore exact current source overlay '+head}}})};
   const plan={kind:'collector_patch',head,expected_main:head,connected:{status:'EXACT_MAIN_CURRENT_COLLECTOR_SOURCE_QUALIFIED',head,run:run.id,url:run.html_url},scope:{status:'EXACT_HUB_PREFIX_PRESERVED_CURRENT_TAIL_PATCH',hub_prefix_sha256:rolloutDigest(original.slice(0,at)),original_module_sha256:before.module_sha256,patched_module_sha256:worker.module_sha256,private_runtime_manifest:injected.manifest,approved_universe_changed:false},workers:[worker]};
