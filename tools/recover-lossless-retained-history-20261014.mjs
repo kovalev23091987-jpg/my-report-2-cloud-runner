@@ -10,6 +10,7 @@ const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoin
 await fs.mkdir(dir,{recursive:true});
 const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
 const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY||'')||null;
+const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
 const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,lease,admitted=false,reservation_id;
@@ -28,6 +29,7 @@ async function guard(){
 try{
  if(!/^\d+$/.test(String(out.run||''))||process.env.GITHUB_REPOSITORY!==repository)throw Error('EXACT_RETAINED_REPOSITORY_RUN_REQUIRED');
  if(!['full_evidence','canonical'].includes(kind))throw Error('EXACT_RETAINED_HISTORY_KIND_REQUIRED');
+ if(!['3','4'].includes(owner_slot_input)||(owner_emergency_slot===4&&!emergency))throw Error('EXACT_OWNER_EMERGENCY_SLOT_REQUIRED');
  if(owner_emergency_day!==null&&(!emergency||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||!process.env.BORROW_EXISTING_OWNER||kind!=='canonical'||!out.execute||process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION!=='true'))throw Error('EXACT_MANUAL_CANONICAL_EMERGENCY_REQUIRED');
  // Preparation may retain originals. Hot-body replacement needs its own
  // measured native qualification; a code merge never enables it implicitly.
@@ -47,7 +49,7 @@ try{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
  }});
- reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveLosslessRecoveryBudget(db,{reservation_id,owner_emergency_day});admitted=out.admission.allowed;if(!admitted)throw Error(out.admission.status);
+ reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveLosslessRecoveryBudget(db,{reservation_id,owner_emergency_day,owner_emergency_slot});admitted=out.admission.allowed;if(!admitted)throw Error(out.admission.status);
  if(kind==='canonical'){
   archive_db=new PrivateArchiveD1API({token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN,beforeRequest:()=>{
    const grant=whole.reserve({logical_request_id:'RETAINED_PRIVATE_D1:'+private_HTTP,lane:'background',attempts:1});if(grant.allowed)private_HTTP++;return grant;

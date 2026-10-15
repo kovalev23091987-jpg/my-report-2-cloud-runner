@@ -27,6 +27,11 @@ on:
         description: Owner-approved one-off third shared slot on 2026-10-15 only; empty keeps the two-slot limit
         type: string
         default: ''
+      owner_emergency_slot:
+        description: Exact separately approved one-off slot on UTC2026-10-15; default preserves third-only behavior
+        type: choice
+        options: ['3', '4']
+        default: '3'
 permissions:
   contents: write
 concurrency:
@@ -47,6 +52,7 @@ jobs:
       RETAINED_HISTORY_KIND: ${{ inputs.kind || 'full_evidence' }}
       REPORT2_PRIVATE_PREFETCH_QUALIFICATION: ${{ inputs.prefetch_private == true }}
       REPORT2_OWNER_STORAGE_EMERGENCY_DAY: ${{ inputs.owner_emergency_day || '' }}
+      REPORT2_OWNER_STORAGE_EMERGENCY_SLOT: ${{ inputs.owner_emergency_slot || '3' }}
       EXPECTED_MAIN: ${{ inputs.expected_main || github.sha }}
       BORROW_EXISTING_OWNER: ${{ inputs.expected_owner || '' }}
       LOSSLESS_EXECUTE: ${{ github.event_name == 'schedule' || inputs.execute == true }}

@@ -1,0 +1,44 @@
+{
+  "schema": "EXACT_FOURTH_SLOT_CLEANUP_PROPOSAL_V1",
+  "recorded_utc": "2026-10-15T13:44:11.023630+00:00",
+  "source_main": "dd1a6c0e0b20d85e72297ae5bee19f3c3ece48b6",
+  "reason": "Owner requests removing unneeded old DB data. Approved third attempt38740608955 stopped before mutations;385 fixes its schema path. Existing2 daily slots plus one approved third are all spent. A fourth requires a separate explicit exception.",
+  "owner_fourth_approval_received": false,
+  "ordinary_daily_runs_unchanged": 2,
+  "proposed_exception": {
+    "UTC_day": "2026-10-15",
+    "exact_slot": 4,
+    "requires_prior_count_exactly": 3,
+    "max_old_protected_safe_rows": 48,
+    "reserve_reads": 5000,
+    "reserve_writes": 400,
+    "next_full_plus_copy_protected": {
+      "reads": 59000,
+      "writes": 920
+    },
+    "whole_HTTP": 164,
+    "manual_HTTP_headroom": 24,
+    "fifth_allowed": false,
+    "previous_spend_reset_refunded_aliased": false,
+    "flags_enabled": false,
+    "source_HTTP": 0,
+    "same_existing_family": "RETAINED_HISTORY"
+  },
+  "known_family_sum_including_both_one_off_extra_slots": {
+    "reads": 3276708,
+    "writes": 59720,
+    "not_complete_day_guarantee": true,
+    "unclosed": "collector/hourly/control native costs and legacy model overlap"
+  },
+  "conditional_native_admission": "Shared atomic existing ledger; block if aggregate unknown or cap/headroom unavailable. Static estimate is not production admission.",
+  "copy_safety": "All385 native original/schema/reference/race/clock guards retained; no current signals/statistics/latest-per-coin removed.",
+  "local": {
+    "pass": 39,
+    "fail": 0,
+    "tap_sha256": "f31d9d7317a96a8f947aa7ca05d858351303c1006ea4238fea1f2af6f57e6a44",
+    "archive": "checkpoints/active105-storage-schema-20261015/one-off-slot4-local-39.tap.gz"
+  },
+  "candidate_merged": false,
+  "executed": false,
+  "project_complete": false
+}
