@@ -1,0 +1,312 @@
+{
+  "schema": "ACTIVE105_RELEASE375_377_CONTINUATION_V1",
+  "recorded_utc": "2026-10-15T10:03:11.132422+00:00",
+  "verified_main": "3eddb40a9c3ded1d7190d47b1bf03b7f5bd5f86f",
+  "merges": [
+    {
+      "pr": 375,
+      "merge": "5f45ffa550229b46a4583f6ddf4af3faf29ce816",
+      "cloud_run": 38713573205,
+      "pass": 48
+    },
+    {
+      "pr": 376,
+      "merge": "361a3173bbd6341af83859b0d47c1b3b106b4637",
+      "cloud_run": 38715475558,
+      "pass": 55,
+      "N10_cloud_run": 38715475551,
+      "N10_conclusion": "success",
+      "main_assembled_run": 38715726068,
+      "main_assembled_counts": {
+        "tests": 607,
+        "pass": 607,
+        "fail": 0
+      },
+      "artifact_id": 11961873875,
+      "artifact_sha256": "6a0f0f120059956b25ef92b3d2fa491a0d8565f5942947f20388e419d5261a87"
+    },
+    {
+      "pr": 377,
+      "merge": "3eddb40a9c3ded1d7190d47b1bf03b7f5bd5f86f",
+      "candidate_head": "438156be41fd908d39626821661d3f8a01373f12",
+      "cloud_run": 38716858124,
+      "pass": 58,
+      "fail": 0,
+      "log": "checkpoints/active105-reliability-20261015/report2-pr377-check.log.gz",
+      "log_original_sha256": "6be4b2dbbc902b907f1bd9bc0935a8a9f43a430c66d835795930b9acdc69b35c"
+    }
+  ],
+  "bootstrap": {
+    "run": 38713851421,
+    "actual_head": "5f45ffa550229b46a4583f6ddf4af3faf29ce816",
+    "status": "PRIMARY_CLOSED",
+    "source_code_guard": "CURRENT_MAIN_CODE_VERIFIED",
+    "source_HTTP": 0,
+    "first_slot_UTC": "2026-10-15T09:36:19.441Z",
+    "recovery_status": "RECOVERY_DISABLED_OR_BOOTSTRAP",
+    "new_timed_cadence_natural_acceptance": false
+  },
+  "latest_verified_full_report": {
+    "run": 38712899614,
+    "head": "9bcf2524e87fd1b62c3b0baede34797befa3502c",
+    "run_id": "1792056389245-1792056400622",
+    "generated_at": "2026-10-15T09:28:48.765Z",
+    "status": "CLOSED",
+    "scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0
+    },
+    "candidates": [
+      {
+        "contract": "NIL-USDT",
+        "publication_id": "PUB:08a001e2ffb186dd566cbb686d23488a56401259",
+        "snapshot_id": "S392:NIL-USDT:1792056514964",
+        "observed_ts": 1792056514964,
+        "state": "REJECTED",
+        "all9_pauses_excluded": true,
+        "LIQ": {
+          "status": "CLOSED",
+          "provider_zone_count": 2,
+          "external_zone_count": 2,
+          "calculated_scenario_count": 8,
+          "displayed_zone_count": 2,
+          "reason": null
+        },
+        "N15_original_priority": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 3,
+              "latest_observed_ts": 1792048379209,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.42857142857142855,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 3,
+              "latest_observed_ts": 1792048379209,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        }
+      },
+      {
+        "contract": "龙虾-USDT",
+        "publication_id": "PUB:7fb9041d376e14b3e06a65362f2305c8af891919",
+        "snapshot_id": "S392:龙虾-USDT:1792056461154",
+        "observed_ts": 1792056461154,
+        "state": "OBSERVE",
+        "all9_pauses_excluded": true,
+        "LIQ": {
+          "status": "NOT_CLOSED",
+          "provider_zone_count": 0,
+          "external_zone_count": 0,
+          "calculated_scenario_count": 0,
+          "displayed_zone_count": 0,
+          "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE"
+        },
+        "N15_original_priority": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "ordered_collectors": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "LARGE_TRADES",
+            "JOINT_FLOW",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "source_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 2,
+              "latest_observed_ts": 1792006927572,
+              "latest_class": "NOT_CLOSED",
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1792053738701,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.4444444444444444,
+              "initial_historical_preference": false
+            }
+          ],
+          "includes_cached_or_quota_skipped_collectors": true,
+          "transport_counts_from_original_shared_receipts": true,
+          "score_changed": false,
+          "predictive_weight_changed": false
+        }
+      }
+    ],
+    "same_run_SENT": false,
+    "delivery_proof_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "proof_folder": "checkpoints/active105-reliability-20261015/natural-38712899614",
+    "new375_cadence_accepted_by_this_run": false,
+    "NIL_actual_use": {
+      "native_provider": "Hyperliquid official",
+      "native_actual_HTTP": 2,
+      "native_price_count": 2,
+      "native_source_ts": 1792056505296,
+      "native_age_at_consumer_ms": 9668,
+      "bounded_account_sample": true,
+      "external_model_levels": 8,
+      "HTX_spot_futures_skew_ms": 270,
+      "spot_price_context_only": true,
+      "spot_independent_liquidation_source_count_added": 0,
+      "state": "REJECTED",
+      "entry_eligible": false
+    }
+  },
+  "no_work_defect": {
+    "run": 38715699578,
+    "head": "af2989a411c43fd4875b4440edba035e065b1caf",
+    "valid_status": "NO_WORK_NOT_DUE_NO_FRESH_TRIGGER",
+    "last_success_ts": 1792056389245,
+    "next_due_ts": 1792058789245,
+    "archive_status_before": "PRIVATE_ARCHIVE_COPY_NOT_CLOSED",
+    "cause": "The archive step tried to read absent full report even when the exact same run had a verified no-work receipt. It failed before network or D1.",
+    "candidate_fix": "Validate existing exact head/run/no-work facts, record NO_CANONICAL_COPY_EXACT_NO_WORK with zero D1, preserve failures for missing/foreign/malformed outcomes and full-report candidate selection.",
+    "local_integration_tests": 3,
+    "cloud_acceptance": "58_PASSED_0_FAILED_PR377_MERGED_NATIVE_NO_WORK_AFTER377_NOT_YET_OBSERVED"
+  },
+  "retention_capacity_preflight": {
+    "basis": "checkpoints/PROTECTED_CANONICAL_COMPACTION_CANDIDATE_20261015.json",
+    "existing_shared_passes_day": 2,
+    "max_rows_each_kind_per_pass": 48,
+    "optimistic_all_kind_rows_day": 96,
+    "maximum_new_candidates_day": 86,
+    "maximum_two_kind_rows_day": 172,
+    "max_demand_less_optimistic_capacity": 76,
+    "canonical_cold_controlled_rows_per_pass": 16,
+    "canonical_already_private_controlled_rows_per_pass": 48,
+    "not_actual_native_throughput": true,
+    "scope": "Capacity ceiling comparison only. Protected rows and archive size/transport/native D1 may lower eligible throughput; no physical storage savings claim.",
+    "next_design": "Batch exact original archive reads or immutable full-evidence bundles to reduce per-row HTTP within existing envelopes; preserve exact hash, clocks, current references and all originals. Native selection/cost qualification after UTC16 still required.",
+    "automatic_flags": false,
+    "UTC15_retention_calls_added": 0
+  },
+  "model_advisory_rule_saved_in_AGENTS": true,
+  "additional_agent_provider_HTTP": 0,
+  "additional_agent_D1": 0,
+  "forced_MAIN": 0,
+  "test_Telegram": 0,
+  "project_complete": false,
+  "all_blocks_complete": false,
+  "remaining": [
+    "Observe actual new in-slot forty-minute recovery; bootstrap and old natural report alone do not accept it",
+    "LIQ73/103 historical numerical coverage,30 gaps; no full105 fresh-deep claim",
+    "Native free monthly entitlements and worst cold/failure/fallback",
+    "Protected canonical current refs incllegacy24/native costs after legitimate UTC16 admission; shared throughput/private rolling/backlog",
+    "Final Telegram decision-entry score/form/MESSAGE_TOO_LONG after blocks and owner final specification"
+  ],
+  "prior_handoff": "checkpoints/ACTIVE105_SOURCE_PLAN_AFTER_OWNER_106_DEFERRAL_20261015.json",
+  "last_exact_same_run_SENT_proof": "checkpoints/ACTIVE105_NATURAL_RLC_SENT210_REVIEW_20261015.json",
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792054760000",
+    "released": true,
+    "expires_ts": 1792060160000,
+    "released_by_status_package_at_utc": "2026-10-15T10:05:43.886989+00:00"
+  },
+  "next_action": "Continue all-active105 source efficiency. PR375 cadence and376 authority merged/common607;377 exact no-work private copy merged/cloud58. New backup code has exact bootstrap only: observe its naturally due10:06:29UTC recovery and exact final run before claiming timed-cadence acceptance. Saved09:26 full NIL/龙虾105 scan0errors0stale, strict9pauses; NIL2 actual HL position prices (2HTTP,9.668s old),8 external model levels,HTX spot/futures270ms, NIL rejected; 龙虾 no future levels, OBSERVE, no exact same-run SENT. Previous RLC OBSERVE SENT210 exact proof retained. No source/D1 calls for this audit. Continue LIQ30 proof gaps/free monthly cold-failure coverage, then protected canonical native current-reference/cost qualification after UTC16 legitimate admission and combined throughput/private rolling; UTC15 two slots spent, flagsfalse.105/122 retained,106MAGIC deferred. Final Telegram entry-score/form/MESSAGE_TOO_LONG only after block work/owner exact specification. Model advisory saved in AGENTS. This package releases only its own bounded lease; read fresh main/phase/fence and reacquire an own limited CAS lease before continuing.",
+  "status_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "prior_root_values_preserved_byte_exact": 375,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts"
+      ],
+      "before_sha256": "e03705816136d80d364c922b443c4fc09dd940272f5a128540f8cd26ade7dfb7",
+      "after_sha256": "aaffbf4efb67054813959fb14bee87b337013218f122d10ef6bdf5cd8fdc3246"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "prior_root_values_preserved_byte_exact": 152,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts"
+      ],
+      "before_sha256": "07004b6702b0248ef8ce4e8f53169f7de2796efcad462397093b71c671c5a076",
+      "after_sha256": "93404c37000282cbe2ed00c1f70b4a32ac730e78719fc58779f7ab24e6a81187"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "prior_root_values_preserved_byte_exact": 317,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts"
+      ],
+      "before_sha256": "73a3269764b3fb866b2d811daafd364478f1a76095ea36086da8c0c270e5f846",
+      "after_sha256": "c38bed6b7305cd60ce78642102e11b19e438079a956310233bb09edf68cdfa25"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "prior_root_values_preserved_byte_exact": 350,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts",
+        "lease",
+        "latest_own_bounded_continuation_lease",
+        "latest_active105_reliability_own_release"
+      ],
+      "before_sha256": "f637c6c296c7240787765c98d118c7003ffad386ca3ba6eae8c35a283f5c0f1a",
+      "after_sha256": "4d1973a9e435eb15ae2dea145a6c079206ca5a204e250bf1733c9b36ed57842c"
+    }
+  ]
+}
