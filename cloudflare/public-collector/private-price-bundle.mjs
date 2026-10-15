@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 const root=new URL('../../',import.meta.url);
 const modules=[
+ ['collectorCostModule','cloudflare/public-collector/native-cost-observer.mjs',['observeCollectorD1'],''],
+ ['collectorPriorModule','cloudflare/public-collector/prior-snapshot-read.mjs',['readCollectorPriorRows'],''],
  ['historyModule','current-generation/files/src/private-canonical-history.mjs',['createPrivateCanonicalRestorer'],''],
  ['nativeModule','cloudflare/free-history/native-measured-d1.mjs',['nativeMeasuredD1'],''],
  ['budgetModule','runner/d1-preaction-budget-guard.mjs',['evaluateWithinRunReservation','finalizeRunUsage'],''],
@@ -19,7 +21,7 @@ export function buildPrivatePriceRuntime(){
  }
  // Isolated scopes preserve the exact shared decoder, counters and guards.
  // The existing Hub prefix and all provider/Telegram paths remain byte-exact.
- return{source:`var __report2InjectedPrivatePriceRuntime=(()=>{\n${parts.join('\n')}\nreturn priceModule;})();\n`,manifest};
+ return{source:`var __report2InjectedPrivatePriceRuntime=(()=>{\n${parts.join('\n')}\nreturn {...priceModule,observeCollectorD1:collectorCostModule.observeCollectorD1,readCollectorPriorRows:collectorPriorModule.readCollectorPriorRows};})();\n`,manifest};
 }
 export function injectPrivatePriceRuntime(tail){
  const marker=/^(var __REPORT2_PUBLIC_COLLECTOR_VERSION = "[^"\n]+";\n)/;

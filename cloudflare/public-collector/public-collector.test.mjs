@@ -31,7 +31,8 @@ class FakeD1{
     throw new Error(`UNEXPECTED_FIRST:${sql}`);
   }
   async all(sql,args){
-    if(sql.includes('FROM report2_market_snapshot_batch_v1')&&sql.includes('MAX(bucket)'))return{results:[]};
+    if(sql.includes('COUNT(*) AS slots')||sql.includes('FROM report2_public_collector_usage_v1')){const row=await this.first(sql,args);return{results:row?[row]:[],meta:{rows_read:1,rows_written:0}};}
+    if(sql.includes('FROM report2_market_snapshot_batch_v1')&&(sql.includes('MAX(bucket)')||sql.includes('ORDER BY bucket DESC LIMIT 1')))return{results:[]};
     if(sql.includes('SELECT shard,payload_hash,status'))return{results:this.snapshots.map(row=>({shard:row.shard,payload_hash:row.payload_hash,status:row.status}))};
     throw new Error(`UNEXPECTED_ALL:${sql}`);
   }
