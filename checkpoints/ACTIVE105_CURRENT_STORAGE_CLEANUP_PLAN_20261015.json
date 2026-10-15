@@ -1,0 +1,75 @@
+{
+  "schema": "OWNER_CURRENT_NEEDED_DATA_CLEANUP_PLAN_V1",
+  "recorded_utc": "2026-10-15T13:50:12.199717+00:00",
+  "owner_instruction": "Keep what current report and needed history/statistics use; remove unnecessary old data; new chats must read latest main instructions/status/resume.",
+  "scope": [
+    "Primary D1 unused old payloads and expired technical data",
+    "Current working pointers and obsolete active metadata"
+  ],
+  "baseline_sample": {
+    "proof": "checkpoints/STORAGE_BOUNDED_PAYLOAD_SAMPLE_20261013.json",
+    "sample_utc": "2026-10-13T16:46:12Z",
+    "canonical_rows": 128,
+    "sample_canonical_payload_bytes": 56595456,
+    "sample_full_evidence_rows": 103,
+    "sample_full_evidence_payload_bytes": 16297360,
+    "sample_candidate_global_cache_bytes": 98661,
+    "not_current_total_or_deletable_bytes": true
+  },
+  "priority": [
+    {
+      "target": "Old large REJECTED canonical bodies",
+      "require": [
+        "older48h",
+        "newer same-coin original stays hot",
+        "no dispatch/recheck/lifecycle/command/publication/outcome/calibration reference",
+        "all scalar/clock values unchanged",
+        "exact durable original readback before replacement",
+        "native/HTTP/day admission",
+        "conditional body-only replacement with race guards"
+      ],
+      "policy": "runner/protected-canonical-compaction.mjs",
+      "current_state": "385 merged, actual native qualification not yet passed"
+    },
+    {
+      "target": "Old full-evidence bodies already copied into exact durable archive",
+      "require": [
+        "same reference/latest protections",
+        "immutable raw SHA/original clocks",
+        "bounded shared retention slot"
+      ],
+      "policy": "runner/lossless-full-evidence-recovery.mjs",
+      "current_state": "prior native run found only3 eligible old rows; do not assume a large backlog"
+    },
+    {
+      "target": "Expired transient cache/temporary technical rows",
+      "require": [
+        "identify exact table and TTL reader semantics",
+        "no last-useful-source/history/priority/calibration/statistical dependency",
+        "prove cost and useful bytes before deletion"
+      ],
+      "current_state": "deletion list not established; historical sampled cache total under0.1MB, no substantial capacity claim"
+    }
+  ],
+  "protected": [
+    "current signals and recheck/dispatch/outcome/calibration",
+    "needed spot/futures source history and statistics",
+    "latest per coin and all original source clocks",
+    "quota ledgers/reservations including failed runs",
+    "working latest pointers and single originals not durably copied"
+  ],
+  "current_UTC15_shared_retention_slots_used": 3,
+  "extra_current_day_deletion_slot_authorized": false,
+  "ordinary_retention_limit": 2,
+  "automatic_flags_enabled": false,
+  "physical_bytes_freed_this_package": 0,
+  "native_originals_modified_this_package": 0,
+  "new_chat_entrypoints": [
+    "AGENTS.md",
+    "checkpoints/CURRENT_PROJECT_STATUS.json",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json"
+  ],
+  "old_versions_only_historical": true,
+  "needed_data_deleted": false,
+  "remaining": "Select exact safe native rows and verify capacity after an admitted authorized cleanup; do not treat GitHub pointer tidying as D1 capacity recovery."
+}

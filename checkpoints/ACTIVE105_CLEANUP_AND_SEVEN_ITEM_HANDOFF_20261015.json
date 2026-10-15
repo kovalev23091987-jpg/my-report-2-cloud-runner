@@ -1,0 +1,315 @@
+{
+  "schema": "ACTIVE105_STORAGE385_FIXED_ACCEPTANCE_HANDOFF_V1",
+  "recorded_utc": "2026-10-15T13:50:12.199717+00:00",
+  "source_main_before_metadata_cleanup": "dd1a6c0e0b20d85e72297ae5bee19f3c3ece48b6",
+  "status": "PR384385_MERGED_THIRD_TRANSFER_REFUSED_CAPACITY_UNRECOVERED",
+  "PR384": {
+    "head": "f9b59d635c2dde6a9fe3399e646d007a982f4ed7",
+    "merged_main": "ed599f13faadce3da14da7a0503463434ee2889a",
+    "owner_approved": true,
+    "candidate_tests": 638,
+    "main_check": 38740531335
+  },
+  "PR385": {
+    "head": "4d00417a510651d2f11d0d4ed2c0f74b691b190d",
+    "merged_main": "dd1a6c0e0b20d85e72297ae5bee19f3c3ece48b6",
+    "owner_approved": true,
+    "cloud_run": 38742287632,
+    "cloud_pass": 644,
+    "cloud_fail": 0,
+    "main_check": 38742947565,
+    "main_check_status": "success",
+    "proof": "checkpoints/ACTIVE105_STORAGE_SCHEMA_REPAIR_PREPARATION_20261015.json"
+  },
+  "actual_third_attempt": {
+    "schema": "LOSSLESS_RETAINED_HISTORY_CONTROL_V1",
+    "kind": "canonical",
+    "head": "ed599f13faadce3da14da7a0503463434ee2889a",
+    "run": "38740608955",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "execute": true,
+    "canonical_rows_modified": 0,
+    "source_reservations_reset": false,
+    "control": {
+      "expected_main": "ed599f13faadce3da14da7a0503463434ee2889a",
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792069753410",
+      "borrowed": true,
+      "lease_expires_ts": 1792075153410
+    },
+    "admission": {
+      "allowed": true,
+      "status": "ATOMIC_SHARED_DAY_RESERVED",
+      "reservation_id": "RETAINED_HISTORY:38740608955:1792069906169",
+      "reservation": {
+        "rows_read": 5000,
+        "rows_written": 400
+      },
+      "owner_emergency_day": "2026-10-15",
+      "protected_next_full": {
+        "rows_read": 59000,
+        "rows_written": 920
+      }
+    },
+    "status": "RETAINED_RECOVERY_NOT_ACTIVATED",
+    "reason": "CANONICAL_PROTECTED_REFERENCE_SCHEMA_REQUIRED",
+    "error_fingerprint": "81f54714afa3876e7018ddb1880744ecca13ebadca6da09ed34b560fe90412dc",
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "RETAINED_HISTORY:38740608955:1792069906169",
+      "source_run_id": "38740608955",
+      "measured_rows_read": 575,
+      "measured_rows_written_accounted": 4,
+      "measured_requests_accounted": 5,
+      "unknown_ops": 0
+    },
+    "D1": {
+      "requests": 5,
+      "rows_read": 576,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "private_D1": {
+      "requests": 1,
+      "rows_read": 0,
+      "rows_written": 0,
+      "unknown_ops": 0
+    },
+    "whole_HTTP": {
+      "used": {
+        "hot": 13,
+        "background": 2,
+        "statistics": 0
+      },
+      "total": 15,
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "remaining": 149
+    },
+    "github_control_HTTP": 9,
+    "D1_bridge_HTTP": 4,
+    "private_D1_HTTP": 2,
+    "completed_ts": 1792069907962,
+    "history_discarded": false,
+    "project_complete": false
+  },
+  "latest_verified_full": {
+    "run": 38737950586,
+    "head": "d520a568afbf0d1d99b75bac912dda83d1ab0a0c",
+    "run_id": "1792068753137-1792068764538",
+    "status": "NOT_CLOSED",
+    "pipeline_health": {
+      "status": "DEGRADED_PIPELINE",
+      "reason": "CANONICAL_CANDIDATE_SET_INCOMPLETE",
+      "original_status": "HEALTHY_NO_IDEA",
+      "original_reason": null
+    },
+    "canonical_persistence_audit": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "PARTIAL",
+      "run_id": "1792068753137-1792068764538",
+      "expected_contracts": [
+        "SUI-USDT",
+        "龙虾-USDT"
+      ],
+      "present_contracts": [
+        "龙虾-USDT"
+      ],
+      "missing_contracts": [
+        "SUI-USDT"
+      ],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 1,
+      "missing_is_technical_not_no_market_idea": true
+    },
+    "post_analysis_control_failure": {
+      "schema": "POST_ANALYSIS_CONTROL_FAILURE_V1",
+      "head": "d520a568afbf0d1d99b75bac912dda83d1ab0a0c",
+      "run_id": "1792068753137-1792068764538",
+      "failed_ts": 1792068859647,
+      "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+      "error_fingerprint": "72476688c122b5b9337df20c804bdfbb66bc310c52d59c3df59b6a9a23be4e9f",
+      "raw_error_exported": false,
+      "d1_attempt_usage": {
+        "attempted_statements": 496,
+        "measured_rows_read_subtotal": 33002,
+        "measured_rows_written_subtotal": 399,
+        "unknown_operations": 1,
+        "row_totals_closed": false,
+        "total_rows_read": null,
+        "total_rows_written": null
+      },
+      "unmeasured_operation_receipts": [
+        {
+          "operation": "run",
+          "target": "canonical_publication_shadow",
+          "sql_kind": "INSERT",
+          "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+          "http_status": 500,
+          "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+          "observed_ts": 1792068834157,
+          "params_or_SQL_text_exported": false
+        }
+      ],
+      "original_candidates_and_clocks_preserved": true,
+      "original_delivery_proof_not_rewritten": true,
+      "new_entry_authorized": false,
+      "sourceHTTP_added": 0,
+      "D1_added": 0,
+      "Telegram_added": 0
+    },
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "same_run_SENT": false
+  },
+  "capacity_recovered": false,
+  "history_or_statistics_deleted": false,
+  "ordinary_retention_limit": 2,
+  "UTC15_retention_used": 3,
+  "no_more_UTC15_slot_authorized": true,
+  "all_blocks_complete": false,
+  "whole_D1_day_closed": false,
+  "fixed_checklist": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+  "cleanup_plan": "checkpoints/ACTIVE105_CURRENT_STORAGE_CLEANUP_PLAN_20261015.json",
+  "latest_collector_deployment": {
+    "run": 38736082579,
+    "version": "709429a6-877e-4e7f-89cb-de1ed389cb3d",
+    "native_regular_cost_unverified": true
+  },
+  "retained_backup_first_slot": {
+    "run": 38735860097,
+    "bucket": 1792067700000,
+    "status": "PRIMARY_CLOSED",
+    "source_HTTP": 0,
+    "native_usage": {
+      "requests": 6,
+      "rows_read": 3,
+      "rows_written": 1,
+      "unknown_ops": 0
+    },
+    "not_primary_collector_cost": true
+  },
+  "observability_readback": {
+    "API_Work_repeated_auth_not_requested": true,
+    "Observability_keys_available": true,
+    "service_values_12_37_to13_29": [],
+    "native_primary_cost_not_retrieved": true
+  },
+  "source_coverage_proof": "checkpoints/ACTIVE105_TYPED_SOURCE_COVERAGE_FINAL_20261015.json.gz",
+  "LIQ_historical_numeric_union": 73,
+  "LIQ_target_ex_BTC_ETH": 103,
+  "LIQ_historical_gaps": 30,
+  "Vike_added_accepted_coverage": 0,
+  "last_confirmed_same_run_SENT": {
+    "publication_id": "PUB:27bfed4bb10a9bbfe568e24eb69fde2a034cab9b",
+    "contract": "NIL-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:NIL-USDT:1792048301499:G10",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792058817419-1792058826944",
+    "snapshot_id": "S392:NIL-USDT:1792058919661",
+    "observed_ts": 1792058919661,
+    "analytical_fingerprint": "9bc76aa4ce12979b0d9e414b816e029017333742acc96cf4e8ea3b7a2c307dc5",
+    "presentation_hash": "b254f782d3f0bc243c9d64aeb82f450ef15e35e1d0fd08e00503452370fe841e",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "212",
+    "dispatch_finalized": true,
+    "task_at_delivery": {
+      "state": "PENDING",
+      "run_id": "1792058817419-1792058826944",
+      "snapshot_id": "S392:NIL-USDT:1792058919661",
+      "due_ts": 1792059219661,
+      "expires_ts": 1792060719661
+    },
+    "task_at_delivery_verified": true,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED",
+    "cloud_run": 38717894420,
+    "head": "3eddb40a9c3ded1d7190d47b1bf03b7f5bd5f86f",
+    "proof": "checkpoints/active105-reliability-20261015/natural-38717894420/same-run-delivery-proof.json.gz"
+  },
+  "next_action": "Owner-approved PR384 and PR385 merged; candidate385 cloud38742287632 passed644, main385 cloud38742947565 success. UTC15 approved third RETAINED_HISTORY38740608955 was admitted/finalized576R4W, stopped before body mutation with CANONICAL_PROTECTED_REFERENCE_SCHEMA_REQUIRED; zero rows replaced and no capacity recovered. All3 UTC15 slots remain spent; do not retry/reset/refund/alias or enable automatic flags. Next ordinary slot UTC16 (03:00MSK) is available only subject to fresh own lease, aggregate admission and authorized gated native canonical qualification; flags remain false, no automatic transfer promised. Current cleanup priority: exact schema receipt, eligible old rejected bodies with durable archive and atomic reference/race guards, expired redundant technical records only after dependency census. Keep needed history/statistics/source clocks/current signals/latest-per-coin and exact originals; source/DB limits unchanged. Latest verified natural38737950586 scanned105/105 but SUI canonical missing, rootNOT_CLOSED/DEGRADED, INSERT native responseHTTP500 unknown1; no same-runSENT. Preserve historical NIL SENT212 separately. Continue fixed7 acceptance checklist, whole-D1 native collector/hourly/control reconciliation and proven source gaps; no expansion into new blocks,106deferred,9pauses stay strict. Main current instructions/status/resume are authoritative; prior active metadata archived byte-exact, old root fields historical only. Final Telegram form/decision score follows blocks and owner detailed form. Project unfinished.",
+  "project_complete": false,
+  "PR386_current_state": {
+    "PR": 386,
+    "head": "1467fa00a914504082acb0960378f5769cf3f576",
+    "cloud_run": 38745262848,
+    "pass": 646,
+    "fail": 0,
+    "artifact": 11977628234,
+    "artifact_sha256": "dd8dbf62d8f0f2edb7827b1c61e06c2cb8106be1e81a04bba30e559def62ac85",
+    "approval_received": false,
+    "merged": false,
+    "executed": false,
+    "source_main": "dd1a6c0e0b20d85e72297ae5bee19f3c3ece48b6",
+    "exact_slot": 4,
+    "pending_reason": "AGENTS2 ordinary slots and approved third spent; separate owner approval pending"
+  },
+  "obsolete_own_branches_removed": {
+    "removed": [
+      {
+        "PR": 384,
+        "branch": "feat/bounded-storage-emergency-proposal-20261015",
+        "head": "f9b59d635c2dde6a9fe3399e646d007a982f4ed7",
+        "merged_PR_and_main_and_proofs_preserved": true
+      },
+      {
+        "PR": 385,
+        "branch": "fix/canonical-reference-schema-20261015",
+        "head": "4d00417a510651d2f11d0d4ed2c0f74b691b190d",
+        "merged_PR_and_main_and_proofs_preserved": true
+      }
+    ],
+    "D1_space_freed_claimed": false
+  },
+  "working_metadata_cleanup_is_not_D1_capacity_recovery": true,
+  "working_state_cleanup": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "other_root_values_preserved_byte_exact": 373,
+      "prior_active_fields": 270,
+      "current_active_fields": 65,
+      "archived_prior_active": "checkpoints/archive/working-state-20261015/active-state-4791f24c9b1c03e3628e.json.gz",
+      "raw_active_sha256": "4791f24c9b1c03e3628e72a699e7261f96d320ad42fa3db0cb85a107eaf9cbc8"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "other_root_values_preserved_byte_exact": 150,
+      "prior_active_fields": 270,
+      "current_active_fields": 65,
+      "archived_prior_active": "checkpoints/archive/working-state-20261015/active-state-4791f24c9b1c03e3628e.json.gz",
+      "raw_active_sha256": "4791f24c9b1c03e3628e72a699e7261f96d320ad42fa3db0cb85a107eaf9cbc8"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "other_root_values_preserved_byte_exact": 315,
+      "prior_active_fields": 270,
+      "current_active_fields": 65,
+      "archived_prior_active": "checkpoints/archive/working-state-20261015/active-state-4791f24c9b1c03e3628e.json.gz",
+      "raw_active_sha256": "4791f24c9b1c03e3628e72a699e7261f96d320ad42fa3db0cb85a107eaf9cbc8"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "other_root_values_preserved_byte_exact": 348,
+      "prior_active_fields": 277,
+      "current_active_fields": 65,
+      "archived_prior_active": "checkpoints/archive/working-state-20261015/active-state-8ba492b4c5c7e358b504.json.gz",
+      "raw_active_sha256": "8ba492b4c5c7e358b504f6a29bb656a35d8f2e81b25d361c2cfe835da3205cba"
+    }
+  ],
+  "only_current_three_entrypoints_authoritative": true,
+  "own_lease_released": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792069753410",
+    "released": true,
+    "utc": "2026-10-15T13:50:12.199717+00:00"
+  }
+}
