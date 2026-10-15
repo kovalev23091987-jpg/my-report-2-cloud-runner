@@ -1,0 +1,412 @@
+TAP version 13
+# Subtest: actual original QNT forecast is byte-identical through hot and exact private source consumers
+ok 1 - actual original QNT forecast is byte-identical through hot and exact private source consumers
+  ---
+  duration_ms: 22.023875
+  type: 'test'
+  ...
+# Subtest: unavailable private revision keeps cursor retryable; next hour restores rather than permanently skipping it
+ok 2 - unavailable private revision keeps cursor retryable; next hour restores rather than permanently skipping it
+  ---
+  duration_ms: 4.88425
+  type: 'test'
+  ...
+# Subtest: corrupt private bytes never become a skipped forecast, price or refreshed original clock
+ok 3 - corrupt private bytes never become a skipped forecast, price or refreshed original clock
+  ---
+  duration_ms: 4.248625
+  type: 'test'
+  ...
+# Subtest: hourly reservation is atomic, keeps both daily caps, and refuses duplicate or unmeasured usage
+ok 4 - hourly reservation is atomic, keeps both daily caps, and refuses duplicate or unmeasured usage
+  ---
+  duration_ms: 1.709792
+  type: 'test'
+  ...
+# Subtest: 8 historical exact reads are bounded independently of the default 4-row full-report reader
+ok 5 - 8 historical exact reads are bounded independently of the default 4-row full-report reader
+  ---
+  duration_ms: 35.219125
+  type: 'test'
+  ...
+# Subtest: missing native billing or a lost reply remains unknown and is never inferred as zero
+ok 6 - missing native billing or a lost reply remains unknown and is never inferred as zero
+  ---
+  duration_ms: 0.257541
+  type: 'test'
+  ...
+# Subtest: exact hot and archived revisions produce identical waiting, reached, cancellation and expiry receipts
+ok 7 - exact hot and archived revisions produce identical waiting, reached, cancellation and expiry receipts
+  ---
+  duration_ms: 34.248167
+  type: 'test'
+  ...
+# Subtest: missing revision remains pending and retries next slot with its original snapshot, clocks and expiry
+ok 8 - missing revision remains pending and retries next slot with its original snapshot, clocks and expiry
+  ---
+  duration_ms: 4.651208
+  type: 'test'
+  ...
+# Subtest: foreign or corrupt private revision cannot produce a price/cancellation acknowledgement
+ok 9 - foreign or corrupt private revision cannot produce a price/cancellation acknowledgement
+  ---
+  duration_ms: 4.509541
+  type: 'test'
+  ...
+# Subtest: shared atomic caps refuse a duplicate primary/backup slot and retain failed attempts
+ok 10 - shared atomic caps refuse a duplicate primary/backup slot and retain failed attempts
+  ---
+  duration_ms: 7.872666
+  type: 'test'
+  ...
+# Subtest: lost or unmeasured archive reply is recorded as unknown and never advances the pending task
+ok 11 - lost or unmeasured archive reply is recorded as unknown and never advances the pending task
+  ---
+  duration_ms: 4.64975
+  type: 'test'
+  ...
+# Subtest: deployed no-bundle Worker and backup execute the same shared decoder and guard bytes
+ok 12 - deployed no-bundle Worker and backup execute the same shared decoder and guard bytes
+  ---
+  duration_ms: 8.485791
+  type: 'test'
+  ...
+# Subtest: full primary and backup collectors consume an archived SENT trigger with the same four HTX requests
+ok 13 - full primary and backup collectors consume an archived SENT trigger with the same four HTX requests
+  ---
+  duration_ms: 21.316459
+  type: 'test'
+  ...
+# Subtest: both disjoint missing batches share one day family and preserve all original reservations
+ok 14 - both disjoint missing batches share one day family and preserve all original reservations
+  ---
+  duration_ms: 3.457
+  type: 'test'
+  ...
+# Subtest: the already completed legacy initial4 counts and cannot be repeated under a new label
+ok 15 - the already completed legacy initial4 counts and cannot be repeated under a new label
+  ---
+  duration_ms: 1.815417
+  type: 'test'
+  ...
+# Subtest: remaining7 requires the original batch and budget exhaustion or unknown usage forbids admission
+ok 16 - remaining7 requires the original batch and budget exhaustion or unknown usage forbids admission
+  ---
+  duration_ms: 1.014
+  type: 'test'
+  ...
+# Subtest: the distinct missing TRON tokens retain native reservations, have one nonrepeatable group and keep provider caps
+ok 17 - the distinct missing TRON tokens retain native reservations, have one nonrepeatable group and keep provider caps
+  ---
+  duration_ms: 0.305333
+  type: 'test'
+  ...
+# Subtest: a later main commit preserves an original producer revision only after exact ancestry proof; forks and unknown revisions fail closed
+ok 18 - a later main commit preserves an original producer revision only after exact ancestry proof; forks and unknown revisions fail closed
+  ---
+  duration_ms: 0.4775
+  type: 'test'
+  ...
+# Subtest: a saved report must bind every publication before any private copy; no stale, duplicate or over-two adoption
+ok 19 - a saved report must bind every publication before any private copy; no stale, duplicate or over-two adoption
+  ---
+  duration_ms: 0.350666
+  type: 'test'
+  ...
+# Subtest: atomic source-account reservation cannot race another caller, repeat a run or spend past the daily archive pool
+ok 20 - atomic source-account reservation cannot race another caller, repeat a run or spend past the daily archive pool
+  ---
+  duration_ms: 2.70725
+  type: 'test'
+  ...
+# Subtest: unmeasured completed D1 use or exhausted write reserve blocks copy reservation without resetting anything
+ok 21 - unmeasured completed D1 use or exhausted write reserve blocks copy reservation without resetting anything
+  ---
+  duration_ms: 0.899334
+  type: 'test'
+  ...
+# Subtest: two original rows and a later presentation revision are durably readable; source rows and clocks stay unchanged
+ok 22 - two original rows and a later presentation revision are durably readable; source rows and clocks stay unchanged
+  ---
+  duration_ms: 13.049
+  type: 'test'
+  ...
+# Subtest: changed source binding and storage limit do not replace the original or fake a successful archive
+ok 23 - changed source binding and storage limit do not replace the original or fake a successful archive
+  ---
+  duration_ms: 0.866959
+  type: 'test'
+  ...
+# Subtest: the actual fourth-run6778 snapshot plus finalization read charges6779 without rewriting its old ledger row
+ok 24 - the actual fourth-run6778 snapshot plus finalization read charges6779 without rewriting its old ledger row
+  ---
+  duration_ms: 2.775583
+  type: 'test'
+  ...
+# Subtest: finalization raises only an exceeded reserve, never refunds unused allowance, and refuses duplicate finalization
+ok 25 - finalization raises only an exceeded reserve, never refunds unused allowance, and refuses duplicate finalization
+  ---
+  duration_ms: 1.019917
+  type: 'test'
+  ...
+# Subtest: old per-row overrun debt blocks each active archive/price/forecast admission even while other rows have unused reserves
+ok 26 - old per-row overrun debt blocks each active archive/price/forecast admission even while other rows have unused reserves
+  ---
+  duration_ms: 0.949875
+  type: 'test'
+  ...
+# Subtest: unknown costs remain blocked and reserved in-flight rows cannot be discounted by measured zeros
+ok 27 - unknown costs remain blocked and reserved in-flight rows cannot be discounted by measured zeros
+  ---
+  duration_ms: 0.1805
+  type: 'test'
+  ...
+# Subtest: durable preparation uses original clocks, keeps hot/latest rare-coin and every canonical row, and never modifies primary rows
+ok 28 - durable preparation uses original clocks, keeps hot/latest rare-coin and every canonical row, and never modifies primary rows
+  ---
+  duration_ms: 13.423958
+  type: 'test'
+  ...
+# Subtest: conditional relocation restores exact originals through the current reader and leaves rare-coin and canonical references hot
+ok 29 - conditional relocation restores exact originals through the current reader and leaves rare-coin and canonical references hot
+  ---
+  duration_ms: 4.953
+  type: 'test'
+  ...
+# Subtest: a corrupt/missing durable original or whole HTTP denial leaves every primary row untouched
+ok 30 - a corrupt/missing durable original or whole HTTP denial leaves every primary row untouched
+  ---
+  duration_ms: 2.712667
+  type: 'test'
+  ...
+# Subtest: concurrent changes are not erased and a partial batch retains its exact successful-move receipt
+ok 31 - concurrent changes are not erased and a partial batch retains its exact successful-move receipt
+  ---
+  duration_ms: 2.116292
+  type: 'test'
+  ...
+# Subtest: unknown native cost or private values deny export/relocation without a fabricated zero cost
+ok 32 - unknown native cost or private values deny export/relocation without a fabricated zero cost
+  ---
+  duration_ms: 0.705542
+  type: 'test'
+  ...
+# Subtest: the existing reservation family counts legacy maintenance and never refunds a preparation-only or duplicate run
+ok 33 - the existing reservation family counts legacy maintenance and never refunds a preparation-only or duplicate run
+  ---
+  duration_ms: 0.569666
+  type: 'test'
+  ...
+# Subtest: the transaction frees old-row capacity before header allocation and rolls back deletion on an insertion failure
+ok 34 - the transaction frees old-row capacity before header allocation and rolls back deletion on an insertion failure
+  ---
+  duration_ms: 3.669458
+  type: 'test'
+  ...
+# Subtest: all48 archive rows include the real bridge requests, finalization and bounded control in whole164, preserving manual24
+ok 35 - all48 archive rows include the real bridge requests, finalization and bounded control in whole164, preserving manual24
+  ---
+  duration_ms: 16.202458
+  type: 'test'
+  ...
+# Subtest: oversized bridge rows and the six-transaction cap retain untouched originals for a later admitted run
+ok 36 - oversized bridge rows and the six-transaction cap retain untouched originals for a later admitted run
+  ---
+  duration_ms: 109.537375
+  type: 'test'
+  ...
+# Subtest: a local pre-request refusal never spends native SQL or fabricates unknown operations
+ok 37 - a local pre-request refusal never spends native SQL or fabricates unknown operations
+  ---
+  duration_ms: 0.408666
+  type: 'test'
+  ...
+# Subtest: a separately owner-approved UTC15 emergency uses exactly the third existing slot, preserving old spend and next-report headroom
+ok 38 - a separately owner-approved UTC15 emergency uses exactly the third existing slot, preserving old spend and next-report headroom
+  ---
+  duration_ms: 0.732291
+  type: 'test'
+  ...
+# Subtest: the exceptional third slot refuses unknown costs or consumption of next-full-report headroom
+ok 39 - the exceptional third slot refuses unknown costs or consumption of next-full-report headroom
+  ---
+  duration_ms: 0.701333
+  type: 'test'
+  ...
+# Subtest: a fourth UTC15 recovery needs its exact separate slot choice and preserves all existing reservations
+ok 40 - a fourth UTC15 recovery needs its exact separate slot choice and preserves all existing reservations
+  ---
+  duration_ms: 0.514375
+  type: 'test'
+  ...
+# Subtest: the separately proposed fourth slot cannot consume next-report reserve or ignore unknown native cost
+ok 41 - the separately proposed fourth slot cannot consume next-report reserve or ignore unknown native cost
+  ---
+  duration_ms: 0.613042
+  type: 'test'
+  ...
+# Subtest: saved REJECTED bodies use exact private native originals; preparation leaves every primary byte unchanged
+ok 42 - saved REJECTED bodies use exact private native originals; preparation leaves every primary byte unchanged
+  ---
+  duration_ms: 28.927334
+  type: 'test'
+  ...
+# Subtest: body-only conditional compaction preserves ids, unknown scalars, latest/rare originals, source clocks and native readthrough
+ok 43 - body-only conditional compaction preserves ids, unknown scalars, latest/rare originals, source clocks and native readthrough
+  ---
+  duration_ms: 33.65175
+  type: 'test'
+  ...
+# Subtest: the actual schema protects every ENTRY, ACTIONABLE, current command, delivered/outcome, recheck and lifecycle reference
+ok 44 - the actual schema protects every ENTRY, ACTIONABLE, current command, delivered/outcome, recheck and lifecycle reference
+  ---
+  duration_ms: 26.691792
+  type: 'test'
+  ...
+# Subtest: a newly added protected reference or changed original after copy prevents that primary update
+ok 45 - a newly added protected reference or changed original after copy prevents that primary update
+  ---
+  duration_ms: 12.573625
+  type: 'test'
+  ...
+# Subtest: corruption, missing reference schema, unknown cost and storage guard never replace an unverified original
+ok 46 - corruption, missing reference schema, unknown cost and storage guard never replace an unverified original
+  ---
+  duration_ms: 12.295792
+  type: 'test'
+  ...
+# Subtest: transaction failure rolls back the complete group while every private original remains immutable
+ok 47 - transaction failure rolls back the complete group while every private original remains immutable
+  ---
+  duration_ms: 9.244625
+  type: 'test'
+  ...
+# Subtest: existing exact revisions are reused without additional writes and repeated compaction does not nest archive markers
+ok 48 - existing exact revisions are reused without additional writes and repeated compaction does not nest archive markers
+  ---
+  duration_ms: 14.625875
+  type: 'test'
+  ...
+# Subtest: opt-in grouped copies retain four independent private readbacks and every protected original
+ok 49 - opt-in grouped copies retain four independent private readbacks and every protected original
+  ---
+  duration_ms: 300.517875
+  type: 'test'
+  ...
+# Subtest: all48 pre-copied originals share the real bridge/private HTTP and D1 reservation; cold backlog stops before manual headroom
+ok 50 - all48 pre-copied originals share the real bridge/private HTTP and D1 reservation; cold backlog stops before manual headroom
+  ---
+  duration_ms: 388.599625
+  type: 'test'
+  ...
+# Subtest: unqualified canonical execution stops before authority, transport or native reservations
+ok 51 - unqualified canonical execution stops before authority, transport or native reservations
+  ---
+  duration_ms: 39.565292
+  type: 'test'
+  ...
+# Subtest: exceptional execution verifies independent native originals before its first primary mutation
+ok 52 - exceptional execution verifies independent native originals before its first primary mutation
+  ---
+  duration_ms: 17.755458
+  type: 'test'
+  ...
+# Subtest: a corrupt independent preflight read leaves every hot canonical body unchanged
+ok 53 - a corrupt independent preflight read leaves every hot canonical body unchanged
+  ---
+  duration_ms: 11.092458
+  type: 'test'
+  ...
+# Subtest: the retained production namespace works without creating the three uninstalled V2 tables
+ok 54 - the retained production namespace works without creating the three uninstalled V2 tables
+  ---
+  duration_ms: 15.096917
+  type: 'test'
+  ...
+# Subtest: a partially installed V2 namespace still protects the references that exist
+ok 55 - a partially installed V2 namespace still protects the references that exist
+  ---
+  duration_ms: 1.581875
+  type: 'test'
+  ...
+# Subtest: creation of a previously absent reference namespace between copy and update keeps originals hot
+ok 56 - creation of a previously absent reference namespace between copy and update keeps originals hot
+  ---
+  duration_ms: 8.957
+  type: 'test'
+  ...
+# Subtest: unbound legacy dispatch and calibration references are protected in both schema variants
+ok 57 - unbound legacy dispatch and calibration references are protected in both schema variants
+  ---
+  duration_ms: 5.980375
+  type: 'test'
+  ...
+# Subtest: missing mandatory tables and unexpected views retain a precise refusal receipt before archive or body mutation
+ok 58 - missing mandatory tables and unexpected views retain a precise refusal receipt before archive or body mutation
+  ---
+  duration_ms: 2.537708
+  type: 'test'
+  ...
+# Subtest: a large native metadata scan reduces compaction within the existing reservation
+ok 59 - a large native metadata scan reduces compaction within the existing reservation
+  ---
+  duration_ms: 278.725666
+  type: 'test'
+  ...
+# Subtest: an incomplete bounded reference census never reads a large body or touches either original store
+ok 60 - an incomplete bounded reference census never reads a large body or touches either original store
+  ---
+  duration_ms: 5.8475
+  type: 'test'
+  ...
+# Subtest: the root cursor visits only128 metadata rows and can reach an old eligible body behind a noisy window
+ok 61 - the root cursor visits only128 metadata rows and can reach an old eligible body behind a noisy window
+  ---
+  duration_ms: 38.3035
+  type: 'test'
+  ...
+# Subtest: reference growth beyond its complete census allowance retains the original even if its new link is outside the window
+ok 62 - reference growth beyond its complete census allowance retains the original even if its new link is outside the window
+  ---
+  duration_ms: 6.7515
+  type: 'test'
+  ...
+# Subtest: deleting the exact newer witness after durable copy keeps the latest remaining original hot
+ok 63 - deleting the exact newer witness after durable copy keeps the latest remaining original hot
+  ---
+  duration_ms: 8.1625
+  type: 'test'
+  ...
+# Subtest: bounded discovery uses only retained production indexes and advances past a completed48-candidate slice
+ok 64 - bounded discovery uses only retained production indexes and advances past a completed48-candidate slice
+  ---
+  duration_ms: 17.263125
+  type: 'test'
+  ...
+# Subtest: new research cannot reset its distinct-provider allowance or claim a whole-day guarantee
+ok 65 - new research cannot reset its distinct-provider allowance or claim a whole-day guarantee
+  ---
+  duration_ms: 1.366459
+  type: 'test'
+  ...
+# Subtest: all families and unknown operations restrict the shared native daily admission
+ok 66 - all families and unknown operations restrict the shared native daily admission
+  ---
+  duration_ms: 0.366958
+  type: 'test'
+  ...
+# Subtest: research leaves the next full report plus its exact archive-copy envelope untouched
+ok 67 - research leaves the next full report plus its exact archive-copy envelope untouched
+  ---
+  duration_ms: 0.281084
+  type: 'test'
+  ...
+1..67
+# tests 67
+# suites 0
+# pass 67
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1355.059958

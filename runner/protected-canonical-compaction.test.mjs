@@ -2,6 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import fs f
 import {compactProtectedCanonical,PROTECTED_CANONICAL_POLICY as P,exactCanonicalBodyUpdate} from './protected-canonical-compaction.mjs';
 import {encodeCanonicalPublicationRow} from './canonical-cold-archive.mjs';
 import {createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
+import {loadBoundedCanonicalCandidates} from './bounded-canonical-selection.mjs';
 import {PrivateArchiveD1API} from './private-archive-d1-api.mjs';import {RemoteD1Database} from './report2-d1-adapter.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget} from './lossless-full-evidence-recovery.mjs';import {finalizeRunUsage} from './d1-preaction-budget-guard.mjs';
 import bridge from '../current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs';
@@ -12,12 +13,13 @@ function wrap(raw){let usage={requests:0,rows_read:0,rows_written:0,unknown_ops:
 function fixture(count=2,{v2=true}={}){
  const raw=new DatabaseSync(':memory:');
  for(const name of ['canonical_publication_shadow','v3_recheck_task_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','v3_telegram_dispatch_shadow','tz101_entry_area_calibration_signal'])raw.exec(schema.find(r=>r.type==='table'&&r.name===name).sql);
+ for(const index of schema.filter(r=>r.type==='index'&&r.sql&&['canonical_publication_shadow','v3_recheck_task_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','v3_telegram_dispatch_shadow','tz101_entry_area_calibration_signal'].includes(r.tbl_name)))raw.exec(index.sql);
  if(v2){raw.exec(fs.readFileSync(new URL('../current-generation/migrations/007_commands_delivery.sql',import.meta.url),'utf8'));raw.exec(fs.readFileSync(new URL('../current-generation/migrations/008_outcomes_calibration_v2.sql',import.meta.url),'utf8'));}
  raw.exec('ALTER TABLE canonical_publication_shadow ADD COLUMN future_json TEXT;ALTER TABLE canonical_publication_shadow ADD COLUMN decimal_string TEXT');
  const coldraw=new DatabaseSync(':memory:');coldraw.exec(fs.readFileSync(new URL('../cloudflare/free-history/003_canonical_cold_archive.sql',import.meta.url),'utf8'));
  const source_db=wrap(raw),archive_db=wrap(coldraw);archive_db.storage_bytes=100000;
  function add(id,extra={}){
-  const ts=now-(id+3)*DAY,pub='PUB:'+id.toString(16).padStart(40,'0'),c=structuredClone(original.canonical);c.run_id='old-run:'+id;c.snapshot_id='old-snapshot:'+id;c.observed_ts=ts;c.state='REJECTED';c.metadata={...(c.metadata||{}),contract:original.contract,test_padding:'x'.repeat(25000)};
+  const ts=now-(id+3)*DAY,pub='PUB:'+id.toString(16).padStart(40,'0'),c=structuredClone(original.canonical);c.run_id='old-run:'+String(id).padStart(8,'0');c.snapshot_id='old-snapshot:'+id;c.observed_ts=ts;c.state='REJECTED';c.metadata={...(c.metadata||{}),contract:original.contract,test_padding:'x'.repeat(25000)};
   const row={publication_id:pub,contract_code:original.contract,direction:'SHORT',run_id:c.run_id,snapshot_id:c.snapshot_id,wave_id:null,decision_id:'decision:'+id,observed_ts:ts,valid_until_ts:null,lifecycle_event:null,canonical_state:'REJECTED',analytical_fingerprint:c.analytical_fingerprint,canonical_json:JSON.stringify(c,null,2),presentation_inputs_json:'{ "preserve_spaces": true }',manual_text:'Оригинальная строка\n'.repeat(30),telegram_text:null,presentation_hash:null,actionability_status:'UNASSESSED',actionability_reason:null,created_ts:ts,bound_ts:null,shadow_only:1,future_json:JSON.stringify({data:'z'.repeat(1200)}),decimal_string:'00001.2300',...extra};
   raw.prepare('INSERT INTO canonical_publication_shadow('+Object.keys(row).join(',')+') VALUES('+Object.keys(row).map(()=>'?').join(',')+')').run(...Object.values(row));return row;
  }
@@ -89,7 +91,7 @@ test('all48 pre-copied originals share the real bridge/private HTTP and D1 reser
   assert.equal((await reserveLosslessRecoveryBudget(source_db,{reservation_id:'RETAINED_HISTORY:15:15',now})).allowed,true);await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
   const r=await compactProtectedCanonical({source_db,archive_db,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{const s=budget.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks;},before_modify:async()=>{},execute:true,now});
   await finalizeRunUsage(source_db,{reservationId:'RETAINED_HISTORY:15:15',sourceRunId:'15',now,usage:r.D1});
-  assert.equal(r.compacted.length,precopied?48:16);assert.equal(r.native_readbacks.length,4);assert.equal(primaryHTTP,precopied?15:11);assert.equal(privateHTTP,54);assert.ok(budget.summary().total<=164);assert.ok(96-budget.summary().used.hot>=24);assert.equal(source_db.usageSnapshot().unknown_ops+archive_db.usageSnapshot().unknown_ops,0);assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.publication_rows_deleted,0);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM canonical_publication_shadow').get().n,50);
+  assert.equal(r.compacted.length,precopied?48:16);assert.equal(r.native_readbacks.length,4);assert.equal(primaryHTTP,precopied?16:12);assert.equal(privateHTTP,54);assert.ok(budget.summary().total<=164);assert.ok(96-budget.summary().used.hot>=24);assert.equal(source_db.usageSnapshot().unknown_ops+archive_db.usageSnapshot().unknown_ops,0);assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.publication_rows_deleted,0);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM canonical_publication_shadow').get().n,50);
   if(!precopied)assert.equal(r.deferred_hot.filter(r=>r.reason==='SHARED_HTTP_HEADROOM').length,32);
   cases.push({pre_copied:precopied,selected:r.selected,compacted:r.compacted.length,retained_hot:r.deferred_hot.length,primary_HTTP:primaryHTTP,private_HTTP:privateHTTP,all_control_HTTP_reserved:40,whole_HTTP:budget.summary(),controlled_SQLite_usage:r.D1,native_production_usage_measured:false,readthrough_native_fixture_sample:r.native_readbacks.length,publication_rows_deleted:r.publication_rows_deleted,history_discarded:r.history_discarded,source_clocks_refreshed:r.source_clocks_refreshed});
  }
@@ -158,8 +160,47 @@ test('a large native metadata scan reduces compaction within the existing reserv
  const f=fixture(48,{v2:false});archiveAll(f);const prepare=f.source_db.prepare.bind(f.source_db);
  f.source_db.prepare=sql=>{const s=prepare(sql);
   if(sql.startsWith('SELECT name,type FROM sqlite_schema')){const all=s.all;s.all=async()=>{const r=await all.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+200});r.meta.rows_read+=200;return r;};}
-  if(sql.startsWith('UPDATE canonical_publication_shadow')){const run=s.run;s.run=async()=>{const r=await run.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+200});r.meta.rows_read+=200;return r;};}
+  if(sql.includes('UPDATE canonical_publication_shadow AS p SET')){const run=s.run;s.run=async()=>{const r=await run.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+200});r.meta.rows_read+=200;return r;};}
   return s;};
- const r=await compact(f,{execute:true,prefetch_private:true,require_native_preflight:true});assert.ok(r.compacted.length>0&&r.compacted.length<48);assert.ok(r.deferred_hot.some(x=>x.reason==='SHARED_NATIVE_HEADROOM'));assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.D1.unknown_ops,0);assert.ok(r.reference_schema.per_update_read_reserve>=230);
+ const r=await compact(f,{execute:true,prefetch_private:true,require_native_preflight:true});assert.ok(r.compacted.length>0&&r.compacted.length<48);assert.ok(r.deferred_hot.some(x=>['SHARED_NATIVE_HEADROOM','TRANSACTION_BOUND'].includes(x.reason)));assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.D1.unknown_ops,0);assert.ok(r.reference_schema.per_update_read_reserve>=230);
  const moved=new Set(r.compacted.map(x=>x.publication_id));for(const row of f.old)if(!moved.has(row.publication_id))assert.deepEqual(get(f,row.publication_id),row);
+});
+
+test('an incomplete bounded reference census never reads a large body or touches either original store',async()=>{
+ const f=fixture(2,{v2:false});
+ for(let i=0;i<257;i++)f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,'OTHER-USDT','SHORT','wave','OBSERVE','v','PENDING','other',1,1)").run('dispatch:'+i,'key:'+i);
+ const before=f.old.map(r=>get(f,r.publication_id)),r=await compact(f,{execute:true});
+ assert.equal(r.status,'REFERENCE_CENSUS_BOUND_REACHED_ORIGINALS_UNTOUCHED');assert.equal(r.bounded_discovery.complete_reference_census,false);assert.equal(r.bounded_discovery.next_cursor,0);assert.equal(r.bounded_discovery.large_bodies_read,0);assert.equal(f.archive_db.usageSnapshot().requests,0);assert.deepEqual(f.old.map(r=>get(f,r.publication_id)),before);
+ assert.ok(f.source_db.calls.every(sql=>!sql.includes('SELECT p.*')&&!sql.includes('UPDATE canonical_publication_shadow')));
+});
+
+test('the root cursor visits only128 metadata rows and can reach an old eligible body behind a noisy window',async()=>{
+ const f=fixture(130,{v2:false});f.raw.exec("UPDATE canonical_publication_shadow SET canonical_state='ACTIVE' WHERE rowid<=128");
+ const first=await compact(f,{execute:true});assert.equal(first.selected,0);assert.equal(first.bounded_discovery.metadata_rows,128);assert.equal(first.bounded_discovery.next_cursor,128);assert.equal(f.archive_db.usageSnapshot().requests,0);
+ const second=await compact(f,{execute:true,source_cursor:first.bounded_discovery.next_cursor});assert.equal(second.bounded_discovery.metadata_rows,4);assert.equal(second.compacted.length,2);assert.equal(second.bounded_discovery.next_cursor,0);
+ const rootSQL=f.source_db.calls.find(sql=>sql.startsWith('SELECT rowid AS source_rowid'));
+ const plan=f.raw.prepare('EXPLAIN QUERY PLAN '+rootSQL).all(128).map(r=>r.detail).join('\n');assert.match(plan,/SEARCH canonical_publication_shadow USING INTEGER PRIMARY KEY/);assert.doesNotMatch(rootSQL,/(?:^|,)canonical_json(?:,| FROM)|SELECT \*/);
+});
+
+test('reference growth beyond its complete census allowance retains the original even if its new link is outside the window',async()=>{
+ const f=fixture(1,{v2:false}),row=f.old[0];archiveAll(f);
+ const r=await compact(f,{execute:true,before_modify:async()=>{
+  for(let i=0;i<10;i++)f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?, ?, ?, 'SHORT','new-wave','OBSERVE','v','PENDING',?,1,1)").run('dispatch:'+i,'key:'+i,i===9?row.contract_code:'OTHER-USDT',i===9?row.decision_id:'other');
+ }});
+ assert.equal(r.compacted.length,0);assert.deepEqual(r.conflicts_retained_hot,[row.publication_id]);assert.deepEqual(get(f,row.publication_id),row);assert.equal(r.bounded_discovery.next_cursor,0);
+});
+
+test('deleting the exact newer witness after durable copy keeps the latest remaining original hot',async()=>{
+ const f=fixture(1,{v2:false}),row=f.old[0];archiveAll(f);
+ const r=await compact(f,{execute:true,before_modify:async()=>f.raw.prepare('DELETE FROM canonical_publication_shadow WHERE publication_id=?').run(f.latest.publication_id)});
+ assert.equal(r.compacted.length,0);assert.deepEqual(r.conflicts_retained_hot,[row.publication_id]);assert.deepEqual(get(f,row.publication_id),row);
+});
+
+test('bounded discovery uses only retained production indexes and advances past a completed48-candidate slice',async()=>{
+ const f=fixture(60,{v2:false}),present=['canonical_publication_shadow','v3_recheck_task_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','v3_telegram_dispatch_shadow','tz101_entry_area_calibration_signal'];
+ const r=await loadBoundedCanonicalCandidates({source_db:f.source_db,present_tables:present,cutoff:now-2*DAY,prefix:'R2PRIVATE_CANONICAL_V1:',admit:allow});
+ assert.equal(r.rows.length,48);assert.equal(r.receipt.cursor_after_complete_window,48);assert.equal(r.receipt.exact_newer_witness_count,48);
+ const sql=f.source_db.calls.find(sql=>sql.startsWith('SELECT p.*')),plan=f.raw.prepare('EXPLAIN QUERY PLAN '+sql).all(f.old[0].publication_id,f.latest.publication_id).map(r=>r.detail).join('\n');
+ assert.match(plan,/SEARCH p USING INDEX sqlite_autoindex_canonical_publication_shadow_1/);assert.match(plan,/SEARCH newer(?: EXISTS)? USING INDEX sqlite_autoindex_canonical_publication_shadow_1/);assert.doesNotMatch(plan,/SCAN (?:p|newer)\b/);
+ assert.equal(f.archive_db.usageSnapshot().requests,0);
 });

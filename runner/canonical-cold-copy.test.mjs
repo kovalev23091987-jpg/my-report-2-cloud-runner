@@ -11,7 +11,7 @@ function row(ch='a'){
 }
 function report(){return{status:'CLOSED',head:H,run_id:R,candidates:['a','b'].map(ch=>{const r=row(ch);return{...r,contract:r.contract_code,canonical:JSON.parse(r.canonical_json)};})};}
 function db(sql){const raw=new DatabaseSync(':memory:');raw.exec(sql);const usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};return{raw,storage_bytes:1000,usageSnapshot:()=>({...usage}),prepare(sql){let args=[];return{bind(...a){args=a;return this;},async first(){usage.requests++;const r=raw.prepare(sql).get(...args);usage.rows_read+=r?1:0;return r??null;},async run(){usage.requests++;const r=raw.prepare(sql).run(...args);usage.rows_written+=Number(r.changes);return{meta:{changes:Number(r.changes)}};}};},async query(sql){const r=await this.prepare(sql).first();return{results:[r]};}};}
-const ledger='CREATE TABLE report2_runner_budget_ledger_shadow(reservation_id TEXT PRIMARY KEY,day_utc TEXT,reserve_rows_read INTEGER,reserve_rows_written INTEGER,state TEXT,started_ts INTEGER,unknown_ops INTEGER);';
+const ledger='CREATE TABLE report2_runner_budget_ledger_shadow(reservation_id TEXT PRIMARY KEY,day_utc TEXT,reserve_rows_read INTEGER,reserve_rows_written INTEGER,state TEXT,started_ts INTEGER,unknown_ops INTEGER,measured_rows_read INTEGER,measured_rows_written INTEGER);';
 test('a later main commit preserves an original producer revision only after exact ancestry proof; forks and unknown revisions fail closed',()=>{
  const later='b'.repeat(40);assert(canonicalProducerInMainHistory({producer_head:H,main_head:H}));assert(canonicalProducerInMainHistory({producer_head:H,main_head:later,comparison:{status:'ahead',merge_base_commit:{sha:H}}}));
  for(const comparison of [null,{status:'diverged',merge_base_commit:{sha:H}},{status:'ahead',merge_base_commit:{sha:later}},{status:'behind',merge_base_commit:{sha:H}}])assert(!canonicalProducerInMainHistory({producer_head:H,main_head:later,comparison}));
@@ -22,13 +22,13 @@ test('a saved report must bind every publication before any private copy; no sta
 });
 test('atomic source-account reservation cannot race another caller, repeat a run or spend past the daily archive pool',async()=>{
  const d=db(ledger),day=new Date(T).toISOString().slice(0,10);
- d.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('existing',day,3500000-CANONICAL_COPY_POLICY.reservation.rows_read,100,'RESERVED',T,0);
+ d.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts,unknown_ops) VALUES(?,?,?,?,?,?,?)').run('existing',day,3500000-CANONICAL_COPY_POLICY.reservation.rows_read,100,'RESERVED',T,0);
  const [a,b]=await Promise.all([1,2].map(n=>reserveCanonicalCopyBudget(d,{reservation_id:'CANONICAL_COLD_COPY:'+n+':1',now:T})));assert.equal(Number(a.allowed)+Number(b.allowed),1);assert.equal((await reserveCanonicalCopyBudget(d,{reservation_id:'CANONICAL_COLD_COPY:1:1',now:T})).allowed,false);
- d.raw.exec('DELETE FROM report2_runner_budget_ledger_shadow');for(let i=0;i<47;i++)d.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('CANONICAL_COLD_COPY:'+i+':1',day,5000,80,'RESERVED',T,0);
+ d.raw.exec('DELETE FROM report2_runner_budget_ledger_shadow');for(let i=0;i<47;i++)d.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts,unknown_ops) VALUES(?,?,?,?,?,?,?)').run('CANONICAL_COLD_COPY:'+i+':1',day,5000,80,'RESERVED',T,0);
  assert.equal((await reserveCanonicalCopyBudget(d,{reservation_id:'CANONICAL_COLD_COPY:48:1',now:T})).allowed,false);d.raw.close();
 });
 test('unmeasured completed D1 use or exhausted write reserve blocks copy reservation without resetting anything',async()=>{
- for(const [writes,unknown] of [[70000,0],[1,1],[1,null]]){const d=db(ledger),day=new Date(T).toISOString().slice(0,10);d.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('existing',day,1,writes,'FINALIZED',T,unknown);assert.equal((await reserveCanonicalCopyBudget(d,{reservation_id:'CANONICAL_COLD_COPY:1:1',now:T})).allowed,false);assert.equal(d.raw.prepare('SELECT COUNT(*) AS n FROM report2_runner_budget_ledger_shadow').get().n,1);d.raw.close();}
+ for(const [writes,unknown] of [[70000,0],[1,1],[1,null]]){const d=db(ledger),day=new Date(T).toISOString().slice(0,10);d.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts,unknown_ops) VALUES(?,?,?,?,?,?,?)').run('existing',day,1,writes,'FINALIZED',T,unknown);assert.equal((await reserveCanonicalCopyBudget(d,{reservation_id:'CANONICAL_COLD_COPY:1:1',now:T})).allowed,false);assert.equal(d.raw.prepare('SELECT COUNT(*) AS n FROM report2_runner_budget_ledger_shadow').get().n,1);d.raw.close();}
 });
 test('two original rows and a later presentation revision are durably readable; source rows and clocks stay unchanged',async()=>{
  const rows=['a','b'].map(row),cols=Object.keys(rows[0]);

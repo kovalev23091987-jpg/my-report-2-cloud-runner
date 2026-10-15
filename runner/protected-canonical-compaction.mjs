@@ -5,6 +5,7 @@ import {combineMeasuredD1Usage} from './private-archive-d1-api.mjs';
 import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 import {LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 import {prefetchExactCanonicalRevisions} from './private-canonical-prefetch.mjs';
+import {loadBoundedCanonicalCandidates,boundedCanonicalReferenceSQL} from './bounded-canonical-selection.mjs';
 
 // Uses the existing RETAINED_HISTORY reservation, never an additional family.
 // Only large, old REJECTED bodies are replaced. Every publication, scalar,
@@ -40,22 +41,25 @@ export function protectedCanonicalPredicate(cutoff='?1',present_tables=REFERENCE
 }
 export const PROTECTED_CANONICAL_SELECTION_SQL=`SELECT p.* FROM canonical_publication_shadow p WHERE ${protectedCanonicalPredicate()} ORDER BY p.observed_ts,p.publication_id LIMIT 48`;
 
-export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERENCE_TABLES){
+export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERENCE_TABLES,reference_bounds=null,witness=null){
  const changed=Object.keys(row).filter(k=>row[k]!==header[k]);
  if(!changed.length||changed.some(k=>!k.endsWith('_json')&&k!=='manual_text'&&k!=='telegram_text'))throw Error('CANONICAL_ONLY_ORIGINAL_BODY_COLUMNS_ALLOWED');
  const params=changed.map(k=>header[k]),set=changed.map((k,i)=>`${quote(k)}=?${i+1}`).join(',');
  const exact=Object.entries(row).map(([k,v])=>{params.push(v);return `p.${quote(k)} IS ?${params.length}`;}).join(' AND ');
  params.push(cutoff);
- return{sql:`UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${protectedCanonicalPredicate('?'+params.length,present_tables)}`,params};
+ const predicate=protectedCanonicalPredicate('?'+params.length,present_tables),scope=reference_bounds?boundedCanonicalReferenceSQL(predicate,reference_bounds,witness):{with_sql:'',predicate};
+ return{sql:`${scope.with_sql}UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${scope.predicate}`,params};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,now=Date.now()}={}){
+export async function compactProtectedCanonical({source_db,archive_db,archive_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,source_cursor=0,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof archive_db?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
  const p=PROTECTED_CANONICAL_POLICY,usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),archive_db.usageSnapshot());
  const admit=e=>evaluateWithinRunReservation({reservation:p.reservation,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+3});
  const need=(r,w)=>{if(!admit({rows_read:r,rows_written:w}).allowed)throw Error('CANONICAL_SHARED_NATIVE_HEADROOM_REQUIRED');};
  const out={schema:'PROTECTED_CANONICAL_BODY_COMPACTION_V1',sourceHTTP:0,MAIN:0,Telegram:0,execute,history_discarded:false,source_clocks_refreshed:false,publication_rows_deleted:0,reference_or_statistic_rows_modified:0,latest_per_coin_hot:true,all_ENTRY_and_ACTIONABLE_hot:true,hot_window_ms:p.hot_window_ms,selected:0,prepared:0,compacted:[],conflicts_retained_hot:[],deferred_hot:[],mutation_batches:0,native_readbacks:[]};
+ const prepared=[],durable=new Map();
+ try{
  need(50,0);
  const schema_result=await source_db.prepare(`SELECT name,type FROM sqlite_schema WHERE name IN (${REFERENCE_TABLES.map((_,i)=>'?'+(i+1)).join(',')})`).bind(...REFERENCE_TABLES).all(),tables=schema_result.results||[];
  const present=tables.filter(r=>r.type==='table').map(r=>r.name);
@@ -63,12 +67,13 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
  if(out.reference_schema.missing_required.length||out.reference_schema.non_table_objects.length||new Set(present).size!==tables.length){const error=Error('CANONICAL_PROTECTED_REFERENCE_SCHEMA_REQUIRED');error.compaction_receipt={...out,status:'CANONICAL_SCHEMA_PREFLIGHT_REFUSED',D1:usage()};throw error;}
  const schema_reads=schema_result.meta?.rows_read;
  if(!Number.isSafeInteger(schema_reads)||schema_reads<0)throw Error('CANONICAL_NATIVE_SCHEMA_COST_REQUIRED');
- const per_update_reads=24+(out.reference_schema.absent_optional.length?Math.max(50,schema_reads):0);
+ const discovery=await loadBoundedCanonicalCandidates({source_db,present_tables:present,cutoff:now-p.hot_window_ms,prefix:PRIVATE_CANONICAL_PREFIX,admit,source_cursor,max_rows:p.max_rows}),selected=discovery.rows;
+ out.bounded_discovery=discovery.receipt;out.selected=selected.length;
+ if(!selected.length)return{...out,status:discovery.receipt.status,D1:usage()};
+ const reference_reads=Object.values(discovery.bounds).reduce((s,n)=>s+n+1,0),per_update_reads=64+4*reference_reads+(out.reference_schema.absent_optional.length?Math.max(50,schema_reads):0);
  out.reference_schema.native_discovery_rows_read=schema_reads;out.reference_schema.per_update_read_reserve=per_update_reads;
- need(3000,0);
- const selection=await source_db.prepare(`SELECT p.* FROM canonical_publication_shadow p WHERE ${protectedCanonicalPredicate('?1',present)} ORDER BY p.observed_ts,p.publication_id LIMIT 48`).bind(now-p.hot_window_ms).all(),selected=selection.results||[];out.selected=selected.length;
  if(require_native_preflight){
-  const size=selection.meta?.size_after;if(!Number.isSafeInteger(size)||size<0)throw Error('CANONICAL_PRIMARY_SIZE_NOT_MEASURED');
+  const size=discovery.primary_database_bytes;if(!Number.isSafeInteger(size)||size<0)throw Error('CANONICAL_PRIMARY_SIZE_NOT_MEASURED');
   out.primary_database_bytes_before=size;
  }
  if(selected.length>p.max_rows)throw Error('CANONICAL_SOURCE_ROW_BOUND');
@@ -78,16 +83,15 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
   for(const row of selected)try{revisions.push(encodeCanonicalPublicationRow(row));}catch(error){if(!/ARCHIVE_(?:RAW|COMPRESSED|WIRE)_BOUND/.test(error.message))throw error;}
   const prefetched=await prefetchExactCanonicalRevisions({archive_db,revisions,db_admit:admit});copy_db=prefetched.archive_db;out.private_prefetch=prefetched.receipt;
  }
- const prepared=[],durable=new Map();
- try{
   for(const row of selected){
    if(!archive_headroom({max_copy_requests:3,reserved_native_readbacks:p.native_readbacks*(require_native_preflight?2:1)})){out.deferred_hot.push({publication_id:row.publication_id,reason:'SHARED_HTTP_HEADROOM'});continue;}
    if(JSON.parse(row.canonical_json)?.state!=='REJECTED'||row.canonical_json.startsWith(PRIVATE_CANONICAL_PREFIX))throw Error('CANONICAL_EXACT_REJECTED_ORIGINAL_REQUIRED');
    let record;try{record=encodeCanonicalPublicationRow(row);}catch(error){if(/ARCHIVE_(?:RAW|COMPRESSED|WIRE)_BOUND/.test(error.message)){out.deferred_hot.push({publication_id:row.publication_id,reason:'ORIGINAL_SIZE_BOUND'});continue;}throw error;}
    const header=await privateCanonicalHeader(row,record),saved_bytes=record.raw_bytes-Buffer.byteLength(JSON.stringify(header));
    if(saved_bytes<p.min_saved_bytes){out.deferred_hot.push({publication_id:row.publication_id,reason:'NO_USEFUL_SPACE_SAVING'});continue;}
-   const plan=exactCanonicalBodyUpdate(row,header,now-p.hot_window_ms,present),statements=[plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
+   const plan=exactCanonicalBodyUpdate(row,header,now-p.hot_window_ms,present,discovery.bounds,discovery.witnesses[row.publication_id]),statements=[plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
    if(Buffer.byteLength(JSON.stringify({op:'batch',statements}))>p.bridge_wire_bytes){out.deferred_hot.push({publication_id:row.publication_id,reason:'BRIDGE_WIRE_BOUND'});continue;}
+   if(!admit({rows_read:per_update_reads+96,rows_written:24}).allowed){out.deferred_hot.push({publication_id:row.publication_id,reason:'SHARED_NATIVE_HEADROOM_BEFORE_COPY'});continue;}
    need(5,24);
    const retained=await retainCanonicalPublicationRow(copy_db,record,{db_admit:admit,storage_bytes:copy_db.storage_bytes,now,include_verified_record:true});
    if(!retained.retained){out.deferred_hot.push({publication_id:row.publication_id,reason:retained.status});continue;}
@@ -113,7 +117,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
   let cursor=0;
   while(cursor<prepared.length&&out.mutation_batches<p.max_batches){
    const group=[];let statements=[];
-   while(cursor+group.length<prepared.length&&group.length<p.max_rows_per_batch){const s=prepared[cursor+group.length],next=[...statements,...s.statements];if(Buffer.byteLength(JSON.stringify({op:'batch',statements:next}))>p.bridge_wire_bytes||!admit({rows_read:(group.length+1)*per_update_reads,rows_written:(group.length+1)*8+3}).allowed)break;group.push(s);statements=next;}
+   while(cursor+group.length<prepared.length&&group.length<p.max_rows_per_batch){const s=prepared[cursor+group.length],next=[...statements,...s.statements];if(Buffer.byteLength(JSON.stringify({op:'batch',statements:next}))>p.bridge_wire_bytes||!admit({rows_read:(group.length+1)*per_update_reads+96,rows_written:(group.length+1)*8+3}).allowed)break;group.push(s);statements=next;}
    if(!group.length){out.deferred_hot.push(...prepared.slice(cursor).map(s=>({publication_id:s.row.publication_id,reason:'SHARED_NATIVE_HEADROOM'})));cursor=prepared.length;break;}
    await before_modify();need(group.length*per_update_reads,group.length*8);
    const ack=await source_db.batch(statements.map(q=>source_db.prepare(q.sql).bind(...q.params)));out.mutation_batches++;
@@ -135,6 +139,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
    assert.deepEqual(await native_reader.restore(header),original);out.native_readbacks.push(moved.publication_id);
   }
   const measured=require_native_preflight&&Number.isSafeInteger(out.primary_database_bytes_before)&&Number.isSafeInteger(out.primary_database_bytes_after);
+  out.bounded_discovery.next_cursor=out.deferred_hot.length||out.conflicts_retained_hot.length?source_cursor:discovery.receipt.cursor_after_complete_window;
   return{...out,status:out.compacted.length?'PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY':'NO_SAFE_CANONICAL_BODIES_CHANGED',D1:usage(),physical_database_free_bytes_measured:measured,physical_bytes_reclaimed:measured?out.primary_database_bytes_before-out.primary_database_bytes_after:null};
- }catch(error){error.compaction_receipt={...out,prepared:prepared.length,status:'CANONICAL_COMPACTION_PARTIAL_OR_REFUSED_ORIGINALS_PRESERVED',D1:usage()};throw error;}
+ }catch(error){error.compaction_receipt={...out,prepared:prepared.length,status:error.compaction_receipt?.status||'CANONICAL_COMPACTION_PARTIAL_OR_REFUSED_ORIGINALS_PRESERVED',...(error.discovery_receipt?{bounded_discovery:error.discovery_receipt}:{}),D1:usage()};throw error;}
 }

@@ -1,0 +1,304 @@
+TAP version 13
+# Subtest: 34k read burst closes observed projected-liquidation envelope and fits 80-run daily cap
+ok 1 - 34k read burst closes observed projected-liquidation envelope and fits 80-run daily cap
+  ---
+  duration_ms: 1.872375
+  type: 'test'
+  ...
+# Subtest: nominal daily budget remains the hard upper bound
+ok 2 - nominal daily budget remains the hard upper bound
+  ---
+  duration_ms: 0.138125
+  type: 'test'
+  ...
+# Subtest: a late control failure cannot leave a CLOSED artifact or rewrite original market facts and SENT evidence
+ok 3 - a late control failure cannot leave a CLOSED artifact or rewrite original market facts and SENT evidence
+  ---
+  duration_ms: 2.310292
+  type: 'test'
+  ...
+# Subtest: exact GRAM failure bindings persist without claiming a market decision
+ok 4 - exact GRAM failure bindings persist without claiming a market decision
+  ---
+  duration_ms: 4.710875
+  type: 'test'
+  ...
+# Subtest: native bridge codes and HTTP status stay distinct from an unknown native SQL error
+ok 5 - native bridge codes and HTTP status stay distinct from an unknown native SQL error
+  ---
+  duration_ms: 0.219709
+  type: 'test'
+  ...
+# Subtest: allowed owner proceeds without a diagnostic write
+ok 6 - allowed owner proceeds without a diagnostic write
+  ---
+  duration_ms: 0.062208
+  type: 'test'
+  ...
+# Subtest: migration or other owner remains a refusal rather than read-failure evidence
+ok 7 - migration or other owner remains a refusal rather than read-failure evidence
+  ---
+  duration_ms: 0.170083
+  type: 'test'
+  ...
+# Subtest: artifact-write failure preserves the ownership refusal
+ok 8 - artifact-write failure preserves the ownership refusal
+  ---
+  duration_ms: 0.1005
+  type: 'test'
+  ...
+# Subtest: unknown identities and arbitrary error strings do not become bound facts
+ok 9 - unknown identities and arbitrary error strings do not become bound facts
+  ---
+  duration_ms: 0.07775
+  type: 'test'
+  ...
+# Subtest: assembled runner captures refusal in both ownership checks before further work
+ok 10 - assembled runner captures refusal in both ownership checks before further work
+  ---
+  duration_ms: 0.273791
+  type: 'test'
+  ...
+# Subtest: both current runner checks allow the real scheduler owner without diagnostic writes
+ok 11 - both current runner checks allow the real scheduler owner without diagnostic writes
+  ---
+  duration_ms: 0.151334
+  type: 'test'
+  ...
+# Subtest: unknown operation records measured subtotals without inventing total row cost
+ok 12 - unknown operation records measured subtotals without inventing total row cost
+  ---
+  duration_ms: 0.109334
+  type: 'test'
+  ...
+# Subtest: missing or invalid native counters remain absent rather than guessed
+ok 13 - missing or invalid native counters remain absent rather than guessed
+  ---
+  duration_ms: 0.064375
+  type: 'test'
+  ...
+# Subtest: actual unchanged daily guard preserves unknown usage and emits exact infrastructure refusal
+ok 14 - actual unchanged daily guard preserves unknown usage and emits exact infrastructure refusal
+  ---
+  duration_ms: 0.7435
+  type: 'test'
+  ...
+# Subtest: allowed daily admission proceeds without diagnostic writes or changes to the guard
+ok 15 - allowed daily admission proceeds without diagnostic writes or changes to the guard
+  ---
+  duration_ms: 0.043666
+  type: 'test'
+  ...
+# Subtest: daily diagnostic persistence failure cannot turn refusal into admission
+ok 16 - daily diagnostic persistence failure cannot turn refusal into admission
+  ---
+  duration_ms: 0.0815
+  type: 'test'
+  ...
+# Subtest: trigger-only quota refusal stays bound to its exact task without evaluating market conditions
+ok 17 - trigger-only quota refusal stays bound to its exact task without evaluating market conditions
+  ---
+  duration_ms: 0.066167
+  type: 'test'
+  ...
+# Subtest: both actual runner quota checks persist a refusal before later work
+ok 18 - both actual runner quota checks persist a refusal before later work
+  ---
+  duration_ms: 0.340125
+  type: 'test'
+  ...
+# Subtest: native reservations and measured subtotals remain distinct from adaptive admission inputs
+ok 19 - native reservations and measured subtotals remain distinct from adaptive admission inputs
+  ---
+  duration_ms: 0.076583
+  type: 'test'
+  ...
+# Subtest: missing or arbitrary daily provenance is never silently marked native or given zero usage
+ok 20 - missing or arbitrary daily provenance is never silently marked native or given zero usage
+  ---
+  duration_ms: 0.104667
+  type: 'test'
+  ...
+# Subtest: exact kicked task cannot admit another otherwise eligible SENT publication
+ok 21 - exact kicked task cannot admit another otherwise eligible SENT publication
+  ---
+  duration_ms: 4.546167
+  type: 'test'
+  ...
+# Subtest: exact kicked task uses the original admission and unchanged new-analysis-only authority
+ok 22 - exact kicked task uses the original admission and unchanged new-analysis-only authority
+  ---
+  duration_ms: 12.098375
+  type: 'test'
+  ...
+# Subtest: production retained-history adapter accepts empty NOT_DUE trigger admission without source requests
+ok 23 - production retained-history adapter accepts empty NOT_DUE trigger admission without source requests
+  ---
+  duration_ms: 16.708791
+  type: 'test'
+  ...
+# Subtest: production retained-history adapter separates mutable JSON selection from exact canonical restoration
+ok 24 - production retained-history adapter separates mutable JSON selection from exact canonical restoration
+  ---
+  duration_ms: 10.97125
+  type: 'test'
+  ...
+# Subtest: retained history JSON SQL guard still rejects the original mixed query and unsafe canonical parsing
+ok 25 - retained history JSON SQL guard still rejects the original mixed query and unsafe canonical parsing
+  ---
+  duration_ms: 0.491875
+  type: 'test'
+  ...
+# Subtest: original SENT155 has a reachable analysis window before the original30-minute TTL
+ok 26 - original SENT155 has a reachable analysis window before the original30-minute TTL
+  ---
+  duration_ms: 6.625125
+  type: 'test'
+  ...
+# Subtest: receipt cannot authorize entry, execution or invented settlement
+ok 27 - receipt cannot authorize entry, execution or invented settlement
+  ---
+  duration_ms: 14.393375
+  type: 'test'
+  ...
+# Subtest: changed identity, canonical payload, absent SENT id and stale future receipts cannot enter the burst lane
+ok 28 - changed identity, canonical payload, absent SENT id and stale future receipts cannot enter the burst lane
+  ---
+  duration_ms: 31.580458
+  type: 'test'
+  ...
+# Subtest: price below trigger, cancellation, expiration and exact expiry are rejected
+ok 29 - price below trigger, cancellation, expiration and exact expiry are rejected
+  ---
+  duration_ms: 18.359333
+  type: 'test'
+  ...
+# Subtest: SHORT uses its own threshold and cancellation without reversing native conditions
+ok 30 - SHORT uses its own threshold and cancellation without reversing native conditions
+  ---
+  duration_ms: 14.496208
+  type: 'test'
+  ...
+# Subtest: exact SENT trigger admits one candidate without consuming or renewing ordinary cadence
+ok 31 - exact SENT trigger admits one candidate without consuming or renewing ordinary cadence
+  ---
+  duration_ms: 6.535542
+  type: 'test'
+  ...
+# Subtest: the actual runner NOT_DUE branch continues into a fresh exact full recheck and preserves the regular clock
+ok 32 - the actual runner NOT_DUE branch continues into a fresh exact full recheck and preserves the regular clock
+  ---
+  duration_ms: 12.709667
+  type: 'test'
+  ...
+# Subtest: the actual exact-kick runner bypasses only the regular cadence claim and preserves its clock
+ok 33 - the actual exact-kick runner bypasses only the regular cadence claim and preserves its clock
+  ---
+  duration_ms: 10.950333
+  type: 'test'
+  ...
+# Subtest: all72 possible admission ledgers still fit the unchanged daily D1 allowance
+ok 34 - all72 possible admission ledgers still fit the unchanged daily D1 allowance
+  ---
+  duration_ms: 0.049458
+  type: 'test'
+  ...
+# Subtest: duplicate attempts and concurrent executors cannot charge or launch a fourth daily burst
+ok 35 - duplicate attempts and concurrent executors cannot charge or launch a fourth daily burst
+  ---
+  duration_ms: 24.921208
+  type: 'test'
+  ...
+# Subtest: unsent or foreign-wave lifecycle cannot admit full analysis
+ok 36 - unsent or foreign-wave lifecycle cannot admit full analysis
+  ---
+  duration_ms: 10.270209
+  type: 'test'
+  ...
+# Subtest: a foreign actor and exhausted D1 budget create no admission tables or source calls
+ok 37 - a foreign actor and exhausted D1 budget create no admission tables or source calls
+  ---
+  duration_ms: 0.21325
+  type: 'test'
+  ...
+# Subtest: targeted scheduler selects the admitted task even when an older waiting task exists
+ok 38 - targeted scheduler selects the admitted task even when an older waiting task exists
+  ---
+  duration_ms: 8.67925
+  type: 'test'
+  ...
+# Subtest: cancellation or expiry between admission and worker claim never falls back to another coin
+ok 39 - cancellation or expiry between admission and worker claim never falls back to another coin
+  ---
+  duration_ms: 24.953292
+  type: 'test'
+  ...
+# Subtest: the effective deep planner rechecks the exact contract inside the30-minute cooldown at one slot
+ok 40 - the effective deep planner rechecks the exact contract inside the30-minute cooldown at one slot
+  ---
+  duration_ms: 2.935625
+  type: 'test'
+  ...
+# Subtest: an expired prior analytical context cannot shorten the exact SENT task window for a new full analysis
+ok 41 - an expired prior analytical context cannot shorten the exact SENT task window for a new full analysis
+  ---
+  duration_ms: 7.046708
+  type: 'test'
+  ...
+# Subtest: original task expiry and changed lifecycle still reject analysis even when the prior context has expired
+ok 42 - original task expiry and changed lifecycle still reject analysis even when the prior context has expired
+  ---
+  duration_ms: 8.383042
+  type: 'test'
+  ...
+# Subtest: original SENT159 canonical and retained reached price reproduce the old clock veto; SENT160 unreached price stays blocked
+ok 43 - original SENT159 canonical and retained reached price reproduce the old clock veto; SENT160 unreached price stays blocked
+  ---
+  duration_ms: 31.192667
+  type: 'test'
+  ...
+# Subtest: the actual fourth-run6778 snapshot plus finalization read charges6779 without rewriting its old ledger row
+ok 44 - the actual fourth-run6778 snapshot plus finalization read charges6779 without rewriting its old ledger row
+  ---
+  duration_ms: 4.734834
+  type: 'test'
+  ...
+# Subtest: finalization raises only an exceeded reserve, never refunds unused allowance, and refuses duplicate finalization
+ok 45 - finalization raises only an exceeded reserve, never refunds unused allowance, and refuses duplicate finalization
+  ---
+  duration_ms: 0.768708
+  type: 'test'
+  ...
+# Subtest: old per-row overrun debt blocks each active archive/price/forecast admission even while other rows have unused reserves
+ok 46 - old per-row overrun debt blocks each active archive/price/forecast admission even while other rows have unused reserves
+  ---
+  duration_ms: 0.9055
+  type: 'test'
+  ...
+# Subtest: unknown costs remain blocked and reserved in-flight rows cannot be discounted by measured zeros
+ok 47 - unknown costs remain blocked and reserved in-flight rows cannot be discounted by measured zeros
+  ---
+  duration_ms: 0.185417
+  type: 'test'
+  ...
+# Subtest: the assembled analytics daily view cannot refund the ledger debt or reprice another family by its own burst cap
+ok 48 - the assembled analytics daily view cannot refund the ledger debt or reprice another family by its own burst cap
+  ---
+  duration_ms: 0.232917
+  type: 'test'
+  ...
+# Subtest: an incomplete or contradictory analytics admission view fails closed without inventing a charged zero
+ok 49 - an incomplete or contradictory analytics admission view fails closed without inventing a charged zero
+  ---
+  duration_ms: 0.08225
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 358.491417

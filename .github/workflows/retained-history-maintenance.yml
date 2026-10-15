@@ -23,6 +23,10 @@ on:
         description: Opt-in exact private batch-read qualification; defaults off
         type: boolean
         default: false
+      canonical_cursor:
+        description: Exact bounded canonical discovery cursor from the prior receipt; no quota reset
+        type: string
+        default: '0'
       owner_emergency_day:
         description: Owner-approved one-off third shared slot on 2026-10-15 only; empty keeps the two-slot limit
         type: string
@@ -53,6 +57,7 @@ jobs:
       REPORT2_PRIVATE_PREFETCH_QUALIFICATION: ${{ inputs.prefetch_private == true }}
       REPORT2_OWNER_STORAGE_EMERGENCY_DAY: ${{ inputs.owner_emergency_day || '' }}
       REPORT2_OWNER_STORAGE_EMERGENCY_SLOT: ${{ inputs.owner_emergency_slot || '3' }}
+      REPORT2_CANONICAL_SOURCE_CURSOR: ${{ inputs.canonical_cursor || '0' }}
       EXPECTED_MAIN: ${{ inputs.expected_main || github.sha }}
       BORROW_EXISTING_OWNER: ${{ inputs.expected_owner || '' }}
       LOSSLESS_EXECUTE: ${{ github.event_name == 'schedule' || inputs.execute == true }}
@@ -62,7 +67,7 @@ jobs:
         with:
           node-version: '24'
       - name: Verify lossless original bytes, source race, hot references and existing quotas
-        run: node --test runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/github-bounded-phase-lease.test.mjs
+        run: node --test runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/github-bounded-phase-lease.test.mjs
       - name: Preserve original cold full evidence and prove exact current readthrough
         run: node tools/recover-lossless-retained-history-20261014.mjs
       - uses: actions/upload-artifact@v4

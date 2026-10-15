@@ -10,6 +10,8 @@ const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoin
 await fs.mkdir(dir,{recursive:true});
 const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
 const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY||'')||null;
+const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'0');
+const canonical_cursor=Number(canonical_cursor_input);
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
@@ -28,6 +30,7 @@ async function guard(){
 }
 try{
  if(!/^\d+$/.test(String(out.run||''))||process.env.GITHUB_REPOSITORY!==repository)throw Error('EXACT_RETAINED_REPOSITORY_RUN_REQUIRED');
+ if(!/^(0|[1-9][0-9]*)$/.test(canonical_cursor_input)||!Number.isSafeInteger(canonical_cursor))throw Error('EXACT_CANONICAL_CURSOR_REQUIRED');
  if(!['full_evidence','canonical'].includes(kind))throw Error('EXACT_RETAINED_HISTORY_KIND_REQUIRED');
  if(!['3','4'].includes(owner_slot_input)||(owner_emergency_slot===4&&!emergency))throw Error('EXACT_OWNER_EMERGENCY_SLOT_REQUIRED');
  if(owner_emergency_day!==null&&(!emergency||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||!process.env.BORROW_EXISTING_OWNER||kind!=='canonical'||!out.execute||process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION!=='true'))throw Error('EXACT_MANUAL_CANONICAL_EMERGENCY_REQUIRED');
@@ -55,7 +58,7 @@ try{
    const grant=whole.reserve({logical_request_id:'RETAINED_PRIVATE_D1:'+private_HTTP,lane:'background',attempts:1});if(grant.allowed)private_HTTP++;return grant;
   }});
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
-  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
+  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,source_cursor:canonical_cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
   },before_modify:guard,execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:emergency}));
   out.canonical_rows_modified=out.compacted?.length||0;
