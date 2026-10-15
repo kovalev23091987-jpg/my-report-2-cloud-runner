@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {rolloutFreeArchiveReaders,requireArchiveWritersOff} from './free-archive-rollout.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff} from './free-archive-rollout.mjs';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`,h='a'.repeat(40),names=['my-report-2-hub','my-report-2-liq-forecast-history'];
 test('actual repository writer/rotation flags must be completely read and off before each deployment guard',()=>{
  assert(requireArchiveWritersOff({total_count:0,variables:[]}));assert(requireArchiveWritersOff({total_count:1,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED',value:'false'}]}));
@@ -31,4 +31,25 @@ test('foreign deployment or unknown settings keep current state and save an exac
 });
 test('writers, unqualified schemas, wrong worker order and another tested head are rejected before transport',async()=>{
  for(const change of [p=>p.writer_enabled=true,p=>p.native_schema_run=1,p=>p.workers.reverse(),p=>p.qualified.head='c'.repeat(40)]){const f=fixture();change(f.plan);await assert.rejects(f.run(),/EXACT_FREE_ARCHIVE_READER_PLAN/);assert.equal(f.events.length,0);}
+});
+function resumeFixture(){
+ const f=fixture(),prior={schema:'EXACT_FREE_ARCHIVE_READER_ROLLOUT_V1',cloud_run:'38792404641',head:h,status:'FREE_ARCHIVE_PARTIAL_STATE_REQUIRES_EXACT_RESUME',writer_enabled:false,automatic_rotation_enabled:false,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,whole_HTTP:{total:68},workers:f.plan.workers.map((w,i)=>({name:w.name,before:f.original[i],staged:{version_id:id(i+21),activated:false},expected_module_sha256:w.module_sha256}))};
+ f.states[0]={...f.states[0],version_id:id(21),deployment_id:id(31),module_sha256:f.plan.workers[0].module_sha256,settings_sha256:f.plan.workers[0].target_settings_sha256};
+ f.adapter.verifyStaged=async()=>{};const run=()=>resumeFreeArchiveReaders({plan:f.plan,prior,adapter:f.adapter,guard:async()=>{},save:async r=>f.receipts.push(r)});return{...f,prior,run};
+}
+test('own partial resume reuses both uploads and switches only the remaining reader',async()=>{
+ const f=resumeFixture(),r=await f.run();assert.equal(r.status,'BOTH_FREE_ARCHIVE_READERS_EXACT_MODULES_BINDINGS_AND_CRONS_VERIFIED');assert.deepEqual(f.events,['activate:'+names[1]+':'+id(22)]);assert.equal(r.prior_whole_HTTP,68);assert(r.workers[0].already_active);assert.equal(r.sourceHTTP,0);assert.equal(r.D1,0);
+});
+test('foreign active state, missing staged bytes, wrong source receipt and changed module cannot resume',async()=>{
+ for(const kind of ['FOREIGN','STAGED','RECEIPT','MODULE','BINDINGS']){
+  const f=resumeFixture();if(kind==='FOREIGN')f.states[0].version_id=id(99);if(kind==='STAGED')f.adapter.verifyStaged=async()=>{throw Error('NO_EXACT_STAGE');};if(kind==='RECEIPT')f.prior.cloud_run='other';if(kind==='MODULE')f.prior.workers[0].expected_module_sha256='f'.repeat(64);if(kind==='BINDINGS')f.states[0].settings_sha256='f'.repeat(64);
+  await assert.rejects(f.run);assert.equal(f.events.length,0);
+ }
+});
+test('partial resume loses activation reply only after restoring exact originals, without new uploads',async()=>{
+ const f=resumeFixture(),activate=f.adapter.activate;let first=true;f.adapter.activate=async(w,v)=>{await activate(w,v);if(first){first=false;throw Error('REPLY_LOST');}};
+ await assert.rejects(f.run,e=>{assert.equal(e.archive_rollout_receipt.rollback.length,2);assert(e.archive_rollout_receipt.rollback.every(r=>r.status==='ORIGINAL_MODULE_AND_BINDINGS_RESTORED'));return true;});assert(f.states.every((s,i)=>s.module_sha256===f.original[i].module_sha256));assert(!f.events.some(e=>e.startsWith('stage:')));
+});
+test('a new foreign version during partial resume is never overwritten by rollback',async()=>{
+ const f=resumeFixture(),activate=f.adapter.activate;f.adapter.activate=async(w,v)=>{await activate(w,v);f.states[1].version_id=id(99);throw Error('FOREIGN_CHANGE');};await assert.rejects(f.run,e=>{assert(e.archive_rollout_receipt.rollback.some(r=>r.name===names[1]&&r.reason==='FOREIGN_ARCHIVE_READER_STATE_KEEP_CURRENT'));return true;});assert.equal(f.states[1].version_id,id(99));
 });

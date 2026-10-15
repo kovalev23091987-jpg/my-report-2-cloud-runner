@@ -6,6 +6,47 @@ export function requireArchiveWritersOff(result){
 }
 const same=(a,b)=>a?.version_id===b?.version_id&&a?.deployment_id===b?.deployment_id&&a?.module_sha256===b?.module_sha256&&a?.settings_sha256===b?.settings_sha256&&a?.crons_sha256===b?.crons_sha256;
 const target=(row,w)=>row?.version_id===w?.staged?.version_id&&row?.module_sha256===w?.expected_module_sha256&&row?.settings_sha256===w?.expected_settings_sha256&&row?.crons_sha256===w?.before?.crons_sha256;
+// Resume only the recorded own partial deployment. Both immutable uploads are
+// verified by the adapter before this function; never upload or infer a version.
+export async function resumeFreeArchiveReaders({plan,prior,adapter,guard,save=async()=>{},clock=Date.now}={}){
+ if(prior?.schema!=='EXACT_FREE_ARCHIVE_READER_ROLLOUT_V1'||prior.cloud_run!=='38792404641'||prior.status!=='FREE_ARCHIVE_PARTIAL_STATE_REQUIRES_EXACT_RESUME'||prior.writer_enabled!==false||prior.automatic_rotation_enabled!==false||[prior.sourceHTTP,prior.D1,prior.MAIN,prior.Telegram].some(n=>n!==0)||!SHA.test(plan?.head||'')||plan.qualified?.head!==plan.head||plan.qualified?.status!=='EXACT_CLOUD_AND_CURRENT_MAIN_CODE_VERIFIED'||plan.writer_enabled!==false||plan.native_schema_run!==38781244995||plan.workers?.length!==2||prior.workers?.length!==2)throw Error('EXACT_OWN_FREE_ARCHIVE_RESUME_REQUIRED');
+ const out={schema:'EXACT_FREE_ARCHIVE_READER_RESUME_V1',head:plan.head,qualified:plan.qualified,prior_native_run:prior.cloud_run,prior_whole_HTTP:prior.whole_HTTP?.total,writer_enabled:false,automatic_rotation_enabled:false,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,existing_rows_modified:0,workers:[],rollback:[],started_ts:clock()};
+ for(const [i,w] of plan.workers.entries()){
+  const p=prior.workers[i];if(w.name!==NAMES[i]||p.name!==w.name||!same(w.required_before,p.before)||!UUID.test(p.staged?.version_id||'')||p.staged.activated!==false||p.expected_module_sha256!==w.module_sha256||!HEX.test(w.target_settings_sha256||''))throw Error('EXACT_RETAINED_READER_VERSION_REQUIRED');
+  out.workers.push({name:w.name,before:p.before,staged:p.staged,expected_module_sha256:w.module_sha256,expected_settings_sha256:w.target_settings_sha256});
+ }
+ const persist=()=>save(structuredClone(out)),changed=[];
+ try{
+  await guard({min_headroom_ms:600000});
+  for(const [i,w] of plan.workers.entries()){
+   const r=out.workers[i];await adapter.verifyStaged(w,r);const current=await adapter.snapshot(w);
+   if(target(current,r)){r.already_active=current;changed.push(i);}else if(!same(current,r.before))throw Error('FOREIGN_ARCHIVE_RESUME_STATE_KEEP_CURRENT');
+  }
+  await persist();
+  for(const [i,w] of plan.workers.entries()){
+   await guard();adapter.requireHeadroom(22);const r=out.workers[i],current=await adapter.snapshot(w);
+   if(target(current,r)){r.after=current;continue;}
+   if(!same(current,r.before))throw Error('FOREIGN_ARCHIVE_RESUME_STATE_KEEP_CURRENT');
+   r.activation_intent={version_id:r.staged.version_id,ts:clock()};changed.push(i);await persist();await adapter.activate(w,r.staged.version_id);
+   r.after=await adapter.snapshot(w);if(!target(r.after,r))throw Error('FREE_ARCHIVE_RESUME_ACTIVATION_READBACK_REQUIRED');await persist();
+  }
+  for(const [i,w] of plan.workers.entries())if(!target(await adapter.snapshot(w),out.workers[i]))throw Error('FREE_ARCHIVE_RESUME_FINAL_READBACK_REQUIRED');
+  await guard();out.status='BOTH_FREE_ARCHIVE_READERS_EXACT_MODULES_BINDINGS_AND_CRONS_VERIFIED';out.completed_ts=clock();await persist();return out;
+ }catch(e){
+  out.reason=/^[A-Z0-9_]+$/.test(e.message)?e.message:'FREE_ARCHIVE_RESUME_ERROR';
+  for(const i of [...new Set(changed)].reverse()){
+   const w=plan.workers[i],r=out.workers[i];try{
+    await guard();adapter.requireHeadroom(8);const current=await adapter.snapshot(w);
+    if(same(current,r.before)){out.rollback.push({name:w.name,status:'ORIGINAL_STILL_ACTIVE'});continue;}
+    if(!target(current,r))throw Error('FOREIGN_ARCHIVE_READER_STATE_KEEP_CURRENT');
+    await adapter.activate(w,r.before.version_id);const back=await adapter.snapshot(w);
+    if(back.version_id!==r.before.version_id||back.module_sha256!==r.before.module_sha256||back.settings_sha256!==r.before.settings_sha256||back.crons_sha256!==r.before.crons_sha256)throw Error('FREE_ARCHIVE_EXACT_ROLLBACK_READBACK_REQUIRED');
+    out.rollback.push({name:w.name,status:'ORIGINAL_MODULE_AND_BINDINGS_RESTORED'});
+   }catch(err){out.rollback.push({name:w.name,status:'ROLLBACK_NOT_ACKNOWLEDGED',reason:/^[A-Z0-9_]+$/.test(err.message)?err.message:'FREE_ARCHIVE_RESUME_ROLLBACK_ERROR'});}await persist();
+  }
+  out.status='FREE_ARCHIVE_RESUME_NOT_CLOSED';out.completed_ts=clock();await persist();e.archive_rollout_receipt=out;throw e;
+ }
+}
 // Immutable uploads precede activation. Pool writers remain disabled throughout
 // the transition, so a partially deployed reader never receives a new locator.
 export async function rolloutFreeArchiveReaders({plan,adapter,guard,save=async()=>{},execute=false,clock=Date.now}={}){

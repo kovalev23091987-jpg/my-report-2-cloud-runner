@@ -2,9 +2,9 @@ import fs from 'node:fs/promises';import {execFileSync} from 'node:child_process
 import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
 import {active105OfflineReviewOwner} from '../runner/offline-review-authority.mjs';
 import {createVersionBoundWorkerReader} from '../runner/cloudflare-version-bound-readback.mjs';
-import {rolloutDigest,workerSettingsFingerprint,collectorVersionMetadata,historyVersionMetadata,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
+import {rolloutDigest,workerSettingsFingerprint,selectedVersionSettings,collectorVersionMetadata,historyVersionMetadata,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
 import {freeArchiveBindingPlan} from '../runner/free-archive-bindings.mjs';
-import {rolloutFreeArchiveReaders,requireArchiveWritersOff} from '../runner/free-archive-rollout.mjs';
+import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff} from '../runner/free-archive-rollout.mjs';
 import {patchWorker} from '../cloudflare/public-collector/patch-worker.mjs';
 import {injectPrivatePriceRuntime} from '../cloudflare/public-collector/private-price-bundle.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
@@ -47,25 +47,41 @@ try{
   const schema_receipt=JSON.parse(await fs.readFile('checkpoints/free-storage-20261015/schema-38781244995.json','utf8'));
   if(schema_receipt.cloud_run!=='38781244995'||schema_receipt.D1?.unknown_ops!==0||schema_receipt.writer_enabled!==false||schema_receipt.existing_main_rows_modified!==0)throw Error('EXACT_FREE_READER_NATIVE_SCHEMA_RECEIPT_REQUIRED');
   const config=JSON.parse(await fs.readFile('cloudflare/free-history/wrangler-liq.json','utf8')),reader=createVersionBoundWorkerReader({call:cf}),settings=new Map(),runtimes=new Map();
+  const prior=request.resume_native_run===38792404641?JSON.parse(await fs.readFile('checkpoints/free-storage-20261015/reader-partial-38792404641.json','utf8')):null;
+  if(request.resume_native_run&&!prior)throw Error('EXACT_FREE_READER_RESUME_RUN_REQUIRED');
+  if(prior)for(const w of prior.workers)reader.seed(w.name,w.before);
   const specs=[{name:P.collector,crons:['*/5 * * * *','3-58/5 * * * *']},{name:names[1],crons:config.triggers.crons}],snapshot=async w=>{const s=await reader.read(w);if(!settings.has(w.name)){settings.set(w.name,reader.settings(w.name,s.version_id));runtimes.set(w.name,reader.version(w.name,s.version_id).resources.script_runtime);}return s;};
-  const workers=[],bytes=new Map(),targetSettings=new Map();
-  for(const spec of specs){
-   const before=await snapshot(spec),originalSettings=settings.get(spec.name),binding=freeArchiveBindingPlan({settings:originalSettings,schema_receipt});
+  const workers=[],bytes=new Map(),targetSettings=new Map(),verifiedStaged=new Map();
+  for(const [i,spec] of specs.entries()){
+   const current=await snapshot(spec),before=prior?prior.workers[i].before:current,originalVersion=prior?await cf(spec.name,'/versions/'+before.version_id):null,originalSettings=prior?selectedVersionSettings(settings.get(spec.name),originalVersion):settings.get(spec.name);
+   if(prior&&workerSettingsFingerprint(originalSettings)!==before.settings_sha256)throw Error('FREE_READER_ORIGINAL_SETTINGS_CHANGED');
+   if(prior)runtimes.set(spec.name,originalVersion.resources.script_runtime);
+   const binding=freeArchiveBindingPlan({settings:originalSettings,schema_receipt});
    if(binding.added_locations.length!==4)throw Error('FREE_READER_ALREADY_PARTIAL_OR_INSTALLED_REQUIRES_EXACT_RESUME');
    const desired={...originalSettings,bindings:binding.bindings};targetSettings.set(spec.name,desired);
    let module;
-   if(spec.name===P.collector){const original=reader.module(spec.name,before.version_id).bytes.toString(),injected=injectPrivatePriceRuntime(await fs.readFile('cloudflare/public-collector/injected-worker-tail.js','utf8')).source.trim(),patched=patchWorker(original,injected),marker='var __REPORT2_PUBLIC_COLLECTOR_VERSION = ',at=original.indexOf(marker);if(!['UPDATED','ALREADY_PATCHED'].includes(patched.status)||at<0||patched.source.indexOf(marker)!==at||original.slice(0,at)!==patched.source.slice(0,at))throw Error('FREE_READER_EXACT_HUB_PREFIX_REQUIRED');module=Buffer.from(patched.source);out.hub_prefix_sha256=rolloutDigest(original.slice(0,at));}
+   if(spec.name===P.collector){const original=reader.module(spec.name,current.version_id).bytes.toString(),injected=injectPrivatePriceRuntime(await fs.readFile('cloudflare/public-collector/injected-worker-tail.js','utf8')).source.trim(),patched=patchWorker(original,injected),marker='var __REPORT2_PUBLIC_COLLECTOR_VERSION = ',at=original.indexOf(marker);if(!['UPDATED','ALREADY_PATCHED'].includes(patched.status)||at<0||patched.source.indexOf(marker)!==at||original.slice(0,at)!==patched.source.slice(0,at)||prior&&rolloutDigest(original.slice(0,at))!==prior.hub_prefix_sha256)throw Error('FREE_READER_EXACT_HUB_PREFIX_REQUIRED');module=Buffer.from(patched.source);out.hub_prefix_sha256=rolloutDigest(original.slice(0,at));}
    else module=await fs.readFile(dir+'/liq/'+path.basename(config.main).replace(/\.mjs$/,'.js'));
-   bytes.set(spec.name,module);workers.push({...spec,required_before:before,module_sha256:rolloutDigest(module),target_settings_sha256:workerSettingsFingerprint(desired),added_archive_bindings:binding.added_locations});
+   bytes.set(spec.name,module);const worker={...spec,required_before:before,module_sha256:rolloutDigest(module),target_settings_sha256:workerSettingsFingerprint(desired),added_archive_bindings:binding.added_locations};workers.push(worker);
+   if(prior){
+    const p=prior.workers[i];if(p.expected_module_sha256!==worker.module_sha256)throw Error('FREE_READER_STAGED_CODE_CHANGED');
+    const v=await cf(spec.name,'/versions/'+p.staged.version_id),effective=selectedVersionSettings(settings.get(spec.name),v);
+    // The native GET-version schema does not promise upload annotations.
+    // Ownership is bound by the saved upload UUID plus exact code/settings;
+    // reject contradictory annotations when the endpoint does return them.
+    if(v.id!==p.staged.version_id||workerSettingsFingerprint(effective)!==worker.target_settings_sha256||v.annotations&&v.annotations['workers/commit_sha']!==prior.head)throw Error('FREE_READER_EXACT_STAGED_SETTINGS_REQUIRED');
+    const latest=await reader.latestBytes(spec.name,p.staged.version_id);if(latest.module_sha256!==worker.module_sha256)throw Error('FREE_READER_EXACT_RETAINED_STAGED_BYTES_REQUIRED');
+    reader.seed(spec.name,{version_id:v.id,module_sha256:latest.module_sha256});verifiedStaged.set(spec.name,{version_id:v.id,module_sha256:latest.module_sha256,settings_sha256:worker.target_settings_sha256});
+   }
   }
   const plan={head:request.qualified_head,expected_main:request.expected_main,native_schema_run:38781244995,writer_enabled:false,qualified:{head:request.qualified_head,run:run.id,status:'EXACT_CLOUD_AND_CURRENT_MAIN_CODE_VERIFIED',current_code_manifest_sha256:rolloutDigest(manifest),current_code_files:paths.length},workers};
-  const adapter={snapshot,requireHeadroom:n=>{if(P.max_cloudflare_HTTP-cloudflare_HTTP<n||budget.summary().remaining-24<n)throw Error('FREE_READER_ROLLBACK_HTTP_HEADROOM_REQUIRED');},stage:async(w,before)=>{
+  const adapter={snapshot,verifyStaged:async(w,r)=>{const v=verifiedStaged.get(w.name);if(v?.version_id!==r.staged.version_id||v.module_sha256!==w.module_sha256||v.settings_sha256!==w.target_settings_sha256)throw Error('FREE_READER_VERIFIED_RETAINED_STAGE_REQUIRED');},requireHeadroom:n=>{if(P.max_cloudflare_HTTP-cloudflare_HTTP<n||budget.summary().remaining-24<n)throw Error('FREE_READER_ROLLBACK_HTTP_HEADROOM_REQUIRED');},stage:async(w,before)=>{
    const latest=await cf(w.name,'/versions?per_page=1');if(latest.items?.[0]?.id!==before.version_id)throw Error('FREE_READER_LATEST_UPLOAD_IS_NOT_ACTIVE');
    const metadata=w.name===P.collector?collectorVersionMetadata({settings:targetSettings.get(w.name),runtime:runtimes.get(w.name),head:request.qualified_head,active_version:before.version_id,latest_uploaded_version:latest.items[0].id}):historyVersionMetadata({settings:targetSettings.get(w.name),runtime:runtimes.get(w.name),config,main_module:path.basename(config.main).replace(/\.mjs$/,'.js'),head:request.qualified_head});
    const moduleName=w.name===P.collector?'worker.js':path.basename(config.main).replace(/\.mjs$/,'.js'),form=new FormData();form.set('metadata',new Blob([JSON.stringify(metadata)],{type:'application/json'}));form.set(moduleName,new Blob([bytes.get(w.name)],{type:'application/javascript+module'}),moduleName);
    const v=await cf(w.name,'/versions?bindings_inherit=strict',{method:'POST',body:form});return{version_id:v.id,activated:false};
   },activate:(w,id)=>cf(w.name,'/deployments',{method:'POST',body:{strategy:'percentage',versions:[{version_id:id,percentage:100}],annotations:{'workers/message':'Exact free archive readers '+request.qualified_head}}})};
-  await rolloutFreeArchiveReaders({plan,adapter,guard,save,execute:true});
+  if(prior)await resumeFreeArchiveReaders({plan,prior,adapter,guard,save});else await rolloutFreeArchiveReaders({plan,adapter,guard,save,execute:true});
  }
 }catch(error){if(!error.archive_rollout_receipt)await save({status:'FREE_ARCHIVE_READER_ROLLOUT_NOT_CLOSED',reason:/^[A-Z0-9_]+$/.test(error.message)?error.message:'FREE_ARCHIVE_READER_ROLLOUT_ERROR'});process.exitCode=1;}
 console.log(JSON.stringify({status:proof?.status,reason:proof?.reason,github_HTTP,cloudflare_HTTP,whole_HTTP:budget.summary(),sourceHTTP:0,D1:0,writer_enabled:false}));
