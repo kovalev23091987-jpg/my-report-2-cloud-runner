@@ -1,0 +1,28 @@
+name: Inspect exact forecast Worker multipart metadata
+on:
+  push:
+    branches: [fix/free-archive-worker-rollout-20261015]
+    paths: [checkpoints/FREE_ARCHIVE_PARTS_INSPECTION_REQUEST_20261015.json]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read names and hashes only, no module code or configuration values
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node tools/inspect-free-archive-worker-parts-20261015.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: free-archive-parts-${{ github.run_id }}
+          path: audit-output/free-archive-worker-parts/proof.json
+          if-no-files-found: error
+          retention-days: 30
