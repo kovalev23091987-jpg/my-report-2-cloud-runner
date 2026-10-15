@@ -1,0 +1,36 @@
+name: Coordinate exact free archive readers
+on:
+  push:
+    branches: [fix/free-archive-worker-rollout-20261015]
+    paths: [checkpoints/FREE_ARCHIVE_READER_ROLLOUT_REQUEST_20261015.json]
+permissions:
+  contents: read
+concurrency:
+  group: report2-free-archive-reader-rollout
+  cancel-in-progress: false
+jobs:
+  readers:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Compile the isolated reader without activation or source calls
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+          CLOUDFLARE_SEND_METRICS: 'false'
+        run: npx --yes wrangler@4.151.0 deploy --dry-run --config cloudflare/free-history/wrangler-liq.json --outdir "$GITHUB_WORKSPACE/audit-output/free-archive-reader-rollout/liq" > /tmp/report2-free-reader-build.log
+      - name: Bind exact native schema, cloud code, main, lease and Worker versions before activation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node tools/rollout-free-archive-readers-20261015.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: free-archive-readers-${{ github.run_id }}
+          path: audit-output/free-archive-reader-rollout/proof.json
+          if-no-files-found: error
+          retention-days: 30
