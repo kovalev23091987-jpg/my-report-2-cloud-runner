@@ -52,9 +52,10 @@ export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERE
  return{sql:`${scope.with_sql}UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${scope.predicate}`,params};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,source_cursor=0,now=Date.now()}={}){
+export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof (archive_pool||archive_db)?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
+ if(!Number.isSafeInteger(max_mutation_batches)||max_mutation_batches<0||max_mutation_batches>PROTECTED_CANONICAL_POLICY.max_batches)throw Error('EXISTING_CANONICAL_BATCH_CAP_REQUIRED');
  const p=PROTECTED_CANONICAL_POLICY,usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),(archive_pool||archive_db).usageSnapshot());
  const admit=e=>evaluateWithinRunReservation({reservation:p.reservation,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+3});
  const need=(r,w)=>{if(!admit({rows_read:r,rows_written:w}).allowed)throw Error('CANONICAL_SHARED_NATIVE_HEADROOM_REQUIRED');};
@@ -121,7 +122,8 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
   }
   if(!execute)return{...out,status:'PRIVATE_ORIGINALS_VERIFIED_CANONICAL_BODIES_UNCHANGED',D1:usage()};
   let cursor=0;
-  while(cursor<prepared.length&&out.mutation_batches<p.max_batches){
+  out.max_mutation_batches_this_job=max_mutation_batches;
+  while(cursor<prepared.length&&out.mutation_batches<max_mutation_batches){
    const group=[];let statements=[];
    while(cursor+group.length<prepared.length&&group.length<p.max_rows_per_batch){const s=prepared[cursor+group.length],next=[...statements,...s.statements];if(Buffer.byteLength(JSON.stringify({op:'batch',statements:next}))>p.bridge_wire_bytes||!admit({rows_read:(group.length+1)*per_update_reads+96,rows_written:(group.length+1)*8+3}).allowed)break;group.push(s);statements=next;}
    if(!group.length){out.deferred_hot.push(...prepared.slice(cursor).map(s=>({publication_id:s.row.publication_id,reason:'SHARED_NATIVE_HEADROOM'})));cursor=prepared.length;break;}

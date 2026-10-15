@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';import crypto from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
@@ -7,6 +8,7 @@ import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFu
 import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
 import {canonicalExecutionMode} from '../runner/canonical-native-qualification.mjs';
 import {selectCanonicalRetentionCursor,persistCanonicalRetentionCursor} from '../runner/canonical-retention-cursor.mjs';
+import {requireDatedRetentionQualification,verifyExactArchiveReaderBindings} from '../runner/retention-self-qualification.mjs';
 import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
@@ -16,13 +18,14 @@ const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY
 const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'auto');
 let cursor_selection;
 const native_qualification_input=String(process.env.REPORT2_NATIVE_CANONICAL_QUALIFICATION||'false');
+const self_day=String(process.env.REPORT2_SELF_NATIVE_QUALIFICATION_UTC_DAY||''),self_qualification=!!self_day;
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
-const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,archive_pool,lease,admitted=false,reservation_id;
+const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,worker_control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,archive_pool,lease,admitted=false,reservation_id;
 const nativeUsage=()=>archive_db?combineMeasuredD1Usage(db.usageSnapshot(),(archive_pool||archive_db).usageSnapshot()):db.usageSnapshot();
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
- if(control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETAINED_GITHUB_CONTROL_BOUND');
+ if(control_HTTP+worker_control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETAINED_GITHUB_CONTROL_BOUND');
  const grant=whole.reserve({logical_request_id:'RETAINED_GITHUB_CONTROL:'+control_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('RETAINED_GITHUB_CONTROL_BOUND');control_HTTP++;
  return fetch(url,{...options,redirect:'error'});
 }});
@@ -42,7 +45,18 @@ try{
  // Preparation may retain originals. Hot-body replacement needs its own
  // measured native qualification; a code merge never enables it implicitly.
  if(!['true','false'].includes(native_qualification_input))throw Error('EXACT_NATIVE_QUALIFICATION_INPUT_REQUIRED');
- const mode=canonicalExecutionMode({kind,execute:out.execute,enabled:process.env.REPORT2_CANONICAL_COMPACTION_ENABLED==='true',emergency,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER,prefetch:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',native_qualification:native_qualification_input==='true'});
+ if(self_qualification){
+  out.dated_authority=requireDatedRetentionQualification({day:self_day,event:process.env.GITHUB_EVENT_NAME,workflow:process.env.GITHUB_WORKFLOW,kind,execute:out.execute,prefetch:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',native_qualification:native_qualification_input==='true'});
+  if(process.env.BORROW_EXISTING_OWNER||emergency||process.env.REPORT2_CANONICAL_COMPACTION_ENABLED==='true'||process.env.REPORT2_LOSSLESS_RETENTION_ENABLED==='true')throw Error('DATED_QUALIFICATION_MUST_NOT_ENABLE_AUTOMATIC_ROTATION');
+  const tested_head=process.env.REPORT2_NATIVE_QUALIFIED_HEAD,tested_run=process.env.REPORT2_NATIVE_QUALIFIED_RUN;
+  if(!/^[a-f0-9]{40}$/.test(tested_head||'')||!/^\d+$/.test(tested_run||'')||execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()!==tested_head)throw Error('EXACT_DATED_QUALIFIED_CHECKOUT_REQUIRED');
+  const main=(await control.call('git/ref/heads/main')).object.sha,qualified=await control.call('actions/runs/'+tested_run),tree=await control.call('git/trees/'+main+'?recursive=1');
+  if(qualified.head_sha!==tested_head||qualified.conclusion!=='success'||qualified.name!=='LIQ assembled spot and 105 admission offline'||tree.truncated||!Array.isArray(tree.tree))throw Error('EXACT_DATED_CLOUD_QUALIFICATION_REQUIRED');
+  const files=execFileSync('git',['ls-files','-z','runner/*.mjs','current-generation/files/*.mjs','current-generation/files/*.js','cloudflare/*.mjs','cloudflare/*.js','tools/recover-lossless-retained-history-20261014.mjs','.github/workflows/retained-history-native-qualification-20261016.yml'],{encoding:'utf8'}).split('\0').filter(Boolean),blobs=new Map(tree.tree.filter(r=>r.type==='blob').map(r=>[r.path,r.sha]));
+  for(const p of files){const b=await fs.readFile(p),hash=crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');if(blobs.get(p)!==hash)throw Error('DATED_QUALIFIED_CODE_DIFFERS_FROM_CURRENT_MAIN');}
+  out.qualified={head:tested_head,run:Number(tested_run),exact_executable_files:files.length,current_main:main};expected=main;
+ }
+ const mode=canonicalExecutionMode({kind,execute:out.execute,enabled:process.env.REPORT2_CANONICAL_COMPACTION_ENABLED==='true',emergency,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER,prefetch:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',native_qualification:native_qualification_input==='true',self_qualification});
  out.canonical_execution_mode=mode;
  if(process.env.BORROW_EXISTING_OWNER){
   const main=(await control.call('git/ref/heads/main')).object.sha;if(main!==expected)throw Error('RETAINED_MAIN_MOVED');
@@ -50,11 +64,21 @@ try{
   if(p.value.lease?.owner!==process.env.BORROW_EXISTING_OWNER||f.value.active||g.value.latest_only!==true||s.value.active_working_state?.owner_authorized_sequential_continuation!==true||r.value.active_working_state?.owner_authorized_sequential_continuation!==true)throw Error('EXACT_OWNER_AND_LATEST_AUTHORITY_REQUIRED');
   lease={borrowed:true,allowed:true,lease:p.value.lease,head:main};
  }else{
-  if(process.env.REPORT2_LOSSLESS_RETENTION_ENABLED!=='true')throw Error('LOSSLESS_AUTOMATIC_RETENTION_NOT_ACTIVATED');
+  if(process.env.REPORT2_LOSSLESS_RETENTION_ENABLED!=='true'&&!self_qualification)throw Error('LOSSLESS_AUTOMATIC_RETENTION_NOT_ACTIVATED');
   lease=await acquireWeeklyPhaseLease(control,{run_id:out.run,expected_main:expected,scope:'RETAINED_HISTORY. Owner authorized bounded lossless old full-evidence retention/recovery, source clocks and canonical references protected. Existing caps, paused roles and forms unchanged. GitHub run '+out.run});
   if(!lease.allowed)throw Error(lease.status);expected=lease.head;
  }
  const guarded=await guard();if(kind==='canonical'){cursor_selection=selectCanonicalRetentionCursor(canonical_cursor_input,guarded.active_working_state?.canonical_retention_cursor??null);out.cursor_selection=cursor_selection;}out.control={expected_main:expected,owner:lease.lease.owner,borrowed:lease.borrowed===true,lease_expires_ts:lease.lease.expires_ts};
+ if(self_qualification){
+  const proof=JSON.parse(await fs.readFile('checkpoints/free-storage-20261015/readers-38797445363.json','utf8'));
+  const call=async(name,suffix)=>{
+   if(!['my-report-2-hub','my-report-2-liq-forecast-history'].includes(name)||!/^\/(?:deployments|settings|schedules|versions\/[a-f0-9-]+)$/.test(suffix)||worker_control_HTTP>=8||control_HTTP+worker_control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_READER_CONTROL_BOUND');
+   const grant=whole.reserve({logical_request_id:'DATED_READER_CONTROL:'+worker_control_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('DATED_READER_CONTROL_BOUND');worker_control_HTTP++;
+   const r=await fetch('https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/workers/scripts/'+name+suffix,{headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('DATED_READER_HTTP_'+r.status);const j=await r.json();if(!j.success||!j.result)throw Error('DATED_READER_ACK_REQUIRED');return j.result;
+  };
+  out.current_readers=await verifyExactArchiveReaderBindings({proof,call});
+  if(control_HTTP+worker_control_HTTP+13>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
+ }
  db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{beforeRequest:event=>{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
@@ -67,9 +91,10 @@ try{
   }};
   archive_pool=pool_enabled?createPrivateArchivePool({enabled:true,...archive_options}):null;archive_db=archive_pool?.legacy_db??new PrivateArchiveD1API(archive_options);
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
-  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,source_cursor:cursor_selection.cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
+  const max_mutation_batches=Math.min(6,Math.max(0,Math.floor((LOSSLESS_RECOVERY_POLICY.max_control_HTTP-control_HTTP-worker_control_HTTP-(lease.borrowed?5:10))/3)));out.control_limited_mutation_batches=max_mutation_batches;
+  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,source_cursor:cursor_selection.cursor,max_mutation_batches,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
-  },before_modify:async()=>{if(control_HTTP+3+(lease.borrowed?5:10)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
+  },before_modify:async()=>{if(control_HTTP+worker_control_HTTP+3+(lease.borrowed?5:10)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
   out.canonical_rows_modified=out.compacted?.length||0;
  }else{
  const save_originals=async rows=>{
@@ -93,6 +118,6 @@ try{
  if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=(archive_pool||archive_db).usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
  if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
- out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
+ out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.worker_control_HTTP=worker_control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));
 }
