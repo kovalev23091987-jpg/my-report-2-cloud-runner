@@ -78,7 +78,10 @@ async function __report2PublicCollectorHash(text) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 async function __report2PublicCollectorPriorSnapshot(db) {
-  var result = await db.prepare(`SELECT bucket,generation,shard,source_timestamps_json,payload FROM report2_market_snapshot_batch_v1
+  var priorRuntime=typeof __report2InjectedPrivatePriceRuntime==='object'?__report2InjectedPrivatePriceRuntime:null;
+  var result = priorRuntime?.readCollectorPriorRows
+    ?await priorRuntime.readCollectorPriorRows(db,{actor:__REPORT2_PUBLIC_COLLECTOR_ACTOR,generation:__REPORT2_PUBLIC_COLLECTOR_GENERATION})
+    :await db.prepare(`SELECT bucket,generation,shard,source_timestamps_json,payload FROM report2_market_snapshot_batch_v1
     WHERE actor=?1 AND schema_version='report2-market-snapshot-batch-v1' AND status='COMPLETE'
       AND bucket=(SELECT MAX(bucket) FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND schema_version='report2-market-snapshot-batch-v1' AND status='COMPLETE')
     ORDER BY generation DESC,shard ASC LIMIT 32`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR).all();
@@ -307,11 +310,14 @@ async function __report2PublicCollectorScheduled(controller, env) {
   if (__report2PublicCollectorSwitch(env?.CALIBRATION_APPLY_ENABLED)) throw new Error("PUBLIC_COLLECTOR_CALIBRATION_ROLE_FORBIDDEN");
   if (String(env?.REPORT2_CURRENT_GENERATION ?? "") !== __REPORT2_PUBLIC_COLLECTOR_GENERATION) throw new Error("PUBLIC_COLLECTOR_GENERATION_MISMATCH");
   if (!env?.DATA_DB) throw new Error("PUBLIC_COLLECTOR_D1_REQUIRED");
+  var nativeObserver=typeof __report2InjectedPrivatePriceRuntime==='object'&&__report2InjectedPrivatePriceRuntime?.observeCollectorD1
+    ?__report2InjectedPrivatePriceRuntime.observeCollectorD1(env.DATA_DB):null;
+  if(nativeObserver)env={...env,DATA_DB:nativeObserver.db};
   var scheduled = __report2PublicCollectorTimestamp(controller?.scheduledTime) ?? started;
   var bucket = Math.floor(scheduled / __REPORT2_PUBLIC_COLLECTOR_SLOT_MS) * __REPORT2_PUBLIC_COLLECTOR_SLOT_MS;
   var claim = await __report2PublicCollectorClaim(env.DATA_DB, bucket, started);
   if (!claim.claimed) {
-    console.log("REPORT2_PUBLIC_COLLECTOR_NOOP", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, status: claim.status }));
+    console.log("REPORT2_PUBLIC_COLLECTOR_NOOP", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, status: claim.status, native_D1:nativeObserver?.usageSnapshot()??null, native_cost_admission_changed:false }));
     return;
   }
   var externalRequests = 0, rowsRead = 3+Number(claim.rows_read??0), rowsWritten = Number(claim.rows_written ?? 0), payloadBytes = 0, contractCount = 0, shardCount = 0;
@@ -399,11 +405,11 @@ async function __report2PublicCollectorScheduled(controller, env) {
       console.log('REPORT2_LIGHT_PRICE_RECHECK',JSON.stringify(light));
     }
     await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "CLOSED", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "CLOSED", error_text: null, contract_count: contractCount, shard_count: shardCount });
-    console.log("REPORT2_PUBLIC_COLLECTOR_CLOSED", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, generation: __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, contracts: contractCount, shards: shardCount, external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten + 2, payload_bytes: payloadBytes, wall_ms: Date.now() - started, analytical_decision: false, telegram: false, bykaranteli: false }));
+    console.log("REPORT2_PUBLIC_COLLECTOR_CLOSED", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, generation: __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, contracts: contractCount, shards: shardCount, external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten + 2, legacy_rows_are_not_native_billing:true, native_D1:nativeObserver?.usageSnapshot()??null, native_cost_admission_changed:false, payload_bytes: payloadBytes, wall_ms: Date.now() - started, analytical_decision: false, telegram: false, bykaranteli: false }));
   } catch (error) {
     var message = String(error?.message ?? error).slice(0, 300);
     await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "ERROR", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "ERROR", error_text: message, contract_count: contractCount, shard_count: shardCount });
-    console.error("REPORT2_PUBLIC_COLLECTOR_ERROR", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, error: message, external_requests: externalRequests, analytical_decision: false, telegram: false, bykaranteli: false }));
+    console.error("REPORT2_PUBLIC_COLLECTOR_ERROR", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, error: message, external_requests: externalRequests, native_D1:nativeObserver?.usageSnapshot()??null, native_cost_admission_changed:false, analytical_decision: false, telegram: false, bykaranteli: false }));
     throw error;
   }
 }

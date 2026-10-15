@@ -1,0 +1,189 @@
+{
+  "schema": "ACTIVE105_D1_FAMILY_INVENTORY_V1",
+  "recorded_utc": "2026-10-15T12:29:06.504976+00:00",
+  "status": "WHOLE_DAY_NOT_CLOSED_DO_NOT_USE_LEGACY_SCALAR_AS_GUARANTEE",
+  "limits": {
+    "reads": 3500000,
+    "writes": 70000
+  },
+  "families": [
+    {
+      "family": "ANALYTICS",
+      "maximum_invocations": 47,
+      "per_invocation": {
+        "reads": 54000,
+        "writes": 840
+      },
+      "day": {
+        "reads": 2538000,
+        "writes": 39480
+      }
+    },
+    {
+      "family": "CANONICAL_COLD_COPY",
+      "maximum_invocations": 47,
+      "per_invocation": {
+        "reads": 5000,
+        "writes": 80
+      },
+      "day": {
+        "reads": 235000,
+        "writes": 3760
+      }
+    },
+    {
+      "family": "PRIVATE_FORECAST",
+      "maximum_invocations": 24,
+      "per_invocation": {
+        "reads": 5000,
+        "writes": 80
+      },
+      "day": {
+        "reads": 120000,
+        "writes": 1920
+      }
+    },
+    {
+      "family": "PRIVATE_PRICE",
+      "maximum_invocations": 288,
+      "per_invocation": {
+        "reads": 800,
+        "writes": 32
+      },
+      "day": {
+        "reads": 230400,
+        "writes": 9216
+      }
+    },
+    {
+      "family": "TRIGGER_ADMISSION",
+      "maximum_invocations": 75,
+      "per_invocation": {
+        "reads": 1500,
+        "writes": 16
+      },
+      "day": {
+        "reads": 112500,
+        "writes": 1200
+      }
+    },
+    {
+      "family": "TRIGGER_POLLS_AND_BACKUP_EARLY",
+      "maximum_invocations": 288,
+      "per_invocation": {
+        "reads": 41,
+        "writes": 8
+      },
+      "day": {
+        "reads": 11808,
+        "writes": 2304
+      }
+    },
+    {
+      "family": "RETAINED_HISTORY",
+      "maximum_invocations": 2,
+      "per_invocation": {
+        "reads": 5000,
+        "writes": 400
+      },
+      "day": {
+        "reads": 10000,
+        "writes": 800
+      }
+    },
+    {
+      "family": "HTX_WEEKLY_D1",
+      "maximum_invocations": 1,
+      "per_invocation": {
+        "reads": 4000,
+        "writes": 160
+      },
+      "day": {
+        "reads": 4000,
+        "writes": 160
+      }
+    },
+    {
+      "family": "LIQ_NEW_SOURCE_VALIDATE",
+      "maximum_invocations": 2,
+      "per_invocation": {
+        "reads": 2500,
+        "writes": 40
+      },
+      "day": {
+        "reads": 5000,
+        "writes": 80
+      }
+    }
+  ],
+  "known_separate_family_envelopes_sum_not_complete_day": {
+    "reads": 3266708,
+    "writes": 58920
+  },
+  "remaining_before_unclosed_families": {
+    "reads": 233292,
+    "writes": 11080
+  },
+  "not_yet_closed": [
+    "Primary HTX collector source-D1 native read/index write cost, including no-op invocations and cleanup; logical10000 cap is not a native cost proof.",
+    "Hourly compact HTX history source and archive D1 plus archive-run log. One bundled record per hour, not105 separate rows.",
+    "Bridge/control queries outside finalized reservations; failed/unknown replies and unfinished reservations must remain charged.",
+    "Exact overlap/difference from old3374000/66160 base and3413280/69738 maintenance scalar. Do not add whole scalar models together."
+  ],
+  "trigger_old_model": {
+    "reads": 3498308,
+    "writes": 69664,
+    "component_safe_is_not_complete_day_guarantee": true
+  },
+  "runtime_admission_or_caps_changed_by_inventory": false,
+  "source_files": [
+    {
+      "path": "current-generation/files/src/two-candidate-policy.mjs",
+      "sha256": "5da3197efb29f176ad183b4f1f9cacf06c576978ce730699308f2d1a6312bcd5"
+    },
+    {
+      "path": "runner/canonical-cold-copy.mjs",
+      "sha256": "137d912c9d9f3e2935cb70e8fa4fe246370764b840a545c834aee8d8bfb64495"
+    },
+    {
+      "path": "cloudflare/free-history/private-forecast-consumer.mjs",
+      "sha256": "ef676ef00a49d2f06629f996372e5117ffe496c42a233e609bad6b7cd3556e55"
+    },
+    {
+      "path": "cloudflare/public-collector/private-price-consumer.mjs",
+      "sha256": "087ea3371dd899748b40a386884de9621b4b52700d484693fda315e98f4fef9d"
+    },
+    {
+      "path": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "sha256": "110b2709b1e581a6f996605079e23ec6612493286d6f5148665bd198e271ba0c"
+    },
+    {
+      "path": "runner/lossless-full-evidence-recovery.mjs",
+      "sha256": "683a51af6349b4b8f37493dd04d35e022d21fe774ebae0ad4ad1d89926b224f6"
+    },
+    {
+      "path": "runner/htx-weekly-universe-plan.mjs",
+      "sha256": "e9fe8887a696c35feec85583d84afe1175afd5a354a195ef0bfabcbbd6301d9a"
+    },
+    {
+      "path": "tools/liquidation-new-source-admission-20261015.mjs",
+      "sha256": "838ae32b16f6e250104f9e1db1f435010c5a234f6f87cf0c289e7d34fce0050f"
+    },
+    {
+      "path": "cloudflare/public-collector/injected-worker-tail.js",
+      "sha256": "bbbd4a34042feb2c72702dcd199a2237ec7bfa907884852514ad1659dfd7af0a"
+    },
+    {
+      "path": "cloudflare/free-history/hourly-archive.mjs",
+      "sha256": "e19fba3719b3cc315ead4b5a1975242d5d581887ec03d5795475aa7fb5b19924"
+    },
+    {
+      "path": "cloudflare/free-history/spot-archive.mjs",
+      "sha256": "0b0fa4a7626abfe83c8b1b4f1f5f69012f280097f437eeb340802cad86b89638"
+    },
+    {
+      "path": "cloudflare/free-history/worker-entry.mjs",
+      "sha256": "ee2826e36f849d42122f98ca64c99d8f856146e0d1e6d951a0ecf8c1c1548239"
+    }
+  ]
+}

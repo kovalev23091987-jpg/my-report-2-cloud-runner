@@ -6,6 +6,8 @@ import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuou
 import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal,waitForScheduledRecoveryBoundary,scheduledRecoveryBoundary} from './scheduled-report-recovery.mjs';
 import {PrivateArchiveD1API} from '../../runner/private-archive-d1-api.mjs';
 import {runPrivatePriceRechecks} from './private-price-consumer.mjs';
+import {observeCollectorD1} from './native-cost-observer.mjs';
+import {readCollectorPriorRows} from './prior-snapshot-read.mjs';
 
 const SLOT=5*60_000;
 const ACTOR='HUB_PUBLIC_COLLECTOR';
@@ -49,7 +51,7 @@ async function main(){
   const sourceBudget=createCollectorJobBudget({used:previousBudget?.attempted_source_http||0,on_charge:used=>fs.writeFileSync(budgetFile,JSON.stringify({schema:'COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1',cloud_run:cloudRun,attempted_source_http:used,maximum_source_http:164}))});
   const archiveToken=String(process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN||'').trim();
   const archive=archiveToken?new PrivateArchiveD1API({token:archiveToken}):null;
-  const collector=loadExactCollector(source,sourceBudget.fetch,{runPrivatePriceRechecks});
+  const collector=loadExactCollector(source,sourceBudget.fetch,{runPrivatePriceRechecks,observeCollectorD1,readCollectorPriorRows});
   const token=required('GITHUB_TOKEN'),repository=required('GITHUB_REPOSITORY'),manifest=codeManifest(),receipts=[];
   const durationMinutes=Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0);
   const recoveryEnabled=['1','true','yes','on'].includes(String(process.env.REPORT2_SCHEDULED_RECOVERY_ENABLED||'').toLowerCase());
