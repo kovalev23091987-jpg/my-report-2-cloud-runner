@@ -117,6 +117,10 @@ on:
       - current-generation/files/src/liquidation-extension/combined-runner-service.mjs
       - current-generation/tests/native-exact-asset-role-priority.test.mjs
       - current-generation/tests/liquidation-source-weighting.test.mjs
+      - tools/liquidation-new-source-admission-20261015.mjs
+      - tools/liquidation-new-source-admission-20261015.test.mjs
+      - tools/qualify-new-liquidation-source-20261015.mjs
+      - .github/workflows/liquidation-new-source-qualification-20261015.yml
       - tools/production-artifact-outcome.mjs
       - current-generation/tests/collector-only-artifact-outcome.test.mjs
       - .github/workflows/automatic-delivery-artifact-audit.yml
@@ -249,6 +253,8 @@ jobs:
           cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
           cmp current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs runtime/src/liquidation-extension/dydx-native-market-catalog.mjs
           cmp current-generation/files/src/coingecko-sector-evidence.mjs runtime/src/coingecko-sector-evidence.mjs
+          node --check tools/qualify-new-liquidation-source-20261015.mjs
+          node --test tools/liquidation-new-source-admission-20261015.test.mjs > audit-output/liq-assembled/new-liq-research-admission.tap
           node --check tools/validate-native-sector-batch-20261014.mjs
           node tools/validate-native-sector-batch-20261014.mjs --plan > audit-output/liq-assembled/native-sector-validation-plan.json
           REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
