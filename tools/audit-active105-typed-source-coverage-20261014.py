@@ -59,6 +59,10 @@ def markets(block,source,detail):
  return ['MARKET_NOT_RESOLVED_IN_REDUCED_ORIGINAL']
 
 for p in sorted((root/'checkpoints').glob('**/report2-run-result.json*')):
+ packed=p.with_name(p.name+'.gz')
+ if p.suffix!='.gz' and packed.exists():
+  if gzip.decompress(packed.read_bytes())!=p.read_bytes():raise ValueError('ORIGINAL_REPORT_GZIP_MISMATCH: '+str(p.relative_to(root)))
+  continue
  d,ref=read(str(p.relative_to(root)))
  if d.get('status')!='CLOSED' or not re.fullmatch('[a-f0-9]{40}',str(d.get('head'))):continue
  accepted=0
