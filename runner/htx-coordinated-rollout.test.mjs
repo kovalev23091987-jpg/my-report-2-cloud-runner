@@ -72,6 +72,21 @@ test('single-module readback preserves bytes for multipart and plain responses a
  const bytes=Buffer.from('var x="исходные часы";\n');assert.deepEqual(await readSingleWorkerModule(new Response(bytes,{headers:{'content-type':'application/javascript'}})),bytes);
  const body=new FormData();body.set('metadata','{}');body.set('worker.js',new Blob([bytes],{type:'application/javascript+module'}),'worker.js');assert.deepEqual(await readSingleWorkerModule(new Response(body)),bytes);body.set('other.js',new Blob(['code']),'other.js');await assert.rejects(readSingleWorkerModule(new Response(body)),/EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED/);
 });
+test('retained native forecast layout permits its matching non-executable Source Map and hashes only exact module bytes',async()=>{
+ const bytes=Buffer.from('export default {fetch(){return new Response("исходные часы");}};\n'),form=new FormData(),name='liquidation-archive-worker-entry.js';
+ form.set(name,new Blob([bytes],{type:'application/javascript+module'}),name);form.set(name+'.map',new Blob([JSON.stringify({version:3,file:name,sources:['original.mjs'],sourcesContent:['original source'],names:[],mappings:'AAAA'})],{type:'application/source-map'}),name+'.map');
+ assert.deepEqual(await readSingleWorkerModule(new Response(form)),bytes);
+});
+test('a Source Map never admits a second executable, foreign asset, duplicate or malformed debug metadata',async()=>{
+ const name='liquidation-archive-worker-entry.js',map={version:3,sources:['original.mjs'],mappings:'AAAA'};
+ for(const kind of ['EXECUTABLE','FOREIGN','MIME','DUPLICATE','INVALID_JSON','WRONG_VERSION','WRONG_FILE']){
+  const f=new FormData();f.set(name,new Blob(['code'],{type:'application/javascript+module'}),name);
+  const body=kind==='INVALID_JSON'?'not JSON':JSON.stringify({...map,...(kind==='WRONG_VERSION'?{version:4}:{}),...(kind==='WRONG_FILE'?{file:'other.js'}:{})});
+  const filename=kind==='EXECUTABLE'?'second.js':kind==='FOREIGN'?'unrelated.json':name+'.map';f.set(filename,new Blob([body],{type:kind==='MIME'?'application/javascript':'application/source-map'}),filename);
+  if(kind==='DUPLICATE')f.append(filename,new Blob([body],{type:'application/source-map'}),filename);
+  await assert.rejects(readSingleWorkerModule(new Response(f)),/EXACT_(?:SINGLE_BUNDLED_WORKER_MODULE|NONEXECUTABLE_SOURCE_MAP)_REQUIRED/,kind);
+ }
+});
 test('default serialization is compared to the immutable active runtime; an existing variable never disappears from comparison',()=>{
  const old={bindings:[{name:'UNCHANGED',type:'plain_text',text:'0'}],compatibility_date:'2026-09-11'},runtime={compatibility_date:'2026-09-11T00:00:00Z',compatibility_flags:[],usage_model:'standard',limits:{cpu_ms:30000}},expanded={...old,compatibility_flags:[],usage_model:'standard',limits:runtime.limits};
  assert.equal(workerSettingsFingerprint(old,runtime),workerSettingsFingerprint(expanded,runtime));assert.notEqual(workerSettingsFingerprint(old),workerSettingsFingerprint(expanded));assert.ok(runtimeSettingsSerializationHashes(expanded,runtime).includes(workerSettingsFingerprint(old)));assert.equal(runtimeSettingsSerializationHashes({...expanded,bindings:[{...old.bindings[0],text:'1'}]},runtime).includes(workerSettingsFingerprint(old)),false);
