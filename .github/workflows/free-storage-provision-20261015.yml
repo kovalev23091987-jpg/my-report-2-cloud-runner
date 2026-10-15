@@ -1,0 +1,33 @@
+name: Prepare owner-approved empty free archive resources
+on:
+  push:
+    branches: [fix/free-storage-rolling-20261015]
+    paths: [checkpoints/FREE_STORAGE_EXPANSION_REQUEST_20261015.json]
+permissions:
+  contents: read
+concurrency:
+  group: report2-free-archive-provision
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify free capacity, unknown outcomes, exact readback and protected resources
+        run: node --test runner/free-storage-capacity.test.mjs runner/free-storage-provision.test.mjs
+      - name: Create only explicitly requested empty archives after exact cloud qualification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_ISOLATED_D1_API_TOKEN: ${{ secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
+        run: node tools/provision-free-storage-20261015.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: free-storage-provision-${{ github.run_id }}
+          path: audit-output/free-storage-provision/provision.json
+          if-no-files-found: error
+          retention-days: 30

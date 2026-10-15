@@ -17,6 +17,56 @@ function row(extra={}){return {publication_id:candidate.publication_id,run_id:ca
 const allow=()=>({allowed:true});
 function database(records){const sql=new DatabaseSync(':memory:');sql.exec(fs.readFileSync(new URL('../cloudflare/free-history/003_canonical_cold_archive.sql',import.meta.url),'utf8'));let requests=0;for(const r of records)sql.prepare('INSERT INTO report2_canonical_cold_archive_v1 VALUES(?,?,?,?,?,?,?,?)').run(r.publication_id,r.raw_sha256,r.run_id,r.snapshot_id,r.contract_code,r.observed_ts,JSON.stringify(r),r.observed_ts+1);return{sql,usageSnapshot(){return{requests,rows_read:requests,rows_written:0,unknown_ops:0};},prepare(query){let args=[];return{bind(...values){args=values;return this;},async first(){requests++;return sql.prepare(query).get(...args)||null;}};}};}
 
+test('an explicitly installed additional archive restores exact original bytes without searching other databases',async()=>{
+ const source=row(),record=encodeCanonicalPublicationRow(source),legacy=database([]),extra=database([record]);
+ try{
+  const header=await privateCanonicalHeader(source,record,{archive_slot:'A1'});
+  const reader=createPrivateCanonicalRestorer({archive_db:legacy,archive_dbs:{A1:extra},db_admit:allow});
+  assert.deepEqual(await reader.restore(header),source);assert.equal(legacy.usageSnapshot().requests,0);assert.equal(extra.usageSnapshot().requests,1);
+  assert.deepEqual(await reader.restore(header),source);assert.equal(extra.usageSnapshot().requests,1);
+  const absent=await privateCanonicalHeader(source,record,{archive_slot:'A2'});
+  await assert.rejects(reader.restore([header,absent]),/ARCHIVE_SLOT_NOT_INSTALLED/);assert.equal(extra.usageSnapshot().requests,1);
+ }finally{legacy.sql.close();extra.sql.close();}
+});
+
+test('legacy locators remain unchanged and separate shard locations cannot poison the revision cache',async()=>{
+ const source=row(),record=encodeCanonicalPublicationRow(source),legacy=database([record]),extra=database([]);
+ try{
+  const old=await privateCanonicalHeader(source,record),sharded=await privateCanonicalHeader(source,record,{archive_slot:'A1'});
+  assert.ok(old.canonical_json.endsWith(':canonical_json'));
+  const reader=createPrivateCanonicalRestorer({archive_db:legacy,archive_dbs:{A1:extra},db_admit:allow});
+  assert.deepEqual(await reader.restore(old),source);
+  await assert.rejects(reader.restore(sharded),/EXACT_REVISION_MISSING/);assert.equal(extra.usageSnapshot().requests,1);
+  await assert.rejects(reader.restore({...old,canonical_json:sharded.canonical_json}),/MIXED_REVISIONS/);
+  await assert.rejects(privateCanonicalHeader(source,record,{archive_slot:'https://foreign.invalid'}),/ARCHIVE_SLOT_INVALID/);
+  assert.throws(()=>createPrivateCanonicalRestorer({archive_db:legacy,archive_dbs:{A9:extra},db_admit:allow}),/ARCHIVE_POOL_INVALID/);
+ }finally{legacy.sql.close();extra.sql.close();}
+});
+
+test('additional archive locations share the original whole-result row and admission limits',async()=>{
+ const source=row(),record=encodeCanonicalPublicationRow(source),legacy=database([record]),extra=database([record]);
+ try{
+  const old=await privateCanonicalHeader(source,record),sharded=await privateCanonicalHeader(source,record,{archive_slot:'A1'});
+  const reader=createPrivateCanonicalRestorer({archive_db:legacy,archive_dbs:{A1:extra},db_admit:allow,max_rows:1});
+  await assert.rejects(reader.restore([old,sharded]),/READER_ROW_BOUND/);assert.equal(legacy.usageSnapshot().requests+extra.usageSnapshot().requests,0);
+  const denied=createPrivateCanonicalRestorer({archive_db:legacy,archive_dbs:{A1:extra},db_admit:()=>({allowed:false})});
+  await assert.rejects(denied.restore(sharded),/SHARED_D1_ADMISSION_REQUIRED/);assert.equal(extra.usageSnapshot().requests,0);
+ }finally{legacy.sql.close();extra.sql.close();}
+});
+
+test('the real report adapter charges additional archive reads exactly once to the shared native usage',async()=>{
+ const source=row(),record=encodeCanonicalPublicationRow(source),legacy=database([]),extra=database([record]);
+ const header=await privateCanonicalHeader(source,record,{archive_slot:'A1'});
+ const native=new RemoteD1Database('https://example.invalid/bridge','test-token',{fetchImpl:async()=>Response.json({ok:true,result:header,usage:{measured:true,rows_read:1,rows_written:0}})});
+ try{
+  native.enablePrivateCanonicalHistory({archive_db:legacy,archive_dbs:{A1:extra},db_admit:allow});
+  assert.deepEqual(await native.prepare('SELECT * FROM canonical_publication_shadow').first(),source);
+  const usage=native.usageSnapshot();assert.equal(usage.rows_read,2);assert.equal(usage.requests,2);assert.equal(usage.targets['private-canonical:report2_canonical_cold_archive_v1:A1'].requests,1);
+  await native.prepare('SELECT * FROM canonical_publication_shadow').first();assert.equal(native.usageSnapshot().requests,3);assert.equal(extra.usageSnapshot().requests,1);assert.equal(legacy.usageSnapshot().requests,0);
+  assert.throws(()=>new RemoteD1Database('https://example.invalid/bridge','test-token').enablePrivateCanonicalHistory({archive_db:legacy,archive_dbs:{A1:{prepare(){}}},db_admit:allow}),/NATIVE_COUNTERS_REQUIRED/);
+ }finally{legacy.sql.close();extra.sql.close();}
+});
+
 test('Worker-compatible private decoder and exact header restore keep saved OP original bytes and all clocks',async()=>{
  const source=row({future_column:'00001.00'}),record=encodeCanonicalPublicationRow(source),db=database([record]);
  try{

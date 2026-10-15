@@ -1,6 +1,6 @@
 import {archiveLiquidationForecasts} from './liquidation-forecast-archive.mjs';
 import {nativeMeasuredD1,sumNativeUsage} from './native-measured-d1.mjs';
-import {createPrivateCanonicalRestorer} from '../../current-generation/files/src/private-canonical-history.mjs';
+import {createPrivateCanonicalRestorer,privateCanonicalArchivePool} from '../../current-generation/files/src/private-canonical-history.mjs';
 import {evaluateWithinRunReservation,finalizeRunUsage} from '../../runner/d1-preaction-budget-guard.mjs';
 
 export const PRIVATE_FORECAST_POLICY=Object.freeze({max_rows:8,max_runs_day:24,rows_read:5000,rows_written:80,max_daily_reads:3500000,max_daily_writes:70000});
@@ -22,20 +22,21 @@ export async function reservePrivateForecastBudget(db,{scheduled_ts,now}={}){
  return{allowed:true,status:'ATOMIC_SHARED_DAY_RESERVED',reservation_id:id};
 }
 
-export async function runPrivateForecastConsumer({source_db,archive_db,private_db,scheduled_ts=Date.now(),clock=Date.now}={}){
- const source=nativeMeasuredD1(source_db),archive=nativeMeasuredD1(archive_db),privateArchive=nativeMeasuredD1(private_db);
- const p=PRIVATE_FORECAST_POLICY,usage=()=>sumNativeUsage(source,archive,privateArchive);
+export async function runPrivateForecastConsumer({source_db,archive_db,private_db,private_dbs={},scheduled_ts=Date.now(),clock=Date.now}={}){
+ const pool=new Map([...privateCanonicalArchivePool(private_db,private_dbs)].map(([slot,db])=>[slot,nativeMeasuredD1(db)]));
+ const source=nativeMeasuredD1(source_db),archive=nativeMeasuredD1(archive_db),privateArchive=pool.get('LEGACY');
+ const p=PRIVATE_FORECAST_POLICY,usage=()=>sumNativeUsage(source,archive,...pool.values());
  const admit=e=>evaluateWithinRunReservation({reservation:p,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+3});
  const admission=await reservePrivateForecastBudget(source,{scheduled_ts,now:clock()});
  if(!admission.allowed)return{...admission,status:admission.status,D1:usage(),sourceHTTP:0,report_effect:false,telegram_effect:false,weight_effect:false};
  let result,error;
  try{
-  const reader=createPrivateCanonicalRestorer({archive_db:privateArchive,db_admit:admit,max_rows:p.max_rows});
+  const reader=createPrivateCanonicalRestorer({archive_db:privateArchive,archive_dbs:Object.fromEntries([...pool].filter(([slot])=>slot!=='LEGACY')),db_admit:admit,max_rows:p.max_rows});
   result=await archiveLiquidationForecasts({source_db:source,archive_db:archive,restore_canonical_row:reader.restore,db_admit:admit,scheduled_ts,clock});
  }catch(caught){error=caught;result={status:'FORECAST_RETRY_REQUIRED',reason:String(caught?.message||'PRIVATE_FORECAST_ERROR'),source_http:0,report_effect:false,telegram_effect:false,weight_effect:false};}
  const before=usage();
  const finalized_usage=await finalizeRunUsage(source,{reservationId:admission.reservation_id,sourceRunId:admission.reservation_id,now:clock(),usage:before});
  // The returned native counters include the final UPDATE's actual billing;
  // the conservative reservation is the account safety limit in the ledger.
- return{...result,admission,finalized_usage,D1:usage(),private_D1:privateArchive.usageSnapshot(),cursor_retry_required:!!error,sourceHTTP:0};
+ return{...result,admission,finalized_usage,D1:usage(),private_D1:sumNativeUsage(...pool.values()),cursor_retry_required:!!error,sourceHTTP:0};
 }

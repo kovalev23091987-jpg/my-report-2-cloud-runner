@@ -3,7 +3,7 @@
 export const PRIVATE_CANONICAL_PREFIX='R2PRIVATE_CANONICAL_V1:';
 export const PRIVATE_CANONICAL_LIMITS=Object.freeze({raw_bytes:4_000_000,gzip_bytes:400_000,wire_bytes:900_000,max_rows:4,maximum_reader_rows:8});
 const HEX=/^[a-f0-9]{64}$/,PUB=/^PUB:[a-f0-9]{40,64}$/;
-const marker=/^R2PRIVATE_CANONICAL_V1:(PUB:[a-f0-9]{40,64}):([a-f0-9]{64}):([a-zA-Z_][a-zA-Z0-9_]*)$/;
+const marker=/^R2PRIVATE_CANONICAL_V1:(PUB:[a-f0-9]{40,64}):([a-f0-9]{64}):([a-zA-Z_][a-zA-Z0-9_]*)(?::(A[1-8]))?$/;
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
 const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
 const positive=v=>Number.isSafeInteger(v)&&v>0;
@@ -40,27 +40,41 @@ export async function decodePrivateCanonicalRecord(record){
  return exactBinding(JSON.parse(decoder.decode(raw)),record);
 }
 
-export async function privateCanonicalHeader(row,record){
+export async function privateCanonicalHeader(row,record,{archive_slot=null}={}){
  exactBinding(row,record);
+ if(archive_slot!==null&&!/^A[1-8]$/.test(archive_slot))throw Error('PRIVATE_HISTORY_ARCHIVE_SLOT_INVALID');
  if(!HEX.test(record.raw_sha256||'')||!positive(record.raw_bytes)||record.raw_bytes>PRIVATE_CANONICAL_LIMITS.raw_bytes)throw Error('PRIVATE_HISTORY_REVISION_REQUIRED');
  const raw=encoder.encode(JSON.stringify(row));if(raw.length!==record.raw_bytes||await hash(raw)!==record.raw_sha256)throw Error('PRIVATE_HISTORY_HEADER_REVISION_MISMATCH');
  return Object.fromEntries(Object.entries(row).map(([column,value])=>{
   if(!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(column))throw Error('PRIVATE_HISTORY_COLUMN_INVALID');
-  return[column,typeof value==='string'&&(column.endsWith('_json')||column==='manual_text'||column==='telegram_text')&&encoder.encode(value).length>256?`${PRIVATE_CANONICAL_PREFIX}${row.publication_id}:${record.raw_sha256}:${column}`:value];
+  return[column,typeof value==='string'&&(column.endsWith('_json')||column==='manual_text'||column==='telegram_text')&&encoder.encode(value).length>256?`${PRIVATE_CANONICAL_PREFIX}${row.publication_id}:${record.raw_sha256}:${column}${archive_slot===null?'':':'+archive_slot}`:value];
  }));
 }
 
-export function createPrivateCanonicalRestorer({archive_db,db_admit,max_rows=PRIVATE_CANONICAL_LIMITS.max_rows}={}){
- if(!archive_db?.prepare||typeof db_admit!=='function'||!Number.isSafeInteger(max_rows)||max_rows<1||max_rows>PRIVATE_CANONICAL_LIMITS.maximum_reader_rows)throw Error('PRIVATE_HISTORY_MEASURED_READER_REQUIRED');
+export function privateCanonicalArchivePool(archive_db,archive_dbs={}){
+ if(typeof archive_db?.prepare!=='function')throw Error('PRIVATE_HISTORY_MEASURED_READER_REQUIRED');
+ if(!archive_dbs||typeof archive_dbs!=='object'||Array.isArray(archive_dbs)||Object.keys(archive_dbs).some(slot=>!/^A[1-8]$/.test(slot)||typeof archive_dbs[slot]?.prepare!=='function'))throw Error('PRIVATE_HISTORY_ARCHIVE_POOL_INVALID');
+ const entries=[['LEGACY',archive_db],...Object.entries(archive_dbs)];
+ if(new Set(entries.map(([,db])=>db)).size!==entries.length)throw Error('PRIVATE_HISTORY_DUPLICATE_ARCHIVE_BINDING');
+ return new Map(entries);
+}
+
+export function createPrivateCanonicalRestorer({archive_db,archive_dbs={},db_admit,max_rows=PRIVATE_CANONICAL_LIMITS.max_rows}={}){
+ if(typeof db_admit!=='function'||!Number.isSafeInteger(max_rows)||max_rows<1||max_rows>PRIVATE_CANONICAL_LIMITS.maximum_reader_rows)throw Error('PRIVATE_HISTORY_MEASURED_READER_REQUIRED');
+ // Snapshot explicitly installed bindings. A locator cannot select a URL or a
+ // database UUID, and an absent shard never falls back to a different original.
+ const pool=privateCanonicalArchivePool(archive_db,archive_dbs);
+ const selectedDB=slot=>{if(!pool.has(slot||'LEGACY'))throw Error('PRIVATE_HISTORY_ARCHIVE_SLOT_NOT_INSTALLED');return pool.get(slot||'LEGACY');};
+ const revisionKey=m=>`${m[4]||'LEGACY'}:${m[1]}:${m[2]}`;
  const cache=new Map();let reads=0;
- const load=async(publication_id,raw_sha256)=>{
-  const key=`${publication_id}:${raw_sha256}`;
+ const load=async(publication_id,raw_sha256,slot)=>{
+  const key=`${slot||'LEGACY'}:${publication_id}:${raw_sha256}`;
   if(!cache.has(key)){
    if(reads>=max_rows)throw Error('PRIVATE_HISTORY_READER_ROW_BOUND');
    if(db_admit({rows_read:3,rows_written:0})?.allowed!==true)throw Error('PRIVATE_HISTORY_SHARED_D1_ADMISSION_REQUIRED');
    reads++;
    cache.set(key,(async()=>{
-    const saved=await archive_db.prepare('SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1').bind(publication_id,raw_sha256).first();
+    const saved=await selectedDB(slot).prepare('SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1').bind(publication_id,raw_sha256).first();
     if(!saved||typeof saved.record_json!=='string')throw Error('PRIVATE_HISTORY_EXACT_REVISION_MISSING');
     if(encoder.encode(saved.record_json).length>PRIVATE_CANONICAL_LIMITS.wire_bytes)throw Error('PRIVATE_HISTORY_WIRE_BOUND');
     const record=JSON.parse(saved.record_json);if(record.publication_id!==publication_id||record.raw_sha256!==raw_sha256)throw Error('PRIVATE_HISTORY_REQUEST_BINDING_MISMATCH');
@@ -78,7 +92,8 @@ export function createPrivateCanonicalRestorer({archive_db,db_admit,max_rows=PRI
     for(const [key,item] of Object.entries(part)){
      if(typeof item==='string'&&item.startsWith(PRIVATE_CANONICAL_PREFIX)){
       const m=item.match(marker);if(!m||m[3]!==key)throw Error('PRIVATE_HISTORY_COLUMN_LOCATOR_INVALID');
-      const selected=`${m[1]}:${m[2]}`;
+      selectedDB(m[4]);
+      const selected=revisionKey(m);
       if(revision!==null&&revision!==selected)throw Error('PRIVATE_HISTORY_MIXED_REVISIONS');revision=selected;
       if(Object.hasOwn(part,'publication_id')&&part.publication_id!==m[1])throw Error('PRIVATE_HISTORY_QUERY_BINDING_MISMATCH');
       if(!cache.has(selected))needed.add(selected);
@@ -98,8 +113,8 @@ export function createPrivateCanonicalRestorer({archive_db,db_admit,max_rows=PRI
    for(const [key,part] of Object.entries(value)){
     if(typeof part==='string'&&part.startsWith(PRIVATE_CANONICAL_PREFIX)){
      const m=part.match(marker);if(!m||m[3]!==key)throw Error('PRIVATE_HISTORY_COLUMN_LOCATOR_INVALID');
-     const selected=`${m[1]}:${m[2]}`;if(revision!==null&&revision!==selected)throw Error('PRIVATE_HISTORY_MIXED_REVISIONS');revision=selected;
-     const original=await load(m[1],m[2]);
+     const selected=revisionKey(m);if(revision!==null&&revision!==selected)throw Error('PRIVATE_HISTORY_MIXED_REVISIONS');revision=selected;
+     const original=await load(m[1],m[2],m[4]);
      for(const binding of bindingKeys)if(Object.hasOwn(value,binding)&&value[binding]!==original[binding])throw Error('PRIVATE_HISTORY_QUERY_BINDING_MISMATCH');
      if(!Object.hasOwn(original,key)||typeof original[key]!=='string')throw Error('PRIVATE_HISTORY_ORIGINAL_COLUMN_MISSING');
      entries.push([key,original[key]]);

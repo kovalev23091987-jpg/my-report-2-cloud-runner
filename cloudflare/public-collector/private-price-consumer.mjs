@@ -1,4 +1,4 @@
-import {createPrivateCanonicalRestorer} from '../../current-generation/files/src/private-canonical-history.mjs';
+import {createPrivateCanonicalRestorer,privateCanonicalArchivePool} from '../../current-generation/files/src/private-canonical-history.mjs';
 import {nativeMeasuredD1} from '../free-history/native-measured-d1.mjs';
 import {evaluateWithinRunReservation,finalizeRunUsage} from '../../runner/d1-preaction-budget-guard.mjs';
 
@@ -27,10 +27,13 @@ export async function reservePrivatePriceBudget(db,{bucket,now}={}){
  return{allowed:true,status:'ATOMIC_SHARED_DAY_RESERVED',reservation_id:id};
 }
 
-export async function runPrivatePriceRechecks({source_db,private_db,check,args}={}){
+export async function runPrivatePriceRechecks({source_db,private_db,private_dbs={},check,args}={}){
  if(typeof check!=='function'||!private_db?.prepare)throw Error('PRIVATE_PRICE_EXACT_READER_REQUIRED');
- const source=measured(source_db),archive=measured(private_db),sourceStart=source.usageSnapshot(),archiveStart=archive.usageSnapshot(),p=PRIVATE_PRICE_POLICY;
- const usage=()=>{const a=delta(source,sourceStart),b=delta(archive,archiveStart);return Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+b[k]]));};
+ const pool=new Map([...privateCanonicalArchivePool(private_db,private_dbs)].map(([slot,db])=>[slot,measured(db)]));
+ const source=measured(source_db),archive=pool.get('LEGACY'),sourceStart=source.usageSnapshot(),p=PRIVATE_PRICE_POLICY;
+ const starts=new Map([...pool].map(([slot,db])=>[slot,db.usageSnapshot()]));
+ const privateUsage=()=>{const out={requests:0,rows_read:0,rows_written:0,unknown_ops:0};for(const [slot,db] of pool){const d=delta(db,starts.get(slot));for(const key of Object.keys(out))out[key]+=d[key];}return out;};
+ const usage=()=>{const a=delta(source,sourceStart),b=privateUsage();return Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+b[k]]));};
  const admit=e=>evaluateWithinRunReservation({reservation:p,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+3});
  let admission;
  try{admission=await reservePrivatePriceBudget(source,{bucket:args?.bucket,now:args?.now});}
@@ -38,11 +41,11 @@ export async function runPrivatePriceRechecks({source_db,private_db,check,args}=
  if(!admission.allowed)return{status:admission.status,selected:0,checked:0,rows_read:usage().rows_read,rows_written:usage().rows_written,results:[],entry_authorized:false,source_http:0,telegram:false,admission,D1:usage()};
  let result;
  try{
-  const reader=createPrivateCanonicalRestorer({archive_db:archive,db_admit:admit,max_rows:p.max_rows});
+  const reader=createPrivateCanonicalRestorer({archive_db:archive,archive_dbs:Object.fromEntries([...pool].filter(([slot])=>slot!=='LEGACY')),db_admit:admit,max_rows:p.max_rows});
   if(!admit({rows_read:256,rows_written:0}).allowed)throw Error('PRIVATE_PRICE_QUERY_HEADROOM_DENIED');
   result=await check(source,{...args,restore_canonical_row:reader.restore,db_admit:admit});
  }catch(error){result={status:'PRIVATE_PRICE_RETRY_REQUIRED',selected:0,checked:0,results:[],reason:String(error?.message||'PRIVATE_PRICE_ERROR'),entry_authorized:false,source_http:0,telegram:false};}
  const finalized_usage=await finalizeRunUsage(source,{reservationId:admission.reservation_id,sourceRunId:admission.reservation_id,now:args.now,usage:usage()});
  const total=usage();
- return{...result,admission,finalized_usage,D1:total,private_D1:delta(archive,archiveStart),rows_read:total.rows_read,rows_written:total.rows_written,source_http:0,telegram:false,entry_authorized:false};
+ return{...result,admission,finalized_usage,D1:total,private_D1:privateUsage(),rows_read:total.rows_read,rows_written:total.rows_written,source_http:0,telegram:false,entry_authorized:false};
 }

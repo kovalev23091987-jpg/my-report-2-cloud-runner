@@ -33,6 +33,29 @@ test('exact hot and archived revisions produce identical waiting, reached, cance
   try{seed(hot.source,row);seed(cold.source,await privateCanonicalHeader(row,record));store(cold.archive,record);const a=await run(hot,args(price,ts)),b=await run(cold,args(price,ts));assert.equal(a.results[0].status,status);assert.deepEqual(a.results,b.results);assert.equal(b.results[0].entry_authorized,false);assert.equal(b.private_D1.requests,1);assert.equal(b.D1.unknown_ops,0);assert.equal(b.source_http,0);assert.deepEqual(cold.source.raw.prepare('SELECT state,last_result,expires_ts FROM v3_recheck_task_shadow').get(),hot.source.raw.prepare('SELECT state,last_result,expires_ts FROM v3_recheck_task_shadow').get());assert.equal(cold.source.raw.prepare('SELECT canonical_json FROM canonical_publication_shadow').get().canonical_json,(await privateCanonicalHeader(row,record)).canonical_json);}finally{hot.close();cold.close();}
  }
 });
+
+test('additional private archive is consumed by the bundled price reader with exact original clocks and measured cost',async()=>{
+ for(const bundled of [false,true]){
+  const s=setup(),extra=new D1(true),row=original(),record=encodeCanonicalPublicationRow(row);
+  try{
+   seed(s.source,await privateCanonicalHeader(row,record,{archive_slot:'A1'}));store(extra,record);
+   const runtime=bundled?Function(buildPrivatePriceRuntime().source+'return __report2InjectedPrivatePriceRuntime;')().runPrivatePriceRechecks:runPrivatePriceRechecks;
+   const r=await runtime({source_db:s.source,private_db:s.archive,private_dbs:{A1:extra},check:api.check,args:args()});
+   assert.equal(r.checked,1);assert.equal(r.private_D1.requests,1);assert.equal(r.D1.unknown_ops,0);assert.equal(extra.calls.length,1);assert.equal(s.archive.calls.length,0);assert.equal(r.results[0].snapshot_id,row.snapshot_id);assert.equal(r.entry_authorized,false);
+   assert.equal(s.source.raw.prepare('SELECT reserve_rows_read FROM report2_runner_budget_ledger_shadow').get().reserve_rows_read,800);
+  }finally{s.close();extra.close();}
+ }
+});
+
+test('lost additional-archive replies remain unknown in the existing ledger and keep the task pending',async()=>{
+ const s=setup(),extra=new D1(true),row=original(),record=encodeCanonicalPublicationRow(row);
+ try{
+  seed(s.source,await privateCanonicalHeader(row,record,{archive_slot:'A1'}));extra.fail=true;
+  const r=await runPrivatePriceRechecks({source_db:s.source,private_db:s.archive,private_dbs:{A1:extra},check:api.check,args:args()});
+  assert.equal(r.checked,0);assert.equal(r.D1.unknown_ops,1);assert.equal(r.private_D1.unknown_ops,1);assert.equal(s.archive.calls.length,0);
+  assert.equal(s.source.raw.prepare('SELECT unknown_ops FROM report2_runner_budget_ledger_shadow').get().unknown_ops,1);assert.equal(s.source.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result,null);
+ }finally{s.close();extra.close();}
+});
 test('missing revision remains pending and retries next slot with its original snapshot, clocks and expiry',async()=>{
  const s=setup(),row=original(),record=encodeCanonicalPublicationRow(row);
  try{seed(s.source,await privateCanonicalHeader(row,record));const a=await run(s);assert.equal(a.results[0].status,'PRIVATE_CANONICAL_RETRY_REQUIRED');assert.equal(s.source.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result,null);store(s.archive,record);const b=await run(s,args(.28,now+300000));assert.equal(b.checked,1);assert.equal(b.results[0].snapshot_id,row.snapshot_id);assert.equal(s.source.raw.prepare('SELECT observed_ts FROM canonical_publication_shadow').get().observed_ts,T);assert.equal(s.source.raw.prepare('SELECT expires_ts FROM v3_recheck_task_shadow').get().expires_ts,T+1800000);}finally{s.close();}

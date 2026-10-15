@@ -2,15 +2,22 @@ import {checkWeeklyGithubProposal} from './htx-weekly-proposal-check.mjs';
 const PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',SHA=/^[a-f0-9]{40}$/;
 // This current owner family may run offline validation only while every live
 // lease mirror identifies the same bounded all-active105 continuation.
-export function active105OfflineReviewOwner(phase,now=Date.now()){
+function boundedActive105Owner(phase,now,ownerPattern){
  const l=phase?.lease,m=phase?.latest_own_bounded_continuation_lease,a=phase?.active_working_state;
  return phase?.current_task==='ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS'&&
   phase.owner_all_active_blocks_source_budget_and_fallback==='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json'&&
-  /^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d+$/.test(l?.owner||'')&&l.owner.endsWith(':'+l.acquired_ts)&&
+  ownerPattern.test(l?.owner||'')&&l.owner.endsWith(':'+l.acquired_ts)&&
   Number.isSafeInteger(now)&&Number.isSafeInteger(l.acquired_ts)&&Number.isSafeInteger(l.expires_ts)&&
   l.acquired_ts<=now&&now<l.expires_ts&&l.expires_ts-l.acquired_ts<=90*60_000&&SHA.test(l.expected_main||'')&&
   typeof l.scope==='string'&&l.scope.length>0&&m?.owner===l.owner&&m.acquired_ts===l.acquired_ts&&m.expires_ts===l.expires_ts&&
   a?.owned_lease===l.owner&&a.owned_lease_expires_ts===l.expires_ts&&a.lease_released===false;
+}
+export function active105OfflineReviewOwner(phase,now=Date.now()){
+ return boundedActive105Owner(phase,now,/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d+$/);
+}
+export function freeStorageOfflineReviewOwner(phase,now=Date.now()){
+ return boundedActive105Owner(phase,now,/^CODEX:ACTIVE105_FREE_STORAGE_ROLLING:\d+$/)&&
+  phase.lease.scope.includes('Owner-authorized permanent free storage')&&phase.lease.scope.includes('no paid plan');
 }
 // A code proposal must not carry/release a newer live lease. A phase-only
 // advance of main can be retained by the merge without copying that lease

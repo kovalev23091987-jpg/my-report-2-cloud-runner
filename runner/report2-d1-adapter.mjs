@@ -1,6 +1,6 @@
 import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
 import {createHash} from 'node:crypto';
-import {createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
+import {createPrivateCanonicalRestorer,privateCanonicalArchivePool} from './private-canonical-history.mjs';
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 function requiredText(value, label) {
@@ -97,10 +97,10 @@ export class RemoteD1Database {
 
   enablePrivateCanonicalHistory(options = {}) {
     if(this._privateRetainedHistory)throw Error('PRIVATE_HISTORY_READER_ALREADY_CONFIGURED');
-    if(typeof options.archive_db?.usageSnapshot!=='function')throw Error('PRIVATE_HISTORY_NATIVE_COUNTERS_REQUIRED');
+    const pool=privateCanonicalArchivePool(options.archive_db,options.archive_dbs);
+    if([...pool.values()].some(db=>typeof db.usageSnapshot!=='function'))throw Error('PRIVATE_HISTORY_NATIVE_COUNTERS_REQUIRED');
     this._privateRetainedHistory=createPrivateCanonicalRestorer(options);
-    this._privateRetainedDB=options.archive_db;
-    this._privateUsageStart=options.archive_db.usageSnapshot();
+    this._privateUsageTargets=[...pool].map(([slot,db])=>({slot,db,start:db.usageSnapshot()}));
   }
 
   prepare(sql) {
@@ -124,13 +124,13 @@ export class RemoteD1Database {
 
   usageSnapshot() {
     const out=JSON.parse(JSON.stringify({...this._usage,...(this._unmeasuredReceipts.length?{unmeasured_receipts:this._unmeasuredReceipts}: {})}));
-    if(this._privateRetainedDB){
-      const usage=this._privateRetainedDB.usageSnapshot(),delta={};
+    for(const {slot,db,start} of this._privateUsageTargets||[]){
+      const usage=db.usageSnapshot(),delta={};
       for(const key of ['requests','rows_read','rows_written','unknown_ops']){
-        const n=usage[key]-this._privateUsageStart[key];if(!Number.isSafeInteger(n)||n<0)throw Error('PRIVATE_HISTORY_NATIVE_COUNTERS_INVALID');
+        const n=usage[key]-start[key];if(!Number.isSafeInteger(n)||n<0)throw Error('PRIVATE_HISTORY_NATIVE_COUNTERS_INVALID');
         delta[key]=n;out[key]+=n;
       }
-      out.targets['private-canonical:report2_canonical_cold_archive_v1']=delta;
+      out.targets['private-canonical:report2_canonical_cold_archive_v1'+(slot==='LEGACY'?'':':'+slot)]=delta;
     }
     return out;
   }

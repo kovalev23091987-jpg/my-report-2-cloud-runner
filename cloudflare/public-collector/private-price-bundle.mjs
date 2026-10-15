@@ -4,11 +4,11 @@ const root=new URL('../../',import.meta.url);
 const modules=[
  ['collectorCostModule','cloudflare/public-collector/native-cost-observer.mjs',['observeCollectorD1'],''],
  ['collectorPriorModule','cloudflare/public-collector/prior-snapshot-read.mjs',['readCollectorPriorRows'],''],
- ['historyModule','current-generation/files/src/private-canonical-history.mjs',['createPrivateCanonicalRestorer'],''],
+ ['historyModule','current-generation/files/src/private-canonical-history.mjs',['createPrivateCanonicalRestorer','privateCanonicalArchivePool'],''],
  ['nativeModule','cloudflare/free-history/native-measured-d1.mjs',['nativeMeasuredD1'],''],
  ['budgetModule','runner/d1-preaction-budget-guard.mjs',['evaluateWithinRunReservation','finalizeRunUsage'],''],
  ['priceModule','cloudflare/public-collector/private-price-consumer.mjs',['runPrivatePriceRechecks','PRIVATE_PRICE_POLICY'],
-  'const {createPrivateCanonicalRestorer}=historyModule,{nativeMeasuredD1}=nativeModule,{evaluateWithinRunReservation,finalizeRunUsage}=budgetModule;'],
+  'const {createPrivateCanonicalRestorer,privateCanonicalArchivePool}=historyModule,{nativeMeasuredD1}=nativeModule,{evaluateWithinRunReservation,finalizeRunUsage}=budgetModule;'],
 ];
 export function buildPrivatePriceRuntime(){
  const manifest=[],parts=[];
