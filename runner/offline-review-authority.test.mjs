@@ -1,5 +1,11 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {verifyOfflineReviewAuthority,active105OfflineReviewOwner} from './offline-review-authority.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {verifyOfflineReviewAuthority,active105OfflineReviewOwner,freeStorageOfflineReviewOwner} from './offline-review-authority.mjs';
 const main='a'.repeat(40),head='b'.repeat(40),ancestor='c'.repeat(40),now=100000;
+test('free storage offline review requires its exact bounded family, scope and all live mirrors without granting the existing deployment owner role',()=>{
+ const l={owner:'CODEX:ACTIVE105_FREE_STORAGE_ROLLING:90000',acquired_ts:90000,expires_ts:200000,expected_main:ancestor,scope:'Owner-authorized permanent free storage expansion; no paid plan'};
+ const p={current_task:'ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS',owner_all_active_blocks_source_budget_and_fallback:'checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json',lease:l,latest_own_bounded_continuation_lease:{...l},active_working_state:{owned_lease:l.owner,owned_lease_expires_ts:l.expires_ts,lease_released:false}};
+ assert.equal(freeStorageOfflineReviewOwner(p,now),true);assert.equal(active105OfflineReviewOwner(p,now),false);
+ for(const mutate of [p=>p.lease.scope='',p=>p.active_working_state.owned_lease=null,p=>p.lease.expires_ts=now,p=>p.latest_own_bounded_continuation_lease.owner='OTHER']){const bad=structuredClone(p);mutate(bad);assert.equal(freeStorageOfflineReviewOwner(bad,now),false);}
+});
 test('current all-active105 offline authority requires exact current task, bounded owner and all mirrors',()=>{
  const l={owner:'CODEX:ACTIVE105_SOURCE_RELIABILITY:90000',acquired_ts:90000,expires_ts:200000,expected_main:ancestor,scope:'Bounded offline source reliability review'};
  const p={current_task:'ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS',owner_all_active_blocks_source_budget_and_fallback:'checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json',lease:l,latest_own_bounded_continuation_lease:{...l},active_working_state:{owned_lease:l.owner,owned_lease_expires_ts:l.expires_ts,lease_released:false}};
