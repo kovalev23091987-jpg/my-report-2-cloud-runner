@@ -66,7 +66,10 @@ try{
    if(prior){
     const p=prior.workers[i];if(p.expected_module_sha256!==worker.module_sha256)throw Error('FREE_READER_STAGED_CODE_CHANGED');
     const v=await cf(spec.name,'/versions/'+p.staged.version_id),effective=selectedVersionSettings(settings.get(spec.name),v);
-    if(v.id!==p.staged.version_id||workerSettingsFingerprint(effective)!==worker.target_settings_sha256||v.annotations?.['workers/commit_sha']!==prior.head)throw Error('FREE_READER_EXACT_STAGED_SETTINGS_REQUIRED');
+    // The native GET-version schema does not promise upload annotations.
+    // Ownership is bound by the saved upload UUID plus exact code/settings;
+    // reject contradictory annotations when the endpoint does return them.
+    if(v.id!==p.staged.version_id||workerSettingsFingerprint(effective)!==worker.target_settings_sha256||v.annotations&&v.annotations['workers/commit_sha']!==prior.head)throw Error('FREE_READER_EXACT_STAGED_SETTINGS_REQUIRED');
     const latest=await reader.latestBytes(spec.name,p.staged.version_id);if(latest.module_sha256!==worker.module_sha256)throw Error('FREE_READER_EXACT_RETAINED_STAGED_BYTES_REQUIRED');
     reader.seed(spec.name,{version_id:v.id,module_sha256:latest.module_sha256});verifiedStaged.set(spec.name,{version_id:v.id,module_sha256:latest.module_sha256,settings_sha256:worker.target_settings_sha256});
    }
