@@ -40,7 +40,7 @@ try{
   if(process.env.GITHUB_SHA!==request.qualified_head){const c=await control.call('compare/'+request.qualified_head+'...'+process.env.GITHUB_SHA);if(c.status!=='ahead'||c.merge_base_commit?.sha!==request.qualified_head||!Array.isArray(c.files)||c.files.some(f=>f.filename!==requestPath))throw Error('FREE_READER_CODE_CHANGED_AFTER_QUALIFICATION');}
   // Compare exact Git blob hashes for all tracked executable runtime/runner/
   // consumer modules, including transitive imports, to the fresh main tree.
-  const paths=execFileSync('git',['ls-files','-z','runner/*.mjs','current-generation/files/*.mjs','current-generation/files/*.js','cloudflare/*.mjs','tools/rollout-free-archive-readers-20261015.mjs','cloudflare/free-history/wrangler-liq.json'],{encoding:'utf8'}).split('\0').filter(Boolean);
+  const paths=execFileSync('git',['ls-files','-z','runner/*.mjs','current-generation/files/*.mjs','current-generation/files/*.js','cloudflare/*.mjs','cloudflare/*.js','tools/rollout-free-archive-readers-20261015.mjs','cloudflare/free-history/wrangler-liq.json'],{encoding:'utf8'}).split('\0').filter(Boolean);
   const tree=await control.call('git/trees/'+request.expected_main+'?recursive=1');if(tree.truncated||!Array.isArray(tree.tree)||!paths.length)throw Error('FREE_READER_COMPLETE_MAIN_CODE_TREE_REQUIRED');
   const blobs=new Map(tree.tree.filter(r=>r.type==='blob').map(r=>[r.path,r.sha])),manifest={};
   for(const p of paths){const b=await fs.readFile(p),sha=createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');if(blobs.get(p)!==sha)throw Error('FREE_READER_MAIN_EXECUTABLE_CODE_MISMATCH');manifest[p]=sha;}
