@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import vm from 'node:vm';
+import path from 'node:path';
 import crypto from 'node:crypto';
 import {gunzipSync} from 'node:zlib';
 import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
@@ -9,8 +10,8 @@ import {renderWeeklyScopeFiles} from '../runner/htx-weekly-scope-package.mjs';
 import {mergeHtxLinearCatalogModes,buildHtxCryptoUniverse} from '../current-generation/files/src/htx-crypto-universe.mjs';
 import {N15_INITIAL_SOURCE_PREFERENCE} from '../current-generation/files/src/n15-initial-source-preference.mjs';
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
-const control=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN});
-const checked=await checkWeeklyGithubProposal(control,{head:process.env.GITHUB_SHA,expected_main:process.env.WEEKLY_EXPECTED_MAIN,source_run:process.env.WEEKLY_SOURCE_RUN,branch:process.env.GITHUB_REF_NAME});
+export async function verifyWeeklyOriginalProposal({control,head,expected_main,source_run,branch,output='audit-output/liq-assembled/weekly-original-proposal-binding.json'}={}){
+const checked=await checkWeeklyGithubProposal(control,{head,expected_main,source_run,branch});
 const r=checked.receipt,catalogs={};
 for(const s of r.source_receipts){
  const compressed=await fs.readFile(s.path),raw=gunzipSync(compressed,{maxOutputLength:8388608});
@@ -34,4 +35,9 @@ const bytes=Buffer.from(JSON.stringify(current,null,2)+'\n'),manifest_gzip_bytes
 if(JSON.stringify(rendered.required_rollout)!==JSON.stringify(r.required_rollout))throw Error('ALL_CONNECTED_ROLLOUTS_REQUIRED');
 for(const [path,expected] of Object.entries(rendered.files))if(!(await fs.readFile(path)).equals(expected))throw Error('SYNCHRONIZED_PROPOSAL_FILE_MISMATCH:'+path);
 const proof={...checked,receipt:undefined,source_receipts:undefined,status:'ORIGINAL_SIX_CATALOGS_PLAN_ALL_CONSUMERS_EXACTLY_BOUND',manifest_sha256:rendered.scope.manifest_sha256,analysis_assets:rendered.scope.approved_assets,added:plan.added,removed:plan.removed,source_clocks_unchanged:true,provider_HTTP:0,D1:0,production_scope_changed:false};
-await fs.mkdir('audit-output/liq-assembled',{recursive:true});await fs.writeFile('audit-output/liq-assembled/weekly-original-proposal-binding.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));
+await fs.mkdir(path.dirname(output),{recursive:true});await fs.writeFile(output,JSON.stringify(proof,null,2)+'\n');return{proof,receipt:r};
+}
+if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){
+ const control=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN});
+ const {proof}=await verifyWeeklyOriginalProposal({control,head:process.env.GITHUB_SHA,expected_main:process.env.WEEKLY_EXPECTED_MAIN,source_run:process.env.WEEKLY_SOURCE_RUN,branch:process.env.GITHUB_REF_NAME});console.log(JSON.stringify(proof));
+}

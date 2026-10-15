@@ -14,7 +14,7 @@ on:
         type: boolean
         default: false
   push:
-    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014, codex/public-venue-health-priority-20261014, codex/weekly-htx-source-sync-20261014, codex/weekly-htx-connected-proposal-20261014, codex/weekly-retained-catalog-qualification-20261014, codex/lossless-full-evidence-recovery-20261014, codex/protected-canonical-compaction-20261015, codex/weekly106-retained-fixture-20261015]
+    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014, codex/public-venue-health-priority-20261014, codex/weekly-htx-source-sync-20261014, codex/weekly-htx-connected-proposal-20261014, codex/weekly-retained-catalog-qualification-20261014, codex/lossless-full-evidence-recovery-20261014, codex/protected-canonical-compaction-20261015, codex/weekly106-retained-fixture-20261015, codex/coordinated-weekly-rollout-20261015]
     paths:
       - .github/workflows/liq-assembled-offline-20261012.yml
       - current-generation/files/src/coingecko-sector-evidence.mjs
@@ -44,6 +44,10 @@ on:
       - current-generation/files/src/approved-htx-analysis-scope.mjs
       - checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz
       - cloudflare/free-history/hourly-archive.mjs
+      - runner/htx-coordinated-rollout.mjs
+      - runner/htx-coordinated-rollout.test.mjs
+      - tools/weekly-htx-coordinated-rollout.mjs
+      - .github/workflows/weekly-htx-coordinated-rollout.yml
       - runner/htx-weekly-universe-plan.mjs
       - runner/htx-weekly-scope-package.mjs
       - runner/github-bounded-phase-lease.mjs
@@ -157,7 +161,14 @@ jobs:
             const exactProtectedCanonical=context.ref==='refs/heads/codex/protected-canonical-compaction-20261015'&&main==='5446fe194b60a032cf6ed6c092a4457ffb4ea5f7';
             const exactRetainedFixture=context.ref==='refs/heads/codex/weekly106-retained-fixture-20261015'&&main==='df94f00a09c84767c22b380f232feb4a0871f283';
             const weeklyProposal=context.eventName==='workflow_dispatch'&&context.payload.inputs?.weekly_proposal==='true'&&/^refs\/heads\/maintenance\/htx-weekly-\d{4}-\d{2}-\d{2}-\d+$/.test(context.ref)&&main===context.payload.inputs.weekly_expected_main;
-            if(main!==context.sha&&!weeklyProposal&&!exactRetainedFixture&&!exactProtectedCanonical&&!exactLosslessRecovery&&!exactWeeklyRetainedQualification&&!exactWeeklyConnectedPreparation&&!exactWeeklyPreparation&&!exactPublicHealthCandidate&&!exactSourceHealthCandidate&&!exactActivePreflightCandidate&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
+            const coordinated=context.ref==='refs/heads/codex/coordinated-weekly-rollout-20261015';
+            if(coordinated){
+              const {pathToFileURL}=require('url');
+              const {verifyOfflineReviewAuthority}=await import(pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+              const control={call:async route=>(await github.request('GET /repos/{owner}/{repo}/'+route,{owner,repo})).data,read:async(path,ref)=>{const d=(await github.rest.repos.getContent({owner,repo,path,ref})).data;return{value:JSON.parse(Buffer.from(d.content,'base64').toString())};}};
+              await verifyOfflineReviewAuthority(control,{head:context.sha,base:main,branch:context.ref.slice('refs/heads/'.length)});
+            }
+            if(main!==context.sha&&!coordinated&&!weeklyProposal&&!exactRetainedFixture&&!exactProtectedCanonical&&!exactLosslessRecovery&&!exactWeeklyRetainedQualification&&!exactWeeklyConnectedPreparation&&!exactWeeklyPreparation&&!exactPublicHealthCandidate&&!exactSourceHealthCandidate&&!exactActivePreflightCandidate&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
@@ -251,7 +262,7 @@ jobs:
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/public-venue-health-priority.test.mjs current-generation/tests/public-venue-source-budget.test.mjs > audit-output/liq-assembled/public-venue-health-priority.tap
           cp audit-output/public-venue-health-original-proof.json audit-output/liq-assembled/
           REPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-active105-initial-source-priority-20261014.mjs > audit-output/liq-assembled/active105-initial-source-queues.json
-          REPORT2_WEEKLY_RETAINED_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/weekly-retained106-package.json" node --test runner/htx-weekly-universe-plan.test.mjs runner/retained-weekly-106-package.test.mjs runner/offline-review-authority.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/weekly-htx-synchronized-plan.tap
+          REPORT2_WEEKLY_RETAINED_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/weekly-retained106-package.json" node --test runner/htx-coordinated-rollout.test.mjs runner/htx-weekly-universe-plan.test.mjs runner/retained-weekly-106-package.test.mjs runner/offline-review-authority.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/weekly-htx-synchronized-plan.tap
           cp audit-output/htx-weekly/proof.json audit-output/liq-assembled/weekly-disabled-controlled-proof.json
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
           REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
