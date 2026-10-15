@@ -1,6 +1,6 @@
 {
   "schema": "ACTIVE105_RELEASE375_377_CONTINUATION_V1",
-  "recorded_utc": "2026-10-15T10:03:11.132422+00:00",
+  "recorded_utc": "2026-10-15T10:17:41.629564+00:00",
   "verified_main": "3eddb40a9c3ded1d7190d47b1bf03b7f5bd5f86f",
   "merges": [
     {
@@ -47,6 +47,398 @@
     "new_timed_cadence_natural_acceptance": false
   },
   "latest_verified_full_report": {
+    "run": 38717894420,
+    "head": "3eddb40a9c3ded1d7190d47b1bf03b7f5bd5f86f",
+    "run_id": "1792058817419-1792058826944",
+    "generated_at": "2026-10-15T10:08:49.736Z",
+    "status": "CLOSED",
+    "scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0
+    },
+    "candidates": [
+      {
+        "contract": "NIL-USDT",
+        "publication_id": "PUB:27bfed4bb10a9bbfe568e24eb69fde2a034cab9b",
+        "snapshot_id": "S392:NIL-USDT:1792058919661",
+        "observed_ts": 1792058919661,
+        "state": "OBSERVE",
+        "all9_pauses_excluded": true,
+        "LIQ": {
+          "status": "CLOSED",
+          "provider_zone_count": 2,
+          "external_zone_count": 2,
+          "calculated_scenario_count": 8,
+          "displayed_zone_count": 2,
+          "reason": null,
+          "coverage_admission": {
+            "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "NIL-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "structural_market_source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false
+          },
+          "future_source_status": {
+            "coverage_admission": {
+              "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+              "eligible": true,
+              "source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false,
+              "contract": "NIL-USDT",
+              "proven_level_source_ids": [],
+              "additional_context_check_source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "structural_market_source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+              "fresh_live_levels_confirmed": false,
+              "receipt_only_context_score_eligible": false,
+              "receipt_only_context_target_eligible": false,
+              "leaders_may_be_replaced": false
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "nearby_levels": 0
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "CLOSED",
+              "source_ts": 1792058660391,
+              "scenario_count": 8
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          }
+        },
+        "active_block_facts": {
+          "N04": {
+            "checked": true,
+            "valid_context_facts": 2
+          },
+          "N05": {
+            "checked": true,
+            "valid_context_facts": 1
+          },
+          "N10": {
+            "checked": true,
+            "valid_context_facts": 3
+          },
+          "N11": {
+            "checked": true,
+            "valid_context_facts": 1
+          },
+          "N12": {
+            "checked": true,
+            "valid_context_facts": 2
+          },
+          "N15": {
+            "checked": true,
+            "valid_context_facts": 2
+          }
+        }
+      },
+      {
+        "contract": "龙虾-USDT",
+        "publication_id": "PUB:41ada47b6d1efcb373fd5ee60e224bf2cd8f8b9b",
+        "snapshot_id": "S392:龙虾-USDT:1792058873707",
+        "observed_ts": 1792058873707,
+        "state": "REJECTED",
+        "all9_pauses_excluded": true,
+        "LIQ": {
+          "status": "NOT_CLOSED",
+          "provider_zone_count": 0,
+          "external_zone_count": 0,
+          "calculated_scenario_count": 0,
+          "displayed_zone_count": 0,
+          "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+          "coverage_admission": {
+            "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+            "eligible": false,
+            "source_ids": [],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false
+          },
+          "future_source_status": {
+            "coverage_admission": {
+              "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+              "eligible": false,
+              "source_ids": [],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "nearby_levels": 0
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          }
+        },
+        "active_block_facts": {
+          "N04": {
+            "checked": true,
+            "valid_context_facts": 1
+          },
+          "N05": {
+            "checked": true,
+            "valid_context_facts": 1
+          },
+          "N10": {
+            "checked": true,
+            "valid_context_facts": 3
+          },
+          "N11": {
+            "checked": true,
+            "valid_context_facts": 1
+          },
+          "N12": {
+            "checked": true,
+            "valid_context_facts": 1
+          },
+          "N15": {
+            "checked": true,
+            "valid_context_facts": 1
+          }
+        }
+      }
+    ],
+    "liquidation_source_acquisition_audit": {
+      "schema": "LIQUIDATION_SOURCE_ACQUISITION_AUDIT_V1",
+      "run_id": "1792058817419-1792058826944",
+      "evaluated_ts": 1792058930101,
+      "candidates": [
+        "NIL-USDT",
+        "龙虾-USDT"
+      ],
+      "routes": [
+        {
+          "contract": "NIL-USDT",
+          "run_id": "1792058817419-1792058826944",
+          "lane": "HYPERLIQUID_NATIVE",
+          "status": "ACQUISITION_RETURNED",
+          "role_usable": true,
+          "attempt": 1,
+          "source_outcome": {
+            "evaluated": true,
+            "operational_success": true,
+            "actual_http": 2,
+            "transport_status": "CLOSED",
+            "schema_status": "CLOSED",
+            "coverage_status": "SUPPORTED",
+            "failure_origin": null
+          },
+          "position_proof": null
+        }
+      ],
+      "shared_budget": {
+        "reserved_http": 2,
+        "actual_http": 2,
+        "max_http_per_run": 4
+      },
+      "source_clocks_refreshed": false,
+      "diagnostic_only": true,
+      "internal_only": true,
+      "network_calls": 0,
+      "db_calls": 0,
+      "entry_authorized": false
+    },
+    "exact_same_run_SENT": {
+      "publication_id": "PUB:27bfed4bb10a9bbfe568e24eb69fde2a034cab9b",
+      "contract": "NIL-USDT",
+      "direction": "SHORT",
+      "wave_id": "EDW:NIL-USDT:1792048301499:G10",
+      "lifecycle_event": "OBSERVE",
+      "run_id": "1792058817419-1792058826944",
+      "snapshot_id": "S392:NIL-USDT:1792058919661",
+      "observed_ts": 1792058919661,
+      "analytical_fingerprint": "9bc76aa4ce12979b0d9e414b816e029017333742acc96cf4e8ea3b7a2c307dc5",
+      "presentation_hash": "b254f782d3f0bc243c9d64aeb82f450ef15e35e1d0fd08e00503452370fe841e",
+      "same_run_binding_verified": true,
+      "exact_SENT": true,
+      "telegram_message_id": "212",
+      "dispatch_finalized": true,
+      "task_at_delivery": {
+        "state": "PENDING",
+        "run_id": "1792058817419-1792058826944",
+        "snapshot_id": "S392:NIL-USDT:1792058919661",
+        "due_ts": 1792059219661,
+        "expires_ts": 1792060719661
+      },
+      "task_at_delivery_verified": true,
+      "task_state_after_delivery_known": false,
+      "actual_ENTRY": false,
+      "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+    },
+    "proof_folder": "checkpoints/active105-reliability-20261015/natural-38717894420",
+    "artifact_sha256": "ad32c83d68fcc41cf6b5962dac29a66571ab93171e06d05bc724a1049f634b37",
+    "new_cadence_single_natural_cycle_verified": true,
+    "all_day_cadence_verified": false
+  },
+  "no_work_defect": {
+    "run": 38715699578,
+    "head": "af2989a411c43fd4875b4440edba035e065b1caf",
+    "valid_status": "NO_WORK_NOT_DUE_NO_FRESH_TRIGGER",
+    "last_success_ts": 1792056389245,
+    "next_due_ts": 1792058789245,
+    "archive_status_before": "PRIVATE_ARCHIVE_COPY_NOT_CLOSED",
+    "cause": "The archive step tried to read absent full report even when the exact same run had a verified no-work receipt. It failed before network or D1.",
+    "candidate_fix": "Validate existing exact head/run/no-work facts, record NO_CANONICAL_COPY_EXACT_NO_WORK with zero D1, preserve failures for missing/foreign/malformed outcomes and full-report candidate selection.",
+    "local_integration_tests": 3,
+    "cloud_acceptance": "58_PASSED_0_FAILED_PR377_MERGED_NATIVE_NO_WORK_AFTER377_NOT_YET_OBSERVED"
+  },
+  "retention_capacity_preflight": {
+    "basis": "checkpoints/PROTECTED_CANONICAL_COMPACTION_CANDIDATE_20261015.json",
+    "existing_shared_passes_day": 2,
+    "max_rows_each_kind_per_pass": 48,
+    "optimistic_all_kind_rows_day": 96,
+    "maximum_new_candidates_day": 86,
+    "maximum_two_kind_rows_day": 172,
+    "max_demand_less_optimistic_capacity": 76,
+    "canonical_cold_controlled_rows_per_pass": 16,
+    "canonical_already_private_controlled_rows_per_pass": 48,
+    "not_actual_native_throughput": true,
+    "scope": "Capacity ceiling comparison only. Protected rows and archive size/transport/native D1 may lower eligible throughput; no physical storage savings claim.",
+    "next_design": "Batch exact original archive reads or immutable full-evidence bundles to reduce per-row HTTP within existing envelopes; preserve exact hash, clocks, current references and all originals. Native selection/cost qualification after UTC16 still required.",
+    "automatic_flags": false,
+    "UTC15_retention_calls_added": 0
+  },
+  "model_advisory_rule_saved_in_AGENTS": true,
+  "additional_agent_provider_HTTP": 0,
+  "additional_agent_D1": 0,
+  "forced_MAIN": 0,
+  "test_Telegram": 0,
+  "project_complete": false,
+  "all_blocks_complete": false,
+  "remaining": [
+    "First new natural full cycle closed28.174s after40min due; NIL OBSERVE exact SENT212. All-day cadence and no-work branch after377 still need natural evidence.",
+    "LIQ73/103 historical numerical coverage,30 gaps; no full105 fresh-deep claim",
+    "Native free monthly entitlements and worst cold/failure/fallback",
+    "Protected canonical current refs incllegacy24/native costs after legitimate UTC16 admission; shared throughput/private rolling/backlog",
+    "Final Telegram decision-entry score/form/MESSAGE_TOO_LONG after blocks and owner final specification"
+  ],
+  "prior_handoff": "checkpoints/ACTIVE105_SOURCE_PLAN_AFTER_OWNER_106_DEFERRAL_20261015.json",
+  "last_exact_same_run_SENT_proof": "checkpoints/active105-reliability-20261015/natural-38717894420/same-run-delivery-proof.json.gz",
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792054760000",
+    "released": true,
+    "expires_ts": 1792060160000,
+    "released_by_status_package_at_utc": "2026-10-15T10:05:43.886989+00:00"
+  },
+  "next_action": "Continue all-active105 source efficiency. PR375–377 merged, common607/cloud58. First new natural38717894420/head3eddb closed105scan0errors0stale; full start40min28.174s after prior, NIL OBSERVE exact SENT212 (not ENTRY), strict9pauses. NIL2native HL position prices and8CoinBoss scenarios; 龙虾 other active facts exist but0LIQ: native pool2/4, no verified native route; liquidationSourceOrder ASCII parser returns empty for Chinese symbols, CoinBoss also rejects them as owner-policy. This internal restriction is diagnosed, NOT fixed; provider support is NOT disproven. Next inspect original probe/exact provider identity and correct qualification/diagnostic with unchanged clocks/caps, validate scheduled/manual. First cadence cycle is not all-day acceptance. Preserve LIQ73/103 historical30gaps and monthly entitlement/cold-failure work. UTC15 retention2slots spent; no third. Protected canonical native current-reference/cost incllegacy24 after UTC16; shared throughput/private rolling still open.105/122,106MAGIC deferred. Final Telegram entry-score/form/MESSAGE_TOO_LONG after blocks and owner final specification. Own lease released by this package; read fresh main/phase/fence and acquire own bounded CAS lease before further changes.",
+  "status_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "prior_root_values_preserved_byte_exact": 375,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts"
+      ],
+      "before_sha256": "e03705816136d80d364c922b443c4fc09dd940272f5a128540f8cd26ade7dfb7",
+      "after_sha256": "0bca83b1d5a2d797a75c00b1587e211aa57c2cb745c635151fcf7267d3b345b2"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "prior_root_values_preserved_byte_exact": 152,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts"
+      ],
+      "before_sha256": "07004b6702b0248ef8ce4e8f53169f7de2796efcad462397093b71c671c5a076",
+      "after_sha256": "91c1213c43b4b510c19d7134d28bec89e74ba377e6f54da6e1ea74222d69f056"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "prior_root_values_preserved_byte_exact": 317,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts"
+      ],
+      "before_sha256": "73a3269764b3fb866b2d811daafd364478f1a76095ea36086da8c0c270e5f846",
+      "after_sha256": "961750f7449015db8e682a9060712ba38ceefdd3ed80f30208a659ce71a8c171"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "prior_root_values_preserved_byte_exact": 350,
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "updated_utc",
+        "updated_ts",
+        "lease",
+        "latest_own_bounded_continuation_lease",
+        "latest_active105_reliability_own_release"
+      ],
+      "before_sha256": "f637c6c296c7240787765c98d118c7003ffad386ca3ba6eae8c35a283f5c0f1a",
+      "after_sha256": "5010267c1811441cfdacf77b10556248716e74db5aa4a65b57b9cd55ee7b1fec"
+    }
+  ],
+  "previous_full_report_before_first_new_cadence": {
     "run": 38712899614,
     "head": "9bcf2524e87fd1b62c3b0baede34797befa3502c",
     "run_id": "1792056389245-1792056400622",
@@ -205,108 +597,55 @@
       "entry_eligible": false
     }
   },
-  "no_work_defect": {
-    "run": 38715699578,
-    "head": "af2989a411c43fd4875b4440edba035e065b1caf",
-    "valid_status": "NO_WORK_NOT_DUE_NO_FRESH_TRIGGER",
-    "last_success_ts": 1792056389245,
+  "first_new_cadence_acceptance": {
+    "prior_full_start_ts": 1792056389245,
     "next_due_ts": 1792058789245,
-    "archive_status_before": "PRIVATE_ARCHIVE_COPY_NOT_CLOSED",
-    "cause": "The archive step tried to read absent full report even when the exact same run had a verified no-work receipt. It failed before network or D1.",
-    "candidate_fix": "Validate existing exact head/run/no-work facts, record NO_CANONICAL_COPY_EXACT_NO_WORK with zero D1, preserve failures for missing/foreign/malformed outcomes and full-report candidate selection.",
-    "local_integration_tests": 3,
-    "cloud_acceptance": "58_PASSED_0_FAILED_PR377_MERGED_NATIVE_NO_WORK_AFTER377_NOT_YET_OBSERVED"
+    "new_run": 38717894420,
+    "workflow_created_utc": "2026-10-15T10:06:33Z",
+    "new_full_start_ts": 1792058817419,
+    "full_start_delay_from_due_ms": 28174,
+    "actual_full_start_spacing_ms": 2428174,
+    "full_closed": true,
+    "same_run_telegram_message_id": "212",
+    "actual_ENTRY": false,
+    "single_cycle_only": true,
+    "all_day_stability_confirmed": false
   },
-  "retention_capacity_preflight": {
-    "basis": "checkpoints/PROTECTED_CANONICAL_COMPACTION_CANDIDATE_20261015.json",
-    "existing_shared_passes_day": 2,
-    "max_rows_each_kind_per_pass": 48,
-    "optimistic_all_kind_rows_day": 96,
-    "maximum_new_candidates_day": 86,
-    "maximum_two_kind_rows_day": 172,
-    "max_demand_less_optimistic_capacity": 76,
-    "canonical_cold_controlled_rows_per_pass": 16,
-    "canonical_already_private_controlled_rows_per_pass": 48,
-    "not_actual_native_throughput": true,
-    "scope": "Capacity ceiling comparison only. Protected rows and archive size/transport/native D1 may lower eligible throughput; no physical storage savings claim.",
-    "next_design": "Batch exact original archive reads or immutable full-evidence bundles to reduce per-row HTTP within existing envelopes; preserve exact hash, clocks, current references and all originals. Native selection/cost qualification after UTC16 still required.",
-    "automatic_flags": false,
-    "UTC15_retention_calls_added": 0
+  "second_coin_liquidation_gap_diagnosis": {
+    "contract": "龙虾-USDT",
+    "saved_runs": [
+      38712899614,
+      38717894420
+    ],
+    "native_http_used": 2,
+    "native_http_cap": 4,
+    "native_budget_exhausted": false,
+    "native_admission": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+    "supplement_status": "NOT_COLLECTED",
+    "verified_code_cause": {
+      "path": "current-generation/files/src/liquidation-source-http-plan.mjs",
+      "asset_parser": "^([A-Z0-9]+)-USDT$",
+      "effect": "Chinese-symbol approved contracts return empty liquidationSourceOrder before collector or HTTP",
+      "second_barrier_path": "current-generation/files/src/coinboss-liquidation-levels.mjs",
+      "second_barrier": "CoinBoss collector/normalizer rejects non-ASCII base with EXCLUDED_BY_USER_POLICY, although owner excluded only BTC/ETH",
+      "fixed": false
+    },
+    "historical_matrix": "checkpoints/LIQ_105_SAVED_SOURCE_EVIDENCE_MATRIX_20261013.json",
+    "old_probe_class": "invalid",
+    "provider_noncoverage_not_established": true,
+    "does_not_claim_provider_was_queried": true,
+    "next": "Check preserved original probe and exact provider identity for approved Unicode assets; remove unjustified alphabet exclusion only with exact binding and unchanged clock/price/budget gates. Verify manual and scheduled paths. Do not fabricate alias or infer useful coverage from route eligibility."
   },
-  "model_advisory_rule_saved_in_AGENTS": true,
-  "additional_agent_provider_HTTP": 0,
-  "additional_agent_D1": 0,
-  "forced_MAIN": 0,
-  "test_Telegram": 0,
-  "project_complete": false,
-  "all_blocks_complete": false,
-  "remaining": [
-    "Observe actual new in-slot forty-minute recovery; bootstrap and old natural report alone do not accept it",
-    "LIQ73/103 historical numerical coverage,30 gaps; no full105 fresh-deep claim",
-    "Native free monthly entitlements and worst cold/failure/fallback",
-    "Protected canonical current refs incllegacy24/native costs after legitimate UTC16 admission; shared throughput/private rolling/backlog",
-    "Final Telegram decision-entry score/form/MESSAGE_TOO_LONG after blocks and owner final specification"
-  ],
-  "prior_handoff": "checkpoints/ACTIVE105_SOURCE_PLAN_AFTER_OWNER_106_DEFERRAL_20261015.json",
-  "last_exact_same_run_SENT_proof": "checkpoints/ACTIVE105_NATURAL_RLC_SENT210_REVIEW_20261015.json",
-  "own_lease": {
-    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792054760000",
-    "released": true,
-    "expires_ts": 1792060160000,
-    "released_by_status_package_at_utc": "2026-10-15T10:05:43.886989+00:00"
-  },
-  "next_action": "Continue all-active105 source efficiency. PR375 cadence and376 authority merged/common607;377 exact no-work private copy merged/cloud58. New backup code has exact bootstrap only: observe its naturally due10:06:29UTC recovery and exact final run before claiming timed-cadence acceptance. Saved09:26 full NIL/龙虾105 scan0errors0stale, strict9pauses; NIL2 actual HL position prices (2HTTP,9.668s old),8 external model levels,HTX spot/futures270ms, NIL rejected; 龙虾 no future levels, OBSERVE, no exact same-run SENT. Previous RLC OBSERVE SENT210 exact proof retained. No source/D1 calls for this audit. Continue LIQ30 proof gaps/free monthly cold-failure coverage, then protected canonical native current-reference/cost qualification after UTC16 legitimate admission and combined throughput/private rolling; UTC15 two slots spent, flagsfalse.105/122 retained,106MAGIC deferred. Final Telegram entry-score/form/MESSAGE_TOO_LONG only after block work/owner exact specification. Model advisory saved in AGENTS. This package releases only its own bounded lease; read fresh main/phase/fence and reacquire an own limited CAS lease before continuing.",
-  "status_preservation": [
-    {
-      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
-      "prior_root_values_preserved_byte_exact": 375,
-      "changed_root_keys": [
-        "active_working_state",
-        "next_action",
-        "updated_utc",
-        "updated_ts"
-      ],
-      "before_sha256": "e03705816136d80d364c922b443c4fc09dd940272f5a128540f8cd26ade7dfb7",
-      "after_sha256": "aaffbf4efb67054813959fb14bee87b337013218f122d10ef6bdf5cd8fdc3246"
-    },
-    {
-      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
-      "prior_root_values_preserved_byte_exact": 152,
-      "changed_root_keys": [
-        "active_working_state",
-        "next_action",
-        "updated_utc",
-        "updated_ts"
-      ],
-      "before_sha256": "07004b6702b0248ef8ce4e8f53169f7de2796efcad462397093b71c671c5a076",
-      "after_sha256": "93404c37000282cbe2ed00c1f70b4a32ac730e78719fc58779f7ab24e6a81187"
-    },
-    {
-      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
-      "prior_root_values_preserved_byte_exact": 317,
-      "changed_root_keys": [
-        "active_working_state",
-        "next_action",
-        "updated_utc",
-        "updated_ts"
-      ],
-      "before_sha256": "73a3269764b3fb866b2d811daafd364478f1a76095ea36086da8c0c270e5f846",
-      "after_sha256": "c38bed6b7305cd60ce78642102e11b19e438079a956310233bb09edf68cdfa25"
-    },
-    {
-      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
-      "prior_root_values_preserved_byte_exact": 350,
-      "changed_root_keys": [
-        "active_working_state",
-        "next_action",
-        "updated_utc",
-        "updated_ts",
-        "lease",
-        "latest_own_bounded_continuation_lease",
-        "latest_active105_reliability_own_release"
-      ],
-      "before_sha256": "f637c6c296c7240787765c98d118c7003ffad386ca3ba6eae8c35a283f5c0f1a",
-      "after_sha256": "4d1973a9e435eb15ae2dea145a6c079206ca5a204e250bf1733c9b36ed57842c"
-    }
-  ]
+  "active_mirror_verification": {
+    "all_common_values_equal": true,
+    "common_key_count": 260,
+    "historical_phase_only_keys_preserved": [
+      "latest_weekly_identity_repair_merged",
+      "storage_recovery_complete",
+      "last_weekly_lease_release",
+      "latest_full_report_failure_reason",
+      "latest_native_identity_handoff",
+      "latest_full_report_failure"
+    ]
+  }
 }
