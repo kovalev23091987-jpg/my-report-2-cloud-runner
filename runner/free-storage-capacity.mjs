@@ -5,7 +5,7 @@ export const FREE_STORAGE_POLICY=Object.freeze({
  archive_soft_bytes:400_000_000, spare_database_slots:1,
  hot_target_bytes:350_000_000, hot_high_bytes:400_000_000,
  hot_critical_bytes:450_000_000, next_report_reserve_bytes:24_000_000,
- metadata_max_age_ms:15*60_000,
+ metadata_max_age_ms:30*60_000,
 });
 const integer=v=>Number.isSafeInteger(v)&&v>=0;
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
@@ -26,11 +26,13 @@ export function freeStorageExpansionPlan({databases,complete,observed_ts,now=Dat
  const spare=Math.max(0,p.database_count-databases.length-p.spare_database_slots);
  // Reserve the full 500 MB entitlement for each prospective database, even
  // though the archive writer stops at 400 MB. Include foreign project usage.
- const byBytes=Math.max(0,Math.floor((p.account_bytes-used)/p.database_bytes));
+ const reservedExisting=databases.reduce((n,d)=>n+Math.max(d.file_size,p.database_bytes),0);
+ const byBytes=Math.max(0,Math.floor((p.account_bytes-reservedExisting)/p.database_bytes));
  const count=Math.min(spare,byBytes);
  return{...result,status:count?'FREE_ARCHIVE_EXPANSION_HEADROOM_VERIFIED':'NO_VERIFIED_FREE_EXPANSION_HEADROOM',
   allowed:count>0,used_account_bytes:used,free_account_bytes:Math.max(0,p.account_bytes-used),
   existing_database_count:databases.length,reserved_spare_database_slots:p.spare_database_slots,
+  existing_database_reserved_ceiling_bytes:reservedExisting,
   new_database_count:count,new_archive_operating_bytes:count*p.archive_soft_bytes,
   metadata_only_sizes:true,actual_provisioned_database_count:0,production_routes_changed:false};
 }

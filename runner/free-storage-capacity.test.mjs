@@ -9,7 +9,7 @@ test('free account expansion includes all projects, 500 MB reservations and a sp
  const occupied=freeStorageExpansionPlan({databases:[db(1,4_600_000_000)],complete:true,observed_ts:now,now});assert.equal(occupied.allowed,false);
 });
 test('unknown, stale, duplicate and incomplete account storage never authorize creation',()=>{
- for(const a of [{complete:false},{observed_ts:now-900001},{databases:[{...db(1),file_size:null}]},{databases:[db(1),db(1)]},{observed_ts:now+1}])assert.equal(freeStorageExpansionPlan({databases:[db(1)],complete:true,observed_ts:now,now,...a}).allowed,false);
+ for(const a of [{complete:false},{observed_ts:now-1800001},{databases:[{...db(1),file_size:null}]},{databases:[db(1),db(1)]},{observed_ts:now+1}])assert.equal(freeStorageExpansionPlan({databases:[db(1)],complete:true,observed_ts:now,now,...a}).allowed,false);
  assert.equal(freeStorageExpansionPlan({databases:Array.from({length:10},(_,i)=>db(i)),complete:true,observed_ts:now,now}).allowed,false);
 });
 const rolling={used_bytes:390_000_000,projected_new_bytes_before_service:20_000_000,reclaimable_bytes:100_000_000,protected_bytes:200_000_000,maintenance_bytes_per_day:50_000_000,incoming_bytes_per_day:40_000_000,native_qualified:true,archive_readthrough_qualified:true,archive_has_headroom:true,day_admitted:true};

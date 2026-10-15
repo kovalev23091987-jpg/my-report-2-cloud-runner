@@ -69,6 +69,9 @@ on:
       - current-generation/files/src/liquidation-extension/combined-runner-service.mjs
       - current-generation/tests/liquidation-structural-route-priority.test.mjs
       - current-generation/tests/generation-guard.test.mjs
+      - runner/free-storage-provision.mjs
+      - runner/free-storage-provision.test.mjs
+      - tools/provision-free-storage-20261015.mjs
       - runner/free-storage-capacity.mjs
       - runner/free-storage-capacity.test.mjs
       - runner/free-storage-inventory.mjs
@@ -304,7 +307,7 @@ jobs:
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
           REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/liquidation-source-http-plan.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
-          REPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/free-storage-capacity.test.mjs runner/canonical-native-qualification.test.mjs runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/private-canonical-prefetch.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
+          REPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/free-storage-provision.test.mjs runner/free-storage-capacity.test.mjs runner/canonical-native-qualification.test.mjs runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/private-canonical-prefetch.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap
           node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
           node --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap
