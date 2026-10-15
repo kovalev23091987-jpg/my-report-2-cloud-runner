@@ -39,7 +39,7 @@ export function exactCanonicalBodyUpdate(row,header,cutoff){
  return{sql:`UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${protectedCanonicalPredicate('?'+params.length)}`,params};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_headroom,before_modify,execute=false,prefetch_private=false,now=Date.now()}={}){
+export async function compactProtectedCanonical({source_db,archive_db,archive_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof archive_db?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
  const p=PROTECTED_CANONICAL_POLICY,usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),archive_db.usageSnapshot());
@@ -50,7 +50,11 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
  const tables=(await source_db.prepare(`SELECT name FROM sqlite_schema WHERE type='table' AND name IN (${REQUIRED_TABLES.map((_,i)=>'?'+(i+1)).join(',')})`).bind(...REQUIRED_TABLES).all()).results||[];
  if(REQUIRED_TABLES.some(t=>!tables.some(r=>r.name===t)))throw Error('CANONICAL_PROTECTED_REFERENCE_SCHEMA_REQUIRED');
  need(3000,0);
- const selected=(await source_db.prepare(PROTECTED_CANONICAL_SELECTION_SQL).bind(now-p.hot_window_ms).all()).results||[];out.selected=selected.length;
+ const selection=await source_db.prepare(PROTECTED_CANONICAL_SELECTION_SQL).bind(now-p.hot_window_ms).all(),selected=selection.results||[];out.selected=selected.length;
+ if(require_native_preflight){
+  const size=selection.meta?.size_after;if(!Number.isSafeInteger(size)||size<0)throw Error('CANONICAL_PRIMARY_SIZE_NOT_MEASURED');
+  out.primary_database_bytes_before=size;
+ }
  if(selected.length>p.max_rows)throw Error('CANONICAL_SOURCE_ROW_BOUND');
  let copy_db=archive_db;
  if(prefetch_private===true){
@@ -61,7 +65,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
  const prepared=[],durable=new Map();
  try{
   for(const row of selected){
-   if(!archive_headroom({max_copy_requests:3,reserved_native_readbacks:p.native_readbacks})){out.deferred_hot.push({publication_id:row.publication_id,reason:'SHARED_HTTP_HEADROOM'});continue;}
+   if(!archive_headroom({max_copy_requests:3,reserved_native_readbacks:p.native_readbacks*(require_native_preflight?2:1)})){out.deferred_hot.push({publication_id:row.publication_id,reason:'SHARED_HTTP_HEADROOM'});continue;}
    if(JSON.parse(row.canonical_json)?.state!=='REJECTED'||row.canonical_json.startsWith(PRIVATE_CANONICAL_PREFIX))throw Error('CANONICAL_EXACT_REJECTED_ORIGINAL_REQUIRED');
    let record;try{record=encodeCanonicalPublicationRow(row);}catch(error){if(/ARCHIVE_(?:RAW|COMPRESSED|WIRE)_BOUND/.test(error.message)){out.deferred_hot.push({publication_id:row.publication_id,reason:'ORIGINAL_SIZE_BOUND'});continue;}throw error;}
    const header=await privateCanonicalHeader(row,record),saved_bytes=record.raw_bytes-Buffer.byteLength(JSON.stringify(header));
@@ -80,6 +84,15 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
   const cached_db={prepare(sql){if(sql!=='SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1')throw Error('EXACT_VERIFIED_CACHE_LOOKUP_REQUIRED');return{bind(pub,sha){return{async first(){const wire=durable.get(pub+':'+sha);return wire?{record_json:wire}:null;}};}};}};
   // Preflight the entire durable batch before its first primary modification.
   for(let i=0;i<prepared.length;i+=p.max_rows_per_batch){const group=prepared.slice(i,i+p.max_rows_per_batch),reader=createPrivateCanonicalRestorer({archive_db:cached_db,db_admit:admit,max_rows:p.max_rows_per_batch});assert.deepEqual(await reader.restore(group.map(s=>s.header)),group.map(s=>s.row));}
+  if(require_native_preflight){
+   out.native_preflight=[];
+   for(const s of prepared.slice(0,p.native_readbacks)){
+    const reader=createPrivateCanonicalRestorer({archive_db,db_admit:admit,max_rows:1});
+    assert.deepEqual(await reader.restore(s.header),s.row);
+    out.native_preflight.push({publication_id:s.row.publication_id,raw_sha256:s.record.raw_sha256,exact_original_verified:true,primary_still_unmodified:true});
+   }
+   out.native_preflight_required_before_mutation=true;
+  }
   if(!execute)return{...out,status:'PRIVATE_ORIGINALS_VERIFIED_CANONICAL_BODIES_UNCHANGED',D1:usage()};
   let cursor=0;
   while(cursor<prepared.length&&out.mutation_batches<p.max_batches){
@@ -88,6 +101,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
    await before_modify();need(group.length*24,group.length*8);
    const ack=await source_db.batch(statements.map(q=>source_db.prepare(q.sql).bind(...q.params)));out.mutation_batches++;
    if(!Array.isArray(ack)||ack.length!==statements.length)throw Error('CANONICAL_GROUP_ACK_REQUIRED');
+   if(require_native_preflight){const size=ack.at(-1)?.meta?.size_after;out.primary_database_bytes_after=Number.isSafeInteger(size)&&size>=0?size:null;}
    const reader=createPrivateCanonicalRestorer({archive_db:cached_db,db_admit:admit,max_rows:p.max_rows_per_batch});
    for(const [i,s] of group.entries()){
     if(ack[i*2]?.meta?.changes!==1){out.conflicts_retained_hot.push(s.row.publication_id);continue;}
@@ -103,6 +117,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
    const original=prepared.find(s=>s.row.publication_id===moved.publication_id).row;
    assert.deepEqual(await native_reader.restore(header),original);out.native_readbacks.push(moved.publication_id);
   }
-  return{...out,status:out.compacted.length?'PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY':'NO_SAFE_CANONICAL_BODIES_CHANGED',D1:usage(),physical_database_free_bytes_measured:false};
+  const measured=require_native_preflight&&Number.isSafeInteger(out.primary_database_bytes_before)&&Number.isSafeInteger(out.primary_database_bytes_after);
+  return{...out,status:out.compacted.length?'PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY':'NO_SAFE_CANONICAL_BODIES_CHANGED',D1:usage(),physical_database_free_bytes_measured:measured,physical_bytes_reclaimed:measured?out.primary_database_bytes_before-out.primary_database_bytes_after:null};
  }catch(error){error.compaction_receipt={...out,prepared:prepared.length,status:'CANONICAL_COMPACTION_PARTIAL_OR_REFUSED_ORIGINALS_PRESERVED',D1:usage()};throw error;}
 }
