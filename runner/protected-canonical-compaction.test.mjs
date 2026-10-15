@@ -102,3 +102,16 @@ test('unqualified canonical execution stops before authority, transport or nativ
   const proof=JSON.parse(fs.readFileSync(path.join(dir,'audit-output/lossless-retained-history/proof.json'),'utf8'));assert.equal(proof.reason,'CANONICAL_COMPACTION_NATIVE_QUALIFICATION_NOT_ACTIVATED');assert.equal(proof.whole_HTTP.total,0);assert.equal(proof.github_control_HTTP,0);assert.equal(proof.D1_bridge_HTTP,0);assert.equal(proof.private_D1_HTTP,0);assert.ok(!proof.admission);assert.equal(proof.canonical_rows_modified,0);
  }finally{fs.rmSync(dir,{recursive:true});}
 });
+
+test('exceptional execution verifies independent native originals before its first primary mutation',async()=>{
+ const f=fixture();archiveAll(f);let guards=0;
+ const r=await compact(f,{execute:true,prefetch_private:true,require_native_preflight:true,before_modify:async()=>{guards++;assert.ok(f.archive_db.usageSnapshot().requests>=4);}});
+ assert.equal(r.native_preflight_required_before_mutation,true);assert.equal(r.native_preflight.length,2);assert.equal(r.compacted.length,2);assert.ok(guards>0);assert.equal(r.native_readbacks.length,2);
+});
+
+test('a corrupt independent preflight read leaves every hot canonical body unchanged',async()=>{
+ const f=fixture();archiveAll(f);const before=f.old.map(r=>get(f,r.publication_id)),prepare=f.archive_db.prepare.bind(f.archive_db);let guarded=0;
+ f.archive_db.prepare=sql=>{const original=prepare(sql);if(sql==='SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1')original.first=async()=>({record_json:'{}'});return original;};
+ await assert.rejects(compact(f,{execute:true,prefetch_private:true,require_native_preflight:true,before_modify:async()=>{guarded++;}}));
+ assert.equal(guarded,0);assert.deepEqual(f.old.map(r=>get(f,r.publication_id)),before);
+});

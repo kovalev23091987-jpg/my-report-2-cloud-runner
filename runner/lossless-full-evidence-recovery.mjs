@@ -13,9 +13,11 @@ export const LOSSLESS_RECOVERY_SELECTION_SQL=`SELECT e.* FROM full_evidence_shad
   WHERE newer.contract_code=e.contract_code AND (newer.observed_ts>e.observed_ts OR (newer.observed_ts=e.observed_ts AND newer.full_evidence_id>e.full_evidence_id)))
  ORDER BY e.observed_ts,e.full_evidence_id LIMIT 48`;
 
-export async function reserveLosslessRecoveryBudget(db,{reservation_id,now=Date.now()}={}){
+export async function reserveLosslessRecoveryBudget(db,{reservation_id,now=Date.now(),owner_emergency_day=null}={}){
  if(!/^RETAINED_HISTORY:\d+:\d+$/.test(reservation_id||'')||!Number.isSafeInteger(now)||now<=0)throw Error('EXACT_RETAINED_RECOVERY_RESERVATION_REQUIRED');
  const p=LOSSLESS_RECOVERY_POLICY,day=new Date(now).toISOString().slice(0,10);
+ const emergency=owner_emergency_day==='2026-10-15'&&day===owner_emergency_day;
+ if(owner_emergency_day!==null&&!emergency)throw Error('EXACT_OWNER_EMERGENCY_UTC15_REQUIRED');
  // Count the existing maintenance family too. A new implementation never
  // renames/reset its spent reservations or refunds a preparation-only run.
  const ack=await db.prepare(`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
@@ -24,11 +26,11 @@ export async function reserveLosslessRecoveryBudget(db,{reservation_id,now=Date.
  COALESCE(SUM(CASE WHEN state='FINALIZED' AND COALESCE(unknown_ops,1)>0 THEN 1 ELSE 0 END),0) AS unknown_count,
  COALESCE(SUM(CASE WHEN reservation_id LIKE 'RETAINED_HISTORY:%' THEN 1 ELSE 0 END),0) AS prior_count
  FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2)
- WHERE reads+?3<=?6 AND writes+?4<=?7 AND unknown_count=0 AND prior_count<?8`).bind(reservation_id,day,p.reservation.rows_read,p.reservation.rows_written,now,p.limits.rows_read,p.limits.rows_written,p.max_runs_day).run();
+ WHERE reads+?3<=?6 AND writes+?4<=?7 AND unknown_count=0 AND prior_count<?8 AND (?9=0 OR prior_count=2)`).bind(reservation_id,day,p.reservation.rows_read,p.reservation.rows_written,now,p.limits.rows_read-(emergency?59000:0),p.limits.rows_written-(emergency?920:0),emergency?3:p.max_runs_day,emergency?1:0).run();
  if(ack?.meta?.changes!==1)return{allowed:false,status:ack?.meta?.changes===0?'RETAINED_DAY_CAP_OR_DUPLICATE':'RETAINED_ADMISSION_ACK_INVALID'};
  const row=await db.prepare('SELECT reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1').bind(reservation_id).first();
  if(row?.state!=='RESERVED'||row.day_utc!==day||row.reserve_rows_read!==p.reservation.rows_read||row.reserve_rows_written!==p.reservation.rows_written)throw Error('RETAINED_RESERVATION_READBACK_REQUIRED');
- return{allowed:true,status:'ATOMIC_SHARED_DAY_RESERVED',reservation_id,reservation:p.reservation};
+ return{allowed:true,status:'ATOMIC_SHARED_DAY_RESERVED',reservation_id,reservation:p.reservation,owner_emergency_day,protected_next_full:emergency?{rows_read:59000,rows_written:920}:null};
 }
 
 export async function recoverLosslessFullEvidence({db,save_originals,fetch_archive,request_admit,before_modify,execute=false,now=Date.now(),secrets=[]}={}){

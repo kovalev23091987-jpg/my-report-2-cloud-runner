@@ -79,3 +79,22 @@ test('a local pre-request refusal never spends native SQL or fabricates unknown 
  let sent=0;const db=new RemoteD1Database('https://bridge.invalid/d1','fixture-token',{beforeRequest:()=>({allowed:false}),fetchImpl:async()=>{sent++;throw Error('must not send');}});
  await assert.rejects(db.prepare('SELECT 1').first(),/LOCAL_HTTP_ADMISSION_DENIED/);assert.equal(sent,0);assert.deepEqual(db.usageSnapshot(),{requests:0,rows_read:0,rows_written:0,unknown_ops:0,targets:{}});
 });
+
+test('a separately owner-approved UTC15 emergency uses exactly the third existing slot, preserving old spend and next-report headroom',async()=>{
+ const f=fixture(),stamp=Date.parse('2026-10-15T12:00:00Z'),day='2026-10-15',owner_emergency_day=day;
+ const add=id=>f.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('RETAINED_HISTORY:'+id+':1',day,5000,400,'FINALIZED',stamp,0);
+ assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:3:1',now:stamp,owner_emergency_day})).allowed,false);
+ add(1);add(2);assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:3:1',now:stamp})).allowed,false);
+ const third=await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:3:1',now:stamp,owner_emergency_day});assert.equal(third.allowed,true);assert.deepEqual(third.protected_next_full,{rows_read:59000,rows_written:920});
+ assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:4:1',now:stamp,owner_emergency_day})).allowed,false);assert.equal(f.raw.prepare('SELECT COUNT(*) n FROM report2_runner_budget_ledger_shadow').get().n,3);assert.equal(LOSSLESS_RECOVERY_POLICY.max_runs_day,2);
+ await assert.rejects(reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:5:1',now:stamp+DAY,owner_emergency_day}),/EXACT_OWNER_EMERGENCY/);
+});
+
+test('the exceptional third slot refuses unknown costs or consumption of next-full-report headroom',async()=>{
+ for(const kind of ['READS','WRITES','UNKNOWN']){
+  const f=fixture(),stamp=Date.parse('2026-10-15T12:00:00Z'),day='2026-10-15';
+  for(let id=1;id<=2;id++)f.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('RETAINED_HISTORY:'+id+':1',day,5000,400,'FINALIZED',stamp,0);
+  f.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('OTHER:1',day,kind==='READS'?3430000:1,kind==='WRITES'?68400:1,'FINALIZED',stamp,kind==='UNKNOWN'?1:0);
+  assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:3:1',now:stamp,owner_emergency_day:day})).allowed,false,kind);
+ }
+});

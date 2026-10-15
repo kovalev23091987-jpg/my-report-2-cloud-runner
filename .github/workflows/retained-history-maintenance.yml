@@ -23,6 +23,10 @@ on:
         description: Opt-in exact private batch-read qualification; defaults off
         type: boolean
         default: false
+      owner_emergency_day:
+        description: Owner-approved one-off third shared slot on 2026-10-15 only; empty keeps the two-slot limit
+        type: string
+        default: ''
 permissions:
   contents: write
 concurrency:
@@ -42,6 +46,7 @@ jobs:
       REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ${{ secrets.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN || secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
       RETAINED_HISTORY_KIND: ${{ inputs.kind || 'full_evidence' }}
       REPORT2_PRIVATE_PREFETCH_QUALIFICATION: ${{ inputs.prefetch_private == true }}
+      REPORT2_OWNER_STORAGE_EMERGENCY_DAY: ${{ inputs.owner_emergency_day || '' }}
       EXPECTED_MAIN: ${{ inputs.expected_main || github.sha }}
       BORROW_EXISTING_OWNER: ${{ inputs.expected_owner || '' }}
       LOSSLESS_EXECUTE: ${{ github.event_name == 'schedule' || inputs.execute == true }}
