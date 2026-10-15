@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {GUARDED_CODE_PATHS,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,CONTINUOUS_WORKER_PLAN,createCollectorJobBudget} from './continuous-backup-worker.mjs';
+import {GUARDED_CODE_PATHS,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,CONTINUOUS_WORKER_PLAN,createCollectorJobBudget,nextCollectorSlotTs} from './continuous-backup-worker.mjs';
 const T=Date.UTC(2026,9,8,20,1),task_id='RCHK:'+'a'.repeat(40),head='b'.repeat(40);
 const kick={schema:'EXACT_TRIGGER_ANALYSIS_KICK_V1',dispatch:true,entry_authorized:false,task_id,kick_ts:T,expires_ts:T+1800000};
 const manifest=()=>Object.fromEntries(GUARDED_CODE_PATHS.map(p=>[p,'a'.repeat(40)]));
@@ -25,6 +25,11 @@ test('expired, future, malformed, missing-token and entry-authorized hints never
 test('failed dispatch keeps the durable consumed kick and never invents an accepted workflow',async()=>{for(const fetch_impl of [async()=>new Response(null,{status:403}),async()=>{throw Error('CONTROLLED');}]){const r=await dispatchExactTriggerKick({kick,repository:'owner/repo',token:'CONTROLLED_ONLY',now:T,fetch_impl});assert.equal(r.dispatched,false);assert.equal(r.failed_dispatch_consumes_kick,true);assert.equal(r.entry_authorized,false);}});
 test('one cloud worker checks each five-minute slot without depending on new scheduled job starts',async()=>{
  let clock=T;const cycles=[],receipts=[],waits=[];const r=await runContinuousBackup({duration_minutes:11,now:()=>clock,sleep:async ms=>{waits.push(ms);clock+=ms;},source_guard:async()=>({allowed:true,status:'CURRENT_MAIN_CODE_VERIFIED'}),cycle:async()=>{cycles.push(clock);return {status:'PRIMARY_CLOSED',source_http:0,telegram:false};},on_receipt:async x=>receipts.push(x)});assert.deepEqual(cycles,[T,T+300000,T+600000]);assert.equal(r.cycles,3);assert(waits.every(x=>x>0&&x<=60000));assert.equal(receipts.length,3);assert.equal(r.entry_authorized,false);
+});
+test('work ending after a UTC five-minute boundary does not skip the next offset collector slot',async()=>{
+ let clock=T;const starts=[];const result=await runContinuousBackup({duration_minutes:11,now:()=>clock,sleep:async ms=>{clock+=ms;},source_guard:async()=>({allowed:true}),cycle:async context=>{starts.push(clock);assert.equal(context.next_slot_ts,nextCollectorSlotTs(clock));clock+=270_000;return {status:'PRIMARY_CLOSED'};}});
+ assert.deepEqual(starts,[T,T+300_000,T+600_000]);assert.equal(result.cycles,3);
+ assert.equal(nextCollectorSlotTs(T+270_000),T+300_000);
 });
 test('current code changes or unclosed source guard stop the old worker before the next cycle',async()=>{
  let clock=T,guards=0,cycles=0;const r=await runContinuousBackup({duration_minutes:20,now:()=>clock,sleep:async ms=>{clock+=ms;},source_guard:async()=>++guards===1?{allowed:true}:{allowed:false,status:'CURRENT_MAIN_CODE_CHANGED'},cycle:async()=>{cycles++;return {status:'PRIMARY_CLOSED'};}});assert.equal(cycles,1);assert.equal(r.status,'CURRENT_MAIN_CODE_CHANGED');assert.equal(guards,2);

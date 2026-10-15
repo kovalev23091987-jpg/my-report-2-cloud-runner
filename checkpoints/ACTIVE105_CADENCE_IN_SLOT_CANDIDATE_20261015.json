@@ -1,0 +1,59 @@
+{
+  "schema": "ACTIVE105_CADENCE_IN_SLOT_CANDIDATE_V1",
+  "recorded_utc": "2026-10-15T09:30:16.192405+00:00",
+  "source_main": "9bcf2524e87fd1b62c3b0baede34797befa3502c",
+  "status": "OFFLINE_VERIFIED_CLOUD_AND_NATURAL_PENDING",
+  "defect": {
+    "saved_run": 38702114607,
+    "last_full_cadence_ts": 1792050988697,
+    "original_poll_utc": "2026-10-15T08:36:04Z",
+    "due_ts": 1792053388697,
+    "old_next_poll_utc": "2026-10-15T08:41:00Z",
+    "bounded_timer_wait_ms": 24697,
+    "finding": "A five-minute poll just before the durable forty-minute boundary deferred an otherwise due full report to the next poll. Collector offset arithmetic could also skip the next offset slot after a long cycle."
+  },
+  "fix": [
+    "Reuse the single original cadence read and wait only inside the original collector slot, after collector work when not yet due.",
+    "Keep already-due recovery before collector work. Keep GitHub live-run, settlement, local throttle and durable runner gates.",
+    "Reverify exact current-main code after a timer wait; refuse if its bounded window closes during sleep or guard.",
+    "Preserve the five-minute offset grid even when a cycle crosses the plain five-minute boundary."
+  ],
+  "accounting": {
+    "additional_provider_HTTP": 0,
+    "additional_D1": 0,
+    "additional_GitHub_metadata_HTTP_per_actual_timer_wait": 2,
+    "full_cycle_minutes": 40,
+    "collector_minutes": 5,
+    "whole_job_HTTP": 164,
+    "manual_reserve_changed": false,
+    "source_caps_changed": false,
+    "paused_blocks_changed": false,
+    "universe_assets": 105,
+    "contracts": 122,
+    "manual_MAIN_triggered": 0,
+    "test_Telegram_sent": 0
+  },
+  "verification": {
+    "offline_tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "log": "checkpoints/active105-reliability-20261015/local-connected.tap",
+    "log_sha256": "c134172b774dd43e6b8530d6e314206c95567101457cf2dff03cd376e5fb6141",
+    "syntax_and_diff_check": true,
+    "code_sha256": {
+      "cloudflare/public-collector/continuous-backup-worker.mjs": "d6eae2a20e019fcd99a1594e3524ae6de30a82811a94a7101ebcf55e800a2178",
+      "cloudflare/public-collector/github-backup.mjs": "22268199a76e465520be037a3c93ba5b183ec274808c4b0c98a9ca9e1e2c242f",
+      "cloudflare/public-collector/scheduled-report-recovery.mjs": "7a1ccc8cba24976574b22446ef045e2f22bec790c6338192f5e00acfb2f281ab",
+      "cloudflare/public-collector/scheduled-report-recovery.test.mjs": "3f4cd21d2cf0f640871e230ac125e866455547dec2994dab2a3884d3d1535be3",
+      "cloudflare/public-collector/continuous-backup-worker.test.mjs": "6eed0b8c7dac92e03333447895b38f8bb8623b1c50e9090d4711721380778a59"
+    }
+  },
+  "prior_natural_acceptance": "checkpoints/ACTIVE105_NATURAL_RLC_SENT210_REVIEW_20261015.json",
+  "limits": [
+    "GitHub queue or scheduler delay is still external; exact forty-minute wall-clock execution is not guaranteed.",
+    "Previous RLC/SENT210 validates previous runtime and cannot accept this new cadence candidate.",
+    "LIQ numerical history73/103,30 gaps and free monthly entitlement/cold-failure questions remain open.",
+    "Both UTC15 retained-history slots are already spent; no third admission or automatic retention activation."
+  ],
+  "project_complete": false
+}

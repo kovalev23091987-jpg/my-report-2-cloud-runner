@@ -3,7 +3,7 @@ import path from 'node:path';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 import {claimTriggerKick,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
 import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,createCollectorJobBudget} from './continuous-backup-worker.mjs';
-import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal} from './scheduled-report-recovery.mjs';
+import {inspectScheduledReportGap,dispatchScheduledReportRecovery,dispatchContinuousBackupRenewal,waitForScheduledRecoveryBoundary,scheduledRecoveryBoundary} from './scheduled-report-recovery.mjs';
 import {PrivateArchiveD1API} from '../../runner/private-archive-d1-api.mjs';
 import {runPrivatePriceRechecks} from './private-price-consumer.mjs';
 
@@ -54,24 +54,35 @@ async function main(){
   const durationMinutes=Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0);
   const recoveryEnabled=['1','true','yes','on'].includes(String(process.env.REPORT2_SCHEDULED_RECOVERY_ENABLED||'').toLowerCase());
   let lastAcceptedRecoveryTs=0;
-  const worker=await runContinuousBackup({duration_minutes:durationMinutes,should_continue:()=>sourceBudget.can_collect,source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
+  const verifyCode=()=>verifyCurrentMainCode({repository,token,manifest});
+  const worker=await runContinuousBackup({duration_minutes:durationMinutes,should_continue:()=>sourceBudget.can_collect,source_guard:verifyCode,cycle:async({next_slot_ts,worker_deadline_ts})=>{
     let recovery={dispatched:false,status:'RECOVERY_DISABLED_OR_BOOTSTRAP',source_http:0,D1:0};
+    let cadence=null;
     if(recoveryEnabled&&durationMinutes>0){
-      const now=Date.now();
-      let cadence=null;
       try{cadence=await db.prepare(`SELECT last_success_ts,lease_expires_ts FROM v3_maintenance_cadence_shadow
         WHERE job_key=?1 LIMIT 1`).bind('TWO_CANDIDATE_ANALYTICS_40M').first();}
       catch{recovery={dispatched:false,status:'RECOVERY_CADENCE_READ_FAILED',source_http:0,D1:0};}
-      const gap=recovery.status==='RECOVERY_CADENCE_READ_FAILED'?recovery:await inspectScheduledReportGap({repository,token,now,local_last_accepted_ts:lastAcceptedRecoveryTs,
-        cadence_last_success_ts:cadence?.last_success_ts??null,cadence_lease_expires_ts:cadence?.lease_expires_ts??null});
-      recovery=gap.allowed?await dispatchScheduledReportRecovery({gap,repository,token}):gap;
-      if(recovery.dispatched)lastAcceptedRecoveryTs=now;
     }
+    const recoveryEnabledHere=recoveryEnabled&&durationMinutes>0&&recovery.status!=='RECOVERY_CADENCE_READ_FAILED';
+    const boundaryParams={cadence_last_success_ts:cadence?.last_success_ts??null,cadence_lease_expires_ts:cadence?.lease_expires_ts??null,local_last_accepted_ts:lastAcceptedRecoveryTs,not_after_ts:Math.min(next_slot_ts,worker_deadline_ts)};
+    const recoveryDueLater=recoveryEnabledHere&&scheduledRecoveryBoundary(boundaryParams)!==null;
+    const recover=async()=>{
+      const boundary=await waitForScheduledRecoveryBoundary({...boundaryParams,verify_code:verifyCode});
+      const now=Date.now();
+      const gap=boundary.allowed?await inspectScheduledReportGap({repository,token,now,local_last_accepted_ts:lastAcceptedRecoveryTs,
+        cadence_last_success_ts:cadence?.last_success_ts??null,cadence_lease_expires_ts:cadence?.lease_expires_ts??null}):boundary;
+      recovery={...(gap.allowed?await dispatchScheduledReportRecovery({gap,repository,token}):gap),boundary_wait:boundary};
+      if(recovery.dispatched)lastAcceptedRecoveryTs=now;
+    };
+    // Already-due reports keep their original early dispatch. A future due
+    // boundary waits only after the existing collector and trigger work.
+    if(recoveryEnabledHere&&!recoveryDueLater)await recover();
     const result=await runBackupCollector({db,archive_db:archive,collector});let kick={dispatch:false,status:'TRIGGER_KICK_DISABLED'};
     if(['1','true','yes','on'].includes(String(process.env.REPORT2_TRIGGER_KICK_ENABLED||'').toLowerCase())){
       try{kick=await claimTriggerKick(db);}catch{kick={dispatch:false,status:'KICK_NOT_CLOSED',source_http:0,entry_authorized:false};}
     }
     if(kick.dispatch){const dispatched=await dispatchExactTriggerKick({kick,repository,token});kick={...kick,dispatch_status:dispatched.status,github_dispatch_http_status:dispatched.http_status};}
+    if(recoveryDueLater)await recover();
     return {schema:'report2-public-collector-backup-v4-scheduled-recovery',source_code_head:process.env.GITHUB_SHA||null,cloud_run:process.env.GITHUB_RUN_ID||null,...result,recovery,kick,kick_budget:proveTriggerKickBudget(),usage:db.usageSnapshot(),completed_at:new Date().toISOString(),telegram:false,analytical_decision:false};
   },on_receipt:async receipt=>{
     receipt.source_job_budget=sourceBudget.snapshot;

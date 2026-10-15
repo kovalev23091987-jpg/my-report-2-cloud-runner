@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import {HTTP_LIMITS} from '../../current-generation/files/src/unified-budget.mjs';
 
 export const CONTINUOUS_WORKER_PLAN=Object.freeze({maximum_minutes:300,slot_ms:300000,offset_ms:60000,source_guard_http_per_cycle:2,runner:'ubuntu-latest',provider_http_added:0});
+export const nextCollectorSlotTs=now=>Math.floor((now-CONTINUOUS_WORKER_PLAN.offset_ms)/CONTINUOUS_WORKER_PLAN.slot_ms)*CONTINUOUS_WORKER_PLAN.slot_ms+CONTINUOUS_WORKER_PLAN.slot_ms+CONTINUOUS_WORKER_PLAN.offset_ms;
 export function createCollectorJobBudget({used=0,on_charge=()=>{},fetch_impl=(...args)=>globalThis.fetch(...args)}={}){
  const maximum=HTTP_LIMITS.whole_job;
  if(!Number.isSafeInteger(used)||used<0||used>maximum)throw Error('COLLECTOR_JOB_SOURCE_BUDGET_INVALID');
@@ -45,10 +46,11 @@ export async function runContinuousBackup({cycle,source_guard,should_continue=()
   if(!should_continue()){status='ORIGINAL_SOURCE_JOB_HTTP_CAP_REACHED';await on_receipt({worker_status:status,worker_started_ts:started,worker_deadline_ts:deadline,cycles,failures});break;}
   const guard=await source_guard();
   if(guard.allowed!==true){status=guard.status||'CURRENT_MAIN_CODE_NOT_VERIFIED';await on_receipt({worker_status:status,source_guard:guard,worker_started_ts:started,worker_deadline_ts:deadline,cycles,failures});break;}
-  let receipt;try{receipt=await cycle();}catch{failures++;receipt={status:'CONTINUOUS_BACKUP_CYCLE_NOT_CLOSED',telegram:false,analytical_decision:false};}
+  const cycleStarted=now(),nextSlot=nextCollectorSlotTs(cycleStarted);
+  let receipt;try{receipt=await cycle({cycle_started_ts:cycleStarted,next_slot_ts:nextSlot,worker_deadline_ts:deadline});}catch{failures++;receipt={status:'CONTINUOUS_BACKUP_CYCLE_NOT_CLOSED',telegram:false,analytical_decision:false};}
   cycles++;await on_receipt({...receipt,source_guard:guard,worker_status:'CONTINUOUS_CYCLE_COMPLETED',worker_started_ts:started,worker_deadline_ts:deadline,cycles,failures});
   if(duration_minutes===0||now()>=deadline)break;
-  const next=Math.floor(now()/300000)*300000+360000;
+  const next=nextSlot>now()?nextSlot:nextCollectorSlotTs(now());
   while(now()<Math.min(next,deadline))await sleep(Math.min(60000,Math.min(next,deadline)-now()));
  }while(now()<deadline);
  return {status,started_ts:started,deadline_ts:deadline,cycles,failures,provider_http_added:0,entry_authorized:false};
