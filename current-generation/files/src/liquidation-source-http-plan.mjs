@@ -1,4 +1,5 @@
 import {ORDERLY_VERIFIED_HTX_MARKETS} from './orderly-public-liquidation-positions.mjs';
+import {approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 
 export const LIQ_SHARED_HTTP_CAP=8;
 export const LIQ_NATIVE_HTTP_ALLOCATION=4;
@@ -22,7 +23,7 @@ export const SWOLE_EXACT_NUMERIC=new Set(['FIL','STRK']);
 // for every one of these 38 exact markets. Give an observed-position source
 // the first remaining request before aggregate market models.
 export const ORDERLY_SAVED_NUMERIC=ORDERLY_VERIFIED_HTX_MARKETS;
-const asset=contract=>String(contract||'').match(/^([A-Z0-9]+)-USDT$/)?.[1]??null;
+const asset=approvedHtxAnalysisAssetForContract;
 export function liquidationModelOrder(contract){
  const base=asset(contract);if(!base||['BTC','ETH'].includes(base))return[];
  if(SWOLE_EXACT_NUMERIC.has(base))return['SWOLE','COINBOSS'];

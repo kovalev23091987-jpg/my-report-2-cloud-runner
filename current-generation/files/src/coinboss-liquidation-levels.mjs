@@ -3,10 +3,22 @@ import {approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope
 const number=value=>value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value):null;
 const tier=amount=>amount>=1_000_000?'огромная':amount>=100_000?'крупная':amount>=10_000?'средняя':'небольшая';
 const no=(contract,status,reason,network_calls=0)=>({source:'COINBOSS_CEX_MODEL',contract,status,reason,network_calls,scenarios:[],internal_only:true});
+// The original exact requests returned BTC for these four assets. Retain the
+// failed identity receipt instead of calling this an owner exclusion or
+// repeating the same known unhelpful route on every forty-minute report.
+const mismatchedSymbols=new Set(['哈基米','币安人生','牛来','龙虾']);
+export function coinBossLiquidationRequestAdmission(contract){
+ const base=approvedHtxAnalysisAssetForContract(contract);
+ if(!base)return no(contract,'IDENTITY_NOT_CLOSED','EXACT_APPROVED_HTX_ASSET_REQUIRED');
+ if(['BTC','ETH'].includes(base))return no(contract,'EXCLUDED_BY_USER_POLICY','OWNER_EXCLUDED_BTC_ETH_LEVELS');
+ if(mismatchedSymbols.has(base))return{...no(contract,'EXACT_SOURCE_IDENTITY_UNVERIFIED','SAVED_EXACT_REQUEST_RETURNED_OTHER_ASSET'),capability_receipt:{requested_symbol:base,returned_symbol:'BTC',proof:'checkpoints/source-inputs/coinboss-exact-symbol-mismatches-20261012.json',original_probe_sha256:'10c41f4e6bf5dd551617391c083d597b74b64c29da3654760da3bb311d7dd1db',current_market_fact:false,automatic_repeat_allowed:false}};
+ return null;
+}
 
 export function normalizeCoinBossLiquidationLevels(payload,{contract,reference_price,observed_ts=Date.now()}={}){
  const base=approvedHtxAnalysisAssetForContract(contract),reference=number(reference_price),data=payload?.data;
- if(!base||!(/^[A-Z0-9]+$/.test(base))||['BTC','ETH'].includes(base))return no(contract,'EXCLUDED_BY_USER_POLICY','ONLY_APPROVED_NON_BTC_ETH_ASCII_CONTRACTS');
+ if(!base)return no(contract,'IDENTITY_NOT_CLOSED','EXACT_APPROVED_HTX_ASSET_REQUIRED');
+ if(['BTC','ETH'].includes(base))return no(contract,'EXCLUDED_BY_USER_POLICY','OWNER_EXCLUDED_BTC_ETH_LEVELS');
  if(!Number.isSafeInteger(observed_ts)||!(reference>0))return no(contract,'REFERENCE_NOT_CLOSED','HTX_REFERENCE_PRICE_REQUIRED');
  if(payload?.success!==true||data?.symbol!==base)return no(contract,'IDENTITY_NOT_CLOSED','EXACT_RESPONSE_SYMBOL_REQUIRED');
  const sourceTs=number(data.updatedAt),sourcePrice=number(data.price),oi=number(data.oiUsd);
@@ -27,7 +39,7 @@ export function normalizeCoinBossLiquidationLevels(payload,{contract,reference_p
 
 export async function collectCoinBossLiquidationLevels({contract,reference_price,run_id,fetch_impl=globalThis.fetch,request_admit=null,now=Date.now(),max_http=1}={}){
  const base=approvedHtxAnalysisAssetForContract(contract);
- if(!base||!/^[A-Z0-9]+$/.test(base)||['BTC','ETH'].includes(base))return no(contract,'EXCLUDED_BY_USER_POLICY','ONLY_APPROVED_NON_BTC_ETH_ASCII_CONTRACTS');
+ const admission=coinBossLiquidationRequestAdmission(contract);if(admission)return admission;
  if(!(number(reference_price)>0))return no(contract,'REFERENCE_NOT_CLOSED','HTX_REFERENCE_PRICE_REQUIRED');
  if(max_http<1)return no(contract,'DEFERRED_HTTP_ENVELOPE','SHARED_LIQUIDATION_HTTP_CAP');
  if(request_admit){const grant=request_admit({logical_request_id:`COINBOSS_LIQ:${run_id}:${contract}`,lane:'background',attempts:1});if(!grant?.allowed||grant.duplicate)return no(contract,'DEFERRED_HTTP_ENVELOPE','UNIFIED_HTTP_NOT_ADMITTED');}

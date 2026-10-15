@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {liquidationSourceOrder} from '../files/src/liquidation-source-http-plan.mjs';
 import {normalizeCoinBossLiquidationLevels,collectCoinBossLiquidationLevels} from '../files/src/coinboss-liquidation-levels.mjs';
 import {buildPumpLiquidationZones} from '../files/src/pump-liquidation-zones.mjs';
 import {displayBriefTelegramLiquidations,displayFutureLiquidations,RELEVANT_LIQUIDATION_PRESENTATION} from '../files/src/canonical-display.mjs';
@@ -39,7 +41,7 @@ test('stale, mismatched, divergent and malformed responses fail closed',()=>{
  assert.equal(normalize(body,{reference_price:1.30}).status,'PRICE_OR_OI_NOT_CLOSED');
  assert.equal(normalize({...body,data:{...body.data,oiUsd:0}}).status,'PRICE_OR_OI_NOT_CLOSED');
  assert.equal(normalize({...body,data:{...body.data,tiers:{}}}).status,'SCHEMA_NOT_CLOSED');
- assert.equal(normalize(body,{contract:'哈基米-USDT'}).status,'EXCLUDED_BY_USER_POLICY');
+ assert.equal(normalize(body,{contract:'哈基米-USDT'}).status,'IDENTITY_NOT_CLOSED');
 });
 
 test('BTC and ETH create no level request or displayed level',async()=>{
@@ -60,4 +62,32 @@ test('collector admits one request and checks its response identity',async()=>{
  assert.equal(result.status,'CLOSED');assert.equal(result.network_calls,1);assert.equal(calls,1);assert.equal(admissions,1);
  const blocked=await collectCoinBossLiquidationLevels({contract:'FIL-USDT',reference_price:1.1534,max_http:0,fetch_impl});
  assert.equal(blocked.status,'DEFERRED_HTTP_ENVELOPE');assert.equal(calls,1);
+});
+
+
+test('saved Chinese-symbol requests returned BTC and remain explicit zero-HTTP identity failures',async()=>{
+ const original=JSON.parse(readFileSync('checkpoints/source-inputs/coinboss-exact-symbol-mismatches-20261012.json','utf8'));
+ let calls=0,admissions=0;
+ for(const row of original.rows){
+  const contract=`${row.requested}-USDT`;
+  assert.equal(row.response.data.symbol,'BTC');
+  assert.deepEqual(liquidationSourceOrder(contract),['COINBOSS','ORDERLY']);
+  const normalized=normalizeCoinBossLiquidationLevels(row.response,{contract,reference_price:0.04,observed_ts:row.response.data.updatedAt+1000});
+  assert.equal(normalized.status,'IDENTITY_NOT_CLOSED');assert.equal(normalized.scenarios.length,0);
+  const result=await collectCoinBossLiquidationLevels({contract,reference_price:0.04,fetch_impl:async()=>{calls++;throw Error('known wrong-asset route must not retry');},request_admit:()=>{admissions++;return{allowed:true};}});
+  assert.equal(result.status,'EXACT_SOURCE_IDENTITY_UNVERIFIED');assert.equal(result.network_calls,0);
+  assert.equal(result.capability_receipt.requested_symbol,row.requested);assert.equal(result.capability_receipt.returned_symbol,'BTC');assert.equal(result.capability_receipt.current_market_fact,false);
+ }
+ assert.equal(calls,0);assert.equal(admissions,0);
+ assert.deepEqual(liquidationSourceOrder('MAGIC-USDT'),[]);
+ assert.deepEqual(liquidationSourceOrder('UNKNOWN-USDT'),[]);
+ assert.deepEqual(liquidationSourceOrder('NIL-USDT'),['COINBOSS','ORDERLY']);
+});
+
+test('an exact approved Unicode reply can be normalized without an alphabet restriction',()=>{
+ // Controlled future-provider schema case, not an observed coverage claim.
+ const exact={...body,data:{...body.data,symbol:'龙虾'}};
+ const result=normalizeCoinBossLiquidationLevels(exact,{contract:'龙虾-USDT',reference_price:body.data.price,observed_ts:t});
+ assert.equal(result.status,'CLOSED');assert.equal(result.scenarios.length,8);
+ assert.equal(normalizeCoinBossLiquidationLevels(exact,{contract:'UNKNOWN-USDT',reference_price:body.data.price,observed_ts:t}).status,'IDENTITY_NOT_CLOSED');
 });
