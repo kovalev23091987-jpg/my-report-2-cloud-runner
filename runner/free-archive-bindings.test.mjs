@@ -11,3 +11,8 @@ test('later weekly rollout preserves exactly pinned installed archive aliases an
  const config={compatibility_date:'2026-10-12',d1_databases:[{binding:'CANONICAL_ARCHIVE_DB',database_id:D.LEGACY.uuid}]},settings={compatibility_date:config.compatibility_date,bindings:[{name:D.LEGACY.binding,type:'d1',id:D.LEGACY.uuid},{name:D.A1.binding,type:'d1',id:D.A1.uuid}]},runtime={compatibility_date:config.compatibility_date,usage_model:'standard'},args={settings,config,runtime,main_module:'worker.js',head:'a'.repeat(40)};
  assert.deepEqual(historyVersionMetadata(args).bindings,settings.bindings);const bad=structuredClone(settings);bad.bindings[1].id=D.A2.uuid;assert.throws(()=>historyVersionMetadata({...args,settings:bad}),/EXACT_HISTORY_D1/);
 });
+test('new archive aliases match the exact native dual-id shape; conflicting ids are never normalized away',()=>{
+ const settings={bindings:[{name:D.LEGACY.binding,type:'d1',id:D.LEGACY.uuid}]},r=freeArchiveBindingPlan({settings,schema_receipt});
+ for(const b of r.bindings.slice(1)){assert.equal(b.id,b.database_id);assert.deepEqual(Object.keys(b).sort(),['database_id','id','name','type']);}
+ const bad=structuredClone(r.bindings);bad[1].database_id=D.A2.uuid;assert.throws(()=>freeArchiveBindingPlan({settings:{bindings:bad},schema_receipt}),/FOREIGN_ARCHIVE_BINDING/);
+});
