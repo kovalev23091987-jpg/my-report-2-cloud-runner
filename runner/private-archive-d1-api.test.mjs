@@ -25,3 +25,8 @@ test('missing native counters and incomplete batch receipts cannot silently char
 test('both databases count against one shared reservation, including unknown operations',()=>{
  assert.deepEqual(combineMeasuredD1Usage({requests:4,rows_read:35,rows_written:3,unknown_ops:0},{requests:3,rows_read:2,rows_written:4,unknown_ops:0}),{requests:7,rows_read:37,rows_written:7,unknown_ops:0});assert.throws(()=>combineMeasuredD1Usage({rows_read:1}),/USAGE_INVALID/);
 });
+test('local whole HTTP refusal happens before transport and never fabricates unknown native work',async()=>{
+ let sent=0;const events=[],db=new PrivateArchiveD1API({token:TOKEN,beforeRequest:event=>{events.push(event);return{allowed:false};},fetch_impl:async()=>{sent++;throw Error('must not send');}});
+ await assert.rejects(db.query('SELECT 1'),/LOCAL_HTTP_ADMISSION_DENIED/);await assert.rejects(db.verifyDatabase(),/LOCAL_HTTP_ADMISSION_DENIED/);
+ assert.equal(sent,0);assert.deepEqual(db.usageSnapshot(),{requests:0,rows_read:0,rows_written:0,unknown_ops:0});assert.deepEqual(events.map(e=>e.operation),['query','descriptor']);assert.ok(events.every(e=>!Object.hasOwn(e,'sql')&&!JSON.stringify(e).includes(TOKEN)));
+});

@@ -30,7 +30,7 @@ const previous=JSON.parse(gunzipSync(previousCompressed)),current=qualifyWeeklyC
 const known=JSON.parse(JSON.stringify(vm.runInNewContext(hourly_source.replaceAll('export ', '')+';KNOWN_HISTORY_MANIFESTS',{TextEncoder})));
 const plan=planWeeklyHtxUniverse({previous,current,now:r.observed_ts,known_priorities:N15_INITIAL_SOURCE_PREFERENCE});
 if(JSON.stringify(plan)!==JSON.stringify(r.plan))throw Error('ORIGINAL_CATALOG_TO_PLAN_REQUIRED');
-const bytes=Buffer.from(JSON.stringify(current,null,2)+'\n'),rendered=renderWeeklyScopeFiles({plan,manifest_bytes:bytes,generation:previous_scope.generation,previous_scope,approved_source,hourly_source,known_manifests:known});
+const bytes=Buffer.from(JSON.stringify(current,null,2)+'\n'),manifest_gzip_bytes=await fs.readFile(`checkpoints/htx-weekly-universe-${r.week}.json.gz`),rendered=renderWeeklyScopeFiles({plan,manifest_bytes:bytes,manifest_gzip_bytes,generation:previous_scope.generation,previous_scope,approved_source,hourly_source,known_manifests:known});
 if(JSON.stringify(rendered.required_rollout)!==JSON.stringify(r.required_rollout))throw Error('ALL_CONNECTED_ROLLOUTS_REQUIRED');
 for(const [path,expected] of Object.entries(rendered.files))if(!(await fs.readFile(path)).equals(expected))throw Error('SYNCHRONIZED_PROPOSAL_FILE_MISMATCH:'+path);
 const proof={...checked,receipt:undefined,source_receipts:undefined,status:'ORIGINAL_SIX_CATALOGS_PLAN_ALL_CONSUMERS_EXACTLY_BOUND',manifest_sha256:rendered.scope.manifest_sha256,analysis_assets:rendered.scope.approved_assets,added:plan.added,removed:plan.removed,source_clocks_unchanged:true,provider_HTTP:0,D1:0,production_scope_changed:false};
