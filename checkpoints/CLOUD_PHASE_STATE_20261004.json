@@ -329,11 +329,9 @@
     }
   ],
   "lease": {
-    "owner": "GH_ACTIONS:HTX_COMPACT_4H:38681736105:undefined",
-    "acquired_ts": 1792038601918,
-    "expires_ts": 1792040101918,
-    "expected_main": "5446fe194b60a032cf6ed6c092a4457ffb4ea5f7",
-    "scope": "HTX_COMPACT_4H_SAME_SOURCE_6_PER_DAY_PRICE_ONLY_NO_TELEGRAM"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "Verify first owner-authorized bounded weekly HTX qualification/proposal run with its own CAS lease, exact six original catalogs and source-week/day/minute/D1 admission. Changed scope activation remains blocked until synchronized public collector, HTX spot/futures archive and LIQ forecast history deployment/readbacks are checked. The Actions proposal flag is enabled; default workflow rights remain Read. Retain protected hot originals, all historical source matrices, source clocks and SENT208 as historical. Then finish residual source gaps and protected cold consumers/retention; final Telegram entry score/form remains the last owner-specified stage.",
   "common_future_universe": {
@@ -399,11 +397,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:1791935767000",
-    "acquired_ts": 1791935767000,
-    "expires_ts": 1791942967000,
-    "released_utc": "2026-10-14T01:52:20.948435+00:00",
-    "reason": "Verified runtime, natural receipts, deployed forecast consumer and exact continuation saved in GitHub; only own lease released."
+    "owner": "GH_ACTIONS:HTX_COMPACT_4H:38681736105:undefined",
+    "acquired_ts": 1792038601918,
+    "expires_ts": 1792040101918,
+    "released_ts": 1792038615425,
+    "reason": "HTX_COMPACT_4H_DAILY_BOUNDED_RUN"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -10251,52 +10249,52 @@
   },
   "latest_N05_coverage_bottleneck_and_shared_batch_plan": "checkpoints/N05_COVERAGE_BOTTLENECK_AND_SHARED_BATCH_PLAN_20261010.json",
   "latest_htx_compact_4h_daily": {
-    "cloud_run": 38358282884,
-    "head": "0dbfa735cd9d2572b312bebb3463f6691c8a141d",
+    "cloud_run": 38681736105,
+    "head": "5446fe194b60a032cf6ed6c092a4457ffb4ea5f7",
     "status": "BOUNDED_ACTUAL_COMPACT_SOURCE_ATTEMPTS_FINISHED",
     "sourceHTTP": 6,
     "source_http_reserved": 6,
     "results": [
       {
-        "contract": "APT-USDT",
+        "contract": "BANK-USDT",
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "observed_bars": 491
+      },
+      {
+        "contract": "BCH-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "ARB-USDT",
+        "contract": "BEAT-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "ASTER-USDT",
+        "contract": "BILL-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "ATOM-USDT",
+        "contract": "BNB-USDT",
         "status": "COMPLETE_90D_4H_PRICE_ONLY",
         "observed_bars": 540
       },
       {
-        "contract": "AVAX-USDT",
-        "status": "COMPLETE_90D_4H_PRICE_ONLY",
-        "observed_bars": 540
-      },
-      {
-        "contract": "AVNT-USDT",
-        "status": "COMPLETE_90D_4H_PRICE_ONLY",
-        "observed_bars": 540
+        "contract": "BOME-USDT",
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "observed_bars": 299
       }
     ],
     "D1": {
       "requests": 7,
-      "rows_read": 15,
+      "rows_read": 34,
       "rows_written": 8,
       "unknown_ops": 0,
       "targets": {
         "first:report2_runner_budget_ledger_shadow": {
           "requests": 2,
-          "rows_read": 12,
+          "rows_read": 31,
           "rows_written": 0,
           "unknown_ops": 0
         },
