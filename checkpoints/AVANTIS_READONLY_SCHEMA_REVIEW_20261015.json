@@ -1,0 +1,30 @@
+{
+  "schema": "AVANTIS_READONLY_SCHEMA_DOCUMENT_REVIEW_20261015_V1",
+  "recorded_utc": "2026-10-15T08:36:40Z",
+  "prior_reused": "checkpoints/ADDITIONAL_NATIVE_LIQ_PRIMARY_RESEARCH_20261014.json",
+  "status": "DOCUMENTATION_LEAD_ONLY_NOT_ADMITTED_OR_CONNECTED",
+  "sources": [
+    {
+      "url": "https://core.avantisfi.com/api-json",
+      "finding": "Published schema documents public GET/user-data requiring a trader address, but no bulk/positions response schema or current position-state clock. No signed/admin/write operation admitted."
+    },
+    {
+      "url": "https://github.com/Avantis-Labs/avantis-trading-skill/blob/main/core-backend.md",
+      "finding": "Source liquidationPrice is documented for positions separately from limitOrders; openedAt is opening time, not present snapshot proof."
+    },
+    {
+      "url": "https://github.com/Avantis-Labs/avantis-trading-skill/blob/main/data-api.md",
+      "finding": "Pair/Pyth reference configuration is a structural route only, not current open-position evidence or a free numeric quota."
+    }
+  ],
+  "remaining": [
+    "ExactHTX105 asset/feed overlap",
+    "Current real open-position source clock and bounded complete acquisition",
+    "Confirmed free entitlement before market calls",
+    "Original source-backed position consumer proof"
+  ],
+  "new_connected_sources": 0,
+  "new_market_HTTP": 0,
+  "D1": 0,
+  "all_worldwide_sources_exhausted": false
+}

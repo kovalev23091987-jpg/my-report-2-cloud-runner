@@ -18,6 +18,11 @@ by_source = collections.defaultdict(lambda: {'contracts': set(), 'checks': 0, 'v
 by_block = {key: {'checked_contracts': set(), 'context_contracts': set(), 'directional_contracts': set(), 'manual_rendered_contracts': set(), 'nonzero_score_contracts': set(), 'original_checks': 0} for key in active}
 publications, seen, files, bad, issues = [], set(), [], [], []
 for path in sorted((root/'checkpoints').glob('**/report2-run-result.json*')):
+    packed = path.with_name(path.name+'.gz')
+    if path.suffix != '.gz' and packed.exists():
+        if gzip.decompress(packed.read_bytes()) != path.read_bytes():
+            raise ValueError('ORIGINAL_REPORT_GZIP_MISMATCH: '+str(path.relative_to(root)))
+        continue
     raw = gzip.decompress(path.read_bytes()) if path.suffix == '.gz' else path.read_bytes()
     data = json.loads(raw)
     if data.get('status') != 'CLOSED' or not re.fullmatch('[a-f0-9]{40}', str(data.get('head', ''))):
