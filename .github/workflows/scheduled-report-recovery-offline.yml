@@ -10,6 +10,8 @@ on:
       - 'cloudflare/public-collector/scheduled-report-recovery*.mjs'
       - 'cloudflare/public-collector/trigger-analysis-kick.test.mjs'
       - 'tools/admit-weekly-maintenance-after-report*.mjs'
+      - 'runner/offline-review-authority*.mjs'
+      - '.github/workflows/liq-assembled-offline-20261012.yml'
 permissions:
   contents: read
 jobs:
@@ -23,7 +25,7 @@ jobs:
           node-version: '24'
       - name: Verify workflow YAML, recovery guard and report priority without network
         run: |
-          ruby -e "require 'yaml'; ARGV.each{|p| abort(p) unless YAML.load_file(p)['name']}" .github/workflows/report2.yml .github/workflows/report2-public-collector-backup.yml .github/workflows/scheduled-report-recovery-offline.yml
+          ruby -e "require 'yaml'; ARGV.each{|p| abort(p) unless YAML.load_file(p)['name']}" .github/workflows/report2.yml .github/workflows/report2-public-collector-backup.yml .github/workflows/scheduled-report-recovery-offline.yml .github/workflows/liq-assembled-offline-20261012.yml
           node --check cloudflare/public-collector/scheduled-report-recovery.mjs
           node --check cloudflare/public-collector/github-backup.mjs
-          node --test cloudflare/public-collector/scheduled-report-recovery.test.mjs cloudflare/public-collector/continuous-backup-worker.test.mjs cloudflare/public-collector/trigger-analysis-kick.test.mjs tools/admit-weekly-maintenance-after-report.test.mjs
+          node --test cloudflare/public-collector/scheduled-report-recovery.test.mjs cloudflare/public-collector/continuous-backup-worker.test.mjs cloudflare/public-collector/trigger-analysis-kick.test.mjs tools/admit-weekly-maintenance-after-report.test.mjs runner/offline-review-authority.test.mjs

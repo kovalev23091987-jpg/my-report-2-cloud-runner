@@ -1,0 +1,66 @@
+{
+  "schema": "ACTIVE105_CADENCE_RELEASE_AND_OFFLINE_OWNER_V1",
+  "recorded_utc": "2026-10-15T09:44:46.030742+00:00",
+  "base_main": "af2989a411c43fd4875b4440edba035e065b1caf",
+  "cadence_release": {
+    "pr": 375,
+    "candidate_head": "23fb6ca4b39ee3d0426acb0bd990c3fbc827b37a",
+    "merge_head": "5f45ffa550229b46a4583f6ddf4af3faf29ce816",
+    "cloud_run": 38713573205,
+    "cloud_job": 116350683662,
+    "tests": 48,
+    "pass": 48,
+    "fail": 0,
+    "natural_new_cadence_verified": false,
+    "proof": "checkpoints/ACTIVE105_CADENCE_IN_SLOT_CANDIDATE_20261015.json"
+  },
+  "post_merge_gate_defect": {
+    "run": 38713851461,
+    "job": 116351610420,
+    "error": "OWNER_OR_FENCE_BLOCKED",
+    "before_tests": true,
+    "cause": "Offline workflow recognized historical LIQ owner families/task names only. Current bounded all-active105 reliability lease was not an accepted family. Its mirrors were also stale and corrected with a phase-only CAS at af2989.",
+    "fix": "Narrow current owner-family predicate requires all-active105 task and owner plan pointer, acquisition bound to owner, valid90-minute lease, expected SHA, scope and matching live mirrors; existing exact-main/fence gates preserved.",
+    "local_tests": 7,
+    "local_pass": 7,
+    "local_fail": 0,
+    "local_log": "checkpoints/active105-reliability-20261015/offline-owner-guard.tap",
+    "local_log_sha256": "0744fbaf868ba694c238f707c7429a65d34473ce97373d31c9449620b370050c",
+    "cloud_check": "PENDING"
+  },
+  "original_logs": [
+    {
+      "path": "checkpoints/active105-reliability-20261015/cloud-38713573205.log.gz",
+      "original_bytes": 19703,
+      "original_sha256": "b842265132e4c9a07d75d9f1d9452530947c9041f8a67d3b5ff499c2d83034aa",
+      "gzip_sha256": "e10a46587f817c79470a1b424a97884ba7c4908a57d0c78c0c142a568330df7c"
+    },
+    {
+      "path": "checkpoints/active105-reliability-20261015/report2-375-push-failed.log.gz",
+      "original_bytes": 19809,
+      "original_sha256": "cbd13418567d5298d94a6638b07e3b8f1809e414276eb4675342cbff472dad4d",
+      "gzip_sha256": "976923cbcb1a520a9b3078cc997a7ab69bd2e82e0d864faf5bf3830bc11eea35"
+    }
+  ],
+  "preserved": {
+    "assets": 105,
+    "contracts": 122,
+    "nine_pauses": true,
+    "strategy_weights_entry_threshold_and_forms": true,
+    "source_caps_and_164_HTTP": true,
+    "forty_minute_full_and_five_minute_collector": true
+  },
+  "additional_agent_provider_requests": 0,
+  "forced_main_runs": 0,
+  "test_telegram_messages": 0,
+  "retained_history_UTC15_calls": 0,
+  "model_advisory_rule": "Persisted in AGENTS.md by PR375: recommend model/reasoning changes when materially useful, explain tradeoff; do not switch or stall optional advice.",
+  "remaining": [
+    "Natural acceptance of deployed cadence and all-day queue behavior",
+    "LIQ historical numeric73/103 with30gaps; no claim of simultaneous fresh coverage",
+    "Native free-monthly entitlement and cold/failure fallback qualification",
+    "Protected canonical retention/current references and combined backlog throughput; both UTC15slots spent",
+    "Final Telegram entry-decision score and form after block work and owner specification"
+  ],
+  "project_complete": false
+}
