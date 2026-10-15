@@ -1,7 +1,7 @@
 {
   "schema": "WEEKLY106_RETAINED_FIXTURE_REPAIR_20261015_V1",
-  "recorded_utc": "2026-10-15T06:07:28.736229+00:00",
-  "status": "CANDIDATE_FIXTURE_BASELINE_PINNED_LOCAL_RETAINED2_PASS_CLOUD105_106_PENDING",
+  "recorded_utc": "2026-10-15T06:10:50.778309+00:00",
+  "status": "CLOUD105_584_AND_RETAINED106_584_PASS_NO_PRODUCTION_RUNTIME_CHANGE",
   "base": "df94f00a09c84767c22b380f232feb4a0871f283",
   "original_failure": {
     "run": 38689747339,
@@ -33,7 +33,39 @@
   "D1": 0,
   "MAIN": 0,
   "Telegram": 0,
-  "cloud_acceptance_pending": true,
+  "cloud_acceptance_pending": false,
   "weekly106_activation_allowed": false,
-  "project_complete": false
+  "project_complete": false,
+  "cloud": [
+    {
+      "run": 38690581967,
+      "artifact": 11952250707,
+      "artifact_sha256": "c0930c464774849b69ae6791c17a4577bbd5f98b8206ce6ebdfa24292a4e0e90",
+      "head": "2e9f61a98a5f321a99808d09f38eee3a0375b813",
+      "consumer_scope_in_CI": 105,
+      "pass": 584,
+      "fail": 0,
+      "member_index": "checkpoints/weekly106-fixture-repair-20261015/cloud105-38690581967/members.json",
+      "sourceHTTP": 0,
+      "D1": 0,
+      "production_scope_changed": false,
+      "deployment": false
+    },
+    {
+      "run": 38690659248,
+      "artifact": 11952128772,
+      "artifact_sha256": "930e19e687b50abedbfdb02cd75df8b4d8afcf4c36c93a7722288d47946adcdf",
+      "head": "2e9f61a98a5f321a99808d09f38eee3a0375b813",
+      "consumer_scope_in_CI": 106,
+      "pass": 584,
+      "fail": 0,
+      "member_index": "checkpoints/weekly106-fixture-repair-20261015/cloud106-38690659248/members.json",
+      "sourceHTTP": 0,
+      "D1": 0,
+      "production_scope_changed": false,
+      "deployment": false
+    }
+  ],
+  "merge_accepted": false,
+  "production_scope_changed": false
 }
