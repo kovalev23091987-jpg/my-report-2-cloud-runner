@@ -98,3 +98,27 @@ test('the exceptional third slot refuses unknown costs or consumption of next-fu
   assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:3:1',now:stamp,owner_emergency_day:day})).allowed,false,kind);
  }
 });
+
+test('a fourth UTC15 recovery needs its exact separate slot choice and preserves all existing reservations',async()=>{
+ const f=fixture(),stamp=Date.parse('2026-10-15T13:00:00Z'),day='2026-10-15';
+ const add=id=>f.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('RETAINED_HISTORY:'+id+':1',day,5000,400,'FINALIZED',stamp,0);
+ add(1);add(2);assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:4:1',now:stamp,owner_emergency_day:day,owner_emergency_slot:4})).allowed,false);
+ add(3);const before=f.raw.prepare('SELECT * FROM report2_runner_budget_ledger_shadow ORDER BY reservation_id').all();
+ assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:4:1',now:stamp,owner_emergency_day:day})).allowed,false);
+ const fourth=await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:4:1',now:stamp,owner_emergency_day:day,owner_emergency_slot:4});assert.equal(fourth.allowed,true);assert.equal(fourth.owner_emergency_slot,4);assert.deepEqual(fourth.protected_next_full,{rows_read:59000,rows_written:920});
+ assert.deepEqual(f.raw.prepare("SELECT * FROM report2_runner_budget_ledger_shadow WHERE reservation_id!='RETAINED_HISTORY:4:1' ORDER BY reservation_id").all(),before);
+ assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:5:1',now:stamp,owner_emergency_day:day,owner_emergency_slot:4})).allowed,false);
+ for(const slot of [0,2,5,Infinity])await assert.rejects(reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:8:1',now:stamp,owner_emergency_day:day,owner_emergency_slot:slot}),/EXACT_OWNER_EMERGENCY_SLOT/);
+ await assert.rejects(reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:8:1',now:stamp,owner_emergency_slot:4}),/EXACT_OWNER_EMERGENCY_SLOT/);
+ await assert.rejects(reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:8:1',now:stamp+DAY,owner_emergency_day:day,owner_emergency_slot:4}),/EXACT_OWNER_EMERGENCY/);
+ assert.equal(f.raw.prepare('SELECT COUNT(*) n FROM report2_runner_budget_ledger_shadow').get().n,4);assert.equal(LOSSLESS_RECOVERY_POLICY.max_runs_day,2);
+});
+
+test('the separately proposed fourth slot cannot consume next-report reserve or ignore unknown native cost',async()=>{
+ for(const kind of ['READS','WRITES','UNKNOWN']){
+  const f=fixture(),stamp=Date.parse('2026-10-15T13:00:00Z'),day='2026-10-15';
+  for(let id=1;id<=3;id++)f.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('RETAINED_HISTORY:'+id+':1',day,5000,400,'FINALIZED',stamp,0);
+  f.raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?)').run('OTHER:1',day,kind==='READS'?3430000:1,kind==='WRITES'?68400:1,'FINALIZED',stamp,kind==='UNKNOWN'?1:0);
+  assert.equal((await reserveLosslessRecoveryBudget(f.db,{reservation_id:'RETAINED_HISTORY:4:1',now:stamp,owner_emergency_day:day,owner_emergency_slot:4})).allowed,false,kind);
+ }
+});
