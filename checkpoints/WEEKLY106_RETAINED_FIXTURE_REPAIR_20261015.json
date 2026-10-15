@@ -1,0 +1,39 @@
+{
+  "schema": "WEEKLY106_RETAINED_FIXTURE_REPAIR_20261015_V1",
+  "recorded_utc": "2026-10-15T06:07:28.736229+00:00",
+  "status": "CANDIDATE_FIXTURE_BASELINE_PINNED_LOCAL_RETAINED2_PASS_CLOUD105_106_PENDING",
+  "base": "df94f00a09c84767c22b380f232feb4a0871f283",
+  "original_failure": {
+    "run": 38689747339,
+    "head": "2b76f5713b35f6055478a6ab5674306cf636662e",
+    "artifact": 11952216871,
+    "digest": "239c281ad1edcacb5101ac31af299deadb5482d88dd7def189ddec2a27ce2a47",
+    "weekly_original_six_catalog_plan_all_four_consumers_binding_passed": true,
+    "weekly_N10_passed_run": 38689717920,
+    "failed_test": "runner/retained-weekly-106-package.test.mjs",
+    "failure": "Historical reproduction imported proposed live106 scope/hourly source instead of original105 baseline; hourly file hash changed and prior/added membership would be misinterpreted."
+  },
+  "repair": {
+    "immutable_original_baseline_ref": "e71675d8caf140deb32977ec96b8245ba7d66f63",
+    "baseline": "checkpoints/weekly106-preparation-20261015/baseline105.json.gz",
+    "baseline_sha256": "396f777dfb16a0b31501ba4f71c152c0281ab99bb885b7a2496449d46de39b6b",
+    "previous_manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+    "exact_four_output_hashes_and_six_source_clock_assertions_preserved": true,
+    "optional_CI_only_retained106_full_consumer_check_added": true,
+    "runtime_strategy_source_budget_pause_change": false,
+    "production_scope_changed": false
+  },
+  "artifact_indexes": [
+    "checkpoints/weekly106-fixture-repair-20261015/weekly106-failure-38689747339/members.json",
+    "checkpoints/weekly106-fixture-repair-20261015/natural105-38686310455/members.json",
+    "checkpoints/weekly106-fixture-repair-20261015/natural105-delivery-38686310455/members.json"
+  ],
+  "new_natural_source_proof": "checkpoints/LATEST_SAVED105_LSK_ZEC_SOURCE_READBACK_20261015.json",
+  "provider_HTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "cloud_acceptance_pending": true,
+  "weekly106_activation_allowed": false,
+  "project_complete": false
+}
