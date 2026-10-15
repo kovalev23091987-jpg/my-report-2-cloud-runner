@@ -6,14 +6,15 @@ import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from 
 import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFullEvidence} from '../runner/lossless-full-evidence-recovery.mjs';
 import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
 import {canonicalExecutionMode} from '../runner/canonical-native-qualification.mjs';
+import {selectCanonicalRetentionCursor,persistCanonicalRetentionCursor} from '../runner/canonical-retention-cursor.mjs';
 import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
 await fs.mkdir(dir,{recursive:true});
 const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
 const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY||'')||null;
-const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'0');
-const canonical_cursor=Number(canonical_cursor_input);
+const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'auto');
+let cursor_selection;
 const native_qualification_input=String(process.env.REPORT2_NATIVE_CANONICAL_QUALIFICATION||'false');
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
@@ -29,11 +30,12 @@ let expected=process.env.EXPECTED_MAIN||process.env.GITHUB_SHA;
 async function guard(){
  if((await control.call('git/ref/heads/main')).object.sha!==expected)throw Error('RETAINED_MAIN_MOVED');
  const [p,f]=await Promise.all([control.read(PHASE,expected),control.read(FENCE,expected)]),l=p.value.lease;
- if(f.value.active||!l||l.owner!==lease?.lease?.owner||l.expires_ts<=Date.now()||p.value.latest_own_bounded_continuation_lease?.owner!==l.owner||p.value.active_working_state?.owned_lease!==l.owner)throw Error('RETAINED_OWN_GUARD_REQUIRED');
+ if(f.value.active||!l||l.owner!==lease?.lease?.owner||l.expires_ts<=Date.now()||!l.scope?.startsWith('RETAINED_HISTORY.')||p.value.latest_own_bounded_continuation_lease?.owner!==l.owner||p.value.active_working_state?.owned_lease!==l.owner)throw Error('RETAINED_OWN_GUARD_REQUIRED');
+ return p.value;
 }
 try{
  if(!/^\d+$/.test(String(out.run||''))||process.env.GITHUB_REPOSITORY!==repository)throw Error('EXACT_RETAINED_REPOSITORY_RUN_REQUIRED');
- if(!/^(0|[1-9][0-9]*)$/.test(canonical_cursor_input)||!Number.isSafeInteger(canonical_cursor))throw Error('EXACT_CANONICAL_CURSOR_REQUIRED');
+ selectCanonicalRetentionCursor(canonical_cursor_input);
  if(!['full_evidence','canonical'].includes(kind))throw Error('EXACT_RETAINED_HISTORY_KIND_REQUIRED');
  if(!['3','4'].includes(owner_slot_input)||(owner_emergency_slot===4&&!emergency))throw Error('EXACT_OWNER_EMERGENCY_SLOT_REQUIRED');
  if(owner_emergency_day!==null&&(!emergency||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||!process.env.BORROW_EXISTING_OWNER||kind!=='canonical'||!out.execute||process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION!=='true'))throw Error('EXACT_MANUAL_CANONICAL_EMERGENCY_REQUIRED');
@@ -49,10 +51,10 @@ try{
   lease={borrowed:true,allowed:true,lease:p.value.lease,head:main};
  }else{
   if(process.env.REPORT2_LOSSLESS_RETENTION_ENABLED!=='true')throw Error('LOSSLESS_AUTOMATIC_RETENTION_NOT_ACTIVATED');
-  lease=await acquireWeeklyPhaseLease(control,{run_id:out.run,expected_main:expected,scope:'Owner authorized bounded lossless old full-evidence retention/recovery, source clocks and canonical references protected. Existing caps, paused roles and forms unchanged. GitHub run '+out.run});
+  lease=await acquireWeeklyPhaseLease(control,{run_id:out.run,expected_main:expected,scope:'RETAINED_HISTORY. Owner authorized bounded lossless old full-evidence retention/recovery, source clocks and canonical references protected. Existing caps, paused roles and forms unchanged. GitHub run '+out.run});
   if(!lease.allowed)throw Error(lease.status);expected=lease.head;
  }
- await guard();out.control={expected_main:expected,owner:lease.lease.owner,borrowed:lease.borrowed===true,lease_expires_ts:lease.lease.expires_ts};
+ const guarded=await guard();if(kind==='canonical'){cursor_selection=selectCanonicalRetentionCursor(canonical_cursor_input,guarded.active_working_state?.canonical_retention_cursor??null);out.cursor_selection=cursor_selection;}out.control={expected_main:expected,owner:lease.lease.owner,borrowed:lease.borrowed===true,lease_expires_ts:lease.lease.expires_ts};
  db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{beforeRequest:event=>{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
@@ -65,9 +67,9 @@ try{
   }};
   archive_pool=pool_enabled?createPrivateArchivePool({enabled:true,...archive_options}):null;archive_db=archive_pool?.legacy_db??new PrivateArchiveD1API(archive_options);
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
-  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,source_cursor:canonical_cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
+  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,source_cursor:cursor_selection.cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
-  },before_modify:guard,execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
+  },before_modify:async()=>{if(control_HTTP+3+(lease.borrowed?5:10)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
   out.canonical_rows_modified=out.compacted?.length||0;
  }else{
  const save_originals=async rows=>{
@@ -89,6 +91,7 @@ try{
 }finally{
  if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:nativeUsage()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
  if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=(archive_pool||archive_db).usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
+ if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
  out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));

@@ -3,6 +3,16 @@
 // required before an original may become a compaction candidate.
 export const BOUNDED_CANONICAL_SELECTION=Object.freeze({discovery_rows:128,reference_rows:256,newer_witness_rows:16,reference_growth_margin:8});
 const columns={v3_dispatch_publication_binding_shadow:['publication_id'],v3_recheck_task_shadow:['contract_code','publication_id','last_result'],v3_user_lifecycle_shadow:['contract','direction','wave_id','observation_ts','status'],v3_telegram_dispatch_shadow:['contract','direction','wave_id','decision_id'],tz101_entry_area_calibration_signal:['decision_id','snapshot_id'],report2_command_v2:['result_snapshot_id'],report2_publication_v2:['publication_id'],report2_delivered_outcome_v2:['publication_id']};
+// These exact indexes are in the retained production schema. An absent index
+// refuses before reading any large body. Unindexed namespaces keep their full
+// bounded census; no matching reference is discarded to make a batch fit.
+const scopedIndexes={v3_dispatch_publication_binding_shadow:['publication_id','idx_dispatch_publication_id','publication_ids'],v3_recheck_task_shadow:['contract_code','idx_v3_recheck_wave_active','contracts'],v3_user_lifecycle_shadow:['contract','sqlite_autoindex_v3_user_lifecycle_shadow_1','contracts'],v3_telegram_dispatch_shadow:['contract','idx_v3_dispatch_wave','contracts']};
+function referenceSource(table,scope){
+ const spec=scopedIndexes[table];if(!scope||!spec)return table;
+ if(scope.schema!=='EXACT_CANONICAL_REFERENCE_SCOPE_V1'||!Array.isArray(scope.contracts)||!Array.isArray(scope.publication_ids)||[scope.contracts,scope.publication_ids].some(a=>!a.length||a.length>48||new Set(a).size!==a.length||a.some(v=>typeof v!=='string'||!v.length||Buffer.byteLength(v)>128)))throw Error('EXACT_CANONICAL_REFERENCE_SCOPE_REQUIRED');
+ const [column,index,key]=spec,values=scope[key].map(v=>"'"+v.replaceAll("'","''")+"'").join(',');
+ return `${table} INDEXED BY ${index} WHERE ${column} IN (${values})`;
+}
 const newerOriginal="EXISTS(SELECT 1 FROM canonical_publication_shadow newer WHERE newer.contract_code=p.contract_code AND (newer.observed_ts>p.observed_ts OR (newer.observed_ts=p.observed_ts AND newer.publication_id>p.publication_id)))";
 const newerBounded=`EXISTS(SELECT 1 FROM (SELECT observed_ts,publication_id FROM canonical_publication_shadow INDEXED BY idx_canonical_publication_identity WHERE contract_code=p.contract_code AND run_id>p.run_id LIMIT ${BOUNDED_CANONICAL_SELECTION.newer_witness_rows}) newer WHERE newer.observed_ts>p.observed_ts OR (newer.observed_ts=p.observed_ts AND newer.publication_id>p.publication_id))`;
 export function boundedNewerPredicate(predicate,witness=null){
@@ -11,11 +21,11 @@ export function boundedNewerPredicate(predicate,witness=null){
  const exact=witness?`EXISTS(SELECT 1 FROM canonical_publication_shadow newer WHERE newer.publication_id='${witness}' AND newer.contract_code=p.contract_code AND (newer.observed_ts>p.observed_ts OR (newer.observed_ts=p.observed_ts AND newer.publication_id>p.publication_id)))`:newerBounded;
  return predicate.replace(newerOriginal,exact);
 }
-export function boundedCanonicalReferenceSQL(predicate,bounds,witness=null){
+export function boundedCanonicalReferenceSQL(predicate,bounds,witness=null,scope=null){
  const ctes=[],guards=[];let rewritten=boundedNewerPredicate(predicate,witness);
  for(const [table,bound] of Object.entries(bounds)){
   if(!columns[table]||!Number.isSafeInteger(bound)||bound<0||bound>BOUNDED_CANONICAL_SELECTION.reference_rows+BOUNDED_CANONICAL_SELECTION.reference_growth_margin)throw Error('EXACT_BOUNDED_CANONICAL_REFERENCE_REQUIRED');
-  const name='r2_'+table;ctes.push(`${name} AS MATERIALIZED(SELECT ${columns[table].join(',')} FROM ${table} LIMIT ${bound+1})`);guards.push(`(SELECT COUNT(*) FROM ${name})<=${bound}`);
+  const name='r2_'+table;ctes.push(`${name} AS MATERIALIZED(SELECT ${columns[table].join(',')} FROM ${referenceSource(table,scope)} LIMIT ${bound+1})`);guards.push(`(SELECT COUNT(*) FROM ${name})<=${bound}`);
   rewritten=rewritten.replaceAll('FROM '+table+' ','FROM '+name+' ');
  }
  return{with_sql:ctes.length?'WITH '+ctes.join(',')+' ':'',predicate:'('+guards.join(' AND ')+') AND '+rewritten};
@@ -36,21 +46,27 @@ export async function loadBoundedCanonicalCandidates({source_db,present_tables,c
  const p=BOUNDED_CANONICAL_SELECTION;
  if(!Number.isSafeInteger(source_cursor)||source_cursor<0||!Number.isSafeInteger(max_rows)||max_rows<1||max_rows>48||typeof admit!=='function')throw Error('CANONICAL_BOUNDED_DISCOVERY_ARGUMENTS_REQUIRED');
  const names=present_tables.filter(t=>columns[t]);
+ if(!admit({rows_read:2*p.discovery_rows+16,rows_written:0}).allowed)throw Error('CANONICAL_BOUNDED_METADATA_HEADROOM_REQUIRED');
+ const metadata_result=await source_db.prepare(`SELECT rowid AS source_rowid,publication_id,contract_code,direction,run_id,snapshot_id,wave_id,decision_id,observed_ts,created_ts,valid_until_ts,shadow_only,canonical_state,actionability_status,lifecycle_event,substr(canonical_json,1,64) AS body_prefix FROM canonical_publication_shadow WHERE rowid>?1 ORDER BY rowid LIMIT ${p.discovery_rows}`).bind(source_cursor).all(),metadata=metadata_result?.results;
+ if(!Array.isArray(metadata)||metadata.length>p.discovery_rows)throw Error('CANONICAL_BOUNDED_REFERENCE_ACK_REQUIRED');
+ const candidates=metadata.filter(r=>basic(r,cutoff,prefix)).slice(0,max_rows),cursor_after=candidates.length===max_rows?candidates.at(-1).source_rowid:(metadata.length===p.discovery_rows?metadata.at(-1).source_rowid:0);
+ if(!candidates.length)return{rows:[],bounds:{},receipt:{schema:'BOUNDED_CANONICAL_DISCOVERY_V1',source_cursor,metadata_rows:metadata.length,large_bodies_read:0,next_cursor:cursor_after,status:'NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW'}};
+ const reference_scope={schema:'EXACT_CANONICAL_REFERENCE_SCOPE_V1',contracts:[...new Set(candidates.map(r=>r.contract_code))],publication_ids:candidates.map(r=>r.publication_id)};
  const fits=n=>admit({rows_read:2*(p.discovery_rows+names.length*(n+1))+32,rows_written:0}).allowed;
  let bound=p.reference_rows;while(bound>0&&!fits(bound))bound--;
  if(!bound)throw Error('CANONICAL_BOUNDED_REFERENCE_HEADROOM_REQUIRED');
- const statements=[source_db.prepare(`SELECT rowid AS source_rowid,publication_id,contract_code,direction,run_id,snapshot_id,wave_id,decision_id,observed_ts,created_ts,valid_until_ts,shadow_only,canonical_state,actionability_status,lifecycle_event,substr(canonical_json,1,64) AS body_prefix FROM canonical_publication_shadow WHERE rowid>?1 ORDER BY rowid LIMIT ${p.discovery_rows}`).bind(source_cursor),...names.map(t=>source_db.prepare(`SELECT ${columns[t].join(',')} FROM ${t} LIMIT ${bound+1}`))];
- const replies=await source_db.batch(statements),metadata=replies?.[0]?.results;
- if(!Array.isArray(metadata)||metadata.length>p.discovery_rows||replies.length!==statements.length)throw Error('CANONICAL_BOUNDED_REFERENCE_ACK_REQUIRED');
- const refs={},bounds={},receipt={schema:'BOUNDED_CANONICAL_DISCOVERY_V1',source_cursor,metadata_rows:metadata.length,reference_row_bound:bound,reference_counts:{},complete_reference_census:true,large_bodies_read:0,selection_provider_HTTP:0,newer_witness_rows:p.newer_witness_rows,witness_is_conservative_subset:true,next_cursor:source_cursor};
+ const statements=names.map(t=>source_db.prepare(`SELECT ${columns[t].join(',')} FROM ${referenceSource(t,reference_scope)} LIMIT ${bound+1}`));
+ const replies=await source_db.batch(statements);
+ if(!Array.isArray(replies)||replies.length!==statements.length)throw Error('CANONICAL_BOUNDED_REFERENCE_ACK_REQUIRED');
+ const refs={},bounds={},receipt={schema:'BOUNDED_CANONICAL_DISCOVERY_V1',source_cursor,metadata_rows:metadata.length,reference_row_bound:bound,reference_counts:{},complete_reference_census:true,reference_scope,large_bodies_read:0,selection_provider_HTTP:0,newer_witness_rows:p.newer_witness_rows,witness_is_conservative_subset:true,next_cursor:source_cursor};
  for(const [i,t] of names.entries()){
-  const rows=replies[i+1]?.results;if(!Array.isArray(rows)||rows.length>bound+1)throw Error('CANONICAL_BOUNDED_REFERENCE_ACK_REQUIRED');refs[t]=rows;receipt.reference_counts[t]=rows.length;bounds[t]=rows.length+p.reference_growth_margin;
+  const rows=replies[i]?.results;if(!Array.isArray(rows)||rows.length>bound+1)throw Error('CANONICAL_BOUNDED_REFERENCE_ACK_REQUIRED');refs[t]=rows;receipt.reference_counts[t]=rows.length;bounds[t]=rows.length+p.reference_growth_margin;
   if(rows.length>bound)receipt.complete_reference_census=false;
  }
  if(!receipt.complete_reference_census)return{rows:[],bounds:{},receipt:{...receipt,status:'REFERENCE_CENSUS_BOUND_REACHED_ORIGINALS_UNTOUCHED'}};
- const eligible=metadata.filter(r=>basic(r,cutoff,prefix)&&!protectedReference(r,refs)),ids=eligible.slice(0,max_rows).map(r=>r.publication_id);
+ const eligible=candidates.filter(r=>!protectedReference(r,refs)),ids=eligible.map(r=>r.publication_id);
  receipt.metadata_eligible=eligible.length;
- if(!ids.length){receipt.next_cursor=metadata.length===p.discovery_rows?metadata.at(-1).source_rowid:0;return{rows:[],bounds,receipt:{...receipt,status:'NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW'}};}
+ if(!ids.length){receipt.next_cursor=cursor_after;return{rows:[],bounds,reference_scope,receipt:{...receipt,status:'NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW'}};}
  if(!admit({rows_read:ids.length*(2*p.newer_witness_rows+4)+16,rows_written:0}).allowed)throw Object.assign(Error('CANONICAL_BOUNDED_BODY_HEADROOM_REQUIRED'),{discovery_receipt:receipt});
  const witnesses={};
  const bodies=ids.map(id=>{
@@ -64,7 +80,7 @@ export async function loadBoundedCanonicalCandidates({source_db,present_tables,c
  if(!Array.isArray(bodyReplies)||bodyReplies.length!==ids.length||bodyReplies.some(r=>!Array.isArray(r.results)||r.results.length>1))throw Error('CANONICAL_BOUNDED_BODY_ACK_REQUIRED');
  const selected={results:bodyReplies.flatMap(r=>r.results)};
  receipt.large_bodies_read=selected.results.length;receipt.status='BOUNDED_REFERENCES_AND_BODY_CANDIDATES_READ';receipt.exact_newer_witness_count=Object.values(witnesses).filter(Boolean).length;
- receipt.cursor_after_complete_window=eligible.length<=max_rows?(metadata.length===p.discovery_rows?metadata.at(-1).source_rowid:0):eligible[max_rows-1].source_rowid;
+ receipt.cursor_after_complete_window=cursor_after;
  if(!selected.results.length)receipt.next_cursor=receipt.cursor_after_complete_window;
- return{rows:selected.results,bounds,witnesses,receipt,primary_database_bytes:bodyReplies.at(-1)?.meta?.size_after};
+ return{rows:selected.results,bounds,witnesses,reference_scope,receipt,primary_database_bytes:bodyReplies.at(-1)?.meta?.size_after};
 }
