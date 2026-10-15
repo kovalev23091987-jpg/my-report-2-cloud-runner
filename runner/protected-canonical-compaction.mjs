@@ -42,13 +42,13 @@ export function protectedCanonicalPredicate(cutoff='?1',present_tables=REFERENCE
 }
 export const PROTECTED_CANONICAL_SELECTION_SQL=`SELECT p.* FROM canonical_publication_shadow p WHERE ${protectedCanonicalPredicate()} ORDER BY p.observed_ts,p.publication_id LIMIT 48`;
 
-export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERENCE_TABLES,reference_bounds=null,witness=null){
+export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERENCE_TABLES,reference_bounds=null,witness=null,reference_scope=null){
  const changed=Object.keys(row).filter(k=>row[k]!==header[k]);
  if(!changed.length||changed.some(k=>!k.endsWith('_json')&&k!=='manual_text'&&k!=='telegram_text'))throw Error('CANONICAL_ONLY_ORIGINAL_BODY_COLUMNS_ALLOWED');
  const params=changed.map(k=>header[k]),set=changed.map((k,i)=>`${quote(k)}=?${i+1}`).join(',');
  const exact=Object.entries(row).map(([k,v])=>{params.push(v);return `p.${quote(k)} IS ?${params.length}`;}).join(' AND ');
  params.push(cutoff);
- const predicate=protectedCanonicalPredicate('?'+params.length,present_tables),scope=reference_bounds?boundedCanonicalReferenceSQL(predicate,reference_bounds,witness):{with_sql:'',predicate};
+ const predicate=protectedCanonicalPredicate('?'+params.length,present_tables),scope=reference_bounds?boundedCanonicalReferenceSQL(predicate,reference_bounds,witness,reference_scope):{with_sql:'',predicate};
  return{sql:`${scope.with_sql}UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${scope.predicate}`,params};
 }
 
@@ -91,7 +91,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
    let record;try{record=encodeCanonicalPublicationRow(row);}catch(error){if(/ARCHIVE_(?:RAW|COMPRESSED|WIRE)_BOUND/.test(error.message)){out.deferred_hot.push({publication_id:row.publication_id,reason:'ORIGINAL_SIZE_BOUND'});continue;}throw error;}
    const provisional_header=await privateCanonicalHeader(row,record,{archive_slot:archive_pool?'A8':null}),saved_bytes=record.raw_bytes-Buffer.byteLength(JSON.stringify(provisional_header));
    if(saved_bytes<p.min_saved_bytes){out.deferred_hot.push({publication_id:row.publication_id,reason:'NO_USEFUL_SPACE_SAVING'});continue;}
-   const provisional_plan=exactCanonicalBodyUpdate(row,provisional_header,now-p.hot_window_ms,present,discovery.bounds,discovery.witnesses[row.publication_id]),provisional_statements=[provisional_plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
+   const provisional_plan=exactCanonicalBodyUpdate(row,provisional_header,now-p.hot_window_ms,present,discovery.bounds,discovery.witnesses[row.publication_id],discovery.reference_scope),provisional_statements=[provisional_plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
    if(Buffer.byteLength(JSON.stringify({op:'batch',statements:provisional_statements}))>p.bridge_wire_bytes){out.deferred_hot.push({publication_id:row.publication_id,reason:'BRIDGE_WIRE_BOUND'});continue;}
    if(!admit({rows_read:per_update_reads+96,rows_written:24}).allowed){out.deferred_hot.push({publication_id:row.publication_id,reason:'SHARED_NATIVE_HEADROOM_BEFORE_COPY'});continue;}
    need(5,24);
@@ -101,7 +101,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
    // No network is fabricated; the separate native sample below is reported.
    const stored=retained.verified_record,location=retained.location||'LEGACY';durable.set(`${location}:${stored.publication_id}:${stored.raw_sha256}`,JSON.stringify(stored));
    const header=await privateCanonicalHeader(row,stored,{archive_slot:location==='LEGACY'?null:location});
-   const plan=exactCanonicalBodyUpdate(row,header,now-p.hot_window_ms,present,discovery.bounds,discovery.witnesses[row.publication_id]),statements=[plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
+   const plan=exactCanonicalBodyUpdate(row,header,now-p.hot_window_ms,present,discovery.bounds,discovery.witnesses[row.publication_id],discovery.reference_scope),statements=[plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
    prepared.push({row,header,record:stored,location,statements,saved_bytes:stored.raw_bytes-Buffer.byteLength(JSON.stringify(header))});
   }
   out.prepared=prepared.length;
@@ -139,8 +139,10 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
   }
   out.deferred_hot.push(...prepared.slice(cursor).map(s=>({publication_id:s.row.publication_id,reason:'TRANSACTION_BOUND'})));
   const native_reader=createPrivateCanonicalRestorer({...native_options,db_admit:admit,max_rows:p.native_readbacks});
-  for(const moved of out.compacted.slice(0,p.native_readbacks)){
-   need(5,0);const header=await source_db.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(moved.publication_id).first();
+  const sample=out.compacted.slice(0,p.native_readbacks);need(5*sample.length,0);
+  const headers=sample.length?await source_db.batch(sample.map(m=>source_db.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(m.publication_id))):[];
+  for(const [i,moved] of sample.entries()){
+   const header=headers[i]?.results?.[0];if(!header)throw Error('CANONICAL_NATIVE_SAMPLE_HEADER_REQUIRED');
    const original=prepared.find(s=>s.row.publication_id===moved.publication_id).row;
    assert.deepEqual(await native_reader.restore(header),original);out.native_readbacks.push(moved.publication_id);
   }

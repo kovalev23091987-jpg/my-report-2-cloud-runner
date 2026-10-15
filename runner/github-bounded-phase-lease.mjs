@@ -5,6 +5,7 @@ const patchRoot=function rootPatch(src, changes){
 };
 
 const PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json';
+export const patchPhaseRoot=patchRoot;
 export function makeGithubControl({repository,token,fetch_impl=globalThis.fetch}={}){
  if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository||'')||!token)throw Error('GITHUB_CONTROL_ACCESS_REQUIRED');
  const call=async(path,method='GET',body)=>{const r=await fetch_impl('https://api.github.com/repos/'+repository+'/'+path,{method,headers:{accept:'application/vnd.github+json',authorization:'Bearer '+token,'x-github-api-version':'2022-11-28','content-type':'application/json'},signal:AbortSignal.timeout(15000),...(body?{body:JSON.stringify(body)}:{})});if(!r.ok)throw Error('GITHUB_CONTROL_HTTP_'+r.status);if(r.status===204)return null;return r.json();};

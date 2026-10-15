@@ -100,7 +100,7 @@ test('all48 pre-copied originals share the real bridge/private HTTP and D1 reser
   assert.equal((await reserveLosslessRecoveryBudget(source_db,{reservation_id:'RETAINED_HISTORY:15:15',now})).allowed,true);await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
   const r=await compactProtectedCanonical({source_db,archive_db,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{const s=budget.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks;},before_modify:async()=>{},execute:true,now});
   await finalizeRunUsage(source_db,{reservationId:'RETAINED_HISTORY:15:15',sourceRunId:'15',now,usage:r.D1});
-  assert.equal(r.compacted.length,precopied?48:16);assert.equal(r.native_readbacks.length,4);assert.equal(primaryHTTP,precopied?16:12);assert.equal(privateHTTP,54);assert.ok(budget.summary().total<=164);assert.ok(96-budget.summary().used.hot>=24);assert.equal(source_db.usageSnapshot().unknown_ops+archive_db.usageSnapshot().unknown_ops,0);assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.publication_rows_deleted,0);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM canonical_publication_shadow').get().n,50);
+  assert.equal(r.compacted.length,precopied?48:16);assert.equal(r.native_readbacks.length,4);assert.equal(primaryHTTP,precopied?14:10);assert.equal(privateHTTP,54);assert.ok(budget.summary().total<=164);assert.ok(96-budget.summary().used.hot>=24);assert.equal(source_db.usageSnapshot().unknown_ops+archive_db.usageSnapshot().unknown_ops,0);assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.publication_rows_deleted,0);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM canonical_publication_shadow').get().n,50);
   if(!precopied)assert.equal(r.deferred_hot.filter(r=>r.reason==='SHARED_HTTP_HEADROOM').length,32);
   cases.push({pre_copied:precopied,selected:r.selected,compacted:r.compacted.length,retained_hot:r.deferred_hot.length,primary_HTTP:primaryHTTP,private_HTTP:privateHTTP,all_control_HTTP_reserved:40,whole_HTTP:budget.summary(),controlled_SQLite_usage:r.D1,native_production_usage_measured:false,readthrough_native_fixture_sample:r.native_readbacks.length,publication_rows_deleted:r.publication_rows_deleted,history_discarded:r.history_discarded,source_clocks_refreshed:r.source_clocks_refreshed});
  }
@@ -177,7 +177,7 @@ test('a large native metadata scan reduces compaction within the existing reserv
 
 test('an incomplete bounded reference census never reads a large body or touches either original store',async()=>{
  const f=fixture(2,{v2:false});
- for(let i=0;i<257;i++)f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,'OTHER-USDT','SHORT','wave','OBSERVE','v','PENDING','other',1,1)").run('dispatch:'+i,'key:'+i);
+ for(let i=0;i<257;i++)f.raw.prepare(`INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,'${f.old[0].contract_code}','SHORT','wave','OBSERVE','v','PENDING','other',1,1)`).run('dispatch:'+i,'key:'+i);
  const before=f.old.map(r=>get(f,r.publication_id)),r=await compact(f,{execute:true});
  assert.equal(r.status,'REFERENCE_CENSUS_BOUND_REACHED_ORIGINALS_UNTOUCHED');assert.equal(r.bounded_discovery.complete_reference_census,false);assert.equal(r.bounded_discovery.next_cursor,0);assert.equal(r.bounded_discovery.large_bodies_read,0);assert.equal(f.archive_db.usageSnapshot().requests,0);assert.deepEqual(f.old.map(r=>get(f,r.publication_id)),before);
  assert.ok(f.source_db.calls.every(sql=>!sql.includes('SELECT p.*')&&!sql.includes('UPDATE canonical_publication_shadow')));
@@ -212,4 +212,20 @@ test('bounded discovery uses only retained production indexes and advances past 
  const sql=f.source_db.calls.find(sql=>sql.startsWith('SELECT p.*')),plan=f.raw.prepare('EXPLAIN QUERY PLAN '+sql).all(f.old[0].publication_id,f.latest.publication_id).map(r=>r.detail).join('\n');
  assert.match(plan,/SEARCH p USING INDEX sqlite_autoindex_canonical_publication_shadow_1/);assert.match(plan,/SEARCH newer(?: EXISTS)? USING INDEX sqlite_autoindex_canonical_publication_shadow_1/);assert.doesNotMatch(plan,/SCAN (?:p|newer)\b/);
  assert.equal(f.archive_db.usageSnapshot().requests,0);
+});
+test('thousands of unrelated dispatches no longer block a complete indexed census for the selected coin',async()=>{
+ const f=fixture(2,{v2:false}),insert=f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,'OTHER-USDT','SHORT','wave','OBSERVE','v','PENDING','other',1,1)");
+ for(let i=0;i<10000;i++)insert.run('noise:'+i,'key:'+i);
+ const before=f.raw.prepare('SELECT COUNT(*) AS n FROM v3_telegram_dispatch_shadow').get().n,r=await compact(f,{execute:true});assert.equal(r.compacted.length,2);assert.equal(r.bounded_discovery.reference_counts.v3_telegram_dispatch_shadow,0);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM v3_telegram_dispatch_shadow').get().n,before);
+ const sql=f.source_db.calls.find(s=>s.startsWith('SELECT contract,direction,wave_id,decision_id FROM v3_telegram_dispatch_shadow'));
+ const plan=f.raw.prepare('EXPLAIN QUERY PLAN '+sql).all().map(r=>r.detail).join('\n');assert.match(plan,/SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_wave/);assert.doesNotMatch(plan,/SCAN v3_telegram_dispatch_shadow/);
+});
+test('a matching dispatch after thousands of unrelated rows remains protected by exact indexed lookup',async()=>{
+ const f=fixture(1,{v2:false}),row=f.old[0],insert=f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,?,'SHORT','wave','OBSERVE','v','PENDING',?,1,1)");
+ for(let i=0;i<1000;i++)insert.run('noise:'+i,'key:'+i,'OTHER-USDT','other');insert.run('real','real-key',row.contract_code,row.decision_id);
+ const r=await compact(f,{execute:true});assert.equal(r.compacted.length,0);assert.deepEqual(get(f,row.publication_id),row);assert.equal(f.archive_db.usageSnapshot().requests,0);assert.equal(r.bounded_discovery.reference_counts.v3_telegram_dispatch_shadow,1);
+});
+test('missing pinned reference index refuses without fallback to an unbounded scan or original mutation',async()=>{
+ const f=fixture(1,{v2:false}),before=get(f,f.old[0].publication_id);f.raw.exec('DROP INDEX idx_v3_dispatch_wave');
+ await assert.rejects(compact(f,{execute:true}),/no such index/);assert.deepEqual(get(f,before.publication_id),before);assert.equal(f.archive_db.usageSnapshot().requests,0);assert(!f.source_db.calls.some(s=>s.includes('SELECT p.*')));
 });
