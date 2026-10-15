@@ -28,20 +28,39 @@ export function historyVersionMetadata({settings,runtime,config,main_module,head
  if(runtime.migration_tag||runtime.exports&&Object.values(runtime.exports).some(e=>e?.storage||e?.container))throw Error('STATEFUL_HISTORY_MIGRATION_NOT_ALLOWED');
  return{main_module,compatibility_date:settings.compatibility_date,compatibility_flags:settings.compatibility_flags||[],usage_model:runtime.usage_model,...(runtime.limits?{limits:runtime.limits}:{}),bindings:actual.map(b=>({name:b.name,type:'d1',id:b.id??b.database_id})),keep_bindings:[],annotations:{'workers/commit_sha':head,'workers/message':'Exact weekly HTX scope; preserve previous history readers'}};
 }
+export function collectorVersionMetadata({settings,runtime,head,active_version,latest_uploaded_version}={}){
+ if(!UUID.test(active_version||'')||active_version!==latest_uploaded_version)throw Error('COLLECTOR_INHERIT_REQUIRES_LATEST_UPLOADED_ACTIVE_VERSION');
+ const d1=settings?.bindings?.filter(b=>b.type==='d1'),config={compatibility_date:settings?.compatibility_date,d1_databases:[{binding:'DATA_DB',database_id:'057a2847-2cc4-4e52-8534-1be1596d21d5'},{binding:'CANONICAL_ARCHIVE_DB',database_id:'f66e7081-0e67-49a2-8f69-68af00cdaf92'}]};
+ const metadata=historyVersionMetadata({settings:{...settings,bindings:d1},runtime,config,main_module:'worker.js',head});
+ const names=new Set();for(const b of settings.bindings){if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(b.name||'')||!b.type||names.has(b.name))throw Error('COLLECTOR_EXACT_BINDING_NAMES_REQUIRED');names.add(b.name);}
+ // Inherit every non-D1 binding by exact name from the just-verified active
+ // latest version. No secret or variable value is exported or re-entered.
+ metadata.bindings=settings.bindings.map(b=>b.type==='d1'?{name:b.name,type:'d1',id:b.id??b.database_id}:{name:b.name,type:'inherit'});
+ return metadata;
+}
+export async function readSingleWorkerModule(response){
+ if(response.headers.get('content-type')?.includes('multipart/')){
+  const form=await response.formData(),files=[...form.values()].filter(v=>typeof v!=='string'&&/\.(?:m?js)$/.test(v.name));
+  if(files.length!==1||[...form.values()].some(v=>typeof v!=='string'&&!/\.(?:m?js)$/.test(v.name)&&v.name!=='metadata'))throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
+  return Buffer.from(await files[0].arrayBuffer());
+ }
+ return Buffer.from(await response.arrayBuffer());
+}
 export function verifySupersetHistory({previous_targets,targets,previous_manifests,manifests,manifest_sha256}={}){
  if(!Array.isArray(previous_targets)||!previous_targets.length||!Array.isArray(targets)||new Set(targets).size!==targets.length||previous_targets.some(c=>!targets.includes(c))||!Array.isArray(previous_manifests)||!Array.isArray(manifests)||!manifests.some(m=>m.sha256===manifest_sha256&&m.target_count===targets.length)||previous_manifests.some(p=>!manifests.some(m=>m.sha256===p.sha256&&m.target_count===p.target_count)))throw Error('WEEKLY_HISTORY_SUPERSET_AND_PRIOR_MANIFESTS_REQUIRED');
  return{status:'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED',target_count:targets.length,previous_count:previous_targets.length,manifest_sha256};
 }
 function exactState(a,b){return a.version_id===b.version_id&&a.deployment_id===b.deployment_id&&a.module_sha256===b.module_sha256&&a.settings_sha256===b.settings_sha256&&a.crons_sha256===b.crons_sha256;}
 export async function coordinateWeeklyRollout({plan,adapter,guard,save=async()=>{},execute=false,clock=Date.now}={}){
- if(!plan||!/^[a-f0-9]{40}$/.test(plan.head||'')||plan.connected?.head!==plan.head||plan.connected?.status!=='EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS'||!Number.isSafeInteger(plan.connected.run)||plan.scope?.status!=='SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED'||plan.workers?.length!==2||plan.workers.some((w,i)=>w.name!==WEEKLY_ROLLOUT_POLICY.workers[i]||!/^[a-f0-9]{64}$/.test(w.module_sha256||'')))throw Error('EXACT_CONNECTED_WEEKLY_ROLLOUT_PLAN_REQUIRED');
- const proof={schema:'HTX_COORDINATED_WEEKLY_ROLLOUT_V1',head:plan.head,expected_main:plan.expected_main,connected:plan.connected,scope:plan.scope,execute,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,history_discarded:false,source_clocks_refreshed:false,production_scope_changed:false,workers:[],rollback:[],started_ts:clock()};
+ const collectorPatch=plan?.kind==='collector_patch',names=collectorPatch?[WEEKLY_ROLLOUT_POLICY.collector]:WEEKLY_ROLLOUT_POLICY.workers;
+ if(!plan||plan.kind&&!collectorPatch||!/^[a-f0-9]{40}$/.test(plan.head||'')||plan.connected?.head!==plan.head||plan.connected?.status!==(collectorPatch?'EXACT_MAIN_CURRENT_COLLECTOR_SOURCE_QUALIFIED':'EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS')||!Number.isSafeInteger(plan.connected.run)||plan.scope?.status!==(collectorPatch?'EXACT_HUB_PREFIX_PRESERVED_CURRENT_TAIL_PATCH':'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED')||plan.workers?.length!==names.length||plan.workers.some((w,i)=>w.name!==names[i]||!/^[a-f0-9]{64}$/.test(w.module_sha256||'')))throw Error('EXACT_CONNECTED_WEEKLY_ROLLOUT_PLAN_REQUIRED');
+ const proof={schema:collectorPatch?'CURRENT_PUBLIC_COLLECTOR_MODULE_REPAIR_V1':'HTX_COORDINATED_WEEKLY_ROLLOUT_V1',head:plan.head,expected_main:plan.expected_main,connected:plan.connected,scope:plan.scope,execute,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,history_discarded:false,source_clocks_refreshed:false,production_scope_changed:false,workers:[],rollback:[],started_ts:clock()};
  const persist=()=>save(structuredClone(proof));let collector,changed=[];
  try{
   await guard({min_headroom_ms:WEEKLY_ROLLOUT_POLICY.min_lease_headroom_ms});
-  collector=await adapter.readCollector();if(collector.status!=='EXACT_CURRENT_UNIVERSE_NEUTRAL_COLLECTOR')throw Error('COLLECTOR_CURRENT_EXACT_READBACK_REQUIRED');proof.collector=collector;
+  if(!collectorPatch){collector=await adapter.readCollector();if(collector.status!=='EXACT_CURRENT_UNIVERSE_NEUTRAL_COLLECTOR')throw Error('COLLECTOR_CURRENT_EXACT_READBACK_REQUIRED');proof.collector=collector;}
   for(const worker of plan.workers){
-   await guard();const before=await adapter.snapshot(worker);proof.workers.push({name:worker.name,before,expected_module_sha256:worker.module_sha256});
+   await guard();const before=await adapter.snapshot(worker);if(worker.required_before&&!exactState(worker.required_before,before))throw Error('WORKER_MOVED_AFTER_PATCH_PREPARATION');proof.workers.push({name:worker.name,before,expected_module_sha256:worker.module_sha256});
   }
   await persist();
   if(!execute){proof.status='EXACT_CONNECTED_PLAN_AND_ROLLBACK_ORIGINALS_QUALIFIED';await persist();return proof;}
@@ -64,12 +83,12 @@ export async function coordinateWeeklyRollout({plan,adapter,guard,save=async()=>
    if(row.after.version_id!==row.staged.version_id||row.after.module_sha256!==w.module_sha256||row.after.settings_sha256!==row.before.settings_sha256||row.after.crons_sha256!==row.before.crons_sha256)throw Error('EXACT_HISTORY_ACTIVATION_READBACK_REQUIRED');
    await persist();
   }
-  await guard();const afterCollector=await adapter.readCollector();
-  if(!exactState(collector,afterCollector)||afterCollector.status!==collector.status)throw Error('COLLECTOR_CHANGED_DURING_WEEKLY_ROLLOUT');
+  await guard();
+  if(!collectorPatch){const afterCollector=await adapter.readCollector();if(!exactState(collector,afterCollector)||afterCollector.status!==collector.status)throw Error('COLLECTOR_CHANGED_DURING_WEEKLY_ROLLOUT');}
   // Recheck the first history after the second; a successful intermediate
   // read is not proof of the final coordinated state.
   for(let i=0;i<plan.workers.length;i++)if(!exactState(proof.workers[i].after,await adapter.snapshot(plan.workers[i])))throw Error('HISTORY_MOVED_AFTER_ACTIVATION');
-  await guard();proof.status='ALL_CONNECTED_WORKERS_EXACT_NODE_SCOPE_MERGE_READY';proof.production_activation_allowed=true;proof.completed_ts=clock();await persist();return proof;
+  await guard();proof.status=collectorPatch?'CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED':'ALL_CONNECTED_WORKERS_EXACT_NODE_SCOPE_MERGE_READY';proof.production_activation_allowed=true;proof.completed_ts=clock();await persist();return proof;
  }catch(error){
   proof.reason=/^[A-Z0-9_]+$/.test(error.message)?error.message:'WEEKLY_ROLLOUT_ERROR';
   for(const i of changed.reverse()){
