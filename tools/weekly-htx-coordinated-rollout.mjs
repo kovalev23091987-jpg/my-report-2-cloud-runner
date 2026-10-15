@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';import path from 'node:path';import vm from 'n
 import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
 import {verifyWeeklyOriginalProposal} from './verify-weekly-htx-proposal.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
-import {rolloutDigest,coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,historyVersionMetadata,verifySupersetHistory,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
+import {rolloutDigest,coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,historyVersionMetadata,readSingleWorkerModule as moduleBytes,verifySupersetHistory,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
 import {injectPrivatePriceRuntime} from '../cloudflare/public-collector/private-price-bundle.mjs';
 import {patchWorker} from '../cloudflare/public-collector/patch-worker.mjs';
 const PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',repository='kovalev23091987-jpg/my-report-2-cloud-runner',dir='audit-output/weekly-coordinated-rollout';
@@ -20,14 +20,6 @@ async function cf(script,suffix,{method='GET',body,raw=false}={}){
  admit('cloudflare');const response=await fetch('https://api.cloudflare.com/client/v4'+cfBase+script+suffix,{method,headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN,...(body&&!(body instanceof FormData)?{'content-type':'application/json'}:{})},...(body?{body:body instanceof FormData?body:JSON.stringify(body)}:{}),redirect:'error',signal:AbortSignal.timeout(15000)});
  if(!response.ok)throw Error('CLOUDFLARE_HTTP_'+response.status);
  if(raw)return response;const j=await response.json();if(j.success!==true||!j.result)throw Error('CLOUDFLARE_ACK_REQUIRED');return j.result;
-}
-async function moduleBytes(response){
- if(response.headers.get('content-type')?.includes('multipart/')){
-  const form=await response.formData(),files=[...form.values()].filter(v=>typeof v!=='string'&&/\.(?:m?js)$/.test(v.name));
-  if(files.length!==1||[...form.values()].some(v=>typeof v!=='string'&&!/\.(?:m?js)$/.test(v.name)&&v.name!=='metadata'))throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
-  return Buffer.from(await files[0].arrayBuffer());
- }
- return Buffer.from(await response.arrayBuffer());
 }
 const originalSettings=new Map(),runtimeByVersion=new Map(),immutableModules=new Map();
 async function snapshot(worker){

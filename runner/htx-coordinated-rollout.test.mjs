@@ -1,12 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
-import {coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,historyVersionMetadata,verifySupersetHistory,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P} from './htx-coordinated-rollout.mjs';
+import {coordinateWeeklyRollout,singleActiveVersion,workerSettingsFingerprint,historyVersionMetadata,collectorVersionMetadata,readSingleWorkerModule,verifySupersetHistory,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P} from './htx-coordinated-rollout.mjs';
 const id=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0'),head='a'.repeat(40),sha='b'.repeat(64);
 const base=n=>({deployment_id:id(n),version_id:id(n+10),module_sha256:'original'+n,settings_sha256:'settings'+n,crons_sha256:'cron'+n});
 function harness(options={}){
  const original=[base(1),base(2)],states=structuredClone(original),collector={...base(3),status:'EXACT_CURRENT_UNIVERSE_NEUTRAL_COLLECTOR'},events=[],saved=[];let guards=0;
- const workers=P.workers.map((name,i)=>({name,module_sha256:'c'.repeat(64-i)+('d'.repeat(i))}));
- const plan={head,expected_main:'e'.repeat(40),connected:{head,run:42,status:'EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS'},scope:{status:'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED'},workers};
- const index=w=>P.workers.indexOf(w.name);
+ const names=options.collectorPatch?[P.collector]:P.workers,workers=names.map((name,i)=>({name,module_sha256:'c'.repeat(64-i)+('d'.repeat(i))}));
+ const plan={...(options.collectorPatch?{kind:'collector_patch'}:{}),head,expected_main:'e'.repeat(40),connected:{head,run:42,status:options.collectorPatch?'EXACT_MAIN_CURRENT_COLLECTOR_SOURCE_QUALIFIED':'EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS'},scope:{status:options.collectorPatch?'EXACT_HUB_PREFIX_PRESERVED_CURRENT_TAIL_PATCH':'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED'},workers};
+ const index=w=>names.indexOf(w.name);
  const adapter={readCollector:async()=>{events.push('collector');return structuredClone(options.collectorDrift&&events.filter(e=>e==='collector').length>1?{...collector,version_id:id(99)}:collector);},snapshot:async w=>{const i=index(w);events.push('read'+i);return structuredClone(states[i]);},requireHeadroom:n=>{events.push('headroom'+n);if(options.noHeadroom)throw Error('HTTP_HEADROOM_REQUIRED');},stage:async w=>{const i=index(w);events.push('stage'+i);return{version_id:id(30+i)};},activate:async(w,version)=>{
   const i=index(w);events.push('activate'+i+':'+version);
   if(version===original[i].version_id){states[i]={...original[i],deployment_id:id(80+i)};return;}
@@ -57,4 +57,18 @@ test('retained106 scope preserves all production105 targets and every old histor
 });
 test('workflow admits only main-dispatched exact proposals; no historical owner alias, source or D1 credentials',()=>{
  const y=fs.readFileSync('.github/workflows/weekly-htx-coordinated-rollout.yml','utf8'),s=fs.readFileSync('tools/weekly-htx-coordinated-rollout.mjs','utf8');assert.match(y,/github.ref == 'refs\/heads\/main'/);assert.match(y,/default: false/);assert.match(y,/wrangler@4\.151\.0 deploy --dry-run/g);assert.doesNotMatch(y,/D1_BRIDGE|TELEGRAM_BOT_TOKEN|runner-main|wrangler@4 /);assert.match(s,/verifyWeeklyOriginalProposal/);assert.equal(P.rollback_HTTP_reserved,16);assert.equal(P.max_control_HTTP+P.max_cloudflare_HTTP+P.manual_HTTP_reserved,P.http.whole_job);assert.equal(rolloutDigest('original'),rolloutDigest(Buffer.from('original')));
+});
+test('current collector repair is a separate one-Worker exact transaction, never a scope adoption',async()=>{
+ const h=harness({collectorPatch:true});h.plan.workers[0].required_before=h.original[0];const p=await h.run(true);assert.equal(p.status,'CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED');assert.equal(p.workers.length,1);assert.equal(p.workers[0].name,P.collector);assert.equal(p.production_scope_changed,false);assert.equal(h.events.includes('collector'),false);assert.equal(h.states[1].version_id,h.original[1].version_id);
+});
+test('collector patch prepared against a different prefix/version refuses even before staging',async()=>{
+ const h=harness({collectorPatch:true});h.plan.workers[0].required_before={...h.original[0],module_sha256:'different-prefix'};await assert.rejects(h.run(true),/WORKER_MOVED_AFTER_PATCH_PREPARATION/);assert.equal(h.events.some(e=>/stage|activate/.test(e)),false);
+});
+test('collector inherits every existing variable and secret only from the exact active latest version',()=>{
+ const settings={compatibility_date:'2026-09-11',bindings:[{name:'DATA_DB',type:'d1',id:'057a2847-2cc4-4e52-8534-1be1596d21d5'},{name:'CANONICAL_ARCHIVE_DB',type:'d1',id:'f66e7081-0e67-49a2-8f69-68af00cdaf92'},{name:'TELEGRAM_BOT_TOKEN',type:'secret_text'},{name:'DELIVERY_ENABLED',type:'plain_text',text:'0'},{name:'EXISTING_KV',type:'kv_namespace',namespace_id:'original'}]},args={settings,runtime:{compatibility_date:'2026-09-11',usage_model:'standard'},head,active_version:id(1),latest_uploaded_version:id(1)},m=collectorVersionMetadata(args);
+ assert.equal(m.bindings.length,settings.bindings.length);assert.deepEqual(m.bindings.slice(2),settings.bindings.slice(2).map(b=>({name:b.name,type:'inherit'})));assert.doesNotMatch(JSON.stringify(m),/namespace_id|plain_text|secret_text/);assert.throws(()=>collectorVersionMetadata({...args,latest_uploaded_version:id(2)}));assert.throws(()=>collectorVersionMetadata({...args,settings:{...settings,bindings:[...settings.bindings,settings.bindings[0]]}}));
+});
+test('single-module readback preserves bytes for multipart and plain responses and rejects extra executable modules',async()=>{
+ const bytes=Buffer.from('var x="исходные часы";\n');assert.deepEqual(await readSingleWorkerModule(new Response(bytes,{headers:{'content-type':'application/javascript'}})),bytes);
+ const body=new FormData();body.set('metadata','{}');body.set('worker.js',new Blob([bytes],{type:'application/javascript+module'}),'worker.js');assert.deepEqual(await readSingleWorkerModule(new Response(body)),bytes);body.set('other.js',new Blob(['code']),'other.js');await assert.rejects(readSingleWorkerModule(new Response(body)),/EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED/);
 });

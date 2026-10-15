@@ -1,0 +1,40 @@
+name: Repair exact current collector module without source calls
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main: {type: string, required: true}
+      borrow_existing_owner: {type: string, required: true}
+      connected_run: {type: string, required: true}
+      execute: {type: boolean, default: false}
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: report2-coordinated-weekly-rollout
+  cancel-in-progress: false
+jobs:
+  repair:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Preserve exact current Hub prefix and settings; repair only verified overlay
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.borrow_existing_owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          EXECUTE_COLLECTOR_REPAIR: ${{ inputs.execute }}
+        run: node tools/repair-current-public-collector.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: current-collector-repair-${{ github.run_id }}
+          path: audit-output/current-collector-repair/proof.json
+          if-no-files-found: error
+          retention-days: 30
