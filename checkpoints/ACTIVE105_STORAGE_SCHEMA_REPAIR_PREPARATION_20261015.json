@@ -1,0 +1,141 @@
+{
+  "schema": "ACTIVE105_STORAGE_SCHEMA_REPAIR_PREPARATION_V1",
+  "recorded_utc": "2026-10-15T13:22:25.823524+00:00",
+  "source_main": "ed599f13faadce3da14da7a0503463434ee2889a",
+  "owner_approval_PR384_received": true,
+  "PR384_merged": true,
+  "actual_emergency": {
+    "run": 38740608955,
+    "artifact": 11975432335,
+    "artifact_sha256": "a563086a6a1c1cfdb779cdd5d368b83a49a06297248953e1804688fc2aad5278",
+    "archive": "checkpoints/active105-storage-schema-20261015/emergency384-38740608955.zip",
+    "receipt": {
+      "schema": "LOSSLESS_RETAINED_HISTORY_CONTROL_V1",
+      "kind": "canonical",
+      "head": "ed599f13faadce3da14da7a0503463434ee2889a",
+      "run": "38740608955",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "execute": true,
+      "canonical_rows_modified": 0,
+      "source_reservations_reset": false,
+      "control": {
+        "expected_main": "ed599f13faadce3da14da7a0503463434ee2889a",
+        "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792069753410",
+        "borrowed": true,
+        "lease_expires_ts": 1792075153410
+      },
+      "admission": {
+        "allowed": true,
+        "status": "ATOMIC_SHARED_DAY_RESERVED",
+        "reservation_id": "RETAINED_HISTORY:38740608955:1792069906169",
+        "reservation": {
+          "rows_read": 5000,
+          "rows_written": 400
+        },
+        "owner_emergency_day": "2026-10-15",
+        "protected_next_full": {
+          "rows_read": 59000,
+          "rows_written": 920
+        }
+      },
+      "status": "RETAINED_RECOVERY_NOT_ACTIVATED",
+      "reason": "CANONICAL_PROTECTED_REFERENCE_SCHEMA_REQUIRED",
+      "error_fingerprint": "81f54714afa3876e7018ddb1880744ecca13ebadca6da09ed34b560fe90412dc",
+      "finalized_usage": {
+        "schema": "report2-d1-reservation-budget-v2",
+        "status": "FINALIZED",
+        "reservation_id": "RETAINED_HISTORY:38740608955:1792069906169",
+        "source_run_id": "38740608955",
+        "measured_rows_read": 575,
+        "measured_rows_written_accounted": 4,
+        "measured_requests_accounted": 5,
+        "unknown_ops": 0
+      },
+      "D1": {
+        "requests": 5,
+        "rows_read": 576,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "private_D1": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "whole_HTTP": {
+        "used": {
+          "hot": 13,
+          "background": 2,
+          "statistics": 0
+        },
+        "total": 15,
+        "limits": {
+          "whole_job": 164,
+          "hot": 96,
+          "background": 56,
+          "statistics": 12
+        },
+        "remaining": 149
+      },
+      "github_control_HTTP": 9,
+      "D1_bridge_HTTP": 4,
+      "private_D1_HTTP": 2,
+      "completed_ts": 1792069907962,
+      "history_discarded": false,
+      "project_complete": false
+    }
+  },
+  "capacity_restored": false,
+  "all_originals_unmodified": true,
+  "third_existing_RETAINED_HISTORY_slot_spent": true,
+  "fourth_or_retry_authorized": false,
+  "ordinary_daily_limit": 2,
+  "automatic_compaction_enabled": false,
+  "diagnosis": {
+    "native_exact_missing_table_names": "NOT_RECORDED_BY_OLD_CODE; do not infer current names from historical schema",
+    "retained_original_schema": {
+      "path": "audit-fixes/t00/fixtures/d1-schema.json",
+      "sha256": "dd9856e3b46ba04495f9e35e3b903bafa2bb525981a49036f6269247bb04fc5a",
+      "receipt": {
+        "schema": "my-report-2-t00-sanitized-production-fixtures-v1",
+        "source_capture_run_id": 36359630895,
+        "source_captured_at": 1790552597585,
+        "changed_db": false,
+        "rows_written": 0,
+        "contracts": [
+          "DOT-USDT",
+          "ETC-USDT",
+          "ETHFI-USDT",
+          "LSK-USDT"
+        ],
+        "htx_timeout_run_id": "1790543463456-1790543476898",
+        "sanitizer": "key-name denylist plus nested JSON traversal"
+      },
+      "V2_names_absent": [
+        "report2_command_v2",
+        "report2_publication_v2",
+        "report2_delivered_outcome_v2"
+      ]
+    },
+    "old_controlled_fixture_installed_unproven_V2_namespace": true,
+    "candidate": "Require retained core schema, honor each installed V2 namespace, atomically refuse if an absent namespace is created after selection, protect unbound dispatch/calibration rows, retain exact schema refusal receipt and admit measured metadata-scan work inside unchanged native reservation."
+  },
+  "local_tests": {
+    "pass": 37,
+    "fail": 0,
+    "tap_sha256": "04cd462db21b7d6453b6e51262c974b1edd9e67fcd85b066ff74a3236e20bc4b",
+    "archive": "checkpoints/active105-storage-schema-20261015/schema-repair-local-37.tap.gz",
+    "production_native_cost_qualified": false
+  },
+  "cloud_check_pending": true,
+  "candidate_merged": false,
+  "candidate_executed": false,
+  "source_HTTP": 0,
+  "new_D1_for_preparation": 0,
+  "strategy_weights_pauses_forms_caps_changed": false,
+  "project_complete": false,
+  "next": "Verify combined cloud candidate; preserve spent UTC15 third slot. No fourth run/reset/alias. Actual schema/native compaction/physical free capacity and next full two-candidate persistence remain unverified. Continue independent source and whole-day accounting from retained evidence."
+}
