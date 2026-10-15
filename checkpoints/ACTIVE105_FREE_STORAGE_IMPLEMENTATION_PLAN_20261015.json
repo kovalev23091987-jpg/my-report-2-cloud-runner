@@ -1,0 +1,60 @@
+{
+  "schema": "ACTIVE105_FREE_STORAGE_IMPLEMENTATION_PLAN_V1",
+  "owner_request": "Внедрить предложенную схему хранения и расширить бесплатное хранилище, если возможно.",
+  "existing_acceptance_directions": [
+    1,
+    4
+  ],
+  "new_strategy_or_score_changes": false,
+  "observed_inventory": {
+    "run": 38766943607,
+    "head": "4bbe49e36d25a05113affdb0b8493d9d8da597c6",
+    "path": "checkpoints/free-storage-20261015/inventory-38766943607.json",
+    "main_bytes": 499904512,
+    "archive_bytes": 13684736,
+    "account_total_bytes": 513638400,
+    "existing_databases": 5,
+    "planned_additional_empty_databases": 4,
+    "planned_additional_archive_operating_bytes": 1600000000,
+    "spare_database_slots": 1
+  },
+  "implemented_candidate": [
+    "Account-wide descriptors and conservative full500MB reservations for existing and planned databases; no paid subscription endpoint.",
+    "Bounded allocation of up to4 empty archives only after unchanged account identities, exact live own lease and exact offline cloud consumer qualification; independent identity readback; no SQL, deletion or automatic retry.",
+    "Exact additional-shard locators preserve legacy originals and clocks; no scan/fallback across shards, unknown locations fail before any partial read.",
+    "Full-report adapter, price/cancellation readers and LIQ forecast statistics count all additional archive reads within existing shared native reservations; failed replies remain unknown.",
+    "Rolling capacity decision checks growth, reclaimable/protected bytes, archive headroom, next-report24MB reserve and throughput; it does not activate a timer or increase maintenance caps."
+  ],
+  "native_steps_remaining": [
+    "Initialize new archive schemas only under a separately admitted shared D1 budget; protect next full/manual reserve.",
+    "Install exact allowlisted writer/reader locations and all corresponding Worker bindings in one qualified release; new headers remain forbidden until every reader is ready.",
+    "Use the next ordinary RETAINED_HISTORY allowance after UTC reset for native qualification; four UTC15 slots remain spent and no fifth is authorized.",
+    "Restore actual full-report persistence, verify both finalist originals and same-run delivery separately.",
+    "Measure bytes in/out, backlog, indexed reference selection and cost of each maintenance kind. Current48 rows x2 shared runs/day is only an upper bound; it does not prove sustainable handling of72 finalist canonical records plus full evidence and manual runs.",
+    "Prepare any needed byte/batch/cadence limit change with a reconciled whole-day calculation and explicit owner approval; preserve current caps until then.",
+    "Activate permanent rolling only after sustainable native throughput, exact old-body readthrough, protected-data checks and compact outcome/source statistics are confirmed. Keep current signals, latest coin originals, source clocks, quota ledgers and statistical dependencies."
+  ],
+  "not_claimed": {
+    "main_capacity_recovered": false,
+    "automatic_retention_activated": false,
+    "all_day_limits_closed": false,
+    "whole_plan_complete": false
+  },
+  "source_calls_for_preparation": 0,
+  "forced_MAIN": 0,
+  "Telegram": 0,
+  "created_empty_archive_resources": 4,
+  "creation_run": 38769570869,
+  "independent_identity_readback_pending": false,
+  "actual_cloud_reader_qualification": {
+    "head": "86dd8fc0caba7a251c0c60d46511a491e021387c",
+    "run": 38769178855,
+    "pass": 684,
+    "fail": 0,
+    "artifact": 11990756565,
+    "sha256": "c1d348aae63dfdd6c9a16f83edd05c137c134219c14a8a2f28b242ad22b2590d"
+  },
+  "independent_identity_readback_run": 38770284536,
+  "new_storage_schemas_initialized": false,
+  "new_storage_consumers_installed": false
+}
