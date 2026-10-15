@@ -180,7 +180,9 @@ jobs:
             const allActiveOwner=/^CODEX:ACTIVE_SOURCE_DAY_BUDGET:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.active_working_state?.owned_lease===phase.lease.owner&&phase.owner_all_active_blocks_source_budget_and_fallback==='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json';
             const privateOwner=/^CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner;
             const coverageOwner=/^CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner&&phase.active_working_state?.owned_lease===phase.lease.owner;
-            if(!(liqOwner||allActiveOwner||privateOwner||coverageOwner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const {active105OfflineReviewOwner}=await import(require('url').pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+            const active105Owner=active105OfflineReviewOwner(phase);
+            if(!(liqOwner||allActiveOwner||privateOwner||coverageOwner||active105Owner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Verify immutable weekly catalogs, exact data-only branch and all consumers
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.weekly_proposal == true }}
         env:

@@ -1,5 +1,14 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {verifyOfflineReviewAuthority} from './offline-review-authority.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {verifyOfflineReviewAuthority,active105OfflineReviewOwner} from './offline-review-authority.mjs';
 const main='a'.repeat(40),head='b'.repeat(40),ancestor='c'.repeat(40),now=100000;
+test('current all-active105 offline authority requires exact current task, bounded owner and all mirrors',()=>{
+ const l={owner:'CODEX:ACTIVE105_SOURCE_RELIABILITY:90000',acquired_ts:90000,expires_ts:200000,expected_main:ancestor,scope:'Bounded offline source reliability review'};
+ const p={current_task:'ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS',owner_all_active_blocks_source_budget_and_fallback:'checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json',lease:l,latest_own_bounded_continuation_lease:{...l},active_working_state:{owned_lease:l.owner,owned_lease_expires_ts:l.expires_ts,lease_released:false}};
+ assert.equal(active105OfflineReviewOwner(p,now),true);
+ for(const edit of [p=>p.current_task='OTHER',p=>delete p.owner_all_active_blocks_source_budget_and_fallback,p=>p.lease.owner='CODEX:OTHER:90000',p=>p.lease.acquired_ts=now+1,p=>p.lease.expires_ts=now,p=>p.lease.expires_ts=90000+90*60000+1,p=>p.lease.expected_main='main',p=>p.lease.scope='',p=>p.latest_own_bounded_continuation_lease.owner='CODEX:OLD:1',p=>p.latest_own_bounded_continuation_lease.expires_ts++,p=>p.active_working_state.owned_lease=null,p=>p.active_working_state.owned_lease_expires_ts++,p=>p.active_working_state.lease_released=true]){
+  const bad=structuredClone(p);edit(bad);assert.equal(active105OfflineReviewOwner(bad,now),false);
+ }
+ assert.equal(active105OfflineReviewOwner(null,now),false);
+});
 function fixture(){
  const l={owner:'CODEX:TEST:1',acquired_ts:90000,expires_ts:200000,expected_main:ancestor},p={lease:l,latest_own_bounded_continuation_lease:l,active_working_state:{owned_lease:l.owner,owned_lease_expires_ts:l.expires_ts,lease_released:false}};
  const f={phase:p,branch:structuredClone(p),old:{lease:null},fence:{active:false},files:[{filename:'checkpoints/CLOUD_PHASE_STATE_20261004.json',status:'modified'}],changed_main:false,calls:[]};let refs=0;
