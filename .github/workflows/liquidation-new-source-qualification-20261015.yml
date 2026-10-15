@@ -2,6 +2,11 @@ name: Bounded new liquidation source qualification
 on:
   workflow_dispatch:
     inputs:
+      source_batch:
+        required: true
+        type: choice
+        default: pumpglass
+        options: [pumpglass, vike, hyperperps]
       expected_main:
         required: true
         type: string
@@ -25,6 +30,8 @@ jobs:
           node-version: '24'
       - name: Capture at most three missing public source replies after shared admission
         env:
+          REPORT2_LIQ_RESEARCH_BATCH: ${{ inputs.source_batch }}
+          REPORT2_VIKE_API_KEY: ${{ secrets.REPORT2_VIKE_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
           REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.expected_lease_owner }}

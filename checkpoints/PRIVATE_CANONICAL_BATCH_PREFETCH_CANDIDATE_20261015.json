@@ -66,12 +66,25 @@
     "live_weekly_run_added": false,
     "scope_106_changed": false
   },
-  "cloud_assembled_verification": "PENDING_UPDATED_PHASE_GUARD",
+  "cloud_assembled_verification": {
+    "status": "SUCCESS",
+    "run": 38724794142,
+    "head": "f8a92ecb6d50626526dacd35a3bcb762d9ed7294",
+    "related_pass": 624,
+    "fail": 0,
+    "artifact_id": 11967800637,
+    "artifact_sha256": "cc017d4cbb112d616fc60859f67277e39e826797912496d0518746e6df0b98a1",
+    "originals": "checkpoints/active105-source-research-20261015/cloud381-38724794142/members.json"
+  },
   "continuous_worker_replacement_fix": {
     "cause": "The code guard includes private archive API, D1 budget guard and measured native D1, but the backup push trigger omitted those three paths. Their changes could stop the old worker without immediately requesting a replacement.",
     "fix": "Cover all guarded code paths in the existing replacement trigger; retain exact-source guard, existing schedule/concurrency and caps.",
-    "controlled_tests": 12,
+    "controlled_tests": 15,
     "new_provider_calls": 0,
     "forced_MAIN": 0
+  },
+  "merged": {
+    "PR": 381,
+    "main": "1ede45fb8d6b4a60ec1a8a88401cc99d343859e5"
   }
 }
