@@ -28,7 +28,11 @@ try{
    const main=(await control.call('git/ref/heads/main')).object.sha;if(main!==request.expected_main)throw Error('FREE_ARCHIVE_READER_MAIN_MOVED');
    const [phase,fence]=await Promise.all([control.read('checkpoints/CLOUD_PHASE_STATE_20261004.json',main),control.read('audit-fixes/source-optimization-20260930/execution-lock.json',main)]),l=phase.value.lease;
    if(fence.value.active||!active105OfflineReviewOwner(phase.value)||l.owner!==request.expected_owner||!l.scope.includes('FREE_ARCHIVE_BINDINGS_ROLLOUT')||l.expires_ts-Date.now()<min_headroom_ms)throw Error('EXACT_FREE_ARCHIVE_BINDINGS_LEASE_REQUIRED');
-   requireArchiveWritersOff(await control.call('actions/variables?per_page=100'));out.repository_writer_and_rotation_flags_verified_off=true;
+   // Variables REST requires a separate Variables permission which the
+   // contents-read workflow token does not request. Use the authoritative
+   // Actions vars context supplied at job start; an active own lease forbids
+   // changing these flags during this bounded rollout.
+   requireArchiveWritersOff({total_count:3,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED',value:process.env.REPORT2_ROLLOUT_POOL_FLAG},{name:'REPORT2_LOSSLESS_RETENTION_ENABLED',value:process.env.REPORT2_ROLLOUT_RETENTION_FLAG},{name:'REPORT2_CANONICAL_COMPACTION_ENABLED',value:process.env.REPORT2_ROLLOUT_COMPACTION_FLAG}]});out.repository_writer_and_rotation_flags_verified_off=true;out.repository_flags_basis='GITHUB_ACTIONS_VARS_CONTEXT_AT_JOB_START';
   };
   await guard({min_headroom_ms:600000});
   const run=await control.call('actions/runs/'+request.qualified_run);

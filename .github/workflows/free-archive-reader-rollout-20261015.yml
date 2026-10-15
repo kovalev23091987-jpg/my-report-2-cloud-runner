@@ -26,6 +26,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT2_ROLLOUT_POOL_FLAG: ${{ vars.REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED || 'false' }}
+          REPORT2_ROLLOUT_RETENTION_FLAG: ${{ vars.REPORT2_LOSSLESS_RETENTION_ENABLED || 'false' }}
+          REPORT2_ROLLOUT_COMPACTION_FLAG: ${{ vars.REPORT2_CANONICAL_COMPACTION_ENABLED || 'false' }}
         run: node tools/rollout-free-archive-readers-20261015.mjs
       - uses: actions/upload-artifact@v4
         if: always()
