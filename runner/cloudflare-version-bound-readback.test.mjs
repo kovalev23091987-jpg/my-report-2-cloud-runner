@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createVersionBoundWorkerReader} from './cloudflare-version-bound-readback.mjs';
-import {rolloutDigest,selectedVersionSettings,bindWorkerModule} from './htx-coordinated-rollout.mjs';
+import {rolloutDigest,selectedVersionSettings,bindWorkerModule,readSingleWorkerModule} from './htx-coordinated-rollout.mjs';
 const id=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0'),script='my-report-2-hub',worker={name:script,crons:['*/5 * * * *']},runtime={compatibility_date:'2026-09-11',usage_model:'standard'};
 function fixture(){let active=id(1),latest=id(2);const calls=[],bytes=new Map([[id(1),Buffer.from('old active module\n')],[id(2),Buffer.from('new dormant module\n')]]),versions=new Map([...bytes.keys()].map((v,i)=>[v,{id:v,resources:{bindings:[{name:'FLAG',type:'plain_text',text:String(i)}],script_runtime:runtime,script:{etag:'etag'+i}}}]));
  const call=async(name,suffix)=>{calls.push(suffix);if(name!==script)throw Error('wrong worker');if(suffix==='/deployments')return{deployments:[{id:id(3),strategy:'percentage',versions:[{version_id:active,percentage:100}]}]};if(suffix==='/settings')return{bindings:versions.get(latest).resources.bindings,...runtime,annotations:{'workers/commit_sha':latest},placement:{}};if(suffix==='/schedules')return[{cron:worker.crons[0]}];if(suffix==='/versions?per_page=1')return{items:[{id:latest}]};if(suffix==='/content/v2')return new Response(bytes.get(latest),{headers:{'content-type':'application/javascript'}});if(suffix.startsWith('/versions/'))return versions.get(suffix.slice('/versions/'.length));throw Error('unexpected '+suffix);};
@@ -16,4 +16,8 @@ test('an exact prior native version digest remains bound to its version and curr
 });
 test('operational settings retain unknown non-versioned fields and binding values while provenance follows the version ID',()=>{
  const h=fixture(),v=h.versions.get(id(1)),a=selectedVersionSettings({bindings:[],annotations:{message:'latest'},placement:{},future_guard:'KEEP'},v);assert.equal(a.future_guard,'KEEP');assert.equal(a.bindings[0].text,'0');assert.equal(Object.hasOwn(a,'annotations'),false);assert.throws(()=>selectedVersionSettings({}, {id:id(1),resources:{bindings:{},script_runtime:runtime}}));
+});
+test('a Wrangler source map is accepted as bounded diagnostic JSON, while another executable or unrelated map is denied',async()=>{
+ const bytes=Buffer.from('export default {};\n'),form=new FormData();form.set('worker.js',new Blob([bytes],{type:'application/javascript+module'}),'worker.js');form.set('worker.js.map',new Blob([JSON.stringify({version:3,file:'worker.js',sources:['original.mjs'],mappings:''})],{type:'application/source-map'}),'worker.js.map');assert.deepEqual(await readSingleWorkerModule(new Response(form)),bytes);
+ for(const [name,body] of [['other.js.map',JSON.stringify({version:3,sources:[],mappings:''})],['worker.js.map','not-json']]){const bad=new FormData();bad.set('worker.js',new Blob([bytes]),'worker.js');bad.set(name,new Blob([body]),name);await assert.rejects(readSingleWorkerModule(new Response(bad)),/EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED/);}
 });

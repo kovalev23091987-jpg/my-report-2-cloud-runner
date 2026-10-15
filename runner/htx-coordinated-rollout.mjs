@@ -71,7 +71,18 @@ export function collectorVersionMetadata({settings,runtime,head,active_version,l
 export async function readSingleWorkerModule(response){
  if(response.headers.get('content-type')?.includes('multipart/')){
   const form=await response.formData(),files=[...form.values()].filter(v=>typeof v!=='string'&&/\.(?:m?js)$/.test(v.name));
-  if(files.length!==1||[...form.values()].some(v=>typeof v!=='string'&&!/\.(?:m?js)$/.test(v.name)&&v.name!=='metadata'))throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
+  if(files.length!==1)throw Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');
+  for(const [key,value] of form.entries()){
+   if(typeof value==='string'||value===files[0])continue;
+   if(key==='metadata'||value.name==='metadata')continue;
+   // Wrangler may upload a source map next to its single compiled module.
+   // It is diagnostic JSON, never a second executable or a fetched source.
+   if(value.name===files[0].name+'.map'&&value.size<=8388608){
+    let map;try{map=JSON.parse(await value.text());}catch{}
+    if(map?.version===3&&Array.isArray(map.sources)&&typeof map.mappings==='string'&&(!map.file||map.file.replaceAll('\\','/').split('/').at(-1)===files[0].name))continue;
+   }
+   const e=new Error('EXACT_SINGLE_BUNDLED_WORKER_MODULE_REQUIRED');e.module_names=[...form.entries()].filter(([,v])=>typeof v!=='string').map(([k,v])=>({field:k,name:v.name,type:v.type}));throw e;
+  }
   return Buffer.from(await files[0].arrayBuffer());
  }
  return Buffer.from(await response.arrayBuffer());
