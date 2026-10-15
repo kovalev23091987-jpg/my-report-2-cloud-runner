@@ -23,7 +23,8 @@ jobs:
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
             const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
             const privateOwner=/^CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner;
-            if(!(/^CODEX:LIQ_[A-Z0-9_]+:\d+$/.test(phase.lease?.owner||'')||privateOwner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const {active105OfflineReviewOwner}=await import(require('url').pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+            if(!(/^CODEX:LIQ_[A-Z0-9_]+:\d+$/.test(phase.lease?.owner||'')||privateOwner||active105OfflineReviewOwner(phase))||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Verify isolated archive and source-clock guards
         run: node --test cloudflare/free-history/*.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs
       # The schema is provisioned separately through the Cloudflare D1 query API.
