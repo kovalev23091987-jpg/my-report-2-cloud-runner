@@ -5,6 +5,7 @@ import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-b
 import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from '../runner/github-bounded-phase-lease.mjs';
 import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFullEvidence} from '../runner/lossless-full-evidence-recovery.mjs';
 import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
+import {canonicalExecutionMode} from '../runner/canonical-native-qualification.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
 await fs.mkdir(dir,{recursive:true});
@@ -12,6 +13,7 @@ const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
 const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY||'')||null;
 const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'0');
 const canonical_cursor=Number(canonical_cursor_input);
+const native_qualification_input=String(process.env.REPORT2_NATIVE_CANONICAL_QUALIFICATION||'false');
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
@@ -36,7 +38,9 @@ try{
  if(owner_emergency_day!==null&&(!emergency||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||!process.env.BORROW_EXISTING_OWNER||kind!=='canonical'||!out.execute||process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION!=='true'))throw Error('EXACT_MANUAL_CANONICAL_EMERGENCY_REQUIRED');
  // Preparation may retain originals. Hot-body replacement needs its own
  // measured native qualification; a code merge never enables it implicitly.
- if(kind==='canonical'&&out.execute&&process.env.REPORT2_CANONICAL_COMPACTION_ENABLED!=='true'&&!emergency)throw Error('CANONICAL_COMPACTION_NATIVE_QUALIFICATION_NOT_ACTIVATED');
+ if(!['true','false'].includes(native_qualification_input))throw Error('EXACT_NATIVE_QUALIFICATION_INPUT_REQUIRED');
+ const mode=canonicalExecutionMode({kind,execute:out.execute,enabled:process.env.REPORT2_CANONICAL_COMPACTION_ENABLED==='true',emergency,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER,prefetch:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',native_qualification:native_qualification_input==='true'});
+ out.canonical_execution_mode=mode;
  if(process.env.BORROW_EXISTING_OWNER){
   const main=(await control.call('git/ref/heads/main')).object.sha;if(main!==expected)throw Error('RETAINED_MAIN_MOVED');
   const [p,f,s,r,g]=await Promise.all([control.read(PHASE,main),control.read(FENCE,main),control.read('checkpoints/CURRENT_PROJECT_STATUS.json',main),control.read('checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json',main),control.read('REPORT2_CURRENT_GENERATION.json',main)]);
@@ -60,7 +64,7 @@ try{
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
   Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,source_cursor:canonical_cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
-  },before_modify:guard,execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:emergency}));
+  },before_modify:guard,execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
   out.canonical_rows_modified=out.compacted?.length||0;
  }else{
  const save_originals=async rows=>{
