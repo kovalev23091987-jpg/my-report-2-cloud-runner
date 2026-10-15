@@ -23,7 +23,7 @@ export async function reserveLosslessRecoveryBudget(db,{reservation_id,now=Date.
  // renames/reset its spent reservations or refunds a preparation-only run.
  const ack=await db.prepare(`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
  SELECT ?1,?2,?3,?4,'RESERVED',?5 FROM (
- SELECT COALESCE(SUM(reserve_rows_read),0) AS reads,COALESCE(SUM(reserve_rows_written),0) AS writes,
+ SELECT COALESCE(SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)),0) AS reads,COALESCE(SUM(MAX(reserve_rows_written,COALESCE(measured_rows_written,0))),0) AS writes,
  COALESCE(SUM(CASE WHEN state='FINALIZED' AND COALESCE(unknown_ops,1)>0 THEN 1 ELSE 0 END),0) AS unknown_count,
  COALESCE(SUM(CASE WHEN reservation_id LIKE 'RETAINED_HISTORY:%' THEN 1 ELSE 0 END),0) AS prior_count
  FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2)

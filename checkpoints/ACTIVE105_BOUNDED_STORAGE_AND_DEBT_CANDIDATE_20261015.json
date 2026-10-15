@@ -1,0 +1,202 @@
+{
+  "schema": "ACTIVE105_BOUNDED_CANONICAL_AND_NATIVE_DEBT_CANDIDATE_V1",
+  "recorded_utc": "2026-10-15T14:30:05.908334+00:00",
+  "basis_main": "3cd974ac1d38a5e8c03581b275069d361c5faf92",
+  "status": "OFFLINE_REPAIR_67_PASS_CLOUD_PENDING_NOT_DEPLOYED",
+  "actual_fourth_cleanup": {
+    "schema": "LOSSLESS_RETAINED_HISTORY_CONTROL_V1",
+    "kind": "canonical",
+    "head": "3cd974ac1d38a5e8c03581b275069d361c5faf92",
+    "run": "38746776207",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "execute": true,
+    "canonical_rows_modified": 0,
+    "source_reservations_reset": false,
+    "control": {
+      "expected_main": "3cd974ac1d38a5e8c03581b275069d361c5faf92",
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792072396643",
+      "borrowed": true,
+      "lease_expires_ts": 1792077796643
+    },
+    "admission": {
+      "allowed": true,
+      "status": "ATOMIC_SHARED_DAY_RESERVED",
+      "reservation_id": "RETAINED_HISTORY:38746776207:1792072511063",
+      "reservation": {
+        "rows_read": 5000,
+        "rows_written": 400
+      },
+      "owner_emergency_day": "2026-10-15",
+      "owner_emergency_slot": 4,
+      "protected_next_full": {
+        "rows_read": 59000,
+        "rows_written": 920
+      }
+    },
+    "status": "RETAINED_D1_ENVELOPE_NOT_CLOSED",
+    "reason": "PRIVATE_PREFETCH_SHARED_D1_DENIED",
+    "error_fingerprint": "786eeaa759041b2729e373a342ffd8ca8b5ef56142f1b0e0a226512b796c36a9",
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "RETAINED_HISTORY:38746776207:1792072511063",
+      "source_run_id": "38746776207",
+      "measured_rows_read": 6778,
+      "measured_rows_written_accounted": 4,
+      "measured_requests_accounted": 6,
+      "unknown_ops": 0
+    },
+    "D1": {
+      "requests": 6,
+      "rows_read": 6779,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "private_D1": {
+      "requests": 1,
+      "rows_read": 0,
+      "rows_written": 0,
+      "unknown_ops": 0
+    },
+    "D1_envelope_not_closed": true,
+    "whole_HTTP": {
+      "used": {
+        "hot": 14,
+        "background": 2,
+        "statistics": 0
+      },
+      "total": 16,
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "remaining": 148
+    },
+    "github_control_HTTP": 9,
+    "D1_bridge_HTTP": 5,
+    "private_D1_HTTP": 2,
+    "completed_ts": 1792072516190,
+    "history_discarded": false,
+    "project_complete": false
+  },
+  "fourth_cleanup_summary": {
+    "run": 38746776207,
+    "modified": 0,
+    "capacity_recovered": false,
+    "rows_read": 6779,
+    "planned_rows_read": 5000,
+    "known_old_ledger_undercharge_reads": 1779,
+    "source_HTTP": 0,
+    "UTC15_retention_slots_spent": 4,
+    "fifth_attempt_authorized": false
+  },
+  "retained_latest_verified_natural": {
+    "run": 38743589702,
+    "head": "dd1a6c0e0b20d85e72297ae5bee19f3c3ece48b6",
+    "run_id": "1792071187635-1792071198936",
+    "status": "NOT_CLOSED",
+    "canonical_persistence_audit": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "CLOSED",
+      "run_id": "1792071187635-1792071198936",
+      "expected_contracts": [
+        "BTW-USDT",
+        "BEAT-USDT"
+      ],
+      "present_contracts": [
+        "BEAT-USDT",
+        "BTW-USDT"
+      ],
+      "missing_contracts": [],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 2,
+      "missing_is_technical_not_no_market_idea": false
+    },
+    "post_analysis_control_failure": {
+      "schema": "POST_ANALYSIS_CONTROL_FAILURE_V1",
+      "head": "dd1a6c0e0b20d85e72297ae5bee19f3c3ece48b6",
+      "run_id": "1792071187635-1792071198936",
+      "failed_ts": 1792071281628,
+      "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+      "error_fingerprint": "72476688c122b5b9337df20c804bdfbb66bc310c52d59c3df59b6a9a23be4e9f",
+      "raw_error_exported": false,
+      "d1_attempt_usage": {
+        "attempted_statements": 502,
+        "measured_rows_read_subtotal": 34699,
+        "measured_rows_written_subtotal": 359,
+        "unknown_operations": 1,
+        "row_totals_closed": false,
+        "total_rows_read": null,
+        "total_rows_written": null
+      },
+      "unmeasured_operation_receipts": [
+        {
+          "operation": "first",
+          "target": "report2_evidence_source_cache",
+          "sql_kind": "SELECT",
+          "sql_sha256": "efce8b75818cc4b5e1d3f450e4a2cfd310840eac2016392f7ec21b4000e18ab7",
+          "http_status": null,
+          "failure_class": "BRIDGE_TRANSPORT_FAILURE",
+          "observed_ts": 1792071234838,
+          "params_or_SQL_text_exported": false
+        }
+      ],
+      "original_candidates_and_clocks_preserved": true,
+      "original_delivery_proof_not_rewritten": true,
+      "new_entry_authorized": false,
+      "sourceHTTP_added": 0,
+      "D1_added": 0,
+      "Telegram_added": 0
+    },
+    "same_run_SENT": false,
+    "distinction": "Both selected canonicals persisted; late native cache transport failure is distinct from prior maximum-size failure."
+  },
+  "repair": {
+    "metadata_rows_per_window": 128,
+    "reference_rows_max_per_table": 256,
+    "incomplete_reference_census": "No body selection, copy or mutation; exact cursor remains unchanged. This bound can retain a large reference namespace hot until a separately qualified indexed plan exists.",
+    "newer_witness": "Exact primary-key witness where found; otherwise at most16 rows of retained identity index, conservative subset only.",
+    "update_races": "Complete bounded reference CTEs are reevaluated atomically; overflow, new namespace or changed/deleted witness keeps hot original.",
+    "source_cursor": "Explicit exact input and continuation receipt, zero wraps bounded discovery; no ledger reset.",
+    "debt_accounting": "Each active admission charges MAX(reservation,measured overrun + finalization-read padding) per row. Future finalization monotonically retains larger spend, never refunds. Legacy fourth-row debt is charged without rewriting old original.",
+    "new_HTTP": "No extra source/DB accounting requests; replacement bounded selection uses one additional bridge batch within existing16."
+  },
+  "controlled_validation": {
+    "tests": 67,
+    "pass": 67,
+    "fail": 0,
+    "tap_path": "checkpoints/active105-bounded-storage-20261015/bounded-selection-and-debt-local.tap",
+    "uses_retained_schema_indexes": true,
+    "includes_noisy128_cursor_reference_overflow_new_reference_and_newer_witness_races": true,
+    "native_production_billing_proved": false,
+    "query_plan_tests_are_controlled_SQLite_only": true
+  },
+  "originals": [
+    {
+      "path": "checkpoints/active105-bounded-storage-20261015/cleanup386-38746776207.zip",
+      "sha256": "2d333a025486b0b883a76ebb93ad595a2411c859423e723b3c58f5329cb7e407"
+    },
+    {
+      "path": "checkpoints/active105-bounded-storage-20261015/natural-38743589702.zip",
+      "sha256": "efb28da6936e12b8c44fd7c769a72e048177cd9e1f5783fdab879c79af589006"
+    }
+  ],
+  "boundaries": {
+    "source_HTTP": 0,
+    "production_D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "strategy_weights_forms_pauses_changed": false,
+    "limits_increased": false,
+    "automatic_flags_enabled": false,
+    "native_qualification_and_capacity_recovery": false,
+    "whole_day_budget_closed": false
+  },
+  "fixed_acceptance_checklist": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+  "next_action": "One composed cloud check for exact candidate. Preserve all4 spent UTC15 retention slots. No fifth retry or cap reset. Candidate code approval/merge and separately admitted native qualification still required; do not call controlled tests actual production capacity recovery. Continue remaining fixed seven acceptance directions.",
+  "project_complete": false
+}

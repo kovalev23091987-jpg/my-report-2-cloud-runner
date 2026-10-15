@@ -15,8 +15,8 @@ export async function reserveNativeSectorValidationBatch(db,{batch,id,now}={}){
  if(batch==='TRON_TOKEN4'){
   const result=await db.prepare(`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
   SELECT ?1,?2,?3,?4,'RESERVED',?5 WHERE
-  COALESCE((SELECT SUM(reserve_rows_read) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=3500000 AND
-  COALESCE((SELECT SUM(reserve_rows_written) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=70000 AND
+  COALESCE((SELECT SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=3500000 AND
+  COALESCE((SELECT SUM(MAX(reserve_rows_written,COALESCE(measured_rows_written,0))) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=70000 AND
   NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND state='FINALIZED' AND COALESCE(unknown_ops,1)>0) AND
   NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'N15_TRON_SECTOR_VALIDATE:%')`).bind(id,day,plan.D1_reservation.rows_read,plan.D1_reservation.rows_written,now).run();
   return Number(result?.meta?.changes??result?.changes)===1;
@@ -25,8 +25,8 @@ export async function reserveNativeSectorValidationBatch(db,{batch,id,now}={}){
  // new batch ID nor a rerun can reset it or repeat the four qualified assets.
  const grant=await db.prepare(`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
  SELECT ?1,?2,?3,?4,'RESERVED',?5 WHERE
- COALESCE((SELECT SUM(reserve_rows_read) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=3500000 AND
- COALESCE((SELECT SUM(reserve_rows_written) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=70000 AND
+ COALESCE((SELECT SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=3500000 AND
+ COALESCE((SELECT SUM(MAX(reserve_rows_written,COALESCE(measured_rows_written,0))) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=70000 AND
  NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND state='FINALIZED' AND COALESCE(unknown_ops,1)>0) AND
  (SELECT COUNT(*) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'NATIVE_SECTOR_VALIDATE:%')<2 AND
  ((?6='INITIAL_NATIVE4' AND NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'NATIVE_SECTOR_VALIDATE:%')) OR

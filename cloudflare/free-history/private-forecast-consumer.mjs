@@ -11,8 +11,8 @@ export async function reservePrivateForecastBudget(db,{scheduled_ts,now}={}){
  const id='PRIVATE_FORECAST:'+Math.floor(scheduled_ts/HOUR),day=new Date(now).toISOString().slice(0,10);
  const result=await db.prepare(`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
  SELECT ?1,?2,?3,?4,'RESERVED',?5 WHERE
- COALESCE((SELECT SUM(reserve_rows_read) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=?6 AND
- COALESCE((SELECT SUM(reserve_rows_written) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=?7 AND
+ COALESCE((SELECT SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?3<=?6 AND
+ COALESCE((SELECT SUM(MAX(reserve_rows_written,COALESCE(measured_rows_written,0))) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2),0)+?4<=?7 AND
  NOT EXISTS(SELECT 1 FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND state='FINALIZED' AND COALESCE(unknown_ops,1)>0) AND
  (SELECT COUNT(*) FROM report2_runner_budget_ledger_shadow WHERE day_utc=?2 AND reservation_id LIKE 'PRIVATE_FORECAST:%')<?8`).bind(id,day,p.rows_read,p.rows_written,now,p.max_daily_reads,p.max_daily_writes,p.max_runs_day).run();
  const changes=Number(result?.meta?.changes);

@@ -54,8 +54,8 @@ export async function loadDailyUsageAggregate(db, now=Date.now()) {
   const day=utcDay(now);
   const row=await db.prepare(`
     SELECT COUNT(*) AS run_count,
-           SUM(reserve_rows_read) AS reserved_rows_read,
-           SUM(reserve_rows_written) AS reserved_rows_written,
+           SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)) AS reserved_rows_read,
+           SUM(MAX(reserve_rows_written,COALESCE(measured_rows_written,0))) AS reserved_rows_written,
            SUM(CASE WHEN state='FINALIZED' THEN measured_rows_read ELSE 0 END) AS measured_rows_read,
            SUM(CASE WHEN state='FINALIZED' THEN measured_rows_written ELSE 0 END) AS measured_rows_written,
            SUM(CASE WHEN state='FINALIZED' THEN COALESCE(unknown_ops,1) ELSE 0 END) AS unknown_ops,
@@ -127,17 +127,21 @@ export async function finalizeRunUsage(db,{reservationId,sourceRunId,now=Date.no
   if(!id||!run) throw new Error('D1_USAGE_IDENTIFIERS_REQUIRED');
   const rr=nonNegInt(usage?.rows_read),rw=nonNegInt(usage?.rows_written),req=nonNegInt(usage?.requests),uo=nonNegInt(usage?.unknown_ops);
   if([rr,rw,req,uo].some(v=>v===null)) throw new Error('D1_USAGE_SNAPSHOT_INVALID');
-  // Account for this UPDATE itself as one write/request. The reservation, not this
-  // measured telemetry, is the authoritative daily safety ceiling.
+  // Never refund a reservation. A measured overrun becomes monotonic daily
+  // debt, including this exact primary-key UPDATE as one read/write/request.
+  // The next admission also charges legacy finalized rows by their measured
+  // maximum, so old overruns cannot disappear from the shared day budget.
   const result=await db.prepare(`
     UPDATE report2_runner_budget_ledger_shadow
     SET source_run_id=?2, measured_rows_read=?3, measured_rows_written=?4,
-        measured_requests=?5, unknown_ops=?6, state='FINALIZED', completed_ts=?7
+        measured_requests=?5, unknown_ops=?6, state='FINALIZED', completed_ts=?7,
+        reserve_rows_read=MAX(reserve_rows_read,?3+1),
+        reserve_rows_written=MAX(reserve_rows_written,?4)
     WHERE reservation_id=?1 AND state='RESERVED'
   `).bind(id,run,rr,rw+1,req+1,uo,Number(now)).run();
   const changes=Number(result?.meta?.changes ?? result?.changes);
   if(changes!==1) throw new Error(`D1_USAGE_FINALIZE_ACK_INVALID:${String(changes)}`);
-  return {schema:SCHEMA,status:'FINALIZED',reservation_id:id,source_run_id:run,measured_rows_read:rr,measured_rows_written_accounted:rw+1,measured_requests_accounted:req+1,unknown_ops:uo};
+  return {schema:SCHEMA,status:'FINALIZED',reservation_id:id,source_run_id:run,measured_rows_read:rr,finalization_read_padding:1,reservation_never_reduced:true,measured_rows_written_accounted:rw+1,measured_requests_accounted:req+1,unknown_ops:uo};
 }
 
 export default {deriveRunReservation,parseDailyUsageAggregate,loadDailyUsageAggregate,reserveRunBudget,evaluateDailyReservationBudget,evaluateWithinRunReservation,finalizeRunUsage};
