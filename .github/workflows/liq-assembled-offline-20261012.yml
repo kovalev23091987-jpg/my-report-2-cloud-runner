@@ -14,7 +14,7 @@ on:
         type: boolean
         default: false
   push:
-    branches: [main, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014, codex/public-venue-health-priority-20261014, codex/weekly-htx-source-sync-20261014, codex/weekly-htx-connected-proposal-20261014, codex/weekly-retained-catalog-qualification-20261014, codex/lossless-full-evidence-recovery-20261014, codex/protected-canonical-compaction-20261015, codex/weekly106-retained-fixture-20261015, codex/coordinated-weekly-rollout-20261015]
+    branches: [main, fix/active105-unicode-liq-20261015, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014, codex/public-venue-health-priority-20261014, codex/weekly-htx-source-sync-20261014, codex/weekly-htx-connected-proposal-20261014, codex/weekly-retained-catalog-qualification-20261014, codex/lossless-full-evidence-recovery-20261014, codex/protected-canonical-compaction-20261015, codex/weekly106-retained-fixture-20261015, codex/coordinated-weekly-rollout-20261015]
     paths:
       - .github/workflows/liq-assembled-offline-20261012.yml
       - current-generation/files/src/coingecko-sector-evidence.mjs
@@ -38,6 +38,7 @@ on:
       - current-generation/tests/liquidation-spot-reference.test.mjs
       - current-generation/files/src/worker.js
       - current-generation/tests/coinboss-liquidation-levels.test.mjs
+      - current-generation/tests/fixtures/output-contract/MANIFEST.json
       - current-generation/tests/orderly-public-liquidation-positions.test.mjs
       - current-generation/tests/liquidation-forecast-memory.test.mjs
       - current-generation/tests/liquidation-zone-policy.test.mjs
@@ -116,6 +117,10 @@ on:
       - current-generation/files/src/liquidation-extension/combined-runner-service.mjs
       - current-generation/tests/native-exact-asset-role-priority.test.mjs
       - current-generation/tests/liquidation-source-weighting.test.mjs
+      - tools/liquidation-new-source-admission-20261015.mjs
+      - tools/liquidation-new-source-admission-20261015.test.mjs
+      - tools/qualify-new-liquidation-source-20261015.mjs
+      - .github/workflows/liquidation-new-source-qualification-20261015.yml
       - tools/production-artifact-outcome.mjs
       - current-generation/tests/collector-only-artifact-outcome.test.mjs
       - .github/workflows/automatic-delivery-artifact-audit.yml
@@ -165,7 +170,7 @@ jobs:
             const exactProtectedCanonical=context.ref==='refs/heads/codex/protected-canonical-compaction-20261015'&&main==='5446fe194b60a032cf6ed6c092a4457ffb4ea5f7';
             const exactRetainedFixture=context.ref==='refs/heads/codex/weekly106-retained-fixture-20261015'&&main==='df94f00a09c84767c22b380f232feb4a0871f283';
             const weeklyProposal=context.eventName==='workflow_dispatch'&&context.payload.inputs?.weekly_proposal==='true'&&/^refs\/heads\/maintenance\/htx-weekly-\d{4}-\d{2}-\d{2}-\d+$/.test(context.ref)&&main===context.payload.inputs.weekly_expected_main;
-            const coordinated=context.ref==='refs/heads/codex/coordinated-weekly-rollout-20261015';
+            const coordinated=context.ref==='refs/heads/codex/coordinated-weekly-rollout-20261015'||context.ref==='refs/heads/fix/active105-unicode-liq-20261015';
             if(coordinated){
               const {pathToFileURL}=require('url');
               const {verifyOfflineReviewAuthority}=await import(pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
@@ -238,6 +243,7 @@ jobs:
           cmp current-generation/files/src/pump-liquidation-zones.mjs runtime/src/pump-liquidation-zones.mjs
           cmp current-generation/files/src/htx-source-backed-liquidation-model.mjs runtime/src/htx-source-backed-liquidation-model.mjs
           cmp current-generation/files/src/coinboss-liquidation-levels.mjs runtime/src/coinboss-liquidation-levels.mjs
+          cmp current-generation/files/src/liquidation-source-http-plan.mjs runtime/src/liquidation-source-http-plan.mjs
           cmp current-generation/files/src/orderly-public-liquidation-positions.mjs runtime/src/orderly-public-liquidation-positions.mjs
           cmp current-generation/files/src/liquidation-forecast-memory.mjs runtime/src/liquidation-forecast-memory.mjs
           cmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs
@@ -247,6 +253,8 @@ jobs:
           cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
           cmp current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs runtime/src/liquidation-extension/dydx-native-market-catalog.mjs
           cmp current-generation/files/src/coingecko-sector-evidence.mjs runtime/src/coingecko-sector-evidence.mjs
+          node --check tools/qualify-new-liquidation-source-20261015.mjs
+          node --test tools/liquidation-new-source-admission-20261015.test.mjs > audit-output/liq-assembled/new-liq-research-admission.tap
           node --check tools/validate-native-sector-batch-20261014.mjs
           node tools/validate-native-sector-batch-20261014.mjs --plan > audit-output/liq-assembled/native-sector-validation-plan.json
           REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
@@ -271,7 +279,7 @@ jobs:
           REPORT2_WEEKLY_RETAINED_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/weekly-retained106-package.json" node --test runner/cloudflare-version-bound-readback.test.mjs runner/htx-coordinated-rollout.test.mjs runner/htx-weekly-universe-plan.test.mjs runner/retained-weekly-106-package.test.mjs runner/offline-review-authority.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/weekly-htx-synchronized-plan.tap
           cp audit-output/htx-weekly/proof.json audit-output/liq-assembled/weekly-disabled-controlled-proof.json
           node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
-          REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
+          REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/liquidation-source-http-plan.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
           REPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap

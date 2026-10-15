@@ -1,0 +1,39 @@
+name: Bounded new liquidation source qualification
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main:
+        required: true
+        type: string
+      expected_lease_owner:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: report2-new-liquidation-source-qualification
+  cancel-in-progress: false
+jobs:
+  qualify:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Capture at most three missing public source replies after shared admission
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
+          REPORT2_EXPECTED_LEASE_OWNER: ${{ inputs.expected_lease_owner }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/qualify-new-liquidation-source-20261015.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: new-liquidation-source-${{ github.run_id }}
+          path: audit-output/new-liquidation-source/
+          retention-days: 30

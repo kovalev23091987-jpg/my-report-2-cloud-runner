@@ -1,0 +1,62 @@
+{
+  "schema": "ACTIVE105_UNICODE_LIQ_IDENTITY_REPAIR_V1",
+  "recorded_utc": "2026-10-15T10:27:37.976730+00:00",
+  "base_before_lease": "5104c2b8ff53d138bff4de3f361c45b1e482b80a",
+  "lease_main": "cb46e004",
+  "source_original_sha256": "10c41f4e6bf5dd551617391c083d597b74b64c29da3654760da3bb311d7dd1db",
+  "source_original": "checkpoints/source-inputs/coinboss-liq-levels-102-original-20261012.json.gz",
+  "mismatch_receipt": "checkpoints/source-inputs/coinboss-exact-symbol-mismatches-20261012.json",
+  "affected_assets": [
+    "哈基米",
+    "币安人生",
+    "牛来",
+    "龙虾"
+  ],
+  "observed_returned_asset_for_all4": "BTC",
+  "source_clocks_refreshed": false,
+  "fix": {
+    "routing": "Exact approved105 universe replaces ASCII-only contract parser. Unknown/MAGIC and owner-excluded BTC/ETH do not enter the queue.",
+    "collector": "The four proven wrong-asset routes return exact source-identity-unverified receipt without quota admission or HTTP. Only BTC/ETH are marked owner exclusions. Normalization permits exact approved Unicode response and rejects wrong symbols.",
+    "consumer": "Preserve status, reason, zero actual HTTP and historical capability proof in scheduled canonical and manual LIQ paths. No future levels invented; historical bad replies never become live evidence.",
+    "guard": "Existing current main/own bounded lease/fence preflight verifies exact candidate for offline assembly."
+  },
+  "coverage_increase_claimed": false,
+  "LIQ_historical_numeric_assets": 73,
+  "LIQ_non_BTC_ETH_assets": 103,
+  "remaining_historical_numeric_gaps": 30,
+  "old_probe_repeat_added": 0,
+  "agent_provider_HTTP": 0,
+  "agent_D1": 0,
+  "forced_MAIN": 0,
+  "test_Telegram": 0,
+  "local_related_tests": 12,
+  "local_fail": 0,
+  "local_log_sha256": "15e681f95b192bc5c3896264f79d3e4614876157aba651fc9a17ca0ca1db306e",
+  "cloud_assembled_verification": "PENDING",
+  "natural_verification": "PENDING",
+  "strategy_weights_threshold_pauses_forms_caps_changed": false,
+  "project_complete": false,
+  "first_cloud": {
+    "run": 38720427502,
+    "artifact_id": 11964094663,
+    "artifact_sha256": "22b41d7ff2324d06e21f0fb77c280a2f273080640d5b6f7af3db4e60f6d6d178",
+    "reason": "Frozen module hash required update after diagnostic fields changed; original output fixture checks passed and fixtures remain unchanged.",
+    "module_sha256_before": "675dcf14127c2bc309944615f35fdb7e116fe956385e1f673eae08dae5104231",
+    "module_sha256_after": "27094651cdc0fa7c75c6641d387e917b3a9ec75b10e52babb67200c661700484",
+    "first_validation_counts": {
+      "pass": 1576,
+      "fail": 1,
+      "skipped": 4
+    },
+    "output_fixture_bytes_changed": false
+  },
+  "second_cloud": {
+    "run": 38721373051,
+    "artifact_id": 11966121327,
+    "artifact_sha256": "27138ffe0d9ebcbecba728a1cd5fd95daa6eef78a36970c7af3df42f576bead9",
+    "reason": "Added bounded source qualification must be listed by the existing manual workflow gate. Exact main/lease, three HTTP, one daily admission and no MAIN/Telegram remain enforced.",
+    "validation_pass": 1576,
+    "validation_fail": 1,
+    "skipped": 4
+  }
+}
