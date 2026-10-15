@@ -52,7 +52,7 @@ try{
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
   Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
-  },before_modify:guard,execute:out.execute}));
+  },before_modify:guard,execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true'}));
   out.canonical_rows_modified=out.compacted?.length||0;
  }else{
  const save_originals=async rows=>{

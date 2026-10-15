@@ -68,6 +68,17 @@ test('existing exact revisions are reused without additional writes and repeated
  const f=fixture();archiveAll(f);const r=await compact(f,{execute:true});assert.equal(r.compacted.length,2);assert.equal(f.archive_db.usageSnapshot().rows_written,0);const before=f.archive_db.usageSnapshot().requests;const repeated=await compact(f,{execute:true});assert.equal(repeated.compacted.length,0);assert.equal(f.archive_db.usageSnapshot().requests,before);
  assert.throws(()=>exactCanonicalBodyUpdate(f.old[0],{...f.old[0],observed_ts:1},now-2*DAY),/ONLY_ORIGINAL_BODY_COLUMNS/);
 });
+test('opt-in grouped copies retain four independent private readbacks and every protected original',async()=>{
+ const f=fixture(48);archiveAll(f);
+ const r=await compact(f,{execute:true,prefetch_private:true});
+ assert.equal(r.compacted.length,48);assert.equal(r.private_prefetch.cached,48);assert.equal(r.native_readbacks.length,4);
+ const expected=r.private_prefetch.metadata_queries+r.private_prefetch.body_queries+4;
+ assert.equal(f.archive_db.usageSnapshot().requests,expected);assert.ok(expected<52);assert.equal(f.archive_db.usageSnapshot().rows_written,0);
+ assert.deepEqual(get(f,f.latest.publication_id),f.latest);assert.deepEqual(get(f,f.rare.publication_id),f.rare);
+ assert.equal(r.private_prefetch.native_production_cost_qualified,false);assert.equal(r.history_discarded,false);
+ const reader=createPrivateCanonicalRestorer({archive_db:f.archive_db,db_admit:allow,max_rows:8});
+ assert.deepEqual(await reader.restore(f.old.slice(0,8).map(row=>get(f,row.publication_id))),f.old.slice(0,8));
+});
 test('all48 pre-copied originals share the real bridge/private HTTP and D1 reservation; cold backlog stops before manual headroom',async()=>{
  const cases=[];
  for(const precopied of [true,false]){

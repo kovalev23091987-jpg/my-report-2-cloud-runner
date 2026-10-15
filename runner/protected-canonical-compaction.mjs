@@ -4,6 +4,7 @@ import {privateCanonicalHeader,createPrivateCanonicalRestorer,PRIVATE_CANONICAL_
 import {combineMeasuredD1Usage} from './private-archive-d1-api.mjs';
 import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 import {LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
+import {prefetchExactCanonicalRevisions} from './private-canonical-prefetch.mjs';
 
 // Uses the existing RETAINED_HISTORY reservation, never an additional family.
 // Only large, old REJECTED bodies are replaced. Every publication, scalar,
@@ -38,7 +39,7 @@ export function exactCanonicalBodyUpdate(row,header,cutoff){
  return{sql:`UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${protectedCanonicalPredicate('?'+params.length)}`,params};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_headroom,before_modify,execute=false,now=Date.now()}={}){
+export async function compactProtectedCanonical({source_db,archive_db,archive_headroom,before_modify,execute=false,prefetch_private=false,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof archive_db?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
  const p=PROTECTED_CANONICAL_POLICY,usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),archive_db.usageSnapshot());
@@ -51,6 +52,12 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
  need(3000,0);
  const selected=(await source_db.prepare(PROTECTED_CANONICAL_SELECTION_SQL).bind(now-p.hot_window_ms).all()).results||[];out.selected=selected.length;
  if(selected.length>p.max_rows)throw Error('CANONICAL_SOURCE_ROW_BOUND');
+ let copy_db=archive_db;
+ if(prefetch_private===true){
+  const revisions=[];
+  for(const row of selected)try{revisions.push(encodeCanonicalPublicationRow(row));}catch(error){if(!/ARCHIVE_(?:RAW|COMPRESSED|WIRE)_BOUND/.test(error.message))throw error;}
+  const prefetched=await prefetchExactCanonicalRevisions({archive_db,revisions,db_admit:admit});copy_db=prefetched.archive_db;out.private_prefetch=prefetched.receipt;
+ }
  const prepared=[],durable=new Map();
  try{
   for(const row of selected){
@@ -62,7 +69,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_he
    const plan=exactCanonicalBodyUpdate(row,header,now-p.hot_window_ms),statements=[plan,{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
    if(Buffer.byteLength(JSON.stringify({op:'batch',statements}))>p.bridge_wire_bytes){out.deferred_hot.push({publication_id:row.publication_id,reason:'BRIDGE_WIRE_BOUND'});continue;}
    need(5,24);
-   const retained=await retainCanonicalPublicationRow(archive_db,record,{db_admit:admit,storage_bytes:archive_db.storage_bytes,now,include_verified_record:true});
+   const retained=await retainCanonicalPublicationRow(copy_db,record,{db_admit:admit,storage_bytes:copy_db.storage_bytes,now,include_verified_record:true});
    if(!retained.retained){out.deferred_hot.push({publication_id:row.publication_id,reason:retained.status});continue;}
    // Cache only the exact bytes just read back from private native storage.
    // No network is fabricated; the separate native sample below is reported.

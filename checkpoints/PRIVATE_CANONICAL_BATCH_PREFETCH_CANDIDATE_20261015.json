@@ -1,0 +1,61 @@
+{
+  "schema": "PRIVATE_CANONICAL_BATCH_PREFETCH_CANDIDATE_V1",
+  "recorded_utc": "2026-10-15T10:58:20.641661+00:00",
+  "base": "1990f8185c039de32c2d3b8fc597c891da25d341",
+  "purpose": "Reduce repeated lookup transport for immutable, already copied canonical revisions while retaining exact original-byte restoration and separate native readbacks.",
+  "controlled_transport": {
+    "status": "CONTROLLED_SQLITE_REST_FIXTURE_ONLY",
+    "revisions": 48,
+    "private_queries": 7,
+    "previous_single_lookup_queries": 48,
+    "primary_mutations": 0,
+    "provider_HTTP": 0,
+    "production_D1": 0,
+    "native_cost_qualified": false,
+    "source_clocks_refreshed": false
+  },
+  "controlled_related_tests": 21,
+  "controlled_fail": 0,
+  "controlled_log_sha256": "bba3823f76bc5796d7da9aaa552214d57b51b35cae05835ffac8107a7e76efa0",
+  "bounds": {
+    "selected_revisions": 48,
+    "max_rows_per_query": 8,
+    "REST_response_wire_bytes": 1400000,
+    "metadata_select": "Exact publication_id/raw_sha256 primary-key OR branches; SQLite plan shows indexed SEARCH, no full table scan. Native query-plan cost not yet measured.",
+    "body_select": "Exact same revisions, UTF8 byte lengths before bounded groups; compressed/original hashes and canonical binding verified.",
+    "missing_or_oversized": "No negative cache; existing reader/writer path retained. All primary originals remain safe on any prefetch refusal.",
+    "four_private_native_readbacks": "Always use original measured archive adapter, independently of prefetch cache."
+  },
+  "activation": {
+    "default": false,
+    "input": "retained-history-maintenance.prefetch_private",
+    "automatic_flags_changed": false,
+    "existing_canonical_execution_gate_preserved": true,
+    "UTC15_retention_calls_added": 0,
+    "new_admission_family": false
+  },
+  "unchanged_limits": {
+    "whole_HTTP": 164,
+    "hot": 96,
+    "background": 56,
+    "statistics": 12,
+    "manual_headroom": 24,
+    "shared_RETENTION_day_passes": 2,
+    "D1_each_pass_reads": 5000,
+    "D1_each_pass_writes": 400,
+    "max_mutation_batches": 6,
+    "primary_bridge_wire_bytes": 1400000
+  },
+  "actual_native_qualification": "PENDING_AFTER_LEGITIMATE_UTC16_ADMISSION",
+  "native_cost_qualified": false,
+  "combined_kind_steady_state_throughput_closed": false,
+  "physical_free_space_savings_claimed": false,
+  "provider_HTTP": 0,
+  "production_D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clocks_refreshed": false,
+  "history_discarded": false,
+  "report_score_effect": false,
+  "project_complete": false
+}
