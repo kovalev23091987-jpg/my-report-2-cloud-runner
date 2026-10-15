@@ -399,7 +399,7 @@ async function __report2PublicCollectorScheduled(controller, env) {
       var priceArgs={rows,market_source_ts:marketResult.source_ts,bucket,now:Date.now()};
       var priceRuntime=typeof __report2InjectedPrivatePriceRuntime==='object'?__report2InjectedPrivatePriceRuntime:null;
       var light=priceRuntime?.runPrivatePriceRechecks&&env.CANONICAL_ARCHIVE_DB
-        ?await priceRuntime.runPrivatePriceRechecks({source_db:env.DATA_DB,private_db:env.CANONICAL_ARCHIVE_DB,check:__report2RunPriceRechecks,args:priceArgs})
+        ?await priceRuntime.runPrivatePriceRechecks({source_db:env.DATA_DB,private_db:env.CANONICAL_ARCHIVE_DB,private_dbs:priceRuntime.privateCanonicalBindings?.(env).archive_dbs||{},check:__report2RunPriceRechecks,args:priceArgs})
         :await __report2RunPriceRechecks(env.DATA_DB,priceArgs);
       rowsRead+=light.rows_read;rowsWritten+=light.rows_written;
       console.log('REPORT2_LIGHT_PRICE_RECHECK',JSON.stringify(light));

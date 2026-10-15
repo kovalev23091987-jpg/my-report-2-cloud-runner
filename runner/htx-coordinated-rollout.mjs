@@ -2,6 +2,7 @@
 // A superset may be staged in history before Node adopts it. No source call,
 // cron change, schema change or loss of a previous history digest is allowed.
 import {createHash} from 'node:crypto';
+import {PRIVATE_CANONICAL_DATABASES} from './private-canonical-history.mjs';
 const digest=b=>createHash('sha256').update(b).digest('hex');
 const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>[k,stable(v[k])])):v;
 export const rolloutDigest=v=>digest(typeof v==='string'||Buffer.isBuffer(v)?v:JSON.stringify(stable(v)));
@@ -50,7 +51,12 @@ export function resumeOwnUnactivatedCollector({prior,current,expected_module_sha
 }
 export function historyVersionMetadata({settings,runtime,config,main_module,head}={}){
  if(!/^[a-f0-9]{40}$/.test(head||'')||!/^[-a-zA-Z0-9_.]+\.js$/.test(main_module||'')||settings?.compatibility_date!==config?.compatibility_date)throw Error('EXACT_HISTORY_BUILD_METADATA_REQUIRED');
- const actual=settings.bindings,expected=config.d1_databases;
+ const actual=settings.bindings,configured=config.d1_databases;
+ // Existing deployments may have the separately qualified archive pool. A
+ // weekly universe rollout preserves these exact bindings, and cannot invent
+ // one, substitute another DB, or drop a still-readable archive location.
+ const optional=configured?.some(b=>b.binding==='CANONICAL_ARCHIVE_DB'&&b.database_id===PRIVATE_CANONICAL_DATABASES.LEGACY.uuid)?Object.entries(PRIVATE_CANONICAL_DATABASES).filter(([slot])=>slot!=='LEGACY').map(([,d])=>({binding:d.binding,database_id:d.uuid})):[];
+ const expected=Array.isArray(configured)?[...configured,...optional.filter(e=>actual?.some(b=>b.name===e.binding)&&!configured.some(b=>b.binding===e.binding))]:configured;
  // Unexpected bindings require a separately reviewed adapter, not a deployment
  // which silently drops a variable or inherits from another uploaded version.
  if(!Array.isArray(actual)||!Array.isArray(expected)||actual.length!==expected.length||actual.some(b=>b.type!=='d1'||expected.filter(e=>e.binding===b.name&&e.database_id===(b.id??b.database_id)).length!==1)||new Set(actual.map(b=>b.name)).size!==actual.length)throw Error('EXACT_HISTORY_D1_BINDINGS_REQUIRED');

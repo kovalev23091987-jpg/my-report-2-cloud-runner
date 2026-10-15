@@ -1,12 +1,13 @@
 import fs from 'node:fs/promises';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
+import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {CANONICAL_COPY_POLICY,canonicalCopyCandidates,reserveCanonicalCopyBudget,copyCanonicalReport,canonicalProducerInMainHistory} from '../runner/canonical-cold-copy.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {auditNoWorkReceipt} from './report2-no-work-receipt.mjs';
 const path='runtime/private-canonical-archive-receipt.json';
 const out={schema:'REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_V1',head:process.env.GITHUB_SHA,cloud_run:process.env.GITHUB_RUN_ID,status:'NO_EXACT_CLOSED_REPORT',sourceHTTP:0,MAIN:0,Telegram:0,main_rows_modified:0,private_payload_exported:false,report_effect:false};
-let admitted=false,source,archive,id;
+let admitted=false,source,archive,pool,id;
 try{
  const text=await fs.readFile('runtime/report2-run-result.json','utf8').catch(e=>{if(e.code==='ENOENT')return null;throw e;});
  if(text===null){
@@ -27,15 +28,18 @@ try{
   const [phase,fence]=await Promise.all([control('checkpoints/CLOUD_PHASE_STATE_20261004.json'),control('audit-fixes/source-optimization-20260930/execution-lock.json')]);
   if(fence.active||phase.current_phase!=='OWNER_SEQUENTIAL_BLOCK_REQUIREMENTS_REVIEW')throw Error('ARCHIVE_PHASE_OR_FENCE_BLOCKED');
   out.control={main,producer_head:process.env.GITHUB_SHA,producer_in_current_main_history:true,phase:phase.current_phase,fence_active:false};
-  source=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);archive=new PrivateArchiveD1API({token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN});
-  out.private_database=await archive.verifyDatabase();
+  source=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
+  const pool_enabled=process.env.REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED==='true';
+  pool=pool_enabled?createPrivateArchivePool({enabled:true,token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN}):null;
+  archive=pool?.legacy_db??new PrivateArchiveD1API({token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN});
+  out.private_database=await archive.verifyDatabase();out.archive_pool_enabled=pool_enabled;
   id='CANONICAL_COLD_COPY:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
   out.admission=await reserveCanonicalCopyBudget(source,{reservation_id:id});admitted=out.admission.allowed;
-  if(admitted)Object.assign(out,await copyCanonicalReport({source_db:source,archive_db:archive,candidates:selection.candidates}));else out.status=out.admission.status;
+  if(admitted)Object.assign(out,await copyCanonicalReport({source_db:source,archive_db:archive,archive_pool:pool,candidates:selection.candidates}));else out.status=out.admission.status;
  }
  }
 }catch(e){out.status='PRIVATE_ARCHIVE_COPY_NOT_CLOSED';out.reason=/^[A-Z0-9_]+$/.test(e.message)?e.message:e.name;}
 finally{
- if(source&&archive){const usage=()=>combineMeasuredD1Usage(source.usageSnapshot(),archive.usageSnapshot());if(admitted)try{out.finalized_usage=await finalizeRunUsage(source,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:usage()});}catch{out.status='PRIVATE_ARCHIVE_USAGE_FINALIZE_NOT_CLOSED';}out.D1=usage();if(out.D1.unknown_ops||out.D1.rows_read>CANONICAL_COPY_POLICY.reservation.rows_read||out.D1.rows_written>CANONICAL_COPY_POLICY.reservation.rows_written)out.status='PRIVATE_ARCHIVE_D1_ENVELOPE_NOT_CLOSED';}
+ if(source&&archive){const usage=()=>combineMeasuredD1Usage(source.usageSnapshot(),pool?pool.usageSnapshot():archive.usageSnapshot());if(admitted)try{out.finalized_usage=await finalizeRunUsage(source,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:usage()});}catch{out.status='PRIVATE_ARCHIVE_USAGE_FINALIZE_NOT_CLOSED';}out.D1=usage();if(out.D1.unknown_ops||out.D1.rows_read>CANONICAL_COPY_POLICY.reservation.rows_read||out.D1.rows_written>CANONICAL_COPY_POLICY.reservation.rows_written)out.status='PRIVATE_ARCHIVE_D1_ENVELOPE_NOT_CLOSED';}
  out.completed_ts=Date.now();await fs.mkdir('runtime',{recursive:true});await fs.writeFile(path,JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,records:out.records?.length??0,D1:out.D1,reason:out.reason}));
 }

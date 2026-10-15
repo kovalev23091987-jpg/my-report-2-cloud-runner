@@ -6,6 +6,7 @@ import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from 
 import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFullEvidence} from '../runner/lossless-full-evidence-recovery.mjs';
 import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
 import {canonicalExecutionMode} from '../runner/canonical-native-qualification.mjs';
+import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
 await fs.mkdir(dir,{recursive:true});
@@ -17,8 +18,8 @@ const native_qualification_input=String(process.env.REPORT2_NATIVE_CANONICAL_QUA
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
-const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,lease,admitted=false,reservation_id;
-const nativeUsage=()=>archive_db?combineMeasuredD1Usage(db.usageSnapshot(),archive_db.usageSnapshot()):db.usageSnapshot();
+const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,archive_pool,lease,admitted=false,reservation_id;
+const nativeUsage=()=>archive_db?combineMeasuredD1Usage(db.usageSnapshot(),(archive_pool||archive_db).usageSnapshot()):db.usageSnapshot();
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
  if(control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETAINED_GITHUB_CONTROL_BOUND');
  const grant=whole.reserve({logical_request_id:'RETAINED_GITHUB_CONTROL:'+control_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('RETAINED_GITHUB_CONTROL_BOUND');control_HTTP++;
@@ -58,11 +59,13 @@ try{
  }});
  reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveLosslessRecoveryBudget(db,{reservation_id,owner_emergency_day,owner_emergency_slot});admitted=out.admission.allowed;if(!admitted)throw Error(out.admission.status);
  if(kind==='canonical'){
-  archive_db=new PrivateArchiveD1API({token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN,beforeRequest:()=>{
+  const pool_enabled=process.env.REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED==='true';
+  const archive_options={token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN,beforeRequest:()=>{
    const grant=whole.reserve({logical_request_id:'RETAINED_PRIVATE_D1:'+private_HTTP,lane:'background',attempts:1});if(grant.allowed)private_HTTP++;return grant;
-  }});
+  }};
+  archive_pool=pool_enabled?createPrivateArchivePool({enabled:true,...archive_options}):null;archive_db=archive_pool?.legacy_db??new PrivateArchiveD1API(archive_options);
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
-  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,source_cursor:canonical_cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
+  Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,source_cursor:canonical_cursor,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
   },before_modify:guard,execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
   out.canonical_rows_modified=out.compacted?.length||0;
@@ -85,7 +88,7 @@ try{
  if(admitted)process.exitCode=1;
 }finally{
  if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:nativeUsage()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
- if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=archive_db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
+ if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=(archive_pool||archive_db).usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
  out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));
