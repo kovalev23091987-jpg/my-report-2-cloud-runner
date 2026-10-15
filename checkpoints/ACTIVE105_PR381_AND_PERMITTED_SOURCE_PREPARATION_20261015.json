@@ -124,10 +124,6 @@
       "reads": 2500,
       "writes": 40
     },
-    "whole_conservative_day": {
-      "reads": 3418280,
-      "writes": 69818
-    },
     "unchanged_native_day_caps": {
       "reads": 3500000,
       "writes": 70000
@@ -135,7 +131,33 @@
     "retention_day_cap_still2": true,
     "full_report_164_HTTP_and_all_runtime_source_caps_unchanged": true,
     "production_source_HTTP_added": 0,
-    "cloud_assembled": "PENDING"
+    "cloud_assembled": "PENDING",
+    "old_component_estimate_not_complete_whole_day": {
+      "reads": 3418280,
+      "writes": 69818
+    },
+    "legacy_trigger_model": {
+      "reads": 3498308,
+      "writes": 69664,
+      "source": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "base_component_definition_not_reconciled_with_new_history_families": true
+    },
+    "complete_day_guarantee": false,
+    "research_admission_extra_protection": {
+      "next_full_report": {
+        "reads": 54000,
+        "writes": 840
+      },
+      "next_canonical_copy": {
+        "reads": 5000,
+        "writes": 80
+      },
+      "reads_protected": 59000,
+      "writes_protected": 920,
+      "atomic_same_shared_ledger": true
+    },
+    "native_current_day_sums_still_required": true,
+    "why_live_qualification_can_be_bounded": "At most3 source HTTP, once per distinct source, max2 including the spent legacy reservation; actual aggregate atomic admission must leave59000R/920W for the next full+copy. No whole-day sustainability claim and no ordinary runtime source activation."
   },
   "accepted_historical_LIQ": {
     "covered": 73,
