@@ -1,0 +1,129 @@
+{
+  "schema": "BOUNDED_COLLECTOR_NATIVE_TAIL_V1",
+  "worker": "my-report-2-hub",
+  "before": {
+    "deployment_id": "8ce40ec8-c9bb-40b5-9ba8-47e48b500154",
+    "version_id": "24438bcc-96fe-41a2-9dfb-066829fcf594"
+  },
+  "started_ts": 1792147289736,
+  "status": "REGULAR_COLLECTOR_NATIVE_TAIL_OBSERVED",
+  "filters": {
+    "filters": [
+      {
+        "query": "REPORT2_PUBLIC_COLLECTOR_NATIVE_D1"
+      },
+      {
+        "scriptVersion": "24438bcc-96fe-41a2-9dfb-066829fcf594"
+      }
+    ]
+  },
+  "target": "COLLECTOR_CLOSED",
+  "frames": 2,
+  "wire_bytes": 4559,
+  "receipts": [
+    {
+      "worker": "my-report-2-hub",
+      "version": "24438bcc-96fe-41a2-9dfb-066829fcf594",
+      "version_binding_basis": "EXPLICIT_TAIL_EVENT_VERSION",
+      "event_ts": 1792147423153,
+      "log_ts": 1792147423667,
+      "received_ts": 1792147424012,
+      "invocation_kind": "NOOP",
+      "receipt_sha256": "6eba150dc3f3eda2e4b9338082b6179f705fd4dfa7c2b94755929e3f4b819001",
+      "original_native_message": "{\"schema\":\"PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1\",\"invocation_id\":\"5344b184-027f-48e4-9db4-66fed4a1571e\",\"bucket\":1792147200000,\"started_ts\":1792147423215,\"completed_ts\":1792147423667,\"native_D1\":{\"requests\":2,\"rows_read\":130,\"rows_written\":0,\"unknown_ops\":0},\"private_price_source_D1\":{\"requests\":0,\"rows_read\":0,\"rows_written\":0,\"unknown_ops\":0},\"collector_excluding_private_price_source_D1\":{\"requests\":2,\"rows_read\":130,\"rows_written\":0,\"unknown_ops\":0},\"native_totals_closed\":true,\"additional_SQL\":0,\"daily_total\":false,\"native_cost_admission_changed\":false,\"scope\":\"DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE\"}",
+      "receipt": {
+        "schema": "PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1",
+        "invocation_id": "5344b184-027f-48e4-9db4-66fed4a1571e",
+        "started_ts": 1792147423215,
+        "completed_ts": 1792147423667,
+        "native_D1": {
+          "requests": 2,
+          "rows_read": 130,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private_price_source_D1": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "collector_excluding_private_price_source_D1": {
+          "requests": 2,
+          "rows_read": 130,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "split_disjoint": true,
+        "unknown": false
+      },
+      "daily_total": false
+    },
+    {
+      "worker": "my-report-2-hub",
+      "version": "24438bcc-96fe-41a2-9dfb-066829fcf594",
+      "version_binding_basis": "EXPLICIT_TAIL_EVENT_VERSION",
+      "event_ts": 1792147504279,
+      "log_ts": 1792147508555,
+      "received_ts": 1792147508728,
+      "invocation_kind": "COLLECTOR_CLOSED",
+      "receipt_sha256": "27ddcbc8ec64dff3a50d567a315d80fbac62764a6f573aef2d3ace4ac6e0cff6",
+      "original_native_message": "{\"schema\":\"PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1\",\"invocation_id\":\"9e0683be-0f79-4bf2-a1a5-1599a54b2001\",\"bucket\":1792147500000,\"started_ts\":1792147504313,\"completed_ts\":1792147508555,\"native_D1\":{\"requests\":19,\"rows_read\":319,\"rows_written\":34,\"unknown_ops\":0},\"private_price_source_D1\":{\"requests\":4,\"rows_read\":147,\"rows_written\":4,\"unknown_ops\":0},\"collector_excluding_private_price_source_D1\":{\"requests\":15,\"rows_read\":172,\"rows_written\":30,\"unknown_ops\":0},\"native_totals_closed\":true,\"additional_SQL\":0,\"daily_total\":false,\"native_cost_admission_changed\":false,\"scope\":\"DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE\"}",
+      "receipt": {
+        "schema": "PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1",
+        "invocation_id": "9e0683be-0f79-4bf2-a1a5-1599a54b2001",
+        "started_ts": 1792147504313,
+        "completed_ts": 1792147508555,
+        "native_D1": {
+          "requests": 19,
+          "rows_read": 319,
+          "rows_written": 34,
+          "unknown_ops": 0
+        },
+        "private_price_source_D1": {
+          "requests": 4,
+          "rows_read": 147,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "collector_excluding_private_price_source_D1": {
+          "requests": 15,
+          "rows_read": 172,
+          "rows_written": 30,
+          "unknown_ops": 0
+        },
+        "split_disjoint": true,
+        "unknown": false
+      },
+      "daily_total": false
+    }
+  ],
+  "conflicting_invocations": [],
+  "target_satisfied": true,
+  "tail_created": true,
+  "tail_deleted": true,
+  "websocket_connections": 1,
+  "settings_changed": false,
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Worker_invocations": 0,
+  "whole_day_closed": false,
+  "daily_total": null,
+  "tail_id": "f4265638910b4ee3ae7cd540687af06d",
+  "expires_at": "2026-10-16T16:41:30Z",
+  "opened_ts": 1792147291704,
+  "stream_status": "REGULAR_CRON_NATIVE_RECEIPT_RECEIVED",
+  "after": {
+    "deployment_id": "8ce40ec8-c9bb-40b5-9ba8-47e48b500154",
+    "version_id": "24438bcc-96fe-41a2-9dfb-066829fcf594"
+  },
+  "completed_ts": 1792147510216,
+  "head": "91f74a0e25b069ced0358436c736b9df2c67cfee",
+  "github_HTTP": 20,
+  "cloudflare_HTTP": 5,
+  "max_control_HTTP": 40,
+  "manual_HTTP_reserved": 24,
+  "secret_values_exported": false
+}

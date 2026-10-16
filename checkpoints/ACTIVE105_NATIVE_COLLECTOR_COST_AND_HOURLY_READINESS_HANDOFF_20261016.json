@@ -1,0 +1,241 @@
+{
+  "schema": "ACTIVE105_NATIVE_COLLECTOR_COST_AND_HOURLY_READINESS_HANDOFF_V1",
+  "recorded_utc": "2026-10-16T11:03:01.907Z",
+  "main_before_status_save": "5eb0451033aadce35574666d94e4d168ee1d16a9",
+  "previous_handoff": "checkpoints/ACTIVE105_NATIVE_COST_OBSERVERS_AND_STORAGE_FLOW_HANDOFF_20261016.json",
+  "current_task": "PR401_TO404_MERGED_COLLECTOR_NATIVE_COST_ACCEPTED_HOURLY_NATIVE_AND_STORAGE_RECOVERY_OPEN",
+  "current_three": [
+    "checkpoints/ACTIVE105_NATIVE_COLLECTOR_COST_AND_HOURLY_READINESS_HANDOFF_20261016.json",
+    "checkpoints/free-storage-20261016/observer401-404-native-review.json",
+    "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json"
+  ],
+  "code": [
+    {
+      "PR": 401,
+      "merge": "b1a3b2d2e1a7c86b2b66d576b57866ed08c5c024",
+      "head": "9009aad15eaf06cfdf21ae59ad924b10efa02944",
+      "cloud": 38882130426,
+      "attempt": 2,
+      "pass": 815,
+      "fail": 0,
+      "main_cloud": 38882878212,
+      "proof": "checkpoints/free-storage-20261016/cloud-38882878212-observer401-review.json"
+    },
+    {
+      "PR": 402,
+      "merge": "dec79c9e2a5c9be7ddc55481beef2d5685605de0",
+      "head": "d59994f5369b2f921f7237c5342c6ca80693fb90",
+      "cloud": 38884376171,
+      "pass": 823,
+      "fail": 0,
+      "main_cloud": 38884784221,
+      "proof": "checkpoints/free-storage-20261016/cloud-38884784221-tail402-review.json"
+    },
+    {
+      "PR": 403,
+      "merge": "f39cb8cc9dd5c5b9a6602a328704cdbe4ca82901",
+      "head": "f52d67ba606dff8217a36d76ed52b53599cb7cdd",
+      "cloud": 38887528272,
+      "pass": 825,
+      "fail": 0,
+      "main_cloud": 38888176377,
+      "exact_leased_main_cloud": 38888664909,
+      "proof": "checkpoints/free-storage-20261016/cloud-38888176377-tail403-review.json"
+    },
+    {
+      "PR": 404,
+      "merge": "5eb0451033aadce35574666d94e4d168ee1d16a9",
+      "head": "0e4525c51c75ea9ebbe36ab5f5b7e92646dacd2f",
+      "cloud": 38890347464,
+      "pass": 827,
+      "fail": 0,
+      "main_cloud": 38890743560,
+      "main_cloud_accepted": true,
+      "proof": "checkpoints/free-storage-20261016/cloud-38890347464-hourly404-review.json",
+      "main_cloud_artifact": 12041641434,
+      "main_cloud_digest": "sha256:b3cc73fe9eb2d558947e469ef7366b0f86a6eb4f6e99413725b56e5d5172b736"
+    }
+  ],
+  "hourly_release": {
+    "run": 38883509910,
+    "proof": "checkpoints/free-storage-20261016/observer401-release-38883509910.json",
+    "version": "13355aa2-0653-438b-83c3-268ff6e3ba88",
+    "module_sha256": "7bb25faba7b5b733337060e2b2a7e187cd54255929e5e1488f5eccbedea58975",
+    "SQL_source_clocks_archived_bytes_settings_crons_preserved": true,
+    "ordinary_native_receipt_accepted": false
+  },
+  "collector": {
+    "run": 38888867181,
+    "proof": "checkpoints/free-storage-20261016/native-tail-38888867181-review.json",
+    "version": "24438bcc-96fe-41a2-9dfb-066829fcf594",
+    "native_collection": {
+      "requests": 19,
+      "reads": 319,
+      "writes": 34,
+      "unknown": 0
+    },
+    "private_price_source": {
+      "requests": 4,
+      "reads": 147,
+      "writes": 4,
+      "unknown": 0
+    },
+    "disjoint_remainder": {
+      "requests": 15,
+      "reads": 172,
+      "writes": 30,
+      "unknown": 0
+    },
+    "separate_NOOP": {
+      "requests": 2,
+      "reads": 130,
+      "writes": 0,
+      "unknown": 0
+    },
+    "both_exact_native_messages_preserved": true,
+    "tail_deleted": true,
+    "normal_process_exit": true,
+    "settings_changed": false,
+    "point_sample_only": true,
+    "whole_day_closed": false
+  },
+  "earlier_monitor_failure": {
+    "run": 38884936968,
+    "proof": "checkpoints/free-storage-20261016/native-tail-38884936968-review.json",
+    "native_reads": 123,
+    "native_writes": 0,
+    "unknown": 0,
+    "tail_deleted_before_cancel": true,
+    "process_withheld_close_ack_fixed_by403": true,
+    "workflow_cancelled": true,
+    "not_CLOSED_collection_proof": true
+  },
+  "persistent_queries": {
+    "runs": [
+      38883143100,
+      38889528419
+    ],
+    "after_hourly_proof": "checkpoints/free-storage-20261016/native-observations-38889528419.json",
+    "actual_read_access": true,
+    "usable_native_events": 0,
+    "logging_configured": null,
+    "abr_level": 1,
+    "statistics_are_Observability_not_D1": true,
+    "repeat_empty_query_without_new_reason": false
+  },
+  "guard_repairs": {
+    "phase_current_task_must_remain": "ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS",
+    "own_task_metadata_fixed_commit": "ff684837c54bca69d0e1dd723fd6689e8353c8d3",
+    "owner_suffix_must_equal_acquired_ts": true,
+    "lease_max_ms": 5400000,
+    "own_overlong_renewal_refused_run": 38888425473,
+    "fresh_bounded_lease_readback_commit": "91f74a0e25b069ced0358436c736b9df2c67cfee",
+    "refusals_before_source_SQL": true,
+    "no_guard_weakened": true
+  },
+  "storage_birth_preconditions": "checkpoints/free-storage-20261016/storage-birth-preconditions-401-402.json",
+  "whole_day": {
+    "known9envelopes": {
+      "reads": 3266708,
+      "writes": 58920
+    },
+    "closed": false,
+    "point_sample_not_bound": true,
+    "private_price_not_added_twice": true,
+    "missing": [
+      "Hourly DATA_DB and ARCHIVE_DB native costs including run-log; only original scheduled35-minute invocation",
+      "Whole-day collector worst paths, all callbacks/noops, control and late/failed/unknown costs",
+      "Current-day 3 unknown full-report INSERTs retained; actual total remains null"
+    ]
+  },
+  "retention": {
+    "UTC16_runs_used": 2,
+    "third_authorized": false,
+    "next_native": "Later ordinary UTC-day window only after exact qualification/fresh own lease/current readers/actual admission; do not re-run expired UTC16 job",
+    "limits": {
+      "day": 2,
+      "rows_run": 48,
+      "reads_run": 5000,
+      "writes_run": 400,
+      "bridge": 16,
+      "control": 40,
+      "wholeHTTP": 164
+    },
+    "reserved_reads": 10000,
+    "reserved_writes": 800,
+    "reserves_not_refunded": true,
+    "actual_reads_first_two": 4118,
+    "actual_writes_first_two": 21,
+    "freed_bytes_native": 487424,
+    "physical_size_at_first_native_completion": 499470336,
+    "cursor": 710,
+    "A1_A4_payloads_accepted": false,
+    "shared399_native_accepted": false,
+    "writer_rotation_flags": false,
+    "nominal96_rows_day_less_than144_scheduled_and188_manual": true,
+    "four_slots_are_only_unapproved_unqualified_proposal": true
+  },
+  "last_full": {
+    "run": 38840064503,
+    "proof": "checkpoints/free-storage-20261016/natural-38840064503-review.json",
+    "assets": 105,
+    "finalists": [
+      "FIL",
+      "SUI"
+    ],
+    "both_persisted": false,
+    "known_reads": 42337,
+    "known_writes": 341,
+    "unknown": 3,
+    "total": null,
+    "same_run_SENT": false,
+    "message_id": null
+  },
+  "natural_guard": {
+    "run": 38843513867,
+    "proof": "checkpoints/free-storage-20261016/natural-38843513867-review.json",
+    "NOT_CLOSED": true,
+    "new_sourceHTTP": 0,
+    "new_SQL": 0,
+    "new_Telegram": 0,
+    "not_recovery": true
+  },
+  "constraints": {
+    "assets": 105,
+    "contracts": 122,
+    "paused": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "MAGIC106_deferred": true,
+    "strategy_weights_forms_source_clocks_preserved": true,
+    "sourceHTTP0_for_observation": true,
+    "SQL0_for_observation": true,
+    "manualHTTP24": true,
+    "final_decision_score_and_precise_owner_Telegram_form_required": true
+  },
+  "fixed_acceptance_checklist": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+  "project_complete": false,
+  "next_action": "PR401–404 merged; exact main38890743560/head5eb0451033aadce35574666d94e4d168ee1d16a9:827PASS/0FAIL. Ordinary collector38888867181 accepted exact native NOOP130R/0W and CLOSED319R/34W unknown0, split PRIVATE_PRICE147R/4W + remainder172R/30W, stable version24438bcc-96fe-41a2-9dfb-066829fcf594, own Tail deleted, normal process exit. This is point cost, not a day bound or recovered full report. Hourly clock observer installed38883509910/version13355aa2-0653-438b-83c3-268ff6e3ba88. Saved log reads38883143100/38889528419 are empty sampled events, not cost0 or disabled logs; no more identical queries without new reason. Next missing fact: one ordinary hourly35-minute native receipt using existing current-hourly-native-observer-repair workflow inspect_only=true,tail_hourly=true,tail_collector=false,execute=false and successful connected cloud of EXACT current main. Open only UTCminute30–34; one330sec/16frame/256KiB connection, cleanup own Tail, no Worker invocation/source/SQL probe/settings change. Fresh own bounded CASlease <=90min, suffix=acquired_ts, mirrors/readback and stable phase.current_task=ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS required. Allow sufficient lease for final guard>=10min; if waking shortly before window, exact-main offline qualification is useful preparation; do not force hourly cron or open outside window. Read exact artifact/original native message, binding costs/unknown/actual execution UTC/own deletion; retain both databases separately. Reconcile all callbacks (max576 with288buckets), known9family3266708R/58920W, collector remainder, hourly/control/late-unknown; PRIVATE_PRICE is nested and must not be added twice. Old3413280/69738 scalar or sampled point projection is NOT a closed-day guarantee. Both UTC16 retention slots spent; NO third native SQL maintenance, forcedMAIN, quota refund/reset/rename/raise. Existing10000R800W reservations remain. Old datedUTC16 job expired; next native399 shared qualification only later ordinary UTCday2/day after exact readers/code/fresh lease/actual admission; unknowns never cleared. Main physically last499470336, only487424bytes NEAR freed01:44:46UTC16; A1–A4 bodies/399throughput not accepted. 96nominal/day<144scheduled/188manual; four slots proposal only, writer/rotationfalse. Continue safe offline architecture for reduced byte duplication: exact native INSERT trigger011 validates43json_extract+5json_type, and17declared consumers need qualification before changing primary format. Do not replace raw proof JSON by gzip/pointers blindly or use public projection as complete original. LastFULL38840064503:105/105,FIL/SUI both not saved,known42337R341W+3unknown,totalnull,noSENT. Natural398guard38843513867 already accepted zeroNEWcallsNOT_CLOSED; do not repeat known-failure MAIN. Need actual sustainable physical space, both saved finalists and exact same-runTelegrammessage_id before acceptance. All7fixed directions remain open,105assets122contracts9pauses,strategy/weights/sourceclocks/forms preserved,MAGIC106deferred. Decision score and precise owner Telegram form remain mandatory after blocks. Save current status and release only own lease. Local heartbeat2 requires computer/app/network, not independent cloudAI.",
+  "next_work_in_order": [
+    "Read fresh source-of-truth and own bounded lease/mirrors; keep exact stable phase task ID and <=90-minute owner.",
+    "Qualify exact-current-main offline; observe only next ordinary hourly35-minute native receipt, opening UTC30–34, preserve both D1 bindings and actual clocks.",
+    "Reconcile native whole-day costs and sustainable byte-growth architecture on saved exact originals; avoid repeating empty persisted log queries.",
+    "At a later ordinary UTC-day window only, exact native399 qualification after actual admission; then verify physical capacity and a natural full report with both saved finalists and same-run delivery.",
+    "Continue remaining fixed coverage/fallback/history/priorities/weekly/integrated directions; final decision score and owner Telegram form after blocks."
+  ],
+  "lease_released_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792147131772",
+  "heartbeat": {
+    "id": "2",
+    "kind": "local hourly heartbeat",
+    "requires_computer_app_network": true,
+    "independent_cloud_AI": false
+  }
+}

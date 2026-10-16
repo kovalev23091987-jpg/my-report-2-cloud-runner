@@ -1,0 +1,133 @@
+{
+  "schema": "BOUNDED_NATIVE_COST_OBSERVATIONS_V1",
+  "timeframe": {
+    "from": 1792140450947,
+    "to": 1792147650947
+  },
+  "workers": [
+    {
+      "worker": "my-report-2-free-history",
+      "active_version": "13355aa2-0653-438b-83c3-268ff6e3ba88",
+      "logging": {
+        "enabled": null,
+        "head_sampling_rate": null,
+        "invocation_logs": null,
+        "persist": null,
+        "status": "PERSISTENT_LOGGING_UNCONFIRMED",
+        "platform_sampling_excluded": false
+      },
+      "query_status": "NO_QUALIFIED_NATIVE_INVOCATIONS",
+      "receipts": [],
+      "query": {
+        "queryId": "report2-native-cost-my-report-2-free-history-1792147650947",
+        "view": "events",
+        "dry": true,
+        "limit": 64,
+        "timeframe": {
+          "from": 1792140450947,
+          "to": 1792147650947
+        },
+        "parameters": {
+          "datasets": [
+            "cloudflare-workers"
+          ],
+          "filters": [
+            {
+              "key": "$metadata.service",
+              "operation": "eq",
+              "type": "string",
+              "value": "my-report-2-free-history"
+            }
+          ],
+          "needle": {
+            "value": "REPORT2_FREE_HISTORY_NATIVE_D1"
+          }
+        }
+      },
+      "query_sha256": "94a4b315657fcb8bec4416418d8465bc6ff9bc3d0cbc2f653283e4800d4f130b",
+      "response_sha256": "2938c87f14ff72d2fc88af44642f4cd08cfc42c906b3fef281a7f173018d96be",
+      "telemetry_statistics": {
+        "elapsed": 0.107732739,
+        "rows_read": 5014333,
+        "bytes_read": 40116798,
+        "abr_level": 1
+      },
+      "rejected": [],
+      "conflicting_invocations": [],
+      "accepted_unique_invocations": 0,
+      "whole_day_closed": false,
+      "daily_total": null,
+      "events_returned": 0,
+      "events_matching": 0
+    },
+    {
+      "worker": "my-report-2-hub",
+      "active_version": "24438bcc-96fe-41a2-9dfb-066829fcf594",
+      "logging": {
+        "enabled": null,
+        "head_sampling_rate": null,
+        "invocation_logs": null,
+        "persist": null,
+        "status": "PERSISTENT_LOGGING_UNCONFIRMED",
+        "platform_sampling_excluded": false
+      },
+      "query_status": "NO_QUALIFIED_NATIVE_INVOCATIONS",
+      "receipts": [],
+      "query": {
+        "queryId": "report2-native-cost-my-report-2-hub-1792147650947",
+        "view": "events",
+        "dry": true,
+        "limit": 64,
+        "timeframe": {
+          "from": 1792140450947,
+          "to": 1792147650947
+        },
+        "parameters": {
+          "datasets": [
+            "cloudflare-workers"
+          ],
+          "filters": [
+            {
+              "key": "$metadata.service",
+              "operation": "eq",
+              "type": "string",
+              "value": "my-report-2-hub"
+            }
+          ],
+          "needle": {
+            "value": "REPORT2_PUBLIC_COLLECTOR_NATIVE_D1"
+          }
+        }
+      },
+      "query_sha256": "c5767584377dd7f3248cb5e12e666019a37c58ff1852338cc4a6271212b60a3c",
+      "response_sha256": "67107b9e0d4b0511566ae401e5140a322808ee8787b3036442c0cb8c9b6ac7d3",
+      "telemetry_statistics": {
+        "elapsed": 0.123842988,
+        "rows_read": 5129497,
+        "bytes_read": 41038110,
+        "abr_level": 1
+      },
+      "rejected": [],
+      "conflicting_invocations": [],
+      "accepted_unique_invocations": 0,
+      "whole_day_closed": false,
+      "daily_total": null,
+      "events_returned": 0,
+      "events_matching": 0
+    }
+  ],
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Worker_invocations": 0,
+  "settings_changed": false,
+  "whole_day_closed": false,
+  "daily_total": null,
+  "head": "91f74a0e25b069ced0358436c736b9df2c67cfee",
+  "github_HTTP": 14,
+  "cloudflare_HTTP": 8,
+  "max_control_HTTP": 40,
+  "manual_HTTP_reserved": 24,
+  "secret_values_exported": false
+}
