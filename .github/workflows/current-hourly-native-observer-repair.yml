@@ -1,0 +1,47 @@
+name: Install hourly native cost observer without new SQL
+on:
+  workflow_dispatch:
+    inputs:
+      connected_run:
+        type: string
+        required: true
+      owner:
+        type: string
+        required: true
+      execute:
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  release:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Qualify exact original SQL, archived bytes and native failure receipts offline
+        env:
+          REPORT2_HOURLY_NATIVE_PROOF_OUTPUT: audit-output/hourly-native-observer/hourly-native-usage-proof.json
+        run: |
+          mkdir -p audit-output/hourly-native-observer
+          node --test cloudflare/free-history/native-usage-receipt.test.mjs > audit-output/hourly-native-observer/qualification.tap
+          npx --yes wrangler@4.151.0 deploy --dry-run --config cloudflare/free-history/wrangler.json --outdir "$GITHUB_WORKSPACE/audit-output/hourly-native-observer" > /tmp/report2-hourly-native-build.log
+      - name: Stage and read back exact existing bindings, crons and immutable module
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          OBSERVER_HEAD: ${{ github.sha }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          EXECUTE_HOURLY_OBSERVER: ${{ inputs.execute }}
+        run: node tools/repair-current-hourly-native-observer.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hourly-native-observer-${{ github.run_id }}
+          path: audit-output/hourly-native-observer
+          retention-days: 30
