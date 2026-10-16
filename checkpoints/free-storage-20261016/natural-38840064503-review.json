@@ -1,0 +1,149 @@
+{
+  "schema": "POST_RELOCATION_NATURAL_FULL_REVIEW_V1",
+  "run": 38840064503,
+  "head": "6700d47b4491bb28a38467e8fc387b84c26a7edd",
+  "run_id": "1792117353040-1792117361875",
+  "generated_at": "2026-10-16T02:24:13.880Z",
+  "after_native_relocation": true,
+  "artifact": 12020992278,
+  "artifact_digest": "sha256:708af396d1a45d7c88dfc7b1d763105b84a1418d37a1c09961f39c6b01ec8279",
+  "originals": [
+    {
+      "path": "checkpoints/free-storage-20261016/natural-38840064503-report2-run-result.json.gz",
+      "raw_sha256": "d09ba1a9efcad3b2c6985fe07715dc8784ded14235f9fe6c152d4cb5a61b412e",
+      "gzip_sha256": "b262e4ad0ad325cb4fb368dd970bbccd88db4daed151908bbe133f20869758a4"
+    },
+    {
+      "path": "checkpoints/free-storage-20261016/natural-38840064503-same-run-delivery-proof.json.gz",
+      "raw_sha256": "faf2a3c25116ed6cf2d7990044fd84513b8ac8cface4aa41e69aec03d3ad0f04",
+      "gzip_sha256": "3e717abd462e03ce2776b3f87228eaf27f4f17703f0c44e4b154b34051bbb52e"
+    }
+  ],
+  "status": "NOT_CLOSED",
+  "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+  "scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "approved_scope": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1792117362046,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 105,
+      "missing_approved_analysis_contracts": [],
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "WAL-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "selection": {
+    "top_two": [
+      "FIL-USDT",
+      "SUI-USDT"
+    ],
+    "deep_selected": [
+      "FIL-USDT",
+      "SUI-USDT"
+    ]
+  },
+  "persistence": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "PARTIAL",
+    "run_id": "1792117353040-1792117361875",
+    "expected_contracts": [
+      "FIL-USDT",
+      "SUI-USDT"
+    ],
+    "present_contracts": [],
+    "missing_contracts": [
+      "FIL-USDT",
+      "SUI-USDT"
+    ],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 0,
+    "missing_is_technical_not_no_market_idea": true
+  },
+  "native_attempt_usage": {
+    "attempted_statements": 434,
+    "measured_rows_read_subtotal": 42337,
+    "measured_rows_written_subtotal": 341,
+    "unknown_operations": 3,
+    "row_totals_closed": false,
+    "total_rows_read": null,
+    "total_rows_written": null
+  },
+  "unmeasured_operations": [
+    {
+      "operation": "run",
+      "target": "canonical_publication_shadow",
+      "sql_kind": "INSERT",
+      "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+      "http_status": 500,
+      "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+      "observed_ts": 1792117424603,
+      "params_or_SQL_text_exported": false
+    },
+    {
+      "operation": "batch",
+      "target": "full_evidence_shadow_log",
+      "sql_kind": "INSERT",
+      "sql_sha256": "d07a8ee537fe06ec160baa684af937cec5876287200b761350cb5e97031a4809",
+      "http_status": 500,
+      "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+      "observed_ts": 1792117451023,
+      "params_or_SQL_text_exported": false
+    },
+    {
+      "operation": "run",
+      "target": "canonical_publication_shadow",
+      "sql_kind": "INSERT",
+      "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+      "http_status": 500,
+      "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+      "observed_ts": 1792117452409,
+      "params_or_SQL_text_exported": false
+    }
+  ],
+  "exact_same_run_SENT": false,
+  "same_run_message_id": null,
+  "native_capacity_now_measured": false,
+  "prior_reclaimed_bytes": 487424,
+  "full_report_restored": false,
+  "project_complete": false,
+  "review_added_sourceHTTP": 0,
+  "review_added_SQL": 0,
+  "review_added_MAIN": 0,
+  "review_added_Telegram": 0
+}
