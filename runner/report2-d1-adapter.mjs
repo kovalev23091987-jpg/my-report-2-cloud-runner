@@ -1,6 +1,7 @@
 import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
 import {createHash} from 'node:crypto';
 import {createPrivateCanonicalRestorer,privateCanonicalArchivePool} from './private-canonical-history.mjs';
+import {NativeQueryCostJournal} from './native-query-cost-journal.mjs';
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 function requiredText(value, label) {
@@ -89,6 +90,7 @@ export class RemoteD1Database {
       : DEFAULT_TIMEOUT_MS;
     this._usage = { requests: 0, rows_read: 0, rows_written: 0, unknown_ops: 0, targets: {} };
     this._unmeasuredReceipts = [];
+    this._nativeCostJournal=options.nativeQueryReceipts===true?new NativeQueryCostJournal({binding:'D1_BRIDGE'}):null;
   }
 
   enableRetainedHistory(options = {}) {
@@ -135,6 +137,8 @@ export class RemoteD1Database {
     return out;
   }
 
+  nativeQueryCostReceipts(){return this._nativeCostJournal?.snapshot()??null;}
+
   _recordSingle(op, sql, usage, diagnostic = {}) {
     this._usage.requests += 1;
     const target = `${String(op || "unknown")}:${targetFromSql(sql)}`;
@@ -143,14 +147,11 @@ export class RemoteD1Database {
     }
     const bucket = this._usage.targets[target];
     bucket.requests += 1;
-    if (usage?.measured === true && Number.isSafeInteger(usage.rows_read) && usage.rows_read >= 0 && Number.isSafeInteger(usage.rows_written) && usage.rows_written >= 0) {
-      const rr = usage.rows_read;
-      const rw = usage.rows_written;
-      this._usage.rows_read += rr;
-      this._usage.rows_written += rw;
-      bucket.rows_read += rr;
-      bucket.rows_written += rw;
-    } else {
+    const readKnown=Number.isSafeInteger(usage?.rows_read)&&usage.rows_read>=0,writeKnown=Number.isSafeInteger(usage?.rows_written)&&usage.rows_written>=0;
+    if(readKnown){this._usage.rows_read+=usage.rows_read;bucket.rows_read+=usage.rows_read;}
+    if(writeKnown){this._usage.rows_written+=usage.rows_written;bucket.rows_written+=usage.rows_written;}
+    this._nativeCostJournal?.record({operation:op,sql,usage,http_status:diagnostic.http_status,force_unknown:diagnostic.force_unknown===true});
+    if (usage?.measured !== true || !readKnown || !writeKnown || diagnostic.force_unknown===true) {
       this._usage.unknown_ops += 1;
       bucket.unknown_ops += 1;
       if(this._unmeasuredReceipts.length<10){
@@ -209,6 +210,8 @@ export class RemoteD1Database {
         throw new Error(`D1_BRIDGE_INVALID_JSON_HTTP_${response.status}`);
       }
       if (!response.ok || data?.ok !== true) {
+        this._recordUsage(originalPayload,data?.usage,{http_status:httpStatus,force_unknown:true,failure_class:'BRIDGE_RESPONSE_NOT_CLOSED'});
+        nativeUsageRecorded=true;
         const code = String(data?.error || `HTTP_${response.status}`);
         throw new Error(`D1_BRIDGE_FAILURE:${code}`);
       }

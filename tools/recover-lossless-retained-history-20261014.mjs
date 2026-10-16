@@ -22,7 +22,7 @@ const self_day=String(process.env.REPORT2_SELF_NATIVE_QUALIFICATION_UTC_DAY||'')
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
 const emergency=owner_emergency_day==='2026-10-15'&&new Date().toISOString().slice(0,10)===owner_emergency_day;
 const out={schema:'LOSSLESS_RETAINED_HISTORY_CONTROL_V1',kind,head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,execute:process.env.LOSSLESS_EXECUTE==='true',canonical_rows_modified:0,source_reservations_reset:false};
-const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,worker_control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,archive_pool,lease,admitted=false,reservation_id;
+const whole=createUnifiedHttpBudget(LOSSLESS_RECOVERY_POLICY.http_limits);let control_HTTP=0,worker_control_HTTP=0,bridge_HTTP=0,private_HTTP=0,db,archive_db,archive_pool,lease,admitted=false,reservation_id,mode;
 const nativeUsage=()=>archive_db?combineMeasuredD1Usage(db.usageSnapshot(),(archive_pool||archive_db).usageSnapshot()):db.usageSnapshot();
 const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{
  if(control_HTTP+worker_control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETAINED_GITHUB_CONTROL_BOUND');
@@ -56,7 +56,7 @@ try{
   for(const p of files){const b=await fs.readFile(p),hash=crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');if(blobs.get(p)!==hash)throw Error('DATED_QUALIFIED_CODE_DIFFERS_FROM_CURRENT_MAIN');}
   out.qualified={head:tested_head,run:Number(tested_run),exact_executable_files:files.length,current_main:main};expected=main;
  }
- const mode=canonicalExecutionMode({kind,execute:out.execute,enabled:process.env.REPORT2_CANONICAL_COMPACTION_ENABLED==='true',emergency,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER,prefetch:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',native_qualification:native_qualification_input==='true',self_qualification});
+ mode=canonicalExecutionMode({kind,execute:out.execute,enabled:process.env.REPORT2_CANONICAL_COMPACTION_ENABLED==='true',emergency,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER,prefetch:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',native_qualification:native_qualification_input==='true',self_qualification});
  out.canonical_execution_mode=mode;
  const pool_qualification=canonicalArchivePoolQualification(process.env.REPORT2_CANONICAL_ARCHIVE_POOL_QUALIFICATION||'false',{mode,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER});
  if(process.env.BORROW_EXISTING_OWNER){
@@ -83,7 +83,7 @@ try{
   out.current_readers=await verifyExactArchiveReaderBindings({proof,call,expected_reader_run:current?CURRENT_ARCHIVE_READER_PROOF.run:DATED_RETENTION_QUALIFICATION.native_readers_run});
   if(control_HTTP+worker_control_HTTP+13>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
  }
- db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{beforeRequest:event=>{
+ db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{nativeQueryReceipts:mode.native_qualification,beforeRequest:event=>{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
  }});
@@ -93,7 +93,7 @@ try{
   out.pool_enabled_only_for_manual_qualification=pool_qualification;
   const shared_mutation=canonicalSharedMutationQualification({mode,pool_enabled});
   out.shared_mutation_only_for_manual_native_qualification=shared_mutation;
-  const archive_options={token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN,beforeRequest:()=>{
+  const archive_options={token:process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN,nativeQueryReceipts:mode.native_qualification,beforeRequest:()=>{
    const grant=whole.reserve({logical_request_id:'RETAINED_PRIVATE_D1:'+private_HTTP,lane:'background',attempts:1});if(grant.allowed)private_HTTP++;return grant;
   }};
   archive_pool=pool_enabled?createPrivateArchivePool({enabled:true,...archive_options}):null;archive_db=archive_pool?.legacy_db??new PrivateArchiveD1API(archive_options);
@@ -123,6 +123,11 @@ try{
 }finally{
  if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:nativeUsage()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
  if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=(archive_pool||archive_db).usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
+ if(mode?.native_qualification&&db){
+  out.native_query_costs={bridge:db.nativeQueryCostReceipts(),private:archive_pool?.nativeQueryCostReceipts?.()??(archive_db?{LEGACY:archive_db.nativeQueryCostReceipts()}:{}),additional_SQL:0,SQL_params_results_exported:false};
+  const journals=[out.native_query_costs.bridge,...Object.values(out.native_query_costs.private)];
+  if(journals.some(j=>!j||j.overflow)){out.native_query_cost_journal_incomplete=true;process.exitCode=1;}
+ }
  if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
  out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.worker_control_HTTP=worker_control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;

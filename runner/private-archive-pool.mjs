@@ -3,13 +3,13 @@ import {PRIVATE_CANONICAL_DATABASES} from './private-canonical-history.mjs';
 import {decodeCanonicalPublicationRow,retainCanonicalPublicationRow,CANONICAL_COLD_ARCHIVE_LIMITS} from './canonical-cold-archive.mjs';
 import {prefetchExactCanonicalRevisions} from './private-canonical-prefetch.mjs';
 const LOOKUP='SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?1 AND raw_sha256=?2 LIMIT 1';
-export function createPrivateArchivePool({enabled=false,token,fetch_impl,beforeRequest,databases}={}){
+export function createPrivateArchivePool({enabled=false,token,fetch_impl,beforeRequest,databases,nativeQueryReceipts=false}={}){
  const locations=enabled?Object.keys(PRIVATE_CANONICAL_DATABASES):['LEGACY'];
- const entries=new Map(locations.map(location=>[location,databases?.[location]??new PrivateArchiveD1API({location,token,fetch_impl,beforeRequest})]));
+ const entries=new Map(locations.map(location=>[location,databases?.[location]??new PrivateArchiveD1API({location,token,fetch_impl,beforeRequest,nativeQueryReceipts})]));
  if([...entries.values()].some(db=>typeof db?.prepare!=='function'||typeof db?.usageSnapshot!=='function')||new Set(entries.values()).size!==entries.size)throw Error('PRIVATE_ARCHIVE_MEASURED_DISTINCT_POOL_REQUIRED');
  const readerOptions=()=>({archive_db:entries.get('LEGACY'),archive_dbs:Object.fromEntries([...entries].filter(([slot])=>slot!=='LEGACY'))});
  return{locations,enabled,legacy_db:entries.get('LEGACY'),get:location=>{if(!entries.has(location))throw Error('PRIVATE_ARCHIVE_LOCATION_NOT_ENABLED');return entries.get(location);},readerOptions,
-  usageSnapshot:()=>combineMeasuredD1Usage(...[...entries.values()].map(db=>db.usageSnapshot()))};
+  usageSnapshot:()=>combineMeasuredD1Usage(...[...entries.values()].map(db=>db.usageSnapshot())),nativeQueryCostReceipts:()=>Object.fromEntries([...entries].map(([slot,db])=>[slot,db.nativeQueryCostReceipts?.()??null]))};
 }
 
 // Check all permitted locations before choosing writable capacity. Reuse a

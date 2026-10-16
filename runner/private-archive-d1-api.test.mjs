@@ -20,14 +20,27 @@ test('query auth rejection preserves zero native execution; unmeasured timeout f
 });
 test('missing native counters and incomplete batch receipts cannot silently charge zero',async()=>{
  const a=new PrivateArchiveD1API({token:TOKEN,fetch_impl:async()=>new Response(JSON.stringify({success:true,result:[{success:true,results:[],meta:{}}]}))});await assert.rejects(a.query('SELECT 1'),/USAGE_UNMEASURED/);assert.equal(a.usageSnapshot().unknown_ops,1);
- const b=new PrivateArchiveD1API({token:TOKEN,fetch_impl:async()=>reply()});await assert.rejects(b.query('SELECT 1; SELECT 1'),/QUERY_NOT_CLOSED/);assert.equal(b.usageSnapshot().unknown_ops,1);
+ const b=new PrivateArchiveD1API({token:TOKEN,fetch_impl:async()=>reply()});await assert.rejects(b.query('SELECT 1; SELECT 1'),/QUERY_NOT_CLOSED/);assert.deepEqual(b.usageSnapshot(),{requests:2,rows_read:1,rows_written:0,unknown_ops:2});
 });
 test('both databases count against one shared reservation, including unknown operations',()=>{
  assert.deepEqual(combineMeasuredD1Usage({requests:4,rows_read:35,rows_written:3,unknown_ops:0},{requests:3,rows_read:2,rows_written:4,unknown_ops:0}),{requests:7,rows_read:37,rows_written:7,unknown_ops:0});assert.throws(()=>combineMeasuredD1Usage({rows_read:1}),/USAGE_INVALID/);
 });
 test('an incomplete first batch receipt retains every known later native cost and pins each new location',async()=>{
  const db=new PrivateArchiveD1API({location:'A4',token:TOKEN,fetch_impl:async url=>{assert(url.includes('4c15f527-0287-484a-9dd1-bf1bd5c4f7c6'));return new Response(JSON.stringify({success:true,result:[{success:true,results:[],meta:{rows_read:3}},{success:true,results:[],meta:{rows_read:7,rows_written:9,size_after:16384}}]}));}});
- await assert.rejects(db.query('SELECT 1; SELECT 1'),/USAGE_UNMEASURED/);assert.deepEqual(db.usageSnapshot(),{requests:2,rows_read:10,rows_written:9,unknown_ops:1});assert.throws(()=>new PrivateArchiveD1API({location:'foreign',token:TOKEN}),/EXACT_LOCATION/);
+ await assert.rejects(db.query('SELECT 1; SELECT 1'),/USAGE_UNMEASURED/);assert.deepEqual(db.usageSnapshot(),{requests:2,rows_read:10,rows_written:9,unknown_ops:1});assert.equal(db.storage_bytes,null);assert.throws(()=>new PrivateArchiveD1API({location:'foreign',token:TOKEN}),/EXACT_LOCATION/);
+});
+test('failed or short native batches retain every known counter and invalidate older capacity',async()=>{
+ for(const status of [200,500]){
+  const db=new PrivateArchiveD1API({token:TOKEN,nativeQueryReceipts:true,fetch_impl:async()=>new Response(JSON.stringify({success:status===200,result:[{success:true,results:[],meta:{rows_read:19,rows_written:3,size_after:8192}}]}),{status})});db.storage_bytes=4096;
+  await assert.rejects(db.query('SELECT 1; SELECT 1'),/QUERY_NOT_CLOSED/);assert.deepEqual(db.usageSnapshot(),{requests:2,rows_read:19,rows_written:3,unknown_ops:2});assert.equal(db.storage_bytes,null);
+  const j=db.nativeQueryCostReceipts();assert.equal(j.attempted_statements,2);assert.equal(j.receipts[0].rows_read,19);assert.equal(j.receipts[1].rows_read,null);assert(j.receipts.every(r=>r.unknown));
+ }
+});
+test('private transport/invalid JSON charge each attempted member but local/auth refusal remain zero native attempts',async()=>{
+ for(const fetch_impl of [async()=>{throw Error('controlled');},async()=>new Response('invalid',{status:500})]){
+  const db=new PrivateArchiveD1API({token:TOKEN,nativeQueryReceipts:true,fetch_impl});await assert.rejects(db.query('SELECT 1; SELECT 1; SELECT 1'));assert.deepEqual(db.usageSnapshot(),{requests:3,rows_read:0,rows_written:0,unknown_ops:3});assert.equal(db.nativeQueryCostReceipts().recorded_statements,3);
+ }
+ const denied=new PrivateArchiveD1API({token:TOKEN,nativeQueryReceipts:true,fetch_impl:async()=>new Response('{}',{status:403})});await assert.rejects(denied.query('SELECT 1; SELECT 1'));assert.equal(denied.nativeQueryCostReceipts().attempted_statements,0);
 });
 test('a latest native reply without size cannot inherit earlier apparent free capacity',async()=>{
  let n=0;const db=new PrivateArchiveD1API({token:TOKEN,fetch_impl:async()=>++n===1?reply([],1,0,4096):new Response(JSON.stringify({success:true,result:[{success:true,results:[],meta:{rows_read:1,rows_written:0}}]}))});await db.query('SELECT 1');assert.equal(db.storage_bytes,4096);await db.query('SELECT 1');assert.equal(db.storage_bytes,null);assert.equal(db.usageSnapshot().unknown_ops,0);

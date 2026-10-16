@@ -43,3 +43,18 @@ test('a lost schema reply retains a bounded operation fingerprint without SQL li
 test('successful unmeasured counters have a different diagnosis from HTTP failure and are never coerced into measured zero',async()=>{
  const db=dbWith(async()=>ok(null,{measured:false,rows_read:0,rows_written:0}));await db.prepare('CREATE TABLE beta(x TEXT)').run();const r=db.usageSnapshot().unmeasured_receipts[0];assert.equal(r.failure_class,'NATIVE_COUNTERS_NOT_CLOSED');assert.equal(r.http_status,200);assert.equal(db.usageSnapshot().unknown_ops,1);
 });
+test('independently known native counters survive partial or explicitly unmeasured replies',async()=>{
+ for(const [usage,reads,writes] of [[{measured:true,rows_read:41},41,0],[{measured:true,rows_written:13},0,13],[{measured:false,rows_read:17,rows_written:5},17,5]]){
+  const db=dbWith(async()=>ok(null,usage));await db.prepare('UPDATE alpha SET x=?1').bind('PRIVATE_VALUE').run();const u=db.usageSnapshot();assert.equal(u.requests,1);assert.equal(u.rows_read,reads);assert.equal(u.rows_written,writes);assert.equal(u.unknown_ops,1);assert.equal(evaluateWithinRunReservation({reservation:{rows_read:100,rows_written:100},currentUsage:u}).allowed,false);
+ }
+});
+test('failed HTTP with native metadata charges known counters once and keeps every member unknown',async()=>{
+ const db=new RemoteD1Database('https://controlled.invalid/d1','PRIVATE_TOKEN',{nativeQueryReceipts:true,fetchImpl:async()=>new Response(JSON.stringify({ok:false,error:'CONTROLLED',usage:{statements:[{measured:true,rows_read:11,rows_written:3},{measured:false,rows_read:7}]}}),{status:500})});
+ await assert.rejects(db.batch([db.prepare('UPDATE alpha SET x=?1').bind('PRIVATE_VALUE'),db.prepare('SELECT x FROM beta')]));const u=db.usageSnapshot();assert.equal(u.requests,2);assert.equal(u.rows_read,18);assert.equal(u.rows_written,3);assert.equal(u.unknown_ops,2);
+ const j=db.nativeQueryCostReceipts();assert.equal(j.attempted_statements,2);assert(j.receipts.every(r=>r.unknown));assert.deepEqual(j.receipts.map(r=>r.rows_read),[11,7]);assert.deepEqual(j.receipts.map(r=>r.rows_written),[3,null]);assert(!JSON.stringify(j).includes('PRIVATE_VALUE'));assert(!JSON.stringify(j).includes('PRIVATE_TOKEN'));
+});
+test('opt-in journal preserves distinct statement order and cannot add SQL or change a successful result',async()=>{
+ const wires=[],make=journal=>new RemoteD1Database('https://controlled.invalid/d1','CONTROLLED_ONLY',{nativeQueryReceipts:journal,fetchImpl:async(url,options)=>{wires.push(options.body);return ok([{success:true}],{statements:[{measured:true,rows_read:2,rows_written:1},{measured:true,rows_read:4,rows_written:0}]});}}),plain=make(false),journal=make(true);
+ const run=db=>db.batch([db.prepare('UPDATE alpha SET x=?1').bind('PRIVATE'),db.prepare('SELECT x FROM beta')]);assert.deepEqual(await run(plain),await run(journal));assert.equal(wires[0],wires[1]);assert.deepEqual(plain.usageSnapshot(),journal.usageSnapshot());assert.equal(plain.nativeQueryCostReceipts(),null);
+ const j=journal.nativeQueryCostReceipts();assert.deepEqual(j.receipts.map(r=>r.sequence),[1,2]);assert.deepEqual(j.receipts.map(r=>r.target),['alpha','beta']);assert(j.receipts.every(r=>!r.unknown));assert.equal(j.additional_SQL,0);assert.equal(j.overflow,false);
+});

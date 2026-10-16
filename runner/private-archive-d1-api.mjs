@@ -1,9 +1,22 @@
 import {PRIVATE_CANONICAL_DATABASES} from './private-canonical-history.mjs';
+import {NativeQueryCostJournal} from './native-query-cost-journal.mjs';
 const ACCOUNT='70ee0af85191ea470e74c7383fdec772';
 const nonnegative=v=>Number.isSafeInteger(v)&&v>=0;
 export class PrivateArchiveD1API {
- constructor({token,fetch_impl=globalThis.fetch,beforeRequest,location='LEGACY'}={}){if(!String(token||'').trim())throw Error('PRIVATE_ARCHIVE_D1_TOKEN_REQUIRED');if(beforeRequest!==undefined&&typeof beforeRequest!=='function')throw Error('PRIVATE_ARCHIVE_BEFORE_REQUEST_CALLBACK_REQUIRED');if(!Object.hasOwn(PRIVATE_CANONICAL_DATABASES,location))throw Error('PRIVATE_ARCHIVE_EXACT_LOCATION_REQUIRED');this.location=location;this.database=PRIVATE_CANONICAL_DATABASES[location];this.token=String(token).trim();this.fetch_impl=fetch_impl;this.beforeRequest=beforeRequest;this._usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};this.storage_bytes=null;}
+ constructor({token,fetch_impl=globalThis.fetch,beforeRequest,location='LEGACY',nativeQueryReceipts=false}={}){if(!String(token||'').trim())throw Error('PRIVATE_ARCHIVE_D1_TOKEN_REQUIRED');if(beforeRequest!==undefined&&typeof beforeRequest!=='function')throw Error('PRIVATE_ARCHIVE_BEFORE_REQUEST_CALLBACK_REQUIRED');if(!Object.hasOwn(PRIVATE_CANONICAL_DATABASES,location))throw Error('PRIVATE_ARCHIVE_EXACT_LOCATION_REQUIRED');this.location=location;this.database=PRIVATE_CANONICAL_DATABASES[location];this.token=String(token).trim();this.fetch_impl=fetch_impl;this.beforeRequest=beforeRequest;this._usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};this.storage_bytes=null;this._nativeCostJournal=nativeQueryReceipts===true?new NativeQueryCostJournal({binding:'PRIVATE_ARCHIVE:'+location}):null;}
  usageSnapshot(){return{...this._usage};}
+ nativeQueryCostReceipts(){return this._nativeCostJournal?.snapshot()??null;}
+ _recordQueryCosts(statements,parts,{force_unknown=false,http_status=null}={}){
+  let incomplete=false;const rows=Array.isArray(parts)?parts:[],length=Math.max(statements.length,rows.length);
+  for(let i=0;i<length;i++){
+   const r=rows[i],m=r?.meta,knownRead=nonnegative(m?.rows_read),knownWrite=nonnegative(m?.rows_written),unknown=force_unknown||i>=statements.length||r?.success!==true||!knownRead||!knownWrite;
+   this._usage.requests++;if(knownRead)this._usage.rows_read+=m.rows_read;if(knownWrite)this._usage.rows_written+=m.rows_written;
+   if(unknown){this._usage.unknown_ops++;incomplete=true;}
+   this.storage_bytes=!unknown&&nonnegative(m?.size_after)?m.size_after:null;
+   this._nativeCostJournal?.record({operation:'query',sql:statements[i]??'',usage:{measured:!unknown,rows_read:knownRead?m.rows_read:null,rows_written:knownWrite?m.rows_written:null},force_unknown:unknown,http_status});
+  }
+  if(incomplete)this.storage_bytes=null;return incomplete;
+ }
  async _admit(event){if(this.beforeRequest&&(await this.beforeRequest(event))?.allowed!==true)throw Error('PRIVATE_ARCHIVE_LOCAL_HTTP_ADMISSION_DENIED');}
  async verifyDatabase(){await this._admit({operation:'descriptor',statement_count:0,wire_bytes:0,location:this.location});const r=await this.fetch_impl(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/d1/database/${this.database.uuid}`,{headers:{authorization:'Bearer '+this.token},redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('PRIVATE_ARCHIVE_D1_ACCESS_REQUIRED_HTTP_'+r.status);const j=await r.json();if(!j.success||j.result?.uuid!==this.database.uuid||j.result?.name!==this.database.name)throw Error('PRIVATE_ARCHIVE_DATABASE_BINDING_REQUIRED');return{database_id:this.database.uuid,name:j.result.name,location:this.location,descriptor_size_is_not_measured_query_size:true};}
  prepare(sql){const db=this;return{args:[],bind(...args){this.args=args;return this;},async first(){return(await db.query(sql,this.args)).results[0]??null;},async all(){return db.query(sql,this.args);},async run(){return db.query(sql,this.args);}};}
@@ -17,15 +30,17 @@ export class PrivateArchiveD1API {
   // A refusal before transport is a known zero SQL attempt. Genuine timeouts
   // below still remain unknown and block the shared native account budget.
   await this._admit({operation:'query',statement_count:statements.length,wire_bytes:new TextEncoder().encode(body).length,location:this.location});
+  this.storage_bytes=null;
   let response;
-  try{response=await this.fetch_impl(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/d1/database/${this.database.uuid}/query`,{method:'POST',headers:{authorization:'Bearer '+this.token,'content-type':'application/json'},body,redirect:'error',signal:AbortSignal.timeout(30000)});}catch{this._usage.unknown_ops++;throw Error('PRIVATE_ARCHIVE_D1_TRANSPORT_UNMEASURED');}
+  try{response=await this.fetch_impl(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/d1/database/${this.database.uuid}/query`,{method:'POST',headers:{authorization:'Bearer '+this.token,'content-type':'application/json'},body,redirect:'error',signal:AbortSignal.timeout(30000)});}catch{this._recordQueryCosts(statements,null,{force_unknown:true});throw Error('PRIVATE_ARCHIVE_D1_TRANSPORT_UNMEASURED');}
   if([401,403].includes(response.status))throw Error('PRIVATE_ARCHIVE_D1_QUERY_ACCESS_REQUIRED_HTTP_'+response.status);
-  let j;try{j=await response.json();}catch{this._usage.unknown_ops++;throw Error('PRIVATE_ARCHIVE_D1_RESPONSE_UNMEASURED');}
-  if(!response.ok||!j.success||!Array.isArray(j.result)||j.result.length!==statements.length){this._usage.unknown_ops++;throw Error('PRIVATE_ARCHIVE_D1_QUERY_NOT_CLOSED');}
-  let incomplete=false;
+  let j;try{j=await response.json();}catch{this._recordQueryCosts(statements,null,{force_unknown:true,http_status:response.status});throw Error('PRIVATE_ARCHIVE_D1_RESPONSE_UNMEASURED');}
+  const shapeClosed=response.ok&&j?.success===true&&Array.isArray(j.result)&&j.result.length===statements.length;
   // A malformed early acknowledgement must not discard known costs from a
-  // later statement of the same DDL batch. Unknown work still fails closed.
-  for(const result of j.result){this._usage.requests++;const m=result?.meta;if(result?.success!==true||!nonnegative(m?.rows_read)||!nonnegative(m?.rows_written)){this._usage.unknown_ops++;incomplete=true;}if(nonnegative(m?.rows_read))this._usage.rows_read+=m.rows_read;if(nonnegative(m?.rows_written))this._usage.rows_written+=m.rows_written;this.storage_bytes=nonnegative(m?.size_after)?m.size_after:null;}
+  // later statement or failed/short reply. Every potentially attempted member
+  // remains unknown when the native batch shape is not closed.
+  const incomplete=this._recordQueryCosts(statements,j?.result,{force_unknown:!shapeClosed,http_status:response.status});
+  if(!shapeClosed)throw Error('PRIVATE_ARCHIVE_D1_QUERY_NOT_CLOSED');
   if(incomplete)throw Error('PRIVATE_ARCHIVE_D1_USAGE_UNMEASURED');
   return j.result[j.result.length-1];
  }
