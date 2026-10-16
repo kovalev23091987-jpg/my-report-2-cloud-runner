@@ -14,3 +14,9 @@ export function canonicalArchivePoolQualification(input='false',{mode,event,borr
  if(mode?.native_qualification!==true||mode?.require_native_preflight!==true||mode?.automatic_activation!==false||event!=='workflow_dispatch'||typeof borrowed_owner!=='string'||!borrowed_owner.trim())throw Error('EXACT_BORROWED_NATIVE_POOL_QUALIFICATION_REQUIRED');
  return true;
 }
+
+// The new SQL is only a manually qualified native path. An enabled archive
+// pool alone never enables it in scheduled or ordinary automatic maintenance.
+export function canonicalSharedMutationQualification({mode,pool_enabled=false}={}){
+ return pool_enabled===true&&mode?.native_qualification===true&&mode.require_native_preflight===true&&mode.automatic_activation===false&&mode.extra_retention_slot_granted===false;
+}

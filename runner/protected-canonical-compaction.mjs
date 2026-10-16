@@ -6,7 +6,7 @@ import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 import {LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 import {retainCanonicalInPool,prefetchCanonicalArchivePool} from './private-archive-pool.mjs';
 import {prefetchExactCanonicalRevisions} from './private-canonical-prefetch.mjs';
-import {loadBoundedCanonicalWindowSequence,boundedCanonicalReferenceSQL} from './bounded-canonical-selection.mjs';
+import {loadBoundedCanonicalWindowSequence,boundedCanonicalReferenceSQL,boundedCanonicalReferenceGroupSQL} from './bounded-canonical-selection.mjs';
 
 // Uses the existing RETAINED_HISTORY reservation, never an additional family.
 // Only large, old REJECTED bodies are replaced. Every publication, scalar,
@@ -53,10 +53,68 @@ export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERE
  return{sql:`${scope.with_sql}UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${scope.predicate}`,params};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,discovery_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
+// Each statement is independently subject to D1 limits, even in a batch.
+// Native cost reserves stay the SUM of the existing single-row estimates.
+export const SHARED_CANONICAL_SQL_LIMITS=Object.freeze({parameters:100,sql_bytes:100000});
+const stableBounds=b=>JSON.stringify(Object.entries(b||{}).sort(([a],[c])=>a.localeCompare(c)));
+function sharedSignature(s){
+ const r=s.references,keys=Object.keys(s.row).sort(),headerKeys=Object.keys(s.header).sort();
+ if(!r||r.scope?.schema!=='EXACT_CANONICAL_REFERENCE_SCOPE_V1'||r.scope.contracts?.length!==1||r.scope.contracts[0]!==s.row.contract_code||r.scope.publication_ids?.length!==1||r.scope.publication_ids[0]!==s.row.publication_id||JSON.stringify(keys)!==JSON.stringify(headerKeys))throw Error('EXACT_SHARED_CANONICAL_ROW_SCOPE_REQUIRED');
+ if(!/^PUB:[a-f0-9]{40,64}$/.test(s.row.publication_id||''))throw Error('EXACT_SHARED_CANONICAL_ID_REQUIRED');
+ return JSON.stringify([s.row.contract_code,stableBounds(r.bounds),keys]);
+}
+export function exactCanonicalGroupBodyUpdate(items,cutoff,present_tables=REFERENCE_TABLES){
+ if(!Array.isArray(items)||items.length<2||items.length>8||new Set(items.map(s=>s.row.publication_id)).size!==items.length)throw Error('EXACT_SHARED_CANONICAL_GROUP_REQUIRED');
+ const signature=sharedSignature(items[0]);if(items.some(s=>sharedSignature(s)!==signature))throw Error('SAME_CONTRACT_AND_REFERENCE_BOUNDS_REQUIRED');
+ if(stableBounds(Object.fromEntries(present_tables.filter(t=>t!=='canonical_publication_shadow').map(t=>[t,items[0].references.bounds[t]])))!==stableBounds(items[0].references.bounds)||Object.values(items[0].references.bounds).some(v=>v===undefined))throw Error('COMPLETE_SHARED_CANONICAL_REFERENCE_BOUNDS_REQUIRED');
+ const changed=[...new Set(items.flatMap(s=>Object.keys(s.row).filter(k=>s.row[k]!==s.header[k])))];
+ if(!changed.length||changed.some(k=>!k.endsWith('_json')&&k!=='manual_text'&&k!=='telegram_text'))throw Error('CANONICAL_ONLY_ORIGINAL_BODY_COLUMNS_ALLOWED');
+ const params=[],bind=v=>{if(v!==null&&typeof v!=='string'&&(typeof v!=='number'||!Number.isFinite(v)))throw Error('EXACT_SHARED_CANONICAL_SCALAR_REQUIRED');params.push(v);return '?'+params.length;};
+ const set=changed.map(k=>`${quote(k)}=CASE p.publication_id ${items.map(s=>`WHEN '${s.row.publication_id}' THEN ${bind(s.header[k])}`).join(' ')} ELSE p.${quote(k)} END`).join(',');
+ const exact=items.map(s=>'('+Object.entries(s.row).map(([k,v])=>`p.${quote(k)} IS ${bind(v)}`).join(' AND ')+')').join(' OR ');
+ const predicate=protectedCanonicalPredicate(bind(cutoff),present_tables);
+ const scope={schema:'EXACT_CANONICAL_REFERENCE_SCOPE_V1',contracts:[items[0].row.contract_code],publication_ids:items.map(s=>s.row.publication_id)};
+ const refs=boundedCanonicalReferenceGroupSQL(predicate,items[0].references.bounds,items.map(s=>({publication_id:s.row.publication_id,witness:s.witness})),scope);
+ // Explicit PK restriction avoids an OR of full original-field comparisons
+ // degenerating into an unbounded primary-table scan.
+ const sql=`${refs.with_sql}UPDATE canonical_publication_shadow AS p SET ${set} WHERE p.publication_id IN (${scope.publication_ids.map(id=>`'${id}'`).join(',')}) AND (${exact}) AND ${refs.predicate} RETURNING publication_id`;
+ if(params.length>SHARED_CANONICAL_SQL_LIMITS.parameters||Buffer.byteLength(sql)>SHARED_CANONICAL_SQL_LIMITS.sql_bytes)throw Error('SHARED_CANONICAL_STATEMENT_BOUND');
+ return{sql,params};
+}
+// Reorder only the already admitted <=8 storage rows inside one transaction.
+// Different contracts/bounds retain separate predicates. Split at SQL/param
+// bounds without consuming extra transaction, bridge or control slots.
+export function planCanonicalMutationGroup(items,{shared=false,cutoff,present_tables=REFERENCE_TABLES}={}){
+ if(!Array.isArray(items)||!items.length||items.length>8||typeof shared!=='boolean')throw Error('CANONICAL_MUTATION_GROUP_BOUND');
+ const chunks=[];
+ if(shared){
+  const buckets=new Map();for(const s of items){const key=sharedSignature(s);if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(s);}
+  for(const bucket of buckets.values()){
+   let part=[];
+   for(const s of bucket){
+    if(part.length)try{exactCanonicalGroupBodyUpdate([...part,s],cutoff,present_tables);}catch(error){if(error.message!=='SHARED_CANONICAL_STATEMENT_BOUND')throw error;chunks.push(part);part=[];}
+    part.push(s);
+   }if(part.length)chunks.push(part);
+  }
+ }else chunks.push(...items.map(s=>[s]));
+ const statements=[],operations=[],rows=[];
+ for(const chunk of chunks){
+  const index=statements.length,is_shared=chunk.length>1;
+  statements.push(is_shared?exactCanonicalGroupBodyUpdate(chunk,cutoff,present_tables):chunk[0].statements[0]);
+  operations.push({operation:is_shared?'SHARED_CONDITIONAL_BODY_UPDATE':'CONDITIONAL_BODY_UPDATE',publication_ids:chunk.map(s=>s.row.publication_id)});
+  for(const s of chunk){const readback=statements.length;statements.push(s.statements[1]);operations.push({operation:'EXACT_HEADER_READBACK',publication_ids:[s.row.publication_id]});rows.push({item:s,update:index,readback,shared:is_shared});}
+ }
+ // The pre-copy admission already holds the old single-row wire bound. A
+ // shared encoding may not enlarge it after the originals have been copied.
+ if(shared&&Buffer.byteLength(JSON.stringify({op:'batch',statements}))>Buffer.byteLength(JSON.stringify({op:'batch',statements:items.flatMap(s=>s.statements)})))return planCanonicalMutationGroup(items,{shared:false,cutoff,present_tables});
+ return{statements,operations,rows,shared_updates:chunks.filter(c=>c.length>1).length};
+}
+
+export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,discovery_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,shared_mutation=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof (archive_pool||archive_db)?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
  if(!Number.isSafeInteger(max_mutation_batches)||max_mutation_batches<0||max_mutation_batches>PROTECTED_CANONICAL_POLICY.max_batches)throw Error('EXISTING_CANONICAL_BATCH_CAP_REQUIRED');
+ if(typeof shared_mutation!=='boolean')throw Error('EXPLICIT_SHARED_CANONICAL_MODE_REQUIRED');
  const p=PROTECTED_CANONICAL_POLICY,usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),(archive_pool||archive_db).usageSnapshot());
  const admit=e=>evaluateWithinRunReservation({reservation:p.reservation,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+3});
  const need=(r,w)=>{if(!admit({rows_read:r,rows_written:w}).allowed)throw Error('CANONICAL_SHARED_NATIVE_HEADROOM_REQUIRED');};
@@ -95,10 +153,11 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
   const native_options=archive_pool?archive_pool.readerOptions():{archive_db};
   const pending_reads=()=>pending.reduce((n,s)=>n+s.read_reserve,0);
   const pending_statements=()=>pending.flatMap(s=>s.statements);
-  const wire_fits=statements=>Buffer.byteLength(JSON.stringify({op:'batch',statements}))<=p.bridge_wire_bytes;
+  const wire_fits=statements=>statements.every(s=>s.params.length<=SHARED_CANONICAL_SQL_LIMITS.parameters&&Buffer.byteLength(s.sql)<=SHARED_CANONICAL_SQL_LIMITS.sql_bytes)&&Buffer.byteLength(JSON.stringify({op:'batch',statements}))<=p.bridge_wire_bytes;
   const flush=async()=>{
    if(!pending.length||!execute)return;
-   const group=pending,statements=pending_statements(),reads=pending_reads();pending=[];
+   const group=pending,reads=pending_reads(),plan=planCanonicalMutationGroup(group,{shared:shared_mutation,cutoff:now-p.hot_window_ms,present_tables:present}),{statements}=plan;pending=[];
+   if(!wire_fits(statements))throw Error('CANONICAL_SHARED_WIRE_BOUND');
    if(out.mutation_batches>=max_mutation_batches){out.deferred_hot.push(...group.map(s=>({publication_id:s.row.publication_id,reason:'TRANSACTION_BOUND'})));preparation_stopped=true;return;}
    // Every member of this admitted wire-bounded group has an exact durable
    // original before any member changes. Sample independent native originals
@@ -115,15 +174,21 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
    }
    if(!admit({rows_read:reads+96,rows_written:group.length*8+3}).allowed){out.deferred_hot.push(...group.map(s=>({publication_id:s.row.publication_id,reason:'SHARED_NATIVE_HEADROOM'})));preparation_stopped=true;return;}
    await before_modify();need(reads,group.length*8);
-   out.copy_admission.groups.push({publication_ids:group.map(s=>s.row.publication_id),rows_read_reserved:reads,wire_bytes:Buffer.byteLength(JSON.stringify({op:'batch',statements})),usage_before:usage()});
+   out.copy_admission.groups.push({publication_ids:group.map(s=>s.row.publication_id),rows_read_reserved:reads,shared_updates:plan.shared_updates,unchanged_sum_of_row_reserves:true,wire_bytes:Buffer.byteLength(JSON.stringify({op:'batch',statements})),usage_before:usage()});
    const ack=await source_db.batch(statements.map(q=>source_db.prepare(q.sql).bind(...q.params)));out.mutation_batches++;
    if(!Array.isArray(ack)||ack.length!==statements.length)throw Error('CANONICAL_GROUP_ACK_REQUIRED');
    out.copy_admission.groups.at(-1).usage_after=usage();
-   out.copy_admission.groups.at(-1).statement_costs=ack.map((r,i)=>{const m=r?.meta,closed=Number.isSafeInteger(m?.rows_read)&&m.rows_read>=0&&Number.isSafeInteger(m?.rows_written)&&m.rows_written>=0;return{publication_id:group[Math.floor(i/2)].row.publication_id,operation:i%2?'EXACT_HEADER_READBACK':'CONDITIONAL_BODY_UPDATE',counters_present:closed,rows_read:closed?m.rows_read:null,rows_written:closed?m.rows_written:null};});
+   out.copy_admission.groups.at(-1).statement_costs=ack.map((r,i)=>{const m=r?.meta,closed=Number.isSafeInteger(m?.rows_read)&&m.rows_read>=0&&Number.isSafeInteger(m?.rows_written)&&m.rows_written>=0;return{...plan.operations[i],counters_present:closed,rows_read:closed?m.rows_read:null,rows_written:closed?m.rows_written:null};});
    if(require_native_preflight){const size=ack.at(-1)?.meta?.size_after;out.primary_database_bytes_after=Number.isSafeInteger(size)&&size>=0?size:null;}
-   for(const [i,s] of group.entries()){
-    if(ack[i*2]?.meta?.changes!==1){out.conflicts_retained_hot.push(s.row.publication_id);continue;}
-    assert.deepEqual(ack[i*2+1]?.results?.[0],s.header);assert.deepEqual(await cached_reader.restore(ack[i*2+1].results[0]),s.row);
+   const changed=new Map();
+   for(const [i,op] of plan.operations.entries())if(op.operation==='SHARED_CONDITIONAL_BODY_UPDATE'){
+    const ids=ack[i]?.results?.map(r=>r.publication_id);
+    if(!Array.isArray(ids)||new Set(ids).size!==ids.length||ids.some(id=>!op.publication_ids.includes(id))||ack[i]?.meta?.changes!==ids.length)throw Error('EXACT_SHARED_CANONICAL_RETURNING_ACK_REQUIRED');
+    changed.set(i,new Set(ids));
+   }
+   for(const {item:s,update,readback,shared} of plan.rows){
+    if(shared?!changed.get(update).has(s.row.publication_id):ack[update]?.meta?.changes!==1){out.conflicts_retained_hot.push(s.row.publication_id);continue;}
+    assert.deepEqual(ack[readback]?.results?.[0],s.header);assert.deepEqual(await cached_reader.restore(ack[readback].results[0]),s.row);
     out.compacted.push({publication_id:s.row.publication_id,run_id:s.row.run_id,contract:s.row.contract_code,observed_ts:s.row.observed_ts,raw_sha256:s.record.raw_sha256,archive_location:s.location,original_bytes:s.record.raw_bytes,hot_header_bytes:Buffer.byteLength(JSON.stringify(s.header)),logical_saved_bytes:s.saved_bytes});
    }
   };
@@ -152,7 +217,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
    const header=await privateCanonicalHeader(row,stored,{archive_slot:location==='LEGACY'?null:location});
    const statements=[make_plan(header),provisional_statements[1]];
    if(execute&&!wire_fits([...pending_statements(),...statements]))throw Error('CANONICAL_ADMITTED_WIRE_BOUND_CHANGED');
-   const item={row,header,record:stored,location,statements,read_reserve,saved_bytes:stored.raw_bytes-Buffer.byteLength(JSON.stringify(header))};
+   const item={row,header,record:stored,location,statements,references,witness:discovery.witnesses[row.publication_id],read_reserve,saved_bytes:stored.raw_bytes-Buffer.byteLength(JSON.stringify(header))};
    prepared.push(item);pending.push(item);out.prepared=prepared.length;
   }
   if(!execute){

@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';import {gunzipSync} from 'node:zlib';import {DatabaseSync} from 'node:sqlite';
-import {compactProtectedCanonical,PROTECTED_CANONICAL_POLICY as P,exactCanonicalBodyUpdate} from './protected-canonical-compaction.mjs';
+import {compactProtectedCanonical,PROTECTED_CANONICAL_POLICY as P,exactCanonicalBodyUpdate,exactCanonicalGroupBodyUpdate,planCanonicalMutationGroup,SHARED_CANONICAL_SQL_LIMITS} from './protected-canonical-compaction.mjs';
 import {encodeCanonicalPublicationRow} from './canonical-cold-archive.mjs';
 import {createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
 import {loadBoundedCanonicalCandidates,loadBoundedCanonicalWindowSequence} from './bounded-canonical-selection.mjs';
@@ -10,7 +10,7 @@ import bridge from '../current-generation/tests/fixtures/actual-d1-bridge-202610
 const now=1792026000000,DAY=86400000,allow=()=>({allowed:true}),headroom=()=>true;
 const original=JSON.parse(gunzipSync(fs.readFileSync(new URL('../checkpoints/storage-recovery-natural-38638248237/report2-run-result.json.gz',import.meta.url)))).candidates[0];
 const schema=JSON.parse(fs.readFileSync(new URL('../audit-fixes/t00/fixtures/d1-schema.json',import.meta.url),'utf8')).rows;
-function wrap(raw){let usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};const calls=[];const db={raw,calls,usageSnapshot:()=>({...usage}),setUsage:u=>{usage={...usage,...u};},prepare(sql){return{sql,args:[],bind(...args){this.args=args;return this;},async all(){calls.push(sql);const results=raw.prepare(sql).all(...this.args).map(r=>({...r}));usage.requests++;usage.rows_read+=results.length;return{results,success:true,meta:{changes:0,rows_read:results.length,rows_written:0,size_after:100000}};},async first(){return(await this.all()).results[0]??null;},async run(){calls.push(sql);const r=raw.prepare(sql).run(...this.args);usage.requests++;usage.rows_written+=Number(r.changes);return{results:[],success:true,meta:{changes:Number(r.changes),rows_read:0,rows_written:Number(r.changes),size_after:100000}};}};},async batch(statements){raw.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await (/^\s*SELECT\b/i.test(s.sql)?s.all():s.run()));raw.exec('COMMIT');return rows;}catch(error){raw.exec('ROLLBACK');throw error;}}};return db;}
+function wrap(raw){let usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};const calls=[];const db={raw,calls,usageSnapshot:()=>({...usage}),setUsage:u=>{usage={...usage,...u};},prepare(sql){return{sql,args:[],bind(...args){this.args=args;return this;},async all(){calls.push(sql);const results=raw.prepare(sql).all(...this.args).map(r=>({...r}));usage.requests++;usage.rows_read+=results.length;return{results,success:true,meta:{changes:0,rows_read:results.length,rows_written:0,size_after:100000}};},async first(){return(await this.all()).results[0]??null;},async run(){calls.push(sql);const returned=/RETURNING publication_id$/.test(sql)?raw.prepare(sql).all(...this.args).map(r=>({...r})):null;const r=returned?raw.prepare('SELECT changes() AS changes').get():raw.prepare(sql).run(...this.args);usage.requests++;usage.rows_read+=returned?.length||0;usage.rows_written+=Number(r.changes);return{results:returned||[],success:true,meta:{changes:Number(r.changes),rows_read:returned?.length||0,rows_written:Number(r.changes),size_after:100000}};}};},async batch(statements){raw.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await (/^\s*SELECT\b/i.test(s.sql)?s.all():s.run()));raw.exec('COMMIT');return rows;}catch(error){raw.exec('ROLLBACK');throw error;}}};return db;}
 function fixture(count=2,{v2=true}={}){
  const raw=new DatabaseSync(':memory:');
  for(const name of ['canonical_publication_shadow','v3_recheck_task_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','v3_telegram_dispatch_shadow','tz101_entry_area_calibration_signal'])raw.exec(schema.find(r=>r.type==='table'&&r.name===name).sql);
@@ -286,4 +286,91 @@ test('outstanding mutation costs are held before copies and measured groups are 
 
 test('zero admitted mutation groups do not create unusable archive copies',async()=>{
  const f=fixture(12,{v2:false}),result=await compact(f,{execute:true,max_mutation_batches:0});assert.equal(result.prepared,0);assert.equal(result.compacted.length,0);assert.equal(result.deferred_hot.length,12);assert.equal(f.archive_db.usageSnapshot().rows_written,0);assert.equal(result.mutation_batches,0);
+});
+
+// Shared statement qualification uses retained schema + originals. SQLite
+// result counters below are fixture counters, never native D1 cost receipts.
+function sharedItems(f,rows=f.old){
+ const present=schema.filter(r=>r.type==='table').map(r=>r.name).filter(n=>['canonical_publication_shadow','v3_recheck_task_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','v3_telegram_dispatch_shadow','tz101_entry_area_calibration_signal'].includes(n));
+ for(const name of ['report2_command_v2','report2_publication_v2','report2_delivered_outcome_v2'])if(f.raw.prepare('SELECT 1 FROM sqlite_schema WHERE name=?').get(name))present.push(name);
+ const bounds=Object.fromEntries(present.filter(n=>n!=='canonical_publication_shadow').map(n=>[n,8]));
+ const items=rows.map(row=>{const header={...row,manual_text:'exact header '+row.publication_id},references={scope:{schema:'EXACT_CANONICAL_REFERENCE_SCOPE_V1',contracts:[row.contract_code],publication_ids:[row.publication_id]},bounds:{...bounds}},witness=f.latest.publication_id;return{row,header,references,witness,statements:[exactCanonicalBodyUpdate(row,header,now-2*DAY,present,bounds,witness,references.scope),{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}]};});
+ return{items,present};
+}
+test('shared same-contract UPDATE retains every original field and shares each indexed reference census once',async()=>{
+ for(const v2 of [false,true]){
+  const f=fixture(2,{v2}),{items,present}=sharedItems(f),q=exactCanonicalGroupBodyUpdate(items,now-2*DAY,present);
+  assert.equal((q.sql.match(/r2_v3_telegram_dispatch_shadow AS MATERIALIZED/g)||[]).length,1);assert.match(q.sql,/RETURNING publication_id$/);assert(q.params.length<=100);assert(Buffer.byteLength(q.sql)<=100000);
+  const plan=f.raw.prepare('EXPLAIN QUERY PLAN '+q.sql).all(...q.params).map(r=>r.detail).join('\n');assert.match(plan,/SEARCH p USING INDEX sqlite_autoindex_canonical_publication_shadow_1/);assert.doesNotMatch(plan,/SCAN p\b/);
+  const out=await compact(f,{execute:true,shared_mutation:true,require_native_preflight:true});assert.equal(out.compacted.length,2);assert.equal(out.native_preflight.length,2);assert.equal(out.native_readbacks.length,2);assert.equal(out.copy_admission.groups[0].shared_updates,1);assert.equal(out.copy_admission.native_cost_qualified,false);assert.equal(out.copy_admission.unchanged_update_cost_formula,true);
+  const group=out.copy_admission.groups[0];assert.equal(group.rows_read_reserved,out.reference_schema.per_row_plans.reduce((n,p)=>n+p.rows_read_reserve,0));assert.equal(group.statement_costs.length,3);
+  const reader=createPrivateCanonicalRestorer({archive_db:f.archive_db,db_admit:allow});for(const row of f.old)assert.deepEqual(await reader.restore(get(f,row.publication_id)),row);
+ }
+});
+test('shared chunk planner splits100 parameters within the same eight-row transaction and retains six-transaction cap',async()=>{
+ const f=fixture(48,{v2:false});archiveAll(f);const {items,present}=sharedItems(f,f.old.slice(0,8)),plan=planCanonicalMutationGroup(items,{shared:true,cutoff:now-2*DAY,present_tables:present});
+ assert.equal(plan.rows.length,8);assert(plan.shared_updates>=2);assert(plan.statements.length<16);assert(plan.statements.every(s=>s.params.length<=100&&Buffer.byteLength(s.sql)<=100000));assert.equal(SHARED_CANONICAL_SQL_LIMITS.parameters,100);
+ assert.throws(()=>exactCanonicalGroupBodyUpdate(items,now-2*DAY,present),/STATEMENT_BOUND/);
+ const out=await compact(f,{execute:true,shared_mutation:true,prefetch_private:true});assert.equal(out.compacted.length,48);assert.equal(out.mutation_batches,6);assert(out.copy_admission.groups.every(g=>g.publication_ids.length===8&&g.wire_bytes<=P.bridge_wire_bytes));assert.equal(out.native_readbacks.length,4);assert.equal(out.D1.unknown_ops,0);
+});
+test('different coins and unequal reference bounds never share an UPDATE or widen a contract scope',()=>{
+ const f=fixture(2),{items,present}=sharedItems(f);items[1].row={...items[1].row,contract_code:'OTHER-USDT'};items[1].header={...items[1].header,contract_code:'OTHER-USDT'};items[1].references.scope.contracts=['OTHER-USDT'];
+ assert.throws(()=>exactCanonicalGroupBodyUpdate(items,now-2*DAY,present),/SAME_CONTRACT/);assert.equal(planCanonicalMutationGroup(items,{shared:true,cutoff:now-2*DAY,present_tables:present}).shared_updates,0);
+ const b=sharedItems(f);b.items[1].references.bounds.v3_telegram_dispatch_shadow++;assert.throws(()=>exactCanonicalGroupBodyUpdate(b.items,now-2*DAY,b.present),/SAME_CONTRACT/);assert.equal(planCanonicalMutationGroup(b.items,{shared:true,cutoff:now-2*DAY,present_tables:b.present}).shared_updates,0);
+});
+test('shared validation rejects incomplete scopes, bounds, duplicate ids, extra headers and changed scalars',()=>{
+ for(const kind of ['SCOPE','BOUND','DUPLICATE','EXTRA','SCALAR','WITNESS']){const f=fixture(2),{items,present}=sharedItems(f);
+  if(kind==='SCOPE')items[0].references.scope.publication_ids.push(items[1].row.publication_id);
+  if(kind==='BOUND')for(const s of items)delete s.references.bounds.v3_telegram_dispatch_shadow;
+  if(kind==='DUPLICATE')items[1]=items[0];if(kind==='EXTRA')items[0].header.extra='untracked';if(kind==='SCALAR')items[0].header.observed_ts++;if(kind==='WITNESS')items[0].witness="PUB:bad' SQL";
+  assert.throws(()=>exactCanonicalGroupBodyUpdate(items,now-2*DAY,present),undefined,kind);
+ }
+});
+test('one late scalar conflict retains only that original and RETURNING attributes the other exact mutation',async()=>{
+ const f=fixture(2),id=f.old[0].publication_id,out=await compact(f,{execute:true,shared_mutation:true,before_modify:async()=>f.raw.prepare('UPDATE canonical_publication_shadow SET decimal_string=? WHERE publication_id=?').run('changed-exact-scalar',id)});
+ assert.deepEqual(out.conflicts_retained_hot,[id]);assert.equal(out.compacted.length,1);assert.equal(out.compacted[0].publication_id,f.old[1].publication_id);assert.equal(get(f,id).canonical_json,f.old[0].canonical_json);assert.equal(out.bounded_discovery.next_cursor,0);assert.equal(out.prepared,2);
+});
+test('an already identical header from another writer is not falsely attributed to this shared mutation',async()=>{
+ const f=fixture(2),id=f.old[0].publication_id,out=await compact(f,{execute:true,shared_mutation:true,before_modify:async()=>{const record=JSON.parse(f.coldraw.prepare('SELECT record_json FROM report2_canonical_cold_archive_v1 WHERE publication_id=?').get(id).record_json);const {privateCanonicalHeader}=await import('./private-canonical-history.mjs');const header=await privateCanonicalHeader(f.old[0],record);f.raw.prepare('UPDATE canonical_publication_shadow SET canonical_json=?,presentation_inputs_json=?,manual_text=?,telegram_text=?,future_json=? WHERE publication_id=?').run(header.canonical_json,header.presentation_inputs_json,header.manual_text,header.telegram_text,header.future_json,id);}});
+ assert.deepEqual(out.conflicts_retained_hot,[id]);assert.equal(out.compacted.length,1);assert.equal(out.compacted[0].publication_id,f.old[1].publication_id);
+});
+function insertLateReference(f,kind,r){
+ const pub=r.publication_id;
+ if(kind==='COMMAND')f.raw.prepare("INSERT INTO report2_command_v2 VALUES('cmd','FULL',NULL,'MANUAL',1,2,'gen','COMPLETED',NULL,NULL,?,NULL,NULL,1)").run(r.snapshot_id);
+ if(kind==='PUBLICATION')f.raw.prepare("INSERT INTO report2_publication_v2 VALUES(?,?,'snap','wave','BTW-USDT','SHORT','OBSERVE','gen','text','hash',1)").run(pub,r.run_id);
+ if(kind==='OUTCOME')f.raw.prepare("INSERT INTO report2_delivered_outcome_v2 VALUES('sample','gen','wave','SHORT',?,'dispatch',1,1,1,1,'PENDING',1)").run(pub);
+ if(kind==='RECHECK')f.raw.prepare("INSERT INTO v3_recheck_task_shadow(task_id,publication_id,contract_code,direction,wave_id,snapshot_id,run_id,due_ts,expires_ts,state,last_result,created_ts,updated_ts) VALUES('task','other',?,'SHORT','wave','snap','run',1,2,'DONE',?,1,2)").run(r.contract_code,JSON.stringify({completed_publication:pub}));
+ if(kind==='BINDING')f.raw.prepare("INSERT INTO v3_dispatch_publication_binding_shadow(idempotency_key,publication_id,contract_code,direction,wave_id,lifecycle_event,rules_version,snapshot_id,run_id,observed_ts,analytical_fingerprint,presentation_hash,created_ts) VALUES('key',?,?,'SHORT','wave','OBSERVE','v','snap','run',1,'hash','hash',1)").run(pub,r.contract_code);
+ if(kind==='LIFECYCLE')f.raw.prepare("INSERT INTO v3_user_lifecycle_shadow VALUES(?,'SHORT','wave','v','WAIT','reason',?,NULL,1,1)").run(r.contract_code,r.observed_ts);
+ if(kind==='DISPATCH')f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES('dispatch','key',?,'SHORT','wave','OBSERVE','v','PENDING',?,1,1)").run(r.contract_code,r.decision_id);
+ if(kind==='CALIBRATION'){const s={sample_id:'sample',decision_id:r.decision_id,snapshot_id:r.snapshot_id,contract_code:r.contract_code,direction:'SHORT',campaign_receipt_id:'receipt',campaign_id:'campaign',observed_ts:1,anchor_committed_ts:1,entry_trigger_time:1,entry_trigger_price:1,base_low:1,base_high:2,invalidation_price:1,target_price:3,scenario_type:'CONTROLLED',sample_json:'{}',material_digest:'hash',created_ts:1};f.raw.prepare('INSERT INTO tz101_entry_area_calibration_signal('+Object.keys(s).join(',')+') VALUES('+Object.keys(s).map(()=>'?').join(',')+')').run(...Object.values(s));}
+}
+test('all eight reference namespaces still protect the referenced member of a shared UPDATE after archive copy',async()=>{
+ for(const kind of ['COMMAND','PUBLICATION','OUTCOME','RECHECK','BINDING','LIFECYCLE','DISPATCH','CALIBRATION']){const f=fixture(2),r=f.old[0],out=await compact(f,{execute:true,shared_mutation:true,before_modify:async()=>insertLateReference(f,kind,r)});assert.equal(out.compacted.length,1,kind);assert.deepEqual(out.conflicts_retained_hot,[r.publication_id],kind);assert.deepEqual(get(f,r.publication_id),r,kind);assert.equal(out.reference_or_statistic_rows_modified,0);}
+});
+test('shared complete census fails closed for reference growth beyond the unchanged margin',async()=>{
+ const f=fixture(2),out=await compact(f,{execute:true,shared_mutation:true,before_modify:async()=>{for(let i=0;i<9;i++)f.raw.prepare("INSERT INTO report2_command_v2 VALUES(?,'FULL',NULL,'MANUAL',1,2,'gen','COMPLETED',NULL,NULL,'unrelated',NULL,NULL,1)").run('late:'+i);}});assert.equal(out.compacted.length,0);assert.equal(out.conflicts_retained_hot.length,2);for(const r of f.old)assert.deepEqual(get(f,r.publication_id),r);
+});
+test('namespace creation between copy and shared UPDATE retains every affected original',async()=>{
+ const f=fixture(2,{v2:false}),out=await compact(f,{execute:true,shared_mutation:true,before_modify:async()=>f.raw.exec(fs.readFileSync(new URL('../current-generation/migrations/007_commands_delivery.sql',import.meta.url),'utf8'))});assert.equal(out.compacted.length,0);assert.equal(out.conflicts_retained_hot.length,2);for(const r of f.old)assert.deepEqual(get(f,r.publication_id),r);
+});
+test('deleted newer witness is checked per shared member; another eligible member may still move',async()=>{
+ const f=fixture(2),out=await compact(f,{execute:true,shared_mutation:true,before_modify:async()=>f.raw.prepare('DELETE FROM canonical_publication_shadow WHERE publication_id=?').run(f.latest.publication_id)});assert.equal(out.compacted.length,1);assert.deepEqual(out.conflicts_retained_hot,[f.old[0].publication_id]);assert.deepEqual(get(f,f.old[0].publication_id),f.old[0]);
+});
+test('shared UPDATE transaction abort preserves all primary originals and immutable archive copies',async()=>{
+ const f=fixture(4);f.raw.exec(`CREATE TRIGGER shared_failure BEFORE UPDATE ON canonical_publication_shadow WHEN NEW.publication_id='${f.old[1].publication_id}' BEGIN SELECT RAISE(ABORT,'SHARED_CONTROLLED_FAILURE'); END`);
+ await assert.rejects(compact(f,{execute:true,shared_mutation:true}),e=>{assert.match(e.message,/SHARED_CONTROLLED_FAILURE/);assert.equal(e.compaction_receipt.compacted.length,0);return true;});for(const r of f.old)assert.deepEqual(get(f,r.publication_id),r);assert.equal(f.coldraw.prepare('SELECT COUNT(*) AS n FROM report2_canonical_cold_archive_v1').get().n,4);
+});
+test('missing, duplicated or foreign RETURNING ids refuse a success claim without discarding any private original',async()=>{
+ for(const kind of ['MISSING','DUPLICATE','FOREIGN']){const f=fixture(2),batch=f.source_db.batch.bind(f.source_db);f.source_db.batch=async s=>{const r=await batch(s);for(const [i,q] of s.entries())if(q.sql.endsWith('RETURNING publication_id'))r[i].results=kind==='MISSING'?[]:kind==='DUPLICATE'?[r[i].results[0],r[i].results[0]]:[{publication_id:'PUB:'+'f'.repeat(40)}];return r;};await assert.rejects(compact(f,{execute:true,shared_mutation:true}),/EXACT_SHARED_CANONICAL_RETURNING_ACK_REQUIRED/);assert.equal(f.coldraw.prepare('SELECT COUNT(*) AS n FROM report2_canonical_cold_archive_v1').get().n,2);}
+});
+test('shared mutation remains disabled by default and does not alter permanent writer or rotation flags',async()=>{
+ const f=fixture(2),r=await compact(f,{execute:true});assert.equal(r.compacted.length,2);assert(r.copy_admission.groups.every(g=>g.shared_updates===0));assert(!f.source_db.calls.some(s=>s.endsWith('RETURNING publication_id')));
+});
+
+test('shared exact ids and per-statement counters survive the retained bridge and RemoteD1 transport',async()=>{
+ const f=fixture(8,{v2:false});archiveAll(f);let requests=0;
+ const source_db=new RemoteD1Database('https://bridge.invalid/d1','fixture-token',{beforeRequest:e=>{assert(e.wire_bytes<=P.bridge_wire_bytes);assert(requests++<16);return{allowed:true};},fetchImpl:(u,init)=>bridge.fetch(new Request(u,init),{DATA_DB:f.source_db,REPORT2_CLOUD_BRIDGE_TOKEN:'fixture-token'})});
+ const r=await compactProtectedCanonical({source_db,archive_db:f.archive_db,archive_headroom:headroom,before_modify:async()=>{},execute:true,shared_mutation:true,now});assert.equal(r.compacted.length,8);assert.equal(r.mutation_batches,1);assert.equal(r.native_readbacks.length,4);assert.equal(r.D1.unknown_ops,0);assert(r.copy_admission.groups[0].statement_costs.every(s=>s.counters_present));
+ if(process.env.REPORT2_COMPACTION_PROOF_OUTPUT){const file=process.env.REPORT2_COMPACTION_PROOF_OUTPUT,proof=JSON.parse(fs.readFileSync(file,'utf8'));proof.shared_mutation={schema:'SHARED_EXACT_CANONICAL_FIXTURE_V1',selected:r.selected,prepared:r.prepared,moved:r.compacted.length,mutation_batches:r.mutation_batches,independent_post_readbacks:r.native_readbacks.length,copy_admission:r.copy_admission,parameters_limit:100,sql_bytes_limit:100000,group_cap:8,transaction_cap:6,wire_cap:P.bridge_wire_bytes,D1_fixture:r.D1,native_production_cost_qualified:false,per_row_estimates_lowered:false,productionD1:0,sourceHTTP:0,MAIN:0,Telegram:0};fs.writeFileSync(file,JSON.stringify(proof,null,2)+'\n');}
 });
