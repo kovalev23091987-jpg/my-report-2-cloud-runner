@@ -1,0 +1,19 @@
+# Offline proof read shapes and extra-readback envelope
+
+This package advances the missing generic result-boundary qualification. No production caller imports either new candidate module. The current producer, bridge, format, schema, quotas, pauses and reports are unchanged. No old three-native-row qualification is replayed.
+
+## Read boundary
+
+The reader accepts explicit source/output column mappings and independently prepared expectations. A descriptor is only an untrusted lookup hint into that supplied manifest; it cannot manufacture expected hashes. The manifest and SQL contract are snapshotted before reads. Supported controlled shapes are all-result envelopes, aliases, first rows, scalar first(column), raw arrays, columnNames headers, ordered mixed run/read batches and exact legacy raw values. The existing immutable archive must restore its locator first; proof decoding follows. The actual installed repaired bridge bytes, existing Node adapter and journal are exercised with synthetic D1 responses. Decoding adds no SQL or HTTP and changes no native usage metadata.
+
+The whole response is checked before decoding: at most8 proof values,12MB declared decompressed bytes and256 result rows; attempted decode work is never refunded after corruption. Wrong identity, missing independent expectation, forged/corrupt data, changed raw headers, failed SELECT, accessors and oversized groups refuse without returning a partial result. Original UTF8 whitespace and Unicode remain exact. Positive candidate output never grants persistence ACK or enables a format.
+
+This is not a complete live caller graph. The source audit pins six real named producer/reader/maintenance anchors and the separate Node/Hub boundaries. The existing execution reader explicitly selects the proof column. Previous-snapshot and status queries use other explicit columns. Full-row archival must retain the original bytes. The arbitrary SQL bridge also permits computed SQL expressions; JSON extraction over a compressed body cannot be repaired by a result decoder. These computed SQL paths remain unqualified, as do current installed raw column order and durable independent-manifest lookup after restart.
+
+## Extra INSERT readback
+
+The prepared ordered INSERT+SELECT plan adds one statement per finalist. With two finalists:2 extra statements per full report,72 for36 scheduled runs and22 for11 reserved manual runs,94 total. Both statements stay in the same explicit batch plan, so it adds0 HTTP calls to that plan. This is plan arithmetic, not an accepted native cost or wire bound.
+
+The old Worker declares a48-query conservative path and50-query invocation limit.48+2=50 is only a declared calculation: the old constant/comment does not prove the current native worst case. A supplied offline read-cost bound must also fit the unchanged current-run reservation, a complete day ledger and a closed whole day; unknown failed usage, missing bounds, arithmetic overflow or exhausted reservations refuse. Even a positive synthetic model returns actual_native_bound_accepted=false and production_admission_authorized=false. No reservation is increased, reset or refunded.
+
+Remaining before activation: actual indexed-read cost/wire/CPU/heap bounds; current installed schema and trigger; complete live caller/projection routing; durable independent expectations; causal native readback ACK; day admission and integrated natural/manual/LIQ acceptance. The96-row/day versus144 scheduled/188 including manual deficit is unchanged. Writer, rotation and new format remain false.
