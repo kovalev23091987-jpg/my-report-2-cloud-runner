@@ -1,0 +1,210 @@
+{
+  "schema": "ACTIVE105_SQL_BRIDGE_COUNTER_REPAIR_INSTALLED_HANDOFF_V1",
+  "recorded_utc": "2026-10-16T16:46:43.500Z",
+  "status": "PR413_TO415_MERGED_EXACT_SQL_BRIDGE_COUNTER_REPAIR_INSTALLED_STORAGE_ACCEPTANCE_OPEN",
+  "source_main": "51c775d10d3cc33376a6e2bdfe8dba1e8a59092c",
+  "leased_main": "68d85b93d598a70855670b8b4e2bb1007e941c2b",
+  "merged_main": "6312144055c64cba9fed3516d84c92390859635b",
+  "previous_handoff": "checkpoints/ACTIVE105_OFFLINE_PROOF_READBACK_AND_ORDERED_BATCH_HANDOFF_20261016.json",
+  "PR413_to415": {
+    "PRs": [
+      413,
+      414,
+      415
+    ],
+    "PR415_merge": "6312144055c64cba9fed3516d84c92390859635b",
+    "branch": {
+      "run": 38933381207,
+      "head": "d9ae0b05bc69dafcf815d0f2951dfe86172b0d1e",
+      "pass": 925,
+      "fail": 0,
+      "TAP": 21,
+      "artifact": 12060141790,
+      "digest": "sha256:bcc1c0d0ec75c43e590b6562c8c108f11abcaf0830da9928b5810ad04c49f65b"
+    },
+    "main": {
+      "run": 38933750536,
+      "head": "6312144055c64cba9fed3516d84c92390859635b",
+      "pass": 925,
+      "fail": 0,
+      "TAP": 21,
+      "artifact": 12060355841,
+      "digest": "sha256:720860963007e478f1d60f260cf4cc64f566dd31403b14ef8386ca0cb3644e8d"
+    },
+    "release": {
+      "run": 38934007309,
+      "proof": "checkpoints/free-storage-20261016/sql-bridge-counter-release-38934007309.json",
+      "artifact": 12060545299,
+      "digest": "sha256:5e2ca00ca2c43e22a8e3a7dff2e5bc6c74057bcfd36babc91867567b4bc89fe9",
+      "version": "7011c257-4bdc-4244-a858-42c30e8532ab",
+      "module_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+      "settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+      "installed": true,
+      "native_partial_reply_accepted": false
+    }
+  },
+  "identity_finding": {
+    "Hub_run": 38930912170,
+    "SQL_bridge_run": 38932219618,
+    "Hub_is_NOT_SQL_bridge": true,
+    "SQL_bridge_module_before": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
+    "current_native_5103byte_fixture_exact": true
+  },
+  "native_release": {
+    "schema": "EXACT_SQL_BRIDGE_COUNTER_RELEASE_NATIVE_REVIEW_V1",
+    "run": 38934007309,
+    "head": "6312144055c64cba9fed3516d84c92390859635b",
+    "artifact": 12060545299,
+    "artifact_digest": "sha256:5e2ca00ca2c43e22a8e3a7dff2e5bc6c74057bcfd36babc91867567b4bc89fe9",
+    "proof_raw_sha256": "09e4349fc13140e2bc8059f7698ad3306dcd5ce3bcef66f561486019d021e651",
+    "status": "CURRENT_SQL_BRIDGE_COUNTER_REPAIR_EXACTLY_INSTALLED",
+    "before": {
+      "deployment_id": "4bbbca85-8201-4a3e-ba43-60c6fc48b147",
+      "version_id": "9543ad66-087e-49d9-b7de-5766a5b63687",
+      "module_sha256": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
+      "module_readback_basis": "ACTIVE_EQUALS_LATEST_UPLOAD_EXACT_BYTES",
+      "settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+      "crons_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "binding_names": [
+        "DATA_DB",
+        "REPORT2_CLOUD_BRIDGE_TOKEN",
+        "REPORT2_DENO_BRIDGE_TOKEN"
+      ],
+      "crons": [],
+      "settings_key_sha256": {
+        "placement": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "tail_consumers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "logpush": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+        "bindings": "93af1a3986b65e6aeadfb38f7c3ee8e91dde9a6f99da84940c3bd31f2e4d56cf",
+        "compatibility_date": "9499aee670fe2683a3221ad04355d6118aa80ff24acbecd1377ba2922b2c7202",
+        "compatibility_flags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "usage_model": "fe6d3468cf5c74d8ec2a95b40f2e05338c37a4202f8fad692d2b64a9cf9b468a",
+        "limits": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "effective_runtime": {
+        "compatibility_date": "2026-09-15",
+        "usage_model": "standard"
+      },
+      "immutable_script_etag": "b80b7814f42ff98df364a5fd4115be677b35727590cc317e243d3d0d9754315e"
+    },
+    "after": {
+      "deployment_id": "8cd9ba38-b819-49ce-9ff2-e1e7f3e8541b",
+      "version_id": "7011c257-4bdc-4244-a858-42c30e8532ab",
+      "module_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+      "module_readback_basis": "ACTIVE_EQUALS_LATEST_UPLOAD_EXACT_BYTES",
+      "settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+      "crons_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "binding_names": [
+        "DATA_DB",
+        "REPORT2_CLOUD_BRIDGE_TOKEN",
+        "REPORT2_DENO_BRIDGE_TOKEN"
+      ],
+      "crons": [],
+      "settings_key_sha256": {
+        "placement": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "tail_consumers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "logpush": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+        "bindings": "93af1a3986b65e6aeadfb38f7c3ee8e91dde9a6f99da84940c3bd31f2e4d56cf",
+        "compatibility_date": "9499aee670fe2683a3221ad04355d6118aa80ff24acbecd1377ba2922b2c7202",
+        "compatibility_flags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "usage_model": "fe6d3468cf5c74d8ec2a95b40f2e05338c37a4202f8fad692d2b64a9cf9b468a",
+        "limits": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "effective_runtime": {
+        "compatibility_date": "2026-09-15",
+        "usage_model": "standard"
+      },
+      "immutable_script_etag": "faf47729620694c0e12f5c439fd5f22a15d42dbee42bc66625ff9c7e57ad8836"
+    },
+    "completed_ts": 1792168947264,
+    "SQL": 0,
+    "sourceHTTP": 0,
+    "Worker_invocations": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "rollback": [],
+    "github_HTTP": 26,
+    "cloudflare_HTTP": 32,
+    "whole_HTTP": {
+      "used": {
+        "hot": 26,
+        "background": 32,
+        "statistics": 0
+      },
+      "total": 58,
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "remaining": 106
+    },
+    "manual_reserved": 24,
+    "installed_counter_code_exactly_verified": true,
+    "native_partial_reply_accepted": false,
+    "whole_day_closed": false,
+    "physical_bytes_freed": 0,
+    "full_report_restored": false
+  },
+  "verification": {
+    "latest_cloud_pass": 925,
+    "fail": 0,
+    "TAP": 21,
+    "related_local": 48,
+    "new_counter_controlled_tests": 13,
+    "coordinator_bridge_rollback_case": 1,
+    "artifact_digests_checked": true
+  },
+  "preserved": {
+    "SQL_source_params_auth_limits_clocks": true,
+    "settings_and_secret_bindings": true,
+    "UTC16_native_slots_spent": 2,
+    "additional_slot_authorized": false,
+    "manual24": true,
+    "writer_rotation_newformat": false,
+    "assets": 105,
+    "contracts": 122,
+    "paused": 9
+  },
+  "open": {
+    "native_partial_reply": false,
+    "whole_day_closed": false,
+    "storage_restored": false,
+    "full_report_restored": false,
+    "project_complete": false,
+    "byte_inflow_deficit_solved": false,
+    "physical_bytes_freed_this_package": 0
+  },
+  "metadata_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "unrelated_root_values_byte_preserved": 375
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "unrelated_root_values_byte_preserved": 152
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "unrelated_root_values_byte_preserved": 317
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "unrelated_root_values_byte_preserved": 350
+    }
+  ],
+  "attachment_policy": "Only stale merged PR313-315 UI attachments unlinked to fit100; no GitHub PR/code/history deleted.",
+  "next_action": "Continue from checkpoints/ACTIVE105_SQL_BRIDGE_COUNTER_REPAIR_INSTALLED_HANDOFF_20261016.json. PR413/414 identity inspection and PR415 installed SQL bridge counter repair are complete in their stated scope. PR415 final branch38933381207/head d9ae0b05bc69dafcf815d0f2951dfe86172b0d1e and main38933750536/head6312144055c64cba9fed3516d84c92390859635b:925PASS/0FAIL,21TAP. Native control release38934007309 installed bridge version7011c257-4bdc-4244-a858-42c30e8532ab/module06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf; exact settings05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded, no crons and both secret bindings preserved; no rollback.26GitHub+32Cloudflare=58controlHTTP,0SQL/source/Workerinvocation/MAIN/Telegram. Actual old SQL bridge source70c3b56e... is now proven current before repair; Hub prefix is NOT SQL bridge provenance. Missing counter formerly became0 and could be measured; repaired code keeps null and each known safe counter separately, success=false unclosed. Native partial reply/whole-day/storage/full-report acceptance is NOT proved by installation. Do not repeat accepted inspection/rollout or tests without a new defect. BOTH UTC16 RETAINED_HISTORY slots spent, NO third permission; no nativeSQLmaintenance/expired datedjob/forcedMAIN/manualknownfailure or quota reset/refund/rename/raise.10000R800W reserved remains spent;2/day48/run5000R400W16bridge40control164whole/manual24 unchanged. Next399+406 native qualification only a later ordinary UTCday, fresh exact main/code/readers/bridge release/current scoped own lease STARTING RETAINED_HISTORY., exact readback and actual admission, never clear unknown. Use existing retained-history-maintenance.yml execute=true,kind=canonical,prefetch_private=true,canonical_cursor=auto,native_qualification=true,archive_pool_qualification=true,owner_emergency_day empty; no self_qualification_day. Need full nonoverflow per-binding native journals and reconciliation, each private grouped query/shared UPDATE/readback actual counters, exact copies/preflight/readthrough/physical bytes,cursor/owner release. Preserve installed reader proof counter-release38901929896 and new bridge release38934007309 distinctly. After valid later physical remediation save exact status evidence, inspect already saved next NATURAL full and both persisted finalists plus same-run message_id, no forced known failure. LastFULL38840064503 FIL/SUI absent,42337R341W+3unknownINSERT500,totalnull,noSENT; PR405 capacity refusal crosses days until valid later physical remediation+admission. Only1NEAR487424bytes freed earlier01:44:46UTC16,main499470336; no newA1-A4body/shared399/grouped406native throughput. writer/rotation/newprimaryformatfalse. Without waiting continue only a concrete missing offline caller/admission/storage-growth qualification, not13candidate/3historicalrow reruns.96nominal/day<144scheduled/188manual;4x48 remains proposal.9family3266708R58920W notwhole-day, PRIVATE_PRICE nested no doublecount, no sample upperbound. PR412 offline compression/readback candidate unchanged; all live callers/native schema/CPUheapwire/extraSQLadmission/causalnativeACK open. Then all7fixed directions,105assets122contracts9indefinitepauses,MAGIC106deferred,strategy/weights/sourceclocks/forms/caps preserved, decision score and owner-specified final Telegram last.",
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792168726234",
+    "acquired_ts": 1792168726234,
+    "expires_ts": 1792173226234,
+    "expected_main": "f4866f3a5fd88e9223a5fcd4ed9a6980d2c44928",
+    "scope": "Owner-authorized exact SQL bridge counter rollout within the ongoing all-active105 repair plan: qualify and merge the proven installed-source partial-counter repair, then ONE bounded bridge-only immutable upload/activation with exact original source/settings/runtime/DATA_DB/two inherited secrets/no-cron readbacks and own-only rollback through the existing control coordinator. Require exact successful fresh main common-cloud, current phase/fence/generation/status and own CAS readback; preserve existing82CF/58GitHub/164whole/24manual/16rollback control bounds. No SQL/source/Worker invocation/tail, schema or global settings changes, UTC16 native RETAINED_HISTORY maintenance, forced MAIN/manual known failure, quota reset/refund/rename/raise, primary compression/deletion/writer/rotation/newformat activation, paid plan, strategy/weights/sourceclocks/forms/pauses changes. Save exact deployment/code/artifact/counter-provenance handoff and release own lease. Native partial reply/whole-day/storage/report acceptance remains separate.",
+    "released_ts": 1792169203500,
+    "released": true
+  }
+}
