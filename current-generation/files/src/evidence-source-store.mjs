@@ -1,6 +1,13 @@
 export const EVIDENCE_SOURCE_STORE_VERSION='evidence-source-store-v1-20260928';
 
 const text=value=>String(value??'').trim();
+// Read existing instrumentation only. Absence is not a measured-zero receipt;
+// it leaves admission with the existing caller. An invalid/unknown native
+// snapshot must not authorize more source work after an earlier failure.
+export function nativeSourceUsageUnclosed(db){
+ if(typeof db?.usageSnapshot!=='function')return false;
+ try{const n=db.usageSnapshot().unknown_ops;return!Number.isSafeInteger(n)||n<0||n>0;}catch{return true;}
+}
 const schemaReadiness=new WeakMap();
 export async function ensureSourceSchemaOnce(db,namespace,install){
  let states=schemaReadiness.get(db);if(!states){states=new Map();schemaReadiness.set(db,states);}
