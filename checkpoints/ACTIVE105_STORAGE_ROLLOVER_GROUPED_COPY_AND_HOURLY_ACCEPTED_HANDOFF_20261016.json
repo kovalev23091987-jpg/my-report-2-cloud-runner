@@ -1,0 +1,286 @@
+{
+  "schema": "ACTIVE105_STORAGE_ROLLOVER_GROUPED_COPY_AND_HOURLY_ACCEPTED_HANDOFF_V1",
+  "recorded_utc": "2026-10-16T11:51:38.717Z",
+  "source_main": "24bccc7a9226f55551984afbe888abab88b9eb2d",
+  "current_task": "ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS",
+  "status": "PR405_PR406_MERGED_HOURLY_NATIVE_ACCEPTED_CAPACITY_AND_WHOLE_DAY_OPEN",
+  "recovered_prior_point": {
+    "commit": "18768256a0c0bfdc200ff496c2b6ae6f37c61874",
+    "recorded_utc": "2026-10-16T11:03:50Z",
+    "proof": "checkpoints/ACTIVE105_NATIVE_COLLECTOR_COST_AND_HOURLY_READINESS_HANDOFF_20261016.json",
+    "chat_UI_restored_claimed": false
+  },
+  "PR405": {
+    "number": 405,
+    "merged": true,
+    "merge": "3df358914fa9307124bf0def98a8b8ecdc50abaa",
+    "head": "b23329c407530274e78175a1ee26376ef7e0e4c4",
+    "cloud": 38893104159,
+    "main_cloud": 38893478174,
+    "pass": 830,
+    "fail": 0,
+    "proof": "checkpoints/free-storage-20261016/cloud-38893478174-storage405-review.json",
+    "cross_day_production_observed": false,
+    "original_unknown_day_preserved": "2026-10-16"
+  },
+  "PR406": {
+    "number": 406,
+    "merged": true,
+    "merge": "24bccc7a9226f55551984afbe888abab88b9eb2d",
+    "head": "6a369407e710142f59986617aaeabe5c3d84405b",
+    "cloud": 38895342166,
+    "main_cloud": 38895729651,
+    "pass": 839,
+    "fail": 0,
+    "proof": "checkpoints/free-storage-20261016/cloud-38895729651-copy406-review.json",
+    "max_rows_per_copy_group": 8,
+    "max_cold_group_private_queries": 7,
+    "native_cost_or_throughput_qualified": false,
+    "reserves_lowered": false,
+    "manual_native_qualification_only": true,
+    "permanent_flags_changed": false
+  },
+  "ordinary_hourly_native": {
+    "schema": "EXACT_ORDINARY_HOURLY_NATIVE_USAGE_REVIEW_V1",
+    "run": 38894299195,
+    "head": "3df358914fa9307124bf0def98a8b8ecdc50abaa",
+    "artifact": 12042689734,
+    "artifact_digest": "sha256:de80c486b2330709ca4e20453c95a1812122e386f541d5e8cbd37f224cb2ebae",
+    "original_raw_sha256": "e664cc7df7f32242599c8c5002c29d77eea2e260d40821a05a27763f7ad45c84",
+    "receipt_sha256": "c20f791c7031218fc8cf5f394ea0f58b49d62035b6c79d2c6575375dea65e6a2",
+    "version": "13355aa2-0653-438b-83c3-268ff6e3ba88",
+    "deployment_id": "2d027484-07d9-4c7a-bc71-66b82c85a0b4",
+    "version_deployment_unchanged": true,
+    "scheduled_ts": 1792150502446,
+    "execution_started_ts": 1792150503863,
+    "execution_completed_ts": 1792150508790,
+    "native_bindings": {
+      "DATA_DB": {
+        "attempted_statements": 2,
+        "measured_rows_read_subtotal": 8,
+        "measured_rows_written_subtotal": 0,
+        "unknown_operations": 0,
+        "row_totals_closed": true,
+        "total_rows_read": 8,
+        "total_rows_written": 0
+      },
+      "ARCHIVE_DB": {
+        "attempted_statements": 16,
+        "measured_rows_read_subtotal": 25,
+        "measured_rows_written_subtotal": 7,
+        "unknown_operations": 0,
+        "row_totals_closed": true,
+        "total_rows_read": 25,
+        "total_rows_written": 7
+      }
+    },
+    "native_total_reads": 33,
+    "native_total_writes": 7,
+    "native_unknown": 0,
+    "actual_SQL_statements": 18,
+    "additional_SQL": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "extra_Worker_invocations": 0,
+    "github_HTTP": 20,
+    "cloudflare_HTTP": 5,
+    "one_stream": true,
+    "frames": 1,
+    "wire_bytes": 2230,
+    "tail_deleted": true,
+    "normal_workflow_exit": true,
+    "daily_total": false,
+    "whole_day_closed": false,
+    "full_report_recovered": false,
+    "original_contains_exact_native_message": true,
+    "original_path": "checkpoints/free-storage-20261016/native-tail-38894299195.json"
+  },
+  "collector_reused": "checkpoints/free-storage-20261016/native-tail-38888867181-review.json",
+  "native_capacity_source": {
+    "run": 38840064503,
+    "job": 116777904299,
+    "head": "6700d47b4491bb28a38467e8fc387b84c26a7edd",
+    "artifact": 12020992278,
+    "error": "Exceeded maximum DB size",
+    "excerpt": "checkpoints/free-storage-20261016/natural-38840064503-native-capacity-error.json.gz",
+    "raw_sha256": "32648baf9af3965b7e4beaa25b0e7d9e4c3036f6a2f20ef8de7ffcef74e52856"
+  },
+  "native_byte_profile": "checkpoints/free-storage-20261016/full-evidence-native-byte-profile.json",
+  "storage_recovered": false,
+  "full_report_recovered": false,
+  "whole_day_closed": false,
+  "project_complete": false,
+  "all_blocks_complete": false,
+  "previous_native_storage": {
+    "schema": "FIRST_NATIVE_CANONICAL_RELOCATION_REVIEW_V1",
+    "run": 38836709187,
+    "head": "f85439880b4e255ce918f7590a91d77ed322b4b1",
+    "artifact": 12019123831,
+    "artifact_digest": "sha256:de5ecd5e7e12a23a065ff262e31544ea0bd449a60bfe565abc8a7adc00294509",
+    "proof": "checkpoints/free-storage-20261016/native-38836709187.json",
+    "proof_raw_sha256": "d9ea136794b7a9ce10893ddf38f716a3f9112e2f1c459b02a6cecdfe51de5249",
+    "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY",
+    "selected": 43,
+    "prepared": 13,
+    "canonical_rows_modified": 1,
+    "primary_database_bytes_before": 499957760,
+    "primary_database_bytes_after": 499470336,
+    "physical_bytes_reclaimed": 487424,
+    "D1": {
+      "requests": 106,
+      "rows_read": 3060,
+      "rows_written": 17,
+      "unknown_ops": 0
+    },
+    "private_D1": {
+      "requests": 45,
+      "rows_read": 27,
+      "rows_written": 12,
+      "unknown_ops": 0
+    },
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "RETAINED_HISTORY:38836709187:1792115065012",
+      "source_run_id": "38836709187",
+      "measured_rows_read": 3059,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 17,
+      "measured_requests_accounted": 106,
+      "unknown_ops": 0
+    },
+    "cursor_persistence": {
+      "status": "CANONICAL_CURSOR_UNCHANGED",
+      "cursor": 710
+    },
+    "native_preflight": [
+      {
+        "publication_id": "PUB:85b7efaa9061246f71afe5392d25691bebfcf784",
+        "raw_sha256": "b3c99b1581b2e7bed4fa01f556550bd7dc48999c1325845d34129d6932b0b6a8",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      },
+      {
+        "publication_id": "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c",
+        "raw_sha256": "8c0bdd98616957f33e5bbc923128ef30d076487d71f5e33ecffda7b100f71ece",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      },
+      {
+        "publication_id": "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3",
+        "raw_sha256": "d14048554275d4700acf2eb9fb863c5cc24b89da8f19aee0375981844fbd494e",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      },
+      {
+        "publication_id": "PUB:2c5b1256c3ce8adabb01e531f9909766b63fef15",
+        "raw_sha256": "e9ee491a9100a17f4b0f51f93d4c36cf0c439aad33f82f747d7778d475b03cfd",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      }
+    ],
+    "native_readbacks": [
+      "PUB:85b7efaa9061246f71afe5392d25691bebfcf784"
+    ],
+    "compacted": [
+      {
+        "publication_id": "PUB:85b7efaa9061246f71afe5392d25691bebfcf784",
+        "run_id": "1791839191939-1791839201967",
+        "contract": "NEAR-USDT",
+        "observed_ts": 1791839289400,
+        "raw_sha256": "b3c99b1581b2e7bed4fa01f556550bd7dc48999c1325845d34129d6932b0b6a8",
+        "archive_location": "LEGACY",
+        "original_bytes": 537431,
+        "hot_header_bytes": 964,
+        "logical_saved_bytes": 536467
+      }
+    ],
+    "deferred_counts": {
+      "ARCHIVE_POOL_HTTP_HEADROOM_DENIED": 30,
+      "SHARED_NATIVE_HEADROOM": 12
+    },
+    "whole_HTTP": 75,
+    "combined_control_HTTP": 20,
+    "bridge_HTTP": 9,
+    "private_HTTP": 46,
+    "private_payload_in_new_A1_A4": false,
+    "private_payload_in_legacy": true,
+    "permanent_flags_changed": false,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "reference_or_statistics_rows_modified": 0,
+    "publication_rows_deleted": 0,
+    "ordinary_UTC16_slots_used": 2,
+    "native_unclosed_ops": 0,
+    "full_report_after_relocation_verified": false,
+    "sustainable_throughput_verified": false,
+    "project_complete": false
+  },
+  "restrictions": {
+    "UTC16_slots_used": 2,
+    "third_UTC16_authorized": false,
+    "ordinary_slots_per_day": 2,
+    "rows_per_run": 48,
+    "reads_per_run": 5000,
+    "writes_per_run": 400,
+    "bridge_HTTP": 16,
+    "control_HTTP": 40,
+    "whole_HTTP": 164,
+    "manual_HTTP_reserved": 24,
+    "writer": false,
+    "rotation": false,
+    "assets": 105,
+    "contracts": 122,
+    "paused": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "MAGIC106_deferred": true,
+    "strategy_or_source_clocks_or_form_changed": false
+  },
+  "package_operations": {
+    "extra_sourceHTTP": 0,
+    "extra_SQL": 0,
+    "extra_MAIN": 0,
+    "extra_Telegram": 0,
+    "extra_Worker_invocations": 0,
+    "observation_control_HTTP": 25
+  },
+  "next_action": "Continue from PR405–406; do not restart old N05 or lost UI history. Exact main38895729651/head24bccc7a9226f55551984afbe888abab88b9eb2d:839PASS/0FAIL. PR405 binds verified 'Exceeded maximum DB size' to original full38840064503/job116777904299 and holds full scheduled cycles across UTC rollover until a later exact native physical relocation plus actual day admission. Generic HTTP500 retains old same-day behavior, original3unknown stay UTC16; cross-day production not yet observed. PR406 groups<=8 cold copies in<=7private queries only within existing explicit manual native qualification; SUM32R24W/member, future mutation reserves, source exact fields, all protected references, per-member newer witness, namespace guards, four independent pre/post readbacks preserved. Fixture transport is not native throughput/cost acceptance. Ordinary hourly38894299195 ACCEPTED: actual11:35UTC,DATA_DB8R0W+ARCHIVE_DB25R7W,unknown0,stableversion13355aa2,ownTaildeleted,normalexit. Collector38888867181 ACCEPTED NOOP130R0W/CLOSED319R34W, nestedPRIVATE_PRICE147R4W+disjoint172R30W. Do not re-tail/probe these accepted point facts. Reconcile whole-day max576callbacks/288buckets,known9families3266708R58920W, collector disjoint remainder,hourly,controls,latefailedunknown. Do not double-count PRIVATE_PRICE or call sampled multiplication an upper bound. BOTH UTC16 RETAINED_HISTORY slots spent, no third authorization: no additional nativeSQLmaintenance/expiredUTC16datedjob/forcedMAIN/manualreport of knownfailure, quota reset/refund/rename/raise.10000R800W reservations remain spent. Next399+406 native qualification only a later ordinary UTCday2/day window with fresh exact main/phase/fence/generation/status, own<=90min scoped CASlease+readback, exact installed readers and actual native day admission; never clear unknown to force admission.48/run5000R400W16bridge40control164whole/manual24 stay. Preserve exact per-query private and shared UPDATE/readback costs, before/after copies/physical bytes, cursor and owner release. Save remediation evidence then inspect next NATURAL full for BOTH persisted finalists and same-runTelegrammessage_id or honest no-delivery reason; greenworkflow is not recovery. LastFULL38840064503:105/105,FIL/SUI both absent,known42337R341W+3unknown,totalnull,noSENT. Only487424bytes NEAR freed01:44:46UTC16,lastprimary499470336; A1–A4 bodies/shared+groupednative not accepted.96nominal/day<144scheduled/188manual,4x48 proposal unapproved/unqualified,writer/rotationfalse. Three saved exact native full-evidence originals show large proof bytes, but trigger01143json_extract/5json_type and17consumers require full qualification before primary format/compression/deletion; byte profile is sample not inventory. Continue safe architecture and all7fixed directions using saved originals; no repeat finished checks without defect.105assets122contracts9indefinitepauses,strategy/weights/sourceclocks/forms preserved,MAGIC106deferred. Usefulcoverage/order/fallback of all105, history/statistics, automaticpriorities/weeklyHTX, integratednatural/manual/LIQ remain open. Decision score and finalTelegram mandatory afterblocks; owner supplies exact final form. Save status/threeproofs/release only ownlease. Heartbeat2 requires computer/app/network, not independent cloudAI.",
+  "own_lease_release": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792148821243",
+    "released_utc": "2026-10-16T11:51:38.717Z",
+    "only_own": true
+  },
+  "save_integrity": {
+    "unrelated_root_value_preservation": [
+      {
+        "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+        "unrelated_root_values_preserved_exactly": 375
+      },
+      {
+        "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+        "unrelated_root_values_preserved_exactly": 151
+      },
+      {
+        "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+        "unrelated_root_values_preserved_exactly": 317
+      },
+      {
+        "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+        "unrelated_root_values_preserved_exactly": 350
+      }
+    ],
+    "exact_readback_required": true
+  }
+}
