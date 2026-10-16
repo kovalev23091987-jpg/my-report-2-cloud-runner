@@ -1,0 +1,107 @@
+{
+  "schema": "FIRST_NATIVE_CANONICAL_RELOCATION_REVIEW_V1",
+  "run": 38836709187,
+  "head": "f85439880b4e255ce918f7590a91d77ed322b4b1",
+  "artifact": 12019123831,
+  "artifact_digest": "sha256:de5ecd5e7e12a23a065ff262e31544ea0bd449a60bfe565abc8a7adc00294509",
+  "proof": "checkpoints/free-storage-20261016/native-38836709187.json",
+  "proof_raw_sha256": "d9ea136794b7a9ce10893ddf38f716a3f9112e2f1c459b02a6cecdfe51de5249",
+  "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY",
+  "selected": 43,
+  "prepared": 13,
+  "canonical_rows_modified": 1,
+  "primary_database_bytes_before": 499957760,
+  "primary_database_bytes_after": 499470336,
+  "physical_bytes_reclaimed": 487424,
+  "D1": {
+    "requests": 106,
+    "rows_read": 3060,
+    "rows_written": 17,
+    "unknown_ops": 0
+  },
+  "private_D1": {
+    "requests": 45,
+    "rows_read": 27,
+    "rows_written": 12,
+    "unknown_ops": 0
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "RETAINED_HISTORY:38836709187:1792115065012",
+    "source_run_id": "38836709187",
+    "measured_rows_read": 3059,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 17,
+    "measured_requests_accounted": 106,
+    "unknown_ops": 0
+  },
+  "cursor_persistence": {
+    "status": "CANONICAL_CURSOR_UNCHANGED",
+    "cursor": 710
+  },
+  "native_preflight": [
+    {
+      "publication_id": "PUB:85b7efaa9061246f71afe5392d25691bebfcf784",
+      "raw_sha256": "b3c99b1581b2e7bed4fa01f556550bd7dc48999c1325845d34129d6932b0b6a8",
+      "exact_original_verified": true,
+      "primary_still_unmodified": true
+    },
+    {
+      "publication_id": "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c",
+      "raw_sha256": "8c0bdd98616957f33e5bbc923128ef30d076487d71f5e33ecffda7b100f71ece",
+      "exact_original_verified": true,
+      "primary_still_unmodified": true
+    },
+    {
+      "publication_id": "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3",
+      "raw_sha256": "d14048554275d4700acf2eb9fb863c5cc24b89da8f19aee0375981844fbd494e",
+      "exact_original_verified": true,
+      "primary_still_unmodified": true
+    },
+    {
+      "publication_id": "PUB:2c5b1256c3ce8adabb01e531f9909766b63fef15",
+      "raw_sha256": "e9ee491a9100a17f4b0f51f93d4c36cf0c439aad33f82f747d7778d475b03cfd",
+      "exact_original_verified": true,
+      "primary_still_unmodified": true
+    }
+  ],
+  "native_readbacks": [
+    "PUB:85b7efaa9061246f71afe5392d25691bebfcf784"
+  ],
+  "compacted": [
+    {
+      "publication_id": "PUB:85b7efaa9061246f71afe5392d25691bebfcf784",
+      "run_id": "1791839191939-1791839201967",
+      "contract": "NEAR-USDT",
+      "observed_ts": 1791839289400,
+      "raw_sha256": "b3c99b1581b2e7bed4fa01f556550bd7dc48999c1325845d34129d6932b0b6a8",
+      "archive_location": "LEGACY",
+      "original_bytes": 537431,
+      "hot_header_bytes": 964,
+      "logical_saved_bytes": 536467
+    }
+  ],
+  "deferred_counts": {
+    "ARCHIVE_POOL_HTTP_HEADROOM_DENIED": 30,
+    "SHARED_NATIVE_HEADROOM": 12
+  },
+  "whole_HTTP": 75,
+  "combined_control_HTTP": 20,
+  "bridge_HTTP": 9,
+  "private_HTTP": 46,
+  "private_payload_in_new_A1_A4": false,
+  "private_payload_in_legacy": true,
+  "permanent_flags_changed": false,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "reference_or_statistics_rows_modified": 0,
+  "publication_rows_deleted": 0,
+  "ordinary_UTC16_slots_used": 2,
+  "native_unclosed_ops": 0,
+  "full_report_after_relocation_verified": false,
+  "sustainable_throughput_verified": false,
+  "project_complete": false
+}
