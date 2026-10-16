@@ -1,0 +1,406 @@
+{
+  "schema": "ACTIVE105_ROW_ADMISSION_AND_FAILURE_ACCOUNTING_HANDOFF_V1",
+  "recorded_utc": "2026-10-16T02:51:47.000Z",
+  "source_main": "41fc62b8bd793c104d2dd4b079e858689d3f94a1",
+  "PR397": {
+    "number": 397,
+    "merged": true,
+    "merge": "6700d47b4491bb28a38467e8fc387b84c26a7edd",
+    "qualified_head": "90c1522bc02853e13a6e56bb558894bdcaf299b3",
+    "cloud_run": 38839715040,
+    "cloud_pass": 739,
+    "cloud_fail": 0,
+    "proof": "checkpoints/free-storage-20261016/cloud-38839715040-summary.json",
+    "native_qualified": false
+  },
+  "PR398": {
+    "number": 398,
+    "merged": true,
+    "merge": "41fc62b8bd793c104d2dd4b079e858689d3f94a1",
+    "qualified_head": "af2981dea3039135d8214c53671587f6de03bb53",
+    "cloud_run": 38841744456,
+    "cloud_pass": 775,
+    "cloud_fail": 0,
+    "proof": "checkpoints/free-storage-20261016/cloud-38841744456-summary.json",
+    "main_cloud": 38842021102,
+    "recovery_cloud": 38841791404,
+    "N10_cloud": 38841791416,
+    "native_failed_accounting_qualified": false,
+    "natural_guard_behavior_qualified": false
+  },
+  "clouds": {
+    "PR397": {
+      "run": 38839715040,
+      "pass": 739,
+      "artifact": 12021150844,
+      "digest": "sha256:0b7def9fbdce9354f9eb58840cc86aa34109172928abe521a50f9c4ef062b89f"
+    },
+    "PR398": {
+      "run": 38841744456,
+      "pass": 775,
+      "artifact": 12021138269,
+      "digest": "sha256:66c57f31b47e027818466d2e44d8b8dec4de34825c42cf0e9b426e70bbfe9435"
+    }
+  },
+  "connected_local_tests": {
+    "row_mutation": 65,
+    "failed_accounting_and_guard": 43
+  },
+  "latest_natural": {
+    "schema": "POST_RELOCATION_NATURAL_FULL_REVIEW_V1",
+    "run": 38840064503,
+    "head": "6700d47b4491bb28a38467e8fc387b84c26a7edd",
+    "run_id": "1792117353040-1792117361875",
+    "generated_at": "2026-10-16T02:24:13.880Z",
+    "after_native_relocation": true,
+    "artifact": 12020992278,
+    "artifact_digest": "sha256:708af396d1a45d7c88dfc7b1d763105b84a1418d37a1c09961f39c6b01ec8279",
+    "originals": [
+      {
+        "path": "checkpoints/free-storage-20261016/natural-38840064503-report2-run-result.json.gz",
+        "raw_sha256": "d09ba1a9efcad3b2c6985fe07715dc8784ded14235f9fe6c152d4cb5a61b412e",
+        "gzip_sha256": "b262e4ad0ad325cb4fb368dd970bbccd88db4daed151908bbe133f20869758a4"
+      },
+      {
+        "path": "checkpoints/free-storage-20261016/natural-38840064503-same-run-delivery-proof.json.gz",
+        "raw_sha256": "faf2a3c25116ed6cf2d7990044fd84513b8ac8cface4aa41e69aec03d3ad0f04",
+        "gzip_sha256": "3e717abd462e03ce2776b3f87228eaf27f4f17703f0c44e4b154b34051bbb52e"
+      }
+    ],
+    "status": "NOT_CLOSED",
+    "reason": "D1_POST_CYCLE_RESERVATION_EXCEEDED",
+    "scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0,
+      "approved_scope": {
+        "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+        "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+        "approved_contracts": 122,
+        "approved_assets": 105,
+        "catalog_families": 3,
+        "unsupported_inverse_delivery_contracts": 17,
+        "catalog_observed_ts": 1791827516363,
+        "observed_ts": 1792117362046,
+        "expected_analysis_contracts": 105,
+        "accepted_analysis_contracts": 105,
+        "missing_approved_analysis_contracts": [],
+        "outside_approved_crypto_contracts": [
+          {
+            "contract": "ZCSH-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "SNPS-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "WAL-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "MAGIC-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          }
+        ],
+        "identity_rejected": [],
+        "duplicate_rejected": [],
+        "status": "CLOSED",
+        "structural_membership_only": true,
+        "source_clocks_refreshed": false,
+        "approved_universe_changed": false
+      },
+      "stage0_coverage_pct": 100,
+      "complete": true
+    },
+    "selection": {
+      "top_two": [
+        "FIL-USDT",
+        "SUI-USDT"
+      ],
+      "deep_selected": [
+        "FIL-USDT",
+        "SUI-USDT"
+      ]
+    },
+    "persistence": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "PARTIAL",
+      "run_id": "1792117353040-1792117361875",
+      "expected_contracts": [
+        "FIL-USDT",
+        "SUI-USDT"
+      ],
+      "present_contracts": [],
+      "missing_contracts": [
+        "FIL-USDT",
+        "SUI-USDT"
+      ],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 0,
+      "missing_is_technical_not_no_market_idea": true
+    },
+    "native_attempt_usage": {
+      "attempted_statements": 434,
+      "measured_rows_read_subtotal": 42337,
+      "measured_rows_written_subtotal": 341,
+      "unknown_operations": 3,
+      "row_totals_closed": false,
+      "total_rows_read": null,
+      "total_rows_written": null
+    },
+    "unmeasured_operations": [
+      {
+        "operation": "run",
+        "target": "canonical_publication_shadow",
+        "sql_kind": "INSERT",
+        "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792117424603,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "full_evidence_shadow_log",
+        "sql_kind": "INSERT",
+        "sql_sha256": "d07a8ee537fe06ec160baa684af937cec5876287200b761350cb5e97031a4809",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792117451023,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "run",
+        "target": "canonical_publication_shadow",
+        "sql_kind": "INSERT",
+        "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792117452409,
+        "params_or_SQL_text_exported": false
+      }
+    ],
+    "exact_same_run_SENT": false,
+    "same_run_message_id": null,
+    "native_capacity_now_measured": false,
+    "prior_reclaimed_bytes": 487424,
+    "full_report_restored": false,
+    "project_complete": false,
+    "review_added_sourceHTTP": 0,
+    "review_added_SQL": 0,
+    "review_added_MAIN": 0,
+    "review_added_Telegram": 0
+  },
+  "prior_native": {
+    "schema": "FIRST_NATIVE_CANONICAL_RELOCATION_REVIEW_V1",
+    "run": 38836709187,
+    "head": "f85439880b4e255ce918f7590a91d77ed322b4b1",
+    "artifact": 12019123831,
+    "artifact_digest": "sha256:de5ecd5e7e12a23a065ff262e31544ea0bd449a60bfe565abc8a7adc00294509",
+    "proof": "checkpoints/free-storage-20261016/native-38836709187.json",
+    "proof_raw_sha256": "d9ea136794b7a9ce10893ddf38f716a3f9112e2f1c459b02a6cecdfe51de5249",
+    "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY",
+    "selected": 43,
+    "prepared": 13,
+    "canonical_rows_modified": 1,
+    "primary_database_bytes_before": 499957760,
+    "primary_database_bytes_after": 499470336,
+    "physical_bytes_reclaimed": 487424,
+    "D1": {
+      "requests": 106,
+      "rows_read": 3060,
+      "rows_written": 17,
+      "unknown_ops": 0
+    },
+    "private_D1": {
+      "requests": 45,
+      "rows_read": 27,
+      "rows_written": 12,
+      "unknown_ops": 0
+    },
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "RETAINED_HISTORY:38836709187:1792115065012",
+      "source_run_id": "38836709187",
+      "measured_rows_read": 3059,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 17,
+      "measured_requests_accounted": 106,
+      "unknown_ops": 0
+    },
+    "cursor_persistence": {
+      "status": "CANONICAL_CURSOR_UNCHANGED",
+      "cursor": 710
+    },
+    "native_preflight": [
+      {
+        "publication_id": "PUB:85b7efaa9061246f71afe5392d25691bebfcf784",
+        "raw_sha256": "b3c99b1581b2e7bed4fa01f556550bd7dc48999c1325845d34129d6932b0b6a8",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      },
+      {
+        "publication_id": "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c",
+        "raw_sha256": "8c0bdd98616957f33e5bbc923128ef30d076487d71f5e33ecffda7b100f71ece",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      },
+      {
+        "publication_id": "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3",
+        "raw_sha256": "d14048554275d4700acf2eb9fb863c5cc24b89da8f19aee0375981844fbd494e",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      },
+      {
+        "publication_id": "PUB:2c5b1256c3ce8adabb01e531f9909766b63fef15",
+        "raw_sha256": "e9ee491a9100a17f4b0f51f93d4c36cf0c439aad33f82f747d7778d475b03cfd",
+        "exact_original_verified": true,
+        "primary_still_unmodified": true
+      }
+    ],
+    "native_readbacks": [
+      "PUB:85b7efaa9061246f71afe5392d25691bebfcf784"
+    ],
+    "compacted": [
+      {
+        "publication_id": "PUB:85b7efaa9061246f71afe5392d25691bebfcf784",
+        "run_id": "1791839191939-1791839201967",
+        "contract": "NEAR-USDT",
+        "observed_ts": 1791839289400,
+        "raw_sha256": "b3c99b1581b2e7bed4fa01f556550bd7dc48999c1325845d34129d6932b0b6a8",
+        "archive_location": "LEGACY",
+        "original_bytes": 537431,
+        "hot_header_bytes": 964,
+        "logical_saved_bytes": 536467
+      }
+    ],
+    "deferred_counts": {
+      "ARCHIVE_POOL_HTTP_HEADROOM_DENIED": 30,
+      "SHARED_NATIVE_HEADROOM": 12
+    },
+    "whole_HTTP": 75,
+    "combined_control_HTTP": 20,
+    "bridge_HTTP": 9,
+    "private_HTTP": 46,
+    "private_payload_in_new_A1_A4": false,
+    "private_payload_in_legacy": true,
+    "permanent_flags_changed": false,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "reference_or_statistics_rows_modified": 0,
+    "publication_rows_deleted": 0,
+    "ordinary_UTC16_slots_used": 2,
+    "native_unclosed_ops": 0,
+    "full_report_after_relocation_verified": false,
+    "sustainable_throughput_verified": false,
+    "project_complete": false
+  },
+  "prior_physical_bytes_reclaimed": 487424,
+  "additional_native_SQL_this_package": 0,
+  "additional_sourceHTTP_this_package": 0,
+  "forced_MAIN_this_package": 0,
+  "Telegram_this_package": 0,
+  "ordinary_UTC16_slots_used": 2,
+  "third_UTC16_authorized": false,
+  "permanent_writer_enabled": false,
+  "automatic_rotation_enabled": false,
+  "new_native_row_costs_qualified": false,
+  "new_A1_A4_payload_proved": false,
+  "native_failure_accounting_observed": false,
+  "natural_guard_behavior_observed": false,
+  "full_report_restored": false,
+  "sustained_capacity_recovered": false,
+  "whole_native_D1_day_closed": false,
+  "planned_body_rows_day": {
+    "scheduled": 144,
+    "manual_envelope": 188,
+    "ordinary_nominal_capacity": 96
+  },
+  "fixed_acceptance_checklist": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+  "all_seven_directions_complete": false,
+  "final_Telegram_required": true,
+  "local_autonomous_continuation": {
+    "automation_id": "2",
+    "kind": "heartbeat",
+    "status": "ACTIVE",
+    "cadence": "hourly",
+    "target": "current local thread",
+    "created_tool_confirmed": true,
+    "requires_computer_app_and_network": true,
+    "independent_cloud_AI_executor": false,
+    "pending_native_job": null,
+    "wait_instructions": "Both UTC16 maintenance slots used; no third. Check already saved next natural refusal after41fc62b8 without forcingMAIN, then continue useful offline throughput/day-budget work. New native only later ordinary window after qualification/fresh lease/admission. Notify meaningful result/failure/action only.",
+    "completed_native_jobs": [
+      38802826734,
+      38836709187
+    ],
+    "current_handoff": "checkpoints/ACTIVE105_ROW_ADMISSION_AND_FAILURE_ACCOUNTING_HANDOFF_20261016.json"
+  },
+  "owned_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792116485000",
+    "acquired_ts": 1792116485000,
+    "expires_ts": 1792121285000,
+    "expected_main": "cd67d44d5c4136803d4f425bf40a152cb3c79d34",
+    "scope": "Owner-authorized OFFLINE storage throughput package: exact per-row indexed reference census and bounded cumulative mutation admission before copies, tests and GitHub PR/status. Read saved natural artifacts. Both UTC16 native slots spent: NO native SQL maintenance/source probes/MAIN/Telegram/quota resets/raises. Preserve references, namespace races, exact originals, statistics,105/122,pauses,strategy,weights,forms."
+  },
+  "owned_lease_released": true,
+  "previous_handoff": "checkpoints/ACTIVE105_STORAGE_FIRST_NATIVE_RELOCATION_HANDOFF_20261016.json",
+  "next_action": "PR397 andPR398 merged:6700d47b/41fc62b8. Exact cloud38839715040:739PASS;38841744456:775PASS/0FAIL; main398cloud38842021102SUCCESS, recoveryoffline38841791404SUCCESS,N1038841791416SUCCESS. Scoped per-row indexed reference plans and cumulative mutation-before-copy hold implemented, original cost formula/schema allowance/growth/race/byte guards unchanged. High-cost controlled case12selected/3prepared/3moved4507R6W is a fixture, NOT new native throughput. Natural AFTER first relocation38840064503 at02:24:13UTC:105/105,FIL/SUI selected,NEITHER persisted,434statements known42337R341W plus3unknown nativeINSERTHTTP500,totalcostnull,no exactsame-runSENT. Hence full report/storage capacity NOT restored. New same-UTC-day guard reuses exact current failed source/delivery files without probes; old guard was onlyOct9. Fatal unfinalizedR2RUN now attempts one monotonic original-ledger finalization after lease cleanup; never retries/refunds/resets unknowns; normal completions not duplicated. Both are cloud-code-qualified, new natural behavior NOT yet observed. FIRST check the already-saved next natural schedule/recovery after merge41fc62b8 for exact retained refusal,zero NEW sourceHTTP/SQL/Telegram and same-run NOT_CLOSED; do not mistake that for a restored full report or create a manual MAIN. Both UTC16 RETAINED_HISTORY slots remain spent; NO third native SQL maintenance today. Do not dispatch extra qualification/rename/refund/raise quotas or enable automatic flags. Native397 row costs,pool placement,bytes and throughput require a later ordinary2/day window, fresh own lease and real native admission; unknown daily costs may still refuse admission and must not be cleared. Independently useful OFFLINE next work: qualify a shared conditional-update design with exact per-row original fields/references/newer-witness/namespace creation races and wire bounds, keeping existing estimates until separate native receipts; audit the full-day cost and byte-growth architecture before sustainability. Nominal96rows/day<144scheduled/188manual remains unsolved, as does source+collector+hourly+failed-unknown wholeD1day. All seven fixed directions remain open;105assets/122contracts/9pauses/strategy/weights/clocks/forms unchanged,106MAGICdeferred. Final decision score and Telegram form remain required after blocks and owner precise form. Current3 are this handoff,natural38840064503review,fixedchecklist; older evidence is retained historical. Local heartbeat2 hourly requires computer/app/network; not independent cloudAI. Fresh main/phase/fence/generation/status and a NEW own bounded CAS lease are required; this save releases only current owner.",
+  "current_3": [
+    "checkpoints/ACTIVE105_ROW_ADMISSION_AND_FAILURE_ACCOUNTING_HANDOFF_20261016.json",
+    "checkpoints/free-storage-20261016/natural-38840064503-review.json",
+    "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json"
+  ],
+  "project_complete": false,
+  "status_preservation": {
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": {
+      "unrelated_root_values_byte_preserved": 352,
+      "changed": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "lease",
+        "latest_own_bounded_continuation_lease",
+        "updated_utc",
+        "updated_ts"
+      ]
+    },
+    "checkpoints/CURRENT_PROJECT_STATUS.json": {
+      "unrelated_root_values_byte_preserved": 376,
+      "changed": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts"
+      ]
+    },
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": {
+      "unrelated_root_values_byte_preserved": 153,
+      "changed": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts"
+      ]
+    },
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": {
+      "unrelated_root_values_byte_preserved": 318,
+      "changed": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts"
+      ]
+    }
+  }
+}
