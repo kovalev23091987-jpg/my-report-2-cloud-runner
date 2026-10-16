@@ -16,7 +16,8 @@
       "path": "checkpoints/free-storage-20261016/natural-38840064503-same-run-delivery-proof.json.gz",
       "raw_sha256": "faf2a3c25116ed6cf2d7990044fd84513b8ac8cface4aa41e69aec03d3ad0f04",
       "gzip_sha256": "3e717abd462e03ce2776b3f87228eaf27f4f17703f0c44e4b154b34051bbb52e"
-    }
+    },
+    "native_capacity_job_id": 116777904299
   },
   "last_verified_relocation": {
     "run": 38836709187,
@@ -32,7 +33,12 @@
   "sourceHTTP": 0,
   "Telegram": 0,
   "manual_paths_changed": false,
-  "expiry": "CURRENT_UTC_DAY_ONLY",
-  "unblock_requires": "UTC_ROLLOVER_OR_LATER_EXACT_PHYSICAL_RELOCATION;THEN_ORIGINAL_NATIVE_ADMISSION",
-  "known_failure_not_exchange_rate_limit": true
+  "expiry": "UNKNOWN_COST_CURRENT_DAY_ONLY;VERIFIED_MAX_DB_SIZE_UNTIL_LATER_EXACT_RELOCATION",
+  "unblock_requires": "UTC_ROLLOVER_FOR_UNKNOWN_COST_ONLY;VERIFIED_STORAGE_CAPACITY_FAILURE_REQUIRES_LATER_EXACT_PHYSICAL_RELOCATION_THEN_ORIGINAL_NATIVE_ADMISSION",
+  "known_failure_not_exchange_rate_limit": true,
+  "capacity_failure": {
+    "path": "checkpoints/free-storage-20261016/natural-38840064503-native-capacity-error.json.gz",
+    "raw_sha256": "32648baf9af3965b7e4beaa25b0e7d9e4c3036f6a2f20ef8de7ffcef74e52856",
+    "gzip_sha256": "d6be49eace9b67b90d193c1289db6a79cbc36b9b04ab02d9c0d3b4a2da16cbbc"
+  }
 }
