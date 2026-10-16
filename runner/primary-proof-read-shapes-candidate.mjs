@@ -20,6 +20,7 @@ export function createPrimaryProofReadShapesCandidate({contract,expectations=[],
  const restore=async(value,spec)=>{
   const work=[],patches=[];let result_rows=0;const rows=n=>{result_rows+=n;if(result_rows>max_result_rows)throw Error('PROOF_READ_RESULT_ROW_BOUND');};
   function scalar(raw,bind,set){
+   if(raw===null){set(null);return;}
    if(bind!==undefined&&(!plain(bind)||Object.keys(bind).some(k=>!['full_evidence_id','contract_code','observed_ts'].includes(k))))throw Error('PROOF_READ_EXPLICIT_IDENTITY_INVALID');
    const h=hint(raw),expectation=manifests.get(h.id.full_evidence_id);
    if(bind&&Object.keys(bind).some(k=>Object.hasOwn(h.id,k)&&bind[k]!==h.id[k])||expectation&&JSON.stringify(identity(expectation.identity))!==JSON.stringify(h.id)||!expectation&&!descriptor_only_reads)throw Error('PROOF_READ_INDEPENDENT_IDENTITY_MISMATCH');
@@ -27,7 +28,7 @@ export function createPrimaryProofReadShapesCandidate({contract,expectations=[],
   }
   function columns(s){if(!Array.isArray(s.columns)||!s.columns.length||s.columns.length>95||s.columns.some(c=>!plain(c)||typeof c.output!=='string'||typeof c.source!=='string')||new Set(s.columns.map(c=>c.output)).size!==s.columns.length)throw Error('PROOF_READ_EXPLICIT_COLUMNS_REQUIRED');return s.columns;}
   function row(input,s,set){
-   if(!plain(input)||Object.values(Object.getOwnPropertyDescriptors(input)).some(d=>!Object.hasOwn(d,'value')))throw Error('PROOF_READ_ROW_REQUIRED');rows(1);const cols=columns(s),out={...input};
+   if(!plain(input)||Object.values(Object.getOwnPropertyDescriptors(input)).some(d=>!Object.hasOwn(d,'value')))throw Error('PROOF_READ_ROW_REQUIRED');rows(1);const cols=columns(s);if(cols.some(c=>!Object.hasOwn(input,c.output)))throw Error('PROOF_READ_SELECTED_COLUMN_MISSING');const out={...input};
    const bind={};for(const c of cols)if(['full_evidence_id','contract_code','observed_ts'].includes(c.source)&&Object.hasOwn(input,c.output))bind[c.source]=input[c.output];
    for(const c of cols)if(c.source===proofKey&&Object.hasOwn(input,c.output))scalar(input[c.output],bind,v=>out[c.output]=v);
    patches.push(()=>set(out));
