@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';
-import {canonicalExecutionMode,canonicalArchivePoolQualification} from './canonical-native-qualification.mjs';
+import {canonicalExecutionMode,canonicalArchivePoolQualification,canonicalSharedMutationQualification} from './canonical-native-qualification.mjs';
 import {reserveLosslessRecoveryBudget,LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 const manual={kind:'canonical',execute:true,enabled:false,emergency:false,event:'workflow_dispatch',borrowed_owner:'CODEX:CONTROLLED:1',prefetch:true,native_qualification:true};
 test('A1-A4 opt-in is confined to an explicit borrowed native qualification and cannot activate permanent flags',()=>{
@@ -21,4 +21,10 @@ test('a qualification cannot create a fifth UTC15 slot or exceed two ordinary sl
  assert.equal((await reserveLosslessRecoveryBudget(db,{reservation_id:'RETAINED_HISTORY:5:1',now})).allowed,false);assert.deepEqual(raw.prepare('SELECT * FROM report2_runner_budget_ledger_shadow ORDER BY reservation_id').all(),before);
  const next=now+86400000;assert.equal((await reserveLosslessRecoveryBudget(db,{reservation_id:'RETAINED_HISTORY:6:1',now:next})).allowed,true);assert.equal((await reserveLosslessRecoveryBudget(db,{reservation_id:'RETAINED_HISTORY:7:1',now:next})).allowed,true);assert.equal((await reserveLosslessRecoveryBudget(db,{reservation_id:'RETAINED_HISTORY:8:1',now:next})).allowed,false);
  assert.equal(LOSSLESS_RECOVERY_POLICY.max_runs_day,2);assert.deepEqual(raw.prepare("SELECT * FROM report2_runner_budget_ledger_shadow WHERE day_utc='2026-10-15' ORDER BY reservation_id").all(),before);
+});
+
+
+test('shared SQL is confined to manual native qualification, not enabled by scheduled pool or automatic flags',()=>{
+ const mode=canonicalExecutionMode(manual);assert.equal(canonicalSharedMutationQualification(),false);assert.equal(canonicalSharedMutationQualification({mode,pool_enabled:true}),true);
+ for(const c of [{mode,pool_enabled:false},{mode:{...mode,native_qualification:false},pool_enabled:true},{mode:{...mode,require_native_preflight:false},pool_enabled:true},{mode:{...mode,automatic_activation:true},pool_enabled:true},{mode:{...mode,extra_retention_slot_granted:true},pool_enabled:true}])assert.equal(canonicalSharedMutationQualification(c),false);
 });

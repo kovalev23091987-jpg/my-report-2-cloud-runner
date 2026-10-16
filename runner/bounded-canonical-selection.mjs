@@ -41,6 +41,15 @@ export function boundedCanonicalReferenceSQL(predicate,bounds,witness=null,scope
  }
  return{with_sql:ctes.length?'WITH '+ctes.join(',')+' ':'',predicate:'('+guards.join(' AND ')+') AND '+rewritten};
 }
+// One materialized census for a same-contract group. Each original keeps its
+// own exact newer witness (or the unchanged conservative16-row fallback).
+export function boundedCanonicalReferenceGroupSQL(predicate,bounds,identities,scope){
+ if(!Array.isArray(identities)||!identities.length||identities.length>8||new Set(identities.map(r=>r.publication_id)).size!==identities.length||identities.some(r=>!/^PUB:[a-f0-9]{40,64}$/.test(r.publication_id||'')))throw Error('EXACT_CANONICAL_GROUP_IDENTITIES_REQUIRED');
+ const shared=boundedCanonicalReferenceSQL(predicate,bounds,null,scope);
+ const selected=identities.map(r=>`(p.publication_id='${r.publication_id}' AND ${boundedNewerPredicate(newerOriginal,r.witness)})`).join(' OR ');
+ if(!shared.predicate.includes(newerBounded))throw Error('EXACT_GROUP_NEWER_PREDICATE_REQUIRED');
+ return{with_sql:shared.with_sql,predicate:shared.predicate.replace(newerBounded,'('+selected+')')};
+}
 const basic=(p,cutoff,prefix)=>Number.isSafeInteger(p.observed_ts)&&p.observed_ts<cutoff&&Number.isSafeInteger(p.created_ts)&&p.created_ts<cutoff&&(p.valid_until_ts===null||p.valid_until_ts<cutoff)&&p.shadow_only===1&&p.canonical_state==='REJECTED'&&['UNASSESSED','INTERNAL_ONLY','REJECTED'].includes(p.actionability_status)&&!["ENTRY","HOLD","EXIT"].includes(p.lifecycle_event)&&typeof p.body_prefix==='string'&&!p.body_prefix.startsWith(prefix);
 function protectedReference(p,rows){
  for(const [table,refs] of Object.entries(rows))for(const r of refs){
