@@ -302,6 +302,15 @@ async function __report2RunPriceRechecks(db,{rows,market_source_ts,bucket,now,re
   }
   return receipt;
 }
+// Disjoint DATA_DB observations; nested PRIVATE_PRICE has its own envelope.
+function __report2CollectorNativeCostSplit(total,before,after,private_called){
+  var keys=['requests','rows_read','rows_written','unknown_ops'];
+  var valid=u=>u&&keys.every(k=>Number.isSafeInteger(u[k])&&u[k]>=0);
+  if(!valid(total))return {native_D1:null,private_price_source_D1:null,collector_excluding_private_price_source_D1:null,native_totals_closed:false};
+  var nested=Object.fromEntries(keys.map(k=>[k,0]));
+  if(private_called){if(!valid(before)||!valid(after)||keys.some(k=>after[k]<before[k]||after[k]-before[k]>total[k]))return {native_D1:total,private_price_source_D1:null,collector_excluding_private_price_source_D1:null,native_totals_closed:false};nested=Object.fromEntries(keys.map(k=>[k,after[k]-before[k]]));}
+  return {native_D1:total,private_price_source_D1:nested,collector_excluding_private_price_source_D1:Object.fromEntries(keys.map(k=>[k,total[k]-nested[k]])),native_totals_closed:total.unknown_ops===0};
+}
 async function __report2PublicCollectorScheduled(controller, env) {
   var started = Date.now();
   if (!__report2PublicCollectorSwitch(env?.PUBLIC_COLLECTOR_ENABLED)) throw new Error("PUBLIC_COLLECTOR_DISABLED");
@@ -313,9 +322,19 @@ async function __report2PublicCollectorScheduled(controller, env) {
   var nativeObserver=typeof __report2InjectedPrivatePriceRuntime==='object'&&__report2InjectedPrivatePriceRuntime?.observeCollectorD1
     ?__report2InjectedPrivatePriceRuntime.observeCollectorD1(env.DATA_DB):null;
   if(nativeObserver)env={...env,DATA_DB:nativeObserver.db};
+  var nativeInvocation=crypto.randomUUID(),privateNativeBefore=null,privateNativeAfter=null,privateNativeCalled=false;
+  try {
   var scheduled = __report2PublicCollectorTimestamp(controller?.scheduledTime) ?? started;
   var bucket = Math.floor(scheduled / __REPORT2_PUBLIC_COLLECTOR_SLOT_MS) * __REPORT2_PUBLIC_COLLECTOR_SLOT_MS;
-  var claim = await __report2PublicCollectorClaim(env.DATA_DB, bucket, started);
+  var claim;
+  try { claim = await __report2PublicCollectorClaim(env.DATA_DB, bucket, started); }
+  catch(error) {
+    // A failure during admission/cleanup predates the later collection try.
+    // Observe its original unknown cost without attempting a second write.
+    var claimUsage=nativeObserver?.usageSnapshot()??null;
+    console.error('REPORT2_PUBLIC_COLLECTOR_CLAIM_ERROR',JSON.stringify({version:__REPORT2_PUBLIC_COLLECTOR_VERSION,bucket,started_ts:started,status:'CLAIM_ERROR',native_D1:claimUsage,native_totals_closed:claimUsage!==null&&claimUsage.unknown_ops===0,native_cost_admission_changed:false,source_http:0,telegram:false}));
+    throw error;
+  }
   if (!claim.claimed) {
     console.log("REPORT2_PUBLIC_COLLECTOR_NOOP", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, status: claim.status, native_D1:nativeObserver?.usageSnapshot()??null, native_cost_admission_changed:false }));
     return;
@@ -398,9 +417,11 @@ async function __report2PublicCollectorScheduled(controller, env) {
       // source request or Telegram transport is created by the lightweight lane.
       var priceArgs={rows,market_source_ts:marketResult.source_ts,bucket,now:Date.now()};
       var priceRuntime=typeof __report2InjectedPrivatePriceRuntime==='object'?__report2InjectedPrivatePriceRuntime:null;
-      var light=priceRuntime?.runPrivatePriceRechecks&&env.CANONICAL_ARCHIVE_DB
+      privateNativeCalled=true;privateNativeBefore=nativeObserver?.usageSnapshot()??null;
+      var light;try { light=priceRuntime?.runPrivatePriceRechecks&&env.CANONICAL_ARCHIVE_DB
         ?await priceRuntime.runPrivatePriceRechecks({source_db:env.DATA_DB,private_db:env.CANONICAL_ARCHIVE_DB,private_dbs:priceRuntime.privateCanonicalBindings?.(env).archive_dbs||{},check:__report2RunPriceRechecks,args:priceArgs})
         :await __report2RunPriceRechecks(env.DATA_DB,priceArgs);
+      } finally { privateNativeAfter=nativeObserver?.usageSnapshot()??null; }
       rowsRead+=light.rows_read;rowsWritten+=light.rows_written;
       console.log('REPORT2_LIGHT_PRICE_RECHECK',JSON.stringify(light));
     }
@@ -411,6 +432,9 @@ async function __report2PublicCollectorScheduled(controller, env) {
     await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "ERROR", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "ERROR", error_text: message, contract_count: contractCount, shard_count: shardCount });
     console.error("REPORT2_PUBLIC_COLLECTOR_ERROR", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, error: message, external_requests: externalRequests, native_D1:nativeObserver?.usageSnapshot()??null, native_cost_admission_changed:false, analytical_decision: false, telegram: false, bykaranteli: false }));
     throw error;
+  }
+  } finally {
+    console.log('REPORT2_PUBLIC_COLLECTOR_NATIVE_D1',JSON.stringify({schema:'PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1',invocation_id:nativeInvocation,bucket,started_ts:started,completed_ts:Date.now(),...__report2CollectorNativeCostSplit(nativeObserver?.usageSnapshot()??null,privateNativeBefore,privateNativeAfter,privateNativeCalled),additional_SQL:0,daily_total:false,native_cost_admission_changed:false,scope:'DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE'}));
   }
 }
 
