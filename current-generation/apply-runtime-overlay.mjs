@@ -18,6 +18,7 @@ const files=[
  'runner-main.mjs',
  'src/same-run-delivery-proof.mjs',
  'src/pre-analysis-failure-receipt.mjs',
+ 'src/failed-d1-run-accounting.mjs',
  'src/approved-htx-analysis-scope.mjs',
  'src/liquidation-source-acquisition-audit.mjs',
  'src/liquidation-extension/selected-native-batch.mjs',

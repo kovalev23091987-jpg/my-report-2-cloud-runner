@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {loadRetainedWriteFailureGuard,buildRetainedWriteFailureOutput} from './retained-write-failure-guard.mjs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
@@ -33,7 +34,8 @@ if(import.meta.url===pathToFileURL(process.argv[1]||'').href){
   const read=n=>JSON.parse(execFileSync('unzip',['-p',p,n],{maxBuffer:1024*1024}).toString());
   guard=evaluateKnownD1DayGuard({proof,retainedAudit:read('automatic-delivery-audit.json'),retainedSource:read('source-artifact.json'),archive_digest:'sha256:'+createHash('sha256').update(b).digest('hex'),now_ts,generation});
  }catch{}
- if(guard.blocked){fs.mkdirSync(path.join(root,'runtime'),{recursive:true});fs.writeFileSync(path.join(root,'runtime/report2-run-result.json'),JSON.stringify(buildKnownDayRefusalOutput({guard,head:process.env.GITHUB_SHA,run_id:process.env.GITHUB_RUN_ID,generation,now_ts}),null,2)+'\n');}
+ if(!guard.blocked){const recent=loadRetainedWriteFailureGuard({root,now_ts,generation});if(recent.blocked)guard=recent;}
+ if(guard.blocked){fs.mkdirSync(path.join(root,'runtime'),{recursive:true});fs.writeFileSync(path.join(root,'runtime/report2-run-result.json'),JSON.stringify((guard.kind==='RETAINED_NATIVE_WRITE_FAILURE'?buildRetainedWriteFailureOutput:buildKnownDayRefusalOutput)({guard,head:process.env.GITHUB_SHA,run_id:process.env.GITHUB_RUN_ID,generation,now_ts}),null,2)+'\n');}
  if(process.env.GITHUB_OUTPUT)fs.appendFileSync(process.env.GITHUB_OUTPUT,`blocked=${guard.blocked}\n`);
  console.log(JSON.stringify(guard));
 }
