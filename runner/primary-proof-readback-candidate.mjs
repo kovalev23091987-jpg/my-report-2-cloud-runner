@@ -67,3 +67,30 @@ export async function verifyPrimaryProofCandidateReadback({expectation,contract,
  const hydrated=await restorePrimaryProofCandidateRow(stored,{expectation:e,contract,require_full_row:true});
  return {schema:'OFFLINE_PRIMARY_PROOF_READBACK_VERIFIED_V1',candidate_readback_verified:true,expectation_sha256:e.expectation_sha256,original_row_sha256:await rowDigest(hydrated),stored_row_sha256:e.stored_row_sha256,columns_verified:e.columns.length,insert_native_usage:{rows_read:ins.rows_read,rows_written:ins.rows_written},readback_native_usage:{rows_read:read.rows_read,rows_written:read.rows_written},clocks:Object.fromEntries(keys.map(k=>[k,clocks[k]])),production_ACK_authorized:false,native_receipt_accepted:false,new_primary_format_enabled:false,activation_authorized:false,additional_native_SQL:0};
 }
+// A future integration may use one ordered D1 batch instead of another HTTP
+// round trip. This compiler/verifier remains offline and does not execute it.
+const BATCH_WIRE_LIMIT=1_400_000;
+const batchCore=p=>({schema:p.schema,expectation_sha256:p.expectation_sha256,statements:p.statements});
+export async function compilePrimaryProofBatchCandidate(prepared){
+ const e=await requireExpectation(prepared?.expectation),stored=prepared?.stored_row;
+ if(await rowDigest(stored)!==e.stored_row_sha256)throw Error('CANDIDATE_EXACT_PREPARED_ROW_REQUIRED');
+ const names=e.columns.map(c=>c.name);if(names.some(n=>! /^[A-Za-z_][A-Za-z0-9_]*$/.test(n)))throw Error('CANDIDATE_SQL_COLUMN_INVALID');
+ const columns=names.map(n=>'"'+n+'"').join(','),params=names.map(n=>stored[n]);
+ const statements=[{sql:`INSERT INTO full_evidence_shadow_log (${columns}) VALUES (${names.map((_,i)=>'?'+(i+1)).join(',')}) ON CONFLICT(full_evidence_id) DO NOTHING`,params},{sql:`SELECT ${columns} FROM full_evidence_shadow_log WHERE full_evidence_id=?1 LIMIT 2`,params:[e.identity.full_evidence_id]}];
+ const body={schema:'OFFLINE_PRIMARY_PROOF_ORDERED_BATCH_V1',expectation_sha256:e.expectation_sha256,statements},wire_bytes=enc.encode(JSON.stringify({op:'batch',statements})).length;
+ if(wire_bytes>BATCH_WIRE_LIMIT||enc.encode(JSON.stringify(stored)).length+8192>BATCH_WIRE_LIMIT)throw Error('CANDIDATE_BATCH_WIRE_BOUND');
+ return{...body,plan_sha256:await hash(JSON.stringify(body)),wire_bytes,max_wire_bytes:BATCH_WIRE_LIMIT,SQL_statements:2,client_HTTP_calls_if_qualified:1,extra_SQL_statements_vs_existing_insert:1,production_enabled:false,activation_authorized:false};
+}
+export async function verifyPrimaryProofCandidateBatchReadback({expectation,contract,plan,batch_result,transport_interval}={}){
+ const e=await requireExpectation(expectation);
+ if(!plain(plan)||plan.schema!=='OFFLINE_PRIMARY_PROOF_ORDERED_BATCH_V1'||plan.expectation_sha256!==e.expectation_sha256||!Array.isArray(plan.statements)||plan.statements.length!==2||!Array.isArray(plan.statements[0]?.params)||plan.statements[0].params.length!==e.columns.length)throw Error('CANDIDATE_EXACT_ORDERED_BATCH_REQUIRED');
+ const prepared={expectation:e,stored_row:Object.fromEntries(e.columns.map((c,i)=>[c.name,plan.statements[0].params[i]]))},expected=await compilePrimaryProofBatchCandidate(prepared);
+ if(plan.plan_sha256!==expected.plan_sha256||await hash(JSON.stringify(batchCore(plan)))!==expected.plan_sha256)throw Error('CANDIDATE_EXACT_ORDERED_BATCH_REQUIRED');
+ if(!Array.isArray(batch_result)||batch_result.length!==2)throw Error('CANDIDATE_BATCH_RESULTS_REQUIRED');
+ const [insert,readback]=batch_result,ins=insert?.meta,read=readback?.meta;
+ if(insert?.success!==true||ins?.changes!==1||!count(ins.rows_read)||!count(ins.rows_written)||ins.rows_written<1||readback?.success!==true||!count(read?.rows_read)||read.rows_read<1||read.rows_written!==0||!Array.isArray(readback.results)||readback.results.length!==1)throw Error('CANDIDATE_BATCH_COUNTERS_AND_READBACK_REQUIRED');
+ if(!plain(transport_interval)||!count(transport_interval.started_ts)||!count(transport_interval.completed_ts)||transport_interval.started_ts<e.identity.observed_ts||transport_interval.completed_ts<transport_interval.started_ts)throw Error('CANDIDATE_BATCH_INTERVAL_REQUIRED');
+ const stored=readback.results[0];if(await rowDigest(stored)!==e.stored_row_sha256)throw Error('CANDIDATE_EXACT_STORED_ROW_MISMATCH');
+ await restorePrimaryProofCandidateRow(stored,{expectation:e,contract,require_full_row:true});
+ return{schema:'OFFLINE_PRIMARY_PROOF_BATCH_READBACK_VERIFIED_V1',candidate_readback_verified:true,columns_verified:e.columns.length,expectation_sha256:e.expectation_sha256,plan_sha256:expected.plan_sha256,client_wire_bytes:expected.wire_bytes,SQL_statements:2,client_HTTP_calls_if_qualified:1,extra_SQL_statements_vs_existing_insert:1,batch_order_basis:'DOCUMENTED_D1_BATCH_ORDER_AND_EXACT_REQUEST_PLAN_NOT_NATIVE_RECEIPT',transport_interval:{started_ts:transport_interval.started_ts,completed_ts:transport_interval.completed_ts},per_statement_timestamps_invented:false,production_ACK_authorized:false,native_receipt_accepted:false,new_primary_format_enabled:false,activation_authorized:false,additional_native_SQL:0};
+}
