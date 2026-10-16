@@ -1,0 +1,236 @@
+{
+  "schema": "PROTECTED_CANONICAL_BODY_COMPACTION_V1",
+  "kind": "canonical",
+  "head": "00fc659166a247df0b526eb10a048e6312535cdb",
+  "run": "38802826734",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "execute": true,
+  "canonical_rows_modified": 0,
+  "source_reservations_reset": false,
+  "dated_authority": {
+    "authorized": true,
+    "day": "2026-10-16",
+    "one_existing_shared_slot": true,
+    "extra_slot_granted": false,
+    "automatic_rotation_enabled": false
+  },
+  "qualified": {
+    "head": "306dc6a1b1b1f6b570afed46fbb107202e3c8678",
+    "run": 38802366058,
+    "exact_executable_files": 378,
+    "current_main": "32e1f673848f1c21f9cf99196e0f80f74e8b9c2b"
+  },
+  "canonical_execution_mode": {
+    "native_qualification": true,
+    "require_native_preflight": true,
+    "automatic_activation": false,
+    "extra_retention_slot_granted": false
+  },
+  "cursor_selection": {
+    "cursor": 0,
+    "previous_cursor": 0,
+    "explicit_override": false
+  },
+  "control": {
+    "expected_main": "5ba1514a78d7f2f619783e76e1d4ea032494c12d",
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792109101035",
+    "borrowed": false,
+    "lease_expires_ts": 1792110301035
+  },
+  "current_readers": {
+    "status": "EXACT_NATIVE_ARCHIVE_READER_BINDINGS_STILL_INSTALLED",
+    "workers": [
+      {
+        "name": "my-report-2-hub",
+        "version_id": "b9a5f2cc-cd7d-49e3-807e-aa09d6ca5d43",
+        "settings_sha256": "e588567094cf0b058bff686cfb9ba887190ee1bbc4aa4cf3d21a7b5d409e7ece",
+        "crons_sha256": "159fca0299f71001e097769b9be423a15d274622661708fccc2990d5351be30b",
+        "module_bound_by_same_immutable_version": true
+      },
+      {
+        "name": "my-report-2-liq-forecast-history",
+        "version_id": "7cb3c97c-57bc-4f64-87f7-2ade495cef4a",
+        "settings_sha256": "7e8d38596a9214d4f581ba4051ab1806d216071406b99895f7ea16f0b3dbc30c",
+        "crons_sha256": "ed91327ac15fd8576e9d0504b0331698d833421e53408c86d6efec357e12f795",
+        "module_bound_by_same_immutable_version": true
+      }
+    ],
+    "Cloudflare_GET": 8,
+    "SQL": 0,
+    "secret_values_exported": false
+  },
+  "admission": {
+    "allowed": true,
+    "status": "ATOMIC_SHARED_DAY_RESERVED",
+    "reservation_id": "RETAINED_HISTORY:38802826734:1792109106054",
+    "reservation": {
+      "rows_read": 5000,
+      "rows_written": 400
+    },
+    "owner_emergency_day": null,
+    "owner_emergency_slot": null,
+    "protected_next_full": null
+  },
+  "control_limited_mutation_batches": 2,
+  "history_discarded": false,
+  "source_clocks_refreshed": false,
+  "publication_rows_deleted": 0,
+  "reference_or_statistic_rows_modified": 0,
+  "latest_per_coin_hot": true,
+  "all_ENTRY_and_ACTIONABLE_hot": true,
+  "hot_window_ms": 172800000,
+  "selected": 0,
+  "prepared": 0,
+  "compacted": [],
+  "conflicts_retained_hot": [],
+  "deferred_hot": [],
+  "mutation_batches": 0,
+  "native_readbacks": [],
+  "reference_schema": {
+    "present_tables": [
+      "v3_user_lifecycle_shadow",
+      "v3_telegram_dispatch_shadow",
+      "tz101_entry_area_calibration_signal",
+      "canonical_publication_shadow",
+      "v3_dispatch_publication_binding_shadow",
+      "v3_recheck_task_shadow",
+      "report2_command_v2"
+    ],
+    "missing_required": [],
+    "absent_optional": [
+      "report2_publication_v2",
+      "report2_delivered_outcome_v2"
+    ],
+    "non_table_objects": [],
+    "schema_creation_performed": false,
+    "absent_namespace_rechecked_in_each_update": true
+  },
+  "bounded_discovery": {
+    "schema": "BOUNDED_CANONICAL_DISCOVERY_V1",
+    "source_cursor": 0,
+    "metadata_rows": 128,
+    "reference_row_bound": 256,
+    "reference_counts": {
+      "v3_user_lifecycle_shadow": 73,
+      "v3_telegram_dispatch_shadow": 143,
+      "tz101_entry_area_calibration_signal": 0,
+      "v3_dispatch_publication_binding_shadow": 0,
+      "v3_recheck_task_shadow": 27,
+      "report2_command_v2": 162
+    },
+    "complete_reference_census": true,
+    "reference_scope": {
+      "schema": "EXACT_CANONICAL_REFERENCE_SCOPE_V1",
+      "contracts": [
+        "BTW-USDT",
+        "RIVER-USDT",
+        "PUMP-USDT",
+        "ONDO-USDT",
+        "NEAR-USDT",
+        "GRAM-USDT",
+        "ENA-USDT",
+        "MUBARAK-USDT",
+        "ZKC-USDT",
+        "ADA-USDT",
+        "TAO-USDT",
+        "ZEC-USDT",
+        "AKE-USDT",
+        "NIL-USDT",
+        "WLD-USDT",
+        "SUI-USDT",
+        "FIL-USDT"
+      ],
+      "publication_ids": [
+        "PUB:3cee2834dce5a83e10a60c5782067a81eaf790b9",
+        "PUB:f2ef85d48e5c9c32225b81d0df4fc1a58139c7c6",
+        "PUB:c85c3f8ead9a134f626a731ca2772c91525124d6",
+        "PUB:27cae28e16f84aa3f88b1e0856b99c1116bcb98b",
+        "PUB:7a14013be9692bb773536391d99fa024f690f406",
+        "PUB:9fb596b29e7a2aefc948eea2db1936386f7a7e2a",
+        "PUB:5f8f85279df0ae2e8af9124cfade32579ad133e7",
+        "PUB:f65c22ef0fe9b7986a0fbccc3b7dd3f8f718f645",
+        "PUB:71018a32aa0ed0004183d5057420c58d60c05c6d",
+        "PUB:6bcb153a818e90ca5124faa7553c9d4207a25fcb",
+        "PUB:ee898c4e64ee6033ffa667cf18450d2d94989cff",
+        "PUB:08239b5518687c48628ee3fefb3d79159860e4c3",
+        "PUB:8aa59067a7fa84b984a014589a85bd1ef26841f5",
+        "PUB:3c5fee170d77e8d07489eef0acbd247e86c98ac8",
+        "PUB:269e50168d3c3f6d0ba192435019c6c57eaafc35",
+        "PUB:90e5002f1d204a6e766fe29ec1067634d73487bd",
+        "PUB:5111fd6c1ad71382cf7c69374d6eb7d54a9ff5a1",
+        "PUB:d8e4e98248b0ef25bec20d9a3acba76c2f1690c6",
+        "PUB:24afbc2366ffe926baced7d64d22a6454ea534be",
+        "PUB:ba02bcbff492d7869ae5ed1dfe1d2948feb86b2c",
+        "PUB:89b8b44986055b0f1cc079dac144191cd105bb7c"
+      ]
+    },
+    "large_bodies_read": 0,
+    "selection_provider_HTTP": 0,
+    "newer_witness_rows": 16,
+    "witness_is_conservative_subset": true,
+    "next_cursor": 710,
+    "metadata_eligible": 0,
+    "status": "NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW"
+  },
+  "status": "NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW",
+  "D1": {
+    "requests": 12,
+    "rows_read": 1058,
+    "rows_written": 4,
+    "unknown_ops": 0
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "RETAINED_HISTORY:38802826734:1792109106054",
+    "source_run_id": "38802826734",
+    "measured_rows_read": 1057,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 12,
+    "unknown_ops": 0
+  },
+  "private_D1": {
+    "requests": 1,
+    "rows_read": 0,
+    "rows_written": 0,
+    "unknown_ops": 0
+  },
+  "cursor_persistence": {
+    "status": "CANONICAL_CURSOR_EXACT_PHASE_CAS_VERIFIED",
+    "head": "1ab070f1559ed61a9b84e98deb6392b04a2976b6",
+    "cursor": 710,
+    "source_cursor": 0,
+    "SQL": 0,
+    "sourceHTTP": 0,
+    "quotas_reset": false
+  },
+  "own_release": {
+    "status": "OWN_WEEKLY_LEASE_RELEASED",
+    "head": "ee7f3bc58d2ab6fa2aa7fe35279e18dabf360d76"
+  },
+  "whole_HTTP": {
+    "used": {
+      "hot": 37,
+      "background": 2,
+      "statistics": 0
+    },
+    "total": 39,
+    "limits": {
+      "whole_job": 164,
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "remaining": 125
+  },
+  "github_control_HTTP": 23,
+  "worker_control_HTTP": 8,
+  "D1_bridge_HTTP": 6,
+  "private_D1_HTTP": 2,
+  "completed_ts": 1792109114177,
+  "project_complete": false
+}

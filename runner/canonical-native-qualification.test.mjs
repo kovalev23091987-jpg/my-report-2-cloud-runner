@@ -1,7 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';
-import {canonicalExecutionMode} from './canonical-native-qualification.mjs';
+import {canonicalExecutionMode,canonicalArchivePoolQualification} from './canonical-native-qualification.mjs';
 import {reserveLosslessRecoveryBudget,LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 const manual={kind:'canonical',execute:true,enabled:false,emergency:false,event:'workflow_dispatch',borrowed_owner:'CODEX:CONTROLLED:1',prefetch:true,native_qualification:true};
+test('A1-A4 opt-in is confined to an explicit borrowed native qualification and cannot activate permanent flags',()=>{
+ const context={mode:canonicalExecutionMode(manual),event:'workflow_dispatch',borrowed_owner:manual.borrowed_owner};assert.equal(canonicalArchivePoolQualification(),false);assert.equal(canonicalArchivePoolQualification('true',context),true);
+ for(const alter of [{event:'schedule'},{borrowed_owner:''},{mode:{...context.mode,automatic_activation:true}},{mode:{...context.mode,require_native_preflight:false}},{mode:{...context.mode,native_qualification:false}}])assert.throws(()=>canonicalArchivePoolQualification('true',{...context,...alter}),/EXACT_BORROWED_NATIVE_POOL/);
+ for(const value of ['TRUE','1',' true',true])assert.throws(()=>canonicalArchivePoolQualification(value,context),/EXACT_ARCHIVE_POOL_QUALIFICATION_INPUT/);
+});
 test('manual native qualification requires exact explicit operator inputs and independently verified originals before mutation',()=>{
  assert.deepEqual(canonicalExecutionMode(manual),{native_qualification:true,require_native_preflight:true,automatic_activation:false,extra_retention_slot_granted:false});
  for(const alter of [{kind:'full_evidence'},{execute:false},{event:'schedule'},{borrowed_owner:''},{prefetch:false},{emergency:true}])assert.throws(()=>canonicalExecutionMode({...manual,...alter}),/EXACT_MANUAL_NATIVE_CANONICAL/);

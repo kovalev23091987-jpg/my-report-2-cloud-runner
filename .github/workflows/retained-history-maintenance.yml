@@ -31,6 +31,10 @@ on:
         description: Explicit manual canonical qualification under the ordinary shared two-slot cap; never enables automatic cleanup
         type: boolean
         default: false
+      archive_pool_qualification:
+        description: Use installed A1-A4 only inside this borrowed-owner native qualification; permanent flags remain unchanged
+        type: boolean
+        default: false
       owner_emergency_day:
         description: Owner-approved one-off third shared slot on 2026-10-15 only; empty keeps the two-slot limit
         type: string
@@ -58,6 +62,8 @@ jobs:
       REPORT2_CANONICAL_COMPACTION_ENABLED: ${{ vars.REPORT2_CANONICAL_COMPACTION_ENABLED || 'false' }}
       REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ${{ secrets.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN || secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
       REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED: ${{ vars.REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED || 'false' }}
+      REPORT2_CANONICAL_ARCHIVE_POOL_QUALIFICATION: ${{ inputs.archive_pool_qualification == true }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       RETAINED_HISTORY_KIND: ${{ inputs.kind || 'full_evidence' }}
       REPORT2_PRIVATE_PREFETCH_QUALIFICATION: ${{ inputs.prefetch_private == true }}
       REPORT2_OWNER_STORAGE_EMERGENCY_DAY: ${{ inputs.owner_emergency_day || '' }}
