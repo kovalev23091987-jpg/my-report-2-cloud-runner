@@ -97,11 +97,11 @@ export function verifySupersetHistory({previous_targets,targets,previous_manifes
 }
 function exactState(a,b){return a.version_id===b.version_id&&a.deployment_id===b.deployment_id&&a.module_sha256===b.module_sha256&&a.settings_sha256===b.settings_sha256&&a.crons_sha256===b.crons_sha256;}
 export async function coordinateWeeklyRollout({plan,adapter,guard,save=async()=>{},execute=false,clock=Date.now}={}){
- const collectorPatch=plan?.kind==='collector_patch',historyObserverPatch=plan?.kind==='history_observer_patch',singleWorkerPatch=collectorPatch||historyObserverPatch,names=collectorPatch?[WEEKLY_ROLLOUT_POLICY.collector]:historyObserverPatch?['my-report-2-free-history']:WEEKLY_ROLLOUT_POLICY.workers;
- const connectedStatus=collectorPatch?'EXACT_MAIN_CURRENT_COLLECTOR_SOURCE_QUALIFIED':historyObserverPatch?'EXACT_MAIN_HOURLY_NATIVE_OBSERVER_QUALIFIED':'EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS';
- const scopeStatus=collectorPatch?'EXACT_HUB_PREFIX_PRESERVED_CURRENT_TAIL_PATCH':historyObserverPatch?'EXACT_HOURLY_SQL_PARAMS_AND_ARCHIVED_BYTES_PRESERVED':'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED';
+ const collectorPatch=plan?.kind==='collector_patch',historyObserverPatch=plan?.kind==='history_observer_patch',bridgeCounterPatch=plan?.kind==='sql_bridge_counter_patch',singleWorkerPatch=collectorPatch||historyObserverPatch||bridgeCounterPatch,names=bridgeCounterPatch?['my-report-2-d1-bridge']:collectorPatch?[WEEKLY_ROLLOUT_POLICY.collector]:historyObserverPatch?['my-report-2-free-history']:WEEKLY_ROLLOUT_POLICY.workers;
+ const connectedStatus=bridgeCounterPatch?'EXACT_MAIN_SQL_BRIDGE_COUNTER_REPAIR_QUALIFIED':collectorPatch?'EXACT_MAIN_CURRENT_COLLECTOR_SOURCE_QUALIFIED':historyObserverPatch?'EXACT_MAIN_HOURLY_NATIVE_OBSERVER_QUALIFIED':'EXACT_WEEKLY_CONNECTED_CHECK_SUCCESS';
+ const scopeStatus=bridgeCounterPatch?'EXACT_SQL_BRIDGE_SQL_PARAMS_AUTH_AND_LIMITS_PRESERVED':collectorPatch?'EXACT_HUB_PREFIX_PRESERVED_CURRENT_TAIL_PATCH':historyObserverPatch?'EXACT_HOURLY_SQL_PARAMS_AND_ARCHIVED_BYTES_PRESERVED':'SUPERSET_AND_PREVIOUS_HISTORY_DIGESTS_PRESERVED';
  if(!plan||plan.kind&&!singleWorkerPatch||!/^[a-f0-9]{40}$/.test(plan.head||'')||plan.connected?.head!==plan.head||plan.connected?.status!==connectedStatus||!Number.isSafeInteger(plan.connected.run)||plan.scope?.status!==scopeStatus||plan.workers?.length!==names.length||plan.workers.some((w,i)=>w.name!==names[i]||!/^[a-f0-9]{64}$/.test(w.module_sha256||'')))throw Error('EXACT_CONNECTED_WEEKLY_ROLLOUT_PLAN_REQUIRED');
- const proof={schema:collectorPatch?'CURRENT_PUBLIC_COLLECTOR_MODULE_REPAIR_V1':historyObserverPatch?'CURRENT_HOURLY_NATIVE_COST_OBSERVER_RELEASE_V1':'HTX_COORDINATED_WEEKLY_ROLLOUT_V1',head:plan.head,expected_main:plan.expected_main,connected:plan.connected,scope:plan.scope,execute,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,history_discarded:false,source_clocks_refreshed:false,production_scope_changed:false,workers:[],rollback:[],started_ts:clock()};
+ const proof={schema:bridgeCounterPatch?'CURRENT_SQL_BRIDGE_COUNTER_REPAIR_RELEASE_V1':collectorPatch?'CURRENT_PUBLIC_COLLECTOR_MODULE_REPAIR_V1':historyObserverPatch?'CURRENT_HOURLY_NATIVE_COST_OBSERVER_RELEASE_V1':'HTX_COORDINATED_WEEKLY_ROLLOUT_V1',head:plan.head,expected_main:plan.expected_main,connected:plan.connected,scope:plan.scope,execute,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,history_discarded:false,source_clocks_refreshed:false,production_scope_changed:false,workers:[],rollback:[],started_ts:clock()};
  const persist=()=>save(structuredClone(proof));let collector,changed=[];
  try{
   await guard({min_headroom_ms:WEEKLY_ROLLOUT_POLICY.min_lease_headroom_ms});
@@ -135,7 +135,7 @@ export async function coordinateWeeklyRollout({plan,adapter,guard,save=async()=>
   // Recheck the first history after the second; a successful intermediate
   // read is not proof of the final coordinated state.
   for(let i=0;i<plan.workers.length;i++)if(!exactState(proof.workers[i].after,await adapter.snapshot(plan.workers[i])))throw Error('HISTORY_MOVED_AFTER_ACTIVATION');
-  await guard();proof.status=collectorPatch?'CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED':historyObserverPatch?'CURRENT_HOURLY_NATIVE_COST_OBSERVER_EXACTLY_INSTALLED':'ALL_CONNECTED_WORKERS_EXACT_NODE_SCOPE_MERGE_READY';proof.production_activation_allowed=true;proof.completed_ts=clock();await persist();return proof;
+  await guard();proof.status=bridgeCounterPatch?'CURRENT_SQL_BRIDGE_COUNTER_REPAIR_EXACTLY_INSTALLED':collectorPatch?'CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED':historyObserverPatch?'CURRENT_HOURLY_NATIVE_COST_OBSERVER_EXACTLY_INSTALLED':'ALL_CONNECTED_WORKERS_EXACT_NODE_SCOPE_MERGE_READY';proof.production_activation_allowed=true;proof.completed_ts=clock();await persist();return proof;
  }catch(error){
   proof.reason=/^[A-Z0-9_]+$/.test(error.message)?error.message:'WEEKLY_ROLLOUT_ERROR';
   for(const i of changed.reverse()){
