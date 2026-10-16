@@ -1,0 +1,40 @@
+name: Inspect exact installed bridge module read only
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main: {type: string, required: true}
+      owner: {type: string, required: true}
+      connected_run: {type: string, required: true}
+      read_only: {type: boolean, default: false}
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: report2-installed-bridge-module-inspection
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read only exact active module with version, settings and lease guards
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          INSPECTION_HEAD: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          READ_ONLY_BRIDGE_INSPECTION: ${{ inputs.read_only }}
+        run: node tools/inspect-installed-bridge-module-20261016.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installed-bridge-module-${{ github.run_id }}
+          path: audit-output/installed-bridge-module/
+          if-no-files-found: error
+          retention-days: 30
