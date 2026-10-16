@@ -4,10 +4,10 @@ globalThis.crypto ||=webcrypto;
 const HOUR=3600000,T=Date.UTC(2026,9,15,5),now=T+35*60000,bucket=T+25*60000;
 const before=fs.readFileSync(new URL('./fixtures/worker-entry-before-native-20261016.mjs',import.meta.url),'utf8');
 const baseline=Function('archiveHour','archiveSpot',before.replace(/^import .+;\n/gm,'').replace('export default','return'))(archiveHour,archiveSpot);
-function binding(schema,{fail=null,missingMeta=false}={}){
+function binding(schema,{fail=null,missingMeta=false,partialMeta=false}={}){
  const raw=new DatabaseSync(':memory:');raw.exec(schema);const calls=[];
  const call=(sql,args,all)=>{const entry={sql,args};calls.push(entry);if(fail?.(sql))throw fail.error;const stmt=raw.prepare(sql);
-  if(all){const results=stmt.all(...args).map(r=>({...r})),meta={rows_read:91+results.length,rows_written:0,size_after:16384};entry.meta=missingMeta?null:meta;return{success:true,results,meta:entry.meta};}
+  if(all){const results=stmt.all(...args).map(r=>({...r})),meta={rows_read:91+results.length,rows_written:0,size_after:16384};if(partialMeta)delete meta.rows_written;entry.meta=missingMeta?null:meta;return{success:true,results,meta:entry.meta};}
   const r=stmt.run(...args),meta={changes:Number(r.changes),rows_read:3,rows_written:Number(r.changes)*7,size_after:16384};entry.meta=missingMeta?null:meta;return{success:true,results:[],meta:entry.meta};};
  return{raw,calls,prepare(sql){let args=[];return{bind(...a){args=a;return this;},async all(){return call(sql,args,true);},async first(column){const r=call(sql,args,true).results[0]??null;return column===undefined?r:r?.[column]??null;},async run(){return call(sql,args,false);}};},async batch(s){return Promise.all(s.map(q=>q.run()));}};
 }
@@ -40,6 +40,11 @@ test('native finally receipt includes a failed run-log INSERT and preserves that
 test('missing native metadata never becomes zero total, and partial source does not authorize another source query',async()=>{
  const f=fixture({source:{missingMeta:true}}),r=await execute(worker,f);assert.ifError(r.error);assert.equal(r.receipt.bindings.DATA_DB.unknown_operations,2);assert.equal(r.receipt.bindings.DATA_DB.total_rows_read,null);assert.equal(r.receipt.total_rows_read,null);
  const missing=fixture({missingSource:true}),p=await execute(worker,missing);assert.ifError(p.error);assert.equal(missing.source.calls.length,1);assert.equal(p.http.length,2);assert.equal(p.receipt.bindings.DATA_DB.row_totals_closed,true);
+});
+test('partial native billing preserves known hourly reads and original archived bytes while refusing a closed total',async()=>{
+ const a=fixture(),b=fixture({source:{partialMeta:true}}),old=await execute(baseline,a),out=await execute(worker,b);assert.ifError(old.error);assert.ifError(out.error);assert.deepEqual(trace(b.source),trace(a.source));assert.deepEqual(trace(b.archive),trace(a.archive));assert.deepEqual(out.http,old.http);
+ for(const table of ['report2_hourly_market_archive_v1','report2_hourly_spot_archive_v1','report2_spot_archive_attempt_v1','report2_archive_run_v1'])assert.deepEqual(b.archive.raw.prepare('SELECT * FROM '+table).all(),a.archive.raw.prepare('SELECT * FROM '+table).all());
+ assert.equal(out.receipt.bindings.DATA_DB.unknown_operations,2);assert.equal(out.receipt.bindings.DATA_DB.measured_rows_read_subtotal,counts(b.source).measured_rows_read_subtotal);assert(out.receipt.bindings.DATA_DB.measured_rows_read_subtotal>0);assert.equal(out.receipt.total_rows_read,null);assert.equal(out.receipt.row_totals_closed,false);assert.equal(out.receipt.additional_SQL,0);
 });
 test('repeated hourly no-op still measures its original lookup/run-log costs with distinct invocation ids and no source HTTP',async()=>{
  const f=fixture(),first=await execute(worker,f);f.source.calls.length=0;f.archive.calls.length=0;const second=await execute(worker,f);assert.ifError(second.error);assert.equal(second.http.length,0);assert.equal(second.receipt.bindings.DATA_DB.attempted_statements,0);assert(second.receipt.bindings.ARCHIVE_DB.total_rows_read>0);assert.notEqual(first.receipt.invocation_id,second.receipt.invocation_id);assert.equal(f.archive.calls.length,4);

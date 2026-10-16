@@ -4,7 +4,7 @@ import {active105OfflineReviewOwner} from '../runner/offline-review-authority.mj
 import {createVersionBoundWorkerReader} from '../runner/cloudflare-version-bound-readback.mjs';
 import {rolloutDigest,workerSettingsFingerprint,selectedVersionSettings,collectorVersionMetadata,historyVersionMetadata,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
 import {freeArchiveBindingPlan} from '../runner/free-archive-bindings.mjs';
-import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff} from '../runner/free-archive-rollout.mjs';
+import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff,currentMainReaderRepairRequest} from '../runner/free-archive-rollout.mjs';
 import {patchWorker} from '../cloudflare/public-collector/patch-worker.mjs';
 import {injectPrivatePriceRuntime} from '../cloudflare/public-collector/private-price-bundle.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
@@ -20,7 +20,7 @@ async function cf(name,suffix,{method='GET',body,raw=false}={}){
  if(!r.ok)throw Error('FREE_READER_CLOUDFLARE_HTTP_'+r.status);if(raw)return r;const j=await r.json();if(!j.success||!j.result)throw Error('FREE_READER_CLOUDFLARE_ACK_REQUIRED');return j.result;
 }
 try{
- const request=JSON.parse(await fs.readFile(requestPath,'utf8'));
+ const manual=currentMainReaderRepairRequest(process.env),request=manual??JSON.parse(await fs.readFile(requestPath,'utf8'));out.manual_current_main_repair=manual!==null;
  if(request.execute!==true)await save({status:'FREE_ARCHIVE_READER_ROLLOUT_NOT_REQUESTED'});
  else{
   if(process.env.GITHUB_REPOSITORY!==repository||!/^\d+$/.test(process.env.GITHUB_RUN_ID||'')||!process.env.CLOUDFLARE_API_TOKEN||request.writer_enabled!==false||request.native_schema_run!==38781244995)throw Error('EXACT_FREE_READER_AUTHORIZED_REQUEST_REQUIRED');

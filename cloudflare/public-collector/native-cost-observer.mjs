@@ -7,7 +7,10 @@ export function observeCollectorD1(binding){
  const account=result=>{
   usage.requests++;
   const m=result?.meta,valid=result?.success!==false&&['rows_read','rows_written'].every(k=>Number.isSafeInteger(m?.[k])&&m[k]>=0);
-  if(valid){usage.rows_read+=m.rows_read;usage.rows_written+=m.rows_written;}else usage.unknown_ops++;
+  // Preserve each known native subtotal even when the other counter or the
+  // acknowledgement is incomplete. Unknown work still keeps totals unclosed.
+  for(const key of ['rows_read','rows_written'])if(Number.isSafeInteger(m?.[key])&&m[key]>=0)usage[key]+=m[key];
+  if(!valid)usage.unknown_ops++;
  };
  const statement=original=>{
   const invoke=async method=>{let result;try{result=await original[method]();}catch(error){usage.requests++;usage.unknown_ops++;throw error;}account(result);return result;};
