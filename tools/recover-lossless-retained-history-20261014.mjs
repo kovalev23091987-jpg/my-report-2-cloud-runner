@@ -8,7 +8,7 @@ import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFu
 import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
 import {canonicalExecutionMode,canonicalArchivePoolQualification,canonicalSharedMutationQualification} from '../runner/canonical-native-qualification.mjs';
 import {selectCanonicalRetentionCursor,persistCanonicalRetentionCursor} from '../runner/canonical-retention-cursor.mjs';
-import {requireDatedRetentionQualification,verifyExactArchiveReaderBindings} from '../runner/retention-self-qualification.mjs';
+import {requireDatedRetentionQualification,verifyExactArchiveReaderBindings,parseCurrentArchiveReaderProof,CURRENT_ARCHIVE_READER_PROOF,DATED_RETENTION_QUALIFICATION} from '../runner/retention-self-qualification.mjs';
 import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
@@ -71,13 +71,16 @@ try{
  }
  const guarded=await guard();if(kind==='canonical'){cursor_selection=selectCanonicalRetentionCursor(canonical_cursor_input,guarded.active_working_state?.canonical_retention_cursor??null);out.cursor_selection=cursor_selection;}out.control={expected_main:expected,owner:lease.lease.owner,borrowed:lease.borrowed===true,lease_expires_ts:lease.lease.expires_ts};
  if(mode.native_qualification){
-  const proof=JSON.parse(await fs.readFile('checkpoints/free-storage-20261015/readers-38797445363.json','utf8'));
+  // Preserve the expired dated qualification's original pin. A later ordinary
+  // manual qualification uses the exact newer native code-repair receipt.
+  const current=!self_qualification;
+  const proof=current?parseCurrentArchiveReaderProof(await fs.readFile(CURRENT_ARCHIVE_READER_PROOF.path)):JSON.parse(await fs.readFile('checkpoints/free-storage-20261015/readers-38797445363.json','utf8'));
   const call=async(name,suffix)=>{
    if(!['my-report-2-hub','my-report-2-liq-forecast-history'].includes(name)||!/^\/(?:deployments|settings|schedules|versions\/[a-f0-9-]+)$/.test(suffix)||worker_control_HTTP>=8||control_HTTP+worker_control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_READER_CONTROL_BOUND');
    const grant=whole.reserve({logical_request_id:'DATED_READER_CONTROL:'+worker_control_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('DATED_READER_CONTROL_BOUND');worker_control_HTTP++;
    const r=await fetch('https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/workers/scripts/'+name+suffix,{headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('DATED_READER_HTTP_'+r.status);const j=await r.json();if(!j.success||!j.result)throw Error('DATED_READER_ACK_REQUIRED');return j.result;
   };
-  out.current_readers=await verifyExactArchiveReaderBindings({proof,call});
+  out.current_readers=await verifyExactArchiveReaderBindings({proof,call,expected_reader_run:current?CURRENT_ARCHIVE_READER_PROOF.run:DATED_RETENTION_QUALIFICATION.native_readers_run});
   if(control_HTTP+worker_control_HTTP+13>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
  }
  db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{beforeRequest:event=>{

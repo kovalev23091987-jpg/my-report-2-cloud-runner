@@ -1,9 +1,13 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {DATED_RETENTION_QUALIFICATION as P,requireDatedRetentionQualification,verifyExactArchiveReaderBindings} from './retention-self-qualification.mjs';
+import {DATED_RETENTION_QUALIFICATION as P,requireDatedRetentionQualification,verifyExactArchiveReaderBindings,CURRENT_ARCHIVE_READER_PROOF,parseCurrentArchiveReaderProof} from './retention-self-qualification.mjs';
 import {canonicalExecutionMode} from './canonical-native-qualification.mjs';
 import {workerSettingsFingerprint,selectedVersionSettings,rolloutDigest} from './htx-coordinated-rollout.mjs';
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
+test('the ordinary manual pin reuses the exact newer native reader receipt without renewing the expired dated window',()=>{
+ const bytes=fs.readFileSync(new URL('../'+CURRENT_ARCHIVE_READER_PROOF.path,import.meta.url)),proof=parseCurrentArchiveReaderProof(bytes);assert.equal(proof.cloud_run,'38901929896');assert.equal(proof.workers[0].after.version_id,'70a0ab62-d3f7-4ff2-97b0-cecf1ef56f1d');assert.equal(proof.workers[1].after.version_id,'9db4fdb5-4078-405e-876a-401eb7611c87');assert.equal(proof.D1,0);assert.throws(()=>parseCurrentArchiveReaderProof(Buffer.concat([bytes,Buffer.from(' ')])),/PROOF_HASH/);
+ assert.equal(P.native_readers_run,'38797445363');assert.equal(P.expires,Date.parse('2026-10-16T00:25:00Z'));assert.equal(P.day,'2026-10-16');
+});
 test('the autonomous single qualification is bounded to the exact owner requested UTC16 window and ordinary slot',()=>{
  const request={day:P.day,event:'workflow_dispatch',workflow:P.workflow,kind:'canonical',execute:true,prefetch:true,native_qualification:true,now:P.not_before};
  const r=requireDatedRetentionQualification(request);assert.equal(r.extra_slot_granted,false);assert.equal(r.automatic_rotation_enabled,false);
@@ -18,6 +22,12 @@ function fixture(){
 }
 test('future native qualification rechecks exact immutable reader versions, every binding, runtime and cron without secret exports',async()=>{
  const f=fixture(),r=await verifyExactArchiveReaderBindings(f);assert.equal(f.calls.length,8);assert.equal(r.SQL,0);assert.equal(r.secret_values_exported,false);assert.equal(r.workers.length,2);assert(!JSON.stringify(r).includes('SECRET'));
+});
+test('only the explicit current pin permits newer readers; native version, settings and cron checks remain mandatory',async()=>{
+ const f=fixture();f.proof.cloud_run=CURRENT_ARCHIVE_READER_PROOF.run;await assert.rejects(verifyExactArchiveReaderBindings(f),/READERS_PROOF/);assert.equal(f.calls.length,0);
+ const out=await verifyExactArchiveReaderBindings({...f,expected_reader_run:CURRENT_ARCHIVE_READER_PROOF.run});assert.equal(out.Cloudflare_GET,8);assert.equal(out.SQL,0);
+ const foreign=fixture();await assert.rejects(verifyExactArchiveReaderBindings({...foreign,expected_reader_run:'unapproved'}),/READERS_PROOF/);assert.equal(foreign.calls.length,0);
+ const moved=fixture();moved.proof.cloud_run=CURRENT_ARCHIVE_READER_PROOF.run;moved.versions[0].id=id(99);await assert.rejects(verifyExactArchiveReaderBindings({...moved,expected_reader_run:CURRENT_ARCHIVE_READER_PROOF.run}),/VERSION_CHANGED/);
 });
 test('a changed reader version, binding, non-versioned setting or schedule stops qualification before any SQL',async()=>{
  for(const kind of ['VERSION','BINDING','SETTING','CRON','RECEIPT']){
