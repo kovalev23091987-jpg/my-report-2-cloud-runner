@@ -51,6 +51,8 @@ on:
       - tools/repair-current-hourly-native-observer.mjs
       - tools/repair-current-hourly-native-observer.test.mjs
       - tools/read-current-native-cost-observations.mjs
+      - runner/native-query-cost-journal.mjs
+      - runner/native-query-cost-journal.test.mjs
       - runner/primary-proof-storage-candidate.mjs
       - runner/primary-proof-storage-candidate.test.mjs
       - tools/qualify-primary-proof-storage-candidate-20261016.mjs
@@ -355,7 +357,7 @@ jobs:
           node tools/audit-native-day-costs-20261016.mjs
           REPORT2_STORAGE_FLOW_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/retained-storage-flow.json" node tools/analyze-retained-storage-flow-20261016.mjs > audit-output/liq-assembled/storage-flow-summary.json
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
-          REPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/primary-proof-storage-candidate.test.mjs runner/retention-self-qualification.test.mjs runner/canonical-retention-cursor.test.mjs runner/free-archive-rollout.test.mjs tools/rollout-free-archive-readers-20261015.test.mjs runner/private-archive-pool.test.mjs runner/free-archive-schema.test.mjs runner/free-archive-bindings.test.mjs runner/free-storage-throughput.test.mjs runner/free-storage-provision.test.mjs runner/free-storage-capacity.test.mjs runner/canonical-native-qualification.test.mjs runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/private-canonical-prefetch.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
+          REPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/native-query-cost-journal.test.mjs runner/primary-proof-storage-candidate.test.mjs runner/retention-self-qualification.test.mjs runner/canonical-retention-cursor.test.mjs runner/free-archive-rollout.test.mjs tools/rollout-free-archive-readers-20261015.test.mjs runner/private-archive-pool.test.mjs runner/free-archive-schema.test.mjs runner/free-archive-bindings.test.mjs runner/free-storage-throughput.test.mjs runner/free-storage-provision.test.mjs runner/free-storage-capacity.test.mjs runner/canonical-native-qualification.test.mjs runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/private-canonical-prefetch.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
           REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap
           node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
           node --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap
