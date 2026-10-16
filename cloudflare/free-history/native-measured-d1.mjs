@@ -13,10 +13,10 @@ export function nativeMeasuredD1(binding){
     let result;
     try{result=await binding.prepare(sql).bind(...args)[method]();}
     catch{usage.unknown_ops++;throw Error('NATIVE_D1_REPLY_UNMEASURED');}
+    for(const key of ['rows_read','rows_written'])if(count(result?.meta?.[key]))usage[key]+=result.meta[key];
     if(result?.success===false||!count(result?.meta?.rows_read)||!count(result?.meta?.rows_written)){
      usage.unknown_ops++;throw Error('NATIVE_D1_USAGE_UNMEASURED');
     }
-    usage.rows_read+=result.meta.rows_read;usage.rows_written+=result.meta.rows_written;
     return result;
    };
    return {bind(...values){args=values;return this;},all:()=>execute('all'),run:()=>execute('run'),async first(column){const r=await execute('all'),row=r.results?.[0]??null;return column===undefined?row:row?.[column]??null;}};

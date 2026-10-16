@@ -17,6 +17,12 @@ test('missing native metadata remains unknown; original result and error are pre
  assert.equal(await o.db.prepare('OLD_ACK').run(),ack);await assert.rejects(o.db.prepare('FAIL').run(),e=>e===error);
  assert.deepEqual(o.usageSnapshot(),{requests:2,rows_read:0,rows_written:0,unknown_ops:2});
 });
+test('partial and failed acknowledgements retain each known billed subtotal without closing the unknown work',async()=>{
+ const replies=[{meta:{rows_read:41}},{meta:{rows_written:7}},{success:false,meta:{rows_read:13,rows_written:5}},{success:true,meta:{rows_read:2,rows_written:3}}];let i=0;
+ const o=observeCollectorD1({prepare(){return{bind(){return this;},async run(){return replies[i++];}};},async batch(s){return Promise.all(s.map(q=>q.run()));}});
+ assert.equal(await o.db.prepare('A').run(),replies[0]);await o.db.batch([o.db.prepare('B'),o.db.prepare('C'),o.db.prepare('D')]);
+ assert.deepEqual(o.usageSnapshot(),{requests:4,rows_read:56,rows_written:15,unknown_ops:3});
+});
 
 test('a truncated batch is unknown and foreign statements never reach the database',async()=>{
  let calls=0;const o=observeCollectorD1({prepare(){return{bind(){return this;}};},async batch(){calls++;return[{meta:{rows_read:2,rows_written:5}}];}});

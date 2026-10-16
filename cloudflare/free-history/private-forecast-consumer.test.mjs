@@ -89,3 +89,9 @@ test('missing native billing or a lost reply remains unknown and is never inferr
   const db=nativeMeasuredD1(binding);await assert.rejects(db.prepare('SELECT 1').first(),/UNMEASURED/);assert.equal(db.usageSnapshot().requests,1);assert.equal(db.usageSnapshot().unknown_ops,1);
  }
 });
+test('native measured failures preserve known partial reads and writes before refusing further admission',async()=>{
+ const replies=[{meta:{rows_read:41}},{meta:{rows_written:7}},{success:false,meta:{rows_read:13,rows_written:5}}];let i=0;
+ const db=nativeMeasuredD1({prepare(){return{bind(){return this;},async all(){return replies[i++];}};}});
+ for(let k=0;k<3;k++)await assert.rejects(db.prepare('SELECT fixture').first(),/NATIVE_D1_USAGE_UNMEASURED/);
+ assert.deepEqual(db.usageSnapshot(),{requests:3,rows_read:54,rows_written:12,unknown_ops:3});
+});
