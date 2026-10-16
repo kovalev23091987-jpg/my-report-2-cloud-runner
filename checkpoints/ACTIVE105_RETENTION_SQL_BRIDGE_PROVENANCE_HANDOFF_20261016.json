@@ -1,0 +1,421 @@
+{
+  "schema": "ACTIVE105_RETENTION_SEPARATE_SQL_BRIDGE_PROVENANCE_HANDOFF_V1",
+  "recorded_utc": "2026-10-16T18:20:10.432Z",
+  "status": "PR417_MERGED_ORDINARY_RETENTION_SEPARATE_SQL_BRIDGE_PROVENANCE_QUALIFIED_NATIVE_PENDING",
+  "source_main": "1e2a4f9e232afabcb22b2df00a922af6bf305b29",
+  "leased_main": "c838bc35ff10791fa84f3f123ecfaf470d2cec78",
+  "merged_main": "acc6fc41e46775e868427c0b0fd558f2cefc93f6",
+  "previous_handoff": "checkpoints/ACTIVE105_OFFLINE_READ_SHAPES_AND_RESERVE_UNITS_HANDOFF_20261016.json",
+  "PR417": {
+    "merged": true,
+    "main": "acc6fc41e46775e868427c0b0fd558f2cefc93f6",
+    "branch": "bdc26da100a67da6ec5254a6a2dc5e4ca6a778cb",
+    "branch_cloud": 38945717494,
+    "main_cloud": 38946076609,
+    "pass": 966,
+    "fail": 0,
+    "tap": 21,
+    "proof": "checkpoints/ACTIVE105_RETENTION_SQL_BRIDGE_PROVENANCE_HANDOFF_20261016.json"
+  },
+  "scope": {
+    "status": "CODE_QUALIFIED_NEW_NATIVE_OBSERVATIONS_PENDING",
+    "release_run": 38934007309,
+    "release_raw_sha256": "09e4349fc13140e2bc8059f7698ad3306dcd5ce3bcef66f561486019d021e651",
+    "version": "7011c257-4bdc-4244-a858-42c30e8532ab",
+    "module": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+    "preflight_metadata_GET": 5,
+    "postflight_metadata_GET": 4,
+    "max_control_HTTP": 40,
+    "borrowed_max_mutation_batches": 3,
+    "new_native_observation_accepted": false,
+    "transient_changes_excluded": false,
+    "new_native_SQL": 0,
+    "physical_bytes_freed": 0,
+    "source_scope": "checkpoints/free-storage-20261016/retention-sql-bridge-provenance-scope.json"
+  },
+  "cloud": {
+    "branch": {
+      "schema": "EXACT_RETENTION_SQL_BRIDGE_PROVENANCE_CLOUD_REVIEW_V1",
+      "run": 38945717494,
+      "head": "bdc26da100a67da6ec5254a6a2dc5e4ca6a778cb",
+      "pass": 966,
+      "fail": 0,
+      "tap": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0,
+          "sha256": "5c673fb51a63f70c89cc6e7109034d53d2a96943ebe5c403f71615080161104f"
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "sha256": "919091a172fd370f8200d993208129b20708742891a356c98aea23964d28ae04"
+        },
+        {
+          "file": "cold-archive.tap",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0,
+          "sha256": "4fb10cbeb748bbd719699fa0377ed738f45768adb3e9e76b471ce2773f7a8b31"
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "sha256": "0e430ab35a77a7913047fe6cc3ae7291df61a636ea22932d1240b069ee236047"
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0,
+          "sha256": "44e26445d0ca7954f1753f45b5cdd4ec03a1badc7848c59fb870cabdda7262e2"
+        },
+        {
+          "file": "index-useful-only.tap",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0,
+          "sha256": "f731e8c06391beee8b7f4e28ab34f677e71cb93c22a59faa9848cfc4a8b9eade"
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "58c7fb814f49ba72b7126f52c6d63102583b34ef1dd5d1c193dadf5c98232f64"
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "tests": 60,
+          "pass": 60,
+          "fail": 0,
+          "sha256": "8284e4fc402b850ef8b52e9965755aac9cd186ebd3269f7d146f06a940e8e493"
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "sha256": "50e24eefe6b0101f54aa2c736beaff1e8987293450b2bdbbd308777796a12e4c"
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0,
+          "sha256": "a307342164bdba1082086aba7c0f0efd521689505ad23411e3eee6e42f5dde8e"
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0,
+          "sha256": "4f6ab0f64fe5bf3b63eb1f731e4fbfcacba57467d72a240f6bf6ab9ed0508040"
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "sha256": "4dcff739f285a42e9753f307c5b2087a971ea0ee9f6430f4ea23a4728ce1a7ce"
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "sha256": "56775144066e692dde68523af20b34dc6319d150f29a6f9b20596bf4f90b7d57"
+        },
+        {
+          "file": "private-price-connected.tap",
+          "tests": 109,
+          "pass": 109,
+          "fail": 0,
+          "sha256": "fdf24bc691a638c1ffa09593b0b5dddf8b94b116c7e0455ddeac828b343d8380"
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0,
+          "sha256": "4e7d23e71a601c1972cbca92ec9a909398e543abaf3429b484ffdd88fe21c297"
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "tests": 12,
+          "pass": 12,
+          "fail": 0,
+          "sha256": "bbbee3d6173f0ceb30aef0d7bda1fa1df0dd0fab4fa13dbe61b4cf5e8e32c8b6"
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "2ed5fd2f4a0c5ac52bbac87b4e3da0a5d52e7b2ed156f9d7fdf5e43483a757b2"
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "sha256": "298140c779b1c57c7cb871df779dbc44a748925581e777ec18dda9cce947062c"
+        },
+        {
+          "file": "source-health-priority.tap",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "sha256": "0ba98e21f0e319ad52c1d2f8732a93eb4562d3d1bb12b90684c4c2b79d05347e"
+        },
+        {
+          "file": "target.tap",
+          "tests": 83,
+          "pass": 83,
+          "fail": 0,
+          "sha256": "3f775de8f56ea2f693c38035ac259b6102173b96791d8eac3eaa9db83563e2f3"
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "tests": 105,
+          "pass": 105,
+          "fail": 0,
+          "sha256": "8d37fc1ec390dd0eae455d6b24903f8dc94c916e0593f13f093c710dbd8751d2"
+        }
+      ],
+      "runtime_binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "artifact": 12066021361,
+      "digest": "sha256:b2ef6fec0ca5b798747b4211a02c4fb06a9cf4a907e7999fa9a3c6884cf69fe1",
+      "native_observation_accepted": false,
+      "native_SQL": 0,
+      "physical_bytes_freed": 0
+    },
+    "main": {
+      "schema": "EXACT_RETENTION_SQL_BRIDGE_PROVENANCE_CLOUD_REVIEW_V1",
+      "run": 38946076609,
+      "head": "acc6fc41e46775e868427c0b0fd558f2cefc93f6",
+      "pass": 966,
+      "fail": 0,
+      "tap": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0,
+          "sha256": "53d8d442e9ba9ba1ccf37a8d9ccdf80ccd79d1f8dddbbcd8c795e54fb9b9bea0"
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "sha256": "d37e836eb10b39417eb1ba5c8ca77d9291ea381f0e296f0b06248a8fcff49960"
+        },
+        {
+          "file": "cold-archive.tap",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0,
+          "sha256": "0dbe1b3e425a9afad5cdf8676b34b37c1980076a493a19efa528be996d320d60"
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "sha256": "ff24963686fff242f17fae978835e33a50d705b546e158c95eec2f37c2083111"
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0,
+          "sha256": "2214541cfd5c3d74e11528f78219f44617eb30bcc7e77cedaffb012ad1e191fb"
+        },
+        {
+          "file": "index-useful-only.tap",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0,
+          "sha256": "e7bb45aa99b5cb0d4ace99f07a4f85e4ef026a255fabe560398e4eb6ce6fe0cd"
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "c1f014f2a5bec5e990327fb6b34521867471aba7fba7ac27d4adbb273919c782"
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "tests": 60,
+          "pass": 60,
+          "fail": 0,
+          "sha256": "4e1ae29167338a95e440e6c8a357be961aee74037734ad619d16909616faece8"
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "sha256": "e14327245649734fb4bd15ae3fc951415c53d8afec924d5d289b8559402cac0a"
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0,
+          "sha256": "a7cb78d6531d0090bc951fb9137f55033fc975cbd2a8c11527937cf60ae7a468"
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0,
+          "sha256": "f8174451b8cfa6ae62a194b7d36c261e21edb32c0025f16d6b5983a84c886955"
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "sha256": "e725dbbabd6b35d8e99e359786d7b9dbee06475843c651d5aff6773806bbc04a"
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "sha256": "8d7b03bc6dbb376b4bc56e25cae8c54f5efe31c2c4b22ce410fc7b28d87dffc4"
+        },
+        {
+          "file": "private-price-connected.tap",
+          "tests": 109,
+          "pass": 109,
+          "fail": 0,
+          "sha256": "2b9787537026dca67b4b05b94024e4cfc048a432fad9241acc9a370ad0ab8353"
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0,
+          "sha256": "6de1d6b1b2c0b1522409c7c3fe43a6ac98454176d174f787434e53739ed13ea3"
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "tests": 12,
+          "pass": 12,
+          "fail": 0,
+          "sha256": "1edb2b87c3e424e349ef42361faf107ca30c3ee1232cf269db6f04c75347d4a1"
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "252d680179574f8a689397c1d832ecbda6947f582c2081712e2fdbaeb733566b"
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "sha256": "080795c53d6b9889c4d92ee92045fb1eaead0d9fded7273912acdcdc55ef0389"
+        },
+        {
+          "file": "source-health-priority.tap",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "sha256": "f4840e83ecbaa713cd9f32c296f7aabaf9e499168c3da931232c80892ff8b09e"
+        },
+        {
+          "file": "target.tap",
+          "tests": 83,
+          "pass": 83,
+          "fail": 0,
+          "sha256": "d54ca9b4eeef0d85f31488a4648d74a66793d8904d0884d8f54542312a2b738b"
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "tests": 105,
+          "pass": 105,
+          "fail": 0,
+          "sha256": "1c05b925c4b1fd4ce0cd09c571cb5d9ed640a844a5429304d42d7268bb4e056d"
+        }
+      ],
+      "runtime_binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "artifact": 12066725097,
+      "digest": "sha256:2350c7715fddd39c9b642b6dca680c745ab50e30eed9d0c64dd89d9fab2011ac",
+      "native_observation_accepted": false,
+      "native_SQL": 0,
+      "physical_bytes_freed": 0
+    }
+  },
+  "metadata_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "unrelated_root_values_byte_preserved": 376
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "unrelated_root_values_byte_preserved": 153
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "unrelated_root_values_byte_preserved": 318
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "unrelated_root_values_byte_preserved": 351
+    }
+  ],
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792173954965",
+    "released": true,
+    "released_utc": "2026-10-16T18:20:10.432Z"
+  },
+  "preserved": {
+    "maintenance_caps": "2/day48/run5000R400W16bridge40control164whole/manual24",
+    "UTC16_slots_spent": 2,
+    "extra_UTC16_slot_authorized": false,
+    "reserved_no_refund": "10000R800W",
+    "writer": false,
+    "rotation": false,
+    "new_primary_format": false,
+    "asset_contract_counts": [
+      105,
+      122
+    ],
+    "pauses": 9,
+    "strategy_weights_sourceclocks_forms_unchanged": true,
+    "nominal_body_rows_scheduled": 144,
+    "nominal_body_rows_including_manual_and_burst": 172,
+    "existing_nominal_capacity_per_day": 96
+  },
+  "not_accepted": [
+    "New native reply/bridge observations/statement cost/whole-day",
+    "Shared/grouped native throughput and new A1-A4 bodies",
+    "New physical recovery or report/both finalists/same-run delivery",
+    "Primary proof format/live caller/schema/Worker costs/causal ACK"
+  ],
+  "project_complete": false,
+  "next_action": "Continue from checkpoints/ACTIVE105_RETENTION_SQL_BRIDGE_PROVENANCE_HANDOFF_20261016.json, PR417 merged acc6fc41e46775e868427c0b0fd558f2cefc93f6. Exact final branch bdc26da100a67da6ec5254a6a2dc5e4ca6a778cb/common38945717494:966PASS/0FAIL,21TAP;10newlocalcontrolledcases/20relatedPASS. Exact main38946076609/headacc6fc41e46775e868427c0b0fd558f2cefc93f6 also966PASS/0FAIL,21TAP,artifact12066725097,digest2350c7715fddd39c9b642b6dca680c745ab50e30eed9d0c64dd89d9fab2011ac. Current ordinary explicit native qualification now requires pinned SEPARATE SQL bridge release38934007309 (rawSHA09e4349fc13140e2bc8059f7698ad3306dcd5ce3bcef66f561486019d021e651), version7011c257-4bdc-4244-a858-42c30e8532ab/module06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf, exact immutableetag/settings/crons/configuredURL. Before SQL5metadataGET, afterfinalization4GET; NOT modulecontent inspection/release/invocation. Borrowed control arithmetic6authority+3initialguard+8readers+5bridgepre=22; reserve4post+5cursor, atmost3mutationguards*3=9 =>40. Allcaps/SUMreserves unchanged; failure preservesknowncosts/unknown, marksqualificationincomplete and blocks cursor promotion. Observations doNOTexclude transientversions or prove native reply/day/throughput/physicalrecovery. Positive settings comparator fixtures synthetic, release rawbytes separatelypinned. In thispacket0nativeSQL/sourceHTTP/Workerinvocation/MAIN/Telegram/physicalbytesfreed; permanentwriter/rotation/newprimaryformatfalse. No redeploy or repeated acceptedinspection/tails/tests/3oldrows. BOTH UTC16 RETAINED_HISTORY slots SPENT, NO thirdpermission,10000R800Wreserved NEVERrefund. No SQLmaintenanceUTC16/expired datedjob/forcedMAIN/manualknownfailure/reset/refund/rename/raise. Next399+406native only later ordinaryUTCday with freshmain/phase/fence/generation/status, own<=90minCASlease scopeSTARTING RETAINED_HISTORY. andexactreadback/currentcode/readers/NEWbridgeguard/actualadmission. Existingretained-history-maintenance.yml execute=true,kind=canonical,expected_main=fresh,expected_owner=own,prefetch_private=true,canonical_cursor=auto,native_qualification=true,archive_pool_qualification=true,owner_emergency_dayempty,no selfqualificationday. Needfullnonoverflowjournals/reconciliation/eachprivategroup/sharedUPDATE/readbacknativecost/exactcopies4preflight/readthrough/physicalbytes/cursor/ownerrelease; unknown mayrefuse, doNOTclear. No promise48rows or physicalgain from3groups. Aftervalidlaterremediation recordexactevidence and read alreadysaved nextNATURAL full/bothpersistedfinalists/same-runTelegrammessage_id or exactdeliveryrefusal. LastFULL38840064503 FIL/SUIabsent,42337R341W+3unknownINSERT500,totalnull,noSENT; PR405capacitycrossdayguard until laterexactphysicalremediation+actualadmission, oldunknownUTC16stay16. OnlyearlierNEAR487424bytes/main499470336, no newA1-A4bodies/sharedthroughput/reportrestoration. Currentgenerationunits PR416:72scheduleddeep+11manualdeep+3burst=86deep/day,2families=>144scheduled/172nominalwithmanualburst; extraSELECTproposal86SQL/0extraHTTPinsamebatch. Prior188rows/94SQL historicaloverestimate, notexactminimum.96rows/day<144/172 remains;4x48=192/+10000R800Wproposalonly,capsunchanged. Ninefamily3266708R58920W notwholeday; PRIVATE_PRICE nested no doublecount, no scalar/point/sample upperbound. Primaryproofcandidate PR410/412/416 ONLYoffline; producer/imports/formatunchanged, allgenericdynamiccallers/nativeSchema/raworder/WorkerCPUheapwire/readcost/causalACK open. DoNOTrepeat accepted31/13candidate/3historicalrows. BeforeUTC17 onlyconcretemissingcriticalofflinegap, no speculative scaffolding or repeatedtests justforactivity; ifnone/windowclosed stayquietunchanged. All7fixed directions remainopen,105assets122contracts9indefinitepauses,strategy/weights/sourceclocks/forms unchanged,MAGIC106deferred; decision score and owner-specified finalTelegram last. Projectnotcomplete."
+}
