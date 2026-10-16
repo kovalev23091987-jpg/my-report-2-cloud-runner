@@ -1,6 +1,7 @@
-// Offline candidate only: decode explicit read shapes against independently
-// supplied pre-insert expectations. No SQL, network, activation or native ACK.
-import {PROOF_STORAGE_CANDIDATE as P} from './primary-proof-storage-candidate.mjs';
+// Offline only: explicit read shapes can use independent pre-insert manifests
+// or an explicit read-only stored-descriptor integrity mode. Neither grants
+// persistence ACK. No SQL, network, activation or native receipt is produced.
+import {PROOF_STORAGE_CANDIDATE as P,decodePrimaryProofCandidate} from './primary-proof-storage-candidate.mjs';
 import {restorePrimaryProofCandidateColumn} from './primary-proof-readback-candidate.mjs';
 const enc=new TextEncoder(),plain=v=>v!==null&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v));
 const count=v=>Number.isSafeInteger(v)&&v>=0,identity=x=>({full_evidence_id:x.full_evidence_id,contract_code:x.contract_code,observed_ts:x.observed_ts});
@@ -10,10 +11,10 @@ function hint(raw){
  const d=body?.[P.marker],id=d?identity(d):{full_evidence_id:body?.full_evidence?.full_evidence_id,contract_code:body?.contract_code,observed_ts:body?.observed_ts};
  if(!id.full_evidence_id||typeof id.full_evidence_id!=='string'||typeof id.contract_code!=='string'||!count(id.observed_ts))throw Error('PROOF_READ_IDENTITY_REQUIRED');
  const bytes=d?.raw_bytes??enc.encode(raw).length;if(!Number.isSafeInteger(bytes)||bytes<=0||bytes>P.max_raw_bytes)throw Error('PROOF_READ_BYTES_REQUIRED');
- return{id,bytes};
+ return{id,bytes,descriptor:d??null};
 }
-export function createPrimaryProofReadShapesCandidate({contract,expectations,max_values=8,max_decoded_bytes=12_000_000,max_result_rows=256}={}){
- if(!plain(contract)||!Array.isArray(expectations)||expectations.length<1||expectations.length>105||!Number.isInteger(max_values)||max_values<1||max_values>8||!Number.isSafeInteger(max_decoded_bytes)||max_decoded_bytes<1||max_decoded_bytes>12_000_000||!Number.isInteger(max_result_rows)||max_result_rows<1||max_result_rows>256)throw Error('PROOF_READ_BOUNDED_INDEPENDENT_MANIFEST_REQUIRED');
+export function createPrimaryProofReadShapesCandidate({contract,expectations=[],descriptor_only_reads=false,max_values=8,max_decoded_bytes=12_000_000,max_result_rows=256}={}){
+ if(!plain(contract)||!Array.isArray(expectations)||expectations.length>105||!expectations.length&&descriptor_only_reads!==true||typeof descriptor_only_reads!=='boolean'||!Number.isInteger(max_values)||max_values<1||max_values>8||!Number.isSafeInteger(max_decoded_bytes)||max_decoded_bytes<1||max_decoded_bytes>12_000_000||!Number.isInteger(max_result_rows)||max_result_rows<1||max_result_rows>256)throw Error('PROOF_READ_BOUNDED_INDEPENDENT_MANIFEST_REQUIRED');
  const fixedContract=JSON.parse(JSON.stringify(contract)),manifests=new Map();for(const original of expectations){const e=JSON.parse(JSON.stringify(original));const id=e?.identity?.full_evidence_id;if(!id||manifests.has(id))throw Error('PROOF_READ_UNIQUE_EXPECTATION_REQUIRED');manifests.set(id,e);}
  let values=0,decoded_bytes=0;
  const restore=async(value,spec)=>{
@@ -21,8 +22,8 @@ export function createPrimaryProofReadShapesCandidate({contract,expectations,max
   function scalar(raw,bind,set){
    if(bind!==undefined&&(!plain(bind)||Object.keys(bind).some(k=>!['full_evidence_id','contract_code','observed_ts'].includes(k))))throw Error('PROOF_READ_EXPLICIT_IDENTITY_INVALID');
    const h=hint(raw),expectation=manifests.get(h.id.full_evidence_id);
-   if(!expectation||JSON.stringify(identity(expectation.identity))!==JSON.stringify(h.id)||bind&&Object.keys(bind).some(k=>Object.hasOwn(h.id,k)&&bind[k]!==h.id[k]))throw Error('PROOF_READ_INDEPENDENT_IDENTITY_MISMATCH');
-   work.push({raw,expectation,row_identity:h.id,bytes:h.bytes,set});
+   if(bind&&Object.keys(bind).some(k=>Object.hasOwn(h.id,k)&&bind[k]!==h.id[k])||expectation&&JSON.stringify(identity(expectation.identity))!==JSON.stringify(h.id)||!expectation&&!descriptor_only_reads)throw Error('PROOF_READ_INDEPENDENT_IDENTITY_MISMATCH');
+   work.push({raw,expectation,descriptor:h.descriptor,row_identity:h.id,bytes:h.bytes,set});
   }
   function columns(s){if(!Array.isArray(s.columns)||!s.columns.length||s.columns.length>95||s.columns.some(c=>!plain(c)||typeof c.output!=='string'||typeof c.source!=='string')||new Set(s.columns.map(c=>c.output)).size!==s.columns.length)throw Error('PROOF_READ_EXPLICIT_COLUMNS_REQUIRED');return s.columns;}
   function row(input,s,set){
@@ -59,9 +60,12 @@ export function createPrimaryProofReadShapesCandidate({contract,expectations,max
   // Reserve the whole response before decoding its first member. A later
   // corruption never returns a partly restored result or refunds attempted work.
   values+=work.length;decoded_bytes+=bytes;
-  for(const w of work)w.set(await restorePrimaryProofCandidateColumn(w.raw,{expectation:w.expectation,contract:fixedContract,row_identity:w.row_identity}));
+  for(const w of work){
+   const restored=w.expectation?await restorePrimaryProofCandidateColumn(w.raw,{expectation:w.expectation,contract:fixedContract,row_identity:w.row_identity}):w.descriptor?await decodePrimaryProofCandidate(w.raw,{row:w.row_identity,contract:fixedContract,expected_raw_sha256:w.descriptor.raw_sha256}):w.raw;
+   w.set(restored);
+  }
   for(const patch of patches)patch();
   return output;
  };
- return{restore,usage:()=>({values,decoded_bytes,max_values,max_decoded_bytes,max_result_rows,SQL:0,HTTP:0,production_enabled:false,production_ACK_authorized:false,native_receipt_accepted:false})};
+ return{restore,usage:()=>({values,decoded_bytes,max_values,max_decoded_bytes,max_result_rows,SQL:0,HTTP:0,read_trust_basis:descriptor_only_reads?'STORED_DESCRIPTOR_INTEGRITY_AND_CALLER_IDENTITY_NOT_INDEPENDENT_ACK':'INDEPENDENT_PREINSERT_EXPECTATION',production_enabled:false,production_ACK_authorized:false,native_receipt_accepted:false})};
 }
