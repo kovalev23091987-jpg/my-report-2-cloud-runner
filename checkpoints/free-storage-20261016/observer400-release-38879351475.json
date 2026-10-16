@@ -1,0 +1,150 @@
+{
+  "schema": "CURRENT_HOURLY_NATIVE_COST_OBSERVER_RELEASE_V1",
+  "head": "c3c76967034d76003b94ae23c898514bf3c52983",
+  "expected_main": "c3c76967034d76003b94ae23c898514bf3c52983",
+  "connected": {
+    "head": "c3c76967034d76003b94ae23c898514bf3c52983",
+    "run": 38879173781,
+    "status": "EXACT_MAIN_HOURLY_NATIVE_OBSERVER_QUALIFIED"
+  },
+  "scope": {
+    "status": "EXACT_HOURLY_SQL_PARAMS_AND_ARCHIVED_BYTES_PRESERVED",
+    "target_count": 105,
+    "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+    "qualified_files": [
+      {
+        "path": "cloudflare/free-history/worker-entry.mjs",
+        "sha256": "8cbcd1aeb002338e9e7a94c0c14fdff69a75d1959db29abd8ba36e318c97a2cc"
+      },
+      {
+        "path": "cloudflare/free-history/native-usage-receipt.mjs",
+        "sha256": "475f21bd1946a7b8c137e760ea2bde44a4436ca30e4e1aeb9096dd96664c6f7b"
+      },
+      {
+        "path": "cloudflare/free-history/fixtures/worker-entry-before-native-20261016.mjs",
+        "sha256": "ee2826e36f849d42122f98ca64c99d8f856146e0d1e6d951a0ecf8c1c1548239"
+      },
+      {
+        "path": "cloudflare/free-history/hourly-archive.mjs",
+        "sha256": "e19fba3719b3cc315ead4b5a1975242d5d581887ec03d5795475aa7fb5b19924"
+      },
+      {
+        "path": "cloudflare/free-history/spot-archive.mjs",
+        "sha256": "0b0fa4a7626abfe83c8b1b4f1f5f69012f280097f437eeb340802cad86b89638"
+      },
+      {
+        "path": "cloudflare/public-collector/native-cost-observer.mjs",
+        "sha256": "3959435a401c79d8fadf830003a80f9b7120095d6cb5724c3d11074356e54553"
+      }
+    ],
+    "additional_SQL": 0
+  },
+  "execute": true,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "history_discarded": false,
+  "source_clocks_refreshed": false,
+  "production_scope_changed": false,
+  "workers": [
+    {
+      "name": "my-report-2-free-history",
+      "before": {
+        "deployment_id": "5e4eb060-a3ee-443c-96f9-25d035330880",
+        "version_id": "6e5f4b9d-b2a2-4a08-9f4d-bf3d9f0adf03",
+        "module_sha256": "96722fa00c12f5d70ced86d8208acf0d4098ab3d040d9b82097b13004180d7a2",
+        "module_readback_basis": "ACTIVE_EQUALS_LATEST_UPLOAD_EXACT_BYTES",
+        "settings_sha256": "84268dc2a18bffaa2ec96c30bd2a1c69019fff94a95b306bcee707b1c7c2202a",
+        "crons_sha256": "9ff979faf96d29b4b85a4ebad74f7c97a553a262407a4faacd5bef8f43c0210a",
+        "binding_names": [
+          "ARCHIVE_DB",
+          "DATA_DB"
+        ],
+        "crons": [
+          "35 * * * *"
+        ],
+        "settings_key_sha256": {
+          "placement": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "tail_consumers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "logpush": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+          "bindings": "99d69e1551450d27dfb58b5cee59d20209739fb3452784aac33c24d26eb34b72",
+          "compatibility_date": "04c17ac53fcbb2057b867357a095d4d5c703f6a4414cae8aec5161cf42f0ccf0",
+          "compatibility_flags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "usage_model": "fe6d3468cf5c74d8ec2a95b40f2e05338c37a4202f8fad692d2b64a9cf9b468a",
+          "limits": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "effective_runtime": {
+          "compatibility_date": "2026-10-12",
+          "usage_model": "standard"
+        },
+        "immutable_script_etag": "3269a3e08e5517a921c8461b9fb4cb1c006ad7f80c4e34cf7c60add887453bbb"
+      },
+      "expected_module_sha256": "00d7f5dd38f644a6bd142a0e67cbcf8055952bc4e66a3be926911856abff669f",
+      "staged": {
+        "version_id": "1ada0e9e-b92f-4094-90b9-ac0653e05136",
+        "activated": false
+      },
+      "activation_intent": {
+        "version_id": "1ada0e9e-b92f-4094-90b9-ac0653e05136",
+        "ts": 1792142228612
+      },
+      "after": {
+        "deployment_id": "d06b54e3-d17d-4ded-80a8-248fdf250fc1",
+        "version_id": "1ada0e9e-b92f-4094-90b9-ac0653e05136",
+        "module_sha256": "00d7f5dd38f644a6bd142a0e67cbcf8055952bc4e66a3be926911856abff669f",
+        "module_readback_basis": "ACTIVE_EQUALS_LATEST_UPLOAD_EXACT_BYTES",
+        "settings_sha256": "84268dc2a18bffaa2ec96c30bd2a1c69019fff94a95b306bcee707b1c7c2202a",
+        "crons_sha256": "9ff979faf96d29b4b85a4ebad74f7c97a553a262407a4faacd5bef8f43c0210a",
+        "binding_names": [
+          "ARCHIVE_DB",
+          "DATA_DB"
+        ],
+        "crons": [
+          "35 * * * *"
+        ],
+        "settings_key_sha256": {
+          "placement": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "tail_consumers": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "logpush": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+          "bindings": "99d69e1551450d27dfb58b5cee59d20209739fb3452784aac33c24d26eb34b72",
+          "compatibility_date": "04c17ac53fcbb2057b867357a095d4d5c703f6a4414cae8aec5161cf42f0ccf0",
+          "compatibility_flags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "usage_model": "fe6d3468cf5c74d8ec2a95b40f2e05338c37a4202f8fad692d2b64a9cf9b468a",
+          "limits": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        "effective_runtime": {
+          "compatibility_date": "2026-10-12",
+          "usage_model": "standard"
+        },
+        "immutable_script_etag": "c8b3fcc42373ce5193a7bca67077fe0b7a124a1486965e5e5caba8c5d9ef59d2"
+      }
+    }
+  ],
+  "rollback": [],
+  "started_ts": 1792142225609,
+  "status": "CURRENT_HOURLY_NATIVE_COST_OBSERVER_EXACTLY_INSTALLED",
+  "production_activation_allowed": true,
+  "completed_ts": 1792142231464,
+  "github_HTTP": 26,
+  "cloudflare_HTTP": 30,
+  "whole_HTTP": {
+    "used": {
+      "hot": 26,
+      "background": 30,
+      "statistics": 0
+    },
+    "total": 56,
+    "limits": {
+      "whole_job": 164,
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "remaining": 108
+  },
+  "manual_HTTP_reserved": 24,
+  "secret_values_exported": false
+}

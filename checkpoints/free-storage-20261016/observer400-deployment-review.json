@@ -1,0 +1,76 @@
+{
+  "schema": "EXACT_PR400_OBSERVATIONAL_INSTALLATION_REVIEW_V1",
+  "recorded_utc": "2026-10-16T09:23:37Z",
+  "PR": 400,
+  "merged_head": "c3c76967034d76003b94ae23c898514bf3c52983",
+  "cloud": {
+    "branch_run": 38856674502,
+    "branch_head": "8fcf5309ca7a470a4b8c7c71661810f43e312c4c",
+    "main_run": 38879173781,
+    "pass_each": 801,
+    "fail_each": 0,
+    "recovery": 38856678166,
+    "N10": 38856678212
+  },
+  "releases": [
+    {
+      "run": 38879351475,
+      "artifact_id": 12036837062,
+      "artifact_digest": "sha256:164c65c35f00547fba65ae54f69bb108caf30804a5f5bfc1f31615bdcfeba586",
+      "proof": "checkpoints/free-storage-20261016/observer400-release-38879351475.json",
+      "status": "CURRENT_HOURLY_NATIVE_COST_OBSERVER_EXACTLY_INSTALLED",
+      "version": "1ada0e9e-b92f-4094-90b9-ac0653e05136",
+      "module_sha256": "00d7f5dd38f644a6bd142a0e67cbcf8055952bc4e66a3be926911856abff669f",
+      "github_HTTP": 26,
+      "cloudflare_HTTP": 30
+    },
+    {
+      "run": 38879661936,
+      "artifact_id": 12037195514,
+      "artifact_digest": "sha256:6ade95256aae0f2e55ca55ebe197187f6ae9b95b9773d60400526b5c4f9ae88b",
+      "proof": "checkpoints/free-storage-20261016/observer400-release-38879661936.json",
+      "status": "CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED",
+      "version": "24438bcc-96fe-41a2-9dfb-066829fcf594",
+      "module_sha256": "c073285f2009d28c5c6c78affbafa556c2d542585244985bbfdf39266d982017",
+      "github_HTTP": 26,
+      "cloudflare_HTTP": 31
+    }
+  ],
+  "checks": {
+    "exact_module_readback": true,
+    "exact_bindings_settings_crons_runtime": true,
+    "Hub_prefix_preserved": true,
+    "sourceHTTP": 0,
+    "productionSQL": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "manual_HTTP_reserve_each": 24,
+    "observer_additional_SQL": 0,
+    "unknown_costs_retained": true,
+    "nested_private_price_source_disjoint": true,
+    "ordinary_native_receipts_observed": false,
+    "whole_D1_day_closed": false,
+    "report_restored": false,
+    "automatic_writer_rotation": false
+  },
+  "oauth": {
+    "Cloudflare_API_MCP": "UNAUTHORIZED_REAUTH_REQUIRED",
+    "user_screenshot_error": "temporarily_unavailable: Client metadata is temporarily unavailable",
+    "repository_token_successful_in_release": true,
+    "new_key_required_by_evidence": false,
+    "preinstall_Observability_native_tag_result": "EMPTY_NOT_ZERO_COST_OR_DISABLED_LOG_PROOF"
+  },
+  "next_action": "PR400 merged c3c76967034d76003b94ae23c898514bf3c52983. Exact branch cloud38856674502 and main38879173781 each801PASS/0FAIL; recovery38856678166 andN10 38856678212SUCCESS. Hourly observer actually installed38879351475 version1ada0e9e-b92f-4094-90b9-ac0653e05136; collector38879661936 version24438bcc-96fe-41a2-9dfb-066829fcf594. Exact module/settings/bindings/crons/runtime readback, Hub prefix preserved, release sourceHTTP/SQL/MAIN/Telegram0, manual24 preserved. New code only observes existing SQL including hourly run-log and collector claim/late failure; unique invocation receipt with unknown retained and private-price source split prevents double counting. Native ordinary receipts/log delivery NOT yet verified; empty pre-install Observability query is not proof of zero cost or disabled logs. Cloudflare MCP API auth currently UNAUTHORIZED; user authorization page says client metadata temporarily unavailable. Do not request new keys or keep retrying OAuth; repository Cloudflare token worked for exact releases. Next read bounded ordinary scheduled native receipts with exact active version/time; no Worker invocation or SQL probe. Check persistent logging/settings before relying on logs. Hourly day_utc is scheduled clock; for actual billed UTC day require actual event time and handle cross-midnight ambiguity, never refresh source clocks. Close collector/hourly/control/failed-late gaps against known9families3266708R/58920W, excluding nested private-price source twice; old3413280/69738 scalar is not closed day. Storage-flow audit48 exact revisions/13assets gzip/raw12.59% only historical bytes, not physical capacity or105coverage. Current2x48=96<144scheduled/188manual; four48slots=192 and extra10000R800W is proposal ONLY, not throughput or cap authorization. BOTH UTC16 retention slots spent, NO third maintenance/probe/forcedMAIN/refund/reset/rename/raise. Next native399 qualification only later ordinary2/day window after exact readers/code/fresh own lease and actual day admission; old dated UTC16 job expired. Keep writer/rotationfalse, all native reserves unchanged. Last full38840064503 failed FIL/SUI, known42337R341W+3unknown,totalnull,noSENT. Natural398guard38843513867 already proved zeroNEWcalls NOT_CLOSED; do not repeat known-failure MAIN. Save exact remediation evidence, then verify physical capacity, both saved finalists and exact same-runTelegrammessage_id. Continue all7 fixed directions,105assets122contracts9pauses,strategy/weights/sourceclocks/forms unchanged,MAGIC106deferred. Final decision score/Telegram required after blocks and owner precise form. Save releases only current own lease; next actions require fresh main/phase/fence/generation/status and new CAS lease/readback. Local hourly heartbeat requires computer/app/network, not independent cloudAI.",
+  "post_install_Observability_read": {
+    "query": "report2-native-post-install-400-0923",
+    "from": "2026-10-16T09:20:00Z",
+    "to": "2026-10-16T09:23:30Z",
+    "result": "EMPTY",
+    "sourceHTTP": 0,
+    "SQL": 0,
+    "cost_inferred": 0,
+    "zero_cost_proven": false,
+    "logs_disabled_proven": false,
+    "actual_receipts_accepted": false
+  }
+}
