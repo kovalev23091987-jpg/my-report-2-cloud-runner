@@ -77,3 +77,15 @@ test('N10 real existing candle reader and report consumer retain original same-w
  const out=await loadN10ReusedVenuePaths({db,contract:sample.contract,flow_result:result,primary_receipt:{check_completed:true,receipts:[{actual_price_windows:[{...h,label:'15m'}]}]},now:sample.now});
  assert.equal(out.evidence.length,1);assert.equal(reads,1);assert.equal(out.provider_http,0);assert.equal(verifyN10ReusedVenuePathEvidence(out.evidence[0],{now:sample.now}),true);assert.equal(out.evidence[0].source_ts,h.window_end_ts);assert.equal(out.evidence[0].source_cache_observed_ts,sample.cache_observed_ts);assert.equal(consumeBlockResultContext({contract:sample.contract,evidence:out.evidence,now:sample.now}).facts.length,1);assert.equal(out.evidence[0].coverage_fraction,0);assert.equal(out.evidence[0].entry_authorized_by_context,false);
 });
+test('N10 does not query its optional candle cache after native usage is already unknown',async()=>{
+ const s=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url))).find(r=>r.venue==='BINANCE');let reads=0;
+ const db={usageSnapshot:()=>({unknown_ops:1}),prepare(){reads++;throw Error('READ_FORBIDDEN');}};
+ const out=await loadN10ReusedVenuePaths({db,contract:s.contract,flow_result:{components:[s.component]},primary_receipt:{check_completed:true,receipts:[{actual_price_windows:[{...s.htx_window,label:'15m'}]}]},now:s.now});
+ assert.equal(reads,0);assert.equal(out.cache_reads,0);assert.equal(out.status,'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE');assert.equal(out.evidence.length,0);
+});
+test('N10 optional read failure retains native unknown and stops before the next pending component',async()=>{
+ const s=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url))).find(r=>r.venue==='BINANCE');let reads=0,unknown=0;
+ const db={usageSnapshot:()=>({unknown_ops:unknown}),prepare(){reads++;return{bind(){return{first:async()=>{unknown++;throw Error('UNMEASURED_READ');}};}};}};
+ const out=await loadN10ReusedVenuePaths({db,contract:s.contract,flow_result:{components:[s.component,s.component]},primary_receipt:{check_completed:true,receipts:[{actual_price_windows:[{...s.htx_window,label:'15m'}]}]},now:s.now});
+ assert.equal(reads,1);assert.equal(unknown,1);assert.equal(out.cache_reads,1);assert.equal(out.status,'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE');assert.equal(out.evidence.length,0);assert.equal(out.provider_http,0);
+});
