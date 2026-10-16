@@ -1,0 +1,49 @@
+{
+  "schema": "RETENTION_SEPARATE_SQL_BRIDGE_PROVENANCE_SCOPE_V1",
+  "status": "OFFLINE_CONTROLLED_QUALIFICATION_ONLY",
+  "source_files": [
+    {
+      "path": "runner/retention-bridge-provenance.mjs",
+      "sha256": "23b4bd423b60435cb8f57c1b9218dcd6a1b49b84dad54d38021fba6e20e10b95"
+    },
+    {
+      "path": "runner/retention-bridge-provenance.test.mjs",
+      "sha256": "3e860c0a0b7e4e4113627f405aac883e5076b77ddf970c09a359ba80df5116ca"
+    },
+    {
+      "path": "tools/recover-lossless-retained-history-20261014.mjs",
+      "sha256": "8852112e224e349b040ebc2ed3fcd15a9c778f73d52ad0ee6875c698527465e0"
+    }
+  ],
+  "native_release_path": "checkpoints/free-storage-20261016/sql-bridge-counter-release-38934007309.json",
+  "native_release_raw_sha256": "09e4349fc13140e2bc8059f7698ad3306dcd5ce3bcef66f561486019d021e651",
+  "future_preflight_GET": 5,
+  "future_postflight_GET": 4,
+  "ordinary_control_plan": {
+    "authority": 6,
+    "initial_guard": 3,
+    "archive_readers": 8,
+    "bridge_preflight": 5,
+    "mutation_guards": 9,
+    "bridge_postflight": 4,
+    "cursor": 5,
+    "total": 40,
+    "maximum_mutation_batches": 3
+  },
+  "metadata_positive_cases": "SYNTHETIC_SETTINGS_NOT_NATIVE_BYTES",
+  "transient_version_changes_excluded": false,
+  "new_native_reply_accepted": false,
+  "native_SQL": 0,
+  "sourceHTTP": 0,
+  "Worker_invocations": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "physical_bytes_freed": 0,
+  "quotas_changed": false,
+  "writer_enabled": false,
+  "rotation_enabled": false,
+  "new_primary_format_enabled": false,
+  "whole_day_closed": false,
+  "native_throughput_accepted": false,
+  "project_complete": false
+}
