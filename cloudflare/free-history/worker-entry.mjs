@@ -6,7 +6,8 @@ import {hourlyNativeUsageReceipt} from './native-usage-receipt.mjs';
 export default {
   async fetch() { return new Response('Not found',{status:404}); },
   async scheduled(controller,env) {
-    const scheduled_ts=controller?.scheduledTime??Date.now();
+    const execution_started_ts=Date.now();
+    const scheduled_ts=controller?.scheduledTime??execution_started_ts;
     const invocation_id=crypto.randomUUID();
     let source=null,archive=null,completed=false;
     try {
@@ -31,7 +32,7 @@ export default {
     } finally {
       // Includes the run-log DELETE/INSERT and failures after lane completion.
       // Keep this in logs: persisting another receipt would add SQL and bytes.
-      console.log('REPORT2_FREE_HISTORY_NATIVE_D1',JSON.stringify(hourlyNativeUsageReceipt({invocation_id,scheduled_ts,source,archive,completed})));
+      console.log('REPORT2_FREE_HISTORY_NATIVE_D1',JSON.stringify(hourlyNativeUsageReceipt({invocation_id,scheduled_ts,execution_started_ts,execution_completed_ts:Date.now(),source,archive,completed})));
     }
   }
 };
