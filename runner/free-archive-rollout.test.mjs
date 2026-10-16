@@ -1,5 +1,10 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff} from './free-archive-rollout.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff,currentMainReaderRepairRequest} from './free-archive-rollout.mjs';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`,h='a'.repeat(40),names=['my-report-2-hub','my-report-2-liq-forecast-history'];
+test('current-main repair reuses the exact reader qualification, keeps writers off and requires explicit false-or-true execution',()=>{
+ assert.equal(currentMainReaderRepairRequest({}),null);const env={REPORT2_CURRENT_READER_REPAIR:'true',GITHUB_REPOSITORY:'kovalev23091987-jpg/my-report-2-cloud-runner',GITHUB_REF:'refs/heads/main',GITHUB_SHA:h,EXPECTED_MAIN:h,CONNECTED_RUN:'123',BORROW_EXISTING_OWNER:'OWN',EXECUTE_READER_REPAIR:'false'},request=currentMainReaderRepairRequest(env);assert.equal(request.execute,false);assert.equal(request.writer_enabled,false);assert.equal(request.qualified_head,h);assert.equal(request.expected_main,h);assert.equal(request.native_schema_run,38781244995);
+ assert.equal(currentMainReaderRepairRequest({...env,EXECUTE_READER_REPAIR:'true'}).execute,true);
+ for(const [key,value] of [['GITHUB_REF','refs/heads/foreign'],['GITHUB_SHA','b'.repeat(40)],['GITHUB_REPOSITORY','foreign'],['EXPECTED_MAIN','bad'],['CONNECTED_RUN',''],['BORROW_EXISTING_OWNER',''],['EXECUTE_READER_REPAIR','1']])assert.throws(()=>currentMainReaderRepairRequest({...env,[key]:value}));
+});
 test('actual repository writer/rotation flags must be completely read and off before each deployment guard',()=>{
  assert(requireArchiveWritersOff({total_count:0,variables:[]}));assert(requireArchiveWritersOff({total_count:1,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED',value:'false'}]}));
  for(const r of [{total_count:1,variables:[]},{total_count:1,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED',value:'true'}]},{total_count:1,variables:[{name:'REPORT2_CANONICAL_COMPACTION_ENABLED',value:'true'}]},{total_count:1,variables:[{name:'REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED'}]}])assert.throws(()=>requireArchiveWritersOff(r));

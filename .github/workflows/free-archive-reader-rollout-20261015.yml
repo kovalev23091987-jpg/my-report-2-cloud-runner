@@ -1,15 +1,23 @@
 name: Coordinate exact free archive readers
 on:
+  workflow_dispatch:
+    inputs:
+      expected_main: {type: string, required: true}
+      owner: {type: string, required: true}
+      connected_run: {type: string, required: true}
+      execute: {type: boolean, default: false}
   push:
     branches: [fix/free-archive-worker-rollout-20261015, fix/free-archive-source-map-20261015, fix/free-archive-binding-resume-20261015]
     paths: [checkpoints/FREE_ARCHIVE_READER_ROLLOUT_REQUEST_20261015.json]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: report2-free-archive-reader-rollout
   cancel-in-progress: false
 jobs:
   readers:
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 10
     steps:
@@ -29,6 +37,11 @@ jobs:
           REPORT2_ROLLOUT_POOL_FLAG: ${{ vars.REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED || 'false' }}
           REPORT2_ROLLOUT_RETENTION_FLAG: ${{ vars.REPORT2_LOSSLESS_RETENTION_ENABLED || 'false' }}
           REPORT2_ROLLOUT_COMPACTION_FLAG: ${{ vars.REPORT2_CANONICAL_COMPACTION_ENABLED || 'false' }}
+          REPORT2_CURRENT_READER_REPAIR: ${{ github.event_name == 'workflow_dispatch' }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          EXECUTE_READER_REPAIR: ${{ inputs.execute }}
         run: node tools/rollout-free-archive-readers-20261015.mjs
       - uses: actions/upload-artifact@v4
         if: always()

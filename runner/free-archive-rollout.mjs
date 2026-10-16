@@ -1,4 +1,12 @@
 const NAMES=['my-report-2-hub','my-report-2-liq-forecast-history'],HEX=/^[a-f0-9]{64}$/,SHA=/^[a-f0-9]{40}$/,UUID=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
+// Reuse the same guarded reader rollout for a current-main accounting repair.
+// A new branch request is unnecessary; no writer or rotation flag is enabled.
+export function currentMainReaderRepairRequest(env){
+ if(env.REPORT2_CURRENT_READER_REPAIR!=='true')return null;
+ const head=env.EXPECTED_MAIN;
+ if(env.GITHUB_REPOSITORY!=='kovalev23091987-jpg/my-report-2-cloud-runner'||env.GITHUB_REF!=='refs/heads/main'||!SHA.test(head||'')||env.GITHUB_SHA!==head||!/^\d+$/.test(env.CONNECTED_RUN||'')||!env.BORROW_EXISTING_OWNER||!['true','false'].includes(env.EXECUTE_READER_REPAIR||''))throw Error('EXACT_CURRENT_MAIN_READER_REPAIR_REQUEST_REQUIRED');
+ return{execute:env.EXECUTE_READER_REPAIR==='true',expected_main:head,qualified_head:head,qualified_run:env.CONNECTED_RUN,expected_owner:env.BORROW_EXISTING_OWNER,writer_enabled:false,native_schema_run:38781244995};
+}
 export function requireArchiveWritersOff(result){
  const rows=result?.variables;if(!Array.isArray(rows)||result.total_count!==rows.length||rows.length>100||new Set(rows.map(r=>r.name)).size!==rows.length)throw Error('FREE_ARCHIVE_COMPLETE_REPOSITORY_FLAGS_REQUIRED');
  for(const name of ['REPORT2_CANONICAL_ARCHIVE_POOL_ENABLED','REPORT2_LOSSLESS_RETENTION_ENABLED','REPORT2_CANONICAL_COMPACTION_ENABLED']){const row=rows.find(r=>r.name===name);if(row&&!['','false','0','off'].includes(String(row.value).toLowerCase()))throw Error('FREE_ARCHIVE_WRITER_OR_ROTATION_MUST_STAY_OFF');}
