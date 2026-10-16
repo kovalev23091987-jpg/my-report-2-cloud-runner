@@ -19,6 +19,10 @@ on:
         description: Briefly read the next regular collector cron through a temporary tail, then remove only that tail
         type: boolean
         default: false
+      tail_hourly:
+        description: Briefly observe only the regular 35-minute hourly history cron and delete the owned temporary tail
+        type: boolean
+        default: false
 permissions:
   contents: read
   actions: read
@@ -36,7 +40,7 @@ jobs:
         with:
           node-version: '24'
       - name: Qualify exact original SQL, archived bytes and native failure receipts offline
-        if: ${{ inputs.inspect_only != true && inputs.tail_collector != true }}
+        if: ${{ inputs.inspect_only != true && inputs.tail_collector != true && inputs.tail_hourly != true }}
         env:
           REPORT2_HOURLY_NATIVE_PROOF_OUTPUT: audit-output/hourly-native-observer/hourly-native-usage-proof.json
         run: |
@@ -44,7 +48,7 @@ jobs:
           node --test cloudflare/free-history/native-usage-receipt.test.mjs > audit-output/hourly-native-observer/qualification.tap
           npx --yes wrangler@4.151.0 deploy --dry-run --config cloudflare/free-history/wrangler.json --outdir "$GITHUB_WORKSPACE/audit-output/hourly-native-observer" > /tmp/report2-hourly-native-build.log
       - name: Stage and read back exact existing bindings, crons and immutable module
-        if: ${{ inputs.inspect_only != true && inputs.tail_collector != true }}
+        if: ${{ inputs.inspect_only != true && inputs.tail_collector != true && inputs.tail_hourly != true }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -63,6 +67,7 @@ jobs:
           CONNECTED_RUN: ${{ inputs.connected_run }}
           INSPECT_NATIVE_OBSERVERS: ${{ inputs.inspect_only }}
           TAIL_NATIVE_COLLECTOR: ${{ inputs.tail_collector }}
+          TAIL_NATIVE_HOURLY: ${{ inputs.tail_hourly }}
         run: node tools/read-current-native-cost-observations.mjs
       - uses: actions/upload-artifact@v4
         if: always()
