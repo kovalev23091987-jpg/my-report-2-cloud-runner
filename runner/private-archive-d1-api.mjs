@@ -10,7 +10,8 @@ export class PrivateArchiveD1API {
  async query(sql,params=[]){
   const text=String(sql).replace(/^\s*--.*$/gm,'').trim(),statements=text.split(';').map(s=>s.trim()).filter(Boolean);
   const schemaRead="SELECT name,type,sql FROM sqlite_schema WHERE name IN ('report2_canonical_cold_archive_v1','report2_canonical_cold_archive_clock_v1') ORDER BY name";
-  const allowed=s=>s===schemaRead||/^SELECT 1(?:\s+AS [a-z_]+)?$/i.test(s)||/^SELECT (?:record_json|COUNT\(\*\) AS [a-z_]+|publication_id,raw_sha256,LENGTH\(CAST\(record_json AS BLOB\)\) AS record_bytes) FROM report2_canonical_cold_archive_v1\b/i.test(s)||/^INSERT INTO report2_canonical_cold_archive_v1\b/i.test(s)||/^CREATE TABLE IF NOT EXISTS report2_canonical_cold_archive_v1\b/i.test(s)||/^CREATE INDEX IF NOT EXISTS report2_canonical_cold_archive_clock_v1\s+ON report2_canonical_cold_archive_v1\b/i.test(s);
+  const boundedBodyRead=s=>/^SELECT publication_id,raw_sha256,CASE WHEN LENGTH\(CAST\(record_json AS BLOB\)\)<=\d{1,6} THEN record_json ELSE NULL END AS record_json FROM report2_canonical_cold_archive_v1\b/i.test(s);
+  const allowed=s=>s===schemaRead||/^SELECT 1(?:\s+AS [a-z_]+)?$/i.test(s)||/^SELECT (?:record_json|COUNT\(\*\) AS [a-z_]+|publication_id,raw_sha256,LENGTH\(CAST\(record_json AS BLOB\)\) AS record_bytes) FROM report2_canonical_cold_archive_v1\b/i.test(s)||boundedBodyRead(s)||/^INSERT INTO report2_canonical_cold_archive_v1\b/i.test(s)||/^CREATE TABLE IF NOT EXISTS report2_canonical_cold_archive_v1\b/i.test(s)||/^CREATE INDEX IF NOT EXISTS report2_canonical_cold_archive_clock_v1\s+ON report2_canonical_cold_archive_v1\b/i.test(s);
   if(!statements.length||statements.some(s=>!allowed(s))||/\b(?:DELETE|UPDATE|DROP|REPLACE|ATTACH|ALTER)\b/i.test(text))throw Error('PRIVATE_ARCHIVE_SQL_ROUTE_REQUIRED');
   const body=JSON.stringify({sql:text,params});
   // A refusal before transport is a known zero SQL attempt. Genuine timeouts

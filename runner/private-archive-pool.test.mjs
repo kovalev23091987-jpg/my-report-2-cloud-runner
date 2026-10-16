@@ -3,6 +3,8 @@ import {createPrivateArchivePool,retainCanonicalInPool,prefetchCanonicalArchiveP
 import {encodeCanonicalPublicationRow} from './canonical-cold-archive.mjs';
 import {createPrivateCanonicalRestorer,privateCanonicalHeader,PRIVATE_CANONICAL_DATABASES,privateCanonicalBindings} from './private-canonical-history.mjs';
 import {copyCanonicalReport} from './canonical-cold-copy.mjs';
+import {retainCanonicalBatchInPool,privateArchiveCopyGroupFits} from './private-archive-batch.mjs';
+import {PrivateArchiveD1API} from './private-archive-d1-api.mjs';
 const allow=()=>({allowed:true}),T=1792080000000;
 export function measuredDB(schema=true){
  const raw=new DatabaseSync(':memory:');if(schema)raw.exec(fs.readFileSync(new URL('../cloudflare/free-history/003_canonical_cold_archive.sql',import.meta.url),'utf8'));
@@ -61,4 +63,33 @@ test('automatic two-candidate copy routes into A1 without source modification an
  const binding=Object.fromEntries(['publication_id','run_id','snapshot_id','contract_code','observed_ts','analytical_fingerprint'].map(k=>[k,row[k]]));
  const out=await copyCanonicalReport({source_db:source,archive_pool:pool,candidates:[binding],now:T});assert.equal(out.records[0].archive_location,'A1');assert.equal(out.records[0].private_reader_verified,true);assert.deepEqual({...source.raw.prepare('SELECT * FROM canonical_publication_shadow').get()},row);
  const before=pool.usageSnapshot().rows_written;await copyCanonicalReport({source_db:source,archive_pool:pool,candidates:[binding],now:T});assert.equal(pool.usageSnapshot().rows_written,before);
+});
+test('eight cold originals share five exact lookups, one insert and one readback with unchanged per-row native reservations',async()=>{
+ const {pool,databases}=fixture(),rows='abcdef12'.split('').map(original),records=rows.map(encodeCanonicalPublicationRow),grants=[];databases.LEGACY.storage_bytes=400000000;
+ const r=await retainCanonicalBatchInPool(pool,records,{db_admit:e=>{grants.push(e);return allow();},request_headroom:e=>{assert.equal(e.max_requests,7);return allow();},now:T});
+ assert.equal(r.retained,true);assert.equal(pool.usageSnapshot().requests,7);assert.equal(databases.A1.usageSnapshot().rows_written,8);assert(grants.every(e=>e.rows_read===8*32&&e.rows_written===8*24));assert.equal(r.reserves_lowered,false);
+ for(const [i,s] of r.records.entries()){assert.equal(s.location,'A1');const reader=createPrivateCanonicalRestorer({...pool.readerOptions(),db_admit:allow});assert.deepEqual(await reader.restore(await privateCanonicalHeader(rows[i],s.verified_record,{archive_slot:'A1'})),rows[i]);}
+});
+test('group lookup reuses A4 and mixed existing revisions before writing only the absent original',async()=>{
+ const {pool,databases}=fixture(),records=['a','b','c'].map(c=>encodeCanonicalPublicationRow(original(c)));insert(databases.A4,records[0]);insert(databases.A2,records[1]);
+ const r=await retainCanonicalBatchInPool(pool,records,{db_admit:allow,request_headroom:allow,now:T});assert.deepEqual(r.records.map(s=>s.location),['A4','A2','LEGACY']);assert.equal(pool.usageSnapshot().rows_written,1);assert.equal(pool.usageSnapshot().requests,7);
+ const before=pool.usageSnapshot().rows_written;const again=await retainCanonicalBatchInPool(pool,records,{db_admit:allow,request_headroom:allow,now:T});assert.equal(again.retained,true);assert.equal(pool.usageSnapshot().rows_written,before);
+});
+test('group bounds, full capacity, denied HTTP and unknown native usage stop before private writes',async()=>{
+ for(const kind of ['COUNT','DUPLICATE','FULL','HTTP','UNKNOWN','SIZE']){const {pool,databases}=fixture(),records=['a','b'].map(c=>encodeCanonicalPublicationRow(original(c)));if(kind==='COUNT')records.push(...Array(7).fill(records[0]));if(kind==='DUPLICATE')records[1]=records[0];if(kind==='FULL')for(const db of Object.values(databases))db.storage_bytes=400000000;if(kind==='SIZE')databases.A4.storage_bytes=null;if(kind==='UNKNOWN')databases.A1.setUsage({unknown_ops:1});
+  const action=()=>retainCanonicalBatchInPool(pool,records,{db_admit:()=>({allowed:pool.usageSnapshot().unknown_ops===0}),request_headroom:()=>({allowed:kind!=='HTTP'}),now:T});if(kind==='SIZE')await assert.rejects(action,/NATIVE_SIZE/);else assert.equal((await action()).retained,false,kind);assert.equal(pool.usageSnapshot().rows_written,0,kind);
+ }
+});
+test('corrupt or oversized existing wire refuses the group without duplicating it elsewhere',async()=>{
+ for(const kind of ['CORRUPT','WIRE']){const {pool,databases}=fixture(),r=encodeCanonicalPublicationRow(original());insert(databases.A4,r);databases.A4.raw.prepare('UPDATE report2_canonical_cold_archive_v1 SET record_json=?').run(kind==='CORRUPT'?'{}':' '.repeat(710000));
+ await assert.rejects(retainCanonicalBatchInPool(pool,[r],{db_admit:allow,request_headroom:allow,now:T}));assert.equal(pool.usageSnapshot().rows_written,0);}
+ assert.equal(privateArchiveCopyGroupFits([],T),false);
+});
+test('group copying crosses the actual private REST adapter with bounded SQL bodies and native counters',async()=>{
+ const originals=fixture(),calls=[],databases=Object.fromEntries(Object.entries(PRIVATE_CANONICAL_DATABASES).map(([location,descriptor])=>[location,new PrivateArchiveD1API({location,token:'fixture-only-token',fetch_impl:async(url,options)=>{
+  assert(url.endsWith('/'+descriptor.uuid+'/query'));const {sql,params}=JSON.parse(options.body);calls.push({location,sql,parameters:params.length,wire_bytes:Buffer.byteLength(options.body)});const raw=originals.databases[location].raw;
+  const rows=sql.startsWith('SELECT')?raw.prepare(sql).all(...params).map(r=>({...r})):[],written=sql.startsWith('INSERT')?Number(raw.prepare(sql).run(...params).changes):0;
+  return new Response(JSON.stringify({success:true,result:[{success:true,results:rows,meta:{rows_read:rows.length+1,rows_written:written,size_after:4096}}]}));
+ }} )])),pool=createPrivateArchivePool({enabled:true,databases}),records='abcdef12'.split('').map(c=>encodeCanonicalPublicationRow(original(c)));
+ const out=await retainCanonicalBatchInPool(pool,records,{db_admit:()=>({allowed:pool.usageSnapshot().unknown_ops===0}),request_headroom:allow,now:T});assert.equal(out.retained,true);assert.equal(calls.length,7);assert(calls.every(c=>c.parameters<=100&&c.wire_bytes<=1400000));assert.equal(calls.filter(c=>c.sql.startsWith('INSERT')).length,1);assert.equal(pool.usageSnapshot().rows_written,8);assert.equal(pool.usageSnapshot().unknown_ops,0);
 });

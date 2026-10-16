@@ -29,6 +29,28 @@ function fixture(count=2,{v2=true}={}){
 }
 const get=(f,id)=>({...f.raw.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?').get(id)});
 const compact=(f,options={})=>compactProtectedCanonical({...f,archive_headroom:headroom,before_modify:async()=>{},now,...options});
+function groupFixture(n){const f=fixture(n),databases={LEGACY:f.archive_db};for(const slot of ['A1','A2','A3','A4']){const raw=new DatabaseSync(':memory:');raw.exec(fs.readFileSync(new URL('../cloudflare/free-history/003_canonical_cold_archive.sql',import.meta.url),'utf8'));databases[slot]=wrap(raw);databases[slot].storage_bytes=100000;}return{...f,databases,archive_pool:createPrivateArchivePool({enabled:true,databases})};}
+const groupMode={execute:true,shared_mutation:true,require_native_preflight:true,batch_private_copies:true};
+test('manual grouped private copy qualifies the full conditional storage chain without reducing native reservations',async()=>{
+ const f=groupFixture(8);f.archive_db.storage_bytes=400000000;const out=await compact(f,groupMode);
+ assert.equal(out.compacted.length,8);assert.equal(out.prepared,8);assert.equal(out.native_preflight.length,4);assert.equal(out.native_readbacks.length,4);assert(out.private_copy_groups.every(g=>g.retained&&g.rows_read_reserved===g.rows*32&&g.rows_written_reserved===g.rows*24&&!g.reserves_lowered));assert(out.copy_admission.groups.every(g=>g.unchanged_sum_of_row_reserves));
+ const reader=createPrivateCanonicalRestorer({...f.archive_pool.readerOptions(),db_admit:allow,max_rows:8});for(const row of f.old){const header=get(f,row.publication_id);assert(header.canonical_json.endsWith(':A1'));assert.deepEqual(await reader.restore(header),row);}assert.deepEqual(get(f,f.latest.publication_id),f.latest);assert.deepEqual(get(f,f.rare.publication_id),f.rare);assert.equal(out.D1.unknown_ops,0);assert(!JSON.stringify(out).includes('payload_gzip_base64'));
+});
+test('grouped copying preserves every late protected reference and source-field race',async()=>{
+ for(const kind of ['COMMAND','PUBLICATION','OUTCOME','RECHECK','BINDING','LIFECYCLE','DISPATCH','CALIBRATION','SCALAR','NAMESPACE','WITNESS']){const f=groupFixture(2),row=f.old[0];if(kind==='NAMESPACE'){for(const t of ['report2_command_v2','report2_publication_v2','report2_delivered_outcome_v2'])f.raw.exec('DROP TABLE '+t);}
+  const out=await compact(f,{...groupMode,before_modify:async()=>{if(kind==='SCALAR')f.raw.prepare('UPDATE canonical_publication_shadow SET decimal_string=? WHERE publication_id=?').run('changed',row.publication_id);else if(kind==='NAMESPACE')f.raw.exec(fs.readFileSync(new URL('../current-generation/migrations/007_commands_delivery.sql',import.meta.url),'utf8'));else if(kind==='WITNESS')f.raw.prepare('DELETE FROM canonical_publication_shadow WHERE publication_id=?').run(f.latest.publication_id);else insertLateReference(f,kind,row);}});
+  assert(out.conflicts_retained_hot.includes(row.publication_id),kind);assert(!get(f,row.publication_id).canonical_json.startsWith('R2PRIVATE_CANONICAL_V1:'),kind);if(kind!=='SCALAR')assert.deepEqual(get(f,row.publication_id),row,kind);assert.equal(out.reference_or_statistic_rows_modified,0);
+ }
+});
+test('group copy requires manual native mode and leaves every source hot on unknown archive cost',async()=>{
+ const f=groupFixture(2);await assert.rejects(compact(f,{batch_private_copies:true}),/MANUAL_NATIVE_GROUP_COPY/);assert.equal(f.source_db.usageSnapshot().requests,0);
+ const db=f.databases.LEGACY,prepare=db.prepare.bind(db);db.prepare=sql=>{const q=prepare(sql),run=q.run.bind(q);q.run=async()=>{const ack=await run();db.setUsage({unknown_ops:1});return ack;};return q;};
+ await assert.rejects(compact(f,groupMode),e=>{const out=e.compaction_receipt;assert.equal(out.compacted.length,0);assert.equal(out.D1.unknown_ops,1);assert.equal(out.bounded_discovery.next_cursor,out.bounded_discovery.source_cursor);return true;});for(const row of f.old)assert.deepEqual(get(f,row.publication_id),row);
+});
+test('a missing grouped durable readback cannot authorize any primary mutation',async()=>{
+ const f=groupFixture(2),id=f.old[0].publication_id;f.coldraw.exec(`CREATE TRIGGER fixture_lost_copy AFTER INSERT ON report2_canonical_cold_archive_v1 WHEN NEW.publication_id='${id}' BEGIN DELETE FROM report2_canonical_cold_archive_v1 WHERE publication_id=NEW.publication_id; END`);
+ await assert.rejects(compact(f,groupMode),e=>{assert.match(e.message,/GROUP_DURABLE_READBACK_MISSING/);assert.equal(e.compaction_receipt.compacted.length,0);return true;});for(const row of f.old)assert.deepEqual(get(f,row.publication_id),row);
+});
 function archiveAll(f){for(const row of f.old){const r=encodeCanonicalPublicationRow(row);f.coldraw.prepare('INSERT INTO report2_canonical_cold_archive_v1 VALUES(?,?,?,?,?,?,?,?)').run(r.publication_id,r.raw_sha256,r.run_id,r.snapshot_id,r.contract_code,r.observed_ts,JSON.stringify(r),now);}}
 test('protected conditional compaction addresses A1 exactly when legacy is full, retaining preflight and independent post-readbacks',async()=>{
  const f=fixture(),databases={LEGACY:f.archive_db};f.archive_db.storage_bytes=400000000;
