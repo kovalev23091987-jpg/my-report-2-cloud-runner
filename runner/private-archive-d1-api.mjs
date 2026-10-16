@@ -3,17 +3,17 @@ import {NativeQueryCostJournal} from './native-query-cost-journal.mjs';
 const ACCOUNT='70ee0af85191ea470e74c7383fdec772';
 const nonnegative=v=>Number.isSafeInteger(v)&&v>=0;
 export class PrivateArchiveD1API {
- constructor({token,fetch_impl=globalThis.fetch,beforeRequest,location='LEGACY',nativeQueryReceipts=false}={}){if(!String(token||'').trim())throw Error('PRIVATE_ARCHIVE_D1_TOKEN_REQUIRED');if(beforeRequest!==undefined&&typeof beforeRequest!=='function')throw Error('PRIVATE_ARCHIVE_BEFORE_REQUEST_CALLBACK_REQUIRED');if(!Object.hasOwn(PRIVATE_CANONICAL_DATABASES,location))throw Error('PRIVATE_ARCHIVE_EXACT_LOCATION_REQUIRED');this.location=location;this.database=PRIVATE_CANONICAL_DATABASES[location];this.token=String(token).trim();this.fetch_impl=fetch_impl;this.beforeRequest=beforeRequest;this._usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};this.storage_bytes=null;this._nativeCostJournal=nativeQueryReceipts===true?new NativeQueryCostJournal({binding:'PRIVATE_ARCHIVE:'+location}):null;}
+ constructor({token,fetch_impl=globalThis.fetch,beforeRequest,location='LEGACY',nativeQueryReceipts=false,nativeQueryClock=Date.now}={}){if(!String(token||'').trim())throw Error('PRIVATE_ARCHIVE_D1_TOKEN_REQUIRED');if(beforeRequest!==undefined&&typeof beforeRequest!=='function')throw Error('PRIVATE_ARCHIVE_BEFORE_REQUEST_CALLBACK_REQUIRED');if(!Object.hasOwn(PRIVATE_CANONICAL_DATABASES,location))throw Error('PRIVATE_ARCHIVE_EXACT_LOCATION_REQUIRED');this.location=location;this.database=PRIVATE_CANONICAL_DATABASES[location];this.token=String(token).trim();this.fetch_impl=fetch_impl;this.beforeRequest=beforeRequest;this._usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};this.storage_bytes=null;this._nativeCostJournal=nativeQueryReceipts===true?new NativeQueryCostJournal({binding:'PRIVATE_ARCHIVE:'+location,clock:nativeQueryClock}):null;}
  usageSnapshot(){return{...this._usage};}
  nativeQueryCostReceipts(){return this._nativeCostJournal?.snapshot()??null;}
- _recordQueryCosts(statements,parts,{force_unknown=false,http_status=null}={}){
+ _recordQueryCosts(statements,parts,{force_unknown=false,http_status=null,transport=null}={}){
   let incomplete=false;const rows=Array.isArray(parts)?parts:[],length=Math.max(statements.length,rows.length);
   for(let i=0;i<length;i++){
    const r=rows[i],m=r?.meta,knownRead=nonnegative(m?.rows_read),knownWrite=nonnegative(m?.rows_written),unknown=force_unknown||i>=statements.length||r?.success!==true||!knownRead||!knownWrite;
    this._usage.requests++;if(knownRead)this._usage.rows_read+=m.rows_read;if(knownWrite)this._usage.rows_written+=m.rows_written;
    if(unknown){this._usage.unknown_ops++;incomplete=true;}
    this.storage_bytes=!unknown&&nonnegative(m?.size_after)?m.size_after:null;
-   this._nativeCostJournal?.record({operation:'query',sql:statements[i]??'',usage:{measured:!unknown,rows_read:knownRead?m.rows_read:null,rows_written:knownWrite?m.rows_written:null},force_unknown:unknown,http_status});
+   this._nativeCostJournal?.record({operation:'query',sql:statements[i]??'',usage:{measured:!unknown,rows_read:knownRead?m.rows_read:null,rows_written:knownWrite?m.rows_written:null},force_unknown:unknown,http_status,transport});
   }
   if(incomplete)this.storage_bytes=null;return incomplete;
  }
@@ -31,15 +31,16 @@ export class PrivateArchiveD1API {
   // below still remain unknown and block the shared native account budget.
   await this._admit({operation:'query',statement_count:statements.length,wire_bytes:new TextEncoder().encode(body).length,location:this.location});
   this.storage_bytes=null;
+  const transportStart=this._nativeCostJournal?.beginTransport();let transportEnd;const transport=()=>transportEnd??=this._nativeCostJournal?.endTransport(transportStart);
   let response;
-  try{response=await this.fetch_impl(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/d1/database/${this.database.uuid}/query`,{method:'POST',headers:{authorization:'Bearer '+this.token,'content-type':'application/json'},body,redirect:'error',signal:AbortSignal.timeout(30000)});}catch{this._recordQueryCosts(statements,null,{force_unknown:true});throw Error('PRIVATE_ARCHIVE_D1_TRANSPORT_UNMEASURED');}
+  try{response=await this.fetch_impl(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/d1/database/${this.database.uuid}/query`,{method:'POST',headers:{authorization:'Bearer '+this.token,'content-type':'application/json'},body,redirect:'error',signal:AbortSignal.timeout(30000)});}catch{this._recordQueryCosts(statements,null,{force_unknown:true,transport:transport()});throw Error('PRIVATE_ARCHIVE_D1_TRANSPORT_UNMEASURED');}
   if([401,403].includes(response.status))throw Error('PRIVATE_ARCHIVE_D1_QUERY_ACCESS_REQUIRED_HTTP_'+response.status);
-  let j;try{j=await response.json();}catch{this._recordQueryCosts(statements,null,{force_unknown:true,http_status:response.status});throw Error('PRIVATE_ARCHIVE_D1_RESPONSE_UNMEASURED');}
+  let j;try{j=await response.json();}catch{this._recordQueryCosts(statements,null,{force_unknown:true,http_status:response.status,transport:transport()});throw Error('PRIVATE_ARCHIVE_D1_RESPONSE_UNMEASURED');}
   const shapeClosed=response.ok&&j?.success===true&&Array.isArray(j.result)&&j.result.length===statements.length;
   // A malformed early acknowledgement must not discard known costs from a
   // later statement or failed/short reply. Every potentially attempted member
   // remains unknown when the native batch shape is not closed.
-  const incomplete=this._recordQueryCosts(statements,j?.result,{force_unknown:!shapeClosed,http_status:response.status});
+  const incomplete=this._recordQueryCosts(statements,j?.result,{force_unknown:!shapeClosed,http_status:response.status,transport:transport()});
   if(!shapeClosed)throw Error('PRIVATE_ARCHIVE_D1_QUERY_NOT_CLOSED');
   if(incomplete)throw Error('PRIVATE_ARCHIVE_D1_USAGE_UNMEASURED');
   return j.result[j.result.length-1];
