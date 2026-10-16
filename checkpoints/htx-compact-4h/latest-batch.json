@@ -1,22 +1,22 @@
 {
   "schema": "HTX_COMPACT_90D_4H_ACTUAL_BATCH_V1",
   "source": "HTX_DELAYED_KLINE_ARCHIVE_QUALIFICATION",
-  "cloud_run": 38681736105,
-  "head": "5446fe194b60a032cf6ed6c092a4457ffb4ea5f7",
-  "started_ts": 1792038605161,
-  "finished_ts": 1792038610273,
+  "cloud_run": 38850450684,
+  "head": "a6cbc9f47861068aea01f4fadf10f8034adee413",
+  "started_ts": 1792124692089,
+  "finished_ts": 1792124697240,
   "anchor_end_ts": 1791590400000,
   "sourceHTTP": 6,
   "source_http_reserved": 6,
   "D1": {
     "requests": 7,
-    "rows_read": 34,
+    "rows_read": 64,
     "rows_written": 8,
     "unknown_ops": 0,
     "targets": {
       "first:report2_runner_budget_ledger_shadow": {
         "requests": 2,
-        "rows_read": 31,
+        "rows_read": 61,
         "rows_written": 0,
         "unknown_ops": 0
       },
@@ -48,18 +48,29 @@
   },
   "results": [
     {
-      "contract": "BANK-USDT",
+      "contract": "BONK-USDT",
+      "status": "COMPLETE_90D_4H_PRICE_ONLY",
+      "sourceHTTP": 1,
+      "http_status": 200,
+      "observed_bars": 540,
+      "missing_bars": 0,
+      "complete_90d_4h_price_only": true,
+      "native_1m_complete": false,
+      "entry_authorized": false
+    },
+    {
+      "contract": "BR-USDT",
       "status": "PARTIAL_90D_4H_PRICE_ONLY",
       "sourceHTTP": 1,
       "http_status": 200,
-      "observed_bars": 491,
-      "missing_bars": 49,
+      "observed_bars": 149,
+      "missing_bars": 391,
       "complete_90d_4h_price_only": false,
       "native_1m_complete": false,
       "entry_authorized": false
     },
     {
-      "contract": "BCH-USDT",
+      "contract": "BTC-USDT",
       "status": "COMPLETE_90D_4H_PRICE_ONLY",
       "sourceHTTP": 1,
       "http_status": 200,
@@ -70,46 +81,35 @@
       "entry_authorized": false
     },
     {
-      "contract": "BEAT-USDT",
-      "status": "COMPLETE_90D_4H_PRICE_ONLY",
-      "sourceHTTP": 1,
-      "http_status": 200,
-      "observed_bars": 540,
-      "missing_bars": 0,
-      "complete_90d_4h_price_only": true,
-      "native_1m_complete": false,
-      "entry_authorized": false
-    },
-    {
-      "contract": "BILL-USDT",
-      "status": "COMPLETE_90D_4H_PRICE_ONLY",
-      "sourceHTTP": 1,
-      "http_status": 200,
-      "observed_bars": 540,
-      "missing_bars": 0,
-      "complete_90d_4h_price_only": true,
-      "native_1m_complete": false,
-      "entry_authorized": false
-    },
-    {
-      "contract": "BNB-USDT",
-      "status": "COMPLETE_90D_4H_PRICE_ONLY",
-      "sourceHTTP": 1,
-      "http_status": 200,
-      "observed_bars": 540,
-      "missing_bars": 0,
-      "complete_90d_4h_price_only": true,
-      "native_1m_complete": false,
-      "entry_authorized": false
-    },
-    {
-      "contract": "BOME-USDT",
+      "contract": "BTR-USDT",
       "status": "PARTIAL_90D_4H_PRICE_ONLY",
       "sourceHTTP": 1,
       "http_status": 200,
-      "observed_bars": 299,
-      "missing_bars": 241,
+      "observed_bars": 263,
+      "missing_bars": 277,
       "complete_90d_4h_price_only": false,
+      "native_1m_complete": false,
+      "entry_authorized": false
+    },
+    {
+      "contract": "BTT-USDT",
+      "status": "COMPLETE_90D_4H_PRICE_ONLY",
+      "sourceHTTP": 1,
+      "http_status": 200,
+      "observed_bars": 540,
+      "missing_bars": 0,
+      "complete_90d_4h_price_only": true,
+      "native_1m_complete": false,
+      "entry_authorized": false
+    },
+    {
+      "contract": "BTW-USDT",
+      "status": "COMPLETE_90D_4H_PRICE_ONLY",
+      "sourceHTTP": 1,
+      "http_status": 200,
+      "observed_bars": 540,
+      "missing_bars": 0,
+      "complete_90d_4h_price_only": true,
       "native_1m_complete": false,
       "entry_authorized": false
     }
