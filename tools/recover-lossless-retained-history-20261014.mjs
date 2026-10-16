@@ -10,6 +10,8 @@ import {compactProtectedCanonical} from '../runner/protected-canonical-compactio
 import {canonicalExecutionMode,canonicalArchivePoolQualification,canonicalSharedMutationQualification} from '../runner/canonical-native-qualification.mjs';
 import {selectCanonicalRetentionCursor,persistCanonicalRetentionCursor} from '../runner/canonical-retention-cursor.mjs';
 import {requireDatedRetentionQualification,verifyExactArchiveReaderBindings,parseCurrentArchiveReaderProof,CURRENT_ARCHIVE_READER_PROOF,DATED_RETENTION_QUALIFICATION} from '../runner/retention-self-qualification.mjs';
+import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge,retentionMutationControlPlan} from '../runner/retention-bridge-provenance.mjs';
+import {boundedControlBody,SQL_BRIDGE_SCRIPT} from '../runner/installed-bridge-module-inspection.mjs';
 import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json',dir='audit-output/lossless-retained-history';
@@ -17,7 +19,7 @@ await fs.mkdir(dir,{recursive:true});
 const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
 const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY||'')||null;
 const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'auto');
-let cursor_selection;
+let cursor_selection,bridge_proof,bridge_control,bridge_postflight_pending=false;
 const native_qualification_input=String(process.env.REPORT2_NATIVE_CANONICAL_QUALIFICATION||'false');
 const self_day=String(process.env.REPORT2_SELF_NATIVE_QUALIFICATION_UTC_DAY||''),self_qualification=!!self_day;
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
@@ -82,7 +84,22 @@ try{
    const r=await fetch('https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/workers/scripts/'+name+suffix,{headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('DATED_READER_HTTP_'+r.status);const j=await r.json();if(!j.success||!j.result)throw Error('DATED_READER_ACK_REQUIRED');return j.result;
   };
   out.current_readers=await verifyExactArchiveReaderBindings({proof,call,expected_reader_run:current?CURRENT_ARCHIVE_READER_PROOF.run:DATED_RETENTION_QUALIFICATION.native_readers_run});
-  if(control_HTTP+worker_control_HTTP+13>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
+  if(current){
+   bridge_proof=parseRetentionSQLBridgeProof(await fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path));
+   let bridge_metadata_HTTP=0;
+   bridge_control=async(name,suffix)=>{
+    if(name!==SQL_BRIDGE_SCRIPT||!/^\/(?:subdomain|deployments|settings|schedules|versions\/[a-f0-9-]{36})$/.test(suffix)||bridge_metadata_HTTP>=9||control_HTTP+worker_control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETENTION_BRIDGE_CONTROL_BOUND');
+    const grant=whole.reserve({logical_request_id:'RETENTION_BRIDGE_METADATA:'+bridge_metadata_HTTP,lane:'hot',attempts:1});if(!grant.allowed)throw Error('RETENTION_BRIDGE_CONTROL_BOUND');bridge_metadata_HTTP++;worker_control_HTTP++;
+    const root='https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/workers',url=root+(suffix==='/subdomain'?'/subdomain':'/scripts/'+name+suffix);
+    const r=await fetch(url,{method:'GET',headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},redirect:'error',signal:AbortSignal.timeout(15000)});
+    if(!r.ok){await r.body?.cancel();throw Error('RETENTION_BRIDGE_CONTROL_HTTP_'+r.status);}
+    let j;try{j=JSON.parse((await boundedControlBody(r,262144)).toString('utf8'));}catch{throw Error('RETENTION_BRIDGE_CONTROL_BODY_REQUIRED');}
+    if(j?.success!==true||!j.result)throw Error('RETENTION_BRIDGE_CONTROL_ACK_REQUIRED');return j.result;
+   };
+   out.SQL_bridge_before=await verifyRetentionSQLBridge({proof:bridge_proof,call:bridge_control,configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,stage:'before_SQL'});
+   bridge_postflight_pending=true;
+  }
+  if(control_HTTP+worker_control_HTTP+13+(bridge_postflight_pending?4:0)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
  }
  db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{nativeQueryReceipts:mode.native_qualification,beforeRequest:event=>{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
@@ -99,10 +116,10 @@ try{
   }};
   archive_pool=pool_enabled?createPrivateArchivePool({enabled:true,...archive_options}):null;archive_db=archive_pool?.legacy_db??new PrivateArchiveD1API(archive_options);
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
-  const max_mutation_batches=Math.min(6,Math.max(0,Math.floor((LOSSLESS_RECOVERY_POLICY.max_control_HTTP-control_HTTP-worker_control_HTTP-(lease.borrowed?5:10))/3)));out.control_limited_mutation_batches=max_mutation_batches;
+  const control_plan=retentionMutationControlPlan({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending}),max_mutation_batches=control_plan.max_mutation_batches;out.control_plan=control_plan;out.control_limited_mutation_batches=max_mutation_batches;
   Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,shared_mutation,batch_private_copies:shared_mutation&&mode.native_qualification&&out.execute===true,source_cursor:cursor_selection.cursor,max_mutation_batches,discovery_headroom:({max_bridge_requests,reserved_bridge_requests})=>bridge_HTTP+max_bridge_requests+reserved_bridge_requests<=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
-  },before_modify:async()=>{if(control_HTTP+worker_control_HTTP+3+(lease.borrowed?5:10)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
+  },before_modify:async()=>{if(retentionMutationControlPlan({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending}).max_mutation_batches<1)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
   out.canonical_rows_modified=out.compacted?.length||0;
  }else{
  const save_originals=async rows=>{
@@ -123,14 +140,18 @@ try{
  if(admitted)process.exitCode=1;
 }finally{
  if(admitted)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation_id,sourceRunId:out.run,usage:nativeUsage()});}catch{out.native_finalization_not_acknowledged=true;process.exitCode=1;}
+ if(bridge_postflight_pending&&db)try{
+  if(lease.lease.expires_ts<=Date.now())throw Error('RETENTION_BRIDGE_POSTFLIGHT_OWN_LEASE_EXPIRED');
+  out.SQL_bridge_after=await verifyRetentionSQLBridge({proof:bridge_proof,call:bridge_control,stage:'after_SQL'});bridge_postflight_pending=false;
+ }catch(e){out.SQL_bridge_provenance_incomplete=true;out.SQL_bridge_postflight_reason=/^[A-Z0-9_]+$/.test(e.message)?e.message:'RETENTION_BRIDGE_POSTFLIGHT_ERROR';process.exitCode=1;}
  if(db){out.D1=nativeUsage();if(archive_db)out.private_D1=(archive_pool||archive_db).usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>LOSSLESS_RECOVERY_POLICY.reservation.rows_read||out.D1.rows_written>LOSSLESS_RECOVERY_POLICY.reservation.rows_written){out.D1_envelope_not_closed=true;out.status='RETAINED_D1_ENVELOPE_NOT_CLOSED';process.exitCode=1;}}
  if(mode?.native_qualification&&db){
   out.native_query_costs={bridge:db.nativeQueryCostReceipts(),private:archive_pool?.nativeQueryCostReceipts?.()??(archive_db?{LEGACY:archive_db.nativeQueryCostReceipts()}:{}),additional_SQL:0,SQL_params_results_exported:false};
   const journals=[out.native_query_costs.bridge,...Object.values(out.native_query_costs.private)];
   out.native_query_cost_reconciliation=reconcileNativeQueryCosts({journals,usage:out.D1});
-  if(journals.some(j=>!j||j.overflow)||!out.native_query_cost_reconciliation.client_day_attribution_closed){out.native_query_cost_journal_incomplete=true;process.exitCode=1;}
+  if(out.SQL_bridge_provenance_incomplete||journals.some(j=>!j||j.overflow)||!out.native_query_cost_reconciliation.client_day_attribution_closed){out.native_query_cost_journal_incomplete=true;process.exitCode=1;}
  }
- if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
+ if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged&&!out.SQL_bridge_provenance_incomplete)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
  out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.worker_control_HTTP=worker_control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));
