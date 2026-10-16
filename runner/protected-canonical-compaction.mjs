@@ -6,6 +6,7 @@ import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 import {LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 import {retainCanonicalInPool,prefetchCanonicalArchivePool} from './private-archive-pool.mjs';
 import {prefetchExactCanonicalRevisions} from './private-canonical-prefetch.mjs';
+import {retainCanonicalBatchInPool,privateArchiveCopyGroupFits} from './private-archive-batch.mjs';
 import {loadBoundedCanonicalWindowSequence,boundedCanonicalReferenceSQL,boundedCanonicalReferenceGroupSQL} from './bounded-canonical-selection.mjs';
 
 // Uses the existing RETAINED_HISTORY reservation, never an additional family.
@@ -110,11 +111,12 @@ export function planCanonicalMutationGroup(items,{shared=false,cutoff,present_ta
  return{statements,operations,rows,shared_updates:chunks.filter(c=>c.length>1).length};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,discovery_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,shared_mutation=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
+export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,discovery_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,shared_mutation=false,batch_private_copies=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof (archive_pool||archive_db)?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
  if(!Number.isSafeInteger(max_mutation_batches)||max_mutation_batches<0||max_mutation_batches>PROTECTED_CANONICAL_POLICY.max_batches)throw Error('EXISTING_CANONICAL_BATCH_CAP_REQUIRED');
  if(typeof shared_mutation!=='boolean')throw Error('EXPLICIT_SHARED_CANONICAL_MODE_REQUIRED');
+ if(typeof batch_private_copies!=='boolean'||(batch_private_copies&&(!execute||!require_native_preflight||!shared_mutation||!archive_pool)))throw Error('MANUAL_NATIVE_GROUP_COPY_QUALIFICATION_REQUIRED');
  const p=PROTECTED_CANONICAL_POLICY,usage=()=>combineMeasuredD1Usage(source_db.usageSnapshot(),(archive_pool||archive_db).usageSnapshot());
  const admit=e=>evaluateWithinRunReservation({reservation:p.reservation,currentUsage:usage(),extraRowsRead:e.rows_read,extraRowsWritten:e.rows_written+3});
  const need=(r,w)=>{if(!admit({rows_read:r,rows_written:w}).allowed)throw Error('CANONICAL_SHARED_NATIVE_HEADROOM_REQUIRED');};
@@ -156,9 +158,28 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
   const wire_fits=statements=>statements.every(s=>s.params.length<=SHARED_CANONICAL_SQL_LIMITS.parameters&&Buffer.byteLength(s.sql)<=SHARED_CANONICAL_SQL_LIMITS.sql_bytes)&&Buffer.byteLength(JSON.stringify({op:'batch',statements}))<=p.bridge_wire_bytes;
   const flush=async()=>{
    if(!pending.length||!execute)return;
-   const group=pending,reads=pending_reads(),plan=planCanonicalMutationGroup(group,{shared:shared_mutation,cutoff:now-p.hot_window_ms,present_tables:present}),{statements}=plan;pending=[];
-   if(!wire_fits(statements))throw Error('CANONICAL_SHARED_WIRE_BOUND');
+   const group=pending,reads=pending_reads();pending=[];
+   if(!wire_fits(group.flatMap(s=>s.statements)))throw Error('CANONICAL_SHARED_WIRE_BOUND');
    if(out.mutation_batches>=max_mutation_batches){out.deferred_hot.push(...group.map(s=>({publication_id:s.row.publication_id,reason:'TRANSACTION_BOUND'})));preparation_stopped=true;return;}
+   if(batch_private_copies){
+    // Admit every future conditional mutation before creating any new copy.
+    // Native copy allowances remain 32R/24W per member, including cache hits.
+    const copy_admit=e=>admit({rows_read:reads+96+e.rows_read,rows_written:group.length*8+e.rows_written});
+    const retained=await retainCanonicalBatchInPool(copy_pool,group.map(s=>s.record),{db_admit:copy_admit,request_headroom:({max_requests})=>({allowed:archive_headroom({max_copy_requests:max_requests,reserved_native_readbacks:p.native_readbacks*2})}),now});
+    out.private_copy_groups??=[];out.private_copy_groups.push({status:retained.status,retained:retained.retained,rows:group.length,rows_read_reserved:32*group.length,rows_written_reserved:24*group.length,native_production_cost_qualified:false,reserves_lowered:false});
+    if(!retained.retained){out.deferred_hot.push(...group.map(s=>({publication_id:s.row.publication_id,reason:retained.status})));preparation_stopped=true;return;}
+    for(const [i,s] of group.entries()){
+     const {verified_record:stored,location}=retained.records[i];
+     durable.set(`${location}:${stored.publication_id}:${stored.raw_sha256}`,JSON.stringify(stored));
+     const header=await privateCanonicalHeader(s.row,stored,{archive_slot:location==='LEGACY'?null:location});
+     s.record=stored;s.location=location;s.header=header;s.saved_bytes=stored.raw_bytes-Buffer.byteLength(JSON.stringify(header));
+     s.statements=[exactCanonicalBodyUpdate(s.row,header,now-p.hot_window_ms,present,s.references.bounds,s.witness,s.references.scope),s.statements[1]];
+    }
+    if(!wire_fits(group.flatMap(s=>s.statements)))throw Error('CANONICAL_ADMITTED_WIRE_BOUND_CHANGED');
+    prepared.push(...group);out.prepared=prepared.length;
+   }
+   const plan=planCanonicalMutationGroup(group,{shared:shared_mutation,cutoff:now-p.hot_window_ms,present_tables:present}),{statements}=plan;
+   if(!wire_fits(statements))throw Error('CANONICAL_SHARED_WIRE_BOUND');
    // Every member of this admitted wire-bounded group has an exact durable
    // original before any member changes. Sample independent native originals
    // before their group's first mutation, at most four across this run.
@@ -204,8 +225,13 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
    const make_plan=header=>exactCanonicalBodyUpdate(row,header,now-p.hot_window_ms,present,references.bounds,discovery.witnesses[row.publication_id],references.scope);
    const provisional_statements=[make_plan(provisional_header),{sql:'SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1',params:[row.publication_id]}];
    if(!wire_fits(provisional_statements)){out.deferred_hot.push({publication_id:row.publication_id,reason:'BRIDGE_WIRE_BOUND'});continue;}
-   if(execute&&pending.length&&(pending.length>=p.max_rows_per_batch||!wire_fits([...pending_statements(),...provisional_statements])||!admit({rows_read:pending_reads()+read_reserve+96,rows_written:(pending.length+1)*8+24}).allowed))await flush();
+   if(batch_private_copies&&!privateArchiveCopyGroupFits([record],now)){out.deferred_hot.push({publication_id:row.publication_id,reason:'ARCHIVE_GROUP_WIRE_OR_ROW_BOUND'});continue;}
+   if(execute&&pending.length&&(pending.length>=p.max_rows_per_batch||!wire_fits([...pending_statements(),...provisional_statements])||(batch_private_copies&&!privateArchiveCopyGroupFits([...pending.map(s=>s.record),record],now))||!admit({rows_read:pending_reads()+read_reserve+96+(batch_private_copies?32*(pending.length+1):0),rows_written:(pending.length+1)*8+(batch_private_copies?24*(pending.length+1):24)}).allowed))await flush();
    if(execute&&(preparation_stopped||out.mutation_batches>=max_mutation_batches)){out.deferred_hot.push({publication_id:row.publication_id,reason:preparation_stopped?'SHARED_NATIVE_HEADROOM_BEFORE_COPY':'TRANSACTION_BOUND'});continue;}
+   if(batch_private_copies){
+    if(!admit({rows_read:pending_reads()+read_reserve+96+32*(pending.length+1),rows_written:32*(pending.length+1)}).allowed){out.deferred_hot.push({publication_id:row.publication_id,reason:'SHARED_NATIVE_HEADROOM_BEFORE_COPY'});continue;}
+    pending.push({row,header:provisional_header,record,statements:provisional_statements,references,witness:discovery.witnesses[row.publication_id],read_reserve,saved_bytes});continue;
+   }
    // Future updates for every outstanding durable copy stay reserved during
    // each private lookup/insert/readback. Reconcile native usage after a group
    // before admitting more copies; no reservation is refunded in the ledger.
