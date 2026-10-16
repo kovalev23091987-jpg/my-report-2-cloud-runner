@@ -171,7 +171,7 @@ test('a large native metadata scan reduces compaction within the existing reserv
   if(sql.startsWith('SELECT name,type FROM sqlite_schema')){const all=s.all;s.all=async()=>{const r=await all.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+200});r.meta.rows_read+=200;return r;};}
   if(sql.includes('UPDATE canonical_publication_shadow AS p SET')){const run=s.run;s.run=async()=>{const r=await run.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+200});r.meta.rows_read+=200;return r;};}
   return s;};
- const r=await compact(f,{execute:true,prefetch_private:true,require_native_preflight:true});assert.ok(r.compacted.length>0&&r.compacted.length<48);assert.ok(r.deferred_hot.some(x=>['SHARED_NATIVE_HEADROOM','TRANSACTION_BOUND'].includes(x.reason)));assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.D1.unknown_ops,0);assert.ok(r.reference_schema.per_update_read_reserve>=230);
+ const r=await compact(f,{execute:true,prefetch_private:true,require_native_preflight:true});assert.ok(r.compacted.length>0&&r.compacted.length<48);assert.ok(r.deferred_hot.some(x=>['SHARED_NATIVE_HEADROOM','SHARED_NATIVE_HEADROOM_BEFORE_COPY','TRANSACTION_BOUND'].includes(x.reason)));assert.ok(r.D1.rows_read<=5000&&r.D1.rows_written<=400);assert.equal(r.D1.unknown_ops,0);assert.ok(r.reference_schema.per_update_read_reserve>=230);
  const moved=new Set(r.compacted.map(x=>x.publication_id));for(const row of f.old)if(!moved.has(row.publication_id))assert.deepEqual(get(f,row.publication_id),row);
 });
 
@@ -245,4 +245,45 @@ test('a smaller control-derived transaction count keeps the ordinary six-batch c
  const f=fixture(20,{v2:false});archiveAll(f);const r=await compact(f,{execute:true,max_mutation_batches:1});assert.equal(r.mutation_batches,1);assert.equal(r.compacted.length,8);assert.equal(r.deferred_hot.length,12);
  const moved=new Set(r.compacted.map(x=>x.publication_id));for(const row of f.old)if(!moved.has(row.publication_id))assert.deepEqual(get(f,row.publication_id),row);assert.equal(r.bounded_discovery.next_cursor,0);
  await assert.rejects(compact(f,{max_mutation_batches:7}),/EXISTING_CANONICAL_BATCH_CAP_REQUIRED/);
+});
+
+
+test('individual indexed reference plans retain global namespaces and avoid the other candidates reference rows',async()=>{
+ const f=fixture(2),other=f.old[1],c=JSON.parse(other.canonical_json);c.metadata.contract='OTHER-USDT';if(c.contract!==undefined)c.contract='OTHER-USDT';
+ f.raw.prepare('UPDATE canonical_publication_shadow SET contract_code=?,canonical_json=? WHERE publication_id=?').run('OTHER-USDT',JSON.stringify(c),other.publication_id);
+ f.add(100,{contract_code:'OTHER-USDT',observed_ts:now-1000,created_ts:now-1000});
+ for(let i=0;i<100;i++)f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,'OTHER-USDT','SHORT','unrelated','OBSERVE','v','PENDING','other',1,1)").run('noise:'+i,'key:'+i);
+ f.raw.prepare("INSERT INTO report2_command_v2 VALUES('cmd','FULL',NULL,'MANUAL',1,2,'gen','COMPLETED',NULL,NULL,'unrelated',NULL,NULL,1)").run();
+ const d=await loadBoundedCanonicalCandidates({source_db:f.source_db,present_tables:['canonical_publication_shadow','v3_recheck_task_shadow','v3_dispatch_publication_binding_shadow','v3_user_lifecycle_shadow','v3_telegram_dispatch_shadow','tz101_entry_area_calibration_signal','report2_command_v2','report2_publication_v2','report2_delivered_outcome_v2'],cutoff:now-2*DAY,prefix:'R2PRIVATE_CANONICAL_V1:',admit:allow});
+ const r=d.reference_plans[f.old[0].publication_id],o=d.reference_plans[other.publication_id];
+ assert.equal(d.bounds.v3_telegram_dispatch_shadow,108);assert.equal(r.bounds.v3_telegram_dispatch_shadow,8);assert.equal(o.bounds.v3_telegram_dispatch_shadow,108);assert.equal(r.bounds.report2_command_v2,9);assert.equal(o.bounds.report2_command_v2,9);
+ assert.deepEqual(r.scope.contracts,[f.old[0].contract_code]);assert.deepEqual(r.scope.publication_ids,[f.old[0].publication_id]);
+ const result=await compact(f,{execute:true});assert.equal(result.compacted.length,2);assert(result.reference_schema.per_row_plans.some(p=>p.rows_read_reserve<result.reference_schema.union_per_update_read_reserve));
+ const sql=f.source_db.calls.find(s=>s.includes('UPDATE canonical_publication_shadow AS p SET')&&s.includes("WHERE contract IN ('"+f.old[0].contract_code+"')"));assert(sql);assert(!sql.includes("WHERE contract IN ('"+f.old[0].contract_code+"','OTHER-USDT')"));
+ assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM v3_telegram_dispatch_shadow').get().n,100);assert.equal(f.raw.prepare('SELECT COUNT(*) AS n FROM report2_command_v2').get().n,1);
+});
+
+test('a contract identity changed after discovery cannot borrow an unrelated reference scope',async()=>{
+ const f=fixture(1),before=f.old[0],batch=f.source_db.batch.bind(f.source_db);let changed=false;
+ f.source_db.batch=async statements=>{if(!changed&&statements[0]?.sql.startsWith('SELECT p.*')){changed=true;f.raw.prepare('UPDATE canonical_publication_shadow SET contract_code=? WHERE publication_id IN (?,?)').run('CHANGED-USDT',before.publication_id,f.latest.publication_id);}return batch(statements);};
+ await assert.rejects(compact(f,{execute:true}),/CANONICAL_REFERENCE_SCOPE_IDENTITY_CHANGED/);assert.equal(f.archive_db.usageSnapshot().requests,0);assert(!get(f,before.publication_id).canonical_json.startsWith('R2PRIVATE_CANONICAL_V1:'));
+ assert.throws(()=>exactCanonicalBodyUpdate(before,{...before,manual_text:'header'},now-2*DAY,undefined,{},null,{contracts:['OTHER-USDT'],publication_ids:[before.publication_id]}),/EXACT_CANONICAL_ROW_SCOPE_REQUIRED/);
+});
+
+test('outstanding mutation costs are held before copies and measured groups are reconciled without lowering the reservation',async()=>{
+ const f=fixture(12,{v2:false});f.raw.exec(fs.readFileSync(new URL('../current-generation/migrations/007_commands_delivery.sql',import.meta.url),'utf8'));
+ for(let i=0;i<162;i++)f.raw.prepare("INSERT INTO report2_command_v2 VALUES(?,'FULL',NULL,'MANUAL',1,2,'gen','COMPLETED',NULL,NULL,'unrelated',NULL,NULL,1)").run('cmd:'+i);
+ const prepare=f.source_db.prepare.bind(f.source_db);
+ f.source_db.prepare=sql=>{const s=prepare(sql);if(sql.startsWith('SELECT name,type FROM sqlite_schema')){const all=s.all;s.all=async()=>{const r=await all.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+404-r.meta.rows_read});r.meta.rows_read=404;return r;};}
+  if(sql.includes('UPDATE canonical_publication_shadow AS p SET')){const run=s.run;s.run=async()=>{const r=await run.call(s),u=f.source_db.usageSnapshot();f.source_db.setUsage({rows_read:u.rows_read+1300});r.meta.rows_read+=1300;return r;};}return s;};
+ const result=await compact(f,{execute:true,require_native_preflight:true});
+ assert(result.compacted.length>0&&result.compacted.length<12);assert.equal(result.prepared,result.compacted.length);assert.equal(f.coldraw.prepare('SELECT COUNT(*) AS n FROM report2_canonical_cold_archive_v1').get().n,result.prepared);assert.equal(result.deferred_hot.length,12-result.prepared);assert(result.deferred_hot.every(r=>r.reason==='SHARED_NATIVE_HEADROOM_BEFORE_COPY'));
+ assert(result.copy_admission.groups.every(g=>g.usage_before.rows_read+g.rows_read_reserved+96<=5000));assert(result.D1.rows_read<=5000&&result.D1.rows_written<=400);assert.equal(result.D1.unknown_ops,0);assert.equal(result.copy_admission.native_cost_qualified,false);
+ assert(result.copy_admission.groups.every(g=>g.statement_costs.every(s=>s.counters_present)));assert(result.copy_admission.groups.every(g=>g.statement_costs.filter(s=>s.operation==='CONDITIONAL_BODY_UPDATE').every(s=>s.rows_read===1300)));
+ if(process.env.REPORT2_COMPACTION_PROOF_OUTPUT){const file=process.env.REPORT2_COMPACTION_PROOF_OUTPUT,proof=JSON.parse(fs.readFileSync(file,'utf8'));proof.row_mutation_admission_stress={schema:'CONTROLLED_CUMULATIVE_ROW_ADMISSION_V1',schema_reads_charged:404,reads_charged_per_update:1300,selected:result.selected,prepared:result.prepared,moved:result.compacted.length,deferred:result.deferred_hot,copy_admission:result.copy_admission,D1:result.D1,fixture_counters_only:true,native_cost_qualified:false,productionD1:0,sourceHTTP:0,MAIN:0,Telegram:0};fs.writeFileSync(file,JSON.stringify(proof,null,2)+'\n');}
+ const moved=new Set(result.compacted.map(r=>r.publication_id));for(const row of f.old)if(!moved.has(row.publication_id))assert.deepEqual(get(f,row.publication_id),row);
+});
+
+test('zero admitted mutation groups do not create unusable archive copies',async()=>{
+ const f=fixture(12,{v2:false}),result=await compact(f,{execute:true,max_mutation_batches:0});assert.equal(result.prepared,0);assert.equal(result.compacted.length,0);assert.equal(result.deferred_hot.length,12);assert.equal(f.archive_db.usageSnapshot().rows_written,0);assert.equal(result.mutation_batches,0);
 });
