@@ -1,4 +1,11 @@
 import {PRIVATE_CANONICAL_DATABASES} from './private-canonical-history.mjs';
+// A current-main code repair may reuse only the already complete, exact pool.
+// It cannot turn into a first installation or finish a partial foreign setup.
+export function installedFreeArchiveRepairBindingPlan(args){
+ const plan=freeArchiveBindingPlan(args);
+ if(plan.added_locations.length!==0||JSON.stringify(plan.bindings)!==JSON.stringify(args.settings.bindings))throw Error('EXACT_ALREADY_INSTALLED_ARCHIVE_BINDINGS_REQUIRED');
+ return plan;
+}
 export function freeArchiveBindingPlan({settings,schema_receipt}={}){
  const locations=Object.entries(PRIVATE_CANONICAL_DATABASES).filter(([s])=>s!=='LEGACY');
  if(schema_receipt?.status!=='EXACT_FOUR_FREE_ARCHIVE_SCHEMAS_VERIFIED'||schema_receipt.locations?.length!==4||locations.some(([location,d])=>schema_receipt.locations.filter(r=>r.location===location&&r.database_id===d.uuid&&r.initialized===true).length!==1))throw Error('EXACT_NATIVE_FOUR_SCHEMAS_REQUIRED_BEFORE_BINDING');

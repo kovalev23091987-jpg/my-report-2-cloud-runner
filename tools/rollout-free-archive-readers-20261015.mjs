@@ -3,7 +3,7 @@ import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
 import {active105OfflineReviewOwner} from '../runner/offline-review-authority.mjs';
 import {createVersionBoundWorkerReader} from '../runner/cloudflare-version-bound-readback.mjs';
 import {rolloutDigest,workerSettingsFingerprint,selectedVersionSettings,collectorVersionMetadata,historyVersionMetadata,WEEKLY_ROLLOUT_POLICY as P} from '../runner/htx-coordinated-rollout.mjs';
-import {freeArchiveBindingPlan} from '../runner/free-archive-bindings.mjs';
+import {freeArchiveBindingPlan,installedFreeArchiveRepairBindingPlan} from '../runner/free-archive-bindings.mjs';
 import {rolloutFreeArchiveReaders,resumeFreeArchiveReaders,requireArchiveWritersOff,currentMainReaderRepairRequest} from '../runner/free-archive-rollout.mjs';
 import {patchWorker} from '../cloudflare/public-collector/patch-worker.mjs';
 import {injectPrivatePriceRuntime} from '../cloudflare/public-collector/private-price-bundle.mjs';
@@ -56,8 +56,8 @@ try{
    const current=await snapshot(spec),before=prior?prior.workers[i].before:current,originalVersion=prior?await cf(spec.name,'/versions/'+before.version_id):null,originalSettings=prior?selectedVersionSettings(settings.get(spec.name),originalVersion):settings.get(spec.name);
    if(prior&&workerSettingsFingerprint(originalSettings)!==before.settings_sha256)throw Error('FREE_READER_ORIGINAL_SETTINGS_CHANGED');
    if(prior)runtimes.set(spec.name,originalVersion.resources.script_runtime);
-   const binding=freeArchiveBindingPlan({settings:originalSettings,schema_receipt});
-   if(binding.added_locations.length!==4)throw Error('FREE_READER_ALREADY_PARTIAL_OR_INSTALLED_REQUIRES_EXACT_RESUME');
+   const binding=(manual?installedFreeArchiveRepairBindingPlan:freeArchiveBindingPlan)({settings:originalSettings,schema_receipt});
+   if(!manual&&binding.added_locations.length!==4)throw Error('FREE_READER_ALREADY_PARTIAL_OR_INSTALLED_REQUIRES_EXACT_RESUME');
    const desired={...originalSettings,bindings:binding.bindings};targetSettings.set(spec.name,desired);
    let module;
    if(spec.name===P.collector){const original=reader.module(spec.name,current.version_id).bytes.toString(),injected=injectPrivatePriceRuntime(await fs.readFile('cloudflare/public-collector/injected-worker-tail.js','utf8')).source.trim(),patched=patchWorker(original,injected),marker='var __REPORT2_PUBLIC_COLLECTOR_VERSION = ',at=original.indexOf(marker);if(!['UPDATED','ALREADY_PATCHED'].includes(patched.status)||at<0||patched.source.indexOf(marker)!==at||original.slice(0,at)!==patched.source.slice(0,at)||prior&&rolloutDigest(original.slice(0,at))!==prior.hub_prefix_sha256)throw Error('FREE_READER_EXACT_HUB_PREFIX_REQUIRED');module=Buffer.from(patched.source);out.hub_prefix_sha256=rolloutDigest(original.slice(0,at));}
