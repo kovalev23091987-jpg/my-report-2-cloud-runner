@@ -47,3 +47,8 @@ test('repeated hourly no-op still measures its original lookup/run-log costs wit
 test('an absent binding remains unmeasured, not a free invocation or a closed daily aggregate',()=>{
  assert.equal(nativeBindingUsage(null).attempted_statements,null);const r=hourlyNativeUsageReceipt({invocation_id:'exact',scheduled_ts:T,source:null,archive:null});assert.equal(r.row_totals_closed,false);assert.equal(r.total_rows_read,null);assert.equal(r.daily_total,false);assert.throws(()=>hourlyNativeUsageReceipt({invocation_id:'',scheduled_ts:T}));
 });
+test('execution UTC day remains separate from delayed scheduled day and unresolved across midnight',()=>{
+ const late=hourlyNativeUsageReceipt({invocation_id:'delayed',scheduled_ts:Date.UTC(2026,9,15,23,35),execution_started_ts:Date.UTC(2026,9,16,0,0,1),execution_completed_ts:Date.UTC(2026,9,16,0,0,2)});assert.equal(late.scheduled_day_utc,'2026-10-15');assert.equal(late.day_utc,'2026-10-15');assert.equal(late.execution_day_utc,'2026-10-16');assert(late.execution_day_unambiguous);assert.equal(late.daily_total,false);
+ const cross=hourlyNativeUsageReceipt({invocation_id:'cross',scheduled_ts:T,execution_started_ts:Date.UTC(2026,9,15,23,59,59),execution_completed_ts:Date.UTC(2026,9,16,0,0,1)});assert.equal(cross.execution_day_utc,null);assert.equal(cross.execution_day_unambiguous,false);
+ const invalid=hourlyNativeUsageReceipt({invocation_id:'reversed',scheduled_ts:T,execution_started_ts:T,execution_completed_ts:T-1});assert.equal(invalid.execution_day_utc,null);
+});

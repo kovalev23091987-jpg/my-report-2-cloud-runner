@@ -1,0 +1,67 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';
+import {persistentLogState,nativeEventEvidence,reconcileNativeEvents,readNativeCostObservations} from './native-cost-observations.mjs';
+const now=Date.UTC(2026,9,16,10),version='11111111-1111-4111-8111-111111111111',other='22222222-2222-4222-8222-222222222222';
+const context={name:'my-report-2-hub',tag:'REPORT2_PUBLIC_COLLECTOR_NATIVE_D1',schema:'PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1',active_version:version,from:now-7200000,to:now};
+const receipt=()=>({schema:context.schema,invocation_id:'exact-invocation',started_ts:now-2000,completed_ts:now-1000,native_D1:{requests:3,rows_read:90,rows_written:6,unknown_ops:0},private_price_source_D1:{requests:1,rows_read:30,rows_written:1,unknown_ops:0},collector_excluding_private_price_source_D1:{requests:2,rows_read:60,rows_written:5,unknown_ops:0},native_totals_closed:true,additional_SQL:0,daily_total:false});
+const event=(r=receipt())=>({$metadata:{id:'native-event',service:context.name},$workers:{scriptName:context.name,scriptVersion:{id:version},eventType:'scheduled',truncated:false},timestamp:now-500,source:{message:[context.tag,JSON.stringify(r)]}});
+const deployment=v=>({deployments:[{id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',strategy:'percentage',versions:[{version_id:v,percentage:100}]}]});
+test('script-level logging state distinguishes disabled, missing and sampled config without asserting absence of platform sampling',()=>{
+ assert.equal(persistentLogState({}).enabled,null);assert.equal(persistentLogState({observability:{enabled:false}}).enabled,false);assert.equal(persistentLogState({observability:{enabled:true,logs:{enabled:true,persist:false}}}).enabled,false);
+ const p=persistentLogState({observability:{enabled:true,logs:{enabled:true,persist:true,head_sampling_rate:.1}}});assert.equal(p.enabled,true);assert.equal(p.head_sampling_rate,.1);assert.equal(p.platform_sampling_excluded,false);
+});
+test('exact native receipt preserves disjoint nested costs; no daily extrapolation or overlapping PRIVATE_PRICE addition',()=>{
+ const r=nativeEventEvidence(event(),context);assert(r.accepted);assert(r.day_allocation_closed);assert.equal(r.receipt.native_D1.rows_read,90);assert.equal(r.receipt.collector_excluding_private_price_source_D1.rows_read,60);assert.equal(r.receipt.private_price_source_D1.rows_read,30);assert.equal(r.daily_total,false);
+ const p=reconcileNativeEvents([event()],context);assert.equal(p.accepted_unique_invocations,1);assert.equal(p.whole_day_closed,false);assert.equal(p.daily_total,null);
+});
+test('version, worker, source clock, event identity and truncated payload must bind before native evidence is accepted',()=>{
+ for(const mutate of [e=>e.$workers.scriptVersion.id=other,e=>e.$workers.scriptName='foreign',e=>e.$metadata.service='foreign',e=>e.$workers.truncated=true,e=>e.$workers.eventType='fetch',e=>e.timestamp=now+1,e=>delete e.$metadata.id]){const e=event();mutate(e);assert.equal(nativeEventEvidence(e,context).accepted,false);}
+ const e=event();e.source.message[1]='not JSON';assert.equal(nativeEventEvidence(e,context).reason,'NATIVE_LOG_JSON_INVALID');
+});
+test('unknown and inconsistent nested native counters remain unclosed without resetting subtotals',()=>{
+ const r=receipt();r.native_D1.unknown_ops=1;r.collector_excluding_private_price_source_D1.unknown_ops=1;r.native_totals_closed=false;const a=nativeEventEvidence(event(r),context);assert(a.accepted);assert(a.receipt.unknown);assert.equal(a.receipt.native_D1.rows_read,90);assert.equal(a.day_allocation_closed,false);
+ const bad=receipt();bad.private_price_source_D1.rows_read=31;assert.equal(nativeEventEvidence(event(bad),context).receipt.split_disjoint,false);assert.equal(nativeEventEvidence(event(bad),context).day_allocation_closed,false);
+});
+test('duplicate delivery of a final invocation is counted once; conflicting revisions of the same invocation are excluded',()=>{
+ const a=event(),b=event();b.$metadata.id='duplicate-event';assert.equal(reconcileNativeEvents([a,b],context).accepted_unique_invocations,1);
+ const changed=receipt();changed.native_D1.rows_read++;changed.collector_excluding_private_price_source_D1.rows_read++;const p=reconcileNativeEvents([a,event(changed)],context);assert.equal(p.accepted_unique_invocations,0);assert.equal(p.conflicting_invocations.length,1);
+});
+test('a midnight-spanning invocation cannot be assigned to one billing day',()=>{
+ const r=receipt();r.started_ts=Date.UTC(2026,9,15,23,59,59);r.completed_ts=Date.UTC(2026,9,16,0,0,1);const e=event(r);e.timestamp=r.completed_ts+1;
+ const p=nativeEventEvidence(e,{...context,from:r.started_ts-1,to:r.completed_ts+10});assert(p.accepted);assert.equal(p.actual_day_utc,null);assert.equal(p.day_allocation_closed,false);
+});
+test('hourly scheduled day is not used as execution day, and missing old execution clocks are unresolved',()=>{
+ const c={...context,name:'my-report-2-free-history',tag:'REPORT2_FREE_HISTORY_NATIVE_D1',schema:'FREE_HISTORY_NATIVE_INVOCATION_USAGE_V1'},b={attempted_statements:2,measured_rows_read_subtotal:5,measured_rows_written_subtotal:1,unknown_operations:0};
+ const r={schema:c.schema,invocation_id:'hourly',scheduled_ts:Date.UTC(2026,9,15,23,35),day_utc:'2026-10-15',execution_started_ts:now-2000,execution_completed_ts:now-1000,bindings:{DATA_DB:b,ARCHIVE_DB:b},row_totals_closed:true,additional_SQL:0,daily_total:false};
+ const e=event();e.$metadata.service=c.name;e.$workers.scriptName=c.name;e.source.message=[c.tag,JSON.stringify(r)];assert.equal(nativeEventEvidence(e,c).actual_day_utc,'2026-10-16');
+ delete r.execution_started_ts;delete r.execution_completed_ts;e.source.message[1]=JSON.stringify(r);assert.equal(nativeEventEvidence(e,c).day_allocation_closed,false);
+ r.bindings.DATA_DB=null;e.source.message[1]=JSON.stringify(r);const p=nativeEventEvidence(e,c);assert(p.receipt.unknown);assert.equal(p.receipt.bindings.DATA_DB,null);
+});
+test('disabled persistent logging uses only four bounded metadata GETs and never guesses zero native cost',async()=>{
+ const calls=[];let guards=0;const p=await readNativeCostObservations({now,guard:async()=>guards++,call:async(path,opt)=>{calls.push({path,opt});return path.endsWith('/deployments')?deployment(version):{observability:{enabled:false}};}});
+ assert.equal(calls.length,4);assert(calls.every(c=>!c.opt));assert(calls.filter(c=>c.path.endsWith('/script-settings')).length===2);assert(p.workers.every(w=>w.query_status==='PERSISTENT_LOGS_DISABLED'));assert.equal(p.daily_total,null);assert.equal(p.SQL,0);assert.equal(guards,2);
+});
+test('read-only observations bind both deployments around dry bounded queries, preserving original sampling statistics',async()=>{
+ const calls=[],stats={abr_level:2,rows_read:200};const p=await readNativeCostObservations({now,guard:async()=>{},call:async(path,opt)=>{calls.push({path,opt});if(path.endsWith('/deployments'))return deployment(version);if(path.endsWith('/script-settings'))return{};return{statistics:stats,events:{count:100,events:[event()]}};}});
+ assert.equal(calls.length,8);assert.equal(calls.filter(c=>c.opt?.method==='POST').length,2);for(const c of calls.filter(c=>c.opt)){assert.equal(c.opt.body.dry,true);assert.equal(c.opt.body.limit,64);assert.equal(c.opt.body.timeframe.to-c.opt.body.timeframe.from,7200000);assert.equal(c.path,'/workers/observability/telemetry/query');}
+ assert.equal(p.workers[1].accepted_unique_invocations,1);assert.equal(p.workers[1].telemetry_statistics.abr_level,2);assert.equal(p.whole_day_closed,false);assert.equal(p.daily_total,null);assert.equal(p.Worker_invocations,0);assert.equal(p.settings_changed,false);
+});
+test('a moved deployment discards attribution; malformed and failed queries are not retried or converted to zero',async()=>{
+ let reads=0;const p=await readNativeCostObservations({now,guard:async()=>{},call:async(path)=>{if(path.endsWith('/deployments'))return deployment(++reads===2?other:version);if(path.endsWith('/script-settings'))return{};return{events:{events:[event()]}};}});assert.equal(p.workers[0].query_status,'WORKER_MOVED_DURING_OBSERVATION');assert.deepEqual(p.workers[0].receipts,[]);
+ let queries=0;const f=await readNativeCostObservations({now,guard:async()=>{},call:async(path)=>{if(path.endsWith('/deployments'))return deployment(version);if(path.endsWith('/script-settings'))return{};queries++;throw Error('NATIVE_OBSERVATION_HTTP_403');}});assert.equal(queries,2);assert(f.workers.every(w=>w.query_status==='NATIVE_OBSERVATION_HTTP_403'));assert.equal(f.daily_total,null);
+});
+test('unqualified inspector refuses before transport and exports no credentials or source request',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'report2-native-inspect-'));try{const script=`globalThis.fetch=async()=>{throw Error('FORBIDDEN_NETWORK')};await import(${JSON.stringify(new URL('../tools/read-current-native-cost-observations.mjs',import.meta.url).href)});`;
+ const r=spawnSync(process.execPath,['--input-type=module','-e',script],{cwd:dir,env:{PATH:process.env.PATH,GITHUB_REPOSITORY:'wrong'},encoding:'utf8'});assert.equal(r.status,1,r.stderr);const p=JSON.parse(fs.readFileSync(path.join(dir,'audit-output/hourly-native-observer/native-observations.json')));assert.equal(p.reason,'EXACT_READ_ONLY_NATIVE_OBSERVATION_ACCESS_REQUIRED');assert.equal(p.github_HTTP,0);assert.equal(p.cloudflare_HTTP,0);assert.equal(p.daily_total,null);assert.equal(p.settings_changed,false);
+ }finally{fs.rmSync(dir,{recursive:true});}
+});
+test('inspection mode skips deployment/build paths and is disabled by default in the existing guarded workflow',()=>{
+ const y=fs.readFileSync(new URL('../.github/workflows/current-hourly-native-observer-repair.yml',import.meta.url),'utf8');assert.match(y,/inspect_only:[\s\S]+?default: false/);assert.equal((y.match(/inputs\.inspect_only != true/g)||[]).length,2);assert.match(y,/if: \$\{\{ inputs\.inspect_only == true \}\}/);assert.match(y,/INSPECT_NATIVE_OBSERVERS: \$\{\{ inputs\.inspect_only \}\}/);assert.doesNotMatch(y,/D1_BRIDGE|TELEGRAM_BOT_TOKEN|--test-scheduled|runner-main/);
+});
+test('qualified main inspection performs only bounded metadata reads; a foreign owner stops before Cloudflare',()=>{
+ for(const foreign of [false,true]){const dir=fs.mkdtempSync(path.join(os.tmpdir(),'report2-native-control-'));try{
+ const script=`const head='a'.repeat(40),owner='OWN_NATIVE_OBSERVER',now=Date.now();const data={'checkpoints/CLOUD_PHASE_STATE_20261004.json':{lease:{owner:${foreign?"'FOREIGN'":"owner"},expires_ts:now+600000},latest_own_bounded_continuation_lease:{owner},active_working_state:{owned_lease:owner}},'audit-fixes/source-optimization-20260930/execution-lock.json':{active:false},'checkpoints/CURRENT_PROJECT_STATUS.json':{active_working_state:{owner_authorized_sequential_continuation:true}},'checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json':{active_working_state:{owner_authorized_sequential_continuation:true}},'REPORT2_CURRENT_GENERATION.json':{latest_only:true}};
+ globalThis.fetch=async(input,opt={})=>{const u=new URL(input),method=opt.method||'GET';let result;if(u.hostname==='api.github.com'){if(method!=='GET')throw Error('FORBIDDEN_GITHUB_MUTATION');const p=u.pathname.split('/my-report-2-cloud-runner/')[1];if(p==='git/ref/heads/main')result={object:{sha:head}};else if(p.startsWith('contents/')){const v=data[p.slice(9)];if(!v)throw Error('FORBIDDEN_GITHUB_CONTENT');result={content:Buffer.from(JSON.stringify(v)).toString('base64')};}else if(p==='actions/runs/42')result={id:42,head_sha:head,workflow_id:7,status:'completed',conclusion:'success'};else if(p==='actions/workflows/liq-assembled-offline-20261012.yml')result={id:7};else throw Error('FORBIDDEN_GITHUB_ROUTE');return Response.json(result);}if(u.hostname!=='api.cloudflare.com'||method!=='GET'||!/\\/workers\\/scripts\\/(my-report-2-hub|my-report-2-free-history)\\/(deployments|script-settings)$/.test(u.pathname))throw Error('FORBIDDEN_NATIVE_OR_MUTATING_ROUTE');result=u.pathname.endsWith('/script-settings')?{observability:{enabled:false}}:${JSON.stringify(deployment(version))};return Response.json({success:true,result});};await import(${JSON.stringify(new URL('../tools/read-current-native-cost-observations.mjs',import.meta.url).href)});`;
+ const r=spawnSync(process.execPath,['--input-type=module','-e',script],{cwd:dir,env:{PATH:process.env.PATH,GITHUB_REPOSITORY:'kovalev23091987-jpg/my-report-2-cloud-runner',GITHUB_REF:'refs/heads/main',GITHUB_SHA:'a'.repeat(40),OBSERVER_HEAD:'a'.repeat(40),BORROW_EXISTING_OWNER:'OWN_NATIVE_OBSERVER',CONNECTED_RUN:'42',GITHUB_TOKEN:'offline-control',CLOUDFLARE_API_TOKEN:'offline-native-token',INSPECT_NATIVE_OBSERVERS:'true'},encoding:'utf8'});
+ assert.equal(r.status,foreign?1:0,r.stderr);const raw=fs.readFileSync(path.join(dir,'audit-output/hourly-native-observer/native-observations.json'),'utf8'),p=JSON.parse(raw);assert.equal(p.cloudflare_HTTP,foreign?0:4);assert(p.github_HTTP<=28);assert.equal(p.SQL,0);assert.equal(p.Worker_invocations,0);assert.equal(p.settings_changed,false);assert.equal(p.daily_total,null);assert.doesNotMatch(raw,/offline-native-token|offline-control/);if(foreign)assert.equal(p.reason,'NATIVE_OBSERVATION_OWN_GUARD_REQUIRED');else assert(p.workers.every(w=>w.query_status==='PERSISTENT_LOGS_DISABLED'));
+ }finally{fs.rmSync(dir,{recursive:true});}}
+});
