@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';import crypto from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
+import {reconcileNativeQueryCosts} from '../runner/native-query-cost-reconciliation.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
 import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from '../runner/github-bounded-phase-lease.mjs';
@@ -126,7 +127,8 @@ try{
  if(mode?.native_qualification&&db){
   out.native_query_costs={bridge:db.nativeQueryCostReceipts(),private:archive_pool?.nativeQueryCostReceipts?.()??(archive_db?{LEGACY:archive_db.nativeQueryCostReceipts()}:{}),additional_SQL:0,SQL_params_results_exported:false};
   const journals=[out.native_query_costs.bridge,...Object.values(out.native_query_costs.private)];
-  if(journals.some(j=>!j||j.overflow)){out.native_query_cost_journal_incomplete=true;process.exitCode=1;}
+  out.native_query_cost_reconciliation=reconcileNativeQueryCosts({journals,usage:out.D1});
+  if(journals.some(j=>!j||j.overflow)||!out.native_query_cost_reconciliation.client_day_attribution_closed){out.native_query_cost_journal_incomplete=true;process.exitCode=1;}
  }
  if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}

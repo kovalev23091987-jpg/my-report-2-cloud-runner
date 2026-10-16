@@ -90,7 +90,7 @@ export class RemoteD1Database {
       : DEFAULT_TIMEOUT_MS;
     this._usage = { requests: 0, rows_read: 0, rows_written: 0, unknown_ops: 0, targets: {} };
     this._unmeasuredReceipts = [];
-    this._nativeCostJournal=options.nativeQueryReceipts===true?new NativeQueryCostJournal({binding:'D1_BRIDGE'}):null;
+    this._nativeCostJournal=options.nativeQueryReceipts===true?new NativeQueryCostJournal({binding:'D1_BRIDGE',clock:options.nativeQueryClock??Date.now}):null;
   }
 
   enableRetainedHistory(options = {}) {
@@ -150,7 +150,7 @@ export class RemoteD1Database {
     const readKnown=Number.isSafeInteger(usage?.rows_read)&&usage.rows_read>=0,writeKnown=Number.isSafeInteger(usage?.rows_written)&&usage.rows_written>=0;
     if(readKnown){this._usage.rows_read+=usage.rows_read;bucket.rows_read+=usage.rows_read;}
     if(writeKnown){this._usage.rows_written+=usage.rows_written;bucket.rows_written+=usage.rows_written;}
-    this._nativeCostJournal?.record({operation:op,sql,usage,http_status:diagnostic.http_status,force_unknown:diagnostic.force_unknown===true});
+    this._nativeCostJournal?.record({operation:op,sql,wire_sql:diagnostic.wire_sql??sql,usage,http_status:diagnostic.http_status,force_unknown:diagnostic.force_unknown===true,transport:diagnostic.transport});
     if (usage?.measured !== true || !readKnown || !writeKnown || diagnostic.force_unknown===true) {
       this._usage.unknown_ops += 1;
       bucket.unknown_ops += 1;
@@ -165,10 +165,10 @@ export class RemoteD1Database {
   _recordUsage(payload, usage, diagnostic = {}) {
     if (payload?.op === "batch" && Array.isArray(payload.statements)) {
       const parts = Array.isArray(usage?.statements) ? usage.statements : [];
-      payload.statements.forEach((stmt, i) => this._recordSingle("batch", stmt?.sql, parts[i],diagnostic));
+      payload.statements.forEach((stmt, i) => this._recordSingle("batch", stmt?.sql, parts[i],{...diagnostic,wire_sql:diagnostic.wire_payload?.statements?.[i]?.sql??stmt?.sql}));
       return;
     }
-    this._recordSingle(payload?.op, payload?.sql, usage,diagnostic);
+    this._recordSingle(payload?.op, payload?.sql, usage,{...diagnostic,wire_sql:diagnostic.wire_payload?.sql??payload?.sql});
   }
 
   async _request(payload) {
@@ -189,6 +189,9 @@ export class RemoteD1Database {
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     let nativeUsageRecorded = false;
     let httpStatus = null;
+    const transportStart=this._nativeCostJournal?.beginTransport();
+    let transportEnd;
+    const transport=()=>transportEnd??=this._nativeCostJournal?.endTransport(transportStart);
     try {
       const response = await this.fetchImpl(this.url, {
         method: "POST",
@@ -210,12 +213,12 @@ export class RemoteD1Database {
         throw new Error(`D1_BRIDGE_INVALID_JSON_HTTP_${response.status}`);
       }
       if (!response.ok || data?.ok !== true) {
-        this._recordUsage(originalPayload,data?.usage,{http_status:httpStatus,force_unknown:true,failure_class:'BRIDGE_RESPONSE_NOT_CLOSED'});
+        this._recordUsage(originalPayload,data?.usage,{wire_payload:payload,transport:transport(),http_status:httpStatus,force_unknown:true,failure_class:'BRIDGE_RESPONSE_NOT_CLOSED'});
         nativeUsageRecorded=true;
         const code = String(data?.error || `HTTP_${response.status}`);
         throw new Error(`D1_BRIDGE_FAILURE:${code}`);
       }
-      this._recordUsage(originalPayload, data?.usage,{http_status:httpStatus});
+      this._recordUsage(originalPayload, data?.usage,{wire_payload:payload,transport:transport(),http_status:httpStatus});
       nativeUsageRecorded = true;
       const restored=this._retainedHistory ? await this._retainedHistory.restore(data.result) : data.result;
       if(this._privateRetainedHistory&&originalPayload.op==='first'&&originalPayload.column&&typeof restored==='string'){
@@ -228,7 +231,7 @@ export class RemoteD1Database {
       // counts or resetting reservations. Downstream budget guards stay closed.
       // A failure in retained-history restoration after a measured DB reply
       // must not charge the original SQL a second time.
-      if (!nativeUsageRecorded) this._recordUsage(originalPayload, null,{http_status:httpStatus,failure_class:error?.name==='AbortError'?'BRIDGE_TIMEOUT':error?.name==='TypeError'?'BRIDGE_TRANSPORT_FAILURE':httpStatus!==null?'BRIDGE_RESPONSE_NOT_CLOSED':'BRIDGE_FAILURE'});
+      if (!nativeUsageRecorded) this._recordUsage(originalPayload, null,{wire_payload:payload,transport:transport(),http_status:httpStatus,failure_class:error?.name==='AbortError'?'BRIDGE_TIMEOUT':error?.name==='TypeError'?'BRIDGE_TRANSPORT_FAILURE':httpStatus!==null?'BRIDGE_RESPONSE_NOT_CLOSED':'BRIDGE_FAILURE'});
       if (error?.name === "AbortError") throw new Error("D1_BRIDGE_TIMEOUT");
       throw error;
     } finally {
