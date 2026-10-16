@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import {singleActiveVersion} from './htx-coordinated-rollout.mjs';
 import {receiptProjection} from './native-cost-observations.mjs';
 const hash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex'),name='my-report-2-hub',tag='REPORT2_PUBLIC_COLLECTOR_NATIVE_D1',schema='PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1';
+function invocationKind(frame){const tags=new Set(frame.logs?.map(l=>l?.message?.[0])),kinds=[['REPORT2_PUBLIC_COLLECTOR_CLOSED','COLLECTOR_CLOSED'],['REPORT2_PUBLIC_COLLECTOR_NOOP','NOOP'],['REPORT2_PUBLIC_COLLECTOR_ERROR','COLLECTOR_ERROR'],['REPORT2_PUBLIC_COLLECTOR_CLAIM_ERROR','CLAIM_ERROR']].filter(([tag])=>tags.has(tag));return kinds.length===1?kinds[0][1]:'OUTCOME_UNCONFIRMED';}
 export function tailNativeEvidence(frame,{opened_ts,received_ts,version}={}){
  if(!Number.isSafeInteger(opened_ts)||!Number.isSafeInteger(received_ts)||opened_ts<=0||received_ts<opened_ts||frame?.scriptName!==name||!['*/5 * * * *','3-58/5 * * * *'].includes(frame?.event?.cron)||!Number.isSafeInteger(frame.eventTimestamp)||frame.eventTimestamp<opened_ts||frame.eventTimestamp>received_ts||frame.truncated===true||!Array.isArray(frame.logs)||frame.logs.length>128)return[];
  const out=[];for(const l of frame.logs){
@@ -10,14 +11,14 @@ export function tailNativeEvidence(frame,{opened_ts,received_ts,version}={}){
   // The tail API is explicitly filtered to this immutable version. Tail event
   // payloads need not have a scriptVersion field; never invent that field.
   const explicit=frame.scriptVersion?.id??frame.scriptVersion;if(explicit&&explicit!==version)continue;
-  out.push({worker:name,version,version_binding_basis:explicit?'EXPLICIT_TAIL_EVENT_VERSION':'EXACT_TAIL_VERSION_FILTER_AND_STABLE_DEPLOYMENT',event_ts:frame.eventTimestamp,log_ts:l.timestamp,received_ts,receipt_sha256:hash(raw),original_native_message:l.message[1],receipt,daily_total:false});
+  out.push({worker:name,version,version_binding_basis:explicit?'EXPLICIT_TAIL_EVENT_VERSION':'EXACT_TAIL_VERSION_FILTER_AND_STABLE_DEPLOYMENT',event_ts:frame.eventTimestamp,log_ts:l.timestamp,received_ts,invocation_kind:invocationKind(frame),receipt_sha256:hash(raw),original_native_message:l.message[1],receipt,daily_total:false});
  }
  const unique=new Map(out.map(e=>[e.receipt_sha256,e]));return unique.size===1?[...unique.values()]:[];
 }
-export async function captureCollectorNativeTail({call,guard,open,save=async()=>{},clock=Date.now,max_wait_ms=330000}={}){
- if(!Number.isSafeInteger(max_wait_ms)||max_wait_ms<1||max_wait_ms>330000)throw Error('TAIL_WAIT_BOUND');await guard();
+export async function captureCollectorNativeTail({call,guard,open,save=async()=>{},clock=Date.now,max_wait_ms=330000,require_collection=false}={}){
+ if(!Number.isSafeInteger(max_wait_ms)||max_wait_ms<1||max_wait_ms>330000||typeof require_collection!=='boolean')throw Error('TAIL_WAIT_BOUND');await guard();
  const root='/workers/scripts/'+name,before=singleActiveVersion(await call(root+'/deployments'));
- const out={schema:'BOUNDED_COLLECTOR_NATIVE_TAIL_V1',worker:name,before,started_ts:clock(),status:'TAIL_NOT_CREATED',filters:{filters:[{query:tag},{scriptVersion:before.version_id}]},frames:0,wire_bytes:0,receipts:[],tail_created:false,tail_deleted:false,websocket_connections:0,settings_changed:false,sourceHTTP:0,SQL:0,MAIN:0,Telegram:0,Worker_invocations:0,whole_day_closed:false,daily_total:null};
+ const out={schema:'BOUNDED_COLLECTOR_NATIVE_TAIL_V1',worker:name,before,started_ts:clock(),status:'TAIL_NOT_CREATED',filters:{filters:[{query:tag},{scriptVersion:before.version_id}]},target:require_collection?'COLLECTOR_CLOSED':'ANY_NATIVE_INVOCATION',frames:0,wire_bytes:0,receipts:[],conflicting_invocations:[],target_satisfied:false,tail_created:false,tail_deleted:false,websocket_connections:0,settings_changed:false,sourceHTTP:0,SQL:0,MAIN:0,Telegram:0,Worker_invocations:0,whole_day_closed:false,daily_total:null};
  let tail,socket,createdAttempted=false;
  try{
   await guard();createdAttempted=true;tail=await call(root+'/tails',{method:'POST',body:out.filters});
@@ -33,7 +34,9 @@ export async function captureCollectorNativeTail({call,guard,open,save=async()=>
     const bytes=typeof event.data==='string'?Buffer.from(event.data):Buffer.from(event.data);out.wire_bytes+=bytes.length;out.frames++;
     if(out.frames>16||out.wire_bytes>262144){finish('TAIL_WIRE_OR_FRAME_BOUND');return;}
     const frame=JSON.parse(bytes.toString('utf8')),receipts=tailNativeEvidence(frame,{opened_ts,received_ts:clock(),version:before.version_id});
-    if(receipts.length){out.receipts=receipts;finish('REGULAR_CRON_NATIVE_RECEIPT_RECEIVED');}
+    for(const r of receipts){const id=r.receipt.invocation_id,old=out.receipts.find(p=>p.receipt.invocation_id===id);if(old&&old.receipt_sha256!==r.receipt_sha256){out.conflicting_invocations.push(id);out.receipts=out.receipts.filter(p=>p.receipt.invocation_id!==id);}else if(!old&&!out.conflicting_invocations.includes(id))out.receipts.push(r);}
+    out.target_satisfied=require_collection?out.receipts.some(r=>r.invocation_kind==='COLLECTOR_CLOSED'):out.receipts.length>0;
+    if(out.target_satisfied)finish('REGULAR_CRON_NATIVE_RECEIPT_RECEIVED');
    }catch{finish('TAIL_FRAME_UNCONFIRMED');}});
    socket.addEventListener('error',()=>finish('TAIL_CONNECTION_ERROR'));socket.addEventListener('close',()=>finish('TAIL_CONNECTION_CLOSED'));
   });
@@ -46,5 +49,5 @@ export async function captureCollectorNativeTail({call,guard,open,save=async()=>
  }
  try{await guard();const after=singleActiveVersion(await call(root+'/deployments'));out.after=after;if(before.deployment_id!==after.deployment_id||before.version_id!==after.version_id){out.attribution_refused='WORKER_MOVED_DURING_TAIL';out.receipts=[];}}
  catch(error){out.attribution_refused=/^[A-Z0-9_]+$/.test(error.message)?error.message:'TAIL_FINAL_GUARD_ERROR';out.receipts=[];}
- out.status=out.receipts.length&&out.tail_deleted&&!out.attribution_refused?'REGULAR_COLLECTOR_NATIVE_TAIL_OBSERVED':'TAIL_OBSERVATION_NOT_ACCEPTED';out.completed_ts=clock();await save(out);return out;
+ out.status=out.target_satisfied&&out.tail_deleted&&!out.attribution_refused?'REGULAR_COLLECTOR_NATIVE_TAIL_OBSERVED':'TAIL_OBSERVATION_NOT_ACCEPTED';out.completed_ts=clock();await save(out);return out;
 }

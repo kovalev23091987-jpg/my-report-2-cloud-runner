@@ -1,0 +1,87 @@
+{
+  "schema": "BOUNDED_COLLECTOR_NATIVE_TAIL_V1",
+  "worker": "my-report-2-hub",
+  "before": {
+    "deployment_id": "8ce40ec8-c9bb-40b5-9ba8-47e48b500154",
+    "version_id": "24438bcc-96fe-41a2-9dfb-066829fcf594"
+  },
+  "started_ts": 1792145160950,
+  "status": "REGULAR_COLLECTOR_NATIVE_TAIL_OBSERVED",
+  "filters": {
+    "filters": [
+      {
+        "query": "REPORT2_PUBLIC_COLLECTOR_NATIVE_D1"
+      },
+      {
+        "scriptVersion": "24438bcc-96fe-41a2-9dfb-066829fcf594"
+      }
+    ]
+  },
+  "frames": 1,
+  "wire_bytes": 1544,
+  "receipts": [
+    {
+      "worker": "my-report-2-hub",
+      "version": "24438bcc-96fe-41a2-9dfb-066829fcf594",
+      "version_binding_basis": "EXPLICIT_TAIL_EVENT_VERSION",
+      "event_ts": 1792145322884,
+      "log_ts": 1792145323400,
+      "received_ts": 1792145323892,
+      "receipt_sha256": "5747f1e06c1c35bacfa59a2e386d6e8989d03a05a42acc508c7d69c842d0d5dc",
+      "original_native_message": "{\"schema\":\"PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1\",\"invocation_id\":\"8a6a2c1b-a3e2-4f3e-ad96-aefed828a9e8\",\"bucket\":1792145100000,\"started_ts\":1792145322954,\"completed_ts\":1792145323400,\"native_D1\":{\"requests\":2,\"rows_read\":123,\"rows_written\":0,\"unknown_ops\":0},\"private_price_source_D1\":{\"requests\":0,\"rows_read\":0,\"rows_written\":0,\"unknown_ops\":0},\"collector_excluding_private_price_source_D1\":{\"requests\":2,\"rows_read\":123,\"rows_written\":0,\"unknown_ops\":0},\"native_totals_closed\":true,\"additional_SQL\":0,\"daily_total\":false,\"native_cost_admission_changed\":false,\"scope\":\"DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE\"}",
+      "receipt": {
+        "schema": "PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1",
+        "invocation_id": "8a6a2c1b-a3e2-4f3e-ad96-aefed828a9e8",
+        "started_ts": 1792145322954,
+        "completed_ts": 1792145323400,
+        "native_D1": {
+          "requests": 2,
+          "rows_read": 123,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private_price_source_D1": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "collector_excluding_private_price_source_D1": {
+          "requests": 2,
+          "rows_read": 123,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "split_disjoint": true,
+        "unknown": false
+      },
+      "daily_total": false
+    }
+  ],
+  "tail_created": true,
+  "tail_deleted": true,
+  "websocket_connections": 1,
+  "settings_changed": false,
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Worker_invocations": 0,
+  "whole_day_closed": false,
+  "daily_total": null,
+  "tail_id": "a86da19dc6974cc99c70b44c1e172050",
+  "expires_at": "2026-10-16T16:06:01Z",
+  "opened_ts": 1792145162920,
+  "stream_status": "REGULAR_CRON_NATIVE_RECEIPT_RECEIVED",
+  "after": {
+    "deployment_id": "8ce40ec8-c9bb-40b5-9ba8-47e48b500154",
+    "version_id": "24438bcc-96fe-41a2-9dfb-066829fcf594"
+  },
+  "completed_ts": 1792145325362,
+  "head": "dec79c9e2a5c9be7ddc55481beef2d5685605de0",
+  "github_HTTP": 20,
+  "cloudflare_HTTP": 5,
+  "max_control_HTTP": 40,
+  "manual_HTTP_reserved": 24,
+  "secret_values_exported": false
+}
