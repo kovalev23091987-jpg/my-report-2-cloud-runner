@@ -1,0 +1,127 @@
+{
+  "schema": "ACTIVE105_SHARED_MUTATION_AND_RETAINED_GUARD_HANDOFF_V1",
+  "recorded_utc": "2026-10-16T05:06:58Z",
+  "source_main": "bbe28bf07d0b94932978db273a5db0ea278fc87a",
+  "PR399": {
+    "number": 399,
+    "merged": true,
+    "merge": "bbe28bf07d0b94932978db273a5db0ea278fc87a",
+    "qualified_head": "87890d5a931306808ea0c0530f634348765c6f99",
+    "cloud_run": 38853606156,
+    "cloud_pass": 790,
+    "cloud_fail": 0,
+    "artifact": 12025304579,
+    "digest": "sha256:dcc8adadcd8a47b83837a4ac6ad7520a60a3d6aa39fed29c1b4f832df60796c1",
+    "main_cloud": 38853801850,
+    "native_qualified": false
+  },
+  "connected_tests": {
+    "pass": 69,
+    "fail": 0,
+    "productionSQL": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "cloud_proof": "checkpoints/free-storage-20261016/cloud-38853606156-summary.json",
+  "initial_cloud_proof": "checkpoints/free-storage-20261016/cloud-38845000537-summary.json",
+  "shared_fixture_proof": "checkpoints/free-storage-20261016/cloud-38853606156-protected-canonical-cases.json",
+  "design": "cloudflare/free-history/SHARED_CONDITIONAL_MUTATION_20261016.md",
+  "native_shared_mutation_qualified": false,
+  "estimates_lowered": false,
+  "natural_guard_verified": {
+    "schema": "NATURAL_RETAINED_REFUSAL_AFTER_PR398_REVIEW_V1",
+    "run": 38843513867,
+    "head": "0f3ba98dc283e74a3a42d7098d256801c105a2e3",
+    "source": "schedule",
+    "generated_at": "2026-10-16T03:03:03.932Z",
+    "artifact": 12022077374,
+    "artifact_digest": "sha256:a30b934ec3bf26598d90fe5e69fc1ee73bbc74852cdb824069c3470d2623dd39",
+    "status": "NOT_CLOSED",
+    "reason": "D1_KNOWN_SAME_DAY_NATIVE_WRITE_FAILURE_BLOCK",
+    "new_sourceHTTP": 0,
+    "new_SQL_attempts": 0,
+    "new_Telegram": 0,
+    "new_unknown_operations": 0,
+    "original_unknown_operations_preserved": 3,
+    "native_day_aggregate": null,
+    "day_totals_closed": false,
+    "new_scan_performed": false,
+    "new_finalists_saved": 0,
+    "same_run_SENT": false,
+    "message_id": null,
+    "no_message_id_basis": "zero Telegram calls; retained pre-analysis refusal; only guard and run-result artifact files",
+    "full_report_restored": false,
+    "storage_capacity_or_throughput_inferred": false,
+    "originals": [
+      {
+        "path": "checkpoints/free-storage-20261016/natural-38843513867-known-d1-day-guard.json.gz",
+        "raw_sha256": "03662e729c866f2654380f742bbad8cdaa40de06057fe7f16f1728ecf2d1e785",
+        "gzip_sha256": "f30a0b861b5bf339a34a13370f37a50046b0b4bf9c0a422744e001ff9755f105",
+        "raw_bytes": 914,
+        "gzip_bytes": 582
+      },
+      {
+        "path": "checkpoints/free-storage-20261016/natural-38843513867-report2-run-result.json.gz",
+        "raw_sha256": "eaf5d8298408120af747243136f4444f49341d7c13f3581629590fabcae28723",
+        "gzip_sha256": "6b0daba7d2fa5f8c71352d5baa9506aabd524858f65b7ff0eda80b56dcae4068",
+        "raw_bytes": 2253,
+        "gzip_bytes": 986
+      }
+    ]
+  },
+  "last_full_failure_proof": "checkpoints/free-storage-20261016/natural-38840064503-review.json",
+  "last_native_relocation_proof": "checkpoints/free-storage-20261016/native-38836709187-review.json",
+  "prior_exact_handoff": "checkpoints/ACTIVE105_ROW_ADMISSION_AND_FAILURE_ACCOUNTING_HANDOFF_20261016.json",
+  "scope_preserved": {
+    "assets": 105,
+    "contracts": 122,
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "magic106_deferred": true,
+    "source_clocks_strategy_weights_forms_unchanged": true,
+    "needed_statistics_deleted": false
+  },
+  "limits": {
+    "retention_runs_day": 2,
+    "max_rows_run": 48,
+    "rows_read_run": 5000,
+    "rows_written_run": 400,
+    "bridgeHTTP": 16,
+    "controlHTTP": 40,
+    "wholeHTTP": 164,
+    "UTC16_slots_spent": 2,
+    "third_UTC16_authorized": false,
+    "permanent_flags": false
+  },
+  "architecture": {
+    "scheduled_rows_day": 144,
+    "with_manual_rows_day": 188,
+    "existing_max_rows_day": 96,
+    "whole_day_closed": false,
+    "complete_byte_growth_qualified": false,
+    "known_family_inventory": "checkpoints/ACTIVE105_D1_FAMILY_INVENTORY_20261015.json",
+    "old_scalar_not_closed": true
+  },
+  "next_action": "PR399 merged bbe28bf07d0b94932978db273a5db0ea278fc87a. Exact final cloud38853606156 head87890d5a:790PASS/0FAIL/artifact12025304579; main38853801850SUCCESS. Initial38845000537 also790/0. Same-contract shared conditional SQL preserves exact every-field CAS, all8 reference namespaces, per-member newer witness, namespace-creation and growth guards; RETURNING exactids and per-row readback. Statements split at100params/100000SQLbytes inside old8rows/6transactions/1.4MB; old SUM of per-row native reserves NOT lowered. Enabled only in existing manual native qualification with pool+preflight; permanent writer/rotationfalse. Controlled8rows/1transaction/3sharedUPDATEs is SQLite+frozen-bridge fixture, NOT native throughput/cost. PR398 natural guard NOW verified on schedule38843513867 at03:03:03UTC head0f3ba98d: exact NOT_CLOSED refusal, zero NEW sourceHTTP/SQL/Telegram, original3unknown retained. This is expense protection, NOT restored full report, fatal-accounting native acceptance or daily total. Last FULL38840064503 still failed FIL/SUI persistence after105/105 scan; known42337R341W plus3unknown,totalnull,noSENT. Native physical last measured01:44:46UTC remains499470336 after487424bytes NEAR freed; no new capacity or A1-A4 payload proof. BOTH UTC16 RETAINED_HISTORY slots remain spent; NO third native maintenance/probe/forcedMAIN today; no refund/reset/rename/raise. Old dated self-qualification00:05-00:25UTC16 has expired: do not dispatch it. Next native only in a later ordinary2/day window, fresh scoped own lease, exact tested code/readers and real whole-day admission, e.g existing borrowed manual maintenance mode; unknown costs can forbid it and must remain. Need separate native per-statement costs, exact copies before/after, physical bytes, cursor and owner release, then save remediation proof before checking a natural complete report/both coins/same-runmessage_id. Useful OFFLINE next: reconcile known9-family3266708R/58920W inventory with collector/hourly/control/failed-late costs; old3413280/69738 scalar is NOT closed whole day and must not be added to that inventory. Quantify byte growth and prepare exact nonduplicating storage or separately calculated maintenance proposal: old96rows/day<144scheduled/188manual cannot be repaired by faster SQL alone. Do not enable rotation, lower reserves from fixtures, or raise2/day. Continue all7 fixed directions;105assets/122contracts/9pauses/strategy/weights/clocks/forms unchanged,106MAGICdeferred. Final decision score/Telegram required after blocks and owner precise form. Current3=new shared handoff,natural388435review,fixedchecklist; historical originals retained. Local hourly heartbeat needs computer/app/network, not independent cloudAI. This save releases only current own lease; every next edit/test/deploy/live requires fresh main/phase/fence/generation/status and NEW CAS lease/readback.",
+  "current_three": [
+    "checkpoints/ACTIVE105_SHARED_MUTATION_AND_RETAINED_GUARD_HANDOFF_20261016.json",
+    "checkpoints/free-storage-20261016/natural-38843513867-review.json",
+    "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json"
+  ],
+  "own_lease_released_by_this_save": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792126758000",
+    "released_ts": 1792127218000
+  },
+  "project_complete": false,
+  "all_blocks_complete": false
+}
