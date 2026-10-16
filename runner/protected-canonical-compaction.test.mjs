@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import fs f
 import {compactProtectedCanonical,PROTECTED_CANONICAL_POLICY as P,exactCanonicalBodyUpdate} from './protected-canonical-compaction.mjs';
 import {encodeCanonicalPublicationRow} from './canonical-cold-archive.mjs';
 import {createPrivateCanonicalRestorer} from './private-canonical-history.mjs';
-import {loadBoundedCanonicalCandidates} from './bounded-canonical-selection.mjs';
+import {loadBoundedCanonicalCandidates,loadBoundedCanonicalWindowSequence} from './bounded-canonical-selection.mjs';
 import {PrivateArchiveD1API} from './private-archive-d1-api.mjs';import {RemoteD1Database} from './report2-d1-adapter.mjs';
 import {createPrivateArchivePool} from './private-archive-pool.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget} from './lossless-full-evidence-recovery.mjs';import {finalizeRunUsage} from './d1-preaction-budget-guard.mjs';
@@ -183,12 +183,24 @@ test('an incomplete bounded reference census never reads a large body or touches
  assert.ok(f.source_db.calls.every(sql=>!sql.includes('SELECT p.*')&&!sql.includes('UPDATE canonical_publication_shadow')));
 });
 
-test('the root cursor visits only128 metadata rows and can reach an old eligible body behind a noisy window',async()=>{
+test('one admitted run reaches an eligible body behind an empty128-row window while each query stays indexed and bounded',async()=>{
  const f=fixture(130,{v2:false});f.raw.exec("UPDATE canonical_publication_shadow SET canonical_state='ACTIVE' WHERE rowid<=128");
- const first=await compact(f,{execute:true});assert.equal(first.selected,0);assert.equal(first.bounded_discovery.metadata_rows,128);assert.equal(first.bounded_discovery.next_cursor,128);assert.equal(f.archive_db.usageSnapshot().requests,0);
- const second=await compact(f,{execute:true,source_cursor:first.bounded_discovery.next_cursor});assert.equal(second.bounded_discovery.metadata_rows,4);assert.equal(second.compacted.length,2);assert.equal(second.bounded_discovery.next_cursor,0);
+ const result=await compact(f,{execute:true});assert.equal(result.bounded_discovery.window_count,2);assert.equal(result.bounded_discovery.windows[0].metadata_rows,128);assert.equal(result.bounded_discovery.metadata_rows,4);assert.equal(result.compacted.length,2);assert.equal(result.bounded_discovery.next_cursor,0);
  const rootSQL=f.source_db.calls.find(sql=>sql.startsWith('SELECT rowid AS source_rowid'));
  const plan=f.raw.prepare('EXPLAIN QUERY PLAN '+rootSQL).all(128).map(r=>r.detail).join('\n');assert.match(plan,/SEARCH canonical_publication_shadow USING INTEGER PRIMARY KEY/);assert.doesNotMatch(rootSQL,/(?:^|,)canonical_json(?:,| FROM)|SELECT \*/);
+});
+
+test('complete protected candidate windows are skipped without relaxing a single dispatch reference',async()=>{
+ const f=fixture(60,{v2:false});for(const row of f.old.slice(0,48))f.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,created_ts,updated_ts) VALUES(?,?,?,'SHORT','wave','OBSERVE','v','PENDING',?,1,1)").run('d:'+row.publication_id,'k:'+row.publication_id,row.contract_code,row.decision_id);
+ const r=await compact(f,{execute:true});assert.equal(r.bounded_discovery.window_count,2);assert.equal(r.bounded_discovery.windows[0].reference_protected,48);assert.equal(r.bounded_discovery.windows[0].reference_protection_counts.v3_telegram_dispatch_shadow,48);assert(r.compacted.length>0);assert(r.compacted.every(x=>!f.old.slice(0,48).some(y=>y.publication_id===x.publication_id)));for(const row of f.old.slice(0,48))assert.deepEqual(get(f,row.publication_id),row);
+});
+
+test('lookahead stops for bridge headroom and at four metadata windows without reading any archive body',async()=>{
+ for(const limited of [true,false]){const f=fixture(520,{v2:false});f.raw.exec("UPDATE canonical_publication_shadow SET canonical_state='ACTIVE'");const r=await compact(f,{execute:true,discovery_headroom:()=>!limited});assert.equal(r.bounded_discovery.window_count,limited?1:4);assert.equal(r.bounded_discovery.next_cursor,limited?128:512);assert.equal(r.bounded_discovery.window_stop,limited?'SHARED_BRIDGE_HEADROOM':'WINDOW_BOUND');assert.equal(f.archive_db.usageSnapshot().requests,0);assert.equal(f.source_db.calls.filter(s=>s.startsWith('SELECT rowid AS source_rowid')).length,limited?1:4);}
+});
+
+test('a lookahead admission refusal preserves only the preceding completely checked cursor',async()=>{
+ const f=fixture(260,{v2:false});f.raw.exec("UPDATE canonical_publication_shadow SET canonical_state='ACTIVE'");let admissions=0;const r=await loadBoundedCanonicalWindowSequence({source_db:f.source_db,present_tables:[],cutoff:now-2*DAY,prefix:'R2PRIVATE_CANONICAL_V1:',admit:()=>({allowed:++admissions===1})});assert.equal(r.receipt.window_count,1);assert.equal(r.receipt.next_cursor,128);assert.equal(r.receipt.window_stop,'CANONICAL_BOUNDED_METADATA_HEADROOM_REQUIRED');assert.equal(f.source_db.calls.length,1);
 });
 
 test('reference growth beyond its complete census allowance retains the original even if its new link is outside the window',async()=>{

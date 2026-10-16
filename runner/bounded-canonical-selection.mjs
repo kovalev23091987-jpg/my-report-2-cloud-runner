@@ -1,7 +1,7 @@
 // Bound native reads before inspecting large bodies. Source clocks and rows
 // are never changed by discovery; a complete bounded reference census is
 // required before an original may become a compaction candidate.
-export const BOUNDED_CANONICAL_SELECTION=Object.freeze({discovery_rows:128,reference_rows:256,newer_witness_rows:16,reference_growth_margin:8});
+export const BOUNDED_CANONICAL_SELECTION=Object.freeze({discovery_rows:128,max_windows:4,reference_rows:256,newer_witness_rows:16,reference_growth_margin:8});
 const columns={v3_dispatch_publication_binding_shadow:['publication_id'],v3_recheck_task_shadow:['contract_code','publication_id','last_result'],v3_user_lifecycle_shadow:['contract','direction','wave_id','observation_ts','status'],v3_telegram_dispatch_shadow:['contract','direction','wave_id','decision_id'],tz101_entry_area_calibration_signal:['decision_id','snapshot_id'],report2_command_v2:['result_snapshot_id'],report2_publication_v2:['publication_id'],report2_delivered_outcome_v2:['publication_id']};
 // These exact indexes are in the retained production schema. An absent index
 // refuses before reading any large body. Unindexed namespaces keep their full
@@ -65,6 +65,8 @@ export async function loadBoundedCanonicalCandidates({source_db,present_tables,c
  }
  if(!receipt.complete_reference_census)return{rows:[],bounds:{},receipt:{...receipt,status:'REFERENCE_CENSUS_BOUND_REACHED_ORIGINALS_UNTOUCHED'}};
  const eligible=candidates.filter(r=>!protectedReference(r,refs)),ids=eligible.map(r=>r.publication_id);
+ receipt.basic_candidates=candidates.length;receipt.reference_protected=candidates.length-eligible.length;
+ receipt.reference_protection_counts=Object.fromEntries(Object.entries(refs).map(([table,rows])=>[table,candidates.filter(r=>protectedReference(r,{[table]:rows})).length]).filter(([,n])=>n>0));
  receipt.metadata_eligible=eligible.length;
  if(!ids.length){receipt.next_cursor=cursor_after;return{rows:[],bounds,reference_scope,receipt:{...receipt,status:'NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW'}};}
  if(!admit({rows_read:ids.length*(2*p.newer_witness_rows+4)+16,rows_written:0}).allowed)throw Object.assign(Error('CANONICAL_BOUNDED_BODY_HEADROOM_REQUIRED'),{discovery_receipt:receipt});
@@ -81,6 +83,34 @@ export async function loadBoundedCanonicalCandidates({source_db,present_tables,c
  const selected={results:bodyReplies.flatMap(r=>r.results)};
  receipt.large_bodies_read=selected.results.length;receipt.status='BOUNDED_REFERENCES_AND_BODY_CANDIDATES_READ';receipt.exact_newer_witness_count=Object.values(witnesses).filter(Boolean).length;
  receipt.cursor_after_complete_window=cursor_after;
- if(!selected.results.length)receipt.next_cursor=receipt.cursor_after_complete_window;
+ if(!selected.results.length){receipt.next_cursor=receipt.cursor_after_complete_window;receipt.status='NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW';}
  return{rows:selected.results,bounds,witnesses,reference_scope,receipt,primary_database_bytes:bodyReplies.at(-1)?.meta?.size_after};
+}
+
+// A complete empty window is progress, not an entire maintenance run. Reuse
+// its admission while looking ahead, keeping the 128-row query, all reference
+// protections and the existing total row/HTTP/native limits unchanged.
+export async function loadBoundedCanonicalWindowSequence(options={}){
+ const max=options.max_windows??BOUNDED_CANONICAL_SELECTION.max_windows;
+ if(!Number.isSafeInteger(max)||max<1||max>BOUNDED_CANONICAL_SELECTION.max_windows)throw Error('EXACT_CANONICAL_WINDOW_BOUND_REQUIRED');
+ const headroom=options.discovery_headroom??(()=>true);if(typeof headroom!=='function')throw Error('CANONICAL_DISCOVERY_HEADROOM_REQUIRED');
+ const windows=[];let cursor=options.source_cursor??0,last,refusal,stop='WINDOW_BOUND';
+ for(let i=0;i<max;i++){
+  if(i&&!headroom({max_bridge_requests:3,reserved_bridge_requests:3})){stop='SHARED_BRIDGE_HEADROOM';break;}
+  let next;
+  try{next=await loadBoundedCanonicalCandidates({...options,source_cursor:cursor});}
+  catch(error){
+   if(last&&['CANONICAL_BOUNDED_METADATA_HEADROOM_REQUIRED','CANONICAL_BOUNDED_REFERENCE_HEADROOM_REQUIRED','CANONICAL_BOUNDED_BODY_HEADROOM_REQUIRED'].includes(error.message)){stop=error.message;break;}
+   throw error;
+  }
+  if(last&&!next.rows.length&&next.receipt.status!=='NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW'){stop=next.receipt.status;refusal=next.receipt;break;}
+  last=next;windows.push(next.receipt);
+  if(next.rows.length){stop='BODY_CANDIDATES_FOUND';break;}
+  if(next.receipt.status!=='NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW'){stop=next.receipt.status;break;}
+  const after=next.receipt.next_cursor;
+  if(after===0){stop='END_OF_PASS';break;}
+  if(!Number.isSafeInteger(after)||after<=cursor)throw Error('CANONICAL_WINDOW_CURSOR_NOT_FORWARD');
+  cursor=after;
+ }
+ return{...last,receipt:{...last.receipt,scan_start_cursor:options.source_cursor??0,window_count:windows.length,window_stop:stop,...(refusal?{lookahead_refusal:refusal}:{}),windows}};
 }

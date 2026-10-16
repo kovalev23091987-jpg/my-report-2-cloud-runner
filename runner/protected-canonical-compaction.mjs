@@ -6,7 +6,7 @@ import {evaluateWithinRunReservation} from './d1-preaction-budget-guard.mjs';
 import {LOSSLESS_RECOVERY_POLICY} from './lossless-full-evidence-recovery.mjs';
 import {retainCanonicalInPool,prefetchCanonicalArchivePool} from './private-archive-pool.mjs';
 import {prefetchExactCanonicalRevisions} from './private-canonical-prefetch.mjs';
-import {loadBoundedCanonicalCandidates,boundedCanonicalReferenceSQL} from './bounded-canonical-selection.mjs';
+import {loadBoundedCanonicalWindowSequence,boundedCanonicalReferenceSQL} from './bounded-canonical-selection.mjs';
 
 // Uses the existing RETAINED_HISTORY reservation, never an additional family.
 // Only large, old REJECTED bodies are replaced. Every publication, scalar,
@@ -52,7 +52,7 @@ export function exactCanonicalBodyUpdate(row,header,cutoff,present_tables=REFERE
  return{sql:`${scope.with_sql}UPDATE canonical_publication_shadow AS p SET ${set} WHERE ${exact} AND ${scope.predicate}`,params};
 }
 
-export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
+export async function compactProtectedCanonical({source_db,archive_db,archive_pool,archive_headroom,discovery_headroom,before_modify,execute=false,prefetch_private=false,require_native_preflight=false,source_cursor=0,max_mutation_batches=PROTECTED_CANONICAL_POLICY.max_batches,now=Date.now()}={}){
  if(!source_db?.prepare||typeof source_db.batch!=='function'||typeof source_db.usageSnapshot!=='function'||typeof (archive_pool||archive_db)?.usageSnapshot!=='function'||typeof archive_headroom!=='function'||!Number.isSafeInteger(now)||now<=0)throw Error('CANONICAL_MEASURED_COMPACTION_REQUIRED');
  if(execute&&typeof before_modify!=='function')throw Error('CURRENT_OWN_GUARD_BEFORE_COMPACTION_REQUIRED');
  if(!Number.isSafeInteger(max_mutation_batches)||max_mutation_batches<0||max_mutation_batches>PROTECTED_CANONICAL_POLICY.max_batches)throw Error('EXISTING_CANONICAL_BATCH_CAP_REQUIRED');
@@ -69,7 +69,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
  if(out.reference_schema.missing_required.length||out.reference_schema.non_table_objects.length||new Set(present).size!==tables.length){const error=Error('CANONICAL_PROTECTED_REFERENCE_SCHEMA_REQUIRED');error.compaction_receipt={...out,status:'CANONICAL_SCHEMA_PREFLIGHT_REFUSED',D1:usage()};throw error;}
  const schema_reads=schema_result.meta?.rows_read;
  if(!Number.isSafeInteger(schema_reads)||schema_reads<0)throw Error('CANONICAL_NATIVE_SCHEMA_COST_REQUIRED');
- const discovery=await loadBoundedCanonicalCandidates({source_db,present_tables:present,cutoff:now-p.hot_window_ms,prefix:PRIVATE_CANONICAL_PREFIX,admit,source_cursor,max_rows:p.max_rows}),selected=discovery.rows;
+ const discovery=await loadBoundedCanonicalWindowSequence({source_db,present_tables:present,cutoff:now-p.hot_window_ms,prefix:PRIVATE_CANONICAL_PREFIX,admit,source_cursor,max_rows:p.max_rows,discovery_headroom}),selected=discovery.rows;
  out.bounded_discovery=discovery.receipt;out.selected=selected.length;
  if(!selected.length)return{...out,status:discovery.receipt.status,D1:usage()};
  const reference_reads=Object.values(discovery.bounds).reduce((s,n)=>s+n+1,0),per_update_reads=64+4*reference_reads+(out.reference_schema.absent_optional.length?Math.max(50,schema_reads):0);
@@ -149,7 +149,7 @@ export async function compactProtectedCanonical({source_db,archive_db,archive_po
    assert.deepEqual(await native_reader.restore(header),original);out.native_readbacks.push(moved.publication_id);
   }
   const measured=require_native_preflight&&Number.isSafeInteger(out.primary_database_bytes_before)&&Number.isSafeInteger(out.primary_database_bytes_after);
-  out.bounded_discovery.next_cursor=out.deferred_hot.length||out.conflicts_retained_hot.length?source_cursor:discovery.receipt.cursor_after_complete_window;
+  out.bounded_discovery.next_cursor=out.deferred_hot.length||out.conflicts_retained_hot.length?discovery.receipt.source_cursor:discovery.receipt.cursor_after_complete_window;
   return{...out,status:out.compacted.length?'PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY':'NO_SAFE_CANONICAL_BODIES_CHANGED',D1:usage(),physical_database_free_bytes_measured:measured,physical_bytes_reclaimed:measured?out.primary_database_bytes_before-out.primary_database_bytes_after:null};
  }catch(error){error.compaction_receipt={...out,prepared:prepared.length,status:error.compaction_receipt?.status||'CANONICAL_COMPACTION_PARTIAL_OR_REFUSED_ORIGINALS_PRESERVED',...(error.discovery_receipt?{bounded_discovery:error.discovery_receipt}:{}),D1:usage()};throw error;}
 }
