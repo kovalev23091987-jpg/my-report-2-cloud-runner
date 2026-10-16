@@ -7,6 +7,17 @@ const columns={v3_dispatch_publication_binding_shadow:['publication_id'],v3_rech
 // refuses before reading any large body. Unindexed namespaces keep their full
 // bounded census; no matching reference is discarded to make a batch fit.
 const scopedIndexes={v3_dispatch_publication_binding_shadow:['publication_id','idx_dispatch_publication_id','publication_ids'],v3_recheck_task_shadow:['contract_code','idx_v3_recheck_wave_active','contracts'],v3_user_lifecycle_shadow:['contract','sqlite_autoindex_v3_user_lifecycle_shadow_1','contracts'],v3_telegram_dispatch_shadow:['contract','idx_v3_dispatch_wave','contracts']};
+// A complete union census also proves each indexed subset. Global namespaces
+// retain their complete census and the same growth allowance in every UPDATE.
+export function exactCanonicalRowReferencePlan(row,references){
+ const scope={schema:'EXACT_CANONICAL_REFERENCE_SCOPE_V1',contracts:[row.contract_code],publication_ids:[row.publication_id]},bounds={},counts={};
+ for(const [table,rows] of Object.entries(references)){
+  if(!columns[table]||!Array.isArray(rows))throw Error('EXACT_CANONICAL_REFERENCE_CENSUS_REQUIRED');
+  const spec=scopedIndexes[table],subset=spec?rows.filter(r=>r[spec[0]]===(spec[2]==='contracts'?row.contract_code:row.publication_id)):rows;
+  counts[table]=subset.length;bounds[table]=subset.length+BOUNDED_CANONICAL_SELECTION.reference_growth_margin;
+ }
+ return{scope,bounds,counts};
+}
 function referenceSource(table,scope){
  const spec=scopedIndexes[table];if(!scope||!spec)return table;
  if(scope.schema!=='EXACT_CANONICAL_REFERENCE_SCOPE_V1'||!Array.isArray(scope.contracts)||!Array.isArray(scope.publication_ids)||[scope.contracts,scope.publication_ids].some(a=>!a.length||a.length>48||new Set(a).size!==a.length||a.some(v=>typeof v!=='string'||!v.length||Buffer.byteLength(v)>128)))throw Error('EXACT_CANONICAL_REFERENCE_SCOPE_REQUIRED');
@@ -81,10 +92,16 @@ export async function loadBoundedCanonicalCandidates({source_db,present_tables,c
  const bodyReplies=await source_db.batch(bodies);
  if(!Array.isArray(bodyReplies)||bodyReplies.length!==ids.length||bodyReplies.some(r=>!Array.isArray(r.results)||r.results.length>1))throw Error('CANONICAL_BOUNDED_BODY_ACK_REQUIRED');
  const selected={results:bodyReplies.flatMap(r=>r.results)};
+ const reference_plans={};
+ for(const row of selected.results){
+  const candidate=eligible.find(r=>r.publication_id===row.publication_id);
+  if(!candidate||candidate.contract_code!==row.contract_code)throw Error('CANONICAL_REFERENCE_SCOPE_IDENTITY_CHANGED');
+  reference_plans[row.publication_id]=exactCanonicalRowReferencePlan(row,refs);
+ }
  receipt.large_bodies_read=selected.results.length;receipt.status='BOUNDED_REFERENCES_AND_BODY_CANDIDATES_READ';receipt.exact_newer_witness_count=Object.values(witnesses).filter(Boolean).length;
  receipt.cursor_after_complete_window=cursor_after;
  if(!selected.results.length){receipt.next_cursor=receipt.cursor_after_complete_window;receipt.status='NO_ELIGIBLE_ROWS_IN_BOUNDED_WINDOW';}
- return{rows:selected.results,bounds,witnesses,reference_scope,receipt,primary_database_bytes:bodyReplies.at(-1)?.meta?.size_after};
+ return{rows:selected.results,bounds,witnesses,reference_scope,reference_plans,receipt,primary_database_bytes:bodyReplies.at(-1)?.meta?.size_after};
 }
 
 // A complete empty window is progress, not an entire maintenance run. Reuse
