@@ -17,11 +17,11 @@ function message(event,tag){
  }
  return null;
 }
-function receiptProjection(r,schema){
+export function receiptProjection(r,schema){
  if(r?.schema!==schema||typeof r.invocation_id!=='string'||!r.invocation_id||r.invocation_id.length>100||r.additional_SQL!==0||r.daily_total!==false)return null;
  if(schema==='PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1'){
   const total=counters(r.native_D1),nested=counters(r.private_price_source_D1),rest=counters(r.collector_excluding_private_price_source_D1);
-  if(!total)return{schema,invocation_id:r.invocation_id,native_D1:null,unknown:true};
+  if(!total)return{schema,invocation_id:r.invocation_id,started_ts:r.started_ts??null,completed_ts:r.completed_ts??null,native_D1:null,unknown:true};
   const disjoint=Boolean(nested&&rest&&counterKeys.every(k=>nested[k]+rest[k]===total[k]));
   return{schema,invocation_id:r.invocation_id,started_ts:r.started_ts??null,completed_ts:r.completed_ts??null,native_D1:total,private_price_source_D1:nested,collector_excluding_private_price_source_D1:rest,split_disjoint:disjoint,unknown:total.unknown_ops!==0||!disjoint||r.native_totals_closed!==true};
  }
