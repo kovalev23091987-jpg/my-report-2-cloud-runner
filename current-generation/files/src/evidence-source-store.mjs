@@ -45,11 +45,13 @@ export async function reserveEvidenceSourceAttempts(db,{source,reservation_id,at
  const provider=text(source),id=text(reservation_id),count=Number(attempts),cap=Number(daily_cap);
  if(!provider||!id||!Number.isSafeInteger(count)||count<1||!Number.isSafeInteger(cap)||cap<1)return{allowed:false,status:'INVALID_SOURCE_RESERVATION',attempts:0};
  const day=new Date(now).toISOString().slice(0,10);
+ if(nativeSourceUsageUnclosed(db))return{allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',source:provider,day_utc:day,attempts:0};
  await db.batch([
   db.prepare(`INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING`).bind(provider,day,now),
   db.prepare(`UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)`).bind(count,id,now,provider,day,cap),
   db.prepare(`INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING`).bind(id,provider,day,count,now),
  ]);
+ if(nativeSourceUsageUnclosed(db))return{allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',source:provider,day_utc:day,attempts:0};
  const row=await db.prepare(`SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1`).bind(id).first();
  const allowed=row?.source===provider&&Number(row?.attempts)===count;
  return{allowed,status:allowed?'RESERVED':'DAILY_CAP_OR_DUPLICATE',source:provider,day_utc:day,attempts:allowed?count:0};
@@ -79,6 +81,18 @@ export function evidenceSourceCacheWriteWireBytes(input){
 export async function writeEvidenceSourceCache(db,input={}){
  const request=evidenceSourceCacheWriteRequest(input);
  await db.prepare(request.sql).bind(...request.params).run();
+}
+
+// Optional cache persistence is not the source fact's validity or its clock.
+// Never discard a qualified response for a cache failure or issue another SQL
+// statement after native costs became unknown. Reservations are not refunded.
+export async function writeOptionalEvidenceSourceCache(db,input={}){
+ if(nativeSourceUsageUnclosed(db))return{status:'CACHE_WRITE_SKIPPED_UNCLOSED_NATIVE_USAGE',native_usage_unclosed:true};
+ try{
+  await writeEvidenceSourceCache(db,input);
+  const unclosed=nativeSourceUsageUnclosed(db);
+  return{status:unclosed?'CACHE_WRITE_UNCLOSED_NATIVE_USAGE':'CACHE_WRITE_COMPLETED',native_usage_unclosed:unclosed};
+ }catch{return{status:'CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED',native_usage_unclosed:nativeSourceUsageUnclosed(db)};}
 }
 
 // Operational observations, separate from forecast accuracy and strategy weights.

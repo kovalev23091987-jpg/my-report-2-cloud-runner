@@ -1,0 +1,61 @@
+{
+  "schema": "ACTIVE105_N15_CACHE_FACT_PRESERVATION_SCOPE_V1",
+  "recorded_utc": "2026-10-17T10:11:48.237512+00:00",
+  "status": "RELATED_CONTROLLED_AND_RETAINED_ORIGINAL_TESTS_PASSED_COMMON_CLOUD_PENDING",
+  "files": [
+    {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "sha256": "0f90bd4527a9e734796a72ac604c11bb256bd1c0f9499234b0c2995ecd4c405c"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-sector-evidence.mjs",
+      "sha256": "359b1680d1367b2b3c7d8d2e5797bc64120d59a2ae09135be275695d431b6b3d"
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "787ca06b9edff10cf9038580792c406d5c8820c4e8e281225c0c03b4056fd43d"
+    },
+    {
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "sha256": "964f27c4fd613672e1524db3c60e8143ef7290b84265314a8469120bba22bb96"
+    },
+    {
+      "path": "current-generation/files/src/provider-minute-ledger.mjs",
+      "sha256": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045"
+    },
+    {
+      "path": "current-generation/tests/sector-cache-preservation.test.mjs",
+      "sha256": "3f7427348bf40b8798ad24f65c73d6b36f32bd80c876dbf7761e212923064a0e"
+    }
+  ],
+  "new_cases": 15,
+  "original_source": {
+    "run": 38570989795,
+    "raw_sha256": "09f289569ce20757529c049e06815fd43b3eb03c182f292ad5db6865c4526429",
+    "scope": "Exact historical WIN CoinGecko body/metadata and HTX identity, unchanged source clocks; cache-failure variations controlled, not new provider data"
+  },
+  "N15_providers": [
+    "COINGECKO_SECTOR",
+    "COINPAPRIKA_SECTOR"
+  ],
+  "behavior": [
+    "Qualified source fact survives optional final/reference cache failure and still reaches existing sector consumer",
+    "Known optional cache failure does not misclassify a useful provider as external failure",
+    "Existing or newly unknown native usage stops subsequent reader/cache/admission/minute/schema work; current already-validated body remains available",
+    "Spent shared/day/minute reservations never refunded or reset; 429 retains its original backoff and cost"
+  ],
+  "normal_path_extra_SQL": 0,
+  "extra_provider_HTTP_authorized": 0,
+  "sourceHTTP": 0,
+  "native_D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Worker_invocations": 0,
+  "physical_bytes_freed": 0,
+  "score_weights_sourceclocks_pauses_caps_form_changed": false,
+  "native_full_manual_same_run_delivery_accepted": false,
+  "all105_useful_coverage_proven": false,
+  "project_complete": false,
+  "related_cases_pass": 51,
+  "related_cases_fail": 0
+}
