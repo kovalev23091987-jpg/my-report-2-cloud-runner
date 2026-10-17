@@ -1,0 +1,509 @@
+{
+  "schema": "ACTIVE105_BLOCK_FALLBACK_AND_N10_REUSE_HANDOFF_V1",
+  "recorded_utc": "2026-10-17T09:48:30.217992+00:00",
+  "status": "PR418_MERGED_BLOCK_FALLBACK_N10_REUSE_MAIN982_NATIVE_STORAGE_AND_COVERAGE_OPEN",
+  "source_main": "e616c3b342251e44b90d593d13ef6d9ee9db59b3",
+  "leased_main": "578758f16bb582b9c18204ba45eba3f6d450afa0",
+  "merged_main": "5e01daca1a37e089c75bbf03412ed340f970428b",
+  "previous_handoff": "checkpoints/ACTIVE105_RETENTION_SQL_BRIDGE_PROVENANCE_HANDOFF_20261016.json",
+  "PR418": {
+    "PR": 418,
+    "merged": true,
+    "merge": "5e01daca1a37e089c75bbf03412ed340f970428b",
+    "head": "83afca6f9761d9dd2e98770730828ac494130071",
+    "branch_cloud": 38961643399,
+    "main_cloud": 39022328594,
+    "pass": 982,
+    "fail": 0,
+    "tap": 21,
+    "scope": "checkpoints/ACTIVE105_BLOCK_FALLBACK_SCOPE_20261016.json",
+    "proof": "checkpoints/ACTIVE105_BLOCK_FALLBACK_AND_N10_REUSE_HANDOFF_20261017.json",
+    "new_tests": 16,
+    "N10": 38961648564,
+    "N12": 38961648563,
+    "recovery": 38961648697,
+    "sourceHTTP": 0,
+    "native_SQL": 0,
+    "new_provider_coverage": false,
+    "native_full_accepted": false
+  },
+  "scope": "checkpoints/ACTIVE105_BLOCK_FALLBACK_SCOPE_20261016.json",
+  "scope_sha256": "296fba0e1628ca86ff6415338d535f919edb9c66aa12ddf0e9917b72053497c8",
+  "owner_priority": "Continue active blocks while storage is pending; do not wait for storage to progress source/fallback/consumer configuration.",
+  "code_result": {
+    "N05_N12_late_adapter_or_turnover_failure_keeps_prior_facts": true,
+    "N10_reused_same_window_cache_and_consumer_preserved": true,
+    "observed_transport_counts_override_adapter_claims": true,
+    "per_adapter_grants_and_shared_five_HTTP_unchanged": true,
+    "N04_N15_common_native_unknown_stop": true,
+    "N10_optional_cache_unknown_stop": true,
+    "unused_failed_reservations_refunded": false,
+    "105_policy_cases_not_105_provider_facts": true,
+    "scope": "checkpoints/ACTIVE105_BLOCK_FALLBACK_SCOPE_20261016.json",
+    "native_acceptance_pending": true
+  },
+  "cloud": {
+    "branch": {
+      "schema": "EXACT_PR403_NATIVE_TAIL_CLOUD_REVIEW_V1",
+      "run": 38961643399,
+      "head": "83afca6f9761d9dd2e98770730828ac494130071",
+      "pass": 982,
+      "fail": 0,
+      "tap": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0,
+          "sha256": "6beefed567821f7543a866877c8372351c0336959d3c34d5d47fe3b451206ea6"
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "sha256": "32f0f5e73de45c13e77308e51f182c4d5d5958241015f4851439c5a94bd7893d"
+        },
+        {
+          "file": "cold-archive.tap",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0,
+          "sha256": "29cc1eeb03073fc1d332bfb4875bc05b1530e830cead6b8077e638a0fe6189e6"
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "sha256": "d32f509b06d822d8554a2414de3c69620cdd08c8b38c3e230c87fbc6be94a848"
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0,
+          "sha256": "db0bdde997b6c4a9a0a6b66ef89c6f85a2a17e1231cc3c7a954d71fd552968c2"
+        },
+        {
+          "file": "index-useful-only.tap",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0,
+          "sha256": "dd9b5fc6c9a41e8e109126b39c1da032b622ec0ef445ede144f413756a20b40d"
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "2eff88bf2cbb28812de7e5f68a61cc9440f65bbed466bfce9af44741582ae00e"
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "tests": 60,
+          "pass": 60,
+          "fail": 0,
+          "sha256": "507ed749e2869bff2e81304c5732d7b02e096a4b250c62357a3f7b1379063fb3"
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "sha256": "c3552e4be669341b93dbad25614ed7249c437ec9fb696cd821bb8a78adf88e17"
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0,
+          "sha256": "9006bb00290e9be27d3957e98cd128f46416f768fb262ad34e22455bf288037e"
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0,
+          "sha256": "39bdcaedb9631c1dcac9672231dcced5efcf9b50488b1a6a0adccf5a5e7a9bea"
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "sha256": "c2d3e3c6ee932be6a74655ed975b5cca5631d6e086f93390e8ca8866d373f101"
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "sha256": "4dd22233d755ffea5e9196abc6616ddfb273006b4bf9fbc3a4f91cc461783fa8"
+        },
+        {
+          "file": "private-price-connected.tap",
+          "tests": 109,
+          "pass": 109,
+          "fail": 0,
+          "sha256": "e9fab4c5162c28d40923b1fd0cb747757290d785d271ef00af718965604112b9"
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0,
+          "sha256": "a77da4578ea993c7943852fe0117230d2adca5ae558117ab09c753b05f64bdda"
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "sha256": "123d08004a57e16cde37ce82d6b16cebcb82c3bbe13e3a18a57863c1d85f9707"
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "55456e695a9245ff51aab1e3416589ec94f2675836d52511f82381ce05498ace"
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "sha256": "261d5493685b4c74590697840a489f32b5abb01b63d03da618769efa702ff99d"
+        },
+        {
+          "file": "source-health-priority.tap",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "sha256": "91a5aad46b97c729136ef5c713987a6da7c1bfd804a7ad4bab584b1045e88de9"
+        },
+        {
+          "file": "target.tap",
+          "tests": 83,
+          "pass": 83,
+          "fail": 0,
+          "sha256": "32616cfcf16da603a17da8fb1e28b78af01a89c5927cdd109eca7e714806906a"
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "tests": 105,
+          "pass": 105,
+          "fail": 0,
+          "sha256": "fe86b24de4432ab43c124f6847919eb297e27df33f049854cf74bb08217caae7"
+        }
+      ],
+      "runtime_binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "artifact": 12073126104,
+      "digest": "sha256:0e38082f5f1090ac3728cfaef71f3ad75f1b992525ccacfe84e5ede961e910e9",
+      "native_observation_accepted": false
+    },
+    "main": {
+      "schema": "EXACT_ACTIVE_BLOCK_FALLBACK_CLOUD_REVIEW_V1",
+      "run": 39022328594,
+      "head": "5e01daca1a37e089c75bbf03412ed340f970428b",
+      "pass": 982,
+      "fail": 0,
+      "tap": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0,
+          "sha256": "1bc7ceae1fad89b43b724027461377919a96b3cc4ac52bd50d4dd2293b49c165"
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "sha256": "b54a669fbb002acff9511c4e373695dccddf5123c3a9579691c468d230397d00"
+        },
+        {
+          "file": "cold-archive.tap",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0,
+          "sha256": "fa0a35adc5bb078fb126557bed091908768405fb0eec0ed2bea0dc3f226d0364"
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "sha256": "5bf9ffcee3ddb6b3a6fdcae152fd357053b9f92a278ef31ae482e3e4e6ce5d62"
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0,
+          "sha256": "0f02f7ba9d907e46fc26c0a87216ccd4bb8f6c85dfb05c88c6401e04c8f1c8f2"
+        },
+        {
+          "file": "index-useful-only.tap",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0,
+          "sha256": "4fa943bfa795a306c7c5490bb86c47ce22edf7e8d069539f36a26081b41842be"
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "a7beec6166aa4dddd0d2e5fc4c888f6eb5c1610f2a1401438435f33b9a5d45d7"
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "tests": 60,
+          "pass": 60,
+          "fail": 0,
+          "sha256": "9b886b4ddd794fd534598d1d8bc51b587450ebcd99e64f5eb208daf0c0a22327"
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "sha256": "c738d985bcb3c829d6bf1d15009aecec5e658ac7c0938926a6e506a76dece79a"
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0,
+          "sha256": "0a42d5485b0699364c760282960eca2f046925d143832fc1df957e9d457519f1"
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0,
+          "sha256": "46d7d9aef23c516f84501159af4d1437ad4e55726b0b8cd55a6911c25d608f2e"
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "sha256": "df6a8f2ddfd5fe9ba240294a20a663dc7aaba5f1bbbdc5150f4c4390c81ebe9b"
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "sha256": "c3395887ddc893076a1b4fe0f43daa2507cec4ed48749f8e719d3d90a6db94c2"
+        },
+        {
+          "file": "private-price-connected.tap",
+          "tests": 109,
+          "pass": 109,
+          "fail": 0,
+          "sha256": "515b0e3883f9de6dfb2b18f4f47c058c3eef4ab2b14f959480beeca10bfdcb70"
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0,
+          "sha256": "1009ef661832a159bac8168e85d81e38daf3b35a4e77d10269ad5aa56097d0e4"
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "sha256": "15318920a3796aefbe86236fb54e4ce7e65b71e2b208df73f3275b79b6d43c86"
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "sha256": "4397edbd7db9bbc6a6545d8043550cc24843b916c3ee0719a1697c885d149ae5"
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "sha256": "8a4d9942984fc5244f944f58bd5a859de1d9249ca80ffa4a527437d63b3c6a09"
+        },
+        {
+          "file": "source-health-priority.tap",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "sha256": "24c9a7e2dde7e2642bc52d9a729b3f29e041bcb81458f8716bc1bcb13a68ae5b"
+        },
+        {
+          "file": "target.tap",
+          "tests": 83,
+          "pass": 83,
+          "fail": 0,
+          "sha256": "bca19b8b7ebd9705a1931f7b27c8bb2e2f8f56ae06d29a96ea169038ff014aad"
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "tests": 105,
+          "pass": 105,
+          "fail": 0,
+          "sha256": "4bb2607c12ac363fe660ca7871292677e2c690b3f0b561914f3c37a6b0138a90"
+        }
+      ],
+      "runtime_binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "artifact": 12097630701,
+      "digest": "sha256:e04a2868b25d455d5046b1d9fa54438ff6983ce22d1c11e77d7f3f663561c1a5",
+      "native_observation_accepted": false
+    }
+  },
+  "metadata_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task"
+      ],
+      "prior_root_values_preserved_byte_exact": 375,
+      "before_sha256": "a900fdc9167d16c564921b1e845e1a6b6c478af8b73d39cddb32643c29aa04ae",
+      "after_sha256": "95d58d9ec1089ff1146595d3124c9506ca4cb81f3fb0cce7e46183fefc1b7fb7"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task"
+      ],
+      "prior_root_values_preserved_byte_exact": 152,
+      "before_sha256": "3820b7007db2d0e91cdb94ac661316340052dbb6925a0ed0af7ce217bd482f61",
+      "after_sha256": "4a54759ae6852b42eea63231fcfb42d70686dc99ea4a838a056c317b05a8b22d"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task"
+      ],
+      "prior_root_values_preserved_byte_exact": 317,
+      "before_sha256": "463b9c51bb4d5265d8618409ab09fe6c82affd72db1547110f844271fcce8dc9",
+      "after_sha256": "4f5e239b2cbd5edc7c57252e5b99ab0f9e18e9fe77ae27a1fddbce159ff8069b"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task",
+        "lease",
+        "latest_own_bounded_continuation_lease",
+        "latest_active105_reliability_own_release"
+      ],
+      "prior_root_values_preserved_byte_exact": 350,
+      "before_sha256": "7bc79c09597bbcb79b6f28c1379b49465438c19f0fb55eb57f45ea2fb70c4ba6",
+      "after_sha256": "3bc6ac07db4e420afda1da6d14265992d4d47967233dc53aa30561fa9b93f885"
+    },
+    {
+      "path": "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json",
+      "changed_root_keys": [
+        "previous_last_three_before_PR418",
+        "last_three",
+        "current_task",
+        "main_at_recording",
+        "work_in_progress_branch",
+        "next_action",
+        "updated_utc"
+      ],
+      "prior_root_values_preserved_byte_exact": 28,
+      "before_sha256": "b36e07222ea96593026ed03c30cc174a44f93d522acb8c28f9fcd79fec913511",
+      "after_sha256": "e4d74a22cb9fd4ae747e90347c9cad3901b0dda170a05bb0adcd35a5ba0fcef6"
+    },
+    {
+      "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+      "changed_root_keys": [
+        "items",
+        "recorded_utc",
+        "project_complete"
+      ],
+      "prior_root_values_preserved_byte_exact": 8,
+      "before_sha256": "fcae60f6596d1f8c680b36e8ea56a3d846dbf3c790a2cef51b949012886d6e24",
+      "after_sha256": "cf76d5c055e2acc6ec05de83510249b059445388543cb25b09eaadad70db3f13"
+    }
+  ],
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792230255179",
+    "acquired_ts": 1792230255179,
+    "expires_ts": 1792234755179,
+    "expected_main": "e616c3b342251e44b90d593d13ef6d9ee9db59b3",
+    "scope": "Owner authorized continuing active block configuration independently of pending storage. Finish already-qualified PR418 N05/N12 fallback preservation, N10 cache reuse and common unknown-native source stop; exact-head merge, automatic main cloud evidence, authoritative handoff and automation pointer. Preserve newer scheduled HTX metadata,105assets122contracts9pauses,strategy,weights,clocks,forms,source/day/month/minute quotas and manual reserve. No native SQL/source probes/MAIN/Telegram/maintenance or archive writer/format/rotation activation.",
+    "released": true,
+    "released_ts": 1792230510217,
+    "only_own_lease_released": true
+  },
+  "preserved": {
+    "assets": 105,
+    "contracts": 122,
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03",
+      "N06",
+      "N07",
+      "N08",
+      "N09",
+      "N14",
+      "N16"
+    ],
+    "strategy_weights_clocks_forms_caps": true,
+    "scheduled_HTX_compact4h_newer_metadata_from": "e616c3b342251e44b90d593d13ef6d9ee9db59b3",
+    "writer_rotation_newprimaryformat": false,
+    "old_UTC16_reservations_not_refunded": true
+  },
+  "not_accepted": [
+    "all105 current useful provider coverage",
+    "native full/manual/LIQ integrated acceptance",
+    "same-run new Telegram message_id",
+    "new native partial SQL reply/day upper bound",
+    "sustainable capacity and physical storage recovery",
+    "primary proof format activation"
+  ],
+  "physical_bytes_freed": 0,
+  "native_SQL": 0,
+  "sourceHTTP": 0,
+  "Worker_invocations": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "project_complete": false,
+  "next_action": "Continue from checkpoints/ACTIVE105_BLOCK_FALLBACK_AND_N10_REUSE_HANDOFF_20261017.json. Owner explicitly requires active block configuration to continue independently while storage is pending: address concrete missing useful sources/facts and source-to-consumer gaps for N04/N05/N10/N11/N12/N15/LIQ using retained original evidence first, large connected packages and one common check. PR418 is merged and main982/0 accepted as code/assembled evidence, NOT all105 useful source coverage or natural/manual/Telegram acceptance. Separately, UTC17 permits only the ordinary existing RETAINED_HISTORY qualification after fresh current guards, a NEW own <=90min lease whose scope starts RETAINED_HISTORY., exact readback/current code/readers/bridge and actual day admission; no assumed free slots or clearing unknown. Existing workflow execute=true,kind=canonical,prefetch_private=true,canonical_cursor=auto,native_qualification=true,archive_pool_qualification=true; no self_qualification_day or owner_emergency_day. Preserve2/day48/run5000R400W16bridge40control164whole/manual24 and all prior reservations. Need full native journals/reconciliation, per-query costs, exact copies/readthrough, physical bytes,cursor/owner release; then already-saved next NATURAL full,both persisted finalists,same-run message_id. No forced known-failure MAIN/manual, no quota reset/refund/rename/raise, no primary codec/writer/rotation activation. Last full38840064503/FIL-SUI absent/3unknown/noSENT remains unresolved.105assets122contracts9pauses,strategy/weights/sourceclocks/forms preserved,MAGIC106 deferred. Keep seven fixed checklist items; final decision score and owner detailed Telegram form last. Reacquire own scoped lease before further actions after this release; do not repeat accepted tests/inspections/tails without a new defect."
+}
