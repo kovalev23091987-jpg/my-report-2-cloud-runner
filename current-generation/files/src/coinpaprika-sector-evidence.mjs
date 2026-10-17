@@ -1,7 +1,7 @@
 import {COINPAPRIKA_HTX_MARKETS_URL,coinpaprikaHtxMarketRows,normalizeCoinpaprikaProviderReference,verifyCoinpaprikaProviderReference} from './coinpaprika-htx-identity.mjs';
 import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
-import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v9-exact-bulk-category-membership-20261013';
@@ -44,19 +44,25 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  const base=clean(contract).replace(/-USDT$/,''),existingChain=Boolean(PLATFORMS[asset_identity?.chain]&&asset_identity?.contract_or_mint);
  let coin_id=clean(asset_metadata?.coinpaprika_id),tag_id=clean(asset_metadata?.sector_tag);const pinned=Boolean(tag_id),marketDiscovery=!existingChain||!coin_id;
  if(!db?.prepare||!/^\S{1,32}-USDT$/u.test(contract)||(pinned&&!/^[a-z0-9-]{3,80}$/.test(tag_id)))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  const key=marketDiscovery?`${contract}:PROVIDER_MARKET_REFERENCE:${coin_id||'DISCOVERY'}:${tag_id}`:`${contract}:${asset_identity.chain}:${asset_identity.contract_or_mint}:${coin_id}:${tag_id}`;
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION){const evidence=(cached.evidence||[]).filter(row=>!PAUSED_BLOCKS[row.block_id]);return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER',...(!evidence.length&&cached.status==='CLOSED'?{status:cached.sector_status||'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND'}:{})}:{})};}
- const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
+ const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
+ if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
  const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:['FUNCTIONAL_SECTOR_DIRECTORY','HTX_MARKET_CATALOG'].includes(route)?900000:6*1024*1024,same_run_batch:route==='FREE_AGGREGATED_QUOTES',bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
  const finish=async(result)=>{
   const summary=reader.summary(),final={version:COINPAPRIKA_SECTOR_VERSION,...result,...(!summary.admission.allowed?{status:summary.admission.status}:{}),...(summary.provider_backoff?{status:summary.provider_backoff.status}:{}),...summary,internal_only:true,free_only:true,monthly_module_bound:SOURCE_POLICIES[SOURCE].monthly_module_bound,official_free_monthly_requests:20000};
-  if(summary.provider_backoff)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',observed_ts:now,expires_ts:summary.provider_backoff.backoff_until,payload:summary.provider_backoff});
+  const cache_write_receipts=[];
+  if(summary.provider_backoff)cache_write_receipts.push({scope:'PROVIDER_BACKOFF',...await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',observed_ts:now,expires_ts:summary.provider_backoff.backoff_until,payload:summary.provider_backoff})});
   const expiry=result.evidence?.length?Math.min(...result.evidence.map(r=>r.expires_at)):now+15*60000;
-  if(expiry>now)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:expiry,payload:final});
-  return final;
+  if(expiry>now)cache_write_receipts.push({scope:'RESULT',...await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:expiry,payload:final})});
+  return{...final,cache_write_receipts};
  };
  let catalog=null,metadata=null,reference=null,directoryTag=null;
  if(marketDiscovery){

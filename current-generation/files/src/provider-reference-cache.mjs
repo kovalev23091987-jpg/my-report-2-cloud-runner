@@ -1,4 +1,4 @@
-import {readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts,evidenceSourceCacheWriteWireBytes} from './evidence-source-store.mjs';
+import {readEvidenceSourceCache,reserveEvidenceSourceAttempts,evidenceSourceCacheWriteWireBytes,nativeSourceUsageUnclosed,writeOptionalEvidenceSourceCache} from './evidence-source-store.mjs';
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 
 export const PROVIDER_REFERENCE_CACHE_VERSION='provider-reference-cache-v1-20261004';
@@ -9,8 +9,9 @@ const digest=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('
 // identity/category membership and quote clocks for each requested market.
 export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9}={}){
  const receipts=[];let calls=0,denied=null,backoff=null,sequence=0;
+ const stopForNativeUsage=()=>{if(!nativeSourceUsageUnclosed(db))return false;denied={allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',attempts:0};return true;};
  async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes,same_run_batch=false}={}){
-  if(denied||backoff)return null;
+  if(denied||backoff||stopForNativeUsage())return null;
   const u=new URL(url),allowed=source==='COINGECKO_SECTOR'?u.hostname==='api.coingecko.com'&&u.pathname.startsWith('/api/v3/')
    :['COINPAPRIKA_SECTOR','COINPAPRIKA_HTX_IDENTITY'].includes(source)?u.hostname==='api.coinpaprika.com'&&u.pathname.startsWith('/v1/'):source==='GATE_ASSET_REFERENCE'?u.hostname==='api.gateio.ws'&&u.pathname==='/api/v4/wallet/currency_chains'&&[...u.searchParams.keys()].length===1&&/^[A-Z0-9][A-Z0-9]{0,31}$/.test(u.searchParams.get('currency')||''):false;
   if(!allowed||u.protocol!=='https:'||u.username||u.password)throw Error('PROVIDER_REFERENCE_ROUTE_NOT_ALLOWED');
@@ -28,7 +29,9 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
    const sibling=source==='COINPAPRIKA_SECTOR'?'COINPAPRIKA_HTX_IDENTITY':source==='COINPAPRIKA_HTX_IDENTITY'?'COINPAPRIKA_SECTOR':null;
    const shared=sibling&&u.hostname==='api.coinpaprika.com'&&/^\/v1\/coins\/[a-z0-9][a-z0-9-]{2,79}$/.test(u.pathname)&&!u.search;
    for(const owner of shared?[source,sibling]:[source]){
+    if(stopForNativeUsage())return null;
     const cached=await readEvidenceSourceCache(db,{source:owner,asset_key:key,now:readTs});
+    if(stopForNativeUsage())return null;
     if(cached?.version===PROVIDER_REFERENCE_CACHE_VERSION&&cached.url===url&&Number.isSafeInteger(cached.received_ts)&&Number.isSafeInteger(cached.expires_ts)&&cached.received_ts<=readTs&&readTs<Math.min(cached.expires_ts,cached.received_ts+ttl_ms)&&typeof cached.body==='string'&&cached.body.length<=max_bytes&&cached.body_sha256===await digest(cached.body)){
      try{const payload=JSON.parse(cached.body);if(shape(payload)){receipts.push({route,url,status:'VALIDATED_REFERENCE_CACHE',http_status:200,received_ts:cached.received_ts,expires_ts:Math.min(cached.expires_ts,cached.received_ts+ttl_ms),body_sha256:cached.body_sha256,actual_http:0,cache_owner_source:owner,shared_provider:owner!==source?'COINPAPRIKA':null});return payload;}}catch{}
     }
@@ -38,20 +41,27 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
   // Durable reservation below remains the authority when concurrent callers
   // compete for the last unit; this read never releases or resets a quota.
   const day_utc=new Date(readTs).toISOString().slice(0,10);
+  if(stopForNativeUsage())return null;
   const usage=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(source,day_utc).first();
+  if(stopForNativeUsage())return null;
   if(Number(usage?.attempts)>=daily_cap){denied={allowed:false,status:'DAILY_CAP_OR_DUPLICATE',source,day_utc,attempts:0};return null;}
   if(minute_provider){
    await installProviderMinuteLedger(db);
+   if(stopForNativeUsage())return null;
    const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind(String(minute_provider).toUpperCase(),readTs-60000,readTs).first();
+   if(stopForNativeUsage())return null;
    if(!Number.isSafeInteger(Number(rolling?.units))||Number(rolling.units)>=minute_cap){denied={allowed:false,status:'PROVIDER_RATE_LIMIT_LOCAL',source,attempts:0};return null;}
   }
   const reservation_id=`EV2:${source}:${run_id}:${await digest(url)}:${sequence++}`;
+  if(stopForNativeUsage())return null;
   const whole=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:1});
   if(whole?.allowed!==true||whole?.duplicate===true){denied={...whole,allowed:false,status:whole?.duplicate===true?'ALREADY_RESERVED_NO_REDISPATCH':whole?.status||'ADMISSION_REQUIRED'};return null;}
   const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts:1,daily_cap,now:readTs});
+  if(stopForNativeUsage())return null;
   if(!daily.allowed){denied=daily;return null;}
   if(minute_provider){
    const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now:readTs,cap:minute_cap});
+   if(stopForNativeUsage())return null;
    if(!minute.allowed){denied={...minute,status:'PROVIDER_RATE_LIMIT_LOCAL'};return null;}
   }
   calls++;
@@ -78,12 +88,13 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
    if(ttl_ms>0&&body.length<=max_cache_bytes){
     const input={source,asset_key:key,observed_ts:received_ts,expires_ts:received_ts+ttl_ms,payload:{version:PROVIDER_REFERENCE_CACHE_VERSION,url,received_ts,expires_ts:received_ts+ttl_ms,body_sha256,body}};
     if(evidenceSourceCacheWriteWireBytes(input)<=900000){
-     try{await writeEvidenceSourceCache(db,input);}catch{receipt.cache_storage_status='CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED';}
+     const cached=await writeOptionalEvidenceSourceCache(db,input);
+     if(cached.status!=='CACHE_WRITE_COMPLETED')receipt.cache_storage_status=cached.status;
     }else receipt.cache_storage_status='WIRE_EXCEEDS_STORAGE_BOUND_VALID_RESPONSE_RETAINED';
    }
    return payload;
   }catch(error){receipts.push({route,url,status:'SOURCE_ERROR',error:String(error.message).slice(0,100),actual_http:1});return null;}
   finally{clearTimeout(timer);}
  }
- return{get,summary:()=>({network_calls:calls,receipts,admission:denied||{allowed:true,status:'PER_TRANSPORT_RESERVED'},provider_backoff:backoff})};
+ return{get,summary:()=>({network_calls:calls,receipts,admission:denied||{allowed:true,status:'PER_TRANSPORT_RESERVED'},provider_backoff:backoff,native_usage_unclosed:nativeSourceUsageUnclosed(db)})};
 }
