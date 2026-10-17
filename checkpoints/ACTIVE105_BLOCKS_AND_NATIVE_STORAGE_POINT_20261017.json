@@ -1,0 +1,350 @@
+{
+  "schema": "ACTIVE105_BLOCKS_AND_NATIVE_STORAGE_POINT_V1",
+  "recorded_utc": "2026-10-17T10:00:31.510816+00:00",
+  "status": "PR418_BLOCKS_MERGED_AND_UTC17_TWO_NATIVE_BODIES_RELOCATED_STORAGE_SUSTAINABILITY_OPEN",
+  "source_main": "5bf998786e3dcb471e8fa65642c4d5d38a432e7c",
+  "leased_main": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+  "native_cursor_main": "22cec9f3ecd895039eed9dfb695ed130546ce3cf",
+  "previous_block_handoff": "checkpoints/ACTIVE105_BLOCK_FALLBACK_AND_N10_REUSE_HANDOFF_20261017.json",
+  "native_point_review": "checkpoints/free-storage-20261017/native-39022879318-review.json",
+  "exact_native_original": {
+    "path": "checkpoints/free-storage-20261017/native-39022879318.json",
+    "raw_sha256": "f39937693ad0c70e54e70a60dd8ebef1caa99c0e8013543e83ee9884009c99a7",
+    "artifact": 12096609261,
+    "artifact_digest": "sha256:022e2138d16b4c4bb5eb2b5f49d72e0787df6bc8f54c539095121dc2c2b71a93"
+  },
+  "native_point": {
+    "schema": "EXACT_UTC17_ORDINARY_NATIVE_STORAGE_RELOCATION_REVIEW_V1",
+    "run": 39022879318,
+    "head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+    "artifact": 12096609261,
+    "artifact_digest": "sha256:022e2138d16b4c4bb5eb2b5f49d72e0787df6bc8f54c539095121dc2c2b71a93",
+    "raw_sha256": "f39937693ad0c70e54e70a60dd8ebef1caa99c0e8013543e83ee9884009c99a7",
+    "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY",
+    "completed_ts": 1792230899286,
+    "selected": 43,
+    "prepared": 2,
+    "compacted": [
+      {
+        "publication_id": "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c",
+        "run_id": "1791841887363-1791841897187",
+        "contract": "ZEC-USDT",
+        "observed_ts": 1791841962390,
+        "raw_sha256": "8c0bdd98616957f33e5bbc923128ef30d076487d71f5e33ecffda7b100f71ece",
+        "archive_location": "LEGACY",
+        "original_bytes": 736101,
+        "hot_header_bytes": 990,
+        "logical_saved_bytes": 735111
+      },
+      {
+        "publication_id": "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3",
+        "run_id": "1791841887363-1791841897187",
+        "contract": "FIL-USDT",
+        "observed_ts": 1791841991587,
+        "raw_sha256": "d14048554275d4700acf2eb9fb863c5cc24b89da8f19aee0375981844fbd494e",
+        "archive_location": "LEGACY",
+        "original_bytes": 501702,
+        "hot_header_bytes": 990,
+        "logical_saved_bytes": 500712
+      }
+    ],
+    "native_original_preflight_and_post_readthrough": true,
+    "physical_bytes_before": 499863552,
+    "physical_bytes_after": 498737152,
+    "physical_bytes_reclaimed": 1126400,
+    "D1": {
+      "requests": 84,
+      "rows_read": 3970,
+      "rows_written": 6,
+      "unknown_ops": 0
+    },
+    "disjoint_journals": {
+      "bridge": {
+        "statements": 71,
+        "reads": 3940,
+        "writes": 6
+      },
+      "LEGACY": {
+        "statements": 9,
+        "reads": 30,
+        "writes": 0
+      },
+      "A1": {
+        "statements": 1,
+        "reads": 0,
+        "writes": 0
+      },
+      "A2": {
+        "statements": 1,
+        "reads": 0,
+        "writes": 0
+      },
+      "A3": {
+        "statements": 1,
+        "reads": 0,
+        "writes": 0
+      },
+      "A4": {
+        "statements": 1,
+        "reads": 0,
+        "writes": 0
+      }
+    },
+    "reconciliation": {
+      "schema": "NATIVE_CLIENT_QUERY_RECONCILIATION_V1",
+      "known_statement_subtotal": {
+        "requests": 84,
+        "rows_read": 3970,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "observed_client_UTC_days": {
+        "2026-10-17": {
+          "requests": 84,
+          "rows_read": 3970,
+          "rows_written": 6,
+          "unknown_ops": 0
+        }
+      },
+      "unallocated_statements": [],
+      "issues": [],
+      "aggregate_usage_matches": true,
+      "statement_costs_closed": true,
+      "client_day_attribution_closed": true,
+      "clock_basis": "CLIENT_TRANSPORT_INTERVAL_NOT_SERVER_EXECUTION_OR_SOURCE_CLOCK",
+      "native_billing_day_verified": false,
+      "whole_day_closed": false,
+      "daily_total": null,
+      "daily_upper_bound": null,
+      "admission_authorized": false,
+      "reservations_changed": false,
+      "additional_SQL": 0
+    },
+    "conditional_statement_costs": [
+      [
+        {
+          "operation": "CONDITIONAL_BODY_UPDATE",
+          "publication_ids": [
+            "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c"
+          ],
+          "counters_present": true,
+          "rows_read": 968,
+          "rows_written": 1
+        },
+        {
+          "operation": "EXACT_HEADER_READBACK",
+          "publication_ids": [
+            "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c"
+          ],
+          "counters_present": true,
+          "rows_read": 1,
+          "rows_written": 0
+        }
+      ],
+      [
+        {
+          "operation": "CONDITIONAL_BODY_UPDATE",
+          "publication_ids": [
+            "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3"
+          ],
+          "counters_present": true,
+          "rows_read": 996,
+          "rows_written": 1
+        },
+        {
+          "operation": "EXACT_HEADER_READBACK",
+          "publication_ids": [
+            "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3"
+          ],
+          "counters_present": true,
+          "rows_read": 1,
+          "rows_written": 0
+        }
+      ]
+    ],
+    "ordinary_day_reservation": {
+      "allowed": true,
+      "status": "ATOMIC_SHARED_DAY_RESERVED",
+      "reservation_id": "RETAINED_HISTORY:39022879318:1792230881330",
+      "reservation": {
+        "rows_read": 5000,
+        "rows_written": 400
+      },
+      "owner_emergency_day": null,
+      "owner_emergency_slot": null,
+      "protected_next_full": null
+    },
+    "reservation_not_refunded": true,
+    "cursor": {
+      "status": "CANONICAL_CURSOR_EXACT_PHASE_CAS_VERIFIED",
+      "head": "22cec9f3ecd895039eed9dfb695ed130546ce3cf",
+      "cursor": 710,
+      "source_cursor": 0,
+      "SQL": 0,
+      "sourceHTTP": 0,
+      "quotas_reset": false
+    },
+    "original_cursor_was_absent_before_this_packet": true,
+    "cursor_prior_absence_seen_at_main": "28c4a2dae774a7790f76ddb5df52597fc54871a8",
+    "cursor_preserve_all_active_mirrors_required": true,
+    "control_HTTP": 37,
+    "bridge_HTTP": 12,
+    "private_HTTP": 14,
+    "whole_HTTP": 63,
+    "new_A1_A4_payloads": 0,
+    "cached_LEGACY_revisions_reused": 2,
+    "multirow_shared_UPDATE_qualified": false,
+    "cold_group_INSERT_native_qualified": false,
+    "actual_normal_native_SQL_counters_received": true,
+    "actual_partial_native_reply_received": false,
+    "SUM_reserves_lowered": false,
+    "writer_rotation_newformat_enabled": false,
+    "sustainable_capacity_accepted": false,
+    "whole_day_closed": false,
+    "full_report_accepted": false,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "project_complete": false
+  },
+  "block_PR418": {
+    "PR": 418,
+    "merged": true,
+    "merge": "5e01daca1a37e089c75bbf03412ed340f970428b",
+    "head": "83afca6f9761d9dd2e98770730828ac494130071",
+    "branch_cloud": 38961643399,
+    "main_cloud": 39022328594,
+    "pass": 982,
+    "fail": 0,
+    "tap": 21,
+    "scope": "checkpoints/ACTIVE105_BLOCK_FALLBACK_SCOPE_20261016.json",
+    "proof": "checkpoints/ACTIVE105_BLOCK_FALLBACK_AND_N10_REUSE_HANDOFF_20261017.json",
+    "new_tests": 16,
+    "N10": 38961648564,
+    "N12": 38961648563,
+    "recovery": 38961648697,
+    "sourceHTTP": 0,
+    "native_SQL": 0,
+    "new_provider_coverage": false,
+    "native_full_accepted": false
+  },
+  "owner_priority": "Continue blocks independently while storage sustainability remains open.",
+  "metadata_preservation": [
+    {
+      "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task"
+      ],
+      "unchanged_root_values_byte_exact": 375,
+      "before_sha256": "cbf903cf660e5f4afc22a0291859f6dc29793d77311865f9e499b8c9ed00a3f9",
+      "after_sha256": "708aa92c39653e6946676a6837e381ad640dca3ed14e4263b8779873c84773fa"
+    },
+    {
+      "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task"
+      ],
+      "unchanged_root_values_byte_exact": 152,
+      "before_sha256": "21aee588edc338e6b9ade7984edcd249bada4c3a2d6167c617356f1f250b9312",
+      "after_sha256": "fcae1a73aa9da2841b8fba40343ce07489e52babef0c4868e26b5d60956c7ad1"
+    },
+    {
+      "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task"
+      ],
+      "unchanged_root_values_byte_exact": 317,
+      "before_sha256": "4f5e239b2cbd5edc7c57252e5b99ab0f9e18e9fe77ae27a1fddbce159ff8069b",
+      "after_sha256": "bb5d1099497b941c9677dba989a5c7ad64142c440cac7eba6f97b836e759d723"
+    },
+    {
+      "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "changed_root_keys": [
+        "active_working_state",
+        "next_action",
+        "exact_next_action",
+        "updated_utc",
+        "updated_ts",
+        "current_task",
+        "lease",
+        "latest_own_bounded_continuation_lease",
+        "latest_active105_reliability_own_release"
+      ],
+      "unchanged_root_values_byte_exact": 350,
+      "before_sha256": "5f4ab75eac21e0250424cf970afe3c2299893cc91ad92b879f18f3ed82915829",
+      "after_sha256": "4d4c996185f98abbb54b3362cef768cb6bf89f3af1ad5fe1e38c1fa466ae7f8a"
+    },
+    {
+      "path": "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json",
+      "changed_root_keys": [
+        "previous_last_three_before_UTC17_native39022879318",
+        "last_three",
+        "current_task",
+        "main_at_recording",
+        "work_in_progress_branch",
+        "next_action",
+        "updated_utc"
+      ],
+      "unchanged_root_values_byte_exact": 29,
+      "before_sha256": "e4d74a22cb9fd4ae747e90347c9cad3901b0dda170a05bb0adcd35a5ba0fcef6",
+      "after_sha256": "1349dbc91be113b44bf3249eae1282fb210796ca57f3cdba89bdb7ec48c2490f"
+    },
+    {
+      "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+      "changed_root_keys": [
+        "items",
+        "recorded_utc",
+        "project_complete"
+      ],
+      "unchanged_root_values_byte_exact": 8,
+      "before_sha256": "cf76d5c055e2acc6ec05de83510249b059445388543cb25b09eaadad70db3f13",
+      "after_sha256": "b5ac9bf52e6983d8c264f2596f628cec7e653274378ba0ffb44e1d5db974c7b3"
+    }
+  ],
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792230715865",
+    "acquired_ts": 1792230715865,
+    "expires_ts": 1792235215865,
+    "expected_main": "5bf998786e3dcb471e8fa65642c4d5d38a432e7c",
+    "scope": "RETAINED_HISTORY. One ordinary UTC17 existing manual canonical native qualification399+406+410+411+417 with pool and independent exact native preflight/readthrough. Existing2/day48/run5000R400W16bridge40control164whole/manual24 and unknown/admission remain authority. No selfqualificationday/emergency, no quota reset/refund/rename/raise, no permanent writer/rotation/newformat, no forced MAIN/manualreport/sourceHTTP/Telegram. Reuse exact executable code qualified982PASS by main39022328594; only metadata changed. Capture complete native per-query journals/reconciliation/copies/physicalbytes/cursor. Release only own parent lease after completed exact artifact review. Active block configuration remains independent; no duplicate job.",
+    "released": true,
+    "released_ts": 1792231231510,
+    "only_own_lease_released": true
+  },
+  "canonical_cursor": {
+    "schema": "PROTECTED_CANONICAL_CURSOR_V1",
+    "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "cursor": 710,
+    "source_cursor": 0,
+    "run_id": "39022879318",
+    "source_head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+    "updated_ts": 1792230897457,
+    "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY"
+  },
+  "scope_note": "Normal native bridge replies and cached single-row LEGACY updates/readthrough accepted; neither multirow shared UPDATE nor cold grouped INSERT/A1-A4 payload nor throughput/day/full report accepted.",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "native_SQL_as_recorded_only": 84,
+  "additional_SQL_for_review": 0,
+  "reservations_refunded": false,
+  "permanent_flags_changed": false,
+  "full_report_restored": false,
+  "project_complete": false,
+  "next_action": "Continue owner-authorized active block configuration independently of pending storage. PR418 merged/main39022328594 qualified982/0,21TAP; no repeat without defect. Use retained original facts to close concrete source/order/fallback/consumer gaps for N04/N05/N10/N11/N12/N15/LIQ, one large package and common check. Storage native39022879318 is now an ACCEPTED LIMITED POINT:2 old ZEC/FIL bodies reused in LEGACY,43selected/2moved/41deferred,3970R6W unknown0/84statements,1126400physicalbytes freed,primary499863552->498737152 at1792230899286. Both native journals+reconciliation/source bridge observations and original preflight/readthrough accepted; NOT new multirow sharedUPDATE/coldINSERT/A1-A4 bodies/daybound/sustainable throughput. One UTC17 ordinary reservation5000R400W is confirmed consumed and never refunded; future actual admission remains authority, no gratuitous second run. Durable cursor710 fromjob22cec9f3 is now preserved in all4active mirrors; it was absent before this packet already at28c4a2, so do not overwrite it with older status metadata. Raw later-remediation evidence is active.latest_native_relocation; after saving, inspect the next ALREADY SAVED NATURAL full for both persisted finalists/same-runmessage_id or exact refusal. Do not force MAIN/manual known failure or wait idly for a new report. Continue block work meanwhile.2/day48/run5000R400W16bridge40control164whole/manual24 unchanged, no reset/refund/rename/raise/unknown clearing, no writer/rotation/newprimaryformat. Existing96row/day remains below144scheduled/172nominal, and observed2rowpoint is not48run guarantee. All7fixed directions,105assets122contracts9pauses,strategy/weights/sourceclocks/forms preserved;MAGIC106 deferred, decision score and owner precise finalTelegram form last. Freshguards/new own scoped lease+readback required before next action after this release."
+}

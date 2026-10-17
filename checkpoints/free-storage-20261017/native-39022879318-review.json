@@ -1,0 +1,194 @@
+{
+  "schema": "EXACT_UTC17_ORDINARY_NATIVE_STORAGE_RELOCATION_REVIEW_V1",
+  "run": 39022879318,
+  "head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+  "artifact": 12096609261,
+  "artifact_digest": "sha256:022e2138d16b4c4bb5eb2b5f49d72e0787df6bc8f54c539095121dc2c2b71a93",
+  "raw_sha256": "f39937693ad0c70e54e70a60dd8ebef1caa99c0e8013543e83ee9884009c99a7",
+  "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY",
+  "completed_ts": 1792230899286,
+  "selected": 43,
+  "prepared": 2,
+  "compacted": [
+    {
+      "publication_id": "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c",
+      "run_id": "1791841887363-1791841897187",
+      "contract": "ZEC-USDT",
+      "observed_ts": 1791841962390,
+      "raw_sha256": "8c0bdd98616957f33e5bbc923128ef30d076487d71f5e33ecffda7b100f71ece",
+      "archive_location": "LEGACY",
+      "original_bytes": 736101,
+      "hot_header_bytes": 990,
+      "logical_saved_bytes": 735111
+    },
+    {
+      "publication_id": "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3",
+      "run_id": "1791841887363-1791841897187",
+      "contract": "FIL-USDT",
+      "observed_ts": 1791841991587,
+      "raw_sha256": "d14048554275d4700acf2eb9fb863c5cc24b89da8f19aee0375981844fbd494e",
+      "archive_location": "LEGACY",
+      "original_bytes": 501702,
+      "hot_header_bytes": 990,
+      "logical_saved_bytes": 500712
+    }
+  ],
+  "native_original_preflight_and_post_readthrough": true,
+  "physical_bytes_before": 499863552,
+  "physical_bytes_after": 498737152,
+  "physical_bytes_reclaimed": 1126400,
+  "D1": {
+    "requests": 84,
+    "rows_read": 3970,
+    "rows_written": 6,
+    "unknown_ops": 0
+  },
+  "disjoint_journals": {
+    "bridge": {
+      "statements": 71,
+      "reads": 3940,
+      "writes": 6
+    },
+    "LEGACY": {
+      "statements": 9,
+      "reads": 30,
+      "writes": 0
+    },
+    "A1": {
+      "statements": 1,
+      "reads": 0,
+      "writes": 0
+    },
+    "A2": {
+      "statements": 1,
+      "reads": 0,
+      "writes": 0
+    },
+    "A3": {
+      "statements": 1,
+      "reads": 0,
+      "writes": 0
+    },
+    "A4": {
+      "statements": 1,
+      "reads": 0,
+      "writes": 0
+    }
+  },
+  "reconciliation": {
+    "schema": "NATIVE_CLIENT_QUERY_RECONCILIATION_V1",
+    "known_statement_subtotal": {
+      "requests": 84,
+      "rows_read": 3970,
+      "rows_written": 6,
+      "unknown_ops": 0
+    },
+    "observed_client_UTC_days": {
+      "2026-10-17": {
+        "requests": 84,
+        "rows_read": 3970,
+        "rows_written": 6,
+        "unknown_ops": 0
+      }
+    },
+    "unallocated_statements": [],
+    "issues": [],
+    "aggregate_usage_matches": true,
+    "statement_costs_closed": true,
+    "client_day_attribution_closed": true,
+    "clock_basis": "CLIENT_TRANSPORT_INTERVAL_NOT_SERVER_EXECUTION_OR_SOURCE_CLOCK",
+    "native_billing_day_verified": false,
+    "whole_day_closed": false,
+    "daily_total": null,
+    "daily_upper_bound": null,
+    "admission_authorized": false,
+    "reservations_changed": false,
+    "additional_SQL": 0
+  },
+  "conditional_statement_costs": [
+    [
+      {
+        "operation": "CONDITIONAL_BODY_UPDATE",
+        "publication_ids": [
+          "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c"
+        ],
+        "counters_present": true,
+        "rows_read": 968,
+        "rows_written": 1
+      },
+      {
+        "operation": "EXACT_HEADER_READBACK",
+        "publication_ids": [
+          "PUB:2dacbeb2576170ff12a2e8a2872f126efe0aa26c"
+        ],
+        "counters_present": true,
+        "rows_read": 1,
+        "rows_written": 0
+      }
+    ],
+    [
+      {
+        "operation": "CONDITIONAL_BODY_UPDATE",
+        "publication_ids": [
+          "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3"
+        ],
+        "counters_present": true,
+        "rows_read": 996,
+        "rows_written": 1
+      },
+      {
+        "operation": "EXACT_HEADER_READBACK",
+        "publication_ids": [
+          "PUB:921a4f2307fe77799e2f3691244bb047d43d58a3"
+        ],
+        "counters_present": true,
+        "rows_read": 1,
+        "rows_written": 0
+      }
+    ]
+  ],
+  "ordinary_day_reservation": {
+    "allowed": true,
+    "status": "ATOMIC_SHARED_DAY_RESERVED",
+    "reservation_id": "RETAINED_HISTORY:39022879318:1792230881330",
+    "reservation": {
+      "rows_read": 5000,
+      "rows_written": 400
+    },
+    "owner_emergency_day": null,
+    "owner_emergency_slot": null,
+    "protected_next_full": null
+  },
+  "reservation_not_refunded": true,
+  "cursor": {
+    "status": "CANONICAL_CURSOR_EXACT_PHASE_CAS_VERIFIED",
+    "head": "22cec9f3ecd895039eed9dfb695ed130546ce3cf",
+    "cursor": 710,
+    "source_cursor": 0,
+    "SQL": 0,
+    "sourceHTTP": 0,
+    "quotas_reset": false
+  },
+  "original_cursor_was_absent_before_this_packet": true,
+  "cursor_prior_absence_seen_at_main": "28c4a2dae774a7790f76ddb5df52597fc54871a8",
+  "cursor_preserve_all_active_mirrors_required": true,
+  "control_HTTP": 37,
+  "bridge_HTTP": 12,
+  "private_HTTP": 14,
+  "whole_HTTP": 63,
+  "new_A1_A4_payloads": 0,
+  "cached_LEGACY_revisions_reused": 2,
+  "multirow_shared_UPDATE_qualified": false,
+  "cold_group_INSERT_native_qualified": false,
+  "actual_normal_native_SQL_counters_received": true,
+  "actual_partial_native_reply_received": false,
+  "SUM_reserves_lowered": false,
+  "writer_rotation_newformat_enabled": false,
+  "sustainable_capacity_accepted": false,
+  "whole_day_closed": false,
+  "full_report_accepted": false,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "project_complete": false
+}
