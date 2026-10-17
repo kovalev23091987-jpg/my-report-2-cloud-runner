@@ -23,8 +23,8 @@ test('512 is a durable daily ceiling; prior reservations are preserved and anoth
  assert.equal((await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1').bind(source).first()).attempts,512);
 });
 test('larger daily headroom does not multiply the five shared requests across fallback venues',async()=>{
- let admitted=0,actual=0;const route=async p=>{let calls=0;for(let i=0;i<5;i++){const a=p.request_admit({attempts:1,logical_request_id:String(actual)+':'+i});if(a.allowed){calls++;actual++;}}return{network_calls:calls,components:[],evidence:[]};};
- const result=await collectN05VenueRoutes({request_admit:()=>{admitted++;return{allowed:true};}},[['GATE',route],['BITGET',route],['KUCOIN',route]]);
+ let admitted=0,actual=0;const route=async p=>{let calls=0;for(let i=0;i<5;i++){const a=p.request_admit({attempts:1,logical_request_id:String(actual)+':'+i});if(a.allowed){calls++;actual++;await p.fetch_impl('https://controlled.invalid/'+i);}}return{network_calls:calls,components:[],evidence:[]};};
+ const result=await collectN05VenueRoutes({request_admit:()=>{admitted++;return{allowed:true};},fetch_impl:async()=>new Response('{}')},[['GATE',route],['BITGET',route],['KUCOIN',route]]);
  assert.equal(admitted,5);assert.equal(actual,5);assert.equal(result.caller_reserved_requests,5);assert.equal(result.network_calls,5);
 });
 test('documented minute pools admit both finalists while weighted KuCoin and endpoint-specific guards remain bounded',async()=>{
@@ -41,7 +41,7 @@ test('documented minute pools admit both finalists while weighted KuCoin and end
 test('an exhausted minute pool consumes no shared request and leaves all five slots to the next venue',async()=>{
  const db=makeDb(),now=1791900000000;await installEvidenceSourceStore(db);await installProviderMinuteLedger(db);
  await reserveProviderMinuteUnits(db,{provider:'GATE',reservation_id:'EARLIER_CALLS',units:12,cap:12,now});
- let actual=0,grants=0;const fallback=async p=>{for(let i=0;i<5;i++){assert.equal(p.request_admit({attempts:1,logical_request_id:'NEXT:'+i}).allowed,true);actual++;}return{network_calls:5,components:[],evidence:[]};};
- const result=await collectN05VenueRoutes({db,contract:'AAVE-USDT',asset_identity:{chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)},identity_method:'HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS',run_id:'MINUTE_FALLBACK',now,clock:()=>now,source_health_admit:()=>({allowed:true}),request_admit:()=>{grants++;return{allowed:true};},fetch_impl:()=>{throw Error('EXHAUSTED_PROVIDER_HTTP_FORBIDDEN');}},[['GATE',collectGateFlow],['BITGET',fallback]]);
+ let actual=0,grants=0;const fallback=async p=>{for(let i=0;i<5;i++){assert.equal(p.request_admit({attempts:1,logical_request_id:'NEXT:'+i}).allowed,true);actual++;await p.fetch_impl('https://controlled.invalid/'+i);}return{network_calls:5,components:[],evidence:[]};};
+ const result=await collectN05VenueRoutes({db,contract:'AAVE-USDT',asset_identity:{chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)},identity_method:'HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS',run_id:'MINUTE_FALLBACK',now,clock:()=>now,source_health_admit:()=>({allowed:true}),request_admit:()=>{grants++;return{allowed:true};},fetch_impl:u=>{assert.match(u,/^https:\/\/controlled.invalid\//);return new Response('{}');}},[['GATE',collectGateFlow],['BITGET',fallback]]);
  assert.equal(result.adapter_results[0].network_calls,0);assert.equal(result.adapter_results[0].status,'ROLLING_60S_CAP_REACHED');assert.equal(actual,5);assert.equal(grants,5);assert.equal(result.caller_reserved_requests,5);
 });

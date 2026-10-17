@@ -1,6 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';import {DatabaseSync} from 'node:sqlite';
 const root=process.env.REPORT2_UNIFIED_MODULE_ROOT?pathToFileURL(path.resolve(process.env.REPORT2_UNIFIED_MODULE_ROOT)+'/'):new URL('../files/src/',import.meta.url);
 const [bp,k,bpc,kc,bn,bc,es,pl,j,ref,ext]=await Promise.all(['backpack-four-hour-flow.mjs','kraken-four-hour-flow.mjs','backpack-flow-collector.mjs','kraken-flow-collector.mjs','binance-native-four-hour-flow.mjs','binance-native-flow-collector.mjs','evidence-source-store.mjs','provider-minute-ledger.mjs','joint-spot-futures-flow.mjs','kraken-public-taker-reference.mjs','external-n05-flow-collector.mjs'].map(n=>import(new URL(n,root))));
+const controlledFetch=async()=>new Response('{}');
+async function controlledCalls(p,n){for(let i=0;i<n;i++){const grant=p.request_admit({attempts:1,logical_request_id:'controlled:'+i});if(grant?.allowed&&!grant.duplicate)await p.fetch_impl('https://controlled.invalid/'+i);}}
 const end=1791648180000,start=end-14400000,clone=x=>JSON.parse(JSON.stringify(x)),iso=t=>new Date(t).toISOString(),identity={chain:'solana',contract_or_mint:'a'.repeat(32)};
 const assets=[{symbol:'TEST',tokens:[{blockchain:'Solana',contractAddress:identity.contract_or_mint}]}],markets=[{symbol:'TEST_USDC',baseSymbol:'TEST',quoteSymbol:'USDC',marketType:'SPOT',orderBookState:'Open',visible:true}];
 const candles=Array.from({length:240},(_,i)=>({start:iso(start+i*60000).replace('T',' ').replace('.000Z',''),end:iso(start+(i+1)*60000).replace('T',' ').replace('.000Z',''),open:'2',high:'2',low:'2',close:'2',volume:'3',quoteVolume:'6',trades:'1'}));
@@ -46,11 +48,11 @@ test('external collection retains Binance and Kraken for the same asset within f
 });
 test('later failures and opposite venue data survive after first success without merging turnover or renewing clocks',async()=>{
  const component=bp.normalizeBackpackSpotFlow(bf()),other={...component,venue:'TEST_SECOND',quote:'USDT',buy_quote:100,sell_quote:900,observed_ts:end+2000};
- const r=await ext.collectN05VenueRoutes({},[['BACKPACK',async()=>({status:'CLOSED',components:[component],network_calls:0,receipts:[{status:'CACHE'}]})],['FAIL',async()=>({status:'HTTP_429',components:[],network_calls:1,receipts:[{status:'HTTP_429'}]})],['SECOND',async()=>({status:'CLOSED',components:[other],network_calls:0})]]);
+ const r=await ext.collectN05VenueRoutes({request_admit:()=>({allowed:true}),fetch_impl:controlledFetch},[['BACKPACK',async()=>({status:'CLOSED',components:[component],network_calls:0,receipts:[{status:'CACHE'}]})],['FAIL',async p=>{await controlledCalls(p,1);return{status:'HTTP_429',components:[],network_calls:1,receipts:[{status:'HTTP_429'}]};}],['SECOND',async()=>({status:'CLOSED',components:[other],network_calls:0})]]);
  assert.equal(r.check_completed,true);assert.equal(r.components.length,2);assert.equal(r.components[0],component);assert.equal(r.components[1],other);assert.deepEqual(r.selected_venues,['BACKPACK','TEST_SECOND']);assert.equal(r.network_calls,1);assert.equal(r.adapter_results[1].status,'HTTP_429');assert.equal(r.receipts.length,2);
 });
 test('shared adapter accounting retains N12 route identity when provider payload names its venue',async()=>{
- const r=await ext.collectN05VenueRoutes({},[['BACKPACK',async()=>({venue:'BACKPACK',status:'CLOSED',components:[],network_calls:2})],['KUCOIN_N12_EXACT_TOKEN',async()=>({venue:'KUCOIN',status:'NO_USEFUL_PUBLIC_TRADE_SAMPLE',components:[],network_calls:3})]]);
+ const r=await ext.collectN05VenueRoutes({request_admit:()=>({allowed:true}),fetch_impl:controlledFetch},[['BACKPACK',async p=>{await controlledCalls(p,2);return{venue:'BACKPACK',status:'CLOSED',components:[],network_calls:2};}],['KUCOIN_N12_EXACT_TOKEN',async p=>{await controlledCalls(p,3);return{venue:'KUCOIN',status:'NO_USEFUL_PUBLIC_TRADE_SAMPLE',components:[],network_calls:3};}]]);
  assert.equal(r.network_calls,5);
  assert.deepEqual(r.adapter_results.map(row=>[row.venue,row.network_calls]),[['BACKPACK',2],['KUCOIN_N12_EXACT_TOKEN',3]]);
  const {attributeSharedN05N12Http}=await import(new URL('candidate-evidence-v2-runtime.mjs',root));
@@ -59,8 +61,8 @@ test('shared adapter accounting retains N12 route identity when provider payload
 });
 test('five-request envelope continues cache-only routes after admission denial and defers optional baseline until all flow routes',async()=>{
  let grants=0,calls=0;const order=[],c=bn.normalizeBinanceNativeFlow({contract:'ATOM-USDT',identity:kin,catalog:{symbols:[{symbol:'ATOMUSDT',baseAsset:'ATOM',quoteAsset:'USDT',status:'TRADING',isSpotTradingAllowed:true}]},candles:nativeBars(),window_end_ts:end,observed_ts:end+1000});
- const route=(venue,n,component)=>[venue,async p=>{order.push(venue);let network_calls=0;for(let i=0;i<n;i++)if(p.request_admit({attempts:1,logical_request_id:venue+i})?.allowed){network_calls++;calls++;}return{status:component?'CLOSED':'DENIED_OR_PARTIAL',components:component?[component]:[],network_calls};}];
- const r=await ext.collectN05VenueRoutes({request_admit:()=>{grants++;return{allowed:true};}},[route('BINANCE',2,c),route('OTHER',3),route('DENIED',2),route('CACHED',0,{...c,venue:'CACHED'})],async p=>{
+ const route=(venue,n,component)=>[venue,async p=>{order.push(venue);let network_calls=0;for(let i=0;i<n;i++)if(p.request_admit({attempts:1,logical_request_id:venue+i})?.allowed){network_calls++;calls++;await p.fetch_impl('https://controlled.invalid/'+venue+i);}return{status:component?'CLOSED':'DENIED_OR_PARTIAL',components:component?[component]:[],network_calls};}];
+ const r=await ext.collectN05VenueRoutes({request_admit:()=>{grants++;return{allowed:true};},fetch_impl:controlledFetch},[route('BINANCE',2,c),route('OTHER',3),route('DENIED',2),route('CACHED',0,{...c,venue:'CACHED'})],async p=>{
   order.push('BASELINE');const grant=p.request_admit({attempts:1,logical_request_id:'BASELINE'});assert.equal(grant.allowed,false);assert.equal(grant.status,'CALLER_FIVE_REQUEST_CAP');return{network_calls:0,status:grant.status};
  });
  assert.deepEqual(order,['BINANCE','OTHER','DENIED','CACHED','BASELINE']);assert.equal(grants,5);assert.equal(calls,5);assert.equal(r.network_calls,5);assert.equal(r.caller_reserved_requests,5);assert.deepEqual(r.selected_venues,['BINANCE','CACHED']);assert.equal(r.components[0].turnover_baseline.network_calls,0);

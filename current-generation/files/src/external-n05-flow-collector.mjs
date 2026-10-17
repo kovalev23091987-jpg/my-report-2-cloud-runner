@@ -1,4 +1,5 @@
 import {preparePublicVenuePriority} from './public-venue-source-priority.mjs';
+import {nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 import {withVerifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {collectPoloniexFlow} from './poloniex-native-flow-collector.mjs';
 import {eligiblePoloniexIdentity} from './poloniex-native-four-hour-flow.mjs';
@@ -45,25 +46,44 @@ export function orderN05VenueRoutes(contract,identity,routes){
 // Internal orchestration seam: production routes are fixed below. Every route
 // shares one caller envelope; each adapter retains its own durable admission.
 export async function collectN05VenueRoutes(params={},routes=[],turnoverCollector=collectTurnoverBaseline){
- const prioritized=await preparePublicVenuePriority(params,routes);routes=prioritized.routes;
- const results=[];let reserved=0;const originalAdmit=params.request_admit;
+ let nativeUnclosed=nativeSourceUsageUnclosed(params.db);
+ const prioritized=nativeUnclosed?{routes,receipt:{status:'SOURCE_PRIORITY_SKIPPED_UNCLOSED_NATIVE_USAGE',contract:params.contract,original_order:routes.map(r=>r[0]),ordered_routes:routes.map(r=>r[0]),source_statistics:{},sourceHTTP:0,score_changed:false,predictive_weight_changed:false}}:await preparePublicVenuePriority(params,routes);routes=prioritized.routes;
+ nativeUnclosed||=nativeSourceUsageUnclosed(params.db);
+ const results=[];let reserved=0,adapterReserved=0,transportHTTP=0;const originalAdmit=params.request_admit,originalFetch=params.fetch_impl||globalThis.fetch;
  params={...params,request_admit:request=>{
   const n=Number(request?.attempts);
+  nativeUnclosed||=nativeSourceUsageUnclosed(params.db);
+  if(nativeUnclosed)return{allowed:false,status:'SOURCE_CHAIN_UNCLOSED_NATIVE_USAGE'};
   if(!Number.isSafeInteger(n)||n<1||reserved+n>5)return{allowed:false,status:'CALLER_FIVE_REQUEST_CAP'};
   const grant=originalAdmit?.(request);
-  if(grant?.allowed===true&&!grant.duplicate)reserved+=n;
+  if(grant?.duplicate===true)return{...grant,allowed:false,status:'ALREADY_RESERVED_NO_REDISPATCH'};
+  if(grant?.allowed===true&&!grant.duplicate){reserved+=n;adapterReserved+=n;}
   return grant;
  }};
+ const invoke=async collect=>{
+  if(nativeUnclosed)return{status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',network_calls:0,components:[],evidence:[],check_completed:false};
+  let actual=0,result;adapterReserved=0;
+  const fetch_impl=(...args)=>{
+   nativeUnclosed||=nativeSourceUsageUnclosed(params.db);
+   if(nativeUnclosed||actual>=adapterReserved||transportHTTP>=reserved||transportHTTP>=5)throw Error('PUBLIC_VENUE_TRANSPORT_NOT_ADMITTED');
+   transportHTTP++;actual++;return originalFetch(...args);
+  };
+  try{result=await collect({...params,fetch_impl});}
+  catch{result={status:'CODE_OR_STORE_ERROR',adapter_exception:true,components:[],evidence:[],check_completed:false};}
+  nativeUnclosed||=nativeSourceUsageUnclosed(params.db);
+  return{...result,network_calls:actual,adapter_reported_network_calls:Number.isSafeInteger(result?.network_calls)&&result.network_calls>=0?result.network_calls:null,transport_count_basis:'OBSERVED_SHARED_FETCH_ATTEMPTS'};
+ };
  // A later failure or exhausted provider cannot erase an earlier complete
  // component. Keep checking routes after five grants: a cache hit costs zero.
- for(const [venue,collect] of routes)results.push({venue,result:await collect(params)});
+ // An unclosed native cost stops further adapters, including their DB reads.
+ for(const [venue,collect] of routes)results.push({venue,result:await invoke(collect)});
  const completed=results.filter(({result})=>result.components?.some(c=>c.check_completed===true));
  const first=completed[0]||results.find(r=>r.venue==='BITGET')||results[0];
  let components=results.flatMap(({result})=>result.components||[]),baseline;
  // Current flow has priority over optional historical turnover. Preserve the
  // existing single-baseline scope and never create a separate request budget.
  const target=components.find(c=>c.check_completed===true&&['GATE','BINANCE'].includes(c.venue)&&c.market==='SPOT');
- if(target){baseline=await turnoverCollector(params,target);components=components.map(c=>c===target?{...c,turnover_baseline:baseline}:c);}
+ if(target){baseline=await invoke(p=>turnoverCollector(p,target));components=components.map(c=>c===target?{...c,turnover_baseline:baseline}:c);}
  const selected_venues=[...new Set(components.filter(c=>c.check_completed===true).map(c=>c.venue))];
  const flow_network_calls=results.reduce((n,{result})=>n+(result.network_calls||0),0);
  return{...(first?.result||{}),status:completed.length>1?'CLOSED_MULTIPLE_QUALIFIED_VENUE_COMPONENTS':first?.result.status||'NO_QUALIFIED_VENUE_COMPONENT',
@@ -71,7 +91,7 @@ export async function collectN05VenueRoutes(params={},routes=[],turnoverCollecto
   network_calls:flow_network_calls+(baseline?.network_calls||0),flow_network_calls,
   receipts:[...results.flatMap(({result})=>result.receipts||[]),...(baseline?.receipts||[])],
   selected_venue:first?.venue||null,selected_venues,source_selection:'MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP',
-  caller_reserved_requests:reserved,source_priority:prioritized.receipt,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({...result,venue}))};
+  caller_reserved_requests:reserved,source_priority:prioritized.receipt,source_chain_native_cost_unclosed:nativeUnclosed,observed_transport_HTTP:transportHTTP,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({...result,venue}))};
 }
 
 export function planPublicVenueRoutes(params={}){

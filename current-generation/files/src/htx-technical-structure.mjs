@@ -1,4 +1,5 @@
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
+import {nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {qualifiedBinanceNativeComponent} from './binance-native-four-hour-flow.mjs';
 import {qualifiedPoloniexNativeComponent} from './poloniex-native-four-hour-flow.mjs';
@@ -150,14 +151,15 @@ export function deriveN10ReusedVenuePathEvidence({contract,venue,component,cache
 export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_receipt,now=Date.now()}={}){
  const h=primary_receipt?.receipts?.[0]?.actual_price_windows?.find(w=>w.label==='15m');
  if(!db?.prepare||primary_receipt?.check_completed!==true||!h)return{status:'PRIMARY_15M_WINDOW_REQUIRED',evidence:[],cache_reads:0,provider_http:0,receipts:[]};
- const components=(flow_result?.components||[]).filter(c=>qualifiedVenueComponent(c)&&c.contract===contract&&c.window_end_ts===h.window_end_ts).slice(0,4),evidence=[],receipts=[];
- for(const c of components){const venue=c.venue,key=venue==='BITGET'?`FLOW:${contract}:SPOT:${h.window_end_ts}`:`${venue==='BINANCE'||venue==='POLONIEX'?'NATIVE_FLOW':'TOKEN_FLOW'}:${contract}:${h.window_end_ts}`;
+ const components=(flow_result?.components||[]).filter(c=>qualifiedVenueComponent(c)&&c.contract===contract&&c.window_end_ts===h.window_end_ts).slice(0,4),evidence=[],receipts=[];let cache_reads=0,native_unclosed=false;
+ for(const c of components){if(nativeSourceUsageUnclosed(db)){native_unclosed=true;receipts.push({venue:c.venue,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',provider_http:0});break;}const venue=c.venue,key=venue==='BITGET'?`FLOW:${contract}:SPOT:${h.window_end_ts}`:`${venue==='BINANCE'||venue==='POLONIEX'?'NATIVE_FLOW':'TOKEN_FLOW'}:${contract}:${h.window_end_ts}`;cache_reads++;
   let row=null;try{row=await db.prepare('SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>=?3 LIMIT 1').bind(`N05_OFFICIAL_FLOW:${venue}`,key,now).first();}catch{}
   let parsed=null;try{if(row)parsed=JSON.parse(row.payload_json);}catch{}
   const facts=deriveN10ReusedVenuePathEvidence({contract,venue,component:c,cache:row?{observed_ts:Number(row.observed_ts),expires_ts:Number(row.expires_ts),payload:parsed}:null,htx_window:h,now});
   evidence.push(...facts);receipts.push({venue,status:facts.length?'CLOSED_INDEPENDENT_SAME_WINDOW_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_PRICE_PATH',cache_key:key,component_check_completed:c.check_completed===true,provider_http:0});
  }
- return{status:evidence.length?'CLOSED':'NO_USEFUL_EXISTING_VENUE_PATH',evidence,cache_reads:components.length,provider_http:0,receipts};
+ native_unclosed||=nativeSourceUsageUnclosed(db);
+ return{status:native_unclosed?'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE':evidence.length?'CLOSED':'NO_USEFUL_EXISTING_VENUE_PATH',evidence,cache_reads,provider_http:0,receipts};
 }
 export function verifyN10ReusedVenuePathEvidence(row,{now=row?.observed_ts}={}){
  const c=row?.n05_component,bars=row?.raw_price_bars,end=row?.window_end,start=row?.window_start,venue=row?.venue;

@@ -28,7 +28,7 @@ import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,PAUSED_BLOCKS,evidenceDedupKey,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
-import {recordEvidenceSourceHealth,readEvidenceSourcePriorityHistory,sourceHistoryStatistics} from './evidence-source-store.mjs';
+import {recordEvidenceSourceHealth,readEvidenceSourcePriorityHistory,sourceHistoryStatistics,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 
 export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v21-exact-flow-five-minute-publication-20261005';
 
@@ -201,15 +201,17 @@ export function finalizedPrimaryTransferAvailable(source,{contract,decision_ts}=
 export async function collectEvidenceRouteBlock({routes=[],collectors={},params={},max_requests=5}={}){
  let reserved=0,actual=0,routeReserved=0;const results={},receipts=[];
  const request_admit=request=>{
+  if(nativeSourceUsageUnclosed(params.db))return{allowed:false,status:'SOURCE_CHAIN_UNCLOSED_NATIVE_USAGE'};
   const n=Number(request?.attempts);if(!Number.isSafeInteger(n)||n<1||reserved+n>max_requests)return{allowed:false,status:'DEFERRED_SHARED_REQUEST_ENVELOPE'};
   const result=typeof params.request_admit==='function'?params.request_admit(request):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
   if(result?.duplicate===true)return{...result,allowed:false,status:'ALREADY_RESERVED_NO_REDISPATCH'};
   if(result?.allowed===true){reserved+=n;routeReserved+=n;}return result;
  };
  for(const route of routes){if(['HTX','HTX_PUBLIC_RISK'].includes(route.name)&&PAUSED_BLOCKS.N08&&PAUSED_BLOCKS.N09||['TOKEN_CALENDAR','TOKEN_SCHEDULE'].includes(route.name)&&PAUSED_BLOCKS.N01||route.name==='COINMETRICS'&&PAUSED_BLOCKS.N02||['BLUESKY','WIKIMEDIA'].includes(route.name)&&PAUSED_BLOCKS.N06||['HTX_ANNOUNCEMENTS','GDELT'].includes(route.name)&&PAUSED_BLOCKS.N07||['DERIBIT','DELTA','BYBIT_OPTIONS','BINANCE_OPTION_INTEREST'].includes(route.name)&&PAUSED_BLOCKS.N14||route.name==='OFFICIAL'&&PAUSED_BLOCKS.N01&&PAUSED_BLOCKS.N07&&PAUSED_BLOCKS.N08&&PAUSED_BLOCKS.N09||route.name==='CHAIN_SUPPLY'&&PAUSED_BLOCKS.N02&&PAUSED_BLOCKS.N03&&!(params.contract==='XRP-USDT'&&params.asset_identity?.chain==='xrp'&&params.asset_identity?.asset_kind==='NATIVE'&&params.asset_identity?.native_asset_id==='xrp:mainnet'&&!params.asset_identity?.contract_or_mint)){results[route.name]={status:'BLOCK_PAUSED_BY_OWNER',network_calls:0,evidence:[],check_completed:false,internal_only:true};receipts.push({route:route.name,status:'BLOCK_PAUSED_BY_OWNER',actual_http:0,phase_reserved:reserved});continue;}const collect=collectors[route.name];if(typeof collect!=='function')continue;
+  if(nativeSourceUsageUnclosed(params.db)){results[route.name]={status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',network_calls:0,evidence:[],check_completed:false,internal_only:true};receipts.push({route:route.name,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',actual_http:0,phase_reserved:reserved});continue;}
   // Collectors read valid cached facts before their request admission. Calling
   // every relevant role also reuses caches after the network envelope is full.
-  const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(actual-beforeActual>=routeReserved||actual>=reserved||actual>=max_requests)throw Error('EVIDENCE_ROUTE_TRANSPORT_NOT_ADMITTED');actual++;return(params.fetch_impl||globalThis.fetch)(...args);};
+  const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(nativeSourceUsageUnclosed(params.db))throw Error('SOURCE_CHAIN_UNCLOSED_NATIVE_USAGE');if(actual-beforeActual>=routeReserved||actual>=reserved||actual>=max_requests)throw Error('EVIDENCE_ROUTE_TRANSPORT_NOT_ADMITTED');actual++;return(params.fetch_impl||globalThis.fetch)(...args);};
   const decisionClock=Math.max(Number(params.now)||0,Number((params.clock||Date.now)()));
   const skipIndex=route.name==='BLOCKSCOUT'&&params.main_index_failure_backoff===true&&finalizedPrimaryTransferAvailable(results.CHAIN_EVENTS,{contract:params.contract,decision_ts:decisionClock});
   try{result=await collect({...params,...(route.name==='BLOCKSCOUT'?{live_discovery_allowed:!skipIndex}:{}),now:evidenceRouteObservationNow(route,params),request_admit,fetch_impl});}catch(error){result={status:'CODE_OR_STORE_ERROR',evidence:[],error:String(error?.message||error).slice(0,120)};}
