@@ -2,9 +2,9 @@
 import {hash} from '../observer/observer.mjs';
 const need=(x,m)=>{if(!x)throw Error(m);},str=x=>typeof x==='string'&&x.length>0;
 const ts=x=>Number.isSafeInteger(x)&&x>=1e12,hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
-export function newProtocolStore({max_operations=4096,max_outbox=1024}={}){
- need(Number.isInteger(max_operations)&&max_operations>0&&Number.isInteger(max_outbox)&&max_outbox>0,'BOUNDS_INVALID');
- return {schema:'CONTROLLED_ATOMIC_OUTBOX_MODEL_V1',revision:0,events:{},outbox:{},operations:{},limits:{max_operations,max_outbox},network_enabled:false,native_persistence_qualified:false};
+export function newProtocolStore({max_operations=4096,max_outbox=1024,max_attempt_nonces=4096}={}){
+ need(Number.isInteger(max_operations)&&max_operations>0&&Number.isInteger(max_outbox)&&max_outbox>0&&Number.isInteger(max_attempt_nonces)&&max_attempt_nonces>0,'BOUNDS_INVALID');
+ return {schema:'CONTROLLED_ATOMIC_OUTBOX_MODEL_V1',revision:0,events:{},outbox:{},operations:{},attempt_nonce_journal:{},limits:{max_operations,max_outbox,max_attempt_nonces},network_enabled:false,native_persistence_qualified:false};
 }
 function row(state,key){need(state.outbox[key],'OUTBOX_MISSING');return state.outbox[key];}
 function sameClaim(o,m){need(o.claim_owner===m.owner&&o.attempt_nonce===m.nonce,'FOREIGN_OR_STALE_CLAIM');}
@@ -36,7 +36,16 @@ function mutate(s,m){
   need(o.status==='DRAFT'&&m.reviewed_form_hash===o.form_hash,'REVIEWED_EXACT_DRAFT_REQUIRED');o.status='READY';return 'CONTROLLED_READY_NO_SEND';
  }
  if(m.kind==='CLAIM'){
-  need(['READY','FAILED_KNOWN_NO_SEND'].includes(o.status)&&(!o.retry_after_ts||o.retry_after_ts<=m.now_ts)&&str(m.owner)&&str(m.nonce)&&ts(m.lease_until)&&m.lease_until>m.now_ts&&m.lease_until-m.now_ts<=600000,'CLAIM_NOT_ALLOWED');
+  need(['READY','FAILED_KNOWN_NO_SEND'].includes(o.status)&&(!o.retry_after_ts||o.retry_after_ts<=m.now_ts)&&str(m.owner)&&str(m.nonce)&&m.nonce.length<=128&&ts(m.lease_until)&&m.lease_until>m.now_ts&&m.lease_until-m.now_ts<=600000,'CLAIM_NOT_ALLOWED');
+  // An old model snapshot without attempt history cannot safely start a new
+  // attempt. Never silently migrate it by inventing an empty nonce journal.
+  need(s.attempt_nonce_journal&&typeof s.attempt_nonce_journal==='object'&&!Array.isArray(s.attempt_nonce_journal)&&Number.isInteger(s.limits.max_attempt_nonces)&&s.limits.max_attempt_nonces>0,'ATTEMPT_NONCE_HISTORY_REQUIRED');
+  const nonceKey=hash({attempt_nonce:m.nonce});
+  need(!Object.hasOwn(s.attempt_nonce_journal,nonceKey),'ATTEMPT_NONCE_ALREADY_USED');
+  if(Object.keys(s.attempt_nonce_journal).length>=s.limits.max_attempt_nonces)return 'DEFERRED_ATTEMPT_NONCE_CAPACITY';
+  // This journal and the claim are part of the same simulated CAS commit.
+  // Recovery, known rejection and SENT never erase consumed nonce identities.
+  s.attempt_nonce_journal[nonceKey]={attempt_nonce:m.nonce,outbox_key:o.outbox_key,claim_owner:m.owner,claimed_ts:m.now_ts};
   o.status='CLAIMED';o.claim_owner=m.owner;o.attempt_nonce=m.nonce;o.lease_until=m.lease_until;return 'CLAIMED';
  }
  if(m.kind==='START_SEND'){
@@ -74,10 +83,13 @@ export function simulateAtomicCommit(state,{expected_revision,operation_id,mutat
  if(Object.keys(state.operations).length>=state.limits.max_operations)return {durable_state:state,reply:'DEFERRED_JOURNAL_CAPACITY',network_calls:0,native_writes:0};
  const next=structuredClone(state);let result;
  try{result=mutate(next,mutation);}catch(e){return {durable_state:state,reply:'REJECTED',reason:e.message,network_calls:0,native_writes:0};}
- if(['NO_CHANGE','DUPLICATE_SOURCE','UNRESOLVED_NO_RETRY'].includes(result))return {durable_state:state,reply:result,network_calls:0,native_writes:0};
+ if(['NO_CHANGE','DUPLICATE_SOURCE','UNRESOLVED_NO_RETRY','DEFERRED_ATTEMPT_NONCE_CAPACITY'].includes(result))return {durable_state:state,reply:result,network_calls:0,native_writes:0};
  if(fault==='BEFORE_COMMIT')return {durable_state:state,reply:'SIMULATED_CRASH_BEFORE_COMMIT',network_calls:0,native_writes:0};
  next.revision++;next.operations[operation_id]={digest,result,revision:next.revision};
  return {durable_state:next,reply:fault==='AFTER_COMMIT_BEFORE_REPLY'?'UNKNOWN_COMMIT_ACK':result,network_calls:0,native_writes:0};
 }
+// Trusted-model snapshot only: checksum detects accidental byte changes. This
+// is not full schema validation, authentication, native durability or a proof
+// that a caller has retained the complete historical nonce journal.
 export function restoreProtocol(serialized){const x=JSON.parse(serialized);need(x?.state?.schema==='CONTROLLED_ATOMIC_OUTBOX_MODEL_V1'&&x.sha256===hash(x.state)&&x.state.network_enabled===false,'MODEL_CHECKSUM');return structuredClone(x.state);}
 export function serializeProtocol(state){return JSON.stringify({state,sha256:hash(state)});}
