@@ -28,11 +28,11 @@ test('repeated revision idempotent, bounded revision history explicitly deferred
 });
 function eventRecord(){const c=fixture().result.events[0],r=registerRevision(newRegistry(),c,native(c));return r.state.events[r.logical_event_id];}
 const retentionArgs=e=>({logical_event:e,active:false,latest_source:false,detail_age_ms:90*86400000,reference_graph_complete:true,planned_outcome_keys:['LONG:30d','LONG:90d'],outcomes:[{key:'LONG:30d',status:'UNWORKED'},{key:'LONG:90d',status:'PENDING'}],outbox:[{key:'O1',status:'SENT',message_id:'CONTROLLED:101'}]});
-test('COUNTEREXAMPLE frozen active/outbox reference list empties after refute+simulated SENT; pending90d must still protect',()=>{
- const c=fixture().result.events[0];let m=capture(newMemory(),c).state;
+test('closed historical watch and simulated SENT keep pending90d references after separate admission repair',()=>{
+ const c=fixture().result.events[0];let m=capture(newMemory(),c,{watch_mode:'HISTORICAL_REVIEW'}).state;
  for(const [n,price] of [[1,110],[2,90]]){const s=snapshot(c,{ts:c.event_end_ts+n*3600000,price,closed:true,id:'S'+n});m=observe(m,{event_id:c.event_id,snapshot:s,now_ts:s.received_ts+1}).state;}
  assert.equal(m.watch[c.event_id].active,false);for(const o of Object.values(m.outbox)){o.status='SENT';o.message_id='CONTROLLED:101';}
- assert.deepEqual(protectedReferences(m),[]);
+ assert.equal(protectedReferences(m).length,1);assert.equal(protectedReferences(m)[0].card_hash,c.card_hash);assert.equal(protectedReferences(m)[0].retention_eligibility_qualified,false);
  const e=eventRecord(),p=retentionDecision(retentionArgs(e));assert.equal(p.eligible_detail_expiry,false);assert.ok(p.reasons.includes('UNFINISHED_OUTCOME:LONG:90d'));assert.equal(p.protected_proof_refs[0].raw_sha256,e.canonical_card.provenance.raw_sha256);assert.equal(p.production_retention_hook_installed,false);
 });
 test('missing outcome ledger, UNKNOWN_SEND, latest source and incomplete reference graph each protect details',()=>{
@@ -53,7 +53,7 @@ function weeklyCase(){
  return {c,s,grid,now:end+30};
 }
 test('COUNTEREXAMPLE dayoffset%week rejects valid separate Monday grid; explicit confirmation grid passes',()=>{
- const {c,s,grid,now}=weeklyCase(),m=capture(newMemory(),c).state;
+ const {c,s,grid,now}=weeklyCase(),m=capture(newMemory(),c,{watch_mode:'HISTORICAL_REVIEW'}).state;
  assert.throws(()=>observe(m,{event_id:c.event_id,snapshot:s,now_ts:now}),/CANDLE_GRID_INVALID/);
  const q=confirmationVerdict({event:c,native:native(c),snapshot:s,snapshot_native:native(c),grid,now_ts:now});assert.equal(q.status,'CLOSED_ABOVE');assert.equal(q.LONG,'CONFIRMED');assert.equal(q.SHORT,'REFUTED');assert.equal(q.native_alignment_offset_ms,345600000);assert.equal(q.entry_authorized,false);
 });
