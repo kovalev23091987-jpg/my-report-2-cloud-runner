@@ -1,0 +1,64 @@
+name: Paid volume bounded history retention
+on:
+  push:
+    branches: [main, fix/paid-bounded-history-20261018]
+    paths:
+      - runner/sliding-history-capacity.mjs
+      - runner/sliding-history-capacity.test.mjs
+      - runner/github-bounded-phase-lease.mjs
+      - runner/github-bounded-phase-lease.test.mjs
+      - tools/run-paid-sliding-history-20261018.mjs
+      - checkpoints/OWNER_PAID_SLIDING_HISTORY_20261018.json
+      - .github/workflows/paid-sliding-history-20261018.yml
+  schedule:
+    - cron: '17 0,12 * * *'
+  workflow_dispatch:
+    inputs:
+      expected_owner:
+        description: Exact parent lease for one verification; empty acquires its own
+        type: string
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: report2-retained-history-relocation
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify real retained schema, reference races, summary preservation and admission
+        run: node --test runner/sliding-history-capacity.test.mjs runner/github-bounded-phase-lease.test.mjs
+      - name: Check scheduled entrypoint syntax
+        run: node --check tools/run-paid-sliding-history-20261018.mjs
+  maintain:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: verify
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 12
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ${{ secrets.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN || secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
+      BORROW_EXISTING_OWNER: ${{ inputs.expected_owner || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check account volume and expire admitted old details only at high water
+        run: node tools/run-paid-sliding-history-20261018.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paid-sliding-history-${{ github.run_id }}
+          path: audit-output/paid-sliding-history/
+          if-no-files-found: error
+          retention-days: 30

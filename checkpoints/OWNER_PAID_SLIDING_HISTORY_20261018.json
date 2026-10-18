@@ -1,0 +1,52 @@
+{
+  "schema": "OWNER_PAID_SLIDING_HISTORY_V1",
+  "recorded_utc": "2026-10-18T07:15:00Z",
+  "owner_instructions": [
+    "Я оплатил, проверяй.",
+    "Нужно сделать, чтобы эта память заполнялась, потом когда она заканчивалась, автоматически перезаписывались новые, сохранялись, старые удалялись.",
+    "Донастраивай нашу базу, делай, чтобы оно перезаписывалось, когда будет заканчиваться, и по плану переходи, донастраивай все блоки наши."
+  ],
+  "active_chat": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "account_id": "70ee0af85191ea470e74c7383fdec772",
+  "primary_database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+  "paid_UI_confirmed": true,
+  "paid_UI_basis": {
+    "page": "https://dash.cloudflare.com/70ee0af85191ea470e74c7383fdec772/workers/plans",
+    "observed_text": ["Paid", "$5 / month + usage", "Current plan"],
+    "observation_method": "Authenticated Chrome accessibility page in the exact project account, 18Oct2026 around07:10UTC",
+    "account_settings": {"default_usage_model": "standard"},
+    "settings_alone_prove_paid_billing": false,
+    "billing_subscription_API_access": "DENIED; UI Current plan is the authority",
+    "actual_new_paid_database_write_accepted": false
+  },
+  "enabled": true,
+  "owner_authorized_detail_expiry": true,
+  "account_ceiling_bytes": 5000000000,
+  "high_water_bytes": 4000000000,
+  "target_bytes": 3500000000,
+  "implementation": "runner/sliding-history-capacity.mjs",
+  "scheduled_entrypoint": ".github/workflows/paid-sliding-history-20261018.yml",
+  "behaviour": "At high water, expire oldest unreferenced REJECTED canonical metadata/presentation inputs and the corresponding full-evidence proof details. Retain publication rows, every original scalar, canonical root decision summaries, other full-evidence columns, source clocks, latest per-asset bodies and all protected reference/statistic rows. Expired payloads are explicitly DETAILS_EXPIRED and cannot pass canonical identity as current complete data.",
+  "operation_bounds_derived_for_new_owner_request": {
+    "canonical_body_updates_per_run": 48,
+    "full_evidence_proof_updates_per_run": 48,
+    "nominal_updates_day_at_two_runs": 192,
+    "nominal_max_input_body_rows_day": 172,
+    "native_successful_throughput_proven": false,
+    "new_detail_expiry_reservation": {"rows_read": 20000, "rows_written": 400},
+    "shared_family": "RETAINED_HISTORY",
+    "max_runs_day_shared_with_legacy": 2,
+    "legacy_archive_mode_unchanged": "48/run,5000R400W",
+    "extra_daily_read_reserve_vs_two_legacy_slots": 30000,
+    "known_nine_family_3266708R_plus_extra_reserve_only": 3296708,
+    "that_scalar_is_a_complete_day_upper_bound": false,
+    "overall_day_limits_unchanged": {"rows_read": 3500000, "rows_written": 70000},
+    "next_full_reserve_protected_before_expiry": {"rows_read": 59000, "rows_written": 920},
+    "HTTP": {"whole_job": 164, "control": 40, "bridge": 16},
+    "spent_reservations_refunded": false,
+    "unknown_reset_or_renamed": false
+  },
+  "same_run_Telegram_or_full_report_restored": false,
+  "all_blocks_complete": false,
+  "project_complete": false
+}
