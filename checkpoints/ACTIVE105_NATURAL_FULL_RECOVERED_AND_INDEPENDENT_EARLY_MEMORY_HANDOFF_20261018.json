@@ -1,0 +1,621 @@
+{
+  "schema": "ACTIVE105_NATURAL_FULL_RECOVERED_AND_OWNER_INDEPENDENT_EARLY_MEMORY_V1",
+  "recorded_utc": "2026-10-18T12:15:01.121435+00:00",
+  "save_base": "8e29b850ad677a7a6ddc6fc56d6d4398e88f5188",
+  "cloud_receipts": "checkpoints/natural-full-recovery-and-statistics-20261018/cloud-and-originals-receipts.json",
+  "native": {
+    "schema": "ACTUAL_NATURAL_FULL_RECOVERY_AND_OWNER_STATISTICS_V1",
+    "run": 39125232536,
+    "head": "0c95a59152a6f0ba9e27d7537e634bdc37be1799",
+    "run_id": "1792324604859-1792324615501",
+    "artifacts": [
+      {
+        "artifact": 12135613441,
+        "digest": "sha256:3d265dbd713df7aee042393dad6126925e1b50fcb0e26f78a84b5c98eaf5ea79",
+        "path": "checkpoints/natural-full-recovery-and-statistics-20261018/native-39125232536-12135613441.zip"
+      },
+      {
+        "artifact": 12135747958,
+        "digest": "sha256:57b9ec968139435b15dae3422fd278e0378b36c41f3bf27429584ec7b9d37c5c",
+        "path": "checkpoints/natural-full-recovery-and-statistics-20261018/native-39125232536-12135747958.zip"
+      }
+    ],
+    "logs_sha256": "527c4b333246ecf77a04e0b3821269e23ffb74b279a72d575ab6d9957590ee88",
+    "full_report_status": "CLOSED",
+    "reason": null,
+    "scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0,
+      "approved_scope": {
+        "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+        "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+        "approved_contracts": 122,
+        "approved_assets": 105,
+        "catalog_families": 3,
+        "unsupported_inverse_delivery_contracts": 17,
+        "catalog_observed_ts": 1791827516363,
+        "observed_ts": 1792324615691,
+        "expected_analysis_contracts": 105,
+        "accepted_analysis_contracts": 99,
+        "missing_approved_analysis_contracts": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "officially_unavailable_analysis_contracts": [
+          {
+            "contract": "BTR-USDT",
+            "symbol": "BTR",
+            "status": "HTX_OFFICIALLY_SUSPENDED",
+            "contract_status": 3,
+            "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+            "source_ts": 1792324616227,
+            "observed_ts": 1792324616709,
+            "classification": "CRYPTO_CONFIRMED",
+            "native_scope": {
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": []
+            },
+            "market_data_available": false,
+            "analysis_eligible": false,
+            "entry_authorized": false,
+            "market_prices_filled": false
+          },
+          {
+            "contract": "DOS-USDT",
+            "symbol": "DOS",
+            "status": "HTX_OFFICIALLY_SUSPENDED",
+            "contract_status": 3,
+            "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+            "source_ts": 1792324616227,
+            "observed_ts": 1792324616709,
+            "classification": "CRYPTO_CONFIRMED",
+            "native_scope": {
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [],
+              "tradfi_labels": []
+            },
+            "market_data_available": false,
+            "analysis_eligible": false,
+            "entry_authorized": false,
+            "market_prices_filled": false
+          },
+          {
+            "contract": "GPS-USDT",
+            "symbol": "GPS",
+            "status": "HTX_OFFICIALLY_SUSPENDED",
+            "contract_status": 3,
+            "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+            "source_ts": 1792324616227,
+            "observed_ts": 1792324616709,
+            "classification": "CRYPTO_CONFIRMED",
+            "native_scope": {
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": []
+            },
+            "market_data_available": false,
+            "analysis_eligible": false,
+            "entry_authorized": false,
+            "market_prices_filled": false
+          },
+          {
+            "contract": "PIPPIN-USDT",
+            "symbol": "PIPPIN",
+            "status": "HTX_OFFICIALLY_SUSPENDED",
+            "contract_status": 3,
+            "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+            "source_ts": 1792324616227,
+            "observed_ts": 1792324616709,
+            "classification": "CRYPTO_CONFIRMED",
+            "native_scope": {
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": []
+            },
+            "market_data_available": false,
+            "analysis_eligible": false,
+            "entry_authorized": false,
+            "market_prices_filled": false
+          },
+          {
+            "contract": "SKR-USDT",
+            "symbol": "SKR",
+            "status": "HTX_OFFICIALLY_SUSPENDED",
+            "contract_status": 3,
+            "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+            "source_ts": 1792324616227,
+            "observed_ts": 1792324616709,
+            "classification": "CRYPTO_CONFIRMED",
+            "native_scope": {
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [],
+              "tradfi_labels": []
+            },
+            "market_data_available": false,
+            "analysis_eligible": false,
+            "entry_authorized": false,
+            "market_prices_filled": false
+          },
+          {
+            "contract": "UB-USDT",
+            "symbol": "UB",
+            "status": "HTX_OFFICIALLY_SUSPENDED",
+            "contract_status": 3,
+            "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+            "source_ts": 1792324616227,
+            "observed_ts": 1792324616709,
+            "classification": "CRYPTO_CONFIRMED",
+            "native_scope": {
+              "business_type": "swap",
+              "contract_type": "swap",
+              "trade_partition": "USDT",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": []
+            },
+            "market_data_available": false,
+            "analysis_eligible": false,
+            "entry_authorized": false,
+            "market_prices_filled": false
+          }
+        ],
+        "unresolved_approved_analysis_contracts": [],
+        "checked_analysis_contracts": 105,
+        "market_data_analysis_contracts": 99,
+        "scan_count_basis": "APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE",
+        "outside_approved_crypto_contracts": [
+          {
+            "contract": "ZCSH-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "SNPS-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "WAL-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          },
+          {
+            "contract": "MAGIC-USDT",
+            "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+          }
+        ],
+        "identity_rejected": [],
+        "duplicate_rejected": [],
+        "status": "CLOSED",
+        "structural_membership_only": true,
+        "source_clocks_refreshed": false,
+        "approved_universe_changed": false
+      },
+      "scanned_market_data": 99,
+      "officially_unavailable": [
+        {
+          "contract": "BTR-USDT",
+          "symbol": "BTR",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792324616227,
+          "observed_ts": 1792324616709,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "DOS-USDT",
+          "symbol": "DOS",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792324616227,
+          "observed_ts": 1792324616709,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "GPS-USDT",
+          "symbol": "GPS",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792324616227,
+          "observed_ts": 1792324616709,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "PIPPIN-USDT",
+          "symbol": "PIPPIN",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792324616227,
+          "observed_ts": 1792324616709,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "SKR-USDT",
+          "symbol": "SKR",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792324616227,
+          "observed_ts": 1792324616709,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "UB-USDT",
+          "symbol": "UB",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792324616227,
+          "observed_ts": 1792324616709,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        }
+      ],
+      "scan_count_basis": "APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE",
+      "stage0_coverage_pct": 100,
+      "complete": true
+    },
+    "candidate_set": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "CLOSED",
+      "run_id": "1792324604859-1792324615501",
+      "expected_contracts": [
+        "APR-USDT",
+        "TIA-USDT"
+      ],
+      "present_contracts": [
+        "TIA-USDT",
+        "APR-USDT"
+      ],
+      "missing_contracts": [],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 2,
+      "missing_is_technical_not_no_market_idea": false
+    },
+    "candidates": [
+      {
+        "contract": "TIA-USDT",
+        "run_id": "1792324604859-1792324615501",
+        "snapshot_id": "S392:TIA-USDT:1792324719982",
+        "publication_id": "PUB:aecd804d72c98962807e9616a35dfdba069639c7",
+        "observed_ts": 1792324719982,
+        "state": "REJECTED",
+        "direction": null,
+        "analytical_fingerprint": "ba7c6280c92b6d279698328379afa5321a4ce500f6cb1ece0349ee08ffbe0c23",
+        "canonical_json_sha256_sorted": "15509d8fb0a3f76ef0b477e8c3100c27cd8b4542056bac566fafa3e66aa87ebc",
+        "readback_basis": "Existing persistCanonicalSnapshot SELECT canonical_json compares full parsed canonical hash; final persisted candidate-set audit CLOSED. No second independent diagnostic SQL performed."
+      },
+      {
+        "contract": "APR-USDT",
+        "run_id": "1792324604859-1792324615501",
+        "snapshot_id": "S392:APR-USDT:1792324681303",
+        "publication_id": "PUB:1e982dcf65394017b015e1340e4e10b5a8ee761a",
+        "observed_ts": 1792324681303,
+        "state": "REJECTED",
+        "direction": null,
+        "analytical_fingerprint": "3862f28a488f04141d85fdadb45333ac580ffcd2d7561fcfb2a1969d4af4307f",
+        "canonical_json_sha256_sorted": "0b29eac6e1955d85b133db1b8ccf500d603eba3f54835e48256b3258d62ff53d",
+        "readback_basis": "Existing persistCanonicalSnapshot SELECT canonical_json compares full parsed canonical hash; final persisted candidate-set audit CLOSED. No second independent diagnostic SQL performed."
+      }
+    ],
+    "pipeline_health": {
+      "status": "HEALTHY_NO_IDEA",
+      "reason": null
+    },
+    "Telegram": {
+      "network_enabled": true,
+      "lifecycle": {
+        "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+        "mode": "SHADOW_ONLY",
+        "network_send": false,
+        "dispatch_enabled": true,
+        "probability": null,
+        "validated_signal": false,
+        "trading_execution": false,
+        "status": "CLOSED",
+        "completed_handoffs": 2,
+        "transitions": [
+          {
+            "contract": "TIA-USDT",
+            "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+            "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+            "current_status": null,
+            "dispatch": null
+          },
+          {
+            "contract": "APR-USDT",
+            "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+            "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+            "current_status": null,
+            "dispatch": null
+          }
+        ],
+        "usage_delta": {
+          "rows_read": 79,
+          "rows_written": 0,
+          "requests": 5,
+          "unknown_ops": 0
+        }
+      },
+      "same_run_proof": {
+        "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+        "head": "0c95a59152a6f0ba9e27d7537e634bdc37be1799",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "run_id": "1792324604859-1792324615501",
+        "source": "schedule",
+        "recorded_at": 1792324727910,
+        "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+        "delivery_status": "CLOSED",
+        "cases": [],
+        "sourceHTTP_added": 0,
+        "D1_added": 0,
+        "Telegram_added": 0,
+        "task_writes_added": 0,
+        "original_clocks_refreshed": false,
+        "project_complete": false
+      },
+      "message_id": null,
+      "sent": false,
+      "reason": "Both finalists REJECTED/directionnull; current lifecycle CANONICAL_DIRECTION_NOT_CLOSED and no final decision. Not a Telegram transport error or forced signal."
+    },
+    "native_cost_limit": "Success currently keeps final counters/statistical refresh only in digit-redacted console; artifact has no exact final native accounting. Do not reconstruct masked digits or infer0. New metadata copy retains already available snapshots for NEXT saved natural, no newSQL/sourceHTTP/journalactivation. Whole-day stillopen.",
+    "observed_statistics_statuses": {
+      "block_weights": "WEEKLY_POLICY_ALREADY_ASSESSED",
+      "recall": "NOT_CLOSED:BASELINE_SNAPSHOT_MISSING across1h/4h/24h; persistedreadbackPASS",
+      "prospective": "CLOSED; one factual BTWearlyoutcome with originalhistory; no capturable entry; readinessNOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE; exact maskedcounts not reconstructed."
+    },
+    "source_original_acquisition_repeated": false,
+    "new_native_SQL": 0,
+    "whole_day_closed": false,
+    "same_run_SENT": false,
+    "project_complete": false
+  },
+  "owner_latest_request": {
+    "schema": "OWNER_STATISTICS_AND_EARLY_EVENT_MEMORY_20261018",
+    "source": "Direct owner messages in coordinator01a14dc8-472e-7090-9342-5c43b77c0a0c18Oct2026",
+    "requested": [
+      "Retain useful report/source effectiveness statistics under paid sliding history",
+      "Existing source/block adaptive weights must use qualified later factual outcomes, not request availability alone",
+      "Persist exact earlier candle/volume anomalies and subsequent price reaction, minutes/hours/day/week, include later strong growth and failures/no growth",
+      "Red large-volume candles are observations; selling/absorption/trap is not established solely by candle colour or volume",
+      "Use historical event memory and verified later outcomes to improve early attention/ranking under existing strategy guards"
+    ],
+    "preserve": [
+      "original source clocks and event identity, exactasset/venue/market/timeframe",
+      "failed and successful events, later outcomes absent remainunknown",
+      "no lookahead or fabricated trade profit",
+      "existing paused blocks, weights/caps/form/entryprotocols until accepted qualified mechanism"
+    ],
+    "actual_audit_now": {
+      "block_weights": "WEEKLY_POLICY_ALREADY_ASSESSED",
+      "recall": "NOT_CLOSED:BASELINE_SNAPSHOT_MISSING across1h/4h/24h; persistedreadbackPASS",
+      "prospective": "CLOSED; one factual BTWearlyoutcome with originalhistory; no capturable entry; readinessNOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE; exact maskedcounts not reconstructed."
+    },
+    "next": "Trace existing anomaly event15m/1h/4h/1d producer→durable event memory→same-venue history/later outcomes→early attention/Deep Check and existing calibration. Existing weekly predictive block mechanism is implemented; verify real eligible samples and consumer use. Long history relative-pattern module is descriptive/report_readyfalse and does not itself close early detection.",
+    "owner_explicit_regression_constraint": {
+      "source": "Latest direct owner message18Oct2026",
+      "required": "Preserve already configured strategy and report/delivery. Thoroughly assess new anomaly/statistics work against market selection, candidate admission and reports; do not repeat earlier regression where no coins passed and Telegram stopped.",
+      "implementation_order": "First independently observe/persist/evaluate event history and later outcomes without changing existing ranking, thresholds, eligibility, strategy/blockweights or delivery. Any later influence only through existing qualified adaptive rules, exact later-outcome proof and connected regression checks.",
+      "protected_chain": "105 approved checks→actualavailablemarket→shortlist→2 deep candidates→canonical persistence/readback→existing renderer/lifecycle/delivery",
+      "current_proof": "Natural39125232536 exact native fullCLOSED105checks99market6suspended,2savedREJECTED and noSENT. Technicalfullrecovery only; do not claim restoration of actualTelegram or tune signals to force a send."
+    },
+    "latest_independent_report_clarification": {
+      "source": "Owner latest direct messages in coordinator18Oct2026",
+      "main_report": "Continue already authorized block/storage/source/Telegram fixes under existing plan. Preserve current main report layout, selection, weights, thresholds, nine paused blocks and delivery semantics. New anomaly chain does not modify main ranking, eligibility or trade authorization.",
+      "parallel_observer": "Separate early anomaly memory over same approved assets/sources: exact candle OHLCV, unusually high volume vs candle result, transfers/flow where verified, original eventtime, internal1m/3m/5m composition only when complete actual candles exist; observebeforelargemove, retain event and later confirmation overhours/day/week, include failed/no-move outcomes.",
+      "Telegram": "Additional short separate message in the SAME existing Telegram chat alongside/after main report; preserve main message bytes/length. Explain earlier anomaly date and current measured confirmation, deduplicate episode, no entry claim from volume/colour alone. Latest owner prefers independent parallel report rather than rewriting main.",
+      "limits": "Reuse already paid source facts first. Current5minute price/rolling24hturnover snapshots are not actualminuteOHLCV or proof of minute-volume anomaly. Whole105continuousminute OHLCV coverage and incrementalHTTP/SQL/day/month/manual headroom not qualified; selective further acquisition only after actual admission withinunchangedcaps, never steal main completion reserve.",
+      "activation_order": "First trace and qualify factual observer/eventmemory/later outcomes with no main strategy effect; then qualify bounded separate Telegram delivery and exact new panel form. Proposed chain NOT implemented/activated by this handoff."
+    },
+    "existing_implementation_audit": {
+      "files": [
+        "current-generation/files/src/opportunity-intelligence-engine.mjs",
+        "current-generation/files/src/selected-early-evidence.mjs",
+        "current-generation/files/src/early-wave-continuity.mjs",
+        "current-generation/files/src/block-weight-calibration.mjs",
+        "current-generation/files/src/liquidation-source-weighting.mjs",
+        "runner/r8-20-prospective-validation-sidecar.mjs"
+      ],
+      "existing_anomaly_timeframes": [
+        "15m",
+        "1h",
+        "4h",
+        "1d"
+      ],
+      "existing_outcome_horizons": [
+        "1h",
+        "4h",
+        "12h",
+        "24h",
+        "3d",
+        "7d"
+      ],
+      "existing_opportunity_event_capacity": "max8computed events,1persisted event/deep check,4outcomeupdates/deep; Deep-Check-eligible population only, NOTwholemarket",
+      "existing_history_relative_pattern": "descriptive;report_readyfalse/score0, not a new predictive/early detector",
+      "weekly_block_adaptation": "Existing qualified later-sample mechanism remains;200samples/30days/20assets/longshort50each and independent chronologicaltrain/validation/test rules, no activation by request or availability alone.",
+      "source_availability": "Existing operational usefulness/health affects source ordering. Runtime LIQ health reader declares SHADOW/LEGACY_DISABLED predictive eligibility; no actual validated predictive activation accepted.",
+      "actual_latest_stats": {
+        "block_weights": "WEEKLY_POLICY_ALREADY_ASSESSED",
+        "recall": "NOT_CLOSED:BASELINE_SNAPSHOT_MISSING across1h/4h/24h; persistedreadbackPASS",
+        "prospective": "CLOSED; one factual BTWearlyoutcome with originalhistory; no capturable entry; readinessNOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE; exact maskedcounts not reconstructed."
+      },
+      "critical_gap": "Existing detailed anomaly memory is downstream of Deep, so it does not prove independent whole-market preselection memory; real recall reports missing historicalbaselines. Need measured separate observer coverage/cost/clock/event→laterconfirmation path rather than claiming existing one closes newownerneed."
+    }
+  },
+  "all4active_mirrors_identical": true,
+  "unmodified_root_value_spans_byte_exact": true,
+  "protected_technical_fields": {
+    "canonical_retention_cursor": {
+      "schema": "PROTECTED_CANONICAL_CURSOR_V1",
+      "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+      "cursor": 710,
+      "source_cursor": 0,
+      "run_id": "39022879318",
+      "source_head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+      "updated_ts": 1792230897457,
+      "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY"
+    },
+    "latest_native_relocation": {
+      "run": 39022879318,
+      "head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+      "proof": "checkpoints/free-storage-20261017/native-39022879318.json",
+      "proof_raw_sha256": "f39937693ad0c70e54e70a60dd8ebef1caa99c0e8013543e83ee9884009c99a7",
+      "review": "checkpoints/free-storage-20261017/native-39022879318-review.json",
+      "completed_ts": 1792230899286,
+      "physical_bytes_reclaimed": 1126400,
+      "primary_database_bytes_after": 498737152,
+      "native_costs_closed": true,
+      "whole_day_closed": false,
+      "full_report_restored": false,
+      "sustainable_capacity_accepted": false
+    },
+    "paid_sliding_history": {
+      "policy": "checkpoints/OWNER_PAID_SLIDING_HISTORY_20261018.json",
+      "paid_UI_confirmed": true,
+      "paid_UI_basis": "Cloudflare exact account Workers plans page: Paid $5/month+usage / disabled Current plan",
+      "enabled": true,
+      "workflow": "paid-sliding-history-20261018.yml",
+      "schedule_UTC": [
+        "00:17",
+        "12:17"
+      ],
+      "chosen_account_ceiling_bytes": 5000000000,
+      "high_water_bytes": 4000000000,
+      "target_bytes": 3500000000,
+      "minimum_hot_ms": 172800000,
+      "body_updates_per_operation": 96,
+      "canonical_updates": 48,
+      "full_proof_updates": 48,
+      "shared_family": "RETAINED_HISTORY",
+      "shared_day_slots": 2,
+      "reservation_rows_read": 20000,
+      "reservation_rows_written": 400,
+      "legacy_lossless_bounds_unchanged": true,
+      "actual_volume_check": "checkpoints/paid-sliding-history-20261018/native-check-39108141802.json",
+      "actual_account_bytes": 518578176,
+      "actual_primary_bytes": 499974144,
+      "actual_observed_ts": 1792308860790,
+      "actual_expiry_rows": 0,
+      "actual_physical_bytes_freed": 0,
+      "native_expiry_qualified": false,
+      "native_throughput_qualified": false,
+      "all_rows_storage_bounded_forever_proven": false,
+      "native_full_restored": false,
+      "unknown_reset": false,
+      "caps_raised": false
+    },
+    "latest_actual_same_run_telegram_message_id": null
+  },
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792321120450",
+    "acquired_ts": 1792321120450,
+    "expires_ts": 1792326220450,
+    "expected_main": "83e38e4faab850eb0da3ff577d79261e51a3fa21",
+    "scope": "Owner explicitly says continue without stopping. Integrate frozen source PR433/434/435/436/438/439/441 and subsequent independent completed N10 source work only after exact original/code/proposal readback; resolve433/438 overlap with exact after433 patch, apply shared consumer/CI proposals, one connected local/branch/main qualification. Preserve all8golden forms,105assets122contracts9pauses, strategies/scores/caps, old15unknown and all spent reservations, paid policy/cursor710/relocation/all4mirrors. Read already saved natural runs after440 for exact105/99 failure context or actual recovery; no forced unchanged-failing MAIN/manual, no new native/source acquisition without actual existing admission and specific missing fact, no resetting/refunding/raising/aliasing quotas. Worker own checkout/lease untouched and keep its accepted large independent queue moving. Concrete exact Telegram length repair may be reviewed within existing approved forms/caps, no speculative scaffolding. Save exact result/next state in GitHub, read back, release only own lease. Concrete native39123622796/headce767863/artifact12134758130 proves all6 missing approved HTX contracts have official contract_status3 (suspended), exact source1792323140029/received1792323140215, both CT/BR canonical bytes read back,16SQL19R13Wunknown0. Implement and qualify accurate current-cycle availability accounting: retain105expected and122contracts, separate99market-data scans from6fresh exact officially suspended/unavailable checks; no fabricated prices, score, entry, provider facts, removed approved assets or relaxed unknown/missing/identity/duplicate guards. Source proof must be same current catalog and clocks. Fix actual CT2341>1600 compact overflow within original1600/850/1100 bounds and approved optional field counts, preserve all8golden canonical bytes, safety/LIQ/mandatory fields and original full canonical facts/statistics; no final owner form redesign. Read/integrate frozen445 delta evidence as applicable, source worker continues independent queue. No repeat of accepted native diagnosis or source original acquisition; no forced unchanged MAIN. One combined local/branch/main check and exact next saved natural. Owner continues parallel useful work while next automatic run is pending. Exact-readback frozen worker445/446/448: integrate delta budget documentation and N15 CoinPaprika/Coingecko raw numeric/null/cached-fact bindings in one connected local/branch/main check; historical raw vs explicit controlled reconstruction distinction preserved. No increased HTTP/SQL, caps/reserves/backoff/strategy/weights/forms/9pauses unchanged. Source worker continues concrete new CT/BR source-consumer gaps in separate scoped offline lane, not waiting for merge. New READY source work may be reviewed for next packet only if an independently demonstrated concrete defect and bounded useful result, no speculative scaffolding. New owner12:02UTC explicitly requires retained statistics to improve report/source usefulness and effectiveness, existing qualified predictive weights and early anomalous candle/volume detection before later pumps. Audit actual history→features→consumer→later outcome/calibration first; retain failed and successful cases, original clocks and independent later test boundaries, do not grant predictive accuracy from availability/HTTP200 or fabricated outcome labels. Current natural39125232536 exact artifact12135613441 is CLOSED,99market+6officialsuspended/105checks,APR/TIAbothsavedREJECTEDdirectionnull/noSENT; only final native accounting and statistical refresh details are console-only and GitHub redacts digit1, so preserve already available in-memory completion accounting/statistics in existing uploaded artifact with0extraSQL/sourceHTTP, no journal activation/reserve/strategy/form/cap changes. One connected branch/main qualification. Save current exact handoff/owner instruction/all4mirrors, release own lease before expiry; worker continues independent source queue.",
+    "released": true,
+    "released_ts": 1792325701121
+  },
+  "project_complete": false,
+  "all7directions_open_in_remaining_scope": true,
+  "next_action": "Continue owner-authorized main project and preserve new independent early-memory requirement. Fresh main/AGENTS/status/resume/three active proofs are truth. PR442/444/447/449/450 accepted exact branch/main; final1889PASS0FAIL21TAP. Integrated433/434/435/436/438/439/441 via442,443 via444,445/446/448 via449. All frozen worker branches untouched; pending next worker source packages are not automatically accepted. Do not rerun accepted local/CI/native/source originals without new defect. Actual automatic natural39125232536/head0c95a591,run1792324604859-1792324615501/artifact12135613441/digestsha256:3d265dbd713df7aee042393dad6126925e1b50fcb0e26f78a84b5c98eaf5ea79 is CLOSED/reasonnull.105approved checks explicitly99actual market scans+6fresh native HTXstatus3suspended,0errors/stale; no invented prices/removedassets. Exact persisted APR/TIA canonical set read back via existing producerhash/final DBreader,auditCLOSED. BothREJECTED/directionnull, healthy noidea. Telegram networkenabled/lifecycleCLOSED but CANONICAL_DIRECTION_NOT_CLOSED, same-runproofNO_EXACT_SAME_RUN_SENT_CAPTURED/no message_id. No full delivery/ENTRY claim or strategy/score weakening to forceSENT. This closes current full-calculation/persistence failure at a limited natural point, not sustainable paidcapacity/daybudget/manual/LIQ/finalTelegram. PR447 fixes6suspended accounting and actualCT2341>1600 compact overflow; exact earlier CT/BR bothDBbodies read at native39123622796,16SQL19R13Wunknown0/1HTXsource,4000R160W spent/no refund. This diagnostic must not repeat. Actuallaternatural catalogsource1792324616227/received1792324616709 independently rechecks6status3. Cursor710/relocation39022879318/Paid5GB4GBstart3.5GBtarget48h/old15unknown/allreserves remain. Paid below-threshold518578176bytes probe39108141802 not repeat; no expiry/long-termcapacity acceptance. Actual successful full currently retains final counters/statistical refresh only in GitHub digit-redacted console: do not infer masked numbers or0. PR450 now saves existing exact in-memory completion aggregate/ledgerfinalization/lease/stats in report2-completion-accounting.json inside same upload,0newSQL/sourceHTTP, no journalactivation; its scope precedes optionalmanualcompletion/externalarchive and whole_dayfalse. Inspect NEXT ALREADY SAVED natural completion artifact, not force another full just for proof. Nativewhole-day/manual reserve remains open; oldUTC18unknown15 independently aggregate-reconciled only under existing originalledgerwitness, never reset/refund/raise quotas. Newest owner: main report/selection/strategy/forms stays; continue previous main work. Additional independent early anomaly observer/report uses same sources, remembers ex-ante candle/volume/transfer anomalies and later movementconfirmation overhours/day/week, with failed/no-move/control separation. Prefer separate short message in sameTelegram adjacent to main, not append/changemainbytes. Proposed observer is not activated here. First audit existingeventmemoryandactualcoverage/costs; no true1mOHLCV from5mprice/rolling24hturnover. Existing opportunityengine15m/1h/4h/1d+1h/4h/12h/24h/3d/7d remains, but max1persisted event/deepcheck and Deep-eligiblepopulation only. Existing weekly adaptiveblock rules require qualified independent lateroutcomes, operationalavailability is not predictiveaccuracy. Actualnative stats: blockweeklyalreadyassessed; recallNOT_CLOSED baseline snapshotsmissing1h/4h/24h; prospectiveCLOSED onefactualBTWearlyoutcome/noentrysample/readinessinsufficient. Determine exact missing historicalreader/data/persistence and event→confirmation→independentshortnotice path; do not rewrite workingcore or enablepredictionweights on unqualifiedsamples. Keep sourcechat Мой отчёт 2 — источники01a14e11-ff1e-7ca1-9f7c-61666ef85c94 on its large independent queue under its own source-ref CAS offlinelease: Gatepaidpages→boundedN12reuse (actualPEOPLE/SUSHI originals stale-negative, positive controlledclock explicitly, no new currentfactclaim), then Backpack CALLER_FIVE_REQUEST_CAP mislabel, then exact sourcefact→consumer→laterstatisticaloutcome gaps from newCT/BR/APR/TIA originals. Primary owns shared/statistics/observer/currentrecovery/live. Worker may not touch shared/main/phase/status/generation/live/SQL/deploy/TG. Inspect compact progress at meaningful packageboundaries; ifidle with independentworkresume directly, not wait hourly or askowner to shuttle messages. Before coordinator changes/tests/live: freshmain/phase/fence/generation/status, own scopedCAS<=90min/exactreadback, phase.current_task ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS, own suffixacquiredts and identicalphaselease/latestobject/all4activeownedstring/expiry. Onlyreleaseown. Preserve unrelatedrootvalue bytes. All7directions remain open in remaining scope: storage/fullreport sustainability,wholebudget/manual,usefulcoverage/order/fallback105,history/statistics,automaticpriorities/weeklyHTX,integratednatural/manual/LIQ/bothpersisted/SENT,finalTelegram.105assets122contracts9pauses/MAGIC106deferred/threshold70weights/forms/backoff/caps preserved. Exact finalentrydecision score/form afterblocks remains; no independentbackgroundpromise and disable autopod only afterfullacceptance."
+}
