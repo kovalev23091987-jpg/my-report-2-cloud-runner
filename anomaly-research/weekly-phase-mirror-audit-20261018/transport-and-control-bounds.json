@@ -1,0 +1,92 @@
+{
+  "schema": "WEEKLY_PHASE_MIRROR_TRANSPORT_BOUND_REVIEW_V1",
+  "base_main": "a9d13e8dd5e7ed69953e3ed38af26596826affd9",
+  "four_root_raw_bytes": 2498292,
+  "four_root_base64_bytes": 3331060,
+  "six_blob_raw_bytes": 2571049,
+  "seven_blob_raw_bytes": 2627749,
+  "representative_unchanged_mutation_JSON_UTF8_bytes": 3331771,
+  "representative_seven_blob_response_JSON_UTF8_bytes": 2821769,
+  "representative_seven_blob_response_all_ASCII_escaped_bytes": 2995029,
+  "measurements_are_local_serializations_not_native_transport": true,
+  "future_patched_payload_exact_size_required": true,
+  "github_documented_body_ceiling_for_this_mutation": "NOT_ESTABLISHED_FROM_CITED_OFFICIAL_DOCS",
+  "actual_installed_GITHUB_TOKEN_permission": "NOT_QUALIFIED",
+  "actual_snapshot_truncation_latency_and_rate_headers": "NOT_OBSERVED",
+  "existing_calls_success_path": {
+    "acquire": {
+      "ref": 1,
+      "contents_reads": 5,
+      "contents_PUT": 1,
+      "phase_readback": 1,
+      "total": 8
+    },
+    "release": {
+      "ref": 1,
+      "phase_read": 1,
+      "contents_PUT": 1,
+      "phase_readback": 1,
+      "total": 4
+    },
+    "canonical_cursor_promotion": {
+      "ref": 1,
+      "phase_and_fence_reads": 2,
+      "contents_PUT": 1,
+      "phase_readback": 1,
+      "total": 5
+    },
+    "sliding_cursor_promotion": {
+      "guard_ref": 1,
+      "guard_phase_fence_reads": 2,
+      "contents_PUT": 1,
+      "phase_readback": 1,
+      "total": 5
+    }
+  },
+  "candidate_conservative_success_path": {
+    "GET_current_main": 1,
+    "GraphQL_SHA_pinned_snapshot_including_ref_and_six_or_seven_Blobs": 1,
+    "createCommitOnBranch_expectedHeadOid_four_additions": 1,
+    "GraphQL_returned_commit_exact_readback_including_ref": 1,
+    "total": 4,
+    "known_expected_head_snapshot_can_omit_first_GET": true,
+    "conditional_not_implemented_or_qualified": true
+  },
+  "existing_retention_control_plan": {
+    "control_cap": 40,
+    "before_each_native_mutation_guard_HTTP": 3,
+    "max_mutation_batches": 6,
+    "borrowed_cursor_cleanup_reserve": 5,
+    "self_cursor_plus_release_cleanup_reserve": 10,
+    "bridge_postflight_reserve_if_pending": 4,
+    "formula": "min(6,max(0,floor((40-used-cleanup-postflight)/3)))",
+    "candidate_borrowed_cursor_HTTP_at_most": 4,
+    "candidate_self_cursor_plus_release_HTTP_at_most": 8,
+    "keep_original_reserves_and_limits": true,
+    "unfunded_retry_or_recovery_HTTP_allowed": false
+  },
+  "official_documentation": [
+    {
+      "url": "https://docs.github.com/en/graphql/reference/commits",
+      "supports": "CreateCommitOnBranchInput expectedHeadOid, branch, fileChanges; one commit updates branch; not token-specific qualification"
+    },
+    {
+      "url": "https://docs.github.com/en/graphql/reference/git",
+      "supports": "FileAddition full RFC4648 base64 bytes; unique paths; no transcoding/newline normalization; Blob byteSize/oid/isBinary/isTruncated/text"
+    },
+    {
+      "url": "https://docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api",
+      "supports": "10-second server timeout and partial resource-limit errors; not body acceptance for measured envelope"
+    },
+    {
+      "url": "https://docs.github.com/en/enterprise-cloud@latest/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app",
+      "supports": "Specific GraphQL query/mutation permissions require app testing; contents permission for Git does not itself prove mutation acceptance"
+    },
+    {
+      "url": "https://docs.github.com/en/graphql/guides/forming-calls-with-graphql",
+      "supports": "Fixed /graphql endpoint, POST JSON, GitHub App authentication supported"
+    }
+  ],
+  "docs_checked_UTC": "2026-10-18",
+  "new_native_or_mutation_calls": 0
+}

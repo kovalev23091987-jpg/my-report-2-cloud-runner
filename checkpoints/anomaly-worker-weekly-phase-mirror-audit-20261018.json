@@ -1,0 +1,88 @@
+{
+  "schema": "ANOMALY_WORKER_WEEKLY_PHASE_MIRROR_AUDIT_V1",
+  "status": "READ_ONLY_AUDIT_READY_FOR_COORDINATOR",
+  "base_main": "a9d13e8dd5e7ed69953e3ed38af26596826affd9",
+  "branch": "work/report2-anomalies-weekly-mirror-audit-20261018",
+  "worker_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "lease_acquired_ref": "641ebbf6820ca3a726cc348b608c8fdbd0033661",
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792355245427",
+  "lease_expires_ts": 1792358845427,
+  "lease_exact_readback": true,
+  "fresh_guard_sha256": {
+    "AGENTS.md": "8664103c383b503928eb65bb82133a44290a198b79039847e8b30a546da36fea",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "fc5e8c0a5a52d99a3c212d18f420fd49660517522ed8da2f59492b317fc96383",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "bb44704499d1699b5231dec70da41c2f8d5325674705ce7c90bc4ebc26670e6e",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b83f5ba8444b8ab92a17b0b651aae2cba87c5dcb674fc894f6d6b75ca2b1b701"
+  },
+  "active_working_window_proofs": [
+    {
+      "path": "checkpoints/ACTIVE105_STATISTICS_CADENCE_RECEIPTS_HANDOFF_20261018.json",
+      "sha256": "08769fc4f9f7be7e54c45f06050399738bd44b960cccee16626d4291cde0f7ff"
+    },
+    {
+      "path": "checkpoints/maintenance-cadence-receipts-20261018/cloud-and-offline-receipts.json",
+      "sha256": "39312dd2525593cc3922cf8a2e0db830725d1c588fc7467bb7379bbe7b1cc359"
+    },
+    {
+      "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+      "sha256": "9131dfe49eaf04d9a9a474f8ce574ccc0cee4f671cff1472f4124c076cb742c4"
+    }
+  ],
+  "base_all4_active_equal": true,
+  "findings": [
+    "Three production callers; weekly control transport not counted by source-only whole summary",
+    "Acquire/release write only phase; saved39142329633 exact marker drift reused without rerun",
+    "Two additional phase-only cursor writers must join minimal connected all4 fix",
+    "One expectedHeadOid four-file mutation plus pinned snapshots can keep conservative4HTTP/op, old cleanup reserves5/10 unchanged",
+    "GraphQL token permission/body acceptance/nontruncated exact snapshot not qualified"
+  ],
+  "files": {
+    "anomaly-research/weekly-phase-mirror-audit-20261018/REVIEW_RU.md": "9dd7802a1129a28b84fa70c39305923502bb6492d8233e735cc5cc48ac37e6ae",
+    "anomaly-research/weekly-phase-mirror-audit-20261018/original-weekly-mirror-drift.json": "f1a042dbb0db3952f6f89274d126750d334b1be76e3ebe36536a0205d939c9e5",
+    "anomaly-research/weekly-phase-mirror-audit-20261018/source-receipts.json": "d3747ac0e26d504b8e646ee8e356ac20bdcd1f7fea4f0449d232ceff7cfd8185",
+    "anomaly-research/weekly-phase-mirror-audit-20261018/transport-and-control-bounds.json": "260d4c62b4e9dc949301305d9935d14a531dd27131383f5ce9a04f61fd3326a4"
+  },
+  "tests_executed": 0,
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "job_dispatch": 0,
+  "deploy": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "runtime_changed": false,
+  "shared_files_changed": false,
+  "candidate_implemented": false,
+  "candidate_qualified": false,
+  "next_action": "Coordinator reviews exact audit and owns connected runtime fix/controlled qualification; no automatic permission or job granted. Worker frozen branch remains unchanged after handoff.",
+  "prepublication_guard": {
+    "main": "a9d13e8dd5e7ed69953e3ed38af26596826affd9",
+    "guards": {
+      "AGENTS.md": "8664103c383b503928eb65bb82133a44290a198b79039847e8b30a546da36fea",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "fc5e8c0a5a52d99a3c212d18f420fd49660517522ed8da2f59492b317fc96383",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "bb44704499d1699b5231dec70da41c2f8d5325674705ce7c90bc4ebc26670e6e",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b83f5ba8444b8ab92a17b0b651aae2cba87c5dcb674fc894f6d6b75ca2b1b701"
+    },
+    "all4_active_equal": true,
+    "proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_STATISTICS_CADENCE_RECEIPTS_HANDOFF_20261018.json",
+        "sha256": "08769fc4f9f7be7e54c45f06050399738bd44b960cccee16626d4291cde0f7ff"
+      },
+      {
+        "path": "checkpoints/maintenance-cadence-receipts-20261018/cloud-and-offline-receipts.json",
+        "sha256": "39312dd2525593cc3922cf8a2e0db830725d1c588fc7467bb7379bbe7b1cc359"
+      },
+      {
+        "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+        "sha256": "9131dfe49eaf04d9a9a474f8ce574ccc0cee4f671cff1472f4124c076cb742c4"
+      }
+    ],
+    "audited_source_files_changed_since_base": [],
+    "own_lease_ref_exact": true,
+    "own_lease_active": true
+  }
+}
