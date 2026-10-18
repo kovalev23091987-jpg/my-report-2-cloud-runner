@@ -17,6 +17,7 @@ const files=[
  'main-official-event-sources.json',
  'runner-main.mjs',
  'src/same-run-delivery-proof.mjs',
+ 'src/maintenance-cadence-receipt.mjs',
  'src/pre-analysis-failure-receipt.mjs',
  'src/failed-d1-run-accounting.mjs',
  'src/approved-htx-analysis-scope.mjs',
