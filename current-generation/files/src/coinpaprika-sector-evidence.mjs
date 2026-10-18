@@ -3,7 +3,7 @@ import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs'
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
-import {PAUSED_BLOCKS} from './evidence-v2.mjs';
+import {PAUSED_BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v9-exact-bulk-category-membership-20261013';
 const SOURCE='COINPAPRIKA_SECTOR',MAX_AGE=15*60000,PLATFORMS={ethereum:'eth-ethereum',solana:'sol-solana'},clean=v=>String(v??'').trim(),finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export function verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}={}){
@@ -40,6 +40,22 @@ export function normalizeCoinpaprikaSector({metadata,tag,tickers,identity,provid
  const evidence=buildEvidenceV2({provider_id:SOURCE,upstream_id:'COINPAPRIKA_AGGREGATED_VENUES',asset_id:provider_reference?.asset_id||`${identity.chain}:${identity.contract_or_mint}`,htx_contract:contract,block_id:'N15',metric_family:'SECTOR_RELATIVE_STRENGTH_CONTEXT',origin_event_id:`${coin_id}:${tag_id}:${target.source_ts}`,dependency_group:`COINPAPRIKA_SECTOR:${coin_id}:${tag_id}:${target.source_ts}`,source_ts,observed_ts,expires_at:Math.min(observed_ts+5*60000,source_ts+MAX_AGE),coverage_status:'PARTIAL_FREE_TIER_DIRECTIONAL_CONTEXT',coverage_fraction:clamp(peerCoverage,.15,.75),directional_strength:clamp(relative/10,-1,1),risk_strength:null,extra:{...summary,peers,...(provider_reference?{provider_reference,category_name:tag.name,provider_tag:{id:tag.id,type:tag.type,name:tag.name,coins:tag.coins}}:{}),sector_proof:'EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1',direction_policy:'RELATIVE_STRENGTH_SUPPORTS_LONG_RELATIVE_WEAKNESS_SUPPORTS_SHORT_LOW_WEIGHT'}});
  return{status:'CLOSED',evidence:[evidence],summary};
 }
+// A live cache envelope does not refresh the provider's fact or identity.
+// Recheck the requested scope and original clocks before a cached result can
+// suppress the existing admitted route. A valid sibling fact remains usable.
+function exactCachedSectorFact(row,{contract,identity,coin_id,tag_id,marketDiscovery,now}){
+ if(row?.block_id!=='N15'||row.metric_family!=='SECTOR_RELATIVE_STRENGTH_CONTEXT'||row.provider_id!==SOURCE||row.upstream_id!=='COINPAPRIKA_AGGREGATED_VENUES'||row.htx_contract!==contract||row.sector_proof!=='EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1'||coin_id&&row.coin_id!==coin_id||tag_id&&row.tag_id!==tag_id||!validateEvidenceV2(row,{decision_ts:now}).usable)return false;
+ if(row.provider_reference||marketDiscovery){
+  if(!verifyCoinpaprikaProviderReference(row.provider_reference,contract,now)||row.coin_id!==row.provider_reference.coinpaprika_id||row.asset_id!==row.provider_reference.asset_id)return false;
+ }else{
+  const expected=`${identity?.chain}:${identity?.contract_or_mint}`;
+  if(identity?.chain==='solana'?row.asset_id!==expected:clean(row.asset_id).toLowerCase()!==expected.toLowerCase())return false;
+ }
+ const clocks=[row.source_ts,row.observed_ts,row.first_known_ts,row.expires_at,row.target_source_ts];
+ if(!clocks.every(Number.isSafeInteger)||row.source_ts>row.observed_ts||row.observed_ts>row.first_known_ts||row.first_known_ts>now||now-row.source_ts>MAX_AGE||row.expires_at<=now||row.expires_at>Math.min(row.observed_ts+300000,row.source_ts+MAX_AGE)||row.target_source_ts>row.observed_ts||!Array.isArray(row.peers)||row.peers.length<3||row.peers.length>50)return false;
+ if(row.peers.some(peer=>!Number.isSafeInteger(peer?.source_ts)||peer.source_ts>row.observed_ts||now-peer.source_ts>MAX_AGE||Math.abs(peer.source_ts-row.target_source_ts)>120000))return false;
+ return row.source_ts===Math.min(row.target_source_ts,...row.peers.map(peer=>peer.source_ts));
+}
 export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false}={}){
  const base=clean(contract).replace(/-USDT$/,''),existingChain=Boolean(PLATFORMS[asset_identity?.chain]&&asset_identity?.contract_or_mint);
  let coin_id=clean(asset_metadata?.coinpaprika_id),tag_id=clean(asset_metadata?.sector_tag);const pinned=Boolean(tag_id),marketDiscovery=!existingChain||!coin_id;
@@ -50,7 +66,10 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  const key=marketDiscovery?`${contract}:PROVIDER_MARKET_REFERENCE:${coin_id||'DISCOVERY'}:${tag_id}`:`${contract}:${asset_identity.chain}:${asset_identity.contract_or_mint}:${coin_id}:${tag_id}`;
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
- if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION){const evidence=(cached.evidence||[]).filter(row=>!PAUSED_BLOCKS[row.block_id]);return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER',...(!evidence.length&&cached.status==='CLOSED'?{status:cached.sector_status||'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND'}:{})}:{})};}
+ if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION&&Array.isArray(cached.evidence)){
+  const active=cached.evidence.filter(row=>!PAUSED_BLOCKS[row?.block_id]),evidence=active.filter(row=>exactCachedSectorFact(row,{contract,identity:asset_identity,coin_id,tag_id,marketDiscovery,now}));
+  if(evidence.length||!active.length&&(cached.status!=='CLOSED'||cached.evidence.length))return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER',...(!evidence.length&&cached.status==='CLOSED'?{status:cached.sector_status&&cached.sector_status!=='CLOSED'?cached.sector_status:'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND'}:{})}:{})};
+ }
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
