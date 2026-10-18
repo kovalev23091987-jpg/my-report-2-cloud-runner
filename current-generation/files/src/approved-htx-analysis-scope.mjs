@@ -8,7 +8,7 @@ export function approvedHtxAnalysisAssetForContract(contract_code){
  const exact=String(contract_code??'').trim().toUpperCase(),asset=approved.get(exact);
  return asset&&exact===`${asset}-USDT`?asset:null;
 }
-export function bindApprovedHtxAnalysisScope(rows,{observed_ts}={}){
+export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog}={}){
  const crypto=(Array.isArray(rows)?rows:[]).filter(x=>x?.instrument_scope?.classification==='CRYPTO_CONFIRMED'),counts=new Map();
  for(const x of Array.isArray(rows)?rows:[])counts.set(x?.contract_code,(counts.get(x?.contract_code)||0)+1);
  const accepted=[],outside=[],identity_rejected=[],duplicate_rejected=[];
@@ -19,5 +19,27 @@ export function bindApprovedHtxAnalysisScope(rows,{observed_ts}={}){
   accepted.push(x);
  }
  const present=new Set(accepted.map(x=>x.contract_code)),missing=APPROVED_HTX_ANALYSIS_CONTRACTS.filter(x=>!present.has(x.contract_code)).map(x=>x.contract_code);
- return{contracts:accepted,audit:{schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',...APPROVED_HTX_SCOPE,observed_ts,expected_analysis_contracts:approved.size,accepted_analysis_contracts:accepted.length,missing_approved_analysis_contracts:missing,outside_approved_crypto_contracts:outside,identity_rejected,duplicate_rejected,status:missing.length?'NOT_CLOSED':'CLOSED',structural_membership_only:true,source_clocks_refreshed:false,approved_universe_changed:false}};
+ const unavailable=qualifiedSuspendedContracts(missing,{native_catalog,observed_ts,counts}),unavailableCodes=new Set(unavailable.map(x=>x.contract)),unresolved=missing.filter(x=>!unavailableCodes.has(x));
+ return{contracts:accepted,audit:{schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',...APPROVED_HTX_SCOPE,observed_ts,expected_analysis_contracts:approved.size,accepted_analysis_contracts:accepted.length,missing_approved_analysis_contracts:missing,officially_unavailable_analysis_contracts:unavailable,unresolved_approved_analysis_contracts:unresolved,checked_analysis_contracts:accepted.length+unavailable.length,market_data_analysis_contracts:accepted.length,scan_count_basis:'APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE',outside_approved_crypto_contracts:outside,identity_rejected,duplicate_rejected,status:unresolved.length?'NOT_CLOSED':'CLOSED',structural_membership_only:true,source_clocks_refreshed:false,approved_universe_changed:false}};
+}
+
+const HTX_CATALOG_URL='https://api.hbdm.com/linear-swap-api/v1/swap_contract_info';
+function qualifiedSuspendedContracts(missing,{native_catalog:n,observed_ts,counts}){
+ const received=n?.observed_ts,source=n?.data?.ts;
+ if(n?.ok!==true||n.http_status!==200||n.url!==HTX_CATALOG_URL||n.data?.status!=='ok'||!Array.isArray(n.data.data)||typeof n.classify!=='function'||!Number.isSafeInteger(observed_ts)||!Number.isSafeInteger(received)||received<observed_ts||received-observed_ts>120000||!Number.isSafeInteger(source)||source>received||received-source>120000)return[];
+ const out=[];
+ for(const contract of missing){
+  if(counts.get(contract))continue;
+  const raw=n.data.data.filter(r=>r?.contract_code===contract);if(raw.length!==1)continue;const r=raw[0];
+  if(r.symbol!==approved.get(contract)||r.contract_status!==3||r.business_type!=='swap'||r.contract_type!=='swap'||r.trade_partition!=='USDT'||!Array.isArray(r.labels)||!Array.isArray(r.tradfi_labels))continue;
+  let classification;try{classification=n.classify(r);}catch{continue;}if(classification?.classification!=='CRYPTO_CONFIRMED')continue;
+  out.push({contract,symbol:r.symbol,status:'HTX_OFFICIALLY_SUSPENDED',contract_status:3,source_url:n.url,source_ts:source,observed_ts:received,classification:classification.classification,native_scope:{business_type:r.business_type,contract_type:r.contract_type,trade_partition:r.trade_partition,labels:[...r.labels],tradfi_labels:[...r.tradfi_labels]},market_data_available:false,analysis_eligible:false,entry_authorized:false,market_prices_filled:false});
+ }
+ return out;
+}
+export function approvedHtxScopeAccounted(a){
+ if(a?.status!=='CLOSED'||a.manifest_sha256!==APPROVED_HTX_SCOPE.manifest_sha256||a.expected_analysis_contracts!==approved.size)return false;
+ if(a.accepted_analysis_contracts===approved.size)return true; // exact legacy complete-market scope
+ const u=a.officially_unavailable_analysis_contracts,m=a.missing_approved_analysis_contracts;
+ return Array.isArray(u)&&Array.isArray(m)&&u.length>0&&u.length===m.length&&new Set(u.map(x=>x?.contract)).size===u.length&&a.accepted_analysis_contracts+u.length===approved.size&&a.checked_analysis_contracts===approved.size&&a.market_data_analysis_contracts===a.accepted_analysis_contracts&&Array.isArray(a.unresolved_approved_analysis_contracts)&&a.unresolved_approved_analysis_contracts.length===0&&a.identity_rejected?.length===0&&a.duplicate_rejected?.length===0&&u.every(x=>m.includes(x?.contract)&&approved.get(x.contract)===x.symbol&&x.status==='HTX_OFFICIALLY_SUSPENDED'&&x.contract_status===3&&x.source_url===HTX_CATALOG_URL&&x.classification==='CRYPTO_CONFIRMED'&&Number.isSafeInteger(x.observed_ts)&&Number.isSafeInteger(x.source_ts)&&x.source_ts<=x.observed_ts&&x.observed_ts-x.source_ts<=120000&&x.observed_ts>=a.observed_ts&&x.observed_ts-a.observed_ts<=120000&&x.native_scope?.business_type==='swap'&&x.native_scope?.contract_type==='swap'&&x.native_scope?.trade_partition==='USDT'&&Array.isArray(x.native_scope?.labels)&&Array.isArray(x.native_scope?.tradfi_labels)&&x.market_data_available===false&&x.analysis_eligible===false&&x.entry_authorized===false&&x.market_prices_filled===false);
 }
