@@ -18,6 +18,7 @@ const files=[
  'runner-main.mjs',
  'src/same-run-delivery-proof.mjs',
  'src/maintenance-cadence-receipt.mjs',
+ 'src/run-budget-context.mjs',
  'src/pre-analysis-failure-receipt.mjs',
  'src/failed-d1-run-accounting.mjs',
  'src/approved-htx-analysis-scope.mjs',
