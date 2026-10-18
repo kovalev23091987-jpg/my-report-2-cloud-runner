@@ -1,0 +1,189 @@
+{
+  "schema": "SOURCE_WORKER_FOUR_N05_VENUE_FACT_PRESERVATION_OFFLINE_V1",
+  "recorded_utc": "2026-10-18T09:29:24.090051+00:00",
+  "parent_main": "12c77c0099fc26bfbe55dd7bc96c8a4e3205039e",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Keep already qualified Binance/Kraken/Poloniex/Backpack four-hour N05 facts through optional cache failure; stop new SQL/source HTTP after unknown and local provider429 even if backoff storage fails. No new bounded adapters.",
+  "source_inputs": {
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "checkpoints/n05-binance-missing6-38133561442/batch-summary.json": {
+      "file_sha256": "8440b816ebb8c46219faf8886532f6af8adb2ce076ec38818428654f01472d17",
+      "raw_sha256": "8440b816ebb8c46219faf8886532f6af8adb2ce076ec38818428654f01472d17"
+    },
+    "checkpoints/n05-binance-missing6-38133561442/BINANCE-CURRENT-NATIVE-CATALOG.json.gz": {
+      "file_sha256": "cc88f606eef4a0a89a5111db7149ca38048132aa2a0558e2fd832b05ef9d54e3",
+      "raw_sha256": "28863d7e71ed896debbad1ea55e7c2a121a5f510c54be3c5ac5c845b297dde8c"
+    },
+    "checkpoints/n05-binance-missing6-38133561442/BINANCE-ZEC-NATIVE240.json.gz": {
+      "file_sha256": "c99ba82011c967b78e688b2a89b83bfa519780bebf0bde525e54cf7750eda9a7",
+      "raw_sha256": "a77291c6eef221f532ea078df0da7008da69202b0d026acea190376344fb2541"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/batch-summary.json": {
+      "file_sha256": "cdc384ddc731c352ab78baa60b246ae6487c21b49f049ed3439e6a7ff29bd7e9",
+      "raw_sha256": "cdc384ddc731c352ab78baa60b246ae6487c21b49f049ed3439e6a7ff29bd7e9"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-CURRENT-ASSET-PAIRS.json.gz": {
+      "file_sha256": "5479afa1b4ceb420183983602b73cdfb6e8618af70a6f5b0860ac7b4306255be",
+      "raw_sha256": "dcb0496ba245597a2c4989056a8c0f2afcd722a496e00b545d1762e5c6a05e34"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-ALGO-NATIVE240.json.gz": {
+      "file_sha256": "4c0b63d190934cfc4c0ef0a0beeaff2ccfdecb93e4a2381f2ad1584345d4a1ed",
+      "raw_sha256": "6afd2e722380885b8ca780c511cba6dcb3b6c6592dd6400962407eddf532438f"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-ALGO-HISTORY-1.json.gz": {
+      "file_sha256": "af743f300a36fd29df0ccaf686f8bb22b0f9cff2e31852f056a45a0137d8c7d0",
+      "raw_sha256": "bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/batch-summary.json": {
+      "file_sha256": "811b0c4fe9f403390af54d15275020bf41d05282e674dde0ed22aeac1770eb82",
+      "raw_sha256": "811b0c4fe9f403390af54d15275020bf41d05282e674dde0ed22aeac1770eb82"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-ASSETS.json.gz": {
+      "file_sha256": "097f57dccacdf31559353686b382b81cd0d67105754248f46b9433fcca2f452e",
+      "raw_sha256": "831439a4702f4957ee2b9b22bfa5ca1687a7fbbb750130124bd1001da5946c49"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-MARKETS.json.gz": {
+      "file_sha256": "fcfad5708852967c952b34ba5e9ffd2c178ce315658bc5f5fffaf205c780ee19",
+      "raw_sha256": "80def488230e5cea02e0a712c8b20adb900984f307d5a5f27ffdd05962667251"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-ENA-CANDLES.json.gz": {
+      "file_sha256": "82fa171ff8c69b36724de71d76ea2146cd3a1deab4a601590e40b1c0bc024fa9",
+      "raw_sha256": "870690eddb1561b4fddbac6f063760f1059de7027d3794b8e17af1763e767127"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-ENA-TRADES.json.gz": {
+      "file_sha256": "f10015822412d18fc3eaa47e0d864eab9a2bb7097a5e7da384b8049a5a9f8526",
+      "raw_sha256": "977cf73baade691a88b17ede7385d4f577c16320f8411bbc035b2df7f79774fd"
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/poloniex-summary.json": {
+      "file_sha256": "8e377d0881fbfcb5418bb147dcd378038593d6b92b90fc34a01abe416c0c063d",
+      "raw_sha256": "8e377d0881fbfcb5418bb147dcd378038593d6b92b90fc34a01abe416c0c063d"
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-EXACT-ASSETS.json.gz": {
+      "file_sha256": "a225d6f415138c0b737f3cbadc1b0d298c821f35ad212858f7d02297314a4de4",
+      "raw_sha256": "23462bb8608b48d601bbcedd8a2be50ec6cfff41a8b2af5d184a9b00af0b32de"
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-SPOT-MARKETS.json.gz": {
+      "file_sha256": "3e7680e9894ca3cb5741cfb586050f59b19b58d4a404745c5f3543303782fd5a",
+      "raw_sha256": "e82313fc3856db985d7abbc1d159504567fb17ad77d67c18eabb65b3c36dda21"
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-AAVE-NATIVE-240.json.gz": {
+      "file_sha256": "377216058061c30b76f1a8b9be8dc410781f5da66aebde5768c6eb35cfeb47e0",
+      "raw_sha256": "99a6f4cd106f0378899225dc75979489c26a11aa9bbf8f3f3ab708e94be67d85"
+    }
+  },
+  "original_assets": {
+    "n05-binance-missing6-38133561442": {
+      "symbol": "ZEC",
+      "run": "38133561442",
+      "original_received_ts": 1791716015716,
+      "window_end_ts": 1791715980000,
+      "original_url": "https://data-api.binance.vision/api/v3/klines?symbol=ZECUSDT&interval=1m&startTime=1791701580000&endTime=1791715979999&limit=240",
+      "raw_sha256": "a77291c6eef221f532ea078df0da7008da69202b0d026acea190376344fb2541",
+      "requalified_current_coverage": false
+    },
+    "n05-kraken-algo-xmr-38135993119": {
+      "symbol": "ALGO",
+      "run": "38135993119",
+      "original_received_ts": 1791718413870,
+      "window_end_ts": 1791718380000,
+      "original_url": "https://api.kraken.com/0/public/Trades?pair=ALGOUSDT&since=1791703979999999999&count=1000",
+      "raw_sha256": "bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008",
+      "requalified_current_coverage": false
+    },
+    "n05-backpack-missing4-38134543735": {
+      "symbol": "ENA",
+      "run": "38134543735",
+      "original_received_ts": 1791716994845,
+      "window_end_ts": 1791716940000,
+      "original_url": "https://api.backpack.exchange/api/v1/trades/history?symbol=ENA_USDC&limit=1000&offset=0",
+      "raw_sha256": "977cf73baade691a88b17ede7385d4f577c16320f8411bbc035b2df7f79774fd",
+      "requalified_current_coverage": false
+    },
+    "n05-poloniex-qualification-38069554249": {
+      "symbol": "AAVE",
+      "run": "38069554249",
+      "original_received_ts": 1791651280814,
+      "window_end_ts": 1791651240000,
+      "original_url": "https://api.poloniex.com/markets/AAVE_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "raw_sha256": "99a6f4cd106f0378899225dc75979489c26a11aa9bbf8f3f3ab708e94be67d85",
+      "requalified_current_coverage": false
+    }
+  },
+  "original_count": 17,
+  "implementation_files": {
+    "current-generation/files/src/binance-native-flow-collector.mjs": "f78727e30f44bdd3d17d46a98687eb2e4db63bc5455f8749106bb5de6111791f",
+    "current-generation/files/src/kraken-flow-collector.mjs": "2d174e0073d9fe0dff93b8b4f66da4c53bec4b5ef0b080c01594a80f0f62d68f",
+    "current-generation/files/src/poloniex-native-flow-collector.mjs": "9fc8c08ac6b7cea50f04e4290277f84516358d197a0972ab313b2d769dfc6226",
+    "current-generation/files/src/backpack-flow-collector.mjs": "34de1d5715e08e4a91b139aae1db541e8239024ce6aa4e499c3513e33ad8201f",
+    "current-generation/tests/n05-venue-fact-preservation.test.mjs": "89de09b83bc3750fe7dc3520b4077e88b8391dfddc3e537db7bd2c1ca9438392"
+  },
+  "tests": {
+    "baseline66": {
+      "path": "checkpoints/source-worker-n05-venue-preservation-20261018/baseline66.tap.gz",
+      "raw_sha256": "2869df0b8fe17fee3bc60c7665f085b9093fe2803a73d5c8c4d718458ba66adc",
+      "gzip_sha256": "c9387f9e53cb86ca69c04328027528aeb8a801333edfb4e799113125607c2f45",
+      "counts": {
+        "tests": 66,
+        "pass": 20,
+        "fail": 46
+      }
+    },
+    "related96": {
+      "path": "checkpoints/source-worker-n05-venue-preservation-20261018/related96.tap.gz",
+      "raw_sha256": "5de766c92e2db4e6bb58899cda99029de85dd10780116afc2291ed0600d426fe",
+      "gzip_sha256": "00a8d9fdf3416dfa3898fd7e346ebd9026aa424418587b982aebc1c9eed368fe",
+      "counts": {
+        "tests": 96,
+        "pass": 96,
+        "fail": 0
+      }
+    }
+  },
+  "new_cases": 66,
+  "baseline": "20PASS46FAIL.20existing passing cases include original cache behavior and earlier daily/minute helper guards, not new defects or coverage.",
+  "related": "96PASS0FAIL=66newcases+5Binance+9Poloniex+16existing shared fallback preservation.",
+  "shared_files_modified": false,
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-n05-venue-preservation-20261018/shared-CI.proposed.patch",
+    "sha256": "250826e327b679e03d07bbc02aafb805e4a454db5037245842fea1c54cfdd6f5",
+    "workflow_before_sha256": "4c6832339b04063e3db59d4614353952cb781cb51ff2c7601316f3926486ed3f",
+    "workflow_proposed_sha256": "2c83fbf4adb32d68df20d74b83b9c2a4e9f43c6a5a0523f265dd69db448a55d3",
+    "coordinator_must_resolve_current_branch_allowlist": true
+  },
+  "limits": {
+    "source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_path_extra_SQL": 0,
+    "normal_path_extra_HTTP": 0,
+    "source_daily_cap_unchanged": 512,
+    "caller_shared_HTTP_cap_unchanged": 5,
+    "internal_provider_rolling60s_caps": {
+      "BINANCE": 6,
+      "KRAKEN": 6,
+      "POLONIEX": 12,
+      "BACKPACK": 6
+    },
+    "cache_original_clocks_retained": true,
+    "reservations_retained_without_refund": true,
+    "unknown_not_cleared": true,
+    "no_new_source_fact_family_or_asset_binding": true,
+    "strategy_weights_forms_limits_pauses_unchanged": true
+  },
+  "acceptance_limits": [
+    "Retained historical originals only; tests exercise a new cache/unknown defect, not repeat accepted full-provider qualification.",
+    "Metadata fetch timing in local transport is controlled; full component uses exact original final-response receipt and window. No new provider requests.",
+    "Poloniex activity hint is explicit controlled empty array during positive AAVE path; it proves no activity fact. Existing containing-zero no-spend behavior protected by old tests.",
+    "Native unknown and errors injected into local SQLite/mock transport, no native cost qualification or actual reserve reset.",
+    "Existing available-flow consumer/manual/bothTelegram paths verified at original clocks with controlled canonical OBSERVE, no real Telegram send.",
+    "Backpack ENA remains SPOT/USDC, other three SPOT/USDT. Existing dimensionless cross-quote policy preserved, amounts not combined.",
+    "Assembled coordinator branch/main CI and natural report use remain pending."
+  ],
+  "exact_next_action": "Coordinator review provider-only frozen PR, apply exact CI proposal on fresh main, one assembled branch/main verification. Worker keeps source lane independent of PR431 Bitfinex and live admission."
+}
