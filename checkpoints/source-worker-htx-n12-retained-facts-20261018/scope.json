@@ -1,0 +1,105 @@
+{
+  "schema": "SOURCE_WORKER_HTX_N12_RETAINED_FACTS_AND_CACHE_BINDING_V1",
+  "recorded_utc": "2026-10-18T10:19:23.931788+00:00",
+  "parent_main": "12896dca48f74465bc19aea7cf22e56f087e0661",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "HTX N12 collector preserves already-obtained bounded futures trade facts across optional cache failure; stops new SQL/provider work after native unknown; exact original cache tuple and provenance, duplicate grant refusal; legacy exact/negative cache stays no-spend.",
+  "new_cases": 38,
+  "tests": {
+    "baseline38": {
+      "path": "checkpoints/source-worker-htx-n12-retained-facts-20261018/baseline38.tap.gz",
+      "raw_sha256": "098995d84002f0039f4a4783ed28f48eccd94cf404d81edaa554e7cfa6499e94",
+      "gzip_sha256": "587ff15ad005104a1559e3481fc0c7d4e1966ea48bf02470d69f79d53058b47c",
+      "counts": {
+        "tests": 38,
+        "pass": 11,
+        "fail": 27
+      }
+    },
+    "related58": {
+      "path": "checkpoints/source-worker-htx-n12-retained-facts-20261018/related58.tap.gz",
+      "raw_sha256": "bcafdad831a958882bd45bd1d85b33d5bfb68cbd47b1a552d74f162e7e579dc8",
+      "gzip_sha256": "c96572f9e439aa2d605a4e2c8400094edeef50ba53a22f7d5d3894ed1e15b4a5",
+      "counts": {
+        "tests": 58,
+        "pass": 58,
+        "fail": 0
+      }
+    }
+  },
+  "source_inputs": {
+    "checkpoints/htx-archive-primary-20261004/near-current-trades.json.gz": {
+      "file_sha256": "d1f801c2504df32c5eb2ede99e8225f9e82f18c0f72086db33c605768c97cbde",
+      "raw_sha256": "5696b9931c8026d5229f142c10ede814276fe8287b7b4fb1665e6cf2f69ba150",
+      "raw_bytes": 432572
+    },
+    "checkpoints/htx-archive-primary-20261004/provenance.json": {
+      "file_sha256": "eaa904eb7f3d9965434300c95fb81a5762cfe721f33f948680f722c46734aac9"
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8"
+    }
+  },
+  "implementation_files": {
+    "current-generation/files/src/htx-large-trades-evidence.mjs": "d7b48c20329f784bad043c30a931ec82e9abeee45126defd5bc6f2e480fde586",
+    "current-generation/tests/htx-n12-retained-facts.test.mjs": "8532e76448a6322985d28ec214c5be37fd135cbca4c7bd668b5cae868ed82793"
+  },
+  "controlled_original_replay": {
+    "contract": "NEAR-USDT",
+    "source_batch_ts": 1791139110861,
+    "latest_selected_trade_ts": 1791139107577,
+    "original_received_ts": null,
+    "controlled_observation_ts": 1791139111861,
+    "explicit_observation_basis": "Saved source batch ts+1000 only for deterministic collector/consumer tests; actual original receipt clock absent.",
+    "outer_batches": 2000,
+    "fills": 2214,
+    "valid_recent_fills_at_controlled_clock": 37,
+    "observed_quote_turnover_usdt": 35235.92,
+    "large_trades_at_100000_usdt_threshold": 0,
+    "saturated": true,
+    "complete_5m_window": false,
+    "fresh_main_acceptance": false,
+    "unsafe_original_decimal_ids_preserved": true,
+    "additional_large_trade_fixture": "Two cache-only cases add one explicitly controlled 150000USDT row; not provider evidence or new coverage."
+  },
+  "concrete_defects": [
+    "Mandatory final cache write erased a valid source result on throw or acknowledgement/native cost uncertainty.",
+    "Initial/schema/cache native unknown could proceed to later SQL/provider work.",
+    "Version-only cache accepted foreign contract/asset/provider/upstream/market/quote/sourceclock or missing binding; valid exact legacy cache must avoid new source acquisition.",
+    "Duplicate caller whole-job grant could allow an additional source attempt."
+  ],
+  "behavior_preserved": [
+    "Same-run already-obtained futures/spot path remains pure local even with native unknown; no new acquisition.",
+    "Positive scoped and legacy exact cache requires original source channel, identity, clocks, USDT units, typed evidence, original TTL and bounded summary consistency; scoped cache also binds official request URL/body hash/result digest.",
+    "Verified empty/error legacy negative cache retained, no grant/HTTP; spent daily/whole-job reservations retained after failed optional write.",
+    "Normalizer, thresholds, bounded weights, source limits, existing 5m/60s clocks unchanged.",
+    "Existing consumer/manual and both Telegram formatter paths consume retained N12 facts locally; delivery explicitly not proven."
+  ],
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-htx-n12-retained-facts-20261018/shared-CI.proposed.patch",
+    "sha256": "7796a4c92e192ddc3c683db4fa5a43517d2581cf158c82226cda7e79377423d5",
+    "workflow_before_sha256": "47bd6390b01574052b06650d580df007c68791f0c5f2aed6aceaac4f4c23b461",
+    "workflow_proposed_sha256": "637674f0c0c91fdd58e4b3aa595ac91290ef07853662206d05a775292500030e",
+    "coordinator_resolves_current_branch_context": true
+  },
+  "limits": {
+    "new_source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_valid_path_extra_SQL_or_HTTP": 0,
+    "valid_cache_extra_SQL_or_HTTP": 0,
+    "new_provider_qualification": false,
+    "current105_full_report_or_SENT": false,
+    "all_caps_pauses_strategy_weights_forms_reservations_unknown_unchanged": true
+  },
+  "acceptance_limits": [
+    "Offline controlled test only; no fresh HTX acquisition or actual observation claim from saved response.",
+    "One retained original NEAR wire cannot establish current105 coverage or whole-window completeness.",
+    "Related58=38new+5HTXnormalizer+8N12markets+7route-block; baseline38=11PASS27FAIL before collector edits.",
+    "Frozen provider source/test/proof PR; shared CI only an exact proposal, coordinator branch/main verification pending."
+  ],
+  "exact_next_action": "Coordinator integrate frozen HTX provider package and shared CI proposal when ready. Worker continues independent N05 turnover original cache binding/shared consumer proposal under fresh own scoped lease, no wait or retry of accepted historical checks."
+}
