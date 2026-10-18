@@ -1,0 +1,124 @@
+{
+  "schema": "SOURCE_WORKER_LIQ_ORIGINAL_CLOCK_AND_NUMERIC_SCHEMA_V1",
+  "recorded_utc": "2026-10-18T10:01:36.203824+00:00",
+  "parent_main": "12896dca48f74465bc19aea7cf22e56f087e0661",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Align Swolecharts provider source/observation clock admissibility with the existing strict shared consumer; reject non-scalar numeric schema in Swolecharts/CoinBoss before request admission or modeled levels.",
+  "new_cases": 56,
+  "tests": {
+    "baseline56": {
+      "path": "checkpoints/source-worker-liq-clock-schema-20261018/baseline56.tap.gz",
+      "raw_sha256": "42af04c11c8daf078ca99284bb13fdb488a1bcd3480df95301ce491f9652cb5e",
+      "gzip_sha256": "7711c739bcf3354b65d9cd1364f4cdbc73e9c906ddc7d32399a631ce4ac12eba",
+      "counts": {
+        "tests": 56,
+        "pass": 8,
+        "fail": 48
+      }
+    },
+    "related84": {
+      "path": "checkpoints/source-worker-liq-clock-schema-20261018/related84.tap.gz",
+      "raw_sha256": "5b1ab9bbf32b56fb8bced3d61c8372cc848664d734013fef91456cc34a8889e3",
+      "gzip_sha256": "d6a393b3afb1bad8a953058a244e65d12744250215a1f5604533b404bda10415",
+      "counts": {
+        "tests": 84,
+        "pass": 84,
+        "fail": 0
+      }
+    }
+  },
+  "source_inputs": {
+    "checkpoints/source-inputs/coinboss-liq-levels-102-original-20261012.json.gz": {
+      "file_sha256": "6429aeebfda7366c450029e7618041b34c76c06c91e9d3c0664ddd10189f8ada",
+      "raw_sha256": "10c41f4e6bf5dd551617391c083d597b74b64c29da3654760da3bb311d7dd1db",
+      "parsed_original_container": true,
+      "original_wire_body_bytes_retained_here": false
+    },
+    "checkpoints/source-inputs/swolecharts-liq-levels-bounded-20261013.json": {
+      "file_sha256": "cd9ccc7d1a3e16ab019060dbafe0474803b277721ee13a0cad65198251b8f73d",
+      "raw_sha256": "cd9ccc7d1a3e16ab019060dbafe0474803b277721ee13a0cad65198251b8f73d",
+      "parsed_original_container": true,
+      "original_wire_body_bytes_retained_here": false
+    }
+  },
+  "original_clock_provenance": [
+    {
+      "provider": "CoinBoss",
+      "symbol": "FIL",
+      "original_source_ts": 1791826156228,
+      "original_observation_upper_bound": 1791826345047,
+      "observation_basis": "Saved batch ended_ts; individual response received clock is absent here.",
+      "recorded_original_response_sha256": "ad832330ae29be7e59b9108bdb6f23dfb4d0d50eba1498e8719d1ce9f3d79396"
+    },
+    {
+      "provider": "CoinBoss",
+      "symbol": "AAVE",
+      "original_source_ts": 1791826157370,
+      "original_observation_upper_bound": 1791826345047,
+      "observation_basis": "Saved batch ended_ts; individual response received clock is absent here.",
+      "recorded_original_response_sha256": "ff897483c62ca984bf65d9af2de812de4bef06b802e1faeba064be64032dbd67"
+    },
+    {
+      "provider": "Swolecharts",
+      "symbol": "FIL",
+      "original_source_ts": 1791886558400,
+      "original_observed_ts": 1791886767618,
+      "original_fetched_utc": "2026-10-13T10:19:27.618359+00:00",
+      "recorded_original_response_sha256": "485110833f3a7ffcc70a00fbc9b63c78b0575845f47005fd2ede12be2d0eb8a5"
+    },
+    {
+      "provider": "Swolecharts",
+      "symbol": "STRK",
+      "original_source_ts": 1791886589915,
+      "original_observed_ts": 1791886768822,
+      "original_fetched_utc": "2026-10-13T10:19:28.822836+00:00",
+      "recorded_original_response_sha256": "6efd91bd572bb2d9e42e9603b0e8032751fb8d451032fd51662ab7c1e62a7d94"
+    }
+  ],
+  "implementation_files": {
+    "current-generation/files/src/coinboss-liquidation-levels.mjs": "019267fbc0eb8c6d29b2eb4b43456232860a172c75a2d1634aec1ce47954cf4e",
+    "current-generation/files/src/swolecharts-liquidation-levels.mjs": "b594389e2113ea46965bfbf4516ec2690d9f9593f18803a99a35ec2e085046e4",
+    "current-generation/tests/liq-provider-clock-schema.test.mjs": "88f0fdf976b13eecad5915a390c503bde4e05fb82bcf22925f709e45a652f72b"
+  },
+  "concrete_defects": [
+    "Swole as_of atobserved+1/+4999/+5000ms couldcloseprovidercoverage yetsharedpump rejects allfuture rows.",
+    "Swole NaN/string/object observation clocks could bypass ordered comparison; require safe integer observation.",
+    "Number(bool/array) coerced provider/reference/clock/price/bin/intensity/OI schema into apparently usable scalar values.",
+    "Malformed caller reference could spend a grant/HTTP before response rejection."
+  ],
+  "behavior_preserved": [
+    "Legitimate numeric numbers and nonempty finite numeric strings remain accepted.",
+    "Five-minute maximum source age and five-percent reference divergence unchanged.",
+    "Exact assetbinding remains from427; source/model classes, tiers and limits preserved.",
+    "Model intensity remains a tier, not an observed position amount. Manual/brief LIQ show calculated model only, factual provider count0, targetfalse, HTX local model disabled.",
+    "Existing3per-side display bound and inherited admission/caps/pauses/forms/weights unchanged."
+  ],
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-liq-clock-schema-20261018/shared-CI.proposed.patch",
+    "sha256": "efa0ac6f8f3d9d3b4166019494b56e2c7573b81b04579e63e0e9681f1b41f49f",
+    "workflow_before_sha256": "47bd6390b01574052b06650d580df007c68791f0c5f2aed6aceaac4f4c23b461",
+    "workflow_proposed_sha256": "9e1ff0421e8a52ec6b5e8bd4c6c4225dfd909870453cfdaa0384cd2ace138830",
+    "coordinator_resolves_current_branch_context": true
+  },
+  "limits": {
+    "new_source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_valid_path_extra_SQL_or_HTTP": 0,
+    "new_provider_qualification": false,
+    "current105_full_report_or_SENT": false,
+    "all_caps_pauses_strategy_weights_forms_reservations_unknown_unchanged": true
+  },
+  "acceptance_limits": [
+    "Retained parsed original bodies in exact saved containers. Original per-response SHA fields are retained as provenance, but wire bytes are absent here; no claim they were independently recomputed from reconstructed JSON.",
+    "Numeric/schema/future-clock modifications are explicit controlled copies, not provider observations or new coin coverage.",
+    "CoinBoss actual per-response receipt clocks absent: use saved batch completion as known observation bound, not fabricated source+1000ms.",
+    "No new Orderly acquisition/qualification. Related21binding cases include existing controlled HYPE only as unchanged regression.",
+    "Local formatter text tested, no actual Telegram or natural report delivery.",
+    "Assembled coordinator branch/main verification pending."
+  ],
+  "exact_next_action": "Coordinator reviews frozen provider PR and applies CI proposal after recovery priority; one connected assembled verification. Worker continues next independent allowed source gap under a fresh own bounded offline lease without changing this ready branch."
+}
