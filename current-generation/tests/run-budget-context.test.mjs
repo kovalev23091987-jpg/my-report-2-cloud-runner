@@ -6,6 +6,7 @@ const root=process.env.REPORT2_TEST_RUNTIME?pathToFileURL(process.env.REPORT2_TE
 const {buildRunBudgetContext:build}=await import(new URL('src/run-budget-context.mjs',root));
 const {createUnifiedHttpBudget,HTTP_LIMITS}=await import(new URL('src/unified-budget.mjs',root));
 const {TWO_NODE_HTTP_LIMITS}=await import(new URL('src/two-candidate-policy.mjs',root));
+const {buildLiquidationSourceAcquisitionAudit}=await import(new URL('src/liquidation-source-acquisition-audit.mjs',root));
 const reservation={rows_read:54000,rows_written:840},usage={requests:687,rows_read:49233,rows_written:685,unknown_ops:0};
 function budget(){return createUnifiedHttpBudget({...HTTP_LIMITS,...TWO_NODE_HTTP_LIMITS});}
 const frozen=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(frozen);Object.freeze(x);}return x;};
@@ -20,7 +21,7 @@ test('inconsistent or nonnumeric summaries never produce an extra-work admission
  assert.equal(build().HTTP,null);
 });
 test('native point arithmetic keeps its exact existing cut and does not subtract another full from a run allowance',()=>{
- const out=build({run_id:'CONTROLLED:one',recorded_ts:1792353846750,reservation,usage});assert.deepEqual(out.native_run.remaining_at_this_cut,{rows_read:4767,rows_written:155});assert.equal(out.native_run.reservation_exceeded,false);assert.deepEqual(out.next_full_protected_reservation,{rows_read:59000,rows_written:920});assert.equal(out.native_run.future_work_admitted,false);assert.ok(out.cut.includes('BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION'));assert.equal(out.independent_global_native_capacity,null);assert.equal(out.whole_day_closed,false);
+ const out=build({run_id:'CONTROLLED:one',recorded_ts:1792353846750,reservation,usage});assert.deepEqual(out.native_run.remaining_at_this_cut,{rows_read:4767,rows_written:155});assert.equal(out.native_run.reservation_exceeded,false);assert.deepEqual(out.required_next_full_reservation_by_policy,{rows_read:59000,rows_written:920});assert.equal(out.observed_next_full_reservation,null);assert.equal(out.native_run.future_work_admitted,false);assert.ok(out.cut.includes('BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION'));assert.equal(out.independent_global_native_capacity,null);assert.equal(out.whole_day_closed,false);
 });
 test('unclosed invocation or missing counters leave native headroom unknown; an overrun is visible',()=>{
  for(const u of [{...usage,unknown_ops:1},{...usage,rows_read:null},{...usage,rows_written:'685'},null]){
@@ -36,7 +37,8 @@ test('configuration caps and local slots cannot create provider daily monthly ro
  const out=build({http:budget().summary(),reservation,usage,provider:{allowance:10000,used:0},usage_targets:{secret:'DO_NOT_COPY'}});assert.equal(out.provider_day_month_rolling60s_headroom,null);assert.equal(out.manual_provider_reserve_headroom,null);assert.equal(out.HTTP.actual_HTTP,null);assert.ok(!JSON.stringify(out).includes('DO_NOT_COPY'));assert.equal(out.additional_SQL,0);assert.equal(out.additional_source_HTTP,0);
 });
 test('native liquidation service zero is retained with narrow scope and absent cost stays null',()=>{
- const out=build({native_liquidation:{reserved_http:0,actual_http:0,max_http:4,raw_provider_body:'DO_NOT_COPY'}});assert.equal(out.native_liquidation_service.reserved_http,0);assert.equal(out.native_liquidation_service.actual_http,0);assert.equal(out.native_liquidation_service.claimed_http,null);assert.equal(out.native_liquidation_service.scope,'EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB');assert.ok(!JSON.stringify(out).includes('DO_NOT_COPY'));assert.equal(build().native_liquidation_service,null);
+ const audit=buildLiquidationSourceAcquisitionAudit({summary:{shared_budget:{reserved_http:0,actual_http:0},total_http_cap:4},run_id:'CONTROLLED',evaluated_ts:1792353846750,candidates:[]});assert.equal(audit.shared_budget.max_http_per_run,4);
+ const out=build({native_liquidation:{...audit.shared_budget,raw_provider_body:'DO_NOT_COPY'}});assert.equal(out.native_liquidation_service.reserved_http,0);assert.equal(out.native_liquidation_service.actual_http,0);assert.equal(out.native_liquidation_service.max_http_per_run,4);assert.equal(out.native_liquidation_service.claimed_http,null);assert.equal(out.native_liquidation_service.gross_reserved_http,null);assert.equal(out.native_liquidation_service.scope,'EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB');assert.ok(!JSON.stringify(out).includes('DO_NOT_COPY'));assert.equal(build().native_liquidation_service,null);
 });
 test('effective runner reads each pure snapshot once and reuses the same native point in the existing artifact',()=>{
  const runner=readFileSync(new URL('runner-main.mjs',root),'utf8'),start=runner.indexOf('  const d1AfterAnalyticsLeaseRelease='),end=runner.indexOf('  const finalRunResult=',start);assert.ok(start>0&&end>start);

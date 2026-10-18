@@ -25,9 +25,9 @@ export function buildRunBudgetContext({run_id,recorded_ts,http,reservation,usage
    future_work_admitted:false},
   earlier_day_admission:object(day_admission)?{status:label(day_admission.status),allowed_at_original_cut:flag(day_admission.allowed),day_utc:label(daily?.day_utc),reported_unknown_ops:count(daily?.unknown_ops),reserved_rows_read:count(daily?.reserved_rows_read),reserved_rows_written:count(daily?.reserved_rows_written),
    reconciliation:witness?{status:label(witness.status),manifest_sha256:label(witness.manifest_sha256),historical_unknown_operations_preserved:count(witness.historical_unknown_operations_preserved),new_or_unmatched_unknown_authorized:flag(witness.new_or_unmatched_unknown_authorized),serialized_copy_is_not_a_proof_token:true}:null}:null,
-  native_liquidation_service:object(native_liquidation)?{scope:'EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB',...Object.fromEntries(['reserved_http','gross_reserved_http','claimed_http','actual_http','max_http'].map(k=>[k,count(native_liquidation[k])]))}:null,
+  native_liquidation_service:object(native_liquidation)?{scope:'EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB',...Object.fromEntries(['reserved_http','gross_reserved_http','claimed_http','actual_http','max_http_per_run'].map(k=>[k,count(native_liquidation[k])]))}:null,
   provider_day_month_rolling60s_headroom:null,manual_provider_reserve_headroom:null,
-  independent_global_native_capacity:null,next_full_protected_reservation:{rows_read:59000,rows_written:920},
+  independent_global_native_capacity:null,required_next_full_reservation_by_policy:{rows_read:59000,rows_written:920},observed_next_full_reservation:null,
   admission_authorized:false,whole_day_closed:false,additional_SQL:0,additional_source_HTTP:0,
  };
 }
