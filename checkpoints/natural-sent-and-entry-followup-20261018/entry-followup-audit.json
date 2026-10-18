@@ -1,0 +1,102 @@
+{
+  "schema": "OWNER_OBSERVE_TO_ENTRY_FOLLOWUP_REQUIRED_V1",
+  "owner_observation": "Owner reports no observed ENTRY notifications after earlier published conditions appeared to be satisfied; previous messages ended in refusal or silence. This is an investigation requirement, not proof every historical condition closed.",
+  "owner_liquidation_workshop": "Preserve named liquidation workshop within existing LIQ/integrated remaining plan; no new interpretation or declaration of completion.",
+  "plan_direction_ids": [
+    "INTEGRATED_ACCEPTANCE",
+    "FINAL_TELEGRAM",
+    "USEFUL_COVERAGE_AND_FALLBACK"
+  ],
+  "current_exact_case": {
+    "publication_id": "PUB:e2a78540f572adf160cc0dbeb79417b7cbb2fdab",
+    "contract": "NIL-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792327033256-1792327043738",
+    "snapshot_id": "S392:NIL-USDT:1792327113389",
+    "observed_ts": 1792327113389,
+    "analytical_fingerprint": "fc25b1c8390cc43b694598516f28082bf466838c873af4c8cc230b5306a1c0e6",
+    "presentation_hash": "c4883e13b4cc9448441a5fdcab563ad5f8bc70095aa8f1d54746d2fcf1cd15d2",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "214",
+    "dispatch_finalized": true,
+    "task_at_delivery": {
+      "state": "PENDING",
+      "run_id": "1792327033256-1792327043738",
+      "snapshot_id": "S392:NIL-USDT:1792327113389",
+      "due_ts": 1792327413389,
+      "expires_ts": 1792328913389
+    },
+    "task_at_delivery_verified": true,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED",
+    "trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": "<=",
+      "value": 0.07918,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1792328913389,
+      "next_recheck_ts": 1792327413389,
+      "cancel_condition": "price>0.08078",
+      "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+    },
+    "due_UTC": "2026-10-18T12:43:33.389000+00:00",
+    "expires_UTC": "2026-10-18T13:08:33.389000+00:00",
+    "last_accepted_task_state": "PENDING_AT_DELIVERY",
+    "post_delivery_task_state": "UNKNOWN_NOT_READ_FROM_NATIVE",
+    "trigger_or_settlement_after_delivery": "UNKNOWN_NOT_IN_THIS_ARTIFACT"
+  },
+  "static_trace": [
+    {
+      "module": "cloudflare/public-collector/injected-worker-tail.js",
+      "role": "Five-minute fresh exact-price check writes WAITING_FOR_PRICE/TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED/CANCELLED with original identity; never authorizes entry."
+    },
+    {
+      "module": "cloudflare/public-collector/trigger-analysis-kick.mjs",
+      "role": "Fresh hint up to3 durable attempted kicks/day, spent failure not refunded. A wake-up is not fresh analysis admission."
+    },
+    {
+      "module": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "role": "Exact SENT identity/hash/task/original deadline + fresh<=180s receipt, actual daily budget and3attempt burst ledger; all existing guards retained."
+    },
+    {
+      "module": "current-generation/files/src/worker.js",
+      "role": "Claim original task, read same original canonical, perform fresh deep with original context, persist and finishOriginalIdeaAnalysis."
+    },
+    {
+      "module": "current-generation/files/src/original-idea-recheck.mjs",
+      "role": "Original1m/5m closed candle must begin after original observation, match same original level and current HTX price, remain inside originalTTL; full fresh entry gates also required. Rejected full retains PENDING, original price cancellation distinct."
+    },
+    {
+      "module": "current-generation/files/src/v3-telegram-runtime.mjs",
+      "role": "Need trace fresh ENTRY canonical through exact lifecycle/idempotency/render/networkACK/dispatch to message_id; not yet native accepted in this case."
+    }
+  ],
+  "unproven_possible_failure_points": [
+    "Collector exact binding/price or retained-canonical restore",
+    "No fresh hint or exhausted kick/admission3/day",
+    "Wake-up action latency or originalTTL expiration before analysis",
+    "Claim/identity/current candle period/closed settlement mismatch",
+    "Fresh source/entry eligibility gate refusal",
+    "Fresh ENTRY lifecycle dedup/render/admission/network failure"
+  ],
+  "important_model_limit": "Original NIL trigger lifetime30min vs regular full40min; bounded kicks exist to bridge reached triggers. This static timing does not prove any actual missed trigger or justify raising caps/resetting spent slots.",
+  "required_next_evidence": [
+    "Use already saved bounded collector/recovery receipts first, identify exact214task by publication/run/snapshot.",
+    "Read exact task last_result/prior_checks/first_trigger/kick/admission/claim/completion and fresh analysis/delivery only through admitted bounded native reader if saved receipts insufficient.",
+    "Differentiate price touch from required closed settlement, TTL/cancellation, budget defer, data failure and fresh full strategy refusal.",
+    "Fix demonstrated defect with explicit failing controlled replay and affected common checks; preserve entry conditions/score/threshold/caps.",
+    "Accept actual completed condition to same-idea ENTRY same-run message_id or exact material refusal; no fabricated price/forced ENTRY."
+  ],
+  "current_cause": "UNPROVEN_PENDING_EXACT_POST_SENT_RECEIPTS",
+  "runtime_or_quota_changed": false,
+  "new_provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram_send": 0
+}
