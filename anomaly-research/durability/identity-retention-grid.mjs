@@ -26,10 +26,13 @@ export function registerRevision(registry,c,native){
  // Price/volume units are material facts. A changed unit must be reconciled,
  // never converted implicitly or counted as a separate independent event.
  const facts=hash({candle:c.candle,price_unit:c.instrument.price_unit,volume_unit:c.instrument.volume_unit,multiplier:c.instrument.multiplier});
- const revisionKey=hash({binding_ref:c.instrument.binding_ref,asset_id:c.instrument.asset_id,rules_hash:c.rules_hash,raw_sha256:c.provenance.raw_sha256,facts});
- if(old?.revisions.some(r=>r.revision_key===revisionKey))return {state:registry,status:'DUPLICATE_REVISION',logical_event_id:id};
+ const legacyRevisionKey=hash({binding_ref:c.instrument.binding_ref,asset_id:c.instrument.asset_id,rules_hash:c.rules_hash,raw_sha256:c.provenance.raw_sha256,facts});
+ // A body digest does not identify its retained locator or native mapping
+ // receipt. Keep both proof references without creating another event.
+ const revisionKey=hash({version:'PROOF_REFERENCE_V2',fact_revision_key:legacyRevisionKey,raw_ref:c.provenance.raw_ref,qualification_ref:native.qualification_ref});
+ if(old?.revisions.some(r=>r.revision_key===revisionKey||r.revision_key===legacyRevisionKey&&r.raw_ref===c.provenance.raw_ref&&r.qualification_ref===native.qualification_ref))return {state:registry,status:'DUPLICATE_REVISION',logical_event_id:id};
  if(!old&&Object.keys(registry.events).length>=registry.limits.max_events||old&&old.revisions.length>=registry.limits.max_revisions)return {state:registry,status:'DEFERRED_REGISTRY_CAPACITY',logical_event_id:id};
- const state=structuredClone(registry),revision={revision_key:revisionKey,card_hash:c.card_hash,raw_ref:c.provenance.raw_ref,raw_sha256:c.provenance.raw_sha256,claimed_first_known_ts:c.first_known_ts,qualification_ref:native.qualification_ref,rules_hash:c.rules_hash,fact_hash:facts};
+ const state=structuredClone(registry),revision={revision_key:revisionKey,revision_key_version:'PROOF_REFERENCE_V2',card_hash:c.card_hash,raw_ref:c.provenance.raw_ref,raw_sha256:c.provenance.raw_sha256,claimed_first_known_ts:c.first_known_ts,qualification_ref:native.qualification_ref,rules_hash:c.rules_hash,fact_hash:facts};
  if(!old)state.events[id]={...identity,first_known_ts:c.first_known_ts,canonical_card:structuredClone(c),canonical_fact_hash:facts,revisions:[revision],conflicting_native_facts:false};
  else{state.events[id].revisions.push(revision);if(old.canonical_fact_hash!==facts)state.events[id].conflicting_native_facts=true;}
  return {state,status:old?(old.canonical_fact_hash===facts?'PROVENANCE_REVISION':'CONFLICTING_NATIVE_FACTS'):'REGISTERED',logical_event_id:id,independent_new_event:!old,canonical_first_known_ts:state.events[id].first_known_ts};
