@@ -33,8 +33,10 @@ Read-only аудит **нового** natural `39136880005`, head `03fafed3ef85e
 |---|---|---|
 | Full ZEC/UNI | CLOSED, оба canonical сохранены; UNI OBSERVE, ZEC REJECTED | фактический ENTRY или новый same-current-canonical SENT |
 | APR исходное наблюдение216 | terminal IDEA_REMOVED, ORIGINAL_TTL_EXPIRED; отдельная bound terminal публикация SENT217 | падение/рост цены, противоположный или неотработавший рыночный исход; доставку текущего UNI |
-| UNI текущая публикация | FAILED_RETRYABLE, NATIVE_LIQUIDATION_SOURCE_STALE, sent=false | отрицательный рыночный исход или неисправность всех его источников |
+| UNI старый LONG G7 dispatch | FAILED_RETRYABLE, NATIVE_LIQUIDATION_SOURCE_STALE, sent=false | отрицательный рыночный исход или неисправность всех его источников |
 | Статистика | три ветви DEFERRED, prospective capacity allowed | completed calibration, нулевые outcome counts, false anomaly |
+
+Отказ UNI относится к старому LONG G7; текущая в этом full публикация UNI — другой SHORT G11. Этот отказ не доказывает состояние или свежесть текущего SHORT.
 
 Для APR у bound delivery receipt `source_run_id` — нынешний исполнитель, но canonical run_id — `ORIGINAL-TASK-TERMINAL:RCHK:…`. `same-run-delivery-proof` корректно оставляет `NO_EXACT_SAME_RUN_SENT_CAPTURED`, reason `NOT_THIS_CANONICAL_RUN`, actual_ENTRY=false. Итого одно фактически отправленное terminal217 совместимо с нулём подтверждённых SENT нынешней пары. Не использовать aggregate delivery.sent=1 как успешную доставку UNI.
 
