@@ -5,22 +5,19 @@ import {pathToFileURL} from 'node:url';
 const moduleURL=name=>process.env.REPORT2_TEST_RUNTIME?pathToFileURL(`${process.env.REPORT2_TEST_RUNTIME}/src/${name}`):new URL(`../files/src/${name}`,import.meta.url);
 const {deriveHtxRecentPathEvidence,deriveHtxSpotSameRunPathEvidence,verifyHtxSpotSameRunPathEvidence,deriveN10ReusedVenuePathEvidence,verifyN10ReusedVenuePathEvidence}=await import(moduleURL('htx-technical-structure.mjs'));
 const {consumeBlockResultContext}=await import(moduleURL('block-result-context.mjs'));
-const samples=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url)));
-function fixture(sample){
- const {venue,htx_window,component}=sample,first=sample.bars[0].split('|').map(Number),start=htx_window.window_end_ts-240*60000;
- const make=(ts,o,hi,lo,cl,activity,end)=>venue==='BINANCE'?[ts,String(o),String(hi),String(lo),String(cl),String(activity),end,'0',activity]:venue==='POLONIEX'?[String(lo),String(hi),String(o),String(cl),'0',String(activity),'0','0',activity,ts,String(cl),'MINUTE_1',ts,end]:[String(ts),String(o),String(hi),String(lo),String(cl),String(activity),'0','0'];
- const raw=Array.from({length:225},(_,i)=>{const ts=start+i*60000;return make(ts,first[1],first[1],first[1],first[1],0,ts+59999);});
- raw.push(...sample.bars.map(line=>make(...line.split('|').map(Number))));
- const payload=venue==='BITGET'?{observed_ts:sample.cache_observed_ts,payloads:{candles:{code:'00000',data:raw}}}:{observed_ts:sample.cache_observed_ts,candles:raw};
- return{contract:sample.contract,venue,component,htx_window:structuredClone(htx_window),now:sample.now,cache:{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload}};
-}
+import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
+const samples=activeSourceSamples.filter(s=>s.venue!=='GATE').map(s=>{const p=sampleParams(s);return{...s,htx_window:p.htx_window,now:p.now,cache_observed_ts:p.cache.observed_ts,cache_expires_ts:p.cache.expires_ts};});
+// Full original caches for BTC/AAVE; Bitget uses an explicit controlled
+// retained-page event clock. No padded225bar cache is treated as complete.
+const fixture=sample=>sampleParams(sample);
+const flatBase=(quote,price)=>{const parse=v=>{const[a,b='']=String(v).split('.');return{n:BigInt(a+b),scale:b.length};},q=parse(quote),p=parse(price),unit=10n**18n,n=q.n*10n**BigInt(18+p.scale-q.scale)/p.n,part=String(n%unit).padStart(18,'0').replace(/0+$/,'');return String(n/unit)+(part?'.'+part:'');};
 for(const sample of samples)for(const flat of ['HTX','VENUE','BOTH'])test(`${sample.venue} ${sample.contract}: controlled flat ${flat} path cannot establish a common direction`,()=>{
  const p=fixture(sample);
  if(flat!=='VENUE')p.htx_window.close=p.htx_window.open;
  if(flat!=='HTX'){
   const bars=p.venue==='BITGET'?p.cache.payload.payloads.candles.data:p.cache.payload.candles,price=p.htx_window.open;
-  for(const row of bars.slice(-15)){
-   if(p.venue==='POLONIEX'){row[0]=row[1]=row[2]=row[3]=String(price);}
+  for(const row of [...bars].sort((a,b)=>Number(a[p.venue==='POLONIEX'?12:0])-Number(b[p.venue==='POLONIEX'?12:0])).slice(-15)){
+   if(p.venue==='POLONIEX'){row[0]=row[1]=row[2]=row[3]=row[10]=String(price);row[5]=flatBase(row[4],price);row[7]=flatBase(row[6],price);}
    else row[1]=row[2]=row[3]=row[4]=String(price);
   }
  }
