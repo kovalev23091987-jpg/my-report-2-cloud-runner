@@ -23,19 +23,22 @@
     "current native unknown stops followup queries",
     "slot duplicate never refunded",
     "normal SQL path has0additionalqueries",
-    "no expired18 proof grant on nextUTCday"
+    "no expired18 proof grant on nextUTCday",
+    "ALL currentday tagged rows require causal parentACK; laterlegacy cannot hide lostreply"
   ],
   "local_validation": {
-    "target_pass": 46,
+    "target_pass": 69,
     "target_fail": 0,
-    "new_controlled_cases": 22,
+    "new_controlled_cases": 45,
     "initial_target": "43PASS1FAIL because missing-billing control configured for read not INSERT; explicit missingRunBilling corrected fixture and validated one-request stop",
     "full_primary_and_backup_controlled": true,
     "provider_fixtures_only": true,
     "actual_native_billing_qualification": false,
-    "actual_ENTRY": false
+    "actual_ENTRY": false,
+    "causal_controls": 23,
+    "causal_controls_scope": "8 finalizer-aftercommit missing/lost combinations primary/backup ordinary/historical;2 healthy causal paths;2 mixedlegacy;7 wrongmarker;1 legacy;3 malformed protocol"
   },
-  "cloud_validation": "PENDING exact branch/main assembled qualification",
+  "cloud_validation": "Earlier35d731 branch39133160339 success before peerfix, not final acceptance. New exact causal branch/main qualification pending.",
   "deployment": "PENDING version-bound coordinated release/readback only after cloud",
   "changed_files": [
     ".github/workflows/liq-assembled-offline-20261012.yml",
@@ -72,5 +75,11 @@
     "reason": "MAIN_MOVED: new push branch was not registered in existing coordinated exact branch allowlist",
     "runtime_tests_executed": false,
     "fix": "Register only this exact new branch; keep verifyOfflineReviewAuthority and all live owner/fence checks unchanged"
+  },
+  "peer_review_defect": {
+    "reviewed_head": "61b6a876620e529b4a939374f1545c5f36023b64",
+    "defect": "PRIVATE finalizer commits FINALIZED/unknown0 before its own billing reply; lost or unmeasured reply can be forgotten by next fresh wrapper",
+    "second_risk": "latest-only ACK could be bypassed by a later legacy writer during mixed rollout/rollback",
+    "repair": "same atomic day scan rejects every current-day PRIVATE row unless legacy FINALIZED/unknown0 or exact new protocol tag with existing parent CLOSED_PRIVATE_PRICE_NATIVE_ACK_V1 actor/generation/bucket/time binding. Parent marker written only after exact matching finalized usage and known reply. No new schema or SQL request; correlated indexed lookup adds read work, native throughput not qualified. Legacy accepted under original accounting, never retrospectively native requalified. Parent own unknown finalization remains collector family; whole-day still open."
   }
 }

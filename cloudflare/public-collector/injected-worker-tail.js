@@ -322,7 +322,7 @@ async function __report2PublicCollectorScheduled(controller, env) {
   var nativeObserver=typeof __report2InjectedPrivatePriceRuntime==='object'&&__report2InjectedPrivatePriceRuntime?.observeCollectorD1
     ?__report2InjectedPrivatePriceRuntime.observeCollectorD1(env.DATA_DB):null;
   if(nativeObserver)env={...env,DATA_DB:nativeObserver.db};
-  var nativeInvocation=crypto.randomUUID(),privateNativeBefore=null,privateNativeAfter=null,privateNativeCalled=false;
+  var nativeInvocation=crypto.randomUUID(),privateNativeBefore=null,privateNativeAfter=null,privateNativeCalled=false,privatePriceReplyKnown=false;
   try {
   var scheduled = __report2PublicCollectorTimestamp(controller?.scheduledTime) ?? started;
   var bucket = Math.floor(scheduled / __REPORT2_PUBLIC_COLLECTOR_SLOT_MS) * __REPORT2_PUBLIC_COLLECTOR_SLOT_MS;
@@ -424,8 +424,13 @@ async function __report2PublicCollectorScheduled(controller, env) {
       } finally { privateNativeAfter=nativeObserver?.usageSnapshot()??null; }
       rowsRead+=light.rows_read;rowsWritten+=light.rows_written;
       console.log('REPORT2_LIGHT_PRICE_RECHECK',JSON.stringify(light));
+      if(light?.D1?.unknown_ops>0)throw Error('PRIVATE_PRICE_FINALIZATION_NATIVE_USAGE_NOT_CLOSED');
+      if(light?.admission?.allowed===true){
+        if(light.finalized_usage?.status!=='FINALIZED'||light.finalized_usage.reservation_id!=='PRIVATE_PRICE:'+bucket||light.finalized_usage.source_run_id!=='PRIVATE_PRICE_ACK_REQUIRED_V1:'+bucket||light.finalized_usage.unknown_ops!==0||light?.D1?.unknown_ops!==0)throw Error('PRIVATE_PRICE_FINALIZATION_ACK_REQUIRED');
+        privatePriceReplyKnown=true;
+      }
     }
-    await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "CLOSED", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "CLOSED", error_text: null, contract_count: contractCount, shard_count: shardCount });
+    await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "CLOSED", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: privatePriceReplyKnown?'CLOSED_PRIVATE_PRICE_NATIVE_ACK_V1':'CLOSED', error_text: null, contract_count: contractCount, shard_count: shardCount });
     console.log("REPORT2_PUBLIC_COLLECTOR_CLOSED", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, generation: __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, contracts: contractCount, shards: shardCount, external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten + 2, legacy_rows_are_not_native_billing:true, native_D1:nativeObserver?.usageSnapshot()??null, native_cost_admission_changed:false, payload_bytes: payloadBytes, wall_ms: Date.now() - started, analytical_decision: false, telegram: false, bykaranteli: false }));
   } catch (error) {
     var message = String(error?.message ?? error).slice(0, 300);
@@ -434,7 +439,7 @@ async function __report2PublicCollectorScheduled(controller, env) {
     throw error;
   }
   } finally {
-    console.log('REPORT2_PUBLIC_COLLECTOR_NATIVE_D1',JSON.stringify({schema:'PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1',invocation_id:nativeInvocation,bucket,started_ts:started,completed_ts:Date.now(),...__report2CollectorNativeCostSplit(nativeObserver?.usageSnapshot()??null,privateNativeBefore,privateNativeAfter,privateNativeCalled),additional_SQL:0,daily_total:false,native_cost_admission_changed:false,scope:'DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE'}));
+    console.log('REPORT2_PUBLIC_COLLECTOR_NATIVE_D1',JSON.stringify({schema:'PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1',invocation_id:nativeInvocation,bucket,started_ts:started,completed_ts:Date.now(),...__report2CollectorNativeCostSplit(nativeObserver?.usageSnapshot()??null,privateNativeBefore,privateNativeAfter,privateNativeCalled),private_price_finalization_reply_known:privatePriceReplyKnown,additional_SQL:0,daily_total:false,native_cost_admission_changed:false,scope:'DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE'}));
   }
 }
 
