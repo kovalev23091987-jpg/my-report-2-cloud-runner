@@ -1,0 +1,749 @@
+{
+  "schema": "POST487_EXACT_NATURAL_MAINTENANCE_AND_STATISTICS_REVIEW_V1",
+  "cloud_run": 39161429947,
+  "head": "07703e786565eb2e0bbb4727f70ef6680115c07b",
+  "run_id": "1792353732784-1792353743745",
+  "artifact": 12148887893,
+  "digest": "sha256:a3ea8666f2329b63accdd6c353dc53268703d3fc86ce09b8f2a4bc8c9d0ac47a",
+  "member_sha256": {
+    "report2-run-result.json": "9c4f9635aa940f0319925eabf8863222f59c830e48b654fcba4d1760a4793e3c",
+    "same-run-delivery-proof.json": "33e65da5d13472eedab5f4ef5f7e8232bd069dfb46e12d79d2aaa9f96c1472fb",
+    "automatic-delivery-audit.json": "bc8e4a272433d911f78b95b8bcea5327be3a46d183aef991bea8e12b9d40d2c7",
+    "known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+    "report2-completion-accounting.json": "6b5cf85aebf366ece555f038d6c797fb906162a0baa42e18d09902dc1d00b0c1",
+    "private-canonical-archive-receipt.json": "940764189742a4fe5c878a0e67fd64184349cf47fad93ffcb23c82daef26b6cb"
+  },
+  "market_scan_audit": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0,
+    "approved_scope": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1792353743907,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 99,
+      "missing_approved_analysis_contracts": [
+        "BTR-USDT",
+        "DOS-USDT",
+        "GPS-USDT",
+        "PIPPIN-USDT",
+        "SKR-USDT",
+        "UB-USDT"
+      ],
+      "officially_unavailable_analysis_contracts": [
+        {
+          "contract": "BTR-USDT",
+          "symbol": "BTR",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792353744975,
+          "observed_ts": 1792353745111,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "DOS-USDT",
+          "symbol": "DOS",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792353744975,
+          "observed_ts": 1792353745111,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "GPS-USDT",
+          "symbol": "GPS",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792353744975,
+          "observed_ts": 1792353745111,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "PIPPIN-USDT",
+          "symbol": "PIPPIN",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792353744975,
+          "observed_ts": 1792353745111,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "SKR-USDT",
+          "symbol": "SKR",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792353744975,
+          "observed_ts": 1792353745111,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        },
+        {
+          "contract": "UB-USDT",
+          "symbol": "UB",
+          "status": "HTX_OFFICIALLY_SUSPENDED",
+          "contract_status": 3,
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "source_ts": 1792353744975,
+          "observed_ts": 1792353745111,
+          "classification": "CRYPTO_CONFIRMED",
+          "native_scope": {
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "market_data_available": false,
+          "analysis_eligible": false,
+          "entry_authorized": false,
+          "market_prices_filled": false
+        }
+      ],
+      "unresolved_approved_analysis_contracts": [],
+      "checked_analysis_contracts": 105,
+      "market_data_analysis_contracts": 99,
+      "scan_count_basis": "APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE",
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "WAL-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "scanned_market_data": 99,
+    "officially_unavailable": [
+      {
+        "contract": "BTR-USDT",
+        "symbol": "BTR",
+        "status": "HTX_OFFICIALLY_SUSPENDED",
+        "contract_status": 3,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+        "source_ts": 1792353744975,
+        "observed_ts": 1792353745111,
+        "classification": "CRYPTO_CONFIRMED",
+        "native_scope": {
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "market_data_available": false,
+        "analysis_eligible": false,
+        "entry_authorized": false,
+        "market_prices_filled": false
+      },
+      {
+        "contract": "DOS-USDT",
+        "symbol": "DOS",
+        "status": "HTX_OFFICIALLY_SUSPENDED",
+        "contract_status": 3,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+        "source_ts": 1792353744975,
+        "observed_ts": 1792353745111,
+        "classification": "CRYPTO_CONFIRMED",
+        "native_scope": {
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [],
+          "tradfi_labels": []
+        },
+        "market_data_available": false,
+        "analysis_eligible": false,
+        "entry_authorized": false,
+        "market_prices_filled": false
+      },
+      {
+        "contract": "GPS-USDT",
+        "symbol": "GPS",
+        "status": "HTX_OFFICIALLY_SUSPENDED",
+        "contract_status": 3,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+        "source_ts": 1792353744975,
+        "observed_ts": 1792353745111,
+        "classification": "CRYPTO_CONFIRMED",
+        "native_scope": {
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "market_data_available": false,
+        "analysis_eligible": false,
+        "entry_authorized": false,
+        "market_prices_filled": false
+      },
+      {
+        "contract": "PIPPIN-USDT",
+        "symbol": "PIPPIN",
+        "status": "HTX_OFFICIALLY_SUSPENDED",
+        "contract_status": 3,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+        "source_ts": 1792353744975,
+        "observed_ts": 1792353745111,
+        "classification": "CRYPTO_CONFIRMED",
+        "native_scope": {
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "market_data_available": false,
+        "analysis_eligible": false,
+        "entry_authorized": false,
+        "market_prices_filled": false
+      },
+      {
+        "contract": "SKR-USDT",
+        "symbol": "SKR",
+        "status": "HTX_OFFICIALLY_SUSPENDED",
+        "contract_status": 3,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+        "source_ts": 1792353744975,
+        "observed_ts": 1792353745111,
+        "classification": "CRYPTO_CONFIRMED",
+        "native_scope": {
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [],
+          "tradfi_labels": []
+        },
+        "market_data_available": false,
+        "analysis_eligible": false,
+        "entry_authorized": false,
+        "market_prices_filled": false
+      },
+      {
+        "contract": "UB-USDT",
+        "symbol": "UB",
+        "status": "HTX_OFFICIALLY_SUSPENDED",
+        "contract_status": 3,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+        "source_ts": 1792353744975,
+        "observed_ts": 1792353745111,
+        "classification": "CRYPTO_CONFIRMED",
+        "native_scope": {
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "market_data_available": false,
+        "analysis_eligible": false,
+        "entry_authorized": false,
+        "market_prices_filled": false
+      }
+    ],
+    "scan_count_basis": "APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE",
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "both_persisted": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1792353732784-1792353743745",
+    "expected_contracts": [
+      "BTW-USDT",
+      "龙虾-USDT"
+    ],
+    "present_contracts": [
+      "龙虾-USDT",
+      "BTW-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "pipeline_health": {
+    "status": "HEALTHY_NO_IDEA",
+    "reason": null
+  },
+  "candidate_identities": [
+    {
+      "contract": "龙虾-USDT",
+      "direction": "SHORT",
+      "publication_id": "PUB:b4c0fdd884977ad69814a52a684c748e9e13a18b",
+      "snapshot_id": "S392:龙虾-USDT:1792353841067",
+      "canonical_state": "REJECTED",
+      "lifecycle_event": null,
+      "actionability_status": "UNASSESSED"
+    },
+    {
+      "contract": "BTW-USDT",
+      "direction": "SHORT",
+      "publication_id": "PUB:c6e9f21e5f5b806e4718749bf82542c264b6e361",
+      "snapshot_id": "S392:BTW-USDT:1792353804311",
+      "canonical_state": "OBSERVE",
+      "lifecycle_event": null,
+      "actionability_status": "UNASSESSED"
+    }
+  ],
+  "actual_PR487_maintenance_receipt_accepted": true,
+  "maintenance": {
+    "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+    "source": "schedule",
+    "unified_enabled": true,
+    "scheduled_minute_utc": 2,
+    "low_priority_cadence_due": true,
+    "claim": {
+      "status": "CLOSED",
+      "claimed": true,
+      "due": true,
+      "job_key": "HOURLY_LOW_PRIORITY_STATS",
+      "interval_ms": 3600000,
+      "last_success_ts": 1792349007932,
+      "next_due_ts": null,
+      "lease_owner": "GITHUB_ACTIONS",
+      "lease_started_ts": 1792353846744,
+      "lease_expires_ts": 1792354446744
+    },
+    "completion": {
+      "status": "CLOSED",
+      "completed": true,
+      "success_recorded": true
+    },
+    "projection_SQL_added": 0,
+    "projection_HTTP_added": 0
+  },
+  "statistics": {
+    "maintenance": {
+      "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+      "source": "schedule",
+      "unified_enabled": true,
+      "scheduled_minute_utc": 2,
+      "low_priority_cadence_due": true,
+      "claim": {
+        "status": "CLOSED",
+        "claimed": true,
+        "due": true,
+        "job_key": "HOURLY_LOW_PRIORITY_STATS",
+        "interval_ms": 3600000,
+        "last_success_ts": 1792349007932,
+        "next_due_ts": null,
+        "lease_owner": "GITHUB_ACTIONS",
+        "lease_started_ts": 1792353846744,
+        "lease_expires_ts": 1792354446744
+      },
+      "completion": {
+        "status": "CLOSED",
+        "completed": true,
+        "success_recorded": true
+      },
+      "projection_SQL_added": 0,
+      "projection_HTTP_added": 0
+    },
+    "block_weights": {
+      "status": "WEEKLY_POLICY_ALREADY_ASSESSED",
+      "sourceHTTP": 0,
+      "policy_fingerprint": "2898479a156de45142e3e58cad63b12d179dccbc78a83f9ae3bc72aff03b02cc"
+    },
+    "discovery_recall": {
+      "mode": "DISCOVERY_RECALL_KPI_SHADOW_V1",
+      "status": "PARTIAL",
+      "closed_horizons": [
+        "4h"
+      ],
+      "horizons": {
+        "1h": {
+          "horizon": "1h",
+          "status": "NOT_CLOSED",
+          "reason": "BASELINE_SNAPSHOT_MISSING"
+        },
+        "4h": {
+          "horizon": "4h",
+          "status": "CLOSED",
+          "semantics": "RELATIVE_DIRECTIONAL_TAIL_P95_SHADOW_KPI_NOT_TRADE_SIGNAL",
+          "matched_contracts": 99,
+          "positive_contracts": 5,
+          "negative_contracts": 92,
+          "thresholds": {
+            "long_positive_tail_p95_pct": 7.254916,
+            "short_negative_tail_p05_pct": -5.773735
+          },
+          "long_tail": {
+            "total": 1,
+            "baseline_directional_watch": 1,
+            "directional_recall_pct": 100,
+            "wrong_direction_only": 0,
+            "missed": []
+          },
+          "short_tail": {
+            "total": 5,
+            "baseline_directional_watch": 0,
+            "directional_recall_pct": 0,
+            "wrong_direction_only": 1,
+            "missed": [
+              {
+                "contract": "龙虾-USDT",
+                "move_pct": -24.932742,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "PUMP-USDT",
+                "move_pct": -7.992388,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "CT-USDT",
+                "move_pct": -6.636501,
+                "baseline_long_watch": true,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 1,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "FARTCOIN-USDT",
+                "move_pct": -6.259921,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "CASHCAT-USDT",
+                "move_pct": -6.05582,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              }
+            ]
+          },
+          "combined": {
+            "total": 6,
+            "baseline_directional_watch": 1,
+            "directional_recall_pct": 16.667
+          },
+          "caveat": "Relative-tail descriptive KPI only. It does not define a trading threshold, probability, validation, or causal false-negative classification."
+        },
+        "24h": {
+          "horizon": "24h",
+          "status": "NOT_CLOSED",
+          "reason": "BASELINE_SNAPSHOT_MISSING"
+        }
+      },
+      "safety": {
+        "strategy_changed": false,
+        "decision_weights_changed": false,
+        "live_probability": false,
+        "validated_signal": false,
+        "automatic_telegram": false,
+        "trading_execution": false
+      },
+      "audit_ts": 1792353732784,
+      "source_run_id": "1792353732784-1792353743745",
+      "current_scan_ts": 1792353743907,
+      "persistence_semantics": "HOURLY_SHADOW_KPI_ONLY",
+      "persisted": true,
+      "persistence_readback": "PASS",
+      "auto_send": false
+    },
+    "prospective_gate": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 47715,
+        "rows_written": 679,
+        "requests": 669,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 3000,
+        "rows_written": 9
+      },
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "remaining": {
+        "rows_read": 6285,
+        "rows_written": 161
+      }
+    },
+    "prospective": {
+      "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+      "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+      "status": "CLOSED",
+      "calibration_only": true,
+      "live_probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "automatic_weight_tuning": false,
+      "strategy_weights_changed": false,
+      "telegram_network_send": false,
+      "source_run_id": "1792353732784-1792353743745",
+      "activation": {
+        "status": "CLOSED",
+        "activation_ts": 1789813960780,
+        "created": false
+      },
+      "early_outcome": {
+        "status": "NOT_CLOSED",
+        "reason": "NO_FACTUAL_PATH",
+        "outcome_id": "EDW:FIL-USDT:1792233006098:G17:H12",
+        "rows_loaded": 0
+      },
+      "entry_sample": {
+        "status": "CLOSED_NO_CAPTURABLE_DECISION",
+        "captured": 0
+      },
+      "entry_outcome": {
+        "status": "DEFERRED_FAIR_QUEUE_ROTATION",
+        "closed": 0
+      },
+      "readiness": {
+        "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+        "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+        "status": "NOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE",
+        "calibration_only": true,
+        "live_probability": null,
+        "validated_signal": false,
+        "trading_execution": false,
+        "automatic_weight_tuning": false,
+        "strategy_weights_changed": false,
+        "telegram_network_send": false,
+        "activation_ts": 1789813960780,
+        "elapsed_days": 29.397,
+        "min_train_per_cell": 80,
+        "min_holdout_per_cell": 40,
+        "required_per_direction_horizon_cell": 120,
+        "ready_cells": 0,
+        "total_cells": 8,
+        "signal_rows": [],
+        "outcome_cells": [
+          {
+            "direction": "LONG",
+            "horizon_hours": 1,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "LONG",
+            "horizon_hours": 4,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "LONG",
+            "horizon_hours": 12,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "LONG",
+            "horizon_hours": 24,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 1,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 4,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 12,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 24,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          }
+        ],
+        "approved_entry_performance": [],
+        "integrity_excluded_outcomes": 0,
+        "performance_dimensions": [
+          "BASIS",
+          "SOURCE",
+          "COHORT"
+        ],
+        "data_ready_for_separate_oos_validation": false,
+        "validated_out_of_sample": false
+      },
+      "usage_delta": {
+        "rows_read": 1513,
+        "rows_written": 2,
+        "requests": 13,
+        "unknown_ops": 0
+      },
+      "prospective_only": true,
+      "retrospective_backfill": false
+    }
+  },
+  "statistics_limits": [
+    "Completion success uses existing recall/prospective predicate, not all3 statistics.",
+    "PARTIAL descriptive4h tail KPI is not predictive trading accuracy.",
+    "Missing1h/24h baseline and FIL factualpath are not zero or adverse market outcomes.",
+    "Readiness0/8 with no samples is not calibration or weight activation.",
+    "One observed FIL hole does not establish starvation: existing module advances durable RECENT/RETAINED cursor before path lookup; queue tests not repeated.",
+    "Earlier lost claim reason remains UNKNOWN, not reconstructed from this later receipt."
+  ],
+  "current_canonical_same_run_SENT": false,
+  "actual_ENTRY": false,
+  "DATA_DB_point": {
+    "requests": 687,
+    "rows_read": 49233,
+    "rows_written": 685,
+    "unknown_ops": 0
+  },
+  "old15unknown_preserved": true,
+  "whole_day_closed": false,
+  "reserved_run_headroom_at_after_lease_cut_only": {
+    "rows_read": 4767,
+    "rows_written": 155
+  },
+  "new_source_or_budget_admission_authorized": false,
+  "old_standalone_budget_reader_protocol": "REJECTED_NOT_IMPLEMENTED_NOT_RUN",
+  "source_HTTP_SQL_MAIN_Telegram_added_by_inspection": 0,
+  "project_complete": false
+}
