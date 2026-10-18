@@ -1,0 +1,52 @@
+{
+  "schema": "ACTIVE105_N11_EXACT_RENDERED_SOURCE_SCOPE_V1",
+  "recorded_utc": "2026-10-18T08:02:29.142123+00:00",
+  "source_main": "d2d4785832da318b0c8e35f45df4b56befdf8510",
+  "defect": "Assigned N11 EV2 producer IDs differ from immutable full_evidence/safety receipt IDs used by actual manual context. Typed audit missed21historical report-consumer assets; runtime execution audit also missed existing Russian normalized lines.",
+  "fix": "Rebuild same-run/source-clock immutable book and both exact identity namespaces, require assigned upstream/root/EV2 and matching printed facts under exact contract. Preserve original report text and zero-score neutral semantics.",
+  "related_cases_pass": 22,
+  "related_cases_fail": 0,
+  "new_cases": 17,
+  "saved_original_example": {
+    "run": 38427005558,
+    "path": "checkpoints/active-identity-n04-natural-38427005558/report2-run-result.json.gz",
+    "assets": [
+      "USELESS-USDT",
+      "UNI-USDT"
+    ],
+    "verified_facts": 6,
+    "assigned_producer_ids": 2
+  },
+  "typed_proof": {
+    "path": "checkpoints/ACTIVE105_TYPED_SOURCE_COVERAGE_N11_BOUND_20261018.json.gz",
+    "file_sha256": "944d885e314e8bb9538dc5b7418b40b34488e1a360bf38d7bbd9d3bb9a8086c2",
+    "raw_sha256": "e3e828ce7785a90e02f92a626cc93c255d6b9cfec12c6a6d458c76af8dd7d59e",
+    "publications": 83,
+    "assets": 21,
+    "N11_historical_qualified_assets": 21,
+    "N11_historical_report_consumer_assets": 21,
+    "prior_missed_N11_report_count": 0,
+    "additional_vs_Oct15_73": "Ten already-saved publications in five natural Oct15 runs38707417112/38712899614/38717894420/38722704173/38727900680; no new provider acquisition or assets.",
+    "inputs_only_git_tracked": true,
+    "new_current_105_coverage": false
+  },
+  "negative_cases": [
+    "foreign run/snapshot/source/clock",
+    "unpersisted source",
+    "tampered book",
+    "foreign assigned EV2/root/upstream",
+    "foreign rendered snapshot/immutable IDs",
+    "metadata only/manual missing/final lines absent/wrong contract section",
+    "duplicate candidate deduplication"
+  ],
+  "normal_path_extra_SQL": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "report_text_forms_strategy_weights_caps_changed": false,
+  "no_new_independent_source_votes": true,
+  "native_full_manual_same_run_SENT_accepted": false,
+  "paid_storage_policy_unchanged": true,
+  "cursor710_preserved": true
+}
