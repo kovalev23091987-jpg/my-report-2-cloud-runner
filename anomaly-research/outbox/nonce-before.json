@@ -1,0 +1,14 @@
+{
+  "schema": "CONTROLLED_FROZEN_NONCE_REUSE_LATE_ACK_COUNTEREXAMPLE_V1",
+  "frozen_head": "cb824178431ccc0dfb630e8df29ccab3606b4d3e",
+  "source_sha256": "733cd616311b6cbed6e51f2bc7d308886b6493df9e5134f7a2c007983411670b",
+  "evidence_class": "CONTROLLED_MODEL_ONLY",
+  "first_nonce": "REUSED_N",
+  "second_claim_same_nonce": "CLAIMED",
+  "late_first_attempt_ACK_accepted_as_second_attempt": "SENT",
+  "model_message_id": "101",
+  "actual_send": false,
+  "network_calls": 0,
+  "native_writes": 0,
+  "root_cause": "CLAIM overwrites attempt_nonce without an immutable used-attempt nonce history; exactAck cannot distinguish attempts sharing event/outbox/owner/nonce/chat."
+}
