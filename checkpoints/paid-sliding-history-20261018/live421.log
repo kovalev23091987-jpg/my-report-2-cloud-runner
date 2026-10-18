@@ -1,0 +1,376 @@
+verify	Set up job	﻿2026-10-18T07:34:01.7709644Z Current runner version: '2.337.0'
+verify	Set up job	2026-10-18T07:34:01.7744573Z ##[group]Runner Image Provisioner
+verify	Set up job	2026-10-18T07:34:01.7745946Z Hosted Compute Agent
+verify	Set up job	2026-10-18T07:34:01.7746723Z Version: 20261012.601
+verify	Set up job	2026-10-18T07:34:01.7747394Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+verify	Set up job	2026-10-18T07:34:01.7748141Z Build Date: 2026-10-12T17:48:21Z
+verify	Set up job	2026-10-18T07:34:01.7748986Z Worker ID: {29684538-a80d-44ae-bf87-60701025cb07}
+verify	Set up job	2026-10-18T07:34:01.7749767Z Region: centralus
+verify	Set up job	2026-10-18T07:34:01.7750406Z Cloud: Azure
+verify	Set up job	2026-10-18T07:34:01.7751106Z ##[endgroup]
+verify	Set up job	2026-10-18T07:34:01.7753019Z ##[group]Operating System
+verify	Set up job	2026-10-18T07:34:01.7753884Z Ubuntu
+verify	Set up job	2026-10-18T07:34:01.7754449Z 24.04.5
+verify	Set up job	2026-10-18T07:34:01.7755032Z LTS
+verify	Set up job	2026-10-18T07:34:01.7756092Z ##[endgroup]
+verify	Set up job	2026-10-18T07:34:01.7756681Z ##[group]Runner Image
+verify	Set up job	2026-10-18T07:34:01.7757410Z Image: ubuntu-24.04-arm
+verify	Set up job	2026-10-18T07:34:01.7758028Z Version: 20261012.149.1
+verify	Set up job	2026-10-18T07:34:01.7759210Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24-arm64/20261012.149/images/ubuntu/Ubuntu2404-Arm64-Readme.md
+verify	Set up job	2026-10-18T07:34:01.7761085Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24-arm64%2F20261012.149
+verify	Set up job	2026-10-18T07:34:01.7762190Z ##[endgroup]
+verify	Set up job	2026-10-18T07:34:01.7763392Z ##[group]GITHUB_TOKEN Permissions
+verify	Set up job	2026-10-18T07:34:01.7766720Z Contents: write
+verify	Set up job	2026-10-18T07:34:01.7767386Z Metadata: read
+verify	Set up job	2026-10-18T07:34:01.7768077Z ##[endgroup]
+verify	Set up job	2026-10-18T07:34:01.7770729Z Secret source: Actions
+verify	Set up job	2026-10-18T07:34:01.7772025Z Cache mode: write
+verify	Set up job	2026-10-18T07:34:01.7772935Z Prepare workflow directory
+verify	Set up job	2026-10-18T07:34:01.8204253Z Prepare all required actions
+verify	Set up job	2026-10-18T07:34:01.8261101Z Getting action download info
+verify	Set up job	2026-10-18T07:34:02.0945858Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+verify	Set up job	2026-10-18T07:34:02.1883078Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+verify	Set up job	2026-10-18T07:34:02.3826460Z Complete job name: verify
+verify	Run actions/checkout@v4	﻿2026-10-18T07:34:02.4778415Z ##[group]Run actions/checkout@v4
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4780184Z with:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4781130Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4785446Z   token: ***
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4786110Z   ssh-strict: true
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4786833Z   ssh-user: git
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4787438Z   persist-credentials: true
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4788104Z   clean: true
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4788738Z   sparse-checkout-cone-mode: true
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4789381Z   fetch-depth: 1
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4790012Z   fetch-tags: false
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4790591Z   show-progress: true
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4791148Z   lfs: false
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4791773Z   submodules: false
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4792437Z   set-safe-directory: true
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4793182Z   allow-unsafe-pr-checkout: false
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.4794405Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5698590Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5701474Z ##[group]Getting Git version info
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5709801Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5712258Z [command]/usr/bin/git version
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5796328Z git version 2.55.0
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5815330Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5830910Z Temporarily overriding HOME='/home/runner/work/_temp/6b75adcd-27f8-4ad5-a12a-aee67fc7d2f9' before making global git config changes
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5832655Z Adding repository directory to the temporary git global config as a safe directory
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5836451Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5868609Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5873567Z ##[group]Initializing the repository
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5878586Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5994822Z hint: Using 'master' as the name for the initial branch. This default branch name
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.5997245Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6002233Z hint: to use in all of your new repositories, which will suppress this warning,
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6003331Z hint: call:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6003883Z hint:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6004607Z hint: 	git config --global init.defaultBranch <name>
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6005593Z hint:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6006321Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6007362Z hint: 'development'. The just-created branch can be renamed via this command:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6008267Z hint:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6008863Z hint: 	git branch -m <name>
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6009515Z hint:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6010287Z hint: Disable this message with "git config set advice.defaultBranchName false"
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6011552Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6014143Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6034404Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6035881Z ##[group]Disabling automatic garbage collection
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6040568Z [command]/usr/bin/git config --local gc.auto 0
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6069798Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6070925Z ##[group]Setting up auth
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6076353Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6105071Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6430109Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6464093Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6670162Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6704455Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6921617Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6953394Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6954671Z ##[group]Fetching the repository
+verify	Run actions/checkout@v4	2026-10-18T07:34:02.6962160Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +75bb36fab0e9c665a605fc8fa81d96214fe117ec:refs/remotes/origin/main
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1480844Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1482607Z  * [new ref]         75bb36fab0e9c665a605fc8fa81d96214fe117ec -> origin/main
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1489241Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1490464Z ##[group]Determining the checkout info
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1491574Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1492400Z [command]/usr/bin/git sparse-checkout disable
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1541535Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1572115Z ##[group]Checking out the ref
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.1575992Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.5175750Z Switched to a new branch 'main'
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.5177390Z branch 'main' set up to track 'origin/main'.
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.5196110Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.5244275Z [command]/usr/bin/git log -1 --format=%H
+verify	Run actions/checkout@v4	2026-10-18T07:34:05.5269426Z 75bb36fab0e9c665a605fc8fa81d96214fe117ec
+verify	Run actions/setup-node@v4	﻿2026-10-18T07:34:05.5654414Z ##[group]Run actions/setup-node@v4
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.5656030Z with:
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.5656823Z   node-version: 24
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.5658190Z   always-auth: false
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.5659051Z   check-latest: false
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.5666038Z   token: ***
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.5666880Z ##[endgroup]
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.6953578Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/arm64
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.6959961Z (node:2288) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.6962040Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	Run actions/setup-node@v4	2026-10-18T07:34:05.6964290Z ##[group]Environment details
+verify	Run actions/setup-node@v4	2026-10-18T07:34:06.0093036Z node: v24.21.0
+verify	Run actions/setup-node@v4	2026-10-18T07:34:06.0093847Z npm: 11.19.0
+verify	Run actions/setup-node@v4	2026-10-18T07:34:06.0094163Z yarn: 1.22.22
+verify	Run actions/setup-node@v4	2026-10-18T07:34:06.0095552Z ##[endgroup]
+verify	Verify real retained schema, reference races, summary preservation and admission	﻿2026-10-18T07:34:06.0227621Z ##[group]Run node --test runner/sliding-history-capacity.test.mjs runner/github-bounded-phase-lease.test.mjs
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.0228805Z ^[[36;1mnode --test runner/sliding-history-capacity.test.mjs runner/github-bounded-phase-lease.test.mjs^[[0m
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.0357533Z shell: /usr/bin/bash -e {0}
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.0358295Z ##[endgroup]
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1572489Z ✔ own weekly CAS/readback retains unrelated original bytes and releases only its owner (3.568725ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1575556Z ✔ foreign active owner receives no write, even an expired foreign lease is retained for explicit coordination (0.382133ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1579845Z ✔ owner authorization and foreign takeover block mutation instead of stealing/releasing a session (0.285937ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1586521Z ✔ GitHub credential remains in header for fixed official API route and errors expose status only (28.354375ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1589860Z ✔ a stale checkout cannot acquire a current lease for obsolete code (0.303202ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1592616Z ✔ authorized current all-active105 phase receives a bounded owner recognized by its connected review (0.853252ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.1595125Z ✔ current task name alone cannot grant weekly authority without the exact owner plan (0.330163ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3255300Z ✔ paid policy counts every database and starts cleanup before the included account ceiling (1.387758ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3257626Z ✔ expire old details while retaining original scalar decisions, statistical evidence, source clocks and latest rare-coin bodies (18.901456ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3263659Z ✔ protect ENTRY and its original full evidence (9.117437ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3265008Z ✔ protect ACTIONABLE and its original full evidence (8.6029ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3266581Z ✔ protect FRESH and its original full evidence (7.446278ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3269787Z ✔ protect COMMAND and its original full evidence (7.209702ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3271037Z ✔ protect RECHECK and its original full evidence (7.841691ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3272507Z ✔ protect BINDING and its original full evidence (7.312529ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3273628Z ✔ protect CALIBRATION and its original full evidence (7.53164ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3274858Z ✔ protect DISPATCH and its original full evidence (7.843578ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3278665Z ✔ protect LIFECYCLE and its original full evidence (7.063841ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3280311Z ✔ new protected reference at the final guard prevents expiry; unclosed native usage prevents every query (12.552166ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3306803Z ✔ a later evidence failure retains the exact already-expired canonical receipt and never claims a complete operation (7.701166ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3308163Z ✔ missing protected table, unexpected mutation trigger and reference census overflow retain all details (60.123063ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3309690Z ✔ new expiry still shares the two maintenance slots with legacy recovery and never clears unknown or the next full reserve (16.53245ms)
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3432349Z ℹ tests 22
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3433091Z ℹ suites 0
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3433717Z ℹ pass 22
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3434142Z ℹ fail 0
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3434586Z ℹ cancelled 0
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3435101Z ℹ skipped 0
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3435765Z ℹ todo 0
+verify	Verify real retained schema, reference races, summary preservation and admission	2026-10-18T07:34:06.3436935Z ℹ duration_ms 269.926054
+verify	Check scheduled entrypoint syntax	﻿2026-10-18T07:34:06.3532847Z ##[group]Run node --check tools/run-paid-sliding-history-20261018.mjs
+verify	Check scheduled entrypoint syntax	2026-10-18T07:34:06.3533723Z ^[[36;1mnode --check tools/run-paid-sliding-history-20261018.mjs^[[0m
+verify	Check scheduled entrypoint syntax	2026-10-18T07:34:06.3591312Z shell: /usr/bin/bash -e {0}
+verify	Check scheduled entrypoint syntax	2026-10-18T07:34:06.3592069Z ##[endgroup]
+verify	Post Run actions/setup-node@v4	﻿2026-10-18T07:34:06.4007559Z Post job cleanup.
+verify	Post Run actions/setup-node@v4	2026-10-18T07:34:06.5091158Z (node:2349) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	Post Run actions/setup-node@v4	2026-10-18T07:34:06.5092520Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	Post Run actions/checkout@v4	﻿2026-10-18T07:34:06.5283257Z Post job cleanup.
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6054057Z [command]/usr/bin/git version
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6093083Z git version 2.55.0
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6133188Z Temporarily overriding HOME='/home/runner/work/_temp/df3d9533-40ad-4c4e-ab2a-35fddb5b6b19' before making global git config changes
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6134377Z Adding repository directory to the temporary git global config as a safe directory
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6138063Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6180083Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6214884Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6440689Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6471991Z http.https://github.com/.extraheader
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6504254Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6547635Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6774713Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	Post Run actions/checkout@v4	2026-10-18T07:34:06.6807751Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	Complete job	﻿2026-10-18T07:34:06.7163298Z Cleaning up orphan processes
+verify	Complete job	2026-10-18T07:34:06.7533797Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+maintain	Set up job	﻿2026-10-18T07:34:14.6041782Z Current runner version: '2.337.0'
+maintain	Set up job	2026-10-18T07:34:14.6073338Z ##[group]Runner Image Provisioner
+maintain	Set up job	2026-10-18T07:34:14.6074377Z Hosted Compute Agent
+maintain	Set up job	2026-10-18T07:34:14.6075249Z Version: 20261012.601
+maintain	Set up job	2026-10-18T07:34:14.6076330Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+maintain	Set up job	2026-10-18T07:34:14.6077280Z Build Date: 2026-10-12T17:48:21Z
+maintain	Set up job	2026-10-18T07:34:14.6078046Z Worker ID: {6a0b4ea6-d8e8-462a-a08c-af9f20419e50}
+maintain	Set up job	2026-10-18T07:34:14.6078767Z Region: westus2
+maintain	Set up job	2026-10-18T07:34:14.6079507Z Cloud: Azure
+maintain	Set up job	2026-10-18T07:34:14.6080106Z ##[endgroup]
+maintain	Set up job	2026-10-18T07:34:14.6082923Z ##[group]Operating System
+maintain	Set up job	2026-10-18T07:34:14.6083645Z Ubuntu
+maintain	Set up job	2026-10-18T07:34:14.6084338Z 24.04.5
+maintain	Set up job	2026-10-18T07:34:14.6084956Z LTS
+maintain	Set up job	2026-10-18T07:34:14.6085539Z ##[endgroup]
+maintain	Set up job	2026-10-18T07:34:14.6086704Z ##[group]Runner Image
+maintain	Set up job	2026-10-18T07:34:14.6087429Z Image: ubuntu-24.04-arm
+maintain	Set up job	2026-10-18T07:34:14.6088184Z Version: 20261012.149.1
+maintain	Set up job	2026-10-18T07:34:14.6089377Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24-arm64/20261012.149/images/ubuntu/Ubuntu2404-Arm64-Readme.md
+maintain	Set up job	2026-10-18T07:34:14.6091469Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24-arm64%2F20261012.149
+maintain	Set up job	2026-10-18T07:34:14.6092449Z ##[endgroup]
+maintain	Set up job	2026-10-18T07:34:14.6094208Z ##[group]GITHUB_TOKEN Permissions
+maintain	Set up job	2026-10-18T07:34:14.6097747Z Contents: write
+maintain	Set up job	2026-10-18T07:34:14.6098464Z Metadata: read
+maintain	Set up job	2026-10-18T07:34:14.6099052Z ##[endgroup]
+maintain	Set up job	2026-10-18T07:34:14.6102210Z Secret source: Actions
+maintain	Set up job	2026-10-18T07:34:14.6103386Z Cache mode: write
+maintain	Set up job	2026-10-18T07:34:14.6104620Z Prepare workflow directory
+maintain	Set up job	2026-10-18T07:34:14.6729753Z Prepare all required actions
+maintain	Set up job	2026-10-18T07:34:14.6782959Z Getting action download info
+maintain	Set up job	2026-10-18T07:34:15.0115176Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+maintain	Set up job	2026-10-18T07:34:15.1209730Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+maintain	Set up job	2026-10-18T07:34:15.1888898Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+maintain	Set up job	2026-10-18T07:34:15.4064718Z Complete job name: maintain
+maintain	Run actions/checkout@v4	﻿2026-10-18T07:34:15.4924023Z ##[group]Run actions/checkout@v4
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4925677Z with:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4926914Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4931324Z   token: ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4931965Z   ssh-strict: true
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4932682Z   ssh-user: git
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4933365Z   persist-credentials: true
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4933973Z   clean: true
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4934762Z   sparse-checkout-cone-mode: true
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4935455Z   fetch-depth: 1
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4936427Z   fetch-tags: false
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4937109Z   show-progress: true
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4937753Z   lfs: false
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4938392Z   submodules: false
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4939097Z   set-safe-directory: true
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4939874Z   allow-unsafe-pr-checkout: false
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4941095Z env:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4945286Z   GITHUB_TOKEN: ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4946550Z   CLOUDFLARE_API_TOKEN: ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4947631Z   REPORT2_D1_BRIDGE_URL: ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4948814Z   REPORT2_D1_BRIDGE_TOKEN: ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4949983Z   REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4950929Z   BORROW_EXISTING_OWNER: CODEX:ACTIVE105_SOURCE_RELIABILITY:1792307586643
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.4951896Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5871248Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5874912Z ##[group]Getting Git version info
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5876700Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5878589Z [command]/usr/bin/git version
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5889056Z git version 2.55.0
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5910633Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5935055Z Temporarily overriding HOME='/home/runner/work/_temp/020f79fe-29f1-4d71-9d44-1efcbdd748d4' before making global git config changes
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5941769Z Adding repository directory to the temporary git global config as a safe directory
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5947303Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5992938Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.5998237Z ##[group]Initializing the repository
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6003670Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6098893Z hint: Using 'master' as the name for the initial branch. This default branch name
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6105196Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6107529Z hint: to use in all of your new repositories, which will suppress this warning,
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6108539Z hint: call:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6109197Z hint:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6109998Z hint: 	git config --global init.defaultBranch <name>
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6110811Z hint:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6111739Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6112882Z hint: 'development'. The just-created branch can be renamed via this command:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6113857Z hint:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6114482Z hint: 	git branch -m <name>
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6115170Z hint:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6116324Z hint: Disable this message with "git config set advice.defaultBranchName false"
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6117738Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6120337Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6147601Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6148912Z ##[group]Disabling automatic garbage collection
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6150736Z [command]/usr/bin/git config --local gc.auto 0
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6186617Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6188382Z ##[group]Setting up auth
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6197264Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6221723Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6549568Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6580930Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6786554Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.6818057Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.7025644Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.7065997Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.7068009Z ##[group]Fetching the repository
+maintain	Run actions/checkout@v4	2026-10-18T07:34:15.7075003Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +75bb36fab0e9c665a605fc8fa81d96214fe117ec:refs/remotes/origin/main
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7214522Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7217538Z  * [new ref]         75bb36fab0e9c665a605fc8fa81d96214fe117ec -> origin/main
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7221845Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7223490Z ##[group]Determining the checkout info
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7225211Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7226535Z [command]/usr/bin/git sparse-checkout disable
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7270850Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7300314Z ##[group]Checking out the ref
+maintain	Run actions/checkout@v4	2026-10-18T07:34:18.7303396Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+maintain	Run actions/checkout@v4	2026-10-18T07:34:19.0866356Z Switched to a new branch 'main'
+maintain	Run actions/checkout@v4	2026-10-18T07:34:19.0868240Z branch 'main' set up to track 'origin/main'.
+maintain	Run actions/checkout@v4	2026-10-18T07:34:19.0887445Z ##[endgroup]
+maintain	Run actions/checkout@v4	2026-10-18T07:34:19.0935903Z [command]/usr/bin/git log -1 --format=%H
+maintain	Run actions/checkout@v4	2026-10-18T07:34:19.0961522Z 75bb36fab0e9c665a605fc8fa81d96214fe117ec
+maintain	Run actions/setup-node@v4	﻿2026-10-18T07:34:19.1248378Z ##[group]Run actions/setup-node@v4
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1249010Z with:
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1249464Z   node-version: 24
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1249761Z   always-auth: false
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1250134Z   check-latest: false
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1253046Z   token: ***
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1253427Z env:
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1256719Z   GITHUB_TOKEN: ***
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1257352Z   CLOUDFLARE_API_TOKEN: ***
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1257902Z   REPORT2_D1_BRIDGE_URL: ***
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1258446Z   REPORT2_D1_BRIDGE_TOKEN: ***
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1259070Z   REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ***
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1259628Z   BORROW_EXISTING_OWNER: CODEX:ACTIVE105_SOURCE_RELIABILITY:1792307586643
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.1260144Z ##[endgroup]
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.2493370Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/arm64
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.2497994Z (node:2900) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.2498941Z (Use `node --trace-deprecation ...` to show where the warning was created)
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.2500203Z ##[group]Environment details
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.5397502Z node: v24.21.0
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.5398684Z npm: 11.19.0
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.5399323Z yarn: 1.22.22
+maintain	Run actions/setup-node@v4	2026-10-18T07:34:19.5400214Z ##[endgroup]
+maintain	Check account volume and expire admitted old details only at high water	﻿2026-10-18T07:34:19.5518558Z ##[group]Run node tools/run-paid-sliding-history-20261018.mjs
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5519405Z ^[[36;1mnode tools/run-paid-sliding-history-20261018.mjs^[[0m
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5619391Z shell: /usr/bin/bash -e {0}
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5619774Z env:
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5622814Z   GITHUB_TOKEN: ***
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5623347Z   CLOUDFLARE_API_TOKEN: ***
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5623923Z   REPORT2_D1_BRIDGE_URL: ***
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5624509Z   REPORT2_D1_BRIDGE_TOKEN: ***
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5625027Z   REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ***
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5625568Z   BORROW_EXISTING_OWNER: CODEX:ACTIVE105_SOURCE_RELIABILITY:1792307586643
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:19.5626217Z ##[endgroup]
+maintain	Check account volume and expire admitted old details only at high water	2026-10-18T07:34:20.7926699Z {"status":"STORAGE_BELOW_HIGH_WATERMARK","account_bytes":518578176,"details_expired":false,"whole_HTTP":7,"D1":null,"reservation_consumed":false}
+maintain	Run actions/upload-artifact@v4	﻿2026-10-18T07:34:20.8069708Z ##[group]Run actions/upload-artifact@v4
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8070122Z with:
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8070454Z   name: paid-sliding-history-39108141802
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8070806Z   path: audit-output/paid-sliding-history/
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8071168Z   if-no-files-found: error
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8071419Z   retention-days: 30
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8071696Z   compression-level: 6
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8071948Z   overwrite: false
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8072230Z   include-hidden-files: false
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8072535Z env:
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8075460Z   GITHUB_TOKEN: ***
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8076193Z   CLOUDFLARE_API_TOKEN: ***
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8076681Z   REPORT2_D1_BRIDGE_URL: ***
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8077176Z   REPORT2_D1_BRIDGE_TOKEN: ***
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8077671Z   REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN: ***
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8078090Z   BORROW_EXISTING_OWNER: CODEX:ACTIVE105_SOURCE_RELIABILITY:1792307586643
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.8078532Z ##[endgroup]
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.9494537Z (node:2945) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.9496055Z (Use `node --trace-deprecation ...` to show where the warning was created)
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.9548219Z With the provided path, there will be 1 file uploaded
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.9552011Z Artifact name is valid!
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:20.9563606Z Root directory input is valid!
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.3498654Z Beginning upload of artifact content to blob storage
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.3660297Z (node:2945) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.6576374Z Uploaded bytes 1372
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.7367330Z Finished uploading artifact content to blob storage!
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.7368890Z SHA256 digest of uploaded artifact zip is 49c6cd55beddc52785fc89b1851164d166a8c9bccd3a3bc242465dfe41ba9514
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.7369730Z Finalizing artifact upload
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.9972253Z Artifact paid-sliding-history-39108141802.zip successfully finalized. Artifact ID 12129003429
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.9973402Z Artifact paid-sliding-history-39108141802 has been successfully uploaded! Final size is 1372 bytes. Artifact ID is 12129003429
+maintain	Run actions/upload-artifact@v4	2026-10-18T07:34:21.9979551Z Artifact download URL: https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39108141802/artifacts/12129003429
+maintain	Post Run actions/setup-node@v4	﻿2026-10-18T07:34:22.0128624Z Post job cleanup.
+maintain	Post Run actions/setup-node@v4	2026-10-18T07:34:22.1190193Z (node:2957) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+maintain	Post Run actions/setup-node@v4	2026-10-18T07:34:22.1191399Z (Use `node --trace-deprecation ...` to show where the warning was created)
+maintain	Post Run actions/checkout@v4	﻿2026-10-18T07:34:22.1342312Z Post job cleanup.
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2138204Z [command]/usr/bin/git version
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2173983Z git version 2.55.0
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2308311Z Temporarily overriding HOME='/home/runner/work/_temp/dd382a8c-7786-44c8-ae0e-c3f8a3689caa' before making global git config changes
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2327702Z Adding repository directory to the temporary git global config as a safe directory
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2328813Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2330217Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2331724Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2533533Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2565612Z http.https://github.com/.extraheader
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2569561Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2610283Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2841093Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+maintain	Post Run actions/checkout@v4	2026-10-18T07:34:22.2886871Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+maintain	Complete job	﻿2026-10-18T07:34:22.3218297Z Cleaning up orphan processes
+maintain	Complete job	2026-10-18T07:34:22.3536501Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
