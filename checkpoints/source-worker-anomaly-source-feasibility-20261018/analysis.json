@@ -1294,7 +1294,21 @@
     "rotation_policy_currently_implemented": false,
     "actual_worst_case_unselected_asset_latency": "UNBOUNDED by existing top24/top2 selection; repeated popular assets can exclude others.",
     "existing5minute_snapshot_detection": "Opportunity only at saved sample times; short intrabucket anomaly may disappear. This is not guaranteed1minute detection.",
-    "one_REST_candle_request_each_market_per_asset_bounds": [
+    "one_REST_candle_request_FUTURES_ONLY_per_asset_bounds": [
+      {
+        "cadence_minutes": 1,
+        "requests_day": 151200
+      },
+      {
+        "cadence_minutes": 5,
+        "requests_day": 30240
+      },
+      {
+        "cadence_minutes": 40,
+        "requests_day": 3780
+      }
+    ],
+    "optional_two_market_REST_candle_scenarios": [
       {
         "cadence_minutes": 1,
         "requests_day": 302400
@@ -1308,10 +1322,11 @@
         "requests_day": 7560
       }
     ],
-    "selected_two_assets_two_markets_per_full_requests_day": 144,
+    "selected_two_assets_FUTURES_ONLY_per_full_requests_day": 72,
+    "selected_two_assets_optional_two_markets_per_full_requests_day": 144,
     "additional_HTTP_when_reusing_original_selected_deep_responses": 0,
     "notes": [
-      "The105asset arithmetic assumes both markets exist and each asset can be selected; six officially suspended markets and any missing spot remain unavailable, never invented. This is a hypothetical request floor, not actual105coverage.",
+      "The optional paired105asset arithmetic assumes both markets exist and each asset can be selected; six officially suspended markets and any missing spot remain unavailable, never invented. This is a hypothetical request floor, not actual105coverage.",
       "Candle-only floors exclude trade pagination, identity, metadata, outcomes, SQL/cache, retries and controls.",
       "REST cadence scenarios are not websocket message/request counts.",
       "Neither source nominal quota nor provider API limits prove actual spare project164/D1/day/month/manual headroom. Coordinator owns complete budgets/official API research/admission.",
@@ -1328,10 +1343,10 @@
     },
     {
       "id": "PAIRED_EVENT_SPOT_AND_FILLS_MISSING",
-      "severity": "high",
+      "severity": "medium",
       "confidence": "high",
       "evidence": "CT late spot15OHLC/count omits volumes; BR no retained spot. Both late N12 sample windows occur after historical event; current4h futures flow does not contain event.",
-      "impact": "Mandatory same-event futures+spot anomaly explanation remains unqualified.",
+      "impact": "Paired same-event futures+spot explanation remains unqualified. Latest owner futures-first rule: absent spot does NOT block an independently sufficient futures fact, later confirmation or notice; this audit installs no gate.",
       "remediation": "For an admitted rare candidate, reuse exact original paired closed-window OHLCV and complete count/volume-reconciled fills if available; otherwise record unavailable/partial and no paired claim."
     },
     {
@@ -1353,7 +1368,7 @@
   ],
   "prospective_acceptance_requirements": [
     "Exact approved asset identity, venue, spot/futures, quote, contract multiplier and original event window. Do not create spot via ticker resemblance.",
-    "Retain closed1m OHLCV and original per-minute count/volume units; derive3m/5m only from exact complete1m. Spot is mandatory research for futures anomalies; unavailable remains unknown.",
+    "Retain closed1m OHLCV and original per-minute count/volume units; derive3m/5m only from exact complete1m. Latest owner clarification supersedes the former mandatory spot wording: futures-first; seek and extend spot, but unavailable/conflicting spot is separate context and does NOT block an independently sufficient futures fact, confirmation or notice. No new spot gate.",
     "First attention and acquisition/available-at clocks distinguish retrospective detection from ex-ante event memory.",
     "Per-event matched later price series and label status: not-yet-mature, baseline missing, failed, no-move, successful, independent control. No label from unbound current price or future-selected winner.",
     "Main/manual budgets protect first; separate source keys do not create new provider quota. New API/provider role requires official terms, actual approved-asset facts and integration qualification by coordinator.",
