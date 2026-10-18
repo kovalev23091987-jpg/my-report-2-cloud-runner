@@ -1,0 +1,161 @@
+{
+  "schema": "REPORT2_N10_CLOSED_WINDOW_AND_DIRECTION_FACT_SCOPE_OFFLINE_V1",
+  "recorded_utc": "2026-10-18T08:56:02.449065+00:00",
+  "source_main": "d3c212c45a7ad8c33497f4d727f62927a38fc65e",
+  "branch": "work/report2-sources-n10-path-facts-20261018",
+  "thread_id": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "lease": {
+    "lease_commit": "5b942566ce4e5bf552da61242b23a336f103fe4c",
+    "lease": {
+      "schema": "REPORT2_SOURCE_WORKER_OFFLINE_CAS_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a14e11:1792313290739",
+      "thread_id": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+      "acquired_ts": 1792313290739,
+      "expires_ts": 1792318090739,
+      "expected_main": "d3c212c45a7ad8c33497f4d727f62927a38fc65e",
+      "scope": "OFFLINE_ONLY N10 closed 15m window freshness and flat-direction comparison; only htx-technical-structure.mjs, N10-specific tests and evidence. Shared block-result-context wording supplied as a proposal to coordinator. Use saved originals and controlled negative windows; no source HTTP/nativeSQL/MAIN/Telegram/deploy, no shared phase/status/generation edits, no quota/unknown/reservation reset.",
+      "released": false,
+      "guard_sha256": {
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "a23ccdb7bacff957572ebd05b77f7c9e5bb41ca8ed62dd110deab6ecc8d55dae",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "6680cb2a33b36e008501686072852ca359def4a5ffbafabe9e828cbb00cc29bd",
+        "REPORT2_CURRENT_GENERATION.json": "3c7bd755f8d44f941c52667001e6d473016aa9b9a6bdbd599f0e14ab53139ef3",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "98d278f916c9a2751b7d35c539a1c51947f0f96ff382f3c2e1e00b004bb58377"
+      }
+    },
+    "exact_readback": true,
+    "file_blob": "acc0085ba084ebb9618f257335b5a7166ee3d8f7"
+  },
+  "defects": [
+    "Reused venue comparison used direction product>=0, describing a flat market as directional agreement.",
+    "HTX spot comparison accepted any futures OHLC interval with matching end, losing start/count/label during source-to-verifier transfer.",
+    "Fresh API response clock could make an old recent candle window appear usable; expiry followed response rather than the original window end.",
+    "HTX spot verifier did not bind observed/first-known clocks and asset namespace to its retained receipt.",
+    "Shared recent-path consumer did not compare declared expiry to reconstructed expiry; independent-flat report text fell through to disjoint-price wording."
+  ],
+  "runtime_files": [
+    "current-generation/files/src/htx-technical-structure.mjs"
+  ],
+  "source_inputs": {
+    "current-generation/tests/fixtures/n10-reused-original-15m-samples.json": {
+      "sha256": "052de7726e587b1f0239a58335913fe0f1c552f0d9ba620fca085523b0b2c3b3",
+      "scope": "retained derived historical15m windows for BINANCE/POLONIEX ZEC and BITGET RLC; no original provider clock refresh"
+    }
+  },
+  "source_input_semantics": "Previously retained three ZEC/RLC independent price-window samples; old PR418 acquisition/reuse qualification is not repeated. Flat prices, response/cutoff variations and HTX ARB spot response are explicit controlled cases, not new source facts. Prefix225 candle rows in the existing fixture builder remain controlled padding.",
+  "shared_proposal": {
+    "path": "checkpoints/source-worker-n10-path-facts-20261018/shared-context-and-fixture.proposed.patch",
+    "workspace_shared_files_modified": false,
+    "changes": [
+      "block-result-context: accurate DIRECTION_UNCONFIRMED wording in existing N10 field",
+      "block-result-context: exact rebuilt recent-path expiry check",
+      "active-market-coverage-expansion controlled spot fixture: explicitly supply the real requested 15m start/count descriptor"
+    ],
+    "CI": "Coordinator adds n10-path-window-clock.test.mjs to existing assembled N10 related command/path trigger; default negative consumer cases require the shared proposal."
+  },
+  "tests": {
+    "original25": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/original25.tap.gz",
+      "raw_sha256": "32210ff1c42cb48b600682a40f50a3dbc9846ebdfb514fb5f298692bfae0a53d",
+      "gzip_sha256": "4cbf62f76d0878bf77218e8927376e5c4efc2c670cafe209cefb39e46ef588df",
+      "counts": {
+        "tests": 25,
+        "pass": 0,
+        "fail": 25,
+        "skipped": 0
+      }
+    },
+    "provider_only25": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/provider_only25.tap.gz",
+      "raw_sha256": "a57c41dbd958b0f970eb97ef3168ce5a283ee912ad7b057c1f6a00eeffe5d9cb",
+      "gzip_sha256": "64846616afe72a244c2a1864d17b7ee400a763288fb3ff331dbbd7b16d07add3",
+      "counts": {
+        "tests": 25,
+        "pass": 23,
+        "fail": 2,
+        "skipped": 0
+      }
+    },
+    "proposed25": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/proposed25.tap.gz",
+      "raw_sha256": "64b55c2be8c25a106c6b491e731525c69a89e24a0858b3bc0aeaf9b020c8e282",
+      "gzip_sha256": "0ef53bcc20e306e8d4f54143fa52d692451369fcd3320a7b12c10fb7e7a5e703",
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    "related12": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/related12.tap.gz",
+      "raw_sha256": "b6ca11e267a3768122b7aebdb21500602d92897c0b17ace90ca37df91380994b",
+      "gzip_sha256": "3798713406ec4baeff5c52c261e5e6288555757ce4013e6ce7ee359daa689e38",
+      "counts": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    "focused_technical6": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/focused_technical6.tap.gz",
+      "raw_sha256": "70e8735fe83d519529050eb1c2aedd7cef54c01906ff6d9dfcb380189abef0e0",
+      "gzip_sha256": "239e771f95624528cd5541e1a23f4e7ccb7a94ce8ed5c21963b009d7688f854b",
+      "counts": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    "controlled_fixture_before": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/controlled_fixture_before.tap.gz",
+      "raw_sha256": "9c5bfdd425cf6d48b01553db545e672b2403774ef24c159787a5141124af6b7c",
+      "gzip_sha256": "3ff259af3c4e1d569fa20032a9401f990afe301fa48dd5110fb03aa691dba46e",
+      "counts": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "skipped": 0
+      }
+    },
+    "controlled_fixture_proposed": {
+      "path": "checkpoints/source-worker-n10-path-facts-20261018/controlled_fixture_proposed.tap.gz",
+      "raw_sha256": "3d9b7983384676d7ffa5c234dab159fece80ca94d61e2e8d08e7e6c87daf29e2",
+      "gzip_sha256": "0d18ef7b84cb415310086e92d0a04e02c26afabee92c6f82925ea0395638dec9",
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "new_cases": 25,
+  "related_passing_with_exact_shared_proposal": 44,
+  "provider_HTTP_this_package": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "extra_normal_path_SQL": 0,
+  "TTL_ms_unchanged": 180000,
+  "source_clocks_refreshed": false,
+  "score_weights_targets_entry_strategy_forms_caps_pauses_changed": false,
+  "limitations": [
+    "Source-only25 has23PASS2FAIL because the two saved shared consumer changes are intentionally not applied in the worker checkout.",
+    "All25 pass in a complete temporary source copy with the exact shared proposal, not on current main or deployment.",
+    "The former controlled spot fixture lacked start/count; its one-case failure and explicit metadata correction are saved. No historical provider body or published message was rewritten.",
+    "A read-only scan of42 reduced source reports supplied zero full recent-path producer rows; this is missing replay provenance, not preserved83-report or current105 coverage acceptance. No zero-row audit is counted as a passed qualification.",
+    "No new useful-source count, provider availability, native full report or same-run delivery/SENT claim."
+  ],
+  "next_action": "Coordinator reviews ready source PR, applies only exact shared context/controlled fixture proposal and CI binding, verifies assembled runtime and merges. Worker retains ready branch unchanged and selects an independent proved source gap from N05/N12/LIQ typed coverage, not another abstract cache helper.",
+  "changed_file_sha256": {
+    "current-generation/files/src/htx-technical-structure.mjs": "f6d522b73a2de780348a92ff3e2e3e830992fe2a876bf352a09df67f704f1dd7",
+    "current-generation/tests/n10-path-window-clock.test.mjs": "d92c53cf984ce9cd3a21bc85ea8076883322c96d03feacad950c6a2d35ef46e6",
+    "checkpoints/source-worker-n10-path-facts-20261018/shared-context-and-fixture.proposed.patch": "3b14fbe7861467aa3934e7a1370e43afc9bc1eb2825e682b3702ab967adeb179"
+  },
+  "unmodified_shared_file_sha256": {
+    "current-generation/files/src/block-result-context.mjs": "3c571712a2028297f70b6071ce432f14c51ebcf7aa3d4cd5d4cf1c04d7d9afc5",
+    "current-generation/tests/active-market-coverage-expansion.test.mjs": "a9799009de876c3738ff6ba98d5fbe94de7f674d75823c1ee878cbbae4614817"
+  }
+}
