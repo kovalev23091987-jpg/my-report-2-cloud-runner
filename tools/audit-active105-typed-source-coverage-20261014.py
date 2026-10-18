@@ -4,11 +4,12 @@
 No HTTP/D1, no market refresh, no score changes. A report's declared producer
 role can resolve market type; names in prose or catalog entries cannot.
 """
-import argparse,collections,datetime,gzip,hashlib,json,math,pathlib,re
+import argparse,collections,datetime,gzip,hashlib,json,math,pathlib,re,subprocess,shutil
 
 root=pathlib.Path(__file__).resolve().parents[1]
-parser=argparse.ArgumentParser();parser.add_argument('--output',required=True);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--output',required=True);parser.add_argument('--node',default=shutil.which('node'));args=parser.parse_args()
 out=root/args.output
+if not args.node:raise ValueError('NODE_RUNTIME_FOR_EXACT_N11_BINDING_REQUIRED')
 if out.exists():raise FileExistsError('IMMUTABLE_PROOF_EXISTS')
 def read(path):
  p=root/path;b=p.read_bytes();raw=gzip.decompress(b) if p.suffix=='.gz' else b
@@ -58,13 +59,21 @@ def markets(block,source,detail):
   return result or ['MARKET_NOT_RESOLVED_IN_REDUCED_ORIGINAL']
  return ['MARKET_NOT_RESOLVED_IN_REDUCED_ORIGINAL']
 
+tracked=set(subprocess.check_output(['git','ls-files','-z','checkpoints'],cwd=root).decode().split('\0'))
 for p in sorted((root/'checkpoints').glob('**/report2-run-result.json*')):
+ if str(p.relative_to(root)) not in tracked:continue
  packed=p.with_name(p.name+'.gz')
  if p.suffix!='.gz' and packed.exists():
   if gzip.decompress(packed.read_bytes())!=p.read_bytes():raise ValueError('ORIGINAL_REPORT_GZIP_MISMATCH: '+str(p.relative_to(root)))
   continue
  d,ref=read(str(p.relative_to(root)))
  if d.get('status')!='CLOSED' or not re.fullmatch('[a-f0-9]{40}',str(d.get('head'))):continue
+ # Rebuild the two original identity namespaces from immutable source facts;
+ # do not replace this with a label/prose or declared-count inference.
+ projected={'run_id':d.get('run_id'),'report_text':d.get('report_text'),'candidates':[{k:c.get(k) for k in ['contract','run_id','snapshot_id','observed_ts','canonical','execution_context_source','block_coverage','block_rendered_results','manual_text']} for c in d.get('candidates',[])]}
+ audit=json.loads(subprocess.check_output([args.node,str(root/'tools/audit-n11-rendered-source-binding-20261018.mjs')],input=json.dumps(projected,ensure_ascii=False).encode(),timeout=30))
+ if audit.get('schema')!='N11_EXACT_RENDERED_SOURCE_BINDING_V1' or any(audit.get(k)!=0 for k in ['sourceHTTP','D1','Telegram']):raise ValueError('EXACT_N11_BINDING_AUDIT_REQUIRED')
+ n11_bindings=audit['bindings']
  accepted=0
  for c in d.get('candidates',[]):
   code=c.get('contract');can=c.get('canonical') or {};key=(c.get('publication_id'),can.get('analytical_fingerprint'))
@@ -91,11 +100,14 @@ for p in sorted((root/'checkpoints').glob('**/report2-run-result.json*')):
     def exact_context(receipts):
      return [r for r in receipts if r.get('block_id')==block and set(r.get('evidence_ids',[r.get('evidence_id')]))&evidence_ids]
     manual_context=exact_context(rendered.get('context_receipts',[]))
+    bound_n11=[r for r in n11_bindings if block=='N11' and source=='PRIMARY_EXECUTION_STRESS' and r['contract']==code and r['snapshot_id']==c['snapshot_id'] and r['run_id']==c['run_id'] and r['producer_evidence_id'] in evidence_ids]
+    manual_context += [{**r,'evidence_ids':[r['producer_evidence_id']]} for r in bound_n11]
     telegram_context=exact_context(rendered.get('telegram_context_receipts',[]))
     manual_rendered=bool(manual_context) and int(detail.get('rendered_fact_count',0))>0 and block in rendered.get('used_context_block_ids',[])
     telegram_prepared=bool(telegram_context) and block in rendered.get('telegram_used_context_block_ids',[])
     clocks=[r['source_ts'] for r in manual_context+telegram_context if finite(r.get('source_ts')) and r['source_ts']<=c['observed_ts']]
     cell={'source':source,'markets':markets(block,source,detail) if fact else ['NO_QUALIFIED_FACT'],'status':check.get('status'),'HTTP_attribution':http,'qualified_fact':fact,'decision_consumer_use':decision_consumed,'report_consumer_use':manual_rendered or telegram_prepared,'nonzero_score':int(detail.get('nonzero_score_fact_count',0))>0,'manual_rendered':manual_rendered,'telegram_prepared':telegram_prepared,'same_run_delivery_not_inferred':True,'validated_evidence_ids':sorted(evidence_ids),'original_source_clocks':sorted(set(clocks)),'clocks_missing_in_reduced_original':not clocks,'declared_upstreams':sorted(set(detail.get('declared_upstream_ids',[]))|set(detail.get('used_declared_upstream_ids',[]))),'physical_roots':sorted(set(detail.get('physical_root_keys',[]))|set(detail.get('used_physical_root_keys',[])))}
+    if bound_n11:cell['manual_source_id_binding_proofs']=[{k:r[k] for k in ['producer_evidence_id','producer_physical_root','immutable_evidence_ids','source_ts','observed_ts','label','proof']} for r in bound_n11]
     record['blocks'][block]['source_cells'].append(cell)
     for market in cell['markets']:
      s=stats[(block,source,market)];s['contracts'].add(code);s['HTTP']+=http
@@ -128,6 +140,6 @@ for (block,source,market),s in sorted(stats.items()):
 block_counts={}
 for block in active:
  block_counts[block]={'historical_qualified_assets_in_current_pause_report_subset':sum(bool(r['blocks'][block]['qualified_sources']) for r in rows),'historical_decision_consumer_assets_in_that_subset':sum(bool(r['blocks'][block]['decision_used_sources']) for r in rows),'historical_report_consumer_assets_in_that_subset':sum(bool(r['blocks'][block]['report_used_sources']) for r in rows),'historical_spot_market_role_assets_in_that_subset':sum('SPOT' in r['blocks'][block]['proven_market_roles'] for r in rows),'historical_futures_market_role_assets_in_that_subset':sum('FUTURES' in r['blocks'][block]['proven_market_roles'] for r in rows),'whole_105_current_coverage_proven':False}
-proof={'schema':'ACTIVE105_TYPED_SOURCE_USE_COVERAGE_V1','recorded_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'manifest':manifest,'prior_reused':[prior_ref,baseline_ref,liq_ref,spot_ref],'source_reports':files,'active_blocks':active,'paused_blocks':paused,'original_publications':len(records),'original_report_distinct_assets':len({r['contract'] for r in records}),'block_counts':block_counts,'source_block_market_matrix':matrix,'asset_rows':rows,'original_records':records,'LIQ':{'eligible':103,'historical_original_numeric_union':len(old_numeric|fresh_external),'historical_gaps':sorted(set(assets)-{'BTC-USDT','ETH-USDT'}-old_numeric-fresh_external),'new_vs_base':sorted(fresh_external-old_numeric),'original_raw_source_clocks_not_refreshed':True},'cost_semantics':'Cell HTTP is attribution only: shared N04/N05 transport and N05/N12 adapters must be deduplicated using their original shared receipt before summing. Market dimensions do not multiply source quotas.','market_semantics':'Market type uses validated declared upstream roles and explicit normalized same-run trade receipts. Catalog/prose/score do not establish useful per-market facts. N04 is on-chain; N15 uses aggregate sector quotes; N11 is futures-only.','historical_39_external_N05_not_replaced_by_reduced_subset':True,'no_telegram_SENT_inferred':True,'issues':issues,'sourceHTTP':0,'D1':0,'MAIN':0,'Telegram':0,'all_blocks_complete':False,'project_complete':False}
+proof={'schema':'ACTIVE105_TYPED_SOURCE_USE_COVERAGE_V1','recorded_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'manifest':manifest,'prior_reused':[prior_ref,baseline_ref,liq_ref,spot_ref],'source_reports':files,'active_blocks':active,'paused_blocks':paused,'original_publications':len(records),'original_report_distinct_assets':len({r['contract'] for r in records}),'block_counts':block_counts,'source_block_market_matrix':matrix,'asset_rows':rows,'original_records':records,'LIQ':{'eligible':103,'historical_original_numeric_union':len(old_numeric|fresh_external),'historical_gaps':sorted(set(assets)-{'BTC-USDT','ETH-USDT'}-old_numeric-fresh_external),'new_vs_base':sorted(fresh_external-old_numeric),'original_raw_source_clocks_not_refreshed':True},'cost_semantics':'Cell HTTP is attribution only: shared N04/N05 transport and N05/N12 adapters must be deduplicated using their original shared receipt before summing. Market dimensions do not multiply source quotas.','market_semantics':'Market type uses validated declared upstream roles and explicit normalized same-run trade receipts. Catalog/prose/score do not establish useful per-market facts. N04 is on-chain; N15 uses aggregate sector quotes; N11 is futures-only.','historical_39_external_N05_not_replaced_by_reduced_subset':True,'no_telegram_SENT_inferred':True,'N11_rendered_source_binding':'EXACT_IMMUTABLE_BOOK_PRODUCER_AND_FINAL_CONTRACT_SCOPED_LINES','N11_binding_auditor':{'path':'tools/audit-n11-rendered-source-binding-20261018.mjs','sha256':hashlib.sha256((root/'tools/audit-n11-rendered-source-binding-20261018.mjs').read_bytes()).hexdigest()},'issues':issues,'sourceHTTP':0,'D1':0,'MAIN':0,'Telegram':0,'all_blocks_complete':False,'project_complete':False}
 out.write_text(json.dumps(proof,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps({'output':args.output,'original_publications':len(records),'distinct_assets':proof['original_report_distinct_assets'],'block_counts':block_counts,'LIQ_numeric_historical':proof['LIQ']['historical_original_numeric_union'],'LIQ_gaps':len(proof['LIQ']['historical_gaps']),'issues':len(issues)},ensure_ascii=False))

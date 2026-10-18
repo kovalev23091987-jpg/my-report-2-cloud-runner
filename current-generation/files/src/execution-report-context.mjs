@@ -4,7 +4,8 @@
  */
 import {verifyExecutionFacts} from './tz101-execution-facts.mjs';
 import {digest} from './upstream-proof-utils.mjs';
-import {PAUSED_BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
+import {sourceLabelRu} from './reason-registry.mjs';
+import {PAUSED_BLOCKS,validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const EXECUTION_REPORT_CONTEXT_VERSION='execution-report-context-v2-canonical-20261004';
 const stamp=n=>Number.isSafeInteger(n)&&n>=1_000_000_000_000;
@@ -79,7 +80,45 @@ export function auditExecutionReportRendering(output={}){
   const proof=consumeExecutionReportContext(row,output.run_id);
   for(const fact of proof.facts){if(typeof output.report_text==='string'&&output.report_text.includes(`- ${fact.label}: ${fact.value}.`))receipts.push({...fact,run_id:output.run_id,contract:row.contract,snapshot_id:row.snapshot_id});}
  }
+ for(const binding of auditExactN11RenderedSourceBindings(output).bindings){
+  if(!receipts.some(r=>r.contract===binding.contract&&r.snapshot_id===binding.snapshot_id&&r.label===binding.label&&r.value===binding.value))
+   receipts.push({...binding,consumer:'RUN_REPORT_CONFIRMED_CONTEXT',entry_authorized:false,directional_vote:false,hard_gate:false,score_contribution:0});
+ }
  return {version:EXECUTION_REPORT_CONTEXT_VERSION,status:receipts.length?'REPORT_TEXT_VERIFIED':'NO_VERIFIED_RENDERED_EXECUTION_CONTEXT',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(r=>r.block_id))],entry_authorized:false,score_contribution:0};
+}
+
+// Producer EV2 identity and rendered immutable receipt identity describe the
+// same verified book, but are not interchangeable strings. Rebuild both from
+// the original source and require the exact final line under its own contract.
+export function auditExactN11RenderedSourceBindings(output={}){
+ const bindings=[],seen=new Set(),candidates=Array.isArray(output.candidates)?output.candidates:[];
+ const contracts=new Set(candidates.map(r=>r.contract)),byContract=new Map();let current=null;
+ for(const line of String(output.report_text||'').split('\n')){
+  if(contracts.has(line)){current=line;continue;}
+  if(current){if(!byContract.has(current))byContract.set(current,new Set());byContract.get(current).add(line);}
+ }
+ for(const row of candidates){
+  const rendered=row.block_rendered_results,check=row.block_coverage?.blocks?.N11?.source_checks?.PRIMARY_EXECUTION_STRESS;
+  if(row.run_id!==output.run_id||row.canonical?.run_id!==output.run_id||row.canonical?.contract!==row.contract||row.canonical?.snapshot_id!==row.snapshot_id||row.canonical?.observed_ts!==row.observed_ts||!/^[a-f0-9]{64}$/.test(row.canonical?.analytical_fingerprint||'')||
+   rendered?.status!=='RENDERED_OUTPUT_VERIFIED'||rendered.run_id!==row.run_id||rendered.contract!==row.contract||rendered.snapshot_id!==row.snapshot_id||
+   !rendered.used_context_block_ids?.includes('N11')||check?.checked!==true||typeof row.manual_text!=='string')continue;
+  const identity={contract:row.contract,run_id:row.run_id,snapshot_id:row.snapshot_id,observed_ts:row.observed_ts,execution_context_source:row.execution_context_source};
+  const producer=buildCanonicalExecutionEvidence(identity).find(e=>e.block_id==='N11'&&check.valid_evidence_ids?.includes(e.evidence_id)&&check.declared_upstream_ids?.includes(e.upstream_id)&&check.physical_root_keys?.includes(evidenceDedupKey(e)));
+  if(!producer)continue;
+  const manualLines=new Set(row.manual_text.split('\n')),runLines=byContract.get(row.contract)||new Set();
+  for(const fact of consumeCanonicalExecutionContext(identity).facts.filter(f=>f.block_id==='N11')){
+   const match=(rendered.context_receipts||[]).find(r=>r.block_id==='N11'&&r.consumer==='MANUAL_CONFIRMED_CONTEXT'&&r.score_contribution===0&&r.evidence_id===fact.evidence_id&&r.physical_root_key===fact.physical_root_key&&r.source_ts===fact.source_ts&&r.observed_ts===fact.observed_ts&&r.label===fact.label&&r.value===fact.value&&JSON.stringify(r.evidence_ids)===JSON.stringify(fact.evidence_ids));
+   const line=`- ${fact.label}: ${fact.value}`;
+   if(!match||![line+'.',line+' — '+(sourceLabelRu(fact.source)||fact.source)+'.'].some(l=>manualLines.has(l))||!runLines.has(line+'.'))continue;
+   const key=JSON.stringify([row.contract,row.snapshot_id,producer.evidence_id,fact.evidence_id]);if(seen.has(key))continue;seen.add(key);
+   bindings.push({block_id:'N11',contract:row.contract,run_id:row.run_id,snapshot_id:row.snapshot_id,producer_id:producer.provider_id,
+    producer_evidence_id:producer.evidence_id,producer_physical_root:evidenceDedupKey(producer),evidence_ids:fact.evidence_ids,
+    immutable_evidence_ids:fact.evidence_ids,physical_roots:fact.physical_root_keys,source_ts:fact.source_ts,observed_ts:fact.observed_ts,
+    label:fact.label,value:fact.value,market:'FUTURES',source:'HTX',score_contribution:0,entry_authorized:false,
+    proof:'EXACT_IMMUTABLE_BOOK_PRODUCER_AND_FINAL_CONTRACT_SCOPED_LINES'});
+  }
+ }
+ return{schema:'N11_EXACT_RENDERED_SOURCE_BINDING_V1',bindings,sourceHTTP:0,D1:0,Telegram:0,new_source_acquisition:false,telegram_delivery_proven:false};
 }
 
 export function buildCanonicalExecutionEvidence(identity={}){
