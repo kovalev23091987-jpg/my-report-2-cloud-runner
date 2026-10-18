@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
@@ -132,6 +133,117 @@ export function coingeckoDemoTransport(fetch_impl,api_key){
   try{return await fetch_impl(url,{...options,headers,redirect:'error'});}catch{throw Error('COINGECKO_TRANSPORT_FAILED');}
  };
 }
+// A result-cache hit must retain the exact already verified source tuple.
+// Legacy results without this provenance pass through the existing raw-reference
+// reader again; a catalog or an accepted version alone cannot close N15.
+const sectorDigest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+const sectorIdentity=identity=>({chain:identity.chain,asset_kind:identity.asset_kind==='NATIVE'?'NATIVE':'TOKEN',native_asset_id:identity.native_asset_id||null,contract_or_mint:identity.contract_or_mint||null});
+const compactSectorMetadata=m=>({id:m.id,symbol:m.symbol,asset_platform_id:m.asset_platform_id??null,platforms:m.platforms,categories:m.categories,links:{homepage:m.links?.homepage||[]}});
+function qualifiedSectorResultCache(cached,{contract,identity,coin_id,category_id,category_name,pinned,native,now}){
+ const s=cached?.cache_scope,r=cached?.evidence?.[0];
+ if(!s||
+    s.schema!=='COINGECKO_RESULT_CACHE_SCOPE_V1'||
+    s.provider_id!==SOURCE||
+    s.contract!==contract||
+    JSON.stringify(s.identity)!==JSON.stringify(sectorIdentity(identity))||
+    s.pinned!==pinned||
+    !Array.isArray(cached.evidence)||
+    cached.evidence.length!==1||
+    s.evidence_sha256!==sectorDigest(cached.evidence)||
+    cached.status!=='CLOSED'||
+    !r||
+    cached.cache_observed_ts!==s.original_observed_ts||
+    cached.cache_expires_ts!==s.expires_at)return false;
+ if((pinned||
+    native)&&s.coin_id!==coin_id||
+    pinned&&(s.category_id!==category_id||
+    s.category_name!==category_name)||
+    !verifyCoingeckoSectorIdentity(s.metadata,{identity,contract,coin_id:s.coin_id,category_name:s.category_name,asset_platforms:s.asset_platforms})||
+    !Array.isArray(s.categories)||
+    s.categories.length!==1||
+    s.categories[0]?.category_id!==s.category_id||
+    s.categories[0]?.name!==s.category_name)return false;
+ const expectedAsset=nativeSectorAssetId(identity,contract)||`${identity.chain}:${identity.contract_or_mint}`;
+ if(r.provider_id!==SOURCE||
+    r.upstream_id!=='COINGECKO_AGGREGATED_VENUES'||
+    r.asset_id!==expectedAsset||
+    r.htx_contract!==contract||
+    r.block_id!=='N15'||
+    r.metric_family!=='SECTOR_RELATIVE_STRENGTH_CONTEXT'||
+    r.sector_proof!=='EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1'||
+    r.schema_version!=='EvidenceV2.1'||
+    r.validation_status!=='VALID'||
+    r.identity_status!=='EXACT'||
+    r.finality_status!=='FINAL'||
+    r.coin_id!==s.coin_id||
+    r.tag_id!==s.category_id||
+    r.category_name!==s.category_name||
+    r.quote!=='USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE'||
+    r.window!=='PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES'||
+    r.is_htx_price!==false||
+    r.entry_eligible!==false||
+    r.full_sector_coverage!==false)return false;
+ const peers=r.peers;
+ if(!Array.isArray(peers)||
+    peers.some(x=>!x||
+    typeof x!=='object')||
+    peers.length<3||
+    peers.length>50||
+    r.eligible_peers!==peers.length||
+    new Set(peers.map(x=>x.id)).size!==peers.length||
+    new Set(peers.map(x=>x.symbol)).size!==peers.length||
+    !Number.isSafeInteger(r.target_source_ts)||
+    peers.some(x=>!x.id||
+    !x.symbol||
+    x.id===r.coin_id||
+    x.symbol===contract.slice(0,-5)||
+    x.quote!=='USD_AGGREGATED'||
+    typeof x.change_24h_pct!=='number'||
+    !Number.isFinite(x.change_24h_pct)||
+    !Number.isSafeInteger(x.source_ts)||
+    Math.abs(x.source_ts-r.target_source_ts)>120000))return false;
+ const clocks=[r.target_source_ts,...peers.map(x=>x.source_ts)];
+ if(!Number.isSafeInteger(r.observed_ts)||
+    r.observed_ts!==s.original_observed_ts||
+    r.first_known_ts!==r.observed_ts||
+    r.observed_ts>now||
+    clocks.some(t=>t>r.observed_ts)||
+    r.source_ts!==Math.min(...clocks)||
+    r.expires_at!==Math.min(r.observed_ts+300000,r.source_ts+MAX_AGE)||
+    r.expires_at!==s.expires_at||
+    r.expires_at<=now)return false;
+ const values=peers.map(x=>x.change_24h_pct).sort((a,b)=>a-b),mid=Math.floor(values.length/2),median=values.length%2?values[mid]:(values[mid-1]+values[mid])/2,relative=r.target_change_24h_pct-median;
+ if(typeof r.target_change_24h_pct!=='number'||
+    !Number.isFinite(r.target_change_24h_pct)||
+    r.peer_median_change_24h_pct!==median||
+    r.relative_strength_pct_points!==relative||
+    r.directional_strength!==clamp(relative/10,-1,1)||
+    r.coverage_fraction!==clamp(peers.length/20,.15,.75)||
+    r.coverage_status!=='PARTIAL_PROVIDER_DIRECTIONAL_CONTEXT'||
+    r.risk_strength!==null||
+    r.unit!==null||
+    r.value!==null||
+    r.origin_event_id!==`${r.coin_id}:${r.tag_id}:${r.target_source_ts}`||
+    r.dependency_group!==`SECTOR:${r.coin_id}:${r.tag_id}:${r.target_source_ts}`||
+    r.direction_policy!=='RELATIVE_STRENGTH_SUPPORTS_LONG_RELATIVE_WEAKNESS_SUPPORTS_SHORT_LOW_WEIGHT')return false;
+ const refs=s.reference_receipts,metadataURL=pinned||
+    native?`https://api.coingecko.com/api/v3/coins/${s.coin_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`:`https://api.coingecko.com/api/v3/coins/${COINGECKO_ASSET_PLATFORMS[identity.chain]}/contract/${encodeURIComponent(identity.contract_or_mint)}`;
+ const urls={EXACT_COIN_METADATA:metadataURL,EXACT_CATEGORY_DIRECTORY:'https://api.coingecko.com/api/v3/coins/categories/list',CATEGORY_QUOTES:`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${s.category_id}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,EXACT_TARGET_QUOTE:`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(s.coin_id)}&sparkline=false`,NATIVE_PLATFORM_BINDING:'https://api.coingecko.com/api/v3/asset_platforms'};
+ if(!Array.isArray(refs)||
+    refs.some(x=>!x||
+    typeof x!=='object')||
+    refs.length<3||
+    refs.length>5||
+    new Set(refs.map(x=>x.route)).size!==refs.length||
+    refs.some(x=>x.url!==urls[x.route]||
+    !Number.isSafeInteger(x.received_ts)||
+    x.received_ts>s.original_observed_ts||
+    !/^[a-f0-9]{64}$/.test(x.body_sha256||
+    ''))||
+    !['EXACT_COIN_METADATA','EXACT_CATEGORY_DIRECTORY','CATEGORY_QUOTES'].every(route=>refs.some(x=>x.route===route))||
+    Math.max(...refs.map(x=>x.received_ts))!==s.original_observed_ts)return false;
+ return cached.summary&&Object.entries(cached.summary).every(([key,value])=>JSON.stringify(r[key])===JSON.stringify(value));
+}
 export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null}={}){
  const access=coingeckoAccessPolicy(coingecko_demo_api_key,{strict_fresh_manual});
  if(!access.allowed)return{status:access.status,evidence:[],network_calls:0};
@@ -142,10 +254,10 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
- const key=`${contract}:${identity.chain}:${native?identity.native_asset_id:identity.contract_or_mint}:${coin_id}:${category_id}:${category_name}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
+ const key=`${contract}:${identity.chain}:${native?identity.native_asset_id:identity.contract_or_mint}:${coin_id}:${category_id}:${category_name}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  const compatibleCachedVersion=cached?.version===COINGECKO_SECTOR_VERSION||cached?.version==='coingecko-sector-v10-exact-tron-addresses-20261014'||cached?.version==='coingecko-sector-v9-exact-native-denominations-20261014'||!['ICP-USDT','CHZ-USDT'].includes(contract)&&cached?.version==='coingecko-sector-v8-exact-native-provider-bindings-20261014'||!native?.provider_homepages&&cached?.version==='coingecko-sector-v7-optional-free-demo-header-20261013';
- if(!strict_fresh_manual&&compatibleCachedVersion&&cached.status==='CLOSED'&&cached.evidence?.length&&cached.evidence.every(r=>r.htx_contract===contract&&r.source_ts<=now&&r.first_known_ts<=now&&r.expires_at>=now))return cached;
+ if(!strict_fresh_manual&&compatibleCachedVersion&&qualifiedSectorResultCache(cached,{contract,identity,coin_id,category_id,category_name,pinned,native,now}))return cached;
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
@@ -153,6 +265,10 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
  const asset_platforms=native?.platform&&!native.provider_ref_primary_authority?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
  const get=(route,url,options)=>reader.get(route,url,options);
+ // Cached reference bodies keep their original receipt clocks, including the
+ // moment all required inputs were known. Reading them never renews a fact.
+ const originalReferences=()=>reader.summary().receipts.filter(r=>['RECEIVED','VALIDATED_REFERENCE_CACHE','VALIDATED_RUN_MEMORY_REFERENCE'].includes(r.status)).map(({route,url,received_ts,body_sha256})=>({route,url,received_ts,body_sha256}));
+ const originalObserved=()=>Math.max(...originalReferences().map(r=>r.received_ts));
  const metadataUrl=(pinned||native)?`https://api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`:`https://api.coingecko.com/api/v3/coins/${platform}/contract/${encodeURIComponent(identity.contract_or_mint)}`;
  const metadata=await get('EXACT_COIN_METADATA',metadataUrl,{ttl_ms:21600000,shape:object});
  if(!pinned)coin_id=clean(metadata?.id);
@@ -161,7 +277,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(!pinned){const nativeCategories=Array.isArray(categories)?nativeFunctionalCategories(native).flatMap(name=>{const matches=categories.filter(r=>r.name===name&&/^[a-z0-9-]{2,100}$/.test(r.category_id));return metadata?.categories?.includes(name)&&matches.length===1?matches:[];}):[];const selected=native?nativeCategories[0]:selectCoingeckoSectorCategory(metadata,categories);category_name=selected?.name||'';category_id=selected?.category_id||'';}
  const match=Array.isArray(categories)&&categories.filter(r=>r.category_id===category_id&&r.name===category_name).length===1;
  const quotes=match?await get('CATEGORY_QUOTES',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${category_id}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual}):null;
- let normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
+ let normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:originalObserved()});
  // A category page contains the top100 peers, not necessarily this exact asset.
  // Resolve its missing or stale exact-ID quote under separate admission.
  // Duplicate identities, future clocks and same-symbol peers remain invalid;
@@ -174,14 +290,16 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(normalized.status==='EXACT_FRESH_TARGET_QUOTE_REQUIRED'&&Array.isArray(quotes)&&refreshScope){
   const targetQuotes=await get('EXACT_TARGET_QUOTE',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(coin_id)}&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual});
   if(Array.isArray(targetQuotes)&&targetQuotes.length===1&&targetQuotes[0]?.id===coin_id){
-   normalized=normalizeCoingeckoSector({metadata,categories,quotes:[...quotes.filter(r=>r?.id!==coin_id),targetQuotes[0]],identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
+   normalized=normalizeCoingeckoSector({metadata,categories,quotes:[...quotes.filter(r=>r?.id!==coin_id),targetQuotes[0]],identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:originalObserved()});
    if(normalized.status==='CLOSED'){normalized.summary.returned_category_rows=quotes.length;normalized.summary.target_quote_route=refreshScope;normalized.summary.previous_target_source_ts=targetRows.length?targetTs:null;Object.assign(normalized.evidence[0],{returned_category_rows:quotes.length,target_quote_route:refreshScope,previous_target_source_ts:targetRows.length?targetTs:null});}
   }
  }
+ if(normalized.status==='CLOSED'&&normalized.evidence[0].expires_at<=Math.max(now,Date.now()))normalized={status:'ORIGINAL_SECTOR_FACT_EXPIRED',evidence:[],summary:normalized.summary};
  const transport=reader.summary(),providerBackoff=transport.provider_backoff;
  const result={version:COINGECKO_SECTOR_VERSION,...normalized,...(transport.admission.allowed===false?{status:transport.admission.status}:{}),...(transport.receipts.some(r=>!['RECEIVED','VALIDATED_REFERENCE_CACHE','VALIDATED_RUN_MEMORY_REFERENCE'].includes(r.status))?{status:'SOURCE_NOT_CLOSED'}:{}),...(providerBackoff?{status:providerBackoff.status}:{}),...transport,internal_only:true,free_only:true,auth_mode:access.auth_mode,daily_cap:access.daily_cap,monthly_module_bound:access.monthly_module_bound};
+ if(normalized.status==='CLOSED')result.cache_scope={schema:'COINGECKO_RESULT_CACHE_SCOPE_V1',provider_id:SOURCE,contract,identity:sectorIdentity(identity),pinned,coin_id,category_id,category_name,metadata:compactSectorMetadata(metadata),categories:categories.filter(r=>r.category_id===category_id&&r.name===category_name).map(({category_id,name})=>({category_id,name})),asset_platforms:Array.isArray(asset_platforms)?asset_platforms.filter(r=>r.id===native?.platform).map(({id,native_coin_id})=>({id,native_coin_id})):[],reference_receipts:originalReferences(),original_observed_ts:normalized.evidence[0].observed_ts,expires_at:normalized.evidence[0].expires_at,evidence_sha256:sectorDigest(normalized.evidence)};
  const expires=normalized.status==='CLOSED'?normalized.evidence[0].expires_at:now+900000;
- const cache_write_receipts=[{scope:'RESULT',...await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:expires,payload:result})}];
+ const cache_write_receipts=[{scope:'RESULT',...await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:normalized.status==='CLOSED'?normalized.evidence[0].observed_ts:now,expires_ts:expires,payload:result})}];
  if(providerBackoff)cache_write_receipts.push({scope:'PROVIDER_BACKOFF',...await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',observed_ts:now,expires_ts:providerBackoff.backoff_until,payload:providerBackoff})});
  return{...result,cache_write_receipts};
 }

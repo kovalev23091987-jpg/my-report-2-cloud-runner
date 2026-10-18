@@ -1,6 +1,6 @@
 import {approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 
-const number=value=>value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value):null;
+const number=value=>(typeof value==='number'||typeof value==='string'&&value.trim()!=='')&&Number.isFinite(Number(value))?Number(value):null;
 const tier=amount=>amount>=1_000_000?'огромная':amount>=100_000?'крупная':amount>=10_000?'средняя':'небольшая';
 const no=(contract,status,reason,network_calls=0)=>({source:'COINBOSS_CEX_MODEL',contract,status,reason,network_calls,scenarios:[],internal_only:true});
 // The original exact requests returned BTC for these four assets. Retain the
