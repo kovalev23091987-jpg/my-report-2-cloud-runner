@@ -1,0 +1,80 @@
+{
+  "schema": "ACTIVE105_N12_CACHE_FACT_PRESERVATION_SCOPE_V1",
+  "recorded_utc": "2026-10-18T07:03:14.705026+00:00",
+  "source_main": "fbf77de8a4e0bfe0fb84c22d62e76e64d1dd31ca",
+  "own_lease_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792306673214",
+  "status": "RELATED_65_PASS_FINAL_COMMON_CLOUD_PENDING",
+  "related_cases_pass": 65,
+  "related_cases_fail": 0,
+  "new_cases": 27,
+  "files": {
+    "current-generation/files/src/n12-native-public-trade-collector.mjs": "574e4a45bdf5a371b49d6a3d3c2151e09a70ab8760b85d98ed652b6802b6bc72",
+    "current-generation/files/src/gate-futures-trade-collector.mjs": "9c93e8308dc2bdd1cd731d663f24cac178c7744f1daa08eea85e9c4c45fb6edd",
+    "current-generation/files/src/bitget-flow-collector.mjs": "218421d5860f1c8f522880e22e6fb068c24b4c87537328b9dbfee8084dd5dffe",
+    "current-generation/tests/n12-cache-preservation.test.mjs": "d9f285ccdbac068bea3453745903029332b5f999aeb7ce3fb58f775bc2bfdcac"
+  },
+  "originals": [
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-OKX-SPOT.json.gz",
+      "raw_sha256": "dbc0a769312027c3aa0b8a80a61276a8bb254987cf5ec25c661d109298533ce9"
+    },
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-OKX-SPOT-BTC.json.gz",
+      "raw_sha256": "f73368ff31ff74a6ea400dc04efa088c68aa4ffdebcc9d19e21efe39fc124517"
+    },
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-OKX-FUTURES-BTC.json.gz",
+      "raw_sha256": "5ad43d4ce5d35466cdf23407f0fbababf6e02d80de826c3458f79e56e05cb02f"
+    },
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/flow-GATE-FUTURES-AAVE.json.gz",
+      "raw_sha256": "3461d56832d8696eb68046129561ef7ec6175afdb497f5cfb3bc92ad8b2f39e4"
+    },
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-FUTURES.json.gz",
+      "raw_sha256": "070843483221951a7da9c4eae518c3e58ce6a86aa47aeac37c65fdd910928cd7"
+    },
+    {
+      "path": "checkpoints/n12-kucoin-token-38193724806/KUCOIN-CURRENCIES.json.gz",
+      "raw_sha256": "9491f1fb600061c171371521cc0df0f22726e0d23f40f8e430e7426bdb3cc580"
+    },
+    {
+      "path": "checkpoints/n12-kucoin-token-38193724806/KUCOIN-SPOT-CATALOG.json.gz",
+      "raw_sha256": "f3f0f7b72315c4d9b986b1a7aee936d3c5d68c0a27c0a8f0ff5a9a675904cdac"
+    },
+    {
+      "path": "checkpoints/n12-kucoin-token-38193724806/KUCOIN-FUTURES-CATALOG.json.gz",
+      "raw_sha256": "4dfb52250372174a364d7f0280f9a1df3d819352060882202f561339c3b5bf1b"
+    },
+    {
+      "path": "checkpoints/n12-kucoin-token-38193724806/KUCOIN-SPOT-PEPE.json.gz",
+      "raw_sha256": "3cac1368c4518c95bd1e3e36e65ce6fd75d772eca30b2608c7b45b0e4a08f506"
+    },
+    {
+      "path": "checkpoints/n12-kucoin-token-38193724806/KUCOIN-FUTURES-PEPE.json.gz",
+      "raw_sha256": "327221ced6692f4b2929d2451858f148cc93375e3aa05aef57670401e53ee098"
+    }
+  ],
+  "behavior": [
+    "Qualified OKX/KuCoin/Gate N12 facts survive optional metadata/result cache failures",
+    "Bitget retained facts survive optional flow cache and later market store failure",
+    "Unknown native cost stops subsequent DB/source work; spent daily/minute/job reservations not refunded",
+    "Original asset identities, trade clocks, contract multipliers, bounded coverage and zero scoring retained",
+    "Existing consumer/manual/approved Telegram path replayed on saved historical PEPE; no actual new delivery",
+    "Observed401/403/429/451 blocks later transport in the same venue invocation even if durable backoff storage failed"
+  ],
+  "normal_path_extra_SQL": 0,
+  "new_source_HTTP": 0,
+  "native_SQL": 0,
+  "Worker_invocations": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "physical_bytes_freed": 0,
+  "new_105_coverage": false,
+  "native_full_manual_delivery_accepted": false,
+  "new_primary_format": false,
+  "caps_strategy_weights_forms_pauses_changed": false,
+  "latest_saved_natural_refusal_review": "checkpoints/active105-blocks-20261018/natural-39101817020-review.json",
+  "initial_candidate_cloud_run": 39106352031,
+  "initial_candidate_superseded": true
+}
