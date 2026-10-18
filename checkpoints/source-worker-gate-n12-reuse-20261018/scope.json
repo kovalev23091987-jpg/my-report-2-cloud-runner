@@ -1,0 +1,270 @@
+{
+  "schema": "SOURCE_WORKER_GATE_N12_PAID_PAGE_REUSE_V1",
+  "recorded_utc": "2026-10-18T12:12:36.954012+00:00",
+  "parent_main": "6f29ddcbefe49307d04d074dabb0809b628a187a",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "New saved CT/BR source→consumer audit and Gate N05 already-acquired spot-page reuse for bounded N12. Source producer/helper/newtests/proofs only;3shared consumer files+CI are exact dry-checked proposals.",
+  "new_cases": {
+    "source_collector": 7,
+    "new_helper_schema_and_clock_guards": 30,
+    "shared_route_consumer_proposal": 1,
+    "total": 38
+  },
+  "baseline": "Old exact6f29 Gate collector:3PASS4FAIL in7new integration cases; four positive controlled cases emitted0N12. Shared before1FAIL because current candidate whitelist drops new provider. Newhelper30guards are a new feature definition, not claimed30independent old defects.",
+  "tests": {
+    "baseline-collector7": {
+      "path": "checkpoints/source-worker-gate-n12-reuse-20261018/baseline-collector7.tap.gz",
+      "gzip_sha256": "523f7fefe4cce3eb7bc6e1fd93528f49b0d0f4eaafaaed3dd45b995167643cca",
+      "raw_sha256": "6788d095168f1491d73ec95c1fdd7efb125cae34d44ad9a86bc7da42e37f79e8",
+      "counts": {
+        "tests": 7,
+        "pass": 3,
+        "fail": 4
+      }
+    },
+    "shared-consumer-before1": {
+      "path": "checkpoints/source-worker-gate-n12-reuse-20261018/shared-consumer-before1.tap.gz",
+      "gzip_sha256": "80418fb3eb615ac310ed10957776bc96dbf0e40ae688de5cfee8a4515371b37c",
+      "raw_sha256": "d8d6d5f1ba2a6c3866427bba3df9d23666dd46dc0dcfb585cccaa5c27639bbda",
+      "counts": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1
+      }
+    },
+    "assembled216": {
+      "path": "checkpoints/source-worker-gate-n12-reuse-20261018/assembled216.tap.gz",
+      "gzip_sha256": "8d26b9bc376b1678957ac36081f0aeae275acc192104560c2ce7a9a6696d232a",
+      "raw_sha256": "ae9962daf360cffeba4ae10b906b2fe5e613bf58168ef7465a321baf9a8353eb",
+      "counts": {
+        "tests": 216,
+        "pass": 216,
+        "fail": 0
+      }
+    }
+  },
+  "connected_scope": [
+    "38new tests",
+    "Gate turnover/fact retention and N05 existing venue preservation",
+    "Gate futures N12 and Bitfinex N12 consumer coexistence",
+    "public venue operational priority",
+    "output-contract-freeze12"
+  ],
+  "source_inputs": {
+    "checkpoints/n05-native-qualification-38052957545/native-summary.json": {
+      "file_sha256": "7361f30c49b902dce556a6bbb6df97ac920ae3df52cdc4c40fade4946a1e3d0a",
+      "raw_sha256": "7361f30c49b902dce556a6bbb6df97ac920ae3df52cdc4c40fade4946a1e3d0a"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz": {
+      "file_sha256": "b74ef586f4951455382b336b1abe998df295ce54ff10643e503f9b0f157c9b8b",
+      "raw_sha256": "c66180ff0c9665e6e4b7b304031652a8bc1b5a4a7a202900dd3410cac7d8d50b"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-PAGE-1.json.gz": {
+      "file_sha256": "2151c43f1aa4b3436adb26d6fea66b728031a52ed264a4d7931a33fbd4db7c30",
+      "raw_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-CANDLES.json.gz": {
+      "file_sha256": "f3b4d1c99ff8db71feb541f5b5d77ea7a0279a1a516e375e2d9baeb527c917c4",
+      "raw_sha256": "d1ab0d86376dc71a5e36b21ecdc09795539c6ddeeaca041687485cd543bdc6d7"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-SUSHI-PAGE-1.json.gz": {
+      "file_sha256": "08bf2056937ae6710a1e5989b9745555de4691cdcbf0f81b0bbc02c49c2fbc19",
+      "raw_sha256": "09ad6b079008114367858b16a01c92c558d3491648f50f0a8fcc1b8c7e9c4f76"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-SUSHI-CANDLES.json.gz": {
+      "file_sha256": "dd25f87594843ca05792cb2f268ed21a2554bb388491f84ac3b5269a042e2b48",
+      "raw_sha256": "9e3c3cc79120ed8b8a4ee025026933601bd0e5422f665a4dc521c130a6f6f8d4"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-SPOT.json.gz": {
+      "file_sha256": "14541e76582798fcf3f0ea10aca92fb3677e04786e2ab9c2b2a7657e44fee110",
+      "raw_sha256": "4e625fb2d29f837f055ebcc8b914be7b69f97e4c597f2ad3dfa779bc418e6a8f"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "current-generation/files/src/gate-public-taker-reference.mjs": {
+      "file_sha256": "dbac8ba2b1201f45a1079c61a7de7fa15c3dbe9fdf9b614797bb724bd6918e4f",
+      "raw_sha256": "dbac8ba2b1201f45a1079c61a7de7fa15c3dbe9fdf9b614797bb724bd6918e4f"
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+      "raw_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8"
+    }
+  },
+  "actual_saved_gate_originals": [
+    {
+      "contract": "PEOPLE-USDT",
+      "rows": 64,
+      "window_end_ts": 1791636120000,
+      "actual_received_ts": 1791636240904,
+      "latest_trade_ts": 1791635435463,
+      "age_at_original_receipt_ms": 805441,
+      "recent_rows_against_request_end": 0,
+      "fresh_at_actual_receipt": false,
+      "original_body_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5",
+      "qualification": "NEGATIVE_ONLY_NO_NEW_N12_FACT"
+    },
+    {
+      "contract": "SUSHI-USDT",
+      "rows": 42,
+      "window_end_ts": 1791636120000,
+      "actual_received_ts": 1791636181556,
+      "latest_trade_ts": 1791635840065,
+      "age_at_original_receipt_ms": 341491,
+      "recent_rows_against_request_end": 2,
+      "fresh_at_actual_receipt": false,
+      "original_body_sha256": "09ad6b079008114367858b16a01c92c558d3491648f50f0a8fcc1b8c7e9c4f76",
+      "qualification": "NEGATIVE_ONLY_NO_NEW_N12_FACT"
+    }
+  ],
+  "actual_CT_BR": {
+    "path": "checkpoints/source-worker-gate-n12-reuse-20261018/ct-br-source-audit.json",
+    "sha256": "5c7c2889bfb7fd58ef2f02e657f4a98ffa30b533bc6b0287dd464c1937c4c066",
+    "native_source_run": "39122290584",
+    "native_exact_readback": "39123622796",
+    "native_proof_sha256": "89d380bb85e0cef9723243e3c0e70570be502d234233f1d1e4fdd8a9a8c7ed69",
+    "code_replay_base": "6f29ddcbefe49307d04d074dabb0809b628a187a",
+    "worker_provider_HTTP_native_SQL": 0,
+    "new_fact_count_claim_from_audit": false,
+    "CT_gate_obstacle": {
+      "actual_HTTP": 4,
+      "parsed_rows": 3000,
+      "pages": 3,
+      "verified_minutes": 176,
+      "unreconciled_oldest_contiguous_minutes": 64,
+      "status": "BOUNDED_3PAGE_PAGINATION_INCOMPLETE_4H",
+      "current_raw_bodies_retained": false,
+      "provider_wrong_volume_proven": false
+    },
+    "BR_identity": "OfficialHTXcurrency notfound; CP exactHTXspot fallbacknegative. Do not guess address/native identity or fabricate externalN05/N15.",
+    "actual_manual_source_blocks": {
+      "CT-USDT": [
+        "N05",
+        "N12",
+        "N10",
+        "N15"
+      ],
+      "BR-USDT": [
+        "N05",
+        "N12",
+        "N10"
+      ]
+    },
+    "actual_V5_source_use_proven": false,
+    "actual_V5_refusal": "DISPLAY_IDENTITY_NOT_CLOSED for saved REJECTED/directionnull canonicals. Retain refusal; controlled positive Gate rendering is separate.",
+    "BR_LIQ": "CoinBoss source age301905ms at canonical, so0eligible scenarios is correct despite historical acquisition statusCLOSED. CT275135ms preserves8models, not factualpositions."
+  },
+  "producer_behavior": [
+    "Reuse current N05 Gate pages after reconciliation, including partial240minute flow; no separate native/provider request.",
+    "Strict exact chain/address/market, saved paired taker-side protocol, per-page official URL/window/page/index/wire+parsed digest/receipt clocks; preserve decimalstring IDs.",
+    "Validate raw pages then select last5minutes against original end; latest trade must still be within5minutes at original receipt.1minute TTL is additionally bounded by source+5minutes.",
+    "No recent original or expired-at-receipt source yields no fact; unrelated old cache envelope never renews original clocks.",
+    "New full-cache entries retain compact original trade receipts, same optional write. Legacy full-cache lacking these stays N05-only without refetch or fabricated N12.",
+    "Positive N12 fact survives late optional cache failure, including unknown usage, with no further provider calls/unknown reset; existing source chain stops new acquisition.",
+    "Normal valid logical HTTP/SQL counts unchanged. Added bounded local parsed-page hashing/validation and compact receipt bytes only; no nativeCPU/throughput claim."
+  ],
+  "controlled_positive": {
+    "basis": "People original parsed rows/metadata; one event clock moved to end-1000 and create_time updated consistently. Body/parsed hashes identify the CONTROLLED serialization. Fast cache/write controls use explicit end+10000 observation and recomputed candle volumes.",
+    "positive_real_provider_qualification": false,
+    "current_CT_N12_gate_fact": false,
+    "recent_rows": 1,
+    "quote_turnover_usdt_display": 15.8067,
+    "directional_strength": null,
+    "coverage_fraction": 0,
+    "strategy_adjustment_asserted": 0,
+    "entry_authorized": false,
+    "manual_V5_brief_consumer_connected_only_in_precise_shared_proposal": true,
+    "actual_delivery": false
+  },
+  "shared_proposals": {
+    "consumer": {
+      "path": "checkpoints/source-worker-gate-n12-reuse-20261018/shared-consumer.proposed.patch",
+      "sha256": "d7897cf75603acd8cab263fed37bcb072a4feeab4f0269319c5235709f536087",
+      "files": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "dd21b951b58663baeb3963ac0c7aa75328f81a1d1935e29d48c0f1b433a1924c",
+          "proposed": "76ae667fba84f3a95c5495a1174639c9623870e4f05a97febc8f701b9b9ccc40"
+        },
+        "current-generation/files/src/candidate-evidence-v2-runtime.mjs": {
+          "before": "a8ae8601cb58a6ffca182c5e09e87476e317ef58a5d975fffcd3a49d13c756ae",
+          "proposed": "85785e34c52d67aac8ab981d6123c78fc8def8bcff4877c67459a8d601d389ec"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "81113d03dc58179ed8aa3248328e85c28fd841a9dc9dbd6a5e0d012d57f6aa5b",
+          "proposed": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643"
+        }
+      },
+      "semantics": "Admit exactGATE_SPOT_TRADES into existing N12 whitelist/field and existing Gate plain/approved text validator. Same score0/partial/nojointconclusion semantics; no field/form/cap change.",
+      "actual_shared_files_changed": false,
+      "dry_check_passed": true
+    },
+    "CI": {
+      "path": "checkpoints/source-worker-gate-n12-reuse-20261018/shared-CI.proposed.patch",
+      "sha256": "0c89b13fc2b9c05e4fc1b35928bf0f85ff2b62a29bdc0c59120b583e85f66284",
+      "actual_workflow_changed": false,
+      "dry_check_passed": true
+    }
+  },
+  "implementation_sha256": {
+    "current-generation/files/src/gate-flow-collector.mjs": "17c6fee8b0db0bdc3dff5ef300c485daec364e83dbafd64ff110c885a178c89f",
+    "current-generation/files/src/gate-n12-bounded-trade-sample.mjs": "42e333d065784b9c3fae69ff3efff639b576ba932ef3697e24248936d3c79837",
+    "current-generation/tests/gate-n12-reuse.test.mjs": "6c303d3ccce83f18cfaf7cfdeeeedea90e187f24abb470952a1bed6e9d442728",
+    "current-generation/tests/gate-n12-sample.test.mjs": "48bf01ee88552fd757ddb5cfbffa6f1eaf16f7c4c14d6a8830cc1496d4adc5e3",
+    "current-generation/tests/gate-n12-consumer-proposal.test.mjs": "bcec12ad035516832c38e5b1a5942f2dbe2f331fd029c363f661c600b58887d4",
+    "current-generation/tests/gate-n12-saved-inputs.mjs": "c87f9a000b12421e453d909338563f755ae908f0e274dca351658ac020805362"
+  },
+  "output_contract": {
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "all10golden_files_byte_unchanged": true,
+    "golden_sha256": {
+      "current-generation/tests/fixtures/output-contract/short-wait-coin.json": "8151567e17668baf3869780644216292bff5a3d6704dcc36c8d6f3ff81c6d665",
+      "current-generation/tests/fixtures/output-contract/long-entry-full.json": "1d1d61ba2332e5b330b9fc2c17fe9f8ff7954f023a02387bf8fb6781b3c007f3",
+      "current-generation/tests/fixtures/output-contract/long-removed-full.json": "cc58cef16c931daec831234808ff080c33b6140860db84e75d193d6e085d364f",
+      "current-generation/tests/fixtures/output-contract/long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
+      "current-generation/tests/fixtures/output-contract/missing-data.json": "14c7851efc2bffb9318142d8d0ba81ceb8a4d9a326ea10fe57ed9fe766179371",
+      "current-generation/tests/fixtures/output-contract/README.md": "86b69186180f6a72166832f9ad3dba2c159318a81ec77fbce44d7db764a6508c",
+      "current-generation/tests/fixtures/output-contract/short-entry-coin.json": "f91398c11b6544afc4d3e955b71e61d5ad50880ea7911bb58326a6378bf0645d",
+      "current-generation/tests/fixtures/output-contract/MANIFEST.json": "62fd775fc21c3384368a4b386f8375d759c76615a733a36ecf025e92f2874afe",
+      "current-generation/tests/fixtures/output-contract/short-removed-coin.json": "36fa5aa33a30202981ea812fd57f7d88589f26d7392ed18257bc0c17ee11d901",
+      "current-generation/tests/fixtures/output-contract/pump-liquidation-only.json": "add2e33d053fad5a7a8cb37fff29cb8b51d79a058ccfc231401200a13ea31b12"
+    },
+    "manifest_maintenance_performed": false
+  },
+  "temporary_audit_output": {
+    "generated_by_related_accepted_tests": [
+      "audit-output/public-venue-health-original-proof.json"
+    ],
+    "moved_to": "/private/tmp/report2-gate-n12-related-audit-output-20261018",
+    "not_new_acquisition": true
+  },
+  "own_lease": {
+    "commit": "df3becbf839e4fdb93b5cc096b596f92a410ac92",
+    "owner": "CODEX:SOURCES:01a14e11:1792324142463",
+    "expires_ts": 1792328942463,
+    "exact_readback": true
+  },
+  "limits": {
+    "new_provider_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "extra_normal_HTTP_SQL": 0,
+    "5sharedHTTP_changed": false,
+    "strategy_weights_threshold70_forms_pauses_caps_unknown_spent_reserves_changed": false,
+    "new_actual_provider_asset_qualification": false,
+    "105census_rerun": false
+  },
+  "acceptance_limits": [
+    "Current CT raw Gate bodies absent; actual native Gate recent fact/use/delivery remains unproven until ordinary saved natural.",
+    "Real People/Sushi originals are stale-negative. Positive source/cache/manual/TG controls are explicitly modified, never current coverage or historical predictive accuracy.",
+    "Manual/V5 live-native paths: actual CT/BR saved states reject public V5 direction/identity; do not weaken them to make tests look green.",
+    "Shared proposals were tested in exact temp runtime; coordinator must resolve current context and qualify branch/main, no sourceworker shared mutation.",
+    "No source request hit rate is treated as predictive accuracy or realized outcome; source event/outcome statistical audit follows separately without changing strategy."
+  ],
+  "exact_next_action": "Coordinator integrate frozen Gate source/helper/new38tests+precise3file/CIproposal and review ordinary natural Gate fact at original clock, without forced request or cap increase. Worker next independently fix demonstrated Backpack markets-admission status hiding as asset-binding failure from savedCT, then offline APR/TIA39125232536 plusCT/BR event→consumer→outcome/missinglabels audit under a fresh own scope; no selection/weight/form/threshold/cap changes."
+}

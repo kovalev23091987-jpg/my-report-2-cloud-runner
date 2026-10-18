@@ -1,0 +1,19 @@
+--- a/.github/workflows/liq-assembled-offline-20261012.yml
++++ b/.github/workflows/liq-assembled-offline-20261012.yml
+@@ -43,6 +43,7 @@
+       - checkpoints/LATEST_VERIFIED_D1_AGGREGATE_RECONCILIATION.json
+       - checkpoints/paid-report-recovery-20261018/**
+       - current-generation/tests/n05-venue-fact-preservation.test.mjs
++      - current-generation/tests/backpack-admission-reason.test.mjs
+       - current-generation/files/src/binance-native-flow-collector.mjs
+       - current-generation/files/src/kraken-flow-collector.mjs
+       - current-generation/files/src/poloniex-native-flow-collector.mjs
+@@ -447,7 +448,7 @@
+           cmp current-generation/files/src/public-venue-source-priority.mjs runtime/src/public-venue-source-priority.mjs
+           cmp current-generation/files/src/n15-initial-source-preference.mjs runtime/src/n15-initial-source-preference.mjs
+           cmp current-generation/files/src/external-n05-flow-collector.mjs runtime/src/external-n05-flow-collector.mjs
+-          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gate-turnover-fact-preservation.test.mjs current-generation/tests/n05-venue-fact-preservation.test.mjs current-generation/tests/bitfinex-bounded-reuse.test.mjs current-generation/tests/n12-cache-scope.test.mjs current-generation/tests/n12-cache-preservation.test.mjs current-generation/tests/active-source-fallback-preservation.test.mjs current-generation/tests/public-venue-health-priority.test.mjs current-generation/tests/public-venue-source-budget.test.mjs > audit-output/liq-assembled/public-venue-health-priority.tap
++          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gate-turnover-fact-preservation.test.mjs current-generation/tests/backpack-admission-reason.test.mjs current-generation/tests/n05-venue-fact-preservation.test.mjs current-generation/tests/bitfinex-bounded-reuse.test.mjs current-generation/tests/n12-cache-scope.test.mjs current-generation/tests/n12-cache-preservation.test.mjs current-generation/tests/active-source-fallback-preservation.test.mjs current-generation/tests/public-venue-health-priority.test.mjs current-generation/tests/public-venue-source-budget.test.mjs > audit-output/liq-assembled/public-venue-health-priority.tap
+           cp audit-output/public-venue-health-original-proof.json audit-output/liq-assembled/
+           REPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-active105-initial-source-priority-20261014.mjs > audit-output/liq-assembled/active105-initial-source-queues.json
+           REPORT2_WEEKLY_RETAINED_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/weekly-retained106-package.json" node --test runner/sql-bridge-counter-repair.test.mjs runner/installed-bridge-module-inspection.test.mjs runner/cloudflare-version-bound-readback.test.mjs runner/htx-coordinated-rollout.test.mjs runner/htx-weekly-universe-plan.test.mjs runner/retained-weekly-106-package.test.mjs runner/offline-review-authority.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/weekly-htx-synchronized-plan.tap
