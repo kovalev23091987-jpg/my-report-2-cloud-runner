@@ -3,6 +3,7 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {normalizeNativeLedgerPair,nativeRpcQuotaReceipt,nativeRpcQuotaWait} from './native-ledger-supply.mjs';
 import {CHAIN_SUPPLY_EVIDENCE_VERSION} from './chain-supply-evidence.mjs';
 import {readEvidenceSourceCache,reserveEvidenceSourceAttempts,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
+import {validateEvidenceV2} from './evidence-v2.mjs';
 
 export const XRPL_PAYMENTS_VERSION='xrpl-validated-native-payment-sample-v1-20261007';
 const TTL=20*60_000,SOURCE='CHAIN_RPC',URL='https://xrplcluster.com/',hash=s=>/^[a-f0-9]{64}$/i.test(s||''),account=s=>/^r[1-9A-HJ-NP-Za-km-z]{24,34}$/.test(s||'');
@@ -31,7 +32,19 @@ export function normalizeXrplNativePayments({contract,identity,ledger_payload,su
 }
 export async function collectXrplNativePayments({db,fetch_impl,request_admit,contract,run_id,asset_identity,now,clock=Date.now,strict_fresh_manual=false}={}){
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
- const key=`XRPL_NATIVE_PAYMENTS:${XRPL_PAYMENTS_VERSION}:${contract}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===XRPL_PAYMENTS_VERSION)return cached;
+ const key=`XRPL_NATIVE_PAYMENTS:${XRPL_PAYMENTS_VERSION}:${contract}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true});
+ if(!strict_fresh_manual&&cached?.version===XRPL_PAYMENTS_VERSION&&contract==='XRP-USDT'&&asset_identity?.chain==='xrp'&&asset_identity.asset_kind==='NATIVE'&&asset_identity.native_asset_id==='xrp:mainnet'&&asset_identity.contract_or_mint===null&&Array.isArray(cached.evidence)&&Number.isSafeInteger(cached.cache_observed_ts)&&cached.cache_observed_ts<=now&&Number.isSafeInteger(cached.cache_expires_ts)&&cached.cache_expires_ts>now){
+  const row=cached.evidence[0];
+  if(cached.status==='CLOSED'&&cached.contract===contract&&cached.evidence.length===1&&validateEvidenceV2(row,{decision_ts:now}).usable&&[row.source_ts,row.observed_ts,row.first_known_ts,row.expires_at].every(Number.isSafeInteger)&&row.source_ts<=row.observed_ts&&row.observed_ts<=row.first_known_ts&&row.first_known_ts<=now){
+   const rebuilt=normalizeXrplNativePayments({contract,identity:asset_identity,ledger_payload:row.validated_ledger_payload,supply_pair_proof:row.supply_pair_proof,observed_ts:row.observed_ts});
+   if(rebuilt.status==='CLOSED'&&JSON.stringify(rebuilt.evidence)===JSON.stringify(cached.evidence)&&JSON.stringify(rebuilt.summary)===JSON.stringify(cached.summary))return cached;
+  }
+  if(!cached.evidence.length){
+   const bounded=cached.status==='CLOSED_BOUNDED_NATIVE_PAYMENT_CHECK'&&cached.contract===contract&&cached.check_completed===true&&cached.summary?.accepted_native_payments===0&&hash(cached.summary.ledger_hash)&&Number.isSafeInteger(cached.summary.ledger_index)&&cached.cache_expires_ts<=cached.cache_observed_ts+TTL;
+   const negative=['SOURCE_ERROR','EXPANDED_VALIDATED_LEDGER_SCHEMA_REQUIRED','EXACT_VALIDATED_LEDGER_DEPENDENCY_REQUIRED'].includes(cached.status)&&cached.cache_expires_ts<=cached.cache_observed_ts+30*60000;
+   if(bounded||negative)return cached;
+  }
+ }
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const supply=await readEvidenceSourceCache(db,{source:'XRPL_NATIVE_SUPPLY',asset_key:'xrp:native:mainnet',now}),proof=supply?.evidence?.find(r=>r.native_ledger_pair_payload)?.native_ledger_pair_payload;
  if(supply?.version!==CHAIN_SUPPLY_EVIDENCE_VERSION||supply.status!=='CLOSED'||normalizeNativeLedgerPair({...proof,observed_ts:now}).status!=='CLOSED')return{status:'EXACT_CURRENT_NATIVE_LEDGER_DEPENDENCY_REQUIRED',evidence:[],network_calls:0,internal_only:true};
