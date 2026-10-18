@@ -965,7 +965,11 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
   if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);
   if (Number(cron.scheduled_time) !== Number(started)) throw new Error(`CRON_IDENTITY_MISMATCH:${cron.scheduled_time}!=${started}`);
-  if (cron.status !== "SUCCESS" || cron.completed_ts == null) throw new Error(`CRON_IDENTITY_NOT_SUCCESS:${JSON.stringify(cron)}`);
+  if (cron.status !== "SUCCESS" || cron.completed_ts == null) {
+    const failure=new Error(`CRON_IDENTITY_NOT_SUCCESS:${JSON.stringify(cron)}`);
+    failure.partial_cron_failure={schema:'PARTIAL_CRON_IN_MEMORY_DIAGNOSTIC_V1',generation,head:process.env.GITHUB_SHA||null,source_run_id:process.env.GITHUB_RUN_ID||null,cron,approved_universe_audit:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null,d1_day_admission:d1DayAdmission,additional_SQL:0,additional_source_HTTP:0,full_report_completed:false,entry_authorized:false,Telegram_SENT_claimed:false};
+    throw failure;
+  }
   console.log("CRON_IDENTITY_BINDING", JSON.stringify({ expected_scheduled_time:started, selected_scheduled_time:Number(cron.scheduled_time), run_id:String(cron.run_id || "") }));
   const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts BETWEEN ?1 AND ?2 ORDER BY ABS(ts - ?3) ASC LIMIT 1").bind(Number(cron.started_ts), Number(cron.completed_ts), Number(cron.started_ts)).first();
   console.log("SCAN_IDENTITY_BINDING", JSON.stringify({ cron_started_ts:Number(cron.started_ts), cron_completed_ts:Number(cron.completed_ts), selected_scan_ts:Number(scan?.ts || 0) || null }));
@@ -1231,6 +1235,7 @@ main().catch(async(error) => {
   }
   if(failedD1RunAccounting){
     const accounting=await failedD1RunAccounting.finalizeFailure();
+    if(error?.partial_cron_failure)accounting.partial_cron_failure=error.partial_cron_failure;
     console.error('REPORT2_FAILED_D1_RUN_ACCOUNTING',JSON.stringify(accounting));
     try{
       await fs.writeFile('report2-failure-accounting.json',JSON.stringify(accounting,null,2));
