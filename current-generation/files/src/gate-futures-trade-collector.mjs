@@ -6,6 +6,7 @@ import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeOptionalEvide
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 import {exactGateTokenBinding} from './gate-four-hour-flow.mjs';
 import {normalizeGateFuturesTradeSample,validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+import {exactCachedN12TradeResult} from './n12-cached-trade-scope.mjs';
 
 const SOURCE='N05_OFFICIAL_FLOW:GATE',GATE_VERSION='gate-flow-collector-v1-20261010',VERSION='gate-futures-trade-collector-v1-20261011';
 const digest=b=>createHash('sha256').update(b).digest('hex');
@@ -29,7 +30,7 @@ export async function collectGateFuturesTradeSample(params={}){
  const validCache=c=>c?.version===GATE_VERSION&&Number.isSafeInteger(c.observed_ts)&&c.observed_ts<=now&&now-c.observed_ts<=21600000&&Array.isArray(c.payload);
  if(!validCache(currenciesCache)||!validCache(spotCache)||!exactGateTokenBinding({contract,identity,currencies:currenciesCache.payload,spot:spotCache.payload}))return root;
  const pair=contract.slice(0,-5)+'_USDT',key=`N12:FUTURES:${contract}`,prior=await cacheRead({source:SOURCE,asset_key:key,now,include_cache_clock:true});
- if(prior?.version===VERSION&&prior.result?.evidence?.every(row=>validateGateFuturesTradeSample(row,now)))return{...root,...prior.result,network_calls:0,receipts:[{status:'HIT_ORIGINAL_SOURCE_CLOCKS',actual_http:0,source_ts:prior.result.evidence[0]?.source_ts}],cache_status:'HIT_ORIGINAL_SOURCE_CLOCKS'};
+ if(prior?.version===VERSION&&exactCachedN12TradeResult(prior.result,{contract,identity,venue:'GATE',market:'FUTURES',now,validate:validateGateFuturesTradeSample}))return{...root,...prior.result,network_calls:0,receipts:[{status:'HIT_ORIGINAL_SOURCE_CLOCKS',actual_http:0,source_ts:prior.result.evidence[0]?.source_ts}],cache_status:'HIT_ORIGINAL_SOURCE_CLOCKS'};
  const get=async url=>{
   const id=`N12_GATE_FUTURES:${run_id}:${contract}:${++sequence}`,receipt={url,status:'NOT_ATTEMPTED',actual_http:0,http_status:null};receipts.push(receipt);
   if(providerBlocked){receipt.status='VENUE_BACKOFF_THIS_INVOCATION';return null;}
