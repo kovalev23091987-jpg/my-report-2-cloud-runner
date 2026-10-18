@@ -51,7 +51,7 @@ try{
    out.history_details_expired=out.expiry.canonical_expired.length+out.expiry.full_evidence_expired.length>0;out.status=out.expiry.status;
   }
  }
-}catch(error){out.status='SLIDING_HISTORY_NOT_CLOSED';out.reason=/^[A-Z0-9_:.]+$/.test(error.message)?error.message:'SLIDING_TRANSPORT_OR_RESPONSE_FAILURE';if(error.expiry_receipt)out.partial_expiry=error.expiry_receipt;process.exitCode=1;}
+}catch(error){out.status='SLIDING_HISTORY_NOT_CLOSED';out.reason=/^[A-Z0-9_:.]+$/.test(error.message)?error.message:'SLIDING_TRANSPORT_OR_RESPONSE_FAILURE';if(error.expiry_receipt){out.partial_expiry=error.expiry_receipt;out.history_details_expired=error.expiry_receipt.canonical_expired.length+error.expiry_receipt.full_evidence_expired.length>0;}process.exitCode=1;}
 finally{
  if(db){
   if(reservation)try{out.finalized_usage=await finalizeRunUsage(db,{reservationId:reservation,sourceRunId:out.run,usage:db.usageSnapshot()});}catch{out.finalization_not_closed=true;process.exitCode=1;}

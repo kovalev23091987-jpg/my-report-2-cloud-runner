@@ -118,6 +118,7 @@ export async function expireOldDetails({db,before_modify,now=Date.now(),source_c
  const out={schema:'BOUNDED_OLD_DETAILS_EXPIRY_V1',sourceHTTP:0,MAIN:0,Telegram:0,history_detail_loss_authorized:true,
   source_clocks_refreshed:false,publication_rows_deleted:0,reference_or_statistic_rows_modified:0,
   canonical_expired:[],full_evidence_expired:[],source_cursor,evidence_cursor,physical_bytes_reclaimed:null,native_throughput_qualified:false};
+ try{
  const need=(r,w)=>{const a=evaluateWithinRunReservation({reservation:p.reservation,currentUsage:db.usageSnapshot(),extraRowsRead:r,extraRowsWritten:w+4});if(!a.allowed)throw Object.assign(Error('SLIDING_NATIVE_HEADROOM_REQUIRED:'+a.status),{expiry_receipt:{...out,D1:db.usageSnapshot()}});};
  need(500,0);
  const schema=(await db.prepare(`SELECT name,type FROM sqlite_schema WHERE name IN (${[...new Set([...mandatory,...Object.keys(references)])].map(quote).join(',')})`).all()).results;
@@ -154,4 +155,5 @@ export async function expireOldDetails({db,before_modify,now=Date.now(),source_c
  }
  out.next_evidence_cursor=evidence.length>48?evidence[47].source_rowid:0;
  need(0,0);out.D1=db.usageSnapshot();out.status='OLD_DETAIL_EXPIRY_COMPLETED_WITH_ORIGINAL_SCALARS_RETAINED';return out;
+ }catch(error){error.expiry_receipt??={...out,status:'DETAIL_EXPIRY_PARTIAL_OR_REFUSED',D1:db.usageSnapshot()};throw error;}
 }

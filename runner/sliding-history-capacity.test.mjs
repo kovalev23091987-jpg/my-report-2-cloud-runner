@@ -66,6 +66,12 @@ test('new protected reference at the final guard prevents expiry; unclosed nativ
  const f=fixture();try{await expireOldDetails({db:f.db,before_modify:async()=>{f.raw.prepare("UPDATE canonical_publication_shadow SET actionability_status='ACTIONABLE' WHERE publication_id=?").run(f.old.publication_id);},now:T,decision:decision()});assert.equal(JSON.parse(f.raw.prepare('SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?').get(f.old.publication_id).canonical_json).status,'CLOSED');}finally{f.raw.close();}
  const g=fixture();try{g.setUsage({unknown_ops:1});await assert.rejects(run(g),/HEADROOM/);assert.equal(g.calls.length,0);}finally{g.raw.close();}
 });
+test('a later evidence failure retains the exact already-expired canonical receipt and never claims a complete operation',async()=>{
+ const f=fixture();try{const prepare=f.db.prepare;f.db.prepare=sql=>{if(sql.startsWith('UPDATE full_evidence_shadow_log'))throw Error('CONTROLLED_LATER_FAILURE');return prepare(sql);};
+ await assert.rejects(run(f),e=>{assert.equal(e.expiry_receipt.canonical_expired.length,1);assert.equal(e.expiry_receipt.full_evidence_expired.length,0);assert.equal(e.expiry_receipt.status,'DETAIL_EXPIRY_PARTIAL_OR_REFUSED');return true;});
+ assert.equal(JSON.parse(f.raw.prepare("SELECT stage392_proof_bundle_json FROM full_evidence_shadow_log WHERE full_evidence_id='FE:1'").get().stage392_proof_bundle_json).history_details_expired,undefined);
+ }finally{f.raw.close();}
+});
 test('missing protected table, unexpected mutation trigger and reference census overflow retain all details',async()=>{
  for(const kind of ['SCHEMA','TRIGGER','OVERFLOW']){const f=fixture();try{
   if(kind==='SCHEMA')f.raw.exec('DROP TABLE v3_recheck_task_shadow');
