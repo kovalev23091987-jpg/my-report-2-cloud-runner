@@ -1,0 +1,302 @@
+{
+  "schema": "SOURCE_WORKER_BITFINEX_N05_N12_BOUNDED_REUSE_OFFLINE_V1",
+  "created_utc": "2026-10-18T09:23:12.085762+00:00",
+  "parent_main": "117f80dfc2c667c1326e7b024f04a6a9392bc796",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Existing exact Bitfinex N05 pages add limited N12 SPOT/USD facts with zero extra provider HTTP; retain validated N05/N12 facts across optional store failures, stop new work on native unknown.",
+  "source_inputs": {
+    "checkpoints/n05-bitfinex-pilot-38138499328/BITFINEX-CURRENT-CATALOG.json.gz": {
+      "file_sha256": "d67c9a7951a45edff51a770bac05f00efc6fc01b02a11d557d003ad04e8e3e53",
+      "raw_sha256": "13404655b75ab9df0bb9b209efb03417ea13677cdf94259d57fa64f2f46b20fc"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/batch-summary.json": {
+      "file_sha256": "d94b1c7fefa1ea228e054708225f774e753730f32924b18a6343735ba12909c1",
+      "raw_sha256": "d94b1c7fefa1ea228e054708225f774e753730f32924b18a6343735ba12909c1"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-DASH-CANDLES1M.json.gz": {
+      "file_sha256": "dca89cc323e3bcd7c78ec22d61bd340f6847659166e4d009ec4691a109ed850a",
+      "raw_sha256": "54b8d1d67d8402e50fad6bbac90af3d6f65074f74de538fa17b994100da0a908"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-DASH-TRADES10000.json.gz": {
+      "file_sha256": "8997947163d691ce6cdec3ea2c8aa0e894b8739ba185d444f25ffa7f740b2194",
+      "raw_sha256": "3417b696ab15426ac150e93e0df621115b76731fc410330ed08f682f1b877641"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-ALGO-CANDLES1M.json.gz": {
+      "file_sha256": "1ba0ebf81a0ed7ddf4f7e02b00cd1fae15b963a22c7e90739d49fb578cfb2b44",
+      "raw_sha256": "6eaa16497ae42139b5fd98427111efb880540d63515c51617356abb5c506a939"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-ALGO-TRADES10000.json.gz": {
+      "file_sha256": "b1633258d56b701419d614d1f725bd129d4a84bb73990aa1fb92ab975cd0cc90",
+      "raw_sha256": "49207b858143a13fba0e9f482bd52f4e624a06d8d295960bd8819efe209a9104"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-XMR-CANDLES1M.json.gz": {
+      "file_sha256": "c2ea73a57e218c4fa2707b76293d2fff8583425ba71eb97109fc70e5d79801af",
+      "raw_sha256": "d903a039713fa76bcd8ca7d1cb8554aa129e2fe4a963e493c395f7f477316718"
+    },
+    "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-XMR-TRADES10000.json.gz": {
+      "file_sha256": "deadc954682fb3ef3256c65e6d4e4f9f4accaa4457c0297b779541ebb5c99bcc",
+      "raw_sha256": "8cc0a66f5c2f7aebe181d9c31b0f7339784d69ed13ad84be28ec0ec8a6eeb738"
+    },
+    "checkpoints/n05-bitfinex-fil-xpl-38140143266/batch-summary.json": {
+      "file_sha256": "d074316eb3932db0dbbb91066d34b6d625db159dfac120f460405bf794d5c1e1",
+      "raw_sha256": "d074316eb3932db0dbbb91066d34b6d625db159dfac120f460405bf794d5c1e1"
+    },
+    "checkpoints/n05-bitfinex-fil-xpl-38140143266/BITFINEX-FIL-CANDLES1M.json.gz": {
+      "file_sha256": "ade6f9c7b8c0f355f8f50ab12dcae1d92d2ecaa733b2b515220dcc247fa80ad4",
+      "raw_sha256": "8a915685a282e1edbe0b365cf3b882d5d6306b90d74d03280ca6e8b5c9db72cb"
+    },
+    "checkpoints/n05-bitfinex-fil-xpl-38140143266/BITFINEX-FIL-TRADES10000.json.gz": {
+      "file_sha256": "c85678ad0bf298cf51883bcc1b7507cada6a42f8b2f3d98e392b0dd534990cb0",
+      "raw_sha256": "e564e79393206b384eb9c2341c44cf9117540be0102c3dfb4791bdd5e24d2fb0"
+    },
+    "checkpoints/n05-bitfinex-fil-xpl-38140143266/BITFINEX-XPL-CANDLES1M.json.gz": {
+      "file_sha256": "f90d185b623aa3fcc9e243b7bb09b9947a0ad3581304341c01d6daf2f7f9da1d",
+      "raw_sha256": "eaf2eb26011161ad3f0146292aa1c8dfed68b3426e52d177aae0ffbbbcea533c"
+    },
+    "checkpoints/n05-bitfinex-fil-xpl-38140143266/BITFINEX-XPL-TRADES10000.json.gz": {
+      "file_sha256": "04ce04f7f0b779fb0a6bb875197d85f1982a2915197f5c79c6a62e2420102851",
+      "raw_sha256": "76b6aed080d753c5e9eba21926442e52d13889304e6a84221849e796574dd292"
+    },
+    "checkpoints/n05-bitfinex-link-pepe-38140937694/batch-summary.json": {
+      "file_sha256": "d8a5d3b42cc477b7ffdddf0fa9879724d2fa26a9dc1b3566ddfa086a4ffe67c2",
+      "raw_sha256": "d8a5d3b42cc477b7ffdddf0fa9879724d2fa26a9dc1b3566ddfa086a4ffe67c2"
+    },
+    "checkpoints/n05-bitfinex-link-pepe-38140937694/BITFINEX-LINK-CANDLES1M.json.gz": {
+      "file_sha256": "53dc1b9367defb7623f35f7338b2bc853a1af274a041c2767c439e0233f7ea2b",
+      "raw_sha256": "8b0a3656e01ead5203917b4ec8df7f068a61697c5635b2eb226f694efb80f297"
+    },
+    "checkpoints/n05-bitfinex-link-pepe-38140937694/BITFINEX-LINK-TRADES10000.json.gz": {
+      "file_sha256": "940e21be69cc6d7382de280686b3b6ceedfa92c339d34599fbb7165350adeba7",
+      "raw_sha256": "7c3590ad2a48ec67bbaffb5d4819c8891a169b0f26f106c73db07b9a1fab6965"
+    },
+    "checkpoints/n05-bitfinex-link-pepe-38140937694/BITFINEX-PEPE-CANDLES1M.json.gz": {
+      "file_sha256": "bfbdb8c91955e32fab38549df12fc3c369b2b0d38b0749065184cced1ec7ad80",
+      "raw_sha256": "54130069f7ae550afadf59a81b6892c514c33e7332b0789146347f8cf0b8965a"
+    },
+    "checkpoints/n05-bitfinex-link-pepe-38140937694/BITFINEX-PEPE-TRADES10000.json.gz": {
+      "file_sha256": "4ceede05272ce74a4543a206515afab7571286c068a1f781d4ebdec819cb505d",
+      "raw_sha256": "546ebb57299b90b6b74c66ea47809eab75ad35dc3efbc0af9dae772c09654e9a"
+    }
+  },
+  "original_assets": {
+    "DASH": {
+      "original_run": "38138608166",
+      "window_end_ts": 1791720960000,
+      "original_trade_received_ts": 1791720971979,
+      "latest_trade_ts": 1791720946502,
+      "original_wire_body_sha256": "3417b696ab15426ac150e93e0df621115b76731fc410330ed08f682f1b877641",
+      "derived_parsed_payload_sha256": "3417b696ab15426ac150e93e0df621115b76731fc410330ed08f682f1b877641",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 22,
+      "bounded_recent_rows": 2,
+      "buy_quote_turnover_usd": 61.8582096,
+      "sell_quote_turnover_usd": 0,
+      "bounded_total_usd": 61.8582096,
+      "n12_sample_usable_at_original_observation": true,
+      "current_coverage_claim": false
+    },
+    "ALGO": {
+      "original_run": "38138608166",
+      "window_end_ts": 1791720960000,
+      "original_trade_received_ts": 1791720974692,
+      "latest_trade_ts": 1791720131585,
+      "original_wire_body_sha256": "49207b858143a13fba0e9f482bd52f4e624a06d8d295960bd8819efe209a9104",
+      "derived_parsed_payload_sha256": "49207b858143a13fba0e9f482bd52f4e624a06d8d295960bd8819efe209a9104",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 5,
+      "bounded_recent_rows": 0,
+      "buy_quote_turnover_usd": 0,
+      "sell_quote_turnover_usd": 0,
+      "bounded_total_usd": 0,
+      "n12_sample_usable_at_original_observation": false,
+      "current_coverage_claim": false
+    },
+    "XMR": {
+      "original_run": "38138608166",
+      "window_end_ts": 1791720960000,
+      "original_trade_received_ts": 1791720977667,
+      "latest_trade_ts": 1791720958899,
+      "original_wire_body_sha256": "8cc0a66f5c2f7aebe181d9c31b0f7339784d69ed13ad84be28ec0ec8a6eeb738",
+      "derived_parsed_payload_sha256": "8cc0a66f5c2f7aebe181d9c31b0f7339784d69ed13ad84be28ec0ec8a6eeb738",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 4556,
+      "bounded_recent_rows": 99,
+      "buy_quote_turnover_usd": 4565.182580847501,
+      "sell_quote_turnover_usd": 1332.7560135594,
+      "bounded_total_usd": 5897.938594406902,
+      "n12_sample_usable_at_original_observation": true,
+      "current_coverage_claim": false
+    },
+    "FIL": {
+      "original_run": "38140143266",
+      "window_end_ts": 1791722400000,
+      "original_trade_received_ts": 1791722428277,
+      "latest_trade_ts": 1791717515519,
+      "original_wire_body_sha256": "e564e79393206b384eb9c2341c44cf9117540be0102c3dfb4791bdd5e24d2fb0",
+      "derived_parsed_payload_sha256": "e564e79393206b384eb9c2341c44cf9117540be0102c3dfb4791bdd5e24d2fb0",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 4,
+      "bounded_recent_rows": 0,
+      "buy_quote_turnover_usd": 0,
+      "sell_quote_turnover_usd": 0,
+      "bounded_total_usd": 0,
+      "n12_sample_usable_at_original_observation": false,
+      "current_coverage_claim": false
+    },
+    "XPL": {
+      "original_run": "38140143266",
+      "window_end_ts": 1791722400000,
+      "original_trade_received_ts": 1791722431153,
+      "latest_trade_ts": 1791721631732,
+      "original_wire_body_sha256": "76b6aed080d753c5e9eba21926442e52d13889304e6a84221849e796574dd292",
+      "derived_parsed_payload_sha256": "76b6aed080d753c5e9eba21926442e52d13889304e6a84221849e796574dd292",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 3,
+      "bounded_recent_rows": 0,
+      "buy_quote_turnover_usd": 0,
+      "sell_quote_turnover_usd": 0,
+      "bounded_total_usd": 0,
+      "n12_sample_usable_at_original_observation": false,
+      "current_coverage_claim": false
+    },
+    "LINK": {
+      "original_run": "38140937694",
+      "window_end_ts": 1791723120000,
+      "original_trade_received_ts": 1791723166034,
+      "latest_trade_ts": 1791722311250,
+      "original_wire_body_sha256": "7c3590ad2a48ec67bbaffb5d4819c8891a169b0f26f106c73db07b9a1fab6965",
+      "derived_parsed_payload_sha256": "7c3590ad2a48ec67bbaffb5d4819c8891a169b0f26f106c73db07b9a1fab6965",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 15,
+      "bounded_recent_rows": 0,
+      "buy_quote_turnover_usd": 0,
+      "sell_quote_turnover_usd": 0,
+      "bounded_total_usd": 0,
+      "n12_sample_usable_at_original_observation": false,
+      "current_coverage_claim": false
+    },
+    "PEPE": {
+      "original_run": "38140937694",
+      "window_end_ts": 1791723120000,
+      "original_trade_received_ts": 1791723168268,
+      "latest_trade_ts": 1791720286198,
+      "original_wire_body_sha256": "546ebb57299b90b6b74c66ea47809eab75ad35dc3efbc0af9dae772c09654e9a",
+      "derived_parsed_payload_sha256": "546ebb57299b90b6b74c66ea47809eab75ad35dc3efbc0af9dae772c09654e9a",
+      "parsed_digest_note": "Derived Node JSON.stringify hash of parsed original tuples, separately labelled from immutable original wire body SHA256.",
+      "returned_rows": 14,
+      "bounded_recent_rows": 0,
+      "buy_quote_turnover_usd": 0,
+      "sell_quote_turnover_usd": 0,
+      "bounded_total_usd": 0,
+      "n12_sample_usable_at_original_observation": false,
+      "current_coverage_claim": false
+    }
+  },
+  "original_count": 19,
+  "tests": {
+    "baseline48": {
+      "path": "checkpoints/source-worker-bitfinex-bounded-reuse-20261018/baseline48.tap.gz",
+      "raw_sha256": "09c5d31de4cd98dbfc1a8ad4f58860b6896dc7baf91006237bc31f667498eafc",
+      "gzip_sha256": "a460f1a433f2646a707cca1547f23e7f78ef78264472bc5019b468b90a6612c5",
+      "counts": {
+        "tests": 48,
+        "pass": 5,
+        "fail": 43
+      }
+    },
+    "related61": {
+      "path": "checkpoints/source-worker-bitfinex-bounded-reuse-20261018/related61.tap.gz",
+      "raw_sha256": "d8af80a7c090813a3e4252093d5aca2a967ee2366a09a48254bb9cab1cdfbe5d",
+      "gzip_sha256": "27ae62211b9b0ac3e316e7831308b14976a3b8e6d31f4d3d3f337982e1bc95fc",
+      "counts": {
+        "tests": 61,
+        "pass": 61,
+        "fail": 0
+      }
+    },
+    "output_freeze12": {
+      "path": "checkpoints/source-worker-bitfinex-bounded-reuse-20261018/output_freeze12.tap.gz",
+      "raw_sha256": "02c08ed982789b214c89d2dcec17bc4f7ef022e12f61d53a342b0ffcbe416b6f",
+      "gzip_sha256": "1caa51319625d8f7444c4acdf29b6acc28b8783c5a3dee607c7444cf68f3c4f1",
+      "counts": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0
+      }
+    }
+  },
+  "new_cases": 48,
+  "baseline": "5PASS43FAIL; missing new adapter accounts for normalization/consumer cases, concrete prior collector loss/unknown/backoff defects covered separately.",
+  "local_proposal_related": "61PASS0FAIL:48new +6affected legacy Bitfinex +7existing shared route cases; output freeze12PASS with8identical goldens.",
+  "integration_requirement": "Apply exact shared-consumer.proposed.patch (3 files), then shared-integration.proposed.patch (overlay/validate/CI/output-support/manifest). Coordinator resolves current branch allowlist contexts and runs assembled cloud CI/main. Source branch has no shared edits.",
+  "shared_proposal_base": "117f80dfc2c667c1326e7b024f04a6a9392bc796",
+  "preliminary_XMR_count_correction": {
+    "received_clock_minus_5m": {
+      "rows": 89,
+      "USD": 5640.2376247016
+    },
+    "closed_window_end_minus_5m": {
+      "rows": 99,
+      "USD": 5897.938594406902
+    },
+    "reason": "Window anchored at original closed minute1791720960000, not later receipt1791720977667. Correct closed window used by final tests."
+  },
+  "provenance": "Trade tuples contain no symbol. Exact original URL/pair/window/received_ts + independent wire body hash and derived canonical payload hash bind the already obtained page. Legacy cache lacking receipt keeps accepted N05 behavior but creates no N12 receipt/fact.",
+  "limits": {
+    "new_source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_path_extra_HTTP": 0,
+    "normal_path_extra_SQL": 0,
+    "shared_venue_calls_max": 5,
+    "bitfinex_calls_catalog_plus_candles_plus_trades": 3,
+    "metadata_cache_shared": true,
+    "quote": "USD",
+    "USD_USDT_conversion": false,
+    "other_market_volume_sum": false,
+    "cross_venue_agreement_added": false,
+    "whole_recent_window_coverage_proven": false,
+    "score_contribution": 0,
+    "entry_authorized": false,
+    "pauses_forms_caps_reservations_unknown_unchanged": true,
+    "source_daily_cap": 512,
+    "internal_bitfinex_rolling60s_cap": 6
+  },
+  "acceptance_limits": [
+    "Saved historical original receipts only; no new provider qualification/current105/full report/SENT.",
+    "Other5saved assets have no recent N12 trades at original observation; never refresh clocks.",
+    "Native cost/throughput accounting simulated with local SQLite/hooks only.",
+    "Manual/bothTelegram render evidence is local controlled canonical OBSERVE, no network delivery.",
+    "Same venue N05 and N12 are one independent upstream; transport charged once to existing N05 adapter.",
+    "Standalone USD fact uses existing context slots; display may omit it when existing bounded formatter limit is filled, no new layout/slot is introduced."
+  ],
+  "official_docs": [
+    {
+      "url": "https://docs.bitfinex.com/reference/rest-public-trades",
+      "checked": "Tuple ID/MTS/signed AMOUNT/PRICE, ascending sort and start/end, max10000; no market-data call.",
+      "paraphrase": true
+    },
+    {
+      "url": "https://docs.bitfinex.com/reference/rest-public-conf",
+      "checked": "Existing exchange pair and currency alias/label catalogue binding; docs only.",
+      "paraphrase": true
+    }
+  ],
+  "exact_next_action": "Coordinator reviews frozen provider PR and exact shared proposals, applies shared files, runs assembled CI, merges after acceptance. Worker continues another independent saved-data source gap under a fresh bounded own offline lease.",
+  "implementation_files": {
+    "current-generation/files/src/bitfinex-native-flow-collector.mjs": "b673412cff57170a836e823379c5420cf636d761a8c60a4b09f9a58bcfd2191c",
+    "current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs": "87e42ed72238ff525cc7746bacc28fa33bad7128139e9a68c3ad1b01c05bd880",
+    "current-generation/tests/bitfinex-bounded-reuse.test.mjs": "c6db1db12ee6a7d72cd75ab5a08284dc5515d913c32fa4d8aa32287af81be8e4"
+  },
+  "proposal_files": {
+    "checkpoints/source-worker-bitfinex-bounded-reuse-20261018/shared-integration.proposed.patch": "6655aea151cbea838bcc644132ea784e190df4c53c81332895316ec79a43145b",
+    "checkpoints/source-worker-bitfinex-bounded-reuse-20261018/shared-consumer.proposed.patch": "5a8524fa4b97a76c3ecc0925445f74611330c61798c87669468cab3e69d9b63b"
+  }
+}
