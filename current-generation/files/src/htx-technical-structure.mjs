@@ -1,11 +1,12 @@
+import {createHash} from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
-import {qualifiedBinanceNativeComponent} from './binance-native-four-hour-flow.mjs';
-import {qualifiedPoloniexNativeComponent} from './poloniex-native-four-hour-flow.mjs';
-import {qualifiedGateSpotComponent} from './gate-four-hour-flow.mjs';
+import {qualifiedBinanceNativeComponent,normalizeBinanceNativeFlow} from './binance-native-four-hour-flow.mjs';
+import {qualifiedPoloniexNativeComponent,normalizePoloniexNativeFlow} from './poloniex-native-four-hour-flow.mjs';
+import {qualifiedGateSpotComponent,normalizeGateSpotFlow} from './gate-four-hour-flow.mjs';
 import {GATE_PUBLIC_TAKER_REFERENCE} from './gate-public-taker-reference.mjs';
-import {BITGET_FLOW_VERSION} from './bitget-four-hour-flow.mjs';
+import {BITGET_FLOW_VERSION,reconcileBitgetFlow} from './bitget-four-hour-flow.mjs';
 const periods={'1min':60000,'5min':300000,'15min':900000,'30min':1800000,'60min':3600000,'4hour':14400000},captured=new Map(),TTL=180000;
 const exact15mWindow=w=>w?.label==='15m'&&w.candle_count===15&&Number.isSafeInteger(w.window_start_ts)&&Number.isSafeInteger(w.window_end_ts)&&w.window_end_ts%60000===0&&w.window_end_ts-w.window_start_ts===900000;
 const comparePricePaths=(open,high,low,close,h)=>high<h.low||low>h.high?'DISJOINT_PRICE_RANGES':close===open||h.close===h.open?'DIRECTION_UNCONFIRMED':(close-open)*(h.close-h.open)>0?'SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION':'DIRECTION_CONFLICT';
@@ -133,11 +134,29 @@ function venuePriceBar(venue,r){
  return null;
 }
 function rawVenueCandles(venue,p){return venue==='BITGET'?p?.payloads?.candles?.code==='00000'?p.payloads.candles.data:null:p?.candles;}
+const N10_REDERIVED_CACHE_CLOCK='EXISTING_N05_REDERIVED_CLOSED_240M_CACHE_SAME_WINDOW';
+const cacheDigest=value=>createHash('sha256').update(JSON.stringify(value,(_k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v)).digest('hex');
+const flowBindingFields='version contract venue market quote status check_completed window_start_ts window_end_ts observed_ts verified_minutes buy_quote sell_quote trade_count score_contribution entry_authorized'.split(' ');
+const flowDescriptor=c=>({...Object.fromEntries(flowBindingFields.map(k=>[k,c[k]])),identity:c.identity,physical_root:c.physical_root,direction_semantics:c.direction_semantics,source_clock_policy:c.source_clock_policy});
+function rederiveCachedN05Flow({contract,venue,component:c,payload:p,end,observed}){
+ try{
+  const common={contract,identity:c.identity,window_end_ts:end,observed_ts:observed};let rebuilt;
+  if(venue==='BINANCE')rebuilt=normalizeBinanceNativeFlow({...common,catalog:p.catalog,candles:p.candles});
+  else if(venue==='POLONIEX')rebuilt=normalizePoloniexNativeFlow({...common,assets:p.assets,markets:p.markets,candles:p.candles});
+  else if(venue==='GATE')rebuilt=normalizeGateSpotFlow({...common,currencies:p.currencies,spot:p.spot,pages:p.pages,candles:p.candles,direction_reference:GATE_PUBLIC_TAKER_REFERENCE});
+  else if(venue==='BITGET')rebuilt=reconcileBitgetFlow({...common,market:'SPOT',pages:p.payloads?.pages,candles:p.payloads?.candles});
+  return Boolean(rebuilt?.check_completed===true&&flowBindingFields.every(k=>rebuilt[k]===c[k]));
+ }catch{return false;}
+}
+function validN10CacheBinding(binding,row,c,bars){
+ return binding?.schema==='N10_REDERIVED_N05_CACHE_BINDING_V1'&&binding.contract===row.htx_contract&&binding.venue===row.venue&&binding.market==='SPOT'&&binding.quote==='USDT'&&binding.window_start_ts===c.window_start_ts&&binding.window_end_ts===row.window_end&&binding.observed_ts===c.observed_ts&&binding.expires_ts===row.window_end+300000&&row.expires_at===binding.expires_ts&&binding.flow_component_sha256===cacheDigest(flowDescriptor(c))&&binding.selected_price_bars_sha256===cacheDigest(bars)&&/^[a-f0-9]{64}$/.test(binding.cache_payload_sha256||'');
+}
 export function deriveN10ReusedVenuePathEvidence({contract,venue,component,cache,htx_window,now=Date.now()}={}){
  const end=htx_window?.window_end_ts,start=htx_window?.window_start_ts,root=VENUE_PRICE_ROOTS[venue],p=cache?.payload;
  if(!root||!isExactHtxUsdtSwapKey(contract)||!qualifiedVenueComponent(component)||component.contract!==contract||component.market!=='SPOT'||component.quote!=='USDT'||component.window_end_ts!==end||component.window_start_ts!==end-240*60000||component.verified_minutes!==240||
   !Number.isSafeInteger(now)||!Number.isSafeInteger(end)||start!==end-15*60000||end>now||now-end>5*60000||
   !Number.isSafeInteger(cache?.observed_ts)||cache.observed_ts!==component.observed_ts||cache.observed_ts<end||cache.observed_ts>now||cache.expires_ts<now||p?.observed_ts!==cache.observed_ts)return[];
+ if(!Number.isSafeInteger(cache.expires_ts)||cache.expires_ts!==end+300000||!rederiveCachedN05Flow({contract,venue,component,payload:p,end,observed:cache.observed_ts}))return[];
  const raw=rawVenueCandles(venue,p);if(!Array.isArray(raw)||raw.length!==240)return[];
  const bars=raw.map(r=>venuePriceBar(venue,r)).sort((a,b)=>(a?.ts??-1)-(b?.ts??-1));
  const fullStart=end-240*60000;
@@ -146,8 +165,8 @@ export function deriveN10ReusedVenuePathEvidence({contract,venue,component,cache
  if(active===0||recent[0].ts!==start||recent.at(-1).ts!==end-60000)return[];
  const open=recent[0].open,high=Math.max(...recent.map(b=>b.high)),low=Math.min(...recent.map(b=>b.low)),close=recent.at(-1).close;
  const h=htx_window;if(![h.open,h.high,h.low,h.close].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>0)||h.low>h.high||h.open<h.low||h.open>h.high||h.close<h.low||h.close>h.high)return[];
- const comparison=comparePricePaths(open,high,low,close,h);
- return[buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:root,asset_id:`htx-futures:${contract}`,htx_contract:contract,block_id:'N10',metric_family:'CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT',origin_event_id:`${venue}:${contract}:${end}`,dependency_group:`${venue}_OFFICIAL_SPOT_CANDLES:${contract}:${end}`,source_ts:end,observed_ts:now,first_known_ts:cache.observed_ts,expires_at:Math.min(cache.expires_ts,end+5*60000),coverage_status:'EXACT_FIFTEEN_CLOSED_ACTIVE_SPOT_MINUTE_CANDLES',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{venue,market:'SPOT',quote:'USDT',window_start:start,window_end:end,candle_count:15,active_minute_count:active,path_open:open,path_high:high,path_low:low,path_close:close,change_pct:(close/open-1)*100,htx_path_open:h.open,htx_path_high:h.high,htx_path_low:h.low,htx_path_close:h.close,htx_close_gap_pct:(close/h.close-1)*100,comparison_status:comparison,source_cache_observed_ts:cache.observed_ts,source_clock_policy:'EXISTING_N05_EXACT_CLOSED_240M_CACHE_SAME_WINDOW',n05_component:component,raw_price_bars:recent,entry_authorized_by_context:false,liquidation_as_target:false,independent_upstream_root:true}})];
+ const comparison=comparePricePaths(open,high,low,close,h),binding={schema:'N10_REDERIVED_N05_CACHE_BINDING_V1',contract,venue,market:'SPOT',quote:'USDT',window_start_ts:component.window_start_ts,window_end_ts:end,observed_ts:cache.observed_ts,expires_ts:cache.expires_ts,flow_component_sha256:cacheDigest(flowDescriptor(component)),selected_price_bars_sha256:cacheDigest(recent),cache_payload_sha256:cacheDigest(p)};
+ return[buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:root,asset_id:`htx-futures:${contract}`,htx_contract:contract,block_id:'N10',metric_family:'CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT',origin_event_id:`${venue}:${contract}:${end}`,dependency_group:`${venue}_OFFICIAL_SPOT_CANDLES:${contract}:${end}`,source_ts:end,observed_ts:now,first_known_ts:cache.observed_ts,expires_at:Math.min(cache.expires_ts,end+5*60000),coverage_status:'EXACT_FIFTEEN_CLOSED_ACTIVE_SPOT_MINUTE_CANDLES',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{venue,market:'SPOT',quote:'USDT',window_start:start,window_end:end,candle_count:15,active_minute_count:active,path_open:open,path_high:high,path_low:low,path_close:close,change_pct:(close/open-1)*100,htx_path_open:h.open,htx_path_high:h.high,htx_path_low:h.low,htx_path_close:h.close,htx_close_gap_pct:(close/h.close-1)*100,comparison_status:comparison,source_cache_observed_ts:cache.observed_ts,source_clock_policy:N10_REDERIVED_CACHE_CLOCK,source_cache_binding:binding,n05_component:component,raw_price_bars:recent,entry_authorized_by_context:false,liquidation_as_target:false,independent_upstream_root:true}})];
 }
 export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_receipt,now=Date.now()}={}){
  const h=primary_receipt?.receipts?.[0]?.actual_price_windows?.find(w=>w.label==='15m');
@@ -174,14 +193,18 @@ export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_r
 export function verifyN10ReusedVenuePathEvidence(row,{now=row?.observed_ts}={}){
  const c=row?.n05_component,bars=row?.raw_price_bars,end=row?.window_end,start=row?.window_start,venue=row?.venue;
  if(row?.block_id!=='N10'||row.metric_family!=='CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT'||row.provider_id!=='PRIMARY_TECHNICAL_CONTEXT'||row.upstream_id!==VENUE_PRICE_ROOTS[venue]||!qualifiedVenueComponent(c)||c.contract!==row.htx_contract||c.market!=='SPOT'||c.quote!=='USDT'||c.window_end_ts!==end||c.window_start_ts!==end-240*60000||c.verified_minutes!==240||c.observed_ts!==row.source_cache_observed_ts||
-  !Number.isSafeInteger(now)||!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||end-start!==15*60000||row.candle_count!==15||row.source_ts!==end||row.first_known_ts!==c.observed_ts||row.observed_ts<row.first_known_ts||row.observed_ts>now||row.expires_at<now||row.expires_at>end+5*60000||row.source_clock_policy!=='EXISTING_N05_EXACT_CLOSED_240M_CACHE_SAME_WINDOW'||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.independent_upstream_root!==true||row.directional_strength!==null||row.risk_strength!==null||row.coverage_fraction!==0||!Array.isArray(bars)||bars.length!==15)return false;
+  !Number.isSafeInteger(now)||!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||end-start!==15*60000||row.candle_count!==15||row.source_ts!==end||row.first_known_ts!==c.observed_ts||row.observed_ts<row.first_known_ts||row.observed_ts>now||row.expires_at<now||row.expires_at>end+5*60000||!['EXISTING_N05_EXACT_CLOSED_240M_CACHE_SAME_WINDOW',N10_REDERIVED_CACHE_CLOCK].includes(row.source_clock_policy)||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.independent_upstream_root!==true||row.directional_strength!==null||row.risk_strength!==null||row.coverage_fraction!==0||!Array.isArray(bars)||bars.length!==15)return false;
  if(!bars.every((b,i)=>b?.ts===start+i*60000&&b.closed_end===b.ts+59999&&[b.open,b.high,b.low,b.close].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>0)&&b.low<=b.high&&b.open>=b.low&&b.open<=b.high&&b.close>=b.low&&b.close<=b.high&&Number.isFinite(b.activity)&&b.activity>=0))return false;
+ // Newly derived rows carry a compact proof of the cached flow rederivation.
+ // Historical saved rows retain their existing fifteen-bar verification.
+ const binding=row.source_cache_binding;
+ if(row.source_clock_policy===N10_REDERIVED_CACHE_CLOCK?!validN10CacheBinding(binding,row,c,bars):binding!==undefined)return false;
  const active=bars.filter(b=>b.activity>0).length,open=bars[0].open,high=Math.max(...bars.map(b=>b.high)),low=Math.min(...bars.map(b=>b.low)),close=bars.at(-1).close,h={open:row.htx_path_open,high:row.htx_path_high,low:row.htx_path_low,close:row.htx_path_close};
  if(active===0||active!==row.active_minute_count||![h.open,h.high,h.low,h.close].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>0)||h.low>h.high||h.open<h.low||h.open>h.high||h.close<h.low||h.close>h.high)return false;
  const comparison=comparePricePaths(open,high,low,close,h);
  const eq=(a,b)=>typeof a==='number'&&Number.isFinite(a)&&Math.abs(a-b)<=Math.max(1,Math.abs(b))*1e-10;
  if(!eq(row.path_open,open)||!eq(row.path_high,high)||!eq(row.path_low,low)||!eq(row.path_close,close)||!eq(row.change_pct,(close/open-1)*100)||!eq(row.htx_close_gap_pct,(close/h.close-1)*100)||row.comparison_status!==comparison)return false;
- const rebuilt=buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:VENUE_PRICE_ROOTS[venue],asset_id:`htx-futures:${row.htx_contract}`,htx_contract:row.htx_contract,block_id:'N10',metric_family:'CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT',origin_event_id:`${venue}:${row.htx_contract}:${end}`,dependency_group:`${venue}_OFFICIAL_SPOT_CANDLES:${row.htx_contract}:${end}`,source_ts:end,observed_ts:row.observed_ts,first_known_ts:c.observed_ts,expires_at:row.expires_at,coverage_status:'EXACT_FIFTEEN_CLOSED_ACTIVE_SPOT_MINUTE_CANDLES',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{venue,market:'SPOT',quote:'USDT',window_start:start,window_end:end,candle_count:15,active_minute_count:active,path_open:open,path_high:high,path_low:low,path_close:close,change_pct:(close/open-1)*100,htx_path_open:h.open,htx_path_high:h.high,htx_path_low:h.low,htx_path_close:h.close,htx_close_gap_pct:(close/h.close-1)*100,comparison_status:comparison,source_cache_observed_ts:c.observed_ts,source_clock_policy:'EXISTING_N05_EXACT_CLOSED_240M_CACHE_SAME_WINDOW',n05_component:c,raw_price_bars:bars,entry_authorized_by_context:false,liquidation_as_target:false,independent_upstream_root:true}});
+ const rebuilt=buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:VENUE_PRICE_ROOTS[venue],asset_id:`htx-futures:${row.htx_contract}`,htx_contract:row.htx_contract,block_id:'N10',metric_family:'CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT',origin_event_id:`${venue}:${row.htx_contract}:${end}`,dependency_group:`${venue}_OFFICIAL_SPOT_CANDLES:${row.htx_contract}:${end}`,source_ts:end,observed_ts:row.observed_ts,first_known_ts:c.observed_ts,expires_at:row.expires_at,coverage_status:'EXACT_FIFTEEN_CLOSED_ACTIVE_SPOT_MINUTE_CANDLES',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{venue,market:'SPOT',quote:'USDT',window_start:start,window_end:end,candle_count:15,active_minute_count:active,path_open:open,path_high:high,path_low:low,path_close:close,change_pct:(close/open-1)*100,htx_path_open:h.open,htx_path_high:h.high,htx_path_low:h.low,htx_path_close:h.close,htx_close_gap_pct:(close/h.close-1)*100,comparison_status:comparison,source_cache_observed_ts:c.observed_ts,source_clock_policy:row.source_clock_policy,...(binding?{source_cache_binding:binding}:{}),n05_component:c,raw_price_bars:bars,entry_authorized_by_context:false,liquidation_as_target:false,independent_upstream_root:true}});
  return rebuilt.evidence_id===row.evidence_id&&rebuilt.raw_hash===row.raw_hash;
 }
 
