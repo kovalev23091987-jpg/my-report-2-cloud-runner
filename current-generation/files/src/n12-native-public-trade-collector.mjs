@@ -43,6 +43,7 @@ export async function collectN12NativePublicVenue(params={},venue){
  const asset_binding_proof=params.asset_binding_proof,native=Boolean(verifiedAssetRouteIdentity(params))&&exactN12NativeIdentity(contract,identity),token=venue==='KUCOIN'&&exactN12KucoinTokenIdentity(contract,identity,identity_method,asset_binding_proof);
  if(!['OKX','KUCOIN'].includes(venue)||!db?.prepare||!run_id||!native&&!token)return root;
  if(nativeSourceUsageUnclosed(db))return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
+ let providerBlocked=false;
  const unclosed=()=>nativeSourceUsageUnclosed(db);
  const cacheRead=async input=>unclosed()?null:readEvidenceSourceCache(db,input);
  const cacheWrite=async input=>{const receipt=await writeOptionalEvidenceSourceCache(db,input);cache_write_receipts.push({asset_key:input.asset_key,...receipt});return receipt;};
@@ -50,6 +51,7 @@ export async function collectN12NativePublicVenue(params={},venue){
  if(!dbGrant())return{...root,status:'SOURCE_DB_HEADROOM_REQUIRED'};
  const get=async(url,market,kind)=>{
   const id=`N12_${venue}:${run_id}:${contract}:${++sequence}`,receipt={url,kind,market,status:'NOT_ATTEMPTED',actual_http:0};receipts.push(receipt);
+  if(providerBlocked){receipt.status='VENUE_BACKOFF_THIS_INVOCATION';return null;}
   if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}
   if(!dbGrant()){receipt.status='SOURCE_DB_HEADROOM_REQUIRED';return null;}
   if(await cacheRead({source:`N12_PROVIDER_BACKOFF:${venue}`,asset_key:'SHARED',now:clock()})){receipt.status='DURABLE_VENUE_BACKOFF';return null;}
@@ -65,7 +67,7 @@ export async function collectN12NativePublicVenue(params={},venue){
   const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id,units,cap:publicVenueMinuteCap(venue),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}
   if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}
   try{
-   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;
+   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;
    const chunks=[];let size=0;for await(const chunk of response.body){size+=chunk.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks);receipt.received_ts=clock();receipt.body_sha256=sha(bytes);receipt.bytes=size;
    if([401,403,429,451].includes(response.status)&&dbGrant()){const retry=Number(response.headers.get('retry-after'));await cacheWrite({source:`N12_PROVIDER_BACKOFF:${venue}`,asset_key:'SHARED',observed_ts:receipt.received_ts,expires_ts:receipt.received_ts+Math.max(900000,Number.isFinite(retry)&&retry>0?retry*1000:0),payload:{http_status:response.status,source_ts:receipt.received_ts}});}
    if(response.status!==200){receipt.status='HTTP_'+response.status;return null;}

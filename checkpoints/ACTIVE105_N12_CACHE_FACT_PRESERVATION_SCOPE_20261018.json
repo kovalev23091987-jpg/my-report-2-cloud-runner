@@ -3,15 +3,15 @@
   "recorded_utc": "2026-10-18T07:03:14.705026+00:00",
   "source_main": "fbf77de8a4e0bfe0fb84c22d62e76e64d1dd31ca",
   "own_lease_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792306673214",
-  "status": "RELATED_63_PASS_COMMON_CLOUD_PENDING",
-  "related_cases_pass": 63,
+  "status": "RELATED_65_PASS_FINAL_COMMON_CLOUD_PENDING",
+  "related_cases_pass": 65,
   "related_cases_fail": 0,
-  "new_cases": 25,
+  "new_cases": 27,
   "files": {
-    "current-generation/files/src/n12-native-public-trade-collector.mjs": "12735c5cdb9f448bc05c63b82d01a0d1c987082fba807901cc3fbcaa7e0d1ce3",
-    "current-generation/files/src/gate-futures-trade-collector.mjs": "8024960fe51274fae2c245062cc22245c82a9caadc22f38790ef5530f8a3fabf",
-    "current-generation/files/src/bitget-flow-collector.mjs": "ad949776a022c6d64448e6325c476586b4cfe3a5a8f03ff83196774c21fea6db",
-    "current-generation/tests/n12-cache-preservation.test.mjs": "f6da5127a93f6afe6436fe7487481cb53e18eb85dd98bcaf4e6d59e45cc422c9"
+    "current-generation/files/src/n12-native-public-trade-collector.mjs": "574e4a45bdf5a371b49d6a3d3c2151e09a70ab8760b85d98ed652b6802b6bc72",
+    "current-generation/files/src/gate-futures-trade-collector.mjs": "9c93e8308dc2bdd1cd731d663f24cac178c7744f1daa08eea85e9c4c45fb6edd",
+    "current-generation/files/src/bitget-flow-collector.mjs": "218421d5860f1c8f522880e22e6fb068c24b4c87537328b9dbfee8084dd5dffe",
+    "current-generation/tests/n12-cache-preservation.test.mjs": "d9f285ccdbac068bea3453745903029332b5f999aeb7ce3fb58f775bc2bfdcac"
   },
   "originals": [
     {
@@ -60,7 +60,8 @@
     "Bitget retained facts survive optional flow cache and later market store failure",
     "Unknown native cost stops subsequent DB/source work; spent daily/minute/job reservations not refunded",
     "Original asset identities, trade clocks, contract multipliers, bounded coverage and zero scoring retained",
-    "Existing consumer/manual/approved Telegram path replayed on saved historical PEPE; no actual new delivery"
+    "Existing consumer/manual/approved Telegram path replayed on saved historical PEPE; no actual new delivery",
+    "Observed401/403/429/451 blocks later transport in the same venue invocation even if durable backoff storage failed"
   ],
   "normal_path_extra_SQL": 0,
   "new_source_HTTP": 0,
@@ -73,5 +74,7 @@
   "native_full_manual_delivery_accepted": false,
   "new_primary_format": false,
   "caps_strategy_weights_forms_pauses_changed": false,
-  "latest_saved_natural_refusal_review": "checkpoints/active105-blocks-20261018/natural-39101817020-review.json"
+  "latest_saved_natural_refusal_review": "checkpoints/active105-blocks-20261018/natural-39101817020-review.json",
+  "initial_candidate_cloud_run": 39106352031,
+  "initial_candidate_superseded": true
 }

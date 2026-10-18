@@ -15,6 +15,7 @@ export async function collectBitgetFlow(params={}){
  const cache_write_receipts=[],components=[],evidence=[];
  const root={version:VERSION,status:'EXACT_ASSET_IDENTITY_REQUIRED',check_completed:false,network_calls:0,evidence,components,receipts,cache_write_receipts,internal_only:true};
  if(!db?.prepare||!identity||!verifiedAssetRouteIdentity(params)||!/^\S+-USDT$/u.test(String(contract||''))||!run_id)return root;
+ let providerBlocked=false;
  const unclosed=()=>nativeSourceUsageUnclosed(db);
  if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
  const cacheRead=async input=>unclosed()?null:readEvidenceSourceCache(db,input);
@@ -24,6 +25,7 @@ export async function collectBitgetFlow(params={}){
  let sequence=0;
  const get=async(url,part={})=>{
   const id=`N05_BITGET:${run_id}:${contract}:${++sequence}`,r={url,received_ts:null,http_status:null,status:'NOT_ATTEMPTED',actual_http:0,...part};receipts.push(r);
+  if(providerBlocked){r.status='VENUE_BACKOFF_THIS_INVOCATION';return null;}
   if(unclosed()){r.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}
   if(!admitDb()){r.status='FLOW_DB_HEADROOM_REQUIRED';return null;}
   const backoff=await cacheRead({source:'N05_PROVIDER_BACKOFF:BITGET',asset_key:'SHARED',now:clock()});if(backoff){r.status='DURABLE_VENUE_BACKOFF';return null;}
@@ -37,7 +39,7 @@ export async function collectBitgetFlow(params={}){
   const minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:id,units:1,cap:publicVenueMinuteCap('BITGET'),now:clock()});if(!minute.allowed){r.status=minute.status;return null;}
   if(unclosed()){r.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}
   try{
-   calls++;r.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});r.http_status=response.status;
+   calls++;r.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});r.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;
    const chunks=[];let size=0;for await(const c of response.body){size+=c.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(c);}const bytes=Buffer.concat(chunks);r.received_ts=clock();r.body_sha256=hash(bytes);r.bytes=size;
    if([401,403,429,451].includes(response.status)){const retry=response.headers.get('retry-after'),seconds=/^\d+$/.test(retry||'')?Number(retry):0;await cacheWrite({source:'N05_PROVIDER_BACKOFF:BITGET',asset_key:'SHARED',observed_ts:r.received_ts,expires_ts:r.received_ts+Math.max(900000,seconds*1000),payload:{http_status:response.status,original_received_ts:r.received_ts}});}
    if(response.status!==200){r.status='HTTP_'+response.status;return null;}const p=JSON.parse(bytes);if(p.code!=='00000'||!Array.isArray(p.data)){r.status='INVALID_PROVIDER_SCHEMA';return null;}r.status='RECEIVED_NOT_QUALIFIED';return p;

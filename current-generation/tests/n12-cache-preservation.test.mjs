@@ -93,8 +93,8 @@ for(const unknown of [false,true])test(`controlled Bitget complete flow and boun
 test('Bitget later market cache error retains the already normalized first market result',async()=>{
  const d=await setup();try{const p=await bitgetParams(d);d.setHook((phase,sql,args)=>{if(phase==='before'&&sql.startsWith('SELECT observed_ts')&&String(args[1]).startsWith('FLOW:LINK-USDT:FUTURES'))throw Error('CONTROLLED_LATE_READ');});const r=await collectBitgetFlow(p);assert.equal(r.evidence.length,1);assert.equal(r.components.filter(c=>c.check_completed).length,1);assert.equal(r.network_calls,2);checkConsumer(r,p);}finally{d.sqlite.close();}
 });
-test('provider 429 survives a failed backoff cache write, with no fallback call after unknown cost',async()=>{
- const d=await setup();try{const p=nativeParams(d,'OKX');failedCache(d,key=>key==='SHARED',{unknown:true});const r=await collectN12NativePublicVenue({...p,fetch_impl:async()=>new Response('{}',{status:429})},'OKX');assert.equal(r.network_calls,1);assert.equal(r.receipts[0].status,'HTTP_429');assert.equal(r.evidence.length,0);noLaterWork(d);}finally{d.sqlite.close();}
+for(const unknown of [false,true])test(`provider 429 survives failed optional backoff storage; unknown=${unknown}`,async()=>{
+ const d=await setup();try{const p=nativeParams(d,'OKX');failedCache(d,key=>key==='SHARED',{unknown});const r=await collectN12NativePublicVenue({...p,fetch_impl:async()=>new Response('{}',{status:429})},'OKX');assert.equal(r.network_calls,1);assert.equal(r.receipts[0].status,'HTTP_429');assert.equal(r.evidence.length,0);noLaterWork(d);}finally{d.sqlite.close();}
 });
 test('retained PEPE facts after cache failure keep exact IDs through existing manual and approved Telegram renderers',async()=>{
  const d=await setup();try{const p=nativeParams(d,'KUCOIN');failedCache(d,key=>key.startsWith('N12:TRADES:'));const r=await collectN12NativePublicVenue(p,'KUCOIN'),facts=checkConsumer(r,p),c=structuredClone(JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical);
@@ -102,3 +102,5 @@ test('retained PEPE facts after cache failure keep exact IDs through existing ma
   const manual=formatManualReport(c);assert.equal(manual.ok,true);for(const policy of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007']){const telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:policy});assert.equal(telegram.ok,true);const audit=auditRenderedBlockResults({canonical:c,manual,telegram});assert.ok(audit.telegram_context_receipts.some(x=>r.evidence.every(row=>x.evidence_ids?.includes(row.evidence_id))));}
  }finally{d.sqlite.close();}
 });
+
+test('Bitget observed429 prevents another market transport even if measured backoff storage fails',async()=>{const d=await setup();try{const p=await bitgetParams(d);failedCache(d,key=>key==='SHARED');const r=await collectBitgetFlow({...p,fetch_impl:async()=>new Response('{}',{status:429})});assert.equal(r.network_calls,1);assert.equal(r.evidence.length,0);assert.equal(d.sqlite.prepare('SELECT attempts FROM report2_evidence_source_daily').get().attempts,1);}finally{d.sqlite.close();}});

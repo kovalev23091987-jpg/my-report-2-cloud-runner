@@ -17,6 +17,7 @@ export async function collectGateFuturesTradeSample(params={}){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[];
  const cache_write_receipts=[],root={version:VERSION,status:'EXACT_GATE_IDENTITY_AND_SHARED_METADATA_REQUIRED',check_completed:false,evidence:[],network_calls:0,receipts,cache_write_receipts,components:[],internal_only:true};let calls=0,sequence=0;
  if(!db?.prepare||!run_id||!/^\S+-USDT$/u.test(String(contract||''))||identity?.asset_kind==='NATIVE'||!identity?.contract_or_mint||!verifiedAssetRouteIdentity(params))return root;
+ let providerBlocked=false;
  const unclosed=()=>nativeSourceUsageUnclosed(db);
  if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
  const cacheRead=async input=>unclosed()?null:readEvidenceSourceCache(db,input);
@@ -31,6 +32,7 @@ export async function collectGateFuturesTradeSample(params={}){
  if(prior?.version===VERSION&&prior.result?.evidence?.every(row=>validateGateFuturesTradeSample(row,now)))return{...root,...prior.result,network_calls:0,receipts:[{status:'HIT_ORIGINAL_SOURCE_CLOCKS',actual_http:0,source_ts:prior.result.evidence[0]?.source_ts}],cache_status:'HIT_ORIGINAL_SOURCE_CLOCKS'};
  const get=async url=>{
   const id=`N12_GATE_FUTURES:${run_id}:${contract}:${++sequence}`,receipt={url,status:'NOT_ATTEMPTED',actual_http:0,http_status:null};receipts.push(receipt);
+  if(providerBlocked){receipt.status='VENUE_BACKOFF_THIS_INVOCATION';return null;}
   if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}
   if(!dbGrant()){receipt.status='FLOW_DB_HEADROOM_REQUIRED';return null;}
   if(await cacheRead({source:'N05_PROVIDER_BACKOFF:GATE',asset_key:'SHARED',now:clock()})){receipt.status='DURABLE_VENUE_BACKOFF';return null;}
@@ -47,7 +49,7 @@ export async function collectGateFuturesTradeSample(params={}){
   if(!minute.allowed){receipt.status=minute.status;return null;}
   if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}
   try{
-   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;
+   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;
    const chunks=[];let size=0;for await(const chunk of response.body){size+=chunk.length;if(size>2*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}
    const body=Buffer.concat(chunks);receipt.received_ts=clock();receipt.body_sha256=digest(body);receipt.bytes=size;
    if([401,403,429,451].includes(response.status)&&dbGrant()){const seconds=Number(response.headers.get('retry-after'));await cacheWrite({source:'N05_PROVIDER_BACKOFF:GATE',asset_key:'SHARED',observed_ts:receipt.received_ts,expires_ts:receipt.received_ts+Math.max(900000,Number.isSafeInteger(seconds)&&seconds>0?seconds*1000:0),payload:{http_status:response.status,original_received_ts:receipt.received_ts}});}
