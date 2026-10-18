@@ -5,14 +5,10 @@ import {pathToFileURL} from 'node:url';
 const moduleURL=name=>process.env.REPORT2_TEST_RUNTIME?pathToFileURL(`${process.env.REPORT2_TEST_RUNTIME}/src/${name}`):new URL(`../files/src/${name}`,import.meta.url);
 const {loadN10ReusedVenuePaths}=await import(moduleURL('htx-technical-structure.mjs'));
 const {consumeBlockResultContext}=await import(moduleURL('block-result-context.mjs'));
-const sample=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url))).find(row=>row.venue==='BITGET');
-const h=sample.htx_window,first=sample.bars[0].split('|').map(Number),start=h.window_end_ts-240*60000;
-const make=(ts,o,hi,lo,cl,activity)=>[String(ts),String(o),String(hi),String(lo),String(cl),String(activity),'0','0'];
-const raw=Array.from({length:225},(_,i)=>make(start+i*60000,first[1],first[1],first[1],first[1],0));
-raw.push(...sample.bars.map(line=>make(...line.split('|').map(Number))));
-const payload={observed_ts:sample.cache_observed_ts,payloads:{candles:{code:'00000',data:raw}}};
-// Component queue changes are explicit controls. The final useful RLC
-// component and its retained fifteen price bars/clocks are unchanged.
+import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
+const input=sampleParams(activeSourceSamples.find(s=>s.venue==='BITGET')),sample={...input,cache_observed_ts:input.cache.observed_ts,cache_expires_ts:input.cache.expires_ts},h=input.htx_window,payload=input.cache.payload;
+// Full reconciled retained-page copy with an explicit controlled event clock.
+// This verifies the queue, not a new provider observation or coverage.
 function fixture(components,options={}){
  const reads=[];let unknown=options.unknown_before?1:0;
  const db={usageSnapshot:()=>({unknown_ops:unknown}),prepare(sql){return{bind(...args){return{async first(){reads.push({sql,args});if(options.fail_read)throw Error('CONTROLLED_CACHE_READ');if(options.unknown_after)unknown=1;return{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload_json:JSON.stringify(payload)};}};}};}};
@@ -25,7 +21,7 @@ for(const [name,change] of Object.entries({
  'unusable USDC quote':c=>({...c,quote:'USDC'}),
  'incomplete 239-minute window':c=>({...c,verified_minutes:239}),
  'wrong four-hour start':c=>({...c,window_start_ts:c.window_start_ts+60000}),
-}))test(`four ${name} components cannot spend the cache-read ceiling before the retained useful RLC spot path`,async()=>{
+}))test(`four ${name} components cannot spend the cache-read ceiling before the complete controlled Bitget spot path`,async()=>{
  const x=fixture([...Array.from({length:4},()=>change(copy())),copy()]),r=await loadN10ReusedVenuePaths(x.params);
  useful(r);assert.equal(x.reads.length,1);assert.equal(r.cache_reads,1);assert.equal(r.receipts.length,1);assert.equal(x.reads[0].args[1],`FLOW:${sample.contract}:SPOT:${h.window_end_ts}`);
 });
