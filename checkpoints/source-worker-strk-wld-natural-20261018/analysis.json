@@ -10227,6 +10227,41 @@
     "current_N10_consumer_exclusion": "No BACKPACK venue adapter and explicit component.quote USDT requirement.",
     "classification": "STRUCTURAL_COVERAGE_GAP_NOT_PROVEN_RUNTIME_DEFECT",
     "missing_original": "The exact240raw OHLC rows and cache persistence ACK are absent from these compact artifacts.",
+    "current_STRK_last15m_activity": null,
+    "active_last15m_and_exact_known_by_clock_required": true,
+    "historical_negative_boundary_reuse": {
+      "path": "checkpoints/n05-backpack-missing4-38134543735/batch-summary.json",
+      "frozen_PR": 452,
+      "sha256": "811b0c4fe9f403390af54d15275020bf41d05282e674dde0ed22aeac1770eb82",
+      "original_summary_only": [
+        {
+          "contract": "ENA-USDT",
+          "original_observed_ts": 1791716994845,
+          "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+          "last15m_trade_count": 0
+        },
+        {
+          "contract": "JUP-USDT",
+          "original_observed_ts": 1791716997559,
+          "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+          "last15m_trade_count": 0
+        },
+        {
+          "contract": "ONDO-USDT",
+          "original_observed_ts": 1791717062478,
+          "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+          "last15m_trade_count": 0
+        },
+        {
+          "contract": "PENGU-USDT",
+          "original_observed_ts": 1791717064546,
+          "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+          "last15m_trade_count": 0
+        }
+      ],
+      "old_qualification_or_probe_repeated": false,
+      "historical_assets_not_added_to_current105_scope": true
+    },
     "next_if_existing_original_available": "Check a separately labelled USDC within-venue15m path from exact already-saved raw bars, without FX/cross-quote HTX-price agreement/score/entry/new provider calls.",
     "shared_fix_or_new_framework_written": false,
     "raw_price_fact_reconstructed": false,
@@ -10253,7 +10288,7 @@
     "deploy_MAIN_Telegram": 0,
     "shared_runtime_mutations": 0,
     "old_accepted_tests_or_probes_rerun": 0,
-    "new_original_assertions": 76
+    "new_original_assertions": 78
   },
   "assertions": [
     "artifact-12150441158.zip immutable ZIP SHA/bytes",
@@ -10331,6 +10366,8 @@
     "STRK has TWO HL native sample levels; WLD ONE native plus17 provider estimates",
     "shared LIQ acquisition four HTTP is retained, not added per panel",
     "DYDX zero-HTTP deferrals are internal scheduling limits, not provider failure",
-    "next useful route question has exact code witnesses, not invented bars"
+    "next useful route question has exact code witnesses, not invented bars",
+    "accepted old Backpack metadata reused by exact SHA, not a repeated qualification",
+    "old full4h flow does NOT prove an active last15m price window"
   ]
 }

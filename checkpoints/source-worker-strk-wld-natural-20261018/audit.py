@@ -180,6 +180,12 @@ technical = code['htx-technical-structure.mjs']['text']
 backpack = code['backpack-four-hour-flow.mjs']['text']
 collector = code['backpack-flow-collector.mjs']['text']
 check('next useful route question has exact code witnesses, not invented bars', "component.quote!=='USDT'" in technical and 'BACKPACK' not in technical and 'candles.length!==240' in backpack and "quote_comparison_policy:'WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY'" in backpack and 'pages,candles' in collector)
+backpack_history_path = 'checkpoints/n05-backpack-missing4-38134543735/batch-summary.json'
+backpack_history_bytes = git_body('230c608f4ffc606eb34562a6484d199a976ffe4a', backpack_history_path)
+check('accepted old Backpack metadata reused by exact SHA, not a repeated qualification', sha(backpack_history_bytes) == '811b0c4fe9f403390af54d15275020bf41d05282e674dde0ed22aeac1770eb82')
+backpack_history = json.loads(backpack_history_bytes)
+history_limits = [{'contract': c['contract'], 'original_observed_ts': c['observed_ts'], 'status': c['status'], 'last15m_trade_count': next(w['trade_count'] for w in c['recent_windows'] if w['minutes'] == 15)} for c in backpack_history['results']]
+check('old full4h flow does NOT prove an active last15m price window', len(history_limits) == 4 and all(c['status'] == 'CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS' and c['last15m_trade_count'] == 0 for c in history_limits))
 
 analysis = {
     'schema': 'NEW_STRK_WLD_SOURCE_FACT_CONSUMER_AND_EXACT_SENT_BOUNDARY_AUDIT_V1',
@@ -196,6 +202,9 @@ analysis = {
         'current_N10_consumer_exclusion': 'No BACKPACK venue adapter and explicit component.quote USDT requirement.',
         'classification': 'STRUCTURAL_COVERAGE_GAP_NOT_PROVEN_RUNTIME_DEFECT',
         'missing_original': 'The exact240raw OHLC rows and cache persistence ACK are absent from these compact artifacts.',
+        'current_STRK_last15m_activity': None,
+        'active_last15m_and_exact_known_by_clock_required': True,
+        'historical_negative_boundary_reuse': {'path': backpack_history_path, 'frozen_PR': 452, 'sha256': sha(backpack_history_bytes), 'original_summary_only': history_limits, 'old_qualification_or_probe_repeated': False, 'historical_assets_not_added_to_current105_scope': True},
         'next_if_existing_original_available': 'Check a separately labelled USDC within-venue15m path from exact already-saved raw bars, without FX/cross-quote HTX-price agreement/score/entry/new provider calls.',
         'shared_fix_or_new_framework_written': False, 'raw_price_fact_reconstructed': False,
         'new_SQL_or_provider_access_requested_or_granted': False,
