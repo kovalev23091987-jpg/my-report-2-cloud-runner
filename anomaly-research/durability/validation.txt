@@ -1,0 +1,19 @@
+✔ COUNTEREXAMPLE actual frozen detector duplicates event_id when binding_ref changes; logical identity does not (3.977208ms)
+✔ rule revisions do not create another logical event or outcome cell (1.176834ms)
+✔ distinct native instrument epochs/venues/timeframes remain separate (0.85125ms)
+✔ changed material units remain a conflict, not another independent sample (0.697375ms)
+✔ repeated revision idempotent, bounded revision history explicitly deferred (0.599583ms)
+✔ COUNTEREXAMPLE frozen active/outbox reference list empties after refute+simulated SENT; pending90d must still protect (4.989416ms)
+✔ missing outcome ledger, UNKNOWN_SEND, latest source and incomplete reference graph each protect details (0.410917ms)
+✔ fully closed old nonlatest event only proposes detail expiry after all explicit final outcomes (0.344875ms)
+✔ COUNTEREXAMPLE dayoffset%week rejects valid separate Monday grid; explicit confirmation grid passes (0.829083ms)
+✔ no fallback from absent or wrong confirmation grid to event offset (0.604166ms)
+✔ late, future, wrong native price units and rawhash mismatch cannot confirm (1.013041ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.348542
