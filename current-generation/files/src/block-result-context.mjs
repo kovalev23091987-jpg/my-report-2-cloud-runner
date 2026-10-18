@@ -140,7 +140,7 @@ function describe(row,now){
  }
  if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_PRICE_PATH_CONTEXT'){
   const rebuilt=deriveHtxRecentPathEvidence({contract:row.htx_contract,window:{label:'15m',window_start_ts:row.window_start,window_end_ts:row.window_end,candle_count:row.candle_count,open:row.path_open,high:row.path_high,low:row.path_low,close:row.path_close},source_ts:row.source_ts,observed_ts:row.observed_ts})[0];
-  if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||
+  if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||rebuilt.expires_at!==row.expires_at||
    row.source_clock_policy!=='HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M'||row.same_htx_upstream_not_independent!==true||
    row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
   const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v),sign=row.change_pct>0?'+':'';
@@ -157,7 +157,7 @@ function describe(row,now){
   const venue={BINANCE:'Binance',POLONIEX:'Poloniex',BITGET:'Bitget',GATE:'Gate'}[row.venue];
   if(!venue)return null;
   const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v),sign=row.change_pct>0?'+':'';
-  const comparison=row.comparison_status==='SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION'?'Направление совпало с HTX и ценовые диапазоны пересеклись; это отдельный рынок, цены не усреднялись':row.comparison_status==='DIRECTION_CONFLICT'?'Направление отличается от HTX; общий вывод по двум рынкам не сформирован':'Ценовые диапазоны не пересекаются; общий вывод по двум рынкам не сформирован';
+  const comparison=row.comparison_status==='SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION'?'Направление совпало с HTX и ценовые диапазоны пересеклись; это отдельный рынок, цены не усреднялись':row.comparison_status==='DIRECTION_UNCONFIRMED'?'В одном из рынков цена не изменилась; общее направление не подтверждено':row.comparison_status==='DIRECTION_CONFLICT'?'Направление отличается от HTX; общий вывод по двум рынкам не сформирован':'Ценовые диапазоны не пересекаются; общий вывод по двум рынкам не сформирован';
   return{source:`${venue} / спотовые закрытые свечи`,label:`Цена за 15 минут на ${venue}`,value:`15 закрытых минутных свечей, активных минут ${row.active_minute_count}: ${price(row.path_open)} → ${price(row.path_close)} USDT (${sign}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT; закрытие относительно HTX ${row.htx_close_gap_pct>0?'+':''}${fmt(row.htx_close_gap_pct)}%. ${comparison}. Цель, баллы и разрешение входа этим не меняются`};
  }
  if(row.block_id==='N10'&&row.metric_family==='ROLLING_24H_PRICE_RANGE_CONTEXT'){
