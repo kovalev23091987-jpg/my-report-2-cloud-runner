@@ -157,7 +157,7 @@ export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N09:{all:['HTX_PUBLIC_RISK'],supplemental:[]},
  N10:{all:['PRIMARY_TECHNICAL_CONTEXT'],supplemental:[]},
  N11:{all:['PRIMARY_EXECUTION_STRESS'],supplemental:[]},
- N12:{all:['HTX_LARGE_TRADES'],supplemental:[]},
+ N12:{all:['HTX_LARGE_TRADES'],supplemental:['EXTERNAL_N05_FLOW']},
  N14:{any:['DERIBIT_ALT_OPTIONS','DELTA_OPTIONS','BYBIT_OPTIONS','BINANCE_OPTION_INTEREST'],supplemental:[]},
  N15:{any:['COINGECKO_SECTOR','COINPAPRIKA_SECTOR'],supplemental:[]},
  N16:{all:['PRIMARY_EXECUTION_COST'],supplemental:[]},
@@ -284,7 +284,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
    const sourceChecks=Object.fromEntries(owners.map(name=>{
-    const source=sources?.[name]||{},sourceRows=(Array.isArray(source.evidence)?source.evidence:[]).filter(row=>row?.block_id===block&&rows.some(fact=>fact.evidence_id===row.evidence_id&&fact.htx_contract===row.htx_contract));
+    const source=sources?.[name]||{},sourceRows=(Array.isArray(source.evidence)?source.evidence:[]).filter(row=>row?.block_id===block&&rows.some(fact=>fact.evidence_id===row.evidence_id&&fact.htx_contract===row.htx_contract&&(block!=='N12'||name!=='EXTERNAL_N05_FLOW'||['provider_id','upstream_id','asset_id','metric_family','source_ts','observed_ts','first_known_ts','expires_at','raw_hash','value','coverage_fraction'].every(k=>fact[k]===row[k])&&evidenceDedupKey(fact)===evidenceDedupKey(row))));
     const valid=sourceRows.filter(row=>validateEvidenceV2(row,{decision_ts}).usable);
     return[name,{status:String(source.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),capability_resolved_without_route:source.status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE',network_calls:Number(source.network_calls||0),cache_status:String(source.cache_status||'')||null,receipt_count:Array.isArray(source.receipts)?source.receipts.length:0,admission_status:source.admission?.status??source.whole_job_admission?.status??null,blocking_checks:Array.isArray(source.blocking_checks)?source.blocking_checks:[],...(retainHtxFlowClosureDiagnostic(source.closure_diagnostic)?{source_diagnostic:retainHtxFlowClosureDiagnostic(source.closure_diagnostic)}:{}),valid_evidence_ids:valid.map(row=>row.evidence_id),provider_ids:[...new Set(valid.map(row=>row.provider_id))],declared_upstream_ids:[...new Set(valid.map(row=>row.upstream_id))],physical_root_keys:[...new Set(valid.map(evidenceDedupKey))],receipts:Array.isArray(source.receipts)?source.receipts.slice(0,8).map(r=>({route:r.route??null,status:r.status??null,http_status:r.http_status??null,error:r.error??null})):[]}];
    }));
