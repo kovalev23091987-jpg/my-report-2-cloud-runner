@@ -33,11 +33,11 @@ jobs:
         with:
           node-version: '24'
       - name: Verify real retained schema, reference races, summary preservation and admission
-        run: node --test runner/sliding-history-capacity.test.mjs runner/github-bounded-phase-lease.test.mjs
+        run: node --test runner/sliding-history-capacity.test.mjs runner/github-bounded-phase-lease.test.mjs current-generation/tests/generation-guard.test.mjs
       - name: Check scheduled entrypoint syntax
         run: node --check tools/run-paid-sliding-history-20261018.mjs
   maintain:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     needs: verify
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 12

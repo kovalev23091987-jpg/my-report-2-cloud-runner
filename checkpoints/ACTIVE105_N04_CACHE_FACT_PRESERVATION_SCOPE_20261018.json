@@ -56,5 +56,20 @@
   "native_full_manual_same_run_SENT_accepted": false,
   "brief_N04_display_accepted": false,
   "storage_PR421_unchanged": true,
-  "canonical_cursor710_preserved": true
+  "canonical_cursor710_preserved": true,
+  "additional_concrete_defect": "PR421 new owner-authorized paid retention workflow was missing from exact manual-workflow allowlist, making global generation validation fail. Register only this authorized workflow and assert main/ref/owner/shared-concurrency/noTelegram invariants; no guard removed.",
+  "rejected_candidates": [
+    {
+      "run": 39108798282,
+      "reason": "NEW_BRANCH_NOT_YET_BOUND_TO_EXISTING_EXACT_OFFLINE_REVIEW; no subject tests executed"
+    },
+    {
+      "run": 39108844107,
+      "reason": "GENERATION_MANUAL_WORKFLOW_ALLOWLIST_MISSING_PR421; subject active-source65cases passed but common run not accepted"
+    },
+    {
+      "run": 39108847078,
+      "reason": "SAME_GENERATION_ALLOWLIST_DEFECT; N10 run not accepted"
+    }
+  ]
 }
