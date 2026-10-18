@@ -17,6 +17,7 @@ export async function loadEffectivePresentationModules(){
     'binance-native-four-hour-flow.mjs':'current-generation/files/src/binance-native-four-hour-flow.mjs',
     'gate-four-hour-flow.mjs':'current-generation/files/src/gate-four-hour-flow.mjs',
     'gate-futures-trade-sample.mjs':'current-generation/files/src/gate-futures-trade-sample.mjs',
+    'gate-n12-bounded-trade-sample.mjs':'current-generation/files/src/gate-n12-bounded-trade-sample.mjs',
     'bitget-n12-bounded-trade-sample.mjs':'current-generation/files/src/bitget-n12-bounded-trade-sample.mjs',
     'verified-asset-route-identity.mjs':'current-generation/files/src/verified-asset-route-identity.mjs',
     'n12-native-public-trade-sample.mjs':'current-generation/files/src/n12-native-public-trade-sample.mjs',
