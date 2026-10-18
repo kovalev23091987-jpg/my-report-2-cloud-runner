@@ -1,0 +1,86 @@
+{
+  "reviewed_PR": 487,
+  "reviewed_head": "09511f0f0c8ad7b8a7c6b1d50e6c8ab36610de38",
+  "base": "2711cad6b83e07d2336445441d9811eaa9c0e766",
+  "result": "NO_BLOCKING_FINDINGS_IN_REVIEWED_DIFF",
+  "changed_files": [
+    ".github/workflows/liq-assembled-offline-20261012.yml",
+    "checkpoints/maintenance-cadence-receipts-20261018/new9.tap.gz",
+    "checkpoints/maintenance-cadence-receipts-20261018/scope.json",
+    "current-generation/apply-runtime-overlay.mjs",
+    "current-generation/files/runner-main.mjs",
+    "current-generation/files/src/maintenance-cadence-receipt.mjs",
+    "current-generation/tests/maintenance-cadence-receipt.test.mjs"
+  ],
+  "scope_manifest_hashes_verified": {
+    "current-generation/files/runner-main.mjs": "50c345e9f70393243a377c7fc88fc322e183bd99bc851e1d28a21ca583085dc8",
+    "current-generation/files/src/maintenance-cadence-receipt.mjs": "e651ee56bf07472773afef5f485beed3318b27e057bc5a401af1fbde77b0577c",
+    "current-generation/apply-runtime-overlay.mjs": "b6058c504699eae7e4b8afb45fab774608efa20933e53e7271c877d09e43da27",
+    "current-generation/tests/maintenance-cadence-receipt.test.mjs": "80f47e8954ea6f33a35c2da7ba88b843c9d89a9ef6d1cca5b0c7669e3bb5acaf",
+    ".github/workflows/liq-assembled-offline-20261012.yml": "d6b17531e44218d96a53a279566b2ef4d612f883e554a0033be6a52ef656025e"
+  },
+  "protected_base_byte_identical": {
+    "post-v7-consolidated/final-reconciliation/files/src/scheduler-control.mjs": "ffdcde5a97aa58040e1bff4001bd3980e9e8799eaaa951e8ceeeecc4ba347cea",
+    "current-generation/files/src/block-weight-calibration.mjs": "fa8d0da672a4fc7e4746610dcfc868e32a9bb48bb120c7b2b3e63c34142d0840",
+    "current-generation/files/src/manual-report-formatter.mjs": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+    "current-generation/files/src/telegram-plain-facts.mjs": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+    "current-generation/tests/fixtures/output-contract/MANIFEST.json": "0385d9d03beb1893e50e006569942d28214c171efdf421c01e0e7c6e98ddf6b8"
+  },
+  "runner_reverses_exactly_to_base": true,
+  "overlay_reverses_exactly_to_base": true,
+  "workflow_only_exact_declared_additions": true,
+  "source_test_bodies_read": 9,
+  "author_saved_log": {
+    "path": "checkpoints/maintenance-cadence-receipts-20261018/new9.tap.gz",
+    "compressed_sha256": "056493a99d96c5854580f2235d1ae950f8acb183bf830256018504ba7d8f9564",
+    "pass": 9,
+    "fail": 0,
+    "rerun": false
+  },
+  "reviewer_test_executions": 0,
+  "native_SQL_provider_MAIN_Telegram": 0,
+  "schema": "EXACT_MAINTENANCE_CADENCE_TYPED_RECEIPT_PEER_REVIEW_V1",
+  "reviewed_sources_sha256": {
+    ".github/workflows/liq-assembled-offline-20261012.yml": "d6b17531e44218d96a53a279566b2ef4d612f883e554a0033be6a52ef656025e",
+    "checkpoints/maintenance-cadence-receipts-20261018/new9.tap.gz": "056493a99d96c5854580f2235d1ae950f8acb183bf830256018504ba7d8f9564",
+    "checkpoints/maintenance-cadence-receipts-20261018/scope.json": "40829cc2fc3aa9f6b5cd99125e48e7ee6a13727a0974dc5a52e2b9c0b8bfb69c",
+    "current-generation/apply-runtime-overlay.mjs": "b6058c504699eae7e4b8afb45fab774608efa20933e53e7271c877d09e43da27",
+    "current-generation/files/runner-main.mjs": "50c345e9f70393243a377c7fc88fc322e183bd99bc851e1d28a21ca583085dc8",
+    "current-generation/files/src/maintenance-cadence-receipt.mjs": "e651ee56bf07472773afef5f485beed3318b27e057bc5a401af1fbde77b0577c",
+    "current-generation/tests/maintenance-cadence-receipt.test.mjs": "80f47e8954ea6f33a35c2da7ba88b843c9d89a9ef6d1cca5b0c7669e3bb5acaf"
+  },
+  "context": "EFFECTIVE final reconciliation scheduler, current runner and current overlay",
+  "semantics": {
+    "claim_due_is_not_execution_grant": true,
+    "claim_failure_due_false_is_not_proven_NOT_DUE": true,
+    "missing_success_recorded_stays_null": true,
+    "CLOSED_completion_can_record_false": true,
+    "no_error_SQL_params_unknown_fields_copied": true,
+    "maintenanceSucceeded_excludes_block_weights": true,
+    "original_lost_claim_reason_still_UNKNOWN": true,
+    "no_new_native_or_production_delivery_acceptance": true
+  },
+  "review_limitations": [
+    "Author SQLite/callcount tests are controlled, not native D1 facts",
+    "Full connected CI/main and future same-run natural completion are coordinator acceptance",
+    "Early abort before completion is outside the changed success-completion artifact path"
+  ],
+  "fresh_main": "2711cad6b83e07d2336445441d9811eaa9c0e766",
+  "active_three_proofs": [
+    {
+      "path": "checkpoints/ACTIVE105_HTX_IDENTITY_AND_NATIVE_EXPIRY_HANDOFF_20261018.json",
+      "sha256": "7242e35e0608b6f6df776f4e650fdd944b5b94a3a3b29e4872401fedd88032c5"
+    },
+    {
+      "path": "checkpoints/htx-reference-fact-preservation-20261018/cloud-and-native-receipts.json",
+      "sha256": "fb08750c3e7696492164ab5451abf4c43987db0fc7418366bfc8b79a8aea0e8d"
+    },
+    {
+      "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+      "sha256": "9131dfe49eaf04d9a9a474f8ce574ccc0cee4f671cff1472f4124c076cb742c4"
+    }
+  ],
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792352331882",
+  "lease_ref": "7fbddbb5bf1f179997bbf67197bbccbab72a40bd",
+  "exact_readback": true
+}
