@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import {BLOCKS,ACTIVE_BLOCK_IDS,PAUSED_BLOCKS} from './evidence-v2.mjs';
-import {APPROVED_HTX_SCOPE} from './approved-htx-analysis-scope.mjs';
+import {APPROVED_HTX_SCOPE,approvedHtxScopeAccounted} from './approved-htx-analysis-scope.mjs';
 import {renderCanonicalTelegram,CANONICAL_PUBLICATION_VERSION} from './canonical-publication.mjs';
 
 export const EXACT_SAVED_RUN_TELEGRAM_VERSION='exact-saved-run-telegram-v2-approved-layout-20261005';
@@ -28,7 +28,7 @@ export function validateExactSavedRunTelegram({saved_output,requested_run_id,now
  if(!run||text(output.run_id)!==run)return fail('SAVED_RUN_ID_MISMATCH');
  if(output.status!=='CLOSED'||output.reason!==null)return fail('SAVED_RUN_NOT_CLOSED');
  if(output.secrets_included!==false||output.alternative_manual_recalculation!==false)return fail('SAVED_RUN_PROVENANCE_NOT_CLOSED');
- const scan=output.market_scan_audit||{},scope=scan.approved_scope||{};if(scan.complete!==true||Number(scan.universe_total)!==APPROVED_HTX_SCOPE.approved_assets||Number(scan.scanned)!==APPROVED_HTX_SCOPE.approved_assets||Number(scan.errors)!==0||Number(scan.stale)!==0||scope.status!=='CLOSED'||scope.manifest_sha256!==APPROVED_HTX_SCOPE.manifest_sha256||Number(scope.accepted_analysis_contracts)!==APPROVED_HTX_SCOPE.approved_assets)return fail('MARKET_SCAN_NOT_CLOSED');
+ const scan=output.market_scan_audit||{},scope=scan.approved_scope||{};if(scan.complete!==true||Number(scan.universe_total)!==APPROVED_HTX_SCOPE.approved_assets||Number(scan.scanned)!==APPROVED_HTX_SCOPE.approved_assets||Number(scan.errors)!==0||Number(scan.stale)!==0||scope.status!=='CLOSED'||scope.manifest_sha256!==APPROVED_HTX_SCOPE.manifest_sha256||!approvedHtxScopeAccounted(scope))return fail('MARKET_SCAN_NOT_CLOSED');
  const selection=output.candidate_selection_audit||{},top=Array.isArray(selection.top_two_contracts)?selection.top_two_contracts.map(text):[],deep=Array.isArray(selection.deep_check_selected)?selection.deep_check_selected.map(text):[];
  if(top.length!==2||JSON.stringify(top)!==JSON.stringify(deep)||selection.registry_did_not_change_rank!==true)return fail('TOP_TWO_BINDING_NOT_CLOSED');
  const candidates=Array.isArray(output.candidates)?output.candidates:[];if(candidates.length!==2||!candidates.every(c=>text(c.run_id||c?.canonical?.run_id)===run&&top.includes(candidateContract(c))&&candidateCoverageAccounted(c)&&noCalculatedLiquidations(c)))return fail('CANDIDATE_ACCEPTANCE_NOT_CLOSED');

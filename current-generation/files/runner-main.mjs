@@ -1129,6 +1129,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,
+    scanned_market_data:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.market_data_analysis_contracts??Number(cron.scanned),
+    officially_unavailable:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.officially_unavailable_analysis_contracts||[],
+    scan_count_basis:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.scan_count_basis||'LEGACY_MARKET_DATA_ONLY',
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.status==='CLOSED'&&Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
   if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};

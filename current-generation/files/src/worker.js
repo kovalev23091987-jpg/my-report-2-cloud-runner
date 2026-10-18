@@ -4635,6 +4635,8 @@ function compactStage0Payload(
     timestamp:
       scan.timestamp,
 
+    approved_scope: scan.scope_audit?.approved_generation || null,
+
     contracts:
       scan.contracts.map(
         (c) => [
@@ -5312,7 +5314,7 @@ async function persistStage0(
    * consumer and persisted market-history shard. Unknown classifications are
    * retained in the audit and fail completeness; they are never silently
    * promoted to crypto. */
-  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now});
+  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
   const contracts = allContracts.filter(
     (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED" && approvedScope.contracts.includes(row)
   );
@@ -5324,7 +5326,7 @@ async function persistStage0(
     .filter((row) => row?.instrument_scope?.classification === "UNKNOWN_FAIL_CLOSED")
     .map((row) => row.contract_code);
 
-  const scanned =
+  const scannedMarketData =
     contracts.filter(
       (c) =>
         c.data_status ===
@@ -5333,6 +5335,11 @@ async function persistStage0(
           "STALE"
     ).length;
 
+  // A suspended contract is checked through its current official status; it
+  // contributes no market row, price, score, deep request or entry permission.
+  const officiallyUnavailable=approvedScope.audit.officially_unavailable_analysis_contracts.length;
+  const scanned=scannedMarketData+officiallyUnavailable;
+
   const stale =
     contracts.filter(
       (c) =>
@@ -5340,7 +5347,7 @@ async function persistStage0(
         "STALE"
     ).length;
 
-  const missing = approvedScope.audit.missing_approved_analysis_contracts.length +
+  const missing = approvedScope.audit.unresolved_approved_analysis_contracts.length +
     contracts.filter(
       (c) =>
         c.data_status ===
@@ -5458,6 +5465,9 @@ async function persistStage0(
         universeTotal,
 
       scanned,
+      scanned_market_data: scannedMarketData,
+      officially_unavailable: officiallyUnavailable,
+      scan_count_basis: approvedScope.audit.scan_count_basis,
       missing,
 
       crypto_scope_confirmed:
@@ -5522,6 +5532,8 @@ async function persistStage0(
 
       stage0_coverage_pct:
         stage0CoveragePct,
+      market_data_coverage_pct: universeTotal ? scannedMarketData/universeTotal*100 : 0,
+      official_availability_checked: officiallyUnavailable,
 
       crypto_instrument_scope:
         instrumentScopeUnknown === 0
