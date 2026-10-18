@@ -1,5 +1,6 @@
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
 import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
 import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
 import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
@@ -292,6 +293,10 @@ function describe(row,now){
  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_GATE_FUTURES_TAKER_TRADES_BOUNDED'){
   if(!validateGateFuturesTradeSample(row,now))return null;
   return{source:'Gate / исходные фьючерсные сделки',label:'Направление последних сделок Gate',value:`Gate фьючерсы: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и размер контракта проверены; выборка неполная, спот и общий межбиржевой вывод не подтверждены`};
+ }
+ if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITFINEX_TAKER_TRADES_BOUNDED'){
+  if(!validateBitfinexN12BoundedTradeSample(row,now))return null;
+  return{source:'Bitfinex / исходные спотовые сделки',label:'Направление последних сделок Bitfinex',value:`Bitfinex спот: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usd)}, продажи ${fmt(row.sell_quote_turnover_usd)} USD; точная монета проверена; выборка неполная, общий межбиржевой вывод не подтверждён`};
  }
  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITGET_TAKER_TRADES_BOUNDED'){
   if(!validateBitgetN12BoundedTradeSample(row,now))return null;
