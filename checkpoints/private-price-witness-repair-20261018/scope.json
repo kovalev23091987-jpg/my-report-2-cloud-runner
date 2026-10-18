@@ -39,8 +39,21 @@
     "causal_controls_scope": "8 finalizer-aftercommit missing/lost combinations primary/backup ordinary/historical;2 healthy causal paths;2 mixedlegacy;7 wrongmarker;1 legacy;3 malformed protocol",
     "collector_suite_pass": 146
   },
-  "cloud_validation": "Earlier35d731 branch39133160339 success before peerfix, not final acceptance. New exact causal branch/main qualification pending.",
-  "deployment": "PENDING version-bound coordinated release/readback only after cloud",
+  "cloud_validation": {
+    "branch_run": 39134928129,
+    "main_run": 39135113147,
+    "each_PASS": 2008,
+    "each_FAIL": 0,
+    "each_TAP": 21,
+    "new_controlled_cases": 45
+  },
+  "deployment": {
+    "run": 39135311818,
+    "status": "CURRENT_COLLECTOR_EXACT_MODULE_AND_BINDINGS_REPAIRED",
+    "version": "590ccf5c-ba0b-4793-a9c5-67ff6247e28d",
+    "module_sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10",
+    "settings_bindings_crons_preserved": true
+  },
   "changed_files": [
     ".github/workflows/liq-assembled-offline-20261012.yml",
     ".github/workflows/report2-public-collector-backup.yml",
@@ -98,5 +111,50 @@
     "two_concrete_risks": "CLOSED_IN_READ_ONLY_REVIEW",
     "tests_repeated_by_peer": 0,
     "native_qualification": false
+  },
+  "native_point": {
+    "schema": "PRICE_WITNESS_REPAIR_INSTALLED_AND_FIRST_REGULAR_NATIVE_POINT_V1",
+    "head": "9eb5716fc053ef111ef2dfffd6ec2afc1a28f3bf",
+    "repair_run": 39135311818,
+    "observation_run": 39135455792,
+    "artifact": 12139274219,
+    "digest": "sha256:94ebd3c338721b5b8bc31f1b8e9d35d76a62a29426c4ced8804cc91b3cf3db6c",
+    "raw_sha256": "5bc5e455546d9cdaa45acfc3672866630dfc6895a095414ac1568dabc5a0d416",
+    "version": "590ccf5c-ba0b-4793-a9c5-67ff6247e28d",
+    "native_receipt_sha256": "28a2d8cadae32ce9ac559213b7e46c477294bda3a6b4def46fc0df1dc82e0778",
+    "bucket": 1792333200000,
+    "invocation_kind": "COLLECTOR_CLOSED",
+    "DATA_DB": {
+      "requests": 21,
+      "rows_read": 241,
+      "rows_written": 37,
+      "unknown_ops": 0
+    },
+    "inside_PRIVATE_PRICE_SOURCE": {
+      "requests": 6,
+      "rows_read": 23,
+      "rows_written": 6,
+      "unknown_ops": 0
+    },
+    "outside_PRIVATE_PRICE_SOURCE": {
+      "requests": 15,
+      "rows_read": 218,
+      "rows_written": 31,
+      "unknown_ops": 0
+    },
+    "disjoint": true,
+    "private_price_finalizer_reply_known": true,
+    "tail_deleted": true,
+    "observation_control_HTTP": 25,
+    "new_sourceHTTP_SQL_MAIN_Telegram_from_observation": 0,
+    "exact_task_identity_or_checked_result_captured": false,
+    "actual_ENTRY": false,
+    "old15_and_reservations_reset": false,
+    "whole_day_closed": false,
+    "sustainable_capacity": false,
+    "per_statement_journals_not_captured": true,
+    "private_archive_pool_costs_not_separately_reported_in_this_DATA_DB_point": true,
+    "partial_native_reply_actually_observed": false,
+    "next_action": "Use exact saved subsequent natural full and published conditions; read-only qualification of new missing followup evidence if needed under its own scoped actual admission; do not force trigger/MAIN or repeat this accepted native point."
   }
 }

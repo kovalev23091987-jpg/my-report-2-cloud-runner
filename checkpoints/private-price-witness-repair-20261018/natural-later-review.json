@@ -1,0 +1,1726 @@
+[
+  {
+    "cloud_run": 39130879648,
+    "head": "a9cc70a2553497d3a745b9449908de1a7cd42959",
+    "event": "workflow_dispatch",
+    "canonical_source": "schedule",
+    "run_id": "1792329458175-1792329467886",
+    "status": "CLOSED",
+    "canonical_persistence_audit": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "CLOSED",
+      "run_id": "1792329458175-1792329467886",
+      "expected_contracts": [
+        "ZEC-USDT",
+        "BR-USDT"
+      ],
+      "present_contracts": [
+        "BR-USDT",
+        "ZEC-USDT"
+      ],
+      "missing_contracts": [],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 2,
+      "missing_is_technical_not_no_market_idea": false
+    },
+    "candidate_states": [
+      {
+        "contract": "BR-USDT",
+        "state": "REJECTED",
+        "publication_id": "PUB:38242abdbe6751e4eba7cdcde7375d18f0442c99",
+        "run_id": "1792329458175-1792329467886",
+        "snapshot_id": "S392:BR-USDT:1792329549601",
+        "observed_ts": 1792329549601
+      },
+      {
+        "contract": "ZEC-USDT",
+        "state": "OBSERVE",
+        "publication_id": "PUB:68659f529ddde9003db2fe4e229c393618ebeb39",
+        "run_id": "1792329458175-1792329467886",
+        "snapshot_id": "S392:ZEC-USDT:1792329528748",
+        "observed_ts": 1792329528748
+      }
+    ],
+    "market_scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0
+    },
+    "market_scope_note": "99 numeric markets +6 exact fresh official suspended status3; not105 current numeric quotes",
+    "usage_after_analytics_lease_release": {
+      "requests": 566,
+      "rows_read": 41680,
+      "rows_written": 474,
+      "unknown_ops": 0,
+      "targets": {
+        "batch:OTHER": {
+          "requests": 28,
+          "rows_read": 8,
+          "rows_written": 42,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 27,
+          "rows_read": 2,
+          "rows_written": 12,
+          "unknown_ops": 0
+        },
+        "run:report2_runtime_lease_v1": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_runtime_lease_v1": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_command_v2": {
+          "requests": 2,
+          "rows_read": 328,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_command_v2": {
+          "requests": 1,
+          "rows_read": 163,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_scheduler_job_ownership_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_maintenance_cadence_shadow": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_maintenance_cadence_shadow": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 9,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 53,
+          "rows_read": 38,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_evidence_source_cache": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_evidence_source_cache": {
+          "requests": 16,
+          "rows_read": 14,
+          "rows_written": 18,
+          "unknown_ops": 0
+        },
+        "all:report2_liquidation_signal_outcomes": {
+          "requests": 1,
+          "rows_read": 169,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_liquidation_predictive_health": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_liquidation_signal_outcomes": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "batch:report2_liquidation_predictive_health": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:report2_liquidation_predictive_health": {
+          "requests": 2,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_global_source_cache": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_global_source_cache": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "all:report2_liq_venue_catalog_cache": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_liq_source_allowance_shadow": {
+          "requests": 20,
+          "rows_read": 885,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "run:report2_candidate_task_v2": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_candidate_task_v2": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_market_snapshot_batch_v1": {
+          "requests": 5,
+          "rows_read": 242,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:scan_runs": {
+          "requests": 1,
+          "rows_read": 32,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "batch:scan_runs": {
+          "requests": 8,
+          "rows_read": 795,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_early_candidate_wave": {
+          "requests": 7,
+          "rows_read": 2435,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "all:report2_market_snapshot_batch_v1": {
+          "requests": 64,
+          "rows_read": 1650,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_market_microstructure_1m": {
+          "requests": 1,
+          "rows_read": 17,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_early_candidate_wave": {
+          "requests": 6,
+          "rows_read": 10,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_early_feature_snapshot": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "batch:full_evidence_shadow_log": {
+          "requests": 3,
+          "rows_read": 2,
+          "rows_written": 10,
+          "unknown_ops": 0
+        },
+        "first:v3_telegram_dispatch_shadow": {
+          "requests": 4,
+          "rows_read": 24,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_recheck_task_shadow": {
+          "requests": 2,
+          "rows_read": 7,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_watch_state": {
+          "requests": 4,
+          "rows_read": 505,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_recheck_queue": {
+          "requests": 2,
+          "rows_read": 10,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_watch_generation": {
+          "requests": 1,
+          "rows_read": 358,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:deep_check_scheduler_state": {
+          "requests": 1,
+          "rows_read": 40,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:deep_check_scheduler_state": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 20,
+          "unknown_ops": 0
+        },
+        "batch:report2_byk_monthly_usage": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "batch:report2_byk_reservations": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "first:report2_byk_reservations": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_byk_monthly_usage": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_candidate_source_cache": {
+          "requests": 4,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_evidence_source_health_observation": {
+          "requests": 15,
+          "rows_read": 3203,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 16,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 35,
+          "rows_read": 60,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 22,
+          "rows_read": 11,
+          "rows_written": 15,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 11,
+          "rows_read": 11,
+          "rows_written": 22,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 11,
+          "rows_read": 11,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 11,
+          "rows_read": 27,
+          "rows_written": 44,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_health_observation": {
+          "requests": 6,
+          "rows_read": 0,
+          "rows_written": 18,
+          "unknown_ops": 0
+        },
+        "first:sqlite_master": {
+          "requests": 1,
+          "rows_read": 404,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_liquidation_role_observation": {
+          "requests": 1,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_liq_source_reservation_shadow": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "run:report2_liq_venue_catalog_cache": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "first:report2_liquidation_source_health": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_liquidation_source_health": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "run:report2_liquidation_role_observation": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "run:json_each": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_shadow_observation": {
+          "requests": 3,
+          "rows_read": 8,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_cluster_state": {
+          "requests": 4,
+          "rows_read": 18692,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_cross_exchange_risk_cache": {
+          "requests": 2,
+          "rows_read": 9,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_cross_exchange_catalog": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_liq_cex_venue_cache": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_volume_profile_cache": {
+          "requests": 4,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:opportunity_shadow_outcome": {
+          "requests": 2,
+          "rows_read": 6745,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:opportunity_shadow_event": {
+          "requests": 2,
+          "rows_read": 158,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_event": {
+          "requests": 2,
+          "rows_read": 147,
+          "rows_written": 18,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_outcome": {
+          "requests": 4,
+          "rows_read": 196,
+          "rows_written": 92,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_funnel": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "batch:shadow_decision_log": {
+          "requests": 3,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:multi_wave_campaign_shadow": {
+          "requests": 2,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:full_evidence_shadow_log": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:full_evidence_shadow_log": {
+          "requests": 4,
+          "rows_read": 16,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:OTHER": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:canonical_publication_shadow": {
+          "requests": 4,
+          "rows_read": 8,
+          "rows_written": 20,
+          "unknown_ops": 0
+        },
+        "first:canonical_publication_shadow": {
+          "requests": 8,
+          "rows_read": 8,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:deep_check_scheduler_state": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 10,
+          "unknown_ops": 0
+        },
+        "batch:deep_check_run_log": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_coinalyze_catalog": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_gate_contract_identity": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_cross_exchange_risk_cache": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:cron_runs": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:scan_runs": {
+          "requests": 1,
+          "rows_read": 157,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_events": {
+          "requests": 1,
+          "rows_read": 2950,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_realized_liquidation_aggregate": {
+          "requests": 8,
+          "rows_read": 8,
+          "rows_written": 24,
+          "unknown_ops": 0
+        },
+        "batch:v3_realized_liquidation_density_5m": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "first:final_decision_integration_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:final_decision_integration_shadow": {
+          "requests": 1,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_user_lifecycle_shadow": {
+          "requests": 3,
+          "rows_read": 27,
+          "rows_written": 7,
+          "unknown_ops": 0
+        },
+        "batch:canonical_publication_shadow": {
+          "requests": 1,
+          "rows_read": 68,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_pipeline_health_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_pipeline_health_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 67,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 2,
+          "rows_read": 43,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_user_lifecycle_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:v3_dispatch_publication_binding_shadow": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_telegram_dispatch_shadow": {
+          "requests": 3,
+          "rows_read": 6,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 1,
+          "rows_read": 68,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:discovery_recall_kpi_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:discovery_recall_kpi_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "first:tz101_entry_area_calibration_state": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:tz101_entry_area_calibration_state": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:v3_early_outcome_journal": {
+          "requests": 1,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:scan_runs": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 625,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:tz101_entry_area_calibration_signal": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:tz101_entry_area_calibration_outcome": {
+          "requests": 1,
+          "rows_read": 10,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A1": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A2": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A3": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A4": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "ledger_finalization": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "R2RUN:1792329458175:75278614f0a95612",
+      "source_run_id": "1792329458175-1792329467886",
+      "measured_rows_read": 41677,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 473,
+      "measured_requests_accounted": 564,
+      "unknown_ops": 0
+    },
+    "delivery": {
+      "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+      "head": "a9cc70a2553497d3a745b9449908de1a7cd42959",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "run_id": "1792329458175-1792329467886",
+      "source": "schedule",
+      "recorded_at": 1792329558143,
+      "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "CLOSED",
+      "cases": [
+        {
+          "publication_id": "PUB:ee2601000fdebe89cd6f25462f7fddadd42377a2",
+          "contract": "NIL-USDT",
+          "direction": "SHORT",
+          "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+          "lifecycle_event": "IDEA_REMOVED",
+          "run_id": "ORIGINAL-TASK-TERMINAL:RCHK:d5b818ae889cfb39afe668b886ae191cef417129",
+          "snapshot_id": "REMOVAL:NIL-USDT:1792329553679",
+          "observed_ts": 1792329553679,
+          "analytical_fingerprint": "6cb54c33405f07974555db0798291667e6cc911b69d5769a20fb4e0384555771",
+          "presentation_hash": "e5aa2905c8e5ed6b76015d09cd6cf6fa6c48b07a76f4acf4f6f4792aed73d61b",
+          "same_run_binding_verified": false,
+          "exact_SENT": false,
+          "telegram_message_id": null,
+          "dispatch_finalized": true,
+          "task_at_delivery": null,
+          "task_at_delivery_verified": false,
+          "task_state_after_delivery_known": false,
+          "actual_ENTRY": false,
+          "reason": "NOT_THIS_CANONICAL_RUN"
+        }
+      ],
+      "sourceHTTP_added": 0,
+      "D1_added": 0,
+      "Telegram_added": 0,
+      "task_writes_added": 0,
+      "original_clocks_refreshed": false,
+      "project_complete": false
+    },
+    "archive_copy_status": "ARCHIVE_DAY_BOUND_OR_DUPLICATE",
+    "whole_day_closed": false,
+    "files": {
+      "12137728583.zip": "46d3c70311b294bf26b1c3fa61373c24db594c342d693c1477a9ac4428aeffdc",
+      "12137643811.zip": "86f1b18d08c9350c62fc6b3d6c0e8904657d0f54ee0505331b3f089eede0b38d",
+      "run.json": "d30461c067cd4530ea1ed609a96fa12083752cdd6aa75b21c53d6defe974186f",
+      "artifacts.json": "54d099bfa188da8bfd57699706fc95d406013c04e1b8d9b8bdec6fa341a989ca",
+      "12137643811/known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+      "12137643811/private-canonical-archive-receipt.json": "b48bb6ba2faa4710059c0189fb12df207afb322d58eb6af802d85fa1106967b8",
+      "12137643811/same-run-delivery-proof.json": "619123fab16d7139f9fc69079546a97bfbb96cce0b5b14bb3b3653de09a9c45a",
+      "12137643811/report2-run-result.json": "e933bc4c5bebd0b919fce0e8bd7a5ac1d6bed56a97457daf8e35b8bf27275fa0",
+      "12137643811/automatic-delivery-audit.json": "3eccbe4c01068c58e967f60d5f027006fa0a69a09d74e91de47a6090d23ca627",
+      "12137643811/report2-completion-accounting.json": "16ae9645c7de8c9c90be0f5b9561429d86e5803eb778ae9bc9ea33d3ca113ab7",
+      "12137728583/telegram-info-proof.json": "3dcc7fbf51f3eb7d910b709a94b019ea3153ed01271a77f860e81139ecbcd66c"
+    },
+    "artifacts": [
+      {
+        "id": 12137728583,
+        "node_id": "MDg6QXJ0aWZhY3QxMjEzNzcyODU4Mw==",
+        "name": "report2-telegram-info-proof",
+        "size_in_bytes": 815,
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12137728583",
+        "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12137728583/zip",
+        "expired": false,
+        "digest": "sha256:46d3c70311b294bf26b1c3fa61373c24db594c342d693c1477a9ac4428aeffdc",
+        "created_at": "2026-10-18T13:19:24Z",
+        "updated_at": "2026-10-18T13:19:24Z",
+        "expires_at": "2026-11-17T13:19:23Z",
+        "workflow_run": {
+          "id": 39130879648,
+          "repository_id": 1371866675,
+          "head_repository_id": 1371866675,
+          "head_branch": "main",
+          "head_sha": "a9cc70a2553497d3a745b9449908de1a7cd42959"
+        }
+      },
+      {
+        "id": 12137643811,
+        "node_id": "MDg6QXJ0aWZhY3QxMjEzNzY0MzgxMQ==",
+        "name": "report2-run-result",
+        "size_in_bytes": 68035,
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12137643811",
+        "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12137643811/zip",
+        "expired": false,
+        "digest": "sha256:86f1b18d08c9350c62fc6b3d6c0e8904657d0f54ee0505331b3f089eede0b38d",
+        "created_at": "2026-10-18T13:19:23Z",
+        "updated_at": "2026-10-18T13:19:23Z",
+        "expires_at": "2026-11-17T13:19:23Z",
+        "workflow_run": {
+          "id": 39130879648,
+          "repository_id": 1371866675,
+          "head_repository_id": 1371866675,
+          "head_branch": "main",
+          "head_sha": "a9cc70a2553497d3a745b9449908de1a7cd42959"
+        }
+      }
+    ]
+  },
+  {
+    "cloud_run": 39133840839,
+    "head": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+    "event": "workflow_dispatch",
+    "canonical_source": "schedule",
+    "run_id": "1792331883613-1792331891442",
+    "status": "CLOSED",
+    "canonical_persistence_audit": {
+      "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+      "status": "CLOSED",
+      "run_id": "1792331883613-1792331891442",
+      "expected_contracts": [
+        "NEAR-USDT",
+        "APR-USDT"
+      ],
+      "present_contracts": [
+        "APR-USDT",
+        "NEAR-USDT"
+      ],
+      "missing_contracts": [],
+      "expected_candidate_count": 2,
+      "present_candidate_count": 2,
+      "missing_is_technical_not_no_market_idea": false
+    },
+    "candidate_states": [
+      {
+        "contract": "APR-USDT",
+        "state": "OBSERVE",
+        "publication_id": "PUB:8d000b5b3f74df3408f5d5e27cddf05b12c0fae7",
+        "run_id": "1792331883613-1792331891442",
+        "snapshot_id": "S392:APR-USDT:1792331980053",
+        "observed_ts": 1792331980053
+      },
+      {
+        "contract": "NEAR-USDT",
+        "state": "OBSERVE",
+        "publication_id": "PUB:7a24cfe593bdc7129806c95e781db3b2c1ea3aba",
+        "run_id": "1792331883613-1792331891442",
+        "snapshot_id": "S392:NEAR-USDT:1792331943696",
+        "observed_ts": 1792331943696
+      }
+    ],
+    "market_scan": {
+      "universe_total": 105,
+      "scanned": 105,
+      "errors": 0,
+      "stale": 0
+    },
+    "market_scope_note": "99 numeric markets +6 exact fresh official suspended status3; not105 current numeric quotes",
+    "usage_after_analytics_lease_release": {
+      "requests": 676,
+      "rows_read": 37733,
+      "rows_written": 556,
+      "unknown_ops": 0,
+      "targets": {
+        "batch:OTHER": {
+          "requests": 31,
+          "rows_read": 10,
+          "rows_written": 47,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 27,
+          "rows_read": 2,
+          "rows_written": 12,
+          "unknown_ops": 0
+        },
+        "run:report2_runtime_lease_v1": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_runtime_lease_v1": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_command_v2": {
+          "requests": 2,
+          "rows_read": 328,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_command_v2": {
+          "requests": 1,
+          "rows_read": 163,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_scheduler_job_ownership_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_maintenance_cadence_shadow": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_maintenance_cadence_shadow": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 10,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 89,
+          "rows_read": 60,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_evidence_source_cache": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_evidence_source_cache": {
+          "requests": 19,
+          "rows_read": 16,
+          "rows_written": 22,
+          "unknown_ops": 0
+        },
+        "all:report2_liquidation_signal_outcomes": {
+          "requests": 1,
+          "rows_read": 170,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_liquidation_predictive_health": {
+          "requests": 2,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_global_source_cache": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_global_source_cache": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:report2_liq_venue_catalog_cache": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_liq_source_allowance_shadow": {
+          "requests": 20,
+          "rows_read": 887,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "run:report2_candidate_task_v2": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_candidate_task_v2": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_market_snapshot_batch_v1": {
+          "requests": 5,
+          "rows_read": 242,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:scan_runs": {
+          "requests": 1,
+          "rows_read": 32,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "batch:scan_runs": {
+          "requests": 4,
+          "rows_read": 162,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_early_candidate_wave": {
+          "requests": 7,
+          "rows_read": 2424,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "all:report2_market_snapshot_batch_v1": {
+          "requests": 63,
+          "rows_read": 1644,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_market_microstructure_1m": {
+          "requests": 1,
+          "rows_read": 17,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_early_candidate_wave": {
+          "requests": 6,
+          "rows_read": 10,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_early_feature_snapshot": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "batch:full_evidence_shadow_log": {
+          "requests": 3,
+          "rows_read": 2,
+          "rows_written": 10,
+          "unknown_ops": 0
+        },
+        "first:v3_telegram_dispatch_shadow": {
+          "requests": 2,
+          "rows_read": 133,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_recheck_task_shadow": {
+          "requests": 3,
+          "rows_read": 5,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:v3_recheck_task_shadow": {
+          "requests": 2,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_watch_state": {
+          "requests": 5,
+          "rows_read": 522,
+          "rows_written": 13,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_recheck_queue": {
+          "requests": 1,
+          "rows_read": 3,
+          "rows_written": 5,
+          "unknown_ops": 0
+        },
+        "run:fast_move_watch_state": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:deep_check_scheduler_state": {
+          "requests": 1,
+          "rows_read": 48,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:deep_check_scheduler_state": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 20,
+          "unknown_ops": 0
+        },
+        "batch:report2_byk_monthly_usage": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "batch:report2_byk_reservations": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "first:report2_byk_reservations": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_byk_monthly_usage": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_candidate_source_cache": {
+          "requests": 4,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_evidence_source_health_observation": {
+          "requests": 26,
+          "rows_read": 75,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 25,
+          "rows_read": 22,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 58,
+          "rows_read": 130,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 36,
+          "rows_read": 18,
+          "rows_written": 18,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 18,
+          "rows_read": 18,
+          "rows_written": 36,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 18,
+          "rows_read": 18,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 18,
+          "rows_read": 58,
+          "rows_written": 72,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_health_observation": {
+          "requests": 10,
+          "rows_read": 0,
+          "rows_written": 30,
+          "unknown_ops": 0
+        },
+        "first:sqlite_master": {
+          "requests": 1,
+          "rows_read": 404,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_liquidation_role_observation": {
+          "requests": 1,
+          "rows_read": 12,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_liq_source_reservation_shadow": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "run:report2_liq_venue_catalog_cache": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:report2_liquidation_source_health": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_liquidation_source_health": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "run:report2_liquidation_role_observation": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "run:json_each": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 12,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_shadow_observation": {
+          "requests": 3,
+          "rows_read": 8,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_cluster_state": {
+          "requests": 4,
+          "rows_read": 18692,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_cross_exchange_risk_cache": {
+          "requests": 2,
+          "rows_read": 9,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_cross_exchange_catalog": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_liq_cex_venue_cache": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_volume_profile_cache": {
+          "requests": 4,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:opportunity_shadow_outcome": {
+          "requests": 2,
+          "rows_read": 6724,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:opportunity_shadow_event": {
+          "requests": 2,
+          "rows_read": 142,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_event": {
+          "requests": 2,
+          "rows_read": 94,
+          "rows_written": 18,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_outcome": {
+          "requests": 4,
+          "rows_read": 216,
+          "rows_written": 92,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_funnel": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "batch:shadow_decision_log": {
+          "requests": 3,
+          "rows_read": 19,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:multi_wave_campaign_shadow": {
+          "requests": 2,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:full_evidence_shadow_log": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:full_evidence_shadow_log": {
+          "requests": 4,
+          "rows_read": 16,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:OTHER": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:canonical_publication_shadow": {
+          "requests": 3,
+          "rows_read": 6,
+          "rows_written": 14,
+          "unknown_ops": 0
+        },
+        "first:canonical_publication_shadow": {
+          "requests": 6,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:deep_check_scheduler_state": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 10,
+          "unknown_ops": 0
+        },
+        "batch:deep_check_run_log": {
+          "requests": 2,
+          "rows_read": 11,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:report2_coinalyze_catalog": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_gate_contract_identity": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_cross_exchange_risk_cache": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:cron_runs": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:scan_runs": {
+          "requests": 1,
+          "rows_read": 150,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_events": {
+          "requests": 1,
+          "rows_read": 2957,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_realized_liquidation_aggregate": {
+          "requests": 8,
+          "rows_read": 8,
+          "rows_written": 24,
+          "unknown_ops": 0
+        },
+        "batch:v3_realized_liquidation_density_5m": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 12,
+          "unknown_ops": 0
+        },
+        "first:final_decision_integration_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:final_decision_integration_shadow": {
+          "requests": 1,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_user_lifecycle_shadow": {
+          "requests": 2,
+          "rows_read": 29,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:canonical_publication_shadow": {
+          "requests": 1,
+          "rows_read": 44,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_user_lifecycle_shadow": {
+          "requests": 4,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_pipeline_health_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_pipeline_health_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 67,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 2,
+          "rows_read": 43,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 62,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:v3_dispatch_publication_binding_shadow": {
+          "requests": 3,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:v3_telegram_dispatch_shadow": {
+          "requests": 3,
+          "rows_read": 6,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "first:discovery_recall_kpi_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:tz101_entry_area_calibration_state": {
+          "requests": 3,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:tz101_entry_area_calibration_state": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 625,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:tz101_entry_area_calibration_signal": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:tz101_entry_area_calibration_outcome": {
+          "requests": 1,
+          "rows_read": 10,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A1": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A2": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A3": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "private-canonical:report2_canonical_cold_archive_v1:A4": {
+          "requests": 0,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "ledger_finalization": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "R2RUN:1792331883613:75278614f0a95612",
+      "source_run_id": "1792331883613-1792331891442",
+      "measured_rows_read": 37730,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 555,
+      "measured_requests_accounted": 674,
+      "unknown_ops": 0
+    },
+    "delivery": {
+      "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+      "head": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "run_id": "1792331883613-1792331891442",
+      "source": "schedule",
+      "recorded_at": 1792331988915,
+      "status": "EXACT_SAME_RUN_SENT_CAPTURED",
+      "delivery_status": "CLOSED",
+      "cases": [
+        {
+          "publication_id": "PUB:8d000b5b3f74df3408f5d5e27cddf05b12c0fae7",
+          "contract": "APR-USDT",
+          "direction": "SHORT",
+          "wave_id": "EDW:APR-USDT:1792324615691:G8",
+          "lifecycle_event": "OBSERVE",
+          "run_id": "1792331883613-1792331891442",
+          "snapshot_id": "S392:APR-USDT:1792331980053",
+          "observed_ts": 1792331980053,
+          "analytical_fingerprint": "e3aeafd2c7b966ec5f1e41b471cdf42c1e284a85444dcdf3abbc78572db54547",
+          "presentation_hash": "5d784b44029177b60700abf5ef6863903f19f835e0eeb71161f685fcfcc2e365",
+          "same_run_binding_verified": true,
+          "exact_SENT": true,
+          "telegram_message_id": "216",
+          "dispatch_finalized": true,
+          "task_at_delivery": null,
+          "task_at_delivery_verified": false,
+          "task_state_after_delivery_known": false,
+          "actual_ENTRY": false,
+          "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+        }
+      ],
+      "sourceHTTP_added": 0,
+      "D1_added": 0,
+      "Telegram_added": 0,
+      "task_writes_added": 0,
+      "original_clocks_refreshed": false,
+      "project_complete": false
+    },
+    "archive_copy_status": "ARCHIVE_DAY_BOUND_OR_DUPLICATE",
+    "whole_day_closed": false,
+    "files": {
+      "12138787149.zip": "91e315ecaf015fff224cfa828caf79b6c39e921e20d0695a3ef40ad4fb1d66cc",
+      "12138508310.zip": "a37194e12e3bb1bfa09fdf50cefa56cceda81ef97dcd7ae6a8cd005cb2ebf703",
+      "run.json": "223047491b90847a48bd6b0b82aba2ec2449758caab46f07d4ebd846b5a1324c",
+      "artifacts.json": "5eeccf4d87f618818e421730e884627c7aa205ae8298b4940ed27017e0caec4d",
+      "12138787149/known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+      "12138787149/private-canonical-archive-receipt.json": "be327f768ad9196c56b1de52d49b990a0b82aa15aa3ac5e2df186440a9ed4124",
+      "12138787149/same-run-delivery-proof.json": "270bfd39ca7d1863fd1381604730d6d15d3db0b0cb21bd28cf5d733cccc8367a",
+      "12138787149/report2-run-result.json": "a8129fe2d7e130cdd0a35cb045f879f90458833a82bf5d930ab3591b46a2d9d1",
+      "12138787149/automatic-delivery-audit.json": "1afb79d55e6c43864a2c44201eaa76063133c16c78407ed8da86d4f1ecc19de1",
+      "12138787149/report2-completion-accounting.json": "08dd8196b50853fb1b598be004f295c92ee180779553937dc54092b0090a3452",
+      "12138508310/telegram-info-proof.json": "9d258fbcfefe73233a4d6f44f42630fe351e94b5285a9acaa6940d5ebde2f09d"
+    },
+    "artifacts": [
+      {
+        "id": 12138787149,
+        "node_id": "MDg6QXJ0aWZhY3QxMjEzODc4NzE0OQ==",
+        "name": "report2-run-result",
+        "size_in_bytes": 71097,
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12138787149",
+        "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12138787149/zip",
+        "expired": false,
+        "digest": "sha256:91e315ecaf015fff224cfa828caf79b6c39e921e20d0695a3ef40ad4fb1d66cc",
+        "created_at": "2026-10-18T13:59:52Z",
+        "updated_at": "2026-10-18T13:59:52Z",
+        "expires_at": "2026-11-17T13:59:52Z",
+        "workflow_run": {
+          "id": 39133840839,
+          "repository_id": 1371866675,
+          "head_repository_id": 1371866675,
+          "head_branch": "main",
+          "head_sha": "998020c564e0ff1d81046150df00d9ca2b1aedfe"
+        }
+      },
+      {
+        "id": 12138508310,
+        "node_id": "MDg6QXJ0aWZhY3QxMjEzODUwODMxMA==",
+        "name": "report2-telegram-info-proof",
+        "size_in_bytes": 1034,
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12138508310",
+        "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/12138508310/zip",
+        "expired": false,
+        "digest": "sha256:a37194e12e3bb1bfa09fdf50cefa56cceda81ef97dcd7ae6a8cd005cb2ebf703",
+        "created_at": "2026-10-18T13:59:53Z",
+        "updated_at": "2026-10-18T13:59:53Z",
+        "expires_at": "2026-11-17T13:59:53Z",
+        "workflow_run": {
+          "id": 39133840839,
+          "repository_id": 1371866675,
+          "head_repository_id": 1371866675,
+          "head_branch": "main",
+          "head_sha": "998020c564e0ff1d81046150df00d9ca2b1aedfe"
+        }
+      }
+    ]
+  }
+]
