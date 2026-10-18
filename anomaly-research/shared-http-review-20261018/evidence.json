@@ -1,0 +1,398 @@
+{
+  "schema": "SOURCE471_SHARED_HTTP_READ_ONLY_REVIEW_V1",
+  "reviewed_head": "c4333de49781fe38bdcd6efda6574035aacc462a",
+  "working_main": "aac691c24af81f5e18c661759b3f2c81713f8b3b",
+  "package_files": [
+    {
+      "path": "checkpoints/source-worker-apr-near-slot-fallback-20261018/analysis.json",
+      "sha256": "799f93bd037a7b59776cd7145a378f0c6428e5a354ce5e6a72839355d4f6ca55",
+      "bytes": 27826
+    },
+    {
+      "path": "checkpoints/source-worker-apr-near-slot-fallback-20261018/audit.mjs",
+      "sha256": "748dd9f1ec1df573c1f34e23c1097fa15fad1e9e1c607c3bfd53c0ae26a239c9",
+      "bytes": 7983
+    },
+    {
+      "path": "checkpoints/source-worker-apr-near-slot-fallback-20261018/reconcile-reference.mjs",
+      "sha256": "65c1afca6703767d8b508976a89cc79434f4b75a327256e9c7548921a0c2aebe",
+      "bytes": 2380
+    },
+    {
+      "path": "checkpoints/source-worker-apr-near-slot-fallback-20261018/review-ru.json",
+      "sha256": "b3c557b383557bda5c6a467c34412e3800e9c8252b6e5877485336c1270b1f43",
+      "bytes": 3082
+    },
+    {
+      "path": "checkpoints/source-worker-apr-near-slot-fallback-20261018/scope.json",
+      "sha256": "46e9432b5f89087e3ff6ef8dc4522a3a035d682bd97c546f974d472b954c2594",
+      "bytes": 3535
+    },
+    {
+      "path": "checkpoints/source-worker-apr-near-slot-fallback-20261018/shared-proposal.json",
+      "sha256": "7b0f22ed4f240cc9f311ce3e9f467dc1dff9a2955b1d90d0815b445e8fab44d1",
+      "bytes": 5933
+    }
+  ],
+  "runtime_sources": [
+    {
+      "path": "current-generation/files/src/external-n05-flow-collector.mjs",
+      "sha256": "cbfcc3dda74e1c3102dc512d7f10539545db05c7d37c25d325a3ce53caa2bb9b",
+      "anchors": [
+        {
+          "line": 48,
+          "text": "export async function collectN05VenueRoutes(params={},routes=[],turnoverCollector=collectTurnoverBaseline){"
+        },
+        {
+          "line": 63,
+          "text": " const invoke=async collect=>{"
+        },
+        {
+          "line": 66,
+          "text": "  const fetch_impl=(...args)=>{"
+        },
+        {
+          "line": 88,
+          "text": " const flow_network_calls=results.reduce((n,{result})=>n+(result.network_calls||0),0);"
+        },
+        {
+          "line": 94,
+          "text": "  caller_reserved_requests:reserved,source_priority:prioritized.receipt,source_chain_native_cost_unclosed:nativeUnclosed,observed_transport_HTTP:transportHTTP,adapter_results:results.map(({venue,result:{components,receipts,evidence,...result}})=>({.."
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0",
+      "anchors": [
+        {
+          "line": 214,
+          "text": "  const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(nativeSourceUsageUnclosed(params.db))throw Error('SOURCE_CHAIN_UNCLOSED_NATIVE_USAGE');if(actual-beforeActual>=routeReserved||actual>=reserved"
+        },
+        {
+          "line": 227,
+          "text": "  if(calls===0&&result?.admission?.allowed===false)reserved=before;"
+        },
+        {
+          "line": 289,
+          "text": "    return[name,{status:String(source.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),capability_resolved_without_route:source.status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE',network_calls:Number(so"
+        },
+        {
+          "line": 303,
+          "text": "  shared_n05_n12_http_attribution:attributeSharedN05N12Http(sources.EXTERNAL_N05_FLOW),"
+        },
+        {
+          "line": 320,
+          "text": "export function attributeSharedN05N12Http(flow){"
+        },
+        {
+          "line": 404,
+          "text": "  cache_status:[publishedCalendar.cache_status,wikimedia.cache_status,tokenSchedule.cache_status,coinmetrics.cache_status,delta.cache_status,bybitOptions.cache_status,binanceOptionInterest.cache_status,cgSector.cache_status,largeTrades.cache_status,s"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/block-decision-use-audit.mjs",
+      "sha256": "9ae5511596818b2e60af715845ffe0cbfa73fc5ed0299ddd8c50e8304156d3dc",
+      "anchors": [
+        {
+          "line": 12,
+          "text": "export function summarizeAssignedSourceUse(details={}) {"
+        },
+        {
+          "line": 69,
+          "text": "   return[source,{status:check.status,attempted:check.attempted===true,checked:check.checked===true,actual_http:check.network_calls||0,valid_fact_count:bound.length,meaningful_fact_count:bound.filter(meaningful).length,assessed_fact_count:bound.filte"
+        },
+        {
+          "line": 81,
+          "text": "  shared_n05_n12_http_attribution:coverage.shared_n05_n12_http_attribution||null,"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/n12-native-public-trade-collector.mjs",
+      "sha256": "d0f521604e677ca3b94dc683f88f7a89738fdb57fc709ca092a1ad3a2457ff2b",
+      "anchors": [
+        {
+          "line": 5,
+          "text": "import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';"
+        },
+        {
+          "line": 65,
+          "text": "  const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});"
+        },
+        {
+          "line": 67,
+          "text": "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:id,attempts:1,daily_cap:N05_N12_PUBLIC_SOURCE_DAILY_CAP,now:clock()});if(!daily.allowed){receipt.status=daily.status;return null;}"
+        },
+        {
+          "line": 71,
+          "text": "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;if([401,403,429,451].includes(response.status))provider"
+        },
+        {
+          "line": 95,
+          "text": "  if(cached?.version===N12_NATIVE_PUBLIC_COLLECTOR_VERSION&&exactCachedN12TradeResult(cached.result,{contract,identity,venue,market,now,window_end_ts:end,validate:valid})){evidence.push(...cached.result.evidence);marketStatus.push({market,status:'HIT"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/flow-turnover-collector.mjs",
+      "sha256": "61a44a590e80235ce8d829c5054b3702a0573c6f72b284c35ea4d7a8fad19c72",
+      "anchors": [
+        {
+          "line": 4,
+          "text": "import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';"
+        },
+        {
+          "line": 29,
+          "text": "  const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});if(grant?.allowed!==true||grant.duplicate){receipt.status=grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED';return null;}"
+        },
+        {
+          "line": 30,
+          "text": "  const daily=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:id,attempts:1,daily_cap:N05_N12_PUBLIC_SOURCE_DAILY_CAP,now:clock()});if(!daily.allowed){receipt.status=daily.status||'SOURCE_DAILY_CAP_DENIED';return null;}"
+        },
+        {
+          "line": 34,
+          "text": "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(resp"
+        },
+        {
+          "line": 45,
+          "text": "  if(cache_hit){candles=old.candles;ts=old.observed_ts;receipts.push({...old.receipt,actual_http:0,cache_status:'HIT_ORIGINAL_CLOCKS'});}"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+      "anchors": [
+        {
+          "line": 44,
+          "text": "export async function reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts,daily_cap,now=Date.now()}={}){"
+        },
+        {
+          "line": 73,
+          "text": " try{return{...JSON.parse(row.payload_json),...(include_cache_clock?{cache_observed_ts:row.observed_ts,cache_expires_ts:row.expires_ts}:{}),cache_status:'HIT',network_calls:0};}catch{return null;}"
+        },
+        {
+          "line": 158,
+          "text": "export default{installEvidenceSourceStore,reserveEvidenceSourceAttempts,reserveEvidenceSourceCredits,readEvidenceSourceCache,writeEvidenceSourceCache};"
+        }
+      ]
+    }
+  ],
+  "current_helper_unchanged_since_source_audit_base": true,
+  "current_helper_sha256": "3b279cb4a9c95bc2f9221de6a68a12560ad8e5787540beef9952e785a75667be",
+  "strict_reference_production_or_runner_imports_found": false,
+  "new_test_runs": 0,
+  "saved_current_helper_cases_read": 6,
+  "saved_reference_cases_read": 23,
+  "all_saved_reference_outputs_admission_authorized_false": true,
+  "selected_previously_recorded_cases": [
+    {
+      "name": "OPTIONAL_BASELINE_IS_EXPLICIT_AND_DISJOINT",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 4,
+        "baseline_transport_HTTP": 1,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 2
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "baseline_http": 1,
+        "no_double_count": true,
+        "admission_authorized": false,
+        "grants_are_not_transport": true,
+        "unused_reservations_refunded": false
+      }
+    },
+    {
+      "name": "ZERO_TRANSPORT_WITH_SPENT_GRANTS",
+      "input": {
+        "network_calls": 0,
+        "flow_network_calls": 0,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 0,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 0
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 0
+          }
+        ]
+      },
+      "output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 0,
+        "n05_http": 0,
+        "n12_http": 0,
+        "baseline_http": 0,
+        "no_double_count": true,
+        "admission_authorized": false,
+        "grants_are_not_transport": true,
+        "unused_reservations_refunded": false
+      }
+    },
+    {
+      "name": "STRING_TOTAL",
+      "input": {
+        "network_calls": "5",
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "TOTAL_UNKNOWN_OR_INVALID",
+        "total_http": null,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_observed_transport_HTTP_4",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 4,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "WRAPPER_TRANSPORT_NOT_TOTAL",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "MISSING_ADAPTERS",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_DETAIL_MISSING_OR_UNBOUNDED",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    }
+  ],
+  "actual_saved_split_scope_unchanged": [
+    {
+      "contract": "APR-USDT",
+      "split": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 5,
+        "n12_http": 0,
+        "n12_routes": [
+          {
+            "venue": "GATE_FUTURES_N12",
+            "http": 0,
+            "status": "EXACT_GATE_IDENTITY_AND_SHARED_METADATA_REQUIRED"
+          },
+          {
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "reported_receipts": 18,
+      "retained_receipts": 8,
+      "exact_per_route_transport": null,
+      "endpoint_order": null
+    },
+    {
+      "contract": "NEAR-USDT",
+      "split": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": "CLOSED_BOUNDED_N12_PUBLIC_TRADES"
+          },
+          {
+            "venue": "KUCOIN_N12_NATIVE",
+            "http": 0,
+            "status": "NO_USEFUL_PUBLIC_TRADE_SAMPLE"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "reported_receipts": 15,
+      "retained_receipts": 8,
+      "exact_per_route_transport": null,
+      "endpoint_order": null
+    }
+  ],
+  "finding": {
+    "id": "KNOWN_COUNTER_VECTOR_AT_COMPACT_BOUNDARY",
+    "scope": "Integration clarification, not actual APR/NEAR cost corruption",
+    "exact_source": "checkpoints/source-worker-apr-near-slot-fallback-20261018/reconcile-reference.mjs:6",
+    "behavior": "Failure output retains only validated network_calls as total_http; independently valid observed/flow/baseline/grant values are absent.",
+    "action": "Retain scalar input witnesses beside strict result and conflict reason; preserve null splits, no min/refund/new grant.",
+    "new_replay_performed": false
+  },
+  "trace_boundary": "Arithmetic success does not establish all expected zero-call adapters, endpoint order, omitted count or source eligibility.",
+  "no_provider_SQL_MAIN_Telegram": true,
+  "batch_merge_performed_or_review_rejection_bypassed": false
+}
