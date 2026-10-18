@@ -1,0 +1,63 @@
+{
+  "schema": "my-report-2-canonical-run-output-v1",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "head": "98ced7341b9425ac16c119b5a85eaf9e0d225f4a",
+  "source": "schedule",
+  "run_id": "39113113248",
+  "status": "NOT_CLOSED",
+  "reason": "D1_KNOWN_SAME_DAY_UNKNOWN_COST_BLOCK",
+  "candidates": [],
+  "pre_analysis_failure": {
+    "schema": "PRE_ANALYSIS_FAILURE_RECEIPT_V1",
+    "stage": "RETAINED_D1_UNKNOWN_COST_DAY_GUARD",
+    "status": "RETAINED_SAME_DAY_UNKNOWN_D1_COST_BLOCK",
+    "reason": "D1_KNOWN_SAME_DAY_UNKNOWN_COST_BLOCK",
+    "head": "98ced7341b9425ac16c119b5a85eaf9e0d225f4a",
+    "source_run_id": "39113113248",
+    "task_id": null,
+    "trigger_only": false,
+    "started_ts": 1792313555688,
+    "failed_ts": 1792313555688,
+    "market_conditions_evaluated": false,
+    "full_analysis_completed": false,
+    "entry_authorized": false,
+    "task_writes": 0,
+    "source_clock_refreshed": false,
+    "d1_attempt_usage": {
+      "attempted_statements": 0,
+      "measured_rows_read_subtotal": 0,
+      "measured_rows_written_subtotal": 0,
+      "unknown_operations": 0,
+      "row_totals_closed": true,
+      "total_rows_read": 0,
+      "total_rows_written": 0
+    },
+    "daily_usage_scope": "RETAINED_ORIGINAL_NATIVE_DAILY_AGGREGATE;NO_CURRENT_NATIVE_READ",
+    "native_daily_aggregate": {
+      "day_utc": "2026-10-18",
+      "status": "DAY_USAGE_CLOSED",
+      "run_count": 1,
+      "reserved_rows_read": 54000,
+      "reserved_rows_written": 840,
+      "measured_rows_read": 30745,
+      "measured_rows_written": 110,
+      "unknown_operations": 15,
+      "unfinished_reservations": 0
+    },
+    "retained_refusal_source": {
+      "run_id": "39101817020",
+      "head": "fbf77de8a4e0bfe0fb84c22d62e76e64d1dd31ca",
+      "failed_ts": 1792302530907,
+      "reason": "D1_TRIGGER_BUDGET_NOT_CLOSED",
+      "artifact_id": 12127325062,
+      "artifact_digest": "sha256:898126e05cd79fcb48adeafdb7be24d36d2b9a2ff3a051bd4b8eb9bb4a2f0b94",
+      "audit_cloud_run": 39101844123,
+      "audit_artifact_digest": "sha256:f5a988367bc1cd713e03cc9afc013ae8d61e77488818bbe13defbe2a0e133aec"
+    },
+    "native_admission_rechecked": false,
+    "next_day_requires_native_measured_admission": true
+  },
+  "generated_at": "2026-10-18T08:52:35.688Z",
+  "secrets_included": false,
+  "alternative_manual_recalculation": false
+}
