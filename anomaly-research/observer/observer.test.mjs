@@ -76,8 +76,8 @@ test('stale snapshots, malformed confirmation and integrity tampering do not mut
  const s=snapshot(c,{closed:true,ts:c.event_end_ts+3600000});s.closed_candle.timeframe='1w';assert.throws(()=>observe(m,{event_id:c.event_id,snapshot:s,now_ts:s.received_ts+1}),/WINDOW/);assert.deepEqual(m.watch[c.event_id].hypotheses,{LONG:'WAITING',SHORT:'WAITING'});
  const bad=JSON.parse(serialize(m));bad.state.cards[c.event_id].anchor.price=1;bad.sha256=hash(bad.state);assert.throws(()=>restore(JSON.stringify(bad)),/CARD_INTEGRITY/);
 });
-test('gap cap preserves old evidence and reports deferral',()=>{
- const c=event(),m=capture(newMemory({max_gap_spans:1}),c).state,a=seen(m,c,{ts:c.first_known_ts+3600000}),b=seen(a.state,c,{ts:c.first_known_ts+7200000,id:'new'});assert.equal(b.status,'DEFERRED_GAP_CAPACITY');assert.deepEqual(b.state,a.state);
+test('gap cap preserves old evidence while current observation advances with explicit incomplete detail',()=>{
+ const c=event(),m=capture(newMemory({max_gap_spans:1}),c).state,a=seen(m,c,{ts:c.first_known_ts+3600000}),b=seen(a.state,c,{ts:c.first_known_ts+7200000,id:'new'});assert.equal(b.status,'OBSERVED');assert.deepEqual(b.state.watch[c.event_id].gaps,a.state.watch[c.event_id].gaps);assert.equal(b.state.watch[c.event_id].observed_count,2);assert.equal(b.gap_details_complete,false);assert.equal(b.unretained_gap.durable_ingress_required,true);
 });
 test('bounded due queue reports deferred count without silently dropping work',()=>{
  let m=newMemory();const a=event(),b=event({asset:'CONTROLLED:OTHER'});m=capture(m,a).state;m=capture(m,b).state;const q=dueEvents(m,a.first_known_ts,{limit:1});assert.equal(q.events.length,1);assert.equal(q.deferred,1);assert.equal(Object.values(m.watch).filter(x=>x.active).length,2);
