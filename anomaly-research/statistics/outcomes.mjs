@@ -55,7 +55,7 @@ function summaryRowIssue(o){
  if(!o||typeof o!=='object'||Array.isArray(o)||o.schema!=='ANOMALY_OBSERVED_OUTCOME_V1'||!hex(o.outcome_hash)||!hex(o.card_hash)||!hex(o.plan_hash)||!label(o.event_id))return 'OUTCOME_SCHEMA_INVALID';
  const i=o.instrument;
  if(!i||!['asset_id','venue','upstream','contract','quote','price_unit','volume_unit','binding_ref'].every(k=>label(i[k]))||!['FUTURES','SPOT'].includes(i.market)||i.identity_verified!==true||!num(i.multiplier)||i.multiplier<=0||!['VERIFIED_NATIVE','CHAIN_ADDRESS'].includes(i.binding_kind)||i.binding_kind==='CHAIN_ADDRESS'&&(!label(i.chain)||!label(i.address)))return 'OUTCOME_IDENTITY_INVALID';
- if(!Object.hasOwn(TIMEFRAMES,o.timeframe)||!Object.hasOwn(HORIZONS,o.horizon)||!['LONG','SHORT'].includes(o.direction)||!['CONTROLLED','BACKFILLED','DECLARED_PROSPECTIVE'].includes(o.cohort))return 'OUTCOME_COHORT_CELL_INVALID';
+ if(!str(o.timeframe)||!str(o.horizon)||!Object.hasOwn(TIMEFRAMES,o.timeframe)||!Object.hasOwn(HORIZONS,o.horizon)||!['LONG','SHORT'].includes(o.direction)||!['CONTROLLED','BACKFILLED','DECLARED_PROSPECTIVE'].includes(o.cohort))return 'OUTCOME_COHORT_CELL_INVALID';
  if(o.extrema_scope!=='OBSERVED_SNAPSHOTS_ONLY'||o.not_executed_profit!==true||o.external_native_commit_ACK_qualified!==false||!label(o.reason))return 'OUTCOME_SCOPE_INVALID';
  if(!stamp(o.first_known_ts)||!stamp(o.as_of_ts)||!stamp(o.target_ts)||o.as_of_ts<o.first_known_ts||o.target_ts!==o.first_known_ts+HORIZONS[o.horizon])return 'OUTCOME_CLOCK_INVALID';
  if(o.status==='PENDING')return o.complete===false&&o.as_of_ts<o.target_ts&&o.reason==='HORIZON_NOT_MATURE'?null:'PENDING_STATE_INVALID';

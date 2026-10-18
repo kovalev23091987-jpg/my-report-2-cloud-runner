@@ -32,3 +32,6 @@ test('all valid producer result shapes still summarize and malformed neighbors c
 test('blank identity or event labels cannot create a summary population from a recomputed digest',()=>{
  const {pending}=outputs();rejected(rewrite(pending,{event_id:' '}),'OUTCOME_SCHEMA_INVALID');for(const key of['asset_id','venue','upstream','contract','quote','price_unit','volume_unit','binding_ref'])rejected(rewrite(pending,{instrument:{...pending.instrument,[key]:' \t'}}),'OUTCOME_IDENTITY_INVALID');
 });
+test('nonscalar cell keys reject before JavaScript property-key coercion can crash the summary',()=>{
+ const {pending}=outputs();for(const key of['timeframe','horizon'])for(const value of[{}, {toString:null}, [],12,null])assert.doesNotThrow(()=>rejected(rewrite(pending,{[key]:value}),'OUTCOME_COHORT_CELL_INVALID'));
+});
