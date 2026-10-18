@@ -1,0 +1,133 @@
+{
+  "schema": "MISSING_SIX_SAVED_DIAGNOSIS_V1",
+  "basis_main": "271a3f631f36b362557ac52b0dd63e9b0a994a4e",
+  "scope": "Only six exact missing contracts from saved natural39122290584; no105census rerun.",
+  "native_artifact": {
+    "run": "39122290584",
+    "head": "4a59607a13dc2a4ebca17aaee123c30fd3e4098a",
+    "artifact_id": 12134662736,
+    "original_zip_sha256": "b61c18416f8a7e0523706131e11bd443e401fd990bf36a58ce926a0cb24f940e",
+    "failure_file_sha256": "988e5706b0c74360b6e84202be9cba76e5a83688f38d5e5df90de1edfb846d4f",
+    "coordinator_planned_preservation_path": "checkpoints/exact-recovery-diagnosis-20261018/native-39122290584/",
+    "path_status": "Coordinator announced pending preservation, not asserted present on this base."
+  },
+  "saved_failure_excerpt": {
+    "cron": {
+      "run_id": "1792321965799-1792321975225",
+      "scheduled_time": 1792321965799,
+      "started_ts": 1792321975225,
+      "completed_ts": 1792322061168,
+      "status": "PARTIAL",
+      "universe_total": 105,
+      "scanned": 99,
+      "persistence_status": "NOT_CLOSED",
+      "error_text": "{\"contracts\":null,\"market\":null,\"oi\":null,\"funding\":null,\"history\":null}",
+      "v3_discovery_shortlist_count": 22,
+      "v3_live_shortlist_count": 22,
+      "v3_live_deep_check_count": 2,
+      "v3_live_zero_reason": "STAGE0_SCAN_FAILED",
+      "v3_pipeline_health_status": "DEGRADED_PIPELINE",
+      "v3_pipeline_health_reason": "STAGE0_SCAN_FAILED",
+      "v3_live_lane": "LIVE_DISCOVERY",
+      "v3_maintenance_deferred": 0
+    },
+    "approved_universe_audit": {
+      "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "approved_contracts": 122,
+      "approved_assets": 105,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791827516363,
+      "observed_ts": 1792321975412,
+      "expected_analysis_contracts": 105,
+      "accepted_analysis_contracts": 99,
+      "missing_approved_analysis_contracts": [
+        "BTR-USDT",
+        "DOS-USDT",
+        "GPS-USDT",
+        "PIPPIN-USDT",
+        "SKR-USDT",
+        "UB-USDT"
+      ],
+      "outside_approved_crypto_contracts": [
+        {
+          "contract": "ZCSH-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "SNPS-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "WAL-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        },
+        {
+          "contract": "MAGIC-USDT",
+          "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+        }
+      ],
+      "identity_rejected": [],
+      "duplicate_rejected": [],
+      "status": "NOT_CLOSED",
+      "structural_membership_only": true,
+      "source_clocks_refreshed": false,
+      "approved_universe_changed": false
+    },
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0,
+    "full_report_completed": false,
+    "Telegram_SENT_claimed": false
+  },
+  "historical_replay": {
+    "file": "calculations.json",
+    "source_catalogs": [
+      {
+        "path": "checkpoints/htx-weekly-live-38612734728/linear-default.json.gz",
+        "gzip_sha256": "4291c9ec183d00ac926032b169c3d96cb9964b33c02014d7970be7e330f61239",
+        "raw_sha256": "f239e9f15902d274ed46eaf53526025fafbaed7461821df3adb4877e37d95d15",
+        "source_ts": 1792001378868
+      },
+      {
+        "path": "checkpoints/htx-weekly-live-38612734728/linear-all.json.gz",
+        "gzip_sha256": "c819f1bd4522c59d13da10c2f0f793e594b98f9ff08567538f02ddea16d65ba1",
+        "raw_sha256": "8e86c31615e5e9928366f41488c41addc07bd683d85b964a999f344464c9942a",
+        "source_ts": 1792001379414
+      }
+    ],
+    "classifier_module_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+    "classifier_function_sha256": "b07f1d6217988d7fd9f40fd8c67750fd3015058c3dd4fe5c6347e8510fc47da3",
+    "six_contracts": [
+      "BTR-USDT",
+      "DOS-USDT",
+      "GPS-USDT",
+      "PIPPIN-USDT",
+      "SKR-USDT",
+      "UB-USDT"
+    ],
+    "rows_replayed": 12,
+    "all12_active_swap_and_CRYPTO_CONFIRMED": true,
+    "current_body_retained": false,
+    "current_presence_status_or_cause_proven": false,
+    "margin_mode_hypothesis_proven": false
+  },
+  "source_code_path": {
+    "active_filter": "Number(contract_status)===1 && lower(business_type||swap)===swap. support_margin_mode/open_type are not filter inputs.",
+    "classifier": "labels/tradfi_labels arrays and exact business_type/contract_type/trade_partition; unknown scope fails closed.",
+    "approved_binding": "Exact approved manifest identity/membership; saved39122290584 identity_rejected and duplicate_rejected empty.",
+    "scanned": "Only approved CRYPTO_CONFIRMED rows with CLOSED or STALE data_status count.",
+    "no_endpoint_error_does_not_prove_contract_presence": true
+  },
+  "next_evidence": "Coordinator separately admitted exact current catalog body/receipt and exact CT/BR canonical reads. Compare only these six through predicates; preserve105 completeness and outside4 rejection. Worker performs no live calls.",
+  "conditional_shared_proposal": {
+    "status": "PROPOSAL_ONLY_IF_CURRENT_CATALOG_DOES_NOT_RESOLVE_STAGE",
+    "target": "Existing partial_cron_failure in-memory artifact",
+    "fields": "For only missing approved6: present_in_allInfo/active/allContracts/approvedScope, exact catalog scope fields, classifier result/reasons, data_status/missing. Derive from already obtained arrays before scope ends.",
+    "extra_HTTP_SQL": 0,
+    "applied": false,
+    "does_not_replace_missing_current_body_or_weaken_completeness": true
+  }
+}

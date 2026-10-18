@@ -1,0 +1,864 @@
+{
+  "schema": "SOURCE_PACKET_DELTA_OFFLINE_CALCULATIONS_V1",
+  "scope": "Configured arithmetic and exactly six historical catalog rows; no current universe census or provider qualification.",
+  "inputs": {
+    "current-generation/files/src/two-candidate-policy.mjs": "5da3197efb29f176ad183b4f1f9cacf06c576978ce730699308f2d1a6312bcd5",
+    "current-generation/files/src/unified-budget.mjs": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f",
+    "current-generation/files/src/public-venue-source-budget.mjs": "cc2e33cbe0b5028208039652ed747a3f1fa1a012298c65ce2b3318fa6b5a9747",
+    "current-generation/files/src/scheduled-evidence-budget.mjs": "f6fa1cc34caf8cfee1df2cc2f4ec284837bc60d379c60ac3c593f50452cdd8a4",
+    "current-generation/files/src/evidence-source-adapters.mjs": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54",
+    "current-generation/files/src/coinpaprika-sector-evidence.mjs": "ffdfb73c73e1f3ab4d2ff4e7254c8350a91367752f232089b23ef32c3ce48bad",
+    "current-generation/files/src/candidate-evidence-v2-runtime.mjs": "a8ae8601cb58a6ffca182c5e09e87476e317ef58a5d975fffcd3a49d13c756ae",
+    "current-generation/files/src/liquidation-source-http-plan.mjs": "ba1be13cbd1717136e821ae964d1d8ca88225f8e2c1c1c2711b1d6eea5b3a106",
+    "current-generation/files/src/worker.js": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09"
+  },
+  "classifier_function_sha256": "b07f1d6217988d7fd9f40fd8c67750fd3015058c3dd4fe5c6347e8510fc47da3",
+  "units": {
+    "month_days": 31,
+    "scheduled_full_invocations": 36,
+    "scheduled_deep": 72,
+    "manual_full_commands": 3,
+    "manual_single_commands": 5,
+    "manual_deep": 11,
+    "burst_deep": 3,
+    "total_deep": 86
+  },
+  "byk": {
+    "unit": "BYK_REQUEST_UNITS_NOT_HTTP",
+    "configured_month_cap": 13500,
+    "configured_scheduled_month_cap": 12900,
+    "scheduled_plus_burst_month_units": 11625,
+    "manual_month_units": 1705,
+    "configured_manual_reserve": 1705,
+    "total_month_units": 13330,
+    "planned_headroom": 170
+  },
+  "shared_public": {
+    "unit": "HTTP_ATTEMPTS_PER_PROVIDER",
+    "configured_daily_cap": 512,
+    "current_helper_inputs": {
+      "scheduled_invocations": 36,
+      "manual_full_invocations": 6,
+      "manual_coin_invocations": 5,
+      "burst_invocations": 3,
+      "finalists_per_invocation": 2,
+      "shared_requests_per_finalist": 5
+    },
+    "current_helper_daily": 500,
+    "normalized_deep_plan_daily": 430,
+    "normalized_month_at5_per_deep": 13330,
+    "helper_month": 15500,
+    "minute_caps": {
+      "GATE": 12,
+      "BITGET": 12,
+      "POLONIEX": 12,
+      "BACKPACK": 6,
+      "BINANCE": 6,
+      "KRAKEN": 6,
+      "BITFINEX": 6,
+      "OKX": 100,
+      "KUCOIN": 32
+    },
+    "kucoin_minute_unit": "WEIGHTED_UNITS_NOT_HTTP",
+    "actual_spend_or_reserve_release_proven": false
+  },
+  "coingecko": {
+    "configured": {
+      "daily_cap": 48,
+      "demo_daily_cap": 256,
+      "demo_ordinary_daily_cap": 224,
+      "demo_protected_manual_attempts": 32,
+      "ttl_ms": 300000,
+      "auth": "OPTIONAL_REPORT2_COINGECKO_DEMO_API_KEY",
+      "blocks": [
+        "N15"
+      ],
+      "monthly_module_bound": 1488,
+      "demo_monthly_module_bound": 7936,
+      "official_demo_monthly_credits": 10000,
+      "retries": 0
+    },
+    "cold_http_per_deep": 4,
+    "cold_day": 344,
+    "cold_month": 10664,
+    "ordinary_deep": 75,
+    "ordinary_cold_day": 300,
+    "manual_cold_day": 44,
+    "configured_keyless_month": 1488,
+    "configured_demo_month": 7936,
+    "configured_protected_manual_month": 992,
+    "provider_terms_or_key_access_reverified": false
+  },
+  "coinpaprika": {
+    "configured": {
+      "daily_cap": 512,
+      "ttl_ms": 300000,
+      "auth": "PUBLIC",
+      "blocks": [
+        "N02",
+        "N15"
+      ],
+      "monthly_module_bound": 15872,
+      "official_free_monthly_requests": 20000
+    },
+    "registered_exact_identity_with_pinned_or_complete_directory_cold_http": 3,
+    "market_discovery_with_pinned_or_complete_directory_cold_http": 4,
+    "conditional_directory_plus_members_followup_cold_http": 5,
+    "conditional_path_basis": "market catalog + exact metadata with declared functional tag + directory whose selected tag lacks exact membership + exact tag members + bulk quotes; static allowed path, not observed provider failure",
+    "registered_three_request_day": 258,
+    "market_discovery_four_request_day": 344,
+    "conditional_five_request_day": 430,
+    "conditional_five_request_month": 13330,
+    "configured_month": 15872,
+    "provider_terms_reverified": false
+  },
+  "scheduled_evidence": {
+    "configured_cap": 18,
+    "configured_roles": {
+      "shared_N05_N12": 5,
+      "finalized_N04": 4,
+      "coingecko_N15": 4,
+      "coinpaprika_N15": 3,
+      "uncaptured_HTX_N12": 2
+    },
+    "existing_proof": {
+      "status": "CLOSED",
+      "per_candidate": 18,
+      "full_background": 36,
+      "other_background_headroom": 20,
+      "whole_job_limit": 164,
+      "whole_job_lanes": 164,
+      "deep_checks_per_day": 86,
+      "source_daily_request_upper": {
+        "shared_N05_N12": 430,
+        "finalized_N04": 344,
+        "coingecko_N15_cold": 344,
+        "coinpaprika_N15_cold": 258
+      },
+      "coingecko_cold_every_candidate_fits_existing_quota": false,
+      "coingecko_daily_cap_not_raised": true,
+      "provider_admission_and_backoff_still_required": true,
+      "manual_and_LIQ_reserves_unchanged": true,
+      "strategy_effect": false
+    },
+    "complete_directory_cold_shape": {
+      "shared_N05_N12": 5,
+      "finalized_N04": 4,
+      "coingecko_N15": 4,
+      "coinpaprika_N15_market_discovery": 4,
+      "uncaptured_HTX_N12": 1
+    },
+    "complete_directory_shape_sum": 18,
+    "conditional_membership_followup_shape_sum": 19,
+    "hard_cap_changed": false,
+    "all_routes_eligible_or_successful_proven": false,
+    "priority_ticket_is_not_request_cost": true,
+    "conditional_extra_route_requires_existing_cache_saving_or_defer": true
+  },
+  "http_lanes": {
+    "node": {
+      "whole_job": 164,
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "worker_default": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 8,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "do_not_mix_lane_allocations": true
+  },
+  "historical_six": {
+    "contracts": [
+      "BTR-USDT",
+      "DOS-USDT",
+      "GPS-USDT",
+      "PIPPIN-USDT",
+      "SKR-USDT",
+      "UB-USDT"
+    ],
+    "catalogs": [
+      {
+        "path": "checkpoints/htx-weekly-live-38612734728/linear-default.json.gz",
+        "gzip_sha256": "4291c9ec183d00ac926032b169c3d96cb9964b33c02014d7970be7e330f61239",
+        "raw_sha256": "f239e9f15902d274ed46eaf53526025fafbaed7461821df3adb4877e37d95d15",
+        "source_ts": 1792001378868,
+        "source_status": "ok",
+        "rows": [
+          {
+            "contract": "BTR-USDT",
+            "original_row": {
+              "symbol": "BTR",
+              "contract_code": "BTR-USDT",
+              "contract_size": 10,
+              "price_tick": 0.00001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260827",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "BTR-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "DOS-USDT",
+            "original_row": {
+              "symbol": "DOS",
+              "contract_code": "DOS-USDT",
+              "contract_size": 10,
+              "price_tick": 0.0001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260812",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "DOS-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "GPS-USDT",
+            "original_row": {
+              "symbol": "GPS",
+              "contract_code": "GPS-USDT",
+              "contract_size": 100,
+              "price_tick": 0.000001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260818",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "GPS-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "PIPPIN-USDT",
+            "original_row": {
+              "symbol": "PIPPIN",
+              "contract_code": "PIPPIN-USDT",
+              "contract_size": 10,
+              "price_tick": 0.00001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20250124",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "PIPPIN-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "SKR-USDT",
+            "original_row": {
+              "symbol": "SKR",
+              "contract_code": "SKR-USDT",
+              "contract_size": 100,
+              "price_tick": 0.000001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260831",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "SKR-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "UB-USDT",
+            "original_row": {
+              "symbol": "UB",
+              "contract_code": "UB-USDT",
+              "contract_size": 10,
+              "price_tick": 0.00001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260503",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "UB-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "path": "checkpoints/htx-weekly-live-38612734728/linear-all.json.gz",
+        "gzip_sha256": "c819f1bd4522c59d13da10c2f0f793e594b98f9ff08567538f02ddea16d65ba1",
+        "raw_sha256": "8e86c31615e5e9928366f41488c41addc07bd683d85b964a999f344464c9942a",
+        "source_ts": 1792001379414,
+        "source_status": "ok",
+        "rows": [
+          {
+            "contract": "BTR-USDT",
+            "original_row": {
+              "symbol": "BTR",
+              "contract_code": "BTR-USDT",
+              "contract_size": 10,
+              "price_tick": 0.00001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260827",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "BTR-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "DOS-USDT",
+            "original_row": {
+              "symbol": "DOS",
+              "contract_code": "DOS-USDT",
+              "contract_size": 10,
+              "price_tick": 0.0001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260812",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "DOS-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "GPS-USDT",
+            "original_row": {
+              "symbol": "GPS",
+              "contract_code": "GPS-USDT",
+              "contract_size": 100,
+              "price_tick": 0.000001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260818",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "GPS-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "PIPPIN-USDT",
+            "original_row": {
+              "symbol": "PIPPIN",
+              "contract_code": "PIPPIN-USDT",
+              "contract_size": 10,
+              "price_tick": 0.00001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20250124",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "PIPPIN-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "SKR-USDT",
+            "original_row": {
+              "symbol": "SKR",
+              "contract_code": "SKR-USDT",
+              "contract_size": 100,
+              "price_tick": 0.000001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260831",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "SKR-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          },
+          {
+            "contract": "UB-USDT",
+            "original_row": {
+              "symbol": "UB",
+              "contract_code": "UB-USDT",
+              "contract_size": 10,
+              "price_tick": 0.00001,
+              "delivery_date": "",
+              "delivery_time": "",
+              "create_date": "20260503",
+              "contract_status": 1,
+              "adjust": [],
+              "price_estimated": [],
+              "settlement_date": "1792008000000",
+              "support_margin_mode": "all",
+              "open_type": 0,
+              "settlement_period": "4",
+              "labels": [
+                "common"
+              ],
+              "tradfi_labels": [],
+              "enable_rpi": false,
+              "business_type": "swap",
+              "pair": "UB-USDT",
+              "contract_type": "swap",
+              "trade_partition": "USDT"
+            },
+            "active_swap_predicate": true,
+            "classifier": {
+              "classification": "CRYPTO_CONFIRMED",
+              "eligible_for_crypto_discovery": true,
+              "source": "HTX swap_contract_info labels/tradfi_labels",
+              "source_fields_present": {
+                "labels": true,
+                "tradfi_labels": true,
+                "business_type": true,
+                "contract_type": true,
+                "trade_partition": true
+              },
+              "evidence": {
+                "official_forex_source_url": null,
+                "official_crypto_token_source_url": null,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [
+                  "common"
+                ],
+                "tradfi_labels": []
+              },
+              "reasons": [
+                "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "all12_saved_rows_active_swap_and_crypto": true,
+    "current_presence_or_cause_proven": false,
+    "current_original_body_retained": false,
+    "margin_mode_hypothesis_proven": false
+  },
+  "effects": {
+    "new_provider_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "runtime_edits": 0,
+    "accepted_test_or_old_census_reruns": 0
+  }
+}
