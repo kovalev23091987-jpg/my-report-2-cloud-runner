@@ -1,0 +1,49 @@
+{
+  "schema": "N15_PAUSED_NEGATIVE_CACHE_INTEGRATION_CORRECTION_V1",
+  "recorded_utc": "2026-10-18T08:37:47.797497+00:00",
+  "initial_worker_head": "6a4054fa442083f0b836ad4aed401cc1fc05e7a7",
+  "first_integrated_head": "ae826e6fc74667940c794b0d3bedf4528fd201ca",
+  "failed_cloud_runs": [
+    39111978256,
+    39111981982
+  ],
+  "failure": "Previously accepted provider-market-context retained paused N02-only cache must not spend; the initial new mutation incorrectly expected an admitted fallback.",
+  "correction": "Keep nonempty all-paused evidence as explicit negative capability with zero provider admission; never return CLOSED from a paused-only sector_status. Empty CLOSED or foreign active fact still follows the existing admitted fallback. Existing N02 pause and every source clock/reserve unchanged.",
+  "revised_new_suite_original_baseline": {
+    "tests": 22,
+    "pass": 4,
+    "fail": 18
+  },
+  "corrected_connected_local": {
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "files": [
+      "coinpaprika-cache-scope.test.mjs",
+      "provider-market-context.test.mjs"
+    ]
+  },
+  "tests": {
+    "n15-pause-fix.tap": {
+      "path": "checkpoints/source-worker-n15-cache-scope-20261018/n15-pause-fix.tap.gz",
+      "raw_sha256": "691093b6f4bc0feb61535d8ea3385d5f49258a321116e292aae65b7d513db81f",
+      "gzip_sha256": "12115b2e0f43cc11ded8dfb4b679558cd75297e5a3335eda413f5617a7818b7e"
+    },
+    "n15-revised-baseline22.tap": {
+      "path": "checkpoints/source-worker-n15-cache-scope-20261018/n15-revised-baseline22.tap.gz",
+      "raw_sha256": "0523d5ebf877ac850d0ce2c1f5b9e6ad9c388e603f01c11eb52d5ad6f175d0d2",
+      "gzip_sha256": "393c6be57dd26f289c3eed4f3bf6f61d4a2ec8d2862f52496dabe6e0ac3ac2cc"
+    }
+  },
+  "current_file_sha256": {
+    "current-generation/files/src/coinpaprika-sector-evidence.mjs": "ffdfb73c73e1f3ab4d2ff4e7254c8350a91367752f232089b23ef32c3ce48bad",
+    "current-generation/tests/coinpaprika-cache-scope.test.mjs": "1e246aaba7ae2ebcaa20995e154240cb32507be807c9ec66bce42a976592c149"
+  },
+  "worker_scope_and_originals_retained_unchanged": true,
+  "new_source_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "current105_or_live_acceptance": false
+}

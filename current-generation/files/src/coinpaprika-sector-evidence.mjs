@@ -68,7 +68,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION&&Array.isArray(cached.evidence)){
   const active=cached.evidence.filter(row=>!PAUSED_BLOCKS[row?.block_id]),evidence=active.filter(row=>exactCachedSectorFact(row,{contract,identity:asset_identity,coin_id,tag_id,marketDiscovery,now}));
-  if(evidence.length||!active.length&&cached.status!=='CLOSED')return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER'}:{})};
+  if(evidence.length||!active.length&&(cached.status!=='CLOSED'||cached.evidence.length))return{...cached,contract,evidence,...(PAUSED_BLOCKS.N02?{supply_status:'BLOCK_PAUSED_BY_OWNER',...(!evidence.length&&cached.status==='CLOSED'?{status:cached.sector_status&&cached.sector_status!=='CLOSED'?cached.sector_status:'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND'}:{})}:{})};
  }
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};

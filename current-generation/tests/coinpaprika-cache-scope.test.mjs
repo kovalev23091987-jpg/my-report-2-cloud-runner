@@ -41,11 +41,13 @@ const mutations={
  'future provider reference':r=>{fact(r).provider_reference.reference_observed_ts=now+1;return r;},
  'wrong reference coin':r=>{fact(r).coin_id='fil-filecoin';return r;},
  'empty CLOSED result':r=>({...r,evidence:[]}),
- 'paused-only CLOSED result':r=>({...r,evidence:r.evidence.filter(row=>row.block_id==='N02')}),
  'malformed evidence container':r=>({...r,evidence:{}}),
 };
 for(const [name,mutate] of Object.entries(mutations))test(`CoinPaprika rejects ${name} cache and attempts only the normally admitted fallback`,async()=>{
  const {d,params,counts}=await setup(mutate);try{const r=await collectCoinpaprikaSectorEvidence(params);assert.equal(r.evidence.length,0);assert.notEqual(r.status,'CLOSED');assert.deepEqual(counts(),{grants:1,calls:0});assert.equal(d.sqlite.prepare('SELECT count(*) AS n FROM report2_evidence_source_reservation').get().n,0);}finally{d.sqlite.close();}
+});
+test('retained paused-only CLOSED cache stays an explicit negative capability without a new provider attempt',async()=>{
+ const {d,params,counts}=await setup(r=>({...r,evidence:r.evidence.filter(row=>row.block_id==='N02')}));try{const r=await collectCoinpaprikaSectorEvidence(params);assert.equal(r.evidence.length,0);assert.notEqual(r.status,'CLOSED');assert.equal(r.supply_status,'BLOCK_PAUSED_BY_OWNER');assert.deepEqual(counts(),{grants:0,calls:0});}finally{d.sqlite.close();}
 });
 test('an exact negative capability result remains cached without an unneeded new provider attempt',async()=>{
  const {d,params,counts}=await setup(r=>({...r,status:'NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA',evidence:[],sector_status:'NOT_CHECKED'}));try{const r=await collectCoinpaprikaSectorEvidence(params);assert.equal(r.status,'NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA');assert.equal(r.evidence.length,0);assert.deepEqual(counts(),{grants:0,calls:0});}finally{d.sqlite.close();}
