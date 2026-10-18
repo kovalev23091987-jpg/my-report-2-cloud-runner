@@ -37,6 +37,7 @@ import {createPrivateArchivePool} from './private-archive-pool.mjs';
 import { buildBudgetBlockedTelegramOutput, runTelegramOutputLayer } from "./telegram-output.mjs";
 import { INFO_D1_BUDGET } from "./telegram-info-runtime.mjs";
 import { deriveRunReservation, loadDailyUsageAggregate, reserveRunBudget, evaluateDailyReservationBudget, evaluateWithinRunReservation, finalizeRunUsage } from "./d1-preaction-budget-guard.mjs";
+import {loadVerifiedNativeDayReconciliation} from './verified-native-day-reconciliation.mjs';
 import { buildR88BurstReservation, buildR88DailyAdmissionView, enforceR88RunBudget } from "./src/v3-adaptive-budget.mjs";
 import { classifyZeroTelegram } from "./telegram-zero-reason.mjs";
 import { runV3EarlyPersistenceSidecar, V3_EARLY_SIDECAR_BUDGET } from "./src/v3-early-sidecar.mjs";
@@ -512,6 +513,7 @@ async function main() {
   const generation=envText("REPORT2_CURRENT_GENERATION");
   if(generation!=="MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const started = Date.now();
+  const nativeDayReconciliation=loadVerifiedNativeDayReconciliation({root:resolve('..'),now_ts:started,generation});
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, liquidationIntelligenceApi, sha } = await loadWorker();
   const env = buildEnv();
@@ -580,7 +582,7 @@ async function main() {
       let triggered={claimed:false,status:'REGULAR_CADENCE_LEASE_ACTIVE'};
       if(cadence.status==='NOT_DUE'){
         if(!proveTriggeredRecheckD1Budget().safe)throw new Error('TRIGGERED_RECHECK_D1_PLAN_UNSAFE');
-        const admissionBudget=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(env.DATA_DB,started),
+        const admissionBudget=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(env.DATA_DB,started,{reconciliation:nativeDayReconciliation}),
           nextReservation:{rows_read:TWO_CANDIDATE_PLAN.d1_run_cap.rows_read+TRIGGERED_RECHECK_D1_RESERVATION.rows_read,
             rows_written:TWO_CANDIDATE_PLAN.d1_run_cap.rows_written+TRIGGERED_RECHECK_D1_RESERVATION.rows_written},
           maxDailyReads:envNumber('REPORT2_D1_MAX_DAILY_READS',3500000),maxDailyWrites:envNumber('REPORT2_D1_MAX_DAILY_WRITES',70000)});
@@ -694,7 +696,7 @@ async function main() {
 if (!d1NominalReservation.ok) throw new Error(`D1_RUN_RESERVATION_NOT_CLOSED:${d1NominalReservation.status}`);
 const d1RunReservation = buildR88BurstReservation(d1NominalReservation,TWO_CANDIDATE_PLAN.d1_run_cap);
 if (!d1RunReservation.ok) throw new Error(`R8_8_BURST_RESERVATION_NOT_CLOSED:${d1RunReservation.status}`);
-const d1DailyBeforeReservationRaw = await loadDailyUsageAggregate(env.DATA_DB, started);
+const d1DailyBeforeReservationRaw = await loadDailyUsageAggregate(env.DATA_DB, started,{reconciliation:nativeDayReconciliation});
 const d1DailyBeforeReservation = buildR88DailyAdmissionView(d1DailyBeforeReservationRaw,d1RunReservation);
 const d1DayAdmission = evaluateDailyReservationBudget({
   daily:d1DailyBeforeReservation,

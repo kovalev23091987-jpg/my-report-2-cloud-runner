@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {isDeepStrictEqual} from 'node:util';
 import {pathToFileURL} from 'node:url';
+import {loadVerifiedNativeDayReconciliation} from '../runner/verified-native-day-reconciliation.mjs';
 
 export function evaluateKnownD1DayGuard({proof,retainedAudit,retainedSource,archive_digest,now_ts,generation}={}){
  const required=reason=>({blocked:false,status:'NATIVE_ADMISSION_REQUIRED',reason,sourceHTTP:0,D1:0,Telegram:0});
@@ -36,7 +37,11 @@ export function loadKnownD1DayGuard({root,now_ts,generation}={}){
    const b=fs.readFileSync(p);if(b.length>4*1024*1024)throw Error('BOUNDED_RETAINED_AUDIT_REQUIRED');
    const read=n=>JSON.parse(execFileSync('unzip',['-p',p,n],{maxBuffer:1024*1024}).toString());
    guard=evaluateKnownD1DayGuard({proof,retainedAudit:read('automatic-delivery-audit.json'),retainedSource:read('source-artifact.json'),archive_digest:'sha256:'+createHash('sha256').update(b).digest('hex'),now_ts,generation});
-   if(guard.blocked)return{...guard,proof_pointer:pointer};
+   if(guard.blocked){
+    const reconciliation=loadVerifiedNativeDayReconciliation({root:base,now_ts,generation});
+    if(reconciliation&&guard.day_utc===reconciliation.day_utc&&guard.native_daily_aggregate?.unknown_operations===reconciliation.historical_unknown_operations)return{blocked:false,status:'NATIVE_ADMISSION_REQUIRED_AFTER_VERIFIED_AGGREGATE_RECONCILIATION',reason:'FRESH_NATIVE_LEDGER_WITNESS_STILL_REQUIRED',proof_pointer:pointer,reconciliation,historical_unknown_operations_retained:guard.native_daily_aggregate.unknown_operations,original_refusal:guard.original_refusal,sourceHTTP:0,D1:0,Telegram:0};
+    return{...guard,proof_pointer:pointer};
+   }
   }catch{}
  }
  return guard;
