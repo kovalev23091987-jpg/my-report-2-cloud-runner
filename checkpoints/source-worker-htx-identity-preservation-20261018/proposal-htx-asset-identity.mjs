@@ -136,4 +136,3 @@ export async function collectHtxBoundSupplementalContext({reference_enabled=true
  return{...context,identity_method:reference.status==='CLOSED'?reference.identity_method:context.identity_method,
   asset_reference:reference,identity_reference_network_calls:reference.network_calls,total_network_calls:Number(context.network_calls||0)+reference.network_calls};
 }
-
