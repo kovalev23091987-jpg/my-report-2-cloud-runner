@@ -287,7 +287,15 @@ export async function loadBoundTelegram(db,{idempotency_key,now_ts=Date.now()}={
  if(upper(b.lifecycle_event)==='OBSERVE'&&!earlySourceRolesClosed(canonical))return {status:'OBSERVE_SOURCE_ROLES_NOT_CLOSED',ok:false};
  const ph=sha256({manual_text:p.manual_text,telegram_text:p.telegram_text,analytical_fingerprint:p.analytical_fingerprint});if(ph!==b.presentation_hash)return {status:'PRESENTATION_CONTENT_MISMATCH',ok:false};
  const display=validatePresentation({canonical,manual_text:p.manual_text,telegram_text:p.telegram_text,direction:b.direction,lifecycle_event:b.lifecycle_event});if(display.status!=='CLOSED')return {...display,ok:false};
- const now=Math.trunc(Number(now_ts)||Date.now());const nativeFreshness=validateNativeLiquidationContext(canonical,{checked_ts:now,check_freshness:upper(b.lifecycle_event)!=='IDEA_REMOVED'});if(!nativeFreshness.ok)return {status:nativeFreshness.status,ok:false};if(p.valid_until_ts!=null&&Number(p.valid_until_ts)<now&&upper(b.lifecycle_event)!=='IDEA_REMOVED')return {status:'PUBLICATION_EXPIRED',ok:false};
+ const now=Math.trunc(Number(now_ts)||Date.now());
+ // These identifiers and original clocks were already read and verified above.
+ // Retain them on a refusal so a later audit cannot confuse another wave or
+ // direction with the current candidate. This does not authorize delivery.
+ const refusal=native_freshness_evaluated=>({publication_id:p.publication_id,contract:b.contract_code,direction:b.direction,wave_id:b.wave_id,lifecycle_event:b.lifecycle_event,run_id:b.run_id,snapshot_id:b.snapshot_id,observed_ts:Number(b.observed_ts),checked_ts:now,publication_valid_until_ts:p.valid_until_ts??null,identity_verified:true,presentation_verified:true,native_freshness_evaluated,native_source_clocks:nativeLiquidationSources(canonical.liquidations).sources.map(s=>({venue:s.venue??null,native_symbol:s.native_symbol??null,source_ts:s.source_ts??null,received_ts:s.received_ts??null,freshness_max_age_ms:s.freshness_max_age_ms??null}))});
+ // An expired immutable publication cannot be rescued by refreshing a source.
+ // Classify it as terminal before an age refusal turns it into another retry.
+ if(p.valid_until_ts!=null&&Number(p.valid_until_ts)<now&&upper(b.lifecycle_event)!=='IDEA_REMOVED')return {status:'PUBLICATION_EXPIRED',ok:false,bound_refusal:refusal(false)};
+ const nativeFreshness=validateNativeLiquidationContext(canonical,{checked_ts:now,check_freshness:upper(b.lifecycle_event)!=='IDEA_REMOVED'});if(!nativeFreshness.ok)return {status:nativeFreshness.status,ok:false,bound_refusal:refusal(true)};
  let prior_delivery_verified=false;
  if(upper(b.lifecycle_event)==='IDEA_REMOVED'){
   const visible=await db.prepare(`SELECT idempotency_key FROM v3_telegram_dispatch_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND state='SENT' AND lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND CAST(telegram_message_id AS INTEGER)>0 AND updated_ts<?4 ORDER BY updated_ts DESC LIMIT 1`).bind(b.contract_code,b.direction,b.wave_id,Number(p.bound_ts??now)).first();
