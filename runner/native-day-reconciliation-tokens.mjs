@@ -10,6 +10,20 @@ export function registerVerifiedNativeDayProof(handle,context){proofs.set(handle
 export function nativeReconciliationQueryBinding(handle,now){
  const p=proofs.get(handle);return p&&integer(now)&&day(now)===handle.day_utc?handle.reservation_id:null;
 }
+// Trusted build-time transfer only. The Node evidence loader must first
+// authenticate the original files. Environment JSON and caller flags never
+// issue a handle. The emitted Worker still has to match its live ledger row.
+export function nativeReconciliationProofMaterial(handle,now){
+ const p=proofs.get(handle);if(!p||!nativeReconciliationQueryBinding(handle,now))return null;
+ return JSON.parse(JSON.stringify({handle,context:p}));
+}
+export function nativeReconciliationAtomicWitness({handle,now,current_usage}={}){
+ const p=proofs.get(handle);
+ if(!p||!nativeReconciliationQueryBinding(handle,now)||current_usage?.unknown_ops!==0)return null;
+ const e=p.receipt;
+ if(!integer(p.started)||!integer(p.end)||p.end<p.started||!integer(p.expected_reserve?.rows_read)||p.expected_reserve.rows_read<1||!integer(p.expected_reserve?.rows_written)||p.expected_reserve.rows_written<1||!integer(e?.measured_rows_read)||!integer(e?.measured_rows_written_accounted)||!integer(e?.measured_requests_accounted)||!integer(handle.historical_unknown_operations)||handle.historical_unknown_operations<1)return null;
+ return Object.freeze({reservation_id:handle.reservation_id,source_run_id:handle.source_run_id,day_utc:handle.day_utc,started_ts:p.started,completed_ts_max:p.end,min_reserve_rows_read:p.expected_reserve.rows_read,min_reserve_rows_written:p.expected_reserve.rows_written,measured_rows_read:e.measured_rows_read,measured_rows_written:e.measured_rows_written_accounted,measured_requests:e.measured_requests_accounted,unknown_ops:handle.historical_unknown_operations,manifest_sha256:handle.manifest_sha256});
+}
 export function bindNativeDayReconciliation({handle,daily,source_row,current_usage}={}){
  const p=proofs.get(handle);if(!p)return null;
  try{
