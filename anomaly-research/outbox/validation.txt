@@ -1,0 +1,23 @@
+✔ one transition group atomically keeps card/watch/outcome refs and one DRAFT for both directions (0.868459ms)
+✔ crash before commit leaves neither orphan watch nor outbox; retry applies once (0.73125ms)
+✔ lost commit ACK restores both rows and original operation retry is idempotent despite stale revision (0.835792ms)
+✔ concurrent stale CAS and conflicting operation id cannot partially mutate (0.47725ms)
+✔ same snapshot or unchanged transition cannot enqueue duplicate; old source cannot rewind event (0.675875ms)
+✔ new binding/outcome plan cannot overwrite canonical card or pending90d refs (0.460125ms)
+✔ foreign claim and expired claim cannot start a send (0.366459ms)
+✔ expired unstarted claim safely recovers, old nonce cannot start new claim (0.379833ms)
+✔ crash after durable send intent becomes UNKNOWN_SEND, not automatic retry (0.358875ms)
+✔ timeout keeps unknown across restart; no conclusive ACK cannot become retry permission (0.565417ms)
+✔ ACK requires exact episode/outbox/chat/attempt/message id, not a success flag (0.601667ms)
+✔ bound simulated ACK can resolve unknown once; real delivery remains unqualified (2.669708ms)
+✔ only explicit no-acceptance proof permits retry after its scheduled delay (0.411875ms)
+✔ bounded outbox and operation journal defer without orphan rows or dedup eviction (0.54075ms)
+✔ corrupt restart and unsupported transition reopening fail without writes (0.945166ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.101084

@@ -1,0 +1,82 @@
+{
+  "schema": "ANOMALY_WORKER_CONTROLLED_ATOMIC_OUTBOX_MODEL_V1",
+  "base": "7d22a3a2617aa34dd3c04f1221855ead6b3ee9c8",
+  "dependencies": [
+    458,
+    461,
+    462
+  ],
+  "fresh_main_guards_read": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "lease": {
+    "lease_ref_sha": "45177d22bacc07d393a5694b1b50edd78531bfd4",
+    "lease": {
+      "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+      "status": "ACTIVE",
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792329923711",
+      "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "acquired_ts": 1792329923711,
+      "expires_ts": 1792335023711,
+      "expected_main": "6f2610f30942b4eddbb0829d1ec5a5eb912d77a7",
+      "scope": "OFFLINE only anomaly-research/** and checkpoints/anomaly-worker-*; audit/replay/detector/event/watch/outcomes/cost; no production imports, provider, SQL, deploy, MAIN, Telegram or shared mutation",
+      "guard_sha256": {
+        "AGENTS.md": "30b81a178c822f5b5af3a964f73bd4f463b7048a4b0795c42dff1ecdac6e2897",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "9584f05ca2994ea79ee01ef2520c853a84db686b9264ddfc0fb37cabdc175843",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "40f5dc076e69635160b2bc80b0977d3cb33a090faee2873244524d9e16007ef2",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b88526812c88b1cd113db1a0b6ad124426278e3dfa1c13262a6fddfc9c8a74ec"
+      }
+    },
+    "exact_readback": true
+  },
+  "files": [
+    {
+      "path": "anomaly-research/outbox/ATOMIC_OUTBOX_CONTRACT_RU.md",
+      "sha256": "3d8dfb3a21b4be45a2d2c5f485fb9771ce3c5c15943f6aee5beaebd3ad85ca8c"
+    },
+    {
+      "path": "anomaly-research/outbox/protocol.mjs",
+      "sha256": "733cd616311b6cbed6e51f2bc7d308886b6493df9e5134f7a2c007983411670b"
+    },
+    {
+      "path": "anomaly-research/outbox/protocol.test.mjs",
+      "sha256": "3ac5fd43b5a6c91c23e85264b710885f0944fd1d388a3679042310a4496ee27f"
+    },
+    {
+      "path": "anomaly-research/outbox/validation.txt",
+      "sha256": "dc7eefe7f251fed6a93d0e948371f62c7336ea2ab7963dbbbc17e8e07e684d92"
+    }
+  ],
+  "checks": {
+    "pass": 15,
+    "fail": 0,
+    "evidence_class": "CONTROLLED_MODEL_ONLY",
+    "raw_output": "anomaly-research/outbox/validation.txt",
+    "accepted_tests_repeated": false
+  },
+  "qualified_model_behavior": [
+    "Card/watch/plannedoutcomerefs/groupedDRAFT atomic bundle in pure state",
+    "expectedrevision/operationid/digest CAS and postcommit lostACK idempotency",
+    "owner/nonce/lease and before-send vs after-intent recovery",
+    "UNKNOWN_SEND survives restart, no blindretry",
+    "ExactsimulatedACK binds episode/outbox/attempt/chat/message/hash",
+    "Journal/outboxcapacitydefer without dedup eviction"
+  ],
+  "not_qualified": [
+    "Actualdatabase atomicity/fsync/nativeCAS/readback/SQLschema",
+    "Realtransport/outboxintegration/Telegramdelivery/exactlyonce",
+    "Factualfirstknown/laterpath/predictiveaccuracy",
+    "Realcommonbudget/nativecost/storagegraph/retentionhooks"
+  ],
+  "effects": {
+    "provider_HTTP": 0,
+    "production_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "production_imports": 0,
+    "schema_created": false,
+    "strategy_weights_forms_limits_pauses_changed": false
+  },
+  "next": "Coordinator integration/review of frozen offline packages. Native data, trusted persistence/grid/referencegraph, real admission/actualsameepisodedelivery are outside worker authorized lane. No additional source calls, cloud exports or repeated accepted tests to fill those gaps."
+}
