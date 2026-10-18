@@ -12,7 +12,9 @@ const peak=estimateCapacity({new_events_day:100,deep_rechecks_day:200,card_bytes
 const measured=[];
 for(const count of [10,104,128]){
  let memory=newMemory();
- for(let n=0;n<count;n++)memory=capture(memory,fixture({asset:'CONTROLLED:MEASURE:'+n}).result.events[0]).state;
+ // Explicitly request historical CONTROLLED observation for this benchmark;
+ // default replay capture is record-only after the starvation repair.
+ for(let n=0;n<count;n++)memory=capture(memory,fixture({asset:'CONTROLLED:MEASURE:'+n}).result.events[0],{watch_mode:'HISTORICAL_REVIEW'}).state;
  const bytesBefore=Buffer.byteLength(serialize(memory)),cpu=process.cpuUsage(),heap=process.memoryUsage().heapUsed,t0=performance.now();
  const ids=Object.keys(memory.cards);
  for(const id of ids){const c=memory.cards[id],s=snapshot(c,{id:'MEASURE:'+id,price:100});memory=observe(memory,{event_id:id,snapshot:s,now_ts:s.received_ts+1}).state;}

@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {detectClosed,features,TIMEFRAMES,newMemory,capture,observe,dueEvents,serialize,restore,protectedReferences,draftNotice,hash} from './observer.mjs';
+import {detectClosed,features,TIMEFRAMES,newMemory,capture as record,observe,dueEvents,serialize,restore,protectedReferences,draftNotice,hash} from './observer.mjs';
 import {fixture,snapshot} from './fixtures.mjs';
 const event=opts=>fixture(opts).result.events[0];
+// These historical CONTROLLED fixtures explicitly request model observation.
+// Default replay is now record-only; its admission boundaries have new tests.
+const capture=(memory,card)=>record(memory,card,{watch_mode:'HISTORICAL_REVIEW'});
 function seen(state,c,args){const s=snapshot(c,args);return observe(state,{event_id:c.event_id,snapshot:s,now_ts:s.received_ts+1});}
 for(const timeframe of Object.keys(TIMEFRAMES))test(`CONTROLLED closed ${timeframe}, native baseline and no direction`,()=>{
  const c=event({timeframe,offset:timeframe==='1w'?345600000:timeframe==='1d'?57600000:0});
@@ -43,8 +46,8 @@ test('idempotent capture freezes firstknown, conflicting body does not overwrite
 test('same coin multiple timeframes and events retained outside main selection',()=>{
  let m=newMemory();const a=event(),b=event({timeframe:'30m'});m=capture(m,a).state;m=capture(m,b).state;assert.equal(Object.keys(m.cards).length,2);assert.equal(dueEvents(m,Math.max(a.first_known_ts,b.first_known_ts)+1).events.length,2);assert.equal(dueEvents(m,a.first_known_ts).main_selection_used,false);
 });
-test('new work is deferred without evicting active event',()=>{
- const a=event(),b=event({asset:'CONTROLLED:OTHER'}),m=capture(newMemory({max_active:1}),a).state,r=capture(m,b);assert.equal(r.status,'DEFERRED_CAPACITY');assert.deepEqual(r.state,m);assert.equal(protectedReferences(m)[0].event_id,a.event_id);
+test('new watch is deferred but its card is recorded without evicting active event',()=>{
+ const a=event(),b=event({asset:'CONTROLLED:OTHER'}),m=capture(newMemory({max_active:1}),a).state,r=capture(m,b);assert.equal(r.status,'RECORDED_WATCH_DEFERRED');assert.deepEqual(r.state.watch[a.event_id],m.watch[a.event_id]);assert.equal(r.state.cards[b.event_id].first_known_ts,b.first_known_ts);assert.equal(r.state.watch[b.event_id].active,false);assert.equal(protectedReferences(r.state).length,2);
 });
 test('price touch is not a closed candle confirmation',()=>{
  const c=event(),m=capture(newMemory(),c).state,r=seen(m,c,{price:110});assert.equal(r.new_transitions,0);assert.equal(r.state.watch[c.event_id].hypotheses.LONG,'WAITING');assert.equal(r.state.watch[c.event_id].sampled_high,110);

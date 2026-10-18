@@ -59,16 +59,70 @@ export function detectClosed({instrument,timeframe,alignment_offset_ms,bars,prov
  return {schema:VERSION,events,diagnostic:{closed_bars:closed.length,open_bars_excluded:open,gapped_backgrounds:gap,zero_median_backgrounds:zero,insufficient_history:closed.length<=r.lookback},empirical_accuracy:null,activated:false};
 }
 function checkedCard(c){const {card_hash,...body}=c;need(card_hash===hash(body),'CARD_INTEGRITY');return c;}
+export const WATCH_ADMISSION_VERSION='SEPARATE_BACKFILL_WATCH_V1';
+const admissionPolicy=limits=>({version:WATCH_ADMISSION_VERSION,backfill_card_limit:limits.max_cards-limits.max_active});
+function checkedAdmission(memory){
+ need(memory.admission_policy?.version===WATCH_ADMISSION_VERSION,'EXPLICIT_LEGACY_MEMORY_UPGRADE_REQUIRED');
+ need(memory.admission_policy.backfill_card_limit===memory.limits.max_cards-memory.limits.max_active,'MEMORY_ADMISSION_POLICY_INVALID');
+}
+function captureClass(c){
+ checkedCard(c);need(['PROSPECTIVE','BACKFILLED'].includes(c.discovery),'CAPTURE_CLASS_INVALID');
+ if(c.discovery==='PROSPECTIVE')need(c.capture_mode==='LIVE_CAPTURE'&&c.evidence_class==='PROSPECTIVE'&&ts(c.first_known_ts)&&ts(c.event_end_ts)&&c.first_known_ts>=c.event_end_ts&&c.first_known_ts-c.event_end_ts<=c.rules.timely_lag_ms,'PROSPECTIVE_CAPTURE_CLASS_INVALID');
+ return c.discovery;
+}
+const activeCount=memory=>Object.values(memory.watch).filter(w=>w.active).length;
+const backfillCount=memory=>Object.values(memory.cards).filter(c=>c.discovery==='BACKFILLED').length;
+function deferredCard(memory,c,status){
+ // Nothing here persists outside this bounded model. The caller still owns
+ // the entire original card, including first-known time and proof references.
+ return {state:memory,status,event_id:c.event_id,card_hash:c.card_hash,first_known_ts:c.first_known_ts,raw_ref:c.provenance.raw_ref,raw_sha256:c.provenance.raw_sha256,caller_owned_card:clone(c),card_retained_by_model:false,durable_ingress_required:true,native_admission_qualified:false};
+}
+function initialWatch(c){return {active:false,status:'HISTORY_RECORDED',admission_kind:'HISTORICAL_RECORD_ONLY',hypotheses:{LONG:'WAITING',SHORT:'WAITING'},last_source_ts:null,last_snapshot_id:null,last_snapshot_hash:null,next_check_ts:c.first_known_ts,last_observed_ts:null,observed_count:0,gaps:[],sampled_high:c.anchor.price,sampled_low:c.anchor.price,transitions:0};}
 export function newMemory({max_active=128,max_cards=512,max_gap_spans=128,expected_snapshot_ms=300000,max_source_age_ms=300000}={}){
  need(Number.isInteger(max_active)&&max_active>0&&max_active<=10000&&Number.isInteger(max_cards)&&max_cards>=max_active&&max_cards<=20000&&Number.isInteger(max_gap_spans)&&max_gap_spans>0&&Number.isSafeInteger(expected_snapshot_ms)&&expected_snapshot_ms>0&&Number.isSafeInteger(max_source_age_ms)&&max_source_age_ms>0,'MEMORY_LIMITS_INVALID');
- return {schema:VERSION,limits:{max_active,max_cards,max_gap_spans,expected_snapshot_ms,max_source_age_ms},cards:{},watch:{},transitions:[],outbox:{}};
+ const limits={max_active,max_cards,max_gap_spans,expected_snapshot_ms,max_source_age_ms};
+ return {schema:VERSION,limits,admission_policy:admissionPolicy(limits),cards:{},watch:{},transitions:[],outbox:{}};
 }
-export function capture(memory,card){
- checkedCard(card);const state=clone(memory),old=state.cards[card.event_id];
+export function capture(memory,card,{watch_mode}={}){
+ checkedAdmission(memory);const kind=captureClass(card),old=memory.cards[card.event_id];
+ need(watch_mode===undefined||watch_mode==='HISTORICAL_REVIEW'&&kind==='BACKFILLED','WATCH_MODE_INVALID');
  if(old){checkedCard(old);return {state:memory,status:old.fact_fingerprint===card.fact_fingerprint?'DUPLICATE':'CONFLICTING_REPLAY',event_id:old.event_id};}
- if(Object.values(state.watch).filter(x=>x.active).length>=state.limits.max_active||Object.keys(state.cards).length>=state.limits.max_cards)return {state:memory,status:'DEFERRED_CAPACITY',event_id:card.event_id};
- state.cards[card.event_id]=clone(card);state.watch[card.event_id]={active:true,status:'WATCHING',hypotheses:{LONG:'WAITING',SHORT:'WAITING'},last_source_ts:null,last_snapshot_id:null,last_snapshot_hash:null,next_check_ts:card.first_known_ts,last_observed_ts:null,observed_count:0,gaps:[],sampled_high:card.anchor.price,sampled_low:card.anchor.price,transitions:0};
- return {state,status:'CAPTURED',event_id:card.event_id};
+ if(Object.keys(memory.cards).length>=memory.limits.max_cards)return deferredCard(memory,card,'DEFERRED_CARD_CAPACITY');
+ if(kind==='BACKFILLED'&&backfillCount(memory)>=memory.admission_policy.backfill_card_limit)return deferredCard(memory,card,'DEFERRED_BACKFILL_CARD_CAPACITY');
+ const state=clone(memory);state.cards[card.event_id]=clone(card);state.watch[card.event_id]=initialWatch(card);
+ if(kind==='PROSPECTIVE'||watch_mode==='HISTORICAL_REVIEW'){
+  const result=admitWatch(state,card.event_id,{mode:kind==='PROSPECTIVE'?'PROSPECTIVE_RETRY':'HISTORICAL_REVIEW'});
+  return {...result,status:result.status==='WATCH_ADMITTED'?'CAPTURED':'RECORDED_WATCH_DEFERRED',card_retained_by_model:true,native_admission_qualified:false};
+ }
+ return {state,status:'RECORDED_BACKFILL',event_id:card.event_id,card_retained_by_model:true,watch_admitted:false,native_admission_qualified:false};
+}
+export function admitWatch(memory,event_id,{mode}={}){
+ checkedAdmission(memory);const c=checkedCard(memory.cards[event_id]||{}),kind=captureClass(c),w=memory.watch[event_id];need(w,'WATCH_RECORD_MISSING');
+ need(mode===(kind==='PROSPECTIVE'?'PROSPECTIVE_RETRY':'HISTORICAL_REVIEW'),'EXPLICIT_WATCH_MODE_REQUIRED');
+ if(w.active)return {state:memory,status:'ALREADY_WATCH_ADMITTED',event_id,watch_admitted:true,native_admission_qualified:false};
+ if(!['HISTORY_RECORDED','WATCH_DEFERRED_ACTIVE_CAPACITY','LEGACY_RECORD_ONLY'].includes(w.status))return {state:memory,status:'CLOSED_OR_UNRECONCILED_WATCH_NOT_REOPENED',event_id,watch_admitted:false,native_admission_qualified:false};
+ const state=clone(memory),record=state.watch[event_id];
+ if(activeCount(memory)>=memory.limits.max_active){record.status='WATCH_DEFERRED_ACTIVE_CAPACITY';return {state,status:'WATCH_DEFERRED_ACTIVE_CAPACITY',event_id,watch_admitted:false,native_admission_qualified:false};}
+ record.active=true;record.status='WATCHING';record.admission_kind=kind==='PROSPECTIVE'?'PROSPECTIVE_CAPTURE':'HISTORICAL_EXPLICIT';
+ return {state,status:'WATCH_ADMITTED',event_id,watch_admitted:true,native_admission_qualified:false};
+}
+export function upgradeLegacyMemory(memory){
+ need(memory?.schema===VERSION,'MEMORY_SCHEMA_INVALID');
+ if(memory.admission_policy){checkedAdmission(memory);return {state:memory,status:'ALREADY_UPGRADED'};}
+ // Explicit in-memory migration only: preserve all existing active watches,
+ // outcome links/unknown fields and outbox. Historical debt is not evicted.
+ need(memory.limits&&['max_active','max_cards','max_gap_spans','expected_snapshot_ms','max_source_age_ms'].every(k=>Object.hasOwn(memory.limits,k)),'LEGACY_LIMITS_REQUIRED');
+ const limits=newMemory(memory.limits).limits;
+ need(Object.keys(memory.cards).length<=limits.max_cards&&activeCount(memory)<=limits.max_active,'LEGACY_MEMORY_OVER_GLOBAL_LIMITS');
+ for(const c of Object.values(memory.cards))captureClass(c);
+ for(const id of Object.keys(memory.watch))need(memory.cards[id],'LEGACY_WATCH_CARD_MISSING');
+ for(const o of Object.values(memory.outbox))need(memory.cards[o.transition?.event_id],'LEGACY_OUTBOX_CARD_MISSING');
+ const state=clone(memory);state.admission_policy=admissionPolicy(limits);
+ for(const [id,c] of Object.entries(state.cards)){
+  if(!state.watch[id])state.watch[id]={...initialWatch(c),status:'LEGACY_RECORD_ONLY'};
+  else state.watch[id].admission_kind??='LEGACY_RETAINED';
+ }
+ return {state,status:'LEGACY_PRESERVED_EXPLICITLY',legacy_active_backfilled:Object.entries(state.watch).filter(([id,w])=>w.active&&state.cards[id].discovery==='BACKFILLED').length,legacy_backfill_card_overage:Math.max(0,backfillCount(state)-state.admission_policy.backfill_card_limit),native_migration_qualified:false};
 }
 function transition(state,c,w,direction,to,s,now){
  const from=w.hypotheses[direction];if(from===to)return;
@@ -79,12 +133,12 @@ function transition(state,c,w,direction,to,s,now){
  state.outbox[t.transition_id]={transition:t,status:'DRAFT',message_id:null,network_send_enabled:false};
 }
 export function observe(memory,{event_id,snapshot,now_ts}={}){
- need(ts(now_ts),'NOW_REQUIRED');const c=checkedCard(memory.cards[event_id]||{}),before=memory.watch[event_id];need(before,'WATCH_MISSING');
+ checkedAdmission(memory);need(ts(now_ts),'NOW_REQUIRED');const c=checkedCard(memory.cards[event_id]||{}),before=memory.watch[event_id];need(before,'WATCH_MISSING');
  const s=snapshot;need(s&&hash(exactInstrument(s.instrument))===hash(c.instrument)&&str(s.snapshot_id)&&hex(s.raw_sha256)&&ts(s.source_ts)&&ts(s.received_ts)&&s.source_ts<=s.received_ts&&s.received_ts<=now_ts&&now_ts-s.source_ts<=memory.limits.max_source_age_ms&&s.source_ts>=c.first_known_ts&&num(s.price)&&s.price>0,'EXACT_SNAPSHOT_REQUIRED');
  const sh=hash(s);
  if(s.snapshot_id===before.last_snapshot_id)return {state:memory,status:sh===before.last_snapshot_hash?'DUPLICATE':'CONFLICTING_SNAPSHOT'};
  if(before.last_source_ts!==null&&s.source_ts<=before.last_source_ts)return {state:memory,status:'STALE_OR_REPLAYED_SOURCE_TIME'};
- if(!before.active)return {state:memory,status:'ALREADY_CLOSED'};
+ if(!before.active)return {state:memory,status:['HISTORY_RECORDED','WATCH_DEFERRED_ACTIVE_CAPACITY','LEGACY_RECORD_ONLY'].includes(before.status)?'WATCH_NOT_ADMITTED':'ALREADY_CLOSED'};
  const state=clone(memory),w=state.watch[event_id],previous=w.last_source_ts??c.first_known_ts;
  if(s.source_ts-previous>state.limits.expected_snapshot_ms){
   if(w.gaps.length>=state.limits.max_gap_spans)return {state:memory,status:'DEFERRED_GAP_CAPACITY',event_id};
@@ -109,14 +163,16 @@ export function observe(memory,{event_id,snapshot,now_ts}={}){
  return {state,status:'OBSERVED',new_transitions:state.transitions.length-memory.transitions.length,observed_extrema_scope:'SAMPLED_PRICES_ONLY'};
 }
 export function dueEvents(memory,now_ts,{limit=128}={}){
- need(ts(now_ts)&&Number.isInteger(limit)&&limit>0,'DUE_ARGUMENTS');
+ checkedAdmission(memory);need(ts(now_ts)&&Number.isInteger(limit)&&limit>0,'DUE_ARGUMENTS');
  const all=Object.entries(memory.watch).filter(([,w])=>w.active&&w.next_check_ts<=now_ts).sort((a,b)=>a[1].next_check_ts-b[1].next_check_ts||a[0].localeCompare(b[0]));
- return {events:all.slice(0,limit).map(([id])=>id),deferred:Math.max(0,all.length-limit),oldest_due_ts:all[0]?.[1].next_check_ts??null,main_selection_used:false};
+ const events=all.slice(0,limit).map(([id])=>id);
+ return {events,deferred:Math.max(0,all.length-limit),oldest_due_ts:all[0]?.[1].next_check_ts??null,lanes:{prospective:events.filter(id=>memory.cards[id].discovery==='PROSPECTIVE'),historical:events.filter(id=>memory.cards[id].discovery==='BACKFILLED')},pending_watch_count:Object.values(memory.watch).filter(w=>w.status==='WATCH_DEFERRED_ACTIVE_CAPACITY').length,backfill_record_count:backfillCount(memory),legacy_active_backfilled:Object.entries(memory.watch).filter(([id,w])=>w.active&&w.admission_kind==='LEGACY_RETAINED'&&memory.cards[id].discovery==='BACKFILLED').length,main_selection_used:false};
 }
 export function protectedReferences(memory){
- const ids=new Set(Object.entries(memory.watch).filter(([,w])=>w.active).map(([id])=>id));
- for(const o of Object.values(memory.outbox))if(o.status!=='SENT')ids.add(o.transition.event_id);
- return [...ids].sort().map(id=>({event_id:id,card_hash:memory.cards[id].card_hash,raw_ref:memory.cards[id].provenance.raw_ref,raw_sha256:memory.cards[id].provenance.raw_sha256,protect:['CARD','ANCHOR','RAW_PROOF','UNFINISHED_OUTCOMES','OUTBOX'],production_retention_hook_installed:false}));
+ // Capture now includes inactive backfill and pending admission. Until an
+ // external complete outcome/reference graph qualifies expiry, protect every
+ // retained card; a closed watch or simulated SENT cannot erase its proof.
+ return Object.keys(memory.cards).sort().map(id=>({event_id:id,card_hash:memory.cards[id].card_hash,raw_ref:memory.cards[id].provenance.raw_ref,raw_sha256:memory.cards[id].provenance.raw_sha256,protect:['CARD','ANCHOR','RAW_PROOF','UNFINISHED_OUTCOMES','OUTBOX'],retention_eligibility_qualified:false,production_retention_hook_installed:false}));
 }
 export function draftNotice(memory,transition_id){
  const t=memory.outbox[transition_id]?.transition;need(t,'TRANSITION_MISSING');const c=checkedCard(memory.cards[t.event_id]);
