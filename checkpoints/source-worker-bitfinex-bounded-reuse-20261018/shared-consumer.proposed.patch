@@ -1,0 +1,59 @@
+--- a/current-generation/files/src/block-result-context.mjs
++++ b/current-generation/files/src/block-result-context.mjs
+@@ -1,5 +1,6 @@
+ import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
+ import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
++import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
+ import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
+ import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
+ import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
+@@ -292,6 +293,10 @@
+  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_GATE_FUTURES_TAKER_TRADES_BOUNDED'){
+   if(!validateGateFuturesTradeSample(row,now))return null;
+   return{source:'Gate / исходные фьючерсные сделки',label:'Направление последних сделок Gate',value:`Gate фьючерсы: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и размер контракта проверены; выборка неполная, спот и общий межбиржевой вывод не подтверждены`};
++ }
++ if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITFINEX_TAKER_TRADES_BOUNDED'){
++  if(!validateBitfinexN12BoundedTradeSample(row,now))return null;
++  return{source:'Bitfinex / исходные спотовые сделки',label:'Направление последних сделок Bitfinex',value:`Bitfinex спот: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usd)}, продажи ${fmt(row.sell_quote_turnover_usd)} USD; точная монета проверена; выборка неполная, общий межбиржевой вывод не подтверждён`};
+  }
+  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITGET_TAKER_TRADES_BOUNDED'){
+   if(!validateBitgetN12BoundedTradeSample(row,now))return null;
+--- a/current-generation/files/src/telegram-plain-facts.mjs
++++ b/current-generation/files/src/telegram-plain-facts.mjs
+@@ -1,5 +1,6 @@
+ import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
+ import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
++import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
+ import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
+ import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
+ import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
+@@ -52,6 +53,10 @@
+   if(pair){const same=Math.abs(row.taker_imbalance)>=.05&&Math.abs(pair.taker_imbalance)>=.05&&Math.sign(row.taker_imbalance)===Math.sign(pair.taker_imbalance),part=r=>`${r.market==='SPOT'?'спот':'фьючерсы'}: ${r.valid_recent_rows} сделок, покупки ${money(r.buy_quote_turnover_usdt)}, продажи ${money(r.sell_quote_turnover_usdt)} USDT`;return `Последние сделки ${row.venue==='OKX'?'OKX':'KuCoin'}: ${part(row)}; ${part(pair)}. Выборки неполные. ${same?'Направления двух рынков совпадают только в этих выборках.':'Общего направления по двум рынкам нет.'} Это одна биржа.`;}
+   return `Последние сделки ${row.venue==='OKX'?'OKX':'KuCoin'} на ${row.market==='SPOT'?'споте':'фьючерсах'}: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usdt)}, продажи ${money(row.sell_quote_turnover_usdt)} USDT. Выборка неполная, общее направление не подтверждено.`;
+  }
++ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){
++  const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
++  return validateBitfinexN12BoundedTradeSample(row,c.observed_ts)?`Последние сделки Bitfinex на споте: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usd)}, продажи ${money(row.sell_quote_turnover_usd)} USD. Выборка неполная, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
++ }
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){
+   const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
+   return validateBitgetN12BoundedTradeSample(row,c.observed_ts)?`Последние сделки Bitget на ${row.market==='SPOT'?'споте':'фьючерсах'}: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usdt)}, продажи ${money(row.sell_quote_turnover_usdt)} USDT. Выборка неполная, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
+@@ -87,6 +92,7 @@
+ // canonical analysis and manual report; they cannot occupy a spare bullet.
+ export function isApprovedTelegramContextFact(f,c){
+  if(f?.block_id==='N12'&&['Направление последних сделок OKX','Направление последних сделок KuCoin'].includes(f.label)){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validN12PublicTrade(row,c.observed_ts);}
++ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitfinexN12BoundedTradeSample(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitgetN12BoundedTradeSample(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateGateFuturesTradeSample(row,c.observed_ts);}
+  if(f?.block_id==='N05'&&f.field==='AVAILABLE_VENUE_TAKER_FLOW_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateAvailableFlowEvidence(row,c.observed_ts);}
+--- a/current-generation/files/src/candidate-evidence-v2-runtime.mjs
++++ b/current-generation/files/src/candidate-evidence-v2-runtime.mjs
+@@ -375,7 +375,7 @@
+  const cgSector=retainCheckedSectorAbsence(params,routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0});
+  const supplementalSources=params?.supplemental_context?.sources||{};
+  const nansen=resolveNansenFlowPrimary(supplementalSources.NANSEN_FLOWS,params);
+- const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(routeBlock.results.JOINT_FLOW?.evidence||[]).filter(row=>row?.block_id==='N12'&&['GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id)),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
++ const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(routeBlock.results.JOINT_FLOW?.evidence||[]).filter(row=>row?.block_id==='N12'&&['BITFINEX_SPOT_TRADES','GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id)),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
+  const wikimedia=PAUSED_BLOCKS.N06?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.WIKIMEDIA||{status:'EXACT_VERIFIED_PAGE_BINDING_REQUIRED',evidence:[],network_calls:0};
+  const htxAnnouncements=PAUSED_BLOCKS.N07?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.HTX_ANNOUNCEMENTS||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
+  const pausedN01={status:'BLOCK_PAUSED_BY_OWNER',pause_reason:PAUSED_BLOCKS.N01,network_calls:0,evidence:[],check_completed:false,internal_only:true};
