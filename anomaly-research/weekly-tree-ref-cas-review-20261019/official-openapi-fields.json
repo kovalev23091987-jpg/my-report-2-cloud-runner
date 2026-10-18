@@ -1,0 +1,100 @@
+{
+  "schema": "OFFICIAL_GITHUB_OPENAPI_2022_11_28_SELECTED_FIELDS_V1",
+  "repository": "github/rest-api-description",
+  "repository_main_at_read": "755ee33b4a81d51f6f07a902cce26cbec3b822f2",
+  "source_url": "https://raw.githubusercontent.com/github/rest-api-description/755ee33b4a81d51f6f07a902cce26cbec3b822f2/descriptions/api.github.com/api.github.com.2022-11-28.json",
+  "full_document_bytes": 13429427,
+  "full_document_sha256": "309e30296b212d220ed143beeba216dbb0df11915daf79ee2ed01e06c6c9a586",
+  "document_info_version": "1.1.4",
+  "paths": {
+    "/repos/{owner}/{repo}/git/trees": {
+      "operationId": "git/create-tree",
+      "body_required": [
+        "tree"
+      ],
+      "properties": {
+        "tree": {
+          "type": "array"
+        },
+        "base_tree": {
+          "type": "string"
+        }
+      },
+      "enabledForGitHubApps": true,
+      "response_201_schema": {
+        "$ref": "#/components/schemas/git-tree"
+      },
+      "tree_item_properties": {
+        "path": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "100644",
+            "100755",
+            "040000",
+            "160000",
+            "120000"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "blob",
+            "tree",
+            "commit"
+          ]
+        },
+        "sha": {
+          "type": "string",
+          "nullable": true
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "tree_item_required": null,
+      "tree_array_minItems": null,
+      "tree_array_maxItems": null,
+      "four_entries_not_excluded_by_schema_array_bound": true
+    },
+    "/repos/{owner}/{repo}/git/commits": {
+      "operationId": "git/create-commit",
+      "body_required": [
+        "message",
+        "tree"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "tree": {
+          "type": "string"
+        },
+        "parents": {
+          "type": "array"
+        },
+        "author": {
+          "type": "object"
+        },
+        "committer": {
+          "type": "object"
+        },
+        "signature": {
+          "type": "string"
+        }
+      },
+      "enabledForGitHubApps": true,
+      "response_201_schema": {
+        "$ref": "#/components/schemas/git-commit"
+      },
+      "parents_items": {
+        "type": "string"
+      }
+    }
+  },
+  "prose_descriptions_omitted": true,
+  "application_or_test_execution": false,
+  "project_API_probe": false
+}
