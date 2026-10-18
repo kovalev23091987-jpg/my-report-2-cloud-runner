@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
-import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom} from './evidence-source-store.mjs';
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 
 export const NATIVE_EVM_CONTEXT_VERSION='native-evm-finalized-context-v1-20261007';
@@ -63,13 +63,16 @@ async function send(fetch_impl,endpoint,messages,clock){
  return{ok:r.ok&&Array.isArray(payload)&&errors.length===0,payload,http_status:r.status,observed_ts,errors,body_sha256:crypto.createHash('sha256').update(body).digest('hex')};}catch(e){return{ok:false,http_status:null,error:String(e.message).slice(0,160),observed_ts:clock()};}
 }
 export async function collectNativeEvmFinalizedContext({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,now=Date.now(),clock=Date.now,strict_fresh_manual=false}={}){
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',network_calls:0,evidence:[],internal_only:true};
  const network=exactNativeEvmNetwork({contract,asset_identity});if(!network)return{status:'EXACT_NATIVE_EVM_NETWORK_REQUIRED',network_calls:0,evidence:[],internal_only:true};
- await installEvidenceSourceStore(db);const key=NATIVE_EVM_CONTEXT_VERSION+':'+contract,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
+ await installEvidenceSourceStore(db);if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',network_calls:0,evidence:[],internal_only:true};const key=NATIVE_EVM_CONTEXT_VERSION+':'+contract,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===NATIVE_EVM_CONTEXT_VERSION&&cached.contract===contract&&Number.isSafeInteger(cached.observed_ts)&&cached.observed_ts<=now&&cached.expires_at>=now){const rebuilt=deriveNativeEvmFacts({contract,asset_identity,proof:cached.native_evm_proof,observed_ts:cached.observed_ts});if(rebuilt.status==='CLOSED'&&rebuilt.source_ts===cached.source_ts&&rebuilt.expires_at===cached.expires_at&&JSON.stringify(rebuilt.evidence)===JSON.stringify(cached.evidence)&&(cached.evidence||[]).every(row=>verifiedNativeEvmContextRow(row,{now})))return{...cached,network_calls:0,cache_status:'VALIDATED_ORIGINAL_CLOCK_CACHE'};}
- const blocked=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,now});if(blocked)return{...blocked,network_calls:0,evidence:[],internal_only:true};
- const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!headroom.allowed)return{status:headroom.status,network_calls:0,evidence:[],admission:headroom};
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',network_calls:0,evidence:[],internal_only:true};
+ const blocked=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,now});if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',network_calls:0,evidence:[],internal_only:true};if(blocked)return{...blocked,network_calls:0,evidence:[],internal_only:true};
+ const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',network_calls:0,evidence:[],internal_only:true};if(!headroom.allowed)return{status:headroom.status,network_calls:0,evidence:[],admission:headroom};
  await installProviderMinuteLedger(db);
  const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('PUBLICNODE_NATIVE_EVM',now-60000,now).first(),usedMinute=Number(rolling?.units);
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',network_calls:0,evidence:[],internal_only:true};
  const knownMinute=rolling?.units!==null&&rolling?.units!==''&&typeof rolling?.units!=='boolean'&&Number.isSafeInteger(usedMinute)&&usedMinute>=0;
  if(!knownMinute||usedMinute+2>6)return{status:knownMinute?'ROLLING_60S_CAP_REACHED':'ADMISSION_LEDGER_UNAVAILABLE',network_calls:0,evidence:[],admission:{allowed:false,status:knownMinute?'PROVIDER_RATE_LIMIT_LOCAL':'ADMISSION_LEDGER_UNAVAILABLE',reserved_units:0,rolling_units:knownMinute?usedMinute:null,cap:6}};
  const reservation_id='EV2:NATIVE_EVM:'+run_id+':'+contract,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:2});
@@ -91,7 +94,7 @@ export async function collectNativeEvmFinalizedContext({db,fetch_impl=globalThis
   }
  }else if(chain_id!==network.chain_id&&chain_id!==null)normalized={status:'WRONG_NATIVE_CHAIN_ID',evidence:[]};
  const observed=clock(),answer={version:NATIVE_EVM_CONTEXT_VERSION,...normalized,network_calls:reads.length,logical_rpc_methods:reads.reduce((n,r)=>n+r.request.length,0),admission,whole_job_admission,cache_status:'REFRESHED',receipts,internal_only:true};
- if(reads.some(r=>[403,429,451,503].includes(r.http_status)||r.errors?.some(e=>e.code===-32005))){const until=observed+30*60000;await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,observed_ts:observed,expires_ts:until,payload:{status:'SOURCE_ACCESS_OR_RATE_BACKOFF',until_ts:until}});}
- if(normalized.status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:normalized.expires_at,payload:answer});
+ if(reads.some(r=>[403,429,451,503].includes(r.http_status)||r.errors?.some(e=>e.code===-32005))){const until=observed+30*60000;answer.cache_write_receipts=[await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,observed_ts:observed,expires_ts:until,payload:{status:'SOURCE_ACCESS_OR_RATE_BACKOFF',until_ts:until}})];}
+ if(normalized.status==='CLOSED')answer.cache_write_receipts=[await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:normalized.expires_at,payload:answer})];
  return answer;
 }

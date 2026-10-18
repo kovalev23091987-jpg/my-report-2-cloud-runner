@@ -53,6 +53,7 @@ export async function reserveEvidenceSourceAttempts(db,{source,reservation_id,at
  ]);
  if(nativeSourceUsageUnclosed(db))return{allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',source:provider,day_utc:day,attempts:0};
  const row=await db.prepare(`SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1`).bind(id).first();
+ if(nativeSourceUsageUnclosed(db))return{allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',source:provider,day_utc:day,attempts:0};
  const allowed=row?.source===provider&&Number(row?.attempts)===count;
  return{allowed,status:allowed?'RESERVED':'DAILY_CAP_OR_DUPLICATE',source:provider,day_utc:day,attempts:allowed?count:0};
 }
