@@ -1,0 +1,65 @@
+{
+  "schema": "THREE_CHAT_OWNER_PAUSE_RECEIPTS_V1",
+  "owner_requested_pause": true,
+  "resume_requires_owner_message": true,
+  "coordinator": {
+    "thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+    "automation": "2",
+    "automation_status": "PAUSED",
+    "lease_release": "to be committed atomically with all4 active mirrors and exact handoff"
+  },
+  "source": {
+    "thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+    "status": "SAVED_AND_PAUSED",
+    "lease_released": true,
+    "automation": "2-2",
+    "automation_status": "PAUSED",
+    "current_owner": "CODEX:SOURCES:01a14e11:1792335675202",
+    "lease_acquired_ref": "1cdbe22bab172bd319c7710df569a881020df226",
+    "next_scope": "Await owner resume and coordinator assignment; route-specific MEXC rawHTML docs do not grant source acquisition",
+    "lease_released_ts": 1792336198250,
+    "lease_release_ref": "20fdd2e2ca2713b3240b4d74f4c961d12af67403",
+    "coordinator_release_ref_exact_readback": "20fdd2e2ca2713b3240b4d74f4c961d12af67403",
+    "branch": "work/report2-sources-mexc-phemex-doc-blockers-20261018",
+    "head": "8840ce89a50305ed69d7e8103ae75b49f0413683",
+    "PR": 476,
+    "coordinator_PR_head_exact_readback": true,
+    "worker_reported_worktree_clean": true,
+    "worker_reported_branch_remote_exact": true,
+    "findings_sha256": "5c4235d0b109ef4d98c69c0074bd9f8cffd7be6ff6fc84665df79cbe123edbc1",
+    "receipts_sha256": "de33335b34315f6ad3c89401bcdbc80d0c6f2af672f69d9ba9362353f3312abe",
+    "new_tests_after_stop": 0,
+    "source_HTTP_SQL_MAIN_Telegram": 0,
+    "doc_only_findings": {
+      "MEXC_kline_rate": "20 requests/2seconds exact endpoint only",
+      "MEXC_deals_rate": "20 requests/2seconds exact endpoint only",
+      "MEXC_contract_detail_rate": "10 requests/2seconds exact endpoint only",
+      "source": "already acquired official rawHTML, textual extraction omitted rate",
+      "actual_market_facts_or_new_admission": false,
+      "aggressor_units_identity_PhemexV2weight": "still require qualification"
+    }
+  },
+  "anomalies": {
+    "thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "status": "SAVED_AND_PAUSED",
+    "branch": "work/report2-anomalies-shared-http-review-20261018",
+    "head": "df3164ce957e678c1aca2f5aad49e2a7a9c9d411",
+    "PR": 475,
+    "worker_reported_branch_remote_exact": true,
+    "worker_reported_worktree_clean": true,
+    "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792335597043",
+    "lease_released": true,
+    "lease_released_ts": 1792336001224,
+    "lease_release_ref": "b173c629d2e5086dfa30b764384233f116930e9c",
+    "worker_reported_ref_readback_exact": true,
+    "own_automation": "NONE_EXISTS_FOR_EXACT_THREAD",
+    "next_scope": "Fresh guards/newownlease only after owner resume and coordinator assignment; PR475 known counter vector clarification, no shared/admission grant",
+    "coordinator_release_ref_exact_readback": "b173c629d2e5086dfa30b764384233f116930e9c"
+  },
+  "automations": {
+    "2": "PAUSED",
+    "2-2": "PAUSED",
+    "third_exact_thread": "NONE_EXISTS"
+  },
+  "cloud_report_scheduler_or_collector_crons_changed": false
+}
