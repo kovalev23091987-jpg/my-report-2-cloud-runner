@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {normalizeNativeLedgerPair,nativeRpcQuotaReceipt,nativeRpcQuotaWait} from './native-ledger-supply.mjs';
 import {CHAIN_SUPPLY_EVIDENCE_VERSION} from './chain-supply-evidence.mjs';
-import {readEvidenceSourceCache,reserveEvidenceSourceAttempts,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {readEvidenceSourceCache,reserveEvidenceSourceAttempts,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 
 export const XRPL_PAYMENTS_VERSION='xrpl-validated-native-payment-sample-v1-20261007';
 const TTL=20*60_000,SOURCE='CHAIN_RPC',URL='https://xrplcluster.com/',hash=s=>/^[a-f0-9]{64}$/i.test(s||''),account=s=>/^r[1-9A-HJ-NP-Za-km-z]{24,34}$/.test(s||'');
@@ -30,12 +30,20 @@ export function normalizeXrplNativePayments({contract,identity,ledger_payload,su
  return base;
 }
 export async function collectXrplNativePayments({db,fetch_impl,request_admit,contract,run_id,asset_identity,now,clock=Date.now,strict_fresh_manual=false}={}){
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const key=`XRPL_NATIVE_PAYMENTS:${XRPL_PAYMENTS_VERSION}:${contract}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===XRPL_PAYMENTS_VERSION)return cached;
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const supply=await readEvidenceSourceCache(db,{source:'XRPL_NATIVE_SUPPLY',asset_key:'xrp:native:mainnet',now}),proof=supply?.evidence?.find(r=>r.native_ledger_pair_payload)?.native_ledger_pair_payload;
  if(supply?.version!==CHAIN_SUPPLY_EVIDENCE_VERSION||supply.status!=='CLOSED'||normalizeNativeLedgerPair({...proof,observed_ts:now}).status!=='CLOSED')return{status:'EXACT_CURRENT_NATIVE_LEDGER_DEPENDENCY_REQUIRED',evidence:[],network_calls:0,internal_only:true};
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const quota=await readEvidenceSourceCache(db,{source:'XRPL_PUBLIC_RATE_LIMIT',asset_key:'xrplcluster.com',now}),until=nativeRpcQuotaWait(quota?.provider_quota,now);
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  if(until)return{status:'PROVIDER_RATE_LIMIT_WAIT',evidence:[],network_calls:0,retry_after_ts:until,provider_quota:quota.provider_quota,internal_only:true};
- const day=new Date(now).toISOString().slice(0,10),used=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind('XRPL_NATIVE_SUPPLY',day).first(),parentUsed=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(SOURCE,day).first();
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
+ const day=new Date(now).toISOString().slice(0,10),used=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind('XRPL_NATIVE_SUPPLY',day).first();
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
+ const parentUsed=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(SOURCE,day).first();
+ if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  if(Number(used?.attempts||0)+1>SOURCE_POLICIES.XRPL_NATIVE_SUPPLY.daily_cap||Number(parentUsed?.attempts||0)+1>SOURCE_POLICIES[SOURCE].daily_cap)return{status:'SOURCE_DAILY_CAP_REACHED',evidence:[],network_calls:0,internal_only:true};
  const reservation_id=`EV2:XRPL_NATIVE_PAYMENT:${run_id}:${contract}:${proof.current_payload.result.ledger_hash}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:1});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
  const admission=await reserveEvidenceSourceAttempts(db,{source:'XRPL_NATIVE_SUPPLY',reservation_id,attempts:1,daily_cap:SOURCE_POLICIES.XRPL_NATIVE_SUPPLY.daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
@@ -44,7 +52,7 @@ export async function collectXrplNativePayments({db,fetch_impl,request_admit,con
  try{const r=await fetch_impl(URL,{method:'POST',headers:{accept:'application/json','content-type':'application/json','user-agent':'My-Report-2/native-payments-v1'},redirect:'error',signal:controller.signal,body:JSON.stringify({method:'ledger',params:[{ledger_hash:proof.current_payload.result.ledger_hash,transactions:true,expand:true,api_version:2}]})});http_status=r.status;const body=await r.text();if(Buffer.byteLength(body)>512*1024)error='RESPONSE_TOO_LARGE';else if(!r.ok)error=`HTTP_${r.status}`;else try{payload=JSON.parse(body);}catch{error='SOURCE_SCHEMA_ERROR';}provider_quota=nativeRpcQuotaReceipt(r,payload,clock());}
  catch(e){error=e?.name==='AbortError'?'TIMEOUT':String(e?.message||e).slice(0,160);}finally{clearTimeout(timer);}
  const observed=clock(),normalized=error?{status:nativeRpcQuotaWait(provider_quota,observed)?'PROVIDER_RATE_LIMIT_WAIT':'SOURCE_ERROR',evidence:[],internal_only:true}:normalizeXrplNativePayments({contract,identity:asset_identity,ledger_payload:payload,supply_pair_proof:proof,observed_ts:observed}),result={version:XRPL_PAYMENTS_VERSION,...normalized,network_calls:1,whole_job_admission,admission,receipts:[{route:'XRPL_EXACT_VALIDATED_LEDGER_PAYMENTS',status:normalized.status.startsWith('CLOSED')?'CLOSED':'SOURCE_ERROR',http_status,error:error||normalized.status,...(provider_quota?{provider_quota}:{})}],internal_only:true};
- if(nativeRpcQuotaWait(provider_quota,observed))await writeEvidenceSourceCache(db,{source:'XRPL_PUBLIC_RATE_LIMIT',asset_key:'xrplcluster.com',observed_ts:provider_quota.observed_ts,expires_ts:provider_quota.retry_after_ts,payload:{provider_quota}});
+ if(nativeRpcQuotaWait(provider_quota,observed))result.cache_write_receipts=[await writeOptionalEvidenceSourceCache(db,{source:'XRPL_PUBLIC_RATE_LIMIT',asset_key:'xrplcluster.com',observed_ts:provider_quota.observed_ts,expires_ts:provider_quota.retry_after_ts,payload:{provider_quota}})];
  const expires=normalized.status.startsWith('CLOSED')?proof.current_payload.result.ledger.close_time*1000+946684800000+TTL:observed+30*60_000;
- if(normalized.status!=='PROVIDER_RATE_LIMIT_WAIT')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:expires,payload:result});return result;
+ if(normalized.status!=='PROVIDER_RATE_LIMIT_WAIT')(result.cache_write_receipts??=[]).push(await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:expires,payload:result}));return result;
 }

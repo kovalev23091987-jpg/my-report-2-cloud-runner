@@ -1,0 +1,60 @@
+{
+  "schema": "ACTIVE105_N04_CACHE_FACT_PRESERVATION_SCOPE_V1",
+  "recorded_utc": "2026-10-18T07:44:11.796324+00:00",
+  "source_main": "453110c7cc5a6fd8f1168532e33b827b6fcc1ab1",
+  "defect": "Finalized N04 facts were thrown away if a later optional result/backoff/quota cache write threw; reservation readback could authorize transport after its native cost became unknown.",
+  "fixed_paths": [
+    "EVM finalized token events",
+    "native BNB/ETH finalized transaction receipts",
+    "Solana native and token transfers",
+    "XRPL validated native delivered-payment sample"
+  ],
+  "actual_retained_replay": {
+    "contract": "BNB-USDT",
+    "run": 37651164902,
+    "clock_ts": 1791390018000,
+    "new_provider_acquisition": false
+  },
+  "controlled_cases": [
+    "known cache exception",
+    "native unknown cache exception",
+    "successful cache ACK with unknown cost",
+    "entry/cache/day/minute/atomic reservation readback unknown stops subsequent SQL/HTTP",
+    "429 and original provider retry retained when backoff cache fails",
+    "XRPL valid body plus zero-quota header survives optional quota cache failure",
+    "existing manual/V5 consumers retain exact BNB IDs; original brief remains without N04 display"
+  ],
+  "related_cases_pass": 62,
+  "related_cases_fail": 0,
+  "new_cases": 31,
+  "actual_originals": [
+    {
+      "path": "checkpoints/native-evm-connected-37651164902/native-evm-current-raw.json.gz",
+      "file_sha256": "1741f4c73a9554623932342fb12cfed8c484b4a949f73e1e130e7fe865adf837",
+      "raw_sha256": "b0c35d57cd97c51ecf4fb9f346104bcf5ce9fcf9843c94bef65b4f2d2b588bfe"
+    },
+    {
+      "path": "checkpoints/native-evm-connected-37651164902/native-evm-current-proof.json",
+      "file_sha256": "ee94fed56e70dc97a44a52f4a40f96870ae286c4be200a346f4bb882d10a4089",
+      "raw_sha256": "ee94fed56e70dc97a44a52f4a40f96870ae286c4be200a346f4bb882d10a4089"
+    },
+    {
+      "path": "checkpoints/actual-native-primary-connected-37575766314.json.gz",
+      "file_sha256": "2165c51cd43acc3c5e35a456f7a6127cac9596e7c49cf4c0e55b4cf13d55d7e5",
+      "raw_sha256": "a0dd9b32b50b22c6f313e6c91605f226f9c16ce0733e9a0448227e05d3fd835d"
+    }
+  ],
+  "normal_path_extra_SQL": 0,
+  "new_provider_HTTP": 0,
+  "new_native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "no_source_clocks_refreshed": true,
+  "spent_grants_day_minute_reservations_refunded": false,
+  "caps_strategy_weights_pauses_forms_changed": false,
+  "new_current_105_useful_coverage": false,
+  "native_full_manual_same_run_SENT_accepted": false,
+  "brief_N04_display_accepted": false,
+  "storage_PR421_unchanged": true,
+  "canonical_cursor710_preserved": true
+}
