@@ -1,3 +1,4 @@
+import {qualifiedTurnoverBaseline} from './flow-turnover-baseline.mjs';
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
 import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
@@ -266,11 +267,11 @@ function describe(row,now){
  if(row.block_id==='N05'){
   if(row.metric_family==='AVAILABLE_VENUE_TAKER_FLOW_4H'){
    if(!validateAvailableFlowEvidence(row,now))return null;
-   const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: покупки ${fmt(c.buy_quote)}, продажи ${fmt(c.sell_quote)} ${c.quote}; ${c.imbalance===0?'равные объёмы':`перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`}`).join('; ');
+   const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: покупки ${fmt(c.buy_quote)}, продажи ${fmt(c.sell_quote)} ${c.quote}; ${c.imbalance===0?'равные объёмы':`перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`}`).map((text,i)=>text+turnoverComparison(row.components[i],now)).join('; ');
    return{source:[...new Set(row.components.map(c=>c.venue))].join(' / '),label:'Поток сделок по доступным площадкам за четыре часа',value:`${parts}; ${row.venue_count===1?'данные одной биржи':row.venue_count===2?'две доступные биржи':`доступных бирж: ${row.venue_count}`}, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены`};
   }
   if(!validateJointFlowEvidence(row,now))return null;
-  const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`).join('; ');
+  const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`).map((text,i)=>text+turnoverComparison(row.components[i],now)).join('; ');
   return{source:[...new Set(row.components.map(c=>c.venue==='BITGET'?'Bitget':c.venue==='BINANCE'?'Binance':c.venue))].join(' / '),label:'Согласованный поток спота и фьючерсов за четыре часа',value:`${parts}; полные окна сопоставлены, близость направления проверена; баллы и разрешение входа не назначены`};
  }
  if(row.block_id==='N12'&&row.metric_family==='EXACT_SIGNED_RAW_24H'){
@@ -351,6 +352,8 @@ function describe(row,now){
 
 // This consumer only uses already acquired, exact, validated facts. It neither
 // creates a missing score nor interprets raw transfers or social counts as trades.
+
+const turnoverComparison=(component,now)=>qualifiedTurnoverBaseline(component.turnover_baseline,component,now)?`; сравнение общего оборота с предыдущими 30 днями: ${fmt(component.turnover_baseline.ratio_to_median)}× медианы ${fmt(component.turnover_baseline.median_four_hour_quote)} ${component.quote} (180 четырёхчасовых окон)`:'';
 function n12FourHourCrossVenueContext(evidence,contract,now){
  const exact=row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable;
  const joint=list(evidence).find(row=>exact(row)&&row.block_id==='N05'&&row.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'&&validateJointFlowEvidence(row,now));
