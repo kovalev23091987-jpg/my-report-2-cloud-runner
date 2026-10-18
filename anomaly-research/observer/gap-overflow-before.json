@@ -1,0 +1,424 @@
+{
+  "schema": "CONTROLLED_GAP_CAPACITY_STARVATION_BEFORE_V1",
+  "input_class": "CONTROLLED_PROTOTYPE_NOT_NATIVE",
+  "source_sha256": "6d57afe651304797cae36ae9f7194208567e0148f5cdce2a8e1b83cf91145e52",
+  "parameters": {
+    "defaults": {
+      "max_active": 128,
+      "max_cards": 512,
+      "max_gap_spans": 128,
+      "expected_snapshot_ms": 300000,
+      "max_source_age_ms": 300000
+    },
+    "gap_spacing_ms": 3600000,
+    "accepted_gap_count": 128
+  },
+  "card": {
+    "schema": "offline-anomaly-observer-v1",
+    "event_id": "ANOM:7db564e9fb6fc9fc20acb70160283139ed1c868f474b41bacdea8ab8f65890f2",
+    "episode_id": "ANOM:7db564e9fb6fc9fc20acb70160283139ed1c868f474b41bacdea8ab8f65890f2",
+    "group_key": "e5730365ca6fc19c33336f15227f0e639aa806fc0e8a00d7766487e31a1f28dd",
+    "instrument": {
+      "asset_id": "CONTROLLED:COIN",
+      "venue": "CONTROLLED_VENUE",
+      "upstream": "CONTROLLED_UPSTREAM",
+      "contract": "TEST-USDT",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "price_unit": "USDT_PER_BASE",
+      "volume_unit": "BASE",
+      "multiplier": 1,
+      "binding_ref": "controlled-native-binding",
+      "binding_kind": "VERIFIED_NATIVE",
+      "identity_verified": true
+    },
+    "timeframe": "15m",
+    "event_start_ts": 1700018100000,
+    "event_end_ts": 1700019000000,
+    "rules_hash": "f03706a9661931f45e295198a0ea5c1d69749436a75049ab7ed035c4776cfc20",
+    "alignment_offset_ms": 0,
+    "first_known_ts": 1700019001000,
+    "discovery": "PROSPECTIVE",
+    "capture_mode": "LIVE_CAPTURE",
+    "evidence_class": "PROSPECTIVE",
+    "provenance": {
+      "raw_sha256": "c5ac039eae79740d29765c7818b0952155466d4b1eeec7c00aaa034b73007328",
+      "raw_ref": "controlled:c5ac039eae79740d29765c7818b0952155466d4b1eeec7c00aaa034b73007328",
+      "source_as_of_ts": 1700019000000,
+      "received_ts": 1700019000500,
+      "evidence_class": "PROSPECTIVE"
+    },
+    "candle": {
+      "start_ts": 1700018100000,
+      "end_ts": 1700019000000,
+      "open": 100,
+      "high": 105,
+      "low": 95,
+      "close": 99.9,
+      "volume": 1000
+    },
+    "features": {
+      "volume_ratio": 10,
+      "volume_median": 100,
+      "volume_mad": 0,
+      "volume_robust_z": null,
+      "range": 10,
+      "range_pct": 10,
+      "range_relative_median": 5,
+      "body": 0.09999999999999432,
+      "body_ratio": 0.009999999999999431,
+      "upper_wick": 5,
+      "lower_wick": 4.900000000000006,
+      "upper_wick_ratio": 0.5,
+      "lower_wick_ratio": 0.49000000000000055,
+      "close_location": 0.49000000000000055,
+      "body_return_pct": -0.09999999999998899,
+      "background_count": 20
+    },
+    "background": [
+      {
+        "start_ts": 1700000100000,
+        "end_ts": 1700001000000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700001000000,
+        "end_ts": 1700001900000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700001900000,
+        "end_ts": 1700002800000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700002800000,
+        "end_ts": 1700003700000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700003700000,
+        "end_ts": 1700004600000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700004600000,
+        "end_ts": 1700005500000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700005500000,
+        "end_ts": 1700006400000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700006400000,
+        "end_ts": 1700007300000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700007300000,
+        "end_ts": 1700008200000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700008200000,
+        "end_ts": 1700009100000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700009100000,
+        "end_ts": 1700010000000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700010000000,
+        "end_ts": 1700010900000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700010900000,
+        "end_ts": 1700011800000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700011800000,
+        "end_ts": 1700012700000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700012700000,
+        "end_ts": 1700013600000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700013600000,
+        "end_ts": 1700014500000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700014500000,
+        "end_ts": 1700015400000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700015400000,
+        "end_ts": 1700016300000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700016300000,
+        "end_ts": 1700017200000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      },
+      {
+        "start_ts": 1700017200000,
+        "end_ts": 1700018100000,
+        "open": 100,
+        "high": 101,
+        "low": 99,
+        "close": 100,
+        "volume": 100
+      }
+    ],
+    "anchor": {
+      "price": 99.9,
+      "source_ts": 1700019000000
+    },
+    "facts": [
+      "CLOSED_OHLCV",
+      "UNUSUAL_VOLUME_RELATIVE_TO_PRIOR_SAME_MARKET"
+    ],
+    "hypotheses": [
+      "ABSORPTION_POSSIBLE",
+      "DISTRIBUTION_POSSIBLE",
+      "TWO_SIDED_TURNOVER_POSSIBLE",
+      "DERIVATIVES_NOISE_POSSIBLE",
+      "INSUFFICIENT_CAUSAL_DATA"
+    ],
+    "rules": {
+      "version": "offline-anomaly-observer-v1",
+      "lookback": 20,
+      "volume_ratio": 3,
+      "extreme_ratio": 5,
+      "small_body": 0.35,
+      "large_wick": 0.5,
+      "timely_lag_ms": 600000,
+      "confirmation_timeframe": "15m"
+    },
+    "spot_context": {
+      "status": "SPOT_EVENT_WINDOW_MISSING",
+      "required": false
+    },
+    "conditions": {
+      "LONG": {
+        "confirm_close_above": 105,
+        "refute_close_below": 95
+      },
+      "SHORT": {
+        "confirm_close_below": 95,
+        "refute_close_above": 105
+      },
+      "timeframe": "15m"
+    },
+    "direction": "UNASSIGNED",
+    "entry_authorized": false,
+    "main_score_effect": 0,
+    "fact_fingerprint": "ed0d9c8c7cec1f9070a23707bb2d8490e8db6e349ef3a508558132e43bac5dc4",
+    "card_hash": "5823d00ea0f0131c6970c56e124f4808b6d13515781455c222e6561712c31cbf"
+  },
+  "snapshot129": {
+    "instrument": {
+      "asset_id": "CONTROLLED:COIN",
+      "venue": "CONTROLLED_VENUE",
+      "upstream": "CONTROLLED_UPSTREAM",
+      "contract": "TEST-USDT",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "price_unit": "USDT_PER_BASE",
+      "volume_unit": "BASE",
+      "multiplier": 1,
+      "binding_ref": "controlled-native-binding",
+      "binding_kind": "VERIFIED_NATIVE",
+      "identity_verified": true
+    },
+    "snapshot_id": "GAP-129",
+    "source_ts": 1700483401000,
+    "received_ts": 1700483401100,
+    "price": 110,
+    "raw_sha256": "5fe8832f8428d96ea23d0d67e01abfafc3c22f5c9151eee35be885e4bb7c4747",
+    "closed_candle": {
+      "start_ts": 1700482500000,
+      "end_ts": 1700483400000,
+      "timeframe": "15m",
+      "open": 100,
+      "high": 111,
+      "low": 99,
+      "close": 110,
+      "volume": 100,
+      "raw_sha256": "5fe8832f8428d96ea23d0d67e01abfafc3c22f5c9151eee35be885e4bb7c4747"
+    }
+  },
+  "snapshot130": {
+    "instrument": {
+      "asset_id": "CONTROLLED:COIN",
+      "venue": "CONTROLLED_VENUE",
+      "upstream": "CONTROLLED_UPSTREAM",
+      "contract": "TEST-USDT",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "price_unit": "USDT_PER_BASE",
+      "volume_unit": "BASE",
+      "multiplier": 1,
+      "binding_ref": "controlled-native-binding",
+      "binding_kind": "VERIFIED_NATIVE",
+      "identity_verified": true
+    },
+    "snapshot_id": "GAP-130",
+    "source_ts": 1700487001000,
+    "received_ts": 1700487001100,
+    "price": 110,
+    "raw_sha256": "a2452d546948363a9f9564edfa4c70e9501e97784422258add255e9c45e085f6",
+    "closed_candle": {
+      "start_ts": 1700486100000,
+      "end_ts": 1700487000000,
+      "timeframe": "15m",
+      "open": 100,
+      "high": 111,
+      "low": 99,
+      "close": 110,
+      "volume": 100,
+      "raw_sha256": "a2452d546948363a9f9564edfa4c70e9501e97784422258add255e9c45e085f6"
+    }
+  },
+  "after128": {
+    "observed_count": 128,
+    "gaps": 128,
+    "last_source_ts": 1700479801000,
+    "next_check_ts": 1700480101000,
+    "state_sha256": "09c45833148446f5df4f126bdac6f46017cf61de50a66b1450c1cab0a0bb606c"
+  },
+  "after129": {
+    "status": "DEFERRED_GAP_CAPACITY",
+    "observed_count": 128,
+    "gaps": 128,
+    "last_source_ts": 1700479801000,
+    "next_check_ts": 1700480101000,
+    "hypotheses": {
+      "LONG": "WAITING",
+      "SHORT": "WAITING"
+    },
+    "transitions": 0,
+    "state_unchanged": true
+  },
+  "after130": {
+    "status": "DEFERRED_GAP_CAPACITY",
+    "observed_count": 128,
+    "last_source_ts": 1700479801000,
+    "next_check_ts": 1700480101000,
+    "hypotheses": {
+      "LONG": "WAITING",
+      "SHORT": "WAITING"
+    },
+    "transitions": 0,
+    "state_unchanged": true,
+    "due": {
+      "events": [
+        "ANOM:7db564e9fb6fc9fc20acb70160283139ed1c868f474b41bacdea8ab8f65890f2"
+      ],
+      "deferred": 0,
+      "oldest_due_ts": 1700480101000,
+      "lanes": {
+        "prospective": [
+          "ANOM:7db564e9fb6fc9fc20acb70160283139ed1c868f474b41bacdea8ab8f65890f2"
+        ],
+        "historical": []
+      },
+      "pending_watch_count": 0,
+      "backfill_record_count": 0,
+      "legacy_active_backfilled": 0,
+      "main_selection_used": false
+    }
+  },
+  "PROVIDER_HTTP": 0,
+  "SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "native_storage_or_transport_qualified": false
+}

@@ -1,0 +1,165 @@
+{
+  "schema": "ANOMALY_WORKER_GAP_OVERFLOW_REPAIR_V1",
+  "status": "OFFLINE_CONTROLLED_REPAIR_READY_FOR_COORDINATOR",
+  "base_main": "a9d13e8dd5e7ed69953e3ed38af26596826affd9",
+  "branch": "work/report2-anomalies-gap-overflow-20261018",
+  "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "fresh_guard_sha256": {
+    "AGENTS.md": "8664103c383b503928eb65bb82133a44290a198b79039847e8b30a546da36fea",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "fc5e8c0a5a52d99a3c212d18f420fd49660517522ed8da2f59492b317fc96383",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "bb44704499d1699b5231dec70da41c2f8d5325674705ce7c90bc4ebc26670e6e",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b83f5ba8444b8ab92a17b0b651aae2cba87c5dcb674fc894f6d6b75ca2b1b701"
+  },
+  "active_working_window_proofs": [
+    {
+      "path": "checkpoints/ACTIVE105_STATISTICS_CADENCE_RECEIPTS_HANDOFF_20261018.json",
+      "sha256": "08769fc4f9f7be7e54c45f06050399738bd44b960cccee16626d4291cde0f7ff"
+    },
+    {
+      "path": "checkpoints/maintenance-cadence-receipts-20261018/cloud-and-offline-receipts.json",
+      "sha256": "39312dd2525593cc3922cf8a2e0db830725d1c588fc7467bb7379bbe7b1cc359"
+    },
+    {
+      "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+      "sha256": "9131dfe49eaf04d9a9a474f8ce574ccc0cee4f671cff1472f4124c076cb742c4"
+    }
+  ],
+  "all4_active_equal_at_acquisition": true,
+  "lease_acquired_ref": "3e0e858ba4f5516c0e1ca1f7c06982b96c6cdbeb",
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792356000088",
+  "lease_expires_ts": 1792359600088,
+  "lease_exact_readback": true,
+  "before_fixture": {
+    "path": "anomaly-research/observer/gap-overflow-before.json",
+    "input_class": "CONTROLLED_PROTOTYPE_NOT_NATIVE",
+    "original_module_sha256": "6d57afe651304797cae36ae9f7194208567e0148f5cdce2a8e1b83cf91145e52",
+    "first128_state_sha256": "09c45833148446f5df4f126bdac6f46017cf61de50a66b1450c1cab0a0bb606c",
+    "after129": {
+      "status": "DEFERRED_GAP_CAPACITY",
+      "observed_count": 128,
+      "gaps": 128,
+      "last_source_ts": 1700479801000,
+      "next_check_ts": 1700480101000,
+      "hypotheses": {
+        "LONG": "WAITING",
+        "SHORT": "WAITING"
+      },
+      "transitions": 0,
+      "state_unchanged": true
+    },
+    "after130": {
+      "status": "DEFERRED_GAP_CAPACITY",
+      "observed_count": 128,
+      "last_source_ts": 1700479801000,
+      "next_check_ts": 1700480101000,
+      "hypotheses": {
+        "LONG": "WAITING",
+        "SHORT": "WAITING"
+      },
+      "transitions": 0,
+      "state_unchanged": true,
+      "due": {
+        "events": [
+          "ANOM:7db564e9fb6fc9fc20acb70160283139ed1c868f474b41bacdea8ab8f65890f2"
+        ],
+        "deferred": 0,
+        "oldest_due_ts": 1700480101000,
+        "lanes": {
+          "prospective": [
+            "ANOM:7db564e9fb6fc9fc20acb70160283139ed1c868f474b41bacdea8ab8f65890f2"
+          ],
+          "historical": []
+        },
+        "pending_watch_count": 0,
+        "backfill_record_count": 0,
+        "legacy_active_backfilled": 0,
+        "main_selection_used": false
+      }
+    },
+    "native": false
+  },
+  "after_facts_proven_by_new_test_assertions": {
+    "accepted_observations": 130,
+    "retained_gap_intervals": 128,
+    "unretained_interval_count": 2,
+    "next_due_advances": true,
+    "no_due_at_snapshot130_receipt": true,
+    "LONG_current_confirmation": true,
+    "transitions_after129": 2,
+    "new_transitions_after130": 0,
+    "first128_state_hash_matches_before": true,
+    "cards_firstknown_cohort_proofrefs_limits_unchanged": true,
+    "raw_overflow_snapshot_not_durable": true,
+    "separate_after_replay_repeated": false
+  },
+  "test_runs": [
+    {
+      "command": "node --test anomaly-research/observer/gap-overflow.test.mjs",
+      "initial_pass": 10,
+      "initial_fail": 1,
+      "initial_issue": "Test helper used POINT-timestamp IDs instead of exact saved GAP-n IDs; corrected fixture constructor only",
+      "final_pass": 11,
+      "final_fail": 0,
+      "final_tool_output_chunk": "22a584"
+    },
+    {
+      "command": "node --test --test-name-pattern=price touch|CONTROLLED (LONG|SHORT)|7d and 90d|restart recovers|stale snapshots|gap cap|bounded due queue anomaly-research/observer/observer.test.mjs",
+      "pass": 8,
+      "fail": 0,
+      "output_file": "anomaly-research/observer/gap-overflow-related-test-output.txt",
+      "reason_for_existing_tests": "New confirmed defect changes observe gap-cap path, accepted current confirmations, due scheduling and restart state; only these directly affected cases repeated"
+    }
+  ],
+  "full_old_suites_rerun": false,
+  "files": {
+    "anomaly-research/observer/observer.mjs": "086274b4bab805c18bb1db740e0d59e30b374b3f5dd4be72dac3880cfa76da05",
+    "anomaly-research/observer/observer.test.mjs": "173282b9d2975b2a92dba80001eb463a66f6ec314dc3be041bd24edf9262b3d6",
+    "anomaly-research/observer/gap-overflow-before.json": "7e3376eba04af5b0516dc9770d7f5bcdc90c4e5f869af70c0c40aa3150fb83db",
+    "anomaly-research/observer/gap-overflow.test.mjs": "af5f8d86b9c71afb80b0072254fb06727ff7d307a495def72d6da1296ed613f4",
+    "anomaly-research/observer/gap-overflow-related-test-output.txt": "ab2b4f2c6568881e924d34254ed8ba53b29b87e0e11678e9e639e29e8a4b9a90",
+    "anomaly-research/observer/GAP_OVERFLOW_REPAIR_RU.md": "9606ac818fd13e8d25d67fc1aae586e0549803cf3e7cfb690739941a462189fc"
+  },
+  "limits_raised": false,
+  "strategy_weights_forms_pauses_changed": false,
+  "shared_files_changed": false,
+  "production_runtime_import_or_activation": false,
+  "native_storage_ingress_qualified": false,
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "workflow_dispatch": 0,
+  "deploy": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "next_action": "Coordinator reviews frozen own-lane patch and runs one connected qualification if appropriate. External durable ingress for exact overflow intervals/snapshots, native admission and outcome completeness remain unqualified; no live activation grant.",
+  "prepublication_guard": {
+    "main": "5a3aaacd161eaaea48f6ea8c24f13c09e0abd400",
+    "guards": {
+      "AGENTS.md": "2c498f89f83335038b02bd0e018a8c7f3090e4fe8e1a7552fcd34eadf46431da",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "d154fc1e1030c22ac40068e96cfb91d96b96b4eb7c35010d93f13df4b5a8c3c7",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "5e032262f782f38d4b34d743a87ace21be04b6e67a43bdaea6f3545b4ee35102",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "911e646c85e9b38d112d752e3b80f59d13392bfc8a6bbd69b6a2ef34092485bf"
+    },
+    "proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_ZERO_QUERY_BUDGET_AND_ACTUAL_STATISTICS_HANDOFF_20261018.json",
+        "sha256": "d417117196e2819f853d9e8fb24c6c809ee90be842c88b3542767ff75168754b"
+      },
+      {
+        "path": "checkpoints/source-budget-context-20261018/cloud-and-native-receipts.json",
+        "sha256": "4b453368c01e0b13eca9cf7372f6b6fc07f5685256a591a64004cabfc2514398"
+      },
+      {
+        "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+        "sha256": "9131dfe49eaf04d9a9a474f8ce574ccc0cee4f671cff1472f4124c076cb742c4"
+      }
+    ],
+    "all4_active_equal": true,
+    "audited_original_observer_fixtures_and_related_tests_unchanged_since_base": true,
+    "own_lease_ref_exact": true,
+    "own_lease_active": true
+  }
+}

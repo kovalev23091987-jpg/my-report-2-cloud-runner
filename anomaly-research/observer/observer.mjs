@@ -127,7 +127,7 @@ export function upgradeLegacyMemory(memory){
 function transition(state,c,w,direction,to,s,now){
  const from=w.hypotheses[direction];if(from===to)return;
  w.hypotheses[direction]=to;w.transitions++;
- const t={event_id:c.event_id,transition:w.transitions,direction,from,to,source_ts:s.source_ts,observed_ts:now,snapshot_id:s.snapshot_id,raw_sha256:s.raw_sha256,timeliness:w.gaps.length?'GAPPED_CURRENT_CONFIRMATION':'OBSERVED',entry_authorized:false};
+ const t={event_id:c.event_id,transition:w.transitions,direction,from,to,source_ts:s.source_ts,observed_ts:now,snapshot_id:s.snapshot_id,raw_sha256:s.raw_sha256,timeliness:w.gaps.length?'GAPPED_CURRENT_CONFIRMATION':'OBSERVED',...(w.gap_overflow?{gap_details_complete:false}:{}),entry_authorized:false};
  t.transition_id=hash(t);state.transitions.push(t);
  // Draft only. Exactly-once external delivery needs a real transactional store and ACK protocol.
  state.outbox[t.transition_id]={transition:t,status:'DRAFT',message_id:null,network_send_enabled:false};
@@ -139,10 +139,19 @@ export function observe(memory,{event_id,snapshot,now_ts}={}){
  if(s.snapshot_id===before.last_snapshot_id)return {state:memory,status:sh===before.last_snapshot_hash?'DUPLICATE':'CONFLICTING_SNAPSHOT'};
  if(before.last_source_ts!==null&&s.source_ts<=before.last_source_ts)return {state:memory,status:'STALE_OR_REPLAYED_SOURCE_TIME'};
  if(!before.active)return {state:memory,status:['HISTORY_RECORDED','WATCH_DEFERRED_ACTIVE_CAPACITY','LEGACY_RECORD_ONLY'].includes(before.status)?'WATCH_NOT_ADMITTED':'ALREADY_CLOSED'};
- const state=clone(memory),w=state.watch[event_id],previous=w.last_source_ts??c.first_known_ts;
+ const state=clone(memory),w=state.watch[event_id],previous=w.last_source_ts??c.first_known_ts;let unretained_gap;
  if(s.source_ts-previous>state.limits.expected_snapshot_ms){
-  if(w.gaps.length>=state.limits.max_gap_spans)return {state:memory,status:'DEFERRED_GAP_CAPACITY',event_id};
-  w.gaps.push({start_ts:previous,end_ts:s.source_ts,kind:'UNOBSERVED_INTERVAL',interpolated:false});
+  const interval={start_ts:previous,end_ts:s.source_ts,kind:'UNOBSERVED_INTERVAL',interpolated:false};
+  if(w.gaps.length<state.limits.max_gap_spans)w.gaps.push(interval);
+  else{
+   // Keep every retained interval. Exhausted detail capacity must not freeze
+   // current observation; enclosing bounds do not reconstruct the lost path.
+   const old=w.gap_overflow;
+   need(!old||old.schema==='GAP_DETAIL_OVERFLOW_V1'&&Number.isSafeInteger(old.unretained_interval_count)&&old.unretained_interval_count>0&&old.unretained_interval_count<Number.MAX_SAFE_INTEGER&&ts(old.first_start_ts)&&ts(old.last_end_ts)&&old.first_start_ts<old.last_end_ts&&old.last_end_ts<=previous&&old.exact_intervals_retained===false&&old.bounds_scope==='ENCLOSING_NOT_CONTIGUOUS','GAP_OVERFLOW_STATE_INVALID');
+   w.gap_overflow={schema:'GAP_DETAIL_OVERFLOW_V1',unretained_interval_count:(old?.unretained_interval_count??0)+1,first_start_ts:old?.first_start_ts??previous,last_end_ts:s.source_ts,exact_intervals_retained:false,bounds_scope:'ENCLOSING_NOT_CONTIGUOUS'};
+   // This receipt belongs to the caller, not a durable store in this model.
+   unretained_gap={event_id,interval,caller_owned_snapshot:clone(s),gap_detail_retained_by_model:false,durable_ingress_required:true,native_ingress_qualified:false};
+  }
  }
  w.last_source_ts=s.source_ts;w.last_snapshot_id=s.snapshot_id;w.last_snapshot_hash=sh;w.last_observed_ts=now_ts;w.observed_count++;w.next_check_ts=s.source_ts+state.limits.expected_snapshot_ms;
  w.sampled_high=Math.max(w.sampled_high,s.price);w.sampled_low=Math.min(w.sampled_low,s.price);
@@ -160,7 +169,7 @@ export function observe(memory,{event_id,snapshot,now_ts}={}){
  }
  w.active=!Object.values(w.hypotheses).every(x=>x==='REFUTED');
  w.status=w.active?(Object.values(w.hypotheses).includes('CONFIRMED')?'CONFIRMED_OBSERVATION':'WATCHING'):'REFUTED';
- return {state,status:'OBSERVED',new_transitions:state.transitions.length-memory.transitions.length,observed_extrema_scope:'SAMPLED_PRICES_ONLY'};
+ return {state,status:'OBSERVED',new_transitions:state.transitions.length-memory.transitions.length,observed_extrema_scope:'SAMPLED_PRICES_ONLY',...(w.gap_overflow?{gap_details_complete:false,gap_overflow:clone(w.gap_overflow)}:{}),...(unretained_gap?{unretained_gap}:{})};
 }
 export function dueEvents(memory,now_ts,{limit=128}={}){
  checkedAdmission(memory);need(ts(now_ts)&&Number.isInteger(limit)&&limit>0,'DUE_ARGUMENTS');
