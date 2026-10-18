@@ -10,6 +10,7 @@ export async function collectBackpackFlow(params={}){
  const {db,contract,asset_identity:identity,identity_method,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[];
  const components=[],cache_write_receipts=[];
  const root={version:VERSION,status:'EXACT_BACKPACK_TOKEN_BINDING_REQUIRED',check_completed:false,network_calls:0,evidence:[],components,receipts,cache_write_receipts,internal_only:true};let calls=0,sequence=0,providerBlocked=false;
+ const failureStatus=fallback=>{const status=receipts.at(-1)?.status;return status&&status!=='RECEIVED_NOT_QUALIFIED'?status:fallback;};
  if(!db?.prepare||!run_id||identity?.asset_kind==='NATIVE'||!identity?.contract_or_mint||!verifiedAssetRouteIdentity(params))return root;
  const unclosed=()=>nativeSourceUsageUnclosed(db);
  if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
@@ -49,10 +50,11 @@ export async function collectBackpackFlow(params={}){
   const assets=await metadata(SOURCE,'METADATA:ASSETS','https://api.backpack.exchange/api/v1/assets',p=>p.filter(r=>!r.symbol.includes('.')).map(r=>({symbol:r.symbol,tokens:(r.tokens||[]).filter(t=>typeof t.contractAddress==='string').map(t=>({blockchain:t.blockchain,contractAddress:t.contractAddress}))})));
   if(!assets)return{...root,status:receipts.at(-1)?.status||'INVALID_BACKPACK_IDENTITY',network_calls:calls};
   const markets=await metadata(SOURCE,'METADATA:SPOT','https://api.backpack.exchange/api/v1/markets',p=>p.filter(r=>r.marketType==='SPOT'&&!r.rwaMarketType&&r.orderBookState==='Open'&&r.visible===true&&['USDT','USDC'].includes(r.quoteSymbol)).map(r=>({symbol:r.symbol,baseSymbol:r.baseSymbol,quoteSymbol:r.quoteSymbol,marketType:r.marketType,orderBookState:r.orderBookState,visible:r.visible,rwaMarketType:r.rwaMarketType})));
+  if(!markets)return{...root,status:failureStatus('INVALID_BACKPACK_MARKET_METADATA'),network_calls:calls};
   const quote=['USDT','USDC'].find(quote=>exactBackpackTokenBinding({contract,identity,assets,markets,quote}));
   if(!quote)return{...root,network_calls:calls};
   const symbol=contract.slice(0,-5)+'_'+quote,query=`symbol=${encodeURIComponent(symbol)}`,candles=await get('https://api.backpack.exchange/api/v1/klines?'+query+'&interval=1m&startTime='+(end-14400000)/1000+'&endTime='+end/1000+'&priceType=Last&source=Venue'),pages=[];let component;
-  if(!Array.isArray(candles)||candles.length!==240)return{...root,status:'NATIVE_240_MINUTE_GRID_REQUIRED',network_calls:calls};
+  if(!Array.isArray(candles)||candles.length!==240)return{...root,status:failureStatus('NATIVE_240_MINUTE_GRID_REQUIRED'),network_calls:calls};
   for(let page=0;page<3;page++){const rows=await get('https://api.backpack.exchange/api/v1/trades/history?'+query+'&limit=1000&offset='+page*1000);if(!Array.isArray(rows))break;pages.push(rows);component=normalizeBackpackSpotFlow({contract,identity,assets,markets,quote,pages,candles,window_end_ts:end,observed_ts:receipts.at(-1).received_ts});if(component.check_completed||rows.length<1000||rows.at(-1)?.timestamp<end-14400000)break;}
   if(!component)return{...root,status:receipts.at(-1)?.status||'BACKPACK_WINDOW_NOT_CLOSED',network_calls:calls};
   const ts=component.observed_ts,payload={version:VERSION,observed_ts:ts,assets:assets.filter(r=>r.symbol===contract.slice(0,-5)),markets:markets.filter(r=>r.symbol===symbol),quote,pages,candles};
