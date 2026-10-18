@@ -52,7 +52,17 @@
     "cloud_branch_main_pending": true,
     "native_exact_source_row_pending": true,
     "both_persisted_finalists_pending": true,
-    "same_run_Telegram_pending": true
+    "same_run_Telegram_pending": true,
+    "cloud_initial_failure": {
+      "run": 39118953456,
+      "head": "e84ddb4e6b00c8159ee1d24ed47c89fee43673cb",
+      "artifact": 12133805733,
+      "digest": "sha256:1688ab2ac584049bf5d36c464194c86c6226c2b2a10cbb34f73e0ebb368068c9",
+      "cause": "Three existing extracted-runner tests omitted the new lexical reconciliation dependency. Actual full runner defines it before both preflights. Add explicit null dependency to existing no-proof harnesses without changing assertions.",
+      "targeted_harness_tests": 25,
+      "pass": 25,
+      "fail": 0
+    }
   },
   "preserved": {
     "unknown_ops": 15,
@@ -121,6 +131,10 @@
     "checkpoints/paid-report-recovery-20261018/source-run-metadata.json": {
       "bytes": 14942,
       "sha256": "a7d854e0d6806046c1286217076e745e14106ce4e6367e2c4849c76e08805312"
+    },
+    "checkpoints/paid-report-recovery-20261018/cadence-harness.tap.gz": {
+      "bytes": 1327,
+      "sha256": "98d273d99f4346279afef07cc14d663842d9781e1ac64bb7a6a3eb4c389d9e1b"
     }
   },
   "next": "Exact assembled branch/main cloud qualification, then actual bounded native admission. Do not force a known-failing MAIN or manufacture SENT; retain original unknown ledger values and every spent reservation."
