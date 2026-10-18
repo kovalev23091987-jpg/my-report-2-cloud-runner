@@ -1,0 +1,664 @@
+{
+  "schema": "PAID_NATIVE_ADMISSION_AND_PARTIAL_CRON_EXACT_RECEIPTS_V1",
+  "recorded_utc": "2026-10-18T10:54:42.497344+00:00",
+  "cloud": {
+    "PR437_branch": {
+      "run": 39119194727,
+      "attempt": 1,
+      "attempt_started_at": "2026-10-18T10:25:30Z",
+      "head": "992b82fbab25c1cf5519f008c2ceed5d1ad329e1",
+      "artifact": 12133647038,
+      "artifact_created_at": "2026-10-18T10:26:35Z",
+      "digest": "sha256:b9f881471b4111bbd05bf32098866cbb8d662c370b5a0593336b361f2c7b17e5",
+      "pass": 1379,
+      "fail": 0,
+      "TAP": 21,
+      "tap_SHA256": {
+        "exact-asset-role-and-collector-audit.tap": "a0d7831ae7d0ed5f84f5b1c0d3c6b0e11317d9913b4389ed4e6e5af1b1f7ee88",
+        "cold-archive.tap": "af5ecc6a522e9e6e2c5c7444a16444c4e62e2716f328be14085bbe7f2268ce68",
+        "native-identity-source-handoff.tap": "30bfdeacd7086f6f78c5942dcf71f51e982c3253f2f9aefb949ea7f3f978d56b",
+        "active-source-headroom.tap": "7c38b6e5dd9edca4a580b15f021f6a38e368b5e7afdcc42a3f3d3a13d74f07c6",
+        "new-liq-research-admission.tap": "1b36ddf08b85dfc9336894819099ee21838a6481fd780fa49574ac756185fcc3",
+        "hourly-native-usage.tap": "dac49e0d3ea788a96dd625048f39aa7a8b44d72ac3ec463ac089c83bba93e693",
+        "target.tap": "11a67dfb348c3309e86f1f5d33673ba8d379c6dacc731283a192074211be48e3",
+        "scheduled-evidence-budget.tap": "cab1c4173639d38ac7623e4ba00c3d2e639d602850426dcd128c009188440a5f",
+        "native-transport-fallback.tap": "6e3c1fcc8244c951d558c432b0b16f4bd743f226416fa84795667b9d09f64f9f",
+        "index-useful-only.tap": "cc2e91b163b6ff419ca0eead83d988d7bc2c55124c27b1b2565969559df5a975",
+        "weekly-htx-synchronized-plan.tap": "10dc42e99fa30c8e0eef72b845deec9464d383f3e7bcf759b72ea4d7dc0eb490",
+        "private-reader-runtime.tap": "bdc267fa4850c01a8270675165e27ebeaeabfd541725d4dd524cc0c8e03ea6a4",
+        "native-useful-runtime.tap": "edda51b74cf2496f698cd388670349409e0d7eb893d19a6e388bd3add641c366",
+        "private-forecast-consumer.tap": "773fefb08e3d5c72b8c3c08b9e3328a1e28795f64f2be29f4c57c0f1e086c308",
+        "native-useful-budget.tap": "c502f6bd230847591be02400305d8cbb2093a399a3af50e7d17fe51c91e49bac",
+        "active-source-finalist-and-markets.tap": "9a7028b1266badebe877a3fae716ac8803dbfe712e428de154849f873b88c693",
+        "native-sector-provider-binding.tap": "33c32d5fe62d823e0cf27d2809e6cb33ed1183b076910bdcbec4d0169f9511a5",
+        "retained-write-failure-guard.tap": "31c73aa8819acfeb5f35160e0bfe4db8ae157a59599f73f6e7db432020bae804",
+        "public-venue-health-priority.tap": "14b045a67a1d550487aff8ddfc3a02da1cc28f2d41239eb843885cd01de36276",
+        "private-price-connected.tap": "f296eccea1a110dd44829e4d72a7b3f09b4f764489de5cbe826cdd191fb8e335",
+        "source-health-priority.tap": "39d652bac3ac420e1769be9194627664a90a1b8fe292998f1b151584b8f48f56"
+      },
+      "assembly": {
+        "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+        "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+        "production_overlays": 15,
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "source_mode_default": "OFF",
+        "production_changed": true
+      },
+      "binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "coverage_summary": {
+        "output": "audit-output/liq-assembled/n11-rendered-source-coverage.json",
+        "original_publications": 83,
+        "distinct_assets": 21,
+        "block_counts": {
+          "N04": {
+            "historical_qualified_assets_in_current_pause_report_subset": 15,
+            "historical_decision_consumer_assets_in_that_subset": 15,
+            "historical_report_consumer_assets_in_that_subset": 15,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N05": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 0,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N10": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N11": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N12": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 20,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 19,
+            "whole_105_current_coverage_proven": false
+          },
+          "N15": {
+            "historical_qualified_assets_in_current_pause_report_subset": 18,
+            "historical_decision_consumer_assets_in_that_subset": 18,
+            "historical_report_consumer_assets_in_that_subset": 18,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          }
+        },
+        "LIQ_numeric_historical": 73,
+        "LIQ_gaps": 30,
+        "issues": 0
+      }
+    },
+    "PR437_main": {
+      "run": 39119428553,
+      "attempt": 1,
+      "attempt_started_at": "2026-10-18T10:29:07Z",
+      "head": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+      "artifact": 12132624753,
+      "artifact_created_at": "2026-10-18T10:30:09Z",
+      "digest": "sha256:1808bf1f693d41319dc16857ba44b4147fc6bbc321f3c043dfd68d84922dc876",
+      "pass": 1379,
+      "fail": 0,
+      "TAP": 21,
+      "tap_SHA256": {
+        "exact-asset-role-and-collector-audit.tap": "fb922e0481cbf96d27a713b6099c5264763fb7969daea3112ccc40955a8b081c",
+        "cold-archive.tap": "c297e11b1162f34a90a0ec74f2de07db83251bad296b8f03b6b0ee9c48953cac",
+        "native-identity-source-handoff.tap": "bb49fa0aeffdc0935424cd9af79cddfcdb167f7830863fc96f2e728b0c278919",
+        "active-source-headroom.tap": "78daf457001f886cbaaa86d8efeed7bb34ecea7f585b0429e75bdc17046035fb",
+        "new-liq-research-admission.tap": "4fddfd93495d6718b1c7acec03c0a6d0ae3f7041cfcde270740ad66203812dac",
+        "hourly-native-usage.tap": "44dd8d811940e4ad8aebe17d1d736c8d0667862d02e32afb746c30c5efb5461b",
+        "target.tap": "01377aa9fe0a6a8c92ada495702cc5f4c6e414537c45ff638c10cf12ff2352ea",
+        "scheduled-evidence-budget.tap": "8bfae4a19ecd8ba7e77444de20b5164f66d18362e78cd6f3684ceac589509ea0",
+        "native-transport-fallback.tap": "7c2022cc8299a89088c06a8c94937a941e44916b2477dda50c29506b8128a925",
+        "index-useful-only.tap": "56efc5e4a0e710d6a9109b2e5c7dd57503fcb99d359f8767bd21a20e65d4639a",
+        "weekly-htx-synchronized-plan.tap": "fef0564679e211bea955921f406f611c9c64a868cefd37bc7103e55e98148f08",
+        "private-reader-runtime.tap": "c0a3284537c6b76b7d38cefb417e186da806f2a4eebf0cfb323d761ecb03112c",
+        "native-useful-runtime.tap": "3da5710709a94fa70ce7d963b9a603c3dad0c7b583dfde66af54be7d5f43d746",
+        "private-forecast-consumer.tap": "e7dbde23329c60e771903ca8d19e05cfe142d3fc3fd9c7aa49acf4d64f4a6d48",
+        "native-useful-budget.tap": "ca50fa4e086d4389c0636951ac9756d785d27925a9f09110b5d319a197fcae8c",
+        "active-source-finalist-and-markets.tap": "e71b816460825c42fa87b999488dfcc665cb9f6046c09b5ecb82819fb884c7cc",
+        "native-sector-provider-binding.tap": "9a8e10630ec4afdd414e5ef2950b8780f8dbf5a84431906251bb85f57a9eb24a",
+        "retained-write-failure-guard.tap": "d158fff08bd41cc3f292f36077fcd43a56e524d903d4059a977dbed192a4d8d8",
+        "public-venue-health-priority.tap": "eac8a3afd9863322a91822ac0c289da2c85cd76883f143bbd440a1e9387e0c33",
+        "private-price-connected.tap": "0ebc272bf129bc9ae98cbe61ba7a681916e3019c46380d93248a4a3d87b2f8ff",
+        "source-health-priority.tap": "c206df8611b1e6cb76d783b36758c36bc8a2b3639cec8625f5a1be40c5efa1b6"
+      },
+      "assembly": {
+        "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+        "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+        "production_overlays": 15,
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "source_mode_default": "OFF",
+        "production_changed": true
+      },
+      "binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "coverage_summary": {
+        "output": "audit-output/liq-assembled/n11-rendered-source-coverage.json",
+        "original_publications": 83,
+        "distinct_assets": 21,
+        "block_counts": {
+          "N04": {
+            "historical_qualified_assets_in_current_pause_report_subset": 15,
+            "historical_decision_consumer_assets_in_that_subset": 15,
+            "historical_report_consumer_assets_in_that_subset": 15,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N05": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 0,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N10": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N11": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N12": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 20,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 19,
+            "whole_105_current_coverage_proven": false
+          },
+          "N15": {
+            "historical_qualified_assets_in_current_pause_report_subset": 18,
+            "historical_decision_consumer_assets_in_that_subset": 18,
+            "historical_report_consumer_assets_in_that_subset": 18,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          }
+        },
+        "LIQ_numeric_historical": 73,
+        "LIQ_gaps": 30,
+        "issues": 0
+      }
+    },
+    "PR440_branch": {
+      "run": 39120630800,
+      "attempt": 1,
+      "attempt_started_at": "2026-10-18T10:47:20Z",
+      "head": "038d2ffd5b00851ee7ab4ac1a82ec52a15698903",
+      "artifact": 12134405715,
+      "artifact_created_at": "2026-10-18T10:48:27Z",
+      "digest": "sha256:a038d06d28bfe3db80beee9881fda30de468db21319a9e19da5ad3e10588d755",
+      "pass": 1382,
+      "fail": 0,
+      "TAP": 21,
+      "tap_SHA256": {
+        "exact-asset-role-and-collector-audit.tap": "74fb9e7429c2b0aa197f61c68173c7eef2c0f9feb3c6d327e9f2995ecdae6f07",
+        "cold-archive.tap": "0debcf0fb9dc1ddd187546d07ef12f548eab7a3fb4b1e8aeac231036057dfdd5",
+        "native-identity-source-handoff.tap": "b0538408160b5c307bd6ba2f161be6b7c83bc2ef8ffa4a7d8213719228aa30a8",
+        "active-source-headroom.tap": "2744f72f8c616fd2a870e1eb2de7b09a9f542c0b87c0d19424f24aa55850c18d",
+        "new-liq-research-admission.tap": "43e2c3233b41f756d6604eaca6db4a43ea088bf738f374d1f54f9e25a3e204aa",
+        "hourly-native-usage.tap": "009e5703fe370601a8f2484a2857527ad5a773f077a8ae03d73d4e8448570cdb",
+        "target.tap": "ef1fe7c681d656f97c2eb3cb5342b66c4f60d3e654459f5b2f89d21005d75859",
+        "scheduled-evidence-budget.tap": "6ba452e1584ae738488d3756e2ba1f708dfd172d47ecee81ac5bec8dae723954",
+        "native-transport-fallback.tap": "4654e811c381bbef1be4a11236d6788e462ea7ac048b3b729d9de5eb7ba98026",
+        "index-useful-only.tap": "1abeedcd9bcd576620ab9899a994b8b01510db9b873270efbb27ab825de90b4c",
+        "weekly-htx-synchronized-plan.tap": "cc98ac3a4d00de5de1962b704ee4f2221ebcc83aafd4f52e2c6672c622f09734",
+        "private-reader-runtime.tap": "bf4e501ae38852cba8d9997fa0b77f5aa9fbfbeb3c1c1c76a3675220b5490b66",
+        "native-useful-runtime.tap": "07866dc6ad625f98df551c052dd2a6bd41f4f892c194e9791752a178c6c8635f",
+        "private-forecast-consumer.tap": "697bc6051660087b54bb6c7a72e17fcae5e40298a94d5951fba72b715dd87889",
+        "native-useful-budget.tap": "4677dafa4ed61f8991a0d5995d1b49b99441cb15b81bfea7dd8dd3482bde9e97",
+        "active-source-finalist-and-markets.tap": "d72ff497238c42b76e55d4d446406de841f507c767abbf24a31c5b6281eb88e0",
+        "native-sector-provider-binding.tap": "8490497a2d799a50184eca9ccf0a383754b27ce3664debc4441c589f8034ade2",
+        "retained-write-failure-guard.tap": "b28a97f24865c0ea32b84545a87383beabf3a169509728cee70becb04bdf6480",
+        "public-venue-health-priority.tap": "e12a1c34332d7ae7ba471cf7fc2787e9acbb43c310dbf6d40a343282fa0f337e",
+        "private-price-connected.tap": "30b7c6c422321d09934a7667a79ff8da1c5dbf0f3c65c40b4f2ff26a94cdfcbd",
+        "source-health-priority.tap": "3e9144c50fb43893f0413be5e8b52e6a95ea94adfad57ccdfb91345f15d5166e"
+      },
+      "assembly": {
+        "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+        "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+        "production_overlays": 15,
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "source_mode_default": "OFF",
+        "production_changed": true
+      },
+      "binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "coverage_summary": {
+        "output": "audit-output/liq-assembled/n11-rendered-source-coverage.json",
+        "original_publications": 83,
+        "distinct_assets": 21,
+        "block_counts": {
+          "N04": {
+            "historical_qualified_assets_in_current_pause_report_subset": 15,
+            "historical_decision_consumer_assets_in_that_subset": 15,
+            "historical_report_consumer_assets_in_that_subset": 15,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N05": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 0,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N10": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N11": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N12": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 20,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 19,
+            "whole_105_current_coverage_proven": false
+          },
+          "N15": {
+            "historical_qualified_assets_in_current_pause_report_subset": 18,
+            "historical_decision_consumer_assets_in_that_subset": 18,
+            "historical_report_consumer_assets_in_that_subset": 18,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          }
+        },
+        "LIQ_numeric_historical": 73,
+        "LIQ_gaps": 30,
+        "issues": 0
+      }
+    },
+    "PR440_main": {
+      "run": 39120940797,
+      "attempt": 1,
+      "attempt_started_at": "2026-10-18T10:52:02Z",
+      "head": "2e9ecf741a3bcfbb380d487de28f21bc825ec2d5",
+      "artifact": 12134715209,
+      "artifact_created_at": "2026-10-18T10:53:04Z",
+      "digest": "sha256:e2479982ae84d67851458b301cea5766bca1ee8a2058d621db66c987a23e9231",
+      "pass": 1382,
+      "fail": 0,
+      "TAP": 21,
+      "tap_SHA256": {
+        "exact-asset-role-and-collector-audit.tap": "78cc2b9a6b689dc1838d01e6770cdc8d426c6649538038cf572b6d69bcf88240",
+        "cold-archive.tap": "49e9ed9762c40ceaa6002e8a172606ad371c9b574906e67ffd226cacd5a31301",
+        "native-identity-source-handoff.tap": "0309b24e05c6fe207e05082dede3bf328f93d9c735bcf47ceb8c3c4d11c6db48",
+        "active-source-headroom.tap": "ddace6302dec9aa695173c21a61fd69a1c26bc43d3ed48aa6df060cba56cb863",
+        "new-liq-research-admission.tap": "547930c98158ef97ff162c69774ceccf5533cf954bc6c572eb2aac6b9ed1c7e0",
+        "hourly-native-usage.tap": "7bb7d7171a5695a37017bf3af945ee856893fe441a0c041625eca722044db75e",
+        "target.tap": "85551fa08f12c211048a4f863e609db445e87b7f14e8b174a6384720b1774f6b",
+        "scheduled-evidence-budget.tap": "a5d71c5ecab69660673c6248e017443fe21525ad0e2f3adbc7e5922156193a74",
+        "native-transport-fallback.tap": "098412cb6ac73d3686f350e839878e10e024bc31360ff871278007379168eb83",
+        "index-useful-only.tap": "3ee22c8535d5257e42c3eccfba2f73cb6a5002990dac09a563c75978485c0308",
+        "weekly-htx-synchronized-plan.tap": "e1d4f94cbd229d5c1665ad5ec2db3785dc14a5a074872129bd629333f66b2513",
+        "private-reader-runtime.tap": "ebbcef55727fe1be924d8496c09fbfd561891d2b5f0ac780fbc5f857e7190d8f",
+        "native-useful-runtime.tap": "aae4e09518bb25da92a23109ca26c21489a5a4aaaaa20cdf44dc94afbcb2203c",
+        "private-forecast-consumer.tap": "e2e3e5ca23eeb091226fabaa3e381a72458616fff77737580e62a3a8418df78f",
+        "native-useful-budget.tap": "40ab11b9ec6b5e3ddb513f27e6e4053181d61b0602bbaa07ad9b264c1c775a63",
+        "active-source-finalist-and-markets.tap": "77e73fa8d4183f8915080d4af9e34a6e55f61f822be77d01ee0b8b081a4f3396",
+        "native-sector-provider-binding.tap": "4db6e96751da15d3c5f4df0bb1411faa5358146d5b6900ff63a1c76892410760",
+        "retained-write-failure-guard.tap": "be98accdc49ca0c57703b6fd7171abbd194c6d0ccc5c802c309aa572da92a187",
+        "public-venue-health-priority.tap": "74a88e99660ffc5b128911d4f96c4f52a12323cb64bd9db637c2309b8dc541f9",
+        "private-price-connected.tap": "97fc5718ee67a15a26989087a90189c5d7baea80094e2ab4bab8c7b07ebf0c9a",
+        "source-health-priority.tap": "a88a77d89cb4ae59c9682c73bfb384d407dfcb027dc8a31efa3f05bbd33d901a"
+      },
+      "assembly": {
+        "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+        "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+        "production_overlays": 15,
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "source_mode_default": "OFF",
+        "production_changed": true
+      },
+      "binding": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+        "runtime_checked": true
+      },
+      "coverage_summary": {
+        "output": "audit-output/liq-assembled/n11-rendered-source-coverage.json",
+        "original_publications": 83,
+        "distinct_assets": 21,
+        "block_counts": {
+          "N04": {
+            "historical_qualified_assets_in_current_pause_report_subset": 15,
+            "historical_decision_consumer_assets_in_that_subset": 15,
+            "historical_report_consumer_assets_in_that_subset": 15,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N05": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 0,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          },
+          "N10": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N11": {
+            "historical_qualified_assets_in_current_pause_report_subset": 21,
+            "historical_decision_consumer_assets_in_that_subset": 21,
+            "historical_report_consumer_assets_in_that_subset": 21,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 21,
+            "whole_105_current_coverage_proven": false
+          },
+          "N12": {
+            "historical_qualified_assets_in_current_pause_report_subset": 20,
+            "historical_decision_consumer_assets_in_that_subset": 20,
+            "historical_report_consumer_assets_in_that_subset": 20,
+            "historical_spot_market_role_assets_in_that_subset": 20,
+            "historical_futures_market_role_assets_in_that_subset": 19,
+            "whole_105_current_coverage_proven": false
+          },
+          "N15": {
+            "historical_qualified_assets_in_current_pause_report_subset": 18,
+            "historical_decision_consumer_assets_in_that_subset": 18,
+            "historical_report_consumer_assets_in_that_subset": 18,
+            "historical_spot_market_role_assets_in_that_subset": 0,
+            "historical_futures_market_role_assets_in_that_subset": 0,
+            "whole_105_current_coverage_proven": false
+          }
+        },
+        "LIQ_numeric_historical": 73,
+        "LIQ_gaps": 30,
+        "issues": 0
+      }
+    }
+  },
+  "native": {
+    "schema": "PARTIAL_CRON_EXACT_NATIVE_ACCOUNTING_REVIEW_V1",
+    "run": 39119616846,
+    "head": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+    "artifact": 12134096068,
+    "digest": "sha256:3198eebe7fd3fe241629743285d5fdf05df97babac49f9a3c9973a39e3bc78c8",
+    "usage_before": {
+      "requests": 630,
+      "rows_read": 33189,
+      "rows_written": 527,
+      "unknown_ops": 0
+    },
+    "usage_after": {
+      "requests": 631,
+      "rows_read": 33190,
+      "rows_written": 528,
+      "unknown_ops": 0
+    },
+    "receipt": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "R2RUN:1792319534403:65a2f7d46b6acfcc",
+      "source_run_id": "39119616846",
+      "measured_rows_read": 33189,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 528,
+      "measured_requests_accounted": 631,
+      "unknown_ops": 0
+    },
+    "static_guard_status": "NATIVE_ADMISSION_REQUIRED_AFTER_VERIFIED_AGGREGATE_RECONCILIATION",
+    "runtime_log_observation": {
+      "source_witness_and_budget_admission_allowed": true,
+      "original_historical_unknown15_preserved": true,
+      "raw_daily_reserved_rows_read": 54000,
+      "raw_daily_reserved_rows_written": 840,
+      "universe_expected": 105,
+      "scanned": 99,
+      "universe_missing_names_not_retained": true,
+      "cron_status": "PARTIAL",
+      "reason": "STAGE0_SCAN_FAILED",
+      "endpoint_errors_all_null": true,
+      "canonical_persistence_reported_closed_for": [
+        "QNT-USDT",
+        "BTW-USDT"
+      ],
+      "canonical_exact_rows_not_retained_in_this_artifact": true,
+      "both_full_evidence_inserts_reported_closed": true,
+      "both_telegram_formatter_status": "MESSAGE_TOO_LONG",
+      "SENT_message_id": null,
+      "console_numbers_and_identifiers_partly_masked_by_GitHub": true
+    },
+    "acceptance": "LIMITED CURRENT NATIVE ADMISSION AND CLOSED USAGE ONLY. Not complete105/full-report/delivery/expanded-volume/expiry/sustainable throughput acceptance. No known-failing full rerun permitted for this unchanged cause."
+  },
+  "ready_source_independent_readback": [
+    {
+      "PR": "434",
+      "head": "8d28b5494290452ad51342f5294234e6194529e4",
+      "verified_original_files": [
+        {
+          "path": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+          "sha256": "6c9f1e79a0d706b75d08fa9431ddff5a628c27d8f00c596dd531a1313993c328",
+          "raw_hash_verified": true
+        },
+        {
+          "path": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+          "sha256": "1d850cb1bba02ba079055f9c03a909c18df1d00633ac8cf5f657118351b1bc03",
+          "raw_hash_verified": true
+        },
+        {
+          "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+          "sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+          "raw_hash_verified": true
+        },
+        {
+          "path": "checkpoints/btw-preserved-block-result-input-20261004.json",
+          "sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+          "raw_hash_verified": true
+        }
+      ],
+      "verified_code": [
+        "current-generation/files/src/coingecko-sector-evidence.mjs",
+        "current-generation/tests/coingecko-cache-binding.test.mjs"
+      ],
+      "verified_TAP": [
+        {
+          "name": "baseline36",
+          "tests": 36,
+          "pass": 1,
+          "fail": 35
+        },
+        {
+          "name": "related89",
+          "tests": 89,
+          "pass": 89,
+          "fail": 0
+        },
+        {
+          "name": "final36",
+          "tests": 36,
+          "pass": 36,
+          "fail": 0
+        }
+      ]
+    },
+    {
+      "PR": "435",
+      "head": "6ab7d72d97993a0232c2241871186901560add41",
+      "verified_original_files": [
+        {
+          "path": "checkpoints/source-inputs/coinboss-liq-levels-102-original-20261012.json.gz",
+          "sha256": "6429aeebfda7366c450029e7618041b34c76c06c91e9d3c0664ddd10189f8ada",
+          "raw_hash_verified": true
+        },
+        {
+          "path": "checkpoints/source-inputs/swolecharts-liq-levels-bounded-20261013.json",
+          "sha256": "cd9ccc7d1a3e16ab019060dbafe0474803b277721ee13a0cad65198251b8f73d",
+          "raw_hash_verified": true
+        }
+      ],
+      "verified_code": [
+        "current-generation/files/src/coinboss-liquidation-levels.mjs",
+        "current-generation/files/src/swolecharts-liquidation-levels.mjs",
+        "current-generation/tests/liq-provider-clock-schema.test.mjs"
+      ],
+      "verified_TAP": [
+        {
+          "name": "baseline56",
+          "tests": 56,
+          "pass": 8,
+          "fail": 48
+        },
+        {
+          "name": "related84",
+          "tests": 84,
+          "pass": 84,
+          "fail": 0
+        }
+      ]
+    },
+    {
+      "PR": "436",
+      "head": "cc5fb8e28c493b87de6cb6f8f7de1596390e51b6",
+      "verified_original_files": [
+        {
+          "path": "checkpoints/htx-archive-primary-20261004/near-current-trades.json.gz",
+          "sha256": "d1f801c2504df32c5eb2ede99e8225f9e82f18c0f72086db33c605768c97cbde",
+          "raw_hash_verified": true
+        },
+        {
+          "path": "checkpoints/htx-archive-primary-20261004/provenance.json",
+          "sha256": "eaa904eb7f3d9965434300c95fb81a5762cfe721f33f948680f722c46734aac9",
+          "raw_hash_verified": false
+        },
+        {
+          "path": "checkpoints/btw-preserved-block-result-input-20261004.json",
+          "sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+          "raw_hash_verified": false
+        }
+      ],
+      "verified_code": [
+        "current-generation/files/src/htx-large-trades-evidence.mjs",
+        "current-generation/tests/htx-n12-retained-facts.test.mjs"
+      ],
+      "verified_TAP": [
+        {
+          "name": "baseline38",
+          "tests": 38,
+          "pass": 11,
+          "fail": 27
+        },
+        {
+          "name": "related58",
+          "tests": 58,
+          "pass": 58,
+          "fail": 0
+        }
+      ]
+    }
+  ],
+  "source_ready_queue": [
+    {
+      "PR": 433,
+      "head": "580ec10a5a4092f77a0836968df892742473508e",
+      "scope": "Gate SPOT N05/internal turnover fact preservation;39new cases",
+      "accepted": false
+    },
+    {
+      "PR": 434,
+      "head": "8d28b5494290452ad51342f5294234e6194529e4",
+      "scope": "CoinGecko exact cache binding/original knowledge clocks;36new",
+      "accepted": false
+    },
+    {
+      "PR": 435,
+      "head": "6ab7d72d97993a0232c2241871186901560add41",
+      "scope": "CoinBoss/Swole scalar schema and strict sourceclock;56new",
+      "accepted": false
+    },
+    {
+      "PR": 436,
+      "head": "cc5fb8e28c493b87de6cb6f8f7de1596390e51b6",
+      "scope": "HTX N12 retained typed facts/cache tuple;38new;NEAR original response clock absent, controlled observation explicit",
+      "accepted": false
+    },
+    {
+      "PR": 438,
+      "head": "f6727b59b382713594b9918dbb7811ab5e435b32",
+      "scope": "N05 turnover body/receipt tuple;66new plus10shared consumer proposal; integrate exact after433 overlap proposal",
+      "accepted": false
+    },
+    {
+      "PR": 439,
+      "head": "865ef8f95b9e1720c917c85f62721ee48d6b3e64",
+      "scope": "Orderly strict model clock/scalar schema;33new controlled cases;no actual original wire qualification",
+      "accepted": false
+    },
+    {
+      "PR": 441,
+      "head": "3dde1e02913b307617653fc728f4701e833789b6",
+      "scope": "Shared N15 malformed-row isolation and quote/window agreement;26new proposal cases;actual shared files unchanged",
+      "accepted": false
+    }
+  ],
+  "source_worker_live_direct_messages_authorized": true,
+  "new_native_recovery_attempts": 1,
+  "new_native_unknown_ops": 0,
+  "historical_unknown15_erased": false,
+  "reserves_refunded": false,
+  "actual_full_report_or_SENT_accepted": false
+}
