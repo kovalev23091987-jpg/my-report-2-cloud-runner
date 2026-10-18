@@ -359,8 +359,22 @@ function describe(row,now){
 // creates a missing score nor interprets raw transfers or social counts as trades.
 
 const turnoverComparison=(component,now)=>qualifiedTurnoverBaseline(component.turnover_baseline,component,now)?`; сравнение общего оборота с предыдущими 30 днями: ${fmt(component.turnover_baseline.ratio_to_median)}× медианы ${fmt(component.turnover_baseline.median_four_hour_quote)} ${component.quote} (180 четырёхчасовых окон)`:'';
+const exactContextEvidence=(row,contract,now)=>!PAUSED_BLOCKS[row?.block_id]&&row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&number(row.observed_ts)!==null&&row.source_ts<=row.observed_ts&&row.observed_ts<=now;
+// Copy provenance only from the exact selected, validated rows. A sampled
+// trade's expiry/source clock is not an observed full-window boundary.
+function contextComponentOrigins(rows){
+ const origins=new Map();
+ const window=r=>({window_start_ts:number(r.window_start_ts)??number(r.window_start),window_end_ts:number(r.window_end_ts)??number(r.window_end)});
+ for(const row of rows){
+  const bounds=window(row),origin={evidence_id:row.evidence_id,block_id:row.block_id,provider_id:row.provider_id,upstream_id:row.upstream_id,asset_id:row.asset_id,htx_contract:row.htx_contract,metric_family:row.metric_family,physical_root_key:evidenceDedupKey(row),raw_hash:row.raw_hash??null,market:typeof row.market==='string'?row.market:null,source_ts:row.source_ts,observed_ts:row.observed_ts,first_known_ts:row.first_known_ts,expires_at:row.expires_at,...bounds,window_status:bounds.window_start_ts!==null&&bounds.window_end_ts!==null?'EXPLICIT_EVIDENCE_FIELDS':'NOT_RETAINED_IN_EVIDENCE',market_components:list(row.components).map(c=>({venue:c.venue??null,market:c.market??null,source_ts:number(c.source_ts),observed_ts:number(c.observed_ts),...window(c),physical_root_key:c.physical_root_key??null})),origin_status:'EXACT_SELECTED_EVIDENCE'};
+  const previous=origins.get(row.evidence_id);
+  if(!previous)origins.set(row.evidence_id,origin);
+  else if(JSON.stringify(previous)!==JSON.stringify(origin))origins.set(row.evidence_id,{...previous,origin_status:'CONFLICTING_EVIDENCE_ID_ORIGIN'});
+ }
+ return [...origins.values()];
+}
 function n12FourHourCrossVenueContext(evidence,contract,now){
- const exact=row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable;
+ const exact=row=>exactContextEvidence(row,contract,now);
  const joint=list(evidence).find(row=>exact(row)&&row.block_id==='N05'&&row.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'&&validateJointFlowEvidence(row,now));
  if(joint){const venues=[...new Set(list(joint.components).map(c=>String(c.venue||'').trim()).filter(Boolean))];return{row:joint,text:`за отдельное полное окно 4 часа согласованы потоки спота и фьючерсов ${venues.join(' / ')}; данные за 4 часа и последние сделки не складывались`};}
  const available=list(evidence).find(row=>exact(row)&&row.block_id==='N05'&&row.metric_family==='AVAILABLE_VENUE_TAKER_FLOW_4H'&&validateAvailableFlowEvidence(row,now));
@@ -372,10 +386,10 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
  evidence=list(evidence).filter(row=>!PAUSED_BLOCKS[row?.block_id]);
  if(!/^[^\s-]+-USDT$/.test(String(contract))||number(now)===null)return{status:'NOT_CLOSED',facts,internal_only:true};
  const n12Cross=n12FourHourCrossVenueContext(evidence,contract,now);
- const gate=list(evidence).find(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateGateFuturesTradeSample(row,now));
- const bitget=list(evidence).filter(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&validateBitgetN12BoundedTradeSample(row,now));
- const nativePublic=list(evidence).filter(row=>row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&(validateN12NativePublicTrade(row,now)||validateN12KucoinTokenTrade(row,now)));
- const htxN12Rows=list(evidence).filter(row=>row?.htx_contract===contract&&row?.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family)&&validateEvidenceV2(row,{decision_ts:now}).usable);
+ const gate=list(evidence).find(row=>exactContextEvidence(row,contract,now)&&validateGateFuturesTradeSample(row,now));
+ const bitget=list(evidence).filter(row=>exactContextEvidence(row,contract,now)&&validateBitgetN12BoundedTradeSample(row,now));
+ const nativePublic=list(evidence).filter(row=>exactContextEvidence(row,contract,now)&&(validateN12NativePublicTrade(row,now)||validateN12KucoinTokenTrade(row,now)));
+ const htxN12Rows=list(evidence).filter(row=>exactContextEvidence(row,contract,now)&&row?.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family)&&validateEvidenceV2(row,{decision_ts:now}).usable);
  const aligned=(a,b)=>a&&b&&Math.abs(a.observed_ts-b.observed_ts)<=60000;
  const hasAlignedHtxN12=row=>htxN12Rows.some(htx=>aligned(row,htx));
  for(const row of list(evidence)){
@@ -387,13 +401,13 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
   const htxN12=row.block_id==='N12'&&['ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET','ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'].includes(row.metric_family);
   const gateAligned=htxN12&&aligned(gate,row),bitgetAligned=htxN12?bitget.filter(sample=>aligned(sample,row)):[],nativeAligned=htxN12?nativePublic.filter(sample=>aligned(sample,row)):[];
   const nativePair=nativePublic.includes(row)&&!hasAlignedHtxN12(row)?nativePublic.find(sample=>sample!==row&&sample.venue===row.venue&&sample.market!==row.market&&aligned(sample,row)):null;
-  const related=[...(htxN12&&n12Cross?[n12Cross.row.evidence_id]:[]),...(gateAligned?[gate.evidence_id]:[]),...bitgetAligned.map(sample=>sample.evidence_id),...nativeAligned.map(sample=>sample.evidence_id),...(nativePair?[nativePair.evidence_id]:[])];
+  const relatedRows=[...(htxN12&&n12Cross?[n12Cross.row]:[]),...(gateAligned?[gate]:[]),...bitgetAligned,...nativeAligned,...(nativePair?[nativePair]:[])],related=relatedRows.map(sample=>sample.evidence_id);
   const asyncHtxPair=row.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'&&['HTX_LARGE_TRADES','HTX_SPOT_TRADES'].includes(row.provider_id)?htxN12Rows.find(sample=>sample!==row&&sample.metric_family===row.metric_family&&sample.provider_id===(row.provider_id==='HTX_LARGE_TRADES'?'HTX_SPOT_TRADES':'HTX_LARGE_TRADES')&&sample.observed_ts===row.observed_ts&&Math.abs(sample.source_ts-row.source_ts)>30_000):null;
   if(asyncHtxPair){
    const future=row.provider_id==='HTX_LARGE_TRADES'?row:asyncHtxPair,spot=row.provider_id==='HTX_SPOT_TRADES'?row:asyncHtxPair;
    const phrase=(sample,name)=>`${name}: ${sample.valid_recent_rows} сделок, покупки ${fmt(sample.buy_quote_turnover_usdt)}, продажи ${fmt(sample.sell_quote_turnover_usdt)} USDT`;
    fact={source:'HTX / разновременные спот и фьючерсы',label:'Направление последних сделок HTX',value:`${phrase(future,'фьючерсы')}; ${phrase(spot,'спот')}; последние сделки разделяют ${Math.ceil(Math.abs(future.source_ts-spot.source_ts)/1000)} с, общего направления по двум рынкам не устанавливаем; одна биржа, выборки неполные`};
-   related.push(asyncHtxPair.evidence_id);pairedHtxAsyncIds.add(asyncHtxPair.evidence_id);
+   related.push(asyncHtxPair.evidence_id);relatedRows.push(asyncHtxPair);pairedHtxAsyncIds.add(asyncHtxPair.evidence_id);
   }
   if(nativePair){
    const same=Math.abs(row.taker_imbalance)>=.05&&Math.abs(nativePair.taker_imbalance)>=.05&&Math.sign(row.taker_imbalance)===Math.sign(nativePair.taker_imbalance),venue=row.venue==='OKX'?'OKX':'KuCoin';
@@ -417,7 +431,8 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
    const parts=nativeAligned.map(sample=>`${sample.venue==='OKX'?'OKX':'KuCoin'} ${sample.market==='SPOT'?'спот':'фьючерсы'}: ${sample.valid_recent_rows} сделок, покупки ${fmt(sample.buy_quote_turnover_usdt)}, продажи ${fmt(sample.sell_quote_turnover_usdt)} USDT`);
    fact={...fact,source:`${fact.source} / ${venues.join(' / ')}`,value:`${fact.value}; ${parts.join('; ')}; ${agreement?'направления всех доступных площадок совпадают лишь в этих неполных выборках':'общего направления по всем доступным неполным выборкам нет'}; спот и фьючерсы одной биржи не считались двумя независимыми площадками`};
   }
-  seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
+  const origins=row.block_id==='N12'?contextComponentOrigins([row,...relatedRows]):null;
+  seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(origins?{component_origins:origins,physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]}:{}),...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
  }
  // Group event logs by transaction. Serial transfers are never summed as flow.
  const groups=new Map();
@@ -456,8 +471,21 @@ export function auditRenderedBlockResults({canonical,manual,telegram}={}){
  const available={facts:availableCanonicalContextFacts(canonical)};
  const printed=manual?.ok===true&&typeof manual.text==='string'?manual.text:null;
  const sourceBlockIds=row=>[...new Set([row.block_id,...(row.evidence_ids||[]).map(id=>canonical?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(e=>e.evidence_id===id)?.block_id).filter(Boolean)])];
- const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row)}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
+ const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row)}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],...(row.component_origins?{component_origins:row.component_origins}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
  const payload=telegram?.ok===true&&typeof telegram.text==='string'&&Boolean(canonical?.analytical_fingerprint)&&telegram.analytical_fingerprint===canonical.analytical_fingerprint?telegram.text:null;
- const telegramReceipts=confirmedBlockContextFacts(canonical).filter(row=>(payload?.includes(`• ${row.label}: ${row.value}`)||payload?.includes(`• ${plainContextFact(row,canonical)}`)||payload?.includes(`• ${omitTelegramCurrencies(plainContextFact(row,canonical))}`))).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row),evidence_ids:row.evidence_ids}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
+ // The plain Telegram form may represent only a subset of the manual
+ // row. Observe the existing pure formatter with one related ID removed;
+ // unchanged text cannot establish that component's publication.
+ const printedTelegramFact=row=>{
+  const plain=plainContextFact(row,canonical),direct=payload?.includes(`• ${row.label}: ${row.value}`),plainPrinted=payload?.includes(`• ${plain}`)||payload?.includes(`• ${omitTelegramCurrencies(plain)}`);
+  if(!direct&&!plainPrinted)return null;
+  if(!row.component_origins)return row;
+  const fullFallback=plain===`${row.label}: ${row.value} — ${row.source}.`,all=row.evidence_ids||[row.evidence_id];
+  const represented=direct||fullFallback?all:all.filter(id=>id===row.evidence_id||plainContextFact({...row,evidence_ids:all.filter(other=>other!==id)},canonical)!==plain);
+  const origins=row.component_origins.filter(origin=>represented.includes(origin.evidence_id));
+  return{...row,evidence_ids:represented,component_origins:origins,physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]};
+ };
+ const telegramReceipts=confirmedBlockContextFacts(canonical).map(printedTelegramFact).filter(Boolean).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&(row.evidence_ids?.length>1||row.component_origins)?{source_block_ids:sourceBlockIds(row),evidence_ids:row.evidence_ids}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,...(row.component_origins?{component_origins:row.component_origins,physical_root_keys:row.physical_root_keys}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
+
  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.flatMap(row=>row.source_block_ids||[row.block_id]))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.flatMap(row=>row.source_block_ids||[row.block_id]))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
 }
