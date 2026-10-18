@@ -1,7 +1,7 @@
 import {NATIVE_SECTOR_BINDINGS} from './coingecko-sector-evidence.mjs';
 import crypto from 'node:crypto';
 import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} from './supplemental-candidate-context.mjs';
-import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
 import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';
 
 export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v6-network-aliases-20261012';
@@ -84,16 +84,23 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
  if(!db?.prepare||!/^\S+-USDT$/u.test(market)||!text(run_id))return{status:'EXACT_HTX_MARKET_AND_RUN_REQUIRED',identity:null,network_calls:0};
  const override=FUTURES_ONLY_EXACT_ASSET_BINDINGS[market.slice(0,-5)];
  if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_EXACT_ASSET_BINDING',receipt:{evidence_url:override.evidence_url,issuer_evidence_url:override.issuer_evidence_url||null,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
+ const unclosed=()=>nativeSourceUsageUnclosed(db);
+ const stopped=()=>({version:HTX_ASSET_IDENTITY_VERSION,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',contract:market,identity:null,network_calls:0,source_chain_native_cost_unclosed:true,internal_only:true});
+ if(unclosed())return stopped();
  await installEvidenceSourceStore(db);
+ if(unclosed())return stopped();
  const withFallback=async primary=>{
   if(primary.status==='CLOSED')return primary;
+  if(unclosed())return{...primary,identity_fallback_status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',source_chain_native_cost_unclosed:true};
   const fallback=await collectCoinpaprikaHtxIdentity({db,fetch_impl,request_admit,contract:market,run_id,now});
   if(fallback.status==='CLOSED')return{...fallback,network_calls:Number(primary.network_calls||0)+Number(fallback.network_calls||0),htx_asset_reference_status:primary.status,htx_asset_reference_receipt:primary.receipt||null};
   return{...primary,network_calls:Number(primary.network_calls||0)+Number(fallback.network_calls||0),identity_fallback_status:fallback.status,identity_fallback_receipts:fallback.receipts||[]};
  };
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,now});
  if(cached?.version===HTX_ASSET_IDENTITY_VERSION&&Number.isFinite(cached.observed_ts)&&cached.observed_ts<=now)return withFallback(selectReference(cached,market,{cache_status:'VALID_HTX_REFERENCE_CACHE'}));
+ if(unclosed())return stopped();
  const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:1,daily_cap:DAILY_CAP,now});
+ if(unclosed())return stopped();
  if(!headroom.allowed)return withFallback({status:headroom.status,identity:null,network_calls:0,admission:headroom});
  const id=`HTX_ASSET_REFERENCE:${run_id}`;
  const grant=typeof request_admit==='function'?request_admit({logical_request_id:id,lane:'background',attempts:1}):null;
@@ -107,8 +114,9 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
   if(!response.ok||normalized.status!=='CLOSED')return withFallback({status:'HTX_ASSET_REFERENCE_SOURCE_NOT_CLOSED',identity:null,network_calls:1,http_status:response.status});
   const bundle={version:HTX_ASSET_IDENTITY_VERSION,entries:normalized.entries,observed_ts:observed,
    receipt:{endpoint:HTX_ASSET_REFERENCE_URL,http_status:response.status,received_ts:observed,parsed_payload_sha256:crypto.createHash('sha256').update(JSON.stringify(payload)).digest('hex')}};
-  await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,observed_ts:observed,expires_ts:observed+TTL,payload:bundle});
-  return withFallback(selectReference(bundle,market,{cache_status:'REFRESHED',network_calls:1}));
+  const selected=selectReference(bundle,market,{cache_status:'REFRESHED',network_calls:1});
+  const receipt=await writeOptionalEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,observed_ts:observed,expires_ts:observed+TTL,payload:bundle});
+  return withFallback({...selected,cache_write_receipts:[receipt],source_chain_native_cost_unclosed:unclosed()});
  }catch(error){return withFallback({status:'HTX_ASSET_REFERENCE_SOURCE_ERROR',identity:null,network_calls:1,error:text(error?.message||error).slice(0,160)});}
  finally{clearTimeout(timer);}
 }
@@ -121,9 +129,9 @@ export async function collectHtxBoundSupplementalContext({reference_enabled=true
   reference=await collectHtxAssetIdentity(params);
   if(reference.status==='CLOSED')scopedRegistry={...registry,[base]:{...(registry[base]||{}),...reference.identity,...(reference.coinpaprika_id?{coinpaprika_id:reference.coinpaprika_id}:{})}};
  }
+ if(nativeSourceUsageUnclosed(params.db))return{status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',contract,base,identity_status:reference?.status==='CLOSED'||known?'CLOSED':'NOT_CLOSED',asset_identity:reference?.identity||known||null,identity_method:reference?.identity_method||null,asset_reference:reference,network_calls:0,identity_reference_network_calls:reference?.network_calls||0,total_network_calls:reference?.network_calls||0,source_chain_native_cost_unclosed:true,internal_only:true};
  const context=await supplemental_collect({...params,registry:scopedRegistry,allow_identity_discovery:reference_enabled?false:params.allow_identity_discovery});
  if(!reference)return context;
  return{...context,identity_method:reference.status==='CLOSED'?reference.identity_method:context.identity_method,
   asset_reference:reference,identity_reference_network_calls:reference.network_calls,total_network_calls:Number(context.network_calls||0)+reference.network_calls};
 }
-
