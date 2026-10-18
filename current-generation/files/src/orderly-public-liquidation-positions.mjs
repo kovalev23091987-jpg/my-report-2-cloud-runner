@@ -2,13 +2,13 @@ export const ORDERLY_PUBLIC_LIQUIDATION_VERSION='orderly-public-position-estimat
 // Exact intersection of the 2026-10-12 public marketSummary with the approved
 // HTX futures universe. BTC/ETH are deliberately absent by owner policy.
 export const ORDERLY_VERIFIED_HTX_MARKETS=new Set('AAVE ADA APT ARB ASTER AVAX BNB DOGE DOT ENA ETHFI FARTCOIN HBAR HYPE JUP LINK LIT LTC NEAR ONDO OP PENGU PUMP RAY SOL SUI TAO TIA TRUMP TRX UNI USELESS WIF WLD XMR XPL XRP ZEC'.split(' '));
-const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
+const finite=v=>(typeof v==='number'||typeof v==='string'&&v.trim()!=='')&&Number.isFinite(Number(v))?Number(v):null;
 const empty=(contract,status,reason,network_calls=0,extra={})=>({source:'ORDERLY_PUBLIC_POSITIONS',contract,status,reason,network_calls,levels:[],internal_only:true,...extra});
 
 export function normalizeOrderlyPublicPositions(raw,{contract,reference_price,now=Date.now()}={}){
  const asset=String(contract||'').replace(/-USDT$/,'').toUpperCase(),reference=finite(reference_price),sourceTs=finite(raw?.ts),rows=raw?.data?.rows;
  if(!ORDERLY_VERIFIED_HTX_MARKETS.has(asset)||contract!==`${asset}-USDT`)return empty(contract,'EXACT_MARKET_UNVERIFIED','NOT_IN_VERIFIED_HTX_ORDERLY_INTERSECTION');
- if(raw?.success!==true||!Array.isArray(rows)||!Number.isSafeInteger(sourceTs)||sourceTs>now+5000||now-sourceTs>120000||!reference||reference<=0)return empty(contract,'INVALID_SOURCE_RESPONSE','PAYLOAD_CLOCK_OR_HTX_REFERENCE_INVALID');
+ if(raw?.success!==true||!Array.isArray(rows)||!Number.isSafeInteger(now)||!Number.isSafeInteger(sourceTs)||sourceTs>now||now-sourceTs>120000||!reference||reference<=0)return empty(contract,'INVALID_SOURCE_RESPONSE','PAYLOAD_CLOCK_OR_HTX_REFERENCE_INVALID');
  const symbol=`PERP_${asset}_USDC`,levels=[];let numericPositions=0,excludedPriceDivergence=0;
  for(let index=0;index<rows.length;index++){
   const row=rows[index];if(row?.symbol!==symbol)continue;
@@ -27,6 +27,7 @@ export function normalizeOrderlyPublicPositions(raw,{contract,reference_price,no
 export async function collectOrderlyPublicPositions({contract,reference_price,run_id,fetch_impl=globalThis.fetch,request_admit=null,max_http=1,now=Date.now()}={}){
  const asset=String(contract||'').replace(/-USDT$/,'').toUpperCase();
  if(!ORDERLY_VERIFIED_HTX_MARKETS.has(asset)||contract!==`${asset}-USDT`)return empty(contract,'EXACT_MARKET_UNVERIFIED','NOT_IN_VERIFIED_HTX_ORDERLY_INTERSECTION');
+ if(!Number.isSafeInteger(now))return empty(contract,'INVALID_OBSERVATION_CLOCK','CURRENT_INTEGER_OBSERVATION_REQUIRED');
  if(max_http<1)return empty(contract,'DEFERRED_HTTP_ENVELOPE','NO_SOURCE_HTTP_HEADROOM');
  if(!finite(reference_price)||reference_price<=0)return empty(contract,'HTX_REFERENCE_REQUIRED','NO_CURRENT_HTX_REFERENCE');
  if(request_admit){const grant=request_admit({logical_request_id:`ORDERLY_PUBLIC_POSITIONS:${run_id}:${contract}`,lane:'background',attempts:1});if(!grant?.allowed||grant.duplicate)return empty(contract,'DEFERRED_HTTP_ENVELOPE','UNIFIED_HTTP_NOT_ADMITTED');}

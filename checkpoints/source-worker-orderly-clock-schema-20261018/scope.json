@@ -1,0 +1,100 @@
+{
+  "schema": "SOURCE_WORKER_ORDERLY_OBSERVATION_AND_NUMERIC_SCHEMA_V1",
+  "recorded_utc": "2026-10-18T10:39:15.286054+00:00",
+  "parent_main": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Independent Orderly source/consumer future clock mismatch and scalar numeric types; preserve427assetbinding and reported-open-notional/estimated-price distinction.",
+  "new_cases": 33,
+  "tests": {
+    "baseline33": {
+      "path": "checkpoints/source-worker-orderly-clock-schema-20261018/baseline33.tap.gz",
+      "raw_sha256": "5bcaaf0edf232042d3ada6acc50eb405e1933bbfc3208746b5e907e9d1eb7dac",
+      "gzip_sha256": "e565a9fdfdfce36838ade915f81e8694e07dfb226e6f543c60eefd1178e9b602",
+      "counts": {
+        "tests": 33,
+        "pass": 7,
+        "fail": 26
+      }
+    },
+    "related57": {
+      "path": "checkpoints/source-worker-orderly-clock-schema-20261018/related57.tap.gz",
+      "raw_sha256": "055a0b161fdfadab9fd9366ce82bbb04f31df40ea6c0f6a298b4d76ddad88a9f",
+      "gzip_sha256": "62b41fdbe50d01cd61ad4cf2667416b30f5c48ff4dc9609ce662470e8003cc4a",
+      "counts": {
+        "tests": 57,
+        "pass": 57,
+        "fail": 0
+      }
+    }
+  },
+  "inputs": {
+    "checkpoints/LIQ_ORDERLY_PUBLIC_POSITIONS_AND_STRK_NATURAL_ARCHIVE_20261012.json": {
+      "file_sha256": "a0da864823f5f8fc3c98d1de80512d94b5607d17236d1a7cb836c94435105a1c",
+      "original_Orderly_wire": false
+    },
+    "current-generation/tests/orderly-public-liquidation-positions.test.mjs": {
+      "file_sha256": "a8cb8d3b80cc8407aefd088bfc0620ba60eaff48dc3ddb2a0e82c1fef3c08e2a",
+      "original_Orderly_wire": false
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+      "original_Orderly_wire": false
+    }
+  },
+  "implementation_files": {
+    "current-generation/files/src/orderly-public-liquidation-positions.mjs": "d9f9c68797fe8d7b7a3a578461ead8587557987c54dafa5491fe25ee735b4700",
+    "current-generation/tests/orderly-clock-schema.test.mjs": "b6875b6181acc3f2eeccddc2b74210844e013f7a4cad9b6c90a714150b069341"
+  },
+  "own_lease": {
+    "commit": "da19d0198c3977cdbfacde94188a06f519036af3",
+    "owner": "CODEX:SOURCES:01a14e11:1792319743540",
+    "expires_ts": 1792324543540,
+    "exact_readback": true
+  },
+  "concrete_defects": [
+    "Future source+1/+4999/+5000ms produced CLOSED positive provider levels yet shared consumer used0 zones.",
+    "Invalid NaN/string/object/array/fractional observations could bypass source clock ordering; collector could acquire before rejection.",
+    "Number(array/bool) coerced provider mark/liquidation-price/notional or caller reference into apparently usable scalar."
+  ],
+  "controlled_only": {
+    "retained_actual_Orderly_wire_available": false,
+    "new_qualification": false,
+    "HYPE_numbers_basis": "Historical summary/existing controlled unit example; explicitly controlled clock/reference/rows, not a source snapshot or source acquisition.",
+    "controlled_observed_ts": 1791830240542,
+    "summary_original_HTX_reference_is_not_current_requalification": true,
+    "before_after_file": "checkpoints/source-worker-orderly-clock-schema-20261018/controlled-future-counterexample.json",
+    "renderer_preview_file": "checkpoints/source-worker-orderly-clock-schema-20261018/controlled-rendered-preview.json"
+  },
+  "behavior_preserved": [
+    "Source age120s and reference divergence5% unchanged; exact market set and requested venue/symbol/USDC unchanged.",
+    "Legitimate finite numeric numbers and nonempty numeric strings accepted.",
+    "Provider estimated liquidation price remains an estimate; positive reported open-position notional retains USDC and display tier. No USD/USDT parity or conversion.",
+    "Manual and both local Telegram renderers preserve existing forms: detailed V5 shows reported size; brief shows size tier/provider. No invented exact amount/target/localHTX model or new source vote.",
+    "Reject malformed caller clock/reference before grant/HTTP; default normal valid request count unchanged."
+  ],
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-orderly-clock-schema-20261018/shared-CI.proposed.patch",
+    "sha256": "3ab6e7566fbfff19133453dc40ac0c16642ff9766d33fa47d14932f82075600d",
+    "workflow_before_sha256": "fc9383e4362a295eb9fc88a5fdd5ffa688f9bda3b752ff859a25633764025c1d",
+    "workflow_proposed_sha256": "911772c8db6c393d760cb24fa7c33c1649a176dc76ed63b619ea31f75cf7c738",
+    "coordinator_resolves_current_context": true
+  },
+  "limits": {
+    "source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_valid_path_extra_HTTP_or_SQL": 0,
+    "current105_coverage_full_or_SENT": false,
+    "strategy_weights_forms_pauses_caps_unknown_spent_reserves_unchanged": true
+  },
+  "acceptance_limits": [
+    "No retained original Orderly response available; controlled HYPE cases are not new source qualification or actual original-position proof.",
+    "Related57=33new+3existingOrderly+21affectedprovider-binding regression; no Swole435 or assetbinding427 rewrite.",
+    "Formatter success is not actual Telegram delivery.",
+    "Frozen source-specific PR; shared CI is proposal only, coordinator branch/main/natural verification pending."
+  ],
+  "exact_next_action": "Coordinator integrate frozen Orderly provider fix+CI after priorities. Worker continue remaining independent saved-source audit and consolidate only new source packages/order/budget/manual reserves, no old census regeneration or waiting."
+}
