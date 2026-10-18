@@ -1,0 +1,120 @@
+{
+  "schema": "N12_TARGETED_CASE_PROPOSALS_NOT_EXECUTED_V1",
+  "status": "PROPOSED_FOR_COORDINATOR",
+  "runtime_tests_executed": false,
+  "actual_APR_NEAR_full_raw_replay_possible": false,
+  "cases": [
+    {
+      "id": "POS_ACTUAL_NEUTRAL_COMPONENT",
+      "input": "Existing normalized full canonical built from qualified source-worker mapping; HTX primary + external valid N12 neutral assessed row, merged manual exactly printed.",
+      "expected": "isRendered matches both actual printed components; existing neutral assessed branch credits external use; provider/upstream/root retained under captured EXTERNAL_N05_FLOW supplemental. score/nonzero/OBSERVE policy unchanged.",
+      "existing_functions": "block-result-context/auditCanonicalBlockDecisionUse/auditCandidateBlocks",
+      "executed": false
+    },
+    {
+      "id": "POS_PRINTED_UNASSESSED",
+      "input": "Valid actually printed external row with no assessment, score or verified diagnostic review.",
+      "expected": "Rendered provider retained; no fabricated neutral or UNSCORED_DIAGNOSTIC receipt/status. If coordinator adds information-use, it is explicitly separate from existing decision-use categories.",
+      "existing_functions": "auditCanonicalBlockDecisionUse",
+      "executed": false
+    },
+    {
+      "id": "NEG_NOT_PRINTED",
+      "input": "Same valid available component; manual absent, ok:false, empty, or final bounded output excludes its exact merged line.",
+      "expected": "No manual component rendered/use credit solely from supporting_context/related ID; actual transport cost remains.",
+      "existing_functions": "auditRenderedBlockResults/isRendered",
+      "executed": false
+    },
+    {
+      "id": "NEG_TG_MANUAL_ONLY",
+      "input": "Manual merged line printed; Telegram payload valid but its limited output omits N12 (saved APR), or payload unconfirmed (saved NEAR).",
+      "expected": "Manual receipt remains; no N12 Telegram component receipts and no delivery claim.",
+      "existing_functions": "auditRenderedBlockResults/runner-main",
+      "executed": false
+    },
+    {
+      "id": "POS_TG_PRINTED_COMPONENT",
+      "input": "Matching approved Telegram fingerprint and exact final plain text actually includes component fragment.",
+      "expected": "Telegram-only surface component proof; manual proof not required or invented; source roots from own validated rows. score/dispatch/message_id unchanged.",
+      "existing_functions": "auditRenderedBlockResults/plainContextFact",
+      "executed": false
+    },
+    {
+      "id": "NEG_TG_PLAIN_SUBSET",
+      "input": "Merged manual includes a related component that the exact plain Telegram branch does not print; parent plain line is present.",
+      "expected": "Do not copy every manual related component into Telegram receipt; credit only fragments actually used by that plain branch.",
+      "existing_functions": "plainContextFact/auditRenderedBlockResults",
+      "executed": false
+    },
+    {
+      "id": "NEG_BAD_RAW",
+      "input": "Related ID names row with validation INVALID, non-EXACT identity, non-FINAL, expires_at before original decision, first_known after decision, or invalid native trade validator.",
+      "expected": "No component origin/render/use success; do not infer from related ID or impact summary. Clock checks use original clocks, no refresh.",
+      "existing_functions": "consumeBlockResultContext/validateEvidenceV2",
+      "executed": false
+    },
+    {
+      "id": "NEG_FOREIGN_RAW",
+      "input": "Related ID added from another htx_contract or block/consumer with coincidentally plausible provider.",
+      "expected": "No foreign provider/root or cross-block N12 decision-use; known intended N05 4h context stays explicitly N05.",
+      "existing_functions": "consumeBlockResultContext/isRendered",
+      "executed": false
+    },
+    {
+      "id": "NEG_STORED_TAMPER",
+      "input": "Stored supporting_context component origins add foreign/missing ID or copied primary root/clocks while exact rebuilt label/value unchanged.",
+      "expected": "Ignore forged metadata; derive from revalidated selected raw rows, or fail component verification. No full raw canonical => no reconstructed success.",
+      "existing_functions": "confirmedBlockContextFacts",
+      "executed": false
+    },
+    {
+      "id": "NEG_DUPLICATE_ID_CONFLICT",
+      "input": "Two raw rows share evidence ID but disagree on provider/root/contract or clock; duplicate identical rows separately.",
+      "expected": "Reject ambiguous binding; exact duplicate does not multiply provider/root/use counts. No first-find promotion from conflicting related row.",
+      "existing_functions": "component binding/audit source sets",
+      "executed": false
+    },
+    {
+      "id": "POS_SUPPLEMENTAL_NO_COLLECTION",
+      "input": "Add EXTERNAL_N05_FLOW only as N12 supplemental accounting owner; preserve all HTX/any, captured source, routes and exact raw membership.",
+      "expected": "External N12 valid IDs become bound; collection plan and executed HTTP remain unchanged. Empty/missing source yields no invented successful route/fact.",
+      "existing_functions": "BLOCK_SOURCE_REQUIREMENTS/auditCandidateBlocks/planCandidateEvidenceRoutes",
+      "executed": false
+    },
+    {
+      "id": "NEG_OWNER_WRONG_MEMBERSHIP",
+      "input": "Valid external printed row exists globally but not in captured source.evidence, or source contains same ID foreign contract.",
+      "expected": "No fabricated owner binding/provider use; expose accounting gap rather than assign to HTX.",
+      "existing_functions": "auditCandidateBlocks/sourceDetails",
+      "executed": false
+    },
+    {
+      "id": "POS_SHARED_HTTP",
+      "input": "APR original5=5+0 or NEAR5=3+2 plus supplemental source check referencing the same network_calls5.",
+      "expected": "One envelope counted once; diagnostic duplicate check never adds5 or root count to overall HTTP; cache/use0HTTP remains possible.",
+      "existing_functions": "attributeSharedN05N12Http/summarizeAssignedSourceUse",
+      "executed": false
+    },
+    {
+      "id": "NEG_UNKNOWN_HTTP",
+      "input": "Captured total missing/invalid or adapter allocation > total; component proof otherwise valid.",
+      "expected": "Retain current UNRECONCILED and unknown; no inference of HTTP from printed providers or origins.",
+      "existing_functions": "attributeSharedN05N12Http",
+      "executed": false
+    },
+    {
+      "id": "POS_SAME_VENUE_MARKETS",
+      "input": "Two printed valid same-venue spot/futures components with separate raw roots.",
+      "expected": "Both source clocks retained, physical evidence distinct but one venue origin; no independent-vote multiplication and no score change.",
+      "existing_functions": "component receipts/summarizeAssignedSourceUse",
+      "executed": false
+    },
+    {
+      "id": "NEG_ROLE_GATE_CONTAMINATION",
+      "input": "Add N12 component metadata, remove existing inherited external role fact, or leave Gate/HTX/OKX role view fixed.",
+      "expected": "auditObservationSourceRoles and earlySourceRolesClosed respond only to existing qualified metric schema; component metadata cannot create eligibility or role origin.",
+      "existing_functions": "observation-source-role-audit/source-role-consumer/observation-source-role-gate",
+      "executed": false
+    }
+  ]
+}
