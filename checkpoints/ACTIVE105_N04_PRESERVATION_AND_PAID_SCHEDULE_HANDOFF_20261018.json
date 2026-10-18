@@ -1,0 +1,449 @@
+{
+  "schema": "ACTIVE105_N04_FACT_PRESERVATION_AND_PAID_SCHEDULE_GUARD_HANDOFF_V1",
+  "recorded_utc": "2026-10-18T07:54:35.570787+00:00",
+  "save_base": "1bf6768ed5c0c5a76eaca2d302c2e523cdccba73",
+  "PR": {
+    "PR": 422,
+    "merged": true,
+    "merge": "1bf6768ed5c0c5a76eaca2d302c2e523cdccba73",
+    "head": "39846f368728ff699b0c1d1d5731d153f0189315",
+    "branch_cloud": 39109015903,
+    "main_cloud": 39109103966,
+    "pass": 1055,
+    "fail": 0,
+    "tap": 21,
+    "scope": "checkpoints/ACTIVE105_N04_CACHE_FACT_PRESERVATION_SCOPE_20261018.json",
+    "proof": "checkpoints/ACTIVE105_N04_PRESERVATION_AND_PAID_SCHEDULE_HANDOFF_20261018.json",
+    "related_cases_pass": 62,
+    "new_cases": 31,
+    "generation_guard_cases": 13,
+    "main_artifact": 12129204327,
+    "main_digest": "sha256:952f13e1ab89e13b18bd6693b0f8e75a8de904a6246dfa5433a7792112e80f18",
+    "N10": 39109018384,
+    "recovery": 39109018393,
+    "sourceHTTP": 0,
+    "native_SQL": 0,
+    "native_full_accepted": false
+  },
+  "branch_cloud": {
+    "run": 39109015903,
+    "head": "39846f368728ff699b0c1d1d5731d153f0189315",
+    "artifact": 12129797083,
+    "digest": "sha256:6a4a712aa87426a1bcebe35b4dae14d164cb166813c8c7e9031cdabd55f6a499",
+    "pass": 1055,
+    "fail": 0,
+    "TAP": 21,
+    "tap_files": {
+      "exact-asset-role-and-collector-audit.tap": {
+        "sha256": "d95d731045e7a76ff830f91351988dbdeac83a10934f29a97ba017a6fdca288c",
+        "pass": 28,
+        "fail": 0
+      },
+      "cold-archive.tap": {
+        "sha256": "e353415147b1f67d250bbae1211b258adfebbdf144307fa90e370fc892985138",
+        "pass": 242,
+        "fail": 0
+      },
+      "native-identity-source-handoff.tap": {
+        "sha256": "9d42f5c1a02b5984ac63957318b1d5d1c4b47aed62f9f7324dff38833f574f60",
+        "pass": 39,
+        "fail": 0
+      },
+      "active-source-headroom.tap": {
+        "sha256": "6f404b56d88cf5b93d1d9feb9fad216966f6ff5f08c53b4952e7fe5bf3c49302",
+        "pass": 65,
+        "fail": 0
+      },
+      "new-liq-research-admission.tap": {
+        "sha256": "f047a9a4b731d00c272637e21d68942dd84c85fcab949b2faf6a4f15983b4348",
+        "pass": 6,
+        "fail": 0
+      },
+      "hourly-native-usage.tap": {
+        "sha256": "84a0ab168c0594ed5fc10c1c2fe92972f4fef8fc6ce45e7646e359cddc5443c8",
+        "pass": 41,
+        "fail": 0
+      },
+      "target.tap": {
+        "sha256": "5071c8b6485bafe4dc96f8f5c1be4ac26fbb1be60ac2e5ec4cc37a6af9e4efce",
+        "pass": 83,
+        "fail": 0
+      },
+      "scheduled-evidence-budget.tap": {
+        "sha256": "56393ff9db76907492b3477b452453a4c82ff3c3144211c1f23c16942c71f768",
+        "pass": 3,
+        "fail": 0
+      },
+      "native-transport-fallback.tap": {
+        "sha256": "68241ee401c4ce07aa5841211273f8f761437b09db01abf27a61b34d940f95e5",
+        "pass": 7,
+        "fail": 0
+      },
+      "index-useful-only.tap": {
+        "sha256": "a619ab67ed7ee135c5e6bb675b737d4377109e37c9a20964fe90c13e59d9c7de",
+        "pass": 21,
+        "fail": 0
+      },
+      "weekly-htx-synchronized-plan.tap": {
+        "sha256": "1c1c4179d17aa5541386682f39f0a34147f4c5dfd0cdc4dd3223ae0cac32ac45",
+        "pass": 105,
+        "fail": 0
+      },
+      "private-reader-runtime.tap": {
+        "sha256": "ec097a6fd37793145286cb86db414602149711dda4c69f19cfac619d4890fce2",
+        "pass": 38,
+        "fail": 0
+      },
+      "native-useful-runtime.tap": {
+        "sha256": "9e02a7b2be548d71c2204dd891c793a7cf41771dc2ccbfbcfbf9eca19c7bb52e",
+        "pass": 24,
+        "fail": 0
+      },
+      "private-forecast-consumer.tap": {
+        "sha256": "5089cffb30e8fd3ccd2af9aefcc1fe846e455b4563458dc5e83abcbacab30065",
+        "pass": 10,
+        "fail": 0
+      },
+      "native-useful-budget.tap": {
+        "sha256": "2dab53f1c99eda3ff76745bddcf48efb4a6082e8956d167ff0875a2114d6f690",
+        "pass": 19,
+        "fail": 0
+      },
+      "active-source-finalist-and-markets.tap": {
+        "sha256": "2cb80b09ebbff1320f8b377e7adbfc9e99a33f1f4cece79f44f9543c1ff741bf",
+        "pass": 29,
+        "fail": 0
+      },
+      "native-sector-provider-binding.tap": {
+        "sha256": "0ab63dff273d757e3deb51c5ca0d4fb44402d8325f788fa0ff5b82086f9251f8",
+        "pass": 75,
+        "fail": 0
+      },
+      "retained-write-failure-guard.tap": {
+        "sha256": "ebc3aa0f6fddf6f7bdf0fc9294829ec059b84367c312b6b5fc4a4f51b8cf405a",
+        "pass": 39,
+        "fail": 0
+      },
+      "public-venue-health-priority.tap": {
+        "sha256": "6d26086e8453d4a4954164cace84b76fb87ce0b144fd21f05aabaf7c42cd4715",
+        "pass": 55,
+        "fail": 0
+      },
+      "private-price-connected.tap": {
+        "sha256": "26f81c52560f86b42c70603672ad8e99f63f4684282a05d545cc28d46c88c69e",
+        "pass": 109,
+        "fail": 0
+      },
+      "source-health-priority.tap": {
+        "sha256": "cb3cfb3fd9c5127df58d17f4cf522daa87ece711bcd8c37a4f4a019d14e0b9a0",
+        "pass": 17,
+        "fail": 0
+      }
+    },
+    "assembly": {
+      "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+      "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+      "production_overlays": 15,
+      "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+      "source_mode_default": "OFF",
+      "production_changed": true
+    },
+    "binding": {
+      "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+      "runtime_checked": true
+    },
+    "validation": {
+      "status": "CURRENT_GENERATION_VALIDATED",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "tests": "PASS",
+      "syntax": "PASS",
+      "schedule_minutes": 20,
+      "scheduled_runs_per_day": 72,
+      "manual_runs_per_day": 8,
+      "burst_deep_checks_per_day": 3,
+      "scheduled_analytics_interval_minutes": 40,
+      "scheduled_analytics_cycles_per_day": 36,
+      "full_cycle_candidate_limit": 2,
+      "worst_case_31_day_requests": 13330,
+      "overlay": "NOT_REQUESTED"
+    }
+  },
+  "main_cloud": {
+    "run": 39109103966,
+    "head": "1bf6768ed5c0c5a76eaca2d302c2e523cdccba73",
+    "artifact": 12129204327,
+    "digest": "sha256:952f13e1ab89e13b18bd6693b0f8e75a8de904a6246dfa5433a7792112e80f18",
+    "pass": 1055,
+    "fail": 0,
+    "TAP": 21,
+    "tap_files": {
+      "exact-asset-role-and-collector-audit.tap": {
+        "sha256": "fccfb53096645e3c9f13bac3a74a6a537469f61dc3ea31428e516e515c4bdd66",
+        "pass": 28,
+        "fail": 0
+      },
+      "cold-archive.tap": {
+        "sha256": "3e4646249ea615078e3ca7dd157125069d6ef94af4d0b567c5c63f416b7da370",
+        "pass": 242,
+        "fail": 0
+      },
+      "native-identity-source-handoff.tap": {
+        "sha256": "cc4bcc50da311d8fa53ec6bc513d6a57bbf8c8c2a1cb3a010d06e01f2f2bb0f3",
+        "pass": 39,
+        "fail": 0
+      },
+      "active-source-headroom.tap": {
+        "sha256": "75dfddec729b80cb2eb885f54c14f87d88c31e172e919b90e1b8d005a606c47a",
+        "pass": 65,
+        "fail": 0
+      },
+      "new-liq-research-admission.tap": {
+        "sha256": "195a69089fd9cc6230b2f86fb0fff40806fa3d6ae5efb3ee4889beede4fb6199",
+        "pass": 6,
+        "fail": 0
+      },
+      "hourly-native-usage.tap": {
+        "sha256": "d628f612fcbaa15353107337eb763fd3660b21498176d440d5968a8c54e82e2c",
+        "pass": 41,
+        "fail": 0
+      },
+      "target.tap": {
+        "sha256": "0d0b948373a89dbeebc7fe24ec60935d64dd79e8b517a7e9127bd1159e75a4e4",
+        "pass": 83,
+        "fail": 0
+      },
+      "scheduled-evidence-budget.tap": {
+        "sha256": "5e93e61ca377712d0d2c42c497b9bdf34a64a33ba8a25d1e412394b8355c241c",
+        "pass": 3,
+        "fail": 0
+      },
+      "native-transport-fallback.tap": {
+        "sha256": "a9e35ab211d8bfe210182034b11bef77fba342786f702de1e2d47a619ea3f98a",
+        "pass": 7,
+        "fail": 0
+      },
+      "index-useful-only.tap": {
+        "sha256": "5ea3f784dd97e9eabe6ac38eb07e8640793e45852033e042fc7c055b11e11211",
+        "pass": 21,
+        "fail": 0
+      },
+      "weekly-htx-synchronized-plan.tap": {
+        "sha256": "d690cff19e5057283feeea52a0b62f3951a08db09852114d442ad3cb27a2c518",
+        "pass": 105,
+        "fail": 0
+      },
+      "private-reader-runtime.tap": {
+        "sha256": "00b233a9ff9fd05665294ee7752003f64c3ca5cba2a505f9c02e57161ef0c59f",
+        "pass": 38,
+        "fail": 0
+      },
+      "native-useful-runtime.tap": {
+        "sha256": "30e6b7036a3f5019f994f3e3286bfa09615087d463e65818631bd7d8782d41f9",
+        "pass": 24,
+        "fail": 0
+      },
+      "private-forecast-consumer.tap": {
+        "sha256": "56a7c667a3680bceb3b850dd415c2687fa0f56d663e65eb97df0fe89d017a495",
+        "pass": 10,
+        "fail": 0
+      },
+      "native-useful-budget.tap": {
+        "sha256": "f6cee995845c8f2bd6598285947815cdb244bfdbabe711bfd53ac48f3b953eb8",
+        "pass": 19,
+        "fail": 0
+      },
+      "active-source-finalist-and-markets.tap": {
+        "sha256": "9aa7e203e40a383b9115ddb989e2af1560a0fc4e8e9ea2e5f1e7544ac8ccc89f",
+        "pass": 29,
+        "fail": 0
+      },
+      "native-sector-provider-binding.tap": {
+        "sha256": "0d26fcfbc16efb21195e5b315a63174e3987550cc3179b222563449b9437c63a",
+        "pass": 75,
+        "fail": 0
+      },
+      "retained-write-failure-guard.tap": {
+        "sha256": "78c7c3860e2b2f3ce98ac2b65f926b75674f8d3c054696b03deecf82bceb3de6",
+        "pass": 39,
+        "fail": 0
+      },
+      "public-venue-health-priority.tap": {
+        "sha256": "93fad60554f1b1859c88935e276777c0d1ef76fec3b52091c90313021ab36ba4",
+        "pass": 55,
+        "fail": 0
+      },
+      "private-price-connected.tap": {
+        "sha256": "850c0cc8e73987e083c589cab440b8f0a5fd3aae9c7566ff13c2536131e136f5",
+        "pass": 109,
+        "fail": 0
+      },
+      "source-health-priority.tap": {
+        "sha256": "96817d25d039bba450f0d79bb11c1c975a741f12afaa4aa7c04866050040487c",
+        "pass": 17,
+        "fail": 0
+      }
+    },
+    "assembly": {
+      "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+      "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+      "production_overlays": 15,
+      "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+      "source_mode_default": "OFF",
+      "production_changed": true
+    },
+    "binding": {
+      "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "worker_sha256": "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09",
+      "runtime_checked": true
+    },
+    "validation": {
+      "status": "CURRENT_GENERATION_VALIDATED",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "tests": "PASS",
+      "syntax": "PASS",
+      "schedule_minutes": 20,
+      "scheduled_runs_per_day": 72,
+      "manual_runs_per_day": 8,
+      "burst_deep_checks_per_day": 3,
+      "scheduled_analytics_interval_minutes": 40,
+      "scheduled_analytics_cycles_per_day": 36,
+      "full_cycle_candidate_limit": 2,
+      "worst_case_31_day_requests": 13330,
+      "overlay": "NOT_REQUESTED"
+    }
+  },
+  "N04": {
+    "qualified_original_facts_survive_optional_result_or_backoff_cache_failure": true,
+    "unknown_stops_subsequent_SQL_source": true,
+    "reservation_readback_unknown_never_authorizes_transport": true,
+    "existing_original_BNB_replay": 37651164902,
+    "original_BNB_source_ts": 1791390018000,
+    "manual_and_V5_consumer_verified": true,
+    "approved_brief_N04_display_accepted": false,
+    "spent_reservations_refunded": false,
+    "normal_path_extra_SQL": 0,
+    "new_current_provider_coverage": false,
+    "native_full_manual_same_run_SENT_accepted": false
+  },
+  "paid_runtime_point_preserved": {
+    "policy": "checkpoints/OWNER_PAID_SLIDING_HISTORY_20261018.json",
+    "paid_UI_confirmed": true,
+    "paid_UI_basis": "Cloudflare exact account Workers plans page: Paid $5/month+usage / disabled Current plan",
+    "enabled": true,
+    "workflow": "paid-sliding-history-20261018.yml",
+    "schedule_UTC": [
+      "00:17",
+      "12:17"
+    ],
+    "chosen_account_ceiling_bytes": 5000000000,
+    "high_water_bytes": 4000000000,
+    "target_bytes": 3500000000,
+    "minimum_hot_ms": 172800000,
+    "body_updates_per_operation": 96,
+    "canonical_updates": 48,
+    "full_proof_updates": 48,
+    "shared_family": "RETAINED_HISTORY",
+    "shared_day_slots": 2,
+    "reservation_rows_read": 20000,
+    "reservation_rows_written": 400,
+    "legacy_lossless_bounds_unchanged": true,
+    "actual_volume_check": "checkpoints/paid-sliding-history-20261018/native-check-39108141802.json",
+    "actual_account_bytes": 518578176,
+    "actual_primary_bytes": 499974144,
+    "actual_observed_ts": 1792308860790,
+    "actual_expiry_rows": 0,
+    "actual_physical_bytes_freed": 0,
+    "native_expiry_qualified": false,
+    "native_throughput_qualified": false,
+    "all_rows_storage_bounded_forever_proven": false,
+    "native_full_restored": false,
+    "unknown_reset": false,
+    "caps_raised": false
+  },
+  "paid_main_35check": 39109103939,
+  "scope": "checkpoints/ACTIVE105_N04_CACHE_FACT_PRESERVATION_SCOPE_20261018.json",
+  "latest_saved_natural": {
+    "run": 39107969912,
+    "head": "57a57393a3128a17a78a64b94da6fdbe33bb302c",
+    "artifact": 12129112638,
+    "digest": "sha256:b22ae5cf0c84a6f98ab316eaa962a06f71513231b18f8391114b62baf745d916",
+    "proof": "checkpoints/paid-sliding-history-20261018/natural-39107969912-report2-run-result.json",
+    "raw_sha256": "f8ec9dfc115481ee1b6fa870b86176eea1bb4e4adf64deda7bbcf4fe7bba318d",
+    "status": "NOT_CLOSED",
+    "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+    "stage": "D1_DAY_PREACTION_ADMISSION",
+    "day_utc": "2026-10-18",
+    "day_unknown": 15,
+    "native_daily_aggregate": {
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-18",
+      "run_count": 1,
+      "reserved_rows_read": 54000,
+      "reserved_rows_written": 840,
+      "measured_rows_read": 30745,
+      "measured_rows_written": 110,
+      "unknown_operations": 15,
+      "unfinished_reservations": 0
+    },
+    "own_attempt_usage": {
+      "attempted_statements": 24,
+      "measured_rows_read_subtotal": 499,
+      "measured_rows_written_subtotal": 5,
+      "unknown_operations": 0,
+      "row_totals_closed": true,
+      "total_rows_read": 499,
+      "total_rows_written": 5
+    },
+    "full_report": false,
+    "same_run_message_id": null,
+    "predates_paid_retention_merge": true
+  },
+  "new_provider_HTTP": 0,
+  "native_SQL": 0,
+  "Worker_invocations": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "physical_bytes_freed": 0,
+  "canonical_cursor_preserved": {
+    "schema": "PROTECTED_CANONICAL_CURSOR_V1",
+    "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "cursor": 710,
+    "source_cursor": 0,
+    "run_id": "39022879318",
+    "source_head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+    "updated_ts": 1792230897457,
+    "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY"
+  },
+  "native_relocation_preserved": {
+    "run": 39022879318,
+    "head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+    "proof": "checkpoints/free-storage-20261017/native-39022879318.json",
+    "proof_raw_sha256": "f39937693ad0c70e54e70a60dd8ebef1caa99c0e8013543e83ee9884009c99a7",
+    "review": "checkpoints/free-storage-20261017/native-39022879318-review.json",
+    "completed_ts": 1792230899286,
+    "physical_bytes_reclaimed": 1126400,
+    "primary_database_bytes_after": 498737152,
+    "native_costs_closed": true,
+    "whole_day_closed": false,
+    "full_report_restored": false,
+    "sustainable_capacity_accepted": false
+  },
+  "paid_policy_preserved": true,
+  "all4active_mirrors_identical": true,
+  "unmodified_root_spans_preserved_exactly": true,
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792309165487",
+    "acquired_ts": 1792309165487,
+    "expires_ts": 1792313965487,
+    "expected_main": "94cc69ad42675ecfcc27c55d35b0a6517d948a4b",
+    "scope": "Owner-authorized active N04 exact existing finalized EVM/token/Solana/XRPL source facts and consumers: preserve qualified original-clock fact when optional result or quota/backoff cache persistence fails; stop every subsequent SQL/source operation on native unknown without resetting grants/reservations/caps. Saved originals and controlled transport tests, one assembled cloud qualification/PR and exact status handoff. No live provider/native SQL/MAIN/Telegram. Continue blocks independently of storage; preserve paid volume retention PR421/cursor710/native relocation and all paused/strategy/form limits.",
+    "released": true,
+    "released_ts": 1792310075570
+  },
+  "all7directions_open": true,
+  "project_complete": false,
+  "next_action": "Continue all7fixed directions here without waiting on storage/day accounting. Fresh main/AGENTS/status/resume/phase/fence/generation and own bounded CAS lease before further changes/tests/live. PR422 merged1bf6768ed5c0c5a76eaca2d302c2e523cdccba73; branch39109015903 and main39109103966 each1055PASS0FAIL/21TAP;31new/62related source cases and13generation-guard cases. N04 finalized EVM/token/Solana/XRPL valid original-clock facts survive optional result/backoff/quota cache failures. Unknown stops subsequent SQL/source, including atomic reservation readback; spent grants/day/minute not refunded. Exact historical BNB provider payload37651164902/source1791390018000 reached existing manual/V5 consumer under controlled failures; approved brief still excludes N04 and is unchanged. This is not new current105 coverage or native report/SENT. PR421 paid volume runtime remains: first actual39108141802 complete9DB/518578176accountbytes,7controlHTTP/0SQL/reservation/expiry; starts4GB/target3.5/chosen5GB,hot48h,latest/statistics/references preserved. PR422 registered authorized workflow and main-only restriction; main39109103939 passes35tests. No native expiry/physical/throughput acceptance. Latest available saved report39107969912 still predates Paid implementation:15unknown UTC18,24measuredSQL499R5Wunknown0, no report/SENT. Inspect next ALREADY SAVED natural after paid release once it exists; do not force known-failing MAIN/manual or clear unknown. NEXT useful concrete task: N11 source-to-report accounting mismatch in tools/audit-active105-typed-source-coverage-20261014.py. Saved current-pause reports include exact immutable N11 HTX book facts in candidate.block_rendered_results.context_receipts and actual manual/report text, but typed matrix says0report-consumer assets because it intersects EV2 assigned producer IDs with different full_evidence_id/safety-receipt IDs. Use saved original run38427005558 (USELESS/UNI), exact execution_context_source, existing buildCanonicalExecutionEvidence/consumeCanonicalExecutionContext and final text to prove ID mapping; never infer from prose/label alone or current catalog. Fix accounting only after exact immutable binding, preserve original clocks/no false independent votes/no current105 or Telegram delivery claim. Reuse prior accepted source cases. Cursor710/latest_native_relocation39022879318, paused9/MAGIC106deferred/105assets122contracts/strategy/weights/forms/sourcecaps unchanged. Final decision score and owner Telegram form remain after blocks. Previous N04 owner released; new own lease required for N11."
+}
