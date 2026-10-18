@@ -1,5 +1,5 @@
 // Offline descriptive outcomes. No main weights, provider calls, SQL or send.
-import {hash} from '../observer/observer.mjs';
+import {hash,TIMEFRAMES} from '../observer/observer.mjs';
 const DAY=86400000;
 export const HORIZONS=Object.freeze({'1h':3600000,'4h':14400000,'24h':DAY,'7d':7*DAY,'30d':30*DAY,'90d':90*DAY});
 const stamp=x=>Number.isSafeInteger(x)&&x>=1e12,num=x=>typeof x==='number'&&Number.isFinite(x),str=x=>typeof x==='string'&&x.length>0;
@@ -18,7 +18,7 @@ export function commitOutcomePlan(card,{anchor,committed_ts,success_pct=5,opposi
 }
 export function evaluateOutcome(plan,{direction,horizon,points=[],as_of_ts}={}){
  const {plan_hash,...body}=plan||{};need(plan_hash===hash(body),'PLAN_INTEGRITY');
- need(['LONG','SHORT'].includes(direction)&&plan.directions.includes(direction)&&plan.horizons.includes(horizon)&&stamp(as_of_ts)&&Array.isArray(points)&&points.length<=30000,'OUTCOME_ARGUMENTS');
+ need(['LONG','SHORT'].includes(direction)&&plan.directions.includes(direction)&&plan.horizons.includes(horizon)&&stamp(as_of_ts)&&as_of_ts>=plan.first_known_ts&&Array.isArray(points)&&points.length<=30000,'OUTCOME_ARGUMENTS');
  const target=plan.first_known_ts+HORIZONS[horizon];
  const base={schema:'ANOMALY_OBSERVED_OUTCOME_V1',event_id:plan.event_id,plan_hash,card_hash:plan.card_hash,instrument:plan.instrument,timeframe:plan.timeframe,cohort:plan.cohort,direction,horizon,target_ts:target,first_known_ts:plan.first_known_ts,as_of_ts,extrema_scope:'OBSERVED_SNAPSHOTS_ONLY',not_executed_profit:true,external_native_commit_ACK_qualified:false};
  const finish=x=>{const o={...base,...x};return {...o,outcome_hash:hash(o)};};
@@ -48,10 +48,32 @@ export function evaluateOutcome(plan,{direction,horizon,points=[],as_of_ts}={}){
  const status=opposite!==null&&(favorable===null||opposite<favorable)?'OPPOSITE':favorable!==null&&opposite!==null?'FALSE':favorable!==null?'SUCCESSFUL':'UNWORKED';
  return finish({status,reason:'PREDECLARED_SAMPLED_BARRIERS',complete:true,samples:xs.length,actual_end_source_ts:xs.at(-1).source_ts,endpoint_lag_ms:target-xs.at(-1).source_ts,directional_return_pct:returns.at(-1),sampled_mfe_pct:Math.max(0,...returns),sampled_mae_pct:Math.min(0,...returns),favorable_first_observed_ts:favorable,opposite_first_observed_ts:opposite,after_target_points_excluded:after,not_yet_available_points_excluded:notYetKnown});
 }
+// A self-consistent checksum is not producer-schema or native provenance
+// validation. Reject malformed summaries without inventing a market outcome.
+function summaryRowIssue(o){
+ const label=v=>str(v)&&v.trim().length>0;
+ if(!o||typeof o!=='object'||Array.isArray(o)||o.schema!=='ANOMALY_OBSERVED_OUTCOME_V1'||!hex(o.outcome_hash)||!hex(o.card_hash)||!hex(o.plan_hash)||!label(o.event_id))return 'OUTCOME_SCHEMA_INVALID';
+ const i=o.instrument;
+ if(!i||!['asset_id','venue','upstream','contract','quote','price_unit','volume_unit','binding_ref'].every(k=>label(i[k]))||!['FUTURES','SPOT'].includes(i.market)||i.identity_verified!==true||!num(i.multiplier)||i.multiplier<=0||!['VERIFIED_NATIVE','CHAIN_ADDRESS'].includes(i.binding_kind)||i.binding_kind==='CHAIN_ADDRESS'&&(!label(i.chain)||!label(i.address)))return 'OUTCOME_IDENTITY_INVALID';
+ if(!Object.hasOwn(TIMEFRAMES,o.timeframe)||!Object.hasOwn(HORIZONS,o.horizon)||!['LONG','SHORT'].includes(o.direction)||!['CONTROLLED','BACKFILLED','DECLARED_PROSPECTIVE'].includes(o.cohort))return 'OUTCOME_COHORT_CELL_INVALID';
+ if(o.extrema_scope!=='OBSERVED_SNAPSHOTS_ONLY'||o.not_executed_profit!==true||o.external_native_commit_ACK_qualified!==false||!label(o.reason))return 'OUTCOME_SCOPE_INVALID';
+ if(!stamp(o.first_known_ts)||!stamp(o.as_of_ts)||!stamp(o.target_ts)||o.as_of_ts<o.first_known_ts||o.target_ts!==o.first_known_ts+HORIZONS[o.horizon])return 'OUTCOME_CLOCK_INVALID';
+ if(o.status==='PENDING')return o.complete===false&&o.as_of_ts<o.target_ts&&o.reason==='HORIZON_NOT_MATURE'?null:'PENDING_STATE_INVALID';
+ if(!['INCOMPLETELY_OBSERVED','SUCCESSFUL','FALSE','OPPOSITE','UNWORKED'].includes(o.status))return 'OUTCOME_STATUS_INVALID';
+ if(o.as_of_ts<o.target_ts)return 'OUTCOME_NOT_MATURE';
+ if(o.status==='INCOMPLETELY_OBSERVED')return o.complete===false?null:'CENSORED_STATE_INVALID';
+ const count=v=>Number.isSafeInteger(v)&&v>=0;
+ if(o.complete!==true||o.reason!=='PREDECLARED_SAMPLED_BARRIERS'||!count(o.samples)||o.samples<1||o.samples>30000||!num(o.directional_return_pct)||!num(o.sampled_mfe_pct)||o.sampled_mfe_pct<0||!num(o.sampled_mae_pct)||o.sampled_mae_pct>0||!count(o.after_target_points_excluded)||!count(o.not_yet_available_points_excluded))return 'COMPLETE_OUTCOME_SHAPE_INVALID';
+ if(!stamp(o.actual_end_source_ts)||o.actual_end_source_ts<=o.first_known_ts||o.actual_end_source_ts>o.target_ts||!count(o.endpoint_lag_ms)||o.endpoint_lag_ms!==o.target_ts-o.actual_end_source_ts)return 'OUTCOME_ENDPOINT_INVALID';
+ const f=o.favorable_first_observed_ts,a=o.opposite_first_observed_ts;
+ if([f,a].some(t=>t!==null&&(!stamp(t)||t<=o.first_known_ts||t>o.actual_end_source_ts)))return 'OUTCOME_PASSAGE_CLOCK_INVALID';
+ const expected=a!==null&&(f===null||a<f)?'OPPOSITE':f!==null&&a!==null?'FALSE':f!==null?'SUCCESSFUL':'UNWORKED';
+ return o.status===expected?null:'OUTCOME_PASSAGE_STATUS_INVALID';
+}
 export function summarizeOutcomes(outcomes=[]){
  need(Array.isArray(outcomes)&&outcomes.length<=20000,'BOUNDED_COHORT_REQUIRED');
- const groups=new Map();let invalid=0;
- for(const o of outcomes){const {outcome_hash,...body}=o||{};if(outcome_hash!==hash(body)||!str(o.event_id)){invalid++;continue;}
+ const groups=new Map(),invalidReasons={};let invalid=0;
+ for(const o of outcomes){let issue=summaryRowIssue(o);if(!issue){const {outcome_hash,...body}=o;issue=outcome_hash===hash(body)?null:'OUTCOME_DIGEST_INVALID';}if(issue){invalid++;invalidReasons[issue]=(invalidReasons[issue]??0)+1;continue;}
   const key=[o.event_id,o.horizon,o.direction].join('|');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(o);
  }
  const cells={},conflicts=[],statusCounts={};let duplicates=0;
@@ -64,7 +86,7 @@ export function summarizeOutcomes(outcomes=[]){
   if(o.status==='PENDING')cell.pending++;else if(o.status==='INCOMPLETELY_OBSERVED')cell.censored++;else if(['SUCCESSFUL','FALSE','OPPOSITE','UNWORKED'].includes(o.status)){cell.complete++;cell[o.status.toLowerCase()]++;}else{cell.censored++;}
   statusCounts[o.status]=(statusCounts[o.status]??0)+1;
  }
- return {schema:'ANOMALY_OUTCOME_COHORTS_V1',cells:Object.values(cells).map(c=>({...c,assets:c.assets.size,descriptive_success_share:c.complete?c.successful/c.complete:null,observation_completion_share:c.total_events?c.complete/c.total_events:null})),status_counts:statusCounts,total_unique_event_cells:groups.size,invalid_rows:invalid,censored_conflicting_cells:conflicts.length,conflicting_event_cells:conflicts,duplicate_replays:duplicates,empirical_predictive_accuracy:null,independent_sample_count:null,recall:null,weights_changed:false,limitations:['CONTROLLED/BACKFILLED/DECLARED_PROSPECTIVE separated','Native contemporaneous commit ACK not qualified by this offline module','Two directions of one event and overlapping horizons/timeframes are correlated; never pool as independent','Recall needs an independent screened-universe baseline; missing facts are not negatives']};
+ return {schema:'ANOMALY_OUTCOME_COHORTS_V1',cells:Object.values(cells).map(c=>({...c,assets:c.assets.size,descriptive_success_share:c.complete?c.successful/c.complete:null,observation_completion_share:c.total_events?c.complete/c.total_events:null})),status_counts:statusCounts,total_unique_event_cells:groups.size,invalid_rows:invalid,invalid_row_reason_counts:invalidReasons,censored_conflicting_cells:conflicts.length,conflicting_event_cells:conflicts,duplicate_replays:duplicates,empirical_predictive_accuracy:null,independent_sample_count:null,recall:null,weights_changed:false,limitations:['CONTROLLED/BACKFILLED/DECLARED_PROSPECTIVE separated','Summary shape/causality checks do not authenticate card/plan/raw source or native commit ACK','Native contemporaneous commit ACK not qualified by this offline module','Two directions of one event and overlapping horizons/timeframes are correlated; never pool as independent','Recall needs an independent screened-universe baseline; missing facts are not negatives']};
 }
 export function sourceUtility(attempts=[]){
  need(Array.isArray(attempts)&&attempts.length<=20000,'BOUNDED_ATTEMPTS_REQUIRED');
