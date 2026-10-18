@@ -1,0 +1,96 @@
+{
+  "schema": "MEXC_PHEMEX_DOCUMENTED_BLOCKER_CORRECTIONS_V1",
+  "status": "SAVED_AT_OWNER_PAUSE_NOT_EXECUTION_READY",
+  "supersedes_only_claims_in": {
+    "PR463": "a1e6ed22a3409825003802ddf971589a30f16bcc",
+    "PR456": "14f9a82ccfb70b25c5ff28bb5c774299d165beef"
+  },
+  "frozen_previous_heads_modified": false,
+  "confirmed_route_rules": [
+    {
+      "provider": "MEXC",
+      "method": "GET",
+      "path": "/api/v1/contract/kline/{symbol}",
+      "published_requests": 20,
+      "window_ms": 2000,
+      "evidence": "mexcKlineHiddenRate and same-response mexcKlineDualRate",
+      "prior_claim": "Current retained main markdown lacked numeric rate; kline rate wasNULL. Full HTML now directly supports20/2s, not10/2s."
+    },
+    {
+      "provider": "MEXC",
+      "method": "GET",
+      "path": "/api/v1/contract/deals/{symbol}",
+      "published_requests": 20,
+      "window_ms": 2000,
+      "evidence": "mexcTradesHiddenRate",
+      "prior_claim": "Recent-trade route rate wasNULL; current rawHTML supports20/2s."
+    },
+    {
+      "provider": "MEXC",
+      "method": "GET",
+      "path": "/api/v1/contract/detail/country",
+      "published_requests": 10,
+      "window_ms": 2000,
+      "evidence": "mexcContractHiddenRate",
+      "prior_claim": "Earlier10/2s cannot be universal; this exact metadata route isnowdocumented10/2s."
+    }
+  ],
+  "extraction_gap": {
+    "same_scrape_id": "01a14f8d-58d8-70b9-951a-f05639e1a01d",
+    "same_response_raw_HTML_rate_present": true,
+    "same_response_main_markdown_rate_present": false,
+    "onlyMainContent": true,
+    "meaning": "An omitted main-markdown block is not proof that the complete official page lacks the rule. Same-response dual formats distinguish this from a possible time-of-page-update explanation."
+  },
+  "not_resolved": [
+    {
+      "provider": "MEXC",
+      "field": "T trade side",
+      "status": "BUY_SELL_LABEL_ONLY_AGGRESSOR_NOT_PROVEN",
+      "reason": "Raw recent-trades table still describes T as side1buy/2sell. O mentions both maker/taker opening; it does not assign T explicitly to the aggressor. M is selftrade flag. Do not publish takerCVD from this alone."
+    },
+    {
+      "provider": "MEXC",
+      "field": "t trade clock unit",
+      "status": "NOT_EXPLICIT_IN_SCHEMA",
+      "reason": "Rawtable calls it trade time; sample magnitude is not a normative unit guarantee."
+    },
+    {
+      "provider": "MEXC",
+      "field": "kline vol/amount exact units",
+      "status": "NOT_QUALIFIED",
+      "reason": "No new unit evidence acquired in this narrow package; previous463 limitation remains."
+    },
+    {
+      "provider": "MEXC",
+      "field": "rate bucket IP/UID/shared scope and ticker rate",
+      "status": "UNKNOWN_FOR_THIS_PACKET",
+      "reason": "Exactroute numeric blocks do not themselves define shared bucket, daily/monthly project allowance or ticker entitlement."
+    },
+    {
+      "provider": "MEXC_PHEMEX",
+      "field": "actual TIA/APR listing/project identity/current useful fact",
+      "status": "UNQUALIFIED_NO_ACQUISITION"
+    },
+    {
+      "provider": "PHEMEX",
+      "field": "/exchange/public/md/v2/kline/last and /list request weight",
+      "status": "EXACT_WEIGHT_NULL",
+      "reason": "Current official hedgedAPI routes point to Generic Other rules. Generic has100/minute and legacy /exchange/public/md/kline weight10; nonexhaustive table describes exceptions to1. UnlistedV2default1 is an inference, not an explicit numeric routebinding or a granted quota."
+    },
+    {
+      "provider": "PHEMEX",
+      "field": "REST keyless actualaccess",
+      "status": "NOT_ACTUALLY_QUALIFIED",
+      "reason": "Public markettrade/orderbook without authentication is explicitly in WebSocket session section. Do not silently extend that statement to REST v2 endpoints. No key/account or actualRESTprobe was used."
+    }
+  ],
+  "runtime_or_project_caps_changed": false,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "execution_ready": false,
+  "quota_admission_granted": false,
+  "freshness_strategy_weights_forms_pauses_unchanged": true,
+  "new_tests_after_owner_stop": 0,
+  "next": "Resume only after ownermessage. Coordinator may register exactroute corrections, preserving other463 blockers and existing budgets; no acquisition or newquota follows from this document."
+}
