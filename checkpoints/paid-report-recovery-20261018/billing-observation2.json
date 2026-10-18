@@ -1,0 +1,53 @@
+{
+  "schema": "REPORT2_UTC18_NATIVE_INTERVAL_BILLING_ANALYTICS_V1",
+  "observed_at": "2026-10-18T10:07:31.850Z",
+  "query": "{viewer{accounts(filter:{accountTag:\"70ee0af85191ea470e74c7383fdec772\"}){d1AnalyticsAdaptiveGroups(limit:16,filter:{databaseId:\"057a2847-2cc4-4e52-8534-1be1596d21d5\",datetime_geq:\"2026-10-18T00:06:20Z\",datetime_leq:\"2026-10-18T00:07:20Z\"}){sum{rowsRead rowsWritten readQueries writeQueries} avg{sampleInterval} dimensions{datetimeMinute databaseId}}}}}",
+  "control_HTTP": 1,
+  "native_SQL": 0,
+  "response": {
+    "success": true,
+    "status": 200,
+    "result": {
+      "viewer": {
+        "accounts": [
+          {
+            "d1AnalyticsAdaptiveGroups": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "dimensions": {
+                  "databaseId": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+                  "datetimeMinute": "2026-10-18T00:06:00Z"
+                },
+                "sum": {
+                  "readQueries": 161,
+                  "rowsRead": 17383,
+                  "rowsWritten": 65,
+                  "writeQueries": 19
+                }
+              },
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "dimensions": {
+                  "databaseId": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+                  "datetimeMinute": "2026-10-18T00:07:00Z"
+                },
+                "sum": {
+                  "readQueries": 49,
+                  "rowsRead": 13363,
+                  "rowsWritten": 45,
+                  "writeQueries": 11
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "errors": [],
+    "messages": []
+  }
+}

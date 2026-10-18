@@ -1,0 +1,52 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {DatabaseSync} from 'node:sqlite';
+import {pathToFileURL} from 'node:url';
+const moduleURL=name=>process.env.REPORT2_TEST_RUNTIME?pathToFileURL(path.join(process.env.REPORT2_TEST_RUNTIME,name)):new URL('./'+name,import.meta.url);
+const {loadVerifiedNativeDayReconciliation}=await import(moduleURL('verified-native-day-reconciliation.mjs'));
+const {loadDailyUsageAggregate,evaluateDailyReservationBudget}=await import(moduleURL('d1-preaction-budget-guard.mjs'));
+import {buildR88DailyAdmissionView} from '../current-generation/files/src/v3-adaptive-budget.mjs';
+import {loadKnownD1DayGuard} from '../tools/known-d1-day-guard.mjs';
+const G='MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',NOW=Date.parse('2026-10-18T10:20:00Z');
+const DIR='checkpoints/paid-report-recovery-20261018',POINTER='checkpoints/LATEST_VERIFIED_D1_AGGREGATE_RECONCILIATION.json';
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const read=(root,p)=>JSON.parse(fs.readFileSync(path.join(root,p)));
+const write=(root,p,j)=>fs.writeFileSync(path.join(root,p),JSON.stringify(j));
+function fixture(){const root=fs.mkdtempSync(path.join(os.tmpdir(),'report2-native-reconcile-'));fs.mkdirSync(path.join(root,'checkpoints'));fs.cpSync(DIR,path.join(root,DIR),{recursive:true});fs.copyFileSync(POINTER,path.join(root,POINTER));return root;}
+const load=root=>loadVerifiedNativeDayReconciliation({root,now_ts:NOW,generation:G});
+function amend(root,key,change){const p=read(root,POINTER),m=read(root,p.manifest.path),d=m.files[key],body=read(root,d.path);change(body);write(root,d.path,body);d.sha256=sha(fs.readFileSync(path.join(root,d.path)));write(root,p.manifest.path,m);p.manifest.sha256=sha(fs.readFileSync(path.join(root,p.manifest.path)));write(root,POINTER,p);}
+function manifest(root,change){const p=read(root,POINTER),m=read(root,p.manifest.path);change(m);write(root,p.manifest.path,m);p.manifest.sha256=sha(fs.readFileSync(path.join(root,p.manifest.path)));write(root,POINTER,p);}
+const groups=j=>j.response.result.viewer.accounts[0].d1AnalyticsAdaptiveGroups;
+test('two exact unsampled historical billing observations close only aggregate cost;15 unknown receipts remain',()=>{
+ const h=load('.');assert.ok(h);assert.equal(h.historical_unknown_operations,15);assert.equal(h.aggregate_billable_rows_read,30746);assert.equal(h.aggregate_billable_rows_written,110);assert.equal(h.per_statement_counters_reconstructed,false);
+});
+for(const [name,change] of [
+ ['foreign account',m=>m.account_id='0'.repeat(32)],['foreign database',m=>m.database_id='other'],['foreign generation',m=>m.generation='OLD'],['foreign day',m=>m.day_utc='2026-10-17'],['foreign source head',m=>m.source.head='a'.repeat(40)],['foreign source run',m=>m.source.run_id++],['different source reservation',m=>m.source.reservation_id='R2RUN:1792281986592:0000000000000000'],['unbounded interval',m=>m.interval.from='2026-10-18T00:00:00Z'],['archive digest mismatch',m=>m.files.source_archive.sha256='0'.repeat(64)]
+])test(`re-signed manifest cannot authorize ${name}`,()=>{const root=fixture();try{manifest(root,change);assert.equal(load(root),null);}finally{fs.rmSync(root,{recursive:true,force:true});}});
+for(const [name,change] of [
+ ['sampled native data',j=>groups(j)[0].avg.sampleInterval=2],['missing minute',j=>groups(j).pop()],['duplicate minute',j=>groups(j).push(structuredClone(groups(j)[0]))],['foreign native database',j=>groups(j)[0].dimensions.databaseId='other'],['different query',j=>j.query=j.query.replace('d1AnalyticsAdaptiveGroups','d1QueriesAdaptiveGroups')],['unaccounted read',j=>groups(j)[0].sum.rowsRead++],['unaccounted write',j=>groups(j)[0].sum.rowsWritten++],['unknown query count',j=>groups(j)[0].sum.readQueries++],['null counters',j=>groups(j)[0].sum.rowsRead=null],['noninteger counters',j=>groups(j)[0].sum.rowsWritten=.5],['failed native reply',j=>j.response.status=500],['native error',j=>j.response.errors=[{message:'not closed'}]],['future observation',j=>j.observed_at='2026-10-18T23:00:00Z']
+])test(`re-signed native observation rejects ${name}`,()=>{const root=fixture();try{amend(root,'billing1',change);assert.equal(load(root),null);}finally{fs.rmSync(root,{recursive:true,force:true});}});
+test('a second sample must be independently timed and agree, not repeat a supplied success flag',()=>{const root=fixture();try{amend(root,'billing2',j=>j.observed_at=read(root,path.join(DIR,'billing-observation1.json')).observed_at);assert.equal(load(root),null);}finally{fs.rmSync(root,{recursive:true,force:true});}});
+test('analytics interval must contain the complete real runner step',()=>{const root=fixture();try{amend(root,'jobs_metadata',j=>j.jobs.find(x=>x.name==='run-report2').steps.find(x=>x.name==='Full Report 2 cycle').started_at='2026-10-18T00:06:19Z');assert.equal(load(root),null);}finally{fs.rmSync(root,{recursive:true,force:true});}});
+test('old day never grants admission on UTC rollover',()=>{assert.equal(loadVerifiedNativeDayReconciliation({root:'.',now_ts:Date.parse('2026-10-19T00:00:00Z'),generation:G}),null);});
+function database(){
+ const raw=new DatabaseSync(':memory:');raw.exec('CREATE TABLE report2_runner_budget_ledger_shadow(reservation_id TEXT PRIMARY KEY,day_utc TEXT,reserve_rows_read INTEGER,reserve_rows_written INTEGER,state TEXT,started_ts INTEGER,source_run_id TEXT,measured_rows_read INTEGER,measured_rows_written INTEGER,measured_requests INTEGER,unknown_ops INTEGER,completed_ts INTEGER);CREATE INDEX day_idx ON report2_runner_budget_ledger_shadow(day_utc);');
+ raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('R2RUN:1792281986592:65a2f7d46b6acfcc','2026-10-18',54000,840,'FINALIZED',1792281986592,'39081512792',30745,110,255,15,Date.parse('2026-10-18T00:07:11.700Z'));
+ const calls=[];let unknown=0;const db={usageSnapshot:()=>({unknown_ops:unknown}),prepare(sql){let args=[];return{bind(...a){args=a;return this;},async first(){calls.push({sql,args});const r=raw.prepare(sql).get(...args);return r?{...r}:null;}};}};
+ return{raw,db,calls,setUnknown:n=>unknown=n,row:()=>({...raw.prepare('SELECT * FROM report2_runner_budget_ledger_shadow LIMIT 1').get()})};
+}
+test('same native day scan binds the original row, preserves15unknown/reserves, and permits budgeted work',async()=>{
+ const f=database(),before=f.row();try{const d=await loadDailyUsageAggregate(f.db,NOW,{reconciliation:load('.')});assert.equal(f.calls.length,1);assert.equal(d.unknown_ops,15);assert.equal(d.reserved_rows_read,54000);assert.equal(d.reserved_rows_written,840);assert.equal(d.native_cost_reconciliation.historical_unknown_operations_preserved,15);assert.deepEqual(f.row(),before);assert.equal(evaluateDailyReservationBudget({daily:d,nextReservation:{rows_read:54000,rows_written:840}}).allowed,true);assert.equal(evaluateDailyReservationBudget({daily:buildR88DailyAdmissionView(d,{rows_read:54000,rows_written:840})}).allowed,true);assert.equal(evaluateDailyReservationBudget({daily:d,maxDailyReads:1}).allowed,false);assert.deepEqual(f.row(),before);}finally{f.raw.close();}
+});
+for(const [name,column,value] of [['source run','source_run_id','other'],['unknown set','unknown_ops',16],['measured reads','measured_rows_read',30744],['measured writes','measured_rows_written',109],['request count','measured_requests',254],['refunded reserve','reserve_rows_read',53999],['wrong write reserve','reserve_rows_written',839],['unfinished source','state','RESERVED'],['outside interval','completed_ts',Date.parse('2026-10-18T00:08:00Z')]])test(`changed native ${name} cannot consume the old reconciliation`,async()=>{
+ const f=database();try{f.raw.prepare(`UPDATE report2_runner_budget_ledger_shadow SET ${column}=?`).run(value);const d=await loadDailyUsageAggregate(f.db,NOW,{reconciliation:load('.')});assert.equal(d.native_cost_reconciliation,undefined);assert.equal(evaluateDailyReservationBudget({daily:d}).allowed,false);}finally{f.raw.close();}
+});
+test('new unknown elsewhere remains blocked even with the original historical row unchanged',async()=>{const f=database();try{f.raw.exec("INSERT INTO report2_runner_budget_ledger_shadow VALUES('OTHER','2026-10-18',100,10,'FINALIZED',1,'NEW',1,1,1,1,1)");const d=await loadDailyUsageAggregate(f.db,NOW,{reconciliation:load('.')});assert.equal(d.unknown_ops,16);assert.equal(evaluateDailyReservationBudget({daily:d}).allowed,false);}finally{f.raw.close();}});
+test('a newly unmeasured current reply cannot be closed by the historical certificate',async()=>{const f=database();try{f.setUnknown(1);const d=await loadDailyUsageAggregate(f.db,NOW,{reconciliation:load('.')});assert.equal(evaluateDailyReservationBudget({daily:d}).allowed,false);}finally{f.raw.close();}});
+test('plain JSON handles and serialized successful receipts cannot grant admission',async()=>{const f=database();try{const fake=JSON.parse(JSON.stringify(load('.'))),a=await loadDailyUsageAggregate(f.db,NOW,{reconciliation:fake});assert.equal(a.native_cost_reconciliation,undefined);assert.equal(f.calls[0].sql.includes('reconciliation_source_row'),false);assert.equal(evaluateDailyReservationBudget({daily:a}).allowed,false);const valid=await loadDailyUsageAggregate(f.db,NOW,{reconciliation:load('.')});assert.equal(evaluateDailyReservationBudget({daily:JSON.parse(JSON.stringify(valid))}).allowed,false);}finally{f.raw.close();}});
+test('ordinary day SQL and unknown fail-closed behavior remain unchanged without a verified proof',async()=>{const f=database();try{const d=await loadDailyUsageAggregate(f.db,NOW);assert.equal(f.calls.length,1);assert.deepEqual(f.calls[0].args,['2026-10-18']);assert.equal(f.calls[0].sql.includes('reconciliation_source_row'),false);assert.equal(d.unknown_ops,15);assert.equal(evaluateDailyReservationBudget({daily:d}).allowed,false);}finally{f.raw.close();}});
+test('local retained refusal becomes native-admission-required, never an unconditional report or SQL grant',()=>{const guard=loadKnownD1DayGuard({root:'.',now_ts:NOW,generation:G});assert.equal(guard.blocked,false);assert.equal(guard.status,'NATIVE_ADMISSION_REQUIRED_AFTER_VERIFIED_AGGREGATE_RECONCILIATION');assert.equal(guard.historical_unknown_operations_retained,15);assert.equal(guard.sourceHTTP+guard.D1+guard.Telegram,0);assert.equal(guard.reason,'FRESH_NATIVE_LEDGER_WITNESS_STILL_REQUIRED');});
