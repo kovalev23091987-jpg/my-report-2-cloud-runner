@@ -1,0 +1,125 @@
+{
+  "schema": "FINAL_ZERO_SQL_RUN_BUDGET_CONTEXT_PEER_REVIEW_V1",
+  "reviewed_PR": 493,
+  "reviewed_head": "739d99a6fcba1785a70ca1622ed4d7554da6b987",
+  "initial_reviewed_head": "1d08c40574a0f774b6e4b322decbe5db29067a68",
+  "base": "5cdb0b2f62c7fa3f189beb7046adb6b83449cec3",
+  "result": "NO_BLOCKING_FINDINGS_AFTER_TWO_NARROW_CORRECTIONS",
+  "source_body_review": {
+    "initial_new_test_bodies": 8,
+    "final_modified_bodies": 2,
+    "reviewer_test_executions": 0
+  },
+  "initial_review": {
+    "schema": "INITIAL_ZERO_SQL_CONTEXT_FROZEN_REVIEW_V1",
+    "reviewed_PR": 493,
+    "initial_head": "1d08c40574a0f774b6e4b322decbe5db29067a68",
+    "base": "5cdb0b2f62c7fa3f189beb7046adb6b83449cec3",
+    "source_test_bodies_read": 8,
+    "own_test_executions": 0,
+    "source_hashes_verified": {
+      "current-generation/files/src/run-budget-context.mjs": "3379fd2582cac10bb1ea6c5ee771c69e2aee922e0f224e7220e5cbb5e80f5ff8",
+      "current-generation/files/runner-main.mjs": "71638d3ce2eb566aee85362d2742152b5fc8749854214137eb5c7129de176752",
+      "current-generation/apply-runtime-overlay.mjs": "8516a3fbdc498acf81012284d3c6b1b61153e079f4780fef601a58ade3680686",
+      "current-generation/tests/run-budget-context.test.mjs": "d1e413e1c6aad78fef15b8da1d9c0ea394383d9a8d82a69a6e492003556403ae",
+      ".github/workflows/liq-assembled-offline-20261012.yml": "bf04f07683840cba13baabcfffe4584e2620556c037aff5641ac0c511652178d"
+    },
+    "nine_protected_hashes_base_exact": {
+      "runner/d1-preaction-budget-guard.mjs": "88fd742f0a9791efe9a8208ac96bea6212c9e12210e5000d243c5feca19f7e14",
+      "tools/read-active-source-budgets-20261014.mjs": "ec8bba26dac48d821bffc5cf10ad0ff5a8b89eb85bea201cdc043de307148e46",
+      "current-generation/files/src/unified-budget.mjs": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f",
+      "current-generation/files/src/evidence-source-store.mjs": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+      "current-generation/files/src/block-weight-calibration.mjs": "fa8d0da672a4fc7e4746610dcfc868e32a9bb48bb120c7b2b3e63c34142d0840",
+      "current-generation/files/src/manual-report-formatter.mjs": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+      "current-generation/files/src/telegram-plain-facts.mjs": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+      "current-generation/tests/fixtures/output-contract/MANIFEST.json": "0385d9d03beb1893e50e006569942d28214c171efdf421c01e0e7c6e98ddf6b8",
+      "runner/r8-20-prospective-validation-sidecar.mjs": "b02d9b8a7755b54621a98579e571ba3207383bf906e771523d576e36d14edaba"
+    },
+    "runner_overlay_workflow_reverse_exact": true,
+    "native_snapshot_relocated_only_across_fs_console_no_SQL": true,
+    "saved_author_log": {
+      "path": "checkpoints/source-budget-context-20261018/new8.tap.gz",
+      "sha256": "b9dacfee5dfbdfe3f85cde4909bc51113ff0760322e05199d9146e7b13ad684c",
+      "pass": 8,
+      "fail": 0,
+      "rerun": false
+    },
+    "requested_narrow_corrections": [
+      {
+        "field": "next_full_protected_reservation",
+        "issue": "Static required policy59000/920 is not an observed held reservation",
+        "recommended": "required_next_full_reservation_by_policy + observed_next_full_reservation:null"
+      },
+      {
+        "field": "native_liquidation_service.max_http",
+        "issue": "Actual input comes from acquisition audit.shared_budget.max_http_per_run; reading max_http loses available existing value",
+        "recommended": "Map exact actual producer max_http_per_run, keep missing gross/claimed NULL"
+      }
+    ],
+    "native_SQL_provider_MAIN_Telegram": 0
+  },
+  "final_scope_hashes_verified": {
+    "current-generation/files/src/run-budget-context.mjs": "fee24a5344b732506e29dc87a1a1117b07d3ff86f158514b5aef9496ca3468f1",
+    "current-generation/files/runner-main.mjs": "71638d3ce2eb566aee85362d2742152b5fc8749854214137eb5c7129de176752",
+    "current-generation/apply-runtime-overlay.mjs": "8516a3fbdc498acf81012284d3c6b1b61153e079f4780fef601a58ade3680686",
+    "current-generation/tests/run-budget-context.test.mjs": "9f37dc7183c87b9a21c8db6618e0aa31be52ebd6b8060e637bf6e5ee115f2b81",
+    ".github/workflows/liq-assembled-offline-20261012.yml": "bf04f07683840cba13baabcfffe4584e2620556c037aff5641ac0c511652178d"
+  },
+  "nine_protected_byte_exact": {
+    "runner/d1-preaction-budget-guard.mjs": "88fd742f0a9791efe9a8208ac96bea6212c9e12210e5000d243c5feca19f7e14",
+    "tools/read-active-source-budgets-20261014.mjs": "ec8bba26dac48d821bffc5cf10ad0ff5a8b89eb85bea201cdc043de307148e46",
+    "current-generation/files/src/unified-budget.mjs": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f",
+    "current-generation/files/src/evidence-source-store.mjs": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+    "current-generation/files/src/block-weight-calibration.mjs": "fa8d0da672a4fc7e4746610dcfc868e32a9bb48bb120c7b2b3e63c34142d0840",
+    "current-generation/files/src/manual-report-formatter.mjs": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+    "current-generation/files/src/telegram-plain-facts.mjs": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+    "current-generation/tests/fixtures/output-contract/MANIFEST.json": "0385d9d03beb1893e50e006569942d28214c171efdf421c01e0e7c6e98ddf6b8",
+    "runner/r8-20-prospective-validation-sidecar.mjs": "b02d9b8a7755b54621a98579e571ba3207383bf906e771523d576e36d14edaba"
+  },
+  "runner_overlay_workflow_unchanged_from_initial": true,
+  "old_standalone_tool_base_byte_exact": true,
+  "initial_author8log_is_historical_for_initial_head": true,
+  "narrow_author_logs": [
+    {
+      "path": "checkpoints/source-budget-context-20261018/label-native-point1.tap.gz",
+      "sha256": "74965142b4ddaa71dfb496e6b26ddf5b7ebe0829758ca30fec93afed73427fa0",
+      "author_pass": 1,
+      "author_fail": 0,
+      "reviewer_rerun": false,
+      "saved_log_text": "✔ native point arithmetic keeps its exact existing cut and does not subtract another full from a run allowance (1.226417ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 51.642875\n"
+    },
+    {
+      "path": "checkpoints/source-budget-context-20261018/liq-producer1.tap.gz",
+      "sha256": "00c9e4ae16fb4ad8604735281d553368920983db7849e4793e885a019436207b",
+      "author_pass": 1,
+      "author_fail": 0,
+      "reviewer_rerun": false,
+      "saved_log_text": "✔ native liquidation service zero is retained with narrow scope and absent cost stays null (1.898167ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 69.337375\n"
+    }
+  ],
+  "two_findings_resolved": {
+    "static_policy_is_required_not_observed_hold": true,
+    "actual_audit_max_http_per_run_mapped_and_real_producer_test_read": true
+  },
+  "semantics": {
+    "one_original_native_snapshot_shared_without_mutation": true,
+    "effective_unified_summary_is_reserved_slots_not_actual_HTTP": true,
+    "native_requests_count_SQL_statements_not_HTTP_transports": true,
+    "native_LIQ_slice_not_all_provider_or_job_HTTP": true,
+    "day_unknown15_not_replaced_by_invocation0": true,
+    "unread_provider_balances_NULL": true,
+    "new_work_admission_false": true,
+    "serialized_old_witness_is_not_new_proof": true
+  },
+  "limits": {
+    "native_budget_day_or_source_coverage_qualified": false,
+    "future_natural_projection_receipt_qualified": false,
+    "coordinator_natural39161429947_audit_repeated": false,
+    "standalone_or_denied_protocol_run": false
+  },
+  "runtime_shared_edits_by_reviewer": false,
+  "provider_SQL_MAIN_Telegram": 0,
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792353676947",
+  "lease_ref": "b9f69896147cea179535e09742cff9cf79497d88",
+  "exact_readback": true
+}
