@@ -419,7 +419,7 @@ async function __report2PublicCollectorScheduled(controller, env) {
       var priceRuntime=typeof __report2InjectedPrivatePriceRuntime==='object'?__report2InjectedPrivatePriceRuntime:null;
       privateNativeCalled=true;privateNativeBefore=nativeObserver?.usageSnapshot()??null;
       var light;try { light=priceRuntime?.runPrivatePriceRechecks&&env.CANONICAL_ARCHIVE_DB
-        ?await priceRuntime.runPrivatePriceRechecks({source_db:env.DATA_DB,private_db:env.CANONICAL_ARCHIVE_DB,private_dbs:priceRuntime.privateCanonicalBindings?.(env).archive_dbs||{},check:__report2RunPriceRechecks,args:priceArgs})
+        ?await priceRuntime.runPrivatePriceRechecks({source_db:env.DATA_DB,private_db:env.CANONICAL_ARCHIVE_DB,private_dbs:priceRuntime.privateCanonicalBindings?.(env).archive_dbs||{},check:__report2RunPriceRechecks,args:priceArgs,reconciliation:priceRuntime.native_cost_reconciliation??null})
         :await __report2RunPriceRechecks(env.DATA_DB,priceArgs);
       } finally { privateNativeAfter=nativeObserver?.usageSnapshot()??null; }
       rowsRead+=light.rows_read;rowsWritten+=light.rows_written;
