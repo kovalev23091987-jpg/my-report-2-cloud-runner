@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
-import {exactKrakenNativeBinding} from './kraken-four-hour-flow.mjs';
+import {exactKrakenNativeBinding,krakenNativeMarketCode} from './kraken-four-hour-flow.mjs';
 import {KRAKEN_PUBLIC_TAKER_REFERENCE} from './kraken-public-taker-reference.mjs';
 import {inspectKrakenN10CachedPricePath} from './kraken-n10-price-path.mjs';
 export const KRAKEN_N12_BOUNDED_SAMPLE_VERSION='kraken-n12-bounded-trade-sample-v1-20261019';
@@ -24,7 +24,7 @@ function receiptsValid(receipts,contract,end,observed){
  if(!Array.isArray(receipts)||!receipts.length||receipts.length>3)return false;
  let cursor=(BigInt(end-FOUR_HOURS)*1000000n-1n).toString();
  for(const r of receipts){
-  if(r?.url!==tradeURL(contract.replace('-USDT','USDT'),cursor)||r.http_status!==200||!Number.isSafeInteger(r.received_ts)||r.received_ts<end||r.received_ts>observed||!hex(r.body_sha256)||!hex(r.payload_sha256)||typeof r.next_cursor!=='string'||!/^\d{1,24}$/.test(r.next_cursor)||BigInt(r.next_cursor)<=BigInt(cursor))return false;
+  if(r?.url!==tradeURL(krakenNativeMarketCode(contract),cursor)||r.http_status!==200||!Number.isSafeInteger(r.received_ts)||r.received_ts<end||r.received_ts>observed||!hex(r.body_sha256)||!hex(r.payload_sha256)||typeof r.next_cursor!=='string'||!/^\d{1,24}$/.test(r.next_cursor)||BigInt(r.next_cursor)<=BigInt(cursor))return false;
   cursor=r.next_cursor;
  }
  return Math.max(...receipts.map(r=>r.received_ts))===observed;
