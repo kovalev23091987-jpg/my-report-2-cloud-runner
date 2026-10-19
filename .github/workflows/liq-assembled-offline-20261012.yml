@@ -319,7 +319,6 @@ permissions:
   contents: read
 jobs:
   verify:
-    if: ${{ github.ref != 'refs/heads/work/provider-compact-and-sidecar-costs-20261019' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -515,43 +514,4 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
-          retention-days: 30
-
-  compact_provider_costs_connected_qualification:
-    if: ${{ github.ref == 'refs/heads/work/provider-compact-and-sidecar-costs-20261019' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - name: Exact own active scope before one compact-cost qualification
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/guard-compact-provider-costs-20261019.mjs before
-      - name: One NEW combined cost-projection and compact-provider case
-        env:
-          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-        run: |
-          mkdir -p runtime audit-output/compact-provider-costs
-          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
-          tar -xzf runtime/payload.tar.gz -C runtime
-          rm runtime/payload.tar.gz
-          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/compact-provider-costs/assembly.json
-          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-          REPORT2_COMPACT_COST_REPAIR_ONLY="1" REPORT2_COMPACT_COST_RUNTIME="$PWD/runtime" REPORT2_COMPACT_COST_WITNESS="$PWD/audit-output/compact-provider-costs/connected-witness.json" REPORT2_COMPACT_PROVIDER_HARNESS="$PWD/checkpoints/source-worker-provider-cut-compaction-20261019/compact-connected.mjs" node --test --test-reporter=spec current-generation/tests/compact-provider-and-sidecar-costs.runtime.mjs > audit-output/compact-provider-costs/connected-tests.log
-      - name: Exact own scope and assembled source bytes after qualification
-        if: ${{ always() }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/guard-compact-provider-costs-20261019.mjs after
-      - uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: compact-provider-costs-${{ github.run_id }}
-          path: audit-output/compact-provider-costs/
-          if-no-files-found: error
           retention-days: 30
