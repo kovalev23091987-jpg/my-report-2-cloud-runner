@@ -1,3 +1,5 @@
+import {verifyKrakenN10MemoryEvidence} from './kraken-n10-memory-context.mjs';
+import {validateKrakenN12BoundedTradeSample} from './kraken-n12-bounded-trade-sample.mjs';
 import {qualifiedTurnoverBaseline} from './flow-turnover-baseline.mjs';
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
@@ -155,6 +157,12 @@ function describe(row,now){
   const comparison=row.comparison_status==='SPOT_ONLY'?'Доступен только спотовый путь; общее направление со срочным рынком не подтверждено':row.comparison_status==='SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION'?'Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника':row.comparison_status==='DIRECTION_CONFLICT'?'Направления спота и фьючерса HTX расходятся; общего вывода нет':row.comparison_status==='DIRECTION_UNCONFIRMED'?'В одном из рынков цена не изменилась; общее направление не подтверждено':'Ценовые диапазоны спота и фьючерса HTX не пересекаются; общего вывода нет';
   return{source:'HTX / спотовые закрытые свечи',label:'Фактический путь цены на споте за 15 минут',value:`15 закрытых минутных свечей, активных минут ${row.active_minute_count}: ${price(row.path_open)} → ${price(row.path_close)} USDT (${sign}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT. ${comparison}. Цель и разрешение входа этим не подтверждены`};
  }
+ if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_KRAKEN_REUSED_PRICE_PATH_CONTEXT'){
+  if(!verifyKrakenN10MemoryEvidence(row,now))return null;
+  const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);
+  const comparison=row.comparison_status==='SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION'?'Направление совпало с HTX и ценовые диапазоны пересеклись':row.comparison_status==='DIRECTION_UNCONFIRMED'?'В одном из рынков цена не изменилась; общее направление не подтверждено':row.comparison_status==='DIRECTION_CONFLICT'?'Направление отличается от HTX; общий вывод не сформирован':'Ценовые диапазоны не пересекаются; общий вывод не сформирован';
+  return{source:'Kraken / спотовые закрытые свечи',label:'Цена за 15 минут на Kraken',value:`15 закрытых минутных свечей, активных минут ${row.active_minute_count}: ${price(row.path_open)} → ${price(row.path_close)} USDT (${row.change_pct>0?'+':''}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT. ${comparison}. Баллы, цели и разрешение входа этим не меняются`};
+ }
  if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT'){
   if(!verifyN10ReusedVenuePathEvidence(row,{now}))return null;
   const venue={BINANCE:'Binance',POLONIEX:'Poloniex',BITGET:'Bitget',GATE:'Gate'}[row.venue];
@@ -299,6 +307,10 @@ function describe(row,now){
  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED'){
   if(!validateGateN12BoundedTradeSample(row,now))return null;
   return{source:'Gate / исходные спотовые сделки',label:'Направление последних сделок Gate',value:`Gate спот: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён`};
+ }
+ if(row.block_id==='N12'&&row.metric_family==='ACTUAL_KRAKEN_SPOT_TAKER_TRADES_BOUNDED'){
+  if(!validateKrakenN12BoundedTradeSample(row,now))return null;
+  return{source:'Kraken / исходные спотовые сделки',label:'Направление последних сделок Kraken',value:`Kraken спот: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён`};
  }
  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITFINEX_TAKER_TRADES_BOUNDED'){
   if(!validateBitfinexN12BoundedTradeSample(row,now))return null;

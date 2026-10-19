@@ -17227,7 +17227,7 @@ async function buildDeepCheckInput(params, env) {
     if(primaryTechnicalReceipt.status!=='CHECKED_PRIMARY_TECHNICAL_CONTEXT')primaryTechnicalReceipt.status='CHECKED_SPOT_ONLY_TECHNICAL_CONTEXT';
     primaryTechnicalReceipt.receipts.push({source:'SAME_RUN_HTX_SPOT_CLOSED_CANDLES',status:'CLOSED_SPOT_PRICE_PATH',provider_http_delta:0,market:'SPOT',same_htx_upstream_not_independent:true,check_completed:true});
   }
-  const reusedVenuePaths=await loadN10ReusedVenuePaths({db:env?.DATA_DB,contract,flow_result:candidateEvidenceV2?.sources?.EXTERNAL_N05_FLOW,primary_receipt:primaryTechnicalReceipt,now});
+  const reusedVenuePaths=await loadN10ReusedVenuePaths({db:env?.DATA_DB,contract,flow_result:candidateEvidenceV2?.sources?.EXTERNAL_N05_FLOW,primary_receipt:primaryTechnicalReceipt,htx_spot_kline:spot?.data?._n10_spot_kline,now});
   if(reusedVenuePaths.evidence.length){
     primaryTechnicalReceipt.evidence.push(...reusedVenuePaths.evidence);
     primaryTechnicalReceipt.receipts.push({source:'N05_ORIGINAL_VENUE_CANDLE_CACHE',status:reusedVenuePaths.status,cache_reads:reusedVenuePaths.cache_reads,provider_http:0,venues:reusedVenuePaths.receipts});

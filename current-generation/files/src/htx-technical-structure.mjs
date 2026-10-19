@@ -1,3 +1,4 @@
+import {deriveKrakenN10MemoryEvidence} from './kraken-n10-memory-context.mjs';
 import {createHash} from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
@@ -168,14 +169,15 @@ export function deriveN10ReusedVenuePathEvidence({contract,venue,component,cache
  const comparison=comparePricePaths(open,high,low,close,h),binding={schema:'N10_REDERIVED_N05_CACHE_BINDING_V1',contract,venue,market:'SPOT',quote:'USDT',window_start_ts:component.window_start_ts,window_end_ts:end,observed_ts:cache.observed_ts,expires_ts:cache.expires_ts,flow_component_sha256:cacheDigest(flowDescriptor(component)),selected_price_bars_sha256:cacheDigest(recent),cache_payload_sha256:cacheDigest(p)};
  return[buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:root,asset_id:`htx-futures:${contract}`,htx_contract:contract,block_id:'N10',metric_family:'CLOSED_15M_INDEPENDENT_PRICE_PATH_CONTEXT',origin_event_id:`${venue}:${contract}:${end}`,dependency_group:`${venue}_OFFICIAL_SPOT_CANDLES:${contract}:${end}`,source_ts:end,observed_ts:now,first_known_ts:cache.observed_ts,expires_at:Math.min(cache.expires_ts,end+5*60000),coverage_status:'EXACT_FIFTEEN_CLOSED_ACTIVE_SPOT_MINUTE_CANDLES',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{venue,market:'SPOT',quote:'USDT',window_start:start,window_end:end,candle_count:15,active_minute_count:active,path_open:open,path_high:high,path_low:low,path_close:close,change_pct:(close/open-1)*100,htx_path_open:h.open,htx_path_high:h.high,htx_path_low:h.low,htx_path_close:h.close,htx_close_gap_pct:(close/h.close-1)*100,comparison_status:comparison,source_cache_observed_ts:cache.observed_ts,source_clock_policy:N10_REDERIVED_CACHE_CLOCK,source_cache_binding:binding,n05_component:component,raw_price_bars:recent,entry_authorized_by_context:false,liquidation_as_target:false,independent_upstream_root:true}})];
 }
-export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_receipt,now=Date.now()}={}){
+export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_receipt,htx_spot_kline,now=Date.now()}={}){
  const h=primary_receipt?.receipts?.[0]?.actual_price_windows?.find(w=>w.label==='15m');
  if(!db?.prepare||primary_receipt?.check_completed!==true||!h)return{status:'PRIMARY_15M_WINDOW_REQUIRED',evidence:[],cache_reads:0,provider_http:0,receipts:[]};
  // Apply the path's market/window requirements before its four-read ceiling.
  // Several components of one source share a cache key; read it once and use
  // the component whose original observation matches the retained cache row.
- const groups=new Map();
+ const groups=new Map(),memory=[];
  for(const c of flow_result?.components||[]){
+  if(c?.venue==='KRAKEN'){memory.push(c);continue;}
   if(!qualifiedVenueComponent(c)||c.contract!==contract||c.market!=='SPOT'||c.quote!=='USDT'||c.window_end_ts!==h.window_end_ts||c.window_start_ts!==h.window_end_ts-240*60000||c.verified_minutes!==240)continue;
   if(!groups.has(c.venue))groups.set(c.venue,[]);groups.get(c.venue).push(c);
  }
@@ -186,6 +188,10 @@ export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_r
   const c=components.find(c=>c.observed_ts===Number(row?.observed_ts))||components[0];
   const facts=deriveN10ReusedVenuePathEvidence({contract,venue,component:c,cache:row?{observed_ts:Number(row.observed_ts),expires_ts:Number(row.expires_ts),payload:parsed}:null,htx_window:h,now});
   evidence.push(...facts);receipts.push({venue,status:facts.length?'CLOSED_INDEPENDENT_SAME_WINDOW_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_PRICE_PATH',cache_key:key,component_check_completed:c.check_completed===true,provider_http:0});
+ }
+ for(const component of memory){
+  const facts=deriveKrakenN10MemoryEvidence({contract,component,htx_spot_kline,htx_window:h,now});
+  evidence.push(...facts);receipts.push({venue:'KRAKEN',status:facts.length?'CLOSED_INDEPENDENT_SAME_WINDOW_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_PRICE_PATH',provider_http:0,cache_reads:0,producer_receipt_not_native_cache_ACK:true});
  }
  native_unclosed||=nativeSourceUsageUnclosed(db);
  return{status:native_unclosed?'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE':evidence.length?'CLOSED':'NO_USEFUL_EXISTING_VENUE_PATH',evidence,cache_reads,provider_http:0,receipts};

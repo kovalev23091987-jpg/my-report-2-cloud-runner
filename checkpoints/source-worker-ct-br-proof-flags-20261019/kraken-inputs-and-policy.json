@@ -1,0 +1,137 @@
+{
+  "schema": "KRAKEN_N10_NATIVE_POSITIVE_AND_SPOT_POLICY_BOUNDARY_V1",
+  "saved_originals": {
+    "checkpoints/n05-kraken-algo-xmr-38135993119/batch-summary.json": {
+      "file_sha256": "cdc384ddc731c352ab78baa60b246ae6487c21b49f049ed3439e6a7ff29bd7e9",
+      "raw_sha256": "cdc384ddc731c352ab78baa60b246ae6487c21b49f049ed3439e6a7ff29bd7e9"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-ALGO-NATIVE240.json.gz": {
+      "file_sha256": "4c0b63d190934cfc4c0ef0a0beeaff2ccfdecb93e4a2381f2ad1584345d4a1ed",
+      "raw_sha256": "6afd2e722380885b8ca780c511cba6dcb3b6c6592dd6400962407eddf532438f"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-XMR-NATIVE240.json.gz": {
+      "file_sha256": "7330a623d3273748a8b232760ef39d6849b8ed51be5bb97bb66347ff53419702",
+      "raw_sha256": "2eff0afad9be39176579b71d2248422eef118041a61b08f88c146a2d8c8ea251"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-ALGO-HISTORY-1.json.gz": {
+      "file_sha256": "af743f300a36fd29df0ccaf686f8bb22b0f9cff2e31852f056a45a0137d8c7d0",
+      "raw_sha256": "bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-XMR-HISTORY-1.json.gz": {
+      "file_sha256": "05bd4a20deeaa2b5ced077906fc4d71829473f16b76eabd1fa2372a70a97e48b",
+      "raw_sha256": "771b40d863ea281b778aa118a66a4b6e81def7f821ff678ef3f7215f72e47e81"
+    },
+    "checkpoints/n05-kraken-algo-xmr-38135993119/KRAKEN-CURRENT-ASSET-PAIRS.json.gz": {
+      "file_sha256": "5479afa1b4ceb420183983602b73cdfb6e8618af70a6f5b0860ac7b4306255be",
+      "raw_sha256": "dcb0496ba245597a2c4989056a8c0f2afcd722a496e00b545d1762e5c6a05e34"
+    },
+    "checkpoints/n15-spot-coverage-20261012/ALL104-SPOT-BULK-RECEIPT.json": {
+      "file_sha256": "f016f045aaa496b4fb5fe559edf8ce49691cbdcb2387f9d8c0b033b41b1c7166"
+    },
+    "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json": {
+      "file_sha256": "7604596559b6f06b20abcb8b01c58d260470d98df43d86bbe3709e544c11e8e9"
+    }
+  },
+  "historical_source_run": 38135993119,
+  "historical_window_end": 1791718380000,
+  "ALGO": {
+    "last15_trades": 2,
+    "closed_minutes": 240
+  },
+  "XMR": {
+    "last15_trades": 144,
+    "closed_minutes": 240
+  },
+  "saved_HTX_spot_rows": [
+    {
+      "asset": "ALGO",
+      "htx_futures_contract": "ALGO-USDT",
+      "htx": {
+        "pair": "algousdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1257,
+        "bid": 0.1256,
+        "ask": 0.1257,
+        "quote_volume_24h": 2505455.095780491,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "ALGO_USDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.12582,
+        "bid": 0.12576,
+        "ask": 0.1258,
+        "quote_volume_24h": 431389.4169772,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      },
+      "bitget": {
+        "pair": "ALGOUSDT",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 0.1258,
+        "bid": 0.12572,
+        "ask": 0.12582,
+        "quote_volume_24h": 816285.62,
+        "exchange_ticker_ts": 1791818529069,
+        "identity_status": "EXTERNAL_PAIR_IDENTITY_UNVERIFIED",
+        "individual_trade_clock_verified": false
+      }
+    },
+    {
+      "asset": "XMR",
+      "htx_futures_contract": "XMR-USDT",
+      "htx": {
+        "pair": "xmrusdt",
+        "present": true,
+        "bounded_ticker": true,
+        "last_price": 532.88,
+        "bid": 532.76,
+        "ask": 533.0,
+        "quote_volume_24h": 37116677.45436401,
+        "identity_status": "HTX_SAME_VENUE_SPOT_PAIR",
+        "individual_trade_clock_verified": false
+      },
+      "gate": {
+        "pair": "XMR_USDT",
+        "present": false,
+        "bounded_ticker": false
+      },
+      "bitget": {
+        "pair": "XMRUSDT",
+        "present": false,
+        "bounded_ticker": false
+      }
+    }
+  ],
+  "owner_excluded_spot_assets": [
+    "AKE",
+    "BR",
+    "BTR",
+    "CASHCAT",
+    "GPS",
+    "LAB",
+    "MYX",
+    "OKB",
+    "ONG",
+    "PAXG",
+    "RAVE",
+    "UB",
+    "USELESS",
+    "VELVET",
+    "哈基米"
+  ],
+  "saved_spot_batch_ts": 1791818390422,
+  "policy_presence_at_fresh_main": "BOTH_ALGO_AND_XMR_PRESENT_IN_SAVED_HTX_BULK_AND_NOT_IN_OWNER15",
+  "current_native_pair_availability": "UNKNOWN_NOT_REFRESHED",
+  "HTX_samewindow_original": "NOT_RETAINED_FOR_THIS_PACKAGE",
+  "native_N05_cache_ACK": "NOT_RETAINED",
+  "test_cache_wrapper": "CONTROLLED_ENVELOPE_OF_EXACT_NATIVE_ORIGINAL_PAYLOADS",
+  "runtime_candidate_HTX_spot_reply": "CONTROLLED_ONLY_IN_NEW_TESTS",
+  "current_source_connection_coverage_or_admission": false,
+  "native_crossvenue_agreement": false,
+  "accepted_old_qualification_suites_rerun": 0
+}
