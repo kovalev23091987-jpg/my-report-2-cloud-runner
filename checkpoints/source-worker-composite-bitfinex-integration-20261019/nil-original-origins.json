@@ -1,0 +1,144 @@
+{
+  "cloud_run": 39216464096,
+  "native_head": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+  "business_run": "1792395072923-1792395084308",
+  "snapshot_id": "S392:NIL-USDT:1792395207582",
+  "contract": "NIL-USDT",
+  "candidate_ts": 1792395207582,
+  "n12_valid_fact_count": 2,
+  "receipt": {
+    "block_id": "N12",
+    "source_block_ids": [
+      "N12",
+      "N05"
+    ],
+    "evidence_id": "EV2:366c8d1a74373a58af9fe1091974355d29f0f85df1c3925a162eeb874d81ab90",
+    "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:NIL-USDT:NIL-USDT:BOUNDED:1000002532299750000:HTX_SPOT_TRADE_SAMPLE:NIL-USDT:28014364",
+    "evidence_ids": [
+      "EV2:366c8d1a74373a58af9fe1091974355d29f0f85df1c3925a162eeb874d81ab90",
+      "EV2:a257ef2bb21bd978e44b8f5a72f9c712cdea0490ed123752905f8034397bd205",
+      "EV2:62022fff74c041e8887fdd5da64a0a7e7eeb6570244b853686607edafd457569"
+    ],
+    "physical_root_keys": [
+      "HTX_SPOT_FUTURES_TRADE_SAMPLE:NIL-USDT:NIL-USDT:BOUNDED:1000002532299750000:HTX_SPOT_TRADE_SAMPLE:NIL-USDT:28014364",
+      "AVAILABLE_FLOW:NIL-USDT:1792380720000:1792395120000",
+      "BITGET_BOUNDED_TRADE_SAMPLE:NIL-USDT:SPOT:1495978866679488512"
+    ],
+    "component_origins": [
+      {
+        "evidence_id": "EV2:366c8d1a74373a58af9fe1091974355d29f0f85df1c3925a162eeb874d81ab90",
+        "block_id": "N12",
+        "provider_id": "HTX_SPOT_FUTURES_TRADES",
+        "upstream_id": "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS",
+        "asset_id": "HTX:NIL-USDT",
+        "htx_contract": "NIL-USDT",
+        "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+        "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:NIL-USDT:NIL-USDT:BOUNDED:1000002532299750000:HTX_SPOT_TRADE_SAMPLE:NIL-USDT:28014364",
+        "raw_hash": "0825b613ac02c05ed1ec3dbd29232118aa6324ebae4b38a750511ff361da24c0",
+        "market": null,
+        "source_ts": 1792395110044,
+        "observed_ts": 1792395162394,
+        "first_known_ts": 1792395162394,
+        "expires_at": 1792395222394,
+        "window_start_ts": null,
+        "window_end_ts": null,
+        "window_status": "NOT_RETAINED_IN_EVIDENCE",
+        "market_components": [
+          {
+            "venue": "HTX",
+            "market": "FUTURES",
+            "source_ts": 1792395110044,
+            "observed_ts": null,
+            "window_start_ts": null,
+            "window_end_ts": null,
+            "physical_root_key": null,
+            "physical_root": null,
+            "quote": null,
+            "contract": null
+          },
+          {
+            "venue": "HTX",
+            "market": "SPOT",
+            "source_ts": 1792395124620,
+            "observed_ts": null,
+            "window_start_ts": null,
+            "window_end_ts": null,
+            "physical_root_key": null,
+            "physical_root": null,
+            "quote": null,
+            "contract": null
+          }
+        ],
+        "origin_status": "EXACT_SELECTED_EVIDENCE"
+      },
+      {
+        "evidence_id": "EV2:a257ef2bb21bd978e44b8f5a72f9c712cdea0490ed123752905f8034397bd205",
+        "block_id": "N05",
+        "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+        "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+        "asset_id": "HTX:USDT_M_PERPETUAL:NIL-USDT",
+        "htx_contract": "NIL-USDT",
+        "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+        "physical_root_key": "AVAILABLE_FLOW:NIL-USDT:1792380720000:1792395120000",
+        "raw_hash": "beaca480be6d1f77012dfd57ed8934fe0ad8181abf44b6c2109f740fdc50848c",
+        "market": null,
+        "source_ts": 1792395120000,
+        "observed_ts": 1792395181364,
+        "first_known_ts": 1792395181364,
+        "expires_at": 1792395420000,
+        "window_start_ts": 1792380720000,
+        "window_end_ts": 1792395120000,
+        "window_status": "EXPLICIT_EVIDENCE_FIELDS",
+        "market_components": [
+          {
+            "venue": "BITGET",
+            "market": "SPOT",
+            "source_ts": null,
+            "observed_ts": 1792395181364,
+            "window_start_ts": 1792380720000,
+            "window_end_ts": 1792395120000,
+            "physical_root_key": null,
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "quote": "USDT",
+            "contract": "NIL-USDT"
+          }
+        ],
+        "origin_status": "EXACT_SELECTED_EVIDENCE"
+      },
+      {
+        "evidence_id": "EV2:62022fff74c041e8887fdd5da64a0a7e7eeb6570244b853686607edafd457569",
+        "block_id": "N12",
+        "provider_id": "BITGET_SPOT_TRADES",
+        "upstream_id": "BITGET_OFFICIAL_PUBLIC_SPOT_TRADES",
+        "asset_id": "HTX:NIL-USDT",
+        "htx_contract": "NIL-USDT",
+        "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+        "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:NIL-USDT:SPOT:1495978866679488512",
+        "raw_hash": "955f0f558ab9b1cdb7fab3a9b305b21153a7da4e00b9be619e36b448cef610a0",
+        "market": "SPOT",
+        "source_ts": 1792395076436,
+        "observed_ts": 1792395181364,
+        "first_known_ts": 1792395181364,
+        "expires_at": 1792395241364,
+        "window_start_ts": null,
+        "window_end_ts": null,
+        "window_status": "NOT_RETAINED_IN_EVIDENCE",
+        "market_components": [],
+        "origin_status": "EXACT_SELECTED_EVIDENCE"
+      }
+    ],
+    "source_ts": 1792395110044,
+    "observed_ts": 1792395162394,
+    "label": "Направление последних сделок HTX",
+    "value": "HTX фьючерсы: 8 сделок, покупки 238,29, продажи 395,92 USDT; спот: 49 сделок, покупки 1 353,48, продажи 1 346,39 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки BITGET; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; Bitget спот: 8 сделок, покупки 0, продажи 1 775,07 USDT; общего направления по всем доступным неполным выборкам нет; Bitget — одна отдельная биржа, её спот и фьючерсы не считались двумя независимыми площадками",
+    "source": "HTX / спот и фьючерсы / BITGET / Bitget",
+    "consumer": "MANUAL_CONFIRMED_CONTEXT",
+    "score_contribution": 0
+  },
+  "provenance": {
+    "original_frozen_commit": "b610eb2dcc0ad778a0a1b2aeb6959ab3459509f7",
+    "report_zip_sha256": "69f19988ec9fc089433bf4cb7e240f523849d013162696d9e2b3ec589d6ffd30",
+    "report_member_sha256": "8636132ab9df0146183420ddcec096ed2876c7cef945e7d2e5222bae4e0381b4",
+    "extraction_only_old69audit_not_executed": true
+  }
+}
