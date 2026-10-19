@@ -1,0 +1,260 @@
+{
+  "schema": "SOURCE_READ_TWO_LATE_RETURN_STATIC_PEER_V1",
+  "created_ts": 1792416010261,
+  "reviewer_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "target": {
+    "frozen_branch": "work/source-read-exit-projection-20261019",
+    "frozen_head": "e301063a0cd4609330a546d44f576a3309439904",
+    "base": "59e8d8ebe7118005d3fd0ac8ee4a971f61efe6f1",
+    "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+    "before_sha256": "d7a35968052d52279d1cda5704b64dae8b5450d87b1243aa5b91e0671c5d2d7a",
+    "after_sha256": "1c3ad1e6f3aef86703aef4663773d729ba11e6060a51708012f98df5e25c1dde",
+    "changed_lines": [
+      317,
+      318
+    ],
+    "changed_return_sites": 2,
+    "files": {
+      "checkpoints/source-read-all-exits-20261019/README_RU.md": {
+        "head": "e301063a0cd4609330a546d44f576a3309439904",
+        "bytes": 615,
+        "sha256": "a9782948c38144e266406acb3def5bdb465f421066462af5b10639396dbec465"
+      },
+      "checkpoints/source-read-all-exits-20261019/application.json": {
+        "head": "e301063a0cd4609330a546d44f576a3309439904",
+        "bytes": 1716,
+        "sha256": "11cbc80c85ac5306af30ebadee583771933edd5f15fa3d54c075f512f8070e0c"
+      },
+      "checkpoints/source-read-all-exits-20261019/sidecar.after.mjs": {
+        "head": "e301063a0cd4609330a546d44f576a3309439904",
+        "bytes": 26814,
+        "sha256": "1c3ad1e6f3aef86703aef4663773d729ba11e6060a51708012f98df5e25c1dde"
+      },
+      "checkpoints/source-read-all-exits-20261019/sidecar.before.mjs": {
+        "head": "e301063a0cd4609330a546d44f576a3309439904",
+        "bytes": 26658,
+        "sha256": "d7a35968052d52279d1cda5704b64dae8b5450d87b1243aa5b91e0671c5d2d7a"
+      },
+      "checkpoints/source-read-all-exits-20261019/two-return-sites.patch": {
+        "head": "e301063a0cd4609330a546d44f576a3309439904",
+        "bytes": 1704,
+        "sha256": "b58278bdcea9694780c3e6f1b2e78ec2a22b4522b4e13fa9cf82500eee31de62"
+      },
+      "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs": {
+        "head": "e301063a0cd4609330a546d44f576a3309439904",
+        "bytes": 26814,
+        "sha256": "1c3ad1e6f3aef86703aef4663773d729ba11e6060a51708012f98df5e25c1dde"
+      }
+    }
+  },
+  "authorization": {
+    "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+    "scope": "NEW frozen two-return delta only; no repeat548 full audit/tests/native",
+    "own_lease_owner": "CODEX:OFFLINE_ANOMALIES:1792415893579",
+    "own_lease_ref_sha": "66cbc4262e4de08ce2173153141099e06aba21fe",
+    "own_exact_readback": true,
+    "expires_ts": 1792418293579,
+    "fresh_main": "59e8d8ebe7118005d3fd0ac8ee4a971f61efe6f1",
+    "all_four_working_mirrors_equal": true,
+    "guard_sha256": {
+      "AGENTS.md": "8c6d33ef4b339d437dc58ff528355d1fee0fd6ed8d62cbf511b828e911c243a1",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "deeda71de194a8d0382ceb9185a1fb196170f4722d45233e02f30e3ab9a06df3",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "c14aceaaf1537aac562aa9d3782a31aee0e766ec12d5b34929165fd62f444d5b",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "3690a1bd9477a2c065d7b2874e7112b063683240676940c297f56ebf5ecd6fef",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "c8eb3af0cf3c39cbc25159919f2673322d02fc703eecb41f8064a7b93768db26",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "6a4577e829c73ebf01e68917e1029ea28728110eb8a088ab4db260dcac31266c",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "three_active_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_RETURNED_BUDGET_AND_WLD_NATIVE_HANDOFF_20261019.json",
+        "sha256": "b58bf0b4e6067261d6a1682278fbbd6554086de4d0d137239f542071b9912aed"
+      },
+      {
+        "path": "checkpoints/returned-budget-integration-20261019/cloud-and-originals-receipts.json",
+        "sha256": "915e0e4e39ea9edbe04722aafb0e4ee8b18fb4df8098d227840b6ee812ff355d"
+      },
+      {
+        "path": "checkpoints/returned-budget-integration-20261019/next-worker-queues.json",
+        "sha256": "400582fe1fcde4bf453a0c05ac6261ae9f06186749a2b8b46b3170ef4b6f1efd"
+      }
+    ]
+  },
+  "result": {
+    "new_blocking_findings": 0,
+    "classification": "STATIC_DELTA_PEER_NO_NEW_BLOCKERS_WITH_LIMITS",
+    "new_runtime_or_native_qualification": false,
+    "production_activation": false
+  },
+  "exact_delta": {
+    "added_expression": ",...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})",
+    "unchanged_prefix_lines": [
+      1,
+      316
+    ],
+    "unchanged_prefix_sha256": "4106a15aab804c692930f55715f2055b3362f6acb0ed6d606c2b11eb4d400b4f",
+    "unchanged_suffix_lines": [
+      319,
+      321
+    ],
+    "unchanged_suffix_sha256": "91cdd90cf864b6678aa98e73b9e0c4a407ad6b34282e58dbd32a2a0457c541e1",
+    "proof": "Text comparison establishes all bytes outside those two return expressions unchanged, including all SQL, bindings, ordering, gates, helpers, cap definitions and existing error/BUDGET exits. No application code was imported, parsed by Node or executed."
+  },
+  "return_path_review": [
+    {
+      "line": 317,
+      "condition": "transitions.some(PARTIAL/PERSISTENCE_READBACK_FAILED/MIGRATION_REQUIRED/SOURCE_UNSUPPORTED)",
+      "status": "PERSISTENCE_NOT_CLOSED",
+      "new_field": "Same truthy loaded.source_read_costs object, else field absent",
+      "preserved": "base, condition, transitions, usage_delta; no new lookup/persistence/gate override"
+    },
+    {
+      "line": 318,
+      "condition": "final normal return",
+      "statuses": [
+        "CLOSED",
+        "CLOSED_NO_TRANSITION"
+      ],
+      "new_field": "Same truthy loaded.source_read_costs object, else field absent",
+      "preserved": "base, completed_handoffs count, transitions, usage_delta and status selection"
+    }
+  ],
+  "unchanged_cost_object_boundary": {
+    "producer": {
+      "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "function": "sourceReadCosts",
+      "lines": [
+        225,
+        238
+      ],
+      "assigned_after_existing_batch_line": 271,
+      "loaded_return_line": 272
+    },
+    "provenance": "Already returned batch statement meta only. At most4 default or5 with CURRENT_CANONICAL. This delta does not read rows, issue SQL/HTTP, parse responses again, clone results or calculate a different cost object.",
+    "query_names": [
+      "EARLY_WAVES",
+      "SHADOW_DECISIONS",
+      "FINAL_WITH_CONTEXT",
+      "PREVIOUS_LIFECYCLE",
+      "CURRENT_CANONICAL when canonical_required"
+    ],
+    "strict_counters": "Rows read/written remain independently NULL unless nonnegative safe integer; missing/failed/extra/short reply shape prevents a complete total. Known subtotals preserve known parts; zero known subtotal is not proof of a complete zero cost.",
+    "clock": "caller_evaluation_ts is existing caller evaluation time, not SQL platform as-of timestamp, provider clock, full-body completion or native persistence ACK.",
+    "admission_authorized": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0,
+    "SQL_params_and_result_values_exported": false,
+    "excluded_from_projection": [
+      "completed-handoff lookup before source batch",
+      "transition persistence/readback after source batch",
+      "adapter/restorer extra work",
+      "whole sidecar/job/day/account/provider/manual/next-full reserves"
+    ],
+    "source_labels_values_clocks_unchanged": true
+  },
+  "preserved_controls": {
+    "rows_read_cap": 160,
+    "rows_written_cap": 12,
+    "max_completed_handoffs": 6,
+    "max_persist_transitions": 1,
+    "source_load_failure_return_line": 283,
+    "loaded_budget_exit_line": 288,
+    "final_budget_exit_line": 316,
+    "canonical_required_ambiguity_gate_line": 296,
+    "derive_context_gate_line": 298,
+    "persist_attempt_limit_line": 299,
+    "persistence_readback_check_lines": [
+      304,
+      310
+    ],
+    "five_existing_SELECTs_bindings_order": "unchanged exact bytes; default4 plus optional5th at269; not five queries on every path",
+    "network_send": false,
+    "mode": "SHADOW_ONLY",
+    "main_report_LIQ_score_strategy_weights_forms_pauses_source_caps": "unchanged"
+  },
+  "coverage_and_limits": {
+    "new_coverage": "Existing projection now also survives both late returns, covering normal CLOSED/CLOSED_NO_TRANSITION and PERSISTENCE_NOT_CLOSED, in addition to already accepted source-load/BUDGET paths.",
+    "still_omitted_where_no_cost_object_exists": [
+      "unsupported db early return278",
+      "completed handoff loader exits before source batch, including no completed handoffs/source mismatch"
+    ],
+    "normal_CLOSED_semantics": "Sidecar return status, not proof of Telegram network delivery, ENTRY, historical182R correction, a free budget or an entire source/day/account boundary.",
+    "proposal_native_motivation": {
+      "source": "checkpoints/source-read-all-exits-20261019/application.json",
+      "native_input_reference": "checkpoints/natural-39255752857/coordinator-post547-native-review.json",
+      "producer_recorded_status": "CLOSED",
+      "producer_recorded_aggregate": {
+        "rows_read": 132,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      },
+      "actual_native_per_query_costs": null,
+      "qualification_here": "Documentation/reference only, not an independent repeat of native392557 review. No historical per-query split reconstructed."
+    },
+    "future_central_affected_case": "Pending one coordinator assembled qualification with separate source compact-capture proposal; no such case executed or implied by this peer.",
+    "native_CPU_heap_wire_persistence_capacity": "not measured or qualified by this static change",
+    "ENTRY_followup_and_physical_storage": "DEFERRED_SEPARATE_DIRECT_OWNER_COMMAND"
+  },
+  "verification": {
+    "kind": "STATIC_SOURCE_BYTES_AND_ARTIFACT_LINKAGE_ONLY",
+    "checks": [
+      {
+        "check": "before bytes match fresh pinned main and producer SHA",
+        "result": "PASS"
+      },
+      {
+        "check": "after bytes match frozen source target and producer SHA",
+        "result": "PASS"
+      },
+      {
+        "check": "proof before is byte-exact main target",
+        "result": "PASS"
+      },
+      {
+        "check": "proof after is byte-exact frozen target",
+        "result": "PASS"
+      },
+      {
+        "check": "patch SHA matches producer",
+        "result": "PASS"
+      },
+      {
+        "check": "exactly two late return lines changed with no other source bytes",
+        "result": "PASS"
+      },
+      {
+        "check": "each change only appends the same optional alreadyloaded field",
+        "result": "PASS"
+      },
+      {
+        "check": "stored unified patch is exact two-line diff",
+        "result": "PASS"
+      },
+      {
+        "check": "frozen branch changes one target plus exactly five technical originals",
+        "result": "PASS"
+      },
+      {
+        "check": "application honestly leaves executed and native qualification false",
+        "result": "PASS"
+      }
+    ],
+    "pass": 10,
+    "fail": 0,
+    "apps_modules_Node_syntax_tests_probes": 0,
+    "old548_fullaudit_or_tests_repeated": 0,
+    "native392557_requalified": 0,
+    "source_compact_capture_reviewed_here": false,
+    "old_suites_repeated": 0,
+    "new_provider_HTTP_native_SQL_artifact_GET": 0,
+    "deploy_MAIN_manual_full_Telegram": 0,
+    "production_imports": 0,
+    "runtime_shared_main_status_generation_mutations": 0,
+    "own_authoring_scope": "anomaly-research/source-read-two-return-peer-20261019/**"
+  }
+}
