@@ -1,0 +1,251 @@
+{
+  "schema": "OFFLINE_PROOF_READ_SHAPES_AND_ADMISSION_SCOPE_V1",
+  "status": "CONTROLLED_READ_SHAPES_AND_DECLARED_ENVELOPE_PREPARED",
+  "source_files": [
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "71638d3ce2eb566aee85362d2742152b5fc8749854214137eb5c7129de176752",
+      "literal_lines": [
+        529,
+        961
+      ]
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5",
+      "literal_lines": [
+        173,
+        12130,
+        12155,
+        14636,
+        14654,
+        14774,
+        14776
+      ]
+    },
+    {
+      "path": "current-generation/files/src/execution-report-context.mjs",
+      "sha256": "0c22ec420e645c6c2d91f0c2def21f106ee04c0af0b8d0d77b44120db7c9eb84",
+      "literal_lines": [
+        54,
+        55
+      ]
+    },
+    {
+      "path": "runner/report2-d1-adapter.mjs",
+      "sha256": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+      "literal_lines": [
+        96
+      ]
+    },
+    {
+      "path": "current-generation/files/src/retained-history.mjs",
+      "sha256": "85c73d45bb78a49600b1dda6fd7ad2a15a7e42180eeffa97c8378848d73a64db",
+      "literal_lines": [
+        8
+      ]
+    },
+    {
+      "path": "runner/lossless-full-evidence-recovery.mjs",
+      "sha256": "99c4a193a292ca0a368fb3ae3d11b4ecc2bcd109bece2b467f5303b9f3330a71",
+      "literal_lines": [
+        6,
+        10,
+        12,
+        45,
+        81
+      ]
+    },
+    {
+      "path": "current-generation/files/src/private-canonical-history.mjs",
+      "sha256": "f842926da4bc53e22e41c900c56a71b640654f6b0f064435a7bdccddd709c033",
+      "literal_lines": []
+    },
+    {
+      "path": "cloudflare/public-collector/injected-worker-tail.js",
+      "sha256": "f2f1e89753cba90aa5c89531d9b49ec2567e407dbf75a7ead02a28b3064fe863",
+      "literal_lines": [
+        446
+      ]
+    }
+  ],
+  "actual_source_anchors": [
+    {
+      "file": "current-generation/files/src/worker.js",
+      "anchor": "loadPreviousEvidenceSnapshotForCanonical",
+      "role": "PREVIOUS_SCALAR_AND_COMPACT_COLUMNS",
+      "proof_selected": false,
+      "compression_reader_needed": false,
+      "anchor_line": 138,
+      "source_sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5"
+    },
+    {
+      "file": "current-generation/files/src/worker.js",
+      "anchor": "dataPlaneStatus",
+      "role": "SUMMARY_AND_RECENT_EXPLICIT_COLUMNS",
+      "proof_selected": false,
+      "compression_reader_needed": false,
+      "anchor_line": 11150,
+      "source_sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5"
+    },
+    {
+      "file": "current-generation/files/src/worker.js",
+      "anchor": "persistFullEvidenceShadowRecord",
+      "role": "43_COLUMN_SINGLE_INSERT_PRODUCER_AND_CAUSAL_ACK",
+      "proof_selected": false,
+      "compression_reader_needed": true,
+      "anchor_line": 14604,
+      "source_sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5"
+    },
+    {
+      "file": "current-generation/files/src/worker.js",
+      "anchor": "runStage392FullEvidenceMaintenance",
+      "role": "BOUNDED_OLD_ROW_REMOVAL",
+      "proof_selected": false,
+      "compression_reader_needed": false,
+      "anchor_line": 14769,
+      "source_sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5"
+    },
+    {
+      "file": "current-generation/files/src/execution-report-context.mjs",
+      "anchor": "loadExecutionReportSource",
+      "role": "EXACT_SNAPSHOT_PROOF_COLUMN_SELECT_AND_JSON_PARSE",
+      "proof_selected": true,
+      "compression_reader_needed": true,
+      "anchor_line": 52,
+      "source_sha256": "0c22ec420e645c6c2d91f0c2def21f106ee04c0af0b8d0d77b44120db7c9eb84"
+    },
+    {
+      "file": "runner/lossless-full-evidence-recovery.mjs",
+      "anchor": "recoverLosslessFullEvidence",
+      "role": "SELECT_FULL_ROW_ARCHIVE_PACK_AND_RESTORE",
+      "proof_selected": true,
+      "compression_reader_needed": true,
+      "anchor_line": 37,
+      "source_sha256": "99c4a193a292ca0a368fb3ae3d11b4ecc2bcd109bece2b467f5303b9f3330a71"
+    }
+  ],
+  "source_edges": [
+    [
+      "current-generation/files/runner-main.mjs:loadWorker",
+      "dynamic exact-hash src/worker.js"
+    ],
+    [
+      "GitHub runner scheduled call",
+      "runBoundedDeepCheckScheduler -> buildDeepCheckInput"
+    ],
+    [
+      "buildDeepCheckInput",
+      "persistFullEvidenceShadowRecord single INSERT then downstream ACK"
+    ],
+    [
+      "buildDeepCheckInput",
+      "loadExecutionReportSource -> same immutable execution context"
+    ],
+    [
+      "RemoteD1Database",
+      "existing archive restore -> future explicit proof-shape restore"
+    ],
+    [
+      "native Hub public tail",
+      "scheduled override is separate from Node bridge route"
+    ]
+  ],
+  "read_shapes": [
+    "all rows/envelope/aliases",
+    "first row",
+    "first scalar column",
+    "raw arrays",
+    "raw columnNames headers",
+    "ordered mixed run/read batch",
+    "legacy raw proof",
+    "existing exact archive then proof decode"
+  ],
+  "independent_mode_expectations_not_derived_from_readback": true,
+  "descriptor_only_mode": "STORED_DESCRIPTOR_INTEGRITY_AND_CALLER_IDENTITY_NOT_INDEPENDENT_ACK",
+  "durable_external_manifest_required_for_all_later_reads": false,
+  "native_causal_ACK_and_live_expectation_routing_qualified": false,
+  "no_SQL_added_by_decode": true,
+  "existing_native_SQL_bridge_source_qualified": true,
+  "native_bridge_version": "7011c257-4bdc-4244-a858-42c30e8532ab",
+  "readback_envelope": {
+    "schema": "OFFLINE_PRIMARY_PROOF_READBACK_ENVELOPE_V1",
+    "scheduled_full_runs": 36,
+    "manual_full_runs": 3,
+    "manual_single_coin_runs": 5,
+    "burst_deep_checks": 3,
+    "finalists": 2,
+    "existing_INSERT_SQL_per_finalist": 1,
+    "candidate_INSERT_SELECT_SQL_per_finalist": 2,
+    "extra_SQL_per_full_run": 2,
+    "scheduled_extra_SQL_day": 72,
+    "manual_reserved_extra_SQL_day": 11,
+    "burst_reserved_extra_SQL_day": 3,
+    "total_extra_SQL_with_manual_and_burst": 86,
+    "extra_HTTP_for_same_explicit_batch_plan": 0,
+    "declared_legacy_invocation_SQL": 48,
+    "candidate_declared_invocation_SQL": 50,
+    "invocation_SQL_limit": 50,
+    "declared_SQL_count_is_not_native_runtime_upper_bound": true,
+    "supplied_readback_native_bound": null,
+    "additional_run_rows": null,
+    "additional_day_rows": null,
+    "current_run": null,
+    "current_day": null,
+    "whole_day_closed": false,
+    "offline_supplied_bounds_close": false,
+    "reasons": [
+      "ACTUAL_NATIVE_INDEXED_READ_COST_BOUND_MISSING",
+      "WHOLE_DAY_NOT_CLOSED",
+      "CURRENT_RUN_RESERVATION_NOT_CLOSED",
+      "CURRENT_DAY_RESERVATION_NOT_CLOSED"
+    ],
+    "actual_native_bound_accepted": false,
+    "production_admission_authorized": false,
+    "production_ACK_authorized": false,
+    "format_enabled": false,
+    "reservations_changed": false,
+    "SQL": 0,
+    "HTTP": 0
+  },
+  "source_generation": {
+    "path": "current-generation/GENERATION.json",
+    "sha256": "2361e0c65ef67cd77ddd4ff72deb175e7bc9dc2a9f8160c1aec1c6fa9f1e9580",
+    "cycle_minutes": 40,
+    "full_cycles_day": 36,
+    "scheduled_deep_checks": 72,
+    "manual_full_reports": 3,
+    "manual_single_coin_checks": 5,
+    "manual_deep_checks": 11,
+    "burst_deep_checks": 3,
+    "total_deep_checks": 86
+  },
+  "nominal_body_flow_upper_model": {
+    "families_per_deep": 2,
+    "scheduled_rows": 144,
+    "manual_rows": 22,
+    "burst_rows": 6,
+    "total_with_manual_and_burst": 172,
+    "prior188_is_conservative_full_pair_assumption_not_minimum": true,
+    "current96_row_day_envelope_unchanged": true,
+    "native_throughput_not_accepted": true
+  },
+  "all_dynamic_callers_qualified": false,
+  "generic_computed_JSON_SQL_qualified": false,
+  "raw_column_order_from_installed_schema_qualified": false,
+  "native_schema_Worker_limits_causal_ACK_qualified": false,
+  "standalone_prior_candidate_requalification_executed": false,
+  "three_historical_originals_replayed": false,
+  "production_imports_added": false,
+  "producer_changed": false,
+  "production_enabled": false,
+  "production_ACK_authorized": false,
+  "whole_day_closed": false,
+  "nominal_row_deficit_solved": false,
+  "physical_bytes_freed": 0,
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "Worker_invocations": 0,
+  "MAIN": 0,
+  "Telegram": 0
+}
