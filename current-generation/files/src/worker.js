@@ -17307,6 +17307,8 @@ async function buildDeepCheckInput(params, env) {
         previousSnapshotContext,
     });
   console.log('SUPPLEMENTAL_SCORE_RECEIPT',JSON.stringify({contract,run_id:String(params?.run_id||''),status:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.status,base_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.base_score,adjustment:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.adjustment,final_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.final_score,receipts:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.receipts||[]}));
+  // Bounded technical callback after the canonical result is complete; never mutate its metadata/fingerprint.
+  if(typeof env?.REPORT2_GATE_BINDING_DIAGNOSTIC_BIND==='function')try{env.REPORT2_GATE_BINDING_DIAGNOSTIC_BIND({contract,run_id:canonicalRunId,snapshot_id:stage392SnapshotId,observed_ts:now,analytical_fingerprint:canonicalAnalyticalBundle?.canonical?.analytical_fingerprint});}catch{/* Diagnostics cannot change the analysis. */}
   if(typeof env?.REPORT2_LIQUIDATION_FORECAST_RECORD==='function'){
     try{console.log('LIQUIDATION_FORECAST_MEMORY',JSON.stringify(await env.REPORT2_LIQUIDATION_FORECAST_RECORD({contract,run_id:String(params?.run_id||''),liquidations:canonicalAnalyticalBundle?.canonical?.liquidations,observed_ts:now,reference_price:canonicalAnalyticalBundle?.canonical?.current_price??params?.discovery_row?.current_price??null})));}
     catch(error){console.log('LIQUIDATION_FORECAST_MEMORY',JSON.stringify({status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160)}));}
