@@ -1,0 +1,38 @@
+{
+  "schema": "EXACT_NEW_CHECK_ATTEMPTS_V1",
+  "entry_failures": [
+    {
+      "log": "initial-entry-error.tap",
+      "sha256": "5a68fd39f67c0a68a10c9163081767d5bdbd3da0ca128404e6345e599364154e",
+      "semantic_cases_executed": 0,
+      "cause": "URL pathname retained encoded space"
+    },
+    {
+      "log": "second-entry-error.tap",
+      "sha256": "94023cc8e94a5c20464479067dc8cee2c638c57a6174c0fc0cc4e9d5719badf9",
+      "semantic_cases_executed": 0,
+      "cause": "six inherited runtime imports absent from current-generation overlay-only snapshot"
+    }
+  ],
+  "first_semantic_attempt": {
+    "log": "full-affected-attempt.tap",
+    "sha256": "cb8fa1d1fa5b3357023c519bf83ab0b8d09e41a064f2a902bc9bf47c8e8c573f",
+    "PASS": 7,
+    "FAIL": 1,
+    "failed_case": "source clock survives actual manual and approved Telegram context audits without changing either text or scores",
+    "cause": "Minimal rejected canonical has no confirmed direction; controlled display fixture required"
+  },
+  "repair": {
+    "log": "failed-case-repair.tap",
+    "sha256": "7ae82616335021322ec82b45beceeb318e363d1820102d413350adcd6fdf90e6",
+    "PASS": 1,
+    "FAIL": 0,
+    "test_name_pattern": "source clock survives actual manual and approved Telegram context audits",
+    "final_test_sha256": "3788ec40b01a01409fe7e26f133fefd47c1db9ff3ad75ad0e860869c0266ff48",
+    "changes": "Only failed case creates explicit controlled OBSERVE display and writes repaired witness; seven successful case bodies unchanged"
+  },
+  "runtime_proposal_sha256_all_semantic_attempts": "ae10a266683a06fd156b021833b1ca33acc26910fc5e395b3e5adda06b52332e",
+  "successful_cases_rerun": 0,
+  "old_cases_rerun": 0,
+  "final_full_success_rerun_claimed": false
+}
