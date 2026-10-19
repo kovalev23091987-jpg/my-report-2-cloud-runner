@@ -1,0 +1,15 @@
+{
+  "schema": "FIRST_NEW_COMMON_CASE_FIXTURE_FAILURE_AND_TARGETED_REPAIR_V1",
+  "run": 39261526101,
+  "head": "7344acc4d3eaa05af3c1b38917bd2027720f7e5e",
+  "artifact": 12190147880,
+  "digest": "sha256:80693a31697c0ec978ccc380ee127f7bfe9490b85b7ca3d94995bcacab964944",
+  "initial_result": "0PASS1FAIL/onecase",
+  "normal_loop_assertions": "REACHED_AND_COMPLETED before first late-helper fixture call; no stored result object reconstructed",
+  "failure": "Controlled late helper fixture had one parameter but actual caller passes(db,ctx,now); it read db.dispatch_enabled instead of ctx.dispatch_enabled. Fix ONLYfixture signature.",
+  "after_guard_failure": "Pinned Node-side retained-history dependency is deliberately not a Worker overlay; source pin retained, after guard now compares only actual overlays.",
+  "runtime_source_patch_changed": false,
+  "provider_component_executed_in_initial_case": false,
+  "targeted_rerun": "ONLY failed late source-exit paths and previously unexecuted provider component; normal path not rerun",
+  "sourceHTTP_nativeSQL_MAIN_Telegram": 0
+}

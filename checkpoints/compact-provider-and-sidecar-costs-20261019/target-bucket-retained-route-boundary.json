@@ -1,0 +1,49 @@
+{
+  "schema": "NEW_SAVED_TARGET_BUCKET_AND_RETAINED_ROUTE_BOUNDARY_V1",
+  "saved_failure": 39245523405,
+  "old_known_total": {
+    "rows_read": 182,
+    "requests": 5,
+    "unknown_ops": 0
+  },
+  "full_invocation_single_batch_target_buckets": {
+    "final_decision_integration_shadow": {
+      "requests": 1,
+      "rows_read": 3
+    },
+    "v3_user_lifecycle_shadow": {
+      "requests": 1,
+      "rows_read": 28
+    },
+    "canonical_publication_shadow": {
+      "requests": 1,
+      "rows_read": 67
+    }
+  },
+  "ambiguous_targets": {
+    "v3_early_candidate_wave": {
+      "requests": 7,
+      "rows_read": 2541,
+      "rows_written": 6
+    },
+    "shadow_decision_log": {
+      "requests": 3,
+      "rows_read": 19,
+      "rows_written": 2
+    }
+  },
+  "boundary": "Existing completion target buckets cover the WHOLE invocation. Single-request buckets are informative but no original SQL transport binding/per-query receipt is reconstructed. Do not subtract multi-operation target buckets as sidecar costs or assign the182 aggregate arbitrarily.",
+  "actual_code_path": {
+    "workflow_retained_enabled": ".github/workflows/report2.yml REPORT2_RETAINED_HISTORY_ENABLED=1",
+    "runtime_enable": "current-generation/files/runner-main.mjs:530",
+    "adapter": "runner/report2-d1-adapter.mjs _request rewrites SELECT on retained-enabled instance",
+    "rewrite": "current-generation/files/src/retained-history.mjs rewriteRetainedSelect",
+    "view": "report2_canonical_retained_v1 hot UNION archive/not-exists",
+    "old_index_hypothesis": "Prior SQLite canonical-index fixture was hot-table-only, explicitly not native evidence; it does not establish retained-view route efficiency."
+  },
+  "new_connected_case": "New actual LocalSQLite+RemoteD106603 bridge case ENABLES existing retained reader and asserts its real canonical retained-view wire SQL. Costs remain CONTROLLED; no native per-query cost/plan claim.",
+  "no_query_or_index_rewrite_implemented": true,
+  "old_test_rerun": false,
+  "new_source_SQL_MAIN_Telegram": 0,
+  "ENTRY_physical_work": false
+}

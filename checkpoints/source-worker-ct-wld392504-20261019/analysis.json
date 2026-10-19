@@ -1,0 +1,2462 @@
+{
+  "schema": "SAVED_392504_CT_WLD_TARGETED_SOURCE_CONSUMER_AUDIT_V1",
+  "native_head": "9d03c094375e78067a45fc754523f0ae6314397a",
+  "saved_in_Git_at": "1f5ba3fbf1daf09a48b4d5be7c4b564ba6e3654d",
+  "cloud_run": 39250479718,
+  "run_id": "1792412076494-1792412090239",
+  "scope": "Five selected useful groups, not all105 matrix or native acceptance",
+  "cases": [
+    {
+      "contract": "CT-USDT",
+      "publication_id": "PUB:fbb0556b1f4d1b23606c58aff583a8cc7d0dcc75",
+      "run_id": "1792412076494-1792412090239",
+      "snapshot_id": "S392:CT-USDT:1792412192020",
+      "observed_ts": 1792412192020,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "score_status": "BASE_SCORE_MISSING",
+      "score_or_probability_not_recomputed": true,
+      "five_useful_groups": {
+        "N05_AVAILABLE_HTX_4H": {
+          "block_id": "N05",
+          "evidence_id": "EV2:8840f7b07c20e7eabd64ae8eb065badfbdd397acf81719232bacf111cbb6b9ca",
+          "physical_root_key": "AVAILABLE_FLOW:CT-USDT:1792397640000:1792412040000",
+          "evidence_ids": [
+            "EV2:8840f7b07c20e7eabd64ae8eb065badfbdd397acf81719232bacf111cbb6b9ca"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:CT-USDT:1792397640000:1792412040000"
+          ],
+          "source_ts": 1792412040000,
+          "observed_ts": 1792412154378,
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "HTX фьючерсы: покупки 110 676,62, продажи 65 807,68 USDT; перевес покупок 25,42%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        "N10_SAME_WINDOW_HTX_PATHS": [
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:c6b95b81eddc6d7ebcb7fa3bad0a4dea3eb0134bfff460c127a0cab3ebbd4006",
+            "physical_root_key": "htx-futures:CT-USDT|CT-USDT:60min:1792411200000",
+            "evidence_ids": [
+              "EV2:c6b95b81eddc6d7ebcb7fa3bad0a4dea3eb0134bfff460c127a0cab3ebbd4006"
+            ],
+            "physical_root_keys": [
+              "htx-futures:CT-USDT|CT-USDT:60min:1792411200000"
+            ],
+            "original_clock": {
+              "source_ts": 1792412153941,
+              "first_known_ts": 1792412154099,
+              "observed_ts": 1792412154099,
+              "expires_at": 1792412333941,
+              "window_start_ts": 1792339200000,
+              "window_end_ts": 1792411200000,
+              "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+            },
+            "source_ts": 1792412153941,
+            "observed_ts": 1792412154099,
+            "label": "Фактический ценовой диапазон",
+            "value": "20 закрытых свечей 60min: 0,2868–0,43485 USDT, ширина 51,62%; цена последней закрытой свечи 0,34141 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+            "source": "HTX / закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:0460a315b772c18c697f600a6b0a972a9a3decc06cd3ed24a21eede254a3acd7",
+            "physical_root_key": "htx-futures:CT-USDT|CT-USDT:15m:1792412100000",
+            "evidence_ids": [
+              "EV2:0460a315b772c18c697f600a6b0a972a9a3decc06cd3ed24a21eede254a3acd7"
+            ],
+            "physical_root_keys": [
+              "htx-futures:CT-USDT|CT-USDT:15m:1792412100000"
+            ],
+            "original_clock": {
+              "source_ts": 1792412100000,
+              "first_known_ts": 1792412157959,
+              "observed_ts": 1792412192020,
+              "expires_at": 1792412280000,
+              "window_start_ts": 1792411200000,
+              "window_end_ts": 1792412100000,
+              "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+            },
+            "source_ts": 1792412100000,
+            "observed_ts": 1792412192020,
+            "label": "Фактический путь цены за 15 минут",
+            "value": "15 закрытых минутных свечей: 0,33826 → 0,33226 USDT (-1,77%); минимум 0,32681, максимум 0,33974 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+            "source": "HTX / закрытые минутные свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:4a33feadf06d621de0d7c085b9f183ccd73e33f4634ed7b05eb504625f9f1772",
+            "physical_root_key": "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792412100000",
+            "evidence_ids": [
+              "EV2:4a33feadf06d621de0d7c085b9f183ccd73e33f4634ed7b05eb504625f9f1772"
+            ],
+            "physical_root_keys": [
+              "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792412100000"
+            ],
+            "original_clock": {
+              "source_ts": 1792412100000,
+              "first_known_ts": 1792412154828,
+              "observed_ts": 1792412192020,
+              "expires_at": 1792412280000,
+              "window_start_ts": 1792411200000,
+              "window_end_ts": 1792412100000,
+              "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+            },
+            "source_ts": 1792412100000,
+            "observed_ts": 1792412192020,
+            "label": "Фактический путь цены на споте за 15 минут",
+            "value": "15 закрытых минутных свечей, активных минут 15: 0,34 → 0,3358 USDT (-1,24%); минимум 0,333, максимум 0,3432 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены",
+            "source": "HTX / спотовые закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "N12_BOUNDED_CONTEXT": {
+          "HTX_with_N05_composite": {
+            "block_id": "N12",
+            "source_block_ids": [
+              "N12",
+              "N05"
+            ],
+            "evidence_id": "EV2:822b1ccd0449a682cb2d2242fe961216739350458fb78709fab3f6498b0e3629",
+            "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:CT-USDT:CT-USDT:BOUNDED:1000000384128530000:HTX_SPOT_TRADE_SAMPLE:CT-USDT:588361",
+            "evidence_ids": [
+              "EV2:822b1ccd0449a682cb2d2242fe961216739350458fb78709fab3f6498b0e3629",
+              "EV2:8840f7b07c20e7eabd64ae8eb065badfbdd397acf81719232bacf111cbb6b9ca"
+            ],
+            "physical_root_keys": [
+              "HTX_SPOT_FUTURES_TRADE_SAMPLE:CT-USDT:CT-USDT:BOUNDED:1000000384128530000:HTX_SPOT_TRADE_SAMPLE:CT-USDT:588361",
+              "AVAILABLE_FLOW:CT-USDT:1792397640000:1792412040000"
+            ],
+            "component_origins": [
+              {
+                "evidence_id": "EV2:822b1ccd0449a682cb2d2242fe961216739350458fb78709fab3f6498b0e3629",
+                "block_id": "N12",
+                "provider_id": "HTX_SPOT_FUTURES_TRADES",
+                "upstream_id": "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS",
+                "asset_id": "HTX:CT-USDT",
+                "htx_contract": "CT-USDT",
+                "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+                "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:CT-USDT:CT-USDT:BOUNDED:1000000384128530000:HTX_SPOT_TRADE_SAMPLE:CT-USDT:588361",
+                "raw_hash": "9ffbc5c7daebbda872898113e994de64dfb91649eeeeb19f3fc1e6cfc4c0407a",
+                "market": null,
+                "source_ts": 1792412139204,
+                "observed_ts": 1792412161960,
+                "first_known_ts": 1792412161960,
+                "expires_at": 1792412221960,
+                "window_start_ts": null,
+                "window_end_ts": null,
+                "window_status": "NOT_RETAINED_IN_EVIDENCE",
+                "market_components": [
+                  {
+                    "venue": "HTX",
+                    "market": "FUTURES",
+                    "source_ts": 1792412139204,
+                    "observed_ts": null,
+                    "window_start_ts": null,
+                    "window_end_ts": null,
+                    "physical_root_key": null,
+                    "physical_root": null,
+                    "quote": null,
+                    "contract": null
+                  },
+                  {
+                    "venue": "HTX",
+                    "market": "SPOT",
+                    "source_ts": 1792412153231,
+                    "observed_ts": null,
+                    "window_start_ts": null,
+                    "window_end_ts": null,
+                    "physical_root_key": null,
+                    "physical_root": null,
+                    "quote": null,
+                    "contract": null
+                  }
+                ],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              },
+              {
+                "evidence_id": "EV2:8840f7b07c20e7eabd64ae8eb065badfbdd397acf81719232bacf111cbb6b9ca",
+                "block_id": "N05",
+                "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+                "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+                "asset_id": "HTX:USDT_M_PERPETUAL:CT-USDT",
+                "htx_contract": "CT-USDT",
+                "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+                "physical_root_key": "AVAILABLE_FLOW:CT-USDT:1792397640000:1792412040000",
+                "raw_hash": "5233b33425d6714ccc223754a5fcf963ff85b79bbacbb12e33dfc945a4300feb",
+                "market": null,
+                "source_ts": 1792412040000,
+                "observed_ts": 1792412154378,
+                "first_known_ts": 1792412154378,
+                "expires_at": 1792412340000,
+                "window_start_ts": 1792397640000,
+                "window_end_ts": 1792412040000,
+                "window_status": "EXPLICIT_EVIDENCE_FIELDS",
+                "market_components": [
+                  {
+                    "venue": "HTX",
+                    "market": "FUTURES",
+                    "source_ts": null,
+                    "observed_ts": 1792412154378,
+                    "window_start_ts": 1792397640000,
+                    "window_end_ts": 1792412040000,
+                    "physical_root_key": null,
+                    "physical_root": "HTX_OFFICIAL_RAW_FILLS",
+                    "quote": "USDT",
+                    "contract": "CT-USDT"
+                  }
+                ],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "composite_first_known_ts": 1792412161960,
+            "source_ts": 1792412139204,
+            "observed_ts": 1792412161960,
+            "label": "Направление последних сделок HTX",
+            "value": "HTX фьючерсы: 28 сделок, покупки 4 013,62, продажи 540,56 USDT; спот: 97 сделок, покупки 2 270,96, продажи 3 628,58 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен",
+            "source": "HTX / спот и фьючерсы / HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          "GATE_SPOT": {
+            "block_id": "N12",
+            "evidence_id": "EV2:988f6bb9ccc546739c80aaca1bf294afc14d0a743dae5cc1236d5e382b7762f0",
+            "physical_root_key": "GATE_BOUNDED_SPOT_TRADE_SAMPLE:CT-USDT:1141043",
+            "evidence_ids": [
+              "EV2:988f6bb9ccc546739c80aaca1bf294afc14d0a743dae5cc1236d5e382b7762f0"
+            ],
+            "physical_root_keys": [
+              "GATE_BOUNDED_SPOT_TRADE_SAMPLE:CT-USDT:1141043"
+            ],
+            "component_origins": [
+              {
+                "evidence_id": "EV2:988f6bb9ccc546739c80aaca1bf294afc14d0a743dae5cc1236d5e382b7762f0",
+                "block_id": "N12",
+                "provider_id": "GATE_SPOT_TRADES",
+                "upstream_id": "GATE_OFFICIAL_PUBLIC_SPOT_TRADES",
+                "asset_id": "HTX:CT-USDT",
+                "htx_contract": "CT-USDT",
+                "metric_family": "ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED",
+                "physical_root_key": "GATE_BOUNDED_SPOT_TRADE_SAMPLE:CT-USDT:1141043",
+                "raw_hash": "c1e5dfb7cddfc9ea944fd72324fa8c0e06ea996cc689a4212513e3fbf850de6d",
+                "market": "SPOT",
+                "source_ts": 1792412153889,
+                "observed_ts": 1792412170990,
+                "first_known_ts": 1792412170990,
+                "expires_at": 1792412230990,
+                "window_start_ts": 1792411860000,
+                "window_end_ts": 1792412160000,
+                "window_status": "EXPLICIT_EVIDENCE_FIELDS",
+                "market_components": [],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "composite_first_known_ts": 1792412170990,
+            "source_ts": 1792412153889,
+            "observed_ts": 1792412170990,
+            "label": "Направление последних сделок Gate",
+            "value": "Gate спот: 291 сделок, покупки 34 712,07, продажи 6 240,56 USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён",
+            "source": "Gate / исходные спотовые сделки",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        },
+        "N15_SECTOR_CONTEXT": [
+          {
+            "block_id": "N15",
+            "evidence_id": "EV2:ab0264b98a06211afe3a9004289e3fa78231b88862c2132d3f7e60528bda2cf7",
+            "physical_root_key": "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792412157000",
+            "evidence_ids": [
+              "EV2:ab0264b98a06211afe3a9004289e3fa78231b88862c2132d3f7e60528bda2cf7"
+            ],
+            "physical_root_keys": [
+              "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792412157000"
+            ],
+            "source_ts": 1792412098000,
+            "observed_ts": 1792412180984,
+            "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+            "value": "монета +8,70%, медиана +0,27%, разница +8,43 п.п.; сводные цены площадок",
+            "source": "CoinGecko",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "LIQ_SOURCE_UNITS_AND_LIMITS": {
+          "status": "NOT_CLOSED",
+          "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+          "source_level_count": 0,
+          "source_levels": [],
+          "external_model_scenario_count": 0,
+          "external_model_scenarios": [],
+          "source_receipts": [],
+          "future_source_status": {
+            "coverage_admission": {
+              "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+              "eligible": true,
+              "source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false,
+              "contract": "CT-USDT",
+              "proven_level_source_ids": [],
+              "additional_context_check_source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "structural_market_source_ids": [],
+              "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+              "fresh_live_levels_confirmed": false,
+              "receipt_only_context_score_eligible": false,
+              "receipt_only_context_target_eligible": false,
+              "leaders_may_be_replaced": false
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "EXACT_MARKET_UNVERIFIED",
+              "source_ts": null,
+              "nearby_levels": 0
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "PRICE_OR_OI_NOT_CLOSED",
+              "reason": "POSITIVE_OI_AND_HTX_PRICE_WITHIN_FIVE_PERCENT_REQUIRED",
+              "network_calls": 1,
+              "capability_receipt": null,
+              "source_ts": null,
+              "scenario_count": 0
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          },
+          "actual_acquisition_routes": [
+            {
+              "lane": "HYPERLIQUID_NATIVE",
+              "status": "UNSUPPORTED_NATIVE_SYMBOL",
+              "kind": "ASSET_UNSUPPORTED",
+              "actual_http": 1,
+              "source_ts": null,
+              "original_clock_retained": false,
+              "complete_accounts_read": null,
+              "full_market_census": false
+            }
+          ],
+          "manual_source_lines": [
+            "Ликвидационные уровни выше: подходящие уровни не подтверждены.",
+            "Ликвидационные уровни ниже: подходящие уровни не подтверждены."
+          ],
+          "notional_alias_is_not_FX": true,
+          "measured_market_zero": false,
+          "new_target_entry_or_independence_claim": false
+        }
+      },
+      "actual_block_consumers": {
+        "N05": {
+          "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+          "valid_fact_count": 1,
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 1,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:8840f7b07c20e7eabd64ae8eb065badfbdd397acf81719232bacf111cbb6b9ca",
+              "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.5,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "BASE_SCORE_MISSING"
+              ]
+            }
+          ]
+        },
+        "N10": {
+          "assigned_consumer": "TARGET_PATH_INVALIDATION",
+          "valid_fact_count": 3,
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "decision_assessment_receipt_count": 3,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 3,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:c6b95b81eddc6d7ebcb7fa3bad0a4dea3eb0134bfff460c127a0cab3ebbd4006",
+              "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.2,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "BASE_SCORE_MISSING"
+              ]
+            },
+            {
+              "evidence_id": "EV2:0460a315b772c18c697f600a6b0a972a9a3decc06cd3ed24a21eede254a3acd7",
+              "metric_family": "CLOSED_15M_PRICE_PATH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.2,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "BASE_SCORE_MISSING"
+              ]
+            },
+            {
+              "evidence_id": "EV2:4a33feadf06d621de0d7c085b9f183ccd73e33f4634ed7b05eb504625f9f1772",
+              "metric_family": "CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.2,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "BASE_SCORE_MISSING"
+              ]
+            }
+          ]
+        },
+        "N12": {
+          "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "valid_fact_count": 2,
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "decision_assessment_receipt_count": 2,
+          "unscored_diagnostic_receipt_count": 1,
+          "rendered_useful_context_receipt_count": 2,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:822b1ccd0449a682cb2d2242fe961216739350458fb78709fab3f6498b0e3629",
+              "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.6,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "BASE_SCORE_MISSING"
+              ]
+            },
+            {
+              "evidence_id": "EV2:988f6bb9ccc546739c80aaca1bf294afc14d0a743dae5cc1236d5e382b7762f0",
+              "metric_family": "ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.6,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "BASE_SCORE_MISSING"
+              ]
+            }
+          ]
+        },
+        "N15": {
+          "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+          "valid_fact_count": 1,
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 1,
+          "rendered_useful_context_receipt_count": 1,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:ab0264b98a06211afe3a9004289e3fa78231b88862c2132d3f7e60528bda2cf7",
+              "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0.75,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0.84317,
+              "block_cap": 2,
+              "weight_policy": "INITIAL_ALLOCATION_NOT_EMPIRICALLY_FITTED",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "BASE_SCORE_MISSING"
+              ]
+            }
+          ]
+        }
+      },
+      "Gate_boundary": {
+        "role_use": [
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792411200000,
+            "received_ts": 1792412152986,
+            "max_age_sec": 7200,
+            "normalized_value": -0.009023
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792411200000,
+            "received_ts": 1792412152986,
+            "max_age_sec": 7200,
+            "normalized_value": 5.928603202846983
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792407600000,
+            "received_ts": 1792412152986,
+            "max_age_sec": 7200,
+            "normalized_value": -8.198489751887816
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [
+              "TRADES_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792411200000,
+            "received_ts": 1792412152986,
+            "max_age_sec": 7200,
+            "normalized_value": -4.89084651118011
+          }
+        ],
+        "source_role_gate_status": "CLOSED",
+        "origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "optional_binding_return": {
+          "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+          "contract": "CT-USDT",
+          "carrier_status": "CAPTURED",
+          "status": "NOT_CLOSED",
+          "reason": "NO_USABLE_GATE_METRIC_REQUIRING_BINDING"
+        },
+        "normalized_identity_fields_as_retained": [
+          {
+            "status": "CLOSED",
+            "base_asset": "CT",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "CT-USDT",
+            "instrument_id": "CT_USDT",
+            "primary_market_id": "CT_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          },
+          {
+            "status": "CLOSED",
+            "base_asset": "CT",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "CT-USDT",
+            "instrument_id": "CT_USDT",
+            "primary_market_id": "CT_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          },
+          {
+            "status": "CLOSED",
+            "base_asset": "CT",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "CT-USDT",
+            "instrument_id": "CT_USDT",
+            "primary_market_id": "CT_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          },
+          {
+            "status": "CLOSED",
+            "base_asset": "CT",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "CT-USDT",
+            "instrument_id": "CT_USDT",
+            "primary_market_id": "CT_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          }
+        ],
+        "units_and_intervals_as_retained": [
+          {
+            "metric": "funding_rate",
+            "unit": "rate_per_settlement",
+            "interval": "CURRENT_HOURLY_STATS"
+          },
+          {
+            "metric": "oi_change_1h",
+            "unit": "pct",
+            "interval": "1h"
+          },
+          {
+            "metric": "price_change_4h",
+            "unit": "pct",
+            "interval": "4h"
+          },
+          {
+            "metric": "taker_balance_1h_raw",
+            "unit": "pct_long_minus_short_of_total",
+            "interval": "1h"
+          }
+        ],
+        "meaning": "Optional binder eligible-row filter is empty. Code filters out asset_identity_verified===true; four stored normalized rows carry true. Not provider HTTP failure or source-role refusal.",
+        "earlier_identity_authority_branch": null,
+        "earlier_identity_authority_status": "NOT_RECONSTRUCTED_FROM_NORMALIZED_FLAGS",
+        "raw_alias_api_bodies_or_selected_source_cache_payload": null,
+        "same_Gate_futures_metrics_are_N12_spot_trades": false,
+        "new_shared_fix_established": false
+      },
+      "source_budget_and_fallback_boundary": {
+        "external_N05_status": "PARTIAL_FOUR_HOUR_FLOW",
+        "shared_N05_N12_actual_http": 5,
+        "compact_receipt_count": 18,
+        "compact_route_receipts": [
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          }
+        ],
+        "priority_original": {
+          "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+          "contract": "CT-USDT",
+          "status": "CAPTURED_ORIGINAL_QUEUE",
+          "N15": {
+            "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+            "ordered_collectors": [
+              "JOINT_FLOW",
+              "LARGE_TRADES",
+              "SECTOR_COINGECKO",
+              "SECTOR",
+              "CHAIN_EVENTS",
+              "BLOCKSCOUT"
+            ],
+            "initial_order": [
+              "JOINT_FLOW",
+              "LARGE_TRADES",
+              "SECTOR",
+              "SECTOR_COINGECKO",
+              "CHAIN_EVENTS",
+              "BLOCKSCOUT"
+            ],
+            "source_statistics": [
+              {
+                "route": "SECTOR",
+                "source_id": "COINPAPRIKA_SECTOR",
+                "block_id": "N15",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "SECTOR_COINGECKO",
+                "source_id": "COINGECKO_SECTOR",
+                "block_id": "N15",
+                "observations": 4,
+                "latest_observed_ts": 1792404824239,
+                "latest_class": "CONTEXT_AVAILABLE",
+                "useful": true,
+                "valid_rows_per_http": 0.3076923076923077,
+                "initial_historical_preference": false
+              }
+            ],
+            "includes_cached_or_quota_skipped_collectors": true,
+            "transport_counts_from_original_shared_receipts": true,
+            "score_changed": false,
+            "predictive_weight_changed": false
+          },
+          "public_venues": {
+            "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+            "ordered_collectors": [
+              "GATE",
+              "BACKPACK",
+              "BITGET",
+              "POLONIEX",
+              "GATE_FUTURES_N12",
+              "KUCOIN_N12_EXACT_TOKEN"
+            ],
+            "initial_order": [
+              "GATE",
+              "BACKPACK",
+              "BITGET",
+              "POLONIEX",
+              "GATE_FUTURES_N12",
+              "KUCOIN_N12_EXACT_TOKEN"
+            ],
+            "source_statistics": [
+              {
+                "route": "GATE",
+                "source_id": "N05_PUBLIC_VENUE:GATE",
+                "block_id": "N05",
+                "observations": 4,
+                "latest_observed_ts": 1792404824239,
+                "latest_class": "NOT_CLOSED",
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "BACKPACK",
+                "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+                "block_id": "N05",
+                "observations": 2,
+                "latest_observed_ts": 1792348949772,
+                "latest_class": "INVALID_RESPONSE",
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "BITGET",
+                "source_id": "N05_PUBLIC_VENUE:BITGET",
+                "block_id": "N05",
+                "observations": 4,
+                "latest_observed_ts": 1792404824239,
+                "latest_class": "NOT_CLOSED",
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "POLONIEX",
+                "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+                "block_id": "N05",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "GATE_FUTURES_N12",
+                "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+                "block_id": "N12",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "KUCOIN_N12_EXACT_TOKEN",
+                "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+                "block_id": "N12",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              }
+            ],
+            "includes_cached_or_quota_skipped_collectors": true,
+            "transport_counts_from_original_shared_receipts": true,
+            "score_changed": false,
+            "predictive_weight_changed": false
+          },
+          "sourceHTTP": 0,
+          "D1": 0,
+          "Telegram_text_changed": false
+        },
+        "full_Gate_240m_closure_failure_term": null,
+        "N05_partial_does_not_disable_current_N12_bounded_fact": true,
+        "N05_N12_HTTP_not_additive": true
+      },
+      "render_boundary": {
+        "available_not_rendered_evidence_ids": [],
+        "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+        "telegram_context_receipts": [],
+        "telegram_delivery_proven": false,
+        "telegram_message_id": null
+      },
+      "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-19T12:16:32.020Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: идея отклонена\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена\nПРИЧИНЫ\n- Качество раннего сигнала: 82\n- Закрытые минутные свечи: 15\n- Открытый интерес HTX: +0,6265018881% за 1 ч; контракты, окно 19.10 14:00–19.10 15:00 МСК.\n- Открытый интерес HTX: +33,07229599% за 4 ч; контракты, окно 19.10 11:00–19.10 15:00 МСК.\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: ОКХ, Гейт.\nЖёсткие проверки: 2.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nПАМП И ЛИКВИДАЦИИ\nЛиквидационные уровни выше: подходящие уровни не подтверждены.\nЛиквидационные уровни ниже: подходящие уровни не подтверждены.\nЧасть площадок не поддерживает монету.\nCoinLobster: числовая карта будущих ликвидаций не получена; причина сохранена в проверке источников.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.\nДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ\n- Боковой объём HTX, 240м: POC 0.35797625; VA 0.351743–0.38221667 USDT; 0 балла; одна площадка — ХТХ.\n- Поток сделок по доступным площадкам за четыре часа: HTX фьючерсы: покупки 110 676,62, продажи 65 807,68 USDT; перевес покупок 25,42%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены — ХТХ.\n- Направление последних сделок HTX: HTX фьючерсы: 28 сделок, покупки 4 013,62, продажи 540,56 USDT; спот: 97 сделок, покупки 2 270,96, продажи 3 628,58 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен — HTX / спот и фьючерсы / HTX.\n- Направление последних сделок Gate: Gate спот: 291 сделок, покупки 34 712,07, продажи 6 240,56 USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён — Gate / исходные спотовые сделки.\n- Фактический ценовой диапазон: 20 закрытых свечей 60min: 0,2868–0,43485 USDT, ширина 51,62%; цена последней закрытой свечи 0,34141 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно — HTX / закрытые свечи.\n- Фактический путь цены за 15 минут: 15 закрытых минутных свечей: 0,33826 → 0,33226 USDT (-1,77%); минимум 0,32681, максимум 0,33974 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены — HTX / закрытые минутные свечи.\n- Фактический путь цены на споте за 15 минут: 15 закрытых минутных свечей, активных минут 15: 0,34 → 0,3358 USDT (-1,24%); минимум 0,333, максимум 0,3432 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены — HTX / спотовые закрытые свечи.\n- Подтверждённые переводы токена: 1 событий в одной транзакции; 289297520000000032768 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена — публичный RPC.\n- Измеренная глубина стакана: на снимке 2026-10-19T12:16:31.790Z: покупка 7758.947 USDT (31 уровней), продажа 11861.1145 USDT (40 уровней), спред 49.579781 б.п.; только возвращённая выборка HTX, не вся ликвидность рынка — ХТХ.\n- Проверка размера покупки: ориентир 500 USDT: 150 целых контрактов; вход 150/150, выход 150/150 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения — ХТХ.\n- Проверка размера продажи: ориентир 500 USDT: 151 целых контрактов; вход 151/151, выход 151/151 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения — ХТХ.\n- Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет: монета +8,70%, медиана +0,27%, разница +8,43 п.п.; сводные цены площадок — CoinGecko.\n- Сверка спота и фьючерсов: разница середин котировок -1.05%; спреды 139.9 и 53.6 б.п.; одна биржа — ХТХ.\n- Сводный вывод по споту и фьючерсам: фьючерсы дешевле спота на 1,05% по серединам котировок; совместная выборка последних сделок не подтверждена; общий рыночный вывод по этим данным не установлен; одна биржа — ХТХ.\nИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА\n- С 2026-10-19T10:14:17.651Z по 2026-10-19T12:15:52.986Z: состав свежих подтверждённых фактов изменился — добавлено 0, перестало быть текущими 16.\n- С 2026-10-19T10:14:17.651Z по 2026-10-19T12:15:52.986Z: сила к ETH (ОКХ спотовый рынок) изменился с 27.7772 процентного пункта до -14.6839 процентного пункта.\n- С 2026-10-19T10:14:17.651Z по 2026-10-19T12:15:52.986Z: сила к BTC (ОКХ спотовый рынок) изменился с 27.9955 процентного пункта до -14.672 процентного пункта.\n- С 2026-10-19T10:14:17.651Z по 2026-10-19T12:15:52.986Z: сила к BTC (ОКХ спотовый рынок) изменился с 1.69565 процентного пункта до -3.97801 процентного пункта."
+    },
+    {
+      "contract": "WLD-USDT",
+      "publication_id": "PUB:9a737a94c9cccd70d7734eec80a410908cfe1e5c",
+      "run_id": "1792412076494-1792412090239",
+      "snapshot_id": "S392:WLD-USDT:1792412150140",
+      "observed_ts": 1792412150140,
+      "canonical_state": "OBSERVE",
+      "direction": "LONG",
+      "score_status": "CLOSED",
+      "score_or_probability_not_recomputed": true,
+      "five_useful_groups": {
+        "N05_AVAILABLE_HTX_4H": {
+          "block_id": "N05",
+          "evidence_id": "EV2:b3617f85cbc883853b28b94db387470edc5e6dbde25c6ecb085eb21fabb4bd34",
+          "physical_root_key": "AVAILABLE_FLOW:WLD-USDT:1792397640000:1792412040000",
+          "evidence_ids": [
+            "EV2:b3617f85cbc883853b28b94db387470edc5e6dbde25c6ecb085eb21fabb4bd34"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:WLD-USDT:1792397640000:1792412040000"
+          ],
+          "source_ts": 1792412040000,
+          "observed_ts": 1792412101862,
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "HTX фьючерсы: покупки 145 299,67, продажи 106 146,08 USDT; перевес покупок 15,57%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        "N10_SAME_WINDOW_HTX_PATHS": [
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:90a8716c7526c1afa55c175e1e02bf164c3146757d2abde41cba9f2823abb820",
+            "physical_root_key": "htx-futures:WLD-USDT|WLD-USDT:60min:1792411200000",
+            "evidence_ids": [
+              "EV2:90a8716c7526c1afa55c175e1e02bf164c3146757d2abde41cba9f2823abb820"
+            ],
+            "physical_root_keys": [
+              "htx-futures:WLD-USDT|WLD-USDT:60min:1792411200000"
+            ],
+            "original_clock": {
+              "source_ts": 1792412101545,
+              "first_known_ts": 1792412102044,
+              "observed_ts": 1792412102044,
+              "expires_at": 1792412281545,
+              "window_start_ts": 1792339200000,
+              "window_end_ts": 1792411200000,
+              "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+            },
+            "source_ts": 1792412101545,
+            "observed_ts": 1792412102044,
+            "label": "Фактический ценовой диапазон",
+            "value": "20 закрытых свечей 60min: 0,4568–0,5108 USDT, ширина 11,82%; цена последней закрытой свечи 0,4972 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+            "source": "HTX / закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:9bed956e960585f05fa6d9d45c26c99ac3a2a21b4d4f5c694b436a6df7c7ea72",
+            "physical_root_key": "htx-futures:WLD-USDT|WLD-USDT:15m:1792412100000",
+            "evidence_ids": [
+              "EV2:9bed956e960585f05fa6d9d45c26c99ac3a2a21b4d4f5c694b436a6df7c7ea72"
+            ],
+            "physical_root_keys": [
+              "htx-futures:WLD-USDT|WLD-USDT:15m:1792412100000"
+            ],
+            "original_clock": {
+              "source_ts": 1792412100000,
+              "first_known_ts": 1792412105670,
+              "observed_ts": 1792412150140,
+              "expires_at": 1792412280000,
+              "window_start_ts": 1792411200000,
+              "window_end_ts": 1792412100000,
+              "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+            },
+            "source_ts": 1792412100000,
+            "observed_ts": 1792412150140,
+            "label": "Фактический путь цены за 15 минут",
+            "value": "15 закрытых минутных свечей: 0,4972 → 0,5089 USDT (+2,35%); минимум 0,4972, максимум 0,5089 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+            "source": "HTX / закрытые минутные свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:620cbc099023364e3310059f772cf226b808297c65b61541722631fcb08ed445",
+            "physical_root_key": "htx-spot:WLD-USDT|HTX_SPOT:WLD-USDT:1792412100000",
+            "evidence_ids": [
+              "EV2:620cbc099023364e3310059f772cf226b808297c65b61541722631fcb08ed445"
+            ],
+            "physical_root_keys": [
+              "htx-spot:WLD-USDT|HTX_SPOT:WLD-USDT:1792412100000"
+            ],
+            "original_clock": {
+              "source_ts": 1792412100000,
+              "first_known_ts": 1792412102782,
+              "observed_ts": 1792412150140,
+              "expires_at": 1792412280000,
+              "window_start_ts": 1792411200000,
+              "window_end_ts": 1792412100000,
+              "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+            },
+            "source_ts": 1792412100000,
+            "observed_ts": 1792412150140,
+            "label": "Фактический путь цены на споте за 15 минут",
+            "value": "15 закрытых минутных свечей, активных минут 8: 0,498 → 0,509 USDT (+2,21%); минимум 0,498, максимум 0,509 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены",
+            "source": "HTX / спотовые закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "N12_BOUNDED_CONTEXT": {
+          "HTX_with_N05_composite": {
+            "block_id": "N12",
+            "source_block_ids": [
+              "N12",
+              "N05"
+            ],
+            "evidence_id": "EV2:5f42eb451ca4fc56e769ee606b30f685d8a13e0ceb40ddaf1e867d1f58ae2f5a",
+            "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:WLD-USDT:WLD-USDT:BOUNDED:1000069741283500000:HTX_SPOT_TRADE_SAMPLE:WLD-USDT:41783122",
+            "evidence_ids": [
+              "EV2:5f42eb451ca4fc56e769ee606b30f685d8a13e0ceb40ddaf1e867d1f58ae2f5a",
+              "EV2:b3617f85cbc883853b28b94db387470edc5e6dbde25c6ecb085eb21fabb4bd34"
+            ],
+            "physical_root_keys": [
+              "HTX_SPOT_FUTURES_TRADE_SAMPLE:WLD-USDT:WLD-USDT:BOUNDED:1000069741283500000:HTX_SPOT_TRADE_SAMPLE:WLD-USDT:41783122",
+              "AVAILABLE_FLOW:WLD-USDT:1792397640000:1792412040000"
+            ],
+            "component_origins": [
+              {
+                "evidence_id": "EV2:5f42eb451ca4fc56e769ee606b30f685d8a13e0ceb40ddaf1e867d1f58ae2f5a",
+                "block_id": "N12",
+                "provider_id": "HTX_SPOT_FUTURES_TRADES",
+                "upstream_id": "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS",
+                "asset_id": "HTX:WLD-USDT",
+                "htx_contract": "WLD-USDT",
+                "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+                "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:WLD-USDT:WLD-USDT:BOUNDED:1000069741283500000:HTX_SPOT_TRADE_SAMPLE:WLD-USDT:41783122",
+                "raw_hash": "9fd0f24e0b248dc8ba6403ad74336a57d2771590933687aed1974b5f29bf350c",
+                "market": null,
+                "source_ts": 1792412089317,
+                "observed_ts": 1792412111566,
+                "first_known_ts": 1792412111566,
+                "expires_at": 1792412171566,
+                "window_start_ts": null,
+                "window_end_ts": null,
+                "window_status": "NOT_RETAINED_IN_EVIDENCE",
+                "market_components": [
+                  {
+                    "venue": "HTX",
+                    "market": "FUTURES",
+                    "source_ts": 1792412089317,
+                    "observed_ts": null,
+                    "window_start_ts": null,
+                    "window_end_ts": null,
+                    "physical_root_key": null,
+                    "physical_root": null,
+                    "quote": null,
+                    "contract": null
+                  },
+                  {
+                    "venue": "HTX",
+                    "market": "SPOT",
+                    "source_ts": 1792412098455,
+                    "observed_ts": null,
+                    "window_start_ts": null,
+                    "window_end_ts": null,
+                    "physical_root_key": null,
+                    "physical_root": null,
+                    "quote": null,
+                    "contract": null
+                  }
+                ],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              },
+              {
+                "evidence_id": "EV2:b3617f85cbc883853b28b94db387470edc5e6dbde25c6ecb085eb21fabb4bd34",
+                "block_id": "N05",
+                "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+                "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+                "asset_id": "HTX:USDT_M_PERPETUAL:WLD-USDT",
+                "htx_contract": "WLD-USDT",
+                "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+                "physical_root_key": "AVAILABLE_FLOW:WLD-USDT:1792397640000:1792412040000",
+                "raw_hash": "b506846be9d2fbfd89489e087de1b1efd6957465e957ba3a21413f9701032e48",
+                "market": null,
+                "source_ts": 1792412040000,
+                "observed_ts": 1792412101862,
+                "first_known_ts": 1792412101862,
+                "expires_at": 1792412340000,
+                "window_start_ts": 1792397640000,
+                "window_end_ts": 1792412040000,
+                "window_status": "EXPLICIT_EVIDENCE_FIELDS",
+                "market_components": [
+                  {
+                    "venue": "HTX",
+                    "market": "FUTURES",
+                    "source_ts": null,
+                    "observed_ts": 1792412101862,
+                    "window_start_ts": 1792397640000,
+                    "window_end_ts": 1792412040000,
+                    "physical_root_key": null,
+                    "physical_root": "HTX_OFFICIAL_RAW_FILLS",
+                    "quote": "USDT",
+                    "contract": "WLD-USDT"
+                  }
+                ],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "composite_first_known_ts": 1792412111566,
+            "source_ts": 1792412089317,
+            "observed_ts": 1792412111566,
+            "label": "Направление последних сделок HTX",
+            "value": "HTX фьючерсы: 13 сделок, покупки 13 928,21, продажи 205,38 USDT; спот: 5 сделок, покупки 151,57, продажи 63,46 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен",
+            "source": "HTX / спот и фьючерсы / HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          "GATE_SPOT": {
+            "block_id": "N12",
+            "evidence_id": "EV2:4002a2d73517cda8465f0664a1879155a93bdbfb4981266e7b5e51766a79e1e8",
+            "physical_root_key": "GATE_BOUNDED_SPOT_TRADE_SAMPLE:WLD-USDT:36894284",
+            "evidence_ids": [
+              "EV2:4002a2d73517cda8465f0664a1879155a93bdbfb4981266e7b5e51766a79e1e8"
+            ],
+            "physical_root_keys": [
+              "GATE_BOUNDED_SPOT_TRADE_SAMPLE:WLD-USDT:36894284"
+            ],
+            "component_origins": [
+              {
+                "evidence_id": "EV2:4002a2d73517cda8465f0664a1879155a93bdbfb4981266e7b5e51766a79e1e8",
+                "block_id": "N12",
+                "provider_id": "GATE_SPOT_TRADES",
+                "upstream_id": "GATE_OFFICIAL_PUBLIC_SPOT_TRADES",
+                "asset_id": "HTX:WLD-USDT",
+                "htx_contract": "WLD-USDT",
+                "metric_family": "ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED",
+                "physical_root_key": "GATE_BOUNDED_SPOT_TRADE_SAMPLE:WLD-USDT:36894284",
+                "raw_hash": "9bb9d67cf39b41716dbb92256f29c8327754426487b1a3ec1b5a11ac78c749ca",
+                "market": "SPOT",
+                "source_ts": 1792412097291,
+                "observed_ts": 1792412120889,
+                "first_known_ts": 1792412120889,
+                "expires_at": 1792412180889,
+                "window_start_ts": 1792411800000,
+                "window_end_ts": 1792412100000,
+                "window_status": "EXPLICIT_EVIDENCE_FIELDS",
+                "market_components": [],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "composite_first_known_ts": 1792412120889,
+            "source_ts": 1792412097291,
+            "observed_ts": 1792412120889,
+            "label": "Направление последних сделок Gate",
+            "value": "Gate спот: 251 сделок, покупки 53 168,05, продажи 20 632,52 USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён",
+            "source": "Gate / исходные спотовые сделки",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        },
+        "N15_SECTOR_CONTEXT": [
+          {
+            "block_id": "N15",
+            "evidence_id": "EV2:5f8e8b76c40212533615035b44261f1c8f0de4e1cdd8cda44405455714830bec",
+            "physical_root_key": "ethereum:0x163f8c2467924be0ae7b5347228cabf260318753|worldcoin-wld:smart-contract-platform:1792412098000",
+            "evidence_ids": [
+              "EV2:5f8e8b76c40212533615035b44261f1c8f0de4e1cdd8cda44405455714830bec"
+            ],
+            "physical_root_keys": [
+              "ethereum:0x163f8c2467924be0ae7b5347228cabf260318753|worldcoin-wld:smart-contract-platform:1792412098000"
+            ],
+            "source_ts": 1792412098000,
+            "observed_ts": 1792412135830,
+            "label": "Сектор «Smart Contract Platform» за 24 часа, выборка 50 монет",
+            "value": "монета +1,96%, медиана +0,11%, разница +1,84 п.п.; сводные цены площадок",
+            "source": "CoinGecko",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N15",
+            "evidence_id": "EV2:ded7383a0e29a1de0a6cb8407d9919e75c30d71dfd622599d541f14ae2b1ab33",
+            "physical_root_key": "provider:coinpaprika:wld-worldcoin|wld-worldcoin:privacy-security:1792412055000",
+            "evidence_ids": [
+              "EV2:ded7383a0e29a1de0a6cb8407d9919e75c30d71dfd622599d541f14ae2b1ab33"
+            ],
+            "physical_root_keys": [
+              "provider:coinpaprika:wld-worldcoin|wld-worldcoin:privacy-security:1792412055000"
+            ],
+            "source_ts": 1792412055000,
+            "observed_ts": 1792412130619,
+            "label": "Сектор «Privacy & Security» за 24 часа, выборка 26 монет",
+            "value": "монета +2,89%, медиана -0,51%, разница +3,40 п.п.; сводные цены площадок",
+            "source": "CoinPaprika",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "LIQ_SOURCE_UNITS_AND_LIMITS": {
+          "status": "CLOSED",
+          "reason": null,
+          "source_level_count": 17,
+          "source_levels": [
+            {
+              "kind": "NATIVE_FUTURE_LEVEL",
+              "source": "Hyperliquid official",
+              "price": 93.2090376286,
+              "price_quote": "USDC",
+              "notional": 567.741942,
+              "notional_unit": "USDC",
+              "notional_usdt": 567.741942,
+              "exact_notional_usdt": null,
+              "exact_amount_available": true,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412140537,
+              "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+              "conditional_cross": true,
+              "native_reference_price": 0.5123099999999999,
+              "decision_target_eligible": false,
+              "estimated": false,
+              "position_count": 1,
+              "position_key": "d0c9d07d7d17781b3a4d56654a1c88810fe4a8ab38989fb1a504a8a2802b5ed2",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.26757118,
+              "price_quote": "USDC",
+              "notional": 309.13198,
+              "notional_unit": "USDC",
+              "notional_usdt": 309.13198,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_2",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.04150599,
+              "price_quote": "USDC",
+              "notional": 1283.15848,
+              "notional_unit": "USDC",
+              "notional_usdt": 1283.15848,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_4",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.27642105,
+              "price_quote": "USDC",
+              "notional": 0.05113,
+              "notional_unit": "USDC",
+              "notional_usdt": 0.05113,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_6",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 5.34555674,
+              "price_quote": "USDC",
+              "notional": 154.25921,
+              "notional_unit": "USDC",
+              "notional_usdt": 154.25921,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_7",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 104.85794826,
+              "price_quote": "USDC",
+              "notional": 11848.40603,
+              "notional_unit": "USDC",
+              "notional_usdt": 11848.40603,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_8",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 75.69251355,
+              "price_quote": "USDC",
+              "notional": 240.61778,
+              "notional_unit": "USDC",
+              "notional_usdt": 240.61778,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_10",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.20939578,
+              "price_quote": "USDC",
+              "notional": 0.25565,
+              "notional_unit": "USDC",
+              "notional_usdt": 0.25565,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_11",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.21708578,
+              "price_quote": "USDC",
+              "notional": 1.0226,
+              "notional_unit": "USDC",
+              "notional_usdt": 1.0226,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_12",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.76854783,
+              "price_quote": "USDC",
+              "notional": 11.45312,
+              "notional_unit": "USDC",
+              "notional_usdt": 11.45312,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_13",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 6.64859012,
+              "price_quote": "USDC",
+              "notional": 19185.86781,
+              "notional_unit": "USDC",
+              "notional_usdt": 19185.86781,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_14",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 2.22290337,
+              "price_quote": "USDC",
+              "notional": 175.73381,
+              "notional_unit": "USDC",
+              "notional_usdt": 175.73381,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_17",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 4.61973333,
+              "price_quote": "USDC",
+              "notional": 0.05113,
+              "notional_unit": "USDC",
+              "notional_usdt": 0.05113,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_20",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 4.3535492,
+              "price_quote": "USDC",
+              "notional": 0.30678,
+              "notional_unit": "USDC",
+              "notional_usdt": 0.30678,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_21",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 122.22493251,
+              "price_quote": "USDC",
+              "notional": 2596.79044,
+              "notional_unit": "USDC",
+              "notional_usdt": 2596.79044,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_22",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.17538325,
+              "price_quote": "USDC",
+              "notional": 1.12486,
+              "notional_unit": "USDC",
+              "notional_usdt": 1.12486,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_24",
+              "source_backed_calculated": false
+            },
+            {
+              "kind": "PROVIDER_ESTIMATE",
+              "source": "Orderly",
+              "price": 0.18960404,
+              "price_quote": "USDC",
+              "notional": 0.66469,
+              "notional_unit": "USDC",
+              "notional_usdt": 0.66469,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+              "source_ts": 1792412143268,
+              "coverage": null,
+              "conditional_cross": true,
+              "native_reference_price": 0.5113,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": 1,
+              "position_key": "ORDERLY_PUBLIC_ROW_25",
+              "source_backed_calculated": false
+            }
+          ],
+          "external_model_scenario_count": 8,
+          "external_model_scenarios": [
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.457062,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.554138,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.487398,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.523802,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.49751,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.51369,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.502566,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            },
+            {
+              "kind": "PROJECTED",
+              "source": "CoinBoss",
+              "price": 0.508634,
+              "price_quote": "USD",
+              "notional": null,
+              "notional_unit": null,
+              "exact_notional_usdt": null,
+              "exact_amount_available": false,
+              "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+              "source_ts": 1792412056930,
+              "coverage": null,
+              "conditional_cross": false,
+              "native_reference_price": 0.5056,
+              "decision_target_eligible": false,
+              "estimated": true,
+              "position_count": null,
+              "position_key": null,
+              "source_backed_calculated": true,
+              "scenario_only": true
+            }
+          ],
+          "source_receipts": [
+            {
+              "source": "Hyperliquid official",
+              "status": "USABLE_SCOPED_CONTEXT",
+              "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+              "source_ts": 1792412140537,
+              "visible_half_range_pct": null,
+              "total_zones": 1
+            }
+          ],
+          "future_source_status": {
+            "coverage_admission": {
+              "status": "BOUNDED_PINNED_NATIVE_CALCULATED_CONTEXT_CHECK_ALLOWED",
+              "eligible": true,
+              "source_ids": [
+                "HYPERLIQUID_NATIVE",
+                "DYDX_PINNED_NATIVE"
+              ],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false,
+              "contract": "WLD-USDT",
+              "proven_level_source_ids": [],
+              "additional_context_check_source_ids": [
+                "HYPERLIQUID_NATIVE",
+                "DYDX_PINNED_NATIVE"
+              ],
+              "structural_market_source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "coverage_scope": "STRUCTURAL_ACCOUNT_HINT_IS_COLLECTION_PERMISSION_NOT_CURRENT_LEVEL_COVERAGE",
+              "fresh_live_levels_confirmed": false,
+              "receipt_only_context_score_eligible": false,
+              "receipt_only_context_target_eligible": false,
+              "leaders_may_be_replaced": false,
+              "automatic_discovery_allowed": true,
+              "structural_hint_available": true
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "CLOSED",
+              "source_ts": 1792412143268,
+              "nearby_levels": 16
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "CLOSED",
+              "reason": null,
+              "network_calls": 1,
+              "capability_receipt": null,
+              "source_ts": 1792412056930,
+              "scenario_count": 8
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          },
+          "actual_acquisition_routes": [
+            {
+              "lane": "HYPERLIQUID_NATIVE",
+              "status": "ACQUISITION_RETURNED",
+              "kind": "NO_ELIGIBLE_LEVEL",
+              "actual_http": 2,
+              "source_ts": null,
+              "original_clock_retained": false,
+              "complete_accounts_read": null,
+              "full_market_census": false
+            },
+            {
+              "lane": "DYDX_PINNED_NATIVE",
+              "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+              "kind": "REQUEST_LIMIT",
+              "actual_http": 0,
+              "source_ts": null,
+              "original_clock_retained": false,
+              "complete_accounts_read": null,
+              "full_market_census": false
+            }
+          ],
+          "manual_source_lines": [
+            "Ликвидационные уровни выше: расчётный уровень ≈0,523802 USD (+3,6% к цене источника) — размер возможной ликвидации: крупная (расчётный); объединено 3 близких уровней, показан дальний; есть расчётные уровни; CoinBoss; расчётный уровень ≈0,554138 USD (+9,6% к цене источника) — размер возможной ликвидации: крупная (расчётный); CoinBoss; расчётный уровень ≈0,76854783 USDC (+50,31% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 11,45312 USDC; Orderly; зависит от других позиций счёта.",
+            "Ликвидационные уровни ниже: расчётный уровень ≈0,26757118 USDC (−47,67% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 309,13198 USDC; объединено 2 близких уровней, показан дальний; есть расчётные уровни; Orderly; зависит от других позиций счёта; расчётный уровень ≈0,17538325 USDC (−65,7% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 1,12486 USDC; Orderly; зависит от других позиций счёта; расчётный уровень ≈0,04150599 USDC (−91,88% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 1283,15848 USDC; Orderly; зависит от других позиций счёта."
+          ],
+          "notional_alias_is_not_FX": true,
+          "measured_market_zero": false,
+          "new_target_entry_or_independence_claim": false
+        }
+      },
+      "actual_block_consumers": {
+        "N05": {
+          "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+          "valid_fact_count": 1,
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 1,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:b3617f85cbc883853b28b94db387470edc5e6dbde25c6ecb085eb21fabb4bd34",
+              "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.5,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+              ]
+            }
+          ]
+        },
+        "N10": {
+          "assigned_consumer": "TARGET_PATH_INVALIDATION",
+          "valid_fact_count": 3,
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "decision_assessment_receipt_count": 3,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 3,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:90a8716c7526c1afa55c175e1e02bf164c3146757d2abde41cba9f2823abb820",
+              "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.2,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+              ]
+            },
+            {
+              "evidence_id": "EV2:9bed956e960585f05fa6d9d45c26c99ac3a2a21b4d4f5c694b436a6df7c7ea72",
+              "metric_family": "CLOSED_15M_PRICE_PATH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.2,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+              ]
+            },
+            {
+              "evidence_id": "EV2:620cbc099023364e3310059f772cf226b808297c65b61541722631fcb08ed445",
+              "metric_family": "CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.2,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+              ]
+            }
+          ]
+        },
+        "N12": {
+          "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "valid_fact_count": 2,
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "decision_assessment_receipt_count": 2,
+          "unscored_diagnostic_receipt_count": 1,
+          "rendered_useful_context_receipt_count": 2,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:5f42eb451ca4fc56e769ee606b30f685d8a13e0ceb40ddaf1e867d1f58ae2f5a",
+              "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.6,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+              ]
+            },
+            {
+              "evidence_id": "EV2:4002a2d73517cda8465f0664a1879155a93bdbfb4981266e7b5e51766a79e1e8",
+              "metric_family": "ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED",
+              "validation": "VALID",
+              "coverage_fraction": 0,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0,
+              "block_cap": 0.6,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0,
+              "reasons": [
+                "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+              ]
+            }
+          ]
+        },
+        "N15": {
+          "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+          "valid_fact_count": 2,
+          "participation_status": "SCORE_EFFECT_PROVEN",
+          "score_contribution": 0.2682,
+          "decision_assessment_receipt_count": 2,
+          "unscored_diagnostic_receipt_count": 2,
+          "rendered_useful_context_receipt_count": 2,
+          "impact_rows": [
+            {
+              "evidence_id": "EV2:5f8e8b76c40212533615035b44261f1c8f0de4e1cdd8cda44405455714830bec",
+              "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0.75,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0.1842405,
+              "block_cap": 2,
+              "weight_policy": "INITIAL_ALLOCATION_NOT_EMPIRICALLY_FITTED",
+              "actual_score_contribution": 0.2211,
+              "reasons": [
+                "WEAK_MEASURED_EFFECT",
+                "SMALL_ACTUAL_ADJUSTMENT_BEFORE_INTEGER_ROUNDING"
+              ]
+            },
+            {
+              "evidence_id": "EV2:ded7383a0e29a1de0a6cb8407d9919e75c30d71dfd622599d541f14ae2b1ab33",
+              "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+              "validation": "VALID",
+              "coverage_fraction": 0.28888888888888886,
+              "reliability": 0.8,
+              "directional_or_risk_strength": 0.33950001150369646,
+              "block_cap": 0.6,
+              "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+              "actual_score_contribution": 0.0471,
+              "reasons": [
+                "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                "SMALL_ACTUAL_ADJUSTMENT_BEFORE_INTEGER_ROUNDING"
+              ]
+            }
+          ]
+        }
+      },
+      "Gate_boundary": {
+        "role_use": [
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792411200000,
+            "received_ts": 1792412100668,
+            "max_age_sec": 7200,
+            "normalized_value": 7.3e-05
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792411200000,
+            "received_ts": 1792412100668,
+            "max_age_sec": 7200,
+            "normalized_value": 0.014857993401462544
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792407600000,
+            "received_ts": 1792412100668,
+            "max_age_sec": 7200,
+            "normalized_value": -1.8711837699428968
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [
+              "TRADES_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792411200000,
+            "received_ts": 1792412100668,
+            "max_age_sec": 7200,
+            "normalized_value": 27.502034174125306
+          }
+        ],
+        "source_role_gate_status": "CLOSED",
+        "origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "optional_binding_return": {
+          "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+          "contract": "WLD-USDT",
+          "carrier_status": "CAPTURED",
+          "status": "NOT_CLOSED",
+          "reason": "NO_USABLE_GATE_METRIC_REQUIRING_BINDING"
+        },
+        "normalized_identity_fields_as_retained": [
+          {
+            "status": "CLOSED",
+            "base_asset": "WLD",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "WLD-USDT",
+            "instrument_id": "WLD_USDT",
+            "primary_market_id": "WLD_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          },
+          {
+            "status": "CLOSED",
+            "base_asset": "WLD",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "WLD-USDT",
+            "instrument_id": "WLD_USDT",
+            "primary_market_id": "WLD_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          },
+          {
+            "status": "CLOSED",
+            "base_asset": "WLD",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "WLD-USDT",
+            "instrument_id": "WLD_USDT",
+            "primary_market_id": "WLD_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          },
+          {
+            "status": "CLOSED",
+            "base_asset": "WLD",
+            "quote_asset": "USDT",
+            "market_type": "PERP",
+            "market_type_raw": "USDT_PERP",
+            "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+            "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+            "contract_code": "WLD-USDT",
+            "instrument_id": "WLD_USDT",
+            "primary_market_id": "WLD_USDT:GATE:USDT_PERP",
+            "multiplier_required_for_metric": false,
+            "symbol_verified": true,
+            "asset_identity_verified": true
+          }
+        ],
+        "units_and_intervals_as_retained": [
+          {
+            "metric": "funding_rate",
+            "unit": "rate_per_settlement",
+            "interval": "CURRENT_HOURLY_STATS"
+          },
+          {
+            "metric": "oi_change_1h",
+            "unit": "pct",
+            "interval": "1h"
+          },
+          {
+            "metric": "price_change_4h",
+            "unit": "pct",
+            "interval": "4h"
+          },
+          {
+            "metric": "taker_balance_1h_raw",
+            "unit": "pct_long_minus_short_of_total",
+            "interval": "1h"
+          }
+        ],
+        "meaning": "Optional binder eligible-row filter is empty. Code filters out asset_identity_verified===true; four stored normalized rows carry true. Not provider HTTP failure or source-role refusal.",
+        "earlier_identity_authority_branch": null,
+        "earlier_identity_authority_status": "NOT_RECONSTRUCTED_FROM_NORMALIZED_FLAGS",
+        "raw_alias_api_bodies_or_selected_source_cache_payload": null,
+        "same_Gate_futures_metrics_are_N12_spot_trades": false,
+        "new_shared_fix_established": false
+      },
+      "source_budget_and_fallback_boundary": {
+        "external_N05_status": "PARTIAL_FOUR_HOUR_FLOW",
+        "shared_N05_N12_actual_http": 5,
+        "compact_receipt_count": 19,
+        "compact_route_receipts": [
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          },
+          {
+            "route": null,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "http_status": 200,
+            "error": null
+          }
+        ],
+        "priority_original": {
+          "schema": "EXACT_ASSET_SOURCE_PRIORITY_ARTIFACT_V1",
+          "contract": "WLD-USDT",
+          "status": "CAPTURED_ORIGINAL_QUEUE",
+          "N15": {
+            "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+            "ordered_collectors": [
+              "JOINT_FLOW",
+              "LARGE_TRADES",
+              "SECTOR",
+              "SECTOR_COINGECKO",
+              "CHAIN_EVENTS",
+              "BLOCKSCOUT"
+            ],
+            "initial_order": [
+              "JOINT_FLOW",
+              "LARGE_TRADES",
+              "SECTOR",
+              "SECTOR_COINGECKO",
+              "CHAIN_EVENTS",
+              "BLOCKSCOUT"
+            ],
+            "source_statistics": [
+              {
+                "route": "SECTOR",
+                "source_id": "COINPAPRIKA_SECTOR",
+                "block_id": "N15",
+                "observations": 2,
+                "latest_observed_ts": 1792363474088,
+                "latest_class": "CONTEXT_AVAILABLE",
+                "useful": true,
+                "valid_rows_per_http": 0.5,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "SECTOR_COINGECKO",
+                "source_id": "COINGECKO_SECTOR",
+                "block_id": "N15",
+                "observations": 2,
+                "latest_observed_ts": 1792363474088,
+                "latest_class": "CONTEXT_AVAILABLE",
+                "useful": true,
+                "valid_rows_per_http": 0.5,
+                "initial_historical_preference": false
+              }
+            ],
+            "includes_cached_or_quota_skipped_collectors": true,
+            "transport_counts_from_original_shared_receipts": true,
+            "score_changed": false,
+            "predictive_weight_changed": false
+          },
+          "public_venues": {
+            "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+            "ordered_collectors": [
+              "GATE",
+              "BACKPACK",
+              "BITGET",
+              "POLONIEX",
+              "GATE_FUTURES_N12",
+              "KUCOIN_N12_EXACT_TOKEN"
+            ],
+            "initial_order": [
+              "GATE",
+              "BACKPACK",
+              "BITGET",
+              "POLONIEX",
+              "GATE_FUTURES_N12",
+              "KUCOIN_N12_EXACT_TOKEN"
+            ],
+            "source_statistics": [
+              {
+                "route": "GATE",
+                "source_id": "N05_PUBLIC_VENUE:GATE",
+                "block_id": "N05",
+                "observations": 2,
+                "latest_observed_ts": 1792363474088,
+                "latest_class": "NOT_CLOSED",
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "BACKPACK",
+                "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+                "block_id": "N05",
+                "observations": 1,
+                "latest_observed_ts": 1792356198016,
+                "latest_class": "NOT_CLOSED",
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "BITGET",
+                "source_id": "N05_PUBLIC_VENUE:BITGET",
+                "block_id": "N05",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "POLONIEX",
+                "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+                "block_id": "N05",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "GATE_FUTURES_N12",
+                "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+                "block_id": "N12",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              },
+              {
+                "route": "KUCOIN_N12_EXACT_TOKEN",
+                "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+                "block_id": "N12",
+                "observations": 0,
+                "latest_observed_ts": null,
+                "latest_class": null,
+                "useful": false,
+                "valid_rows_per_http": 0,
+                "initial_historical_preference": false
+              }
+            ],
+            "includes_cached_or_quota_skipped_collectors": true,
+            "transport_counts_from_original_shared_receipts": true,
+            "score_changed": false,
+            "predictive_weight_changed": false
+          },
+          "sourceHTTP": 0,
+          "D1": 0,
+          "Telegram_text_changed": false
+        },
+        "full_Gate_240m_closure_failure_term": null,
+        "N05_partial_does_not_disable_current_N12_bounded_fact": true,
+        "N05_N12_HTTP_not_additive": true
+      },
+      "render_boundary": {
+        "available_not_rendered_evidence_ids": [],
+        "telegram_payload_status": "APPROVED_PAYLOAD_TEXT_OBSERVED",
+        "telegram_context_receipts": [],
+        "telegram_delivery_proven": false,
+        "telegram_message_id": null
+      },
+      "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-19T12:15:50.140Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: наблюдение\nНаправление: покупка\nОбщая оценка: не подтверждена\nМонета интересна: 83 из 100\nГотовность ко входу: сильный ранний сценарий, вход ещё не подтверждён\nПРИЧИНЫ\n- Качество раннего сигнала: 82\n- Закрытые минутные свечи: 15\n- Открытый интерес HTX: -0,06912248378% за 1 ч; контракты, окно 19.10 14:00–19.10 15:00 МСК.\n- Открытый интерес HTX: +1,410895493% за 4 ч; контракты, окно 19.10 11:00–19.10 15:00 МСК.\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\n- WLD-USDT: приоритет 70/100; Есть дополнительная внутренняя причина, для которой ещё нет утверждённого пользовательского объяснения; вывод оставлен в безопасном режиме.\nВсего ранних кандидатов: 1.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: ОКХ, Гейт.\nЖёсткие проверки: 2.\nВход: 0.5089 USDT\nУсловие входа: цена >= 0,5089 USDT (5 мин).\nОтмена ожидания: цена<0.4978.\nУсловие действительно до: 19.10 15:45 МСК.\nПроверка цены и отмены: начиная с 19.10 15:20 МСК; далее каждые 5 минут до истечения условия. Полное подтверждение входа — при следующем полном анализе.\nОтмена идеи: цена<0.4978\nНачинать закрывать позицию: 0,52 USDT.\nДальнейшие цели: 0,52 USDT.\nОснова идеи: за четыре часа монета опережает биткоин на 0,9 п. п. и эфир на 0,9 п. п.; изменение суточного оборота выше обычного для этой монеты; по измеренной структуре цена пытается выйти вверх.\nПАМП И ЛИКВИДАЦИИ\nЛиквидационные уровни выше: расчётный уровень ≈0,523802 USD (+3,6% к цене источника) — размер возможной ликвидации: крупная (расчётный); объединено 3 близких уровней, показан дальний; есть расчётные уровни; CoinBoss; расчётный уровень ≈0,554138 USD (+9,6% к цене источника) — размер возможной ликвидации: крупная (расчётный); CoinBoss; расчётный уровень ≈0,76854783 USDC (+50,31% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 11,45312 USDC; Orderly; зависит от других позиций счёта.\nЛиквидационные уровни ниже: расчётный уровень ≈0,26757118 USDC (−47,67% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 309,13198 USDC; объединено 2 близких уровней, показан дальний; есть расчётные уровни; Orderly; зависит от других позиций счёта; расчётный уровень ≈0,17538325 USDC (−65,7% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 1,12486 USDC; Orderly; зависит от других позиций счёта; расчётный уровень ≈0,04150599 USDC (−91,88% к цене источника) — размер возможной ликвидации: небольшая (по данным источника); объём позиции 1283,15848 USDC; Orderly; зависит от других позиций счёта.\nРазмер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.\nПокрытие: только доступные площадки и диапазон источника; время снимка 19.10 15:15 МСК.\nРасчётные зоны CoinBoss — сценарии по рыночным данным, а не наблюдаемые позиции или подтверждённые объёмы будущих ликвидаций.\nСпот ХТХ: 0,509 USDT; фьючерсы ХТХ: 0,50875 USDT (разница -0,05%). Спот — ориентир цены, не источник уровней ликвидации.\nCoinLobster: числовая карта будущих ликвидаций не получена; причина сохранена в проверке источников.\nДополнительная фактическая выборка площадок:\nЛиквидации: пригодные уровни в проверенной выборке не подтверждены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.\nДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ\n- Боковой объём HTX, 240м: POC 0.4974625; VA 0.496775–0.507225 USDT; 0.75 балла; одна площадка — ХТХ.\n- Поток сделок по доступным площадкам за четыре часа: HTX фьючерсы: покупки 145 299,67, продажи 106 146,08 USDT; перевес покупок 15,57%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены — ХТХ.\n- Направление последних сделок HTX: HTX фьючерсы: 13 сделок, покупки 13 928,21, продажи 205,38 USDT; спот: 5 сделок, покупки 151,57, продажи 63,46 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен — HTX / спот и фьючерсы / HTX.\n- Направление последних сделок Gate: Gate спот: 251 сделок, покупки 53 168,05, продажи 20 632,52 USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён — Gate / исходные спотовые сделки.\n- Фактический ценовой диапазон: 20 закрытых свечей 60min: 0,4568–0,5108 USDT, ширина 11,82%; цена последней закрытой свечи 0,4972 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно — HTX / закрытые свечи.\n- Фактический путь цены за 15 минут: 15 закрытых минутных свечей: 0,4972 → 0,5089 USDT (+2,35%); минимум 0,4972, максимум 0,5089 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены — HTX / закрытые минутные свечи.\n- Фактический путь цены на споте за 15 минут: 15 закрытых минутных свечей, активных минут 8: 0,498 → 0,509 USDT (+2,21%); минимум 0,498, максимум 0,509 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены — HTX / спотовые закрытые свечи.\n- Подтверждённые переводы токена: 1 событий в одной транзакции; 2251153786760000000000 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена — публичный RPC.\n- Измеренная глубина стакана: на снимке 2026-10-19T12:15:49.894Z: покупка 74517.1599 USDT (150 уровней), продажа 55394.542 USDT (110 уровней), спред 21.48018 б.п.; только возвращённая выборка HTX, не вся ликвидность рынка — ХТХ.\n- Проверка размера покупки: ориентир 500 USDT: 974 целых контрактов; вход 974/974, выход 974/974 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения — ХТХ.\n- Проверка размера продажи: ориентир 500 USDT: 976 целых контрактов; вход 976/976, выход 976/976 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения — ХТХ.\n- Сектор «Smart Contract Platform» за 24 часа, выборка 50 монет: монета +1,96%, медиана +0,11%, разница +1,84 п.п.; сводные цены площадок — CoinGecko.\n- Сектор «Privacy & Security» за 24 часа, выборка 26 монет: монета +2,89%, медиана -0,51%, разница +3,40 п.п.; сводные цены площадок — CoinPaprika.\n- Сверка спота и фьючерсов: разница середин котировок -0.05%; спреды 39.3 и 5.9 б.п.; встречные цены пересекаются, разница не подтверждена по bid/ask; одна биржа — ХТХ.\n- Сводный вывод по споту и фьючерсам: середины различаются на 0,05%, встречные цены пересекаются; совместная выборка последних сделок не подтверждена; общего сигнала нет; одна биржа — ХТХ.\nИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА\n- С 2026-10-18T22:45:06.150Z по 2026-10-19T12:15:00.668Z: состав свежих подтверждённых фактов изменился — добавлено 0, перестало быть текущими 16.\n- С 2026-10-18T22:45:06.150Z по 2026-10-19T12:15:00.668Z: рыночный показатель (Гейт срочный рынок) изменился с -36.9619 % перевеса покупателей над продавцами до 27.502 % перевеса покупателей над продавцами.\n- С 2026-10-18T22:45:06.150Z по 2026-10-19T12:15:00.668Z: финансирование (Гейт срочный рынок) изменился с -0.000046 ставка за расчётный период до 0.000073 ставка за расчётный период.\n- С 2026-10-18T22:45:06.150Z по 2026-10-19T12:15:00.668Z: сила к BTC (ОКХ спотовый рынок) изменился с 0.860349 процентного пункта до -0.0492352 процентного пункта."
+    }
+  ],
+  "conclusion": "USEFUL_GATE_CONTEXT_RETAINED; NO_SAVED_SOURCE_FACT_LOSS_COUNTEREXAMPLE",
+  "code_or_strategy_changed": false,
+  "normalizers_or_old_tests_executed": 0,
+  "delivery234_and_Gate535_acceptance_repeated": false,
+  "source_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0
+}
