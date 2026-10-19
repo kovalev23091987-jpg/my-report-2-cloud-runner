@@ -1,0 +1,109 @@
+{
+  "schema": "FIRST_ACTUAL_POST556_V2_AND_REPEATED_SOURCE_COSTS_V1",
+  "cloud_run": 39267344117,
+  "head": "cbb869173cbd669d3c6b3c75afac4c246799a2ad",
+  "run_id": "1792419366062-1792419381315",
+  "artifact_receipts": "original-archives-receipt.json",
+  "candidate_tuples": [
+    {
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:a6c000579348b1e7d41d38150ff7591dc06b9a60",
+      "run_id": "1792419366062-1792419381315",
+      "snapshot_id": "S392:BTW-USDT:1792419513968",
+      "observed_ts": 1792419513968,
+      "canonical_state": "REJECTED",
+      "direction": null
+    },
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:9f1b424faa7f073a6283115e948ecf084d2fc5b4",
+      "run_id": "1792419366062-1792419381315",
+      "snapshot_id": "S392:ZEC-USDT:1792419457232",
+      "observed_ts": 1792419457232,
+      "canonical_state": "REJECTED",
+      "direction": null
+    }
+  ],
+  "both_primary_private_durable": true,
+  "same_run_SENT": false,
+  "lifecycle_actual_status": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+  "first_actual_V2": {
+    "records": 4,
+    "retained_cuts": 12,
+    "overflow": 0,
+    "invalid": 0,
+    "foreign": 0,
+    "allrun_complete": false,
+    "record_bytes": [
+      524,
+      519,
+      719,
+      721
+    ],
+    "compact_frame_bytes": 3562,
+    "original_captureorder_clocks_NULL_preserved": true,
+    "native_old_omitted2_recovered": 0,
+    "provider_account_month_manual_NULL_futureadmissionfalse": true,
+    "qualification": "LIMITED_ACTUAL_RETURNED_LOCAL_LEDGER_PROJECTION_NOT_PROVIDER_GRANT"
+  },
+  "actual_source_costs": {
+    "schema": "EXISTING_LIFECYCLE_SOURCE_READ_COSTS_V1",
+    "source_run_id": "1792419366062-1792419381315",
+    "caller_evaluation_ts": 1792419519872,
+    "basis": "ALREADY_RETURNED_BATCH_REPLY_META_NOT_WHOLE_DAY_OR_PROVIDER_HEADROOM",
+    "scope": "BATCH_STATEMENT_META_ONLY_NOT_ADAPTER_OR_RESTORER_EXTRA_WORK",
+    "status": "REPORTED_COUNTERS_COMPLETE",
+    "expected_queries": 5,
+    "actual_reply_count": 5,
+    "queries": [
+      {
+        "query": "EARLY_WAVES",
+        "reply_success": true,
+        "rows_read": 76,
+        "rows_written": 0,
+        "returned_rows": 24
+      },
+      {
+        "query": "SHADOW_DECISIONS",
+        "reply_success": true,
+        "rows_read": 8,
+        "rows_written": 0,
+        "returned_rows": 2
+      },
+      {
+        "query": "FINAL_WITH_CONTEXT",
+        "reply_success": true,
+        "rows_read": 3,
+        "rows_written": 0,
+        "returned_rows": 0
+      },
+      {
+        "query": "PREVIOUS_LIFECYCLE",
+        "reply_success": true,
+        "rows_read": 28,
+        "rows_written": 0,
+        "returned_rows": 12
+      },
+      {
+        "query": "CURRENT_CANONICAL",
+        "reply_success": true,
+        "rows_read": 67,
+        "rows_written": 0,
+        "returned_rows": 2
+      }
+    ],
+    "known_rows_read_subtotal": 182,
+    "known_rows_written_subtotal": 0,
+    "total_rows_read": 182,
+    "total_rows_written": 0,
+    "admission_authorized": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0,
+    "SQL_params_and_result_values_exported": false
+  },
+  "new556_normal_late_exit_fields_accepted": false,
+  "native182_fixed": false,
+  "source_HTTP_nativeSQL_MAIN_Telegram_added_by_review": 0,
+  "ENTRY_followup_or_physicalstorage": false,
+  "project_complete": false
+}
