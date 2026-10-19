@@ -4,7 +4,7 @@ import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {reconcileNativeQueryCosts} from '../runner/native-query-cost-reconciliation.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
-import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease} from '../runner/github-bounded-phase-lease.mjs';
+import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease,borrowFourMirrorLease} from '../runner/github-bounded-phase-lease.mjs';
 import {LOSSLESS_RECOVERY_POLICY,reserveLosslessRecoveryBudget,recoverLosslessFullEvidence} from '../runner/lossless-full-evidence-recovery.mjs';
 import {compactProtectedCanonical} from '../runner/protected-canonical-compaction.mjs';
 import {canonicalExecutionMode,canonicalArchivePoolQualification,canonicalSharedMutationQualification} from '../runner/canonical-native-qualification.mjs';
@@ -63,10 +63,7 @@ try{
  out.canonical_execution_mode=mode;
  const pool_qualification=canonicalArchivePoolQualification(process.env.REPORT2_CANONICAL_ARCHIVE_POOL_QUALIFICATION||'false',{mode,event:process.env.GITHUB_EVENT_NAME,borrowed_owner:process.env.BORROW_EXISTING_OWNER});
  if(process.env.BORROW_EXISTING_OWNER){
-  const main=(await control.call('git/ref/heads/main')).object.sha;if(main!==expected)throw Error('RETAINED_MAIN_MOVED');
-  const [p,f,s,r,g]=await Promise.all([control.read(PHASE,main),control.read(FENCE,main),control.read('checkpoints/CURRENT_PROJECT_STATUS.json',main),control.read('checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json',main),control.read('REPORT2_CURRENT_GENERATION.json',main)]);
-  if(p.value.lease?.owner!==process.env.BORROW_EXISTING_OWNER||f.value.active||g.value.latest_only!==true||s.value.active_working_state?.owner_authorized_sequential_continuation!==true||r.value.active_working_state?.owner_authorized_sequential_continuation!==true)throw Error('EXACT_OWNER_AND_LATEST_AUTHORITY_REQUIRED');
-  lease={borrowed:true,allowed:true,lease:p.value.lease,head:main};
+  lease=await borrowFourMirrorLease(control,{expected_main:expected,owner:process.env.BORROW_EXISTING_OWNER,scope_prefix:'RETAINED_HISTORY.',required_authority:'owner_authorized_sequential_continuation'});
  }else{
   if(process.env.REPORT2_LOSSLESS_RETENTION_ENABLED!=='true'&&!self_qualification)throw Error('LOSSLESS_AUTOMATIC_RETENTION_NOT_ACTIVATED');
   lease=await acquireWeeklyPhaseLease(control,{run_id:out.run,expected_main:expected,scope:'RETAINED_HISTORY. Owner authorized bounded lossless old full-evidence retention/recovery, source clocks and canonical references protected. Existing caps, paused roles and forms unchanged. GitHub run '+out.run});
@@ -151,7 +148,7 @@ try{
   out.native_query_cost_reconciliation=reconcileNativeQueryCosts({journals,usage:out.D1});
   if(out.SQL_bridge_provenance_incomplete||journals.some(j=>!j||j.overflow)||!out.native_query_cost_reconciliation.client_day_attribution_closed){out.native_query_cost_journal_incomplete=true;process.exitCode=1;}
  }
- if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged&&!out.SQL_bridge_provenance_incomplete)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head)expected=out.cursor_persistence.head;}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
+ if(admitted&&kind==='canonical'&&cursor_selection&&!out.native_finalization_not_acknowledged&&!out.SQL_bridge_provenance_incomplete)try{out.cursor_persistence=await persistCanonicalRetentionCursor(control,{expected_main:expected,owner:lease.lease.owner,selection:cursor_selection,outcome:out,run_id:out.run});if(out.cursor_persistence.head){expected=out.cursor_persistence.head;lease.head=expected;}}catch(e){out.cursor_persistence={status:'CANONICAL_CURSOR_NOT_SAVED',reason:/^[A-Z0-9_]+$/.test(e.message)?e.message:'CANONICAL_CURSOR_ERROR'};process.exitCode=1;}
  if(lease?.allowed&&!lease.borrowed)try{out.own_release=await releaseWeeklyPhaseLease(control,lease);if(out.own_release.status!=='OWN_WEEKLY_LEASE_RELEASED')process.exitCode=1;}catch{out.own_release_not_acknowledged=true;process.exitCode=1;}
  out.whole_HTTP=whole.summary();out.github_control_HTTP=control_HTTP;out.worker_control_HTTP=worker_control_HTTP;out.D1_bridge_HTTP=bridge_HTTP;out.private_D1_HTTP=private_HTTP;out.completed_ts=Date.now();out.history_discarded=false;out.project_complete=false;
  await fs.writeFile(dir+'/proof.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,selected:out.selected,moved:out.moved?.length,D1:out.D1,archive_commit:out.archive_commit,execute:out.execute,sourceHTTP:0}));

@@ -13,7 +13,37 @@ concurrency:
   group: report2-htx-weekly-universe
   cancel-in-progress: false
 jobs:
+  repair_four_mirrors:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/work/github-four-mirror-repair-20261019'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: One combined verification of all affected mirror and cleanup paths
+        run: |
+          mkdir -p audit-output/four-mirror-repair
+          node --check tools/compact-history-github-control.mjs
+          node --check tools/recover-lossless-retained-history-20261014.mjs
+          node --check tools/run-paid-sliding-history-20261018.mjs
+          node --test runner/github-bounded-phase-lease.test.mjs runner/canonical-retention-cursor.test.mjs runner/github-four-mirror-cas.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs > audit-output/four-mirror-repair/connected-tests.log
+      - name: Verify one authorized metadata-only four-mirror write on main
+        run: node tools/qualify-four-mirror-runtime-20261019.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: four-mirror-connected-repair-${{ github.run_id }}
+          path: audit-output/four-mirror-repair/
+          if-no-files-found: error
+          retention-days: 30
   reconcile:
+    if: github.ref != 'refs/heads/work/github-four-mirror-repair-20261019'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
