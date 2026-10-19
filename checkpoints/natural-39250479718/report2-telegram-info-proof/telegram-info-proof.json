@@ -1,0 +1,78 @@
+{
+  "schema": "telegram-info-proof-v1",
+  "head": "9d03c094375e78067a45fc754523f0ae6314397a",
+  "source": "schedule",
+  "source_run_id": "1792412076494-1792412090239",
+  "lifecycle": {
+    "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+    "mode": "SHADOW_ONLY",
+    "network_send": false,
+    "dispatch_enabled": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "completed_handoffs": 2,
+    "transitions": [
+      {
+        "contract": "CT-USDT",
+        "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      },
+      {
+        "contract": "WLD-USDT",
+        "wave_id": "EDW:WLD-USDT:1792412090411:G17",
+        "direction": "LONG",
+        "status": "CLOSED",
+        "previous_status": "NONE",
+        "current_status": "OBSERVE",
+        "reason": "USEFUL_LIVE_OBSERVATION",
+        "removal_receipt": null,
+        "dispatch": {
+          "state": "PENDING",
+          "idempotency_key": "WLD-USDT|LONG|EDW:WLD-USDT:1792412090411:G17|OBSERVE|v3-telegram-shadow-r6"
+        },
+        "score_0_100": 82
+      }
+    ],
+    "usage_delta": {
+      "rows_read": 127,
+      "rows_written": 8,
+      "requests": 9,
+      "unknown_ops": 0
+    }
+  },
+  "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+  "v3_telegram_network_enabled": true,
+  "output": {
+    "version": "telegram-output-v9-plain-text-explained-score",
+    "enabled": false,
+    "info_enabled": false,
+    "final_chain_auto": false,
+    "final_chain_threshold": 70,
+    "morning": {
+      "status": "INFO_DISABLED",
+      "sent": false
+    },
+    "early_info": {
+      "status": "INFO_DISABLED",
+      "sent": false,
+      "count": 0
+    },
+    "watch70": {
+      "status": "DISABLED_FINAL_CHAIN_ONLY",
+      "sent": 0
+    },
+    "shadow_decision": {
+      "status": "OUTPUT_DISABLED",
+      "sent": false,
+      "count": 0
+    }
+  },
+  "live_probability": null,
+  "validated_signal": false,
+  "execution": false,
+  "automatic_weight_tuning": false
+}
