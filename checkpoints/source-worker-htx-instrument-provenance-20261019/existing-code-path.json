@@ -1,0 +1,157 @@
+{
+  "schema": "EXISTING_HTX_CATALOG_DATA_PATH_STATIC_MAP_V1",
+  "base": "9d03c094375e78067a45fc754523f0ae6314397a",
+  "files": {
+    "current-generation/files/src/worker.js": {
+      "sha256": "c22cfcfe6fa3d49f1c678d3d1f90e53a2df5ccfa1b66d7562659c1954dcd6529",
+      "anchors": [
+        {
+          "text": "async function fetchJson(url)",
+          "lines": [
+            291
+          ]
+        },
+        {
+          "text": "received_ts=Date.now();http_status=response.status",
+          "lines": [
+            310
+          ]
+        },
+        {
+          "text": "const text = await response.text();",
+          "lines": [
+            312
+          ]
+        },
+        {
+          "text": "data = parseHtxMarketJson(text, url);",
+          "lines": [
+            316
+          ]
+        },
+        {
+          "text": "async function htxUniverseScan",
+          "lines": [
+            4832
+          ]
+        },
+        {
+          "text": "contractsR.data?.data",
+          "lines": [
+            4889
+          ]
+        },
+        {
+          "text": "const approvedScope=bindApprovedHtxAnalysisScope",
+          "lines": [
+            5317
+          ]
+        },
+        {
+          "text": "contract_size:",
+          "lines": [
+            1196,
+            1272,
+            1347,
+            1846,
+            2707,
+            3075,
+            5147,
+            9326
+          ]
+        },
+        {
+          "text": "create_date:",
+          "lines": [
+            9336
+          ]
+        }
+      ]
+    },
+    "current-generation/files/src/approved-htx-analysis-scope.mjs": {
+      "sha256": "4782dde4b525619cfefd54e4c99516cdf7922e04808e28effebae29fdf544a23",
+      "anchors": [
+        {
+          "text": "bindApprovedHtxAnalysisScope",
+          "lines": [
+            11
+          ]
+        },
+        {
+          "text": "qualifiedSuspendedContracts",
+          "lines": [
+            22,
+            27
+          ]
+        },
+        {
+          "text": "native_scope:",
+          "lines": [
+            36
+          ]
+        }
+      ]
+    },
+    "current-generation/files/src/htx-crypto-universe.mjs": {
+      "sha256": "902b9e991524b5e33c38eea067ca2f0dc43a14f421356e03b13d78c2cafd44ab",
+      "anchors": [
+        {
+          "text": "const record={family,contract_code:",
+          "lines": [
+            49
+          ]
+        }
+      ]
+    },
+    "current-generation/files/src/htx-trade-json.mjs": {
+      "sha256": "4a63e588c691bc193d7152b39abf5478283947463bd3f09c04ec749e88f0df3d",
+      "anchors": [
+        {
+          "text": "export function parseHtxMarketJson",
+          "lines": [
+            46
+          ]
+        },
+        {
+          "text": "observeHtxSignedTape(payload,url)",
+          "lines": [
+            50,
+            58
+          ]
+        }
+      ]
+    },
+    "current-generation/files/src/htx-signed-tape.mjs": {
+      "sha256": "10f364bd219be9a8c3c0f5dfd3e6d4e46fe34f7f17006855cf9df8f62118e8c5",
+      "anchors": [
+        {
+          "text": "const u=new URL(url),contract=u.searchParams.get",
+          "lines": [
+            53
+          ]
+        },
+        {
+          "text": "observeHtxSignedTape",
+          "lines": [
+            52
+          ]
+        }
+      ]
+    },
+    "current-generation/files/runner-main.mjs": {
+      "sha256": "1eb795f954cc73062378ff5d2ab4509dedd316d7868acf65511d39fe4235652b",
+      "anchors": [
+        {
+          "text": "approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT",
+          "lines": [
+            1167
+          ]
+        }
+      ]
+    }
+  },
+  "actual_gap": "The unfiltered scan already obtains the native catalog. Stage0 retains contract_size/price_tick; instrument_scope.evidence retains explicit business_type/contract_type/trade_partition and symbol_fingerprint also has some fallback values. Approved universe retains structural native metadata. Missing for a separate anomaly current-instrument receipt is the TOGETHER binding of exact selected native row/create_date to complete original response bodySHA and explicit header/body/parse/hash clocks. This is a provenance/export gap, not proof that existing useful size/tick/role facts are lost. Exact-query signed tape capture requires contract_code query and does not preserve the unfiltered catalog for this consumer.",
+  "scope": "Only current catalog reuse path and exact AAVE/BTC selected inputs; no global negative catalog search",
+  "code_changed": false,
+  "old_normalizers_or_tests_executed": 0
+}
