@@ -1,0 +1,42 @@
+{
+  "schema": "SAVED_NIL_COMPOSITE_CLOCK_METADATA_PROPOSAL_V1",
+  "status": "PROPOSAL_ONLY_SHARED_FILES_UNCHANGED",
+  "native_head": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+  "cloud_run": 39216464096,
+  "snapshot_id": "S392:NIL-USDT:1792395207582",
+  "source_path": "current-generation/files/src/block-result-context.mjs",
+  "native_source_anchors": {
+    "contextComponentOrigins": 365,
+    "related_rows": 404,
+    "base_row_clock_in_composite": 435,
+    "manual_receipt_projection": 474,
+    "telegram_represented_components_filter": 485,
+    "telegram_receipt_projection": 488
+  },
+  "saved_witness": {
+    "base_evidence_id": "EV2:366c8d1a74373a58af9fe1091974355d29f0f85df1c3925a162eeb874d81ab90",
+    "related_evidence_ids": [
+      "EV2:a257ef2bb21bd978e44b8f5a72f9c712cdea0490ed123752905f8034397bd205",
+      "EV2:62022fff74c041e8887fdd5da64a0a7e7eeb6570244b853686607edafd457569"
+    ],
+    "outer_source_ts": 1792395110044,
+    "outer_observed_ts": 1792395162394,
+    "DERIVED_latest_component_first_known_ts": 1792395181364,
+    "candidate_ts": 1792395207582,
+    "difference_ms": 18970,
+    "all_inputs_known_by_candidate": true,
+    "runtime_first_known_gate_violation_proven": false
+  },
+  "concrete_additive_proposal": [
+    "Keep source_ts and observed_ts as existing base-row clocks and document this meaning explicitly. Preserve every component origin clock/expiry/window and evidence ID.",
+    "Optionally add composite_first_known_ts=max(first_known_ts of the actually represented component origins), only if every represented origin has an exact finite known clock. Otherwise retain null with an explicit incomplete-origin reason; do not fill missing time from current wall clock.",
+    "Compute such metadata after represented-component filtering for a shortened Telegram text, so omitted components cannot be claimed as rendered. The manual full composite uses its exact represented origins.",
+    "Do not use base observed_ts as proof that the complete composite existed then. Keep existing per-component validation/expiry; the derived maximum is descriptive metadata, not freshness renewal, additional admission, score, an independent source vote or delivery ACK.",
+    "When integrating the coordinator-owned Kraken memory route, use its actual selected evidence and original first-known clocks under the same rule. No extra sourceHTTP/SQL is required for this metadata. Do not change shared code in this source audit PR."
+  ],
+  "not_proposed": [
+    "No overwrite of original clocks, synthetic composite source window, historical first-publication reconstruction or claimed look-ahead bug",
+    "No form/strategy/weight/limit/TTL/entry/delivery change",
+    "No new raw cache ACK, source acquisition or current105 qualification"
+  ]
+}
