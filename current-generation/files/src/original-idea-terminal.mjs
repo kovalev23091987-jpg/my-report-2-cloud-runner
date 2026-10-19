@@ -1,5 +1,11 @@
 import {canonicalFingerprint} from './canonical-publication.mjs';
 import {originalIdeaIdentity} from './original-idea-recheck.mjs';
+import {originalTaskFollowupAudit} from './original-task-followup-audit.mjs';
+
+function projectFollowup(task,canonical,now_ts){
+ try{return originalTaskFollowupAudit({task,canonical,now_ts});}
+ catch{return {schema:'EXISTING_ORIGINAL_TASK_FOLLOWUP_AUDIT_V1',status:'PROJECTION_NOT_CLOSED',entry_authorized:false,actual_ENTRY:null,SQL_added:0,source_HTTP_added:0};}
+}
 
 // One administrative transition within the existing bound-delivery envelope.
 // No transport, new source request, new idea or entry is created here.
@@ -36,16 +42,25 @@ export async function prepareOriginalIdeaTerminal(db,{now_ts=Date.now()}={}){
    conditions:[{source:expired?'ORIGINAL_RECHECK_TASK_TTL':cancelled?'HTX_OFFICIAL_COLLECTOR':'HTX_OFFICIAL_FULL_ANALYSIS',row_id:task.task_id,observed_ts:expired?now_ts:cancelled?light.checked_ts:full.checked_ts,
     field:expired?'original_expires_ts':'original_cancel_price',value:expired?task.expires_ts:cancelled?light.price:primary.value}],
    ...(cancelled?{original_light_price_receipt:light}:fullCancelled?{original_full_analysis_receipt:full}:{})};
-  const writes=await db.batch([
+  const statements=[
    db.prepare(`UPDATE v3_user_lifecycle_shadow SET status='IDEA_REMOVED',reason=?5,observation_ts=?6,updated_ts=?6
     WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND rules_version=?4 AND status IN ('OBSERVE','WAIT')
-    AND NOT EXISTS(SELECT 1 FROM v3_telegram_dispatch_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND rules_version=?4 AND lifecycle_event='IDEA_REMOVED')`).bind(task.contract_code,task.direction,task.wave_id,task.rules_version,reason,now_ts),
-   db.prepare(`INSERT OR IGNORE INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,message_hash,created_ts,updated_ts,shadow_only)
+    AND ${expired?'1=1':"NOT EXISTS(SELECT 1 FROM v3_telegram_dispatch_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND rules_version=?4 AND lifecycle_event='IDEA_REMOVED')"}`).bind(task.contract_code,task.direction,task.wave_id,task.rules_version,reason,now_ts)
+  ];
+  // Owner19Oct: expiry still closes the original lifecycle, silently.
+  // Keep actual price cancellation on the existing bounded notification path.
+  if(!expired)statements.push(db.prepare(`INSERT OR IGNORE INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,decision_id,message_hash,created_ts,updated_ts,shadow_only)
     SELECT ?1,?2,?3,?4,?5,'IDEA_REMOVED',?6,'PENDING',NULL,?7,?8,?8,1
-    WHERE EXISTS(SELECT 1 FROM v3_user_lifecycle_shadow WHERE contract=?3 AND direction=?4 AND wave_id=?5 AND rules_version=?6 AND status='IDEA_REMOVED' AND observation_ts=?8 AND reason=?9)`).bind('V3TG:'+key,key,task.contract_code,task.direction,task.wave_id,task.rules_version,JSON.stringify(receipt),now_ts,reason)
-  ]);
+    WHERE EXISTS(SELECT 1 FROM v3_user_lifecycle_shadow WHERE contract=?3 AND direction=?4 AND wave_id=?5 AND rules_version=?6 AND status='IDEA_REMOVED' AND observation_ts=?8 AND reason=?9)`).bind('V3TG:'+key,key,task.contract_code,task.direction,task.wave_id,task.rules_version,JSON.stringify(receipt),now_ts,reason));
+  const writes=await db.batch(statements);
+  if(expired){
+   const changed=writes?.[0]?.meta?.changes??writes?.[0]?.changes;
+   if(changed===0)continue;
+   return {status:changed===1?'ORIGINAL_EXPIRY_CLOSED_SILENTLY':'ORIGINAL_EXPIRY_CLOSE_ACK_NOT_CLOSED',queued:false,task_id:task.task_id,reason,
+    lifecycle_closed:changed===1,task_followup:projectFollowup(task,canonical,now_ts)};
+  }
   const queued=Number(writes?.[1]?.meta?.changes??writes?.[1]?.changes??0)===1;
-  if(queued)return {status:'ORIGINAL_TERMINAL_QUEUED',queued:true,task_id:task.task_id,reason,idempotency_key:key,original_message_id:String(task.telegram_message_id)};
+  if(queued)return {status:'ORIGINAL_TERMINAL_QUEUED',queued:true,task_id:task.task_id,reason,idempotency_key:key,original_message_id:String(task.telegram_message_id),task_followup:projectFollowup(task,canonical,now_ts)};
  }
  return {status:'NO_ELIGIBLE_ORIGINAL_TERMINAL',queued:false};
 }

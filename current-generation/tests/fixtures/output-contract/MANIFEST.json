@@ -9,11 +9,11 @@
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "27094651cdc0fa7c75c6641d387e917b3a9ec75b10e52babb67200c661700484",
-    "current-generation/files/src/canonical-publication.mjs": "82cfe3904a8f3c0b66260ad75f97cb07e19a818073d9bde6b695e0d0315a65a0",
+    "current-generation/files/src/canonical-publication.mjs": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "466d2d3d498e97235971d159de5135b20d42d572a9f067ea2afb90f990e9bb88",
-    "current-generation/files/src/telegram-plain-facts.mjs": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+    "current-generation/files/src/block-result-context.mjs": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12",
+    "current-generation/files/src/telegram-plain-facts.mjs": "d8f0f1a7ef17f08c5db716c81bbec867fa096e771f00e85b190de93459d964ed",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
     "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461",
     "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4",
@@ -997,6 +997,29 @@
       "original_saved_sent_bytes_unchanged": true,
       "affected_cloud": 39222245111,
       "source_HTTP_or_SQL_added_on_qualified_paths": 0
+    },
+    {
+      "date": "2026-10-19",
+      "scope": "OWNER_SILENT_TTL_AND_EXISTING_TASK_FOLLOWUP_PLUS_BITFINEX_USD_N12_METADATA",
+      "authorization": "Owner explicitly removed expiry-only Telegram notices and prioritized OBSERVE/confirmed ENTRY. TTL/task expiry and trading gates preserved. Neutral memory reuse and original composite clocks are owner-authorized active-block work; no score/format/cap change. Historical golden fixtures and old SENT bytes unchanged.",
+      "module_changes": {
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "82cfe3904a8f3c0b66260ad75f97cb07e19a818073d9bde6b695e0d0315a65a0",
+          "after": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0"
+        },
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "466d2d3d498e97235971d159de5135b20d42d572a9f067ea2afb90f990e9bb88",
+          "after": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+          "after": "d8f0f1a7ef17f08c5db716c81bbec867fa096e771f00e85b190de93459d964ed"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "owner_TTL_only_notification_disabled": true,
+      "new_source_HTTP_or_SQL": 0
     }
   ],
   "consumer_selection_revisions": [
