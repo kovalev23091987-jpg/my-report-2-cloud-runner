@@ -1,0 +1,239 @@
+{
+  "schema": "FOUR_MIRROR_CALLER_RAW_CONTEXT_PROPOSAL_V1",
+  "source_head": "299441eb76df9e99909527d4f4954474ddb87bd9",
+  "status": "OFFLINE_PROPOSAL_NOT_IMPLEMENTED",
+  "read_contract": "FULL_PREPARED_RAW_BOUND_TO_NATIVE_GIT_BLOB_IDENTITY",
+  "native_fulltext_readback": false,
+  "authority_fields": [
+    "phase.lease",
+    "phase.latest_own_bounded_continuation_lease",
+    "all4.active_working_state"
+  ],
+  "init": {
+    "local_complete_raws": {
+      "read_calls": 1,
+      "self_acquire_total": 5,
+      "borrowed_total": 1
+    },
+    "budgeted_immutable_blob_bootstrap": {
+      "formula_self": "5+k",
+      "formula_borrowed": "1+k",
+      "observed_large_missing_files": 3,
+      "k_max": 3,
+      "self_total_k3": 8,
+      "borrowed_total_k3": 4,
+      "k_gt3": "DENY_BEFORE_ADDITIONAL_BLOB_CALLS",
+      "actually_executed": false
+    }
+  },
+  "carried_context": [
+    "repository_id",
+    "expected_head",
+    "root_tree_oid",
+    "complete_raws[6]",
+    "bytes/git_blob_oid/sha256[6]",
+    "owner/acquired_ts/expires_ts/scope",
+    "authority_base",
+    "last_operation_receipt"
+  ],
+  "cursor_control": 5,
+  "release_control": 5,
+  "fresh_basis_fetch_inside_cleanup_allowed": false,
+  "minimum_authority_cursor_writers": [
+    {
+      "path": "runner/github-bounded-phase-lease.mjs",
+      "operation": "acquire",
+      "line": 15
+    },
+    {
+      "path": "runner/github-bounded-phase-lease.mjs",
+      "operation": "release",
+      "line": 29
+    },
+    {
+      "path": "tools/run-paid-sliding-history-20261018.mjs",
+      "operation": "paid_cursor",
+      "line": 63
+    },
+    {
+      "path": "runner/canonical-retention-cursor.mjs",
+      "operation": "canonical_cursor",
+      "line": 12
+    },
+    {
+      "path": ".github/workflows/htx-compact-4h-daily-20261010.yml",
+      "operation": "compact_acquire",
+      "line": 56
+    },
+    {
+      "path": ".github/workflows/htx-compact-4h-daily-20261010.yml",
+      "operation": "compact_release",
+      "line": 136
+    }
+  ],
+  "additional_own_head_transition": {
+    "path": ".github/workflows/htx-compact-4h-daily-20261010.yml",
+    "operation": "retain_data_only_commit",
+    "line": 114,
+    "required": "confirmed own parent/head + unchanged six control blobs before carry"
+  },
+  "callers": [
+    {
+      "id": "weekly",
+      "entry": "tools/weekly-htx-universe-refresh.mjs",
+      "workflow": ".github/workflows/htx-weekly-source-universe.yml",
+      "initial_expected": "GITHUB_SHA",
+      "checkout": "event/default checkout",
+      "borrowed": false,
+      "current_acquire": 8,
+      "current_release": 4,
+      "current_full_raw_context_returned": false,
+      "cursor": false,
+      "carry_required": "acquire context to finally release",
+      "proposal_evidence_branch_parent": "PRE_ACQUIRE lease.expected_main, preserve existing semantics",
+      "accounting_gap": "source-only summary does not close GitHub controls; prior refs/receipts traversal needs explicit finite bound"
+    },
+    {
+      "id": "paid",
+      "entry": "tools/run-paid-sliding-history-20261018.mjs",
+      "workflow": ".github/workflows/paid-sliding-history-20261018.yml",
+      "initial_expected": "GITHUB_SHA",
+      "checkout": "event/default checkout",
+      "borrowed": true,
+      "current_self_acquire": 8,
+      "current_borrowed_init": 2,
+      "current_cursor_block": {
+        "guard": 3,
+        "PUT": 1,
+        "readback": 1,
+        "total": 5
+      },
+      "replace_whole_cursor_block_with": 5,
+      "append_new5_after_old_guard3": false,
+      "current_release_uses_old_lease": true,
+      "carry_required": "init -> cursor result context -> finally self release; borrower never releases",
+      "before_first_SQL": "reserve remaining native guards6 + postflight4 + cleanup borrowed5/self10"
+    },
+    {
+      "id": "lossless_ordinary",
+      "entry": "tools/recover-lossless-retained-history-20261014.mjs",
+      "workflow": ".github/workflows/retained-history-maintenance.yml",
+      "initial_expected": "EXPECTED_MAIN || GITHUB_SHA",
+      "checkout": "default checkout independent of EXPECTED_MAIN input",
+      "main_only_job_guard_present": false,
+      "borrowed": true,
+      "current_self_acquire": 8,
+      "current_borrowed_init": 6,
+      "current_full_raw_context_returned": false,
+      "current_cursor_returns": "head only",
+      "current_release_uses_old_lease": true,
+      "carry_required": "init -> canonical cursor result context -> self release",
+      "full_evidence_extra_archive_controls": 6,
+      "full_evidence_before_modify_guard_per_batch": 3,
+      "full_evidence_max_batches": 6,
+      "full_evidence_early_reserve_required": true,
+      "counterexample": "non-main checkout + fresh expected main + matching borrowed owner may pass old remote guards with stale local six raw basis; static only, not run"
+    },
+    {
+      "id": "lossless_dated_qualification",
+      "entry": "tools/recover-lossless-retained-history-20261014.mjs:51-60",
+      "workflow": ".github/workflows/retained-history-native-qualification-20261016.yml",
+      "checkout": "qualified executable head",
+      "code_comparison_covers_six_control_raws": false,
+      "borrowed": true,
+      "current_permission": "EXPIRED_UTC16_PATH_NO_NEW_EXECUTION_GRANT",
+      "requirement": "independently bind all six full raws to expected main before any control mutation"
+    },
+    {
+      "id": "compact4h",
+      "entry": ".github/workflows/htx-compact-4h-daily-20261010.yml",
+      "initial_expected": "event/default checkout, currently reads mutable main separately",
+      "borrowed": false,
+      "current_acquire": 5,
+      "current_before_retain": 2,
+      "current_release": 2,
+      "current_only_phase_writes": true,
+      "foreign_expired_automatically_taken": true,
+      "carry_required": "verified init -> acquire h1 -> own retain h2 (six raw unchanged) -> release",
+      "proposed_phase_API_total_local": 11,
+      "proposed_phase_API_total_bootstrap_k3": 14,
+      "git_fetch_push_and_Actions_plumbing_included_in_totals": false
+    }
+  ],
+  "paid_max_path": [
+    {
+      "mode": "self_local",
+      "init": 5,
+      "initial_guard": 3,
+      "account_metadata": 2,
+      "bridge_before": 5,
+      "native_guards": 6,
+      "bridge_after": 4,
+      "cursor": 5,
+      "release": 5,
+      "total": 35
+    },
+    {
+      "mode": "self_bootstrap_k3",
+      "init": 8,
+      "initial_guard": 3,
+      "account_metadata": 2,
+      "bridge_before": 5,
+      "native_guards": 6,
+      "bridge_after": 4,
+      "cursor": 5,
+      "release": 5,
+      "total": 38
+    },
+    {
+      "mode": "borrowed_local",
+      "init": 1,
+      "initial_guard": 3,
+      "account_metadata": 2,
+      "bridge_before": 5,
+      "native_guards": 6,
+      "bridge_after": 4,
+      "cursor": 5,
+      "release": 0,
+      "total": 26
+    },
+    {
+      "mode": "borrowed_bootstrap_k3",
+      "init": 4,
+      "initial_guard": 3,
+      "account_metadata": 2,
+      "bridge_before": 5,
+      "native_guards": 6,
+      "bridge_after": 4,
+      "cursor": 5,
+      "release": 0,
+      "total": 29
+    }
+  ],
+  "retention_budget": {
+    "hard_control": 40,
+    "hard_bridge": 16,
+    "hard_whole": 164,
+    "cleanup_borrowed": 5,
+    "cleanup_self": 10,
+    "postflight": 4,
+    "native_guard_per_batch": 3,
+    "max_mutation_batches": 6,
+    "formula": "min(6,max(0,floor((40-used-cleanup-post)/3)))",
+    "savings_allow_extra_native_batches": false,
+    "all_preflight_and_failed_attempts_counted": true,
+    "full_evidence_formula": "min(6,max(0,floor((40-used-future_archive_controls-post-cleanup)/3)))",
+    "full_evidence_future_archive_controls_before_save": 6,
+    "full_evidence_future_archive_controls_after_save": 0
+  },
+  "unknown_CAS_ACK": {
+    "planned_last_readback_only": true,
+    "published_exact": "ref=c + expected parent/tree/all4OID+bytes + valid scope",
+    "not_published": "ref=h at exact observation; no success/refund",
+    "otherwise": "fail closed, no mutation retry/new basis/release claim",
+    "generic_error_and_unchanged_ref_proves_stale_cause": false
+  },
+  "production_activation": false,
+  "provider_SQL_MAIN_Telegram": 0,
+  "tests_or_application_execution": 0
+}
