@@ -1,0 +1,30 @@
+{
+  "schema": "CONNECTED_SIX_GITHUB_WRITER_REPAIR_SCOPE_V1",
+  "expected_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792392836085",
+  "expires_ts": 1792397336085,
+  "base": "299441eb76df9e99909527d4f4954474ddb87bd9",
+  "GitHub_main_technical_operation_only": 1,
+  "MAIN_analysis_nativeSQL_source_Telegram": 0,
+  "controls": {
+    "initial_self_worst": 8,
+    "initial_borrowed_no_fallback": 1,
+    "cursor": 5,
+    "release": 5,
+    "cleanup_borrowed": 5,
+    "cleanup_self": 10,
+    "whole_control": 40,
+    "post": 4,
+    "native_before_modify_guard": 3
+  },
+  "isolated_negative_semantic_refusal_proven": false,
+  "repeat_isolated_jobs": false,
+  "six_writes": [
+    "helper acquire",
+    "helper release",
+    "canonical cursor",
+    "paid sliding cursor",
+    "compact acquire",
+    "compact release"
+  ],
+  "one_combined_check_after_connected_implementation": true
+}
