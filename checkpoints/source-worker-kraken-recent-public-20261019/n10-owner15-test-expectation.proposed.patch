@@ -1,0 +1,14 @@
+--- a/current-generation/tests/kraken-n10-price-path.test.mjs
++++ b/current-generation/tests/kraken-n10-price-path.test.mjs
+@@ -67,9 +67,9 @@
+  const y={...x,htx_spot_kline:controlledHtxSpot(x)},out=prepareKrakenN10RuntimeInput(y);assert.equal(out.runtime_input_qualified,true);assert.equal(out.price_path.runtime_admission_proven,false);assert.equal(out.price_path.comparison_status,'HTX_SAME_WINDOW_ORIGINAL_NOT_SUPPLIED');
+  for(const change of [s=>s.contract='XMR-USDT',s=>s.payload.ts=x.now+1,s=>s.payload.ch='market.xmrusdt.kline.1min',s=>s.payload.data.splice(0,1),s=>s.payload.data.forEach(r=>r.vol=0)]){const s=clone(y.htx_spot_kline);change(s);assert.equal(prepareKrakenN10RuntimeInput({...y,htx_spot_kline:s}).runtime_input_qualified,false);}
+ });
+-test('all15 owner exclusions remain refused before any external preparation; historical ALGO/XMR membership is not freshness',()=>{
++test('N15 archive cohort does not grant runtime admission; historical ALGO/XMR membership is not freshness',()=>{
+  assert.equal(KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT.length,15);assert.equal(new Set(KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT).size,15);
+- for(const contract of KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT)assert.equal(prepareKrakenN10RuntimeInput({contract}).status,'OWNER_EXTERNAL_SPOT_NOT_ALLOWED');
++ for(const contract of KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT)assert.equal(prepareKrakenN10RuntimeInput({contract}).runtime_input_qualified,false);
+  const policy=JSON.parse(readFileSync(new URL('../../checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json',import.meta.url)));
+  assert.deepEqual([...KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT],policy.source_checks.htx_spot_missing.map(s=>s+'-USDT'));
+  const saved=JSON.parse(readFileSync(new URL('../../checkpoints/n15-spot-coverage-20261012/ALL104-SPOT-BULK-RECEIPT.json',import.meta.url)));

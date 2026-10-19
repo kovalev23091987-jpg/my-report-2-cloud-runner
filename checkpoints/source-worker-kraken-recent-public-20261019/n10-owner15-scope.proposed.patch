@@ -1,0 +1,24 @@
+--- a/current-generation/files/src/kraken-n10-price-path.mjs
++++ b/current-generation/files/src/kraken-n10-price-path.mjs
+@@ -6,8 +6,8 @@
+ import {APPROVED_HTX_ANALYSIS_CONTRACTS} from './approved-htx-analysis-scope.mjs';
+ export const KRAKEN_N10_PRICE_VERSION='kraken-n10-native-price-preparation-v1-20261019';
+ const COLLECTOR_VERSION='kraken-native-flow-collector-v1-20261010',M=60000,TTL=5*M;
+-// Exact owner exclusions retained at the working main. A historical external
+-// positive cannot override these, even if a caller supplies a spot response.
++// Historical N15/hourly archive cohort. It does not authorize a new global
++// exclusion of ordinary N10 inputs; exact current HTX spot proof is still required.
+ export const KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT=Object.freeze(['AKE','BR','BTR','CASHCAT','GPS','LAB','MYX','OKB','ONG','PAXG','RAVE','UB','USELESS','VELVET','哈基米'].map(s=>s+'-USDT'));
+ const approved=new Set(APPROVED_HTX_ANALYSIS_CONTRACTS.map(x=>x.contract_code));
+ const canonical=v=>JSON.stringify(v,(_k,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.keys(x).sort().map(k=>[k,x[k]])):x);
+@@ -66,8 +66,8 @@
+ // reply for the same closed minute window, and the existing owner exclusions.
+ export function prepareKrakenN10RuntimeInput(params={}){
+  const {contract,htx_spot_kline:s,now}=params,denied=reason=>({version:KRAKEN_N10_PRICE_VERSION,status:reason,price_path:null,runtime_input_qualified:false,provider_http:0,cache_reads:0});
+- if(!approved.has(contract)||KRAKEN_N10_OWNER_NO_EXTERNAL_SPOT.includes(contract))return denied('OWNER_EXTERNAL_SPOT_NOT_ALLOWED');
+- const inspected=inspectKrakenN10CachedPricePath(params);if(!inspected.price_path)return inspected;
++ if(!approved.has(contract))return denied('APPROVED_HTX_CONTRACT_REQUIRED');
++ const inspected=inspectKrakenN10CachedPricePath(params);if(!inspected.price_path)return{...inspected,runtime_input_qualified:false};
+  const p=s?.payload,end=inspected.price_path.window_end,start=end-15*M,symbol=contract.slice(0,-5).toLowerCase()+'usdt';
+  if(s?.market!=='SPOT'||s.contract!==contract||p?.status!=='ok'||p.ch!==`market.${symbol}.kline.1min`||![s.received_ts,p.ts].every(Number.isSafeInteger)||p.ts<end||p.ts>s.received_ts||s.received_ts>now||now-p.ts>3*M||!Array.isArray(p.data)||p.data.length>2000)return denied('CURRENT_EXACT_HTX_SPOT_REPLY_REQUIRED');
+  const bars=p.data.filter(r=>Number.isSafeInteger(r?.id)&&r.id*1000>=start&&r.id*1000<end).sort((a,b)=>a.id-b.id);
