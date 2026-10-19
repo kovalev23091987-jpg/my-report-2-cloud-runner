@@ -1,0 +1,234 @@
+{
+  "schema": "SAVED_CANDLE_F1_BINDING_FOLLOWUP_VERIFICATION_V1",
+  "recorded_ts": 1792411487497,
+  "baseline_head": "c6d2bf850fcf673fc7c43fd1a1c98f79fbf34094",
+  "target": "anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs",
+  "before_sha256": "d9893148e7976973e81be150cc54b0b85397c70da12ce020e4e9c36961fd80f3",
+  "after_sha256": "bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442",
+  "patch_sha256": "2bb52d725c71d630312a914a4ba7fedafff679103ea7de9e577e05e4924b58ed",
+  "test_sha256_unchanged": "2fb8d6387dcf4dcd7b13dd2d0d80e98a0cb363eaa32f8e7f127cc323b00bdfd6",
+  "one_new_case": {
+    "before": {
+      "pass": 0,
+      "fail": 1,
+      "controlled_mutations_accepted": 13,
+      "raw_tap_sha256": "b7b3aad73c4887f655c35d589b5ea655ef3655f3e48aa005a1b5f22d0f6e3fd9"
+    },
+    "targeted_after": {
+      "pass": 1,
+      "fail": 0,
+      "all14_mutations_rejected": true,
+      "raw_tap_sha256": "80107f175e8d69e1c8d97108dc0360e3fc79ecb88a698c20bb27aca43fd54abf"
+    },
+    "testcase_bytes_changed": false,
+    "positive_mappings_unchanged": [
+      {
+        "sample_id": "BTC_spot",
+        "market": "spot",
+        "contract": "BTCUSDT",
+        "unit": "USDT",
+        "identity_verified": false,
+        "native_contract_size": null,
+        "admission": {
+          "pure_features": true,
+          "observer_detectClosed": false,
+          "event_card_created": false,
+          "memory_admitted": false,
+          "watch_scheduled": false,
+          "native_ingress": false,
+          "notification": false,
+          "production": false,
+          "score_contribution": 0
+        }
+      },
+      {
+        "sample_id": "BTC_usd_m_futures",
+        "market": "usd_m_futures",
+        "contract": "BTCUSDT",
+        "unit": null,
+        "identity_verified": false,
+        "native_contract_size": null,
+        "admission": {
+          "pure_features": true,
+          "observer_detectClosed": false,
+          "event_card_created": false,
+          "memory_admitted": false,
+          "watch_scheduled": false,
+          "native_ingress": false,
+          "notification": false,
+          "production": false,
+          "score_contribution": 0
+        }
+      },
+      {
+        "sample_id": "HTX_AAVE",
+        "market": "FUTURES",
+        "contract": "AAVE-USDT",
+        "unit": "USDT",
+        "identity_verified": false,
+        "native_contract_size": null,
+        "admission": {
+          "pure_features": true,
+          "observer_detectClosed": false,
+          "event_card_created": false,
+          "memory_admitted": false,
+          "watch_scheduled": false,
+          "native_ingress": false,
+          "notification": false,
+          "production": false,
+          "score_contribution": 0
+        }
+      }
+    ],
+    "old541_case_or_features_rerun": 0
+  },
+  "final_artifact_integrity": {
+    "pass": 12,
+    "fail": 0,
+    "checks": [
+      {
+        "name": "Exact frozen541 before module SHA",
+        "pass": true
+      },
+      {
+        "name": "Only the new fourteen-mutation case changed outcome",
+        "pass": true
+      },
+      {
+        "name": "New test bytes unchanged across counterexample and targeted repetition",
+        "pass": true
+      },
+      {
+        "name": "Initial new failure and final only-new-case success raw TAP retained",
+        "pass": true
+      },
+      {
+        "name": "All three valid mappings and blocked admission preserved",
+        "pass": true
+      },
+      {
+        "name": "All fourteen corrected mutations refuse before output",
+        "pass": true
+      },
+      {
+        "name": "Qualified after text binds exact implementation SHA",
+        "pass": true
+      },
+      {
+        "name": "One exact oldownfile patch target",
+        "pass": true
+      },
+      {
+        "name": "Source fixture exact frozen hash reused without reselecting population",
+        "pass": true
+      },
+      {
+        "name": "No old case/features/source suites or live/native run",
+        "pass": true
+      },
+      {
+        "name": "No new identity epoch or native grant",
+        "pass": true
+      },
+      {
+        "name": "Own unexpired exact scope and fresh allfour guards",
+        "pass": true
+      }
+    ]
+  },
+  "source_htx_endpoint_provenance_reused": {
+    "manifest_path": "checkpoints/htx-compact-4h/AAVE-USDT.manifest.json",
+    "manifest_sha256": "121ac8113f7c5e3a7ceacdefe5b4f4570787181c11330aef93ef8c7404ed8e62",
+    "original_receipt": {
+      "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=AAVE-USDT&period=4hour&size=1200",
+      "contract": "AAVE-USDT",
+      "requested_ts": 1791765482450,
+      "http_status": 200,
+      "bytes": 170076,
+      "sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219",
+      "received_ts": 1791765483910,
+      "server_date": "Mon, 12 Oct 2026 00:38:02 GMT"
+    },
+    "new_request": false,
+    "native_epoch_proof": false
+  },
+  "fresh_guards": {
+    "main": "9d03c094375e78067a45fc754523f0ae6314397a",
+    "guard_sha256": {
+      "AGENTS.md": "93fcecb6066f0dd699e2a9eba7dcb9b3400206b5a0599b505b500d5ffb327cbc",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "0cb1acce7f70e5d0bf5ae54bc286ae59b6e161968ee8688c01c419f8d655d675",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "34c046ff88359da25052dc6c460798147306df647fe8c6383c1bdcfe6a67b3e9",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "47d8f4e64304f2890d853ff0d3def57f26c26fbde38d63485beaa9191d7ec694",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "eacedab85c1af2d9774000aa1573ab3b72cb6f4544b6a15effa66de4e77b1ff6",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "443aa0d5481e1ca18a8682ef12f655cb8539e2d218c55f7ce3016e753a9c1b29",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_GATE_AND_EXISTING_ANOMALY_BASE_HANDOFF_20261019.json",
+        "sha256": "c9b191f14ce66a3f9b8f79e373ad5a6ecfe44e4e661a0b7b6ee6926453ba9146"
+      },
+      {
+        "path": "checkpoints/gate-existing-base-integration-20261019/cloud-and-originals-receipts.json",
+        "sha256": "fd4f33acde970586f7d2e4eeacc314c848a2f8c038035ebc08ed1a8cb0bc2b0f"
+      },
+      {
+        "path": "checkpoints/gate-existing-base-integration-20261019/next-worker-queues.json",
+        "sha256": "cff380edf3a348a615eb0552e2d08e4b1367d99745b5b384949b65e92de50b6a"
+      }
+    ],
+    "phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792410949655",
+    "phase_scope": "OWNER_FIVE_ACTIVE_DIRECTIONS.EXISTING_HISTORY. Accept exact frozen541 actual three-window typed-input research and its already-saved one affected result without rerunning1556/31/18/52/450455. Review concrete existing provider returned budget-cut carrier proposal only after exact ready source+peer; one NEW assembled affected qualification only if actual runtime change ready, zero extra sourceHTTP/nativeSQL/reservations. Read next already-SAVED natural after535 for actual bounded Gate diagnostics/source-to-consumer output, no forcedMAIN/manual/native/Telegram. Preserve all strict admission/knownunknown/LOCALledger versus provideraccount/daymonthminute/manualcut distinctions and project reserves. Do not fabricate nativeidentity/epoch/contractsize/fullbodyACK/post-knownwatch or tradingaccuracy. No new provider acquisition/nativeSQL/schema/deploy/MAIN/Telegram or quota change. ENTRY idea-followup/recheck/cadence/anchors AND physicalstorage thresholdexpiry/throughput/sustainability DEFERRED UNTIL SEPARATE NEW OWNER COMMAND: no research/patch/tests/qualification/resume underthislease. Existing runtime/paid protection stay. Fiveactive continue on savedbase, no waitingnewweeks/framework/activity-only repeats. All4activeequal/rootspans/latesttechnicalfields/cursor710/relocation/Paid5GB4GB3.5GB48h/oldUTC18unknown15/reservations/105assets122contracts9pauses/MAGIC106deferred/70/strategyweightsformsclocks/caps3500000R70000W164HTTP/manual24/nextfull59000R920W/providerdaymonthminute/backoff/control40/post4/cleanup5borrowed10self unchanged. ThreeexistingLOCALchats; ownscopedrefs only/neverforeignrelease/CAS<=90min/exactreadback; releaseONLYown. Concrete NEW saved ordinary39245523405 Telegram OBSERVE publication preparation refused at actual182R/5queries against unchanged160R stagecap BEFORE transitions; bothfinalists persisted/privateverified. Independently inspect saved current lifecycle SOURCE-READ query/index efficiency and prepare/qualify ONE minimal offline equivalent-query reduction if exact preserved schema/inputs suffice. This is ACTIVE original report/OBSERVE delivery+budget work, NOT deferred original idea recheck-to-ENTRY. Do not change ENTRY/followup/cadence/TTL/anchor logic or test/accept it. No addedschema/indexes/nativeSQL/sourceHTTP/MAIN/Telegram, no raising160R or quotas, no reconstruction of missing perquerynative costs. One NEW assembled affected SQL/reader test only after concrete preserving proposal; qualify current native effects only through alreadySAVED natural later.",
+    "own_exact_ref": "645e353ca9776d77e7f2f9a5aa38562531d8cca5",
+    "all4active_equal": true,
+    "source541_exact_head": "c6d2bf850fcf673fc7c43fd1a1c98f79fbf34094",
+    "checked_ts": 1792411364309
+  },
+  "own_lease": {
+    "lease_ref_sha": "645e353ca9776d77e7f2f9a5aa38562531d8cca5",
+    "lease": {
+      "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+      "status": "ACTIVE",
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792411065731",
+      "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "acquired_ts": 1792411065731,
+      "expires_ts": 1792414365731,
+      "expected_main": "514298064f847aa32e4995c93f8718e3a0ce5596",
+      "scope": "Coordinator explicit NEW541F1 cross-binding counterexample+followupfix ONLY. frozen541c6d2bf850fcf673fc7c43fd1a1c98f79fbf34094 immutable. OuterBTCmarket/contract/symbol bind to exacthash-bound sample.current.market/symbol and native-source metadata; HTXrole bind sourcekind/exactnativebodychannel/endpoint notfakecontractsize. Ownnewprefix anomaly-research/saved-candle-market-binding-20261019/** and checkpoints/anomaly-worker-*; proposalpatch for oldown541typed-input.mjs, no shared/runtime edits. ONE NEW affected test realalready-saved541inputs with crossmarket/crossasset/HTXrole controls; may run newcounterexample onoldcode then targetfix and rerun ONLY thatnewcase. Do NOT rerun old5411case/3features,1556,12CSV,source31/18/52,450455 or any accepted suite. No epoch/nativegrant/verifiedinstrument fabrication. No productionimports/provideracquisition/artifactGET/nativeSQL/schema/deploy/MAIN/manualfull/TG/shared/main/status/generation/strategyweightsforms/caps/pauses changes. ENTRYfollowup/recheck/cadence/anchor and physicalstorage remainDEFERRED separateownercommand. Budgetpeer aftercoherentF1boundary onlyreadyfrozenmaterial, no drafts/emptywork. Freshguards/ownCAS<=90min/exactreadback/releaseONLYown/onecompletedfrozenPR+source/coordinatorhandoff. Gitinfrastructure/publish allowed.",
+      "guard_sha256": {
+        "AGENTS.md": "93fcecb6066f0dd699e2a9eba7dcb9b3400206b5a0599b505b500d5ffb327cbc",
+        "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "249b3b42f13adae39dbc491aece687cb21487e96767012f589e55179dea76ec6",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "34c046ff88359da25052dc6c460798147306df647fe8c6383c1bdcfe6a67b3e9",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "47d8f4e64304f2890d853ff0d3def57f26c26fbde38d63485beaa9191d7ec694",
+        "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "eacedab85c1af2d9774000aa1573ab3b72cb6f4544b6a15effa66de4e77b1ff6",
+        "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+        "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "443aa0d5481e1ca18a8682ef12f655cb8539e2d218c55f7ce3016e753a9c1b29",
+        "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+      },
+      "active_three_proofs": [
+        {
+          "path": "checkpoints/ACTIVE105_GATE_AND_EXISTING_ANOMALY_BASE_HANDOFF_20261019.json",
+          "sha256": "c9b191f14ce66a3f9b8f79e373ad5a6ecfe44e4e661a0b7b6ee6926453ba9146"
+        },
+        {
+          "path": "checkpoints/gate-existing-base-integration-20261019/cloud-and-originals-receipts.json",
+          "sha256": "fd4f33acde970586f7d2e4eeacc314c848a2f8c038035ebc08ed1a8cb0bc2b0f"
+        },
+        {
+          "path": "checkpoints/gate-existing-base-integration-20261019/next-worker-queues.json",
+          "sha256": "cff380edf3a348a615eb0552e2d08e4b1367d99745b5b384949b65e92de50b6a"
+        }
+      ]
+    },
+    "exact_readback": true
+  },
+  "production_card_native_ACK_or_activation": false,
+  "ENTRY_physical": "DEFERRED_SEPARATE_OWNER_COMMAND"
+}
