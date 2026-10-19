@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease,readMirrorContext} from '../runner/github-bounded-phase-lease.mjs';
 import {assertMirrorOwner,adoptCompactSourceCommit} from '../runner/github-four-mirror-cas.mjs';
+import {compactChangedPaths} from './compact-history-changed-paths.mjs';
 const saved='/tmp/report2-compact-mirror-context.json',counter='/tmp/report2-compact-control-count.json',published='/tmp/report2-compact-published-head';
 const prefix='HTX_COMPACT_4H_SAME_SOURCE_6_PER_DAY_PRICE_ONLY_NO_TELEGRAM',mode=process.argv[2];
 const git=(...args)=>execFileSync('git',args,{encoding:'utf8'}).trim();
@@ -20,10 +21,10 @@ if(mode==='acquire'){
  const state=JSON.parse(fs.readFileSync(saved,'utf8'));control.mirror_context=state.context;
  if(mode==='release'&&fs.existsSync(published)){
   const h=fs.readFileSync(published,'utf8').trim();requireValue(/^[a-f0-9]{40}$/.test(h)&&git('rev-parse','HEAD')===h,'COMPACT_KNOWN_PUBLISHED_HEAD_REQUIRED');
-  if(h!==state.receipt.head){control.mirror_context=adoptCompactSourceCommit(state.context,{head:h,parent:git('rev-parse',h+'^'),changed_paths:git('diff','--name-only',state.receipt.head,h).split('\n').filter(Boolean),acknowledged:true});state.receipt.head=h;}
+  if(h!==state.receipt.head){control.mirror_context=adoptCompactSourceCommit(state.context,{head:h,parent:git('rev-parse',h+'^'),changed_paths:compactChangedPaths(state.receipt.head,h),acknowledged:true});state.receipt.head=h;}
  }
  if(mode==='persist'){
-  const h=git('rev-parse','HEAD'),changed_paths=git('diff','--name-only',state.receipt.head,h).split('\n').filter(Boolean);
+  const h=git('rev-parse','HEAD'),changed_paths=compactChangedPaths(state.receipt.head,h);
   adoptCompactSourceCommit(state.context,{head:h,parent:git('rev-parse',h+'^'),changed_paths,acknowledged:true});
   assertMirrorOwner(state.context,state.receipt.lease.owner,Date.now(),prefix);
   git('push','origin','HEAD:main','--force-with-lease=refs/heads/main:'+state.receipt.head);
