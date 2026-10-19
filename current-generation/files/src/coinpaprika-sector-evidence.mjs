@@ -63,7 +63,7 @@ function exactCachedSectorFact(row,{contract,identity,coin_id,tag_id,marketDisco
  if(!same(row.peer_median_change_24h_pct,median)||!same(row.relative_strength_pct_points,row.target_change_24h_pct-median)||!number(row.target_change_24h_pct)||!same(row.peer_coverage_fraction,coverage)||!same(row.coverage_fraction,clamp(coverage,.15,.75))||!same(row.directional_strength,clamp(row.relative_strength_pct_points/10,-1,1)))return false;
  return row.source_ts===Math.min(row.target_source_ts,...row.peers.map(peer=>peer.source_ts));
 }
-export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false}={}){
+export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,provider_budget_observe=null}={}){
  const base=clean(contract).replace(/-USDT$/,''),existingChain=Boolean(PLATFORMS[asset_identity?.chain]&&asset_identity?.contract_or_mint);
  let coin_id=clean(asset_metadata?.coinpaprika_id),tag_id=clean(asset_metadata?.sector_tag);const pinned=Boolean(tag_id),marketDiscovery=!existingChain||!coin_id;
  if(!db?.prepare||!/^\S{1,32}-USDT$/u.test(contract)||(pinned&&!/^[a-z0-9-]{3,80}$/.test(tag_id)))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
@@ -80,7 +80,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
+ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});
  const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:['FUNCTIONAL_SECTOR_DIRECTORY','HTX_MARKET_CATALOG'].includes(route)?900000:6*1024*1024,same_run_batch:route==='FREE_AGGREGATED_QUOTES',bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
  const finish=async(result)=>{
   const summary=reader.summary(),final={version:COINPAPRIKA_SECTOR_VERSION,...result,...(!summary.admission.allowed?{status:summary.admission.status}:{}),...(summary.provider_backoff?{status:summary.provider_backoff.status}:{}),...summary,internal_only:true,free_only:true,monthly_module_bound:SOURCE_POLICIES[SOURCE].monthly_module_bound,official_free_monthly_requests:20000};

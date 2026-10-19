@@ -1,0 +1,206 @@
+{
+  "schema": "SAVED_CANDLE_NEW_MARKET_ASSET_BINDING_WITNESS_V1",
+  "mode": "corrected",
+  "baseline_head": "c6d2bf850fcf673fc7c43fd1a1c98f79fbf34094",
+  "baseline_sha256": "d9893148e7976973e81be150cc54b0b85397c70da12ce020e4e9c36961fd80f3",
+  "implementation_sha256": "bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442",
+  "source_samples_sha256": "c8f3d9b5447f4779c7bb3a565ea0f58a3a3a165e66a3d310f5f88a2b8d42ce62",
+  "positive": [
+    {
+      "sample_id": "BTC_spot",
+      "market": "spot",
+      "contract": "BTCUSDT",
+      "unit": "USDT",
+      "identity_verified": false,
+      "native_contract_size": null,
+      "admission": {
+        "pure_features": true,
+        "observer_detectClosed": false,
+        "event_card_created": false,
+        "memory_admitted": false,
+        "watch_scheduled": false,
+        "native_ingress": false,
+        "notification": false,
+        "production": false,
+        "score_contribution": 0
+      }
+    },
+    {
+      "sample_id": "BTC_usd_m_futures",
+      "market": "usd_m_futures",
+      "contract": "BTCUSDT",
+      "unit": null,
+      "identity_verified": false,
+      "native_contract_size": null,
+      "admission": {
+        "pure_features": true,
+        "observer_detectClosed": false,
+        "event_card_created": false,
+        "memory_admitted": false,
+        "watch_scheduled": false,
+        "native_ingress": false,
+        "notification": false,
+        "production": false,
+        "score_contribution": 0
+      }
+    },
+    {
+      "sample_id": "HTX_AAVE",
+      "market": "FUTURES",
+      "contract": "AAVE-USDT",
+      "unit": "USDT",
+      "identity_verified": false,
+      "native_contract_size": null,
+      "admission": {
+        "pure_features": true,
+        "observer_detectClosed": false,
+        "event_card_created": false,
+        "memory_admitted": false,
+        "watch_scheduled": false,
+        "native_ingress": false,
+        "notification": false,
+        "production": false,
+        "score_contribution": 0
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "name": "futures outer market becomes spot without changing bound input",
+      "input_sample": "BTC_usd_m_futures",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_MARKET_SYMBOL_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "spot outer market becomes futures without changing bound input",
+      "input_sample": "BTC_spot",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_MARKET_SYMBOL_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "futures outer contract becomes foreign ETHUSDT",
+      "input_sample": "BTC_usd_m_futures",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_MARKET_SYMBOL_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "spot outer contract becomes foreign ETHUSDT",
+      "input_sample": "BTC_spot",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_MARKET_SYMBOL_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "foreign outer symbol alias cannot disagree with bound symbol",
+      "input_sample": "BTC_usd_m_futures",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_MARKET_SYMBOL_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "foreign CSV filename cannot relabel a BTC source",
+      "input_sample": "BTC_spot",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_NATIVE_SOURCE_METADATA_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "foreign market archive component cannot change source role",
+      "input_sample": "BTC_usd_m_futures",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_BOUND_NATIVE_SOURCE_METADATA_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "even self-consistent foreign parsed symbol has no BTC policy binding",
+      "input_sample": "BTC_spot",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "BTC_EXACT_SYMBOL_POLICY_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "native HTX futures body cannot be relabelled SPOT",
+      "input_sample": "HTX_AAVE",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "native HTX body cannot be relabelled Binance spot role",
+      "input_sample": "HTX_AAVE",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "native HTX body cannot be relabelled Binance futures role",
+      "input_sample": "HTX_AAVE",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "HTX native4hour body cannot acquire15m label",
+      "input_sample": "HTX_AAVE",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "HTX different contract remains bound to native body channel",
+      "input_sample": "HTX_AAVE",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    },
+    {
+      "name": "HTX raw ref foreign contract cannot replace native origin",
+      "input_sample": "HTX_AAVE",
+      "CONTROLLED_MUTATION": true,
+      "rejected": true,
+      "reason": "HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED",
+      "accepted_identity": null,
+      "accepted_quantity": null
+    }
+  ],
+  "violation_count": 0,
+  "violations": [],
+  "old541_case_rerun": 0,
+  "old_purefeatures_calls": 0,
+  "old1556_orCSV_or37_or_source31_18_52_450455_rerun": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "production_imports": 0,
+  "observer_detectClosed_calls": 0,
+  "new_epoch_or_nativegrant": false,
+  "scope": "This is one new label-binding case; actual saved inputs reused, mutations controlled. No production harm or new source agreement asserted."
+}
