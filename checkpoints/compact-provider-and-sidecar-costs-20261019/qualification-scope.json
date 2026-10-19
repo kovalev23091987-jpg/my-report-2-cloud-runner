@@ -4,7 +4,7 @@
   "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792414439557",
   "scope_prefix": "OWNER_FIVE_ACTIVE_DIRECTIONS.SAVED_NATIVE_SOURCE_READ_BUDGET_AND_HTX_METADATA.",
   "files": {
-    ".github/workflows/liq-assembled-offline-20261012.yml": "c5ae6c51a047a53d2750997cc8cc1d5bd5ae8f28fe1733634efcd00d0667013f",
+    ".github/workflows/liq-assembled-offline-20261012.yml": "773da9d3ec03e4a2105148df22f1fa8109f915e7d604d3269857ab8da1f97db7",
     "anomaly-research/aave-native-turnover-typed-consumer-20261019/boundary-receipt.json": "98944f7b4c477b4afd13dc3e4ab57e93aadd599e950920681e35c1ca8c008418",
     "anomaly-research/htx-native-metadata-provenance-peer-20261019/peer-receipt.json": "d81cb93a002ed2897ddb53f9e784fd8e5d631c167973c0e55a13b7fb1ae4a0f6",
     "anomaly-research/provider-cut-compaction-peer-20261019/peer-receipt.json": "00e16c9ab9db57464d0f706560989cbf8502b264ceab08a804d0aae057be84a7",
@@ -85,16 +85,37 @@
     "current-generation/files/src/retained-history.mjs": "85c73d45bb78a49600b1dda6fd7ad2a15a7e42180eeffa97c8378848d73a64db",
     "current-generation/files/src/run-budget-context.mjs": "60528420d20824dbe905e1e16e20c323c4219395709d6dba8460a950d8b162d9",
     "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs": "1c3ad1e6f3aef86703aef4663773d729ba11e6060a51708012f98df5e25c1dde",
-    "current-generation/tests/compact-provider-and-sidecar-costs.runtime.mjs": "acfe81c12b9c3f199fc8f7146376914e975a1053cc878982d3c5791b155decfd",
+    "current-generation/tests/compact-provider-and-sidecar-costs.runtime.mjs": "f663d49ef62b1faec2c8074b8f4063590b1b7ad725288f6fccf85d5a9fbf7d20",
     "current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
     "runner/report2-d1-adapter.mjs": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
     "runner/retained-history.mjs": "5f7f4a493d2e83b9e1bee343e3bd088687866ad8909de25448dac7afb62b8a6a",
     "runner/sql-bridge-counter-repair.mjs": "cf2d70caa589dc96a75857977c3ff11b5075f4bbf148e87cd5854003ac36a8da",
-    "tools/guard-compact-provider-costs-20261019.mjs": "576a3f5ea38d6a6fd4c9804e081f30ce065c25abd6b11d867ba030061f6aebe2"
+    "tools/guard-compact-provider-costs-20261019.mjs": "2be16a1386416d93a916f3c4813bad6ad0c7d1f2765f371cd2e84eff65798f5e",
+    "checkpoints/compact-provider-and-sidecar-costs-20261019/first-qualification/assembly.json": "fa65e28615c8ab5e24f18445c0799d88d30fd0f97bf0d835866a6820998d3c43",
+    "checkpoints/compact-provider-and-sidecar-costs-20261019/first-qualification/original.zip": "80693a31697c0ec978ccc380ee127f7bfe9490b85b7ca3d94995bcacab964944",
+    "checkpoints/compact-provider-and-sidecar-costs-20261019/first-qualification/failure-and-repair.json": "17b75e8d1094d716561bdbdf1fd1a327d6565b79887462515c3834e6f96f63c1",
+    "checkpoints/compact-provider-and-sidecar-costs-20261019/first-qualification/guard-before.json": "567053c3070f3b1847bd73a2913fdbccae5a796ba2ef8a2e9f66a4eff219a0f4",
+    "checkpoints/compact-provider-and-sidecar-costs-20261019/first-qualification/connected-tests.log": "72805b667bd456bb81e4c878a8196a20725a5ef0b0a6aa796fc774869016f3e1"
   },
   "new_common_cases": 1,
   "provider_component_previous_semantic_executions": 0,
   "old_cases_repeated": false,
   "native_sources_SQL_MAIN_Telegram": 0,
-  "deferred_ENTRY_physical": true
+  "deferred_ENTRY_physical": true,
+  "initial_case_failure": {
+    "schema": "FIRST_NEW_COMMON_CASE_FIXTURE_FAILURE_AND_TARGETED_REPAIR_V1",
+    "run": 39261526101,
+    "head": "7344acc4d3eaa05af3c1b38917bd2027720f7e5e",
+    "artifact": 12190147880,
+    "digest": "sha256:80693a31697c0ec978ccc380ee127f7bfe9490b85b7ca3d94995bcacab964944",
+    "initial_result": "0PASS1FAIL/onecase",
+    "normal_loop_assertions": "REACHED_AND_COMPLETED before first late-helper fixture call; no stored result object reconstructed",
+    "failure": "Controlled late helper fixture had one parameter but actual caller passes(db,ctx,now); it read db.dispatch_enabled instead of ctx.dispatch_enabled. Fix ONLYfixture signature.",
+    "after_guard_failure": "Pinned Node-side retained-history dependency is deliberately not a Worker overlay; source pin retained, after guard now compares only actual overlays.",
+    "runtime_source_patch_changed": false,
+    "provider_component_executed_in_initial_case": false,
+    "targeted_rerun": "ONLY failed late source-exit paths and previously unexecuted provider component; normal path not rerun",
+    "sourceHTTP_nativeSQL_MAIN_Telegram": 0
+  },
+  "source_only_dependency_not_worker_overlay": "current-generation/files/src/retained-history.mjs"
 }

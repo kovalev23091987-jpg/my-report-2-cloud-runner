@@ -542,7 +542,7 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/compact-provider-costs/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-          REPORT2_COMPACT_COST_RUNTIME="$PWD/runtime" REPORT2_COMPACT_COST_WITNESS="$PWD/audit-output/compact-provider-costs/connected-witness.json" REPORT2_COMPACT_PROVIDER_HARNESS="$PWD/checkpoints/source-worker-provider-cut-compaction-20261019/compact-connected.mjs" node --test --test-reporter=spec current-generation/tests/compact-provider-and-sidecar-costs.runtime.mjs > audit-output/compact-provider-costs/connected-tests.log
+          REPORT2_COMPACT_COST_REPAIR_ONLY="1" REPORT2_COMPACT_COST_RUNTIME="$PWD/runtime" REPORT2_COMPACT_COST_WITNESS="$PWD/audit-output/compact-provider-costs/connected-witness.json" REPORT2_COMPACT_PROVIDER_HARNESS="$PWD/checkpoints/source-worker-provider-cut-compaction-20261019/compact-connected.mjs" node --test --test-reporter=spec current-generation/tests/compact-provider-and-sidecar-costs.runtime.mjs > audit-output/compact-provider-costs/connected-tests.log
       - name: Exact own scope and assembled source bytes after qualification
         if: ${{ always() }}
         env:

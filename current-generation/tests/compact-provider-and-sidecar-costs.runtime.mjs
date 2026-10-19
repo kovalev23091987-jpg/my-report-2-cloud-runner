@@ -58,7 +58,7 @@ async function executeSidecar(module,{lateFailure=false}={}){
   // Match the existing ordinary retained-reader route; archived locator fetches
   // remain forbidden, and no new native schema/query qualification is claimed.
   db.enableRetainedHistory({fetch_impl:()=>{throw Error('NO_ARCHIVE_HTTP');},request_admit:()=>{throw Error('NO_ARCHIVE_GRANT');}});
-  globalThis.__report2ControlledLateFailure=async ctx=>{lateCalls++;assert.equal(ctx.dispatch_enabled,false);return{status:'PARTIAL',reason:'CONTROLLED_DOWNSTREAM_PERSISTENCE_HELPER_FAILURE'};};
+  globalThis.__report2ControlledLateFailure=async (_db,ctx)=>{lateCalls++;assert.equal(ctx.dispatch_enabled,false);return{status:'PARTIAL',reason:'CONTROLLED_DOWNSTREAM_PERSISTENCE_HELPER_FAILURE'};};
   try{
     const result=await module.runV3TelegramLifecycleSidecar(db,{source_run_id:run,now_ts:now,canonical_required:!lateFailure,dispatch_enabled:false,completed_handoffs:{status:'CLOSED',source_run_id:run,handoffs}});
     const usage=db.usageSnapshot();assert.equal(calls.length,reported.length);assert.equal(transports,1);assert.equal(usage.requests,reported.length);assert.equal(usage.rows_written,0);assert.equal(usage.unknown_ops,0);
@@ -70,12 +70,13 @@ async function executeSidecar(module,{lateFailure=false}={}){
 test('ONE NEW assembled case: compact provider cuts and successful/late sidecar cost projections keep decisions, SQL and existing bounds',async()=>{
   const oldFetch=globalThis.fetch;globalThis.fetch=()=>{throw Error('NO_REAL_SOURCE_OR_NATIVE_NETWORK');};
   try{
-    const normalBefore=await loadSidecar(beforeText),normalCurrent=await loadSidecar(currentText);
+    const repairOnly=process.env.REPORT2_COMPACT_COST_REPAIR_ONLY==='1';
+    const normalBefore=repairOnly?null:await loadSidecar(beforeText),normalCurrent=repairOnly?null:await loadSidecar(currentText);
     const lateBefore=await loadSidecar(beforeText,{lateFailure:true}),lateCurrent=await loadSidecar(currentText,{lateFailure:true});
-    assert.deepEqual(normalCurrent.V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET,normalBefore.V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET);
-    assert.equal(normalCurrent.V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read,160);
+    assert.deepEqual(lateCurrent.V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET,lateBefore.V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET);
+    assert.equal(lateCurrent.V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read,160);
     const paths=[];
-    for(const lateFailure of [false,true]){
+    for(const lateFailure of (repairOnly?[true]:[false,true])){
       const old=await executeSidecar(lateFailure?lateBefore:normalBefore,{lateFailure});
       const next=await executeSidecar(lateFailure?lateCurrent:normalCurrent,{lateFailure});
       assert.equal(next.result.status,lateFailure?'PERSISTENCE_NOT_CLOSED':'CLOSED');
@@ -93,7 +94,7 @@ test('ONE NEW assembled case: compact provider cuts and successful/late sidecar 
     assert.equal(typeof component.runProviderCaptureCompactConnected,'function');
     const provider=await component.runProviderCaptureCompactConnected({runtime_root:root,runner_text:fs.readFileSync(path.join(root,'runner-main.mjs'),'utf8'),native_original_root:path.resolve('checkpoints/natural-39255752857')});
     assert(Buffer.byteLength(JSON.stringify(provider))<=16384);
-    const witness={schema:'ONE_NEW_COMPACT_PROVIDER_AND_SOURCE_EXIT_CONNECTED_WITNESS_V1',new_cases:1,PASS:1,FAIL:0,source_exit_paths:paths,provider,bridge_source_sha256:sha(bridgeText),retained_view_route_exercised:true,original_native132_per_query_split:null,native182_overrun_fixed:false,sourceHTTP_nativeSQL_MAIN_Telegram:0,ENTRY_followup_or_physicalstorage_performed:false,old_accepted_tests_repeated:false,limits:'Actual local SQLite + exact saved06603 bridge + real RemoteD1 adapter/retained query rewrite. Per-statement counters are CONTROLLED, not a reconstruction of native132/182. Normal canonical rows are absent in the controlled fixture; the late failure uses an explicitly injected persistence helper. No native/ENTRY/dispatch/persistence/whole-day/provider admission qualification.'};
+    const witness={schema:'ONE_NEW_COMPACT_PROVIDER_AND_SOURCE_EXIT_CONNECTED_WITNESS_V1',new_cases:1,PASS:1,FAIL:0,source_exit_paths:paths,provider,bridge_source_sha256:sha(bridgeText),retained_view_route_exercised:true,original_native132_per_query_split:null,native182_overrun_fixed:false,sourceHTTP_nativeSQL_MAIN_Telegram:0,ENTRY_followup_or_physicalstorage_performed:false,old_accepted_tests_repeated:false,previous_normal_assertions_reused:repairOnly?{run:39261526101,head:'7344acc4d3eaa05af3c1b38917bd2027720f7e5e',artifact:12190147880,digest:'sha256:80693a31697c0ec978ccc380ee127f7bfe9490b85b7ca3d94995bcacab964944',basis:'Normal loop completed before the first late-helper call failed on fixture signature; original failed-case log and source preserved. Previous normal result object was not written and is not reconstructed.',normal_case_reexecuted:false}:null,limits:'Actual local SQLite + exact saved06603 bridge + real RemoteD1 adapter/retained query rewrite. Per-statement counters are CONTROLLED, not a reconstruction of native132/182. Normal canonical rows are absent in the controlled fixture; the late failure uses an explicitly injected persistence helper. No native/ENTRY/dispatch/persistence/whole-day/provider admission qualification.'};
     assert(process.env.REPORT2_COMPACT_COST_WITNESS);fs.writeFileSync(process.env.REPORT2_COMPACT_COST_WITNESS,JSON.stringify(witness,null,2)+'\n');
   }finally{globalThis.fetch=oldFetch;}
 });
