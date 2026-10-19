@@ -1,0 +1,606 @@
+{
+  "schema": "ANOMALY_WORKER_FIRST_COMPLETED_COLLECTOR392104_PEER_V1",
+  "created_at_utc": "2026-10-19T09:02:25.734627+00:00",
+  "verdict": "SIX_ACTUAL_GENERIC_POLLS_IN_TARGET_WINDOW_EXACT_NIL_TASK_CAUSE_NOT_PROJECTED",
+  "scope": {
+    "reviewer_thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "fresh_main": "511fb5bdf1900432311a83c57a9e1958ed0f2b9c",
+    "own_lease_ref_sha": "0dba72e0194c3817478eff351b1f160659b6b818",
+    "own_lease_owner": "CODEX:OFFLINE_ANOMALIES:1792400410910",
+    "own_exact_readback": true,
+    "data_read": "ONLY new completed fulljoblog and FINALartifact from collector39210422768/job117922344261, first downloaded by coordinator; no prior bootstrap/375/old NIL originals reread",
+    "new_HTTP_SQL_tests_probes_application_execution_Telegram": 0,
+    "runtime_shared_main_changes": 0,
+    "cleanup": "DEFERRED_TO_OWNER_PLAN_END"
+  },
+  "target_context_from_coordinator_not_from_this_projection": {
+    "task_id": "RCHK:d0b84fb61fa20cc0c88cad7eab668964e964c210",
+    "contract": "NIL-USDT",
+    "direction": "LONG",
+    "original_snapshot_id": "S392:NIL-USDT:1792395207582",
+    "original_observed_ts": 1792395207582,
+    "original_due_ts": 1792395507582,
+    "original_expires_ts": 1792397007582,
+    "task_native_row_confirmed_by_this_bundle": false
+  },
+  "originals": {
+    "log": {
+      "path": "/private/tmp/report2-entry-actual-chain-20261019/collector392104-job117922344261-original.log",
+      "bytes": 92223,
+      "sha256": "b294f1c42d56b20a273d150d8110d409f438a47a94bdfb9d2c7c0f094e2bea9b",
+      "lines": 297,
+      "masking": "GitHub runner mask remains; do not reconstruct hidden numerals/identifiers"
+    },
+    "zip": {
+      "path": "/private/tmp/report2-entry-actual-chain-20261019/collector392104-final-original.zip",
+      "bytes": 4349,
+      "sha256": "ca7a35d47b797706fd1c4a17be5f586d389d54fa603908d6c499f36eb6f4014b",
+      "member": "report2-collector-backup-proof.json",
+      "member_bytes": 101382,
+      "member_sha256": "e2407e1c5980b047d134d3c6f09690c07d43c5ba9d114068a690c2be58df8aa9"
+    },
+    "final_upload_log_original_lines": [
+      {
+        "line": 272,
+        "value": "2026-10-19T08:51:01.5552815Z Uploaded bytes 4349"
+      },
+      {
+        "line": 274,
+        "value": "2026-10-19T08:51:01.5977820Z SHA256 digest of uploaded artifact zip is ca7a35d47b797706fd***c4a***7be5f586d389d54fa603908d6c499f36eb6f40***4b"
+      },
+      {
+        "line": 276,
+        "value": "2026-10-19T08:51:01.8757998Z Artifact report2-collector-backup-392***0422768.zip successfully finalized. Artifact ID ***2***72634745"
+      },
+      {
+        "line": 277,
+        "value": "2026-10-19T08:51:01.8759178Z Artifact report2-collector-backup-392***0422768 has been successfully uploaded! Final size is 4349 bytes. Artifact ID is ***2***72634745"
+      },
+      {
+        "line": 278,
+        "value": "2026-10-19T08:51:01.8765108Z Artifact download URL: https://github.com/kovalev2309***987-jpg/my-report-2-cloud-runner/actions/runs/392***0422768/artifacts/***2***72634745"
+      }
+    ],
+    "log_digest_limit_ru": "Оригинальная строка274 содержит маскированный SHA. Вreceipt сохранён фактически вычисленный SHA ZIP; скрытые символы лога не восстановлены. Размер4349 совпадает с исходной строкой272."
+  },
+  "final_artifact_summary": {
+    "worker_status": "CURRENT_MAIN_CODE_CHANGED",
+    "source_guard": {
+      "allowed": false,
+      "status": "CURRENT_MAIN_CODE_CHANGED",
+      "current_main": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+      "changed_paths": [
+        "current-generation/files/src/worker.js",
+        ".github/workflows/report2.yml"
+      ],
+      "source_http": 0,
+      "github_metadata_http": 2
+    },
+    "worker_started_ts": 1792391511091,
+    "worker_deadline_ts": 1792409511091,
+    "completed_cycles": 28,
+    "failures": 0,
+    "source_job_budget": {
+      "attempted_source_http": 0,
+      "maximum_source_http": 164,
+      "failed_attempts_not_refunded": true
+    },
+    "receipt_count": 29,
+    "kick_status_histogram": {
+      "POLL_ALREADY_COUNTED_OR_DAILY_CAP": 1,
+      "NO_FRESH_TRIGGER_HINT": 27,
+      "NO_KICK_FINAL_STOP": 1
+    },
+    "last_completed_cycle_pointer": "/receipts/27",
+    "last_completed_cycle_at": "2026-10-19T08:46:02.128Z",
+    "final_stop_pointer": "/receipts/28",
+    "final_stop_log_line": 246,
+    "final_stop_logged_utc": "2026-10-19T08:51:00.8775731Z"
+  },
+  "new_actual_polls_within_original_window": [
+    {
+      "artifact_pointer": "/receipts/13",
+      "completed_at": "2026-10-19T07:36:02.161Z",
+      "bucket": 1792395300000,
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395300000
+      },
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "usage_cumulative": {
+        "requests": 96,
+        "rows_read": 55,
+        "rows_written": 13,
+        "unknown_ops": 0
+      },
+      "usage_delta_from_previous_receipt": {
+        "requests": 7,
+        "rows_read": 4,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_cumulative": {
+        "requests": 13,
+        "rows_read": 13,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_delta_from_previous_receipt": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "external_requests": 0,
+      "telegram": false,
+      "analytical_decision": false,
+      "exact_task_identity_or_row_projected": false
+    },
+    {
+      "artifact_pointer": "/receipts/14",
+      "completed_at": "2026-10-19T07:41:02.286Z",
+      "bucket": 1792395600000,
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395600000
+      },
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "usage_cumulative": {
+        "requests": 103,
+        "rows_read": 59,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "usage_delta_from_previous_receipt": {
+        "requests": 7,
+        "rows_read": 4,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_cumulative": {
+        "requests": 14,
+        "rows_read": 14,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_delta_from_previous_receipt": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "external_requests": 0,
+      "telegram": false,
+      "analytical_decision": false,
+      "exact_task_identity_or_row_projected": false
+    },
+    {
+      "artifact_pointer": "/receipts/15",
+      "completed_at": "2026-10-19T07:46:02.347Z",
+      "bucket": 1792395900000,
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395900000
+      },
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "usage_cumulative": {
+        "requests": 110,
+        "rows_read": 63,
+        "rows_written": 15,
+        "unknown_ops": 0
+      },
+      "usage_delta_from_previous_receipt": {
+        "requests": 7,
+        "rows_read": 4,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_cumulative": {
+        "requests": 15,
+        "rows_read": 15,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_delta_from_previous_receipt": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "external_requests": 0,
+      "telegram": false,
+      "analytical_decision": false,
+      "exact_task_identity_or_row_projected": false
+    },
+    {
+      "artifact_pointer": "/receipts/16",
+      "completed_at": "2026-10-19T07:51:02.194Z",
+      "bucket": 1792396200000,
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792396200000
+      },
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "usage_cumulative": {
+        "requests": 117,
+        "rows_read": 67,
+        "rows_written": 16,
+        "unknown_ops": 0
+      },
+      "usage_delta_from_previous_receipt": {
+        "requests": 7,
+        "rows_read": 4,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_cumulative": {
+        "requests": 16,
+        "rows_read": 16,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_delta_from_previous_receipt": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "external_requests": 0,
+      "telegram": false,
+      "analytical_decision": false,
+      "exact_task_identity_or_row_projected": false
+    },
+    {
+      "artifact_pointer": "/receipts/17",
+      "completed_at": "2026-10-19T07:56:02.328Z",
+      "bucket": 1792396500000,
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "0246b6cdda2d9a402cb83dfba11ed1a121f51e18",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792396500000
+      },
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "usage_cumulative": {
+        "requests": 124,
+        "rows_read": 71,
+        "rows_written": 17,
+        "unknown_ops": 0
+      },
+      "usage_delta_from_previous_receipt": {
+        "requests": 7,
+        "rows_read": 4,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_cumulative": {
+        "requests": 17,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_delta_from_previous_receipt": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "external_requests": 0,
+      "telegram": false,
+      "analytical_decision": false,
+      "exact_task_identity_or_row_projected": false
+    },
+    {
+      "artifact_pointer": "/receipts/18",
+      "completed_at": "2026-10-19T08:01:02.047Z",
+      "bucket": 1792396800000,
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "34f3ecced35be28f78b586a4b412cf1ed26848e7",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792396800000
+      },
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "usage_cumulative": {
+        "requests": 131,
+        "rows_read": 75,
+        "rows_written": 18,
+        "unknown_ops": 0
+      },
+      "usage_delta_from_previous_receipt": {
+        "requests": 7,
+        "rows_read": 4,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_cumulative": {
+        "requests": 18,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "generic_recheck_table_delta_from_previous_receipt": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "external_requests": 0,
+      "telegram": false,
+      "analytical_decision": false,
+      "exact_task_identity_or_row_projected": false
+    }
+  ],
+  "matching_masked_joblog_observations": [
+    {
+      "line": 231,
+      "timestamp_utc": "2026-10-19T07:36:02.1645702Z",
+      "literal_status": "NO_FRESH_TRIGGER_HINT",
+      "line_sha256": "33005c807884cbb7eb715c0aeb280088938b967929ab1ce1e48ebc0bf47753db",
+      "masked_values_preserved": true
+    },
+    {
+      "line": 232,
+      "timestamp_utc": "2026-10-19T07:41:02.2881777Z",
+      "literal_status": "NO_FRESH_TRIGGER_HINT",
+      "line_sha256": "855513ea8883c501a251f78d00c67e65ba1879cabe35bed8e205ef6743253084",
+      "masked_values_preserved": true
+    },
+    {
+      "line": 233,
+      "timestamp_utc": "2026-10-19T07:46:02.3505391Z",
+      "literal_status": "NO_FRESH_TRIGGER_HINT",
+      "line_sha256": "218ff56d8a970b3af4f603a8d2d0d051c05f91e865018e1908a1e8f2e871f6c6",
+      "masked_values_preserved": true
+    },
+    {
+      "line": 234,
+      "timestamp_utc": "2026-10-19T07:51:02.1966147Z",
+      "literal_status": "NO_FRESH_TRIGGER_HINT",
+      "line_sha256": "ba254d50226b0c1d02125edcfb58dd762280cfdd8f420d21b8aced2a1525d760",
+      "masked_values_preserved": true
+    },
+    {
+      "line": 235,
+      "timestamp_utc": "2026-10-19T07:56:02.3305822Z",
+      "literal_status": "NO_FRESH_TRIGGER_HINT",
+      "line_sha256": "703c8286feb55b066d1ff14a55d8b2026d1b191497033b983102810324ba5050",
+      "masked_values_preserved": true
+    },
+    {
+      "line": 236,
+      "timestamp_utc": "2026-10-19T08:01:02.0502272Z",
+      "literal_status": "NO_FRESH_TRIGGER_HINT",
+      "line_sha256": "68f3b5ed889d48f9323ec56132e858a98fcb6ce3ebc9a1325d5af14b34b5681e",
+      "masked_values_preserved": true
+    }
+  ],
+  "exact_identity_and_result_projection_search": {
+    "RCHK:d0b84fb61fa20cc0c88cad7eab668964e964c210": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "NIL-USDT": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "S392:NIL-USDT:1792395207582": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "1792395207582": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "last_result": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "LIGHT": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "trigger_reached": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    },
+    "price": {
+      "unmasked_artifact_literal_matches": 0,
+      "masked_joblog_literal_matches": 0
+    }
+  },
+  "interpretation_ru": [
+    "Шесть фактических collector cycles completed07:36,07:41,07:46,07:51,07:56,08:01UTC. Их source_guard.allowed=true и kick.status=NO_FRESH_TRIGGER_HINT/dispatch=false. Это новая сохранённая граница: сборщик работал в рассматриваемом интервале, а не только до появления NIL.",
+    "На каждом шаге кумулятивный journal вырос на1request/1rowread/0write по all:v3_recheck_task_shadow. Эти числа подтверждают generic table access, но не возвращённый NIL row, его выбор, LIGHT execution или условие отказа. rows_read не является идентификатором/содержимым результата SQL.",
+    "В FINAL unmasked JSON нет точного task_id, NIL-USDT, исходного snapshot/observed_ts, last_result, LIGHT, trigger_reached или price. Ключи task_at_poll/query_rows/candidate_id и точная причинная связка к задаче в предоставленной проекции отсутствуют. Отсутствие этих полей не означает, что LIGHT не выполнялся в системе.",
+    "NO_FRESH_TRIGGER_HINT — реальный общий статус данного poll, но это не authoritative refusal именно NIL229. Неизвестны returned task row/selector exclusion, price path/reached, due-task processing, actual LIGHT result, полномочия первого отказа и task-specific kick/full-run admission.",
+    "kick_budget.safe=true — сохранённый план envelope; это не доказательство свободного общего/provider бюджета и не индивидуальный grant для NIL. В этихpolls dispatch=false, entry_authorized=false, source_http=0, Telegram=false; ENTRY/NIL delivery ими не устанавливаются.",
+    "CURRENT_MAIN_CODE_CHANGED появился в финальной записи08:51:00.8775731UTC после28успешных cycles/0failures. Все шесть более раннихpoll guards былиallowed; более поздний stop не является доказанной причиной судьбы задачи в07:33→08:03UTC. Clock-basedEXPIRED не выводится.",
+    "Ранее принятый terminal230 не перепроверялся и не переопределялся. Два новых оригинала не закрывают native task row/status/last_result и промежуточныеLIGHT/ENTRY."
+  ],
+  "task_specific_results": {
+    "actual_LIGHT": "UNKNOWN_NOT_PROJECTED",
+    "price_or_trigger_reached": "UNKNOWN_NOT_PROJECTED",
+    "kick_selection_or_exact_authoritative_refusal": "UNKNOWN_NOT_PROJECTED",
+    "task_individual_admission": "UNKNOWN_NOT_PROJECTED",
+    "actual_ENTRY": "UNKNOWN_NOT_PROJECTED",
+    "terminal_task_status": "UNKNOWN_NOT_PROJECTED",
+    "absence_of_execution_inferred": false
+  },
+  "coordinator_next_boundary_ru": "При добавлении диагностики использовать уже выполняемые selector/processor query results: точный task identity, фактическое стадийное решение/причину и исходные часы, при наличии actual LIGHT. Этот review не разрешает дополнительный native query, schema, forced MAIN, price fetch или retry принятого collector job.",
+  "verification": {
+    "status": "PASS",
+    "kind": "ONE_FINAL_SAVED_RECEIPT_INTEGRITY_CHECK",
+    "checks": [
+      "TWO_NEW_FINAL_ORIGINAL_EXACT_SHA_AND_BYTES",
+      "SINGLE_UNMASKED_ZIP_MEMBER_EXACT_SHA",
+      "SIX_ACTUAL_POLL_JSON_POINTERS_AND_REAL_CUMULATIVE_DELTAS",
+      "ZERO_EXACT_TASK_PRICE_LIGHT_RESULT_PROJECTION_MATCHES_NO_NOEXECUTION_INFERENCE",
+      "MASKED_LOG_LINES_PRESERVED_NO_DIGIT_RECONSTRUCTION",
+      "FINAL_STOP_28CYCLES_0FAIL_SEPARATE_FROM_TASK_WINDOW",
+      "FRESH_MAIN_ALL4_EQUAL_OWN_ACTIVE_CAS_AND_OWN_PREFIX_ONLY"
+    ],
+    "application_or_tests": 0,
+    "fresh_main": "511fb5bdf1900432311a83c57a9e1958ed0f2b9c",
+    "own_lease_ref_sha": "0dba72e0194c3817478eff351b1f160659b6b818",
+    "active_four_equal": true
+  }
+}
