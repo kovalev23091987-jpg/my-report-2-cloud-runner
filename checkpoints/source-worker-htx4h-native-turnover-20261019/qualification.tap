@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: NEW actual37 saved raw→native lexemes→closed4h→complete derivedUTC cohort, preserving old OHLC
+ok 1 - NEW actual37 saved raw→native lexemes→closed4h→complete derivedUTC cohort, preserving old OHLC
+  ---
+  duration_ms: 646.653708
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: mark-price endpoint
+ok 2 - NEW CONTROLLED rejection: mark-price endpoint
+  ---
+  duration_ms: 1.528833
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: index endpoint
+ok 3 - NEW CONTROLLED rejection: index endpoint
+  ---
+  duration_ms: 1.076375
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: different request contract
+ok 4 - NEW CONTROLLED rejection: different request contract
+  ---
+  duration_ms: 1.04275
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: different manifest contract
+ok 5 - NEW CONTROLLED rejection: different manifest contract
+  ---
+  duration_ms: 1.057791
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: non4hour request
+ok 6 - NEW CONTROLLED rejection: non4hour request
+  ---
+  duration_ms: 1.026333
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: mismatched channel
+ok 7 - NEW CONTROLLED rejection: mismatched channel
+  ---
+  duration_ms: 1.227417
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: mark zero response
+ok 8 - NEW CONTROLLED rejection: mark zero response
+  ---
+  duration_ms: 2.339583
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: non200 receipt
+ok 9 - NEW CONTROLLED rejection: non200 receipt
+  ---
+  duration_ms: 1.063333
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: future source response clock
+ok 10 - NEW CONTROLLED rejection: future source response clock
+  ---
+  duration_ms: 1.236417
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: source before original request
+ok 11 - NEW CONTROLLED rejection: source before original request
+  ---
+  duration_ms: 1.197167
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: unsafe received clock
+ok 12 - NEW CONTROLLED rejection: unsafe received clock
+  ---
+  duration_ms: 1.170541
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: missing original firstknown
+ok 13 - NEW CONTROLLED rejection: missing original firstknown
+  ---
+  duration_ms: 1.120542
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: negative turnover
+ok 14 - NEW CONTROLLED rejection: negative turnover
+  ---
+  duration_ms: 2.600709
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: unsafe turnover magnitude
+ok 15 - NEW CONTROLLED rejection: unsafe turnover magnitude
+  ---
+  duration_ms: 2.5585
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: missing turnover
+ok 16 - NEW CONTROLLED rejection: missing turnover
+  ---
+  duration_ms: 1.249083
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: string turnover
+ok 17 - NEW CONTROLLED rejection: string turnover
+  ---
+  duration_ms: 1.155291
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: nonfinite turnover
+ok 18 - NEW CONTROLLED rejection: nonfinite turnover
+  ---
+  duration_ms: 1.141958
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: fractional trade count
+ok 19 - NEW CONTROLLED rejection: fractional trade count
+  ---
+  duration_ms: 3.1225
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: zero price
+ok 20 - NEW CONTROLLED rejection: zero price
+  ---
+  duration_ms: 2.846709
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: inverted OHLC
+ok 21 - NEW CONTROLLED rejection: inverted OHLC
+  ---
+  duration_ms: 2.947916
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: offgrid start
+ok 22 - NEW CONTROLLED rejection: offgrid start
+  ---
+  duration_ms: 2.849458
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: duplicate start
+ok 23 - NEW CONTROLLED rejection: duplicate start
+  ---
+  duration_ms: 2.736208
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: descending starts
+ok 24 - NEW CONTROLLED rejection: descending starts
+  ---
+  duration_ms: 2.758959
+  type: 'test'
+  ...
+# Subtest: NEW CONTROLLED rejection: future bar start
+ok 25 - NEW CONTROLLED rejection: future bar start
+  ---
+  duration_ms: 9.224584
+  type: 'test'
+  ...
+# Subtest: NEW exact original bytes/hash mismatch refuses before semantic admission
+ok 26 - NEW exact original bytes/hash mismatch refuses before semantic admission
+  ---
+  duration_ms: 1.365208
+  type: 'test'
+  ...
+# Subtest: NEW duplicate numeric property refuses rather than last-wins
+ok 27 - NEW duplicate numeric property refuses rather than last-wins
+  ---
+  duration_ms: 1.370916
+  type: 'test'
+  ...
+# Subtest: NEW unsafe huge exponent refuses without expansion
+ok 28 - NEW unsafe huge exponent refuses without expansion
+  ---
+  duration_ms: 2.668833
+  type: 'test'
+  ...
+# Subtest: NEW gaps stay absent, incomplete UTC buckets are omitted, original firstknown is not candleclose
+ok 29 - NEW gaps stay absent, incomplete UTC buckets are omitted, original firstknown is not candleclose
+  ---
+  duration_ms: 12.075875
+  type: 'test'
+  ...
+# Subtest: NEW native zeros remain measured only for exact trade endpoint, not fabricated gaps
+ok 30 - NEW native zeros remain measured only for exact trade endpoint, not fabricated gaps
+  ---
+  duration_ms: 6.89225
+  type: 'test'
+  ...
+# Subtest: NEW lexical precision/exponent/both-sides retained, derived sum is exact and not divided by2
+ok 31 - NEW lexical precision/exponent/both-sides retained, derived sum is exact and not divided by2
+  ---
+  duration_ms: 0.628
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 785.800333
