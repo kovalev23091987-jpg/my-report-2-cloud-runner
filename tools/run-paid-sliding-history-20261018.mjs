@@ -1,9 +1,10 @@
 import fs from 'node:fs/promises';
-import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease,patchPhaseRoot} from '../runner/github-bounded-phase-lease.mjs';
+import {makeGithubControl,acquireWeeklyPhaseLease,releaseWeeklyPhaseLease,borrowFourMirrorLease} from '../runner/github-bounded-phase-lease.mjs';
+import {persistSlidingMirrorCursor} from '../runner/github-four-mirror-cas.mjs';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {SLIDING_HISTORY_POLICY as P,slidingCapacityDecision,reserveCapacityExpiryBudget,expireOldDetails} from '../runner/sliding-history-capacity.mjs';
-import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge} from '../runner/retention-bridge-provenance.mjs';
+import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
 import {reconcileNativeQueryCosts} from '../runner/native-query-cost-reconciliation.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json';
 const dir='audit-output/paid-sliding-history';await fs.mkdir(dir,{recursive:true});
@@ -24,9 +25,7 @@ try{
  const policy=JSON.parse(await fs.readFile('checkpoints/OWNER_PAID_SLIDING_HISTORY_20261018.json','utf8'));
  if(policy.schema!==P.schema||policy.account_id!==P.account_id||policy.enabled!==true||policy.paid_UI_confirmed!==true||policy.owner_authorized_detail_expiry!==true||policy.account_ceiling_bytes!==P.account_ceiling_bytes)throw Error('EXACT_OWNER_SLIDING_POLICY_REQUIRED');
  if(process.env.BORROW_EXISTING_OWNER){
-  const head=(await control.call('git/ref/heads/main')).object.sha;
-  if(head!==expected)throw Error('SLIDING_MAIN_MOVED');const p=await control.read(PHASE,head);
-  if(p.value.lease?.owner!==process.env.BORROW_EXISTING_OWNER)throw Error('SLIDING_PARENT_OWNER_REQUIRED');lease={borrowed:true,allowed:true,head,lease:p.value.lease};
+  lease=await borrowFourMirrorLease(control,{expected_main:expected,owner:process.env.BORROW_EXISTING_OWNER,scope_prefix:'RETAINED_HISTORY.'});
  }else{
   lease=await acquireWeeklyPhaseLease(control,{expected_main:expected,run_id:out.run,scope:'RETAINED_HISTORY. Owner18Oct paid Workers Paid and authorized volume-bounded expiry of oldest unreferenced rejected details; preserve current signals/latest per-asset originals/statistics/source clocks. Same two RETAINED_HISTORY slots/day and total3500000R70000W/164HTTP. New expiry operation<=48canonical+48proof bodies/20000R400W, archive48/5000R400W unchanged. Never clear unknown or refund quotas. Run '+out.run});
   if(!lease.allowed)throw Error(lease.status);expected=lease.head;
@@ -41,6 +40,8 @@ try{
  if(!out.capacity.due){out.status=out.capacity.status;out.D1_SQL=0;out.reservation_consumed=false;}
  else{
   out.bridge_before=await observe('before_SQL');
+  // Both existing mutation guards, postflight and cleanup are held BEFORE SQL.
+  out.pre_SQL_control_plan=requireRetentionControlReserve({used:controlHTTP,borrowed:lease.borrowed===true,bridge_postflight_pending:true},2);
   db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{nativeQueryReceipts:true,beforeRequest:event=>{if(bridgeHTTP>=16||event.wire_bytes>1400000||lease.lease.expires_ts<=Date.now())return{allowed:false};bridgeHTTP++;return{allowed:true};}});
   const reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveCapacityExpiryBudget(db,{reservation_id});
   if(!out.admission.allowed){out.status=out.admission.status;out.reservation_consumed=false;}
@@ -60,9 +61,8 @@ finally{
   // Cursor promotion requires exact known costs and the same installed bridge;
   // cursor710 for the lossless archive is never read or overwritten here.
   if(out.expiry&&out.finalized_usage?.unknown_ops===0&&out.D1.unknown_ops===0&&out.native_query_cost_reconciliation.statement_costs_closed&&!out.bridge_after_not_closed&&out.D1.rows_read<=P.reservation.rows_read&&out.D1.rows_written<=P.reservation.rows_written){
-   try{const p=await guard(),a={...p.value.active_working_state,sliding_history_cursor:{canonical:out.expiry.next_source_cursor,evidence:out.expiry.next_evidence_cursor,run:out.run,updated_ts:Date.now()}};
-    const raw=patchPhaseRoot(p.raw,{active_working_state:a});const r=await control.call('contents/'+PHASE,'PUT',{branch:'main',sha:p.sha,message:'Record bounded sliding history cursor '+out.run,content:Buffer.from(raw).toString('base64')});
-    if((await control.read(PHASE,r.commit.sha)).raw!==raw)throw Error('SLIDING_CURSOR_READBACK');expected=r.commit.sha;out.cursor_saved=true;
+   try{const r=await persistSlidingMirrorCursor(control,{expected_main:expected,owner:lease.lease.owner,canonical:out.expiry.next_source_cursor,evidence:out.expiry.next_evidence_cursor,run_id:out.run});
+    expected=r.head;lease.head=r.head;out.cursor_saved=true;
    }catch{out.cursor_not_closed=true;process.exitCode=1;}
   }
  }

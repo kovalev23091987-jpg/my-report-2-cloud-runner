@@ -42,8 +42,14 @@ export async function observeRetentionSQLBridge({expected:proof,call,configured_
 }
 // Final bridge metadata and cursor/release remain reserved before each write.
 // Three GitHub guard requests per mutation, exactly as in the existing tool.
-export function retentionMutationControlPlan({used,borrowed,bridge_postflight_pending=false}={}){
- if(!Number.isSafeInteger(used)||used<0||used>40||typeof borrowed!=='boolean'||typeof bridge_postflight_pending!=='boolean')throw Error('EXACT_RETENTION_CONTROL_USAGE_REQUIRED');
- const postflight=bridge_postflight_pending?4:0,cleanup=borrowed?5:10,reserved=cleanup+postflight;
- return{max_control_HTTP:40,postflight_HTTP:postflight,cursor_and_release_HTTP:cleanup,reserved_HTTP:reserved,max_mutation_batches:Math.min(6,Math.max(0,Math.floor((40-used-reserved)/3)))};
+export function retentionMutationControlPlan({used,borrowed,bridge_postflight_pending=false,future_archive_controls=0,admitted_batch_bound=6}={}){
+ if(!Number.isSafeInteger(used)||used<0||used>40||typeof borrowed!=='boolean'||typeof bridge_postflight_pending!=='boolean'||![0,6].includes(future_archive_controls)||!Number.isSafeInteger(admitted_batch_bound)||admitted_batch_bound<0||admitted_batch_bound>6)throw Error('EXACT_RETENTION_CONTROL_USAGE_REQUIRED');
+ const postflight=bridge_postflight_pending?4:0,cleanup=borrowed?5:10,reserved=cleanup+postflight+future_archive_controls;
+ return{max_control_HTTP:40,postflight_HTTP:postflight,cursor_and_release_HTTP:cleanup,future_archive_controls_HTTP:future_archive_controls,reserved_HTTP:reserved,admitted_batch_bound,max_mutation_batches:Math.min(admitted_batch_bound,Math.max(0,Math.floor((40-used-reserved)/3)))};
+}
+export function requireRetentionControlReserve(options,minimum_mutation_batches=1){
+ if(!Number.isInteger(minimum_mutation_batches)||minimum_mutation_batches<0||minimum_mutation_batches>6)throw Error('EXACT_RETENTION_MINIMUM_GUARD_RESERVE_REQUIRED');
+ const plan=retentionMutationControlPlan(options);
+ if(plan.max_mutation_batches<minimum_mutation_batches||options.used+plan.reserved_HTTP+3*minimum_mutation_batches>40)throw Error('RETENTION_REMAINING_CONTROL_RESERVE_REQUIRED');
+ return plan;
 }
