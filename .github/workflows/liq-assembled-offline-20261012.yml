@@ -319,6 +319,7 @@ permissions:
   contents: read
 jobs:
   verify:
+    if: ${{ github.ref != 'refs/heads/work/n10-observe-clock-connected-20261019' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -514,4 +515,47 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
+          retention-days: 30
+
+  connected_clock_qualification:
+    if: ${{ github.ref == 'refs/heads/work/n10-observe-clock-connected-20261019' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact own bounded scope before connected offline assembly
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-clock-connected-20261019.mjs before
+      - name: One new assembled source to original-task clock qualification
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/clock-connected
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/clock-connected/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          node --check runtime/src/worker.js
+          mkdir -p base-runtime
+          cp -R runtime/src base-runtime/src
+          cp current-generation/tests/fixtures/clock-connected-baseline-20261019/*.mjs base-runtime/src/
+          REPORT2_CLOCK_RUNTIME="$PWD/runtime/src" REPORT2_CLOCK_BASE_RUNTIME="$PWD/base-runtime/src" REPORT2_CLOCK_WITNESS="$PWD/audit-output/clock-connected/connected-witness.json" node --test --test-reporter=spec current-generation/tests/n10-observe-clock-connected.runtime.mjs > audit-output/clock-connected/connected-tests.log
+      - name: Exact own scope and assembled byte hashes after qualification
+        if: ${{ always() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-clock-connected-20261019.mjs after
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: clock-connected-${{ github.run_id }}
+          path: audit-output/clock-connected/
+          if-no-files-found: error
           retention-days: 30
