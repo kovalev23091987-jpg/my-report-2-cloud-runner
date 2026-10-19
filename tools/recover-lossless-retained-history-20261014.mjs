@@ -99,7 +99,10 @@ try{
   if(control_HTTP+worker_control_HTTP+13+(bridge_postflight_pending?4:0)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
  }
  future_archive_controls=kind==='full_evidence'?6:0;
- out.pre_SQL_control_plan=requireRetentionControlReserve({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending,future_archive_controls},out.execute?1:0);
+ // The qualified ordinary borrowed native path admitted only three batches.
+ // Cheaper GitHub acquisition does not expand that native scope.
+ const admitted_batch_bound=kind==='canonical'&&mode.native_qualification&&!self_qualification?3:6;
+ out.pre_SQL_control_plan=requireRetentionControlReserve({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending,future_archive_controls,admitted_batch_bound},out.execute?1:0);
  db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{nativeQueryReceipts:mode.native_qualification,beforeRequest:event=>{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
@@ -115,10 +118,10 @@ try{
   }};
   archive_pool=pool_enabled?createPrivateArchivePool({enabled:true,...archive_options}):null;archive_db=archive_pool?.legacy_db??new PrivateArchiveD1API(archive_options);
   await archive_db.verifyDatabase();await archive_db.query('SELECT 1 AS size_marker');
-  const control_plan=retentionMutationControlPlan({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending}),max_mutation_batches=control_plan.max_mutation_batches;out.control_plan=control_plan;out.control_limited_mutation_batches=max_mutation_batches;
+  const control_plan=retentionMutationControlPlan({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending,admitted_batch_bound}),max_mutation_batches=control_plan.max_mutation_batches;out.control_plan=control_plan;out.control_limited_mutation_batches=max_mutation_batches;
   Object.assign(out,await compactProtectedCanonical({source_db:db,archive_db,archive_pool,shared_mutation,batch_private_copies:shared_mutation&&mode.native_qualification&&out.execute===true,source_cursor:cursor_selection.cursor,max_mutation_batches,discovery_headroom:({max_bridge_requests,reserved_bridge_requests})=>bridge_HTTP+max_bridge_requests+reserved_bridge_requests<=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP,archive_headroom:({max_copy_requests,reserved_native_readbacks})=>{
    const s=whole.summary();return s.limits.background-s.used.background>=max_copy_requests+reserved_native_readbacks&&s.remaining>=max_copy_requests+reserved_native_readbacks+5;
-  },before_modify:async()=>{if(retentionMutationControlPlan({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending}).max_mutation_batches<1)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
+  },before_modify:async()=>{if(retentionMutationControlPlan({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending,admitted_batch_bound}).max_mutation_batches<1)throw Error('CANONICAL_CURSOR_AND_RELEASE_CONTROL_RESERVE_REQUIRED');await guard();},execute:out.execute,prefetch_private:process.env.REPORT2_PRIVATE_PREFETCH_QUALIFICATION==='true',require_native_preflight:mode.require_native_preflight}));
   out.canonical_rows_modified=out.compacted?.length||0;
  }else{
  const save_originals=async rows=>{
