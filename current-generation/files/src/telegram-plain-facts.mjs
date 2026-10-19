@@ -1,3 +1,4 @@
+import {verifyBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
 import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
@@ -93,6 +94,7 @@ export function plainContextFact(f,c){
 // Telegram. Historical supply and other raw diagnostic context stay in the
 // canonical analysis and manual report; they cannot occupy a spare bullet.
 export function isApprovedTelegramContextFact(f,c){
+ if(f?.block_id==='N10'&&f.field==='CLOSED_15M_BITFINEX_USD_PRICE_CONTEXT'&&f.label==='Цена за 15 минут на Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return verifyBitfinexN10MemoryEvidence(row,c.observed_ts);}
  if(f?.block_id==='N12'&&['Направление последних сделок OKX','Направление последних сделок KuCoin'].includes(f.label)){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validN12PublicTrade(row,c.observed_ts);}
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitfinexN12BoundedTradeSample(row,c.observed_ts);}
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitgetN12BoundedTradeSample(row,c.observed_ts);}

@@ -1,0 +1,481 @@
+﻿2026-10-19T09:31:57.3449342Z Current runner version: '2.337.0'
+2026-10-19T09:31:57.3475161Z ##[group]Runner Image Provisioner
+2026-10-19T09:31:57.3476200Z Hosted Compute Agent
+2026-10-19T09:31:57.3476829Z Version: 20261012.601
+2026-10-19T09:31:57.3477527Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-19T09:31:57.3478303Z Build Date: 2026-10-12T17:48:21Z
+2026-10-19T09:31:57.3479050Z Worker ID: {bb2e897d-548d-4a3c-8649-6c7321e825b3}
+2026-10-19T09:31:57.3479909Z Region: westcentralus
+2026-10-19T09:31:57.3480519Z Cloud: Azure
+2026-10-19T09:31:57.3481310Z ##[endgroup]
+2026-10-19T09:31:57.3482703Z ##[group]Operating System
+2026-10-19T09:31:57.3483356Z Ubuntu
+2026-10-19T09:31:57.3484068Z 24.04.5
+2026-10-19T09:31:57.3484631Z LTS
+2026-10-19T09:31:57.3485215Z ##[endgroup]
+2026-10-19T09:31:57.3485819Z ##[group]Runner Image
+2026-10-19T09:31:57.3486454Z Image: ubuntu-24.04
+2026-10-19T09:31:57.3487141Z Version: 20261012.334.1
+2026-10-19T09:31:57.3488529Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-19T09:31:57.3490187Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-19T09:31:57.3491353Z ##[endgroup]
+2026-10-19T09:31:57.3492603Z ##[group]GITHUB_TOKEN Permissions
+2026-10-19T09:31:57.3494517Z Contents: read
+2026-10-19T09:31:57.3495262Z Metadata: read
+2026-10-19T09:31:57.3495858Z ##[endgroup]
+2026-10-19T09:31:57.3498046Z Secret source: Actions
+2026-10-19T09:31:57.3499101Z Cache mode: write
+2026-10-19T09:31:57.3499853Z Prepare workflow directory
+2026-10-19T09:31:57.3841575Z Prepare all required actions
+2026-10-19T09:31:57.3888531Z Getting action download info
+2026-10-19T09:31:57.6809325Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-19T09:31:57.7631121Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-19T09:31:57.8629430Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+2026-10-19T09:31:58.2793780Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-19T09:31:58.4913253Z Complete job name: verify
+2026-10-19T09:31:58.5694398Z ##[group]Run actions/checkout@v4
+2026-10-19T09:31:58.5695398Z with:
+2026-10-19T09:31:58.5695891Z   ref: b59948027f73098dac0527e8c976d29ba28962ba
+2026-10-19T09:31:58.5696599Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:31:58.5701113Z   token: ***
+2026-10-19T09:31:58.5701586Z   ssh-strict: true
+2026-10-19T09:31:58.5702035Z   ssh-user: git
+2026-10-19T09:31:58.5702481Z   persist-credentials: true
+2026-10-19T09:31:58.5702977Z   clean: true
+2026-10-19T09:31:58.5703424Z   sparse-checkout-cone-mode: true
+2026-10-19T09:31:58.5704003Z   fetch-depth: 1
+2026-10-19T09:31:58.5704439Z   fetch-tags: false
+2026-10-19T09:31:58.5704892Z   show-progress: true
+2026-10-19T09:31:58.5705342Z   lfs: false
+2026-10-19T09:31:58.5705755Z   submodules: false
+2026-10-19T09:31:58.5706230Z   set-safe-directory: true
+2026-10-19T09:31:58.5706736Z   allow-unsafe-pr-checkout: false
+2026-10-19T09:31:58.5707479Z ##[endgroup]
+2026-10-19T09:31:58.6737268Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:31:58.6739254Z ##[group]Getting Git version info
+2026-10-19T09:31:58.6740206Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-19T09:31:58.6741738Z [command]/usr/bin/git version
+2026-10-19T09:31:58.6799920Z git version 2.55.0
+2026-10-19T09:31:58.6820612Z ##[endgroup]
+2026-10-19T09:31:58.6835026Z Temporarily overriding HOME='/home/runner/work/_temp/f7985e6c-2a9a-45db-a743-c7f986247d8c' before making global git config changes
+2026-10-19T09:31:58.6837354Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T09:31:58.6840605Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T09:31:58.6898714Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-19T09:31:58.6905542Z ##[group]Initializing the repository
+2026-10-19T09:31:58.6911277Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T09:31:58.7015885Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-19T09:31:58.7017535Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-19T09:31:58.7019001Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-19T09:31:58.7020235Z hint: call:
+2026-10-19T09:31:58.7021139Z hint:
+2026-10-19T09:31:58.7021958Z hint: 	git config --global init.defaultBranch <name>
+2026-10-19T09:31:58.7022959Z hint:
+2026-10-19T09:31:58.7023883Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-19T09:31:58.7025368Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-19T09:31:58.7026614Z hint:
+2026-10-19T09:31:58.7027372Z hint: 	git branch -m <name>
+2026-10-19T09:31:58.7028148Z hint:
+2026-10-19T09:31:58.7029164Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-19T09:31:58.7031300Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+2026-10-19T09:31:58.7034627Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:31:58.7082880Z ##[endgroup]
+2026-10-19T09:31:58.7084185Z ##[group]Disabling automatic garbage collection
+2026-10-19T09:31:58.7086768Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-19T09:31:58.7122699Z ##[endgroup]
+2026-10-19T09:31:58.7123837Z ##[group]Setting up auth
+2026-10-19T09:31:58.7129984Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T09:31:58.7259906Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T09:31:58.7602230Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T09:31:58.7644943Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T09:31:58.7893797Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T09:31:58.7933500Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T09:31:58.8174031Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-19T09:31:58.8216900Z ##[endgroup]
+2026-10-19T09:31:58.8226287Z ##[group]Fetching the repository
+2026-10-19T09:31:58.8228517Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin b59948027f73098dac0527e8c976d29ba28962ba
+2026-10-19T09:32:02.2244921Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:32:02.2245759Z  * branch            b59948027f73098dac0527e8c976d29ba28962ba -> FETCH_HEAD
+2026-10-19T09:32:02.2253793Z ##[endgroup]
+2026-10-19T09:32:02.2254411Z ##[group]Determining the checkout info
+2026-10-19T09:32:02.2254976Z ##[endgroup]
+2026-10-19T09:32:02.2259090Z [command]/usr/bin/git sparse-checkout disable
+2026-10-19T09:32:02.2315395Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-19T09:32:02.2384698Z ##[group]Checking out the ref
+2026-10-19T09:32:02.2388186Z [command]/usr/bin/git checkout --progress --force b59948027f73098dac0527e8c976d29ba28962ba
+2026-10-19T09:32:02.8854173Z Note: switching to 'b59948027f73098dac0527e8c976d29ba28962ba'.
+2026-10-19T09:32:02.8855867Z 
+2026-10-19T09:32:02.8856270Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-19T09:32:02.8857525Z changes and commit them, and you can discard any commits you make in this
+2026-10-19T09:32:02.8858422Z state without impacting any branches by switching back to a branch.
+2026-10-19T09:32:02.8859035Z 
+2026-10-19T09:32:02.8859425Z If you want to create a new branch to retain commits you create, you may
+2026-10-19T09:32:02.8860260Z do so (now or later) by using -c with the switch command. Example:
+2026-10-19T09:32:02.8860726Z 
+2026-10-19T09:32:02.8861525Z   git switch -c <new-branch-name>
+2026-10-19T09:32:02.8861886Z 
+2026-10-19T09:32:02.8862118Z Or undo this operation with:
+2026-10-19T09:32:02.8862424Z 
+2026-10-19T09:32:02.8862640Z   git switch -
+2026-10-19T09:32:02.8862976Z 
+2026-10-19T09:32:02.8863400Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-19T09:32:02.8863959Z 
+2026-10-19T09:32:02.8864423Z HEAD is now at b599480 Retain connected acceptance and remove temporary qualification job
+2026-10-19T09:32:02.8896192Z ##[endgroup]
+2026-10-19T09:32:02.8954205Z [command]/usr/bin/git log -1 --format=%H
+2026-10-19T09:32:02.8985180Z b59948027f73098dac0527e8c976d29ba28962ba
+2026-10-19T09:32:02.9258371Z ##[group]Run actions/setup-node@v4
+2026-10-19T09:32:02.9258718Z with:
+2026-10-19T09:32:02.9258992Z   node-version: 24
+2026-10-19T09:32:02.9259273Z   always-auth: false
+2026-10-19T09:32:02.9259542Z   check-latest: false
+2026-10-19T09:32:02.9262714Z   token: ***
+2026-10-19T09:32:02.9262990Z ##[endgroup]
+2026-10-19T09:32:03.0672374Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-19T09:32:03.0677462Z (node:2375) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T09:32:03.0678743Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T09:32:03.0680354Z ##[group]Environment details
+2026-10-19T09:32:03.4440119Z node: v24.21.0
+2026-10-19T09:32:03.4440562Z npm: 11.19.0
+2026-10-19T09:32:03.4441132Z yarn: 1.22.22
+2026-10-19T09:32:03.4442233Z ##[endgroup]
+2026-10-19T09:32:03.4632578Z ##[group]Run actions/github-script@v7
+2026-10-19T09:32:03.4632896Z with:
+2026-10-19T09:32:03.4636004Z   script: const owner=context.repo.owner,repo=context.repo.repo;
+const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+if(main!==context.payload.pull_request.base.sha)throw Error('MAIN_MOVED');
+const read=async(path,ref)=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref})).data.content,'base64').toString());
+const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',main);
+const branch=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',context.payload.pull_request.head.sha);
+const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json',main);
+if(!/^CODEX:/.test(phase.lease?.owner||'')||branch.lease?.owner!==phase.lease.owner||branch.lease?.acquired_ts!==phase.lease.acquired_ts||branch.lease?.expires_ts!==phase.lease.expires_ts||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+
+2026-10-19T09:32:03.4641912Z   github-token: ***
+2026-10-19T09:32:03.4642158Z   debug: false
+2026-10-19T09:32:03.4642393Z   user-agent: actions/github-script
+2026-10-19T09:32:03.4642678Z   result-encoding: json
+2026-10-19T09:32:03.4642908Z   retries: 0
+2026-10-19T09:32:03.4643150Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-19T09:32:03.4643471Z ##[endgroup]
+2026-10-19T09:32:05.2218263Z ##[group]Run mkdir -p runtime audit-output/n12-cross-venue
+2026-10-19T09:32:05.2218836Z [36;1mmkdir -p runtime audit-output/n12-cross-venue[0m
+2026-10-19T09:32:05.2219495Z [36;1mnode runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz[0m
+2026-10-19T09:32:05.2220097Z [36;1mtar -xzf runtime/payload.tar.gz -C runtime[0m
+2026-10-19T09:32:05.2220418Z [36;1mrm runtime/payload.tar.gz[0m
+2026-10-19T09:32:05.2221296Z [36;1mnode post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/n12-cross-venue/assembly.json[0m
+2026-10-19T09:32:05.2222339Z [36;1mnpm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund[0m
+2026-10-19T09:32:05.2489047Z shell: /usr/bin/bash -e {0}
+2026-10-19T09:32:05.2489357Z env:
+2026-10-19T09:32:05.2489918Z   REPORT2_PAYLOAD_KEY: ***
+2026-10-19T09:32:05.2490179Z ##[endgroup]
+2026-10-19T09:32:09.8074021Z 
+2026-10-19T09:32:09.8082892Z added 52 packages in 1s
+2026-10-19T09:32:09.8575661Z ##[group]Run cmp current-generation/files/src/worker.js runtime/src/worker.js
+2026-10-19T09:32:09.8576315Z [36;1mcmp current-generation/files/src/worker.js runtime/src/worker.js[0m
+2026-10-19T09:32:09.8577013Z [36;1mcmp current-generation/files/src/discovery-candidate-score.mjs runtime/src/discovery-candidate-score.mjs[0m
+2026-10-19T09:32:09.8577814Z [36;1mcmp current-generation/files/src/exact-saved-run-telegram.mjs runtime/src/exact-saved-run-telegram.mjs[0m
+2026-10-19T09:32:09.8578480Z [36;1mcmp current-generation/files/src/evidence-v2.mjs runtime/src/evidence-v2.mjs[0m
+2026-10-19T09:32:09.8579123Z [36;1mcmp current-generation/files/src/n12-market-trades.mjs runtime/src/n12-market-trades.mjs[0m
+2026-10-19T09:32:09.8579827Z [36;1mcmp current-generation/files/src/htx-large-trades-evidence.mjs runtime/src/htx-large-trades-evidence.mjs[0m
+2026-10-19T09:32:09.8580592Z [36;1mcmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs[0m
+2026-10-19T09:32:09.8581558Z [36;1mcmp current-generation/files/src/gate-futures-trade-sample.mjs runtime/src/gate-futures-trade-sample.mjs[0m
+2026-10-19T09:32:09.8582341Z [36;1mcmp current-generation/files/src/gate-futures-trade-collector.mjs runtime/src/gate-futures-trade-collector.mjs[0m
+2026-10-19T09:32:09.8583190Z [36;1mcmp current-generation/files/src/bitget-n12-bounded-trade-sample.mjs runtime/src/bitget-n12-bounded-trade-sample.mjs[0m
+2026-10-19T09:32:09.8583977Z [36;1mcmp current-generation/files/src/bitget-flow-collector.mjs runtime/src/bitget-flow-collector.mjs[0m
+2026-10-19T09:32:09.8584764Z [36;1mcmp current-generation/files/src/n12-native-public-trade-sample.mjs runtime/src/n12-native-public-trade-sample.mjs[0m
+2026-10-19T09:32:09.8585584Z [36;1mcmp current-generation/files/src/n12-kucoin-token-trade-sample.mjs runtime/src/n12-kucoin-token-trade-sample.mjs[0m
+2026-10-19T09:32:09.8586437Z [36;1mcmp current-generation/files/src/n12-native-public-trade-collector.mjs runtime/src/n12-native-public-trade-collector.mjs[0m
+2026-10-19T09:32:09.8587275Z [36;1mcmp current-generation/files/src/external-n05-flow-collector.mjs runtime/src/external-n05-flow-collector.mjs[0m
+2026-10-19T09:32:09.8588075Z [36;1mcmp current-generation/files/src/candidate-evidence-v2-runtime.mjs runtime/src/candidate-evidence-v2-runtime.mjs[0m
+2026-10-19T09:32:09.8588877Z [36;1mcmp current-generation/files/src/bounded-money-flow-diagnostic.mjs runtime/src/bounded-money-flow-diagnostic.mjs[0m
+2026-10-19T09:32:09.8589658Z [36;1mcmp current-generation/files/src/telegram-plain-facts.mjs runtime/src/telegram-plain-facts.mjs[0m
+2026-10-19T09:32:09.8590373Z [36;1mcmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs[0m
+2026-10-19T09:32:09.8591340Z [36;1mcmp current-generation/files/src/telegram-compact-formatter.mjs runtime/src/telegram-compact-formatter.mjs[0m
+2026-10-19T09:32:09.8592138Z [36;1mcmp current-generation/files/src/manual-report-formatter.mjs runtime/src/manual-report-formatter.mjs[0m
+2026-10-19T09:32:09.8592902Z [36;1mcmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs[0m
+2026-10-19T09:32:09.8595556Z [36;1mnode --test current-generation/tests/n12-market-trades.test.mjs current-generation/tests/n12-gate-futures-trades.test.mjs current-generation/tests/n12-bitget-bounded-reuse.test.mjs current-generation/tests/n12-native-public-trades.test.mjs current-generation/tests/n12-kucoin-token-trades.test.mjs current-generation/tests/bitget-flow-collector.test.mjs current-generation/tests/htx-large-trades-evidence.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/joint-spot-futures-flow.test.mjs current-generation/tests/shared-spot-futures-market-context.test.mjs > audit-output/n12-cross-venue/target-unit.tap[0m
+2026-10-19T09:32:09.8598463Z [36;1mnode --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n12-cross-venue/paused-chains.tap[0m
+2026-10-19T09:32:09.8599940Z [36;1mnode --test current-generation/tests/discovery-candidate-score.test.mjs current-generation/tests/two-candidate-budget.test.mjs current-generation/tests/exact-saved-run-telegram.test.mjs > audit-output/n12-cross-venue/selection-delivery.tap[0m
+2026-10-19T09:32:09.8601263Z [36;1mnode current-generation/validate.mjs > audit-output/n12-cross-venue/generation.log 2>&1[0m
+2026-10-19T09:32:09.8601972Z [36;1mnode runner/current-runtime-binding.mjs --runtime runtime > audit-output/n12-cross-venue/binding.json[0m
+2026-10-19T09:32:09.8673058Z shell: /usr/bin/bash -e {0}
+2026-10-19T09:32:09.8673342Z env:
+2026-10-19T09:32:09.8673562Z   REPORT2_TEST_RUNTIME: runtime
+2026-10-19T09:32:09.8673847Z   REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+2026-10-19T09:32:09.8674588Z   NODE_OPTIONS: --import /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/early-evidence-repair/no-network.mjs
+2026-10-19T09:32:09.8675299Z ##[endgroup]
+2026-10-19T09:32:39.6286359Z ##[error]Process completed with exit code 1.
+2026-10-19T09:32:39.6375689Z ##[group]Run for file in audit-output/n12-cross-venue/*.tap audit-output/n12-cross-venue/generation.log; do
+2026-10-19T09:32:39.6376956Z [36;1mfor file in audit-output/n12-cross-venue/*.tap audit-output/n12-cross-venue/generation.log; do[0m
+2026-10-19T09:32:39.6377703Z [36;1m  if test -f "$file"; then echo "FAILED_LOG: $file"; tail -90 "$file"; fi[0m
+2026-10-19T09:32:39.6378094Z [36;1mdone[0m
+2026-10-19T09:32:39.6447882Z shell: /usr/bin/bash -e {0}
+2026-10-19T09:32:39.6448183Z ##[endgroup]
+2026-10-19T09:32:39.6540321Z FAILED_LOG: audit-output/n12-cross-venue/paused-chains.tap
+2026-10-19T09:32:39.6556843Z ✔ owner-paused blocks are inactive and cannot score either direction or claim the physical root (4.29676ms)
+2026-10-19T09:32:39.6558609Z ✔ sole supply/calendar routes are blocked while a shared source preserves active N04 evidence (1.337494ms)
+2026-10-19T09:32:39.6560524Z ✔ manual and Telegram exclude paused facts, including previously stored facts, on the same retained snapshot (39.879181ms)
+2026-10-19T09:32:39.6562218Z ✔ exact stored manual hash is verified before paused facts are suppressed, without rewriting the archive (2.464365ms)
+2026-10-19T09:32:39.6563285Z ✔ all supply-only routes reject explicit non-XRP dispatch before admission, including manual overrides (0.454184ms)
+2026-10-19T09:32:39.6564272Z ✔ paused N06 never plans or dispatches social and pageview HTTP, even for explicit routes (0.357819ms)
+2026-10-19T09:32:39.6565112Z ✔ paused N07 skips sole-block feeds and filters old official facts (0.308159ms)
+2026-10-19T09:32:39.6566105Z ✔ HTX margin-rule adapter only serves paused N08 and N09, while the active futures book route remains available (0.30091ms)
+2026-10-19T09:32:39.6567019Z ✔ paused N14 cannot dispatch any option-only source or revive saved facts (0.523931ms)
+2026-10-19T09:32:39.6567515Z ℹ tests 9
+2026-10-19T09:32:39.6567767Z ℹ suites 0
+2026-10-19T09:32:39.6568018Z ℹ pass 9
+2026-10-19T09:32:39.6568258Z ℹ fail 0
+2026-10-19T09:32:39.6568521Z ℹ cancelled 0
+2026-10-19T09:32:39.6568983Z ℹ skipped 0
+2026-10-19T09:32:39.6569374Z ℹ todo 0
+2026-10-19T09:32:39.6569806Z ℹ duration_ms 185.662813
+2026-10-19T09:32:39.6570655Z FAILED_LOG: audit-output/n12-cross-venue/selection-delivery.tap
+2026-10-19T09:32:39.6572390Z ✔ funding is optional and adds ten points only for strong opposite signed four-hour payments (2.672936ms)
+2026-10-19T09:32:39.6574060Z ✔ hourly payout adds fifteen, but period, sign, freshness and directional boundaries fail closed (0.429699ms)
+2026-10-19T09:32:39.6575162Z ✔ funding without an independent directional route adds zero (0.227878ms)
+2026-10-19T09:32:39.6575965Z ✔ a fully qualified candidate remains eligible and scores 85 without funding (0.260573ms)
+2026-10-19T09:32:39.6576720Z ✔ market quality outranks a weaker candidate with funding (0.275014ms)
+2026-10-19T09:32:39.6577510Z ✔ worker admission cannot be created by funding and enforces the 100k HTX floor (0.848813ms)
+2026-10-19T09:32:39.6578272Z ✔ production overlay includes the candidate score module (0.190826ms)
+2026-10-19T09:32:39.6579078Z ✔ exact accepted saved run preserves the established approved non-entry layout (20.824219ms)
+2026-10-19T09:32:39.6579907Z ✔ missing levels are explicit in approved Telegram and manual forms (6.129544ms)
+2026-10-19T09:32:39.6581257Z ✔ numeric future levels supplement the same established layout and reach both forms (2.466879ms)
+2026-10-19T09:32:39.6582572Z ✔ short Unicode asset preserves approved header and expired snapshots never render (0.649876ms)
+2026-10-19T09:32:39.6584186Z ✔ top-two drift, missing active-block accounting, or calculated liquidation fails closed (0.314969ms)
+2026-10-19T09:32:39.6585373Z ✔ saved Telegram delivery rejects old 102 scope and any owner-paused block use (0.618092ms)
+2026-10-19T09:32:39.6586291Z ✔ network delivery sends exactly approved text and is idempotent on exact run and snapshot (2.774758ms)
+2026-10-19T09:32:39.6587152Z ✔ D1 rows_written acknowledgement is accepted and still requires readback (0.843425ms)
+2026-10-19T09:32:39.6588330Z ✔ legacy pre-network reservation with no owner token is reclaimed once under the analytics lease (1.215164ms)
+2026-10-19T09:32:39.6589427Z ✔ honestly accounted optional gaps permit the same approved renderer, while foreign or inflated use counts cannot (1.236223ms)
+2026-10-19T09:32:39.6590611Z ✔ runner retrieval follows the bound owner scope and still requires actual joint, Top2 and real-only liquidation acceptance (0.514147ms)
+2026-10-19T09:32:39.6592160Z ✔ exact saved-run Telegram validator accepts explicit99market plus6current suspended scope while preserving the approved message (1.376259ms)
+2026-10-19T09:32:39.6593530Z ✔ saved-run Telegram refuses fabricated unavailable counts and any suspended entry authorization (0.656164ms)
+2026-10-19T09:32:39.6594789Z ✔ two real checks fit the unchanged monthly allowance and eight manual commands (1.209105ms)
+2026-10-19T09:32:39.6596297Z ✔ two checks require admitted Node execution, while an exact coin and Worker stay at one (4.178094ms)
+2026-10-19T09:32:39.6597884Z ✔ both candidates share 164 attempts and retain real capacity for their additional sources (0.588821ms)
+2026-10-19T09:32:39.6599443Z ✔ funding and legacy direction priority cannot replace a better measured market rank (0.211185ms)
+2026-10-19T09:32:39.6600332Z ✔ full manual exact top-two order cannot be replaced by a higher enrichment score (4.092885ms)
+2026-10-19T09:32:39.6601958Z ✔ hot maintenance drains hundreds of expired rows in bounded batches and preserves fresh rows (13.210135ms)
+2026-10-19T09:32:39.6602951Z ✔ attempted automatic cycles consume a 40-minute slot even if later analysis fails (0.938868ms)
+2026-10-19T09:32:39.6603919Z ✔ scheduled provider spending cannot consume the protected owner reserve, enforced by SQL too (1.553586ms)
+2026-10-19T09:32:39.6604815Z ✔ scheduled execution cannot acquire full-manual freshness or cooldown bypass (0.858847ms)
+2026-10-19T09:32:39.6605674Z ✔ ordinary hot retention is bounded without changing freshness or retention dates (5.267103ms)
+2026-10-19T09:32:39.6606186Z ℹ tests 30
+2026-10-19T09:32:39.6606444Z ℹ suites 0
+2026-10-19T09:32:39.6606692Z ℹ pass 30
+2026-10-19T09:32:39.6606953Z ℹ fail 0
+2026-10-19T09:32:39.6607208Z ℹ cancelled 0
+2026-10-19T09:32:39.6607482Z ℹ skipped 0
+2026-10-19T09:32:39.6607732Z ℹ todo 0
+2026-10-19T09:32:39.6608024Z ℹ duration_ms 186.030525
+2026-10-19T09:32:39.6608538Z FAILED_LOG: audit-output/n12-cross-venue/target-unit.tap
+2026-10-19T09:32:39.6609540Z ✔ controlled cached identities permit four bounded transports, two reconciled markets, then immutable zero-HTTP reuse (87.138848ms)
+2026-10-19T09:32:39.6610780Z ✔ durable backoff and denied D1 headroom stop before any provider transport (3.717097ms)
+2026-10-19T09:32:39.6611966Z ✔ partial fills can still yield exact bounded N12 facts; exhausted cap cannot create new data (24.239222ms)
+2026-10-19T09:32:39.6612897Z ✔ sixteen prior attempts no longer stop qualified public data in later report cycles (19.948772ms)
+2026-10-19T09:32:39.6614009Z ✔ actual historical BTW flows, margin permission and bounded trades reach existing report layout without inventing score (62.022102ms)
+2026-10-19T09:32:39.6614941Z ✔ expired, foreign, future and corrupted sums cannot become report facts (3.57815ms)
+2026-10-19T09:32:39.6615920Z ✔ formatter failure and metadata alone never establish use; real block facts survive bounded display selection (10.039458ms)
+2026-10-19T09:32:39.6616835Z ✔ physical copies are counted once and contextual facts never vote on entry (2.180312ms)
+2026-10-19T09:32:39.6617833Z ✔ point supply, bounded zero attention and serial transfers provide small factual benefit with precise limits (6.151487ms)
+2026-10-19T09:32:39.6618893Z ✔ exact actual trade retains source clock, units and dedup while adding only bounded sample weight (4.299392ms)
+2026-10-19T09:32:39.6619905Z ✔ self-consistent wrong channel, stale or future batch never satisfies requested futures identity (0.319946ms)
+2026-10-19T09:32:39.6621309Z ✔ unsafe numeric trade ID, duplicated ID, inconsistent quote units and future trade cannot create evidence (0.799619ms)
+2026-10-19T09:32:39.6622316Z ✔ empty or saturated limited sample never means no market liquidations or full trading window (7.670406ms)
+2026-10-19T09:32:39.6623225Z ✔ transport preserves long decimal trade identifiers before JSON number rounding (0.630207ms)
+2026-10-19T09:32:39.6624211Z ✔ controlled multi-venue spot and futures agreement yields one unscored fact for both report chains (36.292864ms)
+2026-10-19T09:32:39.6625334Z ✔ single venue, opposite direction, weak imbalance, large strength spread and old window do not confirm N05 (1.044493ms)
+2026-10-19T09:32:39.6626241Z ✔ tampered report rows cannot bypass the shared recomputed agreement checks (3.535137ms)
+2026-10-19T09:32:39.6627089Z ✔ legacy single-market or Nansen rows cannot award points in the current N05 strategy (0.624558ms)
+2026-10-19T09:32:39.6628066Z ✔ same controlled canonical joint flow is actually printed in manual and both approved Telegram forms (30.628652ms)
+2026-10-19T09:32:39.6628991Z ✔ stored manual presentation hash is checked before legacy N05 text is suppressed (6.431313ms)
+2026-10-19T09:32:39.6629934Z ✔ qualified Binance native taker window participates in the same shared joint gate and reports (8.000797ms)
+2026-10-19T09:32:39.6631128Z ✔ qualified Gate exact token window survives shared validation and both report chains without score (15.279825ms)
+2026-10-19T09:32:39.6632163Z ✔ Backpack USDC flow appears in unchanged manual and both Telegram forms using only relative imbalance (14.039756ms)
+2026-10-19T09:32:39.6633053Z ✔ available context retains a single exact venue without consensus or score (6.413817ms)
+2026-10-19T09:32:39.6633868Z ✔ one qualified external venue remains useful when HTX has no full window (0.847891ms)
+2026-10-19T09:32:39.6634665Z ✔ opposite qualified venues are described separately without agreement (1.210961ms)
+2026-10-19T09:32:39.6635541Z ✔ missing, partial, foreign, stale and tampered available windows do not become flow facts (2.381131ms)
+2026-10-19T09:32:39.6636450Z ✔ all three qualified venues remain visible with disagreements and original clocks (12.30065ms)
+2026-10-19T09:32:39.6637287Z ✔ third qualified venue is printed in manual and both approved Telegram forms (13.261759ms)
+2026-10-19T09:32:39.6638169Z ✔ single-venue context is actually rendered in manual and both approved Telegram forms (6.177285ms)
+2026-10-19T09:32:39.6639285Z ✔ retained original Bitget fills have useful bounded market facts after exact native binding, with no full-window or score claim (13.139017ms)
+2026-10-19T09:32:39.6640397Z ✔ foreign, duplicate, expired or unbound Bitget rows cannot be promoted (3.636988ms)
+2026-10-19T09:32:39.6641534Z ✔ controlled same-run Bitget spot and futures join HTX as bounded facts in manual and approved Telegram (44.453118ms)
+2026-10-19T09:32:39.6642630Z ✔ retained original Gate futures trades produce bounded signed quote evidence with the real contract multiplier (4.118334ms)
+2026-10-19T09:32:39.6643777Z ✔ foreign token identity, multiplier, contract status and duplicate public fills cannot count as useful Gate evidence (0.321998ms)
+2026-10-19T09:32:39.6644821Z ✔ Gate N12 collector spends existing Gate daily/minute ledger and reuses original-clock cache (37.314238ms)
+2026-10-19T09:32:39.6645787Z ✔ full external route preserves the Gate futures sample under the shared five-request cap (18.044941ms)
+2026-10-19T09:32:39.6646740Z ✔ N12 combines HTX and independent Gate samples only as bounded facts and exposes disagreement (34.281334ms)
+2026-10-19T09:32:39.6647657Z ✔ Gate N12 fact reaches manual and approved Telegram context with exact source IDs (24.630393ms)
+2026-10-19T09:32:39.6648698Z ✔ five current original KuCoin pages bind PEPE address, live spot/future units and useful conflicting trades (6.11979ms)
+2026-10-19T09:32:39.6649738Z ✔ foreign chain, wrong mint, duplicate currency, closed market and duplicate trades fail closed (2.473217ms)
+2026-10-19T09:32:39.6650756Z ✔ admitted KuCoin token collector uses five calls, shared source ledger and zero-call cache replay (127.098605ms)
+2026-10-19T09:32:39.6652065Z ✔ opposite exact PEPE spot and futures remain one KuCoin source in manual and approved Telegram (58.097056ms)
+2026-10-19T09:32:39.6653144Z ✔ closed registry provenance retains original KuCoin spot/future facts and rejects a detached or changed proof (2.951308ms)
+2026-10-19T09:32:39.6654127Z ✔ new closed-registry proof survives the consumer and both approved report renderers (8.492637ms)
+2026-10-19T09:32:39.6654968Z ✔ same-run futures and spot agree with one HTX vote and zero extra HTTP (4.609764ms)
+2026-10-19T09:32:39.6655805Z ✔ opposite HTX markets stay separate and do not create a common directional score (7.054078ms)
+2026-10-19T09:32:39.6656692Z ✔ two fresh trade samples separated by a minute stay available without a joint direction (30.738105ms)
+2026-10-19T09:32:39.6657508Z ✔ spot-only is labeled as one market and not independent venue agreement (1.215728ms)
+2026-10-19T09:32:39.6658303Z ✔ stale, foreign-channel and duplicate spot records are not useful evidence (0.348368ms)
+2026-10-19T09:32:39.6659626Z ✔ N12 context connects same-run HTX markets with validated independent four-hour venue without mixing windows (3.592111ms)
+2026-10-19T09:32:39.6660613Z ✔ opposite recent and four-hour directions cannot become one market conclusion (1.93008ms)
+2026-10-19T09:32:39.6661628Z ✔ the joint N12 fact reaches manual and Telegram output with source receipts (36.022302ms)
+2026-10-19T09:32:39.6662481Z ✔ plain Telegram N12 receipts retain only components represented by that surface (6.951306ms)
+2026-10-19T09:32:39.6663566Z ✔ four retained original spot/futures pages contain exact, useful bounded facts with correct contract units (18.572857ms)
+2026-10-19T09:32:39.6664561Z ✔ shared native catalogs retain exact approved instruments within a small D1 cache row (2.727405ms)
+2026-10-19T09:32:39.6665625Z ✔ wrong native identity, asset class, size metadata, symbol, duplicate IDs and unsafe KuCoin nanoseconds are rejected (4.51256ms)
+2026-10-19T09:32:39.6666733Z ✔ OKX collector shares admission, stores original clocks, caches both markets and stops tokens before HTTP (71.310473ms)
+2026-10-19T09:32:39.6667836Z ✔ actual OKX spot and futures pages join controlled HTX fact and reach manual plus approved Telegram with exact IDs (41.893492ms)
+2026-10-19T09:32:39.6668812Z ✔ one native venue keeps spot and futures together and rejects a conflicting direction (6.214431ms)
+2026-10-19T09:32:39.6669776Z ✔ merged N12 component origins retain each native market root and own clocks on both report surfaces (6.207761ms)
+2026-10-19T09:32:39.6671292Z ✔ native paired N12 provenance excludes invalid or foreign related facts and never fabricates their windows (2.75747ms)
+2026-10-19T09:32:39.6672389Z ✔ N12 component accounting includes assessed printed external facts within the same shared HTTP envelope (29.290452ms)
+2026-10-19T09:32:39.6673304Z ✔ N12 component rendering alone cannot invent an assessment or decision use (5.935616ms)
+2026-10-19T09:32:39.6674248Z ✔ N12 component supplemental membership excludes unbound, foreign and other-block source rows (2.467539ms)
+2026-10-19T09:32:39.6675157Z ✔ spot comparison is limited to the exact current approved HTX analysis universe (2.351406ms)
+2026-10-19T09:32:39.6676196Z ✔ original same-depth clocks yield one neutral HTX comparison and the same bounded conclusion in manual and Telegram (34.507891ms)
+2026-10-19T09:32:39.6677151Z ✔ disagreeing recent spot/futures trades produce a cautious shared conclusion (0.298554ms)
+2026-10-19T09:32:39.6678216Z ✔ same-clock RLC overlapping quotes do not become a confirmed futures discount, while FIL separate quotes remain comparable (0.36319ms)
+2026-10-19T09:32:39.6679346Z ✔ foreign, stale, future and incomplete books retain only the verified market; skewed pairs do not compare (1.174586ms)
+2026-10-19T09:32:39.6680341Z ✔ spot original depth prices remain separate from a ticker and paused N16 emits no cost fact (3.236092ms)
+2026-10-19T09:32:39.6681353Z ✔ approved non-ASCII contract retains its exact spot query symbol (0.869984ms)
+2026-10-19T09:32:39.6681836Z ℹ tests 72
+2026-10-19T09:32:39.6682273Z ℹ suites 0
+2026-10-19T09:32:39.6682525Z ℹ pass 72
+2026-10-19T09:32:39.6682777Z ℹ fail 0
+2026-10-19T09:32:39.6683030Z ℹ cancelled 0
+2026-10-19T09:32:39.6683302Z ℹ skipped 0
+2026-10-19T09:32:39.6683559Z ℹ todo 0
+2026-10-19T09:32:39.6683853Z ℹ duration_ms 1026.367552
+2026-10-19T09:32:39.6684264Z FAILED_LOG: audit-output/n12-cross-venue/generation.log
+2026-10-19T09:32:39.6685146Z ✔ shared adapter transport accounting can wrap bound baseline without changing facts or their digest (12.553396ms)
+2026-10-19T09:32:39.6686360Z ✔ original BTC prior-hour reference reaches the existing N05 fact, manual and both Telegram forms with no score or new fact slot (97.253103ms)
+2026-10-19T09:32:39.6687520Z ✔ existing N05 flow stays visible while foreign asset baseline is omitted from manual and both Telegram forms (25.124298ms)
+2026-10-19T09:32:39.6688601Z ✔ existing N05 flow stays visible while foreign market baseline is omitted from manual and both Telegram forms (19.177397ms)
+2026-10-19T09:32:39.6689683Z ✔ existing N05 flow stays visible while foreign quote baseline is omitted from manual and both Telegram forms (19.983758ms)
+2026-10-19T09:32:39.6690750Z ✔ existing N05 flow stays visible while changed window baseline is omitted from manual and both Telegram forms (23.855174ms)
+2026-10-19T09:32:39.6692081Z ✔ existing N05 flow stays visible while future observation baseline is omitted from manual and both Telegram forms (17.22227ms)
+2026-10-19T09:32:39.6693231Z ✔ existing N05 flow stays visible while changed current amount baseline is omitted from manual and both Telegram forms (16.65963ms)
+2026-10-19T09:32:39.6694359Z ✔ existing N05 flow stays visible while changed median baseline is omitted from manual and both Telegram forms (17.092368ms)
+2026-10-19T09:32:39.6695512Z ✔ existing N05 flow stays visible while missing original binding baseline is omitted from manual and both Telegram forms (19.039974ms)
+2026-10-19T09:32:39.6696512Z ✔ late original Gate history cannot make the earlier Gate four-hour window fresh (11.893612ms)
+2026-10-19T09:32:39.6697362Z ✔ two real checks fit the unchanged monthly allowance and eight manual commands (1.290355ms)
+2026-10-19T09:32:39.6698253Z ✔ two checks require admitted Node execution, while an exact coin and Worker stay at one (4.624399ms)
+2026-10-19T09:32:39.6699171Z ✔ both candidates share 164 attempts and retain real capacity for their additional sources (0.49432ms)
+2026-10-19T09:32:39.6700073Z ✔ funding and legacy direction priority cannot replace a better measured market rank (0.148319ms)
+2026-10-19T09:32:39.6701345Z ✔ full manual exact top-two order cannot be replaced by a higher enrichment score (3.728265ms)
+2026-10-19T09:32:39.6702294Z ✔ hot maintenance drains hundreds of expired rows in bounded batches and preserves fresh rows (12.493918ms)
+2026-10-19T09:32:39.6703210Z ✔ attempted automatic cycles consume a 40-minute slot even if later analysis fails (0.95552ms)
+2026-10-19T09:32:39.6704152Z ✔ scheduled provider spending cannot consume the protected owner reserve, enforced by SQL too (1.288152ms)
+2026-10-19T09:32:39.6705053Z ✔ scheduled execution cannot acquire full-manual freshness or cooldown bypass (0.807222ms)
+2026-10-19T09:32:39.6705913Z ✔ ordinary hot retention is bounded without changing freshness or retention dates (2.267638ms)
+2026-10-19T09:32:39.6706796Z ✔ same genuine historical context retains historical V5 slots and full manual output (35.594859ms)
+2026-10-19T09:32:39.6707729Z ✔ unbound, changed, stale, foreign or future evidence cannot become approved Telegram facts (12.329065ms)
+2026-10-19T09:32:39.6708753Z ✔ compact formatter, missing payload or mismatched fingerprint do not prove approved Telegram use (8.265945ms)
+2026-10-19T09:32:39.6709760Z ✔ N07 requires an actual nonempty headline and shares exact dated facts with both report surfaces (6.526146ms)
+2026-10-19T09:32:39.6710758Z ✔ immutable BR/NEAR book facts reach approved Russian manual and Telegram forms from one canonical (20.617443ms)
+2026-10-19T09:32:39.6712156Z ✔ canonical execution facts cannot survive changed quantity, foreign snapshot or forged descriptive text (27.451064ms)
+2026-10-19T09:32:39.6713249Z ✔ exact assembled runtime canonical producer joins source facts without creating score, target or permission (71.145017ms)
+2026-10-19T09:32:39.6714136Z ✔ K15: 31-day worst case is 13,330 and scheduled plus burst is 11,625 (2.117506ms)
+2026-10-19T09:32:39.6714932Z ✔ K15: liquidation-only spends zero BYK but shares five manual-coin admissions (1.329403ms)
+2026-10-19T09:32:39.6715764Z ✔ K15: cache and statistics lanes cannot bypass the 164-request whole-job cap (0.528099ms)
+2026-10-19T09:32:39.6716745Z ✔ K15: two actors competing for last project units admit at most one and duplicate request does not spend twice (2.603534ms)
+2026-10-19T09:32:39.6717734Z ✔ K15: timeout remains conservatively charged and UTC month creates a new accounting period (1.684767ms)
+2026-10-19T09:32:39.6718611Z ✔ official Lighter and GMX catalogs build exact venue identities once per day (2.213078ms)
+2026-10-19T09:32:39.6719533Z ✔ structural gTrade hints are returned separately from exact Lighter/GMX market identities (1.191269ms)
+2026-10-19T09:32:39.6720533Z ✔ the exact producer-confirmed BTW registry binding reaches JOINT_FLOW without renaming its origin (2.507863ms)
+2026-10-19T09:32:39.6721759Z ✔ a method label alone, a candidate, a foreign contract and a changed address never authorize a new route (0.52808ms)
+2026-10-19T09:32:39.6722877Z ✔ CoinPaprika exact reference requires its original catalog and metadata receipts and preserves provider provenance (0.56847ms)
+2026-10-19T09:32:39.6724044Z ✔ original saved BTW Poloniex catalog/address and 240 candles remain qualified through the corrected producer method (82.31777ms)
+2026-10-19T09:32:39.6725119Z ✔ 5% relative-price merge shows original farthest price, distance and amount without mutating raw map (3.080539ms)
+2026-10-19T09:32:39.6726167Z ✔ merge below selects lower original price; no transitive chaining, side, quote, asset or source-age mixing (0.674266ms)
+2026-10-19T09:32:39.6727196Z ✔ additional source collection admission does not inflate accepted coverage or independent votes (5.220719ms)
+2026-10-19T09:32:39.6728344Z ✔ gTrade variable clock cannot become position snapshot clock; receipt-only estimate is labelled and never scored as a fresh map (27.951713ms)
+2026-10-19T09:32:39.6729461Z ✔ gTrade exact crypto routing rejects ticker collisions with stocks and ambiguous native markets (0.514089ms)
+2026-10-19T09:32:39.6730330Z ✔ binds only ready 15m coverage and retains the unwindowed sample and 24h gap (1.880907ms)
+2026-10-19T09:32:39.6731512Z ✔ rejects wrong identity, scale, source, stale or future clocks and misbound windows (1.956429ms)
+2026-10-19T09:32:39.6732391Z ✔ a coverage label or reliable flag cannot bypass factual counts and payload integrity (0.755586ms)
+2026-10-19T09:32:39.6733284Z ✔ the actual deep consumer binds after both components settle, before sufficiency (4.146463ms)
+2026-10-19T09:32:39.6734243Z ✔ HTTP 200 candles for a different requested session cannot validate a volume research dataset (1.07038ms)
+2026-10-19T09:32:39.6735251Z ✔ retained real NEAR account supplies exact BTC capability with zero new HTTP and original native clock (6.327153ms)
+2026-10-19T09:32:39.6736228Z ✔ no native source clock or expired original account cannot become zero-request coverage (1.301703ms)
+2026-10-19T09:32:39.6737132Z ✔ native catalog has durable source admission and denied scope makes no transport call (0.394112ms)
+2026-10-19T09:32:39.6738107Z ✔ additional native pageview context reaches consumer without replacing primary or assigning scores (14.152418ms)
+2026-10-19T09:32:39.6739024Z ✔ pageview route rejects wrapped, foreign native or ambiguous page bindings (0.651682ms)
+2026-10-19T09:32:39.6739918Z ✔ admitted one-request collector caches, retains exact timestamps and caps minute bursts (26.634548ms)
+2026-10-19T09:32:39.6740786Z ✔ 429 installs shared backoff and incomplete responses do not become zero views (3.917675ms)
+2026-10-19T09:32:39.6742137Z ✔ ten additional verified native page routes produce neutral report context only for the matching HTX chain (2.168312ms)
+2026-10-19T09:32:39.6743096Z ✔ XRP and HBAR exact native pages reject ticker collisions and wrapped assets (0.448572ms)
+2026-10-19T09:32:39.6743907Z ✔ K02: disabled execution gates the whole working job before checkout/decrypt (1.711067ms)
+2026-10-19T09:32:39.6744809Z ✔ K02: runtime preflight precedes decrypt and runner preflight precedes worker/network setup (1.789502ms)
+2026-10-19T09:32:39.6745905Z ✔ successful native payments use delivered_amount even when DeliverMax is larger; consumer and score remain neutral (21.528759ms)
+2026-10-19T09:32:39.6747042Z ✔ issued currencies, failed or unavailable delivery amounts and stated Amount never become native payments (0.643711ms)
+2026-10-19T09:32:39.6748001Z ✔ exact ledger hash, header clock, parent proof and fresh source bound are compulsory (0.563042ms)
+2026-10-19T09:32:39.6749017Z ✔ native route depends on supply first and collects one admitted exact ledger without renewing source clocks (23.796057ms)
+2026-10-19T09:32:39.6750121Z ✔ unknown or malformed public quota is not zero/unlimited; original reset and bounded load backoff are explicit (1.289845ms)
+2026-10-19T09:32:39.6751447Z ✔ a binding zero-quota header stops dependent native ledger requests and the next collector spends no caller slot (4.064261ms)
+2026-10-19T09:32:39.6752525Z ✔ XRP supply and N04 payment share provider backoff; exhausted daily parent/child preserve caller slots (2.52633ms)
+2026-10-19T09:32:39.6753116Z ℹ tests 2648
+2026-10-19T09:32:39.6753403Z ℹ suites 0
+2026-10-19T09:32:39.6753669Z ℹ pass 2645
+2026-10-19T09:32:39.6753923Z ℹ fail 1
+2026-10-19T09:32:39.6754174Z ℹ cancelled 0
+2026-10-19T09:32:39.6754434Z ℹ skipped 2
+2026-10-19T09:32:39.6754694Z ℹ todo 0
+2026-10-19T09:32:39.6754991Z ℹ duration_ms 22929.694116
+2026-10-19T09:32:39.6755180Z 
+2026-10-19T09:32:39.6755325Z ✖ failing tests:
+2026-10-19T09:32:39.6755490Z 
+2026-10-19T09:32:39.6755854Z test at current-generation/tests/telegram-publication-backlog.test.mjs:1:1
+2026-10-19T09:32:39.6757061Z ✖ /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/telegram-publication-backlog.test.mjs (69.068265ms)
+2026-10-19T09:32:39.6757775Z   'test failed'
+2026-10-19T09:32:39.6757925Z 
+2026-10-19T09:32:39.6757934Z 
+2026-10-19T09:32:39.6758419Z     at run (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:15:29)
+2026-10-19T09:32:39.6759340Z     at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:58:1
+2026-10-19T09:32:39.6760292Z     at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+2026-10-19T09:32:39.6760770Z     at async node:internal/modules/esm/loader:647:26
+2026-10-19T09:32:39.6761537Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-10-19T09:32:39.6761903Z 
+2026-10-19T09:32:39.6762020Z Node.js v24.21.0
+2026-10-19T09:32:39.6814860Z ##[group]Run actions/upload-artifact@v4
+2026-10-19T09:32:39.6815161Z with:
+2026-10-19T09:32:39.6815384Z   name: n12-cross-venue-39230761735
+2026-10-19T09:32:39.6815675Z   path: audit-output/n12-cross-venue/
+2026-10-19T09:32:39.6815946Z   retention-days: 30
+2026-10-19T09:32:39.6816174Z   if-no-files-found: warn
+2026-10-19T09:32:39.6816424Z   compression-level: 6
+2026-10-19T09:32:39.6816654Z   overwrite: false
+2026-10-19T09:32:39.6816875Z   include-hidden-files: false
+2026-10-19T09:32:39.6817131Z ##[endgroup]
+2026-10-19T09:32:39.8502731Z (node:6776) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T09:32:39.8503651Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T09:32:39.8584752Z With the provided path, there will be 5 files uploaded
+2026-10-19T09:32:39.8586664Z Artifact name is valid!
+2026-10-19T09:32:39.8587757Z Root directory input is valid!
+2026-10-19T09:32:40.1784939Z Beginning upload of artifact content to blob storage
+2026-10-19T09:32:40.2046674Z (node:6776) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-19T09:32:40.4628862Z Uploaded bytes 14654
+2026-10-19T09:32:40.5220149Z Finished uploading artifact content to blob storage!
+2026-10-19T09:32:40.5221580Z SHA256 digest of uploaded artifact zip is 1cbdb94858c7eb4a455dfeb51a05dd05b0242d98d23fc7861eb18dd0f680fc62
+2026-10-19T09:32:40.5222548Z Finalizing artifact upload
+2026-10-19T09:32:40.7848519Z Artifact n12-cross-venue-39230761735.zip successfully finalized. Artifact ID 12176598920
+2026-10-19T09:32:40.7849480Z Artifact n12-cross-venue-39230761735 has been successfully uploaded! Final size is 14654 bytes. Artifact ID is 12176598920
+2026-10-19T09:32:40.7855445Z Artifact download URL: https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39230761735/artifacts/12176598920
+2026-10-19T09:32:40.8067120Z Post job cleanup.
+2026-10-19T09:32:40.8960755Z [command]/usr/bin/git version
+2026-10-19T09:32:40.9003289Z git version 2.55.0
+2026-10-19T09:32:40.9039446Z Temporarily overriding HOME='/home/runner/work/_temp/9c80398f-e88d-4d5a-834b-9f566b7dd01b' before making global git config changes
+2026-10-19T09:32:40.9041188Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T09:32:40.9045065Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T09:32:40.9086270Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T09:32:40.9123607Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T09:32:40.9415747Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T09:32:40.9447585Z http.https://github.com/.extraheader
+2026-10-19T09:32:40.9459992Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-19T09:32:40.9503132Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T09:32:40.9783757Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T09:32:40.9824323Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T09:32:41.0300294Z Cleaning up orphan processes
+2026-10-19T09:32:41.0617918Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/github-script@v7, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

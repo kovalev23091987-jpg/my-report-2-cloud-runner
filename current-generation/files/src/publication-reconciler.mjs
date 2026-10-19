@@ -1,6 +1,7 @@
 import * as publication from './canonical-publication.mjs';
 import {finalizePublication,bindDispatchToPublication,loadBoundTelegram,renderCanonicalTelegram,renderCanonicalManual} from './canonical-publication.mjs';
 import {enqueueRecheck} from './recheck-scheduler.mjs';
+import {ownerSilentExpiryDispatch,OWNER_EXPIRY_NOTICE_DISABLED} from './owner-telegram-expiry-policy.mjs';
 
 export const PUBLICATION_RECONCILER_VERSION='post-v7-publication-reconciler-v5-finalize-invisible-removal-20260928';
 export const PUBLICATION_BINDING_GRACE_MS=10*60_000;
@@ -20,6 +21,7 @@ async function mark(db,key,state,error,now){
 async function removalPublicationForDispatch(db,row,life,now){
  let receipt;try{receipt=JSON.parse(row.message_hash);}catch{return {status:'REMOVAL_RECEIPT_NOT_CLOSED',life};}
  if(!publication.validateRemovalReceipt?.(receipt,{contract:row.contract,direction:row.direction,wave_id:row.wave_id,observed_ts:Number(life.observation_ts)})||receipt.reason!==life.reason||receipt.observed_ts>Number(row.created_ts)||receipt.observed_ts<Number(row.created_ts)-PUBLICATION_BINDING_GRACE_MS)return {status:'REMOVAL_RECEIPT_NOT_CLOSED',life};
+ if(receipt.reason==='ORIGINAL_TTL_EXPIRED')return {status:'OWNER_TTL_NOTICE_DISABLED',life};
  const prior=await db.prepare(`SELECT b.publication_id,b.idempotency_key,b.run_id,b.snapshot_id,b.observed_ts,b.analytical_fingerprint,b.presentation_hash,d.telegram_message_id FROM v3_telegram_dispatch_shadow d JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key WHERE d.contract=?1 AND d.direction=?2 AND d.wave_id=?3 AND d.rules_version=?4 AND d.lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND d.sent_ts<?5 AND (?6 IS NULL OR b.publication_id=?6) AND b.contract_code=d.contract AND b.direction=d.direction AND b.wave_id=d.wave_id AND b.rules_version=d.rules_version AND b.lifecycle_event=d.lifecycle_event ORDER BY d.sent_ts DESC,d.idempotency_key ASC LIMIT 1`).bind(row.contract,upper(row.direction),row.wave_id,row.rules_version,Number(row.created_ts),receipt.original_publication_id||null).first();
  if(!prior)return {status:'REMOVAL_WITHOUT_PRIOR_DELIVERY',life};
  if(receipt.original_publication_id&&(prior.run_id!==receipt.original_run_id||prior.snapshot_id!==receipt.original_snapshot_id||prior.analytical_fingerprint!==receipt.original_fingerprint||String(prior.telegram_message_id)!==receipt.original_telegram_message_id))return {status:'REMOVAL_RECEIPT_NOT_CLOSED',life};
@@ -130,13 +132,15 @@ export async function reconcilePendingPublications(db,{now_ts=Date.now(),limit=8
  // A separate administrative insert consumes the existing write allowance.
  // Reconcile one such cancellation per call; leave other work pending without
  // increasing the frozen max-reconcile, delivery or D1 envelopes.
- const pending=rows(q),administrative=pending.find(row=>upper(row.lifecycle_event)==='IDEA_REMOVED'&&(String(row.message_hash||'').startsWith('{')||Number(row.created_ts)>=Date.parse('2026-10-09T08:30:00Z')));
- const selected=administrative?[administrative]:pending;
+ const pending=rows(q),silent=pending.filter(ownerSilentExpiryDispatch),remaining=pending.filter(row=>!ownerSilentExpiryDispatch(row));
+ const administrative=remaining.find(row=>upper(row.lifecycle_event)==='IDEA_REMOVED'&&(String(row.message_hash||'').startsWith('{')||Number(row.created_ts)>=Date.parse('2026-10-09T08:30:00Z')));
+ const selected=[...silent,...(administrative?[administrative]:remaining)];
  for(const row of selected){
+  if(ownerSilentExpiryDispatch(row)){await mark(db,row.idempotency_key,'FAILED_FINAL',OWNER_EXPIRY_NOTICE_DISABLED,now);out.push({key:row.idempotency_key,status:OWNER_EXPIRY_NOTICE_DISABLED});continue;}
   const exact=await exactPublicationForDispatch(db,row,{executor_run_id:source_run_id,now_ts:now});
   if(exact.status!=='CLOSED'){
    if(exact.status==='EXPIRED_NOT_SENT')await mark(db,row.idempotency_key,'EXPIRED_NOT_SENT',exact.status,now);
-   else if(['LIFECYCLE_SUPERSEDED','REMOVAL_WITHOUT_PRIOR_DELIVERY','CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL','AMBIGUOUS_CANONICAL_SNAPSHOT','AMBIGUOUS_CURRENT_RUN_CANONICAL_SNAPSHOT','REMOVAL_RECEIPT_NOT_CLOSED'].includes(exact.status))await mark(db,row.idempotency_key,'FAILED_FINAL',exact.status,now);
+   else if(['OWNER_TTL_NOTICE_DISABLED','LIFECYCLE_SUPERSEDED','REMOVAL_WITHOUT_PRIOR_DELIVERY','CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL','AMBIGUOUS_CANONICAL_SNAPSHOT','AMBIGUOUS_CURRENT_RUN_CANONICAL_SNAPSHOT','REMOVAL_RECEIPT_NOT_CLOSED'].includes(exact.status))await mark(db,row.idempotency_key,'FAILED_FINAL',exact.status,now);
    out.push({key:row.idempotency_key,status:exact.status,matches:exact.matches??null,dispatch_age_ms:exact.dispatch_age_ms??null});
    continue;
   }

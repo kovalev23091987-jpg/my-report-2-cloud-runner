@@ -52,6 +52,7 @@ export function assessActionability({canonical,lifecycle_event,prior_sent=false}
  const base={deliver:false,status:'INTERNAL_ONLY',reason:'NOT_ACTIONABLE',create_recheck:false};
  if(canonical?.status!=='CLOSED'||observed===null)return {...base,reason:'CANONICAL_NOT_CLOSED'};
  if(canonical?.metadata?.lifecycle_removal&&event!=='IDEA_REMOVED')return {...base,reason:'REMOVAL_EVENT_MISMATCH'};
+ if(event==='IDEA_REMOVED'&&canonical?.metadata?.lifecycle_removal?.reason==='ORIGINAL_TTL_EXPIRED')return {...base,reason:'OWNER_TTL_NOTICE_DISABLED'};
  if(event==='IDEA_REMOVED')return prior_sent?{deliver:true,status:'ACTIONABLE',reason:'IDEA_REMOVED_AFTER_PRIOR_DELIVERY',create_recheck:false}:{...base,reason:'REMOVAL_WITHOUT_PRIOR_DELIVERY'};
  if(!['OBSERVE','WAIT','ENTRY'].includes(event))return {...base,reason:'LIFECYCLE_NOT_USER_ACTIONABLE'};
  if(!directionClosed(canonical))return {...base,reason:'DIRECTION_NOT_CLOSED'};
@@ -284,6 +285,7 @@ export async function loadBoundTelegram(db,{idempotency_key,now_ts=Date.now()}={
  if(upper(b.lifecycle_event)==='ENTRY'&&text(p.decision_id)!==text(b.decision_id))return {status:'BOUND_DECISION_MISMATCH',ok:false};
  let canonical;try{canonical=JSON.parse(p.canonical_json);}catch{return {status:'CANONICAL_JSON_INVALID',ok:false};}
  const id=validateCanonicalIdentity(canonical,{contract:b.contract_code,direction:b.direction,run_id:b.run_id,snapshot_id:b.snapshot_id,observed_ts:b.observed_ts});if(id.status!=='CLOSED')return {...id,ok:false};
+ if(upper(b.lifecycle_event)==='IDEA_REMOVED'&&canonical?.metadata?.lifecycle_removal?.reason==='ORIGINAL_TTL_EXPIRED')return {status:'OWNER_TTL_NOTICE_DISABLED',ok:false};
  if(upper(b.lifecycle_event)==='OBSERVE'&&!earlySourceRolesClosed(canonical))return {status:'OBSERVE_SOURCE_ROLES_NOT_CLOSED',ok:false};
  const ph=sha256({manual_text:p.manual_text,telegram_text:p.telegram_text,analytical_fingerprint:p.analytical_fingerprint});if(ph!==b.presentation_hash)return {status:'PRESENTATION_CONTENT_MISMATCH',ok:false};
  const display=validatePresentation({canonical,manual_text:p.manual_text,telegram_text:p.telegram_text,direction:b.direction,lifecycle_event:b.lifecycle_event});if(display.status!=='CLOSED')return {...display,ok:false};

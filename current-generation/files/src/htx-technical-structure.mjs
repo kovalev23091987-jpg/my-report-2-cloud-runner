@@ -1,3 +1,4 @@
+import {deriveBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
 import {deriveKrakenN10MemoryEvidence} from './kraken-n10-memory-context.mjs';
 import {createHash} from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
@@ -175,9 +176,10 @@ export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_r
  // Apply the path's market/window requirements before its four-read ceiling.
  // Several components of one source share a cache key; read it once and use
  // the component whose original observation matches the retained cache row.
- const groups=new Map(),memory=[];
+ const groups=new Map(),memory=[],bitfinexMemory=[];
  for(const c of flow_result?.components||[]){
   if(c?.venue==='KRAKEN'){memory.push(c);continue;}
+  if(c?.venue==='BITFINEX'){bitfinexMemory.push(c);continue;}
   if(!qualifiedVenueComponent(c)||c.contract!==contract||c.market!=='SPOT'||c.quote!=='USDT'||c.window_end_ts!==h.window_end_ts||c.window_start_ts!==h.window_end_ts-240*60000||c.verified_minutes!==240)continue;
   if(!groups.has(c.venue))groups.set(c.venue,[]);groups.get(c.venue).push(c);
  }
@@ -192,6 +194,10 @@ export async function loadN10ReusedVenuePaths({db,contract,flow_result,primary_r
  for(const component of memory){
   const facts=deriveKrakenN10MemoryEvidence({contract,component,htx_spot_kline,htx_window:h,now});
   evidence.push(...facts);receipts.push({venue:'KRAKEN',status:facts.length?'CLOSED_INDEPENDENT_SAME_WINDOW_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_PRICE_PATH',provider_http:0,cache_reads:0,producer_receipt_not_native_cache_ACK:true});
+ }
+ for(const component of bitfinexMemory){
+  const facts=deriveBitfinexN10MemoryEvidence({contract,component,htx_spot_kline,htx_window:h,now});
+  evidence.push(...facts);receipts.push({venue:'BITFINEX',status:facts.length?'CLOSED_WITHIN_BITFINEX_USD_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_USD_PRICE_PATH',provider_http:0,cache_reads:0,producer_receipt_not_native_cache_ACK:true});
  }
  native_unclosed||=nativeSourceUsageUnclosed(db);
  return{status:native_unclosed?'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE':evidence.length?'CLOSED':'NO_USEFUL_EXISTING_VENUE_PATH',evidence,cache_reads,provider_http:0,receipts};

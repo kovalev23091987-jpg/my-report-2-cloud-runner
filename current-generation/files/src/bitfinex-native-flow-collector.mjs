@@ -1,3 +1,4 @@
+import {attachBitfinexN10Memory} from './bitfinex-n10-memory-context.mjs';
 import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
 import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
 import {createHash} from 'node:crypto';
@@ -44,7 +45,7 @@ export async function collectBitfinexNativeFlow(params={}){
  try{
   if(!admitDb())return{...root,status:'FLOW_DB_HEADROOM_REQUIRED'};
   const end=Math.floor(now/60000)*60000,key=`NATIVE_FLOW:${contract}:${end}`,old=await cacheRead({source:SOURCE,asset_key:key,now,include_cache_clock:true});
-  if(old?.version===VERSION&&old.observed_ts<=now&&old.observed_ts>=end){const c=normalizeBitfinexNativeFlow({contract,identity,catalog:old.catalog,candles:old.candles,trades:old.trades,window_end_ts:end,observed_ts:old.observed_ts}),sample=normalizeBitfinexN12BoundedTradeSample({contract,identity,catalog:old.catalog,trades:old.trades,trade_receipt:old.trade_receipt,window_end_ts:end,observed_ts:old.observed_ts});evidence.push(...sample.evidence.filter(e=>validateBitfinexN12BoundedTradeSample(e,now)));return{...root,status:c.status,components:[c],network_calls:calls,cache_status:'HIT_ORIGINAL_CLOCKS',check_completed:c.check_completed,n12_bounded_sample_status:sample.status};}
+  if(old?.version===VERSION&&old.observed_ts<=now&&old.observed_ts>=end){const c=normalizeBitfinexNativeFlow({contract,identity,catalog:old.catalog,candles:old.candles,trades:old.trades,window_end_ts:end,observed_ts:old.observed_ts}),sample=normalizeBitfinexN12BoundedTradeSample({contract,identity,catalog:old.catalog,trades:old.trades,trade_receipt:old.trade_receipt,window_end_ts:end,observed_ts:old.observed_ts});evidence.push(...sample.evidence.filter(e=>validateBitfinexN12BoundedTradeSample(e,now)));const {cache_observed_ts,cache_expires_ts,cache_status,network_calls,...payload}=old;attachBitfinexN10Memory({contract,component:c,payload,observed_ts:cache_observed_ts,expires_ts:cache_expires_ts,now:clock()});return{...root,status:c.status,components:[c],network_calls:calls,cache_status:'HIT_ORIGINAL_CLOCKS',check_completed:c.check_completed,n12_bounded_sample_status:sample.status};}
   if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
   const metaKey='OFFICIAL_METADATA:EXCHANGE_PAIR_AND_CURRENCY_ALIASES',cached=await cacheRead({source:SOURCE,asset_key:metaKey,now,include_cache_clock:true});let catalog;
   if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
@@ -59,8 +60,9 @@ export async function collectBitfinexNativeFlow(params={}){
   const component=normalizeBitfinexNativeFlow({contract,identity,catalog,candles,trades,window_end_ts:end,observed_ts:receipts.at(-1).received_ts}),ts=component.observed_ts;
   const sample=normalizeBitfinexN12BoundedTradeSample({contract,identity,catalog,trades,trade_receipt:receipts.at(-1),window_end_ts:end,observed_ts:ts});
   evidence.push(...sample.evidence.filter(e=>validateBitfinexN12BoundedTradeSample(e,clock())));
-  components.push({...component,receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256),n12_bounded_sample_status:sample.status});
+  const returned={...component,receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256),n12_bounded_sample_status:sample.status};components.push(returned);
   const payload={version:VERSION,observed_ts:ts,catalog,candles,trades,trade_receipt:receipts.at(-1)};
+  attachBitfinexN10Memory({contract,component:returned,payload,observed_ts:ts,expires_ts:end+300000,now:clock()});
   if(component.check_completed&&Buffer.byteLength(JSON.stringify(payload))<=900000&&admitDb())await cacheWrite({source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:end+300000,payload});
   return{...root,status:component.status,reason:component.reason,components,check_completed:component.check_completed,network_calls:calls};
  }catch(e){return{...root,status:components.some(c=>c.check_completed)||evidence.length?'PARTIAL_RETAINED_FLOW_FACTS':'FLOW_COLLECTOR_ERROR',check_completed:components.some(c=>c.check_completed),reason:e.message,network_calls:calls};}
