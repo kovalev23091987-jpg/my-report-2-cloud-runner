@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792405076036",
   "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
   "acquired_ts": 1792405076036,
@@ -35,5 +35,24 @@
     }
   ],
   "final_target_head": "2fa2abb87932c36797667e4fdce0b20121733e46",
-  "latest_read_main": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412"
+  "latest_read_main": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+  "released_ts": 1792405583193,
+  "release_main": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+  "release_guard_sha256": {
+    "AGENTS.md": "0b91493189f36621451e3a656241509d39f9ff76b493338aea6098a860032a3f",
+    "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "2c9368bedd00439e2aad7629432be52d735d35ce2985f32dbdaeed269d310c11",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "bcaf3fc426f50f13953cf14b7f9a4f5db6f0629e65c78e0d24e5a8fe3ccb7425",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "2f2e10b1d5b09540eb6d4937f24c1b727ff6eb5f28063b50718a7907894bc22f",
+    "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "8378a237b11f72599c0e6abdea922f872643a24bead76fd852dc7dd8bf5bbb84",
+    "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "7e1f1b8904cbea42ad720bcd5fe6494e51bc0302d64f3d91e50c9825a8ae2939",
+    "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+  },
+  "completed_PR": 528,
+  "completed_head": "7f43dbe257d6bf932715358f09982c4fae193c78",
+  "receipt_sha256": "833064a43371625a8f7eb1ca3ee371f394319c191049af593b01fe4d40422e06",
+  "release_reason": "Completed bounded readonly PR527 final composition peer. 0 new concrete blockers WITH LIMITS, 50 artifact integrity PASS/0FAIL, saved6cases read only, no app/module/test/probe/native/GET. Coordinator notified. No source525 re-audit or newnatural duplicate."
 }
