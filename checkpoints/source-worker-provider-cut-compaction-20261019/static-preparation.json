@@ -1,0 +1,106 @@
+{
+  "schema": "UNEXECUTED_PROVIDER_CAPTURE_COMPACTION_PREPARATION_V1",
+  "source_native_completion_sha256": "a353d57c6fc786c3bc38e9b229f832cc93581c01116270d505b10a35e41eb5f4",
+  "source_native_original_events": 16,
+  "source_native_original_omitted_events": 2,
+  "omitted_native_reconstructed": false,
+  "CONTROLLED_additions": 2,
+  "target": {
+    "schema": "BOUNDED_PROVIDER_COMPACTION_TECHNICAL_TARGET_V1",
+    "working_base": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+    "target": "current-generation/files/src/run-budget-context.mjs",
+    "before_sha256": "1ca7685fa2230f5b746b13d3c22e9e50c69272d980ed7d42f1fc8724be82a3e8",
+    "after_sha256": "60528420d20824dbe905e1e16e20c323c4219395709d6dba8460a950d8b162d9",
+    "patch_sha256": "7a7fbf7d495507bb9f97ed60d8704bf0667acb8dd514ef5ae109ebcf0f9c6a33",
+    "runner_completion_line_sha256": "7f6ce32ed5c4c2eab4d9a6506c4d873e4926abd7631147952ec222523619fce3",
+    "production_files_edited": false,
+    "producer_reader_collectors_cache_FP_changed": false,
+    "source_case_semantic_executions": 0,
+    "callable_component": "compact-connected.mjs",
+    "export": "runProviderCaptureCompactConnected",
+    "technical_schema_versions_accepted": [
+      "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V1",
+      "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V2"
+    ],
+    "new_summary_schema": "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V2",
+    "bounds": {
+      "records": 16,
+      "record_utf8_bytes": 1024,
+      "frame_utf8_bytes": 16384,
+      "group_payload_reserved_bound": 14336
+    },
+    "groups_share_only": [
+      "source",
+      "run_id",
+      "contract",
+      "route",
+      "reference_key",
+      "attempt_sequence",
+      "query_window_end_ts",
+      "day_utc"
+    ],
+    "cut_columns": [
+      "capture_order",
+      "phase",
+      "captured_ts",
+      "provider",
+      "row_presence",
+      "reported_used_units",
+      "configured_cap",
+      "reported_own_reserved_units",
+      "minute_bucket",
+      "returned_allowed",
+      "returned_status",
+      "native_usage_guard_passed"
+    ]
+  },
+  "fresh_guard_sha256": {
+    "AGENTS.md": "8c6d33ef4b339d437dc58ff528355d1fee0fd6ed8d62cbf511b828e911c243a1",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "c14aceaaf1537aac562aa9d3782a31aee0e766ec12d5b34929165fd62f444d5b",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "3690a1bd9477a2c065d7b2874e7112b063683240676940c297f56ebf5ecd6fef",
+    "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "c8eb3af0cf3c39cbc25159919f2673322d02fc703eecb41f8064a7b93768db26",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "30e7366163956d7373d827bc8e3bb92bb051ade5fee1562799ea48fe1312800d",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "checkpoints/ACTIVE105_RETURNED_BUDGET_AND_WLD_NATIVE_HANDOFF_20261019.json": "b58bf0b4e6067261d6a1682278fbbd6554086de4d0d137239f542071b9912aed",
+    "checkpoints/returned-budget-integration-20261019/cloud-and-originals-receipts.json": "915e0e4e39ea9edbe04722aafb0e4ee8b18fb4df8098d227840b6ee812ff355d",
+    "checkpoints/returned-budget-integration-20261019/next-worker-queues.json": "400582fe1fcde4bf453a0c05ac6261ae9f06186749a2b8b46b3170ef4b6f1efd"
+  },
+  "byte_preservation": {
+    "old_context_prefix_equal_after_only_explicit_schema_acceptance": true,
+    "source_collectors_reader_runner_existing8test_file_unedited_sha256": {
+      "current-generation/files/src/provider-reference-cache.mjs": "3ecbb81a55827069041a0175cfe9d61de0a92042338bab2d5df7dce4dc96748b",
+      "current-generation/files/src/coingecko-sector-evidence.mjs": "23a841fb9c1a5ef0e13eff38dd1a07b6889739c8088409a12402a277b9da9251",
+      "current-generation/files/src/coinpaprika-sector-evidence.mjs": "4bf0e2469666d516d17c13dcb8dd2df9ea5f46c6ca1c9ca53e8eeac06afe207e",
+      "current-generation/files/runner-main.mjs": "61008c6968cb65b9b3adfac97185238b139f123c0fdb6e333e2a0e8601e87c64",
+      "current-generation/tests/run-budget-context.test.mjs": "1411a8dcfa5cadffe63fb1106739fe3b805171869b6799b60da9361c00010710"
+    },
+    "old_runtime_tests_executed": 0
+  },
+  "static_format_calculation": {
+    "NOT_runtime_measurement": true,
+    "six_modeled_group_bytes": [
+      718,
+      721,
+      516,
+      526,
+      521,
+      732
+    ],
+    "modeled_group_array_bytes": 3741,
+    "max_counter_fixed_header_bytes": 1269,
+    "reserved_header_bytes": 2048,
+    "global_group_payload_bound": 14336,
+    "frame_upper_bound": 16384
+  },
+  "static_syntax_and_apply": "Node --check on two new files and git apply --check completed without diagnostics; not semantic execution",
+  "Node_syntax_invocations": 2,
+  "semantic_case_invocations": 0,
+  "runtime_imports": 0,
+  "test_registrations": 0,
+  "old_cases_or_provider_tests": 0,
+  "production_shared_files_edited": false,
+  "native_SQL_providerHTTP_MAIN_Telegram": 0,
+  "case_owner": "Central coordinator ONE new assembled case with separate source-read late/normal branch component",
+  "qualification": "PENDING_CENTRAL_ONLY_NOT_PASS"
+}
