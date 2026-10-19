@@ -12,6 +12,8 @@ export async function loadEffectivePresentationModules(){
     'backpack-four-hour-flow.mjs':'current-generation/files/src/backpack-four-hour-flow.mjs',
     'kraken-four-hour-flow.mjs':'current-generation/files/src/kraken-four-hour-flow.mjs',
     'bitfinex-n12-bounded-trade-sample.mjs':'current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs',
+    'bitfinex-n10-memory-context.mjs':'current-generation/files/src/bitfinex-n10-memory-context.mjs',
+    'bitfinex-n10-price-path.mjs':'current-generation/files/src/bitfinex-n10-price-path.mjs',
     'bitfinex-native-four-hour-flow.mjs':'current-generation/files/src/bitfinex-native-four-hour-flow.mjs',
     'kraken-public-taker-reference.mjs':'current-generation/files/src/kraken-public-taker-reference.mjs',
     'binance-native-four-hour-flow.mjs':'current-generation/files/src/binance-native-four-hour-flow.mjs',

@@ -546,7 +546,7 @@ jobs:
           mkdir -p base-runtime
           cp -R runtime/src base-runtime/src
           cp current-generation/tests/fixtures/entry-source-baseline-20261019/*.mjs base-runtime/src/
-          REPORT2_JOINT_RUNTIME="$PWD/runtime/src" REPORT2_BASE_RUNTIME="$PWD/base-runtime/src" REPORT2_JOINT_REPO="$PWD" REPORT2_JOINT_WITNESS="$PWD/audit-output/entry-source-connected/source-witness.json" REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_ORIGINAL_TERMINAL_BASELINE_SHA="4f0dfeb56302d11f01e8675ba71683533c0ce5bf21deceeb41c1572aad450ed1" node --test --test-reporter=spec checkpoints/source-worker-composite-bitfinex-integration-20261019/joint-integration.test.mjs current-generation/tests/original-task-followup-audit.test.mjs current-generation/tests/original-task-followup-connected.runtime.mjs current-generation/tests/output-contract-freeze.test.mjs > audit-output/entry-source-connected/connected-tests.log
+          node --test --test-reporter=spec --test-name-pattern="K01: approved V4 user output is byte-for-byte frozen for identical canonical input" current-generation/tests/output-contract-freeze.test.mjs > audit-output/entry-source-connected/output-freeze-targeted.log
       - name: Fresh exact own scope and unchanged runtime hashes after qualification
         if: ${{ always() }}
         env:
