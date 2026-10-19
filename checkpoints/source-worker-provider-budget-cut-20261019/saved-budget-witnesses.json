@@ -1,0 +1,48 @@
+{
+  "schema": "ALREADY_SAVED_PROVIDER_BUDGET_REPLY_WITNESSES_V1",
+  "historical_common_helper_native_reply": {
+    "path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/proof.json",
+    "sha256": "89d380bb85e0cef9723243e3c0e70570be502d234233f1d1e4fdd8a9a8c7ed69",
+    "json_pointer": "/minute_admission",
+    "source_run": "39122290584",
+    "run_id": "1792321965799-1792321975225",
+    "recorded_started_ts": 1792323134976,
+    "native_head": "ce7678630aa736b466cffaba83d5aabc04e6fa21",
+    "cloud_run": "39123622796",
+    "exact_original_helper_reply": {
+      "allowed": true,
+      "status": "RESERVED_OR_IDENTICAL",
+      "provider": "HTX",
+      "minute_bucket": 1792323120000,
+      "reserved_units": 1,
+      "rolling_units": 1,
+      "cap": 6
+    },
+    "what_it_proves": "A returned local minute-ledger helper receipt really existed for historicalHTX. NOT a currentCG/CP/provideraccount counter, not nativeSQLresponsebody/re-admission."
+  },
+  "actual392406_completion_missing_cut": {
+    "parent_zip_path_in_current_main": "checkpoints/natural-39240656308/report2-run-result.zip",
+    "parent_zip_sha256_reused": "13194247df3dd58bb3399b8d723eadd1a5e59a00ad14dc86a13df53b2844dd91",
+    "member": "report2-completion-accounting.json",
+    "member_sha256": "43bc646c486e4c62dacc678f69bdc169e901121b32ea4c66970b6c64dcfb2299",
+    "head": "a6bb7658ebbd2117b4e10f723230bc5add9c64a9",
+    "run_id": "1792407219331-1792407228098",
+    "recorded_ts": 1792407324436,
+    "context_cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "numeric_CG_CP_cut_reconstructable": false,
+    "scope": "Existing493 cut already excludes lateroptionalmanualcompletion/archivecopy. No fresh balances inferred from localD1/native/HTTPslot metadata."
+  },
+  "source_code_witnesses": {
+    "reader": "current-generation/files/src/provider-reference-cache.mjs",
+    "day_counter": "usage.attempts is alreadySELECTed beforecap check",
+    "minute_counter": "rolling.units alreadySELECTed; minute helper already returnsrolling_units/cap/reserved_units/allowed",
+    "loss": "successfullocal values are not included in reader.summary(); onlydeniedreply MAYsurvive, generic successPER_TRANSPORT_RESERVED loses numericcut",
+    "month_and_actual_manualheld": "No existing returnedCGCP measuredaccountmonth/manualheld; policyvalues only"
+  },
+  "runtime_old_tests_or_probes_repeated": 0,
+  "native_SQL": 0,
+  "provider_market_HTTP": 0,
+  "historical_provider_balances_reconstructed": false
+}
