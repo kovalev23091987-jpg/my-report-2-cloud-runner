@@ -6,7 +6,7 @@ import {admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRec
 import {enforcePeriodicOwnership,enforceDailyAnalysisAdmission,markPostAnalysisControlFailure} from './src/pre-analysis-failure-receipt.mjs';
 import {buildLiquidationSourceAcquisitionAudit,bindLiquidationAcquisitionDiagnostics} from './src/liquidation-source-acquisition-audit.mjs';
 import {saveGTradePositionRouting} from './src/liquidation-extension/gtrade-position-routing.mjs';
-import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
+import {auditObservationSourceRoles,captureGateBindingDiagnostic,projectGateSourceDiagnostic} from './src/observation-source-role-audit.mjs';
 import {saveNativeWalletRouting} from './src/liquidation-extension/native-wallet-routing.mjs';
 import {saveGTradeRoutingCatalog} from './src/liquidation-extension/native-routing-catalog.mjs';
 import {loadBlockWeightPolicy,refreshWeeklyBlockWeightPolicy} from './src/block-weight-calibration.mjs';
@@ -218,7 +218,7 @@ async function observeNaturalTelegramDecision(db) {
   }
 }
 
-async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,candidateContracts=[]}={}){
+async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,candidateContracts=[],gate_diagnostic_for=null}={}){
   try{
     const contracts=[...new Set(candidateContracts)].filter(value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)).slice(0,6);
     if(!contracts.length&&Number(cron?.v3_live_deep_check_count)>0)throw new Error('CANONICAL_OUTPUT_CANDIDATE_IDENTITY_REQUIRED');
@@ -242,6 +242,7 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,cand
           block_coverage:blockCoverage,
           source_collection_priority:sourceCollectionPriorityProof(canonical||{}),
           source_role_publication_audit:auditObservationSourceRoles(canonical),
+          gate_source_diagnostic:projectGateSourceDiagnostic(canonical,{binding_receipt:gate_diagnostic_for}),
           block_decision_use:auditCanonicalBlockDecisionUse(canonical||{},{manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),
           block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null},telegram:{ok:Boolean(row.telegram_text),text:row.telegram_text||null,analytical_fingerprint:canonical?.analytical_fingerprint}}),
           canonical:canonical?{contract:canonical.metadata?.contract,status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
@@ -664,7 +665,40 @@ async function main() {
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });if(result.asset_reference)console.log('HTX_ASSET_REFERENCE_RECEIPT',JSON.stringify({contract:params.contract,status:result.asset_reference.status,identity:result.asset_reference.identity,identity_method:result.identity_method,cache_status:result.asset_reference.cache_status,network_calls:result.asset_reference.network_calls,reference_observed_ts:result.asset_reference.reference_observed_ts,receipt:result.asset_reference.receipt||null}));return result;};
-  env.REPORT2_PUBLIC_ASSET_BINDING=params=>bindGateOfficialAssetIdentity({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),...params});
+  // Invocation-local, six entries at most (the existing output SELECT limit).
+  // A duplicate attempt/tuple is ambiguous; never substitute the latest result.
+  const gateBindingDiagnostics=new Map();let gateDiagnosticOverflow=false;
+  const gateDiagnosticKey=v=>{
+    if(typeof v?.contract!=='string'||typeof v?.run_id!=='string'||!v.run_id||new TextEncoder().encode(v.contract).length>128||new TextEncoder().encode(v.run_id).length>128)return null;
+    const key=JSON.stringify([v.contract,v.run_id]);return new TextEncoder().encode(key).length<=256?key:null;
+  };
+  const gateDiagnosticTuple=v=>{
+    if(typeof v?.contract!=='string'||typeof v?.run_id!=='string'||!v.run_id||v.run_id.length>128||typeof v?.snapshot_id!=='string'||v.snapshot_id.length>128||!Number.isSafeInteger(v?.observed_ts)||v.observed_ts<1e12||v.snapshot_id!==`S392:${v.contract}:${v.observed_ts}`||!/^[a-f0-9]{64}$/.test(v?.analytical_fingerprint||''))return null;
+    const tuple={contract:v.contract,run_id:v.run_id,snapshot_id:v.snapshot_id,observed_ts:v.observed_ts,analytical_fingerprint:v.analytical_fingerprint};
+    return new TextEncoder().encode(JSON.stringify(tuple)).length<=512?tuple:null;
+  };
+  env.REPORT2_PUBLIC_ASSET_BINDING=async params=>{
+    const key=gateDiagnosticKey(params);let entry=key===null?null:gateBindingDiagnostics.get(key);
+    if(entry)entry.ambiguous=true;
+    else if(key!==null&&gateBindingDiagnostics.size<6){entry={binding:captureGateBindingDiagnostic(null,{contract:params.contract}),tuple:null,ambiguous:false};gateBindingDiagnostics.set(key,entry);}
+    else if(key!==null)gateDiagnosticOverflow=true;
+    const result=await bindGateOfficialAssetIdentity({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),...params});
+    if(entry&&!entry.ambiguous)entry.binding=captureGateBindingDiagnostic(result,{contract:params.contract});
+    return result;
+  };
+  env.REPORT2_GATE_BINDING_DIAGNOSTIC_BIND=value=>{
+    const tuple=gateDiagnosticTuple(value),entry=gateBindingDiagnostics.get(gateDiagnosticKey(value));
+    if(!entry)return;
+    if(!tuple||entry.tuple){entry.ambiguous=true;return;}
+    entry.tuple=tuple;
+  };
+  const gateDiagnosticFor=canonical=>{
+    const value={contract:canonical?.metadata?.contract,run_id:canonical?.run_id,snapshot_id:canonical?.snapshot_id,observed_ts:canonical?.observed_ts,analytical_fingerprint:canonical?.analytical_fingerprint};
+    const tuple=gateDiagnosticTuple(value),entry=gateBindingDiagnostics.get(gateDiagnosticKey(value));
+    if(!entry)return gateDiagnosticOverflow?{...captureGateBindingDiagnostic(null,{contract:value.contract}),carrier_status:'OVERFLOW'}:null;
+    if(!tuple||!entry.tuple||entry.ambiguous||Object.keys(tuple).some(k=>tuple[k]!==entry.tuple[k]))return null;
+    return entry.binding;
+  };
   const liquidationRiskByContract=new Map(),futureHttpByContract=new Map();
   env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT=async params=>{const admission=env.REPORT2_LIQUIDATION_COVERAGE_FOR?.(params.contract);if(!admission?.eligible||!admission.source_ids.includes('COINLOBSTER_FUTURE_MODEL'))return{status:'COVERAGE_GATE_NOT_ADMITTED',reason:admission?.status||'COVERAGE_DATABASE_NOT_AVAILABLE',levels:[],network_calls:0,internal_only:true};const result=await collectCoinLobsterFutureModel({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,max_http:Math.max(0,5-(futureHttpByContract.get(params.contract)??0)),strict_fresh_manual:source!=='schedule'&&commandIntent.matched,...params});futureHttpByContract.set(params.contract,(futureHttpByContract.get(params.contract)??0)+result.network_calls);return result;};
   env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT=async params=>{const risk=await collectCrossExchangeRiskContext({
@@ -1127,7 +1161,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
 
   // Preserve the already collected canonical result even if a later observer fails.
-  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[]});
+  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor});
   const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,
