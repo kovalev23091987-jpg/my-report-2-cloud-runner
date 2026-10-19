@@ -1,0 +1,402 @@
+{
+  "schema": "NATURAL392406_ACTIVE_SCOPE_REVIEW_V1",
+  "head": "a6bb7658ebbd2117b4e10f723230bc5add9c64a9",
+  "run_id": "1792407219331-1792407228098",
+  "source": "schedule",
+  "scope": "Active blocks/source clocks/budgets/primary persistence only. No deferred original-task/ENTRY or storage-expiry inspection.",
+  "scan": {
+    "universe_total": 105,
+    "scanned": 105,
+    "errors": 0,
+    "stale": 0
+  },
+  "primary_persistence_audit": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1792407219331-1792407228098",
+    "expected_contracts": [
+      "BTW-USDT",
+      "APR-USDT"
+    ],
+    "present_contracts": [
+      "APR-USDT",
+      "BTW-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "private_copy_receipt_status": "ARCHIVE_CANDIDATE_BOUND",
+  "private_durable_copy_acceptance": "NOT_PROVEN_BY_THIS_PARENT_ARTIFACT",
+  "native_usage_cut": {
+    "requests": 647,
+    "rows_read": 38563,
+    "rows_written": 471,
+    "unknown_ops": 0
+  },
+  "existing_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792407219331-1792407228098",
+    "recorded_ts": 1792407324436,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 27,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 111,
+      "reported_remaining_slots": 53,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 647,
+        "rows_read": 38563,
+        "rows_written": 471,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 15437,
+        "rows_written": 369
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 1108000,
+      "reserved_rows_written": 19840,
+      "reconciliation": null
+    },
+    "native_liquidation_service": null,
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "actual_selected_candidates": [
+    {
+      "contract": "APR-USDT",
+      "publication_id": "PUB:da116282b2603783b32ce40cdf1c175e5f652623",
+      "snapshot_id": "S392:APR-USDT:1792407315283",
+      "canonical_state": "REJECTED",
+      "block_counts": {
+        "N04": {
+          "valid_fact_count": 1,
+          "score_contribution": 0
+        },
+        "N05": {
+          "valid_fact_count": 1,
+          "score_contribution": 0
+        },
+        "N10": {
+          "valid_fact_count": 3,
+          "score_contribution": 0
+        },
+        "N11": {
+          "valid_fact_count": 1,
+          "score_contribution": 0
+        },
+        "N12": {
+          "valid_fact_count": 2,
+          "score_contribution": 0
+        },
+        "N15": {
+          "valid_fact_count": 2,
+          "score_contribution": 0.3577
+        }
+      },
+      "N10_original_clock_actual_saved": [
+        {
+          "evidence_id": "EV2:938110f557e339b2f231489e7e3f6d8dab47d3e610fd525203917a0aa8d3a4d9",
+          "original_clock": {
+            "source_ts": 1792407283447,
+            "first_known_ts": 1792407283595,
+            "observed_ts": 1792407283595,
+            "expires_at": 1792407463447,
+            "window_start_ts": 1792332000000,
+            "window_end_ts": 1792404000000,
+            "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+          }
+        },
+        {
+          "evidence_id": "EV2:5986d72917f18d9ada9d0eb1b6fe89948f85804c26bb5241c46b007ba14b3b5c",
+          "original_clock": {
+            "source_ts": 1792407240000,
+            "first_known_ts": 1792407288656,
+            "observed_ts": 1792407315283,
+            "expires_at": 1792407420000,
+            "window_start_ts": 1792406340000,
+            "window_end_ts": 1792407240000,
+            "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+          }
+        },
+        {
+          "evidence_id": "EV2:51fcf64111e0e6a9b8dd9fc8ee6ce9b1171f3434fc18746ac1d0c963a58fc507",
+          "original_clock": {
+            "source_ts": 1792407240000,
+            "first_known_ts": 1792407284386,
+            "observed_ts": 1792407315283,
+            "expires_at": 1792407420000,
+            "window_start_ts": 1792406340000,
+            "window_end_ts": 1792407240000,
+            "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+          }
+        }
+      ],
+      "N04_N11_rendered_contexts": [
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:99bde8a0b9a843df38553483a1cf61fa015c279bcc96abc11a88758da62ff787",
+          "physical_root_key": "ethereum|0xc2db992b4733807c2d5bd4a248dd10d545e2a06fbe81f05ab96aec33ed7dd316|856",
+          "evidence_ids": [
+            "EV2:99bde8a0b9a843df38553483a1cf61fa015c279bcc96abc11a88758da62ff787"
+          ],
+          "physical_root_keys": [
+            "ethereum|0xc2db992b4733807c2d5bd4a248dd10d545e2a06fbe81f05ab96aec33ed7dd316|856"
+          ],
+          "source_ts": 1792406075000,
+          "observed_ts": 1792407306942,
+          "label": "Подтверждённые переводы токена",
+          "value": "1 событий в одной транзакции; 94361483384000000000000 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена",
+          "source": "публичный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "evidence_id": "1792407315283:APR-USDT:full-evidence-v2|SGR:c9b8b75967aeb806|N11|Измеренная глубина стакана",
+          "physical_root_key": "market.APR-USDT.depth.step0:1792407314306",
+          "evidence_ids": [
+            "1792407315283:APR-USDT:full-evidence-v2",
+            "SGR:c9b8b75967aeb806"
+          ],
+          "physical_root_keys": [
+            "market.APR-USDT.depth.step0:1792407314306"
+          ],
+          "source_ts": 1792407314306,
+          "observed_ts": 1792407315283,
+          "label": "Измеренная глубина стакана",
+          "value": "на снимке 2026-10-19T10:55:14.306Z: покупка 14368.6306 USDT (24 уровней), продажа 33040.213 USDT (40 уровней), спред 39.525692 б.п.; только возвращённая выборка HTX, не вся ликвидность рынка",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "evidence_id": "1792407315283:APR-USDT:full-evidence-v2|SGR:c9b8b75967aeb806|N11|Проверка размера LONG",
+          "physical_root_key": "market.APR-USDT.depth.step0:1792407314306",
+          "evidence_ids": [
+            "1792407315283:APR-USDT:full-evidence-v2",
+            "SGR:c9b8b75967aeb806"
+          ],
+          "physical_root_keys": [
+            "market.APR-USDT.depth.step0:1792407314306"
+          ],
+          "source_ts": 1792407314306,
+          "observed_ts": 1792407315283,
+          "label": "Проверка размера покупки",
+          "value": "ориентир 500 USDT: 19685 целых контрактов; вход 19685/19685, выход 19685/19685 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "evidence_id": "1792407315283:APR-USDT:full-evidence-v2|SGR:c9b8b75967aeb806|N11|Проверка размера SHORT",
+          "physical_root_key": "market.APR-USDT.depth.step0:1792407314306",
+          "evidence_ids": [
+            "1792407315283:APR-USDT:full-evidence-v2",
+            "SGR:c9b8b75967aeb806"
+          ],
+          "physical_root_keys": [
+            "market.APR-USDT.depth.step0:1792407314306"
+          ],
+          "source_ts": 1792407314306,
+          "observed_ts": 1792407315283,
+          "label": "Проверка размера продажи",
+          "value": "ориентир 500 USDT: 19762 целых контрактов; вход 19762/19762, выход 19762/19762 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ]
+    },
+    {
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:5fc3df68ad09378accf0ea47ac4ebc45527e91c9",
+      "snapshot_id": "S392:BTW-USDT:1792407279023",
+      "canonical_state": "REJECTED",
+      "block_counts": {
+        "N04": {
+          "valid_fact_count": 1,
+          "score_contribution": null
+        },
+        "N05": {
+          "valid_fact_count": 1,
+          "score_contribution": null
+        },
+        "N10": {
+          "valid_fact_count": 3,
+          "score_contribution": null
+        },
+        "N11": {
+          "valid_fact_count": 1,
+          "score_contribution": null
+        },
+        "N12": {
+          "valid_fact_count": 3,
+          "score_contribution": null
+        },
+        "N15": {
+          "valid_fact_count": 2,
+          "score_contribution": null
+        }
+      },
+      "N10_original_clock_actual_saved": [
+        {
+          "evidence_id": "EV2:7e946bb7c7382ace1a1f5b6323dd9cf6c122c6e900bfcbc6bdff71459fb6c0df",
+          "original_clock": {
+            "source_ts": 1792407239762,
+            "first_known_ts": 1792407240226,
+            "observed_ts": 1792407240226,
+            "expires_at": 1792407419762,
+            "window_start_ts": 1792332000000,
+            "window_end_ts": 1792404000000,
+            "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+          }
+        },
+        {
+          "evidence_id": "EV2:dc6111e312f5a8efd450ec980ae955f2b7f962e66571d7e07c53dd2085f303c5",
+          "original_clock": {
+            "source_ts": 1792407180000,
+            "first_known_ts": 1792407245455,
+            "observed_ts": 1792407279023,
+            "expires_at": 1792407360000,
+            "window_start_ts": 1792406280000,
+            "window_end_ts": 1792407180000,
+            "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+          }
+        },
+        {
+          "evidence_id": "EV2:4201f3ab589e280d5f045ee12d4fa939c26579715d027da606ca3ab6143ae3e8",
+          "original_clock": {
+            "source_ts": 1792407180000,
+            "first_known_ts": 1792407240846,
+            "observed_ts": 1792407279023,
+            "expires_at": 1792407360000,
+            "window_start_ts": 1792406280000,
+            "window_end_ts": 1792407180000,
+            "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+          }
+        }
+      ],
+      "N04_N11_rendered_contexts": [
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:7803905b5987694dc36a9a4bfed902cde22d4a3eb1d0e138938daab9ef4baa8e",
+          "physical_root_key": "bsc|0xf3cdbe2a29b34b33b238d98d0d797b61a8ba2cec99400044aea3246b51c35a8c|64",
+          "evidence_ids": [
+            "EV2:7803905b5987694dc36a9a4bfed902cde22d4a3eb1d0e138938daab9ef4baa8e"
+          ],
+          "physical_root_keys": [
+            "bsc|0xf3cdbe2a29b34b33b238d98d0d797b61a8ba2cec99400044aea3246b51c35a8c|64"
+          ],
+          "source_ts": 1792407257000,
+          "observed_ts": 1792407270133,
+          "label": "Подтверждённые переводы токена",
+          "value": "1 событий в одной транзакции; 1312200000000000000000 минимальных единиц в каждом событии; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена",
+          "source": "публичный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "evidence_id": "1792407279023:BTW-USDT:full-evidence-v2|SGR:b9a9ddd00404adc0|N11|Измеренная глубина стакана",
+          "physical_root_key": "market.BTW-USDT.depth.step0:1792407278856",
+          "evidence_ids": [
+            "1792407279023:BTW-USDT:full-evidence-v2",
+            "SGR:b9a9ddd00404adc0"
+          ],
+          "physical_root_keys": [
+            "market.BTW-USDT.depth.step0:1792407278856"
+          ],
+          "source_ts": 1792407278856,
+          "observed_ts": 1792407279023,
+          "label": "Измеренная глубина стакана",
+          "value": "на снимке 2026-10-19T10:54:38.856Z: покупка 101366.70393 USDT (150 уровней), продажа 175160.74035 USDT (150 уровней), спред 28.04068 б.п.; только возвращённая выборка HTX, не вся ликвидность рынка",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "evidence_id": "1792407279023:BTW-USDT:full-evidence-v2|SGR:b9a9ddd00404adc0|N11|Проверка размера LONG",
+          "physical_root_key": "market.BTW-USDT.depth.step0:1792407278856",
+          "evidence_ids": [
+            "1792407279023:BTW-USDT:full-evidence-v2",
+            "SGR:b9a9ddd00404adc0"
+          ],
+          "physical_root_keys": [
+            "market.BTW-USDT.depth.step0:1792407278856"
+          ],
+          "source_ts": 1792407278856,
+          "observed_ts": 1792407279023,
+          "label": "Проверка размера покупки",
+          "value": "ориентир 500 USDT: 23 целых контрактов; вход 23/23, выход 23/23 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N11",
+          "evidence_id": "1792407279023:BTW-USDT:full-evidence-v2|SGR:b9a9ddd00404adc0|N11|Проверка размера SHORT",
+          "physical_root_key": "market.BTW-USDT.depth.step0:1792407278856",
+          "evidence_ids": [
+            "1792407279023:BTW-USDT:full-evidence-v2",
+            "SGR:b9a9ddd00404adc0"
+          ],
+          "physical_root_keys": [
+            "market.BTW-USDT.depth.step0:1792407278856"
+          ],
+          "source_ts": 1792407278856,
+          "observed_ts": 1792407279023,
+          "label": "Проверка размера продажи",
+          "value": "ориентир 500 USDT: 23 целых контрактов; вход 23/23, выход 23/23 тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ]
+    }
+  ],
+  "project_complete": false
+}
