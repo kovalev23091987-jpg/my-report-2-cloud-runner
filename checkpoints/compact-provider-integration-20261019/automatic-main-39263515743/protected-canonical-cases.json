@@ -1,0 +1,392 @@
+{
+  "schema": "CONTROLLED_PROTECTED_CANONICAL_TRANSPORT_CASES_V1",
+  "cases": [
+    {
+      "pre_copied": true,
+      "selected": 48,
+      "compacted": 48,
+      "retained_hot": 0,
+      "primary_HTTP": 14,
+      "private_HTTP": 54,
+      "all_control_HTTP_reserved": 40,
+      "whole_HTTP": {
+        "used": {
+          "hot": 54,
+          "background": 54,
+          "statistics": 0
+        },
+        "total": 108,
+        "limits": {
+          "whole_job": 164,
+          "hot": 96,
+          "background": 56,
+          "statistics": 12
+        },
+        "remaining": 56
+      },
+      "controlled_SQLite_usage": {
+        "requests": 213,
+        "rows_read": 213,
+        "rows_written": 49,
+        "unknown_ops": 0
+      },
+      "native_production_usage_measured": false,
+      "readthrough_native_fixture_sample": 4,
+      "publication_rows_deleted": 0,
+      "history_discarded": false,
+      "source_clocks_refreshed": false
+    },
+    {
+      "pre_copied": false,
+      "selected": 48,
+      "compacted": 16,
+      "retained_hot": 32,
+      "primary_HTTP": 10,
+      "private_HTTP": 54,
+      "all_control_HTTP_reserved": 40,
+      "whole_HTTP": {
+        "used": {
+          "hot": 50,
+          "background": 54,
+          "statistics": 0
+        },
+        "total": 104,
+        "limits": {
+          "whole_job": 164,
+          "hot": 96,
+          "background": 56,
+          "statistics": 12
+        },
+        "remaining": 60
+      },
+      "controlled_SQLite_usage": {
+        "requests": 149,
+        "rows_read": 149,
+        "rows_written": 33,
+        "unknown_ops": 0
+      },
+      "native_production_usage_measured": false,
+      "readthrough_native_fixture_sample": 4,
+      "publication_rows_deleted": 0,
+      "history_discarded": false,
+      "source_clocks_refreshed": false
+    }
+  ],
+  "sourceHTTP": 0,
+  "productionD1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "automatic_activation": false,
+  "row_mutation_admission_stress": {
+    "schema": "CONTROLLED_CUMULATIVE_ROW_ADMISSION_V1",
+    "schema_reads_charged": 404,
+    "reads_charged_per_update": 1300,
+    "selected": 12,
+    "prepared": 3,
+    "moved": 3,
+    "deferred": [
+      {
+        "publication_id": "PUB:0000000000000000000000000000000000000004",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:0000000000000000000000000000000000000005",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:0000000000000000000000000000000000000006",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:0000000000000000000000000000000000000007",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:0000000000000000000000000000000000000008",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:0000000000000000000000000000000000000009",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:000000000000000000000000000000000000000a",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:000000000000000000000000000000000000000b",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      },
+      {
+        "publication_id": "PUB:000000000000000000000000000000000000000c",
+        "reason": "SHARED_NATIVE_HEADROOM_BEFORE_COPY"
+      }
+    ],
+    "copy_admission": {
+      "schema": "CUMULATIVE_CANONICAL_MUTATION_BEFORE_COPY_V1",
+      "reserved_padding_reads": 96,
+      "unchanged_update_cost_formula": true,
+      "native_cost_qualified": false,
+      "groups": [
+        {
+          "publication_ids": [
+            "PUB:0000000000000000000000000000000000000001",
+            "PUB:0000000000000000000000000000000000000002",
+            "PUB:0000000000000000000000000000000000000003"
+          ],
+          "rows_read_reserved": 4104,
+          "shared_updates": 0,
+          "unchanged_sum_of_row_reserves": true,
+          "wire_bytes": 219407,
+          "usage_before": {
+            "requests": 34,
+            "rows_read": 598,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "usage_after": {
+            "requests": 40,
+            "rows_read": 4501,
+            "rows_written": 6,
+            "unknown_ops": 0
+          },
+          "statement_costs": [
+            {
+              "operation": "CONDITIONAL_BODY_UPDATE",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000001"
+              ],
+              "counters_present": true,
+              "rows_read": 1300,
+              "rows_written": 1
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000001"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "CONDITIONAL_BODY_UPDATE",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000002"
+              ],
+              "counters_present": true,
+              "rows_read": 1300,
+              "rows_written": 1
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000002"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "CONDITIONAL_BODY_UPDATE",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000003"
+              ],
+              "counters_present": true,
+              "rows_read": 1300,
+              "rows_written": 1
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000003"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            }
+          ]
+        }
+      ]
+    },
+    "D1": {
+      "requests": 46,
+      "rows_read": 4507,
+      "rows_written": 6,
+      "unknown_ops": 0
+    },
+    "fixture_counters_only": true,
+    "native_cost_qualified": false,
+    "productionD1": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "shared_mutation": {
+    "schema": "SHARED_EXACT_CANONICAL_FIXTURE_V1",
+    "selected": 8,
+    "prepared": 8,
+    "moved": 8,
+    "mutation_batches": 1,
+    "independent_post_readbacks": 4,
+    "copy_admission": {
+      "schema": "CUMULATIVE_CANONICAL_MUTATION_BEFORE_COPY_V1",
+      "reserved_padding_reads": 96,
+      "unchanged_update_cost_formula": true,
+      "native_cost_qualified": false,
+      "groups": [
+        {
+          "publication_ids": [
+            "PUB:0000000000000000000000000000000000000001",
+            "PUB:0000000000000000000000000000000000000002",
+            "PUB:0000000000000000000000000000000000000003",
+            "PUB:0000000000000000000000000000000000000004",
+            "PUB:0000000000000000000000000000000000000005",
+            "PUB:0000000000000000000000000000000000000006",
+            "PUB:0000000000000000000000000000000000000007",
+            "PUB:0000000000000000000000000000000000000008"
+          ],
+          "rows_read_reserved": 2352,
+          "shared_updates": 3,
+          "unchanged_sum_of_row_reserves": true,
+          "wire_bytes": 570348,
+          "usage_before": {
+            "requests": 24,
+            "rows_read": 32,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "usage_after": {
+            "requests": 35,
+            "rows_read": 48,
+            "rows_written": 8,
+            "unknown_ops": 0
+          },
+          "statement_costs": [
+            {
+              "operation": "SHARED_CONDITIONAL_BODY_UPDATE",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000001",
+                "PUB:0000000000000000000000000000000000000002",
+                "PUB:0000000000000000000000000000000000000003"
+              ],
+              "counters_present": true,
+              "rows_read": 3,
+              "rows_written": 3
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000001"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000002"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000003"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "SHARED_CONDITIONAL_BODY_UPDATE",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000004",
+                "PUB:0000000000000000000000000000000000000005",
+                "PUB:0000000000000000000000000000000000000006"
+              ],
+              "counters_present": true,
+              "rows_read": 3,
+              "rows_written": 3
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000004"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000005"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000006"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "SHARED_CONDITIONAL_BODY_UPDATE",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000007",
+                "PUB:0000000000000000000000000000000000000008"
+              ],
+              "counters_present": true,
+              "rows_read": 2,
+              "rows_written": 2
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000007"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            },
+            {
+              "operation": "EXACT_HEADER_READBACK",
+              "publication_ids": [
+                "PUB:0000000000000000000000000000000000000008"
+              ],
+              "counters_present": true,
+              "rows_read": 1,
+              "rows_written": 0
+            }
+          ]
+        }
+      ]
+    },
+    "parameters_limit": 100,
+    "sql_bytes_limit": 100000,
+    "group_cap": 8,
+    "transaction_cap": 6,
+    "wire_cap": 1400000,
+    "D1_fixture": {
+      "requests": 43,
+      "rows_read": 56,
+      "rows_written": 8,
+      "unknown_ops": 0
+    },
+    "native_production_cost_qualified": false,
+    "per_row_estimates_lowered": false,
+    "productionD1": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  }
+}
