@@ -4,7 +4,7 @@ import {persistSlidingMirrorCursor} from '../runner/github-four-mirror-cas.mjs';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {SLIDING_HISTORY_POLICY as P,slidingCapacityDecision,reserveCapacityExpiryBudget,expireOldDetails} from '../runner/sliding-history-capacity.mjs';
-import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge} from '../runner/retention-bridge-provenance.mjs';
+import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
 import {reconcileNativeQueryCosts} from '../runner/native-query-cost-reconciliation.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json';
 const dir='audit-output/paid-sliding-history';await fs.mkdir(dir,{recursive:true});
@@ -40,6 +40,8 @@ try{
  if(!out.capacity.due){out.status=out.capacity.status;out.D1_SQL=0;out.reservation_consumed=false;}
  else{
   out.bridge_before=await observe('before_SQL');
+  // Both existing mutation guards, postflight and cleanup are held BEFORE SQL.
+  out.pre_SQL_control_plan=requireRetentionControlReserve({used:controlHTTP,borrowed:lease.borrowed===true,bridge_postflight_pending:true},2);
   db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{nativeQueryReceipts:true,beforeRequest:event=>{if(bridgeHTTP>=16||event.wire_bytes>1400000||lease.lease.expires_ts<=Date.now())return{allowed:false};bridgeHTTP++;return{allowed:true};}});
   const reservation_id='RETAINED_HISTORY:'+out.run+':'+Date.now();out.admission=await reserveCapacityExpiryBudget(db,{reservation_id});
   if(!out.admission.allowed){out.status=out.admission.status;out.reservation_consumed=false;}

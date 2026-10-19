@@ -27,6 +27,8 @@ export async function acquireWeeklyPhaseLease(control,{now=control.clock?.()??Da
  let context;try{context=await readMirrorContext(control,{expected_main,maximum_blob_reads,now});}catch(e){return{allowed:false,status:e.code==='FOUR_MIRROR_MAIN_MOVED'?'CHECKOUT_MAIN_MOVED':e.code||'GITHUB_SNAPSHOT_NOT_CLOSED',sourceHTTP:0};}
  const {phase,active}=assertMirrorGuards(context),values=context.raws.map(s=>JSON.parse(s));
  if(phase.lease?.owner||active.owned_lease)return{allowed:false,status:'OWNER_OR_FENCE_BUSY',head:context.head,sourceHTTP:0};
+ const freeLease=phase.lease==null||(phase.lease.owner===null&&phase.lease.acquired_ts===null&&phase.lease.expires_ts===null),latest=phase.latest_own_bounded_continuation_lease;
+ if(!freeLease||active.owned_lease!==null||active.owned_lease_expires_ts!==null||active.lease_released!==true||(latest!=null&&latest.released!==true))return{allowed:false,status:'UNRECONCILED_FREE_AUTHORITY',head:context.head,sourceHTTP:0};
  if(phase.owner_all_active_blocks_source_budget_and_fallback!=='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json'||[active,values[1].active_working_state,values[2].active_working_state].some(a=>a.owner_weekly_HTX_catalog_sync_authorized!==true))return{allowed:false,status:'LATEST_WEEKLY_AUTHORITY_REQUIRED',sourceHTTP:0};
  if(!Number.isSafeInteger(now)||!Number.isSafeInteger(lease_ms)||lease_ms<1||lease_ms>90*60000)throw Error('BOUNDED_FOUR_MIRROR_LEASE_REQUIRED');
  const lease={owner:'CODEX:ACTIVE105_SOURCE_RELIABILITY:'+now,acquired_ts:now,expires_ts:now+lease_ms,expected_main:context.head,scope:scope||'Owner authorized weekly official HTX universe/source reconciliation, unchanged caps, pauses, score and form; GitHub run '+run_id};

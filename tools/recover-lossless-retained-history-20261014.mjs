@@ -10,7 +10,7 @@ import {compactProtectedCanonical} from '../runner/protected-canonical-compactio
 import {canonicalExecutionMode,canonicalArchivePoolQualification,canonicalSharedMutationQualification} from '../runner/canonical-native-qualification.mjs';
 import {selectCanonicalRetentionCursor,persistCanonicalRetentionCursor} from '../runner/canonical-retention-cursor.mjs';
 import {requireDatedRetentionQualification,verifyExactArchiveReaderBindings,parseCurrentArchiveReaderProof,CURRENT_ARCHIVE_READER_PROOF,DATED_RETENTION_QUALIFICATION} from '../runner/retention-self-qualification.mjs';
-import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge,retentionMutationControlPlan} from '../runner/retention-bridge-provenance.mjs';
+import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge,retentionMutationControlPlan,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
 import {boundedControlBody,SQL_BRIDGE_SCRIPT} from '../runner/installed-bridge-module-inspection.mjs';
 import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
@@ -19,7 +19,7 @@ await fs.mkdir(dir,{recursive:true});
 const kind=process.env.RETAINED_HISTORY_KIND||'full_evidence';
 const owner_emergency_day=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_DAY||'')||null;
 const canonical_cursor_input=String(process.env.REPORT2_CANONICAL_SOURCE_CURSOR||'auto');
-let cursor_selection,bridge_proof,bridge_control,bridge_postflight_pending=false;
+let cursor_selection,bridge_proof,bridge_control,bridge_postflight_pending=false,future_archive_controls=0;
 const native_qualification_input=String(process.env.REPORT2_NATIVE_CANONICAL_QUALIFICATION||'false');
 const self_day=String(process.env.REPORT2_SELF_NATIVE_QUALIFICATION_UTC_DAY||''),self_qualification=!!self_day;
 const owner_slot_input=String(process.env.REPORT2_OWNER_STORAGE_EMERGENCY_SLOT||'3'),owner_emergency_slot=Number(owner_slot_input);
@@ -98,6 +98,8 @@ try{
   }
   if(control_HTTP+worker_control_HTTP+13+(bridge_postflight_pending?4:0)>LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('DATED_QUALIFICATION_MUTATION_AND_RELEASE_RESERVE_REQUIRED');
  }
+ future_archive_controls=kind==='full_evidence'?6:0;
+ out.pre_SQL_control_plan=requireRetentionControlReserve({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending,future_archive_controls},out.execute?1:0);
  db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{nativeQueryReceipts:mode.native_qualification,beforeRequest:event=>{
   if(bridge_HTTP>=LOSSLESS_RECOVERY_POLICY.max_bridge_HTTP||event.wire_bytes>LOSSLESS_RECOVERY_POLICY.bridge_wire_bytes)throw Error('RETAINED_D1_TRANSPORT_BOUND');
   const grant=whole.reserve({logical_request_id:'RETAINED_D1_BRIDGE:'+bridge_HTTP,lane:'hot',attempts:1});if(grant.allowed)bridge_HTTP++;return grant;
@@ -124,10 +126,10 @@ try{
   const tree=await control.call('git/trees','POST',{base_tree:treeBase,tree:rows.map(s=>({path:s.path,mode:'100644',type:'blob',content:JSON.stringify(s.envelope)+'\n'}))});
   const written=await control.call('git/commits','POST',{message:'Preserve exact old full evidence before bounded recovery '+out.run,tree:tree.sha,parents:[parent]});
   if((await control.call('git/ref/heads/'+branch)).object.sha!==parent)throw Error('RETAINED_DURABLE_BRANCH_MOVED');
-  await control.call('git/refs/heads/'+branch,'PATCH',{sha:written.sha,force:false});out.archive_commit=written.sha;return{commit:written.sha};
+  await control.call('git/refs/heads/'+branch,'PATCH',{sha:written.sha,force:false});future_archive_controls=0;out.archive_commit=written.sha;return{commit:written.sha};
  };
  const secrets=Object.entries(process.env).filter(([k])=>/TOKEN|SECRET|KEY/.test(k)).map(([,v])=>v);
- Object.assign(out,await recoverLosslessFullEvidence({db,save_originals,fetch_archive:fetch,request_admit:e=>whole.reserve(e),before_modify:guard,execute:out.execute,secrets}));
+ Object.assign(out,await recoverLosslessFullEvidence({db,save_originals,fetch_archive:fetch,request_admit:e=>whole.reserve(e),before_modify:async()=>{requireRetentionControlReserve({used:control_HTTP+worker_control_HTTP,borrowed:lease.borrowed===true,bridge_postflight_pending,future_archive_controls},1);await guard();},execute:out.execute,secrets}));
  }
 }catch(error){
  if(error.recovery_receipt)Object.assign(out,error.recovery_receipt);
