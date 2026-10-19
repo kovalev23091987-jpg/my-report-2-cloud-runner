@@ -1,0 +1,264 @@
+--- /dev/null
++++ b/current-generation/files/src/n12-composite-first-known.mjs
+@@ -0,0 +1,19 @@
++// Descriptive metadata for exact, already selected N12 context origins.
++// Original clocks only: null means unavailable, never a new admission or ACK.
++export function n12CompositeFirstKnown(input){
++ const {contract,evidence_ids:ids,component_origins:origins,decision_ts:at}=input??{};
++ const time=x=>Number.isSafeInteger(x)&&x>0;
++ if(typeof contract!=='string'||!/^[^\s-]+-USDT$/.test(contract)||!time(at)||
++  !Array.isArray(ids)||!ids.length||!Array.isArray(origins)||origins.length!==ids.length||
++  ids.some(id=>typeof id!=='string'||!id.trim())||new Set(ids).size!==ids.length)return null;
++ const expected=new Set(ids),seen=new Set();let latest=null;
++ for(const origin of origins){
++  if(!origin||!expected.has(origin.evidence_id)||seen.has(origin.evidence_id)||
++   origin.htx_contract!==contract||origin.origin_status!=='EXACT_SELECTED_EVIDENCE')return null;
++  const {source_ts:source,observed_ts:observed,first_known_ts:known,expires_at:expires}=origin;
++  if(![source,observed,known,expires].every(time)||source>known||known>observed||
++   observed>at||expires<observed||expires<at)return null;
++  seen.add(origin.evidence_id);latest=latest===null?known:Math.max(latest,known);
++ }
++ return seen.size===expected.size?latest:null;
++}
+--- /dev/null
++++ b/current-generation/files/src/bitfinex-n10-price-path.mjs
+@@ -0,0 +1,43 @@
++// Pure preparation of an already retained Bitfinex USD price path.
++// No production caller, I/O, FX conversion or HTX price comparison.
++import {createHash} from 'node:crypto';
++import {normalizeBitfinexNativeFlow,qualifiedBitfinexNativeComponent,bitfinexNativeMarket} from './bitfinex-native-four-hour-flow.mjs';
++import {APPROVED_HTX_ANALYSIS_CONTRACTS} from './approved-htx-analysis-scope.mjs';
++export const BITFINEX_N10_PRICE_VERSION='bitfinex-n10-native-usd-price-path-v1-20261019';
++const CACHE_VERSION='bitfinex-native-flow-collector-v1-20261011',M=60000,TTL=5*M;
++const approved=new Set(APPROVED_HTX_ANALYSIS_CONTRACTS.map(c=>c.contract_code));
++const canonical=x=>JSON.stringify(x,(_k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v);
++const sha=x=>createHash('sha256').update(canonical(x)).digest('hex');
++const wirePayloadSha=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
++const hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
++const safeBar=b=>[b.open,b.close,b.high,b.low,b.base_volume].every(x=>typeof x==='number'&&Number.isFinite(x)&&x>0)&&b.low<=b.high&&b.open>=b.low&&b.open<=b.high&&b.close>=b.low&&b.close<=b.high;
++
++export function inspectBitfinexN10CachedPricePath({contract,component:c,cache,now}={}){
++ const fail=reason=>({version:BITFINEX_N10_PRICE_VERSION,status:'NO_QUALIFIED_BITFINEX_USD_PRICE_PATH',reason,price_path:null,runtime_input_qualified:false,provider_http:0,cache_reads:0});
++ try{
++  const end=c?.window_end_ts,start=end-240*M,p=cache?.payload;
++  if(!approved.has(contract)||!qualifiedBitfinexNativeComponent(c)||c.contract!==contract||c.window_start_ts!==start)return fail('EXACT_QUALIFIED_N05_BITFINEX_COMPONENT_REQUIRED');
++  if(![now,end,cache?.observed_ts,cache?.expires_ts].every(Number.isSafeInteger)||end%M||cache.observed_ts<end||cache.observed_ts>now||cache.observed_ts!==c.observed_ts||cache.expires_ts!==end+TTL||now>cache.expires_ts)return fail('ORIGINAL_CACHE_CLOCK_OR_CLOSED_WINDOW_REQUIRED');
++  if(p?.version!==CACHE_VERSION||p.observed_ts!==cache.observed_ts||Buffer.byteLength(JSON.stringify(p))>900000)return fail('BOUNDED_ORIGINAL_N05_PAYLOAD_REQUIRED');
++  const pair=bitfinexNativeMarket(contract),r=p.trade_receipt;
++  if(r?.url!==`https://api-pub.bitfinex.com/v2/trades/t${pair}/hist?start=${start}&end=${end-1}&limit=10000&sort=1`||r.http_status!==200||r.received_ts!==cache.observed_ts||!hex(r.body_sha256)||!hex(r.payload_sha256)||r.payload_sha256!==wirePayloadSha(p.trades))return fail('EXACT_ORIGINAL_BOUNDED_TRADE_RECEIPT_REQUIRED');
++  const rebuilt=normalizeBitfinexNativeFlow({contract,identity:c.identity,catalog:p.catalog,candles:p.candles,trades:p.trades,window_end_ts:end,observed_ts:cache.observed_ts});
++  if(!qualifiedBitfinexNativeComponent(rebuilt)||canonical(rebuilt)!==canonical(Object.fromEntries(Object.keys(rebuilt).map(k=>[k,c[k]]))))return fail('RAW_FLOW_OR_COMPONENT_REDERIVATION_MISMATCH');
++  // Four-hour sparse presence reconciliation never fills a price candle.
++  // The new price window needs all fifteen actual native candle rows.
++  const recent=p.candles.filter(x=>x[0]>=end-15*M&&x[0]<end).map(x=>({ts:x[0],closed_end:x[0]+M-1,open:x[1],close:x[2],high:x[3],low:x[4],base_volume:x[5]})).sort((a,b)=>a.ts-b.ts);
++  if(recent.length!==15||!recent.every((b,i)=>b.ts===end-15*M+i*M&&safeBar(b)))return fail('FIFTEEN_CONSECUTIVE_NATIVE_CANDLES_REQUIRED');
++  const trades=new Map();
++  for(const trade of p.trades){const minute=Math.floor(trade[1]/M)*M;if(minute<end-15*M)continue;if(!trades.has(minute))trades.set(minute,[]);trades.get(minute).push(trade[3]);}
++  for(const bar of recent){const prices=trades.get(bar.ts)||[];if(!prices.length||bar.open!==prices[0]||bar.close!==prices.at(-1)||bar.high!==Math.max(...prices)||bar.low!==Math.min(...prices))return fail('NATIVE_15M_OHLC_NOT_RECONCILED_TO_RAW_EXECUTIONS');}
++  const count=[...trades.values()].reduce((n,prices)=>n+prices.length,0);
++  if(count!==rebuilt.recent_windows.find(w=>w.minutes===15)?.trade_count)return fail('RECENT_NATIVE_ACTIVITY_NOT_RECONCILED');
++  const open=recent[0].open,close=recent.at(-1).close;
++  const price_path={version:BITFINEX_N10_PRICE_VERSION,contract,venue:'BITFINEX',market:'SPOT',source_symbol:pair,quote:'USD',window_start:end-15*M,window_end:end,source_ts:end,observed_ts:now,first_known_ts:cache.observed_ts,expires_at:cache.expires_ts,candle_count:15,active_minute_count:15,recent_trade_count:count,native_candle_rows_in_four_hours:p.candles.length,verified_flow_presence_minutes:240,path_open:open,path_close:close,path_high:Math.max(...recent.map(b=>b.high)),path_low:Math.min(...recent.map(b=>b.low)),change_pct:(close/open-1)*100,raw_price_bars:recent,identity:structuredClone(c.identity),source_cache_binding:{source:'N05_OFFICIAL_FLOW:BITFINEX',asset_key:`NATIVE_FLOW:${contract}:${end}`,observed_ts:cache.observed_ts,expires_ts:cache.expires_ts,payload_sha256:sha(p),rederived_component_sha256:sha(rebuilt),selected_price_bars_sha256:sha(recent)},source_clock_policy:'ORIGINAL_N05_BITFINEX_NATIVE_15M_WITH_SPARSE_4H_FLOW_PROOF',native_base_volume_available:true,native_quote_volume_available:false,comparison_status:'WITHIN_BITFINEX_USD_ONLY',htx_comparison:null,exact_price_usdt:null,fx_conversion_proven:false,score_contribution:0,coverage_fraction:0,directional_strength:null,risk_strength:null,entry_authorized:false,liquidation_as_target:false,provider_http:0,cache_reads:0,runtime_admission_proven:false,native_cache_ACK:false};
++  return{version:BITFINEX_N10_PRICE_VERSION,status:'CLOSED_WITHIN_BITFINEX_USD_PRICE_PATH',price_path,runtime_input_qualified:false,provider_http:0,cache_reads:0};
++ }catch{return fail('MALFORMED_NATIVE_PRICE_INPUT');}
++}
++export function verifyBitfinexN10CachedPricePath(path,params){
++ const rebuilt=inspectBitfinexN10CachedPricePath(params).price_path;
++ return Boolean(rebuilt&&canonical(rebuilt)===canonical(path));
++}
+--- /dev/null
++++ b/current-generation/files/src/bitfinex-n10-memory-context.mjs
+@@ -0,0 +1,63 @@
++import {createHash} from 'node:crypto';
++import {buildEvidenceV2} from './evidence-source-adapters.mjs';
++import {inspectBitfinexN10CachedPricePath,BITFINEX_N10_PRICE_VERSION} from './bitfinex-n10-price-path.mjs';
++import {qualifiedBitfinexNativeComponent,bitfinexNativeMarket} from './bitfinex-native-four-hour-flow.mjs';
++const METRIC='CLOSED_15M_BITFINEX_USD_PRICE_CONTEXT',M=60000;
++export const BITFINEX_N10_MEMORY_MAX_DTO_BYTES=16384;
++const canonical=x=>JSON.stringify(x,(_k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v);
++const sha=x=>createHash('sha256').update(canonical(x)).digest('hex'),hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
++const positive=x=>typeof x==='number'&&Number.isFinite(x)&&x>0;
++const ohlc=x=>[x?.open,x?.high,x?.low,x?.close].every(positive)&&x.low<=x.high&&x.open>=x.low&&x.open<=x.high&&x.close>=x.low&&x.close<=x.high;
++const validWindow=w=>w?.label==='15m'&&w.candle_count===15&&Number.isSafeInteger(w.window_start_ts)&&Number.isSafeInteger(w.window_end_ts)&&w.window_end_ts%M===0&&w.window_end_ts-w.window_start_ts===15*M;
++
++// Private same-invocation references, never persisted inside the N05 payload.
++export function attachBitfinexN10Memory({contract,component,payload,observed_ts,expires_ts,now}={}){
++ try{
++  if(!qualifiedBitfinexNativeComponent(component)||component.contract!==contract||observed_ts!==component.observed_ts||payload?.observed_ts!==observed_ts||payload?.version!=='bitfinex-native-flow-collector-v1-20261011'||Buffer.byteLength(JSON.stringify(payload))>900000||
++   ![now,observed_ts,expires_ts].every(Number.isSafeInteger)||observed_ts>now||expires_ts!==component.window_end_ts+5*M||expires_ts<now)return false;
++  Object.defineProperty(component,'_n05_bitfinex_reuse',{enumerable:false,writable:false,configurable:false,value:Object.freeze({cache:{observed_ts,expires_ts,payload}})});
++  return true;
++ }catch{return false;}
++}
++function currentSpotBinding(contract,s,start,end,now){
++ const p=s?.payload,symbol=contract.slice(0,-5).toLowerCase()+'usdt';
++ // Same freshness, identity and native-bar requirements as the existing
++ // Kraken preparation, without interpreting USD as a HTX/USDT price.
++ if(s?.market!=='SPOT'||s.contract!==contract||p?.status!=='ok'||p.ch!==`market.${symbol}.kline.1min`||![s.received_ts,p.ts].every(Number.isSafeInteger)||p.ts<end||p.ts>s.received_ts||s.received_ts>now||now-p.ts>3*M||!Array.isArray(p.data)||p.data.length>2000)return null;
++ const bars=p.data.filter(r=>Number.isSafeInteger(r?.id)&&r.id*1000>=start&&r.id*1000<end).sort((a,b)=>a.id-b.id);
++ if(bars.length!==15||!bars.every((r,i)=>r.id*1000===start+i*M&&ohlc(r)&&typeof r.vol==='number'&&Number.isFinite(r.vol)&&r.vol>=0)||!bars.some(r=>r.vol>0))return null;
++ return{contract,channel:p.ch,source_ts:p.ts,received_ts:s.received_ts,raw_reply_sha256:sha(p)};
++}
++function fact(contract,c,p,h,s,now){
++ return buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:'BITFINEX_OFFICIAL_SPOT_CANDLES',asset_id:`htx-futures:${contract}`,htx_contract:contract,block_id:'N10',metric_family:METRIC,origin_event_id:`BITFINEX_USD:${contract}:${p.window_end}`,dependency_group:`BITFINEX_OFFICIAL_SPOT_CANDLES:${contract}:${p.window_end}`,source_ts:p.source_ts,observed_ts:now,first_known_ts:p.first_known_ts,expires_at:p.expires_at,coverage_status:'EXACT_FIFTEEN_NATIVE_BITFINEX_USD_MINUTES',coverage_fraction:0,directional_strength:null,risk_strength:null,unit:'USD',extra:{venue:'BITFINEX',market:'SPOT',quote:'USD',price_path:p,n05_component:c,primary_window:h,htx_spot_presence_binding:s,verification_scope:'COMPACT_PRODUCER_RECEIPT_NOT_NATIVE_CACHE_ACK',entry_authorized_by_context:false,liquidation_as_target:false,score_contribution:0}});
++}
++export function deriveBitfinexN10MemoryEvidence({contract,component,htx_spot_kline,htx_window,now}={}){
++ try{
++  const capsule=component?._n05_bitfinex_reuse;
++  if(!capsule||!validWindow(htx_window))return[];
++  const p=inspectBitfinexN10CachedPricePath({contract,component,cache:capsule.cache,now}).price_path;
++  if(!p||p.window_start!==htx_window.window_start_ts||p.window_end!==htx_window.window_end_ts)return[];
++  const spot=currentSpotBinding(contract,htx_spot_kline,p.window_start,p.window_end,now);if(!spot)return[];
++  const {receipt_hashes,n12_bounded_sample_status,...c}=component;
++  const h={label:'15m',candle_count:15,window_start_ts:p.window_start,window_end_ts:p.window_end};
++  const row=fact(contract,structuredClone(c),structuredClone(p),h,spot,now);
++  return Buffer.byteLength(JSON.stringify(row))<=BITFINEX_N10_MEMORY_MAX_DTO_BYTES?[row]:[];
++ }catch{return[];}
++}
++// Persisted compact integrity at the qualified producer's trust. Full original
++// raw execution reconciliation happened above; this is no independent wire ACK.
++export function verifyBitfinexN10MemoryEvidence(row,now){
++ try{
++  const p=row?.price_path,c=row?.n05_component,h=row?.primary_window,s=row?.htx_spot_presence_binding,b=p?.source_cache_binding,bars=p?.raw_price_bars;
++  if(Buffer.byteLength(JSON.stringify(row))>BITFINEX_N10_MEMORY_MAX_DTO_BYTES||row?.metric_family!==METRIC||!qualifiedBitfinexNativeComponent(c)||c.contract!==row.htx_contract||
++   p?.version!==BITFINEX_N10_PRICE_VERSION||p.contract!==row.htx_contract||p.venue!=='BITFINEX'||p.market!=='SPOT'||p.source_symbol!==bitfinexNativeMarket(row.htx_contract)||p.quote!=='USD'||canonical(p.identity)!==canonical(c.identity)||
++   ![now,p.window_start,p.window_end,p.source_ts,p.observed_ts,p.first_known_ts,p.expires_at].every(Number.isSafeInteger)||p.window_end%M||p.window_end-p.window_start!==15*M||p.source_ts!==p.window_end||p.first_known_ts!==c.observed_ts||p.first_known_ts<p.window_end||p.first_known_ts>p.observed_ts||p.observed_ts!==row.observed_ts||p.observed_ts>now||p.expires_at!==p.window_end+5*M||p.expires_at<now||
++   c.window_end_ts!==p.window_end||c.window_start_ts!==p.window_end-240*M||p.candle_count!==15||p.active_minute_count!==15||p.verified_flow_presence_minutes!==240||!Number.isSafeInteger(p.native_candle_rows_in_four_hours)||p.native_candle_rows_in_four_hours<15||p.native_candle_rows_in_four_hours>240||
++   p.native_base_volume_available!==true||p.native_quote_volume_available!==false||p.comparison_status!=='WITHIN_BITFINEX_USD_ONLY'||p.htx_comparison!==null||p.exact_price_usdt!==null||p.fx_conversion_proven!==false||p.native_cache_ACK!==false||p.runtime_admission_proven!==false||p.score_contribution!==0||p.coverage_fraction!==0||p.directional_strength!==null||p.risk_strength!==null||p.entry_authorized!==false||p.liquidation_as_target!==false||p.provider_http!==0||p.cache_reads!==0||p.source_clock_policy!=='ORIGINAL_N05_BITFINEX_NATIVE_15M_WITH_SPARSE_4H_FLOW_PROOF')return false;
++  if(b?.source!=='N05_OFFICIAL_FLOW:BITFINEX'||b.asset_key!==`NATIVE_FLOW:${row.htx_contract}:${p.window_end}`||b.observed_ts!==p.first_known_ts||b.expires_ts!==p.expires_at||!hex(b.payload_sha256)||b.rederived_component_sha256!==sha(c)||b.selected_price_bars_sha256!==sha(bars)||
++   !Array.isArray(bars)||bars.length!==15||!bars.every((x,i)=>x.ts===p.window_start+i*M&&x.closed_end===x.ts+M-1&&ohlc(x)&&positive(x.base_volume))||
++   p.path_open!==bars[0].open||p.path_close!==bars.at(-1).close||p.path_high!==Math.max(...bars.map(x=>x.high))||p.path_low!==Math.min(...bars.map(x=>x.low))||p.change_pct!==(p.path_close/p.path_open-1)*100||!Number.isSafeInteger(p.recent_trade_count)||p.recent_trade_count!==c.recent_windows.find(x=>x.minutes===15)?.trade_count||p.recent_trade_count<15||p.recent_trade_count>c.trade_count||c.recent_windows.find(x=>x.minutes===15)?.window_start_ts!==p.window_start||c.recent_windows.find(x=>x.minutes===15)?.window_end_ts!==p.window_end)return false;
++  if(!validWindow(h)||h.window_start_ts!==p.window_start||h.window_end_ts!==p.window_end||s?.contract!==row.htx_contract||s.channel!==`market.${row.htx_contract.slice(0,-5).toLowerCase()}usdt.kline.1min`||![s.source_ts,s.received_ts].every(Number.isSafeInteger)||s.source_ts<p.window_end||s.source_ts>s.received_ts||s.received_ts>p.observed_ts||p.observed_ts-s.source_ts>3*M||!hex(s.raw_reply_sha256))return false;
++  return canonical(fact(row.htx_contract,c,p,h,s,row.observed_ts))===canonical(row);
++ }catch{return false;}
++}
+--- a/current-generation/files/src/bitfinex-native-flow-collector.mjs
++++ b/current-generation/files/src/bitfinex-native-flow-collector.mjs
+@@ -1,3 +1,4 @@
++import {attachBitfinexN10Memory} from './bitfinex-n10-memory-context.mjs';
+ import {verifiedAssetRouteIdentity} from './verified-asset-route-identity.mjs';
+ import {N05_N12_PUBLIC_SOURCE_DAILY_CAP,publicVenueMinuteCap,publicVenueHasMinuteHeadroom} from './public-venue-source-budget.mjs';
+ import {createHash} from 'node:crypto';
+@@ -44,7 +45,7 @@
+  try{
+   if(!admitDb())return{...root,status:'FLOW_DB_HEADROOM_REQUIRED'};
+   const end=Math.floor(now/60000)*60000,key=`NATIVE_FLOW:${contract}:${end}`,old=await cacheRead({source:SOURCE,asset_key:key,now,include_cache_clock:true});
+-  if(old?.version===VERSION&&old.observed_ts<=now&&old.observed_ts>=end){const c=normalizeBitfinexNativeFlow({contract,identity,catalog:old.catalog,candles:old.candles,trades:old.trades,window_end_ts:end,observed_ts:old.observed_ts}),sample=normalizeBitfinexN12BoundedTradeSample({contract,identity,catalog:old.catalog,trades:old.trades,trade_receipt:old.trade_receipt,window_end_ts:end,observed_ts:old.observed_ts});evidence.push(...sample.evidence.filter(e=>validateBitfinexN12BoundedTradeSample(e,now)));return{...root,status:c.status,components:[c],network_calls:calls,cache_status:'HIT_ORIGINAL_CLOCKS',check_completed:c.check_completed,n12_bounded_sample_status:sample.status};}
++  if(old?.version===VERSION&&old.observed_ts<=now&&old.observed_ts>=end){const c=normalizeBitfinexNativeFlow({contract,identity,catalog:old.catalog,candles:old.candles,trades:old.trades,window_end_ts:end,observed_ts:old.observed_ts}),sample=normalizeBitfinexN12BoundedTradeSample({contract,identity,catalog:old.catalog,trades:old.trades,trade_receipt:old.trade_receipt,window_end_ts:end,observed_ts:old.observed_ts});evidence.push(...sample.evidence.filter(e=>validateBitfinexN12BoundedTradeSample(e,now)));const {cache_observed_ts,cache_expires_ts,cache_status,network_calls,...payload}=old;attachBitfinexN10Memory({contract,component:c,payload,observed_ts:cache_observed_ts,expires_ts:cache_expires_ts,now:clock()});return{...root,status:c.status,components:[c],network_calls:calls,cache_status:'HIT_ORIGINAL_CLOCKS',check_completed:c.check_completed,n12_bounded_sample_status:sample.status};}
+   if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
+   const metaKey='OFFICIAL_METADATA:EXCHANGE_PAIR_AND_CURRENCY_ALIASES',cached=await cacheRead({source:SOURCE,asset_key:metaKey,now,include_cache_clock:true});let catalog;
+   if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
+@@ -59,8 +60,9 @@
+   const component=normalizeBitfinexNativeFlow({contract,identity,catalog,candles,trades,window_end_ts:end,observed_ts:receipts.at(-1).received_ts}),ts=component.observed_ts;
+   const sample=normalizeBitfinexN12BoundedTradeSample({contract,identity,catalog,trades,trade_receipt:receipts.at(-1),window_end_ts:end,observed_ts:ts});
+   evidence.push(...sample.evidence.filter(e=>validateBitfinexN12BoundedTradeSample(e,clock())));
+-  components.push({...component,receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256),n12_bounded_sample_status:sample.status});
++  const returned={...component,receipt_hashes:receipts.filter(r=>r.body_sha256).map(r=>r.body_sha256),n12_bounded_sample_status:sample.status};components.push(returned);
+   const payload={version:VERSION,observed_ts:ts,catalog,candles,trades,trade_receipt:receipts.at(-1)};
++  attachBitfinexN10Memory({contract,component:returned,payload,observed_ts:ts,expires_ts:end+300000,now:clock()});
+   if(component.check_completed&&Buffer.byteLength(JSON.stringify(payload))<=900000&&admitDb())await cacheWrite({source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:end+300000,payload});
+   return{...root,status:component.status,reason:component.reason,components,check_completed:component.check_completed,network_calls:calls};
+  }catch(e){return{...root,status:components.some(c=>c.check_completed)||evidence.length?'PARTIAL_RETAINED_FLOW_FACTS':'FLOW_COLLECTOR_ERROR',check_completed:components.some(c=>c.check_completed),reason:e.message,network_calls:calls};}
+--- a/current-generation/files/src/htx-technical-structure.mjs
++++ b/current-generation/files/src/htx-technical-structure.mjs
+@@ -1,3 +1,4 @@
++import {deriveBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
+ import {deriveKrakenN10MemoryEvidence} from './kraken-n10-memory-context.mjs';
+ import {createHash} from 'node:crypto';
+ import {buildEvidenceV2} from './evidence-source-adapters.mjs';
+@@ -175,9 +176,10 @@
+  // Apply the path's market/window requirements before its four-read ceiling.
+  // Several components of one source share a cache key; read it once and use
+  // the component whose original observation matches the retained cache row.
+- const groups=new Map(),memory=[];
++ const groups=new Map(),memory=[],bitfinexMemory=[];
+  for(const c of flow_result?.components||[]){
+   if(c?.venue==='KRAKEN'){memory.push(c);continue;}
++  if(c?.venue==='BITFINEX'){bitfinexMemory.push(c);continue;}
+   if(!qualifiedVenueComponent(c)||c.contract!==contract||c.market!=='SPOT'||c.quote!=='USDT'||c.window_end_ts!==h.window_end_ts||c.window_start_ts!==h.window_end_ts-240*60000||c.verified_minutes!==240)continue;
+   if(!groups.has(c.venue))groups.set(c.venue,[]);groups.get(c.venue).push(c);
+  }
+@@ -192,6 +194,10 @@
+  for(const component of memory){
+   const facts=deriveKrakenN10MemoryEvidence({contract,component,htx_spot_kline,htx_window:h,now});
+   evidence.push(...facts);receipts.push({venue:'KRAKEN',status:facts.length?'CLOSED_INDEPENDENT_SAME_WINDOW_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_PRICE_PATH',provider_http:0,cache_reads:0,producer_receipt_not_native_cache_ACK:true});
++ }
++ for(const component of bitfinexMemory){
++  const facts=deriveBitfinexN10MemoryEvidence({contract,component,htx_spot_kline,htx_window:h,now});
++  evidence.push(...facts);receipts.push({venue:'BITFINEX',status:facts.length?'CLOSED_WITHIN_BITFINEX_USD_PRICE_PATH':'NO_USEFUL_FRESH_CLOSED_USD_PRICE_PATH',provider_http:0,cache_reads:0,producer_receipt_not_native_cache_ACK:true});
+  }
+  native_unclosed||=nativeSourceUsageUnclosed(db);
+  return{status:native_unclosed?'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE':evidence.length?'CLOSED':'NO_USEFUL_EXISTING_VENUE_PATH',evidence,cache_reads,provider_http:0,receipts};
+--- a/current-generation/files/src/block-result-context.mjs
++++ b/current-generation/files/src/block-result-context.mjs
+@@ -1,3 +1,5 @@
++import {n12CompositeFirstKnown} from './n12-composite-first-known.mjs';
++import {verifyBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
+ import {verifyKrakenN10MemoryEvidence} from './kraken-n10-memory-context.mjs';
+ import {validateKrakenN12BoundedTradeSample} from './kraken-n12-bounded-trade-sample.mjs';
+ import {qualifiedTurnoverBaseline} from './flow-turnover-baseline.mjs';
+@@ -157,6 +159,11 @@
+   const comparison=row.comparison_status==='SPOT_ONLY'?'Доступен только спотовый путь; общее направление со срочным рынком не подтверждено':row.comparison_status==='SAME_WINDOW_OVERLAPPING_RANGE_AND_DIRECTION'?'Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника':row.comparison_status==='DIRECTION_CONFLICT'?'Направления спота и фьючерса HTX расходятся; общего вывода нет':row.comparison_status==='DIRECTION_UNCONFIRMED'?'В одном из рынков цена не изменилась; общее направление не подтверждено':'Ценовые диапазоны спота и фьючерса HTX не пересекаются; общего вывода нет';
+   return{source:'HTX / спотовые закрытые свечи',label:'Фактический путь цены на споте за 15 минут',value:`15 закрытых минутных свечей, активных минут ${row.active_minute_count}: ${price(row.path_open)} → ${price(row.path_close)} USDT (${sign}${fmt(row.change_pct)}%); минимум ${price(row.path_low)}, максимум ${price(row.path_high)} USDT. ${comparison}. Цель и разрешение входа этим не подтверждены`};
+  }
++ if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_BITFINEX_USD_PRICE_CONTEXT'){
++  if(!verifyBitfinexN10MemoryEvidence(row,now))return null;
++  const p=row.price_path,price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);
++  return{source:'Bitfinex / исходные спотовые свечи USD',label:'Цена за 15 минут на Bitfinex',value:`15 закрытых активных минут: ${price(p.path_open)} → ${price(p.path_close)} USD (${p.change_pct>0?'+':''}${fmt(p.change_pct)}%); диапазон ${price(p.path_low)}–${price(p.path_high)} USD. Цены в долларах США, без пересчёта и сравнения с HTX. Баллы, цели и вход этим не меняются`};
++ }
+  if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_KRAKEN_REUSED_PRICE_PATH_CONTEXT'){
+   if(!verifyKrakenN10MemoryEvidence(row,now))return null;
+   const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);
+@@ -444,7 +451,7 @@
+    fact={...fact,source:`${fact.source} / ${venues.join(' / ')}`,value:`${fact.value}; ${parts.join('; ')}; ${agreement?'направления всех доступных площадок совпадают лишь в этих неполных выборках':'общего направления по всем доступным неполным выборкам нет'}; спот и фьючерсы одной биржи не считались двумя независимыми площадками`};
+   }
+   const origins=row.block_id==='N12'?contextComponentOrigins([row,...relatedRows]):null;
+-  seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(origins?{component_origins:origins,physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]}:{}),...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
++  seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(origins?{component_origins:origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:[row.evidence_id,...related],component_origins:origins,decision_ts:now}),physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]}:{}),...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
+  }
+  // Group event logs by transaction. Serial transfers are never summed as flow.
+  const groups=new Map();
+@@ -483,7 +490,7 @@
+  const available={facts:availableCanonicalContextFacts(canonical)};
+  const printed=manual?.ok===true&&typeof manual.text==='string'?manual.text:null;
+  const sourceBlockIds=row=>[...new Set([row.block_id,...(row.evidence_ids||[]).map(id=>canonical?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(e=>e.evidence_id===id)?.block_id).filter(Boolean)])];
+- const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row)}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],...(row.component_origins?{component_origins:row.component_origins}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
++ const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row)}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],...(row.component_origins?{component_origins:row.component_origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:row.evidence_ids||[row.evidence_id],component_origins:row.component_origins,decision_ts:now})}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
+  const payload=telegram?.ok===true&&typeof telegram.text==='string'&&Boolean(canonical?.analytical_fingerprint)&&telegram.analytical_fingerprint===canonical.analytical_fingerprint?telegram.text:null;
+  // The plain Telegram form may represent only a subset of the manual
+  // row. Observe the existing pure formatter with one related ID removed;
+@@ -497,7 +504,7 @@
+   const origins=row.component_origins.filter(origin=>represented.includes(origin.evidence_id));
+   return{...row,evidence_ids:represented,component_origins:origins,physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]};
+  };
+- const telegramReceipts=confirmedBlockContextFacts(canonical).map(printedTelegramFact).filter(Boolean).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&(row.evidence_ids?.length>1||row.component_origins)?{source_block_ids:sourceBlockIds(row),evidence_ids:row.evidence_ids}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,...(row.component_origins?{component_origins:row.component_origins,physical_root_keys:row.physical_root_keys}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
++ const telegramReceipts=confirmedBlockContextFacts(canonical).map(printedTelegramFact).filter(Boolean).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&(row.evidence_ids?.length>1||row.component_origins)?{source_block_ids:sourceBlockIds(row),evidence_ids:row.evidence_ids}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,...(row.component_origins?{component_origins:row.component_origins,physical_root_keys:row.physical_root_keys,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:row.evidence_ids||[row.evidence_id],component_origins:row.component_origins,decision_ts:now})}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
+
+  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.flatMap(row=>row.source_block_ids||[row.block_id]))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.flatMap(row=>row.source_block_ids||[row.block_id]))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
+ }
+--- a/current-generation/files/src/telegram-plain-facts.mjs
++++ b/current-generation/files/src/telegram-plain-facts.mjs
+@@ -1,3 +1,4 @@
++import {verifyBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
+ import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
+ import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+ import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
+@@ -93,6 +94,7 @@
+ // Telegram. Historical supply and other raw diagnostic context stay in the
+ // canonical analysis and manual report; they cannot occupy a spare bullet.
+ export function isApprovedTelegramContextFact(f,c){
++ if(f?.block_id==='N10'&&f.field==='CLOSED_15M_BITFINEX_USD_PRICE_CONTEXT'&&f.label==='Цена за 15 минут на Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return verifyBitfinexN10MemoryEvidence(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&['Направление последних сделок OKX','Направление последних сделок KuCoin'].includes(f.label)){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validN12PublicTrade(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitfinexN12BoundedTradeSample(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitgetN12BoundedTradeSample(row,c.observed_ts);}
+--- a/current-generation/apply-runtime-overlay.mjs
++++ b/current-generation/apply-runtime-overlay.mjs
+@@ -124,7 +124,7 @@
+  'src/gdelt-official-discovery.mjs',
+  'src/shadow-market-pilot.mjs',
+  'src/blockscout-index-evidence.mjs',
+- 'src/gate-four-hour-flow.mjs','src/gate-flow-collector.mjs','src/gate-n12-bounded-trade-sample.mjs','src/gate-futures-trade-sample.mjs','src/gate-futures-trade-collector.mjs','src/gate-public-taker-reference.mjs','src/flow-turnover-baseline.mjs','src/flow-turnover-collector.mjs','src/backpack-four-hour-flow.mjs','src/backpack-flow-collector.mjs','src/kraken-four-hour-flow.mjs','src/kraken-flow-collector.mjs','src/kraken-n10-price-path.mjs','src/kraken-n12-bounded-trade-sample.mjs','src/kraken-memory-reuse.mjs','src/kraken-n10-memory-context.mjs','src/bitfinex-native-four-hour-flow.mjs','src/bitfinex-native-flow-collector.mjs','src/bitfinex-n12-bounded-trade-sample.mjs','src/kraken-public-taker-reference.mjs','src/poloniex-native-four-hour-flow.mjs','src/poloniex-native-flow-collector.mjs','src/n05-source-headroom.mjs','src/public-venue-source-budget.mjs','src/verified-asset-route-identity.mjs','src/binance-native-four-hour-flow.mjs','src/binance-native-flow-collector.mjs','src/external-n05-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-n12-bounded-trade-sample.mjs','src/bitget-flow-collector.mjs','src/n12-native-public-trade-sample.mjs','src/n12-kucoin-token-trade-sample.mjs','src/n12-native-public-trade-collector.mjs','src/n12-cached-trade-scope.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/public-venue-source-priority.mjs','src/n15-initial-source-preference.mjs','src/source-closure-diagnostics.mjs',
++ 'src/gate-four-hour-flow.mjs','src/gate-flow-collector.mjs','src/gate-n12-bounded-trade-sample.mjs','src/gate-futures-trade-sample.mjs','src/gate-futures-trade-collector.mjs','src/gate-public-taker-reference.mjs','src/flow-turnover-baseline.mjs','src/flow-turnover-collector.mjs','src/backpack-four-hour-flow.mjs','src/backpack-flow-collector.mjs','src/kraken-four-hour-flow.mjs','src/kraken-flow-collector.mjs','src/kraken-n10-price-path.mjs','src/kraken-n12-bounded-trade-sample.mjs','src/kraken-memory-reuse.mjs','src/kraken-n10-memory-context.mjs','src/bitfinex-native-four-hour-flow.mjs','src/bitfinex-native-flow-collector.mjs','src/bitfinex-n10-price-path.mjs','src/bitfinex-n10-memory-context.mjs','src/n12-composite-first-known.mjs','src/bitfinex-n12-bounded-trade-sample.mjs','src/kraken-public-taker-reference.mjs','src/poloniex-native-four-hour-flow.mjs','src/poloniex-native-flow-collector.mjs','src/n05-source-headroom.mjs','src/public-venue-source-budget.mjs','src/verified-asset-route-identity.mjs','src/binance-native-four-hour-flow.mjs','src/binance-native-flow-collector.mjs','src/external-n05-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-n12-bounded-trade-sample.mjs','src/bitget-flow-collector.mjs','src/n12-native-public-trade-sample.mjs','src/n12-kucoin-token-trade-sample.mjs','src/n12-native-public-trade-collector.mjs','src/n12-cached-trade-scope.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/public-venue-source-priority.mjs','src/n15-initial-source-preference.mjs','src/source-closure-diagnostics.mjs',
+  'src/htx-large-trades-evidence.mjs','src/n12-market-trades.mjs','src/coinpaprika-sector-evidence.mjs','src/coingecko-sector-evidence.mjs','src/sector-context.mjs','src/block-result-context.mjs','src/finalized-chain-events.mjs','src/native-evm-finalized-context.mjs',
+  'src/durable-command-queue.mjs',
+  'src/strict-delivery-binding.mjs',

@@ -1,0 +1,83 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {pathToFileURL} from 'node:url';
+const runtime=process.env.REPORT2_JOINT_RUNTIME,base=process.env.REPORT2_BASE_RUNTIME,repo=process.env.REPORT2_JOINT_REPO;
+if(!runtime||!base||!repo)throw Error('EXACT_ASSEMBLED_PROPOSAL_AND_BASE_REQUIRED');
+const load=(name,dir=runtime)=>import(pathToFileURL(`${dir}/${name}`));
+const {collectBitfinexNativeFlow}=await load('bitfinex-native-flow-collector.mjs'),oldCollector=(await load('bitfinex-native-flow-collector.mjs',base)).collectBitfinexNativeFlow;
+const {loadN10ReusedVenuePaths}=await load('htx-technical-structure.mjs'),oldN10=(await load('htx-technical-structure.mjs',base)).loadN10ReusedVenuePaths;
+const {installEvidenceSourceStore}=await load('evidence-source-store.mjs'),{installProviderMinuteLedger}=await load('provider-minute-ledger.mjs');
+const {consumeBlockResultContext,auditRenderedBlockResults}=await load('block-result-context.mjs');
+const {externalN12ContextEvidence}=await load('candidate-evidence-v2-runtime.mjs');
+const {verifyBitfinexN10MemoryEvidence,BITFINEX_N10_MEMORY_MAX_DTO_BYTES}=await load('bitfinex-n10-memory-context.mjs');
+const {buildEvidenceV2}=await load('evidence-source-adapters.mjs'),{consumeEvidenceV2}=await load('evidence-v2.mjs');
+const {formatManualReport}=await load('manual-report-formatter.mjs'),{canonicalFingerprint,renderCanonicalTelegram}=await load('canonical-publication.mjs');
+const {n12CompositeFirstKnown}=await load('n12-composite-first-known.mjs');
+const {BITGET_FLOW_VERSION}=await load('bitget-four-hour-flow.mjs');
+const hash=b=>createHash('sha256').update(b).digest('hex'),read=p=>fs.readFileSync(`${repo}/${p}`);
+const dir='checkpoints/n05-bitfinex-pilot-38138608166/',summary=JSON.parse(read(dir+'batch-summary.json'));
+const catalog=gunzipSync(read('checkpoints/n05-bitfinex-pilot-38138499328/BITFINEX-CURRENT-CATALOG.json.gz'));
+function original(name){const receipt=summary.sources.find(s=>s.name===name),body=gunzipSync(read(dir+receipt.file));assert.equal(hash(body),receipt.body_sha256);return{receipt,body};}
+function fixture(){
+ const candles=original('BITFINEX-XMR-CANDLES1M'),trades=original('BITFINEX-XMR-TRADES10000'),end=summary.window_end_ts,now=trades.receipt.received_ts,start=end-900000;
+ // Deliberately unrelated CONTROLLED HTX/USDT prices. Never a native quote or FX.
+ const bars=Array.from({length:15},(_,i)=>({id:(start+i*60000)/1000,open:500,close:501,high:502,low:499,vol:1}));
+ return{contract:'XMR-USDT',candles,trades,end,now,spot:{contract:'XMR-USDT',market:'SPOT',received_ts:now,payload:{status:'ok',ch:'market.xmrusdt.kline.1min',ts:now,data:bars}},primary:{check_completed:true,receipts:[{actual_price_windows:[{label:'15m',candle_count:15,window_start_ts:start,window_end_ts:end,open:500,close:501,high:502,low:499}]}]}};
+}
+async function database(){
+ const sql=new DatabaseSync(':memory:'),log=[];let unknown=0,hook=()=>{};
+ const db={sql,log,setUnknown:v=>unknown=v,setHook:f=>hook=f,usageSnapshot:()=>({unknown_ops:unknown}),prepare(query){return{args:[],bind(...args){this.args=args;return this;},async first(){return exec('first',query,this.args);},async all(){return{results:exec('all',query,this.args)};},async run(){return exec('run',query,this.args);}};},async batch(items){return Promise.all(items.map(x=>x.run()));}};
+ function exec(method,query,args){log.push({method,query,args,after_unknown:unknown>0});hook(query,args);const q=sql.prepare(query);return method==='first'?q.get(...args)||null:method==='all'?q.all(...args):q.run(...args);}
+ await installEvidenceSourceStore(db);await installProviderMinuteLedger(db);log.length=0;return db;
+}
+function params(db,x){const requests=[];return{db,contract:x.contract,asset_identity:{asset_kind:'NATIVE',chain:'monero',native_asset_id:'monero:mainnet',contract_or_mint:null},identity_method:'HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK',run_id:'CONTROLLED_COMBINED_BFX_XMR',now:x.now,clock:()=>x.now,request_admit:()=>({allowed:true}),source_health_admit:()=>({allowed:true}),requests,fetch_impl:async url=>{requests.push(url);return new Response(url.includes('/conf/')?catalog:url.includes('/candles/')?x.candles.body:x.trades.body);}};}
+async function produce(change=()=>{}){const x=fixture(),db=await database(),p=params(db,x);change(db,p,x);const result=await collectBitfinexNativeFlow(p);return{x,db,p,result};}
+const path=(z,extra={})=>loadN10ReusedVenuePaths({db:z.db,contract:z.x.contract,flow_result:z.result,primary_receipt:z.x.primary,htx_spot_kline:z.x.spot,now:z.x.now,...extra});
+const fullWrite=(query,args)=>query.startsWith('INSERT INTO report2_evidence_source_cache')&&String(args[1]).startsWith('NATIVE_FLOW:');
+const witness={scope:'NEW_PATCH_CONTROLLED_INTEGRATION_CASES_NOT_A_NATIVE_RUN',native_quotes_or_HTX_agreement:false,native_cache_ACK:false,current105:false,delivery_proven:false};
+test.after(()=>{if(process.env.REPORT2_JOINT_WITNESS)fs.writeFileSync(process.env.REPORT2_JOINT_WITNESS,JSON.stringify(witness,null,2)+'\n');});
+test('new proposed Bitfinex capture preserves exact baseline N05/N12/HTTP/SQL/cache bytes and adds memory USD only',async()=>{
+ const x=fixture(),oldDB=await database(),newDB=await database();try{
+  const a=params(oldDB,x),b=params(newDB,x),before=await oldCollector(a),after=await collectBitfinexNativeFlow(b);
+  assert.deepEqual(a.requests,b.requests);assert.deepEqual(oldDB.log,newDB.log);assert.equal(JSON.stringify(before),JSON.stringify(after));assert.equal(after.network_calls,3);
+  assert.deepEqual(externalN12ContextEvidence(after),externalN12ContextEvidence(before));assert.equal(Object.getOwnPropertyDescriptor(after.components[0],'_n05_bitfinex_reuse').enumerable,false);
+  const cacheA=oldDB.sql.prepare('SELECT payload_json FROM report2_evidence_source_cache WHERE asset_key LIKE ?').get('NATIVE_FLOW:%').payload_json,cacheB=newDB.sql.prepare('SELECT payload_json FROM report2_evidence_source_cache WHERE asset_key LIKE ?').get('NATIVE_FLOW:%').payload_json;assert.equal(cacheA,cacheB);assert(!cacheB.includes('_n05_bitfinex_reuse'));
+  const z={x,db:newDB,result:after},count=newDB.log.length,r=await path(z);assert.equal(newDB.log.length,count);assert.equal(r.cache_reads,0);assert.equal(r.provider_http,0);assert.equal(r.evidence.length,1);const dto=r.evidence[0];assert(verifyBitfinexN10MemoryEvidence(dto,x.now));assert.equal(dto.unit,'USD');assert.equal(dto.price_path.htx_comparison,null);assert.equal(dto.price_path.exact_price_usdt,null);assert.equal(dto.first_known_ts,1791720977667);
+  witness.IO={actual_mock_provider_requests:3,extra_provider_requests:0,old_statement_calls:oldDB.log.length,new_statement_calls_before_N10:count,extra_N10_statement_calls:0,N05_native_cache_payload_bytes:Buffer.byteLength(cacheB),N05_cache_payload_byte_delta:0,new_N10_DTO_bytes:Buffer.byteLength(JSON.stringify(dto)),new_DTO_byte_cap:BITFINEX_N10_MEMORY_MAX_DTO_BYTES,private_raw_capsule_payload_bytes:Buffer.byteLength(JSON.stringify(after.components[0]._n05_bitfinex_reuse.cache.payload)),raw_capsule_payload_cap:900000};
+  witness.XMR={DTO:dto,N12:after.evidence,raw_body_hashes:{candles:x.candles.receipt.body_sha256,trades:x.trades.receipt.body_sha256}};
+ }finally{oldDB.sql.close();newDB.sql.close();}
+});
+test('new USD fact and original N12 reach unchanged manual/two Telegram layouts with neutral score and explicit dollars',async()=>{
+ const z=await produce();try{
+  const n10=await path(z),rows=[...n10.evidence,...externalN12ContextEvidence(z.result)],context=consumeBlockResultContext({contract:z.x.contract,now:z.x.now,evidence:rows});assert.equal(context.facts.length,2);
+  const a=consumeEvidenceV2([],{base_interest:75,decision_ts:z.x.now}),b=consumeEvidenceV2(rows,{base_interest:75,decision_ts:z.x.now});assert.equal(b.adjustment,a.adjustment);assert.equal(b.final_interest,75);assert.equal(b.threshold_unchanged,70);
+  function canonical(evidence){const c=structuredClone(JSON.parse(read('checkpoints/btw-preserved-block-result-input-20261004.json')).canonical);c.observed_ts=z.x.now;c.snapshot_id=`CONTROLLED:XMR:${z.x.now}`;c.metadata.contract=z.x.contract;c.metadata.internal_market_context.evidence_v2.evidence=evidence;c.metadata.internal_market_context.decision_ts=z.x.now;c.metadata.supporting_context={facts:consumeBlockResultContext({contract:z.x.contract,now:z.x.now,evidence}).facts};c.state='OBSERVE';c.direction='LONG';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:z.x.now+600000,next_recheck_ts:z.x.now+60000,cancel_condition:'price<1'};c.analytical_fingerprint=canonicalFingerprint(c);return c;}
+  const c=canonical(rows),old=canonical(externalN12ContextEvidence(z.result)),manual=formatManualReport(c),oldManual=formatManualReport(old);assert.equal(manual.ok,true);assert(manual.text.includes('Цена за 15 минут на Bitfinex'));assert(manual.text.includes('532,67'));const surfaces={};
+  for(const policy of ['ORIGINAL_V5_20261006','ORIGINAL_BRIEF_20261007']){const tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:policy}),oldTg=renderCanonicalTelegram({canonical:old,lifecycle_event:'OBSERVE',context_policy:policy});assert.equal(tg.ok,true,tg.status);assert(tg.text.includes('Цена за 15 минут на Bitfinex'),policy);assert(tg.text.includes('долларах США'),policy);assert(!tg.text.includes('совпало с HTX'));const audit=auditRenderedBlockResults({canonical:c,manual,telegram:tg});assert.equal(audit.telegram_delivery_proven,false);assert.equal(audit.telegram_message_id,null);const n12=audit.context_receipts.find(r=>r.block_id==='N12');assert.equal(n12.composite_first_known_ts,z.x.now);assert.equal(n12.source_ts,z.result.evidence[0].source_ts);assert.equal(n12.observed_ts,z.x.now);surfaces[policy]={text:tg.text,bytes:Buffer.byteLength(tg.text),baseline_bytes:Buffer.byteLength(oldTg.text),audit};}
+  witness.rendering={manual:manual.text,manual_bytes:Buffer.byteLength(manual.text),baseline_manual_bytes:Buffer.byteLength(oldManual.text),surfaces};
+ }finally{z.db.sql.close();}
+});
+test('NIL saved represented origins acquire new metadata only; full raw NIL runtime is not reconstructed',()=>{
+ const f=JSON.parse(fs.readFileSync(new URL('./nil-original-origins.json',import.meta.url))),r=f.receipt,before=JSON.stringify(r);
+ const project=(ids,origins)=>({...r,evidence_ids:ids,component_origins:origins,composite_first_known_ts:n12CompositeFirstKnown({contract:f.contract,evidence_ids:ids,component_origins:origins,decision_ts:f.candidate_ts})});
+ const full=project(r.evidence_ids,r.component_origins),htx=project([r.evidence_ids[0]],[r.component_origins[0]]),missing=project(r.evidence_ids,r.component_origins.slice(0,2));assert.equal(full.composite_first_known_ts,1792395181364);assert.equal(full.composite_first_known_ts-full.observed_ts,18970);assert.equal(htx.composite_first_known_ts,1792395162394);assert.equal(missing.composite_first_known_ts,null);assert.equal(JSON.stringify(r),before);assert.equal(f.n12_valid_fact_count,2);
+ witness.NIL={scope:'SAVED_SELECTED_RECEIPT_METADATA_ONLY_NOT_NATIVE_EVIDENCE_RECONSTRUCTION',full,represented_HTX_only:htx,incomplete_mapping:missing,added_metadata_bytes:Buffer.byteLength(JSON.stringify(full))-Buffer.byteLength(before)};
+});
+test('existing SQL group query/args remain identical when new Bitfinex memory is added',async()=>{
+ const z=await produce();try{const end=z.x.end,legacy={venue:'BITGET',version:BITGET_FLOW_VERSION,status:'CLOSED_VOLUME_RECONCILED_FOUR_HOURS',physical_root:'BITGET_OFFICIAL_PUBLIC_TRADES',check_completed:true,exact_asset_binding:true,contract:z.x.contract,market:'SPOT',quote:'USDT',window_start_ts:end-14400000,window_end_ts:end,verified_minutes:240,observed_ts:z.x.now};
+  const input={db:z.db,contract:z.x.contract,flow_result:{components:[legacy]},primary_receipt:z.x.primary,htx_spot_kline:z.x.spot,now:z.x.now};let start=z.db.log.length;const old=await oldN10(input),before=z.db.log.slice(start);start=z.db.log.length;const updated=await loadN10ReusedVenuePaths({...input,flow_result:{components:[legacy,...z.result.components]}}),after=z.db.log.slice(start);assert.equal(old.cache_reads,1);assert.equal(updated.cache_reads,1);assert.deepEqual(after,before);assert.equal(updated.evidence.length,1);assert.equal(updated.evidence[0].quote,'USD');witness.legacy_group={tested_group_count:1,old_queries:before,new_queries:after,four_group_ceiling_verified_separately_by_exact_source_span:true};
+ }finally{z.db.sql.close();}
+});
+test('old cache HIT preserves originals, new N10 metadata and zero acquisition',async()=>{
+ const z=await produce();try{const later=z.x.now+1000,r=await collectBitfinexNativeFlow({...z.p,now:later,clock:()=>later,fetch_impl:()=>{throw Error('NO_NEW_HTTP');}}),n10=await path({...z,result:r},{now:later});assert.equal(r.network_calls,0);assert.equal(n10.evidence.length,1);assert.equal(n10.evidence[0].first_known_ts,z.x.now);assert.equal(n10.evidence[0].expires_at,z.x.end+300000);assert.equal(r.evidence[0].expires_at,z.result.evidence[0].expires_at);
+ }finally{z.db.sql.close();}
+});
+for(const unknown of [false,true])test('new capsule survives optional native-cache failure; unknown='+unknown+' causes no extra SQL',async()=>{
+ const z=await produce(db=>db.setHook((query,args)=>{if(fullWrite(query,args)){if(unknown)db.setUnknown(1);throw Error('CONTROLLED_OPTIONAL_CACHE_FAILURE');}}));try{assert(z.result.components[0]._n05_bitfinex_reuse);assert(z.result.evidence.length);const before=z.db.log.length,n10=await path(z);assert.equal(n10.evidence.length,1);assert.equal(z.db.log.length,before);assert.equal(z.db.log.filter(q=>q.after_unknown).length,0);assert.equal(z.result.network_calls,3);}finally{z.db.sql.close();}
+});
+for(const [name,change] of [['missing HTX spot',x=>x.spot=null],['foreign HTX spot',x=>x.spot.contract='BTC-USDT'],['incomplete HTX spot',x=>x.spot.payload.data.pop()],['stale HTX spot',x=>x.spot.payload.ts-=180001],['shifted primary window',x=>{x.primary.receipts[0].actual_price_windows[0].window_start_ts+=60000;x.primary.receipts[0].actual_price_windows[0].window_end_ts+=60000;}]])test('new shared path refuses '+name+' without source/SQL fallback',async()=>{const z=await produce();try{change(z.x);const before=z.db.log.length,r=await path(z);assert.equal(r.evidence.length,0);assert.equal(z.db.log.length,before);assert(z.result.components[0].check_completed);}finally{z.db.sql.close();}});
+test('serialized N05 projection has no capsule and cannot manufacture the new USD path',async()=>{const z=await produce();try{const r=await path({...z,result:JSON.parse(JSON.stringify(z.result))});assert.equal(r.evidence.length,0);assert.equal(r.cache_reads,0);}finally{z.db.sql.close();}});
+test('new compact neutral USD consumer rejects units, nested clocks and rehashed fractional activity',async()=>{
+ const z=await produce();try{const row=(await path(z)).evidence[0];for(const mutate of [r=>r.price_path.quote='USDT',r=>r.price_path.first_known_ts--,r=>r.n05_component.identity.native_asset_id='algorand:mainnet',r=>r.score_contribution=1,r=>r.price_path.version='OTHER',r=>r.price_path.recent_trade_count=.5]){const copy=structuredClone(row);mutate(copy);assert.equal(verifyBitfinexN10MemoryEvidence(copy,z.x.now),false);assert.equal(consumeBlockResultContext({contract:z.x.contract,now:z.x.now,evidence:[copy]}).facts.length,0);}
+ const copy=structuredClone(row);copy.price_path.recent_trade_count=322.5;copy.n05_component.recent_windows[0].trade_count=322.5;const canonical=x=>JSON.stringify(x,(_k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v);copy.price_path.source_cache_binding.rederived_component_sha256=hash(canonical(copy.n05_component));const fields=['venue','market','quote','price_path','n05_component','primary_window','htx_spot_presence_binding','verification_scope','entry_authorized_by_context','liquidation_as_target','score_contribution'];const rehashed=buildEvidenceV2({...copy,extra:Object.fromEntries(fields.map(k=>[k,copy[k]]))});assert.equal(verifyBitfinexN10MemoryEvidence(rehashed,z.x.now),false);
+ }finally{z.db.sql.close();}
+});
+test('new DTO byte ceiling prevents raw capsule from entering report evidence',async()=>{const z=await produce();try{const row=(await path(z)).evidence[0];assert(Buffer.byteLength(JSON.stringify(row))<=16384);row.extra_raw='x'.repeat(16385);assert.equal(verifyBitfinexN10MemoryEvidence(row,z.x.now),false);assert(!JSON.stringify(row.price_path).includes('catalog'));}finally{z.db.sql.close();}});
