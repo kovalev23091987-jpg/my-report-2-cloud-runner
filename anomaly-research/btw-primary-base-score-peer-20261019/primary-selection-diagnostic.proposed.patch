@@ -1,0 +1,100 @@
+--- a/current-generation/files/runner-main.mjs
++++ b/current-generation/files/runner-main.mjs
+@@ -218,7 +218,62 @@
+   }
+ }
+ 
+-async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,candidateContracts=[],gate_diagnostic_for=null}={}){
++async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,candidateContracts=[],gate_diagnostic_for=null,include_primary_selection_diagnostic=false}={}){
++  // Optional technical copy only: no score/direction assessment or extra read.
++  // Kept inside this loader so extraction callers have no new global dependency.
++  const projectPrimarySelectionDiagnostic=(row,canonical)=>{
++    let binding=null;
++    const schema='EXISTING_PRIMARY_SELECTION_DIAGNOSTIC_V1';
++    const omitted=reason=>({schema,status:'OMITTED',reason,binding,diagnostic_only:true,decision_or_score_recomputed:false});
++    try{
++      const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
++      const has=(o,k)=>object(o)&&Object.prototype.hasOwnProperty.call(o,k);
++      const metadata=canonical?.metadata;
++      if(!has(metadata,'direction_resolution')&&!has(metadata,'score_basis'))return null;
++      const text=(v,n)=>typeof v==='string'&&v.length>0&&Buffer.byteLength(v,'utf8')<=n;
++      if(!text(row.contract_code,80)||!text(row.run_id,160)||!text(row.snapshot_id,240)||row.run_id!==String(runId||'')||metadata.contract!==row.contract_code||canonical.run_id!==row.run_id||canonical.snapshot_id!==row.snapshot_id||!Number.isSafeInteger(canonical.observed_ts)||canonical.observed_ts<=0||canonical.observed_ts!==Number(row.observed_ts)||!text(canonical.analytical_fingerprint,64)||!/^[a-f0-9]{64}$/.test(canonical.analytical_fingerprint))return omitted('SOURCE_IDENTITY_NOT_BOUND');
++      binding={contract:row.contract_code,run_id:row.run_id,snapshot_id:row.snapshot_id,observed_ts:canonical.observed_ts,analytical_fingerprint:canonical.analytical_fingerprint};
++      const pick=(source,keys)=>{
++        if(!object(source))throw Error('UNSUPPORTED');
++        const value={};for(const key of keys)if(has(source,key)){
++          const v=source[key];if(!(v===null||typeof v==='boolean'||typeof v==='number'&&Number.isFinite(v)||typeof v==='string'&&Buffer.byteLength(v,'utf8')<=160))throw Error('UNSUPPORTED');
++          value[key]=v;
++        }return value;
++      };
++      const list=(value,max,project)=>{if(value===null)return null;if(!Array.isArray(value)||value.length>max)throw Error('UNSUPPORTED');return value.map(project);};
++      const result={schema,status:'COPIED_EXISTING_FIELDS',binding,diagnostic_only:true,decision_or_score_recomputed:false,source:'ALREADY_PARSED_CANONICAL_METADATA'};
++      if(has(metadata,'direction_resolution')){
++        const d=metadata.direction_resolution;
++        if(d===null)result.direction_resolution=null;
++        else{
++          const resolution=pick(d,['status','direction','candidate_direction']);
++          if(has(d,'facts'))resolution.facts=list(d.facts,16,f=>pick(f,['direction','evidence_id','origin']));
++          if(has(d,'early_receipt')){
++            const e=d.early_receipt;
++            if(e===null)resolution.early_receipt=null;
++            else{
++              const early=pick(e,['closed','direction','source_ts','available_at','same_contract','same_wave','fresh','directed','direction_state_closed','reason']);
++              if(has(e,'predicate_receipt')){
++                const p=e.predicate_receipt;
++                if(p===null)early.predicate_receipt=null;
++                else{
++                  const predicates=pick(p,['schema','decision_ts']);
++                  if(has(p,'checks'))predicates.checks=list(p.checks,32,check=>{const r=pick(check,['predicate','passed']);if(has(r,'passed')&&r.passed!==null&&typeof r.passed!=='boolean')throw Error('UNSUPPORTED');return r;});
++                  if(has(p,'failed_predicates'))predicates.failed_predicates=list(p.failed_predicates,32,v=>{if(!text(v,160))throw Error('UNSUPPORTED');return v;});
++                  early.predicate_receipt=predicates;
++                }
++              }
++              resolution.early_receipt=early;
++            }
++          }
++          result.direction_resolution=resolution;
++        }
++      }
++      if(has(metadata,'score_basis'))result.score_basis=metadata.score_basis===null?null:pick(metadata.score_basis,['selected','qualified_early_detection_0_100','deep_canonical_interest_0_100','routed_overall_0_100']);
++      return Buffer.byteLength(JSON.stringify(result),'utf8')<=4096?result:omitted('DIAGNOSTIC_BYTE_LIMIT_EXCEEDED');
++    }catch{return omitted('SOURCE_FIELDS_UNSUPPORTED');}
++  };
++
+   try{
+     const contracts=[...new Set(candidateContracts)].filter(value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)).slice(0,6);
+     if(!contracts.length&&Number(cron?.v3_live_deep_check_count)>0)throw new Error('CANONICAL_OUTPUT_CANDIDATE_IDENTITY_REQUIRED');
+@@ -234,6 +289,7 @@
+       candidates:rows.map(row=>{
+         let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
+         let presentationInputs=null;try{presentationInputs=JSON.parse(row.presentation_inputs_json);}catch{}
++        const primarySelectionDiagnostic=include_primary_selection_diagnostic===true?projectPrimarySelectionDiagnostic(row,canonical):null;
+         const blockCoverage=canonical?.metadata?.internal_market_context?.evidence_v2?.block_coverage||null;
+         return {
+           publication_id:row.publication_id,contract:row.contract_code,direction:row.direction,run_id:row.run_id,snapshot_id:row.snapshot_id,wave_id:row.wave_id,
+@@ -245,6 +301,7 @@
+           gate_source_diagnostic:projectGateSourceDiagnostic(canonical,{binding_receipt:gate_diagnostic_for}),
+           block_decision_use:auditCanonicalBlockDecisionUse(canonical||{},{manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),
+           block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null},telegram:{ok:Boolean(row.telegram_text),text:row.telegram_text||null,analytical_fingerprint:canonical?.analytical_fingerprint}}),
++          ...(primarySelectionDiagnostic?{primary_selection_diagnostic:primarySelectionDiagnostic}:{}),
+           canonical:canonical?{contract:canonical.metadata?.contract,status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
+         };
+       }),
+@@ -631,7 +688,7 @@
+       if(!acceptedJointForTelegramRetrieval(exactAcceptance,savedRunId))throw new Error('EXACT_SAVED_RUN_ACCEPTANCE_NOT_CLOSED');
+     }
+     const savedContracts=exactAcceptance?.candidate_selection?.top_two_contracts||[];
+-    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null,candidateContracts:savedContracts});
++    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null,candidateContracts:savedContracts,include_primary_selection_diagnostic:true});
+     if(exactAcceptance){
+       savedOutput.market_scan_audit={...exactAcceptance.market_scan,stage0_coverage_pct:exactAcceptance.market_scan?.complete===true?100:null};
+       savedOutput.candidate_selection_audit={top_two_contracts:savedContracts,deep_check_selected:exactAcceptance.candidate_selection?.deep_check_selected||[],registry_did_not_change_rank:exactAcceptance.candidate_selection?.exact_order_match===true&&exactAcceptance.candidate_selection?.leaders_replaced_for_coverage===false};
+@@ -1162,7 +1219,7 @@
+   console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
+ 
+   // Preserve the already collected canonical result even if a later observer fails.
+-  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor});
++  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor,include_primary_selection_diagnostic:true});
+   const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
+     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
+     approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,

@@ -1,0 +1,56 @@
+{
+  "schema": "EXACT_SOURCE_QUERY_AND_SAVED_SCHEMA_REFERENCE_V1",
+  "working_base": "cbb869173cbd669d3c6b3c75afac4c246799a2ad",
+  "native": "59e8d8ebe7118005d3fd0ac8ee4a971f61efe6f1",
+  "query_templates": {
+    "EARLY_WAVES": {
+      "template": "SELECT wave_id,contract_code,generation,first_seen_ts,lifecycle_stage,direction_hint,direction_state,\n        early_detection_quality_0_100,last_seen_ts FROM v3_early_candidate_wave WHERE contract_code IN (${placeholders})\n        ORDER BY last_seen_ts DESC LIMIT 24",
+      "sha256": "09f8355d4c40a14fab76b6a9923af2e6caf030220b247fbe33cf2f0f1b751e35",
+      "same_native_template": true
+    },
+    "CURRENT_CANONICAL": {
+      "template": "SELECT publication_id,contract_code,run_id,snapshot_id,wave_id,direction,canonical_state,analytical_fingerprint,observed_ts,created_ts,canonical_json FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>`?${i+2}",
+      "sha256": "c8e15978ce9e3fb0801179a149d0ea38ea28f038749728835ef124b1960a6ddd",
+      "same_native_template": true
+    }
+  },
+  "bound_values": "NOT_EXPORTED_IN_ORIGINAL_SOURCE_COST_RECEIPT; report finalist contracts are not substituted for raw handoff bindings",
+  "actual_native_plan": null,
+  "actual_EARLY_returned24_id_order_ties": null,
+  "actual_completed_handoff_rows": null,
+  "actual_CURRENT_CANONICAL_raw2_rows": null,
+  "static_contract": {
+    "top24_global_per_contract_set": true,
+    "h_iteration_order": "loaded.handoffs.slice(0,6), unchanged",
+    "nonempty_wave": "exactWaveOrLatest uses matching normalized contract+wave or NULL, no latest fallback",
+    "empty_wave": "latest normalized contract by last_seen, original global24 competition remains",
+    "canonical": "Exact run/contract/wave and ambiguity/content/fingerprint/time authority validation retained"
+  },
+  "saved_indexes": {
+    "audit-fixes/t00/fixtures/d1-schema.json": {
+      "source_capture_run_id": 36359630895,
+      "source_captured_at": 1790552597585,
+      "wave_PK": "wave_id TEXT PRIMARY KEY",
+      "wave_unique": "UNIQUE(contract_code,generation)",
+      "wave_index": "idx_v3_early_candidate_contract_seen(contract_code,last_seen_ts DESC)",
+      "canonical_index": "idx_canonical_publication_identity(contract_code,run_id,snapshot_id,observed_ts)",
+      "boundary": "Historical sanitized native schema, not current392614 index/plan/row distribution or native PK seek measurement."
+    },
+    "checkpoints/canonical-index-native-20261014/index_created_raw.json": {
+      "proved_plan": "forecast range observed_ts using report2_canonical_observed_pub_v1",
+      "not_proved": "current run+contract retained query or EARLY query"
+    },
+    "current-generation/files/src/retained-history.mjs": {
+      "view": "report2_canonical_retained_v1",
+      "semantics": "hot UNION ALL archive WHERE NOT EXISTS same hot publication_id",
+      "archive_indexes": "contract_code,observed_ts and observed_ts, not a proved run+contract access path",
+      "rewrite": "All retained SELECTs rewrite FROM/JOIN; INDEXED BY hints removed, JSON SQL parsing disallowed"
+    }
+  },
+  "reuse_order": {
+    "runner_main_lifecycle_call": 1129,
+    "runner_main_canonical_output_call": 1165,
+    "consequence": "Later output rows cannot be a pre-existing earlier-sidecar input without reordering or changing the authoritative read boundary. Existing already-read early producer telemetry is not a substitute for persisted exact wave read."
+  },
+  "native_cost_predictions": null
+}
