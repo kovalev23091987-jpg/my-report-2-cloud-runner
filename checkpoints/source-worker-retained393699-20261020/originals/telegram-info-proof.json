@@ -1,0 +1,125 @@
+{
+  "schema": "telegram-info-proof-v1",
+  "head": "b014569068d113bcf578f7101b92ed3406f17832",
+  "source": "schedule",
+  "source_run_id": "1792470686053-1792470696222",
+  "lifecycle": {
+    "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+    "mode": "SHADOW_ONLY",
+    "network_send": false,
+    "dispatch_enabled": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "completed_handoffs": 2,
+    "transitions": [
+      {
+        "contract": "PEPE-USDT",
+        "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      },
+      {
+        "contract": "BTW-USDT",
+        "status": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      }
+    ],
+    "usage_delta": {
+      "rows_read": 121,
+      "rows_written": 0,
+      "requests": 5,
+      "unknown_ops": 0
+    },
+    "source_read_costs": {
+      "schema": "EXISTING_LIFECYCLE_SOURCE_READ_COSTS_V1",
+      "source_run_id": "1792470686053-1792470696222",
+      "caller_evaluation_ts": 1792470787054,
+      "basis": "ALREADY_RETURNED_BATCH_REPLY_META_NOT_WHOLE_DAY_OR_PROVIDER_HEADROOM",
+      "scope": "BATCH_STATEMENT_META_ONLY_NOT_ADAPTER_OR_RESTORER_EXTRA_WORK",
+      "status": "REPORTED_COUNTERS_COMPLETE",
+      "expected_queries": 5,
+      "actual_reply_count": 5,
+      "queries": [
+        {
+          "query": "EARLY_WAVES",
+          "reply_success": true,
+          "rows_read": 50,
+          "rows_written": 0,
+          "returned_rows": 23
+        },
+        {
+          "query": "SHADOW_DECISIONS",
+          "reply_success": true,
+          "rows_read": 8,
+          "rows_written": 0,
+          "returned_rows": 2
+        },
+        {
+          "query": "FINAL_WITH_CONTEXT",
+          "reply_success": true,
+          "rows_read": 3,
+          "rows_written": 0,
+          "returned_rows": 0
+        },
+        {
+          "query": "PREVIOUS_LIFECYCLE",
+          "reply_success": true,
+          "rows_read": 18,
+          "rows_written": 0,
+          "returned_rows": 7
+        },
+        {
+          "query": "CURRENT_CANONICAL",
+          "reply_success": true,
+          "rows_read": 42,
+          "rows_written": 0,
+          "returned_rows": 2
+        }
+      ],
+      "known_rows_read_subtotal": 121,
+      "known_rows_written_subtotal": 0,
+      "total_rows_read": 121,
+      "total_rows_written": 0,
+      "admission_authorized": false,
+      "additional_SQL": 0,
+      "additional_source_HTTP": 0,
+      "SQL_params_and_result_values_exported": false
+    }
+  },
+  "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+  "v3_telegram_network_enabled": true,
+  "output": {
+    "version": "telegram-output-v9-plain-text-explained-score",
+    "enabled": false,
+    "info_enabled": false,
+    "final_chain_auto": false,
+    "final_chain_threshold": 70,
+    "morning": {
+      "status": "INFO_DISABLED",
+      "sent": false
+    },
+    "early_info": {
+      "status": "INFO_DISABLED",
+      "sent": false,
+      "count": 0
+    },
+    "watch70": {
+      "status": "DISABLED_FINAL_CHAIN_ONLY",
+      "sent": 0
+    },
+    "shadow_decision": {
+      "status": "OUTPUT_DISABLED",
+      "sent": false,
+      "count": 0
+    }
+  },
+  "live_probability": null,
+  "validated_signal": false,
+  "execution": false,
+  "automatic_weight_tuning": false
+}
