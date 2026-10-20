@@ -1,0 +1,683 @@
+{
+  "schema": "SOURCE_HTX577_STATIC_IMPLEMENTATION_PEER_V1",
+  "status": "STATIC_BLOCKERS_ZERO_WITH_LIMITS",
+  "reviewer_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "assignment": "Coordinator direct20Oct frozen577 implementation peer; previous protocol-only guidance is not reused as implementation qualification.",
+  "target": {
+    "PR": 577,
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/577",
+    "frozen_head": "78a69e31be2c70c08091490e53c6367eea8236aa",
+    "github_PR_changed_files": 6,
+    "github_files_exact_prefix": "anomaly-research/htx-multiscale-study-20261020/**",
+    "current_main_at_review": "2394980bc6f43d14f218622c412bf4eea881aebe",
+    "git_merge_base_with_current_main": "359b57776813233d503f7c4729c2042a375e6a6e",
+    "root_guard_note": "GitHub PR own diff has6newprefix files; a direct two-tree comparison to newer main additionally shows intervening control/status changes. This review does not claim frozen577 contains newer main guards. Coordinator must integrate only accepted scope using fresh guards.",
+    "files": [
+      {
+        "path": "anomaly-research/htx-multiscale-study-20261020/README_RU.md",
+        "bytes": 9292,
+        "sha256": "56b47b431dad9eae32093a9624f05bb2508e818773b01becacbfa84f069c8d48",
+        "lines": 35
+      },
+      {
+        "path": "anomaly-research/htx-multiscale-study-20261020/manifest.json",
+        "bytes": 1243,
+        "sha256": "a9b5279f5ded0d58ecac1bab94d55d89ecdfc3634d83d12f2c7fc2a54c5375a5",
+        "lines": 33
+      },
+      {
+        "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+        "bytes": 5038,
+        "sha256": "9b9d18a5cf369c549d7fcdc1dea216d59f6cd2eb12d09bf6435df4e68c76a196",
+        "lines": 121
+      },
+      {
+        "path": "anomaly-research/htx-multiscale-study-20261020/provenance.json",
+        "bytes": 3342,
+        "sha256": "297a9fb227527f8b823bcc6c6589fb4908f3f90443ea8683a7f8ed129bc7ab84",
+        "lines": 84
+      },
+      {
+        "path": "anomaly-research/htx-multiscale-study-20261020/static-packaging.json",
+        "bytes": 1436,
+        "sha256": "c8d6f347d4a35519cb2f2ecb367e99eefbe1716e3718c9dc11cdd3626b9360c7",
+        "lines": 32
+      },
+      {
+        "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+        "bytes": 13237,
+        "sha256": "15eecf3249a9e0dca607478ec6959804e8fea9f82c23f4a7853ad122cb297812",
+        "lines": 90
+      }
+    ],
+    "protocol_freeze_commit": "fcef6f46464bf925341b7ffffbe0a31135c202c1",
+    "protocol_freeze_bytes_exact": true
+  },
+  "dependencies": {
+    "observer_path": "anomaly-research/observer/observer.mjs",
+    "frozen_full_sha256": "086274b4bab805c18bb1db740e0d59e30b374b3f5dd4be72dac3880cfa76da05",
+    "features_lines": [
+      33,
+      36
+    ],
+    "features_sha256": "85e58854c18210df4751cd48f2b7a3f4ee6effd0f85886fe3ee97717b4e23cd6",
+    "features_dependency_prefix_lines": [
+      1,
+      37
+    ],
+    "features_dependency_prefix_sha256": "5a0f9da4521b184af10f9db31ec77c0bd0fc4325d856ff5dee8d963f7f7d2182",
+    "actual_pins_text_checked": true,
+    "future_execution_uses_full_checkout": true
+  },
+  "retained_input_bindings": [
+    {
+      "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/qualified-cohort.json.gz",
+      "bytes": 2025414,
+      "sha256": "cd8b11110d39d801767462ec4b49c660de10f1aa1c2893479370f95141ac1f54",
+      "use": "EXISTING_IMMUTABLE_BYTES_AND_ACCEPTED_METADATA_ONLY_NO_QUALIFIER_OR_FEATURE_REPLAY"
+    },
+    {
+      "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/documentation.json",
+      "bytes": 1201,
+      "sha256": "036cd7bfb73a40bbce312dfd951271ded3ca6f660126e8eaaa290db0f0e22f69",
+      "use": "EXISTING_IMMUTABLE_BYTES_AND_ACCEPTED_METADATA_ONLY_NO_QUALIFIER_OR_FEATURE_REPLAY"
+    },
+    {
+      "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/qualification-summary.json",
+      "bytes": 84959,
+      "sha256": "5a4151ad4332706402b9f8cfe37705c92e6bfb4a3c593d4c4302a30aa1fb1e34",
+      "use": "EXISTING_IMMUTABLE_BYTES_AND_ACCEPTED_METADATA_ONLY_NO_QUALIFIER_OR_FEATURE_REPLAY"
+    },
+    {
+      "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/verification.json",
+      "bytes": 3090,
+      "sha256": "c95e903fb5cee10cc41044760ae7ac99bf637a253075c7a74f40a4cfbe68ac8c",
+      "use": "EXISTING_IMMUTABLE_BYTES_AND_ACCEPTED_METADATA_ONLY_NO_QUALIFIER_OR_FEATURE_REPLAY"
+    },
+    {
+      "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/consumer-proposal.md",
+      "bytes": 8013,
+      "sha256": "67edfe72397b4f327ffb0cd7d63ca173e07f467d84d25d797e55f306001ec1c7",
+      "use": "EXISTING_IMMUTABLE_BYTES_AND_ACCEPTED_METADATA_ONLY_NO_QUALIFIER_OR_FEATURE_REPLAY"
+    }
+  ],
+  "accepted_uncompressed_DTO_binding": {
+    "sha256": "bd28bbaa4c9efe32b00b33219b54bb09a632453ca83b49ac031757c236e13c11",
+    "bytes": 11498780,
+    "basis": "REUSED_ACCEPTED533_METADATA_NOT_REQUALIFIED"
+  },
+  "observations": [
+    {
+      "id": "S01",
+      "topic": "Frozen input and normative units",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 14,
+          "end": 27
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 4,
+          "end": 18
+        }
+      ],
+      "reason": "The exact protocol, gzip, uncompressed DTO bytes/schema/37-count and saved unit policy are bound before new feature calculations. Source body is the previously qualified DTO, not 37 raw-response verification."
+    },
+    {
+      "id": "S02",
+      "topic": "Actual existing feature dependency",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 17,
+          "end": 21
+        },
+        {
+          "path": "anomaly-research/observer/observer.mjs",
+          "start": 6,
+          "end": 36
+        }
+      ],
+      "reason": "Both features substring and its full preceding dependency prefix, including canonical hash and median, are pinned before importing observer. Full observer frozen hash is recorded separately; no detector call is made."
+    },
+    {
+      "id": "S03",
+      "topic": "All retained contract series",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 36,
+          "end": 46
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 20,
+          "end": 42
+        }
+      ],
+      "reason": "Artifacts are visited once, sorted only for deterministic output. Contract duplicates are refused and all three declared series are visited; no main-report finalist selection or retrospective hit filtering precedes feature evaluation."
+    },
+    {
+      "id": "S04",
+      "topic": "USDT volume grain",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 39,
+          "end": 55
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 11,
+          "end": 18
+        }
+      ],
+      "reason": "Native volume is Number(native_lexemes.trade_turnover); derived volume is Number(derived_quote_turnover_usdt_exact). No division by two, amount, vol, count or face-value substitution occurs. Original turnover lexeme is retained with each mapped bar."
+    },
+    {
+      "id": "S05",
+      "topic": "Native and derived calendar",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 45,
+          "end": 57
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 20,
+          "end": 42
+        }
+      ],
+      "reason": "Only existing native.rows and derived_utc.day/week.complete arrays are used. Each row must satisfy exact duration and UTC offset; protocol week offset345600000 is Monday. Derived row-pointer counts are6/42. No aggregation is invoked."
+    },
+    {
+      "id": "S06",
+      "topic": "Closed at original source clock",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 40,
+          "end": 50
+        }
+      ],
+      "reason": "Every mapped finish must be <= native.source_ts, which is preserved per contract. The current research clock is not used to relabel an original forming candle as closed. Existing arrays and completeness are trusted at their frozen source qualification boundary."
+    },
+    {
+      "id": "S07",
+      "topic": "Twenty prior plus target without lookahead",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 59,
+          "end": 64
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 43,
+          "end": 55
+        },
+        {
+          "path": "anomaly-research/observer/observer.mjs",
+          "start": 33,
+          "end": 36
+        }
+      ],
+      "reason": "The loop starts k=20; prior is slice(k-20,k), excluding bars[k]. For sorted bars this gives exactly20 strictly earlier bars of the same contract/timeframe. No bar after k enters features."
+    },
+    {
+      "id": "S08",
+      "topic": "Initial denominator",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 59,
+          "end": 61
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 53,
+          "end": 59
+        }
+      ],
+      "reason": "candidate_windows=max(0,length-20), background-only=min(20,length). A20-bar stream has no candidate and is INSUFFICIENT_BACKGROUND, not20 negative findings."
+    },
+    {
+      "id": "S09",
+      "topic": "Gaps and duplicates",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 48,
+          "end": 63
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 55,
+          "end": 60
+        }
+      ],
+      "reason": "Duplicate start times stop mapping; sorting preserves original cohort_index. A gap anywhere in the21-bar window increments gapped_windows and excludes the entire window. No zero filling or calendar compression is used."
+    },
+    {
+      "id": "S10",
+      "topic": "Zero native turnover is distinct from unavailable baseline",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 52,
+          "end": 68
+        },
+        {
+          "path": "anomaly-research/observer/observer.mjs",
+          "start": 32,
+          "end": 36
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 56,
+          "end": 59
+        }
+      ],
+      "reason": "Native volume0 passes source-number mapping and is counted as an observed zero. A nonpositive prior volume median causes features.volume_ratio=null and a separate undefined_median exclusion; it is not counted as a valid negative."
+    },
+    {
+      "id": "S11",
+      "topic": "Zero MAD remains NULL",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 64,
+          "end": 68
+        },
+        {
+          "path": "anomaly-research/observer/observer.mjs",
+          "start": 34,
+          "end": 36
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 57,
+          "end": 58
+        }
+      ],
+      "reason": "The existing feature returns volume_robust_z=null when MAD=0. Such a window remains ratio-eligible if volume median>0; metric-specific null values are excluded from their own distributions and counted undefined."
+    },
+    {
+      "id": "S12",
+      "topic": "Feature and metric numerical boundaries",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 31,
+          "end": 34
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 75,
+          "end": 89
+        }
+      ],
+      "reason": "Source lexemes convert to finite nonnegative or positive Numbers bounded by MAX_SAFE_INTEGER. Derived statistics use IEEE754 Numbers; exact source turnover strings remain lineage, not a claim of exact rational feature arithmetic. Nearest-rank q uses ceil(p*n)-1 with null for empty metrics."
+    },
+    {
+      "id": "S13",
+      "topic": "Disjoint finding partitions",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 69,
+          "end": 78
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 62,
+          "end": 73
+        },
+        {
+          "path": "anomaly-research/observer/observer.mjs",
+          "start": 34,
+          "end": 36
+        }
+      ],
+      "reason": "A ratio>=3 with allowed body/wick geometry takes VOLUME_WITH_GEOMETRY first. Remaining ratio>=5 takes EXTREME_VOLUME_ONLY; both predicates true still counts once. Flat zero-range geometry is null, so only the extreme-only condition may select such a target."
+    },
+    {
+      "id": "S14",
+      "topic": "Denominator conservation",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 77,
+          "end": 81
+        }
+      ],
+      "reason": "Eligible+gapped+undefined-median equals all candidates. Hits equal shape+extreme and cannot exceed eligible windows; initial20 are outside candidate denominators."
+    },
+    {
+      "id": "S15",
+      "topic": "NULL with no eligible windows",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 79,
+          "end": 89
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 59,
+          "end": 59
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 86,
+          "end": 89
+        }
+      ],
+      "reason": "Per-stream, per-timeframe panel and overall finding counts are null when their respective eligible count is0. Per-stream status distinguishes insufficient history from no eligible baseline; dependent pooled counts are not independent probabilities."
+    },
+    {
+      "id": "S16",
+      "topic": "Per-contract as-of and heterogeneous history",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 41,
+          "end": 42
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 91,
+          "end": 99
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 106,
+          "end": 112
+        }
+      ],
+      "reason": "Original source_as_of and header receipt basis are preserved in contract metadata; stream last-complete endpoints remain separate. The result explicitly denies current105 or synchronized-panel coverage."
+    },
+    {
+      "id": "S17",
+      "topic": "Research knowledge after calculation",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 22,
+          "end": 26
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 91,
+          "end": 99
+        }
+      ],
+      "reason": "inputKnownBy is sampled after complete DTO read/hash/gunzip/parse, not at candle close or original headers. This only establishes current retained-DTO consumption; it does not acknowledge complete37raw provider bodies."
+    },
+    {
+      "id": "S18",
+      "topic": "New first-known and unknown native clocks",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 83,
+          "end": 89
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 91,
+          "end": 99
+        }
+      ],
+      "reason": "finished is sampled after all per-stream feature, distribution and finding construction. Returned research_first_known_ts uses finished; old original_header_receipt_ts remains separate, original body completion and true original detection remain null. No prospective event is dated at the old candle close."
+    },
+    {
+      "id": "S19",
+      "topic": "Lineage and deterministic ledger",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 73,
+          "end": 75
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 88,
+          "end": 89
+        }
+      ],
+      "reason": "Research IDs bind DTO hash, original artifact index, contract/timeframe/window and fixed rule hash. Each finding preserves cohort/target/prior indices and turnover lexeme. The full ledger digest is updated before bounded example selection; examples do not truncate the full findings array."
+    },
+    {
+      "id": "S20",
+      "topic": "Descriptive use only",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 74,
+          "end": 89
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 62,
+          "end": 73
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 101,
+          "end": 112
+        }
+      ],
+      "reason": "Direction is UNASSIGNED, native_card_created=false; the module calls only features/hash from observer. No detectClosed/card/memory/watch/outbox or future-price outcome path is invoked. Precision/recall/independent count remain null and activation/main weight effects are false/0."
+    },
+    {
+      "id": "S21",
+      "topic": "Single upstream and unknown acquisition cost",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/study.mjs",
+          "start": 86,
+          "end": 89
+        }
+      ],
+      "reason": "All output is explicitly HTX one upstream, overlapping windows rather than independent events; derived scales are additional views of the same source. Actual original HTTP totals, native costs and current headroom are null, not reconstructed from array sizes."
+    },
+    {
+      "id": "S22",
+      "topic": "Original source counts reused without repeating533",
+      "verdict": "STATIC_CONSISTENT_WITH_FROZEN_PROTOCOL",
+      "references": [
+        {
+          "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/qualification-summary.json",
+          "pointer": "/contracts_with_20_complete_derived_utc_weeks"
+        },
+        {
+          "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/consumer-proposal.md",
+          "start": 1,
+          "end": 19
+        },
+        {
+          "path": "anomaly-research/htx-multiscale-study-20261020/protocol.json",
+          "start": 106,
+          "end": 118
+        }
+      ],
+      "reason": "Accepted source summary metadata are35634 closed4h/5907days/815weeks with26contracts having at least20weeks. This is not26 eligible21-bar streams:11lack20weeks, including BTW18 despite old COMPLETE90D_PRICE_ONLY. No raw37 qualification, aggregation or BTC915 study was rerun."
+    }
+  ],
+  "observation_count": 22,
+  "paper_traces": [
+    {
+      "id": "P01",
+      "class": "UNEXECUTED_PAPER_TRACE_NOT_MARKET_RESULT",
+      "given": "20 contiguous prior bars of volume2; target volume6, body_ratio0.25",
+      "trace": "k20 uses indices0..19; target20 excluded from median; volume_ratio3 and shape predicate true; one shape finding. No future index is read.",
+      "refs": [
+        "study.mjs:61-74",
+        "observer.mjs:32-36"
+      ]
+    },
+    {
+      "id": "P02",
+      "class": "UNEXECUTED_PAPER_TRACE_NOT_MARKET_RESULT",
+      "given": "Exactly20 complete bars",
+      "trace": "candidate_windows0; loop body not entered; stream INSUFFICIENT_BACKGROUND and finding_count null.",
+      "refs": [
+        "study.mjs:59-61",
+        "study.mjs:79-80"
+      ]
+    },
+    {
+      "id": "P03",
+      "class": "UNEXECUTED_PAPER_TRACE_NOT_MARKET_RESULT",
+      "given": "21 stored bars with one calendar discontinuity inside the21-bar candidate",
+      "trace": "candidate1/gapped1/eligible0/undefined-median0; feature function not called for that window; finding_count null.",
+      "refs": [
+        "study.mjs:61-68",
+        "study.mjs:77-80"
+      ]
+    },
+    {
+      "id": "P04",
+      "class": "UNEXECUTED_PAPER_TRACE_NOT_MARKET_RESULT",
+      "given": "20 contiguous prior volumes0 and any nonnegative target volume",
+      "trace": "prior median0 makes volume_ratio null, so undefined_median_windows increments; no false0 ratio or negative finding is fabricated.",
+      "refs": [
+        "observer.mjs:32-36",
+        "study.mjs:64-68"
+      ]
+    },
+    {
+      "id": "P05",
+      "class": "UNEXECUTED_PAPER_TRACE_NOT_MARKET_RESULT",
+      "given": "20 contiguous prior volumes10; target40 and valid small body",
+      "trace": "median10/MAD0; volume_ratio4 remains eligible; robust_z null; geometry may yield a single shape finding. Undefined robust-z metric count is1.",
+      "refs": [
+        "observer.mjs:34-36",
+        "study.mjs:64-74",
+        "study.mjs:32-34"
+      ]
+    },
+    {
+      "id": "P06",
+      "class": "UNEXECUTED_PAPER_TRACE_NOT_MARKET_RESULT",
+      "given": "A target satisfies both ratio>=5 and the ratio>=3 geometry condition",
+      "trace": "shape-first ternary yields one VOLUME_WITH_GEOMETRY row, not two independent findings.",
+      "refs": [
+        "study.mjs:69-78"
+      ]
+    }
+  ],
+  "paper_trace_count": 6,
+  "blocking_findings": [],
+  "minimal_text_repair_recommendation": null,
+  "qualification_boundary": {
+    "callable_status": "UNEXECUTED_BY_SOURCE_REVIEWER",
+    "new_feature_calculations": 0,
+    "Node": 0,
+    "syntax_checks": 0,
+    "runtime_imports": 0,
+    "semantic_tests": 0,
+    "raw37_qualification_replays": 0,
+    "aggregation_replays": 0,
+    "prior_BTC_study_replays": 0,
+    "SQL": 0,
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "MAIN": 0,
+    "manual": 0,
+    "Telegram": 0,
+    "deployment": 0,
+    "no_PASS_claim": true,
+    "new_market_or_calibration_result_present": false,
+    "sourceUtility_companion_reviewed": false
+  },
+  "limits": [
+    "Static source/code reasoning is not a passed runtime, empirical calibration or completeness proof for future outputs.",
+    "Frozen DTO authenticity/completeness and7asofgroups are accepted533 provenance reused without new raw-response qualification.",
+    "Numeric features are finite IEEE754 projections of preserved exact source lexemes, not exact rational threshold arithmetic.",
+    "Future known-by markers require actual completion of the exact DTO read/hash/parse and feature calculation; no current market or raw body ACK is created by this receipt.",
+    "Contract labels/selected saved histories and overlapping scales are correlated; no current105/random sample/independent-source/native identity/epoch/accuracy/admission/SENT claim.",
+    "Future common must retain full returned ledger and measured execution result; this peer neither executes nor substitutes that common."
+  ],
+  "fresh_guards": {
+    "main": "2394980bc6f43d14f218622c412bf4eea881aebe",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "raw_sha256": "bb6a89dd61318b31dfd8af676f7f95b25100006f6c425933fe506d002deeb43a"
+      },
+      {
+        "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+        "raw_sha256": "c0229238cd1c21133f4d36b4cd79173747ba6895115a962688714e33f3ff93ae"
+      },
+      {
+        "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+        "raw_sha256": "6004504e1eb1359d3ad590c94dba1515bbfd54738563c69e03b23bc21bf2da6b"
+      },
+      {
+        "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+        "raw_sha256": "d7d2330347c60302d8e37b6236c9056a831ea5c56d6c8a5a430074a8a0cda14a"
+      },
+      {
+        "path": "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json",
+        "raw_sha256": "a042827d880913b77ae98ca856192ad33ce4d366c92b5a2303d339d12b6a6d16"
+      },
+      {
+        "path": "audit-fixes/source-optimization-20260930/execution-lock.json",
+        "raw_sha256": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf"
+      },
+      {
+        "path": "REPORT2_CURRENT_GENERATION.json",
+        "raw_sha256": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873"
+      },
+      {
+        "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+        "raw_sha256": "88f4819fd39c6aec4737ff6edb43fcd96ca2a76d25625235fff353f3b903fa79"
+      }
+    ],
+    "all4_active_equal": true,
+    "fence_active": false,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "foreign_phase_owner_read_only": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792520110731",
+    "last_three": [
+      "checkpoints/ACTIVE105_PROOF_CLOCK_ANOMALY_READY_HANDOFF_20261020.json",
+      "checkpoints/proof-budget-anomaly-connected-20261020/qualification-receipt.json",
+      "checkpoints/proof-budget-anomaly-connected-20261020/next-worker-queues.json"
+    ]
+  },
+  "own_lease": {
+    "acquire_commit": "a8666ba33b89de5e0dd2ca5a77b72cae436de263",
+    "owner": "CODEX:SOURCES:01a14e11:1792520755479",
+    "acquired_ts": 1792520755479,
+    "expires_ts": 1792525555479,
+    "expected_main": "2394980bc6f43d14f218622c412bf4eea881aebe",
+    "working_base": "2394980bc6f43d14f218622c412bf4eea881aebe",
+    "exact_readback": true,
+    "release": "ONLY_OWN_AFTER_FROZEN_PEER_HANDOFF; release ref supplied separately so this receipt remains frozen"
+  },
+  "package_scope": "ONE_STATIC_EVIDENCE_FILE_ONLY_UNDER_OWN_SOURCE_PREFIX; no shared/runtime/main/phase/fence/status/generation/weights edits"
+}
