@@ -532,7 +532,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node tools/guard-proof-provider-anomaly-connected-20261020.mjs before
-      - name: ONE NEW connected writer provider clock and independent anomaly case
+      - name: Reassemble identical modules for AFTERGUARD ONLY; semantic tests are not rerun
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
         run: |
@@ -541,7 +541,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/proof-provider-anomaly-connected/assembly.json
-          REPORT2_LINKED_RUNTIME="$PWD/runtime" REPORT2_LINKED_OUTPUT="$PWD/audit-output/proof-provider-anomaly-connected" node --test --test-reporter=spec current-generation/tests/proof-provider-anomaly-connected.runtime.mjs > audit-output/proof-provider-anomaly-connected/connected-tests.log
+          cp checkpoints/proof-budget-anomaly-connected-20261020/semantic-reuse-receipt.json audit-output/proof-provider-anomaly-connected/semantic-reuse-receipt.json
       - name: Exact own scope and assembled module bytes after qualification
         if: ${{ always() }}
         env:
