@@ -40,6 +40,12 @@ export async function runClosedOrderPlanConnected({baseline_root,candidate_root,
  const beforeCard=B.o.detectClosed(input).events[0],card=C.o.detectClosed(input).events[0];
  assert.ok(card);assert.equal(card.card_hash,beforeCard.card_hash);
  assert.equal(card.discovery,'BACKFILLED');assert.equal(card.evidence_class,'CONTROLLED');assert.equal(card.main_score_effect,0);
+ // Fixed model plans precede generation/observation of the controlled future.
+ // T is a controlled chronology, not a claimed wall-clock/native commit ACK.
+ const anchor={instrument,price:card.anchor.price,source_ts:T,received_ts:T,raw_ref:'CONTROLLED:CONTEMPORANEOUS_ANCHOR_NOT_THE_OLD_MARKET_RECEIPT',raw_sha256:C.o.hash('CONTROLLED:KNOWN_TIME_PRICE')};
+ const plan=C.s.commitOutcomePlan(card,{anchor,committed_ts:T,horizons:['1h']});
+ const changedPlan=C.s.commitOutcomePlan(card,{anchor,committed_ts:T,horizons:['1h'],success_pct:10});
+ assert.notEqual(plan.plan_hash,changedPlan.plan_hash);
  const controls=[],record=(label,details={})=>controls.push({label,classification:'CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION',...details});
  const memory=(lib,c=card)=>lib.capture(lib.newMemory(),c,{watch_mode:'HISTORICAL_REVIEW'}).state;
  const bar=(start,end,close,timeframe='1m')=>({timeframe,start_ts:start,end_ts:end,open:card.anchor.price,high:Math.max(card.anchor.price,close)*1.01,low:Math.min(card.anchor.price,close)*.99,close,volume:1});
@@ -87,10 +93,6 @@ export async function runClosedOrderPlanConnected({baseline_root,candidate_root,
  assert.equal(C.o.hash(twoObserved.watch[secondCard.event_id]),untouched);assert.equal(Object.keys(twoObserved.cards).length,2);
  assert.equal(C.o.protectedReferences(twoObserved).length,2);assert.equal(C.o.dueEvents(twoObserved,T+10*M).main_selection_used,false);
  record('two events of one controlled futures instrument survive restart and isolated confirmation without MAIN selection');
- const anchor={instrument,price:card.anchor.price,source_ts:T,received_ts:T,raw_ref:'CONTROLLED:CONTEMPORANEOUS_ANCHOR_NOT_THE_OLD_MARKET_RECEIPT',raw_sha256:C.o.hash('CONTROLLED:KNOWN_TIME_PRICE')};
- const plan=C.s.commitOutcomePlan(card,{anchor,committed_ts:T,horizons:['1h']});
- const changedPlan=C.s.commitOutcomePlan(card,{anchor,committed_ts:T,horizons:['1h'],success_pct:10});
- assert.notEqual(plan.plan_hash,changedPlan.plan_hash);
  const points=Array.from({length:12},(_,n)=>({instrument,source_ts:T+(n+1)*5*M,received_ts:T+(n+1)*5*M+1000,price:anchor.price*(n?1.06:1),raw_sha256:C.o.hash({controlled_path:n}),raw_ref:'CONTROLLED:PATH:'+n}));
  const receiptVariant={...points[0],received_ts:points[0].received_ts+1000,raw_ref:'CONTROLLED:ANOTHER_RETAINED_LOCATOR'};
  const argumentsFor={direction:'LONG',horizon:'1h',points:[...points,receiptVariant],as_of_ts:T+60*M+2000};
