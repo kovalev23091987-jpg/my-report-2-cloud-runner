@@ -319,7 +319,6 @@ permissions:
   contents: read
 jobs:
   verify:
-    if: ${{ github.ref != 'refs/heads/work/primary-score-diagnostics-20261019' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -515,43 +514,4 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
-          retention-days: 30
-
-  primary_source_connected_qualification:
-    if: ${{ github.ref == 'refs/heads/work/primary-score-diagnostics-20261019' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - name: Exact fresh own scope before one primary-source qualification
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/guard-primary-source-connected-20261019.mjs before
-      - name: ONE NEW connected primary projection and initial source case
-        env:
-          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-        run: |
-          mkdir -p runtime audit-output/primary-source-connected
-          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
-          tar -xzf runtime/payload.tar.gz -C runtime
-          rm runtime/payload.tar.gz
-          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/primary-source-connected/assembly.json
-          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-          REPORT2_PRIMARY_COMMON_RUNTIME="$PWD/runtime" REPORT2_PRIMARY_COMMON_OUTPUT="$PWD/audit-output/primary-source-connected" REPORT2_PRIMARY_COMMON_SOURCE_HARNESS="$PWD/checkpoints/primary-source-connected-20261019/coordinator-early-connected.mjs" REPORT2_PRIMARY_COMMON_SOURCE_EXPORT="runEarlyLowerBoundConnected" node --test --test-reporter=spec current-generation/tests/primary-score-and-source-budget.runtime.mjs > audit-output/primary-source-connected/connected-tests.log
-      - name: Exact own scope and assembled bytes after qualification
-        if: ${{ always() }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/guard-primary-source-connected-20261019.mjs after
-      - uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: primary-source-connected-${{ github.run_id }}
-          path: audit-output/primary-source-connected/
-          if-no-files-found: error
           retention-days: 30
