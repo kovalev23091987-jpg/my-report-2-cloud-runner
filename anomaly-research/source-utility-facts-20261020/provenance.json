@@ -1,0 +1,47 @@
+{
+  "schema": "ANOMALY_CANDLE_SOURCE_UTILITY_PROVENANCE_V1",
+  "protocol_freeze": {
+    "head": "142bc4b7a9c5bda8611ba1aa84af09effec0d5fe",
+    "protocol_sha256": "ab86dd38a56ce20ae99c060163abb41dc9f34481fb2ecf9bd3ce877af23fb6f6",
+    "bytes": 2218,
+    "semantic_calls": 0
+  },
+  "author_base_main": "2394980bc6f43d14f218622c412bf4eea881aebe",
+  "own_lease_ref": "80eac79f2684f7501cbaf026c468e0219f5648a9",
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1792520488915",
+  "baseline": {
+    "head": "33b5fbfb46d9310a8458a281038edd57c0565737",
+    "path": "anomaly-research/statistics/outcomes.mjs",
+    "full_file_sha256": "32618dbb2355dc14708689a6350871832184d57b1bb8e5e3ce3b26314dac7124",
+    "source_utility_sha256": "ce9487929d186f65a719e93b1579ea19523d3e5c1c274f605f956c30129f333b",
+    "dependency_prefix_sha256": "090ac0495b6dd01145d6cf4b1901a00f35d6ea0067ed9218e0a3422cdb49a5e0",
+    "spans": {
+      "HTTP_mandatory": {
+        "one_based_line": 104,
+        "text": "!num(a.http_requests)"
+      },
+      "raw_proof_fact_key": {
+        "one_based_line": 114,
+        "text": "g.facts.add(hash({asset_id:a.asset_id,role:a.role,raw_sha256:a.raw_sha256}))"
+      },
+      "mutable_conflict_marker": {
+        "one_based_line": 106,
+        "text": "unique.set(a.attempt_id,null)"
+      },
+      "group_cost_after_validity": {
+        "one_based_line": 112,
+        "text": "g.http_requests+=a.http_requests"
+      }
+    },
+    "selected_helper_bytes_equal_to_author_base": true
+  },
+  "fixture_provenance": "ALL_GENERATED_CONTROLLED_NOT_PROVIDER_OR_RETAINED_MARKET_DATA;SIMULATED_RETAINED_LABEL_DOES_NOT_CHANGE_THIS",
+  "review_scope": "TEXT_CODE_DERIVED_COUNTEREXAMPLES_NOT_EXECUTED_FINDINGS",
+  "actual_market_or_cost_qualified": false,
+  "source_lookup_or_provider_acquisition": 0,
+  "semantic_Node_import_SQL_tests": 0,
+  "legacy_suite_replays": 0,
+  "shared_runtime_weights_status_generation_mutated": false,
+  "next": "ONE_COORDINATOR_NEXT_COMMON_AFTER_WHOLE_BATCH_READY",
+  "owner_deferred_ENTRY_and_physical_storage_untouched": true
+}

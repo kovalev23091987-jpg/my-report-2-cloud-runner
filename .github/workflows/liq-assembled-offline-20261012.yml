@@ -319,6 +319,7 @@ permissions:
   contents: read
 jobs:
   verify:
+    if: ${{ github.ref != 'refs/heads/work/anomaly-history-utility-linked-20261020' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -514,4 +515,36 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
+          retention-days: 30
+
+  anomaly_history_utility_linked:
+    if: ${{ github.ref == 'refs/heads/work/anomaly-history-utility-linked-20261020' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact current own lease and frozen linked inputs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-anomaly-history-utility-linked-20261020.mjs before
+      - name: ONE new linked research common; old accepted suites excluded
+        run: |
+          mkdir -p audit-output/anomaly-history-utility-linked
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/anomaly-history-utility-linked.runtime.mjs > audit-output/anomaly-history-utility-linked/connected-tests.log 2>&1
+      - name: Exact current own lease and unchanged frozen inputs after common
+        if: ${{ always() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-anomaly-history-utility-linked-20261020.mjs after
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: anomaly-history-utility-linked-${{ github.run_id }}
+          path: audit-output/anomaly-history-utility-linked/
+          if-no-files-found: error
           retention-days: 30
