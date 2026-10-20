@@ -1,0 +1,78 @@
+{
+  "schema": "QUALIFIED_PROVIDER_COMPONENT_PLAN_V1",
+  "frozen_head": "b6dab0b7c6703d2e0c9e3b1011f6e151a7c6b3e6",
+  "callable_path": "checkpoints/source-worker-provider-admission-clock-20261020/admission-clock-connected.mjs",
+  "callable_export": "runProviderAdmissionClockConnected",
+  "baseline_prefix": "checkpoints/proof-budget-anomaly-connected-20261020/baseline-runtime",
+  "module_pins": [
+    {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "before_sha256": "23a841fb9c1a5ef0e13eff38dd1a07b6889739c8088409a12402a277b9da9251",
+      "after_sha256": "bc9beb1135c93d2b08c32da66e3099dd06e9d6ad2e58cbf3a7add7be5ce0919f",
+      "text_change": "Pass live Date.now as existing reference reader clock; do not change reader default or original source clocks."
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "before_sha256": "9e17933eefee52b2b835ec364638ff84666313a43c2d72c4e87cae996d4cfffe",
+      "after_sha256": "f90945240808c374f5c3bd788f8f39aab6596bdf4e9f30161339632089b1a00b",
+      "text_change": "Pass live Date.now as existing reference reader clock; do not change reader default or original source clocks."
+    }
+  ],
+  "unchanged_dependency_pins": [
+    {
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "sha256": "3ecbb81a55827069041a0175cfe9d61de0a92042338bab2d5df7dce4dc96748b"
+    },
+    {
+      "path": "current-generation/files/src/provider-minute-ledger.mjs",
+      "sha256": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045"
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "e711bff692c4e42a684464dc3f4bf28a8c0b01f515af13642d856b1fb1a6237b"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-sector-evidence.mjs",
+      "sha256": "4bf0e2469666d516d17c13dcb8dd2df9ea5f46c6ca1c9ca53e8eeac06afe207e"
+    },
+    {
+      "path": "current-generation/files/src/gate-official-asset-binding.mjs",
+      "sha256": "b3efba433a42067f4218488090ba8056bd0c0ed5df260f57a72f71dac3dea3cd"
+    },
+    {
+      "path": "current-generation/files/src/unified-budget.mjs",
+      "sha256": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f"
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-adapters.mjs",
+      "sha256": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54"
+    }
+  ],
+  "scope": {
+    "base": "0c763eb4d03ba66bad1b98d26ab45376da87942e",
+    "commit": "359b57776813233d503f7c4729c2042a375e6a6e",
+    "ref_updated": true,
+    "readback": true,
+    "files": {
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "ef9345cb9fffebeb70851afd25b4b532d710d6cbea48c5e1956f6898881e0468"
+    }
+  },
+  "static_peer": {
+    "schema": "FROZEN_SOURCE572_STATIC_PEER_BINDING_V1",
+    "frozen_source_head": "b6dab0b7c6703d2e0c9e3b1011f6e151a7c6b3e6",
+    "frozen_peer_head": "db058386cfbd72c3d4ab6d95aab262eae55a2e10",
+    "peer_pr": 574,
+    "peer_receipt": "anomaly-research/provider-clock-peer-20261020/peer-receipt.json",
+    "files": {
+      "anomaly-research/provider-clock-peer-20261020/peer-receipt.json": "2041a489a3c41ae55092defe3337a7ef5f0416bf27cc346a528274e31e2b7b15"
+    },
+    "blocking_findings": [],
+    "semantic_executions": 0,
+    "static_only": true
+  },
+  "qualification": "UNEXECUTED"
+}

@@ -24,15 +24,22 @@ export function evaluateOutcome(plan,{direction,horizon,points=[],as_of_ts}={}){
  const finish=x=>{const o={...base,...x};return {...o,outcome_hash:hash(o)};};
  if(as_of_ts<target)return finish({status:'PENDING',reason:'HORIZON_NOT_MATURE',complete:false});
  const censored=reason=>finish({status:'INCOMPLETELY_OBSERVED',reason,complete:false});
- const byTime=new Map();let after=0,notYetKnown=0;
+ const byTime=new Map(),proofVariants=new Set();let after=0,notYetKnown=0,duplicateFactReceipts=0;
  for(const p of points){
   if(!stamp(p?.source_ts))return censored('SOURCE_CLOCK_INVALID');
   if(p.source_ts>target){after++;continue;}
   if(p.source_ts<=plan.first_known_ts)continue;
   if(!stamp(p.received_ts)||p.received_ts<p.source_ts||!num(p.price)||p.price<=0||!p.instrument||hash(p.instrument)!==hash(plan.instrument)||!hex(p.raw_sha256)||!str(p.raw_ref))return censored('UNBOUND_OR_INVALID_PATH');
   if(p.received_ts>as_of_ts){notYetKnown++;continue;}
-  const prior=byTime.get(p.source_ts);if(prior&&hash(prior)!==hash(p))return censored('CONFLICTING_DUPLICATE_POINT');
-  byTime.set(p.source_ts,p);
+  const prior=byTime.get(p.source_ts);
+  if(prior){
+   // Re-reading the same bound economic point is not a conflicting price.
+   // Receipt/locator revisions are neither new samples nor independent facts.
+   if(prior.price!==p.price)return censored('CONFLICTING_DUPLICATE_POINT');
+   duplicateFactReceipts++;
+   if(p.received_ts<prior.received_ts)byTime.set(p.source_ts,p);
+  }else byTime.set(p.source_ts,p);
+  proofVariants.add(hash({source_ts:p.source_ts,raw_sha256:p.raw_sha256,raw_ref:p.raw_ref}));
  }
  const xs=[...byTime.values()].sort((a,b)=>a.source_ts-b.source_ts);
  if(!xs.length)return censored('POST_KNOWN_PATH_MISSING');
@@ -46,7 +53,7 @@ export function evaluateOutcome(plan,{direction,horizon,points=[],as_of_ts}={}){
  // is FALSE; an adverse barrier before it is OPPOSITE. Never choose the side
  // that happened to win, or pretend sampled prices reveal intrabar ordering.
  const status=opposite!==null&&(favorable===null||opposite<favorable)?'OPPOSITE':favorable!==null&&opposite!==null?'FALSE':favorable!==null?'SUCCESSFUL':'UNWORKED';
- return finish({status,reason:'PREDECLARED_SAMPLED_BARRIERS',complete:true,samples:xs.length,actual_end_source_ts:xs.at(-1).source_ts,endpoint_lag_ms:target-xs.at(-1).source_ts,directional_return_pct:returns.at(-1),sampled_mfe_pct:Math.max(0,...returns),sampled_mae_pct:Math.min(0,...returns),favorable_first_observed_ts:favorable,opposite_first_observed_ts:opposite,after_target_points_excluded:after,not_yet_available_points_excluded:notYetKnown});
+ return finish({status,reason:'PREDECLARED_SAMPLED_BARRIERS',complete:true,samples:xs.length,actual_end_source_ts:xs.at(-1).source_ts,endpoint_lag_ms:target-xs.at(-1).source_ts,directional_return_pct:returns.at(-1),sampled_mfe_pct:Math.max(0,...returns),sampled_mae_pct:Math.min(0,...returns),favorable_first_observed_ts:favorable,opposite_first_observed_ts:opposite,after_target_points_excluded:after,not_yet_available_points_excluded:notYetKnown,...(duplicateFactReceipts?{duplicate_fact_receipts_excluded:duplicateFactReceipts,duplicate_fact_provenance_variants:proofVariants.size-byTime.size}:{})});
 }
 // A self-consistent checksum is not producer-schema or native provenance
 // validation. Reject malformed summaries without inventing a market outcome.
@@ -63,6 +70,8 @@ function summaryRowIssue(o){
  if(o.as_of_ts<o.target_ts)return 'OUTCOME_NOT_MATURE';
  if(o.status==='INCOMPLETELY_OBSERVED')return o.complete===false?null:'CENSORED_STATE_INVALID';
  const count=v=>Number.isSafeInteger(v)&&v>=0;
+ const duplicates=o.duplicate_fact_receipts_excluded,variants=o.duplicate_fact_provenance_variants;
+ if((duplicates!==undefined||variants!==undefined)&&(!count(duplicates)||duplicates<1||!count(variants)||variants>duplicates||!count(o.samples)||duplicates+o.samples>30000))return 'OUTCOME_RECEIPT_REPLAY_COUNTS_INVALID';
  if(o.complete!==true||o.reason!=='PREDECLARED_SAMPLED_BARRIERS'||!count(o.samples)||o.samples<1||o.samples>30000||!num(o.directional_return_pct)||!num(o.sampled_mfe_pct)||o.sampled_mfe_pct<0||!num(o.sampled_mae_pct)||o.sampled_mae_pct>0||!count(o.after_target_points_excluded)||!count(o.not_yet_available_points_excluded))return 'COMPLETE_OUTCOME_SHAPE_INVALID';
  if(!stamp(o.actual_end_source_ts)||o.actual_end_source_ts<=o.first_known_ts||o.actual_end_source_ts>o.target_ts||!count(o.endpoint_lag_ms)||o.endpoint_lag_ms!==o.target_ts-o.actual_end_source_ts)return 'OUTCOME_ENDPOINT_INVALID';
  const f=o.favorable_first_observed_ts,a=o.opposite_first_observed_ts;

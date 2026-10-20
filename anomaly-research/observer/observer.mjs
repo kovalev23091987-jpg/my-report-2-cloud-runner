@@ -124,21 +124,42 @@ export function upgradeLegacyMemory(memory){
  }
  return {state,status:'LEGACY_PRESERVED_EXPLICITLY',legacy_active_backfilled:Object.entries(state.watch).filter(([id,w])=>w.active&&state.cards[id].discovery==='BACKFILLED').length,legacy_backfill_card_overage:Math.max(0,backfillCount(state)-state.admission_policy.backfill_card_limit),native_migration_qualified:false};
 }
-function transition(state,c,w,direction,to,s,now){
+function transition(state,c,w,direction,to,s,now,closed_window){
  const from=w.hypotheses[direction];if(from===to)return;
  w.hypotheses[direction]=to;w.transitions++;
- const t={event_id:c.event_id,transition:w.transitions,direction,from,to,source_ts:s.source_ts,observed_ts:now,snapshot_id:s.snapshot_id,raw_sha256:s.raw_sha256,timeliness:w.gaps.length?'GAPPED_CURRENT_CONFIRMATION':'OBSERVED',...(w.gap_overflow?{gap_details_complete:false}:{}),entry_authorized:false};
+ const t={event_id:c.event_id,transition:w.transitions,direction,from,to,source_ts:s.source_ts,observed_ts:now,snapshot_id:s.snapshot_id,raw_sha256:s.raw_sha256,closed_window,timeliness:w.gaps.length?'GAPPED_CURRENT_CONFIRMATION':'OBSERVED',...(w.gap_overflow?{gap_details_complete:false}:{}),entry_authorized:false};
  t.transition_id=hash(t);state.transitions.push(t);
  // Draft only. Exactly-once external delivery needs a real transactional store and ACK protocol.
  state.outbox[t.transition_id]={transition:t,status:'DRAFT',message_id:null,network_send_enabled:false};
 }
-export function observe(memory,{event_id,snapshot,now_ts}={}){
+export function observe(memory,{event_id,snapshot,now_ts,confirmation_alignment_offset_ms}={}){
  checkedAdmission(memory);need(ts(now_ts),'NOW_REQUIRED');const c=checkedCard(memory.cards[event_id]||{}),before=memory.watch[event_id];need(before,'WATCH_MISSING');
  const s=snapshot;need(s&&hash(exactInstrument(s.instrument))===hash(c.instrument)&&str(s.snapshot_id)&&hex(s.raw_sha256)&&ts(s.source_ts)&&ts(s.received_ts)&&s.source_ts<=s.received_ts&&s.received_ts<=now_ts&&now_ts-s.source_ts<=memory.limits.max_source_age_ms&&s.source_ts>=c.first_known_ts&&num(s.price)&&s.price>0,'EXACT_SNAPSHOT_REQUIRED');
  const sh=hash(s);
  if(s.snapshot_id===before.last_snapshot_id)return {state:memory,status:sh===before.last_snapshot_hash?'DUPLICATE':'CONFLICTING_SNAPSHOT'};
  if(before.last_source_ts!==null&&s.source_ts<=before.last_source_ts)return {state:memory,status:'STALE_OR_REPLAYED_SOURCE_TIME'};
  if(!before.active)return {state:memory,status:['HISTORY_RECORDED','WATCH_DEFERRED_ACTIVE_CAPACITY','LEGACY_RECORD_ONLY'].includes(before.status)?'WATCH_NOT_ADMITTED':'ALREADY_CLOSED'};
+ let closed_window=null,confirmation_status=null,confirmation_offset=null;
+ if(s.closed_candle){
+  const b=s.closed_candle,d=CONFIRM[c.conditions.timeframe],eventDuration=TIMEFRAMES[c.timeframe];
+  const derivable=eventDuration>=d&&eventDuration%d===0,derived=c.alignment_offset_ms%d;
+  need(confirmation_alignment_offset_ms!==undefined||derivable,'EXPLICIT_CONFIRMATION_ALIGNMENT_REQUIRED');
+  confirmation_offset=confirmation_alignment_offset_ms??derived;
+  need(Number.isSafeInteger(confirmation_offset)&&confirmation_offset>=0&&confirmation_offset<d&&(!derivable||confirmation_offset===derived),'CONFIRMATION_ALIGNMENT_CONFLICT');
+  need(b.timeframe===c.conditions.timeframe&&b.start_ts>=c.first_known_ts&&b.end_ts<=s.source_ts&&s.source_ts-b.end_ts<=memory.limits.max_source_age_ms&&b.raw_sha256===s.raw_sha256,'CONFIRMATION_WINDOW_REQUIRED');
+  validBar(b,d,confirmation_offset,s.source_ts);
+  closed_window={timeframe:b.timeframe,start_ts:b.start_ts,end_ts:b.end_ts,fact_hash:hash(Object.fromEntries(['timeframe','start_ts','end_ts','open','high','low','close','volume'].map(k=>[k,b[k]])))};
+  const prior=before.last_confirmation;
+  if(prior){
+   need(prior.timeframe===b.timeframe&&Number.isSafeInteger(prior.alignment_offset_ms)&&prior.alignment_offset_ms===confirmation_offset&&ts(prior.start_ts)&&prior.end_ts===prior.start_ts+d&&(prior.start_ts-confirmation_offset)%d===0&&hex(prior.fact_hash)&&ts(prior.first_observed_source_ts)&&prior.end_ts<=prior.first_observed_source_ts&&prior.first_observed_source_ts<=before.last_source_ts,'CONFIRMATION_CURSOR_INVALID');
+   if(b.end_ts<prior.end_ts)confirmation_status='STALE_CLOSED_WINDOW';
+   else if(b.end_ts===prior.end_ts){
+    if(closed_window.fact_hash!==prior.fact_hash)return {state:memory,status:'CONFLICTING_CLOSED_WINDOW'};
+    confirmation_status='DUPLICATE_CLOSED_WINDOW';
+   }
+  }else if(before.observed_count>0&&b.end_ts<=before.last_source_ts)confirmation_status='LEGACY_CONFIRMATION_ORDER_UNRESOLVED';
+  confirmation_status??='NEW_CLOSED_WINDOW';
+ }
  const state=clone(memory),w=state.watch[event_id],previous=w.last_source_ts??c.first_known_ts;let unretained_gap;
  if(s.source_ts-previous>state.limits.expected_snapshot_ms){
   const interval={start_ts:previous,end_ts:s.source_ts,kind:'UNOBSERVED_INTERVAL',interpolated:false};
@@ -155,21 +176,20 @@ export function observe(memory,{event_id,snapshot,now_ts}={}){
  }
  w.last_source_ts=s.source_ts;w.last_snapshot_id=s.snapshot_id;w.last_snapshot_hash=sh;w.last_observed_ts=now_ts;w.observed_count++;w.next_check_ts=s.source_ts+state.limits.expected_snapshot_ms;
  w.sampled_high=Math.max(w.sampled_high,s.price);w.sampled_low=Math.min(w.sampled_low,s.price);
- if(s.closed_candle){
-  const b=s.closed_candle,d=CONFIRM[c.conditions.timeframe];
-  need(b.timeframe===c.conditions.timeframe&&b.start_ts>=c.first_known_ts&&b.end_ts<=s.source_ts&&s.source_ts-b.end_ts<=memory.limits.max_source_age_ms&&b.raw_sha256===s.raw_sha256,'CONFIRMATION_WINDOW_REQUIRED');
-  validBar(b,d,c.alignment_offset_ms%d,s.source_ts);
+ if(s.closed_candle&&confirmation_status==='NEW_CLOSED_WINDOW'){
+  const b=s.closed_candle;
+  w.last_confirmation={...closed_window,alignment_offset_ms:confirmation_offset,first_observed_source_ts:s.source_ts,raw_sha256:s.raw_sha256};
   if(b.close>c.candle.high){
-   if(w.hypotheses.LONG==='WAITING')transition(state,c,w,'LONG','CONFIRMED',s,now_ts);
-   if(w.hypotheses.SHORT!=='REFUTED')transition(state,c,w,'SHORT','REFUTED',s,now_ts);
+   if(w.hypotheses.LONG==='WAITING')transition(state,c,w,'LONG','CONFIRMED',s,now_ts,closed_window);
+   if(w.hypotheses.SHORT!=='REFUTED')transition(state,c,w,'SHORT','REFUTED',s,now_ts,closed_window);
   }else if(b.close<c.candle.low){
-   if(w.hypotheses.SHORT==='WAITING')transition(state,c,w,'SHORT','CONFIRMED',s,now_ts);
-   if(w.hypotheses.LONG!=='REFUTED')transition(state,c,w,'LONG','REFUTED',s,now_ts);
+   if(w.hypotheses.SHORT==='WAITING')transition(state,c,w,'SHORT','CONFIRMED',s,now_ts,closed_window);
+   if(w.hypotheses.LONG!=='REFUTED')transition(state,c,w,'LONG','REFUTED',s,now_ts,closed_window);
   }
  }
  w.active=!Object.values(w.hypotheses).every(x=>x==='REFUTED');
  w.status=w.active?(Object.values(w.hypotheses).includes('CONFIRMED')?'CONFIRMED_OBSERVATION':'WATCHING'):'REFUTED';
- return {state,status:'OBSERVED',new_transitions:state.transitions.length-memory.transitions.length,observed_extrema_scope:'SAMPLED_PRICES_ONLY',...(w.gap_overflow?{gap_details_complete:false,gap_overflow:clone(w.gap_overflow)}:{}),...(unretained_gap?{unretained_gap}:{})};
+ return {state,status:'OBSERVED',new_transitions:state.transitions.length-memory.transitions.length,observed_extrema_scope:'SAMPLED_PRICES_ONLY',...(confirmation_status?{confirmation_status}:{}),...(w.gap_overflow?{gap_details_complete:false,gap_overflow:clone(w.gap_overflow)}:{}),...(unretained_gap?{unretained_gap}:{})};
 }
 export function dueEvents(memory,now_ts,{limit=128}={}){
  checkedAdmission(memory);need(ts(now_ts)&&Number.isInteger(limit)&&limit>0,'DUE_ARGUMENTS');

@@ -45,7 +45,7 @@ export async function collectCoinpaprikaHtxIdentity({db,fetch_impl=globalThis.fe
  const market=clean(contract).toUpperCase();
  if(!db?.prepare||!exactContract(market)||!clean(run_id))return{status:'EXACT_HTX_MARKET_AND_RUN_REQUIRED',identity:null,network_calls:0};
  await installEvidenceSourceStore(db);
- const policy=SOURCE_POLICIES[SOURCE],reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,daily_cap:policy.daily_cap,minute_provider:'COINPAPRIKA_IDENTITY',minute_cap:policy.internal_minute_cap});
+ const policy=SOURCE_POLICIES[SOURCE],reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:policy.daily_cap,minute_provider:'COINPAPRIKA_IDENTITY',minute_cap:policy.internal_minute_cap});
  const markets=await reader.get('HTX_MARKET_CATALOG',COINPAPRIKA_HTX_MARKETS_URL,{ttl_ms:policy.ttl_ms,max_bytes:12*1024*1024,shape:Array.isArray});
  if(!markets)return{version:COINPAPRIKA_HTX_IDENTITY_VERSION,status:reader.summary().provider_backoff?.status||(!reader.summary().admission.allowed?reader.summary().admission.status:'COINPAPRIKA_HTX_MARKETS_NOT_CLOSED'),identity:null,...reader.summary(),internal_only:true};
  const base=market.replace(/-USDT$/,''),rows=markets.filter(row=>exactPair(row,base)),ids=[...new Set(rows.map(row=>clean(row?.base_currency_id).toLowerCase()).filter(id=>/^[a-z0-9][a-z0-9-]{2,79}$/.test(id)))];
