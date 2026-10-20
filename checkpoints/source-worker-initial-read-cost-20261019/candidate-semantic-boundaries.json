@@ -1,0 +1,86 @@
+{
+  "schema": "STATIC_UNEXECUTED_EARLY_LOOKUP_CANDIDATE_BOUNDARIES_V1",
+  "classification": "ANALYTICAL_CONSTRAINTS_NOT_EXECUTED_TESTS_OR_OBSERVED_NATIVE_FAILURES",
+  "candidate": "Replace broad global24 EARLY query with direct handoff(contract,wave) pairs. NOT a production-ready proposal in this packet.",
+  "cases": [
+    {
+      "id": "old24_excludes_named_wave",
+      "controlled_logical_input": "One current handoff A/W;24 newer waves of B occupy old global24; A/W is valid/current but ordered25th.",
+      "old_code": "earlyNULL ->WAVE_NOT_CURRENT",
+      "direct_pair_candidate": "A/W can now be returned; identity/time gates still run but outcome can differ.",
+      "boundary": "Would be explicit LIMIT membership bugfix, not all-outcomes-equivalent optimization. Actual392614 old24 IDs/target membership absent; not claimed to have happened."
+    },
+    {
+      "id": "empty_or_null_wave",
+      "input": "Legacy handoff.wave_id NULL/empty; previous may be absent.",
+      "old_code": "latestFor contract inside original combined global24; derive wave from early/previous then validate",
+      "boundary": "Returning only named IDs or fallback query restricted to only legacy contracts can change global24 membership/status. A genuine legacy fallback must preserve whole original query and contract set."
+    },
+    {
+      "id": "foreign_pair",
+      "input": "Two handoffs A/W1,B/W2 and a stored A/W2 row.",
+      "boundary": "Independent contractIN and waveIN can admit crossed pairs. Any future candidate must bind pairs, retain exact consumer checks and not substitute foreign waves."
+    },
+    {
+      "id": "ties",
+      "input": "Equal last_seen timestamps at global24 boundary and/or latest legacy selection.",
+      "boundary": "Current ORDER BY has no unique tie-breaker; per-contractUNION/materialization/new order/hints can change selected membership or first row. Need explicit tie semantics; no identical exact order assertion."
+    },
+    {
+      "id": "normalization",
+      "input": "Old text helper trims/stringifies row and handoff wave IDs; stored raw wave may be padded while handoff is clean.",
+      "boundary": "Literal SQL equality and validating only incoming canonical-looking IDs is not automatically equivalent to existing JS normalization. Generic schema has no wave-format CHECK. Do not hide as performance-only."
+    },
+    {
+      "id": "duplicate_handoffs",
+      "input": "Repeated same(contract,wave) and same contract with different wave IDs, including more than6 supplied rows.",
+      "boundary": "Original handoff loop/order/max6 and original contracts/batch bounds must remain; query tuple dedup must not dedup publication attempts or change ambiguity/time authority."
+    },
+    {
+      "id": "missing_and_stale",
+      "input": "Named wave absent, future, stale, first_seen after scan, invalid deep timing.",
+      "boundary": "No latest-wave substitution or missing-to-success. Existing derive checks remain; filtering early rows can change status codes even where both paths fail closed."
+    }
+  ],
+  "other_candidates_rejected": {
+    "per_contract_top24_UNION": "No native plan or strict boundary-tie equivalence; no SQLite execution attempted.",
+    "INDEXED_BY": "No current native plan; retained canonical rewrite strips hints. Prior hot-only fixture is explicitly not repeated or promoted.",
+    "HOT_only_current_canonical": "Drops archived-only authoritative rows and retained hot precedence/restoration; not allowed.",
+    "reuse_later_manual_output": "Runner reads it after lifecycle and delivery; cannot claim already-available same rows/time.",
+    "freshness_cutoff_only": "Can alter legacy fallback/status and old global-limit competition; not a proven equal consumed-row query."
+  },
+  "patch_or_callable_added": false,
+  "actual_native_saving": null,
+  "single_SQL_CTE_candidate": {
+    "shape": "<=6 raw-unmodified unique handoff pairs -> exact rows CTE; all-valid if exactly1literal row per pair; otherwise same-SQL originalGLOBALtop24 fallback. No index hints or added query count.",
+    "classification": "NOT_PROPOSED_FOR_INTEGRATION_IN_THIS_PACKET",
+    "literal_match_guard_counterexample": {
+      "classification": "CONTROLLED_LOGICAL_COUNTEREXAMPLE_NOT_EXECUTED_OR_OBSERVED_NATIVE",
+      "schema_permitted": true,
+      "schema_reason": "wave_id TEXT PRIMARY KEY constrains literal keys only; no raw-format CHECK or normalized UNIQUE",
+      "handoff": {
+        "contract_code": "A-USDT",
+        "wave_id": "EDW:A-USDT:1792417000000:G1"
+      },
+      "stored_rows": [
+        {
+          "contract_code": "A-USDT",
+          "wave_id": "EDW:A-USDT:1792417000000:G1",
+          "last_seen_ts": 1792417000001,
+          "lifecycle_stage": "DISCOVERY"
+        },
+        {
+          "contract_code": "A-USDT",
+          "wave_id": " EDW:A-USDT:1792417000000:G1 ",
+          "last_seen_ts": 1792417000002,
+          "lifecycle_stage": "DISCOVERY"
+        }
+      ],
+      "old_selection": "Both in global24; exactWaveOrLatest trims row IDs and selects newer padded row.",
+      "raw_CTE_guard": "Literal pair has exactly1match, all-valid shortcut selects older unpadded row; legacy branch is NOT taken.",
+      "authority_difference": "canonicalLifecycleAuthority separately requires early.wave_id===wave (raw equality). Old padded selection fails CURRENT_RUN_CANONICAL_IDENTITY_MISMATCH; new literal selection can pass for otherwise same valid canonical. This is not old24 exclusion bugfix and can weaken the effective old gate.",
+      "not_actual392614_cause": true
+    },
+    "possible_guard_boundary": "A further normalized-alias/malformed-row census can force legacy fallback, but literal PK checks alone cannot prove its absence. JS text.trim includes Unicode whitespace; simple SQLTRIM(space) is not equivalent. An expression scan may consume the original76R cost or more; no actual/native savings claim or unqualified optimizer is added."
+  }
+}
