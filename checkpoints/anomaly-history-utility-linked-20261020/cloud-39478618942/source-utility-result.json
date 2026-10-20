@@ -1,0 +1,2668 @@
+{
+  "schema": "ANOMALY_SOURCE_UTILITY_CONNECTED_CONTROLLED_RESULT_V1",
+  "status": "CONTROLLED_COMPONENT_COMPLETED",
+  "controls": [
+    "same candle with changed raw wrapper and decimal spellings is one fact",
+    "one acquisition and same candle reused across roles counted once globally",
+    "unknown acquisition retained beside known measured lower bound",
+    "unknown body completion cannot be substituted by header availability",
+    "missing declared epoch preserves cost without manufacturing bound fact",
+    "fact available after decision cannot erase its measured acquisition cost",
+    "conflicting numeric revisions of one window censored across roles",
+    "two candle rows in one raw body remain two facts and one acquisition",
+    "different declared instrument epochs never collapse by shared body hash",
+    "spot and futures with different volume units remain separate",
+    "attempt replay and conflict counters independent of row order",
+    "contradictory measured and unknown claims for same acquisition remain unknown",
+    "malformed cost proof retains explicit unbound unknown instead of zero",
+    "admission refusal is zero request intent without source failure or usable candle",
+    "cohort labels separate and never authenticate controlled input as native",
+    "exact decimal geometry retained beyond IEEE numeric integer precision",
+    "HTTP count accumulation exact and unsafe numeric ratio withheld"
+  ],
+  "control_count": 17,
+  "witnesses": [
+    {
+      "name": "same candle with changed raw wrapper and decimal spellings is one fact",
+      "legacy": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [
+          {
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "role": "CANDLE_FEATURES",
+            "sources": [
+              "CONTROLLED_PROVIDER",
+              "CONTROLLED_PROXY"
+            ],
+            "attempts": 2,
+            "http_requests": 2,
+            "usable_attempts": 2,
+            "consumer_used": 2,
+            "admission_deferred": 0,
+            "distinct_assets": 1,
+            "distinct_usable_facts": 2,
+            "distinct_facts_per_HTTP": 1,
+            "consumer_use_per_attempt": 1
+          }
+        ],
+        "invalid": 0,
+        "duplicates": 0,
+        "conflicts": 0,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER",
+                  "CONTROLLED_PROXY"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              },
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "2",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 2,
+            "distinct_candles_per_HTTP": 0.5,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              },
+              {
+                "raw_ref": "controlled://provider/bodyB",
+                "raw_sha256": "cfa5171374aa8ec91f461e7190ffbefe5dc43a8e383c33ad7cb4f80e9da21398",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER",
+              "CONTROLLED_PROXY"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "one acquisition and same candle reused across roles counted once globally",
+      "legacy": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [
+          {
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "role": "CANDLE_FEATURES",
+            "sources": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "attempts": 1,
+            "http_requests": 1,
+            "usable_attempts": 1,
+            "consumer_used": 1,
+            "admission_deferred": 0,
+            "distinct_assets": 1,
+            "distinct_usable_facts": 1,
+            "distinct_facts_per_HTTP": 1,
+            "consumer_use_per_attempt": 1
+          },
+          {
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "role": "CANDLE_MONITOR",
+            "sources": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "attempts": 1,
+            "http_requests": 1,
+            "usable_attempts": 1,
+            "consumer_used": 1,
+            "admission_deferred": 0,
+            "distinct_assets": 1,
+            "distinct_usable_facts": 1,
+            "distinct_facts_per_HTTP": 1,
+            "consumer_use_per_attempt": 1
+          }
+        ],
+        "invalid": 0,
+        "duplicates": 0,
+        "conflicts": 0,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 1,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 1,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              },
+              {
+                "role": "CANDLE_MONITOR",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 1,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 1,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 1,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "unknown acquisition retained beside known measured lower bound",
+      "legacy": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [
+          {
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "role": "CANDLE_FEATURES",
+            "sources": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "attempts": 1,
+            "http_requests": 2,
+            "usable_attempts": 1,
+            "consumer_used": 1,
+            "admission_deferred": 0,
+            "distinct_assets": 1,
+            "distinct_usable_facts": 1,
+            "distinct_facts_per_HTTP": 0.5,
+            "consumer_use_per_attempt": 1
+          }
+        ],
+        "invalid": 1,
+        "duplicates": 0,
+        "conflicts": 0,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 2,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              },
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "UNKNOWN",
+                "http_requests": null,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "2",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 1,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": false,
+            "total_HTTP": null,
+            "distinct_candles_per_HTTP": null,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "unknown body completion cannot be substituted by header availability",
+      "legacy": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [
+          {
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "role": "CANDLE_FEATURES",
+            "sources": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "attempts": 1,
+            "http_requests": 1,
+            "usable_attempts": 1,
+            "consumer_used": 1,
+            "admission_deferred": 0,
+            "distinct_assets": 1,
+            "distinct_usable_facts": 1,
+            "distinct_facts_per_HTTP": 1,
+            "consumer_use_per_attempt": 1
+          }
+        ],
+        "invalid": 0,
+        "duplicates": 0,
+        "conflicts": 0,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {
+                  "BODY_COMPLETION_UNKNOWN": 1
+                },
+                "usable_attempts": 0,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 0,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "missing declared epoch preserves cost without manufacturing bound fact",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {
+                  "DECLARED_INSTRUMENT_EPOCH_OR_UNITS_MISSING": 1
+                },
+                "usable_attempts": 0,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 0,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "fact available after decision cannot erase its measured acquisition cost",
+      "legacy": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [],
+        "invalid": 1,
+        "duplicates": 0,
+        "conflicts": 0,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {
+                  "NOT_KNOWN_BY_DECISION_OR_CLOSED_SOURCE_CLOCK": 1
+                },
+                "usable_attempts": 0,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 0,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "conflicting numeric revisions of one window censored across roles",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 0,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 1,
+                "attempts_with_conflicting_candle": 1
+              },
+              {
+                "role": "CANDLE_MONITOR",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 0,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 1,
+                "attempts_with_conflicting_candle": 1
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              },
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "2",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 2,
+            "distinct_candles_per_HTTP": 0,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "CENSORED_NUMERIC_REVISIONS",
+            "numeric_variants": [
+              {
+                "value_hash": "01284d1b6dfc5f611d028bec65adb5a8d74edeaee448c44154b9f66b9b04112e",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "100.5",
+                  "volume": "1000"
+                }
+              },
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              },
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d09a23d2d46ca9fc20f9d12d713126f425c895d99b8fa05f94bb225359f188a",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "two candle rows in one raw body remain two facts and one acquisition",
+      "legacy": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [
+          {
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "role": "CANDLE_FEATURES",
+            "sources": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "attempts": 2,
+            "http_requests": 2,
+            "usable_attempts": 2,
+            "consumer_used": 2,
+            "admission_deferred": 0,
+            "distinct_assets": 1,
+            "distinct_usable_facts": 1,
+            "distinct_facts_per_HTTP": 0.5,
+            "consumer_use_per_attempt": 1
+          }
+        ],
+        "invalid": 0,
+        "duplicates": 0,
+        "conflicts": 0,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 2,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 2,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 2,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          },
+          {
+            "fact_key": "5781ab4cd8ad44b0a131084939a734feeb9f5da05ba73fcd4e78024161cd9f45",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792425600000,
+              "end_ts": 1792440000000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/1",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "different declared instrument epochs never collapse by shared body hash",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 2,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              },
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 2,
+            "known_HTTP_lower_bound_decimal": "2",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 2,
+            "distinct_candles_per_HTTP": 1,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          },
+          {
+            "fact_key": "dca7c8e6cb11cfe632183297aa587ead8e05ec3d3cf8c9258fb62a20c07000d4",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_SECOND_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "spot and futures with different volume units remain separate",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 2,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              },
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 2,
+            "known_HTTP_lower_bound_decimal": "2",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 2,
+            "distinct_candles_per_HTTP": 1,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "14e8a3f8f791d0009fce2cbddd01902bfb82314bc75c6b707879c0ed7db0c0b7",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "SPOT",
+              "venue": "CONTROLLED_SPOT",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL/USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "COIN_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_SPOT_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          },
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "attempt replay and conflict counters independent of row order",
+      "legacy_left": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [],
+        "invalid": 0,
+        "duplicates": 1,
+        "conflicts": 1,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "legacy_right": {
+        "schema": "ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1",
+        "upstream_roles": [],
+        "invalid": 0,
+        "duplicates": 0,
+        "conflicts": 2,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "weights_changed": false,
+        "independence_unit": "ACTUAL_UPSTREAM_AND_ROLE"
+      },
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 0,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 1,
+        "conflicting_attempts": 1,
+        "conflicting_attempt_refs": [
+          {
+            "attempt_key": "f61cf73a6e33c00f4ca29cb74222f39597d03904862d173615711878b1e66ea9",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "attempt_id": "A",
+            "variant_sha256": [
+              "a407cddcbbc51147b15328eb8b1e7949f8f400aa51376d8d5a836002f8b3a006",
+              "ff99d23a51d38d1324012091489b9b15ae67e2af8fe48e3e2622f34e53747dfc"
+            ]
+          }
+        ],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "contradictory measured and unknown claims for same acquisition remain unknown",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "CONFLICTING_COST_CLAIMS",
+                "http_requests": null,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "0",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 1,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": false,
+            "total_HTTP": null,
+            "distinct_candles_per_HTTP": null,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "malformed cost proof retains explicit unbound unknown instead of zero",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 1,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 1,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "0",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": false,
+            "total_HTTP": null,
+            "distinct_candles_per_HTTP": null,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 1,
+        "unbound_cost_claim_digests": [
+          "846083c400c58bf53983192e2fc75629971ac76f8d1ccc949c1e90fcdc0b9ec7"
+        ],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "admission refusal is zero request intent without source failure or usable candle",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 0,
+                "admission_deferred": 1,
+                "status_counts": {
+                  "NOT_ATTEMPTED_ADMISSION": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 0,
+                "declared_consumer_uses": 0,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "NOT_ATTEMPTED",
+                "http_requests": 0,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "0",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 1,
+            "cost_scope_complete": true,
+            "total_HTTP": 0,
+            "distinct_candles_per_HTTP": null,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "cohort labels separate and never authenticate controlled input as native",
+      "fixture_provenance": "ALL_CONTROLLED_INCLUDING_SIMULATED_RETAINED_LABEL",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 1,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 1,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 1,
+            "role_cost_attribution": null
+          },
+          {
+            "cohort": "RETAINED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 1,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 1,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 1,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "41964d3c066481067368a530fb86e9964b36a3ab1ba9a661ef92c23d987f8a2f",
+            "cohort": "RETAINED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          },
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "exact decimal geometry retained beyond IEEE numeric integer precision",
+      "valid": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 1,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 1,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 1,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "4f973d53e6bd08d06dc9ac39ac25aefbc91468ee940388a1e4c0fb586468f99d",
+                "values": {
+                  "open": "100000000000000000000.1",
+                  "high": "100000000000000000000.2",
+                  "low": "100000000000000000000",
+                  "close": "100000000000000000000.15",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      },
+      "invalid": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 1,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 1
+                },
+                "ineligible_reasons": {
+                  "EXACT_DECIMAL_OHLC_GEOMETRY_INVALID": 1
+                },
+                "usable_attempts": 0,
+                "declared_consumer_uses": 1,
+                "usable_consumer_uses": 0,
+                "distinct_bound_candles": 0,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 1,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 0,
+            "known_HTTP_lower_bound_decimal": "1",
+            "known_HTTP_number_safe": true,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": true,
+            "total_HTTP": 1,
+            "distinct_candles_per_HTTP": 0,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    },
+    {
+      "name": "HTTP count accumulation exact and unsafe numeric ratio withheld",
+      "candidate": {
+        "schema": "ANOMALY_BOUND_CANDLE_SOURCE_UTILITY_V1",
+        "reports": [
+          {
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "roles": [
+              {
+                "role": "CANDLE_FEATURES",
+                "sources": [
+                  "CONTROLLED_PROVIDER"
+                ],
+                "attempts": 2,
+                "admission_deferred": 0,
+                "status_counts": {
+                  "FACT": 2
+                },
+                "ineligible_reasons": {},
+                "usable_attempts": 2,
+                "declared_consumer_uses": 2,
+                "usable_consumer_uses": 2,
+                "distinct_bound_candles": 1,
+                "censored_conflicting_candles": 0,
+                "attempts_with_conflicting_candle": 0
+              }
+            ],
+            "acquisitions": [
+              {
+                "acquisition_id": "CONTROLLED-B",
+                "status": "MEASURED",
+                "http_requests": 9007199254740991,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/B",
+                    "sha256": "c9b1a430872696e18b066c20be1fd2e4296f1f9d31c6cd0d59838fcf5f7fdd0d"
+                  }
+                ]
+              },
+              {
+                "acquisition_id": "CONTROLLED-A",
+                "status": "MEASURED",
+                "http_requests": 9007199254740991,
+                "cost_proof_variant_count": 1,
+                "cost_proofs": [
+                  {
+                    "ref": "controlled://cost/A",
+                    "sha256": "37dbd598b377b2629375837a9a40ec72be9b561c7c83c4a4728189b7a61b0ee9"
+                  }
+                ]
+              }
+            ],
+            "distinct_bound_candles_across_roles": 1,
+            "known_HTTP_lower_bound_decimal": "18014398509481982",
+            "known_HTTP_number_safe": false,
+            "unknown_acquisitions": 0,
+            "conflicting_cost_acquisitions": 0,
+            "not_attempted_acquisitions": 0,
+            "cost_scope_complete": false,
+            "total_HTTP": null,
+            "distinct_candles_per_HTTP": null,
+            "role_cost_attribution": null
+          }
+        ],
+        "facts": [
+          {
+            "fact_key": "485014bedbd98fe93458b3b985ec30c972a049d382dd2514c0ec06f7086d1bc3",
+            "cohort": "CONTROLLED",
+            "upstream": "CONTROLLED_HTX_LIKE",
+            "instrument": {
+              "asset_id": "CONTROLLED_ASSET",
+              "market": "FUTURES",
+              "venue": "CONTROLLED_FUTURES",
+              "upstream": "CONTROLLED_HTX_LIKE",
+              "contract": "CONTROL-USDT",
+              "quote": "USDT",
+              "price_unit": "USDT",
+              "volume_unit": "USDT_BOTH_SIDES",
+              "native_epoch": "CONTROLLED_NOT_NATIVE_EPOCH",
+              "multiplier_decimal": "1"
+            },
+            "window": {
+              "timeframe": "4h",
+              "alignment_offset_ms": 0,
+              "start_ts": 1792440000000,
+              "end_ts": 1792454400000
+            },
+            "status": "SINGLE_DECLARED_NUMERIC_FACT",
+            "numeric_variants": [
+              {
+                "value_hash": "10cd422198293a5077d59e74539f289c62845d5b1a9fa2328c6df607111ab053",
+                "values": {
+                  "open": "100",
+                  "high": "102",
+                  "low": "99",
+                  "close": "101",
+                  "volume": "1000"
+                }
+              }
+            ],
+            "proof_variants": [
+              {
+                "raw_ref": "controlled://provider/bodyA",
+                "raw_sha256": "2d97693b3506d67e5d8c939559ffccbc09a849002e5be2abb107340368a2b61f",
+                "raw_row_ref": "/data/0",
+                "source_ts": 1792454401000,
+                "body_completed_ts": 1792454402000,
+                "available_at": 1792454402000,
+                "decision_ts": 1792454405000
+              }
+            ],
+            "source_ids": [
+              "CONTROLLED_PROVIDER"
+            ],
+            "earliest_declared_available_at": 1792454402000,
+            "native_original_first_detection_ts": null
+          }
+        ],
+        "invalid_rows": 0,
+        "invalid_row_reasons": {},
+        "identical_attempt_replays": 0,
+        "conflicting_attempts": 0,
+        "conflicting_attempt_refs": [],
+        "unbound_cost_claims": 0,
+        "unbound_cost_claim_digests": [],
+        "global_HTTP_total_across_cohorts": null,
+        "predictive_accuracy": null,
+        "causal_incremental_value": null,
+        "independent_sample_count": null,
+        "weights_changed": false,
+        "native_identity_or_cost_authentication": false,
+        "native_commit_ACK_qualified": false,
+        "activation_allowed": false,
+        "limitations": [
+          "Declared exact instrument epoch, clocks, numeric facts and cost proofs are NOT native authentication",
+          "Cohorts must not be pooled; role counts share candles and acquisitions",
+          "Raw metadata/receipt/locator variants are not independent numeric facts",
+          "Unknown or conflicting cost is not zero; malformed facts cannot erase acquisition cost",
+          "No provider calls, event admission, source weights, MAIN or Telegram integration"
+        ]
+      }
+    }
+  ],
+  "fixture_provenance": "ALL_DATA_GENERATED_CONTROLLED_NOT_RETAINED_MARKET_RESULTS",
+  "protocol_sha256": "ab86dd38a56ce20ae99c060163abb41dc9f34481fb2ecf9bd3ce877af23fb6f6",
+  "current_sourceUtility_unchanged": true,
+  "actual_provider_or_source_cost_qualified": false,
+  "actual_native_identity_or_commit_ACK": false,
+  "main_weights_changed": false,
+  "provider_HTTP": 0,
+  "local_SQL": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "prior_accepted_case_replayed": false,
+  "activation_allowed": false
+}

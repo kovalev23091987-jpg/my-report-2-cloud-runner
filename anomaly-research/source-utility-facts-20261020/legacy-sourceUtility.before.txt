@@ -1,0 +1,18 @@
+export function sourceUtility(attempts=[]){
+ need(Array.isArray(attempts)&&attempts.length<=20000,'BOUNDED_ATTEMPTS_REQUIRED');
+ const groups=new Map(),unique=new Map();let invalid=0,duplicates=0,conflicts=0;
+ for(const a of attempts){
+  if(!str(a?.attempt_id)||!str(a.upstream)||!str(a.source_id)||!str(a.asset_id)||!str(a.role)||!stamp(a.available_at)||!stamp(a.decision_ts)||a.available_at>a.decision_ts||!num(a.http_requests)||a.http_requests<0||!Number.isInteger(a.http_requests)||!hex(a.raw_sha256)||!['FACT','EMPTY','ERROR','PARTIAL','NOT_ATTEMPTED_ADMISSION'].includes(a.status)||typeof a.exact_identity!=='boolean'||typeof a.fresh!=='boolean'||typeof a.numeric!=='boolean'||typeof a.consumer_used!=='boolean'){invalid++;continue;}
+  if(a.status==='NOT_ATTEMPTED_ADMISSION'&&(a.http_requests!==0||a.consumer_used)){invalid++;continue;}
+  if(unique.has(a.attempt_id)){if(hash(unique.get(a.attempt_id))!==hash(a)){unique.set(a.attempt_id,null);conflicts++;}else duplicates++;}else unique.set(a.attempt_id,a);
+ }
+ for(const a of unique.values()){
+  if(!a)continue;const key=[a.upstream,a.role].join('|');const g=groups.get(key)??{upstream:a.upstream,role:a.role,sources:new Set(),assets:new Set(),facts:new Set(),attempts:0,http_requests:0,usable_attempts:0,consumer_used:0,admission_deferred:0};
+  g.sources.add(a.source_id);g.assets.add(a.asset_id);
+  if(a.status==='NOT_ATTEMPTED_ADMISSION')g.admission_deferred++;else g.attempts++;
+  g.http_requests+=a.http_requests;
+  const fact=a.status==='FACT'&&a.exact_identity&&a.fresh&&a.numeric;
+  if(fact){g.usable_attempts++;g.facts.add(hash({asset_id:a.asset_id,role:a.role,raw_sha256:a.raw_sha256}));}if(fact&&a.consumer_used)g.consumer_used++;groups.set(key,g);
+ }
+ return {schema:'ANOMALY_OPERATIONAL_SOURCE_UTILITY_V1',upstream_roles:[...groups.values()].map(g=>({...g,sources:[...g.sources].sort(),distinct_assets:g.assets.size,assets:undefined,distinct_usable_facts:g.facts.size,facts:undefined,distinct_facts_per_HTTP:g.http_requests?g.facts.size/g.http_requests:null,consumer_use_per_attempt:g.attempts?g.consumer_used/g.attempts:null})),invalid,duplicates,conflicts,predictive_accuracy:null,causal_incremental_value:null,weights_changed:false,independence_unit:'ACTUAL_UPSTREAM_AND_ROLE'};
+}

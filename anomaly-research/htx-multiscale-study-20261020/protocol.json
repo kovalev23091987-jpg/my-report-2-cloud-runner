@@ -1,0 +1,121 @@
+{
+  "schema": "HTX_MULTI_CONTRACT_SAVED_DESCRIPTIVE_PROTOCOL_V1",
+  "scope": "ALL37FROZEN_CONTRACT_LABEL_SERIES_NOT_CURRENT105_OR_NATIVE_EVENTS",
+  "source": {
+    "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/qualified-cohort.json.gz",
+    "gzip_sha256": "cd8b11110d39d801767462ec4b49c660de10f1aa1c2893479370f95141ac1f54",
+    "uncompressed_sha256": "bd28bbaa4c9efe32b00b33219b54bb09a632453ca83b49ac031757c236e13c11",
+    "uncompressed_bytes": 11498780,
+    "source_schema": "HTX_SAVED_NATIVE_4H_QUOTE_TURNOVER_COHORT_V1",
+    "contract_label_count": 37,
+    "upstream": "HTX",
+    "market": "FUTURES",
+    "quote_field": "native_lexemes.trade_turnover",
+    "quantity": "USDT_BOTH_SIDES_AGGREGATE_NOT_SIGNED_FLOW",
+    "amount_or_contracts_substitute": false,
+    "divide_by_two": false,
+    "normative_policy_path": "checkpoints/source-worker-htx4h-native-turnover-20261019/documentation.json",
+    "normative_policy_sha256": "036cd7bfb73a40bbce312dfd951271ded3ca6f660126e8eaaa290db0f0e22f69"
+  },
+  "series": [
+    {
+      "timeframe": "4h",
+      "cohort_path": "native.rows",
+      "duration_ms": 14400000,
+      "alignment_offset_ms": 0,
+      "origin": "RETAINED_NATIVE4H_CLOSED_BY_ORIGINAL_SOURCE_TS"
+    },
+    {
+      "timeframe": "1d",
+      "cohort_path": "derived_utc.day.complete",
+      "duration_ms": 86400000,
+      "alignment_offset_ms": 0,
+      "origin": "REUSE_EXISTING_DERIVED_UTC6X4H_NOT_NATIVE1D"
+    },
+    {
+      "timeframe": "1w",
+      "cohort_path": "derived_utc.week.complete",
+      "duration_ms": 604800000,
+      "alignment_offset_ms": 345600000,
+      "origin": "REUSE_EXISTING_DERIVED_MONDAY42X4H_NOT_NATIVE1W"
+    }
+  ],
+  "fixed_rules": {
+    "lookback": 20,
+    "volume_ratio": 3,
+    "extreme_ratio": 5,
+    "small_body": 0.35,
+    "large_wick": 0.5
+  },
+  "quality_policy": {
+    "source_sha_mismatch": "STOP_BEFORE_METRICS",
+    "invalid_unit_grain_or_OHLCV": "STOP_WITH_SCOPED_CONTRACT_TIMEFRAME_INDEX_ERROR",
+    "first20_bars": "INSUFFICIENT_BACKGROUND_NOT_TESTED_WINDOWS",
+    "target_requires": 21,
+    "background": "20strictlypreviouscontiguoussamecontractsameTFclosedbars",
+    "gap": "EXCLUDE_WINDOW_NO_FILL",
+    "median_volume_zero": "EXCLUDE_UNDEFINED_RATIO_NOT_MISSING_NATIVE_ZERO_CANDLE",
+    "MAD_zero": "robust_zNULL_not0;ratio_mayremainvalid",
+    "no_eligible_windows": "finding_countNULL_NOT_ZERO_OPPORTUNITIES",
+    "duplicate_source_window": "STOP_NOT_DOUBLECOUNT"
+  },
+  "findings": {
+    "namespace": "HTX_SAVED_QUOTE_RESEARCH",
+    "classification": "BACKFILLED_DESCRIPTIVE_NUMERIC_WINDOW",
+    "direction": "UNASSIGNED",
+    "native_event_id_created": false,
+    "shape_first_partition": "volume>=3 AND(body<=.35 ORupperwick>=.5 ORlowerwick>=.5)",
+    "extreme_only_partition": "volume>=5 AND NOTshape_first_partition",
+    "rules_calibrated": false,
+    "future_outcome_or_sidewinner_evaluation": false,
+    "independent_sample_count": null,
+    "predictive_accuracy": null,
+    "weights_changed": false
+  },
+  "distributions": {
+    "quantiles": "NEAREST_RANK_P50_P90_P95_P99_WITH_MIN_MAX",
+    "eligible_denominator": "ONLY_WINDOWS_WITH_CONTIGUOUS20PRIOR_AND_POSITIVE_VOLUME_MEDIAN",
+    "metrics": [
+      "volume_ratio",
+      "range_relative_median",
+      "body_ratio",
+      "upper_wick_ratio",
+      "lower_wick_ratio",
+      "volume_robust_z"
+    ],
+    "undefined_values": "NULL_with_explicit_count_not_zero",
+    "pooling": "DESCRIPTIVE_COUNTS_PER_TF_NOT_INDEPENDENT_PROBABILITY",
+    "examples_per_series": 2,
+    "ledger": "ALL_FINDINGS_WITH_STABLE_INPUT_ROW_POINTERS;FACT_DIGEST_EXCLUDES_INVOCATION_TIME"
+  },
+  "temporal_policy": {
+    "source_asof": "PRESERVE_PER_CONTRACT_ORIGINAL_SOURCE_TS",
+    "endpoints": "HETEROGENEOUS_7SAVED_END_GROUPS_NOT_SYNCHRONOUS_PANEL",
+    "old_first_known": "ORIGINAL_RECORDED_HEADER_RECEIPT_NOT_BODY_COMPLETION_OR_TRUE_DETECTION",
+    "input_read_scope": "FROZEN_QUALIFIED_COHORT_DTO_ONLY_NOT37RAWBODY_ACK",
+    "study_known_by": "AFTER_COMPLETE_INPUT_HASH_PARSE_AND_FEATURE_CALCULATION_AT_FUTURE_EXECUTION",
+    "native_body_completion_ts": null,
+    "true_original_event_first_known_ts": null,
+    "live_quote_or_timed_replay": false
+  },
+  "missing": [
+    "15m/30m/1h_NOT_DERIVABLE_FROM4H",
+    "spot_NOT_IN_THIS_FROZEN_COHORT_NONBLOCKING",
+    "nativefacevalue/instrumentepoch/causalfirstknown/takersides/notrequiredforwithinseriesdescriptivegeometry"
+  ],
+  "lineage_limits": [
+    "37selectedsavedcontractlabelsnotrandom/current105sample",
+    "HTXoneupstream;derivedTFarenewviewsnotsources",
+    "overlappingwindows/scales/assetscorrelated",
+    "old27COMPLETE90dPRICEONLYlabelsnotweekeligibility",
+    "20weeksaloneisnot20PRIORplustarget",
+    "originalproviderHTTPtotal/nativecost/currentaccountheadroomUNKNOWN"
+  ],
+  "preparation": {
+    "new_feature_calculations_executed": 0,
+    "prior37qualification_recomputed": false,
+    "prior_aggregation_recomputed": false,
+    "BTC915oroldCSVreplayed": false,
+    "execution_deferred_to": "COORDINATOR_NEXT_COMMON_AFTER_FROZEN_PROTOCOL"
+  }
+}
