@@ -1,0 +1,26 @@
+--- a/anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs
++++ b/anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs
+@@ -49,7 +49,9 @@
+   if(sample.market!=='FUTURES'||sample.current.timeframe!=='4h'||sample.raw_source?.path!==`checkpoints/htx-compact-4h/${sample.contract}.raw.json.gz`)fail('HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED');
+   if(r.scope!=='HTX_ORIGINAL_JSON_BODY_LOCAL_READ'||r.body_sha256!==sample.raw_source.body_sha256||r.raw_ref!==sample.raw_source.path+'#uncompressed')fail('EXACT_HTX_ORIGINAL_MARKER_REQUIRED');
+   if(input_value.ch!==`market.${sample.contract}.kline.4hour`||input_value.ts!==sample.original_source_ts)fail('EXACT_HTX_NATIVE_SCOPE_REQUIRED');
++  if(!stamp(input_value.ts))fail('HTX_ORIGINAL_SOURCE_ASOF_REQUIRED');
+   for(const b of [...sample.current.background,sample.current.candle]){
++   if(!stamp(b.end_ts)||b.end_ts>input_value.ts)fail('HTX_SELECTED_BAR_NOT_CLOSED_AT_SOURCE_ASOF');
+    const native=input_value.data?.[b.source_row_index];
+    if(!native||native.id*1000!==b.start_ts||b.end_ts-b.start_ts!==14_400_000||['open','high','low','close'].some(k=>native[k]!==Number(b[k]))||native.trade_turnover!==Number(b.raw_quote_turnover_lexeme))fail('HTX_SELECTED_WINDOW_NOT_BOUND_TO_BODY');
+   }
+@@ -58,7 +60,12 @@
+  }
+  const known_by_ts=Math.max(r.verified_at_ts,p.verified_at_ts);
+  if(!stamp(known_by_ts)||sample.current.candle.end_ts>known_by_ts||sample.original_immutable_card_first_known_ts>known_by_ts)fail('KNOWLEDGE_PRECEDES_SAVED_INPUT');
+- const toBar=b=>{const quote_lexeme=btc?b.raw_column7_sum:b.raw_quote_turnover_lexeme;return{start_ts:b.start_ts,end_ts:b.end_ts,open:number(b.open,{positive:true}),high:number(b.high,{positive:true}),low:number(b.low,{positive:true}),close:number(b.close,{positive:true}),volume:number(quote_lexeme),preserved_quote_lexeme:quote_lexeme};};
++ const toBar=b=>{
++  const quote_lexeme=btc?b.raw_column7_sum:b.raw_quote_turnover_lexeme;
++  const bar={start_ts:b.start_ts,end_ts:b.end_ts,open:number(b.open,{positive:true}),high:number(b.high,{positive:true}),low:number(b.low,{positive:true}),close:number(b.close,{positive:true}),volume:number(quote_lexeme),preserved_quote_lexeme:quote_lexeme};
++  if(bar.low>Math.min(bar.open,bar.close)||bar.high<Math.max(bar.open,bar.close)||bar.low>bar.high)fail('SAVED_OHLC_GEOMETRY_INVALID');
++  return bar;
++ };
+  const candle=toBar(sample.current.candle),prior=sample.current.background.map(toBar);
+  if(prior.length!==20||prior.at(-1).end_ts!==candle.start_ts||prior.some((b,k)=>k&&b.start_ts!==prior[k-1].end_ts))fail('TWENTY_PAST_CONTIGUOUS_SAVED_BARS_REQUIRED');
+  const blockers=['NATIVE_INSTRUMENT_EPOCH_NOT_PROVEN'];

@@ -1,0 +1,58 @@
+{
+  "schema": "my-report-2-canonical-run-output-v1",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "head": "2992296cd033320deba278e1e52e57e18618fd47",
+  "source": "schedule",
+  "run_id": "39493645805",
+  "status": "NOT_CLOSED",
+  "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+  "candidates": [],
+  "pre_analysis_failure": {
+    "schema": "PRE_ANALYSIS_FAILURE_RECEIPT_V1",
+    "stage": "D1_DAY_PREACTION_ADMISSION",
+    "status": "UNMEASURED_FINALIZED_USAGE",
+    "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+    "source_run_id": "39493645805",
+    "head": "2992296cd033320deba278e1e52e57e18618fd47",
+    "task_id": null,
+    "trigger_only": false,
+    "started_ts": 1792528712242,
+    "failed_ts": 1792528716556,
+    "daily": {
+      "status": "DAY_USAGE_CLOSED",
+      "unknown_operations": 1,
+      "reserved_rows_read": 1252100,
+      "reserved_rows_written": 22472,
+      "unfinished_reservations": 0
+    },
+    "d1_attempt_usage": {
+      "attempted_statements": 24,
+      "measured_rows_read_subtotal": 692,
+      "measured_rows_written_subtotal": 5,
+      "unknown_operations": 0,
+      "row_totals_closed": true,
+      "total_rows_read": 692,
+      "total_rows_written": 5
+    },
+    "market_conditions_evaluated": false,
+    "full_analysis_completed": false,
+    "entry_authorized": false,
+    "task_writes": 0,
+    "source_clock_refreshed": false,
+    "daily_usage_scope": "ADAPTIVE_ADMISSION_POLICY_INPUTS",
+    "native_daily_aggregate": {
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-20",
+      "run_count": 194,
+      "reserved_rows_read": 1252100,
+      "reserved_rows_written": 22472,
+      "measured_rows_read": 775425,
+      "measured_rows_written": 8365,
+      "unknown_operations": 1,
+      "unfinished_reservations": 0
+    }
+  },
+  "generated_at": "2026-10-20T20:38:36.556Z",
+  "secrets_included": false,
+  "alternative_manual_recalculation": false
+}
