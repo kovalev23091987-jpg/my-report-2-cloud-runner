@@ -319,7 +319,6 @@ permissions:
   contents: read
 jobs:
   verify:
-    if: ${{ github.ref != 'refs/heads/work/stage0-partial-20261020' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -515,42 +514,4 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
-          retention-days: 30
-
-  stage0_availability_connected_qualification:
-    if: ${{ github.ref == 'refs/heads/work/stage0-partial-20261020' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - name: Exact own scope before ONE availability qualification
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/guard-stage0-availability-connected-20261020.mjs before
-      - name: ONE NEW connected availability caller and failure carrier
-        env:
-          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-        run: |
-          mkdir -p runtime audit-output/stage0-availability-connected
-          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
-          tar -xzf runtime/payload.tar.gz -C runtime
-          rm runtime/payload.tar.gz
-          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/stage0-availability-connected/assembly.json
-          REPORT2_AVAILABILITY_RUNTIME="$PWD/runtime" REPORT2_AVAILABILITY_OUTPUT="$PWD/audit-output/stage0-availability-connected" REPORT2_AVAILABILITY_BASELINE_HELPER="$PWD/checkpoints/source-worker-native-availability-20261020/scope.before.mjs" REPORT2_AVAILABILITY_COMPONENT="$PWD/checkpoints/source-worker-native-availability-20261020/availability-connected.mjs" REPORT2_AVAILABILITY_EXPORT="runNativeAvailabilityConnected" node --test --test-reporter=spec current-generation/tests/native-availability-connected.runtime.mjs > audit-output/stage0-availability-connected/connected-tests.log
-      - name: Exact own scope and assembled bytes after qualification
-        if: ${{ always() }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/guard-stage0-availability-connected-20261020.mjs after
-      - uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: stage0-availability-connected-${{ github.run_id }}
-          path: audit-output/stage0-availability-connected/
-          if-no-files-found: error
           retention-days: 30
