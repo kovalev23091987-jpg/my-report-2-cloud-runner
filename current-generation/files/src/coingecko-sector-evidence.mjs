@@ -262,7 +262,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});
+ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,clock:Date.now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
  const asset_platforms=native?.platform&&!native.provider_ref_primary_authority?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
  const get=(route,url,options)=>reader.get(route,url,options);

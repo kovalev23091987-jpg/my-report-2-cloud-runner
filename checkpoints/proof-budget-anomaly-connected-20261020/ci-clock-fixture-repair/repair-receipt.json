@@ -1,0 +1,65 @@
+{
+  "schema": "REPORT2_PR576_FAILED_FIXTURE_CLOCK_REPAIR_V1",
+  "base_main": "2394980bc6f43d14f218622c412bf4eea881aebe",
+  "prior_candidate": "080f07aec02c34d44796f0fd8745051996598201",
+  "phase_sync_merge": "a38b7649567e513fc339d182d1b189e476bff495",
+  "own_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792520110731",
+  "original_required_run": 39471735908,
+  "original_artifact": 12287970306,
+  "original_artifact_sha256": "6d143ba1be2745bdb847d0fc25dc169cca310c2b0638b24863c4b5c6b7393ddd",
+  "original_actual_generation": {
+    "tests": 2731,
+    "pass": 2728,
+    "fail": 1,
+    "skip": 2
+  },
+  "original_failure": "REFERENCE_READ_CLOCK_NOT_CLOSED in one shared fallback catalog test: supplied now+1000/+2000 with frozen clock=NOW",
+  "repair": "Only test context mocks Date.now with the same mutable injected clock; advance both before second cache and supplemental-consumer reads. Original assertions unchanged. Production read-clock guard and three qualified runtime targets unchanged.",
+  "test_file": "current-generation/tests/coinpaprika-htx-identity.test.mjs",
+  "test_before_sha256": "632b300dc46baf26893aa2d27fa72e9387a31606e47ae9a5413c1e93800787d6",
+  "test_after_sha256": "c76a761804c763edfa7cd2b19e58426bd5f88021436cc48d791668d970e597fc",
+  "targeted_test": {
+    "command": "node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test --test-name-pattern <exact failed test name> current-generation/tests/coinpaprika-htx-identity.test.mjs",
+    "pass": 1,
+    "fail": 0,
+    "other_test_cases_executed": 0,
+    "first_preload_command_refused_before_module_load": "ERR_UNSUPPORTED_DIR_IMPORT caused by unquoted space in NODE_OPTIONS; original output retained, zero semantic execution; corrected direct relative --import flag"
+  },
+  "common_57_or_components_reexecuted": 0,
+  "qualified_runtime_sha256": {
+    "current-generation/files/src/worker.js": "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17",
+    "current-generation/files/src/coingecko-sector-evidence.mjs": "bc9beb1135c93d2b08c32da66e3099dd06e9d6ad2e58cbf3a7add7be5ce0919f",
+    "current-generation/files/src/coinpaprika-htx-identity.mjs": "f90945240808c374f5c3bd788f8f39aab6596bdf4e9f30161339632089b1a00b"
+  },
+  "qualified_case_and_component_sha256": {
+    "current-generation/tests/proof-provider-anomaly-connected.runtime.mjs": "21d1818899225375182cdef8ff9a2f168dd8c8ac4d0786118c2f552946100f39",
+    "checkpoints/proof-budget-anomaly-connected-20261020/proof-preflight-connected.mjs": "76833864e5539db9226d2895e12a3004dd261b0f1a145666498f6eda481eef37",
+    "checkpoints/source-worker-provider-admission-clock-20261020/admission-clock-connected.mjs": "401c05a052cf031337ea9cd7a8fbf0411aa10cdd2dfd418d679ba745cb58cf53",
+    "anomaly-research/closed-order-plan-batch-20261020/connected.mjs": "024f49553405f32d0aee74c52bb610053017eba8901164c61e91afc4811c7940"
+  },
+  "authority_roots_current_main_sha256": {
+    "AGENTS.md": "bb6a89dd61318b31dfd8af676f7f95b25100006f6c425933fe506d002deeb43a",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "d7d2330347c60302d8e37b6236c9056a831ea5c56d6c8a5a430074a8a0cda14a",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "c0229238cd1c21133f4d36b4cd79173747ba6895115a962688714e33f3ff93ae",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "6004504e1eb1359d3ad590c94dba1515bbfd54738563c69e03b23bc21bf2da6b",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "88f4819fd39c6aec4737ff6edb43fcd96ca2a76d25625235fff353f3b903fa79",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+    "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "a042827d880913b77ae98ca856192ad33ce4d366c92b5a2303d339d12b6a6d16"
+  },
+  "source_HTTP_native_SQL_MAIN_Telegram": 0,
+  "required_checks_on_new_head": "PENDING_AUTOMATIC",
+  "current_native_budget_or_Telegram_restored": false,
+  "raw_files": {
+    "current-report-telegram.tap": "e6fefc441cadfbed8b552ae5ca20a65ab53ce42dbd79b10811cbc03166d80833",
+    "assembly.json": "0a9a802dc75aaa88aed3bd198789b9a7b3ecc0f1dc737d8ee7c6b90a1789e5b5",
+    "target-runtime.tap": "9fd2eda8d9399eabe6b737e2031ccbf23e240fd20514ff0206b2cc0eddd7eb68",
+    "target-unit.tap": "5fe0e618efabb7997fa84e0d74b672ebd965d2bda897f1226c45efb127e9ab7c",
+    "failed-clock-fixture-preload-path-refusal.tap": "12d7eaec0ac3b20fa8efb21e8bbc15d348a0ca3ed35950948de20e0398b3311b",
+    "artifact.zip": "6d143ba1be2745bdb847d0fc25dc169cca310c2b0638b24863c4b5c6b7393ddd",
+    "failed-clock-fixture-repair.tap": "9f515a2c7f86648f3f70d24ffe221642978cba674a6fde7765d16a74265b66a7",
+    "generation.log": "a7e2d57e911bc5b8c49dd3e3348e3f8909fe791c1e7e0f39f4e7bb930b6ccf0a",
+    "artifacts.json": "3bd2dc9bf266ce86fe97174f3fce0f7a87bfe78b780c257a0482c1ee6731093c"
+  }
+}

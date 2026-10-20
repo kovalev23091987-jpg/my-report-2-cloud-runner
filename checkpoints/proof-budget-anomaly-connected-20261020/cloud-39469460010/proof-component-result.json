@@ -1,0 +1,64 @@
+{
+  "schema": "ONE_NEW_EXISTING_PROOF_STORAGE_PREFLIGHT_CONNECTED_RESULT_V1",
+  "status": "PASS",
+  "controls": [
+    {
+      "case": "actual_captured_SQLite_CHECK_saved_bridge_RemoteD1_baseline_failure",
+      "controlled_unknown_ops": 1,
+      "failed_native_body_recovered": false
+    },
+    {
+      "case": "same_controlled_oversize_refused_before_prepare_no_ACK",
+      "bytes": 262145
+    },
+    {
+      "case": "valid_small_SQL_bindings_bytes_costs_unchanged",
+      "bytes": 7619,
+      "duplicate_does_not_mint_ACK": true
+    },
+    {
+      "case": "exact_existing_262144_byte_boundary_accepted",
+      "bytes": 262144,
+      "duplicate_does_not_mint_ACK": true
+    },
+    {
+      "case": "legacy_absent_NULL_unchanged_not_prepared_proof"
+    },
+    {
+      "case": "array_refused_before_SQL",
+      "bytes": 2
+    },
+    {
+      "case": "scalar_refused_before_SQL",
+      "bytes": 5
+    },
+    {
+      "case": "circular_refused_before_SQL",
+      "bytes": null
+    },
+    {
+      "case": "bigint_refused_before_SQL",
+      "bytes": null
+    },
+    {
+      "case": "utf8_refused_before_SQL",
+      "bytes": 271618
+    },
+    {
+      "case": "existing_trigger_still_rejects_small_invalid_proof_no_guard_weakening"
+    }
+  ],
+  "controlled_only": true,
+  "SQLite_schema_sha256": "4ea72fd8fb25fc13c6a84deafde3f33ff5b33bcc82c3aec094326c003ed15016",
+  "bridge_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+  "native_failed_proof_bytes": null,
+  "native_failed_condition_subterm": null,
+  "native_failed_statement_cost": null,
+  "historical_unknown_operations_changed": false,
+  "SQL_schema_limits_forms_weights_gates_changed": false,
+  "new_nativeSQL": 0,
+  "providerHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "valid_local_ACK_is_not_native_ACK": true
+}

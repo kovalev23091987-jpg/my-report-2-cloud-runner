@@ -1,0 +1,79 @@
+{
+  "schema": "CLOSED_ORDER_PLAN_CONNECTED_CONTROLLED_V1",
+  "actual_input": {
+    "sample": "BTC_usd_m_futures",
+    "closed_bars": 21,
+    "saved_sample_sha256": "c8f3d9b5447f4779c7bb3a565ea0f58a3a3a165e66a3d310f5f88a2b8d42ce62",
+    "original_provider_body_completion_ts": null,
+    "native_identity_qualified": false,
+    "actual_card_memory_watch_admitted": false,
+    "actual_future_path_available": false
+  },
+  "controlled_model_card": {
+    "event_id": "ANOM:202836e62962adeae22858b92385d000874995c78c9b4afb67fa9b8d44565f43",
+    "discovery": "BACKFILLED",
+    "evidence_class": "CONTROLLED",
+    "first_known_ts": 1792497600000,
+    "native_ingress_ACK": false
+  },
+  "controls": [
+    {
+      "label": "baseline late older close refutes; candidate advances current price without retroactive transition",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION",
+      "baseline": "REFUTED",
+      "candidate": "CONFIRMED"
+    },
+    {
+      "label": "same closed window receipt replay is not a price conflict; changed economic candle rejects without mutation",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "genuine later close refutes once; legacy cursor absence is not reconstructed across restart",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "cross-timeframe weekly alignment uses explicit existing grid result; no inferred native epoch",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "two events of one controlled futures instrument survive restart and isolated confirmation without MAIN selection",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "bound economic point replay with another receipt no longer censors the complete sampled path",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION",
+      "baseline": "INCOMPLETELY_OBSERVED",
+      "candidate": "SUCCESSFUL"
+    },
+    {
+      "label": "true price conflict and observation gap stay censored; directions and frozen-cell conflict remain explicit",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "same outcome keys cannot hide a changed threshold plan; bound downgrade and legacy promotion reject",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "wrong-plan ACK cannot close delivery; restart reconciliation needs the exact frozen plan and remains simulated",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    },
+    {
+      "label": "actual preserved historical unknown stays closed after controlled model ACK; other budget inputs are placeholders, not native headroom",
+      "classification": "CONTROLLED_LOGIC_NOT_NATIVE_QUALIFICATION"
+    }
+  ],
+  "simulated_outbox_status": "SENT",
+  "actual_send": false,
+  "admission": {
+    "status": "UNKNOWN_NOT_CLEARED",
+    "activation_allowed": false,
+    "unknown_ops_preserved": 1,
+    "other_cost_inputs": "CONTROLLED_PLACEHOLDERS_NOT_BUDGET_FACTS"
+  },
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "local_SQL": 0,
+  "Telegram": 0,
+  "main_score_effect": 0,
+  "native_delivery_or_statistical_accuracy": null
+}
