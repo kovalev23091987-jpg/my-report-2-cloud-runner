@@ -5314,7 +5314,7 @@ async function persistStage0(
    * consumer and persisted market-history shard. Unknown classifications are
    * retained in the audit and fail completeness; they are never silently
    * promoted to crypto. */
-  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
+  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,include_native_availability_diagnostic:true,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
   const contracts = allContracts.filter(
     (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED" && approvedScope.contracts.includes(row)
   );
