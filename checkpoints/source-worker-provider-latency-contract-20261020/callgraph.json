@@ -1,0 +1,2090 @@
+{
+  "schema": "TRACKED_PROVIDER_MINUTE_WRITER_READER_STATIC_CALLGRAPH_V1",
+  "working_base": "fac59f4fb6d5efdba00937d551dfb0dc3c126dec",
+  "fresh_main": "16b1c607155cb9f13391ac718eaac5394f827cdd",
+  "runtime_runner_authority": "current-generation/files/runner-main.mjs",
+  "literal_scan_exclusions": [
+    "checkpoints/**",
+    "anomaly-research/**",
+    "audit-fixes/**",
+    "current-generation/tests/**",
+    "reference/**"
+  ],
+  "inventory_files": [
+    {
+      "path": "current-generation/apply-runtime-overlay.mjs",
+      "sha256": "0e82fe31a0166ff26b9a5422b6346d5d792919fa7241ef9fe32b979cd3909516",
+      "classification": "AUXILIARY_OR_LEGACY_NOT_PROVEN_ACTIVE",
+      "literal_or_import_sites": [
+        {
+          "line": 115,
+          "text": "'src/provider-minute-ledger.mjs','src/provider-reference-cache.mjs','src/gate-official-asset-binding.mjs','src/inherited-fact-contract.mjs','src/expired-provider-cache-maintenance.mjs',"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "53cd3f8d5cf060a11fad8a343a546736b1db97d36eb1588b810ced2cc2602b85",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 84,
+          "text": "import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "current-generation/files/src/backpack-flow-collector.mjs",
+      "sha256": "defd82645f5b08af71f05bd3476149773c9bf1c82f6ddb542869fbc349987e84",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 36,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'BACKPACK',reservation_id:id,units:1,cap:publicVenueMinuteCap('BACKPACK'),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectBackpackFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/binance-native-flow-collector.mjs",
+      "sha256": "f78727e30f44bdd3d17d46a98687eb2e4db63bc5455f8749106bb5de6111791f",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 32,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'BINANCE',reservation_id:id,units:1,cap:publicVenueMinuteCap('BINANCE'),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectBinanceNativeFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/bitfinex-native-flow-collector.mjs",
+      "sha256": "0ebce5aece844e8c36dcb2e8adf6f17521d9d05a627c0e6a640ab6ba9259945e",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 7,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 36,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'BITFINEX',reservation_id:id,units:1,cap:publicVenueMinuteCap('BITFINEX'),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectBitfinexNativeFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/bitget-flow-collector.mjs",
+      "sha256": "218421d5860f1c8f522880e22e6fb068c24b4c87537328b9dbfee8084dd5dffe",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 39,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:id,units:1,cap:publicVenueMinuteCap('BITGET'),now:clock()});if(!minute.allowed){r.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){r.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;r.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});r.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectBitgetFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/coinmetrics-supply-context.mjs",
+      "sha256": "59ddf429bef8f79e6f9b1b3991d341c8589f4a30481f7f9e9246a7e3a30dcd66",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 4,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 44,
+          "text": "await installProviderMinuteLedger(db);admission=await reserveProviderMinuteUnits(db,{provider:SOURCE,reservation_id:id,units:1,cap:COINMETRICS_FREE_LIMITS.module_rolling_60s_attempts,now:clock()});if(!admission.allowed)return null;",
+          "following_lines": [
+            "  calls++;const response=await fetch_impl(urls[route],{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(15000)}),body=await response.text(),ts=clock();receipts.push({route,url:urls[route],http_status:response.status,actual_http:1,received_ts:ts,body_sha256:hash(body)});",
+            "  if([401,403,429,451].includes(response.status)){const raw=response.headers?.get?.('retry-after'),sec=/^\\d+$/.test(raw||'')?Number(raw):null,date=raw?Date.parse(raw):NaN,until_ts=Math.max(ts+3600000,sec!==null?ts+sec*1000:Number.isFinite(date)?date:0);admission={allowed:false,status:response.status===429?'PROVIDER_RATE_LIMITED':'SOURCE_ACCESS_BLOCKED'};await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'ACCESS_BACKOFF',observed_ts:ts,expires_ts:until_ts,payload:{status:admission.status,until_ts}});}",
+            "  if(!response.ok||Buffer.byteLength(body)>150000)return null;let p;try{p=JSON.parse(body);}catch{return null;}if(!Array.isArray(p.data)||p.next_page_url||p.data.length>100)return null;"
+          ]
+        }
+      ],
+      "exports": [
+        "exactCoinmetricsNativeIdentity",
+        "deriveCoinmetricsSupplyContext",
+        "normalizeCoinmetricsSupply",
+        "collectCoinmetricsSupplyContext"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/cross-exchange-risk-context.mjs",
+      "sha256": "c799075a1039b7452c4e85342d50c8ddb43340c7e9e506a72d21d42b4d0f7c75",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 4,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 157,
+          "text": "const admission=await reserveProviderMinuteUnits(db,{provider:'COINALYZE',reservation_id:`${run_id}:CATALOG:${base}`,units:1,now,cap:30});",
+          "following_lines": [
+            " if(!admission.allowed)return{status:'DEFERRED_RATE_LIMIT',cache_status:'MISS',network_calls:0,rows:[],error:admission.status,admission};",
+            " const raw=await requestJson(fetch_impl,'https://api.coinalyze.net/v1/future-markets',{headers:{api_key},timeout_ms:12000}),allRows=raw.ok?compactCoinalyzeMarkets(raw.payload):[],rows=compactCoinalyzeMarkets(allRows,base);",
+            " const rate=await recordCoinalyzeRateLimit(db,raw,now);if(rate)return{...rate,cache_status:'REFRESHED',network_calls:1,rows:[],catalog_complete:false,admission};"
+          ]
+        },
+        {
+          "line": 169,
+          "text": "const admission=await reserveProviderMinuteUnits(db,{provider:'COINALYZE',reservation_id:`${run_id}:HISTORY:${base}:${symbols.join(',')}`,units:symbols.length,now,cap:30});",
+          "following_lines": [
+            " if(!admission.allowed)return{source:'COINALYZE',status:'DEFERRED_RATE_LIMIT',reason:admission.status,network_calls:catalog.network_calls,provider_call_units:catalog.network_calls,observed_ts:now,admission};",
+            " const to=Math.floor(now/(5*60_000))*5*60,from=to-24*5*60,url=`https://api.coinalyze.net/v1/liquidation-history?symbols=${encodeURIComponent(symbols.join(','))}&interval=5min&from=${from}&to=${to}&convert_to_usd=true`,raw=await requestJson(fetch_impl,url,{headers:{api_key},timeout_ms:12000});",
+            " const networkCalls=catalog.network_calls+1,providerUnits=symbols.length+catalog.network_calls;"
+          ]
+        }
+      ],
+      "exports": [
+        "normalizeCrossExchangeCatalogs",
+        "loadVenueCatalog",
+        "probeLiquidationVenueCoverage",
+        "normalizeCrossExchangeDepth",
+        "normalizeOkxLiquidationEvents",
+        "normalizeCoinalyzeLiquidationHistory",
+        "compactCoinalyzeMarkets",
+        "loadCoinalyzeMarkets",
+        "collectCrossExchangeRiskContext"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/cross-venue-volume-profile.mjs",
+      "sha256": "be3a16d93abfa23d49a6785dcb200f4b8667a90107db64aacfd96740448483ce",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 69,
+          "text": "const rate=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:`VOLUME_PEER:${run_id}:${contract}:${venue}`,units:venue==='BINANCE'?22:2,now,cap:venue==='BINANCE'?1200:100});if(!rate.allowed){sources[venue]=missing(venue,'TEMPORARY_RATE_LIMIT');continue;}",
+          "following_lines": [
+            "  const end=Math.floor(now/M)*M-M,q=encodeURIComponent(symbol),urls=venue==='BINANCE'?[`https://fapi.binance.com/fapi/v1/aggTrades?symbol=${q}&limit=1000`,`https://fapi.binance.com/fapi/v1/klines?symbol=${q}&interval=1m&limit=241&endTime=${end-1}`]:[`https://api.bybit.com/v5/market/recent-trade?category=linear&symbol=${q}&limit=1000`,`https://api.bybit.com/v5/market/kline?category=linear&symbol=${q}&interval=1&limit=241&end=${end-1}`];",
+            "  if(venue==='OKX')urls.splice(0,urls.length,`https://www.okx.com/api/v5/market/trades?instId=${q}&limit=500`,`https://www.okx.com/api/v5/market/candles?instId=${q}&bar=1m&limit=241`);",
+            "  const results=await Promise.all(urls.map(async url=>{network_calls++;const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);try{const r=await fetch_impl(url,{signal:c.signal,headers:{accept:'application/json'},redirect:'error'});const raw=await r.text();return {ok:r.ok,status:r.status,payload:raw.length<=4*1024*1024?JSON.parse(raw):null,retry_after:r.headers?.get?.('retry-after')};}catch{return {ok:false,status:null};}finally{clearTimeout(t);}}));"
+          ]
+        }
+      ],
+      "exports": [
+        "normalizeVenueVolumeProfiles",
+        "compareVolumeProfiles",
+        "selectComparableVolumeProfiles",
+        "collectCrossVenueVolumeProfiles"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/delta-options-evidence.mjs",
+      "sha256": "35120e50eb5a927b37308ec86c11524e006e7efead2f119f183f61b5cc3d2869",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 5,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 46,
+          "text": "await installProviderMinuteLedger(db);admission=await reserveProviderMinuteUnits(db,{provider:SOURCE,reservation_id:id,units:3,cap:DELTA_FREE_LIMITS.module_rolling_60s_weight_cap,now:clock()});if(!admission.allowed)return null;",
+          "following_lines": [
+            "  calls++;const response=await fetch_impl(urls[route],{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(15000)}),body=await response.text(),ts=clock();receipts.push({route,url:urls[route],actual_http:1,http_status:response.status,received_ts:ts,body_sha256:hash(body),endpoint_weight:3});",
+            "  if([401,403,429,451].includes(response.status)){const raw=response.headers?.get?.('retry-after'),seconds=/^\\d+$/.test(raw||'')?Number(raw):null,date=raw?Date.parse(raw):NaN,until_ts=Math.max(ts+900000,seconds!==null?ts+seconds*1000:Number.isFinite(date)?date:0);admission={allowed:false,status:response.status===429?'PROVIDER_RATE_LIMITED':'SOURCE_ACCESS_BLOCKED'};await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'ACCESS_BACKOFF',observed_ts:ts,expires_ts:until_ts,payload:{status:admission.status,until_ts}});}",
+            "  if(!response.ok||Buffer.byteLength(body)>6000000)return null;"
+          ]
+        }
+      ],
+      "exports": [
+        "deriveDeltaOptionRisk",
+        "normalizeDeltaOptions",
+        "collectDeltaOptionsEvidence"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/flow-turnover-collector.mjs",
+      "sha256": "61a44a590e80235ce8d829c5054b3702a0573c6f72b284c35ea4d7a8fad19c72",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 5,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 31,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id,units:1,cap:publicVenueMinuteCap(venue),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectTurnoverBaseline"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/gate-flow-collector.mjs",
+      "sha256": "17c6fee8b0db0bdc3dff5ef300c485daec364e83dbafd64ff110c885a178c89f",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 36,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'GATE',reservation_id:id,units:1,cap:publicVenueMinuteCap('GATE'),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectGateFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/gate-futures-trade-collector.mjs",
+      "sha256": "004b0eb558f5846f4669ebc41160f3af9c34ee7e730e5a6570e453af8d2623c5",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 49,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'GATE',reservation_id:id,units:1,cap:publicVenueMinuteCap('GATE'),now:clock()});",
+          "following_lines": [
+            "  if(!minute.allowed){receipt.status=minute.status;return null;}",
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{"
+          ]
+        }
+      ],
+      "exports": [
+        "collectGateFuturesTradeSample"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/gate-liquidation-history.mjs",
+      "sha256": "f1a2e455b65a0420b1080fff01ecc085727dbbd3bb1b4b3d24ee2cab3085ab8d",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 1,
+          "text": "import {reserveProviderMinuteUnits,installProviderMinuteLedger} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 30,
+          "text": "await installProviderMinuteLedger(db);const grant=await reserveProviderMinuteUnits(db,{provider:'GATE_PUBLIC_STATISTICS',reservation_id:`${run_id}:GATE:${symbol}`,units:required,now,cap:6});",
+          "following_lines": [
+            " if(!grant.allowed)return{source,status:'SKIPPED_QUOTA',reason:grant.status,network_calls:0,admission:grant};",
+            " let network_calls=0;const receipts=[];async function get(path){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9000);network_calls++;try{const response=await fetch_impl(`https://api.gateio.ws/api/v4/futures/usdt/${path}`,{headers:{accept:'application/json'},signal:controller.signal});const payload=await response.json().catch(()=>null);receipts.push({http_status:response.status,path,received_ts:Date.now()});return{ok:response.ok,payload,status:response.status};}catch(error){receipts.push({path,http_status:null,error:String(error.message).slice(0,100)});return{ok:false,payload:null,status:null};}finally{clearTimeout(timer);}}",
+            " if(!identity){const raw=await get(`contracts/${encodeURIComponent(symbol)}`),p=raw.payload;if(!raw.ok||p?.name!==symbol||p?.in_delisting===true||!(finite(p?.quanto_multiplier)>0)||p?.type!=='direct')return{source,status:raw.ok?'SOURCE_UNSUPPORTED':'EXTERNAL_FAILURE',reason:'EXACT_ACTIVE_DIRECT_USDT_CONTRACT_REQUIRED',network_calls,receipts};identity={symbol,type:p.type,quanto_multiplier:Number(p.quanto_multiplier)};await db.prepare(`INSERT INTO report2_gate_contract_identity(symbol,expires_ts,payload_json) VALUES(?1,?2,?3) ON CONFLICT(symbol) DO UPDATE SET expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(symbol,now+86400_000,JSON.stringify(identity)).run();}"
+          ]
+        }
+      ],
+      "exports": [
+        "normalizeGateLiquidationStatistics",
+        "collectGateLiquidationHistory",
+        "formatLiquidationHistoryFacts"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/htx-realized-liquidations.mjs",
+      "sha256": "7eeaccd43b67c8b9a13b97cd5812925f734754de0f42cffb13fae4cb14d78a92",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 1,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 18,
+          "text": "await installProviderMinuteLedger(db);const grant=await reserveProviderMinuteUnits(db,{provider:'HTX_PUBLIC_LIQUIDATIONS',reservation_id:`${run_id}:HTX_LIQ:${contract}`,units:1,now,cap:6});",
+          "following_lines": [
+            " if(!grant.allowed)return{source,status:'SKIPPED_QUOTA',reason:grant.status,network_calls:0,admission:grant};",
+            " const end=Math.floor(now/300_000)*300_000,start=end-7200_000,url=`https://api.hbdm.com/linear-swap-api/v3/swap_liquidation_orders?contract=${encodeURIComponent(contract)}&trade_type=0&start_time=${start}&end_time=${end}&direct=prev`,controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9000);",
+            " try{const response=await fetch_impl(url,{headers:{accept:'application/json'},signal:controller.signal}),payload=await response.json().catch(()=>null),observed=Math.max(now,Date.now());return{...(response.ok?normalizeHtxRealizedLiquidations(payload,{contract,window_start_ts:start,window_end_ts:end,now:observed}):{source,status:'EXTERNAL_FAILURE',reason:`HTTP_${response.status}`}),network_calls:1,http_status:response.status,admission:grant,request_route:'GET /linear-swap-api/v3/swap_liquidation_orders',public_keyless:true};}"
+          ]
+        }
+      ],
+      "exports": [
+        "normalizeHtxRealizedLiquidations",
+        "collectHtxRealizedLiquidations"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/kraken-flow-collector.mjs",
+      "sha256": "7a569eb38e66d2e2c3bcf192e6720fba8373312987925f1ace3b4483e5a82e8a",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 35,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'KRAKEN',reservation_id:id,units:1,cap:publicVenueMinuteCap('KRAKEN'),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectKrakenFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/n12-native-public-trade-collector.mjs",
+      "sha256": "d0f521604e677ca3b94dc683f88f7a89738fdb57fc709ca092a1ad3a2457ff2b",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 68,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id,units,cap:publicVenueMinuteCap(venue),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)});receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "compactN12NativeCatalog",
+        "collectN12NativePublicVenue"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/native-evm-finalized-context.mjs",
+      "sha256": "efbd48828da9bf70814a6163bae1f21669161409efe16ba21dbedfd26f097b19",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 5,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        },
+        {
+          "line": 74,
+          "text": "const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('PUBLICNODE_NATIVE_EVM',now-60000,now).first(),usedMinute=Number(rolling?.units);"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 81,
+          "text": "admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id,units:2,cap:6,now});if(!admission.allowed)return{status:admission.status,network_calls:0,evidence:[],admission};",
+          "following_lines": [
+            " const reads=[],receipts=[],call=async messages=>{const r=await send(fetch_impl,network.endpoint,messages,clock);reads.push({...r,request:messages});receipts.push({route:messages.some(x=>x.method==='eth_chainId')?'EXACT_CHAIN_FINALIZED_FULL_BLOCK':'EXACT_SELECTED_NATIVE_RECEIPTS',http_status:r.http_status,status:r.ok?'RECEIVED':'SOURCE_ERROR',body_sha256:r.body_sha256||null,error:r.error||null,rpc_errors:r.errors||[]});return r;},message=(id,method,params)=>({jsonrpc:'2.0',id,method,params});",
+            " const head=await call([message(1,'eth_chainId',[]),message(2,'eth_getBlockByNumber',['finalized',true])]),block=result(head.payload,2),chain_id=result(head.payload,1);",
+            " let normalized={status:'EXACT_FRESH_FINALIZED_BLOCK_REQUIRED',evidence:[]},proof=null;"
+          ]
+        }
+      ],
+      "exports": [
+        "exactNativeEvmNetwork",
+        "deriveNativeEvmFacts",
+        "verifiedNativeEvmContextRow",
+        "collectNativeEvmFinalizedContext"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/poloniex-native-flow-collector.mjs",
+      "sha256": "9fc8c08ac6b7cea50f04e4290277f84516358d197a0972ab313b2d769dfc6226",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 33,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'POLONIEX',reservation_id:id,units:1,cap:publicVenueMinuteCap('POLONIEX'),now:clock()});if(!minute.allowed){receipt.status=minute.status;return null;}",
+          "following_lines": [
+            "  if(unclosed()){receipt.status='SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE';return null;}",
+            "  try{",
+            "   calls++;receipt.actual_http=1;const response=await fetch_impl(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)}),chunks=[];let size=0;receipt.http_status=response.status;if([401,403,429,451].includes(response.status))providerBlocked=true;"
+          ]
+        }
+      ],
+      "exports": [
+        "collectPoloniexFlow"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/provider-minute-ledger.mjs",
+      "sha256": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 1,
+          "text": "export const PROVIDER_MINUTE_LEDGER_VERSION='provider-minute-ledger-v1-20260928';"
+        },
+        {
+          "line": 10,
+          "text": "await db.prepare(`CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1("
+        },
+        {
+          "line": 15,
+          "text": "await db.prepare(`CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window"
+        },
+        {
+          "line": 16,
+          "text": "ON report2_provider_minute_ledger_v1(provider,created_ts)`).run();"
+        },
+        {
+          "line": 18,
+          "text": "await db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation"
+        },
+        {
+          "line": 19,
+          "text": "ON report2_provider_minute_ledger_v1(provider,reservation_id)`).run();"
+        },
+        {
+          "line": 29,
+          "text": "await db.prepare(`INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)"
+        },
+        {
+          "line": 31,
+          "text": "WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7"
+        },
+        {
+          "line": 34,
+          "text": "const exact=await db.prepare(`SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1`).bind(source,id).first();"
+        },
+        {
+          "line": 36,
+          "text": "const total=await db.prepare(`SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3`).bind(source,ts-60_000,ts).first();"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": [
+        "installProviderMinuteLedger",
+        "reserveProviderMinuteUnits"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "sha256": "3ecbb81a55827069041a0175cfe9d61de0a92042338bab2d5df7dce4dc96748b",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 2,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        },
+        {
+          "line": 55,
+          "text": "const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind(String(minute_provider).toUpperCase(),readTs-60000,readTs).first();"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 69,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now:readTs,cap:minute_cap});",
+          "following_lines": [
+            "   if(stopForNativeUsage())return null;",
+            "   observeBudget('MINUTE_RESERVATION_REPLY',{provider:minute.provider,returned_allowed:minute.allowed,returned_status:minute.status,reported_used_units:minute.rolling_units,reported_own_reserved_units:minute.reserved_units,configured_cap:minute.cap,minute_bucket:minute.minute_bucket});",
+            "   if(!minute.allowed){denied={...minute,status:'PROVIDER_RATE_LIMIT_LOCAL'};return null;}"
+          ]
+        }
+      ],
+      "exports": [
+        "createProviderReferenceReader"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/public-venue-source-budget.mjs",
+      "sha256": "cc2e33cbe0b5028208039652ed747a3f1fa1a012298c65ce2b3318fa6b5a9747",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 17,
+          "text": "const row=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind(provider,now-60000,now).first();"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": [
+        "publicVenueHasMinuteHeadroom",
+        "publicVenueDailyDemand"
+      ]
+    },
+    {
+      "path": "current-generation/files/src/wikimedia-attention-context.mjs",
+      "sha256": "f4728024b84653ae1c09a7bd806f5416a6bd0bf5b1257a26f3f9ecd385bad928",
+      "classification": "ACTIVE_RUNTIME",
+      "literal_or_import_sites": [
+        {
+          "line": 5,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 29,
+          "text": "await installProviderMinuteLedger(db);admission=await reserveProviderMinuteUnits(db,{provider:SOURCE,reservation_id:id,units:1,cap:WIKIMEDIA_LIMITS.internal_minute_cap,now});if(!admission.allowed)return{status:admission.status,network_calls:0,evidence:[],admission};",
+          "following_lines": [
+            " const last=Math.floor(now/DAY)*DAY-2*DAY,url=`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/${encodeURIComponent(page)}/daily/${fmt(last-13*DAY)}/${fmt(last)}`;",
+            " try{",
+            "  const response=await fetch_impl(url,{headers:{accept:'application/json','user-agent':'My-Report-2/1.0 (https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner)'},redirect:'error',signal:AbortSignal.timeout(WIKIMEDIA_LIMITS.timeout_ms)}),body=await response.text(),observed=clock();"
+          ]
+        }
+      ],
+      "exports": [
+        "exactWikimediaPage",
+        "normalizeWikimediaAttention",
+        "collectWikimediaAttention"
+      ]
+    },
+    {
+      "path": "current-generation/migrations/010_provider_minute_ledger.sql",
+      "sha256": "a12a8ef3780e3e9f490159233bdeac413df3826443dfa18fc859831a11fd9644",
+      "classification": "EXISTING_MIGRATION_NOT_EXECUTED",
+      "literal_or_import_sites": [
+        {
+          "line": 1,
+          "text": "CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1("
+        },
+        {
+          "line": 9,
+          "text": "CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window"
+        },
+        {
+          "line": 10,
+          "text": "ON report2_provider_minute_ledger_v1(provider,created_ts);"
+        },
+        {
+          "line": 11,
+          "text": "CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation"
+        },
+        {
+          "line": 12,
+          "text": "ON report2_provider_minute_ledger_v1(provider,reservation_id);"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "current-generation/validate.mjs",
+      "sha256": "38b7e3b2703e986ff5fe71b3ed2bcb6b3fb90b02ffc813f3aae89ee1f55bb27b",
+      "classification": "AUXILIARY_OR_LEGACY_NOT_PROVEN_ACTIVE",
+      "literal_or_import_sites": [
+        {
+          "line": 45,
+          "text": "'files/src/market-history-reader.mjs','files/src/deep-candidate-order.mjs','files/src/discovery-candidate-score.mjs','files/src/provider-minute-ledger.mjs','files/src/prospective-delivery-cohort.mjs',"
+        },
+        {
+          "line": 74,
+          "text": "for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/user-approved-publication-policy.mjs','src/entry-area-rule-v2.mjs','src/tz101-scenario-plan.mjs','src/tz101-cost-assessment.mjs','src/technical-move-potential.mjs','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/observation-prepublication-recovery.mjs','src/v3-telegram-runtime.mjs','src/gate-official-asset-binding.mjs','src/inherited-fact-contract.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/v3-adaptive-budget.mjs','src/v3-pipeline-health-sidecar.mjs','src/supplemental-candidate-context.mjs','src/candidate-source-routing.mjs','src/official-source-registry.mjs','src/dynamic-liquidation-panel.mjs','src/liquidation-source-weighting.mjs','src/cross-exchange-risk-context.mjs','src/gate-liquidation-history.mjs','src/htx-realized-liquidations.mjs','src/liquidation-source-chain.mjs','src/liquidation-futures-coverage.mjs','src/coinlobster-future-model.mjs','src/htx-source-backed-liquidation-model.mjs','src/liquidation-candidate-queue.mjs','src/liquidation-outcome-calibration.mjs','src/evidence-v2.mjs','src/evidence-source-adapters.mjs','src/evidence-source-store.mjs','src/market-history-reader.mjs','src/discovery-candidate-score.mjs','src/provider-minute-ledger.mjs','src/prospective-delivery-cohort.mjs','src/stage392-proof-runtime.mjs','src/tz101-execution-facts.mjs','src/full-evidence-shadow-model.mjs','src/htx-public-risk-evidence.mjs','src/macro-calendar-evidence.mjs','src/wikimedia-attention-context.mjs','src/wikimedia-page-binding.mjs','src/coinmetrics-supply-context.mjs','src/delta-options-evidence.mjs','src/deribit-option-risk-context.mjs','src/deribit-alt-options-evidence.mjs','src/bybit-options-evidence.mjs','src/chain-supply-evidence.mjs','src/htx-signed-tape.mjs','src/htx-large-trades-evidence.mjs','src/n12-market-trades.mjs','src/gate-futures-trade-sample.mjs','src/gate-futures-trade-collector.mjs','src/coinpaprika-sector-evidence.mjs','src/coinpaprika-htx-identity.mjs','src/coingecko-sector-evidence.mjs','src/sector-context.mjs','src/finalized-chain-events.mjs','src/native-evm-finalized-context.mjs','src/sourcify-abi-evidence.mjs','src/bluesky-attention-evidence.mjs','src/snapshot-governance-evidence.mjs','src/official-events-evidence.mjs','src/htx-official-announcements-evidence.mjs','src/gdelt-official-discovery.mjs','src/blockscout-index-evidence.mjs','src/poloniex-native-four-hour-flow.mjs','src/poloniex-native-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-n12-bounded-trade-sample.mjs','src/bitget-flow-collector.mjs','src/n12-native-public-trade-sample.mjs','src/n12-kucoin-token-trade-sample.mjs','src/n12-native-public-trade-collector.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/public-venue-source-priority.mjs','src/n15-initial-source-preference.mjs','src/early-wave-continuity.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "runner/exact-recovery-diagnosis.mjs",
+      "sha256": "2e640704d577886001e9d18296a3009a1afe2b00428a253da8c890248985fe11",
+      "classification": "AUXILIARY_OR_LEGACY_NOT_PROVEN_ACTIVE",
+      "literal_or_import_sites": [
+        {
+          "line": 4,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        },
+        {
+          "line": 37,
+          "text": "const minute=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('HTX',clock()-60000,clock()).first();room();if(typeof minute?.units!=='number'||!Number.isSafeInteger(minute.units)||minute.units<0||minute.units+1>policy.minute_cap)throw Error('EXISTING_HTX_MINUTE_CAP_DENIED');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 40,
+          "text": "out.minute_admission=await reserveProviderMinuteUnits(db,{provider:'HTX',reservation_id:sourceId,units:1,cap:policy.minute_cap,now:clock()});room();if(!out.minute_admission.allowed)throw Error('ATOMIC_SOURCE_MINUTE_DENIED');",
+          "following_lines": [
+            "  await guard('before_one_catalog_HTTP');room();out.sourceHTTP++;",
+            "  const response=await fetch_impl(policy.url,{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;",
+            "  for await(const chunk of response.body){size+=chunk.length;if(size>8388608)throw Error('CATALOG_BODY_BOUND');chunks.push(chunk);}"
+          ]
+        }
+      ],
+      "exports": [
+        "describeMissingCatalog",
+        "runExactRecoveryDiagnosis"
+      ]
+    },
+    {
+      "path": "runner/exact-recovery-diagnosis.test.mjs",
+      "sha256": "710b29363bb6f22301947d986585f48199127009dea5818b005d44720845c4ca",
+      "classification": "TEST_SOURCE_NOT_EXECUTED",
+      "literal_or_import_sites": [
+        {
+          "line": 4,
+          "text": "import {installEvidenceSourceStore} from '../current-generation/files/src/evidence-source-store.mjs';import {installProviderMinuteLedger} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        },
+        {
+          "line": 23,
+          "text": "test('rolling HTX minute headroom is checked before source reservations',async()=>{const x=await run(f=>f.raw.prepare('INSERT INTO report2_provider_minute_ledger_v1 VALUES(?,?,?,?,?)').run('HTX',Math.floor(NOW/60000)*60000,'OLD',6,NOW));assert.equal(x.HTTP,0);assert.equal(x.result.reason,'EXISTING_HTX_MINUTE_CAP_DENIED');assert.equal(x.sources.length,0);});"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-alias-route-batch-20261012.mjs",
+      "sha256": "feacfebdf227d82e0b8e73eff33b1293c1ee8ce44f2019c19e9ab813c14a4971",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 25,
+          "text": "import('../runner/report2-d1-adapter.mjs'),import('../runner/d1-preaction-budget-guard.mjs'),import('../current-generation/files/src/unified-budget.mjs'),import('../current-generation/files/src/evidence-source-store.mjs'),import('../current-generation/files/src/provider-minute-ledger.mjs'),import('../current-generation/files/src/htx-asset-identity.mjs'),import('../current-generation/files/src/poloniex-native-four-hour-flow.mjs')"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 41,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:logical_request_id,units:1,cap:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;",
+            "  const response=await fetch(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;",
+            "  for await(const c of response.body){size+=c.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(c);}"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-backpack-missing4-20261011.mjs",
+      "sha256": "d950ef8d40a7d0cb7b9b9c91312ece4076ed6b345dab073f5fe296e1e45fd7ca",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 34,
+          "text": "for(let attempt=0;attempt<8;attempt++){minute=await reserveProviderMinuteUnits(db,{provider:'BACKPACK',reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-binance-missing6-20261011.mjs",
+      "sha256": "22c5eb2245a4713733c90f89c18b02ef43c123413e33921cafdc74e495424eba",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 42,
+          "text": "minute=await reserveProviderMinuteUnits(db,{provider:'BINANCE',reservation_id:requestId,units:1,cap:6,now:Date.now()});",
+          "following_lines": [
+            "   if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;",
+            "   await sleep(10000);",
+            "  }"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-bitfinex-catalog-20261011.mjs",
+      "sha256": "9f8a3897b5a9f005acdad528db607cdcb93e466721da8a32824f1a2dcfd26ac4",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 31,
+          "text": "const requestId=id+':'+name;let minute;for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+          "following_lines": [
+            " const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            " const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');",
+            " receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json','user-agent':'MY_REPORT_2_N05_SOURCE_QUALIFICATION'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-bitfinex-fil-xpl-20261011.mjs",
+      "sha256": "a815741fbbf8e33bc38154a578ce3492c1290e9ff47f7055424713c86b13a0d2",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 31,
+          "text": "const requestId=id+':'+name;let minute;for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+          "following_lines": [
+            " const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            " const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');",
+            " receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json','user-agent':'MY_REPORT_2_N05_SOURCE_QUALIFICATION'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-bitfinex-link-pepe-20261011.mjs",
+      "sha256": "2653263b933f5bf209d1de90f621791503d8905e18d75d1814c628e7a8b76c5a",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 31,
+          "text": "const requestId=id+':'+name;let minute;for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+          "following_lines": [
+            " const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            " const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');",
+            " receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json','user-agent':'MY_REPORT_2_N05_SOURCE_QUALIFICATION'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-bitget-missing6-20261011.mjs",
+      "sha256": "468f00b577822c437601fa758b814c294f2ca39a4d3f2d294e8e00f07419a503",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 34,
+          "text": "for(let attempt=0;attempt<8;attempt++){minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-coinbase-pilot-20261011.mjs",
+      "sha256": "0faef479416f2e22e0cf2fe9c91c918e89428115e829f3751ef2d0b780e96f64",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 39,
+          "text": "for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-gate-missing3-20261011.mjs",
+      "sha256": "b88d4d69fe94b1daa6fdb9f7be4c80813ddd12818879f4f8dc005357b81b1934",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 24,
+          "text": "async function providerSpace(){for(let n=0;n<8;n++){const ts=Date.now(),row=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('GATE',ts-60000,ts).first(),used=Number(row?.units??0);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_PROVIDER_MINUTE_COUNTER');if(used===0)return;await sleep(10000);}throw Error('GATE_ROLLING_MINUTE_HEADROOM_REQUIRED');}"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-gemini-pilot-20261011.mjs",
+      "sha256": "615c97209112aeaeab295437549cff14fb5e4a189a4ba19c3b97478afcd7a9b7",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 31,
+          "text": "const requestId=id+':'+name;let minute;for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+          "following_lines": [
+            " const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            " const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');",
+            " receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json','user-agent':'MY_REPORT_2_N05_SOURCE_QUALIFICATION'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-kraken-algo-xmr-20261011.mjs",
+      "sha256": "2284feb9ef58f63bad65b0fffbb32d9cddfb61c481f8b3c375063a343f930f71",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 43,
+          "text": "for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider:'KRAKEN',reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-lighter-pilot-20261011.mjs",
+      "sha256": "fa8a5369de6ea21c62515706d8bc57911e10669a2eb4ee73daecb16cb22425cd",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 28,
+          "text": "const requestId=id+':'+name;let minute;for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+          "following_lines": [
+            " const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            " const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');",
+            " receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json','user-agent':'MY_REPORT_2_N05_SOURCE_QUALIFICATION'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-backpack-20261011.mjs",
+      "sha256": "11a49ad200b435e499bc3a9727afba5b62ad24b02a071e8cfaeb7019045fe0c7",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 37,
+          "text": "for(let attempt=0;attempt<8;attempt++){minute=await reserveProviderMinuteUnits(db,{provider:'BACKPACK',reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-bitfinex-algo-xmr-shib-20261011.mjs",
+      "sha256": "369b15b4ec82a7e795b3698f60329bb91467478d78caf42bcb8527b5a2656be6",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 32,
+          "text": "const requestId=id+':'+name;let minute;for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider,reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+          "following_lines": [
+            " const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            " const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');",
+            " receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json','user-agent':'MY_REPORT_2_N05_SOURCE_QUALIFICATION'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-bitget-20261011.mjs",
+      "sha256": "108b23011d42dc4dc8edbc558f9a65b49ce3a0f782cbc0340afc92b6bbc03871",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 37,
+          "text": "for(let attempt=0;attempt<8;attempt++){minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-gate-20261011.mjs",
+      "sha256": "12dcb958e33f0c610c9ef290e927d52392b70d485f1033e10f78a5150d176fc8",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 27,
+          "text": "async function providerSpace(){for(let n=0;n<8;n++){const ts=Date.now(),row=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('GATE',ts-60000,ts).first(),used=Number(row?.units??0);if(!Number.isSafeInteger(used)||used<0)throw Error('UNKNOWN_PROVIDER_MINUTE_COUNTER');if(used===0)return;await sleep(10000);}throw Error('GATE_ROLLING_MINUTE_HEADROOM_REQUIRED');}"
+        }
+      ],
+      "direct_reserve_sites": [],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-kraken-algo-xmr-20261011.mjs",
+      "sha256": "39d607eb1df6bcdd861a4c2129d4c0d709e20d38f480dbfe51f8e7a9a9bf60bb",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 44,
+          "text": "for(let i=0;i<8;i++){minute=await reserveProviderMinuteUnits(db,{provider:'KRAKEN',reservation_id:requestId,units:1,cap:6,now:Date.now()});if(minute.allowed||minute.status!=='ROLLING_60S_CAP_REACHED')break;await sleep(10000);}",
+          "following_lines": [
+            "  receipt.minute_admission=minute;if(!minute.allowed)throw Error(minute.status);",
+            "  const whole=budget.reserve({logical_request_id:requestId,lane:'background',attempts:1});receipt.whole_admission=whole;if(!whole.allowed||whole.duplicate)throw Error('WHOLE_JOB_HTTP_DENIED');",
+            "  const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id:requestId,attempts:1,daily_cap:cap,now:Date.now()});receipt.daily_admission=daily;if(!daily.allowed)throw Error('SOURCE_DAILY_CAP_DENIED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-poloniex-20261011.mjs",
+      "sha256": "b655edcb771c5b585eb3f19a45c35e80db8dfc2122f8e8924877469624255291",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 23,
+          "text": "import('../runner/report2-d1-adapter.mjs'),import('../runner/d1-preaction-budget-guard.mjs'),import('../current-generation/files/src/unified-budget.mjs'),import('../current-generation/files/src/evidence-source-store.mjs'),import('../current-generation/files/src/provider-minute-ledger.mjs'),import('../current-generation/files/src/htx-asset-identity.mjs'),import('../current-generation/files/src/poloniex-native-four-hour-flow.mjs')"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 39,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:logical_request_id,units:1,cap:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;",
+            "  const response=await fetch(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;",
+            "  for await(const c of response.body){size+=c.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(c);}"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/acquire-n05-saved12-native-batch-20261010.mjs",
+      "sha256": "8cdd64e6f8fec451828b87ef8dda4827c448412ff8c7dffc9c34df57ee10698f",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 22,
+          "text": "import('../runner/report2-d1-adapter.mjs'),import('../runner/d1-preaction-budget-guard.mjs'),import('../current-generation/files/src/unified-budget.mjs'),import('../current-generation/files/src/evidence-source-store.mjs'),import('../current-generation/files/src/provider-minute-ledger.mjs'),import('../current-generation/files/src/htx-asset-identity.mjs'),import('../current-generation/files/src/poloniex-native-four-hour-flow.mjs')"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 38,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:logical_request_id,units:1,cap:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  receipt.actual_http=1;receipt.attempt_ts=Date.now();out.sourceHTTP++;",
+            "  const response=await fetch(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(15000)}),chunks=[];let size=0;receipt.http_status=response.status;",
+            "  for await(const c of response.body){size+=c.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(c);}"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-broad-exchanges-20261010.mjs",
+      "sha256": "49993aa35d992c6ecc8eed02047a403d683ce6555a8c4edbec211ac2393136ed",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:venue==='GATE'?4:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        },
+        {
+          "line": 46,
+          "text": "receipt.minute_admission=await reserveProviderMinuteUnits(db,{provider:'KRAKEN',reservation_id:key,units:1,cap:6,now:Date.now()});if(!receipt.minute_admission.allowed){receipt.status='PROVIDER_MINUTE_CAP_DENIED';return [];}",
+          "following_lines": [
+            " const request={method:'subscribe',params:{channel:'trade',symbol:['DOT/USDT','ATOM/USDT'],snapshot:true}},messages=[],raw=[];receipt.sourceHTTP=1;out.sourceHTTP++;receipt.started_ts=Date.now();",
+            " await new Promise(resolve=>{let done=false,total=0;const ws=new WebSocket(receipt.url),finish=status=>{if(done)return;done=true;clearTimeout(timer);receipt.status=status;receipt.received_ts=Date.now();try{ws.close();}catch{}resolve();},timer=setTimeout(()=>finish('BOUNDED_PUBLIC_CAPTURE_CLOSED'),60000);",
+            "  ws.addEventListener('open',()=>{receipt.http_status=101;ws.send(JSON.stringify(request));});"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-coinex-20261010.mjs",
+      "sha256": "0276e9e817656d7458d396671e096105e9825d566cfce7de1b990d491078f74a",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:venue==='GATE'?4:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-joint-flow-20261010.mjs",
+      "sha256": "21b4ad42e93ff70d4a615c00af30cf3b0061da3ae1ff52e46971577a80330269",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 23,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-large-venue-batch-20261010.mjs",
+      "sha256": "6d00db026840e1aecec9794c03f0bddc9ce82603677f1c895ca60f58fe1a8413",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:venue==='GATE'?4:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        },
+        {
+          "line": 49,
+          "text": "receipt.minute_admission=await reserveProviderMinuteUnits(db,{provider:'GATE',reservation_id:key,units:1,cap:4,now:Date.now()});if(!receipt.minute_admission.allowed){receipt.status='PROVIDER_MINUTE_CAP_DENIED';return [];}",
+          "following_lines": [
+            " const request={time:Math.floor(Date.now()/1000),channel:'spot.trades',event:'subscribe',payload:['BTC_USDT']},messages=[],raw=[];receipt.sourceHTTP=1;out.sourceHTTP++;receipt.started_ts=Date.now();",
+            " await new Promise(resolve=>{let done=false,total=0;const ws=new WebSocket(receipt.url),finish=status=>{if(done)return;done=true;clearTimeout(timer);receipt.status=status;receipt.received_ts=Date.now();try{ws.close();}catch{}resolve();},timer=setTimeout(()=>finish('BOUNDED_PUBLIC_CAPTURE_CLOSED'),120000);",
+            "  ws.addEventListener('open',()=>{receipt.http_status=101;ws.send(JSON.stringify(request));});"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-original-pagination-20261010.mjs",
+      "sha256": "190bd9c908045d9640fc93d25538e57db0b9bb2bc4425e73087cd6a0516caea6",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-poloniex-20261010.mjs",
+      "sha256": "df93ddb799ab6ea68f506bee13fd46c076be2a0a37a58cd6527d5dcffa8f078d",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:venue==='GATE'?4:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-remaining-exchanges-20261010.mjs",
+      "sha256": "de1afbc69769d4d81ab3fe63873fa3055e6b5742cc5c2ba43e79849eb64cc356",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:venue==='GATE'?4:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n05-window-20261010.mjs",
+      "sha256": "77944cb11b9fed37e87dede9f9ccf62a317f7503bb822f396d1ef06d8eb77aba",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:id+':'+name,units:1,cap:6,now:Date.now()});receipt.minute_admission=minute;if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  out.sourceHTTP++;receipt.sourceHTTP=1;",
+            "  const r=await fetch(url,{method,body:body?JSON.stringify(body):undefined,headers:{accept:'application/json',...(body?{'content-type':'application/json'}:{})},redirect:'manual',signal:AbortSignal.timeout(15000)});",
+            "  receipt.http_status=r.status;receipt.retry_after=r.headers.get('retry-after');const chunks=[];let n=0;for await(const chunk of r.body){n+=chunk.length;if(n>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}const bytes=Buffer.concat(chunks),gz=gzipSync(bytes);receipt.received_ts=Date.now();receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n06-coingecko-trending-pengu-20261011.mjs",
+      "sha256": "b582909355ba997899748dd4450fb517b9b6706996bedd6823bdce53913e85ed",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 34,
+          "text": "import('../runtime/src/unified-budget.mjs'),import('../runtime/src/evidence-source-store.mjs'),import('../runtime/src/provider-minute-ledger.mjs'),"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 49,
+          "text": "const m=await reserveProviderMinuteUnits(db,{provider:'COINGECKO',reservation_id:id,units:2,cap:minuteCap,now});",
+          "following_lines": [
+            " if(!m.allowed){out.status=m.status;throw Error('COINGECKO_SHARED_MINUTE_DENIED');}",
+            " if(!guard.evaluateWithinRunReservation({reservation,currentUsage:db.usageSnapshot(),extraRowsRead:500,extraRowsWritten:60}).allowed)throw Error('D1_HEADROOM_DENIED');",
+            " const metadataUrl='https://api.coingecko.com/api/v3/coins/solana/contract/'+mint+'?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false';"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/qualify-n12-kucoin-token-20261012.mjs",
+      "sha256": "d6192b82dddd59cc529e0133079d38a9abac1386bf4f07e804f085820ecf1f70",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 8,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 25,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:requestId,units,cap:20,now:Date.now()});if(!minute.allowed)throw Error('PROVIDER_MINUTE_CAP_DENIED');",
+          "following_lines": [
+            "  receipt.actual_http=1;out.sourceHTTP++;",
+            "  const response=await fetch(url,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(12000)});receipt.http_status=response.status;receipt.retry_after=response.headers.get('retry-after');const chunks=[];let size=0;",
+            "  for await(const chunk of response.body){size+=chunk.length;if(size>8*1024*1024)throw Error('BODY_LIMIT');chunks.push(chunk);}"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/refresh-htx-crypto-universe-20261010.mjs",
+      "sha256": "42a49d43b2a9dc5eccd8cf7716e7f0d01a0b11bb2f55342d5ddf64541f5c2aa6",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 6,
+          "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 20,
+          "text": "const minute=await reserveProviderMinuteUnits(db,{provider:'HTX',reservation_id:request_id,units:1,cap:6,now:Date.now()});if(!minute.allowed)throw Error('HTX_PROVIDER_MINUTE_DENIED');",
+          "following_lines": [
+            " const receipt={name,url,sourceHTTP:1,whole_admission:whole,daily_admission:daily,minute_admission:minute,file:name+'.json.gz'};out.receipts.push(receipt);out.sourceHTTP++;",
+            " const response=await fetch(url,{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(15000)});receipt.http_status=response.status;",
+            " const parts=[];let size=0;for await(const p of response.body){size+=p.length;if(size>8388608)throw Error('BODY_LIMIT');parts.push(p);}"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-synfutures-v4-native-20261007.mjs",
+      "sha256": "2a20c68fd250257358db98039da6a8bea164a521501fa61ada4e22d97bf91a43",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 29,
+          "text": "await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:5,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const [chain,header]=await read([request('eth_chainId',[]),request('eth_getBlockByNumber',['latest',false])]);assert.equal(Number(BigInt(chain)),8453,'WRONG_CHAIN');assert.match(header.hash,/^0x[0-9a-fA-F]{64}$/);const height=Number(BigInt(header.number)),source_ts=Number(BigInt(header.timestamp))*1000;assert.ok(source_ts<=Date.now()&&Date.now()-source_ts<=120000,'PINNED_NATIVE_STALE_OR_FUTURE');proof.pin={height,hash:header.hash,source_ts,observed_ts:Date.now(),finalized:false,canonical_reread_required:true};",
+            " const block=header.number,[gateCode,observerCode,countHex,configHex]=await read([request('eth_getCode',[config.gate,block]),request('eth_getCode',[config.observer,block]),call(config.gate,gate,'allInstrumentsLength',[],block),call(config.gate,gate,'config',[],block)]);assert.ok(gateCode.length>2&&observerCode.length>2,'CURRENT_CONTRACT_NO_CODE');proof.contract_code_hashes={gate:utils.keccak256(gateCode),observer:utils.keccak256(observerCode)};const count=Number(gate.decodeFunctionResult('allInstrumentsLength',countHex)[0]),actualConfig=gate.decodeFunctionResult('config',configHex)[0];assert.equal(actualConfig.toLowerCase(),config.config.toLowerCase(),'OFFICIAL_CONFIG_MISMATCH');assert.ok(Number.isInteger(count)&&count>=0&&count<=2048,'CATALOGUE_TOTAL_BOUND');proof.catalogue_total=count;",
+            " if(count===0){proof.status='CURRENT_NATIVE_CATALOGUE_EMPTY';}else{"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-veranta-v2-current-liquidation-20261007.mjs",
+      "sha256": "9fad53cbaa2a02e202dd0459258a38332075c8f1b06312b069bffa431f9ad903",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 15,
+          "text": "proof.day_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,started),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});assert.equal(proof.day_admission.allowed,true,'D1_DAY_DENIED');proof.d1_reservation=await reserveRunBudget(db,{reservationId:run_id,now:started,reservation});reserved=true;assert.equal(within(),true,'D1_HEADROOM_DENIED');proof.provider_before=await db.prepare('SELECT source,day_utc,attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind('CHAIN_RPC',new Date(started).toISOString().slice(0,10)).first();proof.parent_admission=await reserveEvidenceSourceAttempts(db,{source:'CHAIN_RPC',reservation_id:run_id,attempts:5,daily_cap:720,now:started});assert.equal(proof.parent_admission.allowed,true,'CHAIN_RPC_PARENT_DENIED');await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:5,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const [chain,header]=await batch([request('eth_chainId',[]),request('eth_getBlockByNumber',['latest',false])]);assert.equal(Number(BigInt(chain)),8453);assert.match(header.hash,/^0x[0-9a-fA-F]{64}$/);const height=Number(BigInt(header.number)),source_ts=Number(BigInt(header.timestamp))*1000;assert.ok(source_ts<=Date.now()&&Date.now()-source_ts<=120000,'PINNED_SOURCE_STALE_OR_FUTURE');proof.pin={height,block_hash:header.hash,source_ts,observed_ts:Date.now(),finalized:false};",
+            " const slot='0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',prior=JSON.parse(fs.readFileSync('checkpoints/veranta-v2-direct-storage-37685497656/veranta-v2-direct-storage-proof.json')),retainedBytes=fs.readFileSync('checkpoints/veranta-v2-direct-storage-37685497656/veranta-v2-direct-storage-raw.json.gz');assert.equal(sha(retainedBytes),prior.raw_gzip_sha256,'RETAINED_ABI_RAW_DIGEST');",
+            " const captured=JSON.parse(gunzipSync(retainedBytes)),receipt=captured.raw.find(r=>r.url.startsWith('https://sourcify.dev/server/v2/contract/8453/'));assert.ok(receipt&&receipt.http_status===200);assert.equal(sha(Buffer.from(receipt.raw_body_utf8)),receipt.body_sha256,'ORIGINAL_ABI_RECEIPT_DIGEST');const metadata=JSON.parse(receipt.raw_body_utf8),implementation=prior.pinned_implementation;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-veranta-v2-direct-storage-20261007.mjs",
+      "sha256": "f1974c798ebcd68806b5dc26701553ae56764d39277898b3fe3b73b126ca20fe",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 15,
+          "text": "proof.day_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,started),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});assert.equal(proof.day_admission.allowed,true,'D1_DAY_DENIED');proof.d1_reservation=await reserveRunBudget(db,{reservationId:run_id,now:started,reservation});reserved=true;assert.equal(within(),true,'D1_HEADROOM_DENIED');proof.provider_before=await db.prepare('SELECT source,day_utc,attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind('CHAIN_RPC',new Date(started).toISOString().slice(0,10)).first();proof.parent_admission=await reserveEvidenceSourceAttempts(db,{source:'CHAIN_RPC',reservation_id:run_id,attempts:4,daily_cap:720,now:started});assert.equal(proof.parent_admission.allowed,true,'CHAIN_RPC_PARENT_DENIED');await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:4,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const [chain,header]=await batch([request('eth_chainId',[]),request('eth_getBlockByNumber',['latest',false])]);assert.equal(Number(BigInt(chain)),8453);assert.match(header.hash,/^0x[0-9a-fA-F]{64}$/);const height=Number(BigInt(header.number)),source_ts=Number(BigInt(header.timestamp))*1000;assert.ok(source_ts<=Date.now()&&Date.now()-source_ts<=120000,'PINNED_SOURCE_STALE_OR_FUTURE');proof.pin={height,block_hash:header.hash,source_ts,observed_ts:Date.now(),finalized:false};",
+            " const slot='0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',[stored,proxyCode]=await batch([request('eth_getStorageAt',[proxy,slot,header.number]),request('eth_getCode',[proxy,header.number])]);assert.match(stored,/^0x[0-9a-fA-F]{64}$/);assert.ok(proxyCode.length>2,'PINNED_PROXY_NO_CODE');const implementation=BigInt(stored)===0n?proxy:utils.getAddress('0x'+stored.slice(-40));assert.ok(utils.isAddress(implementation));proof.pinned_implementation=implementation;",
+            " const url='https://sourcify.dev/server/v2/contract/8453/'+implementation+'?fields=abi,runtimeBytecode.onchainBytecode,compilation.name';permitted.add(url);const metadata=await read(url);assert.equal(String(metadata.chainId),'8453','VERIFIED_CHAIN_REQUIRED');assert.equal(metadata.address.toLowerCase(),implementation.toLowerCase(),'VERIFIED_ADDRESS_REQUIRED');assert.equal(metadata.runtimeMatch,'exact_match','EXACT_VERIFIED_RUNTIME_REQUIRED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-veranta-v2-pinned-20261007.mjs",
+      "sha256": "5c3ea1a1ae4ed30f80061b12a832652f615881d041a56a4831037427ef551dff",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 15,
+          "text": "proof.day_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,started),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});assert.equal(proof.day_admission.allowed,true,'D1_DAY_DENIED');proof.d1_reservation=await reserveRunBudget(db,{reservationId:run_id,now:started,reservation});reserved=true;assert.equal(within(),true,'D1_HEADROOM_DENIED');proof.provider_before=await db.prepare('SELECT source,day_utc,attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind('CHAIN_RPC',new Date(started).toISOString().slice(0,10)).first();proof.parent_admission=await reserveEvidenceSourceAttempts(db,{source:'CHAIN_RPC',reservation_id:run_id,attempts:5,daily_cap:720,now:started});assert.equal(proof.parent_admission.allowed,true,'CHAIN_RPC_PARENT_DENIED');await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:5,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const proxyMetadata=await read('https://base.blockscout.com/api/v2/smart-contracts/'+proxy.toLowerCase());proof.proxy_metadata={address:proxy,is_verified:proxyMetadata.is_verified,name:proxyMetadata.name,implementations:proxyMetadata.implementations??null};let implementation=proxy,metadata=proxyMetadata;",
+            " const getter=m=>(m.abi??[]).find(f=>f.type==='function'&&f.name==='getPositions'&&f.stateMutability==='view'&&f.inputs?.length===1&&f.inputs[0].type==='address');",
+            " if(!getter(metadata)){const impl=proxyMetadata.implementations;if(!Array.isArray(impl)||impl.length!==1||!utils.isAddress(impl[0]?.address))throw Error('CURRENT_GETPOSITIONS_ABI_NOT_PUBLICLY_CLOSED');implementation=impl[0].address;const url='https://base.blockscout.com/api/v2/smart-contracts/'+implementation.toLowerCase();permitted.add(url);metadata=await read(url);}"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-veranta-v2-readonly-20261007.mjs",
+      "sha256": "6518830e90432d1d589cc3c18b7b967841dd0f0c8f8faf639d77827e423fc2b5",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root));"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 14,
+          "text": "proof.provider_before=await db.prepare('SELECT source,day_utc,attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind('CHAIN_RPC',new Date(started).toISOString().slice(0,10)).first();proof.parent_admission=await reserveEvidenceSourceAttempts(db,{source:'CHAIN_RPC',reservation_id:run_id,attempts:3,daily_cap:720,now:started});assert.equal(proof.parent_admission.allowed,true,'CHAIN_RPC_PARENT_DENIED');await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:3,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const retained=JSON.parse(fs.readFileSync('checkpoints/veranta-v2-readonly-37679696444/veranta-v2-readonly-proof.json')),retainedBytes=fs.readFileSync('checkpoints/veranta-v2-readonly-37679696444/veranta-v2-readonly-raw.json.gz');assert.equal(sha(retainedBytes),retained.raw_gzip_sha256,'RETAINED_STRUCTURAL_RAW_DIGEST');assert.equal(retained.cloud_run,37679696444);const captured=JSON.parse(gunzipSync(retainedBytes)),catalogReceipt=captured.raw.find(r=>r.url==='https://prod-api.veranta.xyz/data/v2/trading');assert.ok(catalogReceipt&&catalogReceipt.http_status===200,'ORIGINAL_CATALOGUE_RECEIPT_REQUIRED');const catalog=catalogReceipt.payload.data??catalogReceipt.payload,meta=retained.current_meta;assert.equal(Number(meta.chainId),8453);proof.retained_structural_catalogue={source_cloud_run:37679696444,meta_started_ts:captured.raw[0].started_ts,meta_received_ts:captured.raw[0].received_ts,catalogue_started_ts:catalogReceipt.started_ts,catalogue_received_ts:catalogReceipt.received_ts,raw_gzip_sha256:retained.raw_gzip_sha256,not_current_position_state:true,source_clocks_refreshed:false};proof.current_meta=meta;const entries=Object.entries(catalog.pairInfos);assert.ok(entries.length<=512,'RETAINED_CATALOGUE_BOUND');proof.catalogue_count=entries.length;",
+            " const candidates=entries.map(([key,p])=>({index:Number(p.index??key),pair:p})).filter(({index,pair})=>Number.isSafeInteger(index)&&index>=0&&index<=99999&&typeof pair.from==='string'&&assets.has(pair.from.toUpperCase())&&pair.to==='USD'&&typeof pair.feed?.feedId==='string'&&pair.feed.feedId.length>0&&String(pair.feed?.attributes?.assetType||'').toLowerCase().includes('crypto'));assert.ok(candidates.length,'RETAINED_FROZEN_CRYPTO_CANDIDATES_REQUIRED');const byIndex=new Map(candidates.map(c=>[c.index,c]));proof.crypto_protocol_indices=candidates.map(c=>c.index);proof.discovery_basis='OFFICIAL_PUBLIC_LEADERBOARD_RETURNED_ADDRESS_NOT_RANDOM_WALLET';",
+            " const history=await read('https://api.veranta.xyz/v1/history/portfolio/leader-board'),discovered=accounts(history);proof.discovered_public_accounts=discovered;assert.equal(discovered.length,1,'NO_PUBLIC_TRADER_IN_BOUNDED_LEADERBOARD_SAMPLE');const trader=discovered[0],core=await read('https://prod-api.veranta.xyz/core/user-data?trader='+trader),native=await read('https://tx-builder.veranta.xyz/v2/positions?trader='+trader);proof.core_data=core;proof.native_data=native;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-veranta-v2-sourcify-20261007.mjs",
+      "sha256": "151580b76161394a84de1f32cfcefc7589ed579c80becef5995c0c773972bbaf",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 15,
+          "text": "proof.day_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,started),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});assert.equal(proof.day_admission.allowed,true,'D1_DAY_DENIED');proof.d1_reservation=await reserveRunBudget(db,{reservationId:run_id,now:started,reservation});reserved=true;assert.equal(within(),true,'D1_HEADROOM_DENIED');proof.provider_before=await db.prepare('SELECT source,day_utc,attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind('CHAIN_RPC',new Date(started).toISOString().slice(0,10)).first();proof.parent_admission=await reserveEvidenceSourceAttempts(db,{source:'CHAIN_RPC',reservation_id:run_id,attempts:5,daily_cap:720,now:started});assert.equal(proof.parent_admission.allowed,true,'CHAIN_RPC_PARENT_DENIED');await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:5,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const [chain,header]=await batch([request('eth_chainId',[]),request('eth_getBlockByNumber',['latest',false])]);assert.equal(Number(BigInt(chain)),8453);assert.match(header.hash,/^0x[0-9a-fA-F]{64}$/);const height=Number(BigInt(header.number)),source_ts=Number(BigInt(header.timestamp))*1000;assert.ok(source_ts<=Date.now()&&Date.now()-source_ts<=120000,'PINNED_SOURCE_STALE_OR_FUTURE');proof.pin={height,block_hash:header.hash,source_ts,observed_ts:Date.now(),finalized:false};",
+            " const slot='0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',[stored,proxyCode]=await batch([request('eth_getStorageAt',[proxy,slot,header.number]),request('eth_getCode',[proxy,header.number])]);assert.match(stored,/^0x[0-9a-fA-F]{64}$/);assert.ok(proxyCode.length>2,'PINNED_PROXY_NO_CODE');const implementation=BigInt(stored)===0n?proxy:utils.getAddress('0x'+stored.slice(-40));assert.ok(utils.isAddress(implementation));proof.pinned_implementation=implementation;",
+            " const url='https://sourcify.dev/server/v2/contract/8453/'+implementation+'?fields=abi,runtimeBytecode.onchainBytecode,compilation.name';permitted.add(url);const metadata=await read(url);assert.equal(String(metadata.chainId),'8453','VERIFIED_CHAIN_REQUIRED');assert.equal(metadata.address.toLowerCase(),implementation.toLowerCase(),'VERIFIED_ADDRESS_REQUIRED');assert.equal(metadata.runtimeMatch,'exact_match','EXACT_VERIFIED_RUNTIME_REQUIRED');"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/research-veranta-v2-storage-abi-reuse-20261007.mjs",
+      "sha256": "80870bc40cb7e3dc14e0d3a4458de39657adbd6f5c1bc72821d4127f7b8ac7c5",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 3,
+          "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 15,
+          "text": "proof.day_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,started),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});assert.equal(proof.day_admission.allowed,true,'D1_DAY_DENIED');proof.d1_reservation=await reserveRunBudget(db,{reservationId:run_id,now:started,reservation});reserved=true;assert.equal(within(),true,'D1_HEADROOM_DENIED');proof.provider_before=await db.prepare('SELECT source,day_utc,attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2 LIMIT 1').bind('CHAIN_RPC',new Date(started).toISOString().slice(0,10)).first();proof.parent_admission=await reserveEvidenceSourceAttempts(db,{source:'CHAIN_RPC',reservation_id:run_id,attempts:2,daily_cap:720,now:started});assert.equal(proof.parent_admission.allowed,true,'CHAIN_RPC_PARENT_DENIED');await installProviderMinuteLedger(db);proof.minute_admission=await reserveProviderMinuteUnits(db,{provider:'PUBLICNODE_NATIVE_EVM',reservation_id:run_id,units:2,cap:6,now:started});assert.equal(proof.minute_admission.allowed,true,'SHARED_NATIVE_MINUTE_DENIED');granted=true;",
+          "following_lines": [
+            " const [chain,header]=await batch([request('eth_chainId',[]),request('eth_getBlockByNumber',['latest',false])]);assert.equal(Number(BigInt(chain)),8453);assert.match(header.hash,/^0x[0-9a-fA-F]{64}$/);const height=Number(BigInt(header.number)),source_ts=Number(BigInt(header.timestamp))*1000;assert.ok(source_ts<=Date.now()&&Date.now()-source_ts<=120000,'PINNED_SOURCE_STALE_OR_FUTURE');proof.pin={height,block_hash:header.hash,source_ts,observed_ts:Date.now(),finalized:false};",
+            " const slot='0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',prior=JSON.parse(fs.readFileSync('checkpoints/veranta-v2-direct-storage-37685497656/veranta-v2-direct-storage-proof.json')),retainedBytes=fs.readFileSync('checkpoints/veranta-v2-direct-storage-37685497656/veranta-v2-direct-storage-raw.json.gz');assert.equal(sha(retainedBytes),prior.raw_gzip_sha256,'RETAINED_ABI_RAW_DIGEST');",
+            " const captured=JSON.parse(gunzipSync(retainedBytes)),receipt=captured.raw.find(r=>r.url.startsWith('https://sourcify.dev/server/v2/contract/8453/'));assert.ok(receipt&&receipt.http_status===200);assert.equal(sha(Buffer.from(receipt.raw_body_utf8)),receipt.body_sha256,'ORIGINAL_ABI_RECEIPT_DIGEST');const metadata=JSON.parse(receipt.raw_body_utf8),implementation=prior.pinned_implementation;"
+          ]
+        }
+      ],
+      "exports": []
+    },
+    {
+      "path": "tools/weekly-htx-universe-refresh.mjs",
+      "sha256": "11118e08c345ff5c576d49ed9e09deb60a4dbaa5073eaffe28380a5256498f0a",
+      "classification": "AUXILIARY_TOOL_OR_FIXTURE_NOT_EXECUTED_ACTIVITY_UNKNOWN",
+      "literal_or_import_sites": [
+        {
+          "line": 5,
+          "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+        },
+        {
+          "line": 39,
+          "text": "const headroom=await evidenceSourceAttemptHeadroom(db,{source:policy.source_family,attempts:6,daily_cap:144,now:started}),minute=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind('HTX',started-60000,started).first();if(!headroom.allowed||typeof minute?.units!=='number'||!Number.isSafeInteger(minute.units)||minute.units<0||minute.units+6>6)throw Error('EXISTING_SOURCE_DAY_OR_MINUTE_HEADROOM_DENIED');"
+        }
+      ],
+      "direct_reserve_sites": [
+        {
+          "line": 41,
+          "text": "const sourceGrant=await reserveEvidenceSourceAttempts(db,{source:policy.source_family,reservation_id:sourceId,attempts:6,daily_cap:144,now:started}),minuteGrant=await reserveProviderMinuteUnits(db,{provider:'HTX',reservation_id:sourceId,units:6,cap:6,now:started});out.source_admission=sourceGrant;out.minute_admission=minuteGrant;if(!sourceGrant.allowed||!minuteGrant.allowed)throw Error('ATOMIC_SOURCE_ADMISSION_DENIED');",
+          "following_lines": [
+            " async function get(name,url){",
+            "  if(Date.now()>=lease.lease.expires_ts)throw Error('OWN_LEASE_EXPIRED');if((await control.call('git/ref/heads/main')).object.sha!==lease.head)throw Error('MAIN_MOVED_DURING_SOURCE_COLLECTION');",
+            "  const rec={name,url,received_ts:null};out.receipts.push(rec);out.sourceHTTP++;const response=await fetch(url,{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(15000)});rec.http_status=response.status;const parts=[];let n=0;for await(const p of response.body){n+=p.length;if(n>8388608)throw Error('SOURCE_BODY_BOUND');parts.push(p);}const raw=Buffer.concat(parts);rec.received_ts=Date.now();rec.body_sha256=hash(raw);rec.bytes=raw.length;rec.file=name+'.json.gz';await fs.writeFile(dir+'/'+rec.file,gzipSync(raw,{mtime:0}));if(response.status!==200)throw Error('HTX_CATALOG_HTTP_'+response.status);const p=JSON.parse(raw);rec.source_ts=p.ts;return p;"
+          ]
+        }
+      ],
+      "exports": []
+    }
+  ],
+  "reference_reader_callers": [
+    {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "sha256": "bc9beb1135c93d2b08c32da66e3099dd06e9d6ad2e58cbf3a7add7be5ce0919f",
+      "reader_calls": [
+        {
+          "line": 265,
+          "text": "const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,clock:Date.now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "sha256": "f90945240808c374f5c3bd788f8f39aab6596bdf4e9f30161339632089b1a00b",
+      "reader_calls": [
+        {
+          "line": 48,
+          "text": "const policy=SOURCE_POLICIES[SOURCE],reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:policy.daily_cap,minute_provider:'COINPAPRIKA_IDENTITY',minute_cap:policy.internal_minute_cap});"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-sector-evidence.mjs",
+      "sha256": "4bf0e2469666d516d17c13dcb8dd2df9ea5f46c6ca1c9ca53e8eeac06afe207e",
+      "reader_calls": [
+        {
+          "line": 83,
+          "text": "const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/gate-official-asset-binding.mjs",
+      "sha256": "b3efba433a42067f4218488090ba8056bd0c0ed5df260f57a72f71dac3dea3cd",
+      "reader_calls": [
+        {
+          "line": 47,
+          "text": "const reader=createProviderReferenceReader({db,source:'GATE_ASSET_REFERENCE',run_id,request_admit,fetch_impl,now,clock,daily_cap:8,minute_provider:'GATE',minute_cap:4});"
+        }
+      ]
+    }
+  ],
+  "selected_import_and_call_edges": [
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "line": 81,
+      "text": "import {bindGateOfficialAssetIdentity} from './src/gate-official-asset-binding.mjs';"
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "line": 84,
+      "text": "import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "line": 742,
+      "text": "const result=await bindGateOfficialAssetIdentity({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),...params});"
+    },
+    {
+      "path": "current-generation/files/src/backpack-flow-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/binance-native-flow-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/bitfinex-native-flow-collector.mjs",
+      "line": 7,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/bitget-flow-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "line": 19,
+      "text": "import {collectCoingeckoSectorEvidence,COINGECKO_ASSET_PLATFORMS,exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "line": 20,
+      "text": "import {collectCoinpaprikaSectorEvidence} from './coinpaprika-sector-evidence.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "line": 370,
+      "text": "const routeBlock=await collectEvidenceRouteBlock({routes:orderEvidenceDependencyRoutes(prioritized.routes,params.asset_identity),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{JOINT_FLOW:collectExternalN05Flow,TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,BYBIT_OPTIONS:collectBybitOptionsEvidence,BINANCE_OPTION_INTEREST:collectBinanceOptionInterestEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});"
+    },
+    {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "line": 5,
+      "text": "import {createProviderReferenceReader} from './provider-reference-cache.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "line": 248,
+      "text": "export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null,provider_budget_observe=null}={}){"
+    },
+    {
+      "path": "current-generation/files/src/coinmetrics-supply-context.mjs",
+      "line": 4,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "line": 3,
+      "text": "import {createProviderReferenceReader} from './provider-reference-cache.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "line": 44,
+      "text": "export async function collectCoinpaprikaHtxIdentity({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now()}={}){"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "line": 58,
+      "text": "export default{normalizeCoinpaprikaHtxIdentity,collectCoinpaprikaHtxIdentity};"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-sector-evidence.mjs",
+      "line": 5,
+      "text": "import {createProviderReferenceReader} from './provider-reference-cache.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-sector-evidence.mjs",
+      "line": 66,
+      "text": "export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,provider_budget_observe=null}={}){"
+    },
+    {
+      "path": "current-generation/files/src/cross-exchange-risk-context.mjs",
+      "line": 4,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/cross-venue-volume-profile.mjs",
+      "line": 3,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/delta-options-evidence.mjs",
+      "line": 5,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/flow-turnover-collector.mjs",
+      "line": 5,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/gate-flow-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/gate-futures-trade-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/gate-liquidation-history.mjs",
+      "line": 1,
+      "text": "import {reserveProviderMinuteUnits,installProviderMinuteLedger} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/gate-official-asset-binding.mjs",
+      "line": 1,
+      "text": "import {createProviderReferenceReader} from './provider-reference-cache.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/gate-official-asset-binding.mjs",
+      "line": 40,
+      "text": "export async function bindGateOfficialAssetIdentity({db,fetch_impl=globalThis.fetch,request_admit,db_admit,contract,run_id,public_evidence,supplemental_context,now=Date.now(),clock=()=>Date.now()}={}){"
+    },
+    {
+      "path": "current-generation/files/src/htx-asset-identity.mjs",
+      "line": 5,
+      "text": "import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/htx-asset-identity.mjs",
+      "line": 95,
+      "text": "const fallback=await collectCoinpaprikaHtxIdentity({db,fetch_impl,request_admit,contract:market,run_id,now});"
+    },
+    {
+      "path": "current-generation/files/src/htx-realized-liquidations.mjs",
+      "line": 1,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/kraken-flow-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/n12-native-public-trade-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/native-evm-finalized-context.mjs",
+      "line": 5,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/poloniex-native-flow-collector.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/provider-minute-ledger.mjs",
+      "line": 1,
+      "text": "export const PROVIDER_MINUTE_LEDGER_VERSION='provider-minute-ledger-v1-20260928';"
+    },
+    {
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "line": 2,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "line": 4,
+      "text": "export const PROVIDER_REFERENCE_CACHE_VERSION='provider-reference-cache-v1-20261004';"
+    },
+    {
+      "path": "current-generation/files/src/published-token-calendar.mjs",
+      "line": 20,
+      "text": "const cached=await readEvidenceSourceCache(db,{source:'COINGECKO_SECTOR',asset_key:`REFERENCE:provider-reference-cache-v1-20261004:${hash(url)}`,now});"
+    },
+    {
+      "path": "current-generation/files/src/published-token-calendar.mjs",
+      "line": 21,
+      "text": "if(cached?.version!=='provider-reference-cache-v1-20261004'||cached.url!==url||!safeTs(cached.received_ts)||cached.received_ts>now||!safeTs(cached.expires_ts)||now>=Math.min(cached.expires_ts,cached.received_ts+TTL)||typeof cached.body!=='string'||cached.body.length>2*1024*1024||hash(cached.body)!==cached.body_sha256)return null;"
+    },
+    {
+      "path": "current-generation/files/src/run-budget-context.mjs",
+      "line": 56,
+      "text": "if(!e||!sources.includes(e.source)||!phases.includes(e.phase)||!text(e.run_id,160)||!text(e.contract,80)||!/^\\S{1,32}-USDT$/u.test(e.contract)||!text(e.route,64)||!/^[A-Z0-9_]+$/.test(e.route)||!text(e.reference_key,128)||!/^REFERENCE:provider-reference-cache-v1-20261004:[a-f0-9]{64}$/.test(e.reference_key)||!Number.isSafeInteger(e.attempt_sequence)||e.attempt_sequence<0||!Number.isSafeInteger(e.query_window_end_ts)||e.query_window_end_ts<=0||e.query_window_end_ts>8_640_000_000_000_000||e.day_utc!==new Date(e.query_window_end_ts).toISOString().slice(0,10)||e.native_usage_guard_passed!==true){invalid++;return;}"
+    },
+    {
+      "path": "current-generation/files/src/wikimedia-attention-context.mjs",
+      "line": 5,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "runner/exact-recovery-diagnosis.mjs",
+      "line": 4,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-alias-route-batch-20261012.mjs",
+      "line": 25,
+      "text": "import('../runner/report2-d1-adapter.mjs'),import('../runner/d1-preaction-budget-guard.mjs'),import('../current-generation/files/src/unified-budget.mjs'),import('../current-generation/files/src/evidence-source-store.mjs'),import('../current-generation/files/src/provider-minute-ledger.mjs'),import('../current-generation/files/src/htx-asset-identity.mjs'),import('../current-generation/files/src/poloniex-native-four-hour-flow.mjs')"
+    },
+    {
+      "path": "tools/acquire-n05-backpack-missing4-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-binance-missing6-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-bitfinex-catalog-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-bitfinex-fil-xpl-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-bitfinex-link-pepe-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-bitget-missing6-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-coinbase-pilot-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-gemini-pilot-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-kraken-algo-xmr-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-lighter-pilot-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-backpack-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-bitfinex-algo-xmr-shib-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-bitget-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-kraken-algo-xmr-20261011.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/acquire-n05-post-reset-poloniex-20261011.mjs",
+      "line": 23,
+      "text": "import('../runner/report2-d1-adapter.mjs'),import('../runner/d1-preaction-budget-guard.mjs'),import('../current-generation/files/src/unified-budget.mjs'),import('../current-generation/files/src/evidence-source-store.mjs'),import('../current-generation/files/src/provider-minute-ledger.mjs'),import('../current-generation/files/src/htx-asset-identity.mjs'),import('../current-generation/files/src/poloniex-native-four-hour-flow.mjs')"
+    },
+    {
+      "path": "tools/acquire-n05-saved12-native-batch-20261010.mjs",
+      "line": 22,
+      "text": "import('../runner/report2-d1-adapter.mjs'),import('../runner/d1-preaction-budget-guard.mjs'),import('../current-generation/files/src/unified-budget.mjs'),import('../current-generation/files/src/evidence-source-store.mjs'),import('../current-generation/files/src/provider-minute-ledger.mjs'),import('../current-generation/files/src/htx-asset-identity.mjs'),import('../current-generation/files/src/poloniex-native-four-hour-flow.mjs')"
+    },
+    {
+      "path": "tools/qualify-n05-broad-exchanges-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-coinex-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-joint-flow-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-large-venue-batch-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-original-pagination-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-poloniex-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-remaining-exchanges-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n05-window-20261010.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/qualify-n06-coingecko-trending-pengu-20261011.mjs",
+      "line": 34,
+      "text": "import('../runtime/src/unified-budget.mjs'),import('../runtime/src/evidence-source-store.mjs'),import('../runtime/src/provider-minute-ledger.mjs'),"
+    },
+    {
+      "path": "tools/qualify-n12-kucoin-token-20261012.mjs",
+      "line": 8,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/refresh-htx-crypto-universe-20261010.mjs",
+      "line": 6,
+      "text": "import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    },
+    {
+      "path": "tools/research-synfutures-v4-native-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+    },
+    {
+      "path": "tools/research-veranta-v2-current-liquidation-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+    },
+    {
+      "path": "tools/research-veranta-v2-direct-storage-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+    },
+    {
+      "path": "tools/research-veranta-v2-pinned-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+    },
+    {
+      "path": "tools/research-veranta-v2-readonly-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root));"
+    },
+    {
+      "path": "tools/research-veranta-v2-sourcify-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+    },
+    {
+      "path": "tools/research-veranta-v2-storage-abi-reuse-20261007.mjs",
+      "line": 3,
+      "text": "const root=pathToFileURL(path.resolve('runtime/src')+'/'),{reserveEvidenceSourceAttempts}=await import(new URL('evidence-source-store.mjs',root)),{installProviderMinuteLedger,reserveProviderMinuteUnits}=await import(new URL('provider-minute-ledger.mjs',root)),require=createRequire(path.resolve('runtime/src/liquidation-extension/package.json')),{utils}=require('ethers');"
+    },
+    {
+      "path": "tools/validate-coingecko-demo-sector-20261013.mjs",
+      "line": 4,
+      "text": "import {collectCoingeckoSectorEvidence} from '../current-generation/files/src/coingecko-sector-evidence.mjs';"
+    },
+    {
+      "path": "tools/validate-coingecko-demo-sector-20261013.mjs",
+      "line": 25,
+      "text": "const result=await collectCoingeckoSectorEvidence({db,request_admit,contract:row.contract,run_id:id,asset_identity:row.identity,asset_metadata:{},now,strict_fresh_manual:true,coingecko_demo_api_key:process.env.REPORT2_COINGECKO_DEMO_API_KEY});"
+    },
+    {
+      "path": "tools/validate-native-sector-batch-20261014.mjs",
+      "line": 7,
+      "text": "import {collectCoingeckoSectorEvidence} from '../current-generation/files/src/coingecko-sector-evidence.mjs';"
+    },
+    {
+      "path": "tools/validate-native-sector-batch-20261014.mjs",
+      "line": 49,
+      "text": "const contract=symbol+'-USDT',identity=identities[symbol].identities[0],result=await collectCoingeckoSectorEvidence({db,request_admit,fetch_impl,contract,run_id:id+':'+symbol,asset_identity:identity,asset_metadata:{},now:Date.now(),strict_fresh_manual:false,coingecko_demo_api_key:process.env.REPORT2_COINGECKO_DEMO_API_KEY});"
+    },
+    {
+      "path": "tools/weekly-htx-universe-refresh.mjs",
+      "line": 5,
+      "text": "import {installProviderMinuteLedger,reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';"
+    }
+  ],
+  "known_reference_policies": {
+    "COINGECKO_SECTOR": {
+      "minute_provider": "COINGECKO",
+      "minute_cap": 9,
+      "units": 1,
+      "daily_keyless": 48,
+      "daily_demo_ordinary": 224,
+      "daily_demo_manual": 256,
+      "monthly_module_demo": 7936
+    },
+    "COINPAPRIKA_HTX_IDENTITY": {
+      "minute_provider": "COINPAPRIKA_IDENTITY",
+      "minute_cap": 2,
+      "units": 1,
+      "daily": 12,
+      "monthly_module": 372
+    },
+    "COINPAPRIKA_SECTOR": {
+      "minute_provider": null,
+      "daily": 512,
+      "monthly_module": 15872
+    },
+    "GATE_ASSET_REFERENCE": {
+      "minute_provider": "GATE",
+      "minute_cap": 4,
+      "units": 1,
+      "daily": 8,
+      "shares_Gate_flow_history_namespace_cap": 12
+    }
+  },
+  "whole_provider_limits_not_proven_by_role_namespaces": true,
+  "direct_runtime_caller_files_other_than_reference": 18,
+  "all_literal_sites_in_declared_scan_inventoried": true,
+  "complete_native_or_dynamic_all_process_callgraph_qualified": false,
+  "legacy_or_inflight_native_dispatch_drain_known": false,
+  "single_atomic_writer_implementation": "current-generation/files/src/provider-minute-ledger.mjs",
+  "existing_atomic_predicate_upper_cutoff": true,
+  "existing_identical_reservation_readback_not_dispatch_claim": true,
+  "minute_ledger_DELETE_or_refund_proposed": false,
+  "native_SQL_cost_or_index_plan_qualified": false,
+  "source_HTTP_or_SQL_executed": 0
+}
