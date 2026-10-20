@@ -1,0 +1,113 @@
+{
+  "schema": "FOLLOWING_CLOSED_ARCHIVAL_GEOMETRY_PROTOCOL_V1",
+  "purpose": "TARGET_RELATIVE_DESCRIPTIVE_CONTEXT_ONLY_NOT_ENTRY_OR_PREDICTIVE_OUTCOMES",
+  "population": {
+    "study_path": "checkpoints/anomaly-history-utility-linked-20261020/cloud-39478618942/htx-descriptive-result.json",
+    "study_bytes": 7637085,
+    "study_sha256": "d3c719c215affc730f0464bae518db2167004fd8be66d61a1ef8111b0128d63a",
+    "study_fact_ledger_sha256": "c8215d62458144a9f3fece6ef23d94dd385c9487ab086477852ed3b5c21b3946",
+    "frozen_findings": 3274,
+    "classification": "BACKFILLED_DESCRIPTIVE_NUMERIC_WINDOW",
+    "selection_recomputed": false,
+    "expected_descriptive_cells": 13096
+  },
+  "native_source": {
+    "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/qualified-cohort.json.gz",
+    "gzip_bytes": 2025414,
+    "gzip_sha256": "cd8b11110d39d801767462ec4b49c660de10f1aa1c2893479370f95141ac1f54",
+    "DTO_bytes": 11498780,
+    "DTO_sha256": "bd28bbaa4c9efe32b00b33219b54bb09a632453ca83b49ac031757c236e13c11",
+    "timeframe": "4h",
+    "duration_ms": 14400000,
+    "market": "FUTURES",
+    "upstream": "HTX",
+    "native_epoch_or_original_body_ACK_qualified": false
+  },
+  "horizons": [
+    {
+      "id": "4h",
+      "ms": 14400000,
+      "required_native_bars": 1
+    },
+    {
+      "id": "24h",
+      "ms": 86400000,
+      "required_native_bars": 6
+    },
+    {
+      "id": "7d",
+      "ms": 604800000,
+      "required_native_bars": 42
+    },
+    {
+      "id": "30d",
+      "ms": 2592000000,
+      "required_native_bars": 180
+    }
+  ],
+  "temporal_policy": {
+    "start": "target.end_ts;target and earlier bars EXCLUDED",
+    "end": "target.end_ts+horizon_ms",
+    "complete_bar": "native start/end exact4h grid and end<=original source_asof for this contract",
+    "availability": "ARCHIVAL_TARGET_RELATIVE_NOT_RESEARCH_FIRST_KNOWN_PROSPECTIVE",
+    "intrabar_order": "UNKNOWN;min-low/max-high not first passage or execution order"
+  },
+  "exclusive_context_status_precedence": [
+    {
+      "status": "RIGHT_CENSORED_SOURCE_ASOF",
+      "when": "desired_end>original_source_asof",
+      "metrics": "NULL;partial observed bars are not a full horizon"
+    },
+    {
+      "status": "INSUFFICIENT_RETAINED_FUTURE_HISTORY",
+      "when": "horizon within source_asof but retained closed series edge coverage cannot cover [target.end,desired_end]",
+      "metrics": "NULL"
+    },
+    {
+      "status": "INTERNAL_FUTURE_GAP",
+      "when": "edge coverage exists but required exact4h interval(s) missing",
+      "metrics": "NULL;no fill/interpolation"
+    },
+    {
+      "status": "FULL_COMPARABLE_CLOSED_CONTEXT",
+      "when": "all exact1/6/42/180 consecutive4h bars available and closed by original source_asof",
+      "metrics": "three descriptive percentage changes"
+    }
+  ],
+  "metrics": {
+    "reference": "target.closed_price only; NOT entry anchor/known-time quote/level",
+    "end_close_change_pct": "100*(last_future_close/target_close-1)",
+    "following_min_low_relative_close_pct": "100*(min_future_low/target_close-1)",
+    "following_max_high_relative_close_pct": "100*(max_future_high/target_close-1)",
+    "zero": "numeric0 is valid; missing remainsNULL",
+    "numeric_basis": "finite positive saved price lexemes converted to Number; no quote/face-value conversion"
+  },
+  "denominators": {
+    "unit": "ONE_PREVIOUSLY_FROZEN_RESEARCH_WINDOW_AND_HORIZON_NOT_INDEPENDENT_EVENT",
+    "groups": "target timeframe x horizon; 3x4 descriptive cells",
+    "partition": "candidates=right_censored+insufficient_history+internal_gap+full_context",
+    "summaries": "coverage counts only; no winner/success/false/opposite/unworked/positive-rate/accuracy aggregation",
+    "unselected": "no added windows from11 prior insufficient weekly series; original577 selection remains fixed",
+    "same_paths": "overlapping windows/scales/shared candles correlated; never add LONG/SHORT mirrors as independent N"
+  },
+  "audit_links": [
+    "study research_id + original target row pointer",
+    "native contract/source_asof and target close/end link",
+    "full-context native cohort indices and original source_row_indices",
+    "exact3274 frozen findings x4horizons only"
+  ],
+  "forbidden_outputs": [
+    "ENTRY_ANCHOR_OR_LEVELS",
+    "STOP_TRIGGER_TTL_RECHECK_CADENCE",
+    "FIRST_PASSAGE_OR_INTRABAR_ORDER",
+    "TRADE_OR_DIRECTIONAL_SUCCESS",
+    "PROSPECTIVE_PRECISION_RECALL_PROFIT",
+    "NATIVE_CARD_WATCH_OUTBOX_ACK_OR_ADMISSION"
+  ],
+  "preparation": {
+    "new_geometry_calculations_by_author": 0,
+    "Node_import_syntax_semantics_SQL_provider_MAIN_TG": 0,
+    "source533_577qualification_aggregation_or_BTC915_or23_or57_replay": false,
+    "next": "ONE_COORDINATOR_FUTURE_COMMON_CALLABLE_UNEXECUTED_WITH_MINIMAL_NEW_CONTROLLED_EDGE_CASES"
+  }
+}
