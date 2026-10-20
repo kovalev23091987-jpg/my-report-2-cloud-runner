@@ -1,0 +1,75 @@
+--- a/current-generation/files/src/approved-htx-analysis-scope.mjs
++++ b/current-generation/files/src/approved-htx-analysis-scope.mjs
+@@ -8,7 +8,7 @@
+  const exact=String(contract_code??'').trim().toUpperCase(),asset=approved.get(exact);
+  return asset&&exact===`${asset}-USDT`?asset:null;
+ }
+-export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog}={}){
++export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,include_native_availability_diagnostic=false}={}){
+  const crypto=(Array.isArray(rows)?rows:[]).filter(x=>x?.instrument_scope?.classification==='CRYPTO_CONFIRMED'),counts=new Map();
+  for(const x of Array.isArray(rows)?rows:[])counts.set(x?.contract_code,(counts.get(x?.contract_code)||0)+1);
+  const accepted=[],outside=[],identity_rejected=[],duplicate_rejected=[];
+@@ -19,23 +19,54 @@
+   accepted.push(x);
+  }
+  const present=new Set(accepted.map(x=>x.contract_code)),missing=APPROVED_HTX_ANALYSIS_CONTRACTS.filter(x=>!present.has(x.contract_code)).map(x=>x.contract_code);
+- const unavailable=qualifiedSuspendedContracts(missing,{native_catalog,observed_ts,counts}),unavailableCodes=new Set(unavailable.map(x=>x.contract)),unresolved=missing.filter(x=>!unavailableCodes.has(x));
+- return{contracts:accepted,audit:{schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',...APPROVED_HTX_SCOPE,observed_ts,expected_analysis_contracts:approved.size,accepted_analysis_contracts:accepted.length,missing_approved_analysis_contracts:missing,officially_unavailable_analysis_contracts:unavailable,unresolved_approved_analysis_contracts:unresolved,checked_analysis_contracts:accepted.length+unavailable.length,market_data_analysis_contracts:accepted.length,scan_count_basis:'APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE',outside_approved_crypto_contracts:outside,identity_rejected,duplicate_rejected,status:unresolved.length?'NOT_CLOSED':'CLOSED',structural_membership_only:true,source_clocks_refreshed:false,approved_universe_changed:false}};
++ const diagnostic=include_native_availability_diagnostic===true?{}:null;
++ const unavailable=qualifiedSuspendedContracts(missing,{native_catalog,observed_ts,counts,diagnostic}),unavailableCodes=new Set(unavailable.map(x=>x.contract)),unresolved=missing.filter(x=>!unavailableCodes.has(x));
++ return{contracts:accepted,audit:{schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',...APPROVED_HTX_SCOPE,observed_ts,expected_analysis_contracts:approved.size,accepted_analysis_contracts:accepted.length,missing_approved_analysis_contracts:missing,officially_unavailable_analysis_contracts:unavailable,unresolved_approved_analysis_contracts:unresolved,checked_analysis_contracts:accepted.length+unavailable.length,market_data_analysis_contracts:accepted.length,scan_count_basis:'APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE',outside_approved_crypto_contracts:outside,identity_rejected,duplicate_rejected,status:unresolved.length?'NOT_CLOSED':'CLOSED',structural_membership_only:true,source_clocks_refreshed:false,approved_universe_changed:false,...(diagnostic?{native_availability_diagnostic:diagnostic.value}:{})}};
+ }
+ 
+ const HTX_CATALOG_URL='https://api.hbdm.com/linear-swap-api/v1/swap_contract_info';
+-function qualifiedSuspendedContracts(missing,{native_catalog:n,observed_ts,counts}){
++function qualifiedSuspendedContracts(missing,{native_catalog:n,observed_ts,counts,diagnostic}){
+  const received=n?.observed_ts,source=n?.data?.ts;
+- if(n?.ok!==true||n.http_status!==200||n.url!==HTX_CATALOG_URL||n.data?.status!=='ok'||!Array.isArray(n.data.data)||typeof n.classify!=='function'||!Number.isSafeInteger(observed_ts)||!Number.isSafeInteger(received)||received<observed_ts||received-observed_ts>120000||!Number.isSafeInteger(source)||source>received||received-source>120000)return[];
++ // Opt-in technical trace of THIS invocation, never reconstructed native proof.
++ // No classifier rerun, new reader, source call, status promotion or clock update.
++ const bytes=v=>new TextEncoder().encode(JSON.stringify(v)).length;
++ let valueOverflows=0;
++ const value=v=>{if(v===null||typeof v==='boolean'||(typeof v==='number'&&Number.isFinite(v)))return v;if(typeof v==='string'){if(new TextEncoder().encode(v).length<=64)return v;valueOverflows++;}return null;};
++ const clock=v=>Number.isSafeInteger(v)?v:null;
++ const trace=diagnostic?{schema:'APPROVED_HTX_NATIVE_AVAILABILITY_DIAGNOSTIC_V1',status:'CAPTURED',scope:'EXECUTED_HELPER_PREDICATES_AND_ALREADY_LOADED_METADATA_ONLY',observation_ts:clock(observed_ts),catalog_observed_ts:clock(received),catalog_source_ts:clock(source),clock_basis:'EXISTING_CALLER_EVALUATION_AND_CATALOG_OBSERVATION_NOT_BODY_COMPLETION',original_body_completion_ts:null,raw_body_sha256:null,catalog_gate:{first_failed_term:null,ok:value(n?.ok),http_status:value(n?.http_status),source_url_exact:n?.url===HTX_CATALOG_URL,payload_status:value(n?.data?.status),data_is_array:Array.isArray(n?.data?.data),catalog_rows_count:Array.isArray(n?.data?.data)?n.data.data.length:null,classifier_is_function:typeof n?.classify==='function'},missing_contracts_count:missing.length,qualified_contracts_count:0,records:[],records_omitted:0,value_overflows:0,limits:{records:8,record_utf8:1024,frame_utf8:8192},admission_granted:false}:null;
++ const finish=out=>{
++  if(trace){trace.qualified_contracts_count=out.length;trace.value_overflows=valueOverflows;if(trace.records_omitted||valueOverflows)trace.status='OVERFLOW';
++   if(bytes(trace)>8192){trace.records_omitted+=trace.records.length;trace.records=[];trace.status='OVERFLOW';trace.overflow_reason='FRAME_UTF8_LIMIT';}
++   diagnostic.value=trace;
++  }
++  return out;
++ };
++ const reject=(failed,term)=>{if(failed&&trace)trace.catalog_gate.first_failed_term=term;return failed;};
++ if(reject(n?.ok!==true,'CATALOG_OK_NOT_TRUE')||reject(n.http_status!==200,'HTTP_STATUS_NOT_200')||reject(n.url!==HTX_CATALOG_URL,'CATALOG_URL_NOT_EXACT')||reject(n.data?.status!=='ok','PAYLOAD_STATUS_NOT_OK')||reject(!Array.isArray(n.data.data),'CATALOG_DATA_NOT_ARRAY')||reject(typeof n.classify!=='function','CLASSIFIER_NOT_FUNCTION')||reject(!Number.isSafeInteger(observed_ts),'OBSERVATION_NOT_SAFE_INTEGER')||reject(!Number.isSafeInteger(received),'CATALOG_OBSERVATION_NOT_SAFE_INTEGER')||reject(received<observed_ts,'CATALOG_OBSERVATION_BEFORE_EVALUATION')||reject(received-observed_ts>120000,'CATALOG_OBSERVATION_DELAY_OVER_120000')||reject(!Number.isSafeInteger(source),'CATALOG_SOURCE_NOT_SAFE_INTEGER')||reject(source>received,'CATALOG_SOURCE_AFTER_OBSERVATION')||reject(received-source>120000,'CATALOG_SOURCE_AGE_OVER_120000'))return finish([]);
+  const out=[];
+  for(const contract of missing){
+-  if(counts.get(contract))continue;
+-  const raw=n.data.data.filter(r=>r?.contract_code===contract);if(raw.length!==1)continue;const r=raw[0];
+-  if(r.symbol!==approved.get(contract)||r.contract_status!==3||r.business_type!=='swap'||r.contract_type!=='swap'||r.trade_partition!=='USDT'||!Array.isArray(r.labels)||!Array.isArray(r.tradfi_labels))continue;
+-  let classification;try{classification=n.classify(r);}catch{continue;}if(classification?.classification!=='CRYPTO_CONFIRMED')continue;
++  const row=trace?{contract,analysis_input_match_count:counts.get(contract)||0,native_catalog_match_count:null,first_failed_term:null,native_symbol:null,native_contract_status:null,business_type:null,contract_type:null,trade_partition:null,labels_count:null,tradfi_labels_count:null,classification:null,value_overflow:false}:null;
++  const note=(term,r,rawCount,classification)=>{
++   if(!row)return;
++   const before=valueOverflows;row.first_failed_term=term;row.native_catalog_match_count=rawCount;
++   if(r){row.native_symbol=value(r.symbol);row.native_contract_status=value(r.contract_status);row.business_type=value(r.business_type);row.contract_type=value(r.contract_type);row.trade_partition=value(r.trade_partition);row.labels_count=Array.isArray(r.labels)?r.labels.length:null;row.tradfi_labels_count=Array.isArray(r.tradfi_labels)?r.tradfi_labels.length:null;}
++   row.classification=value(classification);row.value_overflow=valueOverflows!==before;
++   if(trace.records.length>=8||bytes(row)>1024){trace.records_omitted++;return;}trace.records.push(row);
++  };
++  if(counts.get(contract)){note('ANALYSIS_INPUT_ALREADY_PRESENT',null,null,null);continue;}
++  const raw=n.data.data.filter(r=>r?.contract_code===contract);if(raw.length!==1){note('NATIVE_CATALOG_MATCH_COUNT_NOT_ONE',null,raw.length,null);continue;}const r=raw[0];
++  if(r.symbol!==approved.get(contract)){note('NATIVE_SYMBOL_NOT_APPROVED',r,1,null);continue;}
++  if(r.contract_status!==3){note('NATIVE_STATUS_NOT_EXPLICIT_3',r,1,null);continue;}
++  if(r.business_type!=='swap'){note('NATIVE_BUSINESS_TYPE_NOT_SWAP',r,1,null);continue;}
++  if(r.contract_type!=='swap'){note('NATIVE_CONTRACT_TYPE_NOT_SWAP',r,1,null);continue;}
++  if(r.trade_partition!=='USDT'){note('NATIVE_TRADE_PARTITION_NOT_USDT',r,1,null);continue;}
++  if(!Array.isArray(r.labels)){note('NATIVE_LABELS_NOT_ARRAY',r,1,null);continue;}
++  if(!Array.isArray(r.tradfi_labels)){note('NATIVE_TRADFI_LABELS_NOT_ARRAY',r,1,null);continue;}
++  let classification;try{classification=n.classify(r);}catch{note('CLASSIFIER_THREW',r,1,null);continue;}if(classification?.classification!=='CRYPTO_CONFIRMED'){note('CLASSIFICATION_NOT_CRYPTO_CONFIRMED',r,1,classification?.classification);continue;}
++  note(null,r,1,classification.classification);
+   out.push({contract,symbol:r.symbol,status:'HTX_OFFICIALLY_SUSPENDED',contract_status:3,source_url:n.url,source_ts:source,observed_ts:received,classification:classification.classification,native_scope:{business_type:r.business_type,contract_type:r.contract_type,trade_partition:r.trade_partition,labels:[...r.labels],tradfi_labels:[...r.tradfi_labels]},market_data_available:false,analysis_eligible:false,entry_authorized:false,market_prices_filled:false});
+  }
+- return out;
++ return finish(out);
+ }
+ export function approvedHtxScopeAccounted(a){
+  if(a?.status!=='CLOSED'||a.manifest_sha256!==APPROVED_HTX_SCOPE.manifest_sha256||a.expected_analysis_contracts!==approved.size)return false;
