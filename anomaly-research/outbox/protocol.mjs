@@ -1,5 +1,6 @@
 // CONTROLLED pure state-machine model. No database schema, sender or network.
 import {hash} from '../observer/observer.mjs';
+import {commitOutcomePlan} from '../statistics/outcomes.mjs';
 const need=(x,m)=>{if(!x)throw Error(m);},str=x=>typeof x==='string'&&x.length>0;
 const ts=x=>Number.isSafeInteger(x)&&x>=1e12,hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
 export function newProtocolStore({max_operations=4096,max_outbox=1024,max_attempt_nonces=4096}={}){
@@ -8,17 +9,30 @@ export function newProtocolStore({max_operations=4096,max_outbox=1024,max_attemp
 }
 function row(state,key){need(state.outbox[key],'OUTBOX_MISSING');return state.outbox[key];}
 function sameClaim(o,m){need(o.claim_owner===m.owner&&o.attempt_nonce===m.nonce,'FOREIGN_OR_STALE_CLAIM');}
+function boundOutcomePlan(card,plan,logical_event_id,keys){
+ if(plan===undefined)return null;
+ need(plan&&typeof plan==='object'&&!Array.isArray(plan),'EXACT_FROZEN_OUTCOME_PLAN_REQUIRED');
+ const rebuilt=commitOutcomePlan(card,{anchor:plan.anchor,committed_ts:plan.committed_ts,success_pct:plan.success_pct,opposite_pct:plan.opposite_pct,max_gap_ms:plan.max_gap_ms,endpoint_tolerance_ms:plan.endpoint_tolerance_ms,horizons:plan.horizons});
+ need(hash(rebuilt)===hash(plan),'EXACT_FROZEN_OUTCOME_PLAN_REQUIRED');
+ const expected=plan.horizons.flatMap(horizon=>plan.directions.map(direction=>hash({logical_event_id,horizon,direction})));
+ need(hash([...keys].sort())===hash(expected.sort()),'EXACT_PLANNED_OUTCOME_CELLS_REQUIRED');
+ return plan.plan_hash;
+}
 function exactAck(o,a){
  need(a?.evidence_class==='CONTROLLED_SIMULATED_ACK'&&a.logical_event_id===o.logical_event_id&&a.outbox_key===o.outbox_key&&a.attempt_nonce===o.attempt_nonce&&a.chat_binding===o.chat_binding&&typeof a.message_id==='string'&&/^[1-9][0-9]*$/.test(a.message_id)&&hex(a.reply_sha256),'EXACT_BOUND_SIMULATED_ACK_REQUIRED');
+ if(o.outcome_plan_hash)need(a.outcome_plan_hash===o.outcome_plan_hash,'EXACT_BOUND_OUTCOME_PLAN_ACK_REQUIRED');
 }
 function mutate(s,m){
  need(ts(m?.now_ts),'NOW_REQUIRED');
  if(m.kind==='EVENT_TRANSITION'){
   const c=m.card,{card_hash,...body}=c||{};
   need(card_hash===hash(body)&&str(m.logical_event_id)&&str(m.snapshot_id)&&hex(m.snapshot_raw_sha256)&&ts(m.source_ts)&&m.source_ts>=c.first_known_ts&&m.source_ts<=m.now_ts&&m.now_ts-m.source_ts<=300000&&Array.isArray(m.planned_outcome_keys)&&m.planned_outcome_keys.length>0&&new Set(m.planned_outcome_keys).size===m.planned_outcome_keys.length&&Array.isArray(m.transition_group)&&m.transition_group.length>0&&str(m.notification?.text)&&str(m.notification?.chat_binding),'TRANSITION_ARGUMENTS');
-  const old=s.events[m.logical_event_id],fingerprint=hash({snapshot_id:m.snapshot_id,snapshot_raw_sha256:m.snapshot_raw_sha256,source_ts:m.source_ts,transition_group:m.transition_group,notification:m.notification});
+  const planHash=boundOutcomePlan(c,m.outcome_plan,m.logical_event_id,m.planned_outcome_keys);
+  const old=s.events[m.logical_event_id],fingerprint=hash({snapshot_id:m.snapshot_id,snapshot_raw_sha256:m.snapshot_raw_sha256,source_ts:m.source_ts,transition_group:m.transition_group,notification:m.notification,...(planHash?{outcome_plan_hash:planHash}:{})});
   if(old){
    need(old.card.card_hash===card_hash&&hash(old.planned_outcome_keys)===hash(m.planned_outcome_keys),'IMMUTABLE_CARD_OR_PLAN_CONFLICT');
+   if(old.outcome_plan_hash)need(planHash===old.outcome_plan_hash,'IMMUTABLE_OUTCOME_PLAN_CONFLICT');
+   else need(planHash===null,'LEGACY_EVENT_PLAN_BINDING_UNRESOLVED');
    if(old.last_snapshot_id===m.snapshot_id){need(old.last_source_fingerprint===fingerprint,'CONFLICTING_SNAPSHOT');return 'DUPLICATE_SOURCE';}
    need(m.source_ts>old.last_source_ts,'SOURCE_TIME_NOT_MONOTONIC');
   }
@@ -27,8 +41,8 @@ function mutate(s,m){
   if(!changed)return 'NO_CHANGE';
   need(Object.keys(s.outbox).length<s.limits.max_outbox,'OUTBOX_CAPACITY');
   const seq=(old?.transition_sequence??0)+1,key=hash({logical_event_id:m.logical_event_id,transition_sequence:seq});
-  s.events[m.logical_event_id]={card:structuredClone(c),first_known_ts:old?.first_known_ts??c.first_known_ts,planned_outcome_keys:[...m.planned_outcome_keys],transition_sequence:seq,last_snapshot_id:m.snapshot_id,last_source_ts:m.source_ts,last_source_fingerprint:fingerprint,hypothesis_states:states,transition_group:structuredClone(m.transition_group)};
-  s.outbox[key]={outbox_key:key,logical_event_id:m.logical_event_id,transition_sequence:seq,chat_binding:m.notification.chat_binding,text:m.notification.text,form_hash:hash(m.notification.text),status:'DRAFT',claim_owner:null,attempt_nonce:null,lease_until:null,message_id:null,network_enabled:false,actual_send:false};
+  s.events[m.logical_event_id]={card:structuredClone(c),first_known_ts:old?.first_known_ts??c.first_known_ts,planned_outcome_keys:[...m.planned_outcome_keys],transition_sequence:seq,last_snapshot_id:m.snapshot_id,last_source_ts:m.source_ts,last_source_fingerprint:fingerprint,hypothesis_states:states,transition_group:structuredClone(m.transition_group),...(planHash?{outcome_plan_hash:planHash,plan_binding:'FROZEN_MODEL_PLAN_V1'}:{})};
+  s.outbox[key]={outbox_key:key,logical_event_id:m.logical_event_id,transition_sequence:seq,chat_binding:m.notification.chat_binding,text:m.notification.text,form_hash:hash(m.notification.text),status:'DRAFT',claim_owner:null,attempt_nonce:null,lease_until:null,message_id:null,network_enabled:false,actual_send:false,...(planHash?{outcome_plan_hash:planHash,plan_binding:'FROZEN_MODEL_PLAN_V1'}:{})};
   return 'EVENT_AND_OUTBOX_ATOMICALLY_STAGED';
  }
  const o=m.outbox_key?row(s,m.outbox_key):null;
