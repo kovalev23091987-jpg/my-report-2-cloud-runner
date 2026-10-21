@@ -1,0 +1,118 @@
+{
+  "schema": "FIRST_NATIVE_ANOMALY_DOMAIN_CONNECTED_QUALIFICATION_V1",
+  "semantic_status": "UNEXECUTED",
+  "base_main": "e1822973369acfe557a6186fe91dfe68ec6aaed5",
+  "baseline_git_commit": "e1822973369acfe557a6186fe91dfe68ec6aaed5",
+  "frozen_original": {
+    "PR": 598,
+    "head": "84b07f4e6c787dcd122d998b45f562e116396fdd"
+  },
+  "runtime_targets": [
+    {
+      "path": "current-generation/files/src/anomaly-native-domain.mjs",
+      "runtime_relative": "src/anomaly-native-domain.mjs",
+      "before_sha256": null,
+      "after_sha256": "a7e4bebe19c9ffecc27aa3274b5d4d5157ed32529356f21cbcb56bb5a0684ede"
+    },
+    {
+      "path": "current-generation/files/migrations/20261021_anomaly_domain.sql",
+      "runtime_relative": "migrations/20261021_anomaly_domain.sql",
+      "before_sha256": null,
+      "after_sha256": "aaa82c6a0b518c087e8f6b8aeee11d0d7456690cf57c8cae6afa68d7c9ba6592"
+    },
+    {
+      "path": "current-generation/files/src/htx-signed-tape.mjs",
+      "runtime_relative": "src/htx-signed-tape.mjs",
+      "before_sha256": "83a4a603fb19a788ebf751421c72b1df7e0ceca4edf6095d0a81120d3ae16e0d",
+      "after_sha256": "1b9767db0c2d32cc99da161d7d74b5d2463aba975bb20e154fa45a99e6c2c086"
+    }
+  ],
+  "callable": {
+    "path": "anomaly-research/native-anomaly-domain-20261021/connected.mjs",
+    "entry": "runNativeAnomalyDomainConnected"
+  },
+  "new_common_cases": 1,
+  "new_CONTROLLED_groups": 16,
+  "full_baseline_files": 613,
+  "full_candidate_files": 615,
+  "private_input": "Existing owner-approved artifact12346799964 bounded contract only; no rawinput in output and no private JS imported",
+  "native_SQL_providerHTTP_MAIN_Telegram": 0,
+  "native_schema_install_or_scheduler_or_sender": false,
+  "old_accepted_cases_manually_replayed": 0,
+  "first_preassembly_failure": {
+    "run": 39616338307,
+    "semantic_executions": 0
+  },
+  "baseline_git_read": "EXACT_PINNED_ANCESTOR_e182_LOCAL_GIT; not changed immediate parent after authority/read repair",
+  "new_owner_approved_read4": {
+    "runtime_path": "src/v3-realized-liquidation-sidecar.mjs",
+    "sha256": "a56b7b9f2908648c19bfc4ff30f1d2f22bc202365eef1a1a7c858a20360e648a",
+    "private_fragment_artifact_total_bound": 65536,
+    "private_module_executed": false,
+    "production_SQL_provider_MAIN_TG": 0
+  },
+  "expected_authority_main": "81e3788eee417eef1e799947aeca4c12ba759cc9",
+  "second_preapplication_failure": {
+    "run": 39618013942,
+    "artifact": 12353621974,
+    "digest": "sha256:6acc8579c57e6d1a027ee9b7ee82af8b476e69af20a9638afd303ed2dbb9b00b",
+    "cause": "SHALLOW_CHECKOUT_BASELINE_COMMIT_NOT_PRESENT",
+    "Node_harness_tests": {
+      "pass": 0,
+      "fail": 1
+    },
+    "application_imports": 0,
+    "controlled_groups_executed": 0
+  },
+  "fourth_read_completed_retained_no_reextract": {
+    "run": 39618013942,
+    "head": "c700a1f4ac4724a92f80dd8549b131101037ae51",
+    "artifact": 12352933199,
+    "ZIP_bytes": 4470,
+    "digest": "sha256:83448438c3d02f460b1108503ecebcccd69702f3b1be50f05a86903d30be0241",
+    "members": {
+      "read-receipt.json": {
+        "bytes": 485,
+        "sha256": "92887157bdcda406ca34e25f306625ae69c571dfbc0a9fb251f3d8dd354e64f8"
+      },
+      "realized-source-contract.json": {
+        "bytes": 10618,
+        "sha256": "b677fb2d1c7ff1acd4056ec33f8b971dfd2481572d74f40506f660a43e93ea47"
+      }
+    },
+    "read_result": {
+      "schema": "EXACT_REALIZED_LIQ_BOUNDED_SOURCE_READ_V1",
+      "target": {
+        "path": "src/v3-realized-liquidation-sidecar.mjs",
+        "bytes": 6995,
+        "sha256": "a56b7b9f2908648c19bfc4ff30f1d2f22bc202365eef1a1a7c858a20360e648a"
+      },
+      "bytes": 10618,
+      "sha256": "b677fb2d1c7ff1acd4056ec33f8b971dfd2481572d74f40506f660a43e93ea47",
+      "SQL_count": 2,
+      "budget_rows": 8,
+      "fragment_rows": 20,
+      "omitted": 0,
+      "private_module_executed": false,
+      "production_SQL_provider_MAIN_TG": 0
+    },
+    "same_run_common": "PRE_APPLICATION_BOUNDARY_FAILED_SHALLOW_GIT_NO_CONTROLLED_GROUP_EXECUTED",
+    "raw_private_fragments_repo_exported": false,
+    "production_SQL_provider_MAIN_TG": 0
+  },
+  "baseline_checkout_depth": 8,
+  "completed_kernel_case_retained_not_replayed": {
+    "run": 39618820750,
+    "head": "2220ecb79ef38c6bc401358e9625406572e7b711",
+    "artifact": 12353223297,
+    "digest": "sha256:f2fccd1896996555fb418543da93e84db7148e739756a31a8bf075c89d473878",
+    "SPEC": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0
+    },
+    "CONTROLLED_groups": 16,
+    "workflow_conclusion": "FAILURE_POSTGUARD_MAPPING_ONLY"
+  },
+  "late_only_repair": "Explicit literal overlay list + two root retained copies; ONLYassembly/hashguard, no Nodecase/input3fetch/read4"
+}
