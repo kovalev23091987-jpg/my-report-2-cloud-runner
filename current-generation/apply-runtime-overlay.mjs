@@ -35,6 +35,7 @@ const files=[
  'src/published-token-calendar.mjs',
  'src/funding-directional-policy.mjs',
  'src/htx-trade-json.mjs','src/htx-signed-tape.mjs',
+ 'src/anomaly-native-domain.mjs','migrations/20261021_anomaly_domain.sql',
  'src/verified-futures-flow-binding.mjs',
  'src/htx-volume-profile.mjs',
  'src/cross-venue-volume-profile.mjs',

@@ -1,0 +1,42 @@
+{
+  "schema": "FIRST_NATIVE_ANOMALY_DOMAIN_CONNECTED_QUALIFICATION_V1",
+  "semantic_status": "UNEXECUTED",
+  "base_main": "e1822973369acfe557a6186fe91dfe68ec6aaed5",
+  "baseline_git_commit": "e1822973369acfe557a6186fe91dfe68ec6aaed5",
+  "frozen_original": {
+    "PR": 598,
+    "head": "84b07f4e6c787dcd122d998b45f562e116396fdd"
+  },
+  "runtime_targets": [
+    {
+      "path": "current-generation/files/src/anomaly-native-domain.mjs",
+      "runtime_relative": "src/anomaly-native-domain.mjs",
+      "before_sha256": null,
+      "after_sha256": "a7e4bebe19c9ffecc27aa3274b5d4d5157ed32529356f21cbcb56bb5a0684ede"
+    },
+    {
+      "path": "current-generation/files/migrations/20261021_anomaly_domain.sql",
+      "runtime_relative": "migrations/20261021_anomaly_domain.sql",
+      "before_sha256": null,
+      "after_sha256": "aaa82c6a0b518c087e8f6b8aeee11d0d7456690cf57c8cae6afa68d7c9ba6592"
+    },
+    {
+      "path": "current-generation/files/src/htx-signed-tape.mjs",
+      "runtime_relative": "src/htx-signed-tape.mjs",
+      "before_sha256": "83a4a603fb19a788ebf751421c72b1df7e0ceca4edf6095d0a81120d3ae16e0d",
+      "after_sha256": "1b9767db0c2d32cc99da161d7d74b5d2463aba975bb20e154fa45a99e6c2c086"
+    }
+  ],
+  "callable": {
+    "path": "anomaly-research/native-anomaly-domain-20261021/connected.mjs",
+    "entry": "runNativeAnomalyDomainConnected"
+  },
+  "new_common_cases": 1,
+  "new_CONTROLLED_groups": 16,
+  "full_baseline_files": 613,
+  "full_candidate_files": 615,
+  "private_input": "Existing owner-approved artifact12346799964 bounded contract only; no rawinput in output and no private JS imported",
+  "native_SQL_providerHTTP_MAIN_Telegram": 0,
+  "native_schema_install_or_scheduler_or_sender": false,
+  "old_accepted_cases_manually_replayed": 0
+}
