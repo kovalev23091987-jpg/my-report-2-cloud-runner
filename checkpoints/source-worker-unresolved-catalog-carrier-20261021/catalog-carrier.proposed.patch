@@ -1,0 +1,26 @@
+--- a/current-generation/files/src/approved-htx-analysis-scope.mjs
++++ b/current-generation/files/src/approved-htx-analysis-scope.mjs
+@@ -23,3 +23,22 @@
+  const unavailable=qualifiedSuspendedContracts(missing,{native_catalog,observed_ts,counts,diagnostic}),unavailableCodes=new Set(unavailable.map(x=>x.contract)),unresolved=missing.filter(x=>!unavailableCodes.has(x));
+- return{contracts:accepted,audit:{schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',...APPROVED_HTX_SCOPE,observed_ts,expected_analysis_contracts:approved.size,accepted_analysis_contracts:accepted.length,missing_approved_analysis_contracts:missing,officially_unavailable_analysis_contracts:unavailable,unresolved_approved_analysis_contracts:unresolved,checked_analysis_contracts:accepted.length+unavailable.length,market_data_analysis_contracts:accepted.length,scan_count_basis:'APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE',outside_approved_crypto_contracts:outside,identity_rejected,duplicate_rejected,status:unresolved.length?'NOT_CLOSED':'CLOSED',structural_membership_only:true,source_clocks_refreshed:false,approved_universe_changed:false,...(diagnostic?{native_availability_diagnostic:diagnostic.value}:{})}};
++ const result={contracts:accepted,audit:{schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',...APPROVED_HTX_SCOPE,observed_ts,expected_analysis_contracts:approved.size,accepted_analysis_contracts:accepted.length,missing_approved_analysis_contracts:missing,officially_unavailable_analysis_contracts:unavailable,unresolved_approved_analysis_contracts:unresolved,checked_analysis_contracts:accepted.length+unavailable.length,market_data_analysis_contracts:accepted.length,scan_count_basis:'APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE',outside_approved_crypto_contracts:outside,identity_rejected,duplicate_rejected,status:unresolved.length?'NOT_CLOSED':'CLOSED',structural_membership_only:true,source_clocks_refreshed:false,approved_universe_changed:false,...(diagnostic?{native_availability_diagnostic:diagnostic.value}:{})}};
++ if(diagnostic&&unresolved.length){
++  // Retain only the already-loaded PUBLIC parsed response, never wire/body ACK.
++  // This separate field does not enlarge the existing 8192-byte helper trace.
++  const n=native_catalog,payload=n?.data,max=262144;
++  let snapshot={schema:'APPROVED_HTX_PUBLIC_PARSED_CATALOG_V1',status:'OMITTED_INVALID_INPUT',complete:false,representation:'ALREADY_PARSED_JSON_NOT_ORIGINAL_RESPONSE_TEXT_OR_WIRE',source_url:n?.url===HTX_CATALOG_URL?HTX_CATALOG_URL:null,http_status:Number.isSafeInteger(n?.http_status)?n.http_status:null,transport_ok:n?.ok===true,payload_status:payload?.status==='ok'?'ok':null,evaluation_ts:Number.isSafeInteger(observed_ts)?observed_ts:null,catalog_observed_ts:Number.isSafeInteger(n?.observed_ts)?n.observed_ts:null,catalog_source_ts:Number.isSafeInteger(payload?.ts)?payload.ts:null,original_body_completion_ts:null,raw_body_sha256:null,max_snapshot_utf8_bytes:max,emitted_json_basis:'EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH3',parsed_payload_utf8_bytes:null,omission_reason:'NATIVE_PUBLIC_CATALOG_INPUT_NOT_CLOSED',parsed_payload:null};
++  if(n?.ok===true&&n.http_status===200&&n.url===HTX_CATALOG_URL&&payload&&typeof payload==='object'&&!Array.isArray(payload)&&payload.status==='ok'&&Array.isArray(payload.data))try{
++   const text=JSON.stringify(payload,function(key,value){
++    if(Object.is(value,-0)||this[key]!==value||['undefined','function','symbol','bigint'].includes(typeof value)||typeof value==='number'&&!Number.isFinite(value))throw Error('NON_JSON_PARSED_VALUE');
++    if(value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)!==Object.prototype&&Object.getPrototypeOf(value)!==null)throw Error('NON_JSON_PARSED_OBJECT');
++    return value;
++   });
++   const parsed_payload_utf8_bytes=new TextEncoder().encode(text).byteLength;
++   const complete={...snapshot,status:'COMPLETE_PARSED_PUBLIC_CATALOG',complete:true,parsed_payload_utf8_bytes,omission_reason:null,parsed_payload:JSON.parse(text)};
++   const emitted=new TextEncoder().encode(JSON.stringify(complete,null,2).replace(/\n/g,'\n      ')).byteLength;
++   snapshot=emitted<=max?complete:{...snapshot,status:'OMITTED_OVERSIZE',parsed_payload_utf8_bytes,attempted_snapshot_utf8_bytes:emitted,omission_reason:'SNAPSHOT_UTF8_LIMIT'};
++  }catch{snapshot={...snapshot,status:'OMITTED_INVALID_OR_NON_LOSSLESS_JSON',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON'};}
++  result.audit.native_catalog_parsed_snapshot=snapshot;
++ }
++ return result;
+ }
