@@ -1,19 +1,21 @@
 --- a/current-generation/files/src/htx-signed-tape.mjs
 +++ b/current-generation/files/src/htx-signed-tape.mjs
-@@ -60,6 +60,12 @@
+@@ -60,6 +60,14 @@
     }
    }
    prior[type].body_knowledge={body_completed_ts:complete,body_text_utf8_bytes:bytes,body_text_sha256:digest,hash_scope:'SHA256_UTF8_RESPONSE_TEXT',hash_status:status};
-+  // Bind completion to this synchronous parser capture, not a later latest-attempt lookup.
-+  const minuteCapture=captured.get(contract)?.minutes;
-+  if(stage==='COMPLETED'&&complete!==null&&minuteCapture&&minuteCapture.observed_ts>=complete){
-+   minuteCapture.anomaly_body_receipt={...prior[type],captured_payload_sha256:hash(minuteCapture.payload),raw_body_sha256:null};
-+  }
++  // A completed bounded text must parse to this exact capture, not merely share its contract/clock.
++  const minuteCapture=captured.get(contract)?.minutes;let captured_payload_sha256=null;
++  if(stage==='COMPLETED'&&status==='TEXT_HASH_RECORDED'&&complete!==null&&minuteCapture&&minuteCapture.observed_ts>=complete)try{
++   const capturedHash=hash(minuteCapture.payload);
++   if(hash(JSON.parse(body_text))===capturedHash)captured_payload_sha256=capturedHash;
++  }catch{}
++  if(captured_payload_sha256!==null)minuteCapture.anomaly_body_receipt={...prior[type],captured_payload_sha256,raw_body_sha256:null};
 +
   }
   retainBounded(requestReceipts,contract,prior);
  }
-@@ -72,6 +78,16 @@
+@@ -72,6 +80,16 @@
   if(!captured.has(contract)&&captured.size>=8)captured.delete(captured.keys().next().value);
   const row=captured.get(contract)||{};row[type]={payload,observed_ts};captured.set(contract,row);
  }
