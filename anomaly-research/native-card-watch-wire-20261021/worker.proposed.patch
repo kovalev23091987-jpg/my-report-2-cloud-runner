@@ -1,0 +1,19 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -30,0 +31 @@
++import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';
+@@ -16747,0 +16749,4 @@
++  let anomalyDomainCandidate = null;
++  if (typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
++    anomalyDomainCandidate = prepareCapturedAnomalyCardWatch({contract,known_ts:now});
++  }
+@@ -16915,0 +16921,9 @@
++  if (anomalyDomainCandidate?.status === 'ANOMALY_DRAFT_CANDIDATE' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
++    try {
++      await env.REPORT2_ANOMALY_DOMAIN_COMMIT({logical_event_id:anomalyDomainCandidate.logical_event_id,prepare_from_origin:anomalyDomainCandidate.prepare_from_origin});
++    } catch {
++      // Capability retains the effective prepared/opid and UNKNOWN fence.
++      // No retry, replacement operation or public output from this optional lane.
++    }
++  }
++

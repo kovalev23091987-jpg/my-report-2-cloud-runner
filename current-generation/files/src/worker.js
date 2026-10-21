@@ -28,6 +28,7 @@ import {
   runOpportunityShadowCycle,
   selectOpportunityJournalCandidate,
 } from "./opportunity-intelligence-runtime.mjs";
+import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';
 
 import {
   MULTI_WAVE_VERSION,
@@ -16745,6 +16746,10 @@ async function buildDeepCheckInput(params, env) {
   }
   // Receipt observation cannot predate completion of its market inputs.
   now = Date.now();
+  let anomalyDomainCandidate = null;
+  if (typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
+    anomalyDomainCandidate = prepareCapturedAnomalyCardWatch({contract,known_ts:now});
+  }
   let opportunityIntelligence;
   try {
     const primaryOpportunityInputs =
@@ -16911,6 +16916,15 @@ async function buildDeepCheckInput(params, env) {
           false,
       },
     };
+  }
+
+  if (anomalyDomainCandidate?.status === 'ANOMALY_DRAFT_CANDIDATE' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
+    try {
+      await env.REPORT2_ANOMALY_DOMAIN_COMMIT({logical_event_id:anomalyDomainCandidate.logical_event_id,prepare_from_origin:anomalyDomainCandidate.prepare_from_origin});
+    } catch {
+      // Capability retains the effective prepared/opid and UNKNOWN fence.
+      // No retry, replacement operation or public output from this optional lane.
+    }
   }
 
   const executionRefresh = await refreshHtxExecutionQuoteIfNeeded({

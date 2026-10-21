@@ -157,7 +157,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "3c9e8e2ec2c5570d0ef00f050447f0ce5b11bab6d783616a525b372b26f924b3"
+      REPORT2_EXPECTED_WORKER_SHA: "e410ba6cdd00886e426e7148a0a715b8df86a755f559c170fae524c6ce6d28dd"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -192,6 +192,7 @@ jobs:
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
       REPORT2_LIQ_ACCESS_PATH_ONCE: ${{ vars.REPORT2_LIQ_ACCESS_PATH_ONCE || '' }}
+      REPORT2_ANOMALY_DOMAIN_COST_BOUNDS: ${{ vars.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS }}
       REPORT2_LIQ_ACCESS_PATH_NATURAL: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scheduled_recovery_run == true && inputs.reason == 'SCHEDULED_CADENCE_RECOVERY' && inputs.manual_run_authorized != true && inputs.trigger_only_run != true)) && '1' || '0' }}
       REPORT2_RUN_SOURCE: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && 'schedule' || 'manual' }}
       REPORT2_TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run == true && '1' || '0' }}
@@ -471,6 +472,7 @@ jobs:
             runtime/known-d1-day-guard.json
             runtime/report2-failure-accounting.json
             runtime/report2-liquidation-access-path.json
+            runtime/report2-anomaly-domain-receipts.json
             runtime/report2-completion-accounting.json
             runtime/raw24h-control-readback.json
             runtime/private-canonical-archive-receipt.json
