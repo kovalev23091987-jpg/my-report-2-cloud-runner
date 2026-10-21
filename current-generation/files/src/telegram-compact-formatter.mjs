@@ -1,3 +1,4 @@
+import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
 import { reasonDefinition, safeUserReason, sourceLabelRu } from './reason-registry.mjs';
 import {displaySnapshotChange,displayFutureLiquidations,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
 import {plainSpotFuturesJointConclusion} from './telegram-plain-facts.mjs';
@@ -14,6 +15,7 @@ export function formatTelegramCompact(result,{facts=[],liquidation_policy=liquid
  if(result?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',message:null};
  const bs=blockers(result),unknown=bs.some(x=>x.known===false||x.code==='UNKNOWN_INTERNAL_REASON');const ticker=text(result?.candidates?.[0]?.ticker||result?.candidates?.[0]?.contract||result?.metadata?.contract||'').replace(/-USDT$/i,'');
  const lines=[`${ticker||'Монета'} — ${unknown?'⛔️ ВЫВОД НЕ ГОТОВ':stateTitle(result)}`,`Снимок: ${result.snapshot_time_utc}`,`Общая оценка: ${fmtScore(result.scores?.overall_0_100)}`,`Монета интересна: ${fmtScore(result.scores?.coin_interest_0_100)}`,`Готовность ко входу: ${fmtScore(result.scores?.entry_readiness_0_100)}`];
+ const limitedNotice=approvedHtxLimitedReportNotice(result?.metadata?.internal_market_context?.limited_report_scope);if(limitedNotice)lines.push(limitedNotice);
  const evidence=(Array.isArray(facts)&&facts.length?facts:result.reasons).map(factLine).filter(Boolean).slice(0,5);lines.push(...evidence);const marketSummary=plainSpotFuturesJointConclusion(result);if(marketSummary)lines.push(marketSummary);const early=Array.isArray(result?.early_candidate?.items)?result.early_candidate.items:[];if(early.length){const e=early[0],name=text(e?.contract||e?.ticker).replace(/-USDT$/i,''),priority=finite(e?.operational_priority_0_100??e?.early_candidate_operational_priority_0_100),why=safeUserReason(e?.reason||e?.bridge_reason,{short:true})||'подтверждены ранние признаки';lines.push(`Ранний кандидат: ${name||ticker||'монета'}${priority!==null?` — приоритет ${Math.round(priority)}/100`:''}; ${why}.`);}
  const src=sources(result);if(src.length)lines.push(`Источники: ${src.join(', ')}.`);
  const sf=supportingFacts(result),contextParts=sf.slice(0,3).map(f=>{const src=sourceLabelRu(f.source)||f.source;const val=f.value===null||f.value===undefined?'подтверждено':`${f.value}${f.unit?` ${f.unit}`:''}`;return `${f.label}: ${val}${src?` — ${src}`:''}`;}),contextIndex=contextParts.length?lines.length:-1;if(contextIndex>=0)lines.push(`Доп. контекст: ${contextParts.join('; ')}.`);

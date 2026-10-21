@@ -1,5 +1,5 @@
 import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAnalysis} from './original-idea-recheck.mjs';
-import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
+import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract,approvedHtxLimitedReportAdmitted,approvedHtxLimitedScanAdmitted,APPROVED_HTX_LIMITED_CRON_MARKER} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt,deriveHtxSpotSameRunPathEvidence,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
@@ -4693,8 +4693,7 @@ async function persistStage0(
 
   try {
     if (
-      !scan?.health
-        ?.contracts ||
+      (!scan?.health?.contracts && !approvedHtxLimitedScanAdmitted(scan?.scope_audit?.approved_generation,{ts:scan?.timestamp,...scan?.counts,...scan?.coverage})) ||
       !scan?.counts
         ?.universe_total
     ) {
@@ -5315,7 +5314,7 @@ async function persistStage0(
    * consumer and persisted market-history shard. Unknown classifications are
    * retained in the audit and fail completeness; they are never silently
    * promoted to crypto. */
-  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,include_native_availability_diagnostic:true,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
+  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,include_native_availability_diagnostic:true,allow_owner_limited_six_unknown:true,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
   const contracts = allContracts.filter(
     (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED" && approvedScope.contracts.includes(row)
   );
@@ -8779,6 +8778,7 @@ async function runBoundedDeepCheckScheduler(
     const target
     of plan.selected
   ) {
+    if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===target.contract)){results.push({contract:target.contract,run_id:runId,execution_status:'SKIPPED',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN'});continue;}
     if(options?.execution_runtime==="GITHUB_ACTIONS_NODE"){
       const grant=typeof env?.REPORT2_DEEP_HTTP_ADMIT==="function"?env.REPORT2_DEEP_HTTP_ADMIT({logical_request_id:`FULL_DEEP:${runId}:${target.contract}`,lane:"hot",attempts:40}):null;
       if(grant?.allowed!==true||grant?.duplicate===true){results.push({contract:target.contract,run_id:runId,execution_status:"SKIPPED",reason:grant?.status||"NODE_DEEP_HTTP_ADMISSION_REQUIRED"});continue;}
@@ -16023,6 +16023,8 @@ async function buildDeepCheckInput(params, env) {
       "ETHFI-USDT"
     );
 
+  if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===contract))return{tool:'deep_check_input',contract,status:'NOT_CLOSED',data_sufficiency:'INSUFFICIENT',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN',entry_authorized:false};
+
   const futuresParams = {
     contract,
     notional_usdt: 1000,
@@ -17302,7 +17304,7 @@ async function buildDeepCheckInput(params, env) {
     });
   }
   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,swole_liquidation:swoleLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const internalMarketContext={...globalInternalContext,...(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)?{limited_report_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report}:{}),candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,swole_liquidation:swoleLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
   let canonicalExecutionContextSource=null;
   // One bounded indexed read of the source already saved by this exact cycle;
@@ -19913,7 +19915,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
         .map(row=>({contract:row?.contract??null,...(row?.full_evidence_persistence||{})}))
         .find(row=>row?.status&&!(row.persisted===true&&row.status==='CLOSED'&&Number(row.insert_changes)===1));
       const scanPersistenceStatus=scan?.persistence?.status||null;
-      const scanCompleted=Boolean(scan?.health?.contracts&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
+      const limitedScopeAdmitted=approvedHtxLimitedScanAdmitted(scan?.scope_audit?.approved_generation,{ts:scan?.timestamp,...scan?.counts,...scan?.coverage});
+      const scanCompleted=Boolean((scan?.health?.contracts||limitedScopeAdmitted)&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
       const scanFailure=scanCompleted?null:{
         status:'DEGRADED_PIPELINE',
         reason:(!scan?.health?.contracts||!(scan?.counts?.universe_total>0))?'STAGE0_SCAN_FAILED':'STAGE0_PERSISTENCE_FAILED',
@@ -20238,7 +20241,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
         JSON.stringify({ run_id: runId, ...stage392FullEvidenceMaintenance })
       );
       const persistenceStatus=scanPersistenceStatus;
-      const success=scanCompleted;
+      const success=scanCompleted&&!limitedScopeAdmitted;
 
       const completedTs =
         Date.now();
@@ -20277,9 +20280,9 @@ const __REPORT2_ORIGINAL_HANDLER = {
             persistenceStatus,
 
           error_text:
-            success
-              ? null
-              : JSON.stringify(
+            scanCompleted&&limitedScopeAdmitted
+              ? APPROVED_HTX_LIMITED_CRON_MARKER
+              : success ? null : JSON.stringify(
                   scan?.endpoint_errors ||
                   scan?.persistence ||
                   {}

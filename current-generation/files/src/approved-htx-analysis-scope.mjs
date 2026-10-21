@@ -8,7 +8,7 @@ export function approvedHtxAnalysisAssetForContract(contract_code){
  const exact=String(contract_code??'').trim().toUpperCase(),asset=approved.get(exact);
  return asset&&exact===`${asset}-USDT`?asset:null;
 }
-export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,include_native_availability_diagnostic=false}={}){
+export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,include_native_availability_diagnostic=false,allow_owner_limited_six_unknown=false}={}){
  const crypto=(Array.isArray(rows)?rows:[]).filter(x=>x?.instrument_scope?.classification==='CRYPTO_CONFIRMED'),counts=new Map();
  for(const x of Array.isArray(rows)?rows:[])counts.set(x?.contract_code,(counts.get(x?.contract_code)||0)+1);
  const accepted=[],outside=[],identity_rejected=[],duplicate_rejected=[];
@@ -44,6 +44,10 @@ export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,in
    }
   }catch{snapshot={...snapshot,status:'OMITTED_INVALID_OR_NON_LOSSLESS_JSON',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON'};}
   result.audit.native_catalog_parsed_snapshot=snapshot;
+ }
+ if(allow_owner_limited_six_unknown===true&&qualifiesExactSixUnknown(result.audit,{native_catalog,accepted,counts,input_rows:rows})){
+  const source=native_catalog.data.ts,received=native_catalog.observed_ts;
+  result.audit.limited_report={schema:'OWNER_APPROVED_EXACT_SIX_UNKNOWN_V1',mode:'LIMITED_99_PLUS_6_UNKNOWN',manifest_sha256:APPROVED_HTX_SCOPE.manifest_sha256,registry_total:105,market_checked:99,catalog_scope_unknown_count:0,catalog_rows:native_catalog.data.data.length,scope_status:'NOT_CLOSED',evaluation_ts:observed_ts,source_ts:source,observed_ts:received,unknown_contracts:EXACT_SIX_UNKNOWN.map(contract=>({contract,registry_symbol:approved.get(contract),status:'NO_CURRENT_NATIVE_CATALOG_RECORD_AT_SOURCE_CUT',native_status:null,classification:null,market_data_available:null,analysis_eligible:false,entry_authorized:false,market_prices_filled:false}))};
  }
  return result;
 }
@@ -97,4 +101,39 @@ export function approvedHtxScopeAccounted(a){
  if(a.accepted_analysis_contracts===approved.size)return true; // exact legacy complete-market scope
  const u=a.officially_unavailable_analysis_contracts,m=a.missing_approved_analysis_contracts;
  return Array.isArray(u)&&Array.isArray(m)&&u.length>0&&u.length===m.length&&new Set(u.map(x=>x?.contract)).size===u.length&&a.accepted_analysis_contracts+u.length===approved.size&&a.checked_analysis_contracts===approved.size&&a.market_data_analysis_contracts===a.accepted_analysis_contracts&&Array.isArray(a.unresolved_approved_analysis_contracts)&&a.unresolved_approved_analysis_contracts.length===0&&a.identity_rejected?.length===0&&a.duplicate_rejected?.length===0&&u.every(x=>m.includes(x?.contract)&&approved.get(x.contract)===x.symbol&&x.status==='HTX_OFFICIALLY_SUSPENDED'&&x.contract_status===3&&x.source_url===HTX_CATALOG_URL&&x.classification==='CRYPTO_CONFIRMED'&&Number.isSafeInteger(x.observed_ts)&&Number.isSafeInteger(x.source_ts)&&x.source_ts<=x.observed_ts&&x.observed_ts-x.source_ts<=120000&&x.observed_ts>=a.observed_ts&&x.observed_ts-a.observed_ts<=120000&&x.native_scope?.business_type==='swap'&&x.native_scope?.contract_type==='swap'&&x.native_scope?.trade_partition==='USDT'&&Array.isArray(x.native_scope?.labels)&&Array.isArray(x.native_scope?.tradfi_labels)&&x.market_data_available===false&&x.analysis_eligible===false&&x.entry_authorized===false&&x.market_prices_filled===false);
+}
+
+// Separate owner-approved limited report authority; never a CLOSED/105 scope.
+const EXACT_SIX_UNKNOWN=Object.freeze(['BTR-USDT','DOS-USDT','GPS-USDT','PIPPIN-USDT','SKR-USDT','UB-USDT']);
+export const APPROVED_HTX_LIMITED_CRON_MARKER='OWNER_APPROVED_LIMITED_99_PLUS_6_UNKNOWN';
+const exactSix=rows=>Array.isArray(rows)&&rows.length===6&&new Set(rows).size===6&&EXACT_SIX_UNKNOWN.every(x=>rows.includes(x));
+const safeClock=v=>Number.isSafeInteger(v)&&v>0;
+const limitedClocks=(evaluation,source,received)=>safeClock(evaluation)&&safeClock(source)&&safeClock(received)&&received>=evaluation&&received-evaluation<=120000&&source<=received&&received-source<=120000;
+function qualifiesExactSixUnknown(a,{native_catalog:n,accepted,counts,input_rows}){
+ const snapshot=a?.native_catalog_parsed_snapshot;
+ if(snapshot?.complete!==true||snapshot.status!=='COMPLETE_PARSED_PUBLIC_CATALOG'||snapshot.max_snapshot_utf8_bytes!==262144||snapshot.source_url!==HTX_CATALOG_URL||snapshot.catalog_source_ts!==n?.data?.ts||snapshot.catalog_observed_ts!==n?.observed_ts||snapshot.evaluation_ts!==a.observed_ts||!Array.isArray(input_rows)||input_rows.some(r=>!['CRYPTO_CONFIRMED','NON_CRYPTO_HTX_CLASSIFIED'].includes(r?.instrument_scope?.classification)))return false;
+ if(a?.status!=='NOT_CLOSED'||a.expected_analysis_contracts!==105||a.accepted_analysis_contracts!==99||a.checked_analysis_contracts!==99||a.market_data_analysis_contracts!==99||!exactSix(a.missing_approved_analysis_contracts)||!exactSix(a.unresolved_approved_analysis_contracts)||a.officially_unavailable_analysis_contracts.length||a.identity_rejected.length||a.duplicate_rejected.length||accepted.some(r=>r.data_status!=='CLOSED')||!EXACT_SIX_UNKNOWN.every(c=>!counts.get(c)))return false;
+ if(n?.ok!==true||n.http_status!==200||n.url!==HTX_CATALOG_URL||n.data?.status!=='ok'||!Array.isArray(n.data.data)||typeof n.classify!=='function'||!limitedClocks(a.observed_ts,n.data.ts,n.observed_ts))return false;
+ const rows=n.data.data,ids=new Set(),normal=v=>typeof v==='string'?v.normalize('NFC').trim().toUpperCase().replace(/[-_\/\s]/g,''):null;
+ for(const r of rows){
+  if(!r||typeof r!=='object'||Array.isArray(r)||typeof r.contract_code!=='string'||!r.contract_code||typeof r.symbol!=='string'||!r.symbol||typeof r.pair!=='string'||!r.pair||!Number.isSafeInteger(r.contract_status)||r.contract_status<0||r.contract_status>8||r.contract_code!==r.contract_code.trim()||r.symbol!==r.symbol.trim()||r.pair!==r.pair.trim()||!normal(r.contract_code)||ids.has(normal(r.contract_code)))return false;
+  ids.add(normal(r.contract_code));
+  if(EXACT_SIX_UNKNOWN.some(c=>[r.contract_code,r.pair].some(v=>normal(v)===normal(c))||normal(r.symbol)===normal(approved.get(c))))return false;
+ }
+ return accepted.every(r=>rows.filter(n=>n.contract_code===r.contract_code&&n.symbol===r.symbol&&n.contract_status===1&&n.business_type==='swap'&&n.contract_type==='swap'&&n.trade_partition==='USDT'&&Array.isArray(n.labels)&&Array.isArray(n.tradfi_labels)).length===1);
+}
+export function approvedHtxLimitedReportReceipt(r){
+ return r?.schema==='OWNER_APPROVED_EXACT_SIX_UNKNOWN_V1'&&r.mode==='LIMITED_99_PLUS_6_UNKNOWN'&&r.manifest_sha256===APPROVED_HTX_SCOPE.manifest_sha256&&r.registry_total===105&&r.market_checked===99&&r.catalog_scope_unknown_count===0&&Number.isSafeInteger(r.catalog_rows)&&r.catalog_rows>=99&&r.scope_status==='NOT_CLOSED'&&limitedClocks(r.evaluation_ts,r.source_ts,r.observed_ts)&&Array.isArray(r.unknown_contracts)&&exactSix(r.unknown_contracts.map(x=>x?.contract))&&r.unknown_contracts.every(x=>Object.keys(x).sort().join(',')==='analysis_eligible,classification,contract,entry_authorized,market_data_available,market_prices_filled,native_status,registry_symbol,status'&&x.registry_symbol===approved.get(x.contract)&&x.status==='NO_CURRENT_NATIVE_CATALOG_RECORD_AT_SOURCE_CUT'&&x.native_status===null&&x.classification===null&&x.market_data_available===null&&x.analysis_eligible===false&&x.entry_authorized===false&&x.market_prices_filled===false);
+}
+export function approvedHtxLimitedReportAdmitted(a){
+ return a?.status==='NOT_CLOSED'&&a.manifest_sha256===APPROVED_HTX_SCOPE.manifest_sha256&&a.expected_analysis_contracts===105&&a.accepted_analysis_contracts===99&&a.checked_analysis_contracts===99&&a.market_data_analysis_contracts===99&&exactSix(a.missing_approved_analysis_contracts)&&exactSix(a.unresolved_approved_analysis_contracts)&&a.officially_unavailable_analysis_contracts?.length===0&&a.identity_rejected?.length===0&&a.duplicate_rejected?.length===0&&approvedHtxLimitedReportReceipt(a.limited_report)&&a.observed_ts===a.limited_report.evaluation_ts&&a.native_catalog_parsed_snapshot?.complete===true&&a.native_catalog_parsed_snapshot.status==='COMPLETE_PARSED_PUBLIC_CATALOG'&&a.native_catalog_parsed_snapshot.evaluation_ts===a.observed_ts&&a.native_catalog_parsed_snapshot.catalog_source_ts===a.limited_report.source_ts&&a.native_catalog_parsed_snapshot.catalog_observed_ts===a.limited_report.observed_ts;
+}
+export function approvedHtxLimitedScanAdmitted(a,s){
+ return approvedHtxLimitedReportAdmitted(a)&&s?.ts===a.observed_ts&&s.universe_total===105&&s.scanned===99&&s.errors===0&&s.stale===0&&s.stage0_coverage_pct===(99/105)*100;
+}
+export function approvedHtxLimitedCronAdmitted(c,a,s=null){
+ return approvedHtxLimitedReportAdmitted(a)&&c?.status==='PARTIAL'&&c.error_text===APPROVED_HTX_LIMITED_CRON_MARKER&&c.persistence_status==='CLOSED'&&c.universe_total===105&&c.scanned===99&&safeClock(c.started_ts)&&safeClock(c.completed_ts)&&c.started_ts<=a.observed_ts&&a.observed_ts<=c.completed_ts&&(s===null||approvedHtxLimitedScanAdmitted(a,s));
+}
+export function approvedHtxLimitedReportNotice(r){
+ return approvedHtxLimitedReportReceipt(r)?'Ограниченный охват: проверено 99 из 105 монет. BTR, DOS, GPS, PIPPIN, SKR и UB отсутствуют в текущем каталоге ХТХ; доступность не установлена.':null;
 }

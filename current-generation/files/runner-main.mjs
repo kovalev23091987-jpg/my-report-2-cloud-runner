@@ -1,3 +1,4 @@
+import {approvedHtxLimitedReportAdmitted,approvedHtxLimitedCronAdmitted} from './src/approved-htx-analysis-scope.mjs';
 import {createFailedD1RunAccounting} from './src/failed-d1-run-accounting.mjs';
 import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
 import {buildMaintenanceCadenceReceipt} from './src/maintenance-cadence-receipt.mjs';
@@ -150,7 +151,8 @@ function buildEnv() {
     REPORT2_MANUAL_COMMAND: envText("REPORT2_MANUAL_COMMAND", { required:false }),
   };
 }
-function assertClosedCron(cron, scan) {
+function assertClosedCron(cron, scan, approvedScope=null) {
+  if(scan&&approvedHtxLimitedCronAdmitted(cron,approvedScope,scan))return;
   if (!cron || cron.status !== "SUCCESS") throw new Error(`CRON_NOT_SUCCESS:${JSON.stringify(cron || {})}`);
   if (cron.completed_ts == null) throw new Error("CRON_NOT_COMPLETED");
   if (!(Number(cron.universe_total) > 0)) throw new Error("CRON_UNIVERSE_EMPTY");
@@ -1059,7 +1061,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
   if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);
   if (Number(cron.scheduled_time) !== Number(started)) throw new Error(`CRON_IDENTITY_MISMATCH:${cron.scheduled_time}!=${started}`);
-  if (cron.status !== "SUCCESS" || cron.completed_ts == null) {
+  if ((cron.status !== "SUCCESS"&&!approvedHtxLimitedCronAdmitted(cron,env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)) || cron.completed_ts == null) {
     const failure=new Error(`CRON_IDENTITY_NOT_SUCCESS:${JSON.stringify(cron)}`);
     failure.partial_cron_failure={schema:'PARTIAL_CRON_IN_MEMORY_DIAGNOSTIC_V1',generation,head:process.env.GITHUB_SHA||null,source_run_id:process.env.GITHUB_RUN_ID||null,cron,approved_universe_audit:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null,d1_day_admission:d1DayAdmission,additional_SQL:0,additional_source_HTTP:0,full_report_completed:false,entry_authorized:false,Telegram_SENT_claimed:false};
     throw failure;
@@ -1067,7 +1069,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log("CRON_IDENTITY_BINDING", JSON.stringify({ expected_scheduled_time:started, selected_scheduled_time:Number(cron.scheduled_time), run_id:String(cron.run_id || "") }));
   const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts BETWEEN ?1 AND ?2 ORDER BY ABS(ts - ?3) ASC LIMIT 1").bind(Number(cron.started_ts), Number(cron.completed_ts), Number(cron.started_ts)).first();
   console.log("SCAN_IDENTITY_BINDING", JSON.stringify({ cron_started_ts:Number(cron.started_ts), cron_completed_ts:Number(cron.completed_ts), selected_scan_ts:Number(scan?.ts || 0) || null }));
-  assertClosedCron(cron, scan);
+  assertClosedCron(cron, scan, env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT);
   console.log("R8_8_D1_PRE_SIDECARS_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
   // V3 Telegram journal may persist state before network delivery is enabled.
   // Network delivery itself remains fail-closed until the dedicated env gate is on.
@@ -1203,9 +1205,10 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (!healthBudget.allowed) {
     v3PipelineHealthSidecar = {version:"v3-pipeline-health-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",market_signal:false,reasons:v3SidecarsPreactionBudget.reasons||[]};
   } else {
-    v3PipelineHealthSidecar = await runV3PipelineHealthSidecar(env.DATA_DB, {cron,scan,telegram_zero_reason:telegramZeroReason,critical_feed_state:v3CriticalFeedState,now_ts:Date.now()});
+    v3PipelineHealthSidecar = await runV3PipelineHealthSidecar(env.DATA_DB, {cron,scan,telegram_zero_reason:telegramZeroReason,critical_feed_state:v3CriticalFeedState,approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT,now_ts:Date.now()});
   }
   console.log("V3_PIPELINE_HEALTH_SIDECAR", JSON.stringify(v3PipelineHealthSidecar));
+  if(approvedHtxLimitedReportAdmitted(env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&(v3PipelineHealthSidecar.status!=='CLOSED'||v3PipelineHealthSidecar.health?.global_report_admission!=='ADMITTED'))throw new Error('LIMITED_REPORT_PIPELINE_HEALTH_NOT_ADMITTED');
   let v3TelegramDeliverySidecar;
   const postV7DeliveryBudget = postV7UnifiedEnabled ? evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,extraRowsWritten:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written+1}) : d1PreTelegramBudget;
   if (!postV7DeliveryBudget.allowed) {
@@ -1220,7 +1223,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
 
   // Preserve the already collected canonical result even if a later observer fails.
   const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor,include_primary_selection_diagnostic:true});
-  const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
+  const canonicalRunOutput={...canonicalRunOutputBase,...(approvedHtxLimitedReportAdmitted(env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)?{limited_report_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report,full_report_completed:false,limited_report_completed:['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(canonicalRunOutputBase.status)&&canonicalRunOutputBase.reason===null}:{}),liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,
     scanned_market_data:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.market_data_analysis_contracts??Number(cron.scanned),
@@ -1228,6 +1231,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     scan_count_basis:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.scan_count_basis||'LEGACY_MARKET_DATA_ONLY',
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.status==='CLOSED'&&Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
+  if(canonicalRunOutput.limited_report_scope)canonicalRunOutput.report_text=formatManualRunSummary(canonicalRunOutput);
   if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};
   canonicalOutputForFailure=canonicalRunOutput;
   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));

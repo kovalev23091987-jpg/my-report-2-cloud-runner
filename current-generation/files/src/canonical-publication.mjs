@@ -1,3 +1,4 @@
+import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
 import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {formatManualReport} from './manual-report-formatter.mjs';
 import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
@@ -175,6 +176,7 @@ export function renderCanonicalTelegram({canonical,lifecycle_event,context_polic
  const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007'||context_policy===RELEVANT_LIQUIDATION_PRESENTATION;
  const liquidationPolicy=context_policy===RELEVANT_LIQUIDATION_PRESENTATION?context_policy:liquidationPresentationPolicy(canonical.observed_ts);
  const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${factual?factualIdeaBasis(canonical):basisLabel(canonical)}.`];
+ const limitedNotice=approvedHtxLimitedReportNotice(canonical?.metadata?.internal_market_context?.limited_report_scope);if(limitedNotice)lines.push('',limitedNotice);
  const marketSummary=plainSpotFuturesJointConclusion(canonical);
  if(marketSummary)lines.push('',marketSummary);
  const brief=context_policy!=='ORIGINAL_V5_20261006';
