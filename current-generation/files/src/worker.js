@@ -291,8 +291,8 @@ function normalizeSpotSymbol(value) {
 async function fetchJson(url) {
   let timeout = null;
   const started_ts=Date.now();
-  let received_ts=null,http_status=null,reading_body=false;
-  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code});
+  let received_ts=null,http_status=null,reading_body=false,body_completed_ts=null,body_text=null;
+  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code,body_completed_ts,body_text});
   retain('REQUEST_STARTED');
   try {
     const controller = new AbortController();
@@ -310,6 +310,7 @@ async function fetchJson(url) {
     received_ts=Date.now();http_status=response.status;retain('HTTP_RESPONSE');
     reading_body=true;
     const text = await response.text();
+    body_completed_ts=Date.now();body_text=text;
     reading_body=false;
     let data;
     try {
