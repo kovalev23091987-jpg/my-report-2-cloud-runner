@@ -104,7 +104,7 @@ function fixture(DatabaseSync, RemoteD1Database, queries, mode = {}, clock = {no
       executed.push({SQL_sha256: sha(statement.sql), params: [...statement.params], rows: rows.length});
       return {success: true, results: rows};
     };
-    const result = isBatch ? payload.statements.map(all) : all(payload);
+    let result = isBatch ? payload.statements.map(all) : all(payload);
     if (!isBatch && diagnosticCalls === 1 && mode.wholeReceiptBound) result.CONTROLLED_pretty_expansion = Array(7000).fill(0);
     let usage = isBatch ? {statements: payload.statements.map(() => ({measured: true, rows_read: 3, rows_written: 0}))} : {measured: true, rows_read: 2, rows_written: 0};
     if (!isBatch && diagnosticCalls === 1) {
@@ -113,6 +113,7 @@ function fixture(DatabaseSync, RemoteD1Database, queries, mode = {}, clock = {no
       if (mode.writeChanged) usage = {measured: true, rows_read: 2, rows_written: 1};
       if (mode.expireBetween) clock.now = NOW + 600000;
       if (mode.dayBetween) clock.now = NOW + 86400000;
+      if (mode.undefinedReply) result = undefined;
     }
     let body = JSON.stringify({ok: true, result, usage});
     if (!isBatch && diagnosticCalls === 1 && mode.nativeExactBoundary) body = body.padEnd(524288, ' ');
@@ -277,9 +278,13 @@ export async function runLiquidationAccessPathCaptureConnected({runtime_root, ba
     try {
       const input = await originalInput(context, functions, selected, mode);
       const actualSnapshot = context.db.usageSnapshot.bind(context.db);
+      context.actualSnapshot = actualSnapshot;
       if (mode.hugeTargets) context.db.usageSnapshot = () => ({...actualSnapshot(), targets: {CONTROLLED: 'x'.repeat(70000)}});
       if (mode.unknownBefore) context.db.usageSnapshot = () => ({...actualSnapshot(), unknown_ops: 1});
-      if (mode.snapshotThrows) context.db.usageSnapshot = () => { throw Error('CONTROLLED_SNAPSHOT_FAILURE'); };
+      if (mode.snapshotThrows) context.db.usageSnapshot = () => {
+        if (context.diagnosticCalls() > 0) throw Error('CONTROLLED_POST_REPLY_SNAPSHOT_FAILURE');
+        return actualSnapshot();
+      };
       if (mode.unknownReply) memory.onWrite = () => {
         if (memory.attempts.length > 1) assert.equal(context.db.beforeRequest?.({}).allowed, false, 'UNKNOWN_FENCE_NOT_SET_BEFORE_ARTIFACT_WRITE');
       };
@@ -364,8 +369,22 @@ export async function runLiquidationAccessPathCaptureConnected({runtime_root, ba
     // Additional variants belong to that same group, not extra TAP/group claims.
     for (const mode of [{unknownBefore: true}, {snapshotThrows: true}]) await run(mode, async ({context, memory, error}) => {
       assert.equal(error?.message, 'LIQ_ACCESS_PATH_UNKNOWN_STOP_ALL_NATIVE_SQL');
-      assert.equal(context.diagnosticCalls(), 0);
-      assert.equal(memory.saved.at(-1).status, 'CURRENT_NATIVE_USAGE_NOT_CLOSED_BEFORE_DIAGNOSTIC');
+      assert.equal(context.diagnosticCalls(), mode.snapshotThrows ? 1 : 0);
+      const last = memory.saved.at(-1);
+      assert.equal(last.status, mode.snapshotThrows ? 'NATIVE_USAGE_NOT_CLOSED' : 'CURRENT_NATIVE_USAGE_NOT_CLOSED_BEFORE_DIAGNOSTIC');
+      if (mode.snapshotThrows) {
+        assert.equal(last.native_queries[0].reply_received, true);
+        assert.equal(last.native_queries[0].usage_snapshot_error, 'CURRENT_NATIVE_USAGE_SNAPSHOT_FAILED');
+        assert.equal(last.native_queries[0].usage_after, null);
+        // Restore only the CONTROLLED observation harness, never the deny-all fence.
+        context.db.usageSnapshot = context.actualSnapshot;
+        const actual = context.db.usageSnapshot();
+        assert.equal(actual.rows_read, 8); // 6 original + the already settled measured2 read.
+        assert.equal(actual.rows_written, 0);
+        assert.equal(actual.requests, 3);
+        assert.equal(actual.unknown_ops, 0, 'SNAPSHOT_FAILURE_MUST_NOT_FABRICATE_NATIVE_COUNTERS');
+        await finalizerMustBeDenied(context, finalizeRunUsage);
+      }
       let wireReached = false;
       try { await context.db.prepare('SELECT 1').all(); wireReached = true; }
       catch (denied) { assert.equal(denied.message, 'D1_LOCAL_HTTP_ADMISSION_DENIED'); }
@@ -373,7 +392,7 @@ export async function runLiquidationAccessPathCaptureConnected({runtime_root, ba
     });
     controls.at(-1).variants = 3;
 
-    const unsafeModes = [{transportFailure: true}, {nativeOversize: true}, {unknownReply: true, failWriteNumber: 2}];
+    const unsafeModes = [{transportFailure: true}, {nativeOversize: true}, {unknownReply: true, undefinedReply: true, failWriteNumber: 2}];
     for (const mode of unsafeModes) await run(mode, async ({context, memory, error}) => {
       assert.ok(error); assert.equal(context.diagnosticCalls(), 1);
       assert.equal(context.db.usageSnapshot().unknown_ops, 1);
@@ -381,6 +400,7 @@ export async function runLiquidationAccessPathCaptureConnected({runtime_root, ba
         assert.equal(error.message, 'CONTROLLED_ARTIFACT_WRITE_FAILED');
         assert.equal(memory.saved.length, 1, 'INITIAL_ORIGINAL_RESULT_NOT_PRESERVED');
         assert.equal(memory.attempts.at(-1).native_queries[0].reply_received, true);
+        assert.equal(memory.attempts.at(-1).native_queries[0].reply_serialization_failed, true, 'UNDEFINED_REPLY_DID_NOT_EXERCISE_SERIALIZER_FAILURE');
       } else assert.equal(memory.saved.at(-1).status, 'NATIVE_USAGE_NOT_CLOSED');
       await finalizerMustBeDenied(context, finalizeRunUsage);
     });
