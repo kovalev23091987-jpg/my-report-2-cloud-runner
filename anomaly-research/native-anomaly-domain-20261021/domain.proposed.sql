@@ -25,6 +25,7 @@ CREATE TABLE report2_anomaly_bundle_v1 (
  CHECK(json_extract(state_json,'$.watch.next_check_ts') IS next_check_ts),
  CHECK(COALESCE(json_extract(state_json,'$.last_snapshot.ts'),-1)=last_snapshot_ts),
  CHECK(COALESCE(json_type(state_json,'$.outbox'),'')='object'),
+ CHECK(COALESCE(json_type(state_json,'$.outcomes'),'')='object'),
  CHECK(COALESCE(json_type(state_json,'$.revisions'),'')='array'),
  CHECK(json_array_length(state_json,'$.revisions')<=32),
  CHECK(COALESCE(json_extract(state_json,'$.native_admission_qualified'),-1)=0),
@@ -105,6 +106,10 @@ BEGIN
  SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outbox') WHERE json_extract(value,'$.status') IS NOT 'DRAFT')
   OR (SELECT COUNT(*) FROM json_each(NEW.state_json,'$.outbox'))>32
   THEN RAISE(ABORT,'ANOMALY_SENDER_NOT_ENABLED') END;
+ SELECT CASE WHEN (SELECT COUNT(*) FROM json_each(NEW.state_json,'$.outcomes'))<>json_array_length(NEW.plan_json,'$.cells')
+  OR EXISTS(SELECT 1 FROM json_each(NEW.plan_json,'$.cells') c WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outcomes') o WHERE o.key=json_extract(c.value,'$.key') AND json_extract(o.value,'$.target_ts')=json_extract(c.value,'$.target_ts') AND json_extract(o.value,'$.status') IN('PENDING','CLOSED_FACTUAL','CENSORED_FINAL')))
+  OR (NEW.next_check_ts IS NULL AND EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outcomes') WHERE json_extract(value,'$.status')='PENDING'))
+  THEN RAISE(ABORT,'ANOMALY_OUTCOME_PLAN_OR_DUE_CONFLICT') END;
 END;
 CREATE TRIGGER report2_anomaly_bundle_v1_update BEFORE UPDATE ON report2_anomaly_bundle_v1
 BEGIN
@@ -117,12 +122,17 @@ BEGIN
  SELECT CASE WHEN json_extract(NEW.state_json,'$.evaluated_ts')<json_extract(OLD.state_json,'$.evaluated_ts') OR NEW.last_snapshot_ts<OLD.last_snapshot_ts
   OR (NEW.last_snapshot_ts=OLD.last_snapshot_ts AND json_extract(NEW.state_json,'$.last_snapshot') IS NOT json_extract(OLD.state_json,'$.last_snapshot'))
   THEN RAISE(ABORT,'ANOMALY_SNAPSHOT_CLOCK_CONFLICT') END;
- SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(OLD.state_json,'$.outbox') old WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outbox') fresh WHERE fresh.key=old.key AND fresh.value=old.value))
-  OR EXISTS(SELECT 1 FROM json_each(OLD.state_json,'$.revisions') old WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.revisions') fresh WHERE fresh.value=old.value))
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(OLD.state_json,'$.outbox') prior_ref WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outbox') next_ref WHERE next_ref.key=prior_ref.key AND next_ref.value=prior_ref.value))
+  OR EXISTS(SELECT 1 FROM json_each(OLD.state_json,'$.revisions') prior_ref WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.revisions') next_ref WHERE next_ref.value=prior_ref.value))
   THEN RAISE(ABORT,'ANOMALY_PROTECTED_REFERENCE_REMOVAL') END;
  SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outbox') WHERE json_extract(value,'$.status') IS NOT 'DRAFT')
   OR (SELECT COUNT(*) FROM json_each(NEW.state_json,'$.outbox'))>32
   THEN RAISE(ABORT,'ANOMALY_SENDER_NOT_ENABLED') END;
+ SELECT CASE WHEN (SELECT COUNT(*) FROM json_each(NEW.state_json,'$.outcomes'))<>json_array_length(NEW.plan_json,'$.cells')
+  OR EXISTS(SELECT 1 FROM json_each(NEW.plan_json,'$.cells') c WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outcomes') o WHERE o.key=json_extract(c.value,'$.key') AND json_extract(o.value,'$.target_ts')=json_extract(c.value,'$.target_ts') AND json_extract(o.value,'$.status') IN('PENDING','CLOSED_FACTUAL','CENSORED_FINAL')))
+  OR (NEW.next_check_ts IS NULL AND EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outcomes') WHERE json_extract(value,'$.status')='PENDING'))
+  OR EXISTS(SELECT 1 FROM json_each(OLD.state_json,'$.outcomes') o WHERE json_extract(o.value,'$.status')<>'PENDING' AND NOT EXISTS(SELECT 1 FROM json_each(NEW.state_json,'$.outcomes') n WHERE n.key=o.key AND n.value=o.value))
+  THEN RAISE(ABORT,'ANOMALY_OUTCOME_PLAN_OR_DUE_CONFLICT') END;
 END;
 -- Receipt/card integrity and future retention remain protected, including unknown ACKs.
 CREATE TRIGGER report2_anomaly_bundle_v1_no_delete BEFORE DELETE ON report2_anomaly_bundle_v1 BEGIN SELECT RAISE(ABORT,'ANOMALY_RETENTION_NOT_QUALIFIED'); END;

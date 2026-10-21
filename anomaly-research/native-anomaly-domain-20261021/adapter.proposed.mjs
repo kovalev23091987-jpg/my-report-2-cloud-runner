@@ -58,6 +58,8 @@ function validateParts({logical_event_id,card,descriptor,plan,state}){
  need(plan.cells.some(x=>x.direction==='LONG')&&plan.cells.some(x=>x.direction==='SHORT')&&plan.cells.some(x=>x.horizon_ms>=90*86400000),'LONG_SHORT_LONG_HORIZON_PLAN_REQUIRED');
  need(object(state)&&clock(state.evaluated_ts)&&state.evaluated_ts>=card.first_known_ts&&object(state.watch)&&typeof state.watch.active==='boolean'&&(state.watch.next_check_ts===null||clock(state.watch.next_check_ts))&&object(state.last_snapshot)&&Number.isSafeInteger(state.last_snapshot.ts)&&state.last_snapshot.ts>=0&&state.last_snapshot.ts<=state.evaluated_ts,'WATCH_AND_CURSOR_REQUIRED');
  need(object(state.outbox)&&Object.keys(state.outbox).length<=DOMAIN_BOUNDS.outbox&&Array.isArray(state.revisions)&&state.revisions.length<=DOMAIN_BOUNDS.revisions,'BOUNDED_DOMAIN_STATE_REQUIRED');
+ need(object(state.outcomes)&&Object.keys(state.outcomes).length===plan.cells.length&&plan.cells.every(c=>object(state.outcomes[c.key])&&state.outcomes[c.key].target_ts===c.target_ts&&['PENDING','CLOSED_FACTUAL','CENSORED_FINAL'].includes(state.outcomes[c.key].status)),'EXACT_PLANNED_OUTCOME_STATE_REQUIRED');
+ need(!Object.values(state.outcomes).some(o=>o.status==='PENDING')||state.watch.next_check_ts!==null,'PENDING_OUTCOMES_REQUIRE_DUE_TIME');
  need(Object.values(state.outbox).every(x=>object(x)&&x.status==='DRAFT'&&x.form_status==='NOT_APPROVED'&&x.actual_send===false&&typeof x.message_ru==='string'&&x.message_ru.length<=1600&&typeof x.source_snapshot_id==='string'&&x.source_snapshot_id.length<=160),'DRAFT_ONLY_NO_SENDER');
  need(state.native_admission_qualified===false&&state.event_first_knowledge_qualified===false&&state.native_epoch_qualified===false,'NO_SYNTHETIC_QUALIFICATION');
 }
