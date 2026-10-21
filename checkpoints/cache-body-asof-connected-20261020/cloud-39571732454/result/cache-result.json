@@ -1,0 +1,1699 @@
+{
+  "schema": "HTX_EMPTY_ENVELOPE_CACHE_CONTROLLED_COMPONENT_V1",
+  "status": "CONTROLLED_COMPONENT_COMPLETED",
+  "controls": [
+    {
+      "name": "usable full/partial/closed-empty same-run keeps zero-SQL authority",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "status": "CLOSED_BOUNDED_MULTIMARKET_AGREEMENT",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:e0007308adeed29be4e3231f50f1e475c2960559db5fddd6d5e5b10e48f46d35"
+          ],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        },
+        {
+          "status": "CLOSED_BOUNDED_PARTIAL_MARKET",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+          ],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        },
+        {
+          "status": "CLOSED_BOUNDED_PARTIAL_MARKET",
+          "evidence_ids": [
+            "EV2:d8a8518e8450ffb1a5263fc9b188ae61df52f9eb80a097ba3a2a19c9d61be44e"
+          ],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        },
+        {
+          "status": "CLOSED_BOUNDED_PARTIAL_MARKET",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        }
+      ]
+    },
+    {
+      "name": "empty and unbound envelopes recover exact positive cache through actual route",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "baseline": {
+            "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "evidence_ids": [],
+            "sql_count": 0,
+            "cache_reads": 0,
+            "admissions": [],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": null
+          },
+          "candidate": {
+            "status": "CLOSED_BOUNDED_SAMPLE",
+            "evidence_ids": [
+              "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "sql_count": 1,
+            "cache_reads": 1,
+            "admissions": [
+              {
+                "rows_read": 500,
+                "rows_written": 0
+              }
+            ],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": {
+              "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+              "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+              "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+              "same_run_receipts": [
+                {
+                  "route": "HTX_FUTURES_SAME_RUN",
+                  "status": "FUTURES_RESPONSE_UNAVAILABLE"
+                },
+                {
+                  "route": "HTX_SPOT_SAME_RUN",
+                  "status": "SPOT_RESPONSE_UNAVAILABLE"
+                }
+              ],
+              "native_usage_unclosed": false
+            }
+          }
+        },
+        {
+          "baseline": {
+            "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "evidence_ids": [],
+            "sql_count": 0,
+            "cache_reads": 0,
+            "admissions": [],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": null
+          },
+          "candidate": {
+            "status": "CLOSED_BOUNDED_SAMPLE",
+            "evidence_ids": [
+              "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "sql_count": 1,
+            "cache_reads": 1,
+            "admissions": [
+              {
+                "rows_read": 500,
+                "rows_written": 0
+              }
+            ],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": {
+              "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+              "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+              "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+              "same_run_receipts": [
+                {
+                  "route": "HTX_FUTURES_SAME_RUN",
+                  "status": "FUTURES_RESPONSE_UNAVAILABLE"
+                },
+                {
+                  "route": "HTX_SPOT_SAME_RUN",
+                  "status": "SPOT_RESPONSE_UNAVAILABLE"
+                }
+              ],
+              "native_usage_unclosed": false
+            }
+          }
+        },
+        {
+          "baseline": {
+            "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "evidence_ids": [],
+            "sql_count": 0,
+            "cache_reads": 0,
+            "admissions": [],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": null
+          },
+          "candidate": {
+            "status": "CLOSED_BOUNDED_SAMPLE",
+            "evidence_ids": [
+              "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "sql_count": 1,
+            "cache_reads": 1,
+            "admissions": [
+              {
+                "rows_read": 500,
+                "rows_written": 0
+              }
+            ],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": {
+              "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+              "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+              "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+              "same_run_receipts": [
+                {
+                  "route": "HTX_FUTURES_SAME_RUN",
+                  "status": "FUTURES_RESPONSE_UNAVAILABLE"
+                },
+                {
+                  "route": "HTX_SPOT_SAME_RUN",
+                  "status": "SPOT_RESPONSE_UNAVAILABLE"
+                }
+              ],
+              "native_usage_unclosed": false
+            }
+          }
+        },
+        {
+          "baseline": {
+            "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "evidence_ids": [],
+            "sql_count": 0,
+            "cache_reads": 0,
+            "admissions": [],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": null
+          },
+          "candidate": {
+            "status": "CLOSED_BOUNDED_SAMPLE",
+            "evidence_ids": [
+              "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "sql_count": 1,
+            "cache_reads": 1,
+            "admissions": [
+              {
+                "rows_read": 500,
+                "rows_written": 0
+              }
+            ],
+            "native_usage_unclosed": false,
+            "actual_http": 0,
+            "whole_reserved": 0,
+            "fallback": {
+              "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+              "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+              "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+              "same_run_receipts": [
+                {
+                  "route": "HTX_FUTURES_SAME_RUN",
+                  "status": "FUTURES_RESPONSE_UNAVAILABLE"
+                },
+                {
+                  "route": "HTX_SPOT_SAME_RUN",
+                  "status": "SPOT_RESPONSE_UNAVAILABLE"
+                }
+              ],
+              "native_usage_unclosed": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "failed or stale same-run payload is not treated as a fresh empty sample",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "status": "CLOSED_BOUNDED_SAMPLE",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+          ],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "EXACT_FRESH_HTX_TRADE_BATCH_REQUIRED"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "CLOSED_BOUNDED_SAMPLE",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+          ],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "EXACT_FRESH_HTX_TRADE_BATCH_REQUIRED"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "CLOSED_BOUNDED_SAMPLE",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+          ],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "EXACT_FRESH_HTX_TRADE_BATCH_REQUIRED"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "cache absent keeps original missing result without provider fallback",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": {
+        "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+        "evidence_ids": [],
+        "sql_count": 1,
+        "cache_reads": 1,
+        "admissions": [
+          {
+            "rows_read": 500,
+            "rows_written": 0
+          }
+        ],
+        "native_usage_unclosed": false,
+        "actual_http": 0,
+        "whole_reserved": 0,
+        "fallback": {
+          "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+          "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+          "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "same_run_receipts": [
+            {
+              "route": "HTX_FUTURES_SAME_RUN",
+              "status": "FUTURES_RESPONSE_UNAVAILABLE"
+            },
+            {
+              "route": "HTX_SPOT_SAME_RUN",
+              "status": "SPOT_RESPONSE_UNAVAILABLE"
+            }
+          ],
+          "native_usage_unclosed": false
+        }
+      }
+    },
+    {
+      "name": "failed/empty cached result cannot replace missing with zero",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrong-asset and unbound legacy cache are rejected by the new path",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 1,
+          "cache_reads": 1,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "expired cache never becomes a current fact",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": {
+        "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+        "evidence_ids": [],
+        "sql_count": 1,
+        "cache_reads": 1,
+        "admissions": [
+          {
+            "rows_read": 500,
+            "rows_written": 0
+          }
+        ],
+        "native_usage_unclosed": false,
+        "actual_http": 0,
+        "whole_reserved": 0,
+        "fallback": {
+          "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+          "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+          "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "same_run_receipts": [
+            {
+              "route": "HTX_FUTURES_SAME_RUN",
+              "status": "FUTURES_RESPONSE_UNAVAILABLE"
+            },
+            {
+              "route": "HTX_SPOT_SAME_RUN",
+              "status": "SPOT_RESPONSE_UNAVAILABLE"
+            }
+          ],
+          "native_usage_unclosed": false
+        }
+      }
+    },
+    {
+      "name": "future cache clock is not closed by lookup time",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": {
+        "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+        "evidence_ids": [],
+        "sql_count": 1,
+        "cache_reads": 1,
+        "admissions": [
+          {
+            "rows_read": 500,
+            "rows_written": 0
+          }
+        ],
+        "native_usage_unclosed": false,
+        "actual_http": 0,
+        "whole_reserved": 0,
+        "fallback": {
+          "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+          "status": "NO_VALID_EXISTING_POSITIVE_CACHE",
+          "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "same_run_receipts": [
+            {
+              "route": "HTX_FUTURES_SAME_RUN",
+              "status": "FUTURES_RESPONSE_UNAVAILABLE"
+            },
+            {
+              "route": "HTX_SPOT_SAME_RUN",
+              "status": "SPOT_RESPONSE_UNAVAILABLE"
+            }
+          ],
+          "native_usage_unclosed": false
+        }
+      }
+    },
+    {
+      "name": "missing/denied admission, invalid identity/clock and unknown usage stop before SQL",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "EXISTING_CACHE_READ_NOT_ADMITTED",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [
+            {
+              "rows_read": 500,
+              "rows_written": 0
+            }
+          ],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "EXISTING_CACHE_READ_NOT_ADMITTED",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "EXISTING_CACHE_READ_NOT_ADMITTED",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "EXISTING_CACHE_READ_NOT_ADMITTED",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": false
+          }
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": true,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": {
+            "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+            "status": "EXISTING_CACHE_READ_NOT_ADMITTED",
+            "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+            "same_run_receipts": [
+              {
+                "route": "HTX_FUTURES_SAME_RUN",
+                "status": "FUTURES_RESPONSE_UNAVAILABLE"
+              },
+              {
+                "route": "HTX_SPOT_SAME_RUN",
+                "status": "SPOT_RESPONSE_UNAVAILABLE"
+              }
+            ],
+            "native_usage_unclosed": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "cache query failure keeps refusal and unknown without another query",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": {
+        "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+        "evidence_ids": [],
+        "sql_count": 1,
+        "cache_reads": 1,
+        "admissions": [
+          {
+            "rows_read": 500,
+            "rows_written": 0
+          }
+        ],
+        "native_usage_unclosed": true,
+        "actual_http": 0,
+        "whole_reserved": 0,
+        "fallback": {
+          "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+          "status": "EXISTING_CACHE_READ_FAILED",
+          "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "same_run_receipts": [
+            {
+              "route": "HTX_FUTURES_SAME_RUN",
+              "status": "FUTURES_RESPONSE_UNAVAILABLE"
+            },
+            {
+              "route": "HTX_SPOT_SAME_RUN",
+              "status": "SPOT_RESPONSE_UNAVAILABLE"
+            }
+          ],
+          "native_usage_unclosed": true
+        }
+      }
+    },
+    {
+      "name": "valid returned cache survives late unknown and actual route stops following work",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": {
+        "status": "CLOSED_BOUNDED_SAMPLE",
+        "evidence_ids": [
+          "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+          "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+        ],
+        "sql_count": 1,
+        "cache_reads": 1,
+        "admissions": [
+          {
+            "rows_read": 500,
+            "rows_written": 0
+          }
+        ],
+        "native_usage_unclosed": true,
+        "actual_http": 0,
+        "whole_reserved": 0,
+        "fallback": {
+          "schema": "HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1",
+          "status": "VALIDATED_EXISTING_POSITIVE_CACHE",
+          "same_run_status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "same_run_receipts": [
+            {
+              "route": "HTX_FUTURES_SAME_RUN",
+              "status": "FUTURES_RESPONSE_UNAVAILABLE"
+            },
+            {
+              "route": "HTX_SPOT_SAME_RUN",
+              "status": "SPOT_RESPONSE_UNAVAILABLE"
+            }
+          ],
+          "native_usage_unclosed": true
+        },
+        "following_calls": 0,
+        "following_status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE"
+      }
+    },
+    {
+      "name": "legacy omitted, array and non-plain envelopes remain unchanged",
+      "classification": "NEW_CONTROLLED_SOURCE_CACHE_CONSUMER_CASE",
+      "detail": [
+        {
+          "status": "CLOSED_BOUNDED_SAMPLE",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+          ],
+          "sql_count": 6,
+          "cache_reads": 1,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        },
+        {
+          "status": "CLOSED_BOUNDED_SAMPLE",
+          "evidence_ids": [
+            "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+            "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+          ],
+          "sql_count": 6,
+          "cache_reads": 1,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        },
+        {
+          "status": "EXACT_FRESH_TRADE_BATCH_REQUIRED",
+          "evidence_ids": [],
+          "sql_count": 0,
+          "cache_reads": 0,
+          "admissions": [],
+          "native_usage_unclosed": false,
+          "actual_http": 0,
+          "whole_reserved": 0,
+          "fallback": null
+        }
+      ]
+    }
+  ],
+  "control_count": 12,
+  "consumer": {
+    "views": [
+      {
+        "policy": "ORIGINAL_V5_20261006",
+        "manual_context": [
+          {
+            "block_id": "N12",
+            "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+            "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+            "evidence_ids": [
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "physical_root_keys": [
+              "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765"
+            ],
+            "component_origins": [
+              {
+                "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+                "block_id": "N12",
+                "provider_id": "HTX_LARGE_TRADES",
+                "upstream_id": "HTX_PUBLIC_FUTURES_TRADES",
+                "asset_id": "HTX:BTW-USDT",
+                "htx_contract": "BTW-USDT",
+                "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE",
+                "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+                "raw_hash": "45862ce5a7b9f4994c3f6622c1a35dce28b6d7972512cf78e12e7afda1f6ca39",
+                "market": null,
+                "source_ts": 1791105088681,
+                "observed_ts": 1791105089181,
+                "first_known_ts": 1791105089181,
+                "expires_at": 1791105149181,
+                "window_start_ts": null,
+                "window_end_ts": null,
+                "window_status": "NOT_RETAINED_IN_EVIDENCE",
+                "market_components": [],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "composite_first_known_ts": 1791105089181,
+            "source_ts": 1791105088681,
+            "observed_ts": 1791105089181,
+            "label": "Направление последних сделок HTX",
+            "value": "выборка 1 сделок: покупки 200 000, продажи 0 USDT; ограниченная выборка, не суточный поток",
+            "source": "HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "telegram_context": [
+          {
+            "block_id": "N12",
+            "source_block_ids": [
+              "N12"
+            ],
+            "evidence_ids": [
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+            "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+            "component_origins": [
+              {
+                "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+                "block_id": "N12",
+                "provider_id": "HTX_LARGE_TRADES",
+                "upstream_id": "HTX_PUBLIC_FUTURES_TRADES",
+                "asset_id": "HTX:BTW-USDT",
+                "htx_contract": "BTW-USDT",
+                "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE",
+                "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+                "raw_hash": "45862ce5a7b9f4994c3f6622c1a35dce28b6d7972512cf78e12e7afda1f6ca39",
+                "market": null,
+                "source_ts": 1791105088681,
+                "observed_ts": 1791105089181,
+                "first_known_ts": 1791105089181,
+                "expires_at": 1791105149181,
+                "window_start_ts": null,
+                "window_end_ts": null,
+                "window_status": "NOT_RETAINED_IN_EVIDENCE",
+                "market_components": [],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "physical_root_keys": [
+              "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765"
+            ],
+            "composite_first_known_ts": 1791105089181,
+            "source_ts": 1791105088681,
+            "observed_ts": 1791105089181,
+            "label": "Направление последних сделок HTX",
+            "value": "выборка 1 сделок: покупки 200 000, продажи 0 USDT; ограниченная выборка, не суточный поток",
+            "consumer": "APPROVED_TELEGRAM_PAYLOAD_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "telegram_available_not_rendered": [],
+        "display_limits_unchanged": true
+      },
+      {
+        "policy": "ORIGINAL_BRIEF_20261007",
+        "manual_context": [
+          {
+            "block_id": "N12",
+            "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+            "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+            "evidence_ids": [
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "physical_root_keys": [
+              "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765"
+            ],
+            "component_origins": [
+              {
+                "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+                "block_id": "N12",
+                "provider_id": "HTX_LARGE_TRADES",
+                "upstream_id": "HTX_PUBLIC_FUTURES_TRADES",
+                "asset_id": "HTX:BTW-USDT",
+                "htx_contract": "BTW-USDT",
+                "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE",
+                "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+                "raw_hash": "45862ce5a7b9f4994c3f6622c1a35dce28b6d7972512cf78e12e7afda1f6ca39",
+                "market": null,
+                "source_ts": 1791105088681,
+                "observed_ts": 1791105089181,
+                "first_known_ts": 1791105089181,
+                "expires_at": 1791105149181,
+                "window_start_ts": null,
+                "window_end_ts": null,
+                "window_status": "NOT_RETAINED_IN_EVIDENCE",
+                "market_components": [],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "composite_first_known_ts": 1791105089181,
+            "source_ts": 1791105088681,
+            "observed_ts": 1791105089181,
+            "label": "Направление последних сделок HTX",
+            "value": "выборка 1 сделок: покупки 200 000, продажи 0 USDT; ограниченная выборка, не суточный поток",
+            "source": "HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "telegram_context": [
+          {
+            "block_id": "N12",
+            "source_block_ids": [
+              "N12"
+            ],
+            "evidence_ids": [
+              "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+            ],
+            "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+            "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+            "component_origins": [
+              {
+                "evidence_id": "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139",
+                "block_id": "N12",
+                "provider_id": "HTX_LARGE_TRADES",
+                "upstream_id": "HTX_PUBLIC_FUTURES_TRADES",
+                "asset_id": "HTX:BTW-USDT",
+                "htx_contract": "BTW-USDT",
+                "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE",
+                "physical_root_key": "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765",
+                "raw_hash": "45862ce5a7b9f4994c3f6622c1a35dce28b6d7972512cf78e12e7afda1f6ca39",
+                "market": null,
+                "source_ts": 1791105088681,
+                "observed_ts": 1791105089181,
+                "first_known_ts": 1791105089181,
+                "expires_at": 1791105149181,
+                "window_start_ts": null,
+                "window_end_ts": null,
+                "window_status": "NOT_RETAINED_IN_EVIDENCE",
+                "market_components": [],
+                "origin_status": "EXACT_SELECTED_EVIDENCE"
+              }
+            ],
+            "physical_root_keys": [
+              "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765"
+            ],
+            "composite_first_known_ts": 1791105089181,
+            "source_ts": 1791105088681,
+            "observed_ts": 1791105089181,
+            "label": "Направление последних сделок HTX",
+            "value": "выборка 1 сделок: покупки 200 000, продажи 0 USDT; ограниченная выборка, не суточный поток",
+            "consumer": "APPROVED_TELEGRAM_PAYLOAD_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "telegram_available_not_rendered": [],
+        "display_limits_unchanged": true
+      }
+    ],
+    "strict_manual_audit": {
+      "status": "PARTIAL_BLOCK_CHECK",
+      "blocks": {
+        "N01": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_NO_QUALIFIED_INDEPENDENT_RELEASE_PAIR",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N02": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_SUPPLY_BLOCK_EXCLUDED_FROM_BOTH_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N03": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_SUPPLY_REDUCTION_BLOCK_EXCLUDED_FROM_BOTH_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N04": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TRANSFER_INVESTIGATION",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "CHAIN_EVENTS"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "CHAIN_EVENTS"
+          ]
+        },
+        "N05": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "JOINT_SPOT_FUTURES_FLOW": "NOT_EVALUATED",
+            "AVAILABLE_N05_FLOW_CONTEXT": "NOT_EVALUATED",
+            "CHAIN_EVENTS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "NOT_EVALUATED",
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "EXTERNAL_N05_FLOW": "NOT_EVALUATED",
+            "BITGET_FOUR_HOUR_FLOW": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "JOINT_SPOT_FUTURES_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "AVAILABLE_N05_FLOW_CONTEXT": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "CHAIN_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "EXTERNAL_N05_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BITGET_FOUR_HOUR_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+          "maximum_score_points": 0.5,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "JOINT_SPOT_FUTURES_FLOW",
+            "AVAILABLE_N05_FLOW_CONTEXT"
+          ],
+          "missing_required": [
+            "ANY:JOINT_SPOT_FUTURES_FLOW|AVAILABLE_N05_FLOW_CONTEXT"
+          ]
+        },
+        "N06": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_SOCIAL_ATTENTION_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N07": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_OFFICIAL_PROJECT_EVENTS_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N08": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_LISTING_AND_EXECUTION_GATE_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N09": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_HTX_MARGIN_RISK_LIMITS_EXCLUDED_FROM_STRATEGY_AND_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N10": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TARGET_PATH_INVALIDATION",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ]
+        },
+        "N11": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_STRESS",
+          "maximum_score_points": 0.4,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_STRESS"
+          ]
+        },
+        "N12": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": false,
+          "observed_facts": 2,
+          "valid_context_facts": 2,
+          "usable_facts": 1,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE",
+            "EXTERNAL_N05_FLOW": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_LARGE_TRADES": {
+              "status": "CLOSED_BOUNDED_SAMPLE",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": "HIT",
+              "receipt_count": 1,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [
+                "EV2:50a3654c889b1416939759942bdde6619c2938b23345e0d056d4ecac4e76e934",
+                "EV2:7a5e7fa510d91738d5e208c0aa923102fa76aad49022c4fc6ba337070a0ad139"
+              ],
+              "provider_ids": [
+                "HTX_LARGE_TRADES"
+              ],
+              "declared_upstream_ids": [
+                "HTX_PUBLIC_FUTURES_TRADES"
+              ],
+              "physical_root_keys": [
+                "HTX_TRADE:BTW-USDT:9876543210987654321098765",
+                "HTX:BTW-USDT|BTW-USDT:BOUNDED:9876543210987654321098765"
+              ],
+              "receipts": [
+                {
+                  "route": null,
+                  "status": null,
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            },
+            "EXTERNAL_N05_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          },
+          "required_all": [
+            "HTX_LARGE_TRADES"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_LARGE_TRADES"
+          ]
+        },
+        "N14": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_OPTIONS_RISK_EXCLUDED_FROM_STRATEGY_AND_BOTH_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N15": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "COINGECKO_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SECTOR_RELATIVE_STRENGTH",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "COINGECKO_SECTOR",
+            "COINPAPRIKA_SECTOR"
+          ],
+          "missing_required": [
+            "ANY:COINGECKO_SECTOR|COINPAPRIKA_SECTOR"
+          ]
+        },
+        "N16": {
+          "status": "BLOCK_PAUSED_BY_OWNER",
+          "pause_reason": "OWNER_PAUSED_COST_AND_EXECUTION_BLOCK_EXCLUDED_FROM_STRATEGY_AND_BOTH_REPORT_CHAINS",
+          "included_in_active_coverage": false,
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {},
+          "source_checks": {},
+          "decision_consumer": null,
+          "maximum_score_points": 0,
+          "decision_path": "EXCLUDED_PAUSED_BLOCK",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [],
+          "missing_required": []
+        }
+      },
+      "coverage_count": 6,
+      "paused_block_ids": [
+        "N01",
+        "N02",
+        "N03",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N14",
+        "N16"
+      ],
+      "paused_blocks_excluded_from_coverage": true,
+      "shared_n05_n12_http_attribution": {
+        "status": "NO_SHARED_HTTP",
+        "total_http": 0,
+        "n05_http": 0,
+        "n12_http": 0,
+        "no_double_count": true
+      },
+      "checked_block_count": 0,
+      "usable_block_count": 1,
+      "score_or_risk_input_block_count": 0,
+      "admitted_control_context_block_count": 0,
+      "admitted_neutral_context_block_count": 0,
+      "observed_context_not_score_eligible_block_count": 0,
+      "checked_neutral_no_event_block_count": 0,
+      "blocked_required_source_block_count": 6,
+      "all_blocks_have_assigned_consumer": true,
+      "all_blocks_decision_accounted": false,
+      "actual_use_is_measured_in_canonical_result": true,
+      "all_blocks_checked": false,
+      "all_blocks_have_useful_data": false,
+      "strict_fresh_required": true,
+      "internal_only": true
+    },
+    "retained_render_template_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+    "modified_template_classification": "CONTROLLED_RENDER_ONLY_NOT_ACTUAL_RUN_OR_SENT"
+  },
+  "fixture_provenance": "CONTROLLED_NEW_TRADE_CACHE_AND_BUDGET_WITH_ACTUAL_ASSEMBLED_MODULES_LOCAL_SQLITE",
+  "additional_existing_SELECT_per_fallback": 1,
+  "new_SQL_templates": 0,
+  "new_schema_in_fallback": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "native_rows_read_cost": null,
+  "savings": null,
+  "admission_authorized": false,
+  "source_clocks_refreshed": false,
+  "native_body_or_epoch_ACK_qualified": false,
+  "Telegram": 0,
+  "old_accepted_cases_replayed": false
+}
