@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import {approvedHtxLimitedCronAdmitted} from '../files/src/approved-htx-analysis-scope.mjs';
 
 const source=fs.readFileSync(process.env.REPORT2_TEST_RUNTIME?path.join(process.env.REPORT2_TEST_RUNTIME,'runner-main.mjs'):new URL('../files/runner-main.mjs',import.meta.url),'utf8');
-const begin=source.indexOf('  if (cron.status !== "SUCCESS" || cron.completed_ts == null)'),end=source.indexOf('  console.log("CRON_IDENTITY_BINDING"',begin);
+const begin=source.indexOf('  if ((cron.status !== "SUCCESS"&&!approvedHtxLimitedCronAdmitted('),end=source.indexOf('  console.log("CRON_IDENTITY_BINDING"',begin);
 assert.ok(begin>0&&end>begin);
-const verify=new Function('cron','generation','process','env','d1DayAdmission',source.slice(begin,end));
+const verify=new Function('approvedHtxLimitedCronAdmitted','cron','generation','process','env','d1DayAdmission',source.slice(begin,end)).bind(null,approvedHtxLimitedCronAdmitted);
 const audit={schema:'APPROVED_HTX_ANALYSIS_SCOPE_V1',status:'NOT_CLOSED',expected_analysis_contracts:105,accepted_analysis_contracts:99,missing_approved_analysis_contracts:['CONTROLLED_A-USDT','CONTROLLED_B-USDT','CONTROLLED_C-USDT','CONTROLLED_D-USDT','CONTROLLED_E-USDT','CONTROLLED_F-USDT'],observed_ts:1792319554644,identity_rejected:[],duplicate_rejected:[]};
 const selection={run_id:'CONTROLLED_RUN',top_two_contracts:['QNT-USDT','BTW-USDT'],registry_did_not_change_rank:true};
 const cron={run_id:'CONTROLLED_RUN',status:'PARTIAL',completed_ts:1792319668771,universe_total:105,scanned:99,persistence_status:'NOT_CLOSED'};

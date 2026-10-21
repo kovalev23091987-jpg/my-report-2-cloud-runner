@@ -1,0 +1,325 @@
+--- a/current-generation/files/src/approved-htx-analysis-scope.mjs
++++ b/current-generation/files/src/approved-htx-analysis-scope.mjs
+@@ -8,7 +8,7 @@
+  const exact=String(contract_code??'').trim().toUpperCase(),asset=approved.get(exact);
+  return asset&&exact===`${asset}-USDT`?asset:null;
+ }
+-export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,include_native_availability_diagnostic=false}={}){
++export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,include_native_availability_diagnostic=false,allow_owner_limited_six_unknown=false}={}){
+  const crypto=(Array.isArray(rows)?rows:[]).filter(x=>x?.instrument_scope?.classification==='CRYPTO_CONFIRMED'),counts=new Map();
+  for(const x of Array.isArray(rows)?rows:[])counts.set(x?.contract_code,(counts.get(x?.contract_code)||0)+1);
+  const accepted=[],outside=[],identity_rejected=[],duplicate_rejected=[];
+@@ -44,6 +44,10 @@
+    }
+   }catch{snapshot={...snapshot,status:'OMITTED_INVALID_OR_NON_LOSSLESS_JSON',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON'};}
+   result.audit.native_catalog_parsed_snapshot=snapshot;
++ }
++ if(allow_owner_limited_six_unknown===true&&qualifiesExactSixUnknown(result.audit,{native_catalog,accepted,counts,input_rows:rows})){
++  const source=native_catalog.data.ts,received=native_catalog.observed_ts;
++  result.audit.limited_report={schema:'OWNER_APPROVED_EXACT_SIX_UNKNOWN_V1',mode:'LIMITED_99_PLUS_6_UNKNOWN',manifest_sha256:APPROVED_HTX_SCOPE.manifest_sha256,registry_total:105,market_checked:99,catalog_scope_unknown_count:0,catalog_rows:native_catalog.data.data.length,scope_status:'NOT_CLOSED',evaluation_ts:observed_ts,source_ts:source,observed_ts:received,unknown_contracts:EXACT_SIX_UNKNOWN.map(contract=>({contract,registry_symbol:approved.get(contract),status:'NO_CURRENT_NATIVE_CATALOG_RECORD_AT_SOURCE_CUT',native_status:null,classification:null,market_data_available:null,analysis_eligible:false,entry_authorized:false,market_prices_filled:false}))};
+  }
+  return result;
+ }
+@@ -98,3 +102,38 @@
+  const u=a.officially_unavailable_analysis_contracts,m=a.missing_approved_analysis_contracts;
+  return Array.isArray(u)&&Array.isArray(m)&&u.length>0&&u.length===m.length&&new Set(u.map(x=>x?.contract)).size===u.length&&a.accepted_analysis_contracts+u.length===approved.size&&a.checked_analysis_contracts===approved.size&&a.market_data_analysis_contracts===a.accepted_analysis_contracts&&Array.isArray(a.unresolved_approved_analysis_contracts)&&a.unresolved_approved_analysis_contracts.length===0&&a.identity_rejected?.length===0&&a.duplicate_rejected?.length===0&&u.every(x=>m.includes(x?.contract)&&approved.get(x.contract)===x.symbol&&x.status==='HTX_OFFICIALLY_SUSPENDED'&&x.contract_status===3&&x.source_url===HTX_CATALOG_URL&&x.classification==='CRYPTO_CONFIRMED'&&Number.isSafeInteger(x.observed_ts)&&Number.isSafeInteger(x.source_ts)&&x.source_ts<=x.observed_ts&&x.observed_ts-x.source_ts<=120000&&x.observed_ts>=a.observed_ts&&x.observed_ts-a.observed_ts<=120000&&x.native_scope?.business_type==='swap'&&x.native_scope?.contract_type==='swap'&&x.native_scope?.trade_partition==='USDT'&&Array.isArray(x.native_scope?.labels)&&Array.isArray(x.native_scope?.tradfi_labels)&&x.market_data_available===false&&x.analysis_eligible===false&&x.entry_authorized===false&&x.market_prices_filled===false);
+ }
++
++// Separate owner-approved limited report authority; never a CLOSED/105 scope.
++const EXACT_SIX_UNKNOWN=Object.freeze(['BTR-USDT','DOS-USDT','GPS-USDT','PIPPIN-USDT','SKR-USDT','UB-USDT']);
++export const APPROVED_HTX_LIMITED_CRON_MARKER='OWNER_APPROVED_LIMITED_99_PLUS_6_UNKNOWN';
++const exactSix=rows=>Array.isArray(rows)&&rows.length===6&&new Set(rows).size===6&&EXACT_SIX_UNKNOWN.every(x=>rows.includes(x));
++const safeClock=v=>Number.isSafeInteger(v)&&v>0;
++const limitedClocks=(evaluation,source,received)=>safeClock(evaluation)&&safeClock(source)&&safeClock(received)&&received>=evaluation&&received-evaluation<=120000&&source<=received&&received-source<=120000;
++function qualifiesExactSixUnknown(a,{native_catalog:n,accepted,counts,input_rows}){
++ const snapshot=a?.native_catalog_parsed_snapshot;
++ if(snapshot?.complete!==true||snapshot.status!=='COMPLETE_PARSED_PUBLIC_CATALOG'||snapshot.max_snapshot_utf8_bytes!==262144||snapshot.source_url!==HTX_CATALOG_URL||snapshot.catalog_source_ts!==n?.data?.ts||snapshot.catalog_observed_ts!==n?.observed_ts||snapshot.evaluation_ts!==a.observed_ts||!Array.isArray(input_rows)||input_rows.some(r=>!['CRYPTO_CONFIRMED','NON_CRYPTO_HTX_CLASSIFIED'].includes(r?.instrument_scope?.classification)))return false;
++ if(a?.status!=='NOT_CLOSED'||a.expected_analysis_contracts!==105||a.accepted_analysis_contracts!==99||a.checked_analysis_contracts!==99||a.market_data_analysis_contracts!==99||!exactSix(a.missing_approved_analysis_contracts)||!exactSix(a.unresolved_approved_analysis_contracts)||a.officially_unavailable_analysis_contracts.length||a.identity_rejected.length||a.duplicate_rejected.length||accepted.some(r=>r.data_status!=='CLOSED')||!EXACT_SIX_UNKNOWN.every(c=>!counts.get(c)))return false;
++ if(n?.ok!==true||n.http_status!==200||n.url!==HTX_CATALOG_URL||n.data?.status!=='ok'||!Array.isArray(n.data.data)||typeof n.classify!=='function'||!limitedClocks(a.observed_ts,n.data.ts,n.observed_ts))return false;
++ const rows=n.data.data,ids=new Set(),normal=v=>typeof v==='string'?v.normalize('NFC').trim().toUpperCase().replace(/[-_\/\s]/g,''):null;
++ for(const r of rows){
++  if(!r||typeof r!=='object'||Array.isArray(r)||typeof r.contract_code!=='string'||!r.contract_code||typeof r.symbol!=='string'||!r.symbol||typeof r.pair!=='string'||!r.pair||!Number.isSafeInteger(r.contract_status)||r.contract_status<0||r.contract_status>8||r.contract_code!==r.contract_code.trim()||r.symbol!==r.symbol.trim()||r.pair!==r.pair.trim()||!normal(r.contract_code)||ids.has(normal(r.contract_code)))return false;
++  ids.add(normal(r.contract_code));
++  if(EXACT_SIX_UNKNOWN.some(c=>[r.contract_code,r.pair].some(v=>normal(v)===normal(c))||normal(r.symbol)===normal(approved.get(c))))return false;
++ }
++ return accepted.every(r=>rows.filter(n=>n.contract_code===r.contract_code&&n.symbol===r.symbol&&n.contract_status===1&&n.business_type==='swap'&&n.contract_type==='swap'&&n.trade_partition==='USDT'&&Array.isArray(n.labels)&&Array.isArray(n.tradfi_labels)).length===1);
++}
++export function approvedHtxLimitedReportReceipt(r){
++ return r?.schema==='OWNER_APPROVED_EXACT_SIX_UNKNOWN_V1'&&r.mode==='LIMITED_99_PLUS_6_UNKNOWN'&&r.manifest_sha256===APPROVED_HTX_SCOPE.manifest_sha256&&r.registry_total===105&&r.market_checked===99&&r.catalog_scope_unknown_count===0&&Number.isSafeInteger(r.catalog_rows)&&r.catalog_rows>=99&&r.scope_status==='NOT_CLOSED'&&limitedClocks(r.evaluation_ts,r.source_ts,r.observed_ts)&&Array.isArray(r.unknown_contracts)&&exactSix(r.unknown_contracts.map(x=>x?.contract))&&r.unknown_contracts.every(x=>Object.keys(x).sort().join(',')==='analysis_eligible,classification,contract,entry_authorized,market_data_available,market_prices_filled,native_status,registry_symbol,status'&&x.registry_symbol===approved.get(x.contract)&&x.status==='NO_CURRENT_NATIVE_CATALOG_RECORD_AT_SOURCE_CUT'&&x.native_status===null&&x.classification===null&&x.market_data_available===null&&x.analysis_eligible===false&&x.entry_authorized===false&&x.market_prices_filled===false);
++}
++export function approvedHtxLimitedReportAdmitted(a){
++ return a?.status==='NOT_CLOSED'&&a.manifest_sha256===APPROVED_HTX_SCOPE.manifest_sha256&&a.expected_analysis_contracts===105&&a.accepted_analysis_contracts===99&&a.checked_analysis_contracts===99&&a.market_data_analysis_contracts===99&&exactSix(a.missing_approved_analysis_contracts)&&exactSix(a.unresolved_approved_analysis_contracts)&&a.officially_unavailable_analysis_contracts?.length===0&&a.identity_rejected?.length===0&&a.duplicate_rejected?.length===0&&approvedHtxLimitedReportReceipt(a.limited_report)&&a.observed_ts===a.limited_report.evaluation_ts&&a.native_catalog_parsed_snapshot?.complete===true&&a.native_catalog_parsed_snapshot.status==='COMPLETE_PARSED_PUBLIC_CATALOG'&&a.native_catalog_parsed_snapshot.evaluation_ts===a.observed_ts&&a.native_catalog_parsed_snapshot.catalog_source_ts===a.limited_report.source_ts&&a.native_catalog_parsed_snapshot.catalog_observed_ts===a.limited_report.observed_ts;
++}
++export function approvedHtxLimitedScanAdmitted(a,s){
++ return approvedHtxLimitedReportAdmitted(a)&&s?.ts===a.observed_ts&&s.universe_total===105&&s.scanned===99&&s.errors===0&&s.stale===0&&s.stage0_coverage_pct===(99/105)*100;
++}
++export function approvedHtxLimitedCronAdmitted(c,a,s=null){
++ return approvedHtxLimitedReportAdmitted(a)&&c?.status==='PARTIAL'&&c.error_text===APPROVED_HTX_LIMITED_CRON_MARKER&&c.persistence_status==='CLOSED'&&c.universe_total===105&&c.scanned===99&&safeClock(c.started_ts)&&safeClock(c.completed_ts)&&c.started_ts<=a.observed_ts&&a.observed_ts<=c.completed_ts&&(s===null||approvedHtxLimitedScanAdmitted(a,s));
++}
++export function approvedHtxLimitedReportNotice(r){
++ return approvedHtxLimitedReportReceipt(r)?'Ограниченный охват: проверено 99 из 105 монет. BTR, DOS, GPS, PIPPIN, SKR и UB отсутствуют в текущем каталоге ХТХ; доступность не установлена.':null;
++}
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -1,5 +1,5 @@
+ import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAnalysis} from './original-idea-recheck.mjs';
+-import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
++import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract,approvedHtxLimitedReportAdmitted,approvedHtxLimitedScanAdmitted,APPROVED_HTX_LIMITED_CRON_MARKER} from './approved-htx-analysis-scope.mjs';
+ import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
+ import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
+ import {buildHtxPrimaryTechnicalReceipt,deriveHtxSpotSameRunPathEvidence,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
+@@ -4693,8 +4693,7 @@
+ 
+   try {
+     if (
+-      !scan?.health
+-        ?.contracts ||
++      (!scan?.health?.contracts && !approvedHtxLimitedScanAdmitted(scan?.scope_audit?.approved_generation,{ts:scan?.timestamp,...scan?.counts,...scan?.coverage})) ||
+       !scan?.counts
+         ?.universe_total
+     ) {
+@@ -5315,7 +5314,7 @@
+    * consumer and persisted market-history shard. Unknown classifications are
+    * retained in the audit and fail completeness; they are never silently
+    * promoted to crypto. */
+-  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,include_native_availability_diagnostic:true,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
++  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,include_native_availability_diagnostic:true,allow_owner_limited_six_unknown:true,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
+   const contracts = allContracts.filter(
+     (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED" && approvedScope.contracts.includes(row)
+   );
+@@ -8779,6 +8778,7 @@
+     const target
+     of plan.selected
+   ) {
++    if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===target.contract)){results.push({contract:target.contract,run_id:runId,execution_status:'SKIPPED',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN'});continue;}
+     if(options?.execution_runtime==="GITHUB_ACTIONS_NODE"){
+       const grant=typeof env?.REPORT2_DEEP_HTTP_ADMIT==="function"?env.REPORT2_DEEP_HTTP_ADMIT({logical_request_id:`FULL_DEEP:${runId}:${target.contract}`,lane:"hot",attempts:40}):null;
+       if(grant?.allowed!==true||grant?.duplicate===true){results.push({contract:target.contract,run_id:runId,execution_status:"SKIPPED",reason:grant?.status||"NODE_DEEP_HTTP_ADMISSION_REQUIRED"});continue;}
+@@ -16023,6 +16023,8 @@
+       "ETHFI-USDT"
+     );
+ 
++  if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===contract))return{tool:'deep_check_input',contract,status:'NOT_CLOSED',data_sufficiency:'INSUFFICIENT',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN',entry_authorized:false};
++
+   const futuresParams = {
+     contract,
+     notional_usdt: 1000,
+@@ -17302,7 +17304,7 @@
+     });
+   }
+   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
+-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,swole_liquidation:swoleLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
++  const internalMarketContext={...globalInternalContext,...(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)?{limited_report_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report}:{}),candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,swole_liquidation:swoleLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+   const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
+   let canonicalExecutionContextSource=null;
+   // One bounded indexed read of the source already saved by this exact cycle;
+@@ -19913,7 +19915,8 @@
+         .map(row=>({contract:row?.contract??null,...(row?.full_evidence_persistence||{})}))
+         .find(row=>row?.status&&!(row.persisted===true&&row.status==='CLOSED'&&Number(row.insert_changes)===1));
+       const scanPersistenceStatus=scan?.persistence?.status||null;
+-      const scanCompleted=Boolean(scan?.health?.contracts&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
++      const limitedScopeAdmitted=approvedHtxLimitedScanAdmitted(scan?.scope_audit?.approved_generation,{ts:scan?.timestamp,...scan?.counts,...scan?.coverage});
++      const scanCompleted=Boolean((scan?.health?.contracts||limitedScopeAdmitted)&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
+       const scanFailure=scanCompleted?null:{
+         status:'DEGRADED_PIPELINE',
+         reason:(!scan?.health?.contracts||!(scan?.counts?.universe_total>0))?'STAGE0_SCAN_FAILED':'STAGE0_PERSISTENCE_FAILED',
+@@ -20238,7 +20241,7 @@
+         JSON.stringify({ run_id: runId, ...stage392FullEvidenceMaintenance })
+       );
+       const persistenceStatus=scanPersistenceStatus;
+-      const success=scanCompleted;
++      const success=scanCompleted&&!limitedScopeAdmitted;
+ 
+       const completedTs =
+         Date.now();
+@@ -20277,9 +20280,9 @@
+             persistenceStatus,
+ 
+           error_text:
+-            success
+-              ? null
+-              : JSON.stringify(
++            scanCompleted&&limitedScopeAdmitted
++              ? APPROVED_HTX_LIMITED_CRON_MARKER
++              : success ? null : JSON.stringify(
+                   scan?.endpoint_errors ||
+                   scan?.persistence ||
+                   {}
+--- a/current-generation/files/runner-main.mjs
++++ b/current-generation/files/runner-main.mjs
+@@ -1,3 +1,4 @@
++import {approvedHtxLimitedReportAdmitted,approvedHtxLimitedCronAdmitted} from './src/approved-htx-analysis-scope.mjs';
+ import {createFailedD1RunAccounting} from './src/failed-d1-run-accounting.mjs';
+ import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
+ import {buildMaintenanceCadenceReceipt} from './src/maintenance-cadence-receipt.mjs';
+@@ -150,7 +151,8 @@
+     REPORT2_MANUAL_COMMAND: envText("REPORT2_MANUAL_COMMAND", { required:false }),
+   };
+ }
+-function assertClosedCron(cron, scan) {
++function assertClosedCron(cron, scan, approvedScope=null) {
++  if(scan&&approvedHtxLimitedCronAdmitted(cron,approvedScope,scan))return;
+   if (!cron || cron.status !== "SUCCESS") throw new Error(`CRON_NOT_SUCCESS:${JSON.stringify(cron || {})}`);
+   if (cron.completed_ts == null) throw new Error("CRON_NOT_COMPLETED");
+   if (!(Number(cron.universe_total) > 0)) throw new Error("CRON_UNIVERSE_EMPTY");
+@@ -1059,7 +1061,7 @@
+   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
+   if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);
+   if (Number(cron.scheduled_time) !== Number(started)) throw new Error(`CRON_IDENTITY_MISMATCH:${cron.scheduled_time}!=${started}`);
+-  if (cron.status !== "SUCCESS" || cron.completed_ts == null) {
++  if ((cron.status !== "SUCCESS"&&!approvedHtxLimitedCronAdmitted(cron,env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)) || cron.completed_ts == null) {
+     const failure=new Error(`CRON_IDENTITY_NOT_SUCCESS:${JSON.stringify(cron)}`);
+     failure.partial_cron_failure={schema:'PARTIAL_CRON_IN_MEMORY_DIAGNOSTIC_V1',generation,head:process.env.GITHUB_SHA||null,source_run_id:process.env.GITHUB_RUN_ID||null,cron,approved_universe_audit:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null,d1_day_admission:d1DayAdmission,additional_SQL:0,additional_source_HTTP:0,full_report_completed:false,entry_authorized:false,Telegram_SENT_claimed:false};
+     throw failure;
+@@ -1067,7 +1069,7 @@
+   console.log("CRON_IDENTITY_BINDING", JSON.stringify({ expected_scheduled_time:started, selected_scheduled_time:Number(cron.scheduled_time), run_id:String(cron.run_id || "") }));
+   const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts BETWEEN ?1 AND ?2 ORDER BY ABS(ts - ?3) ASC LIMIT 1").bind(Number(cron.started_ts), Number(cron.completed_ts), Number(cron.started_ts)).first();
+   console.log("SCAN_IDENTITY_BINDING", JSON.stringify({ cron_started_ts:Number(cron.started_ts), cron_completed_ts:Number(cron.completed_ts), selected_scan_ts:Number(scan?.ts || 0) || null }));
+-  assertClosedCron(cron, scan);
++  assertClosedCron(cron, scan, env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT);
+   console.log("R8_8_D1_PRE_SIDECARS_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
+   // V3 Telegram journal may persist state before network delivery is enabled.
+   // Network delivery itself remains fail-closed until the dedicated env gate is on.
+@@ -1203,9 +1205,10 @@
+   if (!healthBudget.allowed) {
+     v3PipelineHealthSidecar = {version:"v3-pipeline-health-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",market_signal:false,reasons:v3SidecarsPreactionBudget.reasons||[]};
+   } else {
+-    v3PipelineHealthSidecar = await runV3PipelineHealthSidecar(env.DATA_DB, {cron,scan,telegram_zero_reason:telegramZeroReason,critical_feed_state:v3CriticalFeedState,now_ts:Date.now()});
++    v3PipelineHealthSidecar = await runV3PipelineHealthSidecar(env.DATA_DB, {cron,scan,telegram_zero_reason:telegramZeroReason,critical_feed_state:v3CriticalFeedState,approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT,now_ts:Date.now()});
+   }
+   console.log("V3_PIPELINE_HEALTH_SIDECAR", JSON.stringify(v3PipelineHealthSidecar));
++  if(approvedHtxLimitedReportAdmitted(env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&(v3PipelineHealthSidecar.status!=='CLOSED'||v3PipelineHealthSidecar.health?.global_report_admission!=='ADMITTED'))throw new Error('LIMITED_REPORT_PIPELINE_HEALTH_NOT_ADMITTED');
+   let v3TelegramDeliverySidecar;
+   const postV7DeliveryBudget = postV7UnifiedEnabled ? evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,extraRowsWritten:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written+1}) : d1PreTelegramBudget;
+   if (!postV7DeliveryBudget.allowed) {
+@@ -1220,7 +1223,7 @@
+ 
+   // Preserve the already collected canonical result even if a later observer fails.
+   const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor,include_primary_selection_diagnostic:true});
+-  const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
++  const canonicalRunOutput={...canonicalRunOutputBase,...(approvedHtxLimitedReportAdmitted(env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)?{limited_report_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report,full_report_completed:false,limited_report_completed:['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(canonicalRunOutputBase.status)&&canonicalRunOutputBase.reason===null}:{}),liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
+     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
+     approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,
+     scanned_market_data:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.market_data_analysis_contracts??Number(cron.scanned),
+@@ -1228,6 +1231,7 @@
+     scan_count_basis:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.scan_count_basis||'LEGACY_MARKET_DATA_ONLY',
+     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.status==='CLOSED'&&Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
+   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
++  if(canonicalRunOutput.limited_report_scope)canonicalRunOutput.report_text=formatManualRunSummary(canonicalRunOutput);
+   if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};
+   canonicalOutputForFailure=canonicalRunOutput;
+   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
+--- a/current-generation/files/src/manual-run-summary.mjs
++++ b/current-generation/files/src/manual-run-summary.mjs
+@@ -1,3 +1,4 @@
++import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
+ import {BLOCKS,ACTIVE_BLOCK_IDS,PAUSED_BLOCKS} from './evidence-v2.mjs';
+ import {consumeExecutionReportContext} from './execution-report-context.mjs';
+ const requiredBlockCount=ACTIVE_BLOCK_IDS.length;
+@@ -96,12 +97,12 @@
+  if(block_audit.all_candidates_fully_checked||accounted)return {...output,block_audit};
+  return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'BLOCK_OUTCOME_AUDIT_MISSING',block_audit};
+ }
+-export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit,liquidation_policy}={}){
+- const contextLines=confirmedRunContext(candidates,run_id);
++export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit,liquidation_policy,limited_report_scope}={}){
++ const contextLines=confirmedRunContext(candidates,run_id),limitedNotice=approvedHtxLimitedReportNotice(limited_report_scope);
+  if(status==='PARTIAL_DATA_UNAVAILABLE'){
+   const checked=Number(block_audit?.minimum_checked_block_count);
+   const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из ${requiredBlockCount}.`:'';
+-  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.${contextLines.length?'\n\n'+contextLines.join('\n'):''}\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
++  return `МОЙ ОТЧЁТ 2${limitedNotice?`\n${limitedNotice}`:''}\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.${contextLines.length?'\n\n'+contextLines.join('\n'):''}\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
+  }
+  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
+  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
+@@ -109,7 +110,7 @@
+   `Проверка дополнительных блоков: ${Number(block_audit?.minimum_checked_block_count||0)} из ${requiredBlockCount}; неподтверждённых: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
+   `Новые допущенные факты: ${Number(block_audit?.minimum_admissible_fact_block_count||0)} блока; сведения без допуска в решение: ${Number(block_audit?.minimum_filtered_fact_block_count||0)}; событий не обнаружено: ${Number(block_audit?.minimum_checked_no_event_block_count||0)}.`,
+  ]:[];
+- const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];
++ const lines=['МОЙ ОТЧЁТ 2',...(limitedNotice?[limitedNotice]:[]),...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];
+  let found=0;
+  for(const direction of ['LONG','SHORT']){
+   lines.push(direction==='LONG'?'ЛОНГ':'ШОРТ');
+--- a/current-generation/files/src/manual-report-formatter.mjs
++++ b/current-generation/files/src/manual-report-formatter.mjs
+@@ -1,3 +1,4 @@
++import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
+ import {PAUSED_BLOCKS} from './evidence-v2.mjs';
+ import {formatCoinLobsterFutureLines} from './coinlobster-future-model.mjs';
+ import {factualIdeaBasis} from './idea-basis-facts.mjs';
+@@ -38,7 +39,8 @@
+ export function formatManualReport(result,{liquidation_policy=liquidationPresentationPolicy(result?.observed_ts)}={}){
+  if(result?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};
+  const blockers=blockerDetails(result),unknown=hasUnknownBlockerReasons(result?.free_sources?.entry_funnel);
+- const lines=['МОЙ ОТЧЁТ 2',`Снимок рынка: ${result.snapshot_time_utc}`,''];
++ const limitedNotice=approvedHtxLimitedReportNotice(result?.metadata?.internal_market_context?.limited_report_scope);
++ const lines=['МОЙ ОТЧЁТ 2',...(limitedNotice?[limitedNotice]:[]),`Снимок рынка: ${result.snapshot_time_utc}`,''];
+  lines.push('КАНОНИЧЕСКОЕ СОСТОЯНИЕ',`Состояние: ${unknown?'вывод не готов — есть непереведённая внутренняя причина':(STATE_RU[result.state]||'не закрыто')}`,`Направление: ${result.direction==='LONG'?'покупка':result.direction==='SHORT'?'продажа':'не закрыто'}`,
+    `Общая оценка: ${displayScore(result.scores?.overall_0_100)}`,`Монета интересна: ${displayScore(result.scores?.coin_interest_0_100)}`,`Готовность ко входу: ${unknown?'не подтверждена — внутренняя причина требует проверки':displayReadiness(result.state)}`,'');
+  lines.push('ПРИЧИНЫ');const reasons=(Array.isArray(result.reasons)?result.reasons:[]).map(reasonLine).filter(Boolean);if(reasons.length)lines.push(...reasons);else lines.push('- подтверждённых причин нет');for(const fact of displayMarketFacts(result))lines.push(`- ${fact}`);
+--- a/current-generation/files/src/telegram-compact-formatter.mjs
++++ b/current-generation/files/src/telegram-compact-formatter.mjs
+@@ -1,3 +1,4 @@
++import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
+ import { reasonDefinition, safeUserReason, sourceLabelRu } from './reason-registry.mjs';
+ import {displaySnapshotChange,displayFutureLiquidations,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
+ import {plainSpotFuturesJointConclusion} from './telegram-plain-facts.mjs';
+@@ -14,6 +15,7 @@
+  if(result?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',message:null};
+  const bs=blockers(result),unknown=bs.some(x=>x.known===false||x.code==='UNKNOWN_INTERNAL_REASON');const ticker=text(result?.candidates?.[0]?.ticker||result?.candidates?.[0]?.contract||result?.metadata?.contract||'').replace(/-USDT$/i,'');
+  const lines=[`${ticker||'Монета'} — ${unknown?'⛔️ ВЫВОД НЕ ГОТОВ':stateTitle(result)}`,`Снимок: ${result.snapshot_time_utc}`,`Общая оценка: ${fmtScore(result.scores?.overall_0_100)}`,`Монета интересна: ${fmtScore(result.scores?.coin_interest_0_100)}`,`Готовность ко входу: ${fmtScore(result.scores?.entry_readiness_0_100)}`];
++ const limitedNotice=approvedHtxLimitedReportNotice(result?.metadata?.internal_market_context?.limited_report_scope);if(limitedNotice)lines.push(limitedNotice);
+  const evidence=(Array.isArray(facts)&&facts.length?facts:result.reasons).map(factLine).filter(Boolean).slice(0,5);lines.push(...evidence);const marketSummary=plainSpotFuturesJointConclusion(result);if(marketSummary)lines.push(marketSummary);const early=Array.isArray(result?.early_candidate?.items)?result.early_candidate.items:[];if(early.length){const e=early[0],name=text(e?.contract||e?.ticker).replace(/-USDT$/i,''),priority=finite(e?.operational_priority_0_100??e?.early_candidate_operational_priority_0_100),why=safeUserReason(e?.reason||e?.bridge_reason,{short:true})||'подтверждены ранние признаки';lines.push(`Ранний кандидат: ${name||ticker||'монета'}${priority!==null?` — приоритет ${Math.round(priority)}/100`:''}; ${why}.`);}
+  const src=sources(result);if(src.length)lines.push(`Источники: ${src.join(', ')}.`);
+  const sf=supportingFacts(result),contextParts=sf.slice(0,3).map(f=>{const src=sourceLabelRu(f.source)||f.source;const val=f.value===null||f.value===undefined?'подтверждено':`${f.value}${f.unit?` ${f.unit}`:''}`;return `${f.label}: ${val}${src?` — ${src}`:''}`;}),contextIndex=contextParts.length?lines.length:-1;if(contextIndex>=0)lines.push(`Доп. контекст: ${contextParts.join('; ')}.`);
+--- a/current-generation/files/src/canonical-publication.mjs
++++ b/current-generation/files/src/canonical-publication.mjs
+@@ -1,3 +1,4 @@
++import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
+ import {PAUSED_BLOCKS} from './evidence-v2.mjs';
+ import {formatManualReport} from './manual-report-formatter.mjs';
+ import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
+@@ -175,6 +176,7 @@
+  const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007'||context_policy===RELEVANT_LIQUIDATION_PRESENTATION;
+  const liquidationPolicy=context_policy===RELEVANT_LIQUIDATION_PRESENTATION?context_policy:liquidationPresentationPolicy(canonical.observed_ts);
+  const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${factual?factualIdeaBasis(canonical):basisLabel(canonical)}.`];
++ const limitedNotice=approvedHtxLimitedReportNotice(canonical?.metadata?.internal_market_context?.limited_report_scope);if(limitedNotice)lines.push('',limitedNotice);
+  const marketSummary=plainSpotFuturesJointConclusion(canonical);
+  if(marketSummary)lines.push('',marketSummary);
+  const brief=context_policy!=='ORIGINAL_V5_20261006';
+--- a/current-generation/files/src/v3-pipeline-health-sidecar.mjs
++++ b/current-generation/files/src/v3-pipeline-health-sidecar.mjs
+@@ -1,3 +1,4 @@
++import {approvedHtxLimitedCronAdmitted} from './approved-htx-analysis-scope.mjs';
+ import {buildPipelineHealth,persistPipelineHealth} from './v3-pipeline-health-runtime.mjs';
+ 
+ export const V3_PIPELINE_HEALTH_SIDECAR_VERSION='v3-pipeline-health-sidecar-shadow-v2-worker-degraded-20260928';
+@@ -14,7 +15,7 @@
+   return true;
+ }
+ 
+-export function buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state='OK'}={}){
++export function buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state='OK',approved_scope=null}={}){
+   const cronOk=text(cron?.status).toUpperCase()==='SUCCESS';
+   const scanClosed=Boolean(scan&&num(scan.universe_total)>0&&num(scan.scanned)===num(scan.universe_total)&&num(scan.errors||0)===0&&num(scan.stale||0)===0&&num(scan.stage0_coverage_pct)>=99.9);
+   const internalStatus=text(cron?.v3_pipeline_health_status).toUpperCase();
+@@ -36,14 +37,15 @@
+     critical_feed_state,
+   });
+   const reasons=[...new Set([...(health.reasons||[]),...(workerDegraded&&internalReason?[`WORKER_${internalReason}`]:[])])];
+-  return {...health,reasons,worker_health_status:internalStatus||null,worker_health_reason:internalReason||null,eligible_live_count:eligible,live_deep_check_count:deep,shadow_only:true};
++  const limited=Boolean(scan&&approvedHtxLimitedCronAdmitted(cron,approved_scope,scan)),otherReasons=reasons.filter(reason=>reason!=='STAGE0_NOT_CLOSED');
++  return {...health,reasons,...(limited?{report_scope_status:'LIMITED_SOURCE_AVAILABILITY',global_report_admission:otherReasons.length?'BLOCKED':'ADMITTED',full_stage0_closed:false,full_health_status:health.status,full_scope_reasons:[...reasons],limited_report_blockers:otherReasons}:{}),worker_health_status:internalStatus||null,worker_health_reason:internalReason||null,eligible_live_count:eligible,live_deep_check_count:deep,shadow_only:true};
+ }
+ 
+-export async function runV3PipelineHealthSidecar(db,{cron,scan,telegram_zero_reason,critical_feed_state='OK',now_ts=Date.now()}={}){
++export async function runV3PipelineHealthSidecar(db,{cron,scan,telegram_zero_reason,critical_feed_state='OK',approved_scope=null,now_ts=Date.now()}={}){
+   const base={version:V3_PIPELINE_HEALTH_SIDECAR_VERSION,mode:'SHADOW_ONLY',market_signal:false};
+   if(!db?.prepare||!db?.batch)return {...base,status:'SOURCE_UNSUPPORTED'};
+   const before=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
+-  const health=buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state});
++  const health=buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state,approved_scope});
+   const persisted=await persistPipelineHealth(db,{health,now_ts,namespace:'PIPELINE'});
+   const after=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
+   const delta=usageDelta(before,after);

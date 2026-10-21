@@ -20,6 +20,7 @@ test('worker degraded result is classified as degraded by the real health runtim
     fs.copyFileSync(path.join(sourceRoot,name),path.join(dir,name));
   }
   fs.copyFileSync(new URL('../files/src/v3-pipeline-health-sidecar.mjs',import.meta.url),path.join(dir,'v3-pipeline-health-sidecar.mjs'));
+  fs.copyFileSync(new URL('../files/src/approved-htx-analysis-scope.mjs',import.meta.url),path.join(dir,'approved-htx-analysis-scope.mjs'));
   const {buildPipelineHealthFromCron}=await import(`${pathToFileURL(path.join(dir,'v3-pipeline-health-sidecar.mjs')).href}?test=${Date.now()}`);
   const health=buildPipelineHealthFromCron({
     cron:{
