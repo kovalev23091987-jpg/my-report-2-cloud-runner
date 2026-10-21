@@ -39,7 +39,7 @@ function expectedCandidate(before, addition, binding) {
   const end = addition.indexOf(') {', start);
   assert.ok(start >= 0 && end > start, 'ADDITION_PREDICATE_GRAMMAR_CHANGED');
   const newPredicate = compact(addition.slice(start + 4, end));
-  assert.equal(newPredicate, compact(oldPredicate).replace(/\bdelta\b/g, 'emptyUsage'), 'THREE_EXISTING_PREDICATES_CHANGED');
+  assert.ok(newPredicate === compact(oldPredicate).replace(/\bdelta\b/g, 'emptyUsage'), 'THREE_EXISTING_PREDICATES_CHANGED');
   const oldLine = lines[empty[0]];
   assert.equal(oldLine.split(';return ').length, 2, 'EMPTY_RETURN_GRAMMAR_CHANGED');
   assert.equal(oldLine.split('usageDelta(before,after)').length, 2, 'EMPTY_DELTA_EXPRESSION_CHANGED');
@@ -74,7 +74,7 @@ function fixture(DatabaseSync, profile) {
   let snapshots = 0;
   const db = {
     prepare(statement) {
-      assert.match(statement, /^\s*SELECT\b/i, 'EMPTY_PATH_ATTEMPTED_A_NONSELECT');
+      assert.ok(/^\s*SELECT\b/i.test(statement), 'EMPTY_PATH_ATTEMPTED_A_NONSELECT');
       return {statement, bind: (...parameters) => ({statement, parameters})};
     },
     async batch(statements) {
@@ -149,7 +149,7 @@ export async function runRealizedEmptyBudgetGuardConnected({runtime_root, baseli
   try {
     const oldModule = await import(pathToFileURL(path.join(baselineRoot, target)).href);
     const newModule = await import(pathToFileURL(path.join(candidateRoot, target)).href);
-    assert.deepEqual(newModule.V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET, oldModule.V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET);
+    assert.equal(digest(JSON.stringify(newModule.V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET)), digest(JSON.stringify(oldModule.V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET)), 'EXISTING_BUDGET_EXPORT_CHANGED');
     assert.equal(oldModule.V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_read, 3200);
     assert.equal(oldModule.V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written, 64);
     const now = 1792587329606;
