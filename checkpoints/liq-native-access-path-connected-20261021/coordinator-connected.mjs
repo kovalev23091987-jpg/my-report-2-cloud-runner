@@ -215,7 +215,7 @@ export async function runLiquidationAccessPathCaptureConnected({runtime_root, ba
   }
   const binding = readJSON(path.join(packageRoot, 'bindings.json'));
   const full = readJSON(path.join(fs.realpathSync(repo_root), 'checkpoints/liq-native-access-path-connected-20261021/corrected-full-runtime-dependencies.json'));
-  binding.unchanged_dependencies = binding.unchanged_dependencies.map(pin => full[pin.runtime_relative] ? {runtime_relative:pin.runtime_relative,bytes:full[pin.runtime_relative].bytes,sha256:full[pin.runtime_relative].sha256} : pin);
+  binding.unchanged_dependencies = binding.unchanged_dependencies.map(pin => full[pin.runtime_relative] ? {runtime_relative:full[pin.runtime_relative].runtime_relative,bytes:full[pin.runtime_relative].bytes,sha256:full[pin.runtime_relative].sha256} : pin);
   const candidateSrc = fs.realpathSync(runtime_root), baselineSrc = fs.realpathSync(baseline_runtime_root);
   assert.equal(path.basename(candidateSrc), 'src');
   assert.equal(path.basename(baselineSrc), 'src');
