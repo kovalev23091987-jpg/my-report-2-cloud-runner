@@ -535,11 +535,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node tools/guard-native-domain-connected-20261021.mjs before
-      - name: Reuse existing owner-approved bounded contract as transient private input
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: python3 tools/fetch-existing-anomaly-contract-20261021.py
-      - name: ONE FIRST connected atomic domain memory and source capture case
+      - name: ONLY failed late assembled hash guard repair; completed16groups NOT executed again
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
         run: |
@@ -549,7 +545,6 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/native-domain-connected/assembly.json
-          REPORT2_LINKED_RUNTIME="$PWD/runtime" REPORT2_LINKED_OUTPUT="$PWD/audit-output/native-domain-connected" node --test current-generation/tests/native-anomaly-domain-connected.runtime.mjs > audit-output/native-domain-connected/connected-tests.log 2>&1
       - name: Exact own scope and assembled modules after FIRST case
         if: ${{ always() }}
         env:
