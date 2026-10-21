@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
-import {applyRuntimePolicyPatches} from './runtime-policy-patches.mjs';
+import {applyRuntimePolicyPatches,applyRealizedEmptyBudgetGuard} from './runtime-policy-patches.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const runtime=path.resolve(process.argv[2]||'runtime');
 const sha=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
@@ -167,5 +167,6 @@ fs.copyFileSync(path.join(here,'../runner/private-canonical-prefetch.mjs'),path.
 fs.copyFileSync(path.join(here,'../runner/native-query-cost-journal.mjs'),path.join(runtime,'native-query-cost-journal.mjs'));
 for(const file of ['verified-native-day-reconciliation.mjs','native-day-reconciliation-tokens.mjs'])fs.copyFileSync(path.join(here,'../runner',file),path.join(runtime,file));
 const policyPatches=applyRuntimePolicyPatches(runtime);
-console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
+const realizedEmptyGuard=applyRealizedEmptyBudgetGuard(runtime);
+console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches,realized_empty_budget_guard:realizedEmptyGuard}));
 
