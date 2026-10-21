@@ -549,6 +549,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/native-domain-connected/assembly.json
+          node tools/read-realized-liq-contract-20261021.mjs runtime
           REPORT2_LINKED_RUNTIME="$PWD/runtime" REPORT2_LINKED_OUTPUT="$PWD/audit-output/native-domain-connected" node --test current-generation/tests/native-anomaly-domain-connected.runtime.mjs > audit-output/native-domain-connected/connected-tests.log 2>&1
       - name: Exact own scope and assembled modules after FIRST case
         if: ${{ always() }}
@@ -566,5 +567,14 @@ jobs:
         with:
           name: native-domain-connected-${{ github.run_id }}
           path: audit-output/native-domain-connected/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload only owner-approved bounded fourth-source fragments
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: realized-liq-contract-${{ github.run_id }}
+          path: audit-output/realized-liq-contract/
           if-no-files-found: error
           retention-days: 30

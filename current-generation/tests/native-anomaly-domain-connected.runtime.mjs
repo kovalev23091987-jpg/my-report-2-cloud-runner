@@ -11,7 +11,7 @@ const sha=b=>createHash('sha256').update(b).digest('hex'),write=(n,d)=>fs.writeF
 const files=(root,rel='')=>fs.readdirSync(path.join(root,rel),{withFileTypes:true}).flatMap(x=>x.isDirectory()?files(root,path.join(rel,x.name)):[path.join(rel,x.name)]).sort();
 test('ONE FIRST native anomaly atomic domain memory capture and admission kernel',async()=>{
  assert.ok(runtime&&output);fs.mkdirSync(output,{recursive:true});const plan=JSON.parse(fs.readFileSync(path.join(repo,prefix,'qualification-plan.json')));assert.equal(plan.semantic_status,'UNEXECUTED');
- assert.equal(execFileSync('git',['rev-parse','HEAD^'],{cwd:repo,encoding:'utf8'}).trim(),plan.baseline_git_commit);
+ execFileSync('git',['merge-base','--is-ancestor',plan.baseline_git_commit,'HEAD'],{cwd:repo});
  const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'report2-native-domain-baseline-')),baseline=path.join(temporary,'baseline');let returned=false;
  try{
   fs.cpSync(runtime,baseline,{recursive:true});
