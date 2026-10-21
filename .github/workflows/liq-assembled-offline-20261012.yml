@@ -319,6 +319,7 @@ permissions:
   contents: read
 jobs:
   verify:
+    if: ${{ github.ref != 'refs/heads/work/native-anomaly-contract-read-20261021' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -514,4 +515,41 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
+          retention-days: 30
+
+  native_anomaly_contract_read:
+    if: ${{ github.ref == 'refs/heads/work/native-anomaly-contract-read-20261021' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact own scope before read-only existing store contract
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-native-anomaly-contract-read-20261021.mjs before
+      - name: Read three pinned contracts without module or SQL execution
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          trap 'rm -rf runtime' EXIT
+          mkdir -p runtime audit-output/native-anomaly-contract
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/native-anomaly-contract/assembly.json
+          node tools/read-native-anomaly-contract-20261021.mjs runtime
+          node tools/guard-native-anomaly-contract-read-20261021.mjs after
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: native-anomaly-contract-${{ github.run_id }}
+          path: audit-output/native-anomaly-contract/
+          if-no-files-found: error
           retention-days: 30
