@@ -1,0 +1,201 @@
+{
+  "schema": "SCAN_FALLBACK_SOURCE_ASOF_CONNECTED_V1",
+  "status": "CONTROLLED_COMPONENT_COMPLETED",
+  "control_count": 7,
+  "controls": [
+    {
+      "name": "original saved scan source clock later than historical same-bucket read-asof is excluded",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": {
+        "saved_record_index": 0,
+        "source_ts": 1790635729452,
+        "bucket": 1790635500000,
+        "supplied_historical_asof": 1790635729451,
+        "original_SQL_returned_clock_after_asof": true,
+        "before_received": 1,
+        "after_received": 0,
+        "before_status": "PARTIAL",
+        "after_status": "WARMING",
+        "immutable_availability_or_native_incident_proven": false
+      }
+    },
+    {
+      "name": "actual SQLite NULL zero negative fraction text unsafe and infinite clocks cannot become eligible series",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": [
+        {
+          "label": "NULL",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        },
+        {
+          "label": "zero",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        },
+        {
+          "label": "negative",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        },
+        {
+          "label": "fraction",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        },
+        {
+          "label": "text",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        },
+        {
+          "label": "unsafe-real",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        },
+        {
+          "label": "infinite-real",
+          "before_received": 1,
+          "after_received": 0,
+          "after_status": "WARMING"
+        }
+      ]
+    },
+    {
+      "name": "target fallback also rejects schema-permitted future or unknown original clocks without trusting buckets",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": [
+        {
+          "label": "future",
+          "supplied_read_asof": 1790635729452,
+          "before_targets": 5,
+          "after_targets": 0,
+          "bucket_source_consistency_claimed": false
+        },
+        {
+          "label": "unknown",
+          "supplied_read_asof": 1790635729452,
+          "before_targets": 5,
+          "after_targets": 0,
+          "bucket_source_consistency_claimed": false
+        }
+      ]
+    },
+    {
+      "name": "nearest-bucket tolerance after the ideal historical target is preserved when source is before read-asof",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": [
+        {
+          "target": "5m",
+          "source_ts": 1790635201000,
+          "supplied_read_asof": 1790635729452,
+          "after_ideal_target_but_allowed": false,
+          "actual_cadence_minutes": 20
+        },
+        {
+          "target": "15m",
+          "source_ts": 1790634601000,
+          "supplied_read_asof": 1790635729452,
+          "after_ideal_target_but_allowed": false,
+          "actual_cadence_minutes": 20
+        },
+        {
+          "target": "1h",
+          "source_ts": 1790632201000,
+          "supplied_read_asof": 1790635729452,
+          "after_ideal_target_but_allowed": true,
+          "actual_cadence_minutes": 20
+        },
+        {
+          "target": "4h",
+          "source_ts": 1790621401000,
+          "supplied_read_asof": 1790635729452,
+          "after_ideal_target_but_allowed": true,
+          "actual_cadence_minutes": 20
+        },
+        {
+          "target": "24h",
+          "source_ts": 1790549401000,
+          "supplied_read_asof": 1790635729452,
+          "after_ideal_target_but_allowed": true,
+          "actual_cadence_minutes": 20
+        }
+      ]
+    },
+    {
+      "name": "exact source-asof edge and original NULL numeric fields zero age and funding units stay unchanged",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": {
+        "source_ts": 1790635729452,
+        "price": 83455.2,
+        "funding_rate": -0.000014873337058743,
+        "funding_rate_pct": -0.0014873337058743,
+        "funding_interval_hours": null,
+        "market_age_sec": 0,
+        "unrelated_NULL_not_coerced": true,
+        "PARTIAL_not_promoted": true,
+        "clock_refreshes": 0
+      }
+    },
+    {
+      "name": "actual existing SELECT templates bindings order limits counts and fixture read accounting stay exact",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": [
+        {
+          "path": "contract",
+          "SQL_calls_each": 4,
+          "scan_SELECTs_each": 1,
+          "SQL_and_parameters_sha256": "150c64d32a5d1a7c04d4e96f43dacf3ed73fd33dc981636433794349cef54c6a",
+          "fixture_returned_rows_each": 1,
+          "new_SQL_templates": 0,
+          "new_SQL_bindings": 0,
+          "native_rows_read_cost": null,
+          "quota_refund_or_saving_claimed": false
+        },
+        {
+          "path": "targets",
+          "SQL_calls_each": 10,
+          "scan_SELECTs_each": 5,
+          "SQL_and_parameters_sha256": "619e07a43048bfeb29e4b64183cb9846be95a91e6bd99db0025f82a6a747b9eb",
+          "fixture_returned_rows_each": 5,
+          "new_SQL_templates": 0,
+          "new_SQL_bindings": 0,
+          "native_rows_read_cost": null,
+          "quota_refund_or_saving_claimed": false
+        }
+      ]
+    },
+    {
+      "name": "new controlled collector envelope retains the unchanged preferred path without reading fallback",
+      "classification": "NEW_CONTROLLED_SQLITE_WITH_ONE_SAVED_PROJECTION_NOT_NATIVE_INCIDENT_OR_ACK",
+      "detail": {
+        "preferred_path_unchanged": true,
+        "fallback_not_queried": true,
+        "received_points": 1,
+        "source_clock": 1790635729452,
+        "fixture_envelope_is_not_original_collector_receipt": true
+      }
+    }
+  ],
+  "source_saved_projection_sha256": "bbf062ba9bdcd7621124d2cf2777507fb2813d8dbcf451308c3945077002005e",
+  "source_rows_used": 1,
+  "existing_SQLite_DDL_and_adapter_used": true,
+  "local_SQLite_executed": true,
+  "new_SQL_templates": 0,
+  "new_SQL_bindings": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clock_refreshes": 0,
+  "old_K07_565_586_588_589_or_37_3274_13096_semantic_reexecution": 0,
+  "immutable_firstknowledge_or_anomaly_ACK_qualified": false,
+  "actual_native_future_incident_proven": false,
+  "native_cost_saving_or_admission_qualified": false
+}
