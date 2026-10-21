@@ -65,5 +65,11 @@
     "preaction_reserved_metadata_bytes": 3072,
     "record_bytes": 2048
   },
-  "root_owned_artifact_wiring_not_applied_by_source": true
+  "root_owned_artifact_wiring_not_applied_by_source": true,
+  "own_static_cost_unknown_ack_correction": {
+    "old_rule": "COMMITTED status skipped reconciliation even when cost_status was unknown",
+    "new_rule": "retain SAME effective prepared/opid whenever uncertain, even if verified row status is COMMITTED",
+    "case_groups_added": 0,
+    "author_execution": 0
+  }
 }

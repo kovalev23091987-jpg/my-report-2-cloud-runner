@@ -128,9 +128,10 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
       effective=validate_prepared(prepared,id,origin);expected_phase='WRITE';
       const result=await commitAnomalyBundle({db,prepared:effective,admit,cost_bounds:policy});
       const u=usage();
-      if(!u||result.cost_status==='PROJECTION_EXCEEDED_OR_UNKNOWN'||result.new_operation_id_allowed===false||['UNKNOWN_COMMIT_ACK','COMMIT_REPLY_RETAINED_RECONCILIATION_REQUIRED','READBACK_CONFLICT_OR_UNKNOWN_USAGE'].includes(result.status))stopped=true;
+      const uncertain=!u||result.cost_status==='PROJECTION_EXCEEDED_OR_UNKNOWN'||result.new_operation_id_allowed===false||['UNKNOWN_COMMIT_ACK','COMMIT_REPLY_RETAINED_RECONCILIATION_REQUIRED','READBACK_CONFLICT_OR_UNKNOWN_USAGE'].includes(result.status);
+      if(uncertain)stopped=true;
       const returned={...result,effective_prepared:effective,original_origin_revision:origin?.revision??null,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};
-      if(result.status!=='COMMITTED_RECEIPT_READBACK'&&result.status!=='COMMIT_NOT_ADMITTED'){
+      if(uncertain||result.status!=='COMMITTED_RECEIPT_READBACK'&&result.status!=='COMMIT_NOT_ADMITTED'){
         stopped=true;returned.new_operation_id_allowed=false;reconciliation.set(id,returned);
       }
       return returned;
