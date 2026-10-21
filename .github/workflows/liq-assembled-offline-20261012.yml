@@ -535,7 +535,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node tools/guard-realized-empty-budget-connected-20261021.mjs before
-      - name: ONE FIRST connected empty budget guard and new normalizer lexical delta case
+      - name: ONLY failed late target hash pin repair; completed10 and new delta NOT replayed
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
         run: |
@@ -545,7 +545,6 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/realized-empty-connected/assembly.json
-          REPORT2_LINKED_RUNTIME="$PWD/runtime" REPORT2_LINKED_OUTPUT="$PWD/audit-output/realized-empty-connected" node --test current-generation/tests/realized-empty-budget-connected.runtime.mjs > audit-output/realized-empty-connected/connected-tests.log 2>&1
       - name: Exact own scope and assembled modules after FIRST case
         if: ${{ always() }}
         env:
@@ -566,10 +565,3 @@ jobs:
           retention-days: 30
 
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: realized-normalizer-delta-${{ github.run_id }}
-          path: audit-output/realized-normalizer-delta/
-          if-no-files-found: ignore
-          retention-days: 30
