@@ -53,10 +53,11 @@ export async function runNativeCardWatchWireConnected({runtime_root,baseline_run
   assert.equal(sha(observerText.replace(typed,'').replace(branch,'')),pins.targets['anomaly-research/observer/observer.mjs'].before_sha256);
   const oldFetch=globalThis.fetch,oldNow=Date.now;let clock=T+30002,networkAttempts=0;
   globalThis.fetch=async()=>{networkAttempts++;throw Error('NATIVE_PROVIDER_NETWORK_FORBIDDEN');};Date.now=()=>clock;
-  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'report2-new-anomaly-ingress-')),contexts=[],groups=[];
-  let component,api,tape,ingress,DatabaseSync,serial=0;
+  const contexts=[],groups=[];
+  let directory=null,component,api,tape,ingress,DatabaseSync,serial=0;
   const add=(name,variants=1,detail={})=>groups.push({name,variants,classification:'NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION',...detail});
   try{
+    directory=fs.mkdtempSync(path.join(os.tmpdir(),'report2-new-anomaly-ingress-'));
     const loader=await import(pathToFileURL(loaderPath).href);
     api=await loader.loadRunnerAnomalyParentCapability({runtime_root:src,baseline_runtime_root:baseSrc,repo_root:repo});
     ({DatabaseSync}=await import('node:sqlite'));
@@ -174,8 +175,8 @@ export async function runNativeCardWatchWireConnected({runtime_root,baseline_run
   finally{
     try{
       for(const c of contexts)if(!c.closed){try{await c.capability.close();}finally{c.sql.close();c.closed=true;}}
-      fs.rmSync(directory,{recursive:true,force:true});
+      if(directory!==null)fs.rmSync(directory,{recursive:true,force:true});
     }finally{globalThis.fetch=oldFetch;Date.now=oldNow;}
   }
-  component.fixture_cleanup_removed=!fs.existsSync(directory);return component;
+  component.fixture_cleanup_removed=directory===null||!fs.existsSync(directory);return component;
 }
