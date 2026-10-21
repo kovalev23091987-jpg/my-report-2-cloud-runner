@@ -191,6 +191,8 @@ jobs:
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
+      REPORT2_LIQ_ACCESS_PATH_ONCE: ${{ vars.REPORT2_LIQ_ACCESS_PATH_ONCE || '' }}
+      REPORT2_LIQ_ACCESS_PATH_NATURAL: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scheduled_recovery_run == true && inputs.reason == 'SCHEDULED_CADENCE_RECOVERY' && inputs.manual_run_authorized != true && inputs.trigger_only_run != true)) && '1' || '0' }}
       REPORT2_RUN_SOURCE: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && 'schedule' || 'manual' }}
       REPORT2_TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run == true && '1' || '0' }}
       REPORT2_TRIGGER_KICK_TASK_ID: ${{ inputs.trigger_task_id || '' }}
@@ -468,6 +470,7 @@ jobs:
             runtime/automatic-delivery-audit.json
             runtime/known-d1-day-guard.json
             runtime/report2-failure-accounting.json
+            runtime/report2-liquidation-access-path.json
             runtime/report2-completion-accounting.json
             runtime/raw24h-control-readback.json
             runtime/private-canonical-archive-receipt.json
