@@ -1,0 +1,34 @@
+{
+  "schema": "SCAN_FALLBACK_SOURCE_ASOF_TEXT_BINDINGS_V1",
+  "base": "dafbd32c3e42602b0d91c668ed21a5172c5b0f32",
+  "protocol_first_commit": "93c2b7cda994fed578bf46de3b8a3a206e61ee6c",
+  "target": "current-generation/files/src/market-history-reader.mjs",
+  "runtime_file": "market-history-reader.mjs",
+  "before_sha256": "bae6e5653389425a557f3d69ce74d869b9028585c8a69c5b51704b651d69518b",
+  "after_sha256": "2e82c72abec59d4b66f6767a07c5a4f158865caca0f15d1ec54b09dac7b0ad79",
+  "existing_fixture_helper": {
+    "path": "current-generation/tests/early-evidence-repair/fixture-db.mjs",
+    "sha256": "6e7cf9dd2faf0fd9a10a0d1d63c534956799ed359b5f5f2d02e3b50b23fa1fe2",
+    "adapter_start": " const usage={",
+    "adapter_end": "\n return db;",
+    "adapter_sha256": "fd9010a190ed69eda06c98fe55a3e939abcf4f4e98aaf074c4cca3eaaacec4eb",
+    "DDL_start": "CREATE TABLE scan_runs(",
+    "DDL_end": "\n CREATE TABLE v3_market_microstructure_1m",
+    "DDL_sha256": "df795fb3da1b102b69cd5d1fd193301530a5a0547e587daf6f8d53da0fc8f779"
+  },
+  "saved_projection": {
+    "path": "current-generation/tests/early-evidence-repair/real_scans.json",
+    "bytes": 14644,
+    "sha256": "bbf062ba9bdcd7621124d2cf2777507fb2813d8dbcf451308c3945077002005e",
+    "record_index": 0,
+    "contract": "BTC-USDT",
+    "original_observation_ts": 1790635729452,
+    "original_bucket": 1790635500000,
+    "read_asof_counterexample": 1790635729451,
+    "classification": "SAVED_TEST_PROJECTION_NOT_ORIGINAL_PROVIDER_BODY_OR_FIRSTKNOWN"
+  },
+  "prepared_CONTROLLED_groups": 7,
+  "new_SQL_templates": 0,
+  "new_SQL_bindings": 0,
+  "actual_immutable_availability_or_native_ACK": false
+}
