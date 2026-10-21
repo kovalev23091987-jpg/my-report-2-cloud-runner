@@ -1,0 +1,422 @@
+﻿2026-10-21T08:50:21.7594966Z Current runner version: '2.338.0'
+2026-10-21T08:50:21.7620039Z ##[group]Runner Image Provisioner
+2026-10-21T08:50:21.7620960Z Hosted Compute Agent
+2026-10-21T08:50:21.7621635Z Version: 20261012.601
+2026-10-21T08:50:21.7622531Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-21T08:50:21.7623294Z Build Date: 2026-10-12T17:48:21Z
+2026-10-21T08:50:21.7624085Z Worker ID: {01334de6-06ea-4bb5-8070-850215e3bfed}
+2026-10-21T08:50:21.7624810Z Region: westus2
+2026-10-21T08:50:21.7625434Z Cloud: Azure
+2026-10-21T08:50:21.7625998Z ##[endgroup]
+2026-10-21T08:50:21.7627825Z ##[group]Operating System
+2026-10-21T08:50:21.7628589Z Ubuntu
+2026-10-21T08:50:21.7629112Z 24.04.5
+2026-10-21T08:50:21.7629608Z LTS
+2026-10-21T08:50:21.7630195Z ##[endgroup]
+2026-10-21T08:50:21.7630809Z ##[group]Runner Image
+2026-10-21T08:50:21.7631534Z Image: ubuntu-24.04
+2026-10-21T08:50:21.7632122Z Version: 20261012.334.1
+2026-10-21T08:50:21.7633967Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-21T08:50:21.7635533Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-21T08:50:21.7636579Z ##[endgroup]
+2026-10-21T08:50:21.7637725Z ##[group]GITHUB_TOKEN Permissions
+2026-10-21T08:50:21.7639779Z Contents: read
+2026-10-21T08:50:21.7640426Z Metadata: read
+2026-10-21T08:50:21.7641114Z ##[endgroup]
+2026-10-21T08:50:21.7643654Z Secret source: Actions
+2026-10-21T08:50:21.7644698Z Cache mode: write
+2026-10-21T08:50:21.7645436Z Prepare workflow directory
+2026-10-21T08:50:21.7994028Z Prepare all required actions
+2026-10-21T08:50:21.8043732Z Getting action download info
+2026-10-21T08:50:22.1898072Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-21T08:50:22.3031135Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-21T08:50:22.4060003Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+2026-10-21T08:50:22.6670584Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-21T08:50:22.8806635Z Complete job name: verify
+2026-10-21T08:50:22.9640094Z ##[group]Run actions/checkout@v4
+2026-10-21T08:50:22.9640985Z with:
+2026-10-21T08:50:22.9641474Z   ref: f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:22.9642199Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:22.9646727Z   token: ***
+2026-10-21T08:50:22.9647178Z   ssh-strict: true
+2026-10-21T08:50:22.9647630Z   ssh-user: git
+2026-10-21T08:50:22.9648090Z   persist-credentials: true
+2026-10-21T08:50:22.9648597Z   clean: true
+2026-10-21T08:50:22.9649052Z   sparse-checkout-cone-mode: true
+2026-10-21T08:50:22.9649580Z   fetch-depth: 1
+2026-10-21T08:50:22.9650014Z   fetch-tags: false
+2026-10-21T08:50:22.9650463Z   show-progress: true
+2026-10-21T08:50:22.9650920Z   lfs: false
+2026-10-21T08:50:22.9651334Z   submodules: false
+2026-10-21T08:50:22.9651831Z   set-safe-directory: true
+2026-10-21T08:50:22.9652530Z   allow-unsafe-pr-checkout: false
+2026-10-21T08:50:22.9653429Z ##[endgroup]
+2026-10-21T08:50:23.0701993Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:23.0704520Z ##[group]Getting Git version info
+2026-10-21T08:50:23.0705489Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-21T08:50:23.0706827Z [command]/usr/bin/git version
+2026-10-21T08:50:23.0819920Z git version 2.55.0
+2026-10-21T08:50:23.0844814Z ##[endgroup]
+2026-10-21T08:50:23.0869711Z Temporarily overriding HOME='/home/runner/work/_temp/cfa66084-8119-4d24-b1dc-740aeebb798a' before making global git config changes
+2026-10-21T08:50:23.0871997Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T08:50:23.0877922Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-21T08:50:23.0941042Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-21T08:50:23.0945734Z ##[group]Initializing the repository
+2026-10-21T08:50:23.0950251Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-21T08:50:23.1115239Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-21T08:50:23.1116923Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-21T08:50:23.1118610Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-21T08:50:23.1120462Z hint: call:
+2026-10-21T08:50:23.1121220Z hint:
+2026-10-21T08:50:23.1122125Z hint: 	git config --global init.defaultBranch <name>
+2026-10-21T08:50:23.1123506Z hint:
+2026-10-21T08:50:23.1124551Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-21T08:50:23.1126179Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-21T08:50:23.1127549Z hint:
+2026-10-21T08:50:23.1128339Z hint: 	git branch -m <name>
+2026-10-21T08:50:23.1129238Z hint:
+2026-10-21T08:50:23.1130346Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-21T08:50:23.1132986Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+2026-10-21T08:50:23.1136577Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:23.1204548Z ##[endgroup]
+2026-10-21T08:50:23.1213718Z ##[group]Disabling automatic garbage collection
+2026-10-21T08:50:23.1214448Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-21T08:50:23.1250155Z ##[endgroup]
+2026-10-21T08:50:23.1251328Z ##[group]Setting up auth
+2026-10-21T08:50:23.1258737Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T08:50:23.1298431Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T08:50:23.1731622Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T08:50:23.1769206Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T08:50:23.2004921Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T08:50:23.2045561Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T08:50:23.2277938Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-21T08:50:23.2322852Z ##[endgroup]
+2026-10-21T08:50:23.2324321Z ##[group]Fetching the repository
+2026-10-21T08:50:23.2334227Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:26.7983674Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:26.7984785Z  * branch            f78c15dc1c0bc8f3b537f4553806f71bb63ec180 -> FETCH_HEAD
+2026-10-21T08:50:26.7987890Z ##[endgroup]
+2026-10-21T08:50:26.7988608Z ##[group]Determining the checkout info
+2026-10-21T08:50:26.7990516Z ##[endgroup]
+2026-10-21T08:50:26.7996995Z [command]/usr/bin/git sparse-checkout disable
+2026-10-21T08:50:26.8054149Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-21T08:50:26.8095055Z ##[group]Checking out the ref
+2026-10-21T08:50:26.8098940Z [command]/usr/bin/git checkout --progress --force f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:27.6992515Z Note: switching to 'f78c15dc1c0bc8f3b537f4553806f71bb63ec180'.
+2026-10-21T08:50:27.6993194Z 
+2026-10-21T08:50:27.6993613Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-21T08:50:27.6994750Z changes and commit them, and you can discard any commits you make in this
+2026-10-21T08:50:27.6995373Z state without impacting any branches by switching back to a branch.
+2026-10-21T08:50:27.6995726Z 
+2026-10-21T08:50:27.6995966Z If you want to create a new branch to retain commits you create, you may
+2026-10-21T08:50:27.6996497Z do so (now or later) by using -c with the switch command. Example:
+2026-10-21T08:50:27.6996841Z 
+2026-10-21T08:50:27.6996986Z   git switch -c <new-branch-name>
+2026-10-21T08:50:27.6997224Z 
+2026-10-21T08:50:27.6997376Z Or undo this operation with:
+2026-10-21T08:50:27.6997565Z 
+2026-10-21T08:50:27.6997694Z   git switch -
+2026-10-21T08:50:27.6997868Z 
+2026-10-21T08:50:27.6998154Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-21T08:50:27.6998513Z 
+2026-10-21T08:50:27.6998812Z HEAD is now at f78c15d Preserve qualified HTX cached facts and original body/asof clocks
+2026-10-21T08:50:27.7048297Z ##[endgroup]
+2026-10-21T08:50:27.7105783Z [command]/usr/bin/git log -1 --format=%H
+2026-10-21T08:50:27.7137214Z f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:27.7420327Z ##[group]Run actions/setup-node@v4
+2026-10-21T08:50:27.7420703Z with:
+2026-10-21T08:50:27.7420956Z   node-version: 24
+2026-10-21T08:50:27.7421216Z   always-auth: false
+2026-10-21T08:50:27.7421474Z   check-latest: false
+2026-10-21T08:50:27.7424581Z   token: ***
+2026-10-21T08:50:27.7424855Z ##[endgroup]
+2026-10-21T08:50:27.8868069Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-21T08:50:27.8872870Z (node:2589) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-21T08:50:27.8873821Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-21T08:50:27.8876396Z ##[group]Environment details
+2026-10-21T08:50:28.3466246Z node: v24.21.0
+2026-10-21T08:50:28.3467128Z npm: 11.19.0
+2026-10-21T08:50:28.3467537Z yarn: 1.22.22
+2026-10-21T08:50:28.3469136Z ##[endgroup]
+2026-10-21T08:50:28.3686984Z ##[group]Run actions/github-script@v7
+2026-10-21T08:50:28.3687302Z with:
+2026-10-21T08:50:28.3689843Z   script: const owner=context.repo.owner,repo=context.repo.repo;
+const {pathToFileURL}=await import('node:url');
+const {verifyOfflineReviewAuthority}=await import(pathToFileURL(process.cwd()+'/runner/offline-review-authority.mjs').href);
+const control={call:async path=>(await github.request('GET /repos/{owner}/{repo}/'+path,{owner,repo})).data,read:async(path,ref)=>({value:JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref})).data.content,'base64').toString())})};
+const proof=await verifyOfflineReviewAuthority(control,{head:context.payload.pull_request.head.sha,base:context.payload.pull_request.base.sha,branch:context.payload.pull_request.head.ref});
+core.info(JSON.stringify(proof));
+
+2026-10-21T08:50:28.3695496Z   github-token: ***
+2026-10-21T08:50:28.3695744Z   debug: false
+2026-10-21T08:50:28.3695972Z   user-agent: actions/github-script
+2026-10-21T08:50:28.3696337Z   result-encoding: json
+2026-10-21T08:50:28.3696588Z   retries: 0
+2026-10-21T08:50:28.3696844Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-21T08:50:28.3697168Z ##[endgroup]
+2026-10-21T08:50:29.2635866Z {"status":"EXACT_MATCHING_LIVE_BRANCH_LEASE","main":"166d77dceeb91931e71259ed29deaa6ee57ea3b2","head":"f78c15dc1c0bc8f3b537f4553806f71bb63ec180","live_owner":"CODEX:ACTIVE105_SOURCE_RELIABILITY:1792571738690","lease_expires_ts":1792577138690,"sourceHTTP":0,"D1":0,"production_activation_allowed":false}
+2026-10-21T08:50:29.2788176Z ##[group]Run mkdir -p runtime audit-output/n10-technical-path
+2026-10-21T08:50:29.2788714Z [36;1mmkdir -p runtime audit-output/n10-technical-path[0m
+2026-10-21T08:50:29.2789377Z [36;1mnode runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz[0m
+2026-10-21T08:50:29.2790023Z [36;1mtar -xzf runtime/payload.tar.gz -C runtime[0m
+2026-10-21T08:50:29.2790348Z [36;1mrm runtime/payload.tar.gz[0m
+2026-10-21T08:50:29.2791185Z [36;1mnode post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/n10-technical-path/assembly.json[0m
+2026-10-21T08:50:29.2791984Z [36;1mnpm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund[0m
+2026-10-21T08:50:29.3107117Z shell: /usr/bin/bash -e {0}
+2026-10-21T08:50:29.3107521Z env:
+2026-10-21T08:50:29.3108206Z   REPORT2_PAYLOAD_KEY: ***
+2026-10-21T08:50:29.3108551Z ##[endgroup]
+2026-10-21T08:50:33.3563294Z 
+2026-10-21T08:50:33.3564190Z added 52 packages in 2s
+2026-10-21T08:50:33.4058489Z ##[group]Run cmp current-generation/files/src/worker.js runtime/src/worker.js
+2026-10-21T08:50:33.4059151Z [36;1mcmp current-generation/files/src/worker.js runtime/src/worker.js[0m
+2026-10-21T08:50:33.4059827Z [36;1mcmp current-generation/files/src/htx-technical-structure.mjs runtime/src/htx-technical-structure.mjs[0m
+2026-10-21T08:50:33.4060634Z [36;1mcmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs[0m
+2026-10-21T08:50:33.4061436Z [36;1mcmp current-generation/files/src/technical-move-potential.mjs runtime/src/technical-move-potential.mjs[0m
+2026-10-21T08:50:33.4062602Z [36;1mcmp current-generation/files/src/dynamic-liquidation-panel.mjs runtime/src/dynamic-liquidation-panel.mjs[0m
+2026-10-21T08:50:33.4063474Z [36;1mcmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs[0m
+2026-10-21T08:50:33.4065312Z [36;1mnode --test current-generation/tests/technical-move-potential.test.mjs current-generation/tests/dynamic-liquidation-panel.test.mjs current-generation/tests/htx-volume-profile.test.mjs current-generation/tests/technical-native-facts.test.mjs current-generation/tests/n10-reused-venue-price.test.mjs > audit-output/n10-technical-path/target-unit.tap[0m
+2026-10-21T08:50:33.4067417Z [36;1mnode --test current-generation/tests/technical-target-producer.runtime.mjs current-generation/tests/observation-technical-range.runtime.mjs > audit-output/n10-technical-path/target-runtime.tap[0m
+2026-10-21T08:50:33.4068665Z [36;1mnode --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n10-technical-path/current-report-telegram.tap[0m
+2026-10-21T08:50:33.4069515Z [36;1mnode current-generation/validate.mjs > audit-output/n10-technical-path/generation.log 2>&1[0m
+2026-10-21T08:50:33.4070268Z [36;1mnode runner/current-runtime-binding.mjs --runtime runtime > audit-output/n10-technical-path/binding.json[0m
+2026-10-21T08:50:33.4135601Z shell: /usr/bin/bash -e {0}
+2026-10-21T08:50:33.4135872Z env:
+2026-10-21T08:50:33.4136074Z   REPORT2_TEST_RUNTIME: runtime
+2026-10-21T08:50:33.4136355Z   REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+2026-10-21T08:50:33.4137089Z   NODE_OPTIONS: --import /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/early-evidence-repair/no-network.mjs
+2026-10-21T08:50:33.4137770Z ##[endgroup]
+2026-10-21T08:51:05.3845357Z ##[error]Process completed with exit code 1.
+2026-10-21T08:51:05.3904668Z ##[group]Run for file in audit-output/n10-technical-path/*.tap audit-output/n10-technical-path/generation.log; do
+2026-10-21T08:51:05.3905523Z [36;1mfor file in audit-output/n10-technical-path/*.tap audit-output/n10-technical-path/generation.log; do[0m
+2026-10-21T08:51:05.3906148Z [36;1m  if test -f "$file"; then echo "FAILED_LOG: $file"; tail -90 "$file"; fi[0m
+2026-10-21T08:51:05.3906531Z [36;1mdone[0m
+2026-10-21T08:51:05.3995051Z shell: /usr/bin/bash -e {0}
+2026-10-21T08:51:05.3995381Z ##[endgroup]
+2026-10-21T08:51:05.4087738Z FAILED_LOG: audit-output/n10-technical-path/current-report-telegram.tap
+2026-10-21T08:51:05.4106095Z ✔ owner-paused blocks are inactive and cannot score either direction or claim the physical root (5.114832ms)
+2026-10-21T08:51:05.4107876Z ✔ sole supply/calendar routes are blocked while a shared source preserves active N04 evidence (1.47087ms)
+2026-10-21T08:51:05.4109846Z ✔ manual and Telegram exclude paused facts, including previously stored facts, on the same retained snapshot (42.124885ms)
+2026-10-21T08:51:05.4111450Z ✔ exact stored manual hash is verified before paused facts are suppressed, without rewriting the archive (2.682255ms)
+2026-10-21T08:51:05.4113018Z ✔ all supply-only routes reject explicit non-XRP dispatch before admission, including manual overrides (0.422901ms)
+2026-10-21T08:51:05.4114193Z ✔ paused N06 never plans or dispatches social and pageview HTTP, even for explicit routes (0.477263ms)
+2026-10-21T08:51:05.4115146Z ✔ paused N07 skips sole-block feeds and filters old official facts (0.451945ms)
+2026-10-21T08:51:05.4116255Z ✔ HTX margin-rule adapter only serves paused N08 and N09, while the active futures book route remains available (0.333874ms)
+2026-10-21T08:51:05.4117593Z ✔ paused N14 cannot dispatch any option-only source or revive saved facts (0.57762ms)
+2026-10-21T08:51:05.4118229Z ℹ tests 9
+2026-10-21T08:51:05.4118528Z ℹ suites 0
+2026-10-21T08:51:05.4118952Z ℹ pass 9
+2026-10-21T08:51:05.4119422Z ℹ fail 0
+2026-10-21T08:51:05.4119847Z ℹ cancelled 0
+2026-10-21T08:51:05.4120254Z ℹ skipped 0
+2026-10-21T08:51:05.4120681Z ℹ todo 0
+2026-10-21T08:51:05.4121147Z ℹ duration_ms 202.178037
+2026-10-21T08:51:05.4121782Z FAILED_LOG: audit-output/n10-technical-path/target-runtime.tap
+2026-10-21T08:51:05.4122989Z ✔ retained actual forward range closes an early observation where old anomaly alone has no forward trigger (59.355939ms)
+2026-10-21T08:51:05.4124010Z ✔ missing direction, low interest, hard veto, stale or missing range cannot become a new observation (18.194375ms)
+2026-10-21T08:51:05.4124908Z ✔ WAIT/ENTRY rules and an existing routed plan do not consume the new range fallback (32.315416ms)
+2026-10-21T08:51:05.4125793Z ✔ existing valid anomaly-based observation retains its original trigger and canonical fields (10.811703ms)
+2026-10-21T08:51:05.4126732Z ✔ actual raw-fill producer timing reproduces rejected old target and closed measured new target (2.661877ms)
+2026-10-21T08:51:05.4127787Z ✔ same assembled consumer receives the measured target without changing score, trigger, cancellation or ENTRY state (42.199144ms)
+2026-10-21T08:51:05.4128695Z ✔ an admitted independent price conflict withholds only the fallback target (1.816138ms)
+2026-10-21T08:51:05.4130318Z ✔ a precommitted scenario target already behind current price cannot become start-closing advice (9.71879ms)
+2026-10-21T08:51:05.4132055Z ✔ the original unclosed source direction is not promoted by a measured target (4.411467ms)
+2026-10-21T08:51:05.4133979Z ✔ old actual producer observations and stale QNT cannot become fresh technical targets (0.286997ms)
+2026-10-21T08:51:05.4135506Z ✔ foreign and incomplete real receipt mutations cannot supply an assigned measured target (0.441075ms)
+2026-10-21T08:51:05.4136039Z ℹ tests 11
+2026-10-21T08:51:05.4136258Z ℹ suites 0
+2026-10-21T08:51:05.4136467Z ℹ pass 11
+2026-10-21T08:51:05.4136673Z ℹ fail 0
+2026-10-21T08:51:05.4136891Z ℹ cancelled 0
+2026-10-21T08:51:05.4137115Z ℹ skipped 0
+2026-10-21T08:51:05.4137326Z ℹ todo 0
+2026-10-21T08:51:05.4137963Z ℹ duration_ms 309.699602
+2026-10-21T08:51:05.4138397Z FAILED_LOG: audit-output/n10-technical-path/target-unit.tap
+2026-10-21T08:51:05.4139212Z ✔ representative selector balances side, proximity and size without wallet dominance (1.522737ms)
+2026-10-21T08:51:05.4140058Z ✔ panel deduplicates positions, discounts cross margin and never sums venue notionals (2.116848ms)
+2026-10-21T08:51:05.4140783Z ✔ missing, wrong-side or unverified data has zero influence (0.273802ms)
+2026-10-21T08:51:05.4141437Z ✔ stale receipt is excluded from both targets and score evidence (0.383277ms)
+2026-10-21T08:51:05.4142485Z ✔ fresh scoped context keeps its role and does not acquire target permission (0.667618ms)
+2026-10-21T08:51:05.4143989Z ✔ an admitted target cannot move to the center of a nearby estimated bucket (1.009418ms)
+2026-10-21T08:51:05.4145263Z ✔ multiple admitted positions retain the nearest actual level and its own provenance (0.348482ms)
+2026-10-21T08:51:05.4147633Z ✔ retained real wire reconciles every minute, volume and long identifiers in 4h (40.921658ms)
+2026-10-21T08:51:05.4150665Z ✔ wrong units, duplicates, gaps, wrong contract and stale or future times fail closed (195.623028ms)
+2026-10-21T08:51:05.4152644Z ✔ shorter complete fallback is disclosed and a replacement sample never accumulates prior trades (29.147954ms)
+2026-10-21T08:51:05.4154316Z ✔ single venue, agreement, conflict and missing peers produce one bounded score family (49.087101ms)
+2026-10-21T08:51:05.4155906Z ✔ foreign venue adapter reconciles ready trades against its own candles, never HTX candles (64.35885ms)
+2026-10-21T08:51:05.4157659Z ✔ liquidation ranking gets confluence but unchanged price, notional, eligibility and directional score (17.606205ms)
+2026-10-21T08:51:05.4159221Z ✔ standalone collector admits three calls once, does not wait or retry 429 (50.024794ms)
+2026-10-21T08:51:05.4160817Z ✔ cross-venue provider cooldown survives another asset and independent provider remains eligible (19.152717ms)
+2026-10-21T08:51:05.4163488Z ✔ OKX native contract sizes are converted once and its closed candles prove completeness (28.077853ms)
+2026-10-21T08:51:05.4165340Z ✔ an independently fresh peer with a large price discrepancy neutralizes the profile, not silently drops to single venue (16.49542ms)
+2026-10-21T08:51:05.4166383Z ✔ N10 reuses independently qualified BINANCE complete cached candles for BTC-USDT (103.627548ms)
+2026-10-21T08:51:05.4167267Z ✔ N10 reuses independently qualified POLONIEX complete cached candles for AAVE-USDT (32.071259ms)
+2026-10-21T08:51:05.4168115Z ✔ N10 reuses independently qualified BITGET complete cached candles for SUSHI-USDT (5.250837ms)
+2026-10-21T08:51:05.4168920Z ✔ N10 skips a cached venue window without any traded minute (23.717211ms)
+2026-10-21T08:51:05.4169604Z ✔ N10 keeps a conflicting venue price separate from the common conclusion (74.931509ms)
+2026-10-21T08:51:05.4170259Z ✔ N10 uses one indexed cache read and zero provider HTTP (83.253397ms)
+2026-10-21T08:51:05.4170976Z ✔ N10 producer, block audit and report consumer use the same synchronized row (68.116348ms)
+2026-10-21T08:51:05.4171814Z ✔ actual producer timing receipt closes a measured target without invented timely field (3.131564ms)
+2026-10-21T08:51:05.4173521Z ✔ stale or future producer clocks and retrospective receipts cannot be overridden by legacy timely flag (0.784427ms)
+2026-10-21T08:51:05.4174509Z ✔ foreign, inverse, incomplete or inconsistent actual source windows reject measured targets (0.51889ms)
+2026-10-21T08:51:05.4175285Z ✔ original event and receipt expiry remain strict at decision time (0.407202ms)
+2026-10-21T08:51:05.4176063Z ✔ a legacy timely flag without original producer clocks cannot mint a measured target (0.271878ms)
+2026-10-21T08:51:05.4176887Z ✔ a target already reached by the current price is not presented as forward potential (0.332291ms)
+2026-10-21T08:51:05.4177616Z ✔ a verified nearer obstacle prevents a clear-path target claim (0.533597ms)
+2026-10-21T08:51:05.4178550Z ✔ an already crossed observed level does not block the remaining path (0.434603ms)
+2026-10-21T08:51:05.4179358Z ✔ an estimated bucket cannot veto a measured target as an exact path obstacle (0.341599ms)
+2026-10-21T08:51:05.4180083Z ✔ a bare five-percent wish is rejected without technical evidence (0.472573ms)
+2026-10-21T08:51:05.4180736Z ✔ measured candle range can prove more than five percent (0.345836ms)
+2026-10-21T08:51:05.4181439Z ✔ only a separately admitted fresh native liquidation level can prove a target (0.411068ms)
+2026-10-21T08:51:05.4182503Z ✔ calculated zone never becomes a decision target from generic confirmations (0.312404ms)
+2026-10-21T08:51:05.4183355Z ✔ the nearest favorable measured structure is used without a fixed percentage (0.317574ms)
+2026-10-21T08:51:05.4184151Z ✔ estimated or conditional account levels cannot override the target proof gate (0.320629ms)
+2026-10-21T08:51:05.4184940Z ✔ primary SOL supply integer is preserved exactly above the safe Number limit (1.907226ms)
+2026-10-21T08:51:05.4185937Z ✔ native SOL route verifies mainnet, finalized supply reconciliation and the exact source slot clock in two transports (49.423991ms)
+2026-10-21T08:51:05.4187150Z ✔ wrong Solana genesis, missing native integer and inconsistent supply cannot request a source clock (3.094325ms)
+2026-10-21T08:51:05.4188161Z ✔ all fresh exact crypto rolling market rows can supply neutral N10 facts without targets or signed-flow claims (58.673255ms)
+2026-10-21T08:51:05.4189046Z ✔ rolling N10 rejects duplicate, stale, foreign and impossible price summaries (2.729262ms)
+2026-10-21T08:51:05.4189841Z ✔ closed candle N10 uses exactly 20 complete minutes and does not authorize an entry (2.47621ms)
+2026-10-21T08:51:05.4190687Z ✔ saved exact NEAR 15m trajectory adds one neutral N10 text fact without another source call (1.789916ms)
+2026-10-21T08:51:05.4191554Z ✔ primary N10 uses both saved closed ranges and exact recent path without any new transport (2.52482ms)
+2026-10-21T08:51:05.4192668Z ✔ the existing manual report section prints and audits the verified path fact (22.003254ms)
+2026-10-21T08:51:05.4193579Z ✔ primary HTX empty isolated mode is accepted only with exact default/all/cross reconciliation (21.152335ms)
+2026-10-21T08:51:05.4194107Z ℹ tests 49
+2026-10-21T08:51:05.4194322Z ℹ suites 0
+2026-10-21T08:51:05.4194543Z ℹ pass 49
+2026-10-21T08:51:05.4194757Z ℹ fail 0
+2026-10-21T08:51:05.4194973Z ℹ cancelled 0
+2026-10-21T08:51:05.4195195Z ℹ skipped 0
+2026-10-21T08:51:05.4195407Z ℹ todo 0
+2026-10-21T08:51:05.4195650Z ℹ duration_ms 977.722221
+2026-10-21T08:51:05.4196041Z FAILED_LOG: audit-output/n10-technical-path/generation.log
+2026-10-21T08:51:05.4196597Z     '          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then\n' +
+2026-10-21T08:51:05.4197058Z     '            if normalize_true "$SCHEDULED_RECOVERY_RUN"; then\n' +
+2026-10-21T08:51:05.4198072Z     '              if normalize_true "$LEGACY_RUNNER_ENABLED" && ! normalize_true "$MANUAL_AUTHORIZED" && ! normalize_true "$TRIGGER_ONLY_RUN" && [ "$RECOVERY_REASON" = "SCHEDULED_CADENCE_RECOVERY" ]; then admitted=true; fi\n' +
+2026-10-21T08:51:05.4199014Z     '            elif normalize_true "$TRIGGER_ONLY_RUN"; then\n' +
+2026-10-21T08:51:05.4199631Z     '              if normalize_true "$LEGACY_RUNNER_ENABLED" && [ -n "$TRIGGER_TASK_ID" ]; then admitted=true; fi\n' +
+2026-10-21T08:51:05.4200276Z     '            elif normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi\n' +
+2026-10-21T08:51:05.4200668Z     '          fi\n' +
+2026-10-21T08:51:05.4200990Z     '          echo "admitted=$admitted" >> "$GITHUB_OUTPUT"\n' +
+2026-10-21T08:51:05.4201482Z     '          echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"\n' +
+2026-10-21T08:51:05.4201871Z     '\n' +
+2026-10-21T08:51:05.4202114Z     '  enqueue-manual-command:\n' +
+2026-10-21T08:51:05.4206996Z     "    if: ${{ inputs.trigger_only_run != true && ((github.event_name == 'push' && (contains(toJSON(github.event.commits), 'manual-requests/run.json') || startsWith(github.event.head_commit.message, '[manual-request]')) && !contains(github.event.head_commit.message, '[public-collector-release]')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'V13_P0_DRY_RUN' && inputs.reason != 'V13_SHADOW_MARKET_SMOKE' && inputs.reason != 'V13_FINAL_37' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') ) }}\n" +
+2026-10-21T08:51:05.4211082Z     '    runs-on: ubuntu-latest\n' +
+2026-10-21T08:51:05.4211497Z     '    outputs:\n' +
+2026-10-21T08:51:05.4211839Z     '      command_id: ${{ steps.enqueue.outputs.command_id }}\n' +
+2026-10-21T08:51:05.4212587Z     '      command: ${{ steps.enqueue.outputs.command }}\n' +
+2026-10-21T08:51:05.4213071Z     '      coin_contract: ${{ steps.enqueue.outputs.coin_contract }}\n' +
+2026-10-21T08:51:05.4213461Z     '    env:\n' +
+2026-10-21T08:51:05.4213820Z     '      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n' +
+2026-10-21T08:51:05.4214346Z     '      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n' +
+2026-10-21T08:51:05.4214831Z     "      REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}\n" +
+2026-10-21T08:51:05.4215318Z     "      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}\n" +
+2026-10-21T08:51:05.4215971Z     "      REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}\n" +
+2026-10-21T08:51:05.4216615Z     '      REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"\n' +
+2026-10-21T08:51:05.4217232Z     '      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"\n' +
+2026-10-21T08:51:05.4217667Z     '    steps:\n' +
+2026-10-21T08:51:05.4217941Z     '      - uses: actions/checkout@v4\n' +
+2026-10-21T08:51:05.4218271Z     '      - uses: actions/setup-node@v4\n' +
+2026-10-21T08:51:05.4218566Z     '        with:\n' +
+2026-10-21T08:51:05.4218829Z     "          node-version: '24'\n" +
+2026-10-21T08:51:05.4219236Z     '      - name: Durably enqueue command before analytics concurrency\n' +
+2026-10-21T08:51:05.4219617Z     '        id: enqueue\n' +
+2026-10-21T08:51:05.4219966Z     '        run: node runner/enqueue-manual-command.mjs\n' +
+2026-10-21T08:51:05.4220299Z     '\n' +
+2026-10-21T08:51:05.4220506Z     '  run-report2:\n' +
+2026-10-21T08:51:05.4220836Z     '    needs: [execution-gate, enqueue-manual-command]\n' +
+2026-10-21T08:51:05.4225053Z     "    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '7,27,47 * * * *') || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}\n" +
+2026-10-21T08:51:05.4228642Z     '    runs-on: ubuntu-24.04-arm\n' +
+2026-10-21T08:51:05.4229141Z     '    timeout-minutes: 25\n' +
+2026-10-21T08:51:05.4229425Z     '    concurrency:\n' +
+2026-10-21T08:51:05.4229736Z     '      group: my-report-2-production-cycle\n' +
+2026-10-21T08:51:05.4230099Z     '      cancel-in-progress: false\n' +
+2026-10-21T08:51:05.4230395Z     '    env:\n' +
+2026-10-21T08:51:05.4230752Z     '      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}\n' +
+2026-10-21T08:51:05.4231166Z     '      ANALYTICS_ENABLED: "1"\n' +
+2026-10-21T08:51:05.4231494Z     '      PUBLIC_COLLECTOR_ENABLED: "0"\n' +
+2026-10-21T08:51:05.4233271Z     "      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}\n" +
+2026-10-21T08:51:05.4234633Z     '      CALIBRATION_APPLY_ENABLED: "0"\n' +
+2026-10-21T08:51:05.4235610Z     "      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}\n" +
+2026-10-21T08:51:05.4236427Z     '      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}\n' +
+2026-10-21T08:51:05.4237085Z     '      REPORT2_EXPECTED_WORKER_SHA: "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17"\n' +
+2026-10-21T08:51:05.4237733Z     '      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n' +
+2026-10-21T08:51:05.4238243Z     '      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n' +
+2026-10-21T08:51:05.4238769Z     '      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}\n' +
+2026-10-21T08:51:05.4239327Z     '      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}\n' +
+2026-10-21T08:51:05.4240043Z     '      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"\n' +
+2026-10-21T08:51:05.4240736Z     '      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}\n' +
+2026-10-21T08:51:05.4241330Z     "      REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}\n" +
+2026-10-21T08:51:05.4241842Z     '      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"\n' +
+2026-10-21T08:51:05.4242446Z     '      REPORT2_TELEGRAM_WATCH70_ENABLED: "1"\n' +
+2026-10-21T08:51:05.4242876Z     '      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"\n' +
+2026-10-21T08:51:05.4243612Z     "      REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}\n" +
+2026-10-21T08:51:05.4244308Z     '      REPORT2_TELEGRAM_INFO_ENABLED: "1"\n' +
+2026-10-21T08:51:05.4244691Z     '      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"\n' +
+2026-10-21T08:51:05.4245504Z     "      REPORT2_EVIDENCE_HTTP_CAP: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && '18' || '24' }}\n" +
+2026-10-21T08:51:05.4246471Z     '      REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036'... 22965 more characters
+2026-10-21T08:51:05.4246949Z   
+2026-10-21T08:51:05.4247720Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/generation-guard.test.mjs:137:9)
+2026-10-21T08:51:05.4248541Z       at Test.runInAsyncScope (node:async_hooks:227:14)
+2026-10-21T08:51:05.4248952Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-10-21T08:51:05.4249438Z       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+2026-10-21T08:51:05.4249929Z       at Test.postRun (node:internal/test_runner/test:1542:19)
+2026-10-21T08:51:05.4250361Z       at Test.run (node:internal/test_runner/test:1467:12)
+2026-10-21T08:51:05.4250873Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-10-21T08:51:05.4251521Z     generatedMessage: true,
+2026-10-21T08:51:05.4251796Z     code: 'ERR_ASSERTION',
+2026-10-21T08:51:05.4294816Z     actual: 'name: Report 2 Cloud Runner\nrun-name: ${{ inputs.scheduled_recovery_run == true && \'Report 2 scheduled recovery\' || \'Report 2 Cloud Runner\' }}\n\non:\n  schedule:\n    - cron: "7,27,47 * * * *"\n  push:\n    branches:\n      - main\n    paths:\n      - "manual-requests/run.json"\n      - "cloudflare/public-collector/release-request.json"\n  workflow_dispatch:\n    inputs:\n      reason:\n        description: "manual validation"\n        required: false\n        default: "manual"\n      command:\n        description: "Russian command, for example: Найди ликвидационные монеты"\n        required: false\n        default: ""\n      coin_contract:\n        description: "optional exact HTX futures contract for a deep analysis, for example SOL-USDT"\n        required: false\n        default: ""\n      telegram_report_test:\n        description: "send one compact Telegram report test"\n        required: false\n        type: boolean\n        default: false\n      controlled_no_telegram:\n        description: "controlled smoke with Telegram fully disabled"\n        required: false\n        type: boolean\n        default: false\n      isolated_telegram_validation:\n        description: "isolate owner Telegram validation from unrelated manual smoke gates"\n        required: false\n        type: boolean\n        default: false\n      oxarchive_cost_probe:\n        description: "run one idempotent authenticated 0xArchive cost probe"\n        required: false\n        type: boolean\n        default: false\n      oxarchive_probe_symbol:\n        description: "0xArchive Hyperliquid symbol for the one-call cost probe"\n        required: false\n        default: "SOL"\n      cross_exchange_validation_lane:\n        description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"\n        required: false\n        default: ""\n      trigger_only_run:\n        description: "internal exact SENT price-trigger wake-up"\n        required: false\n        type: boolean\n        default: false\n      trigger_task_id:\n        description: "exact original trigger task; required for trigger-only run"\n        required: false\n        default: ""\n      scheduled_recovery_run:\n        description: "internal full-cycle recovery after missing scheduled events"\n        required: false\n        type: boolean\n        default: false\n      public_collector_release:\n        description: "deploy the bounded five-minute HTX public collector"\n        required: false\n        type: boolean\n        default: false\n      manual_run_authorized:\n        description: "explicitly authorize this manual analytics run"\n        required: true\n        type: boolean\n        default: true\n\npermissions:\n  contents: read\n\njobs:\n  execution-gate:\n    runs-on: ubuntu-24.04-arm\n    outputs:\n      admitted: ${{ steps.gate.outputs.admitted }}\n    env:\n      LEGACY_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}\n      EVENT_NAME: ${{ github.event_name }}\n      TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run || \'false\' }}\n      TRIGGER_TASK_ID: ${{ inputs.trigger_task_id || \'\' }}\n      SCHEDULED_RECOVERY_RUN: ${{ inputs.scheduled_recovery_run || \'false\' }}\n      RECOVERY_REASON: ${{ inputs.reason || \'\' }}\n      MANUAL_AUTHORIZED: ${{ inputs.manual_run_authorized || \'false\' }}\n    steps:\n      - name: Gate the entire working job\n        id: gate\n        shell: bash\n        run: |\n          set -Eeuo pipefail\n          normalize_true() {\n            case "$(printf \'%s\' "$1" | tr \'[:upper:]\' \'[:lower:]\')" in 1|true|yes|on) return 0 ;; *) return 1 ;; esac\n          }\n          admitted=false\n          if [ "$EVENT_NAME" = "schedule" ]; then\n            if normalize_true "$LEGACY_RUNNER_ENABLED"; then admitted=true; fi\n          elif [ "$EVENT_NAME" = "push" ]; then\n            admitted=true\n          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then\n            if normalize_true "$SCHEDULED_RECOVERY_RUN"; then\n              if normalize_true "$LEGACY_RUNNER_ENABLED" && ! normalize_true "$MANUAL_AUTHORIZED" && ! normalize_true "$TRIGGER_ONLY_RUN" && [ "$RECOVERY_REASON" = "SCHEDULED_CADENCE_RECOVERY" ]; then admitted=true; fi\n            elif normalize_true "$TRIGGER_ONLY_RUN"; then\n              if normalize_true "$LEGACY_RUNNER_ENABLED" && [ -n "$TRIGGER_TASK_ID" ]; then admitted=true; fi\n            elif normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi\n          fi\n          echo "admitted=$admitted" >> "$GITHUB_OUTPUT"\n          echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"\n\n  enqueue-manual-command:\n    if: ${{ inputs.trigger_only_run != true && ((github.event_name == \'push\' && (contains(toJSON(github.event.commits), \'manual-requests/run.json\') || startsWith(github.event.head_commit.message, \'[manual-request]\')) && !contains(github.event.head_commit.message, \'[public-collector-release]\')) || (github.event_name == \'workflow_dispatch\' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != \'T00_RUNTIME_EXPORT\' && inputs.reason != \'T00_D1_INVENTORY\' && inputs.reason != \'T00_CLOUDFLARE_HUB_AUDIT\' && inputs.reason != \'V13_P0_READ_ONLY_DIAG\' && inputs.reason != \'V13_P0_DRY_RUN\' && inputs.reason != \'V13_SHADOW_MARKET_SMOKE\' && inputs.reason != \'V13_FINAL_37\' && inputs.reason != \'T16_DERIBIT_ALT_OPTIONS_SMOKE\' && inputs.reason != \'T16_CHAIN_SUPPLY_SMOKE\' && inputs.reason != \'T16_SOURCIFY_ABI_SMOKE\' && inputs.reason != \'T16_METADATA_SOURCES_SMOKE\' && inputs.reason != \'T16_OFFICIAL_FEED_SMOKE\' && inputs.reason != \'T16_LIDO_SNAPSHOT_SMOKE\' && inputs.reason != \'T16_LIGHTER_NATIVE_SMOKE\' && inputs.reason != \'T16_GMX_NATIVE_SMOKE\' && inputs.reason != \'T16_GTRADE_NATIVE_SMOKE\' && inputs.reason != \'T16_BLOCKSCOUT_INDEX_SMOKE\') ) }}\n    runs-on: ubuntu-latest\n    outputs:\n      command_id: ${{ steps.enqueue.outputs.command_id }}\n      command: ${{ steps.enqueue.outputs.command }}\n      coin_contract: ${{ steps.enqueue.outputs.coin_contract }}\n    env:\n      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n      REPORT2_MANUAL_COMMAND: ${{ inputs.command || \'\' }}\n      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || \'\' }}\n      REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == \'push\' && \'manual-requests/run.json\' || \'\' }}\n      REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"\n      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: \'24\'\n      - name: Durably enqueue command before analytics concurrency\n        id: enqueue\n        run: node runner/enqueue-manual-command.mjs\n\n  run-report2:\n    needs: [execution-gate, enqueue-manual-command]\n    if: ${{ always() && needs.execution-gate.outputs.admitted == \'true\' && ((github.event_name == \'schedule\' && github.event.schedule == \'7,27,47 * * * *\') || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || needs.enqueue-manual-command.result == \'success\' || inputs.reason == \'T00_RUNTIME_EXPORT\' || inputs.reason == \'T00_D1_INVENTORY\' || inputs.reason == \'V13_P0_READ_ONLY_DIAG\' || inputs.reason == \'V13_P0_DRY_RUN\' || inputs.reason == \'V13_SHADOW_MARKET_SMOKE\' || inputs.reason == \'V13_FINAL_37\' || inputs.reason == \'T16_DERIBIT_ALT_OPTIONS_SMOKE\' || inputs.reason == \'T16_CHAIN_SUPPLY_SMOKE\' || inputs.reason == \'T16_SOURCIFY_ABI_SMOKE\' || inputs.reason == \'T16_BLUESKY_ATTENTION_SMOKE\' || inputs.reason == \'T16_METADATA_SOURCES_SMOKE\' || inputs.reason == \'T16_OFFICIAL_FEED_SMOKE\' || inputs.reason == \'T16_LIDO_SNAPSHOT_SMOKE\' || inputs.reason == \'T16_LIGHTER_NATIVE_SMOKE\' || inputs.reason == \'T16_GMX_NATIVE_SMOKE\' || inputs.reason == \'T16_GTRADE_NATIVE_SMOKE\' || inputs.reason == \'T16_BLOCKSCOUT_INDEX_SMOKE\') }}\n    runs-on: ubuntu-24.04-arm\n    timeout-minutes: 25\n    concurrency:\n      group: my-report-2-production-cycle\n      cancel-in-progress: false\n    env:\n      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}\n      ANALYTICS_ENABLED: "1"\n      PUBLIC_COLLECTOR_ENABLED: "0"\n      DELIVERY_ENABLED: ${{ (github.event_name == \'schedule\' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || (github.event_name == \'workflow_dispatch\' && inputs.isolated_telegram_validation == true) || (github.event_name == \'push\' && contains(github.event.head_commit.message, \'[telegram-canonical-delivery]\'))) && \'1\' || \'0\' }}\n      CALIBRATION_APPLY_ENABLED: "0"\n      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == \'push\' || (github.event_name == \'workflow_dispatch\' && inputs.manual_run_authorized == true)) && \'1\' || \'0\' }}\n      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}\n      REPORT2_EXPECTED_WORKER_SHA: "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17"\n      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}\n      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}\n      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"\n      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}\n      REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || \'false\' }}\n      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"\n      REPORT2_TELEGRAM_WATCH70_ENABLED: "1"\n      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"\n      REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == \'workflow_dispatch\' && inputs.controlled_no_telegram == true && \'0\' || \'1\' }}\n      REPORT2_TELEGRAM_INFO_ENABLED: "1"\n      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"\n      REPORT2_EVIDENCE_HTTP_CAP: ${{ (github.event_name == \'schedule\' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && \'18\' || \'24\' }}\n      REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036'... 22965 more characters,
+2026-10-21T08:51:05.4326726Z     expected: /885553691d783ca8a57b6a8a45e22a07e23208d7467b0ac300fdf38080008950/,
+2026-10-21T08:51:05.4327170Z     operator: 'match',
+2026-10-21T08:51:05.4327406Z     diff: 'simple'
+2026-10-21T08:51:05.4327615Z   }
+2026-10-21T08:51:05.4327726Z 
+2026-10-21T08:51:05.4327737Z 
+2026-10-21T08:51:05.4328219Z     at run (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:15:29)
+2026-10-21T08:51:05.4329135Z     at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:58:1
+2026-10-21T08:51:05.4329813Z     at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+2026-10-21T08:51:05.4330258Z     at async node:internal/modules/esm/loader:647:26
+2026-10-21T08:51:05.4330782Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-10-21T08:51:05.4331131Z 
+2026-10-21T08:51:05.4331227Z Node.js v24.21.0
+2026-10-21T08:51:05.4387189Z ##[group]Run actions/upload-artifact@v4
+2026-10-21T08:51:05.4387498Z with:
+2026-10-21T08:51:05.4387749Z   name: n10-technical-path-39572282936
+2026-10-21T08:51:05.4388047Z   path: audit-output/n10-technical-path/
+2026-10-21T08:51:05.4388325Z   retention-days: 30
+2026-10-21T08:51:05.4388544Z   if-no-files-found: warn
+2026-10-21T08:51:05.4388774Z   compression-level: 6
+2026-10-21T08:51:05.4388990Z   overwrite: false
+2026-10-21T08:51:05.4389227Z   include-hidden-files: false
+2026-10-21T08:51:05.4389471Z ##[endgroup]
+2026-10-21T08:51:05.6157721Z (node:6932) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-21T08:51:05.6159405Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-21T08:51:05.6242875Z With the provided path, there will be 5 files uploaded
+2026-10-21T08:51:05.6244403Z Artifact name is valid!
+2026-10-21T08:51:05.6245324Z Root directory input is valid!
+2026-10-21T08:51:05.9950942Z Beginning upload of artifact content to blob storage
+2026-10-21T08:51:06.0234866Z (node:6932) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-21T08:51:06.3103778Z Uploaded bytes 9297
+2026-10-21T08:51:06.3912180Z Finished uploading artifact content to blob storage!
+2026-10-21T08:51:06.3913975Z SHA256 digest of uploaded artifact zip is 5d6fe56512091e3b2f8d47a3921404a02770c431a583488e213a646e2a8b26d2
+2026-10-21T08:51:06.3918809Z Finalizing artifact upload
+2026-10-21T08:51:06.7008597Z Artifact n10-technical-path-39572282936.zip successfully finalized. Artifact ID 12331998113
+2026-10-21T08:51:06.7010560Z Artifact n10-technical-path-39572282936 has been successfully uploaded! Final size is 9297 bytes. Artifact ID is 12331998113
+2026-10-21T08:51:06.7017240Z Artifact download URL: https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39572282936/artifacts/12331998113
+2026-10-21T08:51:06.7228843Z Post job cleanup.
+2026-10-21T08:51:06.8123270Z [command]/usr/bin/git version
+2026-10-21T08:51:06.8173070Z git version 2.55.0
+2026-10-21T08:51:06.8220512Z Temporarily overriding HOME='/home/runner/work/_temp/e675c8b2-a175-4599-bba8-1f0be4659af5' before making global git config changes
+2026-10-21T08:51:06.8222833Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T08:51:06.8228251Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-21T08:51:06.8274507Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T08:51:06.8321548Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T08:51:06.8616654Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T08:51:06.8651084Z http.https://github.com/.extraheader
+2026-10-21T08:51:06.8665870Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-21T08:51:06.8707744Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T08:51:06.9003285Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T08:51:06.9064549Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T08:51:06.9572072Z Cleaning up orphan processes
+2026-10-21T08:51:06.9918040Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/github-script@v7, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
