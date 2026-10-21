@@ -38,7 +38,7 @@ export function decodeSignedTapeStorage(payload){
 export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();acquisitionReceipts.clear();ringReadbacks.clear();requestReceipts.clear();}
 // Diagnostic receipts never supply a payload or renew a source clock. Record
 // only actual attempts at the three existing exact-contract primary routes.
-export function observeHtxAcquisitionAttempt({url,started_ts,received_ts=null,http_status=null,stage,error_code=null}={}){
+export function observeHtxAcquisitionAttempt({url,started_ts,received_ts=null,http_status=null,stage,error_code=null,body_completed_ts=null,body_text=null}={}){
  let u;try{u=new URL(url);}catch{return;}
  const contract=u.searchParams.get('contract_code');
  if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(started_ts))return;
@@ -47,6 +47,20 @@ export function observeHtxAcquisitionAttempt({url,started_ts,received_ts=null,ht
  const codes=new Set(['INVALID_JSON','BODY_LIMIT','CHANNEL_MISMATCH','HTTP_REJECTED','API_REJECTED','ABORT_ERROR','TRANSPORT_EXCEPTION']);
  const prior=requestReceipts.get(contract)||{};
  prior[type]={stage,started_ts,received_ts:Number.isSafeInteger(received_ts)&&received_ts>=started_ts?received_ts:null,http_status:Number.isInteger(http_status)&&http_status>=100&&http_status<=599?http_status:null,error_code:codes.has(error_code)?error_code:null};
+ // A completed response text is separate from headers and source clocks.
+ // Hash only the already decoded text, not reserialized JSON or wire bytes.
+ if(type==='minutes'){
+  const complete=Number.isSafeInteger(body_completed_ts)&&Number.isSafeInteger(received_ts)&&received_ts>=started_ts&&body_completed_ts>=received_ts?body_completed_ts:null;
+  let bytes=null,digest=null,status=complete===null?'BODY_COMPLETION_UNKNOWN':'TEXT_HASH_UNAVAILABLE';
+  if(complete!==null&&typeof body_text==='string'){
+   status='TEXT_HASH_BOUND_REACHED';
+   if(body_text.length<=1048576){
+    const size=Buffer.byteLength(body_text,'utf8');
+    if(size<=1048576)try{digest=byteHash(body_text);bytes=size;status='TEXT_HASH_RECORDED';}catch{status='TEXT_HASH_UNAVAILABLE';}
+   }
+  }
+  prior[type].body_knowledge={body_completed_ts:complete,body_text_utf8_bytes:bytes,body_text_sha256:digest,hash_scope:'SHA256_UTF8_RESPONSE_TEXT',hash_status:status};
+ }
  retainBounded(requestReceipts,contract,prior);
 }
 export function observeHtxSignedTape(payload,url,observed_ts=Date.now()){

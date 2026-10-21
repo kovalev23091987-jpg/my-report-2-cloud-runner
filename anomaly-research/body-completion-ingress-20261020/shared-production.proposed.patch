@@ -1,0 +1,75 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -291,8 +291,8 @@
+ async function fetchJson(url) {
+   let timeout = null;
+   const started_ts=Date.now();
+-  let received_ts=null,http_status=null,reading_body=false;
+-  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code});
++  let received_ts=null,http_status=null,reading_body=false,body_completed_ts=null,body_text=null;
++  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code,body_completed_ts,body_text});
+   retain('REQUEST_STARTED');
+   try {
+     const controller = new AbortController();
+@@ -310,6 +310,7 @@
+     received_ts=Date.now();http_status=response.status;retain('HTTP_RESPONSE');
+     reading_body=true;
+     const text = await response.text();
++    body_completed_ts=Date.now();body_text=text;
+     reading_body=false;
+     let data;
+     try {
+--- a/current-generation/files/src/htx-signed-tape.mjs
++++ b/current-generation/files/src/htx-signed-tape.mjs
+@@ -38,7 +38,7 @@
+ export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();acquisitionReceipts.clear();ringReadbacks.clear();requestReceipts.clear();}
+ // Diagnostic receipts never supply a payload or renew a source clock. Record
+ // only actual attempts at the three existing exact-contract primary routes.
+-export function observeHtxAcquisitionAttempt({url,started_ts,received_ts=null,http_status=null,stage,error_code=null}={}){
++export function observeHtxAcquisitionAttempt({url,started_ts,received_ts=null,http_status=null,stage,error_code=null,body_completed_ts=null,body_text=null}={}){
+  let u;try{u=new URL(url);}catch{return;}
+  const contract=u.searchParams.get('contract_code');
+  if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(started_ts))return;
+@@ -47,6 +47,20 @@
+  const codes=new Set(['INVALID_JSON','BODY_LIMIT','CHANNEL_MISMATCH','HTTP_REJECTED','API_REJECTED','ABORT_ERROR','TRANSPORT_EXCEPTION']);
+  const prior=requestReceipts.get(contract)||{};
+  prior[type]={stage,started_ts,received_ts:Number.isSafeInteger(received_ts)&&received_ts>=started_ts?received_ts:null,http_status:Number.isInteger(http_status)&&http_status>=100&&http_status<=599?http_status:null,error_code:codes.has(error_code)?error_code:null};
++ // A completed response text is separate from headers and source clocks.
++ // Hash only the already decoded text, not reserialized JSON or wire bytes.
++ if(type==='minutes'){
++  const complete=Number.isSafeInteger(body_completed_ts)&&Number.isSafeInteger(received_ts)&&received_ts>=started_ts&&body_completed_ts>=received_ts?body_completed_ts:null;
++  let bytes=null,digest=null,status=complete===null?'BODY_COMPLETION_UNKNOWN':'TEXT_HASH_UNAVAILABLE';
++  if(complete!==null&&typeof body_text==='string'){
++   status='TEXT_HASH_BOUND_REACHED';
++   if(body_text.length<=1048576){
++    const size=Buffer.byteLength(body_text,'utf8');
++    if(size<=1048576)try{digest=byteHash(body_text);bytes=size;status='TEXT_HASH_RECORDED';}catch{status='TEXT_HASH_UNAVAILABLE';}
++   }
++  }
++  prior[type].body_knowledge={body_completed_ts:complete,body_text_utf8_bytes:bytes,body_text_sha256:digest,hash_scope:'SHA256_UTF8_RESPONSE_TEXT',hash_status:status};
++ }
+  retainBounded(requestReceipts,contract,prior);
+ }
+ export function observeHtxSignedTape(payload,url,observed_ts=Date.now()){
+--- a/current-generation/files/src/source-closure-diagnostics.mjs
++++ b/current-generation/files/src/source-closure-diagnostics.mjs
+@@ -7,7 +7,18 @@
+  const a=signed_flow?.raw_acquisition_diagnostic,w=trajectory?.windows?.['4h'],end=clock(w?.order_flow?.window_end_ts),read=signed_flow?.saved_ring_read_diagnostic;
+  const body={schema:'HTX_FLOW_CLOSURE_DIAGNOSTIC_V1',contract,evaluated_ts:now,freshness_limit_ms:300000,signed_raw_status:text(signed_flow?.status),signed_raw_ring:signed_flow?.saved_ring_diagnostic??null,acquisition:a?{status:text(a.status),failure_stage:text(a.failure_stage),error_code:text(a.error_code),observed_ts:clock(a.observed_ts),new_verified_minutes:count(a.new_verified_minutes),unverified_recent_minutes:count(a.unverified_recent_minutes),persisted_minutes:count(a.persisted_minutes),source_clocks:Object.fromEntries(['trades','minutes','metadata'].map(k=>{const r=a.source_clocks?.[k];return[k,{status:text(r?.status),source_ts:clock(r?.source_ts),received_ts:clock(r?.received_ts),age_ms:Number.isSafeInteger(r?.age_ms)?r.age_ms:null}];}))}:null,trajectory:{observed_ts:clock(trajectory?.timestamp),window_start_ts:clock(w?.order_flow?.window_start_ts),window_end_ts:end,window_age_ms:end===null?null:now-end,expected_1m_bars:count(w?.price?.expected_1m_bars),received_1m_bars:count(w?.price?.received_1m_bars)},diagnostic_only:true,internal_only:true,source_clocks_refreshed:false,network_calls:0};
+  if(read?.diagnostic_only===true&&read.source_clock_unchanged===true&&clock(read.evaluated_ts)!==null&&read.evaluated_ts<=now)body.saved_ring_read={status:text(read.status),failure_stage:text(read.failure_stage),error_code:text(read.error_code),evaluated_ts:read.evaluated_ts,diagnostic_only:true,source_clock_unchanged:true};
+- if(a){const failed=Object.entries(a.source_clocks||{}).find(([,r])=>['JSON_PARSE_FAILED','API_REJECTED','TRANSPORT_FAILED','BODY_READ_FAILED','TIMEOUT'].includes(r?.attempt?.stage));if(failed)body.acquisition.source_request_failure={source:failed[0],...failed[1].attempt};body.acquisition.current_run_verified_flow_retained=a.current_run_verified_flow_retained===true;body.acquisition.storage_bytes=count(a.storage_bytes);body.acquisition.wire_bytes=count(a.wire_bytes);body.acquisition.wire_cap=count(a.wire_cap);}
++ if(a){const failed=Object.entries(a.source_clocks||{}).find(([,r])=>['JSON_PARSE_FAILED','API_REJECTED','TRANSPORT_FAILED','BODY_READ_FAILED','TIMEOUT'].includes(r?.attempt?.stage));if(failed){const {body_knowledge,...legacyAttempt}=failed[1].attempt;body.acquisition.source_request_failure={source:failed[0],...legacyAttempt};}body.acquisition.current_run_verified_flow_retained=a.current_run_verified_flow_retained===true;body.acquisition.storage_bytes=count(a.storage_bytes);body.acquisition.wire_bytes=count(a.wire_bytes);body.acquisition.wire_cap=count(a.wire_cap);}
++ // This existing carrier stays bounded. Losing optional body metadata must
++ // never discard a previously representable legacy closure diagnostic.
++ if(a){
++  const attempt=a.source_clocks?.minutes?.attempt,k=attempt?.body_knowledge;
++  const completed=clock(k?.body_completed_ts),header=clock(attempt?.received_ts),started=clock(attempt?.started_ts);
++  const valid=completed!==null&&header!==null&&started!==null&&started<=header&&header<=completed&&completed<=now;
++  const bytes=Number.isSafeInteger(k?.body_text_utf8_bytes)&&k.body_text_utf8_bytes>=0&&k.body_text_utf8_bytes<=1048576?k.body_text_utf8_bytes:null;
++  const digest=valid&&bytes!==null&&k?.hash_scope==='SHA256_UTF8_RESPONSE_TEXT'&&typeof k?.body_text_sha256==='string'&&/^[a-f0-9]{64}$/.test(k.body_text_sha256)?k.body_text_sha256:null;
++  const knowledge=k?{body_completed_ts:valid?completed:null,body_text_utf8_bytes:digest?bytes:null,body_text_sha256:digest,hash_scope:'SHA256_UTF8_RESPONSE_TEXT',hash_status:!valid?'BODY_COMPLETION_UNKNOWN':digest?'TEXT_HASH_RECORDED':k.hash_status==='TEXT_HASH_BOUND_REACHED'?'TEXT_HASH_BOUND_REACHED':'TEXT_HASH_UNAVAILABLE'}:null;
++  if(Buffer.byteLength(JSON.stringify({...body,minute_body_knowledge:knowledge}))<=2048)body.minute_body_knowledge=knowledge;
++ }
+  return Buffer.byteLength(JSON.stringify(body))<=2048?body:null;
+ }
+ export function retainHtxFlowClosureDiagnostic(raw){
