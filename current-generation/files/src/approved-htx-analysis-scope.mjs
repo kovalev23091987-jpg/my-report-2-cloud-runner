@@ -37,6 +37,11 @@ export function bindApprovedHtxAnalysisScope(rows,{observed_ts,native_catalog,in
    const complete={...snapshot,status:'COMPLETE_PARSED_PUBLIC_CATALOG',complete:true,parsed_payload_utf8_bytes,omission_reason:null,parsed_payload:JSON.parse(text)};
    const emitted=new TextEncoder().encode(JSON.stringify(complete,null,2).replace(/\n/g,'\n      ')).byteLength;
    snapshot=emitted<=max?complete:{...snapshot,status:'OMITTED_OVERSIZE',parsed_payload_utf8_bytes,attempted_snapshot_utf8_bytes:emitted,omission_reason:'SNAPSHOT_UTF8_LIMIT'};
+   if(emitted>max){
+    const compact={...complete,schema:'APPROVED_HTX_PUBLIC_PARSED_CATALOG_V2',payload_encoding:'COMPACT_PARSED_JSON_TEXT',parsed_payload:null,parsed_payload_json:text};
+    const encoded=new TextEncoder().encode(JSON.stringify(compact,null,2).replace(/\n/g,'\n      ')).byteLength;
+    if(encoded<=max)snapshot=compact;
+   }
   }catch{snapshot={...snapshot,status:'OMITTED_INVALID_OR_NON_LOSSLESS_JSON',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON'};}
   result.audit.native_catalog_parsed_snapshot=snapshot;
  }

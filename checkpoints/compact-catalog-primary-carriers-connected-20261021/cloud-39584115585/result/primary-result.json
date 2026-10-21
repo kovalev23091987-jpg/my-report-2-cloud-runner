@@ -1,0 +1,577 @@
+{
+  "schema": "PARTIAL_INITIAL_ANALYSIS_METADATA_CARRIER_CONNECTED_V1",
+  "status": "CONTROLLED_COMPONENT_COMPLETED",
+  "control_count": 8,
+  "controls": [
+    {
+      "name": "two exact already-built canonical metadata copies preserve all previous projection and selection fields",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": [
+        {
+          "identity": {
+            "contract": "BR-USDT",
+            "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+            "snapshot_id": "CONTROLLED:BR-USDT:1792600000000",
+            "observed_ts": 1792600000000,
+            "analytical_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "canonical_state": "REJECTED",
+          "direction": null,
+          "complete": true,
+          "emitted_utf8_bytes": 2079,
+          "metadata": {
+            "direction_resolution": {
+              "status": "UNKNOWN",
+              "direction": null,
+              "facts": [],
+              "early_receipt": {
+                "closed": false,
+                "reason": "CONTROLLED_NOT_THE_MISSING_REAL_REASON",
+                "source_ts": 1792599940000,
+                "available_at": null,
+                "evidence_ids": []
+              },
+              "candidate_direction": "UNKNOWN",
+              "authorized_entry_direction": "UNKNOWN"
+            },
+            "score_basis": {
+              "selected": "CONTROLLED_EXISTING_BASIS",
+              "qualified_early_detection_0_100": 0,
+              "deep_canonical_interest_0_100": null,
+              "routed_overall_0_100": 0
+            }
+          }
+        },
+        {
+          "identity": {
+            "contract": "APR-USDT",
+            "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+            "snapshot_id": "CONTROLLED:APR-USDT:1792600000000",
+            "observed_ts": 1792600000000,
+            "analytical_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "canonical_state": "REJECTED",
+          "direction": null,
+          "complete": true,
+          "emitted_utf8_bytes": 2082,
+          "metadata": {
+            "direction_resolution": {
+              "status": "UNKNOWN",
+              "direction": null,
+              "facts": [],
+              "early_receipt": {
+                "closed": false,
+                "reason": "CONTROLLED_NOT_THE_MISSING_REAL_REASON",
+                "source_ts": 1792599940000,
+                "available_at": null,
+                "evidence_ids": []
+              },
+              "candidate_direction": "UNKNOWN",
+              "authorized_entry_direction": "UNKNOWN"
+            },
+            "score_basis": {
+              "selected": "CONTROLLED_EXISTING_BASIS",
+              "qualified_early_detection_0_100": 0,
+              "deep_canonical_interest_0_100": null,
+              "routed_overall_0_100": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "literal NULL false zero nested reasons and retained DEDUP identity are preserved",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": {
+        "schema": "INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1",
+        "status": "CAPTURED_EXISTING_INITIAL_ANALYSIS",
+        "complete": true,
+        "representation": "EXISTING_PARSED_INITIAL_ANALYSIS_METADATA",
+        "requested_contract": "BR-USDT",
+        "requested_run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+        "max_candidate_utf8_bytes": 4096,
+        "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4",
+        "identity": {
+          "contract": "BR-USDT",
+          "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+          "snapshot_id": "CONTROLLED:BR-USDT:1792600000000",
+          "observed_ts": 1792600000000,
+          "analytical_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "canonical_state": "REJECTED",
+        "canonical_direction": null,
+        "persistence": {
+          "status": "DEDUPLICATED",
+          "persisted": false,
+          "publication_id": "PUB:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "identity_matched": true,
+          "fingerprint_independently_returned": false
+        },
+        "metadata": {
+          "direction_resolution": null,
+          "score_basis": {
+            "selected": null,
+            "enabled": false,
+            "value": 0,
+            "reason": null,
+            "source_ts": 1792599940000
+          }
+        },
+        "omission_reason": null,
+        "source_clocks_refreshed": false,
+        "entry_authorized": false
+      }
+    },
+    {
+      "name": "foreign incomplete canonical and retained persistence identities omit without changing old analysis",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": [
+        {
+          "label": "canonical-run",
+          "status": "OMITTED_UNBOUND_CANONICAL",
+          "reason": "EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "canonical-contract",
+          "status": "OMITTED_UNBOUND_CANONICAL",
+          "reason": "EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "snapshot-missing",
+          "status": "OMITTED_UNBOUND_CANONICAL",
+          "reason": "EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "observed-string",
+          "status": "OMITTED_UNBOUND_CANONICAL",
+          "reason": "EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "fingerprint-invalid",
+          "status": "OMITTED_UNBOUND_CANONICAL",
+          "reason": "EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "parity-foreign",
+          "status": "OMITTED_UNBOUND_CANONICAL",
+          "reason": "EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-contract",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-run",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-snapshot",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-observed",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-direction",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-missing",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "receipt-failure",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "CLOSED-false",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        },
+        {
+          "label": "DEDUP-true",
+          "status": "OMITTED_PERSISTENCE_IDENTITY",
+          "reason": "EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED"
+        }
+      ]
+    },
+    {
+      "name": "legacy metadata absence and old rows remain explicit omissions rather than invented reasons",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": {
+        "missing_field": {
+          "schema": "INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1",
+          "status": "OMITTED_LEGACY_METADATA",
+          "complete": false,
+          "representation": "EXISTING_PARSED_INITIAL_ANALYSIS_METADATA",
+          "requested_contract": "BR-USDT",
+          "requested_run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+          "max_candidate_utf8_bytes": 4096,
+          "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4",
+          "identity": {
+            "contract": "BR-USDT",
+            "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+            "snapshot_id": "CONTROLLED:BR-USDT:1792600000000",
+            "observed_ts": 1792600000000,
+            "analytical_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "canonical_state": "REJECTED",
+          "canonical_direction": null,
+          "persistence": {
+            "status": "CLOSED",
+            "persisted": true,
+            "publication_id": "PUB:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "identity_matched": true,
+            "fingerprint_independently_returned": false
+          },
+          "metadata": null,
+          "omission_reason": "INITIAL_ANALYSIS_METADATA_FIELDS_ABSENT",
+          "source_clocks_refreshed": false,
+          "entry_authorized": false
+        },
+        "legacy_row": {
+          "schema": "INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1",
+          "status": "OMITTED_LEGACY_ROW",
+          "complete": false,
+          "representation": "EXISTING_PARSED_INITIAL_ANALYSIS_METADATA",
+          "requested_contract": "BR-USDT",
+          "requested_run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+          "max_candidate_utf8_bytes": 4096,
+          "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4",
+          "identity": null,
+          "canonical_state": null,
+          "canonical_direction": null,
+          "persistence": null,
+          "metadata": null,
+          "omission_reason": "INITIAL_ANALYSIS_DIAGNOSTIC_ABSENT",
+          "source_clocks_refreshed": false,
+          "entry_authorized": false
+        }
+      }
+    },
+    {
+      "name": "exact emitted UTF8 candidate4096 and one byte overflow include envelope escaping and depth4",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": {
+        "exact_emitted_utf8_bytes": 4096,
+        "selection_exact_emitted_utf8_bytes": 4096,
+        "one_byte_over_status": "OMITTED_OVERSIZE",
+        "omission_emitted_utf8_bytes": 1318
+      }
+    },
+    {
+      "name": "cycles and nonlossless metadata never become complete changed facts",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": {
+        "variants": 7,
+        "statuses": [
+          "OMITTED_NON_LOSSLESS_METADATA",
+          "OMITTED_NON_LOSSLESS_METADATA",
+          "OMITTED_NON_LOSSLESS_METADATA",
+          "OMITTED_NON_LOSSLESS_METADATA",
+          "OMITTED_NON_LOSSLESS_METADATA",
+          "OMITTED_NON_LOSSLESS_METADATA",
+          "OMITTED_NON_LOSSLESS_METADATA"
+        ]
+      }
+    },
+    {
+      "name": "selection rechecks row identity receipt and missing fields and bounds independent candidates to two",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": {
+        "unbound": [
+          {
+            "label": "row-run",
+            "status": "OMITTED_UNBOUND_ROW"
+          },
+          {
+            "label": "row-fingerprint",
+            "status": "OMITTED_UNBOUND_ROW"
+          },
+          {
+            "label": "receipt-after-copy",
+            "status": "OMITTED_UNBOUND_ROW"
+          },
+          {
+            "label": "metadata-after-copy",
+            "status": "OMITTED_UNBOUND_ROW"
+          }
+        ],
+        "duplicate_omitted": true,
+        "max_candidates": 2,
+        "additional_candidates_omitted": 1
+      }
+    },
+    {
+      "name": "existing actual partial guard and fatal exporter retain initial reasons clocks refusal and unknown0or1",
+      "classification": "NEW_CONTROLLED_COPY_ONLY_NOT_REAL_METADATA_OR_NATIVE_ACK",
+      "detail": [
+        {
+          "unknown_preserved": 0,
+          "candidates": 2,
+          "emitted_candidate_bytes": [
+            2079,
+            2082
+          ],
+          "artifact_sha256": "59aad7f7a783dac656fedfe8901bd1bf2c1be4663537d84ce437327b32f68c41",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "new_SQL": 0,
+          "provider_HTTP": 0
+        },
+        {
+          "unknown_preserved": 1,
+          "candidates": 2,
+          "emitted_candidate_bytes": [
+            2079,
+            2082
+          ],
+          "artifact_sha256": "0073d46d93971e4621ff7c37837feac77144640f876cb4b8e1f337103de763b8",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "new_SQL": 0,
+          "provider_HTTP": 0
+        },
+        {
+          "unknown_preserved": 0,
+          "candidates": 1,
+          "emitted_candidate_bytes": [
+            4096
+          ],
+          "artifact_sha256": "6f04732244a23d1ce031c4133e7f5924b5a86f6b69dac324f361415537ebb04c",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "new_SQL": 0,
+          "provider_HTTP": 0
+        },
+        {
+          "unknown_preserved": 1,
+          "candidates": 1,
+          "emitted_candidate_bytes": [
+            4096
+          ],
+          "artifact_sha256": "ee17216e4910412529e1332314df22c8ea5f52062df7725d90dbf9069bb64df3",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "new_SQL": 0,
+          "provider_HTTP": 0
+        }
+      ]
+    }
+  ],
+  "representative_exported_failure": {
+    "status": "CONTROLLED_FAILED_USAGE_FINALIZED",
+    "unknown_ops_preserved": 0,
+    "reservation_never_reduced": true,
+    "reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "usage_after": {
+      "requests": 11,
+      "rows_read": 17,
+      "rows_written": 3,
+      "unknown_ops": 0
+    },
+    "partial_cron_failure": {
+      "schema": "PARTIAL_CRON_IN_MEMORY_DIAGNOSTIC_V1",
+      "generation": "CONTROLLED_CURRENT_GENERATION",
+      "head": "cccccccccccccccccccccccccccccccccccccccc",
+      "source_run_id": "CONTROLLED_NEW_METADATA",
+      "cron": {
+        "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+        "status": "PARTIAL",
+        "completed_ts": 1792600001000,
+        "universe_total": 105,
+        "scanned": 99,
+        "persistence_status": "NOT_CLOSED"
+      },
+      "approved_universe_audit": {
+        "status": "NOT_CLOSED",
+        "checked_analysis_contracts": 99
+      },
+      "candidate_selection_audit": {
+        "schema": "report2-candidate-selection-audit-v1",
+        "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+        "lane": "LIVE_DISCOVERY",
+        "minimum_turnover_24h_usdt": 100000,
+        "qualified_candidates": [
+          {
+            "rank": 1,
+            "queue_priority_rank": null,
+            "contract": "BR-USDT",
+            "score_0_100": 90,
+            "direction_hint": null,
+            "funding_bonus_0_15": 0,
+            "funding_interval_hours": null,
+            "non_funding_anomaly_flags_count": 0,
+            "turnover_24h_usdt": null
+          },
+          {
+            "rank": 2,
+            "queue_priority_rank": null,
+            "contract": "APR-USDT",
+            "score_0_100": 80,
+            "direction_hint": null,
+            "funding_bonus_0_15": 0,
+            "funding_interval_hours": null,
+            "non_funding_anomaly_flags_count": 0,
+            "turnover_24h_usdt": null
+          }
+        ],
+        "top_two_contracts": [
+          "BR-USDT",
+          "APR-USDT"
+        ],
+        "registry_did_not_change_rank": true,
+        "deep_check_selected": [
+          "BR-USDT",
+          "APR-USDT"
+        ],
+        "deep_check_capacity_this_invocation": 2,
+        "initial_analysis_diagnostics": [
+          {
+            "schema": "INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1",
+            "status": "CAPTURED_EXISTING_INITIAL_ANALYSIS",
+            "complete": true,
+            "representation": "EXISTING_PARSED_INITIAL_ANALYSIS_METADATA",
+            "requested_contract": "BR-USDT",
+            "requested_run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+            "max_candidate_utf8_bytes": 4096,
+            "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4",
+            "identity": {
+              "contract": "BR-USDT",
+              "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+              "snapshot_id": "CONTROLLED:BR-USDT:1792600000000",
+              "observed_ts": 1792600000000,
+              "analytical_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "canonical_state": "REJECTED",
+            "canonical_direction": null,
+            "persistence": {
+              "status": "CLOSED",
+              "persisted": true,
+              "publication_id": "PUB:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "identity_matched": true,
+              "fingerprint_independently_returned": false
+            },
+            "metadata": {
+              "direction_resolution": {
+                "status": "UNKNOWN",
+                "direction": null,
+                "facts": [],
+                "early_receipt": {
+                  "closed": false,
+                  "reason": "CONTROLLED_NOT_THE_MISSING_REAL_REASON",
+                  "source_ts": 1792599940000,
+                  "available_at": null,
+                  "evidence_ids": []
+                },
+                "candidate_direction": "UNKNOWN",
+                "authorized_entry_direction": "UNKNOWN"
+              },
+              "score_basis": {
+                "selected": "CONTROLLED_EXISTING_BASIS",
+                "qualified_early_detection_0_100": 0,
+                "deep_canonical_interest_0_100": null,
+                "routed_overall_0_100": 0
+              }
+            },
+            "omission_reason": null,
+            "source_clocks_refreshed": false,
+            "entry_authorized": false
+          },
+          {
+            "schema": "INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1",
+            "status": "CAPTURED_EXISTING_INITIAL_ANALYSIS",
+            "complete": true,
+            "representation": "EXISTING_PARSED_INITIAL_ANALYSIS_METADATA",
+            "requested_contract": "APR-USDT",
+            "requested_run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+            "max_candidate_utf8_bytes": 4096,
+            "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4",
+            "identity": {
+              "contract": "APR-USDT",
+              "run_id": "CONTROLLED_NEW_INITIAL_METADATA_RUN",
+              "snapshot_id": "CONTROLLED:APR-USDT:1792600000000",
+              "observed_ts": 1792600000000,
+              "analytical_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "canonical_state": "REJECTED",
+            "canonical_direction": null,
+            "persistence": {
+              "status": "CLOSED",
+              "persisted": true,
+              "publication_id": "PUB:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "identity_matched": true,
+              "fingerprint_independently_returned": false
+            },
+            "metadata": {
+              "direction_resolution": {
+                "status": "UNKNOWN",
+                "direction": null,
+                "facts": [],
+                "early_receipt": {
+                  "closed": false,
+                  "reason": "CONTROLLED_NOT_THE_MISSING_REAL_REASON",
+                  "source_ts": 1792599940000,
+                  "available_at": null,
+                  "evidence_ids": []
+                },
+                "candidate_direction": "UNKNOWN",
+                "authorized_entry_direction": "UNKNOWN"
+              },
+              "score_basis": {
+                "selected": "CONTROLLED_EXISTING_BASIS",
+                "qualified_early_detection_0_100": 0,
+                "deep_canonical_interest_0_100": null,
+                "routed_overall_0_100": 0
+              }
+            },
+            "omission_reason": null,
+            "source_clocks_refreshed": false,
+            "entry_authorized": false
+          }
+        ],
+        "initial_analysis_diagnostics_omitted_count": 0
+      },
+      "d1_day_admission": {
+        "allowed": true,
+        "unknown_ops": 0,
+        "next_reservation": {
+          "rows_read": 54000,
+          "rows_written": 840
+        }
+      },
+      "additional_SQL": 0,
+      "additional_source_HTTP": 0,
+      "full_report_completed": false,
+      "entry_authorized": false,
+      "Telegram_SENT_claimed": false
+    }
+  },
+  "max_candidate_emitted_utf8_bytes": 4096,
+  "max_candidates": 2,
+  "fixture_provenance": "NEW_CONTROLLED_ALREADY_BUILT_CANONICAL_METADATA_NOT_RECOVERED_REAL_BR_APR_REASONS",
+  "canonical_resolver_or_score_recomputed": false,
+  "old_projection_selection_fields_unchanged": true,
+  "existing_runner_changed": false,
+  "new_SQL": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clock_refreshes": 0,
+  "native_persistence_or_fingerprint_ACK_qualified": false,
+  "old_565_588_589_semantic_reexecution": 0,
+  "actual395777_missing_metadata_recovered": false,
+  "initial_direction_cause_or_SENT_fixed": false
+}
