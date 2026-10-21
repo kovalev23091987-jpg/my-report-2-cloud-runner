@@ -1,0 +1,10 @@
+--- a/current-generation/files/src/approved-htx-analysis-scope.mjs
++++ b/current-generation/files/src/approved-htx-analysis-scope.mjs
+@@ -39,2 +39,7 @@
+    snapshot=emitted<=max?complete:{...snapshot,status:'OMITTED_OVERSIZE',parsed_payload_utf8_bytes,attempted_snapshot_utf8_bytes:emitted,omission_reason:'SNAPSHOT_UTF8_LIMIT'};
++   if(emitted>max){
++    const compact={...complete,schema:'APPROVED_HTX_PUBLIC_PARSED_CATALOG_V2',payload_encoding:'COMPACT_PARSED_JSON_TEXT',parsed_payload:null,parsed_payload_json:text};
++    const encoded=new TextEncoder().encode(JSON.stringify(compact,null,2).replace(/\n/g,'\n      ')).byteLength;
++    if(encoded<=max)snapshot=compact;
++   }
+   }catch{snapshot={...snapshot,status:'OMITTED_INVALID_OR_NON_LOSSLESS_JSON',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON'};}
