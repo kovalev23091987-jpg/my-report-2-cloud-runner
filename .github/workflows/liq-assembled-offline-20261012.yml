@@ -319,6 +319,7 @@ permissions:
   contents: read
 jobs:
   verify:
+    if: ${{ github.ref != 'refs/heads/work/compact-catalog-primary-carriers-connected-20261021' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -514,4 +515,42 @@ jobs:
         with:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
+          retention-days: 30
+
+  compact_catalog_primary_carriers:
+    if: ${{ github.ref == 'refs/heads/work/compact-catalog-primary-carriers-connected-20261021' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact own scope before NEW linked carriers qualification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-compact-catalog-primary-carriers-20261021.mjs before
+      - name: ONE NEW linked compact catalog and initial primary reason carriers
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/compact-catalog-primary-carriers
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/compact-catalog-primary-carriers/assembly.json
+          REPORT2_LINKED_RUNTIME="$PWD/runtime" REPORT2_LINKED_OUTPUT="$PWD/audit-output/compact-catalog-primary-carriers" node --test current-generation/tests/compact-catalog-primary-carriers.runtime.mjs > audit-output/compact-catalog-primary-carriers/connected-tests.log 2>&1
+      - name: Exact own scope and assembled modules after NEW common
+        if: ${{ always() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-compact-catalog-primary-carriers-20261021.mjs after
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: compact-catalog-primary-carriers-${{ github.run_id }}
+          path: audit-output/compact-catalog-primary-carriers/
+          if-no-files-found: error
           retention-days: 30
