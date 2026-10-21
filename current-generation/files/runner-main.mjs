@@ -566,6 +566,118 @@ function enforceD1Budget(db) {
 let cleanupClaimedAnalyticsLease=null;
 let canonicalOutputForFailure=null;
 let failedD1RunAccounting=null;
+// Narrow one-run diagnostic. The operator selector is never a D1 grant.
+function liquidationAccessPathBinding({source,trigger_only,started_ts}){
+  let c;try{const raw=process.env.REPORT2_LIQ_ACCESS_PATH_ONCE;if(!raw||Buffer.byteLength(raw)>1536)return null;c=JSON.parse(raw);}catch{return null;}
+  const now=Date.now(),canonicalNumber=v=>typeof v==='string'&&/^[1-9][0-9]{0,14}$/.test(v);
+  if(c?.schema!=='REPORT2_LIQ_ACCESS_PATH_ONCE_V1'||source!=='schedule'||trigger_only||process.env.REPORT2_LIQ_ACCESS_PATH_NATURAL!=='1'||!['schedule','workflow_dispatch'].includes(process.env.GITHUB_EVENT_NAME)||process.env.GITHUB_REF!=='refs/heads/main'||process.env.REPORT2_TRIGGER_ONLY_RUN==='1'||process.env.REPORT2_TRIGGER_KICK_TASK_ID||process.env.REPORT2_TRIGGERED_RECHECK_TASK_ID||process.env.REPORT2_MANUAL_COMMAND||process.env.REPORT2_MANUAL_COIN_CONTRACT||process.env.REPORT2_COMMAND_ID||c.run_attempt!=='1'||process.env.GITHUB_RUN_ATTEMPT!=='1'||!canonicalNumber(process.env.GITHUB_RUN_ID)||!canonicalNumber(c.run_number)||c.run_number!==process.env.GITHUB_RUN_NUMBER||c.workflow_ref!=='kovalev23091987-jpg/my-report-2-cloud-runner/.github/workflows/report2.yml@refs/heads/main'||c.workflow_ref!==process.env.GITHUB_WORKFLOW_REF||c.head!==process.env.GITHUB_SHA||!/^[0-9a-f]{40}$/.test(c.head||'')||!Number.isSafeInteger(c.not_before_ts)||!Number.isSafeInteger(c.expires_ts)||c.not_before_ts<1||c.expires_ts>8640000000000000||c.expires_ts<=c.not_before_ts||new Date(c.not_before_ts).toISOString().slice(0,10)!==new Date(c.expires_ts-1).toISOString().slice(0,10)||c.expires_ts-c.not_before_ts>5400000||!Number.isSafeInteger(now)||now<c.not_before_ts||now>=c.expires_ts||!Number.isSafeInteger(started_ts)||started_ts<c.not_before_ts||started_ts>=c.expires_ts)return null;
+  const allowed=['schema','head','workflow_ref','run_number','run_attempt','not_before_ts','expires_ts'];
+  if(Object.keys(c).some(k=>!allowed.includes(k)))return null;
+  return{...c,cloud_run_id:process.env.GITHUB_RUN_ID,actual_head:process.env.GITHUB_SHA,diagnostic_attempted:false};
+}
+function captureRealizedAccessPath(db,binding,started_ts){
+  if(!binding)return{restore:()=>{},read:()=>null};
+  const own=Object.getOwnPropertyDescriptor(db,'batch'),original=db.batch;let captured=null,matches=0;
+  const hash=x=>crypto.createHash('sha256').update(x).digest('hex');
+  db.batch=function(statements){
+    let matchedThisCall=false;
+    if(Array.isArray(statements)&&statements.length===2){
+      const q=statements[0],params=q?.params;
+      if(q?.db===db&&typeof q.sql==='string'&&hash(q.sql)==='0c731b2a82cda816638a689cb13fc0587839156eeae544b520b852e722b121ba'&&Array.isArray(params)&&params.length===2&&params.every(Number.isSafeInteger)&&params[0]===started_ts-7200000&&params[1]===started_ts+1000){matches++;matchedThisCall=true;captured={SQL:q.sql,params:Object.freeze([...params]),SQL_sha256:hash(q.sql)};}
+    }
+    const pending=Reflect.apply(original,this,[statements]);
+    if(!matchedThisCall)return pending;
+    return Promise.resolve(pending).then(result=>{
+      try{
+        const rows=result?.[0]?.results,columns=['source','event_id','contract_code','ts','side','price','volume_contracts','amount_base','notional_usdt'];
+        const info={hash_scope:'CANONICAL_EXISTING_PUBLIC_EVENT_COLUMNS_JSON_NOT_WIRE_BODY',new_SQL:0,returned_rows:Array.isArray(rows)?rows.length:null,complete_columns_exported:false};
+        if(!Array.isArray(rows)||rows.length>240){info.status='ORIGINAL_RESULT_SHAPE_NOT_CLOSED';captured.input_result=info;return result;}
+        info.limit_may_truncate=rows.length===240;info.boundary_ts=rows.length?rows.at(-1)?.ts??null:null;
+        if(rows.length)info.boundary_ties_within_returned=rows.filter(row=>Object.is(row?.ts,info.boundary_ts)).length;
+        const bounded=[];let bytes=2;
+        for(const row of rows){
+          if(!row||typeof row!=='object'||columns.some(k=>!Object.hasOwn(row,k))){info.status='ORIGINAL_COLUMNS_NOT_CLOSED';captured.input_result=info;return result;}
+          const copy={};
+          for(const key of columns){const value=row[key];if(!(value===null||(typeof value==='number'&&Number.isFinite(value))||(typeof value==='string'&&Buffer.byteLength(value)<=512))){info.status='ORIGINAL_VALUE_NOT_BOUNDED_SCALAR';captured.input_result=info;return result;}copy[key]=value;}
+          const rowJSON=JSON.stringify(copy);bytes+=Buffer.byteLength(rowJSON)+(bounded.length?1:0);
+          if(bytes>16384){info.status='ORIGINAL_INPUT_OVER16384B_OMITTED_WHOLE';captured.input_result=info;return result;}bounded.push(copy);
+        }
+        const exact=JSON.stringify(bounded);info.status='EXISTING_INPUT_COLUMNS_CAPTURED_NO_REREAD';info.rows=bounded;info.bytes=Buffer.byteLength(exact);info.sha256=hash(exact);info.complete_columns_exported=true;captured.input_result=info;
+      }catch{if(captured)captured.input_result={status:'ORIGINAL_INPUT_CAPTURE_NOT_CLOSED',new_SQL:0,complete_columns_exported:false};}
+      return result;
+    });
+  };
+  return{restore:()=>{if(own)Object.defineProperty(db,'batch',own);else delete db.batch;},read:()=>matches===1?captured:null};
+}
+async function recordLiquidationAccessPath({db,binding,captured,reservation,parent_receipt,day_admission,downstream,http_admit,original_result}){
+  if(!binding||!captured||binding.diagnostic_attempted||!original_result||typeof original_result!=='object')return;
+  binding.diagnostic_attempted=true;
+  const output='report2-liquidation-access-path.json',hash=x=>crypto.createHash('sha256').update(x).digest('hex');
+  const validUsage=u=>u&&['rows_read','rows_written','requests','unknown_ops'].every(k=>Number.isSafeInteger(u[k])&&u[k]>=0);
+  const originalJSON=JSON.stringify(original_result),originalBytes=Buffer.byteLength(originalJSON);
+  const compact=u=>u?{rows_read:u.rows_read,rows_written:u.rows_written,requests:u.requests,unknown_ops:u.unknown_ops}:null;
+  const receipt={schema:'ONE_NATIVE_REALIZED_ACCESS_PATH_V1',binding:{...binding},actual_event_SQL_sha256:captured.SQL_sha256,actual_event_SQL_params:[...captured.params],existing_input_result:captured.input_result??{status:'ORIGINAL_INPUT_NOT_EXPORTED',complete_columns_exported:false},original_realized_result:originalBytes<=8192?JSON.parse(originalJSON):null,original_result_bytes:originalBytes,original_result_sha256:hash(originalJSON),original_result_omitted:originalBytes>8192,status:'ORIGINAL_RESULT_PRESERVED_BEFORE_DIAGNOSTIC',native_queries:[],proposed_query_reads:[2000,2000],projections_are_not_native_cost_upper_bounds:true,native_response_body_limit_bytes:524288,artifact_reply_limit_bytes:24576,source_HTTP:0,additional_MAIN:0,additional_Telegram:0,schema_or_index_mutation:false,reservations_refunded:false,old_components_replayed:0};
+  const save=async()=>{
+    let raw=JSON.stringify(receipt,null,2)+'\n';
+    for(const item of [...receipt.native_queries].reverse()){
+      if(Buffer.byteLength(raw)<=65536)break;
+      if(Object.hasOwn(item,'reply')){delete item.reply;item.reply_omitted_reason='WHOLE65536B_RECEIPT_BUDGET_NO_PARTIAL_REPLY';raw=JSON.stringify(receipt,null,2)+'\n';}
+    }
+    const complete=!receipt.original_result_omitted&&receipt.native_queries.every(item=>!item.reply_omitted_reason);
+    receipt.artifact_complete=complete;raw=JSON.stringify(receipt,null,2)+'\n';
+    if(Buffer.byteLength(raw)>65536){raw=JSON.stringify({schema:receipt.schema,status:receipt.status,artifact_status:'INCOMPLETE_WHOLE_BOUND_FALLBACK',original_result_sha256:receipt.original_result_sha256,original_result_bytes:originalBytes,native_queries:receipt.native_queries.map(item=>({kind:item.kind,SQL_sha256:item.SQL_sha256,reply_sha256:item.reply_sha256,reply_bytes:item.reply_bytes,usage_before:item.usage_before,usage_after:item.usage_after,error:item.error??null,reply_omitted_reason:'WHOLE_RECEIPT_BOUND'}))},null,2)+'\n';await fs.writeFile(output,raw);return false;}
+    await fs.writeFile(output,raw);return complete;
+  };
+  if(!await save())return;
+  if(parent_receipt?.status!=='RESERVED'||typeof parent_receipt.reservation_id!=='string'||!parent_receipt.reservation_id.startsWith('R2RUN:')||parent_receipt.rows_read!==reservation?.rows_read||parent_receipt.rows_written!==reservation?.rows_written||parent_receipt.day_utc!==new Date(captured.params[1]-1000).toISOString().slice(0,10)||day_admission?.allowed!==true){receipt.status='LIVE_EXISTING_PARENT_RECEIPT_NOT_CLOSED';await save();return;}
+  let before;try{before=db.usageSnapshot();}catch{before=null;}
+  if(!validUsage(before)||before.unknown_ops>0){db.beforeRequest=()=>({allowed:false});receipt.status='CURRENT_NATIVE_USAGE_NOT_CLOSED_BEFORE_DIAGNOSTIC';await save();throw Error('LIQ_ACCESS_PATH_UNKNOWN_STOP_ALL_NATIVE_SQL');}
+  receipt.usage_before=compact(before);
+  const queries=[{kind:'CURRENT_TABLE_AND_INDEX_DEFINITIONS',sql:"SELECT type,name,tbl_name,sql FROM sqlite_master WHERE tbl_name=?1 AND type IN ('table','index') ORDER BY type,name LIMIT 64",params:['liquidation_events']},{kind:'EXPLAIN_SAME_EXISTING_INPUT_SELECT_NOT_EVENT_REEXECUTION',sql:'EXPLAIN QUERY PLAN '+captured.SQL,params:[...captured.params]}];
+  for(let i=0;i<queries.length;i++){
+    const q=queries[i];let current;try{current=db.usageSnapshot();}catch{current=null;}
+    if(!validUsage(current)||current.unknown_ops>0){db.beforeRequest=()=>({allowed:false});receipt.status='CURRENT_NATIVE_USAGE_NOT_CLOSED';await save();throw Error('LIQ_ACCESS_PATH_UNKNOWN_STOP_ALL_NATIVE_SQL');}
+    const spent=current.rows_read-before.rows_read;
+    const gate=evaluateWithinRunReservation({reservation,currentUsage:current,extraRowsRead:downstream.rows_read+(i===0?4000:2000),extraRowsWritten:downstream.rows_written});
+    if(Date.now()<binding.not_before_ts||Date.now()>=binding.expires_ts||new Date().toISOString().slice(0,10)!==parent_receipt.day_utc||!gate.allowed||spent===null||spent<0||spent>(i===0?0:2000)||current.rows_written!==before.rows_written){receipt.status='DIAGNOSTIC_NOT_ADMITTED_OR_WINDOW_CLOSED';receipt.last_admission=gate;await save();return;}
+    const http=http_admit?.({logical_request_id:'LIQ_ACCESS_PATH:'+binding.cloud_run_id+':'+i,lane:'statistics',attempts:1});
+    if(http?.allowed!==true||http.duplicate){receipt.status='DIAGNOSTIC_HTTP_NOT_ADMITTED';receipt.HTTP_admission=http??null;await save();return;}
+    const entry={kind:q.kind,SQL_sha256:hash(q.sql),params:q.params,started_ts:Date.now(),usage_before:compact(current),admission:gate,HTTP_admission:{allowed:true,status:http.status??null,duplicate:false}};receipt.native_queries.push(entry);
+    let reply,callError=null,snapshotError=null;
+    const originalFetch=db.fetchImpl;
+    db.fetchImpl=async (...args)=>{
+      const response=await Reflect.apply(originalFetch,db,args),reader=response.body?.getReader();let total=0;const chunks=[];
+      if(!reader)throw Error('LIQ_ACCESS_PATH_NATIVE_BODY_REQUIRED');
+      try{while(true){const part=await reader.read();if(part.done)break;total+=part.value.byteLength;if(total>524288){await reader.cancel();throw Error('LIQ_ACCESS_PATH_NATIVE_RESPONSE_OVER524288B');}chunks.push(Buffer.from(part.value));}}
+      finally{reader.releaseLock();}
+      return new Response(Buffer.concat(chunks),{status:response.status,statusText:response.statusText,headers:response.headers});
+    };
+    try{reply=await db.prepare(q.sql).bind(...q.params).all();entry.reply_received=true;}
+    catch(error){callError=error;entry.reply_received=false;}
+    finally{db.fetchImpl=originalFetch;}
+    try{entry.usage_after=db.usageSnapshot();}catch(error){snapshotError=error;entry.usage_after=null;}
+    const after=entry.usage_after,unsafe=!validUsage(after)||after.unknown_ops>0;
+    // Fence before serialization, hashing, artifact writes or error formatting.
+    if(unsafe)db.beforeRequest=()=>({allowed:false});
+    entry.completed_ts=Date.now();entry.usage_after=validUsage(after)?compact(after):null;
+    if(snapshotError)entry.usage_snapshot_error='CURRENT_NATIVE_USAGE_SNAPSHOT_FAILED';
+    if(callError){try{entry.error=String(callError?.message||callError).slice(0,240);}catch{entry.error='NATIVE_QUERY_ERROR_MESSAGE_UNAVAILABLE';}}
+    if(entry.reply_received){
+      try{const rawReply=JSON.stringify(reply);if(typeof rawReply!=='string')throw Error('NATIVE_REPLY_NOT_SERIALIZABLE');const replyBytes=Buffer.byteLength(rawReply);entry.reply_bytes=replyBytes;entry.reply_sha256=hash(rawReply);if(replyBytes<=24576)entry.reply=reply;else entry.reply_omitted_reason='REPLY_OVER24576B_NO_PARTIAL_RECONSTRUCTION';}
+      catch(error){entry.reply_serialization_failed=true;}
+    }
+    if(unsafe){receipt.status='NATIVE_USAGE_NOT_CLOSED';await save();throw Error('LIQ_ACCESS_PATH_UNKNOWN_STOP_ALL_NATIVE_SQL');}
+    if(callError||entry.reply_serialization_failed){receipt.status='NATIVE_QUERY_OR_REPLY_NOT_CLOSED';await save();return;}
+    if(after.rows_written!==before.rows_written){receipt.status='CURRENT_USAGE_WRITES_CHANGED_NO_NEXT_DIAGNOSTIC';await save();return;}
+    const replyBytes=entry.reply_bytes;
+    const rows=reply?.results,complete=replyBytes<=24576&&reply?.success!==false&&Array.isArray(rows)&&rows.length>0&&rows.length<64&&(i===0?rows.some(r=>r.type==='table'&&r.name==='liquidation_events'&&typeof r.sql==='string'):rows.every(r=>typeof r.detail==='string'));
+    if(!complete){receipt.status='NATIVE_RESULT_INCOMPLETE_NO_NEXT_DIAGNOSTIC';await save();return;}
+    receipt.status='PARTIAL_NATIVE_ACCESS_PATH_RECORDED';if(!await save())return;
+    if(after.rows_read-current.rows_read>2000||after.rows_read<current.rows_read){receipt.status='DIAGNOSTIC_PROJECTION_EXCEEDED_NO_NEXT_DIAGNOSTIC';await save();return;}
+  }
+  receipt.status='CURRENT_NATIVE_INDEX_AND_SAME_INPUT_PLAN_RECORDED';receipt.usage_after=receipt.native_queries.at(-1)?.usage_after??null;receipt.native_current_cost_or_index_saving_proven=false;await save();
+}
+
 async function main() {
   const preflight=evaluatePreflight(process.env);
   console.log('REPORT2_RUNTIME_PREFLIGHT',JSON.stringify(preflight));
@@ -1157,11 +1269,16 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   let v3LiquidationSidecar;
   const r88EarlyGate = env.REPORT2_CURRENT_CYCLE_EARLY_RESULT?.capacity_gate || {allowed:["CLOSED","PARTIAL"].includes(String(env.REPORT2_CURRENT_CYCLE_EARLY_RESULT?.status||"").toUpperCase()),status:"CURRENT_CYCLE_RESULT"};
   v3EarlySidecar = env.REPORT2_CURRENT_CYCLE_EARLY_RESULT || v3Blocked("v3-early-sidecar-shadow-v1",r88EarlyGate,"CURRENT_CYCLE_EARLY_PERSISTENCE");
+  const liqAccessBinding=liquidationAccessPathBinding({source,trigger_only:triggerOnly,started_ts:started});
+  let liqAccessCapture=null;
   const r88RealizedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
   if (r88RealizedGate.allowed) {
+    liqAccessCapture=liqAccessBinding?captureRealizedAccessPath(env.DATA_DB,liqAccessBinding,started):null;
+    try {
     v3RealizedLiquidationSidecar = await runV3RealizedLiquidationSidecar(env.DATA_DB, {
       current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
     });
+    } finally {liqAccessCapture?.restore();}
   } else v3RealizedLiquidationSidecar = v3Blocked("v3-realized-liquidation-sidecar-shadow-v1",r88RealizedGate,"REALIZED_LIQUIDATION_AGGREGATION");
   const r88ProjectedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
   if (r88ProjectedGate.allowed) {
@@ -1169,6 +1286,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
     });
   } else v3LiquidationSidecar = v3Blocked("v3-liquidation-intelligence-sidecar-shadow-v1",r88ProjectedGate,"PROJECTED_LIQUIDATION");
+  if(liqAccessBinding&&liqAccessCapture)await recordLiquidationAccessPath({db:env.DATA_DB,binding:liqAccessBinding,captured:liqAccessCapture?.read(),reservation:d1RunReservation,parent_receipt:d1ReservationReceipt,day_admission:d1DayAdmission,downstream:postV7CriticalLaneReserve,http_admit:unifiedHttpBudget.reserve,original_result:v3RealizedLiquidationSidecar});
   console.log("R8_8_BUDGET_GATES", JSON.stringify({downstream_reserve:R88_DOWNSTREAM_RESERVE,early:r88EarlyGate,realized:r88RealizedGate,projected:r88ProjectedGate,usage:env.DATA_DB.usageSnapshot()}));
   console.log("V3_EARLY_PERSISTENCE_SIDECAR", JSON.stringify(v3EarlySidecar));
   console.log("V3_REALIZED_LIQUIDATION_SIDECAR", JSON.stringify(v3RealizedLiquidationSidecar));
