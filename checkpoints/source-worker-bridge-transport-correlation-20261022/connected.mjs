@@ -87,7 +87,7 @@ export async function runBridgeClientCorrelationConnected(args){
   // 5. Three repeated-hash batch members after a prior transport: rank, not sequence.
   f=make(api.sdk);await all(f);const SQL=['SELECT ? AS same','SELECT ? AS same',' SELECT ? AS same '];await f.db.batch(SQL.map((s,i)=>f.db.prepare(s).bind(i)));
   snap=f.db.nativeQueryCostReceipts();const id=f.calls[1].headers[HEADER],rows=snap.receipts.filter(x=>x.client_request_id===id);
-  assert.equal(rows.length,3);assert.deepEqual(rows.map(x=>x.sequence),[2,3,4]);assert.deepEqual(rows.map(x=>x.transport_sequence),[2,2,2]);assert.deepEqual(rows.map(x=>x.wire_sql_sha256),SQL.map(sha));assert.equal(rows[0].wire_sql_sha256,rows[1].wire_sql_sha256);assert.notEqual(id,f.calls[0].headers[HEADER]);assert.equal(f.calls.length,2);
+  assert.equal(rows.length,3);assert.deepEqual(rows.map(x=>x.sequence),[2,3,4]);assert.deepEqual(rows.map(x=>x.transport_sequence),[2,2,2]);assert.deepEqual(rows.map(x=>x.wire_sql_sha256),f.calls[1].wire.statements.map(x=>sha(x.sql)));assert.equal(f.calls[1].wire.statements[2].sql,SQL[2].trim());assert.equal(rows[0].wire_sql_sha256,rows[1].wire_sql_sha256);assert.equal(rows[0].wire_sql_sha256,rows[2].wire_sql_sha256);assert.notEqual(id,f.calls[0].headers[HEADER]);assert.equal(f.calls.length,2);
   add('PER_BATCH_SHARED_ID_REPEATED_SQL_HASH_ORDER_ZERO_BASE_RANK_NOT_GLOBAL_SEQUENCE',3);
   // 6. Concurrent requests settle in the reverse order without identity mixing.
   let ready,waiting=[];const both=new Promise(resolve=>{ready=resolve;});
