@@ -319,6 +319,7 @@ permissions:
   contents: read
 jobs:
   verify:
+    if: ${{ github.ref != 'refs/heads/work/anomaly-original-outcomes-connected-20261022' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -515,3 +516,52 @@ jobs:
           name: liq-assembled-${{ github.run_id }}
           path: audit-output/liq-assembled/
           retention-days: 30
+
+  anomaly_original_outcomes_connected:
+    if: ${{ github.ref == 'refs/heads/work/anomaly-original-outcomes-connected-20261022' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact own scope before FIRST complete original event windows and factual outcomes qualification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-anomaly-original-outcomes-connected-20261022.mjs before
+      - name: ONE FIRST connected complete original event windows and factual outcomes case
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p runtime audit-output/anomaly-original-outcomes-connected
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/anomaly-original-outcomes-connected/assembly.json
+          REPORT2_LINKED_RUNTIME="$PWD/runtime" REPORT2_LINKED_OUTPUT="$PWD/audit-output/anomaly-original-outcomes-connected" node --test current-generation/tests/anomaly-original-outcomes-connected.runtime.mjs > audit-output/anomaly-original-outcomes-connected/connected-tests.log 2>&1
+      - name: Exact own scope and assembled modules after FIRST case
+        if: ${{ always() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-anomaly-original-outcomes-connected-20261022.mjs after
+      - name: Remove private contract input and assembled runtime before artifact upload
+        if: ${{ always() }}
+        run: |
+          rm -rf runtime contract-input
+          mkdir -p audit-output/anomaly-original-outcomes-connected
+          python3 -c 'import pathlib,json; pathlib.Path("audit-output/anomaly-original-outcomes-connected/private-input-cleanup.json").write_text(json.dumps({"runtime_removed":not pathlib.Path("runtime").exists(),"private_input_removed":not pathlib.Path("contract-input").exists(),"private_input_exported":False})+"\n")'
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: anomaly-original-outcomes-connected-${{ github.run_id }}
+          path: audit-output/anomaly-original-outcomes-connected/
+          if-no-files-found: error
+          retention-days: 30
+
