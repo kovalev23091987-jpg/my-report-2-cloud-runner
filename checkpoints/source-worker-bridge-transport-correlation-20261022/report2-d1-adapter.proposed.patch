@@ -1,0 +1,30 @@
+--- a/runner/report2-d1-adapter.mjs
++++ b/runner/report2-d1-adapter.mjs
+@@ -1,5 +1,5 @@
+ import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
+-import {createHash} from 'node:crypto';
++import {createHash,randomUUID} from 'node:crypto';
+ import {createPrivateCanonicalRestorer,privateCanonicalArchivePool} from './private-canonical-history.mjs';
+ import {NativeQueryCostJournal} from './native-query-cost-journal.mjs';
+ const DEFAULT_TIMEOUT_MS = 30_000;
+@@ -185,11 +185,11 @@
+       const grant=await this.beforeRequest({operation:payload.op,statement_count:payload.op==='batch'?payload.statements.length:1,wire_bytes:Buffer.byteLength(wireBody)});
+       if(grant?.allowed!==true)throw Error('D1_LOCAL_HTTP_ADMISSION_DENIED');
+     }
++    const transportStart=this._nativeCostJournal?.beginTransport(randomUUID());
+     const controller = new AbortController();
+     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+     let nativeUsageRecorded = false;
+     let httpStatus = null;
+-    const transportStart=this._nativeCostJournal?.beginTransport();
+     let transportEnd;
+     const transport=()=>transportEnd??=this._nativeCostJournal?.endTransport(transportStart);
+     try {
+@@ -200,6 +200,7 @@
+           accept: "application/json",
+           authorization: `Bearer ${this.token}`,
+           "user-agent": "My-Report-2-GitHub-D1-Adapter/4.3",
++          ...(transportStart?.client_request_id?{"x-report2-request-id":transportStart.client_request_id}:{}),
+         },
+         body: wireBody,
+         signal: controller.signal,
