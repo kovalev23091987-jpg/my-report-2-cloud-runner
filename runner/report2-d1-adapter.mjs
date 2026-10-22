@@ -1,8 +1,9 @@
 import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
-import {createHash} from 'node:crypto';
+import {createHash,randomUUID} from 'node:crypto';
 import {createPrivateCanonicalRestorer,privateCanonicalArchivePool} from './private-canonical-history.mjs';
 import {NativeQueryCostJournal} from './native-query-cost-journal.mjs';
 const DEFAULT_TIMEOUT_MS = 30_000;
+const validClientRequestId=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(v);
 
 function requiredText(value, label) {
   const text = String(value ?? "").trim();
@@ -156,7 +157,8 @@ export class RemoteD1Database {
       bucket.unknown_ops += 1;
       if(this._unmeasuredReceipts.length<10){
         const normalized=String(sql||'').replace(/\s+/g,' ').trim();
-        const receipt={operation:String(op),target:targetFromSql(sql),sql_kind:normalized.match(/^[A-Za-z]+(?:\s+(?:TABLE|INDEX|UNIQUE INDEX))?/i)?.[0]?.toUpperCase()||'UNKNOWN',sql_sha256:createHash('sha256').update(normalized).digest('hex'),http_status:Number.isInteger(diagnostic.http_status)?diagnostic.http_status:null,failure_class:diagnostic.failure_class||'NATIVE_COUNTERS_NOT_CLOSED',observed_ts:Date.now(),params_or_SQL_text_exported:false};
+        const client_request_id=this._nativeCostJournal?diagnostic.transport?.client_request_id:undefined;
+        const receipt={...(validClientRequestId(client_request_id)?{client_request_id}:{}),operation:String(op),target:targetFromSql(sql),sql_kind:normalized.match(/^[A-Za-z]+(?:\s+(?:TABLE|INDEX|UNIQUE INDEX))?/i)?.[0]?.toUpperCase()||'UNKNOWN',sql_sha256:createHash('sha256').update(normalized).digest('hex'),http_status:Number.isInteger(diagnostic.http_status)?diagnostic.http_status:null,failure_class:diagnostic.failure_class||'NATIVE_COUNTERS_NOT_CLOSED',observed_ts:Date.now(),params_or_SQL_text_exported:false};
         this._unmeasuredReceipts.push(receipt);
       }
     }
@@ -185,11 +187,13 @@ export class RemoteD1Database {
       const grant=await this.beforeRequest({operation:payload.op,statement_count:payload.op==='batch'?payload.statements.length:1,wire_bytes:Buffer.byteLength(wireBody)});
       if(grant?.allowed!==true)throw Error('D1_LOCAL_HTTP_ADMISSION_DENIED');
     }
+    const client_request_id=this._nativeCostJournal?randomUUID():null;
+    if(this._nativeCostJournal&&!validClientRequestId(client_request_id))throw Error('D1_CLIENT_REQUEST_ID_INVALID');
+    const transportStart=this._nativeCostJournal?.beginTransport(client_request_id);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     let nativeUsageRecorded = false;
     let httpStatus = null;
-    const transportStart=this._nativeCostJournal?.beginTransport();
     let transportEnd;
     const transport=()=>transportEnd??=this._nativeCostJournal?.endTransport(transportStart);
     try {
@@ -200,6 +204,7 @@ export class RemoteD1Database {
           accept: "application/json",
           authorization: `Bearer ${this.token}`,
           "user-agent": "My-Report-2-GitHub-D1-Adapter/4.3",
+          ...(transportStart?.client_request_id?{"x-report2-request-id":transportStart.client_request_id}:{}),
         },
         body: wireBody,
         signal: controller.signal,
