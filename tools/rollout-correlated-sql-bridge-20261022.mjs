@@ -100,4 +100,144 @@ export async function rolloutCorrelatedBridge(){
  }catch(e){failureReason=/^[A-Z0-9_]+$/.test(e.message)?e.message:'BRIDGE_CORRELATION_RELEASE_ERROR';await save();process.exitCode=1;}
  console.log(JSON.stringify({status:proof?.status,github_HTTP,cloudflare_HTTP,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0}));return proof;
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)await rolloutCorrelatedBridge();
+
+// Stage immutable bytes only. Upload ACK is the ownership carrier; GET annotations are not assumed.
+export async function stageCorrelatedSQLBridgeOnly({plan,adapter,guard,save,clock=Date.now}={}){
+ const codes=new Set(['STAGE_PLAN_REQUIRED','STAGE_CLOCK_NOT_CLOSED','STAGE_HEADROOM_OR_SCOPE_NOT_CLOSED','STAGE_SAFE_SNAPSHOT_REQUIRED','STAGE_OLD_PAID_IDENTITY_REQUIRED','STAGE_FOREIGN_DORMANT_LATEST','STAGE_INTENT_SAVE_NOT_CLOSED','STAGE_NATIVE_READBACK_NOT_CLOSED','STAGE_ACTIVE_OR_SETTINGS_CHANGED','STAGE_LATEST_MOVED','STAGE_FINAL_SAVE_NOT_CLOSED']);
+ const fail=c=>{throw Object.assign(Error(c),{stage_code:c});},hex=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v),id=v=>typeof v==='string'&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(v),uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(v),time=v=>Number.isSafeInteger(v)&&v>=1e12&&v<=8640000000000000;
+ const expected='c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063',names=['DATA_DB','REPORT2_CLOUD_BRIDGE_TOKEN','REPORT2_DENO_BRIDGE_TOKEN'];
+ const proof={schema:'CORRELATED_SQL_BRIDGE_STAGE_ONLY_V1',status:'STAGE_ONLY_NOT_CLOSED',head:null,owner:null,operation_id:null,upload_attempts:0,known_upload_ack:false,ownership_verified:false,active_preservation_verified:null,before:null,after:null,intent:null,staged:null,observed_after_unknown_ACK:null,reason:null,activation_attempts:0,settings_mutations:0,delete_attempts:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,old_unknown_recovered:false,Paid_identity_changed:false,native_activation_or_future_reconciliation_qualified:false,proof_persisted:false};
+ let attempted=false,afterAttempted=false,phase='PLAN',previousClock=null;
+ const now=()=>{let n;try{n=clock();}catch{fail('STAGE_CLOCK_NOT_CLOSED');}if(!time(n)||previousClock!==null&&n<previousClock)fail('STAGE_CLOCK_NOT_CLOSED');previousClock=n;return n;};
+ const persist=async code=>{try{const copy=structuredClone({...proof,proof_persisted:true});if(Buffer.byteLength(JSON.stringify(copy))>16384)throw Error('BOUND');await save(copy);proof.proof_persisted=true;}catch{proof.proof_persisted=false;fail(code);}};
+ const boundary=async(label,minimum_CF,minimum_GH)=>{phase=label;const n=now();if(plan.lease_expires_ts-n<30000)fail('STAGE_HEADROOM_OR_SCOPE_NOT_CLOSED');try{await guard({phase:label,min_headroom_ms:30000,minimum_CF,minimum_GH});}catch{fail('STAGE_HEADROOM_OR_SCOPE_NOT_CLOSED');}if(plan.lease_expires_ts-now()<30000)fail('STAGE_HEADROOM_OR_SCOPE_NOT_CLOSED');};
+ const snapshot=x=>{
+  if(!x||!id(x.version_id)||!id(x.deployment_id)||!id(x.latest_uploaded_version)||!['module_sha256','settings_sha256','crons_sha256','runtime_sha256'].every(k=>hex(x[k]))||!hex(x.immutable_script_etag)||!Array.isArray(x.binding_names)||rolloutDigest([...x.binding_names].sort())!==rolloutDigest(names))fail('STAGE_SAFE_SNAPSHOT_REQUIRED');
+  return Object.fromEntries(['version_id','deployment_id','module_sha256','settings_sha256','crons_sha256','runtime_sha256','binding_names','latest_uploaded_version','immutable_script_etag'].map(k=>[k,k==='binding_names'?[...x[k]].sort():x[k]]));
+ };
+ const oldIdentity=x=>['version_id','module_sha256','settings_sha256','crons_sha256','immutable_script_etag'].every(k=>x[k]===RETENTION_SQL_BRIDGE_PROOF[k]);
+ const preserved=(a,b)=>['version_id','deployment_id','module_sha256','settings_sha256','crons_sha256','runtime_sha256','immutable_script_etag','binding_names'].every(k=>rolloutDigest(a[k])===rolloutDigest(b[k]));
+ const observation=x=>{
+  if(x===null||x===undefined)return null;
+  const latest=x.observed_latest_version??x.latest_uploaded_version;
+  if(!id(latest))return{observation_closed:false};
+  return{observed_latest_version:latest,module_sha256:hex(x.module_sha256)?x.module_sha256:null,created_on_ts:time(x.created_on_ts)?x.created_on_ts:null,metadata_sha256:hex(x.metadata_sha256)?x.metadata_sha256:null,ownership_verified:false,observation_closed:hex(x.module_sha256)};
+ };
+ try{
+  const started=now();
+  if(!plan||!/^[a-f0-9]{40}$/.test(plan.head||'')||typeof plan.owner!=='string'||plan.owner.length>128||!/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d{13}$/.test(plan.owner)||!uuid(plan.operation_id)||!time(plan.lease_expires_ts)||plan.lease_expires_ts-started>90*60000||plan.lease_expires_ts-started<30000||plan.candidate_module_sha256!==expected||typeof guard!=='function'||typeof save!=='function'||!['snapshot','stage','readStaged','reconcileOwnStage'].every(k=>typeof adapter?.[k]==='function'))fail('STAGE_PLAN_REQUIRED');
+  Object.assign(proof,{head:plan.head,owner:plan.owner,operation_id:plan.operation_id,started_ts:started});
+  await boundary('BEFORE_SNAPSHOT',24,28);proof.before=snapshot(await adapter.snapshot({phase:'before'}));
+  if(!oldIdentity(proof.before))fail('STAGE_OLD_PAID_IDENTITY_REQUIRED');
+  if(proof.before.latest_uploaded_version!==proof.before.version_id)fail('STAGE_FOREIGN_DORMANT_LATEST');
+  const annotations={'workers/tag':'R2STAGE:'+plan.operation_id,'workers/commit_sha':plan.head,'workers/message':'Stage only '+plan.owner+' '+plan.operation_id};
+  proof.intent={operation_id:plan.operation_id,owner:plan.owner,head:plan.head,operation_started_ts:started,saved_before_upload_ts:now(),candidate_module_sha256:expected,annotations,request_annotations_sha256:rolloutDigest(annotations),annotations_are_REQUEST_ONLY:true,GET_annotations_assumed:false};
+  proof.status='STAGE_ONLY_UPLOAD_INTENT';await persist('STAGE_INTENT_SAVE_NOT_CLOSED');
+  await boundary('UPLOAD',16,20);proof.upload_attempts=1;attempted=true;let ack=null;
+  try{ack=await adapter.stage({plan:structuredClone(plan),before:structuredClone(proof.before),intent:structuredClone(proof.intent)});}catch{proof.upload_ACK_unknown=true;}
+  if(id(ack?.version_id)&&ack.activated===false){
+   if(ack.version_id===proof.before.version_id)fail('STAGE_NATIVE_READBACK_NOT_CLOSED');
+   proof.known_upload_ack=true;proof.upload_ack={version_id:ack.version_id,activated:false,ownership_basis:'ACTUAL_OWN_UPLOAD_RESPONSE_ID',request_metadata_sha256:hex(ack.request_metadata_sha256)?ack.request_metadata_sha256:null};
+   await boundary('READ_STAGED',10,12);const staged=await adapter.readStaged({version_id:ack.version_id,intent:structuredClone(proof.intent),before:structuredClone(proof.before)});
+   if(!staged||staged.version_id!==ack.version_id||staged.latest_uploaded_version!==ack.version_id||staged.module_sha256!==expected||staged.module_readback_basis!=='EXACT_LATEST_UPLOAD_SOURCE_BYTES'||!hex(staged.immutable_script_etag)||!hex(staged.settings_sha256)||!hex(staged.runtime_sha256)||staged.settings_sha256!==proof.before.settings_sha256||staged.runtime_sha256!==proof.before.runtime_sha256||!Array.isArray(staged.binding_names)||rolloutDigest([...staged.binding_names].sort())!==rolloutDigest(proof.before.binding_names))fail('STAGE_NATIVE_READBACK_NOT_CLOSED');
+   const observed=now(),created=time(staged.created_on_ts)?staged.created_on_ts:null;
+   proof.staged={version_id:staged.version_id,module_sha256:staged.module_sha256,module_readback_basis:staged.module_readback_basis,immutable_script_etag:staged.immutable_script_etag,settings_sha256:staged.settings_sha256,runtime_sha256:staged.runtime_sha256,binding_names:[...staged.binding_names].sort(),metadata_sha256:hex(staged.metadata_sha256)?staged.metadata_sha256:null,created_on_ts:created,created_clock_status:created===null?'UNKNOWN':created<started||created>observed?'OUTSIDE_CLIENT_OBSERVATION_WINDOW':'WITHIN_CLIENT_OBSERVATION_WINDOW',observed_ts:observed,clock_is_ownership_or_billing_proof:false,ownership_basis:'KNOWN_UPLOAD_ACK_PLUS_EXACT_NATIVE_READBACK'};
+  }else{
+   proof.upload_ACK_unknown=true;await boundary('OBSERVE_UNKNOWN_ACK',10,12);
+   try{proof.observed_after_unknown_ACK=observation(await adapter.reconcileOwnStage({intent:structuredClone(proof.intent),before:structuredClone(proof.before)}));}catch{proof.unknown_ACK_observation_not_closed=true;}
+   proof.status='STAGE_ACK_UNKNOWN_OWNERSHIP_UNRESOLVED';
+  }
+  await boundary('AFTER_SNAPSHOT',5,6);afterAttempted=true;proof.after=snapshot(await adapter.snapshot({phase:'after'}));proof.active_preservation_verified=preserved(proof.before,proof.after);
+  if(!proof.active_preservation_verified)fail('STAGE_ACTIVE_OR_SETTINGS_CHANGED');
+  if(proof.known_upload_ack){if(proof.after.latest_uploaded_version!==proof.upload_ack.version_id)fail('STAGE_LATEST_MOVED');proof.ownership_verified=true;proof.status='STAGED_OWN_VERSION_VERIFIED_ACTIVE_UNCHANGED';}
+  proof.completed_ts=now();await persist('STAGE_FINAL_SAVE_NOT_CLOSED');return structuredClone(proof);
+ }catch(error){
+  proof.reason=codes.has(error?.stage_code)?error.stage_code:'STAGE_CONTROL_NOT_CLOSED';proof.failed_phase=phase;proof.status=attempted&&!proof.known_upload_ack?'STAGE_ACK_UNKNOWN_OWNERSHIP_UNRESOLVED':'STAGE_ONLY_NOT_CLOSED';proof.ownership_verified=false;
+  if(attempted&&!afterAttempted&&proof.before){try{await boundary('AFTER_UNCLOSED_STAGE',5,6);afterAttempted=true;proof.after=snapshot(await adapter.snapshot({phase:'after'}));proof.active_preservation_verified=preserved(proof.before,proof.after);}catch{proof.active_preservation_verified=null;}}
+  try{proof.completed_ts=now();}catch{proof.completed_ts=null;}
+  try{await persist('STAGE_FINAL_SAVE_NOT_CLOSED');}catch{proof.proof_persisted=false;}
+  return structuredClone(proof);
+ }
+}
+import {workerSettingsFingerprint} from '../runner/htx-coordinated-rollout.mjs';
+export function createCorrelatedStageNativeAdapter({cf,head,owner,configured_bridge_matches_account_script,secret_values=[],saveTransportIntent}={}){
+ if(typeof cf!=='function'||typeof saveTransportIntent!=='function'||configured_bridge_matches_account_script!==true||!/^[a-f0-9]{40}$/.test(head||'')||typeof owner!=='string'||!Array.isArray(secret_values))throw Error('NATIVE_STAGE_ADAPTER_BINDING_REQUIRED');
+ let settings=null,runtime=null,originalBytes=null,expectedBytes=null;
+ const reader=createVersionBoundWorkerReader({call:(name,path,opt)=>{if(name!==SQL_BRIDGE_SCRIPT)throw Error('NATIVE_STAGE_EXACT_WORKER_REQUIRED');return cf(path,opt);}});
+ const nativeCreated=v=>{const s=v?.metadata?.created_on;if(typeof s!=='string'||s.length>64)return null;const n=Date.parse(s);return Number.isSafeInteger(n)&&n>=1e12&&n<=8640000000000000?n:null;};
+  const worker={name:SQL_BRIDGE_SCRIPT,crons:[]};
+  const snapshot=async({phase})=>{
+   const state=await reader.read(worker),version=reader.version(SQL_BRIDGE_SCRIPT,state.version_id),currentSettings=reader.settings(SQL_BRIDGE_SCRIPT,state.version_id),latest=(await cf('/versions?per_page=1')).items?.[0]?.id;
+   if(phase==='before'){
+    settings=currentSettings;runtime=version.resources.script_runtime;originalBytes=reader.module(SQL_BRIDGE_SCRIPT,state.version_id)?.bytes;
+    if(!Buffer.isBuffer(originalBytes)||rolloutDigest(originalBytes)!==RETENTION_SQL_BRIDGE_PROOF.module_sha256)throw Error('NATIVE_STAGE_EXACT_ORIGINAL_BYTES_REQUIRED');
+    expectedBytes=Buffer.from(addExactSQLBridgeCostCorrelation(originalBytes.toString('utf8')).source);
+    if(rolloutDigest(expectedBytes)!=='c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063')throw Error('NATIVE_STAGE_EXACT_CANDIDATE_REQUIRED');
+    if(secret_values.some(v=>typeof v==='string'&&v.length>=12&&expectedBytes.includes(Buffer.from(v))))throw Error('NATIVE_STAGE_SECRET_EXPORT_DENIED');
+   }
+   return{version_id:state.version_id,deployment_id:state.deployment_id,module_sha256:state.module_sha256,settings_sha256:state.settings_sha256,crons_sha256:state.crons_sha256,runtime_sha256:rolloutDigest(version.resources.script_runtime),binding_names:state.binding_names,latest_uploaded_version:latest,immutable_script_etag:state.immutable_script_etag};
+  };
+  const describeStaged=async(version,bytes)=>{
+   if(!version||typeof version.id!=='string'||version.id!==bytes.version_id||!version.resources?.script_runtime)throw Error('NATIVE_STAGE_VERSION_SOURCE_BINDING_REQUIRED');
+   const currentSettings=selectedVersionSettings(await cf('/settings'),version);
+   return{version_id:version.id,latest_uploaded_version:bytes.version_id,module_sha256:bytes.module_sha256,module_readback_basis:'EXACT_LATEST_UPLOAD_SOURCE_BYTES',created_on_ts:nativeCreated(version),metadata_sha256:version.metadata&&typeof version.metadata==='object'&&!Array.isArray(version.metadata)?rolloutDigest(version.metadata):null,settings_sha256:workerSettingsFingerprint(currentSettings),runtime_sha256:rolloutDigest(version.resources.script_runtime),binding_names:currentSettings.bindings.map(x=>x.name).sort(),immutable_script_etag:version.resources.script?.etag??null};
+  };
+  const adapter={snapshot,
+   stage:async({plan,before,intent})=>{
+    const latest=(await cf('/versions?per_page=1')).items?.[0]?.id,metadata=sqlBridgeCounterVersionMetadata({settings,runtime,head,active_version:before.version_id,latest_uploaded_version:latest});
+    metadata.annotations={...metadata.annotations,...intent.annotations};const metadataText=JSON.stringify(metadata);
+    const transportIntent={schema:'NATIVE_STAGE_UPLOAD_TRANSPORT_INTENT_V1',operation_id:plan.operation_id,head,owner,script:SQL_BRIDGE_SCRIPT,metadata_json_utf8_sha256:rolloutDigest(Buffer.from(metadataText)),module_sha256:rolloutDigest(expectedBytes),module_bytes:expectedBytes.length,annotations_sha256:rolloutDigest(metadata.annotations),request_metadata_hash_is_not_multipart_wire_hash:true,configured_bridge_matches:configured_bridge_matches_account_script,upload_transport_intent_saved:false};
+    await saveTransportIntent(structuredClone(transportIntent));const form=new FormData();form.set('metadata',new Blob([metadataText],{type:'application/json'}));form.set('bridge-worker.js',new Blob([expectedBytes],{type:'application/javascript+module'}),'bridge-worker.js');
+    transportIntent.upload_transport_intent_saved=true;await saveTransportIntent(structuredClone(transportIntent));const v=await cf('/versions?bindings_inherit=strict',{method:'POST',body:form});
+    return{version_id:v.id,activated:false,request_metadata_sha256:transportIntent.metadata_json_utf8_sha256};
+   },
+   readStaged:async({version_id})=>{const version=await cf('/versions/'+version_id),bytes=await reader.latestBytes(SQL_BRIDGE_SCRIPT,version_id);return describeStaged(version,bytes);},
+   reconcileOwnStage:async()=>{const bytes=await reader.latestBytes(SQL_BRIDGE_SCRIPT),version=await cf('/versions/'+bytes.version_id);return describeStaged(version,bytes);}
+  };
+ return adapter;
+}
+// The stage-only native entry uses existing authenticated version readers.
+// It never calls the bridge HTTP handler, deployment API or script settings PATCH.
+export async function runCorrelatedBridgeStageOnly(){
+ const repo='kovalev23091987-jpg/my-report-2-cloud-runner',dir='audit-output/bridge-correlated-cost-stage',prefix='checkpoints/report-producer-and-bridge-stage-connected-20261022',head=process.env.EXPECTED_MAIN,owner=process.env.BORROW_EXISTING_OWNER,scopePrefix='OWNER_FIVE_ACTIVE_DIRECTIONS.REPORT_PRODUCER_CORRELATION_AND_BRIDGE_STAGE_ONLY_20261022.';
+ const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,gh,stageProof=null,transportIntent=null,outerReason=null,actual_upload_HTTP_attempts=0;
+ await fs.mkdir(dir,{recursive:true});
+ const save=async p=>{
+  if(p)stageProof=structuredClone(p);
+  const value={schema:'CORRELATED_SQL_BRIDGE_NATIVE_STAGE_CONTROL_V1',head,owner,status:stageProof?.status??'NATIVE_STAGE_NOT_STARTED',reason:outerReason,stage:stageProof,transport_intent:transportIntent,actual_upload_HTTP_attempts,metadata_hash_basis:'STABLE_CANONICAL_VERSION_METADATA_NOT_RAW_REPLY',local_intent_crash_durability_qualified:false,github_HTTP,cloudflare_HTTP,whole_HTTP:budget.summary(),manual_HTTP_reserved:24,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,activation_attempts:0,settings_mutations:0,delete_attempts:0,old_unknown_recovered:false,current_Telegram_restored:false,secret_values_exported:false,source_body_exported:false,native_transient_changes_excluded:false};
+  const text=JSON.stringify(value,null,2)+'\n';if(Buffer.byteLength(text)>131072)throw Error('NATIVE_STAGE_PROOF_BOUND');await fs.writeFile(dir+'/proof.tmp',text);await fs.rename(dir+'/proof.tmp',dir+'/proof.json');
+ };
+ const reserve=kind=>{const used=kind==='github'?github_HTTP:cloudflare_HTTP;if(used>=40||budget.summary().remaining<=24)throw Error('NATIVE_STAGE_CONTROL_HTTP_BOUND');const lane=kind==='cloudflare'&&budget.summary().used.background<56?'background':'hot';if(!budget.reserve({logical_request_id:'NATIVE_BRIDGE_STAGE:'+kind+':'+used,lane,attempts:1}).allowed)throw Error('NATIVE_STAGE_CONTROL_HTTP_BOUND');if(kind==='github')github_HTTP++;else cloudflare_HTTP++;};
+ async function guard({min_headroom_ms=30000,minimum_CF=0,minimum_GH=0}={}){
+  const context=await readMirrorContext(gh,{expected_main:head,maximum_blob_reads:0}),checked=assertMirrorOwner(context,owner,Date.now(),scopePrefix);
+  if(checked.lease.expires_ts-Date.now()<min_headroom_ms||40-cloudflare_HTTP<minimum_CF||40-github_HTTP<minimum_GH||budget.summary().remaining-24<minimum_CF+minimum_GH)throw Error('NATIVE_STAGE_OWN_SCOPE_OR_HEADROOM_REQUIRED');
+ }
+ async function cf(suffix,{method='GET',body,raw=false}={}){
+  const read=/^\/(?:deployments|settings|schedules|subdomain|versions\?per_page=1|versions\/[a-f0-9-]{36}|content\/v2)$/.test(suffix),upload=suffix==='/versions?bindings_inherit=strict'&&body instanceof FormData;
+  if(!(method==='GET'&&read&&body===undefined||method==='POST'&&upload))throw Error('NATIVE_STAGE_ROUTE_DENIED');
+  await guard();reserve('cloudflare');
+  const url=`https://api.cloudflare.com/client/v4/accounts/${P.account}/workers${suffix==='/subdomain'?'/subdomain':'/scripts/'+SQL_BRIDGE_SCRIPT+suffix}`;
+  if(method==='POST')actual_upload_HTTP_attempts++;
+  const r=await fetch(url,{method,headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},...(body?{body}:{}),redirect:'error',signal:AbortSignal.timeout(15000)});
+  if(!r.ok){await r.body?.cancel();throw Error('NATIVE_STAGE_CONTROL_HTTP_'+r.status);}const bytes=await boundedControlBody(r,raw?6500000:262144);
+  if(raw)return new Response(bytes,{headers:{'content-type':r.headers.get('content-type')||'application/octet-stream'}});
+  let j;try{j=JSON.parse(bytes.toString('utf8'));}catch{throw Error('NATIVE_STAGE_REPLY_JSON_NOT_CLOSED');}if(j.success!==true||j.result===undefined||j.result===null)throw Error('NATIVE_STAGE_REPLY_ACK_REQUIRED');return j.result;
+ }
+ try{
+  if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main'||process.env.GITHUB_SHA!==head||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||process.env.GITHUB_RUN_ATTEMPT!=='1'||process.env.EXECUTE_CORRELATED_COST_STAGE!=='true'||process.env.EXECUTE_CORRELATED_COST_RELEASE==='true'||process.env.EXECUTE_SQL_BRIDGE_REPAIR==='true'||process.env.READ_ONLY_BRIDGE_INSPECTION==='true'||!process.env.CLOUDFLARE_API_TOKEN||!/^\d+$/.test(process.env.CONNECTED_RUN||''))throw Error('EXACT_CURRENT_NATIVE_STAGE_MODE_REQUIRED');
+  gh=makeGithubControl({repository:repo,token:process.env.GITHUB_TOKEN,fetch_impl:(url,opt)=>{if(opt.method!=='GET'&&!(url==='https://api.github.com/graphql'&&opt.method==='POST'&&!String(opt.body).includes('mutation')))throw Error('NATIVE_STAGE_GITHUB_READ_ONLY');reserve('github');return fetch(url,{...opt,redirect:'error'});}});
+  await guard({min_headroom_ms:600000});
+  const qualified=JSON.parse(await fs.readFile(prefix+'/qualification-receipt.json','utf8')),pins=JSON.parse(await fs.readFile(prefix+'/qualification-scope.json','utf8'));
+  const [run,wf,automatic]=await Promise.all([gh.call('actions/runs/'+process.env.CONNECTED_RUN),gh.call('actions/workflows/liq-assembled-offline-20261012.yml'),gh.call('actions/runs?head_sha='+head+'&per_page=30')]);
+  if(qualified.run_id!==run.id||qualified.head!==run.head_sha||run.workflow_id!==wf.id||run.status!=='completed'||run.conclusion!=='success'||qualified.actual_SPEC_pass!==1||qualified.actual_SPEC_fail!==0||!automatic.workflow_runs?.some(x=>x.workflow_id===wf.id&&x.event==='push'&&x.head_sha===head&&x.status==='completed'&&x.conclusion==='success'))throw Error('NATIVE_STAGE_CURRENT_CODE_QUALIFICATION_REQUIRED');
+  for(const q of ['current-generation/files/runner-main.mjs','runner/report2-d1-adapter.mjs','runner/native-query-cost-journal.mjs','runner/sql-bridge-counter-repair.mjs','runner/cloudflare-version-bound-readback.mjs','runner/retention-bridge-provenance.mjs','tools/rollout-correlated-sql-bridge-20261022.mjs','.github/workflows/current-bridge-module-inspection-20261016.yml'])if(rolloutDigest(await fs.readFile(q))!==pins.files[q])throw Error('NATIVE_STAGE_QUALIFIED_SOURCE_PIN_CHANGED');
+  const context=gh.mirror_context,lease=assertMirrorOwner(context,owner,Date.now(),scopePrefix).lease,operation_id=globalThis.crypto.randomUUID();
+  const identity=exactConfiguredSQLBridgeURL(process.env.REPORT2_D1_BRIDGE_URL,(await cf('/subdomain')).subdomain);
+  const adapter=createCorrelatedStageNativeAdapter({cf,head,owner,configured_bridge_matches_account_script:identity.configured_bridge_matches_account_script,secret_values:Object.entries(process.env).filter(([k,v])=>/TOKEN|SECRET|KEY/.test(k)&&typeof v==='string'&&v.length>=12).map(([,v])=>v),saveTransportIntent:async x=>{transportIntent=x;await save();}});
+  stageProof=await stageCorrelatedSQLBridgeOnly({plan:{head,owner,operation_id,lease_expires_ts:lease.expires_ts,candidate_module_sha256:'c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063'},adapter,guard,save,clock:Date.now});
+  await save();if(stageProof.status!=='STAGED_OWN_VERSION_VERIFIED_ACTIVE_UNCHANGED')process.exitCode=1;
+ }catch(error){outerReason=/^[A-Z0-9_]+$/.test(error?.message||'')?error.message:'NATIVE_STAGE_CONTROL_NOT_CLOSED';try{await save();}catch{}process.exitCode=1;}
+ console.log(JSON.stringify({status:stageProof?.status??'NATIVE_STAGE_NOT_STARTED',reason:outerReason,head,github_HTTP,cloudflare_HTTP,activation_attempts:0,settings_mutations:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0}));return stageProof;
+}
+
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)await(process.env.EXECUTE_CORRELATED_COST_STAGE==='true'?runCorrelatedBridgeStageOnly():rolloutCorrelatedBridge());
