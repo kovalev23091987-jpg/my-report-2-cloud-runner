@@ -143,7 +143,7 @@ async function loadWorker() {
 }
 function buildEnv() {
   return {
-    DATA_DB: new RemoteD1Database(envText("REPORT2_D1_BRIDGE_URL"), envText("REPORT2_D1_BRIDGE_TOKEN"), { fetchImpl: nativeFetch, timeoutMs: 45_000 }),
+    DATA_DB: new RemoteD1Database(envText("REPORT2_D1_BRIDGE_URL"), envText("REPORT2_D1_BRIDGE_TOKEN"), { fetchImpl: nativeFetch, timeoutMs: 45_000, nativeQueryReceipts: true }),
     BYKARANTELI_API_KEY: envText("BYKARANTELI_API_KEY"),
     REPORT2_POST_V7_UNIFIED_ENABLED: envText("REPORT2_POST_V7_UNIFIED_ENABLED", { required:false }),
     REPORT2_ANALYTICS_ACTOR: envText("REPORT2_ANALYTICS_ACTOR", { required:false }) || "GITHUB_ACTIONS",
