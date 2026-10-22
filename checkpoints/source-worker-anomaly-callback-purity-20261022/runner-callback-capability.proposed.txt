@@ -83,7 +83,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
   // Snapshot callback-owned data while SQL/reentry denial is still active.
   // Reject Proxy trap-free BEFORE reflection: traps could schedule later SQL.
   const data_proto=Object.prototype,data_get_proto=Object.getPrototypeOf,data_keys=Reflect.ownKeys,
-    data_descriptor=Object.getOwnPropertyDescriptor,data_create=Object.create,data_freeze=Object.freeze,data_is_proxy=nodeUtilTypes.isProxy;
+    data_descriptor=Object.getOwnPropertyDescriptor,data_create=Object.create,data_freeze=Object.freeze,data_is_proxy=nodeUtilTypes.isProxy,data_is_array=Array.isArray;
   const snapshot_prepared=value=>{
     let nodes=0,string_bytes=0;const ancestors=new Set();
     const string=s=>{string_bytes+=Buffer.byteLength(s,'utf8');if(string_bytes>2*131072+8192)throw Error('ANOMALY_PREPARED_DATA_BOUND');return s;};
@@ -92,7 +92,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
       if(v===null||typeof v==='boolean')return v;
       if(typeof v==='string')return string(v);
       if(typeof v==='number'&&Number.isFinite(v)&&!Object.is(v,-0))return v;
-      if(!v||typeof v!=='object'||data_is_proxy(v)||ancestors.has(v))throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
+      if(!v||typeof v!=='object'||data_is_proxy(v)||data_is_array(v)||ancestors.has(v))throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
       const proto=data_get_proto(v);if(proto!==data_proto&&proto!==null)throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
       const names=data_keys(v);if(names.length>32)throw Error('ANOMALY_PREPARED_DATA_BOUND');
       ancestors.add(v);const copy=data_create(null);
