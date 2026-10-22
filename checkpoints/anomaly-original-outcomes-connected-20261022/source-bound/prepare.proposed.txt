@@ -1,0 +1,21 @@
+export function prepareCapturedDueWatch({due,origin,now_ts}={}){
+  checkedOrigin(origin,due.logical_event_id);
+  if(origin.revision!==due.revision||origin.state.watch.next_check_ts!==due.next_check_ts||Number(origin.state.watch.active)!==due.watch_active)return terminal(origin,'DUE_REVISION_CHANGED','QUEUE_HINT_IS_NOT_CURRENT_MUTATION_AUTHORITY');
+  need(clock(now_ts)&&now_ts>=origin.state.evaluated_ts,'DUE_CUT_BEFORE_RETAINED_EVALUATION');
+  const evaluated=evaluateOriginalEventOutcomes({origin,projection:capturedOriginalOutcomeWindows({origin,now_ts}),now_ts});
+  let watch;try{watch=advanceCapturedWatch(origin,now_ts);}catch{watch={reason:'CLOSED_WINDOW_UNAVAILABLE',detail:'CURRENT_WATCH_CAPTURE_NOT_CLOSED'};}
+  if(!evaluated.closed_keys.length&&watch.reason){const result=terminal(origin,watch.reason,watch.detail);return{...result,outcome_evaluation:evaluated.status,outcome_deferred_reason:evaluated.deferred[0]?.reason??null};}
+  const factual=evaluated.closed_keys.length>0,fingerprint=factual?digest({kind:'ORIGINAL_EVENT_OUTCOME_FACTS_V1',logical_event_id:origin.logical_event_id,closure_fingerprints:evaluated.closure_fingerprints,watch_fingerprint:watch.reason?null:watch.fingerprint}):watch.fingerprint;
+  const drafts=watch.reason?{}:watch.drafts;
+  const capacity=reason=>({status:'DEFERRED_CAPACITY',reason,logical_event_id:origin.logical_event_id,observation_fingerprint:fingerprint,expected_revision:origin.revision,first_known_ts:origin.first_known_ts,...Object.fromEntries(['card','descriptor','plan'].map(n=>[n+'_sha256',origin[n+'_sha256']])),write_required:false,durable_new_observation:false,...QUAL});
+  if(origin.state.revisions.length>=DOMAIN_BOUNDS.revisions||Object.keys(origin.state.outbox).length+Object.keys(drafts).length>DOMAIN_BOUNDS.outbox)return capacity('REVISIONS_OR_OUTBOX_CAPACITY_NO_DROP');
+  need(Object.keys(drafts).every(id=>!Object.hasOwn(origin.state.outbox,id)),'DRAFT_TRANSITION_ID_CONFLICT');
+  const state=clone(origin.state);state.evaluated_ts=now_ts;state.outcomes=evaluated.outcomes;
+  if(!watch.reason){state.watch=watch.observed.state.watch[origin.card.event_id];state.last_snapshot={...state.last_snapshot,ts:watch.snapshot.source_ts,id:watch.snapshot_id,sha256:watch.input.raw_sha256};state.outbox={...state.outbox,...drafts};}
+  const pending=origin.plan.cells.filter(c=>state.outcomes[c.key].status==='PENDING').map(c=>c.target_ts),dueTimes=[...(state.watch.active&&state.watch.next_check_ts!==null?[state.watch.next_check_ts]:[]),...pending];
+  state.watch.next_check_ts=dueTimes.length?Math.min(...dueTimes):null;
+  state.revisions.push({observation_kind:factual?'ORIGINAL_EVENT_OUTCOME_FACTS_V1':'CLOSED_CAPTURE_WATCH_V1',observation_fingerprint:fingerprint,recorded_by_worker_ts:now_ts,watch_status:state.watch.status,outcome_evaluation:evaluated.status,outcome_closed_keys:clone(evaluated.closed_keys),outcome_deferred:clone(evaluated.deferred),watch_deferred_reason:watch.reason??null,...(!watch.reason?{watch_observation_fingerprint:watch.fingerprint,source_snapshot_id:watch.snapshot_id,closed_window:{...watch.input.candle,fact_hash:watch.input.fact_hash},price_source_ts:watch.snapshot.source_ts,provider_source_as_of_ts:watch.input.source_as_of_ts,received_ts:watch.input.received_ts,body_completed_ts:watch.input.body_completed_ts,raw_ref:watch.input.raw_ref,raw_sha256:watch.input.raw_sha256,metadata_row_sha256:watch.input.metadata_row_sha256,gap_detail_receipt:watch.observed.unretained_gap?.interval??null}:{}),...QUAL});
+  if(Buffer.byteLength(canonical(state))>DOMAIN_BOUNDS.state)return capacity('STATE_BYTES_CAPACITY_NO_DROP');
+  const operation_id=(factual?'ANOMALY_OUTCOME:':'ANOMALY_WATCH:')+digest({logical_event_id:origin.logical_event_id,expected_revision:origin.revision,observation_fingerprint:fingerprint});
+  return prepareAnomalyCommit({logical_event_id:origin.logical_event_id,operation_id,expected_revision:origin.revision,card:clone(origin.card),descriptor:clone(origin.descriptor),plan:clone(origin.plan),state});
+}
