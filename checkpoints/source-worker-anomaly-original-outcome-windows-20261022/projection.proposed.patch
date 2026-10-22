@@ -1,0 +1,60 @@
+--- a/current-generation/files/src/anomaly-native-due-watch.mjs
++++ b/current-generation/files/src/anomaly-native-due-watch.mjs
+@@ -48,6 +48,57 @@
+   const fact_hash=hash(Object.fromEntries(['timeframe','start_ts','end_ts','open','high','low','close','volume'].map(n=>[n,candle[n]])));
+   return{candle,fact_hash,alignment,source_as_of_ts:p.ts,received_ts:basis.minutes_observed_ts,body_completed_ts:k.body_completed_ts,raw_sha256:k.body_text_sha256,raw_ref:'HTX_CAPTURE_TEXT_SHA256:'+k.body_text_sha256,metadata_row_sha256:descriptor.parsed_metadata_row_sha256};
+ }
++export function capturedOriginalOutcomeWindows({origin,now_ts}={}){
++  let cells=[];
++  const out={status:'CAPTURED_ORIGINAL_OUTCOME_WINDOWS_V1',logical_event_id:null,revision:null,card_sha256:null,descriptor_sha256:null,plan_sha256:null,first_known_ts:null,now_ts:clock(now_ts)?now_ts:null,source_as_of_ts:null,received_ts:null,body_completed_ts:null,body_text_sha256:null,raw_body_sha256:null,metadata_row_sha256:null,record_compatibility:null,quote:'USDT',price_unit:'HTX_NATIVE_LINEAR_PRICE',windows:[],summary_sha256:null,provenance_sha256:null,source_HTTP:0,SQL:0,...QUAL};
++  const deferred=(c,reason)=>({key:c.key,direction:c.direction,horizon_ms:c.horizon_ms,target_ts:c.target_ts,start_ts:origin.card.event_end_ts,end_ts:c.target_ts,status:'DEFERRED',reason,minutes:null,expected_minutes:null,first_open:null,last_close:null,high:null,low:null,window_sha256:null});
++  const finish=reason=>{
++    if(reason){out.reason=reason;out.windows=cells.map(c=>deferred(c,reason));}
++    out.summary_sha256=digest({logical_event_id:out.logical_event_id,revision:out.revision,card_sha256:out.card_sha256,descriptor_sha256:out.descriptor_sha256,plan_sha256:out.plan_sha256,windows:out.windows,quote:out.quote,price_unit:out.price_unit});
++    if(Buffer.byteLength(canonical(out))>16384){out.reason='OUTCOME_WINDOW_DTO_BOUND';out.windows=cells.map(c=>deferred(c,out.reason));out.summary_sha256=digest({logical_event_id:out.logical_event_id,revision:out.revision,card_sha256:out.card_sha256,descriptor_sha256:out.descriptor_sha256,plan_sha256:out.plan_sha256,windows:out.windows,quote:out.quote,price_unit:out.price_unit});}
++    return out;
++  };
++  try{checkedOrigin(origin,origin?.logical_event_id);}catch{return finish('ORIGIN_NOT_CLOSED');}
++  cells=origin.plan.cells;
++  Object.assign(out,{logical_event_id:origin.logical_event_id,revision:origin.revision,card_sha256:origin.card_sha256,descriptor_sha256:origin.descriptor_sha256,plan_sha256:origin.plan_sha256,first_known_ts:origin.first_known_ts});
++  if(!clock(now_ts)||now_ts>Date.now()||now_ts<origin.state.evaluated_ts)return finish('EVALUATION_CLOCK_NOT_CLOSED');
++  try{
++    const basis=capturedHtxAnomalyBasis({contract:origin.descriptor.contract_code,now:now_ts});
++    if(!basis)return finish('NO_SAME_COMPLETED_CAPTURE');
++    const p=basis.minutes,r=basis.body_receipt,k=r?.body_knowledge;
++    need(r?.stage==='COMPLETED'&&k?.hash_status==='TEXT_HASH_RECORDED'&&hex(k.body_text_sha256)&&r.captured_payload_sha256===digest(JSON.stringify(p)),'CAPTURE_BODY_BINDING_REQUIRED');
++    need([p.ts,basis.minutes_observed_ts,k.body_completed_ts,basis.material_available_ts].every(clock)&&p.ts<=k.body_completed_ts&&k.body_completed_ts<=basis.minutes_observed_ts&&basis.material_available_ts<=now_ts,'CAPTURE_CLOCK_ORDER_REQUIRED');
++    const descriptor=opaqueHtxDescriptor({metadata:basis.metadata,contract:basis.contract,observed_ts:basis.metadata_observed_ts,source_ref:'SAME_HTX_ORIGINAL_OUTCOME_CAPTURE'});
++    const compatibility=nativeRecordCompatibility(origin.descriptor,descriptor);
++    if(compatibility!=='SAME_OPAQUE_RECORD_NOT_QUALIFIED_EPOCH')return finish('CAPTURE_RECORD_MISMATCH');
++    need(p.status==='ok'&&p.ch===`market.${basis.contract}.kline.1min`&&Array.isArray(p.data)&&p.data.length<=2000,'CAPTURE_NATIVE_MINUTES_REQUIRED');
++    Object.assign(out,{source_as_of_ts:p.ts,received_ts:basis.minutes_observed_ts,body_completed_ts:k.body_completed_ts,body_text_sha256:k.body_text_sha256,metadata_row_sha256:descriptor.parsed_metadata_row_sha256,record_compatibility:compatibility});
++    out.provenance_sha256=digest({source_as_of_ts:out.source_as_of_ts,received_ts:out.received_ts,body_completed_ts:out.body_completed_ts,body_text_sha256:out.body_text_sha256,metadata_row_sha256:out.metadata_row_sha256,record_compatibility:compatibility,captured_payload_sha256:r.captured_payload_sha256});
++    const by=new Map();
++    for(const row of p.data){const t=row?.id*1000;if(!Number.isSafeInteger(row?.id)||row.id<=0||!Number.isSafeInteger(t)||t%MIN!==0||by.has(t))return finish('CAPTURE_GRID_INVALID');by.set(t,row);}
++    const number=v=>{need((typeof v==='number'||typeof v==='string'&&/^(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(v))&&Number.isFinite(Number(v)),'CAPTURE_RAW_NUMBER_REQUIRED');return Number(v);};
++    const record=Object.fromEntries(['venue','market','contract_code','symbol','pair','business_type','contract_type','trade_partition','raw_native_listing_date','raw_contract_size'].map(n=>[n,origin.descriptor[n]])),cache=new Map();
++    out.windows=cells.map(c=>{
++      const start=origin.card.event_end_ts,end=c.target_ts,count=(end-start)/MIN;
++      if(end>now_ts)return deferred(c,'NOT_MATURE');
++      if(!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start%MIN!==0||end%MIN!==0||!Number.isSafeInteger(count)||count<1)return deferred(c,'UNSUPPORTED_MINUTE_ALIGNMENT');
++      if(count>2000)return deferred(c,'WINDOW_EXCEEDS_CAPTURE_BOUND');
++      if(end>p.ts)return deferred(c,'SOURCE_ASOF_BEFORE_TARGET');
++      if(cache.has(end)){const x=cache.get(end);return x.reason?deferred(c,x.reason):{...x,key:c.key,direction:c.direction,horizon_ms:c.horizon_ms};}
++      const parts=[];
++      for(let t=start;t<end;t+=MIN){
++        const row=by.get(t);if(!row){cache.set(end,{reason:'WINDOW_GRID_GAP'});return deferred(c,'WINDOW_GRID_GAP');}
++        let b;try{b={start_ts:t,open:number(row.open),high:number(row.high),low:number(row.low),close:number(row.close),volume:number(row.trade_turnover)};need([b.open,b.high,b.low,b.close].every(v=>v>0)&&b.low<=Math.min(b.open,b.close)&&b.high>=Math.max(b.open,b.close)&&b.low<=b.high&&b.volume>=0,'CAPTURE_OHLCV_GEOMETRY');}catch{cache.set(end,{reason:'WINDOW_OHLCV_INVALID'});return deferred(c,'WINDOW_OHLCV_INVALID');}parts.push(b);
++      }
++      if(!Number.isFinite(parts.reduce((s,b)=>s+b.volume,0))){cache.set(end,{reason:'WINDOW_OHLCV_INVALID'});return deferred(c,'WINDOW_OHLCV_INVALID');}
++      const fact={schema:'ORIGINAL_EVENT_END_CLOSED_MINUTE_WINDOW_FACT_V1',record,start_ts:start,end_ts:end,quote:out.quote,price_unit:out.price_unit,minutes:parts};
++      const window={key:c.key,direction:c.direction,horizon_ms:c.horizon_ms,target_ts:end,start_ts:start,end_ts:end,status:'COMPLETE_CLOSED_MINUTE_WINDOW',reason:null,minutes:parts.length,expected_minutes:count,first_open:parts[0].open,last_close:parts.at(-1).close,high:Math.max(...parts.map(b=>b.high)),low:Math.min(...parts.map(b=>b.low)),window_sha256:digest(fact)};
++      cache.set(end,window);return window;
++    });
++    return finish();
++  }catch{return finish('CAPTURE_NOT_CLOSED');}
++}
++
+ export function prepareCapturedDueWatch({due,origin,now_ts}={}){
+   checkedOrigin(origin,due.logical_event_id);
+   if(origin.revision!==due.revision||origin.state.watch.next_check_ts!==due.next_check_ts||Number(origin.state.watch.active)!==due.watch_active)return terminal(origin,'DUE_REVISION_CHANGED','QUEUE_HINT_IS_NOT_CURRENT_MUTATION_AUTHORITY');
