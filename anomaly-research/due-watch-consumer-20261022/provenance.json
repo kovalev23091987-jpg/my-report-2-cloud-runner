@@ -1,0 +1,106 @@
+{
+  "schema": "DUE_WATCH_PROPOSAL_PROVENANCE_V1",
+  "working_base": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115",
+  "protocol_first_commit": "1e91aac7069898ca518e79d2ecdd39a5102f44cd",
+  "latest_fresh_main": "9d73af1d3c6782b1f9da2f507f07fcef8f6aa0a1",
+  "guard_sha256": {
+    "AGENTS.md": "154fbba7e0585c35adb29fb799dd1f573d7d5d31aadf91b6ac5442e1b659ed28",
+    "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "0d75e5f08f73e1d9d1537e036efcf50b1a8d47330200f342e1387b1d1ae8b3d8",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "e0d76897f22f3ac58c2e2a9e2d9d15cb2ab65332e1f7aa089fcbdd31447f7d87",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "23cb9b75740489dfab29c5b813618d740fac16ed85531a9b902c06b1b3008106",
+    "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "20939d955fe354cad46b0972428169e1dc38f8cdc9e4896136db6fe21f089b3d",
+    "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "86de6ff5cecee89e74b8aecd95899090a1a5a2b9effbd21fd167b657710da3c8",
+    "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+  },
+  "active_three_proofs": [
+    {
+      "path": "checkpoints/ACTIVE105_ANOMALY_INITIAL_INGRESS_PARENT_HANDOFF_20261022.json",
+      "sha256": "337ab71236f52542b0fc801787f621599d9ea99caf4d1849d00976e711811638"
+    },
+    {
+      "path": "checkpoints/anomaly-initial-ingress-connected-20261021/merge-and-checks-receipt.json",
+      "sha256": "f4d32c0a8ef1532d1aea3361dd048717ccad0adcbc01b9c77045b1fcababfb5d"
+    },
+    {
+      "path": "checkpoints/anomaly-initial-ingress-connected-20261021/next-worker-queues.json",
+      "sha256": "48911ce5099aef3b6bbd01230870d27c4245dd41d71359d43487be0cde93bb2c"
+    }
+  ],
+  "all4_equal": true,
+  "owner_paused": false,
+  "own_lease": {
+    "ref": "b4619063c9ad059d1e432225997c37200804217c",
+    "owner": "CODEX:OFFLINE_ANOMALIES:1792653450365",
+    "acquired_ts": 1792653450365,
+    "expires_ts": 1792658550365,
+    "exact_full_readback": true
+  },
+  "inputs": [
+    {
+      "path": "current-generation/files/src/anomaly-native-domain.mjs",
+      "exports": [
+        "readDueAnomalyBundles",
+        "verifyAnomalyOriginRow",
+        "opaqueHtxDescriptor",
+        "nativeRecordCompatibility",
+        "prepareAnomalyCommit",
+        "lockedOutcomePlan"
+      ],
+      "evidence": "Existing code, not installed native schema or cost"
+    },
+    {
+      "path": "anomaly-research/observer/observer.mjs",
+      "exports": [
+        "observe",
+        "draftNotice",
+        "newMemory",
+        "opaqueRecordInstrument"
+      ],
+      "evidence": "Existing watch algorithms, no old component execution"
+    },
+    {
+      "path": "current-generation/files/src/htx-signed-tape.mjs",
+      "export": "capturedHtxAnomalyBasis",
+      "evidence": "Same completed map/body/metadata, TTL120s, no new reader or HTTP"
+    },
+    {
+      "path": "anomaly-research/statistics/outcomes.mjs",
+      "export": "evaluateOutcome",
+      "used": false,
+      "reason": "Known-time anchored plan is incompatible with immutable ORIGINAL_EVENT_END locked16 plan"
+    },
+    {
+      "path": "current-generation/GENERATION.json",
+      "sha256": "2361e0c65ef67cd77ddd4ff72deb175e7bc9dc2a9f8160c1aec1c6fa9f1e9580",
+      "used_for": "Declared scenario counts72 scheduled,36 analytics,47 maximum analytics; not measured seam invocations"
+    }
+  ],
+  "scheduled_caller": "After existing boundedDeepCheck scheduler before CURRENT_CYCLE_SELECTION_AUDIT, one conditional invocation, no chosen-contract argument",
+  "new_runtime_files": [
+    "src/anomaly-native-due-watch.mjs"
+  ],
+  "shared_files_mutated": false,
+  "production_policy": null,
+  "author_execution": {
+    "Node": 0,
+    "imports": 0,
+    "syntax": 0,
+    "tests": 0,
+    "SQL": 0,
+    "SQLite": 0,
+    "semantics": 0,
+    "gitapply": 0,
+    "native": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "old_components": 0
+  },
+  "new_priority": "Finish CURRENT linked DUE frozen READY/PR/exact readback/only own release; no following feature work or semantic runs; regression recovery remains coordinator-owned",
+  "callback_return_scope": "Actual consumer returns plain literal/prepared data; generic accessor/getter return-object purity is unqualified. No exploit execution, old-case replay or runtime fix in this frozen package.",
+  "frozen_SOURCE_dependency": "6f94424b08f2efe125d97710ade6b75ffd88818f"
+}
