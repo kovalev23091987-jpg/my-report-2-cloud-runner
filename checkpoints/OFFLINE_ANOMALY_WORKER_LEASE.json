@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792653450365",
   "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
   "acquired_ts": 1792653450365,
@@ -33,5 +33,29 @@
       "path": "checkpoints/liq-native-access-path-connected-20261021/next-worker-queues.json",
       "sha256": "e77e4eb998734cd9af1522742ca616024323a3db68443e4b6efac5d60fa341c4"
     }
-  ]
+  ],
+  "released_ts": 1792656010004,
+  "release_expected_main": "6b02178d540ae112e5ab6a7f5ac3b15147dafced",
+  "completion": {
+    "state": "FROZEN_READY_AUTHOR_UNEXECUTED_REGRESSION_PRIORITY",
+    "PR": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/607",
+    "frozen_head": "15f1439137073afc53e6ad036aa959d2e42ee20f",
+    "files": 11,
+    "manifest_sha256": "68ba3ab9cfe467fcb89379225fb85bca457478cdec45bd223bdad20338fc9a0b",
+    "all11_full_GitHub_content_exact": true,
+    "source_peer": "ACCEPTED_WITH_LIMITS_0_OPEN_ACTUAL_PLAIN_CONSUMER",
+    "source_frozen_head": "6f94424b08f2efe125d97710ade6b75ffd88818f",
+    "source_published_manifest_exact": true,
+    "source_factory_sha256": "f4660be58eecebebfe0aef74372d9519e5955e632fec8881c614d6738c7b53e1",
+    "prepared_groups": 9,
+    "prepared_nested_variants": 22,
+    "case_sha256": "2b9237e7ded1f51313ab7869ce4e225b5f10e60c46fecf7d4e593919e7454a05",
+    "consumer_sha256": "224a90f1358c9b996bd78fdaecbd233f0be7b2e6fecf4a9fb56097d0270b9b74",
+    "author_application_executions": 0,
+    "native_policy": null,
+    "production_activation": false,
+    "no_next_feature_or_semantic_runs": true,
+    "generic_accessor_return_safety": "UNQUALIFIED; actual consumer returns plain data",
+    "next_action": "Coordinator preserves frozen READY while restoring existing LIQ/report/Telegram; no autoqualification/merge/native activation or replay of accepted cases."
+  }
 }
