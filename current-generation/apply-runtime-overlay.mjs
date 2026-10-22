@@ -36,6 +36,7 @@ const files=[
  'src/funding-directional-policy.mjs',
  'src/htx-trade-json.mjs','src/htx-signed-tape.mjs',
  'src/anomaly-native-domain.mjs','migrations/20261021_anomaly_domain.sql',
+ 'src/anomaly-native-ingress.mjs',
  'src/verified-futures-flow-binding.mjs',
  'src/htx-volume-profile.mjs',
  'src/cross-venue-volume-profile.mjs',
@@ -158,6 +159,7 @@ const files=[
 ];
 for(const rel of files){const from=path.join(here,'files',rel),to=path.join(runtime,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);}
 fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.mjs'),path.join(runtime,'r8-20-prospective-validation-sidecar.mjs'));
+fs.copyFileSync(path.join(here,'../anomaly-research/observer/observer.mjs'),path.join(runtime,'src/anomaly-record-observer.mjs'));
 fs.copyFileSync(path.join(here,'files/src/retained-history.mjs'),path.join(runtime,'retained-history.mjs'));
 fs.copyFileSync(path.join(here,'files/src/private-canonical-history.mjs'),path.join(runtime,'private-canonical-history.mjs'));
 fs.copyFileSync(path.join(here,'../runner/private-archive-d1-api.mjs'),path.join(runtime,'private-archive-d1-api.mjs'));

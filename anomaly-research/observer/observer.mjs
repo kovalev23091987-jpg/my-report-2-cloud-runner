@@ -13,7 +13,16 @@ const clone=x=>structuredClone(x),str=x=>typeof x==='string'&&x.trim().length>0;
 const ts=x=>Number.isSafeInteger(x)&&x>=1e12,num=x=>typeof x==='number'&&Number.isFinite(x);
 const hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
 function need(ok,reason){if(!ok)throw Error(reason);}
+export function opaqueRecordInstrument(d){
+ need(d?.schema==='OPAQUE_HTX_NATIVE_LISTING_DATE_RECORD_V1'&&d.venue==='HTX'&&d.market==='LINEAR_SWAP'&&d.instrument_epoch===null&&d.listing_ts===null&&d.native_epoch_qualified===false,'OPAQUE_NATIVE_RECORD_REQUIRED');
+ need(str(d.symbol)&&d.contract_code===d.symbol+'-USDT'&&d.pair===d.contract_code&&d.business_type==='swap'&&d.contract_type==='swap'&&d.trade_partition==='USDT'&&typeof d.raw_native_listing_date==='string'&&/^\d{8}$/.test(d.raw_native_listing_date),'OPAQUE_NATIVE_MARKET_FIELDS_REQUIRED');
+ need(num(d.raw_contract_size)&&d.raw_contract_size>0&&num(d.raw_price_tick)&&d.raw_price_tick>0&&hex(d.parsed_metadata_row_sha256),'OPAQUE_NATIVE_RECORD_VALUES_REQUIRED');
+ const keys=['schema','venue','market','contract_code','symbol','pair','business_type','contract_type','trade_partition','raw_native_listing_date','raw_contract_size','raw_price_tick','parsed_metadata_row_sha256','listing_ts','instrument_epoch','native_epoch_qualified'];
+ const record=Object.fromEntries(keys.map(k=>[k,d[k]]));
+ return{asset_id:null,venue:'HTX',upstream:'HTX',market:'FUTURES',contract:d.contract_code,quote:'USDT',price_unit:'HTX_NATIVE_LINEAR_PRICE',volume_unit:'HTX_NATIVE_TRADE_TURNOVER_FIELD',multiplier:d.raw_contract_size,multiplier_role:'RAW_CONTRACT_SIZE_NOT_OHLCV_CONVERSION',binding_kind:'OPAQUE_NATIVE_RECORD',binding_ref:'HTX_METADATA_ROW_SHA256:'+d.parsed_metadata_row_sha256,identity_verified:false,identity_scope:'NATIVE_RECORD_ONLY_NOT_ASSET_EPOCH',native_epoch_qualified:false,event_first_knowledge_qualified:false,native_admission_qualified:false,native_record:record};
+}
 function exactInstrument(i){
+ if(i?.binding_kind==='OPAQUE_NATIVE_RECORD'){need(hash(i)===hash(opaqueRecordInstrument(i.native_record)),'OPAQUE_NATIVE_INSTRUMENT_MISMATCH');return clone(i);}
  need(i&&['asset_id','venue','upstream','contract','quote','price_unit','volume_unit','binding_ref'].every(k=>str(i[k]))&&['FUTURES','SPOT'].includes(i.market)&&i.identity_verified===true&&num(i.multiplier)&&i.multiplier>0&&['VERIFIED_NATIVE','CHAIN_ADDRESS'].includes(i.binding_kind),'EXACT_INSTRUMENT_REQUIRED');
  if(i.binding_kind==='CHAIN_ADDRESS')need(str(i.chain)&&str(i.address),'CHAIN_ADDRESS_REQUIRED');
  return clone(i);

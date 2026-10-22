@@ -1,0 +1,210 @@
+{
+  "schema": "FIRST_LINKED_ANOMALY_INGRESS_PARENT_CODE_QUALIFICATION_V1",
+  "run": 39737735170,
+  "head": "b730ce23b80ca35a37b2a404a8ebc008a5327c2a",
+  "repair_head": "53e31078e21490fbac729712882c8b66ccdc47a6",
+  "repair_tree_identical_at_dispatch": true,
+  "actual_reporter": "NODE_SPEC",
+  "tests": 1,
+  "pass": 1,
+  "fail": 0,
+  "Node": "v24.21.0",
+  "CONTROLLED_groups": 20,
+  "parent_groups": 12,
+  "ingress_groups": 8,
+  "ingress_nested_variants": 14,
+  "artifact": {
+    "id": 12407921553,
+    "bytes": 113278,
+    "digest": "sha256:11119a7144c4ae13c6759f712f17b771bad326d5a30780873db6ae404f06480e",
+    "members": 12,
+    "independently_ZIP_verified": true
+  },
+  "result_members": {
+    "global-baseline-binding.json": {
+      "bytes": 418,
+      "sha256": "1ed9b71fc027646f3a922e9b4a7ccc74fb54ab76dc471fe81a64a3c0c054b0d0"
+    },
+    "ingress-component.json": {
+      "bytes": 3052,
+      "sha256": "a71c5fd69ebf8727883177da14cb5d17431c6d4367af130a4744194b9805d7dd"
+    },
+    "parent-component.json": {
+      "bytes": 2920,
+      "sha256": "8ca468d53a8430de4ae3f59ab7a338ab8c822505de73346004dca94dc998de9b"
+    },
+    "receipt-consumer-proof.json": {
+      "bytes": 244,
+      "sha256": "d6c5d21d6c4c486b3a19f8c67ba9752bcf29e7fafed9ba8dd1ac1905741514f4"
+    },
+    "result.json": {
+      "bytes": 758,
+      "sha256": "c05a3c5bdd23c61c86c11ec7a61ac8202033b32817a6cbfb06849aa135c9e00e"
+    }
+  },
+  "baseline": {
+    "current_before_files": 615,
+    "candidate_files": 617,
+    "source_component_staged_baseline_files": 617,
+    "source_baseline_is_not_deployed615": true,
+    "current_before_inventory_sha256": "d5ec45be8badfac5f2fc01b4941c352f08d42d572421a41c96298f0b32d0bbcd",
+    "accepted603_actual_current615_inventory_sha256": "d5ec45be8badfac5f2fc01b4941c352f08d42d572421a41c96298f0b32d0bbcd",
+    "accepted_tests_reexecuted": false
+  },
+  "actual_fs_metadata_consumer": {
+    "actual_fs_write_and_readback": true,
+    "bytes": 1866,
+    "sha256": "c66064c86a2241f272e8bf088328498cf2da2a8a092305df40cdf09a41b6e907",
+    "controlled_ACK_metadata": true,
+    "native_qualification": false,
+    "fs_durability_qualified": false
+  },
+  "source_pins": 889,
+  "runtime_pins": 262,
+  "component_groups": {
+    "parent-component.json": [
+      {
+        "name": "THREE_ACTUAL_RPC_AND_EXACT_PARENT_HTTP",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED",
+        "RPC": 3,
+        "known_usage": {
+          "requests": 3,
+          "rows_read": 6,
+          "rows_written": 12,
+          "unknown_ops": 0,
+          "targets": {
+            "first:report2_anomaly_bundle_v1": {
+              "requests": 1,
+              "rows_read": 2,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "run:report2_anomaly_commit_v1": {
+              "requests": 1,
+              "rows_read": 2,
+              "rows_written": 12,
+              "unknown_ops": 0
+            },
+            "first:report2_anomaly_operation_v1": {
+              "requests": 1,
+              "rows_read": 2,
+              "rows_written": 0,
+              "unknown_ops": 0
+            }
+          }
+        }
+      },
+      {
+        "name": "NO_NUMERIC_POLICY_NO_HOOK_OR_IO",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "RECEIPT_DAY_FINALIZED_AND_SAME_NAMESPACE",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "EXACT_PARENT_R_W_BOUNDARIES_NO_CAP_RAISE",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "UNIFIED_STATISTICS_EACH_PHASE_REFUSAL",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "UNKNOWN_ALL_PHASES_BEFORE_LATER_SQL_AND_FINALIZER",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "SNAPSHOT_THROW_AFTER_SETTLED_REPLY_KNOWN_COST_NOT_ERASED",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "LOST_REPLY_RETAINS_SAME_EFFECTIVE_PREPARED_OPERATION",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "KNOWN_PROJECTION_OVERRUN_STOPS_DOMAIN_WITH_COST",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "VERIFIED_ORIGIN_FROZEN_AND_EXACT_DUPLICATE_ONLY_ORIGIN",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "WORKER_LIFETIME_CLOSE_BEFORE_FINALIZATION",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      },
+      {
+        "name": "NO_SOURCE_ENV_OR_DB_SERIALIZATION",
+        "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+      }
+    ],
+    "ingress-component.json": [
+      {
+        "name": "actual_new_worker_insertions_preserve_before_bytes_and_missing_hook_skips_shaper",
+        "variants": 1,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+        "old_cycle_not_invoked": true,
+        "legacy_bytehash_preserved": true
+      },
+      {
+        "name": "same_completed_capture_uses_existing_detector_opaque_false_and_full_original_plan",
+        "variants": 2,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+        "provider_HTTP": 0,
+        "SQL": 0,
+        "first_knowledge_scope": "WORKER_RECORD_ONLY"
+      },
+      {
+        "name": "actual_source_capability_initial_origin_write_readback_three_rpc",
+        "variants": 1,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+        "full_runtime_files": 617,
+        "non_target_equal": 616
+      },
+      {
+        "name": "fresh_client_memory_clock_and_body_format_do_not_create_new_initial_or_revision",
+        "variants": 2,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+        "restart_is_CONTROLLED_client_restart": true,
+        "auto_durable_pending_journal_proven": false
+      },
+      {
+        "name": "new_source_facts_same_event_append_only_revision_preserving_original_and_due_plan",
+        "variants": 1,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+        "new_notice_sent": false,
+        "watch_price_or_outcome_evaluation": false
+      },
+      {
+        "name": "saturated_revision_or_outbox_and_material_multiplier_conflict_defer_without_drop",
+        "variants": 3,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION"
+      },
+      {
+        "name": "lost_before_or_after_write_keeps_same_pending_prepared_opid_and_old_unknown",
+        "variants": 2,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+        "pending_DTO_explicitly_retained_by_CONTROLLED_harness": true,
+        "production_durable_pending_artifact_not_qualified": true
+      },
+      {
+        "name": "orphan_left_join_and_oversize_origin_never_become_absence_or_new_initial",
+        "variants": 2,
+        "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION"
+      }
+    ]
+  },
+  "old_components_replayed": 0,
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "native_policy": null,
+  "independent105_connected": false,
+  "native_epoch_or_firstknowledge_or_ACK_or_SAVING_or_SENT_qualified": false,
+  "production_durable_pending_journal_qualified": false,
+  "baseline_cleanup_removed": true,
+  "F1_F2_closed_before_first_execution": true,
+  "static_guard_status_label": "EXACT_LIQ_NATIVE_ACCESS_CAPTURE_SCOPE is inherited label; exact anomaly prefix/main/owner/hash controls verified"
+}

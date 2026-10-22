@@ -1,0 +1,15 @@
+# Дополнение до нового connected case
+
+Координатор потребовал проверить свежее обнаружение того же события после перезапуска. Прежняя проверка SAME prepared DTO не доказывает этот случай и не повторяется. Новый `known_ts` меняет candidate card hash, а existing kernel сохраняет immutable card/first_known/descriptor/plan и требует фактическую expected revision. Нельзя обходить это добавлением часов обработки или body hash в logical event key.
+
+Финальный API координатора заменяет ранние варианты: `env.REPORT2_ANOMALY_DOMAIN_COMMIT({logical_event_id, prepare_from_origin})`. Synchronous pure callback получает null либо строго проверенный retained origin. Third владеет одним предложенным ORIGIN reader/verifier в existing kernel и pure resolver; source владеет same-DB capability, lifecycle, политикой и допуском фаз ORIGIN/WRITE/READBACK. Нет второй реализации reader и новой схемы.
+
+ORIGIN — SELECT по существующему PK bundle, LEFT JOIN последней operation receipt, LIMIT1. Отсутствующая receipt не становится отсутствующей bundle. Четыре JSON-поля ограничиваются до parse/hash; проверяются hashes, canonical text, scalar crossbindings и existing prepare/verifyAnomalyReadback. Это static existing-store contract, а не доказательство native index plan или стоимости.
+
+Начальное отсутствие даёт3RPC: ORIGIN, atomic WRITE, READBACK. Сохранённый duplicate с теми же source facts даёт только ORIGIN и честный NO_WRITE. Новое фактическое наблюдение может добавить лишь bounded state revision на actual origin.revision, с исходными card/first_known/descriptor/полным16cellplan без изменения. Fingerprint исключает processing/received/completed clocks и формат тела; включает исходное source_as_of, закрытые OHLCV/background и native record facts. Другая строка body сама по себе не новый event.
+
+Revisions32/outbox32/границы state не разрешают молчаливую очистку: новый ingress явно откладывается. UNKNOWN удерживает тот же effective prepared и operation_id; текущий unknown запрещает новый ORIGIN/WRITE/READBACK. После нового разрешённого parent retained operation receipt сверяется с тем же opid/hash. Новая карточка или operation_id ради обхода UNKNOWN не создаётся.
+
+Числовые native projections не одобрены. Отсутствующая/невалидная policy не устанавливает hook: нет даже shaper clock/body reads и0SQL. Предложенный защищённый остаток source9448R244W — консервативная сумма прежних двух резервов, не новая квота и не доказательство свободного остатка. Контролируемые значения future case не становятся native defaults.
+
+ONE новый affected case проверит first shape/commit/readback, fresh memory/later processing clock при тех же фактах, новое source observation того же события, immutable original и полный plan, saturation/record conflict и lost reply без смены operation_id. Root выполняет его вместе с source admission component после завершения пакетов/peers, сохраняя каждый JSON до последующих assertions. Авторское исполнение0; независимая очередь105, due-progress, actual schema/стоимость и SENT остаются открытыми.
