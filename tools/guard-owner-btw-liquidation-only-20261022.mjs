@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+import {readMirrorContext,assertMirrorOwner} from '../runner/github-four-mirror-cas.mjs';
+import {parseLiquidationCommand} from '../current-generation/files/src/liquidation-command-router.mjs';
+const P='checkpoints/owner-btw-liquidation-only-20261022',s=JSON.parse(fs.readFileSync(P+'/scope.json')),stage=process.argv[2],sha=b=>createHash('sha256').update(b).digest('hex');
+if(!['before','assembled','after'].includes(stage)||process.env.GITHUB_REPOSITORY!=='kovalev23091987-jpg/my-report-2-cloud-runner'||process.env.GITHUB_REF!=='refs/heads/work/btw-liquidation-only-20261022'||process.env.GITHUB_RUN_ATTEMPT!=='1')throw Error('EXACT_ONCE_BTW_LIQ_SCOPE_REQUIRED');
+const intent=parseLiquidationCommand(process.env.REPORT2_MANUAL_COMMAND);
+if(!intent.matched||intent.contract!=='BTW-USDT'||process.env.REPORT2_MANUAL_COIN_CONTRACT!=='BTW-USDT'||process.env.REPORT2_RUN_SOURCE!=='manual'||process.env.REPORT2_MANUAL_RUN_AUTHORIZED!=='1'||process.env.DELIVERY_ENABLED!=='0'||process.env.REPORT2_V3_TELEGRAM_NETWORK_ENABLED!=='0')throw Error('ONLY_BTW_LIQUIDATION_MANUAL_REQUIRED');
+for(const[p,h]of Object.entries(s.files))if(sha(fs.readFileSync(p))!==h)throw Error('EXACT_SOURCE_CHANGED:'+p);
+if(stage==='assembled')for(const[p,h]of Object.entries(s.runtime_files))if(sha(fs.readFileSync('runtime/'+p))!==h)throw Error('EXACT_RUNTIME_CHANGED:'+p);
+const ctl=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN,maximum_calls:1}),ctx=await readMirrorContext(ctl,{expected_main:s.expected_main,maximum_blob_reads:0}),checked=assertMirrorOwner(ctx,s.owner,Date.now(),s.scope_prefix);
+if(JSON.stringify(checked.lease)!==JSON.stringify(s.owned_lease))throw Error('EXACT_OWN_BTW_LEASE_REQUIRED');
+fs.mkdirSync('audit-output/owner-btw-liquidation-only',{recursive:true});fs.writeFileSync('audit-output/owner-btw-liquidation-only/guard-'+stage+'.json',JSON.stringify({status:'EXACT_OWNER_BTW_LIQ_ONLY',stage,head:process.env.GITHUB_SHA,main:ctx.head,owner:s.owner,manual_contract:'BTW-USDT',source_pins:Object.keys(s.files).length,runtime_pins:Object.keys(s.runtime_files).length,full_MAIN:false,Telegram:false,reused_actual_MAIN_run:39738730895,old_tests_replayed:0},null,2)+'\n');
