@@ -1,0 +1,67 @@
+{
+  "schema": "DUE_WATCH_CURRENT_TARGET_PINS_V1",
+  "base_main": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115",
+  "protocol_first_commit": "1e91aac7069898ca518e79d2ecdd39a5102f44cd",
+  "consumer": {
+    "target": "current-generation/files/src/anomaly-native-due-watch.mjs",
+    "payload": "consumer.proposed.mjs",
+    "bytes": 14359,
+    "sha256": "224a90f1358c9b996bd78fdaecbd233f0be7b2e6fecf4a9fb56097d0270b9b74"
+  },
+  "worker": {
+    "target": "current-generation/files/src/worker.js",
+    "before_bytes": 633138,
+    "before_sha256": "e410ba6cdd00886e426e7148a0a715b8df86a755f559c170fae524c6ce6d28dd",
+    "after_bytes": 633555,
+    "after_sha256": "5d97133c892d81d35b384edaa2e6c601fdabba5090e08add6415e8df5f452d45",
+    "insertions": [
+      {
+        "after": "import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';\n",
+        "text": "import {runCapturedAnomalyDueCycle} from './anomaly-native-due-watch.mjs';\n"
+      },
+      {
+        "before": "      env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={\n",
+        "text": "      if (typeof env?.REPORT2_ANOMALY_DOMAIN_DUE === 'function' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {\n        try { await runCapturedAnomalyDueCycle({env,now_ts:Date.now(),logical_request_id:'ANOMALY_DUE:'+runId,limit:2}); }\n        catch { /* SOURCE retains uncertain operations and the SAME DB fence. */ }\n      }\n\n"
+      }
+    ]
+  },
+  "unchanged": {
+    "current-generation/files/src/anomaly-native-domain.mjs": {
+      "bytes": 24309,
+      "sha256": "5a366465cf546a08c022c04f070a125fb41cd4cc7601b0ce82254badd30bd4c6"
+    },
+    "current-generation/files/src/anomaly-native-ingress.mjs": {
+      "bytes": 9072,
+      "sha256": "5dfeddeb3693c3561ed374d6fc0c59889e1e5a5fff6a99c610c47fdaecf51172"
+    },
+    "current-generation/files/src/htx-signed-tape.mjs": {
+      "bytes": 31689,
+      "sha256": "1b9767db0c2d32cc99da161d7d74b5d2463aba975bb20e154fa45a99e6c2c086"
+    },
+    "anomaly-research/observer/observer.mjs": {
+      "bytes": 24988,
+      "sha256": "3284152626d52bc51079819726dac44e1e9f28643a8bfb240e5606ab7762e739"
+    },
+    "current-generation/files/migrations/20261021_anomaly_domain.sql": {
+      "bytes": 15263,
+      "sha256": "aaa82c6a0b518c087e8f6b8aeee11d0d7456690cf57c8cae6afa68d7c9ba6592"
+    }
+  },
+  "emitter": {
+    "target": "current-generation/apply-runtime-overlay.mjs",
+    "before_bytes": 12684,
+    "before_sha256": "35610fbb9f9ccd90317d851d31b99959ad23d24114612d06689a120c276fcc84",
+    "after_bytes": 12721,
+    "after_sha256": "82f051ebda92e33d698a82c7e85b8204b7733090798e9e922c984063b8af9e1b",
+    "insertion": " 'src/anomaly-native-due-watch.mjs',\n"
+  },
+  "runtime_layout": {
+    "candidate": 618,
+    "source_component_both_roots": 618,
+    "source_pair_non_runner_equal": 617,
+    "added": [
+      "src/anomaly-native-due-watch.mjs"
+    ],
+    "new_source_factory_must_be_centrally_rebound_before_first_common": true
+  }
+}

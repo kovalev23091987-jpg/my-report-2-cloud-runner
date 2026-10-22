@@ -1,4 +1,5 @@
-import {readAnomalyOrigin,commitAnomalyBundle,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL} from './src/anomaly-native-domain.mjs';
+import {types as nodeUtilTypes} from "node:util";
+import {readAnomalyOrigin,commitAnomalyBundle,readDueAnomalyBundles,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL,DUE_SQL} from './src/anomaly-native-domain.mjs';
 import {approvedHtxLimitedReportAdmitted,approvedHtxLimitedCronAdmitted} from './src/approved-htx-analysis-scope.mjs';
 import {createFailedD1RunAccounting} from './src/failed-d1-run-accounting.mjs';
 import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
@@ -701,16 +702,17 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
   const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
   const refusal=status=>({status,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false});
   const absent=()=>({installed:false,status:'ANOMALY_PARENT_POLICY_NOT_CLOSED',close:async()=>{}});
-  let policy;
+  let policy,due_policy=null;
   try {
     if(typeof cost_bounds==='string') {
       if(Buffer.byteLength(cost_bounds,'utf8')>2048)return absent();
       policy=JSON.parse(cost_bounds);
     } else policy=cost_bounds;
     if(!plain(policy)||!['origin','write','read'].every(p=>plain(policy[p])&&integer(policy[p].rows_read)&&policy[p].rows_read>0&&integer(policy[p].rows_written)&&policy[p].rows_written>=(p==='write'?2:0)))return absent();
-    policy=Object.freeze(Object.fromEntries(['origin','write','read'].map(p=>[p,Object.freeze({rows_read:policy[p].rows_read,rows_written:policy[p].rows_written})])));
+    if(plain(policy.due)&&integer(policy.due.rows_read)&&policy.due.rows_read>0&&integer(policy.due.rows_written))due_policy=Object.freeze({rows_read:policy.due.rows_read,rows_written:policy.due.rows_written});
+    policy=Object.freeze({...Object.fromEntries(['origin','write','read'].map(p=>[p,Object.freeze({rows_read:policy[p].rows_read,rows_written:policy[p].rows_written})])),...(due_policy?{due:due_policy}:{})});
   } catch { return absent(); }
-  if(!env||env.DATA_DB!==db||typeof db?._request!=='function'||typeof db?.usageSnapshot!=='function'||typeof http_budget?.reserve!=='function'||typeof post_v7!=='boolean'||Object.hasOwn(env,'REPORT2_ANOMALY_DOMAIN_COMMIT'))return absent();
+  if(!env||env.DATA_DB!==db||typeof db?._request!=='function'||typeof db?.usageSnapshot!=='function'||typeof http_budget?.reserve!=='function'||typeof post_v7!=='boolean'||(Object.hasOwn(env,'REPORT2_ANOMALY_DOMAIN_COMMIT')||due_policy&&Object.hasOwn(env,'REPORT2_ANOMALY_DOMAIN_DUE')))return absent();
   if(!plain(reservation)||!integer(reservation.rows_read)||!reservation.rows_read||!integer(reservation.rows_written)||!reservation.rows_written||typeof reservation_id!=='string'||!/^R2RUN:\d+:[a-f0-9]{16}$/.test(reservation_id))return absent();
   // No overlap proof exists: retain the SUM of the two declared future envelopes.
   const protected_budget=Object.freeze({
@@ -723,6 +725,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
   let active=true,unsafe=false,stopped=false,in_prepare=false,reentrant=false,sequence=0,ticket=null,last_usage=null,last_reported_usage=null;
   let tail=Promise.resolve();
   const reconciliation=new Map();
+  const due_requests=new Map();
   const completed=[],logical_ids=new Set();
   let overflow=null,observer_failed=false;
   const fence=()=>{unsafe=true;stopped=true;db.beforeRequest=()=>({allowed:false,status:'ANOMALY_NATIVE_USAGE_NOT_CLOSED'});};
@@ -738,7 +741,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
     const now=Date.now();
     return active&&!unsafe&&!stopped&&env.DATA_DB===db&&integer(now)&&now>0&&receipt?.status==='RESERVED'&&receipt.reservation_id===reservation_id&&receipt.day_utc===new Date(now).toISOString().slice(0,10)&&receipt.rows_read===caps.rows_read&&receipt.rows_written===caps.rows_written&&reservation.rows_read===caps.rows_read&&reservation.rows_written===caps.rows_written&&day_admission?.allowed===true;
   };
-  const remaining=phase=>phase==='ORIGIN'?['origin','write','read']:phase==='WRITE'?['write','read']:phase==='READBACK'?['read']:null;
+  const remaining=phase=>phase==='ORIGIN'?['origin','write','read']:phase==='WRITE'?['write','read']:phase==='READBACK'?['read']:phase==='DUE'&&due_policy?['due']:null;
   const project=(phase,u)=>{
     const phases=remaining(phase);if(!phases||!parent_closed()||!u)return null;
     const extraRowsRead=protected_budget.rows_read+phases.reduce((s,p)=>s+policy[p].rows_read,0);
@@ -751,7 +754,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
   const wrapped_request=async function(payload){
     if(in_prepare){reentrant=true;usage();throw Error('ANOMALY_PREPARE_SQL_REFUSED');}
     const before=usage();if(!before)throw Error('ANOMALY_NATIVE_USAGE_NOT_CLOSED');
-    const domain=payload?.sql===ORIGIN_SQL||payload?.sql===COMMIT_SQL||payload?.sql===READBACK_SQL;
+    const domain=payload?.sql===ORIGIN_SQL||payload?.sql===COMMIT_SQL||payload?.sql===READBACK_SQL||payload?.sql===DUE_SQL;
     if(domain){
       const t=ticket;ticket=null;
       if(!t||!parent_closed()||!same_usage(before,t.usage)||JSON.stringify(payload)!==t.wire||project(t.phase,before)?.allowed!==true)throw Error('ANOMALY_PARENT_WIRE_NOT_ADMITTED');
@@ -772,6 +775,32 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
     }
     if(parts.card.first_known_ts!==origin.first_known_ts||origin.receipt.first_known_ts!==origin.first_known_ts||origin.receipt.current_revision!==origin.revision||['card','plan','state'].some(n=>origin.receipt[n+'_sha256']!==origin[n+'_sha256']))throw Error('ANOMALY_RETAINED_ORIGIN_SCALAR');
     return freeze({...origin,...parts,receipt:{...origin.receipt}});
+  };
+  // Snapshot callback-owned data while SQL/reentry denial is still active.
+  // Reject Proxy trap-free BEFORE reflection: traps could schedule later SQL.
+  const data_proto=Object.prototype,data_get_proto=Object.getPrototypeOf,data_keys=Reflect.ownKeys,
+    data_descriptor=Object.getOwnPropertyDescriptor,data_create=Object.create,data_freeze=Object.freeze,data_is_proxy=nodeUtilTypes.isProxy,data_is_array=Array.isArray;
+  const snapshot_prepared=value=>{
+    let nodes=0,string_bytes=0;const ancestors=new Set();
+    const string=s=>{string_bytes+=Buffer.byteLength(s,'utf8');if(string_bytes>2*131072+8192)throw Error('ANOMALY_PREPARED_DATA_BOUND');return s;};
+    const walk=(v,depth)=>{
+      if(++nodes>64||depth>4)throw Error('ANOMALY_PREPARED_DATA_BOUND');
+      if(v===null||typeof v==='boolean')return v;
+      if(typeof v==='string')return string(v);
+      if(typeof v==='number'&&Number.isFinite(v)&&!Object.is(v,-0))return v;
+      if(!v||typeof v!=='object'||data_is_proxy(v)||data_is_array(v)||ancestors.has(v))throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
+      const proto=data_get_proto(v);if(proto!==data_proto&&proto!==null)throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
+      const names=data_keys(v);if(names.length>32)throw Error('ANOMALY_PREPARED_DATA_BOUND');
+      ancestors.add(v);const copy=data_create(null);
+      for(const name of names){
+        if(typeof name!=='string')throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');string(name);
+        const d=data_descriptor(v,name);
+        if(!d||!Object.hasOwn(d,'value'))throw Error('ANOMALY_PREPARED_ACCESSOR_REFUSED');
+        copy[name]=walk(d.value,depth+1);
+      }
+      ancestors.delete(v);return data_freeze(copy);
+    };
+    return walk(value,0);
   };
   const validate_prepared=(prepared,id,origin)=>{
     const r=prepared?.request;
@@ -806,7 +835,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
       origin=origin_for_callback(read.origin,id);
       let prepared;
       const preparation_usage=usage();
-      reentrant=false;in_prepare=true;try{prepared=prepare(origin);}finally{in_prepare=false;}
+      reentrant=false;in_prepare=true;try{prepared=snapshot_prepared(prepare(origin));}finally{in_prepare=false;}
       if(reentrant)throw Error('ANOMALY_REENTRANT_CALLBACK_REFUSED');
       if(!same_usage(usage(),preparation_usage)||!parent_closed())throw Error('ANOMALY_PREPARE_CHANGED_PARENT_OR_USAGE');
       if(prepared&&typeof prepared.then==='function')throw Error('ANOMALY_PREPARE_MUST_BE_SYNCHRONOUS');
@@ -818,6 +847,10 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
       if(prepared?.status==='DEFERRED_CAPACITY'){
         if(!origin||prepared.logical_event_id!==id||!hex(prepared.observation_fingerprint)||prepared.expected_revision!==origin.revision||prepared.first_known_ts!==origin.first_known_ts||['card','descriptor','plan'].some(n=>prepared[n+'_sha256']!==origin[n+'_sha256'])||prepared.write_required!==false||prepared.durable_new_observation!==false||!['REVISIONS_OR_OUTBOX_CAPACITY_NO_DROP','STATE_BYTES_CAPACITY_NO_DROP'].includes(prepared.reason))throw Error('ANOMALY_CAPACITY_DEFER_NOT_BOUND');
         return{...refusal('DEFERRED_CAPACITY'),reason:prepared.reason,write_required:false,durable_new_observation:false};
+      }
+      if(prepared?.status==='DUE_DEFERRED'){
+        if(!origin||prepared.logical_event_id!==id||prepared.expected_revision!==origin.revision||prepared.first_known_ts!==origin.first_known_ts||['card','descriptor','plan'].some(n=>prepared[n+'_sha256']!==origin[n+'_sha256'])||prepared.write_required!==false||prepared.durable_new_observation!==false||!['DUE_REVISION_CHANGED','NO_SAME_COMPLETED_CAPTURE','CLOSED_WINDOW_UNAVAILABLE','CAPTURE_RECORD_MISMATCH','CLOSED_WINDOW_ALREADY_OBSERVED','WATCH_INACTIVE_PENDING_OUTCOMES'].includes(prepared.reason))throw Error('ANOMALY_DUE_DEFER_NOT_BOUND');
+        return{...refusal('DUE_DEFERRED'),reason:prepared.reason,logical_event_id:id,revision:origin.revision,first_known_ts:origin.first_known_ts,write_required:false,durable_new_observation:false,origin_receipt:read};
       }
       effective=validate_prepared(prepared,id,origin);expected_phase='WRITE';
       const result=await commitAnomalyBundle({db,prepared:effective,admit,cost_bounds:policy});
@@ -834,6 +867,34 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
       if(effective)reconciliation.set(id,returned);return returned;
     } finally {ticket=null;}
   };
+  // One bounded due-read per capability; no new SQL or cursor implementation.
+  const run_due=async input=>{
+    const now_ts=input?.now_ts,limit=input?.limit,id=input?.logical_request_id,live=Date.now();
+    if(!due_policy||!integer(now_ts)||!now_ts||!integer(live)||now_ts>live||new Date(now_ts).toISOString().slice(0,10)!==new Date(live).toISOString().slice(0,10)||!integer(limit)||limit<1||limit>2||typeof id!=='string'||!/^[A-Za-z0-9:._-]{1,160}$/.test(id))return refusal('ANOMALY_BOUNDED_DUE_INPUT_REQUIRED');
+    const signature=JSON.stringify([now_ts,limit]);
+    if(due_requests.has(id)){const prior=due_requests.get(id);return prior.signature===signature?prior.result:refusal('ANOMALY_DUE_REQUEST_CONFLICT');}
+    if(due_requests.size)return refusal('ANOMALY_DUE_ALREADY_READ_NO_REFRESH');
+    if(!parent_closed())return refusal('ANOMALY_PARENT_NOT_ADMITTED');
+    const initial=usage();if(!initial)return refusal('ANOMALY_NATIVE_USAGE_NOT_CLOSED');
+    const invocation=++sequence,wire=JSON.stringify({op:'all',sql:DUE_SQL,params:[now_ts,limit]});
+    const admit=async e=>{
+      const u=usage();
+      if(e?.phase!=='DUE'||e.operation_id!==id||!u||!same_usage(u,e.current_usage)||e.requires_parent_downstream_reserve!==true||e.rows_read!==due_policy.rows_read||e.rows_written!==due_policy.rows_written||e.request_bytes!==0||e.D1_bridge_wire_bytes!==Buffer.byteLength(wire,'utf8')||project('DUE',u)?.allowed!==true)return{allowed:false};
+      const h=http_budget.reserve({logical_request_id:`ANOMALY_DOMAIN:${reservation_id}:${invocation}:DUE`,lane:'statistics',attempts:1});
+      if(h?.allowed!==true||h.duplicate===true||!same_usage(usage(),u)||!parent_closed())return{allowed:false};
+      ticket={phase:'DUE',usage:Object.fromEntries(keys.map(k=>[k,u[k]])),wire};
+      return{allowed:true,status:'LIVE_PARENT_AND_HTTP_PROJECTED',protected_budget};
+    };
+    let result;
+    try{
+      result=await readDueAnomalyBundles({db,now_ts,limit,logical_request_id:id,admit,cost_bounds:policy});
+      const after=usage(),closed=!!after&&parent_closed()&&result.status==='DUE_BUNDLES_READ'&&result.cost_status==='WITHIN_CALLER_PROJECTION';
+      if(!closed)stopped=true;
+      result={...result,current_parent_admitted:closed,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};
+    }catch{stopped=true;result=refusal('ANOMALY_DUE_READ_NOT_CLOSED');}
+    finally{ticket=null;}
+    due_requests.set(id,{signature,result});return result;
+  };
   const cost_cut=u=>u?Object.fromEntries(keys.map(k=>[k,u[k]])):null;
   const receipts=()=>{
     usage(); // Even failure-fallback serialization occurs after the SAMEdb fence.
@@ -846,6 +907,7 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
     try{if(!hex(fp)&&typeof p?.state_json==='string'&&Buffer.byteLength(p.state_json,'utf8')<=65536)fp=JSON.parse(p.state_json).revisions?.at(-1)?.observation_fingerprint;}catch{}
     const r={sequence:completed.length+1,logical_event_id:text(input?.logical_event_id),status:typeof result?.status==='string'?result.status.slice(0,96):'OUTCOME_NOT_CLOSED',operation_id:text(result?.operation_id??p?.operation_id??o?.operation_id),request_sha256:hex(result?.request_sha256??p?.request_sha256??o?.request_sha256)?(result?.request_sha256??p?.request_sha256??o?.request_sha256):null,first_known_ts:integer(result?.first_known_ts??p?.first_known_ts??o?.first_known_ts)?(result?.first_known_ts??p?.first_known_ts??o?.first_known_ts):null,server_recorded_ts_floor_ms:integer(result?.server_recorded_ts_floor_ms??o?.receipt?.server_recorded_ts_floor_ms)?(result?.server_recorded_ts_floor_ms??o?.receipt?.server_recorded_ts_floor_ms):null,observation_fingerprint:hex(fp)?fp:null,usage_before:cost_cut(before),usage_after:cost_cut(after),last_verified_usage:cost_cut(last_usage),native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};
     r.last_reported_usage=cost_cut(last_reported_usage);
+    if(typeof input?.logical_request_id==='string'){r.logical_request_id=text(input.logical_request_id);r.due_cutoff_ts=integer(input.now_ts)?input.now_ts:null;r.due_limit=integer(input.limit)?input.limit:null;r.due_rows_returned=Array.isArray(result?.rows)&&result.rows.length<=2?result.rows.length:null;r.current_parent_admitted=result?.current_parent_admitted===true;}
     for(const name of ['card','descriptor','plan','state']){const h=p?.[name+'_sha256']??o?.[name+'_sha256'];r[name+'_sha256']=hex(h)?h:null;}
     if(Buffer.byteLength(JSON.stringify(r),'utf8')>2048){overflow={status:'COMPLETED_RECEIPT_METADATA_BOUND_EXCEEDED',completed_sequence:r.sequence};stopped=true;completed.push(freeze({...r,usage_before:null,usage_after:null,last_verified_usage:null,last_reported_usage:null,cost_cuts_omitted:true}));return;}
     completed.push(freeze(r));
@@ -868,11 +930,29 @@ function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id
       return result;
     });tail=next.catch(()=>{});return next;
   };
-  try{Object.defineProperty(env,'REPORT2_ANOMALY_DOMAIN_COMMIT',{value:hook,writable:false,configurable:true,enumerable:false});}
-  catch{if(request_descriptor)Object.defineProperty(db,'_request',request_descriptor);else delete db._request;return absent();}
-  return {installed:true,status:'ANOMALY_PARENT_OPTIONAL_CAPABILITY',protected_budget,receipts,retained_reconciliation:()=>[...reconciliation.values()],close:async()=>{
+  const due_hook=input=>{
+    if(in_prepare){reentrant=true;return Promise.resolve(refusal('ANOMALY_REENTRANT_CALLBACK_REFUSED'));}
+    const next=tail.then(async()=>{
+      const id=input?.logical_request_id,prior=typeof id==='string'?due_requests.get(id):null;
+      // Exact replay returns the SAME object even after unknown/close, never a retry.
+      if(prior){usage();if(!integer(input?.now_ts)||!integer(input?.limit))return refusal('ANOMALY_DUE_REQUEST_CONFLICT');return prior.signature===JSON.stringify([input.now_ts,input.limit])?prior.result:refusal('ANOMALY_DUE_REQUEST_CONFLICT');}
+      if(completed.length>=16||Buffer.byteLength(JSON.stringify(completed),'utf8')+3072>16384){stopped=true;overflow={status:'RECEIPT_CAPACITY_DEFERRED_BEFORE_SQL',retained_records:completed.length};return refusal('RECEIPT_CAPACITY_DEFERRED_BEFORE_SQL');}
+      const before=usage();let result;
+      try{result=await run_due(input);}catch{stopped=true;result=refusal('ANOMALY_DUE_READ_NOT_CLOSED');}
+      const after=usage();retain_receipt(input,result,before,after);
+      if(typeof on_receipt==='function')try{await on_receipt(receipts());}catch{observer_failed=true;stopped=true;}
+      return result;
+    });tail=next.catch(()=>{});return next;
+  };
+  try{
+    Object.defineProperty(env,'REPORT2_ANOMALY_DOMAIN_COMMIT',{value:hook,writable:false,configurable:true,enumerable:false});
+    if(due_policy)Object.defineProperty(env,'REPORT2_ANOMALY_DOMAIN_DUE',{value:due_hook,writable:false,configurable:true,enumerable:false});
+  }
+  catch{if(env.REPORT2_ANOMALY_DOMAIN_COMMIT===hook)delete env.REPORT2_ANOMALY_DOMAIN_COMMIT;if(env.REPORT2_ANOMALY_DOMAIN_DUE===due_hook)delete env.REPORT2_ANOMALY_DOMAIN_DUE;if(request_descriptor)Object.defineProperty(db,'_request',request_descriptor);else delete db._request;return absent();}
+  return {installed:true,due_installed:!!due_policy,status:'ANOMALY_PARENT_OPTIONAL_CAPABILITY',protected_budget,receipts,retained_reconciliation:()=>[...reconciliation.values()],close:async()=>{
     active=false;await tail;
     if(env.REPORT2_ANOMALY_DOMAIN_COMMIT===hook)delete env.REPORT2_ANOMALY_DOMAIN_COMMIT;
+    if(env.REPORT2_ANOMALY_DOMAIN_DUE===due_hook)delete env.REPORT2_ANOMALY_DOMAIN_DUE;
     if(db._request===wrapped_request){if(request_descriptor)Object.defineProperty(db,'_request',request_descriptor);else delete db._request;}
   }};
 }
