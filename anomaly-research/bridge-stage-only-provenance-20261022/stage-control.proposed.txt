@@ -19,7 +19,7 @@ export async function stageCorrelatedSQLBridgeOnly({plan,adapter,guard,save,cloc
   if(x===null||x===undefined)return null;
   const latest=x.observed_latest_version??x.latest_uploaded_version;
   if(!id(latest))return{observation_closed:false};
-  return{observed_latest_version:latest,module_sha256:hex(x.module_sha256)?x.module_sha256:null,created_on_ts:time(x.created_on_ts)?x.created_on_ts:null,metadata_sha256:hex(x.metadata_sha256)?x.metadata_sha256:null,ownership_verified:false,observation_closed:true};
+  return{observed_latest_version:latest,module_sha256:hex(x.module_sha256)?x.module_sha256:null,created_on_ts:time(x.created_on_ts)?x.created_on_ts:null,metadata_sha256:hex(x.metadata_sha256)?x.metadata_sha256:null,ownership_verified:false,observation_closed:hex(x.module_sha256)};
  };
  try{
   const started=now();
