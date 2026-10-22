@@ -156,7 +156,8 @@ export class RemoteD1Database {
       bucket.unknown_ops += 1;
       if(this._unmeasuredReceipts.length<10){
         const normalized=String(sql||'').replace(/\s+/g,' ').trim();
-        const receipt={operation:String(op),target:targetFromSql(sql),sql_kind:normalized.match(/^[A-Za-z]+(?:\s+(?:TABLE|INDEX|UNIQUE INDEX))?/i)?.[0]?.toUpperCase()||'UNKNOWN',sql_sha256:createHash('sha256').update(normalized).digest('hex'),http_status:Number.isInteger(diagnostic.http_status)?diagnostic.http_status:null,failure_class:diagnostic.failure_class||'NATIVE_COUNTERS_NOT_CLOSED',observed_ts:Date.now(),params_or_SQL_text_exported:false};
+        const client_request_id=this._nativeCostJournal?diagnostic.transport?.client_request_id:undefined;
+        const receipt={...(typeof client_request_id==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(client_request_id)?{client_request_id}:{}),operation:String(op),target:targetFromSql(sql),sql_kind:normalized.match(/^[A-Za-z]+(?:\s+(?:TABLE|INDEX|UNIQUE INDEX))?/i)?.[0]?.toUpperCase()||'UNKNOWN',sql_sha256:createHash('sha256').update(normalized).digest('hex'),http_status:Number.isInteger(diagnostic.http_status)?diagnostic.http_status:null,failure_class:diagnostic.failure_class||'NATIVE_COUNTERS_NOT_CLOSED',observed_ts:Date.now(),params_or_SQL_text_exported:false};
         this._unmeasuredReceipts.push(receipt);
       }
     }
