@@ -28,7 +28,7 @@ export async function loadRunnerAnomalyParentCapability({runtime_root,baseline_r
   assert.equal(path.basename(src),'src');assert.equal(path.basename(baseSrc),'src');assert.notEqual(src,baseSrc);
   const root=path.dirname(src),base=path.dirname(baseSrc),pkg=path.join(repo,PREFIX);
   const originalManifest=json(path.join(pkg,'manifest.json'));
-  for(const pin of originalManifest.files){const b=fs.readFileSync(path.join(pkg,pin.path));assert.equal(b.length,pin.bytes);assert.equal(sha(b),pin.sha256,'ORIGINAL_SOURCE_PIN');}
+  for(const pin of originalManifest.payloads){const b=fs.readFileSync(path.join(pkg,pin.path));assert.equal(b.length,pin.bytes);assert.equal(sha(b),pin.sha256,'ORIGINAL_SOURCE_PIN');}
   const recipe=json(path.join(repo,'checkpoints/anomaly-initial-ingress-connected-20261021/coordinator-target-bindings.json')),bindings=json(path.join(pkg,'dependencies.json'));
   assert.equal(sha(recipe.coordinator_prefix),recipe.coordinator_prefix_sha256);
   const a=inventory(root),b=inventory(base);assert.equal(a.length,617);assert.equal(b.length,617);
@@ -180,5 +180,5 @@ export async function runAnomalyParentAdmissionConnected(args){
     f=fresh();capability=f.install({on_receipt:async()=>{throw Error('CONTROLLED_ARTIFACT_SINK_FAILURE');}});r=await f.env.REPORT2_ANOMALY_DOMAIN_COMMIT(input());assert.equal(r.status,'COMMITTED_RECEIPT_READBACK');assert.equal(capability.receipts().observer_failed,true);assert.equal(capability.receipts().records[0].request_sha256,prepared.request.request_sha256);await f.env.REPORT2_ANOMALY_DOMAIN_COMMIT(input());assert.equal(f.wires.length,3);await close();
     add('NO_SOURCE_ENV_OR_DB_SERIALIZATION');
     return{schema:'RUNNER_ANOMALY_PARENT_CONNECTED_CONTROLLED_V1',binding:api.binding,groups,controlled_groups:groups.length,actual_SQL:'LOCAL_SQLITE_ONLY',provider_HTTP:0,native_SQL:0,MAIN:0,Telegram:0,native_numeric_policy_available:false,old_component_replay:false,protected_budget:{rows_read:9448,rows_written:244},all_qualification_flags:false,native_cost_saving:null};
-  }finally{try{await close();}finally{Date.now=oldNow;globalThis.fetch=oldFetch;}}
+  }catch(error){error.completed_new_parent_groups=groups;throw error;}finally{try{await close();}finally{Date.now=oldNow;globalThis.fetch=oldFetch;}}
 }

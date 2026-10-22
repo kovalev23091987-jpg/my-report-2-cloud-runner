@@ -1,8 +1,8 @@
 {
   "schema": "FIRST_LINKED_ANOMALY_INITIAL_INGRESS_PARENT_QUALIFICATION_V1",
   "semantic_status": "UNEXECUTED",
-  "base_main": "3d0e0589d0965a3c63d40621542e5ca17fac7943",
-  "baseline_git_commit": "3d0e0589d0965a3c63d40621542e5ca17fac7943",
+  "base_main": "85b4f55933c2ce7fd18b9b7d450136c03fc350ed",
+  "baseline_git_commit": "85b4f55933c2ce7fd18b9b7d450136c03fc350ed",
   "accepted_current615_inventory_sha256": "d5ec45be8badfac5f2fc01b4941c352f08d42d572421a41c96298f0b32d0bbcd",
   "saved_actual_reference_run": 39644547794,
   "reference_tests_reexecuted": false,
@@ -176,5 +176,10 @@
   "native_policy": null,
   "native_SQL_providerHTTP_MAIN_Telegram": 0,
   "old_components_replayed": 0,
-  "source_component_staged617_not_whole_old615": true
+  "source_component_staged617_not_whole_old615": true,
+  "readiness_correction": {
+    "F1": "SOURCE payloads only; THIRD files preserved",
+    "F2": "actual completed_new_ingress_groups and central completed_new_parent_groups retained; first file witness copied on later failure",
+    "semantic_executions_before_first_dispatch": 0
+  }
 }
