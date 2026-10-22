@@ -29,6 +29,7 @@ import {
   selectOpportunityJournalCandidate,
 } from "./opportunity-intelligence-runtime.mjs";
 import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';
+import {runCapturedAnomalyDueCycle} from './anomaly-native-due-watch.mjs';
 
 import {
   MULTI_WAVE_VERSION,
@@ -19865,6 +19866,11 @@ const __REPORT2_ORIGINAL_HANDLER = {
               null,
           }
         );
+
+      if (typeof env?.REPORT2_ANOMALY_DOMAIN_DUE === 'function' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
+        try { await runCapturedAnomalyDueCycle({env,now_ts:Date.now(),logical_request_id:'ANOMALY_DUE:'+runId,limit:2}); }
+        catch { /* SOURCE retains uncertain operations and the SAME DB fence. */ }
+      }
 
       env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={
         schema:'report2-candidate-selection-audit-v1',
