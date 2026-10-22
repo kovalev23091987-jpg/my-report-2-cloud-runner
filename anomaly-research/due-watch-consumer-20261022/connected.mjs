@@ -44,7 +44,7 @@ export async function runDueWatchConsumerConnected({runtime_root,baseline_runtim
       const wires=[];const db=new api.adapter.RemoteD1Database('https://controlled.invalid/d1','CONTROLLED_NO_NATIVE_TOKEN',{fetchImpl:async(url,request)=>{
         assert.equal(String(url),'https://controlled.invalid/d1');const p=JSON.parse(request.body);wires.push(p);
         if(mode.failBeforeWrite&&p.op==='run')throw Error('CONTROLLED_LOST_BEFORE_WATCH_WRITE');
-        let out;if(p.op==='all')out=sql.prepare(p.sql).all(...p.params);else if(p.op==='first')out=sql.prepare(p.sql).get(...p.params)??null;else if(p.op==='run'){const q=sql.prepare(p.sql).run(...p.params);out={success:true,meta:{changes:Number(q.changes)}};}else throw Error('UNEXPECTED_CONTROLLED_SQL');
+        let out;if(p.op==='all')out={results:sql.prepare(p.sql).all(...p.params)};else if(p.op==='first')out=sql.prepare(p.sql).get(...p.params)??null;else if(p.op==='run'){const q=sql.prepare(p.sql).run(...p.params);out={success:true,meta:{changes:Number(q.changes)}};}else throw Error('UNEXPECTED_CONTROLLED_SQL');
         if(mode.failAfterWrite&&p.op==='run')throw Error('CONTROLLED_LOST_AFTER_WATCH_WRITE');
         return new Response(JSON.stringify({ok:true,result:out,usage:{measured:true,rows_read:2,rows_written:p.op==='run'?12:0}}),{status:200});
       }});
