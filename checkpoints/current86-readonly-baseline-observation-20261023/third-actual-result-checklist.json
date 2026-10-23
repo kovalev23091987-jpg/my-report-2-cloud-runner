@@ -1,0 +1,205 @@
+{
+  "schema": "CURRENT86_ACTUAL_NINE_GET_RECEIPT_CHECKLIST_V1",
+  "role": "FINITE_MANUAL_CLAIMS_PEER_ONLY",
+  "actual_receipt_seen": false,
+  "frozen_contract": {
+    "head": "dc47ea3fbb8cbf6b76d32294e86d9a900eba4742",
+    "manifest_sha256": "9fd6545139b9f894e662c0b23e1bad24f431323032a4e0212b7687c06f5be4f7",
+    "files_sha256": {
+      "contract.json": "a7d7bc5dc3f38b11b607aba44bfbbf1854810867b50b79d886553ade4a02a108",
+      "receipt-contract.json": "0d555520e4695d604a0595998c7f1a6228a5771e4f6699728b7736e858b3d4f6",
+      "request-plan.json": "1a0ed86462e8808e0bde9520d308339306e2207b333f9fb353c85751170ed27b",
+      "budget.json": "e27b24e77d89a5b743dcf905d907f919f1d466a15cc430748c5d09a8afe5d542"
+    }
+  },
+  "authority": {
+    "require": [
+      "actual new ROOT head/owner/scope/lease/all4/fence/source pins",
+      "direct owner authorization ONE9GET only",
+      "fresh guard before EACH actual CF request and final guard"
+    ],
+    "refuse": "AUTHORITY_OR_SOURCE_BINDING_NOT_CLOSED"
+  },
+  "outer": {
+    "schema": "READONLY_CURRENT_ACTIVE_BASELINE_OBSERVATION_V1",
+    "success_status": "CURRENT_CODE_BASELINE_OBSERVED_READONLY",
+    "stop_status": "CURRENT_BASELINE_NOT_CLOSED_STOP",
+    "Paid_metadata_scope": "NOT_REQUESTED",
+    "success_requires": "both actual before/after objects, stop_reason=null; never use partial as success",
+    "refuse": "WRONG_ROLE_OR_INCOMPLETE_SUCCESS"
+  },
+  "before_after": {
+    "both_status": "EXACT_RETAINED_SQL_BRIDGE_VERSION_OBSERVED",
+    "stages": [
+      "before_SQL",
+      "after_SQL"
+    ],
+    "same_compatibility_session": true,
+    "name": "my-report-2-d1-bridge",
+    "compatibility_role": "CODE_ACTIVE_CURRENT_SETTINGS_ONLY",
+    "Cloudflare_GET": [
+      5,
+      4
+    ],
+    "module_basis": "EXACT_ACCEPTED_IMMUTABLE_VERSION_AND_ETAG",
+    "both_version_id": "86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e",
+    "both_module_sha256": "c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063",
+    "both_immutable_script_etag": "ac9d474832fa5a166a92032b19f42ee85bd4fb91b5066fd75da1877a8f051e29",
+    "both_settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+    "both_runtime_sha256": "cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a",
+    "both_crons_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "actual_deployment": "valid first native UUID, same deployment AND86 after; percentage/exactly one100% version. Historical72257 not required/owned.",
+    "refuse": [
+      "NOT_CURRENT86_OR_MODULE_ETAG_MISMATCH",
+      "DEPLOYMENT_CHANGED_OR_NOT_SINGLE100",
+      "SETTINGS_RUNTIME_CRON_MISMATCH",
+      "WRONG_STAGE_OR_SESSION_OR_INNER_COUNT"
+    ]
+  },
+  "binding_closure": {
+    "trusted_actual_account": "70ee0af85191ea470e74c7383fdec772",
+    "script": "my-report-2-d1-bridge",
+    "binding_names": [
+      "DATA_DB",
+      "REPORT2_CLOUD_BRIDGE_TOKEN",
+      "REPORT2_DENO_BRIDGE_TOKEN"
+    ],
+    "DATA_DB": {
+      "type": "d1",
+      "id": "057a2847-2cc4-4e52-8534-1be1596d21d5"
+    },
+    "secret_text_names": [
+      "REPORT2_CLOUD_BRIDGE_TOKEN",
+      "REPORT2_DENO_BRIDGE_TOKEN"
+    ],
+    "configured_bridge_matches_account_script": true,
+    "require": "actual selected-version bindings/runtime plus all nonversioned settings hash05120; names alone insufficient. Native input/raw output must support trusted actual caller account and URL comparison.",
+    "refuse": "UNBOUND_ACCOUNT_URL_OR_BINDING_TYPE_VALUE"
+  },
+  "times": {
+    "fields": [
+      "started_ts",
+      "completed_ts",
+      "before.started_ts",
+      "before.completed_ts",
+      "after.started_ts",
+      "after.completed_ts",
+      "lease_expires_ts"
+    ],
+    "order": "outer.start<=before.start<=before.complete<=after.start<=after.complete<=outer.complete<lease_expiry; safe integer ms",
+    "journal": "actual fresh guard precedes each transport; request_start<=headers<=body_complete where retained; each request completes within its observation. Metadata3-way reads may overlap. Client transport clocks are not server clocks/first-known; unretained server Date stays null.",
+    "refuse": [
+      "CLOCK_OR_LEASE_NOT_CLOSED",
+      "PER_IO_FRESH_GUARD_OR_COMPLETE_RESPONSE_UNPROVEN"
+    ]
+  },
+  "request_journal": {
+    "success_attempts": 9,
+    "script_suffixes_by_phase": {
+      "before": [
+        "/subdomain",
+        "/deployments",
+        "/settings",
+        "/schedules",
+        "/versions/86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e"
+      ],
+      "after": [
+        "/deployments",
+        "/settings",
+        "/schedules",
+        "/versions/86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e"
+      ]
+    },
+    "method": "GET",
+    "unique_attempt_ids_and_counts": "exact9 total, each once; inner5+4 are these same9, not another9",
+    "native_response": "actual complete bounded successful CF response/result tied to journal/raw output and pinned reader, not fabricated callback boolean; metadata<=262144B, redirects error",
+    "prohibited": [
+      "optional Paid2",
+      "content/v2",
+      "latest",
+      "POST",
+      "SQL",
+      "settings/logging",
+      "retry",
+      "provider",
+      "MAIN",
+      "Telegram"
+    ],
+    "refuse": [
+      "MISSING_DUPLICATE_EXTRA_ATTEMPT",
+      "ROUTE_METHOD_OR_COUNT_MISMATCH",
+      "NATIVE_RESPONSE_NOT_BOUND"
+    ]
+  },
+  "budget": {
+    "required_fresh_GH_guard_queries": 11,
+    "breakdown": "start1+perCF9+final1; read-only GraphQL queries",
+    "GH_actual_total": "may include other setup/proof reads; count ALL, never force total11 or omit extras",
+    "base_read_HTTP": 20,
+    "held_cleanup_HTTP": 10,
+    "actual_control_plus_held_cleanup_lte": 40,
+    "whole_HTTP_cap": 164,
+    "manual_reserve": 24,
+    "require": "actual per-attempt admission/current usage; unknown/pending/old reservations unchanged; no retrocost/refund. Missing shared headroom is unknown, not0.",
+    "refuse": "ACTUAL_USAGE_OR_RESERVE_NOT_CLOSED"
+  },
+  "claims": {
+    "historical_reference": {
+      "sha256": "0fa59fe3b67f29faca364ff6acffe67304cefbd3aa7a233d4169282b49d0f0ad",
+      "status": "EXISTING_ACTIVATION_ACK_UNKNOWN_STOP",
+      "known_activation_ACK": false,
+      "activation_ownership_verified": false,
+      "activation_after": null
+    },
+    "outer_false_fields": [
+      "known_activation_ACK",
+      "activation_ownership_verified",
+      "old_unknown_recovered",
+      "day_hold_removed",
+      "logging_settings_allowed",
+      "native_admission",
+      "native_reply_accepted",
+      "whole_day_closed",
+      "transient_changes_excluded",
+      "current_Telegram_restored",
+      "physical_bytes_freed_claimed",
+      "admission",
+      "native_admission_qualified",
+      "activation_ACK_unknown_resolved"
+    ],
+    "both_inner_false": [
+      "logging_settings_allowed",
+      "admission",
+      "transient_changes_excluded",
+      "native_reply_accepted",
+      "whole_day_closed"
+    ],
+    "side_effect_counts_zero": [
+      "SQL",
+      "Worker_invocations",
+      "provider",
+      "MAIN",
+      "Telegram",
+      "upload",
+      "activation",
+      "rollback",
+      "settings",
+      "delete"
+    ],
+    "Paid_billing_capacity_qualified": false,
+    "require": "new observation.after is separate from historical activation.after; no old deployment adoption, dayhold clear, cost recovery or SENT",
+    "refuse": "ACK_OWNERSHIP_UNKNOWN_DAYHOLD_OR_TG_OVERCLAIM"
+  },
+  "partial_STOP": {
+    "require": "first failed/unknown request/body/JSON/native result or guard/identity/clock/budget conflict: persist actual partial before/after and attempted/pending journal/counts BEFORE assertion/next phase, mark stop reason and STOP.0..9 attempts allowed only as partial; no retry/resume/newopid/extra read.",
+    "refuse": "PARTIAL_PROMOTED_OR_CALL_AFTER_STOP"
+  },
+  "peer_limits": {
+    "one_saved_receipt_read_only": true,
+    "repeat_ZIP_download": false,
+    "old_code_or_case_recheck": false,
+    "new_CF_Actions_SQL_Node_tests": 0,
+    "no_fabricated_missing_fields": true,
+    "qualifies_only": "current86 code/settings bracket at recorded clocks; no activation ownership/ACK/daycost/admission/transient exclusion/TG recovery"
+  }
+}

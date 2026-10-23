@@ -127,3 +127,33 @@ jobs:
           path: audit-output/bridge-existing-version-activation/
           if-no-files-found: error
           retention-days: 30
+
+  current86_readonly_baseline_once:
+    if: github.ref == 'refs/heads/work/current86-readonly-observation-20261023' && inputs.read_only == true && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Observe current86 baseline in exactly one authorised GET-only session
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          INPUT_CONNECTED_RUN: ${{ inputs.connected_run }}
+          READONLY_CODE_HEAD: ${{ inputs.automatic_main_run }}
+          CURRENT86_NINE_GET_EXECUTE: 'true'
+          EXPECTED_READER_SHA: 1d3e3fbaf283b47b2757ee571bcfc37f1a0408514039521e409656ea57c3f4a9
+          EXPECTED_PINSET_SHA: 5282ac7035b00a532b133e7c62e24df5d7689ea9eee7b0f3732000250f6da817
+        run: node tools/current86-readonly-baseline-20261023.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: current86-readonly-baseline-${{ github.run_id }}
+          path: audit-output/current86-readonly-baseline/observation.json
+          if-no-files-found: error
+          retention-days: 30

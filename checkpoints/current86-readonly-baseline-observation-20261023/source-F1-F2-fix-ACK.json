@@ -1,0 +1,55 @@
+{
+  "schema": "SOURCE_CURRENT86_READER_F1_F2_TARGETED_FIX_ACK_V1",
+  "status": "ACCEPTED_WITH_LIMITS_F1_F2_CLOSED_IN_EXACT_UNEXECUTED_SNAPSHOT",
+  "blockers": [],
+  "open_findings": [],
+  "mismatch": [],
+  "scope": "ONE narrow follow-up of the two new-wrapper findings and updated pins/count arithmetic. Earlier first peer and delta1 files remain unchanged; no second full compatibility/runtime review.",
+  "snapshot": {
+    "root": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-schedule-fix",
+    "reader_path": "tools/current86-readonly-baseline-20261023.mjs",
+    "reader_bytes": 12537,
+    "reader_sha256": "1d3e3fbaf283b47b2757ee571bcfc37f1a0408514039521e409656ea57c3f4a9",
+    "pinset_path": "checkpoints/current86-readonly-baseline-observation-20261023/source-pins.json",
+    "pinset_bytes": 2119,
+    "pinset_sha256": "2024fc24d5a88690fed2bdf5dea1c1f31b4c2209440fad50a80b8bd73e0fecea",
+    "workflow_path": ".github/workflows/current-bridge-module-inspection-20261016.yml",
+    "workflow_bytes": 9828,
+    "workflow_sha256": "2b33f6460cc0597881c28aa20598ad75550ef5f847e61b5e8e557b623b33776b",
+    "all12_full_pinned_lengths_and_SHA_exact": true,
+    "other11_full_file_lengths_and_SHA_unchanged_vs_reviewed_11861_snapshot": true,
+    "workflow_only_two_env_pin_values_changed_vs_reviewed_11861_snapshot": true,
+    "original_workflow_8218_byte_prefix_90591e_exact": true
+  },
+  "F1_ack": {
+    "status": "CLOSED_STATICALLY_IN_THIS_SNAPSHOT",
+    "GH": "After pre-dispatch await save(), GH fetch_impl now runs local() and opt.signal.throwIfAborted before incrementing the actual-attempt counter and fetch. AbortSignal.any retains the earlier abort and adds2s; boundedControlBody262144 consumes the streamed body under that signal before returning a buffered Response.",
+    "CF": "CF fetch_impl retains its post-intent-save local() check,2s combined abort and bounded262144B streamed-body read; body byte count/hash only. Actual attempts and reservations remain distinct.",
+    "run_deadline": "The one allowed current execution-run REST GET binds id/repository/head/branch/path/event/attempt/start, then deadline=min(local initial deadline, actual run_started_at+300s). Lease and deadline30s tail checks remain. No activation initializer or additional CF request.",
+    "limits": "Static code-path acceptance for native fetch/AbortSignal behavior. No measured latency, CPU/heap, platform kill timing or crash/FS durability guarantee."
+  },
+  "F2_ack": {
+    "status": "CLOSED_STATICALLY_IN_THIS_SNAPSHOT",
+    "entire_operation": "one() now encloses local/route/guard/initial journal save/native call/postreply checks/save in one try/catch. Catch sets stopped before awaiting a save/rejecting; absent activeRow is safe, and an existing first-row reason is not overwritten.",
+    "queued_calls": "tail catch also sets stopped. Subsequent queued callbacks encounter local() before any guard/native IO; their catch can persist diagnostics but cannot start a new request. The GH post-save local check also blocks a request that was already waiting on a save when stop was set.",
+    "finalization": "saveTail serializes all snapshot construction/write/rename operations. Finally sets stopped, awaits the full queued tail and saveTail, then records completed_ts and saves the final receipt. There is no final-counter snapshot racing outstanding queued guard/journal work along this reviewed chain.",
+    "serialization": "JSON text ends with explicit String.fromCharCode(10), an actual LF. No claim of atomic distributed storage or power-loss recovery."
+  },
+  "count_arithmetic_NOT_MEASURED": {
+    "Cloudflare_successful_bracket": 9,
+    "GitHub_initial_fresh_query": 1,
+    "GitHub_current_run_REST_GET": 1,
+    "GitHub_distinct_pre_CF_fresh_queries": 9,
+    "GitHub_final_fresh_query": 1,
+    "GitHub_total": 12,
+    "actual_control_total_on_complete_success": 21,
+    "control_plus_cleanup10": "21+10=31<=40",
+    "whole_plus_held_manual24_cleanup10": "21+24+10=55<=164",
+    "pre_final_check": "Before final guard the wrapper requires9CF reservations/attempts/native.used and11GH reservations/attempts; final guard brings GH to12. Failed paths retain actual versus reserved counters and claim no completed9GET result.",
+    "routes_and_consumer": "Previously reviewed exact1+2+2+2+2 route counts and SAME existing compatibility session unchanged. Existing consumer/proof/helper11 full byte pins unchanged."
+  },
+  "execution_boundary": "This ACK is not execution, native admission, fresh ROOT lease verification, activation ownership or resolution of old UNKNOWN_STOP. ROOT alone decides and performs its specifically authorized one readonly session with fresh authority. No old case/component replay or extra Paid/storage metadata is authorized here.",
+  "SOURCE_execution": {"Node": 0, "imports": 0, "syntax_tests": 0, "application_semantics": 0, "CF_GH_network": 0, "SQL_provider_dispatch": 0, "Gitwrites_lease_PR": 0},
+  "delivery": "Requested local ACK only. Blocked outbound message route not retried/bypassed; no SENT claim.",
+  "next": "Finite F1/F2 delta peer complete. Only exact new ROOT actual artifact/result or concrete finding/task; do not repeat full peer, old cases or live polling."
+}

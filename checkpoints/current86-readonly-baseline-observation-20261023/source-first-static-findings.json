@@ -1,0 +1,59 @@
+{
+  "schema": "SOURCE_CURRENT86_NINE_GET_READER_TARGETED_STATIC_PEER_V1",
+  "status": "CHANGES_REQUIRED_BEFORE_FIRST",
+  "scope": "ONE exact new ROOT wrapper and appended branch-only workflow job; no old compatibility audit, case execution or live call.",
+  "snapshot": {
+    "root": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-schedule-fix",
+    "reader": "tools/current86-readonly-baseline-20261023.mjs",
+    "reader_bytes": 10381,
+    "reader_sha256": "9510c9b9c98c7f50633e3b9a4a967b03819e4d78fd3a3ae3d9fab243fdd427dd",
+    "workflow": ".github/workflows/current-bridge-module-inspection-20261016.yml",
+    "workflow_bytes": 9828,
+    "workflow_sha256": "8adb457359442a22de91621bd0e8cf9a8848c9b96786b2f5c5006983c00393d4",
+    "pinset_bytes": 2119,
+    "pinset_sha256": "98351b65ed82eef4018c73e55097c63734dae8af49f3cdfa11b0a52fc2a22426",
+    "all12_full_pinned_file_lengths_and_SHA_exact": true,
+    "all_literal_non_node_imports_in_pinned_closure": true,
+    "original_workflow_8218_byte_prefix_90591e_exact": true,
+    "owner_approval_bytes": 527,
+    "owner_approval_sha256": "af1189bea80564c10be48a075db5740ccf47df944d24aca537c5a45ef4f7f00c",
+    "already_fixed_scope_copy": "guard now assigns out.scope=x.lease.scope; this review includes that fix."
+  },
+  "findings": [
+    {
+      "id": "F1_TRANSPORT_AND_PRE_DISPATCH_DEADLINE",
+      "priority": 1,
+      "reader_lines": [13, 30, 34],
+      "evidence": "Both custom fetch_impl callbacks await save(), then call plain fetch without another local()/signal deadline check. They inherit the existing controls'15s AbortSignal; no2s headers+body wrapper is installed. A slow filesystem await can cross the lease/run tail before the actual request starts. The local deadline also starts at module evaluation, not the exact workflow-run start.",
+      "effect": "The proposed strict2s transport and immediate pre-IO lease/run-deadline contract is not enforced by the actual wrapper. This is a static code path, not an observed native failure.",
+      "minimal_fix_before_FIRST": "Recheck local expiry/stopped and abort signal after every pre-dispatch save await, immediately before actual fetch. Apply a2s bound that includes headers AND streamed body, retaining earlier aborts and262144B metadata bound. Bind the deadline to the accepted execution-run start/remaining job window from a trusted ROOT carrier or explicitly budgeted exact read, rather than silently granting300s from module load. Update actual reader/pinset/workflow pins. Do not initialize activation or add CF calls."
+    },
+    {
+      "id": "F2_QUEUE_FAILURE_ENVELOPE_AND_FINAL_SETTLEMENT",
+      "priority": 1,
+      "reader_lines": [30, 36, 43],
+      "evidence": "one() places local/route checks, await guard(false), journal creation and its first await save() BEFORE the try/catch that sets stopped=true. tail=p.catch(()=>{}) resolves a failed queued item even for those uncovered errors, enabling the next queued callback before the outer observe failure handler necessarily sets stopped. Finally does not await tail; GH fetch_impl can resume after its save await and issue fetch even after outer stop/final save.",
+      "effect": "The serial queue does not provide an unconditional stop on the first failure across guard/journal/transport paths. Queued guard work or its in-flight save can overlap finalization and mutate counters/journal after the receipt is marked complete. No actual failure or extra GET was executed by SOURCE.",
+      "minimal_fix_before_FIRST": "Enclose the ENTIRE queued operation in a catch that sets stopped synchronously before rejection, including guard and journal-write errors. Preserve errors without dereferencing a nonexistent activeRow. Ensure queued items refuse without more IO; settle the tail before final receipt/counters and serialize saves. Combine with F1's post-save local check so an already waiting fetch cannot dispatch after stop. Do not replay a completed observation or add a general resume framework."
+    }
+  ],
+  "reviewed_positive_boundaries": {
+    "routes": "Only exact account/script; GET/no body/redirect:error; subdomain1/deployments2/settings2/schedules2/exact86metadata2 =9. Old7011 selection is locally refused at its version route; no content/list/account/D1 metadata route or SQL bridge invocation.",
+    "guards": "Each queued CF operation performs a fresh readMirrorContext with maximum_blob_reads0 and assertMirrorOwner; complete6-file native Git basis/all4 equality/fence/generation/actual owner/scope/live expiry. Does not require acquisition expected_main equal to later execution head. Guard query is read-only GraphQL POST, not a mutation.",
+    "budget_arithmetic_not_measurement": "Successful bracket plans9CF+10GH before final guard, then final GH=11: actual total20. Combined control ceiling40 preserves10 cleanup slots; whole164 reserves24manual+10cleanup separately. Existing wrapper stricter max9CF and retry0. Actual run counters not yet produced.",
+    "compatibility": "ONE unchanged existing compatibility session uses full old09e/stagef010 bytes, before5 then after4. Both inner returns saved before assertions/next; require exact86 and SAME observed deployment. Original inner false fields retained; no activation initializer or adapter.",
+    "binding": "Pinned12 actual files match full lengths/SHA. Literal imports remain within declared closure; full DATA_DB UUID/type and two secret_text types checked in version metadata. Owner approval file read and checked; this peer does not supply execution authority or independently verify ROOT live lease.",
+    "workflow": "Only appended branch job; old8218B prefix exact. inspect main job skipped on branch. Exact branch/read_only/all execute flagsfalse, Node24, only observation.json uploaded. automatic_main_run is reused as READONLY_CODE_HEAD40hex selector for this branch job; no automatic-run acceptance inferred from that input.",
+    "historical_unknown": "Original activation ACK/ownership false and afterNULL remain historical. No adoption/retry/rollback/logging/admission/dayhold/Paid billing/current Telegram restoration claim."
+  },
+  "limits": "Targeted static review of exact unexecuted new code. No Node/import/syntax/test/app semantics, native request, FSrace/crash durability, latency/CPU/heap or successful actual9GET claim. Old6c6 and prior static/semantic cases were not repeated.",
+  "entry_mapping_already_ready": {
+    "path": "/private/tmp/report2-current86-readonly-entry-mapping-20261023.json",
+    "bytes": 12125,
+    "sha256": "63d2ace189c4a71a659e3466c9ad6549e34e14bb7af144490b32059be09ea457",
+    "scope": "Earlier requested existing CLI/workflow/env design; generic4qualification-read design is not asserted to be installed in this new reader. Actual wrapper budget above is its own20-call design."
+  },
+  "next": "ROOT corrects ONLY these new wrapper paths before FIRST; provide exact new reader/pinset/workflow delta for one targeted ACK. No second full peer or old case replay.",
+  "SOURCE_execution": {"Node_import_tests": 0, "app_semantics": 0, "SQL_SQLite": 0, "CF_provider_dispatch": 0, "Gitwrites_lease_PR": 0},
+  "delivery": "Requested local result only. Blocked outbound message route not retried or bypassed; no SENT claim."
+}

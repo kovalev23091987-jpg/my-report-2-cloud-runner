@@ -1,0 +1,85 @@
+{
+  "schema": "SOURCE_CURRENT86_READONLY_RUNTIME_ENTRY_MAPPING_V1",
+  "status": "FINITE_READONLY_DESIGN_COMPLETE_EXISTING_9GET_ENTRY_ABSENT",
+  "authorization_boundary": "ROOT reports explicit owner authorization for ONE current86 9GET-only baseline. ROOT alone supplies fresh authority and executes. SOURCE performs no live calls or dispatch. This map is a proposed entry design, not an installed or qualified callable.",
+  "basis": {
+    "consumer_fieldmap": "/private/tmp/report2-source-current86-paid-consumer-20261023/consumer-field-map.json",
+    "consumer_fieldmap_bytes": 12426,
+    "consumer_fieldmap_sha256": "f04342b263927da28c41aff204fd613c8e0e227eadf9d45c72accc33ed27f1f1",
+    "THIRD_contract": "Incoming THIRD accepted unchanged existing inner outputs inside READONLY_CURRENT_ACTIVE_BASELINE_OBSERVATION_V1; outer observation is separate from activation ownership and consumer admission.",
+    "local_checkout_read": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-schedule-fix",
+    "fresh_execution_authority": "Not supplied by these local source reads; ROOT must authenticate actual execution head, complete code/proof closure and current scope before any IO."
+  },
+  "existing_workflow": {
+    "path": ".github/workflows/current-bridge-module-inspection-20261016.yml",
+    "bytes": 8218,
+    "sha256": "90591ea706c320a9181acab2cfc27aff68f34f8584e89da4749cad1b58347d9d",
+    "constraints": "main only; contents:read/actions:read; concurrency report2-installed-bridge-module-inspection, cancel-in-progress:false; ubuntu-24.04-arm; Node24; timeout5min. Checkout depth8 only for existing activation, otherwise1.",
+    "inputs": {
+      "required_strings": ["expected_main", "owner", "connected_run"],
+      "optional_string": "automatic_main_run (default empty)",
+      "booleans_default_false": ["read_only", "execute_counter_repair", "execute_correlated_cost_release", "execute_correlated_cost_stage", "execute_correlated_existing_activation"]
+    },
+    "read_only_env": {
+      "GITHUB_TOKEN": "github.token",
+      "CLOUDFLARE_API_TOKEN": "secrets.CLOUDFLARE_API_TOKEN",
+      "REPORT2_D1_BRIDGE_URL": "secrets.REPORT2_D1_BRIDGE_URL",
+      "INSPECTION_HEAD": "inputs.expected_main",
+      "BORROW_EXISTING_OWNER": "inputs.owner",
+      "CONNECTED_RUN": "inputs.connected_run",
+      "READ_ONLY_BRIDGE_INSPECTION": "inputs.read_only"
+    },
+    "activation_env_difference": "Activation uses EXPECTED_MAIN and AUTOMATIC_MAIN_RUN plus EXECUTE_CORRELATED_EXISTING_ACTIVATION; read_only uses INSPECTION_HEAD and passes no AUTOMATIC_MAIN_RUN env.",
+    "read_only_command": "node tools/inspect-installed-bridge-module-20261016.mjs",
+    "read_only_artifact": "installed-bridge-module-<GITHUB_RUN_ID>, audit-output/installed-bridge-module/",
+    "why_not_current_baseline_entry": "read_only invokes inspectInstalledSQLBridgeModule: version-bound module/content reads, latest-version-list read and gzip source export. It is not a 9GET metadata-only session. No existing input selects the requested baseline. Do not dispatch this command unchanged for the 9GET authorization."
+  },
+  "existing_CLI": {
+    "path": "tools/rollout-correlated-sql-bridge-20261022.mjs",
+    "bytes": 80504,
+    "sha256": "493ac8518820918eefe063d00037c1da9ea57f815b457119ccf964883d247cb4",
+    "entry_line": 572,
+    "unsafe_default_for_this_task": "With activation/stage flags absent or false, direct CLI invocation selects rolloutCorrelatedBridge. No metadata-only default exists.",
+    "activation_control_not_reusable_as_is": "createExistingActivationNativeControl.cf refuses while internal_deadline_ts is null. initialize is activation-specific and authenticates its scope, qualification snapshot and pins. Do not call initialize, runExistingCorrelatedBridgeActivation or cf from this control for the new readonly baseline.",
+    "reusable_transport_only_export": "existingActivationDeadlineResponse at line367 bounds actual headers+body to2s/262144B by default. It can wrap the readonly fetch implementation without constructing or initializing activation control. Importing this CLI module requires ROOT to bind its full transitive closure; importing an export does not itself qualify the new wrapper."
+  },
+  "minimal_isolated_ROOT_entry_design": {
+    "installed_command_or_dispatch_input": null,
+    "entry_requirement": "ROOT must provide an explicitly scoped isolated entry/step that calls only the existing compatibility factory and readonly control. Existing workflow flags alone cannot select it. This JSON installs no wrapper, workflow or generic framework.",
+    "arguments": "repo_root, exact current execution head, actual current ROOT owner/scope, connected_run, automatic_main_run and current execution-run identity, plus existing GITHUB_TOKEN/CLOUDFLARE_API_TOKEN/REPORT2_D1_BRIDGE_URL bindings. Do not export secret values or configured URL.",
+    "factory": "runner/retention-bridge-provenance.mjs:createRetentionSQLBridgeCompatibility",
+    "unchanged_constructor_inputs": [
+      "checkpoints/free-storage-20261016/sql-bridge-counter-release-38934007309.json (8210B/09e4349fc13140e2bc8059f7698ad3306dcd5ce3bcef66f561486019d021e651)",
+      "checkpoints/report-producer-and-bridge-stage-connected-20261022/native-stage-receipt.json (3694B/f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7)"
+    ],
+    "sequence": [
+      "Before imports/CF, ROOT binds current actual module6c6, its complete import closure, two unchanged consumers and both full frozen proofs to the accepted code snapshot and current authority. No private runtime extraction or new module-content read is needed by the comparator.",
+      "Create ONE compatibility session from those original proof bytes. Create GET-only trusted account/script transport; do not create activation adapter/control or run the inspection/Paid scripts.",
+      "Call session.observe({call,configured_bridge_url:REPORT2_D1_BRIDGE_URL,stage:'before_SQL'}). Save the actual returned inner JSON before asserting or calling the next stage. Require returned version86 exactly; an old7011 result cannot qualify current86.",
+      "With NO SQL or mutation between, call the SAME session.observe with stage:'after_SQL'. Save its actual returned JSON before assertions. Require both86 and the same actual deployment UUID; preserve every original inner field unchanged.",
+      "Fresh final guard and actual transport counters bind the outer READONLY_CURRENT_ACTIVE_BASELINE_OBSERVATION_V1 receipt. Save failure/partial outputs and actual counts on any refusal; no retry/replay, activation adoption or reconstruction of missing output."
+    ],
+    "readonly_control": "runner/installed-bridge-module-inspection.mjs:createReadOnlyBridgeControl({token,script:SQL_BRIDGE_SCRIPT,admit,fetch_impl}). It returns native .result only after HTTP-ok and JSON.success===true. Existing default allows20 CF calls/15s and extra content/list routes: an outer task-specific gate must narrow it before any request.",
+    "outer_transport_restrictions": "Account70ee0af85191ea470e74c7383fdec772; scriptmy-report-2-d1-bridge only; GET/no body/redirect:error; at most9 CF attempts; only/subdomain,/deployments,/settings,/schedules,/versions/86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e. If comparator selects7011, its version-metadata route is locally refused before another CF request. No /content/v2, version list, account settings, D1 metadata or bridge endpoint invocation. Bound headers+body2s and metadata262144B; stop scheduling new IO after any failure and settle/cancel already-started calls before finalizing counters.",
+    "actual_parallelism": "Existing observe uses Promise.all for deployments/settings/schedules. Each CF attempt needs its own fresh guard and synchronous budget reservation immediately before dispatch; one shared snapshot for the batch is insufficient. No comparator rewrite or artificial serialization is proposed.",
+    "success_CF_counts": {"before": 5, "after": 4, "total": 9},
+    "failure_CF_counts": "Actual attempted/completed counters0..9; never claim9 completed after refusal."
+  },
+  "guards_and_budget_differences": {
+    "old_inspection_guard": "tools/inspect-installed-bridge-module-20261016.mjs checks main + phase/fence via3 GETs per guard and separate status/resume/generation/run/workflow reads. It does not perform all4 exact-equal mirror validation before every CF attempt. Reusing this guard unchanged is insufficient for the requested current contract.",
+    "new_guard_primitives": "makeGithubControl with fullRawBasis(repo_root); readMirrorContext({expected_main:execution_head,maximum_blob_reads:0}); assertMirrorOwner(context,actual_owner,now,ROOT_NEW_EXACT_READONLY_SCOPE). Validate context.head, all4 active mirrors, fencefalse/latest-generation, exact actual scope, live expiry and remaining run/HTTP reserves. Lease.expected_main is its acquisition base and must not be blindly required equal to the later execution head. No acquire/release or scope rewrite inside this observation entry.",
+    "readonly_GH_method": "readMirrorContext makes ONE GraphQL POST containing a query, not a mutation; therefore 'all GH HTTP must be GET' would reject the intended guard. Permit only exact read-only GraphQL query plus required REST GETs; prohibit mutations and all other POSTs. Complete local6-file basis must match immutable native blob metadata, otherwise refuse before CF; no extra blob download/lazy fetch fallback.",
+    "guard_control_count_design": "1 initial +9 distinct pre-CF +1 final =11 GH query calls on a successful9GET session. If ROOT retains the existing4 exact qualification metadata reads (connected run, offline workflow, automatic main run, current dispatch run), planned GH total15; CF9; combined24. This is proposed arithmetic, not measured work. Additional control calls must be named and recounted before admission.",
+    "preserved_limits": "GH<=40, CF<=40 with strictertaskCF<=9, wholeHTTP164, manualreserve24; reserve each attempted call before dispatch; no automatic retry. ROOT separately reserves its own checkpoint/release control. No new HTTP grant follows from this design.",
+    "time_contract": "Fresh initial lease headroom10min; current dispatch run_started_at+300s internal deadline; preserve30s tail and2s headers+body bounds and earlier abort. Do not call activation initialize to obtain a deadline; readonly entry must bind its own exact current run deadline. Platform timeout/checkout volume/CPU/heap/FSrace/crash durability are not qualified here.",
+    "qualification": "Accepted630 normal automatic result and connected composition are existing evidence. Newly authored wrapper/step behavior requires ROOT's applicable review/qualification binding; this mapping itself is not its execution or semantic acceptance."
+  },
+  "receipt_limits": {
+    "before_after_inner": "Exact existing outputs, including stage before_SQL/after_SQL, Cloudflare_GET5/4, SQL0, CODE_ACTIVE_CURRENT_SETTINGS_ONLY, EXACT_ACCEPTED_IMMUTABLE_VERSION_AND_ETAG and all existing false fields.",
+    "outer": "Record exact head/run/owner/scope/code-proof pins, actual request metrics and before/after outputs. Outer receipt is independent observation, never old_release_bytes/staged_receipt_bytes or a new Paid admission token.",
+    "historical_activation": "EXISTING_ACTIVATION_ACK_UNKNOWN_STOP remains known_activation_ACKfalse/ownershipfalse/afterNULL. Historical722570de reference is neither a required current deployment nor adopted ownership. No retry/rollback/logging/unknown-day restoration/report/Telegram authorization.",
+    "optional_Paid_metadata": "Two account/D1 metadata GETs are outside the current9GET authorization and require a separate owner scope. Do not run full Paid maintenance or any storage reader."
+  },
+  "SOURCE_execution": {"Node": 0, "imports": 0, "syntax_tests": 0, "application_semantics": 0, "SQL_SQLite": 0, "Cloudflare_provider": 0, "dispatch_MAIN_Telegram": 0, "Gitwrites": 0, "lease": 0, "PR": 0},
+  "delivery": "Requested local JSON only; blocked outbound messages not retried or bypassed. No existing project files changed; no old static peer/case replay."
+}
