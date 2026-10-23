@@ -53,7 +53,7 @@ export async function runRootLoggingEntryConnected({repo_root}={}){
     assert.equal(u.origin,'https://api.cloudflare.com');CF++;calls.push({surface:'CONTROLLED_CF',method,path:u.pathname});
     const suffix=u.pathname.split('/workers')[1].replace('/scripts/my-report-2-d1-bridge','');
     if(method==='PATCH'){
-     assert.equal(suffix,'/script-settings');PATCH++;const saved=JSON.parse(data.get('audit-output/current86-logging-only/proof.json').toString());assert.equal(saved.controller.status,'LOGGING_ONLY_PATCH_INTENT_SAVED');assert.equal(saved.intent.operation_id,op);assert.equal(saved.intent.PATCH_JSON_sha256,digest(opt.body));assert(saved.request_journal.at(-1).intent_saved_before_transport);patchIntentSeen=true;current={...current,observability:JSON.parse(opt.body).observability};if(lostACK)throw Error('CONTROLLED_PATCH_ACK_LOST');return response({success:true,result:structuredClone(current)});
+     assert.equal(suffix,'/script-settings');PATCH++;const saved=JSON.parse(data.get('audit-output/current86-logging-only/proof.json').toString());assert.equal(saved.controller.status,'LOGGING_ONLY_PATCH_INTENT_SAVED');assert.equal(saved.intent.operation_id,op);assert.equal(saved.intent.PATCH_JSON_sha256,digest(opt.body));assert(Number.isSafeInteger(saved.request_journal.at(-1).transport_intent_ts));assert.equal(saved.request_journal.at(-1).reply_known,false);assert.equal(saved.intent.max_PATCH_attempts,1);patchIntentSeen=true;current={...current,observability:JSON.parse(opt.body).observability};if(lostACK)throw Error('CONTROLLED_PATCH_ACK_LOST');return response({success:true,result:structuredClone(current)});
     }
     assert.equal(method,'GET');let result;
     if(suffix==='/subdomain')result={subdomain:'controlled'};

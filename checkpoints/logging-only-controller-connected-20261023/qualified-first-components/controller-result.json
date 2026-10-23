@@ -1,0 +1,77 @@
+{
+  "schema": "LOGGING_ONLY_NEW_CONTROLLER_CONTROLLED_RESULT_V1",
+  "group_count": 7,
+  "case_count": 18,
+  "groups": [
+    {
+      "name": "explicit mode separates logging and disables old default",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "missing mode remains OFF",
+        "logging only selects explicit isolated entry",
+        "mixed activation and logging refuses"
+      ]
+    },
+    {
+      "name": "known PATCH exact intent and readback",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "onePATCH after saved intent and computed H only"
+      ]
+    },
+    {
+      "name": "unknown PATCH may observe once then stops",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "unknown ACK observation matches H is never adopted",
+        "unknown ACK observation fails is never adopted",
+        "wrong ACK operation is unknown, not permission"
+      ]
+    },
+    {
+      "name": "known reply mismatch never restores",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "nonObsConflict stops without another PATCH",
+        "obsConflict stops without another PATCH",
+        "foreignPost stops without another PATCH"
+      ]
+    },
+    {
+      "name": "persistence boundaries precede next IO",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "intent save failure sends noPATCH",
+        "known reply save failure retains reply and performs no next read"
+      ]
+    },
+    {
+      "name": "denials do not become a native grant",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "precondition refusal {\"beforeConflict\":true}",
+        "precondition refusal {\"external\":true}",
+        "precondition refusal {\"guardFail\":true}",
+        "precondition refusal {\"denyAt\":1}",
+        "precondition refusal {\"denyAt\":2}"
+      ]
+    },
+    {
+      "name": "already matched is zero-write and not new H qualification",
+      "status": "CONTROLLED_PASS",
+      "cases": [
+        "no-op remains one readonly observation of configured state"
+      ]
+    }
+  ],
+  "provider_HTTP": 0,
+  "native_CF": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "old625_624_cases": 0,
+  "native_entry_invoked": false,
+  "full_native_transport_or_owner_policy_qualified": false,
+  "actual_H_qualified": false,
+  "author_execution": "UNEXECUTED"
+}

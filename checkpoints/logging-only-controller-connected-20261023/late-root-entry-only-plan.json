@@ -1,0 +1,32 @@
+{
+  "schema": "CURRENT86_LOGGING_LATE_ROOT_ENTRY_ONLY_PLAN_V1",
+  "source_controller_run": 39976513833,
+  "source_controller_head": "73c18416689a80ea2b1e66727b52a48689720148",
+  "artifact": {
+    "id": 12510593953,
+    "bytes": 4188,
+    "digest": "sha256:f91a57522d57df1b2e76448bb72c08527090d2c1d3d6bdef26faa799fca253ee",
+    "members": 6,
+    "ROOT_whole_ZIP_verified": true
+  },
+  "completed_components_reused_without_execution": {
+    "paid": {
+      "groups": 1,
+      "variants": 18,
+      "includes_first_run_variant_reused": 1
+    },
+    "controller": {
+      "groups": 7,
+      "variants": 18
+    }
+  },
+  "failed_ROOT_entry_completed_variants": 0,
+  "failure": "ROOT test callback demanded a derived post-readback flag in the PRE-transport saved JSON; saved exact intent existed but the test threw before returning simulated PATCH ACK",
+  "correction": "Test verifies the already-saved exact intent/opid/payload hash/transport_intent_ts/reply_known=false. Final native entry flag still asserted after operation. No production byte changes.",
+  "remaining_only": {
+    "ROOT_groups": 1,
+    "ROOT_variants": 3
+  },
+  "Node_semantic_local": 0,
+  "nativeCF_SQL_provider_MAIN_TG": 0
+}
