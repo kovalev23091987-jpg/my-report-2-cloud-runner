@@ -1,0 +1,120 @@
+{
+  "schema": "OWNER_READONLY_TG_ANOMALY_AUDIT_AND_FROZEN_WIP_RECEIPT_V1",
+  "recorded_utc": "2026-10-23T15:51:13.139Z",
+  "owner_request": "Audit Telegram and new anomaly ONLY, no execution; human returns final TZ. Other workers existing blocks outside audit.",
+  "audit_documents": [
+    {
+      "path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/TELEGRAM_ANOMALIES_READONLY_AUDIT_20261023_RU.md",
+      "bytes": 24211,
+      "sha256": "3eab6b87fc497ac2a55b34a8619779ea3e16dc44c9c96e7d7664b193a96eebfa"
+    },
+    {
+      "path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/TELEGRAM_ANOMALIES_AUDIT_TIMELINE_20261023_RU.md",
+      "bytes": 24555,
+      "sha256": "3b4a047a1b8ab7ffb6525ab7c14acacf52cb28939f8d445fb10585b6dd2c9733"
+    },
+    {
+      "path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/TELEGRAM_ANOMALIES_AUDIT_EVIDENCE_INDEX_20261023.json",
+      "bytes": 1372503,
+      "sha256": "acdc3648e32d5eca7022a1b92835d430c56be53ea7513bb0aac025384421eb9f"
+    },
+    {
+      "path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/TELEGRAM_ANOMALIES_AUDIT_SAVED_HANDOFFS_20261023.json",
+      "bytes": 903603,
+      "sha256": "d7f9e8ddd819c56b7e40529a9604825b700d0ef4b826de0b6d6e71b1299390ec"
+    }
+  ],
+  "evidence_index": {
+    "snapshot": "45d98f2bf049e415a45260e1f47ce58f1c4c9eb6",
+    "dated_files": 2990,
+    "indexed_bytes": 132288069,
+    "full_top_handoff_JSON_read": 62,
+    "index_is_not_acceptance_or_native_proof": true
+  },
+  "WIP": {
+    "schema": "ROOT_LOGGING_WIP_FROZEN_FOR_OWNER_READONLY_AUDIT_V1",
+    "base_main": "45d98f2bf049e415a45260e1f47ce58f1c4c9eb6",
+    "branch": "work/current86-logging-connected-20261023",
+    "last_executed_head": "73c18416689a80ea2b1e66727b52a48689720148",
+    "last_prepared_unexecuted_head": "84d352add39f80a9bf6f56ff0584f96611b010bf",
+    "completed_controlled_groups": 8,
+    "completed_controlled_variants": 36,
+    "remaining_root_groups": 1,
+    "remaining_root_variants": 3,
+    "remaining_root_execution": false,
+    "central_PR": null,
+    "merged": false,
+    "native_CF": 0,
+    "SQL": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "temporary_workflow_restored_byteexact": true,
+    "workflow_sha256": "14c66612609ef49ae60e91040b295f874c2820cfb4f162184e6bc4b2b282d54f",
+    "guard_removed_from_live_path": true,
+    "case_wrappers_archived_outside_testdiscovery": true,
+    "old_components_replayed": false,
+    "owner_next_action": "READONLY independent Telegram+anomaly audit and final TZ only; owner will return the result before implementation",
+    "artifact_runs": [
+      {
+        "run": 39974583365,
+        "artifact": 12510866520,
+        "bytes": 2338,
+        "sha256": "694df92f5fdab8d9be83285af284324b4c39979d21e3b0e06dbc8b76a67210a5",
+        "status": "FAIL_SOURCE_FIXTURE_DEPENDENCY_MAP",
+        "completed_source_variants": 1
+      },
+      {
+        "run": 39975615493,
+        "artifact": 12510249979,
+        "bytes": 915,
+        "sha256": "8f8c89919f60f1baa8ae13b0b4f1b5b5328bf2794bd5ee89038e3128ddc86edb",
+        "status": "FAIL_MISSING_TRACKED_IGNORED_LOG_BEFORE_IMPORTS",
+        "semantic_groups": 0
+      },
+      {
+        "run": 39976513833,
+        "artifact": 12510593953,
+        "bytes": 4188,
+        "sha256": "f91a57522d57df1b2e76448bb72c08527090d2c1d3d6bdef26faa799fca253ee",
+        "status": "SOURCE_AND_THIRD_COMPLETED_ROOT_FIXTURE_ASSERT_FAILED",
+        "completed_groups": 8,
+        "completed_variants": 36
+      }
+    ],
+    "restored_remote_branch_head": "9992ddc6ebce7255cc5479828a743e8680c87a54",
+    "branch_push_known_ACK": true,
+    "full_server_WIP_blob_readback_not_claimed": true,
+    "source_frozen": "e32c9297e002ada6e067cd82b6fdb721928446cc",
+    "third_frozen": "37aac5478b6a12f40a7b85649ab6d600c226c6a1",
+    "public_cli_sha256": "3309aaf2f74057c07df74a79e79f798206c11d5fd360fb239326e0b4a602e2ad",
+    "native_workflow_sha256": "83c8878202c35abaa2e25445b798ccef728d3878ebf19b838a1f062c25d03b18",
+    "assembled_runtime_618_unchanged": true,
+    "production_proof_descriptor_NULL": true
+  },
+  "source_independent": {
+    "head": "b929bce19a4782a7ddeef8b6a216d866c62af1c9",
+    "files": 8,
+    "LOCAL_ONLY": true,
+    "finite_inputs": 4,
+    "new_runtime_defect_not_proven": true
+  },
+  "third_independent": {
+    "PR": 631,
+    "head": "b61417ba5e5418ad5fe96e34424c683f4f44f897",
+    "files": 17,
+    "status": "READY_PROPOSAL_NOT_IMPLEMENTED",
+    "new_callable_UNEXECUTED": true
+  },
+  "native_current86_baseline_reference": "checkpoints/current86-readonly-baseline-observation-20261023/native-observation-receipt.json",
+  "native_IO_this_scope": 0,
+  "Telegram_restored": false,
+  "current_same_run_message_id": null,
+  "anomaly_native_policy": null,
+  "anomaly_native_schema_installed": false,
+  "old_unknowns_reserves_unchanged": true,
+  "new_logging_permission_asked": false,
+  "approval_pending": false,
+  "next": "OWNER DIRECT: independent READONLY AUDIT ONLY of Telegram restoration AND new independent anomaly; auditor returns conclusion/final TZ to human, HUMAN will paste here before implementation. No execution/codechange/tests/CF/SQL/provider/dispatch/activation/TG by auditor. ROOT current logging WIP FROZEN branch9992ddc6 with temporary offlineworkflow restored14c666 byteexact; source1group18+third7groups18 actualCONTROLLED completed/saved (8groups36variants), ROOT remaining1group3variants corrected fixture but UNEXECUTED. Three actual failed common runs retained399745/399756/399765; no centralPR/merge/nativePATCH/currentSENT. Do NOT resume/replay logging components automatically awaiting actual auditor TZ. Audit local24k prompt+timeline62handoffs+index2990datedcheckpointpaths (index not2990accepted/read/nativeclaims). Nativecurrent86 readonly399615 remains only currentcode/settingsbaseline; historicalactivationACKUNKNOWN/ownershipfalse/afterNULL unchanged, consumed approvals do not grant newCF/settings/logging. Other2 NEWdirect tasks DELIVERED: SOURCE existing sourceorder/fallback/priorities N05N10N12N15, THIRD existing HISTORY_TYPED_CONSUMERS/STATISTICS_USEFULNESS; both outside Telegram/newanomaly audit, no acceptedcase/study replay, one minimal new proposed existingconsumer patch+UNEXECUTEDcase only if concrete. Sourceb929/8finiteinput report DONE LOCALONLY; third631/b61417/17 READY_PROPOSAL_NOT_IMPLEMENTED, never merge/test by implication. Preserve full17/fiveactive/2ownerdeferrals/caps/unknown/reserves/Paid/cursor; projectNOTcomplete. OnlyROOTown released withthispoint; workerrefs separate.",
+  "project_complete": false
+}
