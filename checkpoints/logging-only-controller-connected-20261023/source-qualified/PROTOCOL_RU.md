@@ -1,0 +1,7 @@
+# Current86 logging compatibility — SOURCE protocol
+
+ROOT23Oct assigned one new minimal TEXT proposal for exact old7011/05120 +new86/05120 +new86/H, H derived only by the existing correlatedLogsIntent from the actual baseline observability and unchanged non-observability/source identity. Existing logging producer/caller seam must be concrete, no loose expected hash or caller boolean. Old7011/H must refuse. ONE new affected CONTROLLED callable PREPARED_UNEXECUTED, prospectiveH explicitly NOTnative.
+
+Fresh GitHub main a8ea80b5882054b8ec1758b48d64d3d6911dd98c/all4 equal/fencefalse/V13 and own bounded80minute offline CAS lease/readback were checked. ROOT supplied actual39961572286/head2a81d052 observation22958B/6858cf03767b4703baadcfa89798f3f975ae63381e65afd7cafa023b1a2e2cc4; SOURCE does not repeat its actual result peer/readback. Fixed base is separate from future fresh guards.
+
+ONLY this checkpoint prefix may change. Shared runtime/CLI/consumer changes are complete proposed text plus literal diffs for ROOT, never applied by SOURCE. No Node/import/syntax/tests/appsemantics/SQL/SQLite/gitapply/CF/provider/MAIN/manual/TG/deploy or loggingPATCH. No old6c6/624/625 case/audit replay or new framework/admission token. All Paid guards, caps, storage/ENTRY deferrals, unknowns/cursor/forms/strategy remain. Local immutable handoff, no PR/remotesourcebranch or blocked outbound retry. Every project write/Git mutation checks hosttime<ownexpiry in the SAME script immediately before mutation. Release only own lease.

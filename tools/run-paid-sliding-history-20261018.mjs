@@ -4,7 +4,7 @@ import {persistSlidingMirrorCursor} from '../runner/github-four-mirror-cas.mjs';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {SLIDING_HISTORY_POLICY as P,slidingCapacityDecision,reserveCapacityExpiryBudget,expireOldDetails} from '../runner/sliding-history-capacity.mjs';
-import {RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_SQL_BRIDGE_PROOF,createRetentionSQLBridgeCompatibility,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
+import {RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_LOGGING_PROOF,createRetentionSQLBridgeCompatibility,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
 import {reconcileNativeQueryCosts} from '../runner/native-query-cost-reconciliation.mjs';
 const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json';
 const dir='audit-output/paid-sliding-history';await fs.mkdir(dir,{recursive:true});
@@ -24,7 +24,7 @@ async function observe(stage){
  if(!bridgeCompatibility){
   if(stage!=='before_SQL')throw Error('RETENTION_COMPATIBILITY_BEFORE_REQUIRED');
   const [old_release_bytes,staged_receipt_bytes]=await Promise.all([fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path),fs.readFile(CORRELATED_RETENTION_SQL_BRIDGE_PROOF.path)]);
-  bridgeCompatibility=createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes});
+  bridgeCompatibility=createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes,logging_receipt_bytes:await fs.readFile(CORRELATED_RETENTION_LOGGING_PROOF.path).catch(error=>{if(error.code==='ENOENT')return undefined;throw error;})});
  }
  return bridgeCompatibility.observe({configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,stage,call:async(name,suffix)=>(await cf(suffix==='/subdomain'?'/workers/subdomain':'/workers/scripts/'+name+suffix)).result});
 }

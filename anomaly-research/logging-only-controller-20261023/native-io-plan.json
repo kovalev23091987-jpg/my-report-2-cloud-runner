@@ -1,0 +1,58 @@
+{
+  "schema": "LOGGING_ONLY_NATIVE_IO_PLAN_V1",
+  "future_only_new_owner_approval_required": true,
+  "fixed_account": "70ee0af85191ea470e74c7383fdec772",
+  "fixed_script": "my-report-2-d1-bridge",
+  "allowed_CF_route_counts": {
+    "GET /subdomain": 1,
+    "GET /deployments": 3,
+    "GET /settings": 2,
+    "GET /schedules": 2,
+    "GET /versions/86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e": 2,
+    "PATCH /script-settings": 1
+  },
+  "CF_success_upper": 11,
+  "CF_GET_success": 10,
+  "CF_PATCH_success": 1,
+  "GH_success_upper": 17,
+  "GH_breakdown": {
+    "fresh_start": 1,
+    "newconnectedrun_workflow_automaticMAIN_currentexecution_metadata": 4,
+    "fresh_before_every_CF": 11,
+    "finalfresh_success": 1
+  },
+  "executed_control_success_upper": 28,
+  "cleanup_held": 10,
+  "control_cap_unchanged": 40,
+  "manual_held": 24,
+  "whole_reserved_upper": 62,
+  "whole_cap_unchanged": 164,
+  "unknown_branch_upper": {
+    "CF": 8,
+    "GH": 13,
+    "executed_control": 21,
+    "plus_cleanup": 31,
+    "plus_cleanup_and_manual": 55,
+    "final_CF_after_unknown_observation": 0
+  },
+  "noop_branch_upper": {
+    "CF": 6,
+    "PATCH": 0,
+    "GH": 12,
+    "executed_control": 18
+  },
+  "headroom_checks": {
+    "core_before": "used15+2*6+finalGH1+cleanup10=38<=40",
+    "before_PATCH": "used17+2*5+finalGH1+cleanup10=38<=40"
+  },
+  "no_extra_blob_bootstrap_or_qualification_calls_or_retries": "If exactretainedrawbasis/qualifiedfiles/runmetadata missing orcap insufficient, STOP; no hidden extraIO.",
+  "per_transport_timeout_ms": 2000,
+  "metadata_max_bytes": 262144,
+  "proof_max_bytes": 131072,
+  "execution_deadline": "current workflow_dispatch run_started_at+300000 with30s tail, lease initial10min/alwayscurrent; no platformkillguarantee",
+  "budget_is_actual_per_job_reserved_counts_not_account_day_balance": true,
+  "actual_shared_day_provider_D1_headroom": null,
+  "native_D1_budget_or_reservation_reset_granted": false,
+  "cross_run_once": "NOTqualified; ROOT mustdispatch once/consume approval andpreserve unknown. Fixedapprovedoperationid never replaced withnewidafterfailure.",
+  "current_script_settings_input": "Actual selected effective settings from THIS_RUN GET/settings+exactversion metadata; no GET/script-settings or clock refresh invented"
+}

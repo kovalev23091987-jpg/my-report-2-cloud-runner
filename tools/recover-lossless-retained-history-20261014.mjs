@@ -10,7 +10,7 @@ import {compactProtectedCanonical} from '../runner/protected-canonical-compactio
 import {canonicalExecutionMode,canonicalArchivePoolQualification,canonicalSharedMutationQualification} from '../runner/canonical-native-qualification.mjs';
 import {selectCanonicalRetentionCursor,persistCanonicalRetentionCursor} from '../runner/canonical-retention-cursor.mjs';
 import {requireDatedRetentionQualification,verifyExactArchiveReaderBindings,parseCurrentArchiveReaderProof,CURRENT_ARCHIVE_READER_PROOF,DATED_RETENTION_QUALIFICATION} from '../runner/retention-self-qualification.mjs';
-import {RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_SQL_BRIDGE_PROOF,createRetentionSQLBridgeCompatibility,retentionMutationControlPlan,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
+import {RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_LOGGING_PROOF,createRetentionSQLBridgeCompatibility,retentionMutationControlPlan,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
 import {boundedControlBody,SQL_BRIDGE_SCRIPT} from '../runner/installed-bridge-module-inspection.mjs';
 import {createPrivateArchivePool} from '../runner/private-archive-pool.mjs';
 import {PrivateArchiveD1API,combineMeasuredD1Usage} from '../runner/private-archive-d1-api.mjs';
@@ -82,7 +82,7 @@ try{
   };
   out.current_readers=await verifyExactArchiveReaderBindings({proof,call,expected_reader_run:current?CURRENT_ARCHIVE_READER_PROOF.run:DATED_RETENTION_QUALIFICATION.native_readers_run});
   if(current){
-   bridge_proof=createRetentionSQLBridgeCompatibility({old_release_bytes:await fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path),staged_receipt_bytes:await fs.readFile(CORRELATED_RETENTION_SQL_BRIDGE_PROOF.path)});
+   bridge_proof=createRetentionSQLBridgeCompatibility({old_release_bytes:await fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path),staged_receipt_bytes:await fs.readFile(CORRELATED_RETENTION_SQL_BRIDGE_PROOF.path),logging_receipt_bytes:await fs.readFile(CORRELATED_RETENTION_LOGGING_PROOF.path).catch(error=>{if(error.code==='ENOENT')return undefined;throw error;})});
    let bridge_metadata_HTTP=0;
    bridge_control=async(name,suffix)=>{
     if(name!==SQL_BRIDGE_SCRIPT||!/^\/(?:subdomain|deployments|settings|schedules|versions\/[a-f0-9-]{36})$/.test(suffix)||bridge_metadata_HTTP>=9||control_HTTP+worker_control_HTTP>=LOSSLESS_RECOVERY_POLICY.max_control_HTTP)throw Error('RETENTION_BRIDGE_CONTROL_BOUND');

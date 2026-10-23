@@ -1,0 +1,49 @@
+{
+  "schema": "LOGGING_ONLY_CONTROLLER_TARGET_BINDINGS_V1",
+  "working_base": "a8ea80b5882054b8ec1758b48d64d3d6911dd98c",
+  "target": "tools/rollout-correlated-sql-bridge-20261022.mjs",
+  "before": {
+    "bytes": 80504,
+    "sha256": "493ac8518820918eefe063d00037c1da9ea57f815b457119ccf964883d247cb4"
+  },
+  "after": {
+    "bytes": 107522,
+    "sha256": "3309aaf2f74057c07df74a79e79f798206c11d5fd360fb239326e0b4a602e2ad"
+  },
+  "baseline_receipt": {
+    "path": "checkpoints/current86-readonly-baseline-observation-20261023/actual-observation.json",
+    "bytes": 22958,
+    "sha256": "6858cf03767b4703baadcfa89798f3f975ae63381e65afd7cafa023b1a2e2cc4"
+  },
+  "controller_append": {
+    "bytes": 8256,
+    "sha256": "355c391d01b9b6bd8d017646fa5b5171dfca291bdc2e9d6b4ed9d39bc46a8789"
+  },
+  "native_entry_append": {
+    "bytes": 19424,
+    "sha256": "7654a90c56e3804ed9c8e5d11d4697067e5b253df85de31223b49d10f342571c"
+  },
+  "old_CLI": "if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){if(process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION==='true'&&['EXECUTE_CORRELATED_COST_STAGE','EXECUTE_CORRELATED_COST_RELEASE','EXECUTE_SQL_BRIDGE_REPAIR','READ_ONLY_BRIDGE_INSPECTION'].some(k=>process.env[k]==='true'))throw Error('EXISTING_ACTIVATION_MIXED_MODE_REFUSED');await(process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION==='true'?runExistingCorrelatedBridgeActivation():process.env.EXECUTE_CORRELATED_COST_STAGE==='true'?runCorrelatedBridgeStageOnly():rolloutCorrelatedBridge());}\n",
+  "new_CLI": "if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){const mode=correlatedBridgeExecutionMode(process.env);if(mode==='EXECUTE_CORRELATED_LOGGING_ONLY')await runCurrent86LoggingOnly();else if(mode==='EXECUTE_CORRELATED_EXISTING_ACTIVATION')await runExistingCorrelatedBridgeActivation();else if(mode==='EXECUTE_CORRELATED_COST_STAGE')await runCorrelatedBridgeStageOnly();else if(mode==='EXECUTE_CORRELATED_COST_RELEASE')await rolloutCorrelatedBridge();else throw Error('CORRELATED_BRIDGE_DEFAULT_OFF_EXPLICIT_MODE_REQUIRED');}\n",
+  "shared_runtime_applied": false,
+  "author_Node_import_syntax_tests_CF_SQL": 0,
+  "source_cli_prerequisite": {
+    "bytes": 79701,
+    "sha256": "0c9cc488a0b80eb9cc9b59c22abe530fa9bb8453def1c39be3073f830fd52c47",
+    "head": "e32c9297e002ada6e067cd82b6fdb721928446cc",
+    "policy_module": "runner/htx-coordinated-rollout.mjs",
+    "policy_after_sha256": "e081995567bba27a29a663830554079e62a188f6df16c7a4c06eef30587e28cb"
+  },
+  "workflow_target": {
+    "path": ".github/workflows/current-bridge-module-inspection-20261016.yml",
+    "before": {
+      "bytes": 8218,
+      "sha256": "90591ea706c320a9181acab2cfc27aff68f34f8584e89da4749cad1b58347d9d"
+    },
+    "after": {
+      "bytes": 10815,
+      "sha256": "83c8878202c35abaa2e25445b798ccef728d3878ebf19b838a1f062c25d03b18"
+    },
+    "actual_applied": false
+  }
+}

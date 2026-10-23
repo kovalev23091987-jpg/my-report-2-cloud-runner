@@ -1,0 +1,25 @@
+--- a/tools/rollout-correlated-sql-bridge-20261022.mjs
++++ b/tools/rollout-correlated-sql-bridge-20261022.mjs
+@@ -4,20 +4,12 @@
+ import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+ import {readMirrorContext,assertMirrorOwner} from '../runner/github-four-mirror-cas.mjs';
+ import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
+-import {coordinateWeeklyRollout,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P,singleActiveVersion,selectedVersionSettings} from '../runner/htx-coordinated-rollout.mjs';
++import {coordinateWeeklyRollout,rolloutDigest,WEEKLY_ROLLOUT_POLICY as P,singleActiveVersion,selectedVersionSettings,correlatedLogsIntent} from '../runner/htx-coordinated-rollout.mjs';
+ import {boundedControlBody,exactConfiguredSQLBridgeURL,SQL_BRIDGE_SCRIPT} from '../runner/installed-bridge-module-inspection.mjs';
+ import {RETENTION_SQL_BRIDGE_PROOF} from '../runner/retention-bridge-provenance.mjs';
+ import {addExactSQLBridgeCostCorrelation,sqlBridgeCounterVersionMetadata} from '../runner/sql-bridge-counter-repair.mjs';
+ // Purpose-built, non-versioned SQL-bridge logging configuration. No SQL/provider IO.
+-export function correlatedLogsIntent(settings){
+- const plain=x=>x&&typeof x==='object'&&!Array.isArray(x)&&[Object.prototype,null].includes(Object.getPrototypeOf(x));
+- if(!plain(settings))throw Error('BRIDGE_SCRIPT_SETTINGS_REQUIRED');
+- const before=settings.observability;if(before!==null&&before!==undefined&&!plain(before))throw Error('BRIDGE_OBSERVABILITY_SHAPE');
+- const old=before??{},logs=old.logs??{};if(!plain(logs))throw Error('BRIDGE_LOGS_SHAPE');
+- if(logs.destinations!==undefined&&(!Array.isArray(logs.destinations)||logs.destinations.some(x=>x!=='cloudflare')))throw Error('BRIDGE_EXTERNAL_LOG_DESTINATION_REFUSED');
+- if(old.enabled!==true&&old.traces?.enabled===true)throw Error('BRIDGE_DORMANT_TRACES_NOT_AUTHORIZED');
+- return{...old,enabled:true,head_sampling_rate:1,logs:{...logs,enabled:true,head_sampling_rate:1,invocation_logs:false,persist:true,destinations:['cloudflare']}};
+-}
++export {correlatedLogsIntent} from '../runner/htx-coordinated-rollout.mjs';
+ export function correlatedLogsMatch(actual,desired){
+  if(!actual||actual.enabled!==true||actual.head_sampling_rate!==1||!actual.logs||actual.logs.enabled!==true||actual.logs.head_sampling_rate!==1||actual.logs.invocation_logs!==false||actual.logs.persist!==true||JSON.stringify(actual.logs.destinations)!==JSON.stringify(['cloudflare']))return false;
+  const equal=(a,b)=>rolloutDigest(a)===rolloutDigest(b);

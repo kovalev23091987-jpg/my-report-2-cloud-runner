@@ -1,0 +1,17 @@
+--- a/runner/htx-coordinated-rollout.mjs
++++ b/runner/htx-coordinated-rollout.mjs
+@@ -153,3 +153,14 @@
+   proof.status=proof.rollback.some(r=>r.status==='ROLLBACK_NOT_ACKNOWLEDGED')?'WEEKLY_PARTIAL_STATE_REQUIRES_EXACT_RESUME':'WEEKLY_NOT_ACTIVATED_OR_OWN_ACTIVATIONS_ROLLED_BACK';proof.production_activation_allowed=false;proof.completed_ts=clock();await persist();error.rollout_receipt=proof;throw error;
+  }
+ }
++
++// Existing correlated SQL-bridge observability policy, relocated byte-for-byte.
++export function correlatedLogsIntent(settings){
++ const plain=x=>x&&typeof x==='object'&&!Array.isArray(x)&&[Object.prototype,null].includes(Object.getPrototypeOf(x));
++ if(!plain(settings))throw Error('BRIDGE_SCRIPT_SETTINGS_REQUIRED');
++ const before=settings.observability;if(before!==null&&before!==undefined&&!plain(before))throw Error('BRIDGE_OBSERVABILITY_SHAPE');
++ const old=before??{},logs=old.logs??{};if(!plain(logs))throw Error('BRIDGE_LOGS_SHAPE');
++ if(logs.destinations!==undefined&&(!Array.isArray(logs.destinations)||logs.destinations.some(x=>x!=='cloudflare')))throw Error('BRIDGE_EXTERNAL_LOG_DESTINATION_REFUSED');
++ if(old.enabled!==true&&old.traces?.enabled===true)throw Error('BRIDGE_DORMANT_TRACES_NOT_AUTHORIZED');
++ return{...old,enabled:true,head_sampling_rate:1,logs:{...logs,enabled:true,head_sampling_rate:1,invocation_logs:false,persist:true,destinations:['cloudflare']}};
++}

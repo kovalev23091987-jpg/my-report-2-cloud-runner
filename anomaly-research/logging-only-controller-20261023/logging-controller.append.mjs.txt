@@ -1,0 +1,56 @@
+// New logging-only branch. Core outputs never establish native provenance.
+const CURRENT86_LOGGING_BASELINE=Object.freeze({path:'checkpoints/current86-readonly-baseline-observation-20261023/actual-observation.json',sha256:'6858cf03767b4703baadcfa89798f3f975ae63381e65afd7cafa023b1a2e2cc4',bytes:22958,run:39961572286,execution_head:'2a81d052e2703578df5c072dadf39bc01f036715',version:'86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e',module:'c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063',etag:'ac9d474832fa5a166a92032b19f42ee85bd4fb91b5066fd75da1877a8f051e29',settings:'05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded',runtime:'cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a',crons:'4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'});
+const logNeed=(ok,message)=>{if(!ok)throw Error(message);};
+const logUUID=x=>/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(x||'');
+const logHex=x=>/^[a-f0-9]{64}$/.test(x||'');
+const withoutLogs=x=>{const {observability,...rest}=x;return rest;};
+const logNonObservabilityHash=x=>rolloutDigest(withoutLogs(x));
+export function correlatedBridgeExecutionMode(env={}){
+ const flags=['EXECUTE_CORRELATED_LOGGING_ONLY','EXECUTE_CORRELATED_EXISTING_ACTIVATION','EXECUTE_CORRELATED_COST_STAGE','EXECUTE_CORRELATED_COST_RELEASE'];
+ const active=flags.filter(k=>env[k]==='true');
+ if(active.length>1||active.length&&['EXECUTE_SQL_BRIDGE_REPAIR','READ_ONLY_BRIDGE_INSPECTION'].some(k=>env[k]==='true'))throw Error('CORRELATED_BRIDGE_MIXED_MODE_REFUSED');
+ return active[0]??'OFF';
+}
+async function configureCurrent86LoggingOnly({readScript,readDeployment,patch,readOperational,guard,save,admit,logging_only:context}){
+ const proof={schema:'CURRENT86_LOGGING_ONLY_CONTROLLER_RESULT_V1',status:'LOGGING_ONLY_NOT_STARTED',evidence_scope:'CALLER_CONTROL_FLOW_NOT_NATIVE_AUTHENTICATION',native_provenance_qualified:false,native_admission_qualified:false,logging_settings_allowed:false,known_activation_ACK:false,activation_ownership_verified:false,old_unknown_recovered:false,day_hold_removed:false,current_Telegram_restored:false,patch_call_attempts:0,known_patch_ACK:false,patch_ACK_unknown:false,unknown_observation_attempts:0,restore_PATCH_attempts:0,activation_attempts:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0};
+ const persist=()=>save(structuredClone(proof));
+ let desired,baselineNonObs,prospective;
+ const same=d=>d?.version_id===context.expected_version&&d.deployment_id===context.expected_deployment;
+ try{
+  logNeed(context?.schema==='CURRENT86_LOGGING_ONLY_CONTEXT_V1'&&context.baseline_receipt_sha256===CURRENT86_LOGGING_BASELINE.sha256&&context.expected_version===CURRENT86_LOGGING_BASELINE.version&&logUUID(context.expected_deployment)&&logUUID(context.operation_id)&&logHex(context.expected_before_settings_sha256),'LOGGING_ONLY_CURRENT_BASELINE_CONTEXT_REQUIRED');
+  logNeed([readScript,readDeployment,patch,readOperational,guard,save,admit].every(x=>typeof x==='function'),'LOGGING_ONLY_ACTUAL_CALLBACKS_REQUIRED');
+  logNeed(workerSettingsFingerprint(context.before_effective_settings)===context.expected_before_settings_sha256,'LOGGING_ONLY_ACTUAL_BEFORE_SETTINGS_CONFLICT');
+  await guard();logNeed(admit(6)===true,'LOGGING_ONLY_BEFORE_HEADROOM_REQUIRED');
+  const script=await readScript();desired=correlatedLogsIntent(script);
+  logNeed(rolloutDigest(script.observability??null)===rolloutDigest(context.before_effective_settings.observability??null),'LOGGING_ONLY_BEFORE_OBSERVABILITY_CONFLICT');
+  logNeed(same(await readDeployment()),'LOGGING_ONLY_BASELINE_DEPLOYMENT_CHANGED');
+  baselineNonObs=logNonObservabilityHash(context.before_effective_settings);
+  prospective=workerSettingsFingerprint({...context.before_effective_settings,observability:desired});
+  proof.intent={schema:'CURRENT86_LOGGING_ONLY_INTENT_V1',operation_id:context.operation_id,baseline_receipt_sha256:CURRENT86_LOGGING_BASELINE.sha256,expected_version:context.expected_version,expected_deployment:context.expected_deployment,actual_before_settings_sha256:context.expected_before_settings_sha256,baseline_without_observability_sha256:baselineNonObs,baseline_observability_present:Object.hasOwn(context.before_effective_settings,'observability'),baseline_observability:structuredClone(context.before_effective_settings.observability??null),desired_observability:structuredClone(desired),desired_observability_sha256:rolloutDigest(desired),desired_digest:rolloutDigest(desired),prospective_settings_sha256:prospective,prospective_hash_role:'DERIVED_FROM_ACTUAL_BEFORE_NOT_YET_NATIVE_AFTER',PATCH_JSON_sha256:rolloutDigest(JSON.stringify({observability:desired})),max_PATCH_attempts:1,unknown_ACK_observation_route:'/settings',max_unknown_observations:1,owner_approval_reference:context.owner_approval_reference};
+  proof.status='LOGGING_ONLY_INTENT_PREPARED';await persist();
+  if(correlatedLogsMatch(script.observability,desired)){proof.status='LOGGING_ONLY_ALREADY_MATCHED_NO_WRITE';proof.before_only_no_new_H_qualification=true;await persist();return proof;}
+  await guard();logNeed(admit(5)===true,'LOGGING_ONLY_PATCH_AND_OBSERVATION_RESERVE_REQUIRED');
+  proof.status='LOGGING_ONLY_PATCH_INTENT_SAVED';await persist();
+  proof.patch_call_attempts=1;
+  let ack;
+  try{
+   ack=await patch(desired);
+   logNeed(ack?.schema==='CURRENT86_LOG_PATCH_ACK_V1'&&ack.operation_id===context.operation_id&&ack.request_json_sha256===proof.intent.PATCH_JSON_sha256&&ack.HTTP_status>=200&&ack.HTTP_status<300&&ack.CF_success===true&&logHex(ack.body_sha256)&&logHex(ack.result_sha256),'LOGGING_ONLY_PATCH_REPLY_NOT_BOUND');
+  }catch(error){
+   proof.patch_ACK_unknown=true;proof.known_patch_ACK=false;proof.status='LOGGING_ONLY_UNKNOWN_PATCH_ACK_STOP';proof.patch_reason=/^[A-Z0-9_]+$/.test(error?.message||'')?error.message:'PATCH_REPLY_NOT_CLOSED';
+   await persist();
+   proof.unknown_observation_attempts=1;await persist();
+   try{const observed=await readOperational();proof.unknown_observation={settings_sha256:workerSettingsFingerprint(observed),nonobservability_sha256:logNonObservabilityHash(observed),observability_sha256:rolloutDigest(observed.observability??null),matches_prospective:workerSettingsFingerprint(observed)===prospective,observation_is_NOT_PATCH_ACK:true};}
+   catch(observationError){proof.unknown_observation={status:'NOT_CLOSED',reason:/^[A-Z0-9_]+$/.test(observationError?.message||'')?observationError.message:'OBSERVATION_REPLY_NOT_CLOSED'};}
+   // No second PATCH, adoption, restoration or postdeployment reads after unknown.
+   proof.new_CF_actions_allowed=false;await persist();return proof;
+  }
+  proof.known_patch_ACK=true;proof.patch_reply=structuredClone(ack);proof.status='LOGGING_ONLY_KNOWN_PATCH_REPLY_SAVED';
+  try{await persist();}catch{proof.proof_persistence_failed=true;throw Error('LOGGING_ONLY_KNOWN_REPLY_PERSISTENCE_NOT_CLOSED');}
+  const after=await readOperational();proof.after_settings_sha256=workerSettingsFingerprint(after);proof.after_without_observability_sha256=logNonObservabilityHash(after);proof.after_observability=after.observability??null;await persist();
+  logNeed(proof.after_without_observability_sha256===baselineNonObs,'LOGGING_ONLY_NONOBSERVABILITY_CHANGED');
+  logNeed(proof.after_settings_sha256===prospective&&rolloutDigest(after.observability??null)===proof.intent.desired_observability_sha256&&correlatedLogsMatch(after.observability,desired),'LOGGING_ONLY_EXACT_READBACK_NOT_CLOSED');
+  const identity=await readDeployment();proof.after_identity=structuredClone(identity);await persist();logNeed(same(identity),'LOGGING_ONLY_POST_DEPLOYMENT_CHANGED');
+  proof.status='LOGGING_ONLY_KNOWN_PATCH_EXACT_READBACK';proof.configuration_matches_desired=true;proof.log_contract={persist:true,destinations:['cloudflare'],head_sampling_rate:1,invocation_logs:false};proof.future_log_delivery_qualified=false;proof.new_CF_actions_allowed=false;await persist();return proof;
+ }catch(error){proof.status=proof.patch_call_attempts?'LOGGING_ONLY_PARTIAL_STOP':'LOGGING_ONLY_NOT_ADMITTED';proof.reason=/^[A-Z0-9_]+$/.test(error?.message||'')?error.message:'LOGGING_ONLY_NOT_CLOSED';proof.new_CF_actions_allowed=false;try{await persist();}catch{proof.proof_persistence_failed=true;}return proof;}
+}

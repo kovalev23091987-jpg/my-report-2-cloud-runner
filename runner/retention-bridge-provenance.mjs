@@ -76,9 +76,26 @@ export function parseCorrelatedRetentionSQLBridgeProof(raw){
  if(j.schema!=='ACTUAL_NATIVE_BRIDGE_STAGE_ONLY_RECEIPT_V1'||j.run!==p.run||j.head!==p.head||j.conclusion!=='success'||j.status!=='STAGED_OWN_VERSION_VERIFIED_ACTIVE_UNCHANGED'||j.reason!==null||j.known_upload_ack!==true||j.ownership_verified!==true||j.active_preservation_verified!==true||j.actual_upload_HTTP_attempts!==1||j.artifact?.id!==p.artifact_id||j.artifact.digest!==p.artifact_digest||j.artifact.members!==1||j.artifact.whole_ZIP_verified!==true||j.proof?.sha256!==p.inner_proof_sha256||j.proof.bytes!==p.inner_proof_bytes||oldKeys.some(k=>j.before?.[k]!==o[k]||j.after?.[k]!==o[k])||j.before?.deployment_id!==j.after?.deployment_id||j.before?.latest_uploaded_version!==o.version_id||j.after?.latest_uploaded_version!==p.version_id||['before','after','staged'].some(k=>j[k]?.runtime_sha256!==p.runtime_sha256||rolloutDigest(j[k]?.binding_names)!==rolloutDigest(PAID_BRIDGE_NAMES))||oldKeys.filter(k=>k!=='crons_sha256').some(k=>j.staged?.[k]!==p[k])||Object.hasOwn(j.staged,'crons_sha256')||j.staged?.module_readback_basis!=='EXACT_LATEST_UPLOAD_SOURCE_BYTES'||j.staged?.ownership_basis!=='KNOWN_UPLOAD_ACK_PLUS_EXACT_NATIVE_READBACK'||['native_SQL','Worker_invocations','sourceHTTP','MAIN','Telegram','activation_attempts','settings_mutations','delete_attempts'].some(k=>j[k]!==0)||j.old_unknown_recovered!==false||j.current_Telegram_restored!==false||j.source_body_or_secret_exported!==false)throw Error('EXACT_NATIVE_STAGE_OWNERSHIP_AND_OLD_PRESERVATION_REQUIRED');
  return p;
 }
-export function createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes}={}){
+import {correlatedLogsIntent} from './htx-coordinated-rollout.mjs';
+// ROOT must bind the actual known-PATCH-ACK accepted artifact before H is usable.
+// NULL is intentionally fail-closed, never an unpinned default grant.
+export const CORRELATED_RETENTION_LOGGING_PROOF=Object.freeze({
+ path:'checkpoints/current86-correlated-logging-connected-20261023/paid-compatibility-logging-proof.json',
+ sha256:null,run:null,head:null
+});
+export function createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes,logging_receipt_bytes}={}){
  const old=parseRetentionSQLBridgeProof(old_release_bytes),next=parseCorrelatedRetentionSQLBridgeProof(staged_receipt_bytes);
- let state='NEW',selected=null,selectedDeployment=null;
+ let logging=null;
+ if(logging_receipt_bytes!==undefined){
+  const p=CORRELATED_RETENTION_LOGGING_PROOF,raw=Buffer.isBuffer(logging_receipt_bytes)?logging_receipt_bytes:typeof logging_receipt_bytes==='string'?Buffer.from(logging_receipt_bytes):null;
+  if(!raw||raw.length>65536||!/^[a-f0-9]{64}$/.test(p.sha256||'')||!/^\d+$/.test(String(p.run||''))||!/^[a-f0-9]{40}$/.test(p.head||'')||rolloutDigest(raw)!==p.sha256)throw Error('RETENTION_LOGGING_EXACT_ACCEPTED_PROOF_REQUIRED');
+  const j=JSON.parse(raw.toString('utf8')),i=j.intent,b=j.before,a=j.after,hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),plain=x=>x&&typeof x==='object'&&!Array.isArray(x);
+  if(j.schema!=='CURRENT86_LOGGING_ONLY_OPERATION_V1'||j.status!=='CURRENT86_LOGGING_KNOWN_ACK_AND_EXACT_READBACK'||String(j.run)!==String(p.run)||j.head!==p.head||j.known_patch_ACK!==true||j.logging_qualified!==true||j.intent_before_IO!==true||j.mutation_attempts!==1||['native_SQL','Worker_invocations','sourceHTTP','MAIN','Telegram'].some(k=>j[k]!==0)||j.old_unknown_recovered!==false||j.day_hold_removed!==false||!plain(i)||!plain(b)||!plain(a))throw Error('RETENTION_LOGGING_KNOWN_ACK_PROOF_REQUIRED');
+  if(b.version_id!==next.version_id||a.version_id!==next.version_id||!/^([a-f0-9]{8}-){1}[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(b.deployment_id||'')||a.deployment_id!==b.deployment_id||b.settings_sha256!==PAID_BRIDGE_SETTINGS_SHA256||i.actual_before_settings_sha256!==PAID_BRIDGE_SETTINGS_SHA256||!hex(i.baseline_without_observability_sha256)||!hex(i.prospective_settings_sha256)||a.settings_sha256!==i.prospective_settings_sha256||b.settings_without_observability_sha256!==i.baseline_without_observability_sha256||a.settings_without_observability_sha256!==i.baseline_without_observability_sha256||typeof i.baseline_observability_present!=='boolean'||!Object.hasOwn(i,'baseline_observability')||!i.baseline_observability_present&&i.baseline_observability!==null||i.baseline_observability!==null&&!plain(i.baseline_observability)||!plain(i.desired_observability)||rolloutDigest(i.desired_observability)!==i.desired_digest)throw Error('RETENTION_LOGGING_EXACT_BASELINE_AND_INTENT_REQUIRED');
+  for(const x of [b,a])if(x.module_sha256!==next.module_sha256||x.immutable_script_etag!==next.immutable_script_etag||x.runtime_sha256!==PAID_BRIDGE_RUNTIME_SHA256||x.crons_sha256!==next.crons_sha256||rolloutDigest(x.binding_names)!==rolloutDigest([...PAID_BRIDGE_NAMES].sort()))throw Error('RETENTION_LOGGING_SOURCE_IDENTITY_REQUIRED');
+  logging=j;
+ }
+ let state='NEW',selected=null,selectedDeployment=null,selectedSettings=null;
  return Object.freeze({async observe({call,configured_bridge_url,stage,clock=Date.now}={}){
   if(typeof call!=='function'||typeof clock!=='function'||!['before_SQL','after_SQL'].includes(stage)||stage==='before_SQL'&&state!=='NEW'||stage==='after_SQL'&&state!=='READY')throw Error('RETENTION_COMPATIBILITY_EXACT_STAGE_SEQUENCE_REQUIRED');
   state=stage==='before_SQL'?'READING_BEFORE':'READING_AFTER';
@@ -93,16 +110,25 @@ export function createRetentionSQLBridgeCompatibility({old_release_bytes,staged_
    }
    if(active.version_id!==selected.version_id||active.deployment_id!==selectedDeployment)throw Error('RETENTION_COMPATIBILITY_SELECTED_IDENTITY_CHANGED');
    const v=await call(SQL_BRIDGE_SCRIPT,'/versions/'+selected.version_id),effective=selectedVersionSettings(s,v),schedules=Array.isArray(c)?c:c?.schedules;
-   if(!Array.isArray(schedules)||v.id!==selected.version_id||v.resources?.script?.etag!==selected.immutable_script_etag||workerSettingsFingerprint(effective)!==PAID_BRIDGE_SETTINGS_SHA256||rolloutDigest(v.resources?.script_runtime)!==PAID_BRIDGE_RUNTIME_SHA256||rolloutDigest(schedules.map(r=>r.cron).sort())!==selected.crons_sha256||rolloutDigest(effective.bindings.map(b=>b.name).sort())!==rolloutDigest(PAID_BRIDGE_NAMES))throw Error('RETENTION_COMPATIBILITY_EXACT_SETTINGS_RUNTIME_BINDING_REQUIRED');
+   const settingsHash=workerSettingsFingerprint(effective);
+   if(settingsHash!==PAID_BRIDGE_SETTINGS_SHA256){
+    if(!logging||selected.version_id!==next.version_id||selectedDeployment!==logging.before.deployment_id)throw Error('RETENTION_LOGGING_CURRENT86_PROOF_REQUIRED');
+    const i=logging.intent,baseline={...effective};
+    if(i.baseline_observability_present)baseline.observability=i.baseline_observability;else delete baseline.observability;
+    const {observability,...nonObservability}=effective,desired=correlatedLogsIntent(baseline),H=workerSettingsFingerprint({...baseline,observability:desired});
+    if(workerSettingsFingerprint(baseline)!==PAID_BRIDGE_SETTINGS_SHA256||rolloutDigest(nonObservability)!==i.baseline_without_observability_sha256||rolloutDigest(desired)!==i.desired_digest||rolloutDigest(observability)!==rolloutDigest(desired)||settingsHash!==H||H!==i.prospective_settings_sha256||H!==logging.after.settings_sha256)throw Error('RETENTION_LOGGING_EXACT_OBSERVABILITY_ONLY_REQUIRED');
+   }
+   if(stage==='before_SQL')selectedSettings=settingsHash;else if(settingsHash!==selectedSettings)throw Error('RETENTION_COMPATIBILITY_SELECTED_SETTINGS_CHANGED');
+   if(!Array.isArray(schedules)||v.id!==selected.version_id||v.resources?.script?.etag!==selected.immutable_script_etag||rolloutDigest(v.resources?.script_runtime)!==PAID_BRIDGE_RUNTIME_SHA256||rolloutDigest(schedules.map(r=>r.cron).sort())!==selected.crons_sha256||rolloutDigest(effective.bindings.map(b=>b.name).sort())!==rolloutDigest(PAID_BRIDGE_NAMES))throw Error('RETENTION_COMPATIBILITY_EXACT_SETTINGS_RUNTIME_BINDING_REQUIRED');
    const completed_ts=clock();if(!Number.isSafeInteger(completed_ts)||completed_ts<started_ts)throw Error('RETENTION_COMPATIBILITY_CLOCK_REQUIRED');
    state=stage==='before_SQL'?'READY':'DONE';
-   return Object.freeze({status:'EXACT_RETAINED_SQL_BRIDGE_VERSION_OBSERVED',stage,name:SQL_BRIDGE_SCRIPT,version_id:selected.version_id,deployment_id:selectedDeployment,module_sha256:selected.module_sha256,settings_sha256:PAID_BRIDGE_SETTINGS_SHA256,crons_sha256:selected.crons_sha256,immutable_script_etag:selected.immutable_script_etag,runtime_sha256:PAID_BRIDGE_RUNTIME_SHA256,started_ts,completed_ts,Cloudflare_GET:stage==='before_SQL'?5:4,SQL:0,configured_url_exported:false,secret_values_exported:false,module_basis:'EXACT_ACCEPTED_IMMUTABLE_VERSION_AND_ETAG',same_selected_run_identity:true,compatibility_role:'CODE_ACTIVE_CURRENT_SETTINGS_ONLY',logging_settings_allowed:false,admission:false,transient_changes_excluded:false,native_reply_accepted:false,whole_day_closed:false});
+   return Object.freeze({status:'EXACT_RETAINED_SQL_BRIDGE_VERSION_OBSERVED',stage,name:SQL_BRIDGE_SCRIPT,version_id:selected.version_id,deployment_id:selectedDeployment,module_sha256:selected.module_sha256,settings_sha256:settingsHash,crons_sha256:selected.crons_sha256,immutable_script_etag:selected.immutable_script_etag,runtime_sha256:PAID_BRIDGE_RUNTIME_SHA256,started_ts,completed_ts,Cloudflare_GET:stage==='before_SQL'?5:4,SQL:0,configured_url_exported:false,secret_values_exported:false,module_basis:'EXACT_ACCEPTED_IMMUTABLE_VERSION_AND_ETAG',same_selected_run_identity:true,compatibility_role:'CODE_ACTIVE_CURRENT_SETTINGS_ONLY',logging_settings_allowed:false,admission:false,transient_changes_excluded:false,native_reply_accepted:false,whole_day_closed:false});
   }catch(error){state='FAILED';throw error;}
  }});
 }
 const EXACT_COMPATIBLE_CONSUMERS=Object.freeze({
- 'tools/run-paid-sliding-history-20261018.mjs':'d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c',
- 'tools/recover-lossless-retained-history-20261014.mjs':'1335612c4b492cb75142f523e864aa4cc98c81b3dd32a64da850f6891f76b2f4'
+ 'tools/run-paid-sliding-history-20261018.mjs':'a8ff9e5f91fcf14f45c66c843d4ecc9f7d06f16c439cf144f74951dda528840b',
+ 'tools/recover-lossless-retained-history-20261014.mjs':'4cace44d78bc0c6054bcc17d9de9697a2b959fe4880222facef35fc46a251684'
 });
 export async function attestRetentionSQLBridgeCompatibility({repo_root}={}){
  const filesystem=await import('node:fs/promises'),paths=await import('node:path');

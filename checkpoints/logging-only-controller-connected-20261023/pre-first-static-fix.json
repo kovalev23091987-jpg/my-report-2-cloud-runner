@@ -1,0 +1,24 @@
+{
+  "schema": "CURRENT86_LOGGING_PRE_FIRST_STATIC_BINDING_FIX_V1",
+  "finding": "DUPLICATE_ESM_WORKER_SETTINGS_FINGERPRINT_BINDING",
+  "first_actual_syntax_exit": 1,
+  "first_actual_import_or_semantic_executions": 0,
+  "first_actual_error": "SyntaxError: Identifier 'workerSettingsFingerprint' has already been declared",
+  "before": {
+    "bytes": 107561,
+    "sha256": "cafed16f6c1473d6026bb3ec47e24b69a11165d29550fcd7fba2f22acc9d8635"
+  },
+  "after": {
+    "bytes": 107522,
+    "sha256": "3309aaf2f74057c07df74a79e79f798206c11d5fd360fb239326e0b4a602e2ad"
+  },
+  "change": "Remove only two THIRD-added duplicate names from top imports; retain original legacy single-name imports and all function/case bodies unchanged. No imports/semantic executions.",
+  "runtime_or_case_semantics_changed": false,
+  "old_components_replayed": 0,
+  "findings": [
+    "DUPLICATE_ESM_WORKER_SETTINGS_FINGERPRINT_BINDING",
+    "DUPLICATE_ESM_FULL_RAW_BASIS_BINDING"
+  ],
+  "second_actual_syntax_exit": 1,
+  "second_actual_error": "SyntaxError: Identifier 'fullRawBasis' has already been declared"
+}
