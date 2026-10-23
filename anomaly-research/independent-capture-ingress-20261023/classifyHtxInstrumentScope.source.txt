@@ -1,0 +1,216 @@
+function classifyHtxInstrumentScope(info) {
+  const labelsPresent =
+    Array.isArray(
+      info?.labels
+    );
+
+  const tradfiLabelsPresent =
+    Array.isArray(
+      info?.tradfi_labels
+    );
+
+  const labels =
+    labelsPresent
+      ? info.labels
+          .map(
+            (value) =>
+              String(
+                value || ""
+              )
+                .trim()
+                .toLowerCase()
+          )
+          .filter(Boolean)
+      : [];
+
+  const tradfiLabels =
+    tradfiLabelsPresent
+      ? info.tradfi_labels
+          .map(
+            (value) =>
+              String(
+                value || ""
+              ).trim()
+          )
+          .filter(Boolean)
+      : [];
+
+  const businessType =
+    String(
+      info?.business_type ||
+      ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const contractType =
+    String(
+      info?.contract_type ||
+      ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const tradePartition =
+    String(
+      info?.trade_partition ||
+      ""
+    )
+      .trim()
+      .toUpperCase();
+
+  const tradfiLabelSet =
+    new Set([
+      "tradfi",
+      "stock",
+      "indices",
+      "commodities",
+    ]);
+
+  // Exact fiat instruments independently identified by HTX's own listings.
+  // HTX currently sends empty tradfi_labels for these four forex pairs.
+  // This is a scoped primary-source correction, not a crypto ticker allowlist.
+  const officialForexEvidence = {
+    "EURUSD-USDT": "https://t.me/HTXGlobalAnnouncementChannel/15470",
+    "GBPUSD-USDT": "https://t.me/HTXGlobalAnnouncementChannel/15470",
+    "USDJPY-USDT": "https://t.me/HTXGlobalAnnouncementChannel/15480",
+    "USDBRL-USDT": "https://www.htx.com/en-us/support/45044889526369/",
+  }[String(info?.contract_code || "").toUpperCase()] || null;
+
+  // Exact exceptions bind the HTX contract to an issuer-documented crypto
+  // token. Generic Metals/TradFi tags are not sufficient to exclude it.
+  // Stock-tagged homonyms never inherit spot-token identity by ticker alone.
+  const cryptoTokenEvidence = {
+    "PAXG-USDT": "https://www.paxos.com/paxgold",
+    "XAUT-USDT": "https://gold.tether.to/",
+  }[String(info?.contract_code || "").toUpperCase()] || null;
+  const explicitStockOrForex = Boolean(officialForexEvidence) ||
+    labels.some(label => ["stock", "stocks", "forex", "fx"].includes(label)) ||
+    tradfiLabels.some(label => /^(stocks?|forex|fx)$/i.test(label));
+  const confirmedCryptoToken = Boolean(cryptoTokenEvidence) && !explicitStockOrForex &&
+    ["PAXG", "XAUT"].includes(String(info?.symbol || "").toUpperCase()) &&
+    String(info?.contract_code || "").toUpperCase() === String(info?.symbol || "").toUpperCase() + "-USDT";
+
+  const htxTradfiClassified = !confirmedCryptoToken && (
+    explicitStockOrForex ||
+    tradfiLabels.length > 0 ||
+    labels.some(
+      (label) =>
+        tradfiLabelSet.has(
+          label
+        )
+    ));
+
+  const evidenceComplete =
+    labelsPresent &&
+    tradfiLabelsPresent &&
+    Boolean(businessType) &&
+    Boolean(contractType) &&
+    Boolean(tradePartition);
+
+  const correctMarket =
+    ((businessType === "swap" && contractType === "swap") ||
+      (businessType === "futures" && ["this_week", "next_week", "quarter", "next_quarter"].includes(contractType))) &&
+    tradePartition === "USDT";
+
+  let classification =
+    "UNKNOWN_FAIL_CLOSED";
+
+  const reasons = [];
+
+  if (!labelsPresent) {
+    reasons.push(
+      "HTX_LABELS_FIELD_MISSING"
+    );
+  }
+
+  if (!tradfiLabelsPresent) {
+    reasons.push(
+      "HTX_TRADFI_LABELS_FIELD_MISSING"
+    );
+  }
+
+  if (!correctMarket) {
+    reasons.push(
+      "NOT_HTX_LINEAR_CRYPTO_FUTURES_SCOPE"
+    );
+  }
+
+  if (officialForexEvidence) reasons.push("HTX_OFFICIAL_FOREX_UNDERLYING");
+  if (confirmedCryptoToken) reasons.push("EXACT_ISSUER_CRYPTO_TOKEN_UNDERLYING");
+
+  if (htxTradfiClassified) {
+    reasons.push(
+      "HTX_TRADFI_CLASSIFIED"
+    );
+  }
+
+  if (
+    evidenceComplete &&
+    correctMarket
+  ) {
+    classification =
+      htxTradfiClassified
+        ? "NON_CRYPTO_HTX_CLASSIFIED"
+        : "CRYPTO_CONFIRMED";
+  }
+
+  if (
+    classification ===
+      "CRYPTO_CONFIRMED" &&
+    !reasons.length
+  ) {
+    reasons.push(
+      "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+    );
+  }
+
+  return {
+    classification,
+
+    eligible_for_crypto_discovery:
+      classification ===
+      "CRYPTO_CONFIRMED",
+
+    source:
+      "HTX swap_contract_info labels/tradfi_labels",
+
+    source_fields_present: {
+      labels:
+        labelsPresent,
+
+      tradfi_labels:
+        tradfiLabelsPresent,
+
+      business_type:
+        Boolean(businessType),
+
+      contract_type:
+        Boolean(contractType),
+
+      trade_partition:
+        Boolean(tradePartition),
+    },
+
+    evidence: {
+      official_forex_source_url: officialForexEvidence,
+      official_crypto_token_source_url: confirmedCryptoToken ? cryptoTokenEvidence : null,
+      business_type:
+        businessType || null,
+
+      contract_type:
+        contractType || null,
+
+      trade_partition:
+        tradePartition || null,
+
+      labels,
+
+      tradfi_labels:
+        tradfiLabels,
+    },
+
+    reasons,
+  };
+}
+

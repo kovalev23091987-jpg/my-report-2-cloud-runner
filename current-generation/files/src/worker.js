@@ -28,7 +28,7 @@ import {
   runOpportunityShadowCycle,
   selectOpportunityJournalCandidate,
 } from "./opportunity-intelligence-runtime.mjs";
-import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';
+import {prepareCapturedAnomalyCardWatch,runIndependentCapturedAnomalyIngress} from './anomaly-native-ingress.mjs';
 import {runCapturedAnomalyDueCycle} from './anomaly-native-due-watch.mjs';
 
 import {
@@ -19870,6 +19870,13 @@ const __REPORT2_ORIGINAL_HANDLER = {
       if (typeof env?.REPORT2_ANOMALY_DOMAIN_DUE === 'function' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
         try { await runCapturedAnomalyDueCycle({env,now_ts:Date.now(),logical_request_id:'ANOMALY_DUE:'+runId,limit:2}); }
         catch { /* SOURCE retains uncertain operations and the SAME DB fence. */ }
+      }
+
+      // Independent approved-roster slice AFTER existing bounded Deep/DUE work.
+      // Default OFF; IO owner must protect report/final-delivery reserve; native SQL keeps its owner callback.
+      if(env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_ENABLED==='1'){
+        try { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT=await runIndependentCapturedAnomalyIngress({env,run_id:String(runId),fetch_json:fetchJson,classify_contract:classifyHtxInstrumentScope}); }
+        catch { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT={status:'INDEPENDENT_CAPTURE_CALLER_NOT_CLOSED',native_admission_qualified:false,SENT_claimed:false}; }
       }
 
       env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={

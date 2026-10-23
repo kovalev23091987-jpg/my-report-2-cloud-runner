@@ -1,0 +1,145 @@
+{
+  "schema": "ANOMALY_INGRESS_STATIC_BYTE_AUDIT_V1",
+  "checks": [
+    {
+      "path": "current-generation/files/src/anomaly-native-ingress.mjs",
+      "before_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "before_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/htx-trade-json.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/htx-volume-profile.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/htx-contract-key.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/htx-technical-structure.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/bitget-four-hour-flow.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/gate-public-taker-reference.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/gate-four-hour-flow.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/poloniex-native-four-hour-flow.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/binance-native-four-hour-flow.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-adapters.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/kraken-n10-memory-context.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/kraken-public-taker-reference.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/kraken-four-hour-flow.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/kraken-n10-price-path.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/approved-htx-analysis-scope.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/bitfinex-n10-memory-context.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/bitfinex-native-four-hour-flow.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/htx-signed-tape.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/anomaly-native-ingress.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "anomaly-research/observer/observer.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/src/anomaly-native-domain.mjs",
+      "public_source_bytes_exact": true
+    },
+    {
+      "path": "cloudflare/public-collector/injected-worker-tail.js",
+      "context_bytes_exact": true
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "context_bytes_exact": true
+    },
+    {
+      "path": "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md",
+      "context_bytes_exact": true
+    },
+    {
+      "path": ".github/workflows/report2.yml",
+      "context_bytes_exact": true
+    },
+    {
+      "worker_recipe_single_literal_match_and_after_hash_exact": true
+    },
+    {
+      "function_span": "fetchJson",
+      "static_bytes_exact": true
+    },
+    {
+      "function_span": "classifyHtxInstrumentScope",
+      "static_bytes_exact": true
+    },
+    {
+      "patch": "worker",
+      "unified_diff_exact_text": true
+    },
+    {
+      "patch": "ingress",
+      "unified_diff_exact_text": true
+    }
+  ],
+  "performed": "PYTHON_TEXT_HASH_JSON_ONLY",
+  "application_semantics_executed": false,
+  "Node_import_syntax_tests_SQL_provider_native_MAIN_Telegram": 0,
+  "new_callable": "UNEXECUTED",
+  "no_PASS_claim": true
+}
