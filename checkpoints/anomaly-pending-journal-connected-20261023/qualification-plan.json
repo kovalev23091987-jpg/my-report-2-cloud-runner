@@ -11,8 +11,8 @@
   },
   "scope_prefix": "OWNER_FIVE_ACTIVE_DIRECTIONS.ANOMALY_PENDING_JOURNAL_LOCAL_RECOVERY_20261023.",
   "case": {
-    "path": "anomaly-research/pending-operation-journal-20261023/connected.mjs",
-    "sha256": "2a48433c35e5cd8b271aea90702fd6c3a00ae4845168acca435be98c11ed2397",
+    "path": "checkpoints/anomaly-pending-journal-connected-20261023/root-connected.component.mjs",
+    "sha256": "2770476049c9289c6c9e655bf4a97f7aa63380fc319a28c9b848b58c82bf3c42",
     "export": "runPendingOperationJournalConnected"
   },
   "expected_status": "NEW_CONTROLLED_PENDING_JOURNAL_COMPONENT_RETURNED",
@@ -64,7 +64,13 @@
     "runner/github-bounded-phase-lease.mjs": "a04d1d0877cabd3dc92a2aa7e3033a21eecb9048f13810d0acd229ed2fb10ac7",
     "runner/github-four-mirror-cas.mjs": "fbd4b30314790bd91fc4b617365af80ebb6672e5ff8a7e26a394a4db9712ff39",
     "runner/report2-d1-adapter.mjs": "cab59c2b26c12c657fda2918d97f80e11f8139e455f5ef878fc427794f3db220",
-    "tools/guard-anomaly-pending-journal-20261023.mjs": "baee345b9ef1607dcd96a8241f4d0f3058915c6df696001e559aee731d83866e"
+    "tools/guard-anomaly-pending-journal-20261023.mjs": "baee345b9ef1607dcd96a8241f4d0f3058915c6df696001e559aee731d83866e",
+    "checkpoints/anomaly-pending-journal-connected-20261023/root-connected.component.mjs": "2770476049c9289c6c9e655bf4a97f7aa63380fc319a28c9b848b58c82bf3c42",
+    "checkpoints/anomaly-pending-journal-connected-20261023/preimport-binding-repair.json": "b81689709055c1da48244e25cb04cf953bb2cb1f6d8d1c0b93e69d67e0cb1aba",
+    "checkpoints/anomaly-pending-journal-connected-20261023/first-run-artifact-receipt.json": "89d991444337bf61b4731e9bdeba3f04fd4d8d60fc538615d81b7dcbcff852da",
+    "checkpoints/anomaly-pending-journal-connected-20261023/first-run-failure-context.json": "49cc1ae415f9b92dd7e8f098a1186c3dc6afb405570caf45199589d65fd2cff3",
+    "checkpoints/anomaly-pending-journal-connected-20261023/first-run-failed.spec.txt": "27d706d5145b059076efc6668ba2db18cf88b11438f0b8d5b16f727711ccf35c",
+    "checkpoints/anomaly-pending-journal-connected-20261023/third-preimport-delta-ack.json": "26f1a258d3f7a90051933bd5e74eb02baabab83bcfa75425d3297bcfe475973e"
   },
   "old_components_replay": false,
   "private_runtime_assembly_for_common": false,
@@ -77,5 +83,13 @@
     "bytes": 202183,
     "sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d"
   },
-  "local_files_only_not_native_durability": true
+  "local_files_only_not_native_durability": true,
+  "first_run_failed_before_completed_groups": {
+    "run": 39941887750,
+    "groups": 0,
+    "variants": 0,
+    "classification": "TRANSITIVE_IMPORT_SETUP_ONLY",
+    "production_target_unchanged": true
+  },
+  "completed_new_groups_replayed": 0
 }
