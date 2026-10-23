@@ -1,0 +1,35 @@
+{
+  "schema": "SOURCE_CURRENT_CONTEXT_EVIDENCE_STATIC_BOUNDARY_V1",
+  "kind": "STATIC_REACHABLE_DIAGNOSTIC_PROJECTION_OMISSION_NOT_EXECUTED_COUNTEREXAMPLE",
+  "historical_RLC_cause": null,
+  "historical_artifact_lookup_repeated": false,
+  "current_source_check_ID_gap_reproduced": false,
+  "current_code_already_has_N12_EXPLICIT_SOURCE": "BLOCK_SOURCE_REQUIREMENTS.N12.supplemental EXTERNAL_N05_FLOW; collector externalN12ContextEvidence selects actual route result.evidence and same object source enters auditCandidateBlocks",
+  "actual_producer": "normalizeBitgetN12BoundedTradeSample emits unit=USDT and origin_event_id=physical BITGET_BOUNDED_TRADE_SAMPLE identity, preserving clocks and NULL window fields",
+  "reachable_chain": [
+    "collectN05VenueRoutes flattens adapter evidence without dropping N12 rows",
+    "collectCandidateEvidenceV2 appends externalN12ContextEvidence and keeps EXTERNAL_N05_FLOW",
+    "finalizeCandidateBlockCoverage retains rows and source evidence",
+    "canonical runtime adapter preserves evidence and recomputes coverage at observed_ts",
+    "consumeBlockResultContext validates and describes the exact N12 row",
+    "contextComponentOrigins explicitly projects identity/clocks/raw_hash/window but omits existing row.unit and row.origin_event_id",
+    "formatManualReport uses those facts under existing24-line cap",
+    "auditRenderedBlockResults attaches component_origins to exact printed manual receipt",
+    "loadCanonicalRunOutput exports coverage/context receipts and a canonical summary which excludes raw internal evidence metadata"
+  ],
+  "current_loss_scope": "The original normalized unit and producer event identifier are omitted from the public report diagnostic projection even though they remain in persisted canonical evidence. Human-readable USDT text is not an exact normalized-unit field. This is not a lost manual line, a provider error, a source acquisition loss or a claim that current source_checks misses the ID.",
+  "proposed_change": "ONLY two descriptive scalar fields in existing contextComponentOrigins. Already existing nonempty strings bounded by JSON UTF8, otherwise NULL. No source body or numeric facts copied, no admission/score/text/routing/SQL/HTTP/schema/cap change.",
+  "copy_limits": {
+    "unit_max_UTF16_code_units": 64,
+    "unit_max_JSON_UTF8_bytes_including_quotes": 66,
+    "origin_event_id_max_UTF16_code_units": 192,
+    "origin_event_id_max_JSON_UTF8_bytes_including_quotes": 194,
+    "max_new_JSON_bytes_per_origin": 287,
+    "missing_wrongtype_or_oversize": "NULL, with no invented fallback to physical root/label",
+    "raw_hash_semantics": "Existing normalized EvidenceV2 hash, NOT newly verified provider-body SHA"
+  },
+  "old_RLC_original_envelope_recovered": false,
+  "original_provider_body_or_producer_response_proof_added": false,
+  "one_new_case": "runContextEvidenceOriginBindingConnected; PREPARED_UNEXECUTED",
+  "application_execution": 0
+}

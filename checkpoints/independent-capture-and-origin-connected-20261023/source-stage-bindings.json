@@ -1,0 +1,583 @@
+{
+  "schema": "SOURCE_CONTEXT_ORIGIN_BINDINGS_V1",
+  "fixed_working_base": "47729645100eaca3848f0e713d9e6aa54bca916e",
+  "target": {
+    "repo_path": "current-generation/files/src/block-result-context.mjs",
+    "runtime_path": "src/block-result-context.mjs",
+    "before_bytes": 95524,
+    "before_sha256": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+    "after_bytes": 95898,
+    "after_sha256": "5d0266b848230abf44483e49003573015dc61091af0950eb1478eafa6577e4ba",
+    "old_literal": "metric_family:row.metric_family,physical_root_key:evidenceDedupKey(row),raw_hash:row.raw_hash??null,market:",
+    "new_literal": "metric_family:row.metric_family,origin_event_id:typeof row.origin_event_id==='string'&&row.origin_event_id.length>0&&row.origin_event_id.length<=192&&new TextEncoder().encode(JSON.stringify(row.origin_event_id)).byteLength<=194?row.origin_event_id:null,unit:typeof row.unit==='string'&&row.unit.length>0&&row.unit.length<=64&&new TextEncoder().encode(JSON.stringify(row.unit)).byteLength<=66?row.unit:null,physical_root_key:evidenceDedupKey(row),raw_hash:row.raw_hash??null,market:",
+    "one_existing_function": "contextComponentOrigins",
+    "proposed_runtime_code_executed": false
+  },
+  "public_import_closure": {
+    "src/approved-htx-analysis-scope.mjs": {
+      "bytes": 34471,
+      "sha256": "6bf0d645afdbbe3226c7f6aac92c341d0c0cc0dff96f5a95e922c8b87029ca6c",
+      "git_blob": "6302c984e0b99ea3892ce84860d71a909c715e5c"
+    },
+    "src/backpack-flow-collector.mjs": {
+      "bytes": 9774,
+      "sha256": "defd82645f5b08af71f05bd3476149773c9bf1c82f6ddb542869fbc349987e84",
+      "git_blob": "cb31b221a783c9e64bb48574a8a895d77618886c"
+    },
+    "src/backpack-four-hour-flow.mjs": {
+      "bytes": 7112,
+      "sha256": "078a7e43a0fb5481d86dae4bf282738c6d2dce8711686147225c0275de522ce8",
+      "git_blob": "2e22d5df593661834642f3804b1059e5020f9533"
+    },
+    "src/binance-native-flow-collector.mjs": {
+      "bytes": 7954,
+      "sha256": "f78727e30f44bdd3d17d46a98687eb2e4db63bc5455f8749106bb5de6111791f",
+      "git_blob": "13fdb4efb4a2da59cc9693f4e7d59f15356806a8"
+    },
+    "src/binance-native-four-hour-flow.mjs": {
+      "bytes": 8185,
+      "sha256": "625e0ce46ef10edfea81eca69b087abaa8e503501559ff4fae63b8a77f0dd950",
+      "git_blob": "0b8650412a80650e97a59976d1ce81c0033e825a"
+    },
+    "src/binance-options-interest-evidence.mjs": {
+      "bytes": 10712,
+      "sha256": "0a75144a0a2ff5d35cf40ab6e6b8d39ea8541fef97b86710b74a6b8268063fa1",
+      "git_blob": "1b748835eec10c646deb26e51ddbdfb120aedbfa"
+    },
+    "src/bitfinex-n10-memory-context.mjs": {
+      "bytes": 8230,
+      "sha256": "0f6d365d1d6ec0d9f7b057189e003dd55db6f28aa25545596ed3e2b6e4bdf9e9",
+      "git_blob": "78effc5b69d655940d255f271a1a80085d46e6f9"
+    },
+    "src/bitfinex-n10-price-path.mjs": {
+      "bytes": 5913,
+      "sha256": "a18d8033edb2193ac422043512505f570382a9b8329cd7913c8e275b4601d319",
+      "git_blob": "4840fad8dc92e31bc7da226b652c169f26cf76d8"
+    },
+    "src/bitfinex-n12-bounded-trade-sample.mjs": {
+      "bytes": 6523,
+      "sha256": "87e42ed72238ff525cc7746bacc28fa33bad7128139e9a68c3ad1b01c05bd880",
+      "git_blob": "bb20b0595968549ff47ddb162238717a0b33fa5a"
+    },
+    "src/bitfinex-native-flow-collector.mjs": {
+      "bytes": 9672,
+      "sha256": "0ebce5aece844e8c36dcb2e8adf6f17521d9d05a627c0e6a640ab6ba9259945e",
+      "git_blob": "cc0d6e573b67016838ac4a8c3b24bcaf3f3a2961"
+    },
+    "src/bitfinex-native-four-hour-flow.mjs": {
+      "bytes": 7754,
+      "sha256": "68eac3f0c3b07ab26986776d0000939e8d4ff1d32aecdd88b3709ec1921f1234",
+      "git_blob": "ed180a33f62d79fda62dd39bba8e2c67c191c0b4"
+    },
+    "src/bitget-flow-collector.mjs": {
+      "bytes": 8651,
+      "sha256": "218421d5860f1c8f522880e22e6fb068c24b4c87537328b9dbfee8084dd5dffe",
+      "git_blob": "6eba2e9749ed401d54a0d72132c3e6220c3d4584"
+    },
+    "src/bitget-four-hour-flow.mjs": {
+      "bytes": 8022,
+      "sha256": "4cbab98e1c61a8cbf9f7133ad178e4801c630380feaa20ae6c6b99e7baab34c0",
+      "git_blob": "9d2cbcafb1c62a21e4d457adc8bd82f0886fd84c"
+    },
+    "src/bitget-n12-bounded-trade-sample.mjs": {
+      "bytes": 5811,
+      "sha256": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461",
+      "git_blob": "d6e561281199074500da92ae91e4c30a7acbce04"
+    },
+    "src/block-result-context.mjs": {
+      "bytes": 95524,
+      "sha256": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+      "git_blob": "2e66a543516334db380a79a23c4dfd42f0c5e6de"
+    },
+    "src/block-score-policy.mjs": {
+      "bytes": 3531,
+      "sha256": "873d70a0404baf5df104ee34459246fd85d798163f3cadd7bd72bb7cba3441a1",
+      "git_blob": "44589eac9b9663691276738cfc796dac15cd0056"
+    },
+    "src/blockscout-index-evidence.mjs": {
+      "bytes": 11324,
+      "sha256": "dd00a89a68531ae0f71005f010eae457e1845a087737f8d87c2802e2d7a93191",
+      "git_blob": "0641a845eddd2d37c668a8e1347c0c55e58b3450"
+    },
+    "src/bluesky-attention-evidence.mjs": {
+      "bytes": 12441,
+      "sha256": "3a0b9850b9aeedcb90a78958c4f1eccbb192581e7a52439bd317e9b09e0ed629",
+      "git_blob": "d45f65fe5d5ed3677320c8fe01d017baf58eed0d"
+    },
+    "src/bybit-options-evidence.mjs": {
+      "bytes": 10264,
+      "sha256": "a31f0eefab063a30d454ba77c73f3e3a9ae05cb615a45d86ab0662944337a08a",
+      "git_blob": "dcc9caceee286708d9ea67194da4eb418e77e1ea"
+    },
+    "src/candidate-evidence-v2-runtime.mjs": {
+      "bytes": 61792,
+      "sha256": "e711bff692c4e42a684464dc3f4bf28a8c0b01f515af13642d856b1fb1a6237b",
+      "git_blob": "4060dac2590cbc28962ef9e082e44622954d77dc"
+    },
+    "src/canonical-display.mjs": {
+      "bytes": 25629,
+      "sha256": "60fe28962fd2ef99dccc95f26c8478f8d7288cf355e4cb9e4ebd69e3e9bcc2e8",
+      "git_blob": "874af22e8c670bad87dd92f4507dbc112f8bdc75"
+    },
+    "src/chain-supply-evidence.mjs": {
+      "bytes": 26240,
+      "sha256": "b2e3a4ab9f9cfc0b823af2962d94cdd5d9d144ed10e408e8dd855a0853d1dc3e",
+      "git_blob": "ab81f632f62e02926be1800f060eed363a9ab9b7"
+    },
+    "src/coingecko-sector-evidence.mjs": {
+      "bytes": 31784,
+      "sha256": "bc9beb1135c93d2b08c32da66e3099dd06e9d6ad2e58cbf3a7add7be5ce0919f",
+      "git_blob": "7e072a047399929119001268104b93a5c681846d"
+    },
+    "src/coinlobster-future-model.mjs": {
+      "bytes": 8927,
+      "sha256": "007fe3da1f8822383af8584ad45e92cc0504f6c711f2939fb969415686c5e423",
+      "git_blob": "0b9cbd16bff58d86fb6692829f5733320e6eb7fa"
+    },
+    "src/coinmetrics-supply-context.mjs": {
+      "bytes": 10525,
+      "sha256": "59ddf429bef8f79e6f9b1b3991d341c8589f4a30481f7f9e9246a7e3a30dcd66",
+      "git_blob": "5656fa474f8353034fbb762b864cf62053e3c195"
+    },
+    "src/coinpaprika-htx-identity.mjs": {
+      "bytes": 7570,
+      "sha256": "f90945240808c374f5c3bd788f8f39aab6596bdf4e9f30161339632089b1a00b",
+      "git_blob": "bd471e38cfea783d4a9601e72a3627c46e3f77fc"
+    },
+    "src/coinpaprika-market-supply.mjs": {
+      "bytes": 2206,
+      "sha256": "5ccb783da18bb471ff7bb4aea4cb6bb90d40e9d4d5b8a38d51c193268aefea2b",
+      "git_blob": "e75495271ee1e7006e172c2134e07245672834f7"
+    },
+    "src/coinpaprika-sector-evidence.mjs": {
+      "bytes": 19266,
+      "sha256": "4bf0e2469666d516d17c13dcb8dd2df9ea5f46c6ca1c9ca53e8eeac06afe207e",
+      "git_blob": "0aabb28b263e137f7c38a1cfa33301d9ff83e2f2"
+    },
+    "src/delta-options-evidence.mjs": {
+      "bytes": 12551,
+      "sha256": "35120e50eb5a927b37308ec86c11524e006e7efead2f119f183f61b5cc3d2869",
+      "git_blob": "3db060deb60c2142ab2f916e0bfe73d60790e8ce"
+    },
+    "src/deribit-alt-options-evidence.mjs": {
+      "bytes": 15219,
+      "sha256": "fecf665533ffdf996903d19652fd6d7255fdf032ed5d7c4a458dfa6aed18c15d",
+      "git_blob": "33598f298abe55c51d2a1191eabd171be1bdde85"
+    },
+    "src/deribit-option-risk-context.mjs": {
+      "bytes": 4845,
+      "sha256": "036e153824e4638d4b5420cdcb844b315d415287c4a62e7e7720961bbe95a8d6",
+      "git_blob": "4cea1c9d065b8f5076f838ba386b666dc773f9b5"
+    },
+    "src/early-direction-receipt.mjs": {
+      "bytes": 4331,
+      "sha256": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
+      "git_blob": "70bc6c1fadf4a69c125e9e615897d0ab571dfaef"
+    },
+    "src/evidence-source-adapters.mjs": {
+      "bytes": 10600,
+      "sha256": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54",
+      "git_blob": "a776e50fd146d72202cb26b85fcaaac2b2c688c0"
+    },
+    "src/evidence-source-store.mjs": {
+      "bytes": 17488,
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+      "git_blob": "6310bc88f3b515f0063adedbdd84750d77780cf0"
+    },
+    "src/evidence-v2.mjs": {
+      "bytes": 8157,
+      "sha256": "dd939e4825e032d71eb41f8bc530419b78263d341f2491486279ef4a4be712e7",
+      "git_blob": "57892233bb589116ac365ca0d4ba397597adc57b"
+    },
+    "src/execution-report-context.mjs": {
+      "bytes": 17299,
+      "sha256": "0c22ec420e645c6c2d91f0c2def21f106ee04c0af0b8d0d77b44120db7c9eb84",
+      "git_blob": "be79481c76ebed02644372e2b203d397afdf5534"
+    },
+    "src/external-n05-flow-collector.mjs": {
+      "bytes": 9134,
+      "sha256": "cbfcc3dda74e1c3102dc512d7f10539545db05c7d37c25d325a3ce53caa2bb9b",
+      "git_blob": "847bdbc8f8f5cff5d3bd7993a14d394dbb97e35a"
+    },
+    "src/finalized-chain-events.mjs": {
+      "bytes": 29432,
+      "sha256": "80c04e84774224b868cae02435c4def775ef4f8139fdfe00c7397873a281ac31",
+      "git_blob": "20ad374756b618d4f4123fdf0af22924e4df810b"
+    },
+    "src/flow-turnover-baseline.mjs": {
+      "bytes": 10498,
+      "sha256": "46a1f9f3a5a4b91b30395ea0735bb399b4ed40de02d32f3fb7c56acfd4b3f255",
+      "git_blob": "663ec7148b412a6291ba40355581a7e9cb7cc206"
+    },
+    "src/flow-turnover-collector.mjs": {
+      "bytes": 6551,
+      "sha256": "61a44a590e80235ce8d829c5054b3702a0573c6f72b284c35ea4d7a8fad19c72",
+      "git_blob": "6e8771143ff6ab6f4d519a14576d13e4f4a41a4a"
+    },
+    "src/gate-flow-collector.mjs": {
+      "bytes": 10180,
+      "sha256": "17c6fee8b0db0bdc3dff5ef300c485daec364e83dbafd64ff110c885a178c89f",
+      "git_blob": "d3216e9994821f8d60cec933878b22c5427f117f"
+    },
+    "src/gate-four-hour-flow.mjs": {
+      "bytes": 6644,
+      "sha256": "e2df657d01aa682e0adc195ce19f9e62af85bbf4fbd91b7d5b5bb8eec2c74152",
+      "git_blob": "9be75c4121f03bc2f352c24e043382c1ed81c575"
+    },
+    "src/gate-futures-trade-collector.mjs": {
+      "bytes": 8507,
+      "sha256": "004b0eb558f5846f4669ebc41160f3af9c34ee7e730e5a6570e453af8d2623c5",
+      "git_blob": "1b32e0630d1cbf958b0c9b6691b7174a5df3a6a9"
+    },
+    "src/gate-futures-trade-sample.mjs": {
+      "bytes": 5759,
+      "sha256": "2779234fd5286be45f8bec69c4f6d5605db0815ce56ebb121f38f5b8a368574d",
+      "git_blob": "c6f19b1d6ac587b73ff8df37aec288e8ce20d455"
+    },
+    "src/gate-liquidation-history.mjs": {
+      "bytes": 10155,
+      "sha256": "f1a2e455b65a0420b1080fff01ecc085727dbbd3bb1b4b3d24ee2cab3085ab8d",
+      "git_blob": "e58255d17826e36886a3749981d5e742c1359322"
+    },
+    "src/gate-n12-bounded-trade-sample.mjs": {
+      "bytes": 8446,
+      "sha256": "42e333d065784b9c3fae69ff3efff639b576ba932ef3697e24248936d3c79837",
+      "git_blob": "cdd1623d66f9f35d94eec89e6db01cd26d128899"
+    },
+    "src/gate-public-taker-reference.mjs": {
+      "bytes": 1123,
+      "sha256": "dbac8ba2b1201f45a1079c61a7de7fa15c3dbe9fdf9b614797bb724bd6918e4f",
+      "git_blob": "7a5ee42c883f4ece8848b5db746bb993b359dfca"
+    },
+    "src/gdelt-official-discovery.mjs": {
+      "bytes": 6733,
+      "sha256": "d03c8ee8ceb595a155273672e0361f7477d7b5c2b2199aa03756181943f26a61",
+      "git_blob": "634140f19b96d0897e9c35ec1452094afeb5fa4e"
+    },
+    "src/github-official-releases.mjs": {
+      "bytes": 5278,
+      "sha256": "b956a4aaefbee81d9a9629aa690a205f57670c2572c78d00dbca92773bafb782",
+      "git_blob": "98278e7c6b22ecacbfa064374518f5c297b487b6"
+    },
+    "src/hedera-primary-supply.mjs": {
+      "bytes": 3767,
+      "sha256": "704a51801c161d10a636e4a2b6c41f51f2db60aa04fe50205a3427ede55817a0",
+      "git_blob": "b3e9ecb9d996070397cbae4a2b0460f68a09ccf0"
+    },
+    "src/htx-contract-key.mjs": {
+      "bytes": 269,
+      "sha256": "970f4e69e0bbece58bffe67df5f49d9f933248700fadf85649d3f1fa6c7ce426",
+      "git_blob": "13bbe2e60dd4796b227942bc64a3a3fb482c3cf1"
+    },
+    "src/htx-large-trades-evidence.mjs": {
+      "bytes": 17718,
+      "sha256": "c220c171d4d046a1e821f4c1ad5e5b56539a2539c878c36d9bc5c762ab290b3f",
+      "git_blob": "896bd44e2469dcc6260b07a827af837b8b99d72b"
+    },
+    "src/htx-official-announcements-evidence.mjs": {
+      "bytes": 12208,
+      "sha256": "b03654d34f9730f72c023d93440b094a3a9d2327ce5d921386b0ad7413e3cdef",
+      "git_blob": "01a2c268a8af286380c1f959a6fdb07e668b5acc"
+    },
+    "src/htx-public-risk-evidence.mjs": {
+      "bytes": 12776,
+      "sha256": "2023af92145139497185e5c625321d463f33eed695829ed894fcccd85ef7fc6d",
+      "git_blob": "74226489030a233dde18b4bc88ccac1709913355"
+    },
+    "src/htx-signed-tape.mjs": {
+      "bytes": 31689,
+      "sha256": "1b9767db0c2d32cc99da161d7d74b5d2463aba975bb20e154fa45a99e6c2c086",
+      "git_blob": "961ab72c87c5d5a660f1c63ffa4b2a29c2c77563"
+    },
+    "src/htx-technical-structure.mjs": {
+      "bytes": 33974,
+      "sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337",
+      "git_blob": "4f371785bbf4ac44499c7bcbfbeee8a35ae31052"
+    },
+    "src/htx-trade-json.mjs": {
+      "bytes": 2904,
+      "sha256": "4a63e588c691bc193d7152b39abf5478283947463bd3f09c04ec749e88f0df3d",
+      "git_blob": "e6b27b3a0bc40a3cc09b1dcdea2b7563017b8bd8"
+    },
+    "src/htx-volume-profile.mjs": {
+      "bytes": 12460,
+      "sha256": "3ca75fc7200120d372c690d44f92773a9acd9692d4ef4521b49cfd6d8f1a11cd",
+      "git_blob": "caa59a2fc6e90c3b0630a119a5390948c6233f2f"
+    },
+    "src/idea-basis-facts.mjs": {
+      "bytes": 10757,
+      "sha256": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
+      "git_blob": "240ed926d6fc730363548d008eb61516eccf0adf"
+    },
+    "src/joint-spot-futures-flow.mjs": {
+      "bytes": 14080,
+      "sha256": "df683365fc71935d46bde3da9b5dc87a580fb92e10c78025484347c5b61d69f2",
+      "git_blob": "0a81355334ab3c1e1bac8f19744979ff58bb5f99"
+    },
+    "src/kraken-flow-collector.mjs": {
+      "bytes": 9964,
+      "sha256": "7a569eb38e66d2e2c3bcf192e6720fba8373312987925f1ace3b4483e5a82e8a",
+      "git_blob": "694968ec26c62365348369b7ca7c180d09749744"
+    },
+    "src/kraken-four-hour-flow.mjs": {
+      "bytes": 9353,
+      "sha256": "043e742e2e560ccc0fa6aaf4e91a99e92000ba088de405116f59f64d42acf5fb",
+      "git_blob": "7f35d9bf8e1de26a7c15760b55a59502523e370e"
+    },
+    "src/kraken-memory-reuse.mjs": {
+      "bytes": 1226,
+      "sha256": "bb3ff406ae6942744699d25c02aaa1f7f590ea3498e137a24c1213b4d7656ece",
+      "git_blob": "0f4bd1261d7c1048b31bd333ca9d365e11680825"
+    },
+    "src/kraken-n10-memory-context.mjs": {
+      "bytes": 6347,
+      "sha256": "4efa0726c263b626f618166941678082cc86190dd59ab724e35b63e6bde04b69",
+      "git_blob": "ebd0cc8c5c84bd3090a38f0ff9a4dfe9663a4415"
+    },
+    "src/kraken-n10-price-path.mjs": {
+      "bytes": 9218,
+      "sha256": "840934a2d0d32953184d44a87198389748ac096f5f8c14bd84e7ca2e4a4a1c49",
+      "git_blob": "f06415daf0099ea668f9ec7c4514eb7a278bd6cf"
+    },
+    "src/kraken-n12-bounded-trade-sample.mjs": {
+      "bytes": 7470,
+      "sha256": "a1bac20d910784237bf1a97fd56655b653874e1ce8d340c356929d90b464fc93",
+      "git_blob": "7042066deea29bad004c0cdfb412f99a2a5bc8c4"
+    },
+    "src/kraken-public-taker-reference.mjs": {
+      "bytes": 2116,
+      "sha256": "38c4b5af18c5965bb7b799aaf0104593c0c70540b7ff516539c5b84556128875",
+      "git_blob": "47bf973866ce7c2da8dc3c7b4b3b32a8247980e8"
+    },
+    "src/liquidation-source-acquisition-audit.mjs": {
+      "bytes": 8617,
+      "sha256": "595efecc950c7e4dda86a59673e908245dd1d886fa146ff10247b11474f89b00",
+      "git_blob": "713d28befa0ae528d6d78d59b7aa1599f100b06c"
+    },
+    "src/liquidation-spot-reference.mjs": {
+      "bytes": 3938,
+      "sha256": "c4c79f4ebbc090af02c49c221e06407f453f371e3f071d69205d16399abdcbbc",
+      "git_blob": "e72d2628a995c6c57dbbc7e151541ab551335ed4"
+    },
+    "src/manual-report-formatter.mjs": {
+      "bytes": 11463,
+      "sha256": "5c9eb973c29c61bdb5b415dc6d476cb322a38b5cadd8b984e6f9162852e41680",
+      "git_blob": "1e15e5ed0569179ab7697d530702536c36725670"
+    },
+    "src/market-contracts.mjs": {
+      "bytes": 4142,
+      "sha256": "48914030991b1690c33056489a3d6fda8877eabe883556fbbbccccec84c72680",
+      "git_blob": "2df3d9ef7181fe3783d99f65f5c212d8147f9d18"
+    },
+    "src/n05-source-headroom.mjs": {
+      "bytes": 637,
+      "sha256": "dce9d8b5610dc292409e3acbc2b0dc67027594251003dfe023abea0eb740e1fc",
+      "git_blob": "96b8a609d77233222cf1a812aab5bf7390671f95"
+    },
+    "src/n12-cached-trade-scope.mjs": {
+      "bytes": 1959,
+      "sha256": "a6cbb647afeaa4aa3b236031eeafe6d2da6df806b932623edd8e2a0cfcdefb12",
+      "git_blob": "6989c4fa745d8ee3b37405275ff07e7a3675b0ca"
+    },
+    "src/n12-composite-first-known.mjs": {
+      "bytes": 1233,
+      "sha256": "911ff90aa848ddb857e314cbbd48d1294a1ead975041359d6e6b6f3db3b11d4f",
+      "git_blob": "b88f31695b097cfba82c0b74742bfd6bfa604b30"
+    },
+    "src/n12-kucoin-token-trade-sample.mjs": {
+      "bytes": 8555,
+      "sha256": "a1150019d0d516cda87a0568e85da46c80dbc533e21ede1809d756b922bf0161",
+      "git_blob": "0b1b4abc75090db6f17c396edc6e33c66c195176"
+    },
+    "src/n12-market-trades.mjs": {
+      "bytes": 7513,
+      "sha256": "05b6ea93aebf2195af571724e3040a8b1dd73bf3ec52fb6b87bcaaec0f570dec",
+      "git_blob": "5f0cbc05927259f07d88ee771164fc3e56f432e4"
+    },
+    "src/n12-native-public-trade-collector.mjs": {
+      "bytes": 13275,
+      "sha256": "d0f521604e677ca3b94dc683f88f7a89738fdb57fc709ca092a1ad3a2457ff2b",
+      "git_blob": "cb52c8f41652d4f3c78e9a155059d7d487b26f61"
+    },
+    "src/n12-native-public-trade-sample.mjs": {
+      "bytes": 8730,
+      "sha256": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4",
+      "git_blob": "44060b2f12fee5058e3c204b118fdf9513903070"
+    },
+    "src/n15-initial-source-preference.mjs": {
+      "bytes": 13640,
+      "sha256": "4c3589551dab6d9f02b6c74072e6b86651e88d465fb9d372ebfc61e0340bc668",
+      "git_blob": "a18e4a5438925812b3f6a303994483247fc8e662"
+    },
+    "src/native-evm-finalized-context.mjs": {
+      "bytes": 17454,
+      "sha256": "efbd48828da9bf70814a6163bae1f21669161409efe16ba21dbedfd26f097b19",
+      "git_blob": "8faaac90e5465712fc8a67f9e32d99029d1c2714"
+    },
+    "src/native-ledger-supply.mjs": {
+      "bytes": 10962,
+      "sha256": "5e0f022adbc49068f3f91448cf3716e2cf7b54af63c84aca43690798e00a75e6",
+      "git_blob": "bcbc00f9f3853978514c1dd5f1faec6ed1bfc8ea"
+    },
+    "src/native-liquidation-guard.mjs": {
+      "bytes": 10400,
+      "sha256": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
+      "git_blob": "2d03e64bc5ea4fe3121db6b7e4b59be9649c8f29"
+    },
+    "src/official-events-evidence.mjs": {
+      "bytes": 21292,
+      "sha256": "7daff831b91d7b30245eed8e330345a2b8427f8bd7c8f76ade02db3247944f49",
+      "git_blob": "b8a6de8c800e9de830ab6cbc4236daa0fb9b45e4"
+    },
+    "src/official-token-schedule.mjs": {
+      "bytes": 8540,
+      "sha256": "1221db2d340f3e9ab0fb65e96c8dedd0758fd3084f09210c64868e4775860e00",
+      "git_blob": "9f3fd1a50fd76499dae3873d6c376829990cb194"
+    },
+    "src/poloniex-native-flow-collector.mjs": {
+      "bytes": 10221,
+      "sha256": "9fc8c08ac6b7cea50f04e4290277f84516358d197a0972ab313b2d769dfc6226",
+      "git_blob": "5cdb9c5a1103bdda9e8452015c296ea3032a105c"
+    },
+    "src/poloniex-native-four-hour-flow.mjs": {
+      "bytes": 6958,
+      "sha256": "aaa81352c6c6f1a1acb93f2344a6af22cf038b7cc78c3b5373fa5064e409ed57",
+      "git_blob": "e9a5f533467ac3eaa9f4c940e2a6a43b934dca27"
+    },
+    "src/provider-minute-ledger.mjs": {
+      "bytes": 3870,
+      "sha256": "cbc4ee5440d3f3e1da1bf1cde34a1f809b2fe87d366b8f34a2e3aa6a9be275f3",
+      "git_blob": "088152db767547dd8549d088576c35671b55d0f4"
+    },
+    "src/provider-reference-cache.mjs": {
+      "bytes": 10393,
+      "sha256": "3ecbb81a55827069041a0175cfe9d61de0a92042338bab2d5df7dce4dc96748b",
+      "git_blob": "62e160cc425bdf15afd80bd8084aae2a322a1364"
+    },
+    "src/public-venue-source-budget.mjs": {
+      "bytes": 2063,
+      "sha256": "cc2e33cbe0b5028208039652ed747a3f1fa1a012298c65ce2b3318fa6b5a9747",
+      "git_blob": "7ef52bdafb8fd4d6b21fad0cb916958496b2e27a"
+    },
+    "src/public-venue-source-priority.mjs": {
+      "bytes": 3981,
+      "sha256": "4091e8e25215c663cd79c45c74f04b563d035a653caca27182e733202adf7842",
+      "git_blob": "e026fb87b2f779d2ddda92beca0be110dafb65e5"
+    },
+    "src/published-monthly-supply-schedule.mjs": {
+      "bytes": 8057,
+      "sha256": "22d9be2defa1d0887b4038cc24cbe59fced2c9dd5a29bb427494ca81dd7cbb48",
+      "git_blob": "81ae833500b09f5d469326394d092447483e3e23"
+    },
+    "src/published-token-calendar.mjs": {
+      "bytes": 12498,
+      "sha256": "dbb230238d6fcdb4cef1b9040041b10b6d54e214c6c223cca62b9de7c8a3921c",
+      "git_blob": "cc4891991b76ad406900ace436405c1525f672a1"
+    },
+    "src/reason-registry.mjs": {
+      "bytes": 8090,
+      "sha256": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
+      "git_blob": "905000f5b438272610694319cafce380680dac00"
+    },
+    "src/sector-context.mjs": {
+      "bytes": 4827,
+      "sha256": "6817c4998420387f63ecd853c0b3a16e56e1024850eef0f4100cea4317c55402",
+      "git_blob": "6acf02a257604995b8b81843c0c2cb0a1da3464c"
+    },
+    "src/solana-native-supply.mjs": {
+      "bytes": 2900,
+      "sha256": "3dbdcc492cb602a3c70f23f94e1e5c942d13af331d7c57963351e02768964cc2",
+      "git_blob": "5f893b75da9567792592493f46470b8c5fe9f78e"
+    },
+    "src/source-closure-diagnostics.mjs": {
+      "bytes": 4329,
+      "sha256": "5f8c31b2501ad19a82318824f0b9d25507926e6254fe89c4eaa6c66493ecba8c",
+      "git_blob": "6368339ca011d0e4fb0bdab09059cb91acb0f628"
+    },
+    "src/specialist-candidate-context.mjs": {
+      "bytes": 15407,
+      "sha256": "ce6490755f0e83067b9f790ae4bfff44adbf449f8bf73db6e170f2ddd55999f3",
+      "git_blob": "56cb4b8f0aab92a8cb21f54e2a6609ffd034671f"
+    },
+    "src/stellar-primary-supply.mjs": {
+      "bytes": 3856,
+      "sha256": "f20f632be4628aea66134622c07eb2515f1bdeb4d097bc10cb4a813ead67548c",
+      "git_blob": "cec1bbf1a4a20d23ee538b9f8148642ee216398c"
+    },
+    "src/telegram-plain-facts.mjs": {
+      "bytes": 18447,
+      "sha256": "d8f0f1a7ef17f08c5db716c81bbec867fa096e771f00e85b190de93459d964ed",
+      "git_blob": "344f3b543168972781d4052c7b6be4cc8a45ce00"
+    },
+    "src/two-candidate-policy.mjs": {
+      "bytes": 2407,
+      "sha256": "5da3197efb29f176ad183b4f1f9cacf06c576978ce730699308f2d1a6312bcd5",
+      "git_blob": "9ce84a16485f7fc9aae84228b74214a36fabac37"
+    },
+    "src/tz101-execution-facts.mjs": {
+      "bytes": 10711,
+      "sha256": "b406dad736b61998ff2f4ba7452dec7bee7059cae6d792b5a393a21017ae7001",
+      "git_blob": "da0c1a01bd762cd388397d3567a9eaf90f021f1a"
+    },
+    "src/unified-budget.mjs": {
+      "bytes": 7279,
+      "sha256": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f",
+      "git_blob": "a08b91daf8638ebfd1622d9ea3ecdec475e8bb81"
+    },
+    "src/upstream-proof-utils.mjs": {
+      "bytes": 1464,
+      "sha256": "4560baeb76258bc501b66f01a327d980ef3c3af2c1444814966e99729c730a62",
+      "git_blob": "640cd17b948b2f5fa49acdf316af3c13644aaf25"
+    },
+    "src/verified-asset-route-identity.mjs": {
+      "bytes": 4308,
+      "sha256": "ddb6bbdefd26a32d2e21d6444000d63483765500259b0768e45833d913003eb3",
+      "git_blob": "44fc55fa939a4e1327cd9537aa2e7cd44c08141b"
+    },
+    "src/wikimedia-attention-context.mjs": {
+      "bytes": 7617,
+      "sha256": "f4728024b84653ae1c09a7bd806f5416a6bd0bf5b1257a26f3f9ecd385bad928",
+      "git_blob": "ed621aedf5fc535a7a54ff5d48ced0f0ccef1c06"
+    },
+    "src/wikimedia-page-binding.mjs": {
+      "bytes": 2574,
+      "sha256": "44e443a8b8b9fdca9e16ac70c7eb9605a0d52b75a41744e22c69d4526578722f",
+      "git_blob": "10d0bb42708246a2976c62ca1b23bbed6d362d21"
+    },
+    "src/xrpl-native-payments.mjs": {
+      "bytes": 12288,
+      "sha256": "ceaac318241493d57a63ce0c5bd5e92b2a4fb02f77c9ecf48b092bb3ea988aaf",
+      "git_blob": "5ea2b347a4d753d2e23ccb6c1301fbdc108fa5c4"
+    }
+  },
+  "repo_pins": {
+    "REPORT2_CURRENT_GENERATION.json": {
+      "bytes": 72056,
+      "sha256": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "git_blob": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+    },
+    "current-generation/GENERATION.json": {
+      "bytes": 7431,
+      "sha256": "2361e0c65ef67cd77ddd4ff72deb175e7bc9dc2a9f8160c1aec1c6fa9f1e9580",
+      "git_blob": "483714e171ae77b1039f94d97ac2fdd58f16fa6f"
+    },
+    ".github/workflows/report2.yml": {
+      "bytes": 33581,
+      "sha256": "027c098d4054fa9183b35b2abaae70ec21e9c8bd4ad48bc78b09aa6a60efc24b",
+      "git_blob": "91de85d360d97e69346c563964787eb77c0b202b"
+    },
+    "current-generation/files/src/worker.js": {
+      "bytes": 634229,
+      "sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4",
+      "git_blob": "e5506fc3be8bc4ff6d7d9e361f0a7a47c756115e"
+    },
+    "current-generation/files/runner-main.mjs": {
+      "bytes": 202183,
+      "sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d",
+      "git_blob": "5b5acff1e60a49d765d0c00aa16cff14aacb2c60"
+    }
+  },
+  "full_runtime_pair_count": 618,
+  "full_runtime_pair_rule": "All relative paths and bytes equal except exact target. ROOT must independently authenticate its full618 baseline and scope before importing this case; pair equality alone is not baseline provenance.",
+  "private_code_extracted": false
+}

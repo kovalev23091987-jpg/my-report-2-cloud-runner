@@ -1,0 +1,44 @@
+{
+  "schema": "GROUPED_WATCH_DRAFT_BINDINGS_V1",
+  "working_base": "7e6fd776f5f6a3576394a5805a43a96a48e8beec",
+  "target": "current-generation/files/src/anomaly-native-due-watch.mjs",
+  "before": {
+    "bytes": 28277,
+    "sha256": "15fdf46bf82bef1b513e96cffbcb07bcc2b57afcc9cd9f99bf6e5db6e29789fa"
+  },
+  "after": {
+    "bytes": 31123,
+    "sha256": "777a363e9befc1e5e8561aa291dc833b37f08281707351df19d8f96f057802ac"
+  },
+  "helper": {
+    "start_marker": "// ONE closed check => one new DRAFT. This is not delivery/READY/admission.\nfunction groupClosedWatchDrafts(",
+    "end_marker": "function advanceCapturedWatch(origin,now_ts){",
+    "bytes": 3029,
+    "sha256": "a33c34cbd5bae6d614f33648e61c540e66c48af19ed8f82434faf9ab4ccebaa7"
+  },
+  "prelude": {
+    "text": "const need=(ok,reason)=>{if(!ok)throw Error(reason);},clone=structuredClone;\n",
+    "sha256": "f1e362c8625948ef629cc10d8bd91393e47a7ae5e1a9baa6b07fafbf2b01e9d7"
+  },
+  "old_actual_drafts_statement": "  const drafts=Object.fromEntries(Object.entries(observed.state.outbox).map(([id,o])=>['watch:'+id,{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id:snapshot_id,message_ru:draftNotice(observed.state,id).text,transition:clone(o.transition)}]));\n",
+  "new_actual_drafts_statement": "  const drafts=groupClosedWatchDrafts({origin,snapshot_id,snapshot,observed,fingerprint});\n",
+  "public_dependency_pins": {
+    "current-generation/files/src/anomaly-native-domain.mjs": {
+      "bytes": 24309,
+      "sha256": "5a366465cf546a08c022c04f070a125fb41cd4cc7601b0ce82254badd30bd4c6"
+    },
+    "anomaly-research/observer/observer.mjs": {
+      "bytes": 24988,
+      "sha256": "3284152626d52bc51079819726dac44e1e9f28643a8bfb240e5606ab7762e739"
+    },
+    "anomaly-research/outbox/ATOMIC_OUTBOX_CONTRACT_RU.md": {
+      "bytes": 7841,
+      "sha256": "3d8dfb3a21b4be45a2d2c5f485fb9771ce3c5c15943f6aee5beaebd3ad85ca8c"
+    },
+    "current-generation/files/migrations/20261021_anomaly_domain.sql": {
+      "bytes": 15263,
+      "sha256": "aaa82c6a0b518c087e8f6b8aeee11d0d7456690cf57c8cae6afa68d7c9ba6592"
+    }
+  },
+  "author_execution": "UNEXECUTED"
+}
