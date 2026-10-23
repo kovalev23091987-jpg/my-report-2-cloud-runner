@@ -1,0 +1,50 @@
+{
+  "schema": "LEGACY_STATISTICS_OBSERVED_ZERO_NEW_DEFECT_V1",
+  "current_main": "4969da83d00e47c00e48d91ad898e4c1575c1f92",
+  "scope": "Existing production source-profile metadata only, outside Telegram/newanomaly audit",
+  "producer": {
+    "path": "current-generation/files/src/liquidation-outcome-calibration.mjs",
+    "pin": {
+      "bytes": 9464,
+      "sha256": "60a0d03eea4938302532a30709e90d99c0b0d1283ec74c976331cf45c58ab493"
+    },
+    "schema_storage_type": "ewma_accuracy REAL NOT NULL; observations INTEGER NOT NULL",
+    "writer": "   await db.batch([db.prepare(`UPDATE report2_liquidation_signal_outcomes SET status='SETTLED',settled_ts=?2,outcome_price=?3,outcome_move_pct=?4,hit=?5 WHERE signal_id=?1 AND status='PENDING'`).bind(row.signal_id,now,price,move,hit?1:0),db.prepare(`INSERT INTO report2_liquidation_predictive_health(source_id,observations,hits,ewma_accuracy,predictive_weight_factor,eligible,updated_ts) VALUES(?1,?2,?3,?4,1,0,?5) ON CONFLICT(source_id) DO UPDATE SET observations=excluded.observations,hits=excluded.hits,ewma_accuracy=excluded.ewma_accuracy,predictive_weight_factor=1,eligible=0,updated_ts=excluded.updated_ts`).bind(row.source_id,observations,hits,ewma,now)]);settled++;}",
+    "summary_qualification": " async function summary(){await install();const result=await db.prepare(`SELECT source_id,observations,hits,ewma_accuracy,predictive_weight_factor,eligible,updated_ts FROM report2_liquidation_predictive_health`).all();return{version:LIQUIDATION_OUTCOME_CALIBRATION_VERSION,min_observations_before_weighting:MIN_PREDICTIVE_OBSERVATIONS,legacy_metric:true,activation_disabled:true,activation_protocol_required:'T16_5',sources:result?.results||[]};}",
+    "native_rows_read_or_changed": 0
+  },
+  "loader": {
+    "path": "current-generation/files/src/liquidation-source-weighting.mjs",
+    "pin": {
+      "bytes": 14284,
+      "sha256": "85f9061717fa828e641c69c4deacfc16dcb6b25a50cf28615cc8bda99952d9dd"
+    },
+    "SQL_alias_unchanged": "  let statement=db.prepare(`SELECT h.source_id,h.attempts,h.usable_runs,h.not_closed_runs,h.reliability,h.last_status,h.updated_ts,p.observations AS predictive_observations,p.ewma_accuracy AS predictive_accuracy,p.predictive_weight_factor,p.eligible AS predictive_eligible,'SHADOW' AS activation_state,'LEGACY_DISABLED' AS eligibility_protocol${prior} FROM report2_liquidation_source_health h LEFT JOIN report2_liquidation_predictive_health p ON p.source_id=h.source_id WHERE h.source_id IN (SELECT value FROM json_each(?${prior?5:1}))`);",
+    "same_source_identity_join": true,
+    "SQL_LEFT_JOIN_absence_remains_unknown": true
+  },
+  "consumer": {
+    "path": "current-generation/files/src/liquidation-source-weighting.mjs",
+    "name": "buildLiquidationSourceWeightProfile",
+    "before_line": "  return {source_id:id,responsibility:LIQUIDATION_SOURCE_ROLES[id]||'Verified supplemental liquidation context',attempts,usable_runs:Math.max(0,Number(row?.usable_runs)||0),not_closed_runs:Math.max(0,Number(row?.not_closed_runs)||0),reliability:Number(reliability.toFixed(4)),predictive_observations:predictiveObservations,predictive_accuracy:predictiveObservations?Number(row?.predictive_accuracy)||null:null,predictive_weight_factor:Number(predictiveFactor.toFixed(4)),predictive_weight_eligible:predictiveEligible,selection_weight:Number(Math.max(0.5,(0.5+reliability)*predictiveFactor).toFixed(4)),exploration_floor:0.5,last_status:row?.last_status||null,updated_ts:Number(row?.updated_ts)||null};",
+    "exact_defect": "For numeric raw0 and predictive_observations>0, Number(0)||null returnsNULL. Valid observed0 disappears; absence is indistinguishable from0 in metadata. This is a static source-level counterexample, NOT observed native incident.",
+    "proposed_local_guard": "  const reportedAccuracy=typeof row?.predictive_accuracy==='number'&&Number.isFinite(row.predictive_accuracy)&&row.predictive_accuracy>=0&&row.predictive_accuracy<=1?row.predictive_accuracy:null;\n",
+    "proposed_field": "predictive_accuracy:predictiveObservations>0?reportedAccuracy:null"
+  },
+  "existing_actual_caller": {
+    "runner_path": "current-generation/files/runner-main.mjs",
+    "store_creation_line": "    const sourceWeightStore=createLiquidationSourceWeightStore({db:env.DATA_DB});",
+    "service_path": "current-generation/files/src/liquidation-extension/combined-runner-service.mjs",
+    "load_line": "  let healthRows=[];try{healthRows=source_weight_store?await source_weight_store.load(lanes,{contract:params.contract,run_id:params.run_id,now:clock()}):[];}catch{healthRows=[];}",
+    "consumer_line": "  const weighted=planLiquidationSourceOrder({contract:params.contract,run_id:params.run_id,now:clock(),preferred:lastRotation.preferred,lanes,rows:healthRows,costs:{HYPERLIQUID_NATIVE:hlCost,GTRADE_NATIVE:secondary?.estimateUsefulHttpCost?.(params)??(sharedGtrade?0:3),LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1,DYDX_PINNED_NATIVE:dydx?.estimateHttpCost(params)??3},exact:lanes.filter(lane=>lane==='DYDX_PINNED_NATIVE'&&dydx.hasRoutingHint(params)||lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE'||lane==='HYPERLIQUID_NATIVE'&&(primary.nativeMarketCoverage(params).status==='SUPPORTED'||provenHints.has(lane)||structuralHints.has(lane)||primary.hasWalletRoutingHint(params))||lane==='GTRADE_NATIVE'&&secondary?.nativeMarketCoverage?.(params)?.status==='SUPPORTED'),cached:[...(dydx?.hasRunSnapshot(params.run_id)?['DYDX_PINNED_NATIVE']:[]),...(sharedGtrade?['GTRADE_NATIVE']:[]),...(primary.hasFreshNativeAccount(params)?['HYPERLIQUID_NATIVE']:[])],clock_capable:lanes.filter(x=>x==='DYDX_PINNED_NATIVE'||x==='HYPERLIQUID_NATIVE'||x==='GTRADE_NATIVE')});lastWeightProfile=weighted.profile;",
+    "existing_summary_field": "source_weighting.profile:lastWeightProfile; no report form changed"
+  },
+  "unchanged_known_cost_contract": {
+    "path": "current-generation/files/src/liquidation-source-weighting.mjs",
+    "recordRole_actual_HTTP_line": "  const http=Number.isSafeInteger(actual_http)&&actual_http>=0?actual_http:null;",
+    "unknown_cost_stays_NULL_not_zero": true,
+    "new_SQL_or_provider_requests": 0,
+    "actual_native_read_cost": null
+  },
+  "old_studies_geometry_weeklyabsence_journal_projection_anomaly_cases_reexecuted": 0
+}
