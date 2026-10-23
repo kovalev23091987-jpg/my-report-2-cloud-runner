@@ -240,7 +240,7 @@ export async function runCorrelatedBridgeStageOnly(){
  console.log(JSON.stringify({status:stageProof?.status??'NATIVE_STAGE_NOT_STARTED',reason:outerReason,head,github_HTTP,cloudflare_HTTP,activation_attempts:0,settings_mutations:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0}));return stageProof;
 }
 
-const EXISTING_ACTIVATION_SOURCE_BINDING=Object.freeze({"module_path":"runner/retention-bridge-provenance.mjs","module_sha256":"f25b2e35e30a6457e5322b72b069c904c3bc2ce9de1956eb292d6238036f79c2","consumer_sha256":{"tools/run-paid-sliding-history-20261018.mjs":"d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c","tools/recover-lossless-retained-history-20261014.mjs":"1335612c4b492cb75142f523e864aa4cc98c81b3dd32a64da850f6891f76b2f4"}});
+const EXISTING_ACTIVATION_SOURCE_BINDING=Object.freeze({"module_path":"runner/retention-bridge-provenance.mjs","module_sha256":"6c6dd7294e4c8c235ffe29121faa359e40a4307dbbfd78762624569b3f257045","consumer_sha256":{"tools/run-paid-sliding-history-20261018.mjs":"d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c","tools/recover-lossless-retained-history-20261014.mjs":"1335612c4b492cb75142f523e864aa4cc98c81b3dd32a64da850f6891f76b2f4"}});
 // PROPOSED append to the existing CLI. Author execution: ZERO.
 // SOURCE binding is a frozen literal in source-binding.mjs.txt, never a caller option.
 import activationPath from 'node:path';

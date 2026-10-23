@@ -1,12 +1,12 @@
 {
   "schema": "FIRST_PAID_COMPATIBILITY_EXISTING_ACTIVATION_QUALIFICATION_V1",
   "semantic_status": "UNEXECUTED",
-  "base_main": "634b36c7abab94c1fa015ce9cb21c07a5c7134d1",
+  "base_main": "29064366821eb508317c8ac6ab1eb338ab8b046e",
   "baseline_targets": [],
   "targets": {
     "runner/retention-bridge-provenance.mjs": {
-      "sha256": "f25b2e35e30a6457e5322b72b069c904c3bc2ce9de1956eb292d6238036f79c2",
-      "bytes": 14404
+      "sha256": "6c6dd7294e4c8c235ffe29121faa359e40a4307dbbfd78762624569b3f257045",
+      "bytes": 14474
     },
     "tools/run-paid-sliding-history-20261018.mjs": {
       "sha256": "d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c",
@@ -17,7 +17,7 @@
       "bytes": 21393
     },
     "tools/rollout-correlated-sql-bridge-20261022.mjs": {
-      "sha256": "16ca55ab14511828016a741995fa16cf6eb71bb9ba5ad21d6a14bc4ed1e29ae2",
+      "sha256": "8fd53dba375b575435e3863050faaa5651500b566d322b8b4913af156db21dfc",
       "bytes": 70250
     },
     ".github/workflows/current-bridge-module-inspection-20261016.yml": {
@@ -27,13 +27,13 @@
   },
   "components": [
     {
-      "path": "checkpoints/source-worker-correlated-bridge-paid-compatibility-20261022/connected.mjs",
+      "path": "checkpoints/correlated-bridge-existing-version-activation-connected-20261022/source-case/connected.mjs",
       "export": "runCorrelatedBridgePaidCompatibilityConnected",
       "output": "paid-compatibility-component.json",
       "groups": 8
     },
     {
-      "path": "anomaly-research/correlated-bridge-existing-version-activation-20261022/connected.mjs",
+      "path": "checkpoints/correlated-bridge-existing-version-activation-connected-20261022/activation-case/connected.mjs",
       "export": "runExistingBridgeActivationConnected",
       "output": "existing-activation-component.json",
       "groups": 12
@@ -74,5 +74,8 @@
     }
   },
   "native_activation_executed": false,
-  "old_components_replayed": 0
+  "old_components_replayed": 0,
+  "repair_only_failed_SOURCE_preflight_and_FIRST_THIRD": true,
+  "original_failed_run": 39918812667,
+  "original_completed_source_groups": 0
 }
