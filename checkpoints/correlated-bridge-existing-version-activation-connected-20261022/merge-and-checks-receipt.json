@@ -1,0 +1,144 @@
+{
+  "schema": "CENTRAL624_COMPOSED_QUALIFICATION_AND_SAVE_RECEIPT_V1",
+  "PR": 624,
+  "frozen_head": "486a1665d9202997d8b2f70e628a6f9ad42904e3",
+  "merge_head": "626d68a9fe6037c13095c9c876431c42881e48cf",
+  "files": 86,
+  "all_files_exact_Git_blob_readback": true,
+  "authority_roots_unchanged": 9,
+  "actual_required_checks": [
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "id": 120311188967
+    }
+  ],
+  "runtime_files": 618,
+  "runtime_inventory": "61c0db2a16487fed0fd7774701a6232e7c61a3ee74b603755500905b36c1fbc3",
+  "native_activation": false,
+  "Telegram_restored": false,
+  "originals": [
+    {
+      "PR": 622,
+      "head": "bd4902b70772f8dcbbcc539093b3ab6ed3034fe1",
+      "files": 15,
+      "state": "CLOSED_UNMERGED",
+      "all_original_Git_blobs_exact_through_624": true
+    },
+    {
+      "PR": 623,
+      "head": "bb413fd986bdbb81e6949b6869dbdb4025a9afae",
+      "files": 18,
+      "state": "CLOSED_UNMERGED",
+      "all_original_Git_blobs_exact_through_624": true
+    }
+  ],
+  "recorded_utc": "2026-10-23T08:26:43.983Z",
+  "qualification": {
+    "run_id": 39922080777,
+    "head": "10b5eca9adfb6e252a6721e7ac4410e861a4e037",
+    "status": "success",
+    "actual_SPEC_pass": 1,
+    "actual_SPEC_fail": 0,
+    "artifact": {
+      "id": 12487023597,
+      "size_in_bytes": 129688,
+      "digest": "sha256:67d89ab1870bf7fedc6a4b8c6db83a21b12fbcf39666315d0f6d40b7307ea113"
+    },
+    "members": [
+      {
+        "path": "assembly.json",
+        "bytes": 261,
+        "sha256": "dcae3c7d024f3be9db13c67a7afed042b5c08337d183205f82d23784cb2e8737"
+      },
+      {
+        "path": "baseline-binding.json",
+        "bytes": 355,
+        "sha256": "a3d47025fbcd01351b575a0960f7d2c24d00a98b886b746f7e46e1d916cee929"
+      },
+      {
+        "path": "baseline-cleanup.json",
+        "bytes": 50,
+        "sha256": "34a35fcfccd0b57a16b40e150b18e4c77b6163ea825ecc52cdc0f0ee6ab0c51a"
+      },
+      {
+        "path": "connected-tests.log",
+        "bytes": 208,
+        "sha256": "daf4c8777eafa9c0b0ba254d0fbe08529fdfb2aebcc63e814260b18cd6dba9a0"
+      },
+      {
+        "path": "guard-after.json",
+        "bytes": 198029,
+        "sha256": "64031d51c81030ccf27452c125e53a5303b1f62c2b48fee25352e2038cec5d92"
+      },
+      {
+        "path": "guard-before.json",
+        "bytes": 198030,
+        "sha256": "7d27c5a51a1b6689c60a74b117cc36f68c52b074d9df9ae94bffa9a4c82412f3"
+      },
+      {
+        "path": "late-activation-component.json",
+        "bytes": 2187,
+        "sha256": "4e826c841039488c3a0b44e58e2d6da3b8e1ab754ae2cd8cb7904602d20c3e6f"
+      },
+      {
+        "path": "private-input-cleanup.json",
+        "bytes": 90,
+        "sha256": "7cdca2bf80f14f2adb4f0eb370f182b82c8cef7fff7862ab7e43262c8ae340a1"
+      },
+      {
+        "path": "result.json",
+        "bytes": 890,
+        "sha256": "5f3ea43adaab3551c23c189a33610311a7c20f1b882c61eddcca5993fbe560b6"
+      }
+    ],
+    "late_actual_groups": 2,
+    "late_actual_variants": 3,
+    "prior_source8_complete_and_third10_partial_reused_not_replayed": true,
+    "composed_total_CONTROLLED_groups": 20,
+    "not20inONEactualrun": true,
+    "raw_original_failure_run399188_and399203_preserved": true
+  },
+  "peer_precision": {
+    "schema": "COMPOSED_ACTUAL_RESULT_PEER_LIMITS_V1",
+    "SOURCE": {
+      "result": "ACCEPTED_WITH_LIMITS",
+      "open_blockers": 0,
+      "actual_returned_groups": 8
+    },
+    "THIRD": {
+      "result": "ACCEPTED_WITH_LIMITS",
+      "open_blockers": 0,
+      "prior_run": 39920325159,
+      "actual_partial_groups": 10,
+      "partial_variants": 23,
+      "partial_outputs": 21,
+      "whole12_return_exists": false,
+      "late_run": 39922080777,
+      "late_groups": 2,
+      "late_variants": 3,
+      "late_spec_pass": 1,
+      "late_spec_fail": 0
+    },
+    "composition": "8 returned +10 actual partial +2 failed-tail only across runs; never20 in one actual run",
+    "late_binding_flags": "FS-attestation/core/negative-positive fields are shared-code/prior-composition context; actual late2 ran initializer timeout/earlier-abort and workflow text only. No repeated FS/core qualification claimed.",
+    "member_verification": "Root wholeZIP verified; Third all9 late+3 needed second FULLlocalmembers verified; no redownload/reexecution",
+    "native_activation": false,
+    "Telegram_restored": false
+  },
+  "native": {
+    "status": "NOT_DISPATCHED_MINIMUM_LEASE_HEADROOM_UNAVAILABLE",
+    "minimum_initialize_headroom_ms": 600000,
+    "owner_expires_ts": 1792744165011,
+    "activation_attempts": 0,
+    "reupload": 0,
+    "settings_mutations": 0,
+    "SQL": 0,
+    "providerHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "old_active_preserved_by_no_mutation": true
+  },
+  "automaticMAIN": "SOURCE assigned one actual exactmerge result receipt; no manual dispatch or borrowed old suite",
+  "attach624": "AttemptedONCE rejected identitycount100; linkvalid/no retry/delete"
+}
