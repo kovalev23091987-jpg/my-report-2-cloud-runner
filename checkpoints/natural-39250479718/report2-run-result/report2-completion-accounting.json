@@ -1,0 +1,1073 @@
+{
+  "schema": "REPORT2_FULL_COMPLETION_ACCOUNTING_V1",
+  "head": "9d03c094375e78067a45fc754523f0ae6314397a",
+  "cloud_run": "39250479718",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "run_id": "1792412076494-1792412090239",
+  "source": "schedule",
+  "started_ts": 1792412076494,
+  "recorded_ts": 1792412203161,
+  "canonical_status": "CLOSED",
+  "candidate_count": 2,
+  "reservation_id": "R2RUN:1792412076494:c22cfcfe6fa3d49f",
+  "reservation": {
+    "ok": true,
+    "status": "CLOSED_BURST",
+    "runs_per_day": 47,
+    "rows_read": 54000,
+    "rows_written": 840,
+    "daily_reserved_if_all_runs": {
+      "rows_read": 3499996,
+      "rows_written": 69983
+    },
+    "daily_limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    },
+    "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+    "nominal_rows_read": 74468,
+    "nominal_rows_written": 1489
+  },
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-19",
+      "run_count": 197,
+      "reserved_rows_read": 1238800,
+      "reserved_rows_written": 22192,
+      "measured_rows_read": 788298,
+      "measured_rows_written": 8869,
+      "unknown_ops": 0,
+      "unfinished_count": 0,
+      "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+      "raw_reserved_rows_read": 1238800,
+      "raw_reserved_rows_written": 22192,
+      "adaptive_effective_rows_read": 1238800,
+      "adaptive_effective_rows_written": 22192,
+      "unfinished_reservations_charged_by_own_ledger_caps": true,
+      "no_completed_reservation_refund": true
+    },
+    "next_reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "projected_reserved": {
+      "rows_read": 1292800,
+      "rows_written": 23032
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "ledger_finalization": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1792412076494:c22cfcfe6fa3d49f",
+    "source_run_id": "1792412076494-1792412090239",
+    "measured_rows_read": 39745,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 517,
+    "measured_requests_accounted": 712,
+    "unknown_ops": 0
+  },
+  "usage_before_finalization": {
+    "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+    "measured_rows_read": 39745,
+    "measured_rows_written": 516,
+    "measured_requests": 711,
+    "unknown_ops": 0,
+    "run_burst_cap": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "run_headroom": {
+      "rows_read": 14255,
+      "rows_written": 324
+    },
+    "runs_per_day": 47,
+    "maximum_reserved_daily_rows_read": 2538000,
+    "maximum_reserved_daily_rows_written": 39480,
+    "naive_projected_daily_rows_read": 1868015,
+    "naive_projected_daily_rows_written": 24252,
+    "safety_budget_daily_rows_read": 3500000,
+    "safety_budget_daily_rows_written": 70000,
+    "daily_admission_status": "CLOSED",
+    "top_targets": [
+      {
+        "target": "batch:liquidation_cluster_state",
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:opportunity_shadow_outcome",
+        "requests": 2,
+        "rows_read": 6552,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:liquidation_events",
+        "requests": 1,
+        "rows_read": 3065,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:v3_early_candidate_wave",
+        "requests": 7,
+        "rows_read": 2522,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:opportunity_shadow_event",
+        "requests": 2,
+        "rows_read": 2048,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:report2_market_snapshot_batch_v1",
+        "requests": 63,
+        "rows_read": 1638,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_liq_source_allowance_shadow",
+        "requests": 22,
+        "rows_read": 955,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:fast_move_watch_state",
+        "requests": 4,
+        "rows_read": 496,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      {
+        "target": "first:sqlite_master",
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:fast_move_watch_generation",
+        "requests": 1,
+        "rows_read": 373,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      {
+        "target": "run:report2_command_v2",
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_market_snapshot_batch_v1",
+        "requests": 5,
+        "rows_read": 242,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    ]
+  },
+  "usage_after_analytics_lease_release": {
+    "requests": 714,
+    "rows_read": 39748,
+    "rows_written": 518,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 31,
+        "rows_read": 10,
+        "rows_written": 47,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 28,
+        "rows_read": 2,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "run:report2_runtime_lease_v1": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_runtime_lease_v1": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_command_v2": {
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_command_v2": {
+        "requests": 1,
+        "rows_read": 163,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_scheduler_job_ownership_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_maintenance_cadence_shadow": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_maintenance_cadence_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 198,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 101,
+        "rows_read": 59,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 32,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 24,
+        "rows_read": 21,
+        "rows_written": 27,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_signal_outcomes": {
+        "requests": 1,
+        "rows_read": 179,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_predictive_health": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 22,
+        "rows_read": 955,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_candidate_task_v2": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_task_v2": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_market_snapshot_batch_v1": {
+        "requests": 5,
+        "rows_read": 242,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:scan_runs": {
+        "requests": 1,
+        "rows_read": 5,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:scan_runs": {
+        "requests": 4,
+        "rows_read": 181,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_candidate_wave": {
+        "requests": 7,
+        "rows_read": 2522,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 63,
+        "rows_read": 1638,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_market_microstructure_1m": {
+        "requests": 1,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 6,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_feature_snapshot": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:full_evidence_shadow_log": {
+        "requests": 3,
+        "rows_read": 2,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "first:v3_telegram_dispatch_shadow": {
+        "requests": 2,
+        "rows_read": 140,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_recheck_task_shadow": {
+        "requests": 3,
+        "rows_read": 5,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_state": {
+        "requests": 4,
+        "rows_read": 496,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_recheck_queue": {
+        "requests": 2,
+        "rows_read": 22,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_generation": {
+        "requests": 1,
+        "rows_read": 373,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:deep_check_scheduler_state": {
+        "requests": 1,
+        "rows_read": 34,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_monthly_usage": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_monthly_usage": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 29,
+        "rows_read": 27,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 40,
+        "rows_read": 20,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 20,
+        "rows_read": 20,
+        "rows_written": 40,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 20,
+        "rows_read": 20,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_source_cache": {
+        "requests": 4,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_health_observation": {
+        "requests": 27,
+        "rows_read": 129,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 64,
+        "rows_read": 176,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 20,
+        "rows_read": 80,
+        "rows_written": 80,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_health_observation": {
+        "requests": 11,
+        "rows_read": 0,
+        "rows_written": 33,
+        "unknown_ops": 0
+      },
+      "first:sqlite_master": {
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_role_observation": {
+        "requests": 2,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 6,
+        "rows_read": 6,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:report2_liquidation_source_health": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_liquidation_source_health": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_liquidation_role_observation": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "run:json_each": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_shadow_observation": {
+        "requests": 3,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_cluster_state": {
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_coinalyze_catalog": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_gate_contract_identity": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_cross_exchange_risk_cache": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:report2_cross_exchange_risk_cache": {
+        "requests": 2,
+        "rows_read": 9,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_cross_exchange_catalog": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_volume_profile_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_outcome": {
+        "requests": 2,
+        "rows_read": 6552,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 77,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 2048,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_outcome": {
+        "requests": 3,
+        "rows_read": 180,
+        "rows_written": 62,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_funnel": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:shadow_decision_log": {
+        "requests": 3,
+        "rows_read": 19,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:multi_wave_campaign_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:full_evidence_shadow_log": {
+        "requests": 4,
+        "rows_read": 16,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:canonical_publication_shadow": {
+        "requests": 3,
+        "rows_read": 6,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 6,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_run_log": {
+        "requests": 2,
+        "rows_read": 11,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_gate_contract_identity": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:cron_runs": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:scan_runs": {
+        "requests": 1,
+        "rows_read": 155,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_events": {
+        "requests": 1,
+        "rows_read": 3065,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_realized_liquidation_aggregate": {
+        "requests": 8,
+        "rows_read": 8,
+        "rows_written": 24,
+        "unknown_ops": 0
+      },
+      "batch:v3_realized_liquidation_density_5m": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_user_lifecycle_shadow": {
+        "requests": 2,
+        "rows_read": 27,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 34,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_user_lifecycle_shadow": {
+        "requests": 4,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_pipeline_health_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_pipeline_health_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 76,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 2,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 72,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_telegram_dispatch_shadow": {
+        "requests": 3,
+        "rows_read": 6,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A2": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A3": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A4": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "existing_run_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792412076494-1792412090239",
+    "recorded_ts": 1792412203160,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 28,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 112,
+      "reported_remaining_slots": 52,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 714,
+        "rows_read": 39748,
+        "rows_written": 518,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 14252,
+        "rows_written": 322
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 1238800,
+      "reserved_rows_written": 22192,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 3,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 3,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "analytics_lease": {
+    "finished": true,
+    "status": "RELEASED"
+  },
+  "statistics": {
+    "maintenance": {
+      "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+      "source": "schedule",
+      "unified_enabled": true,
+      "scheduled_minute_utc": 14,
+      "low_priority_cadence_due": false,
+      "claim": {
+        "status": "NOT_DUE",
+        "claimed": false,
+        "due": false,
+        "job_key": null,
+        "interval_ms": null,
+        "last_success_ts": 1792409794029,
+        "next_due_ts": 1792413394029,
+        "lease_owner": null,
+        "lease_started_ts": null,
+        "lease_expires_ts": null
+      },
+      "completion": null,
+      "projection_SQL_added": 0,
+      "projection_HTTP_added": 0
+    },
+    "block_weights": {
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "sourceHTTP": 0
+    },
+    "discovery_recall": {
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "scheduled_minute_utc": 14,
+      "shadow_only": true,
+      "auto_send": false
+    },
+    "prospective_gate": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 39745,
+        "rows_written": 516,
+        "requests": 711,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 3000,
+        "rows_written": 9
+      },
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "remaining": {
+        "rows_read": 14255,
+        "rows_written": 324
+      }
+    },
+    "prospective": {
+      "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+      "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "scheduled_minute_utc": 14,
+      "calibration_only": true,
+      "live_probability": null,
+      "validated_signal": false,
+      "trading_execution": false
+    }
+  },
+  "delivery": {
+    "version": "post-v7-bound-telegram-delivery-v5-finalize-invisible-removal-20260928",
+    "mode": "CANONICAL_BOUND_DELIVERY",
+    "network_send": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "original_terminal": {
+      "status": "NO_ELIGIBLE_ORIGINAL_TERMINAL",
+      "queued": false
+    },
+    "reconciliation": {
+      "status": "CLOSED",
+      "processed": 1,
+      "capacity_deferred": 0,
+      "source_run_id": "1792412076494-1792412090239",
+      "executor_run_id": "1792412076494-1792412090239",
+      "results": [
+        {
+          "key": "WLD-USDT|LONG|EDW:WLD-USDT:1792412090411:G17|OBSERVE|v3-telegram-shadow-r6",
+          "status": "BOUND_ACTIONABLE",
+          "publication_id": "PUB:9a737a94c9cccd70d7734eec80a410908cfe1e5c",
+          "run_id": "1792412076494-1792412090239",
+          "snapshot_id": "S392:WLD-USDT:1792412150140"
+        }
+      ]
+    },
+    "lifecycle": [
+      {
+        "key": "WLD-USDT|LONG|EDW:WLD-USDT:1792412090411:G17|OBSERVE|v3-telegram-shadow-r6",
+        "status": "SENT",
+        "sent": true,
+        "message_id": "234",
+        "publication_id": "PUB:9a737a94c9cccd70d7734eec80a410908cfe1e5c",
+        "bound_receipt": {
+          "schema": "BOUND_DELIVERY_RECEIPT_V1",
+          "publication_id": "PUB:9a737a94c9cccd70d7734eec80a410908cfe1e5c",
+          "contract": "WLD-USDT",
+          "direction": "LONG",
+          "wave_id": "EDW:WLD-USDT:1792412090411:G17",
+          "lifecycle_event": "OBSERVE",
+          "run_id": "1792412076494-1792412090239",
+          "snapshot_id": "S392:WLD-USDT:1792412150140",
+          "observed_ts": 1792412150140,
+          "analytical_fingerprint": "3fdf4882f40cbebcd4c6821450915c2afc343ab6b2e82a882714b2d4080d0869",
+          "presentation_hash": "5aa1c3fb06ac86e3428f4d8face1ebafdfc8e6650e55288f91d3e99e4259c138",
+          "source_run_id": "1792412076494-1792412090239",
+          "network_result": "CONFIRMED_SENT",
+          "dispatch_finalized": true,
+          "finalization_status": "SENT",
+          "dispatch_state": "SENT",
+          "task_at_delivery": {
+            "state": "PENDING",
+            "due_ts": 1792412450140,
+            "expires_ts": 1792413950140,
+            "run_id": "1792412076494-1792412090239",
+            "snapshot_id": "S392:WLD-USDT:1792412150140"
+          }
+        }
+      },
+      {
+        "key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791710630650:G8|OBSERVE|v3-telegram-shadow-r6",
+        "status": "FAILED_RETRYABLE",
+        "reason": "NOT_CLOSED",
+        "sent": false,
+        "bound_refusal": null
+      }
+    ],
+    "health": [],
+    "sent": 1,
+    "usage_delta": {
+      "rows_read": 287,
+      "rows_written": 15,
+      "requests": 22,
+      "unknown_ops": 0
+    },
+    "secrets_logged": false
+  },
+  "telegram_network_enabled": true,
+  "scope": "FULL_ANALYTICS_AFTER_LEDGER_FINALIZATION_AND_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+  "statement_journals_recorded": false,
+  "whole_day_closed": false,
+  "reservations_refunded": false,
+  "additional_SQL": 0,
+  "additional_source_HTTP": 0,
+  "contains_SQL_params_or_results": false,
+  "secret_values_stored": false
+}

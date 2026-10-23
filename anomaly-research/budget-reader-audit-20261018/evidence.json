@@ -1,0 +1,80 @@
+{
+  "schema": "READ_ONLY_ACTIVE_SOURCE_BUDGET_READER_CONTRACT_AUDIT_V1",
+  "base": "ccda8240ff90d61be57fd5c6010d365d3d3b9960",
+  "files": {
+    "tools/read-active-source-budgets-20261014.mjs": "ec8bba26dac48d821bffc5cf10ad0ff5a8b89eb85bea201cdc043de307148e46",
+    ".github/workflows/active-source-budget-read-20261014.yml": "3b6549729a1b70fa9d36cb2f80392674b429dc4208e8e7e09a96092ca90c0043",
+    "runner/d1-preaction-budget-guard.mjs": "88fd742f0a9791efe9a8208ac96bea6212c9e12210e5000d243c5feca19f7e14",
+    "runner/verified-native-day-reconciliation.mjs": "d9c37ff7a087f69ebec1d3ccb99fedea8f0c30f5fa8207172e95d8d8f65df381",
+    "runner/native-day-reconciliation-tokens.mjs": "08b59ad9b0e1a9f05b5a857d66ca940384d604c4c791b219c742267a0081f883",
+    "runner/report2-d1-adapter.mjs": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+    "runner/native-query-cost-journal.mjs": "8187ae623b5f65abcf4cad0b7a1c3966bfae897b9055db009f7ddf3de77bc057",
+    "runner/native-query-cost-reconciliation.mjs": "df58d235f3030b1ba5622a8faf60f2c8ba5f0c70f2ce7df1c7ad23b8b1c64526",
+    "runner/offline-review-authority.mjs": "f46b33643c469c6f4837faafb5b4172d0e9112bbfdcf414c6c65a28af942e802",
+    "cloudflare/public-collector/private-price-consumer.mjs": "a80dc59228871206c51a475902d6ac1af7b02207d1d6ddbe386bcc4dc42bad73",
+    "current-generation/files/runner-main.mjs": "50c345e9f70393243a377c7fc88fc322e183bd99bc851e1d28a21ca583085dc8",
+    "checkpoints/LATEST_VERIFIED_D1_AGGREGATE_RECONCILIATION.json": "4e88f8245de5d709dc90415a743f2530888531ae3c5560d3ea6c9e75ac02a352",
+    "checkpoints/paid-report-recovery-20261018/UTC18-39081512792-reconciliation.json": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23",
+    "current-generation/files/src/provider-minute-ledger.mjs": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045",
+    "current-generation/files/src/public-venue-source-budget.mjs": "cc2e33cbe0b5028208039652ed747a3f1fa1a012298c65ce2b3318fa6b5a9747",
+    "current-generation/files/src/evidence-source-adapters.mjs": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54",
+    "current-generation/files/src/liquidation-source-http-plan.mjs": "ba1be13cbd1717136e821ae964d1d8ca88225f8e2c1c1c2711b1d6eea5b3a106"
+  },
+  "source_lines": {
+    "old_reader_phase": 23,
+    "old_reader_atomic_admission": [
+      30,
+      35
+    ],
+    "old_reader_readback": [
+      36,
+      40
+    ],
+    "old_reader_business_reads": [
+      41,
+      58
+    ],
+    "old_reader_finalization": [
+      60,
+      66
+    ]
+  },
+  "statically_proven_findings": [
+    "CurrentALL_ACTIVE105phase refused by staleLIQguard beforeDBconstruction",
+    "RawNOTEXISTSunknown has no authenticated historical witness path",
+    "Atomic sums omit nextfull59000R920W",
+    "reserveRunBudget is unconditional INSERT+readback, not atomic daily/2slot admission",
+    "No native journal/bounded beforeRequest guard",
+    "Last routes reply has no following within-run/unknown check before CLOSED",
+    "admitted=false admission attempts are omitted from ledger finalization path",
+    "Finalization ACK lacks subsequent ledger/native delta proof"
+  ],
+  "bounds_unchanged": {
+    "reader_R": 2500,
+    "reader_W": 32,
+    "reader_runs_per_UTC_day": 2,
+    "all_day_R": 3500000,
+    "all_day_W": 70000,
+    "next_full_R": 59000,
+    "next_full_W": 920
+  },
+  "authentic_historical_witness_source_pointer_read_not_requalified": "checkpoints/LATEST_VERIFIED_D1_AGGREGATE_RECONCILIATION.json",
+  "known_historical_unknown": 15,
+  "witness_day": "2026-10-18",
+  "witness_source_run": 39081512792,
+  "witness_reservation_id": "R2RUN:1792281986592:65a2f7d46b6acfcc",
+  "new_or_unmatched_unknown_authorized": false,
+  "current_native_balances_known": false,
+  "tool_plan_job_helper_modules_tests_executed": 0,
+  "native_SQL_market_HTTP_MAIN_Telegram": 0,
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792352331882",
+  "lease_ref": "20f1942b56dc589d60ca74566e8de0cce95306d3",
+  "exact_readback": true,
+  "findings_not_live_reproductions": true,
+  "proposal_is_native_admission": false,
+  "denied_admission_cost_ledger_binding": "NOT_DEFINED_IN_CURRENT_STANDALONE_READER",
+  "cost_journal_alone_proves_ledger_accounting": false,
+  "finalizer_UPDATE_ACK_alone_proves_readback": false,
+  "no_parent_budget_or_new_slot_implicitly_authorized": true,
+  "finalizer_binds_unknown_before_UPDATE_reply": "New finalizer unknown must remain visible in after/journal and cannot be called ledger-closed"
+}

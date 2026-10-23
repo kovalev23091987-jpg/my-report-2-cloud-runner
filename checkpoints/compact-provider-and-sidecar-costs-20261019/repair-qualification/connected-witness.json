@@ -1,0 +1,101 @@
+{
+  "schema": "ONE_NEW_COMPACT_PROVIDER_AND_SOURCE_EXIT_CONNECTED_WITNESS_V1",
+  "new_cases": 1,
+  "PASS": 1,
+  "FAIL": 0,
+  "source_exit_paths": [
+    {
+      "status": "PERSISTENCE_NOT_CLOSED",
+      "CONTROLLED_reported_metadata": [
+        30,
+        20,
+        2,
+        20
+      ],
+      "actual_local_SQL_queries": 4,
+      "local_bridge_transports": 1,
+      "late_persistence_helper_injected": true,
+      "projection_bytes": 1013,
+      "decisions_SQL_and_usage_unchanged": true
+    }
+  ],
+  "provider": {
+    "schema": "NEW_PROVIDER_CAPTURE_COMPACTION_CONNECTED_CONTROLLED_WITNESS_V1",
+    "actual_functions_called": [
+      "assembled createProviderBudgetReceiptCapture.observe/summary",
+      "assembled buildRunBudgetContext",
+      "exact runner completion expression",
+      "saved V1 pure capture for NEW modeled counterexample"
+    ],
+    "original_native_status": "OVERFLOW",
+    "actual_saved_native_inputs": 16,
+    "actual_omitted_native_inputs": 2,
+    "native_omitted_values": null,
+    "native_omitted_timestamps": null,
+    "native_omitted_recovered": 0,
+    "controlled_added_inputs": 2,
+    "total_MODELED_inputs": 18,
+    "modeled_baseline_overflow": 2,
+    "MODELED_proposed_status": "CAPTURED_EARLIER_QUERY_CUTS",
+    "MODELED_preserved_cuts": 18,
+    "MODELED_groups": 6,
+    "actual16_values_NULL_clocks_and_capture_order_equal": true,
+    "repeated_phase_preserved": true,
+    "exact_identity_fields_not_merged": true,
+    "invalid_foreign_and_honest_overflow_preserved": true,
+    "group_record_byte_sizes": [
+      718,
+      721,
+      516,
+      526,
+      521,
+      732
+    ],
+    "technical_frame_bytes": 4815,
+    "frame_capacity_control": {
+      "retained": 104,
+      "overflow": 280,
+      "bytes": 15364
+    },
+    "bounds": {
+      "records": 16,
+      "record_UTF8_bytes": 1024,
+      "frame_UTF8_bytes": 16384
+    },
+    "source_payload_or_cache_or_canonical_mutated": false,
+    "old_context_except_technical_equal": true,
+    "V1_historical_passthrough_equal": true,
+    "NULL_account_month_manual_preserved": true,
+    "admission_authorized": false,
+    "additional_SQL": 0,
+    "additional_HTTP": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "target_sha256": "60528420d20824dbe905e1e16e20c323c4219395709d6dba8460a950d8b162d9",
+    "native_completion_sha256": "a353d57c6fc786c3bc38e9b229f832cc93581c01116270d505b10a35e41eb5f4",
+    "limits": [
+      "Sixteen actual normalized LOCAL ledger observations; two additions are CONTROLLED, never reconstructed native facts",
+      "No native new V2 run/cache/persist/wire/account balance/future grant/CPU heap/day capacity qualification",
+      "No source transport/reservation/SQL is called; only pure capture/context/runner completion expression",
+      "All-run complete remains false even when this modeled18-call diagnostic fits"
+    ]
+  },
+  "bridge_source_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+  "retained_view_route_exercised": true,
+  "original_native132_per_query_split": null,
+  "native182_overrun_fixed": false,
+  "sourceHTTP_nativeSQL_MAIN_Telegram": 0,
+  "ENTRY_followup_or_physicalstorage_performed": false,
+  "old_accepted_tests_repeated": false,
+  "previous_normal_assertions_reused": {
+    "run": 39261526101,
+    "head": "7344acc4d3eaa05af3c1b38917bd2027720f7e5e",
+    "artifact": 12190147880,
+    "digest": "sha256:80693a31697c0ec978ccc380ee127f7bfe9490b85b7ca3d94995bcacab964944",
+    "basis": "Normal loop completed before the first late-helper call failed on fixture signature; original failed-case log and source preserved. Previous normal result object was not written and is not reconstructed.",
+    "normal_case_reexecuted": false
+  },
+  "limits": "Actual local SQLite + exact saved06603 bridge + real RemoteD1 adapter/retained query rewrite. Per-statement counters are CONTROLLED, not a reconstruction of native132/182. Normal canonical rows are absent in the controlled fixture; the late failure uses an explicitly injected persistence helper. No native/ENTRY/dispatch/persistence/whole-day/provider admission qualification."
+}

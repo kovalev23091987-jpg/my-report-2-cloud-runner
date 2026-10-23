@@ -1,0 +1,57 @@
+{
+  "schema": "COINEX_TIA_SCOPED_OFFLINE_VERIFICATION_V1",
+  "working_base": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+  "source_of_truth_main": "07703e786565eb2e0bbb4727f70ef6680115c07b",
+  "lease_commit": "3bedbd4ade48da003b5645555ae762d89479d587",
+  "expected_main_guard_packet_read_before_edits": true,
+  "working_base_difference_only_accepted489_six_files": true,
+  "checks": {
+    "new_audit_syntax": "PASS",
+    "exact_saved_native_reference_and_clock_hash_boundaries": "PASS",
+    "staged_request_example_grid_and_stop_boundaries": "PASS",
+    "reader_all_daily_rows_scope_not_literal_filter": "PASS",
+    "analysis_byte_reproduction": "PASS",
+    "accepted_suites_rerun": 0
+  },
+  "new_official_doc": {
+    "primary": "Celestia native denomination",
+    "market_call": false,
+    "feedback": "409FEEDBACK_WINDOW_EXPIRED retryablefalse; no retry; doesnotaffectsourcefactscope"
+  },
+  "files": {
+    "REVIEW_RU.md": {
+      "bytes": 10645,
+      "sha256": "9b142a9a4dae4d0a429c3b73a5ba369c7a64d8a36fe5c80004d0fbbf3ee02e0a"
+    },
+    "analysis.json": {
+      "bytes": 19832,
+      "sha256": "179fc27b1bc30d4bec90cd9ececf6a186f80e26eefa4348094a085baa82ec64b"
+    },
+    "audit.mjs": {
+      "bytes": 10646,
+      "sha256": "0a601a8c809a585360d35c889717c58eef1ab0adf329bcb2cd1d71fcd90b7ef7"
+    },
+    "native-denom-document.json": {
+      "bytes": 977,
+      "sha256": "f013181421a753f89e3bce6517eff10d100859483f20ecd932480e12c3b21f41"
+    },
+    "qualification-request.json": {
+      "bytes": 11217,
+      "sha256": "c8c3c4198e9da0e3ed6306d2ebaa04f324f45e5960ac41062b028149b8ae0b9b"
+    }
+  },
+  "analysis_sha256": "179fc27b1bc30d4bec90cd9ececf6a186f80e26eefa4348094a085baa82ec64b",
+  "worker_effects": {
+    "marketHTTP": 0,
+    "WS": 0,
+    "nativeSQL": 0,
+    "newrunacquisition": 0,
+    "shared_runtime_changes": 0,
+    "framework_or_productionImports": 0,
+    "deploy_MAIN_Telegram": 0,
+    "unknown_reset_or_reserve_refund": false
+  },
+  "remaining": "CurrentCoinExfutures/epoch/21closedbars/volumeunits/fullhistoricaltakercandle/currentpoolandnativecost/admission NOT_QUALIFIED; conditional5shape isnotactualcoverage.",
+  "pre_freeze_correction": "LiteralCoinEx absence isnot readerfilter: dailyquery returnsALL rows and missing policycapNULL. Not a deployed/DB registryinventory. Coordinator informed.",
+  "staged_scope_whitespace_and_manifest_required_before_commit": true
+}

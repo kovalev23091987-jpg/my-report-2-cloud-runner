@@ -1,0 +1,595 @@
+{
+  "schema": "ANOMALY_FEED_EXISTING_INPUTS_AND_BOUNDED_QUALIFICATION_PLAN_V1",
+  "working_base": "b6e85836267ed3cf9a04e64c449a4ffafd6c8d2c",
+  "task": "Owner two-stage path: already-paid105snapshot HINT_ONLY -> bounded rare-candidate independent-source closed bars/baseline/structure -> existing sampled watch. Full105OHLCV/WS are rejected comparisons, not a requirement.",
+  "lease": {
+    "commit": "4ac5a8191f8f45d78fddb55de75ca01c39c23ed1",
+    "owner": "CODEX:SOURCES:01a14e11:1792351558335",
+    "expires_ts": 1792356358335,
+    "exact_readback": true,
+    "fence_active": false
+  },
+  "allowed_prefix": "checkpoints/source-worker-anomaly-input-feed-20261018/",
+  "coordinator_request": {
+    "thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+    "source_worker": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+    "third_worker": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "event_watch_outcome_retention_outbox_implementation_owned_by_third": true,
+    "new_framework_or_runtime": false
+  },
+  "saved_inputs": {
+    "bulk105": "checkpoints/collector-v10-release-38531281231/approved105-first-natural-funding-coverage.json",
+    "bulk_partial_export_not_full_input": [
+      "checkpoints/collector-v10-release-38531281231/exact105-first-snapshot-native-projection.json",
+      "checkpoints/collector-v10-release-38531281231/original-first-snapshot-native-chunked-read.json"
+    ],
+    "prior_four_candidate_audit": "checkpoints/source-worker-anomaly-source-feasibility-20261018/analysis.json",
+    "prior_new_block_audit": "PR482@fa79b69dd84fe9e68e659e66fd194e2febea0276/checkpoints/source-worker-ct-br-n10-n15-liq-20261018/analysis.json",
+    "accepted_prior_packages_not_rerun": [
+      447,
+      456,
+      459,
+      463,
+      465,
+      476,
+      477,
+      480,
+      481,
+      482
+    ],
+    "post478_natural39158392794": "Coordinator-owned. Do not acquire or repeat audit."
+  },
+  "source_code": [
+    "cloudflare/public-collector/injected-worker-tail.js",
+    "cloudflare/free-history/hourly-archive.mjs",
+    "cloudflare/free-history/spot-archive.mjs",
+    "current-generation/files/src/market-history-reader.mjs",
+    "current-generation/files/src/worker.js",
+    "current-generation/files/src/two-candidate-policy.mjs",
+    "current-generation/files/src/htx-technical-structure.mjs",
+    "current-generation/files/src/opportunity-intelligence-engine.mjs"
+  ],
+  "actual_field_roles": [
+    {
+      "lane": "COLLECTOR_BULK",
+      "population": "Whole provider catalog filtered to approved105 for consumers",
+      "cadence_ms_nominal": 300000,
+      "fields": [
+        "price",
+        "observed_ts",
+        "turnover_24h_usdt",
+        "oi_contracts",
+        "oi_value_usdt",
+        "funding_rate",
+        "funding_interval_hours"
+      ],
+      "source_HTTP_per_cycle": {
+        "warm": 3,
+        "catalog_due": 4
+      },
+      "closed_OHLCV": false,
+      "scope": "Point quotes and rolling24h context; cadence continuity/source schema require actual receipts. Not one candle per5m."
+    },
+    {
+      "lane": "SCALAR_ORIGINAL105",
+      "population": 105,
+      "fields": [
+        "contract",
+        "price",
+        "funding_rate",
+        "funding_interval_hours",
+        "observed_ts",
+        "source_status"
+      ],
+      "closed_OHLCV": false,
+      "scope": "Exact historical105-row witness only; not current coverage and no volume fields."
+    },
+    {
+      "lane": "HOURLY_ARCHIVE",
+      "population": "TARGETS105 when present/qualified",
+      "source_bucket_after_hour_min": [
+        5,
+        25
+      ],
+      "fields": [
+        "contract",
+        "market",
+        "source_status",
+        "price",
+        "observed_ts",
+        "turnover_24h_usdt",
+        "oi_value_usdt",
+        "funding_rate",
+        "funding_interval_hours"
+      ],
+      "closed_OHLCV": false,
+      "scope": "One copied collector sample, not aggregated open/high/low/close/volume of that hour."
+    },
+    {
+      "lane": "SPOT_PAIRED_ARCHIVE",
+      "population": "Only present eligible HTX spot pairs",
+      "fields": [
+        "price",
+        "bid",
+        "ask",
+        "quote_volume_24h",
+        "source_ts"
+      ],
+      "closed_OHLCV": false,
+      "scope": "LAST_TICKER_NOT_CANDLE. Optional spot must not block futures. Preserve owner exclusions on external spot history."
+    },
+    {
+      "lane": "DEEP_TRAJECTORY",
+      "population": "Selected deep candidates, full scheduled plan2; shortlist24 is not a promise of24 candle histories",
+      "native_timeframes": [
+        "1m",
+        "15m",
+        "1h",
+        "1d"
+      ],
+      "direct_30m_4h_1w_in_this_function": false,
+      "fields": [
+        "ts",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume_contracts",
+        "volume_base",
+        "turnover_usdt",
+        "trade_count"
+      ],
+      "source": "futuresTrajectory and non-enumerable _opportunity_shadow_inputs",
+      "scope": "Potential original bars in process, not all105 persisted inputs. public summaries/JSON omit the private array; missing volume cannot be converted from summary0 to proven0."
+    },
+    {
+      "lane": "SAVED_CT_BR_EVENT",
+      "population": 2,
+      "timeframe": "15m",
+      "normalized_1m_rows_per_event": 15,
+      "comparison_baseline_retained": 0,
+      "first_detection_proven": false,
+      "scope": "Prior447 already verified grids and sums; reuse its receipt without rerun. Not all105/multi-scale live detection."
+    }
+  ],
+  "required_candle_contract": {
+    "asset": [
+      "approved_asset",
+      "native_instrument_id",
+      "venue",
+      "market",
+      "contract_code",
+      "instrument_epoch",
+      "linear_or_inverse",
+      "quote",
+      "contract_multiplier",
+      "verified_identity_provenance"
+    ],
+    "bar": [
+      "native_timeframe",
+      "UTC_start_ts",
+      "UTC_end_ts",
+      "native_grid_offset_ms",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_contracts",
+      "volume_base",
+      "turnover_quote",
+      "volume_units",
+      "native_closed_confirmation",
+      "source_as_of_ts",
+      "transport_received_ts",
+      "first_known_ts",
+      "raw_ref",
+      "raw_hash"
+    ],
+    "timeframes_minutes": [
+      15,
+      30,
+      60,
+      240,
+      1440,
+      10080
+    ],
+    "baseline_previous_closed_bars": 20,
+    "event_closed_bars": 1,
+    "absence": "NULL/UNKNOWN/GAP/CENSORED; never zero volume, no-event, no-move or negative outcome.",
+    "aggregation": "Only complete contiguous correctly anchored base bars with same identity/units/source epoch; label derived and separately verify native grid. No quote-to-OHLC reconstruction.",
+    "prospective": "Only actual ingest ACK, preserved first-known and event-close/knowledge lag<=10min; historical/bootstrap bars remain backfill. Source close is not first detection.",
+    "watch": "Existing healthy5m quote path can serve sampled observation, not intrabar OHLC. Contemporary anchor age<=5min and complete postknown sampled path are separate outcome requirements; missing path censored.",
+    "spot": "Futures primary; optional qualified spot context cannot veto a sufficient futures event.",
+    "zero_volume": "A provider-explicit numeric0 on a verified closed bar may be genuine; absent volume or missing bars remainUNKNOWN/GAP. Do not synthesize a flat0-volume bar without an explicit provider contract."
+  },
+  "provider_decisions": [
+    {
+      "provider": "HTX",
+      "role": "Existing source input qualification only when actual main/manual/provider headroom exists",
+      "REST": {
+        "path": "/linear-swap-ex/market/history/kline",
+        "market": "Exact USDT linear perpetual, one contract per request; no documented all105 closed-kline bulk in this retained contract",
+        "size_max": 2000,
+        "size_and_range_mutually_effective": "When size and from/to all present, from/to ignored",
+        "time_units": {
+          "bar_id": "seconds, candle start",
+          "response_ts": "milliseconds",
+          "from_to": "seconds"
+        },
+        "volume": {
+          "vol": "provider contract volume",
+          "amount": "provider coin amount",
+          "trade_turnover": "provider transaction turnover; quote unit requires exact linear contract binding",
+          "count": "provider reported order count, not reconstructed individual raw fills"
+        },
+        "last_bar": "May still be forming. Use native start/end and source time; wall clock alone is not an explicit final receipt.",
+        "weekly": "This REST period table omits1week; do not infer support from mark-price or legacy code."
+      },
+      "WS": {
+        "url": "wss://api.hbdm.com/linear-swap-ws",
+        "topic": "market.$contract_code.kline.$period",
+        "req": "Same topic plus from/to seconds; max2000bars; interval range boundary semantics retained separately",
+        "periods": [
+          "1min",
+          "5min",
+          "15min",
+          "30min",
+          "60min",
+          "4hour",
+          "1day",
+          "1week",
+          "1mon"
+        ],
+        "update_frequency": "On change; numeric max or guaranteed close-push delay NOT_QUALIFIED",
+        "explicit_closed_flag": false,
+        "volume": "vol/amount/trade_turnover distinct, same source-unit caveats",
+        "heartbeat_seconds_nominal": 5,
+        "heartbeat_frequency_may_change": true,
+        "market_payload_compression": "GZIP per general market WS reference; must bound decompressed size",
+        "max_req_per_second_documented": 50,
+        "max_subscriptions_per_second_documented": 40,
+        "max_public_topics_per_connection": null,
+        "max_public_connections": null,
+        "private30_connections_not_public_limit": true,
+        "no_limit_sub_phrase_not_override_stricter_40_per_second": true
+      },
+      "missing": [
+        "Actual closed-bar confirmation against REST, source/grid/units and returned gaps for exactasset",
+        "Public topic/connection/message/byte limits and persistent-host feasibility",
+        "Actual source/day/month/project pool admission and native SQL R/W bounds"
+      ],
+      "eligible_for_activation": false
+    },
+    {
+      "provider": "MEXC",
+      "role": "Owner-preferred new separate source candidate; not connected",
+      "reused_REST": "PR463/476 route/rate/identity/units blockers retained; no refetch of those pages",
+      "WS": {
+        "topic": "sub.kline symbol+interval; push.kline",
+        "periods": [
+          "Min1",
+          "Min5",
+          "Min15",
+          "Min30",
+          "Min60",
+          "Hour4",
+          "Hour8",
+          "Day1",
+          "Week1",
+          "Month1"
+        ],
+        "bar_start": "t seconds",
+        "update_frequency": "On change, numeric upper bound NULL",
+        "explicit_closed_flag": false,
+        "volume_fields": [
+          "a total traded amount",
+          "q total traded volume",
+          "v total volume"
+        ],
+        "volume_base_quote_contract_mapping": null,
+        "provider_as_of_timestamp_beyond_bar_start": null,
+        "connection_limit": null,
+        "topic_limit": null,
+        "heartbeat_contract": null
+      },
+      "missing": [
+        "Actual exact native/chain binding per target",
+        "a/q/v scale and field presence (sample omits v)",
+        "Finality/source-asof/reconnect gap reconciliation and public connection/message bounds"
+      ],
+      "eligible_for_activation": false
+    },
+    {
+      "provider": "BINGX",
+      "role": "Owner-preferred new separate source candidate",
+      "reused": "Existing39docs and459REST/rate/identity plans",
+      "new_primary_directory_read": "Directory exposed existing API reference, no new usable WS schema in returned content",
+      "WS_semantics": "NOT_QUALIFIED; this is not proof WS is unsupported",
+      "eligible_for_activation": false
+    },
+    {
+      "provider": "BITUNIX",
+      "role": "New alternative source candidate",
+      "WS": {
+        "topic": "market_kline_15min etc; mark_kline is distinct price type, not traded volume",
+        "update_ms": 500,
+        "initial_snapshot": true,
+        "switch_interval_requires_unsubscribe": true,
+        "fields": [
+          "o",
+          "h",
+          "l",
+          "c",
+          "b coin volume",
+          "q quote volume"
+        ],
+        "explicit_native_bar_start": null,
+        "explicit_closed_flag": null,
+        "ts_unit_and_role_qualified": false
+      },
+      "missing": [
+        "Exact asset/native binding and contract size",
+        "Bar-start/end/grid/close semantics and TS role",
+        "Connection/topic/pool limits; actual venue availability"
+      ],
+      "eligible_for_activation": false
+    },
+    {
+      "provider": "COINEX",
+      "role": "New candidate; reuse REST459, exclude tempting bulkWS as candle substitute",
+      "WS": {
+        "topic": "state.subscribe",
+        "empty_market_list": "allmarkets",
+        "push_delay_ms": 200,
+        "period_seconds": 86400,
+        "semantics": "ROLLING24H_STATE_NOT_CLOSED_NATIVE_CANDLES"
+      },
+      "eligible_as_closed_bar_feed": false,
+      "not_claiming_no_other_WS_kline_support": true
+    },
+    {
+      "provider": "BINANCE",
+      "role": "Existing source comparison, not new source coverage",
+      "WS": {
+        "current_partition": "/market",
+        "kline_topic": "{symbol}@kline_{interval}",
+        "combined_streams": true,
+        "update_ms": 250,
+        "closed_flag": "k.x",
+        "start_ms": "k.t",
+        "end_ms": "k.T inclusive; normalized end is T+1 only after interval/grid verification",
+        "source_event_ms": "E",
+        "base_volume": "k.v",
+        "quote_volume": "k.q",
+        "post_migration": "Returned docs mention UM/CM migration; exact venue/linear USDT/epoch needed, never ticker-only",
+        "public_partition": "/public is book/depth in retained current docs, not kline",
+        "legacy_url200_shell": "No evidence",
+        "max_topics_or_connections": null,
+        "max_control_messages_per_second": null,
+        "session_lifetime": null
+      },
+      "eligible_for_new_anomaly_source_claim": false
+    }
+  ],
+  "budget_model": {
+    "universe": 105,
+    "slot_minutes": 40,
+    "slots_per_day": 36,
+    "days_per_model_month": 31,
+    "timeframes_minutes_4": [
+      15,
+      60,
+      1440,
+      10080
+    ],
+    "timeframes_minutes_6": [
+      15,
+      30,
+      60,
+      240,
+      1440,
+      10080
+    ],
+    "doc_rate_scenarios_only": [
+      {
+        "provider": "BITUNIX",
+        "update_ms": 500
+      },
+      {
+        "provider": "BINANCE",
+        "update_ms": 250
+      }
+    ],
+    "caps_preserved": {
+      "whole_HTTP": 164,
+      "manual_HTTP_reserve": 24,
+      "N05_N12_shared_HTTP": 5,
+      "supplement_HTTP": 18,
+      "account_R": 3500000,
+      "account_W": 70000,
+      "next_full_R": 59000,
+      "next_full_W": 920
+    },
+    "native_SQL_bound": null,
+    "native_R_bound": null,
+    "native_W_bound": null,
+    "actual_provider_feed_day_month_cap": null,
+    "notes": [
+      "One REST request per asset/scale/closure is a model, not new acquisition or source-cap admission.",
+      "105x4 cold=420 HTTP before catalog/identity/duplicates; cannot fit whole164 and cannot spend main/manual reserve.",
+      "Rolling15m poll for all105 averages280HTTP/40min before main work; selecting rare q assets reduces coverage and must retain denominator.",
+      "A single15m history cannot bootstrap20weekly baseline (21weeks) within2000bars. A1m history2000bars covers only33h20min.",
+      "WebSocket upgrades are HTTP connections; subscriptions, pings/pongs, data frames, retry/reconnect/backfill are separate measured units and pool pressure. Do not assign every frame1HTTP or bypass164.",
+      "A one-row-per-bar design has at least the modelled logical base-row writes; batching/packing/indexes/journals/native charged counters require separate qualification.",
+      "Daily/weekly boundaries and exchange TZ offsets cannot be assumed UTCmidnight/Monday; derive from actual native IDs, preserve UTC epoch.",
+      "R/W/headroom/unknown may not be reset or renamed into ANOMALY quota. Main/manual decisions and nextfull reserve retain priority.",
+      "128 active watch slots are events, not128assets or128x6 independent subscriptions; deduplicate exact source keys across events/revisions."
+    ],
+    "active_watch_event_slots": 128
+  },
+  "effects": {
+    "market_HTTP": 0,
+    "WS_connections": 0,
+    "native_SQL": 0,
+    "deploy_MAIN_Telegram": 0,
+    "production_imports": 0,
+    "strategy_weights_forms_pauses_limits_changed": false,
+    "accepted_tests_repeated": 0
+  },
+  "two_stage_owner_path": {
+    "stage1": {
+      "population": 105,
+      "input": "Existing paid stage0 collector snapshot and saved anomaly flags/price/OI/rolling24h context; exact source and observation clocks retained.",
+      "role": "HINT_ONLY",
+      "additional_provider_HTTP": 0,
+      "incremental_SQL_if_passed_in_memory": 0,
+      "incremental_SQL_if_separate_reader": null,
+      "not_true_closed15m_volume": true,
+      "rolling_delta_identity": "T24(t)-T24(t-d) = entering turnover minus old departing turnover, not interval d turnover.",
+      "not_claimed": "All105 closed-candle recall, sub5m/intrabucket discovery or zero source cost for a separate native reader."
+    },
+    "stage2": {
+      "population": "Only actually admitted rare candidates, independent of main top24/2 limits; do not reduce main capacity.",
+      "preferred_new_source": "CoinEx conditional REST contract from accepted459, with MEXC/BingX still gated by exact identity/units/access.",
+      "default_scope": "One selected native event timeframe,20prior+1event, exact1m intrabar rows, at most one bounded trade page; not all6timeframes for every hint.",
+      "actual_provider_HTTP_and_SQL_admission_required": true,
+      "source_root": "Independent venue root from HTX hint; exact native/chain identity and quote/epoch required.",
+      "new_strategy_or_source_cap": false
+    },
+    "stage3": {
+      "input": "Existing healthy HTX snapshot for sampled5m observation; no repeated deep fetch on every watch tick.",
+      "additional_provider_HTTP_default": 0,
+      "separate_native_read_R_W": null,
+      "reference": "Keep venue/quote/basis explicit; HTX sampled-reference path is not CoinEx intrabar price history.",
+      "outcome": "Only qualified contemporaneous anchor/fullpostknown path; otherwiseCENSORED.",
+      "early_claim": "first_hint != verified firstknown; delayed admission cannot inherit an earlier firstknown or early tag."
+    },
+    "deferral": {
+      "reason_types": [
+        "MAIN_OR_MANUAL_RESERVE_PROTECTED",
+        "SOURCE_DAY_MONTH_OR_MINUTE_CAP",
+        "NATIVE_BOUND_OR_USAGE_UNKNOWN",
+        "IDENTITY_OR_UNIT_OR_FINALITY_NOT_CLOSED",
+        "RARE_EVENT_ADMISSION_EXHAUSTED"
+      ],
+      "state": "PENDING_DATA/DEFERRED with original hint/asof/rawref, not marketnegative/noevent",
+      "acquisition_after_unknown": 0,
+      "automatic_provider_spot_retry_escalation": false,
+      "old_unknown_and_reservations": "Retain all known witnesses; no reset/refund/alias budget.",
+      "resume": "Fresh guards/cost/source admission, original clocks; delayed historicalevent staysBACKFILL as applicable."
+    }
+  },
+  "rare_event_budget": {
+    "reused_contract": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan.json",
+    "reused_proof": "PR459@f58b7e749c060e225ecd2075e716cb129d8d16d2; accepted calculator notrerun",
+    "one_provider_warm_narrow_data_HTTP_per_deep": 3,
+    "cold_first_one_asset_HTTP_conditional": 5,
+    "second_asset_increment_if_metadata_shared_fresh_conditional": 4,
+    "actual_metadata_M": null,
+    "actual_additional_identity_I": null,
+    "actual_native_SQL_R_W": null,
+    "normal": {
+      "new_deep_events_D": 2,
+      "default_repeated_deep_R": 0,
+      "default_watch": "reuse existing snapshot",
+      "default_data_HTTP": 6,
+      "default_31day_data_HTTP": 186,
+      "conditional_cold_all_events_HTTP_cap": 10,
+      "optional_deep_rechecks_R_only_if_new_missing_fact_and_admitted": 4,
+      "accepted459_data_DplusR_HTTP": 18
+    },
+    "peak": {
+      "new_deep_events_D": 10,
+      "default_repeated_deep_R": 0,
+      "default_watch": "reuse existing snapshot",
+      "default_data_HTTP": 30,
+      "default_31day_data_HTTP": 930,
+      "conditional_cold_all_events_HTTP_cap": 50,
+      "optional_deep_rechecks_R_only_if_new_missing_fact_and_admitted": 20,
+      "accepted459_data_DplusR_HTTP": 90
+    },
+    "all_numbers_are_scenarios_not_rarity_measurement_or_new_cap": true,
+    "complete_cost": "M+I+3*(D+R), SQL/CPU/storage remainNULL; conditional cold5 bound assumes accepted459 one identity lookup route can actually bind the asset, no retry/pagination/OI/spot.",
+    "remaining": "Only real residual AFTER main/manual/nextfull and each provider/source/IP/day/month pool. Do not compute residual by subtracting fictitious zeros.",
+    "within_run": "If qualified actual HTTP residual H allows5 only, at most1 cold first asset;2 cold assets sharingmetadata need9. Nativebound/usage unresolved or sourceadmissionfalse means0assetacquisition regardless H. Defer remaining hints."
+  },
+  "optional_WS_validation_comparison_deferred": {
+    "status": "PLAN_ONLY_NOT_ADMITTED",
+    "contract": "HBAR-USDT",
+    "venue": "HTX",
+    "market": "USDT_LINEAR_PERPETUAL",
+    "exact_asset": "Approved manifest must match original HTX contract row, swap type,USDT quote, active epoch/size; ticker alone insufficient",
+    "reason": "Existing source can qualify missing15m feed only on actual spare; new-source MEXC identity/units remain separate blockers.",
+    "scope": "One asset, one15m stream, two new close boundaries. No all105 or alltimeframes claim.",
+    "timebox_minutes": 35,
+    "baseline": "20prior closed15m plus latest event; requestsize22 to allow forming bar, verify exact grid and native close; reject insufficient returned rows.",
+    "HTTP_upper_bound_without_retry": {
+      "contract_catalog": 1,
+      "initial15m_history": 1,
+      "REST_close_confirmations_max": 2,
+      "WS_upgrade": 1,
+      "total": 5
+    },
+    "WS_units": {
+      "subscriptions": 1,
+      "topic": "market.HBAR-USDT.kline.15min",
+      "heartbeats": "nominal5s may change; count received/sent separately",
+      "proposed_pilot_stop_frames": 20000,
+      "proposed_pilot_stop_wire_bytes": 8388608,
+      "stop_bounds_are_proposal_not_deployed_cap": true,
+      "reconnects_allowed": 0,
+      "retry": 0,
+      "pagination": 0,
+      "implicit_backfill": 0
+    },
+    "close_rule": "HTX has no explicit final flag in retained kline schema. Capture previous mutable candle and next-native-ID transition, then compare previous candle with separately admitted REST closed-bar receipt; a transition alone does not prove final OHLCV.",
+    "evidence": "Exact head/run/contract/nativeepoch, raw request/response bytes+hash, native start/end/gridoffset and volume dimensions; source asof, transport clock, firstknown, actual consumer ingestACK, true source/HTTP/WS/SQL journals and reservations retained.",
+    "prospective": "Initial historical baseline BACKFILL; only new actual post-subscription closed bars may qualify after ACK/<=10min. No retrospective firstknown.",
+    "no_native_or_publication_shortcut": "Do not write ingestACK without exact persisted readback. No Telegram or detector activation in this plan.",
+    "SQL_R_W_bound": null,
+    "storage_bound": null,
+    "provider_day_minute_month_headroom": null,
+    "actual_admission": false,
+    "stop_conditions": [
+      "No actual five-HTTP/pool/manual headroom",
+      "Unknown native or source cost",
+      "Identity/epoch/source clock/unit/gap/closed proof missing",
+      "Frame/byte/time cap reached before two confirmed boundaries",
+      "Disconnect or missed native candle; retain GAP/partial, no automatic reconnect/backfill"
+    ],
+    "later_scales": "1h/1d/1w and all105 require separately bounded native grids/baselines and producer/consumer/store costs. Do not expand this pilot."
+  },
+  "minimal_qualification": {
+    "status": "PLAN_ONLY_NOT_ADMITTED",
+    "contract": "TIA-USDT",
+    "venue": "COINEX",
+    "market": "EXACT_LINEAR_USDT_FUTURES",
+    "primary_path": "Rare-event REST selected from105HINT_ONLY; no persistentWS dependency.",
+    "reused_contract": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan.json",
+    "conditional_HTTP_upper_bound_without_retry": {
+      "market_metadata": 1,
+      "exact_asset_reference": 1,
+      "native15m_candles": 1,
+      "one_minute_candles": 1,
+      "one_bounded_trade_page": 1,
+      "total": 5
+    },
+    "HTTP_actual_complete_bound": null,
+    "identity": "Provider assets/native TIA binding to approved HTX identity must be demonstrated; no ticker/website-only guess. If notclosed, stop before candle/trade.",
+    "candles": "At least21exactclosed native15m candles for20prior+event, plus native1m bars for the event internal structure; nativeperiodend/grid verified independently, no rolling15m alias.",
+    "trade_page": "At most1000rows; IDs/clock/side/size/bodylimits verified; partial sample not4hCVD/person/trap/absorption.",
+    "source_clocks": "Preserve native barstart/end/source-asof/received/firstknown/rawhash; startuphistoryBACKFILLED.",
+    "followup": "New post-ingest closure requires separate exact source/admission/causalACK; existing5mHTX sampled watch uses explicit reference venue and censor rules.",
+    "no_keys_accounts_WS_deploy_or_Telegram": true,
+    "retry": 0,
+    "pagination": 0,
+    "spot_HTTP": 0,
+    "untimed_OI_HTTP": 0,
+    "SQL_R_W_bound": null,
+    "storage_bound": null,
+    "provider_day_minute_month_headroom": null,
+    "actual_admission": false,
+    "result_if_unqualified": "Exact reason/retained hints/knowncosts/reserves; no guessed fact and no automatic provider escalation.",
+    "next_precise_package": "Resolve this single-asset native identity/route/unit/closure/cache/admission SQL shape using retained originals+official docs. Market acquisition stayscoordinator-only."
+  }
+}

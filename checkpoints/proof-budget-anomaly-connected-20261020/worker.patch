@@ -1,0 +1,47 @@
+diff --git a/current-generation/files/src/worker.js b/current-generation/files/src/worker.js
+index 5eb524ca..10c13d08 100644
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -14626,9 +14626,39 @@ async function persistFullEvidenceShadowRecord(env, record, { stage392_prepared_
+ 
+   const now = Date.now();
+   const dq = record?.data_quality || {};
+-  const proofBundleJson = stage392_prepared_proof_bundle?.bundle
+-    ? fullEvidenceJson(stage392_prepared_proof_bundle.bundle, null)
+-    : null;
++  let proofBundleJson = null;
++  if (stage392_prepared_proof_bundle?.bundle != null) {
++    // Match the existing D1 CHECK before issuing its INSERT. Never truncate a
++    // proof, replace an invalid prepared proof with NULL, or mint a D1 ACK.
++    let proofBundleBytes = null;
++    let proofBundleError = null;
++    try {
++      const serialized = JSON.stringify(stage392_prepared_proof_bundle.bundle);
++      const parsed = JSON.parse(serialized);
++      proofBundleBytes = new TextEncoder().encode(serialized).byteLength;
++      if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
++        proofBundleError = "FULL_EVIDENCE_PROOF_BUNDLE_NOT_OBJECT";
++      } else if (proofBundleBytes > 262144) {
++        proofBundleError = "FULL_EVIDENCE_PROOF_BUNDLE_EXCEEDS_EXISTING_262144_BYTE_CHECK";
++      } else {
++        proofBundleJson = serialized;
++      }
++    } catch {
++      proofBundleError = "FULL_EVIDENCE_PROOF_BUNDLE_JSON_NOT_SERIALIZABLE";
++    }
++    if (proofBundleError !== null) {
++      return {
++        status: "REFUSED_PROOF_STORAGE_CONTRACT",
++        persisted: false,
++        insert_changes: 0,
++        hot_path_statements: 0,
++        cleanup_deferred: true,
++        proof_bundle_bytes: proofBundleBytes,
++        proof_bundle_max_bytes: 262144,
++        error: proofBundleError,
++      };
++    }
++  }
+ 
+   try {
+     const insert = env.DATA_DB

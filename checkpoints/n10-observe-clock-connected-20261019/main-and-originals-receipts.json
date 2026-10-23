@@ -1,0 +1,611 @@
+{
+  "schema": "PR527_ORIGINAL_CLOCK_AND_FIRST_OBSERVE_CONNECTED_MAIN_ACCEPTANCE_V1",
+  "recorded_utc": "2026-10-19T10:36:02.341315+00:00",
+  "runtime_merge": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "sha": "72318564919738b252a79c0729bf6f5f1378c81f",
+      "merged": true,
+      "message": "Pull Request successfully merged"
+    },
+    "isError": false
+  },
+  "runtime_exact_readback": {
+    "merge": "72318564919738b252a79c0729bf6f5f1378c81f",
+    "frozen": "2fa2abb87932c36797667e4fdce0b20121733e46",
+    "files_exact": 21,
+    "all6roots_unchanged": true,
+    "all4active_equal": true,
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792404548500",
+    "sha256_nonbinary": {
+      "checkpoints/n10-observe-clock-connected-20261019/README_RU.md": "5c77173a5092166c30d662e508140e01305e685ec0317ebed8f7f51579cf628d",
+      "checkpoints/n10-observe-clock-connected-20261019/application-byte-proof.json": "d20b927ac127b0678ae97a9e046ebac41d5b6536433efad6de9db11f29ae60e4",
+      "checkpoints/n10-observe-clock-connected-20261019/connected-acceptance.json": "12a8e6acdc1713630cf5dc87d1c35e4c85b1930b39d32c9a33a41f047f9c5fdb",
+      "checkpoints/n10-observe-clock-connected-20261019/entry523-canonical-clock.patch": "c54c7b0964a3c1617512422d6dcff44460928061b9a8675c4d87383b9700606f",
+      "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801-artifact.json": "aba55d77cbcd112118e974c46623bd47f17bd9feeaff0a95af97755936fb1479",
+      "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/assembly.json": "5e3c0ad2725df100bac4311fdc940c06457d69b9f3667e332773fe01f77b540a",
+      "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/connected-tests.log": "851b7f0502ff596be661ff86dfd09d4c4e174e90808a8bc052ee75ad0f9cf24c",
+      "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/connected-witness.json": "3f4f542812ba656c7615ce4066baa1fa6af51ba647943279d44e08b35c572627",
+      "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/guard-after.json": "bf3cd9668cbe427039775398d914247907e52607d0962148d95ed400df3a820c",
+      "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/guard-before.json": "81632434541e9dd3525fb9bc06001b634bdde30835b3105d9853e3f3ee3e3303",
+      "checkpoints/n10-observe-clock-connected-20261019/qualified-scope.json": "96797d2f718b5743438d817832fd80d0b9dc5d221080b9624aa33f9b959f814f",
+      "checkpoints/n10-observe-clock-connected-20261019/source525-cumulative.patch": "655fcc55922baac49c7882b11673937637d31ccd6cbe2a26090f95a66662a9a3",
+      "current-generation/files/src/block-result-context.mjs": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+      "current-generation/files/src/htx-technical-structure.mjs": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337",
+      "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs": "bc5845ba2f4904f320d7eb9c952759c5e4a4fc0ae33fc595df5f097e1125ac99",
+      "current-generation/tests/fixtures/clock-connected-baseline-20261019/block-result-context.mjs": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12",
+      "current-generation/tests/fixtures/clock-connected-baseline-20261019/htx-technical-structure.mjs": "4ce4a5fa55bfdb8a0c7f7f0ac8d184ace3d5d3620cd995cd83b9bb6712dd5dd5",
+      "current-generation/tests/fixtures/clock-connected-baseline-20261019/v3-telegram-lifecycle-sidecar.mjs": "0c4f621540790a7f5aae95c1967ab51c73adca8f0510cc64b5f7932c37e5b59e",
+      "current-generation/tests/fixtures/output-contract/MANIFEST.json": "a9859c7f78fc4892f22f33ab32ec081d030e135bae11753f385babaa05c31d0e",
+      "current-generation/tests/n10-observe-clock-connected.runtime.mjs": "aae9476ba42c29368afaa2b45f1914661a9a2cfc10070acb59f1afedf0f7ae1a"
+    }
+  },
+  "one_new_assembled_qualification": {
+    "schema": "CONNECTED_CLOCK_SIX_NEW_ASSEMBLED_CASES_ACCEPTANCE_V1",
+    "run": 39236286801,
+    "head": "7b205638cda60ac7b60edfbc8c847368e945ad13",
+    "artifact": 12179226326,
+    "digest": "sha256:1efdeea013f8c11a40f002b198cc2fcd8e48584079489a807013fa42d39876b1",
+    "PASS": 6,
+    "FAIL": 0,
+    "executions": 1,
+    "reporter": "NODE_SPEC",
+    "old8_559_1_22_24_38_tests_rerun": 0,
+    "new_controlled_SQLite_causal_result": "Original first OBSERVE successfully persists/binds/delivers using injected relay, then unchanged existingLIGHT selector changes0→1 solely because lifecycle timestamp matches canonical original timestamp",
+    "price_crossing_authorizes_ENTRY": false,
+    "later_samewave_refresh_still_open": true,
+    "old_TTL_silence_policy_preserved": true,
+    "sourceHTTP_nativeSQL_Telegram_MAIN_deploy": 0,
+    "native_cost_or_actual_delivery_not_qualified": true,
+    "source525_alternative_used": "ONLY cumulative655fcc55922baac49c7882b11673937637d31ccd6cbe2a26090f95a66662a9a3",
+    "source526_peer_receipt_sha256": "61ac6f113b6fff872b759a52fe8b647218979475c5b7e030218ccc0e79c35745"
+  },
+  "main_automatic": {
+    "schema": "PR527_MAIN_AUTOMATIC_ORIGINAL_ACCEPTANCE_V1",
+    "run": 39237944118,
+    "head": "72318564919738b252a79c0729bf6f5f1378c81f",
+    "artifact": 12180460446,
+    "digest": "sha256:78051d408795bb6354ac6231bcdc06376edb5b3871ee4970a654cdf92fea34f4",
+    "member_count": 44,
+    "reporter": "NODE_SPEC",
+    "named_tap_file_count": 21,
+    "sum_report_counts": {
+      "PASS": 2084,
+      "FAIL": 0
+    },
+    "counts": [
+      {
+        "file": "active-source-finalist-and-markets.tap",
+        "PASS": 29,
+        "FAIL": 0
+      },
+      {
+        "file": "active-source-headroom.tap",
+        "PASS": 403,
+        "FAIL": 0
+      },
+      {
+        "file": "cold-archive.tap",
+        "PASS": 242,
+        "FAIL": 0
+      },
+      {
+        "file": "exact-asset-role-and-collector-audit.tap",
+        "PASS": 28,
+        "FAIL": 0
+      },
+      {
+        "file": "hourly-native-usage.tap",
+        "PASS": 41,
+        "FAIL": 0
+      },
+      {
+        "file": "index-useful-only.tap",
+        "PASS": 21,
+        "FAIL": 0
+      },
+      {
+        "file": "native-identity-source-handoff.tap",
+        "PASS": 39,
+        "FAIL": 0
+      },
+      {
+        "file": "native-sector-provider-binding.tap",
+        "PASS": 260,
+        "FAIL": 0
+      },
+      {
+        "file": "native-useful-budget.tap",
+        "PASS": 19,
+        "FAIL": 0
+      },
+      {
+        "file": "native-transport-fallback.tap",
+        "PASS": 7,
+        "FAIL": 0
+      },
+      {
+        "file": "native-useful-runtime.tap",
+        "PASS": 24,
+        "FAIL": 0
+      },
+      {
+        "file": "new-liq-research-admission.tap",
+        "PASS": 6,
+        "FAIL": 0
+      },
+      {
+        "file": "private-forecast-consumer.tap",
+        "PASS": 10,
+        "FAIL": 0
+      },
+      {
+        "file": "private-price-connected.tap",
+        "PASS": 154,
+        "FAIL": 0
+      },
+      {
+        "file": "private-reader-runtime.tap",
+        "PASS": 38,
+        "FAIL": 0
+      },
+      {
+        "file": "public-venue-health-priority.tap",
+        "PASS": 281,
+        "FAIL": 0
+      },
+      {
+        "file": "retained-write-failure-guard.tap",
+        "PASS": 110,
+        "FAIL": 0
+      },
+      {
+        "file": "scheduled-evidence-budget.tap",
+        "PASS": 3,
+        "FAIL": 0
+      },
+      {
+        "file": "source-health-priority.tap",
+        "PASS": 17,
+        "FAIL": 0
+      },
+      {
+        "file": "target.tap",
+        "PASS": 223,
+        "FAIL": 0
+      },
+      {
+        "file": "weekly-htx-synchronized-plan.tap",
+        "PASS": 129,
+        "FAIL": 0
+      }
+    ],
+    "manual_broad_tests_added": 0,
+    "assembly_binding": {
+      "assembly.json": {
+        "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+        "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+        "production_overlays": 15,
+        "worker_sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5",
+        "source_mode_default": "OFF",
+        "production_changed": true
+      },
+      "binding.json": {
+        "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "worker_sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5",
+        "runtime_checked": true
+      }
+    },
+    "validation_pass_log": "main527-automatic-originals/members/validation.log",
+    "validation_status": "PASS"
+  },
+  "peer528": {
+    "head": "7f43dbe257d6bf932715358f09982c4fae193c78",
+    "original_path": "anomaly-research/n10-observe-clock-composition-peer-20261019/peer-receipt.json",
+    "receipt_sha256": "833064a43371625a8f7eb1ca3ee371f394319c191049af593b01fe4d40422e06",
+    "verdict": "ZERO_NEW_CONCRETE_COMPOSITION_BLOCKERS_WITH_EXPLICIT_LIMITS",
+    "integrity_PASS": 50,
+    "semantic_tests_executed": 0
+  },
+  "new_saved_native_review": "checkpoints/natural-39235810465/coordinator-native-review.json",
+  "new_source_consumer_inventory": "checkpoints/natural-39235810465/source-consumer-inventory.json",
+  "latest_same_run_SENT_remains": {
+    "publication_id": "PUB:d9e2c0c421012b8492be231581bc8e44ca090c2e",
+    "contract": "AKE-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:AKE-USDT:1792399941678:G7",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792399931640-1792399941482",
+    "snapshot_id": "S392:AKE-USDT:1792399976580",
+    "observed_ts": 1792399976580,
+    "analytical_fingerprint": "ea2ce54c52555a70073bd6c089fe49a414fb444df07f7860fd86d7264d73940c",
+    "presentation_hash": "2e2aeb9aa3e5addc1842aeb969679b4c438360243e320b83aba16f0080498d43",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "231",
+    "dispatch_finalized": true,
+    "task_at_delivery": null,
+    "task_at_delivery_verified": false,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED",
+    "cloud_run": 39225792595,
+    "head": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+    "proof": "checkpoints/natural-39225792595/coordinator-native-review.json"
+  },
+  "documentary_approval": {
+    "PRs": [
+      522,
+      523,
+      524,
+      525,
+      526,
+      528
+    ],
+    "status": "OPEN_AWAITING_EXACT_OWNER_APPROVAL_AFTER_AUTO_REVIEW_REJECTION",
+    "all_reviewed_files_scoped_documentary": true,
+    "runtime_mutations": 0,
+    "approved_old8_not_reused_as_authorization": true,
+    "runtime527_already_merged_independently": true,
+    "rejection": "checkpoints/n10-observe-clock-connected-20261019/documentary_attempts.json"
+  },
+  "sourceHTTP_nativeSQL_forcedMAIN_manualfull_Telegram_deploy_added_by_packet": 0,
+  "actual_native_clock_fix_ENTRY_or_silentexpiry_acceptance": false,
+  "file_manifest": {
+    "checkpoints/n10-observe-clock-connected-20261019/lease.json": {
+      "bytes": 1720,
+      "sha256": "2610a4903380a0d8ad05d2ce505130602b268b511a08fdde5179c0d8d00093c4"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/lease-receipt.json": {
+      "bytes": 659,
+      "sha256": "93c6c4c7797e5bba76bcff467dd22f615b33ea9d6fdab56522bfb873d4555a47"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/merge527.json": {
+      "bytes": 265,
+      "sha256": "6e94f6faf76cf6cd2d95f735c7a85d24bd9bbf26585e1e328c35a424eb6fd3ab"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/pr527-main-byte-readback.json": {
+      "bytes": 3530,
+      "sha256": "94caaf63b09869d10b4e1907c795daaa7f8f99bae9d728d298c4925af1b1259d"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/peer528-receipt.json": {
+      "bytes": 32429,
+      "sha256": "833064a43371625a8f7eb1ca3ee371f394319c191049af593b01fe4d40422e06"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-frozen-proof.json": {
+      "bytes": 3772,
+      "sha256": "9dd08f3d078a5954f2e10275f6a3160ff03e423b9634eb30d696b484d08f7ca9"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/automatic-branch-review.json": {
+      "bytes": 2772,
+      "sha256": "02ab4ef0d19067093c7a4ea3767df83321f810e7d44be7610b2a034268a25894"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-final-acceptance.json": {
+      "bytes": 3146,
+      "sha256": "4c90f487dc41ead0ec1f6aacef9cd238e635c4fea8bbdd37082c0d2c8d3622b0"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main_jobs.json": {
+      "bytes": 2408,
+      "sha256": "b697d851052266613cb9664d51a7497fb7e71086f27d5e834c9b5d3591ff4c4e"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/six-proof-PRs-premerge-review.json": {
+      "bytes": 5561,
+      "sha256": "d30db303183a5491c1375c80176f348efe31971cf273991c35455c2ee3e2e095"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/documentary_attempts.json": {
+      "bytes": 940,
+      "sha256": "e0efb7eecd10ab050bc313aa0e9b97f4ff305119eea7f29b243e9aab3e734212"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319.zip": {
+      "bytes": 6824,
+      "sha256": "d163e77d2353c025f97f62b0465a6533818eeec114f075257e5614ab86b7f1c2"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319-artifact.json": {
+      "bytes": 811,
+      "sha256": "77d61801429d038f8d193bde9e51889824d6e0834c4378f451c066995e5ff9ed"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264.zip": {
+      "bytes": 4943,
+      "sha256": "d5b0a10ea96db27393d47c2ad7889e6f8432557943028a58ea400918af6df60a"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264-artifact.json": {
+      "bytes": 814,
+      "sha256": "f3724e2679d336fb088ac9eeec1ed65e35abbfd8ca52e3de8af1c879be91ba60"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264/current-report-telegram.tap": {
+      "bytes": 1099,
+      "sha256": "9a13fadca06af75047643d4850d0055ccbf8be77a7d4ec2ccc7cc3b2496165bf"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264/assembly.json": {
+      "bytes": 261,
+      "sha256": "5e3c0ad2725df100bac4311fdc940c06457d69b9f3667e332773fe01f77b540a"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264/target-runtime.tap": {
+      "bytes": 1307,
+      "sha256": "e8fa7fb875b56d439ef905180b1b0599cf905856a8d4c919e0b69e082cc9e039"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264/target-unit.tap": {
+      "bytes": 4952,
+      "sha256": "7b71621499716377f4c9bc40f8924d42c8d67bcc5d2fd13044fefb1c20b2afe7"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264/binding.json": {
+      "bytes": 218,
+      "sha256": "1769bf76ada1239b0f2d3cfdba2a6c4a084cfee0fe30a4e48ba040c4a74bcd49"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n10-technical-path-39236984264/generation.log": {
+      "bytes": 417,
+      "sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319/assembly.json": {
+      "bytes": 261,
+      "sha256": "5e3c0ad2725df100bac4311fdc940c06457d69b9f3667e332773fe01f77b540a"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319/target-unit.tap": {
+      "bytes": 7976,
+      "sha256": "d6a3b129230d6d1df08874fb95c9fdad7931db685ec4beb255f35e21442688e6"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319/binding.json": {
+      "bytes": 218,
+      "sha256": "1769bf76ada1239b0f2d3cfdba2a6c4a084cfee0fe30a4e48ba040c4a74bcd49"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319/selection-delivery.tap": {
+      "bytes": 3154,
+      "sha256": "75433aa645d333ee66fa9d795d31588af5915f271d524ed097ca0f222baf80c0"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319/generation.log": {
+      "bytes": 417,
+      "sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/final-automatic-originals/n12-cross-venue-39236984319/paused-chains.tap": {
+      "bytes": 1099,
+      "sha256": "9e4c2bc058260151371528a66324d88ebc38d30ca85dc8f9dcfac222803a7658"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/liq-assembled-39237944118.zip": {
+      "bytes": 269089,
+      "sha256": "78051d408795bb6354ac6231bcdc06376edb5b3871ee4970a654cdf92fea34f4"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/artifact.json": {
+      "bytes": 774,
+      "sha256": "b5ba4fd3097f06746aa2a04c52dfc0c55ed612300621c95859d43bd6ce8b90c0"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/exact-asset-role-and-collector-audit.tap": {
+      "bytes": 3023,
+      "sha256": "4fc8da5777ec56bd00a041aaca2b5410f3d0cc751e3c052f2fc6c1c9bb6f4e84"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/assembly.json": {
+      "bytes": 261,
+      "sha256": "5e3c0ad2725df100bac4311fdc940c06457d69b9f3667e332773fe01f77b540a"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/source-health-priority-retained-proof.json": {
+      "bytes": 27375,
+      "sha256": "d76c988f27687c3d0a93dc2022cbb615524061c296850aa883e26b12193c2c30"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/validation.log": {
+      "bytes": 417,
+      "sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/cold-archive.tap": {
+      "bytes": 27163,
+      "sha256": "4581ad8346cf8f9cbe68001a5578c1cd129aa76b0996d4134f9cd77da4d23287"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/storage-flow-summary.json": {
+      "bytes": 609,
+      "sha256": "67afad29b10cfc2f9f3bf0adc99315ca78f4c478bb435ef686afb1915f75b141"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-identity-source-handoff.tap": {
+      "bytes": 4179,
+      "sha256": "01bf9b01cb6508bc14db20831560c024550897d1576a2f38f36f58cfa5c5d872"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/sql-bridge-counter-repair-qualification.json": {
+      "bytes": 3773,
+      "sha256": "08299ed6ec0b46da67c445cb62a8133f047b72ed41d91797bc12d8fef8faea96"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/weekly-disabled-controlled-proof.json": {
+      "bytes": 897,
+      "sha256": "253b62bf6361dce891af6942bb8f751fc0beeb6167d62be7c45d56db99f0cf7e"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/active105-initial-source-queues.json": {
+      "bytes": 299714,
+      "sha256": "e46bef359ea4a1bad67c6610304d246e097bff4a6d254b8730387f2e55ce2edd"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/binding.json": {
+      "bytes": 218,
+      "sha256": "1769bf76ada1239b0f2d3cfdba2a6c4a084cfee0fe30a4e48ba040c4a74bcd49"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/active-source-headroom.tap": {
+      "bytes": 41780,
+      "sha256": "8cd65eaa8057b7f9d8aeeceeb4625da319705c16746de87a8a8aa6fa477f088c"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/new-liq-research-admission.tap": {
+      "bytes": 743,
+      "sha256": "02ebcfa763effef056e3b80194c74a2bd3cf88db502cd6e231d0ad1b2b7dea55"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/sector-effective105-retained.json": {
+      "bytes": 186642,
+      "sha256": "45607df9aefa04ad0348c1426e6e907a8a0728a49121071152426c146d0bceee"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/tron-sector-retained-four-proof.json": {
+      "bytes": 45860,
+      "sha256": "380b918f303abeeb2febda3eac284b7c936ed4860a23444264ef88fd09770fe7"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/weekly-retained106-package.json": {
+      "bytes": 595,
+      "sha256": "1b03107ed07662ba8a76dfacd240dee7a369f81ba5185397176eb596f2708934"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/hourly-native-usage.tap": {
+      "bytes": 5123,
+      "sha256": "89642358250366035938753e4ee971d4e128f377fca3d5d600f15baf377d5639"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/target.tap": {
+      "bytes": 22215,
+      "sha256": "2d8797d5fa91194dce401064226f63c810ed31432a014ab8fbb28c30db3e9cf9"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/protected-canonical-cases.json": {
+      "bytes": 12075,
+      "sha256": "6c9551c85ac4429859cd0653a10cc43bf4df77add48d5772c66e3b8dac7eeecf"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/scheduled-evidence-budget.tap": {
+      "bytes": 491,
+      "sha256": "d76b415b11441158616ebc408410408f3c28868896e81056047b9835d79dde95"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/public-venue-health-original-proof.json": {
+      "bytes": 1920,
+      "sha256": "440ba076bf9e4b172bf714394e1d412b019d1d97367d2e0bda76425fa501a2b0"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/sector-exact-target-controlled-proof.json": {
+      "bytes": 2279,
+      "sha256": "2cb5f9a93977bd2ca58499d8b38703121b1f49cab9b5eae8e618c5a6245fd07d"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-transport-fallback.tap": {
+      "bytes": 883,
+      "sha256": "e820ff1a40e841371a9e92bb970cdbe4e6820c782c6afe8f46483b8cb33ab2fe"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/proof-read-shapes-admission-scope.json": {
+      "bytes": 8379,
+      "sha256": "e779d710c96e0539d644230073997d3c09d5a9ed5f5592913c5bf1d407dca070"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/saved-native-day-accounting.json": {
+      "bytes": 8819,
+      "sha256": "db748309d6cf21410a4306d5b7953a531228a8843e7c36cf903746a085c53f94"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/index-useful-only.tap": {
+      "bytes": 2288,
+      "sha256": "15e64ad19562bd8a7ba0a943e16dc0f340a55da402a357bba5f4ce07d3fe20a7"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/weekly-htx-synchronized-plan.tap": {
+      "bytes": 13418,
+      "sha256": "1f6b0ca7f4eed2fcd7b844b7587a4b8a2363b03642946e727ba5fd0e3de74eb2"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/retained-storage-flow.json": {
+      "bytes": 50106,
+      "sha256": "a742652ee3b387f1fa4fda9d821ea53cfff234fcc26c9519fc2e51815d0d03ea"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/private-reader-runtime.tap": {
+      "bytes": 4347,
+      "sha256": "a4542702df495b7ecdf22e50f6f639921bd87d5564d9ad428da209d8bfc9bba2"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/n11-rendered-source-coverage.json": {
+      "bytes": 1895769,
+      "sha256": "bfaf5577709f56e00fa1f7f198912122a898018b34452d974726c372eeaea8c8"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-useful-runtime.tap": {
+      "bytes": 3157,
+      "sha256": "73b6e0675485bf36cbb1e6107208e744a60914f83c5c914edb440d9dcda6eca7"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/private-forecast-consumer.tap": {
+      "bytes": 1220,
+      "sha256": "95237b813cba66bbf386c8a965b09d93563615de0ba1131d6271885d760917e0"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/n11-rendered-source-coverage-summary.json": {
+      "bytes": 2296,
+      "sha256": "369d69b9cb123da240e32d919ac5a08b048592339b4c7719f3f7c3f59a980d8f"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-useful-budget.tap": {
+      "bytes": 2318,
+      "sha256": "44128087d0b8ef55d47c1c13596393c8a6ef24b877712a1d1fa9524eaf22700d"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/active-source-finalist-and-markets.tap": {
+      "bytes": 3856,
+      "sha256": "c0e63282ffc8c4502b1211f7c7d9f191509ac5278902fc6188cb6d20bbf1b01f"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-sector-denominations-retained-proof.json": {
+      "bytes": 34993,
+      "sha256": "63e509401e8ef80a908bb133fd393bf79bb694f3eae2cde0616f52b75a90ba17"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/hourly-native-usage-proof.json": {
+      "bytes": 2463,
+      "sha256": "489d7ccd1b472ebe8a2de31aa492f64a3fee708ffcc19907c69baacd1d927d18"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-sector-provider-binding.tap": {
+      "bytes": 26276,
+      "sha256": "20e1755b8aefa77e7eba052703145a93f518f1c76f7643baa88ce546873f6115"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/retained-write-failure-guard.tap": {
+      "bytes": 11011,
+      "sha256": "410a17fb58c2f1d409ba55df198dd9c4936975277d5f410e1ea981069a3213ff"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/public-venue-health-priority.tap": {
+      "bytes": 25915,
+      "sha256": "3f91cff88d595e9d2d5c742ebd949b67ad9d3d1c884da342e0d342eae9823ec0"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/private-price-connected.tap": {
+      "bytes": 25586,
+      "sha256": "91ead1252a8197becadd933d4a32a0594edd8d2b9994c5e76eae1f4c5a327a55"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/native-sector-validation-plan.json": {
+      "bytes": 515,
+      "sha256": "8cf00904ee9610d58cf4968e0eeaff9556b0bf88a3cb339c19be4b58fb54c882"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/qnt-lsk-native4-retained-proof.json": {
+      "bytes": 16373,
+      "sha256": "410a6004319e20183221001cc5e6218ddcdb6f6150a82cb65f4abf3458ed76ce"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/source-health-priority.tap": {
+      "bytes": 2006,
+      "sha256": "d1bd3a5ff838c17f4bf7c2cbc7db8cee52afbaa8bed37aeb84599c60f87a1277"
+    },
+    "checkpoints/natural-39235810465/report2-run-result-artifact.json": {
+      "bytes": 766,
+      "sha256": "a5627ff00982c7487644c37590fdb57045565f3b0f04fee0fcbaa949698c174b"
+    },
+    "checkpoints/natural-39235810465/report2-telegram-info-proof.zip": {
+      "bytes": 908,
+      "sha256": "8a62e05496408c97d7811f446da45e730deff20a0449f84e4a3300ffdbecb811"
+    },
+    "checkpoints/natural-39235810465/report2-telegram-info-proof-artifact.json": {
+      "bytes": 773,
+      "sha256": "8672ebb0eaa9cf15f595aad94e425657e2dabe11b234190914a663c99f86c6a1"
+    },
+    "checkpoints/natural-39235810465/coordinator-native-review.json": {
+      "bytes": 35168,
+      "sha256": "2edf33ea08105b6a0e8853e8b6e2ee8871fbb804b93c8141d89099b0686944d2"
+    },
+    "checkpoints/natural-39235810465/report2-run-result.zip": {
+      "bytes": 67302,
+      "sha256": "9090eca1ce5f7b76349a168e8ed39378b1b99d0faae7748c009f658ff0da7f1c"
+    },
+    "checkpoints/natural-39235810465/report2-telegram-info-proof/telegram-info-proof.json": {
+      "bytes": 1833,
+      "sha256": "170a03e0bbeff6cc94bb4c3251858eb13ecfe7b19b1cd2a36d568b13ad49eaf3"
+    },
+    "checkpoints/natural-39235810465/report2-run-result/known-d1-day-guard.json": {
+      "bytes": 135,
+      "sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605"
+    },
+    "checkpoints/natural-39235810465/report2-run-result/private-canonical-archive-receipt.json": {
+      "bytes": 4537,
+      "sha256": "d5607bb5d307edc7f9e73a176bc26b23c687ba06d12fec6e7dce3e342b7c4025"
+    },
+    "checkpoints/natural-39235810465/report2-run-result/same-run-delivery-proof.json": {
+      "bytes": 518,
+      "sha256": "be67c16894f2be6d50c71681fe14d781df9434e3a5210cb7330a665e7ea1658b"
+    },
+    "checkpoints/natural-39235810465/report2-run-result/report2-run-result.json": {
+      "bytes": 469238,
+      "sha256": "7ea323c441c3815e6701dbaea2147f2d18b799114cafb589921a39d07ff24ca7"
+    },
+    "checkpoints/natural-39235810465/report2-run-result/automatic-delivery-audit.json": {
+      "bytes": 350,
+      "sha256": "1405ec8a2573512cd4b1cedae11cdc2c7f6a49713ed5c1a60e1e31fff1f8895e"
+    },
+    "checkpoints/natural-39235810465/report2-run-result/report2-completion-accounting.json": {
+      "bytes": 36542,
+      "sha256": "32657f6565842cc24a43b9e1068ea25a21db566eb17812af36c72c38c23d77a2"
+    },
+    "checkpoints/natural-39235810465/source-consumer-inventory.json": {
+      "bytes": 3436,
+      "sha256": "5619e7248a579cb27c9d80562e76d310db50f5065c623cc24a25b5f2daf95fd9"
+    },
+    "checkpoints/n10-observe-clock-connected-20261019/next-worker-batch-queues.json": {
+      "bytes": 2099,
+      "sha256": "2dec5d1b72661ea93dcb990184c9ea2e661a0be774bea8aa7f3b794833cc1a64"
+    }
+  },
+  "project_complete": false
+}

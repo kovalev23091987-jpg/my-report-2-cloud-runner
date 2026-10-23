@@ -1,0 +1,214 @@
+TAP version 13
+# Subtest: NEW exact XMR native USD price path is rejected by old N10 USDT venue consumer
+ok 1 - NEW exact XMR native USD price path is rejected by old N10 USDT venue consumer
+  ---
+  duration_ms: 22.892041
+  type: 'test'
+  ...
+# Subtest: original first-known is retained on still-valid reuse; input unmodified
+ok 2 - original first-known is retained on still-valid reuse; input unmodified
+  ---
+  duration_ms: 14.869791
+  type: 'test'
+  ...
+# Subtest: foreign contract cannot produce a new USD price context
+ok 3 - foreign contract cannot produce a new USD price context
+  ---
+  duration_ms: 3.094584
+  type: 'test'
+  ...
+# Subtest: foreign identity cannot produce a new USD price context
+ok 4 - foreign identity cannot produce a new USD price context
+  ---
+  duration_ms: 2.46525
+  type: 'test'
+  ...
+# Subtest: wrong quote cannot produce a new USD price context
+ok 5 - wrong quote cannot produce a new USD price context
+  ---
+  duration_ms: 2.557959
+  type: 'test'
+  ...
+# Subtest: incomplete flow cannot produce a new USD price context
+ok 6 - incomplete flow cannot produce a new USD price context
+  ---
+  duration_ms: 2.817875
+  type: 'test'
+  ...
+# Subtest: descriptor amount tamper cannot produce a new USD price context
+ok 7 - descriptor amount tamper cannot produce a new USD price context
+  ---
+  duration_ms: 4.707208
+  type: 'test'
+  ...
+# Subtest: future first-known cannot produce a new USD price context
+ok 8 - future first-known cannot produce a new USD price context
+  ---
+  duration_ms: 2.50375
+  type: 'test'
+  ...
+# Subtest: stale source cannot produce a new USD price context
+ok 9 - stale source cannot produce a new USD price context
+  ---
+  duration_ms: 2.786625
+  type: 'test'
+  ...
+# Subtest: unknown cache observed cannot produce a new USD price context
+ok 10 - unknown cache observed cannot produce a new USD price context
+  ---
+  duration_ms: 2.577458
+  type: 'test'
+  ...
+# Subtest: altered cache observed cannot produce a new USD price context
+ok 11 - altered cache observed cannot produce a new USD price context
+  ---
+  duration_ms: 2.504667
+  type: 'test'
+  ...
+# Subtest: refreshed payload clock cannot produce a new USD price context
+ok 12 - refreshed payload clock cannot produce a new USD price context
+  ---
+  duration_ms: 2.496708
+  type: 'test'
+  ...
+# Subtest: extended expiry cannot produce a new USD price context
+ok 13 - extended expiry cannot produce a new USD price context
+  ---
+  duration_ms: 2.505541
+  type: 'test'
+  ...
+# Subtest: missing raw candles cannot produce a new USD price context
+ok 14 - missing raw candles cannot produce a new USD price context
+  ---
+  duration_ms: 3.845208
+  type: 'test'
+  ...
+# Subtest: missing raw executions cannot produce a new USD price context
+ok 15 - missing raw executions cannot produce a new USD price context
+  ---
+  duration_ms: 2.792625
+  type: 'test'
+  ...
+# Subtest: native candle duplicate cannot produce a new USD price context
+ok 16 - native candle duplicate cannot produce a new USD price context
+  ---
+  duration_ms: 4.779833
+  type: 'test'
+  ...
+# Subtest: native candle missing cannot produce a new USD price context
+ok 17 - native candle missing cannot produce a new USD price context
+  ---
+  duration_ms: 5.081875
+  type: 'test'
+  ...
+# Subtest: native candle shifted cannot produce a new USD price context
+ok 18 - native candle shifted cannot produce a new USD price context
+  ---
+  duration_ms: 5.001666
+  type: 'test'
+  ...
+# Subtest: native candle base volume tamper cannot produce a new USD price context
+ok 19 - native candle base volume tamper cannot produce a new USD price context
+  ---
+  duration_ms: 5.2735
+  type: 'test'
+  ...
+# Subtest: OPEN tamper invisible to prior flow min/max reconciliation cannot produce a new USD price context
+ok 20 - OPEN tamper invisible to prior flow min/max reconciliation cannot produce a new USD price context
+  ---
+  duration_ms: 5.442542
+  type: 'test'
+  ...
+# Subtest: CLOSE tamper invisible to prior flow min/max reconciliation cannot produce a new USD price context
+ok 21 - CLOSE tamper invisible to prior flow min/max reconciliation cannot produce a new USD price context
+  ---
+  duration_ms: 4.78075
+  type: 'test'
+  ...
+# Subtest: receipt for foreign market cannot produce a new USD price context
+ok 22 - receipt for foreign market cannot produce a new USD price context
+  ---
+  duration_ms: 3.556125
+  type: 'test'
+  ...
+# Subtest: receipt clock refreshed cannot produce a new USD price context
+ok 23 - receipt clock refreshed cannot produce a new USD price context
+  ---
+  duration_ms: 3.378333
+  type: 'test'
+  ...
+# Subtest: receipt payload hash missing cannot produce a new USD price context
+ok 24 - receipt payload hash missing cannot produce a new USD price context
+  ---
+  duration_ms: 4.052958
+  type: 'test'
+  ...
+# Subtest: wrong native payload version cannot produce a new USD price context
+ok 25 - wrong native payload version cannot produce a new USD price context
+  ---
+  duration_ms: 2.431458
+  type: 'test'
+  ...
+# Subtest: oversized payload cannot produce a new USD price context
+ok 26 - oversized payload cannot produce a new USD price context
+  ---
+  duration_ms: 5.027958
+  type: 'test'
+  ...
+# Subtest: missing native minute is not filled from a price carry or raw trade
+ok 27 - missing native minute is not filled from a price carry or raw trade
+  ---
+  duration_ms: 7.523708
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered price
+ok 28 - new consumer verification rejects altered price
+  ---
+  duration_ms: 12.572541
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered quote
+ok 29 - new consumer verification rejects altered quote
+  ---
+  duration_ms: 11.450625
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered first-known
+ok 30 - new consumer verification rejects altered first-known
+  ---
+  duration_ms: 12.762458
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered FX
+ok 31 - new consumer verification rejects altered FX
+  ---
+  duration_ms: 13.118167
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered score
+ok 32 - new consumer verification rejects altered score
+  ---
+  duration_ms: 12.072166
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered bars
+ok 33 - new consumer verification rejects altered bars
+  ---
+  duration_ms: 12.159708
+  type: 'test'
+  ...
+# Subtest: new consumer verification rejects altered binding
+ok 34 - new consumer verification rejects altered binding
+  ---
+  duration_ms: 11.984208
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 272.832458

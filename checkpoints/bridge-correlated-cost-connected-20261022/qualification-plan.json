@@ -1,0 +1,195 @@
+{
+  "schema": "FIRST_CLIENT_BRIDGE_COST_CORRELATION_QUALIFICATION_V1",
+  "semantic_status": "UNEXECUTED",
+  "base_main": "15d682ebe3a0c3dfe22d1488bcc7b272ebe7fe62",
+  "baseline_git_commit": "15d682ebe3a0c3dfe22d1488bcc7b272ebe7fe62",
+  "baseline_targets": [
+    {
+      "repository": "runner/report2-d1-adapter.mjs",
+      "runtime": "report2-d1-adapter.mjs",
+      "sha256": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614"
+    },
+    {
+      "repository": "runner/native-query-cost-journal.mjs",
+      "runtime": "native-query-cost-journal.mjs",
+      "sha256": "8187ae623b5f65abcf4cad0b7a1c3966bfae897b9055db009f7ddf3de77bc057"
+    }
+  ],
+  "targets": {
+    "runner/report2-d1-adapter.mjs": {
+      "bytes": 11909,
+      "sha256": "cab59c2b26c12c657fda2918d97f80e11f8139e455f5ef878fc427794f3db220"
+    },
+    "runner/native-query-cost-journal.mjs": {
+      "bytes": 3741,
+      "sha256": "dc00990939ab39019add4f2217731965b3699e89b9df9b8cd15ff12e1a3a7071"
+    },
+    "runner/sql-bridge-counter-repair.mjs": {
+      "bytes": 10184,
+      "sha256": "67b5213a52d0d9ccbde29a6f905c5ef5ab072bc9b93e38488c6de6998e9d5084"
+    },
+    "tools/rollout-correlated-sql-bridge-20261022.mjs": {
+      "bytes": 16147,
+      "sha256": "b9598c7cd557d562e9688fcc86c9fdbf4e1896594c1dac2f4d5cd016a9df5382"
+    },
+    ".github/workflows/current-bridge-module-inspection-20261016.yml": {
+      "bytes": 3832,
+      "sha256": "86cdde437d5655808ca7c45e8c1ba74ce5b4e05747d645800c813b9cc03451e8"
+    }
+  },
+  "new_common_cases": 1,
+  "new_CONTROLLED_groups": 35,
+  "components": [
+    {
+      "path": "checkpoints/source-worker-bridge-transport-correlation-20261022/connected.mjs",
+      "export": "runBridgeClientCorrelationConnected",
+      "output": "client-component.json",
+      "groups": 14
+    },
+    {
+      "path": "anomaly-research/bridge-correlated-cost-receipts-20261022/connected.mjs",
+      "export": "runBridgeServerCostCorrelationConnected",
+      "output": "server-component.json",
+      "groups": 12
+    },
+    {
+      "path": "checkpoints/bridge-correlated-cost-connected-20261022/logging-control.connected.mjs",
+      "export": "runBridgeLoggingControlConnected",
+      "output": "logging-control-component.json",
+      "groups": 9
+    }
+  ],
+  "frozen_originals": {
+    "frozen": true,
+    "peers_accepted": true,
+    "source": {
+      "PR": 617,
+      "head": "a05d3ab396ee4b694a0a71b1f55859a2c5a2afdf",
+      "prefix": "checkpoints/source-worker-bridge-transport-correlation-20261022",
+      "files": {
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/PROTOCOL_RU.md": {
+          "bytes": 3767,
+          "sha256": "c60f769893ad4e0db464ebadf51ea6c80495c38beefecae42d0e30f426bf7eb9"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/README_RU.md": {
+          "bytes": 5698,
+          "sha256": "6ded77e4a44f90aeea77151cb35433f843fa6317603a3ad288b2ea275cf56692"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/central-entry-plan.md": {
+          "bytes": 1509,
+          "sha256": "8b929615d777c1e576abb7165b0d1dd310f08bb59ad86ce9cb814898c39fd1bf"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/connected.mjs": {
+          "bytes": 19380,
+          "sha256": "e4971988a70d21cd56ec6504517940d8d510f8333c715e4e04379e1fa8ca94ec"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/dependencies.json": {
+          "bytes": 990,
+          "sha256": "b3e71171e285c2ea199aa0d34665223f18de6d80a2bcbd0d2ed17c475864f558"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/manifest.json": {
+          "bytes": 1985,
+          "sha256": "05c948372d883d741d1cd18f8df844dea8ae9fb372d25e72d8256ab395399b7c"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/native-query-cost-journal.proposed.mjs": {
+          "bytes": 3741,
+          "sha256": "dc00990939ab39019add4f2217731965b3699e89b9df9b8cd15ff12e1a3a7071"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/native-query-cost-journal.proposed.patch": {
+          "bytes": 4495,
+          "sha256": "e918e2b2129ac9b9063d65ef4d69749be9ddf9fec10512efa48c313c802a3886"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/peer-receipt.json": {
+          "bytes": 2768,
+          "sha256": "0af7d50434096a3bd06e20ca42bac17ac2471537fe627b123625237e32711174"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/provenance.json": {
+          "bytes": 2879,
+          "sha256": "b0a794c381ea25f9650946347987c3acf27c920bac677804af4852516efb0f30"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/report2-d1-adapter.proposed.mjs": {
+          "bytes": 11909,
+          "sha256": "cab59c2b26c12c657fda2918d97f80e11f8139e455f5ef878fc427794f3db220"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/report2-d1-adapter.proposed.patch": {
+          "bytes": 3318,
+          "sha256": "3ef60dc1bdda9b010e464c561a85a7dd174251dd40119a25cf53f37b958f6de2"
+        },
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/target-bindings.json": {
+          "bytes": 1568,
+          "sha256": "b9241def6ff3b4b72ab68006ca3a881a6c40ebec800b9c00259c0feb7b805986"
+        }
+      },
+      "peer_files": [
+        "checkpoints/source-worker-bridge-transport-correlation-20261022/peer-receipt.json"
+      ]
+    },
+    "third": {
+      "PR": 616,
+      "head": "fbe1c92d59d1d534cafd760d472f234cead01ae3",
+      "prefix": "anomaly-research/bridge-correlated-cost-receipts-20261022",
+      "files": {
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/CONTRACT_RU.md": {
+          "bytes": 5450,
+          "sha256": "51fe14bb0c06619042a607ffeb8269c833fff1ac3e9ae4becff3ce8265ca9bf0"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/README_RU.md": {
+          "bytes": 6566,
+          "sha256": "b602a739ac1ba630584fa909185157c43e176e5d0632930c01b23a8eec1fce43"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/bridge-patch.proposed.txt": {
+          "bytes": 6249,
+          "sha256": "151bd35e9ba6548601f1840d6deede6f34369b66d45f6f52dda3d52ef0936190"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/bridge-worker.proposed.mjs": {
+          "bytes": 9614,
+          "sha256": "c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/central-integration-plan.md": {
+          "bytes": 2060,
+          "sha256": "5481b91c6e2b5ee17093cb4d270086ed4e8c5f85dff4341ef90ee9d85a6b01d5"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/connected.mjs": {
+          "bytes": 21315,
+          "sha256": "b8a1c9d65ccbaa3fece649fe8f0f5d7e7d3df218fef21621bf9770aaf077e478"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/dependencies.json": {
+          "bytes": 3012,
+          "sha256": "2e1d8e26db7a683de555e8eff4c15efb2fb63625d4537c3521b726f42440b42c"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/manifest.json": {
+          "bytes": 2056,
+          "sha256": "955cb89b43a231f6a71e6f887a0bf8253a1d332fe5c51e657674905298b5c395"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/provenance.json": {
+          "bytes": 7781,
+          "sha256": "4c7019e620cd599d07a81cb2f3cc88956e58765d7c04b2d1f75d8f8b0d42e7c8"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/repair-with-correlation.proposed.mjs": {
+          "bytes": 10184,
+          "sha256": "67b5213a52d0d9ccbde29a6f905c5ef5ab072bc9b93e38488c6de6998e9d5084"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/server-static-peer.json": {
+          "bytes": 3565,
+          "sha256": "b740b3495142bb218d7865303b212fe8666f8aac14d3e7cd287b2c7aa3d52d8d"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/source-static-peer.json": {
+          "bytes": 2768,
+          "sha256": "0af7d50434096a3bd06e20ca42bac17ac2471537fe627b123625237e32711174"
+        },
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/target-pins.json": {
+          "bytes": 1385,
+          "sha256": "9ef63e0c2dba86fc4913aca53ec5563b9e7c9decedfdacd7faef5a64f41bcac8"
+        }
+      },
+      "peer_files": [
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/server-static-peer.json",
+        "anomaly-research/bridge-correlated-cost-receipts-20261022/source-static-peer.json"
+      ]
+    }
+  },
+  "native_policy": null,
+  "old_components_replayed": 0,
+  "actual_complete_pair_files": 618,
+  "all_non_target_files_equal": 616
+}

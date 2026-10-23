@@ -1,3 +1,4 @@
+import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
 import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {formatCoinLobsterFutureLines} from './coinlobster-future-model.mjs';
 import {factualIdeaBasis} from './idea-basis-facts.mjs';
@@ -38,7 +39,8 @@ export function selectSupportingContextFacts(facts=[]){
 export function formatManualReport(result,{liquidation_policy=liquidationPresentationPolicy(result?.observed_ts)}={}){
  if(result?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};
  const blockers=blockerDetails(result),unknown=hasUnknownBlockerReasons(result?.free_sources?.entry_funnel);
- const lines=['МОЙ ОТЧЁТ 2',`Снимок рынка: ${result.snapshot_time_utc}`,''];
+ const limitedNotice=approvedHtxLimitedReportNotice(result?.metadata?.internal_market_context?.limited_report_scope);
+ const lines=['МОЙ ОТЧЁТ 2',...(limitedNotice?[limitedNotice]:[]),`Снимок рынка: ${result.snapshot_time_utc}`,''];
  lines.push('КАНОНИЧЕСКОЕ СОСТОЯНИЕ',`Состояние: ${unknown?'вывод не готов — есть непереведённая внутренняя причина':(STATE_RU[result.state]||'не закрыто')}`,`Направление: ${result.direction==='LONG'?'покупка':result.direction==='SHORT'?'продажа':'не закрыто'}`,
    `Общая оценка: ${displayScore(result.scores?.overall_0_100)}`,`Монета интересна: ${displayScore(result.scores?.coin_interest_0_100)}`,`Готовность ко входу: ${unknown?'не подтверждена — внутренняя причина требует проверки':displayReadiness(result.state)}`,'');
  lines.push('ПРИЧИНЫ');const reasons=(Array.isArray(result.reasons)?result.reasons:[]).map(reasonLine).filter(Boolean);if(reasons.length)lines.push(...reasons);else lines.push('- подтверждённых причин нет');for(const fact of displayMarketFacts(result))lines.push(`- ${fact}`);

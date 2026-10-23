@@ -1,0 +1,43 @@
+{
+  "schema": "MAINTENANCE_CADENCE_EXISTING_VALUE_RECEIPT_SCOPE_V1",
+  "base": "2711cad6b83e07d2336445441d9811eaa9c0e766",
+  "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792352259756",
+  "lease_expires_ts": 1792356759756,
+  "source_proposal": "anomaly-research/deferred-outcome-audit-20261018/FINDINGS_RU.md",
+  "actual_missing_reason_case": {
+    "cloud_run": 39158392794,
+    "head": "7da99f9cc93535ae2f023c4d54b07d2665240c58",
+    "completion_status": "DEFERRED_LOW_PRIORITY_CADENCE",
+    "exact_claim_reason": "UNKNOWN_NOT_EXPORTED_BEFORE_THIS_FIX"
+  },
+  "change": "Capture already returned claim/completion in typed metadata-only projection; same claim and complete calls, same SQL, execution order, due gate, lease token, sourceclocks, quotas, strategy, weights and forms. Missing fields remain null. Raw error/SQL/params discarded.",
+  "new_controlled_tests_PASS": 9,
+  "new_controlled_tests_FAIL": 0,
+  "effective_scheduler_source": "post-v7-consolidated/final-reconciliation/files/src/scheduler-control.mjs",
+  "producer_due_false_on_claim_failure_is_not_NOT_DUE": true,
+  "completion_CLOSED_is_not_automatically_statistics_success": true,
+  "additional_SQL_HTTP_source_MAIN_Telegram_deploy": 0,
+  "native_after_new_fix_accepted": false,
+  "native_R_W_bounds_changed": false,
+  "files": {
+    "current-generation/files/runner-main.mjs": "50c345e9f70393243a377c7fc88fc322e183bd99bc851e1d28a21ca583085dc8",
+    "current-generation/files/src/maintenance-cadence-receipt.mjs": "e651ee56bf07472773afef5f485beed3318b27e057bc5a401af1fbde77b0577c",
+    "current-generation/apply-runtime-overlay.mjs": "b6058c504699eae7e4b8afb45fab774608efa20933e53e7271c877d09e43da27",
+    "current-generation/tests/maintenance-cadence-receipt.test.mjs": "80f47e8954ea6f33a35c2da7ba88b843c9d89a9ef6d1cca5b0c7669e3bb5acaf",
+    ".github/workflows/liq-assembled-offline-20261012.yml": "d6b17531e44218d96a53a279566b2ef4d612f883e554a0033be6a52ef656025e"
+  },
+  "protected_byte_exact": {
+    "post-v7-consolidated/final-reconciliation/files/src/scheduler-control.mjs": "ffdcde5a97aa58040e1bff4001bd3980e9e8799eaaa951e8ceeeecc4ba347cea",
+    "current-generation/files/src/block-weight-calibration.mjs": "fa8d0da672a4fc7e4746610dcfc868e32a9bb48bb120c7b2b3e63c34142d0840",
+    "current-generation/files/src/manual-report-formatter.mjs": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+    "current-generation/files/src/telegram-plain-facts.mjs": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+    "current-generation/tests/fixtures/output-contract/MANIFEST.json": "0385d9d03beb1893e50e006569942d28214c171efdf421c01e0e7c6e98ddf6b8"
+  },
+  "branch_run": 39159916658,
+  "main_run": 39160275178,
+  "each_PASS": 2062,
+  "each_FAIL": 0,
+  "each_TAP": 21,
+  "peer_review_in_main": "checkpoints/anomaly-worker-maintenance-completion-review-20261018.json",
+  "future_natural_claim_receipt_accepted": false
+}

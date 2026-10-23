@@ -1,0 +1,13 @@
+# Статический peer интеграции typed-input541+542
+
+Проверен frozen central `037555aed03bcae9920ae6d8ec28f69f1c0a31df`. Новых статических препятствий нет **в указанных границах**. Это проверка точности интеграции и происхождения сохранённых доказательств, не новый запуск модуля или центрального runtime.
+
+Текущий typed-input побайтно равен qualified after542: `bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442`. Original541 code `d9893148…` и его original manifest сохранены отдельно в `checkpoints/returned-budget-and-source-read-20261019/source541-originals/`. Остальные шесть input/docs/proof файлов541 не изменены. Все десять файлов542 сохранены точно. Current typed manifest соответствует текущим байтам и отдельно объясняет qualified maintenance и исторический статус старых verification receipts.
+
+Три **сохранённых** положительных mapping: BTC spot — USDT, BTC USD-M — independent concrete unit NULL, HTX AAVE futures — USDT. Во всех native identity/epoch неподтверждены, native contractsize NULL; доступны только pure research features, card/memory/watch/native ingress/notification/production false. Сохранённый542 proof содержит 14 отказов после исправления и исходный failure; здесь ни один mapping или swap не исполнялся повторно.
+
+F1 связывает market/symbol/source role с проверенным локальным payload/policy. Он не доказывает crossvenue project identity, native instrument epoch, contractsize, исходный body-completion ACK или новый допуск. Numeric quote conversion1 не является facevalue/contractsize. BACKFILLED conservative current known-by не превращается в exante detection. Direction UNASSIGNED и accuracy NULL сохраняются. В production trees нет ссылок на typed research paths по завершённому точному Git grep.
+
+Выполнено 12 новых **статических artifact-linkage** сравнений, а не runtime cases. Первое чтение import-ссылок не завершило predicate полноты; точный process return code не был сохранён, поэтому это не считается semantic counterexample. Повторено только это новое чтение с HTTP/1.1: фактический exit1/no matches. Прежние 11 сравнений не повторялись; исходный provisional receipt оставлен в `first-artifact-linkage.original.json` и объяснён в окончательном receipt.
+
+Node/apps/module import/syntax/runtime/tests/probes — 0; старые541 case/3features,542 swaps,543 checks,545 harness — 0 запусков. ProviderHTTP/nativeSQL/MAIN/Telegram0. Central shared/raw packets не менялись. Source_read_costs peer, provider capture и центральная assembled qualification вне этого review; их результат не подразумевается. ENTRY/physical storage остаются отложенными владельцем.

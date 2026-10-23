@@ -1,0 +1,363 @@
+﻿2026-10-19T08:41:03.5512236Z Current runner version: '2.337.0'
+2026-10-19T08:41:03.5539130Z ##[group]Runner Image Provisioner
+2026-10-19T08:41:03.5540044Z Hosted Compute Agent
+2026-10-19T08:41:03.5540694Z Version: 20261012.601
+2026-10-19T08:41:03.5541445Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-19T08:41:03.5542472Z Build Date: 2026-10-12T17:48:21Z
+2026-10-19T08:41:03.5543269Z Worker ID: {0e7c31eb-1b0b-4f71-927c-742b971a2e9b}
+2026-10-19T08:41:03.5544034Z Region: eastus
+2026-10-19T08:41:03.5544645Z Cloud: Azure
+2026-10-19T08:41:03.5545248Z ##[endgroup]
+2026-10-19T08:41:03.5546740Z ##[group]Operating System
+2026-10-19T08:41:03.5547498Z Ubuntu
+2026-10-19T08:41:03.5548098Z 24.04.5
+2026-10-19T08:41:03.5548743Z LTS
+2026-10-19T08:41:03.5549408Z ##[endgroup]
+2026-10-19T08:41:03.5550042Z ##[group]Runner Image
+2026-10-19T08:41:03.5550758Z Image: ubuntu-24.04
+2026-10-19T08:41:03.5551456Z Version: 20261012.334.1
+2026-10-19T08:41:03.5553128Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-19T08:41:03.5554789Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-19T08:41:03.5555847Z ##[endgroup]
+2026-10-19T08:41:03.5557072Z ##[group]GITHUB_TOKEN Permissions
+2026-10-19T08:41:03.5559084Z Contents: read
+2026-10-19T08:41:03.5559714Z Metadata: read
+2026-10-19T08:41:03.5560370Z ##[endgroup]
+2026-10-19T08:41:03.5563092Z Secret source: Actions
+2026-10-19T08:41:03.5564174Z Cache mode: write
+2026-10-19T08:41:03.5564927Z Prepare workflow directory
+2026-10-19T08:41:03.5906437Z Prepare all required actions
+2026-10-19T08:41:03.5955041Z Getting action download info
+2026-10-19T08:41:03.8300799Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-19T08:41:03.9191941Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-19T08:41:04.0020922Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+2026-10-19T08:41:04.1516884Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-19T08:41:04.3569230Z Complete job name: verify
+2026-10-19T08:41:04.4457371Z ##[group]Run actions/checkout@v4
+2026-10-19T08:41:04.4458287Z with:
+2026-10-19T08:41:04.4458772Z   ref: 4cbbb7d1d315171e3a55c5d4765037ebdd6fd813
+2026-10-19T08:41:04.4459500Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T08:41:04.4464086Z   token: ***
+2026-10-19T08:41:04.4464525Z   ssh-strict: true
+2026-10-19T08:41:04.4464969Z   ssh-user: git
+2026-10-19T08:41:04.4465424Z   persist-credentials: true
+2026-10-19T08:41:04.4465930Z   clean: true
+2026-10-19T08:41:04.4466385Z   sparse-checkout-cone-mode: true
+2026-10-19T08:41:04.4466911Z   fetch-depth: 1
+2026-10-19T08:41:04.4467343Z   fetch-tags: false
+2026-10-19T08:41:04.4467787Z   show-progress: true
+2026-10-19T08:41:04.4468241Z   lfs: false
+2026-10-19T08:41:04.4468655Z   submodules: false
+2026-10-19T08:41:04.4469145Z   set-safe-directory: true
+2026-10-19T08:41:04.4469667Z   allow-unsafe-pr-checkout: false
+2026-10-19T08:41:04.4470542Z ##[endgroup]
+2026-10-19T08:41:04.5609124Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T08:41:04.5612050Z ##[group]Getting Git version info
+2026-10-19T08:41:04.5613484Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-19T08:41:04.5615469Z [command]/usr/bin/git version
+2026-10-19T08:41:04.5710261Z git version 2.55.0
+2026-10-19T08:41:04.5743508Z ##[endgroup]
+2026-10-19T08:41:04.5760681Z Temporarily overriding HOME='/home/runner/work/_temp/66c3f383-e198-4a7b-9755-0acc2d8321db' before making global git config changes
+2026-10-19T08:41:04.5763732Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T08:41:04.5783829Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T08:41:04.5828741Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-19T08:41:04.5840917Z ##[group]Initializing the repository
+2026-10-19T08:41:04.5867630Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T08:41:04.5983608Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-19T08:41:04.6009815Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-19T08:41:04.6012245Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-19T08:41:04.6014027Z hint: call:
+2026-10-19T08:41:04.6015038Z hint:
+2026-10-19T08:41:04.6016375Z hint: 	git config --global init.defaultBranch <name>
+2026-10-19T08:41:04.6111892Z hint:
+2026-10-19T08:41:04.6113388Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-19T08:41:04.6115094Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-19T08:41:04.6116507Z hint:
+2026-10-19T08:41:04.6117267Z hint: 	git branch -m <name>
+2026-10-19T08:41:04.6118146Z hint:
+2026-10-19T08:41:04.6119334Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-19T08:41:04.6122001Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+2026-10-19T08:41:04.6138811Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T08:41:04.6142306Z ##[endgroup]
+2026-10-19T08:41:04.6143743Z ##[group]Disabling automatic garbage collection
+2026-10-19T08:41:04.6144962Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-19T08:41:04.6148018Z ##[endgroup]
+2026-10-19T08:41:04.6149280Z ##[group]Setting up auth
+2026-10-19T08:41:04.6150526Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T08:41:04.6207628Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T08:41:04.6683874Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T08:41:04.6726712Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T08:41:04.6951338Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T08:41:04.6987206Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T08:41:04.7212673Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-19T08:41:04.7254208Z ##[endgroup]
+2026-10-19T08:41:04.7255297Z ##[group]Fetching the repository
+2026-10-19T08:41:04.7264480Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 4cbbb7d1d315171e3a55c5d4765037ebdd6fd813
+2026-10-19T08:41:07.6325384Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T08:41:07.6327683Z  * branch            4cbbb7d1d315171e3a55c5d4765037ebdd6fd813 -> FETCH_HEAD
+2026-10-19T08:41:07.6332841Z ##[endgroup]
+2026-10-19T08:41:07.6334585Z ##[group]Determining the checkout info
+2026-10-19T08:41:07.6336366Z ##[endgroup]
+2026-10-19T08:41:07.6341813Z [command]/usr/bin/git sparse-checkout disable
+2026-10-19T08:41:07.6397043Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-19T08:41:07.6434612Z ##[group]Checking out the ref
+2026-10-19T08:41:07.6438856Z [command]/usr/bin/git checkout --progress --force 4cbbb7d1d315171e3a55c5d4765037ebdd6fd813
+2026-10-19T08:41:08.2629811Z Note: switching to '4cbbb7d1d315171e3a55c5d4765037ebdd6fd813'.
+2026-10-19T08:41:08.2631730Z 
+2026-10-19T08:41:08.2632667Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-19T08:41:08.2635653Z changes and commit them, and you can discard any commits you make in this
+2026-10-19T08:41:08.2638377Z state without impacting any branches by switching back to a branch.
+2026-10-19T08:41:08.2639954Z 
+2026-10-19T08:41:08.2640897Z If you want to create a new branch to retain commits you create, you may
+2026-10-19T08:41:08.2643224Z do so (now or later) by using -c with the switch command. Example:
+2026-10-19T08:41:08.2644529Z 
+2026-10-19T08:41:08.2645093Z   git switch -c <new-branch-name>
+2026-10-19T08:41:08.2646053Z 
+2026-10-19T08:41:08.2646653Z Or undo this operation with:
+2026-10-19T08:41:08.2647533Z 
+2026-10-19T08:41:08.2648049Z   git switch -
+2026-10-19T08:41:08.2648767Z 
+2026-10-19T08:41:08.2649947Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-19T08:41:08.2651869Z 
+2026-10-19T08:41:08.2653695Z HEAD is now at 4cbbb7d Merge accepted source originals and peers while retaining qualified Kraken memory runtime
+2026-10-19T08:41:08.2680281Z ##[endgroup]
+2026-10-19T08:41:08.2726137Z [command]/usr/bin/git log -1 --format=%H
+2026-10-19T08:41:08.2753564Z 4cbbb7d1d315171e3a55c5d4765037ebdd6fd813
+2026-10-19T08:41:08.3144793Z ##[group]Run actions/setup-node@v4
+2026-10-19T08:41:08.3146059Z with:
+2026-10-19T08:41:08.3146966Z   node-version: 24
+2026-10-19T08:41:08.3148003Z   always-auth: false
+2026-10-19T08:41:08.3149050Z   check-latest: false
+2026-10-19T08:41:08.3160196Z   token: ***
+2026-10-19T08:41:08.3161135Z ##[endgroup]
+2026-10-19T08:41:08.4590826Z (node:2280) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T08:41:08.4594849Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T08:41:08.4596853Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-19T08:41:08.4599079Z ##[group]Environment details
+2026-10-19T08:41:09.2342688Z node: v24.21.0
+2026-10-19T08:41:09.2343366Z npm: 11.19.0
+2026-10-19T08:41:09.2343850Z yarn: 1.22.22
+2026-10-19T08:41:09.2345222Z ##[endgroup]
+2026-10-19T08:41:09.2533186Z ##[group]Run actions/github-script@v7
+2026-10-19T08:41:09.2533554Z with:
+2026-10-19T08:41:09.2536841Z   script: const owner=context.repo.owner,repo=context.repo.repo;
+const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+if(main!==context.payload.pull_request.base.sha)throw Error('MAIN_MOVED');
+const read=async(path,ref)=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref})).data.content,'base64').toString());
+const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',main);
+const branch=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',context.payload.pull_request.head.sha);
+const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json',main);
+if(!/^CODEX:/.test(phase.lease?.owner||'')||branch.lease?.owner!==phase.lease.owner||branch.lease?.acquired_ts!==phase.lease.acquired_ts||branch.lease?.expires_ts!==phase.lease.expires_ts||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+
+2026-10-19T08:41:09.2542771Z   github-token: ***
+2026-10-19T08:41:09.2543055Z   debug: false
+2026-10-19T08:41:09.2543327Z   user-agent: actions/github-script
+2026-10-19T08:41:09.2543644Z   result-encoding: json
+2026-10-19T08:41:09.2543930Z   retries: 0
+2026-10-19T08:41:09.2544211Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-19T08:41:09.2544564Z ##[endgroup]
+2026-10-19T08:41:10.1786464Z ##[group]Run mkdir -p runtime audit-output/n11-execution-handoff
+2026-10-19T08:41:10.1787075Z [36;1mmkdir -p runtime audit-output/n11-execution-handoff[0m
+2026-10-19T08:41:10.1787742Z [36;1mnode runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz[0m
+2026-10-19T08:41:10.1788367Z [36;1mtar -xzf runtime/payload.tar.gz -C runtime[0m
+2026-10-19T08:41:10.1788691Z [36;1mrm runtime/payload.tar.gz[0m
+2026-10-19T08:41:10.1789327Z [36;1mnode post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/n11-execution-handoff/assembly.json[0m
+2026-10-19T08:41:10.1790360Z [36;1mnpm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund[0m
+2026-10-19T08:41:10.2051039Z shell: /usr/bin/bash -e {0}
+2026-10-19T08:41:10.2051349Z env:
+2026-10-19T08:41:10.2052083Z   REPORT2_PAYLOAD_KEY: ***
+2026-10-19T08:41:10.2052358Z ##[endgroup]
+2026-10-19T08:41:13.8172299Z 
+2026-10-19T08:41:13.8182431Z added 52 packages in 2s
+2026-10-19T08:41:13.8652838Z ##[group]Run cmp current-generation/files/src/worker.js runtime/src/worker.js
+2026-10-19T08:41:13.8653454Z [36;1mcmp current-generation/files/src/worker.js runtime/src/worker.js[0m
+2026-10-19T08:41:13.8654116Z [36;1mcmp current-generation/files/src/tz101-execution-facts.mjs runtime/src/tz101-execution-facts.mjs[0m
+2026-10-19T08:41:13.8654897Z [36;1mcmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs[0m
+2026-10-19T08:41:13.8656088Z [36;1mnode --test current-generation/tests/execution-report-context.test.mjs current-generation/tests/early-observation-target-pending.test.mjs > audit-output/n11-execution-handoff/target-unit.tap[0m
+2026-10-19T08:41:13.8657314Z [36;1mnode current-generation/tests/decision-timeline.runtime.mjs runtime > audit-output/n11-execution-handoff/decision-timeline.json[0m
+2026-10-19T08:41:13.8658304Z [36;1mnode --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n11-execution-handoff/report-telegram.tap[0m
+2026-10-19T08:41:13.8659138Z [36;1mnode current-generation/validate.mjs > audit-output/n11-execution-handoff/generation.log 2>&1[0m
+2026-10-19T08:41:13.8659893Z [36;1mnode runner/current-runtime-binding.mjs --runtime runtime > audit-output/n11-execution-handoff/binding.json[0m
+2026-10-19T08:41:13.8724718Z shell: /usr/bin/bash -e {0}
+2026-10-19T08:41:13.8724982Z env:
+2026-10-19T08:41:13.8725193Z   REPORT2_TEST_RUNTIME: runtime
+2026-10-19T08:41:13.8725467Z   REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+2026-10-19T08:41:13.8726205Z   NODE_OPTIONS: --import /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/early-evidence-repair/no-network.mjs
+2026-10-19T08:41:13.8726901Z ##[endgroup]
+2026-10-19T08:41:44.4690679Z ##[error]Process completed with exit code 1.
+2026-10-19T08:41:44.4776227Z ##[group]Run for file in audit-output/n11-execution-handoff/*.tap audit-output/n11-execution-handoff/generation.log audit-output/n11-execution-handoff/decision-timeline.json; do
+2026-10-19T08:41:44.4777538Z [36;1mfor file in audit-output/n11-execution-handoff/*.tap audit-output/n11-execution-handoff/generation.log audit-output/n11-execution-handoff/decision-timeline.json; do[0m
+2026-10-19T08:41:44.4778404Z [36;1m  if test -f "$file"; then echo "FAILED_LOG: $file"; tail -90 "$file"; fi[0m
+2026-10-19T08:41:44.4778778Z [36;1mdone[0m
+2026-10-19T08:41:44.4842005Z shell: /usr/bin/bash -e {0}
+2026-10-19T08:41:44.4842263Z ##[endgroup]
+2026-10-19T08:41:44.4928126Z FAILED_LOG: audit-output/n11-execution-handoff/report-telegram.tap
+2026-10-19T08:41:44.4945188Z ✔ owner-paused blocks are inactive and cannot score either direction or claim the physical root (4.984722ms)
+2026-10-19T08:41:44.4947172Z ✔ sole supply/calendar routes are blocked while a shared source preserves active N04 evidence (1.407552ms)
+2026-10-19T08:41:44.4948537Z ✔ manual and Telegram exclude paused facts, including previously stored facts, on the same retained snapshot (253.427527ms)
+2026-10-19T08:41:44.4949618Z ✔ exact stored manual hash is verified before paused facts are suppressed, without rewriting the archive (2.584854ms)
+2026-10-19T08:41:44.4950608Z ✔ all supply-only routes reject explicit non-XRP dispatch before admission, including manual overrides (0.45465ms)
+2026-10-19T08:41:44.4951793Z ✔ paused N06 never plans or dispatches social and pageview HTTP, even for explicit routes (0.409997ms)
+2026-10-19T08:41:44.4952615Z ✔ paused N07 skips sole-block feeds and filters old official facts (0.377276ms)
+2026-10-19T08:41:44.4953754Z ✔ HTX margin-rule adapter only serves paused N08 and N09, while the active futures book route remains available (0.343372ms)
+2026-10-19T08:41:44.4954874Z ✔ paused N14 cannot dispatch any option-only source or revive saved facts (0.585264ms)
+2026-10-19T08:41:44.4955703Z ℹ tests 9
+2026-10-19T08:41:44.4956131Z ℹ suites 0
+2026-10-19T08:41:44.4956559Z ℹ pass 9
+2026-10-19T08:41:44.4956945Z ℹ fail 0
+2026-10-19T08:41:44.4957368Z ℹ cancelled 0
+2026-10-19T08:41:44.4957774Z ℹ skipped 0
+2026-10-19T08:41:44.4958169Z ℹ todo 0
+2026-10-19T08:41:44.4958619Z ℹ duration_ms 418.916295
+2026-10-19T08:41:44.4959366Z FAILED_LOG: audit-output/n11-execution-handoff/target-unit.tap
+2026-10-19T08:41:44.4960691Z ✔ early observation can surface while the 5 percent target is still pending (49.327678ms)
+2026-10-19T08:41:44.4962643Z ✔ a favorable target remains mandatory for wait and confirmed entry without a fixed percentage (1.235952ms)
+2026-10-19T08:41:44.4964139Z ✔ early observation still rejects a score below 70 (0.622404ms)
+2026-10-19T08:41:44.4965658Z ✔ early observation uses the dedicated interest score instead of a duplicate overall threshold (0.765873ms)
+2026-10-19T08:41:44.4967344Z ✔ early observation with a proven 5 percent target keeps the existing message form (1.517638ms)
+2026-10-19T08:41:44.4969146Z ✔ real immutable BR and NEAR facts become actual partial report text; no canonical or score mutation (17.855201ms)
+2026-10-19T08:41:44.4971075Z ✔ HTTP receipts, foreign run, snapshot, contract, unpersisted and future clocks cannot create information (2.827045ms)
+2026-10-19T08:41:44.4973336Z ✔ tampered quote rejected even with matching receipt digest; stale book verified as of exact decision time (5.459629ms)
+2026-10-19T08:41:44.4974602Z ✔ metadata-only or removed rendered lines do not count as used blocks (3.275485ms)
+2026-10-19T08:41:44.4975428Z ✔ reader uses exact existing contract/clock index and refuses ambiguous same-snapshot rows (1.553185ms)
+2026-10-19T08:41:44.4976005Z ℹ tests 10
+2026-10-19T08:41:44.4976254Z ℹ suites 0
+2026-10-19T08:41:44.4976468Z ℹ pass 10
+2026-10-19T08:41:44.4976682Z ℹ fail 0
+2026-10-19T08:41:44.4976897Z ℹ cancelled 0
+2026-10-19T08:41:44.4977123Z ℹ skipped 0
+2026-10-19T08:41:44.4977344Z ℹ todo 0
+2026-10-19T08:41:44.4977592Z ℹ duration_ms 181.244843
+2026-10-19T08:41:44.4978298Z FAILED_LOG: audit-output/n11-execution-handoff/generation.log
+2026-10-19T08:41:44.4979155Z ✔ additional native pageview context reaches consumer without replacing primary or assigning scores (21.627901ms)
+2026-10-19T08:41:44.4980013Z ✔ pageview route rejects wrapped, foreign native or ambiguous page bindings (1.553432ms)
+2026-10-19T08:41:44.4981349Z ✔ admitted one-request collector caches, retains exact timestamps and caps minute bursts (29.037231ms)
+2026-10-19T08:41:44.4982624Z ✔ 429 installs shared backoff and incomplete responses do not become zero views (2.523771ms)
+2026-10-19T08:41:44.4983562Z ✔ ten additional verified native page routes produce neutral report context only for the matching HTX chain (1.940227ms)
+2026-10-19T08:41:44.4985265Z ✔ XRP and HBAR exact native pages reject ticker collisions and wrapped assets (0.470592ms)
+2026-10-19T08:41:44.4986447Z ✔ K02: disabled execution gates the whole working job before checkout/decrypt (1.819861ms)
+2026-10-19T08:41:44.4987342Z ✔ K02: runtime preflight precedes decrypt and runner preflight precedes worker/network setup (1.62223ms)
+2026-10-19T08:41:44.4988370Z ✔ successful native payments use delivered_amount even when DeliverMax is larger; consumer and score remain neutral (24.051686ms)
+2026-10-19T08:41:44.4989415Z ✔ issued currencies, failed or unavailable delivery amounts and stated Amount never become native payments (0.75266ms)
+2026-10-19T08:41:44.4990315Z ✔ exact ledger hash, header clock, parent proof and fresh source bound are compulsory (0.658164ms)
+2026-10-19T08:41:44.4991256Z ✔ native route depends on supply first and collects one admitted exact ledger without renewing source clocks (24.66168ms)
+2026-10-19T08:41:44.4992566Z ✔ unknown or malformed public quota is not zero/unlimited; original reset and bounded load backoff are explicit (1.385928ms)
+2026-10-19T08:41:44.4993803Z ✔ a binding zero-quota header stops dependent native ledger requests and the next collector spends no caller slot (4.528659ms)
+2026-10-19T08:41:44.4994842Z ✔ XRP supply and N04 payment share provider backoff; exhausted daily parent/child preserve caller slots (2.746499ms)
+2026-10-19T08:41:44.4995395Z ℹ tests 2645
+2026-10-19T08:41:44.4995622Z ℹ suites 0
+2026-10-19T08:41:44.4995840Z ℹ pass 2640
+2026-10-19T08:41:44.4996054Z ℹ fail 3
+2026-10-19T08:41:44.4996276Z ℹ cancelled 0
+2026-10-19T08:41:44.4996520Z ℹ skipped 2
+2026-10-19T08:41:44.4996772Z ℹ todo 0
+2026-10-19T08:41:44.4997025Z ℹ duration_ms 24786.954183
+2026-10-19T08:41:44.4997183Z 
+2026-10-19T08:41:44.4997301Z ✖ failing tests:
+2026-10-19T08:41:44.4997427Z 
+2026-10-19T08:41:44.4997739Z test at current-generation/tests/current-runtime-binding.test.mjs:26:1
+2026-10-19T08:41:44.4998542Z ✖ current checkout and isolated workflow share the production pin without a stale duplicate (11.888984ms)
+2026-10-19T08:41:44.4999128Z   Error: CURRENT_BINDING_SOURCE_HASH_MISMATCH
+2026-10-19T08:41:44.4999946Z       at inspectCurrentRuntimeBinding (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runner/current-runtime-binding.mjs:34:11)
+2026-10-19T08:41:44.5001230Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/current-runtime-binding.test.mjs:27:19)
+2026-10-19T08:41:44.5002330Z       at Test.runInAsyncScope (node:async_hooks:227:14)
+2026-10-19T08:41:44.5002747Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-10-19T08:41:44.5003164Z       at Test.start (node:internal/test_runner/test:1262:17)
+2026-10-19T08:41:44.5003661Z       at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+2026-10-19T08:41:44.5003991Z 
+2026-10-19T08:41:44.5004268Z test at current-generation/tests/generation-guard.test.mjs:132:1
+2026-10-19T08:41:44.5004901Z ✖ workflow worker pin equals the effective V13 worker bytes (2.731386ms)
+2026-10-19T08:41:44.5005447Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+2026-10-19T08:41:44.5005841Z   + actual - expected
+2026-10-19T08:41:44.5006068Z   
+2026-10-19T08:41:44.5006571Z   + '97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5'
+2026-10-19T08:41:44.5007109Z   - '75278614f0a95612c38e1ff2bd5e02d5fd6ebef2456ad09a21fa6e62fb5e399c'
+2026-10-19T08:41:44.5007472Z   
+2026-10-19T08:41:44.5008207Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/generation-guard.test.mjs:136:9)
+2026-10-19T08:41:44.5009007Z       at Test.runInAsyncScope (node:async_hooks:227:14)
+2026-10-19T08:41:44.5009405Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-10-19T08:41:44.5009881Z       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+2026-10-19T08:41:44.5010376Z       at Test.postRun (node:internal/test_runner/test:1542:19)
+2026-10-19T08:41:44.5010797Z       at Test.run (node:internal/test_runner/test:1467:12)
+2026-10-19T08:41:44.5011293Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-10-19T08:41:44.5012053Z     generatedMessage: true,
+2026-10-19T08:41:44.5012328Z     code: 'ERR_ASSERTION',
+2026-10-19T08:41:44.5012744Z     actual: '97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5',
+2026-10-19T08:41:44.5013335Z     expected: '75278614f0a95612c38e1ff2bd5e02d5fd6ebef2456ad09a21fa6e62fb5e399c',
+2026-10-19T08:41:44.5013765Z     operator: 'strictEqual',
+2026-10-19T08:41:44.5014020Z     diff: 'simple'
+2026-10-19T08:41:44.5014225Z   }
+2026-10-19T08:41:44.5014334Z 
+2026-10-19T08:41:44.5014623Z test at current-generation/tests/output-contract-freeze.test.mjs:45:1
+2026-10-19T08:41:44.5015286Z ✖ K01: formatter and fixture hashes match the frozen manifest (5.44749ms)
+2026-10-19T08:41:44.5015888Z   AssertionError [ERR_ASSERTION]: current-generation/files/src/block-result-context.mjs
+2026-10-19T08:41:44.5016498Z   + actual - expected
+2026-10-19T08:41:44.5016710Z   
+2026-10-19T08:41:44.5017037Z   + '466d2d3d498e97235971d159de5135b20d42d572a9f067ea2afb90f990e9bb88'
+2026-10-19T08:41:44.5017564Z   - 'fb0110ee6d77b01f40ad42897cbe4150fcc7df1f2c83fac95772a0bdb3cac1de'
+2026-10-19T08:41:44.5017927Z   
+2026-10-19T08:41:44.5018684Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/output-contract-freeze.test.mjs:48:86)
+2026-10-19T08:41:44.5019513Z       at Test.runInAsyncScope (node:async_hooks:227:14)
+2026-10-19T08:41:44.5019918Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-10-19T08:41:44.5020395Z       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+2026-10-19T08:41:44.5020889Z       at Test.postRun (node:internal/test_runner/test:1542:19)
+2026-10-19T08:41:44.5021302Z       at Test.run (node:internal/test_runner/test:1467:12)
+2026-10-19T08:41:44.5022128Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-10-19T08:41:44.5022576Z     generatedMessage: false,
+2026-10-19T08:41:44.5022839Z     code: 'ERR_ASSERTION',
+2026-10-19T08:41:44.5023260Z     actual: '466d2d3d498e97235971d159de5135b20d42d572a9f067ea2afb90f990e9bb88',
+2026-10-19T08:41:44.5023867Z     expected: 'fb0110ee6d77b01f40ad42897cbe4150fcc7df1f2c83fac95772a0bdb3cac1de',
+2026-10-19T08:41:44.5024305Z     operator: 'strictEqual',
+2026-10-19T08:41:44.5024555Z     diff: 'simple'
+2026-10-19T08:41:44.5024778Z   }
+2026-10-19T08:41:44.5024884Z 
+2026-10-19T08:41:44.5024892Z 
+2026-10-19T08:41:44.5025363Z     at run (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:15:29)
+2026-10-19T08:41:44.5026273Z     at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:58:1
+2026-10-19T08:41:44.5026950Z     at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+2026-10-19T08:41:44.5027382Z     at async node:internal/modules/esm/loader:647:26
+2026-10-19T08:41:44.5027886Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-10-19T08:41:44.5028230Z 
+2026-10-19T08:41:44.5028323Z Node.js v24.21.0
+2026-10-19T08:41:44.5028904Z FAILED_LOG: audit-output/n11-execution-handoff/decision-timeline.json
+2026-10-19T08:41:44.5029824Z {"status":"DECISION_TIMELINE_PASS","bome_false_future_removed_by_late_bundle":true,"stale_handoff_rejected":true,"execution_refresh_reserved":2}
+2026-10-19T08:41:44.5080919Z ##[group]Run actions/upload-artifact@v4
+2026-10-19T08:41:44.5081219Z with:
+2026-10-19T08:41:44.5081438Z   name: n11-execution-handoff-39224506314
+2026-10-19T08:41:44.5082047Z   path: audit-output/n11-execution-handoff/
+2026-10-19T08:41:44.5082344Z   retention-days: 30
+2026-10-19T08:41:44.5082570Z   if-no-files-found: warn
+2026-10-19T08:41:44.5082797Z   compression-level: 6
+2026-10-19T08:41:44.5083011Z   overwrite: false
+2026-10-19T08:41:44.5083233Z   include-hidden-files: false
+2026-10-19T08:41:44.5083477Z ##[endgroup]
+2026-10-19T08:41:44.6732346Z (node:6594) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T08:41:44.6734317Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T08:41:44.6822264Z With the provided path, there will be 5 files uploaded
+2026-10-19T08:41:44.6824012Z Artifact name is valid!
+2026-10-19T08:41:44.6824856Z Root directory input is valid!
+2026-10-19T08:41:44.9110730Z Beginning upload of artifact content to blob storage
+2026-10-19T08:41:44.9398834Z (node:6594) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-19T08:41:44.9679369Z Uploaded bytes 10553
+2026-10-19T08:41:44.9822688Z Finished uploading artifact content to blob storage!
+2026-10-19T08:41:44.9824252Z SHA256 digest of uploaded artifact zip is 56d9839a1765ae50bac95323d265d5626b48387c5e8d24df9c4ce81cfe3f3532
+2026-10-19T08:41:44.9826211Z Finalizing artifact upload
+2026-10-19T08:41:45.1782434Z Artifact n11-execution-handoff-39224506314.zip successfully finalized. Artifact ID 12172908806
+2026-10-19T08:41:45.1784532Z Artifact n11-execution-handoff-39224506314 has been successfully uploaded! Final size is 10553 bytes. Artifact ID is 12172908806
+2026-10-19T08:41:45.1791764Z Artifact download URL: https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39224506314/artifacts/12172908806
+2026-10-19T08:41:45.1993895Z Post job cleanup.
+2026-10-19T08:41:45.2863018Z [command]/usr/bin/git version
+2026-10-19T08:41:45.2911052Z git version 2.55.0
+2026-10-19T08:41:45.2956038Z Temporarily overriding HOME='/home/runner/work/_temp/f8d8fed0-24a1-4948-888c-2e2ccfa896d4' before making global git config changes
+2026-10-19T08:41:45.2957355Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T08:41:45.2963120Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T08:41:45.3004628Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T08:41:45.3040515Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T08:41:45.3315623Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T08:41:45.3344861Z http.https://github.com/.extraheader
+2026-10-19T08:41:45.3356974Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-19T08:41:45.3396298Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T08:41:45.3682979Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T08:41:45.3726346Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T08:41:45.4163727Z Cleaning up orphan processes
+2026-10-19T08:41:45.4668813Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/github-script@v7, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

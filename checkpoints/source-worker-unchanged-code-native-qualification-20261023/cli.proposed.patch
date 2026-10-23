@@ -1,0 +1,179 @@
+--- a/tools/rollout-correlated-sql-bridge-20261022.mjs
++++ b/tools/rollout-correlated-sql-bridge-20261022.mjs
+@@ -378,10 +378,134 @@
+  }catch(error){if(signal.aborted)throw Error('EXISTING_ACTIVATION_TRANSPORT_DEADLINE');throw error;}
+  finally{signal.removeEventListener('abort',abortListener);if(reader){void reader.cancel().catch(()=>{});try{reader.releaseLock();}catch{}}}
+ }
++// Exact native-code qualification across bounded authority-only Git commits.
++import {execFileSync as nativeQualificationGitExec} from 'node:child_process';
++import {createHash as nativeQualificationHash} from 'node:crypto';
++const NATIVE_QUALIFICATION_AUTHORITY_PATHS=Object.freeze([
++ 'AGENTS.md',
++ 'checkpoints/CLOUD_PHASE_STATE_20261004.json',
++ 'checkpoints/CURRENT_PROJECT_STATUS.json',
++ 'checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json',
++ 'checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json',
++ 'checkpoints/ACTIVE_WORKING_WINDOW_20261012.json',
++ 'checkpoints/ACTIVE105_NATIVE_QUALIFICATION_GATE_AND_EXISTING_ACTIVATION_HANDOFF_20261023.json',
++ 'checkpoints/native-qualification-gate-connected-20261023/merge-and-checks-receipt.json',
++ 'checkpoints/native-qualification-gate-connected-20261023/next-worker-queues.json'
++]);
++const NATIVE_QUALIFICATION_MODULE_PATHS=Object.freeze([
++ 'tools/rollout-correlated-sql-bridge-20261022.mjs',
++ 'runner/cloudflare-version-bound-readback.mjs',
++ 'runner/github-bounded-phase-lease.mjs',
++ 'runner/github-four-mirror-cas.mjs',
++ 'runner/htx-coordinated-rollout.mjs',
++ 'runner/installed-bridge-module-inspection.mjs',
++ 'runner/retention-bridge-provenance.mjs',
++ 'runner/sql-bridge-counter-repair.mjs',
++ 'runner/private-canonical-history.mjs',
++ 'current-generation/files/src/private-canonical-history.mjs',
++ 'current-generation/files/src/unified-budget.mjs'
++]);
++const NATIVE_QUALIFICATION_FS_PATHS=Object.freeze([...new Set([
++ ...NATIVE_QUALIFICATION_MODULE_PATHS,
++ 'current-generation/files/runner-main.mjs',
++ 'runner/report2-d1-adapter.mjs',
++ 'runner/native-query-cost-journal.mjs',
++ 'tools/run-paid-sliding-history-20261018.mjs',
++ 'tools/recover-lossless-retained-history-20261014.mjs',
++ '.github/workflows/current-bridge-module-inspection-20261016.yml',
++ '.github/workflows/liq-assembled-offline-20261012.yml',
++ '.github/workflows/report2.yml',
++ 'checkpoints/free-storage-20261016/sql-bridge-counter-release-38934007309.json',
++ 'checkpoints/report-producer-and-bridge-stage-connected-20261022/native-stage-receipt.json',
++ 'checkpoints/native-qualification-gate-connected-20261023/qualification-receipt.json',
++ 'checkpoints/native-qualification-gate-connected-20261023/qualification-scope.json',
++ 'checkpoints/CLOUD_PHASE_STATE_20261004.json',
++ 'checkpoints/CURRENT_PROJECT_STATUS.json',
++ 'checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json',
++ 'checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json',
++ 'audit-fixes/source-optimization-20260930/execution-lock.json',
++ 'REPORT2_CURRENT_GENERATION.json'
++])]);
++export function requireQualifiedAutomaticMain({automatic,workflow,requested_run}={}){
++ const id=String(requested_run??''),hex=x=>typeof x==='string'&&/^[a-f0-9]{40}$/.test(x);
++ if(!/^[1-9]\d{0,15}$/.test(id)||!Number.isSafeInteger(Number(id))||String(automatic?.id)!==id||!Number.isSafeInteger(workflow?.id)||automatic.workflow_id!==workflow.id||workflow.path!=='.github/workflows/liq-assembled-offline-20261012.yml'||automatic.path!==workflow.path||automatic.event!=='push'||automatic.head_branch!=='main'||automatic.run_attempt!==1||automatic.status!=='completed'||automatic.conclusion!=='success'||!hex(automatic.head_sha))throw Error('EXISTING_ACTIVATION_EXACT_AUTOMATIC_MAIN_REQUIRED');
++ return Object.freeze({run_id:automatic.id,head:automatic.head_sha,workflow_id:workflow.id,path:workflow.path,event:'push',attempt:1});
++}
++export async function verifyUnchangedNativeExecutionSnapshot({repo_root,current_head,qualified_head}={}){
++ const fail=code=>{throw Error('EXISTING_ACTIVATION_'+code);},hex=x=>typeof x==='string'&&/^[a-f0-9]{40}$/.test(x);
++ if(typeof repo_root!=='string'||!activationPath.isAbsolute(repo_root)||!hex(current_head)||!hex(qualified_head))fail('GIT_SNAPSHOT_BINDING_REQUIRED');
++ const root=await fs.realpath(repo_root),deadline=Date.now()+15000,cache=new Map();let objectBytes=0,treeCount=0,entryCount=0;
++ const budget=()=>{if(Date.now()>=deadline)fail('GIT_PROOF_TIME_BOUND');};
++ const git=(args,input)=>{
++  budget();try{return nativeQualificationGitExec('git',['--no-replace-objects','-c','core.commitGraph=false','-C',root,...args],{input,timeout:Math.min(2000,Math.max(1,deadline-Date.now())),maxBuffer:8*1024*1024,env:{...process.env,GIT_NO_LAZY_FETCH:'1',GIT_NO_REPLACE_OBJECTS:'1',GIT_OPTIONAL_LOCKS:'0',GIT_TERMINAL_PROMPT:'0',GIT_ALLOW_PROTOCOL:'',GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null'},stdio:['pipe','pipe','pipe']});}
++  catch{fail('FULL_LOCAL_GIT_OBJECT_REQUIRED');}
++ };
++ const hashObject=(type,bytes)=>nativeQualificationHash('sha1').update(Buffer.from(type+' '+bytes.length+'\0')).update(bytes).digest('hex');
++ const objects=(ids,type)=>{
++  const missing=[...new Set(ids)].filter(x=>!cache.has(x));if(!missing.length)return;
++  const out=git(['cat-file','--batch'],Buffer.from(missing.join('\n')+'\n'));let at=0;
++  for(const oid of missing){
++   const nl=out.indexOf(10,at);if(nl<0)fail('FULL_LOCAL_GIT_OBJECT_REQUIRED');
++   const fields=out.subarray(at,nl).toString('ascii').split(' ');if(fields.length!==3||fields[0]!==oid||fields[1]!==type||!/^\d+$/.test(fields[2]))fail('FULL_LOCAL_GIT_OBJECT_REQUIRED');
++   const size=Number(fields[2]);if(!Number.isSafeInteger(size)||size<0||size>2*1024*1024||nl+1+size>=out.length||out[nl+1+size]!==10)fail('GIT_OBJECT_BYTE_BOUND');
++   const bytes=out.subarray(nl+1,nl+1+size);objectBytes+=size;if(objectBytes>8*1024*1024||hashObject(type,bytes)!==oid)fail('GIT_OBJECT_HASH_REQUIRED');
++   cache.set(oid,{type,bytes});at=nl+2+size;
++  }
++  if(at!==out.length)fail('FULL_LOCAL_GIT_OBJECT_REQUIRED');
++ };
++ const flat=commit=>{
++  objects([commit],'commit');const raw=cache.get(commit).bytes.toString('utf8'),m=/^tree ([a-f0-9]{40})\n/.exec(raw);if(!m)fail('GIT_COMMIT_TREE_REQUIRED');
++  const files=new Map();let pending=[{oid:m[1],path:'',depth:0}];
++  while(pending.length){
++   budget();if((treeCount+=pending.length)>8192)fail('GIT_TREE_COUNT_BOUND');objects(pending.map(x=>x.oid),'tree');const next=[];
++   for(const item of pending){
++    if(item.depth>32)fail('GIT_TREE_DEPTH_BOUND');const bytes=cache.get(item.oid).bytes;let at=0;
++    while(at<bytes.length){
++     const space=bytes.indexOf(32,at),nul=bytes.indexOf(0,space+1);if(space<at||nul<space||nul+21>bytes.length)fail('FULL_GIT_TREE_REQUIRED');
++     const mode=bytes.subarray(at,space).toString('ascii');let name;try{name=new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(space+1,nul));}catch{fail('GIT_PATH_REQUIRED');}
++     if(!name||name==='.'||name==='..'||/[\/\\\0]/.test(name)||Buffer.byteLength(name)>255)fail('GIT_PATH_REQUIRED');
++     const path=item.path+name,oid=bytes.subarray(nul+1,nul+21).toString('hex');at=nul+21;
++     if(++entryCount>40000||Buffer.byteLength(path)>2048)fail('GIT_PATH_COUNT_BOUND');
++     if(mode==='40000')next.push({oid,path:path+'/',depth:item.depth+1});
++     else{if(!['100644','100755','120000'].includes(mode)||files.has(path))fail('GIT_FILE_MODE_REQUIRED');files.set(path,{mode,oid});}
++    }
++   }
++   pending=next;
++  }
++  return files;
++ };
++ if(git(['rev-parse','--show-toplevel']).toString('utf8').trim()!==root||git(['rev-parse','--verify','HEAD^{commit}']).toString('ascii').trim()!==current_head)fail('CURRENT_CHECKOUT_HEAD_REQUIRED');
++ const qualified=flat(qualified_head),current=flat(current_head),allowed=new Set(NATIVE_QUALIFICATION_AUTHORITY_PATHS),changed=[];
++ if(current.size>20000||qualified.size>20000)fail('GIT_FILE_COUNT_BOUND');
++ for(const path of new Set([...qualified.keys(),...current.keys()])){
++  const a=qualified.get(path),b=current.get(path);if(a?.oid===b?.oid&&a?.mode===b?.mode)continue;
++  if(!allowed.has(path)||!b||b.mode!=='100644'||a&&a.mode!=='100644')fail('QUALIFIED_GIT_CODE_OR_PROOF_CHANGED');changed.push(path);
++ }
++ const modules=new Set(NATIVE_QUALIFICATION_MODULE_PATHS),actual={};let fsBytes=0;
++ for(const path of NATIVE_QUALIFICATION_FS_PATHS){
++  budget();const item=current.get(path);if(!item||!['100644','100755'].includes(item.mode))fail('NATIVE_EXECUTION_FILE_REQUIRED');
++  const filename=activationPath.join(root,path);let real,stat;try{real=await fs.realpath(filename);stat=await fs.lstat(filename);}catch{fail('NATIVE_EXECUTION_REAL_FILE_REQUIRED');}
++  if(real!==filename||!stat.isFile()||stat.isSymbolicLink()||stat.size>2*1024*1024)fail('NATIVE_EXECUTION_REAL_FILE_REQUIRED');
++  let bytes;try{bytes=await fs.readFile(filename);}catch{fail('NATIVE_EXECUTION_REAL_FILE_REQUIRED');}fsBytes+=bytes.length;
++  if(bytes.length!==stat.size||bytes.length>2*1024*1024||fsBytes>16*1024*1024||hashObject('blob',bytes)!==item.oid)fail('NATIVE_EXECUTION_FILESYSTEM_CHANGED');
++  if(modules.has(path)){
++   const text=bytes.toString('utf8');actual[path]=text;
++   for(const match of text.matchAll(/(?:\bfrom\s*|\bimport\s*\(\s*)['"]([^'"\n]+)['"]/g)){
++    const spec=match[1];if(spec.startsWith('node:'))continue;
++    if(!spec.startsWith('./')&&!spec.startsWith('../'))fail('NATIVE_IMPORT_CLOSURE_REQUIRED');
++    const resolved=activationPath.posix.normalize(activationPath.posix.join(activationPath.posix.dirname(path),spec));if(!modules.has(resolved))fail('NATIVE_IMPORT_CLOSURE_REQUIRED');
++   }
++   for(const match of text.matchAll(/\bimport\s*\(/g))if(!/^\s*['"]/.test(text.slice(match.index+match[0].length)))fail('NATIVE_STATIC_IMPORT_REQUIRED');
++  }
++ }
++ budget();
++ return Object.freeze({status:'EXACT_AUTOMATIC_SNAPSHOT_WITH_CURRENT_AUTHORITY',qualified_head,current_head,qualified_git_files:qualified.size,current_git_files:current.size,verified_full_git_objects:cache.size,verified_git_object_bytes:objectBytes,authority_changed_paths:changed.sort(),actual_native_FS_paths:[...NATIVE_QUALIFICATION_FS_PATHS],actual_native_FS_bytes:fsBytes,all_other_Git_paths_modes_and_blobs_equal:true,encrypted_base_recipe_overlays_and_proofs_bound_by_full_Git_identity:true,prior_runtime265_and_full618_reused_by_unchanged_Git_build_inputs:true,new_private_assembly:false,new_runtime_semantic_tests:0,extra_GitHub_calls:0,native_admission:false,filesystem_race_or_crash_durability_qualified:false});
++}
++
+ export function createExistingActivationNativeControl({repo_root,head,owner,github_token,cloudflare_token,fetch_impl=globalThis.fetch,clock=Date.now}={}){
+- const repo='kovalev23091987-jpg/my-report-2-cloud-runner',scopePrefix='OWNER_FIVE_ACTIVE_DIRECTIONS.CORRELATED_BRIDGE_EXISTING_VERSION_ACTIVATION_20261022.',prefix='checkpoints/correlated-bridge-existing-version-activation-connected-20261022',I=EXISTING_ACTIVATION_IDENTITIES;
++ const repo='kovalev23091987-jpg/my-report-2-cloud-runner',scopePrefix='OWNER_FIVE_ACTIVE_DIRECTIONS.CORRELATED_BRIDGE_EXISTING_VERSION_ACTIVATION_20261022.',prefix='checkpoints/native-qualification-gate-connected-20261023',I=EXISTING_ACTIVATION_IDENTITIES;
+  if(typeof repo_root!=='string'||!/^[a-f0-9]{40}$/.test(head||'')||!/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d{13}$/.test(owner||'')||typeof github_token!=='string'||typeof cloudflare_token!=='string'||typeof fetch_impl!=='function'||typeof clock!=='function')throw Error('EXISTING_ACTIVATION_CONTROL_BINDING_REQUIRED');
+- const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,forward_attempts=0,rollback_attempts=0,forward_ACK_deployment=null,internal_deadline_ts=null;
++ const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,forward_attempts=0,rollback_attempts=0,forward_ACK_deployment=null,internal_deadline_ts=null,qualification_snapshot=null;
+  const reserve=kind=>{const used=kind==='github'?github_HTTP:cloudflare_HTTP;if(used>=40||budget.summary().remaining<=24)throw Error('EXISTING_ACTIVATION_CONTROL_HTTP_BOUND');const lane=kind==='cloudflare'&&budget.summary().used.background<56?'background':'hot';if(!budget.reserve({logical_request_id:'EXISTING_BRIDGE_ACTIVATION:'+kind+':'+used,lane,attempts:1}).allowed)throw Error('EXISTING_ACTIVATION_CONTROL_HTTP_BOUND');if(kind==='github')github_HTTP++;else cloudflare_HTTP++;};
+  const gh=makeGithubControl({repository:repo,token:github_token,initial_raw_basis:fullRawBasis(repo_root),clock,fetch_impl:(url,opt)=>{if(opt.method!=='GET'&&!(url==='https://api.github.com/graphql'&&opt.method==='POST'&&!String(opt.body).includes('mutation')))throw Error('EXISTING_ACTIVATION_GITHUB_READ_ONLY');reserve('github');return existingActivationDeadlineResponse(fetch_impl,url,{...opt,redirect:'error'});}});
+  function check(context,{minimum_CF=0,minimum_GH=0,min_headroom_ms=30000}={}){
+@@ -392,15 +516,17 @@
+  // This local check is expressly NOT a new fresh snapshot. Every CF below gets
+  // its own freshGuard before reserve/transport. The final check is fresh too.
+  async function phaseGuard(options={}){if(internal_deadline_ts===null)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');check(gh.mirror_context,options);if(options.final_fresh)await freshGuard({min_headroom_ms:options.min_headroom_ms});}
+- async function initialize({connected_run,execution_run}={}){
++ async function initialize({connected_run,execution_run,automatic_main_run}={}){
+   await freshGuard({min_headroom_ms:600000});
+-  if(!/^\d+$/.test(String(connected_run||''))||!/^\d+$/.test(String(execution_run||'')))throw Error('EXISTING_ACTIVATION_COMMON_AND_EXECUTION_RUN_REQUIRED');
++  if(!/^\d+$/.test(String(connected_run||''))||!/^\d+$/.test(String(execution_run||''))||!/^[1-9]\d{0,15}$/.test(String(automatic_main_run||'')))throw Error('EXISTING_ACTIVATION_COMMON_AND_EXECUTION_RUN_REQUIRED');
+   const q=JSON.parse(await fs.readFile(activationPath.join(repo_root,prefix,'qualification-receipt.json'),'utf8')),pins=JSON.parse(await fs.readFile(activationPath.join(repo_root,prefix,'qualification-scope.json'),'utf8'));
+-  const [run,wf,automatic,execution]=await Promise.all([gh.call('actions/runs/'+connected_run),gh.call('actions/workflows/liq-assembled-offline-20261012.yml'),gh.call('actions/runs?head_sha='+head+'&per_page=30'),gh.call('actions/runs/'+execution_run)]);
+-  if(q.run_id!==run.id||q.head!==run.head_sha||run.workflow_id!==wf.id||run.status!=='completed'||run.conclusion!=='success'||q.actual_SPEC_pass!==1||q.actual_SPEC_fail!==0||!automatic.workflow_runs?.some(x=>x.workflow_id===wf.id&&x.event==='push'&&x.head_sha===head&&x.status==='completed'&&x.conclusion==='success'))throw Error('EXISTING_ACTIVATION_CURRENT_COMMON_AND_AUTOMATIC_MAIN_REQUIRED');
++  const [run,wf,automatic,execution]=await Promise.all([gh.call('actions/runs/'+connected_run),gh.call('actions/workflows/liq-assembled-offline-20261012.yml'),gh.call('actions/runs/'+automatic_main_run),gh.call('actions/runs/'+execution_run)]);
++  if(q.run_id!==run.id||q.head!==run.head_sha||run.workflow_id!==wf.id||run.status!=='completed'||run.conclusion!=='success'||q.actual_SPEC_pass!==1||q.actual_SPEC_fail!==0)throw Error('EXISTING_ACTIVATION_CURRENT_COMMON_AND_AUTOMATIC_MAIN_REQUIRED');
+   const started=typeof execution?.run_started_at==='string'&&execution.run_started_at.length<=64?Date.parse(execution.run_started_at):NaN;
+   if(String(execution?.id)!==String(execution_run)||execution.head_sha!==head||execution.head_branch!=='main'||execution.path!=='.github/workflows/current-bridge-module-inspection-20261016.yml'||execution.event!=='workflow_dispatch'||execution.run_attempt!==1||execution.status!=='in_progress'||!Number.isSafeInteger(started)||started>clock()||clock()>=started+300000)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');
+   internal_deadline_ts=started+300000;
++  const accepted=requireQualifiedAutomaticMain({automatic,workflow:wf,requested_run:automatic_main_run});
++  qualification_snapshot={automatic_main:accepted,...await verifyUnchangedNativeExecutionSnapshot({repo_root,current_head:head,qualified_head:accepted.head})};
+   for(const path of ['current-generation/files/runner-main.mjs','runner/report2-d1-adapter.mjs','runner/native-query-cost-journal.mjs','runner/sql-bridge-counter-repair.mjs','runner/cloudflare-version-bound-readback.mjs','runner/retention-bridge-provenance.mjs','tools/run-paid-sliding-history-20261018.mjs','tools/recover-lossless-retained-history-20261014.mjs','tools/rollout-correlated-sql-bridge-20261022.mjs','.github/workflows/current-bridge-module-inspection-20261016.yml'])if(rolloutDigest(await fs.readFile(activationPath.join(repo_root,path)))!==pins.files?.[path])throw Error('EXISTING_ACTIVATION_QUALIFIED_SOURCE_PIN_CHANGED');
+   return check(gh.mirror_context).lease;
+  }
+@@ -420,7 +546,7 @@
+   if(target===I.new_version){try{const a=singleActiveVersion({deployments:[j.result]});if(a.version_id===I.new_version)forward_ACK_deployment=a.deployment_id;}catch{}}
+   return j.result;
+  }
+- return{initialize,cf,guard:phaseGuard,metrics:()=>({github_HTTP,cloudflare_HTTP,forward_attempts,rollback_attempts,whole_HTTP:budget.summary(),manual_HTTP_reserved:24,internal_run_started_plus_5min_deadline_ts:internal_deadline_ts,internal_deadline_NOT_platform_kill_guarantee:true,new_path_transport_deadline_ms:2000,local_phase_checks_are_not_fresh_snapshots:true,every_CF_attempt_has_separate_fresh_GH_guard:true})};
++ return{initialize,cf,guard:phaseGuard,metrics:()=>({github_HTTP,cloudflare_HTTP,forward_attempts,rollback_attempts,whole_HTTP:budget.summary(),manual_HTTP_reserved:24,internal_run_started_plus_5min_deadline_ts:internal_deadline_ts,internal_deadline_NOT_platform_kill_guarantee:true,new_path_transport_deadline_ms:2000,local_phase_checks_are_not_fresh_snapshots:true,every_CF_attempt_has_separate_fresh_GH_guard:true,code_qualification:qualification_snapshot})};
+ }
+ 
+ export async function runExistingCorrelatedBridgeActivation(){
+@@ -435,7 +561,7 @@
+  try{
+   if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main'||process.env.GITHUB_SHA!==head||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||process.env.GITHUB_RUN_ATTEMPT!=='1'||process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION!=='true'||['EXECUTE_CORRELATED_COST_STAGE','EXECUTE_CORRELATED_COST_RELEASE','EXECUTE_SQL_BRIDGE_REPAIR','READ_ONLY_BRIDGE_INSPECTION'].some(k=>process.env[k]==='true')||!process.env.CLOUDFLARE_API_TOKEN||!process.env.GITHUB_TOKEN)throw Error('EXISTING_ACTIVATION_EXACT_CURRENT_MODE_REQUIRED');
+   control=createExistingActivationNativeControl({repo_root:process.cwd(),head,owner,github_token:process.env.GITHUB_TOKEN,cloudflare_token:process.env.CLOUDFLARE_API_TOKEN});
+-  const lease=await control.initialize({connected_run:process.env.CONNECTED_RUN,execution_run:process.env.GITHUB_RUN_ID});
++  const lease=await control.initialize({connected_run:process.env.CONNECTED_RUN,execution_run:process.env.GITHUB_RUN_ID,automatic_main_run:process.env.AUTOMATIC_MAIN_RUN});
+   const adapter=createExistingCorrelatedActivationNativeAdapter({cf:control.cf,configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,saveTransportIntent:async value=>{transport_intent=structuredClone(value);await save();}});
+   activation=await activateExistingCorrelatedBridge({plan:{head,owner,lease_expires_ts:lease.expires_ts,operation_id:globalThis.crypto.randomUUID()},repo_root:process.cwd(),adapter,guard:control.guard,save});
+   await save();if(activation.status!=='EXISTING_CORRELATED_VERSION_ACTIVATED_NATIVE_METADATA_VERIFIED')process.exitCode=1;

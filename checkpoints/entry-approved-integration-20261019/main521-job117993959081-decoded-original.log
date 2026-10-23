@@ -1,0 +1,871 @@
+﻿2026-10-19T09:46:51.2839032Z Current runner version: '2.337.0'
+2026-10-19T09:46:51.2854349Z ##[group]Runner Image Provisioner
+2026-10-19T09:46:51.2854850Z Hosted Compute Agent
+2026-10-19T09:46:51.2855533Z Version: 20261012.601
+2026-10-19T09:46:51.2855917Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-19T09:46:51.2856394Z Build Date: 2026-10-12T17:48:21Z
+2026-10-19T09:46:51.2856841Z Worker ID: {38469cef-01b1-49d0-946c-3ca66fe8a89f}
+2026-10-19T09:46:51.2857264Z Region: centralus
+2026-10-19T09:46:51.2857674Z Cloud: Azure
+2026-10-19T09:46:51.2858012Z ##[endgroup]
+2026-10-19T09:46:51.2858839Z ##[group]Operating System
+2026-10-19T09:46:51.2859263Z Ubuntu
+2026-10-19T09:46:51.2859574Z 24.04.5
+2026-10-19T09:46:51.2859905Z LTS
+2026-10-19T09:46:51.2860227Z ##[endgroup]
+2026-10-19T09:46:51.2860758Z ##[group]Runner Image
+2026-10-19T09:46:51.2861147Z Image: ubuntu-24.04
+2026-10-19T09:46:51.2861488Z Version: 20261012.334.1
+2026-10-19T09:46:51.2862250Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-19T09:46:51.2863136Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-19T09:46:51.2863744Z ##[endgroup]
+2026-10-19T09:46:51.2864371Z ##[group]GITHUB_TOKEN Permissions
+2026-10-19T09:46:51.2865536Z Contents: read
+2026-10-19T09:46:51.2865906Z Metadata: read
+2026-10-19T09:46:51.2866278Z ##[endgroup]
+2026-10-19T09:46:51.2867459Z Secret source: Actions
+2026-10-19T09:46:51.2868038Z Cache mode: write
+2026-10-19T09:46:51.2868478Z Prepare workflow directory
+2026-10-19T09:46:51.3987815Z Prepare all required actions
+2026-10-19T09:46:51.4031026Z Getting action download info
+2026-10-19T09:46:51.6247264Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-19T09:46:51.7546608Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-19T09:46:52.0827107Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+2026-10-19T09:46:52.8422724Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-19T09:46:53.6135772Z Complete job name: verify
+2026-10-19T09:46:53.6970383Z ##[group]Run actions/checkout@v4
+2026-10-19T09:46:53.6971303Z with:
+2026-10-19T09:46:53.6971902Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:46:53.6977359Z   token: ***
+2026-10-19T09:46:53.6977820Z   ssh-strict: true
+2026-10-19T09:46:53.6978294Z   ssh-user: git
+2026-10-19T09:46:53.6978778Z   persist-credentials: true
+2026-10-19T09:46:53.6979312Z   clean: true
+2026-10-19T09:46:53.6979796Z   sparse-checkout-cone-mode: true
+2026-10-19T09:46:53.6980382Z   fetch-depth: 1
+2026-10-19T09:46:53.6980988Z   fetch-tags: false
+2026-10-19T09:46:53.6981473Z   show-progress: true
+2026-10-19T09:46:53.6981972Z   lfs: false
+2026-10-19T09:46:53.6982429Z   submodules: false
+2026-10-19T09:46:53.6982924Z   set-safe-directory: true
+2026-10-19T09:46:53.6983493Z   allow-unsafe-pr-checkout: false
+2026-10-19T09:46:53.6984260Z ##[endgroup]
+2026-10-19T09:46:53.7641677Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:46:53.7644125Z ##[group]Getting Git version info
+2026-10-19T09:46:53.7645567Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-19T09:46:53.7647563Z [command]/usr/bin/git version
+2026-10-19T09:46:53.7721426Z git version 2.55.0
+2026-10-19T09:46:53.7735419Z ##[endgroup]
+2026-10-19T09:46:53.7744733Z Temporarily overriding HOME='/home/runner/work/_temp/2c5feacf-a160-48a7-a744-88b82d9f8d5c' before making global git config changes
+2026-10-19T09:46:53.7747234Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T09:46:53.7749641Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T09:46:53.8568949Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-19T09:46:53.8572246Z ##[group]Initializing the repository
+2026-10-19T09:46:53.8576087Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T09:46:53.9708372Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-19T09:46:53.9709486Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-19T09:46:53.9710750Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-19T09:46:53.9711694Z hint: call:
+2026-10-19T09:46:53.9712305Z hint:
+2026-10-19T09:46:53.9712943Z hint: 	git config --global init.defaultBranch <name>
+2026-10-19T09:46:53.9713607Z hint:
+2026-10-19T09:46:53.9714232Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-19T09:46:53.9715318Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-19T09:46:53.9716227Z hint:
+2026-10-19T09:46:53.9716660Z hint: 	git branch -m <name>
+2026-10-19T09:46:53.9717181Z hint:
+2026-10-19T09:46:53.9717866Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-19T09:46:53.9719619Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+2026-10-19T09:46:53.9723053Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:46:54.0348003Z ##[endgroup]
+2026-10-19T09:46:54.0349520Z ##[group]Disabling automatic garbage collection
+2026-10-19T09:46:54.0351171Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-19T09:46:54.0936228Z ##[endgroup]
+2026-10-19T09:46:54.0936653Z ##[group]Setting up auth
+2026-10-19T09:46:54.0941162Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T09:46:54.0968508Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T09:46:54.1254728Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T09:46:54.1281392Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T09:46:54.1452861Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T09:46:54.1479294Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T09:46:54.1651866Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-19T09:46:54.2021301Z ##[endgroup]
+2026-10-19T09:46:54.2074702Z ##[group]Fetching the repository
+2026-10-19T09:46:54.2075474Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +def4a1a482cdbef781f673be7147d391e3526bac:refs/remotes/origin/main
+2026-10-19T09:46:57.4543754Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-19T09:46:57.4545609Z  * [new ref]         def4a1a482cdbef781f673be7147d391e3526bac -> origin/main
+2026-10-19T09:46:57.4548690Z ##[endgroup]
+2026-10-19T09:46:57.4549090Z ##[group]Determining the checkout info
+2026-10-19T09:46:57.4549487Z ##[endgroup]
+2026-10-19T09:46:57.4560404Z [command]/usr/bin/git sparse-checkout disable
+2026-10-19T09:46:57.4668772Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-19T09:46:57.4729168Z ##[group]Checking out the ref
+2026-10-19T09:46:57.4737355Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-19T09:46:57.9493238Z Switched to a new branch 'main'
+2026-10-19T09:46:57.9496827Z branch 'main' set up to track 'origin/main'.
+2026-10-19T09:46:57.9528512Z ##[endgroup]
+2026-10-19T09:46:57.9569281Z [command]/usr/bin/git log -1 --format=%H
+2026-10-19T09:46:57.9592257Z def4a1a482cdbef781f673be7147d391e3526bac
+2026-10-19T09:46:57.9788851Z ##[group]Run actions/setup-node@v4
+2026-10-19T09:46:57.9789037Z with:
+2026-10-19T09:46:57.9789153Z   node-version: 24
+2026-10-19T09:46:57.9789275Z   always-auth: false
+2026-10-19T09:46:57.9789400Z   check-latest: false
+2026-10-19T09:46:57.9790981Z   token: ***
+2026-10-19T09:46:57.9791133Z ##[endgroup]
+2026-10-19T09:46:58.0974844Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-19T09:46:58.0977222Z (node:2079) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T09:46:58.0977604Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T09:46:58.0979296Z ##[group]Environment details
+2026-10-19T09:47:00.7109420Z node: v24.21.0
+2026-10-19T09:47:00.7109735Z npm: 11.19.0
+2026-10-19T09:47:00.7109905Z yarn: 1.22.22
+2026-10-19T09:47:00.7110450Z ##[endgroup]
+2026-10-19T09:47:00.7239628Z ##[group]Run actions/github-script@v7
+2026-10-19T09:47:00.7239834Z with:
+2026-10-19T09:47:00.7259664Z   script: const {owner,repo}=context.repo;
+const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+const exactCandidate=(context.ref==='refs/heads/codex/active-source-finalist-and-quota-20261014'&&main==='2338a42afc69c1f96275546c7b4a2b832410a511')||(context.ref==='refs/heads/codex/active-source-typed-private-price-20261014'&&main==='caa3ec4e9eb67a327ab662cbc0e5cf63b589b19a')||(context.ref==='refs/heads/codex/active-source-after338-20261014'&&main==='2190e9547045d821d69ed5211d6a9ccacb16ee0e');
+const exactRoleCandidate=context.ref==='refs/heads/codex/active-source-role-and-history-20261014'&&main==='d0898d037b20f07f73c0304968bf07b54119dc41';
+const exactNativeHandoffCandidate=context.ref==='refs/heads/codex/active-source-next-gaps-20261014'&&main==='ee6917f642fbcc1abdd9929a94d7064b37a3ee9a';
+const exactTransportCandidate=context.ref==='refs/heads/codex/active-source-transport-and-retention-20261014'&&main==='d606c3efbde8ac16128b961881d8afd71079b874';
+const exactNativeSectorCandidate=context.ref==='refs/heads/codex/native-sector-source-coverage-20261014'&&main==='bda7c8abe5b9e2b607552fbd764aff19b10a022f';
+const exactNativeDenomCandidate=context.ref==='refs/heads/codex/native-sector-denominations-20261014'&&main==='fae8db8911331e4aa1e3333ebfca2670f0cf8ff2';
+const exactTronSectorCandidate=context.ref==='refs/heads/codex/tron-sector-source-coverage-20261014'&&main==='32271ab798121efe2e4baa5707bd9f3abc4ecaf1';
+const exactTargetFallbackCandidate=context.ref==='refs/heads/codex/sector-exact-target-fallback-20261014'&&main==='da7f8ae66ca0183cf55a9681f3036a827b8d5140';
+const exactActivePreflightCandidate=context.ref==='refs/heads/codex/active-source-preflight-20261014'&&main==='deec69207cf2a0638780084fc068bddc5545b16e';
+const exactSourceHealthCandidate=context.ref==='refs/heads/codex/source-health-priority-20261014'&&main==='52c7520c7bf0faa22318fee2337ca7066843c309';
+const exactPublicHealthCandidate=context.ref==='refs/heads/codex/public-venue-health-priority-20261014'&&main==='ccb82d056aaa2ac47799d20f4253b945d1936b25';
+const exactWeeklyPreparation=context.ref==='refs/heads/codex/weekly-htx-source-sync-20261014'&&main==='a120a6e175531bd869e4437a6d053748746973f4';
+const exactWeeklyConnectedPreparation=context.ref==='refs/heads/codex/weekly-htx-connected-proposal-20261014'&&main==='e9eb29146fe0990f461f278c49caa1ea4b4e4c3d';
+const exactWeeklyRetainedQualification=context.ref==='refs/heads/codex/weekly-retained-catalog-qualification-20261014'&&main==='fdfc95db6c01d99b704bca451193eef38837924f';
+const exactLosslessRecovery=context.ref==='refs/heads/codex/lossless-full-evidence-recovery-20261014'&&main==='fbeea8a86acf2e2cc02689fc5fc8917389effd6b';
+const exactProtectedCanonical=context.ref==='refs/heads/codex/protected-canonical-compaction-20261015'&&main==='5446fe194b60a032cf6ed6c092a4457ffb4ea5f7';
+const exactRetainedFixture=context.ref==='refs/heads/codex/weekly106-retained-fixture-20261015'&&main==='df94f00a09c84767c22b380f232feb4a0871f283';
+const weeklyProposal=context.eventName==='workflow_dispatch'&&context.payload.inputs?.weekly_proposal==='true'&&/^refs\/heads\/maintenance\/htx-weekly-\d{4}-\d{2}-\d{2}-\d+$/.test(context.ref)&&main===context.payload.inputs.weekly_expected_main;
+const coordinated=context.ref==='refs/heads/fix/source-role-proof-witness-20261018'||context.ref==='refs/heads/fix/active-source-budget-read-20261018'||context.ref==='refs/heads/fix/maintenance-cadence-receipts-20261018'||context.ref==='refs/heads/fix/htx-reference-fact-preservation-20261018'||context.ref==='refs/heads/fix/expired-bound-delivery-20261018'||context.ref==='refs/heads/fix/n12-component-origin-20261018'||context.ref==='refs/heads/fix/private-price-native-witness-20261018'||context.ref==='refs/heads/fix/original-entry-followup-20261018'||context.ref==='refs/heads/fix/gate-reuse-backpack-and-anomaly-contract-20261018'||context.ref==='refs/heads/fix/successful-completion-statistics-proof-20261018'||context.ref==='refs/heads/work/n15-numeric-facts-and-source-budget-delta-20261018'||context.ref==='refs/heads/fix/native-suspended-scope-and-compact-length-20261018'||context.ref==='refs/heads/fix/exact-htx-availability-diagnosis-20261018'||context.ref==='refs/heads/work/source-fact-integrity-integration-20261018'||context.ref==='refs/heads/fix/partial-cron-native-diagnostics-20261018'||context.ref==='refs/heads/fix/paid-report-recovery-20261018'||context.ref==='refs/heads/work/report2-sources-n05-venue-preservation-20261018'||context.ref==='refs/heads/work/report2-sources-n10-useful-path-queue-20261018'||context.ref==='refs/heads/work/report2-sources-bitfinex-bounded-reuse-20261018'||context.ref==='refs/heads/work/report2-sources-n10-path-facts-20261018'||context.ref==='refs/heads/fix/n04-exact-cached-chain-facts-20261018'||context.ref==='refs/heads/work/report2-sources-liq-exact-binding-20261018'||context.ref==='refs/heads/work/report2-sources-n15-cache-scope-20261018'||context.ref==='refs/heads/fix/current-verified-day-refusal-20261018'||context.ref==='refs/heads/work/report2-sources-n12-cache-scope-20261018'||context.ref==='refs/heads/fix/n11-exact-rendered-source-binding-20261018'||context.ref==='refs/heads/fix/n04-cache-fact-preservation-20261018'||context.ref==='refs/heads/fix/n12-cache-fact-preservation-20261018'||context.ref==='refs/heads/fix/sector-cache-fact-preservation-20261017'||context.ref==='refs/heads/fix/active-source-fallback-preservation-20261016'||context.ref==='refs/heads/feat/retention-sql-bridge-provenance-20261016'||context.ref==='refs/heads/feat/offline-proof-caller-admission-20261016'||context.ref==='refs/heads/fix/installed-sql-bridge-counters-20261016'||context.ref==='refs/heads/fix/exact-sql-bridge-provenance-20261016'||context.ref==='refs/heads/feat/installed-bridge-provenance-20261016'||context.ref==='refs/heads/feat/offline-primary-proof-readback-20261016'||context.ref==='refs/heads/fix/native-cost-utc-reconciliation-20261016'||context.ref==='refs/heads/fix/whole-day-storage-envelopes-20261016'||context.ref==='refs/heads/fix/current-native-reader-proof-20261016'||context.ref==='refs/heads/fix/installed-reader-counter-repair-20261016'||context.ref==='refs/heads/fix/disjoint-native-day-accounting-20261016'||context.ref==='refs/heads/fix/grouped-private-archive-copy-20261016'||context.ref==='refs/heads/fix/storage-failure-rollover-20261016'||context.ref==='refs/heads/fix/hourly-native-tail-20261016'||context.ref==='refs/heads/fix/native-tail-process-finish-20261016'||context.ref==='refs/heads/fix/bounded-native-tail-20261016'||context.ref==='refs/heads/fix/native-cost-clock-and-inspection-20261016'||context.ref==='refs/heads/fix/storage-birth-and-day-accounting-20261016'||context.ref==='refs/heads/fix/shared-canonical-update-20261016'||context.ref==='refs/heads/fix/retained-write-failure-guard-20261016'||context.ref==='refs/heads/fix/storage-row-admission-20261016'||context.ref==='refs/heads/fix/retention-window-resume-20261016'||context.ref==='refs/heads/feat/utc16-native-retention-qualification-20261015'||context.ref==='refs/heads/fix/scoped-canonical-retention-20261015'||context.ref==='refs/heads/fix/free-archive-binding-resume-20261015'||context.ref==='refs/heads/fix/free-archive-source-map-20261015'||context.ref==='refs/heads/fix/free-archive-worker-rollout-20261015'||context.ref==='refs/heads/fix/free-storage-pool-routing-20261015'||context.ref==='refs/heads/fix/free-storage-rolling-20261015'||context.ref==='refs/heads/fix/manual-native-history-qualification-20261015'||context.ref==='refs/heads/fix/bounded-canonical-native-selection-20261015'||context.ref==='refs/heads/feat/one-off-storage-cleanup-slot4-20261015'||context.ref==='refs/heads/fix/canonical-reference-schema-20261015'||context.ref==='refs/heads/feat/bounded-storage-emergency-proposal-20261015'||context.ref==='refs/heads/feat/vike-evidence-and-budget-audit-20261015'||context.ref==='refs/heads/feat/permitted-liq-research-20261015'||context.ref==='refs/heads/codex/coordinated-weekly-rollout-20261015'||context.ref==='refs/heads/fix/active105-unicode-liq-20261015'||context.ref==='refs/heads/feat/private-archive-prefetch-20261015';
+if(coordinated){
+  const {pathToFileURL}=require('url');
+  const {verifyOfflineReviewAuthority}=await import(pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+  const control={call:async route=>(await github.request('GET /repos/{owner}/{repo}/'+route,{owner,repo})).data,read:async(path,ref)=>{const d=(await github.rest.repos.getContent({owner,repo,path,ref})).data;return{value:JSON.parse(Buffer.from(d.content,'base64').toString())};}};
+  await verifyOfflineReviewAuthority(control,{head:context.sha,base:main,branch:context.ref.slice('refs/heads/'.length)});
+}
+if(main!==context.sha&&!coordinated&&!weeklyProposal&&!exactRetainedFixture&&!exactProtectedCanonical&&!exactLosslessRecovery&&!exactWeeklyRetainedQualification&&!exactWeeklyConnectedPreparation&&!exactWeeklyPreparation&&!exactPublicHealthCandidate&&!exactSourceHealthCandidate&&!exactActivePreflightCandidate&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
+const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+const liqOwner=/^CODEX:LIQ_(?:COVERAGE_BATCH|NATURAL_AUDIT|EXTERNAL_LEVELS_ONLY):/.test(phase.lease?.owner||'');
+const allActiveOwner=/^CODEX:ACTIVE_SOURCE_DAY_BUDGET:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.active_working_state?.owned_lease===phase.lease.owner&&phase.owner_all_active_blocks_source_budget_and_fallback==='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json';
+const privateOwner=/^CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner;
+const coverageOwner=/^CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner&&phase.active_working_state?.owned_lease===phase.lease.owner;
+const {active105OfflineReviewOwner,freeStorageOfflineReviewOwner}=await import(require('url').pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+const active105Owner=active105OfflineReviewOwner(phase)||freeStorageOfflineReviewOwner(phase);
+if(!(liqOwner||allActiveOwner||privateOwner||coverageOwner||active105Owner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+
+2026-10-19T09:47:00.7280749Z   github-token: ***
+2026-10-19T09:47:00.7280875Z   debug: false
+2026-10-19T09:47:00.7281086Z   user-agent: actions/github-script
+2026-10-19T09:47:00.7281241Z   result-encoding: json
+2026-10-19T09:47:00.7281363Z   retries: 0
+2026-10-19T09:47:00.7281495Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-19T09:47:00.7281660Z ##[endgroup]
+2026-10-19T09:47:01.7619375Z ##[group]Run actions/github-script@v7
+2026-10-19T09:47:01.7619539Z with:
+2026-10-19T09:47:01.7621057Z   script: const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+for(const [id,digest,dir] of [[11397777455,'8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0','original-source'],[11485584554,'6dacb2912f344cf08f84ad8ad4337dc57cbed898275440f61fa4d30291246d32','gtrade-current-source']]){
+  const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:id,archive_format:'zip'})).data);
+  if(crypto.createHash('sha256').update(b).digest('hex')!==digest)throw Error('ORIGINAL_GTRADE_ARTIFACT_DIGEST');
+  fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(dir+'.zip',b);cp.execFileSync('unzip',['-q',dir+'.zip','-d',dir]);
+}
+
+2026-10-19T09:47:01.7623645Z   github-token: ***
+2026-10-19T09:47:01.7623767Z   debug: false
+2026-10-19T09:47:01.7623893Z   user-agent: actions/github-script
+2026-10-19T09:47:01.7624065Z   result-encoding: json
+2026-10-19T09:47:01.7624191Z   retries: 0
+2026-10-19T09:47:01.7624324Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-19T09:47:01.7624491Z ##[endgroup]
+2026-10-19T09:47:03.2229342Z ##[group]Run mkdir -p runtime audit-output/liq-assembled
+2026-10-19T09:47:03.2229734Z [36;1mmkdir -p runtime audit-output/liq-assembled[0m
+2026-10-19T09:47:03.2230071Z [36;1mnode runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz[0m
+2026-10-19T09:47:03.2230391Z [36;1mtar -xzf runtime/payload.tar.gz -C runtime[0m
+2026-10-19T09:47:03.2230565Z [36;1mrm runtime/payload.tar.gz[0m
+2026-10-19T09:47:03.2231128Z [36;1mnode post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/liq-assembled/assembly.json[0m
+2026-10-19T09:47:03.2231545Z [36;1mnpm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund[0m
+2026-10-19T09:47:03.2231858Z [36;1mcmp current-generation/files/runner-main.mjs runtime/runner-main.mjs[0m
+2026-10-19T09:47:03.2232228Z [36;1mcmp current-generation/files/src/liquidation-futures-coverage.mjs runtime/src/liquidation-futures-coverage.mjs[0m
+2026-10-19T09:47:03.2232693Z [36;1mcmp current-generation/files/src/liquidation-spot-reference.mjs runtime/src/liquidation-spot-reference.mjs[0m
+2026-10-19T09:47:03.2233121Z [36;1mcmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs[0m
+2026-10-19T09:47:03.2233506Z [36;1mcmp current-generation/files/src/n12-market-trades.mjs runtime/src/n12-market-trades.mjs[0m
+2026-10-19T09:47:03.2233871Z [36;1mcmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs[0m
+2026-10-19T09:47:03.2234263Z [36;1mcmp current-generation/files/src/htx-technical-structure.mjs runtime/src/htx-technical-structure.mjs[0m
+2026-10-19T09:47:03.2234661Z [36;1mcmp current-generation/files/src/manual-report-formatter.mjs runtime/src/manual-report-formatter.mjs[0m
+2026-10-19T09:47:03.2235096Z [36;1mcmp current-generation/files/src/supplemental-candidate-context.mjs runtime/src/supplemental-candidate-context.mjs[0m
+2026-10-19T09:47:03.2235564Z [36;1mcmp current-generation/files/src/candidate-evidence-v2-runtime.mjs runtime/src/candidate-evidence-v2-runtime.mjs[0m
+2026-10-19T09:47:03.2236010Z [36;1mcmp current-generation/files/src/gate-n12-bounded-trade-sample.mjs runtime/src/gate-n12-bounded-trade-sample.mjs[0m
+2026-10-19T09:47:03.2236403Z [36;1mcmp current-generation/files/src/canonical-display.mjs runtime/src/canonical-display.mjs[0m
+2026-10-19T09:47:03.2236775Z [36;1mcmp current-generation/files/src/pump-liquidation-zones.mjs runtime/src/pump-liquidation-zones.mjs[0m
+2026-10-19T09:47:03.2237368Z [36;1mcmp current-generation/files/src/htx-source-backed-liquidation-model.mjs runtime/src/htx-source-backed-liquidation-model.mjs[0m
+2026-10-19T09:47:03.2237837Z [36;1mcmp current-generation/files/src/coinboss-liquidation-levels.mjs runtime/src/coinboss-liquidation-levels.mjs[0m
+2026-10-19T09:47:03.2238283Z [36;1mcmp current-generation/files/src/swolecharts-liquidation-levels.mjs runtime/src/swolecharts-liquidation-levels.mjs[0m
+2026-10-19T09:47:03.2238744Z [36;1mcmp current-generation/files/src/liquidation-source-http-plan.mjs runtime/src/liquidation-source-http-plan.mjs[0m
+2026-10-19T09:47:03.2239226Z [36;1mcmp current-generation/files/src/orderly-public-liquidation-positions.mjs runtime/src/orderly-public-liquidation-positions.mjs[0m
+2026-10-19T09:47:03.2239699Z [36;1mcmp current-generation/files/src/liquidation-forecast-memory.mjs runtime/src/liquidation-forecast-memory.mjs[0m
+2026-10-19T09:47:03.2240116Z [36;1mcmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs[0m
+2026-10-19T09:47:03.2240831Z [36;1mcmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs[0m
+2026-10-19T09:47:03.2241405Z [36;1mcmp current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs runtime/src/liquidation-extension/gtrade-runtime-collector.mjs[0m
+2026-10-19T09:47:03.2242069Z [36;1mcmp current-generation/files/src/liquidation-source-acquisition-audit.mjs runtime/src/liquidation-source-acquisition-audit.mjs[0m
+2026-10-19T09:47:03.2242519Z [36;1mcmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs[0m
+2026-10-19T09:47:03.2243006Z [36;1mcmp current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs runtime/src/liquidation-extension/dydx-native-market-catalog.mjs[0m
+2026-10-19T09:47:03.2243548Z [36;1mcmp current-generation/files/src/coinpaprika-sector-evidence.mjs runtime/src/coinpaprika-sector-evidence.mjs[0m
+2026-10-19T09:47:03.2244088Z [36;1mcmp current-generation/files/src/provider-reference-cache.mjs runtime/src/provider-reference-cache.mjs[0m
+2026-10-19T09:47:03.2244505Z [36;1mcmp current-generation/files/src/provider-minute-ledger.mjs runtime/src/provider-minute-ledger.mjs[0m
+2026-10-19T09:47:03.2244914Z [36;1mcmp current-generation/files/src/coingecko-sector-evidence.mjs runtime/src/coingecko-sector-evidence.mjs[0m
+2026-10-19T09:47:03.2245267Z [36;1mnode --check tools/qualify-new-liquidation-source-20261015.mjs[0m
+2026-10-19T09:47:03.2245794Z [36;1mnode --test tools/liquidation-new-source-admission-20261015.test.mjs tools/permitted-new-liquidation-source-plan-20261015.test.mjs > audit-output/liq-assembled/new-liq-research-admission.tap[0m
+2026-10-19T09:47:03.2246299Z [36;1mnode --check tools/validate-native-sector-batch-20261014.mjs[0m
+2026-10-19T09:47:03.2246670Z [36;1mnode tools/validate-native-sector-batch-20261014.mjs --plan > audit-output/liq-assembled/native-sector-validation-plan.json[0m
+2026-10-19T09:47:03.2248641Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/coinpaprika-numeric-fact-binding.test.mjs current-generation/tests/coingecko-raw-numbers.test.mjs current-generation/tests/coingecko-cache-binding.test.mjs current-generation/tests/n15-consumer-isolation.test.mjs current-generation/tests/coinpaprika-cache-scope.test.mjs current-generation/tests/sector-cache-preservation.test.mjs current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap[0m
+2026-10-19T09:47:03.2250557Z [36;1mcp audit-output/native-sector-denominations-retained-proof.json audit-output/liq-assembled/[0m
+2026-10-19T09:47:03.2251195Z [36;1mcp audit-output/tron-sector-retained-four-proof.json audit-output/liq-assembled/[0m
+2026-10-19T09:47:03.2251548Z [36;1mcp audit-output/sector-exact-target-controlled-proof.json audit-output/liq-assembled/[0m
+2026-10-19T09:47:03.2252038Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-sector-effective105-retained-20261014.mjs > audit-output/liq-assembled/sector-effective105-retained.json[0m
+2026-10-19T09:47:03.2252537Z [36;1mcmp current-generation/files/src/evidence-source-store.mjs runtime/src/evidence-source-store.mjs[0m
+2026-10-19T09:47:03.2252909Z [36;1mcmp current-generation/files/src/htx-asset-identity.mjs runtime/src/htx-asset-identity.mjs[0m
+2026-10-19T09:47:03.2253285Z [36;1mcmp current-generation/files/src/finalized-chain-events.mjs runtime/src/finalized-chain-events.mjs[0m
+2026-10-19T09:47:03.2253717Z [36;1mcmp current-generation/files/src/native-evm-finalized-context.mjs runtime/src/native-evm-finalized-context.mjs[0m
+2026-10-19T09:47:03.2254132Z [36;1mcmp current-generation/files/src/xrpl-native-payments.mjs runtime/src/xrpl-native-payments.mjs[0m
+2026-10-19T09:47:03.2254526Z [36;1mcmp current-generation/files/src/execution-report-context.mjs runtime/src/execution-report-context.mjs[0m
+2026-10-19T09:47:03.2255025Z [36;1mcmp current-generation/files/src/htx-large-trades-evidence.mjs runtime/src/htx-large-trades-evidence.mjs[0m
+2026-10-19T09:47:03.2258047Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/source-role-proof-witness.test.mjs current-generation/tests/run-budget-context.test.mjs current-generation/tests/maintenance-cadence-receipt.test.mjs current-generation/tests/htx-identity-cache-preservation.test.mjs current-generation/tests/suspended-htx-scope.test.mjs current-generation/tests/compact-native-overflow.test.mjs current-generation/tests/approved-universe-scope.runtime.mjs current-generation/tests/n10-raw-component-binding.test.mjs current-generation/tests/htx-n12-retained-facts.test.mjs current-generation/tests/turnover-cache-binding.test.mjs current-generation/tests/turnover-consumer-proposal.test.mjs current-generation/tests/n10-useful-path-queue.test.mjs current-generation/tests/n10-path-window-clock.test.mjs current-generation/tests/n04-cache-scope.test.mjs current-generation/tests/n11-rendered-source-binding.test.mjs current-generation/tests/execution-report-context.test.mjs current-generation/tests/n04-cache-preservation.test.mjs current-generation/tests/active-source-headroom.test.mjs current-generation/tests/evidence-source-store.test.mjs current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/coinpaprika-htx-identity.test.mjs current-generation/tests/native-evm-finalized-context.test.mjs current-generation/tests/finalized-chain-events.test.mjs current-generation/tests/htx-large-trades-evidence.test.mjs > audit-output/liq-assembled/active-source-headroom.tap[0m
+2026-10-19T09:47:03.2261601Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" python3 tools/audit-active105-typed-source-coverage-20261014.py --output audit-output/liq-assembled/n11-rendered-source-coverage.json > audit-output/liq-assembled/n11-rendered-source-coverage-summary.json[0m
+2026-10-19T09:47:03.2262583Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/source-health-priority.test.mjs current-generation/tests/evidence-route-block.test.mjs current-generation/tests/evidence-source-store.test.mjs > audit-output/liq-assembled/source-health-priority.tap[0m
+2026-10-19T09:47:03.2263282Z [36;1mcp audit-output/source-health-priority-retained-proof.json audit-output/liq-assembled/[0m
+2026-10-19T09:47:03.2263713Z [36;1mcmp current-generation/files/src/n12-native-public-trade-collector.mjs runtime/src/n12-native-public-trade-collector.mjs[0m
+2026-10-19T09:47:03.2264155Z [36;1mcmp current-generation/files/src/n12-cached-trade-scope.mjs runtime/src/n12-cached-trade-scope.mjs[0m
+2026-10-19T09:47:03.2264657Z [36;1mcmp current-generation/files/src/gate-futures-trade-collector.mjs runtime/src/gate-futures-trade-collector.mjs[0m
+2026-10-19T09:47:03.2265072Z [36;1mcmp current-generation/files/src/bitget-flow-collector.mjs runtime/src/bitget-flow-collector.mjs[0m
+2026-10-19T09:47:03.2265501Z [36;1mcmp current-generation/files/src/bitfinex-native-flow-collector.mjs runtime/src/bitfinex-native-flow-collector.mjs[0m
+2026-10-19T09:47:03.2265979Z [36;1mcmp current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs runtime/src/bitfinex-n12-bounded-trade-sample.mjs[0m
+2026-10-19T09:47:03.2266450Z [36;1mcmp current-generation/files/src/binance-native-flow-collector.mjs runtime/src/binance-native-flow-collector.mjs[0m
+2026-10-19T09:47:03.2266871Z [36;1mcmp current-generation/files/src/kraken-flow-collector.mjs runtime/src/kraken-flow-collector.mjs[0m
+2026-10-19T09:47:03.2267297Z [36;1mcmp current-generation/files/src/poloniex-native-flow-collector.mjs runtime/src/poloniex-native-flow-collector.mjs[0m
+2026-10-19T09:47:03.2267732Z [36;1mcmp current-generation/files/src/backpack-flow-collector.mjs runtime/src/backpack-flow-collector.mjs[0m
+2026-10-19T09:47:03.2268156Z [36;1mcmp current-generation/files/src/public-venue-source-priority.mjs runtime/src/public-venue-source-priority.mjs[0m
+2026-10-19T09:47:03.2268606Z [36;1mcmp current-generation/files/src/n15-initial-source-preference.mjs runtime/src/n15-initial-source-preference.mjs[0m
+2026-10-19T09:47:03.2269124Z [36;1mcmp current-generation/files/src/external-n05-flow-collector.mjs runtime/src/external-n05-flow-collector.mjs[0m
+2026-10-19T09:47:03.2271018Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gate-turnover-fact-preservation.test.mjs current-generation/tests/backpack-admission-reason.test.mjs current-generation/tests/gate-n12-reuse.test.mjs current-generation/tests/gate-n12-sample.test.mjs current-generation/tests/gate-n12-consumer-proposal.test.mjs current-generation/tests/n05-venue-fact-preservation.test.mjs current-generation/tests/bitfinex-bounded-reuse.test.mjs current-generation/tests/n12-cache-scope.test.mjs current-generation/tests/n12-cache-preservation.test.mjs current-generation/tests/active-source-fallback-preservation.test.mjs current-generation/tests/public-venue-health-priority.test.mjs current-generation/tests/public-venue-source-budget.test.mjs > audit-output/liq-assembled/public-venue-health-priority.tap[0m
+2026-10-19T09:47:03.2272732Z [36;1mcp audit-output/public-venue-health-original-proof.json audit-output/liq-assembled/[0m
+2026-10-19T09:47:03.2273232Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-active105-initial-source-priority-20261014.mjs > audit-output/liq-assembled/active105-initial-source-queues.json[0m
+2026-10-19T09:47:03.2275023Z [36;1mREPORT2_WEEKLY_RETAINED_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/weekly-retained106-package.json" node --test runner/exact-entry-followup.test.mjs runner/sql-bridge-counter-repair.test.mjs runner/installed-bridge-module-inspection.test.mjs runner/cloudflare-version-bound-readback.test.mjs runner/htx-coordinated-rollout.test.mjs runner/htx-weekly-universe-plan.test.mjs runner/retained-weekly-106-package.test.mjs runner/offline-review-authority.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/weekly-htx-synchronized-plan.tap[0m
+2026-10-19T09:47:03.2276868Z [36;1mREPORT2_SQL_BRIDGE_REPAIR_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/sql-bridge-counter-repair-qualification.json" node tools/qualify-installed-sql-bridge-counter-repair-20261016.mjs[0m
+2026-10-19T09:47:03.2277439Z [36;1mcp audit-output/htx-weekly/proof.json audit-output/liq-assembled/weekly-disabled-controlled-proof.json[0m
+2026-10-19T09:47:03.2277812Z [36;1mnode current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1[0m
+2026-10-19T09:47:03.2280764Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/expired-bound-delivery.test.mjs current-generation/tests/n12-native-public-trades.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/block-decision-use-audit.test.mjs current-generation/tests/liq-provider-clock-schema.test.mjs current-generation/tests/orderly-clock-schema.test.mjs current-generation/tests/liq-provider-asset-binding.test.mjs current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/liquidation-source-http-plan.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap[0m
+2026-10-19T09:47:03.2284349Z [36;1mREPORT2_HOURLY_NATIVE_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/hourly-native-usage-proof.json" node --test cloudflare/free-history/native-usage-receipt.test.mjs tools/repair-current-hourly-native-observer.test.mjs runner/native-cost-observations.test.mjs runner/bounded-native-tail.test.mjs runner/native-tail-process.test.mjs runner/disjoint-native-day-accounting.test.mjs > audit-output/liq-assembled/hourly-native-usage.tap[0m
+2026-10-19T09:47:03.2285271Z [36;1mnode tools/audit-native-day-costs-20261016.mjs[0m
+2026-10-19T09:47:03.2285768Z [36;1mREPORT2_STORAGE_FLOW_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/retained-storage-flow.json" node tools/analyze-retained-storage-flow-20261016.mjs > audit-output/liq-assembled/storage-flow-summary.json[0m
+2026-10-19T09:47:03.2286346Z [36;1mnode runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json[0m
+2026-10-19T09:47:03.2288881Z [36;1mREPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/retention-bridge-provenance.test.mjs runner/primary-proof-read-shapes-candidate.test.mjs runner/primary-proof-admission-candidate.test.mjs runner/primary-proof-readback-candidate.test.mjs runner/native-query-cost-journal.test.mjs runner/primary-proof-storage-candidate.test.mjs runner/retention-self-qualification.test.mjs runner/canonical-retention-cursor.test.mjs runner/free-archive-rollout.test.mjs tools/rollout-free-archive-readers-20261015.test.mjs runner/private-archive-pool.test.mjs runner/free-archive-schema.test.mjs runner/free-archive-bindings.test.mjs runner/free-storage-throughput.test.mjs runner/free-storage-provision.test.mjs runner/free-storage-capacity.test.mjs runner/canonical-native-qualification.test.mjs runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/private-canonical-prefetch.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap[0m
+2026-10-19T09:47:03.2291944Z [36;1mREPORT2_PROOF_READ_SHAPES_OUTPUT="$PWD/audit-output/liq-assembled/proof-read-shapes-admission-scope.json" node tools/qualify-proof-read-shapes-admission-20261016.mjs[0m
+2026-10-19T09:47:03.2292756Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/native-query-cost-reconciliation.test.mjs runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap[0m
+2026-10-19T09:47:03.2293739Z [36;1mnode --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap[0m
+2026-10-19T09:47:03.2294332Z [36;1mnode --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap[0m
+2026-10-19T09:47:03.2295052Z [36;1mnode --test cloudflare/free-history/private-forecast-consumer.test.mjs cloudflare/free-history/liquidation-forecast-archive.test.mjs > audit-output/liq-assembled/private-forecast-consumer.tap[0m
+2026-10-19T09:47:03.2296055Z [36;1mnode --test current-generation/tests/native-useful-acquisition-budget.test.mjs current-generation/tests/selected-native-reserve-policy.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/gtrade-catalog-planning.test.mjs > audit-output/liq-assembled/native-useful-budget.tap[0m
+2026-10-19T09:47:03.2313765Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gtrade-position-routing.runtime.mjs current-generation/tests/native-source-batch.runtime.mjs > audit-output/liq-assembled/native-useful-runtime.tap[0m
+2026-10-19T09:47:03.2315018Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/dydx-native-market-catalog.test.mjs current-generation/tests/dydx-runtime-collector.test.mjs current-generation/tests/selected-finalist-source-priority.test.mjs current-generation/tests/cache-only-native-caller.test.mjs > audit-output/liq-assembled/active-source-finalist-and-markets.tap[0m
+2026-10-19T09:47:03.2315913Z [36;1mcmp runner/verified-native-day-reconciliation.mjs runtime/verified-native-day-reconciliation.mjs[0m
+2026-10-19T09:47:03.2316319Z [36;1mcmp runner/native-day-reconciliation-tokens.mjs runtime/native-day-reconciliation-tokens.mjs[0m
+2026-10-19T09:47:03.2316675Z [36;1mcmp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs[0m
+2026-10-19T09:47:03.2316985Z [36;1mcmp current-generation/files/runner-main.mjs runtime/runner-main.mjs[0m
+2026-10-19T09:47:03.2318206Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/exact-recovery-diagnosis.test.mjs current-generation/tests/partial-cron-failure-context.test.mjs runner/verified-native-day-reconciliation.test.mjs current-generation/tests/current-verified-day-refusal.test.mjs current-generation/tests/failed-d1-run-accounting.test.mjs current-generation/tests/retained-write-failure-guard.test.mjs current-generation/tests/known-d1-day-guard.test.mjs current-generation/tests/pre-analysis-failure-receipt.test.mjs > audit-output/liq-assembled/retained-write-failure-guard.tap[0m
+2026-10-19T09:47:03.2320927Z [36;1mnode --test cloudflare/public-collector/prior-snapshot-read.test.mjs cloudflare/public-collector/native-cost-observer.test.mjs cloudflare/public-collector/funding-period-coverage.test.mjs current-generation/tests/discovery-candidate-score.test.mjs current-generation/tests/funding-directional-policy.test.mjs cloudflare/public-collector/private-price-consumer.test.mjs cloudflare/public-collector/light-price-recheck.test.mjs cloudflare/public-collector/public-collector.test.mjs cloudflare/public-collector/github-backup.test.mjs cloudflare/public-collector/continuous-backup-worker.test.mjs cloudflare/public-collector/trigger-analysis-kick.test.mjs cloudflare/free-history/private-forecast-consumer.test.mjs > audit-output/liq-assembled/private-price-connected.tap[0m
+2026-10-19T09:47:03.2323042Z [36;1mnode --test current-generation/tests/native-exact-asset-role-priority.test.mjs current-generation/tests/liquidation-source-weighting.test.mjs current-generation/tests/collector-only-artifact-outcome.test.mjs current-generation/tests/production-artifact-outcome.test.mjs > audit-output/liq-assembled/exact-asset-role-and-collector-audit.tap[0m
+2026-10-19T09:47:03.2324488Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/native-identity-source-handoff.test.mjs current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/supplemental-candidate-context.test.mjs current-generation/tests/evidence-route-block.test.mjs current-generation/tests/verified-asset-route-identity.test.mjs > audit-output/liq-assembled/native-identity-source-handoff.tap[0m
+2026-10-19T09:47:03.2325669Z [36;1mREPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/native-transport-fallback.runtime.mjs > audit-output/liq-assembled/native-transport-fallback.tap[0m
+2026-10-19T09:47:03.2326159Z [36;1mcp audit-output/qnt-lsk-native4-retained-proof.json audit-output/liq-assembled/[0m
+2026-10-19T09:47:03.2585250Z shell: /usr/bin/bash -e {0}
+2026-10-19T09:47:03.2585409Z env:
+2026-10-19T09:47:03.2585817Z   REPORT2_PAYLOAD_KEY: ***
+2026-10-19T09:47:03.2585954Z ##[endgroup]
+2026-10-19T09:47:06.8432718Z 
+2026-10-19T09:47:06.8437532Z added 52 packages in 2s
+2026-10-19T09:47:15.7209195Z {"status":"EXACT_CURRENT_BRIDGE_SOURCE_AND_OFFLINE_REPAIR_QUALIFIED","module_sha256":"70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8","patched_module_sha256":"06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf","repair_installed":false,"SQL":0}
+2026-10-19T09:47:34.8596728Z ##[error]Process completed with exit code 1.
+2026-10-19T09:47:34.8634357Z ##[group]Run for file in audit-output/liq-assembled/*.log audit-output/liq-assembled/*.tap; do
+2026-10-19T09:47:34.8634730Z [36;1mfor file in audit-output/liq-assembled/*.log audit-output/liq-assembled/*.tap; do[0m
+2026-10-19T09:47:34.8635035Z [36;1m  if test -f "$file"; then echo "FAILED_LOG: $file"; tail -80 "$file"; fi[0m
+2026-10-19T09:47:34.8635242Z [36;1mdone[0m
+2026-10-19T09:47:34.8689515Z shell: /usr/bin/bash -e {0}
+2026-10-19T09:47:34.8689667Z ##[endgroup]
+2026-10-19T09:47:34.8755171Z FAILED_LOG: audit-output/liq-assembled/validation.log
+2026-10-19T09:47:34.8771320Z {"status":"CURRENT_GENERATION_VALIDATED","generation":"MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M","tests":"PASS","syntax":"PASS","schedule_minutes":20,"scheduled_runs_per_day":72,"manual_runs_per_day":8,"burst_deep_checks_per_day":3,"scheduled_analytics_interval_minutes":40,"scheduled_analytics_cycles_per_day":36,"full_cycle_candidate_limit":2,"worst_case_31_day_requests":13330,"overlay":"NOT_REQUESTED"}
+2026-10-19T09:47:34.8772813Z FAILED_LOG: audit-output/liq-assembled/active-source-headroom.tap
+2026-10-19T09:47:34.8779053Z ✔ GATE turnover foreign interval cache is rejected before exact admitted replacement (12.459519ms)
+2026-10-19T09:47:34.8779752Z ✔ GATE turnover failed HTTP receipt cache is rejected before exact admitted replacement (12.041854ms)
+2026-10-19T09:47:34.8780533Z ✔ GATE turnover invalid raw body hash cache is rejected before exact admitted replacement (11.508815ms)
+2026-10-19T09:47:34.8781436Z ✔ GATE turnover changed original body cache is rejected before exact admitted replacement (15.451772ms)
+2026-10-19T09:47:34.8782210Z ✔ GATE turnover future original observation cache is rejected before exact admitted replacement (15.793098ms)
+2026-10-19T09:47:34.8783027Z ✔ GATE turnover container observation drift cache is rejected before exact admitted replacement (10.367938ms)
+2026-10-19T09:47:34.8783859Z ✔ GATE turnover foreign scoped venue cache is rejected before exact admitted replacement (13.455149ms)
+2026-10-19T09:47:34.8784704Z ✔ GATE turnover foreign scoped quote cache is rejected before exact admitted replacement (12.813108ms)
+2026-10-19T09:47:34.8785460Z ✔ GATE turnover foreign scoped market cache is rejected before exact admitted replacement (10.01501ms)
+2026-10-19T09:47:34.8786300Z ✔ GATE turnover changed scoped candle digest cache is rejected before exact admitted replacement (9.211707ms)
+2026-10-19T09:47:34.8787085Z ✔ GATE exact scoped original history cache keeps one-read zero-HTTP original-clock reuse (6.262364ms)
+2026-10-19T09:47:34.8787847Z ✔ GATE exact legacy original history cache keeps one-read zero-HTTP original-clock reuse (6.418126ms)
+2026-10-19T09:47:34.8788948Z ✔ GATE rejected foreign cache plus exhausted caller allowance yields missing, not foreign baseline (5.955113ms)
+2026-10-19T09:47:34.8789589Z ✔ GATE cache_clock cannot renew original history scope (8.449276ms)
+2026-10-19T09:47:34.8790121Z ✔ GATE cache_expiry cannot renew original history scope (6.496865ms)
+2026-10-19T09:47:34.8791183Z ✔ BINANCE turnover foreign saved asset and matching hourly grid cache is rejected before exact admitted replacement (9.697645ms)
+2026-10-19T09:47:34.8792299Z ✔ BINANCE turnover missing original receipt cache is rejected before exact admitted replacement (10.220167ms)
+2026-10-19T09:47:34.8793035Z ✔ BINANCE turnover foreign request asset cache is rejected before exact admitted replacement (9.084938ms)
+2026-10-19T09:47:34.8793519Z ✔ BINANCE turnover wrong requested history start cache is rejected before exact admitted replacement (8.782415ms)
+2026-10-19T09:47:34.8793984Z ✔ BINANCE turnover foreign interval cache is rejected before exact admitted replacement (7.748628ms)
+2026-10-19T09:47:34.8794439Z ✔ BINANCE turnover failed HTTP receipt cache is rejected before exact admitted replacement (8.07069ms)
+2026-10-19T09:47:34.8794889Z ✔ BINANCE turnover invalid raw body hash cache is rejected before exact admitted replacement (8.190469ms)
+2026-10-19T09:47:34.8795505Z ✔ BINANCE turnover changed original body cache is rejected before exact admitted replacement (8.788313ms)
+2026-10-19T09:47:34.8795978Z ✔ BINANCE turnover future original observation cache is rejected before exact admitted replacement (7.89691ms)
+2026-10-19T09:47:34.8796473Z ✔ BINANCE turnover container observation drift cache is rejected before exact admitted replacement (7.305685ms)
+2026-10-19T09:47:34.8797016Z ✔ BINANCE turnover foreign scoped venue cache is rejected before exact admitted replacement (8.384129ms)
+2026-10-19T09:47:34.8797476Z ✔ BINANCE turnover foreign scoped quote cache is rejected before exact admitted replacement (8.996676ms)
+2026-10-19T09:47:34.8797936Z ✔ BINANCE turnover foreign scoped market cache is rejected before exact admitted replacement (8.364059ms)
+2026-10-19T09:47:34.8798631Z ✔ BINANCE turnover changed scoped candle digest cache is rejected before exact admitted replacement (8.244049ms)
+2026-10-19T09:47:34.8799410Z ✔ BINANCE exact scoped original history cache keeps one-read zero-HTTP original-clock reuse (6.818956ms)
+2026-10-19T09:47:34.8800196Z ✔ BINANCE exact legacy original history cache keeps one-read zero-HTTP original-clock reuse (7.658764ms)
+2026-10-19T09:47:34.8801505Z ✔ BINANCE rejected foreign cache plus exhausted caller allowance yields missing, not foreign baseline (4.335769ms)
+2026-10-19T09:47:34.8802121Z ✔ BINANCE cache_clock cannot renew original history scope (7.742058ms)
+2026-10-19T09:47:34.8802443Z ✔ BINANCE cache_expiry cannot renew original history scope (7.363992ms)
+2026-10-19T09:47:34.8802808Z ✔ invalid caller scope {"contract":"ETH-USDT"} does not acquire history (0.489272ms)
+2026-10-19T09:47:34.8803161Z ✔ invalid caller scope {"now":null} does not acquire history (0.331506ms)
+2026-10-19T09:47:34.8803532Z ✔ invalid caller scope {"flow":{"quote":"USDC"}} does not acquire history (0.258306ms)
+2026-10-19T09:47:34.8803913Z ✔ invalid caller scope {"flow":{"market":"FUTURES"}} does not acquire history (0.333499ms)
+2026-10-19T09:47:34.8804298Z ✔ invalid caller scope {"flow":{"buy_quote":true}} does not acquire history (0.361501ms)
+2026-10-19T09:47:34.8804719Z ✔ GATE noncompact wire keeps separate original raw/parsed hashes without another request (7.374858ms)
+2026-10-19T09:47:34.8805170Z ✔ BINANCE noncompact wire keeps separate original raw/parsed hashes without another request (7.49005ms)
+2026-10-19T09:47:34.8805660Z ✔ original Binance compact bound comparison qualifies only for its exact current flow at original clocks (4.258443ms)
+2026-10-19T09:47:34.8806161Z ✔ Gate original baseline clock is two hours after current flow and cannot render a fresh comparison (3.156334ms)
+2026-10-19T09:47:34.8806552Z ✔ bound turnover contract cannot become a useful comparison (3.591666ms)
+2026-10-19T09:47:34.8807173Z ✔ bound turnover venue cannot become a useful comparison (3.5338ms)
+2026-10-19T09:47:34.8807676Z ✔ bound turnover quote cannot become a useful comparison (3.509202ms)
+2026-10-19T09:47:34.8808207Z ✔ bound turnover market cannot become a useful comparison (3.882761ms)
+2026-10-19T09:47:34.8808793Z ✔ bound turnover history end cannot become a useful comparison (3.505897ms)
+2026-10-19T09:47:34.8809518Z ✔ bound turnover future observed cannot become a useful comparison (3.49472ms)
+2026-10-19T09:47:34.8809871Z ✔ bound turnover first knowledge cannot become a useful comparison (3.491216ms)
+2026-10-19T09:47:34.8810227Z ✔ bound turnover extended expiry cannot become a useful comparison (3.86153ms)
+2026-10-19T09:47:34.8810698Z ✔ bound turnover changed median cannot become a useful comparison (3.843793ms)
+2026-10-19T09:47:34.8811066Z ✔ bound turnover changed ratio cannot become a useful comparison (3.493209ms)
+2026-10-19T09:47:34.8811410Z ✔ bound turnover changed current cannot become a useful comparison (3.50118ms)
+2026-10-19T09:47:34.8811782Z ✔ bound turnover changed sample count cannot become a useful comparison (3.866206ms)
+2026-10-19T09:47:34.8812135Z ✔ bound turnover entry claim cannot become a useful comparison (3.529372ms)
+2026-10-19T09:47:34.8812609Z ✔ bound turnover direction claim cannot become a useful comparison (3.499248ms)
+2026-10-19T09:47:34.8812956Z ✔ bound turnover wrong request cannot become a useful comparison (3.511476ms)
+2026-10-19T09:47:34.8813312Z ✔ bound turnover invalid wire hash cannot become a useful comparison (5.285792ms)
+2026-10-19T09:47:34.8813667Z ✔ bound turnover missing binding cannot become a useful comparison (3.529473ms)
+2026-10-19T09:47:34.8814096Z ✔ collector start cannot replace original response clocks or suppress exact same-run later cache (6.91503ms)
+2026-10-19T09:47:34.8814588Z ✔ shared adapter transport accounting can wrap bound baseline without changing facts or their digest (4.989999ms)
+2026-10-19T09:47:34.8815412Z ✔ original BTC prior-hour reference reaches the existing N05 fact, manual and both Telegram forms with no score or new fact slot (69.57774ms)
+2026-10-19T09:47:34.8816358Z ✔ existing N05 flow stays visible while foreign asset baseline is omitted from manual and both Telegram forms (19.755393ms)
+2026-10-19T09:47:34.8817491Z ✔ existing N05 flow stays visible while foreign market baseline is omitted from manual and both Telegram forms (9.910433ms)
+2026-10-19T09:47:34.8818032Z ✔ existing N05 flow stays visible while foreign quote baseline is omitted from manual and both Telegram forms (7.738893ms)
+2026-10-19T09:47:34.8818562Z ✔ existing N05 flow stays visible while changed window baseline is omitted from manual and both Telegram forms (8.546371ms)
+2026-10-19T09:47:34.8819100Z ✔ existing N05 flow stays visible while future observation baseline is omitted from manual and both Telegram forms (7.95016ms)
+2026-10-19T09:47:34.8819664Z ✔ existing N05 flow stays visible while changed current amount baseline is omitted from manual and both Telegram forms (6.154462ms)
+2026-10-19T09:47:34.8820211Z ✔ existing N05 flow stays visible while changed median baseline is omitted from manual and both Telegram forms (6.17365ms)
+2026-10-19T09:47:34.8820955Z ✔ existing N05 flow stays visible while missing original binding baseline is omitted from manual and both Telegram forms (8.185461ms)
+2026-10-19T09:47:34.8821439Z ✔ late original Gate history cannot make the earlier Gate four-hour window fresh (4.840835ms)
+2026-10-19T09:47:34.8821705Z ℹ tests 403
+2026-10-19T09:47:34.8821832Z ℹ suites 0
+2026-10-19T09:47:34.8821957Z ℹ pass 403
+2026-10-19T09:47:34.8822078Z ℹ fail 0
+2026-10-19T09:47:34.8822202Z ℹ cancelled 0
+2026-10-19T09:47:34.8822332Z ℹ skipped 0
+2026-10-19T09:47:34.8822451Z ℹ todo 0
+2026-10-19T09:47:34.8822594Z ℹ duration_ms 2250.480824
+2026-10-19T09:47:34.8822822Z FAILED_LOG: audit-output/liq-assembled/hourly-native-usage.tap
+2026-10-19T09:47:34.8823328Z ✔ quiet window, blocked host and socket failure still remove only the created tail with no retry (11.389876ms)
+2026-10-19T09:47:34.8824172Z ✔ a moved Worker or late expired main guard refuses attribution after own-tail cleanup (1.065862ms)
+2026-10-19T09:47:34.8824696Z ✔ a failed own cleanup stays explicit and unaccepted instead of deleting other tails or claiming success (0.612687ms)
+2026-10-19T09:47:34.8825471Z ✔ wire and frame bounds stop observation and preserve cleanup (0.968078ms)
+2026-10-19T09:47:34.8826129Z ✔ collection qualification preserves a no-op receipt and continues to a distinct CLOSED invocation within the same bounded connection (11.005893ms)
+2026-10-19T09:47:34.8826736Z ✔ tail mode is disabled by default, remains under inspection and never uses command-line retries or a source endpoint (0.577406ms)
+2026-10-19T09:47:34.8827292Z ✔ hourly receipts preserve distinct bindings, source scheduled time, actual UTC clocks and unknown failed work (0.97567ms)
+2026-10-19T09:47:34.8827869Z ✔ hourly observation admits only the next installed cron window and never arbitrary Workers or inherited configuration names (0.633421ms)
+2026-10-19T09:47:34.8828468Z ✔ all three exact saved native invocations reconcile disjoint components without extrapolation or duplicate PRIVATE_PRICE (3.803754ms)
+2026-10-19T09:47:34.8829019Z ✔ duplicate transport of one final receipt is counted once and conflicts retain both candidates unresolved (1.257813ms)
+2026-10-19T09:47:34.8829609Z ✔ hash, immutable version, native clocks and cleanup must bind before a saved point is reused (1.094476ms)
+2026-10-19T09:47:34.8830073Z ✔ unknown native costs preserve known component subtotals and never become a closed day (0.384612ms)
+2026-10-19T09:47:34.8830752Z ✔ unbalanced overlap and midnight-spanning clocks keep native point costs unallocated rather than guessing a billing day (0.868845ms)
+2026-10-19T09:47:34.8831316Z ✔ nine planned family envelopes remain distinct from observed spend and inconsistent arithmetic is rejected (0.589923ms)
+2026-10-19T09:47:34.8832021Z ✔ the reusable saved-only audit preserves deficits and missing proof without activating limits or SQL (1.451215ms)
+2026-10-19T09:47:34.8832919Z ✔ script-level logging state distinguishes disabled, missing and sampled config without asserting absence of platform sampling (2.113916ms)
+2026-10-19T09:47:34.8833817Z ✔ exact native receipt preserves disjoint nested costs; no daily extrapolation or overlapping PRIVATE_PRICE addition (1.360503ms)
+2026-10-19T09:47:34.8834609Z ✔ version, worker, source clock, event identity and truncated payload must bind before native evidence is accepted (0.584427ms)
+2026-10-19T09:47:34.8835119Z ✔ unknown and inconsistent nested native counters remain unclosed without resetting subtotals (0.209318ms)
+2026-10-19T09:47:34.8835648Z ✔ duplicate delivery of a final invocation is counted once; conflicting revisions of the same invocation are excluded (0.33625ms)
+2026-10-19T09:47:34.8836103Z ✔ a midnight-spanning invocation cannot be assigned to one billing day (0.157098ms)
+2026-10-19T09:47:34.8836548Z ✔ hourly scheduled day is not used as execution day, and missing old execution clocks are unresolved (0.3164ms)
+2026-10-19T09:47:34.8837039Z ✔ disabled persistent logging uses only four bounded metadata GETs and never guesses zero native cost (0.597816ms)
+2026-10-19T09:47:34.8837579Z ✔ read-only observations bind both deployments around dry bounded queries, preserving original sampling statistics (0.468521ms)
+2026-10-19T09:47:34.8838129Z ✔ a moved deployment discards attribution; malformed and failed queries are not retried or converted to zero (4.367454ms)
+2026-10-19T09:47:34.8838630Z ✔ unqualified inspector refuses before transport and exports no credentials or source request (40.257023ms)
+2026-10-19T09:47:34.8839134Z ✔ inspection mode skips deployment/build paths and is disabled by default in the existing guarded workflow (0.458175ms)
+2026-10-19T09:47:34.8839653Z ✖ qualified main inspection performs only bounded metadata reads; a foreign owner stops before Cloudflare (55.993986ms)
+2026-10-19T09:47:34.8840526Z ✖ real WebSocket peer withholding close acknowledgment cannot keep the qualified monitor process alive after saved own-tail cleanup (98.677679ms)
+2026-10-19T09:47:34.8841713Z ✔ unqualified hourly observer release refuses before GitHub/Cloudflare transport, SQL or provider requests (39.881939ms)
+2026-10-19T09:47:34.8842707Z ✔ hourly release has no D1 or source credentials, no direct invocation, and keeps the exact pinned dry build and false default (0.397984ms)
+2026-10-19T09:47:34.8843232Z ℹ tests 41
+2026-10-19T09:47:34.8843432Z ℹ suites 0
+2026-10-19T09:47:34.8843625Z ℹ pass 39
+2026-10-19T09:47:34.8843805Z ℹ fail 2
+2026-10-19T09:47:34.8843995Z ℹ cancelled 0
+2026-10-19T09:47:34.8844191Z ℹ skipped 0
+2026-10-19T09:47:34.8844380Z ℹ todo 0
+2026-10-19T09:47:34.8844615Z ℹ duration_ms 262.957777
+2026-10-19T09:47:34.8844708Z 
+2026-10-19T09:47:34.8844779Z ✖ failing tests:
+2026-10-19T09:47:34.8844853Z 
+2026-10-19T09:47:34.8844988Z test at runner/native-cost-observations.test.mjs:60:1
+2026-10-19T09:47:34.8845420Z ✖ qualified main inspection performs only bounded metadata reads; a foreign owner stops before Cloudflare (55.993986ms)
+2026-10-19T09:47:34.8845810Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+2026-10-19T09:47:34.8846024Z   
+2026-10-19T09:47:34.8846132Z   1 !== 0
+2026-10-19T09:47:34.8846238Z   
+2026-10-19T09:47:34.8846720Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runner/native-cost-observations.test.mjs:65:9)
+2026-10-19T09:47:34.8847134Z       at Test.runInAsyncScope (node:async_hooks:227:14)
+2026-10-19T09:47:34.8847360Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-10-19T09:47:34.8847621Z       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+2026-10-19T09:47:34.8847887Z       at Test.postRun (node:internal/test_runner/test:1542:19)
+2026-10-19T09:47:34.8848115Z       at Test.run (node:internal/test_runner/test:1467:12)
+2026-10-19T09:47:34.8848383Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-10-19T09:47:34.8848618Z     generatedMessage: true,
+2026-10-19T09:47:34.8848768Z     code: 'ERR_ASSERTION',
+2026-10-19T09:47:34.8848903Z     actual: 1,
+2026-10-19T09:47:34.8849021Z     expected: 0,
+2026-10-19T09:47:34.8849160Z     operator: 'strictEqual',
+2026-10-19T09:47:34.8849301Z     diff: 'simple'
+2026-10-19T09:47:34.8849421Z   }
+2026-10-19T09:47:34.8849484Z 
+2026-10-19T09:47:34.8849594Z test at runner/native-tail-process.test.mjs:2:1
+2026-10-19T09:47:34.8850085Z ✖ real WebSocket peer withholding close acknowledgment cannot keep the qualified monitor process alive after saved own-tail cleanup (98.677679ms)
+2026-10-19T09:47:34.8850502Z   AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+2026-10-19T09:47:34.8850855Z   
+2026-10-19T09:47:34.8850968Z     assert(handshake)
+2026-10-19T09:47:34.8851089Z   
+2026-10-19T09:47:34.8851430Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runner/native-tail-process.test.mjs:15:2)
+2026-10-19T09:47:34.8851880Z       at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-10-19T09:47:34.8852171Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-10-19T09:47:34.8852455Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+2026-10-19T09:47:34.8852692Z     generatedMessage: true,
+2026-10-19T09:47:34.8852840Z     code: 'ERR_ASSERTION',
+2026-10-19T09:47:34.8852975Z     actual: false,
+2026-10-19T09:47:34.8853099Z     expected: true,
+2026-10-19T09:47:34.8853221Z     operator: '==',
+2026-10-19T09:47:34.8853342Z     diff: 'simple'
+2026-10-19T09:47:34.8853460Z   }
+2026-10-19T09:47:34.8853682Z FAILED_LOG: audit-output/liq-assembled/native-sector-provider-binding.tap
+2026-10-19T09:47:34.8854067Z ✔ sector missing peer id cannot become a report fact (0.111657ms)
+2026-10-19T09:47:34.8854379Z ✔ sector missing peer symbol cannot become a report fact (0.099559ms)
+2026-10-19T09:47:34.8854749Z ✔ saved original WIN clocks/quotes/median remain identical in both consumers (0.326389ms)
+2026-10-19T09:47:34.8855302Z ✔ malformed peer cannot erase original WIN manual/V5 context or alter approved brief omission (20.200074ms)
+2026-10-19T09:47:34.8855753Z ✔ standalone review rejects null peer bad-first without losing exact original review (1.103192ms)
+2026-10-19T09:47:34.8856191Z ✔ standalone review rejects null peer bad-last without losing exact original review (0.697925ms)
+2026-10-19T09:47:34.8856639Z ✔ standalone review rejects undefined peer bad-first without losing exact original review (0.663433ms)
+2026-10-19T09:47:34.8857091Z ✔ standalone review rejects undefined peer bad-last without losing exact original review (0.489783ms)
+2026-10-19T09:47:34.8857562Z ✔ all eleven native routes require the preserved exact HTX binding and enter the production planner (2.6659ms)
+2026-10-19T09:47:34.8858050Z ✔ new metadata needs the exact provider ID, native representation and official HTTPS project site (1.553285ms)
+2026-10-19T09:47:34.8858590Z ✔ controlled functional categories reach the same advisory consumer without refreshing old clocks or making extra votes (12.710785ms)
+2026-10-19T09:47:34.8859126Z ✔ original ICP ledger and CHZ legacy bridge metadata bind only the exact documented representations (0.448962ms)
+2026-10-19T09:47:34.8859740Z ✔ retained actual ICP and CHZ bodies pass the production cached collector and sector consumer with zero new HTTP (25.64906ms)
+2026-10-19T09:47:34.8860239Z ✔ both disjoint missing batches share one day family and preserve all original reservations (2.63937ms)
+2026-10-19T09:47:34.8860818Z ✔ the already completed legacy initial4 counts and cannot be repeated under a new label (0.615181ms)
+2026-10-19T09:47:34.8861289Z ✔ remaining7 requires the original batch and budget exhaustion or unknown usage forbids admission (1.412504ms)
+2026-10-19T09:47:34.8861825Z ✔ the distinct missing TRON tokens retain native reservations, have one nonrepeatable group and keep provider caps (0.633478ms)
+2026-10-19T09:47:34.8862288Z ✔ saved exact WIN source and N15 consumer survive final-known cache failure (52.742797ms)
+2026-10-19T09:47:34.8862689Z ✔ saved exact WIN source and N15 consumer survive final-unknown cache failure (7.861016ms)
+2026-10-19T09:47:34.8863111Z ✔ saved exact WIN source and N15 consumer survive quote-reference-unknown cache failure (5.817517ms)
+2026-10-19T09:47:34.8863551Z ✔ CoinPaprika useful facts survive final cache failure with unknown=false (4.279285ms)
+2026-10-19T09:47:34.8863935Z ✔ CoinPaprika useful facts survive final cache failure with unknown=true (3.43434ms)
+2026-10-19T09:47:34.8864396Z ✔ known reference cache failures preserve the remaining admitted chain and source backoff stays optional (2.964257ms)
+2026-10-19T09:47:34.8864890Z ✔ collectCoingeckoSectorEvidence refuses existing unclosed usage before schema/cache/source (0.243885ms)
+2026-10-19T09:47:34.8865380Z ✔ collectCoinpaprikaSectorEvidence refuses existing unclosed usage before schema/cache/source (0.079139ms)
+2026-10-19T09:47:34.8865840Z ✔ reference reader stops SQL and transport after unknown reference-read without refund (1.76371ms)
+2026-10-19T09:47:34.8866276Z ✔ reference reader stops SQL and transport after unknown daily-read without refund (0.853517ms)
+2026-10-19T09:47:34.8866702Z ✔ reference reader stops SQL and transport after unknown daily-batch without refund (1.116241ms)
+2026-10-19T09:47:34.8867150Z ✔ reference reader stops SQL and transport after unknown minute-reservation without refund (0.979956ms)
+2026-10-19T09:47:34.8867604Z ✔ 429 backoff cache failure retains the original provider failure and exact transport count (1.58356ms)
+2026-10-19T09:47:34.8868056Z ✔ a measured transport body survives an unmeasured optional cache ACK without another SQL (4.559614ms)
+2026-10-19T09:47:34.8868505Z ✔ unknown native cost during minute schema setup prevents the following index statements (0.731024ms)
+2026-10-19T09:47:34.8868962Z ✔ replay ready public LINK sector data through strict evidence and bounded directional weight (7.748678ms)
+2026-10-19T09:47:34.8869458Z ✔ JUP is resolved by Solana mint, and duplicate DYDX and QUICK representations cannot inflate the basket (1.320747ms)
+2026-10-19T09:47:34.8870052Z ✔ wrong asset, ambiguous category, ecosystem category and stale target cannot form sector evidence (0.303804ms)
+2026-10-19T09:47:34.8870530Z ✔ consumer rejects altered median, duplicate peers, cross-market or stale cached evidence (1.526845ms)
+2026-10-19T09:47:34.8871122Z ✔ pinned and automatic address discovery use at most three calls, then the shared cache (42.310668ms)
+2026-10-19T09:47:34.8871600Z ✔ an exact asset missing from the first category page gets one admitted quote without peer pagination (28.935358ms)
+2026-10-19T09:47:34.8872076Z ✔ 429 with Retry-After creates provider-wide backoff without retrying another coin or host (2.043138ms)
+2026-10-19T09:47:34.8872533Z ✔ daily and minute exhaustion defer this provider and free the phase slot for the next role (2.586842ms)
+2026-10-19T09:47:34.8872985Z ✔ exact provider categories beyond oracle and DeFi produce the same bounded sector context (1.012064ms)
+2026-10-19T09:47:34.8873491Z ✔ sector binding includes supported EVM networks and never substitutes an Ethereum address for another chain (6.812066ms)
+2026-10-19T09:47:34.8874067Z ✔ exact bound WIN ID refreshes a missing or stale target despite a different same-ticker asset; original peer clocks survive (59.202837ms)
+2026-10-19T09:47:34.8874719Z ✔ exact-ID target refresh cannot bypass caller, ordinary day or rolling-minute headroom (21.927389ms)
+2026-10-19T09:47:34.8875207Z ✔ wrong/duplicate exact target and future timestamps do not acquire a refresh route or sector evidence (19.037515ms)
+2026-10-19T09:47:34.8875691Z ✔ no functional sector preserves actual transport cost and absence without closing the block (1.402639ms)
+2026-10-19T09:47:34.8876199Z ✔ common runtime keeps two real failed-category HTTP instead of relabelling them as a free capability check (17.804298ms)
+2026-10-19T09:47:34.8876705Z ✔ an exhausted CG source does not suppress an original useful CP cached fact in the common runtime (9.196194ms)
+2026-10-19T09:47:34.8877180Z ✔ native binding requires provider native_coin_id, no token address and exact NEAR contract (7.701657ms)
+2026-10-19T09:47:34.8877666Z ✔ native cold route uses 4 calls; a new manual refresh reuses 3 references and reserves one quote call (28.720037ms)
+2026-10-19T09:47:34.8878119Z ✔ altered, future and expired reference bodies cannot be accepted as cache hits (15.955561ms)
+2026-10-19T09:47:34.8878548Z ✔ references never relabel an asset: wrong metadata stops after its one admitted call (1.423962ms)
+2026-10-19T09:47:34.8879001Z ✔ transport is forbidden without admission and malformed reference response is never cached (1.440607ms)
+2026-10-19T09:47:34.8879493Z ✔ CoinPaprika shares metadata and functional membership but fresh manual quotes still require one call (4.779564ms)
+2026-10-19T09:47:34.8879992Z ✔ native sector route remains present in the full collector when its shared envelope is exhausted (6.316915ms)
+2026-10-19T09:47:34.8880445Z ✔ real provider bodies bind NEAR to near-protocol without accepting wrapped assets (0.605977ms)
+2026-10-19T09:47:34.8881007Z ✔ all supported native networks pass through the same production sector planner (2.44507ms)
+2026-10-19T09:47:34.8881407Z ✔ all 15 blocks and market routes remain assigned for arbitrary HTX futures (0.336003ms)
+2026-10-19T09:47:34.8881827Z ✔ official registry accepts exact native networks and rejects another market binding (0.758956ms)
+2026-10-19T09:47:34.8882276Z ✔ shared route planner admits native Bluesky only with exact binding and one official domain (0.166349ms)
+2026-10-19T09:47:34.8882768Z ✔ real HTX wire bodies preserve no-prefix addresses and native chain type without substituting wrappers (0.436063ms)
+2026-10-19T09:47:34.8883193Z ✔ actual worker excludes stocks and unknown class from the deep queue (3.07367ms)
+2026-10-19T09:47:34.8883627Z ✔ actual native APT denomination binds only to its mainnet coin, and Cosmos keeps Layer0 taxonomy (2.66586ms)
+2026-10-19T09:47:34.8884208Z ✔ a stale exact asset row is refreshed by its already bound provider ID and reaches the assigned sector consumer with unchanged peer clocks (5.903837ms)
+2026-10-19T09:47:34.8884900Z ✔ an exact target refresh remains separately admitted; a denied request produces no transport or sector evidence (2.750336ms)
+2026-10-19T09:47:34.8885498Z ✔ duplicate target identities, future clocks and same-symbol peer ambiguity cannot be repaired into extra sector participation (6.928831ms)
+2026-10-19T09:47:34.8886059Z ✔ four original exact TRON tokens enter the common sector planner without acquiring native or EVM identity (1.040026ms)
+2026-10-19T09:47:34.8886516Z ✔ TRON Base58 provider addresses are exact and case sensitive, unlike EVM hex (0.313359ms)
+2026-10-19T09:47:34.8887023Z ✔ controlled TRON wire shape reaches the production collector and advisory consumer; references and facts are reused (37.410274ms)
+2026-10-19T09:47:34.8887616Z ✔ known exhausted ordinary Demo budget blocks TRON transport before shared caller admission and preserves the manual reserve (1.359435ms)
+2026-10-19T09:47:34.8888205Z ✔ original WIN quote survives a separate same-symbol wrapper while duplicate target IDs and wrong address still fail (1.30953ms)
+2026-10-19T09:47:34.8888771Z ✔ actual four TRON bodies reach the production cached collector and consumer at the original cutoff with no new HTTP (13.58296ms)
+2026-10-19T09:47:34.8889168Z ℹ tests 260
+2026-10-19T09:47:34.8889299Z ℹ suites 0
+2026-10-19T09:47:34.8889424Z ℹ pass 260
+2026-10-19T09:47:34.8889549Z ℹ fail 0
+2026-10-19T09:47:34.8889673Z ℹ cancelled 0
+2026-10-19T09:47:34.8889804Z ℹ skipped 0
+2026-10-19T09:47:34.8889927Z ℹ todo 0
+2026-10-19T09:47:34.8890067Z ℹ duration_ms 1052.20405
+2026-10-19T09:47:34.8890305Z FAILED_LOG: audit-output/liq-assembled/new-liq-research-admission.tap
+2026-10-19T09:47:34.8890856Z ✔ new research cannot reset its distinct-provider allowance or claim a whole-day guarantee (94.626006ms)
+2026-10-19T09:47:34.8891293Z ✔ all families and unknown operations restrict the shared native daily admission (0.552226ms)
+2026-10-19T09:47:34.8891731Z ✔ research leaves the next full report plus its exact archive-copy envelope untouched (0.462482ms)
+2026-10-19T09:47:34.8892145Z ✔ blocked and unconfigured routes refuse before provider/D1, even with a key (0.736422ms)
+2026-10-19T09:47:34.8892612Z ✔ catalog selects an exact approved gap before SOL; rejects aliases, scaled symbols and BTC/ETH levels (0.660258ms)
+2026-10-19T09:47:34.8893112Z ✔ empty positions do not establish availability; duplicate catalogs and foreign gaps stop selection (0.237105ms)
+2026-10-19T09:47:34.8893395Z ℹ tests 6
+2026-10-19T09:47:34.8893516Z ℹ suites 0
+2026-10-19T09:47:34.8893637Z ℹ pass 6
+2026-10-19T09:47:34.8893755Z ℹ fail 0
+2026-10-19T09:47:34.8893875Z ℹ cancelled 0
+2026-10-19T09:47:34.8894005Z ℹ skipped 0
+2026-10-19T09:47:34.8894124Z ℹ todo 0
+2026-10-19T09:47:34.8894260Z ℹ duration_ms 149.595326
+2026-10-19T09:47:34.8894496Z FAILED_LOG: audit-output/liq-assembled/public-venue-health-priority.tap
+2026-10-19T09:47:34.8894889Z ✔ BACKPACK HTTP429 survives optional backoff persistence failure unknown=false (1.225755ms)
+2026-10-19T09:47:34.8895307Z ✔ BACKPACK HTTP429 survives optional backoff persistence failure unknown=true (0.768831ms)
+2026-10-19T09:47:34.8895660Z ✔ BACKPACK original cache keeps clocks and avoids HTTP (28.702533ms)
+2026-10-19T09:47:34.8896020Z ✔ BACKPACK retained original reaches manual and both Telegram renderers (28.121974ms)
+2026-10-19T09:47:34.8896467Z ✔ Poloniex observed429 activity hint blocks later candles when backoff write fails unknown=false (11.080345ms)
+2026-10-19T09:47:34.8896947Z ✔ Poloniex observed429 activity hint blocks later candles when backoff write fails unknown=true (10.445696ms)
+2026-10-19T09:47:34.8897434Z ✔ BINANCE retained fact crosses shared fallback wrapper with native unknown stopping later adapter (19.255553ms)
+2026-10-19T09:47:34.8897922Z ✔ KRAKEN retained fact crosses shared fallback wrapper with native unknown stopping later adapter (15.316757ms)
+2026-10-19T09:47:34.8898418Z ✔ POLONIEX retained fact crosses shared fallback wrapper with native unknown stopping later adapter (15.140834ms)
+2026-10-19T09:47:34.8899030Z ✔ BACKPACK retained fact crosses shared fallback wrapper with native unknown stopping later adapter (22.290535ms)
+2026-10-19T09:47:34.8899467Z ✔ OKX exact original N12 sample survives failed final cache; unknown=false (75.817932ms)
+2026-10-19T09:47:34.8899856Z ✔ OKX exact original N12 sample survives failed final cache; unknown=true (9.730645ms)
+2026-10-19T09:47:34.8900249Z ✔ KUCOIN exact original N12 sample survives failed final cache; unknown=false (50.05961ms)
+2026-10-19T09:47:34.8900790Z ✔ KUCOIN exact original N12 sample survives failed final cache; unknown=true (37.925088ms)
+2026-10-19T09:47:34.8901193Z ✔ OKX unknown metadata cache cost stops before another cache read or transport (6.367501ms)
+2026-10-19T09:47:34.8901615Z ✔ KUCOIN unknown metadata cache cost stops before another cache read or transport (11.240475ms)
+2026-10-19T09:47:34.8902071Z ✔ known metadata cache write failures keep in-memory catalogs and both exact PEPE market facts (34.109796ms)
+2026-10-19T09:47:34.8902535Z ✔ unmeasured successful optional ACK retains the source fact and stops subsequent work (19.850063ms)
+2026-10-19T09:47:34.8902967Z ✔ a later market cache-read exception preserves the prior exact original spot fact (6.859658ms)
+2026-10-19T09:47:34.8903440Z ✔ N12 halts every new SQL and transport after unknown cache-read (0.723393ms)
+2026-10-19T09:47:34.8903795Z ✔ N12 halts every new SQL and transport after unknown daily-headroom (0.475331ms)
+2026-10-19T09:47:34.8904152Z ✔ N12 halts every new SQL and transport after unknown minute-headroom (0.463534ms)
+2026-10-19T09:47:34.8904502Z ✔ N12 halts every new SQL and transport after unknown daily-batch (0.378216ms)
+2026-10-19T09:47:34.8904844Z ✔ N12 halts every new SQL and transport after unknown minute-batch (0.4409ms)
+2026-10-19T09:47:34.8905247Z ✔ Gate exact original AAVE sample and consumer survive final cache error; unknown=false (6.872737ms)
+2026-10-19T09:47:34.8905685Z ✔ Gate exact original AAVE sample and consumer survive final cache error; unknown=true (3.111477ms)
+2026-10-19T09:47:34.8906121Z ✔ Gate unknown metadata write prevents the next native cache read and trade request (1.372144ms)
+2026-10-19T09:47:34.8906500Z ✔ OKX existing unknown refuses before any SQL or source attempt (0.539447ms)
+2026-10-19T09:47:34.8906926Z ✔ collectGateFuturesTradeSample existing unknown refuses before any SQL or source attempt (0.475111ms)
+2026-10-19T09:47:34.8907363Z ✔ collectBitgetFlow existing unknown refuses before any SQL or source attempt (0.813237ms)
+2026-10-19T09:47:34.8907831Z ✔ controlled Bitget complete flow and bounded facts survive optional flow-cache failure; unknown=false (9.92098ms)
+2026-10-19T09:47:34.8908332Z ✔ controlled Bitget complete flow and bounded facts survive optional flow-cache failure; unknown=true (4.545134ms)
+2026-10-19T09:47:34.8908784Z ✔ Bitget later market cache error retains the already normalized first market result (3.44089ms)
+2026-10-19T09:47:34.8909172Z ✔ provider 429 survives failed optional backoff storage; unknown=false (1.10923ms)
+2026-10-19T09:47:34.8909545Z ✔ provider 429 survives failed optional backoff storage; unknown=true (0.73472ms)
+2026-10-19T09:47:34.8910024Z ✔ retained PEPE facts after cache failure keep exact IDs through existing manual and approved Telegram renderers (42.385494ms)
+2026-10-19T09:47:34.8910526Z ✔ Bitget observed429 prevents another market transport even if measured backoff storage fails (1.52339ms)
+2026-10-19T09:47:34.8911161Z ✔ exact retained OKX spot/futures cache hits preserve both original facts and consumer without new attempts (33.830298ms)
+2026-10-19T09:47:34.8911663Z ✔ OKX rejects opposite market cache result and recovers the exact requested original spot sample (39.501858ms)
+2026-10-19T09:47:34.8912188Z ✔ OKX rejects different native asset and venue cache result and recovers the exact requested original spot sample (33.839802ms)
+2026-10-19T09:47:34.8912732Z ✔ OKX rejects different spot asset and venue cache result and recovers the exact requested original spot sample (20.825252ms)
+2026-10-19T09:47:34.8913357Z ✔ OKX rejects adjacent closed window cache result and recovers the exact requested original spot sample (17.132475ms)
+2026-10-19T09:47:34.8913855Z ✔ OKX rejects foreign asset id cache result and recovers the exact requested original spot sample (13.922319ms)
+2026-10-19T09:47:34.8914348Z ✔ OKX rejects future observed clock cache result and recovers the exact requested original spot sample (14.618236ms)
+2026-10-19T09:47:34.8914861Z ✔ OKX rejects future first-known clock cache result and recovers the exact requested original spot sample (14.300437ms)
+2026-10-19T09:47:34.8915380Z ✔ OKX rejects extended original expiry cache result and recovers the exact requested original spot sample (6.566449ms)
+2026-10-19T09:47:34.8915884Z ✔ OKX rejects missing summary window cache result and recovers the exact requested original spot sample (6.451447ms)
+2026-10-19T09:47:34.8916368Z ✔ OKX rejects empty evidence cache result and recovers the exact requested original spot sample (6.939768ms)
+2026-10-19T09:47:34.8916866Z ✔ a rejected foreign cache result cannot bypass denied HTTP admission or discard the valid other market (8.933021ms)
+2026-10-19T09:47:34.8917444Z ✔ exact retained Gate AAVE cache hit preserves the original source clock with no source reservation (1.434177ms)
+2026-10-19T09:47:34.8917926Z ✔ Gate rejects empty evidence and continues to the exact AAVE original within existing admission (2.568485ms)
+2026-10-19T09:47:34.8918414Z ✔ Gate rejects foreign token address and continues to the exact AAVE original within existing admission (2.096468ms)
+2026-10-19T09:47:34.8918902Z ✔ Gate rejects foreign contract and continues to the exact AAVE original within existing admission (2.276697ms)
+2026-10-19T09:47:34.8919391Z ✔ Gate rejects future observed clock and continues to the exact AAVE original within existing admission (2.189898ms)
+2026-10-19T09:47:34.8919857Z ✔ Gate invalid cache plus unknown native read cost stops before another SQL or transport (0.685186ms)
+2026-10-19T09:47:34.8920314Z ✔ exact PEPE address and case-equivalent EVM address reuse both market facts without HTTP (1.438313ms)
+2026-10-19T09:47:34.8920886Z ✔ KuCoin rejects opposite token market cache and recovers the original PEPE spot page (1.809168ms)
+2026-10-19T09:47:34.8921331Z ✔ KuCoin rejects wrong original window cache and recovers the original PEPE spot page (1.637972ms)
+2026-10-19T09:47:34.8921763Z ✔ KuCoin rejects duplicate market facts cache and recovers the original PEPE spot page (1.60322ms)
+2026-10-19T09:47:34.8922293Z ✔ recovered PEPE cache fallback retains exact facts and disagreement through manual and both approved Telegram renderers (10.498504ms)
+2026-10-19T09:47:34.8922833Z ✔ original Bitfinex neutral flow is useful in aggregate and exact venue journal without decision points (2.987882ms)
+2026-10-19T09:47:34.8923373Z ✔ foreign, duplicate, partial, stale or future windows cannot make a venue useful; HTTP reconciliation remains strict (1.321027ms)
+2026-10-19T09:47:34.8923932Z ✔ exact venue histories prioritize N05 and N12 separately, preserve static ties and reject wrong market facts (1.097413ms)
+2026-10-19T09:47:34.8924482Z ✔ journal stores aggregate plus exact attempted venue observations once and no internal skips; no HTTP sum semantics (2.094555ms)
+2026-10-19T09:47:34.8925109Z ✔ production public orchestrator reads admitted journal, orders proven source, then falls back within same five slots and preserves cache (16.664203ms)
+2026-10-19T09:47:34.8925694Z ✔ retained raw source proof preserves original clocks and digests and claims no new current market coverage (2.793251ms)
+2026-10-19T09:47:34.8926238Z ✔ original Gate N12 futures sample is useful only in its own role and stays separate from N05 and cached-only routes (19.945395ms)
+2026-10-19T09:47:34.8926718Z ✔ all-cold public routes cover 36 full cycles plus conservative manual and burst reserve (0.54088ms)
+2026-10-19T09:47:34.8927182Z ✔ 512 is a durable daily ceiling; prior reservations are preserved and another venue is independent (1.886214ms)
+2026-10-19T09:47:34.8927753Z ✔ larger daily headroom does not multiply the five shared requests across fallback venues (18.697928ms)
+2026-10-19T09:47:34.8928268Z ✔ documented minute pools admit both finalists while weighted KuCoin and endpoint-specific guards remain bounded (2.089568ms)
+2026-10-19T09:47:34.8928786Z ✔ an exhausted minute pool consumes no shared request and leaves all five slots to the next venue (4.593265ms)
+2026-10-19T09:47:34.8929061Z ℹ tests 281
+2026-10-19T09:47:34.8929189Z ℹ suites 0
+2026-10-19T09:47:34.8929313Z ℹ pass 281
+2026-10-19T09:47:34.8929432Z ℹ fail 0
+2026-10-19T09:47:34.8929553Z ℹ cancelled 0
+2026-10-19T09:47:34.8929679Z ℹ skipped 0
+2026-10-19T09:47:34.8929801Z ℹ todo 0
+2026-10-19T09:47:34.8929942Z ℹ duration_ms 1612.058123
+2026-10-19T09:47:34.8930167Z FAILED_LOG: audit-output/liq-assembled/source-health-priority.tap
+2026-10-19T09:47:34.8930559Z ✔ candidate boundary excludes foreign and missing market bindings even on a cache hit (1.238093ms)
+2026-10-19T09:47:34.8931183Z ✔ complementary role collectors share a fixed envelope and reuse valid caches when it is exhausted (13.838894ms)
+2026-10-19T09:47:34.8931624Z ✔ known provider quota denial leaves the local envelope for another useful role (0.313809ms)
+2026-10-19T09:47:34.8932112Z ✔ unknown durable reservation after an exception cannot free capacity (0.262002ms)
+2026-10-19T09:47:34.8932508Z ✔ transport counts attempts even when a collector throws after a failed request (0.239509ms)
+2026-10-19T09:47:34.8932883Z ✔ a later collector cannot spend an earlier unknown reservation (0.307621ms)
+2026-10-19T09:47:34.8933359Z ✔ main skips only fresh index discovery after valid exact current finalized RPC; failure and LIQ retain the index route (1.486845ms)
+2026-10-19T09:47:34.8933876Z ✔ neutral useful facts win per actual request only within N15; other owners and every route survive (1.148059ms)
+2026-10-19T09:47:34.8934371Z ✔ foreign, future, stale, malformed, cached-only or unknown source observations cannot move the queue (0.422342ms)
+2026-10-19T09:47:34.8934835Z ✔ a recent failure does not inherit prior success or suppress its later retry/cache (0.157495ms)
+2026-10-19T09:47:34.8935299Z ✔ readback uses existing exact-source index, four attempts, native clock bounds and no schema writes (1.313787ms)
+2026-10-19T09:47:34.8935782Z ✔ denied, missing journal or unknown native usage retains original ordering without new HTTP (0.433449ms)
+2026-10-19T09:47:34.8936239Z ✔ preferred source empty or quota skip proceeds to alternative inside the same envelope (18.181394ms)
+2026-10-19T09:47:34.8936755Z ✔ whole runtime uses exact original neutral CP fact and priority receipt while CG is exhausted; pauses remain excluded (22.004467ms)
+2026-10-19T09:47:34.8937318Z ✔ reconstruct exact original historical N15 attempted receipts without claiming production journal or new coverage (4.245545ms)
+2026-10-19T09:47:34.8937878Z ✔ initial exact retained preference works before finalist selection and current failures cannot revive old success (0.409703ms)
+2026-10-19T09:47:34.8938455Z ✔ artifact projection retains actual per-asset queue without credentials, payloads, foreign receipt or input mutation (0.835521ms)
+2026-10-19T09:47:34.8938773Z ℹ tests 17
+2026-10-19T09:47:34.8938895Z ℹ suites 0
+2026-10-19T09:47:34.8939015Z ℹ pass 17
+2026-10-19T09:47:34.8939134Z ℹ fail 0
+2026-10-19T09:47:34.8939258Z ℹ cancelled 0
+2026-10-19T09:47:34.8939386Z ℹ skipped 0
+2026-10-19T09:47:34.8939507Z ℹ todo 0
+2026-10-19T09:47:34.8939642Z ℹ duration_ms 134.113825
+2026-10-19T09:47:34.8939831Z FAILED_LOG: audit-output/liq-assembled/target.tap
+2026-10-19T09:47:34.8940197Z ✔ volume determines size without fabricating strength from distance, source count or OI (0.551063ms)
+2026-10-19T09:47:34.8940768Z ✔ stale, future-clock, executed, swept, wrong-side and unbound rows are excluded (0.217309ms)
+2026-10-19T09:47:34.8941190Z ✔ unknown money units retain price context without pretending a dollar amount (14.861473ms)
+2026-10-19T09:47:34.8941598Z ✔ provider model amounts remain estimates and upstream overlap is not summed (1.829779ms)
+2026-10-19T09:47:34.8942099Z ✔ tampered or different-symbol provider maps cannot become this coin map (0.521489ms)
+2026-10-19T09:47:34.8942500Z ✔ native reported position sizes keep unit, conditional margin and source scope (0.597494ms)
+2026-10-19T09:47:34.8942901Z ✔ duplicates are not added together and unshown levels remain in full map (0.339003ms)
+2026-10-19T09:47:34.8943338Z ✔ owner excludes BTC/ETH liquidation levels while other approved futures keep the source path (0.26483ms)
+2026-10-19T09:47:34.8943801Z ✔ cross-quote distance uses original source price and never divides USD or USDC by HTX USDT (0.663714ms)
+2026-10-19T09:47:34.8944207Z ✔ same-run futures and spot agree with one HTX vote and zero extra HTTP (3.008281ms)
+2026-10-19T09:47:34.8944606Z ✔ opposite HTX markets stay separate and do not create a common directional score (3.558479ms)
+2026-10-19T09:47:34.8945039Z ✔ two fresh trade samples separated by a minute stay available without a joint direction (19.005918ms)
+2026-10-19T09:47:34.8945446Z ✔ spot-only is labeled as one market and not independent venue agreement (1.285976ms)
+2026-10-19T09:47:34.8945869Z ✔ stale, foreign-channel and duplicate spot records are not useful evidence (0.230729ms)
+2026-10-19T09:47:34.8946444Z ✔ N12 context connects same-run HTX markets with validated independent four-hour venue without mixing windows (2.275863ms)
+2026-10-19T09:47:34.8946907Z ✔ opposite recent and four-hour directions cannot become one market conclusion (1.216861ms)
+2026-10-19T09:47:34.8947308Z ✔ the joint N12 fact reaches manual and Telegram output with source receipts (23.320941ms)
+2026-10-19T09:47:34.8947717Z ✔ plain Telegram N12 receipts retain only components represented by that surface (4.431795ms)
+2026-10-19T09:47:34.8948204Z ✔ four retained original spot/futures pages contain exact, useful bounded facts with correct contract units (9.739525ms)
+2026-10-19T09:47:34.8948682Z ✔ shared native catalogs retain exact approved instruments within a small D1 cache row (1.603667ms)
+2026-10-19T09:47:34.8949206Z ✔ wrong native identity, asset class, size metadata, symbol, duplicate IDs and unsafe KuCoin nanoseconds are rejected (3.363212ms)
+2026-10-19T09:47:34.8949750Z ✔ OKX collector shares admission, stores original clocks, caches both markets and stops tokens before HTTP (50.360138ms)
+2026-10-19T09:47:34.8950297Z ✔ actual OKX spot and futures pages join controlled HTX fact and reach manual plus approved Telegram with exact IDs (28.305918ms)
+2026-10-19T09:47:34.8950924Z ✔ one native venue keeps spot and futures together and rejects a conflicting direction (3.490451ms)
+2026-10-19T09:47:34.8951393Z ✔ merged N12 component origins retain each native market root and own clocks on both report surfaces (3.827891ms)
+2026-10-19T09:47:34.8951918Z ✔ native paired N12 provenance excludes invalid or foreign related facts and never fabricates their windows (1.494491ms)
+2026-10-19T09:47:34.8952442Z ✔ N12 component accounting includes assessed printed external facts within the same shared HTTP envelope (17.365702ms)
+2026-10-19T09:47:34.8952889Z ✔ N12 component rendering alone cannot invent an assessment or decision use (3.360584ms)
+2026-10-19T09:47:34.8953333Z ✔ N12 component supplemental membership excludes unbound, foreign and other-block source rows (2.294892ms)
+2026-10-19T09:47:34.8953822Z ✔ Orderly source clock at observation+1 cannot close provider coverage or any shared future level (1.414781ms)
+2026-10-19T09:47:34.8954313Z ✔ Orderly source clock at observation+4999 cannot close provider coverage or any shared future level (0.150668ms)
+2026-10-19T09:47:34.8954802Z ✔ Orderly source clock at observation+5000 cannot close provider coverage or any shared future level (0.143367ms)
+2026-10-19T09:47:34.8955197Z ✔ Orderly NaN observation is rejected before provider facts (0.10617ms)
+2026-10-19T09:47:34.8955551Z ✔ Orderly numeric string observation is rejected before provider facts (0.07305ms)
+2026-10-19T09:47:34.8955898Z ✔ Orderly object observation is rejected before provider facts (0.07919ms)
+2026-10-19T09:47:34.8956334Z ✔ Orderly array observation is rejected before provider facts (0.085138ms)
+2026-10-19T09:47:34.8956676Z ✔ Orderly boolean observation is rejected before provider facts (0.076225ms)
+2026-10-19T09:47:34.8957022Z ✔ Orderly Infinity observation is rejected before provider facts (0.211801ms)
+2026-10-19T09:47:34.8957377Z ✔ Orderly fractional observation is rejected before provider facts (0.40365ms)
+2026-10-19T09:47:34.8957714Z ✔ Orderly mark_price boolean is not a scalar position number (0.22493ms)
+2026-10-19T09:47:34.8958060Z ✔ Orderly mark_price numeric array is not a scalar position number (0.057978ms)
+2026-10-19T09:47:34.8958408Z ✔ Orderly mark_price string array is not a scalar position number (0.071678ms)
+2026-10-19T09:47:34.8958747Z ✔ Orderly est_liq_price boolean is not a scalar position number (0.070627ms)
+2026-10-19T09:47:34.8959099Z ✔ Orderly est_liq_price numeric array is not a scalar position number (0.05291ms)
+2026-10-19T09:47:34.8959452Z ✔ Orderly est_liq_price string array is not a scalar position number (0.064628ms)
+2026-10-19T09:47:34.8959796Z ✔ Orderly notional boolean is not a scalar position number (0.025819ms)
+2026-10-19T09:47:34.8960132Z ✔ Orderly notional numeric array is not a scalar position number (0.024347ms)
+2026-10-19T09:47:34.8960559Z ✔ Orderly notional string array is not a scalar position number (0.017316ms)
+2026-10-19T09:47:34.8961043Z ✔ Orderly caller reference boolean cannot consume admission or HTTP (0.175816ms)
+2026-10-19T09:47:34.8961417Z ✔ Orderly caller reference numeric array cannot consume admission or HTTP (0.027422ms)
+2026-10-19T09:47:34.8961795Z ✔ Orderly caller reference string array cannot consume admission or HTTP (0.02024ms)
+2026-10-19T09:47:34.8962155Z ✔ Orderly caller NaN observation cannot consume admission or HTTP (0.051758ms)
+2026-10-19T09:47:34.8962529Z ✔ Orderly caller numeric string observation cannot consume admission or HTTP (0.01941ms)
+2026-10-19T09:47:34.8962904Z ✔ Orderly caller object observation cannot consume admission or HTTP (0.039951ms)
+2026-10-19T09:47:34.8963267Z ✔ Orderly caller array observation cannot consume admission or HTTP (0.035563ms)
+2026-10-19T09:47:34.8963654Z ✔ Orderly caller boolean observation cannot consume admission or HTTP (0.048724ms)
+2026-10-19T09:47:34.8964027Z ✔ Orderly caller Infinity observation cannot consume admission or HTTP (0.025489ms)
+2026-10-19T09:47:34.8964403Z ✔ Orderly caller fractional observation cannot consume admission or HTTP (0.017396ms)
+2026-10-19T09:47:34.8964915Z ✔ controlled legitimate numeric positions retain source clocks, USDC reported notional and estimated price in manual/brief (11.356231ms)
+2026-10-19T09:47:34.8965513Z ✔ controlled legitimate string positions retain source clocks, USDC reported notional and estimated price in manual/brief (0.533747ms)
+2026-10-19T09:47:34.8966035Z ✔ controlled exact source clock and120s boundary retain existing age bound without future grace (0.098429ms)
+2026-10-19T09:47:34.8966610Z ✔ controlled legitimate Orderly levels reach manual and both Telegram renderers with estimated price and unchanged reported size tiers (7.371181ms)
+2026-10-19T09:47:34.8967184Z ✔ Orderly public positions provide labelled estimates backed by reported open notional in both outputs (4.052842ms)
+2026-10-19T09:47:34.8967706Z ✔ stale clock, unknown market, wrong-side price, missing price and divergent HTX price do not become levels (0.196557ms)
+2026-10-19T09:47:34.8968158Z ✔ collector consumes at most one admitted HTTP request and excludes BTC and ETH (0.477423ms)
+2026-10-19T09:47:34.8968567Z ✔ spot comparison is limited to the exact current approved HTX analysis universe (1.468011ms)
+2026-10-19T09:47:34.8969072Z ✔ original same-depth clocks yield one neutral HTX comparison and the same bounded conclusion in manual and Telegram (20.871616ms)
+2026-10-19T09:47:34.8969543Z ✔ disagreeing recent spot/futures trades produce a cautious shared conclusion (0.177198ms)
+2026-10-19T09:47:34.8970059Z ✔ same-clock RLC overlapping quotes do not become a confirmed futures discount, while FIL separate quotes remain comparable (0.212442ms)
+2026-10-19T09:47:34.8970849Z ✔ foreign, stale, future and incomplete books retain only the verified market; skewed pairs do not compare (0.718628ms)
+2026-10-19T09:47:34.8971342Z ✔ spot original depth prices remain separate from a ticker and paused N16 emits no cost fact (2.027768ms)
+2026-10-19T09:47:34.8971739Z ✔ approved non-ASCII contract retains its exact spot query symbol (0.574409ms)
+2026-10-19T09:47:34.8971967Z ℹ tests 223
+2026-10-19T09:47:34.8972094Z ℹ suites 0
+2026-10-19T09:47:34.8972218Z ℹ pass 223
+2026-10-19T09:47:34.8972340Z ℹ fail 0
+2026-10-19T09:47:34.8972461Z ℹ cancelled 0
+2026-10-19T09:47:34.8972590Z ℹ skipped 0
+2026-10-19T09:47:34.8972711Z ℹ todo 0
+2026-10-19T09:47:34.8972848Z ℹ duration_ms 831.580475
+2026-10-19T09:47:34.8973085Z FAILED_LOG: audit-output/liq-assembled/weekly-htx-synchronized-plan.tap
+2026-10-19T09:47:34.8973545Z ✔ workflow admits only main-dispatched exact proposals; no historical owner alias, source or D1 credentials (0.33395ms)
+2026-10-19T09:47:34.8974050Z ✔ current collector repair is a separate one-Worker exact transaction, never a scope adoption (0.321571ms)
+2026-10-19T09:47:34.8974513Z ✔ collector patch prepared against a different prefix/version refuses even before staging (0.266008ms)
+2026-10-19T09:47:34.8975077Z ✔ collector inherits every existing variable and secret only from the exact active latest version (0.486077ms)
+2026-10-19T09:47:34.8975602Z ✔ single-module readback preserves bytes for multipart and plain responses and rejects extra executable modules (32.250534ms)
+2026-10-19T09:47:34.8976165Z ✔ retained native forecast layout permits its matching non-executable Source Map and hashes only exact module bytes (1.303211ms)
+2026-10-19T09:47:34.8976693Z ✔ a Source Map never admits a second executable, foreign asset, duplicate or malformed debug metadata (6.420559ms)
+2026-10-19T09:47:34.8977252Z ✔ default serialization is compared to the immutable active runtime; an existing variable never disappears from comparison (0.792767ms)
+2026-10-19T09:47:34.8978026Z ✔ only the exact retained unactivated own version can resume and a real settings change cannot masquerade as default serialization (0.832927ms)
+2026-10-19T09:47:34.8978651Z ✔ hourly native observer is confined to the single existing history Worker and retains exact rollback (0.369483ms)
+2026-10-19T09:47:34.8979366Z ✔ SQL bridge counter rollout is a single-worker transaction with exact own rollback and no Hub/history adoption (0.279849ms)
+2026-10-19T09:47:34.8979979Z ✔ a missing native finalization still releases only the own lease and retains the original collection failure (0.945396ms)
+2026-10-19T09:47:34.8980526Z ✔ unknown or excess actual native usage is retained and blocks acceptance (0.48066ms)
+2026-10-19T09:47:34.8981346Z ✔ a failed check produces a failed job, while disabled or foreign-owner preflight spends no source and remains a skipped result (0.194551ms)
+2026-10-19T09:47:34.8981905Z ✔ failed or foreign-owner release is never reported as an own confirmed release (1.196421ms)
+2026-10-19T09:47:34.8982479Z ✔ six old real primary bodies preserve their hash and clock in the weekly proposal binding (5.121476ms)
+2026-10-19T09:47:34.8983031Z ✔ unrelated code, phase restoration, removed source body or altered ownership denies the candidate (1.249651ms)
+2026-10-19T09:47:34.8983645Z ✔ GitHub dispatch 204 is accepted without parsing a nonexistent JSON body (15.629976ms)
+2026-10-19T09:47:34.8984173Z ✔ an Actions-created proposal explicitly dispatches and binds the exact successful common check (0.630454ms)
+2026-10-19T09:47:34.8984686Z ✔ failed, ambiguous, moved-head or lease-late checks cannot be treated as success (0.453048ms)
+2026-10-19T09:47:34.8985266Z ✔ the weekly candidate does not merge, deploy, restore paused blocks or send a report (0.426448ms)
+2026-10-19T09:47:34.8985843Z ✔ retained original current universe creates all105 role queues, with no price/score claim or provider requests (6.170445ms)
+2026-10-19T09:47:34.8986539Z ✔ controlled new primary crypto and removed contract reconfigure the same synchronized future/runtime/history list (11.951239ms)
+2026-10-19T09:47:34.8987170Z ✔ a partial/stale/future/older catalog cannot remove or add a contract (18.549942ms)
+2026-10-19T09:47:34.8987757Z ✔ stock homonym, unsupported settlement or duplicate exact contract never becomes a new linear asset (9.197487ms)
+2026-10-19T09:47:34.8988329Z ✔ primary population shock is retained for review instead of silently deleting working coins (4.519585ms)
+2026-10-19T09:47:34.8988935Z ✔ weekly interval and free budgets include reports/manual reserve without per-coin quota multiplication (0.319969ms)
+2026-10-19T09:47:34.8989560Z ✔ original manifest clocks and checksum survive the plan, with no mutation of the105 baseline (17.178072ms)
+2026-10-19T09:47:34.8990129Z ✔ proposal changes runtime and history atomically, retains old104/105 hash/counts and old target reads (15.186522ms)
+2026-10-19T09:47:34.9000680Z ✔ disabled weekly proposal gate imports the full acquisition program and spends zero provider/D1/GitHub transport (54.811844ms)
+2026-10-19T09:47:34.9001258Z ✔ a plan cannot render another original manifest or relabel the membership clock (25.355453ms)
+2026-10-19T09:47:34.9001935Z ✔ an asset with only an unsupported inverse adapter is retained for review instead of receiving a fabricated USDT analysis market (7.025306ms)
+2026-10-19T09:47:34.9002630Z ✔ the first six original live catalogs retain105 known assets and one positively tagged addition while unlabelled homonyms stay outside the active crypto scope (11.280475ms)
+2026-10-19T09:47:34.9003200Z ✔ a known current empty tag is preserved but a new empty tag never implies crypto identity (2.774433ms)
+2026-10-19T09:47:34.9003761Z ✔ read-only inspection retains exact active module and independent before/after settings without claiming native counters or capacity (17.92428ms)
+2026-10-19T09:47:34.9004202Z ✔ dormant upload is refused before module export (1.254768ms)
+2026-10-19T09:47:34.9004597Z ✔ activation movement and operational setting drift during inspection refuse exported proof (4.836409ms)
+2026-10-19T09:47:34.9005044Z ✔ wrong retained module, wrong prefix, and embedded credentials cannot be exported (2.937647ms)
+2026-10-19T09:47:34.9005480Z ✔ preflight lease refusal makes zero control calls and late refusal prevents export (0.530004ms)
+2026-10-19T09:47:34.9005923Z ✔ native control rejects mutations, other scripts, unknown routes and bodies before fetch (0.552337ms)
+2026-10-19T09:47:34.9006351Z ✔ control request caps and denied unified budget stop before another HTTP request (4.031384ms)
+2026-10-19T09:47:34.9006732Z ✔ declared and chunked control responses are bounded before parsing (1.22924ms)
+2026-10-19T09:47:34.9007133Z ✔ failed native controls and malformed envelopes cannot be accepted as module proof (1.357332ms)
+2026-10-19T09:47:34.9007530Z ✔ release qualification requires exact immutable native receipt bytes (10.039793ms)
+2026-10-19T09:47:34.9007933Z ✔ missing credentials refuse locally and still retain a zero-call failure receipt (37.835923ms)
+2026-10-19T09:47:34.9008403Z ✔ separate SQL bridge is bound to configured account URL and exact native DATA_DB, not the Hub prefix (1.422709ms)
+2026-10-19T09:47:34.9008905Z ✔ a Hub, foreign account, custom route or credentials in configured bridge URL refuse before script read (1.605113ms)
+2026-10-19T09:47:34.9009404Z ✔ SQL bridge inspection refuses operational drift and has no fallback to an unverified prior fixture (0.429202ms)
+2026-10-19T09:47:34.9009858Z ✔ SQL control transport cannot switch between Hub and bridge or invoke either service (0.259318ms)
+2026-10-19T09:47:34.9010436Z ✔ free storage offline review requires its exact bounded family, scope and all live mirrors without granting the existing deployment owner role (1.531162ms)
+2026-10-19T09:47:34.9011072Z ✔ current all-active105 offline authority requires exact current task, bounded owner and all mirrors (0.346068ms)
+2026-10-19T09:47:34.9011520Z ✔ an exact matching live branch authority keeps the original bounded offline path (0.431496ms)
+2026-10-19T09:47:34.9012122Z ✔ phase-only main advance accepts an authority-neutral code proposal without copying or releasing the current lease (0.246208ms)
+2026-10-19T09:47:34.9012647Z ✔ an intervening executable, scope, status or fence change cannot be hidden by a later service lease (0.746867ms)
+2026-10-19T09:47:34.9013152Z ✔ a proposed owner/expiry/release mirror mutation fails rather than overriding the live main authority (0.702532ms)
+2026-10-19T09:47:34.9013590Z ✔ foreign/expired/unbound live state and a late main move refuse the check (0.60766ms)
+2026-10-19T09:47:34.9014028Z ✔ the weekly branch cannot use the phase-neutral shortcut without its exact data-only receipt (1.009572ms)
+2026-10-19T09:47:34.9014599Z ✔ six retained original catalogs rebuild the exact106 package; provided gzip bytes preserve all four consumer files across compressors (36.87085ms)
+2026-10-19T09:47:34.9015212Z ✔ a different valid encoding is accepted only for identical original bytes; another manifest or decompression bomb is refused (28.403866ms)
+2026-10-19T09:47:34.9015702Z ✔ exact installed source admits only bounded accounting spans and no activation (0.862761ms)
+2026-10-19T09:47:34.9016169Z ✔ installed original falsely closes missing write while prepared repair preserves read and unknown (19.595842ms)
+2026-10-19T09:47:34.9016738Z ✔ installed original falsely closes missing read while prepared repair preserves write and unknown (1.049721ms)
+2026-10-19T09:47:34.9017224Z ✔ nulls, strings, fractions, negatives and unsafe counters are never invented as known native zero (1.815778ms)
+2026-10-19T09:47:34.9017700Z ✔ real safe integer zeroes and complete native counters remain closed and result bytes unchanged (1.960164ms)
+2026-10-19T09:47:34.9018133Z ✔ success=false keeps both known native costs and refuses complete measurement (0.239037ms)
+2026-10-19T09:47:34.9018554Z ✔ batch keeps each partial and failed member, exact order and known disjoint subtotals (0.416544ms)
+2026-10-19T09:47:34.9018994Z ✔ raw and exec without native billing counters stay unknown with their result unchanged (1.852853ms)
+2026-10-19T09:47:34.9019379Z ✔ SQL exceptions cannot become a zero cost successful reply (0.582302ms)
+2026-10-19T09:47:34.9019766Z ✔ authentication and unsupported operations still refuse before database prepare (0.857975ms)
+2026-10-19T09:47:34.9020218Z ✔ existing Node adapter preserves repaired read subtotal and unknown through first/all/run (2.942945ms)
+2026-10-19T09:47:34.9020734Z ✔ existing Node adapter keeps repaired batch member counts and no fabricated closure (0.779707ms)
+2026-10-19T09:47:34.9021233Z ✔ bridge rollout metadata inherits both existing secrets and the exact primary binding without exporting values (0.603754ms)
+2026-10-19T09:47:34.9021538Z ℹ tests 129
+2026-10-19T09:47:34.9021666Z ℹ suites 0
+2026-10-19T09:47:34.9021791Z ℹ pass 129
+2026-10-19T09:47:34.9021916Z ℹ fail 0
+2026-10-19T09:47:34.9022039Z ℹ cancelled 0
+2026-10-19T09:47:34.9022170Z ℹ skipped 0
+2026-10-19T09:47:34.9022289Z ℹ todo 0
+2026-10-19T09:47:34.9022428Z ℹ duration_ms 484.186694
+2026-10-19T09:47:34.9064922Z ##[group]Run actions/upload-artifact@v4
+2026-10-19T09:47:34.9065088Z with:
+2026-10-19T09:47:34.9065209Z   name: liq-assembled-39232617521
+2026-10-19T09:47:34.9065361Z   path: audit-output/liq-assembled/
+2026-10-19T09:47:34.9065505Z   retention-days: 30
+2026-10-19T09:47:34.9065629Z   if-no-files-found: warn
+2026-10-19T09:47:34.9065760Z   compression-level: 6
+2026-10-19T09:47:34.9065880Z   overwrite: false
+2026-10-19T09:47:34.9066001Z   include-hidden-files: false
+2026-10-19T09:47:34.9066136Z ##[endgroup]
+2026-10-19T09:47:35.0058119Z (node:7785) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T09:47:35.0058589Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T09:47:35.0123677Z With the provided path, there will be 24 files uploaded
+2026-10-19T09:47:35.0127208Z Artifact name is valid!
+2026-10-19T09:47:35.0127483Z Root directory input is valid!
+2026-10-19T09:47:35.2912977Z Beginning upload of artifact content to blob storage
+2026-10-19T09:47:35.3329949Z (node:7785) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-19T09:47:35.5731442Z Uploaded bytes 211175
+2026-10-19T09:47:35.6139213Z Finished uploading artifact content to blob storage!
+2026-10-19T09:47:35.6139888Z SHA256 digest of uploaded artifact zip is 0846a4dd840bd0aa3ee534ab08c8cd7f6e3fbcc76ecdda91c18940936aa5bcb4
+2026-10-19T09:47:35.6141465Z Finalizing artifact upload
+2026-10-19T09:47:35.8571832Z Artifact liq-assembled-39232617521.zip successfully finalized. Artifact ID 12177636946
+2026-10-19T09:47:35.8572556Z Artifact liq-assembled-39232617521 has been successfully uploaded! Final size is 211175 bytes. Artifact ID is 12177636946
+2026-10-19T09:47:35.8576815Z Artifact download URL: https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39232617521/artifacts/12177636946
+2026-10-19T09:47:35.8717772Z Post job cleanup.
+2026-10-19T09:47:35.9247276Z [command]/usr/bin/git version
+2026-10-19T09:47:35.9280269Z git version 2.55.0
+2026-10-19T09:47:35.9304806Z Temporarily overriding HOME='/home/runner/work/_temp/ff7957c9-c442-4e97-89f4-c2acb5c31602' before making global git config changes
+2026-10-19T09:47:35.9305439Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T09:47:35.9308579Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-19T09:47:35.9337353Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T09:47:35.9362980Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T09:47:35.9565210Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T09:47:35.9588761Z http.https://github.com/.extraheader
+2026-10-19T09:47:35.9600054Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-19T09:47:35.9642796Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T09:47:35.9846705Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T09:47:35.9879503Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T09:47:36.0168200Z Cleaning up orphan processes
+2026-10-19T09:47:36.0372203Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/github-script@v7, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

@@ -1,0 +1,354 @@
+{
+  "schema": "SAVED_DEFERRED_STATISTICS_AND_DELIVERY_OUTCOME_BOUNDARIES_V1",
+  "base": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+  "cloud_run": 39136880005,
+  "artifact_id": 12140187203,
+  "artifact_sha256": "994ac1139a935d940c2ec526b0d93fcd3ac2fd8d4a889ce4ed1517073f5b7ba3",
+  "run_id": "1792334308196-1792334318400",
+  "inputs": [
+    {
+      "path": "/private/tmp/report2-component-review-20261018/post-repair-natural/39136880005/extracted/report2-run-result.json",
+      "sha256": "cf54131408c6d5ed8428f6de4419aaa5f38ed9a69048a57d174cc865c0f8553e",
+      "coordinator_saved_hash_match": true
+    },
+    {
+      "path": "/private/tmp/report2-component-review-20261018/post-repair-natural/39136880005/extracted/report2-completion-accounting.json",
+      "sha256": "789a8f6399c0c513271230d8e16350b2d1d3d301b6c7bd3c60f20e41a947c7b0",
+      "coordinator_saved_hash_match": true
+    },
+    {
+      "path": "/private/tmp/report2-component-review-20261018/post-repair-natural/39136880005/extracted/same-run-delivery-proof.json",
+      "sha256": "31481314f1e56b9dbe8f0d790d2f5fd4c91e8932e8c713ae2077e8e19ab679a0",
+      "coordinator_saved_hash_match": true
+    }
+  ],
+  "source_code": [
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "520baa83fd0acff55cd6335d3398f52ff10f7989940dab7ae71d52ca0b0cb25f",
+      "anchors": [
+        {
+          "line": 50,
+          "text": "import { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence, maintenanceSucceeded } from \"./src/scheduler-control.mjs\";"
+        },
+        {
+          "line": 578,
+          "text": "    const cadence=triggerOnly?{claimed:false,status:'NOT_DUE',scope:'TRIGGER_ONLY_PRESERVES_REGULAR_CADENCE'}:await claimMaintenanceCadence(env.DATA_DB,{job_key:'TWO_CANDIDATE_ANALYTICS_40M',actor:manualCommandActor,now_ts:started,interval_ms:TWO_CANDIDATE_PLA"
+        },
+        {
+          "line": 610,
+          "text": "    const charged=await completeMaintenanceCadence(env.DATA_DB,{job_key:cadence.job_key,actor:manualCommandActor,lease_started_ts:cadence.lease_started_ts,success:true,now_ts:started,result:'ATTEMPT_ADMITTED'});"
+        },
+        {
+          "line": 1145,
+          "text": "  const scheduledMinuteUtc = new Date(started).getUTCMinutes();"
+        },
+        {
+          "line": 1146,
+          "text": "  let postV7MaintenanceClaim=null;"
+        },
+        {
+          "line": 1147,
+          "text": "  if (postV7UnifiedEnabled && source === \"schedule\") postV7MaintenanceClaim=await claimMaintenanceCadence(env.DATA_DB,{job_key:\"HOURLY_LOW_PRIORITY_STATS\",actor:\"GITHUB_ACTIONS\",now_ts:Date.now(),interval_ms:60*60_000});"
+        },
+        {
+          "line": 1148,
+          "text": "  const lowPriorityCadenceDue = source !== \"schedule\" || (postV7UnifiedEnabled ? postV7MaintenanceClaim?.claimed===true : scheduledMinuteUtc === 2);"
+        },
+        {
+          "line": 1149,
+          "text": "  if (!telegramInstallValidation && lowPriorityCadenceDue) {"
+        },
+        {
+          "line": 1168,
+          "text": "  const r820ProspectiveValidationEnabled = r820ProspectiveValidationConfigured && lowPriorityCadenceDue;"
+        },
+        {
+          "line": 1178,
+          "text": "  } else if (!lowPriorityCadenceDue) {"
+        },
+        {
+          "line": 1189,
+          "text": "  const blockWeightStatistics=lowPriorityCadenceDue?await refreshWeeklyBlockWeightPolicy(env.DATA_DB,{now:Date.now(),admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:e.rows_read,extraRow"
+        },
+        {
+          "line": 1191,
+          "text": "  if (postV7UnifiedEnabled && postV7MaintenanceClaim?.claimed===true) {"
+        },
+        {
+          "line": 1193,
+          "text": "    await completeMaintenanceCadence(env.DATA_DB,{job_key:\"HOURLY_LOW_PRIORITY_STATS\",actor:\"GITHUB_ACTIONS\",lease_started_ts:postV7MaintenanceClaim.lease_started_ts,success:cadenceOk,now_ts:Date.now(),result:cadenceOk?\"CLOSED\":\"NOT_CLOSED\"});"
+        }
+      ]
+    },
+    {
+      "path": "post-v7-consolidated/final-reconciliation/files/src/scheduler-control.mjs",
+      "sha256": "ffdcde5a97aa58040e1bff4001bd3980e9e8799eaaa951e8ceeeecc4ba347cea",
+      "anchors": [
+        {
+          "line": 32,
+          "text": "export async function claimMaintenanceCadence(db,{job_key,actor='GITHUB_ACTIONS',now_ts=Date.now(),interval_ms,lease_ms=10*60_000}={}){"
+        },
+        {
+          "line": 39,
+          "text": "  if(!due)return{status:'NOT_DUE',claimed:false,due:false,last_success_ts:last,next_due_ts:last+iv};"
+        },
+        {
+          "line": 40,
+          "text": "  if(existing&&text(existing.lease_owner)&&Number(existing.lease_expires_ts||0)>now)return{status:'LEASE_ACTIVE',claimed:false,due:true,lease_owner:existing.lease_owner,lease_expires_ts:Number(existing.lease_expires_ts)};"
+        },
+        {
+          "line": 47,
+          "text": "  if(Number(r?.meta?.changes??r?.changes??0)!==1)return{status:'CLAIM_RACE_LOST',claimed:false,due:true};"
+        },
+        {
+          "line": 49,
+          "text": "  if(!readback||text(readback.lease_owner)!==owner||Number(readback.lease_started_ts)!==now||Number(readback.lease_expires_ts)!==leaseExp)return{status:'CLAIM_READBACK_FAILED',claimed:false,due:true};"
+        },
+        {
+          "line": 51,
+          "text": " }catch(error){return{status:/no such table/i.test(String(error?.message||error))?'MIGRATION_REQUIRED':'CLAIM_FAILED',claimed:false,due:false,error:String(error?.message||error).slice(0,240)};}"
+        },
+        {
+          "line": 54,
+          "text": "export async function completeMaintenanceCadence(db,{job_key,actor='GITHUB_ACTIONS',lease_started_ts,success,now_ts=Date.now(),result=null}={}){"
+        },
+        {
+          "line": 63,
+          "text": "export default{SCHEDULER_CONTROL_VERSION,PERIODIC_ANALYTICS_JOB,DEFAULT_PERIODIC_OWNER,loadSchedulerOwnership,actorOwnsPeriodicAnalytics,claimMaintenanceCadence,completeMaintenanceCadence};"
+        }
+      ]
+    },
+    {
+      "path": "post-v7-consolidated/final-reconciliation/runtime-manifest.json",
+      "sha256": "6d5d98ea60e210cd7dd906185fe6aa04332239ab8ebe29a078256557281e61ab",
+      "anchors": [
+        {
+          "line": 36,
+          "text": "      \"path\": \"src/scheduler-control.mjs\","
+        }
+      ]
+    },
+    {
+      "path": "post-v7-consolidated/full-validation/apply-all-runtime.mjs",
+      "sha256": "701e7c00798cf1699c827e59e6f7379becb110de6d4644edb5e3f9bae48bb949",
+      "anchors": [
+        {
+          "line": 28,
+          "text": "run(process.execPath,[path.join(bundle,'final-reconciliation/apply-runtime-overlay.mjs'),runtime]);"
+        },
+        {
+          "line": 29,
+          "text": "run(process.execPath,[path.join(repo,'current-generation/apply-runtime-overlay.mjs'),runtime]);"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/apply-runtime-overlay.mjs",
+      "sha256": "8ebbefc7752b6627f7585ecc24b5223cdca6bd2bef81d855f96733eec09f5286",
+      "anchors": []
+    }
+  ],
+  "scheduler_after_hash_matches_assembly_manifest": true,
+  "scheduler_not_overridden_by_current_generation": true,
+  "statistics": {
+    "block_weights": {
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "sourceHTTP": 0
+    },
+    "discovery_recall": {
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "scheduled_minute_utc": 38,
+      "shadow_only": true,
+      "auto_send": false
+    },
+    "prospective_gate": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 37095,
+        "rows_written": 596,
+        "requests": 699,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 3000,
+        "rows_written": 9
+      },
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "remaining": {
+        "rows_read": 16905,
+        "rows_written": 244
+      }
+    },
+    "prospective": {
+      "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+      "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "scheduled_minute_utc": 38,
+      "calibration_only": true,
+      "live_probability": null,
+      "validated_signal": false,
+      "trading_execution": false
+    }
+  },
+  "claim_object_retained_in_statistics": false,
+  "completion_claim_status": "UNKNOWN_NOT_RETAINED",
+  "effective_unified_mode_retained": false,
+  "candidates": [
+    {
+      "contract": "UNI-USDT",
+      "canonical_state": "OBSERVE",
+      "run_id": "1792334308196-1792334318400",
+      "snapshot_id": "S392:UNI-USDT:1792334416057",
+      "wave_id": "EDW:UNI-USDT:1792334318579:G11",
+      "observed_ts": 1792334416057
+    },
+    {
+      "contract": "ZEC-USDT",
+      "canonical_state": "REJECTED",
+      "run_id": "1792334308196-1792334318400",
+      "snapshot_id": "S392:ZEC-USDT:1792334373460",
+      "wave_id": "EDW:ZEC-USDT:1792329468038:G16",
+      "observed_ts": 1792334373460
+    }
+  ],
+  "delivery": {
+    "status": "CLOSED",
+    "original_terminal": {
+      "status": "ORIGINAL_TERMINAL_QUEUED",
+      "queued": true,
+      "task_id": "RCHK:89a210e05ce3d309c7fd782874057213fbf9286d",
+      "reason": "ORIGINAL_TTL_EXPIRED",
+      "idempotency_key": "APR-USDT|SHORT|EDW:APR-USDT:1792324615691:G8|IDEA_REMOVED|v3-telegram-shadow-r6",
+      "original_message_id": "216"
+    },
+    "lifecycle": [
+      {
+        "key": "APR-USDT|SHORT|EDW:APR-USDT:1792324615691:G8|IDEA_REMOVED|v3-telegram-shadow-r6",
+        "status": "SENT",
+        "sent": true,
+        "message_id": "217",
+        "publication_id": "PUB:54964e95ffb8ced51be7c5a9e8b3e5aeaec43343",
+        "bound_receipt": {
+          "schema": "BOUND_DELIVERY_RECEIPT_V1",
+          "publication_id": "PUB:54964e95ffb8ced51be7c5a9e8b3e5aeaec43343",
+          "contract": "APR-USDT",
+          "direction": "SHORT",
+          "wave_id": "EDW:APR-USDT:1792324615691:G8",
+          "lifecycle_event": "IDEA_REMOVED",
+          "run_id": "ORIGINAL-TASK-TERMINAL:RCHK:89a210e05ce3d309c7fd782874057213fbf9286d",
+          "snapshot_id": "REMOVAL:APR-USDT:1792334421658",
+          "observed_ts": 1792334421658,
+          "analytical_fingerprint": "f0aed96154989867472bb4513cef3e9459951d93f1d4cc46ea31d994fcc359ec",
+          "presentation_hash": "336dd29c4cd6fb85e53ba6713aaabb9340086fe2545b6d96d6e3e5938dbe61bd",
+          "source_run_id": "1792334308196-1792334318400",
+          "network_result": "CONFIRMED_SENT",
+          "dispatch_finalized": true,
+          "finalization_status": "SENT",
+          "dispatch_state": "SENT",
+          "task_at_delivery": null
+        }
+      },
+      {
+        "key": "UNI-USDT|LONG|EDW:UNI-USDT:1791877293953:G7|OBSERVE|v3-telegram-shadow-r6",
+        "status": "FAILED_RETRYABLE",
+        "reason": "NATIVE_LIQUIDATION_SOURCE_STALE",
+        "sent": false
+      }
+    ],
+    "sent": 1
+  },
+  "same_run_proof": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1792334308196-1792334318400",
+    "source": "schedule",
+    "recorded_at": 1792334427427,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [
+      {
+        "publication_id": "PUB:54964e95ffb8ced51be7c5a9e8b3e5aeaec43343",
+        "contract": "APR-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:APR-USDT:1792324615691:G8",
+        "lifecycle_event": "IDEA_REMOVED",
+        "run_id": "ORIGINAL-TASK-TERMINAL:RCHK:89a210e05ce3d309c7fd782874057213fbf9286d",
+        "snapshot_id": "REMOVAL:APR-USDT:1792334421658",
+        "observed_ts": 1792334421658,
+        "analytical_fingerprint": "f0aed96154989867472bb4513cef3e9459951d93f1d4cc46ea31d994fcc359ec",
+        "presentation_hash": "336dd29c4cd6fb85e53ba6713aaabb9340086fe2545b6d96d6e3e5938dbe61bd",
+        "same_run_binding_verified": false,
+        "exact_SENT": false,
+        "telegram_message_id": null,
+        "dispatch_finalized": true,
+        "task_at_delivery": null,
+        "task_at_delivery_verified": false,
+        "task_state_after_delivery_known": false,
+        "actual_ENTRY": false,
+        "reason": "NOT_THIS_CANONICAL_RUN"
+      }
+    ],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "DATA_DB_point": {
+    "requests": 702,
+    "rows_read": 37098,
+    "rows_written": 598,
+    "unknown_ops": 0
+  },
+  "DATA_DB_scope": "FULL_ANALYTICS_AFTER_LEDGER_FINALIZATION_AND_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+  "whole_day_closed": false,
+  "preceding_no_work": {
+    "cloud_run": 39136414965,
+    "receipt": {
+      "schema": "REPORT2_NO_WORK_RECEIPT_V1",
+      "head": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+      "source_cloud_run": "39136414965",
+      "status": "NO_WORK_NOT_DUE_NO_FRESH_TRIGGER",
+      "scheduled_admission": {
+        "status": "NOT_DUE",
+        "claimed": false,
+        "due": false,
+        "last_success_ts": 1792331883613,
+        "next_due_ts": 1792334283613
+      },
+      "trigger_recheck": {
+        "status": "NO_FRESH_EXACT_SENT_TRIGGER",
+        "claimed": false,
+        "entry_authorized": false,
+        "source_http": 0
+      },
+      "market_conditions_evaluated": false,
+      "full_analysis_completed": false,
+      "exact_SENT": 0,
+      "actual_ENTRY": 0,
+      "task_writes": 0,
+      "source_clock_refreshed": false,
+      "audit_added": {
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram": 0
+      },
+      "project_complete": false
+    },
+    "saved_receipt_sha256": "a73cc7459d7f141e127f9ff1f9dd731f328e47c293973b9ff2818eb564cec092",
+    "new_hash_replay_or_calls": false
+  },
+  "market_outcome_classification": "UNDETERMINED_NO_EVENT_PLAN_OR_PATH",
+  "new_runtime_tests": 0,
+  "provider_SQL_MAIN_Telegram": 0,
+  "proposal": "Only retain already computed cadence claim/mode/completion fields; no new timing, retries, collection or outcome rules."
+}

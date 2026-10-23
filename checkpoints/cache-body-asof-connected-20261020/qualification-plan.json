@@ -1,0 +1,70 @@
+{
+  "schema": "LINKED_HTX_BODY_CACHE_CLOSED_ASOF_QUALIFICATION_PLAN_V1",
+  "semantic_status": "UNEXECUTED",
+  "base_main": "166d77dceeb91931e71259ed29deaa6ee57ea3b2",
+  "runtime_targets": [
+    {
+      "component": "body",
+      "path": "current-generation/files/src/worker.js",
+      "runtime_relative": "src/worker.js",
+      "baseline_path": "checkpoints/cache-body-asof-connected-20261020/baseline/worker.js",
+      "before_sha256": "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17",
+      "after_sha256": "885553691d783ca8a57b6a8a45e22a07e23208d7467b0ac300fdf38080008950"
+    },
+    {
+      "component": "body",
+      "path": "current-generation/files/src/htx-signed-tape.mjs",
+      "runtime_relative": "src/htx-signed-tape.mjs",
+      "baseline_path": "checkpoints/cache-body-asof-connected-20261020/baseline/htx-signed-tape.mjs",
+      "before_sha256": "10f364bd219be9a8c3c0f5dfd3e6d4e46fe34f7f17006855cf9df8f62118e8c5",
+      "after_sha256": "83a4a603fb19a788ebf751421c72b1df7e0ceca4edf6095d0a81120d3ae16e0d"
+    },
+    {
+      "component": "body",
+      "path": "current-generation/files/src/source-closure-diagnostics.mjs",
+      "runtime_relative": "src/source-closure-diagnostics.mjs",
+      "baseline_path": "checkpoints/cache-body-asof-connected-20261020/baseline/source-closure-diagnostics.mjs",
+      "before_sha256": "c0d7366c683a52a9bb3996f477315365b1ccf8e3ad29b6a731bf531479eb604d",
+      "after_sha256": "5f8c31b2501ad19a82318824f0b9d25507926e6254fe89c4eaa6c66493ecba8c"
+    },
+    {
+      "component": "cache",
+      "path": "current-generation/files/src/htx-large-trades-evidence.mjs",
+      "runtime_relative": "src/htx-large-trades-evidence.mjs",
+      "baseline_path": "checkpoints/source-worker-htx-empty-envelope-cache-20261020/collector.before.mjs",
+      "before_sha256": "d7b48c20329f784bad043c30a931ec82e9abeee45126defd5bc6f2e480fde586",
+      "after_sha256": "c220c171d4d046a1e821f4c1ad5e5b56539a2539c878c36d9bc5c762ab290b3f"
+    }
+  ],
+  "research_target": {
+    "path": "anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs",
+    "baseline_path": "anomaly-research/closed-asof-typed-consumer-20261020/typed-input.before.mjs",
+    "before_sha256": "bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442",
+    "after_sha256": "eca907dfdee835e162a6a3ea4894370b5948d19840d2667d2e932edaf46634af"
+  },
+  "source_component": {
+    "path": "checkpoints/source-worker-htx-empty-envelope-cache-20261020/empty-envelope-cache-connected.mjs",
+    "export_name": "runHtxEmptyEnvelopeCacheConnected",
+    "expected": {
+      "status": "CONTROLLED_COMPONENT_COMPLETED",
+      "control_count": 12,
+      "new_SQL_templates": 0,
+      "new_schema_in_fallback": 0,
+      "provider_HTTP": 0,
+      "native_SQL": 0,
+      "native_rows_read_cost": null,
+      "savings": null,
+      "admission_authorized": false,
+      "source_clocks_refreshed": false,
+      "Telegram": 0,
+      "old_accepted_cases_replayed": false
+    },
+    "group_count_key": "control_count"
+  },
+  "component_cases": 3,
+  "CONTROLLED_groups_expected": 26,
+  "old_accepted_semantic_reexecution": 0,
+  "native_SQL_providerHTTP_MAIN_Telegram": 0,
+  "not_a_Telegram_cause_repair": true,
+  "native_body_epoch_domain_ACK_admission_and_SENDING_qualified": false
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "NEW_SAVED_INITIAL_OBSERVATION_ACTUAL_COST_CAUSE_V1",
+  "cloud_run": 39261413199,
+  "head": "59e8d8ebe7118005d3fd0ac8ee4a971f61efe6f1",
+  "run_id": "1792416935259-1792416944638",
+  "candidate_tuples": [
+    {
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:4ffae50e49bf9142b0e5738306ec07312f038e8d",
+      "run_id": "1792416935259-1792416944638",
+      "snapshot_id": "S392:BTW-USDT:1792417040488",
+      "observed_ts": 1792417040488,
+      "canonical_state": "REJECTED",
+      "direction": null
+    },
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:9739c515ad3dbbddf78db4e06f1a9a45fe044f23",
+      "run_id": "1792416935259-1792416944638",
+      "snapshot_id": "S392:ZEC-USDT:1792417000570",
+      "observed_ts": 1792417000570,
+      "canonical_state": "OBSERVE",
+      "direction": "SHORT"
+    }
+  ],
+  "both_primary_private_original_durable_verified": true,
+  "same_run_SENT": false,
+  "exact_recorded_failure": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+  "actual_usage": {
+    "rows_read": 182,
+    "rows_written": 0,
+    "requests": 5,
+    "unknown_ops": 0
+  },
+  "first_actual_per_source_query_costs": {
+    "schema": "EXISTING_LIFECYCLE_SOURCE_READ_COSTS_V1",
+    "source_run_id": "1792416935259-1792416944638",
+    "caller_evaluation_ts": 1792417044173,
+    "basis": "ALREADY_RETURNED_BATCH_REPLY_META_NOT_WHOLE_DAY_OR_PROVIDER_HEADROOM",
+    "scope": "BATCH_STATEMENT_META_ONLY_NOT_ADAPTER_OR_RESTORER_EXTRA_WORK",
+    "status": "REPORTED_COUNTERS_COMPLETE",
+    "expected_queries": 5,
+    "actual_reply_count": 5,
+    "queries": [
+      {
+        "query": "EARLY_WAVES",
+        "reply_success": true,
+        "rows_read": 76,
+        "rows_written": 0,
+        "returned_rows": 24
+      },
+      {
+        "query": "SHADOW_DECISIONS",
+        "reply_success": true,
+        "rows_read": 8,
+        "rows_written": 0,
+        "returned_rows": 2
+      },
+      {
+        "query": "FINAL_WITH_CONTEXT",
+        "reply_success": true,
+        "rows_read": 3,
+        "rows_written": 0,
+        "returned_rows": 0
+      },
+      {
+        "query": "PREVIOUS_LIFECYCLE",
+        "reply_success": true,
+        "rows_read": 28,
+        "rows_written": 0,
+        "returned_rows": 12
+      },
+      {
+        "query": "CURRENT_CANONICAL",
+        "reply_success": true,
+        "rows_read": 67,
+        "rows_written": 0,
+        "returned_rows": 2
+      }
+    ],
+    "known_rows_read_subtotal": 182,
+    "known_rows_written_subtotal": 0,
+    "total_rows_read": 182,
+    "total_rows_written": 0,
+    "admission_authorized": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0,
+    "SQL_params_and_result_values_exported": false
+  },
+  "source_HTTP_nativeSQL_MAIN_Telegram_added_by_review": 0,
+  "initial_observation_not_ENTRY_followup": true,
+  "pre556_not_newV2_or_normal_exit_qualification": true,
+  "native182_fixed": false,
+  "exact_old392455_split_reconstructed": false,
+  "older_WLD234_latest_accepted_published_retained": true
+}

@@ -152,7 +152,12 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
     upper(shadow?.dq_status||''),
     upper(final?.timing_state||'')
   ].join('|');
-  const observationTs=finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now;
+  // A canonical OBSERVE must retain the clock of the exact publication that
+  // will own its SENT binding and registered task, rather than telemetry time.
+  const observationTs=observationPublication?finite(observationPublication.observed_ts):
+    finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now;
+  if(observationPublication&&(!Number.isSafeInteger(observationTs)||observationTs<1_000_000_000_000||observationTs>now))
+    return {status:'CANONICAL_OBSERVATION_CLOCK_NOT_CLOSED',ctx:null};
   const removalReceipt=lifecycleRemovalReceipt({contract,direction:dir,wave_id:wave,reason:removal,handoff,shadow,final,early,observed_ts:observationTs});
   const ctx={
     contract,direction:dir,wave_id:wave,rules_version:V3_TELEGRAM_SHADOW_RULES_VERSION,
@@ -186,7 +191,7 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
     data_sufficient_for_observation:sufficientObservation,
     position_open:Boolean(final&&['OPEN_LONG','OPEN_SHORT'].includes(upper(final.position_state))),
     management_action:upper(final?.management_action||'NOT_EVALUATED'),
-    observation_ts:finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now,
+    observation_ts:observationTs,
     valid_until_ts:validUntil,
     decision_id:text(final?.decision_id)||null,
     score_0_100:score,
@@ -215,7 +220,24 @@ export async function loadCompletedLifecycleHandoffs(db,{source_run_id,now_ts=Da
   return {status:handoffs.length?'CLOSED':'CLOSED_NO_COMPLETED_HANDOFF',source_run_id:run,handoffs};
 }
 
-export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(),completed_handoffs=null,canonical_required=false}={}){
+// Technical receipt of the already returned source-read batch. No SQL/results
+// content, forecast or capacity grant; missing counters remain unknown.
+function sourceReadCosts(result,{canonical_required,source_run_id,evaluation_now_ts}){
+ const names=['EARLY_WAVES','SHADOW_DECISIONS','FINAL_WITH_CONTEXT','PREVIOUS_LIFECYCLE',...(canonical_required?['CURRENT_CANONICAL']:[])];
+ const counter=v=>Number.isSafeInteger(v)&&v>=0?v:null;
+ const replies=names.map((query,index)=>{
+  const r=Array.isArray(result)?result[index]:null;
+  return{query,reply_success:typeof r?.success==='boolean'?r.success:null,rows_read:counter(r?.meta?.rows_read),rows_written:counter(r?.meta?.rows_written),returned_rows:Array.isArray(r?.results)?r.results.length:null};
+ });
+ const sum=(key,require_all)=>{
+  if(require_all&&(!Array.isArray(result)||result.length!==names.length||replies.some(r=>r.reply_success!==true||r[key]===null)))return null;
+  const n=replies.reduce((v,r)=>v+(r[key]??0),0);return Number.isSafeInteger(n)?n:null;
+ };
+ const read=sum('rows_read',true),write=sum('rows_written',true);
+ return{schema:'EXISTING_LIFECYCLE_SOURCE_READ_COSTS_V1',source_run_id,caller_evaluation_ts:evaluation_now_ts,basis:'ALREADY_RETURNED_BATCH_REPLY_META_NOT_WHOLE_DAY_OR_PROVIDER_HEADROOM',scope:'BATCH_STATEMENT_META_ONLY_NOT_ADAPTER_OR_RESTORER_EXTRA_WORK',status:read!==null&&write!==null?'REPORTED_COUNTERS_COMPLETE':'REPORTED_COUNTERS_INCOMPLETE',expected_queries:names.length,actual_reply_count:Array.isArray(result)?result.length:null,queries:replies,known_rows_read_subtotal:sum('rows_read',false),known_rows_written_subtotal:sum('rows_written',false),total_rows_read:read,total_rows_written:write,admission_authorized:false,additional_SQL:0,additional_source_HTTP:0,SQL_params_and_result_values_exported:false};
+}
+
+export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(),completed_handoffs=null,canonical_required=false,source_clock_fixed=true}={}){
   const run=text(source_run_id),now=Math.trunc(finite(now_ts)??Date.now());
   const completed=completed_handoffs || await loadCompletedLifecycleHandoffs(db,{source_run_id,now_ts});
   if(completed.source_run_id && completed.source_run_id!==run)return {status:'SOURCE_RUN_MISMATCH',handoffs:[]};
@@ -225,11 +247,26 @@ export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(
   const placeholders=contracts.map((_,i)=>`?${i+1}`).join(',');
   const minScan=Math.min(...handoffs.map(x=>finite(x.scan_ts)??now))-5*60_000;
   const args=[...contracts,minScan,now];
+  // Push down only the existing lower freshness bound for fully named,
+  // closed current-run handoffs. Future rows remain in the original order.
+  // Missing/legacy clocks and handoffs keep the original all-time query.
+  const earlyCutoff=canonical_required===true&&source_clock_fixed===true&&
+    Object.hasOwn(arguments[1]??{},'now_ts')&&Number.isSafeInteger(arguments[1].now_ts)&&now_ts>=1_000_000_000_000&&
+    completed.source_run_id===run&&handoffs.length>0&&handoffs.length<=V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.max_completed_handoffs&&
+    handoffs.every(h=>typeof h?.contract_code==='string'&&h.contract_code===text(h.contract_code)&&h.contract_code!==''&&
+      typeof h.wave_id==='string'&&h.wave_id===text(h.wave_id)&&h.wave_id!==''&&h.source_run_id===run&&h.deep_check_run_id===run&&
+      upper(h.state)==='COMPLETED'&&upper(h.execution_status)==='COMPLETED'&&!text(h.deep_error)&&
+      isCurrentTs(h.scan_ts,now)&&isCurrentTs(h.deep_started_ts,now)&&isCurrentTs(h.deep_completed_ts,now)&&
+      h.deep_started_ts>=h.scan_ts&&h.deep_completed_ts>=h.deep_started_ts)&&
+    new Set(handoffs.map(h=>JSON.stringify([h.contract_code,h.wave_id]))).size===handoffs.length
+      ?now-10*60_000:null;
+  const earlyWhere=earlyCutoff===null?'':` AND last_seen_ts>=?${contracts.length+1}`;
+  let source_read_costs=null;
   try{
     const queries=[
       db.prepare(`SELECT wave_id,contract_code,generation,first_seen_ts,lifecycle_stage,direction_hint,direction_state,
-        early_detection_quality_0_100,last_seen_ts FROM v3_early_candidate_wave WHERE contract_code IN (${placeholders})
-        ORDER BY last_seen_ts DESC LIMIT 24`).bind(...contracts),
+        early_detection_quality_0_100,last_seen_ts FROM v3_early_candidate_wave WHERE contract_code IN (${placeholders})${earlyWhere}
+        ORDER BY last_seen_ts DESC LIMIT 24`).bind(...contracts,...(earlyCutoff===null?[]:[earlyCutoff])),
       db.prepare(`SELECT shadow_id,contract_code,observed_ts,rules_version,direction_hint,eq_status,dq_status,stage,data_sufficiency,evidence_flags_json,created_ts
         FROM shadow_decision_log WHERE contract_code IN (${placeholders}) AND observed_ts BETWEEN ?${contracts.length+1} AND ?${contracts.length+2}
         ORDER BY observed_ts DESC LIMIT 24`).bind(...args),
@@ -245,23 +282,24 @@ export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(
     ];
     if(canonical_required)queries.push(db.prepare(`SELECT publication_id,contract_code,run_id,snapshot_id,wave_id,direction,canonical_state,analytical_fingerprint,observed_ts,created_ts,canonical_json FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>`?${i+2}`).join(',')}) ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(run,...contracts));
     const result=await db.batch(queries);
-    return {status:'CLOSED',handoffs,early:rows(result?.[0]),shadow:rows(result?.[1]),final:rows(result?.[2]),previous:rows(result?.[3]),canonical:canonical_required?rows(result?.[4]):[]};
-  }catch(error){const msg=String(error?.message||error);return {status:/no such table|no such column/i.test(msg)?'MIGRATION_REQUIRED':'PARTIAL',handoffs,early:[],shadow:[],final:[],previous:[],error:msg};}
+    source_read_costs=sourceReadCosts(result,{canonical_required,source_run_id:run,evaluation_now_ts:now});
+    return {status:'CLOSED',handoffs,early:rows(result?.[0]),shadow:rows(result?.[1]),final:rows(result?.[2]),previous:rows(result?.[3]),canonical:canonical_required?rows(result?.[4]):[],source_read_costs};
+  }catch(error){const msg=String(error?.message||error);return {status:/no such table|no such column/i.test(msg)?'MIGRATION_REQUIRED':'PARTIAL',handoffs,early:[],shadow:[],final:[],previous:[],error:msg,...(source_read_costs?{source_read_costs}:{})};}
 }
 
 export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Date.now(),d1_pretelegram_budget_closed=true,dispatch_enabled=false,completed_handoffs=null,canonical_required=false}={}){
   const base={version:V3_TELEGRAM_LIFECYCLE_SIDECAR_VERSION,mode:'SHADOW_ONLY',network_send:false,dispatch_enabled:dispatch_enabled===true,probability:null,validated_signal:false,trading_execution:false};
   if(!db?.prepare||!db?.batch)return {...base,status:'SOURCE_UNSUPPORTED',transitions:[]};
   const before=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
-  const loaded=await loadLifecycleSourceRows(db,{source_run_id,now_ts,completed_handoffs,canonical_required});
+  const loaded=await loadLifecycleSourceRows(db,{source_run_id,now_ts,completed_handoffs,canonical_required,source_clock_fixed:Object.hasOwn(arguments[1]??{},'now_ts')&&Number.isSafeInteger(arguments[1].now_ts)});
   if(loaded.status!=='CLOSED'){
     const after=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
-    return {...base,status:loaded.status,error:loaded.error??null,transitions:[],usage_delta:usageDelta(before,after)};
+    return {...base,status:loaded.status,error:loaded.error??null,transitions:[],usage_delta:usageDelta(before,after),...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
   }
   const transitions=[];
   let persistAttempts=0;
   const loadedDelta=usageDelta(before,typeof db.usageSnapshot==='function'?db.usageSnapshot():null);
-  if(loadedDelta && (loadedDelta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read || loadedDelta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:loadedDelta};
+  if(loadedDelta && (loadedDelta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read || loadedDelta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:loadedDelta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
   for(const h of loaded.handoffs.slice(0,V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.max_completed_handoffs)){
     const contract=text(h.contract_code),waveId=text(h.wave_id);
     const early=exactWaveOrLatest(loaded.early,contract,waveId);
@@ -289,9 +327,9 @@ export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Dat
   }
   const after=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
   const delta=usageDelta(before,after);
-  if(delta&&(delta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read||delta.rows_written>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written||delta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:delta};
-  if(transitions.some(t=>['PARTIAL','PERSISTENCE_READBACK_FAILED','MIGRATION_REQUIRED','SOURCE_UNSUPPORTED'].includes(t.status)))return {...base,status:'PERSISTENCE_NOT_CLOSED',transitions,usage_delta:delta};
-  return {...base,status:transitions.length?'CLOSED':'CLOSED_NO_TRANSITION',completed_handoffs:loaded.handoffs.length,transitions,usage_delta:delta};
+  if(delta&&(delta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read||delta.rows_written>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written||delta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
+  if(transitions.some(t=>['PARTIAL','PERSISTENCE_READBACK_FAILED','MIGRATION_REQUIRED','SOURCE_UNSUPPORTED'].includes(t.status)))return {...base,status:'PERSISTENCE_NOT_CLOSED',transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
+  return {...base,status:transitions.length?'CLOSED':'CLOSED_NO_TRANSITION',completed_handoffs:loaded.handoffs.length,transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
 }
 
 export default {V3_TELEGRAM_LIFECYCLE_SIDECAR_VERSION,V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET,V3_TELEGRAM_SHADOW_RULES_VERSION,deriveLifecycleContext,loadLifecycleSourceRows,runV3TelegramLifecycleSidecar};

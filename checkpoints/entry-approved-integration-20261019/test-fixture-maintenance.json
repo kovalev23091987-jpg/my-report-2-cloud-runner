@@ -1,0 +1,28 @@
+{
+  "schema": "MAIN521_FAILED_TWO_TEST_FIXTURE_ENCODING_MAINTENANCE_V1",
+  "failed_main_run": 39232617521,
+  "head": "def4a1a482cdbef781f673be7147d391e3526bac",
+  "original_artifact": 12177636946,
+  "original_digest": "sha256:0846a4dd840bd0aa3ee534ab08c8cd7f6e3fbcc76ecdda91c18940936aa5bcb4",
+  "failure": "Two old child-process test mocks omit encoding=base64 required by existing GitHub control.read; fake inspection exits before Cloudflare/WebSocket. Both old mocks predate508 contract.",
+  "runtime_changes": 0,
+  "guard_changes": 0,
+  "provider_native_SQL_Telegram": 0,
+  "local_socket": "Only existing127.0.0.1 controlled WebSocket fixture, no external transport",
+  "targeted_only_failed_tests": true,
+  "unchanged_passed39_not_manually_rerun": true,
+  "files": {
+    "runner/native-cost-observations.test.mjs": {
+      "before": "7a7d302fc28aeb1f2b2999e0f8f0db6417d8ad7e2f06dd2a1a32add0e2ee9b54",
+      "after": "264e4b8bfe77615c1d4adc5ac8fcff344116b7981107e11fb42daafc77462c40",
+      "change": "Add actual REST encoding=base64 field to controlled contents reply; no guard or assertion weakened"
+    },
+    "runner/native-tail-process.test.mjs": {
+      "before": "28266c7850dd71982cbc1c3b4318f69e08cc5de08454aa6353a3c236c4b80e9a",
+      "after": "c38ea0cf1dddb799e7ecc3cc634cec587b1d5f51a0f7860c198819a0184c29eb",
+      "change": "Add actual REST encoding=base64 field to controlled contents reply; no guard or assertion weakened"
+    }
+  },
+  "target_returncode": 0,
+  "target_output_sha256": "441316d75dbbf01ba707aed6d97e9dbe6f9a3f748d5f5f9530b3dd8f8531af9b"
+}

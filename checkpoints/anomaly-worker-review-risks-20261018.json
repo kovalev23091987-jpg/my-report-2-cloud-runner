@@ -1,0 +1,76 @@
+{
+  "schema": "ANOMALY_WORKER_THREE_CONCRETE_REVIEW_RISKS_V1",
+  "dependency_PRs": [
+    458,
+    461
+  ],
+  "base": "c309ee349a98fb210d3040518a343d85371e99c5",
+  "fresh_main_guards_read": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "lease": {
+    "lease_ref_sha": "45177d22bacc07d393a5694b1b50edd78531bfd4",
+    "lease": {
+      "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+      "status": "ACTIVE",
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792329923711",
+      "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "acquired_ts": 1792329923711,
+      "expires_ts": 1792335023711,
+      "expected_main": "6f2610f30942b4eddbb0829d1ec5a5eb912d77a7",
+      "scope": "OFFLINE only anomaly-research/** and checkpoints/anomaly-worker-*; audit/replay/detector/event/watch/outcomes/cost; no production imports, provider, SQL, deploy, MAIN, Telegram or shared mutation",
+      "guard_sha256": {
+        "AGENTS.md": "30b81a178c822f5b5af3a964f73bd4f463b7048a4b0795c42dff1ecdac6e2897",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "9584f05ca2994ea79ee01ef2520c853a84db686b9264ddfc0fb37cabdc175843",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "40f5dc076e69635160b2bc80b0977d3cb33a090faee2873244524d9e16007ef2",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b88526812c88b1cd113db1a0b6ad124426278e3dfa1c13262a6fddfc9c8a74ec"
+      }
+    },
+    "exact_readback": true
+  },
+  "files": [
+    {
+      "path": "anomaly-research/durability/THREE_REVIEW_RISKS_RU.md",
+      "sha256": "a99c5952abd13733a83f7231e8f4a74375a9560a3ba52b49b73b5198ad888038"
+    },
+    {
+      "path": "anomaly-research/durability/identity-retention-grid.mjs",
+      "sha256": "437364fc0ecc4d02db54fac9fa1425df9b406d40774e7f7c95c4196fa1c1be24"
+    },
+    {
+      "path": "anomaly-research/durability/identity-retention-grid.test.mjs",
+      "sha256": "aa95323ec9b87cde77fd9234c9cc92f7727731d84987ab65183406ce24c220bf"
+    },
+    {
+      "path": "anomaly-research/durability/validation.txt",
+      "sha256": "32f9ff2d3dc86a0f1b78b074c950e60def9caca99cb01b47083c661242f21551"
+    }
+  ],
+  "validation": {
+    "pass": 11,
+    "fail": 0,
+    "new_counterexamples_on_frozen_module": 3,
+    "raw_output": "anomaly-research/durability/validation.txt",
+    "old_accepted_tests_or_CT_BR_replay_repeated": false
+  },
+  "counterexamples": [
+    "Same native window + newbindingref/rules changes raw detector eventid/group;stablelogicalevent+provenancerevisions preservefirstknown/singlecohort",
+    "Closedrefuted watch+simulatedSENT emptiesoldrefs; explicitunfinished90d mustprotect raw/card/anchor",
+    "Dayeventoffset%week rejects validMondayconfirmationgrid; explicitnativeconfirmationgrid correctlyaccepts"
+  ],
+  "limits": [
+    "Qualified native id/epoch/grid/refgraph/completeoutcomeplan must come from trusted external ingest/readback;controlledflagsnotproof",
+    "NewpureAPIs not integrated into frozen observer/cohort; canonical card/alias/outcomeplan adapter still required",
+    "No DBschema/store/CAS/nativewrite/retentionhook/renderer/network activation"
+  ],
+  "effects": {
+    "provider_HTTP": 0,
+    "production_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "production_imports": 0,
+    "weights_forms_limits_pauses_changed": false
+  },
+  "next": "Concrete pure CAS/atomic event-transition-outbox fault model, commit-loss/restart/unknown-send; no DB schema or production activation."
+}

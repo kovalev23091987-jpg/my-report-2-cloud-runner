@@ -1,0 +1,45 @@
+{
+  "schema": "EXACT_TWO_IDENTITY_PAID_COMPATIBILITY_BINDINGS_V1",
+  "base": "93492c3efc7a65d58b492f1891142fa680013023",
+  "targets": {
+    "runner/retention-bridge-provenance.mjs": {
+      "before_bytes": 6143,
+      "before_sha256": "5b172d218bd324db8f572b963a1169e2530e1c4a2ea0ca1d26539ea00417cef2",
+      "after_bytes": 14474,
+      "after_sha256": "6c6dd7294e4c8c235ffe29121faa359e40a4307dbbfd78762624569b3f257045",
+      "proposed": "provenance-module.proposed.mjs"
+    },
+    "tools/run-paid-sliding-history-20261018.mjs": {
+      "before_bytes": 9301,
+      "before_sha256": "434d8545b9d01c9aa61620b315549e17c34506975cc365e688fb742b87daf738",
+      "after_bytes": 9642,
+      "after_sha256": "d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c",
+      "proposed": "paid-consumer.proposed.mjs"
+    },
+    "tools/recover-lossless-retained-history-20261014.mjs": {
+      "before_bytes": 21305,
+      "before_sha256": "cfcb8cd3232e840bc4133f4312ed8fdee664f16e3654a5867e852ac57226dbf9",
+      "after_bytes": 21393,
+      "after_sha256": "1335612c4b492cb75142f523e864aa4cc98c81b3dd32a64da850f6891f76b2f4",
+      "proposed": "lossless-consumer.proposed.mjs"
+    }
+  },
+  "module_old_prefix_bytes": 6143,
+  "factory_start": "export function createRetentionSQLBridgeCompatibility(",
+  "factory_end": "const EXACT_COMPATIBLE_CONSUMERS=",
+  "factory_sha256": "18a020b9aa3d760f7df99eea245a8b22d29a68347654e2c35c52d2966b7aed3e",
+  "factory_bytes": 3275,
+  "paid_observe_sha256": "36f61a8372a7843f7579e8289959cd6cbfb5151b83146b2e43f5a5d1b6d7f815",
+  "paid_observe_start": "async function observe(stage){",
+  "paid_observe_end": "\ntry{",
+  "lossless_assignment": "bridge_proof=createRetentionSQLBridgeCompatibility({old_release_bytes:await fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path),staged_receipt_bytes:await fs.readFile(CORRELATED_RETENTION_SQL_BRIDGE_PROOF.path)});",
+  "lossless_before": "out.SQL_bridge_before=await bridge_proof.observe({call:bridge_control,configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,stage:'before_SQL'});",
+  "lossless_after": "out.SQL_bridge_after=await bridge_proof.observe({call:bridge_control,stage:'after_SQL'});bridge_postflight_pending=false;",
+  "fixture_only_expected_dependencies": [
+    "PAID_BRIDGE_SETTINGS_SHA256",
+    "PAID_BRIDGE_RUNTIME_SHA256"
+  ],
+  "actual_public_stage_summary_sha256": "f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7",
+  "actual_inner_proof_SHA_not_repo_file": "85e815381e4ec8d2219928768d670b02c0c5f1e87332c89fdb6f93f8c20d2f22",
+  "author_execution": "UNEXECUTED"
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "EXACT_HTX_IDENTITY_CACHE_FACT_COST_SEPARATION_READ_ONLY_REVIEW_V1",
+  "reviewed_PR": 481,
+  "reviewed_head": "04941757955e833bd04b8cc555684d5d20fc4756",
+  "base": "abcf3279fb526853c4c042230a87abfb494b4728",
+  "result": "NO_BLOCKING_FINDINGS_IN_REVIEWED_DIFF",
+  "own_runtime_tests": 0,
+  "new_test_bodies_read": 15,
+  "reviewed_source_files": [
+    {
+      "path": "current-generation/files/src/htx-asset-identity.mjs",
+      "sha256": "2f3cbfd67f3318eb1712271bf5ef2245ae35961501e3531501412179e37a930f"
+    },
+    {
+      "path": "current-generation/tests/htx-identity-cache-preservation.test.mjs",
+      "sha256": "b38846869410335f75d398b355cf845052b8fd5aab0d20c4cac2863c33c3228a"
+    },
+    {
+      "path": "current-generation/tests/fixtures/htx-identity-cache-baseline-sql.json",
+      "sha256": "08ffd20b82631093803ec9c0aa3970a48379a1868df84d5f5c5507c85403a036"
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38"
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "520baa83fd0acff55cd6335d3398f52ff10f7989940dab7ae71d52ca0b0cb25f"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0"
+    },
+    {
+      "path": "checkpoints/htx-reference-fact-preservation-20261018/scope.json",
+      "sha256": "6946b4b6e07b7b045ba3f0a8af212a11114e86a564157a46836bb26f817e0632"
+    }
+  ],
+  "protected_base_hashes": [
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "sha256": "9e17933eefee52b2b835ec364638ff84666313a43c2d72c4e87cae996d4cfffe",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/supplemental-candidate-context.mjs",
+      "sha256": "a7a68efa685b51563aa293b758b44e0b9e5b1b49d1aa182bb7388eca7f93e679",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/observation-source-role-gate.mjs",
+      "sha256": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/block-score-policy.mjs",
+      "sha256": "873d70a0404baf5df104ee34459246fd85d798163f3cadd7bd72bb7cba3441a1",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/manual-report-formatter.mjs",
+      "sha256": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+      "base_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/telegram-plain-facts.mjs",
+      "sha256": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+      "base_byte_identical": true
+    }
+  ],
+  "normalize_select_reference_bytes_unchanged": true,
+  "whole_request_and_durable_reservation_block_bytes_unchanged": true,
+  "known_vs_unknown_cache_matrix": "Qualified static fact survives; aggregate/source-chain guard remains unclosed and stops supplemental work. CLOSED identity is never an admission grant.",
+  "tracked_production_caller": "runner-main.mjs:654 collectHtxBoundSupplementalContext with existing unifiedHttpBudget.reserve",
+  "additional_guard": "candidate-evidence-v2-runtime.mjs:201-230 stops collector/admit/fetch on native unknown",
+  "saved_reports_read": [
+    {
+      "path": "checkpoints/htx-reference-fact-preservation-20261018/before.tap.gz",
+      "sha256": "402e6830454501059ef1297d9c7aae535269baac3f54d7f21547211fbd99492a",
+      "saved_counts": {
+        "tests": 14,
+        "pass": 5,
+        "fail": 9
+      },
+      "rerun_by_reviewer": false
+    },
+    {
+      "path": "checkpoints/htx-reference-fact-preservation-20261018/target15-final.tap.gz",
+      "sha256": "2cbe5ffe60423df003a883e468cf59c64c2d68e65fc50d1c7800eca6e95dbf34",
+      "saved_counts": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0
+      },
+      "rerun_by_reviewer": false
+    },
+    {
+      "path": "checkpoints/htx-reference-fact-preservation-20261018/common.tap.gz",
+      "sha256": "34f0c3aa0e59b675c41133b2f5100b071f157be258baecdb6128b136e45ba1ad",
+      "saved_counts": {
+        "tests": 74,
+        "pass": 74,
+        "fail": 0
+      },
+      "rerun_by_reviewer": false
+    }
+  ],
+  "original_source_scope": {
+    "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+    "compressed_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+    "clock_scope": "CONTROLLED_REPLAY, original transport/sourceclock absent; not currentCTacquisition/coverage/firstdetection",
+    "fixture_replay_repeated": false
+  },
+  "ordinary_SQL_shape_count_from_author": 12,
+  "native_R_W_upper_bound": null,
+  "current_source_coverage_ENTRY_or_SENT_accepted": false,
+  "production_anomaly_activation": false,
+  "new_source_HTTP_SQL_MAIN_Telegram": 0,
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792349036661",
+  "lease_ref": "d4283d5419d1041511e8739e049fdfae3d2eeae4",
+  "exact_lease_readback": true
+}

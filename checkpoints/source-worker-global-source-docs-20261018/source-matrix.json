@@ -1,0 +1,697 @@
+{
+  "schema": "REPORT2_GLOBAL_USEFUL_SOURCE_DOC_MATRIX_V1",
+  "recorded_UTC_day": "2026-10-18",
+  "working_base": "57a2cf8b0c69a08600ecbe9bca060fd1d0f623bb",
+  "scope": "Worldwide useful-source research for all active N04/N05/N10/N11/N12/N15/LIQ and independent Блок аномалий. No actual provider acquisition or connection qualification.",
+  "source_selection_rule": "Priority means first bounded numeric qualification suggested by documented data/limits and saved missing roles, not measured source usefulness/accuracy or changed runtime order.",
+  "saved_gap_basis": [
+    "checkpoints/source-worker-anomaly-source-feasibility-20261018/analysis.json",
+    "checkpoints/ACTIVE105_SENT214_ANOMALY_AND_ENTRY_FOLLOWUP_HANDOFF_20261018.json",
+    "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md"
+  ],
+  "active_blocks": [
+    "N04",
+    "N05",
+    "N10",
+    "N11",
+    "N12",
+    "N15",
+    "LIQ",
+    "ANOMALIES"
+  ],
+  "owner_latest_policy": {
+    "futures_first": true,
+    "spot_preferred_nonblocking": true,
+    "main_score_selection_weights_effect": 0,
+    "LIQ_stays_integrated": true,
+    "new_dedicated_anomaly_sources_preferred": true,
+    "old_sources_only_actual_residual_after_entire_main_and_manual_plan": true,
+    "event_memory_scales": [
+      "15m",
+      "30m",
+      "1h",
+      "4h",
+      "1d",
+      "1w"
+    ],
+    "later_outcomes_may_extend_beyond_7days_to_month_or_later": true,
+    "observer_activated": false
+  },
+  "all_provider_cards": [
+    {
+      "provider_id": "COINEX",
+      "qualification_priority_group": "FIRST_NUMERIC_QUALIFICATION_CANDIDATE",
+      "physical_upstream": "COINEX_NATIVE_EXCHANGE",
+      "current_project_presence": "No enabled N05/N12 route found in searched current source modules; full encrypted-base absence not asserted",
+      "potential_block_roles": {
+        "N05": "Опубликованный поток отдельной биржи после сверки полных окон; текущий HTX raw-fill proof не заменяет.",
+        "N10": "Независимые закрытые свечи и путь цены.",
+        "N11": "Внешний стакан как контекст; HTX execution gate сохраняется.",
+        "N12": "Сделки с taker-стороной и ID, ограниченная выборка до доказанной полноты.",
+        "ANOMALIES": "Фьючерсные свечи разных масштабов; спот желателен, не обязателен."
+      },
+      "documentation_ids": [
+        "coinexFutures",
+        "coinexSpot",
+        "coinexTrades",
+        "coinexRate",
+        "coinexTicker"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "futures": "GET /v2/futures/kline",
+          "spot": "GET /v2/spot/kline",
+          "timeframes": [
+            "1m",
+            "3m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "4h",
+            "1d",
+            "1w"
+          ],
+          "max_rows": 1000,
+          "history": "start_time/end_time; реальная глубина по нашим активам неизвестна",
+          "units": "volume — количество, value — стоимость; цену latest_price отличать от mark/index"
+        },
+        "trades": "GET /v2/futures/deals, до1000, last_id, deal_id, created_at(ms), taker side, decimal price/amount. Направление пагинации/полноту/единицы проверить по оригиналам.",
+        "oi_and_bulk": "/futures/ticker допускает all markets или до10 указанных, open_interest_volume; volume_buy/sell относятся к period86400, не минуте. В показанной схеме нет отдельного source publication clock.",
+        "access": "Публичные market endpoints без подписанного account действия; точный доступ из cloud не проверен.",
+        "limits": "400 requests/s per IP по общему документу. Это общая граница провайдера, не новая project/day/month квота; отдельные ограничения и остаток неизвестны.",
+        "identity": "Нужны точное сопоставление HTX asset с native CoinEx market, contract/quote/multiplier/crypto status; похожий тикер не достаточен.",
+        "risks": [
+          "Пример created_at в kline-документации имеет подозрительную длину; не использовать его как реальное время/fixture положительного покрытия.",
+          "Daily ticker не доказывает закрытый1m поток и не получает now вместо отсутствующего source clock."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "BINGX",
+      "qualification_priority_group": "FIRST_NUMERIC_QUALIFICATION_CANDIDATE",
+      "physical_upstream": "BINGX_NATIVE_EXCHANGE",
+      "current_project_presence": "Not an enabled qualified route in searched current modules; coordinator had DOC_ONLY candidate",
+      "potential_block_roles": {
+        "N05": "Возможен отдельный provider-published taker candle aggregate; фактическую схему и границы нужно доказать.",
+        "N10": "Свечи и история цены другой биржи.",
+        "N11": "Внешний book context после identity/clock validation.",
+        "N12": "Recent/historical trades с maker/taker семантикой, без презумпции полного окна.",
+        "ANOMALIES": "Фьючерс first; отдельный spot context где пригоден."
+      },
+      "documentation_ids": [
+        "bingxSharedRate",
+        "bingxSwapSkill",
+        "bingxSpotSkill",
+        "bingxDocs"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "futures": "/openApi/swap/v3/quote/klines",
+          "spot": "/openApi/spot/v2/market/kline",
+          "historical_spot": "/openApi/market/his/v1/kline max500",
+          "max_standard_rows": 1440,
+          "timeframes": [
+            "1m",
+            "3m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "4h",
+            "1d",
+            "1w"
+          ],
+          "schema": "Официальный repo описывает base/quote volume и для swap trade_count/taker_buy. Это описание, не проверенный wire; не копировать Binance индексы без реального ответа."
+        },
+        "trades": "Swap recent max1000; historical fromId max100 с ID/isBuyerMaker. Spot recent max500; historical max500, отдельный формат времени seconds+ms. Не угадывать taker side если поля нет.",
+        "oi": "/swap/v2/quote/openInterest: base-asset OI с time(ms).",
+        "limits": "Официальное объявление2025-10-16: общий spot+swap IP pool500/10s. Текущий официальный repo также указывает1/s/IP по endpoint; учитывать ОБЕ границы до уточнения, не заменять одно другим.",
+        "access": "Public REST по документации; unattended/cloud/schema/actual asset coverage не проверены.",
+        "identity": "Exact contract metadata, quote, multiplier и native/chain identity, одинаковые окна при парном выводе.",
+        "risks": [
+          "SPA intro не раскрывает параметры; подробности взяты из официального BingX-API repo.",
+          "Два рынка BingX остаются одним upstream и общей IP-квотой."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "MEXC",
+      "qualification_priority_group": "FIRST_NUMERIC_QUALIFICATION_CANDIDATE",
+      "physical_upstream": "MEXC_NATIVE_EXCHANGE",
+      "current_project_presence": "No active route found in searched current modules; existing handoff linked older docs",
+      "potential_block_roles": {
+        "N05": "Контекст ограниченных сделок; full-window proof только при доказанной сверке.",
+        "N10": "Независимый futures/spot candle path.",
+        "N11": "Contract size, ticks, best bid/ask как внешний контекст, не HTX execution.",
+        "N12": "Публичная taker-выборка max100, не CVD всего окна.",
+        "N15": "Возможный новый узкий price-sector контекст: native conceptPlate + сопоставимые данные того же venue; не готовая глобальная секторная метрика.",
+        "ANOMALIES": "Новые отдельные futures свечи; спот по наличию."
+      },
+      "documentation_ids": [
+        "mexcFuturesKline",
+        "mexcSpotKline",
+        "mexcMarketOverview",
+        "mexcIntegration",
+        "mexcRecentTrades",
+        "mexcContractInfo",
+        "mexcTicker"
+      ],
+      "documented_capabilities": {
+        "base": "Текущая integration-guide: https://api.mexc.com; старый contract.mexc.com нельзя молча переносить в новый адаптер.",
+        "candles": {
+          "futures": "/api/v1/contract/kline/{symbol}",
+          "max_futures_rows": 2000,
+          "spot": "/api/v3/klines",
+          "max_spot_rows": 500,
+          "timeframes": [
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "4h",
+            "1d",
+            "1w"
+          ],
+          "three_minute": "Получать из трёх точных закрытых1m, нативный3m не указан в futures doc.",
+          "history": "futures start/end seconds; spot startTime/endTime ms. Retention/полнота неизвестны."
+        },
+        "trades": "/api/v1/contract/deals/{symbol} max100, p/v/T/O/M/t. В документированной схеме нет уникального fill ID и historical cursor. Не изобретать ID из timestamp; не заявлять полный signed tape.",
+        "oi_and_sector": "ticker holdVol — контракты; contractSize обязателен. conceptPlate — native category tags. riseFallRate и UTC+8-поля нельзя автоматически смешивать с rolling24h других источников.",
+        "access": "Market module явно без auth; account/trading endpoints и KYC не нужны для выбранной роли.",
+        "limits": "На прочитанных kline/deals страницах числовой current общий лимит не указан. Metadata ticker упоминает10/2s, но body не задаёт общий budget: не переносить на все routes, не принимать old20/2 как universal.",
+        "identity": "Native contract/baseCoin/quoteCoin/contractSize + exact HTX chain/address/native binding; catalog name alone не факт рынка.",
+        "risks": [
+          "realOpen/realClose и основные OHLC в примере различаются; семантика реального wire требует проверки.",
+          "Новая биржа не добавляет164HTTP/SQL/CPU и не повышает5HTTP N05/N12."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "PHEMEX",
+      "qualification_priority_group": "SECOND_NUMERIC_QUALIFICATION_CANDIDATE",
+      "physical_upstream": "PHEMEX_NATIVE_EXCHANGE",
+      "current_project_presence": "No active qualified route found in searched current modules",
+      "potential_block_roles": {
+        "N05": "Возможен venue-specific taker context; completeness не доказана.",
+        "N10": "Закрытые USDT-M свечи и история.",
+        "N11": "Native product scale/contract/book context.",
+        "N12": "Trade snapshot c nanosecond clocks и buy/sell, не полный поток.",
+        "ANOMALIES": "Futures multiscale и1m drilldown; не смешивать linear/inverse."
+      },
+      "documentation_ids": [
+        "phemexDocs"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "linear": "/exchange/public/md/v2/kline/last, limit в {5,10,50,100,500,1000}; generating candle исключён по docs",
+          "history": "/exchange/public/md/v2/kline/list from/to; legacy method не рекомендуется, документировано менее2000bars",
+          "timeframes": [
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "4h",
+            "1d",
+            "1w"
+          ],
+          "three_minute": "Только точная агрегация1m."
+        },
+        "trades": "USDT-M /md/v2/trade: trades_p timestamp(ns), side, priceRp/sizeRq. Coin-M /md/trade использует scaled priceEp/size. Snapshot sequence не является ID каждого fill.",
+        "limits": "IP5000/5min и обычные группы Contract500/min,SpotOrder500/min,Others100/min. Kline — Others; таблица указывает weight10 для kline route, соответствие новыхlast/list проверить. VIP5000/min не доступен по умолчанию.",
+        "access": "Public market routes; фактический keyless/cloud доступ не проверен.",
+        "identity": "Product metadata, linear/inverse, price/size scale, settlement/quote; quoted contract≠spot.",
+        "risks": [
+          "Не использовать COIN-M BTCUSD пример как USDT linear schema.",
+          "Unknown route weight остаётся ограничением, не превращается в1."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "BITMART",
+      "qualification_priority_group": "SECOND_NUMERIC_QUALIFICATION_CANDIDATE",
+      "physical_upstream": "BITMART_NATIVE_EXCHANGE",
+      "current_project_presence": "No active qualified route found in searched current modules",
+      "potential_block_roles": {
+        "N05": "Отдельный venue flow после полноты/единиц.",
+        "N10": "Futures/spot historical candle paths.",
+        "N11": "Внешняя depth/contract context.",
+        "N12": "Public market-trade sample, отделить от private account trades.",
+        "ANOMALIES": "Futures multiscale, spot optional."
+      },
+      "documentation_ids": [
+        "bitmartFutures",
+        "bitmartSpot"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "futures": "api-cloud-v2.bitmart.com/contract/public/kline",
+          "max_futures_rows": 500,
+          "futures_intervals": "1/3/5/15/30/60/240/1440/10080 minutes; start/end seconds",
+          "spot": "api-cloud.bitmart.com/spot/quotation/v3/klines",
+          "max_spot_rows": 200,
+          "spot_intervals": "1/5/15/30/60/240/1440/10080;3m requires exact1m derivation",
+          "units": "Futures volume назван turnover без явной валюты в прочитанной таблице; spot v=base,qv=quote."
+        },
+        "oi": "Public open-interest отдельно, limit2/2s; не future liquidation positions.",
+        "trades": "/contract/public/market-trade; не /contract/private/trades. Spot recent trade endpoint отдельный; вся historical completeness неизвестна.",
+        "limits": "Futures kline/market-trade12/2s/IP,OI2/2s. Spot historicalkline10/2s/IP,latestkline/recenttrades15/2s. Endpoint limits не дают независимые provider/IP quotas.",
+        "access": "Public routes документированы, spot REST history/depth не real-time, WS предпочтителен для realtime; actualcloud не проверен.",
+        "identity": "Exact native symbols (futuresBTCUSDT vs spotBTC_USDT), contract amount/settlement and HTX identity.",
+        "risks": [
+          "Фьючерсная схема market-price и отдельнаяmark-price не взаимозаменяемы.",
+          "Предел500/200 — страницы, не гарантированная глубина истории."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "BITUNIX",
+      "qualification_priority_group": "NARROW_CANDLE_CANDIDATE",
+      "physical_upstream": "BITUNIX_NATIVE_EXCHANGE",
+      "current_project_presence": "No active route found in searched current modules",
+      "potential_block_roles": {
+        "N10": "Независимые закрытые last-price OHLCV.",
+        "ANOMALIES": "Узкий futures-first candle источник; taker/OI роль пока не подтверждена документами."
+      },
+      "documentation_ids": [
+        "bitunixKline"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "path": "/api/v1/futures/market/kline",
+          "max_rows": 200,
+          "intervals": "1m/5m/15m/30m/1h/4h/1d/1w/1M",
+          "history": "start/end milliseconds; query availability not actual historical depth",
+          "price_type": "LAST_PRICE vs MARK_PRICE; не смешивать",
+          "closed": "Документ говорит, что формирующаяся свеча не возвращается; проверить по фактическим clock/grid."
+        },
+        "units": "baseVol/quoteVol явно разделены в описании, но приведённый пример численно не согласуется с ценой. Не использовать пример как validated positive fixture.",
+        "limits": "10req/s/IP на kline; provider/day/month/headroom не проверены.",
+        "access": "Public example without account mutation; real keyless/cloud access unknown.",
+        "spot": "Наличие пригодного spot/taker/OI маршрута в этом исследовании не доказано; отсутствие spot не блокирует futures факт.",
+        "identity": "symbolName, quote/multiplier/native binding; ticker alone insufficient."
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "WHITEBIT",
+      "qualification_priority_group": "SECOND_NUMERIC_QUALIFICATION_CANDIDATE",
+      "physical_upstream": "WHITEBIT_NATIVE_EXCHANGE",
+      "current_project_presence": "No active route found in searched current modules",
+      "potential_block_roles": {
+        "N05": "Ограниченный venue trade context; full4h tape не доказан.",
+        "N10": "Multiscale native candles.",
+        "N11": "External depth and market status context.",
+        "N12": "До100 recent trades с ID, правильные единицы.",
+        "ANOMALIES": "Новый futures/spot venue при exact crypto identity и доступе."
+      },
+      "documentation_ids": [
+        "whitebitOverview",
+        "whitebitRate",
+        "whitebitKline",
+        "whitebitTrades",
+        "whitebitWs",
+        "whitebitIndex"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "path": "GET /api/v1/public/kline",
+          "max_rows": 1440,
+          "intervals": "1m/3m/5m/15m/30m/1h/4h/1d/1w",
+          "order": "[timeSeconds,OPEN,CLOSE,HIGH,LOW,stockVolume,moneyVolume], не обычныйOHLC index order",
+          "history": "start/end seconds, defaultwindow зависит от interval; page-through docs ≠ actualmonth history"
+        },
+        "trades": "/api/v4/public/trades/{market} fixedmax100,no limit. Docs reversed names:quote_volume содержит stock/base,base_volume money/quote; ID отдельно отtimestamp. REST/book caches≈1s; RPI executions могут быть видны в trades, но отсутствовать в publicbook.",
+        "limits": "Endpoint kline1000/10s для/api/v1/*;trades2000/10s. Overview/v4rate page пишет20000/10s,embedded OpenAPI —2000/10s. Не экстраполировать20k на candles: endpoint-specific lower bound, contradiction unresolved.",
+        "access": "Public zeroauth; region-specific servers есть вdocs,451вfutures предусмотрен. Cloud/region allowability не проверена; обход блокировок не предлагается.",
+        "identity": "Marketcatalog включаетspot/futures/TradFi. Только утверждённыйcryptoasset+типрынка, точнаяquote/multiplier, никакогоuniverseexpansion."
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "BITSTAMP",
+      "qualification_priority_group": "NARROW_GLOBAL_VENUE_CANDIDATE",
+      "physical_upstream": "BITSTAMP_NATIVE_EXCHANGE",
+      "current_project_presence": "No active route found in searched current modules",
+      "potential_block_roles": {
+        "N10": "Price/volume context другой площадки с честнойquote.",
+        "N11": "Внешнийbook/marketstatus; не подменаHTX execution.",
+        "N12": "Publictransactions как boundedsample, не гарантированный tackerfulltape.",
+        "ANOMALIES": "Возможный независимыйpricepath; конкретные futures активы не квалифицированы."
+      },
+      "documentation_ids": [
+        "bitstampDocs"
+      ],
+      "documented_capabilities": {
+        "candles": {
+          "path": "/api/v2/ohlc/{market_symbol}/",
+          "max_rows": 1000,
+          "intervals": "60/180/300/900/1800/3600/14400/86400/259200 seconds впрочитаннойenum",
+          "native_weekly": false,
+          "weekly": "7дневных закрытых свечей только при полнойточнойсетке; нативный1w не заявлен",
+          "closed": "exclude_current_candle=true",
+          "history": "start/end seconds, end имеетприоритет еслиоба; реальнаяглубинанепроверена"
+        },
+        "limits": "400req/s и10000/10min общие стандартныеlimits; не считать10000вминуту.",
+        "access": "PublicHTTPAPI; docs отмечают отдельные условия commercialdatause. Лицензию/права/cloud проверить до подключения; контакт/покупка не выполнялись.",
+        "identity": "market symbol/asset_class/exchange/entity, криптоallowlist. USD/EUR не USDT; не создавать crossquote spreads безvalid FX.",
+        "risks": [
+          "Доступностьдеривативов/нашихмонетизноменклатурыAPIневыведена.",
+          "Publicordergaprecovery размещён вprivatefunctions; auth/unattendedscope не квалифицирован, это не обещание бесплатнойисторииorders/cancels."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "ETHERSCAN_V2",
+      "qualification_priority_group": "KEY_AND_CHAIN_ACCESS_QUALIFICATION_FIRST",
+      "physical_upstream": "UNDERLYING_CHAIN_BLOCK_TX_LOG",
+      "current_project_presence": "Candidate indexed access route; installed connector not assumed cloud authorization",
+      "potential_block_roles": {
+        "N04": "Индексированнаяистория переводов конкретногоадреса/контракта; finality иscopeпроверяютсяотдельно."
+      },
+      "documentation_ids": [
+        "etherscanRates",
+        "etherscanChangelog",
+        "etherscanTokenTransfers"
+      ],
+      "documented_capabilities": {
+        "path": "api.etherscan.io/v2/api,chainid/module=account/action=tokentx,contractaddress/address,start/endblock,page/offset",
+        "scope": "tokentx — address-specific, не all-token-wideflow. Нуженпроверенныйадрес/роль; дляполныхcontractlogsдругойendpoint+proof, здесьнепрочитан.",
+        "limits": "Free3/s,100000/day наselectedchains,sharedaccount/key. С2026-07-01Freepagecap1000,не10000.",
+        "access": "APIkeyrequired; не создан, аккаунт/план/остаток неизвестны. KeylesschatMCPвchangelogнепередаётcloudAPIправ.",
+        "time_changes": "ArbitrumFreeс2026-11-01chain-wideобщийпулвсехFreeusers; Lineaужеcommunitypool. opBNB support endedOct12,Blast/ApeChainendsOct31; выбраннуюchainпроверитьпоactualдопуску.",
+        "identity": "Exactchain/address/decimals/txhash+logidentity/sourceblockclock+nativefinalitywitness. ТотжеблоквRPC/Blockscoutнеотдельныйрыночныйvote."
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "BLOCKSCOUT",
+      "qualification_priority_group": "EXISTING_PROVIDER_NEW_ACCESS_REVIEW",
+      "physical_upstream": "UNDERLYING_CHAIN_BLOCK_TX_LOG",
+      "current_project_presence": "Existing blockscout-index-evidence + SOURCE_POLICIES",
+      "potential_block_roles": {
+        "N04": "Потенциальныйrestore/expandиндексированногопереводногофактадляточнойchain,безснятияexistingaccessguards."
+      },
+      "documentation_ids": [
+        "blockscoutDocs"
+      ],
+      "documented_capabilities": {
+        "existing_caps": "96attempts/day,5000credits/day,existingroutecost30,TTL20min;неизменны.",
+        "new_documentation": "PROAPIстраницаописываетFree100kcredits/day5RPS/allchainsиv12breakingchanges7Oct2026.",
+        "specific_gap": "Текущийкодсодержитявныйfree-denyBase/PolygonсOct1. ПротиворечиестарогонатуральногодопускаиобщейновойдокументацииНЕразрешенотестом: немолчавключать, primaryпроверитконкретнуюchain/route/creditcostпослеadmission.",
+        "access": "Newkeyне создан; actualplan/creditsperroute/headers/schemaunknown.",
+        "identity": "Samechain+token+tx/logdedup;RPC+explorerне2independentmarketvotes."
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "DEFILLAMA",
+      "qualification_priority_group": "EXISTING_PROVIDER_NEW_ROLE_ONLY",
+      "physical_upstream": "PROTOCOL_CHAIN_DATA_PLUS_PRICE_ADAPTER_LINEAGE",
+      "current_project_presence": "Existing supplemental candidate context and paused-calendar policy",
+      "potential_block_roles": {
+        "N15": "Protocol-specificTVLhistory/feescontextприexacttoken→protocolbinding,неуниверсальныйсекторныйreturn.",
+        "N04": "Onlyifточныйusefulchain/protocolfactсоответствуетблоку;TVLнедоказательствоCEXinflow."
+      },
+      "documentation_ids": [
+        "defillamaDocs"
+      ],
+      "documented_capabilities": {
+        "access": "Freeendpointsnokey;paidAPIplanотдельно. Прочитаныdocs,никакихprotocoldataзапросов.",
+        "available_doc_roles": "/protocols,/protocol/{slug},chainTVL; APIplan-gatedinflows/tokenprotocollookupнеобъявлятьбесплатными.",
+        "limits": "Числоваяfreeграницапрочитаннойосновнойстраницынеустановлена; не unlimited.",
+        "time_changes": "Free/pools,/chart/{pool}закрываются2026-11-13подокументу;невыбиратьихкакпостоянныйfreefallback.",
+        "existing_pause": "DEFILLAMA_PUBLISHED_CALENDARдляN01остаётсяpaused;ничегоневосстанавливать.",
+        "risks": [
+          "TVLможетиспользоватьценовойupstream/двойнойучётпротоколов; не объявлятьновымнезависимымCEXprice.",
+          "Existingproviderнеполучаетновуюквотуиз-зановойролиилиSDK."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "COINMETRICS_COMMUNITY",
+      "qualification_priority_group": "EXISTING_PROVIDER_SCOPED_HISTORY_REVIEW",
+      "physical_upstream": "COINMETRICS_NETWORK_DATA_AND_DECLARED_MARKET_UPSTREAM",
+      "current_project_presence": "Existing coinmetrics-supply-context; current supply role N02 is paused",
+      "potential_block_roles": {
+        "N04": "Инойисторическийonchaincontextтолькосподтверждённойсемантикойметрики/chain,неfinalizedRPCзамена.",
+        "N15": "Дополнительнаяисторическаявыборка/фонпоточномуasset,еслиCommunitymetric/frequencyдоступны."
+      },
+      "documentation_ids": [
+        "coinmetricsDocs"
+      ],
+      "documented_capabilities": {
+        "access": "community-api.coinmetrics.io/v4,nokey,CC_BY_NC_4_0;PROapi/wsнеобъявлятьfree.",
+        "limits": "10requests/6s/IP,10parallelREST;existingmodule2/min,12/day(ordinary8/manual4),372/31dнеизменны.",
+        "coverage": "ОбщийOpenAPIсодержитpaid+communityroutes. НаличиемаршрутаURLнепроверяетentitlement; нужныcatalogueperasset/metric/frequencyиactualtimeseries.",
+        "history": "null=missing,не0;daily/laggednativeметрикиточнысвоейчастоте,не1mflow.",
+        "pause": "НоваярольнеразрешаетвозобновитьN02/N03илипереназначитьихрезервы."
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "NANSEN",
+      "qualification_priority_group": "EXISTING_PROVIDER_SCARCE_SPECIALIST_ONLY",
+      "physical_upstream": "NANSEN_LABELS_OVER_CHAIN_OR_HYPERLIQUID_DATA",
+      "current_project_presence": "Existing specialist NANSEN/NANSEN_FLOWS provider and installed MCP",
+      "potential_block_roles": {
+        "N04": "Labelledaddress/chaincontextпослеexactidentity/clockproof.",
+        "N05": "Existingmanual2hCEXtokenflowadvisory,несигналпродажи.",
+        "LIQ": "Untimedcohortpositionsнеактуальныеfactualfuturelevels."
+      },
+      "documentation_ids": [
+        "nansenCredits",
+        "nansenMcp"
+      ],
+      "documented_capabilities": {
+        "limits": "CurrentdocsFree100trialcredits,позднеедневнойtop-upтолько добаланса10;не10новыхкредитовповерхостатка. Actualaccountплан/остаток/стоимостьцелевогоendpointнепроверены.",
+        "existing_caps": "NANSEN8attempts/daysharedwithFLOWS;кеш/ручнойprioritiesнеизменны.",
+        "cloud": "OAuthMCPиспользуетNansenAPIcredits;неchatquota. Дляunattendedbotнуженотдельноприменимыйauthpath/entitlement,невыданэтимисследованием.",
+        "data_limits": "Labelsprovider-defined/revisable,individualaddressownership/intentневыведены. CEXtokenflowнеvenueexecutedtakerflow."
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "SANTIMENT",
+      "qualification_priority_group": "HISTORICAL_OR_ACCESS_QUALIFICATION_ONLY",
+      "physical_upstream": "SANTIMENT_METRIC_SPECIFIC_INDEXED_UPSTREAM",
+      "current_project_presence": "Installed MCP; no new enabled active runtime route established",
+      "potential_block_roles": {
+        "N04": "Ретроспективныеonchainметрикиприexactslug/definition.",
+        "N15": "Metric-basedhistoricalcomparison,неавтоматическийсекторныйvote.",
+        "ANOMALIES": "Толькодоступнаясвоевременнаяметрика;restrictedFree30daylagнераннееподтверждение."
+      },
+      "documentation_ids": [
+        "santimentPlans",
+        "santimentRates"
+      ],
+      "documented_capabilities": {
+        "limits": "Free1000APIcalls/month,500/hour,100/min;одинGraphQLHTTPможетсодержатьнесколькооплачиваемыхmetriccalls;всеkeysодногоaccountобщие.",
+        "access": "Freevsrestrictedmetricsразделены:restricted1yearhistory/30daylag. Actualmetric/assetentitlement/cloudkeyнепроверены.",
+        "budget_implication": "Одинmetriccallнакаждый36dailyfull×31=1116>1000;непостоянныйодинcallнакаждыйfullдажебезmanual.",
+        "risks": [
+          "СоциальныеданныеN06/N07неактивировать.",
+          "Недостающиелаги/часынеобнулятьиsubaccountнеобходлимита."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    },
+    {
+      "provider_id": "COINGLASS",
+      "qualification_priority_group": "PAID_MODEL_ROUTE_DEFERRED",
+      "physical_upstream": "AGGREGATED_DECLARED_EXCHANGES_PLUS_COINGLASS_MODEL",
+      "current_project_presence": "Possible model provider; actual entitlement and active route not established",
+      "potential_block_roles": {
+        "LIQ": "Толькоопубликованнаямодельзон,неоткрытыепозиции;existingLIQpipelineсохраняется.",
+        "ANOMALIES": "Ликвидационныйконтекстпослеidentity/sourceclock;неправилоentry."
+      },
+      "documentation_ids": [
+        "coinglassPricing",
+        "coinglassHeatmap"
+      ],
+      "documented_capabilities": {
+        "access": "APIpaidplans. КонкретныйaggregatedheatmapModel1доступенProfessional/Enterprise,неHobbyist/Startup/Standardпопрочитаннойтаблице. Ничегонепокупалось.",
+        "limits": "Номинальныетарифныеper-minuteграницынеactualquotaпроекта;неиспользоватьвидимыйfreesiteкакAPIentitlement.",
+        "history": "Model1range12h..1yописан;actualassets/history/numericmodel/units/clock/consumerнепроверены.",
+        "independence": "UnderlyingexchangesпересекаютсяснашимиCEX;новыйaggregatorнекаждаяноваянезависимаяvenue. Modelнефактбудущейликвидации.",
+        "risks": [
+          "ПрисутствующееURLExpiredвdocsUIнеошибкабоевогоAPIвэтомаудите:никтоегоневызывал."
+        ]
+      },
+      "actual_approved_asset_numeric_facts": 0,
+      "exact_approved_asset_mappings_qualified": 0,
+      "actual_consumer_use_qualified": false,
+      "actual_cloud_access_qualified": false,
+      "actual_current_quota_remaining": null,
+      "actual_later_outcome_accuracy": null,
+      "status": "DOC_ONLY_NOT_CONNECTED",
+      "runtime_or_policy_change": false
+    }
+  ],
+  "shared_resource_rules": [
+    "Новоеимяроли/SDK/MCP/APIkeyнетождественноновойquota;ledgerпоprovider/IP/account/endpointweightобщий.",
+    "NewexternalquotaнеувеличиваетCPU/HTTP164/D1/day/month/хранилище/Telegram. Нуженполныйmain+manualreserveиactualadmission.",
+    "N05/N12shared5HTTP/finalistи18scheduledsupplementнепереименовыватьдляобхода;нулевыекешзатратыдоказатьпоисходнымclock.",
+    "Нельзяобъявлятьсинхронныйпарныйвыводпоразнымокнам;спотпропускнеfalseagreementинеблоксамодостаточногоfuturesфакта.",
+    "Документированныйlargepageнеобещаетmonthhistory;retention/отсечку/полноту/последнююзакрытуюсвечупроверятьнаоригиналах.",
+    "ТехническиепредложенияN04/N11/sharedпередатькоординатору;никакихсамостоятельныхsharedправок."
+  ],
+  "MCP_dispositions": [
+    {
+      "provider": "DEPTH_RADAR_ORDER_FLOW_2",
+      "evidence": "Enabled tool metadata only; no calls",
+      "useful_role": "Footprint/taker+bookcontextforsmallsubset",
+      "declared_scope": "get_footprint symbol enum BTCUSDT/ETHUSDT,5/15/30minute; get_history up to4320one-minute bars (~3d).",
+      "upstream": "get_live declares Binance/Bybit derivatives+Coinbase spot,existing physical roots.",
+      "decision": "Cannot be all105monthlyhistory fallback or new independent venue. Restingbookwalls are not futureliquidationpositions. UnattendedAPI/auth/license/quota/currentassetfacts unknown; do not call while source acquisition forbidden."
+    },
+    {
+      "provider": "TOKEN_TERMINAL",
+      "evidence": "Enabled research tool metadata only; no calls",
+      "useful_role": "N15protocolfinancialhistory/sector context",
+      "declared_scope": "Dailyfees/revenue/TVL/user metrics,providerclaims only.",
+      "decision": "No verified cloud API entitlement,source-specific costs, exact asset taxonomy/units/clock. Not shortlisted as connectedfreefeed; no main weights or pausedsupplyblockactivation."
+    },
+    {
+      "provider": "VYX",
+      "evidence": "Current specialist-candidate-context source code + enabled tool metadata; no calls",
+      "useful_role": "ExternalHyperliquidmicroprice/depth context; notHTXexecution",
+      "decision": "Existingprovider/key/cap144/day; chatconnectornotnewquota. Price/model/sequence/sourceclockandcloudentitlementmustqualify. No new broadcoverageclaim."
+    }
+  ],
+  "next_central_qualification": {
+    "not_authorized_in_worker": true,
+    "plan": "Координаторвыбираетодинизпервыхnewvenuecandidatesпослеfreshownliveadmission. Сначалаexactapprovedassetidentity+metadata,затемограниченныйнаборclosedcandlesevent+backgroundиоднастраницаdocumentedtakerприостатке. Переполнение/неполнотузафиксировать,нетправаделать105deepрадикаталога.",
+    "selection": "Pickmissingusefulroleandsavedexactasset,notproviderpopularity. Providernegative/identityconflictremainsnegative;firstHTTP200doesnotclosefact.",
+    "acceptance_fields": [
+      "exact provider/native upstream/asset/chain/address-or-nativebinding/market/quote/multiplier",
+      "raw wire/body hash and original server/event/receive/first-known clocks",
+      "closed UTC grid, positivefiniteOHLC and explicit volume/count units",
+      "complete versus partial trade sample/pagination and immutable IDs",
+      "actual source/day/month/minute/shared/project HTTP+SQL accounting including unknown/manual reserve",
+      "fact→approved consumer→manual and Telegram preparation, source-specific contributions kept separate",
+      "later source-bound outcomes/failed/no-move/controls; prediction unknown until qualified",
+      "same-runmessage_id for delivery,notCI or preparedpayload"
+    ]
+  },
+  "effects": {
+    "provider_market_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "runtime_files_changed": 0,
+    "shared_files_changed": 0,
+    "caps_or_strategy_changed": false,
+    "unknown_reset": false,
+    "current_asset_coverage_qualified": false,
+    "source_connections_qualified": 0
+  }
+}

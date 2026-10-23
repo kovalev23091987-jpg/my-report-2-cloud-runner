@@ -1,0 +1,1029 @@
+{
+  "schema": "SAVED_APR_NEAR_SLOT_FALLBACK_GAP_AUDIT_V1",
+  "working_base": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+  "original": {
+    "cloud_run": "39133840839",
+    "artifact_id": "12138787149",
+    "archive": "checkpoints/private-price-witness-repair-20261018/natural-39133840839-12138787149.zip",
+    "sha256": "91e315ecaf015fff224cfa828caf79b6c39e921e20d0695a3ef40ad4fb1d66cc",
+    "member_sha256": {
+      "report2-run-result.json": "a8129fe2d7e130cdd0a35cb045f879f90458833a82bf5d930ab3591b46a2d9d1",
+      "report2-completion-accounting.json": "08dd8196b50853fb1b598be004f295c92ee180779553937dc54092b0090a3452"
+    },
+    "source_head": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+    "run_id": "1792331883613-1792331891442"
+  },
+  "inspected_code_sha256": {
+    "current-generation/files/src/external-n05-flow-collector.mjs": "cbfcc3dda74e1c3102dc512d7f10539545db05c7d37c25d325a3ce53caa2bb9b",
+    "current-generation/files/src/candidate-evidence-v2-runtime.mjs": "85785e34c52d67aac8ab981d6123c78fc8def8bcff4877c67459a8d601d389ec",
+    "current-generation/files/src/public-venue-source-priority.mjs": "4091e8e25215c663cd79c45c74f04b563d035a653caca27182e733202adf7842",
+    "current-generation/files/src/gate-flow-collector.mjs": "17c6fee8b0db0bdc3dff5ef300c485daec364e83dbafd64ff110c885a178c89f",
+    "current-generation/files/src/backpack-flow-collector.mjs": "defd82645f5b08af71f05bd3476149773c9bf1c82f6ddb542869fbc349987e84",
+    "current-generation/files/src/bitget-flow-collector.mjs": "218421d5860f1c8f522880e22e6fb068c24b4c87537328b9dbfee8084dd5dffe",
+    "current-generation/files/src/n12-native-public-trade-collector.mjs": "d0f521604e677ca3b94dc683f88f7a89738fdb57fc709ca092a1ad3a2457ff2b",
+    "current-generation/tests/active-market-coverage-expansion.test.mjs": "1f796b08fb861dd19a09033407449d0f06f623ddb284d747571b75e90867c200"
+  },
+  "saved": [
+    {
+      "contract": "APR-USDT",
+      "snapshot_id": "S392:APR-USDT:1792331980053",
+      "observed_ts": 1792331980053,
+      "collector_queue": [
+        "GATE",
+        "BACKPACK",
+        "BITGET",
+        "POLONIEX",
+        "GATE_FUTURES_N12",
+        "KUCOIN_N12_EXACT_TOKEN"
+      ],
+      "queue_is_not_endpoint_attempt_trace": true,
+      "captured_split": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 5,
+        "n12_http": 0,
+        "n12_routes": [
+          {
+            "venue": "GATE_FUTURES_N12",
+            "http": 0,
+            "status": "EXACT_GATE_IDENTITY_AND_SHARED_METADATA_REQUIRED"
+          },
+          {
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "split_accepted_at_its_original_scope_not_reaudited": true,
+      "receipts": {
+        "reported_count": 18,
+        "retained_count": 8,
+        "omitted_count": 10,
+        "retained_routes": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "retained_statuses": [
+          "RECEIVED_NOT_QUALIFIED"
+        ],
+        "missing_per_receipt_fields": [
+          "actual_http",
+          "received_ts",
+          "cache_status",
+          "url_or_safe_endpoint_id",
+          "market",
+          "kind",
+          "body_sha256",
+          "logical_request_id"
+        ],
+        "first_eight_200s_are_not_eight_new_HTTP": true
+      },
+      "exact_N05_per_route_transport": null,
+      "exact_endpoint_attempt_order": null,
+      "caller_reserved_requests": null,
+      "skipped_N12_market_reasons_not_in_compact_projection": true,
+      "source_order_change_authorized_by_this_audit": false,
+      "provider_failure_inferred_from_caller_cap": false
+    },
+    {
+      "contract": "NEAR-USDT",
+      "snapshot_id": "S392:NEAR-USDT:1792331943696",
+      "observed_ts": 1792331943696,
+      "collector_queue": [
+        "BINANCE",
+        "KRAKEN",
+        "BITGET",
+        "POLONIEX",
+        "OKX_N12_NATIVE",
+        "KUCOIN_N12_NATIVE"
+      ],
+      "queue_is_not_endpoint_attempt_trace": true,
+      "captured_split": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": "CLOSED_BOUNDED_N12_PUBLIC_TRADES"
+          },
+          {
+            "venue": "KUCOIN_N12_NATIVE",
+            "http": 0,
+            "status": "NO_USEFUL_PUBLIC_TRADE_SAMPLE"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "split_accepted_at_its_original_scope_not_reaudited": true,
+      "receipts": {
+        "reported_count": 15,
+        "retained_count": 8,
+        "omitted_count": 7,
+        "retained_routes": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "retained_statuses": [
+          "RECEIVED_NOT_QUALIFIED"
+        ],
+        "missing_per_receipt_fields": [
+          "actual_http",
+          "received_ts",
+          "cache_status",
+          "url_or_safe_endpoint_id",
+          "market",
+          "kind",
+          "body_sha256",
+          "logical_request_id"
+        ],
+        "first_eight_200s_are_not_eight_new_HTTP": true
+      },
+      "exact_N05_per_route_transport": null,
+      "exact_endpoint_attempt_order": null,
+      "caller_reserved_requests": null,
+      "skipped_N12_market_reasons_not_in_compact_projection": true,
+      "source_order_change_authorized_by_this_audit": false,
+      "provider_failure_inferred_from_caller_cap": false
+    }
+  ],
+  "current_helper_new_controlled_defects": [
+    {
+      "name": "MISSING_N05_DETAIL",
+      "input": {
+        "network_calls": 5,
+        "adapter_results": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "actual_current_helper_output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": null
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "controlled_not_observed_in_saved_run": true
+    },
+    {
+      "name": "NULL_N12_HTTP",
+      "input": {
+        "network_calls": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": null
+          }
+        ]
+      },
+      "actual_current_helper_output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 5,
+        "n12_http": 0,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 0,
+            "status": null
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "controlled_not_observed_in_saved_run": true
+    },
+    {
+      "name": "NEGATIVE_N05_HTTP",
+      "input": {
+        "network_calls": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": -10
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "actual_current_helper_output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": null
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "controlled_not_observed_in_saved_run": true
+    },
+    {
+      "name": "DUPLICATE_VENUE",
+      "input": {
+        "network_calls": 5,
+        "adapter_results": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 1
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 1
+          }
+        ]
+      },
+      "actual_current_helper_output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 1,
+            "status": null
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 1,
+            "status": null
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "controlled_not_observed_in_saved_run": true
+    },
+    {
+      "name": "STRING_TOTAL",
+      "input": {
+        "network_calls": "5",
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "actual_current_helper_output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": null
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "controlled_not_observed_in_saved_run": true
+    },
+    {
+      "name": "OVER_FIVE",
+      "input": {
+        "network_calls": 6,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 4
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "actual_current_helper_output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 6,
+        "n05_http": 4,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": null
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "controlled_not_observed_in_saved_run": true
+    }
+  ],
+  "reference_proposal_controls": [
+    {
+      "name": "EXPLICIT_MEASURED_FIVE",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "baseline_http": 0,
+        "no_double_count": true,
+        "admission_authorized": false,
+        "grants_are_not_transport": true,
+        "unused_reservations_refunded": false
+      }
+    },
+    {
+      "name": "OPTIONAL_BASELINE_IS_EXPLICIT_AND_DISJOINT",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 4,
+        "baseline_transport_HTTP": 1,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 2
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "baseline_http": 1,
+        "no_double_count": true,
+        "admission_authorized": false,
+        "grants_are_not_transport": true,
+        "unused_reservations_refunded": false
+      }
+    },
+    {
+      "name": "ZERO_TRANSPORT_WITH_SPENT_GRANTS",
+      "input": {
+        "network_calls": 0,
+        "flow_network_calls": 0,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 0,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 0
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 0
+          }
+        ]
+      },
+      "output": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 0,
+        "n05_http": 0,
+        "n12_http": 0,
+        "baseline_http": 0,
+        "no_double_count": true,
+        "admission_authorized": false,
+        "grants_are_not_transport": true,
+        "unused_reservations_refunded": false
+      }
+    },
+    {
+      "name": "MISSING_N05_DETAIL",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_SUM_NOT_FLOW_HTTP",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "NULL_N12_HTTP",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": null
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "NEGATIVE_N05_HTTP",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": -10
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "DUPLICATE_VENUE",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 1
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 1
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "DUPLICATE_ADAPTER",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "STRING_TOTAL",
+      "input": {
+        "network_calls": "5",
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "TOTAL_UNKNOWN_OR_INVALID",
+        "total_http": null,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "OVER_FIVE",
+      "input": {
+        "network_calls": 6,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 4
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "EXISTING_FIVE_REQUEST_ENVELOPE_EXCEEDED",
+        "total_http": 6,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_N12_undefined",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE"
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_N12_null",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": null
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_N12_-1",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": -1
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_N12_0.5",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 0.5
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_N12_2",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": "2"
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_N12_NaN",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": null
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_baseline_transport_HTTP_null",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": null,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "BASELINE_HTTP_UNKNOWN_OR_INVALID",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_flow_network_calls_4",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 4,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_SUM_NOT_FLOW_HTTP",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_observed_transport_HTTP_4",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 4,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "WRAPPER_TRANSPORT_NOT_TOTAL",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_caller_reserved_requests_4",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 4,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "CALLER_GRANTS_UNKNOWN_OR_INCONSISTENT",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "INVALID_caller_reserved_requests_null",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": null,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "CALLER_GRANTS_UNKNOWN_OR_INCONSISTENT",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "UNEXPLAINED_RESIDUAL_NOT_BASELINE",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 4,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "BINANCE",
+            "network_calls": 2
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "FLOW_PLUS_BASELINE_NOT_TOTAL",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "UNKNOWN_ROUTE_NO_INFERRED_N05",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5,
+        "adapter_results": [
+          {
+            "venue": "UNCLASSIFIED",
+            "network_calls": 3
+          },
+          {
+            "venue": "OKX_N12_NATIVE",
+            "network_calls": 2
+          }
+        ]
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "UNKNOWN_ADAPTER_ROLE",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    },
+    {
+      "name": "MISSING_ADAPTERS",
+      "input": {
+        "network_calls": 5,
+        "flow_network_calls": 5,
+        "baseline_transport_HTTP": 0,
+        "observed_transport_HTTP": 5,
+        "caller_reserved_requests": 5
+      },
+      "output": {
+        "status": "UNRECONCILED_SHARED_HTTP",
+        "reason": "ADAPTER_DETAIL_MISSING_OR_UNBOUNDED",
+        "total_http": 5,
+        "n05_http": null,
+        "n12_http": null,
+        "no_double_count": true,
+        "admission_authorized": false
+      }
+    }
+  ],
+  "reference_control_count": 23,
+  "no_actual_wrong_saved_cost_claim": true,
+  "no_source_reordering_from_incomplete_trace": true,
+  "no_full_canonical_or_raw_provider_body_reconstruction": true,
+  "no_new_HTTP_SQL_delivery_or_actual_coverage": true,
+  "production_files_modified": false
+}

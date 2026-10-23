@@ -1,0 +1,1930 @@
+{
+  "schema": "HTX_IDENTITY_OPTIONAL_CACHE_BEFORE_AFTER_CONTROLLED_V1",
+  "status": "PASS",
+  "case_count": 14,
+  "original": {
+    "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+    "compressed_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+    "decoded_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+    "currency": "ct",
+    "identity": {
+      "chain": "ethereum",
+      "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+    },
+    "original_transport_clock_present": false
+  },
+  "controlled_clock": {
+    "now": 1792281600000,
+    "received_ts": 1792281600017,
+    "status": "CONTROLLED_REPLAY_NOT_ORIGINAL_SOURCE_OR_FIRST_DETECTION_TIME"
+  },
+  "original_production_sha256": "ee9f18108e66d87f2daa4da22b3a5c3abc257beb5dacd398de84b3915f67e4a7",
+  "proposal_sha256": "ce7f6d28177de10bb1675ca7f7ae2acc8087ab988f3108b8dc58abd5e8f713ec",
+  "results": [
+    {
+      "case": {
+        "name": "identity_known-error",
+        "failure": "known-error",
+        "consumer": false
+      },
+      "before": {
+        "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 2,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies",
+          "https://api.coinpaprika.com/v1/exchanges/htx/markets"
+        ],
+        "admissions": 2,
+        "SQL_statements": 25,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(\n   provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,\n   units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,\n   PRIMARY KEY(provider,minute_bucket,reservation_id))",
+          "run:CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window\n   ON report2_provider_minute_ledger_v1(provider,created_ts)",
+          "run:CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation\n   ON report2_provider_minute_ledger_v1(provider,reservation_id)",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+          "first:SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+          "identity": null,
+          "network_calls": 2,
+          "error": "CONTROLLED_REFERENCE_CACHE_FAILURE",
+          "identity_fallback_status": "COINPAPRIKA_HTX_MARKETS_NOT_CLOSED",
+          "identity_fallback_receipts": [
+            {
+              "route": "HTX_MARKET_CATALOG",
+              "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+              "http_status": 503,
+              "status": "HTTP_503",
+              "received_ts": 1792349996660,
+              "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "actual_http": 1
+            }
+          ]
+        }
+      },
+      "after": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "cache_write_receipts": [
+            {
+              "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+              "native_usage_unclosed": false
+            }
+          ],
+          "source_chain_native_cost_unclosed": false
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "consumer_known-error",
+        "failure": "known-error",
+        "consumer": true
+      },
+      "before": {
+        "status": "IDENTITY_NOT_CLOSED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 1,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 2,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies",
+          "https://api.coinpaprika.com/v1/exchanges/htx/markets"
+        ],
+        "admissions": 2,
+        "SQL_statements": 25,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(\n   provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,\n   units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,\n   PRIMARY KEY(provider,minute_bucket,reservation_id))",
+          "run:CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window\n   ON report2_provider_minute_ledger_v1(provider,created_ts)",
+          "run:CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation\n   ON report2_provider_minute_ledger_v1(provider,reservation_id)",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+          "first:SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "IDENTITY_NOT_CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": null,
+          "identity_method": "MANUAL_EXACT_REGISTRY",
+          "network_calls": 0,
+          "asset_reference": {
+            "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+            "identity": null,
+            "network_calls": 2,
+            "error": "CONTROLLED_REFERENCE_CACHE_FAILURE",
+            "identity_fallback_status": "COINPAPRIKA_HTX_MARKETS_NOT_CLOSED",
+            "identity_fallback_receipts": [
+              {
+                "route": "HTX_MARKET_CATALOG",
+                "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+                "http_status": 503,
+                "status": "HTTP_503",
+                "received_ts": 1792349996690,
+                "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+                "actual_http": 1
+              }
+            ]
+          },
+          "identity_reference_network_calls": 2,
+          "total_network_calls": 2
+        }
+      },
+      "after": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 1,
+        "consumer_identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "consumer_route_names": [
+          "JOINT_FLOW",
+          "LARGE_TRADES",
+          "CHAIN_EVENTS",
+          "SECTOR",
+          "SECTOR_COINGECKO"
+        ],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 0,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "CLOSED",
+            "contract": "CT-USDT",
+            "currency": "CT",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+            "network_calls": 1,
+            "cache_status": "REFRESHED",
+            "receipt": {
+              "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+              "http_status": 200,
+              "received_ts": 1792281600017,
+              "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+            },
+            "reference_observed_ts": 1792281600017,
+            "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+            "internal_only": true,
+            "cache_write_receipts": [
+              {
+                "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+                "native_usage_unclosed": false
+              }
+            ],
+            "source_chain_native_cost_unclosed": false
+          },
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "identity_unknown-error",
+        "failure": "unknown-error",
+        "consumer": false
+      },
+      "before": {
+        "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+          "identity": null,
+          "network_calls": 1,
+          "error": "CONTROLLED_REFERENCE_CACHE_FAILURE",
+          "identity_fallback_status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+          "identity_fallback_receipts": []
+        }
+      },
+      "after": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+            "native_usage_unclosed": true
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "cache_write_receipts": [
+            {
+              "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+              "native_usage_unclosed": true
+            }
+          ],
+          "source_chain_native_cost_unclosed": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "consumer_unknown-error",
+        "failure": "unknown-error",
+        "consumer": true
+      },
+      "before": {
+        "status": "IDENTITY_NOT_CLOSED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 1,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "IDENTITY_NOT_CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": null,
+          "identity_method": "MANUAL_EXACT_REGISTRY",
+          "network_calls": 0,
+          "asset_reference": {
+            "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+            "identity": null,
+            "network_calls": 1,
+            "error": "CONTROLLED_REFERENCE_CACHE_FAILURE",
+            "identity_fallback_status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+            "identity_fallback_receipts": []
+          },
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1
+        }
+      },
+      "after": {
+        "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+            "native_usage_unclosed": true
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+          "contract": "CT-USDT",
+          "base": "CT",
+          "identity_status": "CLOSED",
+          "asset_identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "CLOSED",
+            "contract": "CT-USDT",
+            "currency": "CT",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+            "network_calls": 1,
+            "cache_status": "REFRESHED",
+            "receipt": {
+              "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+              "http_status": 200,
+              "received_ts": 1792281600017,
+              "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+            },
+            "reference_observed_ts": 1792281600017,
+            "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+            "internal_only": true,
+            "cache_write_receipts": [
+              {
+                "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+                "native_usage_unclosed": true
+              }
+            ],
+            "source_chain_native_cost_unclosed": true
+          },
+          "network_calls": 0,
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1,
+          "source_chain_native_cost_unclosed": true,
+          "internal_only": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "identity_unknown-ack",
+        "failure": "unknown-ack",
+        "consumer": false
+      },
+      "before": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true
+        }
+      },
+      "after": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_UNCLOSED_NATIVE_USAGE",
+            "native_usage_unclosed": true
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "cache_write_receipts": [
+            {
+              "status": "CACHE_WRITE_UNCLOSED_NATIVE_USAGE",
+              "native_usage_unclosed": true
+            }
+          ],
+          "source_chain_native_cost_unclosed": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "consumer_unknown-ack",
+        "failure": "unknown-ack",
+        "consumer": true
+      },
+      "before": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 1,
+        "consumer_identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "consumer_route_names": [
+          "JOINT_FLOW",
+          "LARGE_TRADES",
+          "CHAIN_EVENTS",
+          "SECTOR",
+          "SECTOR_COINGECKO"
+        ],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 0,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "CLOSED",
+            "contract": "CT-USDT",
+            "currency": "CT",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+            "network_calls": 1,
+            "cache_status": "REFRESHED",
+            "receipt": {
+              "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+              "http_status": 200,
+              "received_ts": 1792281600017,
+              "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+            },
+            "reference_observed_ts": 1792281600017,
+            "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+            "internal_only": true
+          },
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1
+        }
+      },
+      "after": {
+        "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_UNCLOSED_NATIVE_USAGE",
+            "native_usage_unclosed": true
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+          "contract": "CT-USDT",
+          "base": "CT",
+          "identity_status": "CLOSED",
+          "asset_identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "CLOSED",
+            "contract": "CT-USDT",
+            "currency": "CT",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+            "network_calls": 1,
+            "cache_status": "REFRESHED",
+            "receipt": {
+              "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+              "http_status": 200,
+              "received_ts": 1792281600017,
+              "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+            },
+            "reference_observed_ts": 1792281600017,
+            "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+            "internal_only": true,
+            "cache_write_receipts": [
+              {
+                "status": "CACHE_WRITE_UNCLOSED_NATIVE_USAGE",
+                "native_usage_unclosed": true
+              }
+            ],
+            "source_chain_native_cost_unclosed": true
+          },
+          "network_calls": 0,
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1,
+          "source_chain_native_cost_unclosed": true,
+          "internal_only": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "ordinary_no_failure"
+      },
+      "before": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true
+        }
+      },
+      "after": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_COMPLETED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "cache_write_receipts": [
+            {
+              "status": "CACHE_WRITE_COMPLETED",
+              "native_usage_unclosed": false
+            }
+          ],
+          "source_chain_native_cost_unclosed": false
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "consumer_ordinary",
+        "consumer": true
+      },
+      "before": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 1,
+        "consumer_identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "consumer_route_names": [
+          "JOINT_FLOW",
+          "LARGE_TRADES",
+          "CHAIN_EVENTS",
+          "SECTOR",
+          "SECTOR_COINGECKO"
+        ],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 0,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "CLOSED",
+            "contract": "CT-USDT",
+            "currency": "CT",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+            "network_calls": 1,
+            "cache_status": "REFRESHED",
+            "receipt": {
+              "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+              "http_status": 200,
+              "received_ts": 1792281600017,
+              "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+            },
+            "reference_observed_ts": 1792281600017,
+            "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+            "internal_only": true
+          },
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1
+        }
+      },
+      "after": {
+        "status": "CLOSED",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_COMPLETED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "cache_failure_fired": false,
+        "consumer_calls": 1,
+        "consumer_identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "consumer_route_names": [
+          "JOINT_FLOW",
+          "LARGE_TRADES",
+          "CHAIN_EVENTS",
+          "SECTOR",
+          "SECTOR_COINGECKO"
+        ],
+        "simulated_HTTP": 1,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies"
+        ],
+        "admissions": 1,
+        "SQL_statements": 12,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 1,
+        "full_result": {
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 0,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "CLOSED",
+            "contract": "CT-USDT",
+            "currency": "CT",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+            "network_calls": 1,
+            "cache_status": "REFRESHED",
+            "receipt": {
+              "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+              "http_status": 200,
+              "received_ts": 1792281600017,
+              "parsed_payload_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+            },
+            "reference_observed_ts": 1792281600017,
+            "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+            "internal_only": true,
+            "cache_write_receipts": [
+              {
+                "status": "CACHE_WRITE_COMPLETED",
+                "native_usage_unclosed": false
+              }
+            ],
+            "source_chain_native_cost_unclosed": false
+          },
+          "identity_reference_network_calls": 1,
+          "total_network_calls": 1
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "preexisting_unknown",
+        "unknown_before": true,
+        "consumer": true
+      },
+      "before": {
+        "status": "IDENTITY_NOT_CLOSED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 1,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 1,
+        "SQL_statements": 7,
+        "SQL_after_unknown": 7,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "IDENTITY_NOT_CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": null,
+          "identity_method": "MANUAL_EXACT_REGISTRY",
+          "network_calls": 0,
+          "asset_reference": {
+            "status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+            "identity": null,
+            "network_calls": 0
+          },
+          "identity_reference_network_calls": 0,
+          "total_network_calls": 0
+        }
+      },
+      "after": {
+        "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 0,
+        "SQL_statements": 0,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+          "contract": "CT-USDT",
+          "base": "CT",
+          "identity_status": "NOT_CLOSED",
+          "asset_identity": null,
+          "identity_method": null,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+            "contract": "CT-USDT",
+            "identity": null,
+            "network_calls": 0,
+            "source_chain_native_cost_unclosed": true,
+            "internal_only": true
+          },
+          "network_calls": 0,
+          "identity_reference_network_calls": 0,
+          "total_network_calls": 0,
+          "source_chain_native_cost_unclosed": true,
+          "internal_only": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "unknown_after_cache_read",
+        "stage": "cache-read",
+        "consumer": true
+      },
+      "before": {
+        "status": "IDENTITY_NOT_CLOSED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 1,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 1,
+        "SQL_statements": 2,
+        "SQL_after_unknown": 1,
+        "SQL_shapes": [
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "IDENTITY_NOT_CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": null,
+          "identity_method": "MANUAL_EXACT_REGISTRY",
+          "network_calls": 0,
+          "asset_reference": {
+            "status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+            "identity": null,
+            "network_calls": 0
+          },
+          "identity_reference_network_calls": 0,
+          "total_network_calls": 0
+        }
+      },
+      "after": {
+        "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 0,
+        "SQL_statements": 1,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+          "contract": "CT-USDT",
+          "base": "CT",
+          "identity_status": "NOT_CLOSED",
+          "asset_identity": null,
+          "identity_method": null,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+            "contract": "CT-USDT",
+            "identity": null,
+            "network_calls": 0,
+            "source_chain_native_cost_unclosed": true,
+            "internal_only": true
+          },
+          "network_calls": 0,
+          "identity_reference_network_calls": 0,
+          "total_network_calls": 0,
+          "source_chain_native_cost_unclosed": true,
+          "internal_only": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "unknown_after_day_read",
+        "stage": "day-read",
+        "consumer": true
+      },
+      "before": {
+        "status": "IDENTITY_NOT_CLOSED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 1,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 1,
+        "SQL_statements": 2,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "IDENTITY_NOT_CLOSED",
+          "contract": "CT-USDT",
+          "asset_identity": null,
+          "identity_method": "MANUAL_EXACT_REGISTRY",
+          "network_calls": 0,
+          "asset_reference": {
+            "status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+            "identity": null,
+            "network_calls": 0
+          },
+          "identity_reference_network_calls": 0,
+          "total_network_calls": 0
+        }
+      },
+      "after": {
+        "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 0,
+        "SQL_statements": 2,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2"
+        ],
+        "unknown_ops": 1,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+          "contract": "CT-USDT",
+          "base": "CT",
+          "identity_status": "NOT_CLOSED",
+          "asset_identity": null,
+          "identity_method": null,
+          "asset_reference": {
+            "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+            "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+            "contract": "CT-USDT",
+            "identity": null,
+            "network_calls": 0,
+            "source_chain_native_cost_unclosed": true,
+            "internal_only": true
+          },
+          "network_calls": 0,
+          "identity_reference_network_calls": 0,
+          "total_network_calls": 0,
+          "source_chain_native_cost_unclosed": true,
+          "internal_only": true
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "whole_admission_denied",
+        "no_admission": true
+      },
+      "before": {
+        "status": "CONTROLLED_DENIED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 1,
+        "SQL_statements": 7,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "CONTROLLED_DENIED",
+          "identity": null,
+          "network_calls": 0
+        }
+      },
+      "after": {
+        "status": "CONTROLLED_DENIED",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": false,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 0,
+        "URLs": [],
+        "admissions": 1,
+        "SQL_statements": 7,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 0,
+        "durable_reference_reservations": 0,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "CONTROLLED_DENIED",
+          "identity": null,
+          "network_calls": 0
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "invalid_address_not_rescued",
+        "failure": "known-error",
+        "invalid": "bad-address"
+      },
+      "before": {
+        "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 2,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies",
+          "https://api.coinpaprika.com/v1/exchanges/htx/markets"
+        ],
+        "admissions": 2,
+        "SQL_statements": 25,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(\n   provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,\n   units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,\n   PRIMARY KEY(provider,minute_bucket,reservation_id))",
+          "run:CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window\n   ON report2_provider_minute_ledger_v1(provider,created_ts)",
+          "run:CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation\n   ON report2_provider_minute_ledger_v1(provider,reservation_id)",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+          "first:SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+          "identity": null,
+          "network_calls": 2,
+          "error": "CONTROLLED_REFERENCE_CACHE_FAILURE",
+          "identity_fallback_status": "COINPAPRIKA_HTX_MARKETS_NOT_CLOSED",
+          "identity_fallback_receipts": [
+            {
+              "route": "HTX_MARKET_CATALOG",
+              "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+              "http_status": 503,
+              "status": "HTTP_503",
+              "received_ts": 1792349996891,
+              "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "actual_http": 1
+            }
+          ]
+        }
+      },
+      "after": {
+        "status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+        "identity": null,
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 2,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies",
+          "https://api.coinpaprika.com/v1/exchanges/htx/markets"
+        ],
+        "admissions": 2,
+        "SQL_statements": 25,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(\n   provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,\n   units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,\n   PRIMARY KEY(provider,minute_bucket,reservation_id))",
+          "run:CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window\n   ON report2_provider_minute_ledger_v1(provider,created_ts)",
+          "run:CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation\n   ON report2_provider_minute_ledger_v1(provider,reservation_id)",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+          "first:SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": null,
+          "identity_method": null,
+          "network_calls": 2,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "1744c182418cedcd30961856172fefe08a27eafbdbcc4284bceeb752acbd0d0e"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "cache_write_receipts": [
+            {
+              "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+              "native_usage_unclosed": false
+            }
+          ],
+          "source_chain_native_cost_unclosed": false,
+          "identity_fallback_status": "COINPAPRIKA_HTX_MARKETS_NOT_CLOSED",
+          "identity_fallback_receipts": [
+            {
+              "route": "HTX_MARKET_CATALOG",
+              "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+              "http_status": 503,
+              "status": "HTTP_503",
+              "received_ts": 1792349996908,
+              "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "actual_http": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "duplicate_currency_not_rescued",
+        "failure": "known-error",
+        "invalid": "duplicate"
+      },
+      "before": {
+        "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+        "identity": null,
+        "reference_observed_ts": null,
+        "cache_receipts": [],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 2,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies",
+          "https://api.coinpaprika.com/v1/exchanges/htx/markets"
+        ],
+        "admissions": 2,
+        "SQL_statements": 25,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(\n   provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,\n   units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,\n   PRIMARY KEY(provider,minute_bucket,reservation_id))",
+          "run:CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window\n   ON report2_provider_minute_ledger_v1(provider,created_ts)",
+          "run:CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation\n   ON report2_provider_minute_ledger_v1(provider,reservation_id)",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+          "first:SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "status": "HTX_ASSET_REFERENCE_SOURCE_ERROR",
+          "identity": null,
+          "network_calls": 2,
+          "error": "CONTROLLED_REFERENCE_CACHE_FAILURE",
+          "identity_fallback_status": "COINPAPRIKA_HTX_MARKETS_NOT_CLOSED",
+          "identity_fallback_receipts": [
+            {
+              "route": "HTX_MARKET_CATALOG",
+              "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+              "http_status": 503,
+              "status": "HTTP_503",
+              "received_ts": 1792349996921,
+              "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "actual_http": 1
+            }
+          ]
+        }
+      },
+      "after": {
+        "status": "DUPLICATE_HTX_CURRENCY",
+        "identity": null,
+        "reference_observed_ts": 1792281600017,
+        "cache_receipts": [
+          {
+            "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "cache_failure_fired": true,
+        "consumer_calls": 0,
+        "consumer_identity": null,
+        "consumer_route_names": [],
+        "simulated_HTTP": 2,
+        "URLs": [
+          "https://api.huobi.pro/v2/reference/currencies",
+          "https://api.coinpaprika.com/v1/exchanges/htx/markets"
+        ],
+        "admissions": 2,
+        "SQL_statements": 25,
+        "SQL_after_unknown": 0,
+        "SQL_shapes": [
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+          "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json",
+          "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+          "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+          "run:CREATE TABLE IF NOT EXISTS report2_provider_minute_ledger_v1(\n   provider TEXT NOT NULL,minute_bucket INTEGER NOT NULL,reservation_id TEXT NOT NULL,\n   units INTEGER NOT NULL CHECK(units>0),created_ts INTEGER NOT NULL,\n   PRIMARY KEY(provider,minute_bucket,reservation_id))",
+          "run:CREATE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_window\n   ON report2_provider_minute_ledger_v1(provider,created_ts)",
+          "run:CREATE UNIQUE INDEX IF NOT EXISTS idx_report2_provider_minute_ledger_v1_reservation\n   ON report2_provider_minute_ledger_v1(provider,reservation_id)",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+          "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+          "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+          "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+          "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+          "run:INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+          "first:SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+          "first:SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3"
+        ],
+        "unknown_ops": 0,
+        "durable_reference_daily_attempts": 1,
+        "durable_reference_reservations": 1,
+        "reference_cache_rows": 0,
+        "full_result": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "DUPLICATE_HTX_CURRENCY",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": null,
+          "identity_method": null,
+          "network_calls": 2,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792281600017,
+            "parsed_payload_sha256": "b4298f2943186031f47ff74ee3c4bfd2b25db8f17ef1cb86654f299585165bf9"
+          },
+          "reference_observed_ts": 1792281600017,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "cache_write_receipts": [
+            {
+              "status": "CACHE_WRITE_FAILED_VALID_RESPONSE_RETAINED",
+              "native_usage_unclosed": false
+            }
+          ],
+          "source_chain_native_cost_unclosed": false,
+          "identity_fallback_status": "COINPAPRIKA_HTX_MARKETS_NOT_CLOSED",
+          "identity_fallback_receipts": [
+            {
+              "route": "HTX_MARKET_CATALOG",
+              "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+              "http_status": 503,
+              "status": "HTTP_503",
+              "received_ts": 1792349996934,
+              "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "actual_http": 1
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "interpretation": {
+    "new_cache_insert_failure_path_not_accepted_N04_fact_cache_tests": true,
+    "ordinary_logical_SQL_shapes_unchanged": true,
+    "no_native_read_write_upper_bound_claim": true,
+    "actual_provider_HTTP": 0,
+    "actual_native_SQL": 0,
+    "BR_actual_cause_or_binding_claim": false,
+    "production_activation": false,
+    "consumer_proof": "Existing production supplemental and route-planning seams with an injected pure consumer, not new manual/TG or source delivery."
+  }
+}

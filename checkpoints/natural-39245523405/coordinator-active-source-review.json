@@ -1,0 +1,644 @@
+{
+  "schema": "SAVED_NATURAL_ACTIVE_SOURCE_REVIEW_V1",
+  "cloud_run": 39245523405,
+  "head": "47b08e859075fd9bafc19b568ae8d3139ec7cee9",
+  "run_id": "1792409648781-1792409663854",
+  "status": "CLOSED",
+  "source": "schedule",
+  "market_scope": {
+    "universe_total": 105,
+    "scanned": 105,
+    "scanned_market_data": 99,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "current_candidates": [
+    {
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:64fc3e4d790aee40bc837e64ea6967c759b08edd",
+      "snapshot_id": "S392:BTW-USDT:1792409783136",
+      "state": "REJECTED",
+      "direction": "SHORT",
+      "analytical_fingerprint": "5d532a2297f4aeba3253cb5de2e03f4785c8e090afe446fa929ebd874045e20c",
+      "source_role_status": "NOT_CLOSED",
+      "source_role_reasons": [
+        "FEWER_THAN_TWO_VERIFIED_DISTINCT_ORIGINS"
+      ],
+      "rendered_used_context_block_ids": [
+        "N05",
+        "N12",
+        "N10",
+        "N04",
+        "N11",
+        "N15"
+      ],
+      "block_usage": {
+        "N04": {
+          "valid": 7,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "CHAIN_EVENTS": {
+              "valid_fact_count": 7,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "PUBLICNODE_RPC"
+              ],
+              "physical_root_keys": [
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|132",
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|136",
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|138",
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|142",
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|144",
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|153",
+                "bsc|0x3c301a411ce753de714089791a4e543ad5bdf33025bea2f336c911014b8e0472|162"
+              ]
+            },
+            "BLOCKSCOUT_INDEX": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            }
+          }
+        },
+        "N05": {
+          "valid": 1,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "JOINT_SPOT_FUTURES_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "AVAILABLE_N05_FLOW_CONTEXT": {
+              "valid_fact_count": 1,
+              "used_fact_count": 0,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "QUALIFIED_OFFICIAL_TAKER_FLOW"
+              ],
+              "physical_root_keys": [
+                "AVAILABLE_FLOW:BTW-USDT:1792395300000:1792409700000"
+              ]
+            },
+            "CHAIN_EVENTS": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "NANSEN_FLOWS": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "EXTERNAL_N05_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "BITGET_FOUR_HOUR_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            }
+          }
+        },
+        "N10": {
+          "valid": 4,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "valid_fact_count": 4,
+              "used_fact_count": 4,
+              "rendered_fact_count": 4,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_CLOSED_CANDLES",
+                "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+                "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES",
+                "POLONIEX_OFFICIAL_SPOT_CANDLES"
+              ],
+              "physical_root_keys": [
+                "htx-futures:BTW-USDT|BTW-USDT:60min:1792407600000",
+                "htx-futures:BTW-USDT|BTW-USDT:15m:1792409700000",
+                "htx-spot:BTW-USDT|HTX_SPOT:BTW-USDT:1792409700000",
+                "htx-futures:BTW-USDT|POLONIEX:BTW-USDT:1792409700000"
+              ]
+            }
+          }
+        },
+        "N11": {
+          "valid": 1,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "HTX_IMMUTABLE_EXECUTION_BOOK"
+              ],
+              "physical_root_keys": [
+                "htx-futures:BTW-USDT|S392:BTW-USDT:1792409783136:N11"
+              ]
+            }
+          }
+        },
+        "N12": {
+          "valid": 2,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "HTX_LARGE_TRADES": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+              ],
+              "physical_root_keys": [
+                "HTX_SPOT_FUTURES_TRADE_SAMPLE:BTW-USDT:BTW-USDT:BOUNDED:1000005680533440000:HTX_SPOT_TRADE_SAMPLE:BTW-USDT:9328677"
+              ]
+            },
+            "EXTERNAL_N05_FLOW": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "GATE_OFFICIAL_PUBLIC_SPOT_TRADES"
+              ],
+              "physical_root_keys": [
+                "GATE_BOUNDED_SPOT_TRADE_SAMPLE:BTW-USDT:5327553"
+              ]
+            }
+          }
+        },
+        "N15": {
+          "valid": 2,
+          "checked": true,
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "source_facts": {
+            "COINGECKO_SECTOR": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 1,
+              "declared_upstream_ids": [
+                "COINGECKO_AGGREGATED_VENUES"
+              ],
+              "physical_root_keys": [
+                "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa|bitway:decentralized-finance-defi:1792409743000"
+              ]
+            },
+            "COINPAPRIKA_SECTOR": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 1,
+              "declared_upstream_ids": [
+                "COINPAPRIKA_AGGREGATED_VENUES"
+              ],
+              "physical_root_keys": [
+                "provider:coinpaprika:btw-bitway|btw-bitway:defi:1792409657000"
+              ]
+            }
+          }
+        }
+      },
+      "liquidation_summary": {
+        "status": "NOT_CLOSED",
+        "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+        "source": null,
+        "coverage": null
+      },
+      "liquidation_rows": {
+        "above": 0,
+        "below": 0,
+        "calculated_scenarios": 0
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:9123a7744831059a7cc238e59ff41cb606a71030",
+      "snapshot_id": "S392:ZEC-USDT:1792409732543",
+      "state": "OBSERVE",
+      "direction": "SHORT",
+      "analytical_fingerprint": "6675a7b60c436eca162739c4d176eac1a390feb8e492648a2a0ceba908973926",
+      "source_role_status": "CLOSED",
+      "source_role_reasons": [],
+      "rendered_used_context_block_ids": [
+        "N05",
+        "N12",
+        "N10",
+        "N11",
+        "N15"
+      ],
+      "block_usage": {
+        "N04": {
+          "valid": 0,
+          "checked": false,
+          "status": "NOT_CHECKED",
+          "source_facts": {
+            "CHAIN_EVENTS": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            }
+          }
+        },
+        "N05": {
+          "valid": 1,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "JOINT_SPOT_FUTURES_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "AVAILABLE_N05_FLOW_CONTEXT": {
+              "valid_fact_count": 1,
+              "used_fact_count": 0,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "QUALIFIED_OFFICIAL_TAKER_FLOW"
+              ],
+              "physical_root_keys": [
+                "AVAILABLE_FLOW:ZEC-USDT:1792395240000:1792409640000"
+              ]
+            },
+            "CHAIN_EVENTS": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "NANSEN_FLOWS": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "EXTERNAL_N05_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            },
+            "BITGET_FOUR_HOUR_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            }
+          }
+        },
+        "N10": {
+          "valid": 4,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "valid_fact_count": 4,
+              "used_fact_count": 4,
+              "rendered_fact_count": 4,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_CLOSED_CANDLES",
+                "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+                "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES",
+                "BINANCE_OFFICIAL_SPOT_CANDLES"
+              ],
+              "physical_root_keys": [
+                "htx-futures:ZEC-USDT|ZEC-USDT:60min:1792407600000",
+                "htx-futures:ZEC-USDT|ZEC-USDT:15m:1792409640000",
+                "htx-spot:ZEC-USDT|HTX_SPOT:ZEC-USDT:1792409640000",
+                "htx-futures:ZEC-USDT|BINANCE:ZEC-USDT:1792409640000"
+              ]
+            }
+          }
+        },
+        "N11": {
+          "valid": 1,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "HTX_IMMUTABLE_EXECUTION_BOOK"
+              ],
+              "physical_root_keys": [
+                "htx-futures:ZEC-USDT|S392:ZEC-USDT:1792409732543:N11"
+              ]
+            }
+          }
+        },
+        "N12": {
+          "valid": 1,
+          "checked": true,
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "source_facts": {
+            "HTX_LARGE_TRADES": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+              ],
+              "physical_root_keys": [
+                "HTX_SPOT_FUTURES_TRADE_SAMPLE:ZEC-USDT:ZEC-USDT:BOUNDED:1000049846314210000:HTX_SPOT_TRADE_SAMPLE:ZEC-USDT:58618662"
+              ]
+            },
+            "EXTERNAL_N05_FLOW": {
+              "valid_fact_count": 0,
+              "used_fact_count": 0,
+              "rendered_fact_count": 0,
+              "nonzero_score_fact_count": 0,
+              "declared_upstream_ids": [],
+              "physical_root_keys": []
+            }
+          }
+        },
+        "N15": {
+          "valid": 2,
+          "checked": true,
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "source_facts": {
+            "COINGECKO_SECTOR": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 1,
+              "declared_upstream_ids": [
+                "COINGECKO_AGGREGATED_VENUES"
+              ],
+              "physical_root_keys": [
+                "zcash:native:mainnet|zcash:layer-1:1792409633000"
+              ]
+            },
+            "COINPAPRIKA_SECTOR": {
+              "valid_fact_count": 1,
+              "used_fact_count": 1,
+              "rendered_fact_count": 1,
+              "nonzero_score_fact_count": 1,
+              "declared_upstream_ids": [
+                "COINPAPRIKA_AGGREGATED_VENUES"
+              ],
+              "physical_root_keys": [
+                "provider:coinpaprika:zec-zcash|zec-zcash:mining:1792409657000"
+              ]
+            }
+          }
+        }
+      },
+      "liquidation_summary": {
+        "status": "CLOSED",
+        "reason": null,
+        "source": null,
+        "coverage": null
+      },
+      "liquidation_rows": {
+        "above": 6,
+        "below": 6,
+        "calculated_scenarios": 8
+      }
+    }
+  ],
+  "both_primary_persisted": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1792409648781-1792409663854",
+    "expected_contracts": [
+      "ZEC-USDT",
+      "BTW-USDT"
+    ],
+    "present_contracts": [
+      "BTW-USDT",
+      "ZEC-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "private_original_copy_status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+  "private_records": [
+    {
+      "version": "private-canonical-lossless-gzip-v1",
+      "publication_id": "PUB:64fc3e4d790aee40bc837e64ea6967c759b08edd",
+      "run_id": "1792409648781-1792409663854",
+      "snapshot_id": "S392:BTW-USDT:1792409783136",
+      "contract_code": "BTW-USDT",
+      "observed_ts": 1792409783136,
+      "analytical_fingerprint": "5d532a2297f4aeba3253cb5de2e03f4785c8e090afe446fa929ebd874045e20c",
+      "raw_sha256": "a56460f5551b770b86468c534091db93e0267b340d9763f73356eb0600c1a575",
+      "gzip_sha256": "61b43da7cdc307a11676a1423b4468e472bd5f4722a671b2ed541c421d149be4",
+      "raw_bytes": 586367,
+      "gzip_bytes": 81666,
+      "stored": {
+        "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+        "retained": true,
+        "publication_id": "PUB:64fc3e4d790aee40bc837e64ea6967c759b08edd",
+        "raw_sha256": "a56460f5551b770b86468c534091db93e0267b340d9763f73356eb0600c1a575",
+        "gzip_sha256": "61b43da7cdc307a11676a1423b4468e472bd5f4722a671b2ed541c421d149be4",
+        "raw_bytes": 586367,
+        "gzip_bytes": 81666,
+        "original_observed_ts": 1792409783136,
+        "archived_ts": 1792409797545,
+        "main_deletion_authorized": false,
+        "report_or_score_effect": false
+      },
+      "archive_location": "LEGACY",
+      "private_reader_verified": true,
+      "portable_decoder_and_projected_header_verified": true,
+      "original_clocks_unchanged": true
+    },
+    {
+      "version": "private-canonical-lossless-gzip-v1",
+      "publication_id": "PUB:9123a7744831059a7cc238e59ff41cb606a71030",
+      "run_id": "1792409648781-1792409663854",
+      "snapshot_id": "S392:ZEC-USDT:1792409732543",
+      "contract_code": "ZEC-USDT",
+      "observed_ts": 1792409732543,
+      "analytical_fingerprint": "6675a7b60c436eca162739c4d176eac1a390feb8e492648a2a0ceba908973926",
+      "raw_sha256": "3627253f81d97110026f68741436bbfa6c361588ee291d8e1f5c55f7d40870dc",
+      "gzip_sha256": "be18b60e8e1be748af46dd36b1e41eabd254bb4b4663f335dcee721772bf4f6e",
+      "raw_bytes": 672713,
+      "gzip_bytes": 76446,
+      "stored": {
+        "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+        "retained": true,
+        "publication_id": "PUB:9123a7744831059a7cc238e59ff41cb606a71030",
+        "raw_sha256": "3627253f81d97110026f68741436bbfa6c361588ee291d8e1f5c55f7d40870dc",
+        "gzip_sha256": "be18b60e8e1be748af46dd36b1e41eabd254bb4b4663f335dcee721772bf4f6e",
+        "raw_bytes": 672713,
+        "gzip_bytes": 76446,
+        "original_observed_ts": 1792409732543,
+        "archived_ts": 1792409797545,
+        "main_deletion_authorized": false,
+        "report_or_score_effect": false
+      },
+      "archive_location": "LEGACY",
+      "private_reader_verified": true,
+      "portable_decoder_and_projected_header_verified": true,
+      "original_clocks_unchanged": true
+    }
+  ],
+  "private_copy_native_cost": {
+    "requests": 14,
+    "rows_read": 761,
+    "rows_written": 10,
+    "unknown_ops": 0
+  },
+  "same_run_current_delivery_status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+  "existing_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792409648781-1792409663854",
+    "recorded_ts": 1792409794880,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 24,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 108,
+      "reported_remaining_slots": 56,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 670,
+        "rows_read": 41019,
+        "rows_written": 470,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 12981,
+        "rows_written": 370
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 1168400,
+      "reserved_rows_written": 20936,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 4,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 4,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "ENTRY_followup_task_or_reason_investigated": false,
+  "post535_diagnostic_acceptance": false,
+  "reason_post535_open": "Producer head47b08 predates runtime535/1f4ad. Do not replay to fabricate native projection."
+}

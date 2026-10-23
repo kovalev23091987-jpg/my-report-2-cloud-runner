@@ -1,0 +1,11 @@
+--- a/current-generation/files/src/block-result-context.mjs
++++ b/current-generation/files/src/block-result-context.mjs
+@@ -450,7 +450,7 @@
+    const parts=nativeAligned.map(sample=>`${sample.venue==='OKX'?'OKX':'KuCoin'} ${sample.market==='SPOT'?'спот':'фьючерсы'}: ${sample.valid_recent_rows} сделок, покупки ${fmt(sample.buy_quote_turnover_usdt)}, продажи ${fmt(sample.sell_quote_turnover_usdt)} USDT`);
+    fact={...fact,source:`${fact.source} / ${venues.join(' / ')}`,value:`${fact.value}; ${parts.join('; ')}; ${agreement?'направления всех доступных площадок совпадают лишь в этих неполных выборках':'общего направления по всем доступным неполным выборкам нет'}; спот и фьючерсы одной биржи не считались двумя независимыми площадками`};
+   }
+-  const original_clock=row.block_id==='N10'?{source_ts:row.source_ts,first_known_ts:row.first_known_ts,observed_ts:row.observed_ts,expires_at:row.expires_at,window_start_ts:number(row.window_start_ts)??number(row.window_start),window_end_ts:number(row.window_end_ts)??number(row.window_end),source_clock_policy:row.source_clock_policy??null}:null;
++  const original_clock=row.block_id==='N10'&&[row.source_ts,row.first_known_ts,row.observed_ts,row.expires_at].every(Number.isSafeInteger)&&row.source_ts<=row.first_known_ts&&row.first_known_ts<=row.observed_ts&&row.observed_ts<=row.expires_at?{source_ts:row.source_ts,first_known_ts:row.first_known_ts,observed_ts:row.observed_ts,expires_at:row.expires_at,window_start_ts:number(row.window_start_ts)??number(row.window_start),window_end_ts:number(row.window_end_ts)??number(row.window_end),source_clock_policy:row.source_clock_policy??null}:null;
+   const origins=row.block_id==='N12'?contextComponentOrigins([row,...relatedRows]):null;
+   seen.add(root);facts.push({...common,...fact,...(original_clock?{original_clock}:{}),unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(origins?{component_origins:origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:[row.evidence_id,...related],component_origins:origins,decision_ts:now}),physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]}:{}),...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
+  }

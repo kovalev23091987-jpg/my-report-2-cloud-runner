@@ -1,0 +1,97 @@
+{
+  "schema": "THIRD_CALLBACK_RETURN_PURITY_DELTA_STATIC_PEER_V1",
+  "reviewer_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "source_prefix": "checkpoints/source-worker-anomaly-callback-purity-20261022/",
+  "reviewed_full_head": "b620f575b284cb4cb5b6083639ca48d8233c4f75",
+  "reviewed_only_F1_delta_head": "b1b5743a8b375d0a5a83864d6c2af59521994a6e",
+  "mode": "ONE_NEW_DELTA_AND_NEW_CALLABLE_STATIC_PLUS_ONLY_F1_FIX",
+  "result": "ACCEPTED_WITH_LIMITS",
+  "blockers": [],
+  "open_findings": [],
+  "mismatch": [],
+  "closed_findings": [
+    {
+      "id": "PRE_FREEZE_DELAYED_PROXY",
+      "counterexample": "Reflection trap may queue SQL after in_prepare clears",
+      "closure": "Captured node:util.types.isProxy rejects every Proxy before any reflection, including nested/transparent/revoked; no traps activated"
+    },
+    {
+      "id": "F1",
+      "lines_in_reviewed_b620": [
+        95,
+        96
+      ],
+      "counterexample": "Object.setPrototypeOf([],null/Object.prototype) bypasses prototype-only array refusal",
+      "closure": "Captured Array.isArray rejects after isProxy before reflection; 2 variants added to existing group"
+    }
+  ],
+  "pins": {
+    "function": {
+      "bytes": 25013,
+      "sha256": "ee765843cad5e6174c4eff6e63251ab06b267cb11d4bd3a4e687b2618e9bb5b5"
+    },
+    "case": {
+      "bytes": 21343,
+      "sha256": "3bcfaecaddd9a0b348b6466cfbdaaa6c108fa49cc42b0680d56a740b749830e8",
+      "prepared_groups": 12,
+      "status": "AUTHOR_UNEXECUTED"
+    },
+    "runner_before": {
+      "bytes": 182871,
+      "sha256": "2bacab5bc4cd7dbdf6a8906455ff35be82e387195859ae3936dc22a9336ae737"
+    },
+    "runner_after": {
+      "bytes": 184690,
+      "sha256": "5833692779132840b2f6985a16da513b2128c3070acd5f575e3211e2e9866ff2"
+    },
+    "manifest": "861ae96131b7ad7cf26ea40ecfd84a6028ee38aa62c06803a7129d02e4ee468e",
+    "patch": "9d64a2a33d539f948173677cc7698624687a1827758e3ef5e37cf6b927a5aa84",
+    "bindings": "548b812242a1d320840358fad70b19af9f3a3e62c05d589e711da963fc77aae6"
+  },
+  "package_evidence": {
+    "source_files": 10,
+    "manifest_payloads": 9,
+    "all_payload_bytes_SHA256_exact": true,
+    "only_new_prefix": true,
+    "full_TEXT_recipe_exact": true,
+    "F1_other4_files_unchanged": true,
+    "new_SQL_templates": 0,
+    "both_runtime_roots": 618,
+    "non_runner_bytes_equal": 617
+  },
+  "reviewed_invariants": [
+    "ALL callback-owned returned-data reads are replaced by bounded own-descriptor snapshot while in_prepare; accessors never invoked",
+    "Captured reflection and proxy/array predicates; null-prototype recursive frozen copy has no retained accessor/Proxy/function/toJSON/then authority",
+    "Late validation, kernel parsing/serialization, exact wire and receipt work only on inert copied data",
+    "Depth4/nodes64/keys32/aggregateUTF8 270336 bounds refuse without truncation; boundary arithmetic matches new case",
+    "Actual plain prepared text/request/opid/immutable3parts/CAS values preserved; raw callback object identity intentionally changes",
+    "SAME effective snapshot/result retained on unknown/lost/known-overrun replay, no new opid/retry; after-close cached result is not fresh admission",
+    "Existing finite ORIGIN-WRITE-READBACK/DUE, current parent/day/usage/statistics/SUM9448R244W/defaultOFF/unknown/finalizer/metadata-only receipt protections text unchanged",
+    "Factory validates manifest.payloads/full618 pair/exact2bac-to-5833 recipe/dependencies before app imports; builtin nodeUtilTypes explicitly injected",
+    "New callable compiles only actual old/new function blocks for NEW counterexample and affected checks; no old component or accepted test imports/replay"
+  ],
+  "limits": [
+    "STATIC READY is not semantic PASS; 12 NEW CONTROLLED groups remain UNEXECUTED",
+    "CONTROLLED SQLite/schema/counters/parent/projections are not native SQL cost, installed schema, grant or ACK",
+    "Returned-data purity is not a JS sandbox for arbitrary callback body/global mutation/timers/saved transport",
+    "Raw callback reference equality is not preserved; frozen605 identity harness not rewritten/replayed/claimed as new proof",
+    "CPU/heap/latency/native cost/policy/epoch/firstknowledge/independent105/pending journal/fs durability/SAVING/SENT unqualified",
+    "Root central608/607 compiler copies must bind actual nodeUtilTypes/new function/runner hashes before FIRST; originals607/608 remain frozen",
+    "Source owns final metadata-only peer-file/manifest delta, GitHub content readback and only-own release"
+  ],
+  "reviewer_execution": {
+    "Node": 0,
+    "imports": 0,
+    "syntax": 0,
+    "tests": 0,
+    "SQL": 0,
+    "SQLite": 0,
+    "semantics": 0,
+    "gitapply": 0,
+    "provider": 0,
+    "native": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "old_component_review_or_replay": 0
+  }
+}

@@ -1,0 +1,101 @@
+async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,candidateContracts=[],gate_diagnostic_for=null,include_primary_selection_diagnostic=false}={}){
+  // Optional technical copy only: no score/direction assessment or extra read.
+  // Kept inside this loader so extraction callers have no new global dependency.
+  const projectPrimarySelectionDiagnostic=(row,canonical)=>{
+    let binding=null;
+    const schema='EXISTING_PRIMARY_SELECTION_DIAGNOSTIC_V1';
+    const omitted=reason=>({schema,status:'OMITTED',reason,binding,diagnostic_only:true,decision_or_score_recomputed:false});
+    try{
+      const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+      const has=(o,k)=>object(o)&&Object.prototype.hasOwnProperty.call(o,k);
+      const metadata=canonical?.metadata;
+      if(!has(metadata,'direction_resolution')&&!has(metadata,'score_basis'))return null;
+      const text=(v,n)=>typeof v==='string'&&v.length>0&&Buffer.byteLength(v,'utf8')<=n;
+      if(!text(row.contract_code,80)||!text(row.run_id,160)||!text(row.snapshot_id,240)||row.run_id!==String(runId||'')||metadata.contract!==row.contract_code||canonical.run_id!==row.run_id||canonical.snapshot_id!==row.snapshot_id||!Number.isSafeInteger(canonical.observed_ts)||canonical.observed_ts<=0||canonical.observed_ts!==Number(row.observed_ts)||!text(canonical.analytical_fingerprint,64)||!/^[a-f0-9]{64}$/.test(canonical.analytical_fingerprint))return omitted('SOURCE_IDENTITY_NOT_BOUND');
+      binding={contract:row.contract_code,run_id:row.run_id,snapshot_id:row.snapshot_id,observed_ts:canonical.observed_ts,analytical_fingerprint:canonical.analytical_fingerprint};
+      const pick=(source,keys)=>{
+        if(!object(source))throw Error('UNSUPPORTED');
+        const value={};for(const key of keys)if(has(source,key)){
+          const v=source[key];if(!(v===null||typeof v==='boolean'||typeof v==='number'&&Number.isFinite(v)||typeof v==='string'&&Buffer.byteLength(v,'utf8')<=160))throw Error('UNSUPPORTED');
+          value[key]=v;
+        }return value;
+      };
+      const list=(value,max,project)=>{if(value===null)return null;if(!Array.isArray(value)||value.length>max)throw Error('UNSUPPORTED');return value.map(project);};
+      const result={schema,status:'COPIED_EXISTING_FIELDS',binding,diagnostic_only:true,decision_or_score_recomputed:false,source:'ALREADY_PARSED_CANONICAL_METADATA'};
+      if(has(metadata,'direction_resolution')){
+        const d=metadata.direction_resolution;
+        if(d===null)result.direction_resolution=null;
+        else{
+          const resolution=pick(d,['status','direction','candidate_direction']);
+          if(has(d,'facts'))resolution.facts=list(d.facts,16,f=>pick(f,['direction','evidence_id','origin']));
+          if(has(d,'early_receipt')){
+            const e=d.early_receipt;
+            if(e===null)resolution.early_receipt=null;
+            else{
+              const early=pick(e,['closed','direction','source_ts','available_at','same_contract','same_wave','fresh','directed','direction_state_closed','reason']);
+              if(has(e,'predicate_receipt')){
+                const p=e.predicate_receipt;
+                if(p===null)early.predicate_receipt=null;
+                else{
+                  const predicates=pick(p,['schema','decision_ts']);
+                  if(has(p,'checks'))predicates.checks=list(p.checks,32,check=>{const r=pick(check,['predicate','passed']);if(has(r,'passed')&&r.passed!==null&&typeof r.passed!=='boolean')throw Error('UNSUPPORTED');return r;});
+                  if(has(p,'failed_predicates'))predicates.failed_predicates=list(p.failed_predicates,32,v=>{if(!text(v,160))throw Error('UNSUPPORTED');return v;});
+                  early.predicate_receipt=predicates;
+                }
+              }
+              resolution.early_receipt=early;
+            }
+          }
+          result.direction_resolution=resolution;
+        }
+      }
+      if(has(metadata,'score_basis'))result.score_basis=metadata.score_basis===null?null:pick(metadata.score_basis,['selected','qualified_early_detection_0_100','deep_canonical_interest_0_100','routed_overall_0_100']);
+      return Buffer.byteLength(JSON.stringify(result),'utf8')<=4096?result:omitted('DIAGNOSTIC_BYTE_LIMIT_EXCEEDED');
+    }catch{return omitted('SOURCE_FIELDS_UNSUPPORTED');}
+  };
+
+  try{
+    const contracts=[...new Set(candidateContracts)].filter(value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)).slice(0,6);
+    if(!contracts.length&&Number(cron?.v3_live_deep_check_count)>0)throw new Error('CANONICAL_OUTPUT_CANDIDATE_IDENTITY_REQUIRED');
+    const response=contracts.length?await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,presentation_inputs_json,manual_text,telegram_text,actionability_status,actionability_reason,created_ts,bound_ts
+      FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>`?${i+2}`).join(',')}) ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||''),...contracts).all():{results:[]};
+    const rows=Array.isArray(response?.results)?response.results:[];
+    const persistenceAudit=auditCanonicalCandidateSet({expected_contracts:contracts,rows,run_id:String(runId||'')});
+    const completion=classifyCanonicalRunCompletion({candidate_count:persistenceAudit.present_candidate_count,expected_candidate_count:persistenceAudit.expected_candidate_count,cron});
+    const canonicalMissing=['CANONICAL_CANDIDATE_NOT_PERSISTED','CANONICAL_CANDIDATE_SET_INCOMPLETE'].includes(completion.reason);
+    const output={
+      schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),...completion,canonical_persistence_audit:persistenceAudit,
+      pipeline_health:canonicalMissing?{status:'DEGRADED_PIPELINE',reason:completion.reason,original_status:cron?.v3_pipeline_health_status??null,original_reason:cron?.v3_pipeline_health_reason??null}:{status:cron?.v3_pipeline_health_status??null,reason:cron?.v3_pipeline_health_reason??null},
+      candidates:rows.map(row=>{
+        let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
+        let presentationInputs=null;try{presentationInputs=JSON.parse(row.presentation_inputs_json);}catch{}
+        const primarySelectionDiagnostic=include_primary_selection_diagnostic===true?projectPrimarySelectionDiagnostic(row,canonical):null;
+        const blockCoverage=canonical?.metadata?.internal_market_context?.evidence_v2?.block_coverage||null;
+        return {
+          publication_id:row.publication_id,contract:row.contract_code,direction:row.direction,run_id:row.run_id,snapshot_id:row.snapshot_id,wave_id:row.wave_id,
+          observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
+          actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||presentationInputs?.manual_text||null,
+          block_coverage:blockCoverage,
+          source_collection_priority:sourceCollectionPriorityProof(canonical||{}),
+          source_role_publication_audit:auditObservationSourceRoles(canonical),
+          gate_source_diagnostic:projectGateSourceDiagnostic(canonical,{binding_receipt:gate_diagnostic_for}),
+          block_decision_use:auditCanonicalBlockDecisionUse(canonical||{},{manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),
+          block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null},telegram:{ok:Boolean(row.telegram_text),text:row.telegram_text||null,analytical_fingerprint:canonical?.analytical_fingerprint}}),
+          ...(primarySelectionDiagnostic?{primary_selection_diagnostic:primarySelectionDiagnostic}:{}),
+          canonical:canonical?{contract:canonical.metadata?.contract,status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
+        };
+      }),
+      generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,
+    };
+    for(const candidate of output.candidates){
+      try{candidate.execution_context_source=await loadExecutionReportSource(db,candidate,output.run_id);}
+      catch(error){candidate.execution_context_source=null;candidate.execution_context_diagnostic=String(error?.message||error).slice(0,160);}
+    }
+    const checkedOutput=enforceManualBlockCoverage(output);
+    checkedOutput.report_text=formatManualRunSummary(checkedOutput);
+    checkedOutput.execution_report_rendering=auditExecutionReportRendering(checkedOutput);
+    return checkedOutput;
+  }catch(error){
+    return {schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:'NOT_CLOSED',reason:'CANONICAL_RUN_OUTPUT_READ_FAILED',error:String(error?.message||error).slice(0,240),candidates:[],generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false};
+  }
+}

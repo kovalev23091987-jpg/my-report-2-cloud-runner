@@ -1,0 +1,103 @@
+{
+  "schema": "SOURCE_INDEPENDENT_CAPTURE_INGRESS_TARGETED_STATIC_PEER_V1",
+  "status": "CHANGES_REQUIRED_BEFORE_FIRST",
+  "review_scope": "ONE new independent105 capture path in exact frozen628/848d16af plus ROOT defaultOFF Worker correction. Not a full old kernel/DUE/journal/source-context review.",
+  "frozen_original": {
+    "head": "848d16af0c330f409066eefc42193e4d9eeaf1bc",
+    "files": 15,
+    "manifest_bytes": 2286,
+    "manifest_sha256": "d3587a5683f6bb7251c3eca41ae584fefcc20f23f251f15360fbf9e31d69175a",
+    "all15_full_immutable_bytes_SHA_ROOT_local_equal": true
+  },
+  "actual_runtime": {
+    "Worker": {
+      "bytes": 634229,
+      "sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4"
+    },
+    "ingress": {
+      "bytes": 19401,
+      "sha256": "c587121bf94225f8bc76799efe40f437bec4b56a5ab7ab97a10b727fdd3e7b82"
+    },
+    "ROOT_correction": {
+      "path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-schedule-fix/checkpoints/independent-capture-and-origin-connected-20261023/root-default-off-correction.json",
+      "bytes": 1441,
+      "sha256": "fb2145310197033ad226a72d0979f8b31ac52e52459d085c8508a027bc814d5b"
+    },
+    "only_original_recipe_plus_guard_byteexact": true,
+    "actual_fetchJson2424_and_classifier5110_spans_exact": true,
+    "all23_public_source_closure_bytes_exact": true
+  },
+  "blockers": [
+    "F1_CASE_FETCHJSON_MARKER_IS_NOT_UNIQUE"
+  ],
+  "open_findings": [
+    {
+      "id": "F1_CASE_FETCHJSON_MARKER_IS_NOT_UNIQUE",
+      "priority": "BEFORE_FIRST_SETUP_BLOCKER",
+      "file": "anomaly-research/independent-capture-ingress-20261023/independent-ingress-cases.proposed.mjs",
+      "function": "span(text,marker)",
+      "exact_clause": "assert.equal(text.split(marker).length,2,'unique actual Worker function marker')",
+      "marker": "async function fetchJson(",
+      "actual_full_Worker_occurrences": 3,
+      "actual_split_length": 4,
+      "actual_Worker_lines": [
+        293,
+        13111,
+        14949
+      ],
+      "reachable_cause": "Two existing nested fetchJson functions also contain the same unanchored marker. Current full Worker99ccb and original full Worker5d971 have this naming structure. The prepared callable invokes span for fetchJson before app imports, temp tree or groups. Its static equality precondition cannot hold.",
+      "effect": "If retained unchanged in the derived case, FIRST refuses before all7groups34variants; no runtime/native defect or executed failure claimed.",
+      "minimal_required_central_delta": "In the derived callable ONLY, locate exactly one beginning-of-line top-level function marker (no leading spaces), then retain existing next-top-level stop and exact2424B/37d38563... function SHA pin. ROOT actual Worker remains99ccb; frozen original628 untouched. Rebind final actual closure/Worker as already planned before FIRST.",
+      "evidence": "Anchored top-level marker selects one full2424B span with exact source hash; other matches are indented two spaces. This was checked as Python literal bytes, not JS syntax/app execution."
+    }
+  ],
+  "mismatch": [],
+  "new_runtime_logic_actionable_findings": [],
+  "targeted_static_conclusions": [
+    "ROOT correction encloses both hook execution and env receipt assignment in exact ENABLED===1. Missing/off has no new hook or receipt from this insertion. Existing import is static; no new IO occurs at module import.",
+    "Cursor must be explicit canonical JSON bound to full105/122 roster digest, next_index0..104; no top2/score selector and at most1 selected contract per invocation. Only proposed next cursor is returned; no durable cursor ACK is manufactured.",
+    "Each of exact metadata and minute requests calls ROOT-owned IO handler with a one-shot execute closure, deadline and unique run/contract/kind key. Saved, missing, repeated or result-copy execution cannot supply an accepted fetch result. At most2 actual fetch calls/retry0 within this function.",
+    "Budget requirements are six caller obligations: fresh current anomaly parent/persistence projection; no retained unknown or exceeded projection; actual shared/provider day+minute headroom/backoff; actual shared/report/manual grant for each request; preserved MAIN/LIQ/future-full reserve; available downstream persistence slot. Request flags are requirements, not grants. This prepared snapshot installs no REPORT2_ANOMALY_CAPTURE_IO assignment in runner-main and actual_budget_policy_qualified staysfalse. Enabling requires ROOT actual implementation/admission; no native permission is inferred.",
+    "Metadata requires same selected exact contract/symbol/pair, current<=120s numeric clock, active USDT perpetual and actual existing classification. Minute result must be the same actual Worker fetch/parser object and completed bounded body hash/clock; inherited closed-window validators then constrain useful observation. Raw metadata body hash remainsNULL.",
+    "Missing/denied IO, foreign cursor, stale/failed metadata, failed minute capture and unknown/unbound/costless/persistence-failed parent hold the proposed cursor. Absent/ineligible exact metadata or completed unusable/no-event windows may propose advancement; neither implies durable progress or useful105 coverage.",
+    "Bound committed readback or existing stored-duplicate origin with known caller projection may propose advancement. New operation retry isfalse; native epoch/firstknowledge/admission/SENT remainfalse. Existing observer uses REPLAY/BACKFILLED and original origin callbacks, without new SQL/schema in this ingress.",
+    "Hook is after existing bounded Deep/DUE, outside its top2 selection, before final report. Same main invocation cadence still governs reachability. 105visits*20min=35h is arithmetic only, notSLA; long/full40min or no-work paths may worsen reachability."
+  ],
+  "case_state": {
+    "frozen_original": "PREPARED_UNEXECUTED7CONTROLLED34variants",
+    "ROOT_common_plan_reported": "SOURCE1/4+THIRD7/34+ROOTdefaultOFF1/3=9groups41variants, no execution claimed",
+    "ROOT_partial_result_catch_and_full_actual_derived_pins": "Required beforeFIRST as ROOT already planned; source does not claim installed/qualified"
+  },
+  "limits": [
+    "No complete ROOT actual IO admission handler/durable cursor carrier/native policy is qualified by this peer. Default native policyNULL/OFF remains.",
+    "25s is execute-start guard; callback walltime, decoded/wire body bounds, CPU/heap/latency/native costs/durable scheduling are not measured. Existing10s fetch timeout and1MiB receipt hash do not establish transport or platform bounds.",
+    "Not distributed exactly-once/CAS, event first knowledge, current105 useful coverage, independent scheduler or Telegram delivery.",
+    "No native/global unknown reconciliation or grant; Native399397ACKUNKNOWNSTOP unchanged."
+  ],
+  "author_and_peer_execution": {
+    "Node": 0,
+    "import": 0,
+    "syntax": 0,
+    "tests": 0,
+    "appsemantics": 0,
+    "SQL": 0,
+    "SQLite": 0,
+    "gitapply": 0,
+    "provider": 0,
+    "CF": 0,
+    "MAIN": 0,
+    "manual": 0,
+    "Telegram": 0,
+    "native": 0,
+    "Gitwrites": 0,
+    "lease": 0,
+    "PR": 0
+  },
+  "delivery": "LOCAL_ONLY_REQUESTED_TMP_RESULT; blocked outgoing messages not retried or bypassed",
+  "old_completed_components_replayed": false,
+  "frozen_originals_or_ROOT_shared_files_modified": false,
+  "readback_files": [
+    "full-package-readback.json",
+    "targeted-byte-verification.json"
+  ]
+}

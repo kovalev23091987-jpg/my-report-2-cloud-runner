@@ -1,0 +1,102 @@
+{
+  "schema": "SAVED_BINANCE_SIX_CSV_DOCUMENTARY_MAPPING_V1",
+  "scope": "Six already saved BTCUSDT 1m monthly archives, Spot and USD-M June-August2026; no data replay or source acquisition",
+  "ordinal_basis": "ZERO_BASED",
+  "documentation_read_date_utc": "2026-10-19",
+  "primary_sources": [
+    {
+      "id": "BINANCE_PUBLIC_DATA_README",
+      "url": "https://github.com/binance/binance-public-data/blob/master/README.md",
+      "locators": ["SPOT/Klines", "SPOT note before AggTrades", "FUTURES/Klines USD-M", "Updates"],
+      "result": "READ_SUBSTANTIVE_CONTENT",
+      "facts_ru": ["Связывает Spot CSV с /api/v3/klines, USD-M CSV с /fapi/v1/klines и задаёт порядок12 полей", "Для Spot с2025-01-01 timestamps в микросекундах", "Архивы могут впоследствии обновляться: сохранённый hash важнее сегодняшнего same-URL файла"]
+    },
+    {
+      "id": "BINANCE_SPOT_KLINE_REST",
+      "url": "https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data",
+      "resolved_url": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/rest-api/market",
+      "locator": "GET /api/v3/klines, response tuple[12], positions7-10",
+      "result": "READ_SUBSTANTIVE_CONTENT"
+    },
+    {
+      "id": "BINANCE_SPOT_GLOSSARY",
+      "url": "https://developers.binance.com/docs/binance-spot-api-docs/faqs/spot_glossary",
+      "resolved_url": "https://developers.binance.com/en/docs/products/spot/faqs/spot_glossary",
+      "locator": "baseAsset, quoteAsset, quantity, isBuyerMaker, opening disclaimer",
+      "result": "READ_SUBSTANTIVE_CONTENT",
+      "facts_ru": ["Явный примерBTCUSDT: baseBTC, quoteUSDT", "Оговорка glossary: определения относятся только кSpot и могут отличаться вFutures"]
+    }
+  ],
+  "excluded_or_unavailable_documentation": [
+    {"url": "https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Kline-Candlestick-Data", "result": "REDIRECTED_TO_GENERIC_HOME_NO_KLINE_SCHEMA"},
+    {"url": "https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Kline-Candlestick-Streams", "result": "REDIRECTED_TO_GENERIC_HOME_NO_KLINE_SCHEMA"},
+    {"url": "https://developers.binance.com/en/docs/catalog/core-trading-derivatives-trading-usd-s-m-futures/api/rest-api", "result": "EMPTY_CONTENT"},
+    {"url": "https://developers.binance.com/en/docs/products/spot/testnet/web-socket-streams", "result": "EXCLUDED_SPOT_TESTNET_IS_NOT_USD_M_OR_PRODUCTION_CSV_PROOF"}
+  ],
+  "common_archive_columns": [
+    {"index": 0, "canonical_name": "candle_open_native_epoch", "meaning": "Начало свечи; не время публикации/получения архива"},
+    {"index": 1, "canonical_name": "open_price"},
+    {"index": 2, "canonical_name": "high_price"},
+    {"index": 3, "canonical_name": "low_price"},
+    {"index": 4, "canonical_name": "close_price"},
+    {"index": 5, "canonical_name": "volume_literal", "normative_label": "volume", "quantity_basis": null, "unit": null, "status": "INCOMPLETE: selected CSV/REST table calls it volume without explicit base/contract unit; do not infer from magnitude, suffix, taker subset, or Spot Testnet"},
+    {"index": 6, "canonical_name": "candle_close_native_epoch_inclusive", "meaning": "Конец свечи; исходную квантованную запись сохранить"},
+    {"index": 7, "canonical_name": "native_quote_asset_turnover", "quantity_basis": "QUOTE_ASSET", "schema_status": "OFFICIAL_PUBLIC_DATA_SCHEMA_CLOSED_BOTH_MARKETS", "source": "BINANCE_PUBLIC_DATA_README"},
+    {"index": 8, "canonical_name": "executed_trade_count", "quantity_basis": "COUNT", "source": "BINANCE_PUBLIC_DATA_README"},
+    {"index": 9, "canonical_name": "taker_buyer_base_asset_quantity", "quantity_basis": "BASE_ASSET", "source": "BINANCE_PUBLIC_DATA_README"},
+    {"index": 10, "canonical_name": "taker_buyer_quote_asset_quantity", "quantity_basis": "QUOTE_ASSET", "source": "BINANCE_PUBLIC_DATA_README"},
+    {"index": 11, "canonical_name": "ignored_provider_field", "usable_as_volume_or_price": false}
+  ],
+  "market_specific_mapping": {
+    "spot": {
+      "native_header": null,
+      "exact_symbol": "BTCUSDT",
+      "base_asset": "BTC",
+      "quote_asset": "USDT",
+      "asset_binding_basis": "Explicit BTCUSDT example in official Spot glossary, not suffix inference",
+      "column_5_unit": null,
+      "column_7_unit": "USDT",
+      "column_8_unit": "TRADES",
+      "column_9_unit": "BTC",
+      "column_10_unit": "USDT",
+      "native_timestamp_unit": "MICROSECONDS",
+      "timestamp_basis": "Official public-data Spot2025+ rule plus bounded original first-two-row crosscheck; does not imply RESTdefault is microseconds",
+      "open_epoch_ms_rule": "Keep original integer lexeme; require exact open %1000=0, divide by1000",
+      "end_exclusive_ms_rule": "Keep original inclusive close; require exact (close+1)%1000=0, then (close+1)/1000. Do not floor inclusive microsecond close and silently discard remainder."
+    },
+    "usd_m_futures": {
+      "native_header": ["open_time", "open", "high", "low", "close", "volume", "close_time", "quote_volume", "count", "taker_buy_volume", "taker_buy_quote_volume", "ignore"],
+      "exact_symbol": "BTCUSDT",
+      "saved_qualification_declares": {"base": "BTC", "quote": "USDT"},
+      "independently_verified_normative_base_asset": null,
+      "independently_verified_normative_quote_asset": null,
+      "asset_binding_status": "Saved declaration retained separately; official USD-M concrete instrument schema unavailable in this bounded documentation read. Spot glossary disclaimer prevents inheriting its binding as Futures proof.",
+      "column_5_unit": null,
+      "column_7_quantity_basis": "QUOTE_ASSET",
+      "column_7_concrete_unit_independently_closed": null,
+      "column_8_unit": "TRADES",
+      "column_9_quantity_basis": "BASE_ASSET",
+      "column_9_concrete_unit_independently_closed": null,
+      "column_10_quantity_basis": "QUOTE_ASSET",
+      "column_10_concrete_unit_independently_closed": null,
+      "native_timestamp_unit_for_these_six_inputs": "MILLISECONDS_BY_SAVED_QUALIFICATION_AND_FIRST_TWO_ROW_CALENDAR_QUANTUM_CROSSCHECK",
+      "universal_usd_m_2026_epoch_rule_from_current_docs": null,
+      "open_epoch_ms_rule_for_saved_rows": "Exact original integer already maps to2026 UTC monthstart; next open +60000",
+      "end_exclusive_ms_rule_for_saved_rows": "Original inclusive close+1; one minute quantum60000"
+    }
+  },
+  "taker_boundary": {
+    "officially_named_subset": "Columns9/10 describe quantity for taker buyers, in base and quote assets respectively",
+    "per_trade_aggressor_labels_reconstructed": false,
+    "buyer_maker_boolean_in_these_csvs": null,
+    "separate_native_taker_sell_column": null,
+    "total_minus_taker_buy": "Potential arithmetic complement only; not performed or requalified as independent native sell evidence in this documentary package",
+    "economic_causal_direction_or_entry": null
+  },
+  "old_qualification_preserved": {"trade_content_qualified": false, "signed_flow_qualified": false, "decision_replay_eligible": false},
+  "limitations": ["Schema mapping is not full264960-row validation", "ThreeSpot and threeUSD-M files are two markets of one Binance upstream, not independent providers", "Same-index ratios require same instrument/market/unit/timeframe; not crossmarket sums or venue agreement", "No FX, divide-by2, contract-size conversion, 4h-to15m reconstruction, score or ENTRY", "Native publication_ts/source_ts remain null; October acquisition availability is not June exante firstknowledge", "Current docs read inOctober do not prove unchanged historical schema publication; saved structure match only"],
+  "verbatim_source_quotes_words": 0,
+  "runtime_or_shared_imports": false,
+  "new_market_HTTP": 0,
+  "native_SQL": 0
+}

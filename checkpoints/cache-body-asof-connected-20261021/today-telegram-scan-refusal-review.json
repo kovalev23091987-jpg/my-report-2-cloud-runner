@@ -1,0 +1,112 @@
+{
+  "schema": "SAVED_ORDINARY_TELEGRAM_SCAN_REFUSAL_REVIEW_20261021_V1",
+  "workflow_run": 39567415079,
+  "head": "17216818f609d2beca1c815560240c469abe0ac4",
+  "source_run": "1792570316393-1792570323934",
+  "artifact": {
+    "id": 12330037922,
+    "zip_sha256": "6f41048571efa0dff87dfb6b18ec29f78a714023702eb96021c418d0d9f81417",
+    "members": 2,
+    "bytes": 5039
+  },
+  "files": {
+    "known-d1-day-guard.json": {
+      "bytes": 135,
+      "sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605"
+    },
+    "metadata.json": {
+      "bytes": 765,
+      "sha256": "0783a00c7747ded83b5dd39a6598d486f23bd309bba39162b31d167f9b102287"
+    },
+    "artifact.zip": {
+      "bytes": 5039,
+      "sha256": "6f41048571efa0dff87dfb6b18ec29f78a714023702eb96021c418d0d9f81417"
+    },
+    "report2-failure-accounting.json": {
+      "bytes": 42172,
+      "sha256": "9e6a50feaf18b486693a89fdcbd67c371df063d0a6d158ca4c99113d8ac317b7"
+    }
+  },
+  "full_job_log": {
+    "job_id": 119112993016,
+    "bytes": 337356,
+    "sha256": "9b55c4669409c8cb81304f29c8af55659d14c83433be035bd5887ca6f0f9c4ab",
+    "masking_preserved": true,
+    "masked_values_not_reconstructed": true
+  },
+  "today_admission_allowed": true,
+  "today_unknown_operations": 0,
+  "scan": {
+    "expected": 105,
+    "market_values": 99,
+    "catalog_rows": 385,
+    "unresolved": [
+      "BTR-USDT",
+      "DOS-USDT",
+      "GPS-USDT",
+      "PIPPIN-USDT",
+      "SKR-USDT",
+      "UB-USDT"
+    ],
+    "all_six_native_catalog_matches": 0,
+    "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+    "officially_unavailable": []
+  },
+  "failure_chain": [
+    "approved scope NOT_CLOSED",
+    "health.contracts=false",
+    "persistStage0 refuses before baseline INSERT",
+    "cron PARTIAL/STAGE0_SCAN_FAILED",
+    "runner CRON_IDENTITY_NOT_SUCCESS",
+    "delivery path not reached"
+  ],
+  "scan_persistence_reason": "Universe contract list is unavailable/empty; refusing to persist an invalid baseline scan",
+  "deep_results_from_masked_log": [
+    {
+      "contract": "APR-USDT",
+      "canonical_status": "CLOSED",
+      "state": "OBSERVE",
+      "direction": "SHORT",
+      "full_evidence_persisted": true,
+      "full_evidence_status": "CLOSED"
+    },
+    {
+      "contract": "BTW-USDT",
+      "canonical_status": "CLOSED",
+      "state": "REJECTED",
+      "direction": null,
+      "full_evidence_persisted": true,
+      "full_evidence_status": "CLOSED"
+    }
+  ],
+  "private_original_persistence": "NOT_REACHED_BY_RUNNER_AFTER_SCAN_REFUSAL",
+  "same_run_Telegram_SENT": false,
+  "later_publication_gates_would_pass": null,
+  "historical_comparison": {
+    "saved_full_runs": [
+      39255752857,
+      39267344117,
+      39369978210
+    ],
+    "same_six_explicit_native_contract_status": 3,
+    "same_six_classification": "CRYPTO_CONFIRMED",
+    "same_six_availability": "HTX_OFFICIALLY_SUSPENDED",
+    "all_three_scope_closed_99_plus_6": true,
+    "classifier_function_sha256": "b07f1d6217988d7fd9f40fd8c67750fd3015058c3dd4fe5c6347e8510fc47da3",
+    "classifier_bytes_unchanged": true,
+    "caller_native_catalog_unfiltered": true,
+    "concrete_causal_code_regression_found": false
+  },
+  "missing_exact_carrier": "Original395674 swap_contract_info RESPONSE_TEXT or complete retained parsed catalog with exact source/body binding, before transformations. Count385 plus match0 does not prove absence reason/current suspension/delisting.",
+  "not_done": [
+    "copy historical status as current",
+    "shrink105",
+    "weaken gates",
+    "new reader or native SQL",
+    "provider HTTP",
+    "forced MAIN/manual",
+    "Telegram test send",
+    "error_text helper as causal repair"
+  ],
+  "frozen_585_586_587_not_a_scan_cause_fix": true
+}

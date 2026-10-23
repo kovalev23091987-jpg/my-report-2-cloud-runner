@@ -1,0 +1,1237 @@
+{
+  "schema": "NEW_ORDINARY392614_SOURCE_FACT_CONSUMER_RECEIPT_V1",
+  "result": "NO_NEW_SAVED_QUALIFIED_FACT_LOSS_BINDING_OR_REDUNDANT_PROVIDER_HTTP_COUNTEREXAMPLE_FOUND",
+  "scope": "Two new exact snapshots BTW and ZEC only. No mechanical rerun of551/558, no source normalizer/test execution.",
+  "run": {
+    "schema": "my-report-2-canonical-run-output-v1",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "head": "59e8d8ebe7118005d3fd0ac8ee4a971f61efe6f1",
+    "source": "schedule",
+    "run_id": "1792416935259-1792416944638",
+    "status": "CLOSED",
+    "generated_at": "2026-10-19T13:37:25.876Z"
+  },
+  "head_before556": true,
+  "not_native_V2_or_late_source_cost_acceptance": true,
+  "candidates": [
+    {
+      "candidate_pointer": "/candidates/0",
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:4ffae50e49bf9142b0e5738306ec07312f038e8d",
+      "snapshot_id": "S392:BTW-USDT:1792417040488",
+      "observed_ts": 1792417040488,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "score_status": "BASE_SCORE_MISSING",
+      "blocks": {
+        "N05": {
+          "observed_fact_count": 1,
+          "valid_fact_count": 1,
+          "directional_eligible_fact_count": 0,
+          "score_contribution": null,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "participation_status": "USE_NOT_PROVEN",
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 1
+        },
+        "N10": {
+          "observed_fact_count": 4,
+          "valid_fact_count": 4,
+          "directional_eligible_fact_count": 0,
+          "score_contribution": null,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "decision_assessment_receipt_count": 4,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 4
+        },
+        "N12": {
+          "observed_fact_count": 2,
+          "valid_fact_count": 2,
+          "directional_eligible_fact_count": 0,
+          "score_contribution": null,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "decision_assessment_receipt_count": 2,
+          "unscored_diagnostic_receipt_count": 1,
+          "rendered_useful_context_receipt_count": 2
+        },
+        "N15": {
+          "observed_fact_count": 2,
+          "valid_fact_count": 2,
+          "directional_eligible_fact_count": 2,
+          "score_contribution": null,
+          "score_application_status": "NO_BASE_SCORE_NO_APPLICATION",
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 2,
+          "rendered_useful_context_receipt_count": 2
+        }
+      },
+      "selected_fact_provenance": [
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/0",
+          "block_id": "N05",
+          "evidence_ids": [
+            "EV2:dd8445e752e7b1d49c254ec46f25c53e2854026d483bcfb52c5a359b59db50b8"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:BTW-USDT:1792402560000:1792416960000"
+          ],
+          "source_ts": 1792416960000,
+          "observed_ts": 1792417013940,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/1",
+          "block_id": "N12",
+          "evidence_ids": [
+            "EV2:7fb3683ed952775e452f44efb823ab245c4a2ed59fb7d3affef36d042dc420c9",
+            "EV2:dd8445e752e7b1d49c254ec46f25c53e2854026d483bcfb52c5a359b59db50b8"
+          ],
+          "physical_root_keys": [
+            "HTX_SPOT_FUTURES_TRADE_SAMPLE:BTW-USDT:BTW-USDT:BOUNDED:1000005717991990000:HTX_SPOT_TRADE_SAMPLE:BTW-USDT:9332729",
+            "AVAILABLE_FLOW:BTW-USDT:1792402560000:1792416960000"
+          ],
+          "source_ts": 1792416995912,
+          "observed_ts": 1792417010883,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "composite_first_known_ts": 1792417013940,
+          "origins": [
+            {
+              "evidence_id": "EV2:7fb3683ed952775e452f44efb823ab245c4a2ed59fb7d3affef36d042dc420c9",
+              "provider_id": "HTX_SPOT_FUTURES_TRADES",
+              "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+              "raw_hash": "0768f6c721fd0793af355f47b587b866d0cf1b7c11a0e79814071492b6a98b6e",
+              "first_known_ts": 1792417010883,
+              "source_ts": 1792416995912,
+              "observed_ts": 1792417010883,
+              "expires_at": 1792417070883,
+              "window_start_ts": null,
+              "window_end_ts": null,
+              "window_status": "NOT_RETAINED_IN_EVIDENCE"
+            },
+            {
+              "evidence_id": "EV2:dd8445e752e7b1d49c254ec46f25c53e2854026d483bcfb52c5a359b59db50b8",
+              "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+              "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+              "raw_hash": "6d59a7acdf7a6b550df3fa09960182ebb8703418bdd4462c7da31f2e7182df88",
+              "first_known_ts": 1792417013940,
+              "source_ts": 1792416960000,
+              "observed_ts": 1792417013940,
+              "expires_at": 1792417260000,
+              "window_start_ts": 1792402560000,
+              "window_end_ts": 1792416960000,
+              "window_status": "EXPLICIT_EVIDENCE_FIELDS"
+            }
+          ]
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/2",
+          "block_id": "N12",
+          "evidence_ids": [
+            "EV2:8fecfbd23356589923bb86aa1e207cbc1563aea0a68f2cc8568a3dfe0ede8871"
+          ],
+          "physical_root_keys": [
+            "GATE_BOUNDED_SPOT_TRADE_SAMPLE:BTW-USDT:5366940"
+          ],
+          "source_ts": 1792416958832,
+          "observed_ts": 1792417020511,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "composite_first_known_ts": 1792417020511,
+          "origins": [
+            {
+              "evidence_id": "EV2:8fecfbd23356589923bb86aa1e207cbc1563aea0a68f2cc8568a3dfe0ede8871",
+              "provider_id": "GATE_SPOT_TRADES",
+              "metric_family": "ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED",
+              "raw_hash": "43768f559ae856d49271c167c9bf1dbfa65ff4d87af7ebcff928ee45db9d7e1f",
+              "first_known_ts": 1792417020511,
+              "source_ts": 1792416958832,
+              "observed_ts": 1792417020511,
+              "expires_at": 1792417080511,
+              "window_start_ts": 1792416660000,
+              "window_end_ts": 1792416960000,
+              "window_status": "EXPLICIT_EVIDENCE_FIELDS"
+            }
+          ]
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/3",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:a156305c6d7b31a11087d4041a6989c1bb07e80ffe501758d336bc3a5bd55afd"
+          ],
+          "physical_root_keys": [
+            "htx-futures:BTW-USDT|BTW-USDT:60min:1792414800000"
+          ],
+          "source_ts": 1792417004777,
+          "observed_ts": 1792417005245,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792417004777,
+            "first_known_ts": 1792417005245,
+            "observed_ts": 1792417005245,
+            "expires_at": 1792417184777,
+            "window_start_ts": 1792342800000,
+            "window_end_ts": 1792414800000,
+            "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+          }
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/4",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:4a74b812b7b0564a64a2b0a9c17a512e11ff6dd978f2df3354e7546b9978910c"
+          ],
+          "physical_root_keys": [
+            "htx-futures:BTW-USDT|BTW-USDT:15m:1792416960000"
+          ],
+          "source_ts": 1792416960000,
+          "observed_ts": 1792417040488,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792416960000,
+            "first_known_ts": 1792417007875,
+            "observed_ts": 1792417040488,
+            "expires_at": 1792417140000,
+            "window_start_ts": 1792416060000,
+            "window_end_ts": 1792416960000,
+            "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+          }
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/5",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:d27782f020ff6e5785a057174b510cbf83f4bc78e974b6ce03df2ef13012c431"
+          ],
+          "physical_root_keys": [
+            "htx-spot:BTW-USDT|HTX_SPOT:BTW-USDT:1792416960000"
+          ],
+          "source_ts": 1792416960000,
+          "observed_ts": 1792417040488,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792416960000,
+            "first_known_ts": 1792417005870,
+            "observed_ts": 1792417040488,
+            "expires_at": 1792417140000,
+            "window_start_ts": 1792416060000,
+            "window_end_ts": 1792416960000,
+            "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+          }
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/6",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:db56b6ff0000c92814c64580654a870fdea09838714c2c8d6dc4554f697a1352"
+          ],
+          "physical_root_keys": [
+            "htx-futures:BTW-USDT|POLONIEX:BTW-USDT:1792416960000"
+          ],
+          "source_ts": 1792416960000,
+          "observed_ts": 1792417040488,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792416960000,
+            "first_known_ts": 1792417013940,
+            "observed_ts": 1792417040488,
+            "expires_at": 1792417260000,
+            "window_start_ts": 1792416060000,
+            "window_end_ts": 1792416960000,
+            "source_clock_policy": "EXISTING_N05_REDERIVED_CLOSED_240M_CACHE_SAME_WINDOW"
+          }
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/11",
+          "block_id": "N15",
+          "evidence_ids": [
+            "EV2:e98172403ea55b3f71153dd718a9c73f420cc6cf0087cf8c7caf7c50d32c8627"
+          ],
+          "physical_root_keys": [
+            "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa|bitway:decentralized-finance-defi:1792416944000"
+          ],
+          "source_ts": 1792416944000,
+          "observed_ts": 1792417026253,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "pointer": "/candidates/0/block_rendered_results/context_receipts/12",
+          "block_id": "N15",
+          "evidence_ids": [
+            "EV2:6c8adaa3c23fcdee54b98fdc09a89996526aa61c6bf657d72d7bd00339a97566"
+          ],
+          "physical_root_keys": [
+            "provider:coinpaprika:btw-bitway|btw-bitway:defi:1792416857000"
+          ],
+          "source_ts": 1792416857000,
+          "observed_ts": 1792417027751,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "source_orders": {
+        "N15": {
+          "ordered_collectors": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR_COINGECKO",
+            "SECTOR",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "initial_order": [
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR",
+            "SECTOR_COINGECKO",
+            "CHAIN_EVENTS",
+            "BLOCKSCOUT"
+          ],
+          "useful_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1792414596158,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1792414596158,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.6666666666666666,
+              "initial_historical_preference": false
+            }
+          ]
+        },
+        "public_venues": {
+          "ordered_collectors": [
+            "POLONIEX",
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "initial_order": [
+            "POLONIEX",
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "useful_statistics": [
+            {
+              "route": "POLONIEX",
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "block_id": "N05",
+              "observations": 4,
+              "latest_observed_ts": 1792414596158,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5714285714285714,
+              "initial_historical_preference": false
+            }
+          ]
+        }
+      },
+      "source_receipt_projection": {
+        "N05": {
+          "EXTERNAL_N05_FLOW": {
+            "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+            "network_calls": 5,
+            "cache_status": null,
+            "receipt_count": 19
+          }
+        },
+        "N12": {
+          "HTX_LARGE_TRADES": {
+            "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+            "network_calls": 0,
+            "cache_status": "SAME_RUN_REUSED",
+            "receipt_count": 2
+          },
+          "EXTERNAL_N05_FLOW": {
+            "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+            "network_calls": 5,
+            "cache_status": null,
+            "receipt_count": 19
+          }
+        },
+        "N15": {
+          "COINGECKO_SECTOR": {
+            "status": "CLOSED",
+            "network_calls": 1,
+            "cache_status": null,
+            "receipt_count": 3,
+            "receipts": [
+              {
+                "route": "EXACT_COIN_METADATA",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "EXACT_CATEGORY_DIRECTORY",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "CATEGORY_QUOTES",
+                "status": "RECEIVED",
+                "http_status": 200,
+                "error": null
+              }
+            ]
+          },
+          "COINPAPRIKA_SECTOR": {
+            "status": "CLOSED",
+            "network_calls": 0,
+            "cache_status": null,
+            "receipt_count": 4,
+            "receipts": [
+              {
+                "route": "HTX_MARKET_CATALOG",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "EXACT_COIN_METADATA",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "FUNCTIONAL_SECTOR_DIRECTORY",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "FREE_AGGREGATED_QUOTES",
+                "status": "VALIDATED_RUN_MEMORY_REFERENCE",
+                "http_status": 200,
+                "error": null
+              }
+            ]
+          }
+        }
+      },
+      "shared_n05_n12_http": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 5,
+        "n12_http": 0,
+        "n12_routes": [
+          {
+            "venue": "GATE_FUTURES_N12",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          },
+          {
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "role_gate": {
+        "status": "NOT_CLOSED",
+        "observation_source_gate_closed": false,
+        "distinct_verified_origins": [
+          "HTX_OFFICIAL"
+        ],
+        "usable_role_receipt_count": 1,
+        "classified_receipt_count": 11,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 2,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 4,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 4
+        }
+      },
+      "optional_gate_binding": {
+        "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+        "contract": "BTW-USDT",
+        "carrier_status": "CAPTURED",
+        "status": "NOT_CLOSED",
+        "reason": "OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED"
+      },
+      "LIQ": {
+        "status": "CALCULATED_CONTEXT_ONLY",
+        "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+        "future_levels_status": "CALCULATED_SCENARIOS_ONLY",
+        "coverage_status": "NO_FACTUAL_FUTURE_LEVELS",
+        "provider_zone_count": 0,
+        "consensus_zone_count": 0,
+        "calculated_scenario_count": 4,
+        "source_receipts": [],
+        "groups": {
+          "all_zones": [],
+          "display_source_zones": [],
+          "calculated_scenarios": [
+            {
+              "source": "Swolecharts https://swolecharts.com",
+              "quote": "USD",
+              "price_semantics": "SWOLECHARTS_PROVIDER_MODEL_BIN_MID",
+              "estimated": true,
+              "count": 4
+            }
+          ]
+        },
+        "native_HL_display_rows": [],
+        "calculated_model_summary": {
+          "rows": 4,
+          "sources": [
+            "Swolecharts https://swolecharts.com"
+          ],
+          "source_ts": [
+            1792416965669
+          ],
+          "quotes": [
+            "USD"
+          ],
+          "all_estimated": true,
+          "all_exact_notional_usdt_NULL": true,
+          "all_target_ineligible": true
+        },
+        "manual_display_pointer": "/candidates/0/manual_text"
+      },
+      "render_boundary": {
+        "available_not_rendered_evidence_ids": [],
+        "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+        "telegram_context_receipts": [],
+        "telegram_delivery_proven": false,
+        "telegram_message_id": null
+      }
+    },
+    {
+      "candidate_pointer": "/candidates/1",
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:9739c515ad3dbbddf78db4e06f1a9a45fe044f23",
+      "snapshot_id": "S392:ZEC-USDT:1792417000570",
+      "observed_ts": 1792417000570,
+      "canonical_state": "OBSERVE",
+      "direction": "SHORT",
+      "score_status": "CLOSED",
+      "blocks": {
+        "N05": {
+          "observed_fact_count": 1,
+          "valid_fact_count": 1,
+          "directional_eligible_fact_count": 0,
+          "score_contribution": 0,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "participation_status": "USE_NOT_PROVEN",
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 1
+        },
+        "N10": {
+          "observed_fact_count": 3,
+          "valid_fact_count": 3,
+          "directional_eligible_fact_count": 0,
+          "score_contribution": 0,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "decision_assessment_receipt_count": 3,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 3
+        },
+        "N12": {
+          "observed_fact_count": 1,
+          "valid_fact_count": 1,
+          "directional_eligible_fact_count": 0,
+          "score_contribution": 0,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "decision_assessment_receipt_count": 1,
+          "unscored_diagnostic_receipt_count": 1,
+          "rendered_useful_context_receipt_count": 1
+        },
+        "N15": {
+          "observed_fact_count": 2,
+          "valid_fact_count": 2,
+          "directional_eligible_fact_count": 2,
+          "score_contribution": -0.3206,
+          "score_application_status": "SCORE_APPLICATION_PROVEN",
+          "participation_status": "SCORE_EFFECT_PROVEN",
+          "decision_assessment_receipt_count": 2,
+          "unscored_diagnostic_receipt_count": 2,
+          "rendered_useful_context_receipt_count": 2
+        }
+      },
+      "selected_fact_provenance": [
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/0",
+          "block_id": "N05",
+          "evidence_ids": [
+            "EV2:0025f3129de91a88f15f7536254b8c43b159763df96042d1676df2bc147b4c4d"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:ZEC-USDT:1792402560000:1792416960000"
+          ],
+          "source_ts": 1792416960000,
+          "observed_ts": 1792416976024,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/1",
+          "block_id": "N12",
+          "evidence_ids": [
+            "EV2:ca4a5522473adc5f7027802c171b44291f194e3507712df783b8fc6f051cdd4b",
+            "EV2:0025f3129de91a88f15f7536254b8c43b159763df96042d1676df2bc147b4c4d"
+          ],
+          "physical_root_keys": [
+            "HTX_SPOT_FUTURES_TRADE_SAMPLE:ZEC-USDT:ZEC-USDT:BOUNDED:1000049883334820000:HTX_SPOT_TRADE_SAMPLE:ZEC-USDT:58620839",
+            "AVAILABLE_FLOW:ZEC-USDT:1792402560000:1792416960000"
+          ],
+          "source_ts": 1792416939843,
+          "observed_ts": 1792416962663,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "composite_first_known_ts": 1792416976024,
+          "origins": [
+            {
+              "evidence_id": "EV2:ca4a5522473adc5f7027802c171b44291f194e3507712df783b8fc6f051cdd4b",
+              "provider_id": "HTX_SPOT_FUTURES_TRADES",
+              "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+              "raw_hash": "09fa441a3efb4c97cd3bb03718766665a7b993659b0029e67ddac1517247d463",
+              "first_known_ts": 1792416962663,
+              "source_ts": 1792416939843,
+              "observed_ts": 1792416962663,
+              "expires_at": 1792417022663,
+              "window_start_ts": null,
+              "window_end_ts": null,
+              "window_status": "NOT_RETAINED_IN_EVIDENCE"
+            },
+            {
+              "evidence_id": "EV2:0025f3129de91a88f15f7536254b8c43b159763df96042d1676df2bc147b4c4d",
+              "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+              "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+              "raw_hash": "c92cd6761d03670d3ec312e3ddfcc68f5f7a131578aa06af29cea0d31bac7a15",
+              "first_known_ts": 1792416976024,
+              "source_ts": 1792416960000,
+              "observed_ts": 1792416976024,
+              "expires_at": 1792417260000,
+              "window_start_ts": 1792402560000,
+              "window_end_ts": 1792416960000,
+              "window_status": "EXPLICIT_EVIDENCE_FIELDS"
+            }
+          ]
+        },
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/2",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:99be467c6f7fa31c1b93b0b1774c93410910296d6dd46837e4fd44bc32c9e912"
+          ],
+          "physical_root_keys": [
+            "htx-futures:ZEC-USDT|ZEC-USDT:60min:1792414800000"
+          ],
+          "source_ts": 1792416955671,
+          "observed_ts": 1792416955958,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792416955671,
+            "first_known_ts": 1792416955958,
+            "observed_ts": 1792416955958,
+            "expires_at": 1792417135671,
+            "window_start_ts": 1792342800000,
+            "window_end_ts": 1792414800000,
+            "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+          }
+        },
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/3",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:8010414d5e729448bd695bbde128773261067dbd5350d6fbac71d229d0941409"
+          ],
+          "physical_root_keys": [
+            "htx-futures:ZEC-USDT|ZEC-USDT:15m:1792416900000"
+          ],
+          "source_ts": 1792416900000,
+          "observed_ts": 1792417000570,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792416900000,
+            "first_known_ts": 1792416958720,
+            "observed_ts": 1792417000570,
+            "expires_at": 1792417080000,
+            "window_start_ts": 1792416000000,
+            "window_end_ts": 1792416900000,
+            "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+          }
+        },
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/4",
+          "block_id": "N10",
+          "evidence_ids": [
+            "EV2:44488ffc7aa1fdfcbdbc3c2b7b976a6888b9d31463b155a13ff01fbd1f187846"
+          ],
+          "physical_root_keys": [
+            "htx-spot:ZEC-USDT|HTX_SPOT:ZEC-USDT:1792416900000"
+          ],
+          "source_ts": 1792416900000,
+          "observed_ts": 1792417000570,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0,
+          "original_clock": {
+            "source_ts": 1792416900000,
+            "first_known_ts": 1792416956782,
+            "observed_ts": 1792417000570,
+            "expires_at": 1792417080000,
+            "window_start_ts": 1792416000000,
+            "window_end_ts": 1792416900000,
+            "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+          }
+        },
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/8",
+          "block_id": "N15",
+          "evidence_ids": [
+            "EV2:5f9d3e9d55c704d9e3032f698ed4c7f2e892015d45a4fe5d85d75bcfbc927cb7"
+          ],
+          "physical_root_keys": [
+            "zcash:native:mainnet|zcash:layer-1:1792416894000"
+          ],
+          "source_ts": 1792416894000,
+          "observed_ts": 1792416965850,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "pointer": "/candidates/1/block_rendered_results/context_receipts/9",
+          "block_id": "N15",
+          "evidence_ids": [
+            "EV2:fc14536ee32e9eebc4244864047a33d55472c3e84f7917af0a9ccb6bae63fdaa"
+          ],
+          "physical_root_keys": [
+            "provider:coinpaprika:zec-zcash|zec-zcash:mining:1792416857000"
+          ],
+          "source_ts": 1792416857000,
+          "observed_ts": 1792416981683,
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "source_orders": {
+        "N15": {
+          "ordered_collectors": [
+            "SECTOR_COINGECKO",
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR"
+          ],
+          "initial_order": [
+            "SECTOR",
+            "JOINT_FLOW",
+            "LARGE_TRADES",
+            "SECTOR_COINGECKO"
+          ],
+          "useful_statistics": [
+            {
+              "route": "SECTOR",
+              "source_id": "COINPAPRIKA_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1792409689497,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.4,
+              "initial_historical_preference": false
+            },
+            {
+              "route": "SECTOR_COINGECKO",
+              "source_id": "COINGECKO_SECTOR",
+              "block_id": "N15",
+              "observations": 4,
+              "latest_observed_ts": 1792409689497,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.4444444444444444,
+              "initial_historical_preference": false
+            }
+          ]
+        },
+        "public_venues": {
+          "ordered_collectors": [
+            "BINANCE",
+            "KRAKEN",
+            "BITGET",
+            "POLONIEX",
+            "OKX_N12_NATIVE",
+            "KUCOIN_N12_NATIVE"
+          ],
+          "initial_order": [
+            "BINANCE",
+            "KRAKEN",
+            "BITGET",
+            "POLONIEX",
+            "OKX_N12_NATIVE",
+            "KUCOIN_N12_NATIVE"
+          ],
+          "useful_statistics": [
+            {
+              "route": "BINANCE",
+              "source_id": "N05_PUBLIC_VENUE:BINANCE",
+              "block_id": "N05",
+              "observations": 4,
+              "latest_observed_ts": 1792409689497,
+              "latest_class": "CONTEXT_AVAILABLE",
+              "useful": true,
+              "valid_rows_per_http": 0.5714285714285714,
+              "initial_historical_preference": false
+            }
+          ]
+        }
+      },
+      "source_receipt_projection": {
+        "N05": {
+          "EXTERNAL_N05_FLOW": {
+            "status": "CLOSED_MULTIPLE_QUALIFIED_VENUE_COMPONENTS",
+            "network_calls": 5,
+            "cache_status": null,
+            "receipt_count": 15
+          }
+        },
+        "N12": {
+          "HTX_LARGE_TRADES": {
+            "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+            "network_calls": 0,
+            "cache_status": "SAME_RUN_REUSED",
+            "receipt_count": 2
+          },
+          "EXTERNAL_N05_FLOW": {
+            "status": "CLOSED_MULTIPLE_QUALIFIED_VENUE_COMPONENTS",
+            "network_calls": 5,
+            "cache_status": null,
+            "receipt_count": 15
+          }
+        },
+        "N15": {
+          "COINGECKO_SECTOR": {
+            "status": "CLOSED",
+            "network_calls": 2,
+            "cache_status": null,
+            "receipt_count": 3,
+            "receipts": [
+              {
+                "route": "EXACT_COIN_METADATA",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "EXACT_CATEGORY_DIRECTORY",
+                "status": "RECEIVED",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "CATEGORY_QUOTES",
+                "status": "RECEIVED",
+                "http_status": 200,
+                "error": null
+              }
+            ]
+          },
+          "COINPAPRIKA_SECTOR": {
+            "status": "CLOSED",
+            "network_calls": 1,
+            "cache_status": null,
+            "receipt_count": 4,
+            "receipts": [
+              {
+                "route": "HTX_MARKET_CATALOG",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "EXACT_COIN_METADATA",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "FUNCTIONAL_SECTOR_DIRECTORY",
+                "status": "VALIDATED_REFERENCE_CACHE",
+                "http_status": 200,
+                "error": null
+              },
+              {
+                "route": "FREE_AGGREGATED_QUOTES",
+                "status": "RECEIVED",
+                "http_status": 200,
+                "error": null
+              }
+            ]
+          }
+        }
+      },
+      "shared_n05_n12_http": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 4,
+        "n12_http": 1,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 1,
+            "status": "NO_USEFUL_PUBLIC_TRADE_SAMPLE"
+          },
+          {
+            "venue": "KUCOIN_N12_NATIVE",
+            "http": 0,
+            "status": "NO_USEFUL_PUBLIC_TRADE_SAMPLE"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "role_gate": {
+        "status": "CLOSED",
+        "observation_source_gate_closed": true,
+        "distinct_verified_origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "usable_role_receipt_count": 16,
+        "classified_receipt_count": 21,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 1,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 1,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 3
+        }
+      },
+      "optional_gate_binding": {
+        "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+        "contract": "ZEC-USDT",
+        "carrier_status": "CAPTURED",
+        "status": "NOT_CLOSED",
+        "reason": "OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED"
+      },
+      "LIQ": {
+        "status": "CLOSED",
+        "reason": null,
+        "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "provider_zone_count": 45,
+        "consensus_zone_count": 1,
+        "calculated_scenario_count": 8,
+        "source_receipts": [
+          {
+            "source": "Hyperliquid official",
+            "status": "USABLE_SCOPED_CONTEXT",
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "source_ts": 1792416983852,
+            "visible_half_range_pct": null,
+            "total_zones": 2
+          }
+        ],
+        "groups": {
+          "all_zones": [
+            {
+              "source": "Hyperliquid official",
+              "quote": "USDC",
+              "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+              "estimated": false,
+              "count": 1
+            },
+            {
+              "source": "Hyperliquid official + Orderly",
+              "quote": "USDC",
+              "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+              "estimated": true,
+              "count": 1
+            },
+            {
+              "source": "Orderly",
+              "quote": "USDC",
+              "price_semantics": "ORDERLY_ESTIMATED_POSITION_LIQUIDATION_PRICE",
+              "estimated": true,
+              "count": 43
+            }
+          ],
+          "display_source_zones": [
+            {
+              "source": "Hyperliquid official",
+              "quote": "USDC",
+              "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+              "estimated": false,
+              "count": 2
+            },
+            {
+              "source": "Orderly",
+              "quote": "USDC",
+              "price_semantics": "ORDERLY_ESTIMATED_POSITION_LIQUIDATION_PRICE",
+              "estimated": true,
+              "count": 44
+            }
+          ],
+          "calculated_scenarios": [
+            {
+              "source": "CoinBoss",
+              "quote": "USD",
+              "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+              "estimated": true,
+              "count": 8
+            }
+          ]
+        },
+        "native_HL_display_rows": [
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "source": "Hyperliquid official",
+            "price": 546.7592743552,
+            "price_quote": "USDC",
+            "notional": 13254631.618,
+            "notional_unit": "USDC",
+            "source_ts": 1792416983852,
+            "native_reference_price": 1139.8000000000002,
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "conditional_cross": true,
+            "estimated": false,
+            "exact_notional_usdt": null,
+            "decision_target_eligible": false,
+            "position_key": "58e8db3f9ed5e3a6d75fbdcc88a1319754b831fc66e18af7b5ca7055fa1c4571"
+          },
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "source": "Hyperliquid official",
+            "price": 722.0343878113,
+            "price_quote": "USDC",
+            "notional": 9118400,
+            "notional_unit": "USDC",
+            "source_ts": 1792416983927,
+            "native_reference_price": 1139.8,
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "conditional_cross": true,
+            "estimated": false,
+            "exact_notional_usdt": null,
+            "decision_target_eligible": false,
+            "position_key": "94d0a852c59c2852d09c0b7daeda1e88f8adabb866c8e47bc797de30aab75202"
+          }
+        ],
+        "calculated_model_summary": {
+          "rows": 8,
+          "sources": [
+            "CoinBoss"
+          ],
+          "source_ts": [
+            1792416856271
+          ],
+          "quotes": [
+            "USD"
+          ],
+          "all_estimated": true,
+          "all_exact_notional_usdt_NULL": true,
+          "all_target_ineligible": true
+        },
+        "manual_display_pointer": "/candidates/1/manual_text"
+      },
+      "render_boundary": {
+        "available_not_rendered_evidence_ids": [],
+        "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+        "telegram_context_receipts": [],
+        "telegram_delivery_proven": false,
+        "telegram_message_id": null
+      }
+    }
+  ],
+  "new_connected_findings": {
+    "BTW": {
+      "new_snapshot_not_old558": true,
+      "N05_Poloniex_SPOT_USDT_displayed": {
+        "buy": 3102.99,
+        "sell": 2532.09,
+        "imbalance_pct": 10.13,
+        "start": 1792402560000,
+        "end": 1792416960000,
+        "recorded_known": 1792417013940
+      },
+      "N10_Poloniex_15m_displayed": {
+        "active": 12,
+        "open": 2.0019,
+        "close": 1.9462,
+        "low": 1.9462,
+        "high": 2.0127,
+        "change_pct": -2.78,
+        "gap_HTX_pct": 0.82,
+        "start": 1792416060000,
+        "end": 1792416960000,
+        "known": 1792417013940
+      },
+      "N12_HTX_displayed": {
+        "FUTURES": {
+          "trades": 39,
+          "buy_USDT": 4391.39,
+          "sell_USDT": 6297.11,
+          "source_ts": 1792416995912
+        },
+        "SPOT": {
+          "trades": 251,
+          "buy_USDT": 4150.14,
+          "sell_USDT": 12961.71,
+          "source_ts": 1792417004041
+        },
+        "source_skew_ms": 8129,
+        "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+        "why_not_same_sign_only": "Pinned existing policy also requires magnitude spread<=0.15. Rounded displayed amounts are consistent with failure; no executed predicate trace invented."
+      },
+      "N12_Gate_SPOT_displayed": {
+        "trades": 1626,
+        "buy_USDT": 117033.12,
+        "sell_USDT": 71320.39,
+        "source_ts": 1792416958832,
+        "known": 1792417020511,
+        "start": 1792416660000,
+        "end": 1792416960000
+      },
+      "composite_original_max_known": 1792417013940,
+      "outer_HTX_observed": 1792417010883,
+      "later_by_ms": 3057,
+      "N15_displayed": {
+        "CG": {
+          "coin_pct": -19.23,
+          "median_pct": 1.67,
+          "relative_pp": -20.9,
+          "source_ts": 1792416944000,
+          "known": 1792417026253
+        },
+        "CP": {
+          "coin_pct": -16.64,
+          "median_pct": 1.44,
+          "relative_pp": -18.08,
+          "source_ts": 1792416857000,
+          "known": 1792417027751
+        }
+      },
+      "N15_block_contribution": null,
+      "CP_free_quotes": "VALIDATED_RUN_MEMORY_REFERENCE,0currentHTTP; source clocks remain separate",
+      "LIQ": "4SwoleUSDmodeledscenarios, no native level retained, not marketzero"
+    },
+    "ZEC": {
+      "N05_two_venues_SPOT_USDT_displayed": {
+        "BINANCE": {
+          "buy": 12053565.2,
+          "sell": 11525042.6,
+          "imbalance_pct": 2.24,
+          "recorded_known": 1792416968973
+        },
+        "POLONIEX": {
+          "buy": 5803576.5,
+          "sell": 5358377.24,
+          "imbalance_pct": 3.99,
+          "recorded_known": 1792416976024
+        },
+        "start": 1792402560000,
+        "end": 1792416960000
+      },
+      "N10": "3HTXneutral facts; HTX15m end1792416900000, newer external4h end1792416960000: exact prefilter excludes comparison before external cache read. No raw240bars/activity for earlier15m retained: not a demonstrated lost qualified path and no adapter/guard relaxation.",
+      "N12_HTX_displayed": {
+        "FUTURES": {
+          "trades": 126,
+          "buy_USDT": 58174.32,
+          "sell_USDT": 63704.98,
+          "source_ts": 1792416939843
+        },
+        "SPOT": {
+          "trades": 187,
+          "buy_USDT": 4854.14,
+          "sell_USDT": 5565.66,
+          "source_ts": 1792416954698
+        },
+        "source_skew_ms": 14855,
+        "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT"
+      },
+      "composite_original_max_known": 1792416976024,
+      "outer_HTX_observed": 1792416962663,
+      "later_by_ms": 13361,
+      "N15_displayed": {
+        "CG": {
+          "native_identity": "zcash:native:mainnet",
+          "coin": "zcash",
+          "sector": "layer-1",
+          "peers": 50,
+          "coin_pct": 3.1,
+          "median_pct": 0.61,
+          "relative_pp": 2.49,
+          "source_ts": 1792416894000,
+          "known": 1792416965850
+        },
+        "CP": {
+          "provider_identity": "provider:coinpaprika:zec-zcash",
+          "sector": "mining",
+          "peers": 21,
+          "coin_pct": 4.53,
+          "median_pct": 2.02,
+          "relative_pp": 2.51,
+          "source_ts": 1792416857000,
+          "known": 1792416981683
+        }
+      },
+      "N15_actual": {
+        "CG": -0.2993,
+        "CP": -0.0213,
+        "total": -0.3206,
+        "manual_row_zero_does_not_erase": true
+      },
+      "LIQ": "Original display sources2HLnativeUSDC+44OrderlyPROVIDER_ESTIMATE_USDC, one crossprovider consensusmerge=>45all_zones, plus8CoinBossUSDmodels. 46source nodes not46independentorigins. Manual3above/3below retains HLnativeprices722.0343878113 and546.7592743552; hybridconsensus721.013421526 is distinct. No FX/exactUSDT; alltargetfalse."
+    },
+    "same_code_reused_not_retested": [
+      "Existing exact-window/newest-end selection and N10 prefilter",
+      "Original composite maxknown and evidence ID retention",
+      "BASE_SCORE_MISSING staysNULL; actual sector contribution distinct from manualrow0",
+      "Local reference cache/run-memory reuse, no repeated provider HTTP proved",
+      "Conditional crossmargin native HL distinct from Orderly estimate and USDmodels"
+    ]
+  },
+  "proof_limits": [
+    "Only displayed rounded flow/price values where raw numbers not retained; no invented full precision.",
+    "Compact artifact lacks complete raw240 candle grids, external cached payloads/writeACK and all source bodies; evidence.raw_hash is not claimed to be original API bodyhash.",
+    "Recorded source/evidence known clocks are copied, not reconstructed true first publication/first fullbody knowledge.",
+    "OptionalGate reason is a returned code, not all earlier authority predicates. Original h absent; no binding relaxation.",
+    "Orderly modeled levels, HL account sample and CoinBoss/Swole models are scoped; not whole-market amounts/independent votes/HTXtargets.",
+    "Detailed TGreceipts stayempty/false/NULL; root delivery/persistence/budget/baseNULLPRIMARY acceptance belongs coordinator/third and is not duplicated."
+  ],
+  "execution": {
+    "production_shared_edit": 0,
+    "patch_framework_helper_callable_added": 0,
+    "runtime_import_Node_apps_tests_syntax_probes": 0,
+    "provider_HTTP_native_SQL_MAIN_dispatch_TG_deploy": 0,
+    "old551558_accepted_cases_repeated": false,
+    "ENTRY_physical_work": false
+  },
+  "next": "No executable counterexample. Preserve this new saved pair and exact boundaries; next source work requires a concrete new saved source body or defect."
+}

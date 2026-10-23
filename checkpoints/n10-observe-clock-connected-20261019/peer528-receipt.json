@@ -1,0 +1,628 @@
+{
+  "schema": "ANOMALY_WORKER_CANONICAL_OBSERVE_CLOCK_COMPOSITION_PEER_V1",
+  "created_at_utc": "2026-10-19T10:20:36.207663+00:00",
+  "scope": {
+    "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792405076036",
+    "lease_ref": "222398de2fe1d3b081b276836a92f3644e74f663",
+    "lease_exact_readback": true,
+    "main": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+    "review_only": "NEW composition of source522+corrected525 with narrow523 canonical OBSERVE observation clock. Previous source guards/test vectors are reused from frozen526, not re-reviewed or run.",
+    "app_modules_tests_probes_executed": 0,
+    "provider_nativeSQL_deploy_MAIN_Telegram": 0,
+    "final_target_head": "2fa2abb87932c36797667e4fdce0b20121733e46",
+    "final_freeze_directly_confirmed_by_coordinator": true,
+    "scope_expiry_not_extended": true,
+    "infra_preflight_parse_failure": {
+      "count": 1,
+      "application_code_executed": 0,
+      "CAS_mutation": 0,
+      "corrected_before_continue": true
+    }
+  },
+  "candidate": {
+    "code_qualification_head": "7b205638cda60ac7b60edfbc8c847368e945ad13",
+    "final_head": "2fa2abb87932c36797667e4fdce0b20121733e46",
+    "runtime_files": [
+      {
+        "path": "current-generation/files/src/htx-technical-structure.mjs",
+        "sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337",
+        "bytes": 33974
+      },
+      {
+        "path": "current-generation/files/src/block-result-context.mjs",
+        "sha256": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+        "bytes": 95524
+      },
+      {
+        "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+        "sha256": "bc5845ba2f4904f320d7eb9c952759c5e4a4fc0ae33fc595df5f097e1125ac99",
+        "bytes": 24415
+      }
+    ],
+    "candidate_files": [
+      {
+        "path": ".github/workflows/liq-assembled-offline-20261012.yml",
+        "sha256": "ac8cca97ec04fa6bfb6c9694370da8e70ff553cd7e59e976366f89a64c67b2ac",
+        "bytes": 61244
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/application-byte-proof.json",
+        "sha256": "7138262d180ce3997468bff9a5a186437d2373ef19a8a60e2780236ea5bef1bf",
+        "bytes": 1200
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/entry523-canonical-clock.patch",
+        "sha256": "c54c7b0964a3c1617512422d6dcff44460928061b9a8675c4d87383b9700606f",
+        "bytes": 1610
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-scope.json",
+        "sha256": "5c2e1cf29249a4fd2bb97513335bab0f58e8adcedd170cb6ab07640cfa927d0b",
+        "bytes": 2418
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/source525-cumulative.patch",
+        "sha256": "655fcc55922baac49c7882b11673937637d31ccd6cbe2a26090f95a66662a9a3",
+        "bytes": 13853
+      },
+      {
+        "path": "current-generation/files/src/block-result-context.mjs",
+        "sha256": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+        "bytes": 95524
+      },
+      {
+        "path": "current-generation/files/src/htx-technical-structure.mjs",
+        "sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337",
+        "bytes": 33974
+      },
+      {
+        "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+        "sha256": "bc5845ba2f4904f320d7eb9c952759c5e4a4fc0ae33fc595df5f097e1125ac99",
+        "bytes": 24415
+      },
+      {
+        "path": "current-generation/tests/fixtures/clock-connected-baseline-20261019/block-result-context.mjs",
+        "sha256": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12",
+        "bytes": 94776
+      },
+      {
+        "path": "current-generation/tests/fixtures/clock-connected-baseline-20261019/htx-technical-structure.mjs",
+        "sha256": "4ce4a5fa55bfdb8a0c7f7f0ac8d184ace3d5d3620cd995cd83b9bb6712dd5dd5",
+        "bytes": 33842
+      },
+      {
+        "path": "current-generation/tests/fixtures/clock-connected-baseline-20261019/v3-telegram-lifecycle-sidecar.mjs",
+        "sha256": "0c4f621540790a7f5aae95c1967ab51c73adca8f0510cc64b5f7932c37e5b59e",
+        "bytes": 24053
+      },
+      {
+        "path": "current-generation/tests/fixtures/output-contract/MANIFEST.json",
+        "sha256": "a9859c7f78fc4892f22f33ab32ec081d030e135bae11753f385babaa05c31d0e",
+        "bytes": 74831
+      },
+      {
+        "path": "current-generation/tests/n10-observe-clock-connected.runtime.mjs",
+        "sha256": "aae9476ba42c29368afaa2b45f1914661a9a2cfc10070acb59f1afedf0f7ae1a",
+        "bytes": 15885
+      },
+      {
+        "path": "tools/guard-clock-connected-20261019.mjs",
+        "sha256": "f300104fc804e9759adcff75e39f6351dff60914ce38596a8be890a201bdb8c8",
+        "bytes": 1697
+      }
+    ],
+    "unchanged_authority_and_path_files": [
+      {
+        "path": "cloudflare/public-collector/injected-worker-tail.js",
+        "sha256": "f2f1e89753cba90aa5c89531d9b49ec2567e407dbf75a7ead02a28b3064fe863",
+        "bytes": 37593,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/canonical-lifecycle-authority.mjs",
+        "sha256": "f98a9d994ade8b54c59fe49da20c19d86ea1e816543e01e35cd302313ff53530",
+        "bytes": 3084,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/v3-telegram-runtime.mjs",
+        "sha256": "8fe389d38e614e5ffa368dae6bc862b84640dba0eb16f4c236343c4bdffe9511",
+        "bytes": 8617,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/publication-reconciler.mjs",
+        "sha256": "73cc72450ab47b5fe0d7ab0cc42eec1456c140015e3e5726eadef4ef3f21085f",
+        "bytes": 21543,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/recheck-scheduler.mjs",
+        "sha256": "ba06136ae2efa0cf45826d54930b52548a2b6c9e9fc035536b31057298b34273",
+        "bytes": 8019,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/original-idea-terminal.mjs",
+        "sha256": "8ee55b30cf2f6c289d8c51c8e6c8eed1cc56555041985ed9a68c8a16c39ea614",
+        "bytes": 7693,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/owner-telegram-expiry-policy.mjs",
+        "sha256": "b99d2bcd806e4b7e0119b0e5042a00bc064f4a5d43b0e53007fb96f35fe65eeb",
+        "bytes": 794,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/bound-telegram-delivery-sidecar.mjs",
+        "sha256": "a5a829eaf3dcc41c654271ab191aedc2cceebfdaf8dec9d3e0082080f701f891",
+        "bytes": 9007,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/canonical-publication.mjs",
+        "sha256": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0",
+        "bytes": 48767,
+        "equal_main": true
+      },
+      {
+        "path": "current-generation/files/src/worker.js",
+        "sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5",
+        "bytes": 617350,
+        "equal_main": true
+      }
+    ],
+    "applied_patch_forms": {
+      "ONE_source525_cumulative_SHA256": "655fcc55922baac49c7882b11673937637d31ccd6cbe2a26090f95a66662a9a3",
+      "narrow523_SHA256": "c54c7b0964a3c1617512422d6dcff44460928061b9a8675c4d87383b9700606f",
+      "narrow523_bytes_match_frozen523": true,
+      "source_guard_prior_peer": {
+        "PR": 526,
+        "head": "964291003cc8a374c4c314bc84a486d0e0ac1102",
+        "receipt_SHA256": "61ac6f113b6fff872b759a52fe8b647218979475c5b7e030218ccc0e79c35745"
+      }
+    },
+    "manifest": "Only block-result-context effective-module hash and one maintenance entry change; fixture/golden records unchanged.",
+    "PR": 527,
+    "final_files": [
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/README_RU.md",
+        "bytes": 2978,
+        "sha256": "5c77173a5092166c30d662e508140e01305e685ec0317ebed8f7f51579cf628d",
+        "Git_blob_oid": "2086bbf3e00094896487027dc69d76ab0f2c4bc9"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/application-byte-proof.json",
+        "bytes": 1199,
+        "sha256": "d20b927ac127b0678ae97a9e046ebac41d5b6536433efad6de9db11f29ae60e4",
+        "Git_blob_oid": "5286600bb0be6fe1bffaff733f798aa06c073737"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/connected-acceptance.json",
+        "bytes": 1080,
+        "sha256": "12a8e6acdc1713630cf5dc87d1c35e4c85b1930b39d32c9a33a41f047f9c5fdb",
+        "Git_blob_oid": "5c0222135a3fe425ed034a6f4d5d2d3cf59f642e"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/entry523-canonical-clock.patch",
+        "bytes": 1610,
+        "sha256": "c54c7b0964a3c1617512422d6dcff44460928061b9a8675c4d87383b9700606f",
+        "Git_blob_oid": "bd3fa1c238f444f588241493716b305d42e5c7fa"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801-artifact.json",
+        "bytes": 811,
+        "sha256": "aba55d77cbcd112118e974c46623bd47f17bd9feeaff0a95af97755936fb1479",
+        "Git_blob_oid": "a2c7b23d2808028df82ae637a38de433e20ddb99"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801.zip",
+        "bytes": 4484,
+        "sha256": "1efdeea013f8c11a40f002b198cc2fcd8e48584079489a807013fa42d39876b1",
+        "Git_blob_oid": "f643e9cd0294ade5f386b51fd2fef3c0599063bb"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/assembly.json",
+        "bytes": 261,
+        "sha256": "5e3c0ad2725df100bac4311fdc940c06457d69b9f3667e332773fe01f77b540a",
+        "Git_blob_oid": "054205721e8fcd37a8c70dba0973e8d9ce2ea0cf"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/connected-tests.log",
+        "bytes": 824,
+        "sha256": "851b7f0502ff596be661ff86dfd09d4c4e174e90808a8bc052ee75ad0f9cf24c",
+        "Git_blob_oid": "a7d8d97f24ec68a00f561c49f228a6e7a33571c6"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/connected-witness.json",
+        "bytes": 1004,
+        "sha256": "3f4f542812ba656c7615ce4066baa1fa6af51ba647943279d44e08b35c572627",
+        "Git_blob_oid": "b821985917abcd9bece900e7664b8e44aec40220"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/guard-after.json",
+        "bytes": 2665,
+        "sha256": "bf3cd9668cbe427039775398d914247907e52607d0962148d95ed400df3a820c",
+        "Git_blob_oid": "488df89eca424503e8935a27e9a1900e6e2afac4"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801/guard-before.json",
+        "bytes": 2666,
+        "sha256": "81632434541e9dd3525fb9bc06001b634bdde30835b3105d9853e3f3ee3e3303",
+        "Git_blob_oid": "ef1ec85de8b9bd0e3a78fa7d07d49d708e0ee2d0"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/qualified-scope.json",
+        "bytes": 2417,
+        "sha256": "96797d2f718b5743438d817832fd80d0b9dc5d221080b9624aa33f9b959f814f",
+        "Git_blob_oid": "a085ec569ab10a9f46554a3c6351a543dacd5383"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/source525-cumulative.patch",
+        "bytes": 13853,
+        "sha256": "655fcc55922baac49c7882b11673937637d31ccd6cbe2a26090f95a66662a9a3",
+        "Git_blob_oid": "a61b3c7bb391c672611061484f7e9898bb01943a"
+      },
+      {
+        "path": "current-generation/files/src/block-result-context.mjs",
+        "bytes": 95524,
+        "sha256": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+        "Git_blob_oid": "2e66a543516334db380a79a23c4dfd42f0c5e6de"
+      },
+      {
+        "path": "current-generation/files/src/htx-technical-structure.mjs",
+        "bytes": 33974,
+        "sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337",
+        "Git_blob_oid": "4f371785bbf4ac44499c7bcbfbeee8a35ae31052"
+      },
+      {
+        "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+        "bytes": 24415,
+        "sha256": "bc5845ba2f4904f320d7eb9c952759c5e4a4fc0ae33fc595df5f097e1125ac99",
+        "Git_blob_oid": "e10483c363de4e92539b62740dff5ac4fc08d0b8"
+      },
+      {
+        "path": "current-generation/tests/fixtures/clock-connected-baseline-20261019/block-result-context.mjs",
+        "bytes": 94776,
+        "sha256": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12",
+        "Git_blob_oid": "bf8c5c94fcb9b8e53645e502a264e68365e9c488"
+      },
+      {
+        "path": "current-generation/tests/fixtures/clock-connected-baseline-20261019/htx-technical-structure.mjs",
+        "bytes": 33842,
+        "sha256": "4ce4a5fa55bfdb8a0c7f7f0ac8d184ace3d5d3620cd995cd83b9bb6712dd5dd5",
+        "Git_blob_oid": "236cc587985e7295203a792a46a2cb72b95e4fa9"
+      },
+      {
+        "path": "current-generation/tests/fixtures/clock-connected-baseline-20261019/v3-telegram-lifecycle-sidecar.mjs",
+        "bytes": 24053,
+        "sha256": "0c4f621540790a7f5aae95c1967ab51c73adca8f0510cc64b5f7932c37e5b59e",
+        "Git_blob_oid": "61f082ddd0d5e60b5659869afc1bbef27bde90cf"
+      },
+      {
+        "path": "current-generation/tests/fixtures/output-contract/MANIFEST.json",
+        "bytes": 74831,
+        "sha256": "a9859c7f78fc4892f22f33ab32ec081d030e135bae11753f385babaa05c31d0e",
+        "Git_blob_oid": "6f21749263a4543ec8411d836209d81b84f460f4"
+      },
+      {
+        "path": "current-generation/tests/n10-observe-clock-connected.runtime.mjs",
+        "bytes": 15885,
+        "sha256": "aae9476ba42c29368afaa2b45f1914661a9a2cfc10070acb59f1afedf0f7ae1a",
+        "Git_blob_oid": "340b518cdb92fe62e399200f118d94506892a396"
+      }
+    ],
+    "six_authority_root_hashes": [
+      {
+        "path": "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+        "bytes": 643466,
+        "sha256": "2c9368bedd00439e2aad7629432be52d735d35ce2985f32dbdaeed269d310c11",
+        "Git_blob_oid": "c5afea406ead94ac0b2ccacbe3a927a5bd8da58d"
+      },
+      {
+        "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+        "bytes": 669592,
+        "sha256": "bcaf3fc426f50f13953cf14b7f9a4f5db6f0629e65c78e0d24e5a8fe3ccb7425",
+        "Git_blob_oid": "06e8446ba3b705b79ffcb446b09b4810ea13a29b"
+      },
+      {
+        "path": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+        "bytes": 338636,
+        "sha256": "2f2e10b1d5b09540eb6d4937f24c1b727ff6eb5f28063b50718a7907894bc22f",
+        "Git_blob_oid": "2d98cb6b8d23239deb4c0381c318c61cb8d85730"
+      },
+      {
+        "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+        "bytes": 885313,
+        "sha256": "7e1f1b8904cbea42ad720bcd5fe6494e51bc0302d64f3d91e50c9825a8ae2939",
+        "Git_blob_oid": "8a83639578315ed241c0377060ab877e0c87228d"
+      },
+      {
+        "path": "audit-fixes/source-optimization-20260930/execution-lock.json",
+        "bytes": 701,
+        "sha256": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "Git_blob_oid": "b7cfec4353c9cde30c1f836a5330d433203f9421"
+      },
+      {
+        "path": "REPORT2_CURRENT_GENERATION.json",
+        "bytes": 72056,
+        "sha256": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "Git_blob_oid": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+      }
+    ],
+    "temporary_workflow_helper_removed": true,
+    "qualification_to_final_note": "Only proof metadata/newline and temporary qualification workflow/helper/scope removal changed after tested7b205; three runtime modules, fixtures/new test and manifest remain exact. Historical qualified-scope hashes bind qualification head, not the post-cleanup proof newline."
+  },
+  "composition_review": {
+    "new_concrete_blockers": [],
+    "canonical_OBSERVE_clock_anchor": {
+      "entrypoint": "deriveLifecycleContext",
+      "lines": [
+        101,
+        120,
+        124,
+        126,
+        130,
+        157,
+        159,
+        194
+      ],
+      "required_before_anchor": [
+        "same completed source run and contract",
+        "exact wave/snapshot/observed_ts row-versus-canonical identity",
+        "safe epoch time inside deep_started/deep_completed and <= now, age <=10min",
+        "canonical assigned direction and source-role gate",
+        "OBSERVE coin-interest threshold >=70",
+        "OBSERVE assessActionability and render success"
+      ],
+      "change": "Use the exact immutable canonical row observed_ts for ctx.observation_ts, instead of final/shadow telemetry. It is not a new market observation or a new source availability time.",
+      "on_invalid_canonical_clock": "CANONICAL_OBSERVATION_CLOCK_NOT_CLOSED with ctx:null",
+      "other_paths": "No observationPublication for legacy, canonical WAIT/ENTRY, or existing-prior removals; original telemetry expression and other fields unchanged."
+    },
+    "strict_original_task_join": {
+      "file": "cloudflare/public-collector/injected-worker-tail.js",
+      "lines": [
+        267,
+        269,
+        270,
+        271,
+        272,
+        273,
+        275,
+        288,
+        289,
+        294,
+        298
+      ],
+      "unchanged_predicates": [
+        "task→publication exact publication/contract/direction/run/snapshot/wave",
+        "binding publication/contract/direction/wave",
+        "dispatch SENT and contract/direction/wave",
+        "lifecycle contract/direction/wave/rules/status AND lifecycle.observation_ts=publication.observed_ts",
+        "task PENDING and due <= now and OBSERVE/WAIT, same bucket not repeated",
+        "LIMIT 2 unchanged",
+        "safe positive Telegram message_id plus recomputed exact canonical fingerprint",
+        "exact canonical identity and unchanged trigger due/expiry",
+        "compare-and-set task update and exact state/result readback"
+      ],
+      "effect": "The first published OBSERVE can satisfy the existing clock equality. The equality is not removed and a task is not rebound to a later publication."
+    },
+    "same_wave_refresh": "OPEN. Existing prepareLifecycleTransition still updates the current lifecycle observation time; a newer same-wave canonical may make an older task ineligible. This patch does not refresh old due/expiry, recreate a dispatch, migrate original-plan authority or claim a complete same-plan refresh.",
+    "ENTRY_authority": "Unchanged. LIGHT only yields full-analysis-required hint; it does not authorize ENTRY. Existing entry gates, original deadline, cancellation and silent TTL policy remain.",
+    "source_clocks": "Technical/context bytes exactly match the accepted frozen525 after-hashes cited in peer526. Canonical publication observed_ts selects the lifecycle anchor; source/first_known/observed/expiry evidence values are not re-timed.",
+    "budgets_and_output": "No new source/SQL path in the runtime diff; caps/strategy/weights/forms remain. Actual additional useful LIGHT work has unqualified native cost; no free-capacity claim.",
+    "independent_LONG_SHORT": "Anchor choice is direction-independent after the existing exact LONG/SHORT authority; the positive saved connected fixture is LONG and does not qualify actual SHORT delivery."
+  },
+  "saved_cloud": {
+    "run": 39236286801,
+    "head": "7b205638cda60ac7b60edfbc8c847368e945ad13",
+    "artifact_id": 12179226326,
+    "announced_digest": "1efdeea013f8c11a40f002b198cc2fcd8e48584079489a807013fa42d39876b1",
+    "source_reported": "SUCCESS, six new connected cases once; no test rerun by reviewer.",
+    "independent_saved_original_read": "EXACT_ZIP_AND_ALL_FIVE_MEMBERS_READ_ONLY_PASS",
+    "actual_native_SQL_or_TG": false,
+    "ZIP": {
+      "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801.zip",
+      "bytes": 4484,
+      "sha256": "1efdeea013f8c11a40f002b198cc2fcd8e48584079489a807013fa42d39876b1",
+      "Git_blob_oid": "f643e9cd0294ade5f386b51fd2fef3c0599063bb"
+    },
+    "artifact_metadata": {
+      "path": "checkpoints/n10-observe-clock-connected-20261019/qualification-originals/clock-connected-39236286801-artifact.json",
+      "bytes": 811,
+      "sha256": "aba55d77cbcd112118e974c46623bd47f17bd9feeaff0a95af97755936fb1479",
+      "Git_blob_oid": "a2c7b23d2808028df82ae637a38de433e20ddb99"
+    },
+    "members": [
+      {
+        "member": "assembly.json",
+        "bytes": 261,
+        "sha256": "5e3c0ad2725df100bac4311fdc940c06457d69b9f3667e332773fe01f77b540a"
+      },
+      {
+        "member": "connected-tests.log",
+        "bytes": 824,
+        "sha256": "851b7f0502ff596be661ff86dfd09d4c4e174e90808a8bc052ee75ad0f9cf24c"
+      },
+      {
+        "member": "connected-witness.json",
+        "bytes": 1004,
+        "sha256": "3f4f542812ba656c7615ce4066baa1fa6af51ba647943279d44e08b35c572627"
+      },
+      {
+        "member": "guard-after.json",
+        "bytes": 2665,
+        "sha256": "bf3cd9668cbe427039775398d914247907e52607d0962148d95ed400df3a820c"
+      },
+      {
+        "member": "guard-before.json",
+        "bytes": 2666,
+        "sha256": "81632434541e9dd3525fb9bc06001b634bdde30835b3105d9853e3f3ee3e3303"
+      }
+    ],
+    "saved_log_PASS": 6,
+    "saved_log_FAIL": 0,
+    "source_execution_count": 1,
+    "reviewer_execution_count": 0,
+    "witness": {
+      "schema": "CONNECTED_N10_CANONICAL_OBSERVATION_CLOCK_V1",
+      "trust": "SAVED_CT_OHLC_WITH_CONTROLLED_ENVELOPE_AND_REAL_LOCAL_SQLITE_NOT_NATIVE",
+      "cases": [
+        {
+          "case": "FIRST_PUBLICATION_LIGHT_JOIN_REPAIRED",
+          "old_selected": 0,
+          "new_selected": 1,
+          "light_entry_authorized": false,
+          "original_first_known_ts": 1792397525000,
+          "original_deadline": 1792399360589,
+          "relay": "CONTROLLED_NOT_NATIVE_SENT"
+        },
+        {
+          "case": "FULL_SQLITE_CLOCK_PROVENANCE_TEXT_UNCHANGED",
+          "native_ACK": false
+        },
+        {
+          "case": "AUTHORITY_REFUSALS_PRESERVED"
+        },
+        {
+          "case": "ONLY_CANONICAL_OBSERVE_CLOCK_CHANGED"
+        },
+        {
+          "case": "LATER_REFRESH_STILL_REQUIRES_EXACT_ORIGINAL_PLAN",
+          "not_solved_by_firstsend_fix": true
+        },
+        {
+          "case": "OLD_TTL_POLICY_AND_STRICT_LIMIT_GUARDS_RETAINED",
+          "providerHTTP": 0,
+          "nativeSQL": 0
+        }
+      ],
+      "sourceHTTP": 0,
+      "nativeSQL": 0,
+      "Telegram": 0,
+      "actual_ENTRY": null
+    },
+    "acceptance": {
+      "schema": "CONNECTED_CLOCK_SIX_NEW_ASSEMBLED_CASES_ACCEPTANCE_V1",
+      "run": 39236286801,
+      "head": "7b205638cda60ac7b60edfbc8c847368e945ad13",
+      "artifact": 12179226326,
+      "digest": "sha256:1efdeea013f8c11a40f002b198cc2fcd8e48584079489a807013fa42d39876b1",
+      "PASS": 6,
+      "FAIL": 0,
+      "executions": 1,
+      "reporter": "NODE_SPEC",
+      "old8_559_1_22_24_38_tests_rerun": 0,
+      "new_controlled_SQLite_causal_result": "Original first OBSERVE successfully persists/binds/delivers using injected relay, then unchanged existingLIGHT selector changes0→1 solely because lifecycle timestamp matches canonical original timestamp",
+      "price_crossing_authorizes_ENTRY": false,
+      "later_samewave_refresh_still_open": true,
+      "old_TTL_silence_policy_preserved": true,
+      "sourceHTTP_nativeSQL_Telegram_MAIN_deploy": 0,
+      "native_cost_or_actual_delivery_not_qualified": true,
+      "source525_alternative_used": "ONLY cumulative655fcc55922baac49c7882b11673937637d31ccd6cbe2a26090f95a66662a9a3",
+      "source526_peer_receipt_sha256": "61ac6f113b6fff872b759a52fe8b647218979475c5b7e030218ccc0e79c35745"
+    },
+    "job_success": "Coordinator reported SUCCESS; saved NODE_SPEC log/guards independently read. No new GitHub API or artifact GET by reviewer.",
+    "assembly_production_changed_field": "The raw assembly field production_changed:true describes the reconstructed local runtime; it is not deployment evidence."
+  },
+  "limits_ru": [
+    "Это независимый статический разбор новой совместной сборки. Приложение, тесты, модули и пробы не запускались.",
+    "Первый OBSERVE и LIGHT в контролируемой SQLite не доказывают реальное движение, native D1 ACK/расходы, полный refresh исходного плана, actual ENTRY или доставку Telegram.",
+    "Исходный native отказ NIL не установлен; новое доказательство воспроизводит конкретное несовпадение часов, не всю историю.",
+    "Физическая проверка очистки остаётся в конце плана. Pauses, основной отчёт и встроенный LIQ не меняются."
+  ],
+  "verification": {
+    "status": "PASS_ONE_FINAL_NEW_COMPOSITION_EVIDENCE_INTEGRITY",
+    "checked_at_utc": "2026-10-19T10:24:24.273230+00:00",
+    "PASS": 50,
+    "FAIL": 0,
+    "checks": [
+      "fresh scope and exact own readback remain within original expiry",
+      "fresh guard hashes unchanged since acquisition",
+      "all four fresh main active states equal",
+      "final runtime delta contains exactly the three reviewed files",
+      "qualified/final runtime bytes identical: current-generation/files/src/htx-technical-structure.mjs",
+      "qualified/final runtime bytes identical: current-generation/files/src/block-result-context.mjs",
+      "qualified/final runtime bytes identical: current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "authority/path unchanged from main: cloudflare/public-collector/injected-worker-tail.js",
+      "authority/path unchanged from main: current-generation/files/src/canonical-lifecycle-authority.mjs",
+      "authority/path unchanged from main: current-generation/files/src/v3-telegram-runtime.mjs",
+      "authority/path unchanged from main: current-generation/files/src/publication-reconciler.mjs",
+      "authority/path unchanged from main: current-generation/files/src/recheck-scheduler.mjs",
+      "authority/path unchanged from main: current-generation/files/src/original-idea-terminal.mjs",
+      "authority/path unchanged from main: current-generation/files/src/owner-telegram-expiry-policy.mjs",
+      "authority/path unchanged from main: current-generation/files/src/bound-telegram-delivery-sidecar.mjs",
+      "authority/path unchanged from main: current-generation/files/src/canonical-publication.mjs",
+      "authority/path unchanged from main: current-generation/files/src/worker.js",
+      "six authority root unchanged: checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "six authority root unchanged: checkpoints/CURRENT_PROJECT_STATUS.json",
+      "six authority root unchanged: checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "six authority root unchanged: checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "six authority root unchanged: audit-fixes/source-optimization-20260930/execution-lock.json",
+      "six authority root unchanged: REPORT2_CURRENT_GENERATION.json",
+      "instructions/MAIN workflow/temp qualification workflow restored: AGENTS.md",
+      "instructions/MAIN workflow/temp qualification workflow restored: MY_REPORT_2_STARTUP_CONTRACT.md",
+      "instructions/MAIN workflow/temp qualification workflow restored: .github/workflows/report2.yml",
+      "instructions/MAIN workflow/temp qualification workflow restored: .github/workflows/liq-assembled-offline-20261012.yml",
+      "temporary helper absent from final tree",
+      "final test and all three accepted baseline fixtures unchanged since qualification",
+      "manifest only effective pin and maintenance history change",
+      "one effective pin only and no golden changes",
+      "maintenance appends one entry only",
+      "exact narrow523 patch retained",
+      "ONE accepted cumulative525 form retained, no followup stacked",
+      "saved original ZIP exact announced digest",
+      "artifact metadata binds run/head/branch/id/digest",
+      "saved ZIP has exactly five original members",
+      "committed unpacked original equals ZIP member: assembly.json",
+      "committed unpacked original equals ZIP member: connected-tests.log",
+      "committed unpacked original equals ZIP member: connected-witness.json",
+      "committed unpacked original equals ZIP member: guard-after.json",
+      "committed unpacked original equals ZIP member: guard-before.json",
+      "saved NODE_SPEC log six PASS/zero FAIL/no skipped",
+      "before/after saved guards use exact owner/main and identical pinned inputs",
+      "all saved guard hashes bind qualification Git tree",
+      "retained historical qualified-scope JSON matches original qualification scope",
+      "saved connected witness binds six cases, first LIGHT0-to1 and no ENTRY",
+      "saved assembly has expected worker hash and local OFF source mode",
+      "source acceptance binds saved run/head/digest and one new execution only",
+      "own branch/base still exact and no unauthorized tracked edits"
+    ],
+    "fresh_main": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+    "guard_sha256": {
+      "AGENTS.md": "0b91493189f36621451e3a656241509d39f9ff76b493338aea6098a860032a3f",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "2c9368bedd00439e2aad7629432be52d735d35ce2985f32dbdaeed269d310c11",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "bcaf3fc426f50f13953cf14b7f9a4f5db6f0629e65c78e0d24e5a8fe3ccb7425",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "2f2e10b1d5b09540eb6d4937f24c1b727ff6eb5f28063b50718a7907894bc22f",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "8378a237b11f72599c0e6abdea922f872643a24bead76fd852dc7dd8bf5bbb84",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "7e1f1b8904cbea42ad720bcd5fe6494e51bc0302d64f3d91e50c9825a8ae2939",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "three_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_SILENT_EXPIRY_AND_SOURCE_REUSE_INTEGRATED_HANDOFF_20261019.json",
+        "sha256": "2442ace58adc96ca14e62e942a6e7fc68750608d6cf7f82e992fa095ed69cfa1"
+      },
+      {
+        "path": "checkpoints/entry-approved-integration-20261019/approved-eight-main-receipts.json",
+        "sha256": "8a8cebf92f1d139327ca8ee7501751985697aeaef5017c081ad4b42ce1947fe5"
+      },
+      {
+        "path": "checkpoints/natural-39225792595/coordinator-native-review.json",
+        "sha256": "e9968e8ac0c5e3f5f921c13518efd42e8552152c5abfd326d1b619d93b283459"
+      }
+    ],
+    "app_module_test_probe_executions": 0,
+    "old_or_new_semantic_tests_rerun": 0,
+    "provider_nativeSQL_MAIN_TG_deploy": 0,
+    "production_integration": false
+  },
+  "verdict": "ZERO_NEW_CONCRETE_COMPOSITION_BLOCKERS_WITH_EXPLICIT_LIMITS",
+  "summary_ru": "Совместная сборка PR527 сохраняет исходные часы N10 и привязывает первый канонический OBSERVE к времени именно своей публикации. Строгий LIGHT join и полномочия исходной задачи сохранены. Сохранённая облачная проверка содержит 6 PASS / 0 FAIL; повторных запусков не было. Полный refresh того же плана, нативные расходы, actual ENTRY и Telegram этим не приняты."
+}

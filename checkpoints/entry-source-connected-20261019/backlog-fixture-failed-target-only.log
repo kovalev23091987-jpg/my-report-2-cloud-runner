@@ -1,0 +1,18 @@
+✔ backlog dispatch binds its own publication when delivery executes in a later run (45.170375ms)
+✔ manual refusal records its failing status when Telegram text is READY and leaves no binding (1.521166ms)
+✔ legacy early publication repairs its wave id from canonical evidence and binds (1.819625ms)
+✔ fresh LTC OBSERVE repairs only a missing wave from the same exact production run and binds (1.523625ms)
+✔ missing publication wave is never repaired across executor runs (0.708917ms)
+✔ fresh bound signal is sent before stale unbound backlog and stale row is never delivered (2.853458ms)
+✔ removal after the binding grace period uses only its previously delivered exact wave (3.066791ms)
+✔ removal without a previously delivered exact wave is finalized without network retry (0.652083ms)
+✔ two equally recent canonical publications fail closed instead of guessing (0.775375ms)
+✔ technical health remains in the journal and never reaches owner Telegram (1.173042ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127.260666

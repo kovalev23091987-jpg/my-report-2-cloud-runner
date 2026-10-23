@@ -1,0 +1,351 @@
+{
+  "schema": "PR595_SOURCE_ASOF_AND_PRESENTATION_PRIMARY_ACCEPTANCE_V1",
+  "merge": {
+    "PR": 595,
+    "frozen_head": "1d3c287927e3da3ab72e2471e5093c2b962e7a66",
+    "squash": "5f6d786756b5dacc331784df509d17f36a926abf",
+    "changed_files_exact": {
+      ".github/workflows/report2.yml": "06cc4e070c3d5346ee093fd13b9237fe2c1d404946d25639ccbb6fb2f09df64d",
+      "anomaly-research/scan-fallback-source-asof-20261021/PROTOCOL_RU.md": "21435e04c0ec64271c5a4e76ab53ae309ca73b5e382753f3307037188aaab355",
+      "anomaly-research/scan-fallback-source-asof-20261021/README_RU.md": "e2fe44a41ccf57d65833d5f798ac65d2a4a7885090d13abf8619196251b5db9c",
+      "anomaly-research/scan-fallback-source-asof-20261021/connected.mjs": "19b27fab7bca462a3b645935ac3629f18629cdad4632a34fd15351a1573eb1ce",
+      "anomaly-research/scan-fallback-source-asof-20261021/manifest.json": "9e263b03449cd106a2609619117867040c39d4649d49bfb353a01b851df68158",
+      "anomaly-research/scan-fallback-source-asof-20261021/reader.after.mjs": "2e82c72abec59d4b66f6767a07c5a4f158865caca0f15d1ec54b09dac7b0ad79",
+      "anomaly-research/scan-fallback-source-asof-20261021/reader.before.mjs": "bae6e5653389425a557f3d69ce74d869b9028585c8a69c5b51704b651d69518b",
+      "anomaly-research/scan-fallback-source-asof-20261021/reader.proposed.patch": "2eba0112ec4240f4f803f434826761a4a79afdb34a3c72b5bdb81212e454b4e8",
+      "anomaly-research/scan-fallback-source-asof-20261021/target-bindings.json": "9c40b72f4fcec15b934bc70bf36687ccd72c6bdb5a5eb3a4f1f270570e510937",
+      "checkpoints/scan-source-asof-connected-20261021/common-receipt.json": "bdb7ae89ecc80bde31841e7f86e3b0f556b6e10d35bdf03776d462dd5f982b94",
+      "checkpoints/scan-source-asof-connected-20261021/common/artifact-metadata.json": "1a9803ce825a28ba29a41c5c16290c5c4322c6a0d67c808dc7d3134042f46f08",
+      "checkpoints/scan-source-asof-connected-20261021/common/artifact.zip": "a6b988d305703eb4fac87af9be4c47732e21221971e19bb1a42e160073f66b14",
+      "checkpoints/scan-source-asof-connected-20261021/common/assembly.json": "07087f30a5148538cbfd02566c74736d742aae4a5f3b32e14326ea821f8f174f",
+      "checkpoints/scan-source-asof-connected-20261021/common/baseline-binding.json": "a8d9e51afdc1d52a65bc05e3c6f7c144609aed193af9c6db8f1f89baf3b0f1d3",
+      "checkpoints/scan-source-asof-connected-20261021/common/baseline-cleanup.json": "34a35fcfccd0b57a16b40e150b18e4c77b6163ea825ecc52cdc0f0ee6ab0c51a",
+      "checkpoints/scan-source-asof-connected-20261021/common/guard-after.json": "383eea74daa37a54578522b3f4c035de2c9c7471662432bc8181ab86b8d00974",
+      "checkpoints/scan-source-asof-connected-20261021/common/guard-before.json": "8ac30b069d0e6bd70df780919f2c3a429d29f3abe28a7458935701ebc7db4a6b",
+      "checkpoints/scan-source-asof-connected-20261021/common/history-result.json": "4646babc053856312d68092c8ea27a4b914abcc46eb3b1ce24c668f838d4ad31",
+      "checkpoints/scan-source-asof-connected-20261021/common/members.json": "f32e680f039ea6c87ea2fd55e6b435c5e569a66548b6c20308e8b45a9118e0ae",
+      "checkpoints/scan-source-asof-connected-20261021/common/primary-result.json": "412f5283d8a67fb1d0407da03dfec1932d9d96502093586cb6b6f1b8930c1b9d",
+      "checkpoints/scan-source-asof-connected-20261021/common/result.json": "7f5177cb9776e6446d97e9a57d2dc88f98186c2acf926e90e8896be37c3fae65",
+      "checkpoints/scan-source-asof-connected-20261021/common/run.json": "f4d6aac73ce0c19939605843b01ea4f0dc79f6ab7cb007b30597417cdc1d3a7d",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/12340332694.zip": "66870b6b760c65885563aa13f53d1cf1682db669909b704c44806060a7614370",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/actual-summary.json": "af09cb1d8ffa562209fe9a4a07106896132f26e7d73aad64bf723ec847a45c7c",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/artifacts.json": "7176892b2a5177c905748092bd16d680874b6ac5ce8d4c643c3119db12c1492d",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/complete-job.log.gz": "891e34d79ff75abf98804fd676044e19952349a4c5441c5306cdedf300f7ed5f",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/jobs.json": "7e81b88ac38dd5ca223ea7eae8cf81c39bc1697581a4b747227a52060073b3f0",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/raw-members-and-log-sha256.json": "2b3294cd15937fd8fd449f352f6b7d721f5160bf6bfa641d2a7df99de94cbfce",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/run-selection.json": "4c004789e490ea90890c71169dc830ad6bbdb40a61b869e1b805d2601cd61e0b",
+      "checkpoints/scan-source-asof-connected-20261021/natural-39587891954/selected-diagnostics.json": "efae5d5a79a1c41b99b7ac27afaf7fa83b22d899229bd2eac4a39fb143a44ef3",
+      "checkpoints/scan-source-asof-connected-20261021/owner-limited99-approval.json": "7067238b78beccfa8c5d4a1a407d2a110b1aa516701a866155dbae9cc285f9a8",
+      "checkpoints/scan-source-asof-connected-20261021/post-archive-exact-binding.json": "390bb333e155f3cb51e3b8b433b8fcc698c60cb1fa7d1f137d50f6114c53e247",
+      "checkpoints/scan-source-asof-connected-20261021/primary/connected.mjs": "b320ccb252a46d4ae943dca2380b2848f923f8a3f1356d503f7cea327619baaa",
+      "checkpoints/scan-source-asof-connected-20261021/primary/target-bindings.json": "b31a0d212f24365928a9f6a4d6af90975effc9c5456bb6f5e5d627629fc86ed6",
+      "checkpoints/scan-source-asof-connected-20261021/primary/worker-hash-bindings.json": "2e0ddcb36a63b46b620ec808ae49c81d59f4c95bfd96a2f9d8fc4fd53e64b520",
+      "checkpoints/scan-source-asof-connected-20261021/primary/worker.proposed.patch": "cb16a840f91386877a6a637d8d4f3ba0fba2b597ce9e42445367313e3bb50f9d",
+      "checkpoints/scan-source-asof-connected-20261021/qualification-plan.json": "09eec6ee5bc947c1a6c627d12c7e1f966080f3dbc52b3a1a9aa6d621cd680243",
+      "checkpoints/scan-source-asof-connected-20261021/qualification-scope.json": "b410ac3ca5d5bf78b188200ea96b202535c1283198095842f74d2d9a88bcec70",
+      "checkpoints/scan-source-asof-connected-20261021/temporary-guard.qualified.mjs": "1450e44d0b2cef6294fe44a90cd1df1dc3e3ba25aa51d7dbf32f8cd8b015818f",
+      "checkpoints/scan-source-asof-connected-20261021/temporary-workflow.qualified.yml": "9e5a77b9ad20469f7cf64f48cf8c9c882bab1a58818db7e73111070ccbee04e9",
+      "current-generation/files/src/market-history-reader.mjs": "2e82c72abec59d4b66f6767a07c5a4f158865caca0f15d1ec54b09dac7b0ad79",
+      "current-generation/files/src/worker.js": "6ffb71218afe975b37c2f909d302afd7170229711f67704ed39a42784b7493c7",
+      "current-generation/tests/generation-guard.test.mjs": "b37fdbb9c68f63cf13f8cf3fe7dd35f2fd9923bcc8b8fca3b977bd18adbb750d",
+      "current-generation/tests/scan-source-asof.runtime.mjs": "9bdc29c9ffeb93a2223b08aafce9406ed6151be15d4f853379affa9ac2b3b8c0"
+    },
+    "authority_roots_unchanged_at_merge": {
+      "AGENTS.md": "36bfb8850999c21034c24a2153d19ad54ebb4dc86cb3710cf78abef7c3fefa8a",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "187a2f057204181760f97b81c8c44e86b110b66e2c69d8c7fd261339715bb28a",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "ac1f119b3274d20d2ee3d71337a2cce201bdc48a455b247c15e7853b431ce107",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "d12f2a21ab4d7387ca5435c36b0f583ac7596916084932e000c22f87e832f6a1",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "0b347c6b60b0e85cb54be64f72e428d5cae8d346a5a0f7468f9c592cb6744daa",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "4910f4d62709efb52e701077310636581c18c5ed17afb8440bc16c59190fdb13"
+    },
+    "original594_frozen": "e6113d3a6fa3407150587104fd2b4671d529c864",
+    "original594_files_byte_exact": 8,
+    "checks_success": 4,
+    "own_lease_unchanged": {
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792580114348",
+      "acquired_ts": 1792580114348,
+      "expires_ts": 1792584614348,
+      "expected_main": "dafbd32c3e42602b0d91c668ed21a5172c5b0f32",
+      "scope": "OWNER_FIVE_ACTIVE_DIRECTIONS.SCAN_SOURCE_ASOF_AND_SAVED_PRIMARY_20261021. Read ONE new already-SAVED ordinary after593 for actual compactcatalog/initialprimaryreasons and exact source-cost/refusal evidence; no forced MAIN/manual/provider/nativeSQL/TG/CF. Review the newly proved scan_runs originalsourceclock future-or-unknown counterexample and frozen third proposal; integrate ONLY two inline JS returned-source-ts safepositiveinteger<=existingreadasof guards in existing market-history-reader fallback paths (basebae6e565), preserving SQL/templates/binds/order/limits/nearesttolerance/metrics/sourceclocks/score/strategy/gates/forms. One NEW connected actualLocalSQLite qualification with actualfullassembled old/new module baseline; no oldK07/586/593cases/components replay. Qualified temporary workflow restored/guard archived, required automaticCI/expectedhead squash/exactfiles+authorityroots/originalpreservation/commoncheckpoint/onlyownrelease. Causal catalog/primary runtime repairs require separate precise sameowner sameexpiry scope amendment after actual new evidence+readyproposal; no speculative extra changes. Preserve105/122/9pauses/Paid/cursor710/unknowns/reserves/caps/ENTRYfollowup and physicalstorage ownerdeferrals. SAME LINKED PACKAGE precise amendment: actual395878 shows ZEC retainedcanonicalCLOSED/OBSERVE with bundleNOT_CLOSED+TelegramMESSAGE_TOO_LONG causes initialdiagnostic falseunbound, and USELESS initialmetadata OMlTTED_OVERSIZE. ONLY extend existing two inline Worker diagnostic copies: preserve exact canonicalownCLOSED/parity/tuple/retainedreceipt identity when presentationbundleNOT_CLOSED (record that status/formatter metadata explicitly, never publicationeligibility); on otherwise bound V1metadata prettyoverflow allow explicit lossless V2compactparsedJSONTEXT within SAME4096B emitteddepth4/candidatex2, else oldwholeomission. No publication/form/lengthlimit/score/direction/gate/SQL/reader/privatepayload change. One new affected primary carrier component for these new actual boundaries alongside NEW clockcomponent; old5937/8components not replayed. Update only existing exactWorkerSHA literals for newbytes. Sourcecatalog causal runtime change remains out of scope until separate readyproposal/exactamend."
+    },
+    "merged_readback": true,
+    "readback_mode": "RAW_BYTES_INCLUDING_ZIP_AND_GZIP"
+  },
+  "common": {
+    "schema": "SCAN_SOURCE_ASOF_AND_PRESENTATION_DIAGNOSTICS_COMMON_ACCEPTANCE_V1",
+    "run": 39592585990,
+    "head": "b70821cd1e8669bdae1e2c8e191c6ee6ae0f8a67",
+    "artifact": 12342228262,
+    "ZIP_bytes": 130385,
+    "digest": "sha256:a6b988d305703eb4fac87af9be4c47732e21221971e19bb1a42e160073f66b14",
+    "members": 9,
+    "actual_reporter": "NODE_SPEC",
+    "actual_pass": 1,
+    "actual_fail": 0,
+    "CONTROLLED_groups": 13,
+    "components": {
+      "primary": 6,
+      "history": 7
+    },
+    "old_components_replayed": 0,
+    "native_SQL_provider_HTTP_MAIN_Telegram": 0,
+    "actual_missing_metadata_recovered": false,
+    "Telegram_restored": false,
+    "immutable_anomaly_ACK_or_native_saving_qualified": false,
+    "original594_frozen_head": "e6113d3a6fa3407150587104fd2b4671d529c864"
+  },
+  "common_SPEC": {
+    "source": "EXISTING_EXACT_ARTIFACT_MEMBER_connected-tests.log",
+    "sha256": "77168452be1a0a8237006644a04fd523b3ebc3593a79d19617dd71757ca7c04c",
+    "actual_reporter": "NODE_SPEC",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "lines": [
+      "✔ ONE NEW linked source-asof and primary presentation encoding boundaries (397.672281ms)",
+      "ℹ tests 1",
+      "ℹ pass 1",
+      "ℹ fail 0"
+    ]
+  },
+  "result_peer": {
+    "reviewer_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "scope": "ONE read-only actual common results-to-claims review, not repeated static source review",
+    "status": "ACCEPTED_WITH_LIMITS",
+    "new_blockers": [],
+    "artifact": 12342228262,
+    "digest": "sha256:a6b988d305703eb4fac87af9be4c47732e21221971e19bb1a42e160073f66b14",
+    "verified": {
+      "members": 9,
+      "source_pins": 259,
+      "runtime_pins": 232,
+      "full_assembled_files": 613,
+      "component_other_files": 612,
+      "CONTROLLED_groups": 13,
+      "primary_groups": 6,
+      "history_groups": 7,
+      "baseline_cleanup": true
+    },
+    "unqualified": [
+      "native availability",
+      "native anomaly ACK",
+      "native saving",
+      "actual395878 missing metadata recovery",
+      "Telegram SENT"
+    ],
+    "peer_executions": 0,
+    "peer_new_PR_or_lease": false
+  },
+  "automatic_PR_checks": [
+    {
+      "id": 119198109873,
+      "name": "verify",
+      "head": "1d3c287927e3da3ab72e2471e5093c2b962e7a66",
+      "conclusion": "success",
+      "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39592929320/job/119198109873"
+    },
+    {
+      "id": 119198109819,
+      "name": "verify",
+      "head": "1d3c287927e3da3ab72e2471e5093c2b962e7a66",
+      "conclusion": "success",
+      "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39592929375/job/119198109819"
+    },
+    {
+      "id": 119198109453,
+      "name": "verify",
+      "head": "1d3c287927e3da3ab72e2471e5093c2b962e7a66",
+      "conclusion": "success",
+      "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39592929301/job/119198109453"
+    },
+    {
+      "id": 119198109451,
+      "name": "verify",
+      "head": "1d3c287927e3da3ab72e2471e5093c2b962e7a66",
+      "conclusion": "success",
+      "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39592929265/job/119198109451"
+    }
+  ],
+  "automatic_MAIN": {
+    "run": 39593209602,
+    "head": "5f6d786756b5dacc331784df509d17f36a926abf",
+    "artifact": 12342089305,
+    "ZIP_bytes": 292420,
+    "digest": "sha256:1da003f41bcdc119ba3da375e855339b45dcc3cad15f4dfb7cba4d73f1a40b14",
+    "members": 44,
+    "actual_reporter": "NODE_SPEC",
+    "SPEC_files": [
+      {
+        "file": "active-source-finalist-and-markets.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 29,
+        "pass": 29,
+        "fail": 0
+      },
+      {
+        "file": "active-source-headroom.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 403,
+        "pass": 403,
+        "fail": 0
+      },
+      {
+        "file": "cold-archive.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 242,
+        "pass": 242,
+        "fail": 0
+      },
+      {
+        "file": "exact-asset-role-and-collector-audit.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 28,
+        "pass": 28,
+        "fail": 0
+      },
+      {
+        "file": "hourly-native-usage.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 41,
+        "pass": 41,
+        "fail": 0
+      },
+      {
+        "file": "index-useful-only.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 21,
+        "pass": 21,
+        "fail": 0
+      },
+      {
+        "file": "native-identity-source-handoff.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 39,
+        "pass": 39,
+        "fail": 0
+      },
+      {
+        "file": "native-sector-provider-binding.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 260,
+        "pass": 260,
+        "fail": 0
+      },
+      {
+        "file": "native-transport-fallback.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 7,
+        "pass": 7,
+        "fail": 0
+      },
+      {
+        "file": "native-useful-budget.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 19,
+        "pass": 19,
+        "fail": 0
+      },
+      {
+        "file": "native-useful-runtime.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 24,
+        "pass": 24,
+        "fail": 0
+      },
+      {
+        "file": "new-liq-research-admission.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 6,
+        "pass": 6,
+        "fail": 0
+      },
+      {
+        "file": "private-forecast-consumer.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 10,
+        "pass": 10,
+        "fail": 0
+      },
+      {
+        "file": "private-price-connected.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 154,
+        "pass": 154,
+        "fail": 0
+      },
+      {
+        "file": "private-reader-runtime.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 38,
+        "pass": 38,
+        "fail": 0
+      },
+      {
+        "file": "public-venue-health-priority.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 281,
+        "pass": 281,
+        "fail": 0
+      },
+      {
+        "file": "retained-write-failure-guard.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 110,
+        "pass": 110,
+        "fail": 0
+      },
+      {
+        "file": "scheduled-evidence-budget.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 3,
+        "pass": 3,
+        "fail": 0
+      },
+      {
+        "file": "source-health-priority.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 17,
+        "pass": 17,
+        "fail": 0
+      },
+      {
+        "file": "target.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 223,
+        "pass": 223,
+        "fail": 0
+      },
+      {
+        "file": "weekly-htx-synchronized-plan.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 129,
+        "pass": 129,
+        "fail": 0
+      }
+    ],
+    "pass": 2084,
+    "fail": 0,
+    "manual_reexecution": false,
+    "native_grant": false
+  },
+  "original594": {
+    "PR": 594,
+    "state": "closed",
+    "frozen_head": "e6113d3a6fa3407150587104fd2b4671d529c864",
+    "merged_independently": false,
+    "original8_byte_exact_through595": true
+  },
+  "attachment": {
+    "PR": 595,
+    "attempts": 1,
+    "result": "thread attachment identity count exceeds 100",
+    "valid_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/595",
+    "retry": false
+  },
+  "no_manual_old_case_reexecution": true,
+  "Telegram_restored": false,
+  "native_anomaly_ACK_or_cost_saving_qualified": false
+}

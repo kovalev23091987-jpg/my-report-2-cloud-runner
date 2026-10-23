@@ -1,0 +1,706 @@
+{
+  "schema": "SAVED_BTW392557_SOURCE_FACT_CONSUMER_RECEIPT_V1",
+  "result": "NO_NEW_SAVED_USEFUL_FACT_LOSS_BINDING_OR_REPEAT_HTTP_COUNTEREXAMPLE_FOUND",
+  "native": {
+    "cloud_run": 39255752857,
+    "head": "1f5ba3fbf1daf09a48b4d5be7c4b564ba6e3654d",
+    "run_id": "1792414506519-1792414518714",
+    "originals_commit": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+    "candidate_pointer": "/candidates/0",
+    "publication_id": "PUB:e0b68cad1289fbfa89ecf664b64f4246fb2c0e9b",
+    "contract": "BTW-USDT",
+    "snapshot_id": "S392:BTW-USDT:1792414632614",
+    "observed_ts": 1792414632614,
+    "canonical_state": "REJECTED",
+    "direction": null
+  },
+  "scope": "BTW only. No CT audit, no previous551 repetition, no budget132/182/16-overflow acceptance.",
+  "scores": {
+    "status": "BASE_SCORE_MISSING",
+    "canonical": {
+      "overall_0_100": null,
+      "coin_interest_0_100": null,
+      "entry_readiness_0_100": null,
+      "is_probability": false
+    },
+    "block_use": {
+      "N05": {
+        "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+        "observed_fact_count": 1,
+        "valid_fact_count": 1,
+        "directional_eligible_fact_count": 0,
+        "score_contribution": null,
+        "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+        "decision_assessment_receipt_count": 0,
+        "unscored_diagnostic_receipt_count": 0,
+        "rendered_useful_context_receipt_count": 1,
+        "participation_status": "USE_NOT_PROVEN"
+      },
+      "N10": {
+        "assigned_consumer": "TARGET_PATH_INVALIDATION",
+        "observed_fact_count": 4,
+        "valid_fact_count": 4,
+        "directional_eligible_fact_count": 0,
+        "score_contribution": null,
+        "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+        "decision_assessment_receipt_count": 4,
+        "unscored_diagnostic_receipt_count": 0,
+        "rendered_useful_context_receipt_count": 4,
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN"
+      },
+      "N12": {
+        "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+        "observed_fact_count": 2,
+        "valid_fact_count": 2,
+        "directional_eligible_fact_count": 1,
+        "score_contribution": null,
+        "score_application_status": "NO_BASE_SCORE_NO_APPLICATION",
+        "decision_assessment_receipt_count": 1,
+        "unscored_diagnostic_receipt_count": 1,
+        "rendered_useful_context_receipt_count": 2,
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN"
+      },
+      "N15": {
+        "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+        "observed_fact_count": 2,
+        "valid_fact_count": 2,
+        "directional_eligible_fact_count": 2,
+        "score_contribution": null,
+        "score_application_status": "NO_BASE_SCORE_NO_APPLICATION",
+        "decision_assessment_receipt_count": 0,
+        "unscored_diagnostic_receipt_count": 2,
+        "rendered_useful_context_receipt_count": 2,
+        "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN"
+      }
+    },
+    "manual_row_0_is_not_NULL_block_score": true
+  },
+  "selected_retained_facts": [
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/0",
+      "retained_projection": {
+        "block_id": "N05",
+        "evidence_ids": [
+          "EV2:7bb84d31d5fdd566d60eac531a708ec2d63187ca7c6bf0f71da9518cf7f7564b"
+        ],
+        "physical_root_keys": [
+          "AVAILABLE_FLOW:BTW-USDT:1792400160000:1792414560000"
+        ],
+        "source_ts": 1792414560000,
+        "observed_ts": 1792414602032,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/1",
+      "retained_projection": {
+        "block_id": "N12",
+        "evidence_ids": [
+          "EV2:303c140c32745687e2da0d6c87276f17185093ac412da461e688f3532163fe43",
+          "EV2:7bb84d31d5fdd566d60eac531a708ec2d63187ca7c6bf0f71da9518cf7f7564b"
+        ],
+        "physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:BTW-USDT:BTW-USDT:BOUNDED:1000005705328000000:HTX_SPOT_TRADE_SAMPLE:BTW-USDT:9331042",
+          "AVAILABLE_FLOW:BTW-USDT:1792400160000:1792414560000"
+        ],
+        "source_ts": 1792414579058,
+        "observed_ts": 1792414596158,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0,
+        "composite_first_known_ts": 1792414602032,
+        "component_origins": [
+          {
+            "evidence_id": "EV2:303c140c32745687e2da0d6c87276f17185093ac412da461e688f3532163fe43",
+            "block_id": "N12",
+            "provider_id": "HTX_SPOT_FUTURES_TRADES",
+            "raw_hash": "74161cb748f5bb53b19772c97237ce3a063f75b908464b2ab25c8d239c188e03",
+            "source_ts": 1792414579058,
+            "observed_ts": 1792414596158,
+            "first_known_ts": 1792414596158,
+            "expires_at": 1792414656158,
+            "window_start_ts": null,
+            "window_end_ts": null,
+            "window_status": "NOT_RETAINED_IN_EVIDENCE"
+          },
+          {
+            "evidence_id": "EV2:7bb84d31d5fdd566d60eac531a708ec2d63187ca7c6bf0f71da9518cf7f7564b",
+            "block_id": "N05",
+            "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+            "raw_hash": "aaaffa7f554db942690427c3857ab7e93c2997208afd23a43ffdcf38c52cf329",
+            "source_ts": 1792414560000,
+            "observed_ts": 1792414602032,
+            "first_known_ts": 1792414602032,
+            "expires_at": 1792414860000,
+            "window_start_ts": 1792400160000,
+            "window_end_ts": 1792414560000,
+            "window_status": "EXPLICIT_EVIDENCE_FIELDS"
+          }
+        ]
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/2",
+      "retained_projection": {
+        "block_id": "N12",
+        "evidence_ids": [
+          "EV2:8d936615817be3057c1e81744daa97571cc96280ec1d8156595b7a4af4eb802c"
+        ],
+        "physical_root_keys": [
+          "GATE_BOUNDED_SPOT_TRADE_SAMPLE:BTW-USDT:5354321"
+        ],
+        "source_ts": 1792414555547,
+        "observed_ts": 1792414609478,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0,
+        "composite_first_known_ts": 1792414609478,
+        "component_origins": [
+          {
+            "evidence_id": "EV2:8d936615817be3057c1e81744daa97571cc96280ec1d8156595b7a4af4eb802c",
+            "block_id": "N12",
+            "provider_id": "GATE_SPOT_TRADES",
+            "raw_hash": "7cf28c07c97673fa7e749f13ffdcb8d2880161fe142d940c3e176d7dbcf9473a",
+            "source_ts": 1792414555547,
+            "observed_ts": 1792414609478,
+            "first_known_ts": 1792414609478,
+            "expires_at": 1792414669478,
+            "window_start_ts": 1792414260000,
+            "window_end_ts": 1792414560000,
+            "window_status": "EXPLICIT_EVIDENCE_FIELDS"
+          }
+        ]
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/3",
+      "retained_projection": {
+        "block_id": "N10",
+        "evidence_ids": [
+          "EV2:5cf493241029f34aa2da3cd5ea8f87e55e5c7100aed7f9b6488f16fe006f0beb"
+        ],
+        "physical_root_keys": [
+          "htx-futures:BTW-USDT|BTW-USDT:60min:1792411200000"
+        ],
+        "source_ts": 1792414586663,
+        "observed_ts": 1792414587116,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0,
+        "original_clock": {
+          "source_ts": 1792414586663,
+          "first_known_ts": 1792414587116,
+          "observed_ts": 1792414587116,
+          "expires_at": 1792414766663,
+          "window_start_ts": 1792339200000,
+          "window_end_ts": 1792411200000,
+          "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS"
+        }
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/4",
+      "retained_projection": {
+        "block_id": "N10",
+        "evidence_ids": [
+          "EV2:c91a498e5308447a29ad1dc25116c5e1cdfbaff01a7b35855d96d63b21066104"
+        ],
+        "physical_root_keys": [
+          "htx-futures:BTW-USDT|BTW-USDT:15m:1792414560000"
+        ],
+        "source_ts": 1792414560000,
+        "observed_ts": 1792414632614,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0,
+        "original_clock": {
+          "source_ts": 1792414560000,
+          "first_known_ts": 1792414592215,
+          "observed_ts": 1792414632614,
+          "expires_at": 1792414740000,
+          "window_start_ts": 1792413660000,
+          "window_end_ts": 1792414560000,
+          "source_clock_policy": "HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M"
+        }
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/5",
+      "retained_projection": {
+        "block_id": "N10",
+        "evidence_ids": [
+          "EV2:8965c6e068bf4ef66ea48784f629e385be022afa092e1fc196f78fd08a1e2f14"
+        ],
+        "physical_root_keys": [
+          "htx-spot:BTW-USDT|HTX_SPOT:BTW-USDT:1792414560000"
+        ],
+        "source_ts": 1792414560000,
+        "observed_ts": 1792414632614,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0,
+        "original_clock": {
+          "source_ts": 1792414560000,
+          "first_known_ts": 1792414587808,
+          "observed_ts": 1792414632614,
+          "expires_at": 1792414740000,
+          "window_start_ts": 1792413660000,
+          "window_end_ts": 1792414560000,
+          "source_clock_policy": "SAME_RUN_HTX_SPOT_ORIGINAL_CLOSED_1M"
+        }
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/6",
+      "retained_projection": {
+        "block_id": "N10",
+        "evidence_ids": [
+          "EV2:8b8d8973b26353892b3de0162de5e4440bffa4af45ff91fa8c61141ec04d252d"
+        ],
+        "physical_root_keys": [
+          "htx-futures:BTW-USDT|POLONIEX:BTW-USDT:1792414560000"
+        ],
+        "source_ts": 1792414560000,
+        "observed_ts": 1792414632614,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0,
+        "original_clock": {
+          "source_ts": 1792414560000,
+          "first_known_ts": 1792414602032,
+          "observed_ts": 1792414632614,
+          "expires_at": 1792414860000,
+          "window_start_ts": 1792413660000,
+          "window_end_ts": 1792414560000,
+          "source_clock_policy": "EXISTING_N05_REDERIVED_CLOSED_240M_CACHE_SAME_WINDOW"
+        }
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/11",
+      "retained_projection": {
+        "block_id": "N15",
+        "evidence_ids": [
+          "EV2:31325a6693b656d5c6e4d4cc8057c1e43eb3f58d0ba123a60604efcda435e618"
+        ],
+        "physical_root_keys": [
+          "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa|bitway:decentralized-finance-defi:1792414490000"
+        ],
+        "source_ts": 1792414490000,
+        "observed_ts": 1792414620828,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      }
+    },
+    {
+      "pointer": "/candidates/0/block_rendered_results/context_receipts/12",
+      "retained_projection": {
+        "block_id": "N15",
+        "evidence_ids": [
+          "EV2:02fe1eae18fb26413e0f80dc40eea6f83522425ab2d8fef7d27d8f52a1341e66"
+        ],
+        "physical_root_keys": [
+          "provider:coinpaprika:btw-bitway|btw-bitway:defi:1792414454000"
+        ],
+        "source_ts": 1792414454000,
+        "observed_ts": 1792414618946,
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      }
+    }
+  ],
+  "N05": {
+    "available": "POLONIEX SPOT USDT; displayed buy3117.88/sell2726.89USDT, imbalance6.69pct",
+    "window_start_ts": 1792400160000,
+    "window_end_ts": 1792414560000,
+    "known_ts": 1792414602032,
+    "expires_at": 1792414860000,
+    "htx_signed_diagnostic": {
+      "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+      "observed_ts": 1792414592216,
+      "reported_window_end_ts": 1792414500000,
+      "reported_window_age_ms": 132614,
+      "reported_minute_rows": 1108,
+      "diagnostic_only": true,
+      "source_clock_unchanged": true
+    },
+    "htx_end_earlier_ms": 60000,
+    "selection": "Pinned availableFlowContext chooses newest exact end; all aligned admitted components retained. Not a proven lost HTX fact; different windows not summed.",
+    "raw_HTX_buy_sell_here": null
+  },
+  "N10": {
+    "facts": 4,
+    "POLONIEX_15m": {
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1792413660000,
+      "window_end_ts": 1792414560000,
+      "active_minutes": 14,
+      "displayed_open": 1.9685,
+      "displayed_close": 1.9454,
+      "displayed_low": 1.9008,
+      "displayed_high": 1.9685,
+      "displayed_change_pct": -1.17,
+      "displayed_HTX_close_gap_pct": -0.27,
+      "first_known_ts": 1792414602032
+    },
+    "same_HTX_15m_end": true,
+    "provider_HTTP": 0,
+    "zero_basis": "Retained route network_calls0 and pinned cache-only consumer. Not a new native wire capture.",
+    "raw240_body_or_cache_ACK_present": false
+  },
+  "N12": {
+    "facts": 2,
+    "represented_selected_IDs": 3,
+    "HTX_futures_displayed": {
+      "trades": 210,
+      "buy_USDT": 20183.29,
+      "sell_USDT": 30180.91,
+      "source_ts": 1792414579058
+    },
+    "HTX_spot_displayed": {
+      "trades": 181,
+      "buy_USDT": 2625.13,
+      "sell_USDT": 3983.91,
+      "source_ts": 1792414584054
+    },
+    "HTX_market_skew_ms": 4996,
+    "one_HTX_venue": true,
+    "composite_original_max_known_ts": 1792414602032,
+    "outer_HTX_observed_ts": 1792414596158,
+    "composite_later_ms": 5874,
+    "known_before_candidate": true,
+    "Gate_SPOT_displayed": {
+      "trades": 620,
+      "buy_USDT": 15431.09,
+      "sell_USDT": 40422.34,
+      "window_start_ts": 1792414260000,
+      "window_end_ts": 1792414560000,
+      "source_ts": 1792414555547,
+      "first_known_ts": 1792414609478,
+      "expires_at": 1792414669478
+    },
+    "whole_sample_window_proven": false,
+    "no_sum_4h_and_bounded": true,
+    "ID_count_not_provider_votes": true
+  },
+  "N15": {
+    "CG": {
+      "asset": "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa",
+      "coin": "bitway",
+      "sector": "decentralized-finance-defi",
+      "peers": 50,
+      "displayed_coin_pct": -21.03,
+      "median_pct": 0.81,
+      "relative_pp": -21.84,
+      "source_ts": 1792414490000,
+      "recorded_known_ts": 1792414620828
+    },
+    "CP": {
+      "provider": "provider:coinpaprika:btw-bitway",
+      "sector": "defi",
+      "peers": 50,
+      "displayed_coin_pct": -19.24,
+      "median_pct": 0.91,
+      "relative_pp": -20.14,
+      "source_ts": 1792414454000,
+      "recorded_known_ts": 1792414618946
+    },
+    "basis": "Separate aggregated USD rolling24h baskets; not pooled or HTX execution price.",
+    "both_rendered_unscored": true,
+    "block_contribution": null
+  },
+  "Gate_FUTURES": {
+    "role_gate": {
+      "status": "NOT_CLOSED",
+      "observation_source_gate_closed": false,
+      "reasons": [
+        "FEWER_THAN_TWO_VERIFIED_DISTINCT_ORIGINS"
+      ],
+      "distinct_verified_origins": [
+        "HTX_OFFICIAL"
+      ],
+      "classified_receipt_count": 11,
+      "usable_role_receipt_count": 1,
+      "exclusion_reason_counts": {
+        "SOURCE_NOT_CLOSED": 2,
+        "FACT_OR_IDENTITY_NOT_VERIFIED": 4,
+        "UNKNOWN_OR_CONFLICTING_PROVIDER": 4
+      }
+    },
+    "new_exact_optional_return": {
+      "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+      "contract": "BTW-USDT",
+      "carrier_status": "CAPTURED",
+      "status": "NOT_CLOSED",
+      "reason": "OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED"
+    },
+    "return_before_reference_reader": true,
+    "four_normalized_fact_identity_not_closed": true,
+    "original_h_or_raw_reference": null,
+    "exact_failed_h_subterm": null,
+    "first_global_authority_refusal_reconstructed": false,
+    "N15_BSC_and_Gate_SPOT_not_official_HTX_Gate_FUTURES_binding": true,
+    "binding_relaxation_proposed": false
+  },
+  "LIQ": {
+    "status": "CALCULATED_CONTEXT_ONLY",
+    "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+    "future_levels_status": "CALCULATED_SCENARIOS_ONLY",
+    "coverage_status": "NO_FACTUAL_FUTURE_LEVELS",
+    "calculated_scenario_count": 6,
+    "coverage_admission": {
+      "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+      "eligible": false,
+      "source_ids": [],
+      "independent_upstreams": [],
+      "network_calls": 0,
+      "calculated_fallback_allowed": false
+    },
+    "future_source_status": {
+      "coverage_admission": {
+        "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+        "eligible": false,
+        "source_ids": [],
+        "independent_upstreams": [],
+        "network_calls": 0,
+        "calculated_fallback_allowed": false
+      },
+      "source": "BYKARANTELI_FUTURE_MAP",
+      "status": "COVERAGE_GATE_NOT_ADMITTED",
+      "network_calls": 0,
+      "tracked_hl": {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "status": "COVERAGE_GATE_NOT_ADMITTED",
+        "network_calls": 0
+      },
+      "orderly": {
+        "source": "ORDERLY_PUBLIC_POSITIONS",
+        "status": "NOT_COLLECTED",
+        "source_ts": null,
+        "nearby_levels": 0
+      },
+      "coinboss": {
+        "source": "COINBOSS_CEX_MODEL",
+        "status": "NOT_COLLECTED",
+        "reason": null,
+        "network_calls": 0,
+        "capability_receipt": null,
+        "source_ts": null,
+        "scenario_count": 0
+      },
+      "swolecharts": {
+        "source": "SWOLECHARTS_CEX_MODEL",
+        "status": "CLOSED",
+        "source_ts": 1792414537345,
+        "scenario_count": 6
+      }
+    },
+    "acquisition_diagnostics": {
+      "schema": "BOUND_LIQUIDATION_ACQUISITION_DIAGNOSTICS_V1",
+      "contract": "BTW-USDT",
+      "run_id": "1792414506519-1792414518714",
+      "snapshot_id": "S392:BTW-USDT:1792414632614",
+      "observed_ts": 1792414632614,
+      "evaluated_ts": 1792414632614,
+      "routes": [],
+      "status": "NO_CAPTURED_ROUTE",
+      "source_clocks_refreshed": false,
+      "diagnostic_only": true,
+      "source_state_proof": false,
+      "score_contribution": 0,
+      "entry_authorized": false
+    },
+    "native_positions_retained": 0,
+    "not_measured_market_zero": true,
+    "scenarios": [
+      {
+        "price": 1.86064,
+        "price_quote": "USD",
+        "source_ts": 1792414537345,
+        "native_reference_price": 1.91325,
+        "side": "BELOW",
+        "distance_pct": -2.7497713315039807,
+        "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+        "strength_label_ru": "крупная",
+        "notional": null,
+        "exact_notional_usdt": null,
+        "estimated": true,
+        "scenario_only": true,
+        "decision_target_eligible": false
+      },
+      {
+        "price": 1.93717,
+        "price_quote": "USD",
+        "source_ts": 1792414537345,
+        "native_reference_price": 1.91325,
+        "side": "ABOVE",
+        "distance_pct": 1.2502286684960229,
+        "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+        "strength_label_ru": "небольшая",
+        "notional": null,
+        "exact_notional_usdt": null,
+        "estimated": true,
+        "scenario_only": true,
+        "decision_target_eligible": false
+      },
+      {
+        "price": 1.97543,
+        "price_quote": "USD",
+        "source_ts": 1792414537345,
+        "native_reference_price": 1.91325,
+        "side": "ABOVE",
+        "distance_pct": 3.2499673330720125,
+        "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+        "strength_label_ru": "небольшая",
+        "notional": null,
+        "exact_notional_usdt": null,
+        "estimated": true,
+        "scenario_only": true,
+        "decision_target_eligible": false
+      },
+      {
+        "price": 2.03283,
+        "price_quote": "USD",
+        "source_ts": 1792414537345,
+        "native_reference_price": 1.91325,
+        "side": "ABOVE",
+        "distance_pct": 6.250098000784021,
+        "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+        "strength_label_ru": "средняя",
+        "notional": null,
+        "exact_notional_usdt": null,
+        "estimated": true,
+        "scenario_only": true,
+        "decision_target_eligible": false
+      },
+      {
+        "price": 2.16676,
+        "price_quote": "USD",
+        "source_ts": 1792414537345,
+        "native_reference_price": 1.91325,
+        "side": "ABOVE",
+        "distance_pct": 13.25022866849601,
+        "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+        "strength_label_ru": "крупная",
+        "notional": null,
+        "exact_notional_usdt": null,
+        "estimated": true,
+        "scenario_only": true,
+        "decision_target_eligible": false
+      },
+      {
+        "price": 2.33895,
+        "price_quote": "USD",
+        "source_ts": 1792414537345,
+        "native_reference_price": 1.91325,
+        "side": "ABOVE",
+        "distance_pct": 22.250098000784014,
+        "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+        "strength_label_ru": "крупная",
+        "notional": null,
+        "exact_notional_usdt": null,
+        "estimated": true,
+        "scenario_only": true,
+        "decision_target_eligible": false
+      }
+    ],
+    "display": {
+      "above": 3,
+      "below": 1,
+      "three_near_above_scenarios_merged_with_far_representative": true
+    },
+    "single_Swole_model_origin": true,
+    "raw_model_body_and_intensity_values_here": null,
+    "target_or_HTX_native_positions_qualified": false
+  },
+  "order_and_reuse": {
+    "venues": [
+      "POLONIEX",
+      "GATE",
+      "BACKPACK",
+      "BITGET",
+      "GATE_FUTURES_N12",
+      "KUCOIN_N12_EXACT_TOKEN"
+    ],
+    "N15": [
+      "JOINT_FLOW",
+      "LARGE_TRADES",
+      "SECTOR",
+      "SECTOR_COINGECKO",
+      "CHAIN_EVENTS",
+      "BLOCKSCOUT"
+    ],
+    "statistics": "4 historical observations for established routes; zero history is unknown yield, not broken provider.",
+    "old_Gate_N05_not_closed_does_not_erase_new_N12_SPOT": true,
+    "CG_receipts": [
+      {
+        "route": "EXACT_COIN_METADATA",
+        "status": "RECEIVED",
+        "http_status": 200,
+        "error": null
+      },
+      {
+        "route": "EXACT_CATEGORY_DIRECTORY",
+        "status": "VALIDATED_REFERENCE_CACHE",
+        "http_status": 200,
+        "error": null
+      },
+      {
+        "route": "CATEGORY_QUOTES",
+        "status": "VALIDATED_REFERENCE_CACHE",
+        "http_status": 200,
+        "error": null
+      }
+    ],
+    "CP_receipts": [
+      {
+        "route": "HTX_MARKET_CATALOG",
+        "status": "VALIDATED_REFERENCE_CACHE",
+        "http_status": 200,
+        "error": null
+      },
+      {
+        "route": "EXACT_COIN_METADATA",
+        "status": "RECEIVED",
+        "http_status": 200,
+        "error": null
+      },
+      {
+        "route": "FUNCTIONAL_SECTOR_DIRECTORY",
+        "status": "RECEIVED",
+        "http_status": 200,
+        "error": null
+      },
+      {
+        "route": "FREE_AGGREGATED_QUOTES",
+        "status": "RECEIVED",
+        "http_status": 200,
+        "error": null
+      }
+    ],
+    "shared_N05_N12_HTTP": "5 total, N05=5/N12=0; GateFutures and Kucoin caller cap skips not provider failure",
+    "receipt_count_not_HTTP_count": true,
+    "duplicate_actual_request_counterexample": null,
+    "raw_URL_page_trace_absent": true
+  },
+  "manual_TG_boundary": {
+    "available_not_rendered_evidence_ids": [],
+    "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+    "telegram_context_receipts": [],
+    "telegram_delivery_proven": false,
+    "telegram_message_id": null
+  },
+  "limits": [
+    "Retained normalized/context receipts and code linkage, not public raw envelopes/full240bars/cachewriteACK.",
+    "Copied original source/known clocks; no refresh or true-first-knowledge reconstruction.",
+    "Displayed rounded amounts remain rounded; no reconstructed full precision.",
+    "No actual provider account/month/manual headroom, current105/source admission/native costs/delivery/ENTRY qualification."
+  ],
+  "work_performed": {
+    "production_shared_patch_helpers_framework_added": 0,
+    "semantic_tests": 0,
+    "runtime_Node_apps_imports": 0,
+    "syntax_runs": 0,
+    "old_tests_probes": 0,
+    "provider_HTTP_native_SQL_MAIN_TG_deploy": 0,
+    "CT_audit": false,
+    "ENTRY_physical_work": false
+  },
+  "next": "Keep immutable no-new-defect receipt in common checkpoint. New source work only for concrete new saved input or defect."
+}

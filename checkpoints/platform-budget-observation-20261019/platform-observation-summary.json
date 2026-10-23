@@ -1,0 +1,361 @@
+{
+  "schema": "READ_ONLY_PLATFORM_D1_PAST_DAY_OBSERVATION_V1",
+  "recorded_utc": "2026-10-19T13:17:18.337117+00:00",
+  "account_scope": "ACCOUNT returned data, not only current project database list; unknown historical ID retained in total, never subtracted",
+  "source": "Cloudflare GraphQL d1AnalyticsAdaptiveGroups, no database query or Worker invocation",
+  "inventory": {
+    "reported_count": 9,
+    "page": 1,
+    "per_page": 1000,
+    "names_by_id": {
+      "4c15f527-0287-484a-9dd1-bf1bd5c4f7c6": "report2-free-canonical-history-a4",
+      "c1cceb87-c037-43e6-8314-c354c384581d": "report2-free-canonical-history-a3",
+      "ee33406f-2a97-4f73-88ca-77b3dd7028ca": "report2-free-canonical-history-a2",
+      "24d5c5e9-066d-4f3f-8486-38142ff57ba4": "report2-free-canonical-history-a1",
+      "f66e7081-0e67-49a2-8f69-68af00cdaf92": "report2-free-canonical-history",
+      "68a85c40-41e8-4bcc-9599-5ea5da281126": "report2-free-liq-forecast-history",
+      "82dad15b-00ef-485f-862a-7746fae49444": "report2-free-hourly-history",
+      "d764f32a-f8c2-4ce9-b7c8-0e472ed2f4d5": "report2-liq-proof-20260927",
+      "057a2847-2cc4-4e52-8534-1be1596d21d5": "report2-data-plane"
+    },
+    "scope": "IDENTITY inventory only; file_size/num_tables descriptors NOT tested or used as physicalstorage qualification"
+  },
+  "days": [
+    {
+      "day_utc": "2026-10-18",
+      "reported_account_sums": {
+        "rowsRead": 1073016,
+        "rowsWritten": 28120,
+        "readQueries": 14712,
+        "writeQueries": 8940
+      },
+      "request_count": 17534,
+      "reported_sampleInterval": 1,
+      "reported_99pct_bounds_equal_point": true,
+      "reported_confidence_valid": true,
+      "database_groups": [
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 1069761,
+                "isValid": true,
+                "lower": 1069761,
+                "sampleSize": 16876,
+                "upper": 1069761
+              },
+              "rowsWritten": {
+                "estimate": 19103,
+                "isValid": true,
+                "lower": 19103,
+                "sampleSize": 16876,
+                "upper": 19103
+              }
+            }
+          },
+          "count": 16876,
+          "dimensions": {
+            "databaseId": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+            "date": "2026-10-18"
+          },
+          "sum": {
+            "readQueries": 14427,
+            "rowsRead": 1069761,
+            "rowsWritten": 19103,
+            "writeQueries": 6343
+          },
+          "inventory_name": "report2-data-plane",
+          "database_not_in_current_inventory": false
+        },
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 601,
+                "isValid": false,
+                "lower": 601,
+                "sampleSize": 372,
+                "upper": 601
+              },
+              "rowsWritten": {
+                "estimate": 165,
+                "isValid": false,
+                "lower": 165,
+                "sampleSize": 372,
+                "upper": 165
+              }
+            }
+          },
+          "count": 372,
+          "dimensions": {
+            "databaseId": "82dad15b-00ef-485f-862a-7746fae49444",
+            "date": "2026-10-18"
+          },
+          "sum": {
+            "readQueries": 255,
+            "rowsRead": 601,
+            "rowsWritten": 165,
+            "writeQueries": 117
+          },
+          "inventory_name": "report2-free-hourly-history",
+          "database_not_in_current_inventory": false
+        },
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 2654,
+                "isValid": false,
+                "lower": 2654,
+                "sampleSize": 286,
+                "upper": 2654
+              },
+              "rowsWritten": {
+                "estimate": 8852,
+                "isValid": false,
+                "lower": 8852,
+                "sampleSize": 286,
+                "upper": 8852
+              }
+            }
+          },
+          "count": 286,
+          "dimensions": {
+            "databaseId": "398d2413-7c52-4a80-b094-039382e242c3",
+            "date": "2026-10-18"
+          },
+          "sum": {
+            "readQueries": 30,
+            "rowsRead": 2654,
+            "rowsWritten": 8852,
+            "writeQueries": 2480
+          },
+          "inventory_name": null,
+          "database_not_in_current_inventory": true
+        }
+      ],
+      "reported_group_sums_match_account_day": true,
+      "group_limit": 1000,
+      "groups_returned": 3,
+      "returned_group_limit_reached": false,
+      "calendar_day_ended_at_query": true,
+      "query_recorded_utc": "2026-10-19T13:07:21.874Z",
+      "final_invoice_or_ingestion_complete_proof": false,
+      "new_admission_authorized": false
+    },
+    {
+      "day_utc": "2026-10-19",
+      "reported_account_sums": {
+        "rowsRead": 938905,
+        "rowsWritten": 15274,
+        "readQueries": 12494,
+        "writeQueries": 5242
+      },
+      "request_count": 14456,
+      "reported_sampleInterval": 1,
+      "reported_99pct_bounds_equal_point": true,
+      "reported_confidence_valid": true,
+      "database_groups": [
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 78,
+                "isValid": false,
+                "lower": 78,
+                "sampleSize": 176,
+                "upper": 78
+              },
+              "rowsWritten": {
+                "estimate": 117,
+                "isValid": false,
+                "lower": 117,
+                "sampleSize": 176,
+                "upper": 117
+              }
+            }
+          },
+          "count": 176,
+          "dimensions": {
+            "databaseId": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+            "date": "2026-10-19"
+          },
+          "sum": {
+            "readQueries": 137,
+            "rowsRead": 78,
+            "rowsWritten": 117,
+            "writeQueries": 39
+          },
+          "inventory_name": "report2-free-canonical-history",
+          "database_not_in_current_inventory": false
+        },
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 938437,
+                "isValid": true,
+                "lower": 938437,
+                "sampleSize": 13853,
+                "upper": 938437
+              },
+              "rowsWritten": {
+                "estimate": 14796,
+                "isValid": true,
+                "lower": 14796,
+                "sampleSize": 13853,
+                "upper": 14796
+              }
+            }
+          },
+          "count": 13853,
+          "dimensions": {
+            "databaseId": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+            "date": "2026-10-19"
+          },
+          "sum": {
+            "readQueries": 12085,
+            "rowsRead": 938437,
+            "rowsWritten": 14796,
+            "writeQueries": 5048
+          },
+          "inventory_name": "report2-data-plane",
+          "database_not_in_current_inventory": false
+        },
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 261,
+                "isValid": false,
+                "lower": 261,
+                "sampleSize": 208,
+                "upper": 261
+              },
+              "rowsWritten": {
+                "estimate": 91,
+                "isValid": false,
+                "lower": 91,
+                "sampleSize": 208,
+                "upper": 91
+              }
+            }
+          },
+          "count": 208,
+          "dimensions": {
+            "databaseId": "82dad15b-00ef-485f-862a-7746fae49444",
+            "date": "2026-10-19"
+          },
+          "sum": {
+            "readQueries": 143,
+            "rowsRead": 261,
+            "rowsWritten": 91,
+            "writeQueries": 65
+          },
+          "inventory_name": "report2-free-hourly-history",
+          "database_not_in_current_inventory": false
+        },
+        {
+          "avg": {
+            "sampleInterval": 1
+          },
+          "confidence": {
+            "level": 0.99,
+            "sum": {
+              "rowsRead": {
+                "estimate": 129,
+                "isValid": false,
+                "lower": 129,
+                "sampleSize": 219,
+                "upper": 129
+              },
+              "rowsWritten": {
+                "estimate": 270,
+                "isValid": false,
+                "lower": 270,
+                "sampleSize": 219,
+                "upper": 270
+              }
+            }
+          },
+          "count": 219,
+          "dimensions": {
+            "databaseId": "68a85c40-41e8-4bcc-9599-5ea5da281126",
+            "date": "2026-10-19"
+          },
+          "sum": {
+            "readQueries": 129,
+            "rowsRead": 129,
+            "rowsWritten": 270,
+            "writeQueries": 90
+          },
+          "inventory_name": "report2-free-liq-forecast-history",
+          "database_not_in_current_inventory": false
+        }
+      ],
+      "reported_group_sums_match_account_day": true,
+      "group_limit": 1000,
+      "groups_returned": 4,
+      "returned_group_limit_reached": false,
+      "calendar_day_ended_at_query": false,
+      "query_recorded_utc": "2026-10-19T13:07:21.874Z",
+      "final_invoice_or_ingestion_complete_proof": false,
+      "new_admission_authorized": false
+    }
+  ],
+  "unmatched_current_inventory_databases": "No corresponding metric group is NOT coerced to zero; API returned groups only",
+  "important_limits": [
+    "Adaptive dataset reports avg.sampleInterval1 and valid99% confidence bounds equal point in this response, not a universal guarantee or independent final invoice.",
+    "UTC18 is a past calendar day, UTC19 still PARTIAL. Ingestion completeness/finality not independently closed.",
+    "Account ID398d2413-7c52-4a80-b094-039382e242c3 is absent from current9DB inventory; historical project ownership/name UNKNOWN. Kept in account sum, not attributed by symbol.",
+    "Platform totals and existing project native reservation ledger are different overlapping views; do NOT add both or refund reserves/unknown15.",
+    "No per-query/operation/family matching or future capacity upperbound/native source or manual/provider grant established.",
+    "Cloudflare telemetry query internal statistics rows_read are analyticsengine statistics, NOT native D1 reads.",
+    "New full-day observational data does not close projected complete allfamily budget/manual/nextfull heldreserve or sustainable storage.",
+    "Existing log query returned0 matches; connector parse error not absence proof. Query-text filter matched0; after actual backoff, narrow whole-window Insights returned sampled minute groups. No old exact182 per-query reconstruction."
+  ],
+  "native_D1_SQL_sourceHTTP_Worker_MAIN_Telegram": 0,
+  "limits_or_reservations_changed": false,
+  "old_unknown15_cleared": false,
+  "physicalstorage_or_ENTRY_followup_performed": false,
+  "whole_day_future_envelope_closed": false,
+  "project_complete": false,
+  "query_insights_after_backoff": {
+    "dataset": "d1QueriesAdaptiveGroups",
+    "scope": "2026-10-19T11:33:00Z..11:38:00Z/057a2847 primary; minute buckets, NOT old exact statement replies",
+    "returned_minute_groups": 4,
+    "reported_sampleIntervals": [
+      9.176470588235293,
+      12.789473684210526,
+      13.181818181818182,
+      1
+    ],
+    "old_exact182_per_query_costs_recovered": false
+  },
+  "explicit_CF_control_requests_in_this_inspection": 16,
+  "explicit_CF_control_request_count_is_not_retry_inclusive_network_billing": true
+}

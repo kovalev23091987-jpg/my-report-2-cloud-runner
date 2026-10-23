@@ -1,0 +1,159 @@
+{
+  "schema": "HTX_BODY_COMPLETION_EXISTING_INGRESS_CONNECTED_V1",
+  "classification": "CONTROLLED_ONLY_NOT_NATIVE_RECEIPT",
+  "new_affected_cases": 1,
+  "assertion_groups": 7,
+  "groups": [
+    {
+      "id": "ACTUAL_FETCHJSON_DELAYED_BODY_TO_EXISTING_JSON",
+      "classification": "CONTROLLED",
+      "old_producer_source": "abbbad5d56e0eac2a84f65328832b6acd9b8ee8fce1c92abab8758ae926f8957",
+      "candidate_producer_source": "405911420025952b0978ad8c987abebb5a10f037c930799caf998f9a239d10d5",
+      "source_ts": 1792519999000,
+      "header_received_ts": 1792520000002,
+      "legacy_parse_observed_ts": 1792520000011,
+      "body_knowledge": {
+        "body_completed_ts": 1792520000011,
+        "body_text_utf8_bytes": 222,
+        "body_text_sha256": "79634345a274c828a6eb89377d403587ce502cd08691b1d1fc2b11d48b5ee386",
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "TEXT_HASH_RECORDED"
+      },
+      "fetches_each": 1,
+      "text_reads_each": 1,
+      "old_return_equal": true,
+      "old_carrier_fields_equal": true
+    },
+    {
+      "id": "BODY_READ_FAILURE_REMAINS_UNKNOWN",
+      "stage": "BODY_READ_FAILED",
+      "body_knowledge": {
+        "body_completed_ts": null,
+        "body_text_utf8_bytes": null,
+        "body_text_sha256": null,
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "BODY_COMPLETION_UNKNOWN"
+      }
+    },
+    {
+      "id": "COMPLETE_TEXT_DOES_NOT_MEAN_VALID_JSON",
+      "stage": "JSON_PARSE_FAILED",
+      "body_knowledge": {
+        "body_completed_ts": 1792520000011,
+        "body_text_utf8_bytes": 29,
+        "body_text_sha256": "3d7af77d2a78bdee1d2918e2eeb4cf782f5639b7f1ac881b94fe36a34278ee6c",
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "TEXT_HASH_RECORDED"
+      }
+    },
+    {
+      "id": "HASH_BOUND_AND_UTF8_NOT_PARSER_BOUND",
+      "at_cap": {
+        "body_completed_ts": 1792520000011,
+        "body_text_utf8_bytes": 1048576,
+        "body_text_sha256": "de71020b428a08c8f6bc7bc86ec0632859f57745ca2bcf81d3ed3b3cadcd8030",
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "TEXT_HASH_RECORDED"
+      },
+      "over_cap": {
+        "body_completed_ts": 1792520000011,
+        "body_text_utf8_bytes": null,
+        "body_text_sha256": null,
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "TEXT_HASH_BOUND_REACHED"
+      },
+      "multibyte_over_cap": {
+        "body_completed_ts": 1792520000011,
+        "body_text_utf8_bytes": null,
+        "body_text_sha256": null,
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "TEXT_HASH_BOUND_REACHED"
+      },
+      "legacy_parser_ok_all": true
+    },
+    {
+      "id": "LEGACY_ORDER_FUTURE_ARE_NOT_PROMOTED",
+      "legacy": {
+        "body_completed_ts": null,
+        "body_text_utf8_bytes": null,
+        "body_text_sha256": null,
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "BODY_COMPLETION_UNKNOWN"
+      },
+      "backwards": {
+        "body_completed_ts": null,
+        "body_text_utf8_bytes": null,
+        "body_text_sha256": null,
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "BODY_COMPLETION_UNKNOWN"
+      },
+      "future": {
+        "body_completed_ts": null,
+        "body_text_utf8_bytes": null,
+        "body_text_sha256": null,
+        "hash_scope": "SHA256_UTF8_RESPONSE_TEXT",
+        "hash_status": "BODY_COMPLETION_UNKNOWN"
+      }
+    },
+    {
+      "id": "OTHER_EXISTING_RECEIPT_TYPE_UNCHANGED",
+      "metadata_has_new_field": false
+    },
+    {
+      "id": "TYPED_BOUNDED_CARRIER_PRESERVES_OLD_FRAME",
+      "new_field_only_omitted": true,
+      "old_frame_bytes": 2030,
+      "old_oversized_stays_null": true,
+      "arbitrary_payload_not_copied": true
+    }
+  ],
+  "baseline_candidate_pins": [
+    {
+      "runtime": "baseline",
+      "file": "worker.js",
+      "sha256": "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17"
+    },
+    {
+      "runtime": "baseline",
+      "file": "htx-signed-tape.mjs",
+      "sha256": "10f364bd219be9a8c3c0f5dfd3e6d4e46fe34f7f17006855cf9df8f62118e8c5"
+    },
+    {
+      "runtime": "baseline",
+      "file": "source-closure-diagnostics.mjs",
+      "sha256": "c0d7366c683a52a9bb3996f477315365b1ccf8e3ad29b6a731bf531479eb604d"
+    },
+    {
+      "runtime": "candidate",
+      "file": "worker.js",
+      "sha256": "885553691d783ca8a57b6a8a45e22a07e23208d7467b0ac300fdf38080008950"
+    },
+    {
+      "runtime": "candidate",
+      "file": "htx-signed-tape.mjs",
+      "sha256": "83a4a603fb19a788ebf751421c72b1df7e0ceca4edf6095d0a81120d3ae16e0d"
+    },
+    {
+      "runtime": "candidate",
+      "file": "source-closure-diagnostics.mjs",
+      "sha256": "5f8c31b2501ad19a82318824f0b9d25507926e6254fe89c4eaa6c66493ecba8c"
+    }
+  ],
+  "SQL": 0,
+  "db_admission_calls": 0,
+  "unexpected_external_HTTP": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "native_epoch": false,
+  "event_first_known": false,
+  "anomaly_domain_ACK": false,
+  "old_accepted_replays": 0,
+  "limits": [
+    "SHA256_UTF8_RESPONSE_TEXT is decoded text, not wire bytes.",
+    "In-process latest attempt is not exact run/snapshot or durable event binding.",
+    "Optional metadata can be absent at unchanged2048-byte carrier cap; absence is UNKNOWN.",
+    "No provider/CPU/heap/native cost/admission/ACK/SENT or complete anomaly activation qualification."
+  ]
+}

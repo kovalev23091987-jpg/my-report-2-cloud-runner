@@ -1,0 +1,350 @@
+{
+  "schema": "REPORT2_GLOBAL_SOURCE_REVIEW_RU_V1",
+  "state": "Только документация; ни одного нового подключения или текущего полезного числового факта не принято.",
+  "priority_note": "Очередь первой ограниченной проверки по документации: CoinEx/BingX, затем MEXC. Это предложение координатору, не новый runtime-порядок и не оценка точности.",
+  "cards": [
+    {
+      "provider_id": "COINEX",
+      "summary": "Свечи от минуты до недели, объём отдельно от стоимости, taker-сторона и ID сделок. Хороший кандидат для ограниченной проверки; история наших активов, доступ из облака и фактическое использование ещё не доказаны.",
+      "blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "coinexFutures",
+          "url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-kline"
+        },
+        {
+          "id": "coinexSpot",
+          "url": "https://docs.coinex.com/api/v2/spot/market/http/list-market-kline"
+        },
+        {
+          "id": "coinexTrades",
+          "url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-deals"
+        },
+        {
+          "id": "coinexRate",
+          "url": "https://docs.coinex.com/api/v2/rate-limit"
+        },
+        {
+          "id": "coinexTicker",
+          "url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-ticker"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "BINGX",
+      "summary": "Есть подробное описание свечей и исторических сделок. Общую квоту спота и фьючерсов нужно учитывать вместе с более строгим лимитом маршрута. Схема официального репозитория пока не подтверждена реальным ответом.",
+      "blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "bingxSharedRate",
+          "url": "https://bingx.com/en/support/articles/31103871611289"
+        },
+        {
+          "id": "bingxSwapSkill",
+          "url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/swap-market/api-reference.md"
+        },
+        {
+          "id": "bingxSpotSkill",
+          "url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-market/api-reference.md"
+        },
+        {
+          "id": "bingxDocs",
+          "url": "https://bingx-api.github.io/docs/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "MEXC",
+      "summary": "Может дать отдельные свечи, OI и узкий секторный контекст. Последние 100 сделок без документированного fill ID не являются полным потоком. Старый домен и старые лимиты нельзя переносить автоматически.",
+      "blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "mexcFuturesKline",
+          "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-candlestick-data"
+        },
+        {
+          "id": "mexcSpotKline",
+          "url": "https://www.mexc.com/api-docs/spot-v3/market-data-endpoints/klinecandlestick-data"
+        },
+        {
+          "id": "mexcMarketOverview",
+          "url": "https://www.mexc.com/api-docs/futures/market-endpoints"
+        },
+        {
+          "id": "mexcIntegration",
+          "url": "https://www.mexc.com/api-docs/futures/integration-guide"
+        },
+        {
+          "id": "mexcRecentTrades",
+          "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-recent-trades"
+        },
+        {
+          "id": "mexcContractInfo",
+          "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-contract-info"
+        },
+        {
+          "id": "mexcTicker",
+          "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-ticker-contract-market-data"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "PHEMEX",
+      "summary": "Полезен как новая площадка со свечами разных масштабов. Нужно различать линейные и обратные контракты, реальные и масштабированные цены, а также запросы и весовые единицы.",
+      "blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "phemexDocs",
+          "url": "https://phemex-docs.github.io/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "BITMART",
+      "summary": "Есть фьючерсные и спотовые свечные маршруты. Страницы и частота запросов различаются; валюту и семантику фьючерсного объёма ещё нужно доказать по исходным числам.",
+      "blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "bitmartFutures",
+          "url": "https://developer-pro.bitmart.com/en/futuresv2/"
+        },
+        {
+          "id": "bitmartSpot",
+          "url": "https://developer-pro.bitmart.com/en/spot/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "BITUNIX",
+      "summary": "Пока узкий кандидат для фьючерсных свечей. Страница из 200 баров повышает стоимость длинного окна. Taker/OI и спот не подтверждены; отсутствие спота не создаёт запрета на фьючерсный факт.",
+      "blocks": [
+        "N10",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "bitunixKline",
+          "url": "https://www.bitunix.com/api-docs/futures/market/get_kline.html"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "WHITEBIT",
+      "summary": "Есть нужные свечные интервалы и публичные сделки. Важны необычный порядок OHLC и обратные названия единиц в сделках. Общая страница и отдельные маршруты расходятся по лимитам.",
+      "blocks": [
+        "N05",
+        "N10",
+        "N11",
+        "N12",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "whitebitOverview",
+          "url": "https://docs.whitebit.com/products/market-data/overview"
+        },
+        {
+          "id": "whitebitRate",
+          "url": "https://docs.whitebit.com/api-reference/rate-limits"
+        },
+        {
+          "id": "whitebitKline",
+          "url": "https://docs.whitebit.com/api-reference/market-data/kline.md"
+        },
+        {
+          "id": "whitebitTrades",
+          "url": "https://docs.whitebit.com/api-reference/market-data/recent-trades.md"
+        },
+        {
+          "id": "whitebitWs",
+          "url": "https://docs.whitebit.com/guides/websocket-quickstart"
+        },
+        {
+          "id": "whitebitIndex",
+          "url": "https://docs.whitebit.com/llms.txt"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "BITSTAMP",
+      "summary": "Дополнительная площадка для ценового и объёмного контекста. Недельный интервал в прочитанной схеме не указан, USD/EUR нельзя выдавать за USDT. Покрытие наших фьючерсов и условия использования не проверены.",
+      "blocks": [
+        "N10",
+        "N11",
+        "N12",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "bitstampDocs",
+          "url": "https://www.bitstamp.net/api/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "ETHERSCAN_V2",
+      "summary": "Возможный индексатор для конкретных адресов и контрактов N04. Нужен API-ключ; бесплатный доступ зависит от сети и меняется по опубликованному графику. Переводы одного адреса не равны полному потоку токена.",
+      "blocks": [
+        "N04"
+      ],
+      "sources": [
+        {
+          "id": "etherscanRates",
+          "url": "https://docs.etherscan.io/rate-limits"
+        },
+        {
+          "id": "etherscanChangelog",
+          "url": "https://docs.etherscan.io/changelog"
+        },
+        {
+          "id": "etherscanTokenTransfers",
+          "url": "https://docs.etherscan.io/api-reference/endpoint/tokentx"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "BLOCKSCOUT",
+      "summary": "Поставщик уже есть в проекте. Новая документация позволяет пересмотреть доступ к сетям, но не отменяет текущие запреты и лимиты. Схема v12 требует отдельной проверки координатором.",
+      "blocks": [
+        "N04"
+      ],
+      "sources": [
+        {
+          "id": "blockscoutDocs",
+          "url": "https://docs.blockscout.com/devs/pro-api"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "DEFILLAMA",
+      "summary": "Уже существующий поставщик для протокольного контекста. TVL не заменяет поток сделок или секторную доходность. Часть бесплатных маршрутов скоро закрывается; календарь N01 остаётся на паузе.",
+      "blocks": [
+        "N15",
+        "N04"
+      ],
+      "sources": [
+        {
+          "id": "defillamaDocs",
+          "url": "https://api-docs.defillama.com/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "COINMETRICS_COMMUNITY",
+      "summary": "Уже существующий поставщик с ограниченной бесплатной историей. Метрика и частота проверяются для каждого актива. Платные маршруты общего OpenAPI не считаются доступными Community.",
+      "blocks": [
+        "N04",
+        "N15"
+      ],
+      "sources": [
+        {
+          "id": "coinmetricsDocs",
+          "url": "https://docs.coinmetrics.io/api/v4/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "NANSEN",
+      "summary": "Уже существующий редкий специалист по размеченным потокам. MCP использует тот же пул кредитов. Метки и позиции с неизвестным временем не доказывают намерение участника или актуальные ликвидационные уровни.",
+      "blocks": [
+        "N04",
+        "N05",
+        "LIQ"
+      ],
+      "sources": [
+        {
+          "id": "nansenCredits",
+          "url": "https://docs.nansen.ai/getting-started/credits"
+        },
+        {
+          "id": "nansenMcp",
+          "url": "https://docs.nansen.ai/mcp/claude"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "SANTIMENT",
+      "summary": "Преимущественно исторический кандидат: месячный бесплатный лимит мал, часть метрик задержана на 30 дней. Несколько метрик в одном HTTP-запросе могут расходовать несколько единиц API.",
+      "blocks": [
+        "N04",
+        "N15",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "santimentPlans",
+          "url": "https://academy.santiment.net/products-and-plans/sanapi-plans/"
+        },
+        {
+          "id": "santimentRates",
+          "url": "https://academy.santiment.net/sanapi/rate-limits/"
+        }
+      ],
+      "qualified": false
+    },
+    {
+      "provider_id": "COINGLASS",
+      "summary": "Кандидат для опубликованной модели ликвидационных зон после отдельного допуска. Нужная модель указана на старших платных тарифах. Это не бесплатный поток и не открытые позиции; ничего не приобреталось.",
+      "blocks": [
+        "LIQ",
+        "ANOMALIES"
+      ],
+      "sources": [
+        {
+          "id": "coinglassPricing",
+          "url": "https://www.coinglass.com/pricing"
+        },
+        {
+          "id": "coinglassHeatmap",
+          "url": "https://docs.coinglass.com/reference/liquidation-aggregate-heatmap"
+        }
+      ],
+      "qualified": false
+    }
+  ],
+  "next": "После фактического допуска координатор выбирает недостающий факт для точного утверждённого актива. Каталог, HTTP200, локальный тест и наличие плагина не заменяют исходные числа, часы, единицы и подтверждённый путь до потребителя."
+}

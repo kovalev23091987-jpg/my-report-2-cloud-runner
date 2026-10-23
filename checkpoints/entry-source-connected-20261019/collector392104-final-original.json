@@ -1,0 +1,3345 @@
+{
+  "worker_status": "CURRENT_MAIN_CODE_CHANGED",
+  "source_guard": {
+    "allowed": false,
+    "status": "CURRENT_MAIN_CODE_CHANGED",
+    "current_main": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+    "changed_paths": [
+      "current-generation/files/src/worker.js",
+      ".github/workflows/report2.yml"
+    ],
+    "source_http": 0,
+    "github_metadata_http": 2
+  },
+  "worker_started_ts": 1792391511091,
+  "worker_deadline_ts": 1792409511091,
+  "cycles": 28,
+  "failures": 0,
+  "source_job_budget": {
+    "attempted_source_http": 0,
+    "maximum_source_http": 164,
+    "failed_attempts_not_refunded": true
+  },
+  "receipts": [
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792391400000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "SCHEDULED_REPORT_RECENT",
+        "last_attempt_ts": 1792390215679,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "POLL_ALREADY_COUNTED_OR_DAILY_CAP",
+        "day": "2026-10-19",
+        "bucket": 1792391400000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 5,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 2,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T06:31:56.520Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 1,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792391700000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "SCHEDULED_REPORT_RECENT",
+        "last_attempt_ts": 1792390215679,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792391700000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 12,
+        "rows_read": 7,
+        "rows_written": 1,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 2,
+            "rows_read": 2,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 2,
+            "rows_read": 2,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 4,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 2,
+            "rows_read": 2,
+            "rows_written": 1,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T06:36:05.074Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 2,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792392000000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "SCHEDULED_REPORT_RECENT",
+        "last_attempt_ts": 1792390215679,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792392000000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 19,
+        "rows_read": 11,
+        "rows_written": 2,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 3,
+            "rows_read": 3,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 3,
+            "rows_read": 3,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 6,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 3,
+            "rows_read": 3,
+            "rows_written": 2,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 2,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 2,
+            "rows_read": 2,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T06:41:04.792Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 3,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792392300000,
+      "external_requests": 0,
+      "recovery": {
+        "dispatched": true,
+        "status": "RECOVERY_DISPATCH_ACCEPTED",
+        "github_http_status": 204,
+        "source_http": 0,
+        "D1": 0,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "RECOVERY_DUE_WITHIN_ORIGINAL_COLLECTOR_SLOT",
+          "wait_ms": 254351,
+          "source_http": 0,
+          "D1": 0,
+          "next_due_ts": 1792392615679,
+          "source_guard": {
+            "allowed": true,
+            "status": "CURRENT_MAIN_CODE_VERIFIED",
+            "current_main": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+            "changed_paths": [],
+            "source_http": 0,
+            "github_metadata_http": 2
+          }
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792392300000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 26,
+        "rows_read": 15,
+        "rows_written": 3,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 4,
+            "rows_read": 4,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 4,
+            "rows_read": 4,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 8,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 4,
+            "rows_read": 4,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 3,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 3,
+            "rows_read": 3,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T06:50:21.284Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 4,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792392600000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792392600000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 33,
+        "rows_read": 19,
+        "rows_written": 4,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 5,
+            "rows_read": 5,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 5,
+            "rows_read": 5,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 10,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 5,
+            "rows_read": 5,
+            "rows_written": 4,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 4,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 4,
+            "rows_read": 4,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T06:51:02.321Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 5,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792392900000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792392900000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 40,
+        "rows_read": 23,
+        "rows_written": 5,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 6,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 6,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 12,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 6,
+            "rows_read": 6,
+            "rows_written": 5,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 5,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 5,
+            "rows_read": 5,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T06:56:02.207Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "299441eb76df9e99909527d4f4954474ddb87bd9",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 6,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792393200000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792393200000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 47,
+        "rows_read": 27,
+        "rows_written": 6,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 7,
+            "rows_read": 7,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 7,
+            "rows_read": 7,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 14,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 7,
+            "rows_read": 7,
+            "rows_written": 6,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 6,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 6,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:01:02.218Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "299441eb76df9e99909527d4f4954474ddb87bd9",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 7,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792393500000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792393500000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 54,
+        "rows_read": 31,
+        "rows_written": 7,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 8,
+            "rows_read": 8,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 8,
+            "rows_read": 8,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 16,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 8,
+            "rows_read": 8,
+            "rows_written": 7,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 7,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 7,
+            "rows_read": 7,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:06:02.534Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "299441eb76df9e99909527d4f4954474ddb87bd9",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 8,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792393800000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792393800000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 61,
+        "rows_read": 35,
+        "rows_written": 8,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 9,
+            "rows_read": 9,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 9,
+            "rows_read": 9,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 18,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 9,
+            "rows_read": 9,
+            "rows_written": 8,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 8,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 8,
+            "rows_read": 8,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:11:02.070Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "7c3044a0f27599315148ea60045b6131c521469f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 9,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792394100000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792394100000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 68,
+        "rows_read": 39,
+        "rows_written": 9,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 10,
+            "rows_read": 10,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 10,
+            "rows_read": 10,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 20,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 10,
+            "rows_read": 10,
+            "rows_written": 9,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 9,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 9,
+            "rows_read": 9,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:16:02.208Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "7c3044a0f27599315148ea60045b6131c521469f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 10,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792394400000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792392616438,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792394400000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 75,
+        "rows_read": 43,
+        "rows_written": 10,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 11,
+            "rows_read": 11,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 11,
+            "rows_read": 11,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 22,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 11,
+            "rows_read": 11,
+            "rows_written": 10,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 10,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 10,
+            "rows_read": 10,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:21:02.129Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "7c3044a0f27599315148ea60045b6131c521469f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 11,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792394700000,
+      "external_requests": 0,
+      "recovery": {
+        "dispatched": true,
+        "status": "RECOVERY_DISPATCH_ACCEPTED",
+        "github_http_status": 204,
+        "source_http": 0,
+        "D1": 0,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "RECOVERY_DUE_WITHIN_ORIGINAL_COLLECTOR_SLOT",
+          "wait_ms": 283024,
+          "source_http": 0,
+          "D1": 0,
+          "next_due_ts": 1792395044363,
+          "source_guard": {
+            "allowed": true,
+            "status": "CURRENT_MAIN_CODE_VERIFIED",
+            "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+            "changed_paths": [],
+            "source_http": 0,
+            "github_metadata_http": 2
+          }
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792394700000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 82,
+        "rows_read": 47,
+        "rows_written": 11,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 12,
+            "rows_read": 12,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 12,
+            "rows_read": 12,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 24,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 12,
+            "rows_read": 12,
+            "rows_written": 11,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 11,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 11,
+            "rows_read": 11,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:30:49.619Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "7c3044a0f27599315148ea60045b6131c521469f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 12,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792395000000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395000000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 89,
+        "rows_read": 51,
+        "rows_written": 12,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 13,
+            "rows_read": 13,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 13,
+            "rows_read": 13,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 26,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 13,
+            "rows_read": 13,
+            "rows_written": 12,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 12,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 12,
+            "rows_read": 12,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:31:02.246Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 13,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792395300000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395300000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 96,
+        "rows_read": 55,
+        "rows_written": 13,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 14,
+            "rows_read": 14,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 14,
+            "rows_read": 14,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 28,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 14,
+            "rows_read": 14,
+            "rows_written": 13,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 13,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 13,
+            "rows_read": 13,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:36:02.161Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 14,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792395600000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395600000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 103,
+        "rows_read": 59,
+        "rows_written": 14,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 15,
+            "rows_read": 15,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 15,
+            "rows_read": 15,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 30,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 15,
+            "rows_read": 15,
+            "rows_written": 14,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 14,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 14,
+            "rows_read": 14,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:41:02.286Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 15,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792395900000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792395900000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 110,
+        "rows_read": 63,
+        "rows_written": 15,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 16,
+            "rows_read": 16,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 16,
+            "rows_read": 16,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 32,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 16,
+            "rows_read": 16,
+            "rows_written": 15,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 15,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 15,
+            "rows_read": 15,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:46:02.347Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 16,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792396200000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792396200000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 117,
+        "rows_read": 67,
+        "rows_written": 16,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 17,
+            "rows_read": 17,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 17,
+            "rows_read": 17,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 34,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 17,
+            "rows_read": 17,
+            "rows_written": 16,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 16,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 16,
+            "rows_read": 16,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:51:02.194Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 17,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792396500000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792396500000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 124,
+        "rows_read": 71,
+        "rows_written": 17,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 18,
+            "rows_read": 18,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 18,
+            "rows_read": 18,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 36,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 18,
+            "rows_read": 18,
+            "rows_written": 17,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 17,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 17,
+            "rows_read": 17,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T07:56:02.328Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "0246b6cdda2d9a402cb83dfba11ed1a121f51e18",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 18,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792396800000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792396800000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 131,
+        "rows_read": 75,
+        "rows_written": 18,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 19,
+            "rows_read": 19,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 19,
+            "rows_read": 19,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 38,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 19,
+            "rows_read": 19,
+            "rows_written": 18,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 18,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 18,
+            "rows_read": 18,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:01:02.047Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "34f3ecced35be28f78b586a4b412cf1ed26848e7",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 19,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792397100000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792395045192,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792397100000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 138,
+        "rows_read": 79,
+        "rows_written": 19,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 20,
+            "rows_read": 20,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 20,
+            "rows_read": 20,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 40,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 20,
+            "rows_read": 20,
+            "rows_written": 19,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 19,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 19,
+            "rows_read": 19,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:06:02.030Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 20,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792397400000,
+      "external_requests": 0,
+      "recovery": {
+        "dispatched": true,
+        "status": "RECOVERY_DISPATCH_ACCEPTED",
+        "github_http_status": 204,
+        "source_http": 0,
+        "D1": 0,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "RECOVERY_DUE_WITHIN_ORIGINAL_COLLECTOR_SLOT",
+          "wait_ms": 11289,
+          "source_http": 0,
+          "D1": 0,
+          "next_due_ts": 1792397472923,
+          "source_guard": {
+            "allowed": true,
+            "status": "CURRENT_MAIN_CODE_VERIFIED",
+            "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+            "changed_paths": [],
+            "source_http": 0,
+            "github_metadata_http": 2
+          }
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792397400000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 145,
+        "rows_read": 83,
+        "rows_written": 20,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 21,
+            "rows_read": 21,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 21,
+            "rows_read": 21,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 42,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 21,
+            "rows_read": 21,
+            "rows_written": 20,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 20,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 20,
+            "rows_read": 20,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:11:18.958Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 21,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792397700000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792397700000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 152,
+        "rows_read": 87,
+        "rows_written": 21,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 22,
+            "rows_read": 22,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 22,
+            "rows_read": 22,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 44,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 22,
+            "rows_read": 22,
+            "rows_written": 21,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 21,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 21,
+            "rows_read": 21,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:16:02.073Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 22,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792398000000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792398000000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 159,
+        "rows_read": 91,
+        "rows_written": 22,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 23,
+            "rows_read": 23,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 23,
+            "rows_read": 23,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 46,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 23,
+            "rows_read": 23,
+            "rows_written": 22,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 22,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 22,
+            "rows_read": 22,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:21:02.061Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 23,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792398300000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792398300000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 166,
+        "rows_read": 95,
+        "rows_written": 23,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 24,
+            "rows_read": 24,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 24,
+            "rows_read": 24,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 48,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 24,
+            "rows_read": 24,
+            "rows_written": 23,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 23,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 23,
+            "rows_read": 23,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:26:02.157Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 24,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792398600000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792398600000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 173,
+        "rows_read": 99,
+        "rows_written": 24,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 25,
+            "rows_read": 25,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 25,
+            "rows_read": 25,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 50,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 25,
+            "rows_read": 25,
+            "rows_written": 24,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 24,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 24,
+            "rows_read": 24,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:31:02.416Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "43a2441864c746cf188e1820a029db63c0bf689f",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 25,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792398900000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792398900000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 180,
+        "rows_read": 103,
+        "rows_written": 25,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 26,
+            "rows_read": 26,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 26,
+            "rows_read": 26,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 52,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 26,
+            "rows_read": 26,
+            "rows_written": 25,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 25,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 25,
+            "rows_read": 25,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:36:02.115Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "aa580e520426ab1b9ef4556bdf863ff999bd97c3",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 26,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792399200000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792399200000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 187,
+        "rows_read": 107,
+        "rows_written": 26,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 27,
+            "rows_read": 27,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 27,
+            "rows_read": 27,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 54,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 27,
+            "rows_read": 27,
+            "rows_written": 26,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 26,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 26,
+            "rows_read": 26,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:41:02.232Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "aa580e520426ab1b9ef4556bdf863ff999bd97c3",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 27,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "schema": "report2-public-collector-backup-v4-scheduled-recovery",
+      "source_code_head": "ae5c476d04cb73e134e74f5fb07b4b02d3a43241",
+      "cloud_run": "39210422768",
+      "status": "PRIMARY_CLOSED",
+      "bucket": 1792399500000,
+      "external_requests": 0,
+      "recovery": {
+        "allowed": false,
+        "status": "LOCAL_RECOVERY_ALREADY_ACCEPTED",
+        "last_attempt_ts": 1792397473689,
+        "boundary_wait": {
+          "allowed": true,
+          "status": "NO_IN_SLOT_RECOVERY_WAIT",
+          "wait_ms": 0,
+          "source_http": 0,
+          "D1": 0
+        }
+      },
+      "kick": {
+        "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+        "dispatch": false,
+        "entry_authorized": false,
+        "source_http": 0,
+        "telegram": false,
+        "status": "NO_FRESH_TRIGGER_HINT",
+        "day": "2026-10-19",
+        "bucket": 1792399500000
+      },
+      "kick_budget": {
+        "safe": true,
+        "maximum_planned_rows_read": 3498308,
+        "maximum_planned_rows_written": 69664,
+        "cron_admissions_reserved": 72,
+        "additional_kick_admissions_reserved": 3,
+        "kick_poll_plan": {
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1
+        },
+        "source_http": 0,
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1,
+        "regular_analytics_interval_minutes": 40,
+        "original_trigger_ttl_unchanged": true
+      },
+      "usage": {
+        "requests": 194,
+        "rows_read": 111,
+        "rows_written": 27,
+        "unknown_ops": 0,
+        "targets": {
+          "first:v3_maintenance_cadence_shadow": {
+            "requests": 28,
+            "rows_read": 28,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_public_collector_usage_v1": {
+            "requests": 28,
+            "rows_read": 28,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 56,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_trigger_kick_poll": {
+            "requests": 28,
+            "rows_read": 28,
+            "rows_written": 27,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 27,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 27,
+            "rows_read": 27,
+            "rows_written": 0,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "completed_at": "2026-10-19T08:46:02.128Z",
+      "telegram": false,
+      "analytical_decision": false,
+      "source_guard": {
+        "allowed": true,
+        "status": "CURRENT_MAIN_CODE_VERIFIED",
+        "current_main": "aa580e520426ab1b9ef4556bdf863ff999bd97c3",
+        "changed_paths": [],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 28,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    },
+    {
+      "worker_status": "CURRENT_MAIN_CODE_CHANGED",
+      "source_guard": {
+        "allowed": false,
+        "status": "CURRENT_MAIN_CODE_CHANGED",
+        "current_main": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+        "changed_paths": [
+          "current-generation/files/src/worker.js",
+          ".github/workflows/report2.yml"
+        ],
+        "source_http": 0,
+        "github_metadata_http": 2
+      },
+      "worker_started_ts": 1792391511091,
+      "worker_deadline_ts": 1792409511091,
+      "cycles": 28,
+      "failures": 0,
+      "source_job_budget": {
+        "attempted_source_http": 0,
+        "maximum_source_http": 164,
+        "failed_attempts_not_refunded": true
+      }
+    }
+  ]
+}

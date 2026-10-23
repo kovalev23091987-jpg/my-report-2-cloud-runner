@@ -5,8 +5,12 @@ on:
       expected_main: {type: string, required: true}
       owner: {type: string, required: true}
       connected_run: {type: string, required: true}
+      automatic_main_run: {type: string, required: false, default: ""}
       read_only: {type: boolean, default: false}
       execute_counter_repair: {type: boolean, default: false}
+      execute_correlated_cost_release: {type: boolean, default: false}
+      execute_correlated_cost_stage: {type: boolean, default: false}
+      execute_correlated_existing_activation: {type: boolean, default: false}
 permissions:
   contents: read
   actions: read
@@ -20,11 +24,19 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.execute_correlated_existing_activation && 8 || 1 }}
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Refuse mixed existing-version activation and other bridge modes
+        if: inputs.execute_correlated_existing_activation == true && (inputs.read_only == true || inputs.execute_counter_repair == true || inputs.execute_correlated_cost_release == true || inputs.execute_correlated_cost_stage == true)
+        run: exit 1
+      - name: Refuse mixed stage-only and other bridge modes
+        if: inputs.execute_correlated_cost_stage == true && (inputs.read_only == true || inputs.execute_counter_repair == true || inputs.execute_correlated_cost_release == true) && inputs.execute_correlated_existing_activation == false
+        run: exit 1
       - name: Read only exact active module with version, settings and lease guards
-        if: inputs.read_only == true && inputs.execute_counter_repair == false
+        if: inputs.read_only == true && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -35,7 +47,7 @@ jobs:
           READ_ONLY_BRIDGE_INSPECTION: ${{ inputs.read_only }}
         run: node tools/inspect-installed-bridge-module-20261016.mjs
       - name: Repair only exact SQL bridge counter spans with rollback
-        if: inputs.execute_counter_repair == true && inputs.read_only == false
+        if: inputs.execute_counter_repair == true && inputs.read_only == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -45,17 +57,73 @@ jobs:
           CONNECTED_RUN: ${{ inputs.connected_run }}
           EXECUTE_SQL_BRIDGE_REPAIR: ${{ inputs.execute_counter_repair }}
         run: node tools/repair-current-sql-bridge-counters-20261016.mjs
+      - name: Release exact qualified correlated cost metadata and native log settings
+        if: inputs.execute_correlated_cost_release == true && inputs.read_only == false && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          EXECUTE_CORRELATED_COST_RELEASE: ${{ inputs.execute_correlated_cost_release }}
+        run: node tools/rollout-correlated-sql-bridge-20261022.mjs
       - uses: actions/upload-artifact@v4
-        if: always() && inputs.execute_counter_repair == true
+        if: always() && inputs.execute_correlated_cost_release == true && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
+        with:
+          name: bridge-correlated-cost-release-${{ github.run_id }}
+          path: audit-output/bridge-correlated-cost-release/
+          if-no-files-found: error
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always() && inputs.execute_counter_repair == true && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
         with:
           name: sql-bridge-counter-release-${{ github.run_id }}
           path: audit-output/sql-bridge-counter-release/
           if-no-files-found: error
           retention-days: 30
       - uses: actions/upload-artifact@v4
-        if: always() && inputs.read_only == true
+        if: always() && inputs.read_only == true && inputs.execute_correlated_cost_stage == false && inputs.execute_correlated_existing_activation == false
         with:
           name: installed-bridge-module-${{ github.run_id }}
           path: audit-output/installed-bridge-module/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Stage one qualified correlated bridge version without activation
+        if: inputs.execute_correlated_cost_stage == true && inputs.read_only == false && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_existing_activation == false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          EXECUTE_CORRELATED_COST_STAGE: ${{ inputs.execute_correlated_cost_stage }}
+        run: node tools/rollout-correlated-sql-bridge-20261022.mjs
+      - uses: actions/upload-artifact@v4
+        if: always() && inputs.execute_correlated_cost_stage == true && inputs.read_only == false && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_existing_activation == false
+        with:
+          name: bridge-correlated-cost-stage-${{ github.run_id }}
+          path: audit-output/bridge-correlated-cost-stage/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Activate only the already-own staged correlated bridge version
+        if: inputs.execute_correlated_existing_activation == true && inputs.read_only == false && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_cost_stage == false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+          CONNECTED_RUN: ${{ inputs.connected_run }}
+          AUTOMATIC_MAIN_RUN: ${{ inputs.automatic_main_run }}
+          EXECUTE_CORRELATED_EXISTING_ACTIVATION: ${{ inputs.execute_correlated_existing_activation }}
+        run: node tools/rollout-correlated-sql-bridge-20261022.mjs
+      - name: Upload existing-version activation proof
+        if: always() && inputs.execute_correlated_existing_activation == true && inputs.read_only == false && inputs.execute_counter_repair == false && inputs.execute_correlated_cost_release == false && inputs.execute_correlated_cost_stage == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridge-existing-version-activation-${{ github.run_id }}
+          path: audit-output/bridge-existing-version-activation/
           if-no-files-found: error
           retention-days: 30

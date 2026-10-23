@@ -1,0 +1,406 @@
+{
+  "schema": "REPORT2_COINEX_BINGX_FACT_QUALIFICATION_SPEC_V1",
+  "working_base": "51fd34e564f926c1e2f4a226acdd9e691df69047",
+  "state": "OFFLINE_PLAN_NOT_EXECUTION_READY",
+  "owner_scope": "Only source qualification planning. Coordinator performs all live admission/acquisition; third worker owns anomaly/history/statistics modules.",
+  "priority_assets": [
+    {
+      "htx_contract": "TIA-USDT",
+      "order": 1,
+      "reason_ru": "Первый кандидат: утверждённый нативный актив Celestia и сохранённые ценовые факты. Листинг и идентичность на новой бирже пока не доказаны."
+    },
+    {
+      "htx_contract": "APR-USDT",
+      "order": 2,
+      "conditional": true,
+      "reason_ru": "Второй кандидат только после первого: сохранён точный Ethereum-контракт aPriori. Совпадение тикера APR на новой бирже не подтверждает этот токен."
+    }
+  ],
+  "provider_specs": [
+    {
+      "provider": "COINEX",
+      "upstream": "COINEX_OFFICIAL",
+      "independence_group": "COINEX",
+      "native_symbol_candidates": {
+        "TIA": "TIAUSDT",
+        "APR": "APRUSDT"
+      },
+      "native_symbol_status": "LOOKUP_CANDIDATE_ONLY_NOT_VERIFIED_MARKET",
+      "market_metadata": {
+        "base": "https://api.coinex.com/v2",
+        "method": "GET",
+        "path": "/futures/market",
+        "params": {
+          "market": "TIAUSDT,APRUSDT"
+        },
+        "attempt_ceiling_shared": 1,
+        "fields": [
+          "market",
+          "contract_type",
+          "base_ccy",
+          "quote_ccy",
+          "status",
+          "is_market_available",
+          "is_api_trading_available",
+          "tick_size",
+          "open_interest_volume"
+        ],
+        "requirements": "Returned exact market, linear perpetual and USDT quote, active crypto asset; no chain/address proof in this schema. OI has no retained source time here, so not a fresh OI fact."
+      },
+      "futures_native_baseline": {
+        "method": "GET",
+        "path": "/futures/kline",
+        "params_template": {
+          "market": "VERIFIED_NATIVE_MARKET",
+          "price_type": "latest_price",
+          "period": "15min",
+          "limit": 24,
+          "start_time": "E15_MINUS_21x15M_MS",
+          "end_time": "E15_MINUS_1_MS"
+        },
+        "required_closed_bars": 21,
+        "baseline_prior_bars": 20,
+        "event_bars": 1,
+        "query_mode": "EXPLICIT_ANCHORED_MS_RANGE",
+        "start_end_query_time_unit": "MILLISECONDS_EXPLICIT_GLOBAL_INTEGRATION_GUIDE",
+        "volume_unit_status": "Read endpoint calls volume filled volume and value filled value; base/quote scaling must still be qualified from actual source evidence. Do not inherit HTX multipliers."
+      },
+      "futures_minute": {
+        "method": "GET",
+        "path": "/futures/kline",
+        "params_template": {
+          "market": "VERIFIED_NATIVE_MARKET",
+          "price_type": "latest_price",
+          "period": "1min",
+          "limit": 40,
+          "start_time": "MIN_E1_MINUS_15M_AND_E15_MINUS_15M_MS",
+          "end_time": "E1_MINUS_1_MS"
+        },
+        "required_event_bars": 15,
+        "required_sliding_path_bars": 15,
+        "response_time_unit": "created_at milliseconds per endpoint and global guide; reject malformed/future/misaligned values including invalid illustrative examples"
+      },
+      "recent_trades": {
+        "method": "GET",
+        "path": "/futures/deals",
+        "params_template": {
+          "market": "VERIFIED_NATIVE_MARKET",
+          "limit": 1000
+        },
+        "attempt_ceiling": 1,
+        "fields": [
+          "deal_id",
+          "created_at",
+          "side",
+          "price",
+          "amount"
+        ],
+        "pagination_enabled": false,
+        "last_id_direction": "UNQUALIFIED; no follow-up pagination in first packet",
+        "claim": "Bounded recent taker sample only. No per-minute independent trade_count in read kline schema; do not close existing N05 exact raw4h contract."
+      },
+      "optional_timed_OI": {
+        "attempt_ceiling": 0,
+        "reason": "Market/ticker OI fields exist but no original publication clock in read schema. Do not fetch duplicate ticker solely to invent freshness."
+      },
+      "optional_spot": {
+        "separate_admission": true,
+        "nonblocking": true,
+        "metadata_attempt_ceiling_shared": 1,
+        "identity_lookup_attempt_ceiling_per_asset": 1,
+        "native_baseline_attempts_per_asset": 1,
+        "minute_attempts_per_asset": 1,
+        "recent_trade_attempts_per_asset": 1,
+        "paths": [
+          "/spot/kline",
+          "spot market/identity route requires exact documented preflight"
+        ],
+        "not_ready_reason": "No spot execution until exact identity route/access/units and source attempt admission are resolved."
+      },
+      "documented_rate": {
+        "IP_requests_per_second": 400,
+        "daily_or_monthly_free_project_capacity": null,
+        "scope": "All CoinEx requests from shared IP/consumer set; not separate futures/spot quotas"
+      }
+    },
+    {
+      "provider": "BINGX",
+      "upstream": "BINGX_OFFICIAL",
+      "independence_group": "BINGX",
+      "native_symbol_candidates": {
+        "TIA": "TIA-USDT",
+        "APR": "APR-USDT"
+      },
+      "native_symbol_status": "LOOKUP_CANDIDATE_ONLY_NOT_VERIFIED_MARKET",
+      "market_metadata": {
+        "base": "https://open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/contracts",
+        "params": {},
+        "attempt_ceiling_shared": 1,
+        "selection": "Omit symbol returns all; retain/use only exact two requested candidates, not a new105 census.",
+        "fields": [
+          "contractId",
+          "symbol",
+          "asset",
+          "currency",
+          "size",
+          "status",
+          "pricePrecision",
+          "quantityPrecision",
+          "apiStateOpen",
+          "apiStateClose",
+          "launchTime",
+          "maintainTime",
+          "offTime"
+        ],
+        "requirements": "Exact requested base/USDT settlement/active linear contract and valid decimal size. Chain/native identity still needs a separate exact witness."
+      },
+      "futures_native_baseline": {
+        "method": "GET",
+        "path": "/openApi/swap/v3/quote/klines",
+        "params_template": {
+          "symbol": "VERIFIED_NATIVE_SYMBOL",
+          "interval": "15m",
+          "limit": 24,
+          "startTime": "E15_MINUS_21x15M_MS",
+          "endTime": "E15_MINUS_1_MS"
+        },
+        "required_closed_bars": 21,
+        "baseline_prior_bars": 20,
+        "event_bars": 1,
+        "query_time_unit": "milliseconds explicitly documented"
+      },
+      "futures_minute": {
+        "method": "GET",
+        "path": "/openApi/swap/v3/quote/klines",
+        "params_template": {
+          "symbol": "VERIFIED_NATIVE_SYMBOL",
+          "interval": "1m",
+          "limit": 40,
+          "startTime": "MIN_E1_MINUS_15M_AND_E15_MINUS_15M_MS",
+          "endTime": "E1_MINUS_1_MS"
+        },
+        "required_event_bars": 15,
+        "required_sliding_path_bars": 15,
+        "response_time_unit": "Explicit candle open/close milliseconds per official repo; actual schema still unqualified"
+      },
+      "recent_trades": {
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/trades",
+        "params_template": {
+          "symbol": "VERIFIED_NATIVE_SYMBOL",
+          "limit": 1000
+        },
+        "attempt_ceiling": 1,
+        "pagination_enabled": false,
+        "claim": "Bounded current sample. Do not retrofit it to historical native event. Taker-buy/count candle fields from official repo may support provider-published aggregate only if actual wire/units match; not copied raw-fill proof."
+      },
+      "optional_timed_OI": {
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/openInterest",
+        "params_template": {
+          "symbol": "VERIFIED_NATIVE_SYMBOL"
+        },
+        "attempt_ceiling_per_asset": 1,
+        "separate_admission": true,
+        "fields": [
+          "symbol",
+          "openInterest",
+          "time"
+        ],
+        "claim": "Only if source time/units/identity/freshness are verified; does not authorize strategy/LIQ level."
+      },
+      "optional_spot": {
+        "separate_admission": true,
+        "nonblocking": true,
+        "metadata_attempt_ceiling_shared": 1,
+        "identity_lookup_attempt_ceiling_per_asset": 1,
+        "native_baseline_attempts_per_asset": 1,
+        "minute_attempts_per_asset": 1,
+        "recent_trade_attempts_per_asset": 1,
+        "paths": [
+          "/openApi/spot/v1/common/symbols",
+          "/openApi/spot/v2/market/kline",
+          "/openApi/spot/v1/market/trades"
+        ],
+        "not_ready_reason": "Separate spot identity/window proof; no admission or schema assumed."
+      },
+      "documented_rate": {
+        "endpoint_requests_per_second": 1,
+        "all_spot_and_swap_shared_IP_requests_per_10seconds": 500,
+        "daily_or_monthly_free_project_capacity": null,
+        "scope": "Both endpoint1/s and shared500/10s respected. Keys/markets/roles do not create extra provider quota."
+      }
+    }
+  ],
+  "identity_stage": {
+    "attempt_ceiling_per_asset_provider": 1,
+    "status": "STATIC_ROUTES_DOCUMENTED_ACTUAL_BINDINGS_ACCESS_AND_COST_UNQUALIFIED",
+    "provider_routes": [
+      {
+        "provider": "COINEX",
+        "method": "GET",
+        "path": "/assets/info",
+        "params_template": {"ccy": "EXACT_NEW_VENUE_BASE"},
+        "attempt_ceiling_per_asset": 1,
+        "documentation_access": "Not marked signature required; per global guide only marked endpoints require signatures. Actual unauthenticated availability not tested.",
+        "required_fields": ["short_name", "full_name", "website_url", "chain_info.chain_name", "chain_info.identity", "chain_info.explorer_url"],
+        "TIA_rule": "Native Celestia/mainnet relation must be explicit in actual chain/name/site evidence; an empty native identity is not automatic failure or automatic acceptance.",
+        "APR_rule": "Exact Ethereum chain and contract0x5a9610919f5e81183823a2be4bd1beb2b4da2a20 plus matching aPriori identity; ticker/full-name alone cannot close.",
+        "additional_config_route_not_in_default": "/assets/deposit-withdraw-config?ccy=EXACT_NEW_VENUE_BASE exposes chain/explorer_asset_url but would be an extra attempt requiring separate admission. No automatic fallback."
+      },
+      {
+        "provider": "BINGX",
+        "method": "GET",
+        "path": "/openApi/wallets/v1/capital/config/getall",
+        "params_template": {"coin": "EXACT_NEW_VENUE_BASE"},
+        "attempt_ceiling_per_asset": 1,
+        "documentation_access": "SIGNED_HMAC_SHA256_READ_KEY_REQUIRED;5requests/s/UID additionally to applicable shared IP limits",
+        "required_fields": ["coin", "name", "networkList.network", "networkList.name", "networkList.contractAddress"],
+        "default_public_route_available": false,
+        "current_key_admission": false,
+        "rule": "No key request/creation/account call by source worker. An independently approved exact official identity witness may replace this stage at its actual admitted cost; otherwise stop before numeric data."
+      }
+    ],
+    "hard_stop": "If exact native/chain/address relation cannot close from existing verified mapping plus official new-venue evidence, do not request candles/trades or guess a match. Metadata availability is not identity proof.",
+    "no_key_or_paid_fallback_created": true,
+    "no_CoinGecko_or_CoinPaprika_reserve_borrowing": true
+  },
+  "clock_and_window_contract": {
+    "E1": "Trusted central admitted planning cutoff floored to1minute. It is a planning/client clock, never provider publication time.",
+    "E15": "floor(E1/900000)*900000, separate native15m boundary.",
+    "sliding_path": "[E1-15min,E1):15closed1m for N10. Old HTX15m path is sliding, not native15m.",
+    "native_event": "[E15-15min,E15): last closed native15m, plus20previous native15m bars.",
+    "minute_padding": "Request max40one-minute bars to retain both exact15bar windows even with up to14minute native/sliding offset, existing5minute collector deadline and forming/edge bars. Native15m requests24 to retain21targetbars with forming/cross-boundary padding.",
+    "never_merge_different_window_claims": true,
+    "provider_grid_offset": "Validate native documented timezone/period alignment expressed in UTC. Never force wrong midnight/week offset.",
+    "source_clocks": [
+      "raw provider bar open/end or trade event time",
+      "provider response/publication time if actually present, otherwise null",
+      "request_started_ts and received_ts interval",
+      "first_known_ts from original first acquisition, unchanged on reuse",
+      "decision/consumer evaluation time"
+    ],
+    "first_known_rule": "Historical fetch later cannot be assigned old canonical observation time. Mark BACKFILLED/STALE_FOR_CURRENT_REPORT as applicable; original publication or source clocks are not refreshed.",
+    "historical_CoinEx_query_time_unit_documented": true,
+    "historical_CoinEx_actual_availability_ready": false
+  },
+  "numeric_acceptance": {
+    "OHLCV": "Finite positive OHLC with valid geometry; explicit nonnegative base/quote volume and unique exact closed grid. Missing/null/boolean/nonfinite never become zero.",
+    "units": "Preserve raw decimal strings and exact contract/base/quote unit. HTX TIA0.1/APR1 multiplier is provenance only, not a CoinEx/BingX multiplier.",
+    "fill_ID": "Keep decimal IDs as strings from raw wire before lossy Number parsing; reject rounded/ambiguous IDs. No timestamp-as-ID fabrication.",
+    "decomposition": "15exact1m→5x3m and3x5m with same units/asset/venue. Compare native15m to its own1m aggregate; sliding15m remains a separate window.",
+    "taker": "Real taker side/maker inversion only where documented and actual fields match. One page may be incomplete; no whole-window CVD, raw count or direction claim from sample.",
+    "zero": "Zero is factual only when the complete relevant source response/counter proves it. Missing data stays unknown.",
+    "rounding_tolerance": "Not selected before actual decimal/tick/size evidence; no arbitrary new percentage tolerance.",
+    "unknown_native": "Any new native usage uncertainty stops further acquisitions for both venues. Existing historical15unknown and their exact witness/reserves remain untouched."
+  },
+  "consumer_proposals": [
+    {
+      "block": "N10",
+      "fact": "Exact new-venue sliding15m price path and native15m OHLCV baseline, as separate grains.",
+      "benefit": "Adds a primary venue candle fact missing from retained APR/TIA raw artifact; independent anomaly provider role without main selection change.",
+      "status": "SOURCE_FACT_BEFORE_SHARED_IMPLEMENTATION",
+      "score": 0,
+      "direction": null,
+      "entry": false,
+      "files_for_coordinator": [
+        "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+        "current-generation/files/src/block-result-context.mjs",
+        "current-generation/files/src/telegram-plain-facts.mjs"
+      ],
+      "requires": "Exact new provider adapter/version/asset/units/clocks and connected consumer validation; no generic HTX evidence masquerade."
+    },
+    {
+      "block": "N12",
+      "fact": "One correctly timed bounded new-venue taker sample, separate from historical event and other venue.",
+      "benefit": "Independent descriptive sample, not HTX duplicate or fullCVD.",
+      "status": "PROPOSAL_ONLY_UNTIL_ACTUAL_WIRE",
+      "score": 0,
+      "direction": null,
+      "entry": false
+    },
+    {
+      "block": "N05",
+      "fact": "Only source-published candle taker aggregate if actual fields/units/coverage qualify; otherwise retain N10/N12 only.",
+      "benefit": "Potential separate flow context without weakening existing exact4h raw trade contract.",
+      "status": "EXACT4H_FLOW_NOT_CLOSED_BY_FIRST_PACKET",
+      "score": 0,
+      "direction": null,
+      "entry": false
+    },
+    {
+      "block": "ANOMALY_SOURCE_HANDOFF",
+      "fact": "Typed immutable provider/asset/market/window/units/clocks/hash facts and gaps.",
+      "benefit": "Input for third worker's isolated research; no observer/event/watch/statistics module written here.",
+      "status": "THIRD_WORKER_AND_COORDINATOR_OWN_CONSUMERS",
+      "main_score_effect": 0
+    }
+  ],
+  "excluded_first_packet_roles": [
+    "N15 sector peer cohort not acquired; no sector conclusion from two tickers.",
+    "N04 wallet/transfer facts not acquired.",
+    "N11 HTX execution/book gate not replaced.",
+    "LIQ future positions/model zones not established by OI or candle volume.",
+    "No main or new-block Telegram payload/delivery implemented."
+  ],
+  "admission_and_cost": {
+    "default_first_packet": "ONE_PROVIDER_TIA_FUTURES_ONLY",
+    "core_attempts_first_asset": {
+      "shared_market_metadata": 1,
+      "conditional_identity_lookup_max": 1,
+      "native15m_request": 1,
+      "minute_request": 1,
+      "bounded_trade_request": 1
+    },
+    "core_max_HTTP_first_asset": 5,
+    "optional_BingX_timed_OI_HTTP": 1,
+    "optional_second_APR_core_HTTP_if_same_shared_metadata_covers_it": 4,
+    "second_APR_requires_fresh_actual_identity_and_admission": true,
+    "retries": 0,
+    "automatic_pagination": 0,
+    "minute_and_day_source_ledger": "No source IDs or quotas configured by this plan. Coordinator must use applicable explicit source/provider/IP/common admission; UNKNOWN_SOURCE or missing ledger is not a grant.",
+    "native_SQL_bound": null,
+    "native_R_bound": null,
+    "native_W_bound": null,
+    "execution_allowed_until_native_bounds_qualified": false,
+    "native_cost_reason": "Depends on centrally chosen reservation/journal/cache/write/readback path and actual indexed cost.5providerHTTP is not totalnative cost; no borrowing ENTRY4000R40W or protected next-full59000R920W.",
+    "per_attempt_rule": "Unused hypothetical slots are not reservations. Every admitted attempt is counted; spent/unknown grants are never reset or refunded.",
+    "main_priority": "All existing main/source/manual consumers and source-specific protected reserves first; new provider/IP limits do not enlarge164HTTP or D1 limits."
+  },
+  "sustained_model": {
+    "D": "New rare fact bundles/day, measured not assumed rare",
+    "R": "Repeated deeper fact bundles/day only when justified",
+    "M": "Actual metadata refresh attempts/day",
+    "I": "Actual additional identity proof attempts/day",
+    "W": "Shallow active-watch CPU/SQL from already paid common snapshots; not declared free",
+    "narrow_CoinEx_data_HTTP_each": 3,
+    "narrow_BingX_data_HTTP_each_without_OI": 3,
+    "narrow_BingX_data_HTTP_each_with_OI": 4,
+    "all_six_native_scales_plus_minute_and_one_trade_HTTP_each_venue": 8,
+    "not_all_scales_required_for_every_event": true,
+    "long_horizon": "Use native large-frame baselines. A month of following an event does not require a month of1m trades. A bounded internal slice is never declared the entire weekly microstructure.",
+    "daily_and_monthly_limits": "Not fixed or raised; scenario arithmetic only. Actual event counts/queue/cache/retention/SQL/cold-starts/manual reserve must qualify centrally."
+  },
+  "ownership": {
+    "source_paths_only": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/**",
+    "third_worker_paths_untouched": [
+      "anomaly-research/**",
+      "checkpoints/anomaly-worker-*"
+    ],
+    "shared_changes": "Concrete proposals to coordinator only",
+    "all_provider_SQL_deploy_MAIN_Telegram": "COORDINATOR_ONLY"
+  },
+  "effects": {
+    "provider_market_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "runtime_or_shared_files_changed": 0,
+    "strategy_weights_forms_pauses_caps_changed": false,
+    "observer_activated": false,
+    "actual_new_source_connections": 0
+  }
+}

@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+import {readMirrorContext,assertMirrorOwner} from '../runner/github-four-mirror-cas.mjs';
+const prefix='checkpoints/proof-budget-anomaly-connected-20261020';
+const scope=JSON.parse(fs.readFileSync(prefix+'/qualification-scope.json'));
+const stage=process.argv[2],sha=x=>createHash('sha256').update(x).digest('hex');
+if(!['before','after'].includes(stage)||process.env.GITHUB_REPOSITORY!=='kovalev23091987-jpg/my-report-2-cloud-runner'||process.env.GITHUB_REF!=='refs/heads/work/proof-preflight-anomaly-linked-20261020')throw Error('EXACT_LINKED_OFFLINE_SCOPE_REQUIRED');
+for(const[p,h]of Object.entries(scope.files))if(sha(fs.readFileSync(p))!==h)throw Error('QUALIFIED_SOURCE_HASH_CHANGED:'+p);
+if(stage==='after'&&fs.existsSync('runtime/src/worker.js'))for(const[p,h]of Object.entries(scope.runtime_files))if(sha(fs.readFileSync('runtime/'+p))!==h)throw Error('ASSEMBLED_RUNTIME_BYTES_DIFFER:'+p);
+const control=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN,maximum_calls:1});
+const context=await readMirrorContext(control,{expected_main:scope.expected_main,maximum_blob_reads:0});
+const checked=assertMirrorOwner(context,scope.owner,Date.now(),scope.scope_prefix);
+if(JSON.stringify(checked.lease)!==JSON.stringify(scope.owned_lease))throw Error('EXACT_QUALIFIED_OWN_LEASE_REQUIRED');
+fs.mkdirSync('audit-output/proof-provider-anomaly-connected',{recursive:true});
+fs.writeFileSync(`audit-output/proof-provider-anomaly-connected/guard-${stage}.json`,JSON.stringify({status:'EXACT_FRESH_OWN_OFFLINE_SCOPE',stage,main:context.head,owner:scope.owner,control:control.metrics,source_hashes:scope.files,runtime_hashes:scope.runtime_files,sourceHTTP:0,nativeSQL:0,MAIN:0,Telegram:0},null,2));

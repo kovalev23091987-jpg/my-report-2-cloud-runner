@@ -1,0 +1,948 @@
+{
+  "schema": "NATURAL39235810465_POST521_SAVED_ORIGINALS_REVIEW_V1",
+  "cloud_run": 39235810465,
+  "head": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+  "run_id": "1792404792437-1792404803692",
+  "artifacts": [
+    {
+      "id": 12179486026,
+      "name": "report2-run-result",
+      "digest": "sha256:9090eca1ce5f7b76349a168e8ed39378b1b99d0faae7748c009f658ff0da7f1c",
+      "size_in_bytes": 67302
+    },
+    {
+      "id": 12179676810,
+      "name": "report2-telegram-info-proof",
+      "digest": "sha256:8a62e05496408c97d7811f446da45e730deff20a0449f84e4a3300ffdbecb811",
+      "size_in_bytes": 908
+    }
+  ],
+  "original7members_sha256": {
+    "report2-run-result.json": "7ea323c441c3815e6701dbaea2147f2d18b799114cafb589921a39d07ff24ca7",
+    "same-run-delivery-proof.json": "be67c16894f2be6d50c71681fe14d781df9434e3a5210cb7330a665e7ea1658b",
+    "automatic-delivery-audit.json": "1405ec8a2573512cd4b1cedae11cdc2c7f6a49713ed5c1a60e1e31fff1f8895e",
+    "known-d1-day-guard.json": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605",
+    "report2-completion-accounting.json": "32657f6565842cc24a43b9e1068ea25a21db566eb17812af36c72c38c23d77a2",
+    "private-canonical-archive-receipt.json": "d5607bb5d307edc7f9e73a176bc26b23c687ba06d12fec6e7dce3e342b7c4025",
+    "telegram-info-proof.json": "170a03e0bbeff6cc94bb4c3251858eb13ecfe7b19b1cd2a36d568b13ad49eaf3"
+  },
+  "both_candidates_persisted_private_verified": true,
+  "candidates": [
+    {
+      "contract": "BTW-USDT",
+      "direction": "LONG",
+      "publication_id": "PUB:697faf8685be807d981be12bd3169c7559304799",
+      "snapshot_id": "S392:BTW-USDT:1792404897255",
+      "wave_id": "EDW:BTW-USDT:1792392656280:G19",
+      "canonical_state": "OBSERVE",
+      "actionability_status": "UNASSESSED",
+      "actionability_reason": null
+    },
+    {
+      "contract": "CT-USDT",
+      "direction": null,
+      "publication_id": "PUB:d07d8a5ed9ede7c72bcfac5c2f3d0d50ec202a92",
+      "snapshot_id": "S392:CT-USDT:1792404857651",
+      "wave_id": "EDW:CT-USDT:1792344030224:G7",
+      "canonical_state": "REJECTED",
+      "actionability_status": "UNASSESSED",
+      "actionability_reason": null
+    }
+  ],
+  "same_run_delivery": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1792404792437-1792404803692",
+    "source": "schedule",
+    "recorded_at": 1792404903376,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "native_lifecycle_transitions": [
+    {
+      "contract": "BTW-USDT",
+      "status": "RISK_BLOCKED",
+      "reason": "DIRECTION_DESTROYED",
+      "current_status": null,
+      "dispatch": null
+    },
+    {
+      "contract": "CT-USDT",
+      "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "current_status": null,
+      "dispatch": null
+    }
+  ],
+  "native_terminal": {
+    "status": "NO_ELIGIBLE_ORIGINAL_TERMINAL",
+    "queued": false
+  },
+  "source_role_context": [
+    {
+      "contract": "BTW-USDT",
+      "audit": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "BTW-USDT",
+        "run_id": "1792404792437-1792404803692",
+        "snapshot_id": "S392:BTW-USDT:1792404897255",
+        "observed_ts": 1792404897255,
+        "status": "NOT_CLOSED",
+        "observation_source_gate_closed": false,
+        "reasons": [
+          "FEWER_THAN_TWO_VERIFIED_DISTINCT_ORIGINS"
+        ],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "HTX_OFFICIAL"
+        ],
+        "classified_receipt_count": 11,
+        "usable_role_receipt_count": 1,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 2,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 4,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 4
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404860614,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404860614,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792404000000,
+            "received_ts": 1792404860614,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792404000000,
+            "received_ts": 1792404860614,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792400400000,
+            "received_ts": 1792404860614,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792404000000,
+            "received_ts": 1792404860614,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "RELATIVE_STRENGTH_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404860614,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404860614,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404860614,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404860614,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1792404897125,
+            "received_ts": 1792404897255,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      }
+    },
+    {
+      "contract": "CT-USDT",
+      "audit": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "CT-USDT",
+        "run_id": "1792404792437-1792404803692",
+        "snapshot_id": "S392:CT-USDT:1792404857651",
+        "observed_ts": 1792404857651,
+        "status": "CLOSED",
+        "observation_source_gate_closed": true,
+        "reasons": [],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "classified_receipt_count": 21,
+        "usable_role_receipt_count": 16,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 1,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 1,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 3
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404814901,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792396800000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 21600,
+            "normalized_value": -0.0028139741329477
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "OPEN_INTEREST_CURRENT",
+            "assigned_roles": [
+              "OI_CURRENT_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792404822944,
+            "received_ts": 1792404814901,
+            "max_age_sec": 900,
+            "normalized_value": 4682543.216
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 23.44370860927154
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792404000000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": -0.018135
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792404000000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 0.05133312115643829
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 24.801587301587304
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [
+              "TRADES_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792404000000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 1.3888888888888888
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 1.695650557340822
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 1.5623781918999713
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 27.995514180395585
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 27.777158746509855
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 21.596914646138487
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 21.84400244367941
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "SPOT_TURNOVER_24H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_BTC_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 3.0304602886044267
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_ETH_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792400400000,
+            "received_ts": 1792404814901,
+            "max_age_sec": 7200,
+            "normalized_value": 3.561583450143994
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404814901,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404814901,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792404814901,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1792404857526,
+            "received_ts": 1792404857651,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      }
+    }
+  ],
+  "existing_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792404792437-1792404803692",
+    "recorded_ts": 1792404911219,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 26,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 110,
+      "reported_remaining_slots": 54,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 679,
+        "rows_read": 44113,
+        "rows_written": 395,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 9887,
+        "rows_written": 445
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 1036100,
+      "reserved_rows_written": 18568,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 1,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 1,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "native_silent_TTL_branch_observed": false,
+  "native_task_followup_receipt_observed": false,
+  "actual_ENTRY_or_new_SENT": false,
+  "historical_latest_AKE231_not_overwritten_by_ZERO_SENT": true,
+  "first_authority_refusal_and_full_provider_raw_inputs": "NOT_RECONSTRUCTED_FROM_COMPACT_OR_NORMALIZED_FLAGS",
+  "sourceHTTP_nativeSQL_MAIN_Telegram_added_by_review": 0,
+  "project_complete": false
+}

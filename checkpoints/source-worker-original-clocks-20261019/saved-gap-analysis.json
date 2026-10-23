@@ -1,0 +1,750 @@
+{
+  "schema": "SAVED_SOURCE_CLOCK_GAP_AUDIT_V1",
+  "question": "N10 final clock through canonical and rendered consumer, plus only new executable gaps",
+  "excluded_accepted_packages": [
+    419,
+    425,
+    426,
+    427,
+    431,
+    432,
+    514,
+    519
+  ],
+  "runs": [
+    {
+      "cloud_run": "39164519816",
+      "head": "00e103f37774420f00d2043ba94dbd6dbbab2f5e",
+      "run_id": "1792356159202-1792356174618",
+      "zip_path": "checkpoints/source-worker-strk-wld-natural-20261018/artifact-12150441158.zip",
+      "zip_sha256": "0cdc0290341cb883234d3812231001c8791f4c5d594d2e4e2c5fe3200dcec1ab",
+      "member_sha256": "7bb96dee3201783e11144de25e64a5bf037b02bdfb4988b1d36b6970962ae68f",
+      "candidates": [
+        {
+          "contract": "STRK-USDT",
+          "snapshot_id": "S392:STRK-USDT:1792356300866",
+          "blocks": {
+            "N05": {
+              "valid_fact_count": 1,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "JOINT_SPOT_FUTURES_FLOW": {
+                  "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+                  "actual_http": 0
+                },
+                "AVAILABLE_N05_FLOW_CONTEXT": {
+                  "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+                  "actual_http": 0
+                },
+                "CHAIN_EVENTS": {
+                  "status": "CLOSED",
+                  "actual_http": 2
+                },
+                "PRIMARY_HTX_FUTURES_FLOW": {
+                  "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                  "actual_http": 0
+                },
+                "NANSEN_FLOWS": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+                  "actual_http": 5
+                },
+                "BITGET_FOUR_HOUR_FLOW": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N10": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 3,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "PRIMARY_TECHNICAL_CONTEXT": {
+                  "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N12": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "HTX_LARGE_TRADES": {
+                  "status": "CLOSED_BOUNDED_ASYNC_MARKETS",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+                  "actual_http": 5
+                }
+              }
+            },
+            "N15": {
+              "valid_fact_count": 2,
+              "rendered_receipt_count": 2,
+              "actual_score_contribution": 0.5344,
+              "route_statuses": {
+                "COINGECKO_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 2
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 0
+                }
+              }
+            }
+          },
+          "N10_rendered_clock_projection": [
+            {
+              "evidence_id": "EV2:9234238e1a511d899c42be9707bc3126a534dc138ea4fc93c28dfc0c100b9951",
+              "physical_root_key": "htx-futures:STRK-USDT|STRK-USDT:60min:1792353600000",
+              "source_ts": 1792356248930,
+              "observed_ts": 1792356249042,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:1e737d778da6410c630948ff1b6b3c9144de05bc925561d3410457b3bb84a00d",
+              "physical_root_key": "htx-futures:STRK-USDT|STRK-USDT:15m:1792356240000",
+              "source_ts": 1792356240000,
+              "observed_ts": 1792356300866,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:ad8408abd7fd41d1852655c3f4ddec2dd3ab775e388dc42262bb28b7e0a83aec",
+              "physical_root_key": "htx-spot:STRK-USDT|HTX_SPOT:STRK-USDT:1792356240000",
+              "source_ts": 1792356240000,
+              "observed_ts": 1792356300866,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            }
+          ],
+          "raw_N10_evidence_in_compact_canonical": false,
+          "acquisition_firstknown_reconstructed": false,
+          "LIQ_original_statuses": {
+            "coverage_admission": {
+              "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+              "eligible": true,
+              "source_ids": [
+                "HYPERLIQUID_NATIVE",
+                "DYDX_PINNED_NATIVE"
+              ],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false,
+              "contract": "STRK-USDT",
+              "proven_level_source_ids": [],
+              "additional_context_check_source_ids": [
+                "HYPERLIQUID_NATIVE",
+                "DYDX_PINNED_NATIVE"
+              ],
+              "structural_market_source_ids": [],
+              "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+              "fresh_live_levels_confirmed": false,
+              "receipt_only_context_score_eligible": false,
+              "receipt_only_context_target_eligible": false,
+              "leaders_may_be_replaced": false,
+              "automatic_discovery_allowed": true,
+              "structural_hint_available": false
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "nearby_levels": 0
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "CLOSED",
+              "reason": null,
+              "network_calls": 1,
+              "capability_receipt": null,
+              "source_ts": 1792356257556,
+              "scenario_count": 8
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "SOURCE_HTTP_ERROR",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          },
+          "detailed_telegram_delivery_proven": false,
+          "same_run_root_delivery_inherited": false
+        },
+        {
+          "contract": "WLD-USDT",
+          "snapshot_id": "S392:WLD-USDT:1792356244458",
+          "blocks": {
+            "N05": {
+              "valid_fact_count": 1,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "JOINT_SPOT_FUTURES_FLOW": {
+                  "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+                  "actual_http": 0
+                },
+                "AVAILABLE_N05_FLOW_CONTEXT": {
+                  "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+                  "actual_http": 0
+                },
+                "CHAIN_EVENTS": {
+                  "status": "CLOSED",
+                  "actual_http": 3
+                },
+                "PRIMARY_HTX_FUTURES_FLOW": {
+                  "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                  "actual_http": 0
+                },
+                "NANSEN_FLOWS": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "CALLER_FIVE_REQUEST_CAP",
+                  "actual_http": 5
+                },
+                "BITGET_FOUR_HOUR_FLOW": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N10": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 3,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "PRIMARY_TECHNICAL_CONTEXT": {
+                  "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N12": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 2,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "HTX_LARGE_TRADES": {
+                  "status": "CLOSED_BOUNDED_ASYNC_MARKETS",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "CALLER_FIVE_REQUEST_CAP",
+                  "actual_http": 5
+                }
+              }
+            },
+            "N15": {
+              "valid_fact_count": 2,
+              "rendered_receipt_count": 2,
+              "actual_score_contribution": 0.437,
+              "route_statuses": {
+                "COINGECKO_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 2
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 2
+                }
+              }
+            }
+          },
+          "N10_rendered_clock_projection": [
+            {
+              "evidence_id": "EV2:a209e7ac605220e1da6c6ef1e36aa9f982a4309f9eeb0ee4f262d1333babbe54",
+              "physical_root_key": "htx-futures:WLD-USDT|WLD-USDT:60min:1792353600000",
+              "source_ts": 1792356188123,
+              "observed_ts": 1792356188571,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:ff1855b4109fe0382773706370bd111f4d983f7efa4dd06187fb9102daba88c3",
+              "physical_root_key": "htx-futures:WLD-USDT|WLD-USDT:15m:1792356180000",
+              "source_ts": 1792356180000,
+              "observed_ts": 1792356244458,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:4911583c2f30ef5571e5dd145227a394ed57156da638f70fb3aca0cae143d06f",
+              "physical_root_key": "htx-spot:WLD-USDT|HTX_SPOT:WLD-USDT:1792356180000",
+              "source_ts": 1792356180000,
+              "observed_ts": 1792356244458,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            }
+          ],
+          "raw_N10_evidence_in_compact_canonical": false,
+          "acquisition_firstknown_reconstructed": false,
+          "LIQ_original_statuses": {
+            "coverage_admission": {
+              "status": "BOUNDED_PINNED_NATIVE_CALCULATED_CONTEXT_CHECK_ALLOWED",
+              "eligible": true,
+              "source_ids": [
+                "HYPERLIQUID_NATIVE",
+                "DYDX_PINNED_NATIVE"
+              ],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false,
+              "contract": "WLD-USDT",
+              "proven_level_source_ids": [],
+              "additional_context_check_source_ids": [
+                "HYPERLIQUID_NATIVE",
+                "DYDX_PINNED_NATIVE"
+              ],
+              "structural_market_source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "coverage_scope": "STRUCTURAL_ACCOUNT_HINT_IS_COLLECTION_PERMISSION_NOT_CURRENT_LEVEL_COVERAGE",
+              "fresh_live_levels_confirmed": false,
+              "receipt_only_context_score_eligible": false,
+              "receipt_only_context_target_eligible": false,
+              "leaders_may_be_replaced": false,
+              "automatic_discovery_allowed": true,
+              "structural_hint_available": true
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "CLOSED",
+              "source_ts": 1792356237190,
+              "nearby_levels": 17
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "CLOSED",
+              "reason": null,
+              "network_calls": 1,
+              "capability_receipt": null,
+              "source_ts": 1792355956599,
+              "scenario_count": 8
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          },
+          "detailed_telegram_delivery_proven": false,
+          "same_run_root_delivery_inherited": false
+        }
+      ]
+    },
+    {
+      "cloud_run": "39220988644",
+      "head": "43a2441864c746cf188e1820a029db63c0bf689f",
+      "run_id": "1792397499983-1792397507821",
+      "zip_path": "checkpoints/natural-39220988644/report2-run-result.zip",
+      "zip_sha256": "bda0dd8951be56f636fce0399054ddd4d065c9c0837142d272e5e3c3a9101133",
+      "member_sha256": "d19b7c1028f03b09c4f5b8d3afd2b21a02dd7af10e46a72ca7a5d663214c70b5",
+      "candidates": [
+        {
+          "contract": "龙虾-USDT",
+          "snapshot_id": "S392:龙虾-USDT:1792397594552",
+          "blocks": {
+            "N05": {
+              "valid_fact_count": 1,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "JOINT_SPOT_FUTURES_FLOW": {
+                  "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+                  "actual_http": 0
+                },
+                "AVAILABLE_N05_FLOW_CONTEXT": {
+                  "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+                  "actual_http": 0
+                },
+                "CHAIN_EVENTS": {
+                  "status": "CLOSED",
+                  "actual_http": 3
+                },
+                "PRIMARY_HTX_FUTURES_FLOW": {
+                  "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                  "actual_http": 0
+                },
+                "NANSEN_FLOWS": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "PARTIAL_FOUR_HOUR_FLOW",
+                  "actual_http": 5
+                },
+                "BITGET_FOUR_HOUR_FLOW": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N10": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 3,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "PRIMARY_TECHNICAL_CONTEXT": {
+                  "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N12": {
+              "valid_fact_count": 2,
+              "rendered_receipt_count": 2,
+              "actual_score_contribution": -0.0061,
+              "route_statuses": {
+                "HTX_LARGE_TRADES": {
+                  "status": "CLOSED_BOUNDED_MULTIMARKET_AGREEMENT",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "PARTIAL_FOUR_HOUR_FLOW",
+                  "actual_http": 5
+                }
+              }
+            },
+            "N15": {
+              "valid_fact_count": 1,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 1.2,
+              "route_statuses": {
+                "COINGECKO_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 2
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                  "actual_http": 0
+                }
+              }
+            }
+          },
+          "N10_rendered_clock_projection": [
+            {
+              "evidence_id": "EV2:39611afe1eaf7e1240bf57362af0ed7b54d56a6c6abc8d5b1c10dc04a7a70985",
+              "physical_root_key": "htx-futures:龙虾-USDT|龙虾-USDT:60min:1792396800000",
+              "source_ts": 1792397564562,
+              "observed_ts": 1792397565225,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:595c27ada704f4f40a433d3447908b4b8cba512a0701e574e891589c35e7f43d",
+              "physical_root_key": "htx-futures:龙虾-USDT|龙虾-USDT:15m:1792397520000",
+              "source_ts": 1792397520000,
+              "observed_ts": 1792397594552,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:33b18d041039d3945cebd9cd02df90f372089eca09e3b90ff98b41551cb0d846",
+              "physical_root_key": "htx-spot:龙虾-USDT|HTX_SPOT:龙虾-USDT:1792397520000",
+              "source_ts": 1792397520000,
+              "observed_ts": 1792397594552,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            }
+          ],
+          "raw_N10_evidence_in_compact_canonical": false,
+          "acquisition_firstknown_reconstructed": false,
+          "LIQ_original_statuses": {
+            "coverage_admission": {
+              "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+              "eligible": false,
+              "source_ids": [],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "EXACT_MARKET_UNVERIFIED",
+              "source_ts": null,
+              "nearby_levels": 0
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "EXACT_SOURCE_IDENTITY_UNVERIFIED",
+              "reason": "SAVED_EXACT_REQUEST_RETURNED_OTHER_ASSET",
+              "network_calls": 0,
+              "capability_receipt": {
+                "requested_symbol": "龙虾",
+                "returned_symbol": "BTC",
+                "proof": "checkpoints/source-inputs/coinboss-exact-symbol-mismatches-20261012.json",
+                "original_probe_sha256": "10c41f4e6bf5dd551617391c083d597b74b64c29da3654760da3bb311d7dd1db",
+                "current_market_fact": false,
+                "automatic_repeat_allowed": false
+              },
+              "source_ts": null,
+              "scenario_count": 0
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          },
+          "detailed_telegram_delivery_proven": false,
+          "same_run_root_delivery_inherited": false
+        },
+        {
+          "contract": "CT-USDT",
+          "snapshot_id": "S392:CT-USDT:1792397560589",
+          "blocks": {
+            "N05": {
+              "valid_fact_count": 1,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "JOINT_SPOT_FUTURES_FLOW": {
+                  "status": "JOINT_SPOT_FUTURES_NOT_CONFIRMED",
+                  "actual_http": 0
+                },
+                "AVAILABLE_N05_FLOW_CONTEXT": {
+                  "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+                  "actual_http": 0
+                },
+                "CHAIN_EVENTS": {
+                  "status": "CLOSED",
+                  "actual_http": 4
+                },
+                "PRIMARY_HTX_FUTURES_FLOW": {
+                  "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                  "actual_http": 0
+                },
+                "NANSEN_FLOWS": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "PARTIAL_FOUR_HOUR_FLOW",
+                  "actual_http": 5
+                },
+                "BITGET_FOUR_HOUR_FLOW": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N10": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 3,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "PRIMARY_TECHNICAL_CONTEXT": {
+                  "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                  "actual_http": 0
+                }
+              }
+            },
+            "N12": {
+              "valid_fact_count": 3,
+              "rendered_receipt_count": 2,
+              "actual_score_contribution": 0,
+              "route_statuses": {
+                "HTX_LARGE_TRADES": {
+                  "status": "CLOSED_BOUNDED_ASYNC_MARKETS",
+                  "actual_http": 0
+                },
+                "EXTERNAL_N05_FLOW": {
+                  "status": "PARTIAL_FOUR_HOUR_FLOW",
+                  "actual_http": 5
+                }
+              }
+            },
+            "N15": {
+              "valid_fact_count": 1,
+              "rendered_receipt_count": 1,
+              "actual_score_contribution": 1.2,
+              "route_statuses": {
+                "COINGECKO_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 3
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                  "actual_http": 0
+                }
+              }
+            }
+          },
+          "N10_rendered_clock_projection": [
+            {
+              "evidence_id": "EV2:4950c242227e5159f740b1586e00354b88259c77984adf3913f7e0c8a1e5f57e",
+              "physical_root_key": "htx-futures:CT-USDT|CT-USDT:60min:1792396800000",
+              "source_ts": 1792397520111,
+              "observed_ts": 1792397520261,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:56c1763e52c56ef129a4a126df43fd8ca4a2cf25621d830412061b49b21c28df",
+              "physical_root_key": "htx-futures:CT-USDT|CT-USDT:15m:1792397460000",
+              "source_ts": 1792397460000,
+              "observed_ts": 1792397560589,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            },
+            {
+              "evidence_id": "EV2:5d5261229200744f0ebb4b463124f97717b9be45b9de8a9aa055329309ee6726",
+              "physical_root_key": "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792397460000",
+              "source_ts": 1792397460000,
+              "observed_ts": 1792397560589,
+              "first_known_ts_retained": false,
+              "expiry_retained": false,
+              "original_clock_retained": false,
+              "component_origins_retained": false
+            }
+          ],
+          "raw_N10_evidence_in_compact_canonical": false,
+          "acquisition_firstknown_reconstructed": false,
+          "LIQ_original_statuses": {
+            "coverage_admission": {
+              "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+              "eligible": true,
+              "source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "independent_upstreams": [],
+              "network_calls": 0,
+              "calculated_fallback_allowed": false,
+              "contract": "CT-USDT",
+              "proven_level_source_ids": [],
+              "additional_context_check_source_ids": [
+                "HYPERLIQUID_NATIVE"
+              ],
+              "structural_market_source_ids": [],
+              "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+              "fresh_live_levels_confirmed": false,
+              "receipt_only_context_score_eligible": false,
+              "receipt_only_context_target_eligible": false,
+              "leaders_may_be_replaced": false
+            },
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "status": "COVERAGE_GATE_NOT_ADMITTED",
+              "network_calls": 0
+            },
+            "orderly": {
+              "source": "ORDERLY_PUBLIC_POSITIONS",
+              "status": "EXACT_MARKET_UNVERIFIED",
+              "source_ts": null,
+              "nearby_levels": 0
+            },
+            "coinboss": {
+              "source": "COINBOSS_CEX_MODEL",
+              "status": "PRICE_OR_OI_NOT_CLOSED",
+              "reason": "POSITIVE_OI_AND_HTX_PRICE_WITHIN_FIVE_PERCENT_REQUIRED",
+              "network_calls": 1,
+              "capability_receipt": null,
+              "source_ts": null,
+              "scenario_count": 0
+            },
+            "swolecharts": {
+              "source": "SWOLECHARTS_CEX_MODEL",
+              "status": "NOT_COLLECTED",
+              "source_ts": null,
+              "scenario_count": 0
+            }
+          },
+          "detailed_telegram_delivery_proven": false,
+          "same_run_root_delivery_inherited": false
+        }
+      ]
+    }
+  ],
+  "no_new_provider_route_proven": true,
+  "sourceHTTP": 0,
+  "nativeSQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_concrete_defects": [
+    {
+      "id": "N10_FINAL_FIRST_KNOWN_ASSEMBLY_SUBSTITUTION",
+      "proof_kind": "CURRENT_CODE_COUNTEREXAMPLE_WITH_CONTROLLED_AVAILABILITY",
+      "source": "worker settled().available_ts (all components settled, conservative availability bound)",
+      "loss": "buildHtxPrimaryTechnicalReceipt ignores trajectory.available_ts; default first_known_ts=final now",
+      "historical_exact_acquisition_clock": "UNKNOWN_IN_COMPACT_ORIGINAL",
+      "entry_or_freshness_extension_proven": false
+    },
+    {
+      "id": "N10_RENDERED_CLOCK_PROJECTION_LOSS",
+      "proof_kind": "TWELVE_EXACT_SAVED_RENDERED_RECEIPTS_AND_CURRENT_CODE",
+      "loss": "source_ts and observed_ts retained; first_known_ts/expires_at/window/policy not retained in N10 rendered receipt",
+      "canonical_full_evidence_loss_claimed": false,
+      "repair": "Add exact original_clock metadata from revalidated N10 evidence, no text/form change"
+    }
+  ],
+  "remaining_input_boundaries": [
+    "Both report ZIPs deliberately compact canonical metadata; raw N10 bodies/cache ACK are absent. Do not infer full canonical loss from compact output.",
+    "N05 limited full-4h contexts survive; mismatched windows/quotes and partial external flow do not establish a missing qualified joint fact.",
+    "N12 composite original-firstknown is accepted519 scope and excluded. Distinct IDs/HTX markets are not independent providers.",
+    "N15 actual contributions are not erased by manual context contribution zero. CoinPaprika exact-market refusal has no saved contradictory original.",
+    "LIQ exact identity/price-OI refusals lack a newly qualified matching raw input; unknown and uncollected are not measured zero/provider failures.",
+    "Historical STRK/WLD raw cache/Backpack activity and current exact provider balances remain unknown; no new acquisition or adapter justified."
+  ]
+}

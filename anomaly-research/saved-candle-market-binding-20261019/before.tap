@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: ONE NEW saved-input market/asset/source-role binding case rejects label swaps before typed quantity selection
+not ok 1 - ONE NEW saved-input market/asset/source-role binding case rejects label swaps before typed quantity selection
+  ---
+  duration_ms: 62.114834
+  type: 'test'
+  location: '/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-anomaly-worker/anomaly-research/saved-candle-market-binding-20261019/market-binding.test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"name":"futures outer market becomes spot without changing bound input","unit":"USDT","identity":{"declared_contract":"BTCUSDT","declared_market":"spot","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"NOT_APPLICABLE_FOR_SPOT","quote_numeric_conversion_factor":1}},{"name":"spot outer market becomes futures without changing bound input","unit":null,"identity":{"declared_contract":"BTCUSDT","declared_market":"usd_m_futures","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"futures outer contract becomes foreign ETHUSDT","unit":null,"identity":{"declared_contract":"ETHUSDT","declared_market":"usd_m_futures","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"spot outer contract becomes foreign ETHUSDT","unit":"USDT","identity":{"declared_contract":"ETHUSDT","declared_market":"spot","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"NOT_APPLICABLE_FOR_SPOT","quote_numeric_conversion_factor":1}},{"name":"foreign outer symbol alias cannot disagree with bound symbol","unit":null,"identity":{"declared_contract":"BTCUSDT","declared_market":"usd_m_futures","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"foreign CSV filename cannot relabel a BTC source","unit":"USDT","identity":{"declared_contract":"BTCUSDT","declared_market":"spot","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"NOT_APPLICABLE_FOR_SPOT","quote_numeric_conversion_factor":1}},{"name":"foreign market archive component cannot change source role","unit":null,"identity":{"declared_contract":"BTCUSDT","declared_market":"usd_m_futures","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"even self-consistent foreign parsed symbol has no BTC policy binding","unit":"USDT","identity":{"declared_contract":"ETHUSDT","declared_market":"spot","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"NOT_APPLICABLE_FOR_SPOT","quote_numeric_conversion_factor":1}},{"name":"native HTX futures body cannot be relabelled SPOT","unit":"USDT","identity":{"declared_contract":"AAVE-USDT","declared_market":"SPOT","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"native HTX body cannot be relabelled Binance spot role","unit":"USDT","identity":{"declared_contract":"AAVE-USDT","declared_market":"spot","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"NOT_APPLICABLE_FOR_SPOT","quote_numeric_conversion_factor":1}},{"name":"native HTX body cannot be relabelled Binance futures role","unit":"USDT","identity":{"declared_contract":"AAVE-USDT","declared_market":"usd_m_futures","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"HTX native4hour body cannot acquire15m label","unit":"USDT","identity":{"declared_contract":"AAVE-USDT","declared_market":"FUTURES","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}},{"name":"HTX raw ref foreign contract cannot replace native origin","unit":"USDT","identity":{"declared_contract":"AAVE-USDT","declared_market":"FUTURES","native_instrument_epoch_verified":false,"identity_verified":false,"native_contract_size":null,"contract_size_applicability":"UNKNOWN","quote_numeric_conversion_factor":1}}]
+    
+    13 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 13
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-anomaly-worker/anomaly-research/saved-candle-market-binding-20261019/market-binding.test.mjs:71:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 140.146625

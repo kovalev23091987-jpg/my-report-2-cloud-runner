@@ -245,7 +245,7 @@ function qualifiedSectorResultCache(cached,{contract,identity,coin_id,category_i
     Math.max(...refs.map(x=>x.received_ts))!==s.original_observed_ts)return false;
  return cached.summary&&Object.entries(cached.summary).every(([key,value])=>JSON.stringify(r[key])===JSON.stringify(value));
 }
-export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null}={}){
+export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null,provider_budget_observe=null}={}){
  const access=coingeckoAccessPolicy(coingecko_demo_api_key,{strict_fresh_manual});
  if(!access.allowed)return{status:access.status,evidence:[],network_calls:0};
  let coin_id=clean(asset_metadata?.coingecko_id),category_id=clean(asset_metadata?.coingecko_category_id),category_name=clean(asset_metadata?.coingecko_category_name);const identity=asset_identity;
@@ -262,7 +262,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap});
+ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,clock:Date.now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
  const asset_platforms=native?.platform&&!native.provider_ref_primary_authority?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
  const get=(route,url,options)=>reader.get(route,url,options);

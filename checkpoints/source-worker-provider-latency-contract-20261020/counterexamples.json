@@ -1,0 +1,47 @@
+{
+  "schema": "NEW_SHORT_PROVIDER_FUTURE_VISIBILITY_COUNTEREXAMPLES_V1",
+  "traces": [
+    {
+      "name": "COINPAPRIKA_IDENTITY_SHORT_OUT_OF_ORDER_NEW_ID",
+      "type": "STATIC_UNEXECUTED_CONTROLLED_INTERLEAVING",
+      "cap_unchanged": 2,
+      "units_per_new_request": 1,
+      "seed_units": 1,
+      "seed_created_and_dispatch_offset_ms": -10000,
+      "A_get_start_offset_ms": 0,
+      "B_get_start_offset_ms": 1000,
+      "B_atomic_and_dispatch_before_A_atomic": true,
+      "A_atomic_and_possible_dispatch_offset_ms": 2000,
+      "old_upper_cutoff_hides_committed_B_from_A": true,
+      "baseline_possible_dispatch_units": 3,
+      "new_conjunct_rejects_A_INSERT_and_exact_A_absent": true,
+      "proposed_deadline_parameter": null,
+      "old_70s_case_rerun": false,
+      "actual_native_overrun_proven": false
+    },
+    {
+      "name": "COINGECKO_SHORT_OUT_OF_ORDER_NEW_ID",
+      "type": "STATIC_UNEXECUTED_CONTROLLED_INTERLEAVING",
+      "cap_unchanged": 9,
+      "units_per_new_request": 1,
+      "seed_units": 8,
+      "seed_created_and_dispatch_offset_ms": -10000,
+      "A_get_start_offset_ms": 0,
+      "B_get_start_offset_ms": 1000,
+      "B_atomic_and_dispatch_before_A_atomic": true,
+      "A_atomic_and_possible_dispatch_offset_ms": 2000,
+      "old_upper_cutoff_hides_committed_B_from_A": true,
+      "baseline_possible_dispatch_units": 10,
+      "new_conjunct_rejects_A_INSERT_and_exact_A_absent": true,
+      "proposed_deadline_parameter": null,
+      "old_70s_case_rerun": false,
+      "actual_native_overrun_proven": false
+    }
+  ],
+  "monotonicity_scope": "SAME_PRESTATE_NEW_ATOMIC_INSERT_PREDICATE_IS_OLD_AND_EXTRA",
+  "monotonicity_requires_trusting_future_units": false,
+  "existing_identical_id_readback_unfixed": true,
+  "complete_dispatch_latency_holding_or_cutover_fixed": false,
+  "prepared_new_controlled_groups": 12,
+  "source_execution_count": 0
+}

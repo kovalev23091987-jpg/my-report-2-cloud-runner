@@ -1,0 +1,118 @@
+{
+  "schema": "CLOSED_SOURCE_ASOF_TYPED_CONSUMER_CONNECTED_V1",
+  "new_affected_cases": 1,
+  "assertion_groups": 7,
+  "classification": "CONTROLLED_ONLY_NOT_PROVIDER_ORIGINAL",
+  "groups": [
+    {
+      "id": "SOURCE_ASOF_EDGE_PRESERVES_VIEW_AND_FEATURES",
+      "classification": "CONTROLLED",
+      "source_ts": 1792296000000,
+      "local_known_by_ts": 1792900800000,
+      "prior_count": 20,
+      "identity_card_watch_still_blocked": true
+    },
+    {
+      "id": "TARGET_OPEN_AT_ORIGINAL_SOURCE_ASOF",
+      "classification": "CONTROLLED",
+      "old_accepts": true,
+      "new_refuses": true,
+      "old_event_end_ts": 1792296000000,
+      "original_source_ts": 1792295999999
+    },
+    {
+      "id": "SELECTED_PRIOR_OPEN_AT_ORIGINAL_SOURCE_ASOF",
+      "classification": "CONTROLLED",
+      "old_accepts": true,
+      "new_refuses": true,
+      "old_event_end_ts": 1792296000000,
+      "original_source_ts": 1792281599999
+    },
+    {
+      "id": "MISSING_ORIGINAL_HTX_ASOF_NOT_LOCAL_KNOWLEDGE",
+      "classification": "CONTROLLED",
+      "old_accepts": true,
+      "new_refuses": true,
+      "old_event_end_ts": 1792296000000,
+      "original_source_ts": null
+    },
+    {
+      "id": "POSITIVE_OHLC_SHAPE_CANNOT_REACH_FEATURES",
+      "classification": "CONTROLLED",
+      "variants": [
+        {
+          "label": "target-high",
+          "old_accepts": true,
+          "new_refuses": true,
+          "old_event_end_ts": 1792296000000,
+          "original_source_ts": 1792296000000
+        },
+        {
+          "label": "target-low",
+          "old_accepts": true,
+          "new_refuses": true,
+          "old_event_end_ts": 1792296000000,
+          "original_source_ts": 1792296000000
+        },
+        {
+          "label": "prior-high",
+          "old_accepts": true,
+          "new_refuses": true,
+          "old_event_end_ts": 1792296000000,
+          "original_source_ts": 1792296000000
+        },
+        {
+          "label": "prior-low",
+          "old_accepts": true,
+          "new_refuses": true,
+          "old_event_end_ts": 1792296000000,
+          "original_source_ts": 1792296000000
+        },
+        {
+          "label": "derived-BTC-positive-high-below-open",
+          "old_accepts": true,
+          "new_refuses": true,
+          "old_event_end_ts": 1792296000000,
+          "original_source_ts": null
+        }
+      ]
+    },
+    {
+      "id": "OBSERVED_ZERO_IS_PRESERVED",
+      "classification": "CONTROLLED",
+      "volume": 0,
+      "volume_ratio": 0,
+      "missing_not_coerced": true
+    },
+    {
+      "id": "EXISTING_FUTURE_SOURCE_CLOCK_REFUSAL_UNCHANGED",
+      "classification": "CONTROLLED",
+      "both_refused": true
+    }
+  ],
+  "targets": {
+    "before_sha256": "bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442",
+    "after_sha256": "eca907dfdee835e162a6a3ea4894370b5948d19840d2667d2e932edaf46634af"
+  },
+  "policy_sha256": "036cd7bfb73a40bbce312dfd951271ded3ca6f660126e8eaaa290db0f0e22f69",
+  "features_sha256": "23a40a47843c9ab37900edd237548c0ad0f734b6f12bdbe54342d8d717f5cc60",
+  "old_real_sample_replays": 0,
+  "raw_originals_read": 0,
+  "old37_or_3274_or_13096_recomputed": 0,
+  "SQL": 0,
+  "provider_HTTP": 0,
+  "unexpected_HTTP": 0,
+  "native_ingress": false,
+  "event_first_known": false,
+  "event_memory": false,
+  "watch": false,
+  "native_commit_ACK": false,
+  "admission": false,
+  "MAIN": 0,
+  "Telegram": 0,
+  "limits": [
+    "CONTROLLED raw_ref is an in-memory declaration, not a stored provider receipt.",
+    "Closed as-of validates saved research inputs only; native epoch/first detection/domain ACK remain unqualified.",
+    "Old REAL three-sample qualification and accepted studies are not rerun."
+  ]
+}

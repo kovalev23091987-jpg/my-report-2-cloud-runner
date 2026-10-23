@@ -1,0 +1,776 @@
+{
+  "schema": "PR593_LINKED_CARRIERS_AND_AUTOMATIC_MAIN_ACCEPTANCE_V1",
+  "PR": 593,
+  "frozen_head": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+  "squash": "faf1affb71d9ef83c17ff5f7299245d4f35925ef",
+  "exact_files": 46,
+  "authority_roots_unchanged_at_merge": 9,
+  "originals": [
+    {
+      "PR": 591,
+      "head": "c75ea4afdb14d4e0fea0df8af1892fd0981e7f47",
+      "state": "CLOSED_PRESERVED_THROUGH593"
+    },
+    {
+      "PR": 592,
+      "head": "c4e0dd103a7e6b005c3d696f7264e24b802f6298",
+      "state": "CLOSED_PRESERVED_THROUGH593"
+    }
+  ],
+  "original_files_preserved": 24,
+  "common": {
+    "run": 39584115585,
+    "head": "39f636ad25f46116d8972ea7a6d496a9dc843288",
+    "artifact": 12338527126,
+    "bytes": 138113,
+    "digest": "sha256:69b14b21fe13150678bd2d8eae3f7b472b5b1eac9698c1746233c41b012b925f",
+    "members": 9,
+    "result": {
+      "status": "PASS",
+      "new_common_cases": 1,
+      "completed_components": [
+        "catalog",
+        "primary"
+      ],
+      "CONTROLLED_groups": 15,
+      "Node_version": "v24.22.0",
+      "old_565_588_589_components_replayed": 0,
+      "native_SQL": 0,
+      "provider_HTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "actual395777_catalog_or_primary_recovered": false,
+      "missing_six_or_initial_cause_or_SENT_fixed": false
+    }
+  },
+  "required_automatic_PR_checks": {
+    "total_count": 4,
+    "check_runs": [
+      {
+        "id": 119169362875,
+        "name": "verify",
+        "node_id": "CR_kwDOUcUGM88AAAAbvwwruw",
+        "head_sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+        "external_id": "6c2b3066-dc25-5955-b5da-4b56baf2ac14",
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169362875",
+        "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584332156/job/119169362875",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584332156/job/119169362875",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-21T10:24:17Z",
+        "completed_at": "2026-10-21T10:24:55Z",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 2,
+          "annotations_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169362875/annotations"
+        },
+        "check_suite": {
+          "id": 107270620753
+        },
+        "app": {
+          "id": 15368,
+          "client_id": "Iv1.05c79e9ad1f6bdfa",
+          "slug": "github-actions",
+          "node_id": "MDM6QXBwMTUzNjg=",
+          "owner": {
+            "login": "github",
+            "id": 9919,
+            "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+            "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/github",
+            "html_url": "https://github.com/github",
+            "followers_url": "https://api.github.com/users/github/followers",
+            "following_url": "https://api.github.com/users/github/following{/other_user}",
+            "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+            "organizations_url": "https://api.github.com/users/github/orgs",
+            "repos_url": "https://api.github.com/users/github/repos",
+            "events_url": "https://api.github.com/users/github/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/github/received_events",
+            "type": "Organization",
+            "user_view_type": "public",
+            "site_admin": false
+          },
+          "name": "GitHub Actions",
+          "description": "Automate your workflow from idea to production",
+          "external_url": "https://help.github.com/en/actions",
+          "html_url": "https://github.com/apps/github-actions",
+          "created_at": "2018-07-30T09:30:17Z",
+          "updated_at": "2026-06-18T16:17:48Z",
+          "permissions": {
+            "actions": "write",
+            "administration": "read",
+            "artifact_metadata": "write",
+            "attestations": "write",
+            "checks": "write",
+            "code_quality": "write",
+            "contents": "write",
+            "copilot_requests": "write",
+            "deployments": "write",
+            "discussions": "write",
+            "drives": "write",
+            "issues": "write",
+            "merge_queues": "write",
+            "metadata": "read",
+            "models": "read",
+            "packages": "write",
+            "pages": "write",
+            "pull_requests": "write",
+            "repository_hooks": "write",
+            "repository_projects": "write",
+            "security_events": "write",
+            "statuses": "write",
+            "vulnerability_alerts": "read"
+          },
+          "events": [
+            "branch_protection_rule",
+            "check_run",
+            "check_suite",
+            "create",
+            "delete",
+            "deployment",
+            "deployment_status",
+            "discussion",
+            "discussion_comment",
+            "fork",
+            "gollum",
+            "issues",
+            "issue_comment",
+            "label",
+            "merge_group",
+            "milestone",
+            "page_build",
+            "public",
+            "pull_request",
+            "pull_request_review",
+            "pull_request_review_comment",
+            "push",
+            "registry_package",
+            "release",
+            "repository",
+            "repository_dispatch",
+            "status",
+            "watch",
+            "workflow_dispatch",
+            "workflow_run"
+          ]
+        },
+        "pull_requests": [
+          {
+            "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/pulls/593",
+            "id": 4950059747,
+            "number": 593,
+            "head": {
+              "ref": "work/compact-catalog-primary-carriers-connected-20261021",
+              "sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            },
+            "base": {
+              "ref": "main",
+              "sha": "96e4c11ed2a35a65d9d86d22396581ada1986e4d",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 119169362637,
+        "name": "verify",
+        "node_id": "CR_kwDOUcUGM88AAAAbvwwqzQ",
+        "head_sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+        "external_id": "0a386063-b86b-578a-812d-5e128f3688c9",
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169362637",
+        "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584332177/job/119169362637",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584332177/job/119169362637",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-21T10:24:17Z",
+        "completed_at": "2026-10-21T10:25:07Z",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 2,
+          "annotations_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169362637/annotations"
+        },
+        "check_suite": {
+          "id": 107270620808
+        },
+        "app": {
+          "id": 15368,
+          "client_id": "Iv1.05c79e9ad1f6bdfa",
+          "slug": "github-actions",
+          "node_id": "MDM6QXBwMTUzNjg=",
+          "owner": {
+            "login": "github",
+            "id": 9919,
+            "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+            "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/github",
+            "html_url": "https://github.com/github",
+            "followers_url": "https://api.github.com/users/github/followers",
+            "following_url": "https://api.github.com/users/github/following{/other_user}",
+            "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+            "organizations_url": "https://api.github.com/users/github/orgs",
+            "repos_url": "https://api.github.com/users/github/repos",
+            "events_url": "https://api.github.com/users/github/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/github/received_events",
+            "type": "Organization",
+            "user_view_type": "public",
+            "site_admin": false
+          },
+          "name": "GitHub Actions",
+          "description": "Automate your workflow from idea to production",
+          "external_url": "https://help.github.com/en/actions",
+          "html_url": "https://github.com/apps/github-actions",
+          "created_at": "2018-07-30T09:30:17Z",
+          "updated_at": "2026-06-18T16:17:48Z",
+          "permissions": {
+            "actions": "write",
+            "administration": "read",
+            "artifact_metadata": "write",
+            "attestations": "write",
+            "checks": "write",
+            "code_quality": "write",
+            "contents": "write",
+            "copilot_requests": "write",
+            "deployments": "write",
+            "discussions": "write",
+            "drives": "write",
+            "issues": "write",
+            "merge_queues": "write",
+            "metadata": "read",
+            "models": "read",
+            "packages": "write",
+            "pages": "write",
+            "pull_requests": "write",
+            "repository_hooks": "write",
+            "repository_projects": "write",
+            "security_events": "write",
+            "statuses": "write",
+            "vulnerability_alerts": "read"
+          },
+          "events": [
+            "branch_protection_rule",
+            "check_run",
+            "check_suite",
+            "create",
+            "delete",
+            "deployment",
+            "deployment_status",
+            "discussion",
+            "discussion_comment",
+            "fork",
+            "gollum",
+            "issues",
+            "issue_comment",
+            "label",
+            "merge_group",
+            "milestone",
+            "page_build",
+            "public",
+            "pull_request",
+            "pull_request_review",
+            "pull_request_review_comment",
+            "push",
+            "registry_package",
+            "release",
+            "repository",
+            "repository_dispatch",
+            "status",
+            "watch",
+            "workflow_dispatch",
+            "workflow_run"
+          ]
+        },
+        "pull_requests": [
+          {
+            "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/pulls/593",
+            "id": 4950059747,
+            "number": 593,
+            "head": {
+              "ref": "work/compact-catalog-primary-carriers-connected-20261021",
+              "sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            },
+            "base": {
+              "ref": "main",
+              "sha": "96e4c11ed2a35a65d9d86d22396581ada1986e4d",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 119169362433,
+        "name": "verify",
+        "node_id": "CR_kwDOUcUGM88AAAAbvwwqAQ",
+        "head_sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+        "external_id": "aee8f308-37e9-5745-9c36-41fab1c173b1",
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169362433",
+        "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584331988/job/119169362433",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584331988/job/119169362433",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-21T10:24:17Z",
+        "completed_at": "2026-10-21T10:25:04Z",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 2,
+          "annotations_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169362433/annotations"
+        },
+        "check_suite": {
+          "id": 107270620269
+        },
+        "app": {
+          "id": 15368,
+          "client_id": "Iv1.05c79e9ad1f6bdfa",
+          "slug": "github-actions",
+          "node_id": "MDM6QXBwMTUzNjg=",
+          "owner": {
+            "login": "github",
+            "id": 9919,
+            "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+            "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/github",
+            "html_url": "https://github.com/github",
+            "followers_url": "https://api.github.com/users/github/followers",
+            "following_url": "https://api.github.com/users/github/following{/other_user}",
+            "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+            "organizations_url": "https://api.github.com/users/github/orgs",
+            "repos_url": "https://api.github.com/users/github/repos",
+            "events_url": "https://api.github.com/users/github/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/github/received_events",
+            "type": "Organization",
+            "user_view_type": "public",
+            "site_admin": false
+          },
+          "name": "GitHub Actions",
+          "description": "Automate your workflow from idea to production",
+          "external_url": "https://help.github.com/en/actions",
+          "html_url": "https://github.com/apps/github-actions",
+          "created_at": "2018-07-30T09:30:17Z",
+          "updated_at": "2026-06-18T16:17:48Z",
+          "permissions": {
+            "actions": "write",
+            "administration": "read",
+            "artifact_metadata": "write",
+            "attestations": "write",
+            "checks": "write",
+            "code_quality": "write",
+            "contents": "write",
+            "copilot_requests": "write",
+            "deployments": "write",
+            "discussions": "write",
+            "drives": "write",
+            "issues": "write",
+            "merge_queues": "write",
+            "metadata": "read",
+            "models": "read",
+            "packages": "write",
+            "pages": "write",
+            "pull_requests": "write",
+            "repository_hooks": "write",
+            "repository_projects": "write",
+            "security_events": "write",
+            "statuses": "write",
+            "vulnerability_alerts": "read"
+          },
+          "events": [
+            "branch_protection_rule",
+            "check_run",
+            "check_suite",
+            "create",
+            "delete",
+            "deployment",
+            "deployment_status",
+            "discussion",
+            "discussion_comment",
+            "fork",
+            "gollum",
+            "issues",
+            "issue_comment",
+            "label",
+            "merge_group",
+            "milestone",
+            "page_build",
+            "public",
+            "pull_request",
+            "pull_request_review",
+            "pull_request_review_comment",
+            "push",
+            "registry_package",
+            "release",
+            "repository",
+            "repository_dispatch",
+            "status",
+            "watch",
+            "workflow_dispatch",
+            "workflow_run"
+          ]
+        },
+        "pull_requests": [
+          {
+            "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/pulls/593",
+            "id": 4950059747,
+            "number": 593,
+            "head": {
+              "ref": "work/compact-catalog-primary-carriers-connected-20261021",
+              "sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            },
+            "base": {
+              "ref": "main",
+              "sha": "96e4c11ed2a35a65d9d86d22396581ada1986e4d",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 119169361641,
+        "name": "verify",
+        "node_id": "CR_kwDOUcUGM88AAAAbvwwm6Q",
+        "head_sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+        "external_id": "9c288ae6-3838-5d49-a9f6-bb2b821fbbe5",
+        "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169361641",
+        "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584331938/job/119169361641",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39584331938/job/119169361641",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-21T10:24:17Z",
+        "completed_at": "2026-10-21T10:24:29Z",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 2,
+          "annotations_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/check-runs/119169361641/annotations"
+        },
+        "check_suite": {
+          "id": 107270620176
+        },
+        "app": {
+          "id": 15368,
+          "client_id": "Iv1.05c79e9ad1f6bdfa",
+          "slug": "github-actions",
+          "node_id": "MDM6QXBwMTUzNjg=",
+          "owner": {
+            "login": "github",
+            "id": 9919,
+            "node_id": "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
+            "avatar_url": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/github",
+            "html_url": "https://github.com/github",
+            "followers_url": "https://api.github.com/users/github/followers",
+            "following_url": "https://api.github.com/users/github/following{/other_user}",
+            "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+            "organizations_url": "https://api.github.com/users/github/orgs",
+            "repos_url": "https://api.github.com/users/github/repos",
+            "events_url": "https://api.github.com/users/github/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/github/received_events",
+            "type": "Organization",
+            "user_view_type": "public",
+            "site_admin": false
+          },
+          "name": "GitHub Actions",
+          "description": "Automate your workflow from idea to production",
+          "external_url": "https://help.github.com/en/actions",
+          "html_url": "https://github.com/apps/github-actions",
+          "created_at": "2018-07-30T09:30:17Z",
+          "updated_at": "2026-06-18T16:17:48Z",
+          "permissions": {
+            "actions": "write",
+            "administration": "read",
+            "artifact_metadata": "write",
+            "attestations": "write",
+            "checks": "write",
+            "code_quality": "write",
+            "contents": "write",
+            "copilot_requests": "write",
+            "deployments": "write",
+            "discussions": "write",
+            "drives": "write",
+            "issues": "write",
+            "merge_queues": "write",
+            "metadata": "read",
+            "models": "read",
+            "packages": "write",
+            "pages": "write",
+            "pull_requests": "write",
+            "repository_hooks": "write",
+            "repository_projects": "write",
+            "security_events": "write",
+            "statuses": "write",
+            "vulnerability_alerts": "read"
+          },
+          "events": [
+            "branch_protection_rule",
+            "check_run",
+            "check_suite",
+            "create",
+            "delete",
+            "deployment",
+            "deployment_status",
+            "discussion",
+            "discussion_comment",
+            "fork",
+            "gollum",
+            "issues",
+            "issue_comment",
+            "label",
+            "merge_group",
+            "milestone",
+            "page_build",
+            "public",
+            "pull_request",
+            "pull_request_review",
+            "pull_request_review_comment",
+            "push",
+            "registry_package",
+            "release",
+            "repository",
+            "repository_dispatch",
+            "status",
+            "watch",
+            "workflow_dispatch",
+            "workflow_run"
+          ]
+        },
+        "pull_requests": [
+          {
+            "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/pulls/593",
+            "id": 4950059747,
+            "number": 593,
+            "head": {
+              "ref": "work/compact-catalog-primary-carriers-connected-20261021",
+              "sha": "6b9ed51bca7fdc4c84a0110a9447aebc4131903e",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            },
+            "base": {
+              "ref": "main",
+              "sha": "96e4c11ed2a35a65d9d86d22396581ada1986e4d",
+              "repo": {
+                "id": 1371866675,
+                "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner",
+                "name": "my-report-2-cloud-runner"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "automatic_MAIN": {
+    "run": 39584656300,
+    "head": "faf1affb71d9ef83c17ff5f7299245d4f35925ef",
+    "event": "AUTOMATIC_MAIN_PUSH",
+    "artifact": 12338722876,
+    "ZIP_bytes": 292555,
+    "digest": "sha256:e6e102591bfc71820a95dc1e91da278649c63fdea1ce6d79d6346bec832f9335",
+    "members": 44,
+    "actual_reporter": "NODE_SPEC",
+    "files": [
+      {
+        "file": "exact-asset-role-and-collector-audit.tap",
+        "tests": 28,
+        "pass": 28,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "cold-archive.tap",
+        "tests": 242,
+        "pass": 242,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "native-identity-source-handoff.tap",
+        "tests": 39,
+        "pass": 39,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "active-source-headroom.tap",
+        "tests": 403,
+        "pass": 403,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "new-liq-research-admission.tap",
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "hourly-native-usage.tap",
+        "tests": 41,
+        "pass": 41,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "target.tap",
+        "tests": 223,
+        "pass": 223,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "scheduled-evidence-budget.tap",
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "native-transport-fallback.tap",
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "index-useful-only.tap",
+        "tests": 21,
+        "pass": 21,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "weekly-htx-synchronized-plan.tap",
+        "tests": 129,
+        "pass": 129,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "private-reader-runtime.tap",
+        "tests": 38,
+        "pass": 38,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "native-useful-runtime.tap",
+        "tests": 24,
+        "pass": 24,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "private-forecast-consumer.tap",
+        "tests": 10,
+        "pass": 10,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "native-useful-budget.tap",
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "active-source-finalist-and-markets.tap",
+        "tests": 29,
+        "pass": 29,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "native-sector-provider-binding.tap",
+        "tests": 260,
+        "pass": 260,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "retained-write-failure-guard.tap",
+        "tests": 110,
+        "pass": 110,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "public-venue-health-priority.tap",
+        "tests": 281,
+        "pass": 281,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "private-price-connected.tap",
+        "tests": 154,
+        "pass": 154,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      },
+      {
+        "file": "source-health-priority.tap",
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "actual_reporter": "NODE_SPEC"
+      }
+    ],
+    "actual_pass": 2084,
+    "actual_fail": 0,
+    "manual_reexecution": false,
+    "native_SQL_providerHTTP_MAIN_TG_grant": false
+  },
+  "actual_result_reviews": "SOURCE_AND_THIRD_ACCEPTED_WITH_LIMITS",
+  "new_ordinary_at_single_metadata_read": [],
+  "actual_new_native_catalog_or_initial_reasons_accepted": false,
+  "actual395777_missing_payload_recovered": false,
+  "Telegram_restored": false,
+  "anomaly_native_ACK_qualified": false
+}

@@ -1,0 +1,114 @@
+{
+  "schema": "DENIED_NONCE_OWNERSHIP_READ_ONLY_COMPATIBILITY_REVIEW_V1",
+  "base": "07703e786565eb2e0bbb4727f70ef6680115c07b",
+  "result": "COORDINATOR_REJECTED_STANDALONE_VARIANT_ACCOUNTING_TAIL_NOT_PREPAID",
+  "inputs": [
+    {
+      "proposal_source_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+      "proposal_not_accepted": true,
+      "scope": "Same ACTIVE_SOURCE_BUDGET_READ prefix/run/attempt/2day; initial source_run_id cryptographic nonce+admitted/denied tag; atomic RESERVED2500/32 or DENIED0/0; owned finalizer+postreadback"
+    },
+    {
+      "proposal_source_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+      "supersedes_first_state_and_zero_reserve_variant": true,
+      "proposal_not_accepted": true,
+      "scope": "Only RESERVED->FINALIZED; nonce+admitted/denied source_run_id tag, owned CAS,1R1Winitial floor, monotonic MAX costs; GitHub max2createdruns/day and attempt1precheck;40control+16bridge=56whole<=164"
+    }
+  ],
+  "files": {
+    "runner/d1-preaction-budget-guard.mjs": "88fd742f0a9791efe9a8208ac96bea6212c9e12210e5000d243c5feca19f7e14",
+    "runner/native-day-reconciliation-tokens.mjs": "08b59ad9b0e1a9f05b5a857d66ca940384d604c4c791b219c742267a0081f883",
+    "cloudflare/public-collector/private-price-consumer.mjs": "a80dc59228871206c51a475902d6ac1af7b02207d1d6ddbe386bcc4dc42bad73",
+    "runner/report2-d1-adapter.mjs": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+    "runner/native-query-cost-journal.mjs": "8187ae623b5f65abcf4cad0b7a1c3966bfae897b9055db009f7ddf3de77bc057",
+    "runner/native-query-cost-reconciliation.mjs": "df58d235f3030b1ba5622a8faf60f2c8ba5f0c70f2ce7df1c7ad23b8b1c64526",
+    "tools/read-active-source-budgets-20261014.mjs": "ec8bba26dac48d821bffc5cf10ad0ff5a8b89eb85bea201cdc043de307148e46",
+    "audit-fixes/t00/fixtures/d1-schema.json": "dd9856e3b46ba04495f9e35e3b903bafa2bb525981a49036f6269247bb04fc5a",
+    "audit-fixes/t00/fixtures/FIXTURE_MANIFEST.json": "49a131b778e2c2722d2235b00bc72edc194ecdfc96d498700ff0e34d5f39e3d1",
+    "audit-fixes/t00/materialize-sanitized-fixtures.mjs": "7d0d3be7117f21493b96ecd33c41ebbd611d16bd54d9e0941d3ed62dbb958761",
+    "audit-fixes/t00/capture-d1-inventory.mjs": "3ee150ecd669397c09c25c0815b6176d1bf0eda0bc2fef6d608ca8cc5ea961f0",
+    "audit-fixes/t00/PRODUCTION_MANIFEST.json": "5b38cac03bd563b1737c684f900c70cf7779380fd187b5e06b023e6722fe49d7"
+  },
+  "retained_schema_evidence": {
+    "path": "audit-fixes/t00/fixtures/d1-schema.json",
+    "manifest_hash_match": true,
+    "receipt": {
+      "schema": "my-report-2-t00-sanitized-production-fixtures-v1",
+      "source_capture_run_id": 36359630895,
+      "source_captured_at": 1790552597585,
+      "changed_db": false,
+      "rows_written": 0,
+      "contracts": [
+        "DOT-USDT",
+        "ETC-USDT",
+        "ETHFI-USDT",
+        "LSK-USDT"
+      ],
+      "htx_timeout_run_id": "1790543463456-1790543476898",
+      "sanitizer": "key-name denylist plus nested JSON traversal"
+    },
+    "exact_ledger_DDL": "CREATE TABLE report2_runner_budget_ledger_shadow (\n  reservation_id TEXT PRIMARY KEY NOT NULL,\n  day_utc TEXT NOT NULL,\n  reserve_rows_read INTEGER NOT NULL CHECK(reserve_rows_read > 0),\n  reserve_rows_written INTEGER NOT NULL CHECK(reserve_rows_written > 0),\n  measured_rows_read INTEGER,\n  measured_rows_written INTEGER,\n  measured_requests INTEGER,\n  unknown_ops INTEGER,\n  state TEXT NOT NULL CHECK(state IN ('RESERVED','FINALIZED')),\n  started_ts INTEGER NOT NULL,\n  completed_ts INTEGER,\n  source_run_id TEXT,\n  CHECK(\n    (state='RESERVED' AND completed_ts IS NULL)\n    OR\n    (state='FINALIZED' AND completed_ts IS NOT NULL AND measured_rows_read IS NOT NULL AND measured_rows_written IS NOT NULL AND measured_requests IS NOT NULL AND unknown_ops IS NOT NULL AND source_run_id IS NOT NULL)\n  )\n)",
+    "SQL_CHECK_text_not_rewritten_by_materializer": true,
+    "current_native_schema_qualified": false,
+    "new_native_read_or_SQL": false
+  },
+  "ownership_value": "Expected original per-invocation nonce helps distinguish an ambiguous own committed INSERT from a foreign duplicate; not a business grant or funding proof",
+  "bounds_unchanged": {
+    "same_family_prefix": true,
+    "max_reservation_slots_per_UTC_day": 2,
+    "business_reader_R": 2500,
+    "business_reader_W": 32,
+    "common_R": 3500000,
+    "common_W": 70000,
+    "next_full_R": 59000,
+    "next_full_W": 920
+  },
+  "new_tests_helper_tool_schema_probe_native_provider_MAIN_Telegram": 0,
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792353676947",
+  "lease_ref": "a547e88c712d73a873d9d52d40e415f365301c55",
+  "exact_readback": true,
+  "old_variant_conflicts_withdrawn_by_coordinator": [
+    "loadDailyUsageAggregate counts unknown only FINALIZED, unfinished only RESERVED",
+    "finalizeRunUsage WHERE RESERVED rejects DENIED and overwrites source_run_id",
+    "Existing generic finalizer has no nonce/day/started ownership CAS predicate",
+    "Private-price exact-witness variant invalid_count rejects state outside RESERVED/FINALIZED",
+    "DENIED zero reserves cannot pre-fund native accounting cost",
+    "Third denied row cannot fit same2slot family gate",
+    "Finalizer or tail new unknown cannot be certified by the pre-operation snapshot"
+  ],
+  "current_review_findings": [
+    "Existing states and nonzero floor remove the initial vocabulary/CHECK conflict, not current native qualification",
+    "Generic finalizeRunUsage cannot serve as exact nonce CAS; proposed custom code not yet reviewed",
+    "1R1W floor is not the whole INSERT+finalizer+readback cost bound; minimum two successful writes already exceed1W",
+    "Small pending reserve does not hold future cost difference against other actors without proven serialization",
+    "GitHub metadata is conservative preflight, not linearizable D1 day admission",
+    "Atomic same2slot bound applies to denied rows too; no third accounting row",
+    "Finalizer/postreadback last unknown remains explicit NOT_CLOSED and not a business exception"
+  ],
+  "proposed_client_HTTP_bounds": {
+    "GitHub_control": 40,
+    "bridge": 16,
+    "total": 56,
+    "global_164_preserved": true,
+    "actual_cost_or_code_path_qualified": false
+  },
+  "minimum_write_count_fact": "A successfully inserted row plus one successfully changed finalizer row are two writes, independent of additional native index cost",
+  "arithmetic_edge_not_executed_test": {
+    "chargedW": 69079,
+    "floorW": 1,
+    "nextFullW": 920,
+    "dayCapW": 70000,
+    "floorProjection": 70000,
+    "accountingAtTwoLogicalWritesProjection": 70001,
+    "native_upper_bound_qualified": false,
+    "helper_module_execution": false
+  },
+  "coordinator_latest_decision": {
+    "standalone_denied_accounting_rejected": true,
+    "metadata_precheck_protocol_rejected": true,
+    "new_CLI_architecture_ledger_state_quota_cancelled": true,
+    "reason": "Accounting tail not prepaid; reserve floor is not admission",
+    "next_read_only_task": "Existing runner source/day/minute/month return fields available for zero-new-SQL projection; no audit repeat39161429947"
+  },
+  "actual_DDL_current_native_provenance_accepted": false
+}

@@ -1,3 +1,4 @@
+import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
 import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {formatManualReport} from './manual-report-formatter.mjs';
 import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
@@ -52,6 +53,7 @@ export function assessActionability({canonical,lifecycle_event,prior_sent=false}
  const base={deliver:false,status:'INTERNAL_ONLY',reason:'NOT_ACTIONABLE',create_recheck:false};
  if(canonical?.status!=='CLOSED'||observed===null)return {...base,reason:'CANONICAL_NOT_CLOSED'};
  if(canonical?.metadata?.lifecycle_removal&&event!=='IDEA_REMOVED')return {...base,reason:'REMOVAL_EVENT_MISMATCH'};
+ if(event==='IDEA_REMOVED'&&canonical?.metadata?.lifecycle_removal?.reason==='ORIGINAL_TTL_EXPIRED')return {...base,reason:'OWNER_TTL_NOTICE_DISABLED'};
  if(event==='IDEA_REMOVED')return prior_sent?{deliver:true,status:'ACTIONABLE',reason:'IDEA_REMOVED_AFTER_PRIOR_DELIVERY',create_recheck:false}:{...base,reason:'REMOVAL_WITHOUT_PRIOR_DELIVERY'};
  if(!['OBSERVE','WAIT','ENTRY'].includes(event))return {...base,reason:'LIFECYCLE_NOT_USER_ACTIONABLE'};
  if(!directionClosed(canonical))return {...base,reason:'DIRECTION_NOT_CLOSED'};
@@ -174,6 +176,7 @@ export function renderCanonicalTelegram({canonical,lifecycle_event,context_polic
  const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007'||context_policy===RELEVANT_LIQUIDATION_PRESENTATION;
  const liquidationPolicy=context_policy===RELEVANT_LIQUIDATION_PRESENTATION?context_policy:liquidationPresentationPolicy(canonical.observed_ts);
  const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${factual?factualIdeaBasis(canonical):basisLabel(canonical)}.`];
+ const limitedNotice=approvedHtxLimitedReportNotice(canonical?.metadata?.internal_market_context?.limited_report_scope);if(limitedNotice)lines.push('',limitedNotice);
  const marketSummary=plainSpotFuturesJointConclusion(canonical);
  if(marketSummary)lines.push('',marketSummary);
  const brief=context_policy!=='ORIGINAL_V5_20261006';
@@ -284,10 +287,19 @@ export async function loadBoundTelegram(db,{idempotency_key,now_ts=Date.now()}={
  if(upper(b.lifecycle_event)==='ENTRY'&&text(p.decision_id)!==text(b.decision_id))return {status:'BOUND_DECISION_MISMATCH',ok:false};
  let canonical;try{canonical=JSON.parse(p.canonical_json);}catch{return {status:'CANONICAL_JSON_INVALID',ok:false};}
  const id=validateCanonicalIdentity(canonical,{contract:b.contract_code,direction:b.direction,run_id:b.run_id,snapshot_id:b.snapshot_id,observed_ts:b.observed_ts});if(id.status!=='CLOSED')return {...id,ok:false};
+ if(upper(b.lifecycle_event)==='IDEA_REMOVED'&&canonical?.metadata?.lifecycle_removal?.reason==='ORIGINAL_TTL_EXPIRED')return {status:'OWNER_TTL_NOTICE_DISABLED',ok:false};
  if(upper(b.lifecycle_event)==='OBSERVE'&&!earlySourceRolesClosed(canonical))return {status:'OBSERVE_SOURCE_ROLES_NOT_CLOSED',ok:false};
  const ph=sha256({manual_text:p.manual_text,telegram_text:p.telegram_text,analytical_fingerprint:p.analytical_fingerprint});if(ph!==b.presentation_hash)return {status:'PRESENTATION_CONTENT_MISMATCH',ok:false};
  const display=validatePresentation({canonical,manual_text:p.manual_text,telegram_text:p.telegram_text,direction:b.direction,lifecycle_event:b.lifecycle_event});if(display.status!=='CLOSED')return {...display,ok:false};
- const now=Math.trunc(Number(now_ts)||Date.now());const nativeFreshness=validateNativeLiquidationContext(canonical,{checked_ts:now,check_freshness:upper(b.lifecycle_event)!=='IDEA_REMOVED'});if(!nativeFreshness.ok)return {status:nativeFreshness.status,ok:false};if(p.valid_until_ts!=null&&Number(p.valid_until_ts)<now&&upper(b.lifecycle_event)!=='IDEA_REMOVED')return {status:'PUBLICATION_EXPIRED',ok:false};
+ const now=Math.trunc(Number(now_ts)||Date.now());
+ // These identifiers and original clocks were already read and verified above.
+ // Retain them on a refusal so a later audit cannot confuse another wave or
+ // direction with the current candidate. This does not authorize delivery.
+ const refusal=native_freshness_evaluated=>({publication_id:p.publication_id,contract:b.contract_code,direction:b.direction,wave_id:b.wave_id,lifecycle_event:b.lifecycle_event,run_id:b.run_id,snapshot_id:b.snapshot_id,observed_ts:Number(b.observed_ts),checked_ts:now,publication_valid_until_ts:p.valid_until_ts??null,identity_verified:true,presentation_verified:true,native_freshness_evaluated,native_source_clocks:nativeLiquidationSources(canonical.liquidations).sources.map(s=>({venue:s.venue??null,native_symbol:s.native_symbol??null,source_ts:s.source_ts??null,received_ts:s.received_ts??null,freshness_max_age_ms:s.freshness_max_age_ms??null}))});
+ // An expired immutable publication cannot be rescued by refreshing a source.
+ // Classify it as terminal before an age refusal turns it into another retry.
+ if(p.valid_until_ts!=null&&Number(p.valid_until_ts)<now&&upper(b.lifecycle_event)!=='IDEA_REMOVED')return {status:'PUBLICATION_EXPIRED',ok:false,bound_refusal:refusal(false)};
+ const nativeFreshness=validateNativeLiquidationContext(canonical,{checked_ts:now,check_freshness:upper(b.lifecycle_event)!=='IDEA_REMOVED'});if(!nativeFreshness.ok)return {status:nativeFreshness.status,ok:false,bound_refusal:refusal(true)};
  let prior_delivery_verified=false;
  if(upper(b.lifecycle_event)==='IDEA_REMOVED'){
   const visible=await db.prepare(`SELECT idempotency_key FROM v3_telegram_dispatch_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND state='SENT' AND lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND CAST(telegram_message_id AS INTEGER)>0 AND updated_ts<?4 ORDER BY updated_ts DESC LIMIT 1`).bind(b.contract_code,b.direction,b.wave_id,Number(p.bound_ts??now)).first();

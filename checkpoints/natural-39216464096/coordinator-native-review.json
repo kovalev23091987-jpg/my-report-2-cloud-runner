@@ -1,0 +1,164 @@
+{
+  "schema": "INDEPENDENT_SAVED_NATURAL_REVIEW_V1",
+  "cloud_run": 39216464096,
+  "head": "a4b41da462b43956dc40d6873b8e2769db96d7a6",
+  "run_id": "1792395072923-1792395084308",
+  "canonical_persisted": [
+    "NIL-USDT:OBSERVE",
+    "BR-USDT:REJECTED"
+  ],
+  "scope_105_numeric_99_official_unavailable_6": true,
+  "same_run_SENT": {
+    "publication_id": "PUB:702cc69d874126b2639403649a5b92ed1632f65f",
+    "contract": "NIL-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:NIL-USDT:1792395084518:G12",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792395072923-1792395084308",
+    "snapshot_id": "S392:NIL-USDT:1792395207582",
+    "observed_ts": 1792395207582,
+    "analytical_fingerprint": "c9cedcb88f26e61e6725b129c6077b1a40d52d7fe104e77838a23586a51456f6",
+    "presentation_hash": "658751940bcf376ffcc37e8eded415d38f3234324fda99465b5afdebd9f20338",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "229",
+    "dispatch_finalized": true,
+    "task_at_delivery": {
+      "state": "PENDING",
+      "run_id": "1792395072923-1792395084308",
+      "snapshot_id": "S392:NIL-USDT:1792395207582",
+      "due_ts": 1792395507582,
+      "expires_ts": 1792397007582
+    },
+    "task_at_delivery_verified": true,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+  },
+  "actual_ENTRY": false,
+  "subsequent_task_state": "UNKNOWN",
+  "statistics_maintenance": {
+    "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+    "source": "schedule",
+    "unified_enabled": true,
+    "scheduled_minute_utc": 31,
+    "low_priority_cadence_due": true,
+    "claim": {
+      "status": "CLOSED",
+      "claimed": true,
+      "due": true,
+      "job_key": "HOURLY_LOW_PRIORITY_STATS",
+      "interval_ms": 3600000,
+      "last_success_ts": 1792390295629,
+      "next_due_ts": null,
+      "lease_owner": "GITHUB_ACTIONS",
+      "lease_started_ts": 1792395224756,
+      "lease_expires_ts": 1792395824756
+    },
+    "completion": {
+      "status": "CLOSED",
+      "completed": true,
+      "success_recorded": true
+    },
+    "projection_SQL_added": 0,
+    "projection_HTTP_added": 0
+  },
+  "native_current_point": {
+    "requests": 575,
+    "rows_read": 43513,
+    "rows_written": 430,
+    "unknown_ops": 0
+  },
+  "run_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792395072923-1792395084308",
+    "recorded_ts": 1792395229145,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 18,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 102,
+      "reported_remaining_slots": 62,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 575,
+        "rows_read": 43513,
+        "rows_written": 430,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 10487,
+        "rows_written": 410
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 759500,
+      "reserved_rows_written": 13624,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 1,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 1,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "whole_day_closed": false,
+  "old_UTC18_unknown15_not_reset": true,
+  "future_admission": false,
+  "new_provider_SQL_MAIN_Telegram_calls": 0,
+  "current_light_check_originals": "NOT_AVAILABLE_IN_SAVED_ARTIFACTS_INSPECTED: collector39210422768 running since06:31UTC; bootstrap predates NIL229; pending39212815081 not a receipt",
+  "original_sha256": {
+    "report2-telegram-info-proof.zip": "24b743be35cedfff597abac838467ac9ea193b98f1edcafe1b52ed974a88ffef",
+    "run.json": "b579f44016acb045fb97aff83c967521cad4d41643297657beacdee79fa33719",
+    "report2-run-result.zip": "69f19988ec9fc089433bf4cb7e240f523849d013162696d9e2b3ec589d6ffd30",
+    "artifacts.json": "e452585b3ca755b865ce9a67d14a1853080122cac6693a6c707f1c02899a5e41",
+    "report2-telegram-info-proof/telegram-info-proof.json": "c1ceae1e8d25cae726f9931c86ac68f9e7923fbbd47cdeb269510f94b0d23cf0",
+    "report2-run-result/known-d1-day-guard.json": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605",
+    "report2-run-result/private-canonical-archive-receipt.json": "f7d4e9ab1901ba8121d33668ac7d8821be07d1e49ca58bdfe7749489261ea393",
+    "report2-run-result/same-run-delivery-proof.json": "c2efab631de171dc5702469210fb19099d1ed50914bf43efe384bb69f05f2081",
+    "report2-run-result/report2-run-result.json": "8636132ab9df0146183420ddcec096ed2876c7cef945e7d2e5222bae4e0381b4",
+    "report2-run-result/automatic-delivery-audit.json": "fb8b98b4e45ff4468b22a25865f50132e3096dccbf9906a0b1c947498987c6c3",
+    "report2-run-result/report2-completion-accounting.json": "3f39228fe9e776a43f19caf023583ed8da2c457ea796c090176337db43e38d90"
+  }
+}

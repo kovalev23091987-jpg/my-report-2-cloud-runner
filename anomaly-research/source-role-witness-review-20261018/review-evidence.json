@@ -1,0 +1,511 @@
+{
+  "schema": "SOURCE_ROLE_WITNESS_INDEPENDENT_READONLY_REVIEW_V1",
+  "verdict": "NO_REMAINING_BLOCKERS_AFTER_COMPACT_JSON_UNIT_FIX",
+  "reviewed_PR": 499,
+  "base": "20cd5e3ff05c4c2a8b906b61611996836ae1ed4b",
+  "tested_head": "6f57993bef3f8dd31c251f21d3b41dacd9c7c6f6",
+  "final_head": "f705faa941239c2bfe960b7e8ab0d7347b443aaa",
+  "initial_target_paths": [
+    ".github/workflows/liq-assembled-offline-20261012.yml",
+    "checkpoints/source-role-proof-witness-20261018/original-audit.fixture.mjs",
+    "checkpoints/source-role-proof-witness-20261018/scope.json",
+    "current-generation/files/src/observation-source-role-audit.mjs",
+    "current-generation/tests/source-role-proof-witness.test.mjs"
+  ],
+  "exact_proposal": {
+    "PR": 497,
+    "head": "5562b34a063cb0235e3551d3f9b7d92650cc560a",
+    "proposal_path": "checkpoints/source-worker-role-audit-witness-20261018/observation-source-role-audit.proposed.mjs",
+    "proposal_sha256": "4eeeea2465a62f71bca34d70d0ac08a1e9eca49a628e57b7a337b3c5446cf776",
+    "target_runtime_sha256": "4eeeea2465a62f71bca34d70d0ac08a1e9eca49a628e57b7a337b3c5446cf776",
+    "downloaded_proposal_sha256": "4eeeea2465a62f71bca34d70d0ac08a1e9eca49a628e57b7a337b3c5446cf776",
+    "downloaded_proposal_exact_bytes_equal_final_runtime": true
+  },
+  "static_invariants": {
+    "target": "6f57993bef3f8dd31c251f21d3b41dacd9c7c6f6",
+    "base": "20cd5e3ff05c4c2a8b906b61611996836ae1ed4b",
+    "old_audit_body_byte_identical_after_removing_only_additive_helper_and_field": true,
+    "baseline_fixture_byte_identical_to_base_audit": true,
+    "fixture_sha256": "e197a38c8866b3f8c3b59b688797cd9477240452c37353467f4cfbeeea529e29",
+    "workflow_existing_bytes_unchanged_after_removing_exact_target_allowlist_trigger_and_test_additions": true,
+    "protected_files": [
+      {
+        "path": "current-generation/files/src/source-role-consumer.mjs",
+        "bytes": 7976,
+        "sha256": "81acb21b0eb4b10a3d12e02a564c5f712d31eff1857fef8dbf19e8cde8c1fb0f"
+      },
+      {
+        "path": "current-generation/files/src/source-role-registry.mjs",
+        "bytes": 3440,
+        "sha256": "9b15ed85a88210c22b8980845d84ec484ddcff48c33f22c10209bf06026b094d"
+      },
+      {
+        "path": "current-generation/files/src/inherited-fact-contract.mjs",
+        "bytes": 9686,
+        "sha256": "37a456ac9a1938ffa35411640a0ba0646eb94f84ea867b9879833a7434278807"
+      },
+      {
+        "path": "current-generation/files/src/observation-source-role-gate.mjs",
+        "bytes": 778,
+        "sha256": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc"
+      },
+      {
+        "path": "current-generation/files/src/canonical-runtime-adapter.mjs",
+        "bytes": 57800,
+        "sha256": "27094651cdc0fa7c75c6641d387e917b3a9ec75b10e52babb67200c661700484"
+      },
+      {
+        "path": "current-generation/files/runner-main.mjs",
+        "bytes": 134435,
+        "sha256": "71638d3ce2eb566aee85362d2742152b5fc8749854214137eb5c7129de176752"
+      },
+      {
+        "path": "current-generation/apply-runtime-overlay.mjs",
+        "bytes": 11975,
+        "sha256": "8516a3fbdc498acf81012284d3c6b1b61153e079f4780fef601a58ade3680686"
+      },
+      {
+        "path": "REPORT2_CURRENT_GENERATION.json",
+        "bytes": 72056,
+        "sha256": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873"
+      },
+      {
+        "path": "current-generation/files/src/canonical-publication.mjs",
+        "bytes": 48441,
+        "sha256": "82cfe3904a8f3c0b66260ad75f97cb07e19a818073d9bde6b695e0d0315a65a0"
+      },
+      {
+        "path": "current-generation/files/src/manual-report-formatter.mjs",
+        "bytes": 11225,
+        "sha256": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4"
+      },
+      {
+        "path": "current-generation/files/src/telegram-compact-formatter.mjs",
+        "bytes": 8861,
+        "sha256": "6a8829ab983cc14b8eff7c971d6087f78454cbbc99302b18cbf554b22b5366af"
+      },
+      {
+        "path": "current-generation/files/src/unified-budget.mjs",
+        "bytes": 7279,
+        "sha256": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f"
+      }
+    ],
+    "executed_tests": 0
+  },
+  "final_head_proof": {
+    "initial_tested_head": "6f57993bef3f8dd31c251f21d3b41dacd9c7c6f6",
+    "final_head": "f705faa941239c2bfe960b7e8ab0d7347b443aaa",
+    "PR": 499,
+    "only_changed_path": "checkpoints/source-role-proof-witness-20261018/scope.json",
+    "exact_single_field_semantic_rename": true,
+    "renamed_key_reordered_to_end": true,
+    "files": [
+      {
+        "path": ".github/workflows/liq-assembled-offline-20261012.yml",
+        "initial_sha256": "bd9ab15e5afb26152e45bd49e9ba19c943bfd0d15894ffe2f1f22448a19b4855",
+        "final_sha256": "bd9ab15e5afb26152e45bd49e9ba19c943bfd0d15894ffe2f1f22448a19b4855",
+        "byte_identical": true
+      },
+      {
+        "path": "checkpoints/source-role-proof-witness-20261018/original-audit.fixture.mjs",
+        "initial_sha256": "e197a38c8866b3f8c3b59b688797cd9477240452c37353467f4cfbeeea529e29",
+        "final_sha256": "e197a38c8866b3f8c3b59b688797cd9477240452c37353467f4cfbeeea529e29",
+        "byte_identical": true
+      },
+      {
+        "path": "checkpoints/source-role-proof-witness-20261018/scope.json",
+        "initial_sha256": "f24b437ff65472cb32aa76ef7f175b5f320b5c8d8ba6e6e4d8a0e0f2ae26a025",
+        "final_sha256": "eca7644f19ee9bb2835a559f5c5a2e410ab34fa3d95204660473acd2a7325fab",
+        "byte_identical": false
+      },
+      {
+        "path": "current-generation/files/src/observation-source-role-audit.mjs",
+        "initial_sha256": "4eeeea2465a62f71bca34d70d0ac08a1e9eca49a628e57b7a337b3c5446cf776",
+        "final_sha256": "4eeeea2465a62f71bca34d70d0ac08a1e9eca49a628e57b7a337b3c5446cf776",
+        "byte_identical": true
+      },
+      {
+        "path": "current-generation/tests/source-role-proof-witness.test.mjs",
+        "initial_sha256": "340ac1ddf655f937c829a0ef6658252ad1e61b0f9b1812b3f715473a9d9e96e6",
+        "final_sha256": "340ac1ddf655f937c829a0ef6658252ad1e61b0f9b1812b3f715473a9d9e96e6",
+        "byte_identical": true
+      }
+    ],
+    "current_remote_PR_head_exact": true,
+    "fresh_main": "930ec16e4d448145c7fc1d2e6b183c1e429c7904",
+    "fresh_guard_sha256": {
+      "AGENTS.md": "2c498f89f83335038b02bd0e018a8c7f3090e4fe8e1a7552fcd34eadf46431da",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "ddfd66e48af374ab78c79d7fb377636496757cb53467b8d2473bb7de4e5fa2eb",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "f88143a960187bc03247759d3072c0f3c28ba2694c6f05dbf11206170e724062",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "945841c1ff5bf46f89e1fd960c19f965f54984fcc7752812a92d384cb9bfa29b"
+    },
+    "fresh_active_three_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_ZERO_QUERY_BUDGET_AND_ACTUAL_STATISTICS_HANDOFF_20261018.json",
+        "sha256": "d417117196e2819f853d9e8fb24c6c809ee90be842c88b3542767ff75168754b"
+      },
+      {
+        "path": "checkpoints/source-budget-context-20261018/cloud-and-native-receipts.json",
+        "sha256": "4b453368c01e0b13eca9cf7372f6b6fc07f5685256a591a64004cabfc2514398"
+      },
+      {
+        "path": "checkpoints/ACTIVE105_FIXED_ACCEPTANCE_CHECKLIST_20261015.json",
+        "sha256": "9131dfe49eaf04d9a9a474f8ce574ccc0cee4f671cff1472f4124c076cb742c4"
+      }
+    ],
+    "all4_active_equal": true,
+    "lease_scoped_update_ref": "7afd82ec34353b88de9e169cb5e75404c23de5a8",
+    "lease_exact_readback": true,
+    "expires_ts": 1792360234759
+  },
+  "producer_and_existing_path_receipts": [
+    {
+      "path": "current-generation/files/src/inherited-fact-contract.mjs",
+      "sha256": "37a456ac9a1938ffa35411640a0ba0646eb94f84ea867b9879833a7434278807",
+      "bytes": 9686
+    },
+    {
+      "path": "current-generation/files/src/canonical-runtime-adapter.mjs",
+      "sha256": "27094651cdc0fa7c75c6641d387e917b3a9ec75b10e52babb67200c661700484",
+      "bytes": 57800
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "sha256": "82cfe3904a8f3c0b66260ad75f97cb07e19a818073d9bde6b695e0d0315a65a0",
+      "bytes": 48441
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "71638d3ce2eb566aee85362d2742152b5fc8749854214137eb5c7129de176752",
+      "bytes": 134435
+    },
+    {
+      "path": "current-generation/files/src/source-role-consumer.mjs",
+      "sha256": "81acb21b0eb4b10a3d12e02a564c5f712d31eff1857fef8dbf19e8cde8c1fb0f",
+      "bytes": 7976
+    },
+    {
+      "path": "current-generation/apply-runtime-overlay.mjs",
+      "sha256": "8516a3fbdc498acf81012284d3c6b1b61153e079f4780fef601a58ade3680686",
+      "bytes": 11975
+    }
+  ],
+  "CI": {
+    "source": "Existing successful CI artifact only; no test execution or rerun",
+    "run": {
+      "id": 39165052886,
+      "head_sha": "6f57993bef3f8dd31c251f21d3b41dacd9c7c6f6",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "path": ".github/workflows/liq-assembled-offline-20261012.yml",
+      "html_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39165052886",
+      "run_attempt": 1,
+      "created_at": "2026-10-18T20:49:19Z",
+      "updated_at": "2026-10-18T20:50:35Z"
+    },
+    "artifact": {
+      "id": 12150735042,
+      "name": "liq-assembled-39165052886",
+      "size_in_bytes": 266663,
+      "digest": "sha256:2294bf3b587ff0aba70722afa964946a8f555e866faae5ef9d8ee40705097cd8",
+      "expired": false,
+      "download_sha256": "2294bf3b587ff0aba70722afa964946a8f555e866faae5ef9d8ee40705097cd8",
+      "digest_exact": true
+    },
+    "files_named_dot_tap": [
+      {
+        "path": "active-source-finalist-and-markets.tap",
+        "bytes": 3856,
+        "sha256": "c5c2178f88f6c17ac0ff906cf6856c5e1dde821d390d3631130db8705b435d26",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 29,
+          "pass": 29,
+          "fail": 0
+        }
+      },
+      {
+        "path": "active-source-headroom.tap",
+        "bytes": 41775,
+        "sha256": "e44d63a3f2fa9748761282f12ffbea196b5a2cb0cbea08e9307513acff9a0678",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 403,
+          "pass": 403,
+          "fail": 0
+        }
+      },
+      {
+        "path": "cold-archive.tap",
+        "bytes": 27176,
+        "sha256": "f1c37027a8fd51bfc9d9e27e249a692193b04480c59b78256bd3ecf31339dc43",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 242,
+          "pass": 242,
+          "fail": 0
+        }
+      },
+      {
+        "path": "exact-asset-role-and-collector-audit.tap",
+        "bytes": 3022,
+        "sha256": "814ba639a58f9b662f9521c52e2fc89276fa304485ac526d8eb8cf4a7e30842b",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 28,
+          "pass": 28,
+          "fail": 0
+        }
+      },
+      {
+        "path": "hourly-native-usage.tap",
+        "bytes": 5124,
+        "sha256": "ce8c752ba0c47d590cb1003d21140daaefb79f788634b222dd419f4a0d69ffce",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 41,
+          "pass": 41,
+          "fail": 0
+        }
+      },
+      {
+        "path": "index-useful-only.tap",
+        "bytes": 2290,
+        "sha256": "7c3387072bef225848fa32243a69177b5a5497a770d5393169a55dc4002ded61",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 21,
+          "pass": 21,
+          "fail": 0
+        }
+      },
+      {
+        "path": "native-identity-source-handoff.tap",
+        "bytes": 4182,
+        "sha256": "299fbc7a96f2430eb24554bd62919e176c83ead8ca3926fd3f7bc68dad604563",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 39,
+          "pass": 39,
+          "fail": 0
+        }
+      },
+      {
+        "path": "native-sector-provider-binding.tap",
+        "bytes": 26275,
+        "sha256": "568027e1643a857bc25a455721c79f16859a4bfe9cf1028762a5da9da718f3b1",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 260,
+          "pass": 260,
+          "fail": 0
+        }
+      },
+      {
+        "path": "native-transport-fallback.tap",
+        "bytes": 881,
+        "sha256": "8a6a261dba6f64b4dde77448dc64752781fbe334fcd2a3de2996ed9183d9e52e",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0
+        }
+      },
+      {
+        "path": "native-useful-budget.tap",
+        "bytes": 2321,
+        "sha256": "99b0ed058156dcfabd405e29538d85b899b5656726831cf660b7cba1afbd78c0",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 19,
+          "pass": 19,
+          "fail": 0
+        }
+      },
+      {
+        "path": "native-useful-runtime.tap",
+        "bytes": 3155,
+        "sha256": "c86f938cb96c492dffb8130e42bec5eaa24ea20a12037109533bc17326fb0a30",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 24,
+          "pass": 24,
+          "fail": 0
+        }
+      },
+      {
+        "path": "new-liq-research-admission.tap",
+        "bytes": 740,
+        "sha256": "1360d1d74abad4f5152222f952bf88cb05ce0ddccd731ecdd5d3cdc05b27927b",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0
+        }
+      },
+      {
+        "path": "private-forecast-consumer.tap",
+        "bytes": 1222,
+        "sha256": "70d3105f9178dba28dc189a0f8bd814675a222fe3ba6a1cd650d8b3ed5610969",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 10,
+          "pass": 10,
+          "fail": 0
+        }
+      },
+      {
+        "path": "private-price-connected.tap",
+        "bytes": 25570,
+        "sha256": "9db47c1f58f67a4a46282b616b336bfaa7b56b1546567685bc763a7daa55e915",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 154,
+          "pass": 154,
+          "fail": 0
+        }
+      },
+      {
+        "path": "private-reader-runtime.tap",
+        "bytes": 4342,
+        "sha256": "d1f84547837303cb3e599cfd0d69efd0861c622cb78b849ac3b4a0fc36ff74b4",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 38,
+          "pass": 38,
+          "fail": 0
+        }
+      },
+      {
+        "path": "public-venue-health-priority.tap",
+        "bytes": 25937,
+        "sha256": "29ac4e8469d80829a8ba2403a716257c92a90a64c57768870b9abf56830643d7",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 281,
+          "pass": 281,
+          "fail": 0
+        }
+      },
+      {
+        "path": "retained-write-failure-guard.tap",
+        "bytes": 11004,
+        "sha256": "c98b5d30ece02b139637e9f466d7a7127e0af1f40dcce9fff8c59a23f3af5d98",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 110,
+          "pass": 110,
+          "fail": 0
+        }
+      },
+      {
+        "path": "scheduled-evidence-budget.tap",
+        "bytes": 491,
+        "sha256": "bf47459f83c773dd0c72e67cfcfbdd1c6bc150e0a2719fe25eec78db027a17ab",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0
+        }
+      },
+      {
+        "path": "source-health-priority.tap",
+        "bytes": 2008,
+        "sha256": "492466744e2854d733b9fcd89771d613893ca74245e88eee28c35b7e3424990f",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 17,
+          "pass": 17,
+          "fail": 0
+        }
+      },
+      {
+        "path": "target.tap",
+        "bytes": 22207,
+        "sha256": "efa5cf5f3bdac7572195d748877b0b521346f9026bf85b735e45793d2e64d85d",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 223,
+          "pass": 223,
+          "fail": 0
+        }
+      },
+      {
+        "path": "weekly-htx-synchronized-plan.tap",
+        "bytes": 13548,
+        "sha256": "1dd504786f99804bddd7defb6d2e6a484a79283cf689f8ec46faacd93741fba6",
+        "actual_reporter_format": "NODE_SPEC",
+        "summary": {
+          "tests": 129,
+          "pass": 129,
+          "fail": 0
+        }
+      }
+    ],
+    "aggregate_declared_summaries": {
+      "tests": 2084,
+      "pass": 2084,
+      "fail": 0
+    },
+    "selected": {
+      "path": "active-source-headroom.tap",
+      "bytes": 41775,
+      "sha256": "e44d63a3f2fa9748761282f12ffbea196b5a2cb0cbea08e9307513acff9a0678",
+      "actual_reporter_format": "NODE_SPEC",
+      "summary": {
+        "tests": 403,
+        "pass": 403,
+        "fail": 0
+      },
+      "witness_cases": [
+        "✔ CONTROLLED valid two-origin facts keep original closed result (3.698568ms)",
+        "✔ CONTROLLED different failed original proof decision_usable (0.963255ms)",
+        "✔ CONTROLLED different failed original proof fact_contract_status (0.450724ms)",
+        "✔ CONTROLLED different failed original proof identity_status (0.406742ms)",
+        "✔ CONTROLLED different failed original proof identity_object_status (0.502351ms)",
+        "✔ CONTROLLED missing proof remains null decision_usable (0.592961ms)",
+        "✔ CONTROLLED missing proof remains null fact_contract_status (0.601437ms)",
+        "✔ CONTROLLED missing proof remains null identity_status (0.503623ms)",
+        "✔ CONTROLLED missing proof remains null identity_object_status (0.605495ms)",
+        "✔ CONTROLLED malformed/secret values are neither coerced nor echoed (0.943838ms)",
+        "✔ CONTROLLED false usability plus STALE remains the same first exclusion (0.45405ms)",
+        "✔ CONTROLLED source incompatibility keeps its original reason (0.34125ms)",
+        "✔ CONTROLLED source-not-closed does not imply later proof checks executed (0.385803ms)",
+        "✔ CONTROLLED 70 receipts preserve existing 64-detail bound (4.841229ms)"
+      ]
+    },
+    "executed_tests_by_peer": 0
+  },
+  "resolved_finding": {
+    "initial_path": "checkpoints/source-role-proof-witness-20261018/scope.json",
+    "initial_line": 17,
+    "initial_field": "max_metadata_added_bytes_64_receipts",
+    "compact_JSON_delta_64_bytes": 17536,
+    "representative_runner_nesting_pretty_JSON_delta_64_bytes": 26432,
+    "method": "Inert literal-object JSON serialization only; no application module/test replay or native call",
+    "final_field": "max_metadata_added_compact_JSON_bytes_64_receipts",
+    "resolved": true,
+    "whole_artifact_native_wire_bound_claimed": false
+  },
+  "interpretation_limits": [
+    "Fields describe retained NORMALIZED receipt, not recovered original provider payload flags",
+    "Presence does not establish every consumer check executed; first rejection is unchanged",
+    "Existing normalizer may default source_compatible true; projection does not add independent provider verification",
+    "Old391614 public Gate flags/first lifecycle reason remain UNKNOWN; no new native replay",
+    "Final metadata head was not rerun; four code/test/workflow/fixture files byte-identical to successful tested head"
+  ],
+  "peer_test_executions": 0,
+  "CI_dispatch": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "deploy": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "shared_or_runtime_edits": false
+}

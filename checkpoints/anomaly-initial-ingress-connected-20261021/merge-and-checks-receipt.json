@@ -1,0 +1,536 @@
+{
+  "schema": "ANOMALY_INITIAL_INGRESS_MERGE_AND_AUTOMATIC_CHECKS_V1",
+  "runtime_merge": {
+    "PR": 606,
+    "frozen_head": "dc74e115db01da6c1511274321fe6e0246edb264",
+    "squash": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115",
+    "base": "85b4f55933c2ce7fd18b9b7d450136c03fc350ed",
+    "changed_files_exact": {
+      ".github/workflows/report2.yml": "79a00012b93b925f263955bfb126b811d1248f6656807ce2a681b82d45bea401",
+      "anomaly-research/native-card-watch-wire-20261021/DEDUP_BOUNDARY_RU.md": "a7ce8d1646a22c1d39b330f3ca9dbbce3c4320b9f42b7072c3f627238b10bea9",
+      "anomaly-research/native-card-watch-wire-20261021/PROTOCOL_RU.md": "556c7a5743314cc290d9fe2afc2dc76ddce06cf68d391dc064b93bc9a9687370",
+      "anomaly-research/native-card-watch-wire-20261021/README_RU.md": "6827b9a9c79aa79ac673541f13a8ba73059d8a9bb60c656350e579704b73324d",
+      "anomaly-research/native-card-watch-wire-20261021/central-entry-plan.md": "873f8ab9fc3066d7d6eda91744ea380c04a78f2680305f0c76bf70e735e2378f",
+      "anomaly-research/native-card-watch-wire-20261021/connected.mjs": "721ccada28fe4ed8c140c91caa64337ccac02720bd32ac7fdce34dd68ca252d3",
+      "anomaly-research/native-card-watch-wire-20261021/ingress.proposed.mjs": "5dfeddeb3693c3561ed374d6fc0c59889e1e5a5fff6a99c610c47fdaecf51172",
+      "anomaly-research/native-card-watch-wire-20261021/kernel-origin.proposed.patch": "362299a10756df7eb75530a43adfe1e460572cc4dc0f57189d7800514dc0637b",
+      "anomaly-research/native-card-watch-wire-20261021/linked-source.json": "f24dc12465379a2b19ceac4a8e83092daebc48d140e20b3980e8aeddaa4bd64e",
+      "anomaly-research/native-card-watch-wire-20261021/manifest.json": "6f7395a7189377ab1ef119d2aa8b3301d976d981696feac0e5432c6e096228cf",
+      "anomaly-research/native-card-watch-wire-20261021/observer.proposed.patch": "89365aebc3238dd92bfd67e66ce9f81018b419023b43a93861cc52f20c15cbe3",
+      "anomaly-research/native-card-watch-wire-20261021/opaque-boundary.insertion.txt": "ce6c60f390fe825db41d58db849238af5acc31e7991828bd6aae7fd26ea276a7",
+      "anomaly-research/native-card-watch-wire-20261021/origin-kernel.insertion.txt": "70e18c3b08a2ab1876cff0db81a9516f08f7bc2047618225573fd1aade20d137",
+      "anomaly-research/native-card-watch-wire-20261021/profiles.json": "115b64ad7bec1be40eb8d3f7443bdfe46fd7d5a6b6632bc3ad95a95528139c46",
+      "anomaly-research/native-card-watch-wire-20261021/provenance.json": "e80a04f080718a80d6cebb67ba96e658fa2df8ff4f1d87309fd7ff678976e9db",
+      "anomaly-research/native-card-watch-wire-20261021/runtime-emit.proposed.patch": "6f401b80a855197db76e0e90e3b276c0850a6dbf2f1802d478297047d0119200",
+      "anomaly-research/native-card-watch-wire-20261021/source-peer.json": "45049bb0876029ba4d1b1b383a40f13cf3960a09a46fe17f64bfcf5caa3a8e61",
+      "anomaly-research/native-card-watch-wire-20261021/target-pins.json": "3a86c70084ae9ad44346676c04086b39ffb92e0142982b4c40df3ec7355b835f",
+      "anomaly-research/native-card-watch-wire-20261021/worker.proposed.patch": "5391bb38a3fb4d11816516f636fc2dfd5ff38471c086849f621a38d660371b6a",
+      "anomaly-research/observer/observer.mjs": "3284152626d52bc51079819726dac44e1e9f28643a8bfb240e5606ab7762e739",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/README_RU.md": "c8c805c689345fe8b4efa22d5e7afcfe7421efff78b6745b7e7e4fab281ce0e7",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/central-targets.json": "87fed45f44ecccb81d5626acae33b8b9ed6437b16a4bdab8c4d389cab60dd8ed",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/connected-common.qualified.mjs": "61a005b4472b2c93af45728efb2378dacdd39a0bbae51c426837b3b4a9ccbf76",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/connected-sanitized-receipt.json": "9582fb45c9aab0d9bf8facb3c2ec5a4f738c9004c0355cacc7934c8bbfe34806",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/coordinator-loader-link.json": "71abd179902ebc3ff97c41c5f48b2ffa06ba783df611353dd0754b753ac08f4a",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/coordinator-target-bindings.json": "0e06d396aa6702e1c494f8dabe96d301c2c09e751a5a77ada02b1c652298ff52",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/peer-receipts.json": "067824b86e82d722442bfad7cbbee609536fbd30838aab9ebbece02bfc12d449",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/qualification-plan.json": "73b6814baf95c5fbafd8f18e7d4c33bce4d518147ae5f908fd5629a132c1f5bb",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/qualification-scope.json": "70786ae5531c09e3f14d1ec91d46ed44fd59c762d542a58d01b90d455297f67e",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/qualified-archive-bindings.json": "f2ba0d8a2c7fac654ed31306129fe803435ce681dd96415b36d1eab7e24175f0",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/receipt-artifact-function.mjs": "0bfe15c6ab23b6d257703c9456008fc59b5785df94c372c84c77622cc96a960d",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/received-source.json": "a10303426d58345133d1ff390fcd66c364328882094154b8a7e96ab35afa5f8c",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/received-third.json": "d4d733b5edd5c6b062bc636784c39c9ad63fb276f7c37ce1070cb8bbd872d416",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/selected2654-sanitized-receipt.json": "3c9262a6893dd9c47c36fc1105d268127bbcf3c8f52aecc1c149acddf8a7da62",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/source-connected.central.mjs": "aea799c496067d2e5817b7dc8992238c7496a3e35349697ee50e05519ed70af8",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/temporary-guard.qualified.mjs": "b8a16bc4b889d117a44c17f3af03236335309bf3abe0a48a1694812d50f04961",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/temporary-workflow.qualified.yml": "b430a85640202d21f70655aa979ea29111538d31ce11e65de9230e53178e8b6f",
+      "checkpoints/anomaly-initial-ingress-connected-20261021/third-connected.central.mjs": "338786b3650c7964d1bf1be7390dc0c4ed1856beb3e97dee964b127f07290ec6",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/PROTOCOL_RU.md": "ef8b3583a7b675a48a1f2681cb6888fc9f71781532a3d7c14e4ea9745be5256f",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/README_RU.md": "9ce57d7707e5b1a976073bc848771f5fa06072400213763f4b655dbb6ec7f009",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/central-entry-plan.md": "54466feee285b0c3e28065a32e58d43780c5ebaf5cd63a233a96c71de5a53ea2",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/connected.mjs": "3e2c87dea2c690f4dd613b68bfe1df34ab0ce4a7b1d3a4213fd972e74e1ca8bd",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/dependencies.json": "be4bb97f0394be6f9851d2c3858c54dfe6a1e7b5c70c2853d9916680cd94710b",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/manifest.json": "9f53f1ce0620e1d80e2b6077d502f9e00554698d72e79253cb4a298309e64e99",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/peer-receipt.json": "876488f956192d6a73a94f1d88ff5621360faeb2417763256d1f99c4c898485e",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/provenance.json": "a26c2aefb073c418e867a99fd2e50ee1df2d1a3d4442882983896ccca4d9972a",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/runner-parent.insertion.txt": "e813edcb5ac4fb2882530d24defb887e14b635e419ce65bd091dfb5817b139d1",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/runner-parent.proposed.patch": "3b6b4313f8a36fd8538d683dab7d399c027d49127ef91ac3b9b7bc57277d924c",
+      "checkpoints/source-worker-anomaly-parent-admission-20261021/target-bindings.json": "811299e727cffba05b60a425bddd9bb460a55d93cf79664f459b9f15a5bb9be5",
+      "current-generation/apply-runtime-overlay.mjs": "35610fbb9f9ccd90317d851d31b99959ad23d24114612d06689a120c276fcc84",
+      "current-generation/files/runner-main.mjs": "c72f8f26850089c0dc8a8514abad257afa80c3699af79427ec0f2fb77c0eb4ac",
+      "current-generation/files/src/anomaly-native-domain.mjs": "5a366465cf546a08c022c04f070a125fb41cd4cc7601b0ce82254badd30bd4c6",
+      "current-generation/files/src/anomaly-native-ingress.mjs": "5dfeddeb3693c3561ed374d6fc0c59889e1e5a5fff6a99c610c47fdaecf51172",
+      "current-generation/files/src/worker.js": "e410ba6cdd00886e426e7148a0a715b8df86a755f559c170fae524c6ce6d28dd",
+      "current-generation/tests/generation-guard.test.mjs": "459e79613d706a7ef97838f73f79311aa39f322d3c0a08dff2ceaf7c988b5cec"
+    },
+    "authority_roots_unchanged_at_merge": {
+      "AGENTS.md": "17e77d2c2c289ea87640511cb0c9965247f3539244d3204c7fbfb865c037a344",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "6acb57a9c287fe3496c0596e66d5cd7272adc27fe01f315a90eac6b4de46e125",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "3cc5de1b77990d0f615a6246da76d38710c159c18a2d95559862238a891c227b",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "5b330689dcfaa7b23764609f604eef176ea0c32f69be6c01bfbc38d0b4d6fc5c",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "ee6eb2d9e2fcf2a179362792dee98abe60fda6be1b26deb65d3162a6abcd53e1",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "70de29b17cfe8b6bbd6ed248b4185f42e6fed837b199234081ffe44fa8c88933"
+    },
+    "required_automatic_PR_checks": [
+      {
+        "name": "verify",
+        "head": "dc74e115db01da6c1511274321fe6e0246edb264",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39738418672/job/119689511463"
+      },
+      {
+        "name": "verify",
+        "head": "dc74e115db01da6c1511274321fe6e0246edb264",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39738418648/job/119689511359"
+      },
+      {
+        "name": "verify",
+        "head": "dc74e115db01da6c1511274321fe6e0246edb264",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39738418666/job/119689511309"
+      },
+      {
+        "name": "verify",
+        "head": "dc74e115db01da6c1511274321fe6e0246edb264",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39738418660/job/119689511244"
+      }
+    ],
+    "originals": {
+      "604": {
+        "frozen_head": "0eed4acd5bd82815d15c5f674229e9127b21e9bb",
+        "files": 11,
+        "byte_exact": true
+      },
+      "605": {
+        "frozen_head": "ab0dbc91103d1fcdec7c919d6c98af2526117e6c",
+        "files": 18,
+        "byte_exact": true
+      }
+    },
+    "own_lease_unchanged": {
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792652098865",
+      "acquired_ts": 1792652098865,
+      "expires_ts": 1792656898865,
+      "expected_main": "e8818c5a3deee372164b33c00390ca522abcece9",
+      "scope": "OWNER_FIVE_ACTIVE_DIRECTIONS.ANOMALY_INITIAL_INGRESS_PARENT_WIRE_CONNECTED_20261021. Ownerdirect efficient THREEexistingLOCALchats: integrate ready exactTHIRD strictOPAQUEcapturedsource->existingobserver/card/watch/DRAFT/full16plan initialingress, existingkernel indexedORIGIN LEFTJOIN+strictverifier/resolver, SOURCE CURRENTliveparent/day/currentusage/downstream/actualstatisticsHTTP capability3phases withmandatorycallerprojections/no default/no nativegrant. SameexistingDATA_DB/no secondDeep/sourceHTTP; honestepochNULL/qualificationfalse. Preserve immutableorigin/card/firstknown/descriptor/16plan acrossfreshclock/restart; SAMEunknownprepared/opid held/noretry/refund. Sourcecallbackpurity/reentrylatch/request-deny-duringprepare/freshusage andactualfinalizerfence tobequalified ONCEnewcommon, old16/12LIQ/10/read4/acceptedcases notreplayed. Globalactualold615->candidate617, sourceisolated617 stagedTHIRDsameboth/diffonlyrunner; publicWorker3c9/632373 actualbefore, updateeffectiveWorkerSHA inreport2.yml andexistinggeneration-guardfixture BEFOREqualification; exactnewruntime/assembler/sourcepins. RootboundedzeroSQLfsreceipt consumer afterEACHhook/finally metadataonly(nofullcard/state/privatepayload), receipts16KiB explicitoverflowstopbeforefutureSQL, fsfailurehonestnotnativeACK andunknownfencealreadyset. Defaultmissingpolicy NOhook/NOshaper/NOnewartifact. One newconnectedLocalSQLite/currentRemoteD1 fullassembledqualification/requiredautomaticchecks/centralPR attachonce/expectedhead squash/exact9roots+allfiles/originalworkerfrozenfilesbyteexactandcloseunmerged/onlyOWNreleasebeforeexpiry+checkpoint/automation2. Nativeanomaly schema installation/actualcost/policy/nativeACK/independent105/sender NOTactivated orqualified bythisscope; no nativeSQL/provider/MAIN/manual/TG/CF calls, no privateextract/decrypt-onlyprobe. ReadONLYalreadySAVEDselected2654/39652040702 exact48a artifact once; actual17inputrows captured andzeroextraSQL denied48809+8948>54000, currentDDL/planUNKNOWN/noautomaticselectorrearm/windowwiden. RAWSQL/params/eventrows/currentDDL/privateordinary remainexistingGHartifacts+localtmpONLY, publicsanitizedhash/statusreceipts. Correct602PR600crossreference andhistoricalR2RUN usage-vs-day label onlywithsubstantivecheckpoint. Preserveall105/122/9pauses/MAGIC106deferred/70/weights/forms/clocks/3500000R70000W/164HTTP/manual24/nextfull59000R920W/Paid5GB4GB3.5GB48h/cursor710/oldunknown15+1/reserves; no ENTRYfollowup/TTL/anchors/taskreaders orphysicalstorage tests. Readfreshworkerownrefs beforeintegration, neverreleaseforeign. Any live/schema/index/nativeactivation requiresnewprecisescopeCAS/readback beforehand. Resume22Oct underNEWownlease only: fixCENTRAL manifest.payloads readinessF1 andactualpartial ingress/parent error metadataF2; frozen604/605 unchanged. Existingc798 common hasNEVERexecuted. Rebind exactscope/pins andfirstONEnewcommon; saveeachcomponent beforelaterfailure, repaironlyfailedcomponents. Expired21Octown lease wascleanedbeforethisnewlease; no inheritedauthorization.",
+      "released": false
+    },
+    "merged_readback": true
+  },
+  "actual_automatic_checks": [
+    {
+      "run": 39738418666,
+      "event": "pull_request",
+      "head": "dc74e115db01da6c1511274321fe6e0246edb264",
+      "name": "N10 technical path offline connected verification",
+      "status": "completed",
+      "conclusion": "success",
+      "artifact": 12408615152,
+      "ZIP_bytes": 4944,
+      "digest": "sha256:22ba5329a47e8a7638ca35dac401e105f1c5969e0fd3d3ab8ff88faf69aae619",
+      "members": 6,
+      "actual_reporter": "NODE_SPEC",
+      "SPEC_files": [
+        {
+          "file": "current-report-telegram.tap",
+          "tests": 9,
+          "pass": 9,
+          "fail": 0
+        },
+        {
+          "file": "target-runtime.tap",
+          "tests": 11,
+          "pass": 11,
+          "fail": 0
+        },
+        {
+          "file": "target-unit.tap",
+          "tests": 49,
+          "pass": 49,
+          "fail": 0
+        }
+      ],
+      "tests": 69,
+      "pass": 69,
+      "fail": 0,
+      "manual_reexecution": false
+    },
+    {
+      "run": 39738730895,
+      "event": "push",
+      "head": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115",
+      "name": "LIQ assembled spot and 105 admission offline",
+      "status": "completed",
+      "conclusion": "success",
+      "artifact": 12408471542,
+      "ZIP_bytes": 292454,
+      "digest": "sha256:175a36fb857813cfdcdbf47e114d50188ad5edd89456081a3c7f77bf9ff6082f",
+      "members": 44,
+      "actual_reporter": "NODE_SPEC",
+      "SPEC_files": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "tests": 403,
+          "pass": 403,
+          "fail": 0
+        },
+        {
+          "file": "cold-archive.tap",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0
+        },
+        {
+          "file": "index-useful-only.tap",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "tests": 260,
+          "pass": 260,
+          "fail": 0
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0
+        },
+        {
+          "file": "private-price-connected.tap",
+          "tests": 154,
+          "pass": 154,
+          "fail": 0
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "tests": 281,
+          "pass": 281,
+          "fail": 0
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "tests": 110,
+          "pass": 110,
+          "fail": 0
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0
+        },
+        {
+          "file": "source-health-priority.tap",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0
+        },
+        {
+          "file": "target.tap",
+          "tests": 223,
+          "pass": 223,
+          "fail": 0
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "tests": 129,
+          "pass": 129,
+          "fail": 0
+        }
+      ],
+      "tests": 2084,
+      "pass": 2084,
+      "fail": 0,
+      "manual_reexecution": false
+    }
+  ],
+  "common": {
+    "schema": "FIRST_LINKED_ANOMALY_INGRESS_PARENT_CODE_QUALIFICATION_V1",
+    "run": 39737735170,
+    "head": "b730ce23b80ca35a37b2a404a8ebc008a5327c2a",
+    "repair_head": "53e31078e21490fbac729712882c8b66ccdc47a6",
+    "repair_tree_identical_at_dispatch": true,
+    "actual_reporter": "NODE_SPEC",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "Node": "v24.21.0",
+    "CONTROLLED_groups": 20,
+    "parent_groups": 12,
+    "ingress_groups": 8,
+    "ingress_nested_variants": 14,
+    "artifact": {
+      "id": 12407921553,
+      "bytes": 113278,
+      "digest": "sha256:11119a7144c4ae13c6759f712f17b771bad326d5a30780873db6ae404f06480e",
+      "members": 12,
+      "independently_ZIP_verified": true
+    },
+    "result_members": {
+      "global-baseline-binding.json": {
+        "bytes": 418,
+        "sha256": "1ed9b71fc027646f3a922e9b4a7ccc74fb54ab76dc471fe81a64a3c0c054b0d0"
+      },
+      "ingress-component.json": {
+        "bytes": 3052,
+        "sha256": "a71c5fd69ebf8727883177da14cb5d17431c6d4367af130a4744194b9805d7dd"
+      },
+      "parent-component.json": {
+        "bytes": 2920,
+        "sha256": "8ca468d53a8430de4ae3f59ab7a338ab8c822505de73346004dca94dc998de9b"
+      },
+      "receipt-consumer-proof.json": {
+        "bytes": 244,
+        "sha256": "d6c5d21d6c4c486b3a19f8c67ba9752bcf29e7fafed9ba8dd1ac1905741514f4"
+      },
+      "result.json": {
+        "bytes": 758,
+        "sha256": "c05a3c5bdd23c61c86c11ec7a61ac8202033b32817a6cbfb06849aa135c9e00e"
+      }
+    },
+    "baseline": {
+      "current_before_files": 615,
+      "candidate_files": 617,
+      "source_component_staged_baseline_files": 617,
+      "source_baseline_is_not_deployed615": true,
+      "current_before_inventory_sha256": "d5ec45be8badfac5f2fc01b4941c352f08d42d572421a41c96298f0b32d0bbcd",
+      "accepted603_actual_current615_inventory_sha256": "d5ec45be8badfac5f2fc01b4941c352f08d42d572421a41c96298f0b32d0bbcd",
+      "accepted_tests_reexecuted": false
+    },
+    "actual_fs_metadata_consumer": {
+      "actual_fs_write_and_readback": true,
+      "bytes": 1866,
+      "sha256": "c66064c86a2241f272e8bf088328498cf2da2a8a092305df40cdf09a41b6e907",
+      "controlled_ACK_metadata": true,
+      "native_qualification": false,
+      "fs_durability_qualified": false
+    },
+    "source_pins": 889,
+    "runtime_pins": 262,
+    "component_groups": {
+      "parent-component.json": [
+        {
+          "name": "THREE_ACTUAL_RPC_AND_EXACT_PARENT_HTTP",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED",
+          "RPC": 3,
+          "known_usage": {
+            "requests": 3,
+            "rows_read": 6,
+            "rows_written": 12,
+            "unknown_ops": 0,
+            "targets": {
+              "first:report2_anomaly_bundle_v1": {
+                "requests": 1,
+                "rows_read": 2,
+                "rows_written": 0,
+                "unknown_ops": 0
+              },
+              "run:report2_anomaly_commit_v1": {
+                "requests": 1,
+                "rows_read": 2,
+                "rows_written": 12,
+                "unknown_ops": 0
+              },
+              "first:report2_anomaly_operation_v1": {
+                "requests": 1,
+                "rows_read": 2,
+                "rows_written": 0,
+                "unknown_ops": 0
+              }
+            }
+          }
+        },
+        {
+          "name": "NO_NUMERIC_POLICY_NO_HOOK_OR_IO",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "RECEIPT_DAY_FINALIZED_AND_SAME_NAMESPACE",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "EXACT_PARENT_R_W_BOUNDARIES_NO_CAP_RAISE",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "UNIFIED_STATISTICS_EACH_PHASE_REFUSAL",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "UNKNOWN_ALL_PHASES_BEFORE_LATER_SQL_AND_FINALIZER",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "SNAPSHOT_THROW_AFTER_SETTLED_REPLY_KNOWN_COST_NOT_ERASED",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "LOST_REPLY_RETAINS_SAME_EFFECTIVE_PREPARED_OPERATION",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "KNOWN_PROJECTION_OVERRUN_STOPS_DOMAIN_WITH_COST",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "VERIFIED_ORIGIN_FROZEN_AND_EXACT_DUPLICATE_ONLY_ORIGIN",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "WORKER_LIFETIME_CLOSE_BEFORE_FINALIZATION",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        },
+        {
+          "name": "NO_SOURCE_ENV_OR_DB_SERIALIZATION",
+          "status": "CONTROLLED_ASSERTIONS_COMPLETED"
+        }
+      ],
+      "ingress-component.json": [
+        {
+          "name": "actual_new_worker_insertions_preserve_before_bytes_and_missing_hook_skips_shaper",
+          "variants": 1,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+          "old_cycle_not_invoked": true,
+          "legacy_bytehash_preserved": true
+        },
+        {
+          "name": "same_completed_capture_uses_existing_detector_opaque_false_and_full_original_plan",
+          "variants": 2,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+          "provider_HTTP": 0,
+          "SQL": 0,
+          "first_knowledge_scope": "WORKER_RECORD_ONLY"
+        },
+        {
+          "name": "actual_source_capability_initial_origin_write_readback_three_rpc",
+          "variants": 1,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+          "full_runtime_files": 617,
+          "non_target_equal": 616
+        },
+        {
+          "name": "fresh_client_memory_clock_and_body_format_do_not_create_new_initial_or_revision",
+          "variants": 2,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+          "restart_is_CONTROLLED_client_restart": true,
+          "auto_durable_pending_journal_proven": false
+        },
+        {
+          "name": "new_source_facts_same_event_append_only_revision_preserving_original_and_due_plan",
+          "variants": 1,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+          "new_notice_sent": false,
+          "watch_price_or_outcome_evaluation": false
+        },
+        {
+          "name": "saturated_revision_or_outbox_and_material_multiplier_conflict_defer_without_drop",
+          "variants": 3,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION"
+        },
+        {
+          "name": "lost_before_or_after_write_keeps_same_pending_prepared_opid_and_old_unknown",
+          "variants": 2,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION",
+          "pending_DTO_explicitly_retained_by_CONTROLLED_harness": true,
+          "production_durable_pending_artifact_not_qualified": true
+        },
+        {
+          "name": "orphan_left_join_and_oversize_origin_never_become_absence_or_new_initial",
+          "variants": 2,
+          "classification": "NEW_CONTROLLED_INGRESS_RESTART_NOT_NATIVE_QUALIFICATION"
+        }
+      ]
+    },
+    "old_components_replayed": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "native_policy": null,
+    "independent105_connected": false,
+    "native_epoch_or_firstknowledge_or_ACK_or_SAVING_or_SENT_qualified": false,
+    "production_durable_pending_journal_qualified": false,
+    "baseline_cleanup_removed": true,
+    "F1_F2_closed_before_first_execution": true,
+    "static_guard_status_label": "EXACT_LIQ_NATIVE_ACCESS_CAPTURE_SCOPE is inherited label; exact anomaly prefix/main/owner/hash controls verified"
+  },
+  "originals_closed_unmerged": [
+    {
+      "PR": 604,
+      "frozen_head": "0eed4acd5bd82815d15c5f674229e9127b21e9bb",
+      "files_byte_exact_through_central": 11,
+      "CLOSED_unmerged": true,
+      "central_merge": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115"
+    },
+    {
+      "PR": 605,
+      "frozen_head": "ab0dbc91103d1fcdec7c919d6c98af2526117e6c",
+      "files_byte_exact_through_central": 18,
+      "CLOSED_unmerged": true,
+      "central_merge": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115"
+    }
+  ],
+  "app_attachment_attempt": "ONCE rejected: attachment identity count exceeds100; valid PR606 URL retained, no retry/delete",
+  "native_activation": false
+}

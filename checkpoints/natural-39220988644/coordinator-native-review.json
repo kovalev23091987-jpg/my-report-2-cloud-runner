@@ -1,0 +1,121 @@
+{
+  "schema": "EXACT_NEW_NATURAL_NIL_TERMINAL_AND_CURRENT_CANDIDATES_REVIEW_V1",
+  "cloud_run": 39220988644,
+  "head": "43a2441864c746cf188e1820a029db63c0bf689f",
+  "run_id": "1792397499983-1792397507821",
+  "original_artifacts": {
+    "report2-run-result": {
+      "id": 12172110765,
+      "digest": "sha256:bda0dd8951be56f636fce0399054ddd4d065c9c0837142d272e5e3c3a9101133",
+      "name": "report2-run-result"
+    },
+    "report2-telegram-info-proof": {
+      "id": 12171732295,
+      "digest": "sha256:bfcd3c97ee27cced08ddb4f313d6a711c150542d28a2256bbe26c46f41b230b3",
+      "name": "report2-telegram-info-proof"
+    }
+  },
+  "original_member_manifest": {
+    "report2-run-result.json": {
+      "bytes": 446172,
+      "sha256": "d19b7c1028f03b09c4f5b8d3afd2b21a02dd7af10e46a72ca7a5d663214c70b5"
+    },
+    "automatic-delivery-audit.json": {
+      "bytes": 350,
+      "sha256": "064c6a513ee5f53d36b85bf7c9974ed2a7d148223bbf28dac59f97319f55e6c3"
+    },
+    "same-run-delivery-proof.json": {
+      "bytes": 1458,
+      "sha256": "b7b20f7cd80966bde14a207e44614c61cac5f80f824ddda5042d80bfcbe0a6c7"
+    },
+    "known-d1-day-guard.json": {
+      "bytes": 135,
+      "sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605"
+    },
+    "report2-completion-accounting.json": {
+      "bytes": 29071,
+      "sha256": "4826d3c40662682a2693102a38752b34f9d3831342a79a7d3b62707ba480359b"
+    },
+    "private-canonical-archive-receipt.json": {
+      "bytes": 4543,
+      "sha256": "0a582aec539accd9beb6512adcd594dc5097971714b09d43742d36f3cce43c34"
+    },
+    "telegram-info-proof.json": {
+      "bytes": 2156,
+      "sha256": "af7dc2d637aae463d5b149f3940d19c383d1bc8848bd86f6ac2b9dc549553721"
+    }
+  },
+  "current_candidate_set": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1792397499983-1792397507821",
+    "expected_contracts": [
+      "CT-USDT",
+      "龙虾-USDT"
+    ],
+    "present_contracts": [
+      "龙虾-USDT",
+      "CT-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "current_candidates": [
+    {
+      "contract": "龙虾-USDT",
+      "direction": "SHORT",
+      "canonical_state": "OBSERVE",
+      "publication_id": "PUB:332b26a6e6ef287440c70ed20dc8baebb00e648d",
+      "snapshot_id": "S392:龙虾-USDT:1792397594552",
+      "observed_ts": 1792397594552
+    },
+    {
+      "contract": "CT-USDT",
+      "direction": "LONG",
+      "canonical_state": "OBSERVE",
+      "publication_id": "PUB:7325159289b0ac439718ff199f529b891f6a11eb",
+      "snapshot_id": "S392:CT-USDT:1792397560589",
+      "observed_ts": 1792397560589
+    }
+  ],
+  "both_persisted": true,
+  "private_original_rows_durable": true,
+  "same_run_current_candidate_SENT": false,
+  "same_run_proof_reason": "NOT_THIS_CANONICAL_RUN for original task terminal",
+  "accepted_terminal_delivery": {
+    "cloud_run": 39220988644,
+    "task_id": "RCHK:d0b84fb61fa20cc0c88cad7eab668964e964c210",
+    "original_message_id": "229",
+    "terminal_message_id": "230",
+    "runtime_reason": "ORIGINAL_TTL_EXPIRED",
+    "reason_is_actual_saved_runtime_receipt_not_inferred_from_clock": true,
+    "terminal_publication_id": "PUB:e775a666d4f29cab8fdceb3ce18329866d17ec47",
+    "terminal_run_id": "ORIGINAL-TASK-TERMINAL:RCHK:d0b84fb61fa20cc0c88cad7eab668964e964c210",
+    "source_run_id": "1792397499983-1792397507821",
+    "contract": "NIL-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:NIL-USDT:1792395084518:G12",
+    "snapshot_id": "REMOVAL:NIL-USDT:1792397598527",
+    "observed_ts": 1792397598527,
+    "analytical_fingerprint": "6b86a47a55625276df0ee03802ef7f74a59a3fcf0888ad21eaccff54ad20efc9",
+    "presentation_hash": "b073ec2992e9b056aae9ecadffbd73debd5f44ae42e8645c6e1502b589cb67d4",
+    "lifecycle": "IDEA_REMOVED",
+    "network_result": "CONFIRMED_SENT",
+    "dispatch_finalized": true,
+    "proof": "checkpoints/natural-39220988644/coordinator-native-review.json",
+    "json_pointers": [
+      "report2-completion-accounting.json#/delivery/original_terminal",
+      "report2-completion-accounting.json#/delivery/lifecycle/0/bound_receipt"
+    ],
+    "native_task_row_last_result": "UNKNOWN",
+    "all_intermediate_LIGHT_prices_and_ENTRY": "UNKNOWN"
+  },
+  "actual_ENTRY_accepted": false,
+  "task_native_row_state_after_delivery": "UNKNOWN",
+  "budget_review": "checkpoints/natural-39220988644/coordinator-budget-review.json",
+  "new_source_SQL_MAIN_manualfull_Telegram_calls_by_review": 0,
+  "storage_expiry_capacity_qualified": false,
+  "project_complete": false
+}

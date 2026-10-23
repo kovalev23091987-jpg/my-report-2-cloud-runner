@@ -1,0 +1,77 @@
+{
+  "schema": "NATIVE_ANOMALY_DOMAIN_SOURCE_REFERENCES_V1",
+  "main": "36483e132c8777c4dd9a2406c324b14af1cbf091",
+  "protocol_first_commit": "0205d341",
+  "private_contract": {
+    "run": 39606316169,
+    "head": "98e2ed883a0e28dabfeec0f0451c94ca5b0e47be",
+    "artifact": 12346799964,
+    "artifact_sha256": "d9b80d9545092e48f5f1335a45c0387cc0931ffc23794da9b856b3bd72f548fc",
+    "contract_bytes": 63758,
+    "contract_sha256": "a81a31dad230c23a3ac3819057d7b6a4c3f19479a6c3b15b963d6e65114237b3",
+    "private_files": {
+      "src/opportunity-intelligence-runtime.mjs": "9e04137e05d0c2a23c29df992e093a6b071ec103e5810982b6f96a78fc85a9cd",
+      "migrations/20260913_opportunity_intelligence_shadow.sql": "008484cd23a3c60f37848154a636b4ec385975a55794bc99d6f56397cfff5db1",
+      "migrations/20260913_opportunity_integrity_hardening_shadow.sql": "eee69fe5fd15217ac7110861267e819f6239e13207be0e1a7f15cb2a575aa2b7"
+    },
+    "raw_private_export_to_repo": false,
+    "installed_native_schema_qualified": false
+  },
+  "new_runtime_paths": {
+    "adapter": "src/anomaly-native-domain.mjs",
+    "DDL": "migrations/20261021_anomaly_domain.sql"
+  },
+  "public_dependencies": {
+    "anomaly-research/observer/observer.mjs": {
+      "bytes": 23190,
+      "sha256": "23a40a47843c9ab37900edd237548c0ad0f734b6f12bdbe54342d8d717f5cc60"
+    },
+    "runner/report2-d1-adapter.mjs": {
+      "bytes": 11274,
+      "sha256": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614"
+    },
+    "runner/native-query-cost-journal.mjs": {
+      "bytes": 3204,
+      "sha256": "8187ae623b5f65abcf4cad0b7a1c3966bfae897b9055db009f7ddf3de77bc057"
+    },
+    "runner/private-canonical-history.mjs": {
+      "bytes": 79,
+      "sha256": "b1837bbd65e4160d5707b2b9af22ef4414b242e109fa68b586f649e860e638c3"
+    },
+    "current-generation/files/src/private-canonical-history.mjs": {
+      "bytes": 11735,
+      "sha256": "f842926da4bc53e22e41c900c56a71b640654f6b0f064435a7bdccddd709c033"
+    },
+    "runner/retained-history.mjs": {
+      "bytes": 70,
+      "sha256": "5f7f4a493d2e83b9e1bee343e3bd088687866ad8909de25448dac7afb62b8a6a"
+    },
+    "current-generation/files/src/retained-history.mjs": {
+      "bytes": 6616,
+      "sha256": "85c73d45bb78a49600b1dda6fd7ad2a15a7e42180eeffa97c8378848d73a64db"
+    }
+  },
+  "BTC_native_record_witness": {
+    "run": 39587891954,
+    "parsed_catalog_sha256": "7d14b3ac1bdd7ad23523257e776df39297d41a477ded0f24a09ab6548a3f4923",
+    "contract_code": "BTC-USDT",
+    "symbol": "BTC",
+    "pair": "BTC-USDT",
+    "create_date": "20201021",
+    "contract_size": 0.001,
+    "price_tick": 0.1,
+    "business_type": "swap",
+    "contract_type": "swap",
+    "trade_partition": "USDT",
+    "contract_status": 1,
+    "source_ts": 1792580049537,
+    "listing_ts": null,
+    "unique_instrument_epoch": null,
+    "unit_conversion_authorized_by_contract_size_description": false
+  },
+  "documentation_relay": {
+    "source": "https://huobiapi.github.io/docs/usdt_swap/v1/en/#general-query-swap-info",
+    "coordinator_verified_field": "create_date Listing Date YYYYMMDD; no UTC timestamp or uniqueness guarantee",
+    "worker_new_web_or_provider_calls": 0
+  }
+}

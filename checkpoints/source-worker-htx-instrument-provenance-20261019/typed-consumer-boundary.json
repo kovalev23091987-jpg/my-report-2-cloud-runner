@@ -1,0 +1,91 @@
+{
+  "schema": "THREE_TYPED_INPUT_NATIVE_METADATA_BOUNDARY_V1",
+  "source_head": "037555aed03bcae9920ae6d8ec28f69f1c0a31df",
+  "source_path": "anomaly-research/saved-candle-typed-input-20261019/sample-inputs.json",
+  "source_sha256": "c8f3d9b5447f4779c7bb3a565ea0f58a3a3a165e66a3d310f5f88a2b8d42ce62",
+  "inputs": [
+    {
+      "sample_id": "BTC_spot",
+      "kind": "BTC_RESEARCH_CARD_EXCERPT",
+      "venue": "BINANCE",
+      "market": "spot",
+      "contract": "BTCUSDT",
+      "selected_candle": {
+        "start_ts": 1780302600000,
+        "end_ts": 1780303500000
+      },
+      "raw_source": {
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/spot/2026-06/original.zip",
+        "csv_member": "BTCUSDT-1m-2026-06.csv",
+        "csv_sha256": "db449105339f695657d674f8831a0595a8f5f19bbc5750268e0670ba56a72c03"
+      },
+      "original_source_ts": null,
+      "original_recorded_receipt_ts": 1791552915253,
+      "original_provider_body_completion_ts": null,
+      "HTX_catalog_reuse": "FOREIGN_VENUE_METADATA_CANNOT_BIND_BINANCE_INSTRUMENT",
+      "HTX_size_to_type_mapping": false,
+      "historical_native_contract_size": null,
+      "native_instrument_epoch_verified": false,
+      "project_identity_verified": false,
+      "card_memory_watch_admitted": false,
+      "reason": "HTX BTC-USDT is neither Binance BTCUSDT Spot nor Binance USD-M; symbol equality supplies no venue/epoch/size bridge"
+    },
+    {
+      "sample_id": "BTC_usd_m_futures",
+      "kind": "BTC_RESEARCH_CARD_EXCERPT",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "contract": "BTCUSDT",
+      "selected_candle": {
+        "start_ts": 1780314300000,
+        "end_ts": 1780315200000
+      },
+      "raw_source": {
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/usd_m_futures/2026-06/original.zip",
+        "csv_member": "BTCUSDT-1m-2026-06.csv",
+        "csv_sha256": "a0d502fe633a659c806c787bbbc338627527df786bf94c65bc01cef9eb4b853e"
+      },
+      "original_source_ts": null,
+      "original_recorded_receipt_ts": 1791552920374,
+      "original_provider_body_completion_ts": null,
+      "HTX_catalog_reuse": "FOREIGN_VENUE_METADATA_CANNOT_BIND_BINANCE_INSTRUMENT",
+      "HTX_size_to_type_mapping": false,
+      "historical_native_contract_size": null,
+      "native_instrument_epoch_verified": false,
+      "project_identity_verified": false,
+      "card_memory_watch_admitted": false,
+      "reason": "HTX BTC-USDT is neither Binance BTCUSDT Spot nor Binance USD-M; symbol equality supplies no venue/epoch/size bridge"
+    },
+    {
+      "sample_id": "HTX_AAVE",
+      "kind": "HTX_RETAINED_NATIVE_JSON",
+      "venue": "HTX",
+      "market": "FUTURES",
+      "contract": "AAVE-USDT",
+      "selected_candle": {
+        "start_ts": 1774785600000,
+        "end_ts": 1774800000000
+      },
+      "raw_source": {
+        "path": "checkpoints/htx-compact-4h/AAVE-USDT.raw.json.gz",
+        "gzip_sha256": "431a0f6a9f365930f9dc4342bf9fe3cfd697d498f4465e944895d58a08efd829",
+        "body_sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219"
+      },
+      "original_source_ts": 1791765483520,
+      "original_recorded_receipt_ts": 1791765483910,
+      "original_provider_body_completion_ts": null,
+      "HTX_catalog_reuse": "SEPARATE_CURRENT_HTX_INSTRUMENT_METADATA_ONLY",
+      "HTX_size_to_type_mapping": false,
+      "historical_native_contract_size": null,
+      "native_instrument_epoch_verified": false,
+      "project_identity_verified": false,
+      "card_memory_watch_admitted": false,
+      "reason": "Later current HTX metadata is not historical size/epoch continuity; create_date is only native lexeme"
+    }
+  ],
+  "no_raw_candle_replay_or_old_typed_execution": true,
+  "conversion_factor_1_is_contractsize": false,
+  "full_project_identity_closed": false
+}

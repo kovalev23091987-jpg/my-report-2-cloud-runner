@@ -1,0 +1,643 @@
+{
+  "schema": "EXACT_ORIGINAL_ENTRY_FOLLOWUP_NATIVE_V1",
+  "status": "EXACT_ENTRY_FOLLOWUP_READ_CLOSED",
+  "observations": {
+    "task": [
+      {
+        "task_id": "RCHK:d5b818ae889cfb39afe668b886ae191cef417129",
+        "publication_id": "PUB:e2a78540f572adf160cc0dbeb79417b7cbb2fdab",
+        "contract_code": "NIL-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+        "snapshot_id": "S392:NIL-USDT:1792327113389",
+        "run_id": "1792327033256-1792327043738",
+        "due_ts": 1792327413389,
+        "expires_ts": 1792328913389,
+        "state": "PENDING",
+        "attempt_count": 0,
+        "lease_owner": null,
+        "lease_started_ts": null,
+        "lease_expires_ts": null,
+        "last_result": null,
+        "created_ts": 1792327167870,
+        "updated_ts": 1792327167870,
+        "shadow_only": 1
+      }
+    ],
+    "original_dispatch": [
+      {
+        "dispatch_id": "V3TG:NIL-USDT|SHORT|EDW:NIL-USDT:1792327043942:G11|OBSERVE|v3-telegram-shadow-r6",
+        "idempotency_key": "NIL-USDT|SHORT|EDW:NIL-USDT:1792327043942:G11|OBSERVE|v3-telegram-shadow-r6",
+        "contract": "NIL-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+        "lifecycle_event": "OBSERVE",
+        "rules_version": "v3-telegram-shadow-r6",
+        "state": "SENT",
+        "decision_id": null,
+        "message_hash": "SHORT|DISCOVERY|80|80|SHADOW_OBSERVE_LONG_BIAS|HTX_CLOSED_EXTERNAL_CHAINS_MISSING|",
+        "telegram_message_id": "214",
+        "last_error": "SENT",
+        "created_ts": 1792327166568,
+        "updated_ts": 1792327167870,
+        "sent_ts": 1792327167870,
+        "shadow_only": 1
+      }
+    ],
+    "original_binding": [
+      {
+        "idempotency_key": "NIL-USDT|SHORT|EDW:NIL-USDT:1792327043942:G11|OBSERVE|v3-telegram-shadow-r6",
+        "publication_id": "PUB:e2a78540f572adf160cc0dbeb79417b7cbb2fdab",
+        "contract_code": "NIL-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+        "lifecycle_event": "OBSERVE",
+        "rules_version": "v3-telegram-shadow-r6",
+        "decision_id": null,
+        "snapshot_id": "S392:NIL-USDT:1792327113389",
+        "run_id": "1792327033256-1792327043738",
+        "observed_ts": 1792327113389,
+        "analytical_fingerprint": "fc25b1c8390cc43b694598516f28082bf466838c873af4c8cc230b5306a1c0e6",
+        "presentation_hash": "c4883e13b4cc9448441a5fdcab563ad5f8bc70095aa8f1d54746d2fcf1cd15d2",
+        "created_ts": 1792327167870,
+        "shadow_only": 1
+      }
+    ],
+    "user_lifecycle": [
+      {
+        "contract": "NIL-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+        "rules_version": "v3-telegram-shadow-r6",
+        "status": "OBSERVE",
+        "reason": "USEFUL_LIVE_OBSERVATION",
+        "observation_ts": 1792327113389,
+        "valid_until_ts": 1792327343942,
+        "updated_ts": 1792327166568,
+        "shadow_only": 1
+      }
+    ],
+    "kick_day": [],
+    "admission_day": []
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "business_writes": 0,
+  "schema_writes": 0,
+  "reservations_refunded": false,
+  "entry_authorized": false,
+  "actual_ENTRY": false,
+  "target": {
+    "publication_id": "PUB:e2a78540f572adf160cc0dbeb79417b7cbb2fdab",
+    "contract": "NIL-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792327033256-1792327043738",
+    "snapshot_id": "S392:NIL-USDT:1792327113389",
+    "observed_ts": 1792327113389,
+    "analytical_fingerprint": "fc25b1c8390cc43b694598516f28082bf466838c873af4c8cc230b5306a1c0e6",
+    "presentation_hash": "c4883e13b4cc9448441a5fdcab563ad5f8bc70095aa8f1d54746d2fcf1cd15d2",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "214",
+    "dispatch_finalized": true,
+    "task_at_delivery": {
+      "state": "PENDING",
+      "run_id": "1792327033256-1792327043738",
+      "snapshot_id": "S392:NIL-USDT:1792327113389",
+      "due_ts": 1792327413389,
+      "expires_ts": 1792328913389
+    },
+    "task_at_delivery_verified": true,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED",
+    "contract_code": "NIL-USDT",
+    "due_ts": 1792327413389,
+    "expires_ts": 1792328913389,
+    "task_id": "RCHK:d5b818ae889cfb39afe668b886ae191cef417129",
+    "idempotency_key": "NIL-USDT|SHORT|EDW:NIL-USDT:1792327043942:G11|OBSERVE|v3-telegram-shadow-r6",
+    "rules_version": "v3-telegram-shadow-r6"
+  },
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-18",
+      "run_count": 7,
+      "reserved_rows_read": 275500,
+      "reserved_rows_written": 4376,
+      "measured_rows_read": 176932,
+      "measured_rows_written": 2235,
+      "unknown_ops": 15,
+      "unfinished_count": 0,
+      "native_cost_reconciliation": {
+        "schema": "BOUND_NATIVE_AGGREGATE_COST_RECONCILIATION_V1",
+        "day_utc": "2026-10-18",
+        "reservation_id": "R2RUN:1792281986592:65a2f7d46b6acfcc",
+        "source_run_id": "39081512792",
+        "manifest_sha256": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23",
+        "historical_unknown_operations": 15,
+        "aggregate_billable_rows_read": 30746,
+        "aggregate_billable_rows_written": 110,
+        "per_statement_counters_reconstructed": false,
+        "status": "AGGREGATE_BILLABLE_COST_CLOSED",
+        "historical_unknown_operations_preserved": 15,
+        "original_reservation_preserved": true,
+        "new_or_unmatched_unknown_authorized": false
+      }
+    },
+    "next_reservation": {
+      "rows_read": 63000,
+      "rows_written": 960
+    },
+    "projected_reserved": {
+      "rows_read": 338500,
+      "rows_written": 5336
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ENTRY_FOLLOWUP:214:39130282611",
+    "day_utc": "2026-10-18",
+    "rows_read": 4000,
+    "rows_written": 40
+  },
+  "available_tables": [
+    "v3_user_lifecycle_shadow",
+    "v3_telegram_dispatch_shadow",
+    "canonical_publication_shadow",
+    "v3_dispatch_publication_binding_shadow",
+    "v3_recheck_task_shadow",
+    "report2_triggered_recheck_admission",
+    "report2_trigger_kick_slot"
+  ],
+  "observed_schema": [
+    {
+      "name": "v3_user_lifecycle_shadow",
+      "sql": "CREATE TABLE v3_user_lifecycle_shadow (\n  contract TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  rules_version TEXT NOT NULL,\n  status TEXT NOT NULL CHECK(status IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT')),\n  reason TEXT NOT NULL,\n  observation_ts INTEGER NOT NULL,\n  valid_until_ts INTEGER,\n  updated_ts INTEGER NOT NULL,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1),\n  PRIMARY KEY(contract,direction,wave_id,rules_version)\n)"
+    },
+    {
+      "name": "v3_telegram_dispatch_shadow",
+      "sql": "CREATE TABLE v3_telegram_dispatch_shadow (\n  dispatch_id TEXT PRIMARY KEY,\n  idempotency_key TEXT NOT NULL UNIQUE,\n  contract TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  lifecycle_event TEXT NOT NULL CHECK(lifecycle_event IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT')),\n  rules_version TEXT NOT NULL,\n  state TEXT NOT NULL CHECK(state IN ('PENDING','SENDING','SENT','FAILED_RETRYABLE','FAILED_FINAL','EXPIRED_NOT_SENT','SUPPRESSED_DEDUP')),\n  decision_id TEXT,\n  message_hash TEXT,\n  telegram_message_id TEXT,\n  last_error TEXT,\n  created_ts INTEGER NOT NULL,\n  updated_ts INTEGER NOT NULL,\n  sent_ts INTEGER,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1)\n)"
+    },
+    {
+      "name": "canonical_publication_shadow",
+      "sql": "CREATE TABLE canonical_publication_shadow (\n  publication_id TEXT PRIMARY KEY,\n  contract_code TEXT NOT NULL,\n  direction TEXT CHECK(direction IN ('LONG','SHORT') OR direction IS NULL),\n  run_id TEXT NOT NULL,\n  snapshot_id TEXT NOT NULL,\n  wave_id TEXT,\n  decision_id TEXT,\n  observed_ts INTEGER NOT NULL,\n  valid_until_ts INTEGER,\n  lifecycle_event TEXT CHECK(lifecycle_event IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT') OR lifecycle_event IS NULL),\n  canonical_state TEXT NOT NULL,\n  analytical_fingerprint TEXT NOT NULL,\n  canonical_json TEXT NOT NULL,\n  presentation_inputs_json TEXT NOT NULL DEFAULT '{}',\n  manual_text TEXT,\n  telegram_text TEXT,\n  presentation_hash TEXT,\n  actionability_status TEXT NOT NULL DEFAULT 'UNASSESSED',\n  actionability_reason TEXT,\n  created_ts INTEGER NOT NULL,\n  bound_ts INTEGER,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1),\n  UNIQUE(contract_code,run_id,snapshot_id,observed_ts,analytical_fingerprint)\n)"
+    },
+    {
+      "name": "v3_dispatch_publication_binding_shadow",
+      "sql": "CREATE TABLE v3_dispatch_publication_binding_shadow (\n  idempotency_key TEXT PRIMARY KEY,\n  publication_id TEXT NOT NULL,\n  contract_code TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  lifecycle_event TEXT NOT NULL CHECK(lifecycle_event IN ('OBSERVE','WAIT','ENTRY','IDEA_REMOVED','HOLD','EXIT')),\n  rules_version TEXT NOT NULL,\n  decision_id TEXT,\n  snapshot_id TEXT NOT NULL,\n  run_id TEXT NOT NULL,\n  observed_ts INTEGER NOT NULL,\n  analytical_fingerprint TEXT NOT NULL,\n  presentation_hash TEXT NOT NULL,\n  created_ts INTEGER NOT NULL,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1)\n)"
+    },
+    {
+      "name": "v3_recheck_task_shadow",
+      "sql": "CREATE TABLE v3_recheck_task_shadow (\n  task_id TEXT PRIMARY KEY,\n  publication_id TEXT NOT NULL,\n  contract_code TEXT NOT NULL,\n  direction TEXT NOT NULL CHECK(direction IN ('LONG','SHORT')),\n  wave_id TEXT NOT NULL,\n  snapshot_id TEXT NOT NULL,\n  run_id TEXT NOT NULL,\n  due_ts INTEGER NOT NULL,\n  expires_ts INTEGER NOT NULL,\n  state TEXT NOT NULL CHECK(state IN ('PENDING','CLAIMED','DONE','CANCELLED','EXPIRED')),\n  attempt_count INTEGER NOT NULL DEFAULT 0,\n  lease_owner TEXT,\n  lease_started_ts INTEGER,\n  lease_expires_ts INTEGER,\n  last_result TEXT,\n  created_ts INTEGER NOT NULL,\n  updated_ts INTEGER NOT NULL,\n  shadow_only INTEGER NOT NULL DEFAULT 1 CHECK(shadow_only=1)\n)"
+    },
+    {
+      "name": "report2_triggered_recheck_admission",
+      "sql": "CREATE TABLE report2_triggered_recheck_admission(day_key TEXT NOT NULL,slot INTEGER NOT NULL CHECK(slot>=0 AND slot<3),task_id TEXT NOT NULL UNIQUE,actor TEXT NOT NULL,attempt_started_ts INTEGER NOT NULL,PRIMARY KEY(day_key,slot))"
+    },
+    {
+      "name": "report2_trigger_kick_slot",
+      "sql": "CREATE TABLE report2_trigger_kick_slot(day_key TEXT NOT NULL,slot INTEGER NOT NULL CHECK(slot BETWEEN 0 AND 2),task_id TEXT NOT NULL UNIQUE,kick_ts INTEGER NOT NULL,PRIMARY KEY(day_key,slot))"
+    }
+  ],
+  "original_trigger_day_UTC": "2026-10-18",
+  "description": {
+    "status": "EXACT_POST_SENT_TASK_OBSERVED",
+    "task_state": "PENDING",
+    "attempt_count": 0,
+    "updated_ts": 1792327167870,
+    "last_result_schema": null,
+    "last_result_status": null,
+    "last_result_reason": null,
+    "retained_price_checks": 0,
+    "retained_reached_price_checks": 0,
+    "own_kick": [],
+    "own_admission": [],
+    "observed_day_kicks": 0,
+    "observed_day_admissions": 0,
+    "current_user_lifecycle": [
+      {
+        "contract": "NIL-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NIL-USDT:1792327043942:G11",
+        "rules_version": "v3-telegram-shadow-r6",
+        "status": "OBSERVE",
+        "reason": "USEFUL_LIVE_OBSERVATION",
+        "observation_ts": 1792327113389,
+        "valid_until_ts": 1792327343942,
+        "updated_ts": 1792327166568,
+        "shadow_only": 1
+      }
+    ],
+    "actual_ENTRY": false,
+    "root_cause_proven": false,
+    "price_touch_does_not_prove_closed_settlement": true,
+    "post_delivery_known": true
+  },
+  "usage_before_finalization": {
+    "requests": 10,
+    "rows_read": 411,
+    "rows_written": 3,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:sqlite_master": {
+        "requests": 1,
+        "rows_read": 399,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_user_lifecycle_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_trigger_kick_slot": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_triggered_recheck_admission": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "finalization": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ENTRY_FOLLOWUP:214:39130282611",
+    "source_run_id": "39130282611",
+    "measured_rows_read": 411,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 11,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 11,
+    "rows_read": 412,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:sqlite_master": {
+        "requests": 1,
+        "rows_read": 399,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_user_lifecycle_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_trigger_kick_slot": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_triggered_recheck_admission": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1792328961894,
+  "whole_day_closed": false,
+  "data_sha256": "f015f8e7d72049b2d8310ebd08a0bcd3f46b382a1d1927927d6ef45223fb347e",
+  "head": "a9cc70a2553497d3a745b9449908de1a7cd42959",
+  "cloud_run": "39130282611",
+  "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792328058128",
+  "control_HTTP": 9,
+  "bridge_HTTP": 11,
+  "total_HTTP": 20,
+  "journal": {
+    "schema": "BOUNDED_NATIVE_QUERY_COST_JOURNAL_V1",
+    "binding": "D1_BRIDGE",
+    "attempted_statements": 11,
+    "recorded_statements": 11,
+    "max_recorded_statements": 512,
+    "overflow": false,
+    "receipts": [
+      {
+        "transport_sequence": 1,
+        "transport_started_ts": 1792328958920,
+        "transport_completed_ts": 1792328959204,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 1,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "1ae0eee0a427cb0aa5effa4dd849d65c96e84c33a81c3c24af2ddffb29223244",
+        "wire_sql_sha256": "e68ef6bf11c2137b3c8687902a80baeb87200da4ef6b16def0c80dd9cb7ba37a",
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 2,
+        "transport_started_ts": 1792328959437,
+        "transport_completed_ts": 1792328959666,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 2,
+        "binding": "D1_BRIDGE",
+        "operation": "run",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "c62ddafc9fa91239f99eccaa83454a72bcc7b9f7b26ddf536708d69be7d047a6",
+        "wire_sql_sha256": "62d808ce7031fa73910d8ae3ceae6505415d0304a53b464100c80217952280c5",
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 3,
+        "transport_started_ts": 1792328959666,
+        "transport_completed_ts": 1792328959878,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 3,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "0c343a966aacea6868a93f1094ad3bc5d821759082451bf624ebb7d3f7019f44",
+        "wire_sql_sha256": "0c343a966aacea6868a93f1094ad3bc5d821759082451bf624ebb7d3f7019f44",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 4,
+        "transport_started_ts": 1792328960068,
+        "transport_completed_ts": 1792328960272,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 4,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "sqlite_master",
+        "sql_sha256": "5dec033657b41c56b9f10cecaa9f82447311cf8839832e5d2d4055bbd4356201",
+        "wire_sql_sha256": "5dec033657b41c56b9f10cecaa9f82447311cf8839832e5d2d4055bbd4356201",
+        "rows_read": 399,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 5,
+        "transport_started_ts": 1792328960272,
+        "transport_completed_ts": 1792328960464,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 5,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "v3_recheck_task_shadow",
+        "sql_sha256": "0b78aa222bee95fc71142d465d2e37d56a1c63f669839d6a0f5d2b412806bc74",
+        "wire_sql_sha256": "0b78aa222bee95fc71142d465d2e37d56a1c63f669839d6a0f5d2b412806bc74",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 6,
+        "transport_started_ts": 1792328960464,
+        "transport_completed_ts": 1792328960672,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 6,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "v3_telegram_dispatch_shadow",
+        "sql_sha256": "219209592cfd457b41b12287c46e4619a4999de89538bed942cae3f0a793cf0f",
+        "wire_sql_sha256": "219209592cfd457b41b12287c46e4619a4999de89538bed942cae3f0a793cf0f",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 7,
+        "transport_started_ts": 1792328960672,
+        "transport_completed_ts": 1792328960874,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 7,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "v3_dispatch_publication_binding_shadow",
+        "sql_sha256": "1d1c7d194e0f685f7e3a84435091d3bcc3a59d73267bbfcf5f5dde9e6a052774",
+        "wire_sql_sha256": "1d1c7d194e0f685f7e3a84435091d3bcc3a59d73267bbfcf5f5dde9e6a052774",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 8,
+        "transport_started_ts": 1792328960874,
+        "transport_completed_ts": 1792328961078,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 8,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "v3_user_lifecycle_shadow",
+        "sql_sha256": "b61e59941b519ddb2c83fe694fe34a387cd57db0447a112d84ea0870087d551d",
+        "wire_sql_sha256": "b61e59941b519ddb2c83fe694fe34a387cd57db0447a112d84ea0870087d551d",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 9,
+        "transport_started_ts": 1792328961078,
+        "transport_completed_ts": 1792328961280,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 9,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "report2_trigger_kick_slot",
+        "sql_sha256": "33e129493e8294f0ecfc1efd54221ece0323d904eeac55ef54a4ff6a8c43f69a",
+        "wire_sql_sha256": "33e129493e8294f0ecfc1efd54221ece0323d904eeac55ef54a4ff6a8c43f69a",
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 10,
+        "transport_started_ts": 1792328961280,
+        "transport_completed_ts": 1792328961485,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 10,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "report2_triggered_recheck_admission",
+        "sql_sha256": "16d6780c38d7c78fed56bd09f3936136948f4eafa0aed18711efd812c567d018",
+        "wire_sql_sha256": "16d6780c38d7c78fed56bd09f3936136948f4eafa0aed18711efd812c567d018",
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 11,
+        "transport_started_ts": 1792328961662,
+        "transport_completed_ts": 1792328961894,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 11,
+        "binding": "D1_BRIDGE",
+        "operation": "run",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "42cab5c34f9ad7502ca55f51fe6d6d01545031280f0a5c7c19b0e33b53d5df30",
+        "wire_sql_sha256": "e335cdd409aac956c862d89436446ad44791a3e1424d589c43910a163d59f619",
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      }
+    ],
+    "additional_SQL": 0,
+    "contains_SQL_params_or_results": false,
+    "clock_basis": "CLIENT_TRANSPORT_INTERVAL_NOT_SERVER_EXECUTION_OR_SOURCE_CLOCK",
+    "wire_sql_hash_basis": "EXACT_CLIENT_SENT_SQL_UTF8_NOT_PROOF_OF_SERVER_REWRITE"
+  },
+  "journal_reconciliation": {
+    "schema": "NATIVE_CLIENT_QUERY_RECONCILIATION_V1",
+    "known_statement_subtotal": {
+      "requests": 11,
+      "rows_read": 412,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "observed_client_UTC_days": {
+      "2026-10-18": {
+        "requests": 11,
+        "rows_read": 412,
+        "rows_written": 4,
+        "unknown_ops": 0
+      }
+    },
+    "unallocated_statements": [],
+    "issues": [],
+    "aggregate_usage_matches": true,
+    "statement_costs_closed": true,
+    "client_day_attribution_closed": true,
+    "clock_basis": "CLIENT_TRANSPORT_INTERVAL_NOT_SERVER_EXECUTION_OR_SOURCE_CLOCK",
+    "native_billing_day_verified": false,
+    "whole_day_closed": false,
+    "daily_total": null,
+    "daily_upper_bound": null,
+    "admission_authorized": false,
+    "reservations_changed": false,
+    "additional_SQL": 0
+  }
+}
