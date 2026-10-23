@@ -1,0 +1,95 @@
+{
+  "schema": "SOURCE_EXISTING_VERSION_ACTIVATION_TARGETED_STATIC_PEER_FINAL_V1",
+  "result": "ACCEPTED_WITH_LIMITS",
+  "blockers": [],
+  "open_findings": [],
+  "mismatch": [],
+  "reviewed_original_head": "f3aca19d333559161d57cc9e5a406b3c859018ba",
+  "F1_delta_head": "3632c25a236f148f6cf71ec6d573fe1ef8a67409",
+  "final_F2_delta_head": "ae4ae126cce426fde7a427904131a36144ed8fdf",
+  "review_mode": "ONE_FULL_NEW_CHAIN_STATIC_PEER_PLUS_ONLY_F1_F2_CASE_MANIFEST_DELTAS",
+  "files": 17,
+  "manifest_payloads": 16,
+  "manifest_sha256": "26452501c83a8a1020dc6b8e2cb0217519a8413260b0b1742932e34660ea3e64",
+  "all17_original_FULL_immutable_file_bytes_and16_manifest_payloads_verified": true,
+  "final_delta_only_case_and_manifest": true,
+  "other15_payloads_byte_exact": true,
+  "final_case": {
+    "bytes": 26046,
+    "sha256": "604c6b118260e7faee8ba4fe1a149166a7a1ce80040a630fad5e0bc7b70d3531",
+    "prepared_groups": 12,
+    "prepared_nested_variants": 26,
+    "execution": "UNEXECUTED"
+  },
+  "resolved_findings": [
+    {
+      "id": "F1",
+      "origin": "AUTHOR_IDENTIFIED_SOURCE_CONFIRMED_STATIC",
+      "resolution": "Cumulative distinct initial+per-CF GH snapshot attempts and exact whole-entry metrics permit Promise.all interleaving; global adjacency assertion removed. Actual guard-&gt;reserve-&gt;fetch source order remains. No production serialization/new queue."
+    },
+    {
+      "id": "F2",
+      "origin": "SOURCE_STATIC_CONTROL_FLOW",
+      "resolution": "Temporary rmSync cleanup is inside try with nested finally restoring globalThis.fetch even if removal throws. Same case/manifest only; groups unchanged."
+    }
+  ],
+  "target_bindings": {
+    "CLI_before": "191152b2f7d2c45a78c6755599cf07325dff3ad43c0550ab127015944b5f5a7d",
+    "CLI_after": "16ca55ab14511828016a741995fa16cf6eb71bb9ba5ad21d6a14bc4ed1e29ae2",
+    "CLI_after_bytes": 70250,
+    "workflow_before": "993c5412bd7af78fbc6a0770cb2ed82ce625f2ee73eb00848a6655fb505aa489",
+    "workflow_after": "9372f565a3f432045f7ca5232e3fd911984a930bdf82b3cd95918fbca56b7c32",
+    "workflow_after_bytes": 7984,
+    "old_CLI_prefix_bytes": 38159,
+    "old_CLI_prefix_sha256": "78c7814b2e13baebb4532560a8ef4e2e08dc4cbcabda03d1a5be25f65518d588",
+    "literal_full_target_diffs_and_append_order_exact": true,
+    "source_module": "f25b2e35e30a6457e5322b72b069c904c3bc2ce9de1956eb292d6238036f79c2",
+    "source_consumers": [
+      "d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c",
+      "1335612c4b492cb75142f523e864aa4cc98c81b3dd32a64da850f6891f76b2f4"
+    ],
+    "stage_public_summary": "f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7"
+  },
+  "preserved": [
+    "Actual pre-CF real filesystem attestation plus fixed modulef25/consumerd6e133 hardpins",
+    "Old exact CLI body38159B/prefix78c781 preserved; full proposed CLI16ca55 and workflow9372f recipe/diff exact",
+    "Acquire-base expected_main distinct from merged execution head; actual four-mirror owner/scope/expiry/head retained",
+    "Actual new bounded transport/control factory, headers+body2s/earlierabort/internal run_started_at+300s/tail30s; full22CF28GH/33CF39GH calculated, not native costs",
+    "Known ACK owns exact native deployment; unknown ACK only one observation and stop, no retry/rollback; rollback only known current own deployment",
+    "Prospective logging hash from same loaded accepted old settings/immutable version only; zero extra I/O/PATCH, logging_settings_admitted:false",
+    "12NEW groups26variants remain UNEXECUTED, actual production negative distinct from fixture-body positive"
+  ],
+  "limits": [
+    "STATIC proposal only; no native activation/ownership/admission/cost/current-day grant/logging/report/TG/SENT",
+    "API deployment check and later POST are not atomic CAS; transient races not excluded",
+    "Filesystem intents/artifacts are not crash-durable/global once",
+    "Root owns complete central source closure/plan/wrapper binding and first new common; every returned JSON before assert/next; completed components never replay"
+  ],
+  "author_final_delta_scope_reported": {
+    "ref": "ea94d8b4c031a6752a028449c2e958a25f36f814",
+    "owner_suffix": 1792739642686,
+    "expires_ts": 1792744742686,
+    "same_owner_same_expiry": true,
+    "source_queried_foreign_lease": false,
+    "source_claims_final_GitHub_publication_or_release": false
+  },
+  "SOURCE_actions": {
+    "Node": 0,
+    "imports": 0,
+    "syntax": 0,
+    "tests": 0,
+    "SQLite": 0,
+    "semantics": 0,
+    "gitapply": 0,
+    "native_CF": 0,
+    "SQL": 0,
+    "provider": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "repository_writes": 0,
+    "new_lease": 0,
+    "new_PR": 0,
+    "old_components_replayed": 0
+  },
+  "SOURCE622_frozen_unchanged": true
+}
