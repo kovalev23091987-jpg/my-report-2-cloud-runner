@@ -1,0 +1,35 @@
+{
+  "schema": "CURRENT86_LOGGING_CONFIRMED_FIRST_FAILURE_AND_REMAINDER_V1",
+  "first_run": 39974583365,
+  "first_head": "5b4155e8da613ae2de55ed4f6223e94bc3024c61",
+  "first_SPEC": {
+    "pass": 0,
+    "fail": 1
+  },
+  "artifact": {
+    "id": 12510866520,
+    "bytes": 2338,
+    "digest": "sha256:694df92f5fdab8d9be83285af284324b4c39979d21e3b0e06dbc8b76a67210a5",
+    "members": 4,
+    "ROOT_whole_ZIP_verified": true
+  },
+  "confirmed_failed_component": "paid",
+  "error": "ReferenceError: exactConfiguredSQLBridgeURL is not defined in extracted factory dependency map",
+  "correction": "Bind actual already-imported existing URL helper only in derived test factory maps. No production code or original frozen package change.",
+  "actual_completed_before_failure": {
+    "groups": 0,
+    "variants": 1,
+    "name": "existing_policy_is_one_actual_reexport",
+    "source_partial_sha256": "055cb0bc2d9002ad530de2f5932ad9dbe6dd50c9695ffb647eb5592149e2c7dc"
+  },
+  "remainder": {
+    "paid_new_variants": 17,
+    "saved_paid_variant_reused_without_execution": 1,
+    "controller_groups_first_unexecuted": 7,
+    "controller_variants_first_unexecuted": 18,
+    "root_entry_groups_first_unexecuted": 1,
+    "root_entry_variants_first_unexecuted": 3
+  },
+  "nativeCF_SQL_provider_MAIN_TG": 0,
+  "production6_target_bytes_unchanged": true
+}
