@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792749689798",
   "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
   "acquired_ts": 1792749689798,
@@ -17,5 +17,7 @@
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "3e13d4f60230223758cddf23d47e568c69a07605"
   },
-  "parallel_root_phase_owner": null
+  "parallel_root_phase_owner": null,
+  "released_ts": 1792751903941,
+  "release_note": "ONLY own release after draftPR626/de70 frozen12ownfiles FULL content/blob/head/filelist readback with GET-only late TLS metadata recovery. SOURCE one new STATIC peer pending; Root commanded frozen head unchanged. Author Node/import/tests/native/SQL0. Pure read-only peer/coordination needs no lease; no foreign refs touched."
 }
