@@ -1,0 +1,52 @@
+{
+  "schema": "EXISTING_STATISTICS_TYPED_POPULATIONS_BOUNDARY_V1",
+  "historical_descriptive": {
+    "reference": "accepted-history-reference.json",
+    "counts_reused_from_saved": {
+      "contracts": 37,
+      "series": 111,
+      "findings": 3274,
+      "following_cells": 13096
+    },
+    "eligible_denominators": "Use each stored timeframe panel eligible_windows and series_with_eligible_windows; weekly omitted series remain not evaluated, not0findings.",
+    "source_asof": "Stored original_closed_end_cohort_groups preserved; currentfetch/consumerclock cannot refresh them.",
+    "censoring": "Storedgaps/insufficientweeks/undefinedmedian categories stayseparate; no newrecompute",
+    "independent_accuracy_or_current105": false,
+    "fed_into_current_predictive_health": false
+  },
+  "operational_role_utility": {
+    "existing_table": "report2_liquidation_role_observation",
+    "unit": "exactasset/role/source/priorrun up to4rows24h viaexistingverifiedindex",
+    "measured0HTTP": "actual_http0 isvalidcached/reusedcount whenexplicit",
+    "unknownHTTP": "actual_httpNULL staysunknown; nopricefill",
+    "existing_priority_contract_unchanged": true,
+    "currentlevel_or_independentvote_proof": false
+  },
+  "legacy_shadow_statistic": {
+    "existing_table": "report2_liquidation_predictive_health",
+    "fields": [
+      "source_id",
+      "observations",
+      "hits",
+      "ewma_accuracy",
+      "predictive_weight_factor",
+      "eligible",
+      "updated_ts"
+    ],
+    "eligible_for_reported_value": "Existingpositiveobservations plus strict finite number0..1; observations0/missing/null/string/boolean/nonfinite/outofrange =>reportedNULL",
+    "zero_semantics": "Stored legacyEWMA0 is reported0 withpositiveobservations, not convertedtoNULL",
+    "cohort_limits": "Globallegacysource aggregate, not exactasset/window/version/asof/cost cohort; currentsettler useslaterbatchprice, not independent outofsample trajectory/netprofit",
+    "source_units": "normalizeddimensionless legacyEWMA, NOTbasispoints/USD/outcome count",
+    "knowncost": "No completefee/slippage/funding orincrementalproviderprice proof inthisrow; NULLremainsunknown",
+    "sourcewindow_authentication_or_native_zero_incident_qualified": false
+  },
+  "predictive_activation": {
+    "SQL_literal_mode": "SHADOW",
+    "SQL_literal_protocol": "LEGACY_DISABLED",
+    "legacy_writer_factor": 1,
+    "legacy_writer_eligible": 0,
+    "productionweights_changed": false,
+    "loadSQL_schema_sourceorder_policy_unchanged": true
+  },
+  "this_packet_only": "Fix one presentational typedscalar omission. Nooldrows rewritten/nohistoricaloutcomes promoted/no newbackend orcohortledger."
+}
