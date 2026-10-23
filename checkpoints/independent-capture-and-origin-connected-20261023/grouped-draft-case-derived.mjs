@@ -27,6 +27,7 @@ export async function runGroupedWatchDraftCases({repo_root}={}){
   function fixture(directions=['LONG','SHORT']){
     const end=1792750200000,source=end+900000,event_id='CONTROLLED_EVENT_GROUP_DRAFT',snapshot_id='CONTROLLED_SNAPSHOT_GROUP_DRAFT',raw='a'.repeat(64);
     const card={event_id,instrument:{contract:'AAVE-USDT'},timeframe:'15m',event_end_ts:end,first_known_ts:end+60000,discovery:'BACKFILLED',features:{volume_ratio:4},conditions:{timeframe:'15m'}};
+    card.card_hash=hash(card); // CONTROLLED renderer integrity; not a qualified native bundle.
     const origin={logical_event_id:'CONTROLLED_LOGICAL_EVENT',card,state:{outbox:{capture0:{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,message_ru:'EXISTING_CAPTURE_UNCHANGED'}},outcomes:{original_pending:{status:'PENDING'}},watch:{active:true}}};
     const snapshot={source_ts:source,raw_sha256:raw},outbox={};
     directions.forEach((direction,index)=>{const t={event_id,transition:index+1,direction,from:'WAITING',to:direction==='LONG'?'CONFIRMED':'REFUTED',source_ts:source,observed_ts:source+60000,snapshot_id,raw_sha256:raw,closed_window:{timeframe:'15m',start_ts:end,end_ts:source},timeliness:'OBSERVED',entry_authorized:false};const id=hash(t);outbox[id]={transition:{...t,transition_id:id},status:'DRAFT',message_id:null,network_send_enabled:false};});

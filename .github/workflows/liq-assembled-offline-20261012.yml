@@ -540,6 +540,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node tools/guard-independent-capture-and-origin-20261023.mjs before
       - name: Assemble existing encrypted runtime without exporting private bodies
+        if: false # Late fixture-only component uses exact public target; first fullassembly/result frames preserved.
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
         run: |
