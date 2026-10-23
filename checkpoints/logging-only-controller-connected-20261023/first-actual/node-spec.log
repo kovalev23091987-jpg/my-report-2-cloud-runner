@@ -1,0 +1,25 @@
+✖ new logging-only producer and Paid compatibility connected package (181.758361ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 241.603185
+
+✖ failing tests:
+
+test at checkpoints/logging-only-controller-connected-20261023/connected-common.mjs:13:1
+✖ new logging-only producer and Paid compatibility connected package (181.758361ms)
+  ReferenceError: exactConfiguredSQLBridgeURL is not defined
+      at Object.observe (eval at controlled (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/checkpoints/logging-only-controller-connected-20261023/source-qualified/connected.mjs:34:18), <anonymous>:21:88)
+      at async bracket (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/checkpoints/logging-only-controller-connected-20261023/source-qualified/connected.mjs:39:49)
+      at async file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/checkpoints/logging-only-controller-connected-20261023/source-qualified/connected.mjs:42:83
+      at async row (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/checkpoints/logging-only-controller-connected-20261023/source-qualified/connected.mjs:40:30)
+      at async Module.runCurrent86LoggingPaidCompatibilityConnected (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/checkpoints/logging-only-controller-connected-20261023/source-qualified/connected.mjs:42:3)
+      at async TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/checkpoints/logging-only-controller-connected-20261023/connected-common.mjs:17:77)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    partial_result: { schema: 'CURRENT86_LOGGING_PAID_AFFECTED_CONTROLLED_V1', status: 'PREPARED_UNEXECUTED', qualification_basis: 'CONTROLLED_METADATA_AND_FINGERPRINT_BINDINGS_NOT_NATIVE', groups: [], variants: [ [Object] ], completed_groups: 0, completed_variants: 1, source_author_Node_import_tests: 0, native_CF: 0, SQL: 0, provider: 0 }
+  }
