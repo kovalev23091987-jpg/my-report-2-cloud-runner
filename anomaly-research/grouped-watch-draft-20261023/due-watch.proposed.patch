@@ -1,0 +1,45 @@
+--- a/current-generation/files/src/anomaly-native-due-watch.mjs
++++ b/current-generation/files/src/anomaly-native-due-watch.mjs
+@@ -144,6 +144,33 @@
+   }
+   return{status:closed_keys.length?'ORIGINAL_OUTCOMES_FACTUAL':'ORIGINAL_OUTCOMES_DEFERRED',outcomes,closed_keys,deferred,closure_fingerprints};
+ }
++// ONE closed check => one new DRAFT. This is not delivery/READY/admission.
++function groupClosedWatchDrafts({origin,snapshot_id,snapshot,observed,fingerprint}){
++  const entries=Object.entries(observed.state.outbox);
++  need(observed.status==='OBSERVED'&&entries.length<=2,'BOUNDED_CURRENT_WATCH_TRANSITIONS_REQUIRED');
++  if(entries.length===0)return{};
++  const directions=new Set();
++  for(const [id,o] of entries){
++    const t=o?.transition,{transition_id,...body}=t||{};
++    need(o?.status==='DRAFT'&&o.message_id===null&&o.network_send_enabled===false&&transition_id===id&&hash(body)===id,'EXACT_OBSERVER_DRAFT_TRANSITION_REQUIRED');
++    need(t.event_id===origin.card.event_id&&t.snapshot_id===snapshot_id&&t.source_ts===snapshot.source_ts&&t.raw_sha256===snapshot.raw_sha256&&t.entry_authorized===false&&['LONG','SHORT'].includes(t.direction)&&!directions.has(t.direction)&&['CONFIRMED','REFUTED'].includes(t.to),'SAME_CLOSED_CHECK_TRANSITION_REQUIRED');
++    directions.add(t.direction);
++  }
++  entries.sort((a,b)=>a[1].transition.direction==='LONG'?-1:b[1].transition.direction==='LONG'?1:0);
++  const [firstId,firstOutbox]=entries[0],first=firstOutbox.transition,firstNotice=draftNotice(observed.state,firstId).text;
++  if(entries.length===1)return{['watch:'+firstId]:{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id:snapshot_id,message_ru:firstNotice,transition:clone(first)}};
++  const second=entries[1][1].transition;
++  need(first.observed_ts===second.observed_ts&&first.timeliness===second.timeliness&&canonical(first.closed_window)===canonical(second.closed_window)&&canonical(first.gap_details_complete??null)===canonical(second.gap_details_complete??null),'MIXED_CHECK_TRANSITIONS_NOT_GROUPED');
++  // Retain the current renderer's facts, clocks, gaps and caution, changing only
++  // its one-state clause into the two factual transitions of this same check.
++  const begin='Сейчас ',end=' по закрытой ',start=firstNotice.indexOf(begin),stop=firstNotice.indexOf(end,start+begin.length);
++  need(start>=0&&stop>start&&firstNotice.lastIndexOf(begin)===start&&firstNotice.lastIndexOf(end)===stop,'EXACT_CURRENT_DRAFT_RENDERER_REQUIRED');
++  const descriptions=entries.map(([,o])=>{const t=o.transition,side=t.direction==='LONG'?'вверх':'вниз';return t.to==='CONFIRMED'?`подтверждён выход ${side}`:`гипотеза движения ${side} опровергнута`;});
++  const message_ru=firstNotice.slice(0,start)+begin+descriptions.join('; ')+firstNotice.slice(stop);
++  need(message_ru.length<=1600,'DRAFT_MESSAGE_BOUND');
++  const key='watch-group:'+digest({logical_event_id:origin.logical_event_id,watch_observation_fingerprint:fingerprint});
++  return{[key]:{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id:snapshot_id,message_ru,group_schema:'CLOSED_WATCH_CHECK_DRAFT_GROUP_V1',watch_observation_fingerprint:fingerprint,transition_ids:entries.map(([id])=>id),transition_group:entries.map(([,o])=>clone(o.transition))}};
++}
+ function advanceCapturedWatch(origin,now_ts){
+   if(!origin.state.watch.active)return{reason:'WATCH_INACTIVE_PENDING_OUTCOMES',detail:'WATCH_INACTIVE_OUTCOMES_EVALUATED_SEPARATELY'};
+   const input=lastClosedCapture(origin,now_ts);if(input.reason)return input;
+@@ -156,7 +183,7 @@
+   const memory=newMemory({max_active:1,max_cards:2});memory.cards[origin.card.event_id]=clone(origin.card);memory.watch[origin.card.event_id]=clone(w);
+   const observed=observe(memory,{event_id:origin.card.event_id,snapshot,now_ts,confirmation_alignment_offset_ms:input.alignment});
+   if(observed.status!=='OBSERVED')return{reason:'CLOSED_WINDOW_UNAVAILABLE',detail:'EXISTING_WATCH_DID_NOT_ACCEPT_SNAPSHOT'};
+-  const drafts=Object.fromEntries(Object.entries(observed.state.outbox).map(([id,o])=>['watch:'+id,{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id:snapshot_id,message_ru:draftNotice(observed.state,id).text,transition:clone(o.transition)}]));
++  const drafts=groupClosedWatchDrafts({origin,snapshot_id,snapshot,observed,fingerprint});
+   need(Object.values(drafts).every(x=>x.message_ru.length<=1600),'DRAFT_MESSAGE_BOUND');
+   return{input,fingerprint,snapshot_id,snapshot,observed,drafts};
+ }
