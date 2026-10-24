@@ -1,0 +1,130 @@
+{
+  "schema": "BINGX_HISTORY_CONSUMER_BUDGET_MODEL_V1",
+  "fixed_main": "373566cf2ce65f87d2e038da2407b60abb3578fb",
+  "status": "OFFLINE_ARITHMETIC_NOT_ADMISSION_OR_NATIVE_USAGE",
+  "actual_BingX_qualified_N": null,
+  "actual_native_coverage": null,
+  "actual_D1_sizes_or_headroom": null,
+  "actual_shared_remaining_budget": null,
+  "snapshot": {
+    "existing_cadence_minutes": 5,
+    "polls_per_day": 288,
+    "max_contracts_per_shard": 64,
+    "max_payload_bytes_per_shard": 65536,
+    "max_total_payload_bytes_per_poll": 2097152,
+    "identity_bytes_must_be_measured": true,
+    "shards_lower_bound": "ceil(N/64); actual ordered byte packing may need more",
+    "existing_count_guard": "(2*s+3+light(6)+private_if_light(4))<=10000/288",
+    "necessary_count_bound_both_features": {
+      "max_s": 10,
+      "N_count_only_upper_bound": 640,
+      "not_coverage_or_capacity_guarantee": true
+    },
+    "illustrative_not_catalogue": [
+      {
+        "N": 256,
+        "assumed_s": 4,
+        "amortized_units_poll": 21,
+        "nominal_day": 6048,
+        "status": "COUNT_ONLY_BOTH_FEATURES_NO_HEADROOM_CLAIM"
+      },
+      {
+        "N": 640,
+        "assumed_s": 10,
+        "amortized_units_poll": 33,
+        "nominal_day": 9504,
+        "status": "COUNT_ONLY_BEFORE_BYTES_OR_OTHER_USAGE"
+      },
+      {
+        "N": 641,
+        "minimum_s": 11,
+        "amortized_units_poll_at_least": 35,
+        "nominal_day_at_least": 10080,
+        "status": "EXCEEDS_EXISTING_GUARD_WITH_BOTH_FEATURES"
+      },
+      {
+        "N": 640,
+        "assumed_peak_byte_packing_s": 12,
+        "amortized_units_poll": 37,
+        "nominal_day": 10656,
+        "status": "ILLUSTRATIVE_BYTES_EXCEED_EXISTING_GUARD"
+      }
+    ],
+    "existing_compact_retention_hours": 72,
+    "snapshot_points_per_instrument_count_only": 864,
+    "source_methods": "HTX market/OI/funding bulk + hourly contracts. SOURCE BingX REST OI documented per symbol, no bulk qualified.",
+    "OI_every_poll_HTTP_attempts_formula": "288*N/day if one symbol/request; this is not allowed fanout or admission",
+    "OI_gap_policy": "Preserve metric own source_ts/received_ts/unit/status; missing/stale UNKNOWN or PARTIAL, never zero or complete just because price exists"
+  },
+  "hourly_archive": {
+    "existing_retention_days": 270,
+    "hours": 6480,
+    "existing_max_archive_bytes": 400000000,
+    "max_payload_bytes_hour": 100000,
+    "max_source_shards": 32,
+    "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+    "old_HTX_target_count": 105,
+    "historical_comment_estimate": {
+      "assets": 104,
+      "about_bytes_hour": 25000,
+      "label": "HISTORICAL_COMMENT_NOT_CURRENT_NATIVE_INVENTORY",
+      "payload_only270d_at_estimate": 162000000
+    },
+    "payload_only270d_at_ceiling": 648000000,
+    "mean_upper_bound_bytes_hour_ignoring_all_overhead": 61728.39506172839,
+    "limit": "270d at100KB exceeds400MB before indexes/headers/spot/other rows. Actual size distribution/protected baseline required; Paid does not bypass guard. Hour-only PK cannot hold two venues."
+  },
+  "new_BingX_native_history": {
+    "price_OI_funding_start": "Actual first qualified capture, never oldHTX clocks",
+    "required_hot_windows": "5m/15m/1h/4h/24h compact; N10 selected20bars up to80h at4h",
+    "unsupported_claims": [
+      "allN admitted",
+      "all metadata complete",
+      "native billing equals model units",
+      "fresh allN OI every5m",
+      "oldHTX relabeled BingX",
+      "account has5GB free"
+    ]
+  },
+  "future_event_queue_NOT_ENABLED": {
+    "ordinary_formula": "sum(due_events_by_interval * required_missing_requests/event), only under admission",
+    "storage_formula": "original event proof + append-only observations/outcomes/notification receipts + indexes + restart/outbox state",
+    "peak_formula": "simultaneous due events across six timeframes + outage catchup + manual reserve; actual counts/bytes unknown",
+    "seven_day_auto_delete": false,
+    "new_anomaly_watch_executions": 0
+  },
+  "before_enable_measure": [
+    "native qualified N by family/exact asset crypto classification",
+    "actual DTO/payload bytes p50/p95/max/packing",
+    "source attempts/rate weights/latency/timeouts per metric; OI rotation staleness",
+    "D1 baseline/index/page overhead per configured database",
+    "daily/peak ingest/protected share/read-write-readback cost",
+    "shared/source/day/minute remaining reservations and unknown holds",
+    "collector/report deadlines/restart backlog",
+    "conditional retention throughput/physical bytes reclaimed only when separately authorized"
+  ],
+  "limits_unchanged": {
+    "account_ceiling_bytes": 5000000000,
+    "high_water_bytes": 4000000000,
+    "target_bytes": 3500000000,
+    "minimum_hot_details_hours": 48,
+    "whole_HTTP": 164,
+    "shared_D1_day_reads": 3500000,
+    "shared_D1_day_writes": 70000,
+    "next_FULL_reads": 59000,
+    "next_FULL_writes": 920,
+    "new_DB": false
+  },
+  "author_executions": {
+    "Node": 0,
+    "imports": 0,
+    "syntax_checks": 0,
+    "tests": 0,
+    "SQL": 0,
+    "provider_HTTP": 0,
+    "CF": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "deletes": 0
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "SOURCE_BINGX_DIRECT_MARKET_REQUEST_GRANULARITY_AND_BOUNDS_V1",
+  "status": "SYMBOLIC_OFFLINE_ARITHMETIC_NOT_ADMISSION",
+  "variables": {
+    "L": "actual classified active USDT-M crypto perpetual contracts, UNKNOWN",
+    "I": "actual classified active COIN-M crypto perpetual contracts, UNKNOWN",
+    "N": "L+I, different instrument families preserved; asset count distinct",
+    "K": "admitted chosen OI contract slots per poll, UNKNOWN",
+    "P": "existing proposed poll interval, must not be changed before ROOT whole-plan recomputation"
+  },
+  "per_route": {
+    "bulk": [
+      "USDT_M catalogue/ticker/last(optional)/premium",
+      "COIN_M catalogue/ticker/premium (actual bulk response capture pending)"
+    ],
+    "per_contract": [
+      "USDT_M OI",
+      "COIN_M OI conservative until documented optional bulk independently qualified",
+      "both depth",
+      "both candle interval/pages",
+      "USDT_M exact funding-history/page"
+    ],
+    "no_hidden_fanout": true,
+    "one_descriptor_http_attempts_max": 1,
+    "documented_provider_weight_units": null,
+    "OI_WS": "Selected exact official swap/cswap WS reference at7b1c40d2 describes depth/trade/kline/ticker/last/mark/book; no OI channel described in these two files. Native static docs also have no OI subscription identified. This is finite-document evidence, NOT universal absence proof. No undocumented subscription guessed; no WS connection."
+  },
+  "formulas": {
+    "full_OI_poll": "at least L+I individual calls in this conservative plan, not the old ONE bulkOI",
+    "closed_candles_interval": "L*ceil(required_rows/1440) + I*ceil(required_rows/1000), plus explicit overlapping-boundary correction only if measured and reserved; no hidden retry",
+    "old_1600_rows": "USDT_M ceil1600/1440=2pages; COIN_M ceil1600/1000=2pages when available within last30days. This is arithmetic, not actual wire count/coverage.",
+    "rotation_lower_bound": "ceil(N/K) poll cycles for one sweep if all succeed; ageing/gaps/failed slots extend it; no SLA until actualN,K,latency/admission known.",
+    "day": "sum(actual polls/day * permetric admitted calls) + hourlycatalogues + all histories/pages + manualreserve + failures/knowncost/unknownholds; do not transplant old /288write assertion",
+    "funding": "Actual perinstrument settlement period needs authenticated original schedule/period; event spacing is separately observed. No8h/4h/1h default and no independent price/OI directional grant."
+  },
+  "time_and_quality": {
+    "all_clocks": "Unix milliseconds UTC; keep actual original source_ts and transport received_ts separately",
+    "candles": "Objects only; sort/deduplicate/align; discard forming/out-of-request rows; gap means incomplete; candidate end derived from fixed UTC interval and must be <=requested end<=received. Native time=open interpretation still requires actual capture qualification. Calendar1M/1w/3d not silently treated fixed milliseconds.",
+    "current_OI": "Rotation/stale/missing/unitunknown OI stays unqualified, no0fill/clockrefresh/notional guess; existing strategy/gates remain closed if required metric is unavailable",
+    "BBO": "Standalone book sample has no clock; clocked depth quote uses its OWN nativeT, not premium/last/ticker/received timestamp borrowed acrossreplies",
+    "gold_and_universe": "No assumed counts or overlap; exclude gold-backed PAXG/XAUT and all noncrypto under authenticated classification; catalogue symbol suffix alone never eligibility",
+    "native_depth_units": "USDT_M documented bidsCoin/asksCoin carry native coin quantities separately from bids/asks; preserve originals and do not derive a global multiplier from one level or size0. COIN_M levels are documented contracts. Neither is automatic execution-unit qualification."
+  },
+  "transport": {
+    "base": "open-api.bingx.com",
+    "automatic_domain_fallback": false,
+    "provider_retry": false,
+    "published_aggregate_ceiling": "500requests/10seconds/IP spot+futures per officialsupport31103871611289; this is not new project permission",
+    "route_weight": null,
+    "actual_body_bytes": null,
+    "proposed_body_cap_bytes": 1048576,
+    "row_caps": "catalogue20000; response overlimit refuses rather than silent coverage truncation; candles1440/1000; funding1000; depth1000levels",
+    "headers_body_timeout": "ROOT must apply complete bounded transport, native body receipt and all existing unknown fences/admission; proposal performs noHTTP and enforces no measured networktimeout"
+  },
+  "unchanged_until_ROOT_recomputes": [
+    "fullreport cadence",
+    "164 wholeHTTP",
+    "manual24",
+    "provider day/month/minute caps and reservations",
+    "D1 day/read/write/unknown/reserves",
+    "Paid/storage/cursor/pause/weights/70/forms",
+    "twoOWNERdeferrals"
+  ],
+  "physical_native_work": 0
+}

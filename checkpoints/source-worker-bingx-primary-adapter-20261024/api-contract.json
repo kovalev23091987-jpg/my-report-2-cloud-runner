@@ -1,0 +1,130 @@
+{
+  "schema": "SOURCE_BINGX_PRIMARY_OFFICIAL_API_CONTRACT_V1",
+  "status": "DOCUMENTED_PROPOSED_NOT_ACQUIRED_OR_INSTALLED",
+  "base_url": "https://open-api.bingx.com",
+  "authentication": {
+    "public_market_no_api_key_or_hmac": true,
+    "timestamp": "explicit outbound request_ts milliseconds per native tables; NEVER fact source_ts",
+    "automatic_domain_retry": false
+  },
+  "routes": {
+    "USDT_M": {
+      "catalog": {
+        "GET": "/openApi/swap/v2/quote/contracts",
+        "granularity": "BULK or exactsymbol",
+        "data_shape": "array objects contractId,symbol,asset,currency,status,precision/minimums/launchTime; displayName presentation only",
+        "unknowns": [
+          "No explicit crypto/underlying class in selected response spec",
+          "size0 is not contract multiplier",
+          "Original catalogue generation clock absent"
+        ]
+      },
+      "ticker": {
+        "GET": "/openApi/swap/v2/quote/ticker",
+        "granularity": "BULK or exactsymbol",
+        "data_shape": "object for exact symbol; array for bulk; lastPrice,bidPrice,askPrice,volume,quoteVolume,closeTime",
+        "clocks": "closeTime identifies last transaction, not independently timed BBO; quoteVolume USDT documented; native volume unit not assumed"
+      },
+      "last": {
+        "GET": "/openApi/swap/v1/ticker/price",
+        "granularity": "BULK or exactsymbol",
+        "data_shape": "symbol,price,time matching-engine milliseconds"
+      },
+      "premium": {
+        "GET": "/openApi/swap/v2/quote/premiumIndex",
+        "granularity": "optional symbol documented; bulk actual shape must be captured",
+        "data_shape": "symbol,markPrice,indexPrice,lastFundingRate,nextFundingTime",
+        "clock": "source_ts NULL in selected native sample; no nextFundingTime/received clock substitution"
+      },
+      "book": {
+        "GET": "/openApi/swap/v2/quote/bookTicker",
+        "granularity": "ONE_CONTRACT symbol mandatory",
+        "data_shape": "data.book_ticker {symbol,bid_price,bid_qty,ask_price,ask_qty}; example lacks clock",
+        "clock": "BBO source_ts NULL until original timed schema qualified"
+      },
+      "depth": {
+        "GET": "/openApi/swap/v2/quote/depth",
+        "granularity": "ONE_CONTRACT",
+        "data_shape": "bids/asks price-quantity pairs plus nativeT; also separately documented bidsCoin/asksCoin (coin quantities). Preserve both independent native fields; no implicit factor/contract_size calculation.",
+        "use": "bounded top quotes may carry original T; no capacity/VWAP/contract-size guess"
+      },
+      "oi": {
+        "GET": "/openApi/swap/v2/quote/openInterest",
+        "granularity": "ONE_CONTRACT symbol mandatory",
+        "data_shape": "object symbol,openInterest,time",
+        "unit": null,
+        "quantity_conversions": "contracts/base/notional all NULL until independently qualified native unit"
+      },
+      "candles": {
+        "GET": "/openApi/swap/v3/quote/klines",
+        "granularity": "ONE_CONTRACT per interval/page",
+        "data_shape": "array OBJECTS open,close,high,low,volume,time; table types float64 but example decimal strings",
+        "limit_max": 1440,
+        "clock": "native time ms; proposed UTC open-time interpretation requires actual capture qualification; derived close boundary separately labelled",
+        "unit": null
+      },
+      "funding_history": {
+        "GET": "/openApi/swap/v2/quote/fundingRate",
+        "granularity": "exact symbol/page in this proposal; optional bulk not assumed bounded full catalogue",
+        "data_shape": "ARRAY symbol,fundingRate,fundingTime",
+        "limit_max": 1000,
+        "period": "Actual event gaps retained separately; they do not prove current settlement period or absence of missed events. No default8h/ranking grant."
+      }
+    },
+    "COIN_M": {
+      "catalog": {
+        "GET": "/openApi/cswap/v1/market/contracts",
+        "granularity": "BULK or exactsymbol",
+        "data_shape": "array symbol,precision/minimums,status,timeOnline,displayName; native contractId/base/settle/multiplier absent",
+        "classification": "Exact independently qualified crypto inverse-perpetual mapping required; USD quote is not USDT"
+      },
+      "ticker": {
+        "GET": "/openApi/cswap/v1/market/ticker",
+        "granularity": "optional symbol documented; data sample array even with symbol",
+        "data_shape": "array objects symbol,lastPrice,bidPrice,askPrice,closeTime string,volume,quoteVolume",
+        "unit": "Native quoteVolume description and example are not used for numeric conversion; preserve raw units unknown"
+      },
+      "premium": {
+        "GET": "/openApi/cswap/v1/market/premiumIndex",
+        "granularity": "optional symbol; object example versus List<Data> table conflict",
+        "data_shape": "symbol,markPrice,indexPrice,lastFundingRate,nextFundingTime",
+        "clock": "source_ts NULL; envelope timestamp is response clock, not original fact clock"
+      },
+      "depth": {
+        "GET": "/openApi/cswap/v1/market/depth",
+        "granularity": "ONE_CONTRACT",
+        "data_shape": "data {T,bids:[[price,quantity]],asks:[[price,quantity]]}",
+        "quantity_unit": "CONTRACTS per native depth spec; no coin/notional conversion without actual face-value binding"
+      },
+      "oi": {
+        "GET": "/openApi/cswap/v1/market/openInterest",
+        "granularity": "conservative ONE_CONTRACT despite optionalsymbol table; no qualified bulkOI",
+        "data_shape": "sample object openInterest,symbol,time; table says timestamp/List<Data>",
+        "source_ts": null,
+        "unit": null
+      },
+      "candles": {
+        "GET": "/openApi/cswap/v1/market/klines",
+        "granularity": "ONE_CONTRACT per interval/page",
+        "data_shape": "array OBJECTS open,close,high,low,volume,time",
+        "limit_max": 1000,
+        "history_limit_days": 30,
+        "volume_unit": "CONTRACTS per native spec; minTickSize is not verified multiplier",
+        "clock": "UTC candidate boundaries derived separately; native open-time qualification pending"
+      },
+      "funding_history": {
+        "route": null,
+        "status": "NOT_DOCUMENTED_IN_SELECTED_FINITE_CONTRACT; no guessed swap route/signing/8h"
+      }
+    }
+  },
+  "no_live_facts": {
+    "catalog_count": null,
+    "overlap_count": null,
+    "current_prices": null,
+    "current_units": null,
+    "actual_body_bytes": null,
+    "native_API_success": false
+  },
+  "gold_exclusion": "PAXG/XAUT explicitly excluded; all other precious-metal/commodity/equity/FX/index rows need explicit underlying classification, UNKNOWN never admitted by regex."
+}
