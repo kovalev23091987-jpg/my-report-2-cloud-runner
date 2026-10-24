@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792861374849",
   "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
   "acquired_ts": 1792861374849,
@@ -27,5 +27,37 @@
     "checkpoints/bingx-migration-20261024/migration-receipt.json",
     "checkpoints/bingx-migration-20261024/next-worker-queues.json"
   ],
-  "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792859492463"
+  "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792859492463",
+  "released_ts": 1792862168422,
+  "result": {
+    "task": "COMBINED_B04",
+    "frozen_head": "2561b7204b694c963df478951965fd95b6248871",
+    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/636",
+    "files": 20,
+    "manifest_bytes": 5162,
+    "manifest_sha256": "a6a24ad73ab9d22a57a16300b8aa9640ecbc986220bf0171d80b48a13cb7a468",
+    "import_closure_bytes": 5773,
+    "import_closure_sha256": "5c7bf2b0bb9591d6c83138ff0e08a2dd15ec28a94482ac20a3bdf142aee2fb8b",
+    "combined_entry_bytes": 4827,
+    "combined_entry_sha256": "fb115698ccea2d5abc2aacc7dd739f0b9c4568abd3b74c8173d45fd15df0e521",
+    "all4candidate_both_orders_identical": true,
+    "component_variants": [
+      18,
+      22
+    ],
+    "actual_semantic_execution": 0,
+    "ONEcombined_callable": "PREPARED_UNEXECUTED",
+    "FULL_local_Git_readback": true,
+    "FULL_remote_files_received": 20,
+    "Git_blob_ID_and_UTF8_length_match": true,
+    "remote_content_independently_SHA256_rehashed": false,
+    "Node_import_tests_provider_SQL_CF_MAIN_TG_delete": 0,
+    "shared_runtime_or_main_mutation": false,
+    "SOURCE479_adapter_executed": false,
+    "native_registry_or_admission_qualified": false,
+    "originals634635_unchanged": true,
+    "old_accepted_studies_or_semantics_replayed": 0,
+    "deferrals_and_caps_preserved": true
+  },
+  "release_note": "Release ONLY own finite combinedB04 lease after frozenPR636/FULLreadback; preserve sameacquired/expiry/owner; before50minexpiry. No ROOT/SOURCE lease/status/phase/fence/main/runtime/native mutation."
 }
