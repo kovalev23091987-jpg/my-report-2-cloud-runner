@@ -46,18 +46,27 @@ export async function collectBitgetFlow(params={}){
   }catch(e){r.status=e.message;return null;}
  };
  try{
-  const catalogs={};for(const kind of ['coins','spot','futures']){
+  const catalogs={};let knownFuturesMetadataRefusal=false;for(const kind of ['coins','spot','futures']){
    if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',network_calls:calls};
    const key='METADATA:'+kind,cached=await cacheRead({source:SOURCE,asset_key:key,now,include_cache_clock:true});
    if(cached?.version===VERSION&&cached.observed_ts<=now&&now-cached.observed_ts<=21600000){catalogs[kind]=cached.payload;receipts.push({...cached.receipt,cache_status:'HIT',actual_http:0});continue;}
-   const p=await get(metadata[kind],{kind});if(!p)return{...root,status:receipts.at(-1)?.status||'METADATA_NOT_RECEIVED',network_calls:calls};catalogs[kind]=compact(kind,p);const receipt=receipts.at(-1),ts=receipt.received_ts;await cacheWrite({source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:ts+21600000,payload:{version:VERSION,observed_ts:ts,payload:catalogs[kind],receipt}});
+   const p=await get(metadata[kind],{kind});if(!p){
+    const receipt=receipts.at(-1);
+    // Only a complete, known late HTTP refusal allows the already retained
+    // SPOT cache path. Transport/body uncertainty and native unknown still stop.
+    if(kind!=='futures'||unclosed()||!Number.isSafeInteger(receipt?.received_ts)||!/^[a-f0-9]{64}$/.test(receipt?.body_sha256||'')||!Number.isInteger(receipt?.http_status)||receipt.http_status<100||receipt.http_status>599||receipt.http_status===200||receipt.status!=='HTTP_'+receipt.http_status)return{...root,status:receipt?.status||'METADATA_NOT_RECEIVED',network_calls:calls};
+    knownFuturesMetadataRefusal=true;components.push({venue:'BITGET',market:'FUTURES',status:receipt.status,check_completed:false});continue;
+   }catalogs[kind]=compact(kind,p);const receipt=receipts.at(-1),ts=receipt.received_ts;await cacheWrite({source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:ts+21600000,payload:{version:VERSION,observed_ts:ts,payload:catalogs[kind],receipt}});
   }
   const end=Math.floor(now/60000)*60000;for(const market of ['SPOT','FUTURES']){
    if(unclosed())break;
+   if(knownFuturesMetadataRefusal&&market==='FUTURES')continue;
    const rows=catalogs[market==='SPOT'?'spot':'futures'].data.filter(r=>r.symbol===contract.replace(/-USDT$/,'USDT'));
    if(rows.length!==1||!exactBitgetBinding({contract,identity,coins:catalogs.coins,instrument:rows[0],market})){components.push({venue:'BITGET',market,status:'EXACT_ASSET_BINDING_NOT_CLOSED',check_completed:false});continue;}
    const key=`FLOW:${contract}:${market}:${end}`,cached=await cacheRead({source:SOURCE,asset_key:key,now,include_cache_clock:true});let flow;
+   if(knownFuturesMetadataRefusal&&unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE',network_calls:calls};
    if(cached?.version===VERSION&&cached.observed_ts<=now&&cached.payloads){flow={...reconcileBitgetFlow({contract,market,...cached.payloads,window_end_ts:end,observed_ts:cached.observed_ts}),payloads:cached.payloads,cache_status:'HIT'};}
+   else if(knownFuturesMetadataRefusal){components.push({venue:'BITGET',market,status:'CACHED_FLOW_REQUIRED_AFTER_METADATA_REFUSAL',check_completed:false});continue;}
    else{flow=await acquireBitgetFourHourFlow({get,contract,market,window_end_ts:end,max_pages:3,clock});if(flow.check_completed&&admitDb()){const payload={version:VERSION,observed_ts:flow.observed_ts,payloads:flow.payloads};if(Buffer.byteLength(JSON.stringify(payload))<=900000)await cacheWrite({source:SOURCE,asset_key:key,observed_ts:flow.observed_ts,expires_ts:end+300000,payload});}}
    const sample=normalizeBitgetN12BoundedTradeSample({contract,market,identity,identity_method,asset_binding_proof:verifiedAssetRouteIdentity(params)?.asset_binding_proof,exact_asset_binding:true,pages:flow.payloads?.pages,window_end_ts:end,observed_ts:flow.observed_ts});
    evidence.push(...sample.evidence);
