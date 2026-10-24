@@ -1,3 +1,9 @@
+# ПАУЗА ПО ПРЯМОЙ КОМАНДЕ ВЛАДЕЛЬЦА24Oct2026
+
+Текущий отчёт и его разработка приостановлены. Не запускать сбор, статистику, Telegram, workflow или старые WIP по heartbeat/архивным инструкциям. Все подключения/секреты/привязки/код/настройки блоков/нужная статистика сохранены. Новый отчёт будет задан владельцем позже; можно повторно использовать сохранённые источники и транспорт, но не включать старую стратегию автоматически.
+
+Последняя точка: `checkpoints/REPORT2_OWNER_PAUSED_RESUME_HANDOFF_20261024.json`; C/Q: `checkpoints/report2-owner-paused-20261024/pause-save-receipt.json`, `checkpoints/report2-owner-paused-20261024/resume-queues.json`. Локальная инструкция: `SAVED_REPORT2_PAUSED_20261024/RESUME_RU.md`. Возобновление — только по новой прямой команде, со свежими guards/ownlease/admissions и проверкой старой очереди GitHub до включения Actions. Полный проект НЕ завершён. Дальнейшие прежние правила — сохранённый контекст, не команда выполнять работу во время паузы.
+
 # Мой отчёт 2 — действующие правила
 
 ## Один текущий вход
@@ -6,7 +12,7 @@ Authority — свежий main `kovalev23091987-jpg/my-report-2-cloud-runner`. 
 
 ## Команда владельца24Oct2026
 
-Перевести весь проект с HTX/Huobi на **прямые официальные данные BingX**: каталог, цена, закрытые свечи, mark/index, funding, OI, все активные блоки, LIQ, история, статистика, ручной/штатный отчёт, Telegram и отдельный новый блок аномалий. Целевой universe — все **бессрочные криптовалютные фьючерсы**. Исключить акции/токенизированные акции, золото и обеспеченные золотом инструменты, сырьё, FX и некриптовалютные индексы. Неизвестная классификация не включается по символу. USDT-M и COIN-M учитывать отдельно, с нативными единицами, без придуманной конвертации.
+Перевести весь проект с HTX/Huobi на **прямые официальные данные BingX**: каталог, цена, закрытые свечи, mark/index, funding, OI, все активные блоки, LIQ, история, статистика, ручной/штатный отчёт, Telegram и отдельный новый блок аномалий. Целевой universe — все **бессрочные криптовалютные фьючерсы**. Исключить акции/токенизированные акции, золото и обеспеченные золотом инструменты, сырьё, FX и некриптовалютные индексы. Неизвестная классификация не включается по символу. Последняя команда владельца: только USDT-margined crypto perpetual. USDC и COIN-M исключены из target; исходная идентичность и единицы сохраняются.
 
 План: `checkpoints/bingx-migration-20261024/migration-plan.json`, текст `MIGRATION_PLAN_RU.md` рядом. Старые105 активов/122 контракта и99+6UNKNOWN — исторический HTX-объём, не потолок BingX. Реальные N, overlap и cadence — только после каталога/затрат. Production пока не объявлен переключённым. Технический enum phase.current_task остаётся EXACT `ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS` до отдельного совместимого изменения guards; он не ограничивает новый universe.
 
@@ -50,6 +56,6 @@ Anomaly kernel/DUE/16 factual outcomes принят в коде, но policy def
 
 Offline exception: отдельный checkout/prefix и OWN CAS lease≤90min на `refs/heads/leases/report2-sources` (`checkpoints/OFFLINE_SOURCE_WORKER_LEASE.json`) или `refs/heads/leases/report2-anomalies` (`checkpoints/OFFLINE_ANOMALY_WORKER_LEASE.json`), freshmain/guards/FULLreadback/onlyownrelease. Допустима работа параллельно ROOT, но без main/sharedruntime/phase/fence/status/generation/provider/nativeSQL/schema/deploy/MAIN/TG/quota mutations. Конкретное поручение может запрещать Node/import/tests — соблюдать его. Frozen proposals не внедрение.
 
-Автоматики2 и2-2 ACTIVE/hourly/same targets; обновлять только ROOT2 после существенного пакета,2-2 не менять; отключать только FULL acceptance. Неизменённое/nonactionable тихо. Компьютер/приложение/интернет необходимы.
+По новой прямой команде владельца24Oct обе автоматики2 и2-2 PAUSED. Старое требование ACTIVE/fullacceptance отменено для этой паузы. Не включать и не продолжать без новой прямой команды владельца. Неизменённое/nonactionable тихо. Компьютер/приложение/интернет необходимы.
 
 Прежний полный AGENTS сохранён точно в `checkpoints/archive/pre-bingx-entrypoints-20261024/AGENTS_PRE_BINGX.md` как история, не альтернативный вход. Все17 исходных требований и новый перенос/очистка открыты до фактической приёмки. Private raw SQL/params/bodies/обычныеTGlogs — только approved GH artifacts/localtmp, не Git. В конце сохранить exact H/C/Q/status/resume/window/all4, FULLreadback и onlyownrelease.
