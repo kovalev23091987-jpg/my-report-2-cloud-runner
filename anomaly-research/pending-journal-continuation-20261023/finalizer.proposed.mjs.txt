@@ -1,0 +1,6 @@
+  try {
+    await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
+  } finally {
+    try { await anomalyParentCapability.close(); }
+    finally { if(anomalyParentCapability.installed)try{const saved=await persistRunnerAnomalyReceipts(anomalyParentCapability.receipts(),{pending_checkpoint:anomalyPendingJournal?.checkpoint()??null,independent_capture:env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT??null});if(saved.capture_projection_requested&&!saved.capture_projection_recorded)console.error("ANOMALY_CAPTURE_PROJECTION_NOT_SAVED_PARENT_RETAINED");}catch{console.error("ANOMALY_RECEIPT_ARTIFACT_NOT_SAVED");} }
+  }
