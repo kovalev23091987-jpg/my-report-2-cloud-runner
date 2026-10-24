@@ -32,7 +32,8 @@ export async function runBingxDeepBoundaryCase({repo_root,save_result}={}){
   await check('JSON caller cannot install internal capture reader',()=>api.buildDeepCheckInputForTest({...params,_bingx_snapshot_reader:true,allowed:true},{...env,_bingx_snapshot_reader:null}),v=>{assert.equal(v.status,'NOT_CLOSED');assert.equal(v.history_proposal,null);assert.equal(v.futures_snapshot.reason,'BINGX_PRIMARY_NOT_CONNECTED');});
   const before=reads;
   await check('unregistered exact contract stops before capture',()=>api.buildDeepCheckInputForTest({...params,contract:'OTHER-USDC'},env),v=>{assert.equal(v.status,'NOT_CLOSED');assert.equal(v.reason,'BINGX_RESEARCH_BINDING_REQUIRED');assert.equal(reads,before);});
-  assert.equal(fetches,0);assert.equal(sql,0);assert.equal(result.completed.length,6);result.groups=1;result.variants=6;result.status='CONTROLLED_ACTUAL_DEEP_BOUNDARY_COMPLETE';return result;
+  await check('identity-only BingX selection cannot reach old HTX Deep',()=>api.buildDeepCheckInputForTest({contract:i.native_symbol,instrument_identity:structuredClone(i)},{...env,REPORT2_PRIMARY_VENUE:undefined}),v=>{assert.equal(v.venue,'BINGX');assert.equal(v.status,'NOT_CLOSED');assert.equal(v.reason,'BINGX_FULL_DEEP_NOT_CONNECTED');});
+  assert.equal(fetches,0);assert.equal(sql,0);assert.equal(result.completed.length,7);result.groups=1;result.variants=7;result.status='CONTROLLED_ACTUAL_DEEP_BOUNDARY_COMPLETE';return result;
  }catch(error){result.status='CONTROLLED_ACTUAL_DEEP_BOUNDARY_FAILED';error.partial_result=structuredClone(result);throw error;}
  finally{Date.now=originalNow;globalThis.fetch=originalFetch;}
 }

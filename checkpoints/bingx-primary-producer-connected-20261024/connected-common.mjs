@@ -37,8 +37,8 @@ test('one FIRST connected BingX primary capture, typed history and real Worker b
   await invoke('SOURCE_WORKER_DISPATCH',P+'/bound-dispatch/connected.mjs','runBingxWorkerVenueDispatchConnected',{save_result:item=>save('DISPATCH_'+item.name,item.result)},1,17,v=>({groups:v.actual_completed_groups,variants:v.actual_completed_variants}));
   await invoke('PRODUCER_AND_INDIVIDUAL','anomaly-research/bingx-observation-producer-20261024/producer-individual-case.proposed.mjs','runBingxProducerIndividualCase',{binding_path:P+'/producer-bound-closure.json',expected_closure_sha256:plan.producer_closure_sha256,save_result:item=>save('PRODUCER_'+item.name,item.result)},1,16,v=>({groups:v.completed.length===16?1:0,variants:v.completed.length}));
   await invoke('ROOT_LAST_REFERENCE',P+'/last-reference-case.proposed.mjs','runBingxLastReferenceCase',{save_result:(name,value)=>save('LAST_'+name,value)},1,12,v=>({groups:v.groups,variants:v.variants}));
-  await invoke('ROOT_ACTUAL_DEEP',P+'/deep-boundary-case.proposed.mjs','runBingxDeepBoundaryCase',{save_result:(name,value)=>save('DEEP_'+name,value)},1,6,v=>({groups:v.groups,variants:v.variants}));
-  await attest(repo,'AFTER_ALL_ORIGINAL_REPOSITORY_PINS');progress.stage='ALL_NEW_CONTROLLED_COMPONENTS_COMPLETE';progress.pins_before_after_equal=true;assert.equal(progress.completed_groups,7);assert.equal(progress.completed_variants,103);state();
+  await invoke('ROOT_ACTUAL_DEEP',P+'/deep-boundary-case.proposed.mjs','runBingxDeepBoundaryCase',{save_result:(name,value)=>save('DEEP_'+name,value)},1,7,v=>({groups:v.groups,variants:v.variants}));
+  await attest(repo,'AFTER_ALL_ORIGINAL_REPOSITORY_PINS');progress.stage='ALL_NEW_CONTROLLED_COMPONENTS_COMPLETE';progress.pins_before_after_equal=true;assert.equal(progress.completed_groups,7);assert.equal(progress.completed_variants,104);state();
  }catch(error){progress.error={name:error.name,message:error.message,stack:error.stack};throw error;}
  finally{globalThis.fetch=oldFetch;try{if(isolated)await fs.rm(isolated,{recursive:true,force:true});if(baseline)await fs.rm(baseline,{recursive:true,force:true});progress.cleanup=true;}finally{state();}}
 });

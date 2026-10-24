@@ -1,5 +1,5 @@
   // BINGX_PRIMARY_DEEP_BOUNDARY_START
-  if(env?.REPORT2_PRIMARY_VENUE==='BINGX'||params?.venue==='BINGX'){
+  if(env?.REPORT2_PRIMARY_VENUE==='BINGX'||params?.venue==='BINGX'||params?.instrument_identity?.venue==='BINGX'){
     const requested=params?.contract??params?.contract_code??params?.symbol;
     const contract=typeof requested==='string'&&requested===requested.trim()?requested:null;
     const boundary={tool:'deep_check_input',venue:'BINGX',contract,status:'NOT_CLOSED',entry_authorized:false,primary_native_admission:false,legacy_fallback_enabled:false,history_proposal_persisted:false};
@@ -13,10 +13,11 @@
       expectedIdentity=structuredClone(entries[0].instrument_identity);
       instrumentRef=resolveBingxExpectedHistoryRef({context,expected_identity:expectedIdentity});
     }catch(error){return {...boundary,reason:'BINGX_RESEARCH_BINDING_REQUIRED',binding_error:String(error?.message??error).slice(0,160)};}
-    // ROOT replaces this exact env name with the frozen SOURCE caller contract.
-    const source=await futuresSnapshot({contract,venue:'BINGX',instrument_identity:expectedIdentity,_bingx_snapshot_reader:env?.REPORT2_BINGX_SNAPSHOT_READER});
+    const source=await futuresSnapshot({contract,venue:'BINGX',instrument_identity:expectedIdentity,_bingx_snapshot_reader:env?._bingx_snapshot_reader},env);
     const decisionTs=Date.now();
-    const bingxObservationReferencePrice=buildHtxReferencePrice({contract,venue:'BINGX',type:'LAST_OBSERVATION',value:Number(source?.data?.last_price),source_ts:source?.data?.last_price_source_ts,received_ts:source?.data?.received_ts,decision_ts:decisionTs,maximum_age_ms:300000,instrument_identity:source?.data?.instrument_identity??null,expected_instrument_identity:expectedIdentity});
+    const lastOrigins=Array.isArray(source?.data?.component_origins)?source.data.component_origins.filter(origin=>origin?.kind==='last'):[];
+    const lastOrigin=lastOrigins.length===1&&lastOrigins[0].source_ts===source?.data?.last_price_source_ts?lastOrigins[0]:null;
+    const bingxObservationReferencePrice=buildHtxReferencePrice({contract,venue:'BINGX',type:'LAST_OBSERVATION',value:Number(source?.data?.last_price),source_ts:source?.data?.last_price_source_ts,received_ts:lastOrigin?.received_ts??null,decision_ts:decisionTs,maximum_age_ms:300000,instrument_identity:source?.data?.instrument_identity??null,expected_instrument_identity:expectedIdentity});
     let historyProposal=null,historyError=null;
     try{historyProposal=produceBingxHistoryRow({observation:source,context,instrument_ref:instrumentRef,processed_ts:decisionTs});}
     catch(error){historyError=String(error?.message??error).slice(0,160);}
