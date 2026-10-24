@@ -1,0 +1,92 @@
+{
+  "schema": "OWNER_APPROVAL_REQUIRED_BINGX_PUBLIC_RESEARCH_EXCEPTION_V1",
+  "status": "AWAITING_SEPARATE_DIRECT_OWNER_APPROVAL_NOT_A_NATIVE_GRANT",
+  "purpose": "One finite session of official public source originals for migration research; not production integration",
+  "reason": "Existing project requires actual whole/provider admission; native BINGX durable DB grant is absent. This proposed one-off exception avoids all D1/Cloudflare calls and keeps production guards unchanged.",
+  "request_base": "https://open-api.bingx.com",
+  "requests": [
+    {
+      "order": 1,
+      "route": "/openApi/swap/v2/server/time",
+      "body_decoded_cap_bytes": 16384
+    },
+    {
+      "order": 2,
+      "route": "/openApi/swap/v2/quote/contracts",
+      "body_decoded_cap_bytes": 2097152,
+      "retain": "native fields/contractId/symbol/asset/currency/status/apiStateOpen/size/metadata and original body clock/hash; no assetType inferred"
+    },
+    {
+      "order": 3,
+      "route": "/openApi/swap/v1/ticker/price",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "requires": "exact native catalog record and independently known Bitcoin crypto identity",
+      "body_decoded_cap_bytes": 65536
+    },
+    {
+      "order": 4,
+      "route": "/openApi/swap/v3/quote/klines",
+      "params": {
+        "symbol": "BTC-USDT",
+        "interval": "1m",
+        "limit": 6
+      },
+      "window": "Explicit last closed minute at native server cut; exact startTime/endTime computed from retained serverTime before request",
+      "body_decoded_cap_bytes": 131072
+    },
+    {
+      "order": 5,
+      "route": "/openApi/swap/v2/quote/openInterest",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "body_decoded_cap_bytes": 65536,
+      "unit": "Keep raw; no multiplication or conversion until unit independently qualified"
+    },
+    {
+      "order": 6,
+      "route": "/openApi/swap/v2/quote/premiumIndex",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "body_decoded_cap_bytes": 131072
+    },
+    {
+      "order": 7,
+      "route": "/openApi/swap/v2/quote/fundingRate",
+      "params": {
+        "symbol": "BTC-USDT",
+        "limit": 3
+      },
+      "body_decoded_cap_bytes": 131072,
+      "purpose": "Retain at most three native historical funding rows; no period or future funding inference"
+    }
+  ],
+  "maximum_provider_client_HTTP_attempts": 7,
+  "no_redirect_retry_key_cookie_private_endpoint": true,
+  "minimum_spacing_ms": 1100,
+  "headers_timeout_ms": 10000,
+  "body_timeout_ms": 10000,
+  "body_cap_kind": "RAW_HTTP_BODY_IDENTITY_ENCODING_ONLY; reject unsupported compression, do not claim decoded/wire equivalence",
+  "session_deadline_ms": 300000,
+  "require_current_owned_phase_lease_FULL_readback": true,
+  "require_protected_direct_owner_approval_hash_in_lease_scope": true,
+  "require_all4_known_ACK_spend_transition_before_first_source_IO": true,
+  "all7_reserved_irrevocably_before_IO": true,
+  "unknown_or_stop_never_retries_refunds_or_rearms": true,
+  "whole164_manual24_control40_preserved": true,
+  "maximum_native_SQL": 0,
+  "maximum_Cloudflare_calls": 0,
+  "production_MAIN_manual_report_Telegram_orders_settings_deploy": 0,
+  "production_BingX_admission_or_activation": false,
+  "old_unknowns_reservations_unchanged": true,
+  "actual_crypto_contract_count": null,
+  "full_cadence_or_coverage_claim": false,
+  "raw_originals": "localtmp/approved artifact only, sanitized count/clock/hash receipts in Git",
+  "native_registry_and_same_run_Telegram_still_unqualified": true,
+  "approval_reply_required": true,
+  "request_timestamp": "Explicit outbound local request_ts in milliseconds, not fact source_ts",
+  "request_routes_supported_by": "source-worker-bingx-primary-adapter-20261024/api-contract.json and literal official-schema-evidence.json"
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "SOURCE_BINGX_B01_STATIC_OPERATION_COUNTS_NOT_NATIVE_MEASUREMENT_V1",
+  "provider_max": 7,
+  "provider_required": 6,
+  "decoded_body_caps": [
+    16384,
+    2097152,
+    65536,
+    131072,
+    65536,
+    131072,
+    131072
+  ],
+  "all7_decoded_bytes_max": 2637824,
+  "required6_decoded_bytes_max": 2506752,
+  "header_timeout_each_ms": 10000,
+  "body_timeout_each_ms": 10000,
+  "minimum_spacing_ms": 1100,
+  "per_request_unknown_stop": true,
+  "five_minute_job": "actualrunstarted+300000, reserve final30s; perattempt min lease/session/body deadline; source success timing not measured",
+  "conventional_existing_DB_chain": {
+    "beforefirst_SQL_statements": 10,
+    "N_leaf_formula_SQL": "8+3*N",
+    "required6_SQL": 26,
+    "optional7_SQL": 29,
+    "N_leaf_formula_bridgeHTTP": "6+3*N",
+    "required6_bridgeHTTP": 24,
+    "optional7_bridgeHTTP": 27,
+    "breakdown": [
+      "1 dayaggregate SELECT",
+      "2 runreserve INSERT+readback (not atomically sufficient by itself)",
+      "4 source daily statements in2 HTTP if all7 attempts held up front",
+      "3 minute statements/3 HTTP immediately perattempt",
+      "1 existing finalization UPDATE"
+    ],
+    "excludes": [
+      "schema installation (forbidden)",
+      "actual ROOT parent/current day/allowance manual policy queries",
+      "additional provider month/backoff reads if needed",
+      "native cost is rows billed, not statement/HTTP count"
+    ],
+    "no_native_rows_R_W_bound_claimed": true
+  },
+  "strict_perGET_guard_control_scenario": {
+    "initial_GH": 8,
+    "paid_CF": 1,
+    "bridge_before_CF": 5,
+    "bridge_after_CF": 4,
+    "cleanup_hold_borrowed": 5,
+    "perleaf_GH": 3,
+    "required6_control": 41,
+    "optional7_control": 44,
+    "control_ceiling": 40,
+    "status": "NOT_ADMISSIBLE_WITH_THIS_SCHEDULE; actual ROOT execution-spec must change approved guard/session plan or narrower phased scope while preserving all guards/holds, not caps"
+  },
+  "source_only7_never_whole7": true,
+  "limits_not_changed": {
+    "whole_HTTP": 164,
+    "manual_HTTP": 24,
+    "control_HTTP": 40,
+    "D1_reads_day": 3500000,
+    "D1_writes_day": 70000
+  },
+  "all_counts": "Arithmetic from actual source and proposed plan, not actual transport/native cost/latency/admission."
+}

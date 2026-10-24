@@ -1,0 +1,97 @@
+{
+  "schema": "SOURCE_BINGX_B01_PROVIDER_CAPTURE_AND_ARTIFACT_CONTRACT_V1",
+  "source_plan": "root-request-plan.json exact original3179B/870b90c9...; ROOTclarification retained inblockers",
+  "provider": "BINGX",
+  "base_url": "https://open-api.bingx.com",
+  "maximum_attempts": 7,
+  "ordered_routes": [
+    {
+      "order": 1,
+      "route": "/openApi/swap/v2/server/time",
+      "body_decoded_cap_bytes": 16384
+    },
+    {
+      "order": 2,
+      "route": "/openApi/swap/v2/quote/contracts",
+      "body_decoded_cap_bytes": 2097152,
+      "retain": "native fields/contractId/symbol/asset/currency/status/apiStateOpen/size/metadata and original body clock/hash; no assetType inferred"
+    },
+    {
+      "order": 3,
+      "route": "/openApi/swap/v1/ticker/price",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "requires": "exact native catalog record and independently known Bitcoin crypto identity",
+      "body_decoded_cap_bytes": 65536
+    },
+    {
+      "order": 4,
+      "route": "/openApi/swap/v3/quote/klines",
+      "params": {
+        "symbol": "BTC-USDT",
+        "interval": "1m",
+        "limit": 6
+      },
+      "window": "Explicit last closed minute at native server cut; exact startTime/endTime computed from retained serverTime before request",
+      "body_decoded_cap_bytes": 131072
+    },
+    {
+      "order": 5,
+      "route": "/openApi/swap/v2/quote/openInterest",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "body_decoded_cap_bytes": 65536,
+      "unit": "Keep raw; no multiplication or conversion until unit independently qualified"
+    },
+    {
+      "order": 6,
+      "route": "/openApi/swap/v2/quote/premiumIndex",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "body_decoded_cap_bytes": 131072
+    },
+    {
+      "order": 7,
+      "optional": true,
+      "route": "/openApi/swap/v2/quote/fundingRate",
+      "params": {
+        "symbol": "BTC-USDT",
+        "limit": 3
+      },
+      "only_if": "funding period cannot be established from already returned exact native fields AND remaining current admission allows it",
+      "body_decoded_cap_bytes": 131072
+    }
+  ],
+  "preleaf_requirements": [
+    "Actual rootauthenticatedexecution/admission/bridge/Paid/profile available, not local lease/callerbool",
+    "Actual nonduplicate whole/daily/minute reserved units tied exact logical request identity and current immutable7route plan",
+    "After every awaitedDB/fs/control operation immediately recheck inheritedunknownSTOP, lease/run/session/UTC deadlines and local reservations before next IO",
+    "Persist bounded exact intent before attemptedGET, include operationid/run/head/order/method/encodedURL/query/caps/reservationrefs/hostclock; acknowledgement must precede dispatch",
+    "No redirect/proxy/domain fallback/retry/key/privateAPI; increment actualattempt counter immediately at transport invocation, no decrement/refund"
+  ],
+  "response_protocol": [
+    "Header deadline10s and bodycomplete deadline10s, with earlier run/lease/tail deadline actively enforced through streaming and late/ignored abort; decoded caps perroute exactly saved",
+    "Save exact bounded decoded response bytes andSHA before schema assertions or next request, HTTPstatus/clientinterval/nativefieldclock separate; compressed wirelength never inferred fromdecoded bytes or Content-Length",
+    "HTTPnon200/bodyincomplete/timeout/transportuncertain/schemaunknown/savefailure =>STOP with prior bodies/intent/usage intact, no retry/forwardsourceclock; no successfact frompartialbody",
+    "First native servertime cut must exist exactly before computing BTC candle start/end; never substitute localDate.now. Preserve actualclientclock andnativeclock drift, then lastclosed1mUTC boundary only. No openbar/array-shape guess.",
+    "Catalogue retained in fullboundedbody, no number/crypto/overlap inferred. Exact BTCrecord and independently known Bitcoinbinding before price/candle/OI/funding requests. No wholecatalogue classification grant; source units/period missingNULL.",
+    "Optional7 only if original earlier fields fail to establishfundingperiod AND remaining actualauthenticatedgrant/deadline supports it; observedeventgap never currentperiod byitself; no seventhcall justbecauseunusedcapacity"
+  ],
+  "journal_and_artifact": [
+    "Intent+returnedrawpublicbody+SHA/header metadata/client clock+originalnativeclockfields+attempt/reservation/STOPstate; responseRETURN saved before nextconsumer/assertion",
+    "No secrets/Authorization/env/SQLparams/results/controlfullsettings/bindingvalues; raw publicbody stays existing permitted GH artifact/localtmp, sanitized hash/schema/bindings inGit",
+    "Exact artifact/head/run/attempt binding; always retain failurepartialcarrier through existing workflow. Localfilesystem acknowledgement is not distributedCAS/powerloss/globalonce proof.",
+    "Knowncost finalization uses exactalreadyreserved identity and journal; preserves unknown/debt/reserve. Unknownfinalization ACK staysambiguous, no blindrepeat. Native source attempt cost not refunded onHTTPfailure or absentmetadata."
+  ],
+  "current_capture": {
+    "provider_HTTP": 0,
+    "D1_SQL": 0,
+    "native_server_clock": null,
+    "actual_catalogue": null,
+    "current_day_or_provider_grant": null,
+    "source_facts_qualified": false
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "SOURCE_BINGX_B01_EARLY_ACTUAL_ADMISSION_BLOCKERS_V1",
+  "status": "REAL_ENTRY_SEAM_NOT_READY_NO_CALLABLE_CREATED",
+  "root_plan_sha256": "870b90c9ceec6ee573f405fec67546e953cc2aabcc4270c1bea97f2c3958626e",
+  "fixed_base": "373566cf2ce65f87d2e038da2407b60abb3578fb",
+  "blockers": [
+    {
+      "id": "B01_SQL_ZERO_CONTRADICTS_DURABLE_GRANTS",
+      "actual": "loadDailyUsageAggregate is1SELECT; reserveRunBudget INSERT+SELECT; source daily reservation3batch statements+SELECT; rolling minute INSERT+2SELECT; finalizationUPDATE. No schema installation counted. Before firstGET at least10SQLstatements in this conventional chain. 6/7 perattemptminute reservations imply26/29SQLstatements total,24/27bridgeHTTP calls with batch grouping. These are source-static counts, not native row/billing bounds.",
+      "required_ROOT": "Clarify zeroSQL as capture-phase only and authorize/pin actual accounting prelude+finalization/reservations, or supply independently authenticated SAME-RUN durable pregrants with still-valid temporal scope and reserved existingfinalizer. Entirejob0SQL cannot create/finalize these grants."
+    },
+    {
+      "id": "B01_NO_AUTHENTICATED_BINGX_PROVIDER_POLICY",
+      "actual": "generic daily/minute functions accept arbitrary source/provider/cap from caller; they are mechanisms, not an entitlement. publicVenueMinuteCap(BINGX) falls back0. createSharedSourceBudget providerOf rejectsBingX. createD1SourceAdmission uses report2_liq_source_* tables; not allowed to alias BingX into LIQ.",
+      "required_ROOT": "Protected ROOT-reviewed BINGX shared-pool policy with exact scope/fingerprint, limits/units/windows/manual reserves and authority; reuse generic daily/minute ledgers only after real durablegrant ACK/readback; no SOURCE provider installation."
+    },
+    {
+      "id": "B01_ATOMIC_ROOT_RUN_PARENT_REQUIRED",
+      "actual": "reserveRunBudget itself has unconditional INSERT and no atomic sharedSUM/unknown/manual/nextfull predicate; evaluateDailyReservationBudget is separate advisory read. Atomic old LIQ/retention admission hardcodes other families and cannot authorize BingX.",
+      "required_ROOT": "Actual existing ROOT parent reservation/current day authority protecting all families and nextfull+manual, or centrally qualified exact atomic B01 admission on existing ledger. No copied old research grant or allowed:true callback."
+    },
+    {
+      "id": "B01_FINALIZATION_IDENTITY_AND_FULL_CONTROL_PLAN",
+      "actual": "createFailedD1RunAccounting accepts only exact R2RUN:<ts>:<16hex>, not an invented BINGX ID. Native bridge/Paid/current day have not been queried. Need actual combined control+bridge+provider+manual accounting and same selected bridge before/after.",
+      "required_ROOT": "Explicit existing generic finalizeRunUsage once for exact real reservation or genuine bound existing ROOT failed-accounting parent; reserve finalizer/afterbridge/STOP artifact before firstGET; preserve unknown, neverretryunknownACK."
+    },
+    {
+      "id": "B01_CONTROL40_PROFILE_NOT_BOUND",
+      "actual": "If new entry repeats3 GH guards before EVERY providerGET, initial8GH +Paid1CF +beforebridge5CF +postbridge4CF +borrowedcleanup5 =23 control baseline; plus3*n =>41 for6 or44 for7, above40. Selfcleanup10 would46/49. Existing script not run; arithmetic only.",
+      "required_ROOT": "Bind exact bounded fresh-guard/session schedule and actual perCF/perprovidercontrol factory. Keep40 ceiling and post4/cleanup holds. Do not silently omit cleanup or remove guards. No speculative successful control count is qualified."
+    }
+  ],
+  "source_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "SQL": 0,
+    "providerHTTP": 0,
+    "CF": 0
+  },
+  "no_standalone_fake_entry": "No executable/provider acquisition callable until real admission binding exists. The finite package will provide exact entry sequence/required ROOT configuration instead of a boolean grant or placeholder framework.",
+  "root_clarification": {
+    "received": "Actual ROOT incoming24Oct after finding",
+    "statement": "ZeroSQL was first GET/preparation scope only; field name too broad for full research-entry. Future ROOT execution spec must have separate positive bounded DB/admission/finalization budget and actual current grant before leafGET.",
+    "status": "B01_SQL_ZERO_SCOPE_AMBIGUITY_ACKNOWLEDGED; WHOLE_ENTRY_BUDGET_STILL_NOT_SUPPLIED",
+    "new_native_authorization": false
+  }
+}

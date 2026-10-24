@@ -1,0 +1,90 @@
+{
+  "schema": "BINGX_DIRECT_READONLY_BOOTSTRAP_REQUEST_PLAN_V1",
+  "execution_status": "PROPOSED_NOT_DISPATCHED_NOT_ADMITTED",
+  "purpose": "First original official source bodies for native contract/price/closed candles/OI/funding shape; not full coverage or strategy acceptance",
+  "base_url": "https://open-api.bingx.com",
+  "method": "GET_ONLY",
+  "no_API_key_or_private_account_endpoints": true,
+  "maximum_provider_HTTP_attempts": 7,
+  "maximum_required_HTTP_attempts": 6,
+  "no_automatic_retry_redirect_or_proxy": true,
+  "per_request_minimum_spacing_ms": 1100,
+  "per_request_header_timeout_ms": 10000,
+  "per_request_complete_body_timeout_ms": 10000,
+  "all_requests_require_existing_actual_whole_and_provider_admission": true,
+  "lease_is_not_provider_grant": true,
+  "maximum_native_D1_SQL_in_this_plan": 0,
+  "current_actual_day_admission": null,
+  "manual24_and_whole164_preserved": true,
+  "requests": [
+    {
+      "order": 1,
+      "route": "/openApi/swap/v2/server/time",
+      "body_decoded_cap_bytes": 16384
+    },
+    {
+      "order": 2,
+      "route": "/openApi/swap/v2/quote/contracts",
+      "body_decoded_cap_bytes": 2097152,
+      "retain": "native fields/contractId/symbol/asset/currency/status/apiStateOpen/size/metadata and original body clock/hash; no assetType inferred"
+    },
+    {
+      "order": 3,
+      "route": "/openApi/swap/v1/ticker/price",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "requires": "exact native catalog record and independently known Bitcoin crypto identity",
+      "body_decoded_cap_bytes": 65536
+    },
+    {
+      "order": 4,
+      "route": "/openApi/swap/v3/quote/klines",
+      "params": {
+        "symbol": "BTC-USDT",
+        "interval": "1m",
+        "limit": 6
+      },
+      "window": "Explicit last closed minute at native server cut; exact startTime/endTime computed from retained serverTime before request",
+      "body_decoded_cap_bytes": 131072
+    },
+    {
+      "order": 5,
+      "route": "/openApi/swap/v2/quote/openInterest",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "body_decoded_cap_bytes": 65536,
+      "unit": "Keep raw; no multiplication or conversion until unit independently qualified"
+    },
+    {
+      "order": 6,
+      "route": "/openApi/swap/v2/quote/premiumIndex",
+      "params": {
+        "symbol": "BTC-USDT"
+      },
+      "body_decoded_cap_bytes": 131072
+    },
+    {
+      "order": 7,
+      "optional": true,
+      "route": "/openApi/swap/v2/quote/fundingRate",
+      "params": {
+        "symbol": "BTC-USDT",
+        "limit": 3
+      },
+      "only_if": "funding period cannot be established from already returned exact native fields AND remaining current admission allows it",
+      "body_decoded_cap_bytes": 131072
+    }
+  ],
+  "retained_evidence": "Original public bodies in bounded existing artifact/localtmp; sanitized hash/clock/schema receipts in Git",
+  "source_capture_will_not_prove": [
+    "all crypto classification",
+    "entire universe current useful facts",
+    "whole-day cost safety",
+    "native strategy admission",
+    "native firstknowledge or anomaly ACK",
+    "Telegram SENT"
+  ],
+  "first_scope_source_HTTP_executed": 0
+}
