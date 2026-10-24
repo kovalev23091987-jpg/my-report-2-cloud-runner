@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792858525379",
   "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
   "acquired_ts": 1792858525379,
@@ -27,5 +27,29 @@
     "checkpoints/bingx-migration-20261024/migration-receipt.json",
     "checkpoints/bingx-migration-20261024/next-worker-queues.json"
   ],
-  "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792859492463"
+  "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792859492463",
+  "released_ts": 1792860563363,
+  "result": {
+    "task": "B04",
+    "frozen_head": "f0d33890e7aeda89a4fa9832c618d997dc483062",
+    "pull_request": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/635",
+    "files": 16,
+    "manifest_bytes": 4085,
+    "manifest_sha256": "e8e3d12f4470f06afd73a29c7a843af3f1903d3067ffdda1cb1829400ba3074b",
+    "FULL_local_Git_readback": true,
+    "FULL_remote_files_received": 16,
+    "remote_Git_blob_IDs_and_UTF8_lengths_match": true,
+    "remote_content_independently_SHA256_rehashed": false,
+    "case": "ONEnew22named PREPARED_UNEXECUTED",
+    "actual_existing_chain": "pack/persist/reader/Workerloader/historyMetrics5expressions TEXTproposed + typed ROOT current/compatible registry contract",
+    "current_native_producer_or_Stage0_cutover_qualified": false,
+    "actual_native_registry_or_admission_exists": false,
+    "native_billable_cost": null,
+    "native_wire_bound_qualified": false,
+    "Node_import_syntax_tests_provider_SQL_CF_deploy_MAIN_TG_delete": 0,
+    "shared_runtime_changed": false,
+    "old63418case_unchanged_not_replayed": true,
+    "originals_caps_unknowns_deferrals_preserved": true
+  },
+  "release_note": "Release ONLY own B04 offline scoped lease after PR635/frozen16FULL/readback/ROOT handoff; acquired/expiry unchanged, before85minute expiry. No ROOT or SOURCE ref/status/phase/fence/generation/shared-runtime/native/provider/SQL/MAIN/TG mutations."
 }
