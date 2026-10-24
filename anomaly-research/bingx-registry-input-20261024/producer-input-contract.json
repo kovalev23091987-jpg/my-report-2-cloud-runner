@@ -1,0 +1,108 @@
+{
+  "schema": "ACTUAL_NATIVE_CATALOG_TO_COMBINED_B04_REQUIRED_INPUT_CONTRACT_V1",
+  "status": "FINITE_REAL_INPUT_DISPOSITION_REQUIRED_ROOT_AUTHENTICATED_BINDING",
+  "raw_policy": "Rawcatalog/full1278projection/nativeBTCquotes PRIVATEonly, neverGit; sanitizedcounts/hash/schema/pointers only in thispacket",
+  "producer_seam": {
+    "head": "479d39906d542189f43b91e15521bd323aac8c02",
+    "module_path": "checkpoints/source-worker-bingx-primary-adapter-20261024/bingx-perpetual-market.mjs.txt",
+    "bytes": 20966,
+    "sha256": "129bbde37c64c7ffeac185bcbd29a787853c0952e2e2279a35b1cb1ce759002d",
+    "function": "normalizeBingxCatalog",
+    "literal_guards": {
+      "line14": "USDT_M requires exact-USDT suffix",
+      "line78": "symbol(row.symbol,f) BEFORE currency processing",
+      "line85": "USDT_M quote literalUSDT",
+      "line86": "nonUSDT settle triggers SETTLEMENT_FAMILY_MISMATCH"
+    },
+    "actual_input_counterexample": "All49USDC rows have status1; wholecaptured1278response cannot be accepted as uniformUSDT_M by these literal guards. No actual JS exception execution is claimed.",
+    "required_delta_owner": "SOURCE actual-schema task; THIRD does not duplicate provider module edits",
+    "actual_counterexample_pointer": {
+      "ordinal": 2,
+      "original_body_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+      "JSON_pointer": "/data/201",
+      "field": "currency",
+      "observed": "USDC",
+      "not_full_row_export": true
+    }
+  },
+  "concrete_projection_contract": {
+    "original": {
+      "body_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+      "body_bytes": 605854,
+      "row_count": 1278,
+      "code": 0
+    },
+    "per_row": "Exact original index+contractId/symbol/asset/currency/status/APIstate strings/rawsize/precisions/launchTime; original unchanged payloadSHA + private projectionSHA. Every row has a disposition; do not silentlydrop USDC/state25/missingidentity.",
+    "partitions": [
+      {
+        "currency": "USDT",
+        "status": 1,
+        "rows": 935
+      },
+      {
+        "currency": "USDC",
+        "status": 1,
+        "rows": 49
+      },
+      {
+        "currency": "USDT",
+        "status": 25,
+        "rows": 294
+      }
+    ],
+    "filtered_body_policy": "Do not reserialize a subset and call it original/fullcatalogue. A projection retains originalbodySHA/index/count plus own derivedSHA and declared scope.",
+    "identity_policy": "Row symbol/asset/displayName/status and lexicalHTX overlap are not independentcrypto identity. ROOT-specificBTCprimarydocs remain PROPOSED until protectedROOTauthentication."
+  },
+  "consumer": {
+    "head": "2561b7204b694c963df478951965fd95b6248871",
+    "functions": [
+      "bindBingxHistoryRegistry",
+      "normalizeBingxHistoryRow",
+      "packSnapshotShards",
+      "readMarketHistoryTargets"
+    ],
+    "current_expected_registry_JSON": null,
+    "current_external_expected_SHA": null,
+    "verified_registry_instruments_emitted": 0,
+    "proposed_subset": {
+      "native_contractId": "100",
+      "native_symbol": "BTC-USDT",
+      "native_asset": "BTC",
+      "native_currency": "USDT",
+      "binding_status": "PRIMARY_DOCUMENT_BINDING_PROPOSED_NOT_ROOT_REGISTRY_GRANT"
+    },
+    "required_before_valid_registry": [
+      "ROOT-authenticated exact specific BTC identity/product/settlement proof and immutable locator/pin (full rendered-original absent in current proposal)",
+      "Explicit qualified margin currency and stable instrument/token epoch/units revision; no receivedtime/globalcataloghash revision",
+      "ROOT-protected registry JSON + independentexpectedSHA/Gitbloblocator/actor/schema/exact acceptedgeneration set/current+compatible manifests",
+      "Source actual-schema projection preserving nativecurrency and originalbody provenance",
+      "Actualadmitted currentrow producer/asof/cost/wire/globalprovider/D1budget before production IO; this7approval alreadyconsumed"
+    ]
+  },
+  "metric_rules": {
+    "price": "Original timed LAST observation is not BBO/MID/executable gate; becomes old with its original clock",
+    "OI": "Retain native decimal+native time+payload proof, unitNULL; do not multiply catalog size or inferUSD by magnitude",
+    "quantity_size": "BothNULL; positive rawsize or mintrade do not establish contractface/units",
+    "premium": "ExplicitfundingIntervalHours8 observed; rawupdateTime olderboundary, currentmark/index sourceclock still unqualified; never stampnewreceivedassource",
+    "funding": "Explicitnative8H is an observedfield, notdefault. Preserveperiod/sourceclock semantics separately; no newrankingbonus",
+    "turnover24h_BBO_depth": "Not acquired in7; remainNULL, no synthesis from6candles",
+    "candles": "6retainednative1m objects, time semantics remainsSourcequalification; not20closedN10bars or240minute signedflow",
+    "snapshot_time": "Oldretainedcaptures are researchbootstrapfacts; do not fabricate prior B04 snapshots or currentfreshness atlaterprocessing/firstknowledge"
+  },
+  "stable_continuity": "Reuse636existingstable identity tuple and explicit compatiblemanifests afterROOTbinding; rawcatalogSHA/received/globalregistryversion remainprovenance, notinstrumentrevision",
+  "case_decision": {
+    "new_callable_created": false,
+    "reason": "No ROOT-authenticated crypto/margin/registry input exists yet. Do not turn documentaryproposal into VERIFIEDflags for a synthetic positive case. User explicitly permits finite full disposition+needed binding contract. Existing634635636cases notrun/reviewedagain."
+  },
+  "native_or_semantic_actions": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "new_provider_HTTP": 0,
+    "SQL": 0,
+    "CF": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  }
+}

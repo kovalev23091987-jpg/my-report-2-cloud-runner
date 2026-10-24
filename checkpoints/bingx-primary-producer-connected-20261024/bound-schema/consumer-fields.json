@@ -1,0 +1,20 @@
+{
+  "schema": "SOURCE_BINGX_NATIVE_SCHEMA_TO_ACTUAL_CARRIER_DELTA_V1",
+  "status": "TEXT_PROPOSED_NOT_INSTALLED_OR_EXECUTED",
+  "catalogue": {
+    "route_family_label": "USDT_M remains existing swap API routing family, NOT a default quote/settlement asset. COIN_M stays separate and was not newly captured.",
+    "symbol_native_currency": "USDT_M permits exact -USDT/-USDC symbols with same exact native currency. Missing/mismatch refuses; never convert49USDC toUSDT.",
+    "identity": "quote/settle/margin/native_symbol/native_contract_id remain distinct scalar identity fields; independently requested identity must match its symbol quote and native stablecoin settlement. Crypto eligibility still requires separate qualified mapping.",
+    "whole_row_provenance": "catalog_row_index is original zero-based row ordinal plus unchanged catalogue payload SHA. Row index is provenance, not stable identity or a token/multiplier revision. ROOT/THIRD stable keys must exclude index/receipt clocks/body hash while preserving quote/settle and actual revision.",
+    "native_status": "1 is native online marker only.25 remains native offline row. Neither status nor API open is crypto proof or entry admission.",
+    "USDC_units": "No USDC→USDT normalization; quoteVolume unit stays NULL for USDC, because actual USDC ticker unit not captured. Native price quote per native base uses exact quote.",
+    "size": "Nonzero native size remains raw; no contract_size_decimal/unit/quantity default without independent unit proof."
+  },
+  "premium": {
+    "explicit_period": "Only observed USDT_M premium native numeric integer hours>0<=24 yields hours*3600000 with NATIVE_EXPLICIT_FUNDING_INTERVAL_HOURS. Missing/string/invalid/outside bounded profile ->NULL; no default8h or event-gap fallback. COIN_M field stays unqualified.",
+    "clock": "Keep native updateTime separately as funding_update_time, reject future metadata time; never use it as mark/index/rate source_ts. Original field scope remains unqualified even when coinciding with historical funding boundary.",
+    "carrier": "Actual proposed assembleBingxFuturesObservation exports funding.period_ms/period_origin/period_received_ts/native_update_time; funding.source_ts staysNULL and mark_price_source_ts staysNULL. Receipt clock labels metadata observation only.",
+    "score": "NO_GRANT/native_admissionfalse/scorefalse/entryfalse preserved. Explicit8h does not satisfy owner <=4h/<=1h adjustment conditions; no policy change."
+  },
+  "consumer_boundary": "SOURCE delta changes only pure adapter proposal and its actual exported assembler. ROOT binds actual producer/requested identity/Worker+THIRD636/import closure and protected primary doc before FIRST; no final THIRD implementation read/peer or native registry grant claimed."
+}
