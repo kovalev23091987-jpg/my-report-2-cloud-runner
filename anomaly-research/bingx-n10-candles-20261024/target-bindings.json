@@ -1,0 +1,70 @@
+{
+  "schema": "BINGX_N10_OBJECT_CANDLE_TARGETS_V1",
+  "fresh_main": "85e3bd2aab265adc59c7234589900b6a956b3d5e",
+  "ROOT_composed_worker_baseline_head": "0c72e28d3ee6b46e77bf627dad48136de3c0e5f9",
+  "targets": {
+    "current-generation/files/src/htx-technical-structure.mjs": {
+      "before": {
+        "bytes": 33974,
+        "sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337",
+        "git_blob": "4f371785bbf4ac44499c7bcbfbeee8a35ae31052"
+      },
+      "after": {
+        "bytes": 38281,
+        "sha256": "ce1560acd68e1625b90e4d227bed55c83b227e1f77279ac72608fd6283d2a601",
+        "git_blob": "9f39ac0c975f9c29392828509e219320a0544275"
+      },
+      "proposed_text": "htx-technical-structure.proposed.mjs.txt",
+      "patch": "htx-technical-structure.proposed.patch",
+      "patch_pin": {
+        "bytes": 6095,
+        "sha256": "d48f7b18a885178a8d9d03082e036f52fcf333b2f9889fe7a56589acc62ff202",
+        "git_blob": "e408bb014e69bc21c250e4ac220371fad6ded632"
+      }
+    },
+    "current-generation/files/src/worker.js": {
+      "before": {
+        "bytes": 647603,
+        "sha256": "4b066bbfbdaaf82b578493b95e48a87983a078cf400d38d154c6811d3f900860",
+        "git_blob": "68a7dd451320ee8cddf19ed95773c9a54687da13"
+      },
+      "after": {
+        "bytes": 648264,
+        "sha256": "36ba261ac641e1ac469bc3953c38baca39a68ae993022ac7de17ffbe12e54e8c",
+        "git_blob": "a3931913c0ab1b4cc2c0e45020748dfae6f21f03"
+      },
+      "proposed_text": "worker.proposed.mjs.txt",
+      "patch": "worker.proposed.patch",
+      "patch_pin": {
+        "bytes": 1951,
+        "sha256": "0551358ff1465ede06e22fd6712c14e063b13d4d98f41e4c390f890747fe354d",
+        "git_blob": "f7c5f9316f07ca4fa9ddf9a870b85d00648ca558"
+      }
+    }
+  },
+  "unchanged_dependencies": {
+    "current-generation/files/src/bingx-perpetual-market.mjs": {
+      "bytes": 22508,
+      "sha256": "88c9dce0920459753db2a3e16f51f672e99268bcf0892867cba40fa8aa99121b",
+      "git_blob": "29cbc737522eb24eb9c843179e9bc9e11c01148b"
+    },
+    "current-generation/files/src/market-snapshot-batch.mjs": {
+      "bytes": 28267,
+      "sha256": "ceafc8cba053095e7f26b07b7fac3f5d811e5bb85710b7284d903c65a3a538a3",
+      "git_blob": "e9013e4e914d3e2770fa9fece1ec76d6284bb149"
+    }
+  },
+  "source_heads": {
+    "SOURCE": "bc5a4ea61e8e70505448e9ad12429df784dc3e10",
+    "THIRD638": "60910dca09bd07a2ca15500882800ddd35d5c9af"
+  },
+  "actual_gap": {
+    "existing_consumer": "buildHtxPrimaryTechnicalReceipt only accepts HTX FULFILLED/MID/channel+id format, ignores BingX native object candles",
+    "actual_root_caller": "Root early BingX buildDeepCheckInput exits before this consumer",
+    "SOURCE_current_contract": "normalizeBingxCandles native time is not independently qualified open-time; closed_ohlcv_qualified=false; USDT volume_unit=NULL",
+    "repair": "Real existing N10 receipt obtains exact raw object-candles via Source parser and protected ROOT independent byte/receipt/identity binding; returns useful research candidate facts, never closed context."
+  },
+  "latest_human_target": "USDT-margined crypto perpetual ONLY; exclude USDC,COIN_M,UNKNOWN classification; no qualified global N inferred from provisional935 onlineUSDT",
+  "runtime_installed": false,
+  "Node_executed": false
+}
