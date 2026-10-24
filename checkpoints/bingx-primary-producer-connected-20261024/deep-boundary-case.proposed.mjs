@@ -3,15 +3,15 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
-export async function runBingxDeepBoundaryCase({repo_root,save_result}={}){
+export async function runBingxDeepBoundaryCase({repo_root,save_result,runtime_root=null}={}){
  const result={schema:'BINGX_ACTUAL_DEEP_BOUNDARY_CONTROLLED_V1',completed:[],actual_returns:[],groups:0,provider_HTTP:0,native_SQL:0,MAIN:0,Telegram:0};
  const originalNow=Date.now,originalFetch=globalThis.fetch;
  let fetches=0,sql=0,reads=0;
  const save=async(name,value)=>{result.actual_returns.push({name,value:structuredClone(value)});await save_result(name,structuredClone(result));return value;};
  try{
   assert.equal(typeof save_result,'function');globalThis.fetch=async()=>{fetches++;throw Error('NATIVE_NETWORK_FORBIDDEN');};
-  const api=await import(pathToFileURL(join(repo_root,'current-generation/files/src/worker.js')).href);
-  const source=await import(pathToFileURL(join(repo_root,'current-generation/files/src/bingx-perpetual-market.mjs')).href);
+  const api=await import(pathToFileURL(join(runtime_root??join(repo_root,'current-generation/files'),'src/worker.js')).href);
+  const source=await import(pathToFileURL(join(runtime_root??join(repo_root,'current-generation/files'),'src/bingx-perpetual-market.mjs')).href);
   const T=1800000000000,H='a'.repeat(64);
   const i={schema:'BINGX_CRYPTO_PERPETUAL_INSTRUMENT_V1',venue:'BINGX',market:'FUTURES',product:'PERPETUAL',family:'USDT_M',contract:'CONTROLLED-USDC',native_symbol:'CONTROLLED-USDC',native_contract_id:'CONTROLLED100',base:'CONTROLLED',quote:'USDC',settle:'USDC',margin:'USDC',linear_inverse:'LINEAR',quantity_unit:null,contract_size_decimal:null,contract_size_unit:null,price_unit:'QUOTE_PER_NATIVE_BASE',identity_revision:'CONTROLLED_V1',crypto_eligibility:'VERIFIED_CRYPTO_PERPETUAL',underlying_class:'CRYPTO_ASSET',crypto_eligibility_proof_ref:'CONTROLLED_NOT_NATIVE',catalog_payload_sha256:H,token_multiplier_decimal:null,asset_binding:{status:'VENUE_SCOPED',canonical_asset_id:null,chain_id:null,token_address:null,token_epoch:null,proof_ref:null}};
   const registry={schema:'BINGX_HISTORY_REGISTRY_V1',venue:'BINGX',actor:'CONTROLLED_RESEARCH',snapshot_schema:'report2-market-snapshot-batch-v1',row_schema:'BINGX_NATIVE_METRICS_ROW_V1',registry_revision:'CONTROLLED_V1',instruments:[{instrument_identity:i,unit_revision:'CONTROLLED_PRICE_ONLY',metric_specs:{price:{unit:'QUOTE_PER_NATIVE_BASE',basis:'LAST'},oi:{unit:null,basis:'NATIVE_OPEN_INTEREST'},turnover_24h:{unit:null,basis:'PROVIDER_ROLLING_24H'},funding_rate:{unit:'RATE_PER_ACTUAL_PERIOD',basis:'NATIVE_FUNDING_RATE'}}}]};
