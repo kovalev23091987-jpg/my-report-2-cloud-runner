@@ -1,0 +1,82 @@
+{
+  "schema": "B04_STATIC_TEXT_VERIFICATION_V1",
+  "fixed_main": "665362d98296c2c86aa99cd0c7085b33bb337cf9",
+  "observed_ts": 1792860308652,
+  "checks": [
+    {
+      "target": "current-generation/files/src/market-snapshot-batch.mjs",
+      "before": {
+        "bytes": 5423,
+        "sha256": "25d24e32073829fe7e4cccdfcf9369b3dfa16aa4ace326b1d0947f98c4aebd9c"
+      },
+      "after": {
+        "bytes": 22541,
+        "sha256": "f5e55895d9d322949fe31847bb6f7cee6fa370acd2c4e667f3b4c37c9252087f"
+      },
+      "diff_text": "EXACT"
+    },
+    {
+      "target": "current-generation/files/src/market-history-reader.mjs",
+      "before": {
+        "bytes": 21619,
+        "sha256": "2e82c72abec59d4b66f6767a07c5a4f158865caca0f15d1ec54b09dac7b0ad79"
+      },
+      "after": {
+        "bytes": 26383,
+        "sha256": "aad28817e916196bd86da18d55cfe83e601c3aea2aef7030bb96094761134eed"
+      },
+      "diff_text": "EXACT"
+    },
+    {
+      "target": "current-generation/files/src/worker.js",
+      "before": {
+        "bytes": 634229,
+        "sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4"
+      },
+      "after": {
+        "bytes": 635391,
+        "sha256": "436beff008f2cb544e578be57cd1da8a9c7efe6802e10f728c67373e3d55d8ef"
+      },
+      "diff_text": "EXACT"
+    },
+    {
+      "name": "Entire batch baseline prefix except explicit new pack branch/signature exact, including unchanged persist/install/cleanup/admit bodies",
+      "status": "TEXT_MATCH"
+    },
+    {
+      "name": "Entire existing reader baseline restored byteexact except explicit new branch/signature/import, including20min fallback and separate contract reader",
+      "status": "TEXT_MATCH"
+    },
+    {
+      "name": "Entire Worker restored exact except import/loader/historyMetrics branch and FIVE actual expressions; no acquisition/score/admission edit",
+      "status": "TEXT_MATCH"
+    },
+    {
+      "name": "ONE22variant callable uses actual unique loader/metrics/transitions spans; captures return before assert; UNEXECUTED",
+      "status": "TEXT_MATCH_ONLY"
+    },
+    {
+      "name": "No tracked shared files changed; only own new prefix; old634 preserved by immutable base and no edits",
+      "status": "MATCH"
+    }
+  ],
+  "method": "Python text/hash/JSON/Git comparisons only; NOT JS syntax/AST/import/behavior/tests/SQLite/native",
+  "new_case": {
+    "groups": 1,
+    "named_variants": 22,
+    "status": "PREPARED_UNEXECUTED"
+  },
+  "native_producer_or_registry_qualified": false,
+  "native_billable_cost": null,
+  "native_wire_body_bound_qualified": false,
+  "Node_import_syntax_tests_SQL_provider_CF_MAIN_TG": 0,
+  "shared_runtime_or_DDL_changed": false,
+  "prefreeze_refresh": {
+    "current_main": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+    "AGENTS_byteequal": true,
+    "all4_equal": true,
+    "three_runtime_target_Git_blobs_same_as665": true,
+    "own_lease_amendment": "4f76d4cdea347a2a1c70c020387d7c4188851450",
+    "same_acquired_and_expiry": true
+  }
+}
