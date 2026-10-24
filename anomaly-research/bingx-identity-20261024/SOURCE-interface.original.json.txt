@@ -1,0 +1,69 @@
+{
+  "schema": "SOURCE_BINGX_PRIMARY_EARLY_API_AND_CONSUMER_SEAM_V1",
+  "status": "OFFLINE_PROPOSAL_NOT_NATIVE_OR_MUTUAL_ACK",
+  "fixed_main": "373566cf2ce65f87d2e038da2407b60abb3578fb",
+  "official_doc_url": "https://bingx-api.github.io/docs/",
+  "official_static_app": {
+    "url": "https://bingx-api.github.io/docs/static/js/app.4dcba784df17c52faa47.js",
+    "bytes": 1563628,
+    "sha256": "77094f2a99bdca9c1b8e41a260c3657a6ed6b8febe30818b486cb54fe0b14d8f"
+  },
+  "confirmed_document_shapes": {
+    "klines_both_families": "data array of OBJECTS open,close,high,low,volume,time; reject Binance arrays",
+    "usdt_m_contracts": "data array; contractId,symbol,asset,currency,status; sample size0 is NOT positive multiplier; no explicit crypto taxonomy",
+    "coin_m_contracts": "data array; symbol,status,precision/minimum fields,timeOnline; native contract ID/settle/multiplier absent in documented rows",
+    "book_ticker": "swap/v2 nested data.book_ticker with snake_case bid_price/ask_price, sample no clock; NOT skill flat camelCase",
+    "premium": "symbol,markPrice,indexPrice,lastFundingRate,nextFundingTime; native time absent in documented sample; source_tsNULL",
+    "funding_history_usdt_m": "data ARRAY symbol,fundingRate,fundingTime; no fixed 8h/default period; sort/unique actual events; missing previous event periodNULL",
+    "open_interest": "USDT_M symbol REQUIRED; no documented all-contract OI; unit unresolved in native docs; COIN_M sample time versus table timestamp conflict; preserve original fields with no unit/notional assumption"
+  },
+  "consumer_seams": {
+    "worker": "current-generation/files/src/worker.js",
+    "worker_sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4",
+    "price_calls": [
+      16101,
+      17273
+    ],
+    "execution_call": 17283,
+    "module": "current-generation/files/src/market-contracts.mjs",
+    "carrier_proposal": "futures.data.instrument_identity",
+    "input_option_proposal": "instrument_identity",
+    "reference_and_execution_expected_identity": "explicit same full DTO; execution additionally expected_instrument_identity independently bound by ROOT; legacy default HTX kept by THIRD, SOURCE does not edit"
+  },
+  "identity_dto_proposal": {
+    "schema": "BINGX_CRYPTO_PERPETUAL_INSTRUMENT_V1",
+    "venue": "BINGX",
+    "market": "FUTURES",
+    "product": "PERPETUAL",
+    "family": "USDT_M|COIN_M",
+    "contract": "exact native_symbol; never old HTX alias",
+    "native_symbol": "exact catalog symbol",
+    "native_contract_id": "native contractId string or NULL; COIN_M must not manufacture ID from symbol",
+    "base": "native catalog asset or independently qualified native mapping; never infer canonical token from ticker",
+    "quote": "USDT|USD from qualified family/catalog; not forced allUSDT",
+    "settle": "actual qualified settlement asset; COIN_M not guessed from ticker",
+    "margin": "same qualified margin asset, separately retained if differs",
+    "linear_inverse": "LINEAR|INVERSE qualified by product specification",
+    "quantity_unit": "BASE_ASSET|CONTRACTS|NULL; permetric must retain own unit separately",
+    "contract_size_decimal": "positive decimal or NULL; catalog size0/minTickSize/minTradeValue NOT multiplier",
+    "contract_size_unit": "BASE_PER_CONTRACT|QUOTE_PER_CONTRACT|NULL",
+    "price_unit": "QUOTE_PER_NATIVE_BASE; token scale distinct",
+    "crypto_eligibility": "VERIFIED_CRYPTO_PERPETUAL|EXCLUDED_NON_CRYPTO|UNKNOWN",
+    "crypto_eligibility_proof_ref": "exact qualified mapping proof; ticker regex/old105/venue alone insufficient",
+    "asset_binding": "venue-scoped until independent canonical token proof; no same-ticker crossvenue equivalence",
+    "identity_revision": "exact catalog/mapping revision binding, not observed clock",
+    "source_ts": "actual provider time or NULL; no request/local-receipt clock promotion",
+    "received_ts": "actual transport receipt clock"
+  },
+  "budget": "No internal fetch or hidden fanout. Catalog/ticker/price/premium bulk where documented. Klines and USDT OI percontract; OI rotation/staleness cannot become current closed facts. Rate500/10sec documented aggregate ceiling not admission. Request weights undocumented=NULL; wire bytes unmeasured=NULL; body caps proposed only. Root recalculates N/UTCday/month/manual/reserves/cadence; no cap raised here.",
+  "network_provider_calls": 0,
+  "execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "SQL": 0,
+    "CF": 0,
+    "dispatch": 0
+  },
+  "delivery": "LOCAL_ONLY_FOR_REQUESTED_ORDINARY_READ_NO_OUTBOUND_SEND"
+}

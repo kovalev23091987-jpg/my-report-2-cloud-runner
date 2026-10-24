@@ -1,0 +1,39 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -9517,6 +9517,8 @@
+     now_ts: Date.now(),
+     actor: 'HUB_PUBLIC_COLLECTOR',
+     preferred_generation: env?.REPORT2_CURRENT_GENERATION || null,
++    venue:params?.venue??params?.instrument_identity?.venue??'HTX',
++    instrument_identity:params?.instrument_identity??null,
+   });
+ }
+ 
+@@ -16100,6 +16102,9 @@
+ 
+   const htxObservationReferencePrice = buildHtxReferencePrice({
+     contract,
++    venue:futures?.data?.venue??futures?.data?.instrument_identity?.venue??'HTX',
++    instrument_identity:futures?.data?.instrument_identity??null,
++    expected_instrument_identity:params?.instrument_identity??null,
+     type: 'MID_OBSERVATION',
+     bid: futures?.data?.bbo?.best_bid,
+     ask: futures?.data?.bbo?.best_ask,
+@@ -17270,7 +17275,7 @@
+   const globalInternalContext=contextForContract(env?.REPORT2_GLOBAL_MARKET_CONTEXT || null,contract);
+   const finalRouteState=String(finalDecisionPublicationShadow?.entry_signal?.state||''),finalRouteDirection=String(finalDecisionPublicationShadow?.entry_signal?.direction||'').toUpperCase();
+   const htxReferencePrice=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState)&&['LONG','SHORT'].includes(finalRouteDirection)
+-    ?buildHtxReferencePrice({contract,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
++    ?buildHtxReferencePrice({contract,venue:futures?.data?.venue??futures?.data?.instrument_identity?.venue??'HTX',instrument_identity:futures?.data?.instrument_identity??null,expected_instrument_identity:params?.instrument_identity??null,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
+     :htxObservationReferencePrice;
+   const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.discovery_direction_hint??params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.snapshot_ts??params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts??params?.discovery_row?.scan_ts,confirmation_state:'DISCOVERY_ONLY'});
+   const entryDirectionAuthorization=authorizeEntryDirection({candidate:directionCandidate,final_route_state:finalRouteState,final_direction:finalRouteDirection,hard_veto:finalDecisionPublicationShadow?.entry_signal?.hard_veto===true});
+@@ -17280,7 +17285,7 @@
+   const routedExecutionHandoff=entryState&&executionHandoff.ok===true
+     ?checkExecutionHandoff(sealedFullEvidenceProof?.bundle?.execution_gate,{contract_code:contract,checked_ts:Date.now(),direction:finalRouteDirection})
+     :executionHandoff;
+-  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:routedExecutionHandoff?.ok===true?'SUCCESS':routedExecutionHandoff?.status,reason:routedExecutionHandoff?.reason},reference_price:htxReferencePrice});
++  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:routedExecutionHandoff?.ok===true?'SUCCESS':routedExecutionHandoff?.status,reason:routedExecutionHandoff?.reason,venue:routedExecutionHandoff?.venue??null,instrument_identity:routedExecutionHandoff?.instrument_identity??null},reference_price:htxReferencePrice,expected_instrument_identity:params?.instrument_identity??null});
+   const strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
+   const canonicalPublicationShadow={...finalDecisionPublicationShadow,entry_signal:{...(finalDecisionPublicationShadow?.entry_signal||{}),state:strictRouteState,direction:entryState?(entryDirectionAuthorization.authorized?entryDirectionAuthorization.direction:null):finalDecisionPublicationShadow?.entry_signal?.direction}};
+   const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
