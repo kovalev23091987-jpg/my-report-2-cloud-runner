@@ -1,13 +1,13 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792950711000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1792950711000,
   "expires_ts": 1792952691000,
   "expected_main": "0e6ecbe973f2b44c1ba80736fdaaf7e35a2ba736",
   "scope": "T PURE_RECENT_TRADES_QUOTE_NOTIONAL_CONSUMER. ROOTexactcontractref0e6ecbe973f2b44c1ba80736fdaaf7e35a2ba736 v1.2 TRADE_BASE_QUANTITY_UNIT/TRADE_QUOTE_NOTIONAL_UNIT read-only. Ownanalytics/context.mjs minimalnewunit branch: stabletradeid,eventts,price,notional_quote,side; positivefinitequoteamount directly BUYSELLnetflow, BASEunknown neverdividequote/price; preserve oldBASEbranch semantics. Qsamefreshqualifiedsampleprice response/clocks/conflictbeforerowfilter/dedup/tiesnull/fullmarketcausationabsorptionfalse. No benchmark/market_context. One smallnewaffected set2units/conflictpartial+actualanalysiscard artificial only; allcoreplans/readiness/rules/min10/BTCETH/t0P0clocks/map unchanged. Newtests/handoffsanalytics/package-t only, beforeoracles; preservefrozenS/P/Q/R/feature-v1, separatefeature-retentiondelta. No contracts/profile/shared/runtime/source edits/nativeHTTP/SQL/TG/deploy/cron/data deletion;9pauses2deferralsENTRYphysicalcapacity/capsunknownsreserves/original240 intact. No chats/subagents/automations. Newown<=35min/FULLreadback/timelyonlyownrelease, no newautonomousscope.",
-  "released_ts": null,
+  "released_ts": 1792951247000,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "pump-report/AGENTS.md": "24c682e2ecc9ebea95bfffde90c63bff68c2614d",
@@ -22,5 +22,25 @@
     "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "fc2a8428f5409d30c9cfa2a1925e67146325f9d8",
     "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "d6969c796ee0010c7f0699e35e850dc1bd25bd25",
     "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d"
-  }
+  },
+  "completion": {
+    "package": "T_QUOTE_NOTIONAL_CONSUMER",
+    "manifest": "pump-report/handoffs/analytics/package-t/qualification.json",
+    "sha256": "5e81ffca2288f95c7cb672317395f8529013c96f8f3b4bbc2cd1dcbcd4efd526",
+    "files": 19,
+    "new_unique_pass": 4,
+    "fail": 0,
+    "quote_amount_direct_USDT": true,
+    "BASE_derived": false,
+    "BASE_branch_oracle_unchanged": true,
+    "S_and_feature_v1_unchanged": true,
+    "core_plans_rules_clocks_unchanged": true,
+    "no_benchmark": true,
+    "native_HTTP": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "ROOT_integrates": true,
+    "status": "FROZEN_WIP_DEFERRED_FOR_OWNER_U3_COUNT_PRIORITY"
+  },
+  "release_note": "T frozen WIP retained, no additional patch/test. Owner priority changed to offline U3-COUNT under a new own scope. Release only own T."
 }
