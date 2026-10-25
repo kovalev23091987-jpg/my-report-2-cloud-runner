@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: J01 exact observed +20% qualifies the day cohort although all short windows are below +10%
+ok 1 - J01 exact observed +20% qualifies the day cohort although all short windows are below +10%
+  ---
+  duration_ms: 11.984292
+  type: 'test'
+  ...
+# Subtest: J02 no favorable minimum or reported percentage substitutes for first.open to last.close
+ok 2 - J02 no favorable minimum or reported percentage substitutes for first.open to last.close
+  ---
+  duration_ms: 0.288959
+  type: 'test'
+  ...
+# Subtest: J03 different identity, venue, source, origin, market or unit cannot qualify
+ok 3 - J03 different identity, venue, source, origin, market or unit cannot qualify
+  ---
+  duration_ms: 1.18975
+  type: 'test'
+  ...
+# Subtest: J04 stale, future, delayed or extended-expiry day facts never qualify
+ok 4 - J04 stale, future, delayed or extended-expiry day facts never qualify
+  ---
+  duration_ms: 0.429917
+  type: 'test'
+  ...
+# Subtest: J05 exact full aligned 24h boundaries are mandatory
+ok 5 - J05 exact full aligned 24h boundaries are mandatory
+  ---
+  duration_ms: 0.788125
+  type: 'test'
+  ...
+# Subtest: J06 missing minute, open row, incomplete coverage or false absolute/time assertions cannot qualify
+ok 6 - J06 missing minute, open row, incomplete coverage or false absolute/time assertions cannot qualify
+  ---
+  duration_ms: 1.065459
+  type: 'test'
+  ...
+# Subtest: J07 receipt and original OHLC fields and clocks remain bound
+ok 7 - J07 receipt and original OHLC fields and clocks remain bound
+  ---
+  duration_ms: 0.665
+  type: 'test'
+  ...
+# Subtest: J08 a conflicting endpoint in the independently observed core window is ignored without poisoning a short-window idea
+ok 8 - J08 a conflicting endpoint in the independently observed core window is ignored without poisoning a short-window idea
+  ---
+  duration_ms: 4.026833
+  type: 'test'
+  ...
+# Subtest: J09 invalid optional day data does not suppress independently qualifying short windows
+ok 9 - J09 invalid optional day data does not suppress independently qualifying short windows
+  ---
+  duration_ms: 3.307
+  type: 'test'
+  ...
+# Subtest: J10 observed day does not bypass current activity, current book or an independent pullback plan
+ok 10 - J10 observed day does not bypass current activity, current book or an independent pullback plan
+  ---
+  duration_ms: 6.206458
+  type: 'test'
+  ...
+# Subtest: J11 retained original qualification, impulse, creation and expiry cannot be moved by new day boundaries
+ok 11 - J11 retained original qualification, impulse, creation and expiry cannot be moved by new day boundaries
+  ---
+  duration_ms: 3.478375
+  type: 'test'
+  ...
+# Subtest: J12 the former positively qualified ticker fixture path remains and reported-only status is not promoted
+ok 12 - J12 the former positively qualified ticker fixture path remains and reported-only status is not promoted
+  ---
+  duration_ms: 2.837875
+  type: 'test'
+  ...
+# Subtest: J13 manual refusal explains verified price, growth, activity, liquidity and the missing plan
+ok 13 - J13 manual refusal explains verified price, growth, activity, liquidity and the missing plan
+  ---
+  duration_ms: 5.915084
+  type: 'test'
+  ...
+# Subtest: J14 missing or unqualified data is explained as unknown rather than zero activity or fabricated liquidity
+ok 14 - J14 missing or unqualified data is explained as unknown rather than zero activity or fabricated liquidity
+  ---
+  duration_ms: 0.195625
+  type: 'test'
+  ...
+# Subtest: J15 an inactive wave can still explain an independently verified book without becoming READY
+ok 15 - J15 an inactive wave can still explain an independently verified book without becoming READY
+  ---
+  duration_ms: 1.477709
+  type: 'test'
+  ...
+# Subtest: J16 invalid profiles receive a plain refusal without a formatter exception
+ok 16 - J16 invalid profiles receive a plain refusal without a formatter exception
+  ---
+  duration_ms: 0.334791
+  type: 'test'
+  ...
+# Subtest: J17 ready presentation remains exactly the ready card, with optional map absent
+ok 17 - J17 ready presentation remains exactly the ready card, with optional map absent
+  ---
+  duration_ms: 1.205584
+  type: 'test'
+  ...
+# Subtest: J18 the real SOURCE producer joins the consumer using an artificial 1440-row broker receipt
+ok 18 - J18 the real SOURCE producer joins the consumer using an artificial 1440-row broker receipt
+  ---
+  duration_ms: 20.463208
+  type: 'test'
+  ...
+# Subtest: J19 changed J rules and a newer day observation preserve an already published original t0, P0 and target
+ok 19 - J19 changed J rules and a newer day observation preserve an already published original t0, P0 and target
+  ---
+  duration_ms: 4.432584
+  type: 'test'
+  ...
+# Subtest: J20 manual rejection exposes a dimensionless native activity comparison without an absolute quantity claim
+ok 20 - J20 manual rejection exposes a dimensionless native activity comparison without an absolute quantity claim
+  ---
+  duration_ms: 2.308583
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 121.454083
