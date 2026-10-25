@@ -1,5 +1,7 @@
 // Pure wire-shape checks adapted from PR639 bingx-perpetual-market.mjs.
 // Qualification belongs to the independently supplied identity registry.
+import {CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS} from '../contracts/index.mjs';
+import {nativeRelativeRequested, nativeRelativeCandleQualified} from './native-relative-qualification.mjs';
 export const ROUTES = Object.freeze({
   catalog: '/openApi/swap/v2/quote/contracts',
   ticker: '/openApi/swap/v2/quote/ticker',
@@ -75,13 +77,15 @@ function baseQuantity(raw, qualification) {
   return null;
 }
 
-export function parseCandles(body, {start, end, interval_ms, received_ts, windows_ms = [], preserve_disjoint_closed_rows = false, qualification = {}}) {
+export function parseCandles(body, {start, end, interval_ms, received_ts, instrument = null, windows_ms = [], preserve_disjoint_closed_rows = false, qualification = {}}) {
   assertEnvelope(body);
   if (!Array.isArray(body.data) || body.data.length > 1440) fail('BINGX_OBJECT_CANDLES_REQUIRED');
-  const timeKnown = proof(qualification.time) && qualification.time.semantics === 'OPEN_TIME';
-  const volumeKnown = proof(qualification.volume) && ['BASE_ASSET', 'CONTRACTS'].includes(qualification.volume.unit)
+  const relativeRequested = nativeRelativeRequested(qualification);
+  const relativeKnown = relativeRequested && nativeRelativeCandleQualified(qualification, instrument, interval_ms);
+  const timeKnown = relativeRequested ? relativeKnown : proof(qualification.time) && qualification.time.semantics === 'OPEN_TIME';
+  const volumeKnown = !relativeRequested && proof(qualification.volume) && ['BASE_ASSET', 'CONTRACTS'].includes(qualification.volume.unit)
     && (qualification.volume.unit !== 'CONTRACTS' || positive(qualification.volume.base_per_contract) !== null);
-  const turnoverKnown = proof(qualification.turnover) && qualification.turnover.unit === 'USDT'
+  const turnoverKnown = !relativeRequested && proof(qualification.turnover) && qualification.turnover.unit === 'USDT'
     && ['quoteVolume', 'quoteAssetVolume', 'turnover'].includes(qualification.turnover.field);
   const seen = new Set(), candles = [];
   for (const row of body.data) {
@@ -99,10 +103,13 @@ export function parseCandles(body, {start, end, interval_ms, received_ts, window
     candles.push({open_ts: timeKnown ? nativeTime : null, close_ts: timeKnown ? nativeTime + interval_ms : null,
       closed: timeKnown, open, high, low, close,
       volume_base: volumeKnown ? baseQuantity(row.volume, qualification.volume) : null, turnover_quote: turnover,
+      ...(relativeRequested ? {volume_native: relativeKnown ? volume : null, native_quantity_unit: 'UNKNOWN',
+        comparison_kind: relativeKnown ? CANDLE_NATIVE_RELATIVE_KIND : null,
+        volume_comparison_key: relativeKnown ? qualification.volume.comparison_key : null} : {}),
       native_time: nativeTime, native_volume_decimal: String(row.volume),
       native_time_semantics: timeKnown ? 'OPEN_TIME' : 'UNQUALIFIED',
       time_evidence_ref: timeKnown ? qualification.time.evidence_ref : null,
-      volume_evidence_ref: volumeKnown ? qualification.volume.evidence_ref : null});
+      volume_evidence_ref: volumeKnown || relativeKnown ? qualification.volume.evidence_ref : null});
   }
   candles.sort((a, b) => a.native_time - b.native_time);
   const expected = (end - start) / interval_ms;
@@ -114,21 +121,30 @@ export function parseCandles(body, {start, end, interval_ms, received_ts, window
   const availableEnd = candles.length ? candles.at(-1).native_time + interval_ms : null;
   const internalGaps = gaps.filter(t => availableStart !== null && t >= availableStart && t < availableEnd);
   const missingPrefix = gaps.filter(t => availableStart !== null && t < availableStart);
-  const usableWindows = timeKnown && volumeKnown && tail.length ? windows_ms.filter(window => window <= tail.length * interval_ms)
+  const usableWindows = timeKnown && (volumeKnown || relativeKnown) && tail.length ? windows_ms.filter(window => window <= tail.length * interval_ms)
     .map(window => ({window_ms: window, window_start: availableEnd - window, window_end: availableEnd, closed_bars: window / interval_ms})) : [];
   const historyState = internalGaps.length ? 'INTERNAL_GAPS_TRIMMED_TO_CONTIGUOUS_TAIL'
     : missingPrefix.length ? 'SHORT_CONTIGUOUS_HISTORY' : gaps.length ? 'LATEST_REQUESTED_BAR_NOT_RECEIVED_CLOSED' : 'COMPLETE_REQUESTED_WINDOW';
   const emitted = preserve_disjoint_closed_rows ? candles : tail;
-  return {value: emitted, event_ts: timeKnown && tail.length ? tail.at(-1).close_ts : null,
-    qualified: timeKnown && volumeKnown && tail.length > 0,
-    reason: !timeKnown ? 'CANDLE_OPEN_TIME_UNQUALIFIED' : !volumeKnown ? 'CANDLE_VOLUME_UNIT_UNQUALIFIED' : !tail.length ? 'NO_CLOSED_CANDLES' : gaps.length ? historyState : null,
+  return {value: emitted, unit: relativeRequested ? CANDLE_NATIVE_RELATIVE_UNIT : 'OHLC_USDT_VOLUME_BASE',
+    event_ts: timeKnown && tail.length ? tail.at(-1).close_ts : null,
+    qualified: timeKnown && (volumeKnown || relativeKnown) && tail.length > 0,
+    reason: relativeRequested && !relativeKnown ? 'NATIVE_RELATIVE_QUALIFICATION_MISMATCH'
+      : !timeKnown ? 'CANDLE_OPEN_TIME_UNQUALIFIED' : !volumeKnown && !relativeKnown ? 'CANDLE_VOLUME_UNIT_UNQUALIFIED' : !tail.length ? 'NO_CLOSED_CANDLES' : gaps.length ? historyState : null,
     coverage: {window_start: start, window_end: end, interval_ms, expected_rows: expected, returned_rows: candles.length,
       emitted_rows: emitted.length, noncontiguous_older_rows_excluded: candles.length - emitted.length,
       complete: gaps.length === 0 && candles.length === expected, gaps, internal_gaps: internalGaps, missing_older_prefix: missingPrefix,
       history_state: historyState, observed_available_start: timeKnown ? availableStart : null,
       available_start: timeKnown && tail.length ? tail[0].open_ts : null, available_end: timeKnown ? availableEnd : null,
       contiguous_tail: timeKnown && tail.length ? {start_ts: tail[0].open_ts, end_ts: availableEnd, closed_bars: tail.length, duration_ms: tail.length * interval_ms} : null,
-      usable_windows: usableWindows, time_qualified: timeKnown, volume_qualified: volumeKnown, exact_turnover_available: turnoverKnown}};
+      usable_windows: usableWindows, time_qualified: timeKnown, volume_qualified: volumeKnown, exact_turnover_available: turnoverKnown,
+      ...(relativeRequested ? {relative_volume_qualified: relativeKnown, time_basis: relativeKnown ? CANDLE_CCXT_TIME_BASIS : null,
+        time_evidence_ref: relativeKnown ? qualification.time.evidence_ref : null,
+        owner_decision_ref: relativeKnown ? qualification.owner_decision_ref : null,
+        independent_vendor_guarantee_claimed: false, native_quantity_unit: 'UNKNOWN',
+        comparison_kind: relativeKnown ? CANDLE_NATIVE_RELATIVE_KIND : null,
+        volume_comparison_key: relativeKnown ? qualification.volume.comparison_key : null,
+        absolute_base_amount_qualified: false, absolute_USD_amount_qualified: false} : {})}};
 }
 
 export function parseOrderbook(body, qualification = {}) {

@@ -1,0 +1,114 @@
+{
+  "schema": "PUMP_SOURCE_NATIVE_RELATIVE_AND_SWOLE_FROZEN_HANDOFF_V1",
+  "status": "FROZEN_READY_FOR_ROOT_INTEGRATION_NOT_NATIVE_ACCEPTANCE",
+  "created_at": "2026-10-25T13:34:51.883Z",
+  "authority_main": "15bddf357cb54bfc6ee033e6140d70bcdb76270e",
+  "checkout_head": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+  "SOURCE_new_code_head": null,
+  "contract_version": "pump-report-contract-v1.1-native-relative",
+  "owner_decision_git_blob": "8004c6b4b8b646558b8fa0f774cdf985667324a1",
+  "source_code_paths": [
+    "pump-report/sources/index.mjs",
+    "pump-report/sources/bingx.mjs",
+    "pump-report/sources/native-relative-qualification.mjs"
+  ],
+  "registry_path": "pump-report/sources/registry-curated13-native-relative-v1.json",
+  "factory_export": "createNativeRelativeCandleQualification(instrument,60000)",
+  "source_code_frozen": true,
+  "ROOT_runtime_registry_shared_contract_changes_required": true,
+  "integration_notes": [
+    "Keep index DELIVERY purpose propagation and owner gold exclusions",
+    "Include new native-relative-qualification.mjs in module bundling; bingx imports it and shared constants",
+    "Use frozen derived curated13 registry or factory only on independently verified identities; strict base registries unchanged",
+    "Expected rows volume_native/volume_base=null/native_quantity_unit UNKNOWN/comparison kind and key exact; coverage relative_volume_qualified true but volume_qualified false",
+    "Swole inactive route MUST NOT be registered as verified or used to bypass qualification; direct one-probe execution belongs to ROOT distinct admissions",
+    "Native125 is historical; obtain separately admitted current facts for new manual acceptance"
+  ],
+  "offline_results": {
+    "native_relative_affected": "PASS1/1 final test95.712042ms",
+    "Swole_plan": "PASS inactive route before broker IO",
+    "old_A33_and_97plus7_rerun": 0
+  },
+  "not_done": [
+    "SOURCE provider/network/SQL/TG/deploy",
+    "fresh market/manual card/native acceptance",
+    "Swole native payload/price basis/schema qualification",
+    "ANALYTICS division-by-zero arithmetic test"
+  ],
+  "actual_SOURCE_IO": {
+    "market_HTTP": 0,
+    "SQL": 0,
+    "TG": 0,
+    "deploy": 0
+  },
+  "costs_and_unknowns_preserved": true,
+  "nine_legacy_pauses_preserved": true,
+  "two_owner_deferrals_preserved": true,
+  "files": [
+    {
+      "path": "pump-report/sources/index.mjs",
+      "bytes": 31383,
+      "sha256": "1138ef89328fbcd9960fa6a6cc9979c956548824655176731be82d082b669f53"
+    },
+    {
+      "path": "pump-report/sources/bingx.mjs",
+      "bytes": 13882,
+      "sha256": "48c68cc9b7937b4c5f8ace8cbdf029a51d00b74c7aae038be695449f3d96aaec"
+    },
+    {
+      "path": "pump-report/sources/native-relative-qualification.mjs",
+      "bytes": 3126,
+      "sha256": "c9ab4bd23cf10376a3abd7b66490679121362286efdc82ed95d19fdf29ca753f"
+    },
+    {
+      "path": "pump-report/sources/registry-curated13-native-relative-v1.json",
+      "bytes": 61980,
+      "sha256": "76f6a6cca7328b9e41a1141fe0fc93957af722be4095515cf76d632fae2dc516"
+    },
+    {
+      "path": "pump-report/sources/swole-btc-route-inactive-v1.json",
+      "bytes": 866,
+      "sha256": "8da5f377d72a847c43a61a72ce93a2bf3cc2fcbc7d295efff1f7f70a0ee42fa4"
+    },
+    {
+      "path": "pump-report/tests/sources/native-relative-qualification.test.mjs",
+      "bytes": 9114,
+      "sha256": "5daf2684331d0e81bb1e2995941c0e3a6d218ee6d264e9df5af4ad89800ab38a"
+    },
+    {
+      "path": "pump-report/handoffs/sources/NATIVE_RELATIVE_WIRING_RU.md",
+      "bytes": 5137,
+      "sha256": "bfbaceace473c433d2bb3a7d9c5b9a2c73195484f18648b598584608af9df21b"
+    },
+    {
+      "path": "pump-report/handoffs/sources/SWOLE_BTC_ONE_PROBE_PLAN_V2.json",
+      "bytes": 11963,
+      "sha256": "8d1a1b6c7ae54e2dd6fb6955dabf04c27525f258a951103b919de0d50a2f7110"
+    },
+    {
+      "path": "pump-report/handoffs/sources/SWOLE_ONE_PROBE_RU.md",
+      "bytes": 4907,
+      "sha256": "bc946cf27e076fa83aeb28791ac1fcf8d20fcc679aed7ac47cab2b07dc0cfadb"
+    },
+    {
+      "path": "pump-report/handoffs/sources/qualify-swole-one-probe-plan.mjs",
+      "bytes": 4620,
+      "sha256": "f6045c561ff90db04634a17fc92bfc14c28d4045d9a90b93eb32d36d753435aa"
+    },
+    {
+      "path": "pump-report/handoffs/sources/SWOLE_ONE_PROBE_OFFLINE_QUALIFICATION_V2.json",
+      "bytes": 1319,
+      "sha256": "e868f02ded217365edb2cf84c01bcdf1243d275aa4524a326616b25491e04b03"
+    },
+    {
+      "path": "pump-report/handoffs/sources/NATIVE_RELATIVE_OFFLINE_QUALIFICATION_V1.json",
+      "bytes": 5745,
+      "sha256": "27099cabd060284d8cd1957a5323e5f61517f34af5101d1f9f553127cd7f6b13"
+    },
+    {
+      "path": "pump-report/tests/sources/sources.test.mjs",
+      "bytes": 30856,
+      "sha256": "96b7a039aaed39f3f44acf0a8c03e254dbbd71d09c90bc2122e954619829c351"
+    }
+  ]
+}

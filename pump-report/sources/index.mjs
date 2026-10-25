@@ -153,8 +153,8 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     try {
       const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles, purpose});
       const parsed = decode(response, () => parseCandles(response.data, {start, end, interval_ms: step, received_ts: response.received_ts,
-        windows_ms: profile.automatic_growth.short_windows_ms, qualification: entry.qualifications.candles}));
-      return fact(entry, 'candles', parsed.value, 'OHLC_USDT_VOLUME_BASE', parsed.event_ts, response,
+        instrument: entry.instrument, windows_ms: profile.automatic_growth.short_windows_ms, qualification: entry.qualifications.candles}));
+      return fact(entry, 'candles', parsed.value, parsed.unit, parsed.event_ts, response,
         {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage});
     } catch (error) { return failed(entry, 'candles', error); }
   }
@@ -183,6 +183,8 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         if (!symbol || seen.has(symbol)) reason = 'MISSING_OR_DUPLICATE_NATIVE_SYMBOL';
         else if (!symbol.endsWith('-USDT') || row.currency !== 'USDT') reason = 'NON_USDT_SETTLEMENT';
         else if (row.status !== 1) reason = 'INSTRUMENT_NOT_ONLINE';
+        else if (['PAXG', 'XAUT'].includes(String(row.asset ?? '').toUpperCase())
+          || ['PAXG-USDT', 'XAUT-USDT'].includes(symbol)) reason = 'OWNER_EXCLUDED_GOLD_BACKED_ASSET';
         else if (!entry) reason = 'CRYPTO_ASSET_IDENTITY_UNQUALIFIED';
         else if (String(row.contractId ?? '') !== String(entry.native_contract_id ?? entry.instrument.native_contract_id)
           || row.asset !== (entry.native_base ?? entry.instrument.base)) reason = 'CATALOG_REGISTRY_IDENTITY_MISMATCH';
@@ -259,7 +261,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
       response = await request('candles', {instrument, params: {interval: '1m', startTime: start, endTime: queryEnd, limit: Math.min(1440, count + 1)},
         ttl_ms: profile.freshness_ms.candles});
       const parsed = decode(response, () => parseCandles(response.data, {start, end, interval_ms: step, received_ts: response.received_ts,
-        preserve_disjoint_closed_rows: true, qualification: entry.qualifications.candles}));
+        instrument: entry.instrument, preserve_disjoint_closed_rows: true, qualification: entry.qualifications.candles}));
       const qualified = parsed.coverage.time_qualified && parsed.value.length > 0;
       const value = parsed.value.map(candle => ({...candle,
         outcome_boundary: {overlaps_start: candle.open_ts !== null && candle.open_ts < start_ts,

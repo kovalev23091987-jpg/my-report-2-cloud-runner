@@ -1,0 +1,37 @@
+{
+  "schema": "PUMP_SWOLE_FINITE_PLAN_OFFLINE_QUALIFICATION_V2",
+  "status": "PASS",
+  "checked_at": "2026-10-25T13:32:48.105Z",
+  "authority_main": "15bddf357cb54bfc6ee033e6140d70bcdb76270e",
+  "checks": [
+    "exact one GET/no query/no redirect/no retry/10s/256KiB plan",
+    "same curated BTC candidate",
+    "relative magnitude and unknown native fields remain explicit",
+    "inactive route fails existing validator and normalizer",
+    "getLiquidations returns NOT_CHECKED before broker IO"
+  ],
+  "native_response_verified": false,
+  "actual_SOURCE_provider_HTTP": 0,
+  "actual_SOURCE_SQL": 0,
+  "actual_SOURCE_TG": 0,
+  "actual_provider_weight": null,
+  "actual_runtime_SQL_cost": null,
+  "old_A33_reexecuted": 0,
+  "files": [
+    {
+      "path": "pump-report/handoffs/sources/SWOLE_BTC_ONE_PROBE_PLAN_V2.json",
+      "bytes": 11963,
+      "sha256": "8d1a1b6c7ae54e2dd6fb6955dabf04c27525f258a951103b919de0d50a2f7110"
+    },
+    {
+      "path": "pump-report/sources/swole-btc-route-inactive-v1.json",
+      "bytes": 866,
+      "sha256": "8da5f377d72a847c43a61a72ce93a2bf3cc2fcbc7d295efff1f7f70a0ee42fa4"
+    },
+    {
+      "path": "pump-report/handoffs/sources/qualify-swole-one-probe-plan.mjs",
+      "bytes": 4620,
+      "sha256": "f6045c561ff90db04634a17fc92bfc14c28d4045d9a90b93eb32d36d753435aa"
+    }
+  ]
+}

@@ -1,0 +1,262 @@
+{
+  "schema": "PUMP_SWOLE_BTC_EXACT_ONE_PROBE_PLAN_V2",
+  "status": "FINITE_ROOT_ONLY_PLAN_NO_NATIVE_RESPONSE_VERIFIED",
+  "executor": "ROOT_ONLY",
+  "sources_executes_provider_HTTP": 0,
+  "target": {
+    "asset_id": "BINGX_UNDERLYING:BTC",
+    "instrument_id": "BINGX:USDT_M:100:BTC-USDT",
+    "registry": "pump-report/sources/registry-core8-retained-v1.json",
+    "identity_scope": "BTC venue-scoped crypto binding; no cross-venue executable price equivalence"
+  },
+  "request": {
+    "method": "GET",
+    "url": "https://swolecharts.com/api/liquidation-levels/BTC",
+    "query": {},
+    "key_required_by_public_docs": false,
+    "request_headers": {
+      "Accept": "application/json"
+    },
+    "no_api_key_or_signup_or_purchase": true,
+    "range": "No query parameters; native range must be inspected, never presumed",
+    "max_attempts": 1,
+    "automatic_retry": 0,
+    "domain_fallback": 0,
+    "deadline_ms": 10000,
+    "maximum_response_bytes_proposed": 262144,
+    "cap_requires_ROOT_admission": true,
+    "host": "swolecharts.com",
+    "path": "/api/liquidation-levels/BTC",
+    "follow_redirects": false,
+    "redirect_policy": "manual; any 3xx consumes the single attempt and stops",
+    "total_attempt_cap": 1,
+    "ttl_ms": 0,
+    "timeout_ms": 10000,
+    "cache_key_rule": "ROOT generates one probe id/cache key and reuses its terminal result; no second provider dispatch",
+    "response_bound_contract": "ROOT broker constructor max_response_bytes=262144; per-request response-size argument is not implemented",
+    "expected_cost": {
+      "http_attempts_max": 1,
+      "provider_weight": null,
+      "SQL_rows_read": null,
+      "SQL_rows_written": null,
+      "latency_ms": null,
+      "bytes": null
+    }
+  },
+  "primary_documentation": {
+    "route": "https://swolecharts.com/developers",
+    "model": "https://swolecharts.com/methodology/liquidation-heatmap",
+    "machine_contract": "https://swolecharts.com/openapi.json",
+    "route_evidence": "Developers Other endpoints table explicitly lists /api/liquidation-levels/<coin> as model estimate with model_version, levels and max pain.",
+    "free_access_scope": "Public docs say free, key optional. Actual runtime access, response shape and measured expense unverified.",
+    "terms": "Attribution link to Swolecharts/source page, honor Cache-Control, no SLA and no resale/raw feed repackaging.",
+    "rate_scope": "Developers Optional key list calls other endpoints unmetered; listed key/IP exports have30 network/120 key per minute. This is not an unbounded project allowance."
+  },
+  "primary_model": {
+    "basis_type": "EXTERNAL_MODEL",
+    "methodology_version_observed": "est-1.0+hl-2026-09-27",
+    "version_is_document_observation_not_payload_readback": true,
+    "inputs": "Price/OI/volume history plus a liquidation-distance distribution calibrated on Hyperliquid positions; same distribution reused across assets/venues.",
+    "source_venue": "NATIVE_PAYLOAD_COMPOSITION_REQUIRED; NEVER_RENAME_AS_BINGX",
+    "magnitudes": "RELATIVE_INTENSITY_ONLY; a field named usd remains modeled intensity, not actual USD positions.",
+    "not_replacements": [
+      "resting_orderbook",
+      "ordinary_price_level",
+      "historical_liquidation_event",
+      "BingX_observed_open_positions"
+    ],
+    "observed_positions": false,
+    "complete_market_map": false
+  },
+  "before_native_read": {
+    "ROOT_current_whole_provider_SQL_runtime_admission": "REQUIRED_SEPARATELY_NOT_GRANTED_BY_THIS_PLAN",
+    "budget_family": "LIQUIDATIONS",
+    "run_shared_cap": 8,
+    "native_nested_reserve": 4,
+    "candidate_id": "BINGX:USDT_M:100:BTC-USDT",
+    "candidate_admission_required": true,
+    "do_not_borrow_base_core_or_manual_reserve": true,
+    "do_not_invoke_source_with_fabricated_verified_route": true
+  },
+  "before_map_use": [
+    "Actual Swole canonical BTC/Bitcoin identity binding to this underlying, beyond a bare ticker; payload or primary provider metadata with exact model coin. This packet has documented BTC examples but no native map identity readback.",
+    "Actual payload estimated flag, model_version, native venue composition/market id and source event time. Payload must match a qualified model version; generated/received/HTTP Date is not the modeled as_of.",
+    "Explicit as_of clock semantics+units, no future clock, model age<=300000ms from original source time; downloads/cache reads do not refresh event age.",
+    "Actual lo/hi/mid bounds and liquidated long/short side, range and available sides; invalid bins rejected, one-sided result remains partial.",
+    "Exact modeled amount field and scale tied to the payload model_version. Use relative intensity, never dollars or missing zero.",
+    "Qualified source price currency and comparable source market. Current time-aligned price basis/conversion to BingX USDT, with original timestamps, expiry and proof. Source price and reference<=30000ms old, not merely a5min-fresh model map.",
+    "Retain native bounds/currency/venue; absent basis => NOT_FOR_EXACT_BINGX_ORDERS and no fake multiplier1. USD is not automatically USDT.",
+    "Primary provider/model overlap group and unknown composition preserved; do not sum bins/nested aggregates/nativeHL positions as independent notional."
+  ],
+  "frozen_adapter_expected_interface": {
+    "scope": "Existing A parser expectations ONLY, NOT a verified live schema.",
+    "top_level": [
+      "coin",
+      "has_data",
+      "estimated",
+      "model_version",
+      "as_of",
+      "price",
+      "levels"
+    ],
+    "side_arrays": [
+      "levels.long",
+      "levels.short"
+    ],
+    "bin_fields": [
+      "lo",
+      "hi",
+      "mid",
+      "one qualified field among intensity/usd/strength"
+    ],
+    "max_bins_each_side": 1000,
+    "if_interface_differs": "Preserve raw private receipt and exact incompatible path; ROOT agrees any minimal adapter patch before source code changes."
+  },
+  "missing_now": {
+    "native_response": false,
+    "canonical_Swole_asset_binding": null,
+    "payload_model_version": null,
+    "source_clock_units": null,
+    "source_price_currency": null,
+    "venue_composition": null,
+    "amount_field": null,
+    "current_price_basis": null,
+    "actual_latency_ms": null,
+    "actual_provider_weights": null,
+    "actual_SQL_cost": null
+  },
+  "nonblocking": true,
+  "base_idea_continues_if_absent_partial_late_budget_exhausted": true,
+  "registry_liquidations_routes_remain_empty": true,
+  "cost": {
+    "max_new_market_HTTP_attempts": 1,
+    "source_executed": 0,
+    "public_data_price_documented": "FREE_KEY_OPTIONAL",
+    "actual_runtime_cost": null,
+    "SQL_reads": null,
+    "SQL_writes": null,
+    "bytes": null,
+    "latency_ms": null,
+    "cache_policy": "ROOT honors response Cache-Control while preserving source age; no new own ledger.",
+    "backoff": "ROOT durable429/Retry-After/provider backoff; no immediate retry; spent/unknown preserved."
+  },
+  "authority_main": "15bddf357cb54bfc6ee033e6140d70bcdb76270e",
+  "supersedes_plan": "pump-report/handoffs/sources/SWOLE_BTC_ROUTE_PLAN_V1.json",
+  "inactive_route_path": "pump-report/sources/swole-btc-route-inactive-v1.json",
+  "broker_request_template": {
+    "provider": "SWOLECHARTS",
+    "family": "LIQUIDATIONS",
+    "purpose": "CORE",
+    "method": "GET",
+    "url": "https://swolecharts.com/api/liquidation-levels/BTC",
+    "candidate_id": "BINGX:USDT_M:100:BTC-USDT",
+    "ttl_ms": 0,
+    "timeout_ms": 10000,
+    "estimated_cost": {
+      "http": 1
+    },
+    "cache_key": null
+  },
+  "admission": {
+    "executor": "ROOT",
+    "new_distinct_whole_provider_native_SQL_admission_required": true,
+    "one_total_GET_only": true,
+    "no_retries_or_redirect_follow_or_domain_fallback": true,
+    "bounded_SQL_and_wall_clock_required": true,
+    "unknowns_remain_null": true,
+    "spend_before_dispatch": true,
+    "timeout_failure_unknown_no_refund": true,
+    "no_reuse_or_reset_BingX5_3success2unknown": true,
+    "no_reuse_Telegram239_as_market_proof": true,
+    "no_borrow_from_core_delivery_manual_reserves": true,
+    "not_granted_by_this_file": true
+  },
+  "expected_interface": {
+    "scope": "Existing A parser expectations ONLY, NOT a verified live schema.",
+    "top_level": [
+      "coin",
+      "has_data",
+      "estimated",
+      "model_version",
+      "as_of",
+      "price",
+      "levels"
+    ],
+    "side_arrays": [
+      "levels.long",
+      "levels.short"
+    ],
+    "bin_fields": [
+      "lo",
+      "hi",
+      "mid",
+      "one qualified field among intensity/usd/strength"
+    ],
+    "max_bins_each_side": 1000,
+    "if_interface_differs": "Preserve raw private receipt and exact incompatible path; ROOT agrees any minimal adapter patch before source code changes.",
+    "truth": "PARSER_PRECONDITION_NOT_VERIFIED_NATIVE_SCHEMA",
+    "as_of": {
+      "required": true,
+      "type": "positive safe integer milliseconds",
+      "semantics": "source model as_of; not received/generated/HTTP Date",
+      "max_age_ms": 300000,
+      "future": "reject"
+    },
+    "magnitude": {
+      "kind": "RELATIVE",
+      "unit": "RELATIVE_INTENSITY",
+      "allowed_fields": [
+        "intensity",
+        "usd",
+        "strength"
+      ],
+      "actual_field": null,
+      "scale_id": null,
+      "evidence_ref": null,
+      "absolute_USD_amount": null
+    },
+    "coverage": {
+      "native_range": null,
+      "source_venue_composition": null,
+      "complete_market_map": false,
+      "source_market_coverage_complete": false,
+      "one_side_missing": "partial; never fabricate opposite bins",
+      "both_sides_missing": "no usable map",
+      "overlap": "retain primary provider and model/version; never sum as independent positions"
+    }
+  },
+  "activation": {
+    "direct_getLiquidations_before_qualification": false,
+    "verifiedSwoleRoute_for_inactive_template": false,
+    "no_fake_proof_to_get_past_route_guard": true,
+    "required_native_qualification": [
+      "Canonical Swole BTC/Bitcoin binding beyond ticker, tied to independently curated BingX100 BTC underlying",
+      "Actual estimated flag and payload model_version; document methodology version is not payload version",
+      "Source as_of semantics and milliseconds, current model age and original receipt",
+      "Native venue/market composition, price quote, source bounds and sides",
+      "Actual magnitude field and version-bound scale; retain relative intensity even if field name usd",
+      "Current qualified source-to-BingX price mapping with original clock <=30000ms and proof for exact orders"
+    ],
+    "price_mapping_rule": "Reuse only an already admitted, current qualified mapping; missing/old basis means NOT_FOR_EXACT_BINGX_ORDERS. Do not perform a second HTTP within the one-probe cap.",
+    "route_config": "Fill inactive nulls only from real reviewed evidence; then ROOT may add to existing registry. active=false alone is not the existing validator guard."
+  },
+  "rejection_criteria": [
+    "No positive fresh whole/provider/native/SQL admission: do not dispatch",
+    "Any access/HTTP/redirect/timeout/byte-bound/JSON error: stop; preserve spent or unknown",
+    "coin mismatch or canonical identity unqualified: retain receipt, no verified route",
+    "Payload differs from existing parser: record exact incompatible path; no invented missing fields",
+    "estimated!==true or missing model_version: model unqualified",
+    "as_of missing/future/wrong unit/older than300000ms: not current map",
+    "Invalid/nonpositive/unordered bounds, >1000 bins per side, wrong side vs source price: reject invalid interface",
+    "Unknown amount/scale: intensity null, never USD or zero",
+    "Unknown quote or unavailable current price basis: no exact BingX orders",
+    "has_data=false: observed absence only, not permanent coverage assertion"
+  ],
+  "outcome": {
+    "native_response_verified": false,
+    "actual_provider_HTTP_by_SOURCE": 0,
+    "actual_SQL_by_SOURCE": 0,
+    "supplementary": true,
+    "base_idea_must_not_wait": true
+  }
+}
