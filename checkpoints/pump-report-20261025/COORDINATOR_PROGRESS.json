@@ -1,22 +1,31 @@
 {
   "schema": "PUMP_REPORT_COORDINATOR_PROGRESS_V1",
-  "recorded_at": "2026-10-25T12:49:00Z",
+  "recorded_at": "2026-10-25 12:58:33 UTC",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
-  "stage": "NATIVE_CORE_SHAPES_OBSERVED_RUNTIME_CONTINUES",
-  "code_main": "737bfc57be088a3e6662dba39a23084e3103658c",
+  "stage": "TECHNICAL_TELEGRAM_SENT239_DATA_QUALIFICATION_CONTINUES",
+  "code_main": "93faf0b17b3bd7018ef419d665a21819d2589056",
   "code_file_readbacks": 51,
   "qualification": {
     "native_totals": {
-      "requests": 60,
-      "rows_read": 455,
-      "rows_written": 46,
+      "requests": 83,
+      "rows_read": 475,
+      "rows_written": 60,
       "unknown_ops": 0
     },
-    "provider_attempts_charged": 5,
+    "provider_attempts_charged": 6,
     "provider_replies": 3,
     "provider_unknowns": 2,
     "qualification5_remaining": 0,
-    "proof": "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json"
+    "proof": "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json",
+    "bingx_attempts5_spent": true,
+    "bingx_success3_unknown2": true,
+    "technical_telegram": {
+      "message_id": "239",
+      "same_text_hash_receipt_readback": true,
+      "proof": "checkpoints/pump-report-20261025/TELEGRAM_TECHNICAL_ACTUAL.json",
+      "is_trading_signal": false
+    },
+    "technical_tg_single_grant_spent": true
   },
   "blockers": [
     "Mandatory closed candle open-time/volume semantics not yet qualified; source worker has real private sample for evidence review.",
@@ -50,11 +59,27 @@
   "next": "Finish mandatory data evidence and integrate bounded budget-purpose adapters, incremental summary, real native manual chain and Telegram before new daytime schedule.",
   "server_deployment": {
     "worker": "my-report-2-hub",
-    "code_main": "737bfc57be088a3e6662dba39a23084e3103658c",
-    "deployment_id": "ba6c68de6ff74ac19a922f2ad98f9390",
-    "etag": "59786004798cb0d88e00f16b553a0b7880117905236d190b907985d4b287ef78",
-    "module_count": 26,
-    "exact_readback": 26,
-    "legacy_module_preserved": true
+    "code_main": "93faf0b17b3bd7018ef419d665a21819d2589056",
+    "deployment_id": "4f29fdcf99904eb9a415ec1f73764c5d",
+    "exact_modules": 26,
+    "legacy_module_preserved": true,
+    "production_automatic_enabled": false,
+    "production_delivery_enabled": false
+  },
+  "analytics_packages": {
+    "E": {
+      "new_cases": 11,
+      "prior9passed": true,
+      "E09_E10_now_closed": true
+    },
+    "F": {
+      "new29PASS": true,
+      "artificial_sample_not_fit_for_calibration": true,
+      "probability": null
+    },
+    "G": {
+      "new9PASS_affected5PASS": true,
+      "fullcard_limit_and_unicode_repaired": true
+    }
   }
 }

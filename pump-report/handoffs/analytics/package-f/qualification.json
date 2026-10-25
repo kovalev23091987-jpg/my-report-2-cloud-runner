@@ -1,0 +1,145 @@
+{
+  "schema": "PUMP_ANALYTICS_F_COHORT_AUDIT_QUALIFICATION_V1",
+  "base_main": "e1b17a25b7e1f4e056b9ecbf19bfd295f6d3c44c",
+  "code_head": null,
+  "local_only_ROOT_integrates": true,
+  "new_tests": {
+    "pass": 29,
+    "fail": 0,
+    "final_command": "node --test --test-reporter=tap pump-report/tests/analytics/cohort-audit.test.mjs",
+    "prior_new_F_runs": [
+      24,
+      27
+    ],
+    "targeted_floor_recheck": 3,
+    "rerun_reason": "New validation of domains/contrast/floors and original-anchor/terminal admission affected metadata checking. Accepted A/B/C/D/E batteries were not replayed."
+  },
+  "actual_saved_sample_audit_command": "node pump-report/handoffs/analytics/package-f/run-audit.mjs",
+  "saved_sample": {
+    "records": 18,
+    "declared_waves": 18,
+    "assets": 1,
+    "distinct_t0": 1,
+    "cohorts": 18,
+    "train": 0,
+    "holdout": 0,
+    "unknown": 6,
+    "purged_horizon_crosses_split": 12
+  },
+  "paired_comparison": {
+    "pairs": 2,
+    "declared_independent_waves": 1,
+    "qualified_behavior_pair": 1,
+    "native_or_causal_proof": false
+  },
+  "sample_hashes_verified_against_original_manifests": true,
+  "source_refs": {
+    "package-b/examples.json": {
+      "bytes": 68502,
+      "sha256": "13c68bbcc04bbaad0732e5759769bc68a50fe2d00cc5135f9cce0cfc6afedeaf"
+    },
+    "examples.json": {
+      "bytes": 231584,
+      "sha256": "251f0f5e9f28655b8c30699734d4274cdbfa6dfab9c586be1c0a39b69dcfd07a"
+    },
+    "package-d/examples.json": {
+      "bytes": 57077,
+      "sha256": "2300cdc51698e733aa75b934fe6f877da90f9d8ac603a701a6410f39cdd5db63"
+    },
+    "qualification.json": {
+      "bytes": 4508,
+      "sha256": "a923236367b3ab4c8f1a8a591a34fdc98602ce986ad0e2159774169e4881a5b2"
+    },
+    "package-b/qualification.json": {
+      "bytes": 2548,
+      "sha256": "4ee422100eefb66dae213e9c8026a4bd0004e023099a1fd747a96d50f94b2823"
+    },
+    "package-d/qualification.json": {
+      "bytes": 6410,
+      "sha256": "88729bf3f9e70d2c1f3e0d0c0941cca9d5a974b512c79bb213dfa6ac00af6f49"
+    }
+  },
+  "unchanged_dependency": {
+    "path": "pump-report/analytics/summary.mjs",
+    "bytes": 11984,
+    "sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff"
+  },
+  "shared_readonly_dependencies": [
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 3567,
+      "sha256": "7abdc44914c754f5edc1fd1ddacdee0fe407109211581b2534b361faa144ec51"
+    }
+  ],
+  "files": [
+    {
+      "path": "pump-report/analytics/cohort-audit.mjs",
+      "bytes": 16547,
+      "sha256": "4fcd5a4b8e44f13faa252fc7317d4248c2cf90225396ca09dce2287dcc734910"
+    },
+    {
+      "path": "pump-report/tests/analytics/cohort-audit.test.mjs",
+      "bytes": 14142,
+      "sha256": "c2e515fb21347ecc0116e1a82271201ff0598383f3b8e0824b719b94304f39c9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/BLOCKING_INPUTS_RU.md",
+      "bytes": 3619,
+      "sha256": "1f933bcd9e8b3ca6e26fbe3b49305a827c848c29c1f50783e46a88736d73f0b0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/METHOD_AND_FINDINGS_RU.md",
+      "bytes": 15751,
+      "sha256": "fe9235db95ca091f38bacf91ef61fe811a0a9a54762e6d2e8f91d07c1c348855"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/affected-floor-tests.tap",
+      "bytes": 891,
+      "sha256": "1269b4822402f931e555345cc5b5516ebe76b4299c87a6bfacf71f0c8a1ad248"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/audit-results.json",
+      "bytes": 40747,
+      "sha256": "9a71328258de762759c760702d329ac4dc0ec2da2e51d5fbf0fafb91175be971"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/authority.json",
+      "bytes": 3724,
+      "sha256": "18dfc21b6719962a5e0a16589fc33afe3ad9bf5e4c61e25f96fb231c66bbb4e7"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/run-audit.mjs",
+      "bytes": 3579,
+      "sha256": "350e87c49bc3a799c78f368d64b3c8b50a69b16c29a36ba8e1cd18c92de98ca1"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/test-results-final.tap",
+      "bytes": 7024,
+      "sha256": "fd2b47b5743d7f428261b86287c1c8cfc99693535f11fd3093f0a2a61211a7a4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/test-results-initial.tap",
+      "bytes": 5774,
+      "sha256": "913f40a9e01905b98383c23f5680e70536f9d3f0b4231792e5c0e1f52682ab31"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/test-results.tap",
+      "bytes": 6491,
+      "sha256": "9f53f56f52cf7572c4e610f1dc5d5ca5c1787fb55d466a4c76222ff87c5d8b29"
+    }
+  ],
+  "method_limits": {
+    "max_records": 2048,
+    "max_features_per_record": 64,
+    "max_pairs": 64,
+    "max_serialized_bytes": 2000000
+  },
+  "core_runtime_source_profile_contract_mutations": false,
+  "native_IO": 0,
+  "probability_pct": null,
+  "map_benefit_pct": null,
+  "calibration_validated": false,
+  "publication_allowed": false,
+  "remaining_blocking_inputs": "BLOCKING_INPUTS_RU.md",
+  "status": "OFFLINE_AUDIT_COMPLETE_NATIVE_CALIBRATION_INPUTS_MISSING"
+}

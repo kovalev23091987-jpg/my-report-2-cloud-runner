@@ -1,0 +1,1126 @@
+{
+  "scope": "BOUNDED_LOCAL_ARTIFICIAL_RETAINED_EXAMPLES_ONLY",
+  "sources": {
+    "package-b/examples.json": {
+      "bytes": 68502,
+      "sha256": "13c68bbcc04bbaad0732e5759769bc68a50fe2d00cc5135f9cce0cfc6afedeaf"
+    },
+    "examples.json": {
+      "bytes": 231584,
+      "sha256": "251f0f5e9f28655b8c30699734d4274cdbfa6dfab9c586be1c0a39b69dcfd07a"
+    },
+    "package-d/examples.json": {
+      "bytes": 57077,
+      "sha256": "2300cdc51698e733aa75b934fe6f877da90f9d8ac603a701a6410f39cdd5db63"
+    },
+    "qualification.json": {
+      "bytes": 4508,
+      "sha256": "a923236367b3ab4c8f1a8a591a34fdc98602ce986ad0e2159774169e4881a5b2"
+    },
+    "package-b/qualification.json": {
+      "bytes": 2548,
+      "sha256": "4ee422100eefb66dae213e9c8026a4bd0004e023099a1fd747a96d50f94b2823"
+    },
+    "package-d/qualification.json": {
+      "bytes": 6410,
+      "sha256": "88729bf3f9e70d2c1f3e0d0c0941cca9d5a974b512c79bb213dfa6ac00af6f49"
+    }
+  },
+  "source_manifest_bindings": [
+    {
+      "source": "examples.json",
+      "manifest_sha256_matches": true,
+      "bytes_match": true
+    },
+    {
+      "source": "package-b/examples.json",
+      "manifest_sha256_matches": true,
+      "bytes_match": true
+    },
+    {
+      "source": "package-d/examples.json",
+      "manifest_sha256_matches": true,
+      "bytes_match": true
+    }
+  ],
+  "sample": {
+    "version": "pump-cohort-input-audit-v1-tz2-20261025",
+    "as_of_ts": 1800000000000,
+    "split_plan": {
+      "split_ts": 1799992800000,
+      "declared_ts": 1800000000000,
+      "plan_ref": "POST_HOC_F_DIAGNOSTIC_NOT_PROSPECTIVE_RESEARCH"
+    },
+    "split_predeclared": false,
+    "input_records": 18,
+    "declared_independent_waves": 18,
+    "inspected_waves": 18,
+    "invalid_records": 0,
+    "excluded_future_records": 0,
+    "duplicate_record_replays": 0,
+    "assets": 1,
+    "distinct_origin_times": 1,
+    "partitions": {
+      "TRAIN": 0,
+      "HOLDOUT": 0,
+      "PENDING": 0,
+      "UNKNOWN": 6,
+      "PURGED_HORIZON_CROSSES_SPLIT": 12,
+      "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+    },
+    "quality_reason_wave_counts": {
+      "SAVED_ANALYSIS_DIGEST_MISSING": 18,
+      "IMPLEMENTATION_VERSION_MISSING": 18,
+      "ORIGINAL_ANCHOR_UNBOUND": 18,
+      "PUBLISHED_ANCHOR_SELECTION_UNBOUND": 12,
+      "FEATURE_SCHEMA_UNQUALIFIED": 18,
+      "INITIAL_FEATURE_SNAPSHOT_MISSING": 18,
+      "NO_PRECOMMITTED_FORECAST": 18,
+      "SPLIT_NOT_PREDECLARED": 18,
+      "UNSENT_TERMINAL_ADMISSION_UNBOUND": 6,
+      "POSSIBLE_SEND_EVIDENCE_UNBOUND": 6,
+      "PUBLICATION_STATUS_UNRESOLVED": 6
+    },
+    "waves": [
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOSENTMAP\"]",
+        "cohort_key": "[\"AUTO\",\"SENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOSENTPARTIAL_MAP\"]",
+        "cohort_key": "[\"AUTO\",\"SENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOSENTNO_MAP\"]",
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOUNSENTMAP\"]",
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "UNSENT_TERMINAL_ADMISSION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOUNSENTPARTIAL_MAP\"]",
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "UNSENT_TERMINAL_ADMISSION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOUNSENTNO_MAP\"]",
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "UNSENT_TERMINAL_ADMISSION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOUNKNOWNMAP\"]",
+        "cohort_key": "[\"AUTO\",\"UNKNOWN\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": null,
+        "partition": "UNKNOWN",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "POSSIBLE_SEND_EVIDENCE_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED",
+          "PUBLICATION_STATUS_UNRESOLVED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOUNKNOWNPARTIAL_MAP\"]",
+        "cohort_key": "[\"AUTO\",\"UNKNOWN\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": null,
+        "partition": "UNKNOWN",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "POSSIBLE_SEND_EVIDENCE_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED",
+          "PUBLICATION_STATUS_UNRESOLVED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"AUTOUNKNOWNNO_MAP\"]",
+        "cohort_key": "[\"AUTO\",\"UNKNOWN\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": null,
+        "partition": "UNKNOWN",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "POSSIBLE_SEND_EVIDENCE_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED",
+          "PUBLICATION_STATUS_UNRESOLVED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALSENTMAP\"]",
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALSENTPARTIAL_MAP\"]",
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALSENTNO_MAP\"]",
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALUNSENTMAP\"]",
+        "cohort_key": "[\"MANUAL\",\"UNSENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "UNSENT_TERMINAL_ADMISSION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALUNSENTPARTIAL_MAP\"]",
+        "cohort_key": "[\"MANUAL\",\"UNSENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "UNSENT_TERMINAL_ADMISSION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALUNSENTNO_MAP\"]",
+        "cohort_key": "[\"MANUAL\",\"UNSENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": 1800000000000,
+        "partition": "PURGED_HORIZON_CROSSES_SPLIT",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "UNSENT_TERMINAL_ADMISSION_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALUNKNOWNMAP\"]",
+        "cohort_key": "[\"MANUAL\",\"UNKNOWN\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": null,
+        "partition": "UNKNOWN",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "POSSIBLE_SEND_EVIDENCE_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED",
+          "PUBLICATION_STATUS_UNRESOLVED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALUNKNOWNPARTIAL_MAP\"]",
+        "cohort_key": "[\"MANUAL\",\"UNKNOWN\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": null,
+        "partition": "UNKNOWN",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "POSSIBLE_SEND_EVIDENCE_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED",
+          "PUBLICATION_STATUS_UNRESOLVED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      },
+      {
+        "wave_key": "[\"ARTIFICIAL:TEST\",\"MANUALUNKNOWNNO_MAP\"]",
+        "cohort_key": "[\"MANUAL\",\"UNKNOWN\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "asset_id": "ARTIFICIAL:ASSET",
+        "origin_t0": 1799985600000,
+        "deadline_ts": 1800000000000,
+        "first_resolved_recorded_ts": null,
+        "partition": "UNKNOWN",
+        "issues": [
+          "SAVED_ANALYSIS_DIGEST_MISSING",
+          "IMPLEMENTATION_VERSION_MISSING",
+          "ORIGINAL_ANCHOR_UNBOUND",
+          "PUBLISHED_ANCHOR_SELECTION_UNBOUND",
+          "POSSIBLE_SEND_EVIDENCE_UNBOUND",
+          "FEATURE_SCHEMA_UNQUALIFIED",
+          "INITIAL_FEATURE_SNAPSHOT_MISSING",
+          "NO_PRECOMMITTED_FORECAST",
+          "SPLIT_NOT_PREDECLARED",
+          "PUBLICATION_STATUS_UNRESOLVED"
+        ],
+        "structurally_usable": false,
+        "native_evidence_claim": false,
+        "external_provenance_authenticated": false
+      }
+    ],
+    "cohorts": [
+      {
+        "cohort_key": "[\"AUTO\",\"SENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"SENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"UNKNOWN\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 1,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"UNKNOWN\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 1,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"UNKNOWN\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 1,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"UNKNOWN\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 1,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"UNKNOWN\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 1,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"UNKNOWN\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 1,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"UNSENT\",\"MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"UNSENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      },
+      {
+        "cohort_key": "[\"MANUAL\",\"UNSENT\",\"PARTIAL_MAP\",\"ARTIFICIAL_RULES\",\"PROPOSED_PROFILE\",\"NON_NATIVE\",null,null,null]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 0,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 1,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "proposed_floor_check": {
+          "requirements": {
+            "resolved_mature_waves": 300,
+            "assets": 20,
+            "calendar_days": 14,
+            "temporal_holdout_waves": 100
+          },
+          "observed": {
+            "resolved_mature_waves": 0,
+            "assets": 0,
+            "calendar_days": 0,
+            "temporal_holdout_waves": 0
+          },
+          "counts_met": false,
+          "status": "PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF",
+          "calibration_validated": false
+        },
+        "clean_train_wave_keys": [],
+        "clean_holdout_wave_keys": []
+      }
+    ],
+    "empirical_success_rate_pct": null,
+    "probability_pct": null,
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "limitations": [
+      "Counts audit the supplied records only",
+      "OBSERVED flag and claimed digests do not authenticate native evidence",
+      "All updates of one instrument+wave remain in one partition",
+      "Training labels must mature and be known before split",
+      "No model fitted; no percentage or causal map benefit estimated"
+    ]
+  },
+  "paired_comparisons": {
+    "version": "pump-cohort-input-audit-v1-tz2-20261025",
+    "input_pairs": 2,
+    "pairs": 2,
+    "duplicate_pair_replays": 0,
+    "declared_independent_waves": 1,
+    "results": [
+      {
+        "pair_id": "A_RETAINED_MAP_PAIR",
+        "contrast": "MAP",
+        "independent_key": "[\"ARTIFICIAL:BINGX:TEST-USDT\",\"PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000\"]",
+        "issues": [],
+        "qualified": true,
+        "evidence_class": "ARTIFICIAL",
+        "baseline_ready": true,
+        "enriched_ready": true,
+        "plan_changed": false,
+        "text_changed": true,
+        "benefit_pct": null,
+        "causal_benefit_proven": false
+      },
+      {
+        "pair_id": "D_RETAINED_MAP_PAIR_RAW_INPUT_NOT_SAVED",
+        "contrast": "MAP",
+        "independent_key": "[\"ARTIFICIAL:BINGX:TEST-USDT\",\"PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000\"]",
+        "issues": [
+          "INITIAL_INPUT_NOT_BOUND"
+        ],
+        "qualified": false,
+        "evidence_class": "ARTIFICIAL",
+        "baseline_ready": true,
+        "enriched_ready": true,
+        "plan_changed": false,
+        "text_changed": true,
+        "benefit_pct": null,
+        "causal_benefit_proven": false
+      }
+    ],
+    "qualified_pairs": 1,
+    "benefit_pct": null,
+    "causal_benefit_proven": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "limitations": [
+      "Paired snapshots compare explanation/plan behavior only",
+      "A wave reused by several packages is not several independent successes",
+      "Neither raw map/no-map hit-rate differences nor synthetic pairs prove causal benefit"
+    ]
+  },
+  "missing_blocking_inputs": [
+    "Prospective immutable original analyses with saved feature clocks and implementation manifest",
+    "Receipt/possible-send/terminal UNSENT anchors from ROOT runtime",
+    "A genuinely predeclared time split and training manifest",
+    "Precommitted forecasts for their own mode/map/rules/profile cohort",
+    "Independent observed episodes over later times and qualified comparable block variants"
+  ],
+  "probability_pct": null,
+  "map_benefit_pct": null,
+  "native_IO": 0
+}

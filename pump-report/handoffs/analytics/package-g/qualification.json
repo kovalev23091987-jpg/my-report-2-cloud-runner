@@ -1,0 +1,181 @@
+{
+  "schema": "PUMP_ANALYTICS_G_QUALIFICATION_V1",
+  "base_main": "737bfc57be088a3e6662dba39a23084e3103658c",
+  "code_head": null,
+  "ROOT_integrates": true,
+  "new_G_tests_pass": 9,
+  "new_G_tests_fail": 0,
+  "E09_E10_recheck_pass": 2,
+  "E09_E10_open_defects_closed_in_checked_runtime": true,
+  "affected_prior_renderer_pass": 5,
+  "initial_G_failures": [
+    "4434 UTF16 card",
+    "unpaired surrogate in labels"
+  ],
+  "example_card_lengths": {
+    "relative-max": 4056,
+    "opaque-unit-max": 3393,
+    "unicode-max": 4026,
+    "relative-with-warnings": 3535
+  },
+  "commands": [
+    "node --test --test-reporter=tap --test-name-pattern='E09|E10' pump-report/tests/analytics/runtime-acceptance.test.mjs",
+    "node --test --test-reporter=tap pump-report/tests/analytics/card-boundary.test.mjs",
+    "node --test --test-reporter=tap --test-name-pattern='card shows source|uncalibrated event|six long source|maximum six-zone|context text is rendered' pump-report/tests/analytics/targeted-c.test.mjs pump-report/tests/analytics/targeted-d.test.mjs"
+  ],
+  "baseline_D_index_exact": true,
+  "baseline_E_test_exact": true,
+  "runtime_readonly_dependencies": [
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "bytes": 17589,
+      "sha256": "9a9afbefdea139f3b8775aa5e29a3337a4edaf101725d44b74cfa6f04351d6d5"
+    },
+    {
+      "path": "pump-report/runtime/outcome-journal.mjs",
+      "bytes": 6187,
+      "sha256": "de6ce7806a6c81d12eda65045d0cddcfa8230fe62c8a21f1a0607da41c0d21ba"
+    },
+    {
+      "path": "pump-report/runtime/delivery.mjs",
+      "bytes": 7457,
+      "sha256": "6a8b7da29d617d8966a0808dfd5739a3c2bdf18de7025550bd53e54ecf499c30"
+    },
+    {
+      "path": "pump-report/runtime/store.mjs",
+      "bytes": 4922,
+      "sha256": "1f4e7806e675dc980293e805ca3830b6e2cfb0d021cdcd934cf96b0b2a47e94e"
+    },
+    {
+      "path": "pump-report/analytics/anchors.mjs",
+      "bytes": 6253,
+      "sha256": "b2c34fdde0dcdf90a1e8b79c900f3f9313440470e737745ba94a2e0102dc6fdf"
+    },
+    {
+      "path": "pump-report/analytics/summary.mjs",
+      "bytes": 11984,
+      "sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff"
+    }
+  ],
+  "files": [
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 13772,
+      "sha256": "4a42239d01f466523ab05a348d810f3f583e339de7ac04b53dac310e31a89e33"
+    },
+    {
+      "path": "pump-report/tests/analytics/runtime-acceptance.test.mjs",
+      "bytes": 13703,
+      "sha256": "48810e7e913680e5754e13cc63ca55e7aac583f6c27d6d284cc1b1a40a3a20d3"
+    },
+    {
+      "path": "pump-report/tests/analytics/card-boundary.test.mjs",
+      "bytes": 7286,
+      "sha256": "9b0aca226170f0d6a220ec384a33cf7bf9412c89ce96b1d9514685e755a9f250"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/README_RU.md",
+      "bytes": 7030,
+      "sha256": "0bd5811e0a9d6d461a0901e021c815f448a29c873467288028d3f3f8624c68b5"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/affected-renderer-prior.tap",
+      "bytes": 1381,
+      "sha256": "6c19585846392899d011c053262a8e31b2323e67e1738f8b88695eb8fbcd7ed6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/authority.json",
+      "bytes": 3511,
+      "sha256": "8fe5eedbf9c6a33b140fed2f7638eb4a965eab0ea59ad9096812f76c7e7c4de3"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/baseline/index.before.mjs",
+      "bytes": 12516,
+      "sha256": "6ccac1109cbde2b20f7aeb40467f4f51e1c61c629b0498d3a630fdc5823a7a2e"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/baseline/runtime-acceptance.before.mjs",
+      "bytes": 12487,
+      "sha256": "d8322c25be7e885d2aabac16fcaba35f32c4768d882892bce85602e3efc1159f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-after.tap",
+      "bytes": 891,
+      "sha256": "bda8f184ee6f9476141810910c77853025848cb9001ec583af5901fc9bce31f2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-before-merged.tap",
+      "bytes": 2902,
+      "sha256": "36fee27c0633e95ea268d0491bd0d9d922d10e59debafc204b38f6b5d9078b98"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-before.tap",
+      "bytes": 2900,
+      "sha256": "52cddbde30489c445a88de1a7186a008471944ad78a81589b9d2aec8d5bfc21d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-final.tap",
+      "bytes": 2416,
+      "sha256": "c01812dfcd0aea363f5d80eb475788370b6779069210f147b409a55dc8d8fadf"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/e09-e10-recheck.tap",
+      "bytes": 664,
+      "sha256": "4dd0b69f12026c574a7572193cd47bc4b6fd2f6835732fd8cb107b5c58c5aa5a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/index.diff",
+      "bytes": 8827,
+      "sha256": "93f85b9f6b3afaf058461bcbe3b5ef380fd4c1d846bbe8892fca0c4f8bbfc1c4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/opaque-unit-max.json",
+      "bytes": 111638,
+      "sha256": "e31265d226205706f019f5f84a6923d921ca59e7a327c6a39ffaf9d97220670d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/opaque-unit-max.txt",
+      "bytes": 5075,
+      "sha256": "3247d1124e01924634f9239b80a2be723ee37b6e890b8c063a0ad757ad090c23"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/relative-max.json",
+      "bytes": 127611,
+      "sha256": "4d56e830c8d5d19b17042e7c44792b5df2dbbc2d2e3c6b9856afa2324712ceb8"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/relative-max.txt",
+      "bytes": 6019,
+      "sha256": "cd535fe8ab47a868dfcfef9ca186beae6e62a53120012164d81c60eb7a5a17d6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/relative-with-warnings.json",
+      "bytes": 127225,
+      "sha256": "56a72777c6a946d3bf757bbb094f5ab664ad52aaa1cacd698dda1a1c4bcb9a69"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/relative-with-warnings.txt",
+      "bytes": 5289,
+      "sha256": "8123b76955cb03319854cc8974bad182a9d0489cd836caa47d83b494529b68ea"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/runtime-acceptance.diff",
+      "bytes": 3081,
+      "sha256": "ee7af54b01caf36e712b7813204c3d51839e791589db3b2662f39417d28671c6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/unicode-max.json",
+      "bytes": 160341,
+      "sha256": "7ad6ef40fb4debc3a1540d9f861ecd1a1c72eb2f18072534b895e14e3aeb6ea1"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/unicode-max.txt",
+      "bytes": 7033,
+      "sha256": "8c019d6eef497275b6a93d271352f7246c5f6ec10a238ae95d9cd4456bb5a2fc"
+    }
+  ],
+  "native_IO": 0,
+  "probability_pct": null,
+  "runtime_source_contract_profile_mutated": false,
+  "whole_A_B_C_D_E_replayed": false
+}
