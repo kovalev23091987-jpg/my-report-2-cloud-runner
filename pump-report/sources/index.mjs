@@ -167,9 +167,9 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage});
     } catch (error) { return failed(entry, 'orderbook', error); }
   }
-  async function getCatalog() {
+  async function getCatalog({purpose = 'CORE'} = {}) {
     try {
-      const response = await request('catalog');
+      const response = await request('catalog', {purpose});
       if (!Array.isArray(response.data?.data)) fail('BINGX_CATALOG_ARRAY_REQUIRED');
       const rows = decode(response, () => wireRows(response.data)), instruments = [], unqualified = [], seen = new Set();
       for (const row of rows) {
@@ -204,12 +204,12 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     } catch (error) { catalogCoverage = {status: BUDGET_ERROR.test(safeCode(error)) ? 'NOT_CHECKED' : 'ERROR', reason: safeCode(error), total: null, qualified: null, unqualified: null};
       return {instruments: [], unqualified: [], coverage: plain(catalogCoverage)}; }
   }
-  async function getOverview({instruments = []} = {}) {
+  async function getOverview({instruments = [], purpose = 'CORE'} = {}) {
     if (!Array.isArray(instruments)) fail('OVERVIEW_INSTRUMENTS_REQUIRED');
     const entries = instruments.map(resolve);
     if (!entries.length) return {observations: [], coverage: {status: 'NOT_CHECKED', reason: 'EMPTY_VERIFIED_UNIVERSE', expected: 0, checked: 0}};
     let response;
-    try { response = await request('ticker', {ttl_ms: profile.freshness_ms.price}); wireRows(response.data); }
+    try { response = await request('ticker', {ttl_ms: profile.freshness_ms.price, purpose}); wireRows(response.data); }
     catch (error) { for (const entry of entries) note(entry.instrument, 'overview', {status: 'NOT_CHECKED', reason: safeCode(error)});
       return {observations: entries.map(entry => ({instrument: plain(entry.instrument), facts: {ticker_24h: failed(entry, 'ticker_24h', error)}})),
       coverage: {status: 'INCOMPLETE', expected: entries.length, checked: 0, reason: safeCode(error)}}; }

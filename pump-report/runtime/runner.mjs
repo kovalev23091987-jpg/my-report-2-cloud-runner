@@ -35,7 +35,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function getManualResult(id){return store.get(manualResultKey(id));}
 
   async function updateDiscovery(catalog,run_id){
-    const overview=await sources.getOverview({run_id,instruments:catalog.instruments});
+    const overview=await sources.getOverview({run_id,instruments:catalog.instruments,purpose:'DISCOVERY'});
     const now=clock(),slot=Math.floor(now/60000)*60000;
     const compact=overview.observations.map(o=>{const usable=factUsable(o.facts.price,now);return {id:o.instrument.instrument_id,last:usable?o.facts.price.value:null,event_ts:o.facts.price?.event_ts??null,reported_change_pct:usable?o.reported_change_pct??null:null,status:o.facts.price?.status??'ABSENT'};});
     const index=await store.get('pump:overview-index')??[],recent=index.filter(t=>t>=now-3600000&&t<slot),history=[];
@@ -170,7 +170,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     };
     const result={run_id,status:'COMPLETE',checked:[],manual:[],coverage:null,outcomes:[],delivery:[],errors:[]};
     try{
-      const sourceCatalog=await sources.getCatalog({run_id}),catalog={...sourceCatalog,instruments:sourceCatalog.instruments.filter(i=>!ownerInstrumentExcluded(i))};result.catalog_coverage={...catalog.coverage,owner_delivery_excluded:sourceCatalog.instruments.filter(ownerInstrumentExcluded).map(i=>i.instrument_id),verified_crypto_count:sourceCatalog.instruments.length,delivery_eligible_verified_count:catalog.instruments.length};
+      const sourceCatalog=await sources.getCatalog({run_id,purpose:mode==='AUTO'?'DISCOVERY':'CORE'}),catalog={...sourceCatalog,instruments:sourceCatalog.instruments.filter(i=>!ownerInstrumentExcluded(i))};result.catalog_coverage={...catalog.coverage,owner_delivery_excluded:sourceCatalog.instruments.filter(ownerInstrumentExcluded).map(i=>i.instrument_id),verified_crypto_count:sourceCatalog.instruments.length,delivery_eligible_verified_count:catalog.instruments.length};
       if(!catalog.instruments.length){result.status='INCOMPLETE';result.errors.push(catalog.coverage.reason??'NO_VERIFIED_INSTRUMENTS');}
       const unresolved=(catalog.unqualified??[]).filter(row=>['CRYPTO_ASSET_IDENTITY_UNQUALIFIED','CATALOG_REGISTRY_IDENTITY_MISMATCH','MISSING_OR_DUPLICATE_NATIVE_SYMBOL','INVALID_CATALOG_ROW'].includes(row.reason));
       if(unresolved.length){result.status='INCOMPLETE';result.errors.push({reason:'UNIVERSE_QUALIFICATION_INCOMPLETE',unqualified:unresolved.length});}
