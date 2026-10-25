@@ -14,8 +14,15 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 checkpoint = root / 'checkpoints/pump-report-20261025'
-admission = json.loads((checkpoint / 'ROOT_PRODUCTION_LAUNCH_ADMISSION.json').read_text())
-artifact_bytes = Path('/private/tmp/pump-production-launch-prepared-artifact.json').read_bytes()
+options = sys.argv[2:]
+def option(name, default):
+    return options[options.index(name) + 1] if name in options else default
+admission_file = Path(option('--admission', str(checkpoint / 'ROOT_PRODUCTION_LAUNCH_ADMISSION.json')))
+artifact_file = Path(option('--artifact', '/private/tmp/pump-production-launch-prepared-artifact.json'))
+attempt_file = Path(option('--attempt', str(root / 'pump-report/.private/production-cf-deploy-attempt.json')))
+proof_file = Path(option('--proof', str(checkpoint / 'ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK.json')))
+admission = json.loads(admission_file.read_text())
+artifact_bytes = artifact_file.read_bytes()
 artifact = json.loads(artifact_bytes)
 now = int(time.time() * 1000)
 assert admission['schema'] == 'PUMP_PRODUCTION_LAUNCH_ADMISSION_V1'
@@ -69,7 +76,7 @@ append_part('metadata', 'application/json', json.dumps({'main_module': artifact[
 for name, source in artifact['modules'].items():
     append_part(name, 'application/javascript+module', source.encode())
 parts.append(('--' + boundary + '--\r\n').encode())
-attempt = root / 'pump-report/.private/production-cf-deploy-attempt.json'
+attempt = attempt_file
 fd = os.open(attempt, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
 with os.fdopen(fd, 'w') as handle:
     json.dump({'state': 'ATTEMPTED_NO_AUTO_RETRY', 'artifact_sha256': admission['artifact_sha256'],
@@ -103,5 +110,5 @@ proof = {'schema': 'ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK_V1', 'authority_ma
          'FULL_exact_module_bytes': True, 'config_unchanged': True, 'health': after_health,
          'bindings_count': len(after['result']['bindings']), 'all3_schedules': [],
          'deployment': receipt['result'], 'provider_HTTP': 0, 'native_SQL': 0, 'Telegram': 0}
-(checkpoint / 'ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK.json').write_text(json.dumps(proof, indent=2) + '\n')
+proof_file.write_text(json.dumps(proof, indent=2) + '\n')
 print(json.dumps(proof))

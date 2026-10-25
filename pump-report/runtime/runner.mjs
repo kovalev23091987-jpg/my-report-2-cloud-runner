@@ -12,7 +12,7 @@ const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
 const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|AUTOMATIC_WINDOW_CLOSED/.test(typeof reason==='string'?reason:reason?.code??''));
 
-export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null,await_source_window=async()=>{}}){
+export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null,await_source_window=async()=>{},assess_source_evidence=()=>({eligible:true})}){
   if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
   const manualResultKey=id=>'pump:manual-result:'+id;
   const observations=createOutcomeJournal({store,profile,clock,evidence_class,retained_features});
@@ -74,7 +74,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now);
     const score=r=>candidatePriority(r,now,{profile}).score;
     candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
-    const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)));
+    const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)&&assess_source_evidence(i).eligible));
     return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
   }
   async function rememberAnalysis(analysis,input){
@@ -100,6 +100,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   }
   async function checkInstrument(instrument,{run_id,mode,publish=true,assert_execution=async()=>{}}){
     if(ownerInstrumentExcluded(instrument))return {status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:instrument.base,delivery:null};
+    const evidence=assess_source_evidence(instrument);
+    if(!evidence.eligible)return {status:'DEFERRED_SOURCE_EVIDENCE',source_coverage:{status:'NOT_CHECKED',reason:evidence.reason,asset_remains_in_discovery:true},delivery:null};
     budget.setMode(mode);
     await assert_execution();
     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider});
@@ -200,6 +202,10 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     const result={run_id,status:'COMPLETE',checked:[],manual:[],coverage:null,outcomes:[],delivery:[],errors:[]};
     try{
       const sourceCatalog=await sources.getCatalog({run_id,purpose:mode==='AUTO'?'DISCOVERY':'CORE'}),catalog={...sourceCatalog,instruments:sourceCatalog.instruments.filter(i=>!ownerInstrumentExcluded(i))};result.catalog_coverage={...catalog.coverage,owner_delivery_excluded:sourceCatalog.instruments.filter(ownerInstrumentExcluded).map(i=>i.instrument_id),verified_crypto_count:sourceCatalog.instruments.length,delivery_eligible_verified_count:catalog.instruments.length};
+      const evidence=catalog.instruments.map(assess_source_evidence),reasons={};
+      for(const row of evidence)if(!row.eligible)reasons[row.reason]=(reasons[row.reason]??0)+1;
+      result.source_evidence_coverage={eligible_for_deep_check:evidence.filter(r=>r.eligible).length,temporarily_deferred:evidence.filter(r=>!r.eligible).length,reason_counts:reasons,not_an_asset_exclusion:true,current_CORE_proven:false};
+      if(result.source_evidence_coverage.temporarily_deferred){result.status='INCOMPLETE';result.errors.push({reason:'SOURCE_EVIDENCE_PENDING',count:result.source_evidence_coverage.temporarily_deferred});}
       if(!catalog.instruments.length){result.status='INCOMPLETE';result.errors.push(catalog.coverage.reason??'NO_VERIFIED_INSTRUMENTS');}
       const unresolved=(catalog.unqualified??[]).filter(row=>['CRYPTO_ASSET_IDENTITY_UNQUALIFIED','CATALOG_REGISTRY_IDENTITY_MISMATCH','MISSING_OR_DUPLICATE_NATIVE_SYMBOL','INVALID_CATALOG_ROW'].includes(row.reason));
       if(unresolved.length){result.status='INCOMPLETE';result.errors.push({reason:'UNIVERSE_QUALIFICATION_INCOMPLETE',unqualified:unresolved.length});}

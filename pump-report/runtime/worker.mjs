@@ -19,8 +19,9 @@ import {createSavedStatisticsAudit,saveProspectiveAuditPlan} from './saved-stati
 import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID,SOURCE_FEASIBILITY_ID,SAVED_STATISTICS_AUDIT_ID} from './provider-policy.mjs';
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
+import {createSourceEvidenceAdmission} from './source-evidence-admission.mjs';
 
-export const PUMP_VERSION='pump-report-v1.9-movement-deadline-protected-reserves';
+export const PUMP_VERSION='pump-report-v1.10-native-source-evidence-admission';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
@@ -114,7 +115,8 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
     try{const response=await baseBroker.request(args);privateCapture.record(args,response);return response;}
     catch(error){privateCapture.record(args,null,error);throw error;}
   }}:baseBroker;
-  const sources=createPumpSources({broker,identityRegistry:createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY),profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
+  const identityRegistry=createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY);
+  const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
     return revalidatePumpCard({card,store,sources,clock});
@@ -131,7 +133,7 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
     catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
   }});
   const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
-  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,await_source_window:args=>broker.awaitProviderWindow(args)});
+  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,assess_source_evidence:createSourceEvidenceAdmission(identityRegistry),await_source_window:args=>broker.awaitProviderWindow(args)});
   return {native,store,budget,broker,sources,delivery,runner,captured,privateCapture};
   }catch(error){error.pumpNative=native;throw error;}
 }
