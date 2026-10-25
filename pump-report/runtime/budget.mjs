@@ -42,7 +42,8 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if(p.recent.reduce((n,r)=>n+r.cost,0)+cost>policy.per_minute_cap)throw new BudgetRefusal('PROVIDER_MINUTE_EXHAUSTED');
       if(integer(policy.qualification_attempt_cap)&&(p.qualification_totals?.[policy.version]??0)+cost>policy.qualification_attempt_cap)throw new BudgetRefusal('QUALIFICATION_ATTEMPTS_EXHAUSTED');
       const providerOutcomesProtection=policy.outcome_source===false?0:outcomesProtection;
-      if(spent+cost+manualProtection+deliveryProtection+providerOutcomesProtection>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      const providerDeliveryProtection=policy.delivery_source===false?0:deliveryProtection;
+      if(spent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       const globalManual=mode==='MANUAL'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
       if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       if(monthSpent+cost+manualProtection>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
