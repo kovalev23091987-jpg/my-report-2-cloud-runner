@@ -11,12 +11,12 @@ import {START_PROFILE} from '../../profile/start-v1.mjs';
 
 // Entirely artificial market values. This proves component wiring, not native
 // provider meaning, quota, prices, production storage or Telegram delivery.
-function assembled({dayGrowth=26.6}={}){
+function assembled({dayGrowth=26.6,onFetch=null}={}){
   const raw=artificialInput(),store=new MemoryStore(),calls=[],sent=[];
   const policies={BINGX:{version:'ARTIFICIAL',evidence_ref:'ARTIFICIAL',allowed_hosts:['open-api.bingx.com'],allowed_paths:['/openApi/swap/*'],project_daily_cap:900,project_monthly_cap:27900,per_minute_cap:100}};
   const budget=createUnifiedBudget({store,run_id:'ARTIFICIAL_RUN',mode:'AUTO',clock:()=>T,policies,protected_reserves:{http_by_provider:{BINGX:0},delivery_http:0,outcomes_http:0},admission:{provider_policy_version:'ARTIFICIAL',expires_ts:T+100000}});
   const broker=createRequestBroker({store,budget,clock:()=>T,fetch_impl:async url=>{
-    const kind=new URL(url).pathname.split('/').at(-1);calls.push(kind);let data;
+    const kind=new URL(url).pathname.split('/').at(-1);calls.push(kind);if(onFetch)await onFetch({kind,store});let data;
     if(kind==='contracts')data=[{symbol:'TEST-USDT',asset:'TEST',currency:'USDT',contractId:'ARTIFICIAL_TEST',status:1}];
     else if(kind==='ticker')data=[{symbol:'TEST-USDT',lastPrice:'112',openPrice:String(112/(1+dayGrowth/100)),priceChangePercent:String(dayGrowth),closeTime:T,quoteVolume:'100000'}];
     else if(kind==='price')data=[{symbol:'TEST-USDT',price:'112',time:T}];
@@ -56,3 +56,6 @@ test('a simultaneous executor cannot take a still-owned run lease',async()=>{
   assert.equal(result.status,'QUEUED');assert.equal(f.calls.length,0);assert.equal(f.sent.length,0);
 });
 test('a manual idempotency key cannot be reused for a different coin',async()=>{const f=assembled();await f.runner.enqueueManual('TEST',{request_id:'ARTIFICIAL_SAME'});assert.equal((await f.runner.enqueueManual('OTHER',{request_id:'ARTIFICIAL_SAME'})).status,'REQUEST_ID_CONFLICT');assert.equal((await f.store.get('pump:manual:ARTIFICIAL_SAME')).symbol,'TEST');});
+
+test('an abandoned manual job resumes under a newly acquired executor and leaves only its durable result',async()=>{const f=assembled();await f.runner.enqueueManual('TEST',{request_id:'RECOVERED'});await f.store.atomic('pump:manual:RECOVERED',job=>({state:{...job,status:'PROCESSING',executor_owner:'EXPIRED_OWNER',started_ts:T-200000},result:true}));await f.store.set('pump:executor',{owner:'EXPIRED_OWNER',expires_ts:T-1});const r=await f.runner.execute({mode:'AUTO'});assert.equal(r.manual[0].request_id,'RECOVERED');assert.equal(f.sent.length,1);assert.deepEqual(await f.store.get('pump:manual-queue'),[]);assert.equal((await f.runner.getManualResult('RECOVERED')).analysis.ready,true);assert.equal((await f.store.get('pump:manual:RECOVERED')).status,'COMPLETE');});
+test('loss of executor ownership during source IO prevents publication and preserves the newer owner',async()=>{const f=assembled({onFetch:async({kind,store})=>{if(kind==='depth')await store.set('pump:executor',{owner:'NEW_OWNER',expires_ts:T+120000});}});await assert.rejects(f.runner.execute({mode:'MANUAL',symbol:'TEST',request_id:'LOST_OWNER'}),{code:'EXECUTOR_LEASE_EXPIRED'});assert.equal(f.sent.length,0);assert.equal((await f.store.get('pump:executor')).owner,'NEW_OWNER');});

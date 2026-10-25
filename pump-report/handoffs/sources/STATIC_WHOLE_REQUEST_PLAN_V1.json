@@ -1,0 +1,578 @@
+{
+  "schema": "PUMP_STATIC_WHOLE_REQUEST_PLAN_V1",
+  "status": "STATIC_NOT_MEASURED_NOT_AN_ADMISSION",
+  "authority_main": "108a5dbdfc670d9a48fbf953811f5aa1b7bc2864",
+  "own_lease_acquire_commit": "fdee1fa4aa73d7f250c967b87ec7472e145c5996",
+  "code_git_blobs": {
+    "pump-report/runtime/runner.mjs": "4e10647b1c156f65ce3f36b8ba583d8cfe94d5d1",
+    "pump-report/runtime/store.mjs": "2fb03bb15796c64849f38d75e14541388570a99c",
+    "pump-report/runtime/budget.mjs": "172036c07d67b8d3ddb139b5bfcdd35728f1b084",
+    "pump-report/runtime/delivery.mjs": "64bc815ff1c6f544c68678cc8e8b7cf256a06d33",
+    "pump-report/runtime/native-budget.mjs": "725f3493b5d686fdf95ef2dbbef0634690d8c336",
+    "pump-report/runtime/provider-policy.mjs": "1a59a9b36fa5efdaeb9b24f2a634fbcdb4aa2d57",
+    "pump-report/runtime/worker.mjs": "b6d14dbee7ec1a3b04ed8654dea1d3921b65ae39",
+    "pump-report/registry/index.mjs": "0f9040e187ac9ae12a0e74e9947eef6064032f1a"
+  },
+  "source_frozen_SHA256": {
+    "index": "eb45f0762ed090d29d9a853bfa7f121203cd1148f67c385bec13355e9ea5c5b3",
+    "bingx": "bb7dfe0ed7f28756876831d7a2cdabcc35614c850f2a514f41b825222f528492",
+    "liquidations": "7fd1e6cca4eb6037ecbe5d6e9296c681aaa19dfb6248ef38da8bf0e5c2de744e"
+  },
+  "scope": "One bounded NEW manual job/card per selected instrument, one publication attempt, later one due outcome per signal. Empty preexisting pending manual/delivery/outcome backlog unless variables below are supplied. Counts are attempts including errors/unknowns, not successful data.",
+  "route_table": [
+    {
+      "stage": "Catalog",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v2/quote/contracts",
+      "max_per_execute": 1,
+      "TTL_ms": 0,
+      "shared": "One per runner.execute; exact concurrent inFlight only. Serial independent executes have no catalog cache."
+    },
+    {
+      "stage": "Bulk overview LAST",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v2/quote/ticker",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 30000,
+      "shared": "Same full URL across instruments; exact inFlight/cache shares one response, but every row source closeTime must independently be fresh. Never one guaranteed day-wide call."
+    },
+    {
+      "stage": "Core price",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v1/ticker/price?symbol=...",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 30000,
+      "skip": "Fresh same-identity qualified overview/existing price reused with original clocks."
+    },
+    {
+      "stage": "Core price fallback",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v2/quote/ticker?symbol=...",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 30000,
+      "shared": "Different URL from bulk; no automatic coalescing with bulk response. No fallback after identity/future-clock/access/rate/budget terminal result."
+    },
+    {
+      "stage": "Core OHLC/volume",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v3/quote/klines?symbol=...&interval=1m&startTime=...&endTime=...&limit=121",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 90000,
+      "shared": "Exact same rounded window/limit only. Current120min calculation+1=121; no overlap/range cache composition. Forming captured before close never becomes closed after cache read."
+    },
+    {
+      "stage": "Core depth",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v2/quote/depth?symbol=...&limit=1000",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 15000
+    },
+    {
+      "stage": "OI optional",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v2/quote/openInterest?symbol=...",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 120000,
+      "skip": "Missing independent unit qualification=>NOT_CHECKED, HTTP0."
+    },
+    {
+      "stage": "Funding optional",
+      "provider": "BINGX",
+      "route": "/openApi/swap/v2/quote/premiumIndex?symbol=...",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 300000,
+      "skip": "Missing qualified rate clock/period=>NOT_CHECKED, HTTP0. updateTime not rate clock."
+    },
+    {
+      "stage": "Trade direction/context",
+      "provider": null,
+      "route": null,
+      "max_per_candidate_check": 0,
+      "reason": "Not qualified/configured in A; not a zero measurement of a connected source."
+    },
+    {
+      "stage": "Optional map",
+      "provider": "SWOLECHARTS",
+      "route": "/api/liquidation-levels/<qualified coin>",
+      "max_per_candidate_check": 1,
+      "TTL_ms": 300000,
+      "deadline_ms": 10000,
+      "skip": "Only when base analysis ready and exact route/model/asset qualified; retained registries routes empty. Map absence never blocks base idea."
+    },
+    {
+      "stage": "Map fallback",
+      "provider": null,
+      "route": null,
+      "max_per_candidate_check": 0,
+      "reason": "Only Swole GET implemented. Orderly/HL POST NOT_CONNECTED; no hidden market fallback."
+    },
+    {
+      "stage": "Mandatory OHLC/volume external fallback",
+      "provider": null,
+      "route": null,
+      "max_per_candidate_check": 0,
+      "reason": "No independently qualified equivalent free BingX perpetual reserve; see exact negative review."
+    },
+    {
+      "stage": "Delivery fresh price+book",
+      "provider": "BINGX",
+      "route": "LAST?symbol + depth?symbol&limit=1000",
+      "max_per_card_attempt": 2,
+      "TTL_ms": 0,
+      "shared": "force_refresh true, only_facts price/orderbook; no overview/cache reuse, no candles, no third price fallback. Called for every real dispatch attempt, including older queued READY/RETRYABLE cards."
+    },
+    {
+      "stage": "Telegram publication",
+      "provider": "TELEGRAM",
+      "route": "POST sendMessage",
+      "max_per_card_attempt": 1,
+      "TTL_ms": 0,
+      "timeout_ms": 15000,
+      "response_bytes_cap": null,
+      "retry": "No automatic blind retry on unknown ACK. Later known429 RETRYABLE dispatch requires a new accounted attempt/recheck."
+    },
+    {
+      "stage": "Outcome history",
+      "provider": "BINGX",
+      "route": "same v3 klines over floor(t0)..ceil(deadline)",
+      "max_per_due_signal_attempt": 1,
+      "TTL_ms": 90000,
+      "max_rows": 1440,
+      "profile_4h_max_expected_rows": 241,
+      "profile_4h_max_limit_parameter": 242,
+      "shared": "Different URL/window from core. No repeated HIT/MISS history. UNKNOWN pending may be requested on future executions under new actual budget."
+    }
+  ],
+  "coalescing_contract": {
+    "key": "provider + ':' + cache_key + ':' + normalized URL; source cache_key includes sourceversion/provider/family/full URL.",
+    "inFlight_same_key": "One network attempt and one cache/budget SQL path; joiners0 extra HTTP/SQL.",
+    "durable_cache_hit": "One cache SQL get, HTTP0; received_ts/event_ts/expiry preserved.",
+    "cache_window": "Broker TTL uses received_ts; source validators independently enforce source-event freshness.",
+    "different_symbols_or_windows": "No coalescing merely because same provider or overlapping bars.",
+    "separate_broker_instances": "inFlight is local to one broker. Durable cache only after successful persisted response; cross-worker simultaneous misses are not single-flight coordinated.",
+    "catalog": "TTL0 means serial catalog calls remain. One runner batch shares its catalogue, no new source-side collector/cache."
+  },
+  "scenarios": [
+    {
+      "name": "WARM_ALL_CURRENT_PUBLISH",
+      "condition": "All non-forced exact cached facts and independently qualified optional/map facts are still source-fresh. Catalog ttl0 still calls provider.",
+      "bingx": 3,
+      "swole": 0,
+      "telegram": 1,
+      "ttl_network": 0,
+      "zero_ttl_network": 3,
+      "cache_hits": 6,
+      "source_HTTP": 3,
+      "whole_budget_HTTP": 4,
+      "source_response_bytes_cap": 6000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 22,
+      "serial_network_timeout_allowance_ms": 45000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 86,
+      "SQL_broker_and_telegram_statements_upper": 126
+    },
+    {
+      "name": "COLD_FRESH_BULK_MANDATORY_PUBLISH",
+      "condition": "Bulk LAST usable; optional/map not configured.",
+      "bingx": 6,
+      "swole": 0,
+      "telegram": 1,
+      "ttl_network": 3,
+      "zero_ttl_network": 3,
+      "cache_hits": 0,
+      "source_HTTP": 6,
+      "whole_budget_HTTP": 7,
+      "source_response_bytes_cap": 12000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 34,
+      "serial_network_timeout_allowance_ms": 75000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 146,
+      "SQL_broker_and_telegram_statements_upper": 213
+    },
+    {
+      "name": "COLD_FRESH_BULK_FULL_PUBLISH",
+      "condition": "Fresh bulk LAST, qualified OI/funding/map, one publication attempt.",
+      "bingx": 8,
+      "swole": 1,
+      "telegram": 1,
+      "ttl_network": 6,
+      "zero_ttl_network": 3,
+      "cache_hits": 0,
+      "source_HTTP": 9,
+      "whole_budget_HTTP": 10,
+      "source_response_bytes_cap": 18000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 52,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 212,
+      "SQL_broker_and_telegram_statements_upper": 306,
+      "serial_network_timeout_allowance_ms": 105000,
+      "whole_wall_time_bound_ms": null
+    },
+    {
+      "name": "COLD_THIN_LAST_SUCCESS_FULL_PUBLISH",
+      "condition": "Bulk closeTime stale, direct LAST usable, OI/funding/map independently qualified.",
+      "bingx": 9,
+      "swole": 1,
+      "telegram": 1,
+      "ttl_network": 7,
+      "zero_ttl_network": 3,
+      "cache_hits": 0,
+      "source_HTTP": 10,
+      "whole_budget_HTTP": 11,
+      "source_response_bytes_cap": 20000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 58,
+      "serial_network_timeout_allowance_ms": 115000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 234,
+      "SQL_broker_and_telegram_statements_upper": 337
+    },
+    {
+      "name": "COLD_THIN_LAST_FALLBACK_FULL_PUBLISH",
+      "condition": "Bulk stale, direct LAST attempt unable to supply usable price without a terminal error; distinct symbol ticker fallback succeeds. OI/funding/map qualified.",
+      "bingx": 10,
+      "swole": 1,
+      "telegram": 1,
+      "ttl_network": 8,
+      "zero_ttl_network": 3,
+      "cache_hits": 0,
+      "source_HTTP": 11,
+      "whole_budget_HTTP": 12,
+      "source_response_bytes_cap": 22000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 64,
+      "serial_network_timeout_allowance_ms": 125000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 256,
+      "SQL_broker_and_telegram_statements_upper": 368
+    },
+    {
+      "name": "COLD_THIN_FULL_NO_PUBLICATION",
+      "condition": "Same maximal source path but publish=false; map called only if independent analysis.ready.",
+      "bingx": 8,
+      "swole": 1,
+      "telegram": 0,
+      "ttl_network": 8,
+      "zero_ttl_network": 1,
+      "cache_hits": 0,
+      "source_HTTP": 9,
+      "whole_budget_HTTP": 9,
+      "source_response_bytes_cap": 18000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 52,
+      "serial_network_timeout_allowance_ms": 90000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 196,
+      "SQL_broker_and_telegram_statements_upper": 278
+    },
+    {
+      "name": "CORE_REGISTRY_WITH_EMPTY_CANDLE_QUALIFICATIONS",
+      "condition": "Hypothetical admitted source execution with retained core8/next5 unchanged. Core incomplete; OI/funding skip, map/delivery/TG skip. Current published worker actually refuses manual before this path.",
+      "bingx": 6,
+      "swole": 0,
+      "telegram": 0,
+      "ttl_network": 5,
+      "zero_ttl_network": 1,
+      "cache_hits": 0,
+      "source_HTTP": 6,
+      "whole_budget_HTTP": 6,
+      "source_response_bytes_cap": 12000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 34,
+      "serial_network_timeout_allowance_ms": 60000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 130,
+      "SQL_broker_and_telegram_statements_upper": 185
+    },
+    {
+      "name": "OUTCOME_ONE_DUE_SIGNAL_CACHE_MISS_INCREMENT",
+      "condition": "One due qualified same-instrument historical interval<=1440 bars. Excludes entry/catalog/other backlog.",
+      "bingx": 1,
+      "swole": 0,
+      "telegram": 0,
+      "ttl_network": 1,
+      "zero_ttl_network": 0,
+      "cache_hits": 0,
+      "source_HTTP": 1,
+      "whole_budget_HTTP": 1,
+      "source_response_bytes_cap": 2000000,
+      "whole_response_bytes_cap": null,
+      "SQL_broker_and_telegram_statements_nominal": 6,
+      "serial_network_timeout_allowance_ms": 10000,
+      "whole_wall_time_bound_ms": null,
+      "SQL_broker_and_telegram_statements_one_finalize_CAS5_upper": 22,
+      "SQL_broker_and_telegram_statements_upper": 31
+    }
+  ],
+  "six_manuals": {
+    "independent_cold_full": {
+      "BINGX": 60,
+      "SWOLECHARTS": 6,
+      "TELEGRAM": 6,
+      "whole_budget_HTTP": 72,
+      "source_HTTP": 66,
+      "source_response_bytes_cap": 132000000,
+      "SQL_provider_broker_telegram_nominal": 384,
+      "serial_network_timeout_allowance_ms": 750000,
+      "worker_entry_HTTP_not_in_broker": 6,
+      "SQL_provider_broker_telegram_one_finalize_CAS5_upper": 1536,
+      "SQL_provider_broker_telegram_error_cleanup_upper": 2208
+    },
+    "same_executor_six_pending_upper": {
+      "BINGX": 55,
+      "SWOLECHARTS": 6,
+      "TELEGRAM": 6,
+      "whole_budget_HTTP": 67,
+      "source_HTTP": 61,
+      "reason": "One catalogue instead of6; up to6 distinct bulk invocations may still miss after TTL. Guaranteed counts do not assume a single bulk response stays fresh through6 serial analyses."
+    },
+    "independent_warm_all_fresh": {
+      "BINGX": 18,
+      "SWOLECHARTS": 0,
+      "TELEGRAM": 6,
+      "whole_budget_HTTP": 24,
+      "source_HTTP": 18,
+      "reason": "Conditional warm path only; not a safe six-manual reserve."
+    },
+    "one_later_cold_outcome_each": {
+      "extra_BINGX": 6,
+      "extra_whole_budget_HTTP": 6,
+      "extra_SQL_broker_nominal": 36,
+      "extra_SQL_broker_one_finalize_CAS5_upper": 132,
+      "extra_SQL_broker_error_cleanup_upper": 186
+    },
+    "independent_cold_full_plus_outcomes": {
+      "BINGX": 66,
+      "SWOLECHARTS": 6,
+      "TELEGRAM": 6,
+      "whole_budget_HTTP": 78,
+      "source_HTTP": 72,
+      "source_response_bytes_cap": 144000000
+    },
+    "manual24_proves_six_checks": false,
+    "no_existing_grant_expansion": true,
+    "not_measured": true,
+    "nonempty_backlog_warning": "Add2 fresh BINGX+1TG per further queued dispatch attempt,1BINGX per further due outcome attempt and each extra queued instrument core path. Unknown old queues mean no finite six-new-jobs completion bound; coded run164/hot96/map8/provider limits refuse further work instead."
+  },
+  "SQL": {
+    "unit": "SQL_STATEMENT_COUNT_STATIC; ACTUAL_D1_ROWS_AND_BYTES_UNKNOWN",
+    "cache_hit": {
+      "statements": 1,
+      "network": 0
+    },
+    "TTL_positive_network_miss": {
+      "nominal_statements": 6,
+      "one_finalize_CAS5_upper_statements": 22,
+      "known_finalize_failure_cleanup_upper_statements": 31,
+      "formula": "cache_get1 + reserve_atomic<=10 + first finalize_atomic<=10; on known contention/failure while receipt remains RESERVED the catch may finalize UNKNOWN once more<=10. Failed-finalize path has no cache_set, total<=31. Successful path adds cache_set1, total<=22."
+    },
+    "TTL_zero_network": {
+      "nominal_statements": 4,
+      "one_finalize_CAS5_upper_statements": 20,
+      "known_finalize_failure_cleanup_upper_statements": 30,
+      "formula": "reserve<=10 + finalize<=10 + possible UNKNOWN-finalize cleanup<=10; no cache read/write."
+    },
+    "telegram_attempt": {
+      "nominal_statements": 4,
+      "one_finalize_CAS5_upper_statements": 20,
+      "known_finalize_failure_cleanup_upper_statements": 30,
+      "formula": "Same reserve/finalize/catch UNKNOWN-finalize pattern; card/delivery state extra."
+    },
+    "primitive_state_ops": {
+      "get": 1,
+      "set": 1,
+      "atomic_changed_nominal": 2,
+      "atomic_CAS5_upper": 10,
+      "atomic_unchanged": 1,
+      "atomic_refusal_before_write": 1
+    },
+    "native_worker_fixed": {
+      "successful_statements_per_worker": 5,
+      "parts": "reservation INSERT/SUM1 + reservation readback1 + CREATE TABLE IF NOT EXISTS1 + successful finalization UPDATE1 + readback1.",
+      "known_finalization_failure_statement_upper_per_worker": 7,
+      "warning": "Worker catch may invoke finalization again if a known failure left unknown_ops0. Failure/unknown paths need receipts; do not call every failure a prefix.",
+      "actual_row_cost": null
+    },
+    "state_operation_stages": [
+      {
+        "stage": "enqueue new manual",
+        "G": 0,
+        "S": 0,
+        "A": 2
+      },
+      {
+        "stage": "executor claim/release",
+        "G": 0,
+        "S": 0,
+        "A": "1 claim per entrant; +1 release per successful claimant"
+      },
+      {
+        "stage": "each processing loop",
+        "G": "executor1 + queue1 + up to Q manual-job gets",
+        "S": 0,
+        "A": 0
+      },
+      {
+        "stage": "claimManual",
+        "G": 1,
+        "S": 0,
+        "A": "up to Q; completed rows usually unchanged1SQL, selected PENDING changes2SQL nominal"
+      },
+      {
+        "stage": "per checked instrument outside broker",
+        "G": 1,
+        "S": "1 latest-analysis +0/1 wave",
+        "A": 3,
+        "description": "previous_wave get; immutable analysis,active-instruments,candidate-queue atomics"
+      },
+      {
+        "stage": "finish manual",
+        "G": 0,
+        "S": 1,
+        "A": 1
+      },
+      {
+        "stage": "delivery enqueue",
+        "G": "2 +0/1 previous card",
+        "S": 0,
+        "A": "3 +0/1 suppressed card"
+      },
+      {
+        "stage": "new delivery dispatch outside provider budget",
+        "G": "source-input1 + sent-card readback1",
+        "S": 0,
+        "A": "claim1 + finish1"
+      },
+      {
+        "stage": "recordPublished",
+        "G": 1,
+        "S": 0,
+        "A": "0 unless SENT, then2; called repeatedly for repair even existing sent cards"
+      },
+      {
+        "stage": "delivery repair/drain",
+        "G": "delivery queue scans + per-card reads",
+        "S": 0,
+        "A": "up to D dispatch claims plus recordPublished state ops"
+      },
+      {
+        "stage": "outcomes",
+        "G": "1 pending-list + up to2O signal/saved-outcome reads",
+        "S": "up to U due outcomes not already HIT/MISS",
+        "A": 0,
+        "provider_increment": "up to U historical requests; O/U not bounded by6 new manual jobs"
+      },
+      {
+        "stage": "run save/result",
+        "G": "0/1 manual result",
+        "S": 1,
+        "A": 0
+      }
+    ],
+    "formula_nominal": "5P+G+S+2A+H+6Nplus+4Nzero+4T",
+    "symbols": "P=successful worker service lifecycles; G/S/A=runner/card state operations EXCLUDING broker/provider budget/cache; H=cache hits; Nplus=TTL-positive network attempts; Nzero=TTL0 source attempts; T=TG attempts. InFlight joiners0.",
+    "whole_SQL_statements_for_6": null,
+    "whole_rows_read_for_6": null,
+    "whole_rows_written_for_6": null,
+    "missing_for_finite_whole_bound": [
+      "Actual Q manual-queue length including completed entries",
+      "D old delivery-queue entries and eligible dispatch states",
+      "O outcome-pending entries and U currently due UNKNOWN outcomes",
+      "CAS contention/point-row D1 meta and native ledger SUM scope/index behavior",
+      "Current all-family day/outstanding/unknown ledger and actual D1 admission",
+      "Maximum serialized state/cache value size and queue pruning/bounds"
+    ],
+    "configured_reservation_not_measurement": {
+      "native_per_worker_R": 5000,
+      "native_per_worker_W": 300,
+      "core_capacity_R": 500,
+      "core_capacity_W": 80,
+      "delivery_capacity_R": 30,
+      "delivery_capacity_W": 15,
+      "protected_next_full_R": 59000,
+      "protected_next_full_W": 920
+    },
+    "why_not_a_hard_row_bound": "D1Store prechecks use estimated read/write; actual meta may exceed the estimate after the statement. SQL row costs and unknown ACKs must be read from native receipts, never SQL statement count or config.",
+    "formula_one_finalize_CAS5_upper": "5P+G+S+10A+H+22Nplus+20Nzero+20T",
+    "formula_request_error_cleanup_upper": "native_lifecycle + G+S+10A+H+31Nplus+30Nzero+30T"
+  },
+  "bytes_and_time": {
+    "source_broker_stream_limit_bytes": 2000000,
+    "source_default_timeout_ms": 10000,
+    "broker_allowed_timeout_ceiling_ms": 60000,
+    "map_outer_deadline_ms": 10000,
+    "telegram_timeout_ms": 15000,
+    "telegram_response_cap_bytes": null,
+    "manual_control_request_max_bytes": null,
+    "manual_control_body_limit_code": "raw.length<=16384 after request.text; not a streamed byte cap.",
+    "whole_response_bytes_cap": null,
+    "whole_wall_clock_bound_ms": null,
+    "why_unknown": "SQL/CAS waits/state serialization and preexisting queues have no static end-to-end deadline; fetch timeout is started after reserve. Provider pacing queues full work. CLI90s abort/executor120s are not proof six reports finish within those times.",
+    "executor_lease_ms": 120000,
+    "manual_CLI_timeout_ms": 90000
+  },
+  "ROOT_findings": [
+    {
+      "code": "DISCOVERY_STALE_PRICE_VALUE_PROPAGATION",
+      "path": "pump-report/runtime/runner.mjs",
+      "function": "updateDiscovery",
+      "trigger": "Source price is STALE but retains last value; compact.last and historical priors are built without factUsable/source-clock alignment.",
+      "effect": "Can put a thin coin into preliminary queue/history using stale values. Core/delivery rechecks still prevent treating that stale source fact as a usable price.",
+      "proposed_ROOT_change": "Retain reason/source_ts but only use qualified current price in compact/preliminary calculations; qualify historical priors by their event time and compatible horizon.",
+      "source_patch_required": false,
+      "status": "ROOT_REPORTED_FIXED_IN_CONTINUING_INTEGRATION_AFTER_THIS_STATIC108a_SNAPSHOT",
+      "latest_ROOT_report": "Compact now accepts last/reported_change_pct only when factUsable(price,now), retaining source event_ts/status. No native claim. Uploaded build6c0a57d reported by ROOT; not requalified here."
+    },
+    {
+      "code": "DELIVERY_REFRESH_PURPOSE_NOT_TAGGED",
+      "path": "pump-report/sources/index.mjs -> runtime/budget.mjs",
+      "trigger": "force_refresh price/book requests keep family USDT_M while budget exempts deliveryProtection only for family DELIVERY.",
+      "effect": "BingX recheck cannot intentionally consume the protected delivery allowance under that tag; near cap it may refuse while reserve remains held.",
+      "proposed_ROOT_change": "Coordinator chooses separate delivery purpose/budget contract or exact compatible tag; preserve market family and do not silently bypass reserve.",
+      "source_patch_required": "ONLY_AFTER_SHARED_CONTRACT_DECISION"
+    },
+    {
+      "code": "WHOLE_SQL_BACKLOG_BOUNDS_REQUIRED",
+      "path": "pump-report/runtime/runner.mjs",
+      "trigger": "manual/delivery/outcomes arrays retain old entries and scans recur.",
+      "effect": "No finite whole SQL number from6 new jobs alone.",
+      "proposed_ROOT_change": "Supply current bounded Q/D/O/U and queue/storage policy within owner deferrals; no deletion/capacity test in SOURCES scope."
+    }
+  ],
+  "execution": {
+    "market_provider_HTTP": 0,
+    "SQL": 0,
+    "TG": 0,
+    "CF_deploy": 0,
+    "documentation_connector_cost": null,
+    "source_adapter_edits": 0,
+    "old_tests_repeated": 0
+  },
+  "extra_cost_inputs": {
+    "automatic_clock_or_trading_rules_refresh": "Not called by A per manual. Any ROOT new recurring clock/rules/identity IO is additive and needs exact route/cadence/admission; not silently counted as0 measured.",
+    "control_entry": "Six separate manual POSTs=>6 app-entry HTTP outside provider broker totals. One later stats/run trigger is separate if used. OAuth/deploy/control tools are outside this runtime table and not measured here.",
+    "outcome_window": "Current runner invokes outcomes only10:00<=MSK hour<20:00; outside it the pending work remains due/deferred, not a completed zero-cost outcome."
+  },
+  "snapshot108a_published_state": {
+    "provider_stage": "QUALIFICATION_ONLY",
+    "qualification_attempt_cap": 5,
+    "qualification_expiry_ts": 1792918969000,
+    "current_manual_worker_path": "503 QUALIFICATION_ADMISSION_EXPIRED before services; no provider/SQL/TG authorized. Static future tables do not renew it.",
+    "swole_policy_configured": false,
+    "telegram_policy_cap": 0,
+    "current_candle_qualification": false,
+    "current_production_enabled_by_this_plan": false
+  },
+  "latest_ROOT_reported_state": {
+    "source": "Authorized coordinator message; not an IO measurement by SOURCES.",
+    "runtime_commit": "a9e82fc22b27c9f2badab723ae67c996ee3aa634",
+    "stale_discovery_fix": "Reported implemented.",
+    "worker": "ROOT reports Wrangler OAuth and exact26-module deployment readback.",
+    "qualification": "2 calls failed before provider due Cloudflare Fetch redirect:error TypeError; ROOT conservatively keeps2 UNKNOWN and only3 of initial5 remain. No refund/reset here.",
+    "redirect_fix": "ROOT changing to manual redirect and explicit3xx refusal.",
+    "source_native_IO": 0,
+    "static_plan_remains_snapshot108a": true
+  }
+}

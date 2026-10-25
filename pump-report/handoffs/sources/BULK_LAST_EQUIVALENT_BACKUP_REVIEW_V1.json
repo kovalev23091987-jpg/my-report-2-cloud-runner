@@ -1,0 +1,104 @@
+{
+  "schema": "PUMP_BULK_LAST_AND_EQUIVALENT_BACKUP_REVIEW_V1",
+  "status": "FINITE_STATIC_REVIEW_COMPLETE_NOT_NATIVE",
+  "authority_main": "108a5dbdfc670d9a48fbf953811f5aa1b7bc2864",
+  "source_SHA256": {
+    "index": "eb45f0762ed090d29d9a853bfa7f121203cd1148f67c385bec13355e9ea5c5b3",
+    "bingx": "bb7dfe0ed7f28756876831d7a2cdabcc35614c850f2a514f41b825222f528492",
+    "liquidations": "7fd1e6cca4eb6037ecbe5d6e9296c681aaa19dfb6248ef38da8bf0e5c2de744e"
+  },
+  "bulk_LAST": {
+    "field_value": "lastPrice",
+    "source_clock": "row.closeTime",
+    "event_ts_preserved": true,
+    "received_ts_not_event_ts": true,
+    "usable_age_ms": 30000,
+    "expires": "closeTime+30000",
+    "stale_status": "STALE",
+    "stale_reason": "SOURCE_FACT_STALE",
+    "missing_clock_status": "INCOMPLETE",
+    "future_clock_status": "ERROR; value nulled",
+    "cache": "Same original event/received clocks. A new HTTP200 or cache read cannot renew closeTime.",
+    "reuse": "Only factUsable + exact instrument/source/provider/unit/identity proof + original age/expiry checks; stale fact not inserted into reusable overviewPrices.",
+    "thin_asset_path": "Stale bulk LAST=>getCore requests direct same-instrument BingX LAST. It is a new matching-engine-time last-price snapshot, not a claim that a fresh trade occurred."
+  },
+  "qualified_same_fact_fallback": {
+    "route": "/openApi/swap/v2/quote/ticker?symbol=...",
+    "max_extra_GET": 1,
+    "purpose": "Replace LAST price only, never OHLC/volume.",
+    "event_clock": "That fallback row closeTime; if old =>STALE with old expiry. No received-clock repair.",
+    "blocked_on": [
+      "BUDGET/ADMISSION/RESERVE/BACKOFF/RATE_LIMIT",
+      "ACCESS_BLOCKED",
+      "IDENTITY/SYMBOL_ERROR",
+      "CLOCK_MISMATCH",
+      "FUTURE_EVENT_CLOCK"
+    ],
+    "force_delivery": "force_refresh disables fallback; selected price/book total<=2 attempts."
+  },
+  "ROOT_discovery_seam": {
+    "static108a_issue": "updateDiscovery keeps stale price.value in compact history/prequeue without factUsable; source fact itself remains STALE.",
+    "latest_ROOT_report": "ROOT has now added factUsable guard for last/reported_change_pct, preserving event_ts/status, in continuing integration. This packet does not replay accepted ROOT qualification or native.",
+    "status": "REPORTED_FIXED_BY_ROOT_NOT_A_SOURCE_ADAPTER_PATCH"
+  },
+  "equivalent_backup": {
+    "status": "NO_QUALIFIED_FREE_EQUIVALENT_RESERVE_IN_CHECKED_EVIDENCE",
+    "required_equivalence": [
+      "BingX same native perpetual contractId/underlying/family/USDT settlement",
+      "LAST-trade OHLC, not mark/index/spot/other venue OHLC",
+      "Exact interval/open-time/closed-window and independent base volume units or exact multiplier",
+      "Complete requested closed windows, original event/receipt clocks",
+      "Qualified access/parameters/budget through current ROOT broker"
+    ],
+    "checked_primary_evidence": {
+      "official_docs_v3_git_blob": "61480e09f7d4088a41168fd22528e3b4a948dbd8",
+      "whole_SHA256": "4f4ec6e6b902a86ea4eb3e9ef547c46b70104a44c1b2648dae26674e4e070ffb",
+      "official_AI_market_reference_blob": "e61be4746c5bd5475e556146448c79f4c58b064f",
+      "retained_official_WS_reference_SHA256": "8b03a128015c2e0f9ee9da4e729249c09ff1532359ccd20436e70043489467ab"
+    },
+    "candidate_results": [
+      {
+        "route": "/openApi/swap/v3/quote/klines",
+        "result": "PRIMARY_ONLY; same route via another library is not a reserve. Object units/time still unqualified."
+      },
+      {
+        "route": "/openApi/cswap/v1/market/klines",
+        "result": "REJECT_DIFFERENT_COIN_M_PRODUCT"
+      },
+      {
+        "route": "/openApi/spot/v2/quote/klines or /openApi/spot/v2/quote/historicalKlines",
+        "result": "REJECT_SPOT_NOT_SAME_PERPETUAL"
+      },
+      {
+        "route": "/openApi/swap/v1/market/markPriceKlines",
+        "result": "REJECT_MARK_PRICE_DIFFERENT_PRICE_MEANING_NO_EQUIVALENT_TRADE_VOLUME"
+      },
+      {
+        "route": "Official BingX swap WS kline",
+        "result": "EXACT_VENUE_CANDIDATE_NOT_CONNECTED_OR_EQUIVALENT_COMPLETE_HISTORY: t/T documented, v generic volume; prospective pushes do not prove requested121 closed bars, disconnect completeness/recovery unknown; GET-only broker has no WS admission/bytes/session accounting."
+      },
+      {
+        "route": "HTX/Binance/other-venue/TradingView ticker matches",
+        "result": "REJECT_WITHOUT_EXACT_SAME_BINGX_NATIVE_PRODUCT_DATA_CONTRACT_AND_UNITS"
+      },
+      {
+        "route": "Persisted same-venue qualified closed bars",
+        "result": "CACHE_REUSE_NOT_NEW_PROVIDER_RESERVE; only actual retained closed rows/units/window may be reused, never close a captured forming bar by waiting."
+      }
+    ],
+    "minimum_missing_input": "One exact alternative same-BingX-perpetual primary data contract with independently qualified candle clocks/base-volume, complete-window/recovery semantics and actual ROOT route/budget admission. Until then incomplete core remains incomplete.",
+    "market_calls_made": 0,
+    "general_docs_search_repeated": false
+  },
+  "root_contract_decision": {
+    "delivery_budget_purpose": "BingX forced delivery rechecks currently remain family USDT_M; budget only releases protected delivery allowance for family DELIVERY. ROOT must choose explicit purpose/budget seam while preserving market family. No silent adapter change."
+  },
+  "execution": {
+    "market_provider_HTTP": 0,
+    "SQL": 0,
+    "TG": 0,
+    "CF_deploy": 0,
+    "source_adapter_changes": 0,
+    "documentation_connector_cost": null
+  }
+}

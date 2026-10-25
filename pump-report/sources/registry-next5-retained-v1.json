@@ -1,0 +1,360 @@
+{
+  "schema": "PUMP_BINGX_SAVED_IDENTITY_REGISTRY_V1",
+  "version": "next5-exact-retained-primary-crypto-docs-v1",
+  "scope": "DELTA_FIVE_VENUE_SCOPED_UNDERLYING_BINDINGS_NOT_CURRENT_RUNTIME_ADMISSION",
+  "current_membership_verified": false,
+  "native_provider_admission": false,
+  "current_candles_qualified": false,
+  "global_current_qualified_crypto_N": null,
+  "identity_evidence_sha256": "8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+  "base_registry": {
+    "path": "pump-report/sources/registry-core8-retained-v1.json",
+    "sha256": "d53dd25ad347a7fc9049cc1a48f1bb6af6c0b42c24a61c7d5297c761b72c27b5",
+    "entries": 8,
+    "merge": "ROOT combines base.instruments and this.instruments; assert disjoint ids/symbols, then new current catalog readback. Do not replace core8 silently."
+  },
+  "instruments": [
+    {
+      "instrument": {
+        "instrument_id": "BINGX:USDT_M:100009:AVAX-USDT",
+        "asset_id": "BINGX_UNDERLYING:AVAX",
+        "venue": "BINGX",
+        "native_symbol": "AVAX-USDT",
+        "market_type": "PERPETUAL",
+        "base": "AVAX",
+        "quote": "USDT",
+        "settle": "USDT",
+        "margin": "USDT",
+        "classification_status": "VERIFIED_CRYPTO",
+        "identity_evidence_ref": "PUMP_SAVED_NATIVE100009_AVAX_CRYPTO_DOCS_V1:sha256:8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "price_tick": null,
+        "quantity_step": null,
+        "contract_multiplier": null,
+        "canonical_cross_venue_identity_qualified": false
+      },
+      "native_contract_id": "100009",
+      "native_base": "AVAX",
+      "family": "USDT_M",
+      "qualifications": {
+        "candles": {},
+        "orderbook": {
+          "fields": "COIN",
+          "unit": "BASE_ASSET",
+          "evidence_ref": "BINGX_OFFICIAL_DEPTH_LITERAL_SHA256:b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+          "qualification_scope": "MEANING_OF_EXPLICIT_BIDSCOIN_ASKSCOIN_ONLY;ACTUAL_RESPONSE_AND_T_REQUIRED"
+        }
+      },
+      "liquidations": {
+        "routes": []
+      },
+      "evidence": {
+        "proof_id": "PUMP_SAVED_NATIVE100009_AVAX_CRYPTO_DOCS_V1",
+        "review_path": "pump-report/handoffs/sources/evidence/NEXT5_CRYPTO_PRIMARY_IDENTITY_V1.json",
+        "review_sha256": "8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "reviewed_ts": 1792931028177,
+        "native_catalog_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "native_catalog_bytes": 605854,
+        "historical_received_ts": 1792862359941,
+        "historical_status": 1,
+        "historical_api_open": "true",
+        "venue_asset_name": "Avalanche",
+        "independent_crypto_identity": "Avalanche Primary Network native AVAX",
+        "specific_venue_underlying_document": "https://bingx.com/en/price/avalanche-2",
+        "independent_primary_crypto_document": "https://docs.avax.network/docs/primary-network/avax-token",
+        "specific_perpetual_document": "https://bingx.com/en/perpetual/AVAX-USDT",
+        "spot_document_status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "margin_and_settlement_basis": {
+          "currency": "USDT",
+          "evidence_ref": "BINGX_CATALOG_DOCSV3_SHA256:9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+          "current_rules_authenticated": false
+        }
+      },
+      "limitations": [
+        "RETAINED_CATALOG_NOT_CURRENT_MEMBERSHIP",
+        "CURATED_CROSS_DOCUMENT_BINDING_NOT_EXCHANGE_TOKEN_CERTIFICATE",
+        "NO_CHAIN_CONTRACT_OR_CROSS_VENUE_EQUIVALENCE_ASSERTED",
+        "CANDLE_OBJECT_OPEN_TIME_UNQUALIFIED",
+        "CANDLE_OBJECT_VOLUME_UNIT_UNQUALIFIED",
+        "STANDARD_DEPTH_QUANTITY_AND_CONTRACT_SIZE_UNQUALIFIED",
+        "OPTIONAL_SWOLE_ROUTE_NOT_ACTIVATED",
+        "ROOT_PROVIDER_SQL_RUNTIME_ADMISSIONS_SEPARATE"
+      ]
+    },
+    {
+      "instrument": {
+        "instrument_id": "BINGX:USDT_M:103:LINK-USDT",
+        "asset_id": "BINGX_UNDERLYING:LINK",
+        "venue": "BINGX",
+        "native_symbol": "LINK-USDT",
+        "market_type": "PERPETUAL",
+        "base": "LINK",
+        "quote": "USDT",
+        "settle": "USDT",
+        "margin": "USDT",
+        "classification_status": "VERIFIED_CRYPTO",
+        "identity_evidence_ref": "PUMP_SAVED_NATIVE103_LINK_CRYPTO_DOCS_V1:sha256:8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "price_tick": null,
+        "quantity_step": null,
+        "contract_multiplier": null,
+        "canonical_cross_venue_identity_qualified": false
+      },
+      "native_contract_id": "103",
+      "native_base": "LINK",
+      "family": "USDT_M",
+      "qualifications": {
+        "candles": {},
+        "orderbook": {
+          "fields": "COIN",
+          "unit": "BASE_ASSET",
+          "evidence_ref": "BINGX_OFFICIAL_DEPTH_LITERAL_SHA256:b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+          "qualification_scope": "MEANING_OF_EXPLICIT_BIDSCOIN_ASKSCOIN_ONLY;ACTUAL_RESPONSE_AND_T_REQUIRED"
+        }
+      },
+      "liquidations": {
+        "routes": []
+      },
+      "evidence": {
+        "proof_id": "PUMP_SAVED_NATIVE103_LINK_CRYPTO_DOCS_V1",
+        "review_path": "pump-report/handoffs/sources/evidence/NEXT5_CRYPTO_PRIMARY_IDENTITY_V1.json",
+        "review_sha256": "8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "reviewed_ts": 1792931028177,
+        "native_catalog_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "native_catalog_bytes": 605854,
+        "historical_received_ts": 1792862359941,
+        "historical_status": 1,
+        "historical_api_open": "true",
+        "venue_asset_name": "Chainlink",
+        "independent_crypto_identity": "Chainlink Network LINK token; on-chain representation unqualified",
+        "specific_venue_underlying_document": "https://bingx.com/en/price/chainlink",
+        "independent_primary_crypto_document": "https://chain.link/faqs",
+        "specific_perpetual_document": "https://bingx.com/en/perpetual/LINK-USDT",
+        "spot_document_status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "margin_and_settlement_basis": {
+          "currency": "USDT",
+          "evidence_ref": "BINGX_CATALOG_DOCSV3_SHA256:9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+          "current_rules_authenticated": false
+        }
+      },
+      "limitations": [
+        "RETAINED_CATALOG_NOT_CURRENT_MEMBERSHIP",
+        "CURATED_CROSS_DOCUMENT_BINDING_NOT_EXCHANGE_TOKEN_CERTIFICATE",
+        "NO_CHAIN_CONTRACT_OR_CROSS_VENUE_EQUIVALENCE_ASSERTED",
+        "CANDLE_OBJECT_OPEN_TIME_UNQUALIFIED",
+        "CANDLE_OBJECT_VOLUME_UNIT_UNQUALIFIED",
+        "STANDARD_DEPTH_QUANTITY_AND_CONTRACT_SIZE_UNQUALIFIED",
+        "OPTIONAL_SWOLE_ROUTE_NOT_ACTIVATED",
+        "ROOT_PROVIDER_SQL_RUNTIME_ADMISSIONS_SEPARATE",
+        "ERC677_AND_BRIDGED_LINK_VARIANTS_NOT_COLLAPSED_TO_CHAIN_CONTRACT_IDENTITY"
+      ]
+    },
+    {
+      "instrument": {
+        "instrument_id": "BINGX:USDT_M:100006:LTC-USDT",
+        "asset_id": "BINGX_UNDERLYING:LTC",
+        "venue": "BINGX",
+        "native_symbol": "LTC-USDT",
+        "market_type": "PERPETUAL",
+        "base": "LTC",
+        "quote": "USDT",
+        "settle": "USDT",
+        "margin": "USDT",
+        "classification_status": "VERIFIED_CRYPTO",
+        "identity_evidence_ref": "PUMP_SAVED_NATIVE100006_LTC_CRYPTO_DOCS_V1:sha256:8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "price_tick": null,
+        "quantity_step": null,
+        "contract_multiplier": null,
+        "canonical_cross_venue_identity_qualified": false
+      },
+      "native_contract_id": "100006",
+      "native_base": "LTC",
+      "family": "USDT_M",
+      "qualifications": {
+        "candles": {},
+        "orderbook": {
+          "fields": "COIN",
+          "unit": "BASE_ASSET",
+          "evidence_ref": "BINGX_OFFICIAL_DEPTH_LITERAL_SHA256:b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+          "qualification_scope": "MEANING_OF_EXPLICIT_BIDSCOIN_ASKSCOIN_ONLY;ACTUAL_RESPONSE_AND_T_REQUIRED"
+        }
+      },
+      "liquidations": {
+        "routes": []
+      },
+      "evidence": {
+        "proof_id": "PUMP_SAVED_NATIVE100006_LTC_CRYPTO_DOCS_V1",
+        "review_path": "pump-report/handoffs/sources/evidence/NEXT5_CRYPTO_PRIMARY_IDENTITY_V1.json",
+        "review_sha256": "8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "reviewed_ts": 1792931028177,
+        "native_catalog_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "native_catalog_bytes": 605854,
+        "historical_received_ts": 1792862359941,
+        "historical_status": 1,
+        "historical_api_open": "true",
+        "venue_asset_name": "Litecoin",
+        "independent_crypto_identity": "Litecoin digital currency",
+        "specific_venue_underlying_document": "https://bingx.com/en/price/litecoin",
+        "independent_primary_crypto_document": "https://github.com/litecoin-project/litecoin/blob/master/README.md",
+        "specific_perpetual_document": "https://bingx.com/en/perpetual/LTC-USDT",
+        "spot_document_status": "PAIR_AND_NAME_RENDERED_EMPTY",
+        "margin_and_settlement_basis": {
+          "currency": "USDT",
+          "evidence_ref": "BINGX_CATALOG_DOCSV3_SHA256:9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+          "current_rules_authenticated": false
+        }
+      },
+      "limitations": [
+        "RETAINED_CATALOG_NOT_CURRENT_MEMBERSHIP",
+        "CURATED_CROSS_DOCUMENT_BINDING_NOT_EXCHANGE_TOKEN_CERTIFICATE",
+        "NO_CHAIN_CONTRACT_OR_CROSS_VENUE_EQUIVALENCE_ASSERTED",
+        "CANDLE_OBJECT_OPEN_TIME_UNQUALIFIED",
+        "CANDLE_OBJECT_VOLUME_UNIT_UNQUALIFIED",
+        "STANDARD_DEPTH_QUANTITY_AND_CONTRACT_SIZE_UNQUALIFIED",
+        "OPTIONAL_SWOLE_ROUTE_NOT_ACTIVATED",
+        "ROOT_PROVIDER_SQL_RUNTIME_ADMISSIONS_SEPARATE",
+        "SPOT_PAIR_NAME_UNAVAILABLE_NOT_ASSERTED",
+        "UNDERLYING_BINDING_USES_EXACT_NATIVE_PERPETUAL_TUPLE_AND_EXPLICIT_NAMED_VENUE_COIN_DOCUMENT"
+      ]
+    },
+    {
+      "instrument": {
+        "instrument_id": "BINGX:USDT_M:100008:DOT-USDT",
+        "asset_id": "BINGX_UNDERLYING:DOT",
+        "venue": "BINGX",
+        "native_symbol": "DOT-USDT",
+        "market_type": "PERPETUAL",
+        "base": "DOT",
+        "quote": "USDT",
+        "settle": "USDT",
+        "margin": "USDT",
+        "classification_status": "VERIFIED_CRYPTO",
+        "identity_evidence_ref": "PUMP_SAVED_NATIVE100008_DOT_CRYPTO_DOCS_V1:sha256:8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "price_tick": null,
+        "quantity_step": null,
+        "contract_multiplier": null,
+        "canonical_cross_venue_identity_qualified": false
+      },
+      "native_contract_id": "100008",
+      "native_base": "DOT",
+      "family": "USDT_M",
+      "qualifications": {
+        "candles": {},
+        "orderbook": {
+          "fields": "COIN",
+          "unit": "BASE_ASSET",
+          "evidence_ref": "BINGX_OFFICIAL_DEPTH_LITERAL_SHA256:b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+          "qualification_scope": "MEANING_OF_EXPLICIT_BIDSCOIN_ASKSCOIN_ONLY;ACTUAL_RESPONSE_AND_T_REQUIRED"
+        }
+      },
+      "liquidations": {
+        "routes": []
+      },
+      "evidence": {
+        "proof_id": "PUMP_SAVED_NATIVE100008_DOT_CRYPTO_DOCS_V1",
+        "review_path": "pump-report/handoffs/sources/evidence/NEXT5_CRYPTO_PRIMARY_IDENTITY_V1.json",
+        "review_sha256": "8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "reviewed_ts": 1792931028177,
+        "native_catalog_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "native_catalog_bytes": 605854,
+        "historical_received_ts": 1792862359941,
+        "historical_status": 1,
+        "historical_api_open": "true",
+        "venue_asset_name": "Polkadot",
+        "independent_crypto_identity": "Polkadot native DOT",
+        "specific_venue_underlying_document": "https://bingx.com/en/price/polkadot",
+        "independent_primary_crypto_document": "https://docs.polkadot.com/reference/polkadot-hub/consensus-and-security/relay-chain/",
+        "specific_perpetual_document": "https://bingx.com/en/perpetual/DOT-USDT",
+        "spot_document_status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "margin_and_settlement_basis": {
+          "currency": "USDT",
+          "evidence_ref": "BINGX_CATALOG_DOCSV3_SHA256:9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+          "current_rules_authenticated": false
+        }
+      },
+      "limitations": [
+        "RETAINED_CATALOG_NOT_CURRENT_MEMBERSHIP",
+        "CURATED_CROSS_DOCUMENT_BINDING_NOT_EXCHANGE_TOKEN_CERTIFICATE",
+        "NO_CHAIN_CONTRACT_OR_CROSS_VENUE_EQUIVALENCE_ASSERTED",
+        "CANDLE_OBJECT_OPEN_TIME_UNQUALIFIED",
+        "CANDLE_OBJECT_VOLUME_UNIT_UNQUALIFIED",
+        "STANDARD_DEPTH_QUANTITY_AND_CONTRACT_SIZE_UNQUALIFIED",
+        "OPTIONAL_SWOLE_ROUTE_NOT_ACTIVATED",
+        "ROOT_PROVIDER_SQL_RUNTIME_ADMISSIONS_SEPARATE"
+      ]
+    },
+    {
+      "instrument": {
+        "instrument_id": "BINGX:USDT_M:100039:TRX-USDT",
+        "asset_id": "BINGX_UNDERLYING:TRX",
+        "venue": "BINGX",
+        "native_symbol": "TRX-USDT",
+        "market_type": "PERPETUAL",
+        "base": "TRX",
+        "quote": "USDT",
+        "settle": "USDT",
+        "margin": "USDT",
+        "classification_status": "VERIFIED_CRYPTO",
+        "identity_evidence_ref": "PUMP_SAVED_NATIVE100039_TRX_CRYPTO_DOCS_V1:sha256:8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "price_tick": null,
+        "quantity_step": null,
+        "contract_multiplier": null,
+        "canonical_cross_venue_identity_qualified": false
+      },
+      "native_contract_id": "100039",
+      "native_base": "TRX",
+      "family": "USDT_M",
+      "qualifications": {
+        "candles": {},
+        "orderbook": {
+          "fields": "COIN",
+          "unit": "BASE_ASSET",
+          "evidence_ref": "BINGX_OFFICIAL_DEPTH_LITERAL_SHA256:b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+          "qualification_scope": "MEANING_OF_EXPLICIT_BIDSCOIN_ASKSCOIN_ONLY;ACTUAL_RESPONSE_AND_T_REQUIRED"
+        }
+      },
+      "liquidations": {
+        "routes": []
+      },
+      "evidence": {
+        "proof_id": "PUMP_SAVED_NATIVE100039_TRX_CRYPTO_DOCS_V1",
+        "review_path": "pump-report/handoffs/sources/evidence/NEXT5_CRYPTO_PRIMARY_IDENTITY_V1.json",
+        "review_sha256": "8b20c43870a35d925a76f0dcfda7b8c4cef3b85eba8bb93465aff4bcd8baf002",
+        "reviewed_ts": 1792931028177,
+        "native_catalog_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "native_catalog_bytes": 605854,
+        "historical_received_ts": 1792862359941,
+        "historical_status": 1,
+        "historical_api_open": "true",
+        "venue_asset_name": "TRON",
+        "independent_crypto_identity": "TRON native TRX",
+        "specific_venue_underlying_document": "https://bingx.com/en/price/tron",
+        "independent_primary_crypto_document": "https://developers.tron.network/docs/token-standards-trx",
+        "specific_perpetual_document": "https://bingx.com/en/perpetual/TRX-USDT",
+        "spot_document_status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "margin_and_settlement_basis": {
+          "currency": "USDT",
+          "evidence_ref": "BINGX_CATALOG_DOCSV3_SHA256:9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+          "current_rules_authenticated": false
+        }
+      },
+      "limitations": [
+        "RETAINED_CATALOG_NOT_CURRENT_MEMBERSHIP",
+        "CURATED_CROSS_DOCUMENT_BINDING_NOT_EXCHANGE_TOKEN_CERTIFICATE",
+        "NO_CHAIN_CONTRACT_OR_CROSS_VENUE_EQUIVALENCE_ASSERTED",
+        "CANDLE_OBJECT_OPEN_TIME_UNQUALIFIED",
+        "CANDLE_OBJECT_VOLUME_UNIT_UNQUALIFIED",
+        "STANDARD_DEPTH_QUANTITY_AND_CONTRACT_SIZE_UNQUALIFIED",
+        "OPTIONAL_SWOLE_ROUTE_NOT_ACTIVATED",
+        "ROOT_PROVIDER_SQL_RUNTIME_ADMISSIONS_SEPARATE"
+      ]
+    }
+  ],
+  "coverage": {
+    "retained_active_usdt_rows": 935,
+    "new_underlying_bindings": 5,
+    "combined_small_saved_underlying_bindings": 13,
+    "owner_excluded_rows": 2,
+    "remaining_retained_active_usdt_identity_unknown": 920,
+    "current_verified_rows": 0,
+    "known_LTC_spot_gap_preserved": true
+  }
+}

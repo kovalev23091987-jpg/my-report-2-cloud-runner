@@ -16,15 +16,15 @@ const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:
 
 async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,clock}),store=native.store;
-  await store.install();
-  const budget=createUnifiedBudget({store,run_id,mode:mode==='CONTROL'?'MANUAL':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS}});
+  if(mode!=='LOOKUP')await store.install();
+  const budget=createUnifiedBudget({store,run_id,mode:mode==='CONTROL'?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS}});
   const broker=createRequestBroker({budget,store,clock,fetch_impl});
   const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock()))return {valid:false,reason:'CARD_OR_WINDOW_EXPIRED'};
     if(!card.analysis.ready||!card.analysis.plan)return {valid:false,reason:'PLAN_NOT_READY'};
     const saved=await store.get(card.analysis.source_input_key);if(!saved?.input)return {valid:false,reason:'ORIGINAL_INPUT_NOT_SAVED'};
-    const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id,mode:card.mode,force_refresh:true,only_facts:['price','orderbook']});
+    const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});
     const facts={...saved.input.facts,...fresh.facts};if(!['price','orderbook','candles'].every(key=>factUsable(facts[key],clock())))return {valid:false,reason:'MANDATORY_FACT_RECHECK_FAILED'};
     const checked=analyzePump({...saved.input,facts,analysis_ts:clock(),previous_wave:card.analysis.next_wave??saved.input.previous_wave},START_PROFILE);
     const move=Math.abs((checked.reference_price/card.analysis.reference_price-1)*100);
@@ -50,11 +50,17 @@ export function createPumpWorker(legacy={}){
       if(url.pathname==='/pump/health')return json({version:PUMP_VERSION,provider_stage:PROVIDER_STAGE,automatic_enabled:env.PUMP_REPORT_ENABLED==='1',delivery_enabled:env.PUMP_REPORT_DELIVERY_ENABLED==='1',legacy_schedules_restored:false});
       const key=String(env.PUMP_CONTROL_KEY??'');if(!key||request.headers.get('x-pump-control-key')!==key)return json({error:'UNAUTHORIZED'},401);
       if(request.method!=='POST')return json({error:'POST_REQUIRED'},405);
-      let body;try{const raw=await request.text();if(raw.length>16384)throw Error();body=JSON.parse(raw||'{}');}catch{return json({error:'INVALID_BODY'},400);}
+      let body;try{const raw=await request.text();if(raw.length>16384)throw Error();body=JSON.parse(raw||'{}');if(!body||typeof body!=='object'||Array.isArray(body))throw Error();}catch{return json({error:'INVALID_BODY'},400);}
       const probe=url.pathname==='/pump/source-probe';
+      const lookup=['/pump/manual-result','/pump/summary'].includes(url.pathname);
+      if(!probe&&!lookup&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
+      if(probe&&!['clock','catalog','price','ticker','candles','orderbook'].includes(body.kind))return json({error:'INVALID_PROBE_KIND'},400);
+      if(probe&&!['clock','catalog'].includes(body.kind)&&!/^[A-Za-z0-9._-]{1,80}-USDT$/.test(body.symbol??''))return json({error:'INVALID_PROBE_SYMBOL'},400);
+      if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);
+      if(url.pathname==='/pump/summary'&&body.max_records!==undefined&&(!Number.isInteger(body.max_records)||body.max_records<1||body.max_records>40))return json({error:'SUMMARY_LIMIT_1_TO_40'},400);
       if(PROVIDER_STAGE==='QUALIFICATION_ONLY'&&Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'QUALIFICATION_ADMISSION_EXPIRED'},503);
-      if(!probe&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
-      const mode=probe?'CONTROL':body.mode==='AUTO'?'AUTO':'MANUAL',run_id=crypto.randomUUID();
+      if(!probe&&!lookup&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
+      const mode=probe?'CONTROL':lookup?'LOOKUP':body.mode==='AUTO'?'AUTO':'MANUAL',run_id=crypto.randomUUID();
       if(mode==='AUTO'&&!automaticWindowOpen(Date.now()))return json({status:'OUTSIDE_AUTOMATIC_WINDOW',run_id});
       let runtime,result;
       try{
@@ -70,6 +76,7 @@ export function createPumpWorker(legacy={}){
         }else if(url.pathname==='/pump/manual')result=await runtime.runner.execute({mode:'MANUAL',symbol:body.symbol??body.text,context_symbol:body.context_symbol??null,run_id,publish:body.publish!==false,request_id:body.request_id??crypto.randomUUID()});
         else if(url.pathname==='/pump/run')result=await runtime.runner.execute({mode:'AUTO',run_id,publish:body.publish!==false});
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
+        else if(url.pathname==='/pump/summary')result={status:'SUMMARY',result:await runtime.runner.getSummary({max_records:body.max_records??40})};
         else result={error:'NOT_FOUND'};
         const finalized=await finalizeNativeRun(runtime.native);return json({...result,native_receipt:finalized});
       }catch(error){

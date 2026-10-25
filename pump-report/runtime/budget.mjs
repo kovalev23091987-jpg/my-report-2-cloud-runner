@@ -16,9 +16,9 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     if (!policy || !admission?.provider_policy_version || admission.provider_policy_version!==policy.version || !Number.isSafeInteger(admission.expires_ts) || admission.expires_ts<=now || !policy.evidence_ref || !integer(policy.project_daily_cap) || !integer(policy.project_monthly_cap) || !integer(policy.per_minute_cap)) throw new BudgetRefusal('PROVIDER_ADMISSION_REQUIRED',{provider});
     return policy;
   };
-  async function reserve({provider,family='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1}) {
+  async function reserve({provider,family='CORE',purpose='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1}) {
     const policy=providerPolicy(provider),now=clock();
-    if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
+    if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane)||!['CORE','DELIVERY'].includes(purpose))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
     if(run.total+cost>limits.http_per_run||run.lanes[lane]+cost>limits.lanes[lane])throw new BudgetRefusal('RUN_HTTP_EXHAUSTED');
     if(mode==='AUTO'&&lane==='hot'&&run.lanes.hot+cost+limits.manual_http_run_reserve>limits.lanes.hot)throw new BudgetRefusal('RUN_MANUAL_RESERVE_PROTECTED');
     if(family==='LIQUIDATIONS'&&run.liquidations+cost>limits.liquidations_per_run)throw new BudgetRefusal('MAP_BUDGET_EXHAUSTED');
@@ -26,7 +26,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     const protectedHttp=protected_reserves?.http_by_provider?.[provider];
     if(!integer(protectedHttp)||!integer(protected_reserves?.delivery_http)||!integer(protected_reserves?.outcomes_http))throw new BudgetRefusal('PROTECTED_RESERVES_NOT_MEASURED');
     const manualProtection=mode==='MANUAL'?0:protectedHttp;
-    const deliveryProtection=family==='DELIVERY'?0:protected_reserves.delivery_http;
+    const deliveryProtection=family==='DELIVERY'||purpose==='DELIVERY'?0:protected_reserves.delivery_http;
     const outcomesProtection=mode==='STATISTICS'?0:protected_reserves.outcomes_http;
     // Hold the in-process run envelope before awaiting the durable provider CAS.
     // Concurrent different-provider requests cannot oversubscribe a run.
@@ -48,8 +48,8 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
       if(integer(policy.qualification_attempt_cap)){p.qualification_totals??={};inc(p.qualification_totals,policy.version,cost);}
-      state.outstanding[request_id]={run_id,provider,cost,ts:now,family};
-      return {state,result:{request_id,run_id,provider,family,cost,reserved_ts:now,day,month,state:'RESERVED'}};
+      state.outstanding[request_id]={run_id,provider,cost,ts:now,family,purpose};
+      return {state,result:{request_id,run_id,provider,family,purpose,cost,reserved_ts:now,day,month,state:'RESERVED'}};
     });}catch(error){
       if(error instanceof BudgetRefusal&&['REQUEST_ALREADY_RESERVED','PROVIDER_SECOND_EXHAUSTED','PROVIDER_MINUTE_EXHAUSTED','QUALIFICATION_ATTEMPTS_EXHAUSTED','PROTECTED_DAY_RESERVE','PROVIDER_MONTH_EXHAUSTED','PROVIDER_BACKOFF'].includes(error.code)){
         run.total-=cost;run.lanes[lane]-=cost;if(family==='LIQUIDATIONS')run.liquidations-=cost;if(candidate_id)inc(run.candidates,candidate_id,-cost);
@@ -91,7 +91,7 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
     });providerQueues.set(provider,next);
     try{return await next;}finally{if(providerQueues.get(provider)===next)providerQueues.delete(provider);}
   }
-  async function request({provider,family='CORE',cache_key,url,method='GET',timeout_ms=10000,ttl_ms=0,headers={},candidate_id=null,estimated_cost={http:1},deadline_ts=null}) {
+  async function request({provider,family='CORE',purpose='CORE',cache_key,url,method='GET',timeout_ms=10000,ttl_ms=0,headers={},candidate_id=null,estimated_cost={http:1},deadline_ts=null}) {
     if(method!=='GET'||!cache_key||!provider)throw new BudgetRefusal('INVALID_SOURCE_REQUEST');
     if(!Number.isSafeInteger(timeout_ms)||timeout_ms<=0||timeout_ms>60000||deadline_ts!==null&&!Number.isSafeInteger(deadline_ts))throw new BudgetRefusal('INVALID_SOURCE_DEADLINE');
     const deadline=Math.min(deadline_ts??Infinity,clock()+timeout_ms);
@@ -106,7 +106,7 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
       return paced(provider,async()=>{
       const remaining=deadline-clock();if(remaining<=0)throw new BudgetRefusal('SOURCE_DEADLINE_EXPIRED');
       const request_id=crypto.randomUUID();
-      const receipt=await budget.reserve({provider,family,candidate_id,request_id,cost:estimated_cost.http});
+      const receipt=await budget.reserve({provider,family,purpose,candidate_id,request_id,cost:estimated_cost.http});
       let response;
       try {
         response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'manual',signal:AbortSignal.timeout(remaining)});

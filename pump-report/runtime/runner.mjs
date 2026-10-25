@@ -21,14 +21,14 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await store.atomic('pump:manual-queue',queue=>({state:[...new Set([...(queue??[]),request_id])],result:true}));
     return {status:'QUEUED',request_id};
   }
-  async function claimManual(){
+  async function claimManual(executor_owner){
     const ids=await store.get('pump:manual-queue')??[];
     for(const id of ids){const job=await store.atomic('pump:manual:'+id,current=>{
-      if(current?.status!=='PENDING')return {state:current,result:null};
-      return {state:{...current,status:'PROCESSING',started_ts:clock()},result:current};
+      if(current?.status!=='PENDING'&&!(current?.status==='PROCESSING'&&current.executor_owner!==executor_owner))return {state:current,result:null};
+      return {state:{...current,status:'PROCESSING',executor_owner,started_ts:clock()},result:current};
     });if(job)return job;}return null;
   }
-  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));}
+  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await store.atomic('pump:manual-queue',ids=>({state:(ids??[]).filter(id=>id!==job.request_id),result:true}));}
   async function getManualResult(id){return store.get(manualResultKey(id));}
 
   async function updateDiscovery(catalog,run_id){
@@ -79,21 +79,25 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await observations.remember(analysis,input,key);
     return key;
   }
-  async function checkInstrument(instrument,{run_id,mode,publish=true}){
+  async function checkInstrument(instrument,{run_id,mode,publish=true,assert_execution=async()=>{}}){
     budget.setMode(mode);
+    await assert_execution();
     const overview=await sources.getOverview({run_id,instruments:[instrument]});
     const overviewFacts=overview.observations?.[0]?.facts??{};
     const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));
-    const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts});
-    let input={schema_version:INPUT_SCHEMA,run_id,mode,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts,...optional.facts},liquidations:emptyMap(),previous_wave};
+    let input={schema_version:INPUT_SCHEMA,run_id,mode,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts},liquidations:emptyMap(),previous_wave};
     let analysis=analyzePump(input,profile);
     if(analysis.ready){
+      await assert_execution();
+      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts});
+      input.facts={...input.facts,...optional.facts};
       try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts:clock()+profile.liquidation_deadline_ms});}
       catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
       input.analysis_ts=clock();analysis=analyzePump(input,profile);
     }
     const analysis_key=await rememberAnalysis(analysis,input);let delivered=null;
     if(publish&&analysis.ready&&(mode==='MANUAL'||analysis.automatic_eligible)){
+      await assert_execution();
       const expires=Math.min(...['price','orderbook','candles'].map(key=>input.facts[key]?.expires_ts??0));
       if(expires>clock()){
         const card=await delivery.enqueue({...analysis,source_input_key:analysis_key},{mode,expires_ts:expires,update_kind:analysis.update_kind??null});
@@ -128,7 +132,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   }
   function capacity(){
     const summary=budget.summary(),manual=summary.mode==='AUTO'?summary.limits.manual_http_run_reserve:0;
-    const http=summary.total+profile.core_http_upper_bound+profile.delivery_http_reserve+manual<=summary.limits.http_per_run&&summary.lanes.hot+profile.core_http_upper_bound+profile.delivery_http_reserve+manual<=summary.limits.lanes.hot;
+    const candidate=profile.core_http_upper_bound+(profile.optional_http_upper_bound??2)+(profile.map_http_upper_bound??1)+profile.delivery_http_reserve;
+    const http=summary.total+candidate+manual<=summary.limits.http_per_run&&summary.lanes.hot+candidate+manual<=summary.limits.lanes.hot;
     if(!http)return false;
     if(store.admission&&typeof store.usage==='function'){const used=store.usage();return used.rows_read+profile.core_sql_upper_bound.rows_read+profile.delivery_sql_reserve.rows_read<=store.admission.max_rows_read&&used.rows_written+profile.core_sql_upper_bound.rows_written+profile.delivery_sql_reserve.rows_written<=store.admission.max_rows_written;}
     return true;
@@ -142,6 +147,13 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       return {state:{owner,run_id,expires_ts:clock()+profile.executor_lease_ms},result:true};
     });
     if(!claimed)return manual??{status:'EXECUTOR_BUSY',run_id};
+    const assert_execution=async()=>{
+      const valid=await store.atomic('pump:executor',current=>{
+        if(current?.owner!==owner||current.expires_ts<=clock())return {state:current,result:false};
+        return {state:{...current,expires_ts:clock()+profile.executor_lease_ms},result:true};
+      });
+      if(!valid)throw Object.assign(Error('EXECUTOR_LEASE_EXPIRED'),{code:'EXECUTOR_LEASE_EXPIRED'});
+    };
     const result={run_id,status:'COMPLETE',checked:[],manual:[],coverage:null,outcomes:[],delivery:[],errors:[]};
     try{
       const catalog=await sources.getCatalog({run_id});result.catalog_coverage=catalog.coverage;
@@ -151,27 +163,28 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       if(mode==='AUTO'&&catalog.instruments.length)result.coverage=await updateDiscovery(catalog,run_id);
       let job;
       for(;;){
-        const lease=await store.get('pump:executor');if(lease?.owner!==owner||lease.expires_ts<=clock()){result.status='INCOMPLETE';result.errors.push('EXECUTOR_LEASE_EXPIRED');break;}
+        try{await assert_execution();}catch{result.status='INCOMPLETE';result.errors.push('EXECUTOR_LEASE_EXPIRED');break;}
         const pending=await store.get('pump:manual-queue')??[];
-        let hasManual=false;for(const id of pending){if((await store.get('pump:manual:'+id))?.status==='PENDING'){hasManual=true;break;}}
+        let hasManual=false;for(const id of pending){if(['PENDING','PROCESSING'].includes((await store.get('pump:manual:'+id))?.status)){hasManual=true;break;}}
         budget.setMode(hasManual?'MANUAL':mode);
         if(!capacity()){result.status='INCOMPLETE';result.errors.push('RUN_RESOURCES_DEFERRED');break;}
-        job=await claimManual();
+        job=await claimManual(owner);
         if(job){
           const matches=catalog.instruments.filter(i=>symbolKey(i.native_symbol)===job.symbol||i.base.toUpperCase()===job.symbol);
           let answer;
           if(matches.length!==1)answer={status:matches.length?'AMBIGUOUS_SYMBOL':'INSTRUMENT_NOT_QUALIFIED',symbol:job.symbol,candidates:matches.map(i=>i.native_symbol)};
-          else try{answer=await checkInstrument(matches[0],{run_id,mode:'MANUAL',publish:job.publish});}catch(error){answer={status:'ERROR',reason:error.code??'MANUAL_ANALYSIS_ERROR'};}
+          else try{answer=await checkInstrument(matches[0],{run_id,mode:'MANUAL',publish:job.publish,assert_execution});}catch(error){answer={status:'ERROR',reason:error.code??'MANUAL_ANALYSIS_ERROR'};}
           await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});continue;
         }
         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
         budget.setMode('AUTO');const instrument=await selectAutomatic(catalog);if(!instrument)break;
-        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish});result.checked.push(checked);if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
+        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});result.checked.push(checked);if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
         catch(error){result.errors.push({instrument_id:instrument.instrument_id,reason:error.code??'CANDIDATE_ERROR'});await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id])queue[instrument.instrument_id].next_check_ts=clock()+profile.candidate_recheck_ms;return {state:queue,result:true};});}
       }
       // Repair a receipt-backed signal after a prior process stopped between
       // the durable SENT acknowledgement and outcome registration.
       const deliveryIds=await store.get('pump:delivery-queue')??[];for(const id of deliveryIds)await recordPublished(id);
+      await assert_execution();
       result.delivery=await delivery.drain();
       for(const item of result.delivery)await recordPublished(item.card_id);
       if(automaticWindowOpen(clock())){await observations.syncTerminal();result.outcomes=await checkOutcomes({run_id});}
