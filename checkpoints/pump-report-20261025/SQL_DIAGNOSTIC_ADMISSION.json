@@ -1,0 +1,28 @@
+{
+  "schema": "PUMP_REPORT_BOUNDED_SQL_DIAGNOSTIC_ADMISSION_V1",
+  "scope": "READ_ONLY_NATIVE_METADATA_AND_EXISTING_DAY_RESERVATIONS_ONLY",
+  "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792914169000",
+  "expires_ts": 1792918969000,
+  "authority_main": "d81bca51a57bb16d80ef9f9f5ce34c1ab1adb59c",
+  "day_utc": "2026-10-25",
+  "owner_resume": "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json",
+  "database": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+  "max_requests": 3,
+  "reserved_rows_read": 59000,
+  "reserved_rows_written": 920,
+  "requested_writes": false,
+  "account_graphql_observation": "2026-10-25 d1AnalyticsAdaptiveGroups returned no recorded query groups; not a reset of historical unknowns",
+  "legacy_schedules": "All three existing workers GET schedules returned [] in this session",
+  "github_actions": "CLI GET actions/permissions enabled=false",
+  "historical_unknowns_reserves_preserved": true,
+  "unobserved_tail_reserve": {
+    "rows_read": 59000,
+    "rows_written": 920
+  },
+  "next_full_protected": {
+    "rows_read": 59000,
+    "rows_written": 920
+  },
+  "production_writer_provider_telegram_grant": false,
+  "diagnostic_plan": "1 schema metadata of existing budget ledgers/indexes; 2 indexed current-day aggregate if index proven; 3 exact bounded outstanding lookup only if needed. Return and retain native meta every time; no retry after missing ACK."
+}
