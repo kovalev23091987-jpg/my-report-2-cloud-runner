@@ -21,11 +21,12 @@
     "fixed_run_id": "pump-summary-index-20261025-one",
     "existing_native_family": "LOOKUP",
     "maximum_attempts": 1,
-    "state": "PREPARED_OWNER_AMENDED_ARTIFACT_NOT_EXECUTED",
+    "state": "SPENT_FINALIZED_NEVER_RETRY",
     "reservation_non_refundable_and_never_rearmed": true,
     "source": "existing saved raw summary records and production-v2 aggregate only",
     "night_market_or_automatic_statistics_collection": false,
-    "same_unspent_run_ID_no_rearm": true
+    "same_unspent_run_ID_no_rearm": true,
+    "native_actual_ref": "checkpoints/pump-report-20261025/SUMMARY_INDEX_NATIVE_ACTUAL.json"
   },
   "expires_ts": 1792950300000,
   "native": {
@@ -95,5 +96,24 @@
     "physical storage capacity test",
     "deletion of original evidence"
   ],
-  "owner_no_market_comparison_ref": "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json"
+  "owner_no_market_comparison_ref": "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json",
+  "actual": {
+    "receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-summary-index-20261025-one",
+      "usage": {
+        "requests": 30,
+        "rows_read": 56,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 56,
+        "rows_written": 14
+      },
+      "original_envelope_never_reduced": true
+    },
+    "provider_HTTP": 0,
+    "Telegram": 0
+  }
 }
