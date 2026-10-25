@@ -1,0 +1,168 @@
+{
+  "evidence": "ARTIFICIAL_ANALYTIC_CONSUMER_NOT_RUNTIME_NATIVE_ACCEPTANCE",
+  "partial_empty": {
+    "schema": "PUMP_MATERIALIZED_SUMMARY_V3",
+    "version": "pump-materialized-summary-v3-external-replay-20261025",
+    "materialization_id": "EMPTY",
+    "revision": 0,
+    "as_of_ts": 1800000000000,
+    "status": "MATURITY_BOUNDARY_REQUIRED",
+    "maturity_current": false,
+    "pending_clock_transitions": null,
+    "materialized_updated_ts": 1800000000000,
+    "independent_waves": 0,
+    "mature_waves": 0,
+    "pending_waves": 0,
+    "pending_known_hits": 0,
+    "gapped_mature_waves": 0,
+    "coverage_unknown_mature_waves": 0,
+    "enclosing_no_hit_proof_mature_waves": 0,
+    "origin_conflict_waves": 0,
+    "outcome_conflict_waves": 0,
+    "identity_conflict_waves": 0,
+    "outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 0
+    },
+    "mature_outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 0
+    },
+    "denominators": {
+      "all_independent_waves": 0,
+      "mature_waves": 0,
+      "resolved_mature_waves": 0,
+      "unknown_mature_waves": 0,
+      "pending_excluded_from_mature": 0
+    },
+    "publication_counts": {
+      "sent": 0,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "reason_counts": {},
+    "adverse": {
+      "total_drawdown_known": 0,
+      "total_drawdown_unknown": 0,
+      "pre_hit_drawdown_known": 0,
+      "pre_hit_drawdown_unknown": 0,
+      "hit_after_invalidation_yes": 0,
+      "hit_after_invalidation_no": 0,
+      "hit_after_invalidation_unknown": 0
+    },
+    "cohorts": [],
+    "success_rate_pct": null,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "readiness_status": "SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED",
+    "limitations": [
+      "Materialized counts require atomic aggregate+wave commit",
+      "Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation",
+      "When maturity_current=false mature/pending counters need explicit due transitions",
+      "No raw observations removed; no full-history read on query",
+      "No probability, calibration, profit or native storage capacity proven",
+      "V3 requires exact ROOT record receipt/instrument binding readback and atomic source-cursor+wave+aggregate commit",
+      "Queue intent blocks new folds until actual persisted queue reference is acknowledged",
+      "CURRENT with pending waves requires a current complete ROOT maturity-queue boundary; caller flags are not native admission",
+      "Old v2 originals/digests remain historical; no cleanup or capacity test performed"
+    ],
+    "source_cursor": 0,
+    "maturity_intent_pending": false,
+    "maturity_boundary_ref": null,
+    "external_replay_receipts": true,
+    "scalar_cohort_counters": true,
+    "originals_required": true,
+    "delete_allowed": false,
+    "approved_delete_ttl_ms": null
+  },
+  "contradictory_empty": {
+    "schema": "PUMP_MATERIALIZED_SUMMARY_V3",
+    "version": "pump-materialized-summary-v3-external-replay-20261025",
+    "materialization_id": "EMPTY",
+    "revision": 0,
+    "as_of_ts": 1800000000000,
+    "status": "MATURITY_BOUNDARY_CONFLICT",
+    "maturity_current": false,
+    "pending_clock_transitions": null,
+    "materialized_updated_ts": 1800000000000,
+    "independent_waves": 0,
+    "mature_waves": 0,
+    "pending_waves": 0,
+    "pending_known_hits": 0,
+    "gapped_mature_waves": 0,
+    "coverage_unknown_mature_waves": 0,
+    "enclosing_no_hit_proof_mature_waves": 0,
+    "origin_conflict_waves": 0,
+    "outcome_conflict_waves": 0,
+    "identity_conflict_waves": 0,
+    "outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 0
+    },
+    "mature_outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 0
+    },
+    "denominators": {
+      "all_independent_waves": 0,
+      "mature_waves": 0,
+      "resolved_mature_waves": 0,
+      "unknown_mature_waves": 0,
+      "pending_excluded_from_mature": 0
+    },
+    "publication_counts": {
+      "sent": 0,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "reason_counts": {},
+    "adverse": {
+      "total_drawdown_known": 0,
+      "total_drawdown_unknown": 0,
+      "pre_hit_drawdown_known": 0,
+      "pre_hit_drawdown_unknown": 0,
+      "hit_after_invalidation_yes": 0,
+      "hit_after_invalidation_no": 0,
+      "hit_after_invalidation_unknown": 0
+    },
+    "cohorts": [],
+    "success_rate_pct": null,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "readiness_status": "SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED",
+    "limitations": [
+      "Materialized counts require atomic aggregate+wave commit",
+      "Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation",
+      "When maturity_current=false mature/pending counters need explicit due transitions",
+      "No raw observations removed; no full-history read on query",
+      "No probability, calibration, profit or native storage capacity proven",
+      "V3 requires exact ROOT record receipt/instrument binding readback and atomic source-cursor+wave+aggregate commit",
+      "Queue intent blocks new folds until actual persisted queue reference is acknowledged",
+      "CURRENT with pending waves requires a current complete ROOT maturity-queue boundary; caller flags are not native admission",
+      "Old v2 originals/digests remain historical; no cleanup or capacity test performed"
+    ],
+    "source_cursor": 0,
+    "maturity_intent_pending": false,
+    "maturity_boundary_ref": null,
+    "external_replay_receipts": true,
+    "scalar_cohort_counters": true,
+    "originals_required": true,
+    "delete_allowed": false,
+    "approved_delete_ttl_ms": null
+  },
+  "proposal_not_executed": true
+}

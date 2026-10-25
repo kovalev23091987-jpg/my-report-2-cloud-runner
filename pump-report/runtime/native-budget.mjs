@@ -1,10 +1,11 @@
 import {BudgetRefusal,RESOURCE_LIMITS,utcDay} from './budget.mjs';
 import {D1Store} from './store.mjs';
 import {ACCEPTANCE_MANUAL_RUN_IDS} from '../contracts/run-purpose.mjs';
+import {PROVIDER_STAGE,SOURCE_FEASIBILITY_ID} from './provider-policy.mjs';
 
 // Reuse the project's existing shared day ledger, rather than create an
 // independent SQL quota. Every legacy reservation/unknown retains its meaning.
-export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:'checkpoints/pump-report-20261025/SUMMARY_INDEX_SINGLE_ADMISSION.json'});
+export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'?'checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_ADMISSION.json':'checkpoints/pump-report-20261025/SUMMARY_INDEX_SINGLE_ADMISSION.json'});
 export const FIXED_METADATA_RUN_IDS=Object.freeze(['pump-bingx-crypto-metadata-20261025-one','pump-bingx-crypto-metadata-signed-20261025-one']);
 export const LOOKUP_ENVELOPE=Object.freeze({rows_read:500,rows_written:30,max_runs_day:10});
 
@@ -33,7 +34,7 @@ export async function reserveNativeRun({db,run_id,mode,run_purpose='PRODUCTION',
       ,COALESCE(SUM(CASE WHEN reservation_id LIKE 'PUMP:METADATA_CHECK:%' THEN 1 ELSE 0 END),0) AS metadata_check_count
       FROM report2_runner_budget_ledger_shadow INDEXED BY idx_report2_runner_budget_day WHERE day_utc=?2
     ) WHERE unknown_count=0 AND unacknowledged=0
-      AND (?13=0 OR control_count<5)
+      AND (?13=0 OR control_count<5 OR (?24=1 AND control_count=5))
       AND (?16=0 OR lookup_count<?17)
       AND (?18=0 OR delivery_check_count<1)
       AND (?19=0 OR map_check_count<1)
@@ -43,7 +44,7 @@ export async function reserveNativeRun({db,run_id,mode,run_purpose='PRODUCTION',
       AND w+?4+?11+MAX(0,?8-manual_count-?9)*?15<=?12`;
   let inserted;const usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};
   const currentUserManual=mode==='MANUAL'&&run_purpose==='PRODUCTION'&&!ACCEPTANCE_MANUAL_RUN_IDS.includes(run_id);
-  try{inserted=await db.prepare(sql).bind(id,day,envelope.rows_read,envelope.rows_written,now,now-900000,protectedR,policy.manual_checks,currentUserManual?1:0,RESOURCE_LIMITS.d1_reads_day,protectedW,RESOURCE_LIMITS.d1_writes_day,mode==='CONTROL'?1:0,policy.rows_read,policy.rows_written,mode==='LOOKUP'?1:0,LOOKUP_ENVELOPE.max_runs_day,mode==='DELIVERY_CHECK'?1:0,mode==='MAP_CHECK'?1:0,mode==='DAY_CHECK'?1:0,...ACCEPTANCE_MANUAL_RUN_IDS.map(run=>'PUMP:MANUAL:'+run),mode==='METADATA_CHECK'?1:0).all();}catch{throw new BudgetRefusal('NATIVE_RESERVATION_ACK_UNKNOWN');}
+  try{inserted=await db.prepare(sql).bind(id,day,envelope.rows_read,envelope.rows_written,now,now-900000,protectedR,policy.manual_checks,currentUserManual?1:0,RESOURCE_LIMITS.d1_reads_day,protectedW,RESOURCE_LIMITS.d1_writes_day,mode==='CONTROL'?1:0,policy.rows_read,policy.rows_written,mode==='LOOKUP'?1:0,LOOKUP_ENVELOPE.max_runs_day,mode==='DELIVERY_CHECK'?1:0,mode==='MAP_CHECK'?1:0,mode==='DAY_CHECK'?1:0,...ACCEPTANCE_MANUAL_RUN_IDS.map(run=>'PUMP:MANUAL:'+run),mode==='METADATA_CHECK'?1:0,mode==='CONTROL'&&PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&run_id===SOURCE_FEASIBILITY_ID?1:0).all();}catch{throw new BudgetRefusal('NATIVE_RESERVATION_ACK_UNKNOWN');}
   usage.requests++;if(!knownMeta(inserted))throw new BudgetRefusal('NATIVE_RESERVATION_COST_UNKNOWN');
   usage.rows_read+=inserted.meta.rows_read;usage.rows_written+=inserted.meta.rows_written;
   if(inserted.meta.changes!==1)throw new BudgetRefusal('SHARED_NATIVE_DAY_BLOCKED_OR_DUPLICATE',{usage});

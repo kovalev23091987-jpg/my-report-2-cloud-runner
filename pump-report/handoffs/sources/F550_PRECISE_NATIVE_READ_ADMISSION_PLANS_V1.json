@@ -1,0 +1,211 @@
+{
+  "schema": "SOURCE_F550_PRECISE_NATIVE_READ_ADMISSION_PLANS_V1",
+  "status": "PROPOSED_NOT_ADMITTED_NOT_EXECUTED",
+  "E": "floor(actual admitted send Unix-ms/60000)*60000; freeze per-action boundaries immediately before send, do not reuse stale synthetic times",
+  "priority_one_recent": {
+    "exact_url": "https://open-api.bingx.com/openApi/swap/v2/quote/trades?limit=100&symbol=SOL-USDT",
+    "run_id_proposal": "pump-f550-recent-sol-20261025-one",
+    "BINGX_existing_version_unchanged": "pump-manual-native-relative-acceptance-20261025-v1",
+    "provider_attempt_delta": 1,
+    "old_spent": 12,
+    "new_spent_if_attempted": 13,
+    "remaining_after": 11,
+    "qualification_cap_before_after": [
+      24,
+      24
+    ],
+    "daily_cap_before_after": [
+      900,
+      900
+    ],
+    "monthly_cap_before_after": [
+      27900,
+      27900
+    ],
+    "exact_new_allowlist_item": "/openApi/swap/v2/quote/trades, additionally bind full URL SOL-USDT/limit100 in single-use runtime admission",
+    "no_new_provider_budget_above_remaining_pool": true,
+    "not_a_new_family_or_version": true,
+    "Telegram_attempts": 0,
+    "expected_outcome": "code0 data[]<=100; actual nativeid, exact makerfield, quoteQty, originalms clocks validated; missing/mixedschema =>UNKNOWN, no further probe/retry.",
+    "runtime_blockers": [
+      "Current workerstage allowedproviders[] and expiry passed",
+      "Server39modules differs from locally built45; ROOT exactartifact/readback before new wiring",
+      "Old generic source-probe kinds omit trades; do not pretend existing URL admission includes it",
+      "Native CONTROL/MANUAL acceptance operation slot must be checked; old fixed IDs cannot be replayed or renamed to bypass their caps"
+    ],
+    "nativeSQL": "Use at most one actual admitted standard native invocation5000R/300W/max800queries if ROOT selects that existing envelope; measured cost UNKNOWN. If all existing CONTROL slots consumed, require explicit additional1operation grant, not LOOKUP/family relabel. No such grant here."
+  },
+  "minimal_semantic_gap_pair": {
+    "BINGX_attempts": 2,
+    "actions": [
+      1,
+      2
+    ],
+    "remaining_of12_after": 10,
+    "does_not_claim_current_fullCORE_or_full550": true
+  },
+  "minimal_current_breadth_and_one_CORE_pilot": {
+    "BINGX_attempts_max": 6,
+    "actions": [
+      {
+        "order": 1,
+        "name": "recent_SOL_once",
+        "provider": "BINGX",
+        "host": "open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/trades",
+        "params": {
+          "limit": 100,
+          "symbol": "SOL-USDT"
+        },
+        "attempts_max": 1,
+        "timeout_ms": 10000,
+        "response_bytes_max": 2000000,
+        "retries_redirects_hostfallback": 0,
+        "why_new_read_is_needed": "Only unexecuted newT3 wire/IDs/maker/quote/time gap; no TG",
+        "execute_now": false
+      },
+      {
+        "order": 2,
+        "name": "H125_SOL_once",
+        "provider": "BINGX",
+        "host": "open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v3/quote/klines",
+        "params": {
+          "symbol": "SOL-USDT",
+          "interval": "1m",
+          "startTime": "E-125*60000",
+          "endTime": "E-1",
+          "limit": 125
+        },
+        "attempts_max": 1,
+        "timeout_ms": 10000,
+        "response_bytes_max": 2000000,
+        "retries_redirects_hostfallback": 0,
+        "why_new_read_is_needed": "Changed actual125closed request; old SOL had121, no full old audit replay",
+        "execute_now": false
+      },
+      {
+        "order": 3,
+        "name": "current_catalog_once",
+        "provider": "BINGX",
+        "host": "open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/contracts",
+        "params": {},
+        "attempts_max": 1,
+        "timeout_ms": 10000,
+        "response_bytes_max": 2000000,
+        "retries_redirects_hostfallback": 0,
+        "why_new_read_is_needed": "Current active membership/tuple bridge; saved934 counts not a current market snapshot",
+        "execute_now": false
+      },
+      {
+        "order": 4,
+        "name": "current_bulk_ticker_once",
+        "provider": "BINGX",
+        "host": "open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/ticker",
+        "params": {},
+        "attempts_max": 1,
+        "timeout_ms": 10000,
+        "response_bytes_max": 2000000,
+        "retries_redirects_hostfallback": 0,
+        "why_new_read_is_needed": "Observe full payload identity/clock/missing/duplicate coverage of currentselectedscope; oldSOL control not fullmarket proof",
+        "execute_now": false
+      },
+      {
+        "order": 5,
+        "name": "fresh_SOL_depth_for_connected_core",
+        "provider": "BINGX",
+        "host": "open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v2/quote/depth",
+        "params": {
+          "symbol": "SOL-USDT",
+          "limit": 1000
+        },
+        "attempts_max": 1,
+        "timeout_ms": 10000,
+        "response_bytes_max": 2000000,
+        "retries_redirects_hostfallback": 0,
+        "why_new_read_is_needed": "Freshness for connectedCORE only, not re-proving old base-field semantics",
+        "execute_now": false
+      },
+      {
+        "order": 6,
+        "name": "fresh_SOL_day_for_connected_core",
+        "provider": "BINGX",
+        "host": "open-api.bingx.com",
+        "method": "GET",
+        "path": "/openApi/swap/v3/quote/klines",
+        "params": {
+          "symbol": "SOL-USDT",
+          "interval": "1m",
+          "startTime": "E-86400000",
+          "endTime": "E-1",
+          "limit": 1440
+        },
+        "attempts_max": 1,
+        "timeout_ms": 10000,
+        "response_bytes_max": 2000000,
+        "retries_redirects_hostfallback": 0,
+        "why_new_read_is_needed": "Fresh original complete window for currentCORE, old native fact stale",
+        "execute_now": false
+      }
+    ],
+    "old_spent12_new_spent18_remaining6": true,
+    "runtime_order_for_freshness": "Catalog+bulk/day/history first, book and any necessary freshprice last. The priority trade qualification may run separately before the currentCORE pilot. Book/candles remain parallel only when measured deadline supports it. No extra automatic fallback beyond this exact6 action plan.",
+    "if_same_invocation": "One exact6GET bounded source action needs one positive native envelope;6HTTP is not6SQL calls. If split into6standardinvocations, upperSQL reservation30000R/1800W and operation slots must be admitted separately.",
+    "STOP": "Provider429/100410/backoff/unknownACK/bodylimit =>stop, preserve charge/unknown. Incomplete identity/clock/rows =>no fabricated usable facts. Optional trades unknown does not itself block adequate core.",
+    "no_TG_deploy_schedule_grant": true,
+    "not550_qualification": true
+  },
+  "remaining6_not_automatically_spent": {
+    "price_and_book_publication_refresh_upper": 2,
+    "optional_OI_shape_read_if_primaryunitaccepted": 1,
+    "optional_premium_shape_read_if_clock_periodpurpose_exists": 1,
+    "unallocated_remaining": 2,
+    "sum": 6,
+    "all_require_separate_exact_admission": true,
+    "no_map_retry_or_historical_trade_tape_expansion": true
+  },
+  "cold_manual_implemented_route_order": [
+    "catalog1",
+    "overview1",
+    "day1",
+    "core candles/book2 with overviewprice reuse, primary+fallback up to2 if needed",
+    "whenready optionaltotal2",
+    "qualifiedmap up to1 or0truthfulabsent",
+    "savedcard/revalidate forcefreshpricebook2",
+    "TG1 only after separatefutureadmission",
+    "later dueoutcome1"
+  ],
+  "cold_manual_counts": {
+    "BINGX_upper11": "Requires rolling-minute staging because internal10/min; six immediate66BINGX+6potentialmap+6TG=78, plus6outcomes=84",
+    "warm_observed_SOL_source_only": 5,
+    "full_ready_native_manual_cost_proven": false
+  },
+  "AUTO_cycle": "Two bulk discovery requests every5min in count-plan; only selected candidates need per-symbol day/candles/book. Same bulkURL cache can reuse within30s. Candle/day different minuteURLs do not share90s cache. At same burst2discovery+10coldcandidate BINGX exceeds10/min; ROOT stage before freshcore, no strategy/freshness weakening.",
+  "all_164_96_56_12_900_provider_monthly_unknown_reserves_9pauses_2deferrals_preserved": true,
+  "new_market_HTTP_SQL_TG_deploy": 0,
+  "minimum_now_recommended": "F550_MIN_NATIVE_PLAN_V1.json:3changed/unexecutedreads, notrepeatSOL5; former6GETpilotonlyifgenuinelyneededcurrentfullmanual.",
+  "CONTROL5of5_confirmed": {
+    "cap": 5,
+    "finalized_control_reservations": [
+      "PUMP:CONTROL:42d8a7c8-2b5e-4120-a826-de5f2f2e9f07",
+      "PUMP:CONTROL:9deff8ab-c640-4e6b-b8e5-0d168e622361",
+      "PUMP:CONTROL:9fc90acb-9420-4ff2-9843-abc36138c2f2",
+      "PUMP:CONTROL:af76b683-47cc-4bd8-b39b-b0bfc15de472",
+      "PUMP:CONTROL:13802477-71c1-4414-b3df-4f51188e79f8"
+    ],
+    "remaining": 0,
+    "primary_evidence": "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json at6b7c750b, Gitblobd6969c796ee0010c7f0699e35e850dc1bd25bd25",
+    "failed503_control_ops_still_count": true,
+    "no_free_slot_claim_from_SQLunknown0": true
+  },
+  "ROOT_local_staging_update": "ROOT reports locallyimplementedforecast/rollingminute waitBEFOREoverview/day/core withexecutorassertions; new2PASS synthetic. Notnative/deployed/externalquotaproof; not testedbySOURCE.",
+  "actual_executable_admission_remaining_now": 0
+}

@@ -1,5 +1,5 @@
 import {selectOutcomeAnchor} from '../analytics/anchors.mjs';
-import {createMaterializedSummary,prepareOutcomeRecordEvent,foldPreparedOutcomeRecord,advanceWaveMaturity,dueMaturityWaves,readMaterializedSummary} from '../analytics/materialized-summary.mjs';
+import {createMaterializedV3Store} from './materialized-v3-store.mjs';
 import {textHash} from './delivery.mjs';
 import {recordPurpose,productionRecord} from '../contracts/run-purpose.mjs';
 import {createSummaryRecordIndex} from './summary-index.mjs';
@@ -20,8 +20,6 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
   if(typeof store.atomicPair!=='function')throw Error('ATOMIC_WAVE_AND_SUMMARY_STORE_REQUIRED');
   // The old all-purpose aggregate stays intact as historical evidence. This
   // derived production view replays the same append-only index in bounded pages.
-  const aggregateKey='pump:materialized-summary:production-v2';
-  const materializedWaveKey=key=>'pump:materialized-wave:production-v2:'+key;
   const sourceIndex=createSummaryRecordIndex({store});
   const outcomeWork=createOutcomeWorkIndex({store});
   const journalWork=createWorkIndex({store,kind:'journal',targetKey:id=>id,completed:async(journal,{evidence})=>{
@@ -29,8 +27,8 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     const signal=await store.get(evidence.origin.signal_id);
     return signal?.analysis_key===journal.frozen_anchor.analysis_id&&equal(signal.origin,evidence.origin);
   }});
-  const emptyAggregate=()=>({...createMaterializedSummary({materialization_id:'pump-frozen-production-origins-v2',as_of_ts:clock()}),source_cursor:0,excluded_records_by_purpose:{}});
-  const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+40<=store.admission.max_rows_read&&store.usage().rows_written+8<=store.admission.max_rows_written);
+  const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+100<=store.admission.max_rows_read&&store.usage().rows_written+25<=store.admission.max_rows_written);
+  const materialized=createMaterializedV3Store({store,clock,resourcesAvailable});
   async function remember(analysis,input,analysis_id){
     if(!analysis.wave_id)return;
     const key=waveKey(analysis),at=clock();
@@ -89,11 +87,11 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     return key;
   }
   async function catchUp({max_records=40,maturity_limit=5}={}){
-    const initial=await store.get(aggregateKey)??emptyAggregate(),page=await sourceIndex.page({after:initial.source_cursor??0,limit:max_records});
+    const initial=await materialized.recover(),page=await sourceIndex.page({after:initial.source_cursor??0,limit:max_records});
     const total=page.total;
     let processed=0;
     while(processed<max_records&&resourcesAvailable()){
-      const aggregate=await store.get(aggregateKey)??emptyAggregate(),cursor=aggregate.source_cursor??0;
+      const aggregate=await materialized.aggregate(),cursor=aggregate.source_cursor??0;
       if(!page.migration_ready||cursor===total)break;
       const item=page.items.find(r=>r.seq===cursor+1);if(!item)break;
       const key=item.id,row=await store.get(key);if(!row||row.record_id!==key)throw Error('SUMMARY_RECORD_MISSING');
@@ -101,27 +99,13 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       if(key!=='pump:summary-record:'+await textHash(JSON.stringify({origin,publication,outcome})))throw Error('SUMMARY_RECORD_CONTENT_HASH_MISMATCH');
       if(!productionRecord(row)){
         const purpose=recordPurpose(row),reason=purpose==='PRODUCTION'?'NON_OBSERVED':purpose;
-        const committed=await store.atomic(aggregateKey,current=>{
-          current??=emptyAggregate();if((current.source_cursor??0)!==cursor)return {state:current,result:false};
-          const excluded={...(current.excluded_records_by_purpose??{})};excluded[reason]=(excluded[reason]??0)+1;
-          return {state:{...current,source_cursor:cursor+1,excluded_records_by_purpose:excluded},result:true};
-        });
+        const committed=await materialized.exclude(cursor,reason);
         if(committed)processed++;continue;
       }
-      const prepared_event=await prepareOutcomeRecordEvent({kind:'OUTCOME_RECORD',event_id:key,record:row}),wave=materializedWaveKey(JSON.stringify([origin.instrument_id,origin.wave_id]));
-      const committed=await store.atomicPair([wave,aggregateKey],([state,current])=>{
-        current??=emptyAggregate();
-        if((current.source_cursor??0)!==cursor)return {states:[state,current],result:false};
-        const folded=foldPreparedOutcomeRecord({aggregate:current,wave:state,prepared_event,as_of_ts:clock()});
-        return {states:[folded.wave,{...folded.aggregate,source_cursor:cursor+1}],result:true};
-      });
+      const committed=await materialized.fold(row,item.seq,cursor);
       if(committed)processed++;
     }
-    if(maturity_limit>0){const aggregate=await store.get(aggregateKey);if(aggregate)for(const item of dueMaturityWaves(aggregate,{as_of_ts:clock(),limit:Math.min(40,maturity_limit)})){
-      if(!resourcesAvailable())break;
-      await store.atomicPair([materializedWaveKey(item.wave_key),aggregateKey],([wave,current])=>{const tick=advanceWaveMaturity({aggregate:current,wave,as_of_ts:clock()});return {states:[tick.wave,tick.aggregate],result:tick.status};});
-    }}
-    const aggregate=await store.get(aggregateKey)??emptyAggregate(),source_cursor=aggregate.source_cursor??0,view=readMaterializedSummary(aggregate,{as_of_ts:clock()});
+    const view=await materialized.read({maturity_limit:Math.min(40,maturity_limit)}),aggregate=await materialized.aggregate(),source_cursor=aggregate.source_cursor??0;
     const boundary=await sourceIndex.boundary();if(source_cursor>boundary.count)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');
     const caught=page.migration_ready&&boundary.ready&&!boundary.pending&&source_cursor===boundary.count;
     return {...view,run_purpose:'PRODUCTION',excluded_records_by_purpose:{...(aggregate.excluded_records_by_purpose??{})},status:!page.migration_ready||!boundary.ready?'SUMMARY_INDEX_MIGRATING':!caught?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:boundary.count,source_caught_up:caught,processed_records:processed,source_index_append_only:true,source_index_bounded:true};

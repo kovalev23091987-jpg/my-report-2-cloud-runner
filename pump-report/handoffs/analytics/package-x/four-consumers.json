@@ -1,0 +1,32 @@
+{
+  "schema": "ANALYTICS_X_FOUR_CONSUMERS_V1",
+  "authority_main": "381e74e54ca867bc23b5065d2401bf702fe33d1d",
+  "scope": "ONLY_FOUR_NAMED_CONSUMERS_NO_FULL_AUDIT",
+  "items": [
+    {
+      "name": "wave.record_digests",
+      "writer": "materialized-summary.mjs foldPreparedOutcomeRecord",
+      "reader": "same function duplicate/conflict guard",
+      "current_grows_per_record": true,
+      "proposal": "One immutable ROOT receipt cell per record; no per-wave growing map. Full fingerprint+source ordinal+wave+generation; committed cursor determines applied, receipt existence alone never means applied."
+    },
+    {
+      "name": "cohort.wave_keys",
+      "current_persisted_in_materialized_state": false,
+      "facts": "summary.mjs emits wave_keys in nonmaterialized summary. materialized counters() whitelist omits it; scalar replace() stores descriptor/counters only. contribution() summary sees one independent wave.",
+      "proposal": "No removal/extra writer needed. Preserve existing scalar cohorts in same atomic aggregate."
+    },
+    {
+      "name": "aggregate.pending_deadlines",
+      "current_grows_per_pending_wave": true,
+      "proposal": "ROOT external bounded maturity queue + one bounded aggregate.maturity_pending durable intent; queue exact-readback ack before next fold. Old maps untouched."
+    },
+    {
+      "name": "aggregate.instrument_assets",
+      "current_grows_per_instrument": true,
+      "proposal": "ROOT immutable instrument->asset point cell; CAS create/readback before fold, mismatch fail; old maps untouched."
+    }
+  ],
+  "production_modified": false,
+  "tests_run": 0
+}

@@ -12,11 +12,12 @@ import {reserveNativeRun,finalizeNativeRun} from './native-budget.mjs';
 import {createPumpRunner} from './runner.mjs';
 import {createRetainedCapsuleWriter} from './retained-capsules.mjs';
 import {IMPLEMENTATION_PIN} from './implementation-pin.mjs';
-import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID} from './provider-policy.mjs';
+import {runSourceFeasibility} from './source-feasibility.mjs';
+import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID,SOURCE_FEASIBILITY_ID} from './provider-policy.mjs';
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 
-export const PUMP_VERSION='pump-report-v1.7-bounded-work-retained-features';
+export const PUMP_VERSION='pump-report-v1.8-source-window-v3-statistics';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
@@ -44,9 +45,14 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock}),store=native.store;
   try{
   if(mode!=='LOOKUP')await store.install();
-  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(PROVIDER_STAGE==='SUMMARY_INDEX_ACCEPTANCE_ONLY'?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
-  const broker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000});
-  const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:START_PROFILE,clock});
+  const feasibility=PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&mode==='CONTROL'&&run_id===SOURCE_FEASIBILITY_ID;
+  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(PROVIDER_STAGE==='SUMMARY_INDEX_ACCEPTANCE_ONLY'?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
+  const baseBroker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000}),captured=[];let operationFailure=false;
+  const broker=feasibility?{...baseBroker,operationFailed:()=>operationFailure,request:async args=>{
+    try{const response=await baseBroker.request(args);captured.push({request:{url:args.url,method:'GET'},response});if(response.semantic_status!=='SUCCESS')operationFailure=true;return response;}
+    catch(error){operationFailure=true;captured.push({request:{url:args.url,method:'GET'},error:error.code??'SOURCE_REQUEST_FAILED'});throw error;}
+  }}:baseBroker;
+  const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
     return revalidatePumpCard({card,store,sources,clock});
@@ -64,7 +70,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
   }});
   const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
   const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,await_source_window:args=>broker.awaitProviderWindow(args)});
-  return {native,store,budget,broker,sources,delivery,runner};
+  return {native,store,budget,broker,sources,delivery,runner,captured};
   }catch(error){error.pumpNative=native;throw error;}
 }
 
@@ -82,8 +88,11 @@ export function createPumpWorker(legacy={}){
       const dayProbe=url.pathname==='/pump/day-probe';
       const integrationCheck=url.pathname==='/pump/integration-check';
       const metadataProbe=url.pathname==='/pump/metadata-probe';
+      const feasibilityCheck=url.pathname==='/pump/source-feasibility';
       const lookup=['/pump/manual-result','/pump/summary'].includes(url.pathname);
-      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
+      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
+      if(PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&(!feasibilityCheck||body.grant_id!==SOURCE_FEASIBILITY_ID||Object.keys(body).some(k=>k!=='grant_id')))return json({error:'EXACT_SOURCE_FEASIBILITY_OPERATION_REQUIRED'},400);
+      if(feasibilityCheck&&PROVIDER_STAGE!=='SOURCE_FEASIBILITY_SINGLE')return json({error:'SOURCE_FEASIBILITY_NOT_ADMITTED'},400);
       const summaryCheck=PROVIDER_STAGE==='SUMMARY_INDEX_ACCEPTANCE_ONLY'&&url.pathname==='/pump/summary';
       if(PROVIDER_STAGE==='SUMMARY_INDEX_ACCEPTANCE_ONLY'&&(!summaryCheck||body.grant_id!==SUMMARY_INDEX_ACCEPTANCE_ID||body.max_records!==4||Object.keys(body).some(key=>!['grant_id','max_records'].includes(key))))return json({error:'EXACT_SUMMARY_INDEX_ACCEPTANCE_REQUIRED'},400);
       if(metadataProbe&&(PROVIDER_STAGE!=='METADATA_CORRECTED_ONCE'||body.grant_id!==CORRECTED_METADATA_ID))return json({error:'METADATA_PROBE_NOT_ADMITTED'},400);
@@ -103,13 +112,14 @@ export function createPumpWorker(legacy={}){
       const acceptedManual=PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&body.request_id===MANUAL_ACCEPTANCE_ID&&parseManualInput(body.symbol??body.text,{context_symbol:body.context_symbol??null}).symbol===MANUAL_ACCEPTANCE_SYMBOL;
       if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&!acceptedManual)return json({error:'EXACT_MANUAL_ACCEPTANCE_REQUEST_REQUIRED'},400);
       if(Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'PROVIDER_ADMISSION_EXPIRED'},503);
-      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!acceptedManual&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
-      const mode=metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=summaryCheck?SUMMARY_INDEX_ACCEPTANCE_ID:metadataProbe?CORRECTED_METADATA_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
+      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!acceptedManual&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
+      const mode=feasibilityCheck?'CONTROL':metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=feasibilityCheck?SOURCE_FEASIBILITY_ID:summaryCheck?SUMMARY_INDEX_ACCEPTANCE_ID:metadataProbe?CORRECTED_METADATA_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
       if(mode==='AUTO'&&!automaticWindowOpen(Date.now()))return json({status:'OUTSIDE_AUTOMATIC_WINDOW',run_id});
       let runtime,result,finalizationStarted=false;
       try{
         runtime=await services(env,{run_id,mode});
-        if(metadataProbe){
+        if(feasibilityCheck)result=await runSourceFeasibility({...runtime,run_id});
+        else if(metadataProbe){
           const factory=createAnonymousDisplayInfoRequestFactory({clock:Date.now,uuid:()=>crypto.randomUUID(),sha256:createSubtleSha256(crypto.subtle),time_zone_hours:-new Date().getTimezoneOffset()/60});
           const signed=await factory.build();
           if(signed.url!==METADATA_DIAGNOSTIC_URL||signed.method!=='GET')throw Object.assign(Error('EXACT_METADATA_REQUEST_REQUIRED'),{code:'EXACT_METADATA_REQUEST_REQUIRED'});

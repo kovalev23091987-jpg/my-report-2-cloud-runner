@@ -1,0 +1,126 @@
+{
+  "evidence": "ARTIFICIAL_ANALYTIC_CONSUMER_NOT_RUNTIME_NATIVE_ACCEPTANCE",
+  "result": "PASS_NEW_X2_ONLY",
+  "cases": [
+    "exact-replay",
+    "changed-recorded-ts",
+    "changed-publication",
+    "changed-P0",
+    "missing-receipt",
+    "sequence-gap",
+    "immutable-origin",
+    "instrument-asset"
+  ],
+  "aggregate": {
+    "version": "pump-materialized-summary-v3-external-replay-20261025",
+    "materialization_id": "ARTIFICIAL_X2",
+    "revision": 2,
+    "updated_ts": 1800000060000,
+    "records_applied": 1,
+    "counters": {
+      "independent_waves": 1,
+      "mature_waves": 0,
+      "pending_waves": 1,
+      "pending_known_hits": 0,
+      "gapped_mature_waves": 0,
+      "coverage_unknown_mature_waves": 0,
+      "enclosing_no_hit_proof_mature_waves": 0,
+      "origin_conflict_waves": 0,
+      "outcome_conflict_waves": 0,
+      "identity_conflict_waves": 0,
+      "outcomes": {
+        "hit": 0,
+        "miss": 0,
+        "unknown": 1
+      },
+      "mature_outcomes": {
+        "hit": 0,
+        "miss": 0,
+        "unknown": 0
+      },
+      "denominators": {
+        "all_independent_waves": 1,
+        "mature_waves": 0,
+        "resolved_mature_waves": 0,
+        "unknown_mature_waves": 0,
+        "pending_excluded_from_mature": 1
+      },
+      "publication_counts": {
+        "sent": 0,
+        "unsent": 1,
+        "unknown": 0
+      },
+      "reason_counts": {
+        "OUTCOME_NOT_AVAILABLE": 1
+      },
+      "adverse": {
+        "total_drawdown_known": 0,
+        "total_drawdown_unknown": 1,
+        "pre_hit_drawdown_known": 0,
+        "pre_hit_drawdown_unknown": 0,
+        "hit_after_invalidation_yes": 0,
+        "hit_after_invalidation_no": 0,
+        "hit_after_invalidation_unknown": 0
+      }
+    },
+    "cohorts": {
+      "[\"AUTO\",\"UNSENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"ARTIFICIAL_PROFILE\",\"ARTIFICIAL\"]": {
+        "cohort_key": "[\"AUTO\",\"UNSENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"ARTIFICIAL_PROFILE\",\"ARTIFICIAL\"]",
+        "mode": "AUTO",
+        "publication": "UNSENT",
+        "map_mode": "NO_MAP",
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "evidence_class": "ARTIFICIAL",
+        "counters": {
+          "independent_waves": 1,
+          "mature_waves": 0,
+          "pending_waves": 1,
+          "pending_known_hits": 0,
+          "gapped_mature_waves": 0,
+          "coverage_unknown_mature_waves": 0,
+          "enclosing_no_hit_proof_mature_waves": 0,
+          "origin_conflict_waves": 0,
+          "outcome_conflict_waves": 0,
+          "identity_conflict_waves": 0,
+          "outcomes": {
+            "hit": 0,
+            "miss": 0,
+            "unknown": 1
+          },
+          "mature_outcomes": {
+            "hit": 0,
+            "miss": 0,
+            "unknown": 0
+          },
+          "denominators": {
+            "all_independent_waves": 1,
+            "mature_waves": 0,
+            "resolved_mature_waves": 0,
+            "unknown_mature_waves": 0,
+            "pending_excluded_from_mature": 1
+          },
+          "publication_counts": {
+            "sent": 0,
+            "unsent": 1,
+            "unknown": 0
+          },
+          "reason_counts": {
+            "OUTCOME_NOT_AVAILABLE": 1
+          },
+          "adverse": {
+            "total_drawdown_known": 0,
+            "total_drawdown_unknown": 1,
+            "pre_hit_drawdown_known": 0,
+            "pre_hit_drawdown_unknown": 0,
+            "hit_after_invalidation_yes": 0,
+            "hit_after_invalidation_no": 0,
+            "hit_after_invalidation_unknown": 0
+          }
+        }
+      }
+    },
+    "source_cursor": 1,
+    "maturity_pending": null
+  }
+}

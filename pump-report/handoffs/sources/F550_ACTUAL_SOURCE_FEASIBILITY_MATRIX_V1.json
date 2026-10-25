@@ -1,0 +1,534 @@
+{
+  "schema": "SOURCE_F550_ACTUAL_SOURCE_FEASIBILITY_MATRIX_V1",
+  "scope_count": 550,
+  "operational_verified_owner_eligible_registry": 11,
+  "not_complete550_native_coverage": true,
+  "source_pins_unchanged": {
+    "pump-report/sources/index.mjs": "46321d410aa41ba5adc7372cf65834206b5aa6ef72b917ac8f4c632dec5a62c2",
+    "pump-report/sources/bingx.mjs": "4b835db4ba9e8514c5bef26ab287aed99b982d409976ebff540fdf8403052308",
+    "pump-report/sources/recent-trades.mjs": "2894ddd3e9874e2676af1b7093bd41c75e78736c35edc7b843c72f597246079c",
+    "pump-report/handoffs/sources/PACKAGE_B550_BUDGET_COVERAGE_CADENCE_FINAL_V1.json": "ea80e183bb3c0d9eaffa003ed9136c1c82cd4f55fcc40458c5cad3bfe7556d0d",
+    "pump-report/handoffs/sources/PACKAGE_H125_CORE_HISTORY_FIX_FINAL_V1.json": "3822eaef0aa3b0ea7a5869abcf62c40a5ac8312ed1a8c6e60d696b4e0bfdf9e9"
+  },
+  "primary_reference": {
+    "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/official-ai-docs/skills/swap-market/api-reference.md",
+    "sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+    "git_blob": "e61be4746c5bd5475e556146448c79f4c58b064f",
+    "commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0"
+  },
+  "common_broker_limits": {
+    "max_response_bytes": 2000000,
+    "timeout_ms": 10000,
+    "automatic_retries": 0,
+    "redirects": 0,
+    "provider_receipts_required": true,
+    "cache_does_not_refresh_event_clocks": true
+  },
+  "constraints": "Retained reference limits are evidence, not a fresh external entitlement. Vendor exact byte ceilings usually unknown; wrapper size not wire payload size. Current internal grants expired/acceptance only, no IO authorized.",
+  "rows": [
+    {
+      "indicator": "catalog_and_native_instrument_identity",
+      "required": true,
+      "method": "GET /openApi/swap/v2/quote/contracts",
+      "batching": "ALL contracts when symbol omitted",
+      "qualified_semantics_units": "contractId+asset+symbol+currency/status observed; docs-v3 currency=settle AND margin. No crypto classifier or executable multiplier from size/precision.",
+      "original_clock_and_TTL": "Membership observed at original received clock; launchTime is not snapshot or price event time; catalog TTL0.",
+      "maximum_payload": {
+        "documented_row_ceiling": null,
+        "source_row_guard": 20000,
+        "broker_body_bytes": 2000000,
+        "observed_rows": 1278
+      },
+      "retained_native_evidence": [
+        "0320c4b0-ce38-48dc-a275-88a6770ec2b1",
+        "f7413dc3-2c0e-4615-9f73-df1da997dab2"
+      ],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "Fresh membership needed for current counts; scope550 is saved economic selection, not current operational registry.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "bulk_price_and_prequeue_24h_preview",
+      "required": true,
+      "method": "GET /openApi/swap/v2/quote/ticker",
+      "batching": "ALL when symbol omitted; source currently uses all-symbol URL even for one selected instrument",
+      "qualified_semantics_units": "Native SOL last price usable at capture, USDT per verified native price-base. reported priceChangePercent/quoteVolume may preview; exact rolling24h open window still requires its own qualification.",
+      "original_clock_and_TTL": "closeTime milliseconds in retained reference; original exact SOL price clock omitted by control; producer marked usable then. Price TTL30s, receive/cache time never replaces it.",
+      "maximum_payload": {
+        "documented_row_ceiling": null,
+        "source_row_guard": 20000,
+        "broker_body_bytes": 2000000,
+        "all550_presence_in_saved_SOL_control": "NOT_PROVEN"
+      },
+      "retained_native_evidence": [
+        "04b3d8f5-c7bb-4e40-ba14-c9af47fb1ffe"
+      ],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "Need one full bulk payload receipt to count exact current550/missing/duplicate rows and clocks; one SOL observation not whole market.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "primary_price_and_price_fallback",
+      "required": true,
+      "method": "GET /openApi/swap/v1/ticker/price?symbol=<verified>; fallback /openApi/swap/v2/quote/ticker?symbol=<verified>",
+      "batching": "Source primary per-symbol; do not assume undocumented all-symbol batching for v1 price.",
+      "qualified_semantics_units": "Positive price USDT per verified native base; independent native primary v1 clock/shape success not proven by SOL bulk receipt; fallback ticker observed.",
+      "original_clock_and_TTL": "Source requires primary row.time or fallback closeTime; TTL30s. No Date-header clock.",
+      "maximum_payload": {
+        "selected_rows": 1,
+        "primary_plus_fallback_attempts_max": 2,
+        "broker_body_bytes": 2000000
+      },
+      "retained_native_evidence": [
+        "04b3d8f5-c7bb-4e40-ba14-c9af47fb1ffe"
+      ],
+      "external_limit": {
+        "primary_v1_external_exact_rate": "UNKNOWN_IN_SELECTED_REFERENCE",
+        "fallback_ticker": {
+          "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+          "per_IP_per_exact_endpoint": "1 request/second",
+          "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+          "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+          "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+        }
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "No new primary-only probe needed for minimum if fresh bulk price usable; primary schema remains a bounded fallback qualification.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "OHLC_short_growth_and_pullback_history",
+      "required": true,
+      "method": "GET /openApi/swap/v3/quote/klines?symbol=<verified>&interval=1m&startTime=<end-125m>&endTime=<end-1>&limit=125",
+      "batching": "Per-symbol. No all-market candles endpoint wired.",
+      "qualified_semantics_units": "OHLC observed. time=OPEN_TIME is owner-accepted CCXT consumer mapping, not native independent vendor guarantee. Required125=60search+5impulse+60baseline; H125 code1PASS synthetic, not new native125SOL proof.",
+      "original_clock_and_TTL": "Original object.time on60s grid; only closed bars; event=last closed close; TTL90s.",
+      "maximum_payload": {
+        "vendor_limit": 1440,
+        "source_requested": 125,
+        "broker_body_bytes": 2000000,
+        "native_BTC_rows": 125,
+        "native_SOL_old_rows": 121
+      },
+      "retained_native_evidence": [
+        "9341830a-2213-48c6-ae62-f9aeb542887a",
+        "767cc36e-ed8c-41a2-ae87-aa5b65a491ed"
+      ],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "One new exact H125 SOL closed-window read closes changed-wire gap. Existing proof does not cover550.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "relative_candle_activity_volume",
+      "required": true,
+      "method": "GET /openApi/swap/v3/quote/klines (same response, no extra request)",
+      "batching": "Same per-symbol candle request reused for movement and volume.",
+      "qualified_semantics_units": "Only SAME_NATIVE_REPORTED_QUANTITY comparison within exact instrument/method/field/interval accepted. volume absolute BASE/USDT and contract multiplier remain UNKNOWN; native object contradicts array-specific reference shape.",
+      "original_clock_and_TTL": "Same closed bar clocks/TTL90s; no independent freshness refresh.",
+      "maximum_payload": {
+        "extra_HTTP": 0,
+        "same_125_rows": true
+      },
+      "retained_native_evidence": [
+        "9341830a-2213-48c6-ae62-f9aeb542887a",
+        "767cc36e-ed8c-41a2-ae87-aa5b65a491ed"
+      ],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "No dollar turnover or cross-asset absolute quantity from this volume. Each operational registry qualification retains exact comparison key.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "exact_closed_24h_growth",
+      "required": "CONDITIONAL_STRATEGY_OR_BRANCH; currentrunnerstillalwaysfetches",
+      "method": "GET /openApi/swap/v3/quote/klines?symbol=<verified>&interval=1m&startTime=<end-86400000>&endTime=<end-1>&limit=1440",
+      "batching": "Per-symbol; current runner calls before each core analysis. Different URL from125m means separate request/cache key.",
+      "qualified_semantics_units": "OHLC boundary return only, no volume/BASE needed. Exact1440 closed rows and both boundaries required under accepted CCXT basis.",
+      "original_clock_and_TTL": "event=end of closed window, TTL90s. BTC original event1792938480000, receive1792938526815, expired1792938570000; now stale.",
+      "maximum_payload": {
+        "vendor_and_source_rows_max": 1440,
+        "broker_body_bytes": 2000000,
+        "original_wire_bytes_observed": null
+      },
+      "retained_native_evidence": [
+        "a6bf7659-19c6-41a9-8319-0b764550deda",
+        "f0b1c6c7-5100-4817-878c-537172f1b090"
+      ],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "Native BTC1440 and SOL usable diagnostic prove these samples, not every550 asset or every later window. Exact24h is not an additional mandatorygate when approvedshortgrowth qualifies.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "spread_depth_slippage_execution_capacity",
+      "required": true,
+      "method": "GET /openApi/swap/v2/quote/depth?symbol=<verified>&limit=1000",
+      "batching": "Per-symbol",
+      "qualified_semantics_units": "Explicit COIN bidsCoin/asksCoin base-asset quantities with retained depth descriptor; prices USDT per verified native base. SOL1000 bids+1000asks accepted; bounded visible book, not full book. Unknown1000-token execution scaling not copied from SOL.",
+      "original_clock_and_TTL": "Native T milliseconds; BTC exact T retained, SOL exact eventclock omitted by control but producer status usable. TTL15s.",
+      "maximum_payload": {
+        "vendor_limit_values": [
+          5,
+          10,
+          20,
+          50,
+          100,
+          500,
+          1000
+        ],
+        "source_max_per_side": 1000,
+        "broker_body_bytes": 2000000,
+        "BTC_observed_each_side": 20,
+        "SOL_observed_each_side": 1000
+      },
+      "retained_native_evidence": [
+        "efd65787-fdb3-4ea1-ad51-05465b121253",
+        "f6aa506f-f82d-4d39-821d-9743194407d1"
+      ],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "Fresh book and independent units per selected contract. Not550 verified orderbooks; no new book repeat for semantics unless current connected-core pilot.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "recent_executed_notional_and_aggressor",
+      "required": false,
+      "method": "GET /openApi/swap/v2/quote/trades?limit=100&symbol=<verified>",
+      "batching": "Per-symbol",
+      "qualified_semantics_units": "T3 direct quoteQty in USDT, no BASE division/qty inference. Actual stable vendor id required. isBuyerMaker boolean only: falseBUY/trueSELL; buyerMaker-only/mixed fields UNKNOWN. Native current schema and IDs unexecuted.",
+      "original_clock_and_TTL": "Native time Unix milliseconds, original receive/expiry; TTL30s from last fully qualified trade. Latest bounded sample, no full5m tape.",
+      "maximum_payload": {
+        "vendor_max_rows": 1000,
+        "T3_requested_and_guard": 100,
+        "broker_body_bytes": 2000000
+      },
+      "retained_native_evidence": [],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "Exact route absent from old allowlist; new one-time admission1 of remaining12 BINGX, no TG. Synthetic6PASS is not native evidence.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "open_interest",
+      "required": false,
+      "method": "GET /openApi/swap/v2/quote/openInterest?symbol=<verified>",
+      "batching": "Per-symbol; no bulk implemented/documented here",
+      "qualified_semantics_units": "Pinned reference calls openInterest BASE_ASSET; retained native generic descriptor and existing registry do not currently qualify unit/multiplier. No usable new native OI receipt in this package.",
+      "original_clock_and_TTL": "row.time ms from selected reference; original clock needs native match; TTL120s.",
+      "maximum_payload": {
+        "selected_rows": 1,
+        "broker_body_bytes": 2000000
+      },
+      "retained_native_evidence": [],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "Current qualifications empty =>skip without HTTP. One optional native shape read cannot itself prove a unit; ROOT needs explicit evidence acceptance before activating BASE on any row.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "funding_rate_and_actual_period",
+      "required": false,
+      "method": "GET /openApi/swap/v2/quote/premiumIndex?symbol=<verified>",
+      "batching": "Reference permits all-symbol request, but current getOptional is per-symbol; no free bulk funding wiring claimed.",
+      "qualified_semantics_units": "lastFundingRate fraction, actual fundingIntervalHours/period and rate-event clock required. updateTime metadata is not rate time. Current registry qualifications empty; fundingRate history route is distinct and not silently substituted.",
+      "original_clock_and_TTL": "Selected rate_clock_field independent of updateTime; TTL300s; nextFundingTime not current rate event.",
+      "maximum_payload": {
+        "selected_rows": 1,
+        "bulk_rows_vendor_limit": null,
+        "broker_body_bytes": 2000000
+      },
+      "retained_native_evidence": [],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "No call in minimum mandatory pilot. If later admitted1 native premium read lacks effective period/rate clock =>retainUNKNOWN, no history retries.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "mark_and_index_context",
+      "required": false,
+      "method": "GET /openApi/swap/v2/quote/premiumIndex (same optional payload)",
+      "batching": "All-symbol available in retained reference; existing source exposes funding only, not independent mark/index facts.",
+      "qualified_semantics_units": "markPrice/indexPrice semantic field names documented, no native receipt/consumer qualification in current package.",
+      "original_clock_and_TTL": "Envelope time ms is not automatically funding effective time; mark/index TTL contract not added.",
+      "maximum_payload": {
+        "broker_body_bytes": 2000000,
+        "extra_HTTP_if_same_qualified_payload_reused": 0
+      },
+      "retained_native_evidence": [],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "No active consumer requirement justifies new separate collection. Common-format work remains ROOT.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "future_liquidation_model_map",
+      "required": false,
+      "method": "GET https://swolecharts.com/api/liquidation-levels/<exact-qualified-provider-asset>",
+      "batching": "Per-provider-asset; only BTC path admitted historically, now owner-excluded.",
+      "qualified_semantics_units": "Observed4model bins, EXTERNAL_MODEL; usd label not proven actualUSD. Canonical identity, venue/currency/scale and exact BingX price mapping absent.0 usable maps.",
+      "original_clock_and_TTL": "as_of numeric interpreted ms by old parser, independent epoch-ms unit missing; original sample already stale, modelTTL300s cannot be renewed by download.",
+      "maximum_payload": {
+        "observed_bins": 4,
+        "source_max_per_side": 1000,
+        "current_worker_MAP_CHECK_bytecap": 262144,
+        "standard_broker_bytes": 2000000
+      },
+      "retained_native_evidence": [
+        "5113a908-f118-4f2b-875f-c6a913bde255"
+      ],
+      "external_limit": {
+        "public_external_rate_limit": "UNKNOWN_FROM_RETAINED_PRIMARY_MATERIAL"
+      },
+      "current_internal_limit": {
+        "provider": "SWOLECHARTS",
+        "per_minute": 1,
+        "daily": 1,
+        "monthly": 1,
+        "qualification_cap": 1,
+        "spent": 1,
+        "remaining": 0,
+        "admitted_path": "BTC only, ownerexcluded",
+        "project_map_per_run": 8,
+        "native4_is_inside8": true,
+        "SOURCE_getLiquidations_requests_upper": 1
+      },
+      "remaining_gate": "Internal Swole1/day1/month1qualification already SPENT, admittedBTC only. Recommend0new retries until semantic prerequisites; absent map nonblocking.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "4h_outcomes_closed_history",
+      "required": true,
+      "method": "GET /openApi/swap/v3/quote/klines?symbol=<verified>&interval=1m&startTime=<floor(t0)>&endTime=<queryEnd>&limit=<count+1>",
+      "batching": "Per published instrument/window; shared data/cache when exact same URL. No night collector.",
+      "qualified_semantics_units": "Same accepted closed-OHLC time basis, preserve boundary ambiguity; closed high crossing in partial boundary bar not exact event proof. No native real4h outcome receipt qualified in this package.",
+      "original_clock_and_TTL": "Historical original candle times; expires_ts null, intentionally not live-fact freshness. Full interval only after deadline and complete grid.",
+      "maximum_payload": {
+        "closed_4h_rows_aligned": 240,
+        "closed_4h_rows_unaligned": 241,
+        "request_limit_aligned": 241,
+        "request_limit_unaligned": 242,
+        "vendor_max": 1440,
+        "broker_body_bytes": 2000000
+      },
+      "retained_native_evidence": [],
+      "external_limit": {
+        "status": "RETAINED_OFFICIAL_REFERENCE_NOT_NEW_QUOTA_VERIFICATION",
+        "per_IP_per_exact_endpoint": "1 request/second",
+        "pin_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+        "ref_sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+        "monthly_daily_IP_account_shared_scope": "UNKNOWN_FROM_RETAINED_REFERENCE; no paid/free entitlement or current headroom inferred"
+      },
+      "current_internal_limit": {
+        "provider": "BINGX",
+        "second": 1,
+        "rolling_minute": 10,
+        "daily": 900,
+        "monthly": 27900,
+        "qualification_attempt_cap": 24,
+        "spent": 12,
+        "remaining_before_new_actual_admission": 12,
+        "scope": "SUMMARY_INDEX_ACCEPTANCE_ONLY, expired17:45UTC, allowedproviders[] at current stage; numerical remaining12 is not authorization"
+      },
+      "remaining_gate": "One later actual due outcome read, not a fake immediate4h check; daytime only or explicit manual, count within protected outcomes24.",
+      "all550_native_coverage_proven": false
+    },
+    {
+      "indicator": "support_persistence",
+      "required": false,
+      "method": "NOT_CONNECTED / profile support_persistence_enabled=false",
+      "batching": "Would need temporal snapshots plus executions; not supplied by one depth response.",
+      "qualified_semantics_units": "No claims that a displayed wall persisted or was executed from one book image.",
+      "original_clock_and_TTL": "No current native clock-series contract.",
+      "maximum_payload": {
+        "native_payload_max": null,
+        "currently_planned_HTTP": 0
+      },
+      "retained_native_evidence": [],
+      "external_limit": {
+        "external_limit": "NOT_APPLICABLE_TO_DISABLED_ROUTE"
+      },
+      "current_internal_limit": {
+        "enabled": false,
+        "new_attempts": 0,
+        "reason": "No active source route or budget allocated"
+      },
+      "remaining_gate": "No new GET in this release; optional deferred feature, not missing mandatory CORE.",
+      "all550_native_coverage_proven": false
+    }
+  ],
+  "new_market_HTTP_SQL_TG_deploy": 0,
+  "ROOT_local_staging_update": "ROOT reports new2PASS minuteforecast/guardedwait beforefreshcore; localonly/notnative/deployed; SOURCE didnotreplay."
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "ANALYTICS_X2_STATIC_DEFECT_PROOF_V1",
+  "old_expression": "const due=empty?0:bound?b.due_count:null",
+  "defect": "With pending_waves=0 a supplied partial boundary or complete positive due_count was ignored and CURRENT returned; has_more=true could coexist with complete=true.",
+  "correction": "Supplied unbound/partial boundary -> unknown due; complete count>pending -> MATURITY_BOUNDARY_CONFLICT; has_more=true never complete. No boundary with empty counters can still derive zero.",
+  "proposal_executed": false,
+  "affected_new_test": "X207",
+  "proposal_sha256": "885e823b06ecb09ecc85eec5843532c4d443a0e505a114da1476c706239bfff7",
+  "fixed_production_sha256": "53f06bf9d3ca228c4d957bf93cb4abb241ec3f1be653a5bc7847da21601e46a3",
+  "old_legacy_prefix_exact": true
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "SOURCE_F550_MIN_NATIVE_PLAN_V1",
+  "status": "PREPARED_FOR_ROOT_ACTUAL_ADMISSION_ONLY_NO_IO",
+  "authority_main": "6b7c750b0e54cf4fe60275389a406d131494093c",
+  "actual_executable_admission_remaining_now": 0,
+  "reason": "Current stage allowedproviders[], expiry passed; unused numerical BINGX pool is not active permission; CONTROL5of5 and WEBmetadata2of2 consumed.",
+  "provider_pool": {
+    "provider": "BINGX",
+    "existing_policy_version": "pump-manual-native-relative-acceptance-20261025-v1",
+    "cap24_spent12_remaining12": true,
+    "old2HTTP_UNKNOWN_preserved_in_counts": true,
+    "daily900_monthly27900_not_increased": true
+  },
+  "CONTROL_native_slots": {
+    "cap": 5,
+    "finalized_control_reservations": [
+      "PUMP:CONTROL:42d8a7c8-2b5e-4120-a826-de5f2f2e9f07",
+      "PUMP:CONTROL:9deff8ab-c640-4e6b-b8e5-0d168e622361",
+      "PUMP:CONTROL:9fc90acb-9420-4ff2-9843-abc36138c2f2",
+      "PUMP:CONTROL:af76b683-47cc-4bd8-b39b-b0bfc15de472",
+      "PUMP:CONTROL:13802477-71c1-4414-b3df-4f51188e79f8"
+    ],
+    "remaining": 0,
+    "primary_evidence": "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json at6b7c750b, Gitblobd6969c796ee0010c7f0699e35e850dc1bd25bd25",
+    "failed503_control_ops_still_count": true,
+    "no_free_slot_claim_from_SQLunknown0": true
+  },
+  "minimal_changed_or_unexecuted_source_reads": [
+    {
+      "priority": 1,
+      "operation_id_proposal": "pump-f550-recent-sol-20261025-one",
+      "url": "https://open-api.bingx.com/openApi/swap/v2/quote/trades?limit=100&symbol=SOL-USDT",
+      "method": "GET",
+      "calls_max": 1,
+      "response_bytes_max": 2000000,
+      "timeout_ms": 10000,
+      "schema": "code0,data[]<=100 actualid,price,quoteQty,time,isBuyerMaker; buyerMaker-only or mixedschema remainsUNKNOWN",
+      "guarantees": "Exact independently verifiedSOL, directUSDTquoteQty/noBASE, actualstableid, native13digitms notfuture; no syntheticexecutionid or full5min claim",
+      "new_exact_allowlist_required": "/openApi/swap/v2/quote/trades; retain oldBINGX version/counters and cap24"
+    },
+    {
+      "priority": 2,
+      "operation_id_proposal": "pump-f550-h125-sol-20261025-one",
+      "url_template": "https://open-api.bingx.com/openApi/swap/v3/quote/klines?endTime=<E-1>&interval=1m&limit=125&startTime=<E-7500000>&symbol=SOL-USDT",
+      "method": "GET",
+      "calls_max": 1,
+      "response_bytes_max": 2000000,
+      "timeout_ms": 10000,
+      "schema": "code0,dataobjectrows125 time/open/high/low/close/volume; exactclosed125grid; oldSOL121 is insufficientproof for changedrequest",
+      "guarantees": "OwneracceptedCCXTopen timebasis, allclosedbeforeE, full125scope/oldestimpulse60baseline; native absolutevolume remainsUNKNOWN"
+    },
+    {
+      "priority": 3,
+      "operation_id_proposal": "pump-f550-bulk-20261025-one",
+      "url": "https://open-api.bingx.com/openApi/swap/v2/quote/ticker",
+      "method": "GET",
+      "calls_max": 1,
+      "response_bytes_max": 2000000,
+      "timeout_ms": 10000,
+      "schema": "code0,data[] bulk with exactsymbol,lastPrice,closeTime and availablepreviewfields",
+      "guarantees": "Before filtering saveprivate fullpayload/hash + sanitizedcount/types/IDs/clocks/target550intersection/missing/duplicate. Pricepresence not operationalidentity or fullcore550."
+    }
+  ],
+  "E": "floor(actual admitted call hostUnixms/60000)*60000; freeze parameters immediately before send",
+  "all_retries_redirects_hostfallback": 0,
+  "minimal_total": {
+    "BINGX_HTTP": 3,
+    "additional_provider_budget_above_remaining12": 0,
+    "spent_after_if_allattempted": 15,
+    "remaining_after": 9,
+    "TELEGRAM_HTTP": 0,
+    "WEBmetadata_HTTP": 0
+  },
+  "minimal_only_recent_variant": {
+    "BINGX_HTTP": 1,
+    "spent_after": 13,
+    "remaining_after": 11,
+    "TELEGRAM_HTTP": 0
+  },
+  "current_catalog_optional_extra": {
+    "url": "https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+    "calls": 1,
+    "why": "Neededonlyifclaimingfreshactive-nativeuniverse rather than pricecoverage ofsaved550. Not silently included in3. Withit total4, remaining8."
+  },
+  "admission_route_A_explicit_new_CONTROL_budget": {
+    "new_native_control_operations_required": 1,
+    "effective_control_cap_if_one3GETbundle": [
+      5,
+      6
+    ],
+    "this_is_explicit_budget_increase_not_authorized_here": true,
+    "old5_FINALIZED_unchanged": true,
+    "sameBINGX12pool_no_provider_capincrease": true,
+    "native_envelope_ifstandardpolicy_used": {
+      "rows_read": 5000,
+      "rows_written": 300,
+      "queries_max": 800
+    },
+    "actual_native_SQL_cost": "UNKNOWN_untilACK; do not relabelLOOKUP/MAP/DAY or raisecaps silently"
+  },
+  "admission_route_B_genuine_new_full_MANUAL_acceptance": {
+    "status": "ALTERNATIVE_ONLY_IF_ROOT_AUTHORIZES_GENUINE_CHANGED_FULLPIPELINE_NOT_PROBE_RENAME",
+    "new_fixed_run_id_proposal": "pump-f550-full-manual-sol-20261025-one",
+    "provider_family": "ExistingBINGX/USDT_M",
+    "publish": false,
+    "TG": 0,
+    "scope": "Actual newT3/H125/commonconsumer/featurecapsule/queues fullanalyticalmanualpipeline; originals/savedanalysis/sourceclock/sourcecoverage andFINALIZEDreadback. Preserveproduction6manualreserve andoldacceptedmanualIDs/results. No forcedready.",
+    "calls": "CurrentcoldnoTGwithpresentunqualifiedOI/funding/map: baselinecatalog1+bulk1+day1+H1251+book1=5; ifgenuinelyreadyT3trades1 =>6; primarypricefallbackcanaddmax2 alreadyaccountedonlyunderexactadmission. Bulkmetadata capture reuses samebulkGET.",
+    "if_NOT_READY": "NormaltruthfulNOT_READY result; getOptionalnotcalled, cannotclaimrecenttradeswireclosed. Need separatelyadmittedtradeoperation later; do not forceoptionaljusttomakefullmanualclaim.",
+    "why_not_CONTROL_bypass": "Newgenuinefullmanual of materially changedpipeline is distinctwork underownpositiveacceptanceregistration. ThreeprobeswithonlymodeMANUALlabel isNOTthisalternative. OldCONTROL5andWEB2staySPENT.",
+    "native_SQL": "Existingstandard5000R300W envelope ifpositiveadmission; newfixedacceptancemanualID registration and ledger exclusion/reserves mustbeupdatedexplicitly byROOT, notrelabeledtoescapeCONTROL or consumesixproductionchecks invisibly."
+  },
+  "category_WEB": "0currentbudget. Separateproposal needs explicitly+1BINGX_WEB_METADATAattempt and effectivecaps2to3, counters2preserved. Do nothideunderBINGXremaining12. Zeroextrabudgetalternative keepssaved550economicinference.",
+  "ROOT_staging_state": "ROOT reports locallyimplementedforecast/rollingminute waitBEFOREoverview/day/core withexecutorassertions; new2PASS synthetic. Notnative/deployed/externalquotaproof; not testedbySOURCE.",
+  "execution_prerequisites": [
+    "Exactserverartifactdeployment/readback or approvedexactruntimeconstructor; server39 old vslocal45 build is notsame",
+    "Actualnonexpiredprovider+whole+nativeSQL operation admission, existingcounterreadback, exactURL/kinds restrictions",
+    "Controlslots routeAexplicit+1or genuine routeB—notnewfamily/version/reset",
+    "Requestpacedatleast1/sec androlling<=10BINGX/min includingothertraffic; backoff/deadline checkedbeforefreshcore",
+    "Providererror/oversize/unknownACKchargedandstop, nofollowupsoutsidefixedplan"
+  ],
+  "source_new_native_HTTP_SQL_TG_deploy": 0
+}

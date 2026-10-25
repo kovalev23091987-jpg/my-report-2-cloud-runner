@@ -25,6 +25,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     assertWorkWindow();
     const policy=providerPolicy(provider),now=clock();
     if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane)||!['CORE','DELIVERY','DISCOVERY'].includes(purpose))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
+    if(admission.max_http_attempts!==undefined&&(!integer(admission.max_http_attempts)||admission.max_http_attempts<1||admission.max_http_attempts>limits.http_per_run||run.total+cost>admission.max_http_attempts))throw new BudgetRefusal('EXACT_OPERATION_HTTP_EXHAUSTED');
     if(purpose==='DISCOVERY'&&(provider!=='BINGX'||family!=='USDT_M'||candidate_id!==null))throw new BudgetRefusal('INVALID_DISCOVERY_SCOPE');
     if(run.total+cost>limits.http_per_run||run.lanes[lane]+cost>limits.lanes[lane])throw new BudgetRefusal('RUN_HTTP_EXHAUSTED');
     if(mode==='AUTO'&&lane==='hot'&&run.lanes.hot+cost+limits.manual_http_run_reserve>limits.lanes.hot)throw new BudgetRefusal('RUN_MANUAL_RESERVE_PROTECTED');
