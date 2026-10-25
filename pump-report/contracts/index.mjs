@@ -1,6 +1,6 @@
 export const INPUT_SCHEMA = 'PUMP_REPORT_INPUT_V1';
 export const ANALYSIS_SCHEMA = 'PUMP_REPORT_ANALYSIS_V1';
-export const CONTRACT_VERSION = 'pump-report-contract-v1.1-native-relative';
+export const CONTRACT_VERSION = 'pump-report-contract-v1.2-quote-notional';
 export const TZ_SHA256 = '0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc';
 export const FACT_STATUSES = Object.freeze(['USABLE', 'INCOMPLETE', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED']);
 export const MAP_STATUSES = Object.freeze(['USABLE', 'PARTIAL', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED', 'NOT_CHECKED_BUDGET', 'TIMEOUT']);
@@ -11,6 +11,8 @@ export const CANDLE_NATIVE_RELATIVE_UNIT='OHLC_USDT_NATIVE_REPORTED_QUANTITY';
 export const CANDLE_NATIVE_RELATIVE_KIND='SAME_NATIVE_REPORTED_QUANTITY';
 export const CANDLE_CCXT_TIME_BASIS='CCXT_CONSUMER_OPEN_TIME';
 export const CANDLE_SEMANTICS_OWNER_REF='checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json';
+export const TRADE_BASE_QUANTITY_UNIT='USDT_PRICE_BASE_QUANTITY';
+export const TRADE_QUOTE_NOTIONAL_UNIT='USDT_PRICE_QUOTE_NOTIONAL';
 export const GROWTH_24H_UNIT='USDT_CLOSED_ROLLING_24H';
 export const GROWTH_24H_WINDOW_MS=86400000;
 // Owner amendments on 25 October apply to every new publication, including

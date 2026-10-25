@@ -18,6 +18,10 @@
 
 `Fact`: fact_id, instrument_id, kind, value, unit, event_ts, received_ts, expires_ts, source, primary_provider, venue, status, origin, coverage, reason, evidence_ref. Статусы и helpers — в contracts/index.mjs. Отсутствие optional факта не маскируется нулём.
 
+Дополнение `pump-report-contract-v1.2-quote-notional`: у `kind=trades` две раздельные единицы. Прежняя `USDT_PRICE_BASE_QUANTITY` использует известные `price` и `quantity_base`. Новая `USDT_PRICE_QUOTE_NOTIONAL` использует документированное для точного recent-trades метода количество котируемого актива `notional_quote`, только при verified quote=USDT. Строки новой формы: `{trade_id,event_ts,price,notional_quote,aggressor_side}`; неизвестное количество BASE остаётся null/отсутствует и не восстанавливается делением. Исторический `historicalTrades.quoteQty=Turnover` этим не квалифицирован. Константы обеих единиц — в contracts/index.mjs.
+
+Для новой формы нужны положительные конечные price/notional_quote, стабильный trade_id, проверенное BUY/SELL по точной документированной maker-семантике, исходные trade timestamp(ms)/received/expiry и точный instrument/route/field/unit evidence. Нельзя без проверки смешивать buyerMaker/isBuyerMaker или выбирать удобное конфликтное поле. Неизвестные/конфликтующие строки не создают directional claim. Source сохраняет returned/qualified/excluded counts, исходные clocks/receipt и неполноту: latest returned sample не означает полный рынок или заданное временное окно. Consumer использует прямой notional_quote, сохраняет дедупликацию/конфликты до фильтра и тот же квалифицированный набор для суммы и реакции цены; никакого поглощения, причинности или benchmark. Source HTTP остаётся в общем optional upper2, новый маршрут/код не является live admission.
+
 ## Источники → общее ядро
 
 `createPumpSources({broker, identityRegistry, clock, profile})` возвращает методы:
