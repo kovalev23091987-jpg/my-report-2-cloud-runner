@@ -1,0 +1,53 @@
+--- pump-report/handoffs/analytics/package-n/baseline/movement.before.mjs	2026-10-25 18:40:42
++++ pump-report/analytics/movement.mjs	2026-10-25 18:41:35
+@@ -56,10 +56,15 @@
+     normal_range:median(prior.map(w=>Math.max(...w.map(r=>r.high))-Math.min(...w.map(r=>r.low)))),start_ts:end-duration,end_ts:end,
+     open:current[0].open,close:current.at(-1).close,low:Math.min(...current.map(r=>r.low)),return_pct:pct(current[0].open,current.at(-1).close)};
+ }
++function qualificationClockValid(p,at){
++  const known=p.qualification_known_ts??p.created_ts;
++  return validTime(known)&&validTime(p.created_ts)&&known>=p.created_ts&&known<=at&&
++    Array.isArray(p.qualification)&&p.qualification.every(q=>validTime(q.end_ts)&&q.end_ts<=known);
++}
+ function usablePrevious(p,input,profile) {
+   return p&&p.instrument_id===input.instrument.instrument_id&&typeof p.wave_id==='string'&&validTime(p.created_ts)&&p.created_ts<=input.analysis_ts&&
+     validTime(p.expires_ts)&&p.expires_ts===p.created_ts+profile.wave_max_age_ms&&p.expires_ts>input.analysis_ts&&!['CANCELLED','EXPIRED'].includes(p.state)&&
+-    Array.isArray(p.qualification)&&p.qualification.every(q=>validTime(q.end_ts)&&q.end_ts<=p.created_ts)&&
++    qualificationClockValid(p,input.analysis_ts)&&
+     p.impulse&&positive(p.impulse.baseline_median)&&positive(p.impulse.normal_range)&&validTime(p.impulse.end_ts)&&p.impulse.end_ts<=p.created_ts;
+ }
+ export function analyzeMovement(input, rows, price, ticker, profile, observedDay=null) {
+@@ -87,6 +92,8 @@
+     active:false,reasons:[],next_wave:null};
+   if(expired&&!candidates.some(v=>v.start_ts>=p.expires_ts))return {...base,wave_id:p.wave_id,state:'EXPIRED',reasons:['WAVE_LIFETIME_EXPIRED'],next_wave:{...p,state:'EXPIRED'}};
+   if(terminal&&!eligibleCandidates.length)return {...base,wave_id:p.wave_id,state:p.state,reasons:[p.state==='CANCELLED'?'PLAN_INVALIDATED':'WAVE_LIFETIME_EXPIRED'],next_wave:{...p}};
++  if(p?.instrument_id===input.instrument.instrument_id&&!expired&&!terminal&&Array.isArray(p.qualification)&&!qualificationClockValid(p,now))return {...base,wave_id:p.wave_id,state:p.state??null,
++    reasons:['WAVE_QUALIFICATION_CLOCK_INVALID'],next_wave:{...p}};
+   if(!impulse){
+     const recent=end?windowRows(rows,end,profile.impulse_window_ms,profile.candle_interval_ms):null;
+     const basis=recent?volumeBasis(recent,input,profile):null;
+@@ -106,8 +113,13 @@
+   const invalidation=previous?.invalidation_price??impulse.low;
+   const observedCancel=price<invalidation||rows.some(r=>r.open_ts>=Math.max(impulse.end_ts,continuityStart)&&r.low<invalidation);
+   if(!observedCancel&&(!recent||!basis||!recent.every(r=>finite(r[field]))||!finite(sum(recent.map(r=>r[field])))||sum(recent.map(r=>r[field]))<=0))return {...base,state:previous?'WEAKENING':null,next_wave:previous?{...previous,state:'WEAKENING',covered_until_ts:end}:null,reasons:['CURRENT_VOLUME_REQUIRED']};
+-  const qualification=previous?.qualification??windows.filter(w=>w.passed).map(w=>({...w,fact_ids:w.fact_ids??facts}));
+-  const qualified=qualification.some(w=>w.passed===true&&positive(w.start_price)&&positive(w.end_price)&&
++  let qualification=previous?.qualification??[],qualificationKnown=previous?.qualification_known_ts??(qualification.length?previous.created_ts:null);
++  // The first observation can be a manual review below AUTO thresholds. Latch
++  // the first later confirmed threshold once, without restarting this wave.
++  if(!observedCancel&&qualification.length===0&&windows.some(w=>w.passed)){
++    qualification=windows.filter(w=>w.passed).map(w=>({...w,fact_ids:w.fact_ids??facts}));qualificationKnown=now;
++  }
++  const qualified=validTime(qualificationKnown)&&qualificationKnown<=now&&qualification.some(w=>validTime(w.end_ts)&&w.end_ts<=qualificationKnown&&w.passed===true&&positive(w.start_price)&&positive(w.end_price)&&
+     growthAtLeast(w.end_price,w.start_price,w.window_ms===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct));
+   const created=previous?.created_ts??now,wave_id=previous?.wave_id??('PUMP:'+input.instrument.instrument_id+':'+impulse.start_ts);
+   const waveRows=rows.filter(r=>r.close_ts>=impulse.start_ts),peak=Math.max(previous?.peak_price??0,...waveRows.map(r=>r.high));
+@@ -123,7 +135,7 @@
+   if(recent&&previous&&['CALM_PULLBACK','SHARP_PULLBACK_RECLAIMED'].includes(previous.state)&&recent.at(-1).close>recent[0].open&&sum(recent.map(r=>r[field]??0))>(previous.current_volume??Infinity))state='RESUMING';
+   if(recent&&!sharp&&sum(recent.map(r=>r[field]??0))>=impulse.volume&&recent.at(-1).close<=recent[0].open)state='WEAKENING';
+   if(cancelled)state='CANCELLED';
+-  const next_wave={wave_id,instrument_id:input.instrument.instrument_id,created_ts:created,expires_ts:created+profile.wave_max_age_ms,qualification,
++  const next_wave={wave_id,instrument_id:input.instrument.instrument_id,created_ts:created,expires_ts:created+profile.wave_max_age_ms,qualification,qualification_known_ts:qualificationKnown,
+     impulse:{...impulse},state,reclaim_level:reclaim,reclaim_breached:breached,invalidation_price:invalidation,current_volume:recent?sum(recent.map(r=>r[field]??0)):null,
+     covered_until_ts:end,peak_price:peak,peak_event_ts:peakRow.close_ts,confirmed_pivots:pivots,cancelled_ts:cancelled?now:null};
+   const currentRatio=positive(impulse.volume)&&finite(next_wave.current_volume/impulse.volume)?next_wave.current_volume/impulse.volume:null;

@@ -1,0 +1,70 @@
+{
+  "schema": "PUMP_EXACT_WEB_METADATA_ACTUAL_NEGATIVE_V1",
+  "private_input": {
+    "path": "/private/tmp/pump-bingx-crypto-metadata-actual.json",
+    "file_sha256": "27bffc63dd4d4afe0939017136ae832dbd55aef67f8da0bfa1cee622bc2a7a6d",
+    "bytes": 2209,
+    "original_control_response_raw_sha256": "b397152eb2a86b3f5ab40001a27cb13d875d43ffd82d021f90b3fbf04b51ed8e",
+    "raw_hash_is_distinct_from_saved_JSON_serialization": true
+  },
+  "plan_ref": "pump-report/handoffs/sources/EXACT_WEB_METADATA_ONE_GET_PLAN_V1.json",
+  "executed_by": "ROOT",
+  "run_id": "pump-bingx-crypto-metadata-20261025-one",
+  "provider": "BINGX_WEB_METADATA",
+  "family": "IDENTITY_METADATA",
+  "exact_provider_url": "https://api-app.acc-de.com/api/coin/v1/display-info/list",
+  "http_status": 200,
+  "business_code": 100003,
+  "business_success": false,
+  "error_message": "Your device's time is incorrect, please adjust it.",
+  "native_payload_keys": [
+    "code",
+    "msg",
+    "success",
+    "timestamp"
+  ],
+  "provider_timestamp": 1792942913044,
+  "provider_date": "Sun, 25 Oct 2026 15:41:53 GMT",
+  "received_ts": 1792942913224,
+  "control_started_ts": 1792942911539,
+  "control_received_ts": 1792942913388,
+  "event_clock_semantics": "Response error timestamp, not asset-data time; not used to qualify identity",
+  "receipt_id": "b8ceae69-b3e6-4a96-ad03-f8ad8ee17e81",
+  "normalized_response_sha256": "d41cb3535615bbc4f5db568c6bb3291c2b2a23de4fdc7e7459118a6f0876a401",
+  "cache_hit": false,
+  "row_count": null,
+  "row_keys": [],
+  "crypto_identity_promotions": 0,
+  "taxonomy_enum_qualified": false,
+  "native_contract_bridge_qualified": false,
+  "classification": "REACHABLE_HTTP_BUSINESS_REJECTED_NO_TAXONOMY",
+  "cost": {
+    "provider_attempts": 1,
+    "state": "CONFIRMED_SPENT",
+    "native_requests": 10,
+    "rows_read": 18,
+    "rows_written": 8,
+    "unknown_ops": 0,
+    "original_native_envelope_not_reduced": true,
+    "ROOT_reported_cumulative": {
+      "native_requests": 264,
+      "rows_read": 648,
+      "rows_written": 175,
+      "provider_attempts": 16,
+      "initial_provider_UNKNOWN_preserved": 2
+    },
+    "native_SQL_unknown0_does_not_clear_old_provider_unknowns": true
+  },
+  "unexecuted_correction_proposal": {
+    "reason": "Provider asks to adjust device time although error server timestamp is only180ms before broker receive. Error alone does not establish required client timestamp/header/nonce/signature or a correct fix.",
+    "possible_next_input": "ROOT must establish exact request clock/header contract from already retained baseRequest implementation or new separately authorized primary evidence before any proposed request.",
+    "verified_parameter_fix": null,
+    "new_request_admitted": false,
+    "retry": false,
+    "host_fallback": false,
+    "extra_search": false,
+    "stop_after_one_attempt": true
+  },
+  "production_TG": false,
+  "market_values_exported": false
+}

@@ -1,0 +1,11 @@
+--- pump-report/handoffs/analytics/package-n/baseline/index.before.mjs	2026-10-25 18:40:42
++++ pump-report/analytics/index.mjs	2026-10-25 18:41:35
+@@ -10,7 +10,7 @@
+ import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT} from './presentation.mjs';
+ export {evaluateOutcome} from './outcome.mjs';
+ 
+-export const RULES_VERSION='pump-analytics-v3-owner-eligibility-20261025';
++export const RULES_VERSION='pump-analytics-v4-first-qualification-20261025';
+ const clip=(s,n)=>{let out='';for(const point of s){if(out.length+point.length>n)break;out+=point;}return out;};
+ const wellFormed=s=>s.replace(/\p{Cs}/gu,'�');
+ const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);

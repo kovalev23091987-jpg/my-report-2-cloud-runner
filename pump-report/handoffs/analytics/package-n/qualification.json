@@ -1,0 +1,302 @@
+{
+  "schema": "PUMP_ANALYTICS_N_REPAIR_QUALIFICATION_V1",
+  "status": "FROZEN_FOR_ROOT_INTEGRATION",
+  "ROOT_integrates": true,
+  "rules_version": "pump-analytics-v4-first-qualification-20261025",
+  "base_main": "dd758f61a75905aef7a4dd1d8de7e60440ec3b6f",
+  "test_dependency_main": "345a6e982a216ee316855c6fa6f4b027a9c0d6cb",
+  "tests_pass": 4,
+  "tests_fail": 0,
+  "tests_skip": 0,
+  "duration_ms": 126.036417,
+  "new_unique_cases": 4,
+  "command": "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap pump-report/tests/analytics/first-qualification.test.mjs",
+  "fixes": [
+    "M-G01 manual-first empty qualification can latch first later confirmed window once",
+    "M-G07 remove internal fact/evidence identifier from user text only"
+  ],
+  "wave_marker": "qualification_known_ts",
+  "marker_validation": "created_ts<=qualification_known_ts<=current analysis_ts and each q.end_ts<=qualification_known_ts",
+  "unchanged_positive_qualification": true,
+  "unchanged_wave_id_created_expiry_impulse": true,
+  "cancelled_expired_futureproof_fail_closed": true,
+  "legacy_positive_marker_fallback": "previous.created_ts",
+  "new_user_card_UTF16_length": 3398,
+  "internal_provenance_preserved": true,
+  "public_max_card_4096": true,
+  "frozen_prior": [
+    {
+      "path": "pump-report/handoffs/analytics/package-l/qualification.json",
+      "sha256": "bce0b87e2171e4a2508e43a875b9e252a8beee4fcc3b8a9c080aaac8c19b940f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-m/qualification.json",
+      "sha256": "4cf2194a7629e86b08d457a5a5bf573f8862e343c0daa6901938f63a6c9f9200"
+    }
+  ],
+  "audit_repair_delta": {
+    "schema": "PUMP_N_FULL_AUDIT_REPAIR_DELTA_V1",
+    "frozen_M_sha256": "4cf2194a7629e86b08d457a5a5bf573f8862e343c0daa6901938f63a6c9f9200",
+    "frozen_L_sha256": "bce0b87e2171e4a2508e43a875b9e252a8beee4fcc3b8a9c080aaac8c19b940f",
+    "closes_code_gaps": [
+      {
+        "gap_id": "M-G01",
+        "status": "VERIFIED_CODE",
+        "cases": [
+          "N01",
+          "N02",
+          "N03"
+        ],
+        "native_verified": false
+      },
+      {
+        "gap_id": "M-G07",
+        "status": "VERIFIED_CODE",
+        "cases": [
+          "N04"
+        ],
+        "native_verified": false
+      }
+    ],
+    "related_TZ_atoms": [
+      {
+        "id": "TZ06.035",
+        "line": 216,
+        "note": "This repair closes only the stated code defect/UI identifier; broader native pipeline or two-best-reasons UX clauses remain separately limited."
+      },
+      {
+        "id": "TZ06.036",
+        "line": 218,
+        "note": "This repair closes only the stated code defect/UI identifier; broader native pipeline or two-best-reasons UX clauses remain separately limited."
+      },
+      {
+        "id": "TZ14.017",
+        "line": 627,
+        "note": "This repair closes only the stated code defect/UI identifier; broader native pipeline or two-best-reasons UX clauses remain separately limited."
+      },
+      {
+        "id": "TZ18.006",
+        "line": 783,
+        "note": "This repair closes only the stated code defect/UI identifier; broader native pipeline or two-best-reasons UX clauses remain separately limited."
+      },
+      {
+        "id": "TZ18.026",
+        "line": 813,
+        "note": "This repair closes only the stated code defect/UI identifier; broader native pipeline or two-best-reasons UX clauses remain separately limited."
+      },
+      {
+        "id": "TZ23.007",
+        "line": 1001,
+        "note": "This repair closes only the stated code defect/UI identifier; broader native pipeline or two-best-reasons UX clauses remain separately limited."
+      }
+    ],
+    "remaining_gap_ids": [
+      "M-G02",
+      "M-G03",
+      "M-G04",
+      "M-G05",
+      "M-G06",
+      "M-G08",
+      "M-G09"
+    ],
+    "production_native_acceptance": false,
+    "original240_rewritten": false
+  },
+  "changed_files": [
+    "pump-report/analytics/movement.mjs",
+    "pump-report/analytics/presentation.mjs",
+    "pump-report/analytics/index.mjs",
+    "pump-report/analytics/manual-text.mjs",
+    "pump-report/tests/analytics/first-qualification.test.mjs"
+  ],
+  "files": [
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 17410,
+      "sha256": "18298fec0b9c75cfba523befabbd36cbb20a24aa2067bbbb252990929716452e"
+    },
+    {
+      "path": "pump-report/analytics/manual-text.mjs",
+      "bytes": 6469,
+      "sha256": "ff5be1f67aa31fd8292dbf59ec48cf814f5a9508ed0c3831deccf1ba82f5aeb5"
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 17043,
+      "sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    {
+      "path": "pump-report/analytics/presentation.mjs",
+      "bytes": 3230,
+      "sha256": "80d710acb7059b0c150fd40941ad515ed7a044c56404096b0f078293112fdf04"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/README_RU.md",
+      "bytes": 5329,
+      "sha256": "62bd0bef26497f5dfe667967f9b81207621dbc4518f1c8abd41d9ce0443ca951"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/audit-repair-delta.json",
+      "bytes": 2092,
+      "sha256": "fe7f5a4f4f546b79ba16dbf335235848c214841a53bd8bd143f7c5f695c04696"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/authority.json",
+      "bytes": 5224,
+      "sha256": "0328d1d2c43179bf0ec9b2c4c657daed4cbc5f3e7b468720ad5cdb74cd32a9d1"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/baseline/index.before.mjs",
+      "bytes": 17408,
+      "sha256": "4d08ce32f9ab948f14a221f172a3aa491ad1ac33a4a093c448b9905a144c0a22"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/baseline/manual-text.before.mjs",
+      "bytes": 6265,
+      "sha256": "80fb65645504c1b240028db02a1870a2af977faa645014659af0410e906f0b20"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/baseline/movement.before.mjs",
+      "bytes": 16026,
+      "sha256": "6b48b3e583541d4f46e4f5981f4dced800c6fe1ac86e391aabd59b5de1dbd1ad"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/baseline/presentation.before.mjs",
+      "bytes": 3597,
+      "sha256": "8e28bad3f582d023af7b944ca37ba27de7c47f5ba800df46a109c44fc2a81bab"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/clean-user-card.json",
+      "bytes": 126476,
+      "sha256": "34e2466b9e31b37fe92aace77eb23c6dcef23ed1e57af75f74eb5a56401ab95d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/clean-user-card.txt",
+      "bytes": 5930,
+      "sha256": "03b37369216cc1b990ffe3a0b482cefbafb6af92fcbe3210b5d182654e1aaf56"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/index.diff",
+      "bytes": 722,
+      "sha256": "1a190fb4cd0e0682233382fea4192235d3dea9a0fc3ddd3cf7d458015f1337a2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/late-qualification-flow.json",
+      "bytes": 28990,
+      "sha256": "74fe2dc96def6b8d3208fb125a58f40e9bb0f4f35156ecf8df8b74061a344653"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/manual-text.diff",
+      "bytes": 3641,
+      "sha256": "68b43f13492a2e791334815bcbd59a7da38434175b983a02538e4599695cb24a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/movement.diff",
+      "bytes": 5441,
+      "sha256": "c1ebad895c40468652535657b35378b624d77fa3ed1a5ab21c7abc95cb5611e4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/presentation.diff",
+      "bytes": 2002,
+      "sha256": "78121a91e581322c043232df0487641fa38837d79d4bb86f6331fedfe52d9e13"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/readonly-dependencies.json",
+      "bytes": 2512,
+      "sha256": "af0c523aaf5d110192f04fd7e638d2c43dd9ae9cef84922ddd9e292ad5c6cde3"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-n/test-results.tap",
+      "bytes": 1373,
+      "sha256": "daaad36d806aafd9013fda16efa19ad5228f57fd223be6bb3c7bf49dfb7406ae"
+    },
+    {
+      "path": "pump-report/tests/analytics/first-qualification.test.mjs",
+      "bytes": 9600,
+      "sha256": "13ee77a35a9689320adffa25a99c3bed00c46b783683435c529151b38964c259"
+    }
+  ],
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "bytes": 6513,
+      "sha256": "704348a6c56bcdafe10d7335c89e4e092d92fadfe12bed856c9afb8bfc8285d6",
+      "git_blob": "a905bf8b693585c210903290379aa7be394c7097",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/day-growth.mjs",
+      "bytes": 3782,
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "git_blob": "af726423c9fdc355a77a09d3613f044d5f5cd20d",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/liquidity.mjs",
+      "bytes": 3326,
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "git_blob": "560ca16d61f7c7a0ca2b9a8a3e275252a074b356",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "git_blob": "84d526f14c505e23aa5cb72a7d3fdca7d14081b4",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 7245,
+      "sha256": "8be8aeba5bab96e66be6798078104d6b573a66e22b895789d14c6bf9a3759375",
+      "git_blob": "40666136c1b50f631f5b1eab0621d6f690dfa49c",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "bytes": 7668,
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "git_blob": "02542b09ff5f157d701c79489369bce68456ca41",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 5701,
+      "sha256": "cfa9c8387561e08fbecb797f6cffafcfc6fc64a5acd93c0e2ae310d38db4bd94",
+      "git_blob": "7ab392bc5b3ca1748f0df7f31fccbd9f80132d4a",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "bytes": 1774,
+      "sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce",
+      "git_blob": "ec96d96656025dffbdffd4d296689d55ca2002b8",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed",
+      "git_blob": "ea7a0aedbe6cac487850808f70834cca157ee7a5",
+      "remote_exact": true
+    }
+  ],
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "old_full_batteries_replayed": false,
+  "frozen_M_diagnostic_replayed_after_fix": false,
+  "shared_runtime_source_common_mutations": false,
+  "original240_t0_P0_target_rules_receipt_changed": false,
+  "private240_market_values_read": false,
+  "automatic_thresholds_or_owner_minimum_changed": false,
+  "calibration_probability_pct": null,
+  "old_ENTRY_followup_touched": false,
+  "storage_capacity_tests": false,
+  "new_chats_subagents_automations": 0,
+  "production_complete": false,
+  "lease": "Same original bounded L/M/N lease. Release immediately after this freeze; exact FULL readback on authoritative scoped ref and final report.",
+  "stop_scope": "No new autonomous package; remaining full-TZ gaps await ROOT assignments."
+}

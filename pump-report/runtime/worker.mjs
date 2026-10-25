@@ -12,7 +12,7 @@ import {reserveNativeRun,finalizeNativeRun} from './native-budget.mjs';
 import {createPumpRunner} from './runner.mjs';
 import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL} from './provider-policy.mjs';
 
-export const PUMP_VERSION='pump-report-v1.3-metadata-acceptance';
+export const PUMP_VERSION='pump-report-v1.4-integration-acceptance';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
@@ -39,7 +39,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock}),store=native.store;
   try{
   if(mode!=='LOOKUP')await store.install();
-  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:{})}});
+  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
   const broker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000});
   const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
@@ -84,6 +84,7 @@ export function createPumpWorker(legacy={}){
       if(mapProbe&&(body.probe_id!==MAP_DIAGNOSTIC_ID||PROVIDER_STAGE!=='MANUAL_ACCEPTANCE'))return json({error:'MAP_PROBE_NOT_ADMITTED'},400);
       if(dayProbe&&(body.probe_id!==DAY_DIAGNOSTIC_ID||PROVIDER_STAGE!=='DAY_WINDOW_ACCEPTANCE'))return json({error:'DAY_PROBE_NOT_ADMITTED'},400);
       if(integrationCheck&&(body.grant_id!==J_DIAGNOSTIC_ID||PROVIDER_STAGE!=='J_INTEGRATION_ACCEPTANCE'))return json({error:'INTEGRATION_CHECK_NOT_ADMITTED'},400);
+      if(integrationCheck&&Object.keys(body).some(key=>key!=='grant_id'))return json({error:'INVALID_INTEGRATION_CHECK_PARAMS'},400);
       if(probe&&!['clock','catalog','price','ticker','candles','orderbook'].includes(body.kind))return json({error:'INVALID_PROBE_KIND'},400);
       if(probe&&!['clock','catalog'].includes(body.kind)&&!isBingxNativeSymbol(body.symbol))return json({error:'INVALID_PROBE_SYMBOL'},400);
       if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);

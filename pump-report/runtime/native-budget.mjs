@@ -4,7 +4,7 @@ import {ACCEPTANCE_MANUAL_RUN_IDS} from '../contracts/run-purpose.mjs';
 
 // Reuse the project's existing shared day ledger, rather than create an
 // independent SQL quota. Every legacy reservation/unknown retains its meaning.
-export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:'checkpoints/pump-report-20261025/METADATA_SINGLE_GET_ADMISSION.json'});
+export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:'checkpoints/pump-report-20261025/POST_REVIEW_SOL_ADMISSION.json'});
 export const LOOKUP_ENVELOPE=Object.freeze({rows_read:500,rows_written:30,max_runs_day:10});
 
 function knownMeta(result){return result?.success!==false&&['rows_read','rows_written'].every(k=>Number.isSafeInteger(result?.meta?.[k])&&result.meta[k]>=0);}
