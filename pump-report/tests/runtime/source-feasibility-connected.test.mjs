@@ -5,7 +5,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {createPumpSources} from '../../sources/index.mjs';
 import {BINGX_IDENTITY_REGISTRY} from '../../registry/index.mjs';
 import {createUnifiedBudget,createRequestBroker,utcDay,utcMonth} from '../../runtime/budget.mjs';
-import {runSourceFeasibility} from '../../runtime/source-feasibility.mjs';
+import {runSourceFeasibility,readSharedNativeDayBudget} from '../../runtime/source-feasibility.mjs';
 import {reserveNativeRun} from '../../runtime/native-budget.mjs';
 import {SOURCE_FEASIBILITY_ID} from '../../runtime/provider-policy.mjs';
 import {MemoryStore} from '../../runtime/store.mjs';
@@ -50,4 +50,19 @@ test('actual native admission SQL keeps five spent CONTROLs and permits only one
   const admitted=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));const r=await admitted.reserveNativeRun({db:adapter,run_id:SOURCE_FEASIBILITY_ID,mode:'CONTROL',clock:()=>T});assert.equal(r.admission.max_rows_read,5000);assert.equal(r.admission.max_rows_written,300);
   assert.equal(db.prepare("SELECT COUNT(*) AS n FROM report2_runner_budget_ledger_shadow WHERE state='FINALIZED'").get().n,5);assert.equal(db.prepare('SELECT COUNT(*) AS n FROM report2_runner_budget_ledger_shadow').get().n,6);
   for(const id of [SOURCE_FEASIBILITY_ID,'UNRELATED_NEW_ID'])await assert.rejects(admitted.reserveNativeRun({db:adapter,run_id:id,mode:'CONTROL',clock:()=>T}),{code:'SHARED_NATIVE_DAY_BLOCKED_OR_DUPLICATE'});db.close();
+});
+
+test('transport measurements retain body-receive clock before delayed durable finalization and distinguish payload from wire bytes',async()=>{
+  let time=T;const raw='{"code":0,"data":["币"]}',store=new MemoryStore(),budget={minimumIntervalMs:()=>0,assertTarget(){},reserve:async()=>({request_id:'CONTROLLED_TRANSPORT',state:'RESERVED'}),finalize:async r=>{time+=5000;r.state='CONFIRMED';},summary:()=>({})};
+  const broker=createRequestBroker({store,budget,clock:()=>time,fetch_impl:async()=>{time+=23;return new Response(raw,{status:200,headers:{'content-encoding':'gzip'}});}});
+  const r=await broker.request({provider:'BINGX',url:'https://example.invalid/fact',cache_key:'CONTROLLED_METRICS'});
+  assert.equal(r.request_started_ts,T);assert.equal(r.received_ts,T+23);assert.equal(time,T+5023);assert.equal(r.latency_ms,23);assert.equal(r.body_bytes,Buffer.byteLength(raw));assert.equal(r.wire_bytes,null);assert.equal(r.body_bytes_basis,'FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE');
+});
+
+test('budget snapshot uses retained reservation maxima and marks a truncated day incomplete without refunding unknown reservations',async()=>{
+  const db=new DatabaseSync(':memory:');db.exec('CREATE TABLE report2_runner_budget_ledger_shadow(reservation_id TEXT PRIMARY KEY,day_utc TEXT,reserve_rows_read INTEGER,reserve_rows_written INTEGER,state TEXT,started_ts INTEGER,measured_rows_read INTEGER,measured_rows_written INTEGER,unknown_ops INTEGER)');db.exec('CREATE INDEX idx_report2_runner_budget_day ON report2_runner_budget_ledger_shadow(day_utc)');
+  const put=db.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,?,?,?)');put.run('PUMP:CONTROL:OLD',utcDay(T),5000,300,'FINALIZED',T-1000,10,3,0);put.run('PUMP:CONTROL:UNKNOWN',utcDay(T),5000,300,'FINALIZED',T-1000,20,4,1);put.run('PUMP:CONTROL:CURRENT',utcDay(T),5000,300,'RESERVED',T,null,null,null);
+  const store={query:async(sql,args)=>({results:db.prepare(sql).all(...args)})};let s=await readSharedNativeDayBudget({store,clock:()=>T});assert.equal(s.accounted_reads_upper,15000);assert.equal(s.accounted_writes_upper,900);assert.equal(s.unknown_count,1);assert.equal(s.unacknowledged,0);assert.equal(s.complete,true);assert.equal(s.whole_account_complete,false);
+  for(let n=0;n<499;n++)put.run('PUMP:FILL:'+n,utcDay(T),1,1,'FINALIZED',T-1000,0,0,0);
+  s=await readSharedNativeDayBudget({store,clock:()=>T});assert.equal(s.reservation_count,501);assert.equal(s.complete,false);db.close();
 });

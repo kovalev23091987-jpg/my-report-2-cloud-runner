@@ -1,0 +1,134 @@
+{
+  "schema": "ANALYTICS_Y_ACTUAL_V3_RUNTIME_STATIC_REVIEW_V1",
+  "status": "FROZEN_STATIC_REVIEW_HISTORICAL_Y01_ROOT_TARGETED_FIX_REPORTED",
+  "acquisition_main": "39503161e66082fdc9ac746ace5c5da6653c1bc4",
+  "freeze_main": "e9eaac0f6a52ce0205af60b288058238f92fad84",
+  "own_lease_commit": "4876c85bfc0f96fc11e347a93e6b99ec8e67dfe9",
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1792956295000",
+  "own_expires_ts": 1792958695000,
+  "scope": "Exactly3actualROOTfiles:materialized-v3-store,outcome-journal,newconnectedtest. No fullaudit.",
+  "reviewed_sources": [
+    {
+      "path": "pump-report/runtime/materialized-v3-store.mjs",
+      "bytes": 7413,
+      "sha256": "0a3ff9a0f5b3a768d090ad0ea908bfb9d1f6a793b24dee903bb83748e11876d7",
+      "lines": 80,
+      "snapshot": "pump-report/handoffs/analytics/package-y/reviewed-snapshots/materialized-v3-store.mjs.txt"
+    },
+    {
+      "path": "pump-report/runtime/outcome-journal.mjs",
+      "bytes": 11103,
+      "sha256": "ca877fd9900ff7372ba8449baa1e5b468f0968fef94b0ed3ecaf1df8672be781",
+      "lines": 120,
+      "snapshot": "pump-report/handoffs/analytics/package-y/reviewed-snapshots/outcome-journal.mjs.txt"
+    },
+    {
+      "path": "pump-report/tests/runtime/materialized-v3-connected.test.mjs",
+      "bytes": 4261,
+      "sha256": "abf355535042bb735d0302f3dbe4d31a8e90c821fcb976e9d4892412c829cf09",
+      "lines": 35,
+      "snapshot": "pump-report/handoffs/analytics/package-y/reviewed-snapshots/materialized-v3-connected.test.mjs.txt"
+    }
+  ],
+  "finding_count": 1,
+  "findings": [
+    {
+      "id": "Y01",
+      "priority": "P2",
+      "path": "pump-report/runtime/outcome-journal.mjs",
+      "start_line": 108,
+      "end_line": 111,
+      "summary": "Separate latest aggregate read overlays cursor8 on older view7 and may report CURRENT/source_caught_up. Bind one snapshot.",
+      "proof": "finding-Y01.json",
+      "execution": "STATIC_TRACE_ONLY"
+    }
+  ],
+  "test_gap": "Existing two ROOT cases are sequential with constant phase clocks; concurrent view/aggregate interleaving not covered.",
+  "ROOT_reported_connected2PASS_rerun": false,
+  "X2nine_rerun": false,
+  "imports": 0,
+  "Node_runs": 0,
+  "tests_run": 0,
+  "production_files_modified": 0,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "TTL_GC": 0,
+  "no_wave_loss_doublefold_or_native_fault_claimed": true,
+  "new_chats_subagents_automations": 0,
+  "original240_9pauses_2deferrals_capsunknownreserves_preserved": true,
+  "ROOT_owns_fix_and_targeted_new_concurrent_check": true,
+  "release_receipt": "pump-report/handoffs/analytics/package-y/lease-release.json",
+  "prior_review_manifest_sha256": "4c2166b76e0ed0a74de547fbad20967d4e1dacf474b302ffdadf2f215f434cc2",
+  "ROOT_fix_note": "root-reported-fix.json",
+  "ROOT_fix_independently_reviewed_or_tested_by_ANALYTICS": false,
+  "reviewed_old_SHA_is_historical_after_ROOT_edit": true,
+  "files": [
+    {
+      "path": "pump-report/handoffs/analytics/package-y/REVIEW_RU.md",
+      "bytes": 4676,
+      "sha256": "0fb31ca1c87de58a277a46eb2f9eb3e159e53ec49d44793eaad11f35a1f45413"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/authority.json",
+      "bytes": 2982,
+      "sha256": "900314502e0771440d98e4e35bb4c3a8c54d42958923f24bf75c4933efbdf6ae"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/current-sha-at-root-fix-note.json",
+      "bytes": 1006,
+      "sha256": "fa31d6ccaaf9b8ca44a5ac8af015c722a38025bcdbd69f71ebbbf83fed3e2ffc"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/final-guard-readback.json",
+      "bytes": 3107,
+      "sha256": "cb16d3288c4d604cee84a819bf2bebbbc35c6d0ec6bc606b09a14a4fc45b1cb8"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/finding-Y01.json",
+      "bytes": 2976,
+      "sha256": "615f985f0467e1a0b776a90256f67bcab33dd15350285ce46b362c697bb0924f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/freeze-integrity.json",
+      "bytes": 1284,
+      "sha256": "d6a1a3609a8ffd331221c76e7651f4f482f0634f92cca6ac4ea06b372e1ab93c"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/review-manifest.before-root-fix-note.json",
+      "bytes": 4669,
+      "sha256": "4c2166b76e0ed0a74de547fbad20967d4e1dacf474b302ffdadf2f215f434cc2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/reviewed-file-sha256.json",
+      "bytes": 1072,
+      "sha256": "db043018cfcc96cbd6d975a19f4c52ed25544976227f7127b33f9381d759e2c6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/reviewed-snapshots/materialized-v3-connected.test.mjs.txt",
+      "bytes": 4261,
+      "sha256": "abf355535042bb735d0302f3dbe4d31a8e90c821fcb976e9d4892412c829cf09"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/reviewed-snapshots/materialized-v3-store.mjs.txt",
+      "bytes": 7413,
+      "sha256": "0a3ff9a0f5b3a768d090ad0ea908bfb9d1f6a793b24dee903bb83748e11876d7"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/reviewed-snapshots/outcome-journal.mjs.txt",
+      "bytes": 11103,
+      "sha256": "ca877fd9900ff7372ba8449baa1e5b468f0968fef94b0ed3ecaf1df8672be781"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/root-reported-fix.json",
+      "bytes": 1248,
+      "sha256": "0fc62dec2ec76b34df67303c0956b1b84b0707610ab968f086a1d31e6f10494d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-y/test-gap-and-static-boundaries.json",
+      "bytes": 735,
+      "sha256": "16f9bbb08e11a4f5867dd2c4a6ecc9adf8cc4fd10e7f6c95025ee72b9074dedf"
+    }
+  ]
+}

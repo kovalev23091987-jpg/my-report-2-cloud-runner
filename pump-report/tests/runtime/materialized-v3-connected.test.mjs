@@ -33,3 +33,14 @@ test('actual journal restart repairs queue intent after atomic source/wave commi
   view=await journal().summary();assert.equal(view.source_cursor,2);assert.equal(view.independent_waves,1);assert.equal(view.excluded_records_by_purpose.ACCEPTANCE_TEST,1);assert.equal(view.status,'CURRENT');
   assert.equal([...store.rows.keys()].filter(k=>k.startsWith('pump:materialized-record:production-v3:')).length,1);
 });
+
+test('concurrent append after rendered V3 snapshot never labels old counters caught up with a newer cursor',async()=>{
+  class RacingStore extends MemoryStore{
+    async atomicPair(keys,change){const result=await super.atomicPair(keys,change);if(keys.includes('pump:materialized-maturity:production-v3:scan'))this.arm=true;return result;}
+    async get(key){if(key==='pump:summary-ordered-head:v1'&&this.arm&&this.hook){this.arm=false;const hook=this.hook;this.hook=null;await hook();}return super.get(key);}
+  }
+  const store=new RacingStore(),journal=()=>createOutcomeJournal({store,clock:()=>T+60000,profile:START_PROFILE});await journal().record(signal('FIRST'),null);
+  store.arm=false;store.hook=()=>journal().record(signal('CONCURRENT'),null);
+  let view=await journal().summary();assert.equal(view.independent_waves,1);assert.equal(view.source_cursor,1);assert.equal(view.source_records_at_boundary,2);assert.equal(view.source_caught_up,false);assert.equal(view.status,'SUMMARY_CATCHUP_REQUIRED');
+  view=await journal().summary();assert.equal(view.independent_waves,2);assert.equal(view.source_cursor,2);assert.equal(view.source_caught_up,true);assert.equal(view.status,'CURRENT');
+});

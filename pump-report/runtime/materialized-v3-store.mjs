@@ -74,7 +74,7 @@ export function createMaterializedV3Store({store,clock=Date.now,resourcesAvailab
       const committed=await store.atomicPair([AGG,SCAN],([a,scan])=>a?.revision===expected_revision&&!a.maturity_pending?{states:[a,snapshot],result:true}:{states:[a,scan],result:false});
       if(committed&&complete)boundary={materialization_id:ID,aggregate_revision:expected_revision,as_of_ts:view_at,complete:true,due_count:0,source_ref:SCAN+'#'+expected_revision+':'+view_at};
     }
-    current=await aggregate();return readMaterializedSummaryV3(current,{as_of_ts:Math.max(boundary?.as_of_ts??at,current.updated_ts),maturity_boundary:boundary});
+    current=await aggregate();return {...readMaterializedSummaryV3(current,{as_of_ts:Math.max(boundary?.as_of_ts??at,current.updated_ts),maturity_boundary:boundary}),excluded_records_by_purpose:{...current.excluded_records_by_purpose}};
   }
   return {aggregate,recover,exclude,fold,read,aggregate_key:AGG};
 }

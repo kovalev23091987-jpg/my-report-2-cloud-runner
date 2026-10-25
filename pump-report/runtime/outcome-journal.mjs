@@ -105,10 +105,10 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       const committed=await materialized.fold(row,item.seq,cursor);
       if(committed)processed++;
     }
-    const view=await materialized.read({maturity_limit:Math.min(40,maturity_limit)}),aggregate=await materialized.aggregate(),source_cursor=aggregate.source_cursor??0;
+    const view=await materialized.read({maturity_limit:Math.min(40,maturity_limit)}),source_cursor=view.source_cursor??0;
     const boundary=await sourceIndex.boundary();if(source_cursor>boundary.count)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');
     const caught=page.migration_ready&&boundary.ready&&!boundary.pending&&source_cursor===boundary.count;
-    return {...view,run_purpose:'PRODUCTION',excluded_records_by_purpose:{...(aggregate.excluded_records_by_purpose??{})},status:!page.migration_ready||!boundary.ready?'SUMMARY_INDEX_MIGRATING':!caught?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:boundary.count,source_caught_up:caught,processed_records:processed,source_index_append_only:true,source_index_bounded:true};
+    return {...view,run_purpose:'PRODUCTION',status:!page.migration_ready||!boundary.ready?'SUMMARY_INDEX_MIGRATING':!caught?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:boundary.count,source_caught_up:caught,processed_records:processed,source_index_append_only:true,source_index_bounded:true};
   }
   async function summary({max_records=40}={}){
     if(!Number.isSafeInteger(max_records)||max_records<1||max_records>40)throw Error('SUMMARY_PAGE_BOUND_1_TO_40_REQUIRED');

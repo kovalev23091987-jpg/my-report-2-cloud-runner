@@ -1,0 +1,24 @@
+{
+  "schema": "ANALYTICS_Y_STATIC_FINDING_V1",
+  "id": "Y01",
+  "priority": "P2",
+  "title": "Bind summary counters and source-caught-up metadata to one materialized snapshot",
+  "path": "pump-report/runtime/outcome-journal.mjs",
+  "start_line": 108,
+  "end_line": 111,
+  "sha256": "ca877fd9900ff7372ba8449baa1e5b468f0968fef94b0ed3ecaf1df8672be781",
+  "confidence": "HIGH_STATIC_CODE_TRACE_NOT_EXECUTED",
+  "finding": "catchUp spreads view from materialized.read, but derives source_cursor and purpose-exclusion counters from a second aggregate read. A concurrent source fold+ACK can make that aggregate and the later index boundary both N+1 while view counters and revision still describe N. The returned and subsequently persisted summary may claim CURRENT/source_caught_up with stale counters.",
+  "minimal_interleaving": [
+    {"step": 1, "actor": "A", "state": "Index count7, aggregate cursor7/revisionR/independent_waves7, no pending intent; current maturity boundary complete. Initial page total7, migration_ready=true."},
+    {"step": 2, "actor": "A", "code": "outcome-journal:108 awaits materialized.read. materialized-v3-store:77 returns view revisionR/source_cursor7/counters7/statusCURRENT."},
+    {"step": 3, "actor": "B", "state": "Before A next aggregate get, append record8 and finish fold+queue ACK. Aggregate now cursor8/revisionR+2/counters8; index count8."},
+    {"step": 4, "actor": "A", "code": "The second get at outcome-journal:108 sees the newer aggregate and sets source_cursor8. Line109 sees source boundary count8."},
+    {"step": 5, "actor": "A", "code": "Line110 sets caught=true. Line111 spreads old view counters7/revisionR, overlays cursor8, and returns old view.status CURRENT. summary:117 may persist this mixed result."}
+  ],
+  "incorrect_result": {"independent_waves": 7, "source_cursor": 8, "source_records_at_boundary": 8, "source_caught_up": true, "status": "CURRENT", "revision": "R"},
+  "expected": "Either a coherent new snapshot8, or coherent view7/cursor7 with SUMMARY_CATCHUP_REQUIRED after observing boundary8. Never CURRENT on mixed revisions.",
+  "minimal_remedy": "Use view.source_cursor and its revision for coverage checks. Capture excluded_records_by_purpose inside materialized.read from the same snapshot, or reject/retry when the second aggregate revision/source_cursor differs. Never overlay a newer cursor onto old counters.",
+  "suggested_new_check_for_ROOT": "Pause A after materialized.read has built view7 but before catchUp second aggregate read; let B append/fold/ACK the eighth signal, then resume A. Assert CURRENT/source_caught_up implies counters/revision/source_cursor from one snapshot8. Otherwise A must return CATCHUP/cursor7. This is a new targeted concurrent interleaving, not a replay of the existing two connected cases or X2nine.",
+  "not_claimed": ["No demonstrated durable wave or aggregate corruption", "No demonstrated double fold or receipt loss", "No native reproduction or tests executed"]
+}

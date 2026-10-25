@@ -136,6 +136,7 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
       const receipt=await budget.reserve({provider,family,purpose,candidate_id,request_id,cost:estimated_cost.http});
       let response;
       try {
+        const request_started_ts=clock();
         response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'manual',signal:AbortSignal.timeout(remaining)});
         if(response.status>=300&&response.status<400){await budget.finalize(receipt,{http_status:response.status});await response.body?.cancel();throw new BudgetRefusal('SOURCE_REDIRECT_REFUSED');}
         const advertised=Number(response.headers.get('content-length')??0);if(advertised>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');
@@ -143,12 +144,13 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
         if(reader){try{for(;;){const {value,done}=await reader.read();if(done)break;total+=value.byteLength;if(total>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');parts.push(value);}}finally{await reader.cancel().catch(()=>{});}}
         const bytes=new Uint8Array(total);let offset=0;for(const part of parts){bytes.set(part,offset);offset+=part.byteLength;}
         const raw=new TextDecoder().decode(bytes);let data=null;try{data=JSON.parse(raw);}catch{data={invalid_json:true};}
+        const received_ts=clock(),latency_ms=received_ts>=request_started_ts?received_ts-request_started_ts:null;
         const retry=response.headers.get('retry-after');const retryAfter=retry?(Number.isFinite(Number(retry))?Math.max(0,Number(retry)*1000):Math.max(0,Date.parse(retry)-clock())):null;
         const businessRateLimited=provider==='BINGX'&&String(data?.code)==='100410';
         const disposition=responseDisposition(provider,response.status,data);
         const effectiveBackoff=retryAfter??(response.status===429||businessRateLimited?60000:null);
         await budget.finalize(receipt,{http_status:response.status,retry_after_ms:effectiveBackoff,temporary_failure:disposition==='TEMPORARY',successful_response:disposition==='SUCCESS'});
-        const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts:clock(),cache_hit:false,receipt_id:request_id,semantic_status:disposition};
+        const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts,request_started_ts,latency_ms,latency_basis:'FETCH_START_TO_PARSED_RESPONSE_BODY',body_bytes:total,body_bytes_basis:'FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE',wire_bytes:null,cache_hit:false,receipt_id:request_id,semantic_status:disposition};
         if(disposition==='ROUTE_UNAVAILABLE')await store.set('pump:negative-cache:'+key,{reason:'EXACT_ROUTE_UNAVAILABLE_NOT_ASSET_CLASSIFICATION',expires_ts:result.received_ts+SOURCE_ERROR_PROFILE.negative_ttl_ms,result});
         if(disposition==='SUCCESS'&&ttl_ms>0)await store.set('pump:cache:'+key,result);
         return result;
