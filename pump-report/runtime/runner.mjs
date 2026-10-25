@@ -1,0 +1,173 @@
+import {INPUT_SCHEMA,emptyMap,factUsable,positive} from '../contracts/index.mjs';
+import {START_PROFILE} from '../profile/start-v1.mjs';
+import {automaticWindowOpen,textHash} from './delivery.mjs';
+
+const instrumentKey=instrument=>instrument.instrument_id;
+const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
+const globalBudgetReason=analysis=>analysis.reasons?.some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL/.test(typeof reason==='string'?reason:reason.code??''));
+
+export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now}){
+  if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
+  const manualResultKey=id=>'pump:manual-result:'+id;
+  async function enqueueManual(symbol,{request_id=crypto.randomUUID(),publish=true}={}){
+    const normalized=symbolKey(symbol);if(!/^[A-Z0-9][A-Z0-9._-]{0,59}$/.test(normalized))return {status:'INVALID_SYMBOL'};
+    const job={request_id,symbol:normalized,publish,created_ts:clock(),status:'PENDING'};
+    await store.atomic('pump:manual:'+request_id,current=>({state:current??job,result:true}));
+    await store.atomic('pump:manual-queue',queue=>({state:[...new Set([...(queue??[]),request_id])],result:true}));
+    return {status:'QUEUED',request_id};
+  }
+  async function claimManual(){
+    const ids=await store.get('pump:manual-queue')??[];
+    for(const id of ids){const job=await store.atomic('pump:manual:'+id,current=>{
+      if(current?.status!=='PENDING')return {state:current,result:null};
+      return {state:{...current,status:'PROCESSING',started_ts:clock()},result:current};
+    });if(job)return job;}return null;
+  }
+  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));}
+  async function getManualResult(id){return store.get(manualResultKey(id));}
+
+  async function updateDiscovery(catalog,run_id){
+    const overview=await sources.getOverview({run_id,instruments:catalog.instruments});
+    const now=clock(),slot=Math.floor(now/60000)*60000;
+    const compact=overview.observations.map(o=>({id:o.instrument.instrument_id,last:o.facts.price?.value??null,event_ts:o.facts.price?.event_ts??null,reported_change_pct:o.reported_change_pct??null}));
+    const index=await store.get('pump:overview-index')??[],recent=index.filter(t=>t>=now-3600000&&t<slot),history=[];
+    for(const ts of recent)history.push({ts,rows:await store.get('pump:overview:'+ts)??[]});
+    await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);
+    const active=await store.get('pump:active-instruments')??[];
+    await store.atomic('pump:candidate-queue',queue=>{
+      queue??={};
+      for(const row of compact){
+        const prior=history.flatMap(snapshot=>snapshot.rows.filter(r=>r.id===row.id).map(r=>({...r,snapshot_ts:snapshot.ts}))).filter(r=>positive(r.last));
+        const change=positive(row.last)&&prior.length?Math.max(...prior.map(p=>(row.last/p.last-1)*100)):null;
+        const near=(typeof row.reported_change_pct==='number'&&row.reported_change_pct>=profile.automatic_growth.day_pct*profile.prequeue_threshold_fraction)||(change!==null&&change>=profile.automatic_growth.short_pct*profile.prequeue_threshold_fraction);
+        if(!near&&!active.includes(row.id)&&!queue[row.id])continue;
+        queue[row.id]={...(queue[row.id]??{}),instrument_id:row.id,first_seen:queue[row.id]?.first_seen??now,last_seen:now,preliminary_growth:change,reported_day_growth:row.reported_change_pct,active_wave:active.includes(row.id),next_check_ts:queue[row.id]?.next_check_ts??now};
+      }
+      return {state:queue,result:true};
+    });
+    return overview.coverage;
+  }
+  async function selectAutomatic(catalog){
+    const queue=await store.get('pump:candidate-queue')??{},now=clock();
+    const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now);
+    const score=r=>(r.active_wave?100:0)+Math.min(60,(now-(r.last_checked_ts??r.first_seen))/60000)+Math.max(0,r.preliminary_growth??0);
+    candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
+    const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id));
+    return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
+  }
+  async function rememberAnalysis(analysis,input){
+    const fingerprint=await textHash(JSON.stringify(analysis)),key='pump:analysis:'+fingerprint;
+    await store.atomic(key,current=>({state:current??{analysis,input,saved_ts:clock()},result:true}));
+    await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
+    const wave=analysis.next_wave??analysis.previous_wave??null;
+    if(wave)await store.set('pump:wave:'+instrumentKey(input.instrument),wave);
+    await store.atomic('pump:active-instruments',current=>{
+      const set=new Set(current??[]);if(wave&&analysis.wave_state!=='CANCELLED'&&(wave.expires_ts??0)>clock()){if(input.mode==='AUTO'||set.has(instrumentKey(input.instrument)))set.add(instrumentKey(input.instrument));}else set.delete(instrumentKey(input.instrument));
+      return {state:[...set],result:true};
+    });
+    await store.atomic('pump:candidate-queue',queue=>{
+      queue??={};const id=instrumentKey(input.instrument);
+      if(input.mode==='MANUAL'&&!queue[id])return {state:queue,result:true};
+      queue[id]={...(queue[id]??{first_seen:clock(),instrument_id:id}),last_checked_ts:clock(),next_check_ts:clock()+profile.candidate_recheck_ms,last_status:analysis.status,active_wave:Boolean(wave&&(wave.expires_ts??0)>clock())};
+      return {state:queue,result:true};
+    });
+    return key;
+  }
+  async function checkInstrument(instrument,{run_id,mode,publish=true}){
+    budget.setMode(mode);
+    const overview=await sources.getOverview({run_id,instruments:[instrument]});
+    const overviewFacts=overview.observations?.[0]?.facts??{};
+    const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));
+    const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts});
+    let input={schema_version:INPUT_SCHEMA,run_id,mode,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts,...optional.facts},liquidations:emptyMap(),previous_wave};
+    let analysis=analyzePump(input,profile);
+    if(analysis.ready){
+      try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts:clock()+profile.liquidation_deadline_ms});}
+      catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
+      input.analysis_ts=clock();analysis=analyzePump(input,profile);
+    }
+    const analysis_key=await rememberAnalysis(analysis,input);let delivered=null;
+    if(publish&&analysis.ready&&(mode==='MANUAL'||analysis.automatic_eligible)){
+      const expires=Math.min(...['price','orderbook','candles'].map(key=>input.facts[key]?.expires_ts??0));
+      if(expires>clock()){
+        const card=await delivery.enqueue({...analysis,source_input_key:analysis_key},{mode,expires_ts:expires,update_kind:analysis.update_kind??null});
+        delivered=await delivery.dispatch(card.card_id);
+        if(delivered.state==='SENT')await recordPublished(card.card_id);
+      }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
+    }
+    return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage};
+  }
+  async function recordPublished(card_id){
+    const card=await store.get('pump:card:'+card_id);if(card?.state!=='SENT'||!card.receipt?.message_id)return;
+    const a=card.analysis,key='pump:signal:'+a.instrument.instrument_id+':'+a.wave_id;
+    const signal={signal_id:key,instrument:a.instrument,wave_id:a.wave_id,t0:a.analysis_ts,reference_price:a.reference_price,rules_version:a.rules_version,mode:card.mode,map_mode:a.liquidations?.zones_up?.length||a.liquidations?.zones_down?.length?'WITH_MAP':'WITHOUT_MAP',map_status:a.liquidations?.status??'ABSENT',plan:a.plan,card_id,text_hash:card.text_hash,message_id:card.message_id,deadline_ts:a.analysis_ts+profile.horizon_ms};
+    await store.atomic(key,current=>({state:current??signal,result:true}));
+    await store.atomic('pump:outcomes-pending',pending=>({state:[...new Set([...(pending??[]),key])],result:true}));
+  }
+  async function checkOutcomes({run_id}){
+    if(!automaticWindowOpen(clock()))return [];
+    budget.setMode('STATISTICS');
+    const pending=await store.get('pump:outcomes-pending')??[],results=[];
+    for(const key of pending){
+      const signal=await store.get(key);if(!signal||signal.deadline_ts>clock())continue;
+      const saved=await store.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS')continue;
+      if(typeof sources.getOutcomeHistory!=='function'){results.push({signal_id:signal.signal_id,status:'UNKNOWN',reason:'OUTCOME_HISTORY_ROUTE_NOT_CONNECTED'});continue;}
+      const history=await sources.getOutcomeHistory({instrument:signal.instrument,run_id,start_ts:signal.t0,end_ts:signal.deadline_ts});
+      const outcome=evaluateOutcome({signal,candles:history.facts?.candles?.value??[],price_points:[],as_of_ts:clock()});
+      await store.set('pump:outcome:'+signal.signal_id,outcome);results.push(outcome);
+    }
+    return results;
+  }
+  function capacity(){
+    const summary=budget.summary(),manual=summary.mode==='AUTO'?summary.limits.manual_http_run_reserve:0;
+    const http=summary.total+profile.core_http_upper_bound+profile.delivery_http_reserve+manual<=summary.limits.http_per_run&&summary.lanes.hot+profile.core_http_upper_bound+profile.delivery_http_reserve<=summary.limits.lanes.hot;
+    if(!http)return false;
+    if(store.admission&&typeof store.usage==='function'){const used=store.usage();return used.rows_read+profile.core_sql_upper_bound.rows_read+profile.delivery_sql_reserve.rows_read<=store.admission.max_rows_read&&used.rows_written+profile.core_sql_upper_bound.rows_written+profile.delivery_sql_reserve.rows_written<=store.admission.max_rows_written;}
+    return true;
+  }
+
+  async function execute({mode='AUTO',symbol=null,run_id=crypto.randomUUID(),publish=true,request_id=crypto.randomUUID()}={}){
+    if(mode==='AUTO'&&!automaticWindowOpen(clock()))return {status:'OUTSIDE_AUTOMATIC_WINDOW',run_id};
+    let manual;if(mode==='MANUAL'){manual=await enqueueManual(symbol,{request_id,publish});if(manual.status!=='QUEUED')return manual;}
+    const owner=crypto.randomUUID(),claimed=await store.atomic('pump:executor',current=>{
+      if(current?.owner&&current.expires_ts>clock())return {state:current,result:false};
+      return {state:{owner,run_id,expires_ts:clock()+profile.executor_lease_ms},result:true};
+    });
+    if(!claimed)return manual??{status:'EXECUTOR_BUSY',run_id};
+    const result={run_id,status:'COMPLETE',checked:[],manual:[],coverage:null,outcomes:[],delivery:[],errors:[]};
+    try{
+      const catalog=await sources.getCatalog({run_id});result.catalog_coverage=catalog.coverage;
+      if(!catalog.instruments.length){result.status='INCOMPLETE';result.errors.push(catalog.coverage.reason??'NO_VERIFIED_INSTRUMENTS');}
+      if(mode==='AUTO'&&catalog.instruments.length)result.coverage=await updateDiscovery(catalog,run_id);
+      let job;
+      for(;;){
+        const lease=await store.get('pump:executor');if(lease?.owner!==owner||lease.expires_ts<=clock()){result.status='INCOMPLETE';result.errors.push('EXECUTOR_LEASE_EXPIRED');break;}
+        const pending=await store.get('pump:manual-queue')??[];
+        let hasManual=false;for(const id of pending){if((await store.get('pump:manual:'+id))?.status==='PENDING'){hasManual=true;break;}}
+        budget.setMode(hasManual?'MANUAL':mode);
+        if(!capacity()){result.status='INCOMPLETE';result.errors.push('RUN_RESOURCES_DEFERRED');break;}
+        job=await claimManual();
+        if(job){
+          const matches=catalog.instruments.filter(i=>symbolKey(i.native_symbol)===job.symbol||i.base.toUpperCase()===job.symbol);
+          let answer;
+          if(matches.length!==1)answer={status:matches.length?'AMBIGUOUS_SYMBOL':'INSTRUMENT_NOT_QUALIFIED',symbol:job.symbol,candidates:matches.map(i=>i.native_symbol)};
+          else try{answer=await checkInstrument(matches[0],{run_id,mode:'MANUAL',publish:job.publish});}catch(error){answer={status:'ERROR',reason:error.code??'MANUAL_ANALYSIS_ERROR'};}
+          await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});continue;
+        }
+        if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
+        budget.setMode('AUTO');const instrument=await selectAutomatic(catalog);if(!instrument)break;
+        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish});result.checked.push(checked);if(globalBudgetReason(checked.analysis)){result.status='INCOMPLETE';break;}}
+        catch(error){result.errors.push({instrument_id:instrument.instrument_id,reason:error.code??'CANDIDATE_ERROR'});await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id])queue[instrument.instrument_id].next_check_ts=clock()+profile.candidate_recheck_ms;return {state:queue,result:true};});}
+      }
+      // Repair a receipt-backed signal after a prior process stopped between
+      // the durable SENT acknowledgement and outcome registration.
+      const deliveryIds=await store.get('pump:delivery-queue')??[];for(const id of deliveryIds)await recordPublished(id);
+      result.delivery=await delivery.drain();
+      for(const item of result.delivery)if(item.state==='SENT')await recordPublished(item.card_id);
+      if(automaticWindowOpen(clock()))result.outcomes=await checkOutcomes({run_id});
+      if(result.coverage?.status==='INCOMPLETE'||result.errors.length)result.status='INCOMPLETE';
+      result.resources=budget.summary();await store.set('pump:run:'+run_id,result);return manual?{...result,request_id:manual.request_id,manual_result:await getManualResult(manual.request_id)}:result;
+    }finally{await store.atomic('pump:executor',current=>({state:current?.owner===owner?{owner:null,run_id,released_ts:clock()}:current,result:true}));}
+  }
+  return {execute,enqueueManual,getManualResult,checkInstrument,checkOutcomes};
+}

@@ -1,0 +1,107 @@
+{
+  "schema": "PUMP_PROVIDER_QUALIFICATION_ADMISSION_V1",
+  "created_at": "2026-10-25T08:40:02Z",
+  "expires_ts": 1792918969000,
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "authority_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
+  "owner_lease": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792914169000",
+  "scope": "NEW_PUMP_V2_ONLY_BOUNDED_QUALIFICATION_NOT_PRODUCTION",
+  "positive_admission": true,
+  "deployment": {
+    "worker": "my-report-2-hub",
+    "keep_bindings": [
+      "secret_text",
+      "plain_text",
+      "d1"
+    ],
+    "preserve_all_legacy_bindings": true,
+    "preserve_exact_legacy_fetch_module_sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10",
+    "legacy_scheduled_handler_never_called": true,
+    "schedules": [],
+    "new_secret_name": "PUMP_CONTROL_KEY",
+    "automatic_enabled": false,
+    "telegram_enabled": false,
+    "artifact_manifest_path": "checkpoints/pump-report-20261025/QUALIFICATION_ARTIFACT_MANIFEST.json"
+  },
+  "provider": {
+    "provider": "BINGX",
+    "hostname": "open-api.bingx.com",
+    "method": "GET",
+    "max_total_attempts": 5,
+    "allowed_initial_operations": [
+      "server_clock",
+      "catalog",
+      "BTC-USDT_LAST",
+      "BTC-USDT_1m_candles_max125",
+      "BTC-USDT_orderbook"
+    ],
+    "auto_retries": 0,
+    "domain_fallbacks": 0,
+    "per_second": 1,
+    "per_minute": 10,
+    "project_http_day_conservative_cap": 900,
+    "project_month_internal_cap": 27900,
+    "external_quota": "DOCUMENTED_BY_SOURCES_NOT_PRODUCTION_VALIDATED",
+    "raw_response_max_bytes": 2000000,
+    "cold_requests_only_no_mass_collection": true
+  },
+  "native": {
+    "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "existing_shared_ledger": "report2_runner_budget_ledger_shadow",
+    "new_state_table": "pump_report_state_v1",
+    "mode": "CONTROL",
+    "max_control_runs_day": 5,
+    "run_max_reads": 5000,
+    "run_max_writes": 300,
+    "qualification_whole_envelope": {
+      "rows_read": 25000,
+      "rows_written": 1500
+    },
+    "positive_all_family_envelope": true,
+    "previous_diagnostic_used": {
+      "requests": 3,
+      "rows_read": 405,
+      "rows_written": 0
+    },
+    "old_spent_grants_not_reused": true,
+    "original_historical_unknowns_retained": true,
+    "held_reserves": {
+      "manual_runs": 6,
+      "rows_read_per_manual": 5000,
+      "rows_written_per_manual": 300,
+      "outcomes": {
+        "rows_read": 20000,
+        "rows_written": 8000
+      },
+      "delivery": {
+        "rows_read": 2000,
+        "rows_written": 600
+      },
+      "bootstrap_external_floor": {
+        "rows_read": 59000,
+        "rows_written": 920
+      },
+      "next_full": {
+        "rows_read": 59000,
+        "rows_written": 920
+      }
+    },
+    "account_day_analytics": "prior native current UTC-day GraphQL no recorded groups; diagnostic shared ledger0/collector0; conservative59000R920W floor retained, no historical reset",
+    "reject_old_unknown_or_unfinished": true,
+    "exact_meta_and_own_reservation_readback": true
+  },
+  "readiness": {
+    "identity_registry_empty": true,
+    "candle_object_open_time_and_volume_units_unqualified": true,
+    "mandatory_core_must_not_be_promoted_without_evidence": true
+  },
+  "not_authorized_by_this_record": [
+    "TELEGRAM_SEND",
+    "PRODUCTION_COLLECTION",
+    "SCHEDULE_ENABLE",
+    "LEGACY_REPORT_RESUME",
+    "STORAGE_CAPACITY_TEST",
+    "ENTRY_FOLLOWUP",
+    "MASS_HISTORY_OR_MAP_COLLECTION"
+  ]
+}

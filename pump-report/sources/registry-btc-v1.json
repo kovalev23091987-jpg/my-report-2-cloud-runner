@@ -1,0 +1,65 @@
+{
+  "schema": "PUMP_BINGX_SAVED_IDENTITY_REGISTRY_V1",
+  "version": "btc-native100-saved-evidence-v1",
+  "scope": "ONE_REAL_SAVED_VENUE_SCOPED_UNDERLYING_NOT_RUNTIME_ADMISSION",
+  "current_membership_verified": false,
+  "native_provider_admission": false,
+  "current_candles_qualified": false,
+  "instruments": [
+    {
+      "instrument": {
+        "instrument_id": "BINGX:USDT_M:100:BTC-USDT",
+        "asset_id": "BINGX_UNDERLYING:BTC",
+        "venue": "BINGX",
+        "native_symbol": "BTC-USDT",
+        "market_type": "PERPETUAL",
+        "base": "BTC",
+        "quote": "USDT",
+        "settle": "USDT",
+        "classification_status": "VERIFIED_CRYPTO",
+        "identity_evidence_ref": "ROOT_BTC_NATIVE100_BITCOIN_CURATED_V1:catalog-sha256:17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "price_tick": null,
+        "quantity_step": null,
+        "contract_multiplier": null,
+        "canonical_cross_venue_identity_qualified": false
+      },
+      "native_contract_id": "100",
+      "native_base": "BTC",
+      "family": "USDT_M",
+      "qualifications": {
+        "candles": {},
+        "orderbook": {
+          "fields": "COIN",
+          "unit": "BASE_ASSET",
+          "evidence_ref": "BINGX_OFFICIAL_DEPTH_LITERAL_SHA256:b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+          "qualification_scope": "MEANING_OF_EXPLICIT_BIDSCOIN_ASKSCOIN_ONLY;ACTUAL_RESPONSE_AND_T_REQUIRED"
+        }
+      },
+      "liquidations": {"routes": []},
+      "evidence": {
+        "identity_review_path": "checkpoints/bingx-primary-producer-connected-20261024/BTC-venue-identity-review.json",
+        "identity_review_frozen_head": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+        "catalog_bytes": 605854,
+        "catalog_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "historical_status": 1,
+        "historical_api_open": "true",
+        "historical_received_ts": 1792862359941,
+        "specific_primary_asset_url": "https://bingx.com/en/spot/BTCUSDT",
+        "specific_primary_product_url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/BTC-USDT",
+        "margin_basis": "RETAINED_DOCUMENTED_USDT_MARGIN_PRODUCT_PLUS_NATIVE_CURRENCY;EXPLICIT_INFERENCE_NOT_CURRENT_RULE_READBACK",
+        "depth_document_url": "https://bingx-api.github.io/docs/static/js/app.4dcba784df17c52faa47.js",
+        "depth_document_whole_sha256": "77094f2a99bdca9c1b8e41a260c3657a6ed6b8febe30818b486cb54fe0b14d8f",
+        "depth_literal_path": "pump-report/handoffs/sources/evidence/depth-doc.literal.txt"
+      },
+      "limitations": [
+        "CURRENT_STATUS_REQUIRES_NEW_ADMITTED_CATALOG_RESPONSE",
+        "NO_TOKEN_ADDRESS_OR_CROSS_VENUE_EQUIVALENCE_ASSERTED",
+        "CANDLE_OBJECT_TIME_OPEN_SEMANTICS_UNQUALIFIED",
+        "CANDLE_OBJECT_VOLUME_UNIT_UNQUALIFIED",
+        "STANDARD_DEPTH_QUANTITY_AND_CONTRACT_SIZE_UNQUALIFIED",
+        "TICKER_ROLLING_WINDOW_ENDPOINTS_REQUIRE_RESPONSE_CHECK",
+        "PROVIDER_SQL_RUNTIME_ADMISSIONS_SEPARATE"
+      ]
+    }
+  ]
+}

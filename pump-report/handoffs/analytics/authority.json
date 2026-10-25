@@ -1,0 +1,58 @@
+{
+  "schema": "PUMP_ANALYTICS_AUTHORITY_QUALIFICATION_V1",
+  "tz_version": 2,
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "base_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
+  "validation_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
+  "guard_git_blobs": {
+    "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "33ca88a04540d45bc466ba669ce09871c6f16437",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "f944b85f19caa467e58b94af0fad866cd7807dbc",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "e3e6d2d19436b6a51e4a6d7cabbf6c9b6bc8c999",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "621aaab45a6b217726315fb39fb507dd0a33e9f4",
+    "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "acd10a584b6aabc3e6f44548f57b6b4d12887c1f",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+    "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+  },
+  "all4_equal": true,
+  "fence_active": false,
+  "latest_only": true,
+  "own_lease": {
+    "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+    "status": "ACTIVE",
+    "owner": "CODEX:OFFLINE_ANOMALIES:1792915732000",
+    "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
+    "acquired_ts": 1792915732000,
+    "expires_ts": 1792918909000,
+    "expected_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
+    "scope": "DIRECT HUMAN authorization in analytics chat25Oct: implement Pump Report TZv2 package A and obtain own bounded lease, execute coordinator tasks. Own files ONLY pump-report/analytics/**,tests/analytics/**,handoffs/analytics/**. Pure analyzePump/evaluateOutcome, artificial fixtures, affected offline tests and handoff. No shared/main/code branch switching; no provider/SQL/TG/deploy/cron/old ENTRY followup/capacity tests. Legacy pauses, budgets, unknowns, reserves, two deferrals preserved. Onlyownrelease before expiry.",
+    "guard_git_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "33ca88a04540d45bc466ba669ce09871c6f16437",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "f944b85f19caa467e58b94af0fad866cd7807dbc",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "e3e6d2d19436b6a51e4a6d7cabbf6c9b6bc8c999",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "621aaab45a6b217726315fb39fb507dd0a33e9f4",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "acd10a584b6aabc3e6f44548f57b6b4d12887c1f",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+    },
+    "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792914169000",
+    "parallel_root_phase_expires_ts": 1792918969000,
+    "released_ts": null
+  },
+  "own_lease_commit": "623b96ba62cb627ff088abbe85d60fbc700cfb75",
+  "own_lease_FULL_exact_server_readback": true,
+  "last_test_time_utc": "2026-10-25 08:32:06 UTC",
+  "affected_tests": {
+    "pass": 44,
+    "fail": 0,
+    "command": "node --test pump-report/tests/analytics/*.test.mjs"
+  },
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "code_git_commit_created": false,
+  "root_integrates_code": true
+}
