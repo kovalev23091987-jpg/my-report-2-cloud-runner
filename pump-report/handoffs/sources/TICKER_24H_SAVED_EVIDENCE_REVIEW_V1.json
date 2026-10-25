@@ -1,0 +1,57 @@
+{
+  "schema": "PUMP_TICKER_24H_SAVED_EVIDENCE_REVIEW_V1",
+  "status": "EXACT_ROLLING_WINDOW_NOT_QUALIFIED_NO_SOURCE_PATCH",
+  "scope": "Finite review of already retained primary material; no new documentation or market requests",
+  "endpoint": "/openApi/swap/v2/quote/ticker",
+  "official_literal": {
+    "path": "pump-report/handoffs/sources/evidence/ticker-doc.literal.txt",
+    "sha256": "892dce78644020cb8bdcfb3808e19e760dfa7c2a29dcb269f0d26347e765dbf8",
+    "parent_source_url": "https://bingx-api.github.io/docs/static/js/app.4dcba784df17c52faa47.js",
+    "parent_sha256": "77094f2a99bdca9c1b8e41a260c3657a6ed6b8febe30818b486cb54fe0b14d8f",
+    "positive_facts": [
+      "24 hour price-change statistics endpoint, bulk when symbol omitted",
+      "openPrice describes first transaction price within 24 hours",
+      "openTime describes first transaction time within 24 hours",
+      "lastPrice describes latest transaction price",
+      "closeTime describes last transaction time within 24 hours",
+      "quoteVolume explicitly USDT turnover"
+    ],
+    "does_not_establish": [
+      "Explicit continuous rolling interval ending at the chosen source evaluation time versus a calendar session",
+      "openPrice as price at an exact t-minus-24h boundary, including sparse trading behavior",
+      "Consistent boundary mapping between openPrice/openTime, lastPrice/closeTime and the complete statistical window"
+    ],
+    "example_ordering": "Retained example has openTime greater than closeTime; do not infer a complete rolling window from its sample timestamps"
+  },
+  "retained_CCXT": {
+    "commit": "d3159f7036f93db086cd0414642132fba5401710",
+    "bingx_git_blob": "7d05d1e811f498d0ddc4b295c1575e072c2675d9",
+    "manual_git_blob": "c0374a93b4f7d87f616bba6eeaa69ac7584ceb46",
+    "facts": "fetchTickers linear swap selects swapV2PublicGetQuoteTicker; parser maps openPrice/lastPrice and closeTime/time. Manual describes ticker statistics over preceding24h.",
+    "limit": "Client-level interpretation; not a new vendor guarantee of this exact native window. Owner's candle CCXT choice does not independently accept ticker semantics."
+  },
+  "current_runtime_effect": {
+    "registry13_ticker_24h_qualification": null,
+    "automatic_day_growth_20pct": "UNCONFIRMED",
+    "bulk_priceChangePercent": "PRELIMINARY_ONLY",
+    "core_minute_rows": 121,
+    "core_minutes": 121,
+    "day_covered_by_core": false,
+    "short_window_growth_remains_independently_evaluable": true
+  },
+  "minimum_missing_evidence": "Vendor specification for exact rolling24h start/end semantics and source-clock association, plus native field/clock compatibility; or independently complete closed minute prices for an exact24h interval under accepted one-minute time basis.",
+  "bounded_alternative_without_strategy_change": {
+    "proposal_only": true,
+    "strategy_threshold_day_pct": 20,
+    "source": "Same BingX v3 one-minute OHLC over exact24h closed interval",
+    "expected_closed_rows": 1440,
+    "max_new_GET_per_instrument_attempt": 1,
+    "requirements": "Separate bounded request (current121 core unchanged); exact start open and final closed boundary, full grid with no gaps, original receipt/source clocks and fresh endpoint. Endpoint inclusion/limit behavior must be verified under ROOT separate admission. Missing boundary => null with reason.",
+    "existing_history_helper_limit": "getOutcomeHistory allows <=1440 expected rows but returns a historical no-expiry fact; it is not wired into live day-growth input. Do not silently treat it as current core.",
+    "do_not_use": ["121 minute candles as24h", "unqualified reported percent as exact growth", "received_ts as source event time", "larger count1441 in current getCore (over documented1440 cap)"]
+  },
+  "source_files_changed": [],
+  "source_market_HTTP": 0,
+  "new_taxonomy_positive_official_leads": [],
+  "new_source_tests": 0
+}
