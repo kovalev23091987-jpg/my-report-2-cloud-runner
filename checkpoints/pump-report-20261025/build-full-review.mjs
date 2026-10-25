@@ -5,6 +5,7 @@ const target=new URL('FULL_TZ_TRACEABILITY.json',import.meta.url),canonical=JSON
 const source=read('pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json');
 const analytics=read('pump-report/handoffs/analytics/package-m/analytics-traceability.json');
 const delta=read('pump-report/handoffs/analytics/package-n/audit-repair-delta.json');
+const implementationDelta=read('checkpoints/pump-report-20261025/FULL_TZ_IMPLEMENTATION_DELTA.json');
 const tz=fs.readFileSync(new URL('../PUMP_REPORT_DESIGN_HANDOFF_20261025/PUMP_REPORT_TZ_FOR_TRANSFER_RU.md',root));
 const sha=createHash('sha256').update(tz).digest('hex'),lines=tz.toString('utf8').split(/\r?\n/);
 if(sha!==canonical.tz_sha256||canonical.rows.length!==719||source.rows.length!==719)throw Error('EXACT_FULL_TZ_REQUIRED');
@@ -28,11 +29,15 @@ for(const row of canonical.rows){
   row.remaining=picked?.remaining??'Открытая общая приёмка; см. все три оценки.';
   row.assessment_refs=['pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json',...(a?['pump-report/handoffs/analytics/package-m/analytics-traceability.json']:[]),...(row.lead==='ROOT'?['checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md']:[])];
   if(delta.related_TZ_atoms.some(x=>x.id===row.id))row.latest_repair={ref:'pump-report/handoffs/analytics/package-n/audit-repair-delta.json',code_gaps_closed:['M-G01','M-G07'],native_verified:false,broader_requirement_not_automatically_closed:true};
+  const current=implementationDelta.changes.find(x=>x.id===row.id);
+  if(current){row.status=current.status;row.code_verified=current.status==='VERIFIED_CODE';row.code_refs=current.code_refs;row.remaining=current.remaining;row.latest_implementation={...current,ref:implementationDelta.proof,native_verified:false,broader_requirement_not_automatically_closed:true};row.review_assessments.ROOT_CURRENT=row.latest_implementation;row.assessment_refs.push(implementationDelta.proof);}
+  const note=implementationDelta.annotations.find(x=>x.ids.includes(row.id));if(note){row.latest_implementation_note=note;row.assessment_refs.push(note.ref);}
 }
 canonical.review_status='ALL_THREE_FULL_LITERAL_REVIEW_RECONCILED_WITH_OPEN_ITEMS';canonical.all24sections_reviewed=true;canonical.all_nonempty_lines_reviewed=true;canonical.overall_completion_pct=null;
 canonical.current_native_scope={eligible_crypto_N:null,active_USDT_catalog_count:934,positively_verified_crypto:13,owner_delivery_excluded:2,delivery_verified:11,unclassified_active_USDT:919,production_signals:0,qualified_maps:0};
+canonical.current_native_scope.latest_bounded_acceptance=implementationDelta.native_scope;
 canonical.owner_amendments_literal_ref='checkpoints/pump-report-20261025/OWNER_AMENDMENTS_LITERAL_RU.md';
-canonical.latest_repairs={analyticsN:{code_gaps_closed:['M-G01','M-G07'],pass:4,server_deployed:false},manual_reserves:{pass:4,costs_not_refunded:true,server_deployed:true},unicode:{pass:4,server_deployed:true}};
+canonical.latest_repairs={analyticsN:{code_gaps_closed:['M-G01','M-G07'],pass:4,server_deployed:true},analyticsO:{ref:'pump-report/handoffs/analytics/package-o/qualification.json',new_unique_pass:2,scenario_observed_lower_bound_only:true},reliability_and_queue:{ref:implementationDelta.proof,new_pass:7,affected_pass:9,server_deployed:true},manual_reserves:{pass:4,costs_not_refunded:true,server_deployed:true},unicode:{pass:4,server_deployed:true}};
 canonical.counts={};for(const r of canonical.rows)canonical.counts[r.status]=(canonical.counts[r.status]??0)+1;
 canonical.review_counts_are_not_project_completion_percentage=true;canonical.updated_at=new Date().toISOString();
 fs.writeFileSync(target,JSON.stringify(canonical,null,2)+'\n');

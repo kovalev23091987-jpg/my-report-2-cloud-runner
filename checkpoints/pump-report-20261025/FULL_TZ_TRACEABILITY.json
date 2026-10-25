@@ -26842,11 +26842,13 @@
       "kind": "LIST_ITEM",
       "text": "- неподдерживаемая монета — временно запомнить отсутствие поддержки;",
       "lead": "SOURCES",
-      "status": "UNIMPLEMENTED",
-      "code_refs": [],
+      "status": "PARTIAL",
+      "code_refs": [
+        "pump-report/runtime/budget.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "ROOT-owned explicit negative cache with reason/expiry and invalidation; checked-absent must remain distinct from untested.",
+      "remaining": "Работает конечный negative TTL дляточногоHTTP404/410 route+coin URL. Это не доказательство UNSUPPORTED монеты; точные BingXbusinesscodes неподдержки неизвестны и не угадываются.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -26872,13 +26874,36 @@
             "accepted_historical_proof_only": true,
             "code_presence_is_native_PASS": false
           }
+        },
+        "ROOT_CURRENT": {
+          "id": "TZ11.027",
+          "status": "PARTIAL",
+          "code_refs": [
+            "pump-report/runtime/budget.mjs"
+          ],
+          "remaining": "Работает конечный negative TTL дляточногоHTTP404/410 route+coin URL. Это не доказательство UNSUPPORTED монеты; точные BingXbusinesscodes неподдержки неизвестны и не угадываются.",
+          "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+          "native_verified": false,
+          "broader_requirement_not_automatically_closed": true
         }
       },
       "code_verified": false,
       "requirement_closed": false,
       "assessment_refs": [
-        "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json"
-      ]
+        "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
+        "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json"
+      ],
+      "latest_implementation": {
+        "id": "TZ11.027",
+        "status": "PARTIAL",
+        "code_refs": [
+          "pump-report/runtime/budget.mjs"
+        ],
+        "remaining": "Работает конечный negative TTL дляточногоHTTP404/410 route+coin URL. Это не доказательство UNSUPPORTED монеты; точные BingXbusinesscodes неподдержки неизвестны и не угадываются.",
+        "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+        "native_verified": false,
+        "broader_requirement_not_automatically_closed": true
+      }
     },
     {
       "id": "TZ11.028",
@@ -26887,11 +26912,14 @@
       "kind": "LIST_ITEM",
       "text": "- повторяющиеся временные ошибки — увеличивать интервал повторов;",
       "lead": "SOURCES",
-      "status": "UNIMPLEMENTED",
-      "code_refs": [],
+      "status": "VERIFIED_CODE",
+      "code_refs": [
+        "pump-report/runtime/budget.mjs",
+        "pump-report/runtime/source-error-policy.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "ROOT implement bounded increasing backoff for repeated temporary errors, preserve original costs/reserves and future eligibility.",
+      "remaining": "Растущий bounded backoff проверен7новыми+9affected случаями; production workload и реальные временные отказы этого нового пути не объявлены принятыми.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -26917,13 +26945,38 @@
             "accepted_historical_proof_only": true,
             "code_presence_is_native_PASS": false
           }
+        },
+        "ROOT_CURRENT": {
+          "id": "TZ11.028",
+          "status": "VERIFIED_CODE",
+          "code_refs": [
+            "pump-report/runtime/budget.mjs",
+            "pump-report/runtime/source-error-policy.mjs"
+          ],
+          "remaining": "Растущий bounded backoff проверен7новыми+9affected случаями; production workload и реальные временные отказы этого нового пути не объявлены принятыми.",
+          "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+          "native_verified": false,
+          "broader_requirement_not_automatically_closed": true
         }
       },
-      "code_verified": false,
+      "code_verified": true,
       "requirement_closed": false,
       "assessment_refs": [
-        "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json"
-      ]
+        "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
+        "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json"
+      ],
+      "latest_implementation": {
+        "id": "TZ11.028",
+        "status": "VERIFIED_CODE",
+        "code_refs": [
+          "pump-report/runtime/budget.mjs",
+          "pump-report/runtime/source-error-policy.mjs"
+        ],
+        "remaining": "Растущий bounded backoff проверен7новыми+9affected случаями; production workload и реальные временные отказы этого нового пути не объявлены принятыми.",
+        "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+        "native_verified": false,
+        "broader_requirement_not_automatically_closed": true
+      }
     },
     {
       "id": "TZ11.029",
@@ -30894,11 +30947,14 @@
       "kind": "LIST_ITEM",
       "text": "- близость к пригодному входу;",
       "lead": "ROOT",
-      "status": "PARTIAL",
-      "code_refs": [],
+      "status": "VERIFIED_CODE",
+      "code_refs": [
+        "pump-report/runtime/candidate-priority.mjs",
+        "pump-report/runtime/runner.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.",
+      "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -30939,14 +30995,39 @@
             "checkpoints/pump-report-20261025/METADATA_NATIVE_ACTUAL_ONE.json"
           ],
           "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения."
+        },
+        "ROOT_CURRENT": {
+          "id": "TZ13.053",
+          "status": "VERIFIED_CODE",
+          "code_refs": [
+            "pump-report/runtime/candidate-priority.mjs",
+            "pump-report/runtime/runner.mjs"
+          ],
+          "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+          "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+          "native_verified": false,
+          "broader_requirement_not_automatically_closed": true
         }
       },
-      "code_verified": false,
+      "code_verified": true,
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md",
+        "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json"
+      ],
+      "latest_implementation": {
+        "id": "TZ13.053",
+        "status": "VERIFIED_CODE",
+        "code_refs": [
+          "pump-report/runtime/candidate-priority.mjs",
+          "pump-report/runtime/runner.mjs"
+        ],
+        "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+        "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+        "native_verified": false,
+        "broader_requirement_not_automatically_closed": true
+      }
     },
     {
       "id": "TZ13.054",
@@ -30955,11 +31036,14 @@
       "kind": "LIST_ITEM",
       "text": "- свежесть движения;",
       "lead": "ROOT",
-      "status": "PARTIAL",
-      "code_refs": [],
+      "status": "VERIFIED_CODE",
+      "code_refs": [
+        "pump-report/runtime/candidate-priority.mjs",
+        "pump-report/runtime/runner.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.",
+      "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -31000,14 +31084,39 @@
             "checkpoints/pump-report-20261025/METADATA_NATIVE_ACTUAL_ONE.json"
           ],
           "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения."
+        },
+        "ROOT_CURRENT": {
+          "id": "TZ13.054",
+          "status": "VERIFIED_CODE",
+          "code_refs": [
+            "pump-report/runtime/candidate-priority.mjs",
+            "pump-report/runtime/runner.mjs"
+          ],
+          "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+          "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+          "native_verified": false,
+          "broader_requirement_not_automatically_closed": true
         }
       },
-      "code_verified": false,
+      "code_verified": true,
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md",
+        "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json"
+      ],
+      "latest_implementation": {
+        "id": "TZ13.054",
+        "status": "VERIFIED_CODE",
+        "code_refs": [
+          "pump-report/runtime/candidate-priority.mjs",
+          "pump-report/runtime/runner.mjs"
+        ],
+        "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+        "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+        "native_verified": false,
+        "broader_requirement_not_automatically_closed": true
+      }
     },
     {
       "id": "TZ13.055",
@@ -31016,11 +31125,14 @@
       "kind": "LIST_ITEM",
       "text": "- подтверждённость данных;",
       "lead": "ROOT",
-      "status": "PARTIAL",
-      "code_refs": [],
+      "status": "VERIFIED_CODE",
+      "code_refs": [
+        "pump-report/runtime/candidate-priority.mjs",
+        "pump-report/runtime/runner.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.",
+      "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -31061,14 +31173,39 @@
             "checkpoints/pump-report-20261025/METADATA_NATIVE_ACTUAL_ONE.json"
           ],
           "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения."
+        },
+        "ROOT_CURRENT": {
+          "id": "TZ13.055",
+          "status": "VERIFIED_CODE",
+          "code_refs": [
+            "pump-report/runtime/candidate-priority.mjs",
+            "pump-report/runtime/runner.mjs"
+          ],
+          "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+          "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+          "native_verified": false,
+          "broader_requirement_not_automatically_closed": true
         }
       },
-      "code_verified": false,
+      "code_verified": true,
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md",
+        "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json"
+      ],
+      "latest_implementation": {
+        "id": "TZ13.055",
+        "status": "VERIFIED_CODE",
+        "code_refs": [
+          "pump-report/runtime/candidate-priority.mjs",
+          "pump-report/runtime/runner.mjs"
+        ],
+        "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+        "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+        "native_verified": false,
+        "broader_requirement_not_automatically_closed": true
+      }
     },
     {
       "id": "TZ13.056",
@@ -31077,11 +31214,14 @@
       "kind": "LIST_ITEM",
       "text": "- возраст ожидания, чтобы одна монета не занимала всё внимание постоянно.",
       "lead": "ROOT",
-      "status": "PARTIAL",
-      "code_refs": [],
+      "status": "VERIFIED_CODE",
+      "code_refs": [
+        "pump-report/runtime/candidate-priority.mjs",
+        "pump-report/runtime/runner.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.",
+      "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -31130,15 +31270,40 @@
             "checkpoints/pump-report-20261025/METADATA_NATIVE_ACTUAL_ONE.json"
           ],
           "remaining": "Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения."
+        },
+        "ROOT_CURRENT": {
+          "id": "TZ13.056",
+          "status": "VERIFIED_CODE",
+          "code_refs": [
+            "pump-report/runtime/candidate-priority.mjs",
+            "pump-report/runtime/runner.mjs"
+          ],
+          "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+          "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+          "native_verified": false,
+          "broader_requirement_not_automatically_closed": true
         }
       },
-      "code_verified": false,
+      "code_verified": true,
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
-        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+        "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md",
+        "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json"
+      ],
+      "latest_implementation": {
+        "id": "TZ13.056",
+        "status": "VERIFIED_CODE",
+        "code_refs": [
+          "pump-report/runtime/candidate-priority.mjs",
+          "pump-report/runtime/runner.mjs"
+        ],
+        "remaining": "Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.",
+        "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+        "native_verified": false,
+        "broader_requirement_not_automatically_closed": true
+      }
     },
     {
       "id": "TZ13.057",
@@ -35588,8 +35753,21 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+        "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
+        "pump-report/handoffs/analytics/package-o/audit-gap-delta.json"
+      ],
+      "latest_implementation_note": {
+        "ids": [
+          "TZ15.025",
+          "TZ15.026",
+          "TZ15.027",
+          "TZ15.028",
+          "TZ15.029",
+          "TZ15.030"
+        ],
+        "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+        "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      }
     },
     {
       "id": "TZ15.026",
@@ -35663,8 +35841,21 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+        "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
+        "pump-report/handoffs/analytics/package-o/audit-gap-delta.json"
+      ],
+      "latest_implementation_note": {
+        "ids": [
+          "TZ15.025",
+          "TZ15.026",
+          "TZ15.027",
+          "TZ15.028",
+          "TZ15.029",
+          "TZ15.030"
+        ],
+        "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+        "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      }
     },
     {
       "id": "TZ15.027",
@@ -35738,8 +35929,21 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+        "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
+        "pump-report/handoffs/analytics/package-o/audit-gap-delta.json"
+      ],
+      "latest_implementation_note": {
+        "ids": [
+          "TZ15.025",
+          "TZ15.026",
+          "TZ15.027",
+          "TZ15.028",
+          "TZ15.029",
+          "TZ15.030"
+        ],
+        "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+        "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      }
     },
     {
       "id": "TZ15.028",
@@ -35813,8 +36017,21 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+        "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
+        "pump-report/handoffs/analytics/package-o/audit-gap-delta.json"
+      ],
+      "latest_implementation_note": {
+        "ids": [
+          "TZ15.025",
+          "TZ15.026",
+          "TZ15.027",
+          "TZ15.028",
+          "TZ15.029",
+          "TZ15.030"
+        ],
+        "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+        "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      }
     },
     {
       "id": "TZ15.029",
@@ -35888,8 +36105,21 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+        "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
+        "pump-report/handoffs/analytics/package-o/audit-gap-delta.json"
+      ],
+      "latest_implementation_note": {
+        "ids": [
+          "TZ15.025",
+          "TZ15.026",
+          "TZ15.027",
+          "TZ15.028",
+          "TZ15.029",
+          "TZ15.030"
+        ],
+        "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+        "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      }
     },
     {
       "id": "TZ15.030",
@@ -35969,8 +36199,21 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
-        "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+        "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
+        "pump-report/handoffs/analytics/package-o/audit-gap-delta.json"
+      ],
+      "latest_implementation_note": {
+        "ids": [
+          "TZ15.025",
+          "TZ15.026",
+          "TZ15.027",
+          "TZ15.028",
+          "TZ15.029",
+          "TZ15.030"
+        ],
+        "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+        "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      }
     },
     {
       "id": "TZ15.031",
@@ -56819,7 +57062,19 @@
     "delivery_verified": 11,
     "unclassified_active_USDT": 919,
     "production_signals": 0,
-    "qualified_maps": 0
+    "qualified_maps": 0,
+    "latest_bounded_acceptance": {
+      "SOL_CORE_checked_once": true,
+      "SOL_READY": false,
+      "SOL_Telegram": 0,
+      "production_summary_independent_waves": 0,
+      "acceptance240_excluded": true,
+      "corrected_metadata_code": 0,
+      "metadata_rows_nested_unqualified": 5673,
+      "cryptoN": null,
+      "whole_universe_proven": false,
+      "proof": "checkpoints/pump-report-20261025/POST_REVIEW_SOL_NATIVE_ACTUAL.json"
+    }
   },
   "owner_amendments_literal_ref": "checkpoints/pump-report-20261025/OWNER_AMENDMENTS_LITERAL_RU.md",
   "latest_repairs": {
@@ -56829,7 +57084,18 @@
         "M-G07"
       ],
       "pass": 4,
-      "server_deployed": false
+      "server_deployed": true
+    },
+    "analyticsO": {
+      "ref": "pump-report/handoffs/analytics/package-o/qualification.json",
+      "new_unique_pass": 2,
+      "scenario_observed_lower_bound_only": true
+    },
+    "reliability_and_queue": {
+      "ref": "checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json",
+      "new_pass": 7,
+      "affected_pass": 9,
+      "server_deployed": true
     },
     "manual_reserves": {
       "pass": 4,
@@ -56843,12 +57109,12 @@
   },
   "counts": {
     "CONTEXT": 68,
-    "PARTIAL": 355,
-    "VERIFIED_CODE": 258,
+    "PARTIAL": 352,
+    "VERIFIED_CODE": 263,
     "DEFERRED_BY_TZ": 24,
-    "UNIMPLEMENTED": 9,
+    "UNIMPLEMENTED": 7,
     "BLOCKED": 5
   },
   "review_counts_are_not_project_completion_percentage": true,
-  "updated_at": "2026-10-25T16:00:57.780Z"
+  "updated_at": "2026-10-25T16:31:57.856Z"
 }

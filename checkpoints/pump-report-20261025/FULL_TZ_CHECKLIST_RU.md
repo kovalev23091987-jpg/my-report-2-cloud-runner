@@ -3467,22 +3467,22 @@
 > - неподдерживаемая монета — временно запомнить отсутствие поддержки;
 
 - [x] Пункт рассмотрен при полной сверке.
-- [ ] Реализация проверена в коде. Статус: UNIMPLEMENTED.
+- [ ] Реализация проверена в коде. Статус: PARTIAL.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: SOURCES. Остаток: ROOT-owned explicit negative cache with reason/expiry and invalidation; checked-absent must remain distinct from untested.
+Ответственный: SOURCES. Остаток: Работает конечный negative TTL дляточногоHTTP404/410 route+coin URL. Это не доказательство UNSUPPORTED монеты; точные BingXbusinesscodes неподдержки неизвестны и не угадываются.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json.
 
 ### TZ11.028 · исходная строка 490
 
 > - повторяющиеся временные ошибки — увеличивать интервал повторов;
 
 - [x] Пункт рассмотрен при полной сверке.
-- [ ] Реализация проверена в коде. Статус: UNIMPLEMENTED.
+- [x] Реализация проверена в коде. Статус: VERIFIED_CODE.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: SOURCES. Остаток: ROOT implement bounded increasing backoff for repeated temporary errors, preserve original costs/reserves and future eligibility.
+Ответственный: SOURCES. Остаток: Растущий bounded backoff проверен7новыми+9affected случаями; production workload и реальные временные отказы этого нового пути не объявлены принятыми.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json.
 
 ### TZ11.029 · исходная строка 491
 
@@ -4190,44 +4190,44 @@
 > - близость к пригодному входу;
 
 - [x] Пункт рассмотрен при полной сверке.
-- [ ] Реализация проверена в коде. Статус: PARTIAL.
+- [x] Реализация проверена в коде. Статус: VERIFIED_CODE.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: ROOT. Остаток: Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.
+Ответственный: ROOT. Остаток: Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md; checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json.
 
 ### TZ13.054 · исходная строка 587
 
 > - свежесть движения;
 
 - [x] Пункт рассмотрен при полной сверке.
-- [ ] Реализация проверена в коде. Статус: PARTIAL.
+- [x] Реализация проверена в коде. Статус: VERIFIED_CODE.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: ROOT. Остаток: Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.
+Ответственный: ROOT. Остаток: Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md; checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json.
 
 ### TZ13.055 · исходная строка 588
 
 > - подтверждённость данных;
 
 - [x] Пункт рассмотрен при полной сверке.
-- [ ] Реализация проверена в коде. Статус: PARTIAL.
+- [x] Реализация проверена в коде. Статус: VERIFIED_CODE.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: ROOT. Остаток: Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.
+Ответственный: ROOT. Остаток: Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md; checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json.
 
 ### TZ13.056 · исходная строка 589
 
 > - возраст ожидания, чтобы одна монета не занимала всё внимание постоянно.
 
 - [x] Пункт рассмотрен при полной сверке.
-- [ ] Реализация проверена в коде. Статус: PARTIAL.
+- [x] Реализация проверена в коде. Статус: VERIFIED_CODE.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: ROOT. Остаток: Полный дневной расход/частота/шесть холодных проверок и внешние квоты ещё не измерены; отрицательный кэш и растущий backoff, признаки очереди и плановый запас требуют завершения.
+Ответственный: ROOT. Остаток: Общий consumer очереди проверен: пригодный READYвход/свежестьдвижения/подтверждённость/неограниченныйвозраствожидания. Полный дневной native/provider/time/CPU/bytes/storage envelope ещё открыт; это не отметка всей эксплуатации.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md; checkpoints/pump-report-20261025/ROOT_RELIABILITY_CORRECTION_QUALIFICATION.json.
 
 ### TZ13.057 · исходная строка 591
 
@@ -4783,7 +4783,7 @@
 - [ ] Текущая фактическая рабочая приёмка завершена.
 Ответственный: ANALYTICS. Остаток: Нет отдельного принятого доказательства этого атома в аналитической передаче. Требуется точное сведение ROOT/SOURCES; это не PASS.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; pump-report/handoffs/analytics/package-o/audit-gap-delta.json.
 
 ### TZ15.026 · исходная строка 675
 
@@ -4794,7 +4794,7 @@
 - [ ] Текущая фактическая рабочая приёмка завершена.
 Ответственный: ANALYTICS. Остаток: Касания и entry→exit price scenario без исполнения; intrabar порядок неизвестен при одной свече.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; pump-report/handoffs/analytics/package-o/audit-gap-delta.json.
 
 ### TZ15.027 · исходная строка 676
 
@@ -4805,7 +4805,7 @@
 - [ ] Текущая фактическая рабочая приёмка завершена.
 Ответственный: ANALYTICS. Остаток: Касания и entry→exit price scenario без исполнения; intrabar порядок неизвестен при одной свече.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; pump-report/handoffs/analytics/package-o/audit-gap-delta.json.
 
 ### TZ15.028 · исходная строка 677
 
@@ -4816,7 +4816,7 @@
 - [ ] Текущая фактическая рабочая приёмка завершена.
 Ответственный: ANALYTICS. Остаток: Касания и entry→exit price scenario без исполнения; intrabar порядок неизвестен при одной свече.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; pump-report/handoffs/analytics/package-o/audit-gap-delta.json.
 
 ### TZ15.029 · исходная строка 678
 
@@ -4827,7 +4827,7 @@
 - [ ] Текущая фактическая рабочая приёмка завершена.
 Ответственный: ANALYTICS. Остаток: Нет отдельного поля глубины ухода цены от фактически достигнутой entry zone; общий drawdown от P0 не является этой метрикой.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; pump-report/handoffs/analytics/package-o/audit-gap-delta.json.
 
 ### TZ15.030 · исходная строка 680
 
@@ -4838,7 +4838,7 @@
 - [ ] Текущая фактическая рабочая приёмка завершена.
 Ответственный: ANALYTICS. Остаток: execution_proven=false, user_profit=null; добровольные сделки пользователя не требуются.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; pump-report/handoffs/analytics/package-o/audit-gap-delta.json.
 
 ### TZ15.031 · исходная строка 682
 
