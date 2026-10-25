@@ -1,12 +1,15 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "RELEASED",
-  "owner": "CODEX:OFFLINE_ANOMALIES:1792915732000",
+  "status": "ACTIVE",
+  "owner": "CODEX:OFFLINE_ANOMALIES:1792917605000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
-  "acquired_ts": 1792915732000,
-  "expires_ts": 1792918909000,
+  "acquired_ts": 1792917605000,
+  "expires_ts": 1792918805000,
   "expected_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
-  "scope": "DIRECT HUMAN authorization in analytics chat25Oct: implement Pump Report TZv2 package A and obtain own bounded lease, execute coordinator tasks. Own files ONLY pump-report/analytics/**,tests/analytics/**,handoffs/analytics/**. Pure analyzePump/evaluateOutcome, artificial fixtures, affected offline tests and handoff. No shared/main/code branch switching; no provider/SQL/TG/deploy/cron/old ENTRY followup/capacity tests. Legacy pauses, budgets, unknowns, reserves, two deferrals preserved. Onlyownrelease before expiry.",
+  "scope": "PUMP_REPORT_V2_PACKAGE_B_PURE_OUTCOME_SUMMARY. Direct HUMAN in this chat allows own bounded lease and coordinator tasks. Own new analytics/summary.mjs,tests/analytics/summary.test.mjs,handoffs/analytics/package-b/** only. Preserve all package A bytes/hash. Propose normalized summary input without common contract changes. New pure summarizer, artificial tests, local handoff; no provider/SQL/TG/deploy/cron/runtime/main/registry mutations. All old pauses/unknowns/caps/deferrals preserved. Only ownrelease before expiry.",
+  "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792914169000",
+  "parallel_root_phase_expires_ts": 1792918969000,
+  "released_ts": null,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "checkpoints/CLOUD_PHASE_STATE_20261004.json": "33ca88a04540d45bc466ba669ce09871c6f16437",
@@ -16,22 +19,5 @@
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "acd10a584b6aabc3e6f44548f57b6b4d12887c1f",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
-  },
-  "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792914169000",
-  "parallel_root_phase_expires_ts": 1792918969000,
-  "released_ts": 1792917255000,
-  "completion": {
-    "scope_complete": "OFFLINE_ANALYTICS_PACKAGE_A_LOCAL_HANDOFF",
-    "tests_pass": 44,
-    "tests_fail": 0,
-    "qualification_path": "pump-report/handoffs/analytics/qualification.json",
-    "qualification_sha256": "a923236367b3ab4c8f1a8a591a34fdc98602ce986ad0e2159774169e4881a5b2",
-    "base_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
-    "code_git_commit": null,
-    "code_integrator": "ROOT",
-    "provider_HTTP": 0,
-    "native_SQL": 0,
-    "Telegram": 0,
-    "real_delivery_proven": false
   }
 }
