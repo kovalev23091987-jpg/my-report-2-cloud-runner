@@ -52,7 +52,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
     try{const response=await fetch_impl('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:recipient,text,disable_web_page_preview:true}),redirect:'manual',signal:AbortSignal.timeout(15000)});let body=null;try{body=await response.json();}catch{}await budget.finalize(receipt,{http_status:response.status});return {ok:response.ok,status:response.status,body};}
     catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
   }});
-  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock});
+  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED'});
   return {native,store,budget,broker,sources,delivery,runner};
   }catch(error){error.pumpNative=native;throw error;}
 }
