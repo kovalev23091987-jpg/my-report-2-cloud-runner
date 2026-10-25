@@ -1,0 +1,46 @@
+async function persistRunnerAnomalyReceipts(snapshot,{pending_checkpoint=null,independent_capture=null}={}) {
+  if (snapshot?.schema !== 'ANOMALY_PARENT_BOUNDED_RECEIPTS_V1') throw Error('ANOMALY_RECEIPT_SCHEMA_REQUIRED');
+  if(pending_checkpoint!==null&&(pending_checkpoint.schema!=='RUNNER_ANOMALY_PENDING_CHECKPOINT_V1'||Buffer.byteLength(JSON.stringify(pending_checkpoint),'utf8')>2048))throw Error('ANOMALY_PENDING_CHECKPOINT_BOUND');
+  const body = JSON.stringify(snapshot);
+  if (Buffer.byteLength(body,'utf8') > 16384) throw Error('ANOMALY_RECEIPT_METADATA_BOUND');
+  // This is a bounded proposal in the existing artifact, never an adopted cursor.
+  let capture_projection=null;
+  if(independent_capture!==null){
+    const need=(v,m)=>{if(!v)throw Error(m);},hex=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
+    try{
+      const r=independent_capture,raw=JSON.stringify(r),raw_bytes=Buffer.byteLength(raw,'utf8');
+      need(raw_bytes<=4096&&r?.schema==='INDEPENDENT_COMPLETED_CAPTURE_INGRESS_V1'&&typeof r.status==='string'&&/^[A-Z0-9_]{1,96}$/.test(r.status),'CAPTURE_RECEIPT_SHAPE_OR_BOUND');
+      need(r.registry_assets===105&&r.registry_native_contracts===122&&Number.isSafeInteger(r.source_HTTP_attempts)&&r.source_HTTP_attempts>=0&&r.source_HTTP_attempts<=2&&Number.isSafeInteger(r.actual_IO_handler_calls)&&r.actual_IO_handler_calls>=0&&r.actual_IO_handler_calls<=2,'CAPTURE_RECEIPT_SCOPE_OR_COUNTS');
+      const cursor=text=>{
+        if(text===null)return null;
+        need(typeof text==='string'&&Buffer.byteLength(text,'utf8')<=1024,'CAPTURE_CURSOR_BOUND');const x=JSON.parse(text);
+        need(canonicalAnomalyJSON(x)===text&&Object.keys(x).sort().join('|')==='next_index|roster_sha256|schema'&&x.schema==='INDEPENDENT_ANOMALY_CAPTURE_CURSOR_V1'&&hex(x.roster_sha256)&&Number.isSafeInteger(x.next_index)&&x.next_index>=0&&x.next_index<105,'CAPTURE_CURSOR_SHAPE');return x;
+      };
+      const before=cursor(r.cursor_before),next=cursor(r.next_cursor_proposed);
+      need((before===null)===(next===null),'CAPTURE_CURSOR_PAIR_REQUIRED');
+      if(before){
+        need(next.roster_sha256===before.roster_sha256&&[before.next_index,(before.next_index+1)%105].includes(next.next_index)&&r.selected_registry_index===before.next_index,'CAPTURE_CURSOR_STEP_OR_IDENTITY');
+        need(typeof r.selected_contract==='string'&&/^[A-Za-z0-9\u0080-\uffff]{1,40}-USDT$/.test(r.selected_contract),'CAPTURE_SELECTED_CONTRACT_BOUND');
+        need(r.uncertain_parent_requires_existing_reconciliation!==true||r.cursor_before===r.next_cursor_proposed,'CAPTURE_UNKNOWN_CURSOR_ADVANCE_REFUSED');
+      }else need(r.selected_registry_index===null&&r.selected_contract===null,'CAPTURE_UNSELECTED_CURSOR_REQUIRED');
+      need(r.parent_status===undefined||typeof r.parent_status==='string'&&/^[A-Z0-9_]{1,96}$/.test(r.parent_status),'CAPTURE_PARENT_STATUS_BOUND');
+      const count=k=>Number.isSafeInteger(r[k])&&r[k]>=0?r[k]:null;
+      capture_projection={schema:'RUNNER_ANOMALY_CAPTURE_PROPOSAL_V1',status:'CAPTURE_CURSOR_PROPOSAL_RECORDED',capture_status:r.status,capture_result_bytes:raw_bytes,capture_result_sha256:crypto.createHash('sha256').update(raw).digest('hex'),cursor_before:r.cursor_before,next_cursor_proposed:r.next_cursor_proposed,selected_registry_index:r.selected_registry_index,selected_contract:r.selected_contract,source_HTTP_attempts:r.source_HTTP_attempts,source_HTTP_scope:'INGRESS_ATTEMPTS_EXISTING_ENVELOPE_PROVIDER_HTTP_IS_WRITER_ONLY',actual_IO_handler_calls:r.actual_IO_handler_calls,useful_closed_windows:count('useful_closed_windows'),registry_assets_not_selected_this_invocation:count('registry_assets_not_selected_this_invocation'),parent_status:r.parent_status??null,parent_uncertain:typeof r.uncertain_parent_requires_existing_reconciliation==='boolean'?r.uncertain_parent_requires_existing_reconciliation:null,roster_membership_reverified:false,cursor_adopted:false,cursor_advanced_durably:false,independent_scheduler_installed:false,continuous105_coverage_qualified:false,full_roster_sweep_completed:false,native_ACK_qualified:false,event_first_knowledge_qualified:false,SENT_claimed:false};
+      need(Buffer.byteLength(JSON.stringify(capture_projection),'utf8')<=2048,'CAPTURE_PROJECTION_BOUND');
+    }catch(error){
+      capture_projection={schema:'RUNNER_ANOMALY_CAPTURE_PROPOSAL_V1',status:'CAPTURE_PROPOSAL_NOT_CLOSED',reason:/^[A-Z0-9_]{1,96}$/.test(error?.message||'')?error.message:'CAPTURE_INPUT_NOT_CLOSED',cursor_adopted:false,cursor_advanced_durably:false,continuous105_coverage_qualified:false,full_roster_sweep_completed:false,native_ACK_qualified:false,event_first_knowledge_qualified:false,SENT_claimed:false};
+    }
+  }
+  const envelope = {schema:'RUNNER_ANOMALY_RECEIPT_ARTIFACT_V1',head:process.env.GITHUB_SHA||null,cloud_run_id:process.env.GITHUB_RUN_ID||null,recorded_ts:Date.now(),scope:'BOUND_OPERATION_METADATA_NOT_NATIVE_EVENT_FIRST_KNOWLEDGE_OR_DELIVERY',receipts:snapshot,pending_checkpoint,additional_SQL:0,provider_HTTP:0,native_qualification_claimed:false,filesystem_durability_qualified:false};
+  if(capture_projection!==null)envelope.independent_capture=capture_projection;
+  let text = JSON.stringify(envelope);
+  // Parent receipts keep priority within the SAME 20480-byte artifact limit.
+  if(Buffer.byteLength(text,'utf8')>20480&&capture_projection!==null){delete envelope.independent_capture;text=JSON.stringify(envelope);}
+  if (Buffer.byteLength(text,'utf8') > 20480) throw Error('ANOMALY_RECEIPT_ARTIFACT_BOUND');
+  const file = 'report2-anomaly-domain-receipts.json';
+  await fs.writeFile(file+'.tmp',text);
+  await fs.rename(file+'.tmp',file);
+  if(independent_capture!==null&&await fs.readFile(file,'utf8')!==text)throw Error('ANOMALY_CAPTURE_ARTIFACT_READBACK_NOT_CLOSED');
+  return {bytes:Buffer.byteLength(text,'utf8'),sha256:crypto.createHash('sha256').update(text).digest('hex'),native_qualification_claimed:false,...(independent_capture!==null?{capture_projection_requested:true,capture_projection_recorded:Object.hasOwn(envelope,'independent_capture'),capture_projection_readback:true,cursor_adopted:false}: {})};
+}
+
