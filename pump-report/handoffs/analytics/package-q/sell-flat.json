@@ -1,0 +1,53 @@
+{
+  "evidence": "ARTIFICIAL_ONLY",
+  "context": {
+    "buy_usdt": 0,
+    "sell_usdt": 672,
+    "netflow_usdt": -672,
+    "direction_coverage": "ALL_RETURNED_TRADES",
+    "sample_start_ts": 1799999998000,
+    "sample_end_ts": 1800000000000,
+    "unique_executions": 3,
+    "price_response": {
+      "first_price": 112,
+      "last_price": 112,
+      "min_price": 112,
+      "max_price": 112,
+      "first_to_last_return_pct": 0
+    },
+    "price_response_reason": null,
+    "coverage": {
+      "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+      "returned_rows": 3,
+      "qualified_unique_rows": 3,
+      "duplicate_rows": 0,
+      "conflicting_ids": 0,
+      "excluded_returned_rows": 0,
+      "exclusion_reasons": [],
+      "provider_coverage": null,
+      "full_market_coverage": false
+    },
+    "provenance": {
+      "fact_id": "ARTIFICIAL:trades:1800000000000",
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "source": "ARTIFICIAL_FIXTURE",
+      "venue": "BINGX",
+      "origin": "OBSERVED",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1800000000000,
+      "received_ts": 1800000000000,
+      "expires_ts": 1800000090000,
+      "evidence_ref": "ARTIFICIAL_ONLY"
+    },
+    "absorption_proven": false,
+    "market_path_proven": false,
+    "causation_proven": false
+  },
+  "finding": {
+    "code": "TRADE_PRICE_RESPONSE",
+    "text": "В полученной выборке ARTIFICIAL_FIXTURE / BINGX за 2 с от первой к последней сделке цена 112→112 USDT (+0%); покупки 0, продажи 672 USDT. Только выборка, не весь рынок.",
+    "fact_ids": [
+      "ARTIFICIAL:trades:1800000000000"
+    ]
+  }
+}
