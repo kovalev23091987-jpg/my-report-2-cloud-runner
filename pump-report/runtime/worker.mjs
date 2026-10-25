@@ -63,7 +63,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
     catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
   }});
   const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
-  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features});
+  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,await_source_window:args=>broker.awaitProviderWindow(args)});
   return {native,store,budget,broker,sources,delivery,runner};
   }catch(error){error.pumpNative=native;throw error;}
 }

@@ -88,7 +88,18 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   function assertTarget(provider,url,{purpose='CORE',candidate_id=null}={}){assertWorkWindow();const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});if(purpose==='DISCOVERY'&&(provider!=='BINGX'||candidate_id!==null||target.search||!['/openApi/swap/v2/quote/contracts','/openApi/swap/v2/quote/ticker'].includes(target.pathname)))throw new BudgetRefusal('INVALID_DISCOVERY_SCOPE');}
   function setMode(next){if(!['AUTO','MANUAL','STATISTICS'].includes(next))throw new BudgetRefusal('INVALID_BUDGET_MODE');mode=next;}
   function minimumIntervalMs(provider){const cap=providerPolicy(provider).per_second_cap;return integer(cap)&&cap>0?Math.ceil(1000/cap):0;}
-  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
+  async function providerWindow(provider,cost){
+    assertWorkWindow();const policy=providerPolicy(provider),now=clock();
+    if(!integer(cost)||cost<1||cost>policy.per_minute_cap)throw new BudgetRefusal('PROVIDER_WINDOW_COST_INVALID');
+    const state=await store.get('pump:resources'),p=state?.providers?.[provider];
+    if((p?.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
+    const recent=(p?.recent??[]).filter(r=>r.ts>now-60000).sort((a,b)=>a.ts-b.ts);
+    if(recent.some(r=>!integer(r.ts)||r.ts>now||!integer(r.cost)||r.cost<1))throw new BudgetRefusal('PROVIDER_WINDOW_LEDGER_INVALID');
+    let occupied=recent.reduce((n,r)=>n+r.cost,0),not_before_ts=now;
+    for(const row of recent){if(occupied+cost<=policy.per_minute_cap)break;occupied-=row.cost;not_before_ts=row.ts+60000;}
+    return {not_before_ts,expires_ts:admission.expires_ts,cost,minute_cap:policy.per_minute_cap,forecast_only:true};
+  }
+  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,providerWindow,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
 }
 
 export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bind(globalThis),clock=Date.now,max_response_bytes=2000000,sleep_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
@@ -149,5 +160,17 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
     })();inFlight.set(key,work);
     try{return await work;}finally{inFlight.delete(key);}
   }
-  return {request,summary:budget.summary};
+  async function awaitProviderWindow({provider,cost,deadline_ts=clock()+60001,before_wait=async()=>{}}){
+    if(!Number.isSafeInteger(deadline_ts)||deadline_ts<=clock())throw new BudgetRefusal('SOURCE_WINDOW_DEADLINE_EXPIRED');
+    // This read forecasts availability, grants no HTTP and changes no counters.
+    // Every later request still needs the original atomic reserve/finalize.
+    for(let check=0;check<3;check++){
+      const window=await budget.providerWindow(provider,cost),now=clock(),wait=Math.max(0,window.not_before_ts-now);
+      if(now+wait>=Math.min(deadline_ts,window.expires_ts))throw new BudgetRefusal('SOURCE_WINDOW_DEADLINE_EXPIRED');
+      if(!wait)return {status:'AVAILABLE',provider,cost,checked_ts:now,forecast_only:true};
+      await before_wait();await sleep_impl(wait);
+    }
+    throw new BudgetRefusal('SOURCE_WINDOW_CONCURRENTLY_BUSY');
+  }
+  return {request,awaitProviderWindow,summary:budget.summary};
 }

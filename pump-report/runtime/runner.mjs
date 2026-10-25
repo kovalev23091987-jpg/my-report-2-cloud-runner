@@ -11,7 +11,7 @@ const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
 const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|AUTOMATIC_WINDOW_CLOSED/.test(typeof reason==='string'?reason:reason?.code??''));
 
-export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null}){
+export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null,await_source_window=async()=>{}}){
   if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
   const manualResultKey=id=>'pump:manual-result:'+id;
   const observations=createOutcomeJournal({store,profile,clock,evidence_class,retained_features});
@@ -100,6 +100,11 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function checkInstrument(instrument,{run_id,mode,publish=true,assert_execution=async()=>{}}){
     if(ownerInstrumentExcluded(instrument))return {status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:instrument.base,delivery:null};
     budget.setMode(mode);
+    await assert_execution();
+    // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
+    // overview1 + day1 + price(primary/fallback)2 + candles/book2 + optional2
+    // + forced delivery price/book2 =10 BingX attempts. Map/TG are separate.
+    await await_source_window({provider:'BINGX',cost:10,deadline_ts:clock()+60001,before_wait:assert_execution});
     await assert_execution();
     const overview=await sources.getOverview({run_id,instruments:[instrument]});
     const overviewFacts=overview.observations?.[0]?.facts??{};
