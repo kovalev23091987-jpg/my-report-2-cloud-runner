@@ -5,11 +5,12 @@ import {createHash} from 'node:crypto';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const digest=text=>createHash('sha256').update(text).digest('hex');
-export function buildArtifact({legacy_path,output_path}){
+export function buildArtifact({legacy_path,output_path,module_overrides={}}){
   if(!legacy_path||!output_path)throw Error('RETAINED_LEGACY_AND_OUTPUT_PATH_REQUIRED');
   const modules={},visit=name=>{
     if(modules[name])return;
-    const text=name==='legacy-worker.mjs'?fs.readFileSync(legacy_path,'utf8'):fs.readFileSync(path.join(root,name),'utf8');
+    const text=name==='legacy-worker.mjs'?fs.readFileSync(legacy_path,'utf8'):Object.hasOwn(module_overrides,name)?module_overrides[name]:fs.readFileSync(path.join(root,name),'utf8');
+    if(typeof text!=='string')throw Error('MODULE_TEXT_REQUIRED:'+name);
     modules[name]=text;
     if(/(?:\bfrom\s*|\bimport\s*)['"]node:/.test(text))throw Error('NODE_BUILTIN_IN_WORKER:'+name);
     for(const match of text.matchAll(/(?:\bfrom\s*|\bimport\s*)['"]([^'"]+)['"]/g)){

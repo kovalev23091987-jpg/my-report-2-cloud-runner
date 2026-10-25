@@ -1,0 +1,103 @@
+{
+  "schema": "PUMP_EXACT_DAY_WINDOW_NATIVE_ADMISSION_V1",
+  "status": "POSITIVE_ONE_DAY_CHECK_PENDING_EXACT_PUBLISHED_ARTIFACT_READBACK",
+  "issued_at": "2026-10-25 14:27:02 UTC",
+  "expires_ts": 1792941000000,
+  "owner_lease": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792937785000",
+  "owner_lease_expires_ts": 1792942585000,
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "current_main": "39f8af9efbce2c17107b26e48b1b2a46af2c378e",
+  "native_request": {
+    "id": "pump-day-window-btc-20261025-one",
+    "mode": "DAY_CHECK",
+    "max_runs": 1,
+    "rows_read": 500,
+    "rows_written": 30,
+    "shared_indexed_day_reservation_and_exact_PK_readback": true,
+    "finalization_tail": {
+      "rows_read": 2,
+      "rows_written": 1
+    }
+  },
+  "provider": {
+    "name": "BINGX",
+    "policy_version": "pump-manual-native-relative-acceptance-20261025-v1",
+    "version_kept_to_preserve_existing_charged6_of24": true,
+    "new_attempts_max": 1,
+    "existing24_cap_not_reset": true,
+    "route": "https://open-api.bingx.com/openApi/swap/v3/quote/klines",
+    "symbol": "BTC-USDT",
+    "interval": "1m",
+    "limit": 1440,
+    "startTime": "floor(now/60000)*60000-86400000",
+    "endTime": "floor(now/60000)*60000-1",
+    "body_limit_bytes": 2000000,
+    "timeout_ms": 10000,
+    "no_retries": true,
+    "explicit_no_redirects": true,
+    "day_cap": 900,
+    "month_cap": 27900,
+    "per_minute": 10,
+    "per_second": 1,
+    "provider_weight": null
+  },
+  "raw_data": "Broker saves original parsed reply in bounded cache keyed by exact route/window; preserves original source/receipt clocks. Operator output contains derived boundary fact/coverage; no market values published in Git.",
+  "output": "exact1440 closed-minute grid with original boundaries/clocks/receipt/cost, or explicit INCOMPLETE/ERROR; +20threshold unchanged; never inferred from121 rows or unqualifiedticker.",
+  "implementation": {
+    "SOURCE_frozen_manifest": "pump-report/handoffs/sources/PACKAGE_DAY_GROWTH_J_FINAL_V3.json",
+    "source2affectedPASS": true,
+    "root15affectedPASS": true,
+    "root30day_window_queue_affectedPASS": true,
+    "analytics_in_artifact": "Only published frozen I/H modules, no unfinished J; operator day route does not run analysis or send.",
+    "frozen_manual240_artifact_unchanged": true
+  },
+  "all_original_caps_reserves": {
+    "HTTP_run": 164,
+    "lanes": {
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "candidate": 50,
+    "map": 8,
+    "map_native_nested": 4,
+    "manual_run_reserve24": true,
+    "six_full_manual_HTTP": {
+      "BINGX": 102,
+      "TELEGRAM": 6
+    },
+    "delivery24": true,
+    "outcomes24": true,
+    "native_day": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    },
+    "native_next_full": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "shared_ledger_native_manual_remaining5_after_actual_daily_first": true,
+    "known_native_before": {
+      "requests": 242,
+      "rows_read": 613,
+      "rows_written": 157,
+      "unknown_ops": 0
+    }
+  },
+  "prohibited_actions": [
+    "No new Telegram send; technical239 and real240 grants spent.",
+    "No Swole retry; single200probe spent; map unqualified.",
+    "No old CONTROL5 rearm; initial2charged providerUNKNOWN retained.",
+    "No report run/manual replay, production/cron/oldActions enable.",
+    "No unknown identity promotion or cryptoN claim.",
+    "No old ENTRY/storage-stress OWNERdeferral work."
+  ],
+  "deployment": {
+    "stage": "DAY_WINDOW_ACCEPTANCE",
+    "worker": "my-report-2-hub",
+    "all_existing_bindings_preserved": true,
+    "legacy_sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10",
+    "new_schedule": false,
+    "exact_all_modules_readback_before_native": true
+  }
+}
