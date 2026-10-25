@@ -1,13 +1,13 @@
 import {assertInput, ANALYSIS_SCHEMA, CONTRACT_VERSION, factUsable, finite, positive, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS, candleNativeComparisonKey,OWNER_MIN_PLAN_POTENTIAL_PCT,ownerPublicationRefusal} from '../contracts/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {closedCandles, unique} from './math.mjs';
-import {analyzeMovement, constructPlan} from './movement.mjs';
+import {analyzeMovement, constructPlan, describeMovementDetails} from './movement.mjs';
 import {measureLiquidity} from './liquidity.mjs';
 import {selectZones} from './zones.mjs';
 import {explainOptionalFacts, explainMapPlan} from './context.mjs';
 import {consumeObservedDayGrowth} from './day-growth.mjs';
 import {explainManualAnalysis} from './manual-text.mjs';
-import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,selectUserNarrative} from './presentation.mjs';
+import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative} from './presentation.mjs';
 export {evaluateOutcome} from './outcome.mjs';
 
 export const RULES_VERSION='pump-analytics-v4-first-qualification-20261025';
@@ -98,7 +98,7 @@ function analyzeCore(input, profile){
   const movement=analyzeMovement(input,rows,result.reference_price,ticker,profile,day);
   Object.assign(result,{wave_id:movement.wave_id,wave_state:movement.state,next_wave:movement.next_wave,current_threshold_passed:movement.current_threshold_passed,
     automatic_eligible:movement.automatic_eligible,growth_windows:movement.windows,activity:{impulse:movement.impulse,current_volume:movement.current_volume??null,current_to_impulse_volume_ratio:movement.current_to_impulse_volume_ratio??null,
-      ratio_unit:'RATIO',current_to_impulse_volume_ratio_reason:movement.current_to_impulse_volume_ratio_reason??null,volume_basis:movement.volume_basis??null,volume_diagnostics:movement.volume_diagnostics??null,
+      ratio_unit:'RATIO',current_to_impulse_volume_ratio_reason:movement.current_to_impulse_volume_ratio_reason??null,volume_basis:movement.volume_basis??null,volume_diagnostics:movement.volume_diagnostics??null,details:describeMovementDetails(input,rows,movement,result.reference_price,profile),
       candle_time_basis:facts.candles.coverage?.time_basis??null,candle_evidence_ref:facts.candles.evidence_ref??null,
       candle_provenance:{coverage:structuredClone(facts.candles.coverage??null),event_ts:facts.candles.event_ts,received_ts:facts.candles.received_ts,source:facts.candles.source,venue:facts.candles.venue}},
     reasons:unique([...result.reasons,...movement.reasons]),fact_ids:[facts.price.fact_id,facts.candles.fact_id,...(ticker?[ticker.fact_id]:[]),...(day.usable?[day.fact_id]:[])]});
@@ -107,6 +107,7 @@ function analyzeCore(input, profile){
   if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';return result;}
   const stateText=movementStateText(result);if(stateText)result.findings.push({code:movement.state,text:stateText,fact_ids:[facts.candles.fact_id]});
   const activityFinding=currentActivityFinding(result,[facts.candles.fact_id]);if(activityFinding)result.findings.push(activityFinding);
+  result.findings.push(...movementDetailFindings(result,[facts.candles.fact_id]));
   if(movement.impulse.baseline_status==='SHORT_HISTORY')result.findings.push({code:'SHORT_HISTORY',text:'История сравнения короче обычной; вывод основан только на доступных закрытых окнах.',fact_ids:[facts.candles.fact_id]});
   if(!usable.orderbook)return result;
   if(facts.orderbook.unit!=='USDT_PRICE_BASE_QUANTITY')return {...result,reasons:unique([...result.reasons,'ORDERBOOK_UNIT_UNQUALIFIED'])};

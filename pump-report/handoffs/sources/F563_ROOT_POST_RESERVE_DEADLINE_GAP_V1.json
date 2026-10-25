@@ -1,0 +1,17 @@
+{
+  "schema": "SOURCE_F563_ROOT_BROKER_POST_RESERVE_GAP_V1",
+  "status": "CONTROLLED_REPRO_ROOT_OWNED_FIX_REQUIRED",
+  "root_file": "pump-report/runtime/budget.mjs",
+  "observed_root_file_sha256": "682e548961b871ad72676c7579ca569d2f8ae48dcfd1fc216c1d779114f73ab1",
+  "scope": "Related actualwrapper->createRequestBroker deadline path, no providerHTTP orSQL",
+  "controlled_deadline_ts": 1792965000005,
+  "controlled_reserve_completed_ts": 1792965000010,
+  "controlled_fetch_started_ts": 1792965000010,
+  "late_fetch_reproduced": true,
+  "SOURCE_result": "NOT_CHECKED/SOURCE_DEADLINE_EXPIRED",
+  "problem": "Remainingtimeout measured before awaitbudget.reserve; no newclockcheck immediately beforefetch; localSOURCEfix cannot prevent late native start insideROOTbroker.",
+  "proposed_ROOT_fix": "Recompute deadline-clock after reserve andbeforefetch; ifexpired finalizeconservativelywithoutfetch/nocharge refund; use recomputedremaining inAbortSignal. Retain originalreceipt/unknownpolicy and sharedbudgetauthority.",
+  "ROOT_files_changed_by_SOURCE": false,
+  "runtime_cases_replayed": 0,
+  "market_IO": 0
+}

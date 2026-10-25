@@ -2,7 +2,7 @@
 import {automaticWindowOpen} from '../contracts/index.mjs';
 import {responseDisposition,temporaryDelay,SOURCE_ERROR_PROFILE} from './source-error-policy.mjs';
 import {futureDiscoveryHttp} from './discovery-reserve.mjs';
-import {futureCandidateReserve} from './future-candidate-reserve.mjs';
+import {futureCandidateReserve,utcBudgetPeriodEnd} from './future-candidate-reserve.mjs';
 import {admittedReadOnlyJSONPost} from './read-only-json-post.mjs';
 import {textHash} from './text-hash.mjs';
 export const RESOURCE_LIMITS = Object.freeze({http_per_run:164,project_http_day:900,lanes:{hot:96,background:56,statistics:12},deep_per_candidate:50,liquidations_per_run:8,manual_http_run_reserve:24,d1_reads_day:3500000,d1_writes_day:70000,next_full_reads:59000,next_full_writes:920});
@@ -39,8 +39,10 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     const manualProtection=mode==='MANUAL'?0:protectedHttp;
     const deliveryProtection=family==='DELIVERY'||purpose==='DELIVERY'?0:protected_reserves.delivery_http;
     const outcomesProtection=mode==='STATISTICS'?0:protected_reserves.outcomes_http;
-    const futureDiscovery=futureDiscoveryHttp(now,admission.discovery);
+    const futureDiscovery=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'DAY')});
+    const futureDiscoveryMonth=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'MONTH')});
     const futureCandidates=futureCandidateReserve(now,admission.future_candidates);
+    const futureCandidatesMonth=futureCandidateReserve(now,admission.future_candidates,{period:'MONTH'});
     // Hold the in-process run envelope before awaiting the durable provider CAS.
     // Concurrent different-provider requests cannot oversubscribe a run.
     run.total+=cost;run.lanes[lane]+=cost;if(family==='LIQUIDATIONS')run.liquidations+=cost;if(candidate_id)inc(run.candidates,candidate_id,cost);
@@ -59,7 +61,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if(spent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       const globalManual=mode==='MANUAL'&&admission.run_purpose!=='ACCEPTANCE_TEST'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
       if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
-      if(monthSpent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
+      if(monthSpent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscoveryMonth:0)+(futureCandidatesMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
       if(integer(policy.qualification_attempt_cap)){p.qualification_totals??={};inc(p.qualification_totals,policy.version,cost);}
@@ -74,7 +76,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     run.receipts.push(row);
     return row;
   }
-  async function finalize(receipt,{state='CONFIRMED',http_status=null,retry_after_ms=null,temporary_failure=false,successful_response=false}={}) {
+  async function finalize(receipt,{state='CONFIRMED',http_status=null,retry_after_ms=null,temporary_failure=false,successful_response=false,network_attempted=null}={}) {
     if(!['CONFIRMED','UNKNOWN'].includes(state))throw new BudgetRefusal('INVALID_RECEIPT_STATE');
     await store.atomic('pump:resources',current=>{
       const held=current?.outstanding?.[receipt.request_id];
@@ -88,7 +90,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if(integer(retry_after_ms)&&retry_after_ms>0){const p=current.providers[receipt.provider];p.backoff_until=Math.max(p.backoff_until??0,clock()+retry_after_ms);}
       return {state:current,result:true};
     });
-    receipt.state=state;receipt.http_status=http_status;if(state==='UNKNOWN')run.unknown++;
+    receipt.state=state;receipt.http_status=http_status;if(typeof network_attempted==='boolean')receipt.network_attempted=network_attempted;if(state==='UNKNOWN')run.unknown++;
   }
   function assertTarget(provider,url,{purpose='CORE',candidate_id=null,method='GET',json_body=null}={}){assertWorkWindow();const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});if(purpose==='DISCOVERY'&&(method!=='GET'||provider!=='BINGX'||candidate_id!==null||target.search||!['/openApi/swap/v2/quote/contracts','/openApi/swap/v2/quote/ticker'].includes(target.pathname)))throw new BudgetRefusal('INVALID_DISCOVERY_SCOPE');if(method==='POST')return admittedReadOnlyJSONPost(policy,target,json_body);if(method!=='GET'||json_body!==null)throw new BudgetRefusal('INVALID_SOURCE_REQUEST');return {method:'GET'};}
   function setMode(next){if(!['AUTO','MANUAL','STATISTICS'].includes(next))throw new BudgetRefusal('INVALID_BUDGET_MODE');mode=next;}
@@ -142,7 +144,14 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
       let response;
       try {
         const request_started_ts=clock();
-        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers,...(method==='POST'?{'content-type':'application/json'}:{})},...(method==='POST'?{body:route.body_text}:{}),redirect:'manual',signal:AbortSignal.timeout(remaining)});
+        // The durable reservation itself can outlive the source deadline.
+        // Keep its conservative charge, but never start HTTP after that wait.
+        const fetchRemaining=deadline-request_started_ts;
+        if(fetchRemaining<=0){
+          await budget.finalize(receipt,{http_status:null,network_attempted:false});
+          throw Object.assign(new BudgetRefusal('SOURCE_DEADLINE_EXPIRED'),{receipt_id:request_id,network_attempted:false});
+        }
+        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers,...(method==='POST'?{'content-type':'application/json'}:{})},...(method==='POST'?{body:route.body_text}:{}),redirect:'manual',signal:AbortSignal.timeout(fetchRemaining)});
         if(response.status>=300&&response.status<400){await budget.finalize(receipt,{http_status:response.status});await response.body?.cancel();throw new BudgetRefusal('SOURCE_REDIRECT_REFUSED');}
         const advertised=Number(response.headers.get('content-length')??0);if(advertised>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');
         const reader=response.body?.getReader();let total=0;const parts=[];

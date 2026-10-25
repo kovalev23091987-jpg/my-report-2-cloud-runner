@@ -23,13 +23,28 @@ export function currentActivityFinding(result,fact_ids=[]){
   if(!finite(ratio)||ratio<=0||ratio===1||result.activity?.ratio_unit!=='RATIO')return null;
   return {code:'ACTIVITY_RELATION',text:'Активность текущего окна '+(ratio<1?'ниже':'выше')+' исходного импульса.',fact_ids:[...fact_ids]};
 }
+export function movementDetailFindings(result,fact_ids=[]){
+  const d=result.activity?.details;if(d?.status!=='OBSERVED_CLOSED_WINDOW_MEASUREMENTS')return [];
+  const out=[],add=(code,text)=>out.push({code,text,fact_ids:[...fact_ids],observations_version:d.version,causation_proven:false});
+  const effort=d.activity_windows.find(w=>w.window_ms===300000&&w.volume_at_least_previous_with_less_growth===true);
+  if(effort)add('PRICE_ACTIVITY_DECELERATION',effort.price_return_pct<=0?'Последние 5 минут не дали роста при активности не ниже предыдущих 5 минут.':'Рост за последние 5 минут меньше предыдущих 5 минут при активности не ниже прежней.');
+  const accelerated=d.activity_windows.find(w=>w.positive_growth_accelerated===true&&w.volume_counter!==null&&w.previous_volume_counter>0&&w.volume_counter>=w.previous_volume_counter);
+  if(accelerated){const n=accelerated.window_ms/60000;add('CLOSED_WINDOW_ACCELERATION','Рост по закрытиям за последние '+n+' мин ускорился относительно предыдущих '+n+' мин при не меньшей активности.');}
+  const failed=d.failed_high_tests;
+  if(failed?.repeated&&!failed.last_close_above_level&&!failed.current_price_above_level)add('FAILED_PREKNOWN_HIGH_TESTS','В полученных свечах '+failed.failed_closed_bars+' выхода выше подтверждённой вершины '+number(failed.level.price)+' завершились закрытием не выше неё.');
+  const r=d.pullback_return;
+  if(result.wave_state==='SHARP_PULLBACK_RECLAIMED'&&r?.path_complete_in_supplied_rows&&r.closed_return_from_low_pct>0&&r.return_speed_bounds?.duration_max_ms>0)
+    add('OBSERVED_CLOSED_RETURN','От минимума закрытых свечей цена вернулась на '+number(r.closed_return_from_low_pct)+'% за не более '+number(r.return_speed_bounds.duration_max_ms/60000)+' мин.');
+  return out;
+}
 export function selectUserNarrative(result){
   const stage=result.findings.find(f=>f.code===result.wave_state),activity=result.findings.find(f=>f.code==='ACTIVITY_RELATION'),trade=result.findings.find(f=>f.code==='TRADE_PRICE_RESPONSE');
+  const observed=result.findings.find(f=>f.code==='FAILED_PREKNOWN_HIGH_TESTS')??result.findings.find(f=>f.code==='PRICE_ACTIVITY_DECELERATION')??result.findings.find(f=>f.code==='OBSERVED_CLOSED_RETURN')??result.findings.find(f=>f.code==='CLOSED_WINDOW_ACCELERATION');
   const confluence=result.plan_context?.liquidation_confluence;let map=null;
   if(confluence?.entries?.length){const indices=confluence.entries.map(e=>e.entry_index+1);map={code:'MAP_PLAN_CONTEXT',text:(indices.length===1?'Область входа ':'Области входа ')+indices.join(', ')+(indices.length===1?' пересекается':' пересекаются')+' с пригодными нижними зонами карты.',fact_ids:[],zone_ids:confluence.entries.flatMap(e=>e.zone_ids)};}
   else if(confluence?.exit_zone_ids?.length)map={code:'MAP_PLAN_CONTEXT',text:'Область фиксации пересекается с пригодной верхней зоной карты.',fact_ids:[],zone_ids:confluence.exit_zone_ids};
-  const reasons=[];for(const candidate of [stage,activity,trade,map])if(candidate&&!reasons.some(r=>r.code===candidate.code)){reasons.push(structuredClone(candidate));if(reasons.length===2)break;}
-  const warning=result.wave_state==='SHARP_PULLBACK_UNCONFIRMED'?'возврат пока не подтверждён, области входа предварительные':result.wave_state==='SHARP_PULLBACK_RECLAIMED'&&positive(result.next_wave?.reclaim_level)&&result.reference_price<result.next_wave.reclaim_level?'цена снова ниже уровня возврата':confluence?.intervening_upper_zone_ids?.length?'до фиксации показана верхняя зона карты':null;
+  const reasons=[];for(const candidate of [stage,observed,activity,trade,map])if(candidate&&!reasons.some(r=>r.code===candidate.code)){reasons.push(structuredClone(candidate));if(reasons.length===2)break;}
+  const warning=result.wave_state==='SHARP_PULLBACK_UNCONFIRMED'?'возврат пока не подтверждён, области входа предварительные':result.wave_state==='SHARP_PULLBACK_RECLAIMED'&&positive(result.next_wave?.reclaim_level)&&result.reference_price<result.next_wave.reclaim_level?'цена снова ниже уровня возврата':confluence?.intervening_upper_zone_ids?.length?'до фиксации показана верхняя зона карты':observed?.code==='FAILED_PREKNOWN_HIGH_TESTS'?'прежняя вершина пока не удержана закрытием':null;
   return {version:USER_NARRATIVE_VERSION,reasons,warning,limitation:result.findings.some(f=>f.code==='SHORT_HISTORY')?'История сравнения короче обычной; вывод ограничен доступными закрытыми окнами.':null};
 }
 export function presentationModeLines(result){

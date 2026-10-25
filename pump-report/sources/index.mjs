@@ -87,21 +87,21 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     if (!['GET', 'POST'].includes(method)) fail('SOURCE_READONLY_METHOD_REQUIRED');
     // ROOT adds the canonical body SHA to POST cache/coalescing keys and checks
     // exact read-only templates. This wrapper creates no provider admission.
-    const call = broker.request({provider, family, purpose, cache_key: `${SOURCE_VERSION}:${provider}:${family}:${url}`,
+    const result = await broker.request({provider, family, purpose, cache_key: `${SOURCE_VERSION}:${provider}:${family}:${url}`,
       url, method, ...(method === 'POST' ? {json_body: route.json_body} : {}),
-      timeout_ms: remaining, ttl_ms, candidate_id: instrument?.instrument_id ?? null, estimated_cost: {http: 1}});
-    let timer;
-    try {
-      const result = deadline_ts === null ? await call : await Promise.race([call,
-        new Promise((_, reject) => { timer = setTimeout(() => reject(Object.assign(new Error('SOURCE_DEADLINE_EXPIRED'), {code: 'SOURCE_DEADLINE_EXPIRED'})), remaining); })]);
-      if (!object(result) || result.ok !== true || result.status !== 200) {
-        const code = result?.status === 429 ? 'SOURCE_RATE_LIMITED' : [401, 403, 451].includes(result?.status) ? 'SOURCE_ACCESS_BLOCKED' : `SOURCE_HTTP_${Number.isInteger(result?.status) ? result.status : 'UNKNOWN'}`;
-        throw Object.assign(new Error(code), {code, receipt_id: result?.receipt_id ?? null, received_ts: result?.received_ts ?? null});
-      }
-      if (timestamp(result.received_ts) === null || result.received_ts > now()) fail('BROKER_ORIGINAL_RECEIPT_CLOCK_INVALID');
-      if (!text(result.receipt_id)) fail('BROKER_RECEIPT_ID_REQUIRED');
-      return result;
-    } finally { if (timer) clearTimeout(timer); }
+      timeout_ms: remaining, ...(deadline_ts === null ? {} : {deadline_ts}),
+      ttl_ms, candidate_id: instrument?.instrument_id ?? null, estimated_cost: {http: 1}});
+    // The broker owns pacing, abort and finalization. Await that work instead
+    // of returning from a local timer while the admitted request keeps running.
+    if (deadline_ts !== null && now() >= deadline_ts) throw Object.assign(new Error('SOURCE_DEADLINE_EXPIRED'),
+      {code: 'SOURCE_DEADLINE_EXPIRED', receipt_id: result?.receipt_id ?? null, received_ts: result?.received_ts ?? null});
+    if (!object(result) || result.ok !== true || result.status !== 200) {
+      const code = result?.status === 429 ? 'SOURCE_RATE_LIMITED' : [401, 403, 451].includes(result?.status) ? 'SOURCE_ACCESS_BLOCKED' : `SOURCE_HTTP_${Number.isInteger(result?.status) ? result.status : 'UNKNOWN'}`;
+      throw Object.assign(new Error(code), {code, receipt_id: result?.receipt_id ?? null, received_ts: result?.received_ts ?? null});
+    }
+    if (timestamp(result.received_ts) === null || result.received_ts > now()) fail('BROKER_ORIGINAL_RECEIPT_CLOCK_INVALID');
+    if (!text(result.receipt_id)) fail('BROKER_RECEIPT_ID_REQUIRED');
+    return result;
   };
   function fact(entry, kind, value, unit, event_ts, response, {qualified = true, reason = null, coverage = null, origin = 'OBSERVED', extra = {}} = {}) {
     const at = now(), received = response?.received_ts ?? at;
@@ -320,17 +320,36 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     } catch (error) { return finish(failed(entry, 'candles', error), {purpose: 'HISTORICAL_OUTCOME', complete: false,
       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
   }
-  async function getOptional({instrument} = {}) {
-    const entry = resolve(instrument), facts = {};
+  async function getOptional({instrument, deadline_ts} = {}) {
+    const entry = resolve(instrument), facts = {}, at = now();
+    if (!Number.isSafeInteger(profile.liquidation_deadline_ms) || profile.liquidation_deadline_ms <= 0) fail('OPTIONAL_DEADLINE_PROFILE_INVALID');
+    const validDeadline = deadline_ts === undefined || typeof deadline_ts === 'number' && timestamp(deadline_ts) !== null;
+    const deadline = validDeadline ? Math.min(deadline_ts ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms) : null;
+    let timedOut = false;
+    const exhausted = () => timedOut || deadline !== null && now() >= deadline;
+    const optionalFailure = (kind, error) => {
+      const result = failed(entry, kind, error);
+      if (/DEADLINE|TIMEOUT/.test(result.reason)) {
+        timedOut = true;
+        return {...result, status: 'NOT_CHECKED', coverage: {...result.coverage, deadline_status: 'TIMEOUT', spent_or_unknown_not_refunded: true}};
+      }
+      return result;
+    };
     const upper = profile.optional_http_upper_bound;
     if (!Number.isSafeInteger(upper) || upper < 0 || upper > SOURCE_HTTP_PLAN.optional_total_max) fail('OPTIONAL_BUDGET_PROFILE_INVALID');
     const finish = () => {
       const coverage = Object.fromEntries(Object.entries(facts).map(([kind, value]) => [kind,
         {status: value.status, reason: value.reason, ...(value.coverage ? {coverage: value.coverage} : {})}]));
-      note(instrument, 'optional', coverage); return {facts, coverage};
+      note(instrument, 'optional', coverage);
+      return {facts, coverage, deadline_ts: deadline, deadline_status: !validDeadline ? 'INVALID' : exhausted() ? 'TIMEOUT' : 'WITHIN_BOUND'};
     };
     if (ownerInstrumentExcluded(instrument)) {
       for (const kind of ['trades', 'open_interest', 'funding']) facts[kind] = absent(entry, kind, 'OWNER_ASSET_DELIVERY_EXCLUDED', 'NOT_CHECKED');
+      return finish();
+    }
+    if (!validDeadline || exhausted()) {
+      for (const kind of ['trades', 'open_interest', 'funding']) facts[kind] = absent(entry, kind,
+        validDeadline ? 'OPTIONAL_STAGE_DEADLINE_EXPIRED' : 'INVALID_OPTIONAL_DEADLINE', 'NOT_CHECKED');
       return finish();
     }
     // Every attempted broker request consumes a slot even when it fails or is
@@ -340,14 +359,15 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     else {
       attempts++;
       try {
-        const response = await request('trades', {instrument, params: {limit: RECENT_TRADE_SEMANTICS.limit}, ttl_ms: profile.freshness_ms.trades});
+        const response = await request('trades', {instrument, params: {limit: RECENT_TRADE_SEMANTICS.limit}, ttl_ms: profile.freshness_ms.trades, deadline_ts: deadline});
         const parsed = decode(response, () => parseRecentTrades(response.data, {instrument: entry.instrument, received_ts: response.received_ts}));
         facts.trades = fact(entry, 'trades', parsed.value, parsed.unit, parsed.event_ts, response,
           {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage,
             extra: {unit_evidence_ref: RECENT_TRADE_SEMANTICS.evidence_ref, base_quantity_qualified: false}});
-      } catch (error) { facts.trades = failed(entry, 'trades', error); }
+      } catch (error) { facts.trades = optionalFailure('trades', error); }
     }
     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
+      if (exhausted()) { facts[kind] = absent(entry, kind, 'OPTIONAL_STAGE_DEADLINE_EXPIRED', 'NOT_CHECKED'); continue; }
       const qualification = entry.qualifications[kind];
       const usableQualification = proof(qualification) && (kind === 'open_interest'
         ? ['CONTRACTS', 'BASE_ASSET', 'USDT'].includes(qualification.unit)
@@ -357,13 +377,13 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
       if (attempts >= upper) { facts[kind] = absent(entry, kind, 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED'); continue; }
       attempts++;
       try {
-        const response = await request(kind, {instrument, ttl_ms: profile.freshness_ms[kind]});
+        const response = await request(kind, {instrument, ttl_ms: profile.freshness_ms[kind], deadline_ts: deadline});
         const parsed = decode(response, () => parse(response.data, instrument, entry.qualifications[kind]));
         facts[kind] = fact(entry, kind, parsed.value, kind === 'funding' ? 'RATE_FRACTION_PER_ACTUAL_PERIOD' : parsed.unit,
           parsed.event_ts, response, {qualified: parsed.qualified, reason: parsed.reason,
             extra: {unit_evidence_ref: proof(entry.qualifications[kind]) ? entry.qualifications[kind].evidence_ref : null,
               native_value_decimal: parsed.native_value_decimal ?? null, native_metadata_update_ts: parsed.native_metadata_update_ts ?? null}});
-      } catch (error) { facts[kind] = failed(entry, kind, error); }
+      } catch (error) { facts[kind] = optionalFailure(kind, error); }
     }
     return finish();
   }

@@ -41,8 +41,8 @@ function sameVolumeBasis(impulse,basis){
   if(!basis||impulse.field!==basis.field||impulse.unit!==basis.unit)return false;
   return basis.field!=='volume_native'||impulse.comparison_kind===basis.comparison_kind&&impulse.comparison_key===basis.comparison_key&&impulse.interval_ms===basis.interval_ms;
 }
-function volumeComparison(rows, end, profile,input) {
-  const duration=profile.impulse_window_ms,interval=profile.candle_interval_ms,current=windowRows(rows,end,duration,interval);
+function volumeComparison(rows, end, profile,input,duration=profile.impulse_window_ms) {
+  const interval=profile.candle_interval_ms,current=windowRows(rows,end,duration,interval);
   if(!current)return null;
   const prior=[];
   for(let e=end-duration;e>=end-duration-profile.volume_baseline_ms+duration;e-=duration){const w=windowRows(rows,e,duration,interval);if(w)prior.push(w);}
@@ -55,6 +55,69 @@ function volumeComparison(rows, end, profile,input) {
     baseline_windows:prior.length,baseline_status:prior.length*duration>=profile.volume_baseline_ms?'FULL':'SHORT_HISTORY',
     normal_range:median(prior.map(w=>Math.max(...w.map(r=>r.high))-Math.min(...w.map(r=>r.low)))),start_ts:end-duration,end_ts:end,
     open:current[0].open,close:current.at(-1).close,low:Math.min(...current.map(r=>r.low)),return_pct:pct(current[0].open,current.at(-1).close)};
+}
+export const MOVEMENT_DETAILS_VERSION='pump-closed-movement-details-v1-20261026';
+const knownNumber=value=>finite(value)?value:null;
+// Observations of the already qualified, normalized closed rows. These do not
+// change wave qualification, state, lifetime, plan or publication.
+export function describeMovementDetails(input,rows,movement,price,profile){
+  const f=input.facts.candles,at=input.analysis_ts,end=rows.at(-1)?.close_ts;
+  const provenance={fact_id:f.fact_id,source:f.source,event_ts:f.event_ts,received_ts:f.received_ts,known_ts:at,evidence_ref:f.evidence_ref??null};
+  const absent=reason=>({version:MOVEMENT_DETAILS_VERSION,status:'UNAVAILABLE',reason,provenance,activity_windows:[],failed_high_tests:null,pullback_return:null,changes_signal_gates:false});
+  if(f.kind!=='candles'||f.origin!=='OBSERVED'||f.venue!=='BINGX'||f.instrument_id!==input.instrument.instrument_id||!rows.length||!validTime(end)||!validTime(f.event_ts)||!validTime(f.received_ts)||f.event_ts>f.received_ts||f.received_ts>at||end>f.event_ts||typeof f.evidence_ref!=='string'||!f.evidence_ref)return absent('CLOSED_ROW_SOURCE_CLOCK_OR_EVIDENCE_UNBOUND');
+  const configured=profile.activity_windows_ms;
+  if(!Array.isArray(configured)||configured.length!==2||!configured.includes(180000)||!configured.includes(300000))return absent('ACTIVITY_WINDOWS_PROFILE_UNQUALIFIED');
+  const activity_windows=configured.map(duration=>{
+    const current=windowRows(rows,end,duration,profile.candle_interval_ms),previous=windowRows(rows,end-duration,duration,profile.candle_interval_ms);
+    const comparison=volumeComparison(rows,end,profile,input,duration),basis=current?volumeBasis([...(previous??[]),...current],input,profile,comparison?.field??movement.impulse?.field??null):null;
+    const volume=current&&basis?knownNumber(sum(current.map(r=>r[basis.field]))):null,priorVolume=previous&&basis?knownNumber(sum(previous.map(r=>r[basis.field]))):null;
+    const change=current?knownNumber(pct(current[0].open,current.at(-1).close)):null,priorChange=previous?knownNumber(pct(previous[0].open,previous.at(-1).close)):null,minutes=duration/60000;
+    const speed=change===null?null:change/minutes,priorSpeed=priorChange===null?null:priorChange/minutes;
+    const comparable=volume!==null&&priorVolume!==null&&positive(priorVolume),lessGrowth=comparable&&priorChange!==null&&priorChange>0&&change!==null?volume>=priorVolume&&change<priorChange:null;
+    const previousRatio=comparable?knownNumber(volume/priorVolume):null;
+    const baselineComparable=comparison&&basis&&sameVolumeBasis(comparison,basis);
+    return {window_ms:duration,start_ts:end-duration,end_ts:end,previous_start_ts:end-2*duration,previous_end_ts:end-duration,
+      price_return_pct:change,price_return_pct_reason:current?change===null?'PRICE_RETURN_NOT_FINITE':null:'CURRENT_CLOSED_WINDOW_UNAVAILABLE',
+      previous_price_return_pct:priorChange,previous_price_return_pct_reason:previous?priorChange===null?'PRICE_RETURN_NOT_FINITE':null:'PREVIOUS_CLOSED_WINDOW_UNAVAILABLE',speed_pct_per_min:speed,previous_speed_pct_per_min:priorSpeed,
+      speed_change_pct_per_min:speed!==null&&priorSpeed!==null?knownNumber(speed-priorSpeed):null,
+      volume_counter:volume,previous_volume_counter:priorVolume,volume_basis:basis,
+      current_to_previous_volume_ratio:previousRatio,
+      current_to_previous_volume_ratio_reason:comparable?previousRatio===null?'CURRENT_PREVIOUS_VOLUME_RATIO_NOT_FINITE':null:previous?'PREVIOUS_VOLUME_ZERO_OR_UNKNOWN':'PREVIOUS_CLOSED_WINDOW_UNAVAILABLE',
+      baseline_median:baselineComparable?comparison.baseline_median:null,baseline_windows:baselineComparable?comparison.baseline_windows:0,
+      baseline_status:baselineComparable?comparison.baseline_status:'UNAVAILABLE',current_to_baseline_ratio:baselineComparable?comparison.ratio:null,
+      current_to_baseline_ratio_reason:baselineComparable?comparison.ratio_reason:'MATCHED_VOLUME_BASELINE_UNAVAILABLE',
+      volume_at_least_previous_with_less_growth:lessGrowth,
+      positive_growth_accelerated:speed!==null&&priorSpeed!==null?speed>0&&speed>priorSpeed:null,
+      reason:current?volume===null?'CURRENT_VOLUME_BASIS_UNQUALIFIED':null:'CURRENT_CLOSED_WINDOW_UNAVAILABLE'};
+  });
+  const waveStart=movement.impulse?.start_ts,latest=rows.at(-1),level=(movement.pivots??[]).filter(p=>p.kind==='HIGH'&&positive(p.price)&&validTime(p.known_ts)&&p.known_ts<=latest.open_ts&&
+    validTime(p.event_ts)&&(!validTime(waveStart)||p.event_ts>=waveStart)).sort((a,b)=>b.known_ts-a.known_ts||b.event_ts-a.event_ts||b.price-a.price)[0];
+  const tests=level?rows.filter(r=>r.open_ts>=level.known_ts&&(!validTime(waveStart)||r.open_ts>=waveStart)&&r.open<=level.price&&r.high>level.price&&r.close<=level.price):[];
+  const failed_high_tests={scope:'SUPPLIED_CLOSED_BARS_AFTER_PREKNOWN_HIGH_ONLY',level:level?{kind:level.kind,price:level.price,event_ts:level.event_ts,known_ts:level.known_ts,fact_id:level.fact_id??null}:null,
+    failed_closed_bars:level?tests.length:null,repeated:level?tests.length>=2:null,first_test_interval:tests.length?{start_ts:tests[0].open_ts,end_ts:tests[0].close_ts}:null,
+    last_test_interval:tests.length?{start_ts:tests.at(-1).open_ts,end_ts:tests.at(-1).close_ts}:null,
+    last_close_above_level:level?latest.close>level.price:null,current_price_above_level:level?price>level.price:null,
+    full_wave_history_proven:false,intrabar_attempt_count_unknown:true,reason:level?null:'PREKNOWN_CONFIRMED_HIGH_UNAVAILABLE'};
+  const peakTs=movement.next_wave?.peak_event_ts,peak=movement.peak_price,peakBar=rows.find(r=>r.close_ts===peakTs&&r.high===peak),after=validTime(peakTs)?rows.filter(r=>r.open_ts>=peakTs):[],reclaim=movement.reclaim_level;
+  const path=after.length>0&&completeInterval(rows,peakTs,end),lowBar=path?after.reduce((a,r)=>!a||r.low<=a.low?r:a,null):null;
+  const bounds=(change,start,endTime)=>{
+    if(!finite(change)||!start||!validTime(endTime)||endTime<start.close_ts)return null;
+    const min=endTime-start.close_ts,max=endTime-start.open_ts;
+    return {duration_min_ms:min,duration_max_ms:max,lower_pct_per_min:max>0?knownNumber(change/(max/60000)):null,
+      upper_pct_per_min:min>0?knownNumber(change/(min/60000)):null,upper_reason:min>0?null:'INTRABAR_EXTREME_TIME_UNKNOWN',basis:'OHLC_EXTREME_TIME_INTERVAL_NOT_EXACT_TICK'};
+  };
+  const returnPct=lowBar?knownNumber(pct(lowBar.low,latest.close)):null,fallPct=positive(peak)?knownNumber(100*(1-latest.close/peak)):null;
+  const breaches=path&&positive(reclaim)?after.filter(r=>r.low<reclaim):[],first=breaches[0],last=breaches.at(-1),firstReclaim=first?after.find(r=>r.close_ts>=first.close_ts&&r.close>reclaim):null,lastReclaim=last?after.find(r=>r.close_ts>=last.close_ts&&r.close>reclaim):null;
+  const pullback_return={scope:'SUPPLIED_CLOSED_POST_PEAK_PATH',peak_price:positive(peak)?peak:null,peak_close_ts:validTime(peakTs)?peakTs:null,path_complete_in_supplied_rows:path,
+    closed_fall_from_peak_pct:fallPct,fall_speed_bounds:peakBar&&fallPct!==null&&fallPct>=0?bounds(fallPct,peakBar,end):null,
+    low_price:lowBar?.low??null,low_interval:lowBar?{start_ts:lowBar.open_ts,end_ts:lowBar.close_ts}:null,last_close_price:latest.close,last_close_ts:end,
+    closed_return_from_low_pct:returnPct,closed_return_reason:lowBar?returnPct===null?'CLOSED_RETURN_NOT_FINITE':null:'POST_PEAK_LOW_UNAVAILABLE',return_speed_bounds:returnPct!==null?bounds(returnPct,lowBar,end):null,
+    reclaim_level:positive(reclaim)?reclaim:null,first_breach_interval:first?{start_ts:first.open_ts,end_ts:first.close_ts}:null,
+    first_reclaim_close_ts:firstReclaim?.close_ts??null,reclaim_after_last_breach_close_ts:lastReclaim?.close_ts??null,
+    last_close_above_reclaim:positive(reclaim)?latest.close>reclaim:null,current_price_above_reclaim:positive(reclaim)?price>reclaim:null,
+    reason:!validTime(peakTs)?'WAVE_PEAK_UNAVAILABLE':!path?'POST_PEAK_CLOSED_PATH_UNAVAILABLE':!peakBar?'PEAK_BAR_NOT_IN_SUPPLIED_ROWS':null,
+    no_prior_breach_reason:breaches.length?null:movement.next_wave?.reclaim_breached?'EARLIER_BREACH_NOT_IN_SUPPLIED_ROWS':'NO_OBSERVED_POST_PEAK_BREACH'};
+  return {version:MOVEMENT_DETAILS_VERSION,status:'OBSERVED_CLOSED_WINDOW_MEASUREMENTS',reason:null,provenance,activity_windows,failed_high_tests,pullback_return,changes_signal_gates:false};
 }
 function qualificationClockValid(p,at){
   const known=p.qualification_known_ts??p.created_ts;

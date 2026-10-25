@@ -114,10 +114,17 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     let analysis=analyzePump(input,profile);
     if(analysis.ready){
       await assert_execution();
-      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts});
-      input.facts={...input.facts,...optional.facts};
-      try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts:clock()+profile.liquidation_deadline_ms});}
+      // One absolute deadline for all supplemental work. Retain half of the
+      // shortest mandatory fact's remaining life for saving and the existing
+      // publication recheck. Original fact clocks and HTTP reserves stay intact.
+      const at=clock(),mandatoryUntil=Math.min(...['price','orderbook','candles'].map(key=>input.facts[key]?.expires_ts??0));
+      const deadline_ts=Math.min(at+profile.liquidation_deadline_ms,at+Math.max(0,Math.floor((mandatoryUntil-at)/2)));
+      // Future liquidation information has the owner's first priority within
+      // the supplemental budget; its absence is still not a core refusal.
+      try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts});}
       catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
+      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts,deadline_ts});
+      input.facts={...input.facts,...optional.facts};
       input.analysis_ts=clock();analysis=analyzePump(input,profile);
     }
     const analysis_key=await rememberAnalysis(analysis,input);let delivered=null;

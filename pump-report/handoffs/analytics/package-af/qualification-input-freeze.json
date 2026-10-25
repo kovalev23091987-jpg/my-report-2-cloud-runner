@@ -1,0 +1,128 @@
+{
+  "schema": "AF_STATIC_IMPORT_AND_INPUT_FREEZE_V1",
+  "unified_spec_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
+  "unified_git_blob": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+  "unchanged_dependencies": 8,
+  "source_runtime_delivery_storage_imports": 0,
+  "preload_sha256": "7a57d4036d30146735628cb4013f69721fa7cb6794932362f3a2155e36cb6783",
+  "files": {
+    "pump-report/tests/analytics/movement-details.test.mjs": {
+      "sha256": "314f2b2ef8229a9504c0226fd6f9c77e768a4c2bcec21a12b8fcc801fb0183ba",
+      "bytes": 17419,
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:path",
+        "node:url",
+        "../../analytics/index.mjs",
+        "../../analytics/movement.mjs",
+        "../../analytics/presentation.mjs",
+        "../../profile/start-v1.mjs",
+        "../../contracts/index.mjs"
+      ]
+    },
+    "pump-report/contracts/index.mjs": {
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "bytes": 6230,
+      "imports": []
+    },
+    "pump-report/profile/start-v1.mjs": {
+      "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+      "bytes": 1774,
+      "imports": []
+    },
+    "pump-report/analytics/presentation.mjs": {
+      "sha256": "376942638c3e6aefe9d638a199b70820eb648a2a1b2951e20867d45ac61c1451",
+      "bytes": 9770,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    "pump-report/analytics/math.mjs": {
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "bytes": 4477,
+      "imports": [
+        "../contracts/index.mjs"
+      ]
+    },
+    "pump-report/analytics/movement.mjs": {
+      "sha256": "a472e038a54ca2518f0660a9d7d22d1258f1e862202ead010a23e79c3f1604a5",
+      "bytes": 25341,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    "pump-report/analytics/index.mjs": {
+      "sha256": "f04b32435237c5adae628f47928e8325378a162955cf586264be24e70e5d234a",
+      "bytes": 16404,
+      "imports": [
+        "../contracts/index.mjs",
+        "../profile/start-v1.mjs",
+        "./math.mjs",
+        "./movement.mjs",
+        "./liquidity.mjs",
+        "./zones.mjs",
+        "./context.mjs",
+        "./day-growth.mjs",
+        "./manual-text.mjs",
+        "./presentation.mjs",
+        "./outcome.mjs"
+      ]
+    },
+    "pump-report/analytics/outcome.mjs": {
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "bytes": 9914,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    "pump-report/analytics/manual-text.mjs": {
+      "sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f",
+      "bytes": 6627,
+      "imports": [
+        "../contracts/index.mjs",
+        "./presentation.mjs"
+      ]
+    },
+    "pump-report/analytics/day-growth.mjs": {
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "bytes": 3782,
+      "imports": [
+        "../contracts/index.mjs",
+        "../profile/start-v1.mjs",
+        "./math.mjs"
+      ]
+    },
+    "pump-report/analytics/context.mjs": {
+      "sha256": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673",
+      "bytes": 9360,
+      "imports": [
+        "../contracts/index.mjs"
+      ]
+    },
+    "pump-report/analytics/zones.mjs": {
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "bytes": 7668,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    "pump-report/analytics/liquidity.mjs": {
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "bytes": 3326,
+      "imports": [
+        "../contracts/index.mjs"
+      ]
+    }
+  },
+  "old_snapshot_sha256": {
+    "index.mjs.before.mjs.txt": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd",
+    "movement.mjs.before.mjs.txt": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0",
+    "presentation.mjs.before.mjs.txt": "4db478513ec9c927c92bea68e2a799a3dd3dfaaad122403d1f733378a4a180b4"
+  }
+}
