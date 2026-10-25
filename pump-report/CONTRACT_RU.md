@@ -45,3 +45,16 @@ liquidations результата: status,reason,zones_up,zones_down,coverage; �
 ## Следующие пакеты
 
 А: реальные обязательные данные → один пригодный сценарий → сохранение → подтверждённая доставка, карта optional. Б: широкий каталог/очередь/все сценарии/ручной запуск/новое расписание. В: накопление исходов и доказанная калибровка/полезность; ожидание статистики не блокирует первую версию. Полная старая батарея и принятые97+7 без нового дефекта не повторяются.
+
+
+## Принятое владельцем уточнение свечей 25 октября
+
+Владелец прямо выбрал «Принять этот вариант» для exact pinned CCXT opening-time convention и безразмерного native quantity comparison. Решение: `checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json`. ТЗ v2 и его SHA256 остаются теми же; пороги/обязательность движения, активности, ликвидности и плана не меняются.
+
+Новый дополнительный candle unit: `OHLC_USDT_NATIVE_REPORTED_QUANTITY`. Это не BASE и не оборот USDT. В каждой строке `volume_base=null`; исходный `native_volume_decimal` сохраняется, числовой `volume_native` допускается только для сравнения. Явные поля: `native_quantity_unit=UNKNOWN`, `comparison_kind=SAME_NATIVE_REPORTED_QUANTITY`, `volume_comparison_key=candleNativeComparisonKey(instrument,60000)`.
+
+Сравнение допускается внутри одного exact BingX USDT_M инструмента/маршрута/поля volume/минутного интервала и одного сопоставимого определения величины. Входные текущие и предыдущие окна должны быть пригодны и полны по прежним правилам. Отношение имеет единицу RATIO; при нулевой или неизвестной базе результат null с причиной. Абсолютная сумма не становится количеством монет или денежным объёмом. Смешение quantity bases между окнами или с сохранённой волной не допускается; исходные t0/P0/дедлайн не передвигаются.
+
+Coverage различает `volume_qualified=false` для неизвестной абсолютной единицы и `relative_volume_qualified=true` только при выполнении принятого scope. Абсолютные base/USDT qualified flags остаются false. OPEN_TIME интерпретация хранит `time_basis=CCXT_CONSUMER_OPEN_TIME` и ссылку на точный pinned code review. Это принятое основание consumer, а не утверждение о новой биржевой гарантии. Исходные event/received clocks и capture-closedness, grid/gaps/90s свежесть сохраняются.
+
+Старый действительно квалифицированный BASE/quote режим остаётся совместимым. Новый enum не является разрешением для произвольного caller boolean: SOURCE связывает его с сохранённым решением, exact primary-code evidence и registry identity, ANALYTICS проверяет named unit/coverage/row keys. Цена, стакан и размер позиции по-прежнему требуют своих независимых единиц и свежести.

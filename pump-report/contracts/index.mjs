@@ -1,12 +1,21 @@
 export const INPUT_SCHEMA = 'PUMP_REPORT_INPUT_V1';
 export const ANALYSIS_SCHEMA = 'PUMP_REPORT_ANALYSIS_V1';
-export const CONTRACT_VERSION = 'pump-report-contract-v1';
+export const CONTRACT_VERSION = 'pump-report-contract-v1.1-native-relative';
 export const TZ_SHA256 = '0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc';
 export const FACT_STATUSES = Object.freeze(['USABLE', 'INCOMPLETE', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED']);
 export const MAP_STATUSES = Object.freeze(['USABLE', 'PARTIAL', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED', 'NOT_CHECKED_BUDGET', 'TIMEOUT']);
 export const finite = value => typeof value === 'number' && Number.isFinite(value);
 export const positive = value => finite(value) && value > 0;
 export const validTime = value => Number.isSafeInteger(value) && value > 0;
+export const CANDLE_NATIVE_RELATIVE_UNIT='OHLC_USDT_NATIVE_REPORTED_QUANTITY';
+export const CANDLE_NATIVE_RELATIVE_KIND='SAME_NATIVE_REPORTED_QUANTITY';
+export const CANDLE_CCXT_TIME_BASIS='CCXT_CONSUMER_OPEN_TIME';
+export const CANDLE_SEMANTICS_OWNER_REF='checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json';
+export function candleNativeComparisonKey(instrument,interval_ms=60000){
+  assertInstrument(instrument);
+  if(interval_ms!==60000)throw Error('NATIVE_COMPARISON_REQUIRES_APPROVED_ONE_MINUTE_INTERVAL');
+  return 'BINGX|USDT_M|'+instrument.instrument_id+'|/openApi/swap/v3/quote/klines|volume|'+interval_ms;
+}
 
 export function assertInstrument(instrument) {
   if (!instrument || !['instrument_id', 'asset_id', 'native_symbol', 'base'].every(key => typeof instrument[key] === 'string' && instrument[key].length > 0)) throw Error('INSTRUMENT_IDENTITY_REQUIRED');
