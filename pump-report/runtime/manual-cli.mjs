@@ -21,5 +21,6 @@ console.log(JSON.stringify({http_status:response.status,status:body.status??null
 const analysis=body.manual_result?.analysis??body.result?.analysis;
 if(analysis?.card_text)console.log('\n'+analysis.card_text);
 else if(analysis)console.log(JSON.stringify({analysis_status:analysis.status,reasons:analysis.reasons},null,2));
+if(!analysis&&command!=='summary'&&(body.manual_result??body.result))console.log(JSON.stringify(body.manual_result??body.result,null,2));
 if(command==='summary'&&body.result)console.log(JSON.stringify(body.result,null,2));
 if(!response.ok)process.exitCode=1;

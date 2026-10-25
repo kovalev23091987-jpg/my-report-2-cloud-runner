@@ -12,7 +12,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     if(mode==='AUTO'&&!analysis.automatic_eligible)throw new BudgetRefusal('AUTOMATIC_GROWTH_NOT_QUALIFIED');
     if(!['AUTO','MANUAL'].includes(mode)||!Number.isSafeInteger(expires_ts)||expires_ts<=clock())throw new BudgetRefusal('CARD_VALIDITY_REQUIRED');
     const hash=await textHash(analysis.card_text),id='PUMP:'+await textHash(analysis.instrument.instrument_id+'|'+analysis.wave_id+'|'+hash);
-    const card={card_id:id,text:analysis.card_text,text_hash:hash,recipient:String(recipient),mode,analysis,created_ts:clock(),expires_ts,state:'READY',message_id:null,owner:null,claim_until:null,attempts:0};
+    const card={delivery_schema:'PUMP_DELIVERY_V2',card_id:id,text:analysis.card_text,text_hash:hash,recipient:String(recipient),mode,analysis,created_ts:clock(),expires_ts,state:'READY',message_id:null,owner:null,claim_until:null,send_started_ts:null,attempts:0};
     // Save immutable content before the wave pointer. A lost queue ACK is
     // repaired by the next enqueue, while a sent card remains immutable.
     await store.atomic('pump:card:'+id,current=>{
@@ -41,21 +41,22 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     const owner=crypto.randomUUID(),now=clock();
     const card=await store.atomic('pump:card:'+card_id,current=>{
       if(!current)return {state:current,result:{skip:'CARD_NOT_FOUND'}};
-      if(current.state==='SENDING'&&current.claim_until<=now){current.state='UNKNOWN';current.updated_ts=now;current.reason='SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND';return {state:current,result:{skip:'UNKNOWN'}};}
+      if(current.state==='SENDING'&&current.claim_until<=now){const possible=current.delivery_schema!=='PUMP_DELIVERY_V2'||Number.isSafeInteger(current.send_started_ts);current.state=possible?'UNKNOWN':'ERROR';current.updated_ts=now;current.reason=possible?'SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND':'SENDER_INTERRUPTED_BEFORE_SEND';return {state:current,result:{skip:current.state}};}
       if(!['READY','RETRYABLE'].includes(current.state))return {state:current,result:{skip:current.state}};
       if(current.expires_ts<=now||current.mode==='AUTO'&&!automaticWindowOpen(now)){current.state='STALE';current.updated_ts=now;return {state:current,result:{skip:'STALE'}};}
       if((current.retry_after_ts??0)>now)return {state:current,result:{skip:'BACKOFF'}};
-      current.state='SENDING';current.owner=owner;current.claim_until=now+claim_ms;current.attempts++;
+      current.state='SENDING';current.owner=owner;current.claim_until=now+claim_ms;current.send_started_ts=null;current.attempts++;
       return {state:current,result:structuredClone(current)};
     });
     if(card.skip)return {state:card.skip,card_id};
-    const fresh=await revalidate(card);
+    let fresh;try{fresh=await revalidate(card);}catch{await finish(card,{state:'ERROR',reason:'RECHECK_FAILED_BEFORE_SEND'});return {state:'ERROR',card_id};}
     if(!fresh?.valid){await finish(card,{state:'STALE',reason:fresh?.reason??'SCENARIO_RECHECK_FAILED'});return {state:'STALE',card_id};}
-    if(await textHash(card.text)!==card.text_hash)throw new BudgetRefusal('SAVED_TEXT_HASH_MISMATCH');
+    if(await textHash(card.text)!==card.text_hash){await finish(card,{state:'ERROR',reason:'SAVED_TEXT_HASH_MISMATCH'});throw new BudgetRefusal('SAVED_TEXT_HASH_MISMATCH');}
     if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock())){await finish(card,{state:'STALE',reason:'PUBLICATION_WINDOW_CLOSED'});return {state:'STALE',card_id};}
     let reply;
+    await store.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,send_started_ts:clock()},result:true};});
     try{reply=await send({text:card.text,recipient:card.recipient,card_id:card.card_id,text_hash:card.text_hash});}
-    catch{await finish(card,{state:'UNKNOWN',reason:'TELEGRAM_ACK_UNKNOWN'});return {state:'UNKNOWN',card_id};}
+    catch(error){const before=error?.send_attempted===false;await finish(card,{state:before?'ERROR':'UNKNOWN',reason:before?'SEND_REFUSED_BEFORE_HTTP':'TELEGRAM_ACK_UNKNOWN'});return {state:before?'ERROR':'UNKNOWN',card_id};}
     const message=reply?.body?.result,id=message?.message_id;
     if(reply?.ok===true&&reply.body?.ok===true&&positiveMessageId(id)&&String(message.chat?.id)===card.recipient){
       const receipt={message_id:String(id),recipient:card.recipient,card_id,text_hash:card.text_hash,confirmed_ts:clock(),telegram_date:message.date??null};

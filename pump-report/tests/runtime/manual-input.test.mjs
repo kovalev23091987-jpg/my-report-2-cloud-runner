@@ -9,3 +9,5 @@ test('a contextual coin request needs an explicit context and never guesses a ti
   assert.deepEqual(parseManualInput('Что сейчас по этой монете для памп-отчёта?',{context_symbol:'SUI'}),{status:'PARSED',symbol:'SUI'});
   for(const text of ['BTC ETH','BTC; DROP TABLE x','https://evil.test/BTC','Проверь все монеты'])assert.equal(parseManualInput(text).status,'INVALID_MANUAL_REQUEST');
 });
+
+test('the documented request Сделай памп по BTC resolves to the same instrument selector',()=>{assert.deepEqual(parseManualInput('Сделай памп по BTC'),{status:'PARSED',symbol:'BTC'});});
