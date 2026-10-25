@@ -3,11 +3,12 @@ import {START_PROFILE} from '../profile/start-v1.mjs';
 import {object, text, numeric, positive, timestamp, proof, fail, wireRows, selectRow, requestUrl,
   parsePrice, parseCandles, parseOrderbook, parseOpenInterest, parseFunding} from './bingx.mjs';
 import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
+import {createDayGrowthLoader} from './day-growth.mjs';
 
 export const SOURCE_VERSION = 'pump-report-sources-v1';
 export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
   core_price_fallback_max: 1, optional_open_interest: 1, optional_funding: 1,
-  selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1,
+  selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1, day_growth_per_window_max: 1,
   liquidation_swole_per_candidate: 1, automatic_retries: 0, SQL_owned_by_sources: 0,
   actual_provider_and_SQL_cost: null, six_manual_checks_reserved: false});
 const IDENTITY_KEYS = ['instrument_id', 'asset_id', 'venue', 'native_symbol', 'market_type', 'base', 'quote', 'settle', 'classification_status'];
@@ -69,7 +70,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     return entry;
   };
   const note = (instrument, section, value) => {
-    const row = coverageRows.get(instrument.instrument_id) ?? {instrument_id: instrument.instrument_id, asset_id: instrument.asset_id, native_symbol: instrument.native_symbol, overview: null, core: null, optional: null, liquidations: null};
+    const row = coverageRows.get(instrument.instrument_id) ?? {instrument_id: instrument.instrument_id, asset_id: instrument.asset_id, native_symbol: instrument.native_symbol, overview: null, core: null, growth_24h: null, optional: null, liquidations: null};
     row[section] = plain(value); coverageRows.set(instrument.instrument_id, row);
   };
   const request = async (kind, {instrument = null, params = {}, ttl_ms = 0, timeout_ms = 10000, deadline_ts = null, route = null, purpose = 'CORE'} = {}) => {
@@ -247,6 +248,13 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
       cost_authority: 'BROKER', receipt_ids: [...new Set(values.flatMap(value => value.attempt_receipt_ids ?? [value.evidence_ref]).filter(Boolean))]};
     note(instrument, 'core', coverage); return {facts, coverage};
   }
+  let dayGrowthLoader = null;
+  async function getDayGrowth({instrument, force_refresh = false} = {}) {
+    dayGrowthLoader ??= createDayGrowthLoader({broker, resolveEntry: resolve, clock, profile});
+    const result = await dayGrowthLoader.getDayGrowth({instrument, force_refresh});
+    note(instrument, 'growth_24h', result.coverage);
+    return result;
+  }
   async function getOutcomeHistory({instrument, start_ts, end_ts} = {}) {
     const entry = resolve(instrument), step = profile.candle_interval_ms;
     if (step !== 60000 || timestamp(start_ts) === null || timestamp(end_ts) === null || start_ts >= end_ts) fail('INVALID_OUTCOME_WINDOW');
@@ -342,10 +350,12 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         overview_price_usable: instruments.filter(row => row.overview?.status === 'USABLE').length,
         core_usable: instruments.filter(row => row.core?.status === 'USABLE' && row.core.selected_facts?.length === 3).length,
         selected_core_usable: instruments.filter(row => row.core?.status === 'USABLE').length, map_checked: checked.length,
+        day_growth_checked: instruments.filter(row => row.growth_24h && row.growth_24h.status !== 'NOT_CHECKED').length,
+        day_growth_usable: instruments.filter(row => row.growth_24h?.status === 'USABLE').length,
         map_usable: maps.filter(map => ['USABLE', 'PARTIAL'].includes(map.status)).length,
         map_checked_without_usable: checked.filter(map => !['USABLE', 'PARTIAL'].includes(map.status)).length,
         map_not_checked: registry.size - checked.length},
       expense_ledger: 'ROOT_BROKER_ONLY', actual_provider_cost: null, actual_SQL_cost: null};
   }
-  return {getCatalog, getOverview, getCore, getOptional, getLiquidations, getOutcomeHistory, getCoverage};
+  return {getCatalog, getOverview, getCore, getDayGrowth, getOptional, getLiquidations, getOutcomeHistory, getCoverage};
 }

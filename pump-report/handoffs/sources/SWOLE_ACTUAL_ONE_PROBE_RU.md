@@ -1,0 +1,13 @@
+# Единственный фактический Swole-сэмпл
+
+ROOT выполнил один отдельно допущенный GET, получен HTTP200, receipt `5113a908-f118-4f2b-875f-c6a913bde255`. Попытка SPENT; SOURCES повторов и новых запросов не делал. Private wrapper SHA256 `24b91c66d165ecae68c46782b6527f9660df43bb95418b3efb93036dad0c9528`. Это parsed-provider-reply envelope, не original provider HTTP bytes. Цены, границы, величины и raw тело в Git/чат не перенесены.
+
+Наблюдены `estimated=true`, `has_data=true`, `model_version=est-1.0+hl-2026-09-27`, range24h/viewall. Четыре bins:2long/2short; у всех положительные упорядоченные lo/mid/hi, правильная сторона относительно model price и конечное неотрицательное поле usd. Наблюдаемые поля совместимы со структурными ожиданиями существующего parser. Это не успешно квалифицированная карта. Native cum/max_pain/totals вложены в одну модель; суммировать их как независимые позиции нельзя. Величины допускают только относительную модельную интерпретацию; реальные USD/USDT/BASE суммы и явная native scale_id не доказаны.
+
+as_of — safe integer, численно совместимый с epoch milliseconds. Существующий parser трактует его как ms; независимой единицы по одному масштабу числа не доказать. При этой трактовке возраст на original received был283191ms, остаток до300000ms —16809ms. На момент offline проверки модель уже STALE. Receipt/Date/cache не обновляли source clock.
+
+Canonical Swole asset identity ограничена меткой BTC и селектором: именованной независимой привязки недостаточно. Нет native currency/quote, venue/exchange, market_id, price basis; текущий квалифицированный multiplier к BingX отсутствует. Суффикс hl в версии и методология распределения Hyperliquid не превращают модельные bins в наблюдаемые позиции Hyperliquid или BingX. Для точных заявок BingX сэмпл непригоден. Наличие данных не доказывает полный охват рынка.
+
+Одно новое offline qualification — PASS ожидаемого отказа: inactive route не проходит verifiedSwoleRoute; normalizeSwoleMap останавливается на identity gate; getLiquidations с действующим registry возвращает NOT_CHECKED до broker, broker calls0. Placeholder proofs/фиктивный multiplier не применялись. Source/registry/map routes не изменены; старые A33/аудиты не повторялись.
+
+ROOT измерил MAP_CHECK:10 D1 requests/15R/8W/unknown0; cumulative SQL snapshot242requests/613R/157W/unknown0 включает остальные control/manual/summary пакеты. Это не242 marketHTTP и не стоимость одного отчёта. SQLunknown0 не снимает две старые providerUNKNOWN. Main manual отдельно подтверждён ROOT как SENT240 без карты; карта остаётся необязательной. SOURCE marketHTTP/SQL/TG/deploy0. J/day-growth native ещё не доказан; caps/reserves/unknowns/9пауз/2deferrals сохранены.
