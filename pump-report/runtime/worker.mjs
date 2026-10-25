@@ -44,7 +44,7 @@ export async function revalidatePumpCard({card,store,sources,clock=Date.now,prof
 async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
   if(IMPLEMENTATION_PIN?.schema!=='PUMP_BUNDLED_IMPLEMENTATION_PIN_V1'||!/^[a-f0-9]{64}$/.test(IMPLEMENTATION_PIN.sha256??''))throw Object.assign(Error('PINNED_IMPLEMENTATION_ARTIFACT_REQUIRED'),{code:'PINNED_IMPLEMENTATION_ARTIFACT_REQUIRED'});
   const run_purpose=PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?'PRODUCTION':'ACCEPTANCE_TEST';
-  const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock}),store=native.store;
+  const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock,future_schedule:PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?DISCOVERY_PLAN:null}),store=native.store;
   try{
   if(mode!=='LOOKUP')await store.install();
   const feasibility=PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&mode==='CONTROL'&&run_id===SOURCE_FEASIBILITY_ID;

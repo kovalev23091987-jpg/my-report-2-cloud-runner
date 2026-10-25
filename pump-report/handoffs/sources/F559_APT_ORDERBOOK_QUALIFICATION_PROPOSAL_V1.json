@@ -1,0 +1,34 @@
+{
+  "schema": "SOURCE_F559_APT_NATIVE_COIN_QUALIFICATION_PROPOSAL_V1",
+  "status": "READY_FOR_ROOT_EXACT_TUPLE_REVIEW_NOT_APPLIED_TO_REGISTRY",
+  "target_instrument_id": "BINGX:USDT_M:100164:APT-USDT",
+  "required_exact_tuple": {
+    "instrument_id": "BINGX:USDT_M:100164:APT-USDT",
+    "asset_id": "BINGX_UNDERLYING:APT",
+    "venue": "BINGX",
+    "native_symbol": "APT-USDT",
+    "market_type": "PERPETUAL",
+    "base": "APT",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT"
+  },
+  "required_native_contract_id": "100164",
+  "qualification": {
+    "fields": "COIN",
+    "unit": "BASE_ASSET",
+    "native_base_unit": "APT",
+    "evidence_ref": "pump-report/handoffs/sources/F559_APT_NATIVE_COIN_UNIT_REVIEW_V1.json",
+    "qualification_scope": "EXACT_BINGX_USDT_M_CONTRACT_100164_APT_USDT_NATIVE_BASE_APT_ONLY;ACTUAL_COIN_ARRAYS_T_FRESHNESS_REQUIRED"
+  },
+  "set_contract_multiplier": false,
+  "set_quantity_step": false,
+  "set_price_tick": false,
+  "set_cross_venue_canonical_flag": false,
+  "other_539_or_scaled_qualification_copied": false,
+  "ROOT_registry_patch_applied_by_SOURCE": false,
+  "existing_parseOrderbook_compatible": true,
+  "expected_fact_unit_after_qualified_actual_reply": "USDT_PRICE_BASE_QUANTITY",
+  "native_probe": "ROOT only, separate factual allowance; priorCONTROL6/F550extra1SPENT notreopened",
+  "source_new_IO": 0
+}

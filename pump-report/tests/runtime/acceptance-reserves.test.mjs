@@ -13,8 +13,8 @@ function database(otherRead,{historicAcceptance=false}={}){
   const db={prepare(query){let args=[];return {bind(...values){args=values;return this;},async all(){const results=sql.prepare(query).all(...args),write=/^(WITH|INSERT|UPDATE|CREATE)/.test(query.trim()),changes=write?Number(sql.prepare('SELECT changes() AS n').get().n):0;return {success:true,results,meta:{rows_read:write?1:results.length,rows_written:changes,changes}};}};}};
   return {sql,db};
 }
-test('historical acceptance240 costs stay charged while six user-manual slots remain protected',async()=>{
-  const f=database(3322000,{historicAcceptance:true});try{
+test('historical acceptance240 costs stay charged while three user-manual slots remain protected',async()=>{
+  const f=database(3337000,{historicAcceptance:true});try{
     const before=JSON.stringify(f.sql.prepare('SELECT * FROM report2_runner_budget_ledger_shadow ORDER BY reservation_id').all());
     await assert.rejects(reserveNativeRun({db:f.db,run_id:'ARTIFICIAL_AUTO',mode:'AUTO',clock:()=>now}),{code:'SHARED_NATIVE_DAY_BLOCKED_OR_DUPLICATE'});
     assert.equal(JSON.stringify(f.sql.prepare('SELECT * FROM report2_runner_budget_ledger_shadow ORDER BY reservation_id').all()),before);
@@ -22,7 +22,7 @@ test('historical acceptance240 costs stay charged while six user-manual slots re
   }finally{f.sql.close();}
 });
 test('an acceptance run cannot borrow a user slot, while a real user manual check can use its own protected slot',async()=>{
-  const f=database(3326000);try{
+  const f=database(3341000);try{
     await assert.rejects(reserveNativeRun({db:f.db,run_id:ACCEPTANCE_MANUAL_RUN_IDS[1],mode:'MANUAL',run_purpose:'ACCEPTANCE_TEST',clock:()=>now}),{code:'SHARED_NATIVE_DAY_BLOCKED_OR_DUPLICATE'});
     const r=await reserveNativeRun({db:f.db,run_id:'ARTIFICIAL_REAL_USER_MANUAL',mode:'MANUAL',run_purpose:'PRODUCTION',clock:()=>now});assert.equal(r.admission.max_rows_read,5000);assert.equal(r.admission.max_rows_written,300);
   }finally{f.sql.close();}

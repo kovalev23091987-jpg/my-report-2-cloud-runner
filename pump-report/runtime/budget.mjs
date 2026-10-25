@@ -2,6 +2,9 @@
 import {automaticWindowOpen} from '../contracts/index.mjs';
 import {responseDisposition,temporaryDelay,SOURCE_ERROR_PROFILE} from './source-error-policy.mjs';
 import {futureDiscoveryHttp} from './discovery-reserve.mjs';
+import {futureCandidateReserve} from './future-candidate-reserve.mjs';
+import {admittedReadOnlyJSONPost} from './read-only-json-post.mjs';
+import {textHash} from './text-hash.mjs';
 export const RESOURCE_LIMITS = Object.freeze({http_per_run:164,project_http_day:900,lanes:{hot:96,background:56,statistics:12},deep_per_candidate:50,liquidations_per_run:8,manual_http_run_reserve:24,d1_reads_day:3500000,d1_writes_day:70000,next_full_reads:59000,next_full_writes:920});
 const integer = n => Number.isSafeInteger(n) && n >= 0;
 export class BudgetRefusal extends Error {
@@ -37,6 +40,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     const deliveryProtection=family==='DELIVERY'||purpose==='DELIVERY'?0:protected_reserves.delivery_http;
     const outcomesProtection=mode==='STATISTICS'?0:protected_reserves.outcomes_http;
     const futureDiscovery=futureDiscoveryHttp(now,admission.discovery);
+    const futureCandidates=futureCandidateReserve(now,admission.future_candidates);
     // Hold the in-process run envelope before awaiting the durable provider CAS.
     // Concurrent different-provider requests cannot oversubscribe a run.
     run.total+=cost;run.lanes[lane]+=cost;if(family==='LIQUIDATIONS')run.liquidations+=cost;if(candidate_id)inc(run.candidates,candidate_id,cost);
@@ -52,10 +56,10 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if(integer(policy.qualification_attempt_cap)&&(p.qualification_totals?.[policy.version]??0)+cost>policy.qualification_attempt_cap)throw new BudgetRefusal('QUALIFICATION_ATTEMPTS_EXHAUSTED');
       const providerOutcomesProtection=policy.outcome_source===false?0:outcomesProtection;
       const providerDeliveryProtection=policy.delivery_source===false?0:deliveryProtection;
-      if(spent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      if(spent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       const globalManual=mode==='MANUAL'&&admission.run_purpose!=='ACCEPTANCE_TEST'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
-      if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection+futureDiscovery>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
-      if(monthSpent+cost+manualProtection+(provider===admission.discovery?.provider?futureDiscovery:0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
+      if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      if(monthSpent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
       if(integer(policy.qualification_attempt_cap)){p.qualification_totals??={};inc(p.qualification_totals,policy.version,cost);}
@@ -86,7 +90,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     });
     receipt.state=state;receipt.http_status=http_status;if(state==='UNKNOWN')run.unknown++;
   }
-  function assertTarget(provider,url,{purpose='CORE',candidate_id=null}={}){assertWorkWindow();const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});if(purpose==='DISCOVERY'&&(provider!=='BINGX'||candidate_id!==null||target.search||!['/openApi/swap/v2/quote/contracts','/openApi/swap/v2/quote/ticker'].includes(target.pathname)))throw new BudgetRefusal('INVALID_DISCOVERY_SCOPE');}
+  function assertTarget(provider,url,{purpose='CORE',candidate_id=null,method='GET',json_body=null}={}){assertWorkWindow();const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});if(purpose==='DISCOVERY'&&(method!=='GET'||provider!=='BINGX'||candidate_id!==null||target.search||!['/openApi/swap/v2/quote/contracts','/openApi/swap/v2/quote/ticker'].includes(target.pathname)))throw new BudgetRefusal('INVALID_DISCOVERY_SCOPE');if(method==='POST')return admittedReadOnlyJSONPost(policy,target,json_body);if(method!=='GET'||json_body!==null)throw new BudgetRefusal('INVALID_SOURCE_REQUEST');return {method:'GET'};}
   function setMode(next){if(!['AUTO','MANUAL','STATISTICS'].includes(next))throw new BudgetRefusal('INVALID_BUDGET_MODE');mode=next;}
   function minimumIntervalMs(provider){const cap=providerPolicy(provider).per_second_cap;return integer(cap)&&cap>0?Math.ceil(1000/cap):0;}
   async function providerWindow(provider,cost){
@@ -116,14 +120,15 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
     });providerQueues.set(provider,next);
     try{return await next;}finally{if(providerQueues.get(provider)===next)providerQueues.delete(provider);}
   }
-  async function request({provider,family='CORE',purpose='CORE',cache_key,url,method='GET',timeout_ms=10000,ttl_ms=0,headers={},candidate_id=null,estimated_cost={http:1},deadline_ts=null}) {
-    if(method!=='GET'||!cache_key||!provider)throw new BudgetRefusal('INVALID_SOURCE_REQUEST');
+  async function request({provider,family='CORE',purpose='CORE',cache_key,url,method='GET',timeout_ms=10000,ttl_ms=0,headers={},json_body=null,candidate_id=null,estimated_cost={http:1},deadline_ts=null}) {
+    if(!['GET','POST'].includes(method)||method==='GET'&&json_body!==null||!cache_key||!provider)throw new BudgetRefusal('INVALID_SOURCE_REQUEST');
     if(!Number.isSafeInteger(timeout_ms)||timeout_ms<=0||timeout_ms>60000||deadline_ts!==null&&!Number.isSafeInteger(deadline_ts))throw new BudgetRefusal('INVALID_SOURCE_DEADLINE');
     const deadline=Math.min(deadline_ts??Infinity,clock()+timeout_ms);
     const target=new URL(url);
     if(target.protocol!=='https:'||target.username||target.password)throw new BudgetRefusal('HTTPS_SOURCE_REQUIRED');
-    budget.assertTarget(provider,url,{purpose,candidate_id});
-    const key=provider+':'+cache_key+':'+target.toString();
+    const route=budget.assertTarget(provider,url,{purpose,candidate_id,method,json_body});
+    if(method==='POST'&&(route?.method!=='POST'||route.read_only_json_post!==true||typeof route.body_text!=='string'))throw new BudgetRefusal('EXACT_READONLY_JSON_POST_NOT_ADMITTED');
+    const key=provider+':'+cache_key+':'+target.toString()+(method==='POST'?':POST:'+await textHash(route.body_text):'');
     if(inFlight.has(key))return inFlight.get(key);
     const work=(async()=>{
       const negative=await store.get('pump:negative-cache:'+key);
@@ -137,7 +142,7 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
       let response;
       try {
         const request_started_ts=clock();
-        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'manual',signal:AbortSignal.timeout(remaining)});
+        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers,...(method==='POST'?{'content-type':'application/json'}:{})},...(method==='POST'?{body:route.body_text}:{}),redirect:'manual',signal:AbortSignal.timeout(remaining)});
         if(response.status>=300&&response.status<400){await budget.finalize(receipt,{http_status:response.status});await response.body?.cancel();throw new BudgetRefusal('SOURCE_REDIRECT_REFUSED');}
         const advertised=Number(response.headers.get('content-length')??0);if(advertised>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');
         const reader=response.body?.getReader();let total=0;const parts=[];

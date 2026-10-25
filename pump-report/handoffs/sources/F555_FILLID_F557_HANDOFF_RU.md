@@ -1,0 +1,13 @@
+# F555 review применён; F557 primary unit proof ограничен
+
+ROOT принял точное поле fillId по pinned consumer mapping без обещания vendor uniqueness. SOURCE теперь читает id либо fillId. Когда оба заданы, они должны быть валидны и совпадать; конфликт не скрывается fallback. Небезопасные числа и неканонические ID не принимаются. Старые дубликаты и конфликтующие записи сохраняются до consumer dedup; t/tradeId/ts/qty→BASE не добавлены. Поле времени остаётся time, денежное количество — документированный quoteQty.
+
+Один новый ID-alias case:1 PASS,0 FAIL,81.2105ms. Проверены большие строковые ID, конфликт id/fillId, невалидные смешанные поля, дубликат ID между разными полями, исходные часы и connected getOptional. Старый F553 case приведён к принятому поведению без запуска; его прежние байты и прежний source сохранены snapshots. Принятые T3/F553/F551 cases не повторялись.
+
+Ровно один фактический офлайн разбор оригинала F550 SHA0170bba73bc1fd2d56796d2c448258f6192a8c8fb612ab438d4f3d017de60e07:1000 нормализованных строк,1000 квалифицированных до consumer dedup, invalid_id0, уникальных ID1000 в этом сохранённом ответе. Это наблюдение не гарантия vendor uniqueness и не full window. Исходные event/receive/expiry сохранены; сейчас sample STALE. Цены и raw body не экспортировались. Первый запуск CLI завершился синтаксической ошибкой до исполнения модуля и до чтения файла; после исправления выполнена одна нормализация, квитанция приложена.
+
+F557 сначала проверил сохранённые APT/APR metadata, native catalog bindings и price-page/static материалы. У обоих metadata только coinId/coinName/display/type/iconURL. Единственные точные URL ведут к PNG-иконкам. В проверенных сохранённых материалах нет точных absolute или relative ссылок на BingX product explanation APT/APR либо страницу проекта. Поэтому документальных вызовов0 из разрешённых максимум2; адреса не угадывались, поиск и market API не использовались.
+
+Exact native APT-USDT/contractId100164 и crypto-name не доказывают физическую единицу price denominator↔quantity(coin). Новых unit qualifications нет. ROOT отверг автоматическое принятие STANDARD-конвенции: сохраняется COIN/vendor descriptor, требуется более сильная primary связь. Исторический вопрос в F555530ed сохранён, но эта квитанция фиксирует ROOT review и отсутствие принятия конвенции. Масштабированные1000 остаются UNKNOWN; сравнение количеств historicalBTC не используется как доказательство.
+
+F556 Hyperliquid остаётся следующим согласованным пакетом. Здесь0 новых provider HTTP/SQL/TG/deploy; исходники index/registry не менялись. Ownlease df8f0ad5...45min/FULL readback; окончательное освобождение отдельной квитанцией. ROOT получает source recent-trades и новый test по manifest; общие форматы/runtime/policy не менялись.

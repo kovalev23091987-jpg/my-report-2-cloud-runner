@@ -1,0 +1,61 @@
+{
+  "schema": "AE_PROVIDER_SPECIFIC_BOUNDED_DEDUP_V1",
+  "scope": [
+    "pump-report/handoffs/sources",
+    "checkpoints",
+    "audit-fixes/source-optimization-20260930"
+  ],
+  "not_global_census": true,
+  "generic_token_or_text_mentions_not_API_test_proof": true,
+  "providers": {
+    "Avantis_API": {
+      "source_pattern": "avantisfi\\.com|avantis[_ -]trader|Avantis.{0,30}(API|SDK)|(API|SDK).{0,30}Avantis",
+      "matches": 7,
+      "paths": [
+        "checkpoints/ADDITIONAL_NATIVE_LIQ_PRIMARY_RESEARCH_20261014.json",
+        "checkpoints/VERANTA_V2_CURRENT_SOURCE_QUALIFICATION_20261007.json",
+        "checkpoints/AVANTIS_READONLY_SCHEMA_REVIEW_20261015.json",
+        "checkpoints/attention-post-clock-tests-37682149172/veranta-v2-retained-formula-replay.json",
+        "checkpoints/VERIFIED_ESTIMATED_LIQUIDATION_PACKAGE_PENDING_20261005.json",
+        "checkpoints/additional-native-source-docs-20261014/provenance.json",
+        "checkpoints/VERANTA_V2_CURRENT_OFFICIAL_ROUTE_RESEARCH_20261007.json"
+      ]
+    },
+    "DIA_API": {
+      "source_pattern": "diadata\\.org|diadata-org|DIA.{0,10}(REST|quotation|API)",
+      "matches": 4,
+      "paths": [
+        "checkpoints/n06-wikimedia-native10-38144019618/batch-summary.json",
+        "checkpoints/n06-wikimedia-extra2-38144720142/batch-summary.json",
+        "checkpoints/source-worker-provider-latency-contract-20261020/callgraph.json",
+        "checkpoints/wikimedia-attention-release-evidence-20261005.json"
+      ]
+    },
+    "Jupiter_PERPS": {
+      "source_pattern": "perps-api\\.jup|Jupiter.{0,30}(perpet|liquidat|SDK)|(perpet|SDK).{0,30}Jupiter",
+      "matches": 15,
+      "paths": [
+        "checkpoints/entry-approved-integration-20261019/main521-automatic-originals/tron-sector-retained-four-proof.json",
+        "checkpoints/entry-approved-integration-20261019/main521-fixed-originals/tron-sector-retained-four-proof.json",
+        "checkpoints/returned-budget-integration-20261019/main-39254030429/members/tron-sector-retained-four-proof.json",
+        "checkpoints/coingecko-demo-38455066684/validation.json",
+        "checkpoints/LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_20261012.json",
+        "checkpoints/cache-body-asof-connected-20261021/automatic-main-39573108983/result/tron-sector-retained-four-proof.json",
+        "checkpoints/compact-catalog-primary-carriers-connected-20261021/automatic-main-39584656300/result/tron-sector-retained-four-proof.json",
+        "checkpoints/btw-preserved-sector-rendering-input-20261004.json",
+        "checkpoints/stage0-availability-connected-20261020/ci-artifacts/39459671775/members/tron-sector-retained-four-proof.json",
+        "checkpoints/gate-existing-base-integration-20261019/main-39246249184/members/tron-sector-retained-four-proof.json",
+        "checkpoints/compact-provider-integration-20261019/automatic-main-39263515743/tron-sector-retained-four-proof.json",
+        "checkpoints/proof-budget-anomaly-connected-20261020/main-success-39475156691/tron-sector-retained-four-proof.json",
+        "checkpoints/n10-observe-clock-connected-20261019/main527-automatic-originals/members/tron-sector-retained-four-proof.json",
+        "checkpoints/catalog-failure-carrier-connected-20261021/automatic-main-39577693083/result/tron-sector-retained-four-proof.json",
+        "checkpoints/provider-visibility-following-geometry-20261020/MAIN-39487984628/tron-sector-retained-four-proof.json"
+      ]
+    },
+    "Endless_API": {
+      "source_pattern": "endless\\.financial",
+      "matches": 0,
+      "paths": []
+    }
+  }
+}

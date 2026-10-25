@@ -1,0 +1,43 @@
+{
+  "schema": "ROOT_F559_EXACT_NATIVE_APT_EXECUTION_UNIT_REVIEW_V1",
+  "status": "ACCEPTED_SCOPED_SEMANTIC_BINDING_ACTUAL_BOOK_SEPARATE",
+  "authority_main": "f93ee6721e38889beb998085979cfcaa6bf71692",
+  "source_manifest": "pump-report/handoffs/sources/PACKAGE_F559_APT_NATIVE_COIN_FINAL_V1.json",
+  "source_manifest_sha256": "eacb187bcb12333fbce09a1669da99dc18bcbd26fc3689c1221405d72e417cf5",
+  "source_review": "pump-report/handoffs/sources/F559_APT_NATIVE_COIN_UNIT_REVIEW_V1.json",
+  "source_review_sha256": "2ed86695f9984194bb4c556a91862b440da75208999859185181ecb2fb74f7c7",
+  "native_contract_id": "100164",
+  "native_binding": {
+    "instrument_id": "BINGX:USDT_M:100164:APT-USDT",
+    "asset_id": "BINGX_UNDERLYING:APT",
+    "venue": "BINGX",
+    "native_symbol": "APT-USDT",
+    "market_type": "PERPETUAL",
+    "base": "APT",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT"
+  },
+  "accepted_fields": ["bidsCoin", "asksCoin"],
+  "accepted_quantity_unit": "BASE_ASSET",
+  "native_base_unit": "APT",
+  "basis": [
+    "Exact saved BingX contract identity; same-venue product amount is labelled APT and price USDT.",
+    "Official APTUSDT maintenance explanation corroborates notional USDT = mark price times position quantity.",
+    "Retained official depth descriptor names Coin arrays as coin quantity; generic arrays and CCXT contractSize1 are not used."
+  ],
+  "qualifies_current_membership": false,
+  "qualifies_actual_native_book": false,
+  "qualifies_full_CORE": false,
+  "qualifies_cross_venue_identity": false,
+  "qualifies_scaled_assets_or_other_contracts": false,
+  "changes_multiplier_or_precision": false,
+  "new_provider_HTTP_SQL_Telegram_deploy": 0,
+  "connected_check": {
+    "path": "pump-report/tests/runtime/native-apt-execution-connected.test.mjs",
+    "first_run_pass": 1,
+    "native_data_used": false,
+    "scope": "Exact registry overlay reaches the real Coin parser; changed identity, scaled contracts and missing Coin arrays do not gain qualification."
+  },
+  "remaining": "Actual fresh dual-sided Coin arrays, original T, current membership, candle and price facts, budget admission and end-to-end publication remain separately required."
+}

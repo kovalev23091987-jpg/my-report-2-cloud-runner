@@ -6,13 +6,15 @@ import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
 import {createDayGrowthLoader} from './day-growth.mjs';
 import {isExactSavedNonTargetDecision} from './saved-nontarget-decisions.mjs';
 import {parseRecentTrades, RECENT_TRADE_SEMANTICS} from './recent-trades.mjs';
+import {collectHyperliquidPositions} from './hyperliquid-observed-positions.mjs';
 
 export const SOURCE_VERSION = 'pump-report-sources-v1';
 export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
   core_price_fallback_max: 1, optional_open_interest: 1, optional_funding: 1,
   optional_trades: 1, optional_total_max: 2,
   selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1, day_growth_per_window_max: 1,
-  liquidation_swole_per_candidate: 1, automatic_retries: 0, SQL_owned_by_sources: 0,
+  liquidation_swole_per_candidate: 1, liquidation_hyperliquid_per_candidate_max: 1,
+  automatic_retries: 0, SQL_owned_by_sources: 0,
   actual_provider_and_SQL_cost: null, six_manual_checks_reserved: false});
 const IDENTITY_KEYS = ['instrument_id', 'asset_id', 'venue', 'native_symbol', 'market_type', 'base', 'quote', 'settle', 'classification_status'];
 const BUDGET_ERROR = /BUDGET|QUOTA|ADMISSION|RESERVE|EXHAUSTED|BACKOFF|RATE_LIMIT|NOT_ADMITTED|NOT_MEASURED|ALREADY_RESERVED/;
@@ -81,8 +83,13 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     const provider = route?.provider ?? 'BINGX', family = route?.family ?? 'USDT_M';
     const remaining = deadline_ts === null ? timeout_ms : Math.min(timeout_ms, deadline_ts - now());
     if (remaining <= 0) fail('SOURCE_DEADLINE_EXPIRED');
+    const method = route?.method ?? 'GET';
+    if (!['GET', 'POST'].includes(method)) fail('SOURCE_READONLY_METHOD_REQUIRED');
+    // ROOT adds the canonical body SHA to POST cache/coalescing keys and checks
+    // exact read-only templates. This wrapper creates no provider admission.
     const call = broker.request({provider, family, purpose, cache_key: `${SOURCE_VERSION}:${provider}:${family}:${url}`,
-      url, method: 'GET', timeout_ms: remaining, ttl_ms, candidate_id: instrument?.instrument_id ?? null, estimated_cost: {http: 1}});
+      url, method, ...(method === 'POST' ? {json_body: route.json_body} : {}),
+      timeout_ms: remaining, ttl_ms, candidate_id: instrument?.instrument_id ?? null, estimated_cost: {http: 1}});
     let timer;
     try {
       const result = deadline_ts === null ? await call : await Promise.race([call,
@@ -368,8 +375,16 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     if (deadline <= at) return finish(emptyMap('TIMEOUT', 'LIQUIDATION_DEADLINE_EXPIRED'));
     const routes = Array.isArray(entry.liquidations?.routes) ? entry.liquidations.routes : [];
     const route = routes.find(candidate => verifiedSwoleRoute(candidate, instrument));
-    if (!route) return finish(emptyMap('NOT_CHECKED', routes.some(candidate => ['ORDERLY', 'HYPERLIQUID'].includes(candidate.provider))
-      ? 'POST_BODY_NOT_IN_BROKER_CONTRACT' : 'NO_VERIFIED_LIQUIDATION_ROUTE'));
+    if (!route) {
+      const hyperliquid = routes.find(candidate => candidate?.provider === 'HYPERLIQUID');
+      if (hyperliquid) return finish(await collectHyperliquidPositions({route: hyperliquid, instrument, now, profile, deadline,
+        reference_price, http_limit: Number.isSafeInteger(profile.map_http_upper_bound) && profile.map_http_upper_bound >= 0
+          ? Math.min(profile.map_http_upper_bound, SOURCE_HTTP_PLAN.liquidation_hyperliquid_per_candidate_max) : 0,
+        request: postRoute => request('liquidations', {instrument, ttl_ms: profile.freshness_ms.observed_positions,
+          deadline_ts: deadline, route: postRoute})}));
+      return finish(emptyMap('NOT_CHECKED', routes.some(candidate => candidate?.provider === 'ORDERLY')
+        ? 'NO_IMPLEMENTED_ORDERLY_ROUTE' : 'NO_VERIFIED_LIQUIDATION_ROUTE'));
+    }
     let response;
     try {
       response = await request('liquidations', {instrument, ttl_ms: profile.freshness_ms.model_map, deadline_ts: deadline,

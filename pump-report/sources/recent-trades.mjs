@@ -7,6 +7,7 @@ export const RECENT_TRADE_SEMANTICS = Object.freeze({
   route: '/openApi/swap/v2/quote/trades',
   limit: 100,
   response_rows_max: 1000,
+  id_mapping_evidence_ref: 'pump-report/handoffs/sources/F555_FILLID_ROOT_REVIEW_ACCEPTED_V1.json',
   unit: TRADE_QUOTE_NOTIONAL_UNIT,
   amount_field: 'quoteQty',
   maker_field: 'isBuyerMaker',
@@ -34,12 +35,24 @@ export function parseRecentTrades(body, {instrument, received_ts} = {}) {
   // bounded response rather than truncating before downstream conflict checks.
   if (!Array.isArray(body.data) || body.data.length > RECENT_TRADE_SEMANTICS.response_rows_max) fail('BINGX_BOUNDED_TRADE_ARRAY_REQUIRED');
   const counts = {qualified_before_dedup: 0, invalid_id: 0, invalid_clock: 0,
-    invalid_price: 0, invalid_notional: 0, unknown_side: 0, identity_mismatch: 0};
+    invalid_price: 0, invalid_notional: 0, unknown_side: 0, identity_mismatch: 0,
+    id_field_rows: 0, fillId_field_rows: 0, consistent_id_and_fillId_rows: 0, conflicting_id_fields: 0};
   const value = body.data.map(raw => {
     const row = object(raw) ? raw : {}, reasons = [];
     const identityKnown = !Object.hasOwn(row, 'symbol') || row.symbol === instrument.native_symbol;
     if (!identityKnown) { reasons.push('TRADE_SYMBOL_MISMATCH'); counts.identity_mismatch++; }
-    const trade_id = identityKnown ? vendorId(row.id) : null;
+    const hasId = Object.hasOwn(row, 'id'), hasFillId = Object.hasOwn(row, 'fillId');
+    const id = hasId ? vendorId(row.id) : null, fillId = hasFillId ? vendorId(row.fillId) : null;
+    const idConflict = hasId && hasFillId && (id === null || fillId === null || id !== fillId);
+    // ROOT reviewed this pinned consumer field. It does not establish vendor
+    // uniqueness. Mixed fields must agree; never hide a conflict by fallback.
+    const trade_id = identityKnown && !idConflict ? (hasId ? id : fillId) : null;
+    if (idConflict) { reasons.push('CONFLICTING_OR_INVALID_VENDOR_ID_FIELDS'); counts.conflicting_id_fields++; }
+    if (trade_id !== null) {
+      if (hasId && hasFillId) counts.consistent_id_and_fillId_rows++;
+      else if (hasId) counts.id_field_rows++;
+      else counts.fillId_field_rows++;
+    }
     if (trade_id === null) { reasons.push('ACTUAL_STABLE_VENDOR_TRADE_ID_REQUIRED'); counts.invalid_id++; }
     let event_ts = identityKnown ? unixMs(row.time) : null;
     if (event_ts !== null && event_ts > received_ts) { event_ts = null; reasons.push('TRADE_EVENT_CLOCK_FUTURE'); }
@@ -69,7 +82,9 @@ export function parseRecentTrades(body, {instrument, received_ts} = {}) {
       response_rows_max: RECENT_TRADE_SEMANTICS.response_rows_max,
       returned_rows: value.length, returned_more_than_requested: value.length > RECENT_TRADE_SEMANTICS.limit,
       response_bound_evidence_ref: 'pump-report/handoffs/sources/F553_ACTUAL1000_EVIDENCE_V1.json',
-      trade_id_field: 'id', fillId_alias_accepted: false,
+      trade_id_field: 'id_OR_ROOT_REVIEWED_fillId', fillId_alias_accepted: true,
+      id_mapping_evidence_ref: RECENT_TRADE_SEMANTICS.id_mapping_evidence_ref,
+      vendor_ID_uniqueness_guaranteed: false,
       ...counts, counts_are_before_consumer_dedup: true,
       duplicate_and_conflicting_ids_preserved: true, complete: false, full_window_coverage: false,
       complete_window_start: null, complete_window_end: null,

@@ -28,7 +28,7 @@ export const START_PROFILE = Object.freeze({
   liquidation_requests_per_run: 8,
   liquidation_native_nested_reserve: 4,
   automatic_window: {time_zone: 'Europe/Moscow', start_hour: 10, end_hour_exclusive: 20},
-  manual_checks_daily_reserve: 6,
+  manual_checks_daily_reserve: 3,
   publish_uncalibrated_probability: false,
   support_persistence_enabled: false,
   prequeue_threshold_fraction: 0.8,

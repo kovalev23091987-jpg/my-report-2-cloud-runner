@@ -1,0 +1,102 @@
+import {assertInstrument, ownerInstrumentExcluded} from '../contracts/index.mjs';
+
+export const CANDLE_COVERAGE_SCHEMA = 'PUMP_CANDLE_COVERAGE_CHECKPOINT_V1';
+export const CANDLE_COVERAGE_CAPS = Object.freeze({provider_per_minute: 10, minimum_spacing_ms: 1000,
+  global_per_day: 900, per_run: 164, background_per_batch: 56});
+
+export function coreCandleWindow(profile, at) {
+  const step = profile.candle_interval_ms;
+  if (step !== 60000 || !Number.isSafeInteger(at) || at < 1000000000000) throw Error('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');
+  const durations = [profile.wave_search_ms, profile.impulse_window_ms, profile.volume_baseline_ms,
+    ...profile.automatic_growth.short_windows_ms];
+  if (durations.some(x => !Number.isSafeInteger(x) || x <= 0)) throw Error('CORE_CANDLE_WINDOW_PROFILE_INVALID');
+  const count = Math.ceil(Math.max(Math.max(...profile.automatic_growth.short_windows_ms),
+    profile.wave_search_ms + profile.impulse_window_ms + profile.volume_baseline_ms) / step);
+  if (count > 1440) throw Error('BINGX_CANDLE_WINDOW_EXCEEDS_REQUEST_LIMIT');
+  const end = Math.floor(at / step) * step;
+  return {start: end - count * step, end, count, interval_ms: step};
+}
+
+function nativeTuple(entry) {
+  const i = entry.instrument ?? entry.tuple ?? entry;
+  const id = String(entry.native_contract_id ?? i.native_contract_id ?? '');
+  if (!/^\d{1,80}$/.test(id) || i.venue !== 'BINGX' || i.market_type !== 'PERPETUAL'
+    || i.quote !== 'USDT' || i.settle !== 'USDT' || typeof i.base !== 'string'
+    || i.native_symbol !== i.base + '-USDT' || ownerInstrumentExcluded(i)
+    || ['PAXG', 'XAUT'].includes(i.base.toUpperCase())) throw Error('EXACT_TARGET_NATIVE_CANDLE_TUPLE_REQUIRED');
+  return {venue: 'BINGX', family: 'USDT_M', native_contract_id: id, native_symbol: i.native_symbol,
+    native_base: i.base, quote: 'USDT', settle: 'USDT', market_type: 'PERPETUAL'};
+}
+const key = t => `${t.venue}|${t.family}|${t.native_contract_id}|${t.native_symbol}`;
+async function digest(value) {
+  const raw = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(value)));
+  return [...new Uint8Array(raw)].map(n => n.toString(16).padStart(2, '0')).join('');
+}
+
+// A plan/checkpoint is not a runtime registry, a grant or a fresh market fact.
+export async function createCandleCoverageCheckpoint({entries, window_end_ts, prior_observations = []}) {
+  if (!Array.isArray(entries) || entries.length < 1 || entries.length > 550
+    || !Number.isSafeInteger(window_end_ts) || window_end_ts < 1000000000000 || window_end_ts % 60000 !== 0) throw Error('BOUNDED_CANDLE_COVERAGE_PLAN_REQUIRED');
+  const scope = entries.map(nativeTuple), keys = scope.map(key);
+  if (new Set(keys).size !== keys.length || new Set(scope.map(x => x.native_symbol)).size !== scope.length) throw Error('AMBIGUOUS_CANDLE_COVERAGE_SCOPE');
+  const rows = scope.map(tuple => ({...tuple, status: 'NOT_CHECKED', reason: 'NOT_REQUESTED', historical_availability: null,
+    current_freshness: null, source_clock: null, closed_window: null, units: null, cost: null}));
+  for (const prior of prior_observations) {
+    const at = keys.indexOf(prior.native_scope_key);
+    if (at < 0 || prior.window_end_ts !== window_end_ts || prior.status !== 'USABLE'
+      || typeof prior.evidence_ref !== 'string' || !prior.evidence_ref || !prior.source_clock
+      || !Number.isSafeInteger(prior.source_clock.event_ts) || !Number.isSafeInteger(prior.source_clock.received_ts)
+      || prior.source_clock.event_ts > prior.source_clock.received_ts || prior.complete !== true) throw Error('EXACT_SAVED_HISTORY_OBSERVATION_REQUIRED');
+    rows[at] = {...rows[at], ...structuredClone(prior), reused_prior_observation: true, new_requests: 0};
+  }
+  return {schema: CANDLE_COVERAGE_SCHEMA, scope_sha256: await digest(scope), scope, window_end_ts,
+    next_index: 0, next_eligible_ts: 0, rate_window: {start_ts: 0, requests: 0}, rows,
+    state: 'PLANNED_NOT_ADMITTED', observation_receipts: [], cost_authority: 'ROOT_BROKER_ONLY',
+    native_IO_executed_by_creation: 0, full_CORE_or_current_candle_coverage_claimed: false};
+}
+
+export async function runCandleCoverageBatch({checkpoint, entries, sources, limits, clock = Date.now, deadline_ts}) {
+  const c = structuredClone(checkpoint), caps = CANDLE_COVERAGE_CAPS;
+  if (c.schema !== CANDLE_COVERAGE_SCHEMA || c.scope_sha256 !== await digest(c.scope)
+    || JSON.stringify(entries.map(nativeTuple)) !== JSON.stringify(c.scope)
+    || !Array.isArray(c.rows) || c.rows.length !== c.scope.length || !Number.isSafeInteger(c.next_index)
+    || c.next_index < 0 || c.next_index > c.scope.length || typeof sources?.getCandleCoverage !== 'function') throw Error('EXACT_CANDLE_CHECKPOINT_AND_SOURCE_REQUIRED');
+  const fields = ['requested_max', 'provider_day_remaining', 'global_day_remaining', 'run_http_remaining',
+    'background_http_remaining', 'admitted_http_remaining', 'minute_remaining', 'manual_http_protected',
+    'outcome_http_protected', 'delivery_http_protected', 'unknown_http_held', 'future_discovery_http_protected',
+    'future_candidate_continuity_http_protected'];
+  if (!limits || fields.some(k => !Number.isSafeInteger(limits[k]) || limits[k] < 0)) return {...c, state: 'NOT_ADMITTED_BUDGET_INPUTS_REQUIRED'};
+  const protectedHttp = ['manual_http_protected', 'outcome_http_protected', 'delivery_http_protected', 'unknown_http_held',
+    'future_discovery_http_protected', 'future_candidate_continuity_http_protected'].reduce((n, k) => n + limits[k], 0);
+  const maximum = Math.max(0, Math.min(limits.requested_max, caps.per_run, caps.background_per_batch,
+    limits.run_http_remaining, limits.background_http_remaining, limits.admitted_http_remaining,
+    limits.minute_remaining, caps.provider_per_minute, limits.provider_day_remaining,
+    limits.global_day_remaining - protectedHttp));
+  if (maximum === 0) return {...c, state: 'NOT_ADMITTED_NO_UNPROTECTED_HTTP', last_batch_attempts: 0};
+  if (!Number.isSafeInteger(deadline_ts) || deadline_ts <= clock()) return {...c, state: 'DEADLINE_REACHED', last_batch_attempts: 0};
+  let attempts = 0;
+  while (c.next_index < c.scope.length && attempts < maximum) {
+    const n = c.next_index, at = clock();
+    if (at >= deadline_ts) { c.state = 'DEADLINE_REACHED'; break; }
+    if (c.rows[n].status !== 'NOT_CHECKED') { c.next_index++; continue; }
+    if (at < c.next_eligible_ts) { c.state = 'RATE_DEFERRED'; break; }
+    if (at - c.rate_window.start_ts >= 60000) c.rate_window = {start_ts: at, requests: 0};
+    if (c.rate_window.requests >= caps.provider_per_minute) { c.next_eligible_ts = c.rate_window.start_ts + 60000; c.state = 'RATE_DEFERRED'; break; }
+    const instrument = entries[n].instrument ?? entries[n];
+    try { assertInstrument(instrument); } catch { c.rows[n].reason = 'INDEPENDENT_NATIVE_BINDING_REQUIRED'; c.next_index++; continue; }
+    attempts++; c.rate_window.requests++; c.next_eligible_ts = at + caps.minimum_spacing_ms;
+    let result;
+    try { result = await sources.getCandleCoverage({instrument, window_end_ts: c.window_end_ts, purpose: 'CORE'}); }
+    catch { result = {status: 'ERROR', reason: 'CANDLE_COVERAGE_SOURCE_ERROR', cost: {authority: 'ROOT_BROKER_ONLY', spent_or_unknown_not_refunded: true}}; }
+    if (!['NOT_CHECKED', 'USABLE', 'PARTIAL', 'NO_DATA', 'ERROR'].includes(result?.status)) throw Error('CANDLE_COVERAGE_RESULT_STATUS_INVALID');
+    c.rows[n] = {...c.rows[n], ...result};
+    if (result.cost?.receipt_id) c.observation_receipts.push(result.cost.receipt_id);
+    if (result.status === 'NOT_CHECKED') { c.state = 'SOURCE_NOT_CHECKED_NO_AUTOMATIC_RETRY'; break; }
+    c.next_index++;
+  }
+  if (c.next_index === c.scope.length) c.state = 'BOUNDED_PASS_FINISHED';
+  else if (!['RATE_DEFERRED', 'DEADLINE_REACHED', 'SOURCE_NOT_CHECKED_NO_AUTOMATIC_RETRY'].includes(c.state)) c.state = 'BATCH_LIMIT_REACHED';
+  c.last_batch_attempts = attempts;
+  c.status_counts = Object.fromEntries(['NOT_CHECKED', 'USABLE', 'PARTIAL', 'NO_DATA', 'ERROR'].map(s => [s, c.rows.filter(r => r.status === s).length]));
+  return c;
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "AE_BLOCK_SOURCE_PLAN_V1",
+  "status": "DOCUMENTARY_CANDIDATES_NOT_RUNTIME_ADMISSION",
+  "native_qualified_NEW_sources_per_block": {
+    "price": 0,
+    "candles_volume": 0,
+    "trades": 0,
+    "OI_funding": 0,
+    "future_liquidation_levels": 0
+  },
+  "primary_fallback": [
+    {
+      "fact": "BingX price/candles/volume/execution liquidity",
+      "primary": "ROOT/SOURCE existing BingX path",
+      "fallback": "AE has no qualified same-venue replacement; external data contextual only",
+      "marginal_550_coverage": "UNKNOWN_NOT_MEASURED",
+      "no_downgrade_to_cross_venue_book": true
+    },
+    {
+      "fact": "Future price levels of actual open positions",
+      "primary_candidates": [
+        "Lighter account",
+        "Avantis retained bulk lead"
+      ],
+      "fallback_candidate": "Jupiter selected-wallet SOL scope",
+      "provider_reported_level_candidate_protocols": 3,
+      "native_ready": 0,
+      "basis_only_not_counted_as_provider_map": [
+        "GMX",
+        "Drift",
+        "dYdX",
+        "Ostium"
+      ],
+      "marginal_550_coverage": "NOT_CHECKED_NOT_UNSUPPORTED",
+      "need": [
+        "source snapshot clock",
+        "free numeric quota",
+        "bounded account census/pagination",
+        "underlying identity + price comparability",
+        "margin/collateral mode + size units"
+      ]
+    },
+    {
+      "fact": "Price/context fallback",
+      "primary_candidate": "DIA address-qualified quotation",
+      "fallback": "existing independently qualified retained routes owned SOURCE",
+      "Pyth": "not unconditional keyless free; no trial signup",
+      "native_ready": 0,
+      "upstream_independence": "UNKNOWN"
+    },
+    {
+      "fact": "Trades/OI/funding context",
+      "candidate": "dYdX indexer and GMX snapshots; reuse ROOT Pacifica docs only",
+      "historical_rate_not_current_rate": true,
+      "native_ready": 0,
+      "need": [
+        "timestamp/period",
+        "aggressor/amount semantics",
+        "exact current crypto catalog",
+        "quota/cost bound"
+      ]
+    }
+  ],
+  "coverage_method": "Use selected550 asset identity mapping; count usable source facts per block with actual snapshot clocks. UNKNOWN/NOT_CHECKED are not UNSUPPORTED; no native calls in AE so no percentages.",
+  "transport_redundancy_not_independent_economic_data": true,
+  "no_mass_collection_or_account_enumeration_admitted": true,
+  "no_country_inference": true
+}

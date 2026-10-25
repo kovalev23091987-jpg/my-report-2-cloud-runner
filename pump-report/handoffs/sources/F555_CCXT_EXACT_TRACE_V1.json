@@ -1,0 +1,105 @@
+{
+  "schema": "SOURCE_F555_CCXT_EXACT_TRACE_V1",
+  "status": "STATIC_PRIMARY_CODE_TRACE_NO_VENDOR_UNIT_UPGRADE",
+  "pin": "d3159f7036f93db086cd0414642132fba5401710",
+  "full_blob_and_range_index": "F555_FULL_BLOBS_AND_LITERAL_INDEX_V1.json",
+  "market": {
+    "proof": "bingx.ts1073-1187",
+    "native_id": "safeString(market,symbol); split on hyphen into baseId and quoteId",
+    "unified_name": "safeCurrencyCode(baseId)/safeCurrencyCode(quoteId):safeCurrencyCode(currency)",
+    "linear_condition": "currency provided implies swap; absence of minTickSize keeps linear=true/inverse=false",
+    "linear_contractSize": "literal parseNumber(1), not read from native size",
+    "inverse_separate": "minTickSize is inverseContractSize only; not target USDT_M path",
+    "native_size_used_for_linear_amount_conversion": false,
+    "price_value_conversion_in_parseMarket": false,
+    "currency_aliases": "Names may normalize via commonCurrencyCode; native baseId/id retained. The BingX-specific aliases at656-662 contain neither APT nor1000SHIB."
+  },
+  "orderbook": {
+    "proof": "bingx.ts1640-1746",
+    "route": "nonspot, noninverse -> swapV2PublicGetQuoteDepth; request symbol=market.id",
+    "limit": "nearest allowed ceiling in[5,10,20,50,100,500,1000]",
+    "selected_fields": [
+      "bids",
+      "asks"
+    ],
+    "Coin_fields_selected": false,
+    "timestamp": "safeInteger2(orderbook,T,ts)",
+    "nonce": "lastUpdateId",
+    "parse_call_literal": "this.parseOrderBook (orderbook, market['symbol'], timestamp, 'bids', 'asks', 0, 1)",
+    "shared_proof": "Exchange.ts6010-6021/5813-5820/6893-6902",
+    "shared_actions": "Parse numeric price at0 and amount at1, optionally count/id at2; sort; annotate symbol/time",
+    "contractSize_applied_to_book": false,
+    "price_or_amount_scaling_applied": false,
+    "unit_validation_in_shared_book": false,
+    "Coin_to_STANDARD_conversion_established": false
+  },
+  "trades": {
+    "fetch_proof": "bingx.ts1390-1447",
+    "route": "nonspot noninverse -> swapV2PublicGetQuoteTrades; limit=min(requested,1000); then parseTrades with since/limit",
+    "mapping_proof": "bingx.ts1449-1626",
+    "id_candidate_literal": "this.safeStringN (trade, [ 'id', 't', 'fillId', 'tradeId' ])",
+    "id_result": "fillId is explicitly included in unified ID lookup candidates; safeTrade does not replace id",
+    "helper_limit": "safeStringN itself is imported from functions outside the2blobs; no third fetch. Candidate inclusion observed; malformed/multi-field precedence not promoted to SOURCE policy.",
+    "time_candidates": [
+      "time",
+      "filledTm",
+      "T",
+      "tradeTime"
+    ],
+    "ts_candidate_used": false,
+    "maker_candidates": [
+      "buyerMaker",
+      "isBuyerMaker",
+      "maker"
+    ],
+    "side": "Absent explicit side: buyer-maker true -> sell, false -> buy; other WS/private branches exist",
+    "amount_candidates": [
+      "qty",
+      "amount",
+      "q"
+    ],
+    "linear_private_volume_branch": "Uses volume if supplied on swap; comment calls linear volume base with contractSize1, inverse contract count. Not an independent vendor-native guarantee.",
+    "quote_cost": "quoteQty passed directly as cost",
+    "shared_proof": "Exchange.ts5207-5231",
+    "shared_contractSize_application": "Only if supplied cost is undefined: amount*price*contractSize, or amount*(1/price)*contractSize for inverse. Existing quoteQty avoids this derived cost branch.",
+    "invented_id_in_bingx_parseTrade": false,
+    "stable_unique_vendor_id_guaranteed_by_code": false
+  },
+  "per_instrument_static_walkthroughs": [
+    {
+      "native_symbol": "APT-USDT",
+      "assumed_input": "Existing F552 exact ROOT-reviewed native USDT_M catalog tuple with currencyUSDT, no inverse minTickSize; not new native response",
+      "native_baseId": "APT",
+      "consumer_symbol_without_user_currency_overrides": "APT/USDT:USDT",
+      "consumer_contractSize": 1,
+      "book_price": "input bids/asks pair[0] unchanged numerically apart from parsing",
+      "book_amount": "input bids/asks pair[1] unchanged numerically apart from parsing",
+      "Coin_quantity_UNIT": "Not inspected by CCXT path",
+      "vendor_amount_unit": "NOT_PROVEN_BY_THIS_CODE"
+    },
+    {
+      "native_symbol": "1000SHIB-USDT",
+      "assumed_input": "Existing F552 scaled native tuple with currencyUSDT, no inverse minTickSize; not new native response",
+      "native_baseId": "1000SHIB",
+      "consumer_symbol_without_user_currency_overrides": "1000SHIB/USDT:USDT",
+      "consumer_contractSize": 1,
+      "price_divided_or_multiplied_by1000": false,
+      "book_amount_divided_or_multiplied_by1000": false,
+      "underlying_SHIB_UNIT_binding": "UNKNOWN",
+      "Coin_to_generic_or_native_basket_conversion": "UNKNOWN",
+      "vendor_amount_unit": "NOT_PROVEN_BY_THIS_CODE"
+    }
+  ],
+  "vendor_literal_reconciliation": {
+    "literal_sha256": "b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+    "literal_Coin_meaning": "quantity(coin)",
+    "literal_generic_meaning": "quantity; unit unspecified",
+    "conclusion": "CCXT uses a different array pair from current SOURCE Coin path. Raw passing and linear1 do not prove either generic/Coin pricebase equivalence, nor scaled multiplier.",
+    "existing13_change": false,
+    "blanket_new539_qualification": false
+  },
+  "do_not_execute_CCXT_library": "fetchOrderBook may loadMarkets first; fetchMarkets requests linear/inverse/spot by default. Static reading grants none of these calls.",
+  "new_primary_GitHub_code_reads": 2,
+  "new_provider_HTTP_SQL_TG_deploy": 0,
+  "downloaded_code_executed": false
+}

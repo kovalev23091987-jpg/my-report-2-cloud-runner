@@ -3,13 +3,14 @@ import {createExactSavedNonTargetClassifier} from '../sources/saved-nontarget-de
 import {assertInstrument} from '../contracts/index.mjs';
 import {REVIEWED_ROWS,REVIEW_REF,CATALOG_SHA,ECONOMIC_SHA} from './native-reviewed550-data.mjs';
 import {NON_TARGET_BUNDLE} from './native-nontarget380-data.mjs';
+import {reviewedNativeExecution} from './native-execution-qualifications.mjs';
 
 // This frozen overlay consumes ROOT's explicit classification decisions. It
 // supplies no membership, execution units, native-data receipt or IO admission.
 export function createReviewedNativeScopeRegistry(existing_entries){
   if(!Array.isArray(existing_entries)||existing_entries.length!==13||REVIEWED_ROWS.length!==539)throw Error('FROZEN_RETAINED13_AND_REVIEWED539_REQUIRED');
   const byId=new Map(),bySymbol=new Map();
-  const add=e=>{assertInstrument(e.instrument);if(byId.has(e.instrument.instrument_id)||bySymbol.has(e.instrument.native_symbol))throw Error('REVIEWED_NATIVE_SCOPE_CONFLICT');byId.set(e.instrument.instrument_id,e);bySymbol.set(e.instrument.native_symbol,e);};
+  const add=raw=>{const e=reviewedNativeExecution(raw);assertInstrument(e.instrument);if(byId.has(e.instrument.instrument_id)||bySymbol.has(e.instrument.native_symbol))throw Error('REVIEWED_NATIVE_SCOPE_CONFLICT');byId.set(e.instrument.instrument_id,e);bySymbol.set(e.instrument.native_symbol,e);};
   for(const e of existing_entries)add(structuredClone(e));
   for(const [native_contract_id,base,native_symbol,proposal_id,decision_sha256] of REVIEWED_ROWS){
     if(native_symbol!==base+'-USDT'||['BTC','ETH','PAXG','XAUT'].includes(base)||!/^[a-f0-9]{64}$/.test(decision_sha256))throw Error('FROZEN_NATIVE_REVIEW_ROW_CONFLICT');
@@ -27,5 +28,5 @@ export function createReviewedNativeScopeRegistry(existing_entries){
       else if(v!==undefined&&entry.instrument[k]!==v)return null;
     }
     return structuredClone(entry);
-  },resolveCatalogDecision:row=>negative.resolveCatalogDecision(row),summary:()=>({retained_entries:13,explicit_reviewed_added:539,saved_native_identities:552,owner_selected_scope:550,known_saved_nontargets:380,current_membership_proven:false,new_execution_units_qualified:false,full_CORE550_qualified:false,review_ref:REVIEW_REF})};
+  },resolveCatalogDecision:row=>negative.resolveCatalogDecision(row),summary:()=>({retained_entries:13,explicit_reviewed_added:539,saved_native_identities:552,owner_selected_scope:550,known_saved_nontargets:380,current_membership_proven:false,new_execution_units_qualified:false,scoped_new_execution_unit_reviews:1,full_CORE550_qualified:false,review_ref:REVIEW_REF})};
 }

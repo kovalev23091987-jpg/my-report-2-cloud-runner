@@ -1,0 +1,78 @@
+https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint
+3: The info endpoint is used to fetch information about the exchange and specific users. The different request bodies result in different corresponding response body schemas.
+4: 
+5: ### Pagination
+6: 
+7: Responses that take a time range will only return 500 elements or distinct blocks of data. To query larger ranges, use the last returned timestamp as the next `startTime` for pagination.
+8: ### Perpetuals vs Spot
+9: The endpoints in this section as well as websocket subscriptions work for both Perpetuals and Spot. For perpetuals `coin` is the name returned in the `meta` response. For Spot, coin should be `PURR/USDC` for PURR, and `@{index}` e.g. `@1` for all other spot tokens where index is the index of the spot pair in the `universe` field of the `spotMeta` response. For example, the spot index for HYPE on mainnet is `@107` because the token index of HYPE is 150 and the spot pair `@107` has tokens `[150, 0]`.
+10: Note that some assets may be remapped on user interfaces. For example, `BTC/USDC` on app.hyperliquid.xyz corresponds to `UBTC/USDC` on mainnet HyperCore. The L1 name on the [token details page](https://app.hyperliquid.xyz/explorer/token/0x8f254b963e8468305d409b33aa137c67) can be used to detect remappings.
+11: ### User address
+12: 
+13: To query the account data associated with a master or sub-account, you must pass in the actual address of that account. A common pitfall is to use an agent wallet's address which leads to an empty result.
+
+https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals
+315: ## Retrieve user's perpetuals account summary
+316: 
+317: <mark style="color:green;">`POST`</mark> `https://api.hyperliquid.xyz/info`
+318: 
+319: See a user's open positions and margin summary for perpetuals trading.
+320: 
+321: Under unified account or portfolio margin, use spot balances endpoint instead for trading account balance across spot and perps.
+322: #### Headers
+323: 
+324: | Name                                           | Type | Description        |
+325: | ---------------------------------------------- | ---- | ------------------ |
+326: | Content-Type<mark style="color:red;">\*</mark> |      | "application/json" |
+327: #### Request Body
+328: | Name                                   | Type   | Description                                                                                          |
+329: | -------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
+330: | type<mark style="color:red;">\*</mark> | String | "clearinghouseState"                                                                                 |
+331: | user<mark style="color:red;">\*</mark> | String | Onchain address in 42-character hexadecimal format; e.g. 0x0000000000000000000000000000000000000000. |
+332: | dex                                    | String | Perp dex name. Defaults to the empty string which represents the first perp dex.                     |
+333: {% tabs %}
+334: {% tab title="200: OK Successful Response" %}
+335: ```json
+336: {
+337:   "assetPositions": [
+338:     {
+339:       "position": {
+340:         "coin": "ETH",
+341:         "cumFunding": {
+342:           "allTime": "514.085417",
+343:           "sinceChange": "0.0",
+344:           "sinceOpen": "0.0"
+345:         },
+346:         "entryPx": "2986.3",
+347:         "leverage": {
+348:           "rawUsd": "-95.059824",
+349:           "type": "isolated",
+350:           "value": 20
+351:         },
+352:         "liquidationPx": "2866.26936529",
+353:         "marginUsed": "4.967826",
+354:         "maxLeverage": 50,
+355:         "positionValue": "100.02765",
+356:         "returnOnEquity": "-0.0026789",
+357:         "szi": "0.0335",
+358:         "unrealizedPnl": "-0.0134"
+359:       },
+360:       "type": "oneWay"
+361:     }
+362:   ],
+363:   "crossMaintenanceMarginUsed": "0.0",
+364:   "crossMarginSummary": {
+365:     "accountValue": "13104.514502",
+366:     "totalMarginUsed": "0.0",
+367:     "totalNtlPos": "0.0",
+368:     "totalRawUsd": "13104.514502"
+369:   },
+370:   "marginSummary": {
+371:     "accountValue": "13109.482328",
+372:     "totalMarginUsed": "4.967826",
+373:     "totalNtlPos": "100.02765",
+374:     "totalRawUsd": "13009.454678"
+375:   },
+376:   "time": 1708622398623,
+377:   "withdrawable": "13104.514502"
+378: }

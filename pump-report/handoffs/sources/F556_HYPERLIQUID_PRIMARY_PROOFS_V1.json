@@ -1,0 +1,52 @@
+{
+  "schema": "SOURCE_F556_HYPERLIQUID_PRIMARY_PROOFS_V1",
+  "primary_document_reads_used": 2,
+  "limit": 2,
+  "remaining": 0,
+  "sources": [
+    {
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+      "retained_lines": [
+        3,
+        13
+      ],
+      "supported": [
+        "Info requests return schemas selected by body",
+        "Perp coin name comes from meta; spot names differ",
+        "Actual master/subaccount address required; agentwallet can yield empty results"
+      ],
+      "does_not_admit_accounts": true
+    },
+    {
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+      "retained_lines": [
+        315,
+        378
+      ],
+      "supported": [
+        "POST https://api.hyperliquid.xyz/info",
+        "type clearinghouseState, user42charhex, optionaldex",
+        "User open positions and margin summary",
+        "assetPositions oneWay.position with coin/szi/liquidationPx/positionValue and root time"
+      ],
+      "limits": [
+        "Schema/example does not qualify BingX↔HL underlying",
+        "No global account list/market census",
+        "No inference of uniform USDC for every dex/accountmode",
+        "Field schema alone does not prove signedsize units or source-specific price conversion",
+        "time is retained native accountresponse snapshot, not perposition update guarantee"
+      ]
+    }
+  ],
+  "literal_file": "evidence/F556_HYPERLIQUID_PRIMARY_LITERALS_V1.txt",
+  "literal_sha256": "bf520361c9c2a394611856f8701e55a22c34dc41fd753b0e4e392bfce6ddce1b",
+  "retained_old_adapter_review": {
+    "path": "existing-source-hyperliquid-recorder-delta/overlay/src/hyperliquid-recorder-extension.mjs",
+    "findings": [
+      "Retained route/body name and state schema reused as leads",
+      "Old direct fetch, rotating methods, receipt-as-source-time, ticker join and size-zero fallback NOT reused",
+      "Old shadows/admissions not revived"
+    ]
+  },
+  "new_provider_HTTP_SQL_TG_deploy": 0
+}

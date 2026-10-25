@@ -1,0 +1,24 @@
+# AE — смысл данных и дельта источников
+
+Это документационная матрица, **не подключённые источники**. Нативных вызовов/данных и подтверждённого нового покрытия550 — 0. Проверены16 поисковых запросов,12 попыток primary pages (8 успешных,4 неудачных),7 поисков внутри уже прочитанных документов; платных сервисов/ключей/аккаунтов/SQL/TG/deploy — 0. Неудачные попытки включены в расход, лимит не переоткрывался. Все языки допустимы; страна по языку/домену не определялась.
+
+| Источник / novelty | Факт и смысл | Доступ / free quota / freshness | Уникальная условная польза и ограничение |
+|---|---|---|---|
+| [Lighter](https://raw.githubusercontent.com/elliottech/lighter-python/main/docs/AccountApi.md) — retained | Позиции аккаунта с расчётным liquidation_price | Public GET account; active_only=true. Квота и source clock UNKNOWN. | Только открытая ненулевая экспозиция выбранных аккаунтов; не глобальный census. |
+| [GMX](https://docs.gmx.io/docs/api/integration-guide/) — retained | Текущие account positions, OI/funding snapshots | HTTPv2; position cache1s, markets/info10s. Free quota UNKNOWN. | Один Reader block для списка; peer hosts — один экономический источник. |
+| [Drift](https://raw.githubusercontent.com/drift-labs/protocol-v2/master/sdk/src/user.ts) — retained | Публичное состояние + SDK liquidationPrice | SDK/RPC, coherent slots; free RPC quota UNKNOWN. | Собственный protocol-model, не наблюдаемая будущая карта поставщика. |
+| [dYdX](https://docs.dydx.exchange/api_integration-clients/indexer_client) — retained | Indexer positions/candles/trades/historical funding | Read indexer; entitlement/лимит UNKNOWN. | Отдельная площадка; subaccount collateral нужен для risk calculation. |
+| [Jupiter Perps](https://perps-api.jup.ag/v1/docs) — retained | Open wallet positions с liquidationPriceUsd | GET positions, closed=false; quota/clock semantics UNKNOWN. | Документированный narrow SOL lead после исключения BTC/ETH; mint/scale проверить. |
+| [Avantis / Veranta](https://sdk.avantisfi.com/modules.html) — retained | TradeExtended liquidation_price; pending orders отдельно | Старый bulk/wallet lead уже исследован; quota/clock UNKNOWN. | Не новый источник; закрывать только оставшийся bulk/clock/550 delta. |
+| [Ostium](https://ostium-labs.gitbook.io/ostium-docs/developer/api-and-sdk) — retained | Состояние/price SDK; old docs deprecated | Не вызывать старые hosts; новый маршрут не проверен. | Только crypto subset; прежний SOL lead не доказывает нынешний охват. |
+| [DIA](https://raw.githubusercontent.com/diadata-org/diadata/master/documentation/api-1/api-endpoints.md) — new, bounded index | Asset-address quote/last trades, не future map | Public doc examples; текущая квота/живость UNKNOWN. | Адресная идентификация полезнее generic ticker; агрегатор может дублировать upstream. |
+| [Endless Financial](https://www.endless.financial/zh/docs/api) — new, bounded index | Пока только first-party search excerpt | API/free/auth/current positions UNKNOWN. | Нельзя смешивать PX prediction и crypto-perp; низкая уверенность, не adapter-ready. |
+| [Pyth Hermes](https://docs.pyth.network/price-feeds/core/upgrade/preparing) — retained screening | Oracle price, не positions/map | Текущие docs требуют key; trial ≠ постоянная free quota. | Не включать в немедленный keyless-free план по старым предположениям. |
+
+NEW здесь означает только отсутствие literal source URL в ограниченном source-index scan, не доказательство глобальной новизны. Avantis/Ostium уже есть в primary research14Oct; Lighter/Drift/GMX/Pacifica retained подтверждены ROOT. Token-name совпадение (например, биржевой актив GMX или DRIFT) не является доказательством прежнего API теста. Все raw counts сохранены отдельно с исправлением ложных name matches.
+
+Практический порядок: сначала возможный provider-reported уровень открытой позиции (Lighter; retained Avantis; narrow Jupiter), затем basis-only протоколы (GMX/Drift/dYdX), для которых ещё нужен полный collateral/oracle/maintenance snapshot и отдельный model provenance. Не считать hypothetical quote, pending trigger-order или history/liquidations текущей открытой позицией. Нулевые/отрицательные sentinel prices не зоны.
+
+Квота, актуальный source clock, полный inventory аккаунтов, точные underlying mappings и соответствие USD/USDC→BingX USDT ещё требуют отдельного допуска/доказательства. Возраст позиции не возраст snapshot. Не суммировать одну позицию из protocol API и wrapper; dedup по protocol/network/position ID. Число peer domains/SDK/MCP не число независимых фактов.
+
+ROOT ведёт MarginPad/Blocklens/CoinBoss/Vike/ByKaranteli/Buildix/CoinLobster/0xArchive и Pacifica primary. SOURCE ведёт BingX units/550 и Orderly/HL/Swole. AE не повторяет их native проверки. По новой команде поиски закончены; последующая работа аналитики — только AF launch-details. Нет запуска, модели или калибровки.

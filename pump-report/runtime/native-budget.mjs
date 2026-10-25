@@ -2,23 +2,25 @@ import {BudgetRefusal,RESOURCE_LIMITS,utcDay} from './budget.mjs';
 import {D1Store} from './store.mjs';
 import {ACCEPTANCE_MANUAL_RUN_IDS} from '../contracts/run-purpose.mjs';
 import {PROVIDER_STAGE,SOURCE_FEASIBILITY_ID} from './provider-policy.mjs';
+import {futureScheduledSQL} from './future-candidate-reserve.mjs';
 
 // Reuse the project's existing shared day ledger, rather than create an
 // independent SQL quota. Every legacy reservation/unknown retains its meaning.
-export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'?'checkpoints/pump-report-20261025/ROOT_SAVED_STATISTICS_SINGLE_ADMISSION.json':PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'?'checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_ADMISSION.json':'checkpoints/pump-report-20261025/SUMMARY_INDEX_SINGLE_ADMISSION.json'});
+export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:3,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'?'checkpoints/pump-report-20261025/ROOT_SAVED_STATISTICS_SINGLE_ADMISSION.json':PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'?'checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_ADMISSION.json':'checkpoints/pump-report-20261025/SUMMARY_INDEX_SINGLE_ADMISSION.json'});
 export const FIXED_METADATA_RUN_IDS=Object.freeze(['pump-bingx-crypto-metadata-20261025-one','pump-bingx-crypto-metadata-signed-20261025-one']);
 export const LOOKUP_ENVELOPE=Object.freeze({rows_read:500,rows_written:30,max_runs_day:10});
 
 function knownMeta(result){return result?.success!==false&&['rows_read','rows_written'].every(k=>Number.isSafeInteger(result?.meta?.[k])&&result.meta[k]>=0);}
 
-export async function reserveNativeRun({db,run_id,mode,run_purpose='PRODUCTION',clock=Date.now,policy=NATIVE_POLICY}){
+export async function reserveNativeRun({db,run_id,mode,run_purpose='PRODUCTION',clock=Date.now,policy=NATIVE_POLICY,future_schedule=null}){
   if(!db?.prepare||!run_id||!['AUTO','MANUAL','STATISTICS','CONTROL','LOOKUP','DELIVERY_CHECK','MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)||!policy.evidence_ref)throw new BudgetRefusal('NATIVE_RESERVATION_CONTEXT_REQUIRED');
   if(mode==='MANUAL'&&run_purpose!=='PRODUCTION'&&(run_purpose!=='ACCEPTANCE_TEST'||!ACCEPTANCE_MANUAL_RUN_IDS.includes(run_id)))throw new BudgetRefusal('EXACT_ACCEPTANCE_MANUAL_ID_REQUIRED');
   if(mode==='METADATA_CHECK'&&!FIXED_METADATA_RUN_IDS.includes(run_id))throw new BudgetRefusal('EXACT_METADATA_ID_REQUIRED');
   const now=clock(),day=utcDay(now),id='PUMP:'+mode+':'+run_id;
   const envelope=['LOOKUP','MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?LOOKUP_ENVELOPE:policy;
-  const protectedR=policy.bootstrap_or_external_floor.rows_read+policy.outcomes_protected.rows_read+policy.delivery_protected.rows_read+policy.next_full.rows_read;
-  const protectedW=policy.bootstrap_or_external_floor.rows_written+policy.outcomes_protected.rows_written+policy.delivery_protected.rows_written+policy.next_full.rows_written;
+  const future=futureScheduledSQL(now,future_schedule,policy);
+  const protectedR=policy.bootstrap_or_external_floor.rows_read+policy.outcomes_protected.rows_read+policy.delivery_protected.rows_read+policy.next_full.rows_read+future.rows_read;
+  const protectedW=policy.bootstrap_or_external_floor.rows_written+policy.outcomes_protected.rows_written+policy.delivery_protected.rows_written+policy.next_full.rows_written+future.rows_written;
   const sql=`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)
     SELECT ?1,?2,?3,?4,'RESERVED',?5 FROM (
       SELECT COALESCE(SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)),0) AS r,
