@@ -16,6 +16,22 @@ export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка д�
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
 
+export async function revalidatePumpCard({card,store,sources,clock=Date.now,profile=START_PROFILE}){
+  if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock()))return {valid:false,reason:'CARD_OR_WINDOW_EXPIRED'};
+  if(!card.analysis.ready||!card.analysis.plan)return {valid:false,reason:'PLAN_NOT_READY'};
+  const saved=await store.get(card.analysis.source_input_key);if(!saved?.input)return {valid:false,reason:'ORIGINAL_INPUT_NOT_SAVED'};
+  const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id:card.analysis.run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});
+  const facts={...saved.input.facts,...fresh.facts};if(!['price','orderbook'].every(key=>factUsable(facts[key],clock())))return {valid:false,reason:'MANDATORY_FACT_RECHECK_FAILED'};
+  // The same engine qualifies the retained candle tail, including an honest
+  // INCOMPLETE older path. Fresh price/book alone never make candles usable.
+  const checked=analyzePump({...saved.input,facts,analysis_ts:clock(),previous_wave:card.analysis.next_wave??saved.input.previous_wave},profile);
+  const move=Math.abs((checked.reference_price/card.analysis.reference_price-1)*100);
+  const overlap=(a,b)=>a&&b&&a.lower<=b.upper&&b.lower<=a.upper;
+  const entry=card.analysis.plan.entry_zones?.some(a=>checked.plan?.entry_zones?.some(b=>overlap(a,b)));
+  const exit=overlap(card.analysis.plan.exit_zone,checked.plan?.exit_zone);
+  return {valid:Boolean(checked.ready&&move<=profile.publication_recheck_max_price_move_pct&&entry&&exit),reason:'PLAN_OR_PRICE_CHANGED'};
+}
+
 async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,clock}),store=native.store;
   try{
@@ -25,17 +41,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
   const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
-    if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock()))return {valid:false,reason:'CARD_OR_WINDOW_EXPIRED'};
-    if(!card.analysis.ready||!card.analysis.plan)return {valid:false,reason:'PLAN_NOT_READY'};
-    const saved=await store.get(card.analysis.source_input_key);if(!saved?.input)return {valid:false,reason:'ORIGINAL_INPUT_NOT_SAVED'};
-    const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});
-    const facts={...saved.input.facts,...fresh.facts};if(!['price','orderbook','candles'].every(key=>factUsable(facts[key],clock())))return {valid:false,reason:'MANDATORY_FACT_RECHECK_FAILED'};
-    const checked=analyzePump({...saved.input,facts,analysis_ts:clock(),previous_wave:card.analysis.next_wave??saved.input.previous_wave},START_PROFILE);
-    const move=Math.abs((checked.reference_price/card.analysis.reference_price-1)*100);
-    const overlap=(a,b)=>a&&b&&a.lower<=b.upper&&b.lower<=a.upper;
-    const entry=card.analysis.plan.entry_zones?.some(a=>checked.plan?.entry_zones?.some(b=>overlap(a,b)));
-    const exit=overlap(card.analysis.plan.exit_zone,checked.plan?.exit_zone);
-    return {valid:Boolean(checked.ready&&move<=START_PROFILE.publication_recheck_max_price_move_pct&&entry&&exit),reason:'PLAN_OR_PRICE_CHANGED'};
+    return revalidatePumpCard({card,store,sources,clock});
   },send:async ({text,recipient,card_id})=>{
     const diagnostic=mode==='DELIVERY_CHECK'&&text===TELEGRAM_DIAGNOSTIC_TEXT&&PROVIDER_STAGE==='QUALIFICATION_ONLY';
     let acceptedManual=false;
