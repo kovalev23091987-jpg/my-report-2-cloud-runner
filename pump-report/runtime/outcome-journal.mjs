@@ -62,7 +62,20 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     const selected=selectOutcomeAnchor({...journal,as_of_ts:clock()});
     if(!selected.eligible){if(selected.status==='QUARANTINED')await store.set('pump:quarantine:'+key,selected);return selected;}
     const saved=await store.get(selected.anchor.analysis_id);if(!saved?.analysis||await textHash(JSON.stringify(saved.analysis))!==selected.anchor.analysis_sha256)throw Error('ANCHOR_SAVED_BYTES_READBACK_FAILED');
-    await store.atomic(key,j=>{if(j.frozen_anchor&&!equal(j.frozen_anchor,selected.anchor))throw Error('FROZEN_ANCHOR_CONFLICT');return {state:{...j,frozen_anchor:selected.anchor},result:true};});
+    await store.atomic(key,j=>{
+      if(!j)throw Error('ORIGINAL_JOURNAL_REQUIRED');
+      const recorded_ts=clock(),current=selectOutcomeAnchor({...j,as_of_ts:recorded_ts});
+      if(!current.eligible||!equal(current.anchor,selected.anchor)||!equal(current.publication,selected.publication))throw Error('JOURNAL_SELECTION_CHANGED_RETRY_REQUIRED');
+      if(j.frozen_anchor&&!equal(j.frozen_anchor,selected.anchor))throw Error('FROZEN_ANCHOR_CONFLICT');
+      let terminal=j.terminal;
+      // The actual first expiry closure and its first anchor share the same
+      // CAS. Already frozen historical originals never receive retroactive IO.
+      if(!j.frozen_anchor&&!terminal&&selected.publication?.state==='UNSENT'){
+        if(!Number.isSafeInteger(j.wave_expires_ts)||j.wave_expires_ts<0||recorded_ts<j.wave_expires_ts)throw Error('UNSENT_EXPIRY_TERMINAL_CLOCK_UNBOUND');
+        terminal={state:'EXPIRED',event_ts:j.wave_expires_ts,recorded_ts,evidence_ref:key+'#terminal'};
+      }
+      return {state:{...j,terminal,frozen_anchor:selected.anchor},result:true};
+    });
     const a=saved.analysis,o=selected.summary_origin,publication=selected.publication;
     const original_event=journal.publications.find(row=>row.event_id===selected.anchor.selection.publication_event_id);
     const original_refs={original_publication_event_id:original_event?.event_id??null,original_card_id:original_event?.card_id??null};

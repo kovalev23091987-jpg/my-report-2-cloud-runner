@@ -59,6 +59,20 @@ export function createSummaryRecordIndex({store}){
     if(after<head.count&&!items.length)throw Error('SUMMARY_INDEX_SEQUENCE_GAP');
     return {migration_ready:true,total:head.count,items:items.filter(r=>r.seq<=head.count)};
   }
+  // Audit readers do not initialize, migrate or recover the writer's index.
+  // The captured head bounds this page even when new records are appended.
+  async function readPage({after=0,limit=10}={}){
+    if(!Number.isSafeInteger(after)||after<0||!Number.isSafeInteger(limit)||limit<1||limit>10)throw Error('SUMMARY_AUDIT_PAGE_BOUND_REQUIRED');
+    const head=await store.get(HEAD)??empty();
+    if(!Number.isSafeInteger(head.count)||head.count<0)throw Error('SUMMARY_INDEX_SEQUENCE_INVALID');
+    if(!head.legacy_imported||head.pending)return {migration_ready:false,total:head.count,items:[],pending:Boolean(head.pending)};
+    if(after>head.count)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');
+    const rows=await store.scanPrefix(PREFIX,{after_key:after?pointerKey(after):PREFIX,limit});
+    const items=rows.map(r=>r.value).filter(r=>r.seq<=head.count);
+    for(let i=0;i<items.length;i++)if(items[i].seq!==after+i+1||!validId(items[i].id))throw Error('SUMMARY_INDEX_SEQUENCE_GAP');
+    if(items.length!==Math.min(limit,head.count-after))throw Error('SUMMARY_INDEX_SEQUENCE_GAP');
+    return {migration_ready:true,total:head.count,items,pending:false};
+  }
   async function boundary(){const head=await store.get(HEAD)??empty();return {count:head.count,ready:head.legacy_imported,pending:Boolean(head.pending)};}
-  return {initialize,append,page,boundary};
+  return {initialize,append,page,readPage,boundary};
 }

@@ -1,0 +1,176 @@
+{
+  "schema": "ANALYTICS_Z_ACTUAL_SAVED_CAPSULE_AUDIT_QUALIFICATION_V1",
+  "status": "FROZEN_8PASS_BOUNDED_READER_READY_FOR_ROOT_ROUTE_INTEGRATION",
+  "authority_main": "89521ea9ba955957e7e54f50160ff1a2958eed8c",
+  "test_main": "89521ea9ba955957e7e54f50160ff1a2958eed8c",
+  "freeze_main": "89521ea9ba955957e7e54f50160ff1a2958eed8c",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "own_lease_commit": "3535505b4a3952e2e253015fd9246d738e880434",
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1792957172000",
+  "own_expires_ts": 1792961372000,
+  "changed_production_files": [
+    "pump-report/analytics/saved-capsule-audit.mjs"
+  ],
+  "API": "auditSavedCapsules({records,read,as_of_ts,split_plan})",
+  "limits": {
+    "records": 10,
+    "records_bytes": 262144,
+    "read_calls": 90,
+    "read_value_bytes": 524288,
+    "read_bytes": 2000000,
+    "evidence_bytes": 2000000,
+    "journal_analyses": 64,
+    "journal_publications": 64,
+    "key_chars": 512
+  },
+  "read_callback": "exact async store.get only; no global scans/provider/latest fallback",
+  "actual_existing_W_v2_consumer_called": true,
+  "actual_retained_writer_OutcomeJournal_MemoryStore_originals_connected": true,
+  "frozen_anchor_actual_selected_publication_card_receipt_protected_refs_verified": true,
+  "historical_UNKNOWN_not_rewritten_by_later_receipt": true,
+  "read_failures_or_overflow_abort_whole_audit": true,
+  "missing_refs_explicit_W_failures": true,
+  "raw_private_output": false,
+  "global_source_history_complete": false,
+  "native_admission_proven": false,
+  "forecast_model_training_fabricated": false,
+  "calibration_status": "NOT_CALIBRATED",
+  "probability_pct": null,
+  "feature_usefulness_proven": false,
+  "publication_allowed": false,
+  "new_unique_cases": 8,
+  "test_invocations": 1,
+  "initial_pass": 8,
+  "initial_fail": 0,
+  "final_pass": 8,
+  "skip": 0,
+  "repairs_after_initial_run": 0,
+  "old_W9_V8_T4_X2_ROOT_tests_imported_or_rerun": false,
+  "test_command": "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap pump-report/tests/analytics/saved-capsule-audit.test.mjs",
+  "known_actual_store_gap": {
+    "case": "Z03",
+    "code": "SAVED_CAPSULE_UNSENT_TERMINAL_RECORD_REQUIRED",
+    "description": "Implicit expiry may save UNSENT without actual journal.terminal; reader keeps it unbound. Explicit saved terminal works.",
+    "exact_ROOT_patch_proposal": "ROOT_UNSENT_EXPIRY_TERMINAL_PROPOSAL.diff",
+    "proposal_applied_or_executed": false,
+    "old_frozen_originals_retro_pinned": false
+  },
+  "ROOT_owns_runtime_route_sourcepage_admission_and_optional_terminal_fix": true,
+  "ROOT_runtime_shared_main_files_modified": false,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "TTL_GC": 0,
+  "original240_9pauses_2OWNERdeferrals_capsunknownreserves_preserved": true,
+  "new_chats_subagents_automations": 0,
+  "files": [
+    {
+      "path": "pump-report/analytics/saved-capsule-audit.mjs",
+      "bytes": 11763,
+      "sha256": "4dd363981f0feaa8853e6ccd5868c5247ffb6d85b3ff60d0c59c47828e8f5d4a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/PLAN_RU.md",
+      "bytes": 3587,
+      "sha256": "fb0d27a67cd27fbc5db963e64771326f33121987f5cf0eb9de9143e5163f9ebd"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/README_RU.md",
+      "bytes": 1677,
+      "sha256": "14533c549dccb50b4178503760b3b972f6afc8e4224f1e89a7ac80c36f845839"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/ROOT_INTEGRATION_RU.md",
+      "bytes": 6904,
+      "sha256": "8a9792574434a2707f190b642cd6c23ed30caf58437aed8540f34767c855f459"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/ROOT_UNSENT_EXPIRY_TERMINAL_PROPOSAL.diff",
+      "bytes": 1760,
+      "sha256": "b00ab63c23a320076b0b2549f1df11fe1c3d01b72f14eb3c86d8f0f686a37173"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/accepted-byte-integrity.json",
+      "bytes": 1190,
+      "sha256": "3cbe6b624f8fa647465788db7dea020eb1621a15ce39f2c36568dbe5c4c9af50"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/actual-store-gap.json",
+      "bytes": 979,
+      "sha256": "98170e329d0529a30507f9e0b9343a4ecc7dfec83e22c9560f62fca22cfb554d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/actual-terminal-format-gap.json",
+      "bytes": 421,
+      "sha256": "a323ffd005dff392aba434af25203a2f58234b8598eca7cff369d30f32a71f61"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/authority.json",
+      "bytes": 2988,
+      "sha256": "cbd1d10e4cce0a69c64a513e2ec1e8aa8ef36d1af559b486e05fcb1cdc68ba45"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/before-proofs.json",
+      "bytes": 1595,
+      "sha256": "ed849afba4c21db9758b2dcbb20695e8446e5e1d35ddb9dea66f047ad0d6f101"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/cache-evidence-bound.json",
+      "bytes": 258,
+      "sha256": "af1848941205006bcd3517ffbbb59c2b74eb03f5d7c64e4a39eda6b1e9bbbaa9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/connected-sent-summary.json",
+      "bytes": 1311,
+      "sha256": "407f41fb07ea3ec860916c6822d52423ccb64d5f999eef318ccf923cfdb72aa9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/final-guard-readback.json",
+      "bytes": 3173,
+      "sha256": "6320b6dfca8b7d1b1c0a3db68d3265cf822ca1586ccf51f0a301ea3df2048d67"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/freeze-integrity.json",
+      "bytes": 2465,
+      "sha256": "af76cdfb1eb415fc2347d837f9fedffdb85933aa1e0a33ef81a175d09568a960"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/hard-read-limits.json",
+      "bytes": 487,
+      "sha256": "c641fb5a7b32fd8a298c9a47215eed9fd0ebc1f0c399a50adc7f51016aa911d9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/historical-unknown-readback.json",
+      "bytes": 303,
+      "sha256": "6c349f735042126779b6f83e8f88359ac0cbca6b634fdffb14f35963e20af10c"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/record-key-bounds.json",
+      "bytes": 202,
+      "sha256": "ab32a73cbe70a7e038700778479b0ba12d5573af0ce9b151aa15c32a3eed86bc"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/reference-failure-variants.json",
+      "bytes": 948,
+      "sha256": "87079369cc84e5ca08340eb8f7f4ebeab90911d6bf88d83efcd26f6f41d5c572"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/test-graph.json",
+      "bytes": 5722,
+      "sha256": "2a1b40f915af5f852059817756fc6227e355c57bf18ea6cec676abcf87c85411"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-z/test-results-initial.tap",
+      "bytes": 2476,
+      "sha256": "68d1938534ea8ce74b96da5983fd6d5d86521ae426a72994aea1895350c2e352"
+    },
+    {
+      "path": "pump-report/tests/analytics/saved-capsule-audit.test.mjs",
+      "bytes": 15118,
+      "sha256": "d09f44382aca4ac0f79fd6ffd9b5a034cad2b0052ecd7ae5da11da12fea50f34"
+    }
+  ],
+  "release_receipt": "pump-report/handoffs/analytics/package-z/lease-release.json"
+}

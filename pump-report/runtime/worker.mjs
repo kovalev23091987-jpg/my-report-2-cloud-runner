@@ -13,6 +13,7 @@ import {createPumpRunner} from './runner.mjs';
 import {createRetainedCapsuleWriter} from './retained-capsules.mjs';
 import {IMPLEMENTATION_PIN} from './implementation-pin.mjs';
 import {runSourceFeasibility} from './source-feasibility.mjs';
+import {createSavedStatisticsAudit} from './saved-statistics-audit.mjs';
 import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID,SOURCE_FEASIBILITY_ID} from './provider-policy.mjs';
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
@@ -89,7 +90,8 @@ export function createPumpWorker(legacy={}){
       const integrationCheck=url.pathname==='/pump/integration-check';
       const metadataProbe=url.pathname==='/pump/metadata-probe';
       const feasibilityCheck=url.pathname==='/pump/source-feasibility';
-      const lookup=['/pump/manual-result','/pump/summary'].includes(url.pathname);
+      const savedAudit=url.pathname==='/pump/statistics-audit';
+      const lookup=['/pump/manual-result','/pump/summary','/pump/statistics-audit'].includes(url.pathname);
       if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
       if(PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&(!feasibilityCheck||body.grant_id!==SOURCE_FEASIBILITY_ID||Object.keys(body).some(k=>k!=='grant_id')))return json({error:'EXACT_SOURCE_FEASIBILITY_OPERATION_REQUIRED'},400);
       if(feasibilityCheck&&PROVIDER_STAGE!=='SOURCE_FEASIBILITY_SINGLE')return json({error:'SOURCE_FEASIBILITY_NOT_ADMITTED'},400);
@@ -106,6 +108,8 @@ export function createPumpWorker(legacy={}){
       if(probe&&!['clock','catalog'].includes(body.kind)&&!isBingxNativeSymbol(body.symbol))return json({error:'INVALID_PROBE_SYMBOL'},400);
       if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);
       if(url.pathname==='/pump/summary'&&body.max_records!==undefined&&(!Number.isInteger(body.max_records)||body.max_records<1||body.max_records>40))return json({error:'SUMMARY_LIMIT_1_TO_40'},400);
+      if(savedAudit&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'SAVED_STATISTICS_AUDIT_NOT_ADMITTED'},400);
+      if(savedAudit&&(Object.keys(body).some(k=>!['after','limit','plan_id'].includes(k))||!Number.isSafeInteger(body.after??0)||(body.after??0)<0||!Number.isSafeInteger(body.limit??10)||(body.limit??10)<1||(body.limit??10)>10||!/^[a-f0-9]{64}$/.test(body.plan_id??'')))return json({error:'SAVED_AUDIT_BOUND_AND_PLAN_REQUIRED'},400);
       if((url.pathname==='/pump/manual'&&body.mode!==undefined&&body.mode!=='MANUAL')||(url.pathname==='/pump/run'&&body.mode!==undefined&&body.mode!=='AUTO'))return json({error:'ROUTE_MODE_MISMATCH'},400);
       if(url.pathname==='/pump/manual'&&ownerInstrumentExcluded(parseManualInput(body.symbol??body.text,{context_symbol:body.context_symbol??null}).symbol))return json({status:'OWNER_ASSET_DELIVERY_EXCLUDED',manual_response_text:'BTC и ETH исключены из Памп-отчёта по вашему указанию.'},400);
       if(PROVIDER_STAGE!=='QUALIFICATION_ONLY'&&probe)return json({error:'PREVIOUS_QUALIFICATION_GRANT_SPENT'},400);
@@ -157,6 +161,7 @@ export function createPumpWorker(legacy={}){
         }else if(url.pathname==='/pump/manual')result=await runtime.runner.execute({mode:'MANUAL',symbol:body.symbol??body.text,context_symbol:body.context_symbol??null,run_id,publish:body.publish!==false,request_id:body.request_id??crypto.randomUUID()});
         else if(url.pathname==='/pump/run')result=await runtime.runner.execute({mode:'AUTO',run_id,publish:body.publish!==false});
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
+        else if(savedAudit)result=await createSavedStatisticsAudit({store:runtime.store})({after:body.after??0,limit:body.limit??10,plan_id:body.plan_id});
         else if(url.pathname==='/pump/summary')result={status:'SUMMARY',result:await runtime.runner.getSummary({max_records:body.max_records??40})};
         else result={error:'NOT_FOUND'};
         if(url.pathname==='/pump/manual')result={...result,manual_response_text:manualResponseText(result)};
