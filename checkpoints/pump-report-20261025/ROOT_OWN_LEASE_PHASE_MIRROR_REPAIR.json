@@ -1,0 +1,18 @@
+{
+  "schema": "ROOT_OWN_LEASE_PHASE_MIRROR_REPAIR_V1",
+  "authority_main": "f93ee6721e38889beb998085979cfcaa6bf71692",
+  "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792963665892",
+  "status": "EXACT_EXISTING_OWN_METADATA_SYNCHRONIZED_NO_LEASE_REARM",
+  "fixed_fields": [
+    "last_owned_lease_released",
+    "owned_lease",
+    "owned_lease_expires_ts",
+    "lease_released",
+    "released_utc",
+    "pump_report_v2.current_own_lease"
+  ],
+  "own_top_level_lease_unchanged": true,
+  "other_three_mirrors_unchanged": true,
+  "source_native_SQL_TG_deploy": 0,
+  "reason": "Atomic rollover updated phase top-level lease but missed its active_working_state mirror; helpers correctly refused mismatched authority."
+}
