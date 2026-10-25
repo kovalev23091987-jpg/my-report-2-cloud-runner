@@ -44,8 +44,8 @@ export async function reserveNativeRun({db,run_id,mode,clock=Date.now,policy=NAT
   usage.requests++;if(!knownMeta(back))throw new BudgetRefusal('NATIVE_RESERVATION_READBACK_COST_UNKNOWN');
   usage.rows_read+=back.meta.rows_read;usage.rows_written+=back.meta.rows_written;
   const row=back.results?.[0];if(row?.reservation_id!==id||row.state!=='RESERVED'||row.day_utc!==day||row.reserve_rows_read!==envelope.rows_read||row.reserve_rows_written!==envelope.rows_written)throw new BudgetRefusal('NATIVE_RESERVATION_READBACK_MISMATCH');
-  const admission={evidence_ref:policy.evidence_ref+'#'+id,expires_ts:now+900000,max_rows_read:envelope.rows_read,max_rows_written:envelope.rows_written};
-  const store=new D1Store({db,admission,clock,initial_usage:usage,finalization_reserve:{rows_read:2,rows_written:1}});
+  const admission={evidence_ref:policy.evidence_ref+'#'+id,expires_ts:now+900000,max_rows_read:envelope.rows_read,max_rows_written:envelope.rows_written,max_requests:800};
+  const store=new D1Store({db,admission,clock,initial_usage:usage,finalization_reserve:{rows_read:2,rows_written:1,requests:2}});
   return {store,reservation_id:id,run_id,mode,day_utc:day,policy,admission};
 }
 

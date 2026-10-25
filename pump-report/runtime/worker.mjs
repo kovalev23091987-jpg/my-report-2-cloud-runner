@@ -3,7 +3,7 @@ import {requestUrl} from '../sources/bingx.mjs';
 import {analyzePump,evaluateOutcome} from '../analytics/index.mjs';
 import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
-import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal} from '../contracts/index.mjs';
+import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal,isBingxNativeSymbol} from '../contracts/index.mjs';
 import {parseManualInput} from './manual-input.mjs';
 import {manualResponseText} from './manual-response.mjs';
 import {createUnifiedBudget,createRequestBroker} from './budget.mjs';
@@ -81,7 +81,7 @@ export function createPumpWorker(legacy={}){
       if(dayProbe&&(body.probe_id!==DAY_DIAGNOSTIC_ID||PROVIDER_STAGE!=='DAY_WINDOW_ACCEPTANCE'))return json({error:'DAY_PROBE_NOT_ADMITTED'},400);
       if(integrationCheck&&(body.grant_id!==J_DIAGNOSTIC_ID||PROVIDER_STAGE!=='J_INTEGRATION_ACCEPTANCE'))return json({error:'INTEGRATION_CHECK_NOT_ADMITTED'},400);
       if(probe&&!['clock','catalog','price','ticker','candles','orderbook'].includes(body.kind))return json({error:'INVALID_PROBE_KIND'},400);
-      if(probe&&!['clock','catalog'].includes(body.kind)&&!/^[A-Za-z0-9._-]{1,80}-USDT$/.test(body.symbol??''))return json({error:'INVALID_PROBE_SYMBOL'},400);
+      if(probe&&!['clock','catalog'].includes(body.kind)&&!isBingxNativeSymbol(body.symbol))return json({error:'INVALID_PROBE_SYMBOL'},400);
       if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);
       if(url.pathname==='/pump/summary'&&body.max_records!==undefined&&(!Number.isInteger(body.max_records)||body.max_records<1||body.max_records>40))return json({error:'SUMMARY_LIMIT_1_TO_40'},400);
       if((url.pathname==='/pump/manual'&&body.mode!==undefined&&body.mode!=='MANUAL')||(url.pathname==='/pump/run'&&body.mode!==undefined&&body.mode!=='AUTO'))return json({error:'ROUTE_MODE_MISMATCH'},400);
@@ -116,7 +116,7 @@ export function createPumpWorker(legacy={}){
           await runtime.store.set('pump:map-qualification:'+MAP_DIAGNOSTIC_ID,result);
         }else if(probe){
           if(!['clock','catalog','price','ticker','candles','orderbook'].includes(body.kind))throw Object.assign(Error('INVALID_PROBE_KIND'),{code:'INVALID_PROBE_KIND'});
-          const params={};if(!['clock','catalog'].includes(body.kind)){if(!/^[A-Za-z0-9._-]{1,80}-USDT$/.test(body.symbol??''))throw Object.assign(Error('INVALID_PROBE_SYMBOL'),{code:'INVALID_PROBE_SYMBOL'});params.symbol=body.symbol;}
+          const params={};if(!['clock','catalog'].includes(body.kind)){if(!isBingxNativeSymbol(body.symbol))throw Object.assign(Error('INVALID_PROBE_SYMBOL'),{code:'INVALID_PROBE_SYMBOL'});params.symbol=body.symbol;}
           if(body.kind==='candles'){params.interval='1m';params.limit=125;params.endTime=Math.floor(Date.now()/60000)*60000;params.startTime=params.endTime-125*60000;}
           const sourceUrl=body.kind==='clock'?'https://open-api.bingx.com/openApi/swap/v2/server/time':requestUrl(body.kind,params);
           const response=await runtime.broker.request({provider:'BINGX',family:'QUALIFICATION',cache_key:'QUALIFICATION:'+body.kind+':'+JSON.stringify(params),url:sourceUrl,timeout_ms:10000,ttl_ms:60000,estimated_cost:{http:1}});

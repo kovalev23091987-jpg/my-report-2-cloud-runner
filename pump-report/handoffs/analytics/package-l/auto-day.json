@@ -1,0 +1,629 @@
+{
+  "evidence": "ARTIFICIAL_ONLY",
+  "analysis": {
+    "schema_version": "PUMP_REPORT_ANALYSIS_V1",
+    "contract_version": "pump-report-contract-v1.1-native-relative",
+    "rules_version": "pump-analytics-v3-owner-eligibility-20261025",
+    "profile_version": "pump-report-start-v1",
+    "run_id": "ARTIFICIAL_PACKAGE_A",
+    "mode": "AUTO",
+    "run_purpose": "PRODUCTION",
+    "instrument": {
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "asset_id": "ARTIFICIAL:TEST",
+      "native_symbol": "TEST-USDT",
+      "base": "TEST",
+      "quote": "USDT",
+      "settle": "USDT",
+      "venue": "BINGX",
+      "market_type": "PERPETUAL",
+      "classification_status": "VERIFIED_CRYPTO",
+      "identity_evidence_ref": "ARTIFICIAL_FIXTURE_NOT_REAL_MARKET_PROOF",
+      "price_tick": 0.01,
+      "quantity_step": 0.000001,
+      "contract_multiplier": 1
+    },
+    "analysis_ts": 1800000000000,
+    "reference_price": 120,
+    "wave_id": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+    "wave_state": "SHARP_PULLBACK_UNCONFIRMED",
+    "previous_wave": null,
+    "next_wave": {
+      "wave_id": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "created_ts": 1800000000000,
+      "expires_ts": 1800014400000,
+      "qualification": [
+        {
+          "window_ms": 86400000,
+          "start_ts": 1799913600000,
+          "end_ts": 1800000000000,
+          "start_price": 100,
+          "end_price": 120,
+          "return_pct": 19.999999999999996,
+          "passed": true,
+          "basis": "OBSERVED_CLOSED_OHLC_24H",
+          "fact_ids": [
+            "pump-report-sources-day-growth-v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440"
+          ],
+          "evidence_ref": "ARTIFICIAL_L_1440",
+          "source": "BINGX_OFFICIAL_PUBLIC_API",
+          "source_event_ts": 1800000000000
+        }
+      ],
+      "impulse": {
+        "field": "volume_base",
+        "unit": "BASE",
+        "comparison_kind": "QUALIFIED_ABSOLUTE_SAME_FIELD",
+        "comparison_key": null,
+        "interval_ms": 60000,
+        "volume": 15000,
+        "baseline_median": 5000,
+        "ratio": 3,
+        "ratio_unit": "RATIO",
+        "ratio_reason": null,
+        "baseline_windows": 12,
+        "baseline_status": "FULL",
+        "normal_range": 0.525528258147574,
+        "start_ts": 1799999100000,
+        "end_ts": 1799999400000,
+        "open": 117,
+        "close": 121.25,
+        "low": 116.975,
+        "return_pct": 3.6324786324786418
+      },
+      "state": "SHARP_PULLBACK_UNCONFIRMED",
+      "reclaim_level": 117.50052825814757,
+      "reclaim_breached": false,
+      "invalidation_price": 116.975,
+      "current_volume": 1500,
+      "covered_until_ts": 1800000000000,
+      "peak_price": 145,
+      "peak_event_ts": 1799999460000,
+      "confirmed_pivots": [
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799992980000,
+          "known_ts": 1799993100000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799993280000,
+          "known_ts": 1799993400000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799993580000,
+          "known_ts": 1799993700000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799993880000,
+          "known_ts": 1799994000000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799994180000,
+          "known_ts": 1799994300000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799994480000,
+          "known_ts": 1799994600000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799994780000,
+          "known_ts": 1799994900000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799995080000,
+          "known_ts": 1799995200000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799995380000,
+          "known_ts": 1799995500000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799995680000,
+          "known_ts": 1799995800000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799995980000,
+          "known_ts": 1799996100000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799996280000,
+          "known_ts": 1799996400000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799996580000,
+          "known_ts": 1799996700000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799996880000,
+          "known_ts": 1799997000000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799997180000,
+          "known_ts": 1799997300000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799997480000,
+          "known_ts": 1799997600000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799997780000,
+          "known_ts": 1799997900000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799998080000,
+          "known_ts": 1799998200000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799998380000,
+          "known_ts": 1799998500000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.49947174185243,
+          "event_ts": 1799998680000,
+          "known_ts": 1799998800000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 117.50052825814757,
+          "event_ts": 1799998980000,
+          "known_ts": 1799999100000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.975,
+          "event_ts": 1799999100000,
+          "known_ts": 1799999220000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "LOW",
+          "price": 116.975,
+          "event_ts": 1799999160000,
+          "known_ts": 1799999280000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        {
+          "kind": "HIGH",
+          "price": 145,
+          "event_ts": 1799999460000,
+          "known_ts": 1799999580000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        }
+      ],
+      "cancelled_ts": null
+    },
+    "current_threshold_passed": true,
+    "automatic_eligible": true,
+    "ready": true,
+    "status": "READY",
+    "reasons": [],
+    "findings": [
+      {
+        "code": "SHARP_PULLBACK_UNCONFIRMED",
+        "text": "Откат резкий; возврат выше заранее известного уровня пока не подтверждён.",
+        "fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ]
+      },
+      {
+        "code": "STRUCTURAL_PLAN",
+        "text": "Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.",
+        "fact_ids": [
+          "ARTIFICIAL:candles:1800000000000",
+          "ARTIFICIAL:orderbook:1800000000000"
+        ]
+      }
+    ],
+    "plan": {
+      "entry_zones": [
+        {
+          "lower": 117.36914619361067,
+          "upper": 117.63191032268446,
+          "basis_fact_ids": [
+            "ARTIFICIAL:candles:1800000000000"
+          ],
+          "basis_level": {
+            "kind": "HIGH",
+            "price": 117.50052825814757,
+            "event_ts": 1799992980000,
+            "known_ts": 1799993100000,
+            "fact_id": "ARTIFICIAL:candles:1800000000000"
+          },
+          "explanation": "Прежняя подтверждённая вершина 117.50052825814757; уровень был известен до анализа.",
+          "confirmation_level": null,
+          "confirmation_status": "PRELIMINARY_AREA"
+        }
+      ],
+      "exit_zone": {
+        "lower": 144.8686179354631,
+        "upper": 145.1313820645369,
+        "basis_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "basis_level": {
+          "kind": "HIGH",
+          "price": 145,
+          "event_ts": 1799999460000,
+          "known_ts": 1799999580000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        },
+        "explanation": "Ближайшая подтверждённая вершина 145 выше текущей цены; фиксация всей позиции."
+      },
+      "invalidation": {
+        "kind": "PRICE_BELOW",
+        "price": 116.975,
+        "explanation": "Цена ниже сохранённой границы основания волны."
+      },
+      "position_limit_usdt": 3000,
+      "potential_pct": {
+        "minimum": 23.15418285570956,
+        "maximum": 23.653776798486703,
+        "basis": "GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT"
+      },
+      "desired_plan_potential_pct": 10,
+      "desired_potential_status": "MEETS_DESIRED",
+      "automatic_orders": false
+    },
+    "liquidity": {
+      "status": "USABLE",
+      "reason": null,
+      "unit": "USDT",
+      "spread_pct": 0.17857142857141842,
+      "sizes": [
+        {
+          "notional_usdt": 700,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 6.2444239999999995,
+            "quote_usdt": 699.9999303999999,
+            "vwap": 112.1,
+            "fully_filled": true,
+            "levels_used": 1,
+            "requested_budget_usdt": 700,
+            "budget_covered": true,
+            "unused_budget_usdt": 0.00006960000007438794
+          },
+          "exit": {
+            "quantity_base": 6.2444239999999995,
+            "quote_usdt": 698.7510456,
+            "vwap": 111.9,
+            "fully_filled": true,
+            "levels_used": 1
+          },
+          "entry_slippage_pct": 0,
+          "exit_slippage_pct": 0
+        },
+        {
+          "notional_usdt": 1000,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 8.920606,
+            "quote_usdt": 999.9999325999999,
+            "vwap": 112.1,
+            "fully_filled": true,
+            "levels_used": 1,
+            "requested_budget_usdt": 1000,
+            "budget_covered": true,
+            "unused_budget_usdt": 0.0000674000001481545
+          },
+          "exit": {
+            "quantity_base": 8.920606,
+            "quote_usdt": 998.2158114,
+            "vwap": 111.9,
+            "fully_filled": true,
+            "levels_used": 1
+          },
+          "entry_slippage_pct": 0,
+          "exit_slippage_pct": 0
+        },
+        {
+          "notional_usdt": 1500,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 13.380908999999999,
+            "quote_usdt": 1499.9998988999998,
+            "vwap": 112.1,
+            "fully_filled": true,
+            "levels_used": 1,
+            "requested_budget_usdt": 1500,
+            "budget_covered": true,
+            "unused_budget_usdt": 0.00010110000016538834
+          },
+          "exit": {
+            "quantity_base": 13.380908999999999,
+            "quote_usdt": 1497.3237171,
+            "vwap": 111.90000000000002,
+            "fully_filled": true,
+            "levels_used": 1
+          },
+          "entry_slippage_pct": 0,
+          "exit_slippage_pct": -2.220446049250313e-14
+        },
+        {
+          "notional_usdt": 2000,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 17.841213,
+            "quote_usdt": 1999.9999773,
+            "vwap": 112.1,
+            "fully_filled": true,
+            "levels_used": 1,
+            "requested_budget_usdt": 2000,
+            "budget_covered": true,
+            "unused_budget_usdt": 0.000022700000045006163
+          },
+          "exit": {
+            "quantity_base": 17.841213,
+            "quote_usdt": 1996.4317347,
+            "vwap": 111.9,
+            "fully_filled": true,
+            "levels_used": 1
+          },
+          "entry_slippage_pct": 0,
+          "exit_slippage_pct": 0
+        },
+        {
+          "notional_usdt": 3000,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 26.761819,
+            "quote_usdt": 2999.9999098999997,
+            "vwap": 112.1,
+            "fully_filled": true,
+            "levels_used": 1,
+            "requested_budget_usdt": 3000,
+            "budget_covered": true,
+            "unused_budget_usdt": 0.0000901000003068475
+          },
+          "exit": {
+            "quantity_base": 26.761819,
+            "quote_usdt": 2994.6475461,
+            "vwap": 111.9,
+            "fully_filled": true,
+            "levels_used": 1
+          },
+          "entry_slippage_pct": 0,
+          "exit_slippage_pct": 0
+        }
+      ],
+      "position_limit_usdt": 3000,
+      "snapshot_only": true,
+      "quantity_step_known": true,
+      "future_execution_guaranteed": false,
+      "fees_and_funding_included": false,
+      "fact_id": "ARTIFICIAL:orderbook:1800000000000",
+      "source_ts": 1800000000000
+    },
+    "liquidations": {
+      "status": "ABSENT",
+      "reason": "ARTIFICIAL_NO_MAP",
+      "zones_up": [],
+      "zones_down": [],
+      "coverage": null,
+      "rejected_zones": [],
+      "checked_sources": [],
+      "map_mode": "WITHOUT_MAP",
+      "qualified_zone_count": 0
+    },
+    "probability": {
+      "value_pct": null,
+      "event": "PRICE_PLUS_10_PERCENT_WITHIN_4_HOURS",
+      "reason": "NOT_CALIBRATED"
+    },
+    "notification_eligibility": {
+      "eligible": true,
+      "reason": null,
+      "required_potential_pct": 10,
+      "minimum_potential_pct": 23.15418285570956,
+      "comparison": {
+        "entry_upper": 117.63191032268446,
+        "exit_lower": 144.8686179354631,
+        "basis": "GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT",
+        "execution_proven": false
+      }
+    },
+    "fact_ids": [
+      "ARTIFICIAL:price:1800000000000",
+      "ARTIFICIAL:candles:1800000000000",
+      "pump-report-sources-day-growth-v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440",
+      "ARTIFICIAL:orderbook:1800000000000"
+    ],
+    "card_text": "TEST-USDT · Автоматический отчёт\nПодтверждённый рост: +20% за 24 ч (порог +20%); окно 14.01 11:00:00–15.01 11:00:00 МСК; факт …v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440.\nБудущее событие для статистики — +10% за 4 часа: вероятность пока не оценена. Отсчёт от исходной цены отчёта.\nОткат резкий; возврат выше заранее известного уровня пока не подтверждён. Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.\nПокупка на откате: 117.3691462–117.6319103 (прежняя вершина 117.5005283; предварительная область).\nФиксация всей позиции: 144.8686179–145.1313821 — ближайшая подтверждённая вершина выше цены.\nКарта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.\nВажно: пересмотреть план при цене ниже 116.975.\nВозврат не подтверждён; предварительная область не является доказанным выкупом.",
+    "day_growth_diagnostic": {
+      "usable": true,
+      "reason": null,
+      "fact_id": "pump-report-sources-day-growth-v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440"
+    },
+    "growth_windows": [
+      {
+        "window_ms": 300000,
+        "start_ts": 1799999700000,
+        "end_ts": 1800000000000,
+        "start_price": 120.5,
+        "end_price": 120,
+        "return_pct": -0.4149377593360981,
+        "passed": false,
+        "fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "source": "ARTIFICIAL_FIXTURE",
+        "source_event_ts": 1800000000000
+      },
+      {
+        "window_ms": 900000,
+        "start_ts": 1799999100000,
+        "end_ts": 1800000000000,
+        "start_price": 117,
+        "end_price": 120,
+        "return_pct": 2.564102564102555,
+        "passed": false,
+        "fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "source": "ARTIFICIAL_FIXTURE",
+        "source_event_ts": 1800000000000
+      },
+      {
+        "window_ms": 3600000,
+        "start_ts": 1799996400000,
+        "end_ts": 1800000000000,
+        "start_price": 117,
+        "end_price": 120,
+        "return_pct": 2.564102564102555,
+        "passed": false,
+        "fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "source": "ARTIFICIAL_FIXTURE",
+        "source_event_ts": 1800000000000
+      },
+      {
+        "window_ms": 86400000,
+        "start_ts": 1799913600000,
+        "end_ts": 1800000000000,
+        "start_price": 100,
+        "end_price": 120,
+        "return_pct": 19.999999999999996,
+        "passed": true,
+        "basis": "OBSERVED_CLOSED_OHLC_24H",
+        "fact_ids": [
+          "pump-report-sources-day-growth-v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440"
+        ],
+        "evidence_ref": "ARTIFICIAL_L_1440",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "source_event_ts": 1800000000000
+      }
+    ],
+    "activity": {
+      "impulse": {
+        "field": "volume_base",
+        "unit": "BASE",
+        "comparison_kind": "QUALIFIED_ABSOLUTE_SAME_FIELD",
+        "comparison_key": null,
+        "interval_ms": 60000,
+        "volume": 15000,
+        "baseline_median": 5000,
+        "ratio": 3,
+        "ratio_unit": "RATIO",
+        "ratio_reason": null,
+        "baseline_windows": 12,
+        "baseline_status": "FULL",
+        "normal_range": 0.525528258147574,
+        "start_ts": 1799999100000,
+        "end_ts": 1799999400000,
+        "open": 117,
+        "close": 121.25,
+        "low": 116.975,
+        "return_pct": 3.6324786324786418
+      },
+      "current_volume": 1500,
+      "current_to_impulse_volume_ratio": 0.1,
+      "ratio_unit": "RATIO",
+      "current_to_impulse_volume_ratio_reason": null,
+      "volume_basis": {
+        "field": "volume_base",
+        "unit": "BASE",
+        "comparison_kind": "QUALIFIED_ABSOLUTE_SAME_FIELD",
+        "comparison_key": null,
+        "interval_ms": 60000
+      },
+      "volume_diagnostics": null,
+      "candle_time_basis": null,
+      "candle_evidence_ref": "ARTIFICIAL_ONLY",
+      "candle_provenance": {
+        "coverage": null,
+        "event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "source": "ARTIFICIAL_FIXTURE",
+        "venue": "BINGX"
+      }
+    },
+    "growth_proof": {
+      "status": "CURRENT",
+      "window": {
+        "window_ms": 86400000,
+        "start_ts": 1799913600000,
+        "end_ts": 1800000000000,
+        "start_price": 100,
+        "end_price": 120,
+        "return_pct": 19.999999999999996
+      },
+      "threshold_pct": 20,
+      "fact_ids": [
+        "pump-report-sources-day-growth-v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440"
+      ],
+      "evidence_ref": "ARTIFICIAL_L_1440",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "source_event_ts": 1800000000000
+    },
+    "manual_text": "TEST-USDT · Автоматический отчёт\nПодтверждённый рост: +20% за 24 ч (порог +20%); окно 14.01 11:00:00–15.01 11:00:00 МСК; факт …v1:ARTIFICIAL:BINGX:TEST-USDT:ARTIFICIAL_L_1440.\nБудущее событие для статистики — +10% за 4 часа: вероятность пока не оценена. Отсчёт от исходной цены отчёта.\nОткат резкий; возврат выше заранее известного уровня пока не подтверждён. Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.\nПокупка на откате: 117.3691462–117.6319103 (прежняя вершина 117.5005283; предварительная область).\nФиксация всей позиции: 144.8686179–145.1313821 — ближайшая подтверждённая вершина выше цены.\nКарта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.\nВажно: пересмотреть план при цене ниже 116.975.\nВозврат не подтверждён; предварительная область не является доказанным выкупом."
+  }
+}

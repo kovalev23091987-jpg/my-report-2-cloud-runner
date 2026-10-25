@@ -1,0 +1,393 @@
+{
+  "schema": "PUMP_ANALYTICS_L_QUALIFICATION_V1",
+  "status": "FROZEN_FOR_ROOT_INTEGRATION",
+  "ROOT_integrates": true,
+  "rules_version": "pump-analytics-v3-owner-eligibility-20261025",
+  "cohort_audit_version": "pump-cohort-input-audit-v2-purpose-20261025",
+  "base_main": "d9658e069e3673fead21455ba78e22bfced4f288",
+  "owner_policy_ref": "checkpoints/pump-report-20261025/OWNER_PUBLICATION_AMENDMENTS.json",
+  "new_L_unique_cases_pass": 8,
+  "initial_L_pass": 7,
+  "initial_L_fail": 1,
+  "fixture_corrected_L07_pass": 1,
+  "fixture_corrected_L07_fail": 0,
+  "affected_C_pass": 2,
+  "affected_C_fail": 0,
+  "unique_current_cases_pass": 10,
+  "final_fail": 0,
+  "native_HTTP_forbidden_preload": "/private/tmp/pump-e-native-http-forbidden.mjs",
+  "commands": [
+    "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap pump-report/tests/analytics/owner-presentation.test.mjs",
+    "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap --test-name-pattern='^L07 ' pump-report/tests/analytics/owner-presentation.test.mjs",
+    "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap --test-name-pattern='card shows source as-of|uncalibrated event is named' pump-report/tests/analytics/targeted-c.test.mjs"
+  ],
+  "fixture_correction": "Calibration record fixture used origin NO_MAP as outcome map mode; corrected adapter to WITHOUT_MAP. No production change caused by this failed fixture. Initial TAP retained.",
+  "max_card_UTF16_lengths": [
+    3543,
+    3483
+  ],
+  "max_cards_well_formed": true,
+  "maximum_entries": 3,
+  "maximum_map_zones_each_side": 3,
+  "removed_size_and_unknown_absolute_volume_user_lines": true,
+  "relative_activity_and_internal_liquidity_preserved": true,
+  "mandatory_no_map_label_preserved": true,
+  "notification_eligibility": {
+    "condition": "finite(plan.potential_pct.minimum)>=OWNER_MIN_PLAN_POTENTIAL_PCT=10 && expected gross basis, using ROOT ownerPublicationRefusal",
+    "PARTLY_minimum_below10": "REJECTED/null card/PLAN_POTENTIAL_BELOW_OWNER_MINIMUM",
+    "unqualified": "PLAN_POTENTIAL_UNQUALIFIED",
+    "owner_assets": "OWNER_ASSET_DELIVERY_EXCLUDED",
+    "fields": [
+      "eligible",
+      "reason",
+      "required_potential_pct",
+      "minimum_potential_pct",
+      "comparison.entry_upper",
+      "comparison.exit_lower",
+      "comparison.basis",
+      "comparison.execution_proven"
+    ]
+  },
+  "purpose_filter": "ROOT productionRecord, additive exact240 sidecar; no origin rewrite",
+  "raw_summary_or_materialized_kernel_changed": false,
+  "changed_files": [
+    "pump-report/analytics/index.mjs",
+    "pump-report/analytics/movement.mjs",
+    "pump-report/analytics/manual-text.mjs",
+    "pump-report/analytics/cohort-audit.mjs",
+    "pump-report/analytics/presentation.mjs",
+    "pump-report/tests/analytics/owner-presentation.test.mjs"
+  ],
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "bytes": 6513,
+      "sha256": "704348a6c56bcdafe10d7335c89e4e092d92fadfe12bed856c9afb8bfc8285d6",
+      "git_blob": "a905bf8b693585c210903290379aa7be394c7097",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/day-growth.mjs",
+      "bytes": 3782,
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "git_blob": "af726423c9fdc355a77a09d3613f044d5f5cd20d",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/liquidity.mjs",
+      "bytes": 3326,
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "git_blob": "560ca16d61f7c7a0ca2b9a8a3e275252a074b356",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "git_blob": "84d526f14c505e23aa5cb72a7d3fdca7d14081b4",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 7245,
+      "sha256": "8be8aeba5bab96e66be6798078104d6b573a66e22b895789d14c6bf9a3759375",
+      "git_blob": "40666136c1b50f631f5b1eab0621d6f690dfa49c",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/summary.mjs",
+      "bytes": 11984,
+      "sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff",
+      "git_blob": "831e76650a523ec028f5d2ba790f140545765a93",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "bytes": 7668,
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "git_blob": "02542b09ff5f157d701c79489369bce68456ca41",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 5561,
+      "sha256": "4e0b04e04978411cd6fa021e230cc1d13471a006171f6b5ba11823b3c599d53b",
+      "git_blob": "fac6e1d1e07c16fe256112c2cd0fd001647ba7a4",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/contracts/run-purpose.mjs",
+      "bytes": 1130,
+      "sha256": "e242693aca8089883df3eb5b7a9c84f9a9ac51c8eb22997390f809d3331b164a",
+      "git_blob": "b38b44fc44bc705dd3c30c3550c2f16bc213d3c9",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "bytes": 1774,
+      "sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce",
+      "git_blob": "ec96d96656025dffbdffd4d296689d55ca2002b8",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/bingx.mjs",
+      "bytes": 13882,
+      "sha256": "48c68cc9b7937b4c5f8ace8cbdf029a51d00b74c7aae038be695449f3d96aaec",
+      "git_blob": "a640856240dc148940f38ea8ff5eaa3505beaf44",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/day-growth.mjs",
+      "bytes": 9123,
+      "sha256": "6e397080a7fd99fb466b286d916e7df97ce17eedea244ac9cdf3230d3f0c8b93",
+      "git_blob": "54a7147bd5de7f74c5c8ee9e0658970181a01bdd",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "bytes": 32080,
+      "sha256": "d95e5b120f927e1dd89c7a3061764efcde631b6343e7c98e40f296806a269e9f",
+      "git_blob": "32820f91b312a9aed8303f11f45e39cf33bf2565",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/liquidations.mjs",
+      "bytes": 6512,
+      "sha256": "7fd1e6cca4eb6037ecbe5d6e9296c681aaa19dfb6248ef38da8bf0e5c2de744e",
+      "git_blob": "9364bbc269de4371debdf179539e92f44f47d8b3",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/native-relative-qualification.mjs",
+      "bytes": 3126,
+      "sha256": "c9ab4bd23cf10376a3abd7b66490679121362286efdc82ed95d19fdf29ca753f",
+      "git_blob": "0a69ee98e858386a2783c5157709b51ca002a021",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed",
+      "git_blob": "ea7a0aedbe6cac487850808f70834cca157ee7a5",
+      "remote_exact": true
+    }
+  ],
+  "files": [
+    {
+      "path": "pump-report/analytics/cohort-audit.mjs",
+      "bytes": 17872,
+      "sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 17408,
+      "sha256": "4d08ce32f9ab948f14a221f172a3aa491ad1ac33a4a093c448b9905a144c0a22"
+    },
+    {
+      "path": "pump-report/analytics/manual-text.mjs",
+      "bytes": 6265,
+      "sha256": "80fb65645504c1b240028db02a1870a2af977faa645014659af0410e906f0b20"
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 16026,
+      "sha256": "6b48b3e583541d4f46e4f5981f4dced800c6fe1ac86e391aabd59b5de1dbd1ad"
+    },
+    {
+      "path": "pump-report/analytics/presentation.mjs",
+      "bytes": 3597,
+      "sha256": "8e28bad3f582d023af7b944ca37ba27de7c47f5ba800df46a109c44fc2a81bab"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/ROOT_WIRING_RU.md",
+      "bytes": 7359,
+      "sha256": "dc5a598c502334ef4c77f9c95a908125d1f79e439e7bcd4724635a5650b5131d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/affected-two.tap",
+      "bytes": 621,
+      "sha256": "5545ca5bb7f99c0f7aa68a02ee9472e8ab2953209a37517174cf14f9f84926cc"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/authority.json",
+      "bytes": 3743,
+      "sha256": "3a2fa6286e2eea8e09f60ee2749fa8a6e3a0376100ed8bf69d756f2c9608d3e5"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/auto-current.json",
+      "bytes": 22519,
+      "sha256": "7e09ebd8f49c93525f9d62fca1d8369948092754f0cb72256c0cb75a7d84e95a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/auto-current.txt",
+      "bytes": 1353,
+      "sha256": "ea3d79eae6d60495a391fe0eec75f48e7e5db360ba5be1aeffdd753448a93d23"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/auto-day.json",
+      "bytes": 22882,
+      "sha256": "de9f0f61e761636ea4184c3054e8d7f19ce773944d71735806ed443f56d3034e"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/auto-day.txt",
+      "bytes": 1512,
+      "sha256": "281871e18a3d23db432d56637b4481bb2ed96e87c81129486f246cbe06b0c1a0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/auto-retained.json",
+      "bytes": 30180,
+      "sha256": "d3704dcdfa0f0fc826eeec2475117649cfdcda8cfa7a004b39aeba95149ae132"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/auto-retained.txt",
+      "bytes": 1609,
+      "sha256": "9d125ca5e03f2310abba262f6eeb97e821c42f9f5005aab517198d734b550914"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/baseline/cohort-audit.before.mjs",
+      "bytes": 16547,
+      "sha256": "4fcd5a4b8e44f13faa252fc7317d4248c2cf90225396ca09dce2287dcc734910"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/baseline/index.before.mjs",
+      "bytes": 16898,
+      "sha256": "86f66d75865ecd75df0a17a9cb84e89eb091beeebe2c279638dc29cbdb4b22d3"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/baseline/manual-text.before.mjs",
+      "bytes": 6038,
+      "sha256": "f3a4bf8749f9982dd9c6b314a95967bb339dd069ea53a8a0d966f014d0cd7730"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/baseline/movement.before.mjs",
+      "bytes": 15648,
+      "sha256": "db51eb22bf21e4159ebebb587837eaccf8ed79ca2ea2ad4f79c31ad04a96b2fa"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/baseline/targeted-c.before.mjs",
+      "bytes": 5685,
+      "sha256": "8281fea82484a6580c4b5cf23b3f42b820a38f10fa7900a4bb9f818ba59afe64"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/cohort-audit.diff",
+      "bytes": 5228,
+      "sha256": "fcb7080fea481f61a5a78b5fbb4b87fe4230543e4255c2ecf73b093d604d0571"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/index.diff",
+      "bytes": 9928,
+      "sha256": "3987596d9b86a5c8bef1268d4a07d205a7aefda43d775500f847d173ad5f0c3b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/manual-acceptance.json",
+      "bytes": 21288,
+      "sha256": "c40f1fccc9832b5d55ff6d04f4f9f9088080cae48447ef5d1da383074a5fd5c6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/manual-acceptance.txt",
+      "bytes": 1447,
+      "sha256": "5cdc9d10d7c7105d385d5b4440109405ae7c9ea22d19abbf99d5131e52b5ffbe"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/manual-potential-refusal.json",
+      "bytes": 30156,
+      "sha256": "c07fbc1ccd2e6e6d6d794d7f70ad1c9d923e9fac97b8a3c1ef1cb9c2d80599fa"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/manual-potential-refusal.txt",
+      "bytes": 843,
+      "sha256": "9fb37cdba853262b597f45f0f5b7076b1c4cd6f9d3f0a17a1f35cd07a5e81862"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/manual-text.diff",
+      "bytes": 5471,
+      "sha256": "62cf883c9f4167720b54b6b65b63af1d49d1c46fbb3066920b5c8fb96f923ceb"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/maximum-lengths.json",
+      "bytes": 81,
+      "sha256": "9552aa4dee4459f9d803444a96e2f1ef56a1f40173cbe0fd67e7026297083523"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/maximum-opaque.json",
+      "bytes": 130668,
+      "sha256": "d0c51cbc9c95e747aa5d357eb3041288442089190526b13f2c581d8d11a587e5"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/maximum-opaque.txt",
+      "bytes": 5335,
+      "sha256": "86c0ec0e04e6c1e1d7c3361090bfbf68db2b9f820237d248ed2ba1cf73ded44e"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/maximum-unicode.json",
+      "bytes": 178346,
+      "sha256": "d755f7dd682e61ad23d367a7d5fe779d208b12cefc59ad2abb883299ad9bc594"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/maximum-unicode.txt",
+      "bytes": 6093,
+      "sha256": "8d6ffc35025ef1330550ad8c993433055bc1ccc5af4294a96bc3543c74605be7"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/movement.diff",
+      "bytes": 1339,
+      "sha256": "abee4374c8419862f2f438764a7f6a4700717c59087c1636fbd2037f935a1e68"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/prior-frozen-manifest-refs.json",
+      "bytes": 465,
+      "sha256": "e27c3392f522e79b9985a117514ae22db44cd8d2a0d81b6a04cf9a2ec768495c"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/purpose-corrected-one.tap",
+      "bytes": 472,
+      "sha256": "23c535cd188f11fc372a7dfafcb3234ec5591a85236fd47d4010b509746f86b5"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/readonly-dependencies.json",
+      "bytes": 4277,
+      "sha256": "614c94dad090aeb24a85685895039bea176aa67368dc236982a5d6966060e90b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/test-results-initial.tap",
+      "bytes": 3507,
+      "sha256": "9aabd527133f40b495c237ddc79e04ef59f91a1ed9eecae731414d57513724bf"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/test-results.tap",
+      "bytes": 3507,
+      "sha256": "9aabd527133f40b495c237ddc79e04ef59f91a1ed9eecae731414d57513724bf"
+    },
+    {
+      "path": "pump-report/tests/analytics/owner-presentation.test.mjs",
+      "bytes": 16310,
+      "sha256": "803c6a5b8db5c10dd6858ba41892ba3b9fdf4aa9163c95ba5da87c74e0a521a4"
+    }
+  ],
+  "prior_frozen_manifests": [
+    {
+      "path": "pump-report/handoffs/analytics/package-j/qualification.json",
+      "sha256": "4884ebb670a0667dcf73115ac5f84d1b45d9dbf291c3b4b04e75a9020a1021f4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-k/qualification.json",
+      "sha256": "be926b2662009e369426f1224f7a9a3a1fc2e35788647f0ef618a3dbc1fd5bd3"
+    }
+  ],
+  "production_native_acceptance_claimed": false,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "old_batteries_replayed": false,
+  "old_ENTRY_followup_touched": false,
+  "storage_capacity_tests": false,
+  "original240_t0_P0_receipt_target_changed": false,
+  "private240_market_values_read": false,
+  "automatic_growth_thresholds_changed": false,
+  "wave_lifetime_changed": false,
+  "probability_pct": null,
+  "next_owner_assignment": "Read full TZv2 and produce atomic requirement registry plus a small manual-first qualification diagnostic. This L freeze will not be modified.",
+  "lease": "Own same bounded lease live at freeze; subsequent owner audit may amend scope without extending expiry; authoritative scoped ref holds final release."
+}

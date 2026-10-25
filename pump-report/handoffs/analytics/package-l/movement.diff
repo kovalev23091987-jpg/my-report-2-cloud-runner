@@ -1,0 +1,15 @@
+--- pump-report/handoffs/analytics/package-l/baseline/movement.before.mjs	2026-10-25 18:00:55
++++ pump-report/analytics/movement.mjs	2026-10-25 18:02:48
+@@ -63,7 +63,11 @@
+     p.impulse&&positive(p.impulse.baseline_median)&&positive(p.impulse.normal_range)&&validTime(p.impulse.end_ts)&&p.impulse.end_ts<=p.created_ts;
+ }
+ export function analyzeMovement(input, rows, price, ticker, profile, observedDay=null) {
+-  const windows=growthWindows(rows,ticker,profile,observedDay),current_threshold_passed=windows.some(w=>w.passed),now=input.analysis_ts,end=rows.at(-1)?.close_ts;
++  const windows=growthWindows(rows,ticker,profile,observedDay).map(w=>{
++    if(!positive(w.start_price)||!positive(w.end_price))return w;
++    const fact=w.basis==='OBSERVED_CLOSED_OHLC_24H'?input.facts.growth_24h:w.fact_ids?.includes(ticker?.fact_id)?ticker:input.facts.candles;
++    return {...w,fact_ids:w.fact_ids??[fact.fact_id],evidence_ref:w.evidence_ref??fact.evidence_ref??null,source:fact.source,source_event_ts:fact.event_ts};
++  }),current_threshold_passed=windows.some(w=>w.passed),now=input.analysis_ts,end=rows.at(-1)?.close_ts;
+   const p=input.previous_wave,previous=usablePrevious(p,input,profile)?p:null;
+   const expired=p?.instrument_id===input.instrument.instrument_id&&validTime(p.expires_ts)&&p.expires_ts<=now;
+   const candidates=[];

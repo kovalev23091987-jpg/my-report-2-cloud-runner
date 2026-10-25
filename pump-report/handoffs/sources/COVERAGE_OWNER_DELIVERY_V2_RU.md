@@ -1,0 +1,11 @@
+# Coverage V2: отдельные delivery exclusions и acceptance test
+
+Pure `normalizeSourceCoverage` принимает `delivery_policy={excluded_asset_ids,evidence_ref}`. Для текущей команды это BINGX_UNDERLYING:BTC/ETH; в metadata source — прямая команда владельца, переданная ROOT. На последнем прочитанном main d9a2843 общие harddeny/owner-amendment ещё не опубликованы; sender/catalog/queue здесь не менялись. ROOT может подставить canonical policy ref в lookup после публикации common без смены crypto identity.
+
+`OPERATOR_COVERAGE13_OWNER_DELIVERY_V2.json`: verified identity denominator13, owner_delivery_excluded2, deliverable denominator11. Gold-excluded2 и unknown919 отдельны, полный cryptoN=null. BTC/ETH по-прежнему VERIFIED_CRYPTO. Общие historical source counts сохранены: BTCcore1 устарел,12 не проверены; среди deliverable11 checked0/notchecked11. Owner exclusion не маскируется как отсутствие или некриптовалютность.
+
+Report metadata требует явного `report_classification`: PRODUCTION/ACCEPTANCE_TEST, иначе UNCLASSIFIED и production count0. 240 помечен ACCEPTANCE_TEST; historical ready/SENT without map1, acceptance-test1, production0. Прежний `ready_without_map_manual_sent_count` в schema V2 означает production-only0; callers должны учесть изменение. Даже явно переданный PRODUCTION у owner-excluded asset не попадёт в production count. Это классификация операторских счётчиков, не sender gate. Исторические private card/analysis/wave и исходная summary-квитанция не изменены; summary view имеет acceptance-test context.
+
+Новая affected coverage группа и metadata builder —PASS. Проверены13→11 без переклассификации, отдельные gold/UNKNOWN, historical-test vs production, safe default unclassified, запрет подсчёта excluded как production, сохранение часов/причин и исходных фактов. Сборов, BTC/ETH market checks, сообщений, SQL, новых поисков/HTML/JS нет. Source index/day/core/registry/profile/policy не менялись. Пороги, единицы, internal activity и retained wave прежние; внешний текст карточки и gate потенциала≥10% принадлежат ROOT/аналитику.
+
+Owner-review полного cryptoN закрыт отдельным OWNER_REVIEW_FULL_CRYPTO_N_FINAL_RU.md с реальными вариантами и без новой автономной цепочки поиска. Runtime lookup/harddeny подключает ROOT; этот пакет не является live admission.9пауз,2OWNER deferrals,caps/reserves/unknowns сохранены.

@@ -1,0 +1,184 @@
+{
+  "evidence_class": "ARTIFICIAL",
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "outcome": {
+    "signal_id": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1792910700123",
+    "wave_id": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1792910700123",
+    "independence_key": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1792910700123",
+    "mode": "MANUAL",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "pump-analytics-v1-tz2-20261025",
+    "t0": 1792911600123,
+    "reference_price": 112,
+    "target_price": 123.2,
+    "deadline_ts": 1792926000123,
+    "status": "UNKNOWN",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": false,
+      "no_hit_basis": null,
+      "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+      "covered_until_ts": 1792926000123,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 239,
+      "boundary_candles_excluded": 2,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "INSUFFICIENT_HISTORY_COVERAGE",
+      "BOUNDARY_HIGH_NOT_PROOF"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": null,
+      "exit_touched": null,
+      "entry_then_exit_confirmed": null,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": null
+    }
+  },
+  "summary": {
+    "schema": "PUMP_MATERIALIZED_SUMMARY_V1",
+    "version": "pump-materialized-summary-v1-tz2-20261025",
+    "materialization_id": "pump-frozen-origins-v1",
+    "revision": 2,
+    "as_of_ts": 1792926060123,
+    "status": "CURRENT",
+    "maturity_current": true,
+    "pending_clock_transitions": 0,
+    "materialized_updated_ts": 1792926060123,
+    "independent_waves": 1,
+    "mature_waves": 1,
+    "pending_waves": 0,
+    "pending_known_hits": 0,
+    "gapped_mature_waves": 1,
+    "coverage_unknown_mature_waves": 0,
+    "enclosing_no_hit_proof_mature_waves": 0,
+    "origin_conflict_waves": 0,
+    "outcome_conflict_waves": 0,
+    "identity_conflict_waves": 0,
+    "outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 1
+    },
+    "mature_outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 1
+    },
+    "denominators": {
+      "all_independent_waves": 1,
+      "mature_waves": 1,
+      "resolved_mature_waves": 0,
+      "unknown_mature_waves": 1,
+      "pending_excluded_from_mature": 0
+    },
+    "publication_counts": {
+      "sent": 1,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "reason_counts": {
+      "INSUFFICIENT_HISTORY_COVERAGE": 1,
+      "BOUNDARY_HIGH_NOT_PROOF": 1
+    },
+    "adverse": {
+      "total_drawdown_known": 0,
+      "total_drawdown_unknown": 1,
+      "pre_hit_drawdown_known": 0,
+      "pre_hit_drawdown_unknown": 0,
+      "hit_after_invalidation_yes": 0,
+      "hit_after_invalidation_no": 0,
+      "hit_after_invalidation_unknown": 0
+    },
+    "cohorts": [
+      {
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"NO_MAP\",\"pump-analytics-v1-tz2-20261025\",\"pump-report-start-v1\",\"ARTIFICIAL\"]",
+        "mode": "MANUAL",
+        "publication": "SENT",
+        "map_mode": "NO_MAP",
+        "rules_version": "pump-analytics-v1-tz2-20261025",
+        "profile_version": "pump-report-start-v1",
+        "evidence_class": "ARTIFICIAL",
+        "independent_waves": 1,
+        "mature_waves": 1,
+        "pending_waves": 0,
+        "pending_known_hits": 0,
+        "gapped_mature_waves": 1,
+        "coverage_unknown_mature_waves": 0,
+        "enclosing_no_hit_proof_mature_waves": 0,
+        "origin_conflict_waves": 0,
+        "outcome_conflict_waves": 0,
+        "identity_conflict_waves": 0,
+        "outcomes": {
+          "hit": 0,
+          "miss": 0,
+          "unknown": 1
+        },
+        "mature_outcomes": {
+          "hit": 0,
+          "miss": 0,
+          "unknown": 1
+        },
+        "denominators": {
+          "all_independent_waves": 1,
+          "mature_waves": 1,
+          "resolved_mature_waves": 0,
+          "unknown_mature_waves": 1,
+          "pending_excluded_from_mature": 0
+        },
+        "publication_counts": {
+          "sent": 1,
+          "unsent": 0,
+          "unknown": 0
+        },
+        "reason_counts": {
+          "INSUFFICIENT_HISTORY_COVERAGE": 1,
+          "BOUNDARY_HIGH_NOT_PROOF": 1
+        },
+        "adverse": {
+          "total_drawdown_known": 0,
+          "total_drawdown_unknown": 1,
+          "pre_hit_drawdown_known": 0,
+          "pre_hit_drawdown_unknown": 0,
+          "hit_after_invalidation_yes": 0,
+          "hit_after_invalidation_no": 0,
+          "hit_after_invalidation_unknown": 0
+        }
+      }
+    ],
+    "success_rate_pct": null,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "readiness_status": "SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED",
+    "limitations": [
+      "Materialized counts require atomic aggregate+wave commit",
+      "Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation",
+      "When maturity_current=false mature/pending counters need explicit due transitions",
+      "No raw observations removed; no full-history read on query",
+      "No probability, calibration, profit or native storage capacity proven"
+    ],
+    "source_cursor": 2,
+    "source_records_at_boundary": 2,
+    "source_caught_up": true,
+    "processed_records": 0,
+    "source_index_append_only": true,
+    "status_text_ru": "Независимых волн: 1. Зрелых: 1; HIT 0, MISS 0, UNKNOWN 1. Ещё не завершены: 0. Процент успешности и вероятность пока не оценены."
+  }
+}

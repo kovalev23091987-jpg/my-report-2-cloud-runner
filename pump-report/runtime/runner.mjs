@@ -3,6 +3,7 @@ import {START_PROFILE} from '../profile/start-v1.mjs';
 import {automaticWindowOpen,textHash} from './delivery.mjs';
 import {parseManualInput} from './manual-input.mjs';
 import {createOutcomeJournal} from './outcome-journal.mjs';
+import {productionRecord} from '../contracts/run-purpose.mjs';
 
 const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
@@ -125,6 +126,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       const summary=budget.summary();if(summary.lanes.statistics>=summary.limits.lanes.statistics||summary.total>=summary.limits.http_per_run){results.push({status:'DEFERRED',reason:'STATISTICS_HTTP_BUDGET_EXHAUSTED'});break;}
       if(store.admission&&typeof store.usage==='function'){const used=store.usage();if(used.rows_read+500>store.admission.max_rows_read||used.rows_written+30>store.admission.max_rows_written){results.push({status:'DEFERRED',reason:'STATISTICS_NATIVE_ENVELOPE_PROTECTED'});break;}}
       const signal=await store.get(key);if(!signal||signal.deadline_ts>clock())continue;
+      if(!productionRecord({origin:signal.origin})){results.push({signal_id:signal.signal_id,status:'SKIPPED_NON_PRODUCTION',reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});continue;}
       const saved=await store.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS'){await store.atomic('pump:outcomes-pending',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));continue;}
       if(typeof sources.getOutcomeHistory!=='function'){results.push({signal_id:signal.signal_id,status:'UNKNOWN',reason:'OUTCOME_HISTORY_ROUTE_NOT_CONNECTED'});continue;}
       const history=await sources.getOutcomeHistory({instrument:signal.instrument,run_id,start_ts:signal.t0,end_ts:signal.deadline_ts});

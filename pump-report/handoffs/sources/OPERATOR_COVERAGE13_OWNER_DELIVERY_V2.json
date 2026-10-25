@@ -1,0 +1,1084 @@
+{
+  "schema": "PUMP_OPERATOR_SOURCE_COVERAGE_V2_OWNER_DELIVERY",
+  "as_of_ts": 1792940539605,
+  "scope": "CURATED_VERIFIED_IDENTITIES_NOT_FULL_EXCHANGE",
+  "verified_denominator": 13,
+  "complete_crypto_N": null,
+  "unknown_active_USDT": 919,
+  "deliverable_verified_denominator": 11,
+  "owner_delivery_excluded_verified_count": 2,
+  "owner_delivery_excluded_asset_ids": [
+    "BINGX_UNDERLYING:BTC",
+    "BINGX_UNDERLYING:ETH"
+  ],
+  "owner_delivery_policy_ref": "DIRECT_HUMAN_OWNER_IN_ROOT_RELAYED_TO_SOURCES_20261025",
+  "owner_excluded_gold_backed": 2,
+  "universe_counts_as_of": 1792931870932,
+  "unknown_identities_outside_verified_denominator": true,
+  "rows": [
+    {
+      "instrument_id": "BINGX:USDT_M:100:BTC-USDT",
+      "asset_id": "BINGX_UNDERLYING:BTC",
+      "native_symbol": "BTC-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": true,
+      "delivery_eligible_verified": false,
+      "sources": {
+        "core": {
+          "ever_checked": true,
+          "ever_usable_at_capture": true,
+          "status_at_capture": "USABLE",
+          "current_fresh": false,
+          "not_checked": false,
+          "absent": false,
+          "unqualified": false,
+          "expired": true,
+          "current_state": "STALE",
+          "reason_codes": [
+            "SOURCE_EXPIRED_AT_ASOF"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "clock_missing_reason": "CONTROL_RESPONSE_OMITS_ORIGINAL_CORE_FACT_CLOCKS",
+          "capture_ts": 1792937015902,
+          "freshness_upper_bound_ts": 1792937105902,
+          "freshness_basis": "CONSERVATIVE_CAPTURE_PLUS_MAX_MANDATORY_TTL_BOUND_NOT_EXACT_EXPIRY",
+          "receipt_ref": "06e50e5f-28c2-4b69-9bc2-61222a151fe3|a2b859e4-d6d9-46b3-9529-2e0fb409b94e|c1e8e451-2453-4c28-ba2a-130546383745",
+          "artifact_sha256": "00e5635510cb2024fed95b5b0a372527cf7a78a361be80f3f64603e8cab6afad"
+        },
+        "growth_24h": {
+          "ever_checked": true,
+          "ever_usable_at_capture": true,
+          "status_at_capture": "USABLE",
+          "current_fresh": false,
+          "not_checked": false,
+          "absent": false,
+          "unqualified": false,
+          "expired": true,
+          "current_state": "STALE",
+          "reason_codes": [
+            "SOURCE_EXPIRED_AT_ASOF"
+          ],
+          "event_ts": 1792938480000,
+          "received_ts": 1792938526815,
+          "expires_ts": 1792938570000,
+          "clock_missing_reason": null,
+          "capture_ts": 1792938527105,
+          "freshness_upper_bound_ts": null,
+          "freshness_basis": "EXACT_ORIGINAL_NATIVE_FACT_CLOCKS",
+          "receipt_ref": "a6bf7659-19c6-41a9-8319-0b764550deda",
+          "artifact_sha256": "b41f79a69cae3762b864111095785b40af59fa56151ee14a9d7df91635b56f9d"
+        },
+        "liquidations": {
+          "ever_checked": true,
+          "ever_usable_at_capture": false,
+          "status_at_capture": "UNQUALIFIED",
+          "current_fresh": false,
+          "not_checked": false,
+          "absent": false,
+          "unqualified": true,
+          "expired": true,
+          "current_state": "UNQUALIFIED",
+          "reason_codes": [
+            "IDENTITY_UNQUALIFIED",
+            "PRICE_CURRENCY_UNQUALIFIED",
+            "NATIVE_VENUE_UNQUALIFIED",
+            "CURRENT_BINGX_PRICE_MAPPING_UNQUALIFIED",
+            "SOURCE_EXPIRED_AT_ASOF"
+          ],
+          "event_ts": null,
+          "received_ts": 1792937103370,
+          "expires_ts": null,
+          "clock_missing_reason": "SOURCE_TIME_UNIT_NOT_INDEPENDENTLY_QUALIFIED",
+          "capture_ts": 1792937103541,
+          "freshness_upper_bound_ts": 1792937120179,
+          "freshness_basis": "STALE_UNDER_EXISTING_MS_PARSER_INTERPRETATION;NOT_VENDOR_UNIT_GUARANTEE",
+          "receipt_ref": "5113a908-f118-4f2b-875f-c6a913bde255",
+          "artifact_sha256": "24b91c66d165ecae68c46782b6527f9660df43bb95418b3efb93036dad0c9528"
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:101:ETH-USDT",
+      "asset_id": "BINGX_UNDERLYING:ETH",
+      "native_symbol": "ETH-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": true,
+      "delivery_eligible_verified": false,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "asset_id": "BINGX_UNDERLYING:SOL",
+      "native_symbol": "SOL-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100005:XRP-USDT",
+      "asset_id": "BINGX_UNDERLYING:XRP",
+      "native_symbol": "XRP-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100035:DOGE-USDT",
+      "asset_id": "BINGX_UNDERLYING:DOGE",
+      "native_symbol": "DOGE-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100004:ADA-USDT",
+      "asset_id": "BINGX_UNDERLYING:ADA",
+      "native_symbol": "ADA-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100085:BNB-USDT",
+      "asset_id": "BINGX_UNDERLYING:BNB",
+      "native_symbol": "BNB-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100245:SUI-USDT",
+      "asset_id": "BINGX_UNDERLYING:SUI",
+      "native_symbol": "SUI-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100009:AVAX-USDT",
+      "asset_id": "BINGX_UNDERLYING:AVAX",
+      "native_symbol": "AVAX-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:103:LINK-USDT",
+      "asset_id": "BINGX_UNDERLYING:LINK",
+      "native_symbol": "LINK-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100006:LTC-USDT",
+      "asset_id": "BINGX_UNDERLYING:LTC",
+      "native_symbol": "LTC-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100008:DOT-USDT",
+      "asset_id": "BINGX_UNDERLYING:DOT",
+      "native_symbol": "DOT-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:100039:TRX-USDT",
+      "asset_id": "BINGX_UNDERLYING:TRX",
+      "native_symbol": "TRX-USDT",
+      "crypto_classification": "VERIFIED_CRYPTO",
+      "owner_delivery_excluded": false,
+      "delivery_eligible_verified": true,
+      "sources": {
+        "core": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "growth_24h": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        },
+        "liquidations": {
+          "ever_checked": false,
+          "ever_usable_at_capture": null,
+          "current_fresh": false,
+          "not_checked": true,
+          "absent": false,
+          "unqualified": null,
+          "expired": null,
+          "current_state": "NOT_CHECKED",
+          "reason_codes": [
+            "NOT_CHECKED"
+          ],
+          "event_ts": null,
+          "received_ts": null,
+          "expires_ts": null,
+          "capture_ts": null,
+          "receipt_ref": null,
+          "artifact_sha256": null
+        }
+      }
+    }
+  ],
+  "totals": {
+    "core": {
+      "denominator_verified": 13,
+      "ever_checked": 1,
+      "current_fresh": 0,
+      "not_checked": 12,
+      "absent": 0,
+      "unqualified": 0,
+      "expired": 1,
+      "ever_usable_at_capture": 1
+    },
+    "growth_24h": {
+      "denominator_verified": 13,
+      "ever_checked": 1,
+      "current_fresh": 0,
+      "not_checked": 12,
+      "absent": 0,
+      "unqualified": 0,
+      "expired": 1,
+      "ever_usable_at_capture": 1
+    },
+    "liquidations": {
+      "denominator_verified": 13,
+      "ever_checked": 1,
+      "current_fresh": 0,
+      "not_checked": 12,
+      "absent": 0,
+      "unqualified": 1,
+      "expired": 1,
+      "ever_usable_at_capture": 0
+    }
+  },
+  "deliverable_totals": {
+    "core": {
+      "denominator_verified": 11,
+      "ever_checked": 0,
+      "current_fresh": 0,
+      "not_checked": 11,
+      "absent": 0,
+      "unqualified": 0,
+      "expired": 0,
+      "ever_usable_at_capture": 0
+    },
+    "growth_24h": {
+      "denominator_verified": 11,
+      "ever_checked": 0,
+      "current_fresh": 0,
+      "not_checked": 11,
+      "absent": 0,
+      "unqualified": 0,
+      "expired": 0,
+      "ever_usable_at_capture": 0
+    },
+    "liquidations": {
+      "denominator_verified": 11,
+      "ever_checked": 0,
+      "current_fresh": 0,
+      "not_checked": 11,
+      "absent": 0,
+      "unqualified": 0,
+      "expired": 0,
+      "ever_usable_at_capture": 0
+    }
+  },
+  "axes_overlap": true,
+  "axes_note": "Unqualified and expired can overlap; not_checked is not absent. Do not sum these axes as exclusive buckets.",
+  "ready_without_map_manual_sent_count": 0,
+  "production_ready_without_map_manual_sent_count": 0,
+  "acceptance_test_ready_without_map_manual_sent_count": 1,
+  "historical_ready_without_map_manual_sent_count": 1,
+  "ready_without_map_reports": [
+    {
+      "instrument_id": "BINGX:USDT_M:100:BTC-USDT",
+      "mode": "MANUAL",
+      "message_id": "240",
+      "delivery_state": "SENT",
+      "map_mode": "WITHOUT_MAP",
+      "report_classification": "ACCEPTANCE_TEST",
+      "currently_owner_delivery_excluded": true,
+      "production_count_eligible": false,
+      "map_reason_from_saved_analysis": "NO_VERIFIED_LIQUIDATION_ROUTE",
+      "analysis_ts": 1792937009606,
+      "artifact_sha256": "00e5635510cb2024fed95b5b0a372527cf7a78a361be80f3f64603e8cab6afad"
+    }
+  ],
+  "readiness_count_is_asset_quality_or_probability": false,
+  "success_rate_pct": null,
+  "probability": null,
+  "summary_snapshot": {
+    "status_at_capture": "CURRENT",
+    "as_of_ts": 1792937173887,
+    "independent_waves": 1,
+    "pending_waves": 1,
+    "mature_waves": 0,
+    "evidence_class": "OBSERVED",
+    "mode": "MANUAL",
+    "publication": "SENT",
+    "map_mode": "NO_MAP",
+    "report_context": "ACCEPTANCE_TEST",
+    "production_count_eligible": false,
+    "receipt_ref": "SAVED_SUMMARY_AFTER_SENT240",
+    "artifact_sha256": "54d4639877978a5c4c6d0ebe93dd08b3f507215556875a68f673daa136c884b0",
+    "current_summary_freshness": null
+  },
+  "authority": {
+    "authority_main_at_acquire": "d9a2843e1a2489bb5c47f9b81866472c70c17a20",
+    "own_lease_commit": "1946f3a5ef4fbe6539b6518b1654ce834971de9d",
+    "own_lease_owner": "CODEX:SOURCES:01a171fd:1792940324094",
+    "acquired_ts": 1792940324094,
+    "expires_ts": 1792940924094,
+    "all4_equal": true,
+    "fence_active": false,
+    "generation_latest_only": true,
+    "owner_instruction_source": "DIRECT_HUMAN_OWNER_IN_ROOT_RELAYED_TO_SOURCES_20261025",
+    "ROOT_thread": "01a171f7-596e-7dc0-a82f-3e92f57f4ef6",
+    "owner_delivery_excluded_assets": [
+      "BINGX_UNDERLYING:BTC",
+      "BINGX_UNDERLYING:ETH"
+    ],
+    "historical_message240_view_classification": "ACCEPTANCE_TEST",
+    "original_private_records_immutable": true,
+    "source_catalog_queue_filter_scope": "NOT_CHANGED_PENDING_ROOT_COMMON_AGREEMENT"
+  },
+  "previous_snapshot_sha256": "cc7824c3a2ac9d286a3df6e319d74f9db748fafadd3be135d84fca82a4a3137a",
+  "evidence_files": {
+    "manual": {
+      "private_file_sha256": "00e5635510cb2024fed95b5b0a372527cf7a78a361be80f3f64603e8cab6afad",
+      "control_capture_ts": 1792937015902
+    },
+    "summary": {
+      "private_file_sha256": "54d4639877978a5c4c6d0ebe93dd08b3f507215556875a68f673daa136c884b0",
+      "control_capture_ts": 1792937174045
+    },
+    "day": {
+      "private_file_sha256": "b41f79a69cae3762b864111095785b40af59fa56151ee14a9d7df91635b56f9d",
+      "control_capture_ts": 1792938527105
+    },
+    "map": {
+      "private_file_sha256": "24b91c66d165ecae68c46782b6527f9660df43bb95418b3efb93036dad0c9528",
+      "control_capture_ts": 1792937103541
+    }
+  },
+  "clock_limits": [
+    "Core control response omits exact original price/book clocks: retain null, use capture+90s only as conservative expiration bound",
+    "Swole expired axis is under existing millisecond parser interpretation; identity/currency/venue/mapping stay unqualified",
+    "Summary CURRENT belongs to its original as_of; no fresh summary lookup occurred"
+  ],
+  "core_capture_details": {
+    "selected_facts": [
+      "price",
+      "candles",
+      "orderbook"
+    ],
+    "candles_closed_rows": 121,
+    "candles_gaps": 0,
+    "candles_available_end": 1792936980000,
+    "book_bids": 1000,
+    "book_asks": 1000,
+    "complete_book": null,
+    "book_scope": "BOUNDED_VISIBLE_DEPTH_NOT_FULL_CENSUS"
+  },
+  "map_capture_details": {
+    "HTTP_status": 200,
+    "modeled_bins": 4,
+    "has_data": true,
+    "usable_maps": 0,
+    "native_values_exported": false
+  },
+  "original_private_card_analysis_and_wave_rewritten": false,
+  "new_IO": {
+    "marketHTTP": 0,
+    "SQL": 0,
+    "TG": 0,
+    "WS": 0,
+    "deploy": 0
+  },
+  "source_catalog_queue_or_sender_harddeny_implemented_by_this_module": false
+}

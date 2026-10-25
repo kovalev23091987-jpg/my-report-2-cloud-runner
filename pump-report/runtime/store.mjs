@@ -16,17 +16,22 @@ export class D1Store {
   constructor({db,admission,clock=Date.now,initial_usage=null,finalization_reserve=null}){
     if(!db?.prepare||!admission?.evidence_ref||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts<=clock()||!Number.isSafeInteger(admission.max_rows_read)||!Number.isSafeInteger(admission.max_rows_written))throw new BudgetRefusal('NATIVE_SQL_ADMISSION_REQUIRED');
     this.db=db;this.admission=admission;this.clock=clock;this.cost=initial_usage?{...initial_usage}:{requests:0,rows_read:0,rows_written:0,unknown_ops:0};
+    // The confirmed Workers Paid plan permits1000 D1 queries per invocation.
+    // Leave platform headroom and protect the finalization ACK/readback too.
+    this.max_requests=admission.max_requests??800;
+    if(!Number.isSafeInteger(this.max_requests)||this.max_requests<2||this.max_requests>800)throw new BudgetRefusal('BOUNDED_NATIVE_QUERY_COUNT_REQUIRED');
     this.finalization_reserve=finalization_reserve?{...finalization_reserve}:{rows_read:0,rows_written:0};
     if(!Object.values(this.finalization_reserve).every(n=>Number.isSafeInteger(n)&&n>=0))throw new BudgetRefusal('INVALID_FINALIZATION_RESERVE');
     if(!Object.values(this.cost).every(n=>Number.isSafeInteger(n)&&n>=0))throw new BudgetRefusal('INVALID_INITIAL_NATIVE_USAGE');
   }
-  check(extraRead=1,extraWrite=0){
+  check(extraRead=1,extraWrite=0,extraRequests=0){
     if(this.admission.expires_ts<=this.clock()||this.cost.unknown_ops>0)throw new BudgetRefusal('NATIVE_SQL_ADMISSION_EXPIRED_OR_UNKNOWN');
+    if(this.cost.requests+extraRequests+(this.finalization_reserve.requests??0)>this.max_requests)throw new BudgetRefusal('NATIVE_SQL_QUERY_COUNT_PROTECTED');
     if(this.cost.rows_read+extraRead+this.finalization_reserve.rows_read>this.admission.max_rows_read||this.cost.rows_written+extraWrite+this.finalization_reserve.rows_written>this.admission.max_rows_written)throw new BudgetRefusal('NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED');
   }
   beginFinalization(){this.check(0,0);this.finalization_reserve={rows_read:0,rows_written:0};}
   async query(sql,args=[],{read=1,write=0}={}){
-    this.check(read,write);let result;
+    this.check(read,write,1);let result;
     try{result=await this.db.prepare(sql).bind(...args).all();}catch(error){this.cost.requests++;this.cost.unknown_ops++;throw error;}
     this.cost.requests++;
     if(result?.success===false||!['rows_read','rows_written'].every(k=>Number.isSafeInteger(result?.meta?.[k])&&result.meta[k]>=0)){this.cost.unknown_ops++;throw new BudgetRefusal('NATIVE_SQL_COST_ACK_UNKNOWN');}

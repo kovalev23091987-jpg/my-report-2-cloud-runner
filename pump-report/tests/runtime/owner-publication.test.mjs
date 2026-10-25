@@ -55,3 +55,9 @@ test('production materialization excludes acceptance240, future tests and unclas
   assert.equal(recordPurpose({origin:origins[0]}),'ACCEPTANCE_TEST');assert.equal((await journal.summary()).independent_waves,1,'replay does not duplicate the cohort');
   assert.deepEqual(await store.get('pump:materialized-summary:v1'),legacy);for(const [key,bytes]of originals)assert.equal(JSON.stringify(await store.get(key)),bytes);
 });
+test('historical acceptance240 is retained but never starts another BTC outcome collection',async()=>{
+  const store=new MemoryStore(),key='ARTIFICIAL_PENDING240',signal={signal_id:key,instrument:{base:'BTC'},deadline_ts:now-1,origin:{instrument_id:ACCEPTANCE_240.instrument_id,wave_id:ACCEPTANCE_240.wave_id,t0:ACCEPTANCE_240.t0}};
+  await store.set(key,signal);await store.set('pump:outcomes-pending',[key]);let history=0;
+  const runner=createPumpRunner({store,sources:{getCore(){},getOutcomeHistory(){history++;throw Error('Forbidden BTC collection');}},analyzePump(){},evaluateOutcome(){},budget:{setMode(){},summary(){return {total:0,lanes:{statistics:0},limits:{lanes:{statistics:12},http_per_run:164}};}},delivery:{},clock:()=>now});
+  const results=await runner.checkOutcomes({run_id:'ARTIFICIAL_OWNER'});assert.equal(results[0].status,'SKIPPED_NON_PRODUCTION');assert.equal(history,0);assert.deepEqual(await store.get(key),signal);assert.deepEqual(await store.get('pump:outcomes-pending'),[key]);
+});

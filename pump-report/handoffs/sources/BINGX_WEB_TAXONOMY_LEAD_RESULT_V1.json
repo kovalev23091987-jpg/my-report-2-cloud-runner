@@ -1,0 +1,230 @@
+{
+  "schema": "PUMP_BINGX_OFFICIAL_WEB_TAXONOMY_FINITE_LEAD_V1",
+  "status": "FINITE_REVIEW_COMPLETE_NO_QUALIFIED_BULK_CRYPTO_TYPE_BINDING",
+  "checked_at": "2026-10-25T14:36:25.355Z",
+  "authority": {
+    "authority_main": "39f8af9efbce2c17107b26e48b1b2a46af2c378e",
+    "own_lease_commit": "46b9b22285f597f17a7effaf2e40b464f39f8794",
+    "own_lease_owner": "CODEX:SOURCES:01a171fd:1792938402367",
+    "acquired_ts": 1792938402367,
+    "expires_ts": 1792939302367,
+    "root_lease_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792937785000",
+    "all4_equal": true,
+    "fence_active": false,
+    "generation_latest_only": true,
+    "new_primary_searches": 3,
+    "search_queries": [
+      "site:bingx.com (\"coin-info\" OR \"coinInfo\" OR \"assetType\" OR \"coinType\")",
+      "site:bingx.com (\"coinId\" OR \"assetId\" OR \"contractId\") (\"price\" OR \"coin\")",
+      "site:bingx.com/en/prices/ \"cryptocurrency\" \"Bitcoin\""
+    ],
+    "search_results": [
+      {
+        "query_indexes": [
+          1,
+          2
+        ],
+        "result": "EMPTY"
+      },
+      {
+        "query_index": 3,
+        "primary_pages": [
+          "https://bingx.com/en/price",
+          "https://bingx.com/en/price/bitcoin",
+          "https://bingx.com/en/prices"
+        ],
+        "result": "OFFICIAL_CRYPTO_PRICE_PAGES_NO_NATIVE_TYPE_ID_BINDING_IN_INDEXED_TEXT"
+      }
+    ],
+    "browser_UI_or_JS_execution": false,
+    "scope": "FINITE_NEW_OFFICIAL_WEB_TAXONOMY_LEAD_DOCS_ONLY_MAX3_SEARCHES_MAX15MIN"
+  },
+  "elapsed_ms": 582991,
+  "maximum_duration_ms": 900000,
+  "searches_used": 3,
+  "searches_allowed": 3,
+  "search_closed": true,
+  "observations": {
+    "official_price_page_named_asset": true,
+    "JSON_LD_asset_type": "Product",
+    "JSON_LD_asset_type_is_positive_crypto_enum": false,
+    "SSR_spot_metadata_rows": 5,
+    "SSR_identity_fields": [
+      "coinId",
+      "coinName",
+      "slug",
+      "quotationId",
+      "bizType",
+      "futuresType"
+    ],
+    "SSR_coinType_or_assetType_present": false,
+    "SSR_native_contractId_present": false,
+    "static_bulk_method": "common.requestCoinInfoList()",
+    "static_result_shape": "result[]",
+    "static_raw_fields": [
+      "id",
+      "coinName",
+      "coinDisplayName",
+      "coinIconUrl",
+      "coinType"
+    ],
+    "client_projection": {
+      "coinId": "raw.id or empty string",
+      "coinType": "raw.coinType or numeric0"
+    },
+    "raw_coinType_enum_semantics": "UNKNOWN",
+    "raw_coinType_is_explicit_crypto_positive": "NOT_PROVEN",
+    "zero_value_is_crypto_evidence": false,
+    "exact_method_HTTP_host_path": "NOT_RESOLVED_IN_READ_STATIC_FILES",
+    "native_contractId_to_coinId_binding": "NOT_PROVEN",
+    "other_frontend_fields": [
+      "hasSpot",
+      "hasContract",
+      "unifiedName",
+      "name",
+      "valuationCoinName"
+    ],
+    "other_frontend_fields_are_crypto_type_evidence": false,
+    "actual_metadata_endpoint_called": false,
+    "web_runtime_or_UI_executed": false,
+    "note": "coinId/slug/name and hasContract are a new concrete schema lead, not a safe full-universe classification. Market/ranking fields and CoinGecko labels do not bind this web id to native contractId."
+  },
+  "evidence": [
+    {
+      "url": "https://bingx.com/en/price/bitcoin",
+      "private_path": "/private/tmp/bingx-taxonomy-static-bitcoin.html",
+      "sha256": "4272af99b7960034134581ae888967338326cce201b535992c5ce02f3bdffbf9",
+      "kind": "STATIC_HTML_NO_JS",
+      "bytes": 270112,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    },
+    {
+      "url": "https://bin.bb-os.com/growth_nuxt/BoYN12Hi.js",
+      "private_path": "/private/tmp/bingx-taxonomy-static-entry.js",
+      "sha256": "1ed128c48240b4c7bdc5722a928ae49923dbdaefc1e2f66e1264cb71a75a7fab",
+      "kind": "STATIC_ENTRY_JS_TEXT_ONLY",
+      "bytes": 894405,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    },
+    {
+      "url": "https://bin.bb-os.com/growth_nuxt/BQTkqlrM.js",
+      "private_path": "/private/tmp/bingx-taxonomy-static-price-detail.js",
+      "sha256": "e5e78ee5ac60857df4861c07307827770ebe1a8868d6356b5e629a42918339d8",
+      "kind": "STATIC_PRICE_DETAIL_JS_TEXT_ONLY",
+      "bytes": 94454,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    },
+    {
+      "url": "https://bin.bb-os.com/growth_nuxt/C0NlfNwr.js",
+      "private_path": "/private/tmp/bingx-taxonomy-static-price-list.js",
+      "sha256": "e7180684d0be195e5fe5f18cf9523e5c8eb2cb7cc54511fc84e869717e080cbc",
+      "kind": "STATIC_PRICE_LIST_JS_TEXT_ONLY",
+      "bytes": 22549,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    },
+    {
+      "url": "https://bin.bb-os.com/growth_nuxt/f22v5Ol3.js",
+      "private_path": "/private/tmp/bingx-taxonomy-static-api-core.js",
+      "sha256": "0637057d5eaaf7c03ed912f0984aded646b0659bc39ff106b9a7ca70df259e89",
+      "kind": "STATIC_DEPENDENCY_JS_TEXT_ONLY",
+      "bytes": 530920,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    },
+    {
+      "url": "https://bin.bb-os.com/growth_nuxt/rXWW4EMs.js",
+      "private_path": "/private/tmp/bingx-taxonomy-static-services.js",
+      "sha256": "8eca3b723263437f2486bd641bf03c458138ad59daa7d810f3ca190866af06a7",
+      "kind": "STATIC_DEPENDENCY_JS_TEXT_ONLY",
+      "bytes": 95644,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    },
+    {
+      "url": "https://bin.bb-os.com/growth_nuxt/DvwKs6Lp.js",
+      "private_path": "/private/tmp/bingx-taxonomy-static-service-config.js",
+      "sha256": "bf4f7a6f9d49f4a77c4d7c48f030d43c1539fd94cf3b71de20c8c2b1e144d5e9",
+      "kind": "STATIC_DEPENDENCY_JS_TEXT_ONLY",
+      "bytes": 37913,
+      "confirmed_HTTP_status": 200,
+      "executed": false
+    }
+  ],
+  "source_market_prices_or_raw_HTML_JS_exported_to_Git": false,
+  "result_for_universe": {
+    "previous_known_crypto": 13,
+    "owner_excluded_gold_backed": 2,
+    "unknown_active_USDT": 919,
+    "current_complete_qualified_crypto_N": null,
+    "new_unknown_promotions": 0
+  },
+  "exact_ROOT_one_GET_plan_issued": false,
+  "why_no_executable_GET_plan": "The static consumer reveals a bulk method and candidate type field, but not its exact route, positive enum semantics or native identity bridge. Do not invent endpoint/enum or dispatch a speculative API.",
+  "minimum_missing_input": [
+    "Exact official implementation/spec of common.requestCoinInfoList host/path and auth/access/rate facts",
+    "Official coinType enum with explicit positive crypto meanings; absent/default0 must remain unknown",
+    "Authoritative native contractId/native asset to that canonical coinId/underlying binding, including ambiguous names and excluded asset classes"
+  ],
+  "finite_owner_decision_options": [
+    {
+      "option": "LIMITED_CURATED_SCOPE",
+      "immediately_executable": "Keep existing13 registry and mark global coverage incomplete/unknown; no promise all crypto N. Owner explicitly accepts partial coverage for launch; no unknown is relabeled."
+    },
+    {
+      "option": "OFFICIAL_MAPPING_EXPORT",
+      "required": "Owner supplies an official BingX metadata export/spec with native contractId/asset,canonical id and positive underlying type enum. ROOT can then design one exact admitted metadata GET if a public route is documented; SOURCE sends no support messages."
+    },
+    {
+      "option": "NAMED_FINITE_CURATED_BATCH",
+      "immediately_executable": "Owner/ROOT selects a finite priority list of unknown native tuples, then qualify each with named BingX asset information plus independent primary identity evidence. No generic ticker join or unlimited scrape; global N remains unknown until all required bindings exist."
+    }
+  ],
+  "boundaries": {
+    "new_primary_searches": 3,
+    "successful_static_document_GETs": 7,
+    "static_document_bytes": 1945997,
+    "initial_sandbox_DNS_failure_before_escalated_static_read": true,
+    "static_JS_executed": 0,
+    "UI_browser_pages_opened": 0,
+    "marketHTTP": 0,
+    "WS": 0,
+    "SQL": 0,
+    "TG": 0,
+    "deploy": 0,
+    "source_or_registry_changes": 0,
+    "docs_cost_weights": null,
+    "existing_API_docs_NCSK_CCXT_audits_repeated": false,
+    "Firecrawl_credit_refusals_retried": false,
+    "private_DAY_fact_read_in_this_scope": false
+  },
+  "affected_integrity_check": "PASS hashes/literal membership/HTML-to-CDN-to-route provenance and unchanged13/919 code verified; no runtime/source tests replayed",
+  "preserved": [
+    {
+      "path": "pump-report/sources/index.mjs",
+      "sha256": "d95e5b120f927e1dd89c7a3061764efcde631b6343e7c98e40f296806a269e9f",
+      "unchanged": true
+    },
+    {
+      "path": "pump-report/sources/day-growth.mjs",
+      "sha256": "6e397080a7fd99fb466b286d916e7df97ce17eedea244ac9cdf3230d3f0c8b93",
+      "unchanged": true
+    },
+    {
+      "path": "pump-report/sources/registry-curated13-native-relative-v1.json",
+      "sha256": "76f6a6cca7328b9e41a1141fe0fc93957af722be4095515cf76d632fae2dc516",
+      "unchanged": true
+    },
+    {
+      "path": "pump-report/sources/current-native-catalog-classification-v1.json",
+      "sha256": "e721e4f32fcb01fe9ecc736ba0780b5a07ba1a11e86024b0cfe0d43154612a13",
+      "unchanged": true
+    }
+  ],
+  "nine_pauses_preserved": true,
+  "two_OWNER_deferrals_preserved": true,
+  "caps_reserves_unknowns_preserved": true
+}

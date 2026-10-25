@@ -21,6 +21,7 @@ export function ownerInstrumentExcluded(value){
   const names=typeof value==='string'?[value]:[value?.base,value?.native_symbol,value?.asset_id?.split(':').at(-1),value?.instrument_id?.split(':').at(-1)];
   return names.some(name=>OWNER_DELIVERY_EXCLUDED_ASSETS.includes(String(name??'').trim().toUpperCase().replace(/(?:[-/]?USDT)$/,'')));
 }
+export const isBingxNativeSymbol=value=>typeof value==='string'&&/^[\p{L}\p{N}\p{So}][\p{L}\p{M}\p{N}\p{So}._-]{0,119}-USDT$/u.test(value);
 export function ownerPublicationRefusal(analysis){
   if(ownerInstrumentExcluded(analysis?.instrument))return 'OWNER_ASSET_DELIVERY_EXCLUDED';
   const potential=analysis?.plan?.potential_pct?.minimum;
