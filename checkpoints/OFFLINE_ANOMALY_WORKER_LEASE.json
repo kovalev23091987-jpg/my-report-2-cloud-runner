@@ -1,13 +1,13 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792933022000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1792933022000,
   "expires_ts": 1792937222000,
   "expected_main": "93faf0b17b3bd7018ef419d665a21819d2589056",
   "scope": "PUMP_REPORT_V2_H_INCREMENTAL_SUMMARY. Pure analytics fold/update one immutable original wave/journal event, materialized counters equivalent accepted summarizeOutcomes on control stream, explicit due/maturity clock transitions, no full-history scan per query. Own analytics/materialized-summary.mjs, tests/analytics/materialized-summary.test.mjs, handoffs/analytics/package-h/**. Also adapt remaining E tests public summary/origin API without running full E until ROOT final assembled acceptance. Keep original observations/artifacts; DELIVERY_DIAGNOSTIC/SENT239 without source_input_key NEVER creates statistical wave/origin/outcome. No runtime/common/source/main/native/provider/SQL/TG/deploy/cron or new agents/chats. Onlyownrelease before expiry.",
-  "released_ts": null,
+  "released_ts": 1792934593000,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "pump-report/AGENTS.md": "e01cab5ab39f7cdca712289858bddb708325fef6",
@@ -19,5 +19,18 @@
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+  },
+  "completion": {
+    "qualification_path": "pump-report/handoffs/analytics/package-h/qualification.json",
+    "qualification_sha256": "63f73352d7c7e3ff2e78bb74465c17179a8df260bc5771e5e957508fbd4e38a7",
+    "tests_pass": 27,
+    "tests_fail": 0,
+    "saved_control_rows": 18,
+    "saved_control_cohorts": 18,
+    "all_counters_exact": true,
+    "E_adapted_not_run": true,
+    "ROOT_Memory_atomicPair_sync_tested": true,
+    "native_IO": 0,
+    "root_integrates": true
   }
 }
