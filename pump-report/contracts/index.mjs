@@ -24,6 +24,9 @@ export function ownerInstrumentExcluded(value){
 export const isBingxNativeSymbol=value=>typeof value==='string'&&/^[\p{L}\p{N}\p{So}][\p{L}\p{M}\p{N}\p{So}._-]{0,119}-USDT$/u.test(value);
 export function ownerPublicationRefusal(analysis){
   if(ownerInstrumentExcluded(analysis?.instrument))return 'OWNER_ASSET_DELIVERY_EXCLUDED';
+  // A previously queued immutable card must be recomputed if its saved text
+  // relied on the comparison subsequently removed by the owner.
+  if([...(analysis?.findings??[]),...(analysis?.user_narrative?.reasons??[])].some(f=>f?.code==='RELATIVE_RETURN')||analysis?.optional_context?.market_context||analysis?.relative_context_diagnostic?.valid===true)return 'OWNER_REMOVED_MARKET_COMPARISON';
   const potential=analysis?.plan?.potential_pct?.minimum;
   if(!finite(potential)||analysis.plan.potential_pct.basis!=='GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT')return 'PLAN_POTENTIAL_UNQUALIFIED';
   return potential<OWNER_MIN_PLAN_POTENTIAL_PCT?'PLAN_POTENTIAL_BELOW_OWNER_MINIMUM':null;

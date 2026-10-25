@@ -4,7 +4,7 @@ export const START_PROFILE = Object.freeze({
   automatic_growth: {day_pct: 20, short_pct: 10, short_windows_ms: [300000, 900000, 3600000]},
   horizon_ms: 14400000,
   outcome_growth_pct: 10,
-  freshness_ms: {price: 30000, orderbook: 15000, candles: 90000, trades: 30000, market_context: 90000, open_interest: 120000, funding: 300000, observed_positions: 120000, model_map: 300000},
+  freshness_ms: {price: 30000, orderbook: 15000, candles: 90000, trades: 30000, open_interest: 120000, funding: 300000, observed_positions: 120000, model_map: 300000},
   candle_interval_ms: 60000,
   volume_baseline_ms: 3600000,
   activity_windows_ms: [180000, 300000],
