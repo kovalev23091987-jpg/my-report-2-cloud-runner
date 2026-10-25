@@ -1,13 +1,13 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792930291000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1792930291000,
   "expires_ts": 1792934191000,
   "expected_main": "108a5dbdfc670d9a48fbf953811f5aa1b7bc2864",
   "scope": "PUMP_REPORT_V2_E_RUNTIME_ACCEPTANCE. Direct human authorization to execute coordinator assignments; current ROOT assignment E: read runtime only, write own tests/analytics/runtime-acceptance.test.mjs and handoffs/analytics/package-e/**. Identify concrete incompatibilities first, then new meaningful artificial acceptance cases. No A/B/C/D wholesale replay, source/runtime/common/main/phase mutation, provider/nativeSQL/TG/deploy/cron. Independent offline exception lease; historical expired ROOT lease not borrowed or revived. Onlyownrelease before expiry.",
-  "released_ts": null,
+  "released_ts": 1792930700000,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "pump-report/AGENTS.md": "e01cab5ab39f7cdca712289858bddb708325fef6",
@@ -19,5 +19,18 @@
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "6864645f094f434d61b3b76d4eccc3f66df95c77",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+  },
+  "completion": {
+    "qualification_path": "pump-report/handoffs/analytics/package-e/qualification.json",
+    "qualification_sha256": "e4596bda7884048e6097bc62e8da6d977c847372c6e2d9a3cdd6d96399128447",
+    "new_cases": 11,
+    "pass": 9,
+    "fail": 2,
+    "open_defects": [
+      "UNKNOWN original absent",
+      "terminal UNSENT FIRST_READY absent"
+    ],
+    "native_IO": 0,
+    "runtime_mutated": false
   }
 }
