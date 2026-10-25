@@ -4,7 +4,8 @@ import {ACCEPTANCE_MANUAL_RUN_IDS} from '../contracts/run-purpose.mjs';
 
 // Reuse the project's existing shared day ledger, rather than create an
 // independent SQL quota. Every legacy reservation/unknown retains its meaning.
-export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:'checkpoints/pump-report-20261025/POST_REVIEW_SOL_ADMISSION.json'});
+export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:6,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:'checkpoints/pump-report-20261025/CORRECTED_METADATA_SINGLE_ADMISSION.json'});
+export const FIXED_METADATA_RUN_IDS=Object.freeze(['pump-bingx-crypto-metadata-20261025-one','pump-bingx-crypto-metadata-signed-20261025-one']);
 export const LOOKUP_ENVELOPE=Object.freeze({rows_read:500,rows_written:30,max_runs_day:10});
 
 function knownMeta(result){return result?.success!==false&&['rows_read','rows_written'].every(k=>Number.isSafeInteger(result?.meta?.[k])&&result.meta[k]>=0);}
@@ -12,6 +13,7 @@ function knownMeta(result){return result?.success!==false&&['rows_read','rows_wr
 export async function reserveNativeRun({db,run_id,mode,run_purpose='PRODUCTION',clock=Date.now,policy=NATIVE_POLICY}){
   if(!db?.prepare||!run_id||!['AUTO','MANUAL','STATISTICS','CONTROL','LOOKUP','DELIVERY_CHECK','MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)||!policy.evidence_ref)throw new BudgetRefusal('NATIVE_RESERVATION_CONTEXT_REQUIRED');
   if(mode==='MANUAL'&&run_purpose!=='PRODUCTION'&&(run_purpose!=='ACCEPTANCE_TEST'||!ACCEPTANCE_MANUAL_RUN_IDS.includes(run_id)))throw new BudgetRefusal('EXACT_ACCEPTANCE_MANUAL_ID_REQUIRED');
+  if(mode==='METADATA_CHECK'&&!FIXED_METADATA_RUN_IDS.includes(run_id))throw new BudgetRefusal('EXACT_METADATA_ID_REQUIRED');
   const now=clock(),day=utcDay(now),id='PUMP:'+mode+':'+run_id;
   const envelope=['LOOKUP','MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?LOOKUP_ENVELOPE:policy;
   const protectedR=policy.bootstrap_or_external_floor.rows_read+policy.outcomes_protected.rows_read+policy.delivery_protected.rows_read+policy.next_full.rows_read;
@@ -36,7 +38,7 @@ export async function reserveNativeRun({db,run_id,mode,run_purpose='PRODUCTION',
       AND (?18=0 OR delivery_check_count<1)
       AND (?19=0 OR map_check_count<1)
       AND (?20=0 OR day_check_count<1)
-      AND (?23=0 OR metadata_check_count<1)
+      AND (?23=0 OR metadata_check_count<2)
       AND r+?3+?7+MAX(0,?8-manual_count-?9)*?14<=?10
       AND w+?4+?11+MAX(0,?8-manual_count-?9)*?15<=?12`;
   let inserted;const usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};

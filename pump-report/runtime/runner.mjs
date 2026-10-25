@@ -4,6 +4,7 @@ import {automaticWindowOpen,textHash} from './delivery.mjs';
 import {parseManualInput} from './manual-input.mjs';
 import {createOutcomeJournal} from './outcome-journal.mjs';
 import {productionRecord} from '../contracts/run-purpose.mjs';
+import {candidatePriority,analysisQueueEvidence} from './candidate-priority.mjs';
 
 const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
@@ -48,7 +49,12 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         const change=positive(row.last)&&prior.length?Math.max(...prior.map(p=>(row.last/p.last-1)*100)):null;
         const near=(typeof row.reported_change_pct==='number'&&row.reported_change_pct>=profile.automatic_growth.day_pct*profile.prequeue_threshold_fraction)||(change!==null&&change>=profile.automatic_growth.short_pct*profile.prequeue_threshold_fraction);
         if(!near&&!active.includes(row.id)&&!queue[row.id])continue;
-        queue[row.id]={...(queue[row.id]??{}),instrument_id:row.id,first_seen:queue[row.id]?.first_seen??now,last_seen:now,preliminary_growth:change,reported_day_growth:row.reported_change_pct,active_wave:active.includes(row.id),next_check_ts:queue[row.id]?.next_check_ts??now};
+        const observed=overview.observations.find(o=>o.instrument.instrument_id===row.id)?.facts?.price;
+        const priorQueue=queue[row.id]??{},zones=priorQueue.entry_zones??[],usable=factUsable(observed,now)&&positive(observed.value);
+        const distance=usable&&zones.length?Math.min(...zones.map(z=>observed.value<z.lower?100*(z.lower-observed.value)/observed.value:observed.value>z.upper?100*(observed.value-z.upper)/observed.value:0)):null;
+        queue[row.id]={...priorQueue,instrument_id:row.id,first_seen:priorQueue.first_seen??now,last_seen:now,preliminary_growth:change,reported_day_growth:row.reported_change_pct,active_wave:active.includes(row.id),next_check_ts:priorQueue.next_check_ts??now,
+          price_expires_ts:usable?observed.expires_ts:null,entry_distance_pct:distance,
+          movement_event_ts:priorQueue.movement_event_ts??(near&&usable?row.event_ts:null)};
       }
       return {state:queue,result:true};
     });
@@ -57,7 +63,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function selectAutomatic(catalog){
     const queue=await store.get('pump:candidate-queue')??{},now=clock();
     const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now);
-    const score=r=>(r.active_wave?100:0)+Math.max(0,(now-(r.last_checked_ts??r.first_seen))/60000)+Math.max(0,r.preliminary_growth??0);
+    const score=r=>candidatePriority(r,now,{profile}).score;
     candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
     const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)));
     return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
@@ -75,7 +81,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await store.atomic('pump:candidate-queue',queue=>{
       queue??={};const id=instrumentKey(input.instrument);
       if(input.mode==='MANUAL'&&!queue[id])return {state:queue,result:true};
-      queue[id]={...(queue[id]??{first_seen:clock(),instrument_id:id}),last_checked_ts:clock(),next_check_ts:clock()+profile.candidate_recheck_ms,last_status:analysis.status,active_wave:Boolean(wave&&(wave.expires_ts??0)>clock())};
+      queue[id]={...(queue[id]??{first_seen:clock(),instrument_id:id}),last_checked_ts:clock(),next_check_ts:clock()+profile.candidate_recheck_ms,last_status:analysis.status,active_wave:Boolean(wave&&!['CANCELLED','EXPIRED'].includes(analysis.wave_state)&&(wave.expires_ts??0)>clock()),
+        ...analysisQueueEvidence(analysis,input,profile),entry_zones:(analysis.plan?.entry_zones??[]).map(z=>({lower:z.lower,upper:z.upper}))};
       return {state:queue,result:true};
     });
     await observations.remember(analysis,input,key);

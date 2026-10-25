@@ -1,0 +1,204 @@
+{
+  "schema": "PUMP_ANALYTICS_O_QUALIFICATION_V1",
+  "status": "FROZEN_FOR_ROOT_INTEGRATION",
+  "ROOT_integrates": true,
+  "base_main": "dd758f61a75905aef7a4dd1d8de7e60440ec3b6f",
+  "test_dependency_main": "dd758f61a75905aef7a4dd1d8de7e60440ec3b6f",
+  "plan_frozen_before_production_patch": {
+    "path": "pump-report/handoffs/analytics/package-o/PLAN_RU.md",
+    "bytes": 6697,
+    "sha256": "70823ad8b47eb7e6826077c21c296a63094a149a92be99a60309c70a5ce9f011"
+  },
+  "new_unique_cases": 2,
+  "initial_pass": 2,
+  "initial_fail": 0,
+  "expanded_ending_boundary_O02_pass": 1,
+  "expanded_ending_boundary_O02_fail": 0,
+  "final_unique_pass": 2,
+  "final_fail": 0,
+  "fixture_variants": 11,
+  "scalar_fields": [
+    "area_floor_price",
+    "contact_confirmed_by_ts",
+    "post_confirmation_low_observed",
+    "below_area_pct_lower_bound",
+    "reason"
+  ],
+  "metric": "Observed lower bound of price excursion below the lower edge of a uniquely confirmed touched entry area, after its confirmation market-time upper bound",
+  "exact_entry_price_or_exact_DD_claimed": false,
+  "initial_contact_bar_low_excluded": true,
+  "original_t0_deadline_boundary_lows_excluded": true,
+  "ambiguous_first_area_unknown": true,
+  "missing_after_contact_not_zero": true,
+  "reason_required_with_numeric_bound": true,
+  "main_outcome_all_old_fields_deep_equal_to_published_baseline": true,
+  "original_HIT_MISS_UNKNOWN_target_t0_P0_deadline_rules_unchanged": true,
+  "execution_proven": false,
+  "user_profit": null,
+  "changed_files": [
+    "pump-report/analytics/outcome.mjs",
+    "pump-report/tests/analytics/entry-area-excursion.test.mjs"
+  ],
+  "files": [
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 9914,
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/G06_BREVITY_PROPOSALS_RU.md",
+      "bytes": 5052,
+      "sha256": "5ed765b0b2df7505e6ed875329e8fcec9405e8106680ca76bbcd28efa93678af"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/PLAN_RU.md",
+      "bytes": 6697,
+      "sha256": "70823ad8b47eb7e6826077c21c296a63094a149a92be99a60309c70a5ce9f011"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/README_RU.md",
+      "bytes": 5825,
+      "sha256": "c0a56ec0555488ca05c3097e329660330a1114310401e500af3e791dcc087975"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
+      "bytes": 772,
+      "sha256": "9d158c2a9d386191b7ceb5ec9c1757a9d2ecc53cc58a02089d55a7db1435e7fc"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/authority.json",
+      "bytes": 3223,
+      "sha256": "0c03f06d391713a1debd84444feead056a7edd36a3adedf1d962c779dbd1fb2d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/baseline/outcome.before.mjs",
+      "bytes": 7245,
+      "sha256": "8be8aeba5bab96e66be6798078104d6b573a66e22b895789d14c6bf9a3759375"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/boundary-ending-affected.tap",
+      "bytes": 456,
+      "sha256": "04a97947b1bacb03e76afe0f727c9dabf5767da9f4ef416f4ef33f59b9c0e0ab"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/observed-bound-artificial.json",
+      "bytes": 6844,
+      "sha256": "875ef863a17f27c3cfe9ff88ef2793a2fb43e8579d8192aef3e1801570b203a2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/outcome.diff",
+      "bytes": 5811,
+      "sha256": "6c323fab3724712cf61f93163e6d797fea112c274170485c97d565f3dd7b8378"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/readonly-dependencies.json",
+      "bytes": 1038,
+      "sha256": "ce2cb65c91218d881e01d4e28505fb9f72026570b4a55201b5fe74ed8795b591"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/test-results.tap",
+      "bytes": 755,
+      "sha256": "b202c362639e6b95bff4bae436e5a225c8da90027c8dd4d15f6f2faf25f65244"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-o/unknown-cases-artificial.json",
+      "bytes": 11420,
+      "sha256": "c360b4443297eab470600a44f3b0e006a05c71f785cdfcfff6c45d7cf3f5e66e"
+    },
+    {
+      "path": "pump-report/tests/analytics/entry-area-excursion.test.mjs",
+      "bytes": 6917,
+      "sha256": "43ab3fd78dd5a647761a82d1950aceb891c892b34d4028c220b98d2541ff2bb9"
+    }
+  ],
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "git_blob": "84d526f14c505e23aa5cb72a7d3fdca7d14081b4",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 5701,
+      "sha256": "cfa9c8387561e08fbecb797f6cffafcfc6fc64a5acd93c0e2ae310d38db4bd94",
+      "git_blob": "7ab392bc5b3ca1748f0df7f31fccbd9f80132d4a",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed",
+      "git_blob": "ea7a0aedbe6cac487850808f70834cca157ee7a5",
+      "remote_exact": true
+    }
+  ],
+  "published_before_oracle_git_blob": "40666136c1b50f631f5b1eab0621d6f690dfa49c",
+  "required_test_only_oracle": "pump-report/handoffs/analytics/package-o/baseline/outcome.before.mjs",
+  "commands": [
+    "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap pump-report/tests/analytics/entry-area-excursion.test.mjs",
+    "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap --test-name-pattern='^O02 ' pump-report/tests/analytics/entry-area-excursion.test.mjs"
+  ],
+  "audit_gap_delta": {
+    "schema": "PUMP_O_AUDIT_GAP_DELTA_V1",
+    "related_gap": "M-G04",
+    "status": "VERIFIED_CODE",
+    "qualification": "Bounded observed lower bound after confirmed area contact only; no exact entry/maximumDD/execution/native claim",
+    "TZ_atoms": [
+      {
+        "id": "TZ15.025",
+        "line": 673
+      },
+      {
+        "id": "TZ15.026",
+        "line": 675
+      },
+      {
+        "id": "TZ15.027",
+        "line": 676
+      },
+      {
+        "id": "TZ15.028",
+        "line": 677
+      },
+      {
+        "id": "TZ15.029",
+        "line": 678
+      },
+      {
+        "id": "TZ15.030",
+        "line": 680
+      }
+    ],
+    "cases": [
+      "O01",
+      "O02"
+    ],
+    "G06": "Concrete proposals only, remains PARTIAL pending scoped implementation",
+    "native_verified": false,
+    "old_ENTRYfollowup_reopened": false
+  },
+  "G06_proposals_only": true,
+  "renderer_changed": false,
+  "frozen_N": {
+    "path": "pump-report/handoffs/analytics/package-n/qualification.json",
+    "sha256": "6c3387476e0fc0a058d3f821b07e51add62cf057074d602bd4933db740c8ced8",
+    "all21files_exact": true
+  },
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "old_test_batteries_replayed": false,
+  "shared_runtime_source_common_mutations": false,
+  "old_ENTRY_followup_cadence_TTL_anchors_readers_reopened": false,
+  "storage_capacity_tests": false,
+  "new_IO_or_order_position_management": false,
+  "original240_rewritten": false,
+  "new_chats_subagents_automations": 0,
+  "production_native_acceptance_claimed": false,
+  "probability_pct": null,
+  "own_lease": "New bounded O only; release immediately after freeze with FULL scoped-ref readback. No new autonomous scope after this handoff."
+}

@@ -1,0 +1,103 @@
+{
+  "schema": "PUMP_PUBLIC_CLIENT_CLOCK_REQUEST_TEMPLATE_V1",
+  "candidate": {
+    "status": "UNEXECUTED_PUBLIC_CLIENT_SHAPE_NOT_PROVEN_SERVER_MINIMUM",
+    "method": "GET",
+    "url": "https://api-app.acc-de.com/api/coin/v1/display-info/list",
+    "query": {},
+    "body": null,
+    "headers": {
+      "Accept": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "platformId": "30",
+      "appSiteId": "0",
+      "channel": "official",
+      "reg_channel": "official",
+      "app_version": "5.3.37",
+      "device_id": "<fresh anonymous compactUUIDv4, retained for this client>",
+      "lang": "en",
+      "appId": "30004",
+      "mainAppId": "10009",
+      "timeZone": "<truthful actual client offset hours>",
+      "device_brand": "",
+      "antiDeviceId": "",
+      "timestamp": "<fresh current Unix milliseconds at final send construction>",
+      "traceId": "<fresh compactUUIDv4>",
+      "sign": "<uppercase SHA256 exact preimage using identical timestamp/trace/device/platform/version/emptyanti/{}>"
+    },
+    "authorization": null,
+    "cookies": null,
+    "credentials_copied": false,
+    "assumptions": [
+      "Pinned main-site desktop profile30/site0/version5.3.37",
+      "Empty antiDeviceId/device_brand branch exists in code but server permission unknown",
+      "Never update timestamp after hashing or reuse stale synthetic vector",
+      "No invented Origin/Referer/nonce/signature/query timestamp"
+    ],
+    "max_attempts_if_ROOT_admits": 1,
+    "redirects": false,
+    "host_fallback": false,
+    "retry": false,
+    "timeout_ms": 10000,
+    "max_response_bytes": 2000000,
+    "new_admission": false
+  },
+  "sign_contract": {
+    "exact_header_name": "sign",
+    "algorithm": "uppercase hexadecimal SHA256 of UTF-8 preimage",
+    "HMAC": false,
+    "public_build_prefix_parts": [
+      "95d65c73dc5c437",
+      "0ae9018fb7",
+      "f2eab69"
+    ],
+    "public_build_prefix": "95d65c73dc5c4370ae9018fb7f2eab69",
+    "prefix_is": "Public build constant in retained frontend bytes; not account/API/session secret",
+    "order": [
+      "public_prefix",
+      "decimal timestamp",
+      "traceId",
+      "device_id",
+      "platformId",
+      "app_version",
+      "antiDeviceId or empty",
+      "normalized request payload"
+    ],
+    "separators": "none",
+    "empty_GET_payload": "{}",
+    "general_GET_normalization": "o2 removes top-level null/undefined and normalizes array/Date/nonfinite/nested values; ep converts numbers to uppercase strings and booleans to strings; S1 stable-sorts JSON keys recursively. This request has no params and uses literal {}.",
+    "not_in_preimage": [
+      "URL/path",
+      "method itself",
+      "timeZone",
+      "appSiteId",
+      "authorization"
+    ],
+    "method_role": "Only chooses GET payload normalization",
+    "missing_non_anti_fields": "JS template stringifies undefined, so do not silently replace missing required input with empty string",
+    "spans": [
+      "PUBLIC_SIGN_CONTRACT",
+      "SHA256_HELPER_A2",
+      "STABLE_SORT_JSON"
+    ]
+  },
+  "timestamp": {
+    "where": "header, not query",
+    "algorithm": "new Date().getTime()",
+    "unit": "Unix epoch milliseconds",
+    "timezone_adjustment": false,
+    "server_offset_adjustment_found_in_this_path": false,
+    "span": "REQUEST_INTERCEPTOR_R"
+  },
+  "auth_boundary": {
+    "authorization": "Added Bearer only if token cookie exists. No token read/exported here.",
+    "withCredentials_in_constructor": true,
+    "anonymous_construction_possible_in_code": true,
+    "private_key_or_account_secret_in_sign": false,
+    "server_anonymous_permission_proven": false,
+    "server_fingerprint_requirement_known": false,
+    "browser_sessions_copied": 0
+  },
+  "admission": false,
+  "not_server_minimum_proof": true
+}

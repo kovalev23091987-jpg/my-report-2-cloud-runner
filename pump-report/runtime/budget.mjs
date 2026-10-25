@@ -1,5 +1,6 @@
 // One coordinator-owned budget. Adapters receive only its request broker.
 import {automaticWindowOpen} from '../contracts/index.mjs';
+import {responseDisposition,temporaryDelay,SOURCE_ERROR_PROFILE} from './source-error-policy.mjs';
 export const RESOURCE_LIMITS = Object.freeze({http_per_run:164,project_http_day:900,lanes:{hot:96,background:56,statistics:12},deep_per_candidate:50,liquidations_per_run:8,manual_http_run_reserve:24,d1_reads_day:3500000,d1_writes_day:70000,next_full_reads:59000,next_full_writes:920});
 const integer = n => Number.isSafeInteger(n) && n >= 0;
 export class BudgetRefusal extends Error {
@@ -65,7 +66,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     run.receipts.push(row);
     return row;
   }
-  async function finalize(receipt,{state='CONFIRMED',http_status=null,retry_after_ms=null}={}) {
+  async function finalize(receipt,{state='CONFIRMED',http_status=null,retry_after_ms=null,temporary_failure=false,successful_response=false}={}) {
     if(!['CONFIRMED','UNKNOWN'].includes(state))throw new BudgetRefusal('INVALID_RECEIPT_STATE');
     await store.atomic('pump:resources',current=>{
       const held=current?.outstanding?.[receipt.request_id];
@@ -73,6 +74,9 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       // Counts are monotonic: no HTTP attempt is refunded, including errors.
       if(state==='UNKNOWN')current.unknown[receipt.request_id]={...held,http_status};
       delete current.outstanding[receipt.request_id];
+      const p=current.providers[receipt.provider];
+      if(temporary_failure){p.consecutive_temporary_failures=Math.min(100,(p.consecutive_temporary_failures??0)+1);p.backoff_until=Math.max(p.backoff_until??0,clock()+temporaryDelay(p.consecutive_temporary_failures));}
+      else if(successful_response)p.consecutive_temporary_failures=0;
       if(integer(retry_after_ms)&&retry_after_ms>0){const p=current.providers[receipt.provider];p.backoff_until=Math.max(p.backoff_until??0,clock()+retry_after_ms);}
       return {state:current,result:true};
     });
@@ -107,6 +111,8 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
     const key=provider+':'+cache_key+':'+target.toString();
     if(inFlight.has(key))return inFlight.get(key);
     const work=(async()=>{
+      const negative=await store.get('pump:negative-cache:'+key);
+      if(negative&&negative.expires_ts>clock())return {...negative.result,cache_hit:true,negative_cache_hit:true,negative_reason:negative.reason,negative_expires_ts:negative.expires_ts};
       const cached=ttl_ms>0?await store.get('pump:cache:'+key):null;
       if(cached&&cached.received_ts+ttl_ms>=clock())return {...cached,cache_hit:true};
       return paced(provider,async()=>{
@@ -124,14 +130,16 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
         const raw=new TextDecoder().decode(bytes);let data=null;try{data=JSON.parse(raw);}catch{data={invalid_json:true};}
         const retry=response.headers.get('retry-after');const retryAfter=retry?(Number.isFinite(Number(retry))?Math.max(0,Number(retry)*1000):Math.max(0,Date.parse(retry)-clock())):null;
         const businessRateLimited=provider==='BINGX'&&String(data?.code)==='100410';
+        const disposition=responseDisposition(provider,response.status,data);
         const effectiveBackoff=retryAfter??(response.status===429||businessRateLimited?60000:null);
-        await budget.finalize(receipt,{http_status:response.status,retry_after_ms:effectiveBackoff});
-        const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts:clock(),cache_hit:false,receipt_id:request_id};
-        if(response.ok&&ttl_ms>0)await store.set('pump:cache:'+key,result);
+        await budget.finalize(receipt,{http_status:response.status,retry_after_ms:effectiveBackoff,temporary_failure:disposition==='TEMPORARY',successful_response:disposition==='SUCCESS'});
+        const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts:clock(),cache_hit:false,receipt_id:request_id,semantic_status:disposition};
+        if(disposition==='ROUTE_UNAVAILABLE')await store.set('pump:negative-cache:'+key,{reason:'EXACT_ROUTE_UNAVAILABLE_NOT_ASSET_CLASSIFICATION',expires_ts:result.received_ts+SOURCE_ERROR_PROFILE.negative_ttl_ms,result});
+        if(disposition==='SUCCESS'&&ttl_ms>0)await store.set('pump:cache:'+key,result);
         return result;
       } catch(error) {
         // A request that might have crossed the network remains charged.
-        if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN',http_status:response?.status??null});
+        if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN',http_status:response?.status??null,temporary_failure:error.message!=='SOURCE_BODY_LIMIT'});
         throw error;
       }
       },deadline);

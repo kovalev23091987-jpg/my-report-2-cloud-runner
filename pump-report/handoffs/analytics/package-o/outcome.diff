@@ -1,0 +1,60 @@
+--- pump-report/handoffs/analytics/package-o/baseline/outcome.before.mjs	2026-10-25 19:01:13
++++ pump-report/analytics/outcome.mjs	2026-10-25 19:02:47
+@@ -11,8 +11,37 @@
+   }
+   return cursor>=end;
+ }
+-function scenario(plan,rows,points,complete){
+-  if(!plan||!Array.isArray(plan.entry_zones)||!plan.exit_zone)return {status:plan?'PLAN_SHAPE_UNAVAILABLE':'NO_PLAN',entry_touched:null,exit_touched:null,execution_proven:false,user_profit:null};
++function entryAreaExcursion(plan,rows,points,{start,boundary}){
++  const unknown=reason=>({area_floor_price:null,contact_confirmed_by_ts:null,post_confirmation_low_observed:null,below_area_pct_lower_bound:null,reason});
++  if(!plan||!Array.isArray(plan.entry_zones)||!plan.exit_zone)return unknown('PLAN_UNAVAILABLE');
++  const entries=plan.entry_zones;
++  if(!entries.length||entries.length>3||entries.some(z=>!positive(z?.lower)||!positive(z.upper)||z.lower>z.upper))return unknown('ENTRY_AREAS_UNQUALIFIED');
++  const inside=(price,z)=>price>=z.lower&&price<=z.upper,possible=[],confirmed=[];
++  for(const [area,z] of entries.entries()){
++    for(const r of rows)if(touch(r,z)){
++      const witness={area,start:r.open_ts,known_by:r.close_ts};possible.push(witness);
++      // Range intersection alone can hide a gap over the complete area. At
++      // least one observed OHLC price must actually lie inside it.
++      if([r.open,r.high,r.low,r.close].some(price=>inside(price,z)))confirmed.push(witness);
++    }
++    for(const p of points)if(inside(p.price,z)){const witness={area,start:p.event_ts,known_by:p.event_ts};possible.push(witness);confirmed.push(witness);}
++  }
++  if(!confirmed.length)return unknown(boundary.some(r=>entries.some(z=>touch(r,z)))?'BOUNDARY_CONTACT_UNCONFIRMED':possible.length?'RANGE_TOUCH_ONLY':'NO_OBSERVED_ENTRY_CONTACT');
++  const knownBy=Math.min(...confirmed.map(w=>w.known_by)),areas=new Set(possible.filter(w=>w.start<knownBy||w.known_by<=knownBy).map(w=>w.area));
++  for(const r of boundary)if(r.open_ts<knownBy)for(const [area,z]of entries.entries())if(touch(r,z))areas.add(area);
++  if(areas.size!==1)return unknown('FIRST_ENTRY_AREA_ORDER_UNKNOWN');
++  if(entries.length>1&&!enclosingCoverage(rows,start,knownBy))return unknown('FIRST_ENTRY_AREA_HISTORY_INCOMPLETE');
++  const area=entries[[...areas][0]],floor=area.lower;
++  // Never use the contact bar's low: it could precede the contact. Every
++  // retained bar is wholly after the contact was confirmed by market time.
++  const prices=[...rows.filter(r=>r.open_ts>=knownBy).map(r=>r.low),...points.filter(p=>p.event_ts>knownBy).map(p=>p.price)];
++  if(!prices.length)return {...unknown('NO_POST_CONFIRMATION_OBSERVATIONS'),area_floor_price:floor,contact_confirmed_by_ts:knownBy};
++  const low=Math.min(...prices),bound=low>=floor?0:100*(1-low/floor);
++  return {area_floor_price:floor,contact_confirmed_by_ts:knownBy,post_confirmation_low_observed:low,below_area_pct_lower_bound:bound,reason:'OBSERVED_LOWER_BOUND_AFTER_CONFIRMED_CONTACT'};
++}
++function scenario(plan,rows,points,complete,context){
++  const excursion=entryAreaExcursion(plan,rows,points,context);
++  if(!plan||!Array.isArray(plan.entry_zones)||!plan.exit_zone)return {status:plan?'PLAN_SHAPE_UNAVAILABLE':'NO_PLAN',entry_touched:null,exit_touched:null,execution_proven:false,user_profit:null,entry_area_excursion:excursion};
+   const entries=plan.entry_zones??[],touched=rows.filter(r=>entries.some(z=>touch(r,z))),entryPoints=points.filter(p=>entries.some(z=>p.price>=z.lower&&p.price<=z.upper));
+   const first=Math.min(...touched.map(r=>r.open_ts),...entryPoints.map(p=>p.event_ts));
+   const knownBy=Math.min(...touched.map(r=>r.close_ts),...entryPoints.map(p=>p.event_ts));
+@@ -21,7 +50,7 @@
+   const ambiguous=touched.some(r=>touch(r,plan.exit_zone));
+   return {status:'PRICE_SCENARIO_ONLY',entry_touched:Number.isFinite(first)?true:complete?false:null,exit_touched:exited?true:ambiguous?null:complete&&Number.isFinite(first)?false:null,
+     entry_then_exit_confirmed:exited?true:ambiguous?null:complete?false:null,intrabar_order_unknown:ambiguous&&!exited,
+-    execution_proven:false,user_profit:null,entry_first_interval:touched.length?{start_ts:touched[0].open_ts,end_ts:touched[0].close_ts}:null};
++    execution_proven:false,user_profit:null,entry_first_interval:touched.length?{start_ts:touched[0].open_ts,end_ts:touched[0].close_ts}:null,entry_area_excursion:excursion};
+ }
+ export function evaluateOutcome({signal,price_points=[],candles=[],as_of_ts}={}) {
+   const valid=signal&&typeof signal.signal_id==='string'&&typeof signal.wave_id==='string'&&validTime(signal.t0)&&positive(signal.reference_price)&&validTime(as_of_ts)&&as_of_ts>=signal.t0;
+@@ -61,7 +90,7 @@
+     hit_interval:hit&&!firstExact?{start_ts:barHit.open_ts,end_ts:barHit.close_ts}:null,
+     coverage:{complete,no_hit_period_covered:noHitCovered,no_hit_basis:noHitBasis,basis:complete?'EXACT_CLOSED_MINUTE_INTERVAL':noHitBasis??'INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS',
+       covered_until_ts:cutoff,observed_interval_complete:partialComplete,fully_contained_candles:rows.length,boundary_candles_excluded:boundary.length,
+-      price_points:points.length,point_samples_prove_continuity:false},reasons:[...new Set(pathIssues)],scenario_outcome:scenario(signal.plan,rows,points,complete)};
++      price_points:points.length,point_samples_prove_continuity:false},reasons:[...new Set(pathIssues)],scenario_outcome:scenario(signal.plan,rows,points,complete,{start,boundary})};
+   if(!hit&&!complete&&!noHitCovered)result.reasons.push(as_of_ts<deadline?'HORIZON_NOT_MATURE':'INSUFFICIENT_HISTORY_COVERAGE');
+   if(noHitCovered&&!complete)result.reasons.push('NO_HIT_PROVEN_BY_ENCLOSING_BARS_BOUNDARY_DRAWDOWN_UNKNOWN');
+   if(boundary.some(r=>growthAtLeast(r.high,p,10)))result.reasons.push('BOUNDARY_HIGH_NOT_PROOF');

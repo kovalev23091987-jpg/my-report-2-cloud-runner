@@ -1,0 +1,74 @@
+{
+  "schema": "PUMP_ROOT_RELIABILITY_AND_CORRECTED_ACTION_QUALIFICATION_V2",
+  "authority_main": "1eccb25abe1ce18a0629e04d51d9574d60353dee",
+  "recorded_at": "2026-10-25 16:26:55 UTC",
+  "code_files": [
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "sha256": "b18ea7c4bac6e910b4e40f93c8d26268d833220e84c7a81772bbd304ae6b4056"
+    },
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "sha256": "e6c100f5145684aca3d6d7969131e45f1c2d7e43e1d697c99f479a64360199db"
+    },
+    {
+      "path": "pump-report/runtime/candidate-priority.mjs",
+      "sha256": "a2c161cbfe0c5cd3d01a18e63b59f72291c9445e7e6d91d21025a648bb328274"
+    },
+    {
+      "path": "pump-report/runtime/source-error-policy.mjs",
+      "sha256": "2f51fbe6caf9ea37990998a12542ad00e2861d3aefddc160bedc0d0b6e5526ce"
+    },
+    {
+      "path": "pump-report/runtime/provider-policy.mjs",
+      "sha256": "09779ca72b795e51d5f19e86eddc912f004ea3d3d5f122fe99a81ada7ee44cee"
+    },
+    {
+      "path": "pump-report/runtime/native-budget.mjs",
+      "sha256": "c17ecd9fd1450f7a5f5899eaad04f94f18ee9a89fc820ab0d4413e43a74f5df7"
+    },
+    {
+      "path": "pump-report/runtime/worker.mjs",
+      "sha256": "90a2326b33fd903e51fc606f52f12c9562913e9e28e4057bdc44bcc03bb2bd3a"
+    },
+    {
+      "path": "pump-report/tests/runtime/reliability-and-priority.test.mjs",
+      "sha256": "96934ef962e8809d12f8b2dcf6fe6c58d1e4d3df7a6902c3edd431d7ce636d3f"
+    },
+    {
+      "path": "pump-report/tests/runtime/native-budget.test.mjs",
+      "sha256": "9ec8fbea316523a2a54164ed48e6e06d50b754897184efe1944ebae62fe8a1a1"
+    },
+    {
+      "path": "pump-report/tests/runtime/metadata-probe.test.mjs",
+      "sha256": "9032b858ea78e23e0f26fa78d5bdbe57c6ed352d3320f3e3389384196f7752bb"
+    }
+  ],
+  "new_reliability_cases": 7,
+  "affected_budget_cases": 8,
+  "expanded_business_error_case_pass": 1,
+  "metadata_SQLite_and_guard_cases": 8,
+  "fail": 0,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "root_error_profile": {
+    "temporary_base_ms": 60000,
+    "temporary_max_ms": 900000,
+    "negative_route_ttl_ms": 3600000
+  },
+  "queue_preferences": {
+    "freshness": true,
+    "qualified_ready_entry_proximity": true,
+    "confirmed_data": true,
+    "unbounded_wait_age": true,
+    "bounded_each_preference": 20,
+    "manual_first_unchanged": true
+  },
+  "unsupported_business_codes": "UNKNOWN; exactHTTP404410 onlyfinite route-unavailable cache, never assetclassification",
+  "caps_unknowns_reserves_not_reset": true,
+  "new_metadata_action_admission": "checkpoints/pump-report-20261025/CORRECTED_METADATA_SINGLE_ADMISSION.json",
+  "tests_rerun_reason": "New shared broker handling and queue preferences; smallaffected paths only. Changed metadata predicate/route fixedIDs tested with actualSQLite; oldfullbatteriesnotreplayed.",
+  "native_acceptance": false,
+  "deployed": false
+}

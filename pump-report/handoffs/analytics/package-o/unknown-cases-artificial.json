@@ -1,0 +1,359 @@
+{
+  "evidence": "ARTIFICIAL_ONLY",
+  "ambiguous": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": 9.499999999999996,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": true,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "EXACT_CLOSED_MINUTE_INTERVAL",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": true,
+      "fully_contained_candles": 240,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000000000,
+        "end_ts": 1800000060000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": null,
+        "contact_confirmed_by_ts": null,
+        "post_confirmation_low_observed": null,
+        "below_area_pct_lower_bound": null,
+        "reason": "FIRST_ENTRY_AREA_ORDER_UNKNOWN"
+      }
+    }
+  },
+  "boundary": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000123,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400123,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "covered_until_ts": 1800014400123,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 239,
+      "boundary_candles_excluded": 2,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "NO_HIT_PROVEN_BY_ENCLOSING_BARS_BOUNDARY_DRAWDOWN_UNKNOWN"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": null,
+      "exit_touched": null,
+      "entry_then_exit_confirmed": null,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": null,
+      "entry_area_excursion": {
+        "area_floor_price": null,
+        "contact_confirmed_by_ts": null,
+        "post_confirmation_low_observed": null,
+        "below_area_pct_lower_bound": null,
+        "reason": "BOUNDARY_CONTACT_UNCONFIRMED"
+      }
+    }
+  },
+  "ending": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000123,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400123,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "covered_until_ts": 1800014400123,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 239,
+      "boundary_candles_excluded": 2,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "NO_HIT_PROVEN_BY_ENCLOSING_BARS_BOUNDARY_DRAWDOWN_UNKNOWN"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000060000,
+        "end_ts": 1800000120000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": 95,
+        "contact_confirmed_by_ts": 1800000120000,
+        "post_confirmation_low_observed": 94,
+        "below_area_pct_lower_bound": 1.0526315789473717,
+        "reason": "OBSERVED_LOWER_BOUND_AFTER_CONFIRMED_CONTACT"
+      }
+    }
+  },
+  "range": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": 9.999999999999998,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": true,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "EXACT_CLOSED_MINUTE_INTERVAL",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": true,
+      "fully_contained_candles": 240,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000000000,
+        "end_ts": 1800000060000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": null,
+        "contact_confirmed_by_ts": null,
+        "post_confirmation_low_observed": null,
+        "below_area_pct_lower_bound": null,
+        "reason": "RANGE_TOUCH_ONLY"
+      }
+    }
+  },
+  "noLater": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "UNKNOWN",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": false,
+      "no_hit_basis": null,
+      "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 0,
+      "boundary_candles_excluded": 0,
+      "price_points": 1,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "INSUFFICIENT_HISTORY_COVERAGE"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": null,
+      "entry_then_exit_confirmed": null,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": null,
+      "entry_area_excursion": {
+        "area_floor_price": 95,
+        "contact_confirmed_by_ts": 1800000001000,
+        "post_confirmation_low_observed": null,
+        "below_area_pct_lower_bound": null,
+        "reason": "NO_POST_CONFIRMATION_OBSERVATIONS"
+      }
+    }
+  },
+  "incomplete": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "UNKNOWN",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": false,
+      "no_hit_basis": null,
+      "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 239,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "INSUFFICIENT_HISTORY_COVERAGE"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000240000,
+        "end_ts": 1800000300000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": null,
+        "contact_confirmed_by_ts": null,
+        "post_confirmation_low_observed": null,
+        "below_area_pct_lower_bound": null,
+        "reason": "FIRST_ENTRY_AREA_HISTORY_INCOMPLETE"
+      }
+    }
+  },
+  "absent": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": 1.0000000000000009,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": true,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "EXACT_CLOSED_MINUTE_INTERVAL",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": true,
+      "fully_contained_candles": 240,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [],
+    "scenario_outcome": {
+      "status": "NO_PLAN",
+      "entry_touched": null,
+      "exit_touched": null,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_area_excursion": {
+        "area_floor_price": null,
+        "contact_confirmed_by_ts": null,
+        "post_confirmation_low_observed": null,
+        "below_area_pct_lower_bound": null,
+        "reason": "PLAN_UNAVAILABLE"
+      }
+    }
+  },
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0
+}

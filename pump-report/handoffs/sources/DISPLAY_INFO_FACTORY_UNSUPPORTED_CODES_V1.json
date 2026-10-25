@@ -1,0 +1,65 @@
+{
+  "schema": "PUMP_RETAINED_UNSUPPORTED_CODE_REVIEW_V1",
+  "status": "UNKNOWN_NO_PROVEN_COIN_OR_CONTRACT_UNSUPPORTED_MAPPING",
+  "proven_unsupported_codes": [],
+  "reviewed_literals": [
+    {
+      "path": "pump-report/handoffs/sources/evidence/catalog-docsv3-current.literal.txt",
+      "sha256": "9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+      "error_list_empty": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/evidence/kline-docsv3-current.literal.txt",
+      "sha256": "94a1a66379296c4b438d176426ae022c4b65fca33ef9b8653b62571a7125e5a3",
+      "error_list_empty": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/evidence/historical-trades-docsv3-current.literal.txt",
+      "sha256": "8bb60afd6eafb6496ad86941330ce27b20b383f135a61c3aa2572cf5a5ef6dc9",
+      "error_list_empty": true
+    }
+  ],
+  "providers_paths": [
+    {
+      "provider": "BINGX",
+      "paths": [
+        "/openApi/swap/v2/quote/contracts",
+        "/openApi/swap/v3/quote/klines",
+        "/openApi/swap/v1/market/historicalTrades"
+      ],
+      "proven_coin_unsupported_HTTP_codes": [],
+      "proven_coin_unsupported_business_codes": []
+    }
+  ],
+  "known_not_coin_support_evidence": [
+    {
+      "provider": "BINGX_WEB_METADATA",
+      "path": "/api/coin/v1/display-info/list",
+      "business_code": 100003,
+      "actual_meaning": "Your device's time is incorrect, please adjust it.",
+      "evidence_ref": "pump-report/handoffs/sources/EXACT_WEB_METADATA_ACTUAL_NEGATIVE_V1.json",
+      "evidence_sha256": "a211bcdad700eac9ac7f567b64086ddda413879cbe0af54f1ce4dd8d7e96584e"
+    },
+    {
+      "provider": "BINGX",
+      "paths": "implemented source routes",
+      "business_codes": [
+        100410,
+        100421
+      ],
+      "existing_code_interpretations": [
+        "RATE_LIMITED",
+        "CLOCK_MISMATCH"
+      ],
+      "scope": "Source code labels only; not new primary definitions and not UNSUPPORTED",
+      "file": "pump-report/sources/bingx.mjs",
+      "sha256": "48c68cc9b7937b4c5f8ace8cbdf029a51d00b74c7aae038be695449f3d96aaec"
+    }
+  ],
+  "ROOT_policy_boundary": {
+    "HTTP500_503_timeout": "TEMPORARY_BACKOFF, never unsupported",
+    "HTTP404_alone": "Not enough for provider/path/coin unsupported semantics"
+  },
+  "new_docs_or_network": 0,
+  "frozen_ledgers_modified": false
+}
