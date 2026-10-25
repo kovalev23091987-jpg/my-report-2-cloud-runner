@@ -1,0 +1,73 @@
+{
+  "schema": "PUMP_RELATIVE_NATIVE_QUANTITY_CONTRACT_PROPOSAL_V1",
+  "status": "PROPOSED_FOR_ROOT_NOT_APPLIED_NOT_A_DATA_FACT",
+  "reason": "Exact supported consumer handles native object, but its unified volume documentation explicitly says usually base and allows exceptions. Current strict BASE-volume claim cannot be made.",
+  "existing_contract_preserved_until_ROOT_decision": true,
+  "provider_market_IO_required_to_author_this_proposal": 0,
+  "clock_policy_option": {
+    "semantics": "OPEN_TIME",
+    "evidence_class": "PINNED_EXACT_SUPPORTED_CONSUMER_CODE",
+    "evidence_ref": "CCXT_PINNED_NATIVE_CANDLE_REVIEW_V1.json",
+    "requirement": "ROOT explicitly accepts the pinned BingX object=>OHLCV index0 plus shared openingTime convention; otherwise retain UNKNOWN and require vendor guarantee. Never received_ts."
+  },
+  "proposed_candle_fact_unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+  "existing_row_fields": {
+    "open_ts": "Qualified original opening timestamp only",
+    "close_ts": "open_ts+60000 after capture proves interval ended",
+    "closed": "Same original capture-closedness rules",
+    "open": "USDT price unchanged",
+    "high": "USDT price unchanged",
+    "low": "USDT price unchanged",
+    "close": "USDT price unchanged",
+    "native_volume_decimal": "Existing raw reported volume decimal, never copied to public handoff",
+    "volume_base": null
+  },
+  "new_explicit_metadata": {
+    "native_quantity_unit": "UNKNOWN",
+    "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+    "comparison_scope": [
+      "same BINGX native contractId/instrument",
+      "same USDT_M v3 klines route",
+      "same volume field/definition",
+      "same interval and complete compared windows"
+    ],
+    "absolute_base_amount_qualified": false,
+    "absolute_USD_amount_qualified": false
+  },
+  "relative_activity_result": {
+    "unit": "RATIO",
+    "formula": "mean(native reported quantity per closed bar in current activity window) / mean(native reported quantity per closed bar in baseline window)",
+    "zero_or_missing_denominator": "null with reason, never zero/Infinity",
+    "interpretation": "Relative change in the provider's reported transaction quantity; not base-asset inflow, quote turnover, USD notional or a probability.",
+    "qualification": "ROOT accepts this explicit native-comparison definition, backed by exact generic native quantity field/actual schema and comparable windows. A caller boolean does not supply missing window/identity/clock proof."
+  },
+  "minimum_implementation_owners": [
+    {
+      "owner": "ROOT",
+      "change": "Approve named unit/semantic mode in common contract and source profile policy; keep absolute amounts null."
+    },
+    {
+      "owner": "SOURCES",
+      "change": "Only after shared decision, allow exact native-relative volume comparison qualification; preserve native_volume_decimal and leave volume_base null, route/symbol/clocks unchanged."
+    },
+    {
+      "owner": "ANALYTICS",
+      "change": "Use this native quantity only for dimensionless activity ratio under the explicit unit; no existing base amount arithmetic, no USD labels."
+    }
+  ],
+  "guards_unchanged": [
+    "Exact crypto identity/USDT family",
+    "Original source/receipt clocks and capture-closedness",
+    "Complete actual compared windows and no zero fill",
+    "Current price/book freshness and independent pullback plan",
+    "HTTP/SQL budgets/reserves/unknowns",
+    "Optional map remains nonblocking"
+  ],
+  "strict_alternative": "Keep OHLC_USDT_VOLUME_BASE unchanged and obtain an exact BingX-specific base-volume unit declaration/mapping, plus accepted opening-time proof. Existing max3 trade-window plan remains HOLD without its exact units/completeness/anchor preconditions, not a renewed native5 grant.",
+  "current_state": {
+    "source_qualifications_candles": {},
+    "strict_core_ready": false,
+    "source_purpose_patch_complete": true,
+    "native_provider_attempts_by_SOURCE": 0
+  }
+}

@@ -1,0 +1,87 @@
+diff --git a/pump-report/handoffs/sources/index-before-delivery-purpose.mjs b/pump-report/sources/index.mjs
+index 0b0c88de..2e54db61 100644
+--- a/pump-report/handoffs/sources/index-before-delivery-purpose.mjs
++++ b/pump-report/sources/index.mjs
+@@ -72,12 +72,12 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
+     const row = coverageRows.get(instrument.instrument_id) ?? {instrument_id: instrument.instrument_id, asset_id: instrument.asset_id, native_symbol: instrument.native_symbol, overview: null, core: null, optional: null, liquidations: null};
+     row[section] = plain(value); coverageRows.set(instrument.instrument_id, row);
+   };
+-  const request = async (kind, {instrument = null, params = {}, ttl_ms = 0, timeout_ms = 10000, deadline_ts = null, route = null} = {}) => {
++  const request = async (kind, {instrument = null, params = {}, ttl_ms = 0, timeout_ms = 10000, deadline_ts = null, route = null, purpose = 'CORE'} = {}) => {
+     const url = route?.url ?? requestUrl(kind, {...params, ...(instrument ? {symbol: instrument.native_symbol} : {})});
+     const provider = route?.provider ?? 'BINGX', family = route?.family ?? 'USDT_M';
+     const remaining = deadline_ts === null ? timeout_ms : Math.min(timeout_ms, deadline_ts - now());
+     if (remaining <= 0) fail('SOURCE_DEADLINE_EXPIRED');
+-    const call = broker.request({provider, family, cache_key: `${SOURCE_VERSION}:${provider}:${family}:${url}`,
++    const call = broker.request({provider, family, purpose, cache_key: `${SOURCE_VERSION}:${provider}:${family}:${url}`,
+       url, method: 'GET', timeout_ms: remaining, ttl_ms, candidate_id: instrument?.instrument_id ?? null, estimated_cost: {http: 1}});
+     let timer;
+     try {
+@@ -121,13 +121,13 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
+     && value.identity_evidence_ref === entry.instrument.identity_evidence_ref && text(value.evidence_ref)
+     && value.event_ts <= value.received_ts && now() - value.event_ts <= profile.freshness_ms.price
+     && value.expires_ts <= value.event_ts + profile.freshness_ms.price;
+-  async function price(entry, {force_refresh = false, existing_fact = null} = {}) {
++  async function price(entry, {force_refresh = false, existing_fact = null, purpose = 'CORE'} = {}) {
+     if (!force_refresh && reusablePrice(existing_fact, entry)) return {...plain(existing_fact), reused_from_existing_facts: true};
+     const observed = overviewPrices.get(entry.instrument.instrument_id);
+     if (!force_refresh && reusablePrice(observed, entry)) return {...plain(observed), reused_from_overview: true};
+     let first;
+     try {
+-      const response = await request('price', {instrument: entry.instrument, ttl_ms: force_refresh ? 0 : profile.freshness_ms.price});
++      const response = await request('price', {instrument: entry.instrument, ttl_ms: force_refresh ? 0 : profile.freshness_ms.price, purpose});
+       const parsed = decode(response, () => parsePrice(response.data, entry.instrument));
+       first = fact(entry, 'price', parsed.value, 'USDT_PER_BASE', parsed.event_ts, response);
+       if (force_refresh || first.status === 'USABLE' || first.status === 'ERROR') return first;
+@@ -136,7 +136,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
+       if (force_refresh || first.status === 'NOT_CHECKED' || /SYMBOL|IDENTITY|ACCESS_BLOCKED|CLOCK_MISMATCH/.test(first.reason)) return first;
+     }
+     try {
+-      const response = await request('ticker', {instrument: entry.instrument, ttl_ms: profile.freshness_ms.price});
++      const response = await request('ticker', {instrument: entry.instrument, ttl_ms: profile.freshness_ms.price, purpose});
+       const parsed = decode(response, () => parsePrice(response.data, entry.instrument, 'ticker'));
+       return fact(entry, 'price', parsed.value, 'USDT_PER_BASE', parsed.event_ts, response,
+         {extra: {fallback_from_fact_id: first.fact_id, fallback_reason: first.reason,
+@@ -144,23 +144,23 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
+     } catch (error) { const result = failed(entry, 'price', error); return {...result, primary_failure_reason: first.reason,
+       attempt_receipt_ids: [first.evidence_ref, result.evidence_ref].filter(Boolean)}; }
+   }
+-  async function candles(entry, {force_refresh = false} = {}) {
++  async function candles(entry, {force_refresh = false, purpose = 'CORE'} = {}) {
+     const step = profile.candle_interval_ms;
+     if (step !== 60000) fail('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');
+     const count = Math.ceil((profile.volume_baseline_ms + Math.max(...profile.automatic_growth.short_windows_ms)) / step) + 1;
+     if (count > 1440) fail('BINGX_CANDLE_WINDOW_EXCEEDS_REQUEST_LIMIT');
+     const end = Math.floor(now() / step) * step, start = end - count * step;
+     try {
+-      const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles});
++      const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles, purpose});
+       const parsed = decode(response, () => parseCandles(response.data, {start, end, interval_ms: step, received_ts: response.received_ts,
+         windows_ms: profile.automatic_growth.short_windows_ms, qualification: entry.qualifications.candles}));
+       return fact(entry, 'candles', parsed.value, 'OHLC_USDT_VOLUME_BASE', parsed.event_ts, response,
+         {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage});
+     } catch (error) { return failed(entry, 'candles', error); }
+   }
+-  async function orderbook(entry, {force_refresh = false} = {}) {
++  async function orderbook(entry, {force_refresh = false, purpose = 'CORE'} = {}) {
+     try {
+-      const response = await request('orderbook', {instrument: entry.instrument, params: {limit: 1000}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.orderbook});
++      const response = await request('orderbook', {instrument: entry.instrument, params: {limit: 1000}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.orderbook, purpose});
+       const parsed = decode(response, () => parseOrderbook(response.data, entry.qualifications.orderbook));
+       return fact(entry, 'orderbook', parsed.value, parsed.qualified ? 'USDT_PRICE_BASE_QUANTITY' : null, parsed.event_ts, response,
+         {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage});
+@@ -232,11 +232,12 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
+       expected: entries.length, checked: observations.filter(item => item.facts.price).length,
+       invalid_response_rows: wireRows(response.data).filter(row => !object(row)).length, evidence_ref: response.receipt_id}};
+   }
+-  async function getCore({instrument, force_refresh = false, only_facts = ['price', 'candles', 'orderbook'], existing_facts = {}} = {}) {
++  async function getCore({instrument, force_refresh = false, only_facts = ['price', 'candles', 'orderbook'], existing_facts = {}, purpose = 'CORE'} = {}) {
+     if (typeof force_refresh !== 'boolean' || !Array.isArray(only_facts) || !only_facts.length
+       || new Set(only_facts).size !== only_facts.length || only_facts.some(kind => !['price', 'candles', 'orderbook'].includes(kind))) fail('INVALID_CORE_FACT_SELECTION');
++    if (!['CORE', 'DELIVERY'].includes(purpose)) fail('INVALID_CORE_REQUEST_PURPOSE');
+     const entry = resolve(instrument), loaders = {price, candles, orderbook};
+-    const values = await Promise.all(only_facts.map(kind => loaders[kind](entry, {force_refresh, existing_fact: kind === 'price' ? existing_facts?.price : null})));
++    const values = await Promise.all(only_facts.map(kind => loaders[kind](entry, {force_refresh, existing_fact: kind === 'price' ? existing_facts?.price : null, purpose})));
+     const facts = Object.fromEntries(values.map(value => [value.kind, value]));
+     const coverage = {status: values.every(value => value.status === 'USABLE') ? 'USABLE' : 'INCOMPLETE',
+       selected_facts: [...only_facts], force_refresh,

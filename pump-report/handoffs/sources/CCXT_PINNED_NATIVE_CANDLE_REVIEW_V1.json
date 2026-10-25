@@ -1,0 +1,62 @@
+{
+  "schema": "PUMP_PINNED_CCXT_BINGX_CANDLE_REVIEW_V1",
+  "scope": "ROOT_AUTHORIZED_SUPPORTED_CONSUMER_CODE_CHECK_NOT_NEW_MARKET_IO",
+  "ccxt_commit": "d3159f7036f93db086cd0414642132fba5401710",
+  "sources": [
+    {
+      "path": "ts/src/bingx.ts",
+      "git_blob": "7d05d1e811f498d0ddc4b295c1575e072c2675d9",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/bingx.ts",
+      "fetchOHLCV_line": 1231,
+      "parseOHLCV_line": 1324
+    },
+    {
+      "path": "ts/src/base/Exchange.ts",
+      "git_blob": "9434486937487ad4834220c05fda7e9a4c7f1ce0",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/base/Exchange.ts",
+      "buildOHLCVC_line": 6800
+    },
+    {
+      "path": "wiki/Manual.md",
+      "git_blob": "c0374a93b4f7d87f616bba6eeaa69ac7584ceb46",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/wiki/Manual.md",
+      "OHLCV_structure_line": 3704
+    }
+  ],
+  "route_trace": {
+    "market": "Exact native symbol, settlement currency=>swap; native without inverse minTickSize =>linear/non-inverse. Restrict proposal to BINGX USDT_M; reject spot/inverse/USDC and price:mark.",
+    "fetch": "Non-spot,non-inverse,no price:mark => swapV3PublicGetQuoteKlines with market.id,interval,startTime/endTime/limit.",
+    "schema": "fetchOHLCV docs comment shows exact same object open/close/high/low/volume/time as ROOT125 native rows, then parseOHLCVs calls bingx.parseOHLCV.",
+    "time_mapping_literal": "this.safeInteger2 (ohlcv, 'time', 'closeTime')",
+    "volume_mapping_literal": "this.safeNumber (ohlcv, 'volume')",
+    "conversion": "No multiplication/division/contract-size conversion in bingx.parseOHLCV object branch. Do not borrow fallback closeTime for this native object; only time exists.",
+    "market_contractSize": "CCXT sets1 for linear client convention; does not establish the provider-native size or a candle volume unit."
+  },
+  "time_result": {
+    "status": "EXACT_CONSUMER_OPEN_TIME_EXPECTATION_SUPPORTED",
+    "evidence": "CCXT shared buildOHLCVC puts openingTime in index0, and exact BingX object parser puts native time there; Manual calls it UTC milliseconds.",
+    "limitation": "Supports this consumer's opening-time interpretation. Generic provider native doc only says kline timestamp; not an independently observed proof of the vendor's field guarantee.",
+    "qualification_applied_to_source_registry": false
+  },
+  "volume_result": {
+    "status": "BASE_UNIT_NOT_PROVEN_BY_CCXT_MANUAL",
+    "manual_short_literal": "usually in terms of the base currency",
+    "evidence": "Unified Manual explicitly permits quote/base exceptions; exact BingX fetchOHLCV/parseOHLCV docstring does not declare base volume. Passing raw volume unchanged is not an independent unit proof.",
+    "qualification_applied": false,
+    "base_per_contract": null
+  },
+  "conclusion": "Does not close both strict core qualifications. Existing registry candles qualifications remain empty. No callerboolean promotion.",
+  "minimal_contract_option": {
+    "status": "ROOT_SHARED_FORMAT_DECISION_REQUIRED_NOT_IMPLEMENTED",
+    "clock": "If ROOT adopts the pinned supported-consumer opening-time convention, state that policy/evidence explicitly; otherwise exact provider open-time guarantee remains required.",
+    "volume": "Use already-preserved native_volume_decimal as reported same-instrument/same-route/same-field quantity; expose dimensionless relative-native-volume ratio, with native unit UNKNOWN and volume_base=null.",
+    "limits": [
+      "No USD/base notional amounts or base-volume claim",
+      "Stable comparable native quantity unit/field across numerator/baseline and explicit window coverage required",
+      "Consumer opening-time convention and original capture-closedness must be accepted independently",
+      "ROOT/analytics change common input semantics; SOURCE does not relabel the existing OHLC_USDT_VOLUME_BASE field as proven"
+    ]
+  },
+  "market_HTTP_executed": 0,
+  "downloaded_code_executed": false
+}

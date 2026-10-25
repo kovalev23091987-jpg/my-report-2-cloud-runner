@@ -1,0 +1,144 @@
+{
+  "schema": "PUMP_NEW_NATIVE_EVIDENCE_METADATA_V1",
+  "authority_main": "737bfc57be088a3e6662dba39a23084e3103658c",
+  "own_lease_acquire_commit": "bf504185f34dbb3c686e4edd3eec73c365dddef2",
+  "own_scope_amend_commit": "ea805f5a45b3acab1f38ad6c570c33d4c0be9f94",
+  "evidence": {
+    "catalog-corrected": {
+      "private_path": "/private/tmp/pump-report-native-catalog-corrected.json",
+      "file_bytes": 606669,
+      "file_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+      "root_control_HTTP_raw_sha256": "06bd46c7b6f1d2f97efd9fd8176e6a4db9baeb73093975be423bb3ad61379a8c",
+      "root_wrapper_received_ts": 1792931871994,
+      "broker_source_received_ts": 1792931870932,
+      "broker_receipt_id": "0320c4b0-ce38-48dc-a275-88a6770ec2b1",
+      "HTTP_status": 200,
+      "business_code": 0,
+      "rows": 1278,
+      "row_fields": [
+        "apiStateClose",
+        "apiStateOpen",
+        "asset",
+        "brokerState",
+        "contractId",
+        "currency",
+        "displayName",
+        "ensureTrigger",
+        "feeRate",
+        "launchTime",
+        "maintainTime",
+        "makerFeeRate",
+        "offTime",
+        "pricePrecision",
+        "quantityPrecision",
+        "size",
+        "status",
+        "symbol",
+        "takerFeeRate",
+        "tradeMinLimit",
+        "tradeMinQuantity",
+        "tradeMinUSDT",
+        "triggerFeeRate"
+      ],
+      "origin_provider_raw_HTTP_body_hash_claim": false,
+      "raw_or_normalized_prices_volumes_exported": false,
+      "currencies": {
+        "USDT": 1229,
+        "USDC": 49
+      },
+      "statuses": {
+        "1": 983,
+        "25": 295
+      },
+      "active_USDT_at_capture": 934,
+      "underlying_classification_field_present": false
+    },
+    "candles": {
+      "private_path": "/private/tmp/pump-report-native-candles.json",
+      "file_bytes": 14482,
+      "file_sha256": "0147e292d099f5f13ba395ca3fbaebd22571453c87928752e8a4b89d7644f555",
+      "root_control_HTTP_raw_sha256": "f3c1e7283581c726dc1aee9d8a7b5c61a11392794328550181d794894b509409",
+      "root_wrapper_received_ts": 1792931883358,
+      "broker_source_received_ts": 1792931883125,
+      "broker_receipt_id": "9341830a-2213-48c6-ae62-f9aeb542887a",
+      "HTTP_status": 200,
+      "business_code": 0,
+      "rows": 125,
+      "row_fields": [
+        "close",
+        "high",
+        "low",
+        "open",
+        "time",
+        "volume"
+      ],
+      "origin_provider_raw_HTTP_body_hash_claim": false,
+      "raw_or_normalized_prices_volumes_exported": false,
+      "native_time_min": 1792924380000,
+      "native_time_max": 1792931820000,
+      "all_60s_grid": true,
+      "contiguous_delta60s": true,
+      "field_types": {
+        "open": [
+          "str"
+        ],
+        "close": [
+          "str"
+        ],
+        "high": [
+          "str"
+        ],
+        "low": [
+          "str"
+        ],
+        "volume": [
+          "str"
+        ],
+        "time": [
+          "int"
+        ]
+      },
+      "semantics_open_time_qualified": false,
+      "volume_base_qualified": false,
+      "received_time_not_used_to_renew_native_rows": true
+    },
+    "orderbook": {
+      "private_path": "/private/tmp/pump-report-native-orderbook.json",
+      "file_bytes": 2611,
+      "file_sha256": "c0ca264546c756405c97ebb69a1467fc54739e4346978e00d0457a08b85c55d7",
+      "root_control_HTTP_raw_sha256": "f227bbbae451397f05122987f55fb55ffc8f5309c918dcbad2a663b4191f4df3",
+      "root_wrapper_received_ts": 1792931915222,
+      "broker_source_received_ts": 1792931915002,
+      "broker_receipt_id": "efd65787-fdb3-4ea1-ad51-05465b121253",
+      "HTTP_status": 200,
+      "business_code": 0,
+      "rows": 1,
+      "row_fields": [
+        "T",
+        "asks",
+        "asksCoin",
+        "bids",
+        "bidsCoin"
+      ],
+      "origin_provider_raw_HTTP_body_hash_claim": false,
+      "raw_or_normalized_prices_volumes_exported": false,
+      "native_T": 1792931914839,
+      "array_lengths": {
+        "bids": 20,
+        "asks": 20,
+        "bidsCoin": 20,
+        "asksCoin": 20
+      },
+      "documented_COIN_unit": "BASE_ASSET_FIELD_MEANING_ONLY",
+      "full_book_claim": false,
+      "native_probe_does_not_prove_1000_level_coverage": true
+    }
+  },
+  "scope": "ROOT_NATIVE_CAPTURE_READ_OFFLINE_ONLY_NOT_CURRENT_FRESH_MARKET_FACTS",
+  "source_executed_market_HTTP": 0,
+  "source_executed_SQL": 0,
+  "source_executed_TG": 0,
+  "source_executed_deploy": 0,
+  "root_initial5": "3SUCCESS_PLUS2UNKNOWN_SPENT_NOT_REFUNDED",
+  "private_bodies_copied": false
+}
