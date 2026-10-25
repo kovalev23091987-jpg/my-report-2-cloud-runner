@@ -74,6 +74,8 @@ test('compiled production Worker retains original/card/receipt identity and fini
     assert.equal(capture.status,'CAPTURED_SAME_ORIGINAL_CARD');assert.equal(capture.actual_receipts.length,1);
     assert.equal(capture.actual_receipts[0].same_original,true);assert.equal(capture.actual_receipts[0].receipt_bound,true);
     assert.equal(capture.actual_receipts[0].card.state,'SENT');assert.equal(capture.actual_receipts[0].card.message_id,'987');
+    assert.ok(capture.actual_receipts[0].card.receipt.http_started_ts<capture.actual_receipts[0].card.expires_ts);
+    assert.ok(capture.actual_receipts[0].card.receipt.http_ack_received_ts>=capture.actual_receipts[0].card.receipt.http_started_ts);
     assert.equal(capture.analyses[0].original.input.run_purpose,'PRODUCTION');assert.equal(sent,1);
     assert.ok(result.resources.total<=13);const before=calls.length;
     assert.equal((await request('manual',{symbol:'1INCH',request_id:id,capture_id:id,publish:true})).status,503);

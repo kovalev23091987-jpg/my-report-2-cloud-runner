@@ -20,6 +20,7 @@ import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_E
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 import {createSourceEvidenceAdmission} from './source-evidence-admission.mjs';
+import {sendSavedTelegram} from './telegram-send.mjs';
 
 export const PUMP_VERSION='pump-report-v1.10-native-source-evidence-admission';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
@@ -90,7 +91,9 @@ async function readLaunchCapture(runtime,result,{run_id,request_id,publish_reque
   const receipt_bound=card.state==='SENT'&&/^[1-9][0-9]*$/.test(String(card.message_id??''))&&
     card.receipt?.card_id===id&&String(card.receipt.message_id)===String(card.message_id)&&
     card.receipt.text_hash===card.text_hash&&card.receipt.recipient===card.recipient&&Number.isSafeInteger(card.send_started_ts)&&
-    Number.isSafeInteger(card.receipt.confirmed_ts)&&card.receipt.confirmed_ts>=card.send_started_ts&&card.receipt.confirmed_ts<=Date.now();
+    Number.isSafeInteger(card.receipt.confirmed_ts)&&card.receipt.confirmed_ts>=card.send_started_ts&&card.receipt.confirmed_ts<=Date.now()&&
+    Number.isSafeInteger(card.receipt.http_started_ts)&&card.receipt.http_started_ts>=card.send_started_ts&&card.receipt.http_started_ts<card.expires_ts&&
+    Number.isSafeInteger(card.receipt.http_ack_received_ts)&&card.receipt.http_ack_received_ts>=card.receipt.http_started_ts&&card.receipt.http_ack_received_ts<=card.receipt.confirmed_ts;
   if(answer.delivery?.state==='SENT'&&!receipt_bound)throw captureFailure('LAUNCH_SENT_RECEIPT_READBACK_MISMATCH');
   envelope.actual_receipts.push({analysis_key:source_input_key,card,same_original,receipt_bound,delivery_result:answer.delivery});
   envelope.status=same_original?'CAPTURED_SAME_ORIGINAL_CARD':'DIFFERENT_SAVED_ANALYSIS_CARD_NOT_CURRENT_SENT_PROOF';
@@ -128,9 +131,7 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
     if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&mode==='MANUAL'&&run_id===MANUAL_ACCEPTANCE_ID){const card=await store.get('pump:card:'+card_id);acceptedManual=card?.mode==='MANUAL'&&card.analysis?.ready===true&&card.analysis.run_id===run_id&&card.analysis.instrument?.native_symbol===MANUAL_ACCEPTANCE_SYMBOL+'-USDT';}
     if(!diagnostic&&!acceptedManual&&(env.PUMP_REPORT_DELIVERY_ENABLED!=='1'||PROVIDER_STAGE!=='PRODUCTION_QUALIFIED'))throw Object.assign(Error('DELIVERY_NOT_ADMITTED'),{code:'DELIVERY_NOT_ADMITTED',send_attempted:false});
     const token=String(env.TELEGRAM_BOT_TOKEN??'');if(!token||!recipient||recipient==='UNCONFIGURED')throw Object.assign(Error('TELEGRAM_BINDING_MISSING'),{send_attempted:false});
-    let receipt;try{receipt=await budget.reserve({provider:'TELEGRAM',family:'DELIVERY',request_id:'TELEGRAM:'+card_id});}catch(error){error.send_attempted=false;throw error;}
-    try{const response=await fetch_impl('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:recipient,text,disable_web_page_preview:true}),redirect:'manual',signal:AbortSignal.timeout(15000)});let body=null;try{body=await response.json();}catch{}await budget.finalize(receipt,{http_status:response.status});return {ok:response.ok,status:response.status,body};}
-    catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
+    return sendSavedTelegram({budget,fetch_impl,token,recipient,text,card:savedCard,clock});
   }});
   const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
   const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,assess_source_evidence:createSourceEvidenceAdmission(identityRegistry),await_source_window:args=>broker.awaitProviderWindow(args)});
