@@ -1,18 +1,22 @@
 import {BudgetRefusal} from './budget.mjs';
 import {automaticWindowOpen,ownerPublicationRefusal} from '../contracts/index.mjs';
+import {textHash} from './text-hash.mjs';
+import {createWorkIndex} from './work-index.mjs';
 export {automaticWindowOpen} from '../contracts/index.mjs';
-
-export async function textHash(text){const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
+export {textHash} from './text-hash.mjs';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const positiveMessageId=id=>Number.isSafeInteger(Number(id))&&Number(id)>0&&/^[1-9][0-9]*$/.test(String(id));
 
 export function createDelivery({store,send,recipient,clock=Date.now,revalidate,claim_ms=30000}){
   if(!store?.atomic||!send||!recipient||!revalidate)throw Error('DELIVERY_CONTEXT_REQUIRED');
+  const terminal=card=>['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card?.state);
+  const work=createWorkIndex({store,kind:'delivery',targetKey:id=>'pump:card:'+id,completed:card=>terminal(card)&&(card.analysis?.kind==='DELIVERY_DIAGNOSTIC'||card.publication_registered===true)&&(card.state!=='SENT'||positiveMessageId(card.message_id)&&card.receipt?.text_hash===card.text_hash&&card.receipt?.recipient===card.recipient)});
   async function enqueue(analysis,{mode,expires_ts,update_kind=null}={}){
     const refusal=ownerPublicationRefusal(analysis);if(refusal&&analysis?.kind!=='DELIVERY_DIAGNOSTIC')throw new BudgetRefusal(refusal);
     if(!analysis?.ready||!analysis.card_text||!analysis.wave_id||analysis.card_text.length>4096)throw new BudgetRefusal('READY_ANALYSIS_REQUIRED');
     if(mode==='AUTO'&&!analysis.automatic_eligible)throw new BudgetRefusal('AUTOMATIC_GROWTH_NOT_QUALIFIED');
     if(!['AUTO','MANUAL'].includes(mode)||!Number.isSafeInteger(expires_ts)||expires_ts<=clock())throw new BudgetRefusal('CARD_VALIDITY_REQUIRED');
+    await work.ensureReady();
     const hash=await textHash(analysis.card_text),id='PUMP:'+await textHash(analysis.instrument.instrument_id+'|'+analysis.wave_id+'|'+hash);
     const card={delivery_schema:'PUMP_DELIVERY_V2',card_id:id,text:analysis.card_text,text_hash:hash,recipient:String(recipient),mode,analysis,created_ts:clock(),expires_ts,state:'READY',message_id:null,owner:null,claim_until:null,send_started_ts:null,attempts:0};
     // Save immutable content before the wave pointer. A lost queue ACK is
@@ -36,7 +40,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
       return {state:current,result:{duplicate:false,card_id:id}};
     });
     if(decision.card_id!==id)await store.atomic('pump:card:'+id,current=>({state:{...current,state:'SUPPRESSED',reason:'NO_SUBSTANTIAL_PLAN_CHANGE'},result:true}));
-    await store.atomic('pump:delivery-queue',queue=>({state:[...new Set([...(queue??[]),decision.card_id])],result:true}));
+    await work.add(decision.card_id);
     return {...decision,text_hash:hash};
   }
   async function dispatch(card_id){
@@ -75,6 +79,15 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     return {state:retryable?'RETRYABLE':knownRejected?'ERROR':'UNKNOWN',card_id};
   }
   async function finish(card,changes){return store.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,...changes,owner:null,claim_until:null,updated_ts:clock()},result:true};});}
-  async function drain(){const ids=await store.get('pump:delivery-queue')??[],results=[];for(const id of ids){try{results.push(await dispatch(id));}catch(error){results.push({card_id:id,state:'ERROR',reason:error.code??'DELIVERY_ERROR'});}}return results;}
-  return {enqueue,dispatch,drain};
+  async function pending({limit=20}={}){const page=await work.page({limit});if(!page.ready)throw new BudgetRefusal('WORK_INDEX_MIGRATING');return page.items.map(row=>row.id);}
+  async function acknowledge(card_id){
+    await store.atomic('pump:card:'+card_id,card=>{if(!terminal(card))throw new BudgetRefusal('TERMINAL_DELIVERY_REQUIRED');return {state:{...card,publication_registered:true},result:true};});
+    return work.complete(card_id,{evidence_key:'pump:card:'+card_id});
+  }
+  async function drain({limit=20}={}){
+    const ids=await pending({limit}),results=[];
+    for(const id of ids){try{results.push(await dispatch(id));}catch(error){if(/NATIVE_SQL|STATE_CAS|STATE_PAIR/.test(error.code??error.message??'')||store.usage?.().unknown_ops>0)throw error;results.push({card_id:id,state:'ERROR',reason:error.code??'DELIVERY_ERROR'});}}
+    return results;
+  }
+  return {enqueue,dispatch,drain,pending,acknowledge};
 }

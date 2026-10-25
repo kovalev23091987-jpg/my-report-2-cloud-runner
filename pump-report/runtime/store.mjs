@@ -1,9 +1,11 @@
 import {BudgetRefusal,RESOURCE_LIMITS,utcDay} from './budget.mjs';
+const workPointer=key=>typeof key==='string'&&/^pump:work-index:v1:(manual|delivery|journal|outcomes):ready:[0-9]{16}$/.test(key);
 
 export class MemoryStore {
   constructor(){this.rows=new Map();this.chain=Promise.resolve();}
   async get(key){return structuredClone(this.rows.get(key)??null);}
   async set(key,value){this.rows.set(key,structuredClone(value));return value;}
+  async removeWorkPointer(key){if(!workPointer(key))throw new BudgetRefusal('DERIVED_WORK_POINTER_REQUIRED');this.rows.delete(key);}
   async boundedArray(key,{max_items=40,max_bytes=10000}={}){const value=this.rows.get(key)??[];if(!Array.isArray(value)||value.length>max_items||new TextEncoder().encode(JSON.stringify(value)).length>max_bytes)throw new BudgetRefusal('LEGACY_INDEX_BOUNDED_MIGRATION_REQUIRED');return structuredClone(value);}
   async scanPrefix(prefix,{after_key=prefix,limit=40}={}){if(!Number.isSafeInteger(limit)||limit<1||limit>40||!after_key.startsWith(prefix))throw new BudgetRefusal('BOUNDED_PREFIX_SCAN_REQUIRED');return [...this.rows.entries()].filter(([key])=>key.startsWith(prefix)&&key>after_key).sort(([a],[b])=>a<b?-1:a>b?1:0).slice(0,limit).map(([key,value])=>({key,value:structuredClone(value)}));}
   async atomic(key,change){const job=this.chain.then(async()=>{const {state,result}=change(await this.get(key));await this.set(key,state);return result;});this.chain=job.catch(()=>{});return job;}
@@ -54,6 +56,7 @@ export class D1Store {
     const r=await this.query('SELECT state_key,value_json FROM pump_report_state_v1 WHERE state_key>=?1 AND state_key<?2 AND state_key>?3 ORDER BY state_key LIMIT ?4',[prefix,prefix+'\uffff',after_key,limit],{read:limit});return (r.results??[]).map(row=>({key:row.state_key,value:JSON.parse(row.value_json)}));
   }
   async set(key,value){await this.query('INSERT INTO pump_report_state_v1(state_key,value_json,revision,updated_ts) VALUES(?1,?2,0,?3) ON CONFLICT(state_key) DO UPDATE SET value_json=excluded.value_json,revision=pump_report_state_v1.revision+1,updated_ts=excluded.updated_ts',[key,JSON.stringify(value),this.clock()],{read:2,write:2});return value;}
+  async removeWorkPointer(key){if(!workPointer(key))throw new BudgetRefusal('DERIVED_WORK_POINTER_REQUIRED');await this.query('DELETE FROM pump_report_state_v1 WHERE state_key=?1',[key],{read:1,write:2});}
   async atomic(key,change){
     for(let attempt=0;attempt<5;attempt++){
       const current=await this.query('SELECT value_json,revision FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1',[key]);const row=current.results?.[0];

@@ -8,6 +8,7 @@ export const ROUTES = Object.freeze({
   price: '/openApi/swap/v1/ticker/price',
   candles: '/openApi/swap/v3/quote/klines',
   orderbook: '/openApi/swap/v2/quote/depth',
+  trades: '/openApi/swap/v2/quote/trades',
   open_interest: '/openApi/swap/v2/quote/openInterest',
   funding: '/openApi/swap/v2/quote/premiumIndex'
 });

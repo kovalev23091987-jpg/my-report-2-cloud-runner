@@ -10,11 +10,13 @@ import {createUnifiedBudget,createRequestBroker} from './budget.mjs';
 import {createDelivery,automaticWindowOpen,textHash} from './delivery.mjs';
 import {reserveNativeRun,finalizeNativeRun} from './native-budget.mjs';
 import {createPumpRunner} from './runner.mjs';
+import {createRetainedCapsuleWriter} from './retained-capsules.mjs';
+import {IMPLEMENTATION_PIN} from './implementation-pin.mjs';
 import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID} from './provider-policy.mjs';
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 
-export const PUMP_VERSION='pump-report-v1.6-bounded-summary-index';
+export const PUMP_VERSION='pump-report-v1.7-bounded-work-retained-features';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
@@ -37,6 +39,7 @@ export async function revalidatePumpCard({card,store,sources,clock=Date.now,prof
 }
 
 async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
+  if(IMPLEMENTATION_PIN?.schema!=='PUMP_BUNDLED_IMPLEMENTATION_PIN_V1'||!/^[a-f0-9]{64}$/.test(IMPLEMENTATION_PIN.sha256??''))throw Object.assign(Error('PINNED_IMPLEMENTATION_ARTIFACT_REQUIRED'),{code:'PINNED_IMPLEMENTATION_ARTIFACT_REQUIRED'});
   const run_purpose=PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?'PRODUCTION':'ACCEPTANCE_TEST';
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock}),store=native.store;
   try{
@@ -59,7 +62,8 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
     try{const response=await fetch_impl('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:recipient,text,disable_web_page_preview:true}),redirect:'manual',signal:AbortSignal.timeout(15000)});let body=null;try{body=await response.json();}catch{}await budget.finalize(receipt,{http_status:response.status});return {ok:response.ok,status:response.status,body};}
     catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
   }});
-  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose});
+  const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
+  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features});
   return {native,store,budget,broker,sources,delivery,runner};
   }catch(error){error.pumpNative=native;throw error;}
 }
@@ -68,7 +72,7 @@ export function createPumpWorker(legacy={}){
   return {
     async fetch(request,env,ctx){
       const url=new URL(request.url);if(!url.pathname.startsWith('/pump/'))return typeof legacy.fetch==='function'?legacy.fetch(request,env,ctx):new Response('Not Found',{status:404});
-      if(url.pathname==='/pump/health')return json({version:PUMP_VERSION,provider_stage:PROVIDER_STAGE,automatic_enabled:env.PUMP_REPORT_ENABLED==='1',delivery_enabled:env.PUMP_REPORT_DELIVERY_ENABLED==='1',legacy_schedules_restored:false});
+      if(url.pathname==='/pump/health')return json({version:PUMP_VERSION,implementation_sha256:IMPLEMENTATION_PIN?.sha256??null,provider_stage:PROVIDER_STAGE,automatic_enabled:env.PUMP_REPORT_ENABLED==='1',delivery_enabled:env.PUMP_REPORT_DELIVERY_ENABLED==='1',legacy_schedules_restored:false});
       const key=String(env.PUMP_CONTROL_KEY??'');if(!key||request.headers.get('x-pump-control-key')!==key)return json({error:'UNAUTHORIZED'},401);
       if(request.method!=='POST')return json({error:'POST_REQUIRED'},405);
       let body;try{const raw=await request.text();if(raw.length>16384)throw Error();body=JSON.parse(raw||'{}');if(!body||typeof body!=='object'||Array.isArray(body))throw Error();}catch{return json({error:'INVALID_BODY'},400);}

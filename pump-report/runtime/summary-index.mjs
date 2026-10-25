@@ -1,4 +1,4 @@
-import {textHash} from './delivery.mjs';
+import {textHash} from './text-hash.mjs';
 const HEAD='pump:summary-ordered-head:v1',PREFIX='pump:summary-ordered:v1:',MEMBER='pump:summary-member:v1:',LEGACY='pump:summary-record-index';
 const validId=id=>typeof id==='string'&&/^pump:summary-record:[a-f0-9]{64}$/.test(id);
 const pointerKey=seq=>PREFIX+String(seq).padStart(16,'0');

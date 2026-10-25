@@ -21,8 +21,14 @@ export function buildArtifact({legacy_path,output_path,module_overrides={}}){
     }
   };
   visit('worker-entry.mjs');
+  const pinModule='runtime/implementation-pin.mjs';let implementation_pin=null;
+  if(Object.hasOwn(modules,pinModule)){
+    const pinned=Object.fromEntries(Object.entries(modules).filter(([name])=>name!==pinModule).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([name,text])=>[name,digest(text)]));
+    implementation_pin={schema:'PUMP_BUNDLED_IMPLEMENTATION_PIN_V1',sha256:digest(JSON.stringify(pinned)),modules:pinned,excluded_self_module:pinModule};
+    modules[pinModule]='export const IMPLEMENTATION_PIN='+JSON.stringify(implementation_pin)+';\n';
+  }
   const metadata={main_module:'worker-entry.mjs',compatibility_date:'2026-09-11',compatibility_flags:[],keep_bindings:['secret_text','plain_text','d1'],keep_assets:true};
-  const manifest={schema:'PUMP_WORKER_ARTIFACT_V1',tz_sha256:'0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc',main_module:metadata.main_module,module_count:Object.keys(modules).length,modules:Object.fromEntries(Object.entries(modules).map(([name,text])=>[name,{bytes:Buffer.byteLength(text),sha256:digest(text)}])),legacy_scheduled_invoked:false,schedules:[],native_market_proof:false,telegram_proof:false};
+  const manifest={schema:'PUMP_WORKER_ARTIFACT_V1',tz_sha256:'0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc',main_module:metadata.main_module,module_count:Object.keys(modules).length,implementation_pin,modules:Object.fromEntries(Object.entries(modules).map(([name,text])=>[name,{bytes:Buffer.byteLength(text),sha256:digest(text)}])),legacy_scheduled_invoked:false,schedules:[],native_market_proof:false,telegram_proof:false};
   const artifact={metadata,modules,manifest};fs.writeFileSync(output_path,JSON.stringify(artifact),{mode:0o600});
   return manifest;
 }

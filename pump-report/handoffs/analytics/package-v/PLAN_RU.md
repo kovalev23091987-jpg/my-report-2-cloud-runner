@@ -1,0 +1,13 @@
+# V: исходные признаки, labels и защита ссылок
+
+ROOT поручил продолжить S feature/protected refs после закрытия U3 и frozen T. В v2 создаётся отдельный analytics/feature-capsule.mjs: content-bound scalar projection, собственный schema version pump-feature-capsule-v2-20261025, читатель с проверкой SHA, отдельные immutable revisions outcome labels и bounded reference projector. Старый pump-initial-features-v1 и его аудит не расширяются молча. ROOT владеет writer/readback/runtime, общими форматами, очередями и внедрением.
+
+До патча: сохранить manifest текущих T/S, общий contract v1.2, снимки исходного кода и projection plan. T context уже реализован: 4PASS сохранены, новые патчи/повторы T не нужны. Дальнейшая реализация V не меняет анализ/план/P0/t0/версии/eligibility/сравнение BTCETH.
+
+Feature projection связывает точный JSON SHA исходного analysis и input, analysis state key, implementation digest, evidence_class и run purpose; bound clocks=value known by original analysis time, отдельный поздний recorded_ts. Численные поля и explicit null/reason, core movement/activity/liquidity, Q sample five price scalars/netflow и BASE/QUOTE unit derivation, optional OI/funding и расстояния карты. Никаких raw candles/trades/book/provider body/token/secrets, самопровозглашённой provenance authentication, future feature leakage, benchmark или удаления.
+
+Outcome projection связывает исходный feature digest, immutable origin/plan digest, конкретные outcome/publication revisions. HIT/MISS/UNKNOWN, numeric DD, coverage, timestamps и scenario lower-bound сохраняются; execution/profit не заявляются. Для UNKNOWN не производить win/loss. Изменённый t0/P0/wave/rules/target/deadline отвергается.
+
+Bounded references проектируются из одного сохранённого analysis/input + переданных card/journal/signal/summary index evidence. Оригинальные analysis/card/receipt/signal/outcome, source fact/evidence refs, UNKNOWN/possible-send и pending summary allocations защищаются; превышение bounds -> explicit failure, без silent truncation. Cursor/возраст4ч/terminal/HIT не дают delete permission. Внешние refs считаются неразрешёнными. Это не global closure scan и не GC writer; approved TTL null, delete false.
+
+Одна новая V affected qualification на artificial data: exact SHA/reader roundtrip; clocks/null and scalar whitelist; T quote vs BASE provenance без повторения T алгоритма; immutable outcome labels including lower-bound; protected actual links UNKNOWN/pending/oversized fail-closed; V input mutation/schema/version/hash rejection. Старые батареи и исходные240 не повторяются. Только один запуск нового V файла, repair только нового failing case при конкретном дефекте. ROOT интегрирует production writer отдельно.

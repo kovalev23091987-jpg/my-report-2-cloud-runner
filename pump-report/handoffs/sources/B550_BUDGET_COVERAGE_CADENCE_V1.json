@@ -1,0 +1,411 @@
+{
+  "schema": "SOURCE_B550_BUDGET_COVERAGE_CADENCE_V1",
+  "scope": 550,
+  "status": "COUNT_AND_ENVELOPE_PLAN_ONLY_NOT_EXECUTABLE_UNDER_CURRENT_ACCEPTANCE_GRANTS",
+  "inputs": [
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce"
+    },
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "path": "pump-report/runtime/native-budget.mjs",
+      "sha256": "6cf207f04a4ddcb124d2d55b16b50141f2ddf7d905e1140e660f81dbd6d8322c"
+    },
+    {
+      "path": "pump-report/runtime/provider-policy.mjs",
+      "sha256": "024cadf6e0ba0e136e1bbef6ac6d69bcd783d6dbfc8309b839378837408870ed"
+    },
+    {
+      "path": "pump-report/runtime/discovery-reserve.mjs",
+      "sha256": "e4f4864b4c0f19238a33164e388ed0fa817a053cfaddc0fc30347c6e2d89a881"
+    },
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "sha256": "d2f37dd4d6b2efbeb7c68ec894977c6bb678e1ce96527f3c05f39416455d5cad"
+    },
+    {
+      "path": "pump-report/runtime/worker.mjs",
+      "sha256": "6b772464d8f4713baaccf4544684728229e023df6a24930ab5abf79a965b0289"
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    {
+      "path": "pump-report/handoffs/sources/B550_T3_SOURCE_INDEX_BEFORE125.mjs.snapshot",
+      "sha256": "21595a8d412f6074e6375af0f1200e1a189de255837a72aba0286db2fadd6b81"
+    },
+    {
+      "path": "pump-report/sources/bingx.mjs",
+      "sha256": "4b835db4ba9e8514c5bef26ab287aed99b982d409976ebff540fdf8403052308"
+    },
+    {
+      "path": "pump-report/sources/recent-trades.mjs",
+      "sha256": "2894ddd3e9874e2676af1b7093bd41c75e78736c35edc7b843c72f597246079c"
+    },
+    {
+      "path": "pump-report/handoffs/sources/PACKAGE_T3_RECENT_TRADES_PRODUCER_FINAL_V1.json",
+      "sha256": "9710f5869b8f5f38060d78b81c6e972b64a290a0b644d2109d8b0e454791db97"
+    },
+    {
+      "path": "pump-report/handoffs/sources/PACKAGE_U3_FULL934_SCOPE_SELECTION_FINAL_V1.json",
+      "sha256": "1d45208baa190c83728957ae1372118de3cdbb80eda12ab76ebfad74300ebfeb"
+    }
+  ],
+  "timezone": "Europe/Moscow",
+  "automatic_window": "10:00 inclusive–20:00 exclusive Moscow =07:00–17:00UTC",
+  "TZ80_semantics": "80% is proposed resource loading after mandatory reserves; no80% asset coverage threshold occurs inTZ.",
+  "coverage": {
+    "economic_target": 550,
+    "curated_registry": 13,
+    "owner_delivery_excluded_in_curated_registry": 2,
+    "operational_identity_delivery_eligible": 11,
+    "operational_identity_delivery_eligible_share_of550": 0.02,
+    "market_coverage_minimum_from_TZ": null,
+    "hypothetical80pct_only": 440,
+    "full550_onepass_min_candle_book_HTTP": 1102,
+    "hypothetical440_onepass_min_candle_book_HTTP": 882,
+    "actual_runner_day_plus_candle_book_min_440_HTTP": 1322,
+    "actual_runner_day_plus_candle_book_min550_HTTP": 1652,
+    "bulk_snapshot_can_check550_prices_only_when_identity_freshness_valid": true,
+    "deep_checks_use_distinct_denominator": true,
+    "current_fresh_coverage": "NOT_MEASURED_NO_NEW_IO",
+    "quality_signal_count_not_coverage": true
+  },
+  "preserved_limits": {
+    "http_per_run": 164,
+    "project_http_day": 900,
+    "lanes": {
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "deep_per_candidate": 50,
+    "liquidations_per_run": 8,
+    "manual_http_run_reserve": 24,
+    "d1_reads_day": 3500000,
+    "d1_writes_day": 70000,
+    "next_full_reads": 59000,
+    "next_full_writes": 920
+  },
+  "preserved_profile_optional_upper": 2,
+  "known_observed_totals_not_full_current_ledger": {
+    "provider_attempts": 22,
+    "old_unknown_attempts_included": 2,
+    "native_requests": 395,
+    "rows_read": 817,
+    "rows_written": 249,
+    "native_unknown_ops": 0
+  },
+  "unquantified_legacy_spend_reserves_unknowns": "RETAINED_SYMBOLIC_NOT_ZERO_NOT_REFUNDED",
+  "future_discovery_current_code": {
+    "provider": "BINGX",
+    "family": "USDT_M",
+    "cadence_ms": 300000,
+    "http_per_tick": 2,
+    "start_hour": 10,
+    "end_hour": 20,
+    "time_zone": "Europe/Moscow",
+    "paths": [
+      "/openApi/swap/v2/quote/contracts",
+      "/openApi/swap/v2/quote/ticker"
+    ]
+  },
+  "protected_HTTP": {
+    "manual_http_by_provider": {
+      "BINGX": 102,
+      "TELEGRAM": 6,
+      "SWOLECHARTS": 0,
+      "BINGX_WEB_METADATA": 0
+    },
+    "manual_total": 108,
+    "delivery": 24,
+    "outcomes": 24
+  },
+  "fixed_HTTP_protection": 156,
+  "cold_ready_manual": {
+    "route": {
+      "catalog": 1,
+      "overview": 1,
+      "day_1440_closed_window": 1,
+      "core_candles_and_book": 2,
+      "core_price_primary_and_ticker_fallback_max": 2,
+      "optional_total": 2,
+      "map_slot_upper": 1,
+      "delivery_price_book_recheck": 2,
+      "telegram_send": 1
+    },
+    "total_immediate": 13,
+    "BINGX": 11,
+    "six_immediate": 78,
+    "six_plus_one_outcome_each": 84,
+    "current_no_eligible_map_route_six_immediate_upper": 72,
+    "actual_attempts_and_SQL_cost": "NOT_MEASURED_NATIVE0",
+    "manual24_is_run_headroom_not_six_day_reports": true,
+    "protected_BINGX102_not_reduced_to66": true
+  },
+  "scenarios": [
+    {
+      "prior_HTTP_floor_assumption": 0,
+      "not_full_ledger_or_unknown_zero_claim": true,
+      "held_reserves": 156,
+      "automatic_and_future_work_planning_ceiling_80pct": 595,
+      "cadences": [
+        {
+          "minutes": 2,
+          "scans": 300,
+          "overview_HTTP": 300,
+          "catalog_HTTP": 300,
+          "discovery_HTTP": 600,
+          "six_cold_ready_manual_HTTP": 78,
+          "all_outcome_HTTP_slots": 24,
+          "remaining_for_auto_service_unknown_HTTP": -107,
+          "max_full_auto12_HTTP_candidates_if_extra_service_unknown_zero": 0,
+          "SQL_envelope_reads_before_prior_usage": 1670000,
+          "SQL_envelope_writes_before_prior_usage": 102240,
+          "exceeds70000W_before_prior_usage": 32240
+        },
+        {
+          "minutes": 3,
+          "scans": 200,
+          "overview_HTTP": 200,
+          "catalog_HTTP": 200,
+          "discovery_HTTP": 400,
+          "six_cold_ready_manual_HTTP": 78,
+          "all_outcome_HTTP_slots": 24,
+          "remaining_for_auto_service_unknown_HTTP": 93,
+          "max_full_auto12_HTTP_candidates_if_extra_service_unknown_zero": 7,
+          "SQL_envelope_reads_before_prior_usage": 1170000,
+          "SQL_envelope_writes_before_prior_usage": 72240,
+          "exceeds70000W_before_prior_usage": 2240
+        },
+        {
+          "minutes": 5,
+          "scans": 120,
+          "overview_HTTP": 120,
+          "catalog_HTTP": 120,
+          "discovery_HTTP": 240,
+          "six_cold_ready_manual_HTTP": 78,
+          "all_outcome_HTTP_slots": 24,
+          "remaining_for_auto_service_unknown_HTTP": 253,
+          "max_full_auto12_HTTP_candidates_if_extra_service_unknown_zero": 21,
+          "SQL_envelope_reads_before_prior_usage": 770000,
+          "SQL_envelope_writes_before_prior_usage": 48240,
+          "exceeds70000W_before_prior_usage": 0
+        }
+      ]
+    },
+    {
+      "prior_HTTP_floor_assumption": 22,
+      "not_full_ledger_or_unknown_zero_claim": true,
+      "held_reserves": 156,
+      "automatic_and_future_work_planning_ceiling_80pct": 577,
+      "cadences": [
+        {
+          "minutes": 2,
+          "scans": 300,
+          "overview_HTTP": 300,
+          "catalog_HTTP": 300,
+          "discovery_HTTP": 600,
+          "six_cold_ready_manual_HTTP": 78,
+          "all_outcome_HTTP_slots": 24,
+          "remaining_for_auto_service_unknown_HTTP": -125,
+          "max_full_auto12_HTTP_candidates_if_extra_service_unknown_zero": 0,
+          "SQL_envelope_reads_before_prior_usage": 1670000,
+          "SQL_envelope_writes_before_prior_usage": 102240,
+          "exceeds70000W_before_prior_usage": 32240
+        },
+        {
+          "minutes": 3,
+          "scans": 200,
+          "overview_HTTP": 200,
+          "catalog_HTTP": 200,
+          "discovery_HTTP": 400,
+          "six_cold_ready_manual_HTTP": 78,
+          "all_outcome_HTTP_slots": 24,
+          "remaining_for_auto_service_unknown_HTTP": 75,
+          "max_full_auto12_HTTP_candidates_if_extra_service_unknown_zero": 6,
+          "SQL_envelope_reads_before_prior_usage": 1170000,
+          "SQL_envelope_writes_before_prior_usage": 72240,
+          "exceeds70000W_before_prior_usage": 2240
+        },
+        {
+          "minutes": 5,
+          "scans": 120,
+          "overview_HTTP": 120,
+          "catalog_HTTP": 120,
+          "discovery_HTTP": 240,
+          "six_cold_ready_manual_HTTP": 78,
+          "all_outcome_HTTP_slots": 24,
+          "remaining_for_auto_service_unknown_HTTP": 235,
+          "max_full_auto12_HTTP_candidates_if_extra_service_unknown_zero": 19,
+          "SQL_envelope_reads_before_prior_usage": 770000,
+          "SQL_envelope_writes_before_prior_usage": 48240,
+          "exceeds70000W_before_prior_usage": 0
+        }
+      ]
+    }
+  ],
+  "proposed_conditional_day_plan": {
+    "minutes": 5,
+    "scan_runs": 120,
+    "auto_ready_capacity_slots": 12,
+    "manual_checks": 6,
+    "outcome_HTTP_slots": 24,
+    "source_market_HTTP_upper": {
+      "BINGX": 450,
+      "TELEGRAM": 18,
+      "SWOLECHARTS_potential_slots_not_admitted": 18
+    },
+    "HTTP_upper": 486,
+    "SQL_envelopes": {
+      "auto_runs": 120,
+      "manual_runs": 6,
+      "reads": 770817,
+      "writes": 48489
+    },
+    "current_HTTP_reserve156_never_released_or_reallocated": true,
+    "status": "COUNT_AND_ENVELOPE_PLAN_ONLY_NOT_EXECUTABLE_UNDER_CURRENT_ACCEPTANCE_GRANTS",
+    "all550_operationally_verified_assumed": false,
+    "optional_map_absence_nonblocking": true
+  },
+  "HTTP_plan_headroom_below80pct_known_floor": 91,
+  "SQL": {
+    "fixed_protection": {
+      "reads": 140000,
+      "writes": 10440
+    },
+    "envelope_per_invocation": {
+      "reads": 5000,
+      "writes": 300
+    },
+    "six_manual": {
+      "reads": 30000,
+      "writes": 1800
+    },
+    "max_auto_runs_at80pct_after_known_floor_and_protection": 153,
+    "cadence_choice_by_current_envelopes": "Only5minute among2/3/5 fits full-day envelope +6manual+fixed reserves; current production/admissions stillOFF.",
+    "measured_new_cost": null,
+    "overview550_JSON_positions_not550_D1_rows": true,
+    "speculative24_extra_statistics_invocations_add": {
+      "reads": 120000,
+      "writes": 7200
+    },
+    "no_extra_statistics_invocations_assumed": "Outcomes share existing AUTO invocations. Separate runner STATISTICS would add catalog1/SQL envelope; not free."
+  },
+  "per_run": {
+    "total": 164,
+    "hot": 96,
+    "background": 56,
+    "statistics": 12,
+    "AUTO_hot_after_manual24": 72,
+    "scan_plus_one_cold_ready": 14,
+    "source_map_per_candidate_upper": 1,
+    "map_chain8_native4_inside8": true,
+    "deep_per_candidate50_is_HTTP_bound_not50_distinct_assets": true,
+    "background_lane_not_used_by_current_broker_default": true,
+    "unused_lanes_not_free_daily_budget": true
+  },
+  "cache": {
+    "catalog_TTL": 0,
+    "overview_price_TTL": 30000,
+    "book_TTL": 15000,
+    "candles_TTL": 90000,
+    "trades_TTL": 30000,
+    "OI_TTL": 120000,
+    "funding_TTL": 300000,
+    "overview_shared_bulk_reuse_same_URL": true,
+    "exact_candle_day_windows_change_each_minute": true,
+    "cache_key_includes_full_URL": true,
+    "cache_does_not_renew_event_clock": true,
+    "delivery_price_book_ttl0_forced": true,
+    "source_retry_count": 0,
+    "negative_backoff_cache_not_reinterpreted_as_asset_classification": true,
+    "SQL_cache_read_write_cost_nonzero_unmeasured": true
+  },
+  "provider_blockers": {
+    "stage": "SUMMARY_INDEX_ACCEPTANCE_ONLY",
+    "qualification_expires_ts": 1792950300000,
+    "BINGX_policy": {
+      "version": "pump-manual-native-relative-acceptance-20261025-v1",
+      "evidence_ref": "checkpoints/pump-report-20261025/DAY_WINDOW_NATIVE_ADMISSION.json",
+      "allowed_hosts": [
+        "open-api.bingx.com"
+      ],
+      "allowed_paths": [
+        "/openApi/swap/v2/server/time",
+        "/openApi/swap/v2/quote/contracts",
+        "/openApi/swap/v2/quote/ticker",
+        "/openApi/swap/v1/ticker/price",
+        "/openApi/swap/v3/quote/klines",
+        "/openApi/swap/v2/quote/depth",
+        "/openApi/swap/v2/quote/openInterest",
+        "/openApi/swap/v2/quote/premiumIndex"
+      ],
+      "project_daily_cap": 900,
+      "project_monthly_cap": 27900,
+      "per_minute_cap": 10,
+      "per_second_cap": 1,
+      "qualification_attempt_cap": 24,
+      "external_quota_status": "BOUNDED_MANUAL_ACCEPTANCE_ONLY_NOT_PRODUCTION"
+    },
+    "TELEGRAM_policy": {
+      "version": "pump-manual-native-relative-acceptance-20261025-v1",
+      "evidence_ref": "checkpoints/pump-report-20261025/MANUAL_RELATIVE_MAP_ADMISSION.json",
+      "allowed_hosts": [
+        "api.telegram.org"
+      ],
+      "allowed_paths": [
+        "/bot*"
+      ],
+      "project_daily_cap": 2,
+      "project_monthly_cap": 2,
+      "per_minute_cap": 1,
+      "qualification_attempt_cap": 1,
+      "manual_acceptance_only": true,
+      "outcome_source": false
+    },
+    "SWOLECHARTS_policy": {
+      "version": "pump-manual-native-relative-acceptance-20261025-v1",
+      "evidence_ref": "checkpoints/pump-report-20261025/MANUAL_RELATIVE_MAP_ADMISSION.json",
+      "allowed_hosts": [
+        "swolecharts.com"
+      ],
+      "allowed_paths": [
+        "/api/liquidation-levels/BTC"
+      ],
+      "project_daily_cap": 1,
+      "project_monthly_cap": 1,
+      "per_minute_cap": 1,
+      "qualification_attempt_cap": 1,
+      "outcome_source": false,
+      "delivery_source": false
+    },
+    "BINGX_acceptance_spent12_of24_preserved": true,
+    "metadata2_of2_SPENT_preserved": true,
+    "future_BINGX450_exceeds_remaining12": true,
+    "six_ready_sent_manual_TG6_exceeds_current_daily2": true,
+    "current_qualified_map_route_BTC_owner_excluded": true,
+    "current_allowed_providers_empty_at_summary_stage": true,
+    "rolling_minute_BINGX10_vs_cold_manual11": "Worst cold manual needs >60s of rolling-provider capacity or ROOT staging before fresh core; current broker paces only per-second and refuses minute overflow.",
+    "same_tick_scan2_plus_cold_auto_BINGX10_exceeds10": true,
+    "ROOT_dependency": "Positive precise production/provider/whole/native admissions retaining old caps/SPENT/unknowns; minute/deadline staging or capacity-aware deferral; actual fresh full manual chain, CPU/bytes/native costs. No auto capraise or stage/version reset."
+  },
+  "minute_plan_status": "600minute capacity timetable proposal only; candidate/manual phases need ROOT controlled staging within same invocation. No scheduler/runtime change bySOURCE. Manual placeholders are capacity, not restriction on owner request times.",
+  "due_outcomes": "24 slots upper; run only genuinely due within10–20, late-day4h deadlines defer to next allowed/manual check with honest gap, no hidden night collector.",
+  "new_market_HTTP_SQL_TG_deploy": 0,
+  "old9pauses2OWNERdeferrals_preserved": true,
+  "source_code_changes_in_arithmetic_stage": 0,
+  "T3_frozen_bytes_preserved_in_snapshot": {
+    "pump-report/sources/bingx.mjs": "4b835db4ba9e8514c5bef26ab287aed99b982d409976ebff540fdf8403052308",
+    "pump-report/sources/recent-trades.mjs": "2894ddd3e9874e2676af1b7093bd41c75e78736c35edc7b843c72f597246079c",
+    "pump-report/handoffs/sources/PACKAGE_T3_RECENT_TRADES_PRODUCER_FINAL_V1.json": "9710f5869b8f5f38060d78b81c6e972b64a290a0b644d2109d8b0e454791db97",
+    "pump-report/handoffs/sources/PACKAGE_U3_FULL934_SCOPE_SELECTION_FINAL_V1.json": "1d45208baa190c83728957ae1372118de3cdbb80eda12ab76ebfad74300ebfeb",
+    "pump-report/handoffs/sources/B550_T3_SOURCE_INDEX_BEFORE125.mjs.snapshot": "21595a8d412f6074e6375af0f1200e1a189de255837a72aba0286db2fadd6b81"
+  },
+  "H125_followup": "PACKAGE_H125_CORE_HISTORY_FIX_FINAL_V1.json; separately allowed after ROOT snapshot; targeted1PASS, not T3 six-case replay"
+}

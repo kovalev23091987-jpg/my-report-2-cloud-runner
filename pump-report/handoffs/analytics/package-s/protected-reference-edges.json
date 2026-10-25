@@ -1,0 +1,159 @@
+{
+  "schema": "PUMP_S_PROTECTED_REFERENCE_EDGES_V1",
+  "delete_enabled": false,
+  "external_reference_resolution": "NOT_IMPLEMENTED_IN_INSPECTED_RUNTIME_FAIL_CLOSED",
+  "edges": [
+    {
+      "id": "P01",
+      "from": "pump:latest-analysis:<instrument>.analysis_key",
+      "to": "pump:analysis:<hash>",
+      "kind": "CURRENT_POINTER",
+      "evidence_id": "E002",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P02",
+      "from": "pump:card:<id>.analysis.source_input_key",
+      "to": "pump:analysis:<hash>",
+      "kind": "DIRECT_DEREFERENCE_UNTIL_SEND_AND_AUDIT_CLOSED",
+      "evidence_id": "E019",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P03",
+      "from": "pump:journal:<instrument>:<wave>.analyses[].analysis_id",
+      "to": "pump:analysis:<hash>",
+      "kind": "ORIGINAL_SELECTION_AND_HASH_READBACK",
+      "evidence_id": "E005",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P04",
+      "from": "pump:journal:<instrument>:<wave>.frozen_anchor.analysis_id",
+      "to": "pump:analysis:<hash>",
+      "kind": "IMMUTABLE_ORIGINAL",
+      "evidence_id": "E010",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P05",
+      "from": "pump:journal:<instrument>:<wave>.publications[].card_id",
+      "to": "pump:card:<id>",
+      "kind": "PUBLICATION_BINDING",
+      "evidence_id": "E008",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P06",
+      "from": "pump:journal:<instrument>:<wave>.publications[].receipt_ref",
+      "to": "pump:card:<id>#receipt",
+      "kind": "SENT_OR_POSSIBLE_SEND_PROOF",
+      "evidence_id": "E008",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P07",
+      "from": "pump:signal:<instrument>:<wave>.analysis_key",
+      "to": "pump:analysis:<hash>",
+      "kind": "ORIGINAL_SCENARIO_AND_AUDIT",
+      "evidence_id": "E011",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P08",
+      "from": "pump:outcomes-pending[]",
+      "to": "pump:signal:<instrument>:<wave>",
+      "kind": "UNRESOLVED_WORK_ROOT",
+      "evidence_id": "E012",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P09",
+      "from": "pump:journal-index[]",
+      "to": "pump:journal:<instrument>:<wave>",
+      "kind": "UNFROZEN_OR_TERMINAL_WORK_ROOT",
+      "evidence_id": "E007",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P10",
+      "from": "pump:delivery-queue[]",
+      "to": "pump:card:<id>",
+      "kind": "UNSETTLED_DELIVERY_ROOT",
+      "evidence_id": "E018",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P11",
+      "from": "pump:delivery-wave:<instrument>:<wave>.primary_card_id/updates[].card_id/card_by_hash{}",
+      "to": "pump:card:<id>",
+      "kind": "DEDUPE_OR_UPDATE_IDENTITY",
+      "evidence_id": "E017",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P12",
+      "from": "pump:summary-ordered-head:v1.pending.id",
+      "to": "pump:summary-record:<hash>",
+      "kind": "PENDING_ALLOCATION_RECOVERY",
+      "evidence_id": "E042",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P13",
+      "from": "pump:summary-ordered:v1:<seq>.id",
+      "to": "pump:summary-record:<hash>",
+      "kind": "SOURCE_REPLAY_DEREFERENCE",
+      "evidence_id": "E044",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P14",
+      "from": "pump:summary-member:v1:<hash>.id",
+      "to": "pump:summary-record:<hash>",
+      "kind": "DEDUP_APPEND_REPAIR",
+      "evidence_id": "E041",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P15",
+      "from": "pump:materialized-summary:production-v2.source_cursor",
+      "to": "pump:summary-ordered:v1:<seq>",
+      "kind": "CURSOR_NOT_GC_WATERMARK",
+      "evidence_id": "E040",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P16",
+      "from": "pump:materialized-wave:production-v2:<wave>.first/last/valid/hit/miss/sent/invalid.*",
+      "to": "pump:summary-record:<hash>",
+      "kind": "EMBEDDED_WITNESS_AND_SOURCE_PROVENANCE",
+      "evidence_id": "E047",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P17",
+      "from": "pump:analysis:<hash>.analysis.plan.*.basis_fact_ids[]",
+      "to": "same analysis.input.facts.*.fact_id",
+      "kind": "INTRA_ORIGINAL_PROVENANCE_NOT_STATE_KEY",
+      "evidence_id": "E026",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P18",
+      "from": "pump:analysis:<hash>.input.facts.*.evidence_ref",
+      "to": "external original receipt/archive locator",
+      "kind": "UNRESOLVED_EXTERNAL_REF_REQUIRES_PROTECTION",
+      "evidence_id": "E054",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    },
+    {
+      "id": "P19",
+      "from": "acceptance240 exact preserved contract IDs",
+      "to": "original pump:analysis/card/receipt and frozen purpose sidecar",
+      "kind": "HISTORICAL_OWNER_PROTECTED_ORIGINAL",
+      "evidence_id": "E059",
+      "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+    }
+  ]
+}

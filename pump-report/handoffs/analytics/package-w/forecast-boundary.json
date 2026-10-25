@@ -1,0 +1,305 @@
+{
+  "evidence": "ARTIFICIAL_FIXTURES_WITH_SIMULATED_OBSERVED_CLAIMS_NOT_NATIVE",
+  "uncommitted": {
+    "version": "pump-cohort-capsule-audit-v2-20261025",
+    "feature_schema_version": "pump-feature-capsule-v2-20261025",
+    "as_of_ts": 1800054000000,
+    "split_plan": {
+      "split_ts": 1800021600000,
+      "declared_ts": 1799996400000,
+      "plan_ref": "ARTIFICIAL_W_PREDECLARED_SPLIT"
+    },
+    "split_predeclared": true,
+    "input_records": 1,
+    "purpose_eligible_records": 1,
+    "excluded_future_records": 0,
+    "excluded_by_purpose": 0,
+    "purpose_exclusions": {
+      "acceptance_test": 0,
+      "unclassified": 0,
+      "non_observed_production": 0,
+      "production_wave_conflict": 0
+    },
+    "duplicate_record_replays": 0,
+    "invalid_records": 0,
+    "invalid_record_details": [],
+    "declared_independent_waves": 1,
+    "inspected_waves": 1,
+    "partitions": {
+      "TRAIN": 1,
+      "HOLDOUT": 0,
+      "PENDING": 0,
+      "UNKNOWN": 0,
+      "PURGED_HORIZON_CROSSES_SPLIT": 0,
+      "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+    },
+    "quality_reason_wave_counts": {},
+    "waves": [
+      {
+        "wave_key": "[\"ARTIFICIAL:BINGX:W-TRAIN-USDT\",\"PUMP:ARTIFICIAL:BINGX:W-TRAIN-USDT:1799999100000\"]",
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"pump-analytics-v4-first-qualification-20261025\",\"pump-report-start-v1\",\"OBSERVED\",\"479518605be8f84a59887c080da7967390368470643bd4c2bb63263f37e64398\",\"pump-feature-capsule-v2-20261025\",\"ARTIFICIAL_NOT_A_FITTED_MODEL\"]",
+        "asset_id": "ARTIFICIAL:W-TRAIN",
+        "origin_t0": 1800000000000,
+        "reference_price": 112,
+        "deadline_ts": 1800014400000,
+        "partition": "TRAIN",
+        "first_resolved_recorded_ts": 1800014401000,
+        "first_resolved_record_id": "pump:summary-record:387683108dd0ea3e90679bd5931f7c2cde3f08764156b949bd6d0bc11e45ecb8",
+        "first_resolved_label_sha256": "ca97622c8fa18d47b7ac1fb6a2061978e3f08d2d82a1903aa653901a8123ab9c",
+        "first_resolved_label": {
+          "status": "HIT",
+          "target_price": 123.2,
+          "deadline_ts": 1800014400000,
+          "hit_ts": 1800000060000,
+          "drawdown_before_hit_pct": null,
+          "drawdown_total_pct": null,
+          "hit_after_invalidation": null,
+          "hit_interval": null,
+          "reasons": [
+            "PRE_HIT_COVERAGE_INCOMPLETE"
+          ],
+          "coverage": {
+            "complete": false,
+            "no_hit_period_covered": false,
+            "no_hit_basis": null,
+            "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+            "covered_until_ts": 1800014400000,
+            "observed_interval_complete": false,
+            "fully_contained_candles": 0,
+            "boundary_candles_excluded": 0,
+            "price_points": 1,
+            "point_samples_prove_continuity": false
+          }
+        },
+        "first_resolved_scenario": {
+          "status": "PRICE_SCENARIO_ONLY",
+          "entry_touched": null,
+          "exit_touched": null,
+          "entry_then_exit_confirmed": null,
+          "intrabar_order_unknown": false,
+          "entry_first_interval": null,
+          "entry_area_excursion": {
+            "area_floor_price": null,
+            "contact_confirmed_by_ts": null,
+            "post_confirmation_low_observed": null,
+            "below_area_pct_lower_bound": null,
+            "reason": "NO_OBSERVED_ENTRY_CONTACT"
+          },
+          "execution_proven": false,
+          "user_profit": null
+        },
+        "feature_sha256": "72093e29ec9188ac15a4d1f398ba8a573294a7aacbadf635a3db2de099b868a7",
+        "implementation_sha256": "479518605be8f84a59887c080da7967390368470643bd4c2bb63263f37e64398",
+        "issues": [],
+        "structurally_usable": true,
+        "calibration_status": "NOT_CALIBRATED",
+        "calibration_blockers": [
+          "FORECAST_ORIGINAL_READBACK_REQUIRED",
+          "TRAINING_MANIFEST_UNBOUND",
+          "FORECAST_AFTER_ORIGIN",
+          "FORECAST_TRAINING_LEAKAGE",
+          "CALIBRATION_NOT_PERFORMED"
+        ],
+        "protected_original_refs": [
+          "pump:analysis:f701bfcb438de5cf35aa7ac5e7457313965dcd07404f63bf64469e91ff8f1d33",
+          "pump:feature-capsule:v2:f701bfcb438de5cf35aa7ac5e7457313965dcd07404f63bf64469e91ff8f1d33",
+          "pump:outcome-capsule:v2:3f1159345fe409ae1c40ca2a147eeaeeb517fcb832d735602b06727336a2fecd",
+          "pump:protected-refs:ARTIFICIAL_W",
+          "pump:outcome:pump:signal:ARTIFICIAL:BINGX:W-TRAIN-USDT:PUMP:ARTIFICIAL:BINGX:W-TRAIN-USDT:1799999100000",
+          "pump:summary-record:387683108dd0ea3e90679bd5931f7c2cde3f08764156b949bd6d0bc11e45ecb8"
+        ],
+        "delete_allowed": false,
+        "external_provenance_authenticated": false
+      }
+    ],
+    "cohorts": [
+      {
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"pump-analytics-v4-first-qualification-20261025\",\"pump-report-start-v1\",\"OBSERVED\",\"479518605be8f84a59887c080da7967390368470643bd4c2bb63263f37e64398\",\"pump-feature-capsule-v2-20261025\",\"ARTIFICIAL_NOT_A_FITTED_MODEL\"]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 1,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "clean_train_wave_keys": [
+          "[\"ARTIFICIAL:BINGX:W-TRAIN-USDT\",\"PUMP:ARTIFICIAL:BINGX:W-TRAIN-USDT:1799999100000\"]"
+        ],
+        "clean_holdout_wave_keys": [],
+        "calibration_status": "NOT_CALIBRATED"
+      }
+    ],
+    "status": "NOT_CALIBRATED",
+    "empirical_success_rate_pct": null,
+    "probability_pct": null,
+    "feature_benefit_pct": null,
+    "feature_usefulness_proven": false,
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "retention": {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "originals_required": true,
+      "global_reference_closure": false
+    },
+    "limitations": [
+      "Explicit v2 consumer; historical v1 metadata is not promoted",
+      "Original readback and claimed hashes do not authenticate external native provenance",
+      "First persisted resolved label is immutable across later coverage/DD revisions",
+      "Feature availability does not prove predictive or causal benefit",
+      "No model fit or calibration performed; no probability or percentage published"
+    ]
+  },
+  "declared_but_unfitted": {
+    "version": "pump-cohort-capsule-audit-v2-20261025",
+    "feature_schema_version": "pump-feature-capsule-v2-20261025",
+    "as_of_ts": 1800054000000,
+    "split_plan": {
+      "split_ts": 1800021600000,
+      "declared_ts": 1799996400000,
+      "plan_ref": "ARTIFICIAL_W_PREDECLARED_SPLIT"
+    },
+    "split_predeclared": true,
+    "input_records": 1,
+    "purpose_eligible_records": 1,
+    "excluded_future_records": 0,
+    "excluded_by_purpose": 0,
+    "purpose_exclusions": {
+      "acceptance_test": 0,
+      "unclassified": 0,
+      "non_observed_production": 0,
+      "production_wave_conflict": 0
+    },
+    "duplicate_record_replays": 0,
+    "invalid_records": 0,
+    "invalid_record_details": [],
+    "declared_independent_waves": 1,
+    "inspected_waves": 1,
+    "partitions": {
+      "TRAIN": 1,
+      "HOLDOUT": 0,
+      "PENDING": 0,
+      "UNKNOWN": 0,
+      "PURGED_HORIZON_CROSSES_SPLIT": 0,
+      "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+    },
+    "quality_reason_wave_counts": {},
+    "waves": [
+      {
+        "wave_key": "[\"ARTIFICIAL:BINGX:W-TRAIN-USDT\",\"PUMP:ARTIFICIAL:BINGX:W-TRAIN-USDT:1799999100000\"]",
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"pump-analytics-v4-first-qualification-20261025\",\"pump-report-start-v1\",\"OBSERVED\",\"479518605be8f84a59887c080da7967390368470643bd4c2bb63263f37e64398\",\"pump-feature-capsule-v2-20261025\",\"ARTIFICIAL_NOT_A_FITTED_MODEL\"]",
+        "asset_id": "ARTIFICIAL:W-TRAIN",
+        "origin_t0": 1800000000000,
+        "reference_price": 112,
+        "deadline_ts": 1800014400000,
+        "partition": "TRAIN",
+        "first_resolved_recorded_ts": 1800014401000,
+        "first_resolved_record_id": "pump:summary-record:387683108dd0ea3e90679bd5931f7c2cde3f08764156b949bd6d0bc11e45ecb8",
+        "first_resolved_label_sha256": "ca97622c8fa18d47b7ac1fb6a2061978e3f08d2d82a1903aa653901a8123ab9c",
+        "first_resolved_label": {
+          "status": "HIT",
+          "target_price": 123.2,
+          "deadline_ts": 1800014400000,
+          "hit_ts": 1800000060000,
+          "drawdown_before_hit_pct": null,
+          "drawdown_total_pct": null,
+          "hit_after_invalidation": null,
+          "hit_interval": null,
+          "reasons": [
+            "PRE_HIT_COVERAGE_INCOMPLETE"
+          ],
+          "coverage": {
+            "complete": false,
+            "no_hit_period_covered": false,
+            "no_hit_basis": null,
+            "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+            "covered_until_ts": 1800014400000,
+            "observed_interval_complete": false,
+            "fully_contained_candles": 0,
+            "boundary_candles_excluded": 0,
+            "price_points": 1,
+            "point_samples_prove_continuity": false
+          }
+        },
+        "first_resolved_scenario": {
+          "status": "PRICE_SCENARIO_ONLY",
+          "entry_touched": null,
+          "exit_touched": null,
+          "entry_then_exit_confirmed": null,
+          "intrabar_order_unknown": false,
+          "entry_first_interval": null,
+          "entry_area_excursion": {
+            "area_floor_price": null,
+            "contact_confirmed_by_ts": null,
+            "post_confirmation_low_observed": null,
+            "below_area_pct_lower_bound": null,
+            "reason": "NO_OBSERVED_ENTRY_CONTACT"
+          },
+          "execution_proven": false,
+          "user_profit": null
+        },
+        "feature_sha256": "72093e29ec9188ac15a4d1f398ba8a573294a7aacbadf635a3db2de099b868a7",
+        "implementation_sha256": "479518605be8f84a59887c080da7967390368470643bd4c2bb63263f37e64398",
+        "issues": [],
+        "structurally_usable": true,
+        "calibration_status": "NOT_CALIBRATED",
+        "calibration_blockers": [
+          "CALIBRATION_NOT_PERFORMED"
+        ],
+        "protected_original_refs": [
+          "pump:analysis:f701bfcb438de5cf35aa7ac5e7457313965dcd07404f63bf64469e91ff8f1d33",
+          "pump:feature-capsule:v2:f701bfcb438de5cf35aa7ac5e7457313965dcd07404f63bf64469e91ff8f1d33",
+          "pump:outcome-capsule:v2:3f1159345fe409ae1c40ca2a147eeaeeb517fcb832d735602b06727336a2fecd",
+          "pump:protected-refs:ARTIFICIAL_W",
+          "pump:outcome:pump:signal:ARTIFICIAL:BINGX:W-TRAIN-USDT:PUMP:ARTIFICIAL:BINGX:W-TRAIN-USDT:1799999100000",
+          "pump:summary-record:387683108dd0ea3e90679bd5931f7c2cde3f08764156b949bd6d0bc11e45ecb8"
+        ],
+        "delete_allowed": false,
+        "external_provenance_authenticated": false
+      }
+    ],
+    "cohorts": [
+      {
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"pump-analytics-v4-first-qualification-20261025\",\"pump-report-start-v1\",\"OBSERVED\",\"479518605be8f84a59887c080da7967390368470643bd4c2bb63263f37e64398\",\"pump-feature-capsule-v2-20261025\",\"ARTIFICIAL_NOT_A_FITTED_MODEL\"]",
+        "waves": 1,
+        "partitions": {
+          "TRAIN": 1,
+          "HOLDOUT": 0,
+          "PENDING": 0,
+          "UNKNOWN": 0,
+          "PURGED_HORIZON_CROSSES_SPLIT": 0,
+          "PURGED_LABEL_NOT_KNOWN_AT_SPLIT": 0
+        },
+        "clean_train_wave_keys": [
+          "[\"ARTIFICIAL:BINGX:W-TRAIN-USDT\",\"PUMP:ARTIFICIAL:BINGX:W-TRAIN-USDT:1799999100000\"]"
+        ],
+        "clean_holdout_wave_keys": [],
+        "calibration_status": "NOT_CALIBRATED"
+      }
+    ],
+    "status": "NOT_CALIBRATED",
+    "empirical_success_rate_pct": null,
+    "probability_pct": null,
+    "feature_benefit_pct": null,
+    "feature_usefulness_proven": false,
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "retention": {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "originals_required": true,
+      "global_reference_closure": false
+    },
+    "limitations": [
+      "Explicit v2 consumer; historical v1 metadata is not promoted",
+      "Original readback and claimed hashes do not authenticate external native provenance",
+      "First persisted resolved label is immutable across later coverage/DD revisions",
+      "Feature availability does not prove predictive or causal benefit",
+      "No model fit or calibration performed; no probability or percentage published"
+    ]
+  }
+}

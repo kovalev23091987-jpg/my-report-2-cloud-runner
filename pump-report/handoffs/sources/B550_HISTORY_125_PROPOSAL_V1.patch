@@ -1,0 +1,12 @@
+PROPOSAL ONLY — NOT APPLIED; ROOT requested frozen T3 integration snapshot first.
+--- pump-report/sources/index.mjs (T3 frozen21595a8d)
++++ pump-report/sources/index.mjs (proposed later affected patch)
+@@
+-const count = Math.ceil((profile.volume_baseline_ms + Math.max(...profile.automatic_growth.short_windows_ms)) / step) + 1;
++const lookback = Math.max(Math.max(...profile.automatic_growth.short_windows_ms),
++  profile.wave_search_ms + profile.impulse_window_ms + profile.volume_baseline_ms);
++const count = Math.ceil(lookback / step);
+@@
+-params: {interval: '1m', startTime: start, endTime: end, limit: count}
++params: {interval: '1m', startTime: start, endTime: end - 1, limit: count}
+Later verification must exercise125actual normalized closed rows, earliest searched5m impulse/full60m baseline, no open bar, unchanged one HTTP and shared profile. No such code test was run here.

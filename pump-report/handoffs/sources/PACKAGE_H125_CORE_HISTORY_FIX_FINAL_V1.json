@@ -1,0 +1,72 @@
+{
+  "schema": "SOURCE_H125_CORE_HISTORY_FIX_FINAL_V1",
+  "status": "FROZEN_APPLIED_PROFILE_DERIVED125_CLOSED_CANDLES_TARGETED1PASS_NATIVE0",
+  "authority": "ROOT explicit post-snapshot delegation permits separate history125 correction; same B550 compatible ownlease6d36f6fad48884cd4fda219f3ac241d56c6aa50d",
+  "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+  "fresh_compatible_main": "381e74e54ca867bc23b5065d2401bf702fe33d1d",
+  "lease_owner": "CODEX:SOURCES:01a171fd:1792953082000",
+  "source_code_commit": null,
+  "files": [
+    {
+      "path": "pump-report/sources/index.mjs",
+      "sha256": "46321d410aa41ba5adc7372cf65834206b5aa6ef72b917ac8f4c632dec5a62c2",
+      "bytes": 34276
+    },
+    {
+      "path": "pump-report/tests/sources/core-history-125.test.mjs",
+      "sha256": "cde1775d7ba31aeaed47846bf9f2ddd513cbccfd9056daeb17ed48c5591ea6c0",
+      "bytes": 3031
+    },
+    {
+      "path": "pump-report/handoffs/sources/B550_T3_SOURCE_INDEX_BEFORE125.mjs.snapshot",
+      "sha256": "21595a8d412f6074e6375af0f1200e1a189de255837a72aba0286db2fadd6b81",
+      "bytes": 33800
+    },
+    {
+      "path": "pump-report/handoffs/sources/H125_APPLIED_DELTA_V1.diff",
+      "sha256": "a1ca298180dfad696de678b1e3db53c6dd83113783c9e5a11e8f0f394b2bbf23",
+      "bytes": 2012
+    },
+    {
+      "path": "pump-report/handoffs/sources/H125_TARGETED_TEST_V1.log",
+      "sha256": "0274e99a9f2bfa7bd1a440ccc360ac4e0827d3293cd266c08b0b0956b971247a",
+      "bytes": 246
+    },
+    {
+      "path": "pump-report/handoffs/sources/B550_CANDLE_WINDOW_DERIVATION_V1.json",
+      "sha256": "3c269be9487089add7d87338127dbc44bcb468c410679cc8cf1027aae4c04d9d",
+      "bytes": 1636
+    }
+  ],
+  "old_T3_manifest_immutable_sha256": "9710f5869b8f5f38060d78b81c6e972b64a290a0b644d2109d8b0e454791db97",
+  "before_index_sha256": "21595a8d412f6074e6375af0f1200e1a189de255837a72aba0286db2fadd6b81",
+  "new_index_sha256": "46321d410aa41ba5adc7372cf65834206b5aa6ef72b917ac8f4c632dec5a62c2",
+  "unchanged_T3_bingx_sha256": "4b835db4ba9e8514c5bef26ab287aed99b982d409976ebff540fdf8403052308",
+  "unchanged_T3_recent_trades_sha256": "2894ddd3e9874e2676af1b7093bd41c75e78736c35edc7b843c72f597246079c",
+  "change": "Core candle count=max(max short growth, wave_search+impulse_window+baseline)/minute =>125; endTime=end-1 closes half-open window. No shared profile change. Positive safe integer profile duration validation.",
+  "tests": {
+    "new_targeted_cases": 1,
+    "passed": 1,
+    "failed": 0,
+    "duration_ms": 78.511125,
+    "variants": [
+      "actual requestlimit125/start/endTime/end cutoff",
+      "125closed rows with60/60 earliest impulse baseline",
+      "121short response remains incomplete56/60",
+      "returned open bar omitted =>124closed/incomplete"
+    ]
+  },
+  "T3_six_cases_replayed": false,
+  "actual_market_HTTP_SQL_TG_deploy": 0,
+  "HTTP_attempt_upper_before_after": [
+    1,
+    1
+  ],
+  "requested_closed_payload_rows_before_after": [
+    121,
+    125
+  ],
+  "new_native_SQL_cost_delta": null,
+  "caps_strategy_profile_pause_deferral_mutations": false,
+  "integration": "ROOT layers this exact new index after originalT3 snapshot; other T3 modules unchanged. Arithmetic-stage proposal artifact stays historical. No native claim."
+}

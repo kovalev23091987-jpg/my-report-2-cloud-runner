@@ -1,0 +1,75 @@
+{
+  "schema": "PUMP_T3_RECENT_TRADES_PRIMARY_PROOFS_V1",
+  "contract_ref": "0e6ecbe973f2b44c1ba80736fdaaf7e35a2ba736",
+  "official_AI_reference": {
+    "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/official-ai-docs/skills/swap-market/api-reference.md",
+    "sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+    "git_blob": "e61be4746c5bd5475e556146448c79f4c58b064f",
+    "pinned_commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+    "section_lines": [
+      79,
+      103
+    ],
+    "route": "/openApi/swap/v2/quote/trades",
+    "fields": {
+      "id": {
+        "line": 98,
+        "literal": "| `id` | integer | Trade ID |"
+      },
+      "price": {
+        "line": 99,
+        "literal": "| `price` | string | Trade price |"
+      },
+      "qty": {
+        "line": 100,
+        "literal": "| `qty` | string | Trade quantity |"
+      },
+      "quoteQty": {
+        "line": 101,
+        "literal": "| `quoteQty` | string | Quote asset quantity |"
+      },
+      "time": {
+        "line": 102,
+        "literal": "| `time` | integer | Trade timestamp (ms) |"
+      },
+      "buyerMaker": {
+        "line": 103,
+        "literal": "| `buyerMaker` | boolean | `true` if buyer was the maker |"
+      }
+    }
+  },
+  "selected_native_maker_descriptor": {
+    "file": "/private/tmp/report2-source-bingx-primary-adapter-20261024/bingx-docs-app.js",
+    "file_sha256": "77094f2a99bdca9c1b8e41a260c3657a6ed6b8febe30818b486cb54fe0b14d8f",
+    "byte_start": 683756,
+    "byte_end_exclusive": 683862,
+    "span_sha256": "512e0e2f994999aaf070e6e93ee3e55b95fb8d4fd93dafee28257cddf326cbc1",
+    "literal": "{name:\"isBuyerMaker\",type:\"bool\",description:\"Whether the buyer is the maker of the order (true / false)\"}"
+  },
+  "maker_rule": {
+    "selected_field": "isBuyerMaker only, onefield",
+    "true": "buyer ismaker => seller taker => SELL",
+    "false": "buyer isnotmaker => buyer taker => BUY",
+    "basis": "Primary literal buyer-maker meaning + explicit ROOTcommon-contract accepted maker-role directional normalization; not a claim that literal contains BUY/SELL words",
+    "buyerMaker_only": "UNKNOWN, unselected exactdescriptor",
+    "both_fields_even_equal": "UNKNOWN, mixedschema not silentlycoalesced",
+    "conflict_nonboolean_missing": "UNKNOWN",
+    "directional_claim_on_UNKNOWN": false
+  },
+  "notional_rule": {
+    "field": "quoteQty",
+    "unit": "USDT_PRICE_QUOTE_NOTIONAL",
+    "qualifier": "Verified BINGX PERPETUAL quoteUSDT/settleUSDT independentregistry, recentmethodonly",
+    "historical_transfer": false,
+    "quantity_base": "Unknown, neverquotenotional/price"
+  },
+  "id_discrepancy": {
+    "reference_documents_id": true,
+    "retained_native_example_shows_id": false,
+    "require_actual_vendor_id": true,
+    "no_synthetic_execution_ID": true,
+    "missingid_rows_not_directional": true
+  },
+  "new_network": 0,
+  "document_JS_executed": false
+}

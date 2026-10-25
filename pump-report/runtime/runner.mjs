@@ -2,7 +2,8 @@ import {INPUT_SCHEMA,emptyMap,factUsable,positive,ownerInstrumentExcluded,ownerP
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {automaticWindowOpen,textHash} from './delivery.mjs';
 import {parseManualInput} from './manual-input.mjs';
-import {createOutcomeJournal} from './outcome-journal.mjs';
+import {createOutcomeJournal,createOutcomeWorkIndex} from './outcome-journal.mjs';
+import {createWorkIndex} from './work-index.mjs';
 import {productionRecord} from '../contracts/run-purpose.mjs';
 import {candidatePriority,analysisQueueEvidence} from './candidate-priority.mjs';
 
@@ -10,28 +11,35 @@ const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
 const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|AUTOMATIC_WINDOW_CLOSED/.test(typeof reason==='string'?reason:reason?.code??''));
 
-export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED'}){
+export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null}){
   if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
   const manualResultKey=id=>'pump:manual-result:'+id;
-  const observations=createOutcomeJournal({store,profile,clock,evidence_class});
+  const observations=createOutcomeJournal({store,profile,clock,evidence_class,retained_features});
+  const manualWork=createWorkIndex({store,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async job=>job.status==='COMPLETE'&&await store.get(manualResultKey(job.request_id))!==null});
+  const outcomeWork=createOutcomeWorkIndex({store});
   async function enqueueManual(symbol,{request_id=crypto.randomUUID(),publish=true,context_symbol=null}={}){
     const parsed=parseManualInput(symbol,{context_symbol});if(parsed.status!=='PARSED')return parsed;
     const normalized=parsed.symbol;
     if(ownerInstrumentExcluded(normalized))return {status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:normalized};
+    if(typeof request_id!=='string'||!request_id||request_id.length>512||/[\u0000-\u001f]/.test(request_id))return {status:'REQUEST_ID_REQUIRED'};
+    if(!(await manualWork.initialize()).ready)return {status:'QUEUE_MIGRATING',request_id};
     const job={request_id,symbol:normalized,publish,created_ts:clock(),status:'PENDING'};
     const accepted=await store.atomic('pump:manual:'+request_id,current=>({state:current??job,result:!current||current.symbol===normalized&&current.publish===publish}));
     if(!accepted)return {status:'REQUEST_ID_CONFLICT',request_id};
-    await store.atomic('pump:manual-queue',queue=>({state:[...new Set([...(queue??[]),request_id])],result:true}));
+    const saved=await store.get('pump:manual:'+request_id);
+    if(saved.status==='COMPLETE'){const result=await getManualResult(request_id);if(result===null)throw Error('SAVED_MANUAL_RESULT_MISSING');await manualWork.add(request_id);await manualWork.complete(request_id,{evidence_key:manualResultKey(request_id)});return {status:'COMPLETE',request_id,result};}
+    await manualWork.add(request_id);
     return {status:'QUEUED',request_id};
   }
   async function claimManual(executor_owner){
-    const ids=await store.get('pump:manual-queue')??[];
-    for(const id of ids){const job=await store.atomic('pump:manual:'+id,current=>{
+    const page=await manualWork.page({limit:4});if(!page.ready)throw Error('WORK_INDEX_MIGRATING');
+    for(const {id} of page.items){const existing=await store.get('pump:manual:'+id);if(existing?.status==='COMPLETE'){await manualWork.complete(id,{evidence_key:manualResultKey(id)});continue;}
+      const job=await store.atomic('pump:manual:'+id,current=>{
       if(current?.status!=='PENDING'&&!(current?.status==='PROCESSING'&&current.executor_owner!==executor_owner))return {state:current,result:null};
       return {state:{...current,status:'PROCESSING',executor_owner,started_ts:clock()},result:current};
     });if(job)return job;}return null;
   }
-  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await store.atomic('pump:manual-queue',ids=>({state:(ids??[]).filter(id=>id!==job.request_id),result:true}));}
+  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await manualWork.complete(job.request_id,{evidence_key:manualResultKey(job.request_id)});}
   async function getManualResult(id){return store.get(manualResultKey(id));}
 
   async function updateDiscovery(catalog,run_id){
@@ -70,7 +78,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   }
   async function rememberAnalysis(analysis,input){
     const fingerprint=await textHash(JSON.stringify(analysis)),key='pump:analysis:'+fingerprint;
-    await store.atomic(key,current=>({state:current??{analysis,input,saved_ts:clock()},result:true}));
+    await store.atomic(key,current=>{if(retained_features&&current&&(JSON.stringify(current.analysis)!==JSON.stringify(analysis)||JSON.stringify(current.input)!==JSON.stringify(input)))throw Error('IMMUTABLE_ANALYSIS_INPUT_CONFLICT');return {state:current??{analysis,input,saved_ts:clock(),...(retained_features?{implementation_sha256:retained_features.implementation_sha256,evidence_class:retained_features.evidence_class}:{})},result:true};});
+    if(retained_features&&analysis.ready)await retained_features.remember(key);
     await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
     const wave=analysis.next_wave??analysis.previous_wave??null;
     if(wave)await store.set('pump:wave:'+instrumentKey(input.instrument),wave);
@@ -123,24 +132,29 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function recordPublished(card_id){
     const card=await store.get('pump:card:'+card_id);if(!card)return;
     if(['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))await observations.publication(card_id);
-    if(['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card.state))await store.atomic('pump:delivery-queue',ids=>({state:(ids??[]).filter(id=>id!==card_id),result:true}));
+    if(['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card.state))await delivery.acknowledge(card_id);
   }
   async function checkOutcomes({run_id}){
     if(!automaticWindowOpen(clock()))return [];
     budget.setMode('STATISTICS');
-    const pending=await store.get('pump:outcomes-pending')??[],results=[];
-    for(const key of pending){
-      const summary=budget.summary();if(summary.lanes.statistics>=summary.limits.lanes.statistics||summary.total>=summary.limits.http_per_run){results.push({status:'DEFERRED',reason:'STATISTICS_HTTP_BUDGET_EXHAUSTED'});break;}
+    const page=await outcomeWork.page({limit:20}),results=[];if(!page.ready)return [{status:'DEFERRED',reason:'WORK_INDEX_MIGRATING'}];
+    for(const {id:key} of page.items){
       if(store.admission&&typeof store.usage==='function'){const used=store.usage();if(used.rows_read+500>store.admission.max_rows_read||used.rows_written+30>store.admission.max_rows_written){results.push({status:'DEFERRED',reason:'STATISTICS_NATIVE_ENVELOPE_PROTECTED'});break;}}
-      const signal=await store.get(key);if(!signal||signal.deadline_ts>clock())continue;
-      if(!productionRecord({origin:signal.origin})){results.push({signal_id:signal.signal_id,status:'SKIPPED_NON_PRODUCTION',reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});continue;}
-      const saved=await store.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS'){await store.atomic('pump:outcomes-pending',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));continue;}
+      const signal=await store.get(key);if(!signal)throw Error('SAVED_OUTCOME_SIGNAL_MISSING');
+      if(!productionRecord({origin:signal.origin})){
+        const evidence_key='pump:work-exclusion:outcomes:'+await textHash(key);
+        await store.set(evidence_key,{schema:'PUMP_OUTCOME_WORK_EXCLUSION_V1',signal_id:signal.signal_id,origin:signal.origin,reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});
+        await outcomeWork.complete(key,{evidence_key});results.push({signal_id:signal.signal_id,status:'SKIPPED_NON_PRODUCTION',reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});continue;
+      }
+      if(signal.deadline_ts>clock())continue;
+      const saved=await store.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS'){const evidence_key=await observations.record(signal,saved);await outcomeWork.complete(key,{evidence_key});continue;}
+      const summary=budget.summary();if(summary.lanes.statistics>=summary.limits.lanes.statistics||summary.total>=summary.limits.http_per_run){results.push({status:'DEFERRED',reason:'STATISTICS_HTTP_BUDGET_EXHAUSTED'});break;}
       if(typeof sources.getOutcomeHistory!=='function'){results.push({signal_id:signal.signal_id,status:'UNKNOWN',reason:'OUTCOME_HISTORY_ROUTE_NOT_CONNECTED'});continue;}
       const history=await sources.getOutcomeHistory({instrument:signal.instrument,run_id,start_ts:signal.t0,end_ts:signal.deadline_ts});
       if(/BUDGET|RESERVE|EXHAUSTED|BACKOFF/.test(history.coverage?.reason??history.facts?.candles?.reason??'')){results.push({signal_id:signal.signal_id,status:'DEFERRED',reason:history.coverage?.reason??history.facts.candles.reason});break;}
       const outcome=evaluateOutcome({signal,candles:history.facts?.candles?.value??[],price_points:[],as_of_ts:clock()});
-      await store.set('pump:outcome:'+signal.signal_id,outcome);await observations.record(signal,outcome);results.push(outcome);
-      await store.atomic('pump:outcomes-pending',ids=>{const rest=(ids??[]).filter(id=>id!==key);return {state:['HIT','MISS'].includes(outcome.status)?rest:[...rest,key],result:true};});
+      await store.set('pump:outcome:'+signal.signal_id,outcome);const evidence_key=await observations.record(signal,outcome);results.push(outcome);
+      if(['HIT','MISS'].includes(outcome.status))await outcomeWork.complete(key,{evidence_key});
     }
     return results;
   }
@@ -178,8 +192,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       let job;
       for(;;){
         try{await assert_execution();}catch{result.status='INCOMPLETE';result.errors.push('EXECUTOR_LEASE_EXPIRED');break;}
-        const pending=await store.get('pump:manual-queue')??[];
-        let hasManual=false;for(const id of pending){if(['PENDING','PROCESSING'].includes((await store.get('pump:manual:'+id))?.status)){hasManual=true;break;}}
+        const pending=await manualWork.page({limit:1,advance:false});if(!pending.ready){result.status='INCOMPLETE';result.errors.push('WORK_INDEX_MIGRATING');break;}
+        const hasManual=pending.scanned>0;
         budget.setMode(hasManual?'MANUAL':mode);
         if(!capacity()){result.status='INCOMPLETE';result.errors.push('RUN_RESOURCES_DEFERRED');break;}
         job=await claimManual(owner);
@@ -198,7 +212,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       }
       // Repair a receipt-backed signal after a prior process stopped between
       // the durable SENT acknowledgement and outcome registration.
-      const deliveryIds=await store.get('pump:delivery-queue')??[];for(const id of deliveryIds)await recordPublished(id);
+      const deliveryIds=await delivery.pending({limit:20});for(const id of deliveryIds)await recordPublished(id);
       await assert_execution();
       result.delivery=await delivery.drain();
       for(const item of result.delivery)await recordPublished(item.card_id);

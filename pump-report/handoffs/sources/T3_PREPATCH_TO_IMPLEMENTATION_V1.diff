@@ -1,0 +1,127 @@
+--- T3_SOURCE_INDEX_BEFORE.mjs.snapshot
++++ pump-report/sources/index.mjs
+@@ -1,13 +1,15 @@
+-import {assertInstrument, createFact, factUsable, emptyMap, CONTRACT_VERSION} from '../contracts/index.mjs';
++import {assertInstrument, createFact, factUsable, emptyMap, CONTRACT_VERSION, ownerInstrumentExcluded} from '../contracts/index.mjs';
+ import {START_PROFILE} from '../profile/start-v1.mjs';
+ import {object, text, numeric, positive, timestamp, proof, fail, wireRows, selectRow, requestUrl,
+   parsePrice, parseCandles, parseOrderbook, parseOpenInterest, parseFunding} from './bingx.mjs';
+ import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
+ import {createDayGrowthLoader} from './day-growth.mjs';
++import {parseRecentTrades, RECENT_TRADE_SEMANTICS} from './recent-trades.mjs';
+ 
+ export const SOURCE_VERSION = 'pump-report-sources-v1';
+ export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
+   core_price_fallback_max: 1, optional_open_interest: 1, optional_funding: 1,
++  optional_trades: 1, optional_total_max: 2,
+   selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1, day_growth_per_window_max: 1,
+   liquidation_swole_per_candidate: 1, automatic_retries: 0, SQL_owned_by_sources: 0,
+   actual_provider_and_SQL_cost: null, six_manual_checks_reserved: false});
+@@ -297,7 +299,32 @@
+       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
+   }
+   async function getOptional({instrument} = {}) {
+-    const entry = resolve(instrument), facts = {trades: absent(entry, 'trades', 'BINGX_TRADE_ROUTE_NOT_QUALIFIED', 'NOT_CHECKED')};
++    const entry = resolve(instrument), facts = {};
++    const upper = profile.optional_http_upper_bound;
++    if (!Number.isSafeInteger(upper) || upper < 0 || upper > SOURCE_HTTP_PLAN.optional_total_max) fail('OPTIONAL_BUDGET_PROFILE_INVALID');
++    const finish = () => {
++      const coverage = Object.fromEntries(Object.entries(facts).map(([kind, value]) => [kind,
++        {status: value.status, reason: value.reason, ...(value.coverage ? {coverage: value.coverage} : {})}]));
++      note(instrument, 'optional', coverage); return {facts, coverage};
++    };
++    if (ownerInstrumentExcluded(instrument)) {
++      for (const kind of ['trades', 'open_interest', 'funding']) facts[kind] = absent(entry, kind, 'OWNER_ASSET_DELIVERY_EXCLUDED', 'NOT_CHECKED');
++      return finish();
++    }
++    // Every attempted broker request consumes a slot even when it fails or is
++    // denied. These per-kind maxima are alternatives within the same upper2.
++    let attempts = 0;
++    if (attempts >= upper) facts.trades = absent(entry, 'trades', 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED');
++    else {
++      attempts++;
++      try {
++        const response = await request('trades', {instrument, params: {limit: RECENT_TRADE_SEMANTICS.limit}, ttl_ms: profile.freshness_ms.trades});
++        const parsed = decode(response, () => parseRecentTrades(response.data, {instrument: entry.instrument, received_ts: response.received_ts}));
++        facts.trades = fact(entry, 'trades', parsed.value, parsed.unit, parsed.event_ts, response,
++          {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage,
++            extra: {unit_evidence_ref: RECENT_TRADE_SEMANTICS.evidence_ref, base_quantity_qualified: false}});
++      } catch (error) { facts.trades = failed(entry, 'trades', error); }
++    }
+     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
+       const qualification = entry.qualifications[kind];
+       const usableQualification = proof(qualification) && (kind === 'open_interest'
+@@ -305,6 +332,8 @@
+         : text(qualification.rate_clock_field) && qualification.rate_clock_field !== 'updateTime');
+       if (!usableQualification) { facts[kind] = absent(entry, kind,
+         kind === 'open_interest' ? 'OPEN_INTEREST_UNIT_UNQUALIFIED' : 'FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED', 'NOT_CHECKED'); continue; }
++      if (attempts >= upper) { facts[kind] = absent(entry, kind, 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED'); continue; }
++      attempts++;
+       try {
+         const response = await request(kind, {instrument, ttl_ms: profile.freshness_ms[kind]});
+         const parsed = decode(response, () => parse(response.data, instrument, entry.qualifications[kind]));
+@@ -314,8 +343,7 @@
+               native_value_decimal: parsed.native_value_decimal ?? null, native_metadata_update_ts: parsed.native_metadata_update_ts ?? null}});
+       } catch (error) { facts[kind] = failed(entry, kind, error); }
+     }
+-    const coverage = Object.fromEntries(Object.entries(facts).map(([kind, value]) => [kind, {status: value.status, reason: value.reason}]));
+-    note(instrument, 'optional', coverage); return {facts, coverage};
++    return finish();
+   }
+   async function getLiquidations({instrument, reference_price, deadline_ts} = {}) {
+     const entry = resolve(instrument), at = now(), deadline = Math.min(timestamp(deadline_ts) ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms);
+--- T3_BINGX_BEFORE.mjs.snapshot
++++ pump-report/sources/bingx.mjs
+@@ -8,6 +8,7 @@
+   price: '/openApi/swap/v1/ticker/price',
+   candles: '/openApi/swap/v3/quote/klines',
+   orderbook: '/openApi/swap/v2/quote/depth',
++  trades: '/openApi/swap/v2/quote/trades',
+   open_interest: '/openApi/swap/v2/quote/openInterest',
+   funding: '/openApi/swap/v2/quote/premiumIndex'
+ });
+--- T3_NO_COMPARISON_TEST_BEFORE.mjs.snapshot
++++ pump-report/tests/sources/owner-no-btc-eth-context.test.mjs
+@@ -7,7 +7,7 @@
+ const original = registry.instruments.find(e => e.instrument.base === 'SOL');
+ const at = 1792948801000;
+ 
+-test('owner removal omits the entire market_context key and all benchmark calls; strict OI/funding remain within two slots', async () => {
++test('owner removal omits the entire market_context key and benchmarks while trades/OI/funding share two slots', async () => {
+   for (const qualified of [false, true]) {
+     const entry = structuredClone(original);
+     if (qualified) {
+@@ -22,8 +22,10 @@
+         calls.push(request);
+         const url = new URL(request.url);
+         assert.equal(url.searchParams.get('symbol'), 'SOL-USDT');
+-        assert.ok(url.pathname.endsWith('/openInterest') || url.pathname.endsWith('/premiumIndex'));
+-        const data = url.pathname.endsWith('/openInterest')
++        assert.ok(url.pathname.endsWith('/trades') || url.pathname.endsWith('/openInterest'));
++        const data = url.pathname.endsWith('/trades')
++          ? [{id: 1, time: at - 1000, price: '10', quoteQty: '100', isBuyerMaker: false}]
++          : url.pathname.endsWith('/openInterest')
+           ? {symbol: 'SOL-USDT', time: at, openInterest: '10'}
+           : {symbol: 'SOL-USDT', fundingTime: at, lastFundingRate: '0.001', fundingIntervalHours: 8, nextFundingTime: at + 28800000};
+         return {ok: true, status: 200, received_ts: at, receipt_id: 'OWNER_CANCELLED_FIXTURE_' + calls.length, data: {code: 0, data}};
+@@ -34,16 +36,17 @@
+     assert.equal(Object.hasOwn(result.facts, 'market_context'), false);
+     assert.equal(Object.hasOwn(result.coverage, 'market_context'), false);
+     assert.equal(Object.hasOwn(result, 'http_plan'), false);
+-    assert.equal(result.facts.trades.reason, 'BINGX_TRADE_ROUTE_NOT_QUALIFIED');
+-    assert.equal(calls.length, qualified ? 2 : 0);
++    assert.equal(result.facts.trades.status, 'USABLE');
++    assert.equal(calls.length, qualified ? 2 : 1);
+     assert.ok(calls.length <= START_PROFILE.optional_http_upper_bound);
+     if (!qualified) {
+       assert.equal(result.facts.open_interest.reason, 'OPEN_INTEREST_UNIT_UNQUALIFIED');
+       assert.equal(result.facts.funding.reason, 'FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED');
+-    }
++    } else assert.equal(result.facts.funding.reason, 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE');
+   }
+   assert.equal(START_PROFILE.optional_http_upper_bound, 2);
+   assert.equal(SOURCE_HTTP_PLAN.optional_open_interest + SOURCE_HTTP_PLAN.optional_funding, 2);
++  assert.equal(SOURCE_HTTP_PLAN.optional_trades, 1); assert.equal(SOURCE_HTTP_PLAN.optional_total_max, 2);
+   assert.equal(SOURCE_HTTP_PLAN.optional_relative_context_benchmarks_max, undefined);
+   assert.equal(fs.existsSync(new URL('../../sources/relative-context.mjs', import.meta.url)), false);
+ });

@@ -3,18 +3,32 @@ import {createMaterializedSummary,prepareOutcomeRecordEvent,foldPreparedOutcomeR
 import {textHash} from './delivery.mjs';
 import {recordPurpose,productionRecord} from '../contracts/run-purpose.mjs';
 import {createSummaryRecordIndex} from './summary-index.mjs';
+import {createWorkIndex} from './work-index.mjs';
 
 const waveKey=a=>'pump:journal:'+a.instrument.instrument_id+':'+a.wave_id;
 const signalKey=a=>'pump:signal:'+a.instrument.instrument_id+':'+a.wave_id;
 const mapMode=a=>a.liquidations?.map_mode==='WITHOUT_MAP'?'NO_MAP':a.liquidations?.status==='PARTIAL'?'PARTIAL_MAP':'MAP';
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-export function createOutcomeJournal({store,profile,clock=Date.now,evidence_class='UNCLASSIFIED'}){
+export function createOutcomeWorkIndex({store}){
+  return createWorkIndex({store,kind:'outcomes',targetKey:id=>id,completed:async(signal,{evidence})=>{
+    if(!productionRecord({origin:signal.origin}))return evidence?.schema==='PUMP_OUTCOME_WORK_EXCLUSION_V1'&&evidence.signal_id===signal.signal_id&&equal(evidence.origin,signal.origin);
+    const outcome=await store.get('pump:outcome:'+signal.signal_id);
+    return ['HIT','MISS'].includes(outcome?.status)&&evidence?.origin?.signal_id===signal.signal_id&&equal(evidence.origin,signal.origin)&&equal(evidence.outcome,outcome);
+  }});
+}
+export function createOutcomeJournal({store,profile,clock=Date.now,evidence_class='UNCLASSIFIED',retained_features=null}){
   if(typeof store.atomicPair!=='function')throw Error('ATOMIC_WAVE_AND_SUMMARY_STORE_REQUIRED');
   // The old all-purpose aggregate stays intact as historical evidence. This
   // derived production view replays the same append-only index in bounded pages.
   const aggregateKey='pump:materialized-summary:production-v2';
   const materializedWaveKey=key=>'pump:materialized-wave:production-v2:'+key;
   const sourceIndex=createSummaryRecordIndex({store});
+  const outcomeWork=createOutcomeWorkIndex({store});
+  const journalWork=createWorkIndex({store,kind:'journal',targetKey:id=>id,completed:async(journal,{evidence})=>{
+    if(!journal.frozen_anchor||!evidence?.origin?.signal_id)return false;
+    const signal=await store.get(evidence.origin.signal_id);
+    return signal?.analysis_key===journal.frozen_anchor.analysis_id&&equal(signal.origin,evidence.origin);
+  }});
   const emptyAggregate=()=>({...createMaterializedSummary({materialization_id:'pump-frozen-production-origins-v2',as_of_ts:clock()}),source_cursor:0,excluded_records_by_purpose:{}});
   const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+40<=store.admission.max_rows_read&&store.usage().rows_written+8<=store.admission.max_rows_written);
   async function remember(analysis,input,analysis_id){
@@ -25,6 +39,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       return;
     }
     const sha=await textHash(JSON.stringify(analysis));if(!analysis_id.endsWith(sha))throw Error('ANALYSIS_CONTENT_HASH_REQUIRED');
+    await journalWork.ensureReady();
     const used=new Set(analysis.fact_ids??[]),known=[...Object.values(input.facts??{}).filter(f=>used.has(f.fact_id)).map(f=>f.received_ts),...(analysis.liquidations?.zones_up??[]).map(z=>z.received_ts),...(analysis.liquidations?.zones_down??[]).map(z=>z.received_ts)].filter(Number.isSafeInteger);
     const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,run_purpose:input.run_purpose??analysis.run_purpose??'UNCLASSIFIED',ready:true};
     const row={analysis_id,analysis_sha256:sha,recorded_ts:at,features_known_ts:known.length?Math.max(...known):null,origin};
@@ -34,7 +49,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       if(previous&&(!equal(previous.origin,row.origin)||previous.analysis_sha256!==sha))throw Error('IMMUTABLE_ANALYSIS_JOURNAL_CONFLICT');
       if(!previous)j.analyses.push(row);return {state:j,result:!j.frozen_anchor};
     });
-    if(pending)await store.atomic('pump:journal-index',ids=>({state:[...new Set([...(ids??[]),key])],result:true}));
+    if(pending)await journalWork.add(key);
   }
   async function publication(card_id){
     const card=await store.get('pump:card:'+card_id);if(!card?.analysis?.source_input_key||!['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))return null;
@@ -51,20 +66,27 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     const saved=await store.get(selected.anchor.analysis_id);if(!saved?.analysis||await textHash(JSON.stringify(saved.analysis))!==selected.anchor.analysis_sha256)throw Error('ANCHOR_SAVED_BYTES_READBACK_FAILED');
     await store.atomic(key,j=>{if(j.frozen_anchor&&!equal(j.frozen_anchor,selected.anchor))throw Error('FROZEN_ANCHOR_CONFLICT');return {state:{...j,frozen_anchor:selected.anchor},result:true};});
     const a=saved.analysis,o=selected.summary_origin,publication=selected.publication;
-    const signal={...o,instrument:a.instrument,mode:o.mode,map_mode:o.map_mode==='NO_MAP'?'WITHOUT_MAP':'WITH_MAP',plan:a.plan,analysis_key:selected.anchor.analysis_id,origin:o,publication,deadline_ts:o.t0+profile.horizon_ms};
-    await store.atomic(o.signal_id,current=>{if(current?.origin&&!equal(current.origin,o))throw Error('ORIGINAL_SIGNAL_IMMUTABLE');return {state:current?{...current,publication}:signal,result:true};});
-    await store.atomic('pump:outcomes-pending',ids=>({state:[...new Set([...(ids??[]),o.signal_id])],result:true}));
-    await record(signal,await store.get('pump:outcome:'+o.signal_id));
-    await store.atomic('pump:journal-index',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));return selected;
+    const original_event=journal.publications.find(row=>row.event_id===selected.anchor.selection.publication_event_id);
+    const original_refs={original_publication_event_id:original_event?.event_id??null,original_card_id:original_event?.card_id??null};
+    const signal={...o,instrument:a.instrument,mode:o.mode,map_mode:o.map_mode==='NO_MAP'?'WITHOUT_MAP':'WITH_MAP',plan:a.plan,analysis_key:selected.anchor.analysis_id,origin:o,publication,...original_refs,deadline_ts:o.t0+profile.horizon_ms};
+    await store.atomic(o.signal_id,current=>{if(current?.origin&&!equal(current.origin,o)||current?.original_card_id&&current.original_card_id!==original_refs.original_card_id)throw Error('ORIGINAL_SIGNAL_IMMUTABLE');return {state:current?{...current,publication,...original_refs}:signal,result:true};});
+    await outcomeWork.add(o.signal_id);
+    const evidence_key=await record(signal,await store.get('pump:outcome:'+o.signal_id));
+    await journalWork.complete(key,{evidence_key});return selected;
   }
-  async function syncTerminal(){const ids=await store.get('pump:journal-index')??[],results=[];for(const key of ids){if(!resourcesAvailable())break;const j=await store.get(key);if(j?.frozen_anchor){await store.atomic('pump:journal-index',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));continue;}if(j&&(j.terminal||j.wave_expires_ts<=clock()))results.push(await sync(key));}return results;}
+  async function syncTerminal(){
+    const page=await journalWork.page({limit:20}),results=[];if(!page.ready)return [{status:'DEFERRED',reason:'WORK_INDEX_MIGRATING'}];
+    for(const {id:key} of page.items){if(!resourcesAvailable())break;const j=await store.get(key);if(j&&(j.frozen_anchor||j.terminal||j.wave_expires_ts<=clock()))results.push(await sync(key));}return results;
+  }
   async function record(signal,outcome){
     if(!signal?.origin)return;
     if(!(await sourceIndex.initialize()).ready)throw Error('SUMMARY_INDEX_MIGRATING');
     const payload={origin:signal.origin,publication:signal.publication,outcome:outcome??null},hash=await textHash(JSON.stringify(payload)),key='pump:summary-record:'+hash;
     await store.atomic(key,current=>({state:current??{record_id:key,recorded_ts:clock(),...payload},result:true}));
     await sourceIndex.append(key);
+    if(retained_features)await retained_features.record(signal,await store.get(key));
     await catchUp({max_records:4,maturity_limit:0});
+    return key;
   }
   async function catchUp({max_records=40,maturity_limit=5}={}){
     const initial=await store.get(aggregateKey)??emptyAggregate(),page=await sourceIndex.page({after:initial.source_cursor??0,limit:max_records});

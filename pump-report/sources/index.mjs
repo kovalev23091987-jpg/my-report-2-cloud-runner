@@ -1,13 +1,15 @@
-import {assertInstrument, createFact, factUsable, emptyMap, CONTRACT_VERSION} from '../contracts/index.mjs';
+import {assertInstrument, createFact, factUsable, emptyMap, CONTRACT_VERSION, ownerInstrumentExcluded} from '../contracts/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {object, text, numeric, positive, timestamp, proof, fail, wireRows, selectRow, requestUrl,
   parsePrice, parseCandles, parseOrderbook, parseOpenInterest, parseFunding} from './bingx.mjs';
 import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
 import {createDayGrowthLoader} from './day-growth.mjs';
+import {parseRecentTrades, RECENT_TRADE_SEMANTICS} from './recent-trades.mjs';
 
 export const SOURCE_VERSION = 'pump-report-sources-v1';
 export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
   core_price_fallback_max: 1, optional_open_interest: 1, optional_funding: 1,
+  optional_trades: 1, optional_total_max: 2,
   selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1, day_growth_per_window_max: 1,
   liquidation_swole_per_candidate: 1, automatic_retries: 0, SQL_owned_by_sources: 0,
   actual_provider_and_SQL_cost: null, six_manual_checks_reserved: false});
@@ -148,11 +150,17 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
   async function candles(entry, {force_refresh = false, purpose = 'CORE'} = {}) {
     const step = profile.candle_interval_ms;
     if (step !== 60000) fail('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');
-    const count = Math.ceil((profile.volume_baseline_ms + Math.max(...profile.automatic_growth.short_windows_ms)) / step) + 1;
+    // The oldest searched impulse needs its own preceding full baseline:
+    // wave search60m + impulse5m + baseline60m =125 closed minutes.
+    const durations = [profile.wave_search_ms, profile.impulse_window_ms, profile.volume_baseline_ms,
+      ...profile.automatic_growth.short_windows_ms];
+    if (durations.some(ms => !Number.isSafeInteger(ms) || ms <= 0)) fail('CORE_CANDLE_WINDOW_PROFILE_INVALID');
+    const count = Math.ceil(Math.max(Math.max(...profile.automatic_growth.short_windows_ms),
+      profile.wave_search_ms + profile.impulse_window_ms + profile.volume_baseline_ms) / step);
     if (count > 1440) fail('BINGX_CANDLE_WINDOW_EXCEEDS_REQUEST_LIMIT');
     const end = Math.floor(now() / step) * step, start = end - count * step;
     try {
-      const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles, purpose});
+      const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end - 1, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles, purpose});
       const parsed = decode(response, () => parseCandles(response.data, {start, end, interval_ms: step, received_ts: response.received_ts,
         instrument: entry.instrument, windows_ms: profile.automatic_growth.short_windows_ms, qualification: entry.qualifications.candles}));
       return fact(entry, 'candles', parsed.value, parsed.unit, parsed.event_ts, response,
@@ -297,7 +305,32 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
   }
   async function getOptional({instrument} = {}) {
-    const entry = resolve(instrument), facts = {trades: absent(entry, 'trades', 'BINGX_TRADE_ROUTE_NOT_QUALIFIED', 'NOT_CHECKED')};
+    const entry = resolve(instrument), facts = {};
+    const upper = profile.optional_http_upper_bound;
+    if (!Number.isSafeInteger(upper) || upper < 0 || upper > SOURCE_HTTP_PLAN.optional_total_max) fail('OPTIONAL_BUDGET_PROFILE_INVALID');
+    const finish = () => {
+      const coverage = Object.fromEntries(Object.entries(facts).map(([kind, value]) => [kind,
+        {status: value.status, reason: value.reason, ...(value.coverage ? {coverage: value.coverage} : {})}]));
+      note(instrument, 'optional', coverage); return {facts, coverage};
+    };
+    if (ownerInstrumentExcluded(instrument)) {
+      for (const kind of ['trades', 'open_interest', 'funding']) facts[kind] = absent(entry, kind, 'OWNER_ASSET_DELIVERY_EXCLUDED', 'NOT_CHECKED');
+      return finish();
+    }
+    // Every attempted broker request consumes a slot even when it fails or is
+    // denied. These per-kind maxima are alternatives within the same upper2.
+    let attempts = 0;
+    if (attempts >= upper) facts.trades = absent(entry, 'trades', 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED');
+    else {
+      attempts++;
+      try {
+        const response = await request('trades', {instrument, params: {limit: RECENT_TRADE_SEMANTICS.limit}, ttl_ms: profile.freshness_ms.trades});
+        const parsed = decode(response, () => parseRecentTrades(response.data, {instrument: entry.instrument, received_ts: response.received_ts}));
+        facts.trades = fact(entry, 'trades', parsed.value, parsed.unit, parsed.event_ts, response,
+          {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage,
+            extra: {unit_evidence_ref: RECENT_TRADE_SEMANTICS.evidence_ref, base_quantity_qualified: false}});
+      } catch (error) { facts.trades = failed(entry, 'trades', error); }
+    }
     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
       const qualification = entry.qualifications[kind];
       const usableQualification = proof(qualification) && (kind === 'open_interest'
@@ -305,6 +338,8 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         : text(qualification.rate_clock_field) && qualification.rate_clock_field !== 'updateTime');
       if (!usableQualification) { facts[kind] = absent(entry, kind,
         kind === 'open_interest' ? 'OPEN_INTEREST_UNIT_UNQUALIFIED' : 'FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED', 'NOT_CHECKED'); continue; }
+      if (attempts >= upper) { facts[kind] = absent(entry, kind, 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED'); continue; }
+      attempts++;
       try {
         const response = await request(kind, {instrument, ttl_ms: profile.freshness_ms[kind]});
         const parsed = decode(response, () => parse(response.data, instrument, entry.qualifications[kind]));
@@ -314,8 +349,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
               native_value_decimal: parsed.native_value_decimal ?? null, native_metadata_update_ts: parsed.native_metadata_update_ts ?? null}});
       } catch (error) { facts[kind] = failed(entry, kind, error); }
     }
-    const coverage = Object.fromEntries(Object.entries(facts).map(([kind, value]) => [kind, {status: value.status, reason: value.reason}]));
-    note(instrument, 'optional', coverage); return {facts, coverage};
+    return finish();
   }
   async function getLiquidations({instrument, reference_price, deadline_ts} = {}) {
     const entry = resolve(instrument), at = now(), deadline = Math.min(timestamp(deadline_ts) ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms);
