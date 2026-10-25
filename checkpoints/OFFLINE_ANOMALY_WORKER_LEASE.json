@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1792918308000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1792918308000,
@@ -9,7 +9,7 @@
   "scope": "PUMP_REPORT_V2_C_TARGETED_ACCEPTANCE. Coordinator explicit defect: fractional t0 enclosing-minute no-hit proof, boundary lows not exact drawdown, pure summary compatibility; card source as-of/age/model/venue/limits and named target event. Own analytics/**,tests/analytics/**,handoffs/analytics/package-c/** only. B frozen original bytes preserved in package-c/baseline for independent integration. New affected C tests only, no old44/25/97+7 replay. No provider/SQL/TG/deploy/cron/runtime/source/common/main mutation. Onlyownrelease before expiry.",
   "parallel_root_phase_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792914169000",
   "parallel_root_phase_expires_ts": 1792918969000,
-  "released_ts": null,
+  "released_ts": 1792918603000,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "checkpoints/CLOUD_PHASE_STATE_20261004.json": "33ca88a04540d45bc466ba669ce09871c6f16437",
@@ -19,5 +19,14 @@
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "acd10a584b6aabc3e6f44548f57b6b4d12887c1f",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c"
+  },
+  "completion": {
+    "tests_pass": 12,
+    "tests_fail": 0,
+    "qualification_path": "pump-report/handoffs/analytics/package-c/qualification.json",
+    "qualification_sha256": "de3e1c52b987af593febcf273c433b076c3aac6e7a141917dbf8d9b3d581adc4",
+    "baseline_A_B_verified": true,
+    "native_IO": 0,
+    "root_integrates": true
   }
 }
