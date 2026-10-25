@@ -4,6 +4,8 @@ export class MemoryStore {
   constructor(){this.rows=new Map();this.chain=Promise.resolve();}
   async get(key){return structuredClone(this.rows.get(key)??null);}
   async set(key,value){this.rows.set(key,structuredClone(value));return value;}
+  async boundedArray(key,{max_items=40,max_bytes=10000}={}){const value=this.rows.get(key)??[];if(!Array.isArray(value)||value.length>max_items||new TextEncoder().encode(JSON.stringify(value)).length>max_bytes)throw new BudgetRefusal('LEGACY_INDEX_BOUNDED_MIGRATION_REQUIRED');return structuredClone(value);}
+  async scanPrefix(prefix,{after_key=prefix,limit=40}={}){if(!Number.isSafeInteger(limit)||limit<1||limit>40||!after_key.startsWith(prefix))throw new BudgetRefusal('BOUNDED_PREFIX_SCAN_REQUIRED');return [...this.rows.entries()].filter(([key])=>key.startsWith(prefix)&&key>after_key).sort(([a],[b])=>a<b?-1:a>b?1:0).slice(0,limit).map(([key,value])=>({key,value:structuredClone(value)}));}
   async atomic(key,change){const job=this.chain.then(async()=>{const {state,result}=change(await this.get(key));await this.set(key,state);return result;});this.chain=job.catch(()=>{});return job;}
   async atomicPair(keys,change){
     if(!Array.isArray(keys)||keys.length!==2||keys[0]===keys[1])throw new BudgetRefusal('DISTINCT_STATE_PAIR_REQUIRED');
@@ -42,6 +44,15 @@ export class D1Store {
     await this.query('CREATE TABLE IF NOT EXISTS pump_report_state_v1 (state_key TEXT PRIMARY KEY,value_json TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0,updated_ts INTEGER NOT NULL)',[],{read:20,write:20});
   }
   async get(key){const r=await this.query('SELECT value_json FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1',[key]);return r.results?.[0]?JSON.parse(r.results[0].value_json):null;}
+  async boundedArray(key,{max_items=40,max_bytes=10000}={}){
+    if(!Number.isSafeInteger(max_items)||max_items<0||max_items>40||!Number.isSafeInteger(max_bytes)||max_bytes<1||max_bytes>10000)throw new BudgetRefusal('BOUNDED_LEGACY_ARRAY_REQUIRED');
+    const r=await this.query(`SELECT CASE WHEN length(CAST(value_json AS BLOB))<=?3 AND json_type(value_json)='array' AND json_array_length(value_json)<=?2 THEN value_json ELSE NULL END AS bounded_value FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1`,[key,max_items,max_bytes]);
+    if(!r.results?.length)return [];if(r.results[0].bounded_value===null)throw new BudgetRefusal('LEGACY_INDEX_BOUNDED_MIGRATION_REQUIRED');return JSON.parse(r.results[0].bounded_value);
+  }
+  async scanPrefix(prefix,{after_key=prefix,limit=40}={}){
+    if(typeof prefix!=='string'||!prefix||typeof after_key!=='string'||!after_key.startsWith(prefix)||!Number.isSafeInteger(limit)||limit<1||limit>40)throw new BudgetRefusal('BOUNDED_PREFIX_SCAN_REQUIRED');
+    const r=await this.query('SELECT state_key,value_json FROM pump_report_state_v1 WHERE state_key>=?1 AND state_key<?2 AND state_key>?3 ORDER BY state_key LIMIT ?4',[prefix,prefix+'\uffff',after_key,limit],{read:limit});return (r.results??[]).map(row=>({key:row.state_key,value:JSON.parse(row.value_json)}));
+  }
   async set(key,value){await this.query('INSERT INTO pump_report_state_v1(state_key,value_json,revision,updated_ts) VALUES(?1,?2,0,?3) ON CONFLICT(state_key) DO UPDATE SET value_json=excluded.value_json,revision=pump_report_state_v1.revision+1,updated_ts=excluded.updated_ts',[key,JSON.stringify(value),this.clock()],{read:2,write:2});return value;}
   async atomic(key,change){
     for(let attempt=0;attempt<5;attempt++){

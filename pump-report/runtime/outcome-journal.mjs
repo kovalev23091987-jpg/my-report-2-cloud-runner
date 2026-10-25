@@ -2,6 +2,7 @@ import {selectOutcomeAnchor} from '../analytics/anchors.mjs';
 import {createMaterializedSummary,prepareOutcomeRecordEvent,foldPreparedOutcomeRecord,advanceWaveMaturity,dueMaturityWaves,readMaterializedSummary} from '../analytics/materialized-summary.mjs';
 import {textHash} from './delivery.mjs';
 import {recordPurpose,productionRecord} from '../contracts/run-purpose.mjs';
+import {createSummaryRecordIndex} from './summary-index.mjs';
 
 const waveKey=a=>'pump:journal:'+a.instrument.instrument_id+':'+a.wave_id;
 const signalKey=a=>'pump:signal:'+a.instrument.instrument_id+':'+a.wave_id;
@@ -13,6 +14,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
   // derived production view replays the same append-only index in bounded pages.
   const aggregateKey='pump:materialized-summary:production-v2';
   const materializedWaveKey=key=>'pump:materialized-wave:production-v2:'+key;
+  const sourceIndex=createSummaryRecordIndex({store});
   const emptyAggregate=()=>({...createMaterializedSummary({materialization_id:'pump-frozen-production-origins-v2',as_of_ts:clock()}),source_cursor:0,excluded_records_by_purpose:{}});
   const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+40<=store.admission.max_rows_read&&store.usage().rows_written+8<=store.admission.max_rows_written);
   async function remember(analysis,input,analysis_id){
@@ -58,19 +60,21 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
   async function syncTerminal(){const ids=await store.get('pump:journal-index')??[],results=[];for(const key of ids){if(!resourcesAvailable())break;const j=await store.get(key);if(j?.frozen_anchor){await store.atomic('pump:journal-index',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));continue;}if(j&&(j.terminal||j.wave_expires_ts<=clock()))results.push(await sync(key));}return results;}
   async function record(signal,outcome){
     if(!signal?.origin)return;
+    if(!(await sourceIndex.initialize()).ready)throw Error('SUMMARY_INDEX_MIGRATING');
     const payload={origin:signal.origin,publication:signal.publication,outcome:outcome??null},hash=await textHash(JSON.stringify(payload)),key='pump:summary-record:'+hash;
     await store.atomic(key,current=>({state:current??{record_id:key,recorded_ts:clock(),...payload},result:true}));
-    await store.atomic('pump:summary-record-index',ids=>({state:[...new Set([...(ids??[]),key])],result:true}));
+    await sourceIndex.append(key);
     await catchUp({max_records:4,maturity_limit:0});
   }
   async function catchUp({max_records=40,maturity_limit=5}={}){
-    const ids=await store.get('pump:summary-record-index')??[];
+    const initial=await store.get(aggregateKey)??emptyAggregate(),page=await sourceIndex.page({after:initial.source_cursor??0,limit:max_records});
+    const total=page.total;
     let processed=0;
     while(processed<max_records&&resourcesAvailable()){
       const aggregate=await store.get(aggregateKey)??emptyAggregate(),cursor=aggregate.source_cursor??0;
-      if(cursor>ids.length)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');
-      if(cursor===ids.length)break;
-      const key=ids[cursor],row=await store.get(key);if(!row||row.record_id!==key)throw Error('SUMMARY_RECORD_MISSING');
+      if(!page.migration_ready||cursor===total)break;
+      const item=page.items.find(r=>r.seq===cursor+1);if(!item)break;
+      const key=item.id,row=await store.get(key);if(!row||row.record_id!==key)throw Error('SUMMARY_RECORD_MISSING');
       const {origin,publication,outcome}=row;
       if(key!=='pump:summary-record:'+await textHash(JSON.stringify({origin,publication,outcome})))throw Error('SUMMARY_RECORD_CONTENT_HASH_MISMATCH');
       if(!productionRecord(row)){
@@ -96,7 +100,9 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       await store.atomicPair([materializedWaveKey(item.wave_key),aggregateKey],([wave,current])=>{const tick=advanceWaveMaturity({aggregate:current,wave,as_of_ts:clock()});return {states:[tick.wave,tick.aggregate],result:tick.status};});
     }}
     const aggregate=await store.get(aggregateKey)??emptyAggregate(),source_cursor=aggregate.source_cursor??0,view=readMaterializedSummary(aggregate,{as_of_ts:clock()});
-    return {...view,run_purpose:'PRODUCTION',excluded_records_by_purpose:{...(aggregate.excluded_records_by_purpose??{})},status:source_cursor<ids.length?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:ids.length,source_caught_up:source_cursor===ids.length,processed_records:processed,source_index_append_only:true};
+    const boundary=await sourceIndex.boundary();if(source_cursor>boundary.count)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');
+    const caught=page.migration_ready&&boundary.ready&&!boundary.pending&&source_cursor===boundary.count;
+    return {...view,run_purpose:'PRODUCTION',excluded_records_by_purpose:{...(aggregate.excluded_records_by_purpose??{})},status:!page.migration_ready||!boundary.ready?'SUMMARY_INDEX_MIGRATING':!caught?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:boundary.count,source_caught_up:caught,processed_records:processed,source_index_append_only:true,source_index_bounded:true};
   }
   async function summary({max_records=40}={}){
     if(!Number.isSafeInteger(max_records)||max_records<1||max_records>40)throw Error('SUMMARY_PAGE_BOUND_1_TO_40_REQUIRED');
