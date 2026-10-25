@@ -17,3 +17,6 @@ export function recordPurpose(row){
   return ['PRODUCTION','ACCEPTANCE_TEST'].includes(o.run_purpose)?o.run_purpose:'UNCLASSIFIED';
 }
 export function productionRecord(row){return recordPurpose(row)==='PRODUCTION'&&row?.origin?.evidence_class==='OBSERVED';}
+// Exact bounded acceptance IDs only. Their costs remain in the shared ledger,
+// while these checks do not spend the six protected user-manual slots.
+export const ACCEPTANCE_MANUAL_RUN_IDS=Object.freeze([ACCEPTANCE_240.run_id,'pump-j-integration-sol-20261025-one']);

@@ -14,6 +14,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   const run={total:0,lanes:{hot:0,background:0,statistics:0},liquidations:0,candidates:{},unknown:0,receipts:[]};
   const assertWorkWindow=()=>{if(admission?.strict_automatic_window===true&&mode!=='MANUAL'&&!automaticWindowOpen(clock()))throw new BudgetRefusal('BUDGET_AUTOMATIC_WINDOW_CLOSED');};
   const providerPolicy = provider => {
+    if(Array.isArray(admission?.allowed_providers)&&!admission.allowed_providers.includes(provider))throw new BudgetRefusal('PROVIDER_NOT_IN_RUN_ADMISSION');
     const policy=policies?.[provider],now=clock();
     if (!policy || !admission?.provider_policy_version || admission.provider_policy_version!==policy.version || !Number.isSafeInteger(admission.expires_ts) || admission.expires_ts<=now || !policy.evidence_ref || !integer(policy.project_daily_cap) || !integer(policy.project_monthly_cap) || !integer(policy.per_minute_cap)) throw new BudgetRefusal('PROVIDER_ADMISSION_REQUIRED',{provider});
     return policy;
@@ -47,7 +48,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       const providerOutcomesProtection=policy.outcome_source===false?0:outcomesProtection;
       const providerDeliveryProtection=policy.delivery_source===false?0:deliveryProtection;
       if(spent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
-      const globalManual=mode==='MANUAL'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
+      const globalManual=mode==='MANUAL'&&admission.run_purpose!=='ACCEPTANCE_TEST'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
       if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       if(monthSpent+cost+manualProtection>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');

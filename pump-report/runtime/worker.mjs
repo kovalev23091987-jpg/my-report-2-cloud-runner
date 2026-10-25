@@ -7,12 +7,12 @@ import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal,isBingxNative
 import {parseManualInput} from './manual-input.mjs';
 import {manualResponseText} from './manual-response.mjs';
 import {createUnifiedBudget,createRequestBroker} from './budget.mjs';
-import {createDelivery,automaticWindowOpen} from './delivery.mjs';
+import {createDelivery,automaticWindowOpen,textHash} from './delivery.mjs';
 import {reserveNativeRun,finalizeNativeRun} from './native-budget.mjs';
 import {createPumpRunner} from './runner.mjs';
-import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL} from './provider-policy.mjs';
+import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL} from './provider-policy.mjs';
 
-export const PUMP_VERSION='pump-report-v1.2-integration-acceptance';
+export const PUMP_VERSION='pump-report-v1.3-metadata-acceptance';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
@@ -35,10 +35,11 @@ export async function revalidatePumpCard({card,store,sources,clock=Date.now,prof
 }
 
 async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
-  const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,clock}),store=native.store;
+  const run_purpose=PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?'PRODUCTION':'ACCEPTANCE_TEST';
+  const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock}),store=native.store;
   try{
   if(mode!=='LOOKUP')await store.install();
-  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO'}});
+  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:{})}});
   const broker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000});
   const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
@@ -56,7 +57,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
     try{const response=await fetch_impl('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:recipient,text,disable_web_page_preview:true}),redirect:'manual',signal:AbortSignal.timeout(15000)});let body=null;try{body=await response.json();}catch{}await budget.finalize(receipt,{http_status:response.status});return {ok:response.ok,status:response.status,body};}
     catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
   }});
-  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose:PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?'PRODUCTION':'ACCEPTANCE_TEST'});
+  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose});
   return {native,store,budget,broker,sources,delivery,runner};
   }catch(error){error.pumpNative=native;throw error;}
 }
@@ -74,8 +75,11 @@ export function createPumpWorker(legacy={}){
       const mapProbe=url.pathname==='/pump/map-probe';
       const dayProbe=url.pathname==='/pump/day-probe';
       const integrationCheck=url.pathname==='/pump/integration-check';
+      const metadataProbe=url.pathname==='/pump/metadata-probe';
       const lookup=['/pump/manual-result','/pump/summary'].includes(url.pathname);
-      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
+      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
+      if(metadataProbe&&(PROVIDER_STAGE!=='METADATA_ACCEPTANCE_ONLY'||body.grant_id!==METADATA_DIAGNOSTIC_ID))return json({error:'METADATA_PROBE_NOT_ADMITTED'},400);
+      if(metadataProbe&&Object.keys(body).some(key=>key!=='grant_id'))return json({error:'INVALID_METADATA_PROBE_PARAMS'},400);
       if(deliveryCheck&&(body.diagnostic_id!==TELEGRAM_DIAGNOSTIC_ID||PROVIDER_STAGE!=='QUALIFICATION_ONLY'))return json({error:'DELIVERY_DIAGNOSTIC_NOT_ADMITTED'},400);
       if(mapProbe&&(body.probe_id!==MAP_DIAGNOSTIC_ID||PROVIDER_STAGE!=='MANUAL_ACCEPTANCE'))return json({error:'MAP_PROBE_NOT_ADMITTED'},400);
       if(dayProbe&&(body.probe_id!==DAY_DIAGNOSTIC_ID||PROVIDER_STAGE!=='DAY_WINDOW_ACCEPTANCE'))return json({error:'DAY_PROBE_NOT_ADMITTED'},400);
@@ -90,13 +94,19 @@ export function createPumpWorker(legacy={}){
       const acceptedManual=PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&body.request_id===MANUAL_ACCEPTANCE_ID&&parseManualInput(body.symbol??body.text,{context_symbol:body.context_symbol??null}).symbol===MANUAL_ACCEPTANCE_SYMBOL;
       if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&!acceptedManual)return json({error:'EXACT_MANUAL_ACCEPTANCE_REQUEST_REQUIRED'},400);
       if(Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'PROVIDER_ADMISSION_EXPIRED'},503);
-      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!acceptedManual&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
-      const mode=probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
+      if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!acceptedManual&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
+      const mode=metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=metadataProbe?METADATA_DIAGNOSTIC_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
       if(mode==='AUTO'&&!automaticWindowOpen(Date.now()))return json({status:'OUTSIDE_AUTOMATIC_WINDOW',run_id});
       let runtime,result,finalizationStarted=false;
       try{
         runtime=await services(env,{run_id,mode});
-        if(deliveryCheck){
+        if(metadataProbe){
+          const response=await runtime.broker.request({provider:'BINGX_WEB_METADATA',family:'IDENTITY_METADATA',cache_key:METADATA_DIAGNOSTIC_ID,url:METADATA_DIAGNOSTIC_URL,ttl_ms:0,timeout_ms:10000,estimated_cost:{http:1}});
+          const value=response.data,rows=Array.isArray(value?.result)?value.result:Array.isArray(value?.data)?value.data:Array.isArray(value)?value:null;
+          const safe={status:'METADATA_REPLY_UNQUALIFIED',run_id,http_status:response.status,receipt_id:response.receipt_id,received_ts:response.received_ts,normalized_response_sha256:await textHash(JSON.stringify(value)),row_count:rows?.length??null,row_keys:rows?.[0]&&typeof rows[0]==='object'?Object.keys(rows[0]):[],taxonomy_enum_qualified:false,native_contract_bridge_qualified:false};
+          await runtime.store.set('pump:metadata-qualification:'+METADATA_DIAGNOSTIC_ID,safe);
+          result={...safe,response,resources:runtime.budget.summary(),trading_signal:false,crypto_identity_promotions:0};
+        }else if(deliveryCheck){
           const card=await runtime.delivery.enqueue({kind:'DELIVERY_DIAGNOSTIC',diagnostic_id:TELEGRAM_DIAGNOSTIC_ID,ready:true,instrument:{instrument_id:'PUMP:TECHNICAL_DELIVERY_ONLY'},wave_id:TELEGRAM_DIAGNOSTIC_ID,card_text:TELEGRAM_DIAGNOSTIC_TEXT},{mode:'MANUAL',expires_ts:Math.min(Date.now()+60000,QUALIFICATION_EXPIRES_TS)});
           const delivery=await runtime.delivery.dispatch(card.card_id),saved=await runtime.store.get('pump:card:'+card.card_id);
           if(delivery.state==='SENT'&&(saved?.text!==TELEGRAM_DIAGNOSTIC_TEXT||saved.receipt?.card_id!==card.card_id))throw Object.assign(Error('DIAGNOSTIC_SAVED_RECEIPT_MISMATCH'),{code:'DIAGNOSTIC_SAVED_RECEIPT_MISMATCH'});
