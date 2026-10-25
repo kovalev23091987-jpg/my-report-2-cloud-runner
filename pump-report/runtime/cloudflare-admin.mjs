@@ -47,5 +47,5 @@ if(command==='inspect'){
   if(!boundary)throw Error('MULTIPART_READBACK_REQUIRED');
   for(const part of r.text.split('--'+(boundary[1]??boundary[2])).slice(1)){if(part.startsWith('--'))break;const split=part.indexOf('\r\n\r\n');if(split<0)continue;const header=part.slice(0,split),name=header.match(/(?:^|;\s*)name="([^"]+)"/m)?.[1];let value=part.slice(split+4);if(value.endsWith('\r\n'))value=value.slice(0,-2);if(name)modules[name]=value;}
   const results=Object.entries(a.manifest.modules).map(([name,m])=>({name,expected:m.sha256,actual:modules[name]===undefined?null:digest(modules[name]),exact:modules[name]===a.modules[name]}));
-  const result={success:results.every(r=>r.exact),worker:script,module_count:results.length,results};save(output,result);console.log(JSON.stringify(result));if(!result.success)process.exitCode=1;
+  const result={success:results.every(r=>r.exact),worker:script,module_count:results.length,results};save(output,result);console.log(JSON.stringify({success:result.success,worker:script,module_count:results.length,exact_modules:results.filter(r=>r.exact).length,failed:results.filter(r=>!r.exact),full_receipt_path:output??null}));if(!result.success)process.exitCode=1;
 }else throw Error('ONLY_INSPECT_CONTROL_SECRET_DEPLOY_READBACK_SUPPORTED');

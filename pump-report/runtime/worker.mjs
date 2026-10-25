@@ -36,7 +36,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
     if(env.PUMP_REPORT_DELIVERY_ENABLED!=='1'||PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')throw Object.assign(Error('DELIVERY_NOT_ADMITTED'),{code:'DELIVERY_NOT_ADMITTED'});
     const token=String(env.TELEGRAM_BOT_TOKEN??'');if(!token||!recipient||recipient==='UNCONFIGURED')throw Error('TELEGRAM_BINDING_MISSING');
     const receipt=await budget.reserve({provider:'TELEGRAM',family:'DELIVERY',request_id:'TELEGRAM:'+card_id});
-    try{const response=await fetch_impl('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:recipient,text,disable_web_page_preview:true}),redirect:'error',signal:AbortSignal.timeout(15000)});let body=null;try{body=await response.json();}catch{}await budget.finalize(receipt,{http_status:response.status});return {ok:response.ok,status:response.status,body};}
+    try{const response=await fetch_impl('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:recipient,text,disable_web_page_preview:true}),redirect:'manual',signal:AbortSignal.timeout(15000)});let body=null;try{body=await response.json();}catch{}await budget.finalize(receipt,{http_status:response.status});return {ok:response.ok,status:response.status,body};}
     catch(error){if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN'});throw error;}
   }});
   const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock});

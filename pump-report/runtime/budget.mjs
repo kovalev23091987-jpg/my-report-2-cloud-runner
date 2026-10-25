@@ -109,7 +109,8 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bi
       const receipt=await budget.reserve({provider,family,candidate_id,request_id,cost:estimated_cost.http});
       let response;
       try {
-        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'error',signal:AbortSignal.timeout(remaining)});
+        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'manual',signal:AbortSignal.timeout(remaining)});
+        if(response.status>=300&&response.status<400){await budget.finalize(receipt,{http_status:response.status});await response.body?.cancel();throw new BudgetRefusal('SOURCE_REDIRECT_REFUSED');}
         const advertised=Number(response.headers.get('content-length')??0);if(advertised>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');
         const reader=response.body?.getReader();let total=0;const parts=[];
         if(reader){try{for(;;){const {value,done}=await reader.read();if(done)break;total+=value.byteLength;if(total>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');parts.push(value);}}finally{await reader.cancel().catch(()=>{});}}

@@ -1,62 +1,31 @@
 {
   "schema": "PUMP_REPORT_COORDINATOR_PROGRESS_V1",
-  "recorded_at": "2026-10-25T08:51:00Z",
+  "recorded_at": "2026-10-25 12:39:00 UTC",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
-  "stage": "PACKAGE_A_ASSEMBLED_PROVIDER_QUALIFICATION_NOT_EXECUTED",
-  "code_main": "cc498a9f0191fd274d743f0e239ba19321a00bea",
+  "stage": "ACTUAL_EDGE_DEPLOYMENT_TRANSPORT_FIX",
+  "code_main": "a9e82fc22b27c9f2badab723ae67c996ee3aa634",
   "code_file_readbacks": 51,
   "qualification": {
-    "assembled_offline": {
-      "passed": 100,
-      "failed": 0,
-      "meaning": "44 analytics +33 sources +23 runtime, ARTIFICIAL values/controlled SQLite, not native proof"
+    "known_native_totals": {
+      "requests": 24,
+      "rows_read": 422,
+      "rows_written": 16,
+      "unknown_ops": 0
     },
-    "root_following_affected": {
-      "manual_input_and_runner": 6,
-      "budget": 11
-    },
-    "native_sql_diagnostic": {
-      "requests": 3,
-      "rows_read": 405,
-      "rows_written": 0
-    },
-    "new_provider_attempts": 0,
-    "new_production_schema_writes": 0,
-    "telegram_sends": 0,
-    "deployment_completed": false
+    "provider_attempts_charged": 2,
+    "provider_replies": 0,
+    "provider_unknowns": 2,
+    "qualification5_remaining": 3
   },
   "blockers": [
-    {
-      "code": "CLOUDFLARE_OAUTH_WORKERS_WRITE_SCOPE_MISSING",
-      "observed_status": 403,
-      "operation": "PUT my-report-2-hub/secrets new PUMP_CONTROL_KEY",
-      "missing_scope": "workers-scripts.write",
-      "changed": false,
-      "owner_reconnect_in_progress": true
-    },
-    {
-      "code": "BINGX_OBJECT_CANDLE_TIME_AND_VOLUME_UNIT_UNQUALIFIED",
-      "mandatory": true
-    }
+    "Cloudflare Fetch redirect:error unsupported; exact TypeError observed. Corrected manual+refusal3xx; affected13PASS; deploy/readback required before next3 operations.",
+    "Registry identity/time/volume still unqualified for production.",
+    "No current Telegram SENT; no new schedule admitted."
   ],
   "work_in_progress": {
-    "root": [
-      "manual natural-language selector",
-      "paced provider requests and durable 100410 backoff",
-      "manual hot-lane reserve",
-      "resource/coverage distinction",
-      "native artifact deployment/manual route/outbox"
-    ],
-    "sources": [
-      "official/saved candle semantics proofs",
-      "verified crypto universe registry expansion",
-      "optional liquidation coverage and expenses"
-    ],
-    "analytics": [
-      "result cohort summary",
-      "fractional report time enclosing no-hit proof",
-      "honest card time/coverage review"
-    ]
+    "root": "Transport correction followed by distinct catalog/candles/book. Runtime integration, durable private recovery, shared resources retained.",
+    "sources": "Active ordered package costs/candles/identity; stale discovery ROOT fix applied.",
+    "analytics": "Active E runtime acceptance and F holdout/leakage audit. Saved sample unfit for calibration; no probability invented."
   },
   "threads": {
     "coordinator": "01a171f7-596e-7dc0-a82f-3e92f57f4ef6",
@@ -64,7 +33,7 @@
     "analytics": "01a171fe-a65e-7530-8ddc-f097297f8756"
   },
   "runtime_artifact_private_path": "/private/tmp/pump-report-upload-artifact.json",
-  "private_control_key_file": "/private/tmp/pump-report-control-key",
+  "private_control_key_file": "pump-report/.private/control-key",
   "private_key_value_exported": false,
   "original_legacy_module_sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10",
   "legacy_report_paused": true,
@@ -77,5 +46,13 @@
     "checkpoints/report2-owner-paused-20261024/resume-queues.json"
   ],
   "complete": false,
-  "next": "Finish root independent package, native write scope qualification after owner reconnect, no old report resume."
+  "next": "Deploy exact edge correction, FULL26 readback; remaining3 qualification calls bounded by same version/totals; integrate worker packages and native evidence.",
+  "server_deployment": {
+    "worker": "my-report-2-hub",
+    "deployment_id": "75e1d259a395400fac7008d7bafd02b9",
+    "all26modules_exact": true,
+    "settings_preserved": true,
+    "automatic_enabled": false,
+    "delivery_enabled": false
+  }
 }

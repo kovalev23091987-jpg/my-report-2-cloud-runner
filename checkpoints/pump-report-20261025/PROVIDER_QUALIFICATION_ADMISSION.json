@@ -1,9 +1,9 @@
 {
   "schema": "PUMP_PROVIDER_QUALIFICATION_ADMISSION_V1",
-  "created_at": "2026-10-25 12:24:22 UTC",
+  "created_at": "2026-10-25 12:39:00 UTC",
   "expires_ts": 1792935093000,
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
-  "authority_main": "e1b17a25b7e1f4e056b9ecbf19bfd295f6d3c44c",
+  "authority_main": "a9e82fc22b27c9f2badab723ae67c996ee3aa634",
   "owner_lease": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792930293000",
   "scope": "NEW_PUMP_V2_ONLY_BOUNDED_QUALIFICATION_NOT_PRODUCTION",
   "positive_admission": true,
@@ -44,7 +44,14 @@
     "project_month_internal_cap": 27900,
     "external_quota": "DOCUMENTED_BY_SOURCES_NOT_PRODUCTION_VALIDATED",
     "raw_response_max_bytes": 2000000,
-    "cold_requests_only_no_mass_collection": true
+    "cold_requests_only_no_mass_collection": true,
+    "remaining_attempts": 3,
+    "remaining_operations_in_order": [
+      "catalog_after_actual_edge_fix",
+      "BTC-USDT_1m_candles_max125",
+      "BTC-USDT_orderbook"
+    ],
+    "no_automatic_retry": true
   },
   "native": {
     "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
@@ -97,7 +104,13 @@
       "exact_key": "pump:resources",
       "reason": "First qualified server request finalized D1 but threw generic HTTP-layer error; inspect own durable budget before any distinct next probe.",
       "covered_by_retained_first_control_5000R_envelope": true,
-      "old_diagnostic3_not_rearmed": true
+      "old_diagnostic3_not_rearmed": true,
+      "used": true,
+      "actual": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0
+      }
     }
   },
   "readiness": {
@@ -115,8 +128,8 @@
     "MASS_HISTORY_OR_MAP_COLLECTION"
   ],
   "continuation": {
-    "previous_total5_grant_spent": 0,
-    "unknown_attempts": 0,
+    "previous_total5_grant_spent": 2,
+    "unknown_attempts": 2,
     "total5_cap_not_reset": true,
     "previous_expiry_detected_no_execution": true,
     "new_expiry_preserves_same_policy_version": "pump-provider-qualification-20261025-v1",
@@ -131,6 +144,27 @@
       "rows_written": 10,
       "requests": 10,
       "provider_reply_confirmed": false
-    }
+    },
+    "control_runs": [
+      {
+        "run_id": "42d8a7c8-2b5e-4120-a826-de5f2f2e9f07",
+        "native_finalized": true,
+        "rows_read": 7,
+        "rows_written": 10,
+        "requests": 10,
+        "provider_reply_confirmed": false
+      },
+      {
+        "run_id": "9deff8ab-c640-4e6b-b8e5-0d168e622361",
+        "kind": "catalog",
+        "native_finalized": true,
+        "requests": 10,
+        "rows_read": 9,
+        "rows_written": 6,
+        "provider_reply_confirmed": false,
+        "error_name": "TypeError",
+        "reason": "Cloudflare Workers rejects redirect:error before network; charged UNKNOWN conservatively; fix manual without redirect following."
+      }
+    ]
   }
 }
