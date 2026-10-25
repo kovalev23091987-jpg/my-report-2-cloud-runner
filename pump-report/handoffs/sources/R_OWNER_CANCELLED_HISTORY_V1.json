@@ -1,0 +1,39 @@
+{
+  "schema": "PUMP_R_OWNER_CANCELLED_HISTORICAL_SNAPSHOT_V1",
+  "status": "CANCELLED_BY_DIRECT_OWNER_NO_BTC_ETH_CONTEXT",
+  "owner_literal": "Во всяком случае нам это не нужно. Есть или нет, ты должен это убрать, потому что в памповых монетах в этом нет никакой необходимости. Чаще всего бывает пампы происходят наоборот, когда биткоин, допустим, падает сильно",
+  "meaning": "Owner cancels BTC/ETH benchmark comparison/sourceproducer, no benchmark calls/reserves/relative-strengthclaims. Prior8controlledPASS retained as history, not current acceptance.",
+  "files": [
+    {
+      "active_original": "pump-report/sources/index.mjs",
+      "historical_snapshot": "pump-report/handoffs/sources/R_CANCELLED_SOURCE_INDEX.mjs.snapshot",
+      "sha256": "b9969716484be035dd974f32b368f557bdd3929eaf6eb9bc6a149bbac111055a",
+      "bytes": 33569
+    },
+    {
+      "active_original": "pump-report/sources/relative-context.mjs",
+      "historical_snapshot": "pump-report/handoffs/sources/R_CANCELLED_PRODUCER.mjs.snapshot",
+      "sha256": "0875c440cc468ae9a2674835a572b096cd54dd0931a615500f08b5af779e79d8",
+      "bytes": 12271
+    },
+    {
+      "active_original": "pump-report/tests/sources/relative-context.test.mjs",
+      "historical_snapshot": "pump-report/handoffs/sources/R_CANCELLED_TESTS.mjs.snapshot",
+      "sha256": "6392feafe0e22d747591dbc7972e9294f44e4cb1ebcdfba467ae2c49c3548168",
+      "bytes": 12390
+    },
+    {
+      "active_original": "pump-report/handoffs/sources/R_RELATIVE_CONTEXT_HANDOFF_RU.md",
+      "historical_snapshot": "pump-report/handoffs/sources/R_CANCELLED_HANDOFF_RU.md.snapshot",
+      "sha256": "c6d86cd2e2e84a6863b431bc0c36153ccc796fc86e6e2e6de47ad5eb8b6042d5",
+      "bytes": 9556,
+      "active_original_now_annotated_cancelled": true
+    }
+  ],
+  "historical_tests_log": "pump-report/handoffs/sources/relative-context-r-v1.log",
+  "historical_tests": "8PASS0FAIL,73.6705ms, never rerun after cancellation",
+  "historical_common_contract_sha256": "080e0080a0c4e46854c68d48b9e431f2ffed5cda06a3074db9fe956a7b9aa8a2",
+  "R_final_manifest_was_not_published": "Freeze script stopped before final manifest on concurrent shared-contract hash change; no false final package acceptance.",
+  "new_provider_HTTP_SQL_TG_deploy": 0,
+  "snapshots_must_not_be_executed": true
+}

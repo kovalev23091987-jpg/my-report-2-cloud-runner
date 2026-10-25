@@ -1,0 +1,14 @@
+--- pump-report/handoffs/analytics/package-r/baseline/index.before.mjs	2026-10-25 20:13:53
++++ pump-report/analytics/index.mjs	2026-10-25 20:14:42
+@@ -119,9 +119,10 @@
+   result.notification_eligibility={eligible:potentialReason===null,reason:potentialReason,required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:finite(minimum)?minimum:null,
+     comparison:{entry_upper:Math.max(...result.plan.entry_zones.map(z=>z.upper)),exit_lower:result.plan.exit_zone.lower,basis:'GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT',execution_proven:false}};
+   if(potentialReason)return {...result,status:'REJECTED',reasons:unique([...result.reasons,potentialReason])};
+-  const context=explainOptionalFacts(facts,at,profile);
++  const context=explainOptionalFacts(facts,at,profile,instrument);
+   if(context.trade_context)result.trade_context=context.trade_context;
+   if(context.trade_diagnostic)result.trade_diagnostic=context.trade_diagnostic;
++  if(context.relative_context_diagnostic)result.relative_context_diagnostic=context.relative_context_diagnostic;
+   if(Object.keys(context.optional_context).length)result.optional_context=context.optional_context;
+   result.findings.push(...context.findings);result.fact_ids.push(...context.fact_ids);
+   const mapContext=explainMapPlan(result.plan,result.liquidations);

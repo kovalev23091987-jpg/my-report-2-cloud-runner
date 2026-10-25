@@ -2,7 +2,7 @@
 
 ТЗ v2, SHA256 `0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc`. Все1054 строки прочитаны каждым изтрёхчатов; все719 непустых строк сохранены дословно и сверены с исходником.
 
-Отметки разделены: просмотрено; реализация проверена в коде; фактическая приёмка. Галочка кода не объявляет подключение/весь рынок/production готовыми. Общий процент готовности не установлен. Последние прямые указания владельца — OWNER_AMENDMENTS_LITERAL_RU.md и OWNER_PUBLICATION_AMENDMENTS.json.
+Отметки разделены: просмотрено; реализация проверена в коде; фактическая приёмка. Галочка кода не объявляет подключение/весь рынок/production готовыми. Общий процент готовности не установлен. Последние прямые указания владельца — OWNER_AMENDMENTS_LITERAL_RU.md, OWNER_PUBLICATION_AMENDMENTS.json и OWNER_NO_MARKET_COMPARISON.json. Сравнение с BTC/ETH исключено; исходный текст ТЗ сохранён дословно.
 
 ## Раздел 0
 
@@ -546,9 +546,9 @@
 - [x] Пункт рассмотрен при полной сверке.
 - [ ] Реализация проверена в коде. Статус: PARTIAL.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: ANALYTICS. Остаток: Consumer сопоставимых закрытых окон есть, реальный market-context producer не подключён/не доказан.
+Ответственный: ANALYTICS. Остаток: Сравнение движения монеты с BTC/ETH отменено прямой командой владельца. Прочий полезный дополнительный контекст других площадок требует собственной квалификации.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; pump-report/handoffs/analytics/package-m/analytics-traceability.json; checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json.
 
 ### TZ03.009 · исходная строка 76
 
@@ -6337,9 +6337,9 @@
 - [x] Пункт рассмотрен при полной сверке.
 - [ ] Реализация проверена в коде. Статус: PARTIAL.
 - [ ] Текущая фактическая рабочая приёмка завершена.
-Ответственный: ROOT. Остаток: Пригодные компоненты переиспользованы; старые gates не должны вернуться при завершении новых подключений.
+Ответственный: ROOT. Остаток: Сравнение движения монеты с BTC/ETH отменено прямой командой владельца. Прочий полезный дополнительный контекст других площадок требует собственной квалификации.
 
-Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md.
+Доказательства: pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json; checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md; checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json.
 
 ### TZ20.011 · исходная строка 890
 

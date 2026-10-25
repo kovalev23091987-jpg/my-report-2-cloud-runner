@@ -1,0 +1,13 @@
+import {CANDLE_CCXT_TIME_BASIS} from '../../contracts/index.mjs';
+import {RELATIVE_CONTEXT_SCHEMA,RELATIVE_CONTEXT_UNIT,RELATIVE_PRICE_BASIS} from '../../contracts/relative-context.mjs';
+import {fact,instrument as candidate,T,MINUTE} from './fixtures.mjs';
+export function relativeFact({instrument=candidate,at=T,peers=['BTC','ETH'],window_ms=5*MINUTE}={}){
+  const legs=['CANDIDATE',...peers].map(role=>{
+    const bound=role==='CANDIDATE'?structuredClone(instrument):{...structuredClone(candidate),instrument_id:'ARTIFICIAL:BINGX:'+role+'-USDT',asset_id:'ARTIFICIAL:'+role,base:role,native_symbol:role+'-USDT',identity_evidence_ref:'ARTIFICIAL_R_IDENTITY_'+role};
+    const end_price=role==='CANDIDATE'?112:role==='BTC'?101:102;
+    return {role,instrument:bound,fact_id:'ARTIFICIAL:R_LEG:'+role+':'+at,start_ts:at-window_ms,end_ts:at,start_price:100,end_price,return_pct:100*(end_price/100-1),
+      price_basis:RELATIVE_PRICE_BASIS,interval_ms:MINUTE,time_basis:CANDLE_CCXT_TIME_BASIS,complete_closed_window:true,
+      source:'ARTIFICIAL_FIXTURE',primary_provider:'ARTIFICIAL_FIXTURE',venue:'BINGX',origin:'OBSERVED',event_ts:at,received_ts:at,expires_ts:at+90000,evidence_ref:'ARTIFICIAL_R_CLOSED_WINDOW_NOT_NATIVE'};
+  });
+  const f=fact('market_context',{schema_version:RELATIVE_CONTEXT_SCHEMA,returns:legs},RELATIVE_CONTEXT_UNIT,at);f.instrument_id=instrument.instrument_id;return f;
+}

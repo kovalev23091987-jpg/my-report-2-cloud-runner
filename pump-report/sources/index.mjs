@@ -297,8 +297,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
   }
   async function getOptional({instrument} = {}) {
-    const entry = resolve(instrument), facts = {trades: absent(entry, 'trades', 'BINGX_TRADE_ROUTE_NOT_QUALIFIED', 'NOT_CHECKED'),
-      market_context: absent(entry, 'market_context', 'OPTIONAL_CONTEXT_ROUTE_NOT_CONFIGURED', 'NOT_CHECKED')};
+    const entry = resolve(instrument), facts = {trades: absent(entry, 'trades', 'BINGX_TRADE_ROUTE_NOT_QUALIFIED', 'NOT_CHECKED')};
     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
       const qualification = entry.qualifications[kind];
       const usableQualification = proof(qualification) && (kind === 'open_interest'

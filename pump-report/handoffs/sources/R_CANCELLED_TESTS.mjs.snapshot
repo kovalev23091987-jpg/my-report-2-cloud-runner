@@ -1,0 +1,224 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createPumpSources, SOURCE_HTTP_PLAN} from '../../sources/index.mjs';
+import {qualifyRelativeContext, RELATIVE_CONTEXT_UNIT} from '../../contracts/relative-context.mjs';
+import {CANDLE_CCXT_TIME_BASIS} from '../../contracts/index.mjs';
+
+const STEP = 60000, WINDOW = 300000, END = 1792948800000, AT = END + 1000;
+const retained = JSON.parse(fs.readFileSync(new URL('../../sources/registry-curated13-native-relative-v1.json', import.meta.url)));
+const find = role => structuredClone(retained.instruments.find(e => e.instrument.base === role));
+function close(role, at) {
+  const step = Math.max(0, (at - (END - WINDOW)) / STEP);
+  return role === 'SOL' ? 100 + step * 2 : role === 'BTC' ? 200 + step * 0.8 : 300 - step * 0.6;
+}
+function setup({entries = ['SOL', 'BTC', 'ETH'].map(find), alter, clock} = {}) {
+  let current = AT;
+  const calls = [], candidate = entries.find(e => e.instrument.base === 'SOL');
+  const readClock = clock ?? (() => current);
+  const sources = createPumpSources({identityRegistry: entries, clock: readClock, broker: {
+    request: async request => {
+      calls.push(structuredClone(request));
+      const url = new URL(request.url), role = url.searchParams.get('symbol')?.split('-')[0];
+      const n = calls.length;
+      let data;
+      if (url.pathname.endsWith('/klines')) {
+        const start = Number(url.searchParams.get('startTime')), count = Number(url.searchParams.get('limit'));
+        const rows = Array.from({length: count}, (_, index) => {
+          const time = start + index * STEP, c = close(role, time + STEP), o = close(role, time);
+          return {time, open: String(o), high: String(Math.max(o, c) + 1), low: String(Math.min(o, c) - 0.5),
+            close: String(c), volume: role === 'SOL' ? '10' : {native_unit_not_qualified: true}};
+        });
+        data = {code: 0, data: rows};
+      } else if (url.pathname.endsWith('/openInterest')) {
+        data = {code: 0, data: {symbol: 'SOL-USDT', openInterest: '10', time: AT}};
+      } else {
+        data = {code: 0, data: {symbol: 'SOL-USDT', lastFundingRate: '0.001', fundingIntervalHours: 8,
+          fundingTime: AT, nextFundingTime: AT + 28800000}};
+      }
+      const result = {ok: true, status: 200, received_ts: AT, receipt_id: 'R_FIXTURE_' + role + '_' + n, data};
+      return alter ? await alter({request, url, role, result, setClock: value => { current = value; }}) : result;
+    }
+  }});
+  async function core() {
+    const result = await sources.getCore({instrument: candidate.instrument, only_facts: ['candles']});
+    assert.equal(result.facts.candles.status, 'USABLE');
+    calls.length = 0;
+    return result.facts;
+  }
+  return {sources, calls, candidate, core};
+}
+
+test('golden six-close same-window context uses existing candidate, exact identities and shared validator; quantity unused', async () => {
+  const s = setup(), facts = await s.core(), original = structuredClone(facts);
+  const result = await s.sources.getOptional({instrument: s.candidate.instrument, facts});
+  const context = result.facts.market_context, q = qualifyRelativeContext(context, {instrument: s.candidate.instrument, as_of_ts: AT});
+  assert.equal(context.status, 'USABLE');
+  assert.equal(context.unit, RELATIVE_CONTEXT_UNIT);
+  assert.equal(q.valid, true);
+  assert.equal(q.coverage, 'BTC_AND_ETH');
+  assert.equal(q.independent_venue_count, 1);
+  assert.deepEqual(q.returns.map(l => l.role), ['CANDIDATE', 'BTC', 'ETH']);
+  for (const [index, expected] of [10, 2, -1].entries()) {
+    assert.ok(Math.abs(q.returns[index].return_pct - expected) < 1e-10);
+    assert.equal(q.returns[index].start_ts, END - WINDOW);
+    assert.equal(q.returns[index].end_ts, END);
+    assert.equal(q.returns[index].time_basis, CANDLE_CCXT_TIME_BASIS);
+    assert.equal(q.returns[index].complete_closed_window, true);
+    assert.ok(q.returns[index].instrument.identity_evidence_ref);
+    assert.equal(q.returns[index].coverage.quantity_used, false);
+  }
+  assert.deepEqual(facts, original);
+  assert.equal(context.value.returns[0].fact_id, facts.candles.fact_id);
+  assert.equal(context.value.returns[0].received_ts, facts.candles.received_ts);
+  assert.equal(context.event_ts, END);
+  assert.equal(context.expires_ts, END + 90000);
+  assert.equal(s.calls.length, 2);
+  assert.deepEqual(s.calls.map(c => new URL(c.url).searchParams.get('symbol')), ['BTC-USDT', 'ETH-USDT']);
+  for (const c of s.calls) {
+    const p = new URL(c.url).searchParams;
+    assert.equal(p.get('limit'), '6');
+    assert.equal(p.get('startTime'), String(END - WINDOW - STEP));
+    assert.equal(p.get('endTime'), String(END - 1));
+    assert.equal(c.candidate_id, s.candidate.instrument.instrument_id);
+    assert.equal(c.purpose, 'CORE');
+  }
+  assert.equal(result.http_plan.broker_calls_scheduled, 2);
+  assert.equal(result.http_plan.upper_bound, 2);
+  assert.equal(SOURCE_HTTP_PLAN.optional_total_max, 2);
+  assert.equal(result.facts.trades.reason, 'BINGX_TRADE_ROUTE_NOT_QUALIFIED');
+});
+
+test('missing, gapped, duplicate, forming, future-received or wrong-basis candidate cannot trigger benchmark IO', async () => {
+  for (const kind of ['missing', 'gap', 'duplicate', 'forming', 'future', 'basis']) {
+    const s = setup(), facts = await s.core();
+    if (kind === 'missing') delete facts.candles;
+    if (kind === 'gap') facts.candles.value = facts.candles.value.filter(r => r.close_ts !== END - 2 * STEP);
+    if (kind === 'duplicate') facts.candles.value.push(structuredClone(facts.candles.value.at(-1)));
+    if (kind === 'forming') facts.candles.value.at(-1).closed = false;
+    if (kind === 'future') facts.candles.received_ts = AT + 1;
+    if (kind === 'basis') facts.candles.coverage.time_basis = 'UNPROVEN_VENDOR_CLOCK';
+    const result = await s.sources.getOptional({instrument: s.candidate.instrument, facts});
+    assert.notEqual(result.facts.market_context.status, 'USABLE', kind);
+    assert.equal(result.facts.market_context.value, null, kind);
+    assert.equal(s.calls.length, 0, kind);
+  }
+});
+
+test('one invalid benchmark preserves a truthful ONE_BENCHMARK comparison with missing reason', async () => {
+  const s = setup({alter: ({role, result}) => {
+    if (role === 'ETH') result.data.data.splice(2, 1);
+    return result;
+  }});
+  const result = await s.sources.getOptional({instrument: s.candidate.instrument, facts: await s.core()});
+  const context = result.facts.market_context;
+  const q = qualifyRelativeContext(context, {instrument: s.candidate.instrument, as_of_ts: AT});
+  assert.equal(q.valid, true);
+  assert.equal(q.coverage, 'ONE_BENCHMARK');
+  assert.deepEqual(q.returns.map(l => l.role), ['CANDIDATE', 'BTC']);
+  assert.ok(context.coverage.benchmark_observations.some(x => x.role === 'ETH' && x.reason === 'RELATIVE_CONTEXT_CLOSED_WINDOW_GAP'));
+  assert.equal(s.calls.length, 2);
+});
+
+test('future receipt, shifted window, duplicate or unclosed benchmark is rejected, without retry or candidate refetch', async () => {
+  for (const kind of ['future', 'shifted', 'duplicate', 'forming']) {
+    const s = setup({alter: ({role, result}) => {
+      if (role === 'ETH') {
+        if (kind === 'future') result.received_ts = AT + 1;
+        if (kind === 'shifted') for (const row of result.data.data) row.time += STEP;
+        if (kind === 'duplicate') result.data.data[1] = structuredClone(result.data.data[0]);
+        if (kind === 'forming') result.data.data.at(-1).time = AT;
+      }
+      return result;
+    }});
+    const facts = await s.core();
+    const r = await s.sources.getOptional({instrument: s.candidate.instrument, facts});
+    const q = qualifyRelativeContext(r.facts.market_context, {instrument: s.candidate.instrument, as_of_ts: AT});
+    assert.equal(q.valid, true, kind);
+    assert.equal(q.coverage, 'ONE_BENCHMARK', kind);
+    assert.equal(q.returns.some(x => x.role === 'ETH'), false, kind);
+    assert.equal(s.calls.length, 2, kind);
+    assert.ok(s.calls.every(c => new URL(c.url).searchParams.get('symbol') !== 'SOL-USDT'));
+  }
+});
+
+function qualifiedOptionals(entries) {
+  const sol = entries.find(e => e.instrument.base === 'SOL');
+  sol.qualifications.open_interest = {unit: 'BASE_ASSET', evidence_ref: 'CONTROLLED_OI_UNIT'};
+  sol.qualifications.funding = {rate_clock_field: 'fundingTime', evidence_ref: 'CONTROLLED_FUNDING_CLOCK'};
+  return entries;
+}
+
+test('two benchmark slots suppress even qualified OI and funding, never a third or fourth broker call', async () => {
+  const s = setup({entries: qualifiedOptionals(['SOL', 'BTC', 'ETH'].map(find))});
+  const r = await s.sources.getOptional({instrument: s.candidate.instrument, facts: await s.core()});
+  assert.equal(s.calls.length, 2);
+  for (const kind of ['open_interest', 'funding']) {
+    assert.equal(r.facts[kind].status, 'NOT_CHECKED');
+    assert.equal(r.facts[kind].reason, 'NOT_CHECKED_BUDGET');
+    assert.equal(r.facts[kind].coverage.qualification_status, 'QUALIFIED');
+  }
+  assert.equal(r.http_plan.remaining, 0);
+  assert.ok(s.calls.every(c => new URL(c.url).pathname.endsWith('/klines')));
+});
+
+test('missing or wrong-role benchmark frees only residual optional slot and cannot masquerade as BTC', async () => {
+  const entries = qualifiedOptionals(['SOL', 'ETH'].map(find));
+  const s = setup({entries});
+  const r = await s.sources.getOptional({instrument: s.candidate.instrument, facts: await s.core()});
+  const q = qualifyRelativeContext(r.facts.market_context, {instrument: s.candidate.instrument, as_of_ts: AT});
+  assert.equal(q.valid, true);
+  assert.equal(q.coverage, 'ONE_BENCHMARK');
+  assert.deepEqual(q.returns.map(l => l.role), ['CANDIDATE', 'ETH']);
+  assert.equal(s.calls.length, 2);
+  assert.equal(s.calls.filter(c => new URL(c.url).pathname.endsWith('/openInterest')).length, 1);
+  assert.equal(r.facts.open_interest.status, 'USABLE');
+  assert.equal(r.facts.funding.reason, 'NOT_CHECKED_BUDGET');
+  const corrupted = structuredClone(r.facts.market_context);
+  corrupted.value.returns[1].role = 'BTC';
+  assert.equal(qualifyRelativeContext(corrupted, {instrument: s.candidate.instrument, as_of_ts: AT}).reason, 'RELATIVE_CONTEXT_WRONG_BENCHMARK');
+});
+
+test('cached benchmark original receipt clocks and end window are preserved; context keys shared across calls', async () => {
+  const s = setup({alter: ({role, result}) => {
+    if (role !== 'SOL') {result.received_ts = END + 500; result.cache_hit = true; result.receipt_id = 'CACHED_' + role;}
+    return result;
+  }});
+  const facts = await s.core();
+  const first = await s.sources.getOptional({instrument: s.candidate.instrument, facts});
+  const keys = s.calls.map(c => c.cache_key);
+  s.calls.length = 0;
+  const second = await s.sources.getOptional({instrument: s.candidate.instrument, facts});
+  assert.deepEqual(s.calls.map(c => c.cache_key), keys);
+  for (const result of [first, second]) {
+    const context = result.facts.market_context;
+    assert.equal(context.event_ts, END);
+    assert.equal(context.expires_ts, END + 90000);
+    for (const leg of context.value.returns.filter(x => x.role !== 'CANDIDATE')) {
+      assert.equal(leg.received_ts, END + 500);
+      assert.equal(leg.evidence_ref, 'CACHED_' + leg.role);
+    }
+    assert.ok(context.coverage.benchmark_observations.every(x => x.cache_hit));
+  }
+});
+
+test('expiry during load fails closed and budget denial never grows the optional envelope', async () => {
+  const stale = setup({alter: ({role, result, setClock}) => {
+    if (role === 'ETH') setClock(END + 90001);
+    return result;
+  }});
+  const r = await stale.sources.getOptional({instrument: stale.candidate.instrument, facts: await stale.core()});
+  assert.notEqual(r.facts.market_context.status, 'USABLE');
+  assert.equal(r.facts.market_context.value, null);
+  assert.equal(stale.calls.length, 2);
+  const denied = setup({alter: ({role, result}) => {
+    if (role === 'BTC') throw Object.assign(new Error('CONTROLLED_BUDGET_DENIAL'), {code: 'PROVIDER_BUDGET_EXHAUSTED'});
+    return result;
+  }});
+  const good = await denied.sources.getOptional({instrument: denied.candidate.instrument, facts: await denied.core()});
+  assert.equal(denied.calls.length, 2);
+  assert.equal(good.http_plan.broker_calls_scheduled, 2);
+  assert.equal(good.facts.market_context.coverage.comparison, 'ONE_BENCHMARK');
+  assert.equal(good.facts.open_interest.reason, 'NOT_CHECKED_BUDGET');
+});
+

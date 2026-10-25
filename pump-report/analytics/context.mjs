@@ -68,7 +68,7 @@ export function explainOptionalFacts(facts,at,profile){
       if(p.first_to_last_return_pct!==null)add('TRADE_PRICE_RESPONSE','В полученной выборке '+source(trades)+' за '+number((c.sample_end_ts-c.sample_start_ts)/1000)+' с от первой к последней сделке цена '+number(p.first_price)+'→'+number(p.last_price)+' USDT ('+(p.first_to_last_return_pct>=0?'+':'')+number(p.first_to_last_return_pct)+'%); покупки '+number(c.buy_usdt)+', продажи '+number(c.sell_usdt)+' USDT. Только выборка, не весь рынок'+(c.coverage.excluded_returned_rows?'; часть строк исключена':'')+'.',trades);
     }
   }
-  for(const kind of ['open_interest','funding','market_context']){
+  for(const kind of ['open_interest','funding']){
     const f=facts[kind];if(!usable(f,kind,at,profile.freshness_ms[kind]??profile.freshness_ms.price))continue;
     // Keep only qualified feature values. Raw provider payloads belong in ROOT's
     // source store and must not smuggle future rows into the original features.
@@ -76,15 +76,6 @@ export function explainOptionalFacts(facts,at,profile){
       retain(kind,f,f.value);add('OI_SNAPSHOT','Открытый интерес '+source(f)+': '+number(f.value)+' '+f.unit+'; один срез не показывает изменение или сторону позиций.',f);}
     if(kind==='funding'&&f.unit==='RATE_FRACTION_PER_ACTUAL_PERIOD'&&finite(f.value?.rate)&&finite(f.value.rate*100)&&positive(f.value?.period_ms)&&f.value.period_ms<=86400000){
       retain(kind,f,{rate:f.value.rate,period_ms:f.value.period_ms});add('FUNDING_SNAPSHOT','Фандинг '+source(f)+': '+number(f.value.rate*100)+'% за '+number(f.value.period_ms/3600000)+' ч; это контекст, а не направление будущей цены.',f);}
-    // Proposed optional normalized context: same exact closed return window for
-    // the candidate, BTC and/or ETH. Asynchronous windows are not comparable.
-    if(kind==='market_context'&&f.unit==='RETURN_PERCENT_SAME_WINDOW'&&Array.isArray(f.value?.returns)){
-      const rows=f.value.returns.filter(r=>['CANDIDATE','BTC','ETH'].includes(r.role)&&finite(r.return_pct)&&r.return_pct>=-100&&validTime(r.start_ts)&&validTime(r.end_ts)&&r.start_ts<r.end_ts&&r.end_ts<=f.event_ts&&at-r.end_ts<=(profile.freshness_ms.market_context??profile.freshness_ms.price));
-      const candidate=rows.filter(r=>r.role==='CANDIDATE');
-      if(candidate.length===1){const c=candidate[0],peers=['BTC','ETH'].flatMap(role=>{const r=rows.filter(x=>x.role===role);return r.length===1&&r[0].start_ts===c.start_ts&&r[0].end_ts===c.end_ts?r:[];});
-        if(peers.length){retain(kind,f,{returns:[c,...peers].map(r=>({role:r.role,return_pct:r.return_pct,start_ts:r.start_ts,end_ts:r.end_ts}))});
-          add('RELATIVE_RETURN','За одинаковое закрытое окно '+number((c.end_ts-c.start_ts)/60000)+' мин: монета '+number(c.return_pct)+'%, '+peers.map(r=>r.role+' '+number(r.return_pct)+'%').join(', ')+' ('+source(f)+').',f);}}
-    }
   }
   return out;
 }

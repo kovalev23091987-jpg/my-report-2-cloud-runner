@@ -1,7 +1,7 @@
 {
   "schema": "PUMP_SUMMARY_INDEX_SINGLE_NATIVE_ADMISSION_V1",
-  "recorded_at": "2026-10-25 17:23:43 UTC",
-  "base_main": "cd32febb6be71e804b63f30e0299b6468a9c6dcd",
+  "recorded_at": "2026-10-25 17:38:35 UTC",
+  "base_main": "72efb46686058334d9caf6867ada4eb5609cdfbd",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
   "own_lease": {
     "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792946251000",
@@ -21,10 +21,11 @@
     "fixed_run_id": "pump-summary-index-20261025-one",
     "existing_native_family": "LOOKUP",
     "maximum_attempts": 1,
-    "state": "PREPARED_NOT_EXECUTED",
+    "state": "PREPARED_OWNER_AMENDED_ARTIFACT_NOT_EXECUTED",
     "reservation_non_refundable_and_never_rearmed": true,
     "source": "existing saved raw summary records and production-v2 aggregate only",
-    "night_market_or_automatic_statistics_collection": false
+    "night_market_or_automatic_statistics_collection": false,
+    "same_unspent_run_ID_no_rearm": true
   },
   "expires_ts": 1792950300000,
   "native": {
@@ -65,14 +66,15 @@
   },
   "deployment": {
     "worker": "my-report-2-hub",
-    "public_modules": 39,
+    "public_modules": 38,
     "retained_private_legacy_modules": 1,
     "all_19_bindings_preserved": true,
     "full_module_readback_required": true,
     "automatic_enabled": false,
     "delivery_enabled": false,
     "cron_enabled": false,
-    "old_report_resumed": false
+    "old_report_resumed": false,
+    "comparison_producer_consumer_and_contract_removed": true
   },
   "expected": {
     "bounded_index": true,
@@ -92,5 +94,6 @@
     "old ENTRY followup",
     "physical storage capacity test",
     "deletion of original evidence"
-  ]
+  ],
+  "owner_no_market_comparison_ref": "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json"
 }
