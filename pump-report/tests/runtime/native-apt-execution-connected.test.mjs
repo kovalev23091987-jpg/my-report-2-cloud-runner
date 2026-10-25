@@ -9,7 +9,8 @@ test('exact APT primary unit binding reaches actual source Coin parser while cha
   const registry=createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY),entry=registry.resolve({native_symbol:'APT-USDT'}),original=JSON.stringify(BINGX_IDENTITY_REGISTRY);
   assert.equal(entry.native_contract_id,'100164');assert.equal(entry.qualifications.orderbook.native_base_unit,'APT');assert.equal(entry.qualifications.orderbook.evidence_ref,EXECUTION_REVIEW_REF);
   assert.equal(entry.instrument.contract_multiplier,null);assert.equal(entry.instrument.canonical_cross_venue_identity_qualified,false);
-  for(const symbol of ['1000SHIB-USDT','1000PEPE-USDT','APR-USDT'])assert.equal(registry.resolve({native_symbol:symbol}).qualifications.orderbook,undefined);
+  for(const symbol of ['1000SHIB-USDT','1000PEPE-USDT'])assert.equal(registry.resolve({native_symbol:symbol}).qualifications.orderbook,undefined);
+  assert.equal(registry.resolve({native_symbol:'APR-USDT'}).qualifications.orderbook.native_base_unit,'APR');
   const changed=structuredClone(entry);delete changed.qualifications.orderbook;changed.instrument.asset_id='ARTIFICIAL_CHANGED_ASSET';assert.equal(reviewedNativeExecution(changed).qualifications.orderbook,undefined);
   const T=1800100000000,calls=[];let data={code:0,data:{T,bidsCoin:[['5.00','10']],asksCoin:[['5.01','20']],bids:[['5.00','999']],asks:[['5.01','999']]}};
   const source=createPumpSources({identityRegistry:registry,clock:()=>T,broker:{request:async args=>{calls.push(args);return {ok:true,status:200,data:structuredClone(data),received_ts:T,receipt_id:'ARTIFICIAL_F559_NOT_NATIVE_'+calls.length};}}});

@@ -1,0 +1,28 @@
+{
+  "schema": "F565_ORDERLY_DORMANT_ROUTE_TEMPLATE_V1",
+  "provider": "ORDERLY",
+  "market_bindings": [],
+  "actual_admitted_bindings": 0,
+  "actual_enabled_routes": 0,
+  "runtime_registry_modified": false,
+  "reason": "No independently proven current BingX/Orderly identity, field-ID/unit/quote/price-basis proof or accepted common clock-bound contract.",
+  "exact_POST": {
+    "url": "https://api.orderly.org/v1/public/query",
+    "method": "POST",
+    "json_body": {
+      "type": "platformPositions",
+      "min_notional": "0",
+      "limit": 500
+    }
+  },
+  "bounds": {
+    "HTTP": 1,
+    "provider_weight": 20,
+    "rows": 500,
+    "max_bytes": 2000000,
+    "timeout_ms": 10000,
+    "retry": 0,
+    "automatic_pages": 0
+  },
+  "new_IO_admission": false
+}

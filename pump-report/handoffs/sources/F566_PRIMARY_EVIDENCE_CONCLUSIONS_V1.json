@@ -1,0 +1,62 @@
+{
+  "schema": "F566_PRIMARY_EVIDENCE_CONCLUSIONS_V1",
+  "retained_gap": "F564 general guide plus Coin descriptor did not establish which package/underlying quantity the nine explicit scaled labels use.",
+  "sources": [
+    {
+      "attempt": 2,
+      "url": "https://bingx.com/en/perpetual/1000SHIB-USDT",
+      "retrieval": "Indexed HTML, crawled two weeks ago; page navigation plus product title.",
+      "pair_label": "1000SHIBUSDT USDs margined perpetual",
+      "quantity_label_present": false,
+      "price_per_same_package_definition_present": false,
+      "market_title_price_redacted": true,
+      "conclusion": "Product title alone is insufficient."
+    },
+    {
+      "attempt": 3,
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/BTC-USDT",
+      "retrieval": "Trading Information default link; navigation only.",
+      "unit_rules_present": false,
+      "BTC_benchmark_data_collected_or_used": false,
+      "conclusion": "No denominator rule; do not transfer BTC quantities."
+    },
+    {
+      "attempt": 5,
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/1000SHIB-USDT",
+      "retrieval": "Tool reports inaccessible; one failed charged attempt.",
+      "retry": false,
+      "conclusion": "No proof obtained."
+    },
+    {
+      "attempts": [
+        4,
+        6
+      ],
+      "canonical_article_id": "22183116881561",
+      "urls": [
+        "https://bingx.com/es-es/support/articles/22183116881561-Traders-Guaranteed-Price-Fee-Schedule/",
+        "https://bingx.com/de-de/support/articles/22183116881561-%D8%AC%D8%AF%D9%88%D9%84%DA%A9%D8%A7%D8%B1%D9%85%D8%B2%D8%AF%D9%82%DB%8C%D9%85%D8%AA%D8%AA%D8%B6%D9%85%DB%8C%D9%86%DB%8C%DA%A9%D9%BE%DB%8C%E2%80%8C%D8%AA%D8%B1%DB%8C%D8%AF/"
+      ],
+      "retrieval": "Two language search hits of the same fee article; later search automatically repeated them. No explicit failed URL reopen.",
+      "scope": "Copy-trading fee table combines product families/venues; names and fee schedule only.",
+      "fee_values_used": false,
+      "conclusion": "Neither Coin quantity nor exact price denominator proved; count as one underlying article, not independent evidence."
+    },
+    {
+      "attempt": 6,
+      "url": "https://bingx.com/vi/how-to-buy/1000shib",
+      "scope": "Spot/ChainSpot purchase instructions",
+      "conclusion": "Different market and possible token identity; not perpetual Coin-unit proof."
+    },
+    {
+      "attempt": 6,
+      "url": "https://bingx.com/en/flash-news/post/shiba-inu-expands-to-solana-via-sunrise-shib-token-rises-in-hours",
+      "scope": "Third-party news/AI context hosted on BingX",
+      "market_values_used": false,
+      "conclusion": "Not a vendor contract-denomination rule or native identity proof."
+    }
+  ],
+  "verbatim_quotes_exported": 0,
+  "raw_market_values_exported": 0,
+  "new_primary_unit_rule_found": false
+}

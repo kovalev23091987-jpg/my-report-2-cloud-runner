@@ -6,6 +6,7 @@ import {createOutcomeJournal,createOutcomeWorkIndex} from './outcome-journal.mjs
 import {createWorkIndex} from './work-index.mjs';
 import {productionRecord} from '../contracts/run-purpose.mjs';
 import {candidatePriority,analysisQueueEvidence} from './candidate-priority.mjs';
+import {PRODUCTION_PLAN} from './production-policy.mjs';
 
 const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
@@ -101,6 +102,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     if(ownerInstrumentExcluded(instrument))return {status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:instrument.base,delivery:null};
     budget.setMode(mode);
     await assert_execution();
+    const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider});
+    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail},delivery:null};
     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
     // overview1 + day1 + price(primary/fallback)2 + candles/book2 + optional2
     // + forced delivery price/book2 =10 BingX attempts. Map/TG are separate.

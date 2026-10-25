@@ -17,6 +17,17 @@ const inc = (map,key,n=1) => {map[key]=(map[key]??0)+n;};
 export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,limits=RESOURCE_LIMITS,protected_reserves,admission}) {
   if (!store?.atomic || !run_id || !['AUTO','MANUAL','STATISTICS'].includes(mode)) throw new BudgetRefusal('BUDGET_CONTEXT_REQUIRED');
   const run={total:0,lanes:{hot:0,background:0,statistics:0},liquidations:0,candidates:{},unknown:0,receipts:[]};
+  function automaticPlan(state,now){
+    if(admission?.run_purpose!=='PRODUCTION'||admission.planned_load_fraction===undefined)return null;
+    const fraction=admission.planned_load_fraction;
+    if(!Number.isFinite(fraction)||fraction<=0||fraction>1)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'INVALID_PLANNED_LOAD'});
+    const day=utcDay(now),saved=state.automatic_plans?.[day];
+    if(saved){if(!integer(saved.charged)||!integer(saved.limit)||!integer(saved.baseline_charged)||saved.fraction!==fraction||(state.days[day]??0)<saved.baseline_charged+saved.charged)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'AUTOMATIC_PLAN_STATE_UNQUALIFIED'});return saved;}
+    const protectedTotal=Object.values(protected_reserves.http_by_provider).reduce((a,b)=>a+b,0)+protected_reserves.delivery_http+protected_reserves.outcomes_http;
+    const baseline=state.days?.[day]??0;
+    return {schema:'PUMP_PLANNED_AUTOMATIC_DAY_V1',day,created_ts:now,baseline_charged:baseline,
+      protected_at_creation:protectedTotal,fraction,limit:Math.floor(Math.max(0,limits.project_http_day-protectedTotal-baseline)*fraction),charged:0};
+  }
   const assertWorkWindow=()=>{if(admission?.strict_automatic_window===true&&mode!=='MANUAL'&&!automaticWindowOpen(clock()))throw new BudgetRefusal('BUDGET_AUTOMATIC_WINDOW_CLOSED');};
   const providerPolicy = provider => {
     if(Array.isArray(admission?.allowed_providers)&&!admission.allowed_providers.includes(provider))throw new BudgetRefusal('PROVIDER_NOT_IN_RUN_ADMISSION');
@@ -63,10 +74,13 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       if(monthSpent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscoveryMonth:0)+(futureCandidatesMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
+      const plan=mode==='AUTO'?automaticPlan(state,now):null;
+      if(plan&&purpose==='DISCOVERY'&&plan.charged+cost+futureDiscovery+futureCandidates.http>plan.limit)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'PLANNED_AUTO_ALLOCATION_AND_FUTURE_WORK'});
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
+      if(plan){state.automatic_plans??={};plan.charged+=cost;state.automatic_plans[day]=plan;}
       if(integer(policy.qualification_attempt_cap)){p.qualification_totals??={};inc(p.qualification_totals,policy.version,cost);}
-      state.outstanding[request_id]={run_id,provider,cost,ts:now,family,purpose};
-      return {state,result:{request_id,run_id,provider,family,purpose,cost,reserved_ts:now,day,month,state:'RESERVED'}};
+      state.outstanding[request_id]={run_id,provider,cost,ts:now,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED'};
+      return {state,result:{request_id,run_id,provider,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED',cost,reserved_ts:now,day,month,state:'RESERVED'}};
     });}catch(error){
       if(error instanceof BudgetRefusal&&['REQUEST_ALREADY_RESERVED','PROVIDER_SECOND_EXHAUSTED','PROVIDER_MINUTE_EXHAUSTED','QUALIFICATION_ATTEMPTS_EXHAUSTED','PROTECTED_DAY_RESERVE','PROVIDER_MONTH_EXHAUSTED','PROVIDER_BACKOFF'].includes(error.code)){
         run.total-=cost;run.lanes[lane]-=cost;if(family==='LIQUIDATIONS')run.liquidations-=cost;if(candidate_id)inc(run.candidates,candidate_id,-cost);
@@ -106,7 +120,26 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     for(const row of recent){if(occupied+cost<=policy.per_minute_cap)break;occupied-=row.cost;not_before_ts=row.ts+60000;}
     return {not_before_ts,expires_ts:admission.expires_ts,cost,minute_cap:policy.per_minute_cap,forecast_only:true};
   }
-  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,providerWindow,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
+  async function admitCandidate({http_upper_bound,http_by_provider}={}){
+    if(admission?.run_purpose!=='PRODUCTION')return {allowed:true,scope:'NO_PRODUCTION_FORECAST_APPLIED'};
+    assertWorkWindow();const now=clock(),state=await store.get('pump:resources')??{days:{},providers:{}};
+    const deny=reason=>({allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:reason});
+    if(!integer(http_upper_bound)||http_upper_bound<1||!http_by_provider||Object.values(http_by_provider).some(n=>!integer(n))||Object.values(http_by_provider).reduce((a,b)=>a+b,0)>http_upper_bound)return deny('CANDIDATE_COST_UNQUALIFIED');
+    if(admission.max_http_attempts!==undefined&&run.total+http_upper_bound>admission.max_http_attempts)return deny('WHOLE_CANDIDATE_OPERATION_HTTP_LIMIT');
+    const day=utcDay(now),month=utcMonth(now),future=futureCandidateReserve(now,admission.future_candidates),futureMonth=futureCandidateReserve(now,admission.future_candidates,{period:'MONTH'});
+    const discovery=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'DAY')}),discoveryMonth=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'MONTH')});
+    const manual=mode==='MANUAL'?0:Object.values(protected_reserves.http_by_provider).reduce((a,b)=>a+b,0),fixed=manual+protected_reserves.delivery_http+protected_reserves.outcomes_http;
+    if((state.days[day]??0)+http_upper_bound+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
+    const plan=mode==='AUTO'?automaticPlan(state,now):null;
+    if(plan&&plan.charged+http_upper_bound+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
+    for(const [provider,cost]of Object.entries(http_by_provider)){
+      const policy=providerPolicy(provider),p=state.providers?.[provider]??{},reserve=(mode==='MANUAL'?0:protected_reserves.http_by_provider[provider])+(policy.delivery_source===false?0:protected_reserves.delivery_http)+(policy.outcome_source===false?0:protected_reserves.outcomes_http);
+      if(!integer(reserve)||(p.days?.[day]??0)+cost+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
+      if((p.months?.[month]??0)+cost+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
+    }
+    return {allowed:true,scope:'BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION',http_upper_bound};
+  }
+  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,providerWindow,admitCandidate,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
 }
 
 export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bind(globalThis),clock=Date.now,max_response_bytes=2000000,sleep_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {

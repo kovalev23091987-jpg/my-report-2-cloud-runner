@@ -7,6 +7,7 @@ import {createDayGrowthLoader} from './day-growth.mjs';
 import {isExactSavedNonTargetDecision} from './saved-nontarget-decisions.mjs';
 import {parseRecentTrades, RECENT_TRADE_SEMANTICS} from './recent-trades.mjs';
 import {collectHyperliquidPositions} from './hyperliquid-observed-positions.mjs';
+import {collectOrderlyPositions, orderlyRouteConfigured} from './orderly-observed-positions.mjs';
 
 export const SOURCE_VERSION = 'pump-report-sources-v1';
 export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
@@ -14,6 +15,7 @@ export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, cor
   optional_trades: 1, optional_total_max: 2,
   selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1, day_growth_per_window_max: 1,
   liquidation_swole_per_candidate: 1, liquidation_hyperliquid_per_candidate_max: 1,
+  liquidation_orderly_shared_page_max: 1,
   automatic_retries: 0, SQL_owned_by_sources: 0,
   actual_provider_and_SQL_cost: null, six_manual_checks_reserved: false});
 const IDENTITY_KEYS = ['instrument_id', 'asset_id', 'venue', 'native_symbol', 'market_type', 'base', 'quote', 'settle', 'classification_status'];
@@ -389,21 +391,30 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
   }
   async function getLiquidations({instrument, reference_price, deadline_ts} = {}) {
     const entry = resolve(instrument), at = now(), deadline = Math.min(timestamp(deadline_ts) ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms);
-    const finish = result => { note(instrument, 'liquidations', {status: result.status, reason: result.reason, checked_sources: result.checked_sources, coverage: result.coverage}); return result; };
+    const finish = result => { note(instrument, 'liquidations', {status: result.status, reason: result.reason, checked_sources: result.checked_sources,
+      usable_zone_count: Array.isArray(result.zones) ? result.zones.filter(zone => zone.usable === true).length : 0, coverage: result.coverage}); return result; };
     if (positive(reference_price) === null) return finish(emptyMap('NOT_CHECKED', 'REFERENCE_PRICE_REQUIRED'));
     if (deadline_ts !== undefined && timestamp(deadline_ts) === null) return finish(emptyMap('NOT_CHECKED', 'INVALID_LIQUIDATION_DEADLINE'));
     if (deadline <= at) return finish(emptyMap('TIMEOUT', 'LIQUIDATION_DEADLINE_EXPIRED'));
     const routes = Array.isArray(entry.liquidations?.routes) ? entry.liquidations.routes : [];
     const route = routes.find(candidate => verifiedSwoleRoute(candidate, instrument));
     if (!route) {
+      const orderly = routes.find(candidate => candidate?.provider === 'ORDERLY' && orderlyRouteConfigured(candidate, instrument));
+      const collectOrderly = candidate => collectOrderlyPositions({route: candidate, instrument, now, profile, deadline, reference_price,
+        http_limit: Number.isSafeInteger(profile.map_http_upper_bound) && profile.map_http_upper_bound >= 0
+          ? Math.min(profile.map_http_upper_bound, SOURCE_HTTP_PLAN.liquidation_orderly_shared_page_max) : 0,
+        request: postRoute => request('liquidations', {instrument, ttl_ms: profile.freshness_ms.observed_positions,
+          deadline_ts: deadline, route: postRoute})});
+      if (orderly) return finish(await collectOrderly(orderly));
       const hyperliquid = routes.find(candidate => candidate?.provider === 'HYPERLIQUID');
       if (hyperliquid) return finish(await collectHyperliquidPositions({route: hyperliquid, instrument, now, profile, deadline,
         reference_price, http_limit: Number.isSafeInteger(profile.map_http_upper_bound) && profile.map_http_upper_bound >= 0
           ? Math.min(profile.map_http_upper_bound, SOURCE_HTTP_PLAN.liquidation_hyperliquid_per_candidate_max) : 0,
         request: postRoute => request('liquidations', {instrument, ttl_ms: profile.freshness_ms.observed_positions,
           deadline_ts: deadline, route: postRoute})}));
-      return finish(emptyMap('NOT_CHECKED', routes.some(candidate => candidate?.provider === 'ORDERLY')
-        ? 'NO_IMPLEMENTED_ORDERLY_ROUTE' : 'NO_VERIFIED_LIQUIDATION_ROUTE'));
+      const dormantOrderly = routes.find(candidate => candidate?.provider === 'ORDERLY');
+      if (dormantOrderly) return finish(await collectOrderly(dormantOrderly));
+      return finish(emptyMap('NOT_CHECKED', 'NO_VERIFIED_LIQUIDATION_ROUTE'));
     }
     let response;
     try {
@@ -422,16 +433,17 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
   function getCoverage() {
     const instruments = [...coverageRows.values()].map(plain), maps = instruments.map(row => row.liquidations).filter(Boolean);
     const checked = maps.filter(map => map.coverage?.response_checked === true);
+    const targetChecked = checked.filter(map => map.coverage?.target_checked_in_this_page !== false);
     return {version: SOURCE_VERSION, contract_version: CONTRACT_VERSION, catalog: plain(catalogCoverage), instruments,
       totals: {registry_verified_instruments: registry.size, core_checked: instruments.filter(row => row.core && Object.values(row.core.facts).some(value => value.status !== 'NOT_CHECKED')).length,
         overview_price_usable: instruments.filter(row => row.overview?.status === 'USABLE').length,
         core_usable: instruments.filter(row => row.core?.status === 'USABLE' && row.core.selected_facts?.length === 3).length,
-        selected_core_usable: instruments.filter(row => row.core?.status === 'USABLE').length, map_checked: checked.length,
+        selected_core_usable: instruments.filter(row => row.core?.status === 'USABLE').length, map_checked: targetChecked.length,
         day_growth_checked: instruments.filter(row => row.growth_24h && row.growth_24h.status !== 'NOT_CHECKED').length,
         day_growth_usable: instruments.filter(row => row.growth_24h?.status === 'USABLE').length,
-        map_usable: maps.filter(map => ['USABLE', 'PARTIAL'].includes(map.status)).length,
-        map_checked_without_usable: checked.filter(map => !['USABLE', 'PARTIAL'].includes(map.status)).length,
-        map_not_checked: registry.size - checked.length},
+        map_usable: maps.filter(map => map.usable_zone_count > 0).length,
+        map_checked_without_usable: targetChecked.filter(map => !(map.usable_zone_count > 0)).length,
+        map_not_checked: registry.size - targetChecked.length},
       expense_ledger: 'ROOT_BROKER_ONLY', actual_provider_cost: null, actual_SQL_cost: null};
   }
   return {getCatalog, getOverview, getCore, getDayGrowth, getOptional, getLiquidations, getOutcomeHistory, getCoverage};

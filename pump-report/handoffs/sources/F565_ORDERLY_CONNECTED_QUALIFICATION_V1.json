@@ -1,0 +1,43 @@
+{
+  "schema": "F565_ORDERLY_CONNECTED_QUALIFICATION_V1",
+  "unique_new_case": 1,
+  "first_execution": {
+    "pass": 1,
+    "fail": 0,
+    "case_ms": 44.782959,
+    "duration_ms": 108.14925,
+    "log": "pump-report/handoffs/sources/F565_ORDERLY_AGGREGATE_CONNECTED_FIRST.log"
+  },
+  "new_related_coverage_repair": "Do not count PARTIAL zero-zone map as usable; absent target behind cursor stays NOT_CHECKED in global coverage; malformed symbol cannot establish absence.",
+  "affected_rerun_after_repair": {
+    "pass": 1,
+    "fail": 0,
+    "case_ms": 44.431333,
+    "duration_ms": 118.932541,
+    "log": "pump-report/handoffs/sources/F565_ORDERLY_AGGREGATE_CONNECTED_COVERAGE_FIX.log"
+  },
+  "accepted_old_cases_replayed": 0,
+  "real_modules_exercised": [
+    "runtime/read-only-json-post.mjs",
+    "runtime/budget.mjs:createUnifiedBudget/createRequestBroker",
+    "runtime/store.mjs:MemoryStore",
+    "sources/index.mjs:getLiquidations/getCoverage",
+    "sources/orderly-observed-positions.mjs",
+    "analytics/zones.mjs:selectZones rejects empty qualified set"
+  ],
+  "wire_transport": "ARTIFICIAL_FETCH_ONLY_NOT_NATIVE",
+  "shared_three_target_plus_cache_fetches": 1,
+  "shared_current_charge": 1,
+  "old_seeded_unknown_preserved": true,
+  "fake_ID_field": "position_id ONLY IN ARTIFICIAL FIXTURE; NOT_VENDOR_FIELD_CLAIM",
+  "qualified_normalized_zones": 0,
+  "actual_native_coverage": 0,
+  "new_native_provider_docs_SQL_Telegram_deploy": 0,
+  "first_original_log_preserved": true,
+  "limitations": [
+    "Common clock-bound contract is pending ROOT; event_ts remains null",
+    "Native stable-ID/schema/current-access/unit proofs not established",
+    "No cross-venue identity or rate configured in real registry",
+    "Map remains optional and does not block valid core"
+  ]
+}

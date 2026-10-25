@@ -1,6 +1,6 @@
-// Coordinator-owned bounded qualification. Internal limits are not claims
-// about an external free quota. Production remains disabled until evidence.
-export const PROVIDER_STAGE = 'SAVED_STATISTICS_AUDIT_SINGLE';
+// Historical qualification limits below remain intact. Genuine production
+// uses production-policy.mjs and actual per-run admission; flags control IO.
+export const PROVIDER_STAGE = 'PRODUCTION_QUALIFIED';
 export const PROVIDER_POLICY_VERSION = 'pump-manual-native-relative-acceptance-20261025-v1';
 export const MANUAL_ACCEPTANCE_ID='pump-native-relative-manual-btc-20261025-one';
 export const MANUAL_ACCEPTANCE_SYMBOL='BTC';

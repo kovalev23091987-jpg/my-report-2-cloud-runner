@@ -1,0 +1,31 @@
+{
+  "schema": "F565_CLOCK_ID_AND_NATIVE_MINIMUM_INPUTS_V1",
+  "common_clock_contract": "ROOT_ACCEPTANCE_REQUIRED_NO_SOURCE_OVERRIDE",
+  "current_generation_event_ts": null,
+  "existing_analytics_requires_actual_event_ts": true,
+  "saved_primary_source_clock": {
+    "response_ts_field": "ts",
+    "semantics": "SERVER_RESPONSE_TIME_NOT_GENERATION",
+    "documented_worst_age_ms": 5000,
+    "explicit_asof_interval": "[ts-5000,ts]",
+    "no_inferred_event_ts": true,
+    "evidence_ref": "checkpoints/pump-report-20261025/ROOT_ORDERLY_CURRENT_PRIMARY_DELTA.json",
+    "evidence_sha256": "7f9a2ddf961cffab3439e15e9f77f7c015e2c6025295480acd62a0fb9d090277"
+  },
+  "minimal_inputs": [
+    "ROOT-approved explicit bounded-source-asof representation accepted by the common zone consumer, or independently proven real snapshot generation time. Never ts/receipt/opened_at alias.",
+    "One separately admitted bounded actual response to validate exact wire shape and actual stable-ID field availability; a single response alone does not prove vendor ID stability. Primary stable-ID semantics are also required.",
+    "Explicit native notional and price unit proof for USDC; no quote-label inference as currency proof.",
+    "Independent exact source-market/BingX-underlying binding with current target tuple, not retained HTX labels or price-gap heuristic.",
+    "Fresh explicit USDC/USDT quote rate and independent Orderly/BingX price basis, each with proof and expiry.",
+    "Exact positive provider/global/native-SQL admission including body500,weight20,bytes/deadline/finalize, old unknowns/manual3/future/outcome/delivery protections."
+  ],
+  "until_inputs": {
+    "market_bindings": [],
+    "qualified_zones": 0,
+    "actual_current_target_coverage": 0,
+    "map_absence_blocks_core": false
+  },
+  "public_raw_or_account_ID_export": false,
+  "actual_calls_executed": 0
+}
