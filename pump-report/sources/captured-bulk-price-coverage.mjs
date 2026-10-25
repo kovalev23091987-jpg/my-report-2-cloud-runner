@@ -35,8 +35,12 @@ export function analyzeCapturedBulkPrices({capture, expected_symbols, as_of_ts, 
     || expected_symbols.some(s => typeof s !== 'string' || !s || s.length > 160 || /\s/.test(s))
     || new Set(expected_symbols).size !== expected_symbols.length) throw Error('EXACT_UNIQUE_EXPECTED_SCOPE_REQUIRED');
   if (typeof as_of_ts !== 'number' || ms(as_of_ts) === null) throw Error('EXPLICIT_ANALYSIS_UNIX_MS_REQUIRED');
-  const raw = capture?.body?.result?.raw_responses;
-  if (!Array.isArray(raw) || raw.length > 16) throw Error('CAPTURE_BODY_RESULT_RAW_RESPONSES_REQUIRED');
+  const legacy = capture?.body?.result?.raw_responses, direct = capture?.body?.raw_responses;
+  if (Array.isArray(legacy) && Array.isArray(direct)) throw Error('AMBIGUOUS_CAPTURE_ENVELOPE_BRANCHES');
+  const directAllowed = capture?.body?.schema === 'PUMP_SOURCE_FEASIBILITY_ACTUAL_V1';
+  const raw = Array.isArray(legacy) ? legacy : directAllowed ? direct : null;
+  const captureLayout = Array.isArray(legacy) ? 'BODY_RESULT_RAW_RESPONSES' : 'ACTUAL_V1_BODY_RAW_RESPONSES';
+  if (!Array.isArray(raw) || raw.length > 16) throw Error('CAPTURE_SUPPORTED_BOUNDED_RAW_RESPONSES_REQUIRED');
   const candidates = raw.filter(bulkURL), selected = candidates.length === 1 ? candidates[0] : null;
   const response = selected?.response, body = response?.data;
   const reasons = [];
@@ -110,7 +114,10 @@ export function analyzeCapturedBulkPrices({capture, expected_symbols, as_of_ts, 
   const elapsed = started !== null && received !== null && started <= received ? received-started : null;
   const wire = response?.wire_bytes_basis === 'MEASURED_WIRE_BODY_BYTES' && Number.isSafeInteger(response?.wire_bytes)
     && response.wire_bytes >= 0 ? response.wire_bytes : null;
-  return {schema:BULK_COVERAGE_VERSION,analysis_as_of_ts:as_of_ts,source_status:sourceOK?'SUCCESS':'NOT_QUALIFIED',source_reason_codes:reasons,
+  const fetchBodyBytes = response?.body_bytes_basis === 'FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE'
+    && Number.isSafeInteger(response?.body_bytes) && response.body_bytes >= 0 ? response.body_bytes : null;
+  return {schema:BULK_COVERAGE_VERSION,capture_layout:captureLayout,capture_run_id:capture?.body?.run_id??null,
+    analysis_as_of_ts:as_of_ts,source_status:sourceOK?'SUCCESS':'NOT_QUALIFIED',source_reason_codes:reasons,
     captured_bulk_responses:candidates.length,ignored_raw_responses:raw.length-candidates.length,
     request_url:selected?.request?.url ?? null,receipt_id:response?.receipt_id ?? null,cache_hit:response?.cache_hit ?? null,
     original_received_ts:typeof response?.received_ts==='number'?response.received_ts:null,
@@ -119,6 +126,8 @@ export function analyzeCapturedBulkPrices({capture, expected_symbols, as_of_ts, 
       canonical_utf8_bytes:canonical===null?null:new TextEncoder().encode(canonical).byteLength,
       canonical_format:'Stable sorted JSON keys/array order, not original HTTP wire bytes or RFC8785 claim',
       wire_body_bytes:wire,wire_bytes_reason:wire===null?'MEASURED_WIRE_BODY_BYTES_NOT_RECORDED':null,
+      fetch_response_body_bytes:fetchBodyBytes,
+      fetch_response_body_bytes_basis:fetchBodyBytes===null?null:'FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE',
       provided_latency_ms:nullableMetric(response?.latency_ms),request_started_ts:started,
       elapsed_request_start_to_received_ms:elapsed,elapsed_basis:elapsed===null?null:'PROVIDED_REQUEST_START_TO_ORIGINAL_RECEIVE_INCLUDES_BODY_PARSE',
       HTTP_Date_used_as_data_clock:false,raw_body_or_prices_exported:false},

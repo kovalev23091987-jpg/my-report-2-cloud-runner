@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {createPumpSources} from '../../sources/index.mjs';
+import {BINGX_IDENTITY_REGISTRY} from '../../registry/index.mjs';
+import {createReviewedNativeScopeRegistry} from '../../registry/native-reviewed550.mjs';
+import {ownerInstrumentExcluded} from '../../contracts/index.mjs';
+const hash=b=>createHash('sha256').update(b).digest('hex');
+test('actual source catalog consumes ROOT reviewed550 and exact negative API against saved1278 without confusing knownTradFi with unknown crypto',async()=>{
+ const bytes=fs.readFileSync('/private/tmp/pump-report-native-catalog-corrected.json');assert.equal(hash(bytes),'7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5');
+ const saved=JSON.parse(bytes).body.response,registry=createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY);let calls=0;
+ const broker={request:async args=>{calls++;assert.equal(args.url,'https://open-api.bingx.com/openApi/swap/v2/quote/contracts');return structuredClone(saved);}};
+ const source=createPumpSources({broker,identityRegistry:registry,clock:()=>saved.received_ts});const catalog=await source.getCatalog();
+ assert.equal(calls,1);assert.equal(catalog.coverage.total,1278);assert.equal(catalog.instruments.length,552);assert.equal(catalog.instruments.filter(i=>!ownerInstrumentExcluded(i)).length,550);assert.equal(catalog.unqualified.filter(r=>r.reason==='KNOWN_NON_TARGET_EXACT_SAVED_TUPLE').length,380);assert.equal(catalog.unqualified.filter(r=>['CRYPTO_ASSET_IDENTITY_UNQUALIFIED','CATALOG_REGISTRY_IDENTITY_MISMATCH','MISSING_OR_DUPLICATE_NATIVE_SYMBOL','INVALID_CATALOG_ROW'].includes(r.reason)).length,0);
+ assert.equal(catalog.unqualified.filter(r=>r.reason==='OWNER_EXCLUDED_GOLD_BACKED_ASSET').length,2);assert.equal(catalog.instruments.some(i=>['PAXG','XAUT','USDBRL'].includes(i.base)),false);
+ const target=saved.data.data.find(r=>r.symbol==='0G-USDT'),negative=saved.data.data.find(r=>registry.resolveCatalogDecision(r));
+ const changed={...negative,contractId:Number(negative.contractId)+9999999},unknown={...target,contractId:999999998,symbol:'人工新资产-USDT',asset:'人工新资产'};
+ const changedSource=createPumpSources({identityRegistry:registry,clock:()=>saved.received_ts,broker:{request:async()=>({...saved,data:{code:0,data:[target,changed,unknown]}})}});
+ const partial=await changedSource.getCatalog();assert.equal(partial.instruments.length,1);assert.equal(partial.instruments[0].native_symbol,'0G-USDT');assert.equal(partial.unqualified.length,2);assert.ok(partial.unqualified.every(r=>r.reason==='CRYPTO_ASSET_IDENTITY_UNQUALIFIED'));assert.equal(partial.unqualified.some(r=>r.reason==='KNOWN_NON_TARGET_EXACT_SAVED_TUPLE'),false);
+});

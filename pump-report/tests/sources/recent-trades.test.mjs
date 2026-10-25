@@ -79,7 +79,7 @@ test('mixed maker schemas, unsafe/missing IDs, invalid amounts/clocks/identity s
   assert.equal(p.value[13].price, null); assert.equal(p.value[13].notional_quote, null);
   assert.equal(p.reason, 'LATEST_RETURNED_TRADE_SAMPLE_PARTIAL');
   assert.equal(p.coverage.duplicate_and_conflicting_ids_preserved, true);
-  assert.throws(() => parseRecentTrades({code: 0, data: Array.from({length: 101}, () => trade())},
+  assert.throws(() => parseRecentTrades({code: 0, data: Array.from({length: 1001}, () => trade())},
     {instrument: sol.instrument, received_ts: at}), /BOUNDED_TRADE_ARRAY/);
 });
 

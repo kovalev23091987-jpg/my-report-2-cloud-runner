@@ -3546,11 +3546,11 @@
       "kind": "TABLE_ROW",
       "text": "| **5** | **Сила монеты относительно рынка** | Отличить самостоятельное движение от общего подъёма рынка, проверить полезные сведения с других площадок | Дополнительный |",
       "lead": "ANALYTICS",
-      "status": "PARTIAL",
+      "status": "REMOVED_BY_OWNER",
       "code_refs": [],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Сравнение движения монеты с BTC/ETH отменено прямой командой владельца. Прочий полезный дополнительный контекст других площадок требует собственной квалификации.",
+      "remaining": "Прямым поздним решением владельца сравнение с BTC/ETH полностью исключено. Это не новый обязательный блок.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -3606,8 +3606,8 @@
           "native_verified": false
         }
       },
-      "code_verified": false,
-      "requirement_closed": false,
+      "code_verified": true,
+      "requirement_closed": true,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
@@ -15275,7 +15275,14 @@
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+      ],
+      "latest_scoped_actual_evidence": {
+        "proof": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json",
+        "scope": "ONE_SOL_125_CLOSED_BARS_ONLY",
+        "all550_history_verified": false,
+        "absolute_volume_units_qualified": false,
+        "no_whole_requirement_closure_inferred": true
+      }
     },
     {
       "id": "TZ08.007",
@@ -15361,7 +15368,14 @@
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+      ],
+      "latest_scoped_actual_evidence": {
+        "proof": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json",
+        "scope": "ONE_SOL_125_CLOSED_BARS_ONLY",
+        "all550_history_verified": false,
+        "absolute_volume_units_qualified": false,
+        "no_whole_requirement_closure_inferred": true
+      }
     },
     {
       "id": "TZ08.008",
@@ -16610,7 +16624,14 @@
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+      ],
+      "latest_scoped_actual_evidence": {
+        "proof": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json",
+        "scope": "ONE_SOL_125_CLOSED_BARS_ONLY",
+        "all550_history_verified": false,
+        "absolute_volume_units_qualified": false,
+        "no_whole_requirement_closure_inferred": true
+      }
     },
     {
       "id": "TZ08.021",
@@ -16842,7 +16863,14 @@
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json"
-      ]
+      ],
+      "latest_scoped_actual_evidence": {
+        "proof": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json",
+        "scope": "ONE_SOL_125_CLOSED_BARS_ONLY",
+        "all550_history_verified": false,
+        "absolute_volume_units_qualified": false,
+        "no_whole_requirement_closure_inferred": true
+      }
     },
     {
       "id": "TZ08.023",
@@ -33757,7 +33785,15 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ15.006",
@@ -34859,7 +34895,15 @@
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ15.017",
@@ -35773,6 +35817,14 @@
         ],
         "ref": "pump-report/handoffs/analytics/package-o/audit-gap-delta.json",
         "meaning": "Добавлена только наблюдаемая нижняя оценка ухода ниже достигнутой области. Нет точной цены исполнения/реальнойпросадки/прибыли; broader requirement not automaticallyclosed."
+      },
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
       }
     },
     {
@@ -36046,11 +36098,13 @@
       "kind": "LIST_ITEM",
       "text": "- насколько глубже ушла цена.",
       "lead": "ANALYTICS",
-      "status": "UNIMPLEMENTED",
+      "status": "VERIFIED_CODE",
       "code_refs": [],
-      "accepted_proof_refs": [],
+      "accepted_proof_refs": [
+        "pump-report/handoffs/analytics/package-o/qualification.json"
+      ],
       "native_verified": false,
-      "remaining": "Нет отдельного поля глубины ухода цены от фактически достигнутой entry zone; общий drawdown от P0 не является этой метрикой.",
+      "remaining": "Пакет O добавляет наблюдаемую нижнюю оценку ухода ниже достигнутой области; это не точная просадка исполнения и не реальная прибыль. Нужны реальные рабочие исходы.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -36107,7 +36161,7 @@
           "native_verified": false
         }
       },
-      "code_verified": false,
+      "code_verified": true,
       "requirement_closed": false,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
@@ -41187,7 +41241,15 @@
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ17.008",
@@ -41326,7 +41388,15 @@
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ17.010",
@@ -41391,7 +41461,15 @@
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ17.011",
@@ -41465,7 +41543,15 @@
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ17.012",
@@ -41669,7 +41755,15 @@
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ17.015",
@@ -41743,7 +41837,15 @@
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "pump-report/handoffs/analytics/package-m/analytics-traceability.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md"
-      ]
+      ],
+      "latest_connected_code_evidence": {
+        "proof": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+        "ROOT_new_pass": 3,
+        "Z_new_pass": 8,
+        "native_new_audit": false,
+        "calibration_validated": false,
+        "old_originals_no_retroactive_changes": true
+      }
     },
     {
       "id": "TZ17.016",
@@ -48339,11 +48441,11 @@
       "kind": "TABLE_ROW",
       "text": "| Контекст рынка | Пригодные расчёты относительной силы | Сделать дополнительными |",
       "lead": "ROOT",
-      "status": "PARTIAL",
+      "status": "REMOVED_BY_OWNER",
       "code_refs": [],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Сравнение движения монеты с BTC/ETH отменено прямой командой владельца. Прочий полезный дополнительный контекст других площадок требует собственной квалификации.",
+      "remaining": "Прямым поздним решением владельца сравнение с BTC/ETH полностью исключено. Это не новый обязательный блок.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -48391,8 +48493,8 @@
           "remaining": "Пригодные компоненты переиспользованы; старые gates не должны вернуться при завершении новых подключений."
         }
       },
-      "code_verified": false,
-      "requirement_closed": false,
+      "code_verified": true,
+      "requirement_closed": true,
       "assessment_refs": [
         "pump-report/handoffs/sources/FULL_TZ_SOURCE_ATOMIC_LEDGER_V1.json",
         "checkpoints/pump-report-20261025/ROOT_FULL_TZ_REVIEW_RU.md",
@@ -57067,26 +57169,24 @@
   "all24sections_reviewed": true,
   "all_nonempty_lines_reviewed": true,
   "current_native_scope": {
-    "eligible_crypto_N": null,
-    "active_USDT_catalog_count": 934,
-    "positively_verified_crypto": 13,
-    "owner_delivery_excluded": 2,
-    "delivery_verified": 11,
-    "unclassified_active_USDT": 919,
+    "saved_active_USDT": 934,
+    "economic_crypto_scope": 552,
+    "selected_report_scope": 550,
+    "known_TradFi_excluded": 380,
+    "goldbacked_excluded": 2,
+    "owner_BTC_ETH_excluded": 2,
+    "classification_basis": "EXPLICIT_ACCEPTED_ECONOMIC_INFERENCE_NOT_UNIVERSAL_coinType",
+    "historical_strict_registry13_retained": true,
+    "new539_explicit_native_tuple_review_prepared": true,
+    "new_registry_live_native_CORE550_qualified": false,
+    "bulk_price_fresh_at_original_receive": 550,
+    "bulk_price_missing_ambiguous_invalid": 0,
+    "bulk_capture_is_not_current_membership": true,
+    "SOL_closed_candles": 125,
+    "full_CORE_by_instrument_NOT_proven": true,
     "production_signals": 0,
     "qualified_maps": 0,
-    "latest_bounded_acceptance": {
-      "SOL_CORE_checked_once": true,
-      "SOL_READY": false,
-      "SOL_Telegram": 0,
-      "production_summary_independent_waves": 0,
-      "acceptance240_excluded": true,
-      "corrected_metadata_code": 0,
-      "metadata_rows_nested_unqualified": 5673,
-      "cryptoN": null,
-      "whole_universe_proven": false,
-      "proof": "checkpoints/pump-report-20261025/POST_REVIEW_SOL_NATIVE_ACTUAL.json"
-    }
+    "proof": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json"
   },
   "owner_amendments_literal_ref": "checkpoints/pump-report-20261025/OWNER_AMENDMENTS_LITERAL_RU.md",
   "latest_repairs": {
@@ -57117,17 +57217,35 @@
     "unicode": {
       "pass": 4,
       "server_deployed": true
+    },
+    "root_Z": {
+      "ref": "checkpoints/pump-report-20261025/ROOT_Z_SAVED_STATISTICS_AUDIT_CONNECTED.json",
+      "new_unique_pass": 3,
+      "Z_accepted_pass": 8,
+      "native": false
+    },
+    "native_F550": {
+      "ref": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json",
+      "provider_attempts": 3,
+      "native_requests": 28,
+      "rows_read": 51,
+      "rows_written": 15,
+      "Telegram": 0,
+      "trades_actual1000_bound_gap_offline_fix_pending": true
     }
   },
   "counts": {
     "CONTEXT": 68,
-    "PARTIAL": 352,
-    "VERIFIED_CODE": 263,
+    "PARTIAL": 350,
+    "VERIFIED_CODE": 264,
     "DEFERRED_BY_TZ": 24,
-    "UNIMPLEMENTED": 7,
+    "REMOVED_BY_OWNER": 2,
+    "UNIMPLEMENTED": 6,
     "BLOCKED": 5
   },
   "review_counts_are_not_project_completion_percentage": true,
-  "updated_at": "2026-10-25T17:32:38.934Z",
-  "owner_no_market_comparison_ref": "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json"
+  "updated_at": "2026-10-25T20:15:18Z",
+  "owner_no_market_comparison_ref": "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json",
+  "source_literal_rows_unchanged_by_this_delta": true,
+  "latest_acceptance_matrix": "checkpoints/pump-report-20261025/ACCEPTANCE_MATRIX_RU.md"
 }

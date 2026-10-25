@@ -2,6 +2,7 @@ import {createPumpSources} from '../sources/index.mjs';
 import {requestUrl} from '../sources/bingx.mjs';
 import {analyzePump,evaluateOutcome} from '../analytics/index.mjs';
 import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
+import {createReviewedNativeScopeRegistry} from '../registry/native-reviewed550.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal,isBingxNativeSymbol} from '../contracts/index.mjs';
 import {parseManualInput} from './manual-input.mjs';
@@ -13,8 +14,8 @@ import {createPumpRunner} from './runner.mjs';
 import {createRetainedCapsuleWriter} from './retained-capsules.mjs';
 import {IMPLEMENTATION_PIN} from './implementation-pin.mjs';
 import {runSourceFeasibility} from './source-feasibility.mjs';
-import {createSavedStatisticsAudit} from './saved-statistics-audit.mjs';
-import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID,SOURCE_FEASIBILITY_ID} from './provider-policy.mjs';
+import {createSavedStatisticsAudit,saveProspectiveAuditPlan} from './saved-statistics-audit.mjs';
+import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID,SOURCE_FEASIBILITY_ID,SAVED_STATISTICS_AUDIT_ID} from './provider-policy.mjs';
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 
@@ -47,13 +48,13 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
   try{
   if(mode!=='LOOKUP')await store.install();
   const feasibility=PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&mode==='CONTROL'&&run_id===SOURCE_FEASIBILITY_ID;
-  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(PROVIDER_STAGE==='SUMMARY_INDEX_ACCEPTANCE_ONLY'?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
+  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(['SUMMARY_INDEX_ACCEPTANCE_ONLY','SAVED_STATISTICS_AUDIT_SINGLE'].includes(PROVIDER_STAGE)?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
   const baseBroker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000}),captured=[];let operationFailure=false;
   const broker=feasibility?{...baseBroker,operationFailed:()=>operationFailure,request:async args=>{
     try{const response=await baseBroker.request(args);captured.push({request:{url:args.url,method:'GET',started_ts:response.request_started_ts},response});if(response.semantic_status!=='SUCCESS')operationFailure=true;return response;}
     catch(error){operationFailure=true;captured.push({request:{url:args.url,method:'GET'},error:error.code??'SOURCE_REQUEST_FAILED'});throw error;}
   }}:baseBroker;
-  const sources=createPumpSources({broker,identityRegistry:BINGX_IDENTITY_REGISTRY,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
+  const sources=createPumpSources({broker,identityRegistry:createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY),profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
     return revalidatePumpCard({card,store,sources,clock});
@@ -91,6 +92,8 @@ export function createPumpWorker(legacy={}){
       const metadataProbe=url.pathname==='/pump/metadata-probe';
       const feasibilityCheck=url.pathname==='/pump/source-feasibility';
       const savedAudit=url.pathname==='/pump/statistics-audit';
+      const savedAuditSingle=PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'&&savedAudit;
+      if(PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'&&(!savedAuditSingle||body.grant_id!==SAVED_STATISTICS_AUDIT_ID||Object.keys(body).some(k=>k!=='grant_id')))return json({error:'EXACT_SAVED_STATISTICS_AUDIT_REQUIRED'},400);
       const lookup=['/pump/manual-result','/pump/summary','/pump/statistics-audit'].includes(url.pathname);
       if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
       if(PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&(!feasibilityCheck||body.grant_id!==SOURCE_FEASIBILITY_ID||Object.keys(body).some(k=>k!=='grant_id')))return json({error:'EXACT_SOURCE_FEASIBILITY_OPERATION_REQUIRED'},400);
@@ -108,8 +111,8 @@ export function createPumpWorker(legacy={}){
       if(probe&&!['clock','catalog'].includes(body.kind)&&!isBingxNativeSymbol(body.symbol))return json({error:'INVALID_PROBE_SYMBOL'},400);
       if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);
       if(url.pathname==='/pump/summary'&&body.max_records!==undefined&&(!Number.isInteger(body.max_records)||body.max_records<1||body.max_records>40))return json({error:'SUMMARY_LIMIT_1_TO_40'},400);
-      if(savedAudit&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'SAVED_STATISTICS_AUDIT_NOT_ADMITTED'},400);
-      if(savedAudit&&(Object.keys(body).some(k=>!['after','limit','plan_id'].includes(k))||!Number.isSafeInteger(body.after??0)||(body.after??0)<0||!Number.isSafeInteger(body.limit??10)||(body.limit??10)<1||(body.limit??10)>10||!/^[a-f0-9]{64}$/.test(body.plan_id??'')))return json({error:'SAVED_AUDIT_BOUND_AND_PLAN_REQUIRED'},400);
+      if(savedAudit&&!savedAuditSingle&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'SAVED_STATISTICS_AUDIT_NOT_ADMITTED'},400);
+      if(savedAudit&&!savedAuditSingle&&(Object.keys(body).some(k=>!['after','limit','plan_id'].includes(k))||!Number.isSafeInteger(body.after??0)||(body.after??0)<0||!Number.isSafeInteger(body.limit??10)||(body.limit??10)<1||(body.limit??10)>10||!/^[a-f0-9]{64}$/.test(body.plan_id??'')))return json({error:'SAVED_AUDIT_BOUND_AND_PLAN_REQUIRED'},400);
       if((url.pathname==='/pump/manual'&&body.mode!==undefined&&body.mode!=='MANUAL')||(url.pathname==='/pump/run'&&body.mode!==undefined&&body.mode!=='AUTO'))return json({error:'ROUTE_MODE_MISMATCH'},400);
       if(url.pathname==='/pump/manual'&&ownerInstrumentExcluded(parseManualInput(body.symbol??body.text,{context_symbol:body.context_symbol??null}).symbol))return json({status:'OWNER_ASSET_DELIVERY_EXCLUDED',manual_response_text:'BTC и ETH исключены из Памп-отчёта по вашему указанию.'},400);
       if(PROVIDER_STAGE!=='QUALIFICATION_ONLY'&&probe)return json({error:'PREVIOUS_QUALIFICATION_GRANT_SPENT'},400);
@@ -117,7 +120,7 @@ export function createPumpWorker(legacy={}){
       if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&!acceptedManual)return json({error:'EXACT_MANUAL_ACCEPTANCE_REQUEST_REQUIRED'},400);
       if(Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'PROVIDER_ADMISSION_EXPIRED'},503);
       if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!acceptedManual&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
-      const mode=feasibilityCheck?'CONTROL':metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=feasibilityCheck?SOURCE_FEASIBILITY_ID:summaryCheck?SUMMARY_INDEX_ACCEPTANCE_ID:metadataProbe?CORRECTED_METADATA_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
+      const mode=feasibilityCheck?'CONTROL':metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=savedAuditSingle?SAVED_STATISTICS_AUDIT_ID:feasibilityCheck?SOURCE_FEASIBILITY_ID:summaryCheck?SUMMARY_INDEX_ACCEPTANCE_ID:metadataProbe?CORRECTED_METADATA_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
       if(mode==='AUTO'&&!automaticWindowOpen(Date.now()))return json({status:'OUTSIDE_AUTOMATIC_WINDOW',run_id});
       let runtime,result,finalizationStarted=false;
       try{
@@ -161,6 +164,12 @@ export function createPumpWorker(legacy={}){
         }else if(url.pathname==='/pump/manual')result=await runtime.runner.execute({mode:'MANUAL',symbol:body.symbol??body.text,context_symbol:body.context_symbol??null,run_id,publish:body.publish!==false,request_id:body.request_id??crypto.randomUUID()});
         else if(url.pathname==='/pump/run')result=await runtime.runner.execute({mode:'AUTO',run_id,publish:body.publish!==false});
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
+        else if(savedAuditSingle){
+          const plan=await saveProspectiveAuditPlan({store:runtime.store,split_ts:Date.now()+14*86400000});
+          result=await createSavedStatisticsAudit({store:runtime.store})({after:0,limit:1,plan_id:plan.plan_id});
+          result={...result,qualification_run_id:SAVED_STATISTICS_AUDIT_ID,provider_HTTP:0,Telegram:0,native_lookup_family:'EXISTING_LOOKUP_CAP10_UNCHANGED',split_plan:plan,split_interval_status:'PROSPECTIVE_ENGINEERING_PLAN_NOT_PROVEN_OPTIMAL'};
+          await runtime.store.set('pump:statistics-audit-qualification:'+SAVED_STATISTICS_AUDIT_ID,result);
+        }
         else if(savedAudit)result=await createSavedStatisticsAudit({store:runtime.store})({after:body.after??0,limit:body.limit??10,plan_id:body.plan_id});
         else if(url.pathname==='/pump/summary')result={status:'SUMMARY',result:await runtime.runner.getSummary({max_records:body.max_records??40})};
         else result={error:'NOT_FOUND'};

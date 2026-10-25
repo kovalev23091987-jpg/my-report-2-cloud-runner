@@ -1,0 +1,31 @@
+--- a/pump-report/sources/index.mjs
++++ b/pump-report/sources/index.mjs
+@@ -4,6 +4,7 @@
+   parsePrice, parseCandles, parseOrderbook, parseOpenInterest, parseFunding} from './bingx.mjs';
+ import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
+ import {createDayGrowthLoader} from './day-growth.mjs';
++import {isExactSavedNonTargetDecision} from './saved-nontarget-decisions.mjs';
+ import {parseRecentTrades, RECENT_TRADE_SEMANTICS} from './recent-trades.mjs';
+ 
+ export const SOURCE_VERSION = 'pump-report-sources-v1';
+@@ -188,12 +189,20 @@
+           try { entry = lookup({native_symbol: symbol, native_contract_id: String(row.contractId ?? ''), venue: 'BINGX', market_type: 'PERPETUAL', quote: 'USDT', settle: 'USDT'}); }
+           catch { entry = null; }
+         }
++        let catalogDecision = null;
++        if (typeof identityRegistry?.resolveCatalogDecision === 'function') {
++          try { catalogDecision = identityRegistry.resolveCatalogDecision(row); }
++          catch { catalogDecision = {decision: 'INVALID_CATALOG_DECISION'}; }
++        }
++        const knownNonTarget = isExactSavedNonTargetDecision(catalogDecision, row);
+         let reason = null;
+         if (!symbol || seen.has(symbol)) reason = 'MISSING_OR_DUPLICATE_NATIVE_SYMBOL';
+         else if (!symbol.endsWith('-USDT') || row.currency !== 'USDT') reason = 'NON_USDT_SETTLEMENT';
+         else if (row.status !== 1) reason = 'INSTRUMENT_NOT_ONLINE';
+         else if (['PAXG', 'XAUT'].includes(String(row.asset ?? '').toUpperCase())
+           || ['PAXG-USDT', 'XAUT-USDT'].includes(symbol)) reason = 'OWNER_EXCLUDED_GOLD_BACKED_ASSET';
++        else if (catalogDecision && (!knownNonTarget || entry)) reason = 'CATALOG_REGISTRY_IDENTITY_MISMATCH';
++        else if (knownNonTarget) reason = 'KNOWN_NON_TARGET_EXACT_SAVED_TUPLE';
+         else if (!entry) reason = 'CRYPTO_ASSET_IDENTITY_UNQUALIFIED';
+         else if (String(row.contractId ?? '') !== String(entry.native_contract_id ?? entry.instrument.native_contract_id)
+           || row.asset !== (entry.native_base ?? entry.instrument.base)) reason = 'CATALOG_REGISTRY_IDENTITY_MISMATCH';

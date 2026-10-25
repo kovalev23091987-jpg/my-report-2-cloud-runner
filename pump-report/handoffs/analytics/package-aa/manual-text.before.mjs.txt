@@ -1,0 +1,35 @@
+import {finite,positive} from '../contracts/index.mjs';
+import {presentationModeLines,growthProofLine,currentActivityFinding} from './presentation.mjs';
+
+const reasons={ANALYTICS_PROFILE_REQUIRED:'Не хватает пригодных настроек анализа.',
+  MANDATORY_PRICE_NOT_USABLE:'Нет свежей проверенной цены.',POSITIVE_LAST_PRICE_REQUIRED:'Нет пригодного положительного значения цены.',PRICE_UNIT_UNQUALIFIED:'Единица цены не подтверждена.',
+  MANDATORY_CANDLES_NOT_USABLE:'Свечи не прошли проверку свежести или происхождения.',CLOSED_CANDLES_STALE_OR_MISSING:'Нет свежих закрытых свечей.',INVALID_CANDLE:'В свечах есть некорректные значения.',
+  NATIVE_CANDLE_VOLUME_SCOPE_INVALID:'Количество в свечах нельзя сопоставить в одной подтверждённой области.',CANDLE_TIME_PROVENANCE_INVALID:'Время свечей не подтверждено.',
+  CURRENT_VOLUME_REQUIRED:'Не подтверждена текущая торговая активность.',VOLUME_BASELINE_UNAVAILABLE:'Недостаточно пригодной истории для сравнения активности.',CURRENT_ACTIVITY_NOT_CONFIRMED:'Активный рост с усилением торговой активности не подтверждён.',
+  VOLUME_BASELINE_ZERO_OR_UNKNOWN:'Фоновая активность равна нулю или неизвестна; отношение рассчитать нельзя.',IMPULSE_VOLUME_ZERO_OR_UNKNOWN:'Активность исходного импульса неизвестна; сравнение невозможно.',VOLUME_RATIO_NOT_FINITE:'Отношение активности нельзя надёжно рассчитать.',
+  WAVE_VOLUME_COMPARISON_BASIS_CHANGED:'Единица сравнения активности изменилась; сохранённую волну нельзя пересчитать в другой единице.',WAVE_PATH_INCOMPLETE:'В наблюдении волны есть пропуск.',WAVE_QUALIFICATION_CLOCK_INVALID:'Время первого подтверждения роста не согласовано с сохранённой волной; требуется проверка.',
+  MANDATORY_ORDERBOOK_NOT_USABLE:'Нет свежего проверенного стакана.',ORDERBOOK_UNIT_UNQUALIFIED:'Единицы цены и количества в стакане не подтверждены.',
+  NO_SUPPORTED_POSITION_SIZE:'Стакан не подтверждает ни один из заданных размеров позиции.',INVALID_OR_CROSSED_ORDERBOOK:'Стакан некорректен или содержит пересечение цен.',LIQUIDITY_PROFILE_REQUIRED:'Нет пригодных ограничений проверки ликвидности.',
+  INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED:'Не удалось обосновать самостоятельный план покупки на откате с входом, выходом и границей отмены.',PLAN_POTENTIAL_BELOW_OWNER_MINIMUM:'Потенциал самостоятельного плана ниже обязательных 10%.',PLAN_POTENTIAL_UNQUALIFIED:'Потенциал самостоятельного плана не подтверждён.',OWNER_ASSET_DELIVERY_EXCLUDED:'Этот инструмент исключён владельцем из уведомлений.',WAVE_LIFETIME_EXPIRED:'Срок наблюдения сохранённой волны истёк.',PLAN_INVALIDATED:'Цена нарушила сохранённую границу отмены плана.'};
+const number=value=>Number(value.toPrecision(8)).toString();
+function refusalReasons(result){
+  const codes=new Set(result.reasons),priority=['OWNER_ASSET_DELIVERY_EXCLUDED','PLAN_POTENTIAL_BELOW_OWNER_MINIMUM','PLAN_POTENTIAL_UNQUALIFIED','PLAN_INVALIDATED','WAVE_LIFETIME_EXPIRED','WAVE_QUALIFICATION_CLOCK_INVALID'];
+  const selected=[];for(const code of priority)if(codes.has(code)){selected.push(reasons[code]);codes.delete(code);}
+  const missing=[['price','цена'],['candles','свечи'],['orderbook','стакан']].filter(([kind])=>codes.has('MANDATORY_'+kind.toUpperCase()+'_NOT_USABLE'));
+  if(missing.length){selected.push('Нет пригодных обязательных данных: '+missing.map(([,name])=>name).join(', ')+'.');for(const [kind]of missing)codes.delete('MANDATORY_'+kind.toUpperCase()+'_NOT_USABLE');if(missing.some(([kind])=>kind==='price'))codes.delete('POSITIVE_LAST_PRICE_REQUIRED');}
+  for(const code of codes)selected.push(reasons[code]??'Обязательная проверка анализа не пройдена.');
+  return [...new Set(selected)].slice(0,2);
+}
+export function explainManualAnalysis(result,{day=null,liquidity=result.liquidity}={}){
+  if(result.ready)return result.card_text;
+  const why=refusalReasons(result),lines=[...presentationModeLines(result),'Готовой идеи пока нет.','Причина: '+(why.join(' ')||'Обязательное сочетание движения, активности, ликвидности и плана пока не подтверждено.')];
+  if(positive(result.reference_price))lines.push('Цена: '+number(result.reference_price)+' USDT.');
+  const proofKnown=['CURRENT','RETAINED'].includes(result.growth_proof?.status);if(proofKnown)lines.push(growthProofLine(result.growth_proof));
+  const windows=result.growth_windows??(day?.usable?[day.window]:[]),available=windows.filter(w=>finite(w.return_pct));
+  if(!proofKnown&&available.length)lines.push('Рост по точным окнам: '+available.map(w=>(w.window_ms===86400000?'24 ч':w.window_ms/60000+' мин')+' '+(w.return_pct>=0?'+':'')+number(w.return_pct)+'%').join('; ')+'.');
+  const activity=currentActivityFinding(result),background=result.activity?.volume_diagnostics?.ratio,observations=[];
+  if(activity)observations.push(activity.text);else if(finite(background)&&background>0)observations.push('Активность текущего окна к фону: '+number(background)+' раза.');
+  if(positive(liquidity?.position_limit_usdt))observations.push('Двусторонняя ликвидность проверена.');
+  if(observations.length)lines.push(observations.join(' '));
+  return lines.join('\n');
+}

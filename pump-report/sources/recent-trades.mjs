@@ -6,6 +6,7 @@ import {object, positive, assertEnvelope, fail} from './bingx.mjs';
 export const RECENT_TRADE_SEMANTICS = Object.freeze({
   route: '/openApi/swap/v2/quote/trades',
   limit: 100,
+  response_rows_max: 1000,
   unit: TRADE_QUOTE_NOTIONAL_UNIT,
   amount_field: 'quoteQty',
   maker_field: 'isBuyerMaker',
@@ -29,7 +30,9 @@ export function parseRecentTrades(body, {instrument, received_ts} = {}) {
   if (ownerInstrumentExcluded(instrument)) fail('OWNER_ASSET_DELIVERY_EXCLUDED');
   if (typeof received_ts !== 'number' || unixMs(received_ts) === null) fail('BINGX_TRADE_RECEIPT_MS_REQUIRED');
   assertEnvelope(body);
-  if (!Array.isArray(body.data) || body.data.length > RECENT_TRADE_SEMANTICS.limit) fail('BINGX_BOUNDED_TRADE_ARRAY_REQUIRED');
+  // The captured successful reply returned 1000 rows to limit=100. Preserve the
+  // bounded response rather than truncating before downstream conflict checks.
+  if (!Array.isArray(body.data) || body.data.length > RECENT_TRADE_SEMANTICS.response_rows_max) fail('BINGX_BOUNDED_TRADE_ARRAY_REQUIRED');
   const counts = {qualified_before_dedup: 0, invalid_id: 0, invalid_clock: 0,
     invalid_price: 0, invalid_notional: 0, unknown_side: 0, identity_mismatch: 0};
   const value = body.data.map(raw => {
@@ -63,7 +66,11 @@ export function parseRecentTrades(body, {instrument, received_ts} = {}) {
     reason: !value.length ? 'NO_RETURNED_TRADES' : !qualified.length ? 'NO_QUALIFIED_RECENT_TRADE_ROWS'
       : qualified.length < value.length ? 'LATEST_RETURNED_TRADE_SAMPLE_PARTIAL' : null,
     coverage: {sample_kind: 'LATEST_RETURNED_BOUNDED_SAMPLE', requested_limit: RECENT_TRADE_SEMANTICS.limit,
-      returned_rows: value.length, ...counts, counts_are_before_consumer_dedup: true,
+      response_rows_max: RECENT_TRADE_SEMANTICS.response_rows_max,
+      returned_rows: value.length, returned_more_than_requested: value.length > RECENT_TRADE_SEMANTICS.limit,
+      response_bound_evidence_ref: 'pump-report/handoffs/sources/F553_ACTUAL1000_EVIDENCE_V1.json',
+      trade_id_field: 'id', fillId_alias_accepted: false,
+      ...counts, counts_are_before_consumer_dedup: true,
       duplicate_and_conflicting_ids_preserved: true, complete: false, full_window_coverage: false,
       complete_window_start: null, complete_window_end: null,
       qualified_sample_start: clocks.length ? Math.min(...clocks) : null, qualified_sample_end: event_ts,
