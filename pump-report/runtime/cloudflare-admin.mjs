@@ -18,7 +18,16 @@ async function call(method,path,{body,raw=false}={}){
   return {status:response.status,parsed,text,content_type:response.headers.get('content-type')};
 }
 const save=(p,value)=>{if(p)fs.writeFileSync(p,JSON.stringify(value),{mode:0o600});};
-if(command==='inspect'){
+if(command==='subscription-metadata'){
+  const r=await call('GET','/accounts/'+account+'/subscriptions');save(output??arg,r.parsed);
+  console.log(JSON.stringify({success:true,control_plane_GETs:1,SQL_queries:0,subscriptions:(r.parsed.result??[]).map(s=>({state:s.state??null,rate_plan_id:s.rate_plan?.id??null,rate_plan_name:s.rate_plan?.public_name??null,component_names:s.component_values?.map(c=>c.name)??null})),plan_changed:false}));
+}else if(command==='platform-metadata'){
+  const settings=await call('GET',base+'/settings');
+  const database=await call('GET','/accounts/'+account+'/d1/database/057a2847-2cc4-4e52-8534-1be1596d21d5');
+  save(output??arg,{settings:settings.parsed,database:database.parsed});
+  const s=settings.parsed.result,d=database.parsed.result;
+  console.log(JSON.stringify({success:true,control_plane_GETs:2,SQL_queries:0,worker:{usage_model:s.usage_model??null,limits:s.limits??null,compatibility_date:s.compatibility_date,bindings_count:s.bindings?.length,settings_keys:Object.keys(s)},database:{name:d.name,file_size:d.file_size??null,num_tables:d.num_tables??null,version:d.version??null,metadata_keys:Object.keys(d)},storage_stress_test:false}));
+}else if(command==='inspect'){
   const r=await call('GET',base+'/settings');save(output??arg,r.parsed);
   const code=await call('GET',base),bodyStart=code.text.indexOf('\r\n\r\n')+4,marker=code.text.slice(0,code.text.indexOf('\r\n')),bodyEnd=code.text.lastIndexOf('\r\n'+marker+'--');
   const retained_legacy_sha256=bodyStart>=4&&bodyEnd>bodyStart?digest(code.text.slice(bodyStart,bodyEnd)):null;

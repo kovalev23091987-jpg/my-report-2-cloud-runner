@@ -14,7 +14,8 @@ export function manualResponseText(result){
   }
   switch(r.status){
     case 'CONTEXT_SYMBOL_REQUIRED':return 'Укажите тикер монеты, которую нужно проверить.';
-    case 'INVALID_MANUAL_REQUEST':return 'Укажите тикер или напишите, например: «Проверь BTC на памп».';
+    case 'INVALID_MANUAL_REQUEST':return 'Укажите тикер или напишите, например: «Проверь SOL на памп».';
+    case 'OWNER_ASSET_DELIVERY_EXCLUDED':return r.symbol+' исключён из Памп-отчёта по вашему указанию.';
     case 'AMBIGUOUS_SYMBOL':return 'Уточните нужный актив: '+(r.candidates??[]).join(', ')+'.';
     case 'INSTRUMENT_NOT_QUALIFIED':return 'Для '+r.symbol+' пока не подтверждён подходящий криптовалютный контракт BingX с маржой USDT. Готовый план не сформирован.';
     case 'QUEUED':return 'Проверка поставлена в очередь; результат можно получить по её идентификатору.';

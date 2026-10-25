@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: manual and automatic races produce one exact saved Telegram text
+ok 1 - manual and automatic races produce one exact saved Telegram text
+  ---
+  duration_ms: 39.038916
+  type: 'test'
+  ...
+# Subtest: a missing ACK is UNKNOWN and is never blindly retried
+ok 2 - a missing ACK is UNKNOWN and is never blindly retried
+  ---
+  duration_ms: 1.699209
+  type: 'test'
+  ...
+# Subtest: a response for a different recipient is not SENT
+ok 3 - a response for a different recipient is not SENT
+  ---
+  duration_ms: 1.572833
+  type: 'test'
+  ...
+# Subtest: 20:00 during the final recheck stops an automatic send
+ok 4 - 20:00 during the final recheck stops an automatic send
+  ---
+  duration_ms: 0.842292
+  type: 'test'
+  ...
+# Subtest: receiving a map without a material plan change causes no update
+ok 5 - receiving a map without a material plan change causes no update
+  ---
+  duration_ms: 0.678
+  type: 'test'
+  ...
+# Subtest: expired SENDING state recovers as UNKNOWN after a restart
+ok 6 - expired SENDING state recovers as UNKNOWN after a restart
+  ---
+  duration_ms: 0.30575
+  type: 'test'
+  ...
+# Subtest: automatic window follows Moscow and excludes 20:00
+ok 7 - automatic window follows Moscow and excludes 20:00
+  ---
+  duration_ms: 0.172875
+  type: 'test'
+  ...
+# Subtest: a recomputed card replaces an expired unsent primary in the same wave
+ok 8 - a recomputed card replaces an expired unsent primary in the same wave
+  ---
+  duration_ms: 1.096084
+  type: 'test'
+  ...
+# Subtest: an uncertain send blocks a replacement even if the plan changed
+ok 9 - an uncertain send blocks a replacement even if the plan changed
+  ---
+  duration_ms: 0.48275
+  type: 'test'
+  ...
+# Subtest: a failed source recheck never becomes a possible-send UNKNOWN
+ok 10 - a failed source recheck never becomes a possible-send UNKNOWN
+  ---
+  duration_ms: 0.308791
+  type: 'test'
+  ...
+# Subtest: a restarted new-schema sender interrupted before the send point remains a known failure
+ok 11 - a restarted new-schema sender interrupted before the send point remains a known failure
+  ---
+  duration_ms: 0.222583
+  type: 'test'
+  ...
+# Subtest: a known budget refusal before Telegram HTTP is FAILED while an actual lost ACK remains UNKNOWN
+ok 12 - a known budget refusal before Telegram HTTP is FAILED while an actual lost ACK remains UNKNOWN
+  ---
+  duration_ms: 0.350291
+  type: 'test'
+  ...
+# Subtest: BTC and ETH aliases are excluded; unrelated assets retain their crypto identity
+ok 13 - BTC and ETH aliases are excluded; unrelated assets retain their crypto identity
+  ---
+  duration_ms: 0.534833
+  type: 'test'
+  ...
+# Subtest: both delivery modes reject excluded assets, unknown and partly below10pct plans before saving or sending
+ok 14 - both delivery modes reject excluded assets, unknown and partly below10pct plans before saving or sending
+  ---
+  duration_ms: 8.17875
+  type: 'test'
+  ...
+# Subtest: a card queued by an older worker is suppressed before recheck and Telegram without changing saved text or hash
+ok 15 - a card queued by an older worker is suppressed before recheck and Telegram without changing saved text or hash
+  ---
+  duration_ms: 1.1755
+  type: 'test'
+  ...
+# Subtest: manual commands and direct runner checks for BTC/ETH stop before provider IO or queue creation
+ok 16 - manual commands and direct runner checks for BTC/ETH stop before provider IO or queue creation
+  ---
+  duration_ms: 0.812875
+  type: 'test'
+  ...
+# Subtest: authenticated excluded manual endpoints stop before any native SQL reservation
+ok 17 - authenticated excluded manual endpoints stop before any native SQL reservation
+  ---
+  duration_ms: 21.538125
+  type: 'test'
+  ...
+# Subtest: production materialization excludes acceptance240, future tests and unclassified rows while retaining immutable raw originals and old aggregate
+ok 18 - production materialization excludes acceptance240, future tests and unclassified rows while retaining immutable raw originals and old aggregate
+  ---
+  duration_ms: 3.586042
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 107.392875

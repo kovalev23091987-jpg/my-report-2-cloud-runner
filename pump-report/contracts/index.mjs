@@ -13,6 +13,20 @@ export const CANDLE_CCXT_TIME_BASIS='CCXT_CONSUMER_OPEN_TIME';
 export const CANDLE_SEMANTICS_OWNER_REF='checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json';
 export const GROWTH_24H_UNIT='USDT_CLOSED_ROLLING_24H';
 export const GROWTH_24H_WINDOW_MS=86400000;
+// Owner amendments on 25 October apply to every new publication, including
+// previously queued cards. Identity qualification remains a separate concern.
+export const OWNER_MIN_PLAN_POTENTIAL_PCT=10;
+export const OWNER_DELIVERY_EXCLUDED_ASSETS=Object.freeze(['BTC','ETH']);
+export function ownerInstrumentExcluded(value){
+  const names=typeof value==='string'?[value]:[value?.base,value?.native_symbol,value?.asset_id?.split(':').at(-1),value?.instrument_id?.split(':').at(-1)];
+  return names.some(name=>OWNER_DELIVERY_EXCLUDED_ASSETS.includes(String(name??'').trim().toUpperCase().replace(/(?:[-/]?USDT)$/,'')));
+}
+export function ownerPublicationRefusal(analysis){
+  if(ownerInstrumentExcluded(analysis?.instrument))return 'OWNER_ASSET_DELIVERY_EXCLUDED';
+  const potential=analysis?.plan?.potential_pct?.minimum;
+  if(!finite(potential)||analysis.plan.potential_pct.basis!=='GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT')return 'PLAN_POTENTIAL_UNQUALIFIED';
+  return potential<OWNER_MIN_PLAN_POTENTIAL_PCT?'PLAN_POTENTIAL_BELOW_OWNER_MINIMUM':null;
+}
 export function automaticWindowOpen(ts){const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',hour:'2-digit',hourCycle:'h23'}).format(ts));return hour>=10&&hour<20;}
 export function candleNativeComparisonKey(instrument,interval_ms=60000){
   assertInstrument(instrument);

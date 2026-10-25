@@ -1,6 +1,7 @@
 import {selectOutcomeAnchor} from '../analytics/anchors.mjs';
 import {createMaterializedSummary,prepareOutcomeRecordEvent,foldPreparedOutcomeRecord,advanceWaveMaturity,dueMaturityWaves,readMaterializedSummary} from '../analytics/materialized-summary.mjs';
 import {textHash} from './delivery.mjs';
+import {recordPurpose,productionRecord} from '../contracts/run-purpose.mjs';
 
 const waveKey=a=>'pump:journal:'+a.instrument.instrument_id+':'+a.wave_id;
 const signalKey=a=>'pump:signal:'+a.instrument.instrument_id+':'+a.wave_id;
@@ -8,8 +9,11 @@ const mapMode=a=>a.liquidations?.map_mode==='WITHOUT_MAP'?'NO_MAP':a.liquidation
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export function createOutcomeJournal({store,profile,clock=Date.now,evidence_class='UNCLASSIFIED'}){
   if(typeof store.atomicPair!=='function')throw Error('ATOMIC_WAVE_AND_SUMMARY_STORE_REQUIRED');
-  const aggregateKey='pump:materialized-summary:v1';
-  const emptyAggregate=()=>({...createMaterializedSummary({materialization_id:'pump-frozen-origins-v1',as_of_ts:clock()}),source_cursor:0});
+  // The old all-purpose aggregate stays intact as historical evidence. This
+  // derived production view replays the same append-only index in bounded pages.
+  const aggregateKey='pump:materialized-summary:production-v2';
+  const materializedWaveKey=key=>'pump:materialized-wave:production-v2:'+key;
+  const emptyAggregate=()=>({...createMaterializedSummary({materialization_id:'pump-frozen-production-origins-v2',as_of_ts:clock()}),source_cursor:0,excluded_records_by_purpose:{}});
   const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+40<=store.admission.max_rows_read&&store.usage().rows_written+8<=store.admission.max_rows_written);
   async function remember(analysis,input,analysis_id){
     if(!analysis.wave_id)return;
@@ -20,7 +24,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     }
     const sha=await textHash(JSON.stringify(analysis));if(!analysis_id.endsWith(sha))throw Error('ANALYSIS_CONTENT_HASH_REQUIRED');
     const used=new Set(analysis.fact_ids??[]),known=[...Object.values(input.facts??{}).filter(f=>used.has(f.fact_id)).map(f=>f.received_ts),...(analysis.liquidations?.zones_up??[]).map(z=>z.received_ts),...(analysis.liquidations?.zones_down??[]).map(z=>z.received_ts)].filter(Number.isSafeInteger);
-    const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,ready:true};
+    const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,run_purpose:input.run_purpose??analysis.run_purpose??'UNCLASSIFIED',ready:true};
     const row={analysis_id,analysis_sha256:sha,recorded_ts:at,features_known_ts:known.length?Math.max(...known):null,origin};
     const pending=await store.atomic(key,j=>{
       j??={schema:'PUMP_OUTCOME_JOURNAL_V1',analyses:[],publications:[],wave_expires_ts:analysis.next_wave?.expires_ts??analysis.analysis_ts+profile.wave_max_age_ms,terminal:null,frozen_anchor:null};
@@ -69,7 +73,16 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       const key=ids[cursor],row=await store.get(key);if(!row||row.record_id!==key)throw Error('SUMMARY_RECORD_MISSING');
       const {origin,publication,outcome}=row;
       if(key!=='pump:summary-record:'+await textHash(JSON.stringify({origin,publication,outcome})))throw Error('SUMMARY_RECORD_CONTENT_HASH_MISMATCH');
-      const prepared_event=await prepareOutcomeRecordEvent({kind:'OUTCOME_RECORD',event_id:key,record:row}),wave='pump:materialized-wave:'+JSON.stringify([origin.instrument_id,origin.wave_id]);
+      if(!productionRecord(row)){
+        const purpose=recordPurpose(row),reason=purpose==='PRODUCTION'?'NON_OBSERVED':purpose;
+        const committed=await store.atomic(aggregateKey,current=>{
+          current??=emptyAggregate();if((current.source_cursor??0)!==cursor)return {state:current,result:false};
+          const excluded={...(current.excluded_records_by_purpose??{})};excluded[reason]=(excluded[reason]??0)+1;
+          return {state:{...current,source_cursor:cursor+1,excluded_records_by_purpose:excluded},result:true};
+        });
+        if(committed)processed++;continue;
+      }
+      const prepared_event=await prepareOutcomeRecordEvent({kind:'OUTCOME_RECORD',event_id:key,record:row}),wave=materializedWaveKey(JSON.stringify([origin.instrument_id,origin.wave_id]));
       const committed=await store.atomicPair([wave,aggregateKey],([state,current])=>{
         current??=emptyAggregate();
         if((current.source_cursor??0)!==cursor)return {states:[state,current],result:false};
@@ -80,10 +93,10 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     }
     if(maturity_limit>0){const aggregate=await store.get(aggregateKey);if(aggregate)for(const item of dueMaturityWaves(aggregate,{as_of_ts:clock(),limit:Math.min(40,maturity_limit)})){
       if(!resourcesAvailable())break;
-      await store.atomicPair(['pump:materialized-wave:'+item.wave_key,aggregateKey],([wave,current])=>{const tick=advanceWaveMaturity({aggregate:current,wave,as_of_ts:clock()});return {states:[tick.wave,tick.aggregate],result:tick.status};});
+      await store.atomicPair([materializedWaveKey(item.wave_key),aggregateKey],([wave,current])=>{const tick=advanceWaveMaturity({aggregate:current,wave,as_of_ts:clock()});return {states:[tick.wave,tick.aggregate],result:tick.status};});
     }}
     const aggregate=await store.get(aggregateKey)??emptyAggregate(),source_cursor=aggregate.source_cursor??0,view=readMaterializedSummary(aggregate,{as_of_ts:clock()});
-    return {...view,status:source_cursor<ids.length?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:ids.length,source_caught_up:source_cursor===ids.length,processed_records:processed,source_index_append_only:true};
+    return {...view,run_purpose:'PRODUCTION',excluded_records_by_purpose:{...(aggregate.excluded_records_by_purpose??{})},status:source_cursor<ids.length?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:ids.length,source_caught_up:source_cursor===ids.length,processed_records:processed,source_index_append_only:true};
   }
   async function summary({max_records=40}={}){
     if(!Number.isSafeInteger(max_records)||max_records<1||max_records>40)throw Error('SUMMARY_PAGE_BOUND_1_TO_40_REQUIRED');

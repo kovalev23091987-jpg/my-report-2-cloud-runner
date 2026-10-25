@@ -1,5 +1,5 @@
 import {BudgetRefusal} from './budget.mjs';
-import {automaticWindowOpen} from '../contracts/index.mjs';
+import {automaticWindowOpen,ownerPublicationRefusal} from '../contracts/index.mjs';
 export {automaticWindowOpen} from '../contracts/index.mjs';
 
 export async function textHash(text){const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
@@ -9,6 +9,7 @@ const positiveMessageId=id=>Number.isSafeInteger(Number(id))&&Number(id)>0&&/^[1
 export function createDelivery({store,send,recipient,clock=Date.now,revalidate,claim_ms=30000}){
   if(!store?.atomic||!send||!recipient||!revalidate)throw Error('DELIVERY_CONTEXT_REQUIRED');
   async function enqueue(analysis,{mode,expires_ts,update_kind=null}={}){
+    const refusal=ownerPublicationRefusal(analysis);if(refusal&&analysis?.kind!=='DELIVERY_DIAGNOSTIC')throw new BudgetRefusal(refusal);
     if(!analysis?.ready||!analysis.card_text||!analysis.wave_id||analysis.card_text.length>4096)throw new BudgetRefusal('READY_ANALYSIS_REQUIRED');
     if(mode==='AUTO'&&!analysis.automatic_eligible)throw new BudgetRefusal('AUTOMATIC_GROWTH_NOT_QUALIFIED');
     if(!['AUTO','MANUAL'].includes(mode)||!Number.isSafeInteger(expires_ts)||expires_ts<=clock())throw new BudgetRefusal('CARD_VALIDITY_REQUIRED');
@@ -44,12 +45,14 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
       if(!current)return {state:current,result:{skip:'CARD_NOT_FOUND'}};
       if(current.state==='SENDING'&&current.claim_until<=now){const possible=current.delivery_schema!=='PUMP_DELIVERY_V2'||Number.isSafeInteger(current.send_started_ts);current.state=possible?'UNKNOWN':'ERROR';current.updated_ts=now;current.reason=possible?'SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND':'SENDER_INTERRUPTED_BEFORE_SEND';return {state:current,result:{skip:current.state}};}
       if(!['READY','RETRYABLE'].includes(current.state))return {state:current,result:{skip:current.state}};
+      const refusal=ownerPublicationRefusal(current.analysis);
+      if(refusal&&current.analysis?.kind!=='DELIVERY_DIAGNOSTIC'){current.state='SUPPRESSED';current.reason=refusal;current.updated_ts=now;return {state:current,result:{skip:'SUPPRESSED',reason:refusal}};}
       if(current.expires_ts<=now||current.mode==='AUTO'&&!automaticWindowOpen(now)){current.state='STALE';current.updated_ts=now;return {state:current,result:{skip:'STALE'}};}
       if((current.retry_after_ts??0)>now)return {state:current,result:{skip:'BACKOFF'}};
       current.state='SENDING';current.owner=owner;current.claim_until=now+claim_ms;current.send_started_ts=null;current.attempts++;
       return {state:current,result:structuredClone(current)};
     });
-    if(card.skip)return {state:card.skip,card_id};
+    if(card.skip)return {state:card.skip,card_id,...(card.reason?{reason:card.reason}:{})};
     let fresh;try{fresh=await revalidate(card);}catch{await finish(card,{state:'ERROR',reason:'RECHECK_FAILED_BEFORE_SEND'});return {state:'ERROR',card_id};}
     if(!fresh?.valid){await finish(card,{state:'STALE',reason:fresh?.reason??'SCENARIO_RECHECK_FAILED'});return {state:'STALE',card_id};}
     if(await textHash(card.text)!==card.text_hash){await finish(card,{state:'ERROR',reason:'SAVED_TEXT_HASH_MISMATCH'});throw new BudgetRefusal('SAVED_TEXT_HASH_MISMATCH');}
