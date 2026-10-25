@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {createHash,randomUUID} from 'node:crypto';
+import {manualResponseText} from './manual-response.mjs';
 
 const [command,value,outputArg]=process.argv.slice(2);
 const privateDir=new URL('../.private/',import.meta.url);
@@ -19,8 +20,7 @@ fs.writeFileSync(privateResultPath,JSON.stringify(envelope),{mode:0o600});
 fs.chmodSync(privateResultPath,0o600);
 console.log(JSON.stringify({http_status:response.status,status:body.status??null,error:body.error??null,run_id:body.run_id??null,request_id:body.request_id??null,version:body.version??null,provider_stage:body.provider_stage??null,started_ts,received_ts,private_result_path:privateResultPath??null,raw_sha256:envelope.raw_sha256,native_receipt:body.native_receipt??null,source_http_status:body.response?.status??null,provider_code:body.response?.data?.code??null}));
 const analysis=body.manual_result?.analysis??body.result?.analysis;
-if(analysis?.card_text)console.log('\n'+analysis.card_text);
-else if(analysis)console.log(JSON.stringify({analysis_status:analysis.status,reasons:analysis.reasons},null,2));
-if(!analysis&&command!=='summary'&&(body.manual_result??body.result))console.log(JSON.stringify(body.manual_result??body.result,null,2));
+if(['manual','result'].includes(command))console.log('\n'+(body.manual_response_text??manualResponseText(response.ok?body.manual_result??body.result??body:{status:'ERROR',reason:body.error})));
+else if(analysis?.card_text)console.log('\n'+analysis.card_text);
 if(command==='summary'&&body.result)console.log(JSON.stringify(body.result,null,2));
 if(!response.ok)process.exitCode=1;

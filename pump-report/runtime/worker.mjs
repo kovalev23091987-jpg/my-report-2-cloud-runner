@@ -5,6 +5,7 @@ import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {factUsable} from '../contracts/index.mjs';
 import {parseManualInput} from './manual-input.mjs';
+import {manualResponseText} from './manual-response.mjs';
 import {createUnifiedBudget,createRequestBroker} from './budget.mjs';
 import {createDelivery,automaticWindowOpen} from './delivery.mjs';
 import {reserveNativeRun,finalizeNativeRun} from './native-budget.mjs';
@@ -117,6 +118,8 @@ export function createPumpWorker(legacy={}){
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
         else if(url.pathname==='/pump/summary')result={status:'SUMMARY',result:await runtime.runner.getSummary({max_records:body.max_records??40})};
         else result={error:'NOT_FOUND'};
+        if(url.pathname==='/pump/manual')result={...result,manual_response_text:manualResponseText(result)};
+        if(url.pathname==='/pump/manual-result')result={...result,manual_response_text:manualResponseText(result.result)};
         finalizationStarted=true;const finalized=await finalizeNativeRun(runtime.native);return json({...result,native_receipt:finalized});
       }catch(error){
         const native=runtime?.native??error.pumpNative;
