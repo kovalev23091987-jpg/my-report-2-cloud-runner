@@ -13,15 +13,18 @@ export class MemoryStore {
 
 // Native D1 metadata is observed for every statement. Missing ACKs never mean 0.
 export class D1Store {
-  constructor({db,admission,clock=Date.now,initial_usage=null}){
+  constructor({db,admission,clock=Date.now,initial_usage=null,finalization_reserve=null}){
     if(!db?.prepare||!admission?.evidence_ref||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts<=clock()||!Number.isSafeInteger(admission.max_rows_read)||!Number.isSafeInteger(admission.max_rows_written))throw new BudgetRefusal('NATIVE_SQL_ADMISSION_REQUIRED');
     this.db=db;this.admission=admission;this.clock=clock;this.cost=initial_usage?{...initial_usage}:{requests:0,rows_read:0,rows_written:0,unknown_ops:0};
+    this.finalization_reserve=finalization_reserve?{...finalization_reserve}:{rows_read:0,rows_written:0};
+    if(!Object.values(this.finalization_reserve).every(n=>Number.isSafeInteger(n)&&n>=0))throw new BudgetRefusal('INVALID_FINALIZATION_RESERVE');
     if(!Object.values(this.cost).every(n=>Number.isSafeInteger(n)&&n>=0))throw new BudgetRefusal('INVALID_INITIAL_NATIVE_USAGE');
   }
   check(extraRead=1,extraWrite=0){
     if(this.admission.expires_ts<=this.clock()||this.cost.unknown_ops>0)throw new BudgetRefusal('NATIVE_SQL_ADMISSION_EXPIRED_OR_UNKNOWN');
-    if(this.cost.rows_read+extraRead>this.admission.max_rows_read||this.cost.rows_written+extraWrite>this.admission.max_rows_written)throw new BudgetRefusal('NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED');
+    if(this.cost.rows_read+extraRead+this.finalization_reserve.rows_read>this.admission.max_rows_read||this.cost.rows_written+extraWrite+this.finalization_reserve.rows_written>this.admission.max_rows_written)throw new BudgetRefusal('NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED');
   }
+  beginFinalization(){this.check(0,0);this.finalization_reserve={rows_read:0,rows_written:0};}
   async query(sql,args=[],{read=1,write=0}={}){
     this.check(read,write);let result;
     try{result=await this.db.prepare(sql).bind(...args).all();}catch(error){this.cost.requests++;this.cost.unknown_ops++;throw error;}

@@ -1,0 +1,13 @@
+{
+  "schema": "PUMP_NATIVE_FINALIZATION_TAIL_FIX_V1",
+  "recorded_at": "2026-10-25 13:33:48 UTC",
+  "defects": [
+    "route /pump/run previously could reserve MANUAL while executing AUTO; explicit route mode now binds reservation family",
+    "ordinary queries could consume the final acknowledgement envelope; 2R1W now protected until finalization",
+    "failed services setup previously lost known native context; known context now finalized once, possible lost finalization ACK never blindly repeated"
+  ],
+  "affected12PASS": true,
+  "native_IO": 0,
+  "caps_unchanged": true,
+  "old_qualifications_not_rearmed": true
+}

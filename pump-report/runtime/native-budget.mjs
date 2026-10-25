@@ -41,13 +41,14 @@ export async function reserveNativeRun({db,run_id,mode,clock=Date.now,policy=NAT
   usage.rows_read+=back.meta.rows_read;usage.rows_written+=back.meta.rows_written;
   const row=back.results?.[0];if(row?.reservation_id!==id||row.state!=='RESERVED'||row.day_utc!==day||row.reserve_rows_read!==envelope.rows_read||row.reserve_rows_written!==envelope.rows_written)throw new BudgetRefusal('NATIVE_RESERVATION_READBACK_MISMATCH');
   const admission={evidence_ref:policy.evidence_ref+'#'+id,expires_ts:now+900000,max_rows_read:envelope.rows_read,max_rows_written:envelope.rows_written};
-  const store=new D1Store({db,admission,clock,initial_usage:usage});
+  const store=new D1Store({db,admission,clock,initial_usage:usage,finalization_reserve:{rows_read:2,rows_written:1}});
   return {store,reservation_id:id,run_id,mode,day_utc:day,policy,admission};
 }
 
 export async function finalizeNativeRun(receipt,{clock=Date.now}={}){
   const {store,reservation_id,run_id}=receipt,cost=store.usage();
   if(cost.unknown_ops>0)throw new BudgetRefusal('UNKNOWN_NATIVE_RUN_REMAINS_RESERVED');
+  store.beginFinalization();
   // Include the final UPDATE and exact PK readback; retain original envelopes.
   const read=cost.rows_read+2,write=cost.rows_written+1,requests=cost.requests+2;
   const r=await store.query(`UPDATE report2_runner_budget_ledger_shadow SET source_run_id=?2,measured_rows_read=?3,measured_rows_written=?4,measured_requests=?5,unknown_ops=0,state='FINALIZED',completed_ts=?6,reserve_rows_read=MAX(reserve_rows_read,?3),reserve_rows_written=MAX(reserve_rows_written,?4) WHERE reservation_id=?1 AND state='RESERVED'`,[reservation_id,run_id,read,write,requests,clock()],{read:1,write:1});

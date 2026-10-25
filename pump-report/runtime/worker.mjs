@@ -17,6 +17,7 @@ const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:
 
 async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,clock}),store=native.store;
+  try{
   if(mode!=='LOOKUP')await store.install();
   const budget=createUnifiedBudget({store,run_id,mode:['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS}});
   const broker=createRequestBroker({budget,store,clock,fetch_impl});
@@ -44,6 +45,7 @@ async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fe
   }});
   const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock});
   return {native,store,budget,broker,sources,delivery,runner};
+  }catch(error){error.pumpNative=native;throw error;}
 }
 
 export function createPumpWorker(legacy={}){
@@ -63,11 +65,12 @@ export function createPumpWorker(legacy={}){
       if(probe&&!['clock','catalog'].includes(body.kind)&&!/^[A-Za-z0-9._-]{1,80}-USDT$/.test(body.symbol??''))return json({error:'INVALID_PROBE_SYMBOL'},400);
       if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);
       if(url.pathname==='/pump/summary'&&body.max_records!==undefined&&(!Number.isInteger(body.max_records)||body.max_records<1||body.max_records>40))return json({error:'SUMMARY_LIMIT_1_TO_40'},400);
+      if((url.pathname==='/pump/manual'&&body.mode!==undefined&&body.mode!=='MANUAL')||(url.pathname==='/pump/run'&&body.mode!==undefined&&body.mode!=='AUTO'))return json({error:'ROUTE_MODE_MISMATCH'},400);
       if(PROVIDER_STAGE==='QUALIFICATION_ONLY'&&Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'QUALIFICATION_ADMISSION_EXPIRED'},503);
       if(!probe&&!lookup&&!deliveryCheck&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
-      const mode=probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':lookup?'LOOKUP':body.mode==='AUTO'?'AUTO':'MANUAL',run_id=deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:crypto.randomUUID();
+      const mode=probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:crypto.randomUUID();
       if(mode==='AUTO'&&!automaticWindowOpen(Date.now()))return json({status:'OUTSIDE_AUTOMATIC_WINDOW',run_id});
-      let runtime,result;
+      let runtime,result,finalizationStarted=false;
       try{
         runtime=await services(env,{run_id,mode});
         if(deliveryCheck){
@@ -88,17 +91,18 @@ export function createPumpWorker(legacy={}){
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
         else if(url.pathname==='/pump/summary')result={status:'SUMMARY',result:await runtime.runner.getSummary({max_records:body.max_records??40})};
         else result={error:'NOT_FOUND'};
-        const finalized=await finalizeNativeRun(runtime.native);return json({...result,native_receipt:finalized});
+        finalizationStarted=true;const finalized=await finalizeNativeRun(runtime.native);return json({...result,native_receipt:finalized});
       }catch(error){
-        let finalized=null;if(runtime&&runtime.store.usage().unknown_ops===0)try{finalized=await finalizeNativeRun(runtime.native);}catch{}
+        const native=runtime?.native??error.pumpNative;
+        let finalized=null;if(native&&!finalizationStarted&&native.store.usage().unknown_ops===0)try{finalizationStarted=true;finalized=await finalizeNativeRun(native);}catch{}
         let detail=String(error?.message??'').slice(0,600);for(const [name,value] of Object.entries(env))if(/TOKEN|KEY/.test(name)&&typeof value==='string'&&value.length>5)detail=detail.split(value).join('[REDACTED]');
-        return json({status:'ERROR',run_id,error:replyCode(error),error_name:String(error?.name??'Error').slice(0,60),error_detail:detail,native_receipt:finalized,native_usage:runtime?.store.usage()??null,resources:runtime?.budget.summary()??null},503);
+        return json({status:'ERROR',run_id,error:replyCode(error),error_name:String(error?.name??'Error').slice(0,60),error_detail:detail,native_receipt:finalized,native_usage:native?.store.usage()??null,resources:runtime?.budget.summary()??null},503);
       }
     },
     async scheduled(controller,env,ctx){
       // The retained old scheduled handler is deliberately never invoked.
       if(env.PUMP_REPORT_ENABLED!=='1'||PROVIDER_STAGE!=='PRODUCTION_QUALIFIED'||!automaticWindowOpen(Date.now()))return;
-      const work=(async()=>{const run_id=crypto.randomUUID();let runtime;try{runtime=await services(env,{run_id,mode:'AUTO'});await runtime.runner.execute({mode:'AUTO',run_id,publish:true});await finalizeNativeRun(runtime.native);}catch(error){console.log('PUMP_RUN_STATUS',JSON.stringify({run_id,error:replyCode(error),usage:runtime?.store.usage()??null}));}})();
+      const work=(async()=>{const run_id=crypto.randomUUID();let runtime,finalizationStarted=false;try{runtime=await services(env,{run_id,mode:'AUTO'});await runtime.runner.execute({mode:'AUTO',run_id,publish:true});finalizationStarted=true;await finalizeNativeRun(runtime.native);}catch(error){const native=runtime?.native??error.pumpNative;if(native&&!finalizationStarted&&native.store.usage().unknown_ops===0)try{finalizationStarted=true;await finalizeNativeRun(native);}catch{}console.log('PUMP_RUN_STATUS',JSON.stringify({run_id,error:replyCode(error),usage:native?.store.usage()??null}));}})();
       if(ctx?.waitUntil)ctx.waitUntil(work);else await work;
     }
   };
