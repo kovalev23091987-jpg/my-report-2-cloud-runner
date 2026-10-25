@@ -67,7 +67,7 @@ export function createPumpWorker(legacy={}){
           const response=await runtime.broker.request({provider:'BINGX',family:'QUALIFICATION',cache_key:'QUALIFICATION:'+body.kind+':'+JSON.stringify(params),url:sourceUrl,timeout_ms:10000,ttl_ms:60000,estimated_cost:{http:1}});
           result={status:response.ok?'PROVIDER_REPLY_RECEIVED':'PROVIDER_REPLY_ERROR',run_id,response};
           await runtime.store.set('pump:qualification:'+response.receipt_id,result);
-        }else if(url.pathname==='/pump/manual')result=await runtime.runner.execute({mode:'MANUAL',symbol:body.symbol,run_id,publish:body.publish!==false,request_id:body.request_id??crypto.randomUUID()});
+        }else if(url.pathname==='/pump/manual')result=await runtime.runner.execute({mode:'MANUAL',symbol:body.symbol??body.text,context_symbol:body.context_symbol??null,run_id,publish:body.publish!==false,request_id:body.request_id??crypto.randomUUID()});
         else if(url.pathname==='/pump/run')result=await runtime.runner.execute({mode:'AUTO',run_id,publish:body.publish!==false});
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
         else result={error:'NOT_FOUND'};

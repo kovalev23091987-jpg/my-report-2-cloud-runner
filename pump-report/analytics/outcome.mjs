@@ -3,6 +3,14 @@ import {closedCandles, completeInterval, growthAtLeast, plusTenPrice} from './ma
 
 const DD=(p,low)=>100*Math.max(0,1-low/p);
 const touch=(r,z)=>positive(z?.lower)&&positive(z?.upper)&&r.low<=z.upper&&r.high>=z.lower;
+function enclosingCoverage(rows,start,end){
+  let cursor=start;
+  for(const r of rows.filter(r=>r.close_ts>start&&r.open_ts<end)){
+    if(r.open_ts>cursor)return false;
+    cursor=Math.max(cursor,r.close_ts);
+  }
+  return cursor>=end;
+}
 function scenario(plan,rows,points,complete){
   if(!plan||!Array.isArray(plan.entry_zones)||!plan.exit_zone)return {status:plan?'PLAN_SHAPE_UNAVAILABLE':'NO_PLAN',entry_touched:null,exit_touched:null,execution_proven:false,user_profit:null};
   const entries=plan.entry_zones??[],touched=rows.filter(r=>entries.some(z=>touch(r,z))),entryPoints=points.filter(p=>entries.some(z=>p.price>=z.lower&&p.price<=z.upper));
@@ -43,14 +51,19 @@ export function evaluateOutcome({signal,price_points=[],candles=[],as_of_ts}={})
   const points=[...byTime.values()].sort((a,b)=>a.event_ts-b.event_ts);
   const rows=normalized.rows.filter(r=>r.open_ts>=start&&r.close_ts<=cutoff),boundary=normalized.rows.filter(r=>r.open_ts<start&&r.close_ts>start||r.open_ts<deadline&&r.close_ts>deadline);
   const complete=pathIssues.length===0&&as_of_ts>=deadline&&completeInterval(rows,start,deadline),partialComplete=pathIssues.length===0&&completeInterval(rows,start,cutoff);
+  const enclosing=normalized.rows.filter(r=>r.close_ts>start&&r.open_ts<deadline);
+  const noHitCovered=pathIssues.length===0&&as_of_ts>=deadline&&enclosingCoverage(enclosing,start,deadline)&&enclosing.every(r=>!growthAtLeast(r.high,p,10))&&!points.some(r=>growthAtLeast(r.price,p,10));
+  const noHitBasis=noHitCovered?'ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET':null;
   const pointHit=points.find(r=>growthAtLeast(r.price,p,10)),barHit=rows.find(r=>growthAtLeast(r.high,p,10));
   const hit=Boolean(pointHit||barHit),proofEnd=barHit&&(!pointHit||barHit.close_ts<=pointHit.event_ts)?barHit.close_ts:pointHit?.event_ts??null;
   const firstExact=pointHit&&(!barHit||pointHit.event_ts<=barHit.open_ts);
-  const result={...base,status:hit?'HIT':complete?'MISS':'UNKNOWN',hit_ts:firstExact?pointHit.event_ts:null,
+  const result={...base,status:hit?'HIT':complete||noHitCovered?'MISS':'UNKNOWN',hit_ts:firstExact?pointHit.event_ts:null,
     hit_interval:hit&&!firstExact?{start_ts:barHit.open_ts,end_ts:barHit.close_ts}:null,
-    coverage:{complete,covered_until_ts:cutoff,observed_interval_complete:partialComplete,fully_contained_candles:rows.length,boundary_candles_excluded:boundary.length,
+    coverage:{complete,no_hit_period_covered:noHitCovered,no_hit_basis:noHitBasis,basis:complete?'EXACT_CLOSED_MINUTE_INTERVAL':noHitBasis??'INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS',
+      covered_until_ts:cutoff,observed_interval_complete:partialComplete,fully_contained_candles:rows.length,boundary_candles_excluded:boundary.length,
       price_points:points.length,point_samples_prove_continuity:false},reasons:[...new Set(pathIssues)],scenario_outcome:scenario(signal.plan,rows,points,complete)};
-  if(!hit&&!complete)result.reasons.push(as_of_ts<deadline?'HORIZON_NOT_MATURE':'INSUFFICIENT_HISTORY_COVERAGE');
+  if(!hit&&!complete&&!noHitCovered)result.reasons.push(as_of_ts<deadline?'HORIZON_NOT_MATURE':'INSUFFICIENT_HISTORY_COVERAGE');
+  if(noHitCovered&&!complete)result.reasons.push('NO_HIT_PROVEN_BY_ENCLOSING_BARS_BOUNDARY_DRAWDOWN_UNKNOWN');
   if(boundary.some(r=>growthAtLeast(r.high,p,10)))result.reasons.push('BOUNDARY_HIGH_NOT_PROOF');
   if(complete)result.drawdown_total_pct=DD(p,Math.min(p,...rows.map(r=>r.low),...points.map(r=>r.price)));
   if(hit&&firstExact&&completeInterval(rows,start,pointHit.event_ts)){

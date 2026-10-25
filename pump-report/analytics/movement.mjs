@@ -113,13 +113,14 @@ export function constructPlan(movement, price, liquidity, fact_id, tick, profile
   const support=pivots.filter(p=>p.price<price&&p.price-halfWidth>invalidation).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts),entries=[];
   for(const p of support){if(entries.some(e=>p.price>=e.lower-halfWidth&&p.price<=e.upper+halfWidth))continue;
     const lower=p.price-halfWidth,upper=p.price+halfWidth;if(upper>=price)continue;
-    entries.push({lower,upper,basis_fact_ids:[p.fact_id??fact_id],basis_level:p,explanation:'Подтверждённая до анализа область структуры цены.',
-      confirmation_status:movement.state==='SHARP_PULLBACK_RECLAIMED'?'CONFIRMED_RECLAIM':'PRELIMINARY_AREA'});
+    const reclaimed=movement.state==='SHARP_PULLBACK_RECLAIMED'&&movement.reclaim_level>=lower&&movement.reclaim_level<=upper;
+    entries.push({lower,upper,basis_fact_ids:[p.fact_id??fact_id],basis_level:p,explanation:(p.kind==='HIGH'?'Прежняя подтверждённая вершина':'Прежний подтверждённый минимум')+' '+p.price+'; уровень был известен до анализа.',
+      confirmation_level:reclaimed?movement.reclaim_level:null,confirmation_status:reclaimed?'CONFIRMED_RECLAIM':'PRELIMINARY_AREA'});
     if(entries.length>=profile.maximum_entry_zones)break;}
   const resistance=pivots.filter(p=>p.kind==='HIGH'&&p.price-halfWidth>price).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0];
   if(!entries.length||!resistance)return null;
   const exit_zone={lower:resistance.price-halfWidth,upper:resistance.price+halfWidth,basis_fact_ids:[resistance.fact_id??fact_id],basis_level:resistance,
-    explanation:'Ближайшая подтверждённая область сопротивления выше текущей цены; фиксация всей позиции.'};
+    explanation:'Ближайшая подтверждённая вершина '+resistance.price+' выше текущей цены; фиксация всей позиции.'};
   if(exit_zone.lower<=Math.max(...entries.map(e=>e.upper)))return null;
   const min=100*(exit_zone.lower/Math.max(...entries.map(e=>e.upper))-1),max=100*(exit_zone.upper/Math.min(...entries.map(e=>e.lower))-1);
   return {entry_zones:entries,exit_zone,invalidation:{kind:'PRICE_BELOW',price:invalidation,explanation:'Цена ниже сохранённой границы основания волны.'},

@@ -55,3 +55,4 @@ test('a simultaneous executor cannot take a still-owned run lease',async()=>{
   const result=await f.runner.execute({mode:'MANUAL',symbol:'TEST',request_id:'ARTIFICIAL_BUSY'});
   assert.equal(result.status,'QUEUED');assert.equal(f.calls.length,0);assert.equal(f.sent.length,0);
 });
+test('a manual idempotency key cannot be reused for a different coin',async()=>{const f=assembled();await f.runner.enqueueManual('TEST',{request_id:'ARTIFICIAL_SAME'});assert.equal((await f.runner.enqueueManual('OTHER',{request_id:'ARTIFICIAL_SAME'})).status,'REQUEST_ID_CONFLICT');assert.equal((await f.store.get('pump:manual:ARTIFICIAL_SAME')).symbol,'TEST');});

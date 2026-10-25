@@ -20,6 +20,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     const policy=providerPolicy(provider),now=clock();
     if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
     if(run.total+cost>limits.http_per_run||run.lanes[lane]+cost>limits.lanes[lane])throw new BudgetRefusal('RUN_HTTP_EXHAUSTED');
+    if(mode==='AUTO'&&lane==='hot'&&run.lanes.hot+cost+limits.manual_http_run_reserve>limits.lanes.hot)throw new BudgetRefusal('RUN_MANUAL_RESERVE_PROTECTED');
     if(family==='LIQUIDATIONS'&&run.liquidations+cost>limits.liquidations_per_run)throw new BudgetRefusal('MAP_BUDGET_EXHAUSTED');
     if(candidate_id&&(run.candidates[candidate_id]??0)+cost>limits.deep_per_candidate)throw new BudgetRefusal('CANDIDATE_HTTP_EXHAUSTED');
     const protectedHttp=protected_reserves?.http_by_provider?.[provider];
@@ -73,13 +74,27 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   }
   function assertTarget(provider,url){const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});}
   function setMode(next){if(!['AUTO','MANUAL','STATISTICS'].includes(next))throw new BudgetRefusal('INVALID_BUDGET_MODE');mode=next;}
-  return {reserve,finalize,assertTarget,setMode,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
+  function minimumIntervalMs(provider){const cap=providerPolicy(provider).per_second_cap;return integer(cap)&&cap>0?Math.ceil(1000/cap):0;}
+  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
 }
 
-export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch,clock=Date.now,max_response_bytes=2000000}) {
-  const inFlight=new Map();
-  async function request({provider,family='CORE',cache_key,url,method='GET',timeout_ms=10000,ttl_ms=0,headers={},candidate_id=null,estimated_cost={http:1}}) {
+export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch,clock=Date.now,max_response_bytes=2000000,sleep_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
+  const inFlight=new Map(),providerQueues=new Map(),lastStart=new Map();
+  async function paced(provider,work,deadline){
+    const interval=budget.minimumIntervalMs?.(provider)??0;if(!interval)return work();
+    const prior=providerQueues.get(provider)??Promise.resolve();
+    const next=prior.catch(()=>{}).then(async()=>{
+      const wait=Math.max(0,(lastStart.get(provider)??-Infinity)+interval-clock());
+      if(clock()+wait>=deadline)throw new BudgetRefusal('SOURCE_DEADLINE_EXPIRED');
+      if(wait>0)await sleep_impl(wait);
+      lastStart.set(provider,clock());return work();
+    });providerQueues.set(provider,next);
+    try{return await next;}finally{if(providerQueues.get(provider)===next)providerQueues.delete(provider);}
+  }
+  async function request({provider,family='CORE',cache_key,url,method='GET',timeout_ms=10000,ttl_ms=0,headers={},candidate_id=null,estimated_cost={http:1},deadline_ts=null}) {
     if(method!=='GET'||!cache_key||!provider)throw new BudgetRefusal('INVALID_SOURCE_REQUEST');
+    if(!Number.isSafeInteger(timeout_ms)||timeout_ms<=0||timeout_ms>60000||deadline_ts!==null&&!Number.isSafeInteger(deadline_ts))throw new BudgetRefusal('INVALID_SOURCE_DEADLINE');
+    const deadline=Math.min(deadline_ts??Infinity,clock()+timeout_ms);
     const target=new URL(url);
     if(target.protocol!=='https:'||target.username||target.password)throw new BudgetRefusal('HTTPS_SOURCE_REQUIRED');
     budget.assertTarget(provider,url);
@@ -88,18 +103,22 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch,cl
     const work=(async()=>{
       const cached=ttl_ms>0?await store.get('pump:cache:'+key):null;
       if(cached&&cached.received_ts+ttl_ms>=clock())return {...cached,cache_hit:true};
+      return paced(provider,async()=>{
+      const remaining=deadline-clock();if(remaining<=0)throw new BudgetRefusal('SOURCE_DEADLINE_EXPIRED');
       const request_id=crypto.randomUUID();
       const receipt=await budget.reserve({provider,family,candidate_id,request_id,cost:estimated_cost.http});
       let response;
       try {
-        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'error',signal:AbortSignal.timeout(timeout_ms)});
+        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers},redirect:'error',signal:AbortSignal.timeout(remaining)});
         const advertised=Number(response.headers.get('content-length')??0);if(advertised>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');
         const reader=response.body?.getReader();let total=0;const parts=[];
         if(reader){try{for(;;){const {value,done}=await reader.read();if(done)break;total+=value.byteLength;if(total>max_response_bytes)throw Error('SOURCE_BODY_LIMIT');parts.push(value);}}finally{await reader.cancel().catch(()=>{});}}
         const bytes=new Uint8Array(total);let offset=0;for(const part of parts){bytes.set(part,offset);offset+=part.byteLength;}
         const raw=new TextDecoder().decode(bytes);let data=null;try{data=JSON.parse(raw);}catch{data={invalid_json:true};}
         const retry=response.headers.get('retry-after');const retryAfter=retry?(Number.isFinite(Number(retry))?Math.max(0,Number(retry)*1000):Math.max(0,Date.parse(retry)-clock())):null;
-        await budget.finalize(receipt,{http_status:response.status,retry_after_ms:retryAfter});
+        const businessRateLimited=provider==='BINGX'&&String(data?.code)==='100410';
+        const effectiveBackoff=retryAfter??(response.status===429||businessRateLimited?60000:null);
+        await budget.finalize(receipt,{http_status:response.status,retry_after_ms:effectiveBackoff});
         const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts:clock(),cache_hit:false,receipt_id:request_id};
         if(response.ok&&ttl_ms>0)await store.set('pump:cache:'+key,result);
         return result;
@@ -108,6 +127,7 @@ export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch,cl
         if(receipt.state==='RESERVED')await budget.finalize(receipt,{state:'UNKNOWN',http_status:response?.status??null});
         throw error;
       }
+      },deadline);
     })();inFlight.set(key,work);
     try{return await work;}finally{inFlight.delete(key);}
   }

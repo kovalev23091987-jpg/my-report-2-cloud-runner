@@ -41,9 +41,9 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     const owner=crypto.randomUUID(),now=clock();
     const card=await store.atomic('pump:card:'+card_id,current=>{
       if(!current)return {state:current,result:{skip:'CARD_NOT_FOUND'}};
-      if(current.state==='SENDING'&&current.claim_until<=now){current.state='UNKNOWN';current.reason='SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND';return {state:current,result:{skip:'UNKNOWN'}};}
+      if(current.state==='SENDING'&&current.claim_until<=now){current.state='UNKNOWN';current.updated_ts=now;current.reason='SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND';return {state:current,result:{skip:'UNKNOWN'}};}
       if(!['READY','RETRYABLE'].includes(current.state))return {state:current,result:{skip:current.state}};
-      if(current.expires_ts<=now||current.mode==='AUTO'&&!automaticWindowOpen(now)){current.state='STALE';return {state:current,result:{skip:'STALE'}};}
+      if(current.expires_ts<=now||current.mode==='AUTO'&&!automaticWindowOpen(now)){current.state='STALE';current.updated_ts=now;return {state:current,result:{skip:'STALE'}};}
       if((current.retry_after_ts??0)>now)return {state:current,result:{skip:'BACKOFF'}};
       current.state='SENDING';current.owner=owner;current.claim_until=now+claim_ms;current.attempts++;
       return {state:current,result:structuredClone(current)};
