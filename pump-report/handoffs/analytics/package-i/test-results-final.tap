@@ -1,0 +1,166 @@
+TAP version 13
+# Subtest: I01 owner-approved dimensionless native comparison qualifies the same plan without inventing BASE/USDT volume
+ok 1 - I01 owner-approved dimensionless native comparison qualifies the same plan without inventing BASE/USDT volume
+  ---
+  duration_ms: 19.907375
+  type: 'test'
+  ...
+# Subtest: I02 named native unit needs all time/relative/absolute-unknown coverage flags even with USABLE status
+ok 2 - I02 named native unit needs all time/relative/absolute-unknown coverage flags even with USABLE status
+  ---
+  duration_ms: 0.57
+  type: 'test'
+  ...
+# Subtest: I03 unknown absolute mode never consumes native quantity as an implicit BASE fallback
+ok 3 - I03 unknown absolute mode never consumes native quantity as an implicit BASE fallback
+  ---
+  duration_ms: 1.090709
+  type: 'test'
+  ...
+# Subtest: I04 rows preserve exact decimal strings and native metadata without filling volume_base
+ok 4 - I04 rows preserve exact decimal strings and native metadata without filling volume_base
+  ---
+  duration_ms: 1.024042
+  type: 'test'
+  ...
+# Subtest: I05 cross-instrument, other-route, other-field or interval comparison keys fail before ratios
+ok 5 - I05 cross-instrument, other-route, other-field or interval comparison keys fail before ratios
+  ---
+  duration_ms: 0.761083
+  type: 'test'
+  ...
+# Subtest: I06 a BASE/quote row inserted in native current or baseline windows cannot be silently mixed
+ok 6 - I06 a BASE/quote row inserted in native current or baseline windows cannot be silently mixed
+  ---
+  duration_ms: 0.640458
+  type: 'test'
+  ...
+# Subtest: I07 missing, negative, nonfinite, decimal-mismatched or known-unit native fields are rejected
+ok 7 - I07 missing, negative, nonfinite, decimal-mismatched or known-unit native fields are rejected
+  ---
+  duration_ms: 1.32225
+  type: 'test'
+  ...
+# Subtest: I08 zero background produces null RATIO with reason rather than infinite activity
+ok 8 - I08 zero background produces null RATIO with reason rather than infinite activity
+  ---
+  duration_ms: 2.09375
+  type: 'test'
+  ...
+# Subtest: I09 zero current native activity still fails the mandatory current-volume gate
+ok 9 - I09 zero current native activity still fails the mandatory current-volume gate
+  ---
+  duration_ms: 1.767459
+  type: 'test'
+  ...
+# Subtest: I10 saved BASE wave cannot be converted to native or reanchored merely because source units changed
+ok 10 - I10 saved BASE wave cannot be converted to native or reanchored merely because source units changed
+  ---
+  duration_ms: 3.086166
+  type: 'test'
+  ...
+# Subtest: I11 saved native wave cannot convert back to BASE or lose its original key
+ok 11 - I11 saved native wave cannot convert back to BASE or lose its original key
+  ---
+  duration_ms: 2.836625
+  type: 'test'
+  ...
+# Subtest: I12 same native basis preserves retained qualification, baseline and wave lifetime after retreat
+ok 12 - I12 same native basis preserves retained qualification, baseline and wave lifetime after retreat
+  ---
+  duration_ms: 2.839541
+  type: 'test'
+  ...
+# Subtest: I13 a saved native comparison key changed in retained state waits without a new wave
+ok 13 - I13 a saved native comparison key changed in retained state waits without a new wave
+  ---
+  duration_ms: 2.706625
+  type: 'test'
+  ...
+# Subtest: I14 gaps, stale bars and unclosed future bars cannot lower the former activity/freshness requirements
+ok 14 - I14 gaps, stale bars and unclosed future bars cannot lower the former activity/freshness requirements
+  ---
+  duration_ms: 4.79825
+  type: 'test'
+  ...
+# Subtest: I15 ratio mode does not bypass price, book or independent-plan qualification
+ok 15 - I15 ratio mode does not bypass price, book or independent-plan qualification
+  ---
+  duration_ms: 2.746167
+  type: 'test'
+  ...
+# Subtest: I16 old genuine BASE and quote comparisons retain field/unit and numerical ratios
+ok 16 - I16 old genuine BASE and quote comparisons retain field/unit and numerical ratios
+  ---
+  duration_ms: 2.405375
+  type: 'test'
+  ...
+# Subtest: I17 overflowing native sums do not create Infinity/NaN activity; finite large medians remain finite
+ok 17 - I17 overflowing native sums do not create Infinity/NaN activity; finite large medians remain finite
+  ---
+  duration_ms: 1.408792
+  type: 'test'
+  ...
+# Subtest: I18 valid native metadata does not alter the price-only four-hour outcome
+ok 18 - I18 valid native metadata does not alter the price-only four-hour outcome
+  ---
+  duration_ms: 2.003917
+  type: 'test'
+  ...
+# Subtest: I19 richer absolute quote data cannot silently change a retained BASE baseline
+ok 19 - I19 richer absolute quote data cannot silently change a retained BASE baseline
+  ---
+  duration_ms: 2.484375
+  type: 'test'
+  ...
+# Subtest: I20 an absolute quote-to-BASE switch waits without extending the old wave
+ok 20 - I20 an absolute quote-to-BASE switch waits without extending the old wave
+  ---
+  duration_ms: 2.45525
+  type: 'test'
+  ...
+# Subtest: I21 coverage scope mismatch or an asserted absolute/vendor guarantee cannot bypass native row guards
+ok 21 - I21 coverage scope mismatch or an asserted absolute/vendor guarantee cannot bypass native row guards
+  ---
+  duration_ms: 0.183458
+  type: 'test'
+  ...
+# Subtest: I22 real SOURCE normalization joins the analytics consumer with null absolutes and retained clock evidence
+ok 22 - I22 real SOURCE normalization joins the analytics consumer with null absolutes and retained clock evidence
+  ---
+  duration_ms: 20.156625
+  type: 'test'
+  ...
+# Subtest: I23 zero saved impulse denominator returns null with reason and preserves original lifetime
+ok 23 - I23 zero saved impulse denominator returns null with reason and preserves original lifetime
+  ---
+  duration_ms: 2.740125
+  type: 'test'
+  ...
+# Subtest: I24 native-relative warning coexists with a maximum complete Telegram presentation
+ok 24 - I24 native-relative warning coexists with a maximum complete Telegram presentation
+  ---
+  duration_ms: 29.317083
+  type: 'test'
+  ...
+# Subtest: I25 positive but numerically overflowing ratios are null with an honest numeric reason
+ok 25 - I25 positive but numerically overflowing ratios are null with an honest numeric reason
+  ---
+  duration_ms: 4.220958
+  type: 'test'
+  ...
+# Subtest: I26 an expired BASE wave is not revived by switching to inactive native-relative observations
+ok 26 - I26 an expired BASE wave is not revived by switching to inactive native-relative observations
+  ---
+  duration_ms: 2.818208
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 184.607

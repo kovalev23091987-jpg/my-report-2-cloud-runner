@@ -1,0 +1,96 @@
+--- movement.before.mjs
++++ pump-report/analytics/movement.mjs
+@@ -1,4 +1,4 @@
+-import {positive, finite, validTime} from '../contracts/index.mjs';
++import {positive, finite, validTime, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, candleNativeComparisonKey} from '../contracts/index.mjs';
+ import {median, sum, pct, growthAtLeast, windowRows, completeInterval} from './math.mjs';
+ 
+ export function growthWindows(rows, ticker, profile) {
+@@ -26,16 +26,31 @@
+   }
+   return out;
+ }
+-function volumeComparison(rows, end, profile) {
++function volumeBasis(rows,input,profile,preferred=null){
++  if(!rows.length)return null;
++  if(input.facts.candles.unit===CANDLE_NATIVE_RELATIVE_UNIT){
++    const comparison_key=candleNativeComparisonKey(input.instrument,profile.candle_interval_ms);
++    return rows.every(r=>finite(r.volume_native)&&r.volume_native>=0&&r.volume_base===null&&r.turnover_quote===null&&r.native_quantity_unit==='UNKNOWN'&&r.comparison_kind===CANDLE_NATIVE_RELATIVE_KIND&&r.volume_comparison_key===comparison_key)?
++      {field:'volume_native',unit:'UNKNOWN_NATIVE_UNIT',comparison_kind:CANDLE_NATIVE_RELATIVE_KIND,comparison_key,interval_ms:profile.candle_interval_ms}:null;
++  }
++  const known=field=>rows.every(r=>finite(r[field])&&r[field]>=0),field=preferred&&['turnover_quote','volume_base'].includes(preferred)&&known(preferred)?preferred:known('turnover_quote')?'turnover_quote':known('volume_base')?'volume_base':null;
++  return field?{field,unit:field==='turnover_quote'?'USDT':'BASE',comparison_kind:'QUALIFIED_ABSOLUTE_SAME_FIELD',comparison_key:null,interval_ms:profile.candle_interval_ms}:null;
++}
++function sameVolumeBasis(impulse,basis){
++  if(!basis||impulse.field!==basis.field||impulse.unit!==basis.unit)return false;
++  return basis.field!=='volume_native'||impulse.comparison_kind===basis.comparison_kind&&impulse.comparison_key===basis.comparison_key&&impulse.interval_ms===basis.interval_ms;
++}
++function volumeComparison(rows, end, profile,input) {
+   const duration=profile.impulse_window_ms,interval=profile.candle_interval_ms,current=windowRows(rows,end,duration,interval);
+   if(!current)return null;
+   const prior=[];
+   for(let e=end-duration;e>=end-duration-profile.volume_baseline_ms+duration;e-=duration){const w=windowRows(rows,e,duration,interval);if(w)prior.push(w);}
+   if(!prior.length)return null;
+-  const all=[...current,...prior.flat()],field=all.every(r=>finite(r.turnover_quote))?'turnover_quote':all.every(r=>finite(r.volume_base))?'volume_base':null;
+-  if(!field)return null;
+-  const background=median(prior.map(w=>sum(w.map(r=>r[field])))),volume=sum(current.map(r=>r[field]));
+-  return {field,unit:field==='turnover_quote'?'USDT':'BASE',volume,baseline_median:background,ratio:positive(background)?volume/background:null,
++  const all=[...current,...prior.flat()],basis=volumeBasis(all,input,profile);if(!basis)return null;const {field}=basis;
++  const priorVolumes=prior.map(w=>sum(w.map(r=>r[field]))),volume=sum(current.map(r=>r[field]));
++  if(!finite(volume)||!priorVolumes.every(finite))return null;
++  const background=median(priorVolumes),ratio=positive(background)&&finite(volume/background)?volume/background:null;
++  return {...basis,volume,baseline_median:background,ratio,ratio_unit:'RATIO',ratio_reason:ratio===null?positive(background)?'VOLUME_RATIO_NOT_FINITE':'VOLUME_BASELINE_ZERO_OR_UNKNOWN':null,
+     baseline_windows:prior.length,baseline_status:prior.length*duration>=profile.volume_baseline_ms?'FULL':'SHORT_HISTORY',
+     normal_range:median(prior.map(w=>Math.max(...w.map(r=>r.high))-Math.min(...w.map(r=>r.low)))),start_ts:end-duration,end_ts:end,
+     open:current[0].open,close:current.at(-1).close,low:Math.min(...current.map(r=>r.low)),return_pct:pct(current[0].open,current.at(-1).close)};
+@@ -51,7 +66,7 @@
+   const p=input.previous_wave,previous=usablePrevious(p,input,profile)?p:null;
+   const expired=p?.instrument_id===input.instrument.instrument_id&&validTime(p.expires_ts)&&p.expires_ts<=now;
+   const candidates=[];
+-  for(const row of rows){if(row.close_ts<end-profile.wave_search_ms)continue;const v=volumeComparison(rows,row.close_ts,profile);
++  for(const row of rows){if(row.close_ts<end-profile.wave_search_ms)continue;const v=volumeComparison(rows,row.close_ts,profile,input);
+     if(v&&v.ratio!==null&&v.ratio>=profile.elevated_volume_ratio&&v.return_pct>0)candidates.push(v);}
+   // A retained impulse keeps its original baseline and lifetime.
+   const terminal=p?.instrument_id===input.instrument.instrument_id&&['CANCELLED','EXPIRED'].includes(p.state);
+@@ -69,18 +84,23 @@
+   if(terminal&&!eligibleCandidates.length)return {...base,wave_id:p.wave_id,state:p.state,reasons:[p.state==='CANCELLED'?'PLAN_INVALIDATED':'WAVE_LIFETIME_EXPIRED'],next_wave:{...p}};
+   if(!impulse){
+     const recent=end?windowRows(rows,end,profile.impulse_window_ms,profile.candle_interval_ms):null;
+-    const field=recent?.every(r=>finite(r.turnover_quote))?'turnover_quote':recent?.every(r=>finite(r.volume_base))?'volume_base':null;
+-    if(!field)return {...base,reasons:['CURRENT_VOLUME_REQUIRED']};
+-    const current=sum(recent.map(r=>r[field]));
+-    const reason=current>0&&!volumeComparison(rows,end,profile)?'VOLUME_BASELINE_UNAVAILABLE':'CURRENT_ACTIVITY_NOT_CONFIRMED';
+-    return {...base,current_volume:current,reasons:[reason]};
++    const basis=recent?volumeBasis(recent,input,profile):null;
++    if(!basis)return {...base,reasons:['CURRENT_VOLUME_REQUIRED']};
++    const current=sum(recent.map(r=>r[basis.field])),comparison=volumeComparison(rows,end,profile,input);
++    const reason=comparison?.ratio_reason??(current>0&&!comparison?'VOLUME_BASELINE_UNAVAILABLE':'CURRENT_ACTIVITY_NOT_CONFIRMED');
++    return {...base,current_volume:finite(current)?current:null,volume_basis:basis,volume_diagnostics:comparison,reasons:[reason]};
+   }
+   const recent=windowRows(rows,end,profile.impulse_window_ms,profile.candle_interval_ms),field=impulse.field;
++  const basis=recent?volumeBasis(recent,input,profile,field):null;
++  if(basis&&!sameVolumeBasis(impulse,basis))return {...base,wave_id:previous?.wave_id??null,state:previous?.state??null,next_wave:previous?{...previous}:null,
++    volume_basis:basis,reasons:['WAVE_VOLUME_COMPARISON_BASIS_CHANGED']};
++  if(!positive(impulse.volume))return {...base,wave_id:previous?.wave_id??null,state:previous?.state??null,next_wave:previous?{...previous}:null,
++    volume_basis:basis,current_to_impulse_volume_ratio:null,current_to_impulse_volume_ratio_reason:'IMPULSE_VOLUME_ZERO_OR_UNKNOWN',reasons:['IMPULSE_VOLUME_ZERO_OR_UNKNOWN']};
+   const continuityStart=previous?.covered_until_ts??impulse.start_ts;
+   if(!completeInterval(rows,continuityStart,end))return {...base,state:previous?.state??null,next_wave:previous?{...previous}:null,reasons:['WAVE_PATH_INCOMPLETE']};
+   const invalidation=previous?.invalidation_price??impulse.low;
+   const observedCancel=price<invalidation||rows.some(r=>r.open_ts>=Math.max(impulse.end_ts,continuityStart)&&r.low<invalidation);
+-  if(!observedCancel&&(!recent||!recent.every(r=>finite(r[field]))||sum(recent.map(r=>r[field]))<=0))return {...base,state:previous?'WEAKENING':null,next_wave:previous?{...previous,state:'WEAKENING',covered_until_ts:end}:null,reasons:['CURRENT_VOLUME_REQUIRED']};
++  if(!observedCancel&&(!recent||!basis||!recent.every(r=>finite(r[field]))||!finite(sum(recent.map(r=>r[field])))||sum(recent.map(r=>r[field]))<=0))return {...base,state:previous?'WEAKENING':null,next_wave:previous?{...previous,state:'WEAKENING',covered_until_ts:end}:null,reasons:['CURRENT_VOLUME_REQUIRED']};
+   const qualification=previous?.qualification??windows.filter(w=>w.passed).map(w=>({...w,fact_ids:facts}));
+   const qualified=qualification.some(w=>w.passed===true&&positive(w.start_price)&&positive(w.end_price)&&
+     growthAtLeast(w.end_price,w.start_price,w.window_ms===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct));
+@@ -101,8 +121,10 @@
+   const next_wave={wave_id,instrument_id:input.instrument.instrument_id,created_ts:created,expires_ts:created+profile.wave_max_age_ms,qualification,
+     impulse:{...impulse},state,reclaim_level:reclaim,reclaim_breached:breached,invalidation_price:invalidation,current_volume:recent?sum(recent.map(r=>r[field]??0)):null,
+     covered_until_ts:end,peak_price:peak,peak_event_ts:peakRow.close_ts,confirmed_pivots:pivots,cancelled_ts:cancelled?now:null};
++  const currentRatio=positive(impulse.volume)&&finite(next_wave.current_volume/impulse.volume)?next_wave.current_volume/impulse.volume:null;
+   return {...base,active:!cancelled,state,wave_id,automatic_eligible:qualified&&!cancelled,qualification,next_wave,peak_price:peak,reclaim_level:reclaim,
+-    current_volume:next_wave.current_volume,current_to_impulse_volume_ratio:next_wave.current_volume/impulse.volume,reasons:cancelled?['PLAN_INVALIDATED']:[]};
++    volume_basis:basis,current_volume:next_wave.current_volume,current_to_impulse_volume_ratio:currentRatio,current_to_impulse_volume_ratio_reason:currentRatio===null?'CURRENT_TO_IMPULSE_RATIO_NOT_FINITE':null,
++    current_to_impulse_volume_ratio_unit:'RATIO',reasons:cancelled?['PLAN_INVALIDATED']:[]};
+ }
+ 
+ export function constructPlan(movement, price, liquidity, fact_id, tick, profile) {

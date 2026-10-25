@@ -1,0 +1,158 @@
+{
+  "schema": "PUMP_ANALYTICS_I_QUALIFICATION_V1",
+  "base_main": "15bddf357cb54bfc6ee033e6140d70bcdb76270e",
+  "code_head": null,
+  "ROOT_integrates": true,
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "contract_version": "pump-report-contract-v1.1-native-relative",
+  "owner_decision_git_blob": "8004c6b4b8b646558b8fa0f774cdf985667324a1",
+  "tests_pass": 26,
+  "tests_fail": 0,
+  "affected_legacy_pass": 10,
+  "median_final_affected_pass": 5,
+  "commands": [
+    "node --test --test-reporter=tap pump-report/tests/analytics/native-relative.test.mjs",
+    "node --test --test-reporter=tap --test-name-pattern='12%/15m|retained wave survives|sharp unconfirmed|missing quote turnover|partial old history|future confirmation|temporary empty activity|missing mandatory volume|boundary candle high|known target hit survives' pump-report/tests/analytics/analysis.test.mjs pump-report/tests/analytics/outcome.test.mjs",
+    "node --test --test-reporter=tap --test-name-pattern='I01|I16|I17|I22|I25' pump-report/tests/analytics/native-relative.test.mjs"
+  ],
+  "final_change_note": "Last median change retained the exact old finite-sum arithmetic and guarded overflow only; five meaningful affected I cases rerun. Other 26-case final run and legacy10 evidence retained.",
+  "real_SOURCE_factory_and_normalizer_connected_with_in_memory_broker": true,
+  "readonly_dependency_main": "7fc18dbad83576a7ced14df582fe2ed8bee45d36",
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 4222,
+      "sha256": "b8d235eb79a13532006e1b28a0474e993e3f390e476ed5b068a6c0ea210ce169",
+      "git_blob": "5b2731ff90247133a8aef1ea4a9259af32ef758e",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "bytes": 31383,
+      "sha256": "1138ef89328fbcd9960fa6a6cc9979c956548824655176731be82d082b669f53",
+      "git_blob": "bfdaccc6979e8eda769e0f355ab51e394f16aea1",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/bingx.mjs",
+      "bytes": 13882,
+      "sha256": "48c68cc9b7937b4c5f8ace8cbdf029a51d00b74c7aae038be695449f3d96aaec",
+      "git_blob": "a640856240dc148940f38ea8ff5eaa3505beaf44",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/sources/native-relative-qualification.mjs",
+      "bytes": 3126,
+      "sha256": "c9ab4bd23cf10376a3abd7b66490679121362286efdc82ed95d19fdf29ca753f",
+      "git_blob": "0a69ee98e858386a2783c5157709b51ca002a021",
+      "remote_exact": true
+    }
+  ],
+  "baseline_A_math_D_movement_G_index_exact": true,
+  "files": [
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c"
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 15460,
+      "sha256": "fdf390b89d9e56720323419361e61b1d07306e37123293526a04651b585e59bc"
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 15759,
+      "sha256": "a31fb4880ddd3d31e007204d327ea8b6318d48a2e66b2ece4cebeb7b2805e063"
+    },
+    {
+      "path": "pump-report/tests/analytics/native-relative.test.mjs",
+      "bytes": 18606,
+      "sha256": "fd26876353cdbb91c8fd1cc7e1b701240e03afa45d529553d7f145252d1ed0d9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/README_RU.md",
+      "bytes": 9271,
+      "sha256": "a5ac98ab7e4f7ab557659543d69dab919e8db8e29d04fed7508f6f21d006b67f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/affected-legacy.tap",
+      "bytes": 2482,
+      "sha256": "d5e176bee0b0584c91f8729103482a7ee84ccccd92f25dc1a5a98710a63d0aa4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/authority.json",
+      "bytes": 4754,
+      "sha256": "d6fcc5b34e73038874d6c0b1889974cbeeb0464031a084dcc1b2950100a86a09"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/baseline/index.before.mjs",
+      "bytes": 13772,
+      "sha256": "4a42239d01f466523ab05a348d810f3f583e339de7ac04b53dac310e31a89e33"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/baseline/math.before.mjs",
+      "bytes": 2845,
+      "sha256": "c55657a5ed3e65e69394ff187d5d0a1e56962cebee833cdd1a6e950a6f0712fc"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/baseline/movement.before.mjs",
+      "bytes": 12804,
+      "sha256": "dd21f36bb7113063dc6e9465978033822a1af00c56db707571025e32ad17fac2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/index.diff",
+      "bytes": 7611,
+      "sha256": "ab1f7172a2957f6c2abd1373d1e3d2399dd916104983aeca0fa415c91a938ce2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/math.diff",
+      "bytes": 3095,
+      "sha256": "6dd613137f5687ff06affffdd35a6e9daef74a6a9e8c5a1bb9c2e6993c7bb143"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/median-affected.tap",
+      "bytes": 1434,
+      "sha256": "09d7febb369d90bfb710156bcf223dd6610d4eb39a1c2c8bae32f522b4cb1ec0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/movement.diff",
+      "bytes": 9299,
+      "sha256": "787dae27d94f4529d51d9146779509a0a043d9ab3e463be350dfc44ca824703f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/native-analysis.json",
+      "bytes": 20342,
+      "sha256": "d106ffbcc01c0019df61c5d3ec337924765ecb75c87edbc2fa96fe8459d53fc0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/native-card.txt",
+      "bytes": 1343,
+      "sha256": "14d929f35e2c684adcae93362abc024c08fe5f3781aa7e9cbc2f5922f014fa69"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/test-results-final.tap",
+      "bytes": 6599,
+      "sha256": "1bdca801836fff20f784c20b2a2b9414fce77a41ea7ee43d5111f9881c6ce810"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/test-results-initial.tap",
+      "bytes": 4608,
+      "sha256": "f93a5e7321405738b11083737c219e9436e0dd72f16eb4ee44cba28abe6d9966"
+    }
+  ],
+  "native_relative_contract": {
+    "fact_unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+    "quantity_unit": "UNKNOWN_NATIVE_UNIT",
+    "ratio_unit": "RATIO",
+    "absolute_BASE_or_USDT_qualified": false,
+    "previous_wave_basis_switch": "WAITING_PRESERVE_ID_BASELINE_CREATED_EXPIRY"
+  },
+  "profile_or_threshold_changes": false,
+  "runtime_source_shared_contract_mutations": false,
+  "E_final_assembled_NOT_run": true,
+  "whole_A_to_H_replayed": false,
+  "native_IO": 0,
+  "probability_pct": null,
+  "status": "FROZEN_FOR_ROOT_H_I_SOURCE_ASSEMBLY"
+}

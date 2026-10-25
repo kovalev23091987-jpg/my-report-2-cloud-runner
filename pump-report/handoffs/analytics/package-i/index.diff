@@ -1,0 +1,64 @@
+--- index.before.mjs
++++ pump-report/analytics/index.mjs
+@@ -1,4 +1,4 @@
+-import {assertInput, ANALYSIS_SCHEMA, CONTRACT_VERSION, factUsable, finite, positive} from '../contracts/index.mjs';
++import {assertInput, ANALYSIS_SCHEMA, CONTRACT_VERSION, factUsable, finite, positive, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS, candleNativeComparisonKey} from '../contracts/index.mjs';
+ import {START_PROFILE} from '../profile/start-v1.mjs';
+ import {closedCandles, unique} from './math.mjs';
+ import {analyzeMovement, constructPlan} from './movement.mjs';
+@@ -23,8 +23,15 @@
+     p.candle_interval_ms===60000&&Number.isInteger(p.pivot_radius_bars)&&Number.isInteger(p.reclaim_closed_bars)&&p.maximum_entry_zones<=3&&p.maximum_liquidation_zones_per_side<=3;
+ }
+ function currentFact(f,at,ttl){return factUsable(f,at)&&f.event_ts<=f.received_ts&&at-f.event_ts<=ttl;}
+-function coreFact(f,kind,at,p){
++function coreFact(f,kind,at,p,instrument){
+   if(!f||f.kind!==kind||f.venue!=='BINGX'||f.origin!=='OBSERVED')return false;
++  if(kind==='candles'&&f.unit===CANDLE_NATIVE_RELATIVE_UNIT){
++    const c=f.coverage;
++    return ['USABLE','INCOMPLETE'].includes(f.status)&&c?.time_qualified===true&&c.relative_volume_qualified===true&&c.volume_qualified===false&&c.time_basis===CANDLE_CCXT_TIME_BASIS&&
++      c.comparison_kind===CANDLE_NATIVE_RELATIVE_KIND&&c.volume_comparison_key===candleNativeComparisonKey(instrument,p.candle_interval_ms)&&c.native_quantity_unit==='UNKNOWN'&&
++      ![c.base_volume_qualified,c.quote_volume_qualified,c.turnover_quote_qualified,c.absolute_base_amount_qualified,c.absolute_USD_amount_qualified,c.independent_vendor_guarantee_claimed].includes(true)&&
++      typeof f.evidence_ref==='string'&&f.evidence_ref.length>0&&currentFact({...f,status:'USABLE'},at,p.freshness_ms.candles);
++  }
+   if(kind==='candles'&&f.status==='INCOMPLETE'&&f.coverage?.time_qualified===true&&f.coverage?.volume_qualified===true){
+     return currentFact({...f,status:'USABLE'},at,p.freshness_ms.candles);
+   }
+@@ -58,6 +65,7 @@
+   else{lines.push('Ликвидации сверху: '+(map.zones_up.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');lines.push('Ликвидации снизу: '+(map.zones_down.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');if(map.status==='PARTIAL')lines.push('Карта неполная.');lines.push('Охват карты: только полученные данные источников.');}
+   lines.push('Размер: до '+p.position_limit_usdt+' USDT по текущему стакану; будущая цена исполнения не гарантирована.');
+   lines.push('Важно: пересмотреть план при цене ниже '+px(p.invalidation.price)+'.');
++  if(result.activity?.volume_basis?.field==='volume_native')lines.push('Объём сопоставлен только со своей историей; абсолютная единица количества неизвестна.');
+   if(result.wave_state==='SHARP_PULLBACK_UNCONFIRMED')lines.push('Возврат не подтверждён; предварительная область не является доказанным выкупом.');
+   if(p.desired_potential_status==='BELOW_DESIRED')lines.push('Обоснованный потенциал ниже желаемых '+p.desired_plan_potential_pct+'%.');
+   return wellFormed(lines.join('\n'));
+@@ -83,22 +91,26 @@
+   if(!profileReady(profile))return {...result,reasons:['ANALYTICS_PROFILE_REQUIRED']};
+   const usable={};
+   for(const kind of ['price','candles','orderbook']){
+-    usable[kind]=coreFact(facts[kind],kind,at,profile);
++    usable[kind]=coreFact(facts[kind],kind,at,profile,instrument);
+     if(!usable[kind])result.reasons.push('MANDATORY_'+kind.toUpperCase()+'_NOT_USABLE');
+   }
+   if(!usable.price||!positive(facts.price.value))return {...result,reasons:unique([...result.reasons,...(!positive(facts.price?.value)?['POSITIVE_LAST_PRICE_REQUIRED']:[])])};
+   if(facts.price.unit!=='USDT_PER_BASE')return {...result,reasons:unique([...result.reasons,'PRICE_UNIT_UNQUALIFIED'])};
+   result.reference_price=facts.price.value;
+   if(!usable.candles)return result;
+-  const normalized=closedCandles(facts.candles.value,at,profile.candle_interval_ms),rows=normalized.rows;
++  const native=facts.candles.unit===CANDLE_NATIVE_RELATIVE_UNIT;
++  const normalized=closedCandles(facts.candles.value,at,profile.candle_interval_ms,native?{native_comparison_key:candleNativeComparisonKey(instrument,profile.candle_interval_ms)}:{}),rows=normalized.rows;
+   if(normalized.reason||!rows.length||at-rows.at(-1).close_ts>profile.freshness_ms.candles)return {...result,reasons:unique([...result.reasons,normalized.reason??'CLOSED_CANDLES_STALE_OR_MISSING'])};
+   const ticker=currentFact(facts.ticker_24h,at,profile.freshness_ms.price)&&facts.ticker_24h.unit==='USDT_ROLLING_24H'?facts.ticker_24h:null;
+   const movement=analyzeMovement(input,rows,result.reference_price,ticker,profile);
+   Object.assign(result,{wave_id:movement.wave_id,wave_state:movement.state,next_wave:movement.next_wave,current_threshold_passed:movement.current_threshold_passed,
+-    automatic_eligible:movement.automatic_eligible,growth_windows:movement.windows,activity:{impulse:movement.impulse,current_volume:movement.current_volume??null,current_to_impulse_volume_ratio:movement.current_to_impulse_volume_ratio??null},
++    automatic_eligible:movement.automatic_eligible,growth_windows:movement.windows,activity:{impulse:movement.impulse,current_volume:movement.current_volume??null,current_to_impulse_volume_ratio:movement.current_to_impulse_volume_ratio??null,
++      ratio_unit:'RATIO',current_to_impulse_volume_ratio_reason:movement.current_to_impulse_volume_ratio_reason??null,volume_basis:movement.volume_basis??null,volume_diagnostics:movement.volume_diagnostics??null,
++      candle_time_basis:facts.candles.coverage?.time_basis??null,candle_evidence_ref:facts.candles.evidence_ref??null,
++      candle_provenance:{coverage:structuredClone(facts.candles.coverage??null),event_ts:facts.candles.event_ts,received_ts:facts.candles.received_ts,source:facts.candles.source,venue:facts.candles.venue}},
+     reasons:unique([...result.reasons,...movement.reasons]),fact_ids:[facts.price.fact_id,facts.candles.fact_id,...(ticker?[ticker.fact_id]:[])]});
+   result.liquidations=selectZones(input.liquidations,instrument,result.reference_price,movement.normal_range,at,profile);
+-  if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE'].includes(r))?'WAITING':'REJECTED';return result;}
++  if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';return result;}
+   if(descriptions[movement.state])result.findings.push({code:movement.state,text:descriptions[movement.state],fact_ids:[facts.candles.fact_id]});
+   if(movement.impulse.baseline_status==='SHORT_HISTORY')result.findings.push({code:'SHORT_HISTORY',text:'История сравнения короче обычной; вывод основан только на доступных закрытых окнах.',fact_ids:[facts.candles.fact_id]});
+   if(!usable.orderbook)return result;
