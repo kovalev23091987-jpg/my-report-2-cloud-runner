@@ -14,7 +14,7 @@ export const PUMP_VERSION='pump-report-v1-package-a';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
 
-async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch}){
+async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,clock}),store=native.store;
   await store.install();
   const budget=createUnifiedBudget({store,run_id,mode:mode==='CONTROL'?'MANUAL':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS}});
@@ -74,7 +74,8 @@ export function createPumpWorker(legacy={}){
         const finalized=await finalizeNativeRun(runtime.native);return json({...result,native_receipt:finalized});
       }catch(error){
         let finalized=null;if(runtime&&runtime.store.usage().unknown_ops===0)try{finalized=await finalizeNativeRun(runtime.native);}catch{}
-        return json({status:'ERROR',run_id,error:replyCode(error),native_receipt:finalized,native_usage:runtime?.store.usage()??null},503);
+        let detail=String(error?.message??'').slice(0,600);for(const [name,value] of Object.entries(env))if(/TOKEN|KEY/.test(name)&&typeof value==='string'&&value.length>5)detail=detail.split(value).join('[REDACTED]');
+        return json({status:'ERROR',run_id,error:replyCode(error),error_name:String(error?.name??'Error').slice(0,60),error_detail:detail,native_receipt:finalized,native_usage:runtime?.store.usage()??null,resources:runtime?.budget.summary()??null},503);
       }
     },
     async scheduled(controller,env,ctx){

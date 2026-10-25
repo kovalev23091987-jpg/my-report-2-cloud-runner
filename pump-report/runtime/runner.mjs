@@ -34,7 +34,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function updateDiscovery(catalog,run_id){
     const overview=await sources.getOverview({run_id,instruments:catalog.instruments});
     const now=clock(),slot=Math.floor(now/60000)*60000;
-    const compact=overview.observations.map(o=>({id:o.instrument.instrument_id,last:o.facts.price?.value??null,event_ts:o.facts.price?.event_ts??null,reported_change_pct:o.reported_change_pct??null}));
+    const compact=overview.observations.map(o=>{const usable=factUsable(o.facts.price,now);return {id:o.instrument.instrument_id,last:usable?o.facts.price.value:null,event_ts:o.facts.price?.event_ts??null,reported_change_pct:usable?o.reported_change_pct??null:null,status:o.facts.price?.status??'ABSENT'};});
     const index=await store.get('pump:overview-index')??[],recent=index.filter(t=>t>=now-3600000&&t<slot),history=[];
     for(const ts of recent)history.push({ts,rows:await store.get('pump:overview:'+ts)??[]});
     await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);

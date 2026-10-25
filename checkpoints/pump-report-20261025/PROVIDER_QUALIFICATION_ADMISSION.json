@@ -89,7 +89,16 @@
     },
     "account_day_analytics": "prior native current UTC-day GraphQL no recorded groups; diagnostic shared ledger0/collector0; conservative59000R920W floor retained, no historical reset",
     "reject_old_unknown_or_unfinished": true,
-    "exact_meta_and_own_reservation_readback": true
+    "exact_meta_and_own_reservation_readback": true,
+    "failure_inspection": {
+      "max_requests": 1,
+      "rows_read_upper": 2,
+      "rows_written": 0,
+      "exact_key": "pump:resources",
+      "reason": "First qualified server request finalized D1 but threw generic HTTP-layer error; inspect own durable budget before any distinct next probe.",
+      "covered_by_retained_first_control_5000R_envelope": true,
+      "old_diagnostic3_not_rearmed": true
+    }
   },
   "readiness": {
     "identity_registry_empty": true,
@@ -114,6 +123,14 @@
     "new_chats_agents_automations": 0,
     "root_affected_runtime_tests": 26,
     "source_code_frozen_A33": true,
-    "analytics_B25_C12_D41_integrated": true
+    "analytics_B25_C12_D41_integrated": true,
+    "first_control_run": {
+      "run_id": "42d8a7c8-2b5e-4120-a826-de5f2f2e9f07",
+      "native_finalized": true,
+      "rows_read": 7,
+      "rows_written": 10,
+      "requests": 10,
+      "provider_reply_confirmed": false
+    }
   }
 }

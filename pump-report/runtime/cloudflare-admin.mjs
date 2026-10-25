@@ -28,6 +28,11 @@ if(command==='inspect'){
   const r=await call('GET',base),start=r.text.indexOf('\r\n\r\n')+4,marker=r.text.slice(0,r.text.indexOf('\r\n')),end=r.text.lastIndexOf('\r\n'+marker+'--');
   if(start<4||end<start)throw Error('LEGACY_MULTIPART_REQUIRED');
   const result={success:true,sha256:digest(r.text.slice(start,end)),bytes:Buffer.byteLength(r.text.slice(start,end))};save(output??arg,result);console.log(JSON.stringify(result));
+}else if(command==='qualification-resources'){
+  const admission=JSON.parse(fs.readFileSync(arg,'utf8'));if(admission.expires_ts<=Date.now()||admission.native?.failure_inspection?.max_requests!==1)throw Error('BOUNDED_FAILURE_INSPECTION_ADMISSION_REQUIRED');
+  const r=await call('POST','/accounts/'+account+'/d1/database/057a2847-2cc4-4e52-8534-1be1596d21d5/query',{body:{sql:'SELECT value_json FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1',params:['pump:resources']}});
+  save(output,r.parsed);const result=r.parsed.result[0],state=JSON.parse(result.results[0]?.value_json??'null');
+  console.log(JSON.stringify({success:true,meta:result.meta,provider:state?.providers?.BINGX??null,outstanding:state?Object.keys(state.outstanding):null,unknown:state?Object.keys(state.unknown):null,days:state?.days??null}));
 }else if(command==='control-secret'){
   const key=fs.readFileSync(arg,'utf8').trim();if(!/^[a-f0-9]{64}$/.test(key))throw Error('CONTROL_KEY_FORMAT');
   const r=await call('PUT',base+'/secrets',{body:{name:'PUMP_CONTROL_KEY',type:'secret_text',text:key}});save(output,r.parsed);console.log(JSON.stringify({success:true,status:r.status,name:r.parsed.result.name,type:r.parsed.result.type}));

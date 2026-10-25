@@ -78,7 +78,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
 }
 
-export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch,clock=Date.now,max_response_bytes=2000000,sleep_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
+export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bind(globalThis),clock=Date.now,max_response_bytes=2000000,sleep_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
   const inFlight=new Map(),providerQueues=new Map(),lastStart=new Map();
   async function paced(provider,work,deadline){
     const interval=budget.minimumIntervalMs?.(provider)??0;if(!interval)return work();
