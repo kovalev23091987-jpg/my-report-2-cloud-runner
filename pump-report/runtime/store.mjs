@@ -5,6 +5,10 @@ export class MemoryStore {
   async get(key){return structuredClone(this.rows.get(key)??null);}
   async set(key,value){this.rows.set(key,structuredClone(value));return value;}
   async atomic(key,change){const job=this.chain.then(async()=>{const {state,result}=change(await this.get(key));await this.set(key,state);return result;});this.chain=job.catch(()=>{});return job;}
+  async atomicPair(keys,change){
+    if(!Array.isArray(keys)||keys.length!==2||keys[0]===keys[1])throw new BudgetRefusal('DISTINCT_STATE_PAIR_REQUIRED');
+    const job=this.chain.then(async()=>{const {states,result}=change(await Promise.all(keys.map(key=>this.get(key))));if(!Array.isArray(states)||states.length!==2||states.some(s=>s===undefined))throw new BudgetRefusal('TWO_STATE_VALUES_REQUIRED');for(let i=0;i<2;i++)await this.set(keys[i],states[i]);return result;});this.chain=job.catch(()=>{});return job;
+  }
 }
 
 // Native D1 metadata is observed for every statement. Missing ACKs never mean 0.
@@ -40,6 +44,31 @@ export class D1Store {
       if(r.meta.changes===1)return result;
     }
     throw new BudgetRefusal('STATE_CAS_CONTENTION');
+  }
+  async atomicPair(keys,change){
+    if(!Array.isArray(keys)||keys.length!==2||keys[0]===keys[1]||keys.some(k=>typeof k!=='string'||!k))throw new BudgetRefusal('DISTINCT_STATE_PAIR_REQUIRED');
+    for(let attempt=0;attempt<5;attempt++){
+      const current=await this.query('SELECT state_key,value_json,revision FROM pump_report_state_v1 WHERE state_key IN (?1,?2)',keys,{read:2});
+      const rows=keys.map(key=>current.results?.find(row=>row.state_key===key)),values=rows.map(row=>row?JSON.parse(row.value_json):null),{states,result}=change(values);
+      if(!Array.isArray(states)||states.length!==2||states.some(s=>s===undefined))throw new BudgetRefusal('TWO_STATE_VALUES_REQUIRED');
+      const texts=states.map(value=>JSON.stringify(value));
+      if(rows.every((row,i)=>row&&row.value_json===texts[i]))return result;
+      // One statement snapshots both revision predicates before changing either
+      // row. A competing event changes both values or none; no separate ACK gap
+      // can leave the per-wave state ahead of its materialized aggregate.
+      const sql=`WITH gate(ok) AS MATERIALIZED (
+        SELECT COALESCE((SELECT revision FROM pump_report_state_v1 WHERE state_key=?1),-1)=?3
+          AND COALESCE((SELECT revision FROM pump_report_state_v1 WHERE state_key=?4),-1)=?6
+      ), replacement(state_key,value_json,revision,updated_ts) AS (
+        VALUES (?1,?2,?3+1,?7),(?4,?5,?6+1,?7)
+      ) INSERT INTO pump_report_state_v1(state_key,value_json,revision,updated_ts)
+        SELECT replacement.* FROM replacement CROSS JOIN gate WHERE gate.ok
+        ON CONFLICT(state_key) DO UPDATE SET value_json=excluded.value_json,revision=excluded.revision,updated_ts=excluded.updated_ts`;
+      const written=await this.query(sql,[keys[0],texts[0],rows[0]?.revision??-1,keys[1],texts[1],rows[1]?.revision??-1,this.clock()],{read:4,write:4});
+      if(written.meta.changes===2)return result;
+      if(written.meta.changes!==0){this.cost.unknown_ops++;throw new BudgetRefusal('STATE_PAIR_ACK_NOT_ATOMIC');}
+    }
+    throw new BudgetRefusal('STATE_PAIR_CAS_CONTENTION');
   }
   usage(){return {...this.cost};}
 }

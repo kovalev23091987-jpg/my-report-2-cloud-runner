@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: H01 forty-two independent waves have exact materialized counters without passing old records to the query
+ok 1 - H01 forty-two independent waves have exact materialized counters without passing old records to the query
+  ---
+  duration_ms: 60.362334
+  type: 'test'
+  ...
+# Subtest: H02 exact event replay is a no-op and cannot increment counters or revisions twice
+ok 2 - H02 exact event replay is a no-op and cannot increment counters or revisions twice
+  ---
+  duration_ms: 1.885334
+  type: 'test'
+  ...
+# Subtest: H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched
+ok 3 - H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched
+  ---
+  duration_ms: 0.716833
+  type: 'test'
+  ...
+# Subtest: H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter
+ok 4 - H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter
+  ---
+  duration_ms: 0.1335
+  type: 'test'
+  ...
+# Subtest: H25 prepared event folds synchronously through the actual ROOT MemoryStore.atomicPair and repeats safely
+ok 5 - H25 prepared event folds synchronously through the actual ROOT MemoryStore.atomicPair and repeats safely
+  ---
+  duration_ms: 0.768083
+  type: 'test'
+  ...
+# Subtest: H26 prepared hash envelope is immutable/transient and cannot be forged or persisted as an event authority
+ok 6 - H26 prepared hash envelope is immutable/transient and cannot be forged or persisted as an event authority
+  ---
+  duration_ms: 0.700875
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 122.912292

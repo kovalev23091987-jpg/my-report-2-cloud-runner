@@ -1,5 +1,5 @@
 import {selectOutcomeAnchor} from '../analytics/anchors.mjs';
-import {summarizeOutcomes} from '../analytics/summary.mjs';
+import {createMaterializedSummary,prepareOutcomeRecordEvent,foldPreparedOutcomeRecord,advanceWaveMaturity,dueMaturityWaves,readMaterializedSummary} from '../analytics/materialized-summary.mjs';
 import {textHash} from './delivery.mjs';
 
 const waveKey=a=>'pump:journal:'+a.instrument.instrument_id+':'+a.wave_id;
@@ -7,6 +7,10 @@ const signalKey=a=>'pump:signal:'+a.instrument.instrument_id+':'+a.wave_id;
 const mapMode=a=>a.liquidations?.map_mode==='WITHOUT_MAP'?'NO_MAP':a.liquidations?.status==='PARTIAL'?'PARTIAL_MAP':'MAP';
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export function createOutcomeJournal({store,profile,clock=Date.now,evidence_class='UNCLASSIFIED'}){
+  if(typeof store.atomicPair!=='function')throw Error('ATOMIC_WAVE_AND_SUMMARY_STORE_REQUIRED');
+  const aggregateKey='pump:materialized-summary:v1';
+  const emptyAggregate=()=>({...createMaterializedSummary({materialization_id:'pump-frozen-origins-v1',as_of_ts:clock()}),source_cursor:0});
+  const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+40<=store.admission.max_rows_read&&store.usage().rows_written+8<=store.admission.max_rows_written);
   async function remember(analysis,input,analysis_id){
     if(!analysis.wave_id)return;
     const key=waveKey(analysis),at=clock();
@@ -18,13 +22,13 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     const used=new Set(analysis.fact_ids??[]),known=[...Object.values(input.facts??{}).filter(f=>used.has(f.fact_id)).map(f=>f.received_ts),...(analysis.liquidations?.zones_up??[]).map(z=>z.received_ts),...(analysis.liquidations?.zones_down??[]).map(z=>z.received_ts)].filter(Number.isSafeInteger);
     const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,ready:true};
     const row={analysis_id,analysis_sha256:sha,recorded_ts:at,features_known_ts:known.length?Math.max(...known):null,origin};
-    await store.atomic(key,j=>{
+    const pending=await store.atomic(key,j=>{
       j??={schema:'PUMP_OUTCOME_JOURNAL_V1',analyses:[],publications:[],wave_expires_ts:analysis.next_wave?.expires_ts??analysis.analysis_ts+profile.wave_max_age_ms,terminal:null,frozen_anchor:null};
       const previous=j.analyses.find(r=>r.analysis_id===analysis_id);
       if(previous&&(!equal(previous.origin,row.origin)||previous.analysis_sha256!==sha))throw Error('IMMUTABLE_ANALYSIS_JOURNAL_CONFLICT');
-      if(!previous)j.analyses.push(row);return {state:j,result:true};
+      if(!previous)j.analyses.push(row);return {state:j,result:!j.frozen_anchor};
     });
-    await store.atomic('pump:journal-index',ids=>({state:[...new Set([...(ids??[]),key])],result:true}));
+    if(pending)await store.atomic('pump:journal-index',ids=>({state:[...new Set([...(ids??[]),key])],result:true}));
   }
   async function publication(card_id){
     const card=await store.get('pump:card:'+card_id);if(!card?.analysis?.source_input_key||!['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))return null;
@@ -44,20 +48,48 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
     const signal={...o,instrument:a.instrument,mode:o.mode,map_mode:o.map_mode==='NO_MAP'?'WITHOUT_MAP':'WITH_MAP',plan:a.plan,analysis_key:selected.anchor.analysis_id,origin:o,publication,deadline_ts:o.t0+profile.horizon_ms};
     await store.atomic(o.signal_id,current=>{if(current?.origin&&!equal(current.origin,o))throw Error('ORIGINAL_SIGNAL_IMMUTABLE');return {state:current?{...current,publication}:signal,result:true};});
     await store.atomic('pump:outcomes-pending',ids=>({state:[...new Set([...(ids??[]),o.signal_id])],result:true}));
-    await record(signal,await store.get('pump:outcome:'+o.signal_id));return selected;
+    await record(signal,await store.get('pump:outcome:'+o.signal_id));
+    await store.atomic('pump:journal-index',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));return selected;
   }
-  async function syncTerminal(){const ids=await store.get('pump:journal-index')??[],results=[];for(const key of ids){const j=await store.get(key);if(j&&(j.terminal||j.wave_expires_ts<=clock())&&!j.frozen_anchor)results.push(await sync(key));}return results;}
+  async function syncTerminal(){const ids=await store.get('pump:journal-index')??[],results=[];for(const key of ids){if(!resourcesAvailable())break;const j=await store.get(key);if(j?.frozen_anchor){await store.atomic('pump:journal-index',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));continue;}if(j&&(j.terminal||j.wave_expires_ts<=clock()))results.push(await sync(key));}return results;}
   async function record(signal,outcome){
     if(!signal?.origin)return;
     const payload={origin:signal.origin,publication:signal.publication,outcome:outcome??null},hash=await textHash(JSON.stringify(payload)),key='pump:summary-record:'+hash;
     await store.atomic(key,current=>({state:current??{record_id:key,recorded_ts:clock(),...payload},result:true}));
     await store.atomic('pump:summary-record-index',ids=>({state:[...new Set([...(ids??[]),key])],result:true}));
+    await catchUp({max_records:4,maturity_limit:0});
   }
-  async function summary({max_records=1000}={}){
+  async function catchUp({max_records=40,maturity_limit=5}={}){
     const ids=await store.get('pump:summary-record-index')??[];
-    if(ids.length>max_records)return {status:'SUMMARY_RESOURCE_ADMISSION_REQUIRED',record_count:ids.length,probability:null,success_rate_pct:null};
-    const rows=[];for(const key of ids){const row=await store.get(key);if(row)rows.push(row);else throw Error('SUMMARY_RECORD_MISSING');}
-    const result=summarizeOutcomes(rows,{as_of_ts:clock()});await store.set('pump:summary-latest',result);return result;
+    let processed=0;
+    while(processed<max_records&&resourcesAvailable()){
+      const aggregate=await store.get(aggregateKey)??emptyAggregate(),cursor=aggregate.source_cursor??0;
+      if(cursor>ids.length)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');
+      if(cursor===ids.length)break;
+      const key=ids[cursor],row=await store.get(key);if(!row||row.record_id!==key)throw Error('SUMMARY_RECORD_MISSING');
+      const {origin,publication,outcome}=row;
+      if(key!=='pump:summary-record:'+await textHash(JSON.stringify({origin,publication,outcome})))throw Error('SUMMARY_RECORD_CONTENT_HASH_MISMATCH');
+      const prepared_event=await prepareOutcomeRecordEvent({kind:'OUTCOME_RECORD',event_id:key,record:row}),wave='pump:materialized-wave:'+JSON.stringify([origin.instrument_id,origin.wave_id]);
+      const committed=await store.atomicPair([wave,aggregateKey],([state,current])=>{
+        current??=emptyAggregate();
+        if((current.source_cursor??0)!==cursor)return {states:[state,current],result:false};
+        const folded=foldPreparedOutcomeRecord({aggregate:current,wave:state,prepared_event,as_of_ts:clock()});
+        return {states:[folded.wave,{...folded.aggregate,source_cursor:cursor+1}],result:true};
+      });
+      if(committed)processed++;
+    }
+    if(maturity_limit>0){const aggregate=await store.get(aggregateKey);if(aggregate)for(const item of dueMaturityWaves(aggregate,{as_of_ts:clock(),limit:Math.min(40,maturity_limit)})){
+      if(!resourcesAvailable())break;
+      await store.atomicPair(['pump:materialized-wave:'+item.wave_key,aggregateKey],([wave,current])=>{const tick=advanceWaveMaturity({aggregate:current,wave,as_of_ts:clock()});return {states:[tick.wave,tick.aggregate],result:tick.status};});
+    }}
+    const aggregate=await store.get(aggregateKey)??emptyAggregate(),source_cursor=aggregate.source_cursor??0,view=readMaterializedSummary(aggregate,{as_of_ts:clock()});
+    return {...view,status:source_cursor<ids.length?'SUMMARY_CATCHUP_REQUIRED':view.status,source_cursor,source_records_at_boundary:ids.length,source_caught_up:source_cursor===ids.length,processed_records:processed,source_index_append_only:true};
   }
-  return {remember,publication,sync,syncTerminal,record,summary};
+  async function summary({max_records=40}={}){
+    if(!Number.isSafeInteger(max_records)||max_records<1||max_records>40)throw Error('SUMMARY_PAGE_BOUND_1_TO_40_REQUIRED');
+    const result=await catchUp({max_records,maturity_limit:5}),m=result.mature_outcomes;
+    result.status_text_ru=result.status==='CURRENT'?'Независимых волн: '+result.independent_waves+'. Зрелых: '+result.mature_waves+'; HIT '+m.hit+', MISS '+m.miss+', UNKNOWN '+m.unknown+'. Ещё не завершены: '+result.pending_waves+'. Процент успешности и вероятность пока не оценены.':'Сводка обновляется; текущие счётчики неполны. Процент успешности и вероятность пока не оценены.';
+    await store.set('pump:summary-latest',result);return result;
+  }
+  return {remember,publication,sync,syncTerminal,record,summary,catchUp};
 }
