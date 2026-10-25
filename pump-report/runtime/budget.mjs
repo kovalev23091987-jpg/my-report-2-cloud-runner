@@ -1,4 +1,5 @@
 // One coordinator-owned budget. Adapters receive only its request broker.
+import {automaticWindowOpen} from '../contracts/index.mjs';
 export const RESOURCE_LIMITS = Object.freeze({http_per_run:164,project_http_day:900,lanes:{hot:96,background:56,statistics:12},deep_per_candidate:50,liquidations_per_run:8,manual_http_run_reserve:24,d1_reads_day:3500000,d1_writes_day:70000,next_full_reads:59000,next_full_writes:920});
 const integer = n => Number.isSafeInteger(n) && n >= 0;
 export class BudgetRefusal extends Error {
@@ -11,12 +12,14 @@ const inc = (map,key,n=1) => {map[key]=(map[key]??0)+n;};
 export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,limits=RESOURCE_LIMITS,protected_reserves,admission}) {
   if (!store?.atomic || !run_id || !['AUTO','MANUAL','STATISTICS'].includes(mode)) throw new BudgetRefusal('BUDGET_CONTEXT_REQUIRED');
   const run={total:0,lanes:{hot:0,background:0,statistics:0},liquidations:0,candidates:{},unknown:0,receipts:[]};
+  const assertWorkWindow=()=>{if(admission?.strict_automatic_window===true&&mode!=='MANUAL'&&!automaticWindowOpen(clock()))throw new BudgetRefusal('BUDGET_AUTOMATIC_WINDOW_CLOSED');};
   const providerPolicy = provider => {
     const policy=policies?.[provider],now=clock();
     if (!policy || !admission?.provider_policy_version || admission.provider_policy_version!==policy.version || !Number.isSafeInteger(admission.expires_ts) || admission.expires_ts<=now || !policy.evidence_ref || !integer(policy.project_daily_cap) || !integer(policy.project_monthly_cap) || !integer(policy.per_minute_cap)) throw new BudgetRefusal('PROVIDER_ADMISSION_REQUIRED',{provider});
     return policy;
   };
   async function reserve({provider,family='CORE',purpose='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1}) {
+    assertWorkWindow();
     const policy=providerPolicy(provider),now=clock();
     if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane)||!['CORE','DELIVERY'].includes(purpose))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
     if(run.total+cost>limits.http_per_run||run.lanes[lane]+cost>limits.lanes[lane])throw new BudgetRefusal('RUN_HTTP_EXHAUSTED');
@@ -74,7 +77,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     });
     receipt.state=state;receipt.http_status=http_status;if(state==='UNKNOWN')run.unknown++;
   }
-  function assertTarget(provider,url){const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});}
+  function assertTarget(provider,url){assertWorkWindow();const policy=providerPolicy(provider),target=new URL(url);if(!policy.allowed_hosts?.includes(target.hostname)||!policy.allowed_paths?.some(path=>target.pathname===path||path.endsWith('*')&&target.pathname.startsWith(path.slice(0,-1))))throw new BudgetRefusal('PROVIDER_ROUTE_NOT_ADMITTED',{provider});}
   function setMode(next){if(!['AUTO','MANUAL','STATISTICS'].includes(next))throw new BudgetRefusal('INVALID_BUDGET_MODE');mode=next;}
   function minimumIntervalMs(provider){const cap=providerPolicy(provider).per_second_cap;return integer(cap)&&cap>0?Math.ceil(1000/cap):0;}
   return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};

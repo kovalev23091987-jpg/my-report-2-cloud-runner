@@ -13,6 +13,7 @@ export const CANDLE_CCXT_TIME_BASIS='CCXT_CONSUMER_OPEN_TIME';
 export const CANDLE_SEMANTICS_OWNER_REF='checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json';
 export const GROWTH_24H_UNIT='USDT_CLOSED_ROLLING_24H';
 export const GROWTH_24H_WINDOW_MS=86400000;
+export function automaticWindowOpen(ts){const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',hour:'2-digit',hourCycle:'h23'}).format(ts));return hour>=10&&hour<20;}
 export function candleNativeComparisonKey(instrument,interval_ms=60000){
   assertInstrument(instrument);
   if(interval_ms!==60000)throw Error('NATIVE_COMPARISON_REQUIRES_APPROVED_ONE_MINUTE_INTERVAL');

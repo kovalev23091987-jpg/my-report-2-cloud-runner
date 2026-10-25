@@ -1,7 +1,8 @@
 import {BudgetRefusal} from './budget.mjs';
+import {automaticWindowOpen} from '../contracts/index.mjs';
+export {automaticWindowOpen} from '../contracts/index.mjs';
 
 export async function textHash(text){const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
-export function automaticWindowOpen(ts){const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',hour:'2-digit',hourCycle:'h23'}).format(ts));return hour>=10&&hour<20;}
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const positiveMessageId=id=>Number.isSafeInteger(Number(id))&&Number(id)>0&&/^[1-9][0-9]*$/.test(String(id));
 

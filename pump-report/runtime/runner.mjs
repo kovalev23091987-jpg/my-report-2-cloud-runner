@@ -6,7 +6,7 @@ import {createOutcomeJournal} from './outcome-journal.mjs';
 
 const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
-const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL/.test(typeof reason==='string'?reason:reason?.code??''));
+const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|AUTOMATIC_WINDOW_CLOSED/.test(typeof reason==='string'?reason:reason?.code??''));
 
 export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED'}){
   if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
@@ -55,7 +55,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function selectAutomatic(catalog){
     const queue=await store.get('pump:candidate-queue')??{},now=clock();
     const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now);
-    const score=r=>(r.active_wave?100:0)+Math.min(60,(now-(r.last_checked_ts??r.first_seen))/60000)+Math.max(0,r.preliminary_growth??0);
+    const score=r=>(r.active_wave?100:0)+Math.max(0,(now-(r.last_checked_ts??r.first_seen))/60000)+Math.max(0,r.preliminary_growth??0);
     candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
     const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id));
     return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
@@ -84,8 +84,9 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await assert_execution();
     const overview=await sources.getOverview({run_id,instruments:[instrument]});
     const overviewFacts=overview.observations?.[0]?.facts??{};
+    const day=typeof sources.getDayGrowth==='function'?await sources.getDayGrowth({instrument,run_id,mode}):null;
     const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));
-    let input={schema_version:INPUT_SCHEMA,run_id,mode,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts},liquidations:emptyMap(),previous_wave};
+    let input={schema_version:INPUT_SCHEMA,run_id,mode,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts,...(day?.facts??{})},liquidations:emptyMap(),previous_wave};
     let analysis=analyzePump(input,profile);
     if(analysis.ready){
       await assert_execution();

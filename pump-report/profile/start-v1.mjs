@@ -33,12 +33,12 @@ export const START_PROFILE = Object.freeze({
   support_persistence_enabled: false,
   prequeue_threshold_fraction: 0.8,
   candidate_recheck_ms: 300000,
-  core_http_upper_bound: 4,
+  core_http_upper_bound: 5,
   optional_http_upper_bound: 2,
   map_http_upper_bound: 1,
   delivery_http_reserve: 4,
   publication_recheck_max_price_move_pct: 1,
-  core_sql_upper_bound: {rows_read:500,rows_written:80},
+  core_sql_upper_bound: {rows_read:525,rows_written:95},
   delivery_sql_reserve: {rows_read:30,rows_written:15},
   executor_lease_ms: 120000
 });
