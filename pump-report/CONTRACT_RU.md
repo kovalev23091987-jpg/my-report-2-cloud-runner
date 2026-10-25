@@ -58,3 +58,12 @@ liquidations результата: status,reason,zones_up,zones_down,coverage; �
 Coverage различает `volume_qualified=false` для неизвестной абсолютной единицы и `relative_volume_qualified=true` только при выполнении принятого scope. Абсолютные base/USDT qualified flags остаются false. OPEN_TIME интерпретация хранит `time_basis=CCXT_CONSUMER_OPEN_TIME` и ссылку на точный pinned code review. Это принятое основание consumer, а не утверждение о новой биржевой гарантии. Исходные event/received clocks и capture-closedness, grid/gaps/90s свежесть сохраняются.
 
 Старый действительно квалифицированный BASE/quote режим остаётся совместимым. Новый enum не является разрешением для произвольного caller boolean: SOURCE связывает его с сохранённым решением, exact primary-code evidence и registry identity, ANALYTICS проверяет named unit/coverage/row keys. Цена, стакан и размер позиции по-прежнему требуют своих независимых единиц и свежести.
+
+
+## Отдельное суточное окно роста
+
+Аддитивный факт `facts.growth_24h`: `kind=growth_24h`, `unit=USDT_CLOSED_ROLLING_24H`, `value={open,last,start_ts,end_ts,window_ms:86400000}`. Его инструмент, venue BINGX, primary provider BINGX и источник должны соответствовать проверенной USDT_M привязке. Это точный расчёт по наблюдённым OHLC в пределах принятой CCXT-разметки времени, а не vendor-гарантия ticker24h.
+
+Производитель читает отдельно 1440 закрытых минут, `start=end−86400000`, `endTime=end−1`, `limit=1440`; end округлён вниз до минуты. Для USABLE обязательны вся точная сетка1440 без пробелов, положительные известные open/last, начало и конец интервала. `event_ts=end_ts`, `expires_ts=end_ts+profile.freshness_ms.candles`, оригинальный received_ts не обновляется при cache-hit. Coverage явно сохраняет полную сетку, исходный receipt, accepted time basis и способ вычисления. `origin=OBSERVED` означает расчёт по наблюдённым ценам; самостоятельная derived_from/derivation ссылка отделяет его от сырого поля производителя. Неполное или устаревшее окно не подтверждает +20%; received_ts не заменяет исходное время.
+
+Основные121 свеча, профиль, пороги, объёмная база и выбор уровней этим дополнением не меняются. Нативное количество остаётся относительным с неизвестной абсолютной единицей. Отдельный суточный факт влияет только на подтверждённое окно роста; старые замороженные сигналы и их t0/P0/цель/версия правил не переписываются. До отдельной нативной проверки поведения start/endTime этот путь не называется native-proven.
