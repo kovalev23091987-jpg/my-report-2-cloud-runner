@@ -66,7 +66,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     try{reply=await send({text:card.text,recipient:card.recipient,card_id:card.card_id,text_hash:card.text_hash});}
     catch(error){const before=error?.send_attempted===false;await finish(card,{state:before?'ERROR':'UNKNOWN',reason:before?'SEND_REFUSED_BEFORE_HTTP':'TELEGRAM_ACK_UNKNOWN'});return {state:before?'ERROR':'UNKNOWN',card_id};}
     const message=reply?.body?.result,id=message?.message_id;
-    if(reply?.ok===true&&reply.body?.ok===true&&positiveMessageId(id)&&String(message.chat?.id)===card.recipient&&(typeof message.text!=='string'||message.text===card.text)){
+    if(reply?.ok===true&&reply.body?.ok===true&&positiveMessageId(id)&&String(message.chat?.id)===card.recipient&&(!Object.hasOwn(message,'text')||message.text===card.text)){
       const receipt={message_id:String(id),recipient:card.recipient,card_id,text_hash:card.text_hash,confirmed_ts:clock(),telegram_date:message.date??null};
       if(Number.isSafeInteger(reply.http_started_ts)&&Number.isSafeInteger(reply.http_ack_received_ts))Object.assign(receipt,{http_started_ts:reply.http_started_ts,http_ack_received_ts:reply.http_ack_received_ts,http_clock_basis:reply.http_clock_basis??null});
       await finish(card,{state:'SENT',message_id:String(id),receipt});

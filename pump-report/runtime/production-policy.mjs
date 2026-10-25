@@ -4,7 +4,7 @@ import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 // deployment admission; the referenced approval must be positive first.
 export const PRODUCTION_PLAN=Object.freeze({
   version:'pump-production-launch-20261026-v1',
-  evidence_ref:'checkpoints/pump-report-20261025/ROOT_PRODUCTION_LAUNCH_ADMISSION.json',
+  evidence_ref:'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json',
   capture_id:'pump-first-production-manual-20261026-one',
   capture_ids:['pump-first-production-manual-20261026-one','pump-first-production-manual-20261026-two','pump-first-production-manual-20261026-three'],
   manual_checks:3,manual_capture_http_max:13,telegram_daily_cap:27,telegram_monthly_cap:837,

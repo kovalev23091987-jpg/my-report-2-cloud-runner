@@ -88,13 +88,16 @@ async function readLaunchCapture(runtime,result,{run_id,request_id,publish_reque
   if(!card||card.card_id!==id||card.text_hash!==await textHash(card.text))throw captureFailure('LAUNCH_CARD_READBACK_MISMATCH');
   const {source_input_key,...cardAnalysis}=card.analysis??{};
   const same_original=source_input_key===answer.analysis_key&&card.text===original.analysis.card_text&&JSON.stringify(cardAnalysis)===JSON.stringify(original.analysis);
+  const originalExpiry=Math.min(...['price','candles','orderbook'].map(k=>original.input.facts?.[k]?.expires_ts));
   const receipt_bound=card.state==='SENT'&&/^[1-9][0-9]*$/.test(String(card.message_id??''))&&
     card.receipt?.card_id===id&&String(card.receipt.message_id)===String(card.message_id)&&
     card.receipt.text_hash===card.text_hash&&card.receipt.recipient===card.recipient&&Number.isSafeInteger(card.send_started_ts)&&
     Number.isSafeInteger(card.receipt.confirmed_ts)&&card.receipt.confirmed_ts>=card.send_started_ts&&card.receipt.confirmed_ts<=Date.now()&&
     Number.isSafeInteger(card.receipt.http_started_ts)&&card.receipt.http_started_ts>=card.send_started_ts&&card.receipt.http_started_ts<card.expires_ts&&
-    Number.isSafeInteger(card.receipt.http_ack_received_ts)&&card.receipt.http_ack_received_ts>=card.receipt.http_started_ts&&card.receipt.http_ack_received_ts<=card.receipt.confirmed_ts;
-  if(answer.delivery?.state==='SENT'&&!receipt_bound)throw captureFailure('LAUNCH_SENT_RECEIPT_READBACK_MISMATCH');
+    Number.isSafeInteger(card.receipt.http_ack_received_ts)&&card.receipt.http_ack_received_ts>=card.receipt.http_started_ts&&card.receipt.http_ack_received_ts<=card.receipt.confirmed_ts&&
+    Number.isSafeInteger(originalExpiry)&&Number.isSafeInteger(card.expires_ts)&&card.expires_ts<=originalExpiry&&card.receipt.http_started_ts<originalExpiry&&
+    card.receipt.http_clock_basis==='CALL_TO_FETCH_AND_PARSED_ACK_NOT_WIRE_TIMESTAMP'&&Number.isSafeInteger(card.created_ts)&&original.saved_ts<=card.created_ts&&card.created_ts<=card.send_started_ts;
+  if(same_original&&answer.delivery?.state==='SENT'&&!receipt_bound)throw captureFailure('LAUNCH_SENT_RECEIPT_READBACK_MISMATCH');
   envelope.actual_receipts.push({analysis_key:source_input_key,card,same_original,receipt_bound,delivery_result:answer.delivery});
   envelope.status=same_original?'CAPTURED_SAME_ORIGINAL_CARD':'DIFFERENT_SAVED_ANALYSIS_CARD_NOT_CURRENT_SENT_PROOF';
   return envelope;
