@@ -1,0 +1,66 @@
+{
+  "schema": "F567_PRIMARY_DOCUMENT_ATTEMPTS_V1",
+  "maximum": 4,
+  "spent": 4,
+  "remaining": 0,
+  "failures_nonrefundable": true,
+  "charge_before_IO": true,
+  "counting": "Each explicit single-query official-primary search or single-page open/click counts1; no batches or old URL opens. Duplicate search hits rejected, not independent evidence.",
+  "blocked_previously_read_urls": [
+    "https://orderly.network/docs/build-on-omnichain/public-info-api/overview",
+    "https://orderly.network/docs/build-on-omnichain/public-info-api/platform/platform-positions"
+  ],
+  "other_previously_failed_route": "No Firecrawl credits retry; no known403 reopen",
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "OFFICIAL_PRIMARY_SEARCH",
+      "query": "site:orderly.network/docs \"position_id\" notional -platform-positions -overview",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:56:04 UTC",
+      "status": "NO_RESULTS_SPENT"
+    },
+    {
+      "attempt": 2,
+      "kind": "OFFICIAL_PRIMARY_SEARCH",
+      "query": "site:orderly.network/docs notional USDC -platform-positions -overview",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:56:15 UTC",
+      "status": "NEW_OFFICIAL_DOC_DISCOVERY_NO_EXACT_RAW_FIELD_GUARANTEE",
+      "new_primary_refs": [
+        "https://dashboard.orderly.network/webmcp",
+        "https://orderly.network/faq",
+        "https://orderly.network/blog/MultiColat",
+        "https://orderly.network/blog/leveraged-trading-on-orderly-network"
+      ],
+      "market_values_not_used": true
+    },
+    {
+      "attempt": 3,
+      "kind": "NEW_OFFICIAL_STATIC_TOOL_DOCUMENTATION_OPEN",
+      "url": "https://dashboard.orderly.network/webmcp",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:57:09 UTC",
+      "status": "FULL_STATIC_CATALOGUE_READ_NO_EXECUTE_NO_RAW_ID_CLOCK_UNIT_GUARANTEE",
+      "tool_execution": false,
+      "source_ref": "turn47view0",
+      "new_evidence": "Tool catalogue distinguishes dashboard-normalized USD/base fields from raw names; inputs have account_id/broker_id, not an output stable-position-ID guarantee.",
+      "tools_called": 0
+    },
+    {
+      "attempt": 4,
+      "kind": "NEW_OFFICIAL_MARKET_CONFIGURATION_DOCUMENT_OPEN",
+      "url": "https://orderly.network/docs/build-on-omnichain/evm-api/restful-api/public/get-futures-info-for-all-markets",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:58:05 UTC",
+      "status": "TOOL_INACCESSIBLE_SPENT_NO_RETRY",
+      "actual_API_try_it": false,
+      "source_ref": "turn48view0"
+    }
+  ],
+  "market_RPC_SQL_TG_deploy_paid": 0,
+  "exhausted": true,
+  "additional_attempts_allowed": 0,
+  "producer_changed": false,
+  "offline_tests_run": 0
+}

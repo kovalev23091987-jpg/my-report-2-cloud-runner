@@ -1,0 +1,61 @@
+{
+  "schema": "F567_FUTURE_ACTUAL_WIRE_FIELD_CHECKLIST_V1",
+  "status": "CHECKLIST_ONLY_NO_CALL_ADMISSION",
+  "exact_request_unchanged": {
+    "method": "POST",
+    "url": "https://api.orderly.org/v1/public/query",
+    "body": {
+      "type": "platformPositions",
+      "min_notional": "0",
+      "limit": 500
+    },
+    "symbol_filter": false,
+    "max_HTTP": 1,
+    "weight": 20,
+    "automatic_pages": 0,
+    "retry": 0
+  },
+  "broker_receipt": [
+    "Original request/parsed-response receive times, HTTP status, receipt ID, body byte count; no external bytes estimate promoted to actual wire bytes.",
+    "Original private response SHA256/length and sanitized shape summary; no raw account or position IDs in Git/chat."
+  ],
+  "already_documented_fields_to_observe": {
+    "success": "Exact boolean and payload envelope",
+    "ts": "Presence/type/native milliseconds and response-time semantics only; never generation alias",
+    "data.rows": "Array, length<=500, full key/type/nullability census for this bounded page",
+    "data.total_positions": "Presence/type and consistency only; absent remains unknown",
+    "data.next_cursor": "Presence/type/has-next flag; no automatic next page",
+    "rows.symbol": "Exact native source symbol; no reconstructed identity",
+    "rows.side": "Exact values/type, not case/BUY/SELL coercion",
+    "rows.margin_mode": "Exact values/type; no inferred mode",
+    "rows.est_liq_price": "Nullable actual positive estimate; null/zero do not produce zones",
+    "rows.mark_price": "Actual numeric scalar/type, native currency requires independent proof",
+    "rows.notional": "Actual numeric scalar/type/nullability and explicit unit/basis proof; not price*qty-derived",
+    "rows.opened_at": "If present, opening-date semantics only, never snapshot freshness"
+  },
+  "unknown_field_names_do_not_invent": {
+    "stable_position_identifier": {
+      "actual_key_name": null,
+      "check": "Observe actual complete keys. Only configure a returned identifier after primary stability/uniqueness scope proof; one response cannot establish temporal stability.",
+      "sanitized_output": "Presence/type/nonempty/duplicate counts; opaque digest only if admitted, not raw values."
+    },
+    "snapshot_generation_time": {
+      "actual_key_name": null,
+      "check": "Record a generation field only if actually returned and independently documented. Otherwise leave null and use only the separately reviewed bound contract."
+    },
+    "raw_currency_or_instrument_reference": {
+      "actual_key_name": null,
+      "check": "Record only identifiers/currency fields that really exist. No invented oracle ID, address, base token or automatic mapping from symbol."
+    }
+  },
+  "not_solved_by_one_response": [
+    "Stable identifier lifetime/uniqueness guarantee",
+    "Independent cross-venue underlying identity",
+    "Exact raw money-unit semantics when not explicitly documented",
+    "USDC/USDT conversion and independent venue-price basis",
+    "AI/ROOT common conservative-bound contract acceptance"
+  ],
+  "no_extra_account_or_RPC_queries": true,
+  "native_calls_executed": 0,
+  "current_routes_enabled": 0
+}

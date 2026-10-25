@@ -1,0 +1,97 @@
+{
+  "schema": "F567_ORDERLY_PRIMARY_DELTA_AND_GAPS_V1",
+  "status": "BOUNDED_DOCUMENTARY_DELTA_NO_PRODUCER_PROMOTION",
+  "doc_attempts": {
+    "maximum": 4,
+    "spent": 4,
+    "remaining": 0
+  },
+  "new_primary_refs": [
+    {
+      "url": "https://dashboard.orderly.network/webmcp",
+      "actual_full_static_page_read": true,
+      "read_only_documentation_no_tool_execution": true,
+      "delta": {
+        "market_dashboard_outputs": [
+          "volume_24h_usd",
+          "volume_24h_base",
+          "open_interest_usd",
+          "open_interest_base"
+        ],
+        "scope": "These are transformed dashboard market outputs, not raw platformPositions.notional.",
+        "platform_positions_tool": {
+          "symbol_required": true,
+          "documented_wrapper_max_positions": 1000,
+          "same_as_our_global_limit500_body": false
+        },
+        "account_filters": [
+          "account_id",
+          "broker_id"
+        ],
+        "account_filters_are_underlying_asset_identity_proof": false,
+        "stable_position_output_ID_or_generation_guarantee_found": false
+      },
+      "inference": "Input schema/catalogue cannot prove public aggregate row output identity, clock or raw notional currency. No wrapper was invoked."
+    },
+    {
+      "url": "https://orderly.network/faq",
+      "read": "New official indexed search excerpt, not separate full-page open",
+      "delta": "Perpetual cost-position fees described in USDC. This is not an exact platformPositions.notional field guarantee."
+    },
+    {
+      "url": "https://orderly.network/blog/MultiColat",
+      "read": "New official indexed search excerpt",
+      "delta": "USDC remains settlement while ETH/USDT collateral are allowed. Collateral currency does not determine raw position-field currency."
+    },
+    {
+      "url": "https://orderly.network/blog/leveraged-trading-on-orderly-network",
+      "read": "Historical official indexed search excerpt",
+      "delta": "General perp quote/settlement discussion; older collateral limitations must not override newer multicollateral announcement."
+    },
+    {
+      "url": "https://orderly.network/docs/build-on-omnichain/evm-api/restful-api/public/get-futures-info-for-all-markets",
+      "read": "One failed inaccessible document open, charged, not retried",
+      "delta": null
+    }
+  ],
+  "exact_gaps": {
+    "stable_position_ID": {
+      "status": "UNKNOWN",
+      "actual_output_field_name": null,
+      "guaranteed_stability_and_uniqueness": false,
+      "position_id_in_F565_test": "ARTIFICIAL_ONLY_NOT_VENDOR_FIELD_CLAIM",
+      "no_array_index_or_amount_hash_substitute": true
+    },
+    "generation_clock": {
+      "status": "UNKNOWN",
+      "actual_generation_field_name": null,
+      "retained_response_time_field": "ts",
+      "retained_max_age_bound_ms": 5000,
+      "new_snapshot_time_guarantee": false,
+      "AI_common_interval_contract_owner": "ANALYTICS_AND_ROOT_NOT_SOURCE_F567"
+    },
+    "raw_notional_unit": {
+      "status": "UNKNOWN_FOR_EXACT_AGGREGATE_FIELD",
+      "field": "notional",
+      "general_USDC_settlement_corroborated": true,
+      "dashboard_USD_normalization_transferred_to_raw": false,
+      "new_route_unit_proof_activated": false
+    },
+    "independent_asset_identity": {
+      "status": "UNKNOWN",
+      "new_BingX_Orderly_bindings": 0,
+      "account_id_or_broker_id_is_asset_id": false,
+      "ticker_and_price_gap_as_identity": false,
+      "required": "Independent exact source market/underlying identity joined to the accepted native BingX tuple; no names-only copying."
+    }
+  },
+  "preserved": {
+    "dormant_market_bindings": [],
+    "qualified_zones": 0,
+    "actual_native_coverage": 0,
+    "qualified_core_blocked_by_map": false
+  },
+  "producer_changed": false,
+  "tests_run": 0,
+  "actual_market_RPC_SQL_TG_deploy_paid": 0
+}
