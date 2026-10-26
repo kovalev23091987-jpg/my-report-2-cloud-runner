@@ -1,0 +1,13 @@
+# F616 — offline consumer подготовлен, реальных counts нет
+
+Новый sources/catalog-snapshot-review.mjs не импортирован production. Он принимает только observer.catalog_snapshot.private_evidence.snapshot от нового ROOT reader и обязательные expected pin/asof/receipt/clocks/body/full-snapshot hashes. Pin — параметр, не сегодняшняя константа. Будущий wrapper должен сначала сверить исходные private bytes/SHA/size и допущенные frozen inputs по дисциплине F551; сам consumer не выдаёт IO admission и не доказывает происхождение произвольно переданных expected values.
+
+Перед metadata review проверяются ROOT schema/route/bounds, полные digest/byte count, producer receipt и порядок received<=saved<=observed<=asof. OBSERVED требует соответствующих record/reader flags и status. Старый payload допускается только в явно ARTIFICIAL_PREPARATION wrapper и не превращается в native snapshot.
+
+Переиспользуются stableCapturedJSON из F551, tuple seam F568 и существующий isExactSavedNonTargetDecision. Полный F568 parser цен/CORE и source getCatalog не запускаются. Saved selected550 передаются с frozen digest; complete current negatives тоже передаются отдельно с digest, без жёсткого старого380. Совпадение означает membership уже сохранённого scope, не новую крипто-классификацию. Changed/new active USDT tuple остаётся PROPOSAL/NOT_CHECKED. Duplicate ID/symbol блокирует продвижение. Нет языкового фильтра, нормализации numeric prefix, registry/CORE/units/map activation.
+
+Выход ограничен counts, identity tuple metadata, row index, hash и saved decision refs. Цены/объёмы/raw/headers не выдаются. Фактических новых capture/counts в F616 нет: все поля текущего coverage/N в receipt равны null. Новые1294/249 не вычислены и не подставлены. ROOT может позже отдать proposal rows конечными batch<=25 с точным capture/tuple provenance и независимыми primary identity proofs.
+
+Старый genuine fixture1278 — private файл pump-report/.private/evidence/pump-report-native-catalog-corrected.json, SHA7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5, исходный receive25Oct15:37:50.932MSK. F616 его не перечитывал и не копировал; будущая синтетическая обёртка должна быть ARTIFICIAL. Он не подтверждает latest/current global N.
+
+Подготовлен только consumer и конечный план семи новых consumer cases в receipt. Node/import/syntax/runtime tests, engine, HTTP/SQL/Telegram/build/deploy не выполнялись; SOURCE12 и ANBV не повторялись. ROOT сборка72 не ждёт consumer и не включает его. Любой будущий разбор actual capture/квалификация — только по отдельному точному admission после frozen code/input hashes. Qualification24/24, остаток0; native14/расширение16/500/30 не разрешены, прежние unknowns/reserves/caps/9пауз/2OWNERdeferrals сохранены.
