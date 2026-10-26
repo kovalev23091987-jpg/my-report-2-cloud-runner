@@ -6,6 +6,7 @@ import {OBSERVATION_BOUNDS,readSavedAutoObservation} from './saved-auto-observat
 import {readSavedOutcomeObservation} from './saved-outcome-observation.mjs';
 import {readSavedAutoCandidateObservation} from './saved-auto-candidate-observation.mjs';
 import {createBAMaintenanceSqlException} from './ba-maintenance-sql-exception.mjs';
+import {createBFMaintenanceSqlException} from './bf-maintenance-sql-exception.mjs';
 
 const root=fileURLToPath(new URL('../../',import.meta.url)),sha=b=>createHash('sha256').update(b).digest('hex');
 const args=process.argv.slice(2);
@@ -20,7 +21,8 @@ if(args.length===1&&args[0]==='--describe'){
 }
 if(args[0]!=='--execute'||args.length!==4)throw Error('USE --describe OR --execute ADMISSION ATTEMPT PRIVATE_RESULT');
 const [admissionPath,attemptArg,resultArg]=args.slice(1),admission=JSON.parse(fs.readFileSync(admissionPath,'utf8')),now=Date.now();
-const maintenanceSQL=createBAMaintenanceSqlException(admission,now);
+const maintenanceSQL=admission.lookup_single_exception?.schema==='OWNER_ONE_BF_FUNDING_MAINTENANCE_LOOKUP_V1'
+  ?createBFMaintenanceSqlException(admission,now):createBAMaintenanceSqlException(admission,now);
 if(admission.schema!=='PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1'||admission.status!=='ADMITTED_NOT_SPENT'||admission.maximum_attempts!==1||
   !/^[a-f0-9]{40}$/.test(admission.authority_main??'')||admission.fresh_all4_own_CAS_FULL_verified!==true||
   admission.provider_whole_native_admitted!==true||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts>now+900000||

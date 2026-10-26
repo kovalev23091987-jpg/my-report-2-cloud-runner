@@ -3,6 +3,7 @@ import {requestUrl} from '../sources/bingx.mjs';
 import {analyzePump,evaluateOutcome} from '../analytics/index.mjs';
 import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
 import {createReviewedNativeScopeRegistry} from '../registry/native-reviewed550.mjs';
+import {withReviewedFundingQuoteRegistry} from '../registry/funding-quote-profile.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal,isBingxNativeSymbol} from '../contracts/index.mjs';
 import {parseManualInput} from './manual-input.mjs';
@@ -121,7 +122,7 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
     try{const response=await baseBroker.request(args);privateCapture.record(args,response);return response;}
     catch(error){privateCapture.record(args,null,error);throw error;}
   }}:baseBroker;
-  const identityRegistry=createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY);
+  const identityRegistry=withReviewedFundingQuoteRegistry(createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY));
   const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};

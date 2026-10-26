@@ -129,7 +129,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       // the supplemental budget; its absence is still not a core refusal.
       try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts});}
       catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
-      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts,deadline_ts});
+      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts,deadline_ts,requested_kinds:['trades','funding']});
       input.facts={...input.facts,...optional.facts};
       input.analysis_ts=clock();analysis=analyzePump(input,profile);
     }
