@@ -19,6 +19,7 @@ if(admission.schema!=='PUMP_PRODUCTION_OBSERVATION_ADMISSION_V1'||admission.stat
   admission.provider_whole_native_admitted!==true||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts>now+900000||
   !Number.isSafeInteger(admission.own_lease?.acquired_ts)||!Number.isSafeInteger(admission.own_lease?.expires_ts)||
   admission.own_lease.expires_ts-admission.own_lease.acquired_ts>5400000||
+  !/^[a-f0-9]{64}$/.test(admission.expected_recipient_sha256??'')||
   !(now<admission.expires_ts&&admission.expires_ts<=admission.own_lease?.expires_ts&&admission.own_lease.acquired_ts<=now)||
   !/^[A-Za-z0-9:._-]{1,160}$/.test(admission.run_id??'')||admission.native_query_cap!==16||admission.market_HTTP!==0||admission.Telegram!==0)throw Error('POSITIVE_EXACT_OBSERVATION_ADMISSION_REQUIRED');
 const program=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'),'utf8'));
@@ -63,7 +64,7 @@ try{
     return envelope.result[0];
   }}}}}};
   native=await reserveNativeRun({db,run_id:admission.run_id,mode:'LOOKUP',run_purpose:'PRODUCTION',policy:{...NATIVE_POLICY,evidence_ref:'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'},future_schedule:DISCOVERY_PLAN});
-  evidence.observation=await readSavedAutoObservation({store:native.store,implementation_sha256:admission.implementation_sha256,after_key:admission.card_after_key??'pump:card:'});
+  evidence.observation=await readSavedAutoObservation({store:native.store,implementation_sha256:admission.implementation_sha256,expected_recipient_sha256:admission.expected_recipient_sha256,after_key:admission.card_after_key??'pump:card:'});
   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';
 }catch(error){
   evidence.error=String(error.code??error.message??'OBSERVATION_FAILED').slice(0,160);evidence.state='FAILED_OR_UNKNOWN_NO_AUTO_RETRY';

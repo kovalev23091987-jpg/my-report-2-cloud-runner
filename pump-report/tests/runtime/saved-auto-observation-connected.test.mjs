@@ -18,10 +18,12 @@ test('ARTIFICIAL saved AUTO observer binds one original/receipt and leaves incom
     receipt:{card_id:id,text_hash:sha(text),recipient:'FIXTURE_RECIPIENT',message_id:'123',http_started_ts:1300,http_ack_received_ts:6000,confirmed_ts:6100,http_clock_basis:'CALL_TO_FETCH_AND_PARSED_ACK_NOT_WIRE_TIMESTAMP'}};
   await store.set('pump:executor',{owner:null,run_id:'fixture-auto'});await store.set('pump:run:fixture-auto',{status:'INCOMPLETE',errors:['SOURCE_EVIDENCE_PENDING']});
   await store.set(key,original);await store.set('pump:card:'+id,card);
-  const read=()=>readSavedAutoObservation({store,implementation_sha256:pin,clock:()=>7000});
+  const read=()=>readSavedAutoObservation({store,implementation_sha256:pin,expected_recipient_sha256:sha('FIXTURE_RECIPIENT'),clock:()=>7000});
   const positive=await read();assert.equal(positive.status,'OBSERVED_SAME_ORIGINAL_PRODUCTION_AUTO_SENT');assert.equal(positive.first_genuine_same_original_SENT_observed,true);
   assert.equal(positive.latest_run_status,'INCOMPLETE');assert.equal(positive.scope.whole_market_claimed,false);assert.equal(positive.scope.whole_history_claimed,false);
   assert.equal(positive.Telegram,0);assert.equal(positive.market_HTTP,0);
+  const wrongTarget=await readSavedAutoObservation({store,implementation_sha256:pin,expected_recipient_sha256:sha('ANOTHER_RECIPIENT'),clock:()=>7000});
+  assert.equal(wrongTarget.first_genuine_same_original_SENT_observed,false);
   await store.set('pump:card:'+id,{...card,text:'DIFFERENT'});
   assert.equal((await read()).status,'SAVED_SENT_BINDING_MISMATCH');
   await store.set('pump:card:'+id,{...card,mode:'MANUAL',analysis:{...card.analysis,run_purpose:'ACCEPTANCE_TEST'}});
@@ -29,6 +31,6 @@ test('ARTIFICIAL saved AUTO observer binds one original/receipt and leaves incom
   await store.set('pump:card:'+id,{...card,receipt:{...card.receipt,http_started_ts:5000}});
   assert.equal((await read()).first_genuine_same_original_SENT_observed,false);
   const crowded=new MemoryStore();for(let n=0;n<20;n++)await crowded.set('pump:card:PUMP:'+String(n).padStart(64,'0'),{state:'READY'});
-  const partial=await readSavedAutoObservation({store:crowded,implementation_sha256:pin,clock:()=>7000});
+  const partial=await readSavedAutoObservation({store:crowded,implementation_sha256:pin,expected_recipient_sha256:sha('FIXTURE_RECIPIENT'),clock:()=>7000});
   assert.equal(partial.scope.page_exhausted,false);assert.equal(partial.scope.cards_read,20);assert.equal(partial.first_genuine_same_original_SENT_observed,false);
 });

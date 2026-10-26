@@ -7,8 +7,8 @@ const cardKey=id=>typeof id==='string'&&/^PUMP:[a-f0-9]{64}$/.test(id)?'pump:car
 export const OBSERVATION_BOUNDS=Object.freeze({card_page:20,selected_cards:1,selected_originals:1,rows_read:500,rows_written:30,queries:16,market_HTTP:0,Telegram:0});
 
 // One bounded page, never a market scan or a replay of the analysis engine.
-export async function readSavedAutoObservation({store,implementation_sha256,clock=Date.now,after_key='pump:card:'}){
-  if(!/^[a-f0-9]{64}$/.test(implementation_sha256??'')||typeof after_key!=='string'||!after_key.startsWith('pump:card:')||after_key.length>100)throw Error('EXACT_OBSERVATION_CONTEXT_REQUIRED');
+export async function readSavedAutoObservation({store,implementation_sha256,expected_recipient_sha256,clock=Date.now,after_key='pump:card:'}){
+  if(!/^[a-f0-9]{64}$/.test(implementation_sha256??'')||!/^[a-f0-9]{64}$/.test(expected_recipient_sha256??'')||typeof after_key!=='string'||!after_key.startsWith('pump:card:')||after_key.length>100)throw Error('EXACT_OBSERVATION_CONTEXT_REQUIRED');
   const read_started_ts=clock(),executor=await store.get('pump:executor');
   const run_id=executor?.run_id;
   if(run_id!==undefined&&(typeof run_id!=='string'||!/^[A-Za-z0-9:._-]{1,160}$/.test(run_id)))throw Error('SAVED_RUN_ID_UNBOUND');
@@ -40,7 +40,7 @@ export async function readSavedAutoObservation({store,implementation_sha256,cloc
     safeInt(a.analysis_ts)&&safeInt(original.saved_ts)&&a.analysis_ts<=original.saved_ts&&
     safeInt(card.created_ts)&&original.saved_ts<=card.created_ts&&card.created_ts<=card.send_started_ts);
   const boundReceipt=Boolean(receipt&&receipt.card_id===card.card_id&&receipt.text_hash===card.text_hash&&
-    typeof card.recipient==='string'&&card.recipient.length>0&&receipt.recipient===card.recipient&&
+    typeof card.recipient==='string'&&card.recipient.length>0&&card.recipient!=='UNCONFIGURED'&&sha(card.recipient)===expected_recipient_sha256&&receipt.recipient===card.recipient&&
     /^[1-9][0-9]*$/.test(String(card.message_id??''))&&String(receipt.message_id)===String(card.message_id)&&
     safeInt(card.send_started_ts)&&safeInt(card.expires_ts)&&safeInt(originalExpiry)&&card.expires_ts<=originalExpiry&&
     safeInt(receipt.http_started_ts)&&card.send_started_ts<=receipt.http_started_ts&&receipt.http_started_ts<card.expires_ts&&
