@@ -1,0 +1,319 @@
+{
+  "schema": "AU_EXISTING_NEW_REPORT_BLOCK_SOURCE_MATRIX_V1",
+  "status": "FIVE_ACTIVE_TZ_BLOCKS_MAPPED_WITH_ONE_LOCAL_CONSUMER_FIX_AND_UNAPPLIED_ROOT_BLOCK2_PROPOSAL",
+  "code_review_main": "b8d1f52a0d49cb3f9f2e65e8766e171a777b412d",
+  "code_fingerprint_revalidation_main": "0e882f313d4a5773881bf3670a58131561eff01a",
+  "all22_code_blobs_unchanged_at_revalidation": true,
+  "legacy105_usefulness_inherited": false,
+  "ROOT_reported_production_CORE_unique": 10,
+  "full_five_blocks_or_CORE550_proved": false,
+  "additional_live_providers": 0,
+  "SOURCE_F583": null,
+  "active_TZ_blocks": [
+    {
+      "TZ_block": 1,
+      "mandatory": true,
+      "TZ_refs": [
+        "§3 line71",
+        "§6 lines179-218",
+        "§7 lines226-259",
+        "§8 lines269-294"
+      ],
+      "function": "price/candles/growth24h → analyzeMovement/describeMovementDetails/selectGrowthProof",
+      "source": "Existing BingX ticker/price/klines",
+      "actual": "550 bulk prices; one exact KIMCHI AUTO input inspected by AU, ROOT10 unique production CORE. KIMCHI day growth passed, current activity refusal. Other7 not replayed.",
+      "status": "CORE_FACTS_ACTUAL_AT_SAVED_TIMES;FULL_550_NOT_CHECKED",
+      "delta": "No thresholds changed; relative quantity remains same-native only."
+    },
+    {
+      "TZ_block": 2,
+      "mandatory": false,
+      "TZ_refs": [
+        "§3 line72",
+        "§7 lines246-259",
+        "§4 lines108-112",
+        "§6 line166"
+      ],
+      "function": "getOptional trades → parseRecentTrades → explainOptionalFacts → TRADE_PRICE_RESPONSE",
+      "source": "Existing BingX /openApi/swap/v2/quote/trades",
+      "actual": "AUTO8 all early refusals; supplemental actual requests0. Current runtime requires analysis.ready and consumer runs after plan/minimum.",
+      "status": "CONDITIONAL_CODE_SUPPORT;ACTUAL_SELECTED_SUPPLEMENTAL_CHECK_NOT_COMPLETE",
+      "delta": "Concrete ROOT4-file proposal, unapplied. One selected confirmed-growth/liquid candidate with soft activity refusal; max1GET same upper2; observations do not override READY/plan."
+    },
+    {
+      "TZ_block": 3,
+      "mandatory": true,
+      "TZ_refs": [
+        "§3 line73",
+        "§9 lines300-312"
+      ],
+      "function": "getCore orderbook → measureLiquidity; post-refusal wrapper already measures for manual text",
+      "source": "Existing BingX depth with exact COIN/base evidence",
+      "actual": "Original KIMCHI orderbook USABLE; qualified local consumer change exposes existing measurement INSUFFICIENT instead of null.",
+      "status": "CONCRETE_LOCAL_CONSUMER_DELTA_QUALIFIED_ONE_ACTUAL_CASE_NOT_DEPLOYED",
+      "delta": "Return liquidity + fact_id/source_ts in existing analysis field. All other analysis fields/reasons/plan/card/manual text exactly unchanged; no HTTP."
+    },
+    {
+      "TZ_block": 4,
+      "mandatory": false,
+      "TZ_refs": [
+        "§3 line74",
+        "§7 line261",
+        "§8 lines279-280"
+      ],
+      "function": "parseOpenInterest/parseFunding → optional_context/FUNDING_SNAPSHOT/OI_SNAPSHOT",
+      "source": "Existing BingX openInterest/premiumIndex routes",
+      "actual": "Current registry factory supplies no OI unit qualifications or funding source-rate-clock qualifications. Requests skipped, AUTO input has neither.",
+      "status": "NOT_CHECKED_SOURCE_QUALIFICATION_GAP;NOT_COMPLETE",
+      "delta": "No units/clocks guessed; ROOT/SOURCE must supply exact field proofs before activation. Adding a method name is not setup. No new provider or gate."
+    },
+    {
+      "TZ_block": 6,
+      "mandatory": false,
+      "TZ_refs": [
+        "§3 line76",
+        "§2 lines55-56",
+        "§10 lines344-449",
+        "§11 lines453-484"
+      ],
+      "function": "getLiquidations → selectZones/explainMapPlan",
+      "source": "Existing adapter branches SWOLE/Orderly/Hyperliquid; no active exact routes, production provider policy excludes them",
+      "actual": "0 qualified maps, all550 NOT_CHECKED; KIMCHI map not requested due early core refusal. No actual effect on plan demonstrated.",
+      "status": "UNCONFIGURED_OR_UNADMITTED_SOURCE_ROUTES;NOT_COMPLETE;NOT_UNSUPPORTED",
+      "delta": "Missing map cannot block qualified mandatory plan, but is a configuration gap. No fake zones/new service activation. Need exact actual qualified existing route before changing its consumer phase."
+    }
+  ],
+  "rows": [
+    {
+      "block": "Universe / разрешённый инструмент",
+      "fact": "native contractId/symbol/base/family/quote/settle/status + отдельное crypto identity evidence",
+      "source_operation": "BINGX GET /openApi/swap/v2/quote/contracts; createReviewedNativeScopeRegistry",
+      "semantics_freshness": "Catalogue membership текущего ответа не равна пригодному price/candles/book. Сохранённая identity не становится свежей автоматически.",
+      "changes": "Допуск в выбранный550/каталог, исключение exact NON_TARGET/BTCETH; 9 unknown units остаются в discovery, deep deferred.",
+      "utility550": "Универсальный native join для новой области; ticker overlap старого105 не используется.",
+      "route_status": "ACTUAL_USE_IN_SAVED_AUTO",
+      "actual_evidence": "1284 rows / 552 verified crypto / 550 selected; 18 unresolved classification, без вывода по имени.",
+      "duplicates_reserve_gaps": "Registry seed13 + overlay539 — одна native линия, не552 независимых подтверждения. Source F583 owns per-asset coverage.",
+      "minimum_delta": "KEEP; не превращать unknown в VERIFIED/UNSUPPORTED и не вынимать9 из universe.",
+      "code_refs": [
+        "registry/native-reviewed550.mjs:12",
+        "sources/index.mjs:188",
+        "runtime/runner.mjs:204"
+      ]
+    },
+    {
+      "block": "Discovery / предварительная очередь",
+      "fact": "last + native closeTime; reported priceChangePercent как preliminary",
+      "source_operation": "BINGX GET /openApi/swap/v2/quote/ticker bulk; getOverview/updateDiscovery",
+      "semantics_freshness": "price TTL30s; reported24h не квалифицированное точное окно; сохраняются исходные часы. 80% threshold только prequeue.",
+      "changes": "Очередь/приоритет кандидата, не READY/план и не подтверждение +20%24h.",
+      "utility550": "Один bulk operation охватывает550 при валидных строках; отсутствие per-symbol price — NOT_CHECKED/ошибка строки, не гарантированный полный рынок.",
+      "route_status": "ACTUAL_USE_IN_SAVED_AUTO",
+      "actual_evidence": "CHECKED expected550/checked550. Это price coverage, не CORE550.",
+      "duplicates_reserve_gaps": "Bulk reused price не новый голос. Пейсинг/план будущих сканов/3manuals защищены ROOT. При exhaustion остановка, без нового provider fallback.",
+      "minimum_delta": "KEEP; не публиковать reported change как growth proof.",
+      "code_refs": [
+        "sources/index.mjs:233",
+        "runtime/runner.mjs:46",
+        "runtime/runner.mjs:72"
+      ]
+    },
+    {
+      "block": "Reference price / исходная цена",
+      "fact": "USDT_PER_BASE last, event time, same native identity",
+      "source_operation": "getCore price; fresh overview reuse → /openApi/swap/v1/ticker/price → bounded /openApi/swap/v2/quote/ticker fallback",
+      "semantics_freshness": "30s, event≤received≤analysis; expiry не продлевается от cache-hit. Mark/index не last.",
+      "changes": "P0, текущее положение к структуре, оценки плана; отсутствие/старая цена препятствует core.",
+      "utility550": "Нужен каждому выбранному активу. Новый AUTO exact KIMCHI привязан; этого недостаточно для8/550 CORE.",
+      "route_status": "ACTUAL_USE_BOUND_KIMCHI_AUTO_AND_PRIOR_ACCEPTED_ORIGINALS",
+      "actual_evidence": "KIMCHI AUTO price USABLE в исходный analysis_ts; свежесть сейчас не заявлена.",
+      "duplicates_reserve_gaps": "Reuse overview/existing fact экономит повторную загрузку. Primary/fallback одна площадка. NOT_CHECKED/identity/access/clock contradictions не обходятся; caps не возвращаются.",
+      "minimum_delta": "KEEP bounded reuse/fallback; не делать ещё один last запрос при уже пригодном факте.",
+      "code_refs": [
+        "sources/index.mjs:130",
+        "sources/index.mjs:137",
+        "sources/bingx.mjs:61",
+        "analytics/index.mjs:84"
+      ]
+    },
+    {
+      "block": "Подтверждённый суточный рост",
+      "fact": "1440 closed1m OHLC / exact rolling24h open,last,end",
+      "source_operation": "getDayGrowth → BINGX /openApi/swap/v3/quote/klines limit1440",
+      "semantics_freshness": "Принятый CCXT open-time basis; вся сетка1440, без открытых/gaps/outside; price-only; event=end, TTL90s.",
+      "changes": "+20%24h proof/automatic wave qualification и строка роста, а не одно reported ticker %.",
+      "utility550": "Работает для точного underlying при полном окне; короткая история/пустое окно не маскируются. Bound KIMCHI AUTO day usable/passed24h, но не READY.",
+      "route_status": "ACTUAL_USE_BOUND_KIMCHI_AUTO_AND_PRIOR_ACCEPTED_ORIGINALS",
+      "actual_evidence": "Stored KIMCHI AUTO growth_proof CURRENT,24h passed; short5/15/60 not passed.",
+      "duplicates_reserve_gaps": "Тот же endpoint, что core125, но разные окна/проверки. Это не два independent providers; raw reuse не предполагается. Budget denial → NOT_CHECKED без второго окна/ретрая.",
+      "minimum_delta": "KEEP; не заменять полное OHLC окно ticker metadata и не отменять activity/plan.",
+      "code_refs": [
+        "sources/day-growth.mjs:16",
+        "sources/day-growth.mjs:89",
+        "analytics/day-growth.mjs:9",
+        "analytics/movement.mjs:4"
+      ]
+    },
+    {
+      "block": "Движение / импульс / текущая активность / откат",
+      "fact": "125 closed1m OHLC + один сопоставимый native quantity counter",
+      "source_operation": "getCore candles → BINGX /openApi/swap/v3/quote/klines; analyzeMovement/describeMovementDetails",
+      "semantics_freshness": "90s close clock; closed grid/gaps; +10%5/15/60, baseline60m, current3m/5m из тех же минут. UNKNOWN native quantity допускает только same-field same-instrument ratio, не BASE/USDT.",
+      "changes": "Активность/состояние волны, отказ CURRENT_ACTIVITY_NOT_CONFIRMED, детали ускорения/замедления/неудержания high. Из деталей не создаётся новый gate.",
+      "utility550": "Нужна новая fact quality для каждого инструмента; 541 semantic eligibility не actual coverage. KIMCHI: данные пригодны, но criteria активности не выполнены — это различие факта и сигнала.",
+      "route_status": "ACTUAL_USE_BOUND_KIMCHI_AUTO_AND_PRIOR_ACCEPTED_ORIGINALS",
+      "actual_evidence": "KIMCHI stored reason CURRENT_ACTIVITY_NOT_CONFIRMED; details3m/5m имеются; нового kernel replay в AU0.",
+      "duplicates_reserve_gaps": "Growth/activity/pivots/effort — производные одной candle primary line, не отдельные голоса/HTTP. Нулевой baseline/иная native basis остаются NULL/reason.",
+      "minimum_delta": "KEEP; не ослаблять критерий из-за того, что24h рост или отдельная3m observation положительны.",
+      "code_refs": [
+        "sources/index.mjs:160",
+        "analytics/index.mjs:92",
+        "analytics/movement.mjs:30",
+        "analytics/movement.mjs:63",
+        "analytics/presentation.mjs:26"
+      ]
+    },
+    {
+      "block": "Текущая двусторонняя ликвидность / допустимый размер",
+      "fact": "native bidsCoin/asksCoin base quantity, T, bid/ask prices",
+      "source_operation": "getCore orderbook → BINGX /openApi/swap/v2/quote/depth limit1000; measureLiquidity",
+      "semantics_freshness": "TTL15s; explicit COIN evidence or proven contract conversion; crossed/empty/duplicate invalid. Видимая bounded depth, не полный census и не будущее исполнение.",
+      "changes": "Текущая пригодность фиксированных размеров и plan.position_limit_usdt; отсутствие единицы/глубины не лечится множителем1.",
+      "utility550": "541 semantic eligible /9 deferred на входе, actual native proof отдельно. KIMCHI book fact USABLE не означает, что core уже дошёл до готового плана.",
+      "route_status": "ACTUAL_USE_BOUND_KIMCHI_AUTO_AND_PRIOR_ACCEPTED_ORIGINALS",
+      "actual_evidence": "Original KIMCHI book USABLE at original time, analysis.liquidity=NULL; existing wrapper calculation was not returned. One affected candidate output exposes INSUFFICIENT with same source fact/clock; original unchanged.",
+      "duplicates_reserve_gaps": "Резерв force-refresh перед delivery сохраняется; чужая venue depth не замена BingX. Не обращаться deep для9 без unit proof.",
+      "minimum_delta": "APPLIED_LOCAL analytics/index.mjs: retain already-computed refusal liquidity with fact_id/source_ts. One affected NEW KIMCHI AUTO check PASS; new snapshot status INSUFFICIENT, other analysis fields/text unchanged. Not deployed.",
+      "code_refs": [
+        "sources/index.mjs:180",
+        "sources/bingx.mjs:151",
+        "analytics/liquidity.mjs:25",
+        "runtime/source-evidence-admission.mjs:3"
+      ]
+    },
+    {
+      "block": "Структурный план / карточка",
+      "fact": "Предварительно известные OHLC pivots+current last+book liquidity",
+      "source_operation": "constructPlan / ownerPublicationRefusal / render; новых source HTTP нет",
+      "semantics_freshness": "known_ts≤analysis_ts; самостоятельные зоны входа/выхода; conservative full-area minimum≥10, rules прежние.",
+      "changes": "READY/отказ и конкретный план/предупреждение. Две main reasons из stage/observed/activity/trade/map; OI/funding findings не выбираются этим narrative.",
+      "utility550": "Использует факты конкретного инструмента, не старую оценку полезности105. Текущий KIMCHI AUTO не дошёл до plan/ready;8 checked не8 bound originals.",
+      "route_status": "ACTUAL_DECISION_PATH;CURRENT_KIMCHI_NO_PLAN",
+      "actual_evidence": "AUTO run8 NOTREADY:6 activity +2 invalidated (семь пока runtime summaries, не independently bound CORE).",
+      "duplicates_reserve_gaps": "Детали3m/5m/plan из core candles без новых providers. Больше факторов не равно больше evidence. Calibration/проценты не добавляются.",
+      "minimum_delta": "Liquidity retention local fix qualified; source/gate integration in ROOT_BLOCK2_SELECTED_SUPPLEMENT_PROPOSAL.diff is unapplied. No threshold/plan change.",
+      "code_refs": [
+        "analytics/index.mjs:117",
+        "analytics/index.mjs:123",
+        "analytics/presentation.mjs:40"
+      ]
+    },
+    {
+      "block": "Optional recent trades / поток и реакция цены выборки",
+      "fact": "trade id, time(ms), price, quoteQty USDT, exact isBuyerMaker semantics",
+      "source_operation": "getOptional first slot → BINGX /openApi/swap/v2/quote/trades; TRADE_SAMPLE/TRADE_PRICE_RESPONSE",
+      "semantics_freshness": "TTL30s; latest returned sample, request100 mayreturn1000; IDs dedup/conflicts before filter. quantity_base неизвестна; no absorption/causality/full-window claim.",
+      "changes": "Дополнительный trade_context/findings; может попасть в2 reasons только при месте/пригодном price response. Основной READY/plan не создаёт.",
+      "utility550": "Potential venue-specific current evidence для уже READY asset; доказанного production optional coverage550 нет. Нельзя наследовать технический SOL/sample на новые550.",
+      "route_status": "CONDITIONAL_SUPPORT;ACTUAL_USE_IN_NEW_BOUND_AUTO_NOT_CHECKED",
+      "actual_evidence": "KIMCHI input не содержит trades; все8 run candidates notready, поэтому optional stage не вызывается по code path.",
+      "duplicates_reserve_gaps": "Upper2 общий с OI/funding, попытка занимает slot и при отказе/denial. Общий deadline с map, половина remaining mandatory life. Это BingX, не второй provider.",
+      "minimum_delta": "UNAPPLIED_ROOT_PROPOSAL: for exactly selected confirmed-growth candidate, liquidity USABLE, sole soft activity refusal, collect only existing BingX trades (max1GET within upper2/deadline), retain qualified observations before final readiness; never all550 or invalidated/illiquid rescue.",
+      "code_refs": [
+        "sources/index.mjs:325",
+        "sources/recent-trades.mjs:29",
+        "analytics/context.mjs:7",
+        "analytics/presentation.mjs:40",
+        "runtime/runner.mjs:120"
+      ]
+    },
+    {
+      "block": "Optional open interest",
+      "fact": "OI scalar + доказанная native unit и source time",
+      "source_operation": "BINGX /openApi/swap/v2/quote/openInterest → OI_SNAPSHOT",
+      "semantics_freshness": "TTL120s; CONTRACTS/BASE_ASSET/USDT только при exact qualification; один срез не delta/long-short/направление.",
+      "changes": "Сохраняемый optional_context/findings; текущий public narrative не выбирает OI. Не READY/plan gate.",
+      "utility550": "Пока нет active per-entry OI qualifications; usefulness/actual coverage не проверены. Source catalogue overlap не положительное evidence.",
+      "route_status": "NOT_CHECKED;CONDITIONAL_CODE_SUPPORT_ONLY",
+      "actual_evidence": "Static registry seed и overlay не создают OI proof; request skipped до HTTP. KIMCHI optional absent.",
+      "duplicates_reserve_gaps": "Same BingX primary line; после trades остаётся максимум1 общий slot; no qualification/exhaustion → NOT_CHECKED, без новой квоты.",
+      "minimum_delta": "HOLD_NO_HTTP; не добавлять units/новые snapshots ради будущей калибровки.",
+      "code_refs": [
+        "sources/index.mjs:371",
+        "sources/bingx.mjs:179",
+        "analytics/context.mjs:74",
+        "registry/native-reviewed550.mjs:21"
+      ]
+    },
+    {
+      "block": "Optional funding",
+      "fact": "Raw fraction rate + actual period + rate event clock",
+      "source_operation": "BINGX /openApi/swap/v2/quote/premiumIndex → FUNDING_SNAPSHOT",
+      "semantics_freshness": "TTL300s; metadata updateTime не clock ставки. period из фактической строки, RATE_FRACTION_PER_ACTUAL_PERIOD; не annualized/next ставка.",
+      "changes": "Optional_context/findings без направления и без READY; public narrative сейчас не выбирает funding.",
+      "utility550": "Active clock qualifications не созданы; не проверен usable funding для550. AS/новые providers не переаудировались.",
+      "route_status": "NOT_CHECKED;CONDITIONAL_CODE_SUPPORT_ONLY",
+      "actual_evidence": "Источник пропускает request до HTTP при отсутствующем exact rate-clock proof. KIMCHI optional absent.",
+      "duplicates_reserve_gaps": "Последний в общем upper2, не третий дополнительный HTTP. Если trades+qualifiedOI заняли2, funding NOT_CHECKED; no cap reset.",
+      "minimum_delta": "HOLD_NO_HTTP; не подменять updateTime/responseTime источником и не расширять период.",
+      "code_refs": [
+        "sources/index.mjs:371",
+        "sources/bingx.mjs:187",
+        "analytics/context.mjs:80"
+      ]
+    },
+    {
+      "block": "Optional будущие liquidation zones / наблюдаемые позиции",
+      "fact": "Qualified external model либо OPEN positions с units/clocks/asset/quote basis, ≤3up+3down",
+      "source_operation": "getLiquidations → existing SWOLE model / Orderly / Hyperliquid branches only if exact registry route/admission",
+      "semantics_freshness": "Model300s / observed positions120s; не history events/наш liq model. Current registry routes empty, production policies только BingX/TG.",
+      "changes": "Зоны/ограничения/confluence/предупреждение при пригодности; отсутствие карты явно, основной план самостоятельный.",
+      "utility550": "0 qualified maps; no actual native binding for550. Пустой route не UNSUPPORTED для provider/universe.",
+      "route_status": "CONDITIONAL_SUPPORT_UNCONFIGURED;CURRENT_PRODUCTION_UNADMITTED;NOT_CHECKED",
+      "actual_evidence": "KIMCHI map OPTIONAL_MAP_NOT_REQUESTED после раннего отказа, не vendor failure.",
+      "duplicates_reserve_gaps": "Старые BTC/Swole grants SPENT, ownerBTC исключён. Upper map1/LIQ nested caps не новые admissions; overlap не суммируется, без fallback после exhausted.",
+      "minimum_delta": "KEEP_OPTIONAL_EMPTY; не активировать/не искать новыеproviders/не блокировать core картой.",
+      "code_refs": [
+        "sources/index.mjs:392",
+        "runtime/production-policy.mjs:22",
+        "analytics/index.mjs:106",
+        "analytics/context.mjs:86"
+      ]
+    },
+    {
+      "block": "Delivery refresh / точный original→текст",
+      "fact": "Force refreshed last+book при прежних пригодных candles, тот же plan/text",
+      "source_operation": "getCore(force_refresh,only_facts price+orderbook,purpose DELIVERY); revalidatePumpCard",
+      "semantics_freshness": "Original source clocks/expiry не продлеваются; fresh validation same analysis, exact recipient/text/message receipt — ROOT.",
+      "changes": "Допуск сохранить/отправить ту же готовую карточку, не новый источник/новая волна.",
+      "utility550": "Только для фактически READY; в наблюдённом AUTO0 delivery, поэтому текущая цепочка SENT не доказана.",
+      "route_status": "CONDITIONAL_SUPPORT;NO_READY_SENT_IN_THIS_AUTO",
+      "actual_evidence": "run delivery0; AU native/TG0. Исторические239/240 не используются.",
+      "duplicates_reserve_gaps": "Уже защищённый delivery reserve; отсутствие capacity → stale/deferred, не новыйgrant и не иной provider.",
+      "minimum_delta": "KEEP; verification/actual admission на ROOT, не менять sharedsender.",
+      "code_refs": [
+        "runtime/worker.mjs:30",
+        "runtime/runner.mjs:135"
+      ]
+    },
+    {
+      "block": "Базовый outcome после первого READY",
+      "fact": "Original frozen signal + closed1m history точного4h интервала",
+      "source_operation": "getOutcomeHistory → BINGX klines; existing outcome journal/evaluateOutcome",
+      "semantics_freshness": "Historical event timestamps, expiryNULL — не live core факт. UNKNOWN не MISS; границы/intrabar порядок не выдумываются.",
+      "changes": "Базовый учёт исхода, не обязательная калибровка перед запуском. Не влияет на нынешний READY/отбор.",
+      "utility550": "Полезен только после конкретного saved READY inclUNSENT; не повод массово собирать550 history сейчас.",
+      "route_status": "CONDITIONAL_SUPPORT;NEW_READY_OUTCOME_NOT_PROVEN",
+      "actual_evidence": "В переданном AUTO ready0; AT/AR/старые исходы не пересчитывались.",
+      "duplicates_reserve_gaps": "Shared BingX source и защищённый outcome reserve; статистика расширенная позже;2OWNERdeferrals не снимаются.",
+      "minimum_delta": "KEEP_BASELINE_READY_TRIGGER; не создавать новую статистическую батарею/collectors.",
+      "code_refs": [
+        "runtime/runner.mjs:154",
+        "sources/index.mjs:284"
+      ]
+    }
+  ],
+  "local_consumer_change": "retain already measured refusal liquidity with exact book provenance",
+  "affected_actual_callbacks": 1,
+  "shared_block2_proposal_applied": false
+}

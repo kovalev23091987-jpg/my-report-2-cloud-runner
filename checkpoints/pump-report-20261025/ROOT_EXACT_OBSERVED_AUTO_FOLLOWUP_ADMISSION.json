@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_PRODUCTION_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_NO_RETRY",
   "authority_main": "58fef82342269a2b16f5206e771c3fee30612f2a",
   "admitted_ts": 1793001456614,
   "expires_ts": 1793002356614,
@@ -66,5 +66,26 @@
   "previous_observation_file": "pump-report/.private/observations/second-native-20261026-reply.json",
   "previous_observation_sha256": "fcd637c9e054ee245ce9182d6cf8ac808e1a5ad002be1444ee4a7645febeefb8",
   "private_derived_operator": "pump-report/.private/observations/exact-previous-auto-run-once.mjs",
-  "private_derived_operator_sha256": "ba98316558e138bb52db27686bf06ca2b6b800df3dee3b35f51eaba2031254d3"
+  "private_derived_operator_sha256": "ba98316558e138bb52db27686bf06ca2b6b800df3dee3b35f51eaba2031254d3",
+  "actual_completed_ts": 1793001481879,
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-exact-observed-auto-20261026-one",
+    "usage": {
+      "requests": 6,
+      "rows_read": 21,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 21,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_file": "pump-report/.private/observations/exact-auto-20261026-reply.json",
+  "private_result_sha256": "53f6976b062d92a63f3085eccb516309ddd84a4f9190fe66e9a18d7bb575889a",
+  "actual_market_HTTP": 0,
+  "actual_Telegram": 0,
+  "unused_envelope_not_refunded": true
 }

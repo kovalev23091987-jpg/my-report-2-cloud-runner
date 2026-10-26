@@ -9,6 +9,7 @@ export const PRODUCTION_PLAN=Object.freeze({
   capture_ids:['pump-first-production-manual-20261026-one','pump-first-production-manual-20261026-two','pump-first-production-manual-20261026-three'],
   manual_checks:3,manual_capture_http_max:13,telegram_daily_cap:27,telegram_monthly_cap:837,
   planned_load_fraction:0.8,
+  candidate_pacing:Object.freeze({version:'pump-even-day-deep-v2',period_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow'}),
   future_candidates:Object.freeze({cadence_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow',
     http_per_slot:12,http_by_provider:{BINGX:10,TELEGRAM:1},
     unassigned_optional_map_http_per_slot:1,
@@ -38,5 +39,6 @@ export function productionAdmission(nativeAdmission,provider_policy_version,{mod
     production_evidence_ref:PRODUCTION_PLAN.evidence_ref,strict_automatic_window:mode==='AUTO',
     allowed_providers:mode==='LOOKUP'?[]:['BINGX','TELEGRAM'],discovery:DISCOVERY_PLAN,
     future_candidates:PRODUCTION_PLAN.future_candidates,planned_load_fraction:PRODUCTION_PLAN.planned_load_fraction,
+    candidate_pacing:PRODUCTION_PLAN.candidate_pacing,
     ...(maximum_http_attempts===undefined?{}:{max_http_attempts:maximum_http_attempts})};
 }

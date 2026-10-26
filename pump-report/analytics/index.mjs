@@ -139,7 +139,7 @@ export function analyzePump(input,profile=START_PROFILE){
   // A refusal can still explain a separately verified current book. This does
   // not make the analysis READY or bypass movement, volume or plan gates.
   if(!result.ready&&!liquidity&&profileReady(profile)&&coreFact(input.facts.orderbook,'orderbook',input.analysis_ts,profile,input.instrument)&&input.facts.orderbook.unit==='USDT_PRICE_BASE_QUANTITY'){
-    liquidity=measureLiquidity(input.facts.orderbook.value,input.instrument,profile);
+    liquidity={...measureLiquidity(input.facts.orderbook.value,input.instrument,profile),fact_id:input.facts.orderbook.fact_id,source_ts:input.facts.orderbook.event_ts};
   }
-  return {...result,manual_text:explainManualAnalysis(result,{day,liquidity})};
+  return {...result,liquidity,manual_text:explainManualAnalysis(result,{day,liquidity})};
 }

@@ -1,0 +1,32 @@
+{
+  "schema": "AU_BLOCK2_ONE_SELECTED_EXISTING_ROUTE_PROPOSAL_V1",
+  "status": "NOT_ADMITTED_NOT_EXECUTED_NOT_DISPATCHABLE_UNTIL_NEW_EXACT_CANDIDATE",
+  "existing_provider": "BINGX",
+  "method": "GET",
+  "url_template": "https://open-api.bingx.com/openApi/swap/v2/quote/trades?limit=100&symbol=EXACT_CURRENT_SELECTED_NATIVE_SYMBOL",
+  "maximum_logical_HTTP": 1,
+  "within_existing_optional_upper2": true,
+  "candidate_limit": 1,
+  "ready_path_unchanged": true,
+  "preconditions": [
+    "New selected exact verified crypto perpetual USDT candidate, confirmed growth proof CURRENT/RETAINED.",
+    "Only soft CURRENT_ACTIVITY_NOT_CONFIRMED refusal, all mandatory fact clocks valid and retained liquidity.status USABLE; no PLAN_INVALIDATED, unknown/insufficient liquidity or missing mandatory source proof.",
+    "ROOT integrates proposed shared source/runner consumer phases and issues positive exact provider/whole/native admission with same old caps/reserves.",
+    "Bind exact native symbol/run_id/current implementation pin before dispatch. Saved contemporaneous trades and original input, no re-aging old AUTO."
+  ],
+  "normalization": "Existing BingX recent-method quoteQty USDT + literal boolean isBuyerMaker, exact id/fillId handling; no quantity multiplier or new format.",
+  "bounds": {
+    "requested_limit": 100,
+    "maximum_returned_rows": 1000,
+    "broker_body_cap_bytes": 2000000,
+    "trade_TTL_ms": 30000,
+    "deadline": "Existing min(10s, half remaining mandatory source life)",
+    "retries": 0,
+    "pagination": 0,
+    "extra_provider_routes": 0,
+    "cap_increase": 0
+  },
+  "consumer": "TRADE_PRICE_RESPONSE/TRADE_SAMPLE and source coverage only; mandatory READY/plan/thresholds remain unchanged.",
+  "current_KIMCHI_action": "DO_NOT_DISPATCH: retained existing liquidity is INSUFFICIENT",
+  "current_packet_new_HTTP_SQL_TG_Worker_CONTROL": 0
+}

@@ -28,6 +28,43 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     return {schema:'PUMP_PLANNED_AUTOMATIC_DAY_V1',day,created_ts:now,baseline_charged:baseline,
       protected_at_creation:protectedTotal,fraction,limit:Math.floor(Math.max(0,limits.project_http_day-protectedTotal-baseline)*fraction),charged:0};
   }
+  function candidatePacing(state,now,plan,discovery){
+    const config=admission.candidate_pacing;
+    if(mode!=='AUTO'||!config)return null;
+    if(!plan||config.version!=='pump-even-day-deep-v2'||config.period_ms!==3600000||config.start_hour!==10||config.end_hour!==20||config.time_zone!=='Europe/Moscow')throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'CANDIDATE_PACING_POLICY_UNQUALIFIED'});
+    const day=utcDay(now),key=String(Math.floor(now/config.period_ms)*config.period_ms);
+    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:config.time_zone,hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(now),part=type=>Number(parts.find(p=>p.type===type).value);
+    const inDay=part('hour')*3600000+part('minute')*60000+part('second')*1000+now%1000;
+    const end=now-inDay+config.end_hour*3600000,periods=Math.max(1,Math.ceil((end-now)/config.period_ms));
+    const upper=admission.future_candidates?.http_per_slot,providerCosts=admission.future_candidates?.http_by_provider;
+    if(!integer(upper)||upper<1||!providerCosts)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'CANDIDATE_PACING_COST_UNQUALIFIED'});
+    let allocation=state.automatic_candidate_allocations?.[day];
+    if(allocation){
+      if(allocation.version!==config.version||allocation.http_upper_bound!==upper||JSON.stringify(allocation.http_by_provider)!==JSON.stringify(providerCosts)||!integer(allocation.candidates_per_period)||!integer(allocation.remaining_periods)||allocation.remaining_periods<1||allocation.remaining_periods>10||!integer(Number(allocation.first_period))||Number(allocation.first_period)>Number(key)||Number(allocation.first_period)+allocation.remaining_periods*config.period_ms!==end)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'CANDIDATE_ALLOCATION_STATE_UNQUALIFIED'});
+    }else{
+      const fixed=Object.values(protected_reserves.http_by_provider).reduce((a,b)=>a+b,0)+protected_reserves.delivery_http+protected_reserves.outcomes_http;
+      let count=Math.floor(Math.max(0,Math.min(plan.limit-plan.charged-discovery,limits.project_http_day-(state.days[day]??0)-fixed-discovery))/(periods*upper));
+      for(const [provider,cost]of Object.entries(providerCosts)){
+        if(!integer(cost)||cost<1)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'CANDIDATE_PACING_PROVIDER_COST_UNQUALIFIED'});
+        const policy=providerPolicy(provider),p=state.providers?.[provider]??{},reserve=protected_reserves.http_by_provider[provider]+(policy.delivery_source===false?0:protected_reserves.delivery_http)+(policy.outcome_source===false?0:protected_reserves.outcomes_http),later=provider===admission.discovery?.provider?discovery:0;
+        count=Math.min(count,Math.floor(Math.max(0,policy.project_daily_cap-(p.days?.[day]??0)-reserve-later)/(periods*cost)),Math.floor(Math.max(0,policy.project_monthly_cap-(p.months?.[utcMonth(now)]??0)-reserve-later)/(periods*cost)));
+      }
+      allocation={version:config.version,created_ts:now,first_period:key,remaining_periods:periods,http_upper_bound:upper,http_by_provider:{...providerCosts},candidates_per_period:automaticWindowOpen(now)?count:0,baseline_auto_charged:plan.charged};
+    }
+    const first=Number(allocation.first_period),base=allocation.candidates_per_period,elapsed=(Number(key)-first)/config.period_ms;
+    if(!integer(elapsed)||elapsed>=allocation.remaining_periods)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'CANDIDATE_ALLOCATION_CLOCK_UNQUALIFIED'});
+    let issuedBefore=0;
+    const buckets=Object.entries(state.automatic_deep_pacing?.[day]??{}).sort(([a],[b])=>Number(a)-Number(b));
+    for(const [period,bucket]of buckets){
+      const index=(Number(period)-first)/config.period_ms;
+      if(!integer(index)||index>elapsed||bucket.version!==config.version||!integer(bucket.limit)||!integer(bucket.charged)||!integer(bucket.candidate_count)||issuedBefore+bucket.candidate_count>base*(index+1))throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'CANDIDATE_PACING_STATE_UNQUALIFIED'});
+      if(period!==key)issuedBefore+=bucket.candidate_count;
+    }
+    const saved=state.automatic_deep_pacing?.[day]?.[key],maximum=base*(elapsed+1)-issuedBefore;
+    // Places accrue even when discovery finds no candidates. Only unused places
+    // from elapsed hours carry forward; future hours and spent attempts stay held.
+    return {version:config.version,day,key,created_ts:saved?.created_ts??now,limit:maximum*upper,charged:saved?.charged??0,candidate_count:saved?.candidate_count??0,allocation,carried_in:maximum-base,maximum,issued_before:issuedBefore};
+  }
   const assertWorkWindow=()=>{if(admission?.strict_automatic_window===true&&mode!=='MANUAL'&&!automaticWindowOpen(clock()))throw new BudgetRefusal('BUDGET_AUTOMATIC_WINDOW_CLOSED');};
   const providerPolicy = provider => {
     if(Array.isArray(admission?.allowed_providers)&&!admission.allowed_providers.includes(provider))throw new BudgetRefusal('PROVIDER_NOT_IN_RUN_ADMISSION');
@@ -76,8 +113,10 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
       const plan=mode==='AUTO'?automaticPlan(state,now):null;
       if(plan&&purpose==='DISCOVERY'&&plan.charged+cost+futureDiscovery+futureCandidates.http>plan.limit)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'PLANNED_AUTO_ALLOCATION_AND_FUTURE_WORK'});
+      const pacing=mode==='AUTO'&&(purpose==='DISCOVERY'||purpose==='CORE')?candidatePacing(state,now,plan,futureDiscovery):null;
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
       if(plan){state.automatic_plans??={};plan.charged+=cost;state.automatic_plans[day]=plan;}
+      if(pacing){state.automatic_candidate_allocations??={};state.automatic_candidate_allocations[day]??=pacing.allocation;if(purpose==='CORE'){const {allocation,...bucket}=pacing;state.automatic_deep_pacing??={};state.automatic_deep_pacing[day]??={};state.automatic_deep_pacing[day][pacing.key]={...bucket,charged:pacing.charged+cost};}}
       if(integer(policy.qualification_attempt_cap)){p.qualification_totals??={};inc(p.qualification_totals,policy.version,cost);}
       state.outstanding[request_id]={run_id,provider,cost,ts:now,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED'};
       return {state,result:{request_id,run_id,provider,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED',cost,reserved_ts:now,day,month,state:'RESERVED'}};
@@ -122,7 +161,8 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   }
   async function admitCandidate({http_upper_bound,http_by_provider}={}){
     if(admission?.run_purpose!=='PRODUCTION')return {allowed:true,scope:'NO_PRODUCTION_FORECAST_APPLIED'};
-    assertWorkWindow();const now=clock(),state=await store.get('pump:resources')??{days:{},providers:{}};
+    assertWorkWindow();
+    const assess=state=>{const now=clock();
     const deny=reason=>({allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:reason});
     if(!integer(http_upper_bound)||http_upper_bound<1||!http_by_provider||Object.values(http_by_provider).some(n=>!integer(n))||Object.values(http_by_provider).reduce((a,b)=>a+b,0)>http_upper_bound)return deny('CANDIDATE_COST_UNQUALIFIED');
     if(admission.max_http_attempts!==undefined&&run.total+http_upper_bound>admission.max_http_attempts)return deny('WHOLE_CANDIDATE_OPERATION_HTTP_LIMIT');
@@ -132,12 +172,25 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     if((state.days[day]??0)+http_upper_bound+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
     const plan=mode==='AUTO'?automaticPlan(state,now):null;
     if(plan&&plan.charged+http_upper_bound+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
+    const pacing=candidatePacing(state,now,plan,discovery);
+    if(pacing&&http_upper_bound!==pacing.allocation.http_upper_bound)return deny('CANDIDATE_PACING_COST_CHANGED');
+    if(pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION');
     for(const [provider,cost]of Object.entries(http_by_provider)){
       const policy=providerPolicy(provider),p=state.providers?.[provider]??{},reserve=(mode==='MANUAL'?0:protected_reserves.http_by_provider[provider])+(policy.delivery_source===false?0:protected_reserves.delivery_http)+(policy.outcome_source===false?0:protected_reserves.outcomes_http);
       if(!integer(reserve)||(p.days?.[day]??0)+cost+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
       if((p.months?.[month]??0)+cost+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
     }
-    return {allowed:true,scope:'BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION',http_upper_bound};
+    return {allowed:true,scope:'BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION',http_upper_bound,...(pacing?{pacing}:{})};
+    };
+    const state=await store.get('pump:resources')??{days:{},providers:{}},first=assess(state);
+    if(!first.allowed||!first.pacing)return first;
+    return store.atomic('pump:resources',current=>{
+      current??={days:{},providers:{}};const checked=assess(current);if(!checked.allowed)return {state:current,result:checked};
+      const {pacing,...result}=checked,{allocation,...bucket}=pacing;
+      current.automatic_candidate_allocations??={};current.automatic_candidate_allocations[pacing.day]??=allocation;
+      current.automatic_deep_pacing??={};current.automatic_deep_pacing[pacing.day]??={};current.automatic_deep_pacing[pacing.day][pacing.key]={...bucket,candidate_count:bucket.candidate_count+1};
+      return {state:current,result:{...result,candidate_quota:{period_start:Number(pacing.key),maximum:pacing.maximum,base_per_period:allocation.candidates_per_period,carried_in:pacing.carried_in,issued:bucket.candidate_count+1,remaining:pacing.maximum-bucket.candidate_count-1,day_issued:pacing.issued_before+bucket.candidate_count+1,never_refunded:true}}};
+    });
   }
   return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,providerWindow,admitCandidate,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
 }

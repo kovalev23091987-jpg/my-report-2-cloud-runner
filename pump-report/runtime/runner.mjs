@@ -144,7 +144,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         await recordPublished(card.card_id);
       }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
     }
-    return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage};
+    return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
   }
   async function recordPublished(card_id){
     const card=await store.get('pump:card:'+card_id);if(!card)return;
@@ -228,7 +228,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         }
         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
         budget.setMode('AUTO');const instrument=await selectAutomatic(catalog);if(!instrument)break;
-        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});result.checked.push(checked);if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
+        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
         catch(error){result.errors.push({instrument_id:instrument.instrument_id,reason:error.code??'CANDIDATE_ERROR'});await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id])queue[instrument.instrument_id].next_check_ts=clock()+profile.candidate_recheck_ms;return {state:queue,result:true};});}
       }
       // Repair a receipt-backed signal after a prior process stopped between
@@ -239,7 +239,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       for(const item of result.delivery)await recordPublished(item.card_id);
       if(automaticWindowOpen(clock())){await observations.syncTerminal();result.outcomes=await checkOutcomes({run_id});}
       if(result.coverage?.status==='INCOMPLETE'||result.errors.length)result.status='INCOMPLETE';
-      const ready=result.checked.filter(r=>r.analysis.ready&&r.analysis.automatic_eligible).length;
+      const ready=result.checked.filter(r=>r.analysis?.ready&&r.analysis.automatic_eligible).length;
       result.discovery_result=result.status==='INCOMPLETE'?'INCOMPLETE_COVERAGE_OR_RESOURCES':ready?'READY_IDEAS_FOUND':'NO_READY_IDEAS_IN_CHECKED_SCOPE';
       result.resources=budget.summary();await store.set('pump:run:'+run_id,result);return manual?{...result,request_id:manual.request_id,manual_result:await getManualResult(manual.request_id)}:result;
     }finally{await store.atomic('pump:executor',current=>({state:current?.owner===owner?{owner:null,run_id,released_ts:clock()}:current,result:true}));}
