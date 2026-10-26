@@ -1,30 +1,12 @@
 {
-  "schema": "ROOT_NEXT_NORMAL_AUTO_ACCEPTANCE_PREPARATION_V2",
+  "schema": "ROOT_NEXT_NORMAL_AUTO_ACCEPTANCE_PREPARATION_V3_LIVE72",
   "status": "PREPARED_REUSE_NOT_IO_ADMISSION_NOT_SCHEDULED",
-  "authority_main": "a484b3689498649dd2443ba09cb484aa95535da4",
-  "prepared_ts": 1793043099408,
+  "authority_main": "1d696f57491ee4e868fc2c53b5d2e54fc76d73bf",
+  "prepared_ts": 1793044787838,
   "purpose": "Read independently a latestsavedAUTO original and one original behind a selectedSENTcard; jointdeliveryrequires exactrun/key/instrument binding.",
-  "current_implementation": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
-  "current_artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
-  "reuse_unchanged": [
-    {
-      "path": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
-      "sha256": "8c164ee68536b08075f1989a664b696d6aaa402ccfae115adf54d8b8d192e649"
-    },
-    {
-      "path": "pump-report/operator/saved-auto-observation.mjs",
-      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74"
-    },
-    {
-      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
-      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893"
-    },
-    {
-      "path": "pump-report/operator/saved-outcome-observation.mjs",
-      "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f"
-    }
-  ],
-  "requalification_reason": "No observer code change: functions parameterized by current implementation; actual saved run carries new71diagnostic fields privately. Existing admitted mechanical qualification reused; no redundant Node.",
+  "current_implementation": "690fae17addd12ee60e111738b255dce267f6cf2af6827d506c4bd724d51f031",
+  "current_artifact_sha256": "6a1b27dad3a35324b73589593864cbcf1cd99bdca7239d993cd398177eeaeaf4",
+  "requalification_reason": "Existing accepted observer primitives reused; optional one-PK catalog reader and updated wrapper qualified once in BV affected connected case. BW/FULL72 deployment verify exact current artifact. No new test repetition or native read admission.",
   "next_intended_business_window": "2026-10-27 10:00–20:00 Europe/Moscow",
   "no_outside_window_market_or_TG": true,
   "LOOKUP_20261026": {
@@ -56,14 +38,15 @@
     "project_resources_PK": 1,
     "diagnostic_projection": "Existing run.candidate_selection capped4steps,5leaders already stored; don't fabricate wholequeue/sourceeligibility or list5distinctcoins",
     "maximum_selected_originals_total": 2,
-    "success_path_static_queries": 11,
-    "static_headroom5_not_new_grant": true,
-    "latest_AUTO_candidate_and_card_independent_until_joint_bound": true
+    "success_path_static_queries": 12,
+    "latest_AUTO_candidate_and_card_independent_until_joint_bound": true,
+    "static_headroom4_not_new_grant": true,
+    "includes_optional_catalog_PK_only_if_explicitly_admitted": true
   },
   "required_before_IO": [
     "Freshmain/all17/all4+ownboundedCAS/FULL and validrootowner, not current closed/expired engineering lease",
     "One fresh exact admission <=15min and fullprovider/whole/native protection; positive actual native reservation before reads",
-    "Current artifact and 71live modules/config/21bindings/all3cron FULL readback<=5min; no redeploy if unchanged",
+    "Current artifact and 72live modules/config/21bindings/all3cron FULL readback<=5min; no redeploy if unchanged",
     "Existing Wrangler auth valid>5min or separately admitted ordinary existing-account refresh; no newlogin/key/scope",
     "Recipient hash from approved private existing recipient; never rawrecipient/token inpublic",
     "One-use attempt/result paths; preserve failed/unknown costs; no blindretry",
@@ -95,11 +78,10 @@
     "card.analysis.instrument.instrument_id === latest_auto_candidate.private_evidence.original.analysis.instrument.instrument_id",
     "All actual same-text/recipient/hash/message_id/HTTPclock and native finalization/readback checks retained"
   ],
-  "independent_current_card_scope": "A valid current71 card proves one actual delivery of its own run. It does not prove delivery of the latest selected candidate, global earliest/count, entireday or all550.",
-  "normal_current71_event_binding": "pump:run has no explicit implementation pin. An emptychecked savedrun plus currenthealth alone is not exact71 event proof. Require current71 selected original pin with expected ordinary run/asof, or separately admitted actual Cloudflare summary event carrying exact implementation pin; don't relabel historical saved event as newday.",
+  "independent_current_card_scope": "A valid current72 card proves one actual delivery of its own run. It does not prove delivery of the latest selected candidate, global earliest/count, entireday or all550.",
   "no_selected_candidate": "Retain NO_CANDIDATE and missing pin/event proof honestly; not an AUTO SENT or full universe claim.",
   "pending_catalog_extension": {
-    "status": "BV_QUALIFIED_CODE_NOT_INSTALLED_NO_NATIVE_ADMISSION",
+    "status": "INSTALLED_FULL72_NO_NATIVE_READ_ADMISSION_YET",
     "explicit_admission_flag": "read_catalog_snapshot=true",
     "extra_native_PK_queries": 1,
     "total_success_path_static_queries_if_enabled": 12,
@@ -109,7 +91,9 @@
     "record_key": "pump:catalog:last-observed:v1",
     "native_sourceHTTP": 0,
     "Telegram": 0,
-    "latest_catalog_body_or_currentglobalN": "NOT_YET_OBSERVED"
+    "latest_catalog_body_or_currentglobalN": "NOT_YET_OBSERVED",
+    "current_native_record_proof": false,
+    "explicit_flag_required": true
   },
   "reuse_unchanged_before_catalog_extension": [
     {
@@ -128,5 +112,33 @@
       "path": "pump-report/operator/saved-outcome-observation.mjs",
       "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f"
     }
-  ]
+  ],
+  "current_deployment_proof": "checkpoints/pump-report-20261025/ROOT_CATALOG_SNAPSHOT_DEPLOYMENT_READBACK.json",
+  "reuse_files_current": [
+    {
+      "path": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
+      "sha256": "f17fe7bc5cb158365fa753b2c0d905eb203b78f682fac3891796bf50017500d3"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-observation.mjs",
+      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893"
+    },
+    {
+      "path": "pump-report/operator/saved-outcome-observation.mjs",
+      "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f"
+    },
+    {
+      "path": "pump-report/operator/saved-catalog-snapshot.mjs",
+      "sha256": "643de7ce595018e1fd7a7f5f165048ff8500daef94071c71b616eba4240c92ed"
+    },
+    {
+      "path": "pump-report/runtime/catalog-snapshot.mjs",
+      "sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8"
+    }
+  ],
+  "normal_current72_event_binding": "pump:run has no explicit implementation pin. An emptychecked savedrun plus currenthealth alone is not exact72 event proof. Require current72 selected original pin with expected ordinary run/asof, or separately admitted actual Cloudflare summary event carrying exact implementation pin; don't relabel historical saved event as newday."
 }
