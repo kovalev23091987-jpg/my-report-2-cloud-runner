@@ -25,6 +25,7 @@ export async function readSavedAutoObservation({store,implementation_sha256,expe
   const chosen=candidates[0];if(!chosen)return result;
   const key=cardKey(chosen.value.card_id);if(!key||chosen.key!==key)throw Error('CARD_ID_KEY_UNBOUND');
   const card=await store.get(key),analysis_key=card?.analysis?.source_input_key;
+  if(card?.card_id!==chosen.value.card_id||cardKey(card?.card_id)!==key)throw Error('SENT_CARD_ID_CHANGED_AFTER_PAGE_READ');
   if(card?.state!=='SENT'||card.mode!=='AUTO'||!/^pump:analysis:[a-f0-9]{64}$/.test(analysis_key??''))throw Error('SENT_CARD_ORIGINAL_REFERENCE_UNBOUND');
   const original=await store.get(analysis_key);result.private_evidence.card=card;result.private_evidence.original=original;result.observed_ts=clock();
   if(original?.implementation_sha256!==implementation_sha256){result.status='SENT_OTHER_IMPLEMENTATION_NOT_CURRENT_PROOF';return result;}

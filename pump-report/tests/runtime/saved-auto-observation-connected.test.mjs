@@ -34,3 +34,13 @@ test('ARTIFICIAL saved AUTO observer binds one original/receipt and leaves incom
   const partial=await readSavedAutoObservation({store:crowded,implementation_sha256:pin,expected_recipient_sha256:sha('FIXTURE_RECIPIENT'),clock:()=>7000});
   assert.equal(partial.scope.page_exhausted,false);assert.equal(partial.scope.cards_read,20);assert.equal(partial.first_genuine_same_original_SENT_observed,false);
 });
+
+test('AO regression: a changed card identity at the exact PK read never proves the page-selected delivery',async()=>{
+  const idA='PUMP:'+'a'.repeat(64),idB='PUMP:'+'b'.repeat(64);let originalReads=0;
+  const store={
+    async get(key){if(key==='pump:executor')return null;if(key==='pump:card:'+idA)return{card_id:idB,state:'SENT',mode:'AUTO',analysis:{source_input_key:'pump:analysis:'+'d'.repeat(64)}};originalReads++;throw Error('ORIGINAL_MUST_NOT_BE_READ');},
+    async scanPrefix(){return[{key:'pump:card:'+idA,value:{card_id:idA,state:'SENT',mode:'AUTO',analysis:{run_purpose:'PRODUCTION'}}}];}
+  };
+  await assert.rejects(readSavedAutoObservation({store,implementation_sha256:'c'.repeat(64),expected_recipient_sha256:'e'.repeat(64),clock:()=>7000}),/SENT_CARD_ID_CHANGED_AFTER_PAGE_READ/);
+  assert.equal(originalReads,0);
+});
