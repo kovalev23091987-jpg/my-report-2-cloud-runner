@@ -21224,11 +21224,14 @@
       "kind": "LIST_ITEM",
       "text": "1. **Наблюдаемые открытые позиции**, для которых источник публикует текущие расчётные цены ликвидации.",
       "lead": "SOURCES",
-      "status": "UNIMPLEMENTED",
-      "code_refs": [],
+      "status": "PARTIAL",
+      "code_refs": [
+        "pump-report/sources/orderly-observed-positions.mjs",
+        "pump-report/sources/hyperliquid-observed-positions.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "ROOT broker POST/body contract, source adapter, identity/units/clocks, pagination/account-sampling bounds and finite native admission required.",
+      "remaining": "Readonly POST/broker and conditional bounded producers implemented; no admitted asset/account bindings or qualified future-map coverage. Exact stable ID/units/notional/clock/asset/price/conversion/sample boundaries remain UNKNOWN. No observed set is full market; optional map absence does not block useful core signal.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -25854,11 +25857,14 @@
       "kind": "TABLE_ROW",
       "text": "| **Orderly** | Публичные сведения об открытых позициях | Проверить охват, страницы ответа, единицы и сопоставимость с активом BingX |",
       "lead": "SOURCES",
-      "status": "UNIMPLEMENTED",
-      "code_refs": [],
+      "status": "PARTIAL",
+      "code_refs": [
+        "pump-report/sources/orderly-observed-positions.mjs",
+        "pump-report/sources/hyperliquid-observed-positions.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Connect separately with endpoint/body/policy/identity/units/time/pagination/sample scope. Observed accounts never equal all market positions.",
+      "remaining": "Readonly POST/broker and conditional bounded producers implemented; no admitted asset/account bindings or qualified future-map coverage. Exact stable ID/units/notional/clock/asset/price/conversion/sample boundaries remain UNKNOWN. No observed set is full market; optional map absence does not block useful core signal.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -25905,11 +25911,14 @@
       "kind": "TABLE_ROW",
       "text": "| **Hyperliquid** | Данные доступных открытых позиций | Не выдавать наблюдаемые аккаунты за полное покрытие рынка |",
       "lead": "SOURCES",
-      "status": "UNIMPLEMENTED",
-      "code_refs": [],
+      "status": "PARTIAL",
+      "code_refs": [
+        "pump-report/sources/orderly-observed-positions.mjs",
+        "pump-report/sources/hyperliquid-observed-positions.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Connect separately with endpoint/body/policy/identity/units/time/pagination/sample scope. Observed accounts never equal all market positions.",
+      "remaining": "Readonly POST/broker and conditional bounded producers implemented; no admitted asset/account bindings or qualified future-map coverage. Exact stable ID/units/notional/clock/asset/price/conversion/sample boundaries remain UNKNOWN. No observed set is full market; optional map absence does not block useful core signal.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -26210,11 +26219,14 @@
       "kind": "TEXT",
       "text": "Orderly и Hyperliquid требуют отдельной проверки границ охвата: доступные позиции не означают знание всех позиций всех площадок. [Orderly](https://github.com/OrderlyNetwork/documentation-public/blob/main/build-on-omnichain/public-info-api/overview.mdx), [Hyperliquid](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals).",
       "lead": "SOURCES",
-      "status": "UNIMPLEMENTED",
-      "code_refs": [],
+      "status": "PARTIAL",
+      "code_refs": [
+        "pump-report/sources/orderly-observed-positions.mjs",
+        "pump-report/sources/hyperliquid-observed-positions.mjs"
+      ],
       "accepted_proof_refs": [],
       "native_verified": false,
-      "remaining": "Connect separately with endpoint/body/policy/identity/units/time/pagination/sample scope. Observed accounts never equal all market positions.",
+      "remaining": "Readonly POST/broker and conditional bounded producers implemented; no admitted asset/account bindings or qualified future-map coverage. Exact stable ID/units/notional/clock/asset/price/conversion/sample boundaries remain UNKNOWN. No observed set is full market; optional map absence does not block useful core signal.",
       "reviewed": true,
       "review_assessments": {
         "SOURCE": {
@@ -57177,7 +57189,7 @@
     "owner_BTC_ETH_excluded": 2,
     "classification_basis": "EXPLICIT_ACCEPTED_ECONOMIC_INFERENCE_NOT_UNIVERSAL_coinType",
     "historical_strict_registry13_retained": true,
-    "new539_explicit_native_tuple_review_prepared": true,
+    "new539_explicit_native_tuple_review_prepared": false,
     "new_registry_live_native_CORE550_qualified": false,
     "bulk_price_fresh_at_original_receive": 550,
     "bulk_price_missing_ambiguous_invalid": 0,
@@ -57186,7 +57198,36 @@
     "full_CORE_by_instrument_NOT_proven": true,
     "production_signals": 0,
     "qualified_maps": 0,
-    "proof": "checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_NATIVE_ACTUAL.json"
+    "proof": "checkpoints/pump-report-20261025/ROOT_F571_LIVE66_EXACT_READBACK.json",
+    "accepted_scope550_preserved": true,
+    "new539_explicit_native_tuple_review_adopted": true,
+    "latest_exact_non_target_count": 434,
+    "latest_observed_catalogue_identity_gaps": 0,
+    "unit_semantic_eligible_not_CORE": 541,
+    "unit_deferred_not_unsupported": 9,
+    "three_startup_manuals_finalized": true,
+    "three_startup_candidates": [
+      "1INCH",
+      "KIMCHI",
+      "APR"
+    ],
+    "three_startup_READY": 0,
+    "first_same_original_SENT_observed": false,
+    "server_66_modules_FULL": true,
+    "business_auto_delivery": true,
+    "business_cron": "*/5 7-16 * * *",
+    "native_totals": {
+      "queries": 811,
+      "rows_read": 1278,
+      "rows_written": 432,
+      "unknown": 0
+    },
+    "provider_totals": {
+      "charged": 40,
+      "retained_unknown": 2,
+      "BINGX": 35
+    },
+    "complete_account_day_usage_claimed": false
   },
   "owner_amendments_literal_ref": "checkpoints/pump-report-20261025/OWNER_AMENDMENTS_LITERAL_RU.md",
   "latest_repairs": {
@@ -57236,15 +57277,15 @@
   },
   "counts": {
     "CONTEXT": 68,
-    "PARTIAL": 350,
+    "PARTIAL": 354,
     "VERIFIED_CODE": 264,
     "DEFERRED_BY_TZ": 24,
     "REMOVED_BY_OWNER": 2,
-    "UNIMPLEMENTED": 6,
-    "BLOCKED": 5
+    "BLOCKED": 5,
+    "UNIMPLEMENTED": 2
   },
   "review_counts_are_not_project_completion_percentage": true,
-  "updated_at": "2026-10-25T20:15:18Z",
+  "updated_at": "2026-10-26T00:40:21.679Z",
   "owner_no_market_comparison_ref": "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json",
   "source_literal_rows_unchanged_by_this_delta": true,
   "latest_acceptance_matrix": "checkpoints/pump-report-20261025/ACCEPTANCE_MATRIX_RU.md",
@@ -57254,5 +57295,11 @@
     "sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
     "original_TZ_embedded_in_full": true
   },
-  "launch_vs_postlaunch": "First full useful report/TG/working cadence; accumulated calibration/statistical tuning after launch; all other literal requirements remain"
+  "launch_vs_postlaunch": "First full useful report/TG/working cadence; accumulated calibration/statistical tuning after launch; all other literal requirements remain",
+  "latest_launch_delta": {
+    "scope": "Update current runtime/source state and4 obsolete UNIMPLEMENTED source rows only; original literal source text unchanged; ANALYTICS AL pending separate changed-row acceptance",
+    "same_literal_rows": 719,
+    "all_requirements_closed": false,
+    "overall_completion_pct": null
+  }
 }
