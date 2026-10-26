@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_TOOBIT_ONE_CATALOGUE_PROVIDER_WHOLE_ADMISSION_V1",
-  "status": "ADMITTED_ONE_ATTEMPT_NOT_SPENT",
+  "status": "SPENT_ONE_HTTP200_CLIENT_BYTE_BOUND_STOP_NO_RETRY",
   "authority_main": "1e2f6f3824e519f2cafbe39cce8797a5b23f926a",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793025867000",
@@ -57,5 +57,36 @@
     "on_403_429_5xx_timeout_oversize": "STOP_SPENT_NO_RETRY_OR_WRAPPER"
   },
   "outputs": "Private exact body/status/relevant rate headers/receiveclock/hash/size; public shape summary only. Catalogue raw-name join not CORE/map/canonical coverage.",
-  "no_new_keys_or_connections_or_paid_plan": true
+  "no_new_keys_or_connections_or_paid_plan": true,
+  "actual": {
+    "schema": "ROOT_TOOBIT_ONE_CATALOGUE_ACTUAL_V1",
+    "state": "STOPPED_ONE_ATTEMPT_NO_RETRY",
+    "received_ts": 1793027215760,
+    "HTTP_status": 200,
+    "complete": false,
+    "error": "RESPONSE_BYTE_BOUND_EXCEEDED",
+    "body_sha256": "4cff48bfb114e262312e21e3c86da26b7da3378534f9e14de2068be5b803087c",
+    "body_bytes": 2097129,
+    "received_bytes": 2113506,
+    "root_keys": [],
+    "array_counts": {},
+    "rate_headers": {
+      "date": "Mon, 26 Oct 2026 15:06:54 GMT",
+      "content-type": "application/json;charset=UTF-8"
+    },
+    "client_calls": 1,
+    "HTTP_wire_received": 1,
+    "request_write_finished": true,
+    "documented_weight": 1,
+    "qualification_before": 22,
+    "qualification_after": 23,
+    "qualification_cap": 24,
+    "remaining": 1,
+    "old_unknowns_and_spends_retained": true,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "new_recurring_routes": 0,
+    "canonical_or_CORE_map_coverage_proven": false
+  },
+  "current_remaining": 1
 }
