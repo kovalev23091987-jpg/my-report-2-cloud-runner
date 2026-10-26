@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_IN_FLIGHT_DO_NOT_DEPLOY",
   "authority_main": "24ae96646933fcd83752912331e57289c10a4416",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793004911853",
@@ -33,5 +33,23 @@
   "Telegram": 0,
   "purpose": "Exactly read executor and resource ledger after AUTO flagOFF; existing native governor/finalization only writes. No market scan/analysis/send. If owner present do not deploy; no lease removal.",
   "positive_native_reservation_before_business_reads": true,
-  "old_limits_unknowns_reserves9pauses2deferrals_preserved": true
+  "old_limits_unknowns_reserves9pauses2deferrals_preserved": true,
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-candidate-bank-maintenance-quiescence-20261026-one",
+    "usage": {
+      "requests": 6,
+      "rows_read": 36,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 36,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "fbe7161ef68b820701643512d2805be35983a5412eaee5f10bb91c7df93a0146",
+  "private_result_file": "pump-report/.private/observations/candidate-bank-quiescence-result.json",
+  "no_automatic_repeat": true
 }
