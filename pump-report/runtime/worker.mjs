@@ -15,6 +15,7 @@ import {PRODUCTION_PLAN,productionPolicies,productionAdmission} from './producti
 import {createPumpRunner} from './runner.mjs';
 import {createRetainedCapsuleWriter} from './retained-capsules.mjs';
 import {IMPLEMENTATION_PIN} from './implementation-pin.mjs';
+import {autoRunSummary} from './automatic-summary.mjs';
 import {runSourceFeasibility} from './source-feasibility.mjs';
 import {createSavedStatisticsAudit,saveProspectiveAuditPlan} from './saved-statistics-audit.mjs';
 import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_EXPIRES_TS,PROTECTED_HTTP,TELEGRAM_DIAGNOSTIC_ID,MANUAL_ACCEPTANCE_ID,MANUAL_ACCEPTANCE_SYMBOL,MAP_DIAGNOSTIC_ID,DAY_DIAGNOSTIC_ID,J_DIAGNOSTIC_ID,J_DIAGNOSTIC_SYMBOL,METADATA_DIAGNOSTIC_ID,METADATA_DIAGNOSTIC_URL,CORRECTED_METADATA_ID,SUMMARY_INDEX_ACCEPTANCE_ID,SOURCE_FEASIBILITY_ID,SAVED_STATISTICS_AUDIT_ID} from './provider-policy.mjs';
@@ -261,7 +262,7 @@ export function createPumpWorker(legacy={}){
     async scheduled(controller,env,ctx){
       // The retained old scheduled handler is deliberately never invoked.
       if(env.PUMP_REPORT_ENABLED!=='1'||PROVIDER_STAGE!=='PRODUCTION_QUALIFIED'||!automaticWindowOpen(Date.now()))return;
-      const work=(async()=>{const run_id=crypto.randomUUID();let runtime,finalizationStarted=false;try{runtime=await services(env,{run_id,mode:'AUTO'});await runtime.runner.execute({mode:'AUTO',run_id,publish:true});finalizationStarted=true;await finalizeNativeRun(runtime.native);}catch(error){const native=runtime?.native??error.pumpNative;if(native&&!finalizationStarted&&native.store.usage().unknown_ops===0)try{finalizationStarted=true;await finalizeNativeRun(native);}catch{}console.log('PUMP_RUN_STATUS',JSON.stringify({run_id,error:replyCode(error),usage:native?.store.usage()??null}));}})();
+      const work=(async()=>{const run_id=crypto.randomUUID();let runtime,finalizationStarted=false;try{runtime=await services(env,{run_id,mode:'AUTO'});const result=await runtime.runner.execute({mode:'AUTO',run_id,publish:true});finalizationStarted=true;await finalizeNativeRun(runtime.native);try{console.log('PUMP_AUTO_SUMMARY',JSON.stringify(autoRunSummary(result,IMPLEMENTATION_PIN.sha256)));}catch{}}catch(error){const native=runtime?.native??error.pumpNative;if(native&&!finalizationStarted&&native.store.usage().unknown_ops===0)try{finalizationStarted=true;await finalizeNativeRun(native);}catch{}console.log('PUMP_RUN_STATUS',JSON.stringify({run_id,error:replyCode(error),usage:native?.store.usage()??null}));}})();
       if(ctx?.waitUntil)ctx.waitUntil(work);else await work;
     }
   };
