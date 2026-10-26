@@ -1,0 +1,13 @@
+# AN — две границы доказательства до frozen F574
+
+PREPARATION_ARCHIVE: запись подготовлена до получения ROOT manifest/SHA F574. Итог после передачи frozen inputs — APPLICABILITY_RU.md; актуальная authority — authority-renewed.json. Ни один источник этой концептуальной заметкой не квалифицирован. Contracts/context AM не перечитывались; код/формат/правила не меняются.
+
+**1. Vendor liqPrice и наш расчёт — разные доказательства.** Нужен фактически полученный source payload действующей OPEN позиции со stable position/market identity, исходными часами, side, native amount/notional/quote и происхождением поля. Если поставщик публикует liquidation price, можно рассматривать наблюдаемые позиции с **vendor-estimated** порогом: это не произошедшая ликвидация и не обещание будущего исполнения. Название поля не доказывает его метод, units, полноту или актуальность.
+
+Документированная формула либо official SDK-функция сами по себе не являются опубликованной поставщиком ценой конкретной OPEN позиции. SDK, который только получает/декодирует уже опубликованное поле, — транспорт; локальная функция, вычисляющая его из collateral/leverage/oracle inputs, даёт **наш derived результат**, даже если код официальный. Где получено конкретное значение, требует proof. Нельзя назвать локальный расчёт vendor observation или готовой внешней картой. AN не рассчитывает значения, не разрабатывает модель и не вводит новый basis type. История/закрытая позиция/старый UI-пример не подтверждают current OPEN state или census.
+
+**2. Underlying price и payoff unit нелинейного perp не взаимозаменяемы.** Общее имя монеты и quote currency не делают native payoff mark/quantity/notional эквивалентом линейного BingX контракта. Decimals — отображение/масштаб, не доказательство economic conversion; factor1 и quantity×underlying price не подразумеваются.
+
+До использования уровня нужны exact native product/underlying identity, вид payoff, единица публикуемого liquidation threshold, quote/settlement/collateral и подтверждённая сопоставимость с BingX price basis. Если поставщик уже публикует порог в доказанной underlying-price unit, оценивается именно это поле. Если требуется вывести его из payoff price/формулы, AN не изобретает обратное преобразование и сохраняет UNKNOWN. Чужой OI/amount в payoff units не становится BASE_ASSET/USDT только по тикеру.
+
+Обе границы сохраняют действующее ТЗ: источник clock/units/asset/OPEN/coverage/venue basis должен быть доказан, отсутствие optional карты не блокирует основной отчёт, OPEN не подменяется historical liquidation events. Окончательная применимость — только после ROOT frozen F574 inputs; web/provider/RPC/SQL/TG/tests/replay=0, без новых gates/процентов/формул.
