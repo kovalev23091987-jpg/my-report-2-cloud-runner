@@ -1,0 +1,63 @@
+{
+  "schema": "ROOT_NEXT_HOUR_NORMAL_AUTO_ACTUAL_V1",
+  "status": "CURRENT_NORMAL_NEXT_HOUR_REACHED_ANALYSIS_NOTREADY",
+  "private_capture_sha256": "98637be356f611648b43a8840b588d98799399a6aff51f346d9eaff73f361f65",
+  "eventTimestamp": 1793026846584,
+  "normal_run_id": "1372a2e6-3736-448e-b32d-846e37bafc80",
+  "implementation_sha256": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf",
+  "platform_outcome": "ok",
+  "summary": {
+    "schema": "PUMP_AUTO_SUMMARY_V1",
+    "mode": "AUTO",
+    "run_id": "1372a2e6-3736-448e-b32d-846e37bafc80",
+    "implementation_pin": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf",
+    "status": "INCOMPLETE",
+    "discovery_result": "INCOMPLETE_COVERAGE_OR_RESOURCES",
+    "counts": {
+      "checked_entries": 1,
+      "analysis_results": 1,
+      "ready_results": 0,
+      "ready_auto_eligible_results": 0,
+      "manual_results": 0,
+      "budget_deferred_entries": 1,
+      "source_pending": 9,
+      "catalog_unresolved": 249
+    },
+    "phase_flags": {
+      "executor_busy": false,
+      "analysis_result_seen": true,
+      "budget_defer_seen": true,
+      "delivery_result_seen": false
+    },
+    "reason_codes": [
+      "SOURCE_EVIDENCE_PENDING",
+      "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "SOURCE_BUDGET_DEFERRED",
+      "PROTECTED_DAY_RESERVE",
+      "EVEN_DAY_CANDIDATE_ALLOCATION",
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ],
+    "reason_codes_truncated": false,
+    "unlisted_reason_occurrences": 0,
+    "delivery": {
+      "complete_result_envelope": true,
+      "reported_occurrences": 0,
+      "occurrences_by_state": {},
+      "refs": [],
+      "refs_truncated": false
+    }
+  },
+  "interpretation": [
+    "One real candidate reached analysis; sole reported analytical code CURRENT_ACTIVITY_NOT_CONFIRMED.",
+    "No READY in this checked scope, no delivery occurrence.",
+    "Another candidate deferred by base-hour bank.",
+    "Summary does not identify the coin or expose exact candle/volume facts; it cannot prove whether current-activity rejection was correct or a false gate."
+  ],
+  "operator_Worker_invocations": 0,
+  "operator_SQL": 0,
+  "operator_market_HTTP": 0,
+  "operator_Telegram": 0,
+  "normal_business_IO_not_zero_or_recomputed": true,
+  "whole_account_capacity_proven": false,
+  "SENT_proven": false
+}
