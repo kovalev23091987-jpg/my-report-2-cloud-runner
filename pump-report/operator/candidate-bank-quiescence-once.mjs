@@ -7,6 +7,8 @@ import {readSavedOutcomeObservation} from './saved-outcome-observation.mjs';
 import {readSavedAutoCandidateObservation} from './saved-auto-candidate-observation.mjs';
 import {createBAMaintenanceSqlException} from './ba-maintenance-sql-exception.mjs';
 import {createBFMaintenanceSqlException} from './bf-maintenance-sql-exception.mjs';
+import {createCapacityMaintenanceSqlException} from './capacity-maintenance-sql-exception.mjs';
+import {readExactActivityAnalysis,EXACT_ACTIVITY_RUN_ID} from './saved-exact-auto-analysis.mjs';
 
 const root=fileURLToPath(new URL('../../',import.meta.url)),sha=b=>createHash('sha256').update(b).digest('hex');
 const args=process.argv.slice(2);
@@ -21,7 +23,8 @@ if(args.length===1&&args[0]==='--describe'){
 }
 if(args[0]!=='--execute'||args.length!==4)throw Error('USE --describe OR --execute ADMISSION ATTEMPT PRIVATE_RESULT');
 const [admissionPath,attemptArg,resultArg]=args.slice(1),admission=JSON.parse(fs.readFileSync(admissionPath,'utf8')),now=Date.now();
-const maintenanceSQL=admission.lookup_single_exception?.schema==='OWNER_ONE_BF_FUNDING_MAINTENANCE_LOOKUP_V1'
+const maintenanceSQL=admission.lookup_single_exception?.schema==='OWNER_ONE_CAPACITY_MAINTENANCE_LOOKUP_V1'
+  ?createCapacityMaintenanceSqlException(admission,now):admission.lookup_single_exception?.schema==='OWNER_ONE_BF_FUNDING_MAINTENANCE_LOOKUP_V1'
   ?createBFMaintenanceSqlException(admission,now):createBAMaintenanceSqlException(admission,now);
 if(admission.schema!=='PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1'||admission.status!=='ADMITTED_NOT_SPENT'||admission.maximum_attempts!==1||
   !/^[a-f0-9]{40}$/.test(admission.authority_main??'')||admission.fresh_all4_own_CAS_FULL_verified!==true||
@@ -32,6 +35,7 @@ if(admission.schema!=='PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1'||admission.stat
   (admission.read_saved_outcome!==undefined&&typeof admission.read_saved_outcome!=='boolean')||
   (admission.read_latest_auto_candidate!==undefined&&typeof admission.read_latest_auto_candidate!=='boolean')||
   (admission.read_saved_auto!==undefined&&typeof admission.read_saved_auto!=='boolean')||
+  (admission.read_exact_activity_run_id!==undefined&&admission.read_exact_activity_run_id!==EXACT_ACTIVITY_RUN_ID)||
   !(now<admission.expires_ts&&admission.expires_ts<=admission.own_lease?.expires_ts&&admission.own_lease.acquired_ts<=now)||
   !/^[A-Za-z0-9:._-]{1,160}$/.test(admission.run_id??'')||admission.native_query_cap!==16||admission.market_HTTP!==0||admission.Telegram!==0)throw Error('POSITIVE_EXACT_OBSERVATION_ADMISSION_REQUIRED');
 const program=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'),'utf8'));
@@ -83,7 +87,8 @@ try{
   const saved_candidate=admission.read_latest_auto_candidate===true&&saved_auto?await readSavedAutoCandidateObservation({store:native.store,observation:saved_auto,implementation_sha256:admission.implementation_sha256}):null;
   const executor=saved_auto?saved_auto.private_evidence.executor:await native.store.get('pump:executor');
   const resources=await native.store.get('pump:resources');
-  evidence.observation={status:executor?.owner?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,resources,...(saved_auto?{saved_auto}:{}),...(saved_candidate?{saved_candidate}:{}),observed_ts:Date.now(),first_genuine_same_original_SENT_observed:saved_auto?.first_genuine_same_original_SENT_observed===true,market_HTTP:0,Telegram:0};
+  const exact_activity=admission.read_exact_activity_run_id?await readExactActivityAnalysis({store:native.store,run_id:admission.read_exact_activity_run_id,implementation_sha256:admission.implementation_sha256}):null;
+  evidence.observation={status:executor?.owner?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,resources,...(saved_auto?{saved_auto}:{}),...(saved_candidate?{saved_candidate}:{}),...(exact_activity?{exact_activity}:{}),observed_ts:Date.now(),first_genuine_same_original_SENT_observed:saved_auto?.first_genuine_same_original_SENT_observed===true,market_HTTP:0,Telegram:0};
   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';
 }catch(error){
   evidence.error=String(error.code??error.message??'OBSERVATION_FAILED').slice(0,160);evidence.state='FAILED_OR_UNKNOWN_NO_AUTO_RETRY';
