@@ -1,0 +1,191 @@
+{
+  "schema": "F596_MINIMAL_PROVIDER_QUALIFICATION_PROFILE_V1",
+  "status": "OFFLINE_REVIEW_PROFILE_NOT_RUNTIME_QUALIFICATION",
+  "provider": "0XARCHIVE",
+  "family": "HYPERLIQUID_CORE",
+  "subject": "HYPE",
+  "classification": "EXTERNAL_MODEL_PROJECTED_FORCED_LIQUIDATIONS",
+  "evidence_refs": {
+    "new_primary": "F596_PRIMARY_DOC_PROOFS_V1.json",
+    "identity": "F596_SAVED_HYPE_IDENTITY_CHECK_V1.json",
+    "retained_model": {
+      "path": "pump-report/.private/observations/0xarchive-hype-future-model-one-result.json",
+      "sha256": "8d286b57c00cea4a8bf326c91ed19067d0d3d0d27fcf3df3efd9e0c878b72442",
+      "bytes": 40234,
+      "attempted_ts": 1793015503414,
+      "received_ts": 1793015505055,
+      "request": {
+        "tool": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+        "args": {
+          "coin": "HYPE",
+          "range_pct": 50,
+          "buckets": 100
+        },
+        "max_attempts": 1
+      },
+      "isError": false
+    },
+    "retained_catalogue": {
+      "path": "pump-report/.private/observations/0xarchive-instruments-one-result.json",
+      "sha256": "a2ed31a0e660e4ce2f3b3a9e03e4c30b187ee9b6616b4aa6bfc181afa0664a67",
+      "bytes": 76982,
+      "attempted_ts": 1793015398328,
+      "received_ts": 1793015400299,
+      "request": {
+        "tool": "mcp__codex_apps__0xarchive2_get_instruments",
+        "args": {},
+        "max_attempts": 1
+      },
+      "isError": false
+    }
+  },
+  "saved_request": {
+    "coin": "HYPE",
+    "range_pct": 50,
+    "buckets": 100,
+    "actual_levels": 100
+  },
+  "saved_result_use": "STALE_FORMAT_PROOF_ONLY_NEVER_CURRENT_MAP",
+  "clocks": {
+    "snapshot_ts": "2026-10-26T11:48:21.000Z",
+    "snapshot_ts_ms": 1793015301000,
+    "received_ts": 1793015505055,
+    "age_at_original_receive_ms": 204055,
+    "block_number": 1197850000,
+    "base_state_timestamp": "UNKNOWN",
+    "model_clock_is_base_clock": false,
+    "current_freshness_qualified": false
+  },
+  "geometry": {
+    "price_role": "CENTER_CONFIRMED_BY_OPERATION_AND_SCHEMA",
+    "source": "raw",
+    "source_bin_width_present": false,
+    "lower": "UNKNOWN",
+    "upper": "UNKNOWN",
+    "output_bin_width": "UNKNOWN",
+    "edge_alignment": "UNKNOWN",
+    "requested_range_bounds": "NOT_COMPUTED_WITHOUT_PROVIDER_RULE",
+    "spacing_inference_used": false,
+    "source_width_is_output_width": false
+  },
+  "units": {
+    "modeled_long_short_notional": "USD_DOCUMENTED",
+    "native_price_currency": "UNKNOWN_FROM_REVIEWED_PRIMARY_EVIDENCE",
+    "USDT_conversion": "UNQUALIFIED_NOT_APPLIED",
+    "USDC_equals_USD_assumed": false,
+    "USDT_equals_USD_assumed": false
+  },
+  "independent_predicates": [
+    {
+      "id": "P1_CANONICAL_ENTITY",
+      "status": "MISSING",
+      "closes": "Exact BingX underlying ↔ provider entity bridge",
+      "evidence": "F596_SAVED_HYPE_IDENTITY_CHECK_V1.json"
+    },
+    {
+      "id": "P2_PRICE_CURRENCY",
+      "status": "MISSING",
+      "closes": "Explicit price currency/quote semantics for this native route; no USD-notional inference"
+    },
+    {
+      "id": "P3_GEOMETRY",
+      "status": "MISSING",
+      "closes": "Documented requested-bin edges or deterministic endpoint-specific rule including range limits, anchoring, alignment and boundary behavior for range_pct=50,buckets=100"
+    },
+    {
+      "id": "P4_MODEL_BASE_CLOCK",
+      "status": "MISSING",
+      "closes": "Actual base-state time or accepted bounded age evidence plus source/model-clock policy; computed time alone insufficient"
+    },
+    {
+      "id": "P5_CURRENT_ACTUAL",
+      "status": "MISSING_STALE_RETAINED_ONLY",
+      "closes": "One fresh authorized result after prior predicates and budgets pass; no periodic collection"
+    },
+    {
+      "id": "P6_NATIVE_COST_ADMISSION",
+      "status": "MISSING",
+      "closes": "Reconciled operation credit cost, hosted retry/HTTP bound, actual remaining allowance, and preserved whole-account reserves"
+    }
+  ],
+  "optional_native_context": {
+    "question_answer": "Potentially useful without USDT conversion once its own identity, unit and age predicates are satisfied; a provider-native amount need not be converted to be described.",
+    "current_status": "NOT_QUALIFIED_FOR_SELECTED_BINGX_CANDIDATE",
+    "current_saved_use": "OFFLINE_FORMAT_AND_LIMITS_ONLY",
+    "allowed_future_candidate_design": "Source-labelled model centers and USD modeled exposure, native venue, original model/base clocks and age limitations; consumer review required.",
+    "independent_of_full_zone_geometry": "A clearly labelled point/center context could avoid invented zone edges only after ROOT/ANALYTICS approve its semantics.",
+    "prohibited_claims": [
+      "BingX liquidation positions",
+      "Executable BingX USDT entry/stop/target price",
+      "Observed realized liquidations",
+      "Independent two-venue confirmation",
+      "Current map from retained stale result",
+      "Full requested zones inferred from center spacing"
+    ],
+    "current_runtime_routes_added": 0
+  },
+  "common550_batch": {
+    "baseline": "F589_COVERAGE_550_V1.csv",
+    "baseline_sha256": "49df3341e670d53e8f449a8267f42f567809348b1bbb4b6eda1a90399ff1a11f",
+    "method": "Once per accepted catalogue revision: exact typed identity join over the common selected550, attach provider-level semantics, keep per-row identity/fact/clock status independent.",
+    "raw_ticker_candidates": 176,
+    "canonical_UNKNOWN": 550,
+    "qualified_maps": 0,
+    "not_supported_claims": 0,
+    "per_coin_manual_configurations": 0,
+    "per_coin_probe_plan": false,
+    "no_new_550_join": "F592 existing matrix retained; F596 adds only provider profile and targeted HYPE proof."
+  },
+  "minimal_next_admission": {
+    "step_1": "Separate new bounded primary-proof task for exact geometry, core price-currency and canonical identity; this exhausted grant is not rearmed.",
+    "step_2": "Resolve provider credit/hosted HTTP bound and fresh account capacity using separately authorized actual admissions; unknowns cannot count as zero.",
+    "step_3": "If prerequisites pass, ROOT may admit one maximum-attempt fresh native result with cost ceilings and receive/base clocks; qualification22/24 and remaining2 alone authorize nothing.",
+    "step_4": "ROOT/ANALYTICS review point-context versus full-zone use, then batch identity once for selected550; activate only exact qualified rows.",
+    "new_native_calls_authorized_by_this_profile": 0
+  },
+  "preserved": {
+    "qualification_spent": 22,
+    "qualification_cap": 24,
+    "qualification_remaining": 2,
+    "LOOKUP_spent": 12,
+    "LOOKUP_remaining": 0,
+    "LOOKUP_default_cap": 10,
+    "old_grants_rearmed": false,
+    "whole_account_unknowns": "PRESERVED",
+    "old_report_paused": true,
+    "paused_blocks": 9,
+    "OWNER_deferrals": 2
+  },
+  "saved_shape_diagnostics": {
+    "rows": 100,
+    "row_keys": [
+      "long_count",
+      "long_notional",
+      "price",
+      "short_count",
+      "short_notional"
+    ],
+    "all_expected_numeric_fields_finite": true,
+    "all_amounts_counts_nonnegative": true,
+    "all_counts_integer": true,
+    "unique_price_centers": 100,
+    "price_centers_strictly_ascending": true,
+    "source_bin_width_present": false,
+    "bounds_present": false,
+    "visible_native_sums": {
+      "long_notional": 627498558.2926404,
+      "short_notional": 545213005.99248,
+      "long_count": 9513,
+      "short_count": 2170
+    },
+    "whole_book_native_totals": {
+      "long": 804374336.887815,
+      "short": 804296515.6833436,
+      "flagged_notional": 138463318.77488077
+    },
+    "whole_totals_minus_visible": {
+      "long": 176875778.59517455,
+      "short": 259083509.6908636
+    }
+  }
+}
