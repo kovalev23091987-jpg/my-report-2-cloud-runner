@@ -1,4 +1,5 @@
 // Prepared optional policy. It never changes the frozen base allocation.
+import {futureCandidateReserve} from './future-candidate-reserve.mjs';
 const nat=n=>Number.isSafeInteger(n)&&n>=0;
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export const SURPLUS_VERSION='pump-unassigned-candidate-hold-v1';
@@ -51,6 +52,15 @@ export function surplusHeld(state,now,{exclude_grant_id=null,consume=null}={}){
     for(const [p,n] of Object.entries(providers)){if(dayHeld)out.provider_day[p]=(out.provider_day[p]??0)+n;if(monthHeld)out.provider_month[p]=(out.provider_month[p]??0)+n;}
   }
   return out;
+}
+export function surplusBaseExtra(state,now,admission){
+  const day=new Date(now).toISOString().slice(0,10),grants=surplusGrants(state);
+  if(admission.candidate_surplus?.enabled!==true&&!Object.values(grants).some(g=>g.day===day))return {http:0,http_by_provider:{}};
+  const allocation=state.automatic_candidate_allocations?.[day];
+  if(!allocation)return {http:0,http_by_provider:{}};
+  if(!nat(allocation.candidates_per_period))fail('SURPLUS_BASE_ALLOCATION_UNQUALIFIED');
+  const extra=Math.max(0,allocation.candidates_per_period-1),base=futureCandidateReserve(now,admission.future_candidates);
+  return {http:base.http*extra,http_by_provider:Object.fromEntries(Object.entries(base.http_by_provider).map(([p,n])=>[p,n*extra]))};
 }
 export function surplusNativeCapacity(store,run_id,policy,now){
   const a=store?.admission,u=typeof store?.usage==='function'?store.usage():null,f=store?.finalization_reserve??{};

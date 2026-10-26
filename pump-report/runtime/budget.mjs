@@ -5,7 +5,7 @@ import {futureDiscoveryHttp} from './discovery-reserve.mjs';
 import {futureCandidateReserve,utcBudgetPeriodEnd} from './future-candidate-reserve.mjs';
 import {admittedReadOnlyJSONPost} from './read-only-json-post.mjs';
 import {textHash} from './text-hash.mjs';
-import {surplusPolicy,surplusGrantKey,surplusGrants,surplusHeld,surplusNativeCapacity,makeSurplusGrant} from './candidate-surplus.mjs';
+import {surplusPolicy,surplusGrantKey,surplusGrants,surplusHeld,surplusBaseExtra,surplusNativeCapacity,makeSurplusGrant} from './candidate-surplus.mjs';
 export const RESOURCE_LIMITS = Object.freeze({http_per_run:164,project_http_day:900,lanes:{hot:96,background:56,statistics:12},deep_per_candidate:50,liquidations_per_run:8,manual_http_run_reserve:24,d1_reads_day:3500000,d1_writes_day:70000,next_full_reads:59000,next_full_writes:920});
 const integer = n => Number.isSafeInteger(n) && n >= 0;
 export class BudgetRefusal extends Error {
@@ -112,19 +112,20 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
         conversion={grant_id:activeSurplus,provider,cost};
       }
       const held=surplusHeld(state,now,{consume:conversion});
+      const baseExtra=surplusBaseExtra(state,now,admission);
       p.recent=p.recent.filter(r=>r.ts>now-60000);
       if(integer(policy.per_second_cap)&&p.recent.filter(r=>r.ts>now-1000).reduce((n,r)=>n+r.cost,0)+cost>policy.per_second_cap)throw new BudgetRefusal('PROVIDER_SECOND_EXHAUSTED');
       if(p.recent.reduce((n,r)=>n+r.cost,0)+cost>policy.per_minute_cap)throw new BudgetRefusal('PROVIDER_MINUTE_EXHAUSTED');
       if(integer(policy.qualification_attempt_cap)&&(p.qualification_totals?.[policy.version]??0)+cost>policy.qualification_attempt_cap)throw new BudgetRefusal('QUALIFICATION_ATTEMPTS_EXHAUSTED');
       const providerOutcomesProtection=policy.outcome_source===false?0:outcomesProtection;
       const providerDeliveryProtection=policy.delivery_source===false?0:deliveryProtection;
-      if(spent+cost+(held.provider_day[provider]??0)+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      if(spent+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       const globalManual=mode==='MANUAL'&&admission.run_purpose!=='ACCEPTANCE_TEST'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
-      if((state.days[day]??0)+cost+held.http+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
-      if(monthSpent+cost+(held.provider_month[provider]??0)+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscoveryMonth:0)+(futureCandidatesMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
+      if((state.days[day]??0)+cost+held.http+baseExtra.http+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      if(monthSpent+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscoveryMonth:0)+(futureCandidatesMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
       const plan=mode==='AUTO'?automaticPlan(state,now):null;
-      if(plan&&(purpose==='DISCOVERY'||held.http>0||conversion)&&plan.charged+cost+held.http+futureDiscovery+futureCandidates.http>plan.limit)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'PLANNED_AUTO_ALLOCATION_AND_FUTURE_WORK'});
+      if(plan&&(purpose==='DISCOVERY'||held.http>0||baseExtra.http>0||conversion)&&plan.charged+cost+held.http+baseExtra.http+futureDiscovery+futureCandidates.http>plan.limit)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'PLANNED_AUTO_ALLOCATION_AND_FUTURE_WORK'});
       const pacing=!conversion&&mode==='AUTO'&&(purpose==='DISCOVERY'||purpose==='CORE')?candidatePacing(state,now,plan,futureDiscovery):null;
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
       if(plan){state.automatic_plans??={};plan.charged+=cost;state.automatic_plans[day]=plan;}
@@ -184,16 +185,17 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     const discovery=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'DAY')}),discoveryMonth=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'MONTH')});
     const manual=mode==='MANUAL'?0:Object.values(protected_reserves.http_by_provider).reduce((a,b)=>a+b,0),fixed=manual+protected_reserves.delivery_http+protected_reserves.outcomes_http;
     const held=surplusHeld(state,now,{exclude_grant_id});
-    if((state.days[day]??0)+http_upper_bound+held.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
+    const baseExtra=surplusBaseExtra(state,now,admission);
+    if((state.days[day]??0)+http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
     const plan=mode==='AUTO'?automaticPlan(state,now):null;
-    if(plan&&plan.charged+http_upper_bound+held.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
+    if(plan&&plan.charged+http_upper_bound+held.http+baseExtra.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
     const pacing=candidatePacing(state,now,plan,discovery);
     if(pacing&&http_upper_bound!==pacing.allocation.http_upper_bound)return deny('CANDIDATE_PACING_COST_CHANGED');
     if(!ignore_pacing&&pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION');
     for(const [provider,cost]of Object.entries(http_by_provider)){
       const policy=providerPolicy(provider),p=state.providers?.[provider]??{},reserve=(mode==='MANUAL'?0:protected_reserves.http_by_provider[provider])+(policy.delivery_source===false?0:protected_reserves.delivery_http)+(policy.outcome_source===false?0:protected_reserves.outcomes_http);
-      if(!integer(reserve)||(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
-      if((p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
+      if(!integer(reserve)||(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
+      if((p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
       if(ignore_pacing&&(p.backoff_until??0)>now)return deny('SURPLUS_PROVIDER_BACKOFF');
     }
     return {allowed:true,scope:'BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION',http_upper_bound,...(pacing?{pacing}:{})};
