@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {OBSERVATION_BOUNDS,readSavedAutoObservation} from './saved-auto-observation.mjs';
 import {readSavedOutcomeObservation} from './saved-outcome-observation.mjs';
 import {readSavedAutoCandidateObservation} from './saved-auto-candidate-observation.mjs';
+import {createBAMaintenanceSqlException} from './ba-maintenance-sql-exception.mjs';
 
 const root=fileURLToPath(new URL('../../',import.meta.url)),sha=b=>createHash('sha256').update(b).digest('hex');
 const args=process.argv.slice(2);
@@ -19,6 +20,7 @@ if(args.length===1&&args[0]==='--describe'){
 }
 if(args[0]!=='--execute'||args.length!==4)throw Error('USE --describe OR --execute ADMISSION ATTEMPT PRIVATE_RESULT');
 const [admissionPath,attemptArg,resultArg]=args.slice(1),admission=JSON.parse(fs.readFileSync(admissionPath,'utf8')),now=Date.now();
+const maintenanceSQL=createBAMaintenanceSqlException(admission,now);
 if(admission.schema!=='PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1'||admission.status!=='ADMITTED_NOT_SPENT'||admission.maximum_attempts!==1||
   !/^[a-f0-9]{40}$/.test(admission.authority_main??'')||admission.fresh_all4_own_CAS_FULL_verified!==true||
   admission.provider_whole_native_admitted!==true||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts>now+900000||
@@ -63,8 +65,9 @@ try{
   const db={prepare(sql){return {bind(...params){return {async all(){
     if(Date.now()>=admission.expires_ts||calls>=16)throw Error('OBSERVATION_IO_BOUND_REACHED');
     calls++;
+    const request=maintenanceSQL(sql,params);
     const r=await fetch('https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/d1/database/057a2847-2cc4-4e52-8534-1be1596d21d5/query',{
-      method:'POST',headers:{Authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify({sql,params}),redirect:'manual',signal:AbortSignal.timeout(20000)});
+      method:'POST',headers:{Authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(request),redirect:'manual',signal:AbortSignal.timeout(20000)});
     if(r.status!==200)throw Error('D1_API_HTTP_'+r.status);
     const chunks=[];let size=0;for await(const bytes of r.body){size+=bytes.length;totalBytes+=bytes.length;if(size>8388608||totalBytes>12582912)throw Error('OBSERVATION_RESPONSE_BOUND');chunks.push(bytes);}
     const envelope=JSON.parse(Buffer.concat(chunks).toString('utf8'));

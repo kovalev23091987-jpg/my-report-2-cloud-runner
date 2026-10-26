@@ -1,0 +1,124 @@
+{
+  "schema": "BD_ARTIFICIAL_VARIANT_RECEIPT_V1",
+  "variant": "fixed",
+  "ARTIFICIAL_NOT_NATIVE_AUTO": true,
+  "run_status": "COMPLETE",
+  "issued_ticket": {
+    "ticket_id": "ARTIFICIAL_BD_fixed_TICKET1",
+    "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+    "admission_seq": 7
+  },
+  "logical_places_issued": 1,
+  "admission_attempts": 1,
+  "checked_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+  ],
+  "deferred": [],
+  "errors": [],
+  "fake_CORE_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+  ],
+  "analysis_stub_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "kind": "stub_catalog"
+    },
+    {
+      "seq": 2,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+    },
+    {
+      "seq": 3,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    },
+    {
+      "seq": 4,
+      "kind": "stub_discovery",
+      "instrument_ids": [
+        "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+        "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+      ]
+    },
+    {
+      "seq": 5,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    },
+    {
+      "seq": 6,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    },
+    {
+      "seq": 7,
+      "kind": "fake_admitCandidate",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+      "source_evidence_seq": 6,
+      "accepted": true,
+      "http_upper_bound": 12
+    },
+    {
+      "seq": 8,
+      "kind": "stub_candidate_overview",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+      "ticket_id": "ARTIFICIAL_BD_fixed_TICKET1"
+    },
+    {
+      "seq": 9,
+      "kind": "stub_getCore",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+      "ticket_id": "ARTIFICIAL_BD_fixed_TICKET1"
+    },
+    {
+      "seq": 10,
+      "kind": "analysis_stub_NOT_FULL_ENGINE",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    }
+  ],
+  "old_row": {
+    "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+    "first_seen": 1792994400000,
+    "last_seen": 1793005200000,
+    "last_checked_ts": 1792998000000,
+    "next_check_ts": 1792998300000,
+    "last_status": "REJECTED",
+    "reported_day_growth": 0,
+    "preliminary_growth": 0,
+    "active_wave": false,
+    "movement_event_ts": 1792987200000,
+    "entry_zones": [],
+    "entry_distance_pct": null,
+    "confirmed_core_count": 0,
+    "core_expires_ts": 1793005199999,
+    "fixture_history_marker": "KEEP_ARTIFICIAL_ENDED_RECORD",
+    "price_expires_ts": 1793005230000
+  },
+  "new_row": {
+    "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+    "first_seen": 1793005200000,
+    "last_seen": 1793005200000,
+    "preliminary_growth": 0,
+    "reported_day_growth": 20,
+    "active_wave": false,
+    "next_check_ts": 1793005500000,
+    "price_expires_ts": 1793005230000,
+    "entry_distance_pct": null,
+    "movement_event_ts": null,
+    "last_checked_ts": 1793005200000,
+    "last_status": "REJECTED",
+    "confirmed_core_count": 1,
+    "core_expires_ts": 1793005230000,
+    "priority_evidence_ts": 1793005200000,
+    "priority_is_not_signal_eligibility": true,
+    "entry_zones": []
+  },
+  "saved_run_exact": true,
+  "saved_run_sha256": "6c41094ba718bc5cdcf6eab3fe654889ab3379644eed94649cccc38247f1ecb5",
+  "executor_owner_null": true,
+  "native_HTTP_MCP_SQL_TG_LOOKUP": 0
+}
