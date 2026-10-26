@@ -1,0 +1,74 @@
+{
+  "schema": "F586_OPTIONAL_GATE_CAUSE_MATRIX_V1",
+  "authority_main": "9ae7c9a3cda1560866ace71ca0b9dd2d1bd9d877",
+  "DOOD": {
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "asset_id": "BINGX_UNDERLYING:DOOD",
+    "native_symbol": "DOOD-USDT",
+    "native_contract_id": "101207",
+    "quote": "USDT",
+    "settle": "USDT",
+    "family": "USDT_M",
+    "classification": "VERIFIED_CRYPTO",
+    "proposal_ref": "F552:20c1ba771db479e0e10638a4d77324141db13fbca1f0d25724aeb0740ad0756e",
+    "identity_decision_sha256": "bea477ba1589decad14c34444aef9c538bd0dc352862588c4d00923dda48bbab"
+  },
+  "source_blobs": {
+    "bingx": "f21c647219075aba5e75123b2628765154aac27d",
+    "index": "a9ec11158327f99c01b64c6bf57269473e6deb01"
+  },
+  "all550_provider_scope": "SameBingXUSDT_Mprovideroperationsemanticscanbequalifiedonce;actualsymbol/period/clock/valuecheckedperinstrument;notglobaltickermapping",
+  "rows": [
+    {
+      "stage": "runtime optional admission",
+      "code": "pump-report/runtime/runner.mjs:120-131",
+      "condition": "analysis.ready beforemap/getOptional",
+      "effect": "Earlymandatoryrefusal→optionalHTTP0 regardlessUIgrowth/funding;ROOT/ANALYTICSownwhythisDOODmanualisnotREADY",
+      "not_changed": true
+    },
+    {
+      "stage": "registry binding",
+      "code": "pump-report/registry/native-reviewed550.mjs",
+      "condition": "New539qualifications includescandles andexecutionbookoverlay;funding/OIproofs absent",
+      "effect": "DOOD101207 nofundingrateclock/unitprofile,noOIunitprofile",
+      "cross_venue_flag": "Not required for directBingXfact;do not addprojecttickerjoin"
+    },
+    {
+      "stage": "funding preflight",
+      "code": "pump-report/sources/index.mjs:373-378",
+      "condition": "proof(qualification)+nonemptyrate_clock_field !=updateTime",
+      "effect": "Missingfundingentry→FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED,0HTTP"
+    },
+    {
+      "stage": "funding period",
+      "code": "pump-report/sources/bingx.mjs:190",
+      "condition": "NativefundingIntervalHours integer1..24",
+      "effect": "Missing/string/malformedperiod→FUNDING_PERIOD_UNKNOWN;DOODactualperiod notobserved"
+    },
+    {
+      "stage": "funding unit",
+      "code": "pump-report/sources/index.mjs:384",
+      "condition": "LabelsoutputRATE_FRACTION_PER_ACTUAL_PERIOD without explicitrate_unitcheck",
+      "effect": "Futureactivationneedsseparateprovenunitguard;do not merelysetrate_clock_field"
+    },
+    {
+      "stage": "funding event type",
+      "code": "pump-report/sources/bingx.mjs:192-195",
+      "condition": "Clockfieldtreatedasrateevent;onlyupdateTimeexcluded",
+      "effect": "Needallowlistedclocksemantics,notarbitraryfieldname;nextFundingTime neverevent"
+    },
+    {
+      "stage": "OI preflight",
+      "code": "pump-report/sources/index.mjs:374-378",
+      "condition": "proof+unitinCONTRACTS/BASE_ASSET/USDT",
+      "effect": "Noactualunitproof→OPEN_INTEREST_UNIT_UNQUALIFIED0HTTP;retainedconflictdoesnotpermitguess"
+    },
+    {
+      "stage": "optional slots",
+      "code": "pump-report/sources/index.mjs:359-381",
+      "condition": "Tradesfirst,thenOI,thenfunding;totalupper2",
+      "effect": "Trades1+qualifiedOI1 canstarvequalifiedfunding;unqualifiedOIcurrentlycost0;ROOTcanexplicitlyselectrequested2kindswithoutraisingcap"
+    }
+  ],
+  "current_source_findings_not_delivery_verdict": "F586 has no freshfunding/OI/trades DOODfact anddidnotreadnewmanual. Ownerreported76.13/-1notcanonicalAPIinput. Source gating explains unavailableinputs;ROOTmanual/delivery andANALYTICSwaveplanremainwithowners."
+}

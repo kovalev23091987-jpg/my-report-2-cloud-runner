@@ -1,0 +1,77 @@
+{
+  "schema": "F587_CONDITIONAL_FUNDING_RATE_QUOTE_SNAPSHOT_SCOPE_V1",
+  "status": "CONCRETE_NEXT_CODE_SCOPE_REVIEWABLE;UNIT_ACTIVATION_REMAINS_CONDITIONAL",
+  "mode": "FUNDING_RATE_QUOTE_SNAPSHOT",
+  "evidence_level": "ADAPTER_BASED_INFERENCE_NOT_VENDOR_GUARANTEE",
+  "provider": "BINGX",
+  "family": "USDT_M",
+  "route": "/openApi/swap/v2/quote/premiumIndex",
+  "first_instrument": "BINGX:USDT_M:101207:DOOD-USDT",
+  "unit_profile": {
+    "rate_field": "lastFundingRate",
+    "rate_unit_proposed": "RATE_FRACTION",
+    "unit_proof_complete": false,
+    "unit_evidence_ref": "F587_PRIMARY_UNIFIED_RATE_UNIT_CHAIN_V1 plusmissingpremise",
+    "forbid_sample_value_inference": true,
+    "noautomaticclaim_vendorunit": true
+  },
+  "clock_profile": {
+    "field": "updateTime",
+    "role": "RATE_QUOTE_SNAPSHOT",
+    "basis": "CCXT_PINNED_SUPPORTED_CONSUMER_TIMESTAMP_CONVENTION",
+    "payment_event_ts": null,
+    "native_vendor_field_guarantee": false,
+    "nextFundingTime": "Scheduledsettlementonly",
+    "received_ts_as_event": false,
+    "stale_or_missing": "INCOMPLETEorSTALE,neverclockfallback",
+    "timefield_auto_substitution": false
+  },
+  "period_profile": {
+    "field": "fundingIntervalHours",
+    "value": "Actualsameinstrumentresponseonly",
+    "unit": "HOURS",
+    "period_ms": "Checkednativehours×3600000",
+    "unknown": "null/FUNDING_PERIOD_UNKNOWN",
+    "no_default8h": true,
+    "no_nextFundingTime_minus_now": true
+  },
+  "owned_paths": [
+    "pump-report/sources/bingx.mjs",
+    "pump-report/sources/index.mjs",
+    "pump-report/sources/funding-qualification.mjs ifneeded",
+    "pump-report/tests/sources/funding-quote-connected.test.mjs",
+    "pump-report/handoffs/sources/F588*"
+  ],
+  "minimal_changes": [
+    "Fixedproviderprofilewithseparateunit/clockrole/periodproofparts",
+    "Parserpreservesrawdecimalandnativequoteclock;rate_effective/payment_event remainsnull",
+    "ReplaceunsupportedupdateTime=contractmetadataassertionwithaccurateconsumerrole/provenance",
+    "getOptional acceptsROOTrequestedorderedunique2kinds toselecttrades+fundingwithincap2;OIremainsindependentUNKNOWN",
+    "NoexistingregistryentrypromoteduntilunitproofpremisecompleteandROOTacceptsprofile;noowner/UIbooleansbecomeproof"
+  ],
+  "ROOT_dependencies": [
+    "ExplicitqualifiedprofileassemblybindingtosameproviderUSDT_Midentity",
+    "Passrequested_kinds:['trades','funding']wherechosen",
+    "Positivewhole/provider/nativeadmissiononlyforfutureactualIO",
+    "Mandatoryanalysis.ready/AXplanner/deliverypolicyremainROOT/ANALYTICS"
+  ],
+  "one_affected_case": {
+    "count": 1,
+    "path": "pump-report/tests/sources/funding-quote-connected.test.mjs",
+    "name": "DOODtrades+fundingquote retainsupdateTime snapshot/actualperiod within2slots",
+    "fixture": "Controlledproofprofileandfakebrokeronly;notvendorunitproof",
+    "assertions": [
+      "2attemptsexacttrades+premiumIndex;OI0/noothercoin",
+      "Quoteevent_ts=acceptedupdateTime,nevernextFundingTime/received_ts",
+      "payment_event_tsnull;actualperiodusedwithno8hdefault",
+      "Rawrateunchanged;unitflagonlyfromproofprofile;coverageADAPTER_BASED_INFERENCE"
+    ],
+    "run": false
+  },
+  "not_done": [
+    "No codewritten/imported/executed",
+    "No tests/native/provider/metadata/SQL/TG/Worker",
+    "No OI requalification/HLcalls",
+    "No mandatorygate/strategy/plan/deliverychange"
+  ]
+}

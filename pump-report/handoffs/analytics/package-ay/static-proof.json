@@ -1,0 +1,59 @@
+{
+  "schema": "AY_STATIC_PRELIMINARY_TARGET_CONTRADICTION_V1",
+  "status": "STATIC_CONDITIONAL_EXCLUSION_PROVEN_NOT_AN_OBSERVED_NATIVE_REFUSAL",
+  "saved_actual_analysis_ts": 1793006914640,
+  "saved_actual_reference": 0.002505,
+  "saved_actual_manual_was_NOT_this_trigger": true,
+  "highest_preknown_active_wave_HIGH": {
+    "kind": "HIGH",
+    "price": 0.00266,
+    "event_ts": 1793006280000,
+    "known_ts": 1793006400000,
+    "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:candles:b2d1ca53-50ee-4dd0-9bb5-7c3d7fbe2bc8"
+  },
+  "preknown_at_saved_analysis": true,
+  "fixed_half_width": 1.4874999999999996e-05,
+  "conditional_current_quote_constraint": "P > max(preexisting confirmed HIGH prices); no actual P asserted",
+  "proof_steps": [
+    "For every preexisting HIGH H_i, H_i<=H_max<P, hence H_i-halfWidth<P.",
+    "The current filter requires H_i-halfWidth>P, so resistance array is empty and constructPlan returns null at movement.mjs:216.",
+    "The known anchor H_max=0.00266 gives fixed exit lower0.002645125 and upper0.002674875.",
+    "Existing qualified entry upper0.002375875 is below that lower target and above preserved invalidation0.001972; lower-target / upper-entry -1 =11.3326669percent.",
+    "Thus entry-to-exit geometry can meet existing10 while current-reference filter rejects it. The exclusion depends on report price, which TZ332 distinguishes from intended entry potential."
+  ],
+  "case_numbers": {
+    "existing_HIGH": 0.00266,
+    "existing_entry_lower": 0.002346125,
+    "existing_entry_upper": 0.002375875,
+    "existing_exit_lower": 0.002645125,
+    "existing_exit_upper": 0.002674875,
+    "existing_invalidation": 0.001972,
+    "minimum_pct": 11.332666912190238
+  },
+  "all_prices_are_existing_anchor_geometry_except_unspecified_conditional_P": true,
+  "obstacles_must_not_be_hidden": [
+    {
+      "entry_anchor": 0.002361,
+      "strict_intermediate_confirmed_HIGHs": 7,
+      "nearest_intermediate_high_price": 0.002396,
+      "nearest_intermediate_min_return_pct": 0.22097122112905154
+    },
+    {
+      "entry_anchor": 0.002327,
+      "strict_intermediate_confirmed_HIGHs": 7,
+      "nearest_intermediate_high_price": 0.002396,
+      "nearest_intermediate_min_return_pct": 1.6760074726447804
+    },
+    {
+      "entry_anchor": 0.002293,
+      "strict_intermediate_confirmed_HIGHs": 8,
+      "nearest_intermediate_high_price": 0.002327,
+      "nearest_intermediate_min_return_pct": 0.18415208795969917
+    }
+  ],
+  "new_native_quote_supplied": false,
+  "constructPlan_calls": 0,
+  "analyzePump_calls": 0,
+  "tests_or_project_imports": 0,
+  "new_market_native_RPC_SQL_TG_Worker": 0
+}

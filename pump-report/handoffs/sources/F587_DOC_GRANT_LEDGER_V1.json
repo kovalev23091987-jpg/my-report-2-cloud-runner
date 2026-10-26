@@ -1,0 +1,35 @@
+{
+  "id": "ROOT_F587_PRIMARY_UNIFIED_RATE_UNIT_2SEARCH2READ_20261026",
+  "search_max": 2,
+  "open_max": 2,
+  "search_spent": 2,
+  "open_spent": 2,
+  "state": "EXHAUSTED_SPENT_NON_REFUNDABLE",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "search",
+      "q": "site:github.com/ccxt/ccxt \"fundingRate\" \"* 100\"",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "search",
+      "q": "site:github.com/ccxt/ccxt \"fundingRate\" \"percent\"",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "primary_repo_tree_read",
+      "url": "https://api.github.com/repos/ccxt/ccxt/git/trees/d3159f7036f93db086cd0414642132fba5401710?recursive=1",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "primary_unified_adapter_unit_read",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/delta.ts",
+      "purpose": "Check primaryunifiedrate normalization/math for explicitpercent-to-fraction semantics;notmarketIO",
+      "state": "SPENT_COMPLETED"
+    }
+  ],
+  "search_remaining": 0,
+  "open_remaining": 0,
+  "native_market_SQL_TG_Worker": 0
+}

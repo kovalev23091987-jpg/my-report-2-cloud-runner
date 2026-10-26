@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_CANDIDATE_BANK_FLAG_MAINTENANCE_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_ACKNOWLEDGED_PARTIAL_READBACK_THEN_DISTINCT_READONLY_FULL_CONFIRMED",
   "authority_main": "405723dffc90ec1df96ddaa15ddf38a020a67afc",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793004911853",
@@ -29,5 +29,17 @@
   "other20bindings_preserved": true,
   "existing_cron_unchanged": true,
   "automatic_restore_required": true,
-  "purpose": "Owner requested supported deeper pullback entries; AXqualPASS; preservebank/caps/no strategychange"
+  "purpose": "Owner requested supported deeper pullback entries; AXqualPASS; preservebank/caps/no strategychange",
+  "closed_at": "2026-10-26T10:18:57.908520+00:00",
+  "actual": {
+    "flag_change_acknowledged": true,
+    "admin_HTTP_attempted": 7,
+    "partial_proof": "checkpoints/pump-report-20261025/ROOT_AX_DOOD_AUTO_ON_READBACK.json",
+    "mismatch_cause": "UNKNOWN_FAILED_HEALTH_VALUE_NOT_CAPTURED",
+    "distinct_readonly_resolution": "checkpoints/pump-report-20261025/ROOT_AX_POST_RESUME_DIAGNOSTIC_ACTUAL.json",
+    "later_FULL_proof": "checkpoints/pump-report-20261025/ROOT_LIVE65_MANUAL_READBACK.json",
+    "automatic_restored": true,
+    "delivery_enabled": true,
+    "repeat_PATCH_or_deploy": 0
+  }
 }

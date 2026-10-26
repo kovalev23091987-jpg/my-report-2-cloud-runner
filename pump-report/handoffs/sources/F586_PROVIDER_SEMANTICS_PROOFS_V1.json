@@ -1,0 +1,178 @@
+{
+  "schema": "F586_EXACT_PROVIDER_FUNDING_OI_TRADES_PROOFS_V1",
+  "authority_main": "9ae7c9a3cda1560866ace71ca0b9dd2d1bd9d877",
+  "DOOD": {
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "asset_id": "BINGX_UNDERLYING:DOOD",
+    "native_symbol": "DOOD-USDT",
+    "native_contract_id": "101207",
+    "quote": "USDT",
+    "settle": "USDT",
+    "family": "USDT_M",
+    "classification": "VERIFIED_CRYPTO",
+    "proposal_ref": "F552:20c1ba771db479e0e10638a4d77324141db13fbca1f0d25724aeb0740ad0756e",
+    "identity_decision_sha256": "bea477ba1589decad14c34444aef9c538bd0dc352862588c4d00923dda48bbab"
+  },
+  "owner_reported_values": {
+    "price_change_pct": 76.13,
+    "funding_display_pct": -1,
+    "status": "OWNER_REPORTED_UI_NOT_SOURCE_VERIFIED_IN_F586",
+    "not_native_API_unit_proof": true
+  },
+  "firstparty_retained": [
+    {
+      "source": "BingX native docs EN",
+      "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/native-doc-sections/openApi_swap_v2_quote_premiumIndex-1.txt",
+      "sha256": "ab639ff39e5adff4fd9c89add852d8eeaafe5d7ae6951f6c5c2bd87337a06713",
+      "route": "/openApi/swap/v2/quote/premiumIndex",
+      "supported": "lastFundingRate latestupdatedrate;nextFundingTime nextsettlementtiming;mark/indexprices",
+      "missing": "No fraction-vs-percent declaration, no fundingIntervalHours/time/updateTime response descriptor"
+    },
+    {
+      "source": "BingX native docs ZH",
+      "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/native-doc-sections/openApi_swap_v2_quote_premiumIndex-0.txt",
+      "sha256": "23cb36c0cd69b0abd1fe816ccdc01dffcdb79ceec1362ec85156ccf6be8e289e",
+      "supported": "Latest updated fundingrate wording; no rateunit/eventclock proof",
+      "limits": "Numeric examples not used to infer unit"
+    },
+    {
+      "source": "BingX official AI swap reference",
+      "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/official-ai-docs/skills/swap-market/api-reference.md",
+      "sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+      "premium_lines": [
+        107,
+        130
+      ],
+      "OI_lines": [
+        201,
+        221
+      ],
+      "supported": "premiumIndex data.time described as ms timestamp; OI explicitly described asbaseasset",
+      "limits": "Generic time is not described as rate change/effective event; AI fundingRate description differs from native history shape; do not silentlyresolve conflicts"
+    },
+    {
+      "source": "BingX native OI EN",
+      "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/native-doc-sections/openApi_swap_v2_quote_openInterest-1.txt",
+      "sha256": "b686b2bee5c0c0242578fac9d098621780df83063e73099d2c0750c89359576c",
+      "short_literal": "matching engine time",
+      "supported": "data.time native matching-engine clock; openInterest positionamount",
+      "missing": "Unambiguous base/contracts/USDT unit"
+    }
+  ],
+  "new_primary_CCXT": {
+    "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/bingx.ts",
+    "commit": "d3159f7036f93db086cd0414642132fba5401710",
+    "git_blob": "7d05d1e811f498d0ddc4b295c1575e072c2675d9",
+    "full_file_sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "received_utc_window": [
+      "2026-10-26T09:30:17Z",
+      "2026-10-26T09:32:45Z"
+    ],
+    "sections": {
+      "fetchFundingRate": [
+        1758,
+        1795
+      ],
+      "parseFundingRate": [
+        1827,
+        1867
+      ],
+      "parseOpenInterest": [
+        2100,
+        2135
+      ]
+    },
+    "short_literals": [
+      "const timestamp = this.safeInteger (contract, 'updateTime');",
+      "'fundingTimestamp': undefined,",
+      "const interval = this.safeString (contract, 'fundingIntervalHours');"
+    ],
+    "supported": "Current-rate route usespremiumIndex. RawlastFundingRate mapsunchanged to unifiedfundingRate. updateTime is genericnormalizedtimestamp, notfundingevent. Interval field becomes h;nextFundingTime remainsnextscheduledtime. LinearOI maps toopenInterestValue, inverse toamount.",
+    "not_supported": "Rawunscaledmapping doesnotindependently prove fraction-vs-percent. Genericnormalizedtimestamp isnot vendor guaranteedrateevent. No hardcoded8h forDOOD."
+  },
+  "new_vendor_open": {
+    "url": "https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20and%20Funding%20Rate",
+    "result": "HTML_SPA_ZERO_EXTRACTABLE_LINES",
+    "grant_read_spent": true,
+    "no_retry": true
+  },
+  "retained_CCXT_empty_path": {
+    "path": "/private/tmp/pump-ccxt-pinned-bingx.ts",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "used_as_evidence": false
+  },
+  "units_and_clocks": [
+    {
+      "field": "lastFundingRate_fraction_vs_percent",
+      "status": "UNKNOWN_PRECISE_PRIMARY_GAP",
+      "reason": "No inspected first-party field descriptor ties this exact API decimal to percent/fraction. CCXT forwardsraw unchanged; examples/UIvalue are not unitproof.",
+      "needed": "One primaryfieldunitstatement or actualfirstpartyAPI-display/fee conversion implementation explicitlyapplyingtheexactlastFundingRatefield; no sample-value inference"
+    },
+    {
+      "field": "fundingIntervalHours",
+      "status": "SUPPORTED_CONSUMER_HOURS_MAPPING",
+      "proof": "PinnedCCXT1835,1842-1845 maps nativefield to h",
+      "actual_DOOD_period_ms": null,
+      "reason": "Mustreadactualper-instrumentfield;no8hglobal, no nextFundingTime-minusnow, no historygap substitution"
+    },
+    {
+      "field": "data.time",
+      "status": "VENDOR_DOCUMENTED_MS_TIMESTAMP_ONLY",
+      "rate_event_semantics": false,
+      "reason": "AIreference generic timestamp; doesnotprove quotedrateupdatetime/effectiveness"
+    },
+    {
+      "field": "updateTime",
+      "status": "CCXT_SUPPORTED_QUOTE_SNAPSHOT_CONVENTION_ONLY",
+      "rate_event_semantics": false,
+      "source_clock_native_guarantee": false,
+      "reason": "CCXTnormalizedtimestamp1841/1854; quote-clock policycouldbeexplicitlyaccepted, notrateevent",
+      "current_code_behavior": "HardrejectsfieldbeforeHTTP"
+    },
+    {
+      "field": "nextFundingTime",
+      "status": "SCHEDULE_ONLY_NOT_EVENT_TS",
+      "usable_as_fact_event_ts": false
+    },
+    {
+      "field": "OI_clock",
+      "status": "CLOSED_NATIVE_MATCHING_ENGINE_TIME",
+      "field_name": "time",
+      "unit": "UNIX_MS"
+    },
+    {
+      "field": "OI_unit",
+      "status": "CONFLICT_REQUIRES_EXACT_PROVIDER_UNIT_RESOLUTION",
+      "AI_reference": "BASE_ASSET",
+      "CCXT_linear_interpretation": "OPEN_INTEREST_VALUE",
+      "native_descriptor": "PositionAmount withoutunit",
+      "allowed_mass_qualification": false
+    },
+    {
+      "field": "trades_unit_clock_direction",
+      "status": "EXISTING_ACCEPTED_PROVIDER_RULE_REUSED",
+      "unit": "USDT_PRICE_QUOTE_NOTIONAL fromquoteQty",
+      "time": "Native trade time Unixms",
+      "direction": "isBuyerMaker trueSELL/falseBUY",
+      "stable_ID": "ExistingF555 id/fillId qualification;notrerun",
+      "scope": "Returneduniqueexecutionssample,notfullintervalorabsorptionproof"
+    }
+  ],
+  "new_market_HTTP": 0,
+  "new_SQL": 0,
+  "new_TG": 0,
+  "HL_actual_HTTP": 0,
+  "latest_authority_main": "b48e8526dcc9179b006d08baefdaf857730e0c70",
+  "updateTime_role_review": {
+    "ROOT_role": "RATE_QUOTE snapshot,notsettledfundingevent",
+    "native_vendor_definition": "NOT_FOUND_IN_RETAINED_DESCRIPTOR_AND_SPA_OPEN_UNAVAILABLE",
+    "CCXT_supported_role": "Genericfundingquote timestamp",
+    "old_SOURCE_metadata_claim": "Commentbingx.mjs:191 saysmetadata. No inspectedprimaryproofestablishescontractmetadata,so thatassertionmustnotbepresentedasfact.",
+    "no_clock_substitution": [
+      "nextFundingTime",
+      "received_ts"
+    ],
+    "status": "ROLE_DISTINCTION_CLOSED;VENDOR_FIELD_GUARANTEE_STILL_UNPROVEN",
+    "ROOT_steering_timestamp_not_provided": true
+  }
+}
