@@ -1,0 +1,75 @@
+{
+  "schema": "AQ_F576_AND_CURRENT_CONSUMER_INPUTS_V1",
+  "frozen_source_manifest": {
+    "path": "pump-report/handoffs/sources/PACKAGE_F576_NEW_PUBLISHED_FREE_DATA_DOC_RESULT_FINAL_V1.json",
+    "sha256": "a35c0904b5ef1a86221391ae5956833d07df5348511694247696e52f34063034",
+    "matches_ROOT": true
+  },
+  "all6_payload_bytes_and_sha256_verified": [
+    {
+      "path": "pump-report/handoffs/sources/F576_BOUNDED_PUBLISHED_DATA_DEDUP_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F576_NEW_PUBLISHED_FREE_DATA_DOC_ATTEMPTS_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F576_NEW_PUBLISHED_FREE_DATA_FINDINGS_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F576_PRIMARY_STATIC_DOC_PROVENANCE_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F576_AUTHORITY_AND_PREPARED_RELEASE_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F576_HANDOFF_RU.md",
+      "bytes_sha_match": true
+    }
+  ],
+  "source_text_read": [
+    {
+      "path": "pump-report/handoffs/sources/F576_NEW_PUBLISHED_FREE_DATA_FINDINGS_V1.json",
+      "sha256": "30c0abcac5ecb00d1526134a3dd3c90002eefbc85696bdfda33e4c01b5cd2113"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F576_HANDOFF_RU.md",
+      "sha256": "f4adfd257dbb83543a14709f1e61c81db1634b1e7ac62c7eab506a93fd5f7215"
+    }
+  ],
+  "consumer_main": "e11d0a471b1acfe1b0ac8d4a70fb58043e6bbeb0",
+  "ROOT_named_consumer_files": [
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6",
+      "full_text_received": true
+    },
+    {
+      "path": "pump-report/CONTRACT_RU.md",
+      "git_blob": "7b741f1fc67d6c16cab4fb28e838ae4bba712e2a",
+      "full_text_received": true
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de",
+      "full_text_received": true
+    }
+  ],
+  "minimum_actual_optional_handler": {
+    "path": "pump-report/analytics/context.mjs",
+    "git_blob": "03870c55896aa8a0663c55f4b7cfc13d3396b87d",
+    "purpose": "Read only existing OI/trade predicates and findings to identify real consumer compatibility; not a strategy or historical package audit.",
+    "imports_or_execution": 0
+  },
+  "new_external_sources_or_F577_read": 0,
+  "tests_web_provider_RPC_nativeSQL_TG_Worker_observer_calls": 0,
+  "contract_strategy_public_text_route_producer_changes": 0,
+  "all550": "NOT_CHECKED",
+  "maps_qualified": 0,
+  "decision": "NO_CONNECT_NOW_CONDITIONAL_STANDX_BASE_OI_AND_BLOFIN_QUALIFIED_TRADES_ONLY",
+  "SOURCE_confirmation_count": 2
+}

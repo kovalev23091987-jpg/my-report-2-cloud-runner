@@ -1,0 +1,122 @@
+{
+  "schema": "F577_TARGETED_CONTEXT_PREREQUISITES_RESULT_V1",
+  "decision": "NO_NEW_ROUTE_RECOMMENDED_OR_ACTIVATION_ADMITTED",
+  "authority_main": "e11d0a471b1acfe1b0ac8d4a70fb58043e6bbeb0",
+  "contracts": {
+    "tz_v2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+    "unified_spec_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
+    "source_index_sha256": "05917c92e98212b79389eeb7cecc53e84197ae18b3cf329041abdc32a85e510b"
+  },
+  "comparison_input": {
+    "path": "pump-report/handoffs/sources/U3_SELECTED_550_SYMBOLS_V1.json",
+    "sha256": "88bf55ea409ec376502ebc26b92053f99a86d30f16fa49c095fd5eec19073475",
+    "count": 550,
+    "role": "Existing selected registry only; not provider catalog qualification",
+    "same_ticker_is_not_identity_proof": true
+  },
+  "standx": {
+    "decision": "STOP_NO_ELIGIBLE_PUBLISHED_OVERLAP_CONFIRMED",
+    "primary": "https://docs.standx.com/standx-api/perps-reference",
+    "current_doc_attempt": 1,
+    "current_doc_fetch": "FAILED_NO_RETRY",
+    "retained_F576_primary_search_attempt": 5,
+    "retained_published_symbol_enum": [
+      "BTC-USD",
+      "ETH-USD",
+      "XAU-USD",
+      "XAG-USD"
+    ],
+    "retained_token_enum": [
+      "DUSD"
+    ],
+    "retained_documentary_width": 4,
+    "exclusions": {
+      "owner_excluded": [
+        "BTC-USD",
+        "ETH-USD"
+      ],
+      "noncrypto_metals": [
+        "XAU-USD",
+        "XAG-USD"
+      ]
+    },
+    "eligible_published_names_after_exclusions": [],
+    "name_level_overlap_count": 0,
+    "actual_current_provider_width": null,
+    "actual_selected_asset_overlap": null,
+    "limitation": "Retained enum conflicts with illustrative F576 market-overview count5; neither is current catalog proof.",
+    "OI_clock_counting_quota_further_work": "NOT_PERFORMED_AFTER_NO_USEFUL_ELIGIBLE_COVERAGE_EVIDENCE",
+    "future_map_status": "NOT_CHECKED"
+  },
+  "blofin": {
+    "decision": "STOP_PUBLIC_TRADE_AMOUNT_AND_AGGRESSOR_UNRESOLVED",
+    "primary": "https://docs.blofin.com/index.html",
+    "new_doc_sections": [
+      "GET Instruments",
+      "WS Trades Channel",
+      "REST API Limits"
+    ],
+    "unit_delta": {
+      "field": "contractValue",
+      "linear": "base currency per contract",
+      "inverse": "quote currency per contract"
+    },
+    "typed_metadata_fields": [
+      "instId",
+      "baseCurrency",
+      "quoteCurrency",
+      "instType",
+      "contractType",
+      "state",
+      "settleCurrency",
+      "assetClass",
+      "apiPermission"
+    ],
+    "classification_boundary": "Mixed Crypto/Commodities/Stocks/Indices; inspect metadata and canonical identity before any selected-market use. No metadata queried.",
+    "public_trade_gap": {
+      "REST_size": "Trade quantity",
+      "WS_size": "Trade size",
+      "size_unit": null,
+      "size_is_contract_count": null,
+      "side_description": "buy/sell trade direction",
+      "side_is_taker": null,
+      "side_is_maker": null
+    },
+    "clock": "F576 event-clock proof reused unchanged; not requalified",
+    "quota": {
+      "basis": "endpoint/IP as written; aggregate/shared scope unqualified",
+      "requests_per_minute": 500,
+      "suspension_on_minute_threshold": "5minutes",
+      "requests_per_5minutes": 1500,
+      "suspension_on_5minute_threshold": "1hour",
+      "rate_rejection_code": 429,
+      "HTTP_status_vs_body_code": "NOT_DISAMBIGUATED",
+      "trading_UserId_limit_not_public_market_allowance": "30requests/10seconds"
+    },
+    "access": "Public Data no-auth documented; no actual access, permanent pricing, geographic availability or SLA proof.",
+    "monetary_or_signed_flow": null,
+    "formula_from_field_name_forbidden": true,
+    "actual_550_overlap": null,
+    "meaning": "Contract metadata denominator alone does not prove public trade size uses contract count; side text alone does not prove aggressor."
+  },
+  "coverage": {
+    "selected550_each": "NOT_CHECKED",
+    "checked": 0,
+    "qualified": 0,
+    "unsupported": 0,
+    "new_registered_bindings": 0,
+    "new_independent_provider_votes": 0,
+    "canonical_identity_joins": 0,
+    "raw_native_samples": 0
+  },
+  "limits": {
+    "native_market_metadata_provider_RPC_SQL_TG_Worker_deploy_privatecapture": 0,
+    "code_changes": 0,
+    "production_tests": 0,
+    "SDK_execution": 0,
+    "broad_searches": 0,
+    "new_chats_agents_automations": 0,
+    "source_vendor_imports": 0
+  },
+  "stop_rule": "Four focused reads supplied a negative coverage boundary and metadata/quota delta; missing semantic fields remain NULL. No additional read or activation needed for this result."
+}

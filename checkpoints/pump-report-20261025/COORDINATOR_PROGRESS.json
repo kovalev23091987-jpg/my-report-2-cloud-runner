@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_COORDINATOR_PROGRESS_V1",
-  "recorded_at": "2026-10-26T03:57:12.847Z",
+  "recorded_at": "2026-10-26T04:08:22.947Z",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
   "stage": "NEW_REPORT_LIVE_AUTO_AND_TELEGRAM_3REAL_MANUAL_NOTREADY_FIRST_SENT_PENDING",
   "code_main": "f3f8cc6e848c5152aac92a4a5bf1a3fdcfb748fc",
@@ -128,9 +128,9 @@
   ],
   "complete": false,
   "next": [
-    "F577: подтвердить конкретные coverage/clock/unit prerequisites StandX/BloFin либо отказаться от бесполезного маршрута",
-    "AQ: оценить полезность новых фактов без нового поиска",
-    "ROOT: общий бюджет/включение только квалифицированного полезного маршрута; принять первый настоящий AUTO/SENT и базовый исход"
+    "F578: новые полезные бесплатные источники, без повторения старых направлений",
+    "AR: приёмка узкого ROOT reader без native IO",
+    "ROOT: первый настоящий AUTO/SENT и базовый исход в рабочем окне, без принудительной отправки или нового стартового прогона"
   ],
   "server_deployment": "checkpoints/pump-report-20261025/ROOT_F571_LIVE66_EXACT_READBACK.json",
   "analytics_packages": {
@@ -341,9 +341,9 @@
   "automatic_enabled": true,
   "overall_completion_pct": null,
   "current_work": {
-    "ROOT": "Рабочие 66 модулей и доставка включены. Объединяет F576/AP, поддерживает общий бюджет, очередь и приёмку первого настоящего AUTO → original → Telegram → исход. Без четвёртого стартового запуска.",
-    "SOURCES": "F576 завершён 12 документальными попытками. F577: только конкретные пробелы StandX/BloFin, покрытие полезных монет и минимальная цена маршрута; без повторного широкого поиска и market IO.",
-    "ANALYTICS": "AP завершён: public/private LOOKUP совпали. AQ: применимость только новых F576 фактов к существующему consumer; без поиска источников, SQL и повторного анализа старых запусков."
+    "ROOT": "Новый дневной отчёт и Telegram включены. Подготовлено чтение связи saved outcome с той же исходной SENT карточкой:1 ARTIFICIAL PASS, native0; независимая приёмка AR. Первый настоящий AUTO/SENT/исход ещё не наблюдался.",
+    "SOURCES": "F577 закрыт4/8 docs,4unused; StandX/BloFin не включены. F578: новые бесплатные Avantis/gTrade/Paradex, только ещё не изученные первичные данные с полезными полями и покрытием.",
+    "ANALYTICS": "AQ принят: текущие StandX/BloFin не подключать. AR независимо проверяет новый узкий инструмент связи original→SENT→saved outcome; поиск источников не дублирует."
   },
   "scope550_reconciliation": {
     "schema": "ROOT_ALL_THREE_CRYPTO_SCOPE_550_RECONCILIATION_V1",
@@ -712,7 +712,7 @@
     }
   ],
   "baseline_outcome_from_first_READY_including_UNSENT": true,
-  "latest_source_research_manifest": "pump-report/handoffs/sources/PACKAGE_F576_NEW_PUBLISHED_FREE_DATA_DOC_RESULT_FINAL_V1.json",
+  "latest_source_research_manifest": "pump-report/handoffs/sources/PACKAGE_F577_TARGETED_CONTEXT_PREREQUISITES_FINAL_V1.json",
   "saved_auto_observer_preparation": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_OBSERVER_PREPARATION.json",
   "AM_new_sources_decision": "checkpoints/pump-report-20261025/ROOT_AM_OPTIONAL_SOURCE_DECISION.json",
   "latest_live_health": "checkpoints/pump-report-20261025/ROOT_LIVE_HEALTH_ACTUAL_1792982526462.json",
@@ -727,5 +727,7 @@
     "manifest": "pump-report/handoffs/analytics/package-ap/PACKAGE_AP_FIRST_SAVED_AUTO_ACTUAL_ACCEPTANCE_FINAL_V1.json",
     "accepted": true,
     "first_real_SENT": false
-  }
+  },
+  "optional_source_latest_decision": "checkpoints/pump-report-20261025/ROOT_F577_AQ_OPTIONAL_SOURCE_DECISION.json",
+  "saved_outcome_observer_preparation": "checkpoints/pump-report-20261025/ROOT_SAVED_SELECTED_OUTCOME_OBSERVER_PREPARATION.json"
 }
