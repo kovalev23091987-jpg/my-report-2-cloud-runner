@@ -1,0 +1,55 @@
+{
+  "schema": "F589_AUTOMATIC_IDENTITY_AND_COVERAGE_PLAN_V1",
+  "configuration_unit": "ONE_PROVIDER_ROUTE_AND_SEMANTIC_PROFILE",
+  "baseline": "F583 exact selected550; no500 manual onboarding/testing",
+  "selected_universe": {
+    "rows": 550,
+    "registry_verified": 552,
+    "excluded_benchmarks": [
+      "BTC",
+      "ETH"
+    ],
+    "broader18_unresolved": "UNKNOWN_PRESERVED",
+    "deep9_deferred": "REMAIN_SELECTED_NOT_FALSE_UNSUPPORTED",
+    "proof": "pump-report/handoffs/sources/F583_COVERAGE_550_V1.csv"
+  },
+  "steps": [
+    "Capture one complete provider catalogue with immutable request/response hash,bytes,received/header/source clocks,row count,total,next cursor and completion state.",
+    "Keep exact provider IDs and namespace/family/case. Build candidate overlap table against all550 in one local pass.",
+    "Candidate text overlap is not a canonical join. Require project/native asset identity evidence (network+contract for tokens when applicable,or exact native project evidence),plus instrument family,base,quote,settle,multiplier/scale and listing status.",
+    "Bind one canonical provider profile and exact qualified IDs automatically; preserve evidence refs/version per row. Conflicts/renames/multipliers/unknown-language class remain UNKNOWN; no ticker-only/prefix-only/suffix-stripping join.",
+    "Separate listed,canonical_joined,semantic_qualified,actual_fresh_fact,consumer_used per operation/block. Provider supported-symbol absence must be explicit current complete authoritative proof before UNSUPPORTED.",
+    "Use real bulk payload once for all exact joined eligible rows; only then parameterized single reads for selected candidates when provider lacks a bulk method. No500 blind probes.",
+    "Invalidate mapping on identity/delist/contract change. Cache hits retain original event/model/base timestamps and expiry; new receive does not renew source age."
+  ],
+  "accepted_assets": "Any language is allowed. Exact verified crypto USDT-settled BingX perpetuals only; no name/language heuristics for FX/metals/RWA/USDC/COIN-M. Provider-venue quote differences need qualified conversion; do not erase native venue.",
+  "common_fact_contract": "Reuse pump-report/contracts/index.mjs and ROOT profile; no new incompatible executable schema in F589. Handoff tables describe evidence only.",
+  "map_zone_fields": [
+    "canonical instrument/asset ID",
+    "provider native market ID and native venue/family",
+    "lower/upper price and price unit",
+    "OBSERVED_POSITION or EXTERNAL_MODEL provenance",
+    "native amount and unit OR model scale",
+    "model-generated timestamp",
+    "base/input state timestamps",
+    "received and expires clocks",
+    "coverage and degraded inputs",
+    "dedupe upstream/positions/nested aggregates",
+    "cross-venue price conversion and precision limits"
+  ],
+  "forbidden_substitutes": [
+    "realized liquidation prints",
+    "TP/SL orders",
+    "ordinary support/resistance",
+    "order-book wall",
+    "relative intensity relabeled USD",
+    "another venue relabeled BingX positions"
+  ],
+  "actual_join_result": {
+    "BYKARANTELI": "UNKNOWN_ALL550_NO_NATIVE_CATALOGUE_OR_CANONICAL_BINDINGS",
+    "OXARCHIVE": "UNKNOWN_ALL550_NO_NATIVE_CATALOGUE_OR_CANONICAL_BINDINGS"
+  },
+  "current_future_map_qualified_rows": 0,
+  "optional_map_absence_blocks_ready_card": false,
+  "DOOD_role": "Control example in existing exact550, not separate onboarding/configuration."
+}

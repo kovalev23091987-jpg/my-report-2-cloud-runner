@@ -1,0 +1,123 @@
+{
+  "schema": "F589_ROOT_SEPARATE_ACTUAL_ADMISSION_PROPOSAL_V1",
+  "status": "PROPOSAL_NOT_ADMISSION",
+  "execution_authorized_here": false,
+  "configuration_unit": "PROVIDER_ROUTE_AND_SEMANTIC_PROFILE_ONCE",
+  "bykaranteli": {
+    "hard_max_HTTP": 3,
+    "automatic_retries": 0,
+    "MCP_calls": 0,
+    "max_response_bytes_each": 2000000,
+    "max_total_response_bytes": 6000000,
+    "shared_deadline_ms": 10000,
+    "order": [
+      {
+        "n": 1,
+        "method": "GET",
+        "url": "https://bykaranteli.com/api/v1/usage",
+        "purpose": "Exact key plan/quota/headroom/reset headers;no market fact",
+        "upper_HTTP": 1,
+        "admission_before": "ROOT verifies configured server key without exposing it and positively reserves bounded keyed preflight plus whole provider/account capacity. Unknown balance is not zero usage."
+      },
+      {
+        "n": 2,
+        "method": "GET",
+        "url": "https://bykaranteli.com/api/public/symbols?sort=volume&top=1000",
+        "purpose": "One provider full-board catalogue;local batch candidate overlap of550",
+        "upper_HTTP": 1,
+        "depends": "Successfulfreeentitlement/headroom with existing reservations protected;count/total/identity fields retained."
+      },
+      {
+        "n": 3,
+        "method": "GET",
+        "url_template": "https://bykaranteli.com/api/liqmap/public?symbol={QUALIFIED_SELECTED_PROVIDER_MAP_ID}",
+        "purpose": "At most one actual optional model sample for automatically selected existing candidate",
+        "upper_HTTP": 1,
+        "depends": "Exact canonical identity and documented model symbol;one eligible candidate,positive remaining provider/map/whole-native admission. If catalogue only gives ticker text,STOP withUNKNOWN and do not send3."
+      }
+    ],
+    "maximum_is_not_expected_spend": true,
+    "if_no_join": "Only first2 at most;unused third is not evidence or automatic new request.",
+    "headers": "Authorization Bearer server-secret only;never logged; no browser impersonation/no wallet/no signup/no paid fallback",
+    "per_provider_limits": {
+      "free_doc_rate_per_minute": 30,
+      "free_doc_month": 15000,
+      "project_minute": "ROOT existing tighter applicable cap",
+      "MCP_REST_quota_shared": true
+    },
+    "evidence": "status and provider error code, exact normalized request withoutsecret, bodyhash/bytes, original body private,received/response headers,quota used/reset,generated/model/base clocks,total/count/completion,nativeunits/degradedinputs,exactcanonicaljoin evidence refs,consumer usefulness and actual ledger charge.",
+    "data_units": "Keep raw levels and native amount/scale. No notional synthesis/no implied BingX observed positions.",
+    "stop": "401/403/402/429,unknownunit/clock/key/identity/headroom,timeout/bodycap/incompletecatalogue. No retries or alternatewrapper;unknown spent conservatively retained.",
+    "storage": "ROOT separate native/SQL read-write-query/physical-byte grant required before capture/persistence;F589 grants0. Source budget ledger remains ROOT only."
+  },
+  "oxarchive": {
+    "state": "NOT_NATIVE_READY_EXACT_METHOD_ROUTE_AND_CREDIT_COST_GAP",
+    "proposed_future_ceiling_calls": 3,
+    "steps": [
+      "Close exact primary catalogue REST method/pagination and per-method credit weight from docs. Current F589 docs grant exhausted;no additional call under it.",
+      "Under a distinct ROOT actual admission with verified free key/balance,read at most2 bounded catalogue pages for the qualified family,then at most1 map for an exact joined selected candidate.",
+      "If only first page/cursor unsupported orcomplete universe not proven,stopUNKNOWN;do not enumerate500 symbols.",
+      "Keep computed/base-state clocks independently;map remainsEXTERNAL_MODEL. No paid exports/balance top-up or oldHL/SOLaudit."
+    ],
+    "exact_cost": "UNKNOWN;50k credits is not50k requests/maps",
+    "bodycap_bytes_per_call": 2000000,
+    "retries": 0,
+    "actual_calls": 0
+  },
+  "BingX_bulk_cache": {
+    "implementation_owner": "ROOT common contracts/runtime/cache/provider reservation;SOURCE prepared F588 parser preserved inactive",
+    "pinned_evidence": {
+      "file": "CCXT ts/src/bingx.ts",
+      "commit": "d3159f7036f93db086cd0414642132fba5401710",
+      "sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+      "method": "fetchFundingRates1809–1824 passes params to swapV2PublicGetQuotePremiumIndex without symbol;parses all rows"
+    },
+    "current_fixed_scan_HTTP": 2,
+    "current_fixed_scan_operations": [
+      "catalogue1 rawTTL0",
+      "bulk ticker1 TTL30s"
+    ],
+    "funding_bulk": "Only if funding profile is qualified and at least one actual consumer needs it;one lazy symbol-omitted request per stillvalid shared window,not unconditional new polling. Currentinactiveprofile→0 fundingcalls.",
+    "funding_bulk_incremental_per_candidate": 0,
+    "bulk_request_upper_per_shared_window": 1,
+    "savings_formula": "For N qualified demanded candidates sharing the same fresh bulk response,1 bulk request replaces N single requests;saves max(0,N-1). No claim of savings when current calls=0.",
+    "catalogue_cache": "CurrentTTL0 preserved. ROOT may explicitly qualify a bounded immutable whole-catalogue cache with completion/version/delist rules;F589 does not activate or assume that saving.",
+    "cache_key": "Provider/upstream+method+canonical route+exact nativeID/request shape,bodyhash if any,semantic profile version;all ByK wrappers share same namespace. Cache retains per-row original clocks,expiry,quota charging proof and negative result origin.",
+    "candidate_only": [
+      "1m125closed candles",
+      "1440closed daygrowth onlywhen needed",
+      "depth",
+      "boundedtrades",
+      "OI onlyafterunitqualification",
+      "singlemap onlyafterexactidentityroutequalification"
+    ],
+    "delivery_refresh": "OnlyREADY:forceprice+forcebook =2BingX plus1TG. Later outcomes are separate admitted history windows.",
+    "upper_plans_preserved": {
+      "BingX_per_future_candidate": 10,
+      "total_with_TG_and_one_map": 12,
+      "cold_manual_upper": 13,
+      "optional_alternatives_max": 2,
+      "map_calls_max": 1,
+      "retries": 0
+    },
+    "incremental_formula": "Candles1+book1+daygrowth0/1+price0 if usable shared overview else direct1(+fallbackmax1)+selectedoptional≤2+deliveryrefresh0/2. Funding uses shared bulk0 incremental if qualified. Map≤1 separate provider. These are upper reservations,not measured fixed cost.",
+    "actual_no_repricing": true
+  },
+  "protected_budget": {
+    "project_source_HTTP_day": 900,
+    "BingX_month": 27900,
+    "BingX_minute": 10,
+    "BingX_pace_seconds": 1,
+    "planned_ceiling_fraction": 0.8,
+    "after_protecting": "3complete manual checks +future scans/hourly candidate carry +delivery +outcomes +allissued/spent/unknowns",
+    "known_3manual_reservation": "51BingX+3TG retained;not silently repriced",
+    "delivery_floor": 24,
+    "outcome_floor": 24,
+    "hourly_candidate_policy": "ROOT owner base2;unused elapsed-hour places carryforward0→4;no borrowing future hours/no forced checks",
+    "native_caps_unchanged": "Normal5000R300W800queries/15min;LOOKUP500R30W10queries/day,sharedphysicalprotectionsunchanged;all need separate actual admission.",
+    "whole_account_remaining": "UNKNOWN_NOT_ZERO",
+    "ledger_owner": "ROOT_ONLY",
+    "errors": "429/BingX100410 honorRetry-After/min60s;4084255xx exponential60smax900;404410 negative1h notUNSUPPORTED;redirects refused;0 automatic retries;unknown spent not refunded."
+  },
+  "acceptance_after_ROOT_integration": "One affected provider parser/transport case validates that case only;not all550. Full catalogue exact join table and per-block actualfresh/consumer-used evidence are separate claims. Docs/connected/MCPdescription≠qualified production."
+}

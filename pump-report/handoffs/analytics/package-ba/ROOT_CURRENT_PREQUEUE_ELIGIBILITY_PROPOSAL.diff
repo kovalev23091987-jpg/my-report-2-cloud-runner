@@ -1,0 +1,28 @@
+--- a/pump-report/runtime/runner.mjs
++++ b/pump-report/runtime/runner.mjs
+@@ -14,6 +14,7 @@
+ 
+ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null,await_source_window=async()=>{},assess_source_evidence=()=>({eligible:true})}){
+   if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
++  const prequeueNear=(reported,change)=>(typeof reported==='number'&&reported>=profile.automatic_growth.day_pct*profile.prequeue_threshold_fraction)||(change!==null&&change>=profile.automatic_growth.short_pct*profile.prequeue_threshold_fraction);
+   const manualResultKey=id=>'pump:manual-result:'+id;
+   const observations=createOutcomeJournal({store,profile,clock,evidence_class,retained_features});
+   const manualWork=createWorkIndex({store,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async job=>job.status==='COMPLETE'&&await store.get(manualResultKey(job.request_id))!==null});
+@@ -56,7 +57,7 @@
+       for(const row of compact){
+         const prior=history.flatMap(snapshot=>snapshot.rows.filter(r=>r.id===row.id).map(r=>({...r,snapshot_ts:snapshot.ts}))).filter(r=>positive(r.last));
+         const change=positive(row.last)&&prior.length?Math.max(...prior.map(p=>(row.last/p.last-1)*100)):null;
+-        const near=(typeof row.reported_change_pct==='number'&&row.reported_change_pct>=profile.automatic_growth.day_pct*profile.prequeue_threshold_fraction)||(change!==null&&change>=profile.automatic_growth.short_pct*profile.prequeue_threshold_fraction);
++        const near=prequeueNear(row.reported_change_pct,change);
+         if(!near&&!active.includes(row.id)&&!queue[row.id])continue;
+         const observed=overview.observations.find(o=>o.instrument.instrument_id===row.id)?.facts?.price;
+         const priorQueue=queue[row.id]??{},zones=priorQueue.entry_zones??[],usable=factUsable(observed,now)&&positive(observed.value);
+@@ -71,7 +72,7 @@
+   }
+   async function selectAutomatic(catalog){
+     const queue=await store.get('pump:candidate-queue')??{},now=clock();
+-    const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now);
++    const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now&&(r.active_wave===true||prequeueNear(r.reported_day_growth,r.preliminary_growth)));
+     const score=r=>candidatePriority(r,now,{profile}).score;
+     candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
+     const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)&&assess_source_evidence(i).eligible));

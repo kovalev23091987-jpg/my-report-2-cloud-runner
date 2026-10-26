@@ -1,0 +1,194 @@
+{
+  "schema": "F589_PROVIDER_ROUTE_FINDINGS_V1",
+  "status": "DOCS_VERIFIED_CONNECTION_NOT_CHECKED",
+  "documentation_is_connection_proof": false,
+  "providers": [
+    {
+      "id": "BYKARANTELI",
+      "upstream_group": "BYKARANTELI_ONE_PROVIDER_ONE_QUOTA",
+      "wrappers": [
+        "bykaranteli",
+        "bykaranteli_market_data",
+        "bykaranteli_market_data_2"
+      ],
+      "primary": [
+        {
+          "url": "https://bykaranteli.com/developers",
+          "read_result": "PRIMARY_PAGE_READ",
+          "supports": "Program Bearer key,free rate/quota,public catalogue,cache,REST map route,MCP shared quota and paid streaming boundary."
+        },
+        {
+          "url": "https://bykaranteli.com/changelog?category=api",
+          "read_result": "PRIMARY_PAGE_READ",
+          "supports": "9Oct program key enforcement on page-internal map route;2Oct degraded/input presence metadata."
+        },
+        {
+          "url": "https://bykaranteli.com/methodology",
+          "read_result": "FIRST_OPEN_ONLY_NAVIGATION_RETURNED",
+          "reuse": "F562 retained methodology; no new full audit claimed"
+        }
+      ],
+      "metadata_conflict": {
+        "description": "Installed MCP wrappers advertise free/keyless24h. Current official program documentation requires a verified-account key.",
+        "resolution": "Use keyed Worker REST; do not spoof browser/session/Fetch Metadata or probe keyless aliases.",
+        "metadata_is_actual_auth_proof": false,
+        "Worker_key_present": "UNKNOWN",
+        "account_plan": "UNKNOWN"
+      },
+      "entitlement": {
+        "documentation_status": "VERIFIED",
+        "free_program_key": "VERIFIED_ACCOUNT_REQUIRED",
+        "rate_per_minute": 30,
+        "quota_per_month": 15000,
+        "API_MCP_counter": "SHARED",
+        "scope": "public-depth24h map; attribution/personal-research per current docs",
+        "remaining_quota": "UNKNOWN",
+        "reset_clock_actual": "UNKNOWN",
+        "paid_or_wallet_fallback": "DISABLED",
+        "member_timeframes": "NOT_FREE_WORKER_PROFILE",
+        "stream": "PAID_BOUNDARY_NOT_ACTIVATED"
+      },
+      "catalogue": {
+        "method": "GET",
+        "url": "https://bykaranteli.com/api/public/symbols?sort=volume&top=1000",
+        "operation_status": "DOC_VERIFIED_NOT_ACTUALLY_CALLED",
+        "array": "symbols",
+        "total": "totalSymbols",
+        "snapshot_clock": "generatedAt",
+        "default_top": 200,
+        "max_top": 1000,
+        "pagination": "NO_CURSOR_DOCUMENTED; do not invent pages",
+        "fullcoverage_rule": "Require returned unique row count==totalSymbols and <=1000; otherwise UNKNOWN_INCOMPLETE. Reject truncation/duplicates, not silently first200.",
+        "scope": "Tracked Binance USDT-M board; not dedicated LiqMap supported-symbol registry; no cross-venue canonical asset identity guarantee.",
+        "noncrypto_filter": "Use exact verified classification independent of name or language.",
+        "model_universe_list": "UNKNOWN"
+      },
+      "future_map": {
+        "method": "GET",
+        "url_template": "https://bykaranteli.com/api/liqmap/public?symbol={EXACT_PROVIDER_MAP_ID}",
+        "documented_alias": "https://bykaranteli.com/api/public/liqmap",
+        "selected_canonical_route": "/api/liqmap/public",
+        "request_timeframe": "24h public default",
+        "authentication_header": "Authorization: Bearer <server-secret>",
+        "paid_alias_fallback": false,
+        "potential_provider_count_documented": 201,
+        "potential_count_is_550_overlap": false,
+        "actual_550_canonical_join": "UNKNOWN",
+        "actual_550_qualified_routes": 0,
+        "bulk_all_maps_endpoint": "UNKNOWN_NOT_DOCUMENTED_IN_READ_MATERIAL",
+        "one_symbol_map": "DOCUMENTED",
+        "catalogue_membership_does_not_prove_map_membership": true,
+        "model_kind": "EXTERNAL_MODEL",
+        "native_venues": [
+          "BINANCE",
+          "BYBIT",
+          "OKX",
+          "GATE",
+          "HTX",
+          "HYPERLIQUID"
+        ],
+        "BingX_observed_positions": false,
+        "retained_F562_clocks": {
+          "model_calculation": "about2min",
+          "OI_funding_inputs": "15–20min",
+          "source": "F562 retained primary-methodology review",
+          "current_actual": "NOT_CHECKED"
+        },
+        "cache": {
+          "generic_docs_max_age_seconds": 300,
+          "actual_headers": "NOT_CHECKED",
+          "effective_rule": "min(route-cache permission,original event/model expiry,ROOT consumer freshness); hit never refreshes clocks"
+        },
+        "required_payload_checks": [
+          "separate modeled levels from real liquidation prints",
+          "retain meta.inputs_present and meta.degraded; never neutral-default input as observed fact",
+          "separate model calculation/base-input/native source clocks; received is transport only",
+          "native bands/amount unit or relative scale; no intensity-to-USD conversion",
+          "coverage/venues/model version/native symbol; safe cross-venue price conversion before exact BingX orders",
+          "one upstream/dedupe group across wrappers and nested totals"
+        ],
+        "full_map_coverage": "UNKNOWN",
+        "get_coverage_warning": "Feed registry describes realized liquidation-print feeds; not full LiqMap symbol coverage.",
+        "connection": "NOT_CHECKED",
+        "semantic_qualification": "NOT_CHECKED_FOR_WORKER",
+        "commercial_license_if_needed": "ROOT_TO_ASSESS; no purchase/signup in this package"
+      }
+    },
+    {
+      "id": "0XARCHIVE",
+      "upstream_group": "0XARCHIVE_ONE_PROVIDER",
+      "primary": [
+        {
+          "url": "https://0xarchive.io/data-types/forced-liquidation-levels",
+          "read_result": "PRIMARY_SEARCH_EXCERPT_RETAINED;2 direct reads failed cache-miss",
+          "not_claimed": "Full API reference was not read"
+        },
+        {
+          "url": "https://0xarchive.io/",
+          "read_result": "PRIMARY_PAGE_READ",
+          "supports": "Free key/credits/history,namespace/coverage_by_type,API base/auth example;docshost linked"
+        },
+        {
+          "url": "https://docs.0xarchive.io",
+          "read_result": "LINK_DISCOVERED_NOT_READ"
+        }
+      ],
+      "entitlement": {
+        "status": "DOC_PLAN_VERIFIED_METHOD_COST_UNKNOWN",
+        "free_credits_per_month": 50000,
+        "rate_per_second": 15,
+        "rolling_history_days": 30,
+        "max_request_or_replay_days": 30,
+        "credits_per_levels_call": "UNKNOWN",
+        "catalogue_call_credits": "UNKNOWN",
+        "actual_key_and_balance": "UNKNOWN",
+        "exact_quota_reset": "UNKNOWN",
+        "no_50000_map_calls_claim": true,
+        "paid_exports": "SEPARATE_QUOTE_NOT_FREE_BULK_MAP"
+      },
+      "future_map": {
+        "model_kind": "EXTERNAL_MODEL",
+        "BingX_observed_positions": false,
+        "native_families": [
+          "HYPERLIQUID_CORE",
+          "HIP3"
+        ],
+        "route_relative_documented": "/liquidations/{symbol}/levels",
+        "core_REST_candidate": "https://api.0xarchive.io/v1/hyperliquid/liquidations/{symbol}/levels",
+        "core_REST_candidate_basis": "INFERENCE:homepage core API base plus primary page relative path;exact method reference/params/credit weight NOT_QUALIFIED. Do not execute this inferred URL.",
+        "API_key_header_documented_example": "X-API-Key",
+        "catalogue_REST_exact_route": "UNKNOWN",
+        "catalogue_bulk_guidance": "Symbols feed + exact family + coverage_by_type; earliest overall record does not prove this schema.",
+        "all_symbol_map_bulk_endpoint": "UNKNOWN",
+        "MCP_metadata_only": {
+          "catalogue": "mcp__codex_apps__0xarchive2_get_instruments",
+          "HIP3_catalogue": "mcp__codex_apps__0xarchive2_get_hip3_instruments",
+          "core_map": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+          "HIP3_map": "mcp__codex_apps__0xarchive2_get_hip3_liquidation_levels",
+          "fact_calls": 0,
+          "full_catalogue_pagination": "Response can expose nextCursor but these two catalogue signatures have no cursor input; do not invent continuation."
+        },
+        "retained_F562_clocks": {
+          "calculation": "about5min since2026-08-13; older45min description obsolete",
+          "base_exchange_state": "30–65min older than snapshot_ts",
+          "roll_forward": "core fills rolled forward;HIP3 not; margin/funding/new-account gaps persist",
+          "actual_current": "NOT_CHECKED"
+        },
+        "snapshot_clock": "snapshot_ts",
+        "additional_clock_rule": "Retain base-state time and as-of separately; small requested buckets cannot create finer source precision.",
+        "actual_550_join": "UNKNOWN",
+        "actual_qualified_550_routes": 0,
+        "connection": "NOT_CHECKED",
+        "stop_reason": "EXACT_CATALOGUE_REST_ROUTE_PAGINATION_AND_METHOD_CREDIT_COST_NOT_CLOSED_WITHIN_DOC_GRANT",
+        "not_rejected_just_for_old45min": true,
+        "model_origin": "HYPERLIQUID_CLEARINGHOUSE_DERIVED"
+      }
+    },
+    {
+      "id": "BUILDIX_MAP",
+      "status": "EXCLUDED_PAID_MAP_RETAINED_NO_REPLAY",
+      "native_calls": 0
+    }
+  ],
+  "next_choice": "ByKaranteli has a concrete keyed free REST entry. First close provider key/headroom and exact identity gaps under ROOT separate actual admission. 0xArchive remains a bounded alternative after exact route/cost gap closes; no paid automatic fallback."
+}

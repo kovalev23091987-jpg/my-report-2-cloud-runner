@@ -1,0 +1,59 @@
+{
+  "schema": "BC_ACTIVE_BLOCK_GENERIC_CONSUMER_BOUNDARY_V1",
+  "input_pin": "87420e4ab27f582faf3cd8502ce54703ac126dd2f06db1b0d7a4a70aae975af2",
+  "rows": [
+    {
+      "block": "1 movement/price/volume",
+      "mandatory": true,
+      "generic_already": "One analyzePump/START_PROFILE; growth, volume comparison, wave state and AZ plan are instrument-parameterized, no ticker-specific thresholds.",
+      "per_instrument_bulk_output": "Canonical input.instrument; price kind/unitUSDT_PER_BASE; separate closed candles in exact1m grid and own comparison key; growth_24h exact1440closed rows/24h boundaries if used.",
+      "source_proof_pending": "Exact native catalogue join/base/quote/settle; row clock and closed-time convention; native volume same counter/route/market comparison only; no inferred absolute units. BingX-specific day contract cannot be filled by relabeling another venue.",
+      "actual_observation_needed": "Source complete provider catalogue+550join and per-row statuses; real bounded bulk capture with per-symbol windows/coverage, selected consumer use. Bulk ticker is preliminary, not all550CORE."
+    },
+    {
+      "block": "2 executed buys/sells",
+      "mandatory": false,
+      "generic_already": "One trade sample consumer: stable-ID dedup/conflict exclusion, timestamp/side and quantity-or-quote-notional units, sample price response; no absorption claim.",
+      "per_instrument_bulk_output": "Per-market split trades fact, row trade_id/event_ts/price/aggressor_side and quantity_base OR notional_quote; same native ID+provider/market lineage; sample start/end/returned counts.",
+      "source_proof_pending": "Official side and amount semantics; namespace tradeID by provider+native market before global bulk dedup; returned limit/pagination does not equal full market. Genuine bulk capability/free entitlement belongs SOURCE.",
+      "actual_observation_needed": "Real admitted route response, exact selected-instrument sample, skipped/conflicting-row coverage and actual consumer finding. Existing ready-only gate remains separate; BC does not move it."
+    },
+    {
+      "block": "3 liquidity/execution",
+      "mandatory": true,
+      "generic_already": "Same700/1000/1500/2000/3000USDT checks and spread/slippage profile for each instrument; computed position limit adapts to data, not hand tuning.",
+      "per_instrument_bulk_output": "Book bids/asks numeric price+BASE quantity, monotone noncrossed sides; exact market ID, original source snapshot clock and15s TTL; instrument quantity_step/tick from catalogue when proven.",
+      "source_proof_pending": "Native COIN/contracts/BASE units and multipliers per family/schema; no defaultfactor1. Provider-wide proven rule may generate metadata automatically; exceptions stay unknown. Returned depth is visible partial book.",
+      "actual_observation_needed": "Actual fresh matched books, sizes and row coverage. Qualified semantic family alone is not actual CORE550, and current book does not guarantee future execution."
+    },
+    {
+      "block": "4 OI/funding",
+      "mandatory": false,
+      "generic_already": "One optional-context consumer accepts explicit OI units and funding fraction/actual period, keeps source clocks and labels; one OI cut is not change/direction.",
+      "per_instrument_bulk_output": "OI scalar>=0 with CONTRACTS/BASE_ASSET/USDT; funding rate fraction plus actual period_ms<=24h; source event/received/expiry, provider/native market provenance and per-field status.",
+      "source_proof_pending": "OI count/multiplier/quote semantics; funding fraction-vs-percent, rate-known event clock distinct from update/next settlement, real period. Provider bulk-level semantics once plus per-native-market catalogue metadata. F588preparedinactive is not production.",
+      "actual_observation_needed": "Official qualified real rows for exact joined markets and timestamps; consumer accepts only typed fresh facts. User asserted rate or generic URL is not actual funding. F589 owns bulk/free entitlement research."
+    },
+    {
+      "block": "6 future liquidations/map",
+      "mandatory": false,
+      "generic_already": "Generic asset-bound zone selector with known source clocks, USDT comparability, position/model basis and provider-aware dedup; missing maps nonblocking.",
+      "per_instrument_bulk_output": "asset_id, original venue/market_id/provider, zone/position IDs, lower/upper, price currency+conversion/comparability evidence, basis_type OBSERVED_POSITION or EXTERNAL_MODEL, model/version/asof where applicable, magnitude units/relative scale, partial coverage and TTL.",
+      "source_proof_pending": "Prove observed still-open positions or documented modeled future levels. Executed liquidation prints, ordinary support levels and trigger orders do not become future maps. Shared upstream wrappers are one source/quota.",
+      "actual_observation_needed": "Actual qualified provider bulk rows and exact550asset/market join, per-asset USABLE/PARTIAL/NOT_CHECKED etc; one SOL/DOOD parser example cannot prove all550."
+    },
+    {
+      "block": "Independent pullback/add/exit/cancel plan",
+      "mandatory": true,
+      "generic_already": "Single AZ algorithm derives own known pivots/normal range, ordinary target or current-wave prior-high fallback, each-entry owner10-before-cap3 and known obstacles; no percoin drawing.",
+      "per_instrument_bulk_output": "Only qualified own instrument candles/book/price and persisted same-instrument wave; original known_ts/fact IDs/as_of, tick/quantity metadata when proven.",
+      "source_proof_pending": "No new provider plan profile required; correct identity/units/clocks upstream remain necessary. BTC/ETH relative comparison is cancelled and must not reappear.",
+      "actual_observation_needed": "Actual selected current analysis/retained facts and existing revalidation→saved text→same-run delivery prove use; a generic engine or frozen controlled test is not a new live signal."
+    }
+  ],
+  "block5_BTC_ETH_comparison_cancelled": true,
+  "block7_support_persistence_postlaunch_not_added": true,
+  "provider_route_not_six_services_required": true,
+  "no_new_consumer_gap_found_in_this_static_boundary_review": true,
+  "proposed_case_count": 0
+}
