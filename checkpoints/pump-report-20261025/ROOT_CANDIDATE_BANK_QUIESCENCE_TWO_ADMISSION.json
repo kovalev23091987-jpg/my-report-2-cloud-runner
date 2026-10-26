@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_QUIESCENT",
   "authority_main": "84458fab46d1aa1bf2318cb20d35d316111c1552",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793004911853",
@@ -38,5 +38,23 @@
   "previous_saved_sha256": "fbe7161ef68b820701643512d2805be35983a5412eaee5f10bb91c7df93a0146",
   "previous_observed_executor_run_id": "46a4cefb-3434-4541-a5d9-f9bce2d3edf1",
   "previous_observed_executor_expiry": 1793005511117,
-  "new_condition": "Previously observed executor expiry elapsed; newAUTOdisabled; one followup, no polling loop"
+  "new_condition": "Previously observed executor expiry elapsed; newAUTOdisabled; one followup, no polling loop",
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-candidate-bank-maintenance-quiescence-20261026-two",
+    "usage": {
+      "requests": 6,
+      "rows_read": 37,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 37,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "1b0312a4a1089f81817ea850e6fc891d4f69efe183fa59f47a17734fa4199599",
+  "private_result_file": "pump-report/.private/observations/candidate-bank-quiescence-two-result.json",
+  "completed_ts": 1793005602662
 }

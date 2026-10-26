@@ -1,0 +1,51 @@
+{
+  "schema": "ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK_V1",
+  "authority_main": "3ebfa07e8a1a2de19f5b8b13d77f717e7ea193a4",
+  "readback_ts": 1793005686013,
+  "artifact_sha256": "b181be2647ceeb7741b3faad13e34511959d36962eb57ea07e000e596c729774",
+  "implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+  "module_count": 66,
+  "FULL_exact_module_bytes": true,
+  "config_unchanged": true,
+  "health": {
+    "version": "pump-report-v1.10-native-source-evidence-admission",
+    "implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+    "provider_stage": "PRODUCTION_QUALIFIED",
+    "automatic_enabled": false,
+    "delivery_enabled": true,
+    "legacy_schedules_restored": false
+  },
+  "bindings_count": 21,
+  "all3_schedules": {
+    "my-report-2-hub": [
+      "*/5 7-16 * * *"
+    ],
+    "my-report-2-free-history": [],
+    "my-report-2-liq-forecast-history": []
+  },
+  "deployment": {
+    "created_on": "2026-09-11T11:02:15.740887Z",
+    "modified_on": "2026-10-26T09:07:54.52635Z",
+    "id": "my-report-2-hub",
+    "tag": "7c2c70426b0642a596cbf79aae0748bc",
+    "entry_point": "worker-entry.mjs",
+    "tags": [],
+    "deployment_id": "42a7cccae1e74af39b421fc5ade012b7",
+    "tail_consumers": null,
+    "logpush": false,
+    "has_assets": false,
+    "has_modules": true,
+    "etag": "301040fd3126b635583bfed2f7c8b8c4f75064ec01a5627c43f8722f338c4e08",
+    "handlers": [
+      "fetch",
+      "scheduled"
+    ],
+    "last_deployed_from": "api",
+    "compatibility_date": "2026-09-11",
+    "usage_model": "standard",
+    "startup_time_ms": 5
+  },
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0
+}
