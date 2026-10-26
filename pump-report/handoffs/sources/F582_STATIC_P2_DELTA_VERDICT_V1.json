@@ -1,0 +1,92 @@
+{
+  "schema": "F582_STATIC_P2_DELTA_VERDICT_V1",
+  "verdict": "PASS_STATIC_P2_CLOSED_NO_NEW_DELTA_FINDINGS",
+  "scope": "Only F581 missing-identityP2 fix and its new direct contracts dependency; no full F581/source/outcome audit repeat",
+  "inputs": [
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893",
+      "bytes": 3072,
+      "kind": "ROOT_FROZEN_INPUT"
+    },
+    {
+      "path": "pump-report/tests/runtime/saved-auto-candidate-observation-connected.test.mjs",
+      "sha256": "081e1f513ed6a45f84978a5d1dab9fbd3afd346567cf43320c9308213292cd7c",
+      "bytes": 3853,
+      "kind": "ROOT_FROZEN_INPUT"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "bytes": 6230,
+      "kind": "READ_ONLY_EXISTING_DIRECT_DEPENDENCY",
+      "contract_version": "pump-report-contract-v1.2-quote-notional"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "lines": [
+        2,
+        6,
+        27,
+        31
+      ],
+      "finding": "instrumentValid calls existing assertInstrument then ownerInstrumentExcluded. Validator errors return false; binding requires valid analysis instrument plus exact input instrument equality. The null-ID fallback is removed."
+    },
+    {
+      "file": "pump-report/contracts/index.mjs",
+      "lines": [
+        22,
+        26,
+        43,
+        46
+      ],
+      "finding": "Existing guard requires nonempty instrument_id/asset_id/native_symbol/base and VERIFIED_CRYPTO/BINGX/PERPETUAL/USDTquote+settle. Owner exclusion checks all identity names; full Unicode fixture is not excluded. Both functions are read-only; no imports/transitive module dependencies or top-level network/fs/SQL/timer actions."
+    },
+    {
+      "file": "pump-report/tests/runtime/saved-auto-candidate-observation-connected.test.mjs",
+      "lines": [
+        6,
+        26,
+        37
+      ],
+      "finding": "New affected case includes equal incomplete identity, bad venue/settle/classification/BTC/ETH and complete Unicode identity. Read count remains1. Existing affected case now uses full schema."
+    }
+  ],
+  "side_effect_assessment": "No new store/network/market/SQL/TG/Worker calls or input mutation in the dependency/predicate. Still one original get. Invalid identity becomes mismatch without an uncaught validation error.",
+  "limits": [
+    "Static verdict for recorded hashes only; no module import/test/observer execution by SOURCE.",
+    "ROOT reports affected file2PASS0FAIL; supplied result not rerun by SOURCE.",
+    "No genuine AUTO original, current data freshness, strategy, READY or SENT accepted. New actual admission still required before PK reads; prior query/rows/cap limits unchanged."
+  ],
+  "actual": {
+    "source_imports": 0,
+    "tests": 0,
+    "observer_execute": 0,
+    "web_provider_research": 0,
+    "native_provider_market_SQL_TG_Worker": 0,
+    "working_code_edits": 0,
+    "new_chats_agents_automations": 0,
+    "outgoing_messages": 0
+  },
+  "authority": {
+    "main": "d9e1d07a7cc31465dacadc2135be29614c73063f",
+    "final_same_main_check_utc": "2026-10-26 05:41:47 UTC",
+    "working_source_base_and_head": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+    "fresh_AGENTS_all4_window3_phase_fence_generation_FULL": true,
+    "root_owner": "CODEX:PUMP_LIVE_INTEGRATION:1792989633834",
+    "root_expires_ts": 1792994733834,
+    "own_ref": "leases/report2-sources",
+    "own_owner": "CODEX:SOURCES:01a171fd:1792993144000",
+    "own_acquired_ts": 1792993144000,
+    "own_expires_ts": 1792994044000,
+    "own_duration_minutes": 15,
+    "acquire_commit": "feb288b8fe1ca1076ac8218fcac5e25c0790c61b",
+    "acquire_FULL_exact_ref_and_bytes": true,
+    "guard_blob_proof": "13 fresh blob SHAs in exact server own lease file at acquire commit",
+    "prepared_release_commit": "a43a691bd12f015fb49f6c2fda66167fd5f170b1",
+    "release_at_freeze": "REF_CAS_AND_POST_CAS_FULL_PENDING; confirmed afterward in chat; no post-release file edits"
+  },
+  "preservation": "Frozen F581 handoff not rewritten. Original0674/unified384e and all caps/SPENT/unknowns/reserves/9pauses/2OWNERdeferrals unchanged. Next SOURCE input only same genuine AUTO original from ROOT; no new source search."
+}

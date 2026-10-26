@@ -1,0 +1,100 @@
+{
+  "schema": "F580_EDGEX_SERIALIZER_CANONICAL_ID_METADATA_DELTA_V1",
+  "decision": "HOLD_NO_ACTUAL_ADMISSION_RECOMMENDATION",
+  "prior_package": {
+    "manifest": "PACKAGE_F579_NEW_OPTIONAL_PUBLIC_FEEDS_DOC_RESULT_FINAL_V1.json",
+    "sha256": "cf08104dc8cdfe6c06172183a482cd9b5c554d42eb4ccc0900bb72bf290b8fb3",
+    "frozen_unchanged": true,
+    "correction": "Conditional getTicker->funding proposal is not an executable eligibility route; replace with metadata-first ordering only after missing independent proofs close."
+  },
+  "serializer": {
+    "status": "UNRESOLVED",
+    "primary": "https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/funding/types.go",
+    "git_blob": "5328f7bc5274dffca8ce4669be03cee7ec271ae5",
+    "exact_model_fact": "FundingRate is *string with JSON name fundingRate and omitempty",
+    "proved": "JSON string representation; optional field",
+    "not_proved": "Ratio vs percentage-point numeric serialization; string type/SDK naming is not scale evidence",
+    "ratio_to_percent_multiplier": null,
+    "reused_F579_formula": "Not reread; multiplier/price-ratio definition does not establish API serializer scale",
+    "do_not_transfer": "Metadata starkExMaxFundingRate per-second backend precision2^32 is a different field from per-interval fundingRate."
+  },
+  "canonical_4STOCK": {
+    "status": "UNRESOLVED",
+    "edgeX_primary": "https://pro.edgex.exchange/en-US/news/article/4stock-on-edgex-stock-themed-bnb-meme-perpetual",
+    "publication_date": "2026-09-08",
+    "published_market": "4STOCKUSDC",
+    "economic_type": "BNB Chain meme perpetual, not equity-backed",
+    "cited_network": "BNB/BEP-20",
+    "cited_token_contract": "0xd270d4e1ec6e6e0d28c0ecb8be966ec75997ffff",
+    "citation_strength": "Article says commonly cited and asks readers to verify authentic contract/live index; not a definitive native index-component binding.",
+    "bingX_primary": "https://bingx.com/en/support/articles/17534353436815",
+    "article_scope": "Funding settlement-frequency notice only",
+    "canonical_project_id": null,
+    "network_or_token_contract_from_BingX_notice": null,
+    "crossvenue_native_binding": null,
+    "matching_ticker_or_price_not_used": true,
+    "currency_boundary": "edgeX article uses USDC. Do not select an assumed edgeX4STOCKUSDT, or turn edgeX context into BingX USDT. Published name is not current metadata or margin-settlement proof.",
+    "prior_U3_scope": "Crypto economic classification retained; not upgraded to cross-venue canonical join.",
+    "BingX_notice_period": "Historical4h notice may change without further announcement; not current period proof or edgeX period."
+  },
+  "metadata": {
+    "status": "EXACT_OPERATION_CLOSED; ELIGIBILITY_PROOF_PARTIAL",
+    "primary": "https://github.com/edgex-org/edgex-gitbook/blob/main/api-v2/public-api/metadata-api.md",
+    "git_blob": "cc37397a70e0a41fd826b7428b2140a7c09b0249",
+    "method": "GET",
+    "host": "https://edgex-prod-v2.edgex.exchange",
+    "path": "/api/v2/public/meta/getMetaData",
+    "parameters": "none documented",
+    "authentication": "Public meta family from retained V2 auth guide; no native call.",
+    "payload": {
+      "global": "Global config",
+      "coinList": "Coin metadata",
+      "contractList": "Perpetual contract metadata",
+      "multiChain": "Deposit/withdrawal-related config"
+    },
+    "join": "contractList[].baseCoinId and quoteCoinId -> exact unique coinList[].coinId; keep edgeX namespaces, never BingX contract/coin IDs",
+    "direct_fields": {
+      "contractId": "Native perpetual pair ID",
+      "contractName": "Native perpetual name",
+      "baseCoinId": "Base coin ID",
+      "quoteCoinId": "Quote coin ID",
+      "enableTrade": "Trading enabled",
+      "enableDisplay": "Display enabled",
+      "enableOpenPosition": "Opening enabled versus close-only",
+      "fundingRateIntervalMin": "Current metadata settlement interval minutes, multiple60",
+      "stepSize": "Base quantity increment",
+      "tickSize": "Quote price increment"
+    },
+    "global_environment": "appEnv enum dev/testnet/mainnet; response example is testnet, not production receipt.",
+    "missing": {
+      "current_native_values": "NOT_CHECKED",
+      "crypto_vs_stock_RWA_classification": null,
+      "per_contract_explicit_settle_or_margin_asset": null,
+      "underlying_project_chain_contract_id": null
+    },
+    "unrelated_identity_fields": "data.multiChain.chainList[].tokenList[].tokenAddress concerns deposit/withdrawal assets tied to data.multiChain.coinId; global protocol addresses, synthetic IDs and collateral IDs are not canonical4STOCK underlying identifiers.",
+    "current_config_vs_history": "Current metadata interval cannot overwrite an historical record interval or resolve F579 prose/sample contradictions.",
+    "quota_v2": null,
+    "quota_read": "NOT_PERFORMED; core prerequisites unresolved, sixth attempt unused."
+  },
+  "coverage": {
+    "selected550": "NOT_CHECKED",
+    "future_maps_checked": 0,
+    "future_maps_qualified": 0,
+    "unsupported": 0,
+    "canonical_crossvenue_joins": 0,
+    "current_provider_catalog_qualified": false,
+    "new_routes_registry_votes": 0
+  },
+  "actual": {
+    "doc_attempts_spent": 5,
+    "doc_attempts_unused": 1,
+    "searches_spent": 1,
+    "native_market_metadata_provider_RPC_SQL_TG_Worker_deploy_privatecapture": 0,
+    "source_vendor_import_execution": 0,
+    "production_tests": 0,
+    "new_chats_agents_automations": 0,
+    "outgoing_messages": 0
+  },
+  "preserve": "Original0674/unified384e unchanged; old spent unknowns reserves caps9pauses2OWNERdeferrals and old report pause preserved."
+}

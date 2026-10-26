@@ -1,0 +1,56 @@
+{
+  "schema": "F580_PRIMARY_DOC_PROVENANCE_V1",
+  "basis": "Exact UTF8 cached parsed/serialized tool response; static GitHub file content has additional UTF8 digest and publisher blob. Not native market captures, raw HTTP bytes or current eligibility proof.",
+  "receipts": [
+    {
+      "attempt": 1,
+      "parsed_response_bytes": 6958,
+      "parsed_response_sha256": "11d1ef8e9740cbac73e95355784ac28ab73147f4c6f75cba6ee00b7041f3e902",
+      "header": "{\"content\":[{\"type\":\"text\",\"text\":\"Action completed.\"}],\"structuredContent\":{\"results\":[{\"url\":\"https://github.com/edgex-Tech/edgex-python-sdk/blob/487274d97cd1b77e05a759dbdf75e191582adefc/edgex_sdk/ws/manager.py\",\"path\":\"edgex_sdk/ws/manager.py\",\"display_url\":\"https://github.com/edgex-Tech/edgex-python-sdk/blob/487274d97cd1b77e05a759dbdf75e191582adefc/edgex_sdk/ws/manager.py\",\"display_title\":\"edgex_sdk/ws/manager.py\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"\\n    def subscribe_funding_rate(self, contract_id: str, handler: Callable[[str], None]):\\n        client = self.get_public_client()\\n        client.on_message(\\\"fundingRate\\\", handler)\\n        client.subscribe(f\\\"fundingRate.{contract_id}\\\")\\n\\n    def subscribe_funding_rate_all(self, handler: Callable[[str], None]):\",\"matches\":[{\"text\":\"fundingRate\",\"indices\":[158,169]},{\"text\":\"fundingRate\",\"indices\":[208,219]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/ws/manager.go\",\"path\":\"sdk/ws/manager.go\",\"display_url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/ws/manager.go\",\"display_title\":\"sdk/ws/manager.go\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"\\t\\treturn fmt.Errorf(\\\"public WebSocket connection not established\\\")\\n\\t}\\n\\n\\tclient.OnMessage(\\\"fundingRate\\\", handler)\\n\\treturn client.Subscribe(fmt.Sprintf(\\\"fundingRate.%s\\\", contractID), nil)\\n}\\n\",\"matches\":[{\"text\":\"fundingRate\",\"indices\":[90,101]},{\"text\":\"fundingRate\",\"indices\":[151,162]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/funding/types.go\",\"path\":\"sdk/funding/types.go\",\"display_url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/funding/types.go\",\"display_title\":\"sdk/funding/types.go\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"// FundingRate represents funding rate data\\ntype FundingRate struct {\\n\\tContractId               *string `json:\\\"contractId,omitempty\\\"`\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[3,14]},{\"text\":\"FundingRate\",\"indices\":[49,60]}]},{\"property\":\"content\",\"fragment\":\"\\tIndexPrice               *string `json:\\\"indexPrice,omitempty\\\"`\\n\\tFundingRate              *string `json:\\\"fundingRate,omitempty\\\"`\\n\\tIsSettlement             *bool   `json:\\\"isSettlement,omitempty\\\"`\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[65,76]},{\"text\":\"fundingRate\",\"indices\":[105,116]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/quote/types.go\",\"path\":\"sdk/quote/types.go\",\"display_url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/quote/types.go\",\"display_title\":\"sdk/quote/types.go\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"\\tIndexPrice         *string `json:\\\"indexPrice,omitempty\\\"`\\n\\tOraclePrice        *string `json:\\\"oraclePrice,omitempty\\\"`\\n\\tOpenInterest       *string `json:\\\"openInterest,omitempty\\\"`\\n\\tFundingRate        *string `json:\\\"fundingRate,omitempty\\\"`\\n\\tFundingTime        *string `json:\\\"fundingTime,omitempty\\\"`\\n\\tNextFundingTime    *string `json:\\\"nextFundingTime,omitempty\\\"`\\n}\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[178,189]},{\"text\":\"fundingRate\",\"indices\":[212,223]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-python-sdk/blob/487274d97cd1b77e05a759dbdf75e191582adefc/edgex_sdk/funding/client.py\",\"path\":\"edgex_sdk/funding/client.py\",\"display_url\":\"https://github.com/edgex-Tech/edgex-python-sdk/blob/487274d97cd1b77e05a759dbdf75e191582adefc/edgex_sdk/funding/client.py\",\"display_title\":\"edgex_sdk/funding/client.py\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"        if filter_settlement_funding_rate:\\n            query_params[\\\"filterSettlementFundingRate\\\"] = \\\"true\\\"\\n        if filter_begin_time_inclusive > 0:\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[85,96]}]},{\"property\":\"content\",\"fragment\":\"            query_params[\\\"contractId\\\"] = \\\",\\\".join(contract_ids)\\n        return await self.async_client.make_public_request(\\n            method=\\\"GET\\\", path=\\\"/api/v2/public/funding/getLatestFundingRate\\\", params=query_params)\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[188,199]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/funding/client.go\",\"path\":\"sdk/funding/client.go\",\"display_url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/funding/client.go\",\"display_title\":\"sdk/funding/client.go\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"\\t}\\n}\\n\\n// GetFundingRate gets the funding rate for a contract\\nfunc (c *Client) GetFundingRate(ctx context.Context, params GetFundingRateParams) (*ResultPageDataFundingRate, error) {\\n\\turl := fmt.Sprintf(\\\"%s/api/v2/public/funding/getFundingRatePage\\\", c.c.GetBaseURL())\\n\\tqueryParams := map[string]string{\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[12,23]},{\"text\":\"FundingRate\",\"indices\":[81,92]},{\"text\":\"FundingRate\",\"indices\":[124,135]},{\"text\":\"FundingRate\",\"indices\":[159,170]},{\"text\":\"FundingRate\",\"indices\":[230,241]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/metadata/types.go\",\"path\":\"sdk/metadata/types.go\",\"display_url\":\"https://github.com/edgex-Tech/edgex-golang-sdk/blob/a25b92ed45b44df330b2ab4533ff360c322642e3/sdk/metadata/types.go\",\"display_title\":\"sdk/metadata/types.go\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"\\tStarkExContractAddress       string `json:\\\"starkExContractAddress\\\"`\\n\\tCollateralCoin               *Coin  `json:\\\"collateralCoin\\\"`\\n\\tStarkExCollateralCoin        *Coin  `json:\\\"starkExCollateralCoin\\\"`\\n\\tStarkExMaxFundingRate        int32  `json:\\\"starkExMaxFundingRate\\\"`\\n\\tStarkExOrdersTreeHeight      int32  `json:\\\"starkExOrdersTreeHeight\\\"`\\n\\tStarkExPositionsTreeHeight   int32  `json:\\\"starkExPositionsTreeHeight\\\"`\\n\\tStarkExFundingValidityPeriod int32  `json:\\\"starkExFundingValidityPeriod\\\"`\",\"matches\":[{\"text\":\"FundingRate\",\"indices\":[209,220]},{\"text\":\"FundingRate\",\"indices\":[252,263]}]}]},{\"url\":\"https://github.com/edgex-Tech/edgex-python-sdk/blob/487274d97cd1b77e05a759dbdf75e191582adefc/tests/test_websocket_manager.py\",\"path\":\"tests/test_websocket_manager.py\",\"display_url\":\"https://github.com/edgex-Tech/edgex-python-sdk/blob/487274d97cd1b77e05a759dbdf75e191582adefc/tests/test_websocket_manager.py\",\"display_title\":\"tests/test_websocket_manager.py\",\"text_matches\":[{\"property\":\"content\",\"fragment\":\"            [\\n                (\\\"metadata\\\", None),\\n                (\\\"ticker.all.1s\\\", None),\\n                (\\\"fundingRate.10000001\\\", None),\\n                (\\\"fundingRate.all\\\", None),\\n            ],\\n        )\",\"matches\":[{\"text\":\"fundingRate\",\"indices\":[109,120]},{\"text\":\"fundingRate\",\"indices\":[157,168]}]}]}]},\"isError\":false}"
+    },
+    {
+      "attempt": 2,
+      "parsed_response_bytes": 3220,
+      "parsed_response_sha256": "8f68e2c859ff432f308bcdfb00268a3f2f6b284edd76e285c620228ceb875772",
+      "vendor_git_blob_sha": "5328f7bc5274dffca8ce4669be03cee7ec271ae5",
+      "source_UTF8_sha256": "8bf10398b126f16db69ef162071ebd3ae5a0a7e3cdcf81f933dfc0d4557b5b99",
+      "source_UTF8_bytes": 2729
+    },
+    {
+      "attempt": 3,
+      "parsed_response_bytes": 35514,
+      "parsed_response_sha256": "0ebd976c8227e5ef9d4d965876bb90373bef8e616bbb0be2540b5d3cb014d637",
+      "header": "4STOCK Is Listed on edgeX: BNB Stock-Narrative Memes and the On-Chain Attention Trade (https://pro.edgex.exchange/en-US/news/article/4stock-on-edgex-stock-themed-bnb-meme-perpetual)"
+    },
+    {
+      "attempt": 4,
+      "parsed_response_bytes": 10282,
+      "parsed_response_sha256": "71b10cf3dab659a34fbbcc6639f47c244973ec28074c30fca548952ca663aa1b",
+      "header": "BingX Adjusts 4STOCK Funding Rate Settlement Frequency Perpetual Futures (https://bingx.com/en/support/articles/17534353436815)"
+    },
+    {
+      "attempt": 5,
+      "parsed_response_bytes": 26974,
+      "parsed_response_sha256": "4afd9dd2aa80df8d9d6d537840d25a87dd52ba9358012e9655d7bb09990f55dd",
+      "vendor_git_blob_sha": "cc37397a70e0a41fd826b7428b2140a7c09b0249",
+      "source_UTF8_sha256": "ab923907f64520d9d0da9e70f106c0dbc72b879815635df69d5baaea8aa6925d",
+      "source_UTF8_bytes": 25195
+    }
+  ],
+  "pinned_sdk": {
+    "repository": "edgex-Tech/edgex-golang-sdk",
+    "commit": "a25b92ed45b44df330b2ab4533ff360c322642e3",
+    "path": "sdk/funding/types.go",
+    "git_blob": "5328f7bc5274dffca8ce4669be03cee7ec271ae5",
+    "executed": false
+  },
+  "metadata": {
+    "repository": "edgex-org/edgex-gitbook",
+    "ref_at_read": "main",
+    "path": "api-v2/public-api/metadata-api.md",
+    "git_blob": "cc37397a70e0a41fd826b7428b2140a7c09b0249"
+  },
+  "raw_docs_prices_accounts_keys_not_persisted": true,
+  "public_underlying_token_contract_identifier_explicitly_retained": true,
+  "no_failed_URL_retry_or_vendor_execution": true
+}
