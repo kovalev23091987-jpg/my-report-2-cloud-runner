@@ -12,6 +12,7 @@ if(args.length===1&&args[0]==='--describe'){
   console.log(JSON.stringify({schema:'PUMP_PRODUCTION_OBSERVER_PLAN_V1',status:'PREPARED_NOT_ADMITTED',bounds:OBSERVATION_BOUNDS,
     optional_saved_outcome_PK_reads:3,explicit_read_saved_outcome_admission_required:true,
     optional_latest_auto_candidate_PK_reads:1,explicit_read_latest_auto_candidate_admission_required:true,
+    optional_saved_auto_business_queries_max:5,explicit_read_saved_auto_admission_required:true,
     exact_admission_required:true,mode:'LOOKUP',old_CONTROL_and_startup_manual_not_used:true,positive_native_admission_before_SQL:true,
     writes:'Existing shared native reservation/finalization only; business state read-only',network_SQL_TG_executed:0}));
   process.exit(0);
@@ -26,6 +27,7 @@ if(admission.schema!=='PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1'||admission.stat
   !/^[a-f0-9]{64}$/.test(admission.expected_recipient_sha256??'')||
   (admission.read_saved_outcome!==undefined&&typeof admission.read_saved_outcome!=='boolean')||
   (admission.read_latest_auto_candidate!==undefined&&typeof admission.read_latest_auto_candidate!=='boolean')||
+  (admission.read_saved_auto!==undefined&&typeof admission.read_saved_auto!=='boolean')||
   !(now<admission.expires_ts&&admission.expires_ts<=admission.own_lease?.expires_ts&&admission.own_lease.acquired_ts<=now)||
   !/^[A-Za-z0-9:._-]{1,160}$/.test(admission.run_id??'')||admission.native_query_cap!==16||admission.market_HTTP!==0||admission.Telegram!==0)throw Error('POSITIVE_EXACT_OBSERVATION_ADMISSION_REQUIRED');
 const program=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'),'utf8'));
@@ -70,9 +72,12 @@ try{
     return envelope.result[0];
   }}}}}};
   native=await reserveNativeRun({db,run_id:admission.run_id,mode:'LOOKUP',run_purpose:'PRODUCTION',policy:{...NATIVE_POLICY,evidence_ref:'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'},future_schedule:DISCOVERY_PLAN});
-  const executor=await native.store.get('pump:executor');
+  // Reuse the bounded saved-AUTO reader in this same admitted reservation.
+  // It reads the executor itself; do not issue a second executor lookup.
+  const saved_auto=admission.read_saved_auto===true?await readSavedAutoObservation({store:native.store,implementation_sha256:admission.implementation_sha256,expected_recipient_sha256:admission.expected_recipient_sha256}):null;
+  const executor=saved_auto?saved_auto.private_evidence.executor:await native.store.get('pump:executor');
   const resources=await native.store.get('pump:resources');
-  evidence.observation={status:executor?.owner?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,resources,observed_ts:Date.now(),first_genuine_same_original_SENT_observed:false,market_HTTP:0,Telegram:0};
+  evidence.observation={status:executor?.owner?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,resources,...(saved_auto?{saved_auto}:{}),observed_ts:Date.now(),first_genuine_same_original_SENT_observed:saved_auto?.first_genuine_same_original_SENT_observed===true,market_HTTP:0,Telegram:0};
   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';
 }catch(error){
   evidence.error=String(error.code??error.message??'OBSERVATION_FAILED').slice(0,160);evidence.state='FAILED_OR_UNKNOWN_NO_AUTO_RETRY';

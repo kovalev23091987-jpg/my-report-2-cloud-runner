@@ -1,0 +1,43 @@
+--- a/pump-report/analytics/movement.mjs
++++ b/pump-report/analytics/movement.mjs
+@@ -207,16 +207,24 @@
+     current_to_impulse_volume_ratio_unit:'RATIO',reasons:cancelled?['PLAN_INVALIDATED']:[]};
+ }
+ 
+-export function constructPlan(movement, price, liquidity, fact_id, tick, profile) {
++export function constructPlan(movement, price, liquidity, fact_id, tick, profile, as_of_ts=null) {
+   const {pivots,impulse,normal_range}=movement;
+   if(!impulse||!positive(normal_range)||!positive(liquidity.position_limit_usdt))return null;
+   const halfWidth=Math.max(positive(tick)?tick:0,normal_range*profile.entry_zone_normal_range_fraction);
+   const invalidation=movement.next_wave.invalidation_price;
+-  const resistance=pivots.filter(p=>p.kind==='HIGH'&&p.price-halfWidth>price).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0];
++  let resistance=pivots.filter(p=>p.kind==='HIGH'&&p.price-halfWidth>price).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0],returnTarget=false;
++  const knownPivot=p=>positive(p.price)&&validTime(p.event_ts)&&validTime(p.known_ts)&&p.event_ts<=p.known_ts&&p.known_ts<=as_of_ts&&typeof p.fact_id==='string'&&p.fact_id.length>0;
++  if(!resistance){
++    const wave=movement.next_wave;
++    if(movement.active!==true||!validTime(as_of_ts)||!validTime(impulse.start_ts)||!validTime(wave.created_ts)||wave.created_ts>as_of_ts||
++      !validTime(wave.expires_ts)||wave.expires_ts<=as_of_ts||['CANCELLED','EXPIRED'].includes(wave.state))return null;
++    resistance=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.event_ts>=impulse.start_ts).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts)[0];
++    returnTarget=true;
++  }
+   if(!resistance)return null;
+   const exit_zone={lower:resistance.price-halfWidth,upper:resistance.price+halfWidth,basis_fact_ids:[resistance.fact_id??fact_id],basis_level:resistance,
+-    explanation:'Ближайшая подтверждённая вершина '+resistance.price+' выше текущей цены; фиксация всей позиции.'};
+-  const support=pivots.filter(p=>p.price<price&&p.price-halfWidth>invalidation).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts),entries=[];
++    explanation:returnTarget?'Возврат к прежней подтверждённой вершине '+resistance.price+' после будущего отката к области входа; фиксация всей позиции.':'Ближайшая подтверждённая вершина '+resistance.price+' выше текущей цены; фиксация всей позиции.'};
++  const support=pivots.filter(p=>p.price<price&&p.price-halfWidth>invalidation&&(!returnTarget||knownPivot(p))).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts),entries=[];
+   for(const p of support){
+     const lower=p.price-halfWidth,upper=p.price+halfWidth;if(upper>=price)continue;
+     const minimumPotential=100*(exit_zone.lower/upper-1);
+@@ -228,6 +236,11 @@
+     if(entries.length>=profile.maximum_entry_zones)break;}
+   if(!entries.length)return null;
+   if(exit_zone.lower<=Math.max(...entries.map(e=>e.upper)))return null;
++  if(returnTarget){
++    const lowestEntryUpper=Math.min(...entries.map(e=>e.upper));
++    exit_zone.intermediate_highs=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.price>lowestEntryUpper&&p.price<exit_zone.lower)
++      .sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts).map(p=>({...p}));
++  }
+   const min=100*(exit_zone.lower/Math.max(...entries.map(e=>e.upper))-1),max=100*(exit_zone.upper/Math.min(...entries.map(e=>e.lower))-1);
+   return {entry_zones:entries,exit_zone,invalidation:{kind:'PRICE_BELOW',price:invalidation,explanation:'Цена ниже сохранённой границы основания волны.'},
+     position_limit_usdt:liquidity.position_limit_usdt,potential_pct:{minimum:min,maximum:max,basis:'GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT'},

@@ -1,0 +1,35 @@
+{
+  "schema": "AZ_PREDECLARED_CONNECTED_CONTROLLED_SCOPE_V1",
+  "main": "d1c10f483ec4188f1001937151be5054e18c06f6",
+  "owner": "CODEX:OFFLINE_ANOMALIES:1793010070000",
+  "expires_ts": 1793012170000,
+  "implementation_files": [
+    "pump-report/analytics/movement.mjs",
+    "pump-report/analytics/presentation.mjs",
+    "pump-report/analytics/index.mjs"
+  ],
+  "normal_AX_branch": "Unchanged; static proof only, no accepted AX normal-case replay",
+  "controlled_cases": 1,
+  "source_capture_sha256": "280cd8f7725b50f25120e77ec3a24c1a5ffb32f3ccddbfe6734eba3067a945c8",
+  "source_analysis_sha256": "f23232854632c86bb16261993f4d81f8be32aa2e2917fd06b3fe5b2e4ef0cf42",
+  "synthetic_price": "ARTIFICIAL geometry parameter P=max(preknown HIGH)+2*original halfWidth, never a sourcefact, never new market quote",
+  "constructPlan_calls": {
+    "baseline_synthetic": 1,
+    "fixed_synthetic": 1,
+    "fixed_all_HIGH_future_known": 1,
+    "fixed_no_eligible_entry": 1,
+    "fixed_missing_analysis_clock": 1,
+    "fixed_inactive_wave": 1
+  },
+  "formatter_calls": {
+    "fallback_full": 1,
+    "fallback_compact": 1
+  },
+  "script_executions": 1,
+  "analyzePump_calls": 0,
+  "native_market_RPC_SQL_TG_Worker": 0,
+  "no_more_cases_or_reruns": true,
+  "negative_results_expected": "null; existing caller remains non-READY when no plan",
+  "intermediate_context": "All preexisting confirmed HIGH anchors between any planned entry and target, exact fact/event/known provenance; full levels or compact first3+honest remaining count; no guarantee",
+  "clock_contract": "Optional explicit as_of_ts argument, passed by existing analytics caller; only fallback requires valid exact analysis_ts/current active wave"
+}
