@@ -1,0 +1,55 @@
+{
+  "schema": "BP_FIRST_HARNESS_FAILURE_FROZEN_V1",
+  "status": "FAIL_HARNESS_FLOAT_EXPECTATION_NO_RERUN_YET",
+  "frozen_at": "2026-10-26T17:03:15.193974+00:00",
+  "Node_spent": 1,
+  "logical_connected_cases": 1,
+  "expected_preliminary_growth": 12,
+  "actual": 12.00000000000001,
+  "cause": "Strict harness decimal literal versus unchanged JS price-ratio arithmetic; not runtime priority defect",
+  "control_flow_assertions_passed_before_first_failure": [
+    "trace.length2",
+    "selected OLD then NEW",
+    "slots BASE then CONDITIONAL_EXTRA",
+    "both admissions.allowed true",
+    "OLD waiting300 score300",
+    "NEW waiting0 score20"
+  ],
+  "not_persisted_before_failure": [
+    "full trace JSON",
+    "postconditions/delay/queue state checks"
+  ],
+  "minimal_harness_fix_proposed_not_executed": "Expected computed percentage (112/100-1)*100, without changing source formula/threshold; preserve first fail",
+  "files": [
+    {
+      "path": "pump-report/handoffs/analytics/package-bp/.private/bp-selector-once.mjs",
+      "bytes": 10965,
+      "sha256": "9422c07f5b01df7d423c580756b77994faa6a28bc35d33756af9c59d4c60a261"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bp/BP_ARTIFICIAL_COUNTEREXAMPLE_FIXTURE.json",
+      "bytes": 4449,
+      "sha256": "c62568e73fca404b043d51abe74ce9f4c77628146f31d30164e205a5ead06e45"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bp/BP_IMMUTABLE70_INPUTS.json",
+      "bytes": 9646,
+      "sha256": "da178797c6b26c246400364055a92ff0b7225a78f055f9f5228bd3dd577eb783"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bp/BP_EXECUTION_ADMISSION.json",
+      "bytes": 3485,
+      "sha256": "fcd7c185e8f0ea52e6f68800b7ca69dfc110952784373f537eefde902382979e"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bp/BP_FIRST_FAILURE.json",
+      "bytes": 526,
+      "sha256": "cb93c8a584de74730f1aa14054b40fd7c1d66a8217970cf7b2f06aea4367d904"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bp/BP_FIRST_OPERATOR_EXECUTION.json",
+      "bytes": 432,
+      "sha256": "294b81ae4d04e8b9769145c5250e28b22a85f31da9360e1a6d1917809e0423af"
+    }
+  ]
+}
