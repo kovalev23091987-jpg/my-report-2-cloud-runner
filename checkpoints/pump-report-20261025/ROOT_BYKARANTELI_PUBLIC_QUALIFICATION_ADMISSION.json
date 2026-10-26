@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_BYKARANTELI_PUBLIC_MCP_QUALIFICATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "CLOSED_STOPPED_UNAUTHORIZED_ONE_CLIENT_ATTEMPT",
   "authority_main": "7fd822a22df3d0b3d958fd01672de54691bdc7bd",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793009581077",
@@ -61,5 +61,34 @@
   "coverage_join_or_zones_qualified_by_ticker_alone": false,
   "no_map_if_clock_unit_identity_unproven": true,
   "stop_on_auth_paid_quota_transport_failure_no_retry": true,
-  "source_F589_docs_not_rearmed": true
+  "source_F589_docs_not_rearmed": true,
+  "actual": {
+    "schema": "ROOT_BYKARANTELI_CONNECTION_QUALIFICATION_ACTUAL_V1",
+    "status": "STOPPED_UNAUTHORIZED",
+    "admission": "checkpoints/pump-report-20261025/ROOT_BYKARANTELI_PUBLIC_QUALIFICATION_ADMISSION.json",
+    "attempted_ts": 1793012423363,
+    "received_ts": 1793012896531,
+    "tool": "mcp__codex_apps__bykaranteli_get_coverage",
+    "args": {},
+    "actual_client_attempts": 1,
+    "successful_data_responses": 0,
+    "error_code": "UNAUTHORIZED",
+    "error_class": "APP_CONNECTION_REAUTHENTICATION_REQUIRED",
+    "private_original": "pump-report/.private/observations/bykaranteli-coverage-reauth-one-result.json",
+    "private_original_sha256": "1642fc78a6e1ebf638fcc36adea3611762735625497a5367522409a7786bbbce",
+    "DOOD_map_attempts": 0,
+    "map_support": "NOT_CHECKED_NOT_UNSUPPORTED",
+    "upstream_HTTP": "UNKNOWN_NOT_ZERO",
+    "native_SQL": 0,
+    "Telegram": 0,
+    "Worker_deploy": 0,
+    "qualification_prior": 15,
+    "qualification_attempts_after": 16,
+    "qualification_cap": 24,
+    "unused_second_attempt": "NOT_ATTEMPTED_EXPIRED_DO_NOT_REUSE; no spent amount or retained unknown refunded",
+    "whole_account_day": "UNKNOWN_PRESERVED",
+    "closed_ts": 1793013667329
+  },
+  "unused_attempt_expired": true,
+  "closed_ts": 1793013667329
 }
