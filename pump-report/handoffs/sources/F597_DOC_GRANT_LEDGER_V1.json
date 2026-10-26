@@ -1,0 +1,47 @@
+{
+  "id": "ROOT_F597_NATIVE_HL_PRICE_CURRENCY_BINGX_HYPE_ID_2SEARCH4READ_20261026",
+  "search_max": 2,
+  "open_max": 4,
+  "search_spent": 2,
+  "open_spent": 4,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "search",
+      "q": "site:hyperliquid.gitbook.io hyperliquid perpetuals prices denominated USDC quote",
+      "state": "SUCCESS_PRIMARY_RESULTS"
+    },
+    {
+      "kind": "search",
+      "q": "site:bingx.com HYPE Hyperliquid listing official",
+      "state": "NO_BINGX_RESULT_IN_RETURNED_SEARCH"
+    },
+    {
+      "kind": "new_primary_read",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications",
+      "state": "SUCCESS"
+    },
+    {
+      "kind": "new_primary_read",
+      "url": "https://bingx.com/en/price/hyperliquid",
+      "state": "SUCCESS"
+    },
+    {
+      "kind": "new_primary_read",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/robust-price-indices",
+      "purpose": "Mark price construction and currency preservation for HYPE USDC quote",
+      "state": "SUCCESS"
+    },
+    {
+      "kind": "new_primary_read",
+      "ref": "turn142view1:100",
+      "purpose": "Exact BingX Hyperliquid futures instrument link beyond generic ticker",
+      "state": "SUCCESS_GENERIC_ROUTE_NO_EXACT_INSTRUMENT"
+    }
+  ],
+  "primary_read_successes": 4,
+  "failed_reads": 0,
+  "empty_searches": 1,
+  "new_source_qualification_calls": 0
+}

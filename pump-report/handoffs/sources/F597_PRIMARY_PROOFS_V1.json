@@ -1,0 +1,76 @@
+{
+  "schema": "F597_NEW_PRIMARY_PROOFS_V1",
+  "read_batches": [
+    {
+      "refs": [
+        "turn142view0",
+        "turn142view1"
+      ],
+      "returned_text_sha256": "731585e1a38e3d4a2cd4767bf33701e7b475d1649cc7d1ec74de8cf4d2468412",
+      "returned_text_chars": 30026
+    },
+    {
+      "refs": [
+        "turn143view0",
+        "turn143view1"
+      ],
+      "returned_text_sha256": "ace9b10f4e1974711d25723c1a8aa066cb3e24045736e591a1cb83aa789c82f2",
+      "returned_text_chars": 5925
+    }
+  ],
+  "facts": [
+    {
+      "id": "HL_CONTRACT_SPEC",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications",
+      "ref": "turn142view0",
+      "lines": "6-17",
+      "claims": [
+        "Most crypto perps use USDC collateral with USDT-denominated oracle prices; collateral does not determine price denomination.",
+        "HYPE-USD and PURR-USD are explicitly exceptions with USDC-denominated prices.",
+        "The HYPE native price denomination is therefore USDC per underlying unit, not an assumed universal USD/USDT quote."
+      ],
+      "scope": "Hyperliquid native contract specification; no 0xArchive output conversion guarantee."
+    },
+    {
+      "id": "HL_MARK",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/robust-price-indices",
+      "ref": "turn143view0",
+      "lines": "7-13",
+      "claims": [
+        "Mark construction combines oracle-adjusted and traded price inputs, and mark is used for liquidations."
+      ],
+      "scope": "Supports the same-contract price-axis inference; general formula does not independently prove 0xArchive serialization units or fresh positions."
+    },
+    {
+      "id": "BINGX_PROJECT",
+      "url": "https://bingx.com/en/price/hyperliquid",
+      "ref": "turn142view1",
+      "lines": "269-277,355-371,495-507",
+      "claims": [
+        "BingX identifies Hyperliquid (HYPE) as the native token of the Hyperliquid Layer1 project.",
+        "The page links the project's official app.hyperliquid.xyz website and hyperliquid.gitbook.io documentation.",
+        "Its HYPE/USDT futures section gives no contractId or exact underlying-ID bridge."
+      ],
+      "scope": "Authoritative BingX naming/project evidence; no current price/volume facts extracted, and no exact contract100877 proof."
+    },
+    {
+      "id": "BINGX_FUTURES_LINK",
+      "url": "https://bingx.com/en/perpetual/index",
+      "ref": "turn143view1",
+      "lines": "0-133",
+      "claims": [
+        "The linked Futures route resolves to a generic perpetual index, with no HYPE-specific instrument details."
+      ],
+      "scope": "Successful but non-closing read; not evidence that contract100877 is the named project."
+    }
+  ],
+  "retained_F596_reused_without_reread": {
+    "manifest": "pump-report/handoffs/sources/F596_PACKAGE_MINIMAL_FUTURE_MODEL_PROOFS_FINAL_V1.json",
+    "sha256": "2b825974bac6d35691efe4e0d1c3b767e131038f88c30ecc82312c0081686afc",
+    "provider_scope": "Hyperliquid Core; mid is snapshot mark; levels.price is center around mark",
+    "geometry": "edges still UNKNOWN",
+    "model_base_time": "UNKNOWN",
+    "current_snapshot": "STALE_FORMAT_ONLY",
+    "credit_cost": "numeric premium UNKNOWN; ROOT separate pointer"
+  }
+}
