@@ -1,7 +1,7 @@
 {
   "schema": "ROOT_OWNER_CANDIDATE_CAPACITY_CARRY_FORWARD_V2",
   "owner_confirmed": "2026-10-26",
-  "status": "REVIEWED_NOT_DEPLOYED",
+  "status": "DEPLOYED_AUTO_RESUMED_AWAIT_FIRST_SAVED_NORMAL_RUN",
   "scan_cadence_ms": 300000,
   "window": "10:00–20:00 Europe/Moscow",
   "candidate_selection": "TZ prequeue near/confirmed growth or retained active wave; exact growth/current wave/mandatory data/plan qualification before AUTO publication. Empty queue never generates checks.",
@@ -56,11 +56,15 @@
     ]
   },
   "TZ_strategy_changed": false,
-  "current_server_pacing_installed": false,
+  "current_server_pacing_installed": true,
   "static_review": {
     "manifest": "pump-report/handoffs/analytics/package-av/PACKAGE_AV_STATIC_PACING_RUNNER_REVIEW_FINAL_V1.json",
     "sha256": "b15047cc91e6bc7a07e75519e8e54fb970a999b81906bb51233c52c8ebfd482e",
     "concrete_P1_P2": 0,
     "native_proof": false
-  }
+  },
+  "server_implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+  "native_confirmation_pending": true,
+  "today_remaining_preliminary_base_per_hour": 1,
+  "native_receipts_proof": "checkpoints/pump-report-20261025/ROOT_CANDIDATE_BANK_SAFE_MAINTENANCE_ACTUAL.json"
 }

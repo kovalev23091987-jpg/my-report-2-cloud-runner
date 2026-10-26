@@ -1,8 +1,8 @@
 {
   "schema": "PUMP_REPORT_COORDINATOR_PROGRESS_V1",
-  "recorded_at": "2026-10-26T08:55:11.853Z",
+  "recorded_at": "2026-10-26T09:11:30.439Z",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
-  "stage": "LIVE66_PRIMARY_ACTIVE_AUTO_OBSERVED_OPTIONAL_GAPS_CARRY_BANK_PREPARED",
+  "stage": "LIVE66_CARRY_BANK_INSTALLED_AUTO_TELEGRAM_ON_FIRST_BANK_NATIVE_PENDING",
   "code_main": "f3f8cc6e848c5152aac92a4a5bf1a3fdcfb748fc",
   "code_file_readbacks": 51,
   "qualification": {
@@ -102,7 +102,7 @@
   "blockers": [
     "Future liquidation qualified routes0; additional blocks2/4 not used in these saved refusals",
     "First genuine qualifying AUTO→same-original Telegram→saved message_id→outcome remains pending; do not force BTC/ETH or subthreshold idea",
-    "Candidate carry policy tested locally; server still LIVE66 previouspin until explicit exact deployment"
+    "First post-update natural AUTO bank state and quota not yet read; one bounded saved observer admitted"
   ],
   "work_in_progress": {
     "ROOT": "LIVE66/доставка/бюджеты. Приём первого штатного сохранённого AUTO без повторного market запуска и переотправки. Полная таблица550:3productionCORE/547NOT_CHECKED/0maps.",
@@ -313,9 +313,9 @@
     "full_day_cost_proven": false
   },
   "relative_context_contract": "pump-report/contracts/relative-context.mjs",
-  "server_code_main": "f3f8cc6e848c5152aac92a4a5bf1a3fdcfb748fc",
+  "server_code_main": "8a833ebb2bb62534b6ce44f747bcfe278dceea61",
   "server_exact_modules": 66,
-  "latest_native_actual": "checkpoints/pump-report-20261025/ROOT_THIRD_PRODUCTION_MANUAL_ACTUAL.json",
+  "latest_native_actual": "checkpoints/pump-report-20261025/ROOT_CANDIDATE_BANK_SAFE_MAINTENANCE_ACTUAL.json",
   "known_native_totals": {
     "engineering_lower_bound_queries": 844,
     "rows_read": 1380,
@@ -325,10 +325,10 @@
     "proof": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_AND_DAY_BUDGET_ACTUAL_V2.json"
   },
   "known_provider_totals": {
-    "snapshot_UTC": "2026-10-26T08:11:43.783Z",
-    "project_HTTP_day": 209,
-    "BINGX_day": 209,
-    "BINGX_month": 239,
+    "snapshot_UTC": "2026-10-26T09:06:42.058Z",
+    "project_HTTP_day": 355,
+    "BINGX_day": 355,
+    "BINGX_month": 385,
     "retained_HTTP_unknown": 2,
     "whole_account_day": "UNKNOWN"
   },
@@ -666,7 +666,7 @@
     "block7": "POSTLAUNCH_OWNER_DEFERRALS_PRESERVED"
   },
   "work_split_ref": "checkpoints/pump-report-20261025/LAUNCH_COORDINATION_20261026_RU.md",
-  "server_implementation_sha256": "8a0a7ea93f5dd50299bff22b6aac24e98a3abb3dbfc99b79b97981be94e77d44",
+  "server_implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
   "business_configuration": "checkpoints/pump-report-20261025/ROOT_NEW_REPORT_BUSINESS_CONFIGURATION_READBACK.json",
   "business_admission": "checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json",
   "only_new_business_cron": "*/5 7-16 * * *",
@@ -708,7 +708,14 @@
   "latest_source_research_manifest": "pump-report/handoffs/sources/F583_PACKAGE_EXISTING_SOURCES_COVERAGE_FINAL_V1.json",
   "saved_auto_observer_preparation": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_OBSERVER_PREPARATION.json",
   "AM_new_sources_decision": "checkpoints/pump-report-20261025/ROOT_AM_OPTIONAL_SOURCE_DECISION.json",
-  "latest_live_health": "checkpoints/pump-report-20261025/ROOT_LIVE_HEALTH_ACTUAL_1792982526462.json",
+  "latest_live_health": {
+    "version": "pump-report-v1.10-native-source-evidence-admission",
+    "implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+    "provider_stage": "PRODUCTION_QUALIFIED",
+    "automatic_enabled": true,
+    "delivery_enabled": true,
+    "legacy_schedules_restored": false
+  },
   "AN_source_decision": "checkpoints/pump-report-20261025/ROOT_AN_F574_APPLICABILITY_DECISION.json",
   "observer_latest_unique_cases": 2,
   "observer_latest_PASS": 2,
@@ -788,5 +795,5 @@
   "production_CORE_unique": 10,
   "production_CORE_NOT_CHECKED": 540,
   "candidate_capacity_policy": "checkpoints/pump-report-20261025/ROOT_OWNER_CANDIDATE_CAPACITY_CARRY_FORWARD_V2.json",
-  "candidate_capacity_installed": false
+  "candidate_capacity_installed": true
 }
