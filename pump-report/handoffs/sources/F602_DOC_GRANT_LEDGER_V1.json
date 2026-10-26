@@ -1,0 +1,53 @@
+{
+  "id": "ROOT_F602_OFFICIAL_BATCH_BINGX_IDENTITY_BRIDGE_2SEARCH4READ_20261026",
+  "search_max": 2,
+  "open_max": 4,
+  "search_spent": 2,
+  "open_spent": 4,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "targeted_search",
+      "q": "site:bingx-api.github.io (\"coinId\" OR \"underlying\") (\"name\" OR \"network\" OR \"contractAddress\")",
+      "purpose": "Official documented batch identity ID namespace/fields, excluding already known signed wallet route",
+      "state": "EMPTY_SPENT"
+    },
+    {
+      "kind": "targeted_search",
+      "q": "site:bingx.com \"coinId\" (\"website\" OR \"official\" OR \"contractAddress\")",
+      "purpose": "Official public/static batch asset metadata linking nativecoinId to project identity; not single-HYPE review",
+      "state": "EMPTY_SPENT"
+    },
+    {
+      "kind": "new_primary_static_source_index",
+      "url": "https://api.github.com/repos/BingX-API/api-ai-skills/contents/skills",
+      "purpose": "Official new reference inventory for a batch native-ID/project schema; no API execution",
+      "state": "SUCCESS_OFFICIAL_REFERENCE_INDEX"
+    },
+    {
+      "kind": "new_primary_static_tree",
+      "url": "https://api.github.com/repos/BingX-API/api-ai-skills/git/trees/main?recursive=1",
+      "purpose": "Locate exact official asset/spot/announcement schema files without inventing endpoints or rereading old wallet reference",
+      "state": "SUCCESS_PINNED_OFFICIAL_TREE"
+    },
+    {
+      "kind": "new_primary_static_reference",
+      "repository": "BingX-API/api-ai-skills",
+      "path": "skills/announcement/api-reference.md",
+      "blob_sha": "45c2337b942f4bf521415073874bfab587436caf",
+      "purpose": "Batch announcement schema may bind exact listed native instrument to full project; not prior wallet/catalogue reread",
+      "state": "SUCCESS_PINNED_ANNOUNCEMENT_SCHEMA"
+    },
+    {
+      "kind": "new_primary_public_directory",
+      "ref": "turn142view1:31",
+      "purpose": "Official all-coin public directory, inspect only identity attributes and any native-ID linkage, no price facts",
+      "state": "SUCCESS_PUBLIC_DIRECTORY_NO_NATIVE_ID_BRIDGE"
+    }
+  ],
+  "empty_searches": 2,
+  "primary_read_successes": 4,
+  "failed_primary_reads": 0,
+  "new_market_service_API_calls": 0
+}

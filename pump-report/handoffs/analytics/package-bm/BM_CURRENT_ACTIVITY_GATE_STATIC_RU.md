@@ -1,0 +1,44 @@
+# BM — CURRENT_ACTIVITY_NOT_CONFIRMED, точный live69, только static
+
+Статический вывод: gate не требует дождаться уже начавшейся второй фазы. Он требует ранее обнаруженный пригодный импульс либо пригодную сохранённую волну. Для пригодной волны нет обязательного повторного ratio≥2 на откате и нет требования RESUMING/подтверждённого возврата перед построением предварительного плана. Но фактический отказ AUTO1372a2e6-3736-448e-b32d-846e37bafc80 (26октября18:00МСК, checked1/analysis1/READY0 по ROOT) пока НЕ оценён: исходная монета, свечи, previous_wave и analysis_ts BM не прочитаны.
+
+База: live69 pin d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf, сохранённый FULL deployment receipt ROOT_AUTO_SUMMARY_LOG_ONLY_DEPLOY_ACTUAL.json. Analytics/source/profile bytes совпадают с pin. Текущий runtime/runner.mjs уже относится к подготовленному REV2 и НЕ равен live69: поэтому для live-потока взята побайтная копия runner из immutable main d07a5286b20db147dd9ae53d24d94a102167a784 в evidence/live69-runner.mjs, SHA08de29670f7cafec7efbbe76caba66138129fb2ace667730ea7a0a096a8de31e. Список точных SHA/строк — BM_CODE_AND_SPEC_SHA_LINES.json. Новый серверный readback не выполнялся.
+
+Точная формула и закрытые окна
+
+1. Источник запрашивает125 закрытых минут: search60m+impulse5m+baseline60m. Конец запроса — floor(source_now/1m), endTime=end−1. Бар допускается только если open+1m≤original received_ts и ≤запрошенного end; неполученный бар нельзя «дозакрыть» поздним чтением кеша. По умолчанию источник выдаёт непрерывный последний хвост; gaps/короткая история явно сохранены. sources/index.mjs:161–180, bingx.mjs:82–149.
+2. Аналитика снова требует closed=true, close_ts≤исходного analysis_ts, шаг ровно1m, корректный OHLC, сопоставимый volume и отсутствие конфликтующих дублей. E — close_ts последней пригодной строки, не wallclock18:00. Последний close не старше90s; price30s/orderbook15s проверяются отдельно. math.mjs:30–58, index.mjs:90–105, profile:7–14.
+3. Для каждого конца e закрытой минуты в [E−60m,E] ищется полное непрерывное окно [e−5m,e]. V(e)=сумма volume этого окна; B(e)=медиана сумм до12 непересекающихся5m окон непосредственно ПЕРЕД ним: [e−10m,e−5m], …, [e−65m,e−60m]. Текущее окно в базу не входит. Нужен хотя бы1 пригодный prior window; меньше12 помечается SHORT_HISTORY. При B≤0/неизвестной базе отношение недоступно, не infinity.
+4. Новый impulse candidate: V/B≥2 и 100×(close_last/open_first−1)>0. Это не требование +10% именно в5m импульсе. После фильтра terminal/expiry берётся максимальный ratio, при равенстве более ранний end. Пригодный previous_wave имеет приоритет и сохраняет impulse/baseline/created/expiry. movement.mjs:30–58,122–148.
+5. Volume берётся в одной сопоставимой основе: подтверждённый turnover_quote, иначе volume_base; для разрешённого native-relative — только volume_native того же instrument/route/interval/comparison_key. UNKNOWN_NATIVE_UNIT нельзя выдавать за монеты/USD. Окна3m и5m в details — описательные; admission impulse в профиле только5m.
+6. Причина CURRENT_ACTIVITY_NOT_CONFIRMED выдаётся только в ветви !impulse после проверок terminal/expired/qualification clock, при наличии пригодной текущей volume basis. Если comparison существует, его ненулевой ratio_reason имеет приоритет, включая нулевую базу. Если comparison=null и current>0, будет VOLUME_BASELINE_UNAVAILABLE; если current=0, даже отсутствующий comparison попадает в CURRENT_ACTIVITY. Поэтому reason не доказывает полноценную базу или конкретно низкий последний ratio. Возможны: все найденные окна ratio<2, окно с ratio≥2 без положительной доходности, нулевая текущая активность с пригодной либо недоступной базой. movement.mjs:156–166.
+7. Growth qualification отдельно: хотя бы одно20%/24h или10%/5m,15m,60m. Сохраняется прежняя квалификация волны; снижение процента на откате не сбрасывает её. Это не тот же gate. Lifetime4h от original created_ts, не от каждого опроса. movement:179–207/profile:4,12.
+
+Не удерживает ли план до второй фазы
+
+При usable previous_wave повторная текущая аномальность≥2 не требуется. Для активной неотменённой волны state может быть CALM_PULLBACK или SHARP_PULLBACK_UNCONFIRMED; index:114–138 не содержит обязательного RESUMING/reclaim gate. constructPlan:210–247 допускает предварительную область ниже текущей цены и цель возврата к прежней подтверждённой вершине после будущего отката, даже когда эта вершина не выше текущей цены. Метка PRELIMINARY_AREA явная. Нужны реальная структура, ликвидность, invalidation и потенциал от entry-upper до exit-lower≥10%.
+
+Подтверждённый pivot требует2 закрытых бара с каждой стороны (movement:18–28), поэтому структурное подтверждение имеет задержку минимум2 правых бара; отсутствие подходящих pivot/цели даёт другой отказ плана. Это не требование дождаться второй волны. Потенциально значимые для originals случаи: previous_wave потерян/непригоден, impulse уже вне60m поиска при ещё жизнеспособном сценарии, хвост свечей/volume basis не покрывает нужную историю. Без исходных данных ни один из них не установлен.
+
+TZv2:209–218,271–292,314–320 и unified:293–308,330–334,379–382,404–410 требуют пригодную текущую волну/откат, сохранение отобранной волны, повышенную активность на импульсе и допускают предварительные области. Static-ветви этому в проверенной части соответствуют; пороги не меняются. Нельзя признать конкретный18:00 отказ верным или ошибочным по одному reason.
+
+Decision table
+
+| Причина/ситуация | Минимальные originals для проверки | Ожидаемое поведение по TZ и текущему коду |
+|---|---|---|
+| Нет нового impulse, previous отсутствует | original input: все доставленные closed rows, volume basis/provenance, analysis_ts; previous_wave=null; V/B/return по всем концам60m | Суточный рост один не даёт отправку; при отсутствии подтверждённой волны готовность не выдумывать |
+| Ratio≥2, но return≤0 во всех пригодных импульсах | Те же5m OHLC и prior volumes для каждого candidate | Объём продаж/падения сам по себе не является растущим impulse; reason не означает ожидание второй фазы |
+| Импульс уже найден, спокойный откат на меньшем объёме | saved previous_wave целиком: impulse/qualification/clocks/expiry, current positive volume, path/invalidation | Не требовать снова2×; не удалять за падение growth%, продолжить пригодный предварительный план |
+| Резкий откат без возврата | peak/path/reclaim/previous_wave, текущая price, confirmed pivots, book | Различать UNCONFIRMED и RECLAIMED; предварительный вход разрешён при самостоятельном плане, не обещать выкуп |
+| Previous потерян/непригоден либо impulse старше search60m | Именно original.input.previous_wave и125 фактически полученных rows; возраст/normal_range/qualification; не читать текущую wave вместо них | Если originals показывают утерю ещё пригодной волны — конкретный discrepancy ROOT; иначе INDETERMINATE, без ослабления порогов |
+| Baseline/единицы/закрытые окна непригодны | fact.status/unit/coverage/event/received/expires/evidence, exact gaps и rows | Явная неполнота; не заменять неизвестный объём нулём/USD и не ждать новых данных в этом replay |
+| Импульс есть, но план/ликвидность не пригодны | original price/book, pivots known_ts, tick, invalidation, plan potential | Не рисовать вход/цель; это отдельный отказ, не CURRENT_ACTIVITY gate |
+| Current growth ниже порога, retained qualification пригодна | Сохранённые qualification + qualification_known_ts и original clocks | Волна остаётся AUTO eligible до отмены/expiry; повторный новый рост не нужен |
+
+Частное чтение и replay
+
+Готов BM_EXACT_RUN_PRIVATE_READER_REPLAY_CONTRACT.json. Переиспользуется только ROOT readExactActivityAnalysis из operator/saved-exact-auto-analysis.mjs SHAe1da00c86aa69abe1911573e72a8836e7a4055430725a4b7e246f6e6f55e732f: максимум2 логических PK get, run затем analysis_key из run.checked[0]. Второй native reader не создан. Reader уже проверяет exact run/implementation/OBSERVED/AUTO/instrument и полное равенство original.analysis сохранённому checked[0].analysis; его успешный status не заменяет последующие offline-проверки input/profile/clock.
+
+Сейчас контракт PREPARED_NOT_ADMITTED: LOOKUP12 spent,13 не разрешён. Нужны отдельные фактические положительные ROOT admission/разрешение соответствующего расхода и native envelope; нельзя назвать2 логических get двумя физическими SQL или сменить family ради обхода. BM не вызывает reader. После ровно одного разрешённого чтения использовать original.input/analysis_ts/previous_wave, весь существующий доставленный хвост и точные live69 modules/profile; текущую wave, новый market snapshot и новое время не подставлять. Replay — отдельная будущая bounded affected проверка, в BM Node0.
+
+Итог BM: STATIC_CONTRACT_READY_ACTUAL_REFUSAL_UNDETERMINED. Монета/свечи/факт отказа не реконструированы. Node/tests/old suites/nativeSQL/sourceHTTP/MCP/TG/deploy0, ROOT/analytics code edits0; BL bytes сохранены; live69ON/ON, surplusOFF, caps/spentunknowns/reserves9пауз2OWNERdeferrals прежние.

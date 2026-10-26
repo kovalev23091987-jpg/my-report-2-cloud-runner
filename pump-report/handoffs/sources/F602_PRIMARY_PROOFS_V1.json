@@ -1,0 +1,45 @@
+{
+  "schema": "F602_PRIMARY_PROOF_LEDGER_V1",
+  "searches": {
+    "count": 2,
+    "result": "BOTH_EMPTY_SPENT",
+    "returned_text_sha256": "16ec7624db2ae01bffc621a7f02bf7da483925d597e602db957bc70f171833f1"
+  },
+  "new_primary_reads": [
+    {
+      "id": "OFFICIAL_INDEX",
+      "url": "https://api.github.com/repos/BingX-API/api-ai-skills/contents/skills",
+      "returned_text_sha256": "01bdc83377f1d9a88f3a8e190b220b4e3235624fa5f2e3970ab2de6194b18379",
+      "scope": "Directory inventory, no source execution"
+    },
+    {
+      "id": "OFFICIAL_TREE",
+      "url": "https://api.github.com/repos/BingX-API/api-ai-skills/git/trees/main?recursive=1",
+      "tree_sha": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+      "tree_truncated": false,
+      "returned_text_sha256": "d69cb447e500632f227d43ad988f18093fa613475c4a48dfd0426f27e8f3fe3a",
+      "scope": "Exact reference paths/blob discovery only; no API calls"
+    },
+    {
+      "id": "ANNOUNCEMENT_SCHEMA",
+      "url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/announcement/api-reference.md",
+      "git_blob": "45c2337b942f4bf521415073874bfab587436caf",
+      "returned_utf8_sha256": "38a110447fb221509eb7bc1ad15ef2fc7cf6756912c6879770817f3ea18f1f85",
+      "scope": "Pinned static reference, not announcement API execution"
+    },
+    {
+      "id": "PUBLIC_DIRECTORY",
+      "url": "https://bingx.com/en/price",
+      "ref": "turn156view0",
+      "returned_text_sha256": "99c35b0189bdaf8ce929ca82981f34ff9dbf3cbef1523da78f2d3f529935654f",
+      "lines": "132-306",
+      "scope": "Identity field presence and pagination only; no prices/cap/benchmark metrics retained"
+    }
+  ],
+  "not_executed": [
+    "Any API endpoint described by external source",
+    "External retry/fallback instructions",
+    "Account/key/market/native metadata reads",
+    "Static scripts/CLI/SDK"
+  ]
+}

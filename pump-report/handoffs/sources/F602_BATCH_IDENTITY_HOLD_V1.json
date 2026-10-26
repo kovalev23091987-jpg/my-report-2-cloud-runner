@@ -1,0 +1,77 @@
+{
+  "schema": "F602_BATCH_PRIMARY_IDENTITY_BRIDGE_HOLD_V1",
+  "decision": "HOLD_NO_QUALIFIED_BATCH_BRIDGE",
+  "target": "BingX exact native contract/coinId -> full project/network/site/globalassetID for sharedselectedcrypto550",
+  "findings": [
+    {
+      "id": "KNOWN_WALLET_METADATA",
+      "status": "RETAINED_SIGNED_ROUTE_NOT_NEW_PUBLIC_BRIDGE",
+      "public_keyless": false,
+      "identity_fields": "Name/network/contractAddress already documented in prior receipt.",
+      "missing": "Explicit typed relation of wallet coin namespace to swap asset/internalcoinId and accepted read-key admission. No new key/access probe."
+    },
+    {
+      "id": "NEW_PUBLIC_ANNOUNCEMENTS",
+      "status": "PRIMARY_PAGED_TEXT_FEED_NOT_TYPED_IDENTITY_BRIDGE",
+      "method": "GET",
+      "path": "/openApi/content/v1/announcement",
+      "auth": "None/public in official reference",
+      "parameters": {
+        "contentType": "FuturesListing permitted",
+        "language": [
+          "en-us",
+          "zh-tw"
+        ],
+        "page": "integer>=1"
+      },
+      "fields": [
+        "data.list[].title",
+        "time",
+        "link",
+        "content",
+        "type",
+        "data.total",
+        "data.page"
+      ],
+      "limits": "Global per-UID/IP policy referenced; numeric per-route cost not established in this scope.",
+      "missing": "No contractId/coinId/globalassetID fields or guaranteed full project/network/site; content may be summary. Page scope is not all550.",
+      "native_probe_recommended": false
+    },
+    {
+      "id": "PUBLIC_PRICE_DIRECTORY",
+      "status": "DISPLAY_NAMES_NOT_ID_BRIDGE",
+      "observed": "Paginated names/tickers and detail links; returned text exposes no nativecontract/coinId mapping.",
+      "scope": "Not selected perpetual universe; third-party icons and display names do not establish identity.",
+      "market_values_extracted": false
+    }
+  ],
+  "minimum_predicates": [
+    "Documented namespace/key relationship for exact BingX native IDs/asset to project metadata entity",
+    "Canonical project identifiers or network+contract identity with provenance",
+    "Batch coverage/cursor/completeness and unresolved-row status",
+    "Explicit access/cost/admission before any future IO"
+  ],
+  "one_next_step": {
+    "type": "DOCUMENTARY_DEPENDENCY_ONLY",
+    "action": "Obtain one official typed schema/static mapping that explicitly relates swap asset/internalcoinId to wallet coin/project metadata with network+contract or globalassetID. Keep the public announcement feed as textual evidence only until that relation exists.",
+    "why": "This resolves the common missing edge once; another raw sample or500symbol requests cannot prove a namespace guarantee.",
+    "native_calls_authorized": 0
+  },
+  "preserved": {
+    "qualification_spent": 23,
+    "cap": 24,
+    "remaining": 1,
+    "selected550_canonical_UNKNOWN": 550,
+    "raw_candidate452_not_coverage": true,
+    "remainder98_NOT_CHECKED": true,
+    "new_canonical_CORE_maps": 0,
+    "LOOKUP13": "NOT_AUTHORIZED",
+    "LIVE69": "AUTO1/DL1_UNCHANGED",
+    "surplus": "NOT_INSTALLED_BY_SOURCE",
+    "old_cost_unknown_caps_reserves": "PRESERVED",
+    "paused_blocks": 9,
+    "OWNER_deferrals": 2
+  },
+  "no_global_impossibility_claim": "No bridge was established within this bounded evidence set; other unpublished/unreviewed routes remain UNKNOWN.",
+  "accepted_transitive_rule_preserved": "Numeric IDs need not appear in a human listing if the unique same-venue exact pair/family and full project relationship is proved. The generic paged schema itself does not establish that content for any actual row."
+}
