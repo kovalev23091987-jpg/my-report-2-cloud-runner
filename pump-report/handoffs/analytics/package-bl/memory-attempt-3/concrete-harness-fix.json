@@ -1,0 +1,23 @@
+{
+  "schema": "BL_ATTEMPT3_CONCRETE_HARNESS_FIX_V1",
+  "prior_failure_manifest_sha256": "a37e9398c5a005f3bf880907659029cd6698fcdfebd5e126f53a475bc3935bea",
+  "prior_error": "ATOMIC_WAVE_AND_SUMMARY_STORE_REQUIRED",
+  "change": "Use actual runtime MemoryStore for all fixture storage; proxy adds only artificial per-run native guard metadata and binds actual methods to the same shared backing instance. No storage method mocked or overridden.",
+  "real_methods": [
+    "get",
+    "set",
+    "atomic",
+    "atomicPair",
+    "boundedArray",
+    "scanPrefix",
+    "removeWorkPointer"
+  ],
+  "unchanged_corrected_fixture": true,
+  "race_proof_scope": "Real MemoryStore serial atomic, one competing grant only; nativeD1 CAS retries not simulated in attempt3. Prior fakeCAS evidence retained as artificial.",
+  "state_inspection": "Clone public MemoryStore rows pump:resources; seed rows only synthetic fixture",
+  "ROOT_runtime_changes": 0,
+  "authorized": "ROOT same connected affected case until fullPASS; concrete harness failures fixed in new revisions with attempts preserved; runtimefail stops affected branch",
+  "prior_attempts_Node": 2,
+  "this_attempt_Node_budget": 1,
+  "native_proof": false
+}

@@ -1,0 +1,124 @@
+--- pump-report/tests/analytics/bl-surplus-connected-once.mjs
++++ pump-report/tests/analytics/bl-surplus-corrected-once.mjs
+@@ -1,25 +1,25 @@
+-// BL REV2: ONE connected ARTIFICIAL affected case. No native IO/old suites.
++// BL REV2 corrected-once: authorized only after preserved oracle failure25266c50. No native IO/old suites.
+ import assert from 'node:assert/strict';
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import {fileURLToPath,pathToFileURL} from 'node:url';
+ import {createHash} from 'node:crypto';
+-const root=fileURLToPath(new URL('../../../',import.meta.url)),dir=path.join(root,'pump-report/handoffs/analytics/package-bl');
++const root=fileURLToPath(new URL('../../../',import.meta.url)),dir=path.join(root,'pump-report/handoffs/analytics/package-bl/corrected-once');
+ const read=p=>fs.readFileSync(path.join(root,p)),json=p=>JSON.parse(read(p).toString('utf8'));
+ const sha=b=>createHash('sha256').update(b).digest('hex'),clone=structuredClone;
+ const save=(n,v)=>fs.writeFileSync(path.join(dir,n),JSON.stringify(v,null,2)+'\n');
+-const report={schema:'BL_REV2_ONE_CONNECTED_CASE_ACTUAL_V1',status:'STARTED',evidence_class:'ARTIFICIAL_ONLY',
++const report={schema:'BL_REV2_CORRECTED_ONE_CONNECTED_CASE_ACTUAL_V1',status:'STARTED',evidence_class:'ARTIFICIAL_ONLY',
+   Node:1,new_cases:1,phases:[],real_HTTP:0,MCP:0,native_SQL:0,TG:0,deploy:0,engine:0,old_tests:0,REV1_executed:false};
+ let locked=false,lastBackend=null,currentStep='preimport';
+ const mark=(name,data)=>{currentStep=name;report.phases.push({name,...data});save('case-progress.json',report);};
+ try{
+-  const admission=json('pump-report/handoffs/analytics/package-bl/EXECUTION_ADMISSION.json');
++  const admission=json('pump-report/handoffs/analytics/package-bl/corrected-once/EXECUTION_ADMISSION.json');
+   assert.equal(admission.status,'ROOT_FROZEN_REV2_ONE_CASE_AUTHORIZED');assert.ok(Date.now()<admission.own_expires_ts);
+   assert.ok(Date.now()<admission.root_expires_ts);assert.equal(admission.all4_equal,true);
+   assert.equal(admission.own_actual_ref_match,true);assert.equal(admission.own_exact_bytes_match,true);
+   assert.equal(sha(fs.readFileSync(fileURLToPath(import.meta.url))),admission.test_sha256);
+-  const frozen=json('pump-report/handoffs/analytics/package-bl/REV2-frozen-inputs.json');
+-  assert.equal(sha(read('pump-report/handoffs/analytics/package-bl/REV2-frozen-inputs.json')),admission.frozen_inputs_sha256);
++  const frozen=json('pump-report/handoffs/analytics/package-bl/corrected-once/REV2-frozen-inputs.json');
++  assert.equal(sha(read('pump-report/handoffs/analytics/package-bl/corrected-once/REV2-frozen-inputs.json')),admission.frozen_inputs_sha256);
+   for(const f of frozen.files){assert.equal(sha(read(f.path)),f.sha256,'FROZEN_INPUT_CHANGED:'+f.path);assert.equal(read(f.path).length,f.bytes);}
+   const lock=fs.openSync(path.join(dir,'EXECUTION_ONCE.lock'),'wx');locked=true;fs.writeFileSync(lock,'BL REV2 one invocation entered; no blind rerun\n');fs.closeSync(lock);
+   const load=p=>import(pathToFileURL(path.join(root,p)).href);
+@@ -29,7 +29,7 @@
+       load('pump-report/runtime/budget.mjs'),load('pump-report/runtime/production-policy.mjs'),
+       load('pump-report/runtime/provider-policy.mjs'),load('pump-report/runtime/candidate-surplus.mjs'),
+       load('pump-report/runtime/runner.mjs'),load('pump-report/profile/start-v1.mjs')]);
+-  const F=json('pump-report/tests/analytics/bl-conditional-surplus-fixture.json'),T=F.clock,D=F.day,M=F.month;
++  const F=json('pump-report/tests/analytics/bl-conditional-surplus-corrected-fixture.json'),T=F.clock,D=F.day,M=F.month;
+   const productionBefore=JSON.stringify(PRODUCTION_PLAN),policies=productionPolicies(PROVIDER_POLICIES);
+   assert.equal(PRODUCTION_PLAN.candidate_surplus.enabled,false);assert.equal(PRODUCTION_PLAN.candidate_surplus.activation_decision_ref,null);
+   assert.equal(RESOURCE_LIMITS.project_http_day,900);assert.equal(RESOURCE_LIMITS.http_per_run,164);
+@@ -67,8 +67,8 @@
+   let c=context({enabled:false}),before=clone(c.b.state),answer=await request(c);
+   mark('OFF_original_deny',{answer});assert.equal(answer.allowed,false);assert.equal(answer.detail,'EVEN_DAY_CANDIDATE_ALLOCATION');assert.deepEqual(c.b.state,before);
+   const blocked=[
+-    ['manual_global',s=>{s.days[D]=667;},null,'WHOLE_CANDIDATE_DAY_CAPACITY'],
+-    ['future_plan',s=>{s.automatic_plans[D].charged=503;},null,'WHOLE_CANDIDATE_PLANNED_ALLOCATION'],
++    ['manual_global',s=>{s.days[D]=669;},null,'WHOLE_CANDIDATE_DAY_CAPACITY'],
++    ['future_plan',s=>{s.automatic_plans[D].charged=505;},null,'WHOLE_CANDIDATE_PLANNED_ALLOCATION'],
+     ['provider_day',s=>{s.providers.TELEGRAM.days[D]=22;s.providers.TELEGRAM.months[M]=30;},null,'WHOLE_CANDIDATE_PROVIDER_DAY'],
+     ['provider_month',s=>{s.providers.TELEGRAM.months[M]=831;},null,'WHOLE_CANDIDATE_PROVIDER_MONTH'],
+     ['backoff',s=>{s.providers.BINGX.backoff_until=T+60000;},null,'SURPLUS_PROVIDER_BACKOFF'],
+@@ -90,7 +90,7 @@
+   assert.equal(answer.detail,'EVEN_DAY_CANDIDATE_ALLOCATION');assert.deepEqual(c.b.state,before);assert.equal(surplusBaseExtra(c.b.state,T,c.admission).http,0);
+   c=context({state:s3});answer=await request(c);mark('REV2_ON_base3_protected',{answer});
+   assert.equal(answer.allowed,false);assert.equal(answer.detail,'WHOLE_CANDIDATE_DAY_CAPACITY');assert.equal(countRecords(c.b.state),0);
+-  s3=base3();s3.days[D]=594;s3.automatic_plans[D].charged=430;
++  s3=base3();s3.days[D]=596;s3.automatic_plans[D].charged=432;
+   c=context({state:s3});const base3Before=baseSnapshot(s3),extra=surplusBaseExtra(c.b.state,T,c.admission);answer=await request(c);
+   mark('REV2_base3_safe_headroom',{answer,extra});assert.equal(answer.allowed,true);assert.deepEqual(extra,{http:72,http_by_provider:{BINGX:60,TELEGRAM:6}});
+   assert.equal(baseSnapshot(c.b.state),base3Before);
+
+--- pump-report/tests/analytics/bl-conditional-surplus-fixture.json
++++ pump-report/tests/analytics/bl-conditional-surplus-corrected-fixture.json
+@@ -1,5 +1,5 @@
+ {
+-  "schema": "BL_ARTIFICIAL_SHARED_FIXTURE_V1",
++  "schema": "BL_CORRECTED_ARTIFICIAL_SHARED_FIXTURE_V1",
+   "evidence_class": "ARTIFICIAL_ONLY_NOT_NATIVE_ADMISSION",
+   "clock": 1793021400000,
+   "day": "2026-10-26",
+@@ -22,7 +22,7 @@
+   "resource_state": {
+     "schema": "PUMP_SHARED_RESOURCE_V1",
+     "days": {
+-      "2026-10-26": 666
++      "2026-10-26": 668
+     },
+     "providers": {
+       "BINGX": {
+@@ -55,7 +55,7 @@
+         "protected_at_creation": 102,
+         "fraction": 0.8,
+         "limit": 634,
+-        "charged": 502
++        "charged": 504
+       }
+     },
+     "automatic_candidate_allocations": {
+@@ -167,7 +167,7 @@
+     },
+     "delivery_http": 24,
+     "outcomes_http": 24,
+-    "future_scan_HTTP": 84,
++    "future_scan_HTTP": 82,
+     "future_base_HTTP": 36
+   },
+   "feature_fixture_only": {
+@@ -185,13 +185,13 @@
+   },
+   "counterfactual_overlays": {
+     "manual_global_block": {
+-      "project_day": 667
++      "project_day": 669
+     },
+     "future_plan_block": {
+-      "plan_charged": 503
++      "plan_charged": 505
+     },
+     "provider_day_block": {
+-      "project_day": 666,
++      "project_day": 668,
+       "TELEGRAM_day": 22,
+       "TELEGRAM_month": 30
+     },
+@@ -217,5 +217,5 @@
+       "rows_written": 160
+     }
+   },
+-  "note": "Synthetic conservation fixture, not captured42/currentcapacity. Clone pre-admission state for blocker overlays; never reset live or issued logical counters."
++  "note": "Corrected-once synthetic boundary for independently enumerated41ticks*2=82; baseline global668 and plan504 admit exactly12HTTP; global669 or plan505 denies. Prior first-failure fixture unchanged. Not current native capacity."
+ }

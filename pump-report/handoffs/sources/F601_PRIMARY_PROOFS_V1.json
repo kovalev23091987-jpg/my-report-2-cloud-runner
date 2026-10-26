@@ -1,0 +1,51 @@
+{
+  "schema": "F601_PRIMARY_UNREAD_SECTION_PROOFS_V1",
+  "new_reads": [
+    {
+      "id": "EN",
+      "url": "https://api-docs.toobit.com/api/usdt-m-market-data.html",
+      "ref": "turn152view0",
+      "requested_line": 1200,
+      "returned_line_range": [
+        935,
+        1737
+      ],
+      "returned_text_sha256": "07f12c530db671393d0c36d083c00e3377f852f3c3717fd50e1ce08f30151ada",
+      "relevant_line_ranges": [
+        "1366-1410",
+        "1411-1445",
+        "1446-1477"
+      ],
+      "accepted_catalogue_sections_reopened": false
+    },
+    {
+      "id": "ZH",
+      "url": "https://api-docs.toobit.com/zh/api/usdt-m-market-data",
+      "ref": "turn154view0",
+      "requested_line": 1400,
+      "returned_line_range": [
+        995,
+        1786
+      ],
+      "returned_text_sha256": "c4cf361b7408cb77038fefe5f6db659d05688fd7a39cafc71d90735178a9309d",
+      "relevant_line_ranges": [
+        "1362-1406",
+        "1408-1442",
+        "1444-1475"
+      ],
+      "purpose": "Resolve precise coin-denomination wording and look for additional scale/clock/weight statement.",
+      "accepted_catalogue_sections_reopened": false
+    }
+  ],
+  "search": {
+    "spent": 1,
+    "query": "site:api-docs.toobit.com (\"fundingRate\" OR \"openInterest\") (\"weight\" OR \"timestamp\")",
+    "returned_text_sha256": "998c78f60b98db0920d1e378b9091055e15dabf3d6841f748ccd9592c9880ced",
+    "result": "Only the same EN/ZH primary market reference; no independent route-weight or serialization guarantee found."
+  },
+  "retained_not_reread": {
+    "F599": "Basic information and public-market no-key access; shared weighted quota.",
+    "F600": "Original closed row bounds/metadata and closed rateLimits payload."
+  },
+  "method": "Documentation and saved byte-closed metadata only; no native call/SDK execution."
+}

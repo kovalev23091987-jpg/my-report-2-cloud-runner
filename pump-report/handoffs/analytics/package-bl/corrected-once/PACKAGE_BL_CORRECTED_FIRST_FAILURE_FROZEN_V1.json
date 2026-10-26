@@ -1,0 +1,147 @@
+{
+  "schema": "PACKAGE_BL_CORRECTED_FIRST_FAILURE_FROZEN_V1",
+  "status": "FAIL_NO_RERUN_HARNESS_ADAPTER_CONTRACT",
+  "frozen_at": "2026-10-26T15:36:56.536289+00:00",
+  "freeze_before_own_expiry": true,
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1793028766000",
+  "own_expires_ts": 1793029666000,
+  "main": "e5345a795cffff0e71580a769d1c85bc68bff9ce",
+  "Node_this_revision": 1,
+  "connected_case_this_revision": 1,
+  "historical_Node_total_with_first_fail": 2,
+  "prior_first_failure_manifest_sha256": "25266c506344d93d5741725ecbf092a574a4ada030df1c9a72337cb8df5ec9f6",
+  "prior_frozen15_byte_preserved": true,
+  "complete_case_PASS": false,
+  "phases_passed_before_exception": 23,
+  "phase_names": [
+    "OFF_original_deny",
+    "blocked_manual_global",
+    "blocked_future_plan",
+    "blocked_provider_day",
+    "blocked_provider_month",
+    "blocked_backoff",
+    "blocked_native_unknown",
+    "blocked_native_expiry",
+    "blocked_native_requests",
+    "blocked_native_rows_read",
+    "blocked_native_rows_written",
+    "REV2_OFF_base3_no_grants",
+    "REV2_ON_base3_protected",
+    "REV2_base3_safe_headroom",
+    "REV2_base3_provider_day",
+    "REV2_base3_provider_month_today_extra",
+    "competing_CAS",
+    "idempotent_grant",
+    "own_CORE_DELIVERY_conversion",
+    "known_close",
+    "retained_outstanding",
+    "retained_unknown_receipt",
+    "retained_native_unknown"
+  ],
+  "first_exception": {
+    "code": "ATOMIC_WAVE_AND_SUMMARY_STORE_REQUIRED",
+    "runtime_path": "pump-report/runtime/outcome-journal.mjs",
+    "runtime_line": 20,
+    "test_path": "pump-report/tests/analytics/bl-surplus-corrected-once.mjs",
+    "test_line": 133,
+    "expected": "construct runner then fake overview ARTIFICIAL_STOP_AFTER_GRANT then finally CLOSED",
+    "actual": "constructor rejected fake store missing atomicPair before checkInstrument",
+    "classification": "ARTIFICIAL_STORE_ADAPTER_DEFECT_NOT_RUNTIME_BUG_PROOF",
+    "automatic_currentStep_is_previous_passed_phase": "retained_native_unknown"
+  },
+  "NOT_EXECUTED": [
+    "runner.checkInstrument",
+    "fake overview",
+    "runner finally close",
+    "final PRODUCTION_PLAN JSON assertion",
+    "status PASS"
+  ],
+  "independent_timestamps": {
+    "ticks": 41,
+    "future_HTTP": 82,
+    "first_MSK": "16:35",
+    "last_MSK": "19:55"
+  },
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "MCP": 0,
+  "TG": 0,
+  "deploy": 0,
+  "engine": 0,
+  "old_suites": 0,
+  "ROOT_runtime_edits": 0,
+  "live_surplus_OFF": true,
+  "limitations": [
+    "fakeCAS not nativeD1 concurrency",
+    "fake native view not actual IO admission",
+    "bound late candidate only",
+    "partial success never whole PASS"
+  ],
+  "files": [
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/CORRECTED_FIRST_FAILURE_REVIEW_RU.md",
+      "bytes": 4406,
+      "sha256": "7e5250242d2f98458e080660c048dc84a6a85bd37cb283e9a3740359abcfc574"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/EXECUTION_ADMISSION.json",
+      "bytes": 4079,
+      "sha256": "33020387cb93f0c27cbcc05a059142639f6b0286f117c7897c2db9dd917fae32"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/EXECUTION_ONCE.lock",
+      "bytes": 47,
+      "sha256": "047d0beb45574f5c5c02e2a51145432ee1b829ada42fc23c475076eacee117e8"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/REV2-frozen-inputs.json",
+      "bytes": 9631,
+      "sha256": "61fc56a1ab9e03341edf3e59491ab21c1eed9fc60a0c15bdb6d4a95a920247f2"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/affected-failure.json",
+      "bytes": 10500,
+      "sha256": "38c2ea3a774d92f5f9d437b47d1ffc5d6eeea1202f24e6a92cac0d76f68f8c91"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/case-progress.json",
+      "bytes": 9794,
+      "sha256": "365d19708688a99962cef185f6f3dd26deb3e96df411da66761447a782a8a5c8"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/corrected-boundary-oracle.json",
+      "bytes": 961,
+      "sha256": "7cc62199aea29585ce3179da2762829dd36b95e7a6e66040bee3a963c3e5bc74"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/corrected-oracle-explicit.diff",
+      "bytes": 7681,
+      "sha256": "1d725cba90c918aa8878acfc7f2193fb364a3851dbb1466709ac198ff8eeb908"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/failure-state.json",
+      "bytes": 3072,
+      "sha256": "0e4624d0bbb33f525b4936b7e13551259dcac3c62a0a50c7152c59232f00ffc4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/independent-future-timestamps.json",
+      "bytes": 6167,
+      "sha256": "824bb3618caf74109f6b007f39a0a4a1e7242d1862338b25bd3d9fac7e4c74c0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/operator-execution.json",
+      "bytes": 674,
+      "sha256": "e9369a1c429b6351877780d9c945f79c795bf4302cc84a9c3e42a471c3853247"
+    },
+    {
+      "path": "pump-report/tests/analytics/bl-conditional-surplus-corrected-fixture.json",
+      "bytes": 5585,
+      "sha256": "9221ee6bfe2b049eb1a95c2f3ad48fcc57be428a37a4988569ba37b0458cb73f"
+    },
+    {
+      "path": "pump-report/tests/analytics/bl-surplus-corrected-once.mjs",
+      "bytes": 15453,
+      "sha256": "c99bd4a069259cfe2218b81d3ef964d75d30d5ced21675c141fbd6ced568e61b"
+    }
+  ]
+}

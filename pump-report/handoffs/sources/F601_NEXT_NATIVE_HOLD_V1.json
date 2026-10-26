@@ -1,0 +1,47 @@
+{
+  "schema": "F601_NEXT_NATIVE_DECISION_HOLD_V1",
+  "decision": "HOLD",
+  "next_request": null,
+  "new_calls_authorized": 0,
+  "qualification_spent": 23,
+  "qualification_cap": 24,
+  "remaining": 1,
+  "concrete_blockers": [
+    {
+      "route": "CURRENT_FUNDING",
+      "missing": [
+        "Numeric serialization scale",
+        "Original quote-asof clock",
+        "Exact endpoint request weight",
+        "Exact underlying identity"
+      ],
+      "why_native_sample_not_enough": "A numeric sample and next settlement time cannot prove scale or quote age."
+    },
+    {
+      "route": "HISTORICAL_FUNDING",
+      "missing": [
+        "Numeric serialization scale",
+        "Exact endpoint weight",
+        "Exact underlying identity"
+      ],
+      "positive": "Settlement time/period are documented; one pair only, no automatic500 expansion."
+    },
+    {
+      "route": "OPEN_INTEREST",
+      "missing": [
+        "Original data clock",
+        "Counting convention",
+        "Exact endpoint weight",
+        "Exact underlying identity"
+      ],
+      "positive": "Coin quantity denomination documented; metadata multiplier must not be applied again."
+    }
+  ],
+  "bulk_conclusion": "Current funding permits omitted symbol and array response. OI/history require symbol; no documented bulk OI route in reviewed reference. Do not infer full550 coverage from array shape.",
+  "catalogue_retry": "HOLD preserved; no8MiB retry",
+  "reconsider_after": "Primary field-scale/clock/weight proof plus ROOT exact identity acceptance and positive source/whole-budget admission. Then at most one useful targeted or bounded batch call; current document authorizes none.",
+  "no_request_byte_cost_fabricated": true,
+  "no_new_DOCS_or_native_admission": true,
+  "live_programme": "Not touched",
+  "old_unknown_caps_reserves_9pauses_2OWNERdeferrals": "Preserved"
+}

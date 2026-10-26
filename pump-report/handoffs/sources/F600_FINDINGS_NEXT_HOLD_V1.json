@@ -1,0 +1,124 @@
+{
+  "schema": "F600_PREFIX_FINDINGS_AND_NEXT_HOLD_V1",
+  "status": "PARTIAL_METADATA_USEFUL_NEXT_NATIVE_HOLD",
+  "input": {
+    "path": "pump-report/.private/observations/toobit-exchangeinfo-one-20261026-body.bin",
+    "sha256": "4cff48bfb114e262312e21e3c86da26b7da3378534f9e14de2068be5b803087c",
+    "bytes": 2097129,
+    "ROOT_observed_received_bytes": 2113506,
+    "complete": false,
+    "error": "RESPONSE_BYTE_BOUND_EXCEEDED",
+    "ROOT_actual_ref": "checkpoints/pump-report-20261025/ROOT_TOOBIT_ONE_CATALOGUE_ACTUAL.json",
+    "ROOT_actual_git_blob": "a8d1548211d88dc71e97c13389f8df2bede0d8ce",
+    "ROOT_local_result_sha256": "8c983da3c6d05c2fbd211411909c40c6efed7b0a98c8ca90384b77de8c82a975"
+  },
+  "findings": {
+    "spot_symbols": {
+      "complete_array": true,
+      "count": 536,
+      "byte_start": 76,
+      "byte_end_exclusive": 525703
+    },
+    "contracts": {
+      "complete_array": false,
+      "byte_start": 525928,
+      "complete_objects": 696,
+      "last_complete_index": 695,
+      "last_complete_end_exclusive": 2096119,
+      "incomplete_index": 696,
+      "stop_path": [
+        "contracts",
+        696,
+        "riskLimits",
+        0,
+        "riskLimitId"
+      ],
+      "stop_byte_offset": 2097129
+    },
+    "coins": {
+      "state": "NOT_OBSERVED_BEFORE_TRUNCATION",
+      "absence_or_total_not_proven": true
+    },
+    "USDT_M_format_objects": 686,
+    "native_status_TRADING_at_capture": 686,
+    "other_format_objects": 10,
+    "native_isRwa_raw_true": 178,
+    "native_isRwa_raw_false": 508,
+    "raw_selected550_candidates": 452,
+    "raw_candidate_multiplicity": "452 unique1;98 zero observed",
+    "raw_candidates_with_isRwa_true": 0,
+    "remaining_selected_NOT_CHECKED": 98,
+    "canonical_UNKNOWN": 550,
+    "new_canonical_CORE_map_qualifications": 0
+  },
+  "interpretation": {
+    "array_completeness": "Closed array refers only to the exact transmitted value, not proof of current/global venue coverage.",
+    "closed_object_rule": "Only original byte-closed objects independently json.loads-validated are eligible for static projections. No facts extracted from incomplete row696.",
+    "raw_name_join": "Case-sensitive native BingX tuple.base to Toobit underlying within closed USDT-M format objects; no numeric-prefix stripping or cross-venue qualification.",
+    "isRwa": "Raw provider metadata, not a documented universal positive crypto identity rule.",
+    "source_clocks": {
+      "timezone": "UTC",
+      "serverTime_raw": "1793027207646",
+      "ROOT_receive_ts": 1793027215760,
+      "role": "Envelope/server metadata clock only; not per-contract freshness or any current price/OI/funding clock."
+    },
+    "quotas": {
+      "observed_closed_rateLimits": {
+        "REQUEST_WEIGHT": {
+          "interval": "MINUTE",
+          "intervalUnit": 1,
+          "limit": 3000,
+          "burst": 3000
+        },
+        "ORDERS": {
+          "interval": "SECOND",
+          "intervalUnit": 2,
+          "limit": 60,
+          "burst": 60
+        }
+      },
+      "remaining_or_anonymous_shared_scope": "NOT_ESTABLISHED",
+      "response_rate_limit_headers": "NOT_RETURNED_IN_RETAINED_ROOT_ACTUAL",
+      "root_physical_client_calls": 1,
+      "root_HTTP_wire_received": 1,
+      "root_documented_weight": 1,
+      "SOURCE_new_IO": 0
+    }
+  },
+  "next": {
+    "decision": "HOLD_NO_NEXT_NATIVE_REQUEST",
+    "max_new_calls_authorized": 0,
+    "remaining_service_calls": 1,
+    "reason": [
+      "The bounded prefix already supplies useful catalogue seeds and 452 raw matches; completion alone does not establish identity or market facts.",
+      "Full remaining JSON size is unknown; raising the ceiling to8MiB does not prove success or better field semantics.",
+      "F599 exchangeInfo documents no parameters; no futures-only/type/limit/symbol filter was invented.",
+      "Funding numeric scale, field clocks and canonical underlying links remain documentary prerequisites. An actual sample cannot prove them."
+    ],
+    "conditional_DOCS": "Not activated because prefix is useful;1search2reads retired unused, no rearm.",
+    "reconsider_only_after": "Concrete documented field/identity proof and a specific useful exact fact request with cost/byte bound plus separate fresh ROOT admissions. No default catalogue retry or per-coin probing."
+  },
+  "preserved": {
+    "ROOT_actual_qualification_before": 22,
+    "ROOT_actual_qualification_after": 23,
+    "cap": 24,
+    "remaining": 1,
+    "older_all4_qualification_snapshot": 22,
+    "older_snapshot_not_reset_authority": true,
+    "LIVE69": "AUTO1/DL1_UNCHANGED",
+    "latest18_00": "ONE_ANALYSIS_NOTREADY_CURRENT_ACTIVITY_AND_NEXT_DEFER_RETAINED",
+    "surplus_code": "PREPARED_OFF_NOT_CHANGED",
+    "old_spent_unknown_caps_reserves": "PRESERVED",
+    "old_report_paused": true,
+    "paused_blocks": 9,
+    "OWNER_deferrals": 2
+  },
+  "new_SOURCE_operations": {
+    "API_HTTP_MCP_account_market": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "Node_import_product_tests": 0,
+    "deploy": 0,
+    "Python_offline_utility_runs": 3
+  }
+}

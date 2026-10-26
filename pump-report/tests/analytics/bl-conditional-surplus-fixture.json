@@ -1,0 +1,221 @@
+{
+  "schema": "BL_ARTIFICIAL_SHARED_FIXTURE_V1",
+  "evidence_class": "ARTIFICIAL_ONLY_NOT_NATIVE_ADMISSION",
+  "clock": 1793021400000,
+  "day": "2026-10-26",
+  "month": "2026-10",
+  "run_ids": [
+    "BL_ARTIFICIAL_A",
+    "BL_ARTIFICIAL_B"
+  ],
+  "candidate_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BL_A",
+    "BINGX:USDT_M:ARTIFICIAL_BL_B"
+  ],
+  "operation": {
+    "http_upper_bound": 12,
+    "http_by_provider": {
+      "BINGX": 10,
+      "TELEGRAM": 1
+    }
+  },
+  "resource_state": {
+    "schema": "PUMP_SHARED_RESOURCE_V1",
+    "days": {
+      "2026-10-26": 666
+    },
+    "providers": {
+      "BINGX": {
+        "days": {
+          "2026-10-26": 500
+        },
+        "months": {
+          "2026-10": 5000
+        },
+        "recent": []
+      },
+      "TELEGRAM": {
+        "days": {
+          "2026-10-26": 1
+        },
+        "months": {
+          "2026-10": 3
+        },
+        "recent": []
+      }
+    },
+    "outstanding": {},
+    "unknown": {},
+    "automatic_plans": {
+      "2026-10-26": {
+        "schema": "PUMP_PLANNED_AUTOMATIC_DAY_V1",
+        "day": "2026-10-26",
+        "created_ts": 1793005200000,
+        "baseline_charged": 5,
+        "protected_at_creation": 102,
+        "fraction": 0.8,
+        "limit": 634,
+        "charged": 502
+      }
+    },
+    "automatic_candidate_allocations": {
+      "2026-10-26": {
+        "version": "pump-even-day-deep-v2",
+        "created_ts": 1793005260000,
+        "first_period": "1793005200000",
+        "remaining_periods": 8,
+        "http_upper_bound": 12,
+        "http_by_provider": {
+          "BINGX": 10,
+          "TELEGRAM": 1
+        },
+        "candidates_per_period": 1,
+        "baseline_auto_charged": 350
+      }
+    },
+    "automatic_deep_pacing": {
+      "2026-10-26": {
+        "1793005200000": {
+          "version": "pump-even-day-deep-v2",
+          "day": "2026-10-26",
+          "key": "1793005200000",
+          "created_ts": 1793005260000,
+          "limit": 12,
+          "charged": 4,
+          "candidate_count": 1,
+          "carried_in": 0,
+          "maximum": 1,
+          "issued_before": 0
+        },
+        "1793008800000": {
+          "version": "pump-even-day-deep-v2",
+          "day": "2026-10-26",
+          "key": "1793008800000",
+          "created_ts": 1793008860000,
+          "limit": 12,
+          "charged": 4,
+          "candidate_count": 1,
+          "carried_in": 0,
+          "maximum": 1,
+          "issued_before": 1
+        },
+        "1793012400000": {
+          "version": "pump-even-day-deep-v2",
+          "day": "2026-10-26",
+          "key": "1793012400000",
+          "created_ts": 1793012460000,
+          "limit": 12,
+          "charged": 4,
+          "candidate_count": 1,
+          "carried_in": 0,
+          "maximum": 1,
+          "issued_before": 2
+        },
+        "1793016000000": {
+          "version": "pump-even-day-deep-v2",
+          "day": "2026-10-26",
+          "key": "1793016000000",
+          "created_ts": 1793016060000,
+          "limit": 12,
+          "charged": 4,
+          "candidate_count": 1,
+          "carried_in": 0,
+          "maximum": 1,
+          "issued_before": 3
+        },
+        "1793019600000": {
+          "version": "pump-even-day-deep-v2",
+          "day": "2026-10-26",
+          "key": "1793019600000",
+          "created_ts": 1793019660000,
+          "limit": 12,
+          "charged": 4,
+          "candidate_count": 1,
+          "carried_in": 0,
+          "maximum": 1,
+          "issued_before": 4
+        }
+      }
+    }
+  },
+  "native_view": {
+    "ARTIFICIAL_ONLY": true,
+    "evidence_ref_template": "ARTIFICIAL_BL_NATIVE_VIEW#PUMP:AUTO:{run_id}",
+    "expires_ts": 1793022300000,
+    "max_requests": 800,
+    "max_rows_read": 5000,
+    "max_rows_written": 300,
+    "usage": {
+      "requests": 100,
+      "rows_read": 100,
+      "rows_written": 10,
+      "unknown_ops": 0
+    },
+    "finalization_reserve": {
+      "requests": 2,
+      "rows_read": 2,
+      "rows_written": 1
+    }
+  },
+  "expected_protection": {
+    "manual_checks": 3,
+    "http_by_provider": {
+      "BINGX": 51,
+      "TELEGRAM": 3,
+      "SWOLECHARTS": 0,
+      "BINGX_WEB_METADATA": 0
+    },
+    "delivery_http": 24,
+    "outcomes_http": 24,
+    "future_scan_HTTP": 84,
+    "future_base_HTTP": 36
+  },
+  "feature_fixture_only": {
+    "version": "pump-unassigned-candidate-hold-v1",
+    "enabled": true,
+    "activation_decision_ref": "ARTIFICIAL_BL_ONLY_NOT_OWNER_ACTIVATION",
+    "max_grants_per_day": 24,
+    "max_grants_per_run": 1,
+    "max_retained_records": 200,
+    "native_remaining_floor": {
+      "requests": 600,
+      "rows_read": 600,
+      "rows_written": 140
+    }
+  },
+  "counterfactual_overlays": {
+    "manual_global_block": {
+      "project_day": 667
+    },
+    "future_plan_block": {
+      "plan_charged": 503
+    },
+    "provider_day_block": {
+      "project_day": 666,
+      "TELEGRAM_day": 22,
+      "TELEGRAM_month": 30
+    },
+    "provider_month_block": {
+      "TELEGRAM_month": 831
+    },
+    "backoff": {
+      "BINGX_backoff_until": 1793021460000
+    },
+    "native_unknown": {
+      "unknown_ops": 1
+    },
+    "native_expiry": {
+      "expires_ts": 1793021519999
+    },
+    "native_requests": {
+      "requests": 199
+    },
+    "native_rows_read": {
+      "rows_read": 4400
+    },
+    "native_rows_written": {
+      "rows_written": 160
+    }
+  },
+  "note": "Synthetic conservation fixture, not captured42/currentcapacity. Clone pre-admission state for blocker overlays; never reset live or issued logical counters."
+}
