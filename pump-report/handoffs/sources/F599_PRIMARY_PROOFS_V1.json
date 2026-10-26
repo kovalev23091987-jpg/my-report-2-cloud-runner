@@ -1,0 +1,62 @@
+{
+  "schema": "F599_PRIMARY_DOCUMENT_PROVENANCE_V1",
+  "search": {
+    "spent": 2,
+    "returned_text_sha256": "e6ab46fdf765553b81ac7c207175da660cefb2ff922506488c6f3725771dd2ac",
+    "refs": [
+      "turn147search2",
+      "turn147search3",
+      "turn147search6",
+      "turn147search10"
+    ],
+    "use": "Primary search excerpts are explicitly distinguished from direct full text."
+  },
+  "reads": [
+    {
+      "id": "TB_MARKET",
+      "url": "https://api-docs.toobit.com/api/usdt-m-market-data.html",
+      "ref": "turn149view0",
+      "sha256_returned_text": "18d79c8fde310c017d37b70a44b57c76b871f71a68e55030b48da3c2f8af7dc4",
+      "status": "SUCCESS_PARTIAL_RETURNED_THROUGH_LINE931_OF1787",
+      "evidence": "Catalogue/depth direct text; later funding/OI/mark sections supported only by official search excerpt turn147search2/7.",
+      "lines": [
+        "104-112",
+        "202-265",
+        "857-925"
+      ]
+    },
+    {
+      "id": "TB_BASICS",
+      "url": "https://api-docs.toobit.com/api/basic-information.html",
+      "ref": "turn148view0",
+      "sha256_returned_text": "0c1f388786b4e10083d12068d3e8db4dfdb7a997343d2d423743bae6fa852374",
+      "status": "SUCCESS",
+      "lines": [
+        "78-83",
+        "95-143"
+      ]
+    },
+    {
+      "id": "VEST_API",
+      "url": "https://docs.vest.exchange/vest-api",
+      "ref": "turn150view0",
+      "sha256_returned_text": "c4f6004432185567c66e57384ca91e8412d2b41bfcbfedd08a5a3084e34be6dd",
+      "status": "FAILED_403_SPENT_NO_RETRY",
+      "search_excerpt_ref": "turn147search10",
+      "scope": "Only primary search excerpt available; no full response schemas/quotas validated."
+    },
+    {
+      "id": "TB_PUBLIC_AUTOMATION",
+      "url": "https://api-docs.toobit.com/agent/mcp-server.html",
+      "ref": "turn151view0",
+      "sha256_returned_text": "caa21aed7db7ed33febd9a4a1740fe6c23c045aff874a4978b39b1cae6a3ace3",
+      "status": "SUCCESS",
+      "lines": [
+        "43-59",
+        "61-84"
+      ],
+      "execution": "None; no installation, import, connection or tool call."
+    }
+  ],
+  "new_market_provider_metadata_account_API_SQL_TG_IO": 0
+}
