@@ -6,6 +6,7 @@ import {createOutcomeJournal,createOutcomeWorkIndex} from './outcome-journal.mjs
 import {createWorkIndex} from './work-index.mjs';
 import {productionRecord} from '../contracts/run-purpose.mjs';
 import {candidatePriority,analysisQueueEvidence} from './candidate-priority.mjs';
+import {captureDecision} from './candidate-diagnostics.mjs';
 import {PRODUCTION_PLAN} from './production-policy.mjs';
 
 const instrumentKey=instrument=>instrument.instrument_id;
@@ -70,12 +71,13 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     });
     return overview.coverage;
   }
-  async function selectAutomatic(catalog){
+  async function selectAutomatic(catalog,diagnostics){
     const queue=await store.get('pump:candidate-queue')??{},now=clock();
     const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now&&(r.active_wave===true||prequeueNear(r.reported_day_growth,r.preliminary_growth)));
     const score=r=>candidatePriority(r,now,{profile}).score;
     candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
     const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)&&assess_source_evidence(i).eligible));
+    if(diagnostics){if(diagnostics.candidate_selection.length<4)diagnostics.candidate_selection.push(captureDecision(candidates,picked,now,profile));else diagnostics.candidate_selection_truncated=true;}
     return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
   }
   async function rememberAnalysis(analysis,input){
@@ -204,7 +206,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       });
       if(!valid)throw Object.assign(Error('EXECUTOR_LEASE_EXPIRED'),{code:'EXECUTOR_LEASE_EXPIRED'});
     };
-    const result={run_id,status:'COMPLETE',checked:[],manual:[],coverage:null,outcomes:[],delivery:[],errors:[]};
+    const result={run_id,status:'COMPLETE',checked:[],manual:[],coverage:null,outcomes:[],delivery:[],errors:[],candidate_selection:[],candidate_selection_truncated:false};
     try{
       const sourceCatalog=await sources.getCatalog({run_id,purpose:mode==='AUTO'?'DISCOVERY':'CORE'}),catalog={...sourceCatalog,instruments:sourceCatalog.instruments.filter(i=>!ownerInstrumentExcluded(i))};result.catalog_coverage={...catalog.coverage,owner_delivery_excluded:sourceCatalog.instruments.filter(ownerInstrumentExcluded).map(i=>i.instrument_id),verified_crypto_count:sourceCatalog.instruments.length,delivery_eligible_verified_count:catalog.instruments.length};
       const evidence=catalog.instruments.map(assess_source_evidence),reasons={};
@@ -232,7 +234,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
           await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});continue;
         }
         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
-        budget.setMode('AUTO');const instrument=await selectAutomatic(catalog);if(!instrument)break;
+        budget.setMode('AUTO');const instrument=await selectAutomatic(catalog,result);if(!instrument)break;
         try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
         catch(error){result.errors.push({instrument_id:instrument.instrument_id,reason:error.code??'CANDIDATE_ERROR'});await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id])queue[instrument.instrument_id].next_check_ts=clock()+profile.candidate_recheck_ms;return {state:queue,result:true};});}
       }

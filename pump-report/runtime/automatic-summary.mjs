@@ -1,3 +1,4 @@
+import {candidateRunDiagnostics} from './candidate-diagnostics.mjs';
 // Bounded projection of an already returned AUTO result; never a new-send or outcome proof.
 export function autoRunSummary(r, pin) {
   const arr = v => Array.isArray(v) ? v : null;
@@ -58,6 +59,7 @@ export function autoRunSummary(r, pin) {
       source_pending:nat(r?.source_evidence_coverage?.temporarily_deferred),
       catalog_unresolved:nat(errors.find(x => x?.reason === 'UNIVERSE_QUALIFICATION_INCOMPLETE')?.unqualified)
     },
+    candidate_diagnostics:candidateRunDiagnostics(r),
     phase_flags:{
       executor_busy:r?.status === 'EXECUTOR_BUSY',
       analysis_result_seen:analyses === null || analyses === undefined ? null : analyses.length > 0,
