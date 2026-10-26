@@ -4,23 +4,23 @@
   "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
   "acquired_ts": 1793017827000,
   "expires_ts": 1793019267000,
-  "expected_main": "e5f20d5ff80b4e192df4c23d8566ffc5e68adf83",
+  "expected_main": "1f7023db9058e06472990aacac03214770638a13",
   "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
   "released": false,
-  "root_lease_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793014311142",
-  "root_expires_ts": 1793019411142,
+  "root_lease_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793018794000",
+  "root_expires_ts": 1793023894000,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
-    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "e32ac68be40402dae63c777732b3750684a1c931",
-    "checkpoints/CURRENT_PROJECT_STATUS.json": "d258add20b58ccb89bf50bb131b1247f677c1257",
-    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "40a2b53aea6a4516deb19c9f1009cc38200cc634",
-    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "d18c2353b1da80fd0d045754cbb02e0a6948758d",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "3cfee0c69c9300753c6fc20b8ca35f38615053f2",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "91cb9494958d73b539b3bc0bca7987119b701c50",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "afd70f4c08d5abb862611fbad637de850e6bf352",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "4fb1b2a27c4ec9225aa642307ddbcd28e67ad0ec",
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
     "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
-    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "d0a72ea798a1e9dd6d2bb908fca924338a365089",
+    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "55ad1e8be2334524883d617d798db7b29b797a0b",
     "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "d6969c796ee0010c7f0699e35e850dc1bd25bd25",
     "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d"
   },
@@ -32,10 +32,66 @@
     "id": "ROOT_F594_THREE_PROVIDER_FREE_QUOTA_3SEARCH4READ_20261026",
     "search_max": 3,
     "open_max": 4,
-    "search_spent": 0,
-    "open_spent": 0,
-    "state": "NEW_UNUSED",
+    "search_spent": 3,
+    "open_spent": 4,
+    "state": "CLOSED_SPENT_OR_UNKNOWN_NO_REARM",
     "old_grants_rearmed": false,
-    "attempts": []
-  }
+    "attempts": [
+      {
+        "kind": "search",
+        "q": "\"MidasFlow\" \"Flow API\" free quota",
+        "state": "SPENT_RESULT_RETAINED",
+        "ordinal": 1
+      },
+      {
+        "kind": "search",
+        "q": "site:coinfuty.com API MCP free rate limits",
+        "state": "SPENT_EMPTY_SEARCH",
+        "ordinal": 2
+      },
+      {
+        "kind": "search",
+        "q": "site:github.com/Coinversaa/mcp-server free tier rate limit API key",
+        "state": "SPENT_RESULT_RETAINED",
+        "ordinal": 3
+      },
+      {
+        "kind": "primary_doc_read",
+        "url": "https://midasflow.ai/docs/api",
+        "state": "SPENT_RESULT_RETAINED",
+        "ordinal": 4
+      },
+      {
+        "kind": "primary_doc_read",
+        "url": "https://coinfuty.com",
+        "state": "SPENT_FAILED_PRIMARY_READ",
+        "ordinal": 5
+      },
+      {
+        "kind": "primary_repository_read",
+        "url": "https://github.com/Coinversaa/mcp-server/blob/HEAD/README.md",
+        "state": "SPENT_RESULT_RETAINED",
+        "ordinal": 6
+      },
+      {
+        "kind": "primary_repository_read",
+        "url": "https://github.com/Coinversaa/mcp-server/blob/HEAD/src/coinversaServer.ts",
+        "state": "SPENT_RESULT_RETAINED",
+        "ordinal": 7
+      }
+    ],
+    "ROOT_unknown_marker": {
+      "marker": "exec69b84d58-6f60-4687-95de-a9dbf5af688c",
+      "status": "SPENT_OR_UNKNOWN_NO_RETRY",
+      "relation_to_retained_search_packet": "UNCONFIRMED;searchallowancealreadyfullyreserved3,noextraattempt/rearm",
+      "separate_upstream_cost": "UNKNOWN"
+    },
+    "search_remaining": 0,
+    "open_remaining": 0,
+    "failed_primary_reads": 1,
+    "empty_search_queries": 1,
+    "closed_utc": "2026-10-26 12:42:41 UTC"
+  },
+  "initial_authority_main": "e5f20d5ff80b4e192df4c23d8566ffc5e68adf83",
+  "compatibility": "CurrentFULLall4explicitF594continuingunderseparatehelperlease;sameownowner/expiry/scope;noextension/noDOCSrearm"
 }
