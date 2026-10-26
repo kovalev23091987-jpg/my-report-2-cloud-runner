@@ -1,0 +1,245 @@
+{
+  "schema": "F575B_ADRENA_PINNED_READ_PATH_CORRECTION_V1",
+  "disposition": "README_LIQUIDATION_OUTPUT_NOT_IMPLEMENTED_IN_EXAMINED_SOURCE_NO_MAP_PRODUCER",
+  "primary_repository": "AdrenaFoundation/adrena-sdk-ts",
+  "source_tree": "cd74559e2a7e00332348af7b111099a093170153",
+  "root_entry": {
+    "path": "core.js",
+    "git_blob": "5aa7117f4ad45e255ac9522458a9cbf52748e0f8",
+    "content_kind": "45-byte CommonJS require('./dist/src/core')",
+    "executed": false,
+    "dist_committed": false,
+    "published_dist_or_npm_parity": "UNKNOWN"
+  },
+  "implementation": {
+    "path": "src/core/positionStatus.ts",
+    "git_blob": "80124521f6df2652c9a3414c9c25964c91326343",
+    "sha256": "81bc5293015a564b8f8a2893654b643606591b50505bba2bd1e86c921035fc8c",
+    "method": "getPositionStatus({wallet,rpc,principalToken,positionAddress})"
+  },
+  "signing": {
+    "wallet_type": "TransactionSigner parameter declared",
+    "wallet_runtime_usage": "None in inspected function or reachable read helpers",
+    "signing_calls": 0,
+    "broadcast_calls": 0,
+    "simulation_calls": 0,
+    "blockhash_calls": 0,
+    "scope": "Pinned TS source path, not proof of uninspected published dist binary",
+    "wallet_or_key_created": false
+  },
+  "explicit_return_fields": [
+    "positionData",
+    "entryPrice",
+    "pythPrice",
+    "sizeUsd",
+    "totalInterest",
+    "exitFee",
+    "assetAmount",
+    "preFeePnl",
+    "pnl",
+    "principalCustodyMint",
+    "collateralCustodyMint",
+    "openTime",
+    "updateTime"
+  ],
+  "liquidation_output": {
+    "top_level_liquidationPrice": "ABSENT",
+    "nested_Position_liquidationPrice": "ABSENT_IN_PINNED_464_BYTE_LAYOUT",
+    "leverage_top_level": "ABSENT",
+    "collateral_top_level": "ABSENT",
+    "nearby_fields_not_liq_price": [
+      "liquidationFeeUsd",
+      "stopLossClosePositionPrice",
+      "entryPrice",
+      "takeProfitLimitPrice",
+      "stopLossLimitPrice"
+    ],
+    "producer_value": null,
+    "reason": "NO_VENDOR_LIQUIDATION_PRICE_IN_THIS_EXAMINED_PATH",
+    "not_a_claim_protocol_has_no_other_calculator": true
+  },
+  "read_sequence": [
+    {
+      "step": 1,
+      "source": "getPositionUtil -> fetchPosition -> fetchEncodedAccount",
+      "RPC_family": "getAccountInfo via SolanaKit single-account fetch",
+      "input": "Existing ROOT-admitted positionAddress",
+      "commitment": "Unspecified in caller; do not invent default",
+      "network_stage": "single-account read helper"
+    },
+    {
+      "step": 2,
+      "source": "fetchPoolUtil('main-pool', ADRENA_PROGRAM_ADDRESS,rpc) -> fetchPool",
+      "RPC_family": "getAccountInfo interface",
+      "input": "Local static PDA derivation from main-pool and generated program constant",
+      "commitment": "confirmed",
+      "network_stage": "single-account read helper"
+    },
+    {
+      "step": 3,
+      "source": "loadCustodies -> fetchAllCustody",
+      "RPC_family": "getMultipleAccounts interface",
+      "input": "Pool custody list excluding system-program sentinel",
+      "commitment": "confirmed",
+      "network_stage": "multiple-account read helper; physical batching not proven"
+    },
+    {
+      "step": 4,
+      "source": "getPythPrice(mapped principalToken)",
+      "HTTP": "GET https://hermes.pyth.network/v2/updates/price/latest?ids[]=<static-feed-id>",
+      "headers": "accept: application/json only",
+      "network_stage": "one explicit fetch call; no source-level retry"
+    }
+  ],
+  "counts": {
+    "nominal_successful_source_stages": 4,
+    "account_read_stages": 3,
+    "explicit_Hermes_fetches": 1,
+    "hard_HTTP_upper_bound": null,
+    "reason": "SolanaKit account batching/transport/retry/default behavior and actual custody count not inspected or measured",
+    "SDK_one_call_is_one_HTTP": false,
+    "success_not_measured": true
+  },
+  "state_and_pool": {
+    "position_fields": [
+      "owner",
+      "pool",
+      "custody",
+      "collateralCustody",
+      "id",
+      "side",
+      "price",
+      "sizeUsd",
+      "borrowSizeUsd",
+      "collateralUsd",
+      "collateralAmount",
+      "exitFeeUsd",
+      "liquidationFeeUsd",
+      "unrealizedInterestUsd",
+      "unrealizedFundingPaidUsd",
+      "unrealizedFundingReceivedUsd"
+    ],
+    "pool_selection": "Hard-coded main-pool; principal/collateral custodies found by native address",
+    "position_pool_equality_check": "Not explicit in read helper",
+    "actual_generated_ADRENA_PROGRAM_ADDRESS": "Definition not read; do not equate it by assumption to a similarly named helpers constant",
+    "static_helpers_ADRENA_PROGRAM_ID_read": true,
+    "current_user_or_position_addresses_read_or_derived": 0
+  },
+  "OPEN_lifecycle": {
+    "account_size_bytes": 464,
+    "existence_check": "fetchPosition asserts account exists",
+    "OPEN_status_filter": "Not present in getPositionStatus",
+    "side_mapping": "1 -> long; any other value -> short, without protocol enum validation here",
+    "id": "u64 field exists; uniqueness/monotonic/reopen lifecycle not proved",
+    "PDA_reuse_or_close_account_semantics": "UNKNOWN",
+    "current_OPEN_rows": 0,
+    "all550": "NOT_CHECKED"
+  },
+  "documentary_scales": {
+    "price": "Code divides raw price by10^PRICE_DECIMALS; constants declares PRICE_DECIMALS=10",
+    "sizeUsd": "Code divides by10^6",
+    "exitFeeUsd": "Code divides by10^6",
+    "constants": {
+      "USD_DECIMALS": 6,
+      "RATE_DECIMALS": 9,
+      "PRICE_DECIMALS": 10
+    },
+    "actual_native_unit_qualification": "NOT_CHECKED",
+    "economic_price_base_and_quote_basis": "Requires native custody/oracle/asset proof; not inferred from symbol"
+  },
+  "fees_and_PnL": {
+    "interest_helper": "USD scaled10^6 per primary source comment and operations; uses cumulative borrow rate, position borrowSizeUsd and unrealizedInterestUsd",
+    "computation_clock": "Math.floor(Date.now()/1000), not chain generation clock",
+    "formatting_gap": "USD1e6 interest is passed to formatScaledValue with collateralCustody.decimals; formatter source not read, conversion contract unresolved",
+    "long_PnL": "Uses Math.abs(entry size minus current asset value); loss direction is not preserved in preFeePnl",
+    "funding_gap": "Raw Position has unrealizedFundingPaidUsd/ReceivedUsd; this result calculation does not include them",
+    "not_accepted_as_full_risk_or_fee_calculator": true,
+    "no_fees_or_values_assumed_zero": true
+  },
+  "oracle": {
+    "source": "Pyth Hermes",
+    "conversion": "raw price *10^expo",
+    "clock_fields_available_in_response_type": [
+      "publish_time",
+      "metadata.slot",
+      "prev_publish_time"
+    ],
+    "returned_by_helper": "Adjusted numeric price only",
+    "publish_time_confidence_and_slot_retained": false,
+    "staleness_or_confidence_validation": "None in examined helper",
+    "caller_mapping": "JITOSOL -> SOL and WBTC -> BTC",
+    "conversion_ratio_or_wrapped_equivalence_proved": false,
+    "caller_principal_to_custody_binding_validated": false,
+    "quota_scope": "Not established for Hermes; do not borrow Benchmarks quotas from source comment",
+    "exact_typed_response_fields": [
+      "price.price",
+      "price.expo",
+      "price.conf",
+      "price.publish_time",
+      "metadata.slot",
+      "metadata.prev_publish_time"
+    ]
+  },
+  "clocks": {
+    "openTime_updateTime": "Native i64 values converted as Unix seconds to Date",
+    "source_snapshot_generation": null,
+    "RPC_context_slot_in_result": null,
+    "oracle_publish_time_in_result": null,
+    "interest_local_now": "Calculation clock only",
+    "sequential_cross_account_snapshot_coherence": "Not proved; no explicit shared minContextSlot in inspected calls"
+  },
+  "conclusion": "Signer-free source read sequence found, but no vendor liquidation-price output; no useful liquidation-map native probe or producer is qualified by this path.",
+  "next_minimum_primary_gap": "A different exact vendor risk view/calculator/API that supplies liquidation price from complete state, or proof of a published implementation with that output. Do not manufacture it from the PnL helper.",
+  "source_code_executed": false,
+  "actual_RPC_or_Hermes_or_market_calls": 0,
+  "crossvenue_prerequisites": {
+    "BingX_canonical_asset": null,
+    "native_quote_to_USDT": null,
+    "collateral_conversion": null,
+    "wrapped_token_ratio": null,
+    "venue_price_basis": null
+  },
+  "full_inputs_used_by_examined_path": {
+    "caller": [
+      "rpc supporting single/multiple account reads",
+      "principalToken",
+      "existing admitted positionAddress"
+    ],
+    "position": [
+      "side",
+      "openTime",
+      "updateTime",
+      "price",
+      "sizeUsd",
+      "exitFeeUsd",
+      "custody",
+      "collateralCustody",
+      "borrowSizeUsd",
+      "cumulativeInterestSnapshot.low",
+      "cumulativeInterestSnapshot.high",
+      "unrealizedInterestUsd"
+    ],
+    "pool": [
+      "custodies"
+    ],
+    "custody": [
+      "address for lookup",
+      "mint",
+      "decimals",
+      "borrowRateState.cumulativeInterest.low",
+      "borrowRateState.cumulativeInterest.high",
+      "borrowRateState.currentRate",
+      "borrowRateState.lastUpdate"
+    ],
+    "oracle_used": [
+      "parsed[0].price.price",
+      "parsed[0].price.expo"
+    ],
+    "other_inputs": [
+      "local Date.now",
+      "PRICE_DECIMALS10",
+      "USD field divisor10^6"
+    ],
+    "liquidation_risk_parameters_used_by_getPositionStatus": "NONE_IDENTIFIED; no liquidation-price calculation in this function"
+  }
+}
