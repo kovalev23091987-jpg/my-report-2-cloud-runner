@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {buildArtifact} from '../runtime/build.mjs';
+const digest=s=>createHash('sha256').update(s).digest('hex');
+const admissionPath=process.argv[2],a=JSON.parse(fs.readFileSync(admissionPath,'utf8'));
+if(a.status!=='ADMITTED_ONE_OFFLINE_BUILD_NOT_DEPLOYMENT'||Date.now()>=a.expires_ts||a.expires_ts>a.own_lease.expires_ts)throw Error('BUILD_ADMISSION_REQUIRED');
+if(digest(fs.readFileSync('pump-report/runtime/build.mjs'))!==a.builder_sha256)throw Error('BUILDER_CHANGED');
+const bytes=fs.readFileSync(a.base_artifact);if(digest(bytes)!==a.base_artifact_sha256)throw Error('BASE_CHANGED');
+const base=JSON.parse(bytes),overrides={...base.modules};
+if(base.manifest.implementation_pin.sha256!==a.base_live_pin)throw Error('BASE_PIN');
+for(const [p,sha]of Object.entries(a.frozen_REV2)){let text=fs.readFileSync(p,'utf8');if(digest(text)!==sha)throw Error('FROZEN_CHANGED:'+p);if(p.endsWith('/production-policy.mjs')){const old="enabled:false,activation_decision_ref:null",next="enabled:true,activation_decision_ref:'"+a.private_staging_policy.activation_decision_ref+"'";if(text.split(old).length!==2)throw Error('POLICY_ACTIVATION_TRANSFORM_NOT_EXACT');text=text.replace(old,next);}overrides[p.slice('pump-report/'.length)]=text;}
+const lock=a.output+'.build-attempt';fs.writeFileSync(lock,JSON.stringify({started_ts:Date.now(),authority:a.authority_main,not_install_permission:true}),{flag:'wx',mode:0o600});
+const legacy=a.output+'.legacy-base';fs.writeFileSync(legacy,base.modules['legacy-worker.mjs'],{flag:'wx',mode:0o600});
+const manifest=buildArtifact({legacy_path:legacy,output_path:a.output,module_overrides:overrides});
+const candidate=JSON.parse(fs.readFileSync(a.output)),changed=Object.keys(candidate.modules).filter(n=>candidate.modules[n]!==base.modules[n]);
+if(manifest.module_count!==70||JSON.stringify([...changed].sort())!==JSON.stringify([...a.expected_changed_or_added].sort()))throw Error('UNEXPECTED_DELTA');
+const unchanged=Object.keys(base.modules).filter(n=>candidate.modules[n]===base.modules[n]);if(unchanged.length!==64||candidate.modules['legacy-worker.mjs']!==base.modules['legacy-worker.mjs'])throw Error('BASE_MODULE_CHANGED');
+const proof={schema:'ROOT_CONDITIONAL_SURPLUS_REVIEWABLE_ARTIFACT_V1',status:'PREPARED_NOT_APPROVED_NOT_INSTALLED',authority_main:a.authority_main,built_ts:Date.now(),artifact_path:a.output,artifact_sha256:digest(fs.readFileSync(a.output)),implementation_sha256:manifest.implementation_pin.sha256,module_count:manifest.module_count,changed_or_added:changed.map(name=>({name,sha256:digest(candidate.modules[name]),previous_sha256:base.modules[name]?digest(base.modules[name]):null})),unchanged_base_modules:unchanged.length,legacy_unchanged:true,main_policy_remains_OFF:true,staged_policy:a.private_staging_policy,BL_manifest_sha256:a.BL_manifest_sha256,builds:1,native_SQL:0,market_HTTP:0,Telegram:0,deployed:false};
+fs.writeFileSync('checkpoints/pump-report-20261025/ROOT_CONDITIONAL_SURPLUS_REVIEWABLE_ARTIFACT.json',JSON.stringify(proof,null,2)+'\n');
+console.log(JSON.stringify(proof));
