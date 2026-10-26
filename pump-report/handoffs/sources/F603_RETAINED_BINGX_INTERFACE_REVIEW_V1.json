@@ -1,0 +1,203 @@
+{
+  "schema": "F603_RETAINED_BINGX_ID_INTERFACE_REVIEW_V1",
+  "results": [
+    {
+      "path": "pump-report/handoffs/sources/F597_PRIMARY_PROOFS_V1.json",
+      "sha256": "c0ecd2bd1e3e7d1fac19fdbc45cb2504ee6311253d980760cf26bda0c8e23261",
+      "bytes": 3240,
+      "top_keys": [
+        "schema",
+        "read_batches",
+        "facts",
+        "retained_F596_reused_without_reread"
+      ],
+      "matched_lines": [
+        "\"id\": \"BINGX_FUTURES_LINK\","
+      ]
+    },
+    {
+      "path": "checkpoints/COINGECKO_DEMO_ACTUAL_ACCESS_401_20261013.json",
+      "sha256": "630e7689d453dde017a0d02a73fc9cc99592e78d75fd31df95ae4d122967559e",
+      "bytes": 3498,
+      "top_keys": [
+        "schema",
+        "recorded_utc",
+        "head",
+        "cloud_run",
+        "artifact_id",
+        "artifact_digest",
+        "original_validation_path",
+        "original_validation_sha256",
+        "status",
+        "actual_source_HTTP",
+        "original_receipts",
+        "backoff",
+        "D1_actual",
+        "source_fact_count",
+        "consumer_fact_count",
+        "production_use",
+        "credential_value_saved",
+        "owner_key_check_requested",
+        "not_paid_access_and_not_independent_source",
+        "new_numeric_error_capture"
+      ],
+      "safe_status_fields": [
+        {
+          "path": [
+            "status"
+          ],
+          "value": "ONE_AUTHENTICATED_REQUEST_REJECTED_401_NO_USEFUL_FACT"
+        },
+        {
+          "path": [
+            "actual_source_HTTP"
+          ],
+          "value": 1
+        },
+        {
+          "path": [
+            "backoff",
+            "status"
+          ],
+          "value": "SOURCE_ACCESS_BLOCKED"
+        }
+      ]
+    },
+    {
+      "path": "checkpoints/coingecko-demo-38462619944/validation.json",
+      "sha256": "b9367a0ff94ebbb78f85e0ec773ea8fde54a1d93b720a8049f48484ace932861",
+      "bytes": 18868,
+      "top_keys": [
+        "schema",
+        "head",
+        "cloud_run",
+        "run_id",
+        "contract",
+        "identity",
+        "source_identity_record",
+        "missing_fact",
+        "status",
+        "maximum_source_HTTP",
+        "D1_reservation",
+        "MAIN",
+        "Telegram",
+        "score",
+        "new_fresh_SENT",
+        "project_complete",
+        "daily_admission",
+        "auth_mode",
+        "actual_HTTP",
+        "receipts",
+        "summary",
+        "admission",
+        "provider_backoff",
+        "backoff_until",
+        "evidence",
+        "consumer_status",
+        "consumer_facts",
+        "production_use_claim",
+        "monthly_source_bound",
+        "finalized_usage",
+        "D1",
+        "completed_ts"
+      ],
+      "safe_status_fields": [
+        {
+          "path": [
+            "status"
+          ],
+          "value": "CLOSED"
+        },
+        {
+          "path": [
+            "maximum_source_HTTP"
+          ],
+          "value": 4
+        },
+        {
+          "path": [
+            "daily_admission",
+            "allowed"
+          ],
+          "value": true
+        },
+        {
+          "path": [
+            "daily_admission",
+            "status"
+          ],
+          "value": "CLOSED"
+        },
+        {
+          "path": [
+            "actual_HTTP"
+          ],
+          "value": 2
+        },
+        {
+          "path": [
+            "admission",
+            "allowed"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "path": "checkpoints/COINGECKO_UPDATED_DEMO_USEFUL_UNI_20261013.json",
+      "sha256": "8ec1481c1334687d81efc7e25996ec29ab52894d287660b2892d4c581a45c0ed",
+      "bytes": 6294,
+      "top_keys": [
+        "schema",
+        "recorded_utc",
+        "base_main",
+        "status",
+        "secret_metadata_only",
+        "cloud_run",
+        "artifact_id",
+        "artifact_digest",
+        "receipt",
+        "contract",
+        "identity",
+        "actual_HTTP",
+        "original_receipts",
+        "summary",
+        "consumer_status",
+        "consumer_facts",
+        "D1",
+        "monthly_source_bound",
+        "owner_free_plan_screenshot_confirmed",
+        "production_natural_use_verified",
+        "all105_coverage_claim",
+        "Telegram",
+        "MAIN",
+        "score_change",
+        "first_401_preserved",
+        "backoff_only_probe"
+      ],
+      "safe_status_fields": [
+        {
+          "path": [
+            "status"
+          ],
+          "value": "FREE_DEMO_EXACT_UNI_SECTOR_FACT_AND_CONSUMER_VERIFIED"
+        },
+        {
+          "path": [
+            "actual_HTTP"
+          ],
+          "value": 2
+        },
+        {
+          "path": [
+            "consumer_status"
+          ],
+          "value": "CLOSED"
+        }
+      ]
+    }
+  ],
+  "exact_CoinGecko_BingX_derivative_ID_found": false,
+  "scope": "Targeted saved-file checks only; matched F597 proof label is not a vendor ID. No tool/account/native call.",
+  "installed_connection_metadata": "ROOT supplied static interface inventory only; no docs/data tool called, no plan/derivative entitlement inferred."
+}

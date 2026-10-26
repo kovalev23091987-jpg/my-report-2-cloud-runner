@@ -1,0 +1,51 @@
+{
+  "id": "ROOT_F603_BITGET_PRIMARY_BATCH_IDENTITY_OI_FUNDING_2SEARCH4READ_20261026",
+  "search_max": 2,
+  "open_max": 4,
+  "search_spent": 2,
+  "open_spent": 4,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "targeted_search",
+      "q": "site:docs.coingecko.com derivatives exchange tickers base_currency_id funding_rate open_interest_usd",
+      "purpose": "Primary native derivative/global assetID and units schema",
+      "state": "SUCCESS_PRIMARY_CHANGELOG_GLOBAL_IDS_FOUND"
+    },
+    {
+      "kind": "targeted_search",
+      "q": "site:docs.coingecko.com derivatives exchanges Demo API free plan rate limit credits",
+      "purpose": "Primary free entitlement and shared quota for same selected endpoint",
+      "state": "SUCCESS_RESULTS_REQUIRE_ENDPOINT_PLAN_VERIFICATION"
+    },
+    {
+      "kind": "new_primary_read",
+      "url": "https://docs.coingecko.com/v3.0.1/reference/derivatives-exchanges-id",
+      "purpose": "Demo endpoint schema, global IDs, OI/funding units, original clocks and plan access",
+      "state": "SUCCESS_DEMO_ENDPOINT_GLOBAL_COIN_ID_SCHEMA"
+    },
+    {
+      "kind": "new_primary_read",
+      "ref": "turn158view0:11",
+      "purpose": "Official Demo key entitlement and free quota path, no key generation/account probe",
+      "state": "SUCCESS_FREE_DEMO_PLAN_DECLARED_KEY_REQUIRED"
+    },
+    {
+      "kind": "new_primary_read",
+      "ref": "turn159view0:12",
+      "purpose": "Shared per-minute/monthly credit and failed-call accounting",
+      "state": "SUCCESS_DEMO100MIN_AND_FAILED_CALL_RATE_ACCOUNTING"
+    },
+    {
+      "kind": "new_primary_read",
+      "ref": "turn159view0:9",
+      "purpose": "Official free Demo monthly/day/minute entitlement versus installed unknown account",
+      "state": "SUCCESS_DEMO_FREE10000MONTH100MIN"
+    }
+  ],
+  "search_successes": 2,
+  "primary_read_successes": 4,
+  "failed_primary_reads": 0,
+  "new_source_qualification_calls": 0
+}

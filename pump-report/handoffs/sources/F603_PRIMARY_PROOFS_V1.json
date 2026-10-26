@@ -1,0 +1,52 @@
+{
+  "schema": "F603_PRIMARY_EVIDENCE_PROVENANCE_V1",
+  "search": {
+    "spent": 2,
+    "sha256_returned": "ebb70b8f4f2c2f07d017686718dc2d04a24bad0ee1778ed8f26ea7f750a005ff",
+    "finding": "Official changelog led to current Demo schema, not a new market fact."
+  },
+  "reads": [
+    {
+      "id": "DEMO_DERIVATIVE_BATCH",
+      "requested": "https://docs.coingecko.com/v3.0.1/reference/derivatives-exchanges-id",
+      "resolved": "https://docs.coingecko.com/demo/reference/derivatives-exchanges-id",
+      "ref": "turn158view0",
+      "returned_sha256": "af13ac4671299a65820b0bb915c5bfd1522e1bae87013a0f47ba910441560210",
+      "lines": [
+        "203-267",
+        "384-430",
+        "502-518",
+        "591-607"
+      ]
+    },
+    {
+      "id": "FREE_DEMO_AUTH",
+      "url": "https://docs.coingecko.com/docs/setting-up-your-api-key",
+      "ref": "turn159view0",
+      "returned_sha256": "45970dedf1f3f1d0fcc536e9a0f97d9bea69a8a30af0d788a630fb1a70897058",
+      "lines": [
+        "44-51"
+      ]
+    },
+    {
+      "id": "RATE_ACCOUNTING",
+      "url": "https://docs.coingecko.com/docs/errors-and-rate-limits",
+      "ref": "turn161view0",
+      "returned_sha256": "aaa36a077e9324731806eb8e7d3003e4bdcfd138575c00cac797dda2521b19d7",
+      "lines": [
+        "49-67"
+      ]
+    },
+    {
+      "id": "FREE_PLAN_QUOTA",
+      "url": "https://www.coingecko.com/en/api/pricing",
+      "ref": "turn160view0",
+      "returned_sha256": "2616da02a03b37865dfe057243d65c7917783dfbdb712674f7881e0e1f9ccde4",
+      "lines": [
+        "514-535"
+      ],
+      "scope": "Pricing/quotas only; market header values/examples not retained"
+    }
+  ],
+  "scope": "Only public documentation, no signup/key creation/account lookup/native endpoint/SDK execution."
+}

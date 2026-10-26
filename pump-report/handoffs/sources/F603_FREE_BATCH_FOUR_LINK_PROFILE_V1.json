@@ -1,0 +1,153 @@
+{
+  "schema": "F603_COINGECKO_FREE_BATCH_FOUR_LINK_PROFILE_V1",
+  "status": "PARTIAL_DOCUMENTARY_QUALIFICATION_NOT_RUNTIME_READY",
+  "provider": "COINGECKO_DEMO",
+  "role": "Canonical-ID-enriched derivative exchange ticker batch, optional separate-venue OI/funding context.",
+  "route": {
+    "method": "GET",
+    "base": "https://api.coingecko.com/api/v3",
+    "path": "/derivatives/exchanges/{id}",
+    "id_source": "Official derivative exchange ID map; default documented example binance_futures is not a current coverage claim.",
+    "parameters": {
+      "include_tickers": [
+        "all",
+        "unexpired"
+      ]
+    },
+    "omit_parameter": "tickers omitted",
+    "batch_scope": "One derivatives exchange, not all550 or all venues.",
+    "auth_header": "x-cg-demo-api-key required",
+    "key_material_read_or_created": false
+  },
+  "fields": [
+    "symbol",
+    "base",
+    "target",
+    "coin_id",
+    "target_coin_id",
+    "contract_type",
+    "trade_url",
+    "funding_rate",
+    "open_interest_usd",
+    "last_traded",
+    "expired_at"
+  ],
+  "links": [
+    {
+      "link": "IDENTITY",
+      "proved": "Schema explicitly binds each provider ticker base/target to CoinGecko coin IDs; stronger than ticker text.",
+      "status": "PROVIDER_ID_MAP_DOCUMENTED",
+      "not_proved": [
+        "Any actual row",
+        "BingX nativecontract/coinId-to-globalID bridge",
+        "Crypto-only classification",
+        "Current selected550 overlap"
+      ],
+      "rule": "Exact venue+native symbol+contract type+coinIDs, no numeric-prefix/ASCII normalization."
+    },
+    {
+      "link": "UNITS",
+      "proved": "Ticker OI is USD notional.",
+      "status": "PARTIAL_OI_CLOSED_FUNDING_OPEN",
+      "not_proved": [
+        "Funding numeric scale",
+        "Funding interval/settlement period",
+        "OI counting convention/source calculation"
+      ],
+      "rule": "Do not derive funding percent/8h from samples or turn USD into USDT."
+    },
+    {
+      "link": "SOURCE_CLOCK",
+      "proved": "last_traded is last-trade UNIX time.",
+      "status": "OPEN_FOR_OI_AND_FUNDING",
+      "not_proved": [
+        "Original OI asof",
+        "Original funding asof",
+        "Funding settlement/next settlement clock"
+      ],
+      "rule": "Trade time, receive time and cache refresh are not metric asof."
+    },
+    {
+      "link": "FREE_ENTITLEMENT_AND_QUOTA",
+      "proved": "The route is in Demo reference; free Demo plan uses a Demo key.",
+      "status": "PUBLIC_PLAN_DOCUMENTED_ACTUAL_ACCOUNT_OPEN",
+      "quota": {
+        "published_minute_calls": 100,
+        "published_month_credits": 10000,
+        "published_day": "NOT_SPECIFIED",
+        "shared": "Same Demo entitlement across methods; not a separate bucket per connection.",
+        "per_minute_errors": "All requests including4xx/5xx count.",
+        "endpoint_month_credit_debit": "NOT_ESTABLISHED_FROM_INSPECTED_TEXT",
+        "failed_month_credit_debit": "UNKNOWN",
+        "keyless": "IP-shared limits, not a substitute for documented Demo-key requirement"
+      },
+      "not_proved": [
+        "Installed connector host/key type/endpoint capability",
+        "Our actual plan, usage, remaining, reset",
+        "Physical HTTP/retry bound through any wrapper"
+      ],
+      "rule": "No new keys/probes. Shared old costs and unknowns stay preserved."
+    }
+  ],
+  "concrete_new_benefit": "An exact documented provider-native ticker to global CoinGecko asset ID path, plus USD OI units in the same batch. It can support a common typed join once independent BingX-side identity is available; it does not close that side itself.",
+  "common550": {
+    "method": "Future single shared ID-based reconciliation; no per-coin configs or automatic500 requests.",
+    "new_actual_rows": 0,
+    "matched": 0,
+    "not_checked": 550,
+    "UNSUPPORTED": 0,
+    "canonical_or_CORE_or_map_promotions": 0,
+    "missing_or_empty_ids": "Keep UNKNOWN, never fill by symbol."
+  },
+  "lineage": {
+    "data_vendor": "CoinGecko",
+    "market_upstream": "The exact exchange identified by id",
+    "independence": "A separate aggregator wrapper is not independent confirmation of the same upstream positions/rate.",
+    "duplicate_policy": "Keep exchange/nativeinstrument/globalID lineage before comparing or aggregating."
+  },
+  "limits": {
+    "exchange_coin_ids": "Provider attribution, not an onchain contract-address proof.",
+    "asset_class": "CoinGecko IDs may include excluded assets; require crypto classification and selected universe.",
+    "excluded_numeric_facts": "No exchange-level BTC aggregate, BTC/ETH conversions, benchmark, RWA/FX/stock/metal facts retained.",
+    "freshness_pricing": "Demo freshness from60sec is a plan/cache description, not metric original-time proof."
+  },
+  "identity_only_branch": {
+    "useful_without_metric_clocks": true,
+    "status": "PROMISING_BINDING_EXACT_BINGX_EXCHANGE_ID_UNVERIFIED",
+    "exact_BingX_derivative_exchange_id": null,
+    "retained_lookup": "F603_RETAINED_BINGX_INTERFACE_REVIEW_V1.json",
+    "doc_grant_exhausted": true,
+    "required_binding": [
+      "Official CoinGecko derivative exchange ID explicitly identifying BingX",
+      "Provider row binds that venue's exact native perpetual symbol to nonempty coin_id and target_coin_id",
+      "Unique exact BingX native pair/family/quote/margin match and direct vendor attribution; never symbol-only matching"
+    ],
+    "what_can_close": "Provider-direct BingX native ticker -> global projectID attribution, subject to exact row evidence and ROOT acceptance.",
+    "not_claimed": [
+      "BingX ID guessed from spot slug",
+      "Current selected550 global matches",
+      "Funding/OI freshness",
+      "Multiplier/execution units"
+    ],
+    "no_new_data_call_authorized": true
+  },
+  "installed_interfaces": {
+    "metadata_source": "ROOT notice; no interface was called",
+    "ordinary": [
+      "search_coingecko",
+      "get-coin-markets"
+    ],
+    "secondary": [
+      "search_docs",
+      "execute with preauthenticated SDK"
+    ],
+    "limits": "Interfaces share upstream account/quota as applicable; presence/preauthentication is not Demo entitlement or derivative-route access proof.",
+    "tool_execution_count": 0
+  },
+  "historical_account_context": {
+    "first_401": "Preserved 2026-10-13 historical receipt",
+    "later_200": "Saved later free-Demo UNI and validation receipts succeeded; old401 is not relabelled as current failure.",
+    "current_derivative_access_or_remaining": "NOT_CHECKED",
+    "secrets_read_or_exported": false
+  }
+}
