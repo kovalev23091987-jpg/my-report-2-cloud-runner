@@ -4,7 +4,7 @@
   "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
   "acquired_ts": 1793030068000,
   "expires_ts": 1793030937000,
-  "expected_main": "764c85dbdcbf7830b3819f35f4ba3774acf9ef56",
+  "expected_main": "0df81c0682dd3db91bfa4c923bea0417f59599ea",
   "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
   "released": false,
   "root_lease_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793030108000",
@@ -20,7 +20,7 @@
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
     "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
-    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "14e138fdff20cad82bfc6dfe822c5f0cc0a6eb5b",
+    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "de139c5eccf8d1eb53cf77531c45366e4924e12f",
     "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "d6969c796ee0010c7f0699e35e850dc1bd25bd25",
     "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d"
   },
@@ -32,12 +32,56 @@
     "id": "ROOT_F602_OFFICIAL_BATCH_BINGX_IDENTITY_BRIDGE_2SEARCH4READ_20261026",
     "search_max": 2,
     "open_max": 4,
-    "search_spent": 0,
-    "open_spent": 0,
-    "state": "NEW_UNUSED",
+    "search_spent": 2,
+    "open_spent": 4,
+    "state": "CLOSED_EXHAUSTED_NO_REARM",
     "old_grants_rearmed": false,
-    "attempts": []
+    "attempts": [
+      {
+        "kind": "targeted_search",
+        "q": "site:bingx-api.github.io (\"coinId\" OR \"underlying\") (\"name\" OR \"network\" OR \"contractAddress\")",
+        "purpose": "Official documented batch identity ID namespace/fields, excluding already known signed wallet route",
+        "state": "EMPTY_SPENT"
+      },
+      {
+        "kind": "targeted_search",
+        "q": "site:bingx.com \"coinId\" (\"website\" OR \"official\" OR \"contractAddress\")",
+        "purpose": "Official public/static batch asset metadata linking nativecoinId to project identity; not single-HYPE review",
+        "state": "EMPTY_SPENT"
+      },
+      {
+        "kind": "new_primary_static_source_index",
+        "url": "https://api.github.com/repos/BingX-API/api-ai-skills/contents/skills",
+        "purpose": "Official new reference inventory for a batch native-ID/project schema; no API execution",
+        "state": "SUCCESS_OFFICIAL_REFERENCE_INDEX"
+      },
+      {
+        "kind": "new_primary_static_tree",
+        "url": "https://api.github.com/repos/BingX-API/api-ai-skills/git/trees/main?recursive=1",
+        "purpose": "Locate exact official asset/spot/announcement schema files without inventing endpoints or rereading old wallet reference",
+        "state": "SUCCESS_PINNED_OFFICIAL_TREE"
+      },
+      {
+        "kind": "new_primary_static_reference",
+        "repository": "BingX-API/api-ai-skills",
+        "path": "skills/announcement/api-reference.md",
+        "blob_sha": "45c2337b942f4bf521415073874bfab587436caf",
+        "purpose": "Batch announcement schema may bind exact listed native instrument to full project; not prior wallet/catalogue reread",
+        "state": "SUCCESS_PINNED_ANNOUNCEMENT_SCHEMA"
+      },
+      {
+        "kind": "new_primary_public_directory",
+        "ref": "turn142view1:31",
+        "purpose": "Official all-coin public directory, inspect only identity attributes and any native-ID linkage, no price facts",
+        "state": "SUCCESS_PUBLIC_DIRECTORY_NO_NATIVE_ID_BRIDGE"
+      }
+    ],
+    "empty_searches": 2,
+    "primary_read_successes": 4,
+    "failed_primary_reads": 0,
+    "new_market_service_API_calls": 0
   },
   "rebound_from_commit": "8f2b0af0d61e12f1a918c35a7827383adf720de5",
-  "rebind_reason": "Fresh ROOT rollover; exact same F602 scope/grant and original expiry, no rearm/extension"
+  "rebind_reason": "Fresh ROOT rollover; exact same F602 scope/grant and original expiry, no rearm/extension",
+  "final_guard_rebind_from_commit": "314f162bcf194d3503cdbd0ab2885a982e48c1dc"
 }
