@@ -1,0 +1,32 @@
+{
+  "schema": "F598_MECHANICAL_ARTIFACT_CHECK_V1",
+  "status": "PASS",
+  "checks": {
+    "JSON_parse_all": true,
+    "original_hash_bytes_exact": true,
+    "unique_tuple_counts": true,
+    "F552_hash_exact": true,
+    "F552_catalogue_provenance_exact": true,
+    "F552_same_exact_tuple": true,
+    "ROOT_review_hash_exact": true,
+    "ROOT_review_same_tuple_decision": true,
+    "grant_exhausted_no_rearm": true,
+    "correct_transitive_edge_states": true,
+    "no_promotion": true,
+    "F596_F597_all_frozen_files_unchanged": true
+  },
+  "frozen_predecessors": [
+    {
+      "manifest": "pump-report/handoffs/sources/F596_PACKAGE_MINIMAL_FUTURE_MODEL_PROOFS_FINAL_V1.json",
+      "all_frozen_files_unchanged": true,
+      "files": 8
+    },
+    {
+      "manifest": "pump-report/handoffs/sources/F597_PACKAGE_HYPE_NATIVE_CURRENCY_EXACT_ID_PROOFS_FINAL_V1.json",
+      "all_frozen_files_unchanged": true,
+      "files": 7
+    }
+  ],
+  "scope": "JSON/hash/exact retained lookup invariants; no product tests, no provider execution",
+  "new_native_IO": 0
+}

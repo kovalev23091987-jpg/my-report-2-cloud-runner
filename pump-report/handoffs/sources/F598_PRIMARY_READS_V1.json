@@ -1,0 +1,35 @@
+{
+  "schema": "F598_BOUNDED_BINGX_PRIMARY_READS_V1",
+  "search": {
+    "query": "site:bingx.com \"HYPE\" \"Hyperliquid\" \"perpetual\" listing",
+    "spent": 1,
+    "returned_text_sha256": "43fcc63bf9d9be73d1896a447909112219defd9e07706c4f83919566ea371a6b",
+    "outcome": "News/commentary results, no primary listing of BingX HYPE-USDT perpetual. No market facts/third-party identity adopted."
+  },
+  "reads": [
+    {
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/BTC-USDT",
+      "ref": "turn145view0",
+      "selection": "Retained F597 Trading Information link",
+      "returned_text_sha256": "50fcc82c8cce721960fce961579c72eecf6970590c41ef22c8beeaab571b8a32",
+      "returned_lines": 170,
+      "result": "Generic client shell, no HYPE/project content.",
+      "qualifies_bridge": false
+    },
+    {
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/HYPE-USDT",
+      "ref": "turn146view0",
+      "selection": "Exact pair using observed official contract-rules route structure",
+      "returned_text_sha256": "1ebecb2f3544058e66dab6b9525543e341a5f2c82cb03fc9e5f8ce0840c823f1",
+      "returned_lines": 170,
+      "result": "Exact target URL; returned text only generic navigation/footer, no project or instrument detail.",
+      "URL_path_is_content_proof": false,
+      "qualifies_bridge": false
+    }
+  ],
+  "negative_scope": "Non-observation in returned text, not proof of no listing or UNSUPPORTED.",
+  "F597_asset_page_reused_not_reread": {
+    "url": "https://bingx.com/en/price/hyperliquid",
+    "scope": "Already proved named project/network/site; asset page alone insufficient for exact perpetual."
+  }
+}
