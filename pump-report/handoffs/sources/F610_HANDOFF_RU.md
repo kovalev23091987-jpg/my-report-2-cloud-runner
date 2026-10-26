@@ -1,0 +1,19 @@
+# F610 — оригинальный DOOD input и статическая граница AUTO
+
+Полный input фактически присутствует в $.observation.private_evidence.original.input. Извлечён точный исходный UTF8 byte span, без пересериализации: 529 640 байт; SHA256 14e18a8cd4c880de9916bcc55d2fa2e71b4d544f2ddbd8fb4f1f5310218a6d16. Private path: pump-report/.private/handoffs/sources/F610/original-input-exact.json. Путь игнорируется Git, файл mode600. Canonical SHA и алгоритм отдельно объявлены в receipt; это не engine fingerprint. Исходный JSON не менялся.
+
+Input mode MANUAL, run_purpose PRODUCTION, analysis_ts 1793008557222 =26 октября12:55:57.222МСК. Содержит instrument, все8facts, liquidations и previous_wave. Сохранены125закрытых1mсвечей, дневное закрытое окно и1000trades; их величины остаются private. Candle quantity unit остаётся UNKNOWN, сравнение SAME_NATIVE_REPORTED_QUANTITY; абсолютная BASE/USDT volume не придумана. Все producer/unit/window/expiry metadata — F610_ORIGINAL_INPUT_RECEIPT_V1.json. OI/funding остаются исходными NOT_CHECKED. Это исторический as-of, не текущие свежие данные и не новая source coverage.
+
+Точный preliminary reported_change_pct того же as-of в input отсутствует. ticker_24h.value.change_pct=null. Producer live71 возвращает reported_change_pct вне facts, а deep input удерживает только facts. Поздняя queue row имеет reported_day_growth, но не связывает его с12:55input. Ничего не восстановлено из закрытого роста или позднего queue. Отдельный receipt F610_PRELIMINARY_FIELD_PRESENCE_V1.json фиксирует это ограничение.
+
+Иммутабельный71 artifact f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf совпал с FULL deployment proof; pin75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a. Хеши11относящихся к вопросу source/runtime модулей проверены по manifest. Локальный HEAD не подставлялся.
+
+В71 getOverview/getCore не используют mode; assess_source_evidence — общий mode-agnostic identity/orderbook-evidence gate. Оба режима идут в общий checkInstrument→overview/day/core. AUTO отдельно проходит business window, discovery, due/active-or-prequeue, priority/source admission и budget/pacing/surplus. MANUAL выбирает запрос напрямую. Новый AUTO-only source blocker в этих методах не доказан; текущая динамическая eligibility DOOD не вычислялась.
+
+Важная точная ветвь: rememberAnalysis после manualcheck обновляет уже существующую queue row и назначает next_check_ts=clock+recheck. AUTO фильтрует next_check_ts<=selection now. В сохранённых полях next-last_checked=300000мс. Selection предшествует admitCandidate; bucket.created_ts может быть сохранённым старым временем, а не временем селектора/каждой резервации. Полный mode-path с линиями — F610_AUTO_MANUAL_STATIC_GATE_COMPARISON_V1.json.
+
+Readback queue/resources снят13:07:10.061–13:07:14.253МСК, а не12:55. В нём лишь выбранные DOOD/KIMCHI rows, не wholequeue. Пара pacing13:00.created_ts=1793008857831 и DOOD.next_check_ts=1793008857880 даёт49мс. Это условное ordering observation: row stability at13:00, фактический selector time и причинность не доказаны; last_seen уже13:05. Snapshot нельзя перенести назад во времени. Старые allocations/pacing не реконструируют current71 целиком. Уже SENT241 может корректно подавлять дубликат AUTO.
+
+Пакет предназначен для нового отдельно порученного связанного AUTO-path case с настоящим engine у ROOT/аналитика. SOURCE не запускал engine/Node/tests и не создавал mode-modified fixture. Если тест меняет mode на AUTO, это явно производная копия с новым хешем, исходные часы/данные остаются неизменными; отсутствие исходного discovery preliminary/queue as-of не скрывается. Результат такого bounded теста не станет current AUTO discovery/SENT proof.
+
+Новых source/API/MCP/SDK, SQL14/CONTROL7/TG/build/deploy —0; квалификации24/24остаток0. Raw bodies, recipient, keys и Telegram text в публичный пакет не помещены. Старые расходы/unknown/reserves/9пауз/2OWNERdeferrals сохранены. После freeze — только собственный release/FULL.

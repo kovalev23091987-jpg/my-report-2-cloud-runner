@@ -1,0 +1,153 @@
+{
+  "schema": "F610_QUEUE_PACING_SNAPSHOT_RECEIPT_V1",
+  "readback_capture_interval": {
+    "capture_started_ts": 1793009230061,
+    "capture_completed_ts": 1793009234253,
+    "capture_started_ts_MSK": "2026-10-26T13:07:10.061000+03:00",
+    "capture_completed_ts_MSK": "2026-10-26T13:07:14.253000+03:00"
+  },
+  "snapshot_scope": "Two selected queue rows and selected allocation/pacing blocks from later13:07 readback, not wholequeue or12:55 snapshot",
+  "queue_rows": {
+    "DOOD": {
+      "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+      "first_seen": 1792998054916,
+      "last_seen": 1793009151269,
+      "active_wave": true,
+      "next_check_ts": 1793008857880,
+      "price_expires_ts": 1793009178000,
+      "movement_event_ts": 1793003820000,
+      "last_checked_ts": 1793008557880,
+      "last_status": "READY",
+      "confirmed_core_count": 3,
+      "core_expires_ts": 1793008571193,
+      "priority_evidence_ts": 1793008557222,
+      "priority_is_not_signal_eligibility": true,
+      "entry_distance_pct": 10.536419482229041
+    },
+    "KIMCHI": {
+      "instrument_id": "BINGX:USDT_M:104308:KIMCHI-USDT",
+      "first_seen": 1792998054916,
+      "last_seen": 1793009151269,
+      "active_wave": false,
+      "next_check_ts": 1793006223128,
+      "price_expires_ts": 1793009178000,
+      "movement_event_ts": 1793006147000,
+      "last_checked_ts": 1793005923128,
+      "last_status": "REJECTED",
+      "confirmed_core_count": 3,
+      "core_expires_ts": 1793005936074,
+      "priority_evidence_ts": 1793005921868,
+      "priority_is_not_signal_eligibility": true,
+      "entry_distance_pct": null
+    }
+  },
+  "allocation": {
+    "2026-10-26": {
+      "version": "pump-even-day-deep-v2",
+      "created_ts": 1793005850578,
+      "first_period": "1793005200000",
+      "remaining_periods": 8,
+      "candidates_per_period": 1,
+      "baseline_auto_charged": 350
+    }
+  },
+  "deep_pacing": {
+    "2026-10-26": {
+      "1793005200000": {
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-26",
+        "key": "1793005200000",
+        "created_ts": 1793005861434,
+        "limit": 12,
+        "charged": 4,
+        "candidate_count": 1,
+        "carried_in": 0,
+        "maximum": 1,
+        "issued_before": 0
+      },
+      "1793008800000": {
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-26",
+        "key": "1793008800000",
+        "created_ts": 1793008857831,
+        "limit": 12,
+        "charged": 4,
+        "candidate_count": 1,
+        "carried_in": 0,
+        "maximum": 1,
+        "issued_before": 1
+      }
+    }
+  },
+  "executor": {
+    "released_ts": 1793009158528,
+    "owner_present": false,
+    "run_id_present": true
+  },
+  "private_exact_references": [
+    {
+      "source_JSON_path": "$.observation.private_evidence.queue_rows",
+      "private_path": "pump-report/.private/handoffs/sources/F610/queue-rows-exact.json",
+      "bytes": 1751,
+      "sha256": "6fb4e57e7bfb2e5df95428cb0d5c46ec84b780eae686466cd6fddddae9187b2f",
+      "canonical_SHA256": "3bb29cebecb6bee8f18692334d091a246434c275840e7d8f19f9d11bf7b89828",
+      "source_byte_start": 759091,
+      "source_byte_end_exclusive": 760842,
+      "canonical_rule": "Python json.loads then json.dumps ensure_ascii=False sort_keys=True separators comma/colon allow_nan=False; not engine fingerprint",
+      "value_type": "dict",
+      "top_keys": [
+        "DOOD",
+        "KIMCHI"
+      ]
+    },
+    {
+      "source_JSON_path": "$.observation.private_evidence.resources.automatic_candidate_allocations",
+      "private_path": "pump-report/.private/handoffs/sources/F610/candidate-allocations-exact.json",
+      "bytes": 440,
+      "sha256": "d60d2cc267664d2295634300583ca52526847dfb6525f32b890b6b7baaaf11db",
+      "canonical_SHA256": "dff8a07b905638bc9c68d37a3526aec60d535ff394bf11da4f8f4441bd7e1316",
+      "source_byte_start": 757601,
+      "source_byte_end_exclusive": 758041,
+      "canonical_rule": "Python json.loads then json.dumps ensure_ascii=False sort_keys=True separators comma/colon allow_nan=False; not engine fingerprint",
+      "value_type": "dict",
+      "top_keys": [
+        "2026-10-26"
+      ]
+    },
+    {
+      "source_JSON_path": "$.observation.private_evidence.resources.automatic_deep_pacing",
+      "private_path": "pump-report/.private/handoffs/sources/F610/deep-pacing-exact.json",
+      "bytes": 838,
+      "sha256": "526d928018f254f8b6bc54ad367b4e994d7e40acf986e2b04199718fca079615",
+      "canonical_SHA256": "6aee87b97712e0dae86eda8364ec3b43d24ba4ca5aa375d08eae0fb3fee01baf",
+      "source_byte_start": 758076,
+      "source_byte_end_exclusive": 758914,
+      "canonical_rule": "Python json.loads then json.dumps ensure_ascii=False sort_keys=True separators comma/colon allow_nan=False; not engine fingerprint",
+      "value_type": "dict",
+      "top_keys": [
+        "2026-10-26"
+      ]
+    }
+  ],
+  "ordering": {
+    "pacing_1300_created_ts": 1793008857831,
+    "DOOD_next_check_ts": 1793008857880,
+    "DOOD_last_checked_ts": 1793008557880,
+    "next_minus_pacing_ms": 49,
+    "last_checked_minus_original_analysis_ms": 658,
+    "is_conditional_ordering_only": true,
+    "row_write_history_or_at_1300_stability_proven": false,
+    "exact_1255_queue_snapshot_proven": false,
+    "whole_queue_or_actual_AUTO_selection_proven": false,
+    "pacing_1300_created_MSK": "2026-10-26T13:00:57.831000+03:00",
+    "DOOD_next_check_MSK": "2026-10-26T13:00:57.880000+03:00",
+    "next_minus_last_checked_ms": 300000
+  },
+  "cautions": [
+    "49ms is ordering of preserved fields only, conditional on unknown row stability at13:00; not a causal conclusion.",
+    "Queue last_seen is later13:05; changed-price/priority state cannot be moved back to12:55 or13:00.",
+    "Pacing.created_ts is not proven exact selector/each reservation timestamp.",
+    "No wholequeue/current actual selection or current71 budget reconstruction.",
+    "Already SENT manual plan may correctly suppress duplicateAUTO; no bypass."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "F610_PRELIMINARY_FIELD_PRESENCE_V1",
+  "original_input_exact_SHA256": "14e18a8cd4c880de9916bcc55d2fa2e71b4d544f2ddbd8fb4f1f5310218a6d16",
+  "original_analysis_ts": 1793008557222,
+  "exact_named_preliminary_fields_in_original_input": [],
+  "ticker_24h_change_pct_path": "$.facts.ticker_24h.value.change_pct",
+  "ticker_24h_change_pct_is_null": true,
+  "same_asof_reported_change_pct_present": false,
+  "source71_producer_path": "sources/index.mjs:247-255 returns observation.reported_change_pct outside facts",
+  "source71_input_path": "runtime/runner.mjs:118-122 retains overview.facts, not observation.reported_change_pct",
+  "later_queue_only": {
+    "field": "queue_rows.DOOD.reported_day_growth",
+    "field_present": true,
+    "last_seen": 1793009151269,
+    "binds_original_analysis_asof": false
+  },
+  "not_reconstructed_from_closed_growth_or_queue": true,
+  "controlled_AUTO_test_limit": "Original saved deep input can be used unchanged with historical clocks; it does not provide an exact original discovery reported_change_pct or wholequeue snapshot. Any mode variant must be explicit and separately hashed; SOURCE does not create it."
+}

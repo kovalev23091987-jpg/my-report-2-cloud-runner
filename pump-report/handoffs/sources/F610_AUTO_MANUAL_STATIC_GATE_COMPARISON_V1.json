@@ -1,0 +1,129 @@
+{
+  "schema": "F610_AUTO_MANUAL_STATIC_GATE_COMPARISON_V1",
+  "implementation_sha256": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+  "scope": "Static immutable71 source path only; no function/engine invocation or current runtime claim",
+  "findings": [
+    {
+      "id": "SOURCE_METHODS_COMMON",
+      "module": "sources/index.mjs",
+      "lines": [
+        236,
+        267,
+        272
+      ],
+      "finding": "getOverview destructures instruments/purpose; getCore destructures instrument/force_refresh/only_facts/existing_facts/purpose. mode is not consumed by either method. Current runner passes same deep methods in AUTO and MANUAL.",
+      "meaning": "No intrinsic AUTO-only getCore/getOverview branch found."
+    },
+    {
+      "id": "SHARED_SOURCE_EVIDENCE",
+      "module": "runtime/source-evidence-admission.mjs",
+      "lines": [
+        5,
+        7,
+        9,
+        12
+      ],
+      "finding": "Assessment checks exact registry identity keys and a nonempty orderbook evidence_ref; no mode argument or branch.",
+      "call_sites": [
+        {
+          "module": "runtime/runner.mjs",
+          "lines": [
+            79,
+            106,
+            107
+          ]
+        }
+      ],
+      "meaning": "AUTO selection filters with this assessor; shared checkInstrument checks it again for both modes. A failed current source admission would also defer a current manual check; old successful MANUAL does not execute current registry assessment."
+    },
+    {
+      "id": "DEEP_PATH_COMMON",
+      "module": "runtime/runner.mjs",
+      "lines": [
+        104,
+        118,
+        120,
+        121,
+        122,
+        233,
+        238
+      ],
+      "finding": "Both modes reach checkInstrument then overview/day/core, previous_wave, input with mode and analyzePump. Source facts/expiry remain original.",
+      "meaning": "Mode-sensitive engine/publication outcome is outside SOURCE execution; ROOT/AN handles connected test."
+    },
+    {
+      "id": "AUTO_ONLY_PREDEEP",
+      "module": "runtime/runner.mjs",
+      "lines": [
+        48,
+        49,
+        66,
+        74,
+        75,
+        76,
+        77,
+        79,
+        195,
+        219,
+        236,
+        237
+      ],
+      "finding": "AUTO has business window/discovery, queue due filter next_check_ts<=selection now, active-wave/prequeue condition, bounded priority ranking/catalog/source-admission. MANUAL resolves its requested symbol and bypasses automatic candidate selection.",
+      "meaning": "Saved successful manual input alone is not AUTO discovery/selection proof."
+    },
+    {
+      "id": "MANUAL_PERSISTENCE_RECHECK",
+      "module": "runtime/runner.mjs",
+      "lines": [
+        94,
+        96,
+        97,
+        98
+      ],
+      "finding": "For an existing candidate row, rememberAnalysis writes last_checked_ts=clock and next_check_ts=clock+candidate_recheck_ms in either mode; manual does not create a missing queue row.",
+      "meaning": "Manual persistence can postpone an already-queued instrument's next automatic due time. Observed stored next-last=300000ms; no bug/cause conclusion from that alone."
+    },
+    {
+      "id": "BUDGET_AFTER_SELECTION",
+      "module": "runtime/runner.mjs",
+      "lines": [
+        237,
+        238,
+        106,
+        108,
+        110
+      ],
+      "related_module": "runtime/budget.mjs",
+      "related_lines": [
+        69,
+        186,
+        190,
+        194,
+        203,
+        206,
+        227
+      ],
+      "finding": "Selection precedes checkInstrument admission. AUTO retains protected manual reserve/automatic plan/pacing; MANUAL uses its mode reserves. Current71 also has conditional surplus. Bucket created_ts can retain saved created time, so it is not an exact selector timestamp.",
+      "meaning": "Old snapshot maximum/count is historical state and is not full current71 capacity/admission evidence."
+    },
+    {
+      "id": "PUBLICATION_SEPARATE",
+      "module": "runtime/runner.mjs",
+      "lines": [
+        140,
+        142,
+        144,
+        146,
+        147,
+        149
+      ],
+      "finding": "Publication requires ready/no owner refusal; AUTO additionally requires automatic_eligible, fresh mandatory facts, and delivery policy. Existing SENT241 may correctly prevent duplicate publication.",
+      "meaning": "Duplicate/outcome/sender state not replayed or bypassed by this packet; historical manual receipt is reused, not a new AUTO SENT proof."
+    }
+  ],
+  "no_AUTO_only_source_blocker_proven": true,
+  "not_a_claim_current_DOOD_eligible_or_selected": true,
+  "exact_selector_time_or_wholequeue_at1255_unknown": true,
+  "raw_data_or_clocks_modified": false,
+  "engine_Node_tests_market_SQL_TG_build_deploy": 0
+}
