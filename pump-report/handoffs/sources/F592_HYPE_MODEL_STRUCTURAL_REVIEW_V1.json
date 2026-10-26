@@ -1,0 +1,149 @@
+{
+  "schema": "F592_HYPE_NATIVE_EXTERNAL_MODEL_STRUCTURAL_REVIEW_V1",
+  "status": "SAVED_NATIVE_MODEL_FORMAT_CONTROL_NOT_BINGX_ROUTE",
+  "input_proof": {
+    "path": "pump-report/.private/observations/0xarchive-hype-future-model-one-result.json",
+    "sha256": "8d286b57c00cea4a8bf326c91ed19067d0d3d0d27fcf3df3efd9e0c878b72442",
+    "bytes": 40234,
+    "attempted_ts": 1793015503414,
+    "received_ts": 1793015505055,
+    "request": {
+      "tool": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+      "args": {
+        "coin": "HYPE",
+        "range_pct": 50,
+        "buckets": 100
+      },
+      "max_attempts": 1
+    },
+    "isError": false
+  },
+  "review_utc": "2026-10-26 12:00:57 UTC",
+  "request": {
+    "provider": "0XARCHIVE2",
+    "native_family": "HYPERLIQUID_CORE_PERP",
+    "coin": "HYPE",
+    "range_pct": 50,
+    "buckets": 100
+  },
+  "native_catalogue_row": {
+    "row_index": 67,
+    "exact_native_row": {
+      "name": "HYPE",
+      "szDecimals": 2,
+      "maxLeverage": 10,
+      "instrumentType": "perp",
+      "isActive": true
+    },
+    "active": true,
+    "type": "perp",
+    "crypto_classification": "UNKNOWN",
+    "selected550_rawtickerjoin_candidates": [
+      {
+        "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+        "native_symbol": "HYPE-USDT"
+      }
+    ],
+    "canonical_identity": "UNKNOWN",
+    "future_map_actual": "ONE_SAVED_NATIVE_HL_MODEL_CONTROL",
+    "consumer_qualification": "NOT_QUALIFIED_FOR_BINGX",
+    "not_global_unsupported": false
+  },
+  "model_kind": "EXTERNAL_MODEL",
+  "source_field_raw_does_not_mean_observed_positions": true,
+  "primary_docs_reused": "F590 https://docs.0xarchive.io/rest-api/liquidation-levels;no newdocreads",
+  "observed": {
+    "rows": 100,
+    "row_keys": [
+      "long_count",
+      "long_notional",
+      "price",
+      "short_count",
+      "short_notional"
+    ],
+    "all_expected_numeric_fields_finite": true,
+    "all_amounts_counts_nonnegative": true,
+    "all_counts_integer": true,
+    "unique_price_centers": 100,
+    "price_centers_strictly_ascending": true,
+    "source_bin_width_present": false,
+    "bounds_present": false,
+    "visible_native_sums": {
+      "long_notional": 627498558.2926404,
+      "short_notional": 545213005.99248,
+      "long_count": 9513,
+      "short_count": 2170
+    },
+    "whole_book_native_totals": {
+      "long": 804374336.887815,
+      "short": 804296515.6833436,
+      "flagged_notional": 138463318.77488077
+    },
+    "whole_totals_minus_visible": {
+      "long": 176875778.59517455,
+      "short": 259083509.6908636
+    }
+  },
+  "units": {
+    "price_center": "USD_NATIVE_MODEL_PRICE",
+    "mid_price": "USD_NATIVE_MODEL_PRICE",
+    "long_notional": "USD_MODELED_EXPOSURE",
+    "short_notional": "USD_MODELED_EXPOSURE",
+    "long_count": "NATIVE_MODELED_POSITION_COUNT",
+    "short_count": "NATIVE_MODELED_POSITION_COUNT",
+    "szDecimals": "CATALOGUE_SIZE_PRECISION_NOT_PRICE_TICK_OR_BIN_WIDTH",
+    "USD_to_BingX_USDT": "UNKNOWN_NO_CONVERSION",
+    "external_denomination_not_exclusion_reason": true,
+    "target_scope": "BINGX_USDT_M_SELECTED550;externalUSD/USDCcontextdoesnotbecomeatargetinstrument"
+  },
+  "clocks": {
+    "snapshot_ts": "2026-10-26T11:48:21.000Z",
+    "snapshot_ts_ms": 1793015301000,
+    "ISO_numeric_agree": true,
+    "original_received_ts": 1793015505055,
+    "age_at_original_capture_ms": 204055,
+    "review_ts": 1793016057000,
+    "age_at_review_ms": 756000,
+    "model_original_freshness_claim": "CAPTURE_ONLY_NOT_FRESH_AT_LATER_REVIEW",
+    "base_block_number": 1197850000,
+    "base_timestamp": null,
+    "actual_base_state_age": "UNKNOWN",
+    "documented_base_state_age": "F590 primary describes typically30–65min earlier;not measuredfor thisblock",
+    "actual_cadence": "UNKNOWN_SINGLE_SNAPSHOT",
+    "documented_cadence": "About5min since13Aug;currentMCPmetadata45min separate,not actualcadenceproof",
+    "received_is_not_model_or_base_time": true,
+    "consecutive_sameblock_possible": true
+  },
+  "precision": {
+    "source": "raw",
+    "source_bin_width_present": false,
+    "explicit_band_lower_upper_present": false,
+    "price_tick": null,
+    "lower": null,
+    "upper": null,
+    "bounds_status": "UNKNOWN_NO_NATIVE_BOUNDS_OR_QUALIFIED_WIDTH",
+    "center_spacing_or_requested_range_not_used_to_invent_edges": true,
+    "more_buckets_do_not_prove_more_source_resolution": true
+  },
+  "aggregate_semantics": {
+    "visible_sums": "Onlyreturned50percentwindow100centers;notwholebook",
+    "totals": "Wholebooknative totals;not equalvisiblewindow sums",
+    "flagged_notional": "Approximate/unassigned exposure already included in totals;do notaddagain",
+    "overlap_dedupe": "Nativeupstream0xArchive/model/snapshot/nativefamily/HYPE;totalsandbucketsnotindependentvotes",
+    "not_full_accounts_or_BingX_positions": true
+  },
+  "allowed_interpretation": "Source-native historical format/context control with original provenance. No canonicalBingXassetjoin, executablezonegeometry, conversion or freshcurrentconsumerqualification.",
+  "forbidden_interpretations": [
+    "HYPEtickerprovescanonicalasset",
+    "100centersare100qualifiedlowerupperzones",
+    "rawsourceprovesobservedliquidationprices",
+    "USDmodelpriceisBingXUSDTorderprice",
+    "flagged+totals+buckets independentamounts",
+    "OneHYPEmodelprovesmapsfor234or550",
+    "Onecapturedsnapshotproves5minor45minactualcadence",
+    "InactiveDOODrowprovesglobalunsupported"
+  ],
+  "actual_BingX_consumer_qualification": "NOT_QUALIFIED",
+  "fresh_current_BingX_map_fact": "NOT_CHECKED",
+  "raw_model_rows_exported": false
+}

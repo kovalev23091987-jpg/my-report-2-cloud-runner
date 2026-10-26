@@ -1,0 +1,56 @@
+{
+  "schema": "F591_FUNDING_UNIT_QUALIFICATION_VERDICT_V1",
+  "status": "UNKNOWN_UNIT_PREMISE_NOT_CLOSED",
+  "qualification_profile_ready": false,
+  "active_binding": false,
+  "request": "ResolveonlyindependentCCXTunifiedfundingunitcontract and compatibilitywithretainedpinnedBingXpassthrough.",
+  "conclusion": "OfficialunifiedmanualreaddoesnotexplicitlydenominatefundingRatefractionvspercent. Pinnedpassthroughdoesnotresolveunitambiguity. F588unitprofilemustremainUNKNOWN/inactive.",
+  "evidence_file": "pump-report/handoffs/sources/F591_CCXT_PRIMARY_UNIT_EVIDENCE_V1.json",
+  "dimensional_ambiguity": {
+    "kind": "MATHEMATICAL_COUNTEREXAMPLE_NOT_MARKET_DATA",
+    "raw_example": 0.0001,
+    "hypothesis_fraction_percent_display": 0.01,
+    "hypothesis_percent_display": 0.0001,
+    "both_preserve_same_numeric_mapping": true,
+    "note": "Withoutlabelledunit,raw→sameunifiednumbercannotchoosebetweenhypotheses."
+  },
+  "minimum_missing_primary_proof": {
+    "one_required_piece": "OneindependentofficialCCXTunifiedfundingunitstatementorofficialdocumentedcalculation/example/testthatbindsunifiedfundingRate to fraction-of-notional foritsactualperiod,withanexplicitpercentageequivalenceorunit-labelledpaymentformula.",
+    "acceptable_example_of_required_rule": "If an official source explicitly establishes unified fundingRate=0.0001 means0.01%peractualfundingperiod, the retainedunchangedBingXmappingcaninheritthatconsumerconvention.",
+    "example_is_hypothetical_not_new_fact": true,
+    "version_binding": "Recordexactofficialsource/version/blobSHA,andwhytheunitconventionappliestothepinnedFundingRatecontract. Currentmanualblobalonehasnostatementtoapply.",
+    "after_proof": "ROOTmayreviewaninactiveconsumer-basisRATE_FRACTION_PER_ACTUAL_PERIODprofileagainstF588andcarryforwardexistingquoteclock/rowperiod;notvendor-independentguaranteeorautonomousactivation.",
+    "no_need_for": "No500coinmanualchecks,oldBingXendpointaudit,oldnativeprobe,fullsuite,0xArchivewrapperresearchornewproviderlookup."
+  },
+  "existing_F588_clock_and_period_preserved": {
+    "kind": "RATE_QUOTE_SNAPSHOT",
+    "event_clock": "updateTime under CCXT consumer-clock convention",
+    "settlement_payment_event_ts": null,
+    "nextFundingTime": "Separatefuturetimestamp,notquoteeventclockorproofpayment",
+    "received_time": "Transportonly",
+    "actual_period": "fundingIntervalHours from actual row;numericstring permitted;no8hdefault",
+    "vendor_clock_guarantee": false,
+    "staleness": "Originalevent/expiry preserved;download/cachehitdoesnotrenewage",
+    "normalization": "Rawratepreserved;no*100or/100untilunitqualified"
+  },
+  "candidate_handoff_profile": {
+    "state": "UNQUALIFIED_NOT_EXECUTABLE_BINDING",
+    "unit": "UNKNOWN",
+    "desired_unit_if_independent_proof_closed": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+    "unit_basis_status": "MISSING_INDEPENDENT_UNIFIED_UNIT_PROOF",
+    "consumer_mapping_evidence": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "primary_vendor_unit_proof": false,
+    "clock_basis": "EXISTING_F588_CCXT_CONSUMER_QUOTE_CLOCK",
+    "payment_event_ts": null,
+    "period_source": "ACTUAL_NATIVE_ROW_FUNDING_INTERVAL_HOURS",
+    "no_default_period": true,
+    "activation_owner": "ROOT_ONLY_AFTER_REVIEW_AND_SEPARATE_ACTUAL_ADMISSION"
+  },
+  "coverage": {
+    "selected550": "No new unit qualification;all current funding checks remain NOT_CHECKED where unitprofileinactive.",
+    "DOOD_current_rate_or_minus1percent": "NOT_VERIFIED_NOT_ASSERTED",
+    "new_actual_samples": 0
+  },
+  "F588_controlled_case": "Preservedpastconditionalcodecheck;itsassumedunitpremiseisnotindependentsemanticproof.",
+  "operational_effect": "ZERO runtime/code/test/provider/API/nativeSQL/TG/deploy;F588frozeninactivepreserved."
+}
