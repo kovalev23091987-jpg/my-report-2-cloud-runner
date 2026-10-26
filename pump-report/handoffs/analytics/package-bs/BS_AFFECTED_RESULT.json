@@ -1,0 +1,142 @@
+{
+  "schema": "BS_ONE_CONNECTED_AUTO_ORIGINAL_ACTUAL_V1",
+  "status": "FAIL_PRESERVED_NO_AUTOMATIC_RERUN",
+  "Node": 1,
+  "new_connected_cases": 1,
+  "evidence_class": "ARTIFICIAL",
+  "scenario_class": "CONTROLLED_SAVED_FACT_REPLAY",
+  "counterfactual": true,
+  "native_event": false,
+  "native_AUTO_SENT": false,
+  "actual_Telegram": 0,
+  "sourceHTTP": 0,
+  "nativeSQL": 0,
+  "build": 0,
+  "deploy": 0,
+  "old_tests": 0,
+  "AUTO_execute": 1,
+  "MANUAL_execute": 0,
+  "runner_engine_calls": 0,
+  "delivery_recheck_engine_calls": 0,
+  "MOCK_send": 0,
+  "phases": [
+    {
+      "name": "A_SNAPSHOT_PROJECTION_NO_ENGINE",
+      "clock": 1793009234253,
+      "rows": [
+        {
+          "name": "DOOD",
+          "due": true,
+          "prequeue_eligible": true,
+          "price_expired": true,
+          "core_expired": true,
+          "score": 23.7530875,
+          "waiting_minutes": 11.272883333333333,
+          "movement_freshness": 0.6240102083333333,
+          "entry_proximity": 0,
+          "confirmed_data_fraction": 0
+        },
+        {
+          "name": "KIMCHI",
+          "due": true,
+          "prequeue_eligible": true,
+          "price_expired": true,
+          "core_expired": true,
+          "score": 70.89756527777777,
+          "waiting_minutes": 55.18541666666667,
+          "movement_freshness": 0.7856074305555556,
+          "entry_proximity": 0,
+          "confirmed_data_fraction": 0
+        }
+      ],
+      "boundary": {
+        "snapshot_completed_ts": 1793009234253,
+        "slot_created_ts": 1793008857831,
+        "DOOD_next_check_ts": 1793008857880,
+        "due_minus_slot_ms": 49,
+        "analysis_to_remember_ms": 658,
+        "candidate_count": 1,
+        "maximum": 1,
+        "hypothesis_only": true,
+        "exact_slot_queue_write_history_known": false
+      }
+    },
+    {
+      "name": "B_AUTO_EXECUTE_RETURNED",
+      "status": "INCOMPLETE",
+      "errors": [
+        "SOURCE_BUDGET_DEFERRED"
+      ],
+      "checked": 0,
+      "manual": 0,
+      "selection": [
+        {
+          "as_of_ts": 1793008557222,
+          "queue_candidates": 1,
+          "selected": {
+            "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+            "rank": 1,
+            "score": 0,
+            "waiting_minutes": 0,
+            "movement_freshness": 0,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0,
+            "preliminary_growth_pct": null,
+            "reported_day_growth_pct": null,
+            "active_wave": true,
+            "first_seen": 1793008557222,
+            "last_checked_ts": null,
+            "next_check_ts": 1793008557222,
+            "movement_event_ts": null,
+            "price_expires_ts": 1793008580000
+          },
+          "leaders": [
+            {
+              "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+              "rank": 1,
+              "score": 0,
+              "waiting_minutes": 0,
+              "movement_freshness": 0,
+              "entry_proximity": 0,
+              "confirmed_data_fraction": 0,
+              "preliminary_growth_pct": null,
+              "reported_day_growth_pct": null,
+              "active_wave": true,
+              "first_seen": 1793008557222,
+              "last_checked_ts": null,
+              "next_check_ts": 1793008557222,
+              "movement_event_ts": null,
+              "price_expires_ts": 1793008580000
+            }
+          ],
+          "leaders_truncated": false,
+          "leader_scope": "QUEUE_ORDER_BEFORE_SOURCE_ELIGIBILITY",
+          "preview_is_not_confirmed_impulse": true,
+          "diagnostic_is_not_eligibility": true
+        }
+      ],
+      "calls": {
+        "getCatalog": 1,
+        "getOverview": 1
+      },
+      "runner_engine_calls": 0,
+      "delivery_recheck_engine_calls": 0,
+      "MOCK_send": 0
+    }
+  ],
+  "limitations": [
+    "Single known DOOD wave, not cold-start intake or whole550 coverage.",
+    "Saved source-boundary facts and synthetic offline budget state are not provider/native admissions or actual billed cost.",
+    "A transport MOCK receipt is never an actual Telegram SENT. Existing real MANUAL241 is historical evidence only.",
+    "Snapshot queue projection and original analysis clock are separate; no expired fact is refreshed.",
+    "Default worker/environment, delivery-enabled flags, provider transport and sendSavedTelegram wrapper are not invoked.",
+    "History branch reuses the original-context AUTO analysis; a real later AUTO reads the postmanual next_wave. Any divergence is not an actual duplicate bug."
+  ],
+  "failure_stage": "B_AUTO_EXECUTE_RETURNED",
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'INCOMPLETE'\n- 'COMPLETE'\n"
+  },
+  "completed_wall_utc": "2026-10-26T18:33:54.100Z"
+}

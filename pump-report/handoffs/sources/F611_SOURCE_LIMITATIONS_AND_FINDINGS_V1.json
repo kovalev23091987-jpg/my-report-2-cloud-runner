@@ -1,0 +1,74 @@
+{
+  "schema": "F611_SOURCE_LIMITATIONS_AND_FINDINGS_V1",
+  "blocking_defects_for_declared_case": [],
+  "nonblocking_fidelity_limits": [
+    {
+      "id": "HISTORICAL_OPTIONAL_PACKET",
+      "text": "Keeping 12:55 funding NOT_CHECKED is correct for this exact positive engine packet, although current71 supports optional funding quote. It proves no current funding route, normalization, deadline, latency, cost or broker behavior."
+    },
+    {
+      "id": "OPTIONAL_OI_REASON",
+      "text": "Old OI NOT_CHECKED reason is retained to match exact input. Current requested-kinds path would label unrequested OI differently; both are non-promoted gaps."
+    },
+    {
+      "id": "PARTIAL_COVERAGE_METADATA",
+      "text": "Catalog coverage is scoped synthetic one-row metadata, Day/Optional omit real coverage/deadline fields, DELIVERY core reuses manual coverage. No claim of full producer metadata equivalence."
+    },
+    {
+      "id": "HISTORICAL_FORCE_REFRESH_MOCK",
+      "text": "DELIVERY returns unchanged captured price/book at a controlled historical clock despite force_refresh argument; no current upstream refresh or transport proof."
+    },
+    {
+      "id": "NO_BROKER_COST_PROOF",
+      "text": "Visible mock call counts are not physical requests/credits. No retries/cache/coalescing/rate/backoff/provider or native admission measurement."
+    },
+    {
+      "id": "COUNTERFACTUAL_INTAKE",
+      "text": "Active-wave projection and synthetic offline ledger are explicit ROOT controls. No same-asof discovery reported percentage is fabricated, but cold start, full550, actual queue history and 49ms causation remain unproved."
+    },
+    {
+      "id": "NO_EXECUTION_VERDICT",
+      "text": "SOURCE reviewed exact80d0 source only, did not read/produce BS execution verdict or invoke Node/engine/tests. Approved AN case is independent."
+    },
+    {
+      "id": "NO_NEW_SENT",
+      "text": "Synthetic transport receipt and saved manual-history branch do not establish native AUTO SENT, source connectivity, or actual duplicate bug."
+    }
+  ],
+  "preservation_guards_observed_in_code": {
+    "fact_clone_lines": [
+      118,
+      119,
+      121,
+      122,
+      124
+    ],
+    "final_input_equality_lines": [
+      149,
+      150
+    ],
+    "original_fingerprint_lines": [
+      76,
+      189
+    ],
+    "frozen_module_input_hash_lines": [
+      53,
+      54,
+      191,
+      195
+    ],
+    "source_network_forbidden_lines": [
+      59,
+      60,
+      61
+    ],
+    "no_MANUAL_execute_assertions": [
+      36,
+      143
+    ],
+    "these_are_static_observations_not_SOURCE_runtime_results": true
+  },
+  "requested_changes_to_AN": [],
+  "no_blocking_request_or_admission_change": true,
+  "qualification24spent0left_preserved": true
+}

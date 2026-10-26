@@ -1,0 +1,80 @@
+{
+  "schema": "ROOT_NEXT_NORMAL_AUTO_ACCEPTANCE_PREPARATION_V1",
+  "status": "PREPARED_REUSE_NOT_IO_ADMISSION_NOT_SCHEDULED",
+  "authority_main": "a484b3689498649dd2443ba09cb484aa95535da4",
+  "prepared_ts": 1793039645409,
+  "purpose": "Read existing ordinary AUTO71 run and one selected original; bind same-original saved card and actual ACK if present. No market collection, forced signal or fresh manual test.",
+  "current_implementation": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+  "current_artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
+  "reuse_unchanged": [
+    {
+      "path": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
+      "sha256": "8c164ee68536b08075f1989a664b696d6aaa402ccfae115adf54d8b8d192e649"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-observation.mjs",
+      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893"
+    },
+    {
+      "path": "pump-report/operator/saved-outcome-observation.mjs",
+      "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f"
+    }
+  ],
+  "requalification_reason": "No observer code change: functions parameterized by current implementation; actual saved run carries new71diagnostic fields privately. Existing admitted mechanical qualification reused; no redundant Node.",
+  "next_intended_business_window": "2026-10-27 10:00–20:00 Europe/Moscow",
+  "no_outside_window_market_or_TG": true,
+  "LOOKUP_20261026": {
+    "spent": 13,
+    "remaining": 0,
+    "run14_approved": false,
+    "execute": false
+  },
+  "future_LOOKUP": {
+    "default_cap_per_UTC_day": 10,
+    "no_new_14th_exception_or_counter_reset": true,
+    "execute_only_if_real_new_day_positive_shared_ledger_admission_and_current_authority": true,
+    "no_assumed_available_budget": true
+  },
+  "proposed_bounded_read": {
+    "mode": "LOOKUP",
+    "maximum_attempts": 1,
+    "max_queries": 16,
+    "max_rows_read": 500,
+    "max_rows_written": 30,
+    "sourceHTTP": 0,
+    "Telegram": 0,
+    "business_state_writes": 0,
+    "permitted_writes": "Existing shared native reservation/finalization ledger only",
+    "cards_page": 20,
+    "selected_card": 1,
+    "latest_auto_candidate_original": 1,
+    "read_saved_outcome": false,
+    "project_resources_PK": 1,
+    "diagnostic_projection": "Existing run.candidate_selection capped4steps,5leaders already stored; don't fabricate wholequeue/sourceeligibility or list5distinctcoins"
+  },
+  "required_before_IO": [
+    "Freshmain/all17/all4+ownboundedCAS/FULL and validrootowner, not current closed/expired engineering lease",
+    "One fresh exact admission <=15min and fullprovider/whole/native protection; positive actual native reservation before reads",
+    "Current artifact and 71live modules/config/21bindings/all3cron FULL readback<=5min; no redeploy if unchanged",
+    "Existing Wrangler auth valid>5min or separately admitted ordinary existing-account refresh; no newlogin/key/scope",
+    "Recipient hash from approved private existing recipient; never rawrecipient/token inpublic",
+    "One-use attempt/result paths; preserve failed/unknown costs; no blindretry",
+    "Native evidence modes AUTO+PRODUCTION+OBSERVED and exactsavedanalysis/input/pin; never count BS MOCK asnative"
+  ],
+  "accept_if_READY": [
+    "Exact run candidate reference and originalinput/analysis hash agree",
+    "Ready+automaticeligible + validplan from realoriginalfacts/asof; optionalmapmissingexplicit",
+    "Savedtext/cardhash sameoriginal; actualpositiveACKmessage_id/text/recipient/hash/clockbound and durable receiptreadback"
+  ],
+  "accept_if_NOT_READY": [
+    "Keep precise reason and all originalfactclocks",
+    "Review exact original once only for concrete discrepancy; no thresholdloosening or send tofillquota"
+  ],
+  "business_flags_and_cron_unchanged": true,
+  "new_automation_created": false,
+  "statistics_accumulation_does_not_block_launch": true
+}

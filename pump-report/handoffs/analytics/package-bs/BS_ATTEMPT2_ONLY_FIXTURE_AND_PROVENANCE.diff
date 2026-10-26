@@ -1,0 +1,58 @@
+--- bs-auto-original-connected-once.mjs
++++ bs-auto-original-connected-attempt2.mjs
+@@ -6,14 +6,14 @@
+ import {createHash} from 'node:crypto';
+ 
+ const repo=fileURLToPath(new URL('../../../../',import.meta.url));
+-const out=path.join(repo,'pump-report/handoffs/analytics/package-bs');
++const out=path.join(repo,'pump-report/handoffs/analytics/package-bs/attempt2');
+ const privateOut=path.join(out,'.private');
+ const sha=b=>createHash('sha256').update(b).digest('hex');
+ const bytes=p=>fs.readFileSync(path.resolve(repo,p));
+ const read=p=>JSON.parse(bytes(p));
+ const clone=structuredClone;
+ const save=(name,value,priv=false)=>fs.writeFileSync(path.join(priv?privateOut:out,name),JSON.stringify(value,null,2)+'\n');
+-const report={schema:'BS_ONE_CONNECTED_AUTO_ORIGINAL_ACTUAL_V1',status:'STARTED',Node:1,new_connected_cases:1,
++const report={schema:'BS_ONE_CONNECTED_AUTO_ORIGINAL_ACTUAL_V1',status:'STARTED',Node:1,new_connected_cases:1,Node_attempt_number:2,aggregate_Node_attempts:2,logical_cases_total:1,
+   evidence_class:'ARTIFICIAL',scenario_class:'CONTROLLED_SAVED_FACT_REPLAY',counterfactual:true,native_event:false,native_AUTO_SENT:false,
+   actual_Telegram:0,sourceHTTP:0,nativeSQL:0,build:0,deploy:0,old_tests:0,
+   AUTO_execute:0,MANUAL_execute:0,runner_engine_calls:0,delivery_recheck_engine_calls:0,MOCK_send:0,
+@@ -32,13 +32,13 @@
+   save('BS_AFFECTED_RESULT.json',report);
+   assert.equal(process.argv.length,3,'EXACT_ROOT_ADMISSION_PATH_REQUIRED');
+   const admission=read(process.argv[2]);
+-  assert.equal(admission.status,'ROOT_BS_ONE_CONNECTED_AUTO_CASE_AUTHORIZED');
++  assert.equal(admission.status,'ROOT_BS_ONE_CONNECTED_AUTO_CASE_ATTEMPT2_AUTHORIZED');
+   assert.equal(admission.Node_invocations,1);assert.equal(admission.AUTO_execute,1);assert.equal(admission.MANUAL_execute,0);
+   assert.equal(admission.real_engine_calls_upper_bound,3);assert.equal(admission.active_wave_projection_authorized,true);
+-  assert.equal(admission.synthetic_budget_day_spent,500);assert.equal(admission.already_sent_manual_branch_authorized,true);
++  assert.equal(admission.synthetic_budget_day_spent,400);assert.equal(admission.already_sent_manual_branch_authorized,true);
+   assert.ok(Date.now()<admission.own_expires_ts&&Date.now()<admission.root_expires_ts,'LIVE_LEASE_REQUIRED');
+   assert.equal(admission.test_sha256,sha(fs.readFileSync(fileURLToPath(import.meta.url))));
+-  const auth=read('pump-report/handoffs/analytics/package-bs/BS_EXECUTION_AUTHORITY.json');
++  const auth=read('pump-report/handoffs/analytics/package-bs/attempt2/BS_EXECUTION_AUTHORITY.json');
+   assert.equal(auth.own_owner,admission.own_owner);assert.equal(auth.all4_equal,true);
+   assert.equal(auth.own_exact_bytes_match,true);assert.equal(auth.own_actual_ref_match,true);
+   assert.equal(auth.owner_paused,false);assert.equal(auth.fence,false);
+@@ -50,7 +50,11 @@
+   assert.equal(modules.implementation_pin,'75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a');
+   assert.equal(sha(bytes(modules.root_manifest_path)),admission.root_frozen_manifest_sha256);
+   assert.equal(admission.root_frozen_manifest_sha256,'1d239c50c3b8f47926e37fe16fa03a2f53d37fe39c34175b623ba6eea7933378');
+-  const protectedFiles=[...modules.all_modules,...admission.frozen_input_files];
++  const firstFailurePath='pump-report/handoffs/analytics/package-bs/BS_ATTEMPT1_FROZEN_FAILURE_V1.json';
++  assert.equal(sha(bytes(firstFailurePath)),admission.first_failure_manifest_sha256);
++  const firstFailure=read(firstFailurePath);assert.equal(firstFailure.engine,0);assert.equal(firstFailure.Node,1);
++  report.first_failure_manifest_sha256=admission.first_failure_manifest_sha256;
++  const protectedFiles=[...modules.all_modules,...admission.frozen_input_files,...firstFailure.files];
+   for(const f of protectedFiles){assert.equal(sha(bytes(f.path)),f.sha256,'FROZEN_BYTES_CHANGED:'+f.path);assert.equal(bytes(f.path).length,f.bytes);}
+   assert.equal(sha(bytes(admission.F610_final_manifest_path)),admission.F610_final_manifest_sha256);
+   assert.equal(admission.original_input_sha256,'14e18a8cd4c880de9916bcc55d2fa2e71b4d544f2ddbd8fb4f1f5310218a6d16');
+@@ -105,7 +109,7 @@
+   assert.equal(admission.counterfactual_run_id,run_id);
+   // Synthetic offline ledger, never a rewrite/refund of the actual 13:07 ledger.
+   const day=new Date(now).toISOString().slice(0,10),month=day.slice(0,7);
+-  await store.set('pump:resources',{days:{[day]:500},providers:{BINGX:{days:{[day]:500},months:{[month]:500},recent:[]}}});
++  await store.set('pump:resources',{days:{[day]:400},providers:{BINGX:{days:{[day]:400},months:{[month]:400},recent:[]}}});
+   await store.set('pump:wave:'+id,clone(original.previous_wave));
+   await store.set('pump:active-instruments',[id]); // Explicit ROOT-approved projection from exact previous_wave.
+   assert.equal(await store.get('pump:candidate-queue'),null,'QUEUE_MUST_BE_BUILT_BY_DISCOVERY');

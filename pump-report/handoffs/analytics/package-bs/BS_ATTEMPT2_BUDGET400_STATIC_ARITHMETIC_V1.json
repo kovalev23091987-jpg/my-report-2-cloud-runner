@@ -1,0 +1,41 @@
+{
+  "schema": "BS_ATTEMPT2_BUDGET400_STATIC_ARITHMETIC_V1",
+  "status": "ROOT_SELECTED_FIXTURE_CORRECTION_PREPARED_NODE0",
+  "code_sha256": {
+    "runtime/budget.mjs": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+    "runtime/production-policy.mjs": "2cb41c00b38137113df2b071568489007c6bd77e3c485961442b6d791aa7a146",
+    "runtime/discovery-reserve.mjs": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2",
+    "runtime/future-candidate-reserve.mjs": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+    "runtime/provider-policy.mjs": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded"
+  },
+  "synthetic_spent": 400,
+  "fixed": 102,
+  "plan_limit": 318,
+  "current_candidate": 12,
+  "future_light_ticks": 84,
+  "future_light_HTTP": 168,
+  "future_BASE_slots": 7,
+  "future_BASE_HTTP": 84,
+  "required_plan_total": 264,
+  "plan_margin": 54,
+  "whole_day_total": 766,
+  "whole_day_cap": 900,
+  "remaining_periods_including_current": 8,
+  "base_count_math": "floor(min(318-168,900-400-102-168)/(8*12))=floor(150/96)=1",
+  "provider_count_floors": {
+    "BINGX_day": 2,
+    "BINGX_month": 340,
+    "TELEGRAM_day": 3,
+    "TELEGRAM_month": 104
+  },
+  "expected_base_per_period": 1,
+  "provider_candidate_plus_reserves": {
+    "BINGX": 747,
+    "TELEGRAM": 11
+  },
+  "actual_ledger_mutated": false,
+  "actual_spent_refunded": false,
+  "facts_modules_clocks_thresholds_changed": false,
+  "Node": 0,
+  "first_failure_manifest_sha256": "5503478ecbfd06a2feea14f4651496320ed2c310cedabae5f2401744c9631534"
+}
