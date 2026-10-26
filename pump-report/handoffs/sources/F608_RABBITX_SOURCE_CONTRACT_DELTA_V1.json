@@ -1,0 +1,72 @@
+{
+  "schema": "F608_RABBITX_SOURCE_CONTRACT_DELTA_V1",
+  "status": "HOLD_CODE_PARTIAL_GAPS_CLOSED_CURRENT_PUBLIC_FREE_API_NOT_QUALIFIED",
+  "code_observations": {
+    "base_literal": {
+      "path": "rabbitx/const.py",
+      "name": "URL",
+      "value": "https://api.prod.rabbitx.io",
+      "status": "EXACT_PINNED_SOURCE_LITERAL_NOT_CURRENT_PRODUCTION_ATTESTATION"
+    },
+    "test_dev_literals": "Separate testnet/dev constants exist; not used as production fallback",
+    "batch_method": {
+      "path": "rabbitx/client/endpoints/market.py",
+      "class": "MarketGroup",
+      "method": "list",
+      "argument": "market_id: list[str] = None",
+      "verb": "GET",
+      "template": "{self.session.api_url}/markets",
+      "query": "Omitted when no IDs; otherwise market_id is comma-joined input list",
+      "headers": "self.session.headers always passed by this method",
+      "result": "JSON success must equal True; returns result; otherwise raises error",
+      "status": "EXACT_CODE_BEHAVIOR_NOT_CURRENT_DEPLOYED_API_GUARANTEE"
+    },
+    "absolute_current_route": null,
+    "absolute_route_gap": "Session api_url initialization/client binding not read in this four-read grant; no constant-to-session binding or version prefix invented.",
+    "SDK_execution": false,
+    "SDK_installed": false,
+    "env_or_credentials_read": false
+  },
+  "unanswered_fields": {
+    "official_current_production_base": "Repository affiliation/current deployment not established; explicit Unofficial label",
+    "public_keyless_free_entitlement": "UNKNOWN; shared session headers passed, no proof that empty/no-auth headers are accepted",
+    "markets_response_schema_ids": "No typed returned-row schema established by the method; market_id is input key, not proof of returned canonical IDs",
+    "native_family_quote_settlement": "UNKNOWN per row; USD/USDT parity or USDT-M not inferred from old examples",
+    "OI": "Returned field presence, base/contracts/USD units and source asof UNKNOWN",
+    "funding": "Numeric encoding, direction, actual accrual/settlement period and source asof UNKNOWN",
+    "clock": "Receive time cannot replace original source clocks; current schema absent",
+    "pagination_completeness": "Unfiltered SDK call exists, but full result count/pagination/current catalogue completeness not established",
+    "request_cost": {
+      "visible_get_invocations": 1,
+      "actual_wire_HTTP_upper": "UNKNOWN_SESSION_RETRY_ADAPTER_NOT_READ",
+      "SDK_timeout_body_ceiling": "Not specified in read market method; full session policy not read",
+      "request_weights_IP_minute_day_month_remaining": "UNKNOWN_NOT_ZERO_OR_UNLIMITED"
+    },
+    "future_positions_maps": "Not established by market list; no public all-account liquidation census proof"
+  },
+  "canonical_binding_path": {
+    "status": "CONDITIONAL_NOT_IMPLEMENTED",
+    "requirements": [
+      "Current authoritative complete native catalogue with venue/family/quote/settle plus explicit project ID or contract/address carrier",
+      "Use exact accepted asset identity; F605 CGIDs may help only where that catalogue explicitly carries a compatible project identity",
+      "Keep native market ID separate from BingX instrument_id; no dash/prefix/symbol-only normalization",
+      "Preserve source quote/price basis; another venue's price/book never becomes BingX mandatory facts"
+    ]
+  },
+  "utility": "Potential separate-venue batch context only after documentary/identity/admission closure; no unique qualified useful current fact demonstrated.",
+  "source_version_caution": {
+    "repository_pushed_at": "2025-02-28T12:16:17Z",
+    "source_tree": "9f98f6573a4bb383decccaaeade709f39a2fefcd",
+    "not_deployment_timestamp": true,
+    "old_example_values_not_facts": true
+  },
+  "ready_native_requests": 0,
+  "call25_requested": false,
+  "source_qualification": {
+    "spent": 24,
+    "cap": 24,
+    "remaining": 0,
+    "new_API_MCP_SDK_numeric_calls": 0
+  },
+  "new_maps_CORE_recurring_routes": 0
+}
