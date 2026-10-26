@@ -1,0 +1,70 @@
+{
+  "schema": "F606_PROVIDER_DISPOSITION_V1",
+  "decision": "HOLD_ONLY_ONE_NEW_PROVIDER_FOUND_AND_ITS_MAP_API_IS_PAID;HYPERPERPS_LEGACY_DUPLICATE_EXCLUDED",
+  "providers": [
+    {
+      "id": "HYPERPERPS",
+      "kind": "OBSERVED_HYPERLIQUID_POSITION_AGGREGATES_NOT_EXTERNAL_LEVERAGE_MODEL",
+      "free_access": "No signup/key; intentionally15min delayed",
+      "documented_route": "GET https://hyperperps.app/api/public/heatmap/{SYM}",
+      "free_markets": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE"
+      ],
+      "live_route": "PAID_X402_EXCLUDED_NOT_CALLED",
+      "coverage": "Partial: ambiguous cross-margin liquidation levels and market makers excluded",
+      "batch": "Not documented; route is per-SYM",
+      "minute_day_month_credit_caps": "UNKNOWN_NOT_UNLIMITED",
+      "published_payload_schema_units_and_original_state_clock": "NOT_ESTABLISHED_WITHIN_GRANT",
+      "candidate_F605_labels": [
+        "SOL-USDT",
+        "HYPE-USDT"
+      ],
+      "canonical_binding": "F605 proves BingX->CG project IDs only; HyperPerps-to-canonical entity still CANDIDATE, no automatic label join",
+      "per_symbol_transport_upper": 1,
+      "two_label_pass_HTTP_upper": 2,
+      "actual_request_weight_and_remaining": "UNKNOWN",
+      "request_status": "NOT_READY_NOT_ADMITTED_NOT_EXECUTED",
+      "blocking": "15min delayed observed positions fail current freshness; receipt time/model label cannot repair. Missing schema/units/original state clock, canonical native identity and quota.",
+      "minimum_reconsideration": "Only a new published fresh free machine route with typed IDs/schema/clock/units/limits, or a separately owner-approved delayed research use. No call25 request now.",
+      "novelty": "LEGACY_PROVIDER_FOUND_BY_WIDER_LOCAL_DEDUP_NOT_NEW",
+      "decision": "DO_NOT_RETRY_LEGACY_PROVIDER"
+    },
+    {
+      "id": "TRADING_DIFFERENT",
+      "kind": "EXTERNAL_LIQUIDATION_MODEL",
+      "free_boundary": "Documentation/OpenAPI/catalogue public; heatmap API needs paid subscription and Bearer key",
+      "free_UI_note": "Free Pack exists; UI access does not grant API data entitlement. Explicit Hyperliquid BTC example is owner-excluded; OnFire UI is not a free batch API.",
+      "public_catalogue": "GET https://api.tradingdifferent.com/v1/markets — NOT_CALLED, not future-map data",
+      "map_shape": "GET /v1/heatmap/latest; example exchange+symbol+timeframe; data[].time_iso/levels[].from_price/volumes.L1-L4",
+      "magnitude": "Relative scores within one symbol, not dollars",
+      "documented_update": "5min scalping; hourly swing; base-input clock not established",
+      "paid_limits_only": {
+        "minute": 70,
+        "day": 15000,
+        "history_minute": 10,
+        "history_window_candles": 2000,
+        "month": "NOT_PUBLISHED"
+      },
+      "free_data_API_allowance": "NOT_GRANTED_BY_READ_PRIMARY_MATERIAL",
+      "F605_relation": "519 identity rows cannot establish another venue's catalogue ID or paid entitlement; no catalogue called or 550 overlap claimed",
+      "decision": "EXCLUDED_FROM_FREE_WORKING_COMPOSITION",
+      "minimum_reconsideration": "New official free heatmap API entitlement for owner-eligible assets plus schema/IDs/clock/quota. Public spec/catalogue alone does not resolve paid boundary; no signup/key or free UI endpoint workaround.",
+      "novelty": "NEW_IN_SEARCHED_LOCAL_RESEARCH_MD_JSON_TXT_SCOPE"
+    }
+  ],
+  "source_qualification": {
+    "spent": 24,
+    "cap": 24,
+    "remaining": 0,
+    "new_native_calls": 0
+  },
+  "new_qualified_maps": 0,
+  "new_qualified_CORE": 0,
+  "new_recurring_routes": 0,
+  "coverage550": "NOT_CHECKED_UNCHANGED",
+  "docs_grant": "2 searches +4 reads exhausted; no old grant rearm",
+  "evidence_scope": "Documented provider claims only; no current market/API observation or qualification."
+}
