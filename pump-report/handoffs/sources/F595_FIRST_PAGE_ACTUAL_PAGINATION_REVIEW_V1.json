@@ -1,0 +1,85 @@
+{
+  "schema": "F595_COINVERSA_FIRST50_ACTUAL_PAGINATION_AND_FIELD_REVIEW_V1",
+  "status": "FREE_CATALOGUE_ACCESS_OBSERVED_PARTIAL_PAGE_ONLY",
+  "input_proof": {
+    "path": "pump-report/.private/observations/coinversa-first-catalogue-page-one-result.json",
+    "sha256": "85fd06bfad1a8f2658adb396422ab789bbd9a33d2c2ecd32008e27ce31569a01",
+    "bytes": 19135,
+    "isError": false,
+    "origin": "content.text[JSON]"
+  },
+  "ROOT_public_proof": {
+    "path": "checkpoints/pump-report-20261025/ROOT_COINVERSA_FIRST_CATALOGUE_PAGE_ACTUAL_ONE.json",
+    "sha256": "42d6ff4fb1f21de2bc186634172f2a48bfbc00eb8de31023c8ac47a1a9349def",
+    "bytes": 1763
+  },
+  "actual_envelope": {
+    "markets_length": 50,
+    "count": 50,
+    "totalCount": 294,
+    "truncated": true,
+    "hasMore": true,
+    "offset": 0,
+    "nextOffset": 50,
+    "inactiveHidden": 175,
+    "includeInactive": false,
+    "dex": null,
+    "search": null
+  },
+  "scope": "50actualuniquecoin/dexrows;all50nativehl;notfullsourceuniverse",
+  "actual_row_fields": [
+    "coin",
+    "dex",
+    "markPx",
+    "midPx",
+    "oraclePx",
+    "openInterest",
+    "fundingRate",
+    "volume24h",
+    "change24h",
+    "prevDayPx",
+    "hasActivity"
+  ],
+  "observed_field_presence": "Rawprice/funding/OI/volumefieldsobserved;presenceisnotunit/time/identityqualification. Zeroisnotmissing.",
+  "limitations": {
+    "source_event_clock": "NOT_RETURNED",
+    "funding_period_in_row": "NOT_RETURNED",
+    "funding_unit_in_row": "NOT_RETURNED",
+    "OI_unit_in_row": "NOT_RETURNED",
+    "price_currency_in_row": "NOT_RETURNED",
+    "isActive_type_crypto_fields": "NOT_RETURNED;hasActivitynotreplacement",
+    "F594_documented_hourly_fraction": "Retaineddocumentaryhint,notactualperiod/clockproof"
+  },
+  "pagination_gap": {
+    "installed_tool": "mcp__codex_apps__coinversa_pulse_list_markets",
+    "supported_arguments": [
+      "dex",
+      "useToonFormat"
+    ],
+    "unsupported_not_to_invent": [
+      "limit",
+      "offset",
+      "search"
+    ],
+    "actual_note": "Showing markets 1-50 of294;pageoffset50/narrowdexsearch/raiselimitmax500",
+    "interpretation": "ResponseadvertisesbackendAPIparametersnotexposedbyinstalledMCPtool. No secondpagecanbeclaimedfromthiscapture.",
+    "exact_nextOffset": 50,
+    "reported_total_minus_returned": 244,
+    "not_inferred": "Do notaddinactiveHidden175 to294asverified469census;do notclassifyunseenrowsUNSUPPORTED.",
+    "no_dex_paging_workaround_assumed": true,
+    "no_500_coin_calls": true,
+    "no_repeat_first_page": true
+  },
+  "transport": {
+    "ROOT_received_at": "2026-10-26 13:07:16 UTC",
+    "outer_MCP_attempts": 1,
+    "physical_hosted_HTTP": "UNKNOWN_NONZERO_RETAINED",
+    "source_time_unknown": true
+  },
+  "current_free_access": true,
+  "full_catalogue_proven": false,
+  "current_fresh_market_consumer_qualified": false,
+  "active_routes": 0,
+  "globalStats_used_for_selected550": false,
+  "raw_private_price_funding_OI_values_exported": false
+}
