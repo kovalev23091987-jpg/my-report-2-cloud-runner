@@ -6,7 +6,7 @@
   "expires_ts": 1793016140000,
   "expected_main": "ab7c7567649e0ce5debc68eaae877e7f785b7ec8",
   "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
-  "released": false,
+  "released": true,
   "root_lease_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793014311142",
   "root_expires_ts": 1793019411142,
   "guard_git_blobs": {
@@ -32,10 +32,55 @@
     "id": "ROOT_F591_CCXT_UNIFIED_FUNDING_UNIT_1SEARCH2READ_20261026",
     "search_max": 1,
     "open_max": 2,
-    "search_spent": 0,
-    "open_spent": 0,
-    "state": "NEW_UNUSED",
+    "search_spent": 1,
+    "open_spent": 2,
+    "state": "SPENT_CLOSED_NO_REARM",
     "old_grants_rearmed": false,
-    "attempts": []
+    "attempts": [
+      {
+        "kind": "search",
+        "q": "site:docs.ccxt.com fundingRate fraction percent percentage 100 unified",
+        "state": "SPENT_RESULT_RETAINED",
+        "ordinal": 1
+      },
+      {
+        "kind": "primary_doc_read_find",
+        "url": "https://docs.ccxt.com/docs/manual?id=fee-structure",
+        "pattern": "Funding Rate Structure",
+        "state": "SPENT_FIND_FAILED_NO_MATCH",
+        "ordinal": 2
+      },
+      {
+        "kind": "primary_doc_read",
+        "url": "https://github.com/ccxt/ccxt/blob/master/wiki/Manual.md",
+        "state": "SPENT_RESULT_RETAINED",
+        "purpose": "Fullunifiedcontractmanual;notBingXmappingreread",
+        "ordinal": 3
+      }
+    ],
+    "search_remaining": 0,
+    "open_remaining": 0,
+    "failed_reads": 1,
+    "finished_utc": "2026-10-26 11:47:38 UTC"
+  },
+  "status": "RELEASED",
+  "released_ts": 1793015374000,
+  "released_utc": "2026-10-26 11:49:34 UTC",
+  "release_authority": {
+    "main": "90e42cbc1870ba47c471f09f4be98c8bb8b670f8",
+    "all4_FULL_equal": true,
+    "all_guard_blobs_same": true,
+    "register_chars": 1030261,
+    "root_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793014311142",
+    "root_expiry": 1793019411142,
+    "root_released": false
+  },
+  "release_reason": "F591 exactCCXTunifiedunitproofchecked;manualnotexplicitfraction/percent,pinnedmappingpreserved,F588UNKNOWNinactive;minimumindependentunitproofidentified;docs1search2readsSPENTfailed1;code/tests/native0;allcapsreservesunknownspausespreserved.",
+  "frozen_manifest": {
+    "manifest": "pump-report/handoffs/sources/F591_PACKAGE_CCXT_FUNDING_UNIT_MINIMUM_PROOF_FINAL_V1.json",
+    "sha256": "b8a559ca9895bfc493223956134d2d5668b8cc9cea0e14626f8b82f4ea982fab",
+    "bytes": 3787,
+    "files_total": 7,
+    "package_bytes": 20420
   }
 }
