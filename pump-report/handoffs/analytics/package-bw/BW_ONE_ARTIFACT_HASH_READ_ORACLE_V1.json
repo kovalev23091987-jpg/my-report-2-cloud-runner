@@ -1,0 +1,67 @@
+{
+  "schema": "BW_ONE_ARTIFACT_HASH_READ_ORACLE_V1",
+  "status": "PREPARED_WAIT_ROOT_ARTIFACT_READY_SHA_NO_ARTIFACT_READ_YET",
+  "artifact_path": "pump-report/.private/native-20261026/pump-catalog-snapshot-prepared-artifact.json",
+  "expected_artifact_sha256": "WAIT_ROOT_READY",
+  "base_path": "pump-report/.private/native-20261026/pump-auto-candidate-diagnostics-prepared-artifact.json",
+  "base_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
+  "base_pin": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+  "expected": {
+    "base_modules": 71,
+    "new_modules": 72,
+    "unchanged_base_bytes": 68,
+    "removed": [],
+    "changed_or_added": [
+      "runtime/catalog-snapshot.mjs",
+      "runtime/implementation-pin.mjs",
+      "runtime/worker.mjs",
+      "sources/index.mjs"
+    ],
+    "qualified_new_SHA256": {
+      "sources/index.mjs": "32257ea6d5f625d31cc8bd24d7ec99c29044d82f1b90945e4d90fb74754f29dd",
+      "runtime/worker.mjs": "575e8238e8fd6d6789ee8dadae5ef61c9f0e209091bbee24989a7ce9c7a891ad",
+      "runtime/catalog-snapshot.mjs": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8"
+    },
+    "metadata_equals_base": true,
+    "manifest_except_module_count_pin_module_metadata_equals_base": true,
+    "legacy_analytics_profile_budgets_unchanged": true,
+    "qualification_only_operators_not_worker_modules": true,
+    "record_guard": {
+      "record_utf8_bytes": 1900000,
+      "body_utf8_bytes": 2097152,
+      "rows": 2000,
+      "guard_before_store": true
+    }
+  },
+  "pin_algorithm": {
+    "source": "pump-report/runtime/build.mjs:24-28 (read-only)",
+    "pin_module": "runtime/implementation-pin.mjs",
+    "pinned_map": "All worker modules except pin_module, sorted by module name; each value SHA256 UTF8 module bytes.",
+    "digest": "SHA256 UTF8 JSON.stringify(pinned_map). Map contains only ASCII module paths and hex hashes, so Python json.dumps(ensure_ascii=False,separators=(',',':')) is exact.",
+    "compare": [
+      "manifest.implementation_pin.modules equals computed map",
+      "excluded_self_module exactpinpath",
+      "digest matches pin.sha256 and differs frombase75",
+      "generatedpinmodule export exactly agrees with manifest pin",
+      "manifest.modules covers all72 exactUTF8 bytes/hash including regenerated pin module"
+    ]
+  },
+  "accepted_BV_manifest_sha256": "00b66e2089670f3635568e9a16c896a7e0e5ad3c842a41725a5acd17435f9eea",
+  "bounds": {
+    "future_artifact_hash_reads": 1,
+    "Python_mechanical_runs": 1,
+    "Node": 0,
+    "tests": 0,
+    "engine": 0,
+    "build_by_ANALYTICS": 0,
+    "HTTP": 0,
+    "nativeSQL": 0,
+    "TG": 0,
+    "deploy": 0
+  },
+  "failure": "Preserve exact failed check, no blind reread or rebuild.",
+  "limitations": [
+    "Static byte/pin review only; not actual native/SENT/globalN/runtime cost proof.",
+    "Root alone owns build/deploy admissions; no operator/SOURCE12/BS execution."
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schema": "BW_ONE_ARTIFACT_MECHANICAL_HASH_REVIEW_V1",
+  "status": "PASS_STATIC_EXACT72_ARTIFACT_HASH_REVIEW",
+  "started_utc": "2026-10-26T19:35:57.477314+00:00",
+  "artifact_reads": 1,
+  "base_reads": 1,
+  "Python_mechanical_runs": 1,
+  "Node": 0,
+  "tests": 0,
+  "engine": 0,
+  "build_by_ANALYTICS": 0,
+  "sourceHTTP": 0,
+  "nativeSQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "checks": [
+    {
+      "check": "ROOT_expected_artifact_SHA",
+      "pass": true
+    },
+    {
+      "check": "base71_SHA",
+      "pass": true
+    },
+    {
+      "check": "module_counts",
+      "pass": true
+    },
+    {
+      "check": "exact_four_changed_or_added",
+      "pass": true,
+      "detail": [
+        "runtime/catalog-snapshot.mjs",
+        "runtime/implementation-pin.mjs",
+        "runtime/worker.mjs",
+        "sources/index.mjs"
+      ]
+    },
+    {
+      "check": "only_new_writer_no_removed",
+      "pass": true
+    },
+    {
+      "check": "68_base_module_bytes_unchanged",
+      "pass": true
+    },
+    {
+      "check": "BV_qualified_three_exact_SHA",
+      "pass": true,
+      "detail": {
+        "sources/index.mjs": "32257ea6d5f625d31cc8bd24d7ec99c29044d82f1b90945e4d90fb74754f29dd",
+        "runtime/worker.mjs": "575e8238e8fd6d6789ee8dadae5ef61c9f0e209091bbee24989a7ce9c7a891ad",
+        "runtime/catalog-snapshot.mjs": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8"
+      }
+    },
+    {
+      "check": "metadata_exact",
+      "pass": true
+    },
+    {
+      "check": "manifest_nonmodule_fields_unchanged",
+      "pass": true
+    },
+    {
+      "check": "legacy_analytics_profile_budget_bytes_unchanged",
+      "pass": true,
+      "detail": {
+        "modules": 23
+      }
+    },
+    {
+      "check": "no_qualification_operators_in_worker",
+      "pass": true
+    },
+    {
+      "check": "record1900000_guard_before_store",
+      "pass": true
+    },
+    {
+      "check": "all72_manifest_UTF8_sizes_and_SHA",
+      "pass": true
+    },
+    {
+      "check": "pin_shape_and_self_exclusion",
+      "pass": true
+    },
+    {
+      "check": "pin_map_matches_all_nonself_bytes",
+      "pass": true
+    },
+    {
+      "check": "new_pin_digest_matches_ROOT",
+      "pass": true
+    },
+    {
+      "check": "generated_self_module_exact",
+      "pass": true
+    },
+    {
+      "check": "ROOT_build_proof_agrees",
+      "pass": true
+    }
+  ],
+  "native_SENT_globalN_proven": false,
+  "artifact_sha256": "6a1b27dad3a35324b73589593864cbcf1cd99bdca7239d993cd398177eeaeaf4",
+  "implementation_pin": "690fae17addd12ee60e111738b255dce267f6cf2af6827d506c4bd724d51f031",
+  "pin_module_sha256": "ce20a6da607636780eedec46d2043916e8c781c4d7a1bb35b7062a56ff924076",
+  "changed_or_added": [
+    "runtime/catalog-snapshot.mjs",
+    "runtime/implementation-pin.mjs",
+    "runtime/worker.mjs",
+    "sources/index.mjs"
+  ],
+  "unchanged_base_modules": 68,
+  "removed": [],
+  "ROOT_build_proof_sha256": "48d7d63810f9d7b6d6d7b6979796030e35d865cfe5713ec3c5eb39a33dd30f52",
+  "record_guard": 1900000,
+  "live_or_native_acceptance": false,
+  "completed_utc": "2026-10-26T19:35:57.494141+00:00"
+}
