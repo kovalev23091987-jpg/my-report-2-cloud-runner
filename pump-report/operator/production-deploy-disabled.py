@@ -25,6 +25,11 @@ admission = json.loads(admission_file.read_text())
 artifact_bytes = artifact_file.read_bytes()
 artifact = json.loads(artifact_bytes)
 now = int(time.time() * 1000)
+expected_flags = admission['deployment'].get('expected_flags', {'automatic_enabled': False, 'delivery_enabled': False})
+expected_binding_count = admission['deployment'].get('bindings_count', 19)
+preserved_hub_cron = admission['deployment'].get('preserved_hub_cron')
+if expected_flags['automatic_enabled']:
+    assert not 7 <= time.gmtime().tm_hour < 17, 'LIVE_CODE_UPDATE_OUTSIDE_AUTOMATIC_WINDOW_REQUIRED'
 assert admission['schema'] == 'PUMP_PRODUCTION_LAUNCH_ADMISSION_V1'
 assert admission['status'] == 'ADMITTED_NOT_SPENT' and admission['deployment']['max_attempts'] == 1
 assert now < admission['expires_ts'] <= admission['own_lease']['expires_ts']
@@ -61,11 +66,12 @@ def health():
 before = get_json('my-report-2-hub/settings')
 before_health = health()
 assert before_health['implementation_sha256'] == admission['deployment']['previous_pin']
-assert before_health['automatic_enabled'] is False and before_health['delivery_enabled'] is False
+assert before_health['automatic_enabled'] == expected_flags['automatic_enabled'] and before_health['delivery_enabled'] == expected_flags['delivery_enabled']
 names = ['my-report-2-hub', 'my-report-2-free-history', 'my-report-2-liq-forecast-history']
 crons = {name: get_json(name + '/schedules') for name in names}
-assert all(not value['result'].get('schedules') for value in crons.values())
-assert len(before['result']['bindings']) == 19
+assert all(not crons[name]['result'].get('schedules') for name in names if name != 'my-report-2-hub')
+assert [r['cron'] for r in crons['my-report-2-hub']['result'].get('schedules', [])] == ([preserved_hub_cron] if preserved_hub_cron else [])
+assert len(before['result']['bindings']) == expected_binding_count
 boundary = '----pump-production-' + admission['artifact_sha256'][:24]
 parts = []
 
@@ -103,12 +109,12 @@ assert crons == {name: get_json(name + '/schedules') for name in names}, 'OLD_CR
 after_health = health()
 assert after_health['implementation_sha256'] == admission['implementation_sha256']
 assert after_health['provider_stage'] == 'PRODUCTION_QUALIFIED'
-assert after_health['automatic_enabled'] is False and after_health['delivery_enabled'] is False
+assert after_health['automatic_enabled'] == expected_flags['automatic_enabled'] and after_health['delivery_enabled'] == expected_flags['delivery_enabled']
 proof = {'schema': 'ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK_V1', 'authority_main': sys.argv[1],
          'readback_ts': int(time.time() * 1000), 'artifact_sha256': admission['artifact_sha256'],
          'implementation_sha256': admission['implementation_sha256'], 'module_count': len(modules),
          'FULL_exact_module_bytes': True, 'config_unchanged': True, 'health': after_health,
-         'bindings_count': len(after['result']['bindings']), 'all3_schedules': [],
+         'bindings_count': len(after['result']['bindings']), 'all3_schedules': {name: [r['cron'] for r in crons[name]['result'].get('schedules', [])] for name in names},
          'deployment': receipt['result'], 'provider_HTTP': 0, 'native_SQL': 0, 'Telegram': 0}
 proof_file.write_text(json.dumps(proof, indent=2) + '\n')
 print(json.dumps(proof))
