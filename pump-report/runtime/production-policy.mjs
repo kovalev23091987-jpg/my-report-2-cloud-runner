@@ -12,7 +12,7 @@ export const PRODUCTION_PLAN=Object.freeze({
   candidate_pacing:Object.freeze({version:'pump-even-day-deep-v2',period_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow'}),
   // Prepared only. Activation requires an exact separate owner policy decision
   // and current native/provider/deployment admissions. No cap is raised here.
-  candidate_surplus:Object.freeze({version:'pump-unassigned-candidate-hold-v1',enabled:false,activation_decision_ref:null,
+  candidate_surplus:Object.freeze({version:'pump-unassigned-candidate-hold-v1',enabled:true,activation_decision_ref:'checkpoints/pump-report-20261025/OWNER_CONDITIONAL_SURPLUS_APPROVED.json',
     max_grants_per_day:24,max_grants_per_run:1,max_retained_records:200,
     native_remaining_floor:Object.freeze({requests:600,rows_read:600,rows_written:140})}),
   future_candidates:Object.freeze({cadence_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow',
