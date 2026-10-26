@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_COORDINATOR_PROGRESS_V1",
-  "recorded_at": "2026-10-26T03:37:37.220Z",
+  "recorded_at": "2026-10-26T03:57:12.847Z",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
   "stage": "NEW_REPORT_LIVE_AUTO_AND_TELEGRAM_3REAL_MANUAL_NOTREADY_FIRST_SENT_PENDING",
   "code_main": "f3f8cc6e848c5152aac92a4a5bf1a3fdcfb748fc",
@@ -127,7 +127,11 @@
     "checkpoints/report2-owner-paused-20261024/resume-queues.json"
   ],
   "complete": false,
-  "next": "New report runs5min10–20MSK, sends only independently READY>=10% plans; first genuine SENT pending, no fourth startupmanual or test substitute. SOURCE9unit docs and usefulfreeleads, ANALYTICS onlychanged acceptance rows, ROOT runtime/budget/receipt/outcome integration.",
+  "next": [
+    "F577: подтвердить конкретные coverage/clock/unit prerequisites StandX/BloFin либо отказаться от бесполезного маршрута",
+    "AQ: оценить полезность новых фактов без нового поиска",
+    "ROOT: общий бюджет/включение только квалифицированного полезного маршрута; принять первый настоящий AUTO/SENT и базовый исход"
+  ],
   "server_deployment": "checkpoints/pump-report-20261025/ROOT_F571_LIVE66_EXACT_READBACK.json",
   "analytics_packages": {
     "E": {
@@ -337,9 +341,9 @@
   "automatic_enabled": true,
   "overall_completion_pct": null,
   "current_work": {
-    "ROOT": "LIVE66 FULL rechecked; one saved-state LOOKUP FINALIZED7SQL/10R/4W/unknown0, sourceHTTP/TG0. First normal AUTO/READY/SENT/outcome pending; no fourthmanual.",
-    "SOURCES": "F575B closed10/10:Adrena README price-field absent in pinned code, no map probe. F576 new published free liquidation/OI/flow datasets, not further SDK loop.",
-    "ANALYTICS": "AP independently checks actual saved-state LOOKUP7SQL/10R4W and exclusion of old239/240/APR; no second native run or source research."
+    "ROOT": "Рабочие 66 модулей и доставка включены. Объединяет F576/AP, поддерживает общий бюджет, очередь и приёмку первого настоящего AUTO → original → Telegram → исход. Без четвёртого стартового запуска.",
+    "SOURCES": "F576 завершён 12 документальными попытками. F577: только конкретные пробелы StandX/BloFin, покрытие полезных монет и минимальная цена маршрута; без повторного широкого поиска и market IO.",
+    "ANALYTICS": "AP завершён: public/private LOOKUP совпали. AQ: применимость только новых F576 фактов к существующему consumer; без поиска источников, SQL и повторного анализа старых запусков."
   },
   "scope550_reconciliation": {
     "schema": "ROOT_ALL_THREE_CRYPTO_SCOPE_550_RECONCILIATION_V1",
@@ -708,7 +712,7 @@
     }
   ],
   "baseline_outcome_from_first_READY_including_UNSENT": true,
-  "latest_source_research_manifest": "pump-report/handoffs/sources/PACKAGE_F575B_DISTINCT_SDK_STATE_PREREQUISITES_FINAL_V1.json",
+  "latest_source_research_manifest": "pump-report/handoffs/sources/PACKAGE_F576_NEW_PUBLISHED_FREE_DATA_DOC_RESULT_FINAL_V1.json",
   "saved_auto_observer_preparation": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_OBSERVER_PREPARATION.json",
   "AM_new_sources_decision": "checkpoints/pump-report-20261025/ROOT_AM_OPTIONAL_SOURCE_DECISION.json",
   "latest_live_health": "checkpoints/pump-report-20261025/ROOT_LIVE_HEALTH_ACTUAL_1792982526462.json",
@@ -717,5 +721,11 @@
   "observer_latest_PASS": 2,
   "AO_fix_preparation": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_OBSERVER_PREPARATION.json",
   "saved_auto_observer_actual": "checkpoints/pump-report-20261025/ROOT_FIRST_SAVED_AUTO_OBSERVATION_ACTUAL.json",
-  "source_field_correction": "checkpoints/pump-report-20261025/ROOT_F575B_SOURCE_FIELD_CORRECTION_DECISION.json"
+  "source_field_correction": "checkpoints/pump-report-20261025/ROOT_F575B_SOURCE_FIELD_CORRECTION_DECISION.json",
+  "latest_analytics_acceptance": {
+    "package": "AP",
+    "manifest": "pump-report/handoffs/analytics/package-ap/PACKAGE_AP_FIRST_SAVED_AUTO_ACTUAL_ACCEPTANCE_FINAL_V1.json",
+    "accepted": true,
+    "first_real_SENT": false
+  }
 }

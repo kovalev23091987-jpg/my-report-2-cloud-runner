@@ -1,0 +1,141 @@
+{
+  "schema": "F576_NEW_PUBLISHED_FREE_DATA_FINDINGS_V1",
+  "status": "DOCS_ONLY_NO_QUALIFIED_NEW_FUTURE_MAP",
+  "common": {
+    "proposal_only": true,
+    "native_calls": 0,
+    "actual_provider_access": "NOT_CHECKED",
+    "selected_crypto_universe": 550,
+    "future_map_checked": 0,
+    "future_map_qualified": 0,
+    "future_map_status_all_550": "NOT_CHECKED",
+    "missing_values": "NULL_WITH_REASON",
+    "new_provider_votes": 0,
+    "registry_or_production_adoption": 0,
+    "bingx_identity_unit_basis_and_price_alignment": "NOT_CHECKED",
+    "free_entitlement": "Anonymous documentation is not a live access/SLA/permanent pricing qualification",
+    "nested_or_same_primary_values": "Do not add as independent observations",
+    "unknowns_spent_reserves_9pauses_2deferrals_preserved": true
+  },
+  "candidates": [
+    {
+      "id": "HYPURRSCAN",
+      "classification": "EXPLORER_NAVIGATION_ONLY",
+      "primary": "https://hypurrscan.io/about",
+      "attempts": [
+        1,
+        3
+      ],
+      "conclusion": "Indexed community Hyperliquid explorer navigation did not expose a future-position census/schema. Direct parsed page empty.",
+      "clock": null,
+      "units": null,
+      "free_quota": null,
+      "primary_lineage": "Hyperliquid; wrapper independence unproved",
+      "future_zone_eligibility": "NOT_CHECKED",
+      "gap": "HypurrTrace transaction tracing documentation is a different EVM function; no wallet discovery or data endpoint called."
+    },
+    {
+      "id": "ASXN_DATA",
+      "classification": "NO_ACCESSIBLE_DATA_SCHEMA",
+      "primary": [
+        "https://asxn.xyz/posts",
+        "https://asxndata.com/"
+      ],
+      "attempts": [
+        2,
+        4
+      ],
+      "conclusion": "Search returned research index; data homepage inaccessible through tool.",
+      "clock": null,
+      "units": null,
+      "free_quota": null,
+      "primary_lineage": null,
+      "future_zone_eligibility": "NOT_CHECKED",
+      "gap": "No current field, anonymous dataset, units, clock or quota proof. Failed URL not retried; not UNSUPPORTED."
+    },
+    {
+      "id": "STANDX",
+      "classification": "PARTIAL_PUBLIC_PERP_OI_DOC_LEAD",
+      "primary": "https://docs.standx.com/standx-api/perps-http",
+      "attempts": [
+        5,
+        7,
+        9
+      ],
+      "schema": {
+        "method": "GET",
+        "base": "https://perps.standx.com",
+        "path": "/api/query_market_overview",
+        "rows": "symbols[]",
+        "fields": {
+          "base": "base asset",
+          "quote": "quote asset",
+          "symbol": "native pair",
+          "open_interest": "base asset units",
+          "open_interest_notional": "quote asset units",
+          "time": "ISO8601 timestamp"
+        },
+        "summary": "Nested total; do not sum with rows"
+      },
+      "access": "Public endpoint; JWT for non-public endpoints. No signup/key/wallet needed in documented public request.",
+      "clock_gap": "Row timestamp exists; OI sampling versus response-generation semantics/cadence and common snapshot guarantee unspecified.",
+      "unit_basis_gap": "Long+short counting convention and DUSD/USD/USDT conversion not established. DUSD examples do not establish BingX target identity or settlement.",
+      "private_position_boundary": "Authenticated /api/query_positions includes liq_price; not an anonymous position census or public future map.",
+      "quota_source": "https://docs.standx.com/standx-api/rate-limits",
+      "quota": {
+        "ip_requests_per_second": 50,
+        "mutable": true,
+        "account_credit_per_request": 45,
+        "account_replenish_per_second": 1000,
+        "account_burst_credits": 900,
+        "account_sustained_requests_per_second": "approximately22",
+        "anonymous_account_bucket_applicability": "UNKNOWN",
+        "http_exhaustion": 429,
+        "websocket_connections_per_ip": 10,
+        "new_connections_per_minute": 30
+      },
+      "unique_utility": "Venue OI context with direct denomination; clock semantics still need evidence.",
+      "future_zone_eligibility": "NOT_CHECKED"
+    },
+    {
+      "id": "BLOFIN",
+      "classification": "PARTIAL_PUBLIC_PERP_TRADE_FLOW_DOC_LEAD",
+      "primary": "https://docs.blofin.com/index.html",
+      "attempts": [
+        6,
+        8,
+        10,
+        11,
+        12
+      ],
+      "schema": {
+        "method": "GET",
+        "base": "https://openapi.blofin.com",
+        "path": "/api/v1/market/trades",
+        "required": "instId",
+        "limit_default_and_max": 100,
+        "fields": {
+          "tradeId": "Trade ID",
+          "instId": "Instrument ID",
+          "price": "Trade price",
+          "size": "Trade quantity; unit not specified here",
+          "side": "buy/sell; aggressor convention unproved",
+          "ts": "Trade time, Unix milliseconds"
+        }
+      },
+      "access": "Public Data endpoints require no authentication; private account trading routes remain separate.",
+      "quota": null,
+      "quota_gap": "REST limit section clicks returned top page; limits not read.",
+      "identity_gap": "Futures guide has mixed asset classes; current instrument/settlement/linear status and canonical asset not queried.",
+      "units_gap": "Do not equate size with tokens, USD, contractValue or signed taker flow.",
+      "clock_gap": "Trade event clock documented; actual freshness, retention/completeness and ID uniqueness not measured.",
+      "unique_utility": "Venue event chronology candidate; monetary/directional flow remains unqualified.",
+      "future_zone_eligibility": "NOT_CHECKED"
+    }
+  ],
+  "downstream": {
+    "ROOT": "No route activation or native qualification automatically. Choose usefulness and request a separate exact admission only if necessary.",
+    "ANALYTICS": "Assess whether partial venue context adds value. Do not adopt future zones or directional dollars from these docs.",
+    "scope_completed": "Two new risk-data candidates followed by two new public perp feed candidates; no additional SDK loop. No corpus-wide or worldwide absence claim."
+  }
+}

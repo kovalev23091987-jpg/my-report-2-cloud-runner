@@ -1,0 +1,151 @@
+{
+  "schema": "F576_NEW_PUBLISHED_FREE_DATA_DOC_ATTEMPTS_V1",
+  "maximum_total": 12,
+  "maximum_search_queries": 4,
+  "spent_total": 12,
+  "spent_search_queries": 4,
+  "remaining_total": 0,
+  "remaining_search_queries": 0,
+  "failed_attempts_nonrefundable": true,
+  "charge_before_IO": true,
+  "maximum_body_bytes": 2000000,
+  "retries": 0,
+  "fanout": 0,
+  "execution": 0,
+  "admission_expires_ts": 1792990196119,
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "SINGLE_NEW_PRIMARY_RISK_DATA_SEARCH",
+      "candidate": "HYPURRSCAN",
+      "query": "Hypurrscan liquidation map API timestamp open positions documentation",
+      "domains": [
+        "hypurrscan.io"
+      ],
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:41:24 UTC",
+      "status": "SPENT_PRIMARY_NAVIGATION_FOUND"
+    },
+    {
+      "attempt": 2,
+      "kind": "SINGLE_NEW_PRIMARY_RISK_DATA_SEARCH",
+      "candidate": "ASXN",
+      "query": "ASXN liquidation map API data open positions timestamp",
+      "domains": [
+        "asxndata.com",
+        "asxn.xyz"
+      ],
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:41:24 UTC",
+      "status": "SPENT_RESEARCH_INDEX_ONLY_NO_DATA_SCHEMA"
+    },
+    {
+      "attempt": 3,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "HYPURRSCAN",
+      "url": "https://hypurrscan.io/about",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:45:20 UTC",
+      "status": "SPENT_EMPTY_PARSED_DOC_NO_SCHEMA"
+    },
+    {
+      "attempt": 4,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "ASXN_DATA",
+      "url": "https://asxndata.com/",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:45:20 UTC",
+      "status": "SPENT_TOOL_INACCESSIBLE_NO_RETRY"
+    },
+    {
+      "attempt": 5,
+      "kind": "SINGLE_NEW_PRIMARY_PERP_OI_SEARCH",
+      "candidate": "STANDX",
+      "query": "StandX perpetual API open interest timestamp market stats documentation",
+      "domains": [
+        "docs.standx.com",
+        "standx.com"
+      ],
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:45:42 UTC",
+      "status": "SPENT_PRIMARY_OI_SCHEMA_AND_CLOCK_FOUND"
+    },
+    {
+      "attempt": 6,
+      "kind": "SINGLE_NEW_PRIMARY_PERP_OI_SEARCH",
+      "candidate": "BLOFIN",
+      "query": "BloFin API open interest oi oiCcy timestamp ts documentation public",
+      "domains": [
+        "docs.blofin.com"
+      ],
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:45:42 UTC",
+      "status": "SPENT_PRIMARY_PERP_PUBLIC_GUIDE_FOUND_NO_OI_IN_EXCERPT"
+    },
+    {
+      "attempt": 7,
+      "kind": "SINGLE_PRIMARY_STATIC_SCHEMA_OPEN",
+      "candidate": "STANDX",
+      "url": "https://docs.standx.com/standx-api/perps-http",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:46:10 UTC",
+      "status": "SPENT_DIRECT_PUBLIC_OI_SCHEMA"
+    },
+    {
+      "attempt": 8,
+      "kind": "SINGLE_PRIMARY_STATIC_SCHEMA_OPEN",
+      "candidate": "BLOFIN",
+      "url": "https://docs.blofin.com/index.html",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:46:10 UTC",
+      "status": "SPENT_DIRECT_FUTURES_DOC_NAV_AND_PUBLIC_ACCESS"
+    },
+    {
+      "attempt": 9,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_SECTION",
+      "candidate": "STANDX",
+      "ref_id": "turn87view0",
+      "id": 7,
+      "section": "Rate Limits",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:46:40 UTC",
+      "status": "SPENT_PRIMARY_ANONYMOUS_PUBLIC_QUOTA_FOUND"
+    },
+    {
+      "attempt": 10,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_SECTION",
+      "candidate": "BLOFIN",
+      "ref_id": "turn86view0",
+      "id": 36,
+      "section": "GET Trades",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:46:40 UTC",
+      "status": "SPENT_ANCHOR_NOT_FOCUSED_NO_TRADE_SCHEMA"
+    },
+    {
+      "attempt": 11,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_SECTION",
+      "candidate": "BLOFIN",
+      "ref_id": "turn86view0",
+      "id": 26,
+      "section": "REST API Limits",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:46:40 UTC",
+      "status": "SPENT_ANCHOR_NOT_FOCUSED_NO_LIMIT_SCHEMA"
+    },
+    {
+      "attempt": 12,
+      "kind": "SINGLE_PRIMARY_STATIC_CACHED_DOC_SECTION_LOCATION",
+      "candidate": "BLOFIN",
+      "ref_id": "turn86view0",
+      "pattern": "### GET Trades",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 03:47:10 UTC",
+      "status": "SPENT_TRADE_EVENT_CLOCK_FOUND_SIZE_UNIT_UNRESOLVED"
+    }
+  ],
+  "old_26_F570_F573_F574_F575B_grants_not_rearmed": true,
+  "native_API_market_metadata_RPC_SQL_TG_Worker_privatecaptures": 0,
+  "final_status": "CLOSED_12_OF_12_SPENT_4_OF_4_SEARCH_NO_NATIVE_GRANT",
+  "execution_kind": "No vendor SDK/runtime execution; local bookkeeping and digest calculations only"
+}
