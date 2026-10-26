@@ -1,0 +1,69 @@
+{
+  "schema": "F593_F588_COMPATIBLE_CONSUMER_FUNDING_PROFILE_HANDOFF_V1",
+  "status": "PREPARED_PROFILE_DOCUMENTARY_UNIT_PROOF_CLOSED_NOT_BOUND",
+  "activation": {
+    "runtime_binding": false,
+    "owner": "ROOT_ONLY",
+    "file_is_handoff_data_not_runtime_module": true,
+    "requires_ROOT_review_and_integration": true,
+    "provider_or_native_admission_created": false
+  },
+  "candidate_profile": {
+    "mode": "FUNDING_RATE_QUOTE_SNAPSHOT_V1",
+    "evidence_ref": "F593_BINGX_USDT_M_FUNDING_QUOTE_CONSUMER_FRACTION_V1",
+    "provider": "BINGX",
+    "family": "USDT_M",
+    "route": "/openApi/swap/v2/quote/premiumIndex",
+    "rate_field": "lastFundingRate",
+    "rate_unit": "RATE_FRACTION",
+    "qualification_basis": "ADAPTER_BASED_INFERENCE",
+    "unit_proof_parts": {
+      "native_to_unified": {
+        "status": "SUPPORTED_CONSUMER",
+        "evidence_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0"
+      },
+      "unified_fraction": {
+        "status": "VERIFIED",
+        "unit": "RATE_FRACTION",
+        "evidence_ref": "CCXT:373c05278144578818098d9aac82204de934b803:crypto-arbitrage-strategies.mdx:86-90:sha256:4516fca6b9b6ea730c3b90c5091ee4642475891c0b6e3489b93302acea873858"
+      }
+    },
+    "clock_proof": {
+      "status": "SUPPORTED_CONSUMER",
+      "evidence_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+      "field": "updateTime",
+      "role": "RATE_QUOTE_SNAPSHOT",
+      "basis": "CCXT_SUPPORTED_CONSUMER"
+    },
+    "period_proof": {
+      "status": "SUPPORTED_CONSUMER",
+      "evidence_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+      "field": "fundingIntervalHours",
+      "unit": "HOURS",
+      "basis": "SAME_RESPONSE_ROW"
+    }
+  },
+  "normalized_fact_semantics": {
+    "unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+    "raw_rate_preserved": true,
+    "normalization": "No*100or/100ontheunderlyingrate;percentdisplayonlyrate*100afterqualification",
+    "period": "ActualrowfundingIntervalHours;numericstringshandledbyF588;missing/invalidperiod→NOT_CHECKED;no8hdefault",
+    "clock": "ExistingF588RATE_QUOTE_SNAPSHOT/updateTimeconsumerconvention;missing/staleclockfailclosed",
+    "payment_event_ts": null,
+    "nextFundingTime": "Separatescheduleonly",
+    "received_time": "Transportonlynotrate/paymentclock",
+    "zero_and_sign": "Keepzeroandnativepositivenegativesigns;donotcopyexampletruthiness/threshold",
+    "unit_qualification_basis": "ADAPTER_BASED_INFERENCE",
+    "vendor_unit_guarantee_claimed": false,
+    "vendor_quote_clock_guarantee_claimed": false
+  },
+  "scope": "BINGX PERPETUAL USDT_M quoteUSDT settleUSDT marginUSDTwherepresent;samequalificationfactorynot500percoinconfigs",
+  "coverage": {
+    "generic_consumer_unit_premise": "CLOSED_WITH_EXPLICIT_PRIMARY_EXAMPLE",
+    "actual_new_funding_facts": 0,
+    "actual_fresh_selected550": "NOT_CHECKED",
+    "actual_DOOD_rate": "NOT_CHECKED",
+    "active_bindings_created": 0
+  },
+  "compatibility": "FieldnamesmatchretainedF588qualifyBingxFundingQuote(profile,instrument). Staticinterfacecheckedonly;qualifier/parser/testnotexecuted. CurrentSOURCEtemplate/runtimefilesnotedited."
+}

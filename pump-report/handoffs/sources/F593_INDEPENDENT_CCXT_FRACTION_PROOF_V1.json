@@ -1,0 +1,61 @@
+{
+  "schema": "F593_INDEPENDENT_CCXT_FRACTION_EXAMPLE_PROOF_V1",
+  "status": "EXPLICIT_CONSUMER_FRACTION_CONVENTION_FOUND",
+  "primary": {
+    "repository": "ccxt/ccxt",
+    "path": "docs/website/content/blog/crypto-arbitrage-strategies.mdx",
+    "commit": "373c05278144578818098d9aac82204de934b803",
+    "git_blob": "5c2cb16776237eb30f20a3f9658d4d0d4b7ce397",
+    "sha256": "4516fca6b9b6ea730c3b90c5091ee4642475891c0b6e3489b93302acea873858",
+    "UTF8_bytes": 9212,
+    "author": "CCXT Team",
+    "article_date": "2026-07-07T11:00:00Z",
+    "source_url": "https://github.com/ccxt/ccxt/blob/373c05278144578818098d9aac82204de934b803/docs/website/content/blog/crypto-arbitrage-strategies.mdx",
+    "js_fetch_line": 70,
+    "js_percent_display_line": 74,
+    "python_fetch_line": 86,
+    "python_unified_field_line": 88,
+    "python_explicit_interval_percent_line": 89,
+    "python_percent_display_line": 90,
+    "go_percent_display_line": 144,
+    "explicit_unit_equivalence": "0.0005 unified fundingRate is0.05% per interval",
+    "proof_type": "OFFICIAL_CCXT_CONSUMER_EXAMPLE_NOT_VENDOR_GUARANTEE",
+    "verified_by": "Staticreadonly of exact officialfile;example not executed"
+  },
+  "unit_evidence_ref": "CCXT:373c05278144578818098d9aac82204de934b803:crypto-arbitrage-strategies.mdx:86-90:sha256:4516fca6b9b6ea730c3b90c5091ee4642475891c0b6e3489b93302acea873858",
+  "minimal_exact_quote": {
+    "interval_label": "0.05% per interval",
+    "percentage_expression": "{rate * 100:+.4f}%"
+  },
+  "read_trace": "Officialexampleusesfetch_funding_rates→entry['fundingRate']→rate*100 printedwithpercent;threshold0.0005 labelled0.05percentperinterval. JSandGoexamplesinthesamefileconfirmthesameconvention.",
+  "independence": "UnifiedconsumerexampleisnotBingXadapter/rawvendorfield. RetainedpinnedBingXpassthroughsuppliesseparatefieldmapping.",
+  "retained_native_mapping": {
+    "commit": "d3159f7036f93db086cd0414642132fba5401710",
+    "git_blob": "7d05d1e811f498d0ddc4b295c1575e072c2675d9",
+    "sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "lines": [
+      1827,
+      1867
+    ],
+    "mapping": "lastFundingRate→fundingRate unchanged",
+    "trace_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "re_read_remote": false
+  },
+  "version_limit": "ConsumerexampleandBingXadapteraredifferentpinnedcommits. TheprofileexplicitlyusesADAPTER_BASED_INFERENCEthroughsharedunifiedfundingRateconvention;notvendor-nativeunitguaranteeorproofatidenticalcommit.",
+  "proof_closes": "F591singlemissingconsumerunitpremise",
+  "does_not_close": [
+    "IndependentBingXvendorunitguarantee",
+    "ActualfreshfundingvaluesorDOODminus1percent",
+    "Currentper-rowperiod/sourceclockcoverage550",
+    "ROOTintegration/test/deploy/nativeadmission"
+  ],
+  "not_imported": [
+    "0.0005scannerthreshold",
+    "truthinessfilterwhichskipszero",
+    "articlevenuelistorarbitragestrategy",
+    "Anyfixed8hperiodorannualization"
+  ],
+  "full_article_exported": false,
+  "Manual_or_pinned_BingX_re_downloaded": false,
+  "example_executed": false
+}

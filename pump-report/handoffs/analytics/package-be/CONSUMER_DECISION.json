@@ -1,0 +1,95 @@
+{
+  "schema": "PACKAGE_BE_CONSUMER_DECISION_V1",
+  "status": "STATIC_REVIEW_COMPLETE_NO_CODE_NO_EXECUTABLE_TEST",
+  "original_capture_sha256": "8d286b57c00cea4a8bf326c91ed19067d0d3d0d27fcf3df3efd9e0c878b72442",
+  "actual_capture_card_eligibility": "NO_CURRENT_BINGX_ZONE_OR_QUANTITATIVE_CONTEXT_ADMISSION",
+  "blockers": [
+    "ORIGINAL_SNAPSHOT_ALREADY_STALE_BY_EXISTING_300000MS_MODEL_MAP_CEILING",
+    "CANONICAL_ASSET_JOIN_NOT_QUALIFIED",
+    "NATIVE_USD_PRICE_TO_BINGX_USDT_COMPARABILITY_NOT_QUALIFIED",
+    "PRICE_CENTERS_WITHOUT_DOCUMENTED_BIN_BOUNDARIES"
+  ],
+  "retained_facts_are_useful_as": "Historical evidence of a native Hyperliquid external projected forced-liquidation model response; no fresh map, DOOD or 550 coverage claim",
+  "existing_fields_sufficient_for_storage": [
+    "liquidations.status",
+    "liquidations.reason",
+    "liquidations.zones (empty until qualified)",
+    "liquidations.checked_sources",
+    "liquidations.coverage"
+  ],
+  "existing_consumer_flow": [
+    {
+      "file": "pump-report/analytics/zones.mjs",
+      "line": 78,
+      "effect": "Retains status/reason/coverage/checked_sources; no qualified zones => WITHOUT_MAP"
+    },
+    {
+      "file": "pump-report/analytics/context.mjs",
+      "line": 60,
+      "effect": "Optional consumer supports trades/open_interest/funding only; arbitrary native-model Fact kind has no output"
+    },
+    {
+      "file": "pump-report/analytics/context.mjs",
+      "line": 86,
+      "effect": "Map-plan context only from qualified zones_up/zones_down"
+    },
+    {
+      "file": "pump-report/analytics/index.mjs",
+      "line": 63,
+      "effect": "WITHOUT_MAP card prints generic map absence, does not print precise reason/provenance"
+    }
+  ],
+  "new_proven_gap": {
+    "kind": "PRECISE_MAP_ABSENCE_REASON_NOT_RENDERED",
+    "evidence": "This actual received native model is unusable for distinct known reasons; machine result can retain them, current WITHOUT_MAP card cannot distinguish received-but-unqualified or stale from generic absence",
+    "minimal_proposal": {
+      "owner": "ROOT integrates; ANALYTICS code unchanged",
+      "file": "pump-report/analytics/index.mjs",
+      "line": 63,
+      "change": "Append one short sanitized explanation using existing map status/allowlisted reason; retain generic independent-plan line, both full/compact and length bound",
+      "suggested_messages_ru": [
+        "Получен внешний расчётный срез; пригодные зоны для BingX пока не подтверждены.",
+        "Полученный расчётный срез устарел."
+      ],
+      "contract_change_required": false,
+      "new_top_level_fields": false,
+      "raw_reason_passthrough": false,
+      "asset_name_before_verified_join": false,
+      "changes_to_gates_scoring_profile_plan_map_mode": false,
+      "status": "PROPOSAL_ONLY_NOT_IMPLEMENTED"
+    }
+  },
+  "no_separate_numeric_summary_consumer_proposed": true,
+  "qualification_dependency_tiers": {
+    "historical_storage": "Already available exact raw SHA + original clocks + native request provenance; no USABLE claim",
+    "specific_asset_nonprice_context": "Verified native→canonical asset join + documented units/totals/flagged semantics + fresh computed clock/expiry + ROOT accepted base-state limitations; keep native USD and venue, no FX needed for USD-only aggregates without price comparisons",
+    "zones_for_existing_map": "All preceding + actual bin bounds/precision + contemporaneous native USD/BingX USDT price mapping including venue basis/FX/error evidence + actual coverage/model lineage/dedup; never derive interval from centers merely to satisfy parser"
+  },
+  "scope_counters": {
+    "project_modules_imported": 0,
+    "Node_invocations": 0,
+    "tests": 0,
+    "controlled_cases": 0,
+    "full_engine": 0,
+    "source_API_HTTP": 0,
+    "source_MCP": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "Worker_deploy": 0,
+    "CONTROL": 0,
+    "LOOKUP": 0,
+    "GitHub": "Authority and own lease control-plane only",
+    "read_only_JSON_parsing": "jq only; one inspection corrected ISO millisecond parsing, no project code or fixture executed",
+    "code_changes": 0
+  },
+  "controls": {
+    "source_F592_not_duplicated": true,
+    "private_arrays_not_copied": true,
+    "source_clocks_not_refreshed": true,
+    "LOOKUP_spent_10_of_10_preserved": true,
+    "budgets_unknowns_reserves_preserved": true,
+    "pauses9_and_OWNERdeferrals2_preserved": true,
+    "old_report_paused": true,
+    "ROOT_AZ_and_BA_runtime_not_changed": true
+  }
+}
