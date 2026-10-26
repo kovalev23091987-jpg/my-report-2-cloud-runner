@@ -1,0 +1,114 @@
+{
+  "schema": "BV_FINITE_CASE_PLAN_V2_ROOT_BOUNDS",
+  "status": "PREPARED_NODE_NOT_ADMITTED_WAIT_F614_AND_ROOT_FREEZE",
+  "supersedes": "BV_FINITE_CASE_PLAN_V1.json bounds4 replaced with ROOTmax3",
+  "authority_main": "70ff1019f931387586ff50e52ae2d27d4124e592",
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1793041382000",
+  "own_expiry": 1793042882000,
+  "rebind_FULL": {
+    "at": "2026-10-26 19:11:24 UTC",
+    "commit": "750f4c3803f0237bae05c11e37988a04ee6b6d4e",
+    "exact_bytes_match": true,
+    "actual_ref_match": true,
+    "rebound_same_expiry": true
+  },
+  "source_fixture": "GENUINE_OLD_1278_25OCT_153750932MSK; exact oldcaptureSHA7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+  "original_request_started_ts": null,
+  "request_started_ts_rule": "Absent in oldbrokerresponse; do not fabricate. SOURCE ingress exposes original received_ts+receipt_id only; source_event_ts remains null.",
+  "module_drafts_WAIT_FINAL_FREEZE": {
+    "writer": "4def57bf0f81db8bfd34a577a7cec907313878663f988fb47a79f57811e61d9b",
+    "reader": "c5eb61308fae599b9607ab06b5d6223b9dd75bceda880162404d90cdec3f9141",
+    "worker": "575e8238e8fd6d6789ee8dadae5ef61c9f0e209091bbee24989a7ce9c7a891ad",
+    "operator_wrapper": "f17fe7bc5cb158365fa753b2c0d905eb203b78f682fac3891796bf50017500d3"
+  },
+  "state_key": "pump:catalog:last-observed:v1",
+  "bounds": {
+    "rows": 2000,
+    "parsed_body_utf8_bytes": 2097152
+  },
+  "serialization_basis": "BROKER_PARSED_JSON_STRINGIFY_UTF8_NOT_WIRE_BYTES",
+  "stages": [
+    {
+      "name": "OLD71_DEFAULT_BASELINE",
+      "getCatalog": 1,
+      "simulated_broker_requests": 1,
+      "callback": 0,
+      "store_write": 0,
+      "assertions": [
+        "ttl_ms0 and exact originalbrokerresponse",
+        "Savebusinesscatalogoutput, not currentcryptoN."
+      ]
+    },
+    {
+      "name": "NEW_SOURCE_CALLBACK_ROOT_WRITER_PRIVATE_OBSERVER",
+      "getCatalog": 1,
+      "simulated_broker_requests": 1,
+      "callback": 1,
+      "store_write": 1,
+      "writer_GET_readback": 1,
+      "observer_PK_GET": 1,
+      "assertions": [
+        "Newsourceoutput equals old71defaultoutput; no extra provider request/cache semantics.",
+        "Actual ROOT writer uses oneSET+ownGET, private reader separate oneGET. All accesssamefixedkey, nohistory.",
+        "Writer evidence_classARTIFICIAL and explicit controlled implementation fingerprint; never pretend newpreparedcode deployed71.",
+        "Bind parsedbodybytes/hash/receipt/originalreceivedclock/rowcount. Oldclock unchanged; reader exposes age and NON_OBSERVED_NOT_NATIVE/currentglobalNfalse, not freshness claim."
+      ]
+    },
+    {
+      "name": "DIRECT_METADATA_REJECTION_NO_CATALOG_REQUEST",
+      "getCatalog": 0,
+      "simulated_broker_requests": 0,
+      "callback": 0,
+      "store_write": 0,
+      "observer_GET": 0,
+      "assertions": [
+        "Callrealwriter with samebodyand invalid metadata derivedcopy, e.g receipt_id=null; expectSKIPPED/no storecalls.",
+        "Previouslyrecordedbody/clock untouched; no fresh/saved success invented."
+      ]
+    },
+    {
+      "name": "NEW_SOURCE_CALLBACK_NATIVE_ACK_UNKNOWN",
+      "getCatalog": 1,
+      "simulated_broker_requests": 1,
+      "callback": 1,
+      "unknown_write_attempt": 1,
+      "writer_GET_after_unknown": 0,
+      "observer_GET": 0,
+      "assertions": [
+        "Isolated bounded mock set raises originalnative-classACKunknown error; may have committed, never assert refunded/absent write.",
+        "Newsource.getCatalog must propagate samecallbackerror, not mask it as catalog coverage/success.",
+        "Allwriteattempts targetfixedkey only; no fallbackHTTP/retry/recovery probe."
+      ]
+    }
+  ],
+  "total_proposed_bounds": {
+    "Node": 1,
+    "logical_cases": 1,
+    "getCatalog": 3,
+    "simulated_broker_requests": 3,
+    "provider_requests_per_getCatalog": 1,
+    "callback_invocations": 2,
+    "real_writer_invocations": 3,
+    "positive_SET": 1,
+    "unknown_SET_attempt": 1,
+    "writer_success_GET_readback": 1,
+    "observer_PK_GET": 1,
+    "distinct_mutation_keys": 1,
+    "historykeys": 0,
+    "engine": 0,
+    "sourceHTTP": 0,
+    "nativeSQL": 0,
+    "TG": 0,
+    "build": 0,
+    "deploy": 0,
+    "old_BS_or_oldtests": 0
+  },
+  "worker_wrapper_scope": "Hash/static wiring only; no defaultworker/nativeenv or executable nativeCLI invocation.",
+  "required_before_Node": [
+    "Exact F614 source/payloadSHA frozenreceipt",
+    "ROOT immutable module paths/complete transitive hashes inclold71baseline andnewproducerwriterreader/wiring",
+    "One reviewed executable harnessSHA and exact ROOT oneNodeadmission",
+    "Freshmain/all17/all4 and activeownleaseFULL immediatelyprelaunch"
+  ],
+  "Node_so_far": 0
+}

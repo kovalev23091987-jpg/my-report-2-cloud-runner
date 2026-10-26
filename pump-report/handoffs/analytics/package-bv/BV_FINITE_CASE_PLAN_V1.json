@@ -1,0 +1,121 @@
+{
+  "schema": "BV_FINITE_CATALOG_SNAPSHOT_CONNECTED_CASE_PLAN_V1",
+  "status": "PREPARATION_ONLY_NODE_NOT_ADMITTED",
+  "purpose": "One shared connected affected catalog-retention case, not BS AUTO/engine replay or current native acceptance.",
+  "authority_main": "82f8c2704dbf0f9a48bf029781bc4fc007176be1",
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1793041382000",
+  "own_expires_ts": 1793042882000,
+  "own_FULL": {
+    "at": "2026-10-26 19:03:23 UTC",
+    "commit": "615462a517144cca7a8da29c8bf02ae9eb5bfd81",
+    "exact_bytes_match": true,
+    "actual_ref_match": true
+  },
+  "old_genuine_fixture": {
+    "outer_path": "pump-report/.private/evidence/pump-report-native-catalog-corrected.json",
+    "outer_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+    "outer_bytes": 606669,
+    "response_JSON_path": "$.body.response",
+    "catalog_array_path": "$.body.response.data.data",
+    "row_count": 1278,
+    "received_ts": 1792931870932,
+    "received_msk": "2026-10-25 15:37:50.932 MSK",
+    "source_receipt_id": "0320c4b0-ce38-48dc-a275-88a6770ec2b1",
+    "classification": "GENUINE_OLD_CAPTURE_ONLY_NOT_LATEST_OR_CURRENT_GLOBAL_N",
+    "payload_extraction_and_SHA": "WAIT_SOURCE_F614_EXACT_FREEZE",
+    "do_not_retime_or_reclassify_1278_249_or_saved550": true
+  },
+  "current71_baseline": {
+    "pin": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+    "artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
+    "source_index_sha256": "bcf5178ecea9ba84cd879198f833bf2549bf8b8fea5c586b83b3c954effa0c8f",
+    "getCatalog_ttl_ms": 0,
+    "positive_durable_cache_under_ttl0": false,
+    "ordinary_getCatalog_output_must_remain_equal": true
+  },
+  "pending_exact_contracts": [
+    "F614 frozen sources/index optional on_catalog_snapshot callback payload schema/clock/hash basis and error propagation contract",
+    "ROOT frozen single-key bounded writer/key/body byte limit/version/worker wiring",
+    "ROOT frozen private observer one-PK read function and its stale/hash/metadata validation semantics",
+    "Transitive immutable module manifest for same connected package; no mutable sharedmodule imports",
+    "ROOT one exact Node admission after harness review"
+  ],
+  "proposed_one_logical_case_stages": [
+    {
+      "stage": "A_DEFAULT_PRODUCER_CONTROL",
+      "actions": [
+        "Call real frozen getCatalog with callback omitted and a broker boundary mock returning exact OLD response.",
+        "Record exactly one simulated broker request with ttl_ms0, route/provider/purpose/cost unchanged; no metadata write and no fallback request.",
+        "Keep returned catalog output for equality comparison, never claim its qualified count current globalN."
+      ]
+    },
+    {
+      "stage": "B_PRODUCER_WRITER_PRIVATE_OBSERVER_CONNECTED",
+      "actions": [
+        "Call same producer with SOURCE callback wired to real ROOT writer and same exact OLD broker response.",
+        "Verify source output deep-equals default control; callback adds no HTTP, no positive cache or classification change.",
+        "Record writer operations: success has exactly one mutation target, ROOT current snapshot key, at most one positive write; no history/other keys/schema/install.",
+        "Use real ROOT private observer to read that exact key in one PK operation and bind body hash/serialization basis, source receipt/request+received clocks, metadata and row count to old fixture.",
+        "Use original historical clocks for producer/writer replay; observer must not relabel this OLD body as a new/current market catalog. If freshness uses observation clock, evaluate against explicit later observation clock and retain OLD/STALE result; exact clock stages frozen by ROOT."
+      ]
+    },
+    {
+      "stage": "C_KNOWN_METADATA_FAILURE",
+      "actions": [
+        "Use the same payload in a bounded isolated branch; inject exactly the ROOT-defined known metadata validation/storage rejection.",
+        "Check no invented successful/current snapshot receipt, no retimed source freshness, and no other-key write/fallback HTTP.",
+        "Business source-output/error behavior must follow SOURCE/ROOT frozen contract. Do not silently invent best-effort swallowing semantics."
+      ]
+    },
+    {
+      "stage": "D_NATIVE_UNKNOWN_ERROR_PROPAGATION",
+      "actions": [
+        "Use the same payload in one isolated mock storage branch whose write ACK is unknown or throws a native-class error.",
+        "Verify real producer->writer path retains the error/UNKNOWN contract and never returns confirmed-saved/fresh/zero-cost/refunded metadata.",
+        "Do not recover through extra provider calls or additional observer/native probes. Preserve first observed result; no blind rerun."
+      ]
+    }
+  ],
+  "proposed_finite_bounds_NOT_ADMISSION": {
+    "Node_invocations": 1,
+    "logical_cases": 1,
+    "getCatalog_invocations_max": 4,
+    "simulated_broker_requests_per_getCatalog": 1,
+    "simulated_broker_requests_total_max": 4,
+    "callback_invocations_max": 3,
+    "successful_snapshot_write_max": 1,
+    "unknown_write_attempt_max": 1,
+    "all_write_targets_max_distinct": 1,
+    "observer_calls_max": 1,
+    "observer_PK_reads_per_call": 1,
+    "prefix_scans": 0,
+    "history_keys": 0,
+    "real_HTTP": 0,
+    "native_SQL": 0,
+    "engine": 0,
+    "TG": 0,
+    "build": 0,
+    "deploy": 0,
+    "old_tests": 0,
+    "note": "Exact branch count and knownfailure injection depend on frozen writer/producer contract; reduce stages if same finite evidence is obtained. Counts are proposed upper bounds only, not permission."
+  },
+  "oracles": [
+    "Original file/payload and frozen modules byte hashes unchanged before/after.",
+    "ttl0 and one broker request per invocation; callback never performs another provider request.",
+    "Default absent-callback path remains output-identical; no rawbody added to public catalog coverage/output.",
+    "One current key only, no history/other-key mutations; payload within ROOT bound and exactbody hash/clock/source receipt readback.",
+    "Private observer reads exactkey once; no prefix scan or market fallback.",
+    "Old1278 fixture is explicitly historical; row count is not identity/qualification/currentglobalN or a proof of latest249.",
+    "Metadata failure cannot create fresh/saved state; native UNKNOWN/error not masked or reset.",
+    "No source/nativemarket/engine/TG/native billing/current launch acceptance claims."
+  ],
+  "preparation_constraints": {
+    "only_owned_analytics_tests_handoffs": true,
+    "SOURCE_code_readonly": true,
+    "ROOT_writer_worker_budget_contracts_operator_readonly": true,
+    "no_Node_or_import_until_ROOT_exact_admission": true,
+    "no_new_cases_or_old_BS_replay": true,
+    "all_real_spends_unknowns_reserves_caps_pauses_deferrals_unchanged": true
+  },
+  "next_action": "Wait exact F614 payload+hook and ROOT writer/observer freeze, then prepare one executable harness/manifest without running until admitted. Missing exact payload/hash/error contract blocks dependent preparation only."
+}

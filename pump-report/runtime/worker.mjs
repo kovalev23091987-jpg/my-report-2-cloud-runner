@@ -23,6 +23,7 @@ import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../so
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 import {createSourceEvidenceAdmission} from './source-evidence-admission.mjs';
 import {sendSavedTelegram} from './telegram-send.mjs';
+import {createCatalogSnapshotWriter} from './catalog-snapshot.mjs';
 
 export const PUMP_VERSION='pump-report-v1.10-native-source-evidence-admission';
 export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка доставки.\n\nЭто техническое сообщение, без торгового сигнала. Основной отчёт ещё проходит проверку данных.';
@@ -124,7 +125,8 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
     catch(error){privateCapture.record(args,null,error);throw error;}
   }}:baseBroker;
   const identityRegistry=withReviewedFundingQuoteRegistry(createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY));
-  const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
+  const on_catalog_snapshot=production?createCatalogSnapshotWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED',clock}):null;
+  const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock,on_catalog_snapshot});
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
     return revalidatePumpCard({card,store,sources,clock});

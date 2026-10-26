@@ -1,9 +1,9 @@
 {
-  "schema": "ROOT_NEXT_NORMAL_AUTO_ACCEPTANCE_PREPARATION_V1",
+  "schema": "ROOT_NEXT_NORMAL_AUTO_ACCEPTANCE_PREPARATION_V2",
   "status": "PREPARED_REUSE_NOT_IO_ADMISSION_NOT_SCHEDULED",
   "authority_main": "a484b3689498649dd2443ba09cb484aa95535da4",
-  "prepared_ts": 1793039645409,
-  "purpose": "Read existing ordinary AUTO71 run and one selected original; bind same-original saved card and actual ACK if present. No market collection, forced signal or fresh manual test.",
+  "prepared_ts": 1793043099408,
+  "purpose": "Read independently a latestsavedAUTO original and one original behind a selectedSENTcard; jointdeliveryrequires exactrun/key/instrument binding.",
   "current_implementation": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
   "current_artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
   "reuse_unchanged": [
@@ -54,7 +54,11 @@
     "latest_auto_candidate_original": 1,
     "read_saved_outcome": false,
     "project_resources_PK": 1,
-    "diagnostic_projection": "Existing run.candidate_selection capped4steps,5leaders already stored; don't fabricate wholequeue/sourceeligibility or list5distinctcoins"
+    "diagnostic_projection": "Existing run.candidate_selection capped4steps,5leaders already stored; don't fabricate wholequeue/sourceeligibility or list5distinctcoins",
+    "maximum_selected_originals_total": 2,
+    "success_path_static_queries": 11,
+    "static_headroom5_not_new_grant": true,
+    "latest_AUTO_candidate_and_card_independent_until_joint_bound": true
   },
   "required_before_IO": [
     "Freshmain/all17/all4+ownboundedCAS/FULL and validrootowner, not current closed/expired engineering lease",
@@ -76,5 +80,53 @@
   ],
   "business_flags_and_cron_unchanged": true,
   "new_automation_created": false,
-  "statistics_accumulation_does_not_block_launch": true
+  "statistics_accumulation_does_not_block_launch": true,
+  "previous_preparation_sha256": "47ddac17bac9576fc99c533e334fb5b31f735815557b08beecf1340866c51325",
+  "static_review": {
+    "package": "pump-report/handoffs/analytics/package-bt/PACKAGE_BT_STATIC_ACCEPTANCE_REVIEW_FINAL_V1.json",
+    "sha256": "449302de80c6ecffeab828c370775c09221d864394313b94de3c5771077ae785",
+    "operator_changed": false,
+    "Node": 0
+  },
+  "joint_delivery_of_latest_candidate_requires": [
+    "Both independent same-original/currentpin/OBSERVED/AUTO/PRODUCTION validation booleans true",
+    "card.analysis.run_id === latest_auto_candidate.private_evidence.original.analysis.run_id === observation.latest_run_id",
+    "observation.analysis_key === latest_auto_candidate.analysis_key === card.analysis.source_input_key",
+    "card.analysis.instrument.instrument_id === latest_auto_candidate.private_evidence.original.analysis.instrument.instrument_id",
+    "All actual same-text/recipient/hash/message_id/HTTPclock and native finalization/readback checks retained"
+  ],
+  "independent_current_card_scope": "A valid current71 card proves one actual delivery of its own run. It does not prove delivery of the latest selected candidate, global earliest/count, entireday or all550.",
+  "normal_current71_event_binding": "pump:run has no explicit implementation pin. An emptychecked savedrun plus currenthealth alone is not exact71 event proof. Require current71 selected original pin with expected ordinary run/asof, or separately admitted actual Cloudflare summary event carrying exact implementation pin; don't relabel historical saved event as newday.",
+  "no_selected_candidate": "Retain NO_CANDIDATE and missing pin/event proof honestly; not an AUTO SENT or full universe claim.",
+  "pending_catalog_extension": {
+    "status": "BV_QUALIFIED_CODE_NOT_INSTALLED_NO_NATIVE_ADMISSION",
+    "explicit_admission_flag": "read_catalog_snapshot=true",
+    "extra_native_PK_queries": 1,
+    "total_success_path_static_queries_if_enabled": 12,
+    "hard_queries": 16,
+    "max_rows_read": 500,
+    "max_rows_written": 30,
+    "record_key": "pump:catalog:last-observed:v1",
+    "native_sourceHTTP": 0,
+    "Telegram": 0,
+    "latest_catalog_body_or_currentglobalN": "NOT_YET_OBSERVED"
+  },
+  "reuse_unchanged_before_catalog_extension": [
+    {
+      "path": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
+      "sha256": "8c164ee68536b08075f1989a664b696d6aaa402ccfae115adf54d8b8d192e649"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-observation.mjs",
+      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893"
+    },
+    {
+      "path": "pump-report/operator/saved-outcome-observation.mjs",
+      "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f"
+    }
+  ]
 }

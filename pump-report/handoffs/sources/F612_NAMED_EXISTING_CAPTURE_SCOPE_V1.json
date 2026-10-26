@@ -1,0 +1,131 @@
+{
+  "schema": "F612_NAMED_EXISTING_CAPTURE_SCOPE_V1",
+  "checked_utc": "2026-10-26T18:45:27.430038+00:00",
+  "target": {
+    "event_ts": 1793008550000,
+    "received_ts": 1793008552284,
+    "receipt_id": "5a630b09-5a0f-4743-a707-13686edb7394",
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "native_contract_id": "101207",
+    "native_symbol": "DOOD-USDT"
+  },
+  "private_document_limit": 8,
+  "private_documents_opened": 4,
+  "private_file_read_operations": 4,
+  "named_result_files": [
+    {
+      "path": "pump-report/.private/observations/owner-dood-current-review-result.json",
+      "bytes": 82821,
+      "sha256": "280cd8f7725b50f25120e77ec3a24c1a5ffb32f3ccddbfe6734eba3067a945c8",
+      "top_keys": [
+        "schema",
+        "request",
+        "http_status",
+        "received_ts",
+        "body",
+        "body_sha256",
+        "body_bytes"
+      ],
+      "document_type": "EXISTING_OWNER_DOOD_AX_RESULT",
+      "raw_reported_field_candidates": [],
+      "late_queue_fields_ignored": 0,
+      "decoded_embedded_JSON_strings": 0,
+      "target_receipt_occurrences": 0,
+      "same_asof_normalized_fact_metadata": [],
+      "exact_bound_candidate_count": 0
+    },
+    {
+      "path": "pump-report/.private/observations/owner-dood-fixed-followup-result.json",
+      "bytes": 103395,
+      "sha256": "aaefa38da2979724b809b7795f7edd199787c23e664b36f84767fd2e48ed2c3a",
+      "top_keys": [
+        "schema",
+        "request",
+        "http_status",
+        "received_ts",
+        "body",
+        "body_sha256",
+        "body_bytes"
+      ],
+      "document_type": "EXISTING_OWNER_DOOD_AX_RESULT",
+      "raw_reported_field_candidates": [],
+      "late_queue_fields_ignored": 0,
+      "decoded_embedded_JSON_strings": 0,
+      "target_receipt_occurrences": 5,
+      "same_asof_normalized_fact_metadata": [],
+      "exact_bound_candidate_count": 0
+    },
+    {
+      "path": "pump-report/.private/observations/owner-dood-sent241-readback-result.json",
+      "bytes": 761382,
+      "sha256": "16f7e35adc8584de9d6f834dc070f50e82eea8c27aeff2503a62f8d512506f47",
+      "top_keys": [
+        "schema",
+        "authority_main",
+        "started_ts",
+        "implementation_sha256",
+        "run_id",
+        "state",
+        "market_HTTP",
+        "Telegram",
+        "observation",
+        "native_receipt",
+        "completed_ts",
+        "native_api_calls_attempted",
+        "response_bytes"
+      ],
+      "document_type": "EXISTING_OWNER_DOOD_AX_RESULT",
+      "raw_reported_field_candidates": [],
+      "late_queue_fields_ignored": 4,
+      "decoded_embedded_JSON_strings": 0,
+      "target_receipt_occurrences": 8,
+      "same_asof_normalized_fact_metadata": [
+        {
+          "path": "$.observation.private_evidence.original.input.facts.price",
+          "kind": "price",
+          "fact_metadata_not_raw_ticker": true
+        },
+        {
+          "path": "$.observation.private_evidence.original.input.facts.ticker_24h",
+          "kind": "ticker_24h",
+          "fact_metadata_not_raw_ticker": true
+        }
+      ],
+      "exact_bound_candidate_count": 0
+    },
+    {
+      "path": "pump-report/.private/observations/ax-dood-quiescence-result.json",
+      "bytes": 5156,
+      "sha256": "67d69b8998479d3ec7962e34b85acccfab87ac95ae4e37566c9400bd7eaab022",
+      "top_keys": [
+        "schema",
+        "authority_main",
+        "started_ts",
+        "implementation_sha256",
+        "run_id",
+        "state",
+        "market_HTTP",
+        "Telegram",
+        "observation",
+        "native_receipt",
+        "completed_ts",
+        "native_api_calls_attempted",
+        "response_bytes"
+      ],
+      "document_type": "EXISTING_OWNER_DOOD_AX_RESULT",
+      "raw_reported_field_candidates": [],
+      "late_queue_fields_ignored": 0,
+      "decoded_embedded_JSON_strings": 0,
+      "target_receipt_occurrences": 0,
+      "same_asof_normalized_fact_metadata": [],
+      "exact_bound_candidate_count": 0
+    }
+  ],
+  "exact_same_asof_nonnull_reported_body_candidates": [],
+  "search_stopped_after_named_scope": true,
+  "not_a_global_retention_absence_claim": true,
+  "no_late_queue_closedgrowth_substitution": true,
+  "no_raw_values_bodies_recipient_or_TGtext_exported": true,
+  "new_web_HTTP_SQL_Node_engine_TG_build_deploy": 0,
+  "inspection_method": "Recursive parsed JSON objects/arrays and embedded JSON strings; exact raw keys priceChangePercent/reported_change_pct; no code execution. No raw values emitted."
+}

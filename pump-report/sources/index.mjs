@@ -36,8 +36,9 @@ function entriesOf(registry) {
   fail('INDEPENDENT_IDENTITY_REGISTRY_REQUIRED');
 }
 
-export function createPumpSources({broker, identityRegistry, clock = Date.now, profile = START_PROFILE} = {}) {
+export function createPumpSources({broker, identityRegistry, clock = Date.now, profile = START_PROFILE, on_catalog_snapshot = null} = {}) {
   if (typeof broker?.request !== 'function' || typeof clock !== 'function') fail('PUMP_SOURCE_DEPENDENCIES_REQUIRED');
+  if (on_catalog_snapshot !== null && typeof on_catalog_snapshot !== 'function') fail('CATALOG_SNAPSHOT_CALLBACK_INVALID');
   const registry = new Map(), registryRejected = [], blockedIds = new Set(), blockedSymbols = new Set();
   function registerEntry(raw, repeat = false) {
     if (raw == null) return null;
@@ -189,10 +190,18 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     } catch (error) { return failed(entry, 'orderbook', error); }
   }
   async function getCatalog({purpose = 'CORE'} = {}) {
+    let snapshotCallbackFailed = false;
     try {
       const response = await request('catalog', {purpose});
       if (!Array.isArray(response.data?.data)) fail('BINGX_CATALOG_ARRAY_REQUIRED');
       const rows = decode(response, () => wireRows(response.data)), instruments = [], unqualified = [], seen = new Set();
+      if (on_catalog_snapshot !== null) {
+        try {
+          await on_catalog_snapshot({schema: 'PUMP_CATALOG_INGRESS_V1', provider: 'BINGX', family: 'USDT_M',
+            route: '/openApi/swap/v2/quote/contracts', received_ts: response.received_ts,
+            receipt_id: response.receipt_id, body: response.data});
+        } catch (error) { snapshotCallbackFailed = true; throw error; }
+      }
       for (const row of rows) {
         if (!object(row)) { unqualified.push({native_symbol: null, reason: 'INVALID_CATALOG_ROW'}); continue; }
         const symbol = typeof row.symbol === 'string' ? row.symbol : null;
@@ -230,7 +239,8 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         registry_rejected: registryRejected, registry_missing_from_catalog: [...registry.values()].filter(item => !seen.has(item.instrument.native_symbol)).map(item => item.instrument.instrument_id),
         evidence_ref: response.receipt_id, received_ts: response.received_ts, qualified_count_is_not_status1_count: true};
       return {instruments: qualified, unqualified, coverage: plain(catalogCoverage)};
-    } catch (error) { catalogCoverage = {status: BUDGET_ERROR.test(safeCode(error)) ? 'NOT_CHECKED' : 'ERROR', reason: safeCode(error), total: null, qualified: null, unqualified: null};
+    } catch (error) { if (snapshotCallbackFailed) throw error;
+      catalogCoverage = {status: BUDGET_ERROR.test(safeCode(error)) ? 'NOT_CHECKED' : 'ERROR', reason: safeCode(error), total: null, qualified: null, unqualified: null};
       return {instruments: [], unqualified: [], coverage: plain(catalogCoverage)}; }
   }
   async function getOverview({instruments = [], purpose = 'CORE'} = {}) {

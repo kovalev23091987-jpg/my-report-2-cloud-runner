@@ -1,0 +1,184 @@
+{
+  "schema": "F613_CURRENT71_CATALOG_CACHE_PROPOSAL_V1",
+  "kind": "STATIC_PROPOSAL_NOT_IO_ADMISSION",
+  "implementation_pin": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+  "prepared_artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
+  "deployment_binding": "Previously accepted F610 immutable71 FULL chain; no deployment or engine executed by F613.",
+  "catalog_url": "https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+  "physical_table": "pump_report_state_v1",
+  "key_column": "state_key",
+  "json_column": "value_json",
+  "ordinary_source_cache_key": "pump:cache:BINGX:pump-report-sources-v1:BINGX:USDT_M:https://open-api.bingx.com/openApi/swap/v2/quote/contracts:https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+  "ordinary_getCatalog_ttl_ms": 0,
+  "ordinary_positive_cache_read_or_write": false,
+  "ordinary_key_existence_not_proven": true,
+  "reason": "sources/index getCatalog request passes no ttl; wrapper default0; budget gets/sets positive cache only ttl>0. Runner retains coverage summary, not full catalog rows.",
+  "existing_qualification_cache_key_proposal": "pump:cache:BINGX:QUALIFICATION:catalog:{}:https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+  "qualification_route_ttl_ms": 60000,
+  "qualification_PK_presence_clock_and_body_not_checked": true,
+  "future_read_fields_after_value_json_decode": {
+    "catalog_rows": "data.data",
+    "received_clock": "received_ts",
+    "receipt": "receipt_id",
+    "status": [
+      "ok",
+      "status",
+      "semantic_status"
+    ],
+    "auxiliary": [
+      "request_started_ts",
+      "body_bytes"
+    ]
+  },
+  "parsed_response_not_original_wire_text": true,
+  "one_PK_SQL_template_only": "SELECT value_json FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1",
+  "proposal_parameter": "pump:cache:BINGX:QUALIFICATION:catalog:{}:https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+  "future_read_requirements": [
+    "Separate positive factual native admission; no LOOKUP14 or envelope expansion inferred.",
+    "Read-only one existing exact PK; no prefix scan, no fallback market call.",
+    "Check existence, ok/status, full array, receipt and received_ts against an explicitly chosen target capture.",
+    "Older body or merely matching1278 row count cannot prove latest249 unresolved or current global N.",
+    "No name-only identity decisions; preserve exclusions and existing economic/native evidence; ROOT owns finite classification."
+  ],
+  "can_guarantee_latest249_recovery_with_one_PK": false,
+  "latest_body_absence_in_DB_not_proven": true,
+  "no_SQL_HTTP_Node_engine_TG_deploy_executed": true,
+  "code_proof": [
+    {
+      "module": "sources/index.mjs",
+      "module_sha256": "bcf5178ecea9ba84cd879198f833bf2549bf8b8fea5c586b83b3c954effa0c8f",
+      "excerpts": [
+        {
+          "line": 15,
+          "text": "export const SOURCE_VERSION = 'pump-report-sources-v1';"
+        },
+        {
+          "line": 86,
+          "text": "  const request = async (kind, {instrument = null, params = {}, ttl_ms = 0, timeout_ms = 10000, deadline_ts = null, route = null, purpose = 'CORE'} = {}) => {"
+        },
+        {
+          "line": 95,
+          "text": "    const result = await broker.request({provider, family, purpose, cache_key: `${SOURCE_VERSION}:${provider}:${family}:${url}`,"
+        },
+        {
+          "line": 98,
+          "text": "      ttl_ms, candidate_id: instrument?.instrument_id ?? null, estimated_cost: {http: 1}});"
+        },
+        {
+          "line": 193,
+          "text": "      const response = await request('catalog', {purpose});"
+        },
+        {
+          "line": 229,
+          "text": "      catalogCoverage = {status: 'CHECKED', total: rows.length, qualified: qualified.length, unqualified: rows.length - qualified.length,"
+        },
+        {
+          "line": 231,
+          "text": "        evidence_ref: response.receipt_id, received_ts: response.received_ts, qualified_count_is_not_status1_count: true};"
+        },
+        {
+          "line": 232,
+          "text": "      return {instruments: qualified, unqualified, coverage: plain(catalogCoverage)};"
+        }
+      ]
+    },
+    {
+      "module": "sources/bingx.mjs",
+      "module_sha256": "d0df081365f35c0f8c238c79cc71cafb0cc4bead6123fd691ce28b966d0ffd02",
+      "excerpts": [
+        {
+          "line": 7,
+          "text": "  catalog: '/openApi/swap/v2/quote/contracts',"
+        },
+        {
+          "line": 53,
+          "text": "export function requestUrl(kind, params = {}) {"
+        },
+        {
+          "line": 55,
+          "text": "  const url = new URL('https://open-api.bingx.com' + ROUTES[kind]);"
+        }
+      ]
+    },
+    {
+      "module": "runtime/budget.mjs",
+      "module_sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+      "excerpts": [
+        {
+          "line": 269,
+          "text": "    const key=provider+':'+cache_key+':'+target.toString()+(method==='POST'?':POST:'+await textHash(route.body_text):'');"
+        },
+        {
+          "line": 274,
+          "text": "      const cached=ttl_ms>0?await store.get('pump:cache:'+key):null;"
+        },
+        {
+          "line": 275,
+          "text": "      if(cached&&cached.received_ts+ttl_ms>=clock())return {...cached,cache_hit:true};"
+        },
+        {
+          "line": 296,
+          "text": "        const raw=new TextDecoder().decode(bytes);let data=null;try{data=JSON.parse(raw);}catch{data={invalid_json:true};}"
+        },
+        {
+          "line": 303,
+          "text": "        const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts,request_started_ts,latency_ms,latency_basis:'FETCH_START_TO_PARSED_RESPONSE_BODY',body_bytes:total,body_bytes_basis:'FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE',wire_bytes:null,cache_hit:false,receipt_id:request_id,semantic_status:disposition};"
+        },
+        {
+          "line": 305,
+          "text": "        if(disposition==='SUCCESS'&&ttl_ms>0)await store.set('pump:cache:'+key,result);"
+        }
+      ]
+    },
+    {
+      "module": "runtime/store.mjs",
+      "module_sha256": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+      "excerpts": [
+        {
+          "line": 48,
+          "text": "  async get(key){const r=await this.query('SELECT value_json FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1',[key]);return r.results?.[0]?JSON.parse(r.results[0].value_json):null;}"
+        },
+        {
+          "line": 58,
+          "text": "  async set(key,value){await this.query('INSERT INTO pump_report_state_v1(state_key,value_json,revision,updated_ts) VALUES(?1,?2,0,?3) ON CONFLICT(state_key) DO UPDATE SET value_json=excluded.value_json,revision=pump_report_state_v1.revision+1,updated_ts=excluded.updated_ts',[key,JSON.stringify(value),this.clock()],{read:2,write:2});return value;}"
+        }
+      ]
+    },
+    {
+      "module": "runtime/worker.mjs",
+      "module_sha256": "a99eb97c2bd14ead760029201c1bc2ee28f1d59061580bcdc0af5bdf1055383b",
+      "excerpts": [
+        {
+          "line": 233,
+          "text": "          const params={};if(!['clock','catalog'].includes(body.kind)){if(!isBingxNativeSymbol(body.symbol))throw Object.assign(Error('INVALID_PROBE_SYMBOL'),{code:'INVALID_PROBE_SYMBOL'});params.symbol=body.symbol;}"
+        },
+        {
+          "line": 235,
+          "text": "          const sourceUrl=body.kind==='clock'?'https://open-api.bingx.com/openApi/swap/v2/server/time':requestUrl(body.kind,params);"
+        },
+        {
+          "line": 236,
+          "text": "          const response=await runtime.broker.request({provider:'BINGX',family:'QUALIFICATION',cache_key:'QUALIFICATION:'+body.kind+':'+JSON.stringify(params),url:sourceUrl,timeout_ms:10000,ttl_ms:60000,estimated_cost:{http:1}});"
+        }
+      ]
+    },
+    {
+      "module": "runtime/runner.mjs",
+      "module_sha256": "8b157fc79a3a7d2208293c8fe12a09f7e1c499c99f94b5e0c302bb0fb659aee2",
+      "excerpts": [
+        {
+          "line": 211,
+          "text": "      const sourceCatalog=await sources.getCatalog({run_id,purpose:mode==='AUTO'?'DISCOVERY':'CORE'}),catalog={...sourceCatalog,instruments:sourceCatalog.instruments.filter(i=>!ownerInstrumentExcluded(i))};result.catalog_coverage={...catalog.coverage,owner_delivery_excluded:sourceCatalog.instruments.filter(ownerInstrumentExcluded).map(i=>i.instrument_id),verified_crypto_count:sourceCatalog.instruments.length,delivery_eligible_verified_count:catalog.instruments.length};"
+        },
+        {
+          "line": 217,
+          "text": "      const unresolved=(catalog.unqualified??[]).filter(row=>['CRYPTO_ASSET_IDENTITY_UNQUALIFIED','CATALOG_REGISTRY_IDENTITY_MISMATCH','MISSING_OR_DUPLICATE_NATIVE_SYMBOL','INVALID_CATALOG_ROW'].includes(row.reason));"
+        },
+        {
+          "line": 218,
+          "text": "      if(unresolved.length){result.status='INCOMPLETE';result.errors.push({reason:'UNIVERSE_QUALIFICATION_INCOMPLETE',unqualified:unresolved.length});}"
+        }
+      ]
+    }
+  ]
+}

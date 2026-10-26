@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {OBSERVATION_BOUNDS,readSavedAutoObservation} from './saved-auto-observation.mjs';
 import {readSavedOutcomeObservation} from './saved-outcome-observation.mjs';
 import {readSavedAutoCandidateObservation} from './saved-auto-candidate-observation.mjs';
+import {readSavedCatalogSnapshot} from './saved-catalog-snapshot.mjs';
 
 const root=fileURLToPath(new URL('../../',import.meta.url)),sha=b=>createHash('sha256').update(b).digest('hex');
 const args=process.argv.slice(2);
@@ -12,6 +13,7 @@ if(args.length===1&&args[0]==='--describe'){
   console.log(JSON.stringify({schema:'PUMP_PRODUCTION_OBSERVER_PLAN_V1',status:'PREPARED_NOT_ADMITTED',bounds:OBSERVATION_BOUNDS,
     optional_saved_outcome_PK_reads:3,explicit_read_saved_outcome_admission_required:true,
     optional_latest_auto_candidate_PK_reads:1,explicit_read_latest_auto_candidate_admission_required:true,
+    optional_catalog_snapshot_PK_reads:1,explicit_read_catalog_snapshot_admission_required:true,
     exact_admission_required:true,mode:'LOOKUP',old_CONTROL_and_startup_manual_not_used:true,positive_native_admission_before_SQL:true,
     writes:'Existing shared native reservation/finalization only; business state read-only',network_SQL_TG_executed:0}));
   process.exit(0);
@@ -26,6 +28,7 @@ if(admission.schema!=='PUMP_PRODUCTION_OBSERVATION_ADMISSION_V1'||admission.stat
   !/^[a-f0-9]{64}$/.test(admission.expected_recipient_sha256??'')||
   (admission.read_saved_outcome!==undefined&&typeof admission.read_saved_outcome!=='boolean')||
   (admission.read_latest_auto_candidate!==undefined&&typeof admission.read_latest_auto_candidate!=='boolean')||
+  (admission.read_catalog_snapshot!==undefined&&typeof admission.read_catalog_snapshot!=='boolean')||
   !(now<admission.expires_ts&&admission.expires_ts<=admission.own_lease?.expires_ts&&admission.own_lease.acquired_ts<=now)||
   !/^[A-Za-z0-9:._-]{1,160}$/.test(admission.run_id??'')||admission.native_query_cap!==16||admission.market_HTTP!==0||admission.Telegram!==0)throw Error('POSITIVE_EXACT_OBSERVATION_ADMISSION_REQUIRED');
 const program=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'),'utf8'));
@@ -73,6 +76,7 @@ try{
   evidence.observation=await readSavedAutoObservation({store:native.store,implementation_sha256:admission.implementation_sha256,expected_recipient_sha256:admission.expected_recipient_sha256,after_key:admission.card_after_key??'pump:card:'});
   if(admission.read_latest_auto_candidate===true)evidence.latest_auto_candidate=await readSavedAutoCandidateObservation({store:native.store,observation:evidence.observation,implementation_sha256:admission.implementation_sha256});
   if(admission.read_saved_outcome===true)evidence.saved_outcome=await readSavedOutcomeObservation({store:native.store,observation:evidence.observation});
+  if(admission.read_catalog_snapshot===true)evidence.catalog_snapshot=await readSavedCatalogSnapshot({store:native.store,implementation_sha256:admission.implementation_sha256});
   evidence.project_resources=await native.store.get('pump:resources');
   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';
 }catch(error){
