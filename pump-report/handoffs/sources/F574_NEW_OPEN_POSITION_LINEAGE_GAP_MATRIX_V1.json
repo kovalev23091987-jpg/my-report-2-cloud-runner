@@ -1,0 +1,259 @@
+{
+  "schema": "F574_NEW_OPEN_POSITION_LINEAGE_GAP_MATRIX_V1",
+  "status": "TWO_MATERIAL_VENDOR_SDK_LEADS_NO_NATIVE_QUALIFICATION",
+  "selected_material_lineages": [
+    "PERENNIAL",
+    "ADRENA"
+  ],
+  "held_lineage": [
+    "FLASH_TRADE_WIND_DOWN_NOTICE"
+  ],
+  "no_API_proof": [
+    "HMX"
+  ],
+  "all550_coverage": "NOT_CHECKED",
+  "new_usable_future_maps": 0,
+  "new_usable_zones": 0,
+  "current_free_definition": "Current keyless or explicitly free access without unknown trial; not an eternal-price promise.",
+  "actual_native_market_provider_metadata_RPC_SQL_TG_deploy_privatecaptures_account_discovery": 0,
+  "lineages": [
+    {
+      "id": "PERENNIAL",
+      "primary_urls": [
+        "https://github.com/equilibria-xyz/perennial-v2-sdk-ts",
+        "https://github.com/equilibria-xyz/perennial-v2-sdk-ts/blob/main/src/utils/positionUtils.ts",
+        "https://docs.perennial.finance/protocol/markets/payoff-and-positions"
+      ],
+      "exact_source": {
+        "tree": "fded0c0399051022438359d1564fb159e8723e1e",
+        "path": "src/utils/positionUtils.ts",
+        "git_blob": "6d08d16bda36e9f3b5798d981539ff8f3aac4791",
+        "sha256": "6cb3ec0e81f0c93f3e8a221cb44445b6ad8c63770e5dd1857fb6e139113aa64f",
+        "bytes": 23540
+      },
+      "unique_use": "Native per-user market state plus official SDK liquidation calculation, with exact OPEN-state and missing-input hazards documented.",
+      "observed_or_model": "VENDOR_SDK_CALCULATION_FROM_STATE_NOT_OBSERVED_LIQUIDATION_EVENT_OR_ORDERBOOK_LEVEL",
+      "exact_read_method": "sdk.markets.read.marketSnapshots({address,...})",
+      "exact_calc_method": "calcLiquidationPrice({marketSnapshot,collateral,position,limitPrice?})",
+      "exact_inputs": [
+        "marketSnapshot.global.latestPrice unless limitPrice override",
+        "marketSnapshot.riskParameter.maintenance",
+        "marketSnapshot.riskParameter.minMaintenance",
+        "collateral",
+        "position"
+      ],
+      "exact_outputs": {
+        "long": "Vendor liquidation price output",
+        "short": "Vendor liquidation price output",
+        "longBelowMargin": "Margin threshold, NOT liquidation price",
+        "shortBelowMargin": "Margin threshold, NOT liquidation price",
+        "minMaintenance_branch": "May return only long/short"
+      },
+      "missing_input_hazard": "Falsy collateral/position or missing marketSnapshot yields {long:0n,short:0n}; these defaults are not observed liquidation prices and must not become real zero zones.",
+      "hypothetical_input_hazard": "limitPrice overrides snapshot price; a planning calculation is not current OPEN-position evidence.",
+      "OPEN_state": {
+        "source_methods": [
+          "getStatusForSnapshot",
+          "isActivePosition",
+          "closedOrResolved"
+        ],
+        "source_fields": [
+          "magnitude",
+          "nextMagnitude",
+          "collateral",
+          "hasVersionError",
+          "priceUpdate"
+        ],
+        "exact_statuses": [
+          "opening",
+          "open",
+          "closing",
+          "pricing",
+          "closed",
+          "resolved",
+          "failed",
+          "notMargined",
+          "syncError"
+        ],
+        "warning": "isActivePosition only tests status != resolved. It can be true for missing snapshot and closed state; it is not an OPEN-position proof.",
+        "pending": "Current and pending exposure/settlement must remain distinct; do not relabel historical or resolved positions."
+      },
+      "full_state_completeness": "NOT_PROVED. Need actual snapshot acquisition/call-site binding, unsettled fees/collateral/position version and oracle consistency before applying helper.",
+      "access": {
+        "protocol_read_only": "README separates read-only initialization (rpcUrl; optional graphUrl) from write wallet configuration",
+        "protocol_key_required": "No signer/API key in documented read-only SDK initialization",
+        "current_free_transport": "UNQUALIFIED: supplied Arbitrum eth_call RPC and optional graph provider entitlement/quota not established",
+        "registration_or_keys_created": false,
+        "Worker_access": "NOT_TESTED",
+        "SDK_code_text_public": true
+      },
+      "quota": {
+        "RPC_scope": "UNKNOWN_PROVIDER_DEPENDENT",
+        "graph_scope": "UNKNOWN",
+        "SDK_invocation_is_one_HTTP": false,
+        "fanout_and_cost": "Unmeasured; no automatic fanout admitted"
+      },
+      "units": {
+        "position": "Units of market payoff, not automatically USD or base tokens",
+        "payoff": "May be leveraged/nonlinear; underlying identity and inverse-price relation cannot be guessed",
+        "SDK_math": "Uses Big6Math and Big18Math; helper definitions/raw conversion not read, no arbitrary6/18 scaling",
+        "collateral_token_and_price_denominator": null,
+        "notional": "calcNotional uses abs(Big6Math.mul(position,price)); no assumed quantity*BingX-liq-price dollars"
+      },
+      "identity_and_clock": {
+        "native_market": "SupportedMarket/native market address, caller account",
+        "current_stable_position_ID": null,
+        "history_positionId": "Only seen in history method parameters, not qualified for current position lifecycle",
+        "snapshot_block_and_generation": null,
+        "oracle_version_and_timestamp": null,
+        "BingX_canonical_asset": null,
+        "quote_rate_basis_and_payoff_transform": null
+      },
+      "coverage": {
+        "census": "Known-address user sample; no global position census documented",
+        "admitted_addresses": 0,
+        "markets": "SDK supported-market set not all550",
+        "all550": "NOT_CHECKED"
+      },
+      "next_native": {
+        "method_family": "READ_ONLY_RPC_eth_call_VIA_MARKET_SNAPSHOT_SDK",
+        "rpc_url": null,
+        "calldata": null,
+        "request_count": null,
+        "status": "NOT_DISPATCHABLE_NOT_ADMITTED",
+        "minimum_gap": "Exact marketSnapshots acquisition/ABI/oracle-call binding + scale definitions + existing ROOT-admitted account/RPC entitlement and separate actual budget."
+      },
+      "next_new_primary_static_inputs": [
+        {
+          "path": "src/lib/markets/chain.ts",
+          "git_blob": "4acbd8c2a3ba996ff10f73fed20d1b13bfff5054",
+          "bytes": 18752
+        },
+        {
+          "path": "src/lib/markets/index.ts",
+          "git_blob": "9526592a8c863648d0984b6967d1a7565e098dd4",
+          "bytes": 41540
+        },
+        {
+          "path": "src/utils/big6Utils.ts",
+          "git_blob": "12a7895aeca55fdcdd707e66900e33fda871048e",
+          "bytes": 5425
+        }
+      ],
+      "source_lineage": "SDK/onchain views/subgraph index the same native Perennial state; common RPC/indexer providers share quotas, not independent position votes.",
+      "qualification": "DOCUMENTARY_VENDOR_CALCULATOR_LEAD_ONLY"
+    },
+    {
+      "id": "ADRENA",
+      "primary_url": "https://github.com/AdrenaFoundation/adrena-sdk-ts",
+      "unique_use": "Official SDK documents exact getPositionStatus request and liquidationPrice result, with native pool/custody/PDA identity.",
+      "exact_read_method": "getPositionStatus({wallet,rpc,principalToken,positionAddress})",
+      "documented_output_fields": [
+        "pnl",
+        "size",
+        "collateral",
+        "leverage",
+        "liquidationPrice",
+        "entryPrice"
+      ],
+      "observed_or_model": "VENDOR_SDK_RESULT_FIELD; raw stored-vs-calculated semantics and implementation not read.",
+      "OPEN_vs_closed": "Check Position Status is documented, but existence/open filter/closed-account behavior is not proved. Do not assume every derived PDA is currently OPEN.",
+      "identity": {
+        "positionAddress": "Onchain PDA derived from pool/owner/principalCustody/side in example; no derivation/address collection performed",
+        "stable_lifecycle_ID": "UNKNOWN across close/reopen",
+        "market_pools": "Main pool and commodities pool separate",
+        "economic_underlying": "SDK commodities pool is synthetic and USDC collateralized; exclude these from crypto target proof",
+        "canonical_underlying_and_BingX_binding": null
+      },
+      "access": {
+        "SDK_wallet_gate": "README says all functions require wallet transaction signer and RPC client; getPositionStatus signer-free implementation NOT_VERIFIED",
+        "current_free_keyless_data_access": "UNKNOWN",
+        "RPC_endpoint_and_quota": "Caller supplied; no actual free provider entitlement established",
+        "registration_keys_or_wallet_creation": false,
+        "Worker_access": "NOT_TESTED",
+        "no_native_calls": true
+      },
+      "full_state_inputs": "Pool and custody loading plus position and oracle/state requirements need implementation proof; no one-request cost claim.",
+      "units": {
+        "size": null,
+        "collateral": null,
+        "liquidationPrice_denomination": null,
+        "raw_scales": null,
+        "README_human_trade_examples": "Do not promote write-amount examples to native position-unit proof."
+      },
+      "clocks": {
+        "position_generation": null,
+        "RPC_context_slot": null,
+        "oracle_publish_time": null,
+        "receive_time": "Not obtained"
+      },
+      "coverage": {
+        "known_position_sample": true,
+        "admitted_positions": 0,
+        "global_census": false,
+        "all550": "NOT_CHECKED"
+      },
+      "failed_new_material": [
+        "https://docs.adrena.trade/about-adrena/useful-links",
+        "https://github.com/AdrenaFoundation/adrena-sdk-ts/blob/main/adrena-api.d.ts"
+      ],
+      "failures_not_retried": true,
+      "next_new_primary_material": {
+        "path": "core.js",
+        "source": "Observed file link in vendor repo; not fetched",
+        "purpose": "Inspect exact getPositionStatus data/signing/oracle behavior as text",
+        "admitted_now": false
+      },
+      "next_native": {
+        "SDK_route": "getPositionStatus",
+        "RPC_url": null,
+        "positionAddress": null,
+        "raw_request_count": null,
+        "status": "HOLD_IMPLEMENTATION_ACCESS_UNITS_CLOCK_SCOPE_AND_ACTUAL_ADMISSIONS_MISSING"
+      },
+      "source_lineage": "Adrena SDK/ABI/frontend/Sablier and REST wrapper would share Adrena positions; an archived Solana-perpetuals fork is not proof of current deployed program equivalence.",
+      "qualification": "EXACT_VENDOR_FIELD_LEAD_WITH_ACCESS_AND_FULLSTATE_GAPS"
+    },
+    {
+      "id": "FLASH_TRADE",
+      "primary_urls": [
+        "https://docs.flash.trade/flash-trade/flash-trade-protocol/perpetuals-specifications/liquidation",
+        "https://app.flash.trade/token"
+      ],
+      "disposition": "OPERATIONAL_HOLD_CURRENT_OPEN_AVAILABILITY_NOT_PROVED",
+      "new_fact": "Official currently indexed UI notice announces wind-down/close-only/force close and LP settlement; do not qualify a current OPEN-position source from old formula alone.",
+      "notice_dates": "Aug31/Sep2/Sep15; year absent in excerpt, exact effective chronology not established.",
+      "documented_liq_basis": [
+        "Maintenance leverage",
+        "Unsettled obligations including close and borrowing fees",
+        "Maintenance threshold"
+      ],
+      "native_API_ID_units_generation_free_quota": "NOT_ESTABLISHED",
+      "no_actual_market_UI_open": true,
+      "no_position_count_claim": true,
+      "next_native": null,
+      "all550": "NOT_CHECKED_NOT_UNSUPPORTED"
+    },
+    {
+      "id": "HMX",
+      "disposition": "NO_NEW_PRIMARY_API_CONTENT_WITHIN_BOUND",
+      "search_result": "No relevant HMX primary hit; old GMX/Hyperliquid/community results ignored.",
+      "failed_new_URL": "https://docs.hmx.org/",
+      "failure": "Tool inaccessible; not proof protocol unsupported or unavailable",
+      "retry": 0,
+      "exact_OPEN_route": null,
+      "liqprice_field": null,
+      "current_access": null,
+      "units": null,
+      "clock": null,
+      "census": null,
+      "next_native": null,
+      "all550": "NOT_CHECKED_NOT_UNSUPPORTED"
+    }
+  ],
+  "no_own_model_or_zone_calculation": true,
+  "no_provider_code_executed": true,
+  "no_account_or_address_discovery": true,
+  "no_production_source_runtime_registry_policy_changes": true,
+  "old_spent_unknowns_reserves9pauses2OWNERdeferrals_preserved": true
+}
