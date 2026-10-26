@@ -10,6 +10,11 @@ export const PRODUCTION_PLAN=Object.freeze({
   manual_checks:3,manual_capture_http_max:13,telegram_daily_cap:27,telegram_monthly_cap:837,
   planned_load_fraction:0.8,
   candidate_pacing:Object.freeze({version:'pump-even-day-deep-v2',period_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow'}),
+  // Prepared only. Activation requires an exact separate owner policy decision
+  // and current native/provider/deployment admissions. No cap is raised here.
+  candidate_surplus:Object.freeze({version:'pump-unassigned-candidate-hold-v1',enabled:false,activation_decision_ref:null,
+    max_grants_per_day:24,max_grants_per_run:1,max_retained_records:200,
+    native_remaining_floor:Object.freeze({requests:600,rows_read:600,rows_written:140})}),
   future_candidates:Object.freeze({cadence_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow',
     http_per_slot:12,http_by_provider:{BINGX:10,TELEGRAM:1},
     unassigned_optional_map_http_per_slot:1,
@@ -40,5 +45,6 @@ export function productionAdmission(nativeAdmission,provider_policy_version,{mod
     allowed_providers:mode==='LOOKUP'?[]:['BINGX','TELEGRAM'],discovery:DISCOVERY_PLAN,
     future_candidates:PRODUCTION_PLAN.future_candidates,planned_load_fraction:PRODUCTION_PLAN.planned_load_fraction,
     candidate_pacing:PRODUCTION_PLAN.candidate_pacing,
+    candidate_surplus:PRODUCTION_PLAN.candidate_surplus,
     ...(maximum_http_attempts===undefined?{}:{max_http_attempts:maximum_http_attempts})};
 }

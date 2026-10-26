@@ -105,8 +105,9 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     if(!evidence.eligible)return {status:'DEFERRED_SOURCE_EVIDENCE',source_coverage:{status:'NOT_CHECKED',reason:evidence.reason,asset_remains_in_discovery:true},delivery:null};
     budget.setMode(mode);
     await assert_execution();
-    const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider});
+    const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id});
     if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail},delivery:null};
+    try {
     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
     // overview1 + day1 + price(primary/fallback)2 + candles/book2 + optional2
     // + forced delivery price/book2 =10 BingX attempts. Map/TG are separate.
@@ -146,6 +147,9 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
     }
     return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
+    } finally {
+      if(admitted?.surplus_grant_id)await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id});
+    }
   }
   async function recordPublished(card_id){
     const card=await store.get('pump:card:'+card_id);if(!card)return;

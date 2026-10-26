@@ -5,6 +5,7 @@ import {futureDiscoveryHttp} from './discovery-reserve.mjs';
 import {futureCandidateReserve,utcBudgetPeriodEnd} from './future-candidate-reserve.mjs';
 import {admittedReadOnlyJSONPost} from './read-only-json-post.mjs';
 import {textHash} from './text-hash.mjs';
+import {surplusPolicy,surplusGrantKey,surplusGrants,surplusHeld,surplusNativeCapacity,makeSurplusGrant} from './candidate-surplus.mjs';
 export const RESOURCE_LIMITS = Object.freeze({http_per_run:164,project_http_day:900,lanes:{hot:96,background:56,statistics:12},deep_per_candidate:50,liquidations_per_run:8,manual_http_run_reserve:24,d1_reads_day:3500000,d1_writes_day:70000,next_full_reads:59000,next_full_writes:920});
 const integer = n => Number.isSafeInteger(n) && n >= 0;
 export class BudgetRefusal extends Error {
@@ -17,6 +18,8 @@ const inc = (map,key,n=1) => {map[key]=(map[key]??0)+n;};
 export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,limits=RESOURCE_LIMITS,protected_reserves,admission}) {
   if (!store?.atomic || !run_id || !['AUTO','MANUAL','STATISTICS'].includes(mode)) throw new BudgetRefusal('BUDGET_CONTEXT_REQUIRED');
   const run={total:0,lanes:{hot:0,background:0,statistics:0},liquidations:0,candidates:{},unknown:0,receipts:[]};
+  let activeSurplus=null;
+  const closedSurplusCandidates=new Set();
   function automaticPlan(state,now){
     if(admission?.run_purpose!=='PRODUCTION'||admission.planned_load_fraction===undefined)return null;
     const fraction=admission.planned_load_fraction;
@@ -74,6 +77,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   };
   async function reserve({provider,family='CORE',purpose='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1}) {
     assertWorkWindow();
+    if(candidate_id&&closedSurplusCandidates.has(candidate_id))throw new BudgetRefusal('SURPLUS_CANDIDATE_ALREADY_CLOSED');
     const policy=providerPolicy(provider),now=clock();
     if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane)||!['CORE','DELIVERY','DISCOVERY'].includes(purpose))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
     if(admission.max_http_attempts!==undefined&&(!integer(admission.max_http_attempts)||admission.max_http_attempts<1||admission.max_http_attempts>limits.http_per_run||run.total+cost>admission.max_http_attempts))throw new BudgetRefusal('EXACT_OPERATION_HTTP_EXHAUSTED');
@@ -100,28 +104,38 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       if(state.outstanding[request_id]||state.unknown[request_id])throw new BudgetRefusal('REQUEST_ALREADY_RESERVED');
       const p=state.providers[provider]??={days:{},months:{},recent:[]};
       const day=utcDay(now),month=utcMonth(now),spent=p.days[day]??0,monthSpent=p.months[month]??0;
+      let conversion=null;
+      if(activeSurplus&&mode==='AUTO'&&purpose!=='DISCOVERY'){
+        const grant=surplusGrants(state)[activeSurplus];
+        if(!grant||grant.run_id!==run_id||grant.state!=='OPEN')throw new BudgetRefusal('SURPLUS_GRANT_NOT_OWNED');
+        if(candidate_id!==null&&candidate_id!==grant.candidate_id)throw new BudgetRefusal('SURPLUS_CANDIDATE_SCOPE_MISMATCH');
+        conversion={grant_id:activeSurplus,provider,cost};
+      }
+      const held=surplusHeld(state,now,{consume:conversion});
       p.recent=p.recent.filter(r=>r.ts>now-60000);
       if(integer(policy.per_second_cap)&&p.recent.filter(r=>r.ts>now-1000).reduce((n,r)=>n+r.cost,0)+cost>policy.per_second_cap)throw new BudgetRefusal('PROVIDER_SECOND_EXHAUSTED');
       if(p.recent.reduce((n,r)=>n+r.cost,0)+cost>policy.per_minute_cap)throw new BudgetRefusal('PROVIDER_MINUTE_EXHAUSTED');
       if(integer(policy.qualification_attempt_cap)&&(p.qualification_totals?.[policy.version]??0)+cost>policy.qualification_attempt_cap)throw new BudgetRefusal('QUALIFICATION_ATTEMPTS_EXHAUSTED');
       const providerOutcomesProtection=policy.outcome_source===false?0:outcomesProtection;
       const providerDeliveryProtection=policy.delivery_source===false?0:deliveryProtection;
-      if(spent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      if(spent+cost+(held.provider_day[provider]??0)+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscovery:0)+(futureCandidates.http_by_provider[provider]??0)>policy.project_daily_cap)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
       const globalManual=mode==='MANUAL'&&admission.run_purpose!=='ACCEPTANCE_TEST'?0:Object.values(protected_reserves.http_by_provider).reduce((sum,n)=>sum+n,0);
-      if((state.days[day]??0)+cost+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
-      if(monthSpent+cost+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscoveryMonth:0)+(futureCandidatesMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
+      if((state.days[day]??0)+cost+held.http+globalManual+deliveryProtection+outcomesProtection+futureDiscovery+futureCandidates.http>limits.project_http_day)throw new BudgetRefusal('PROTECTED_DAY_RESERVE');
+      if(monthSpent+cost+(held.provider_month[provider]??0)+manualProtection+providerDeliveryProtection+providerOutcomesProtection+(provider===admission.discovery?.provider?futureDiscoveryMonth:0)+(futureCandidatesMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)throw new BudgetRefusal('PROVIDER_MONTH_EXHAUSTED');
       if((p.backoff_until??0)>now)throw new BudgetRefusal('PROVIDER_BACKOFF');
       const plan=mode==='AUTO'?automaticPlan(state,now):null;
-      if(plan&&purpose==='DISCOVERY'&&plan.charged+cost+futureDiscovery+futureCandidates.http>plan.limit)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'PLANNED_AUTO_ALLOCATION_AND_FUTURE_WORK'});
-      const pacing=mode==='AUTO'&&(purpose==='DISCOVERY'||purpose==='CORE')?candidatePacing(state,now,plan,futureDiscovery):null;
+      if(plan&&(purpose==='DISCOVERY'||held.http>0||conversion)&&plan.charged+cost+held.http+futureDiscovery+futureCandidates.http>plan.limit)throw new BudgetRefusal('PROTECTED_DAY_RESERVE',{reason:'PLANNED_AUTO_ALLOCATION_AND_FUTURE_WORK'});
+      const pacing=!conversion&&mode==='AUTO'&&(purpose==='DISCOVERY'||purpose==='CORE')?candidatePacing(state,now,plan,futureDiscovery):null;
       inc(state.days,day,cost);inc(p.days,day,cost);inc(p.months,month,cost);p.recent.push({ts:now,cost});
       if(plan){state.automatic_plans??={};plan.charged+=cost;state.automatic_plans[day]=plan;}
       if(pacing){state.automatic_candidate_allocations??={};state.automatic_candidate_allocations[day]??=pacing.allocation;if(purpose==='CORE'){const {allocation,...bucket}=pacing;state.automatic_deep_pacing??={};state.automatic_deep_pacing[day]??={};state.automatic_deep_pacing[day][pacing.key]={...bucket,charged:pacing.charged+cost};}}
       if(integer(policy.qualification_attempt_cap)){p.qualification_totals??={};inc(p.qualification_totals,policy.version,cost);}
-      state.outstanding[request_id]={run_id,provider,cost,ts:now,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED'};
-      return {state,result:{request_id,run_id,provider,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED',cost,reserved_ts:now,day,month,state:'RESERVED'}};
+      if(conversion){const g=state.automatic_surplus_grants[conversion.grant_id];g.remaining_http-=cost;g.remaining_by_provider[provider]-=cost;g.consumed_http+=cost;g.consumed_by_provider[provider]+=cost;}
+      const grantRef=conversion?{surplus_grant_id:conversion.grant_id}:{};
+      state.outstanding[request_id]={run_id,provider,cost,ts:now,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED',...grantRef};
+      return {state,result:{request_id,run_id,provider,family,purpose,run_purpose:admission.run_purpose??'UNCLASSIFIED',cost,reserved_ts:now,day,month,state:'RESERVED',...grantRef}};
     });}catch(error){
-      if(error instanceof BudgetRefusal&&['REQUEST_ALREADY_RESERVED','PROVIDER_SECOND_EXHAUSTED','PROVIDER_MINUTE_EXHAUSTED','QUALIFICATION_ATTEMPTS_EXHAUSTED','PROTECTED_DAY_RESERVE','PROVIDER_MONTH_EXHAUSTED','PROVIDER_BACKOFF'].includes(error.code)){
+      if(error instanceof BudgetRefusal&&['REQUEST_ALREADY_RESERVED','PROVIDER_SECOND_EXHAUSTED','PROVIDER_MINUTE_EXHAUSTED','QUALIFICATION_ATTEMPTS_EXHAUSTED','PROTECTED_DAY_RESERVE','PROVIDER_MONTH_EXHAUSTED','PROVIDER_BACKOFF','SURPLUS_GRANT_NOT_OWNED','SURPLUS_CANDIDATE_SCOPE_MISMATCH'].includes(error.code)||['SURPLUS_HOLD_STATE_UNQUALIFIED','SURPLUS_HOLD_EXHAUSTED_OR_CLOSED'].includes(error.code)){
         run.total-=cost;run.lanes[lane]-=cost;if(family==='LIQUIDATIONS')run.liquidations-=cost;if(candidate_id)inc(run.candidates,candidate_id,-cost);
       }else run.unknown++;
       throw error;
@@ -159,30 +173,50 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     for(const row of recent){if(occupied+cost<=policy.per_minute_cap)break;occupied-=row.cost;not_before_ts=row.ts+60000;}
     return {not_before_ts,expires_ts:admission.expires_ts,cost,minute_cap:policy.per_minute_cap,forecast_only:true};
   }
-  async function admitCandidate({http_upper_bound,http_by_provider}={}){
+  async function admitCandidate({http_upper_bound,http_by_provider,candidate_id=null}={}){
     if(admission?.run_purpose!=='PRODUCTION')return {allowed:true,scope:'NO_PRODUCTION_FORECAST_APPLIED'};
     assertWorkWindow();
-    const assess=state=>{const now=clock();
+    const assess=(state,{ignore_pacing=false,exclude_grant_id=null}={})=>{const now=clock();
     const deny=reason=>({allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:reason});
     if(!integer(http_upper_bound)||http_upper_bound<1||!http_by_provider||Object.values(http_by_provider).some(n=>!integer(n))||Object.values(http_by_provider).reduce((a,b)=>a+b,0)>http_upper_bound)return deny('CANDIDATE_COST_UNQUALIFIED');
     if(admission.max_http_attempts!==undefined&&run.total+http_upper_bound>admission.max_http_attempts)return deny('WHOLE_CANDIDATE_OPERATION_HTTP_LIMIT');
     const day=utcDay(now),month=utcMonth(now),future=futureCandidateReserve(now,admission.future_candidates),futureMonth=futureCandidateReserve(now,admission.future_candidates,{period:'MONTH'});
     const discovery=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'DAY')}),discoveryMonth=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'MONTH')});
     const manual=mode==='MANUAL'?0:Object.values(protected_reserves.http_by_provider).reduce((a,b)=>a+b,0),fixed=manual+protected_reserves.delivery_http+protected_reserves.outcomes_http;
-    if((state.days[day]??0)+http_upper_bound+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
+    const held=surplusHeld(state,now,{exclude_grant_id});
+    if((state.days[day]??0)+http_upper_bound+held.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
     const plan=mode==='AUTO'?automaticPlan(state,now):null;
-    if(plan&&plan.charged+http_upper_bound+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
+    if(plan&&plan.charged+http_upper_bound+held.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
     const pacing=candidatePacing(state,now,plan,discovery);
     if(pacing&&http_upper_bound!==pacing.allocation.http_upper_bound)return deny('CANDIDATE_PACING_COST_CHANGED');
-    if(pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION');
+    if(!ignore_pacing&&pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION');
     for(const [provider,cost]of Object.entries(http_by_provider)){
       const policy=providerPolicy(provider),p=state.providers?.[provider]??{},reserve=(mode==='MANUAL'?0:protected_reserves.http_by_provider[provider])+(policy.delivery_source===false?0:protected_reserves.delivery_http)+(policy.outcome_source===false?0:protected_reserves.outcomes_http);
-      if(!integer(reserve)||(p.days?.[day]??0)+cost+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
-      if((p.months?.[month]??0)+cost+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
+      if(!integer(reserve)||(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
+      if((p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
+      if(ignore_pacing&&(p.backoff_until??0)>now)return deny('SURPLUS_PROVIDER_BACKOFF');
     }
     return {allowed:true,scope:'BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION',http_upper_bound,...(pacing?{pacing}:{})};
     };
     const state=await store.get('pump:resources')??{days:{},providers:{}},first=assess(state);
+    const policy=surplusPolicy(admission,mode);
+    const existing=policy&&candidate_id?surplusGrants(state)[surplusGrantKey(run_id,candidate_id)]:null;
+    if(policy&&(existing||!first.allowed&&first.detail==='EVEN_DAY_CANDIDATE_ALLOCATION')){
+      if(!candidate_id)return {allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:'SURPLUS_CANDIDATE_ID_REQUIRED'};
+      const answer=await store.atomic('pump:resources',current=>{
+        current??={days:{},providers:{}};const key=surplusGrantKey(run_id,candidate_id),known=surplusGrants(current)[key];
+        if(known&&known.state!=='OPEN')return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:'SURPLUS_LOGICAL_GRANT_ALREADY_SPENT'}};
+        if(known&&(known.original_http!==http_upper_bound||JSON.stringify(known.original_by_provider)!==JSON.stringify(http_by_provider)))return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:'SURPLUS_IDEMPOTENCY_COST_MISMATCH'}};
+        const checked=known?{allowed:true}:assess(current,{ignore_pacing:true});if(!checked.allowed)return {state:current,result:checked};
+        const native=surplusNativeCapacity(store,run_id,policy,clock());if(!native.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:native.detail}};
+        const s=makeSurplusGrant({state:current,run_id,candidate_id,policy,native,now:clock(),http_upper_bound,http_by_provider});
+        if(!s.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:s.detail}};
+        current.automatic_surplus_grants??={};current.automatic_surplus_grants[s.grant_id]??=s.grant;
+        return {state:current,result:{allowed:true,scope:'CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD',surplus_grant_id:s.grant_id,candidate_quota:{kind:'UNASSIGNED_SURPLUS',logical_spent:true,never_refunded:true,idempotent:s.idempotent,http_upper_bound}}};
+      });
+      if(answer.allowed)activeSurplus=answer.surplus_grant_id;
+      return answer;
+    }
     if(!first.allowed||!first.pacing)return first;
     return store.atomic('pump:resources',current=>{
       current??={days:{},providers:{}};const checked=assess(current);if(!checked.allowed)return {state:current,result:checked};
@@ -192,7 +226,21 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       return {state:current,result:{...result,candidate_quota:{period_start:Number(pacing.key),maximum:pacing.maximum,base_per_period:allocation.candidates_per_period,carried_in:pacing.carried_in,issued:bucket.candidate_count+1,remaining:pacing.maximum-bucket.candidate_count-1,day_issued:pacing.issued_before+bucket.candidate_count+1,never_refunded:true}}};
     });
   }
-  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,providerWindow,admitCandidate,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
+  async function closeCandidate({candidate_id,surplus_grant_id=null}={}){
+    if(!surplus_grant_id)return null;
+    if(activeSurplus!==surplus_grant_id)throw new BudgetRefusal('SURPLUS_GRANT_NOT_OWNED');
+    activeSurplus=null;closedSurplusCandidates.add(candidate_id);
+    const usage=typeof store.usage==='function'?store.usage():null;
+    if(!usage||usage.unknown_ops>0||store.admission?.expires_ts<=clock())return {state:'UNKNOWN',hold_retained:true};
+    return store.atomic('pump:resources',state=>{
+      const grant=surplusGrants(state)[surplus_grant_id];
+      if(!grant||grant.run_id!==run_id||grant.candidate_id!==candidate_id)throw new BudgetRefusal('SURPLUS_GRANT_NOT_OWNED');
+      const unresolved=run.unknown>0||Object.values(state.outstanding??{}).some(r=>r.surplus_grant_id===surplus_grant_id)||Object.values(state.unknown??{}).some(r=>r.surplus_grant_id===surplus_grant_id);
+      grant.state=unresolved?'UNKNOWN':'CLOSED';grant.closed_ts=clock();grant.unused_hold_retained_until=unresolved?null:grant.hold_until_ts;
+      return {state,result:{state:grant.state,remaining_http:grant.remaining_http,hold_retained:true,logical_spent:true,unused_releases_after:grant.unused_hold_retained_until}};
+    });
+  }
+  return {reserve,finalize,assertTarget,setMode,minimumIntervalMs,providerWindow,admitCandidate,closeCandidate,summary:()=>structuredClone({...run,run_id,mode,limits,protected_reserves})};
 }
 
 export function createRequestBroker({budget,store,fetch_impl=globalThis.fetch.bind(globalThis),clock=Date.now,max_response_bytes=2000000,sleep_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
