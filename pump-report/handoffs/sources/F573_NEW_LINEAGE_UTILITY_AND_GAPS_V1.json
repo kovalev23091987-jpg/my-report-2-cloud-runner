@@ -1,0 +1,241 @@
+{
+  "schema": "F573_NEW_LINEAGE_UTILITY_AND_GAPS_V1",
+  "observed_docs_utc": "2026-10-26 00:58:01 UTC",
+  "selected_material_new_API_lineages": 2,
+  "selected": [
+    "VARIATIONAL",
+    "DECIBEL"
+  ],
+  "parked_navigation_only": [
+    "NADO"
+  ],
+  "not_new_counted": [
+    "DERIVE_LYRA retained currencies API"
+  ],
+  "global_language_policy": "No language/geography/fame filter. Spanish/Japanese and global developer queries are discovery lenses, not domicile proof.",
+  "actual_market_provider_metadata_RPC_SQL_TG_deploy_privatecaptures": 0,
+  "confirmed_permanent_free_hosted_access": 0,
+  "new_usable_future_maps": 0,
+  "new_BingX_asset_bindings": 0,
+  "all550_coverage": "NOT_CHECKED",
+  "unsupported_assigned": false,
+  "lineages": [
+    {
+      "id": "VARIATIONAL",
+      "native_primary": "VARIATIONAL_OMNI_NATIVE_MARKET_STATE",
+      "disposition": "NEW_PRIMARY_V2_READ_ONLY_BULK_LEAD_FOR_OPTIONAL_OI_FUNDING_AND_CONTEXT",
+      "primary_url": "https://docs.variational.io/technical-documentation/api",
+      "primary_document_attempt": 10,
+      "primary_version": "metadata/v2/stats with explicit v1 migration",
+      "unique_added_value": "Own-venue trader OI and funding terms beyond BingX; current v2 fixes incomplete/stale v1 market type and funding representation.",
+      "origin_not_fallback_for_same_BingX_fact": true,
+      "access": {
+        "public": "Public read-only REST; official example has no auth headers",
+        "permanent_free": "UNKNOWN; public/no trial stated, not a perpetual service guarantee",
+        "expiring_trial_required": "Not stated in read-only documentation",
+        "account_signup_key_paid_setup_performed": false,
+        "Worker_access": "NOT_TESTED; ordinary HTTPS GET is documented, Worker reachability not proved",
+        "trading_API": "Unavailable in reviewed docs; irrelevant to read-only use"
+      },
+      "quota": {
+        "per_IP_requests": 10,
+        "per_IP_window_seconds": 10,
+        "global_requests_per_minute": 1000,
+        "shared_with_v1": true,
+        "over_limit": "HTTP429 with retry_after_seconds",
+        "monthly_quota": "UNKNOWN",
+        "Worker_egress_quota_scope": "Per-IP shared identity must be considered; no independent v2 quota",
+        "project_actual_grant": "NONE"
+      },
+      "open_vs_closed": {
+        "OPEN_positions": "NOT_EXPOSED_BY_STATS_ROUTE",
+        "future_liquidation_zones": "NONE_DOCUMENTED",
+        "funding_next": "Predicted funding terms, not liquidation levels; for perps next currently equals last",
+        "quotes": "Indicative quotes, not standing orderbook orders or future liquidations"
+      },
+      "units": {
+        "prices_and_volume": "USDC",
+        "per_listing_long_OI": "USDC_TRADER_ONLY_SINGLE_SIDED",
+        "per_listing_short_OI": "USDC_TRADER_ONLY_SINGLE_SIDED",
+        "platform_OI": "USDC_DOUBLE_SIDED_TRADERS_PLUS_OLP",
+        "rates": "DECIMAL; annualized_rate separate from interval_rate",
+        "perp_interval": "funding.interval_seconds",
+        "swap_rates": "Distinct long/short annualized and interval rates; not ordinary crypto-perp funding"
+      },
+      "clocks": {
+        "quotes_updated_at": "ISO8601; time quotes were fetched",
+        "quote_cache_max_seconds": 600,
+        "funding_next_timestamp": "UNIX_SECONDS_FUTURE_PAYMENT_TIME_NOT_SNAPSHOT_GENERATION",
+        "OI_generation": null,
+        "funding_observation_generation": null,
+        "top_level_snapshot_generation": null,
+        "warning": "Do not lift quote-fetch or future-payment time to all fields; strict original-clock freshness remains unproved."
+      },
+      "identity": {
+        "native_market_key": "ticker now includes PERP/SWAP suffix plus contract_type",
+        "native_asset_carrier": "name/ticker only; no independent chain/token binding captured",
+        "market_type": "perpetual vs swap explicit",
+        "economic_crypto_type": "NOT_PROVED_BY_PERPETUAL alone; TradFi underlyings must be excluded independently",
+        "BingX_crossvenue_binding": "UNKNOWN",
+        "USDC_USDT_conversion_and_venue_basis": "UNQUALIFIED"
+      },
+      "coverage": {
+        "listing_count": "num_markets may exceed listings length",
+        "missing_listings": "NOT_CHECKED_NOT_ZERO_OR_UNSUPPORTED",
+        "all550": "NOT_CHECKED"
+      },
+      "critical_v1_corrections": [
+        "Use documented v2 route; v1 may be incomplete or stale.",
+        "v1 funding_rate maps to v2 last.annualized_rate, not interval_rate.",
+        "Legacy swap funding0 was a placeholder; v2 funding null means unavailable.",
+        "Per-listing trader-only OI must not be added to the platform trader-plus-OLP aggregate."
+      ],
+      "utility": {
+        "movement_volume": "Optional own-venue rolling24h USDC context; does not qualify BingX closed windows",
+        "liquidity": "Indicative size-tier RFQ spread context, no standing depth claim",
+        "trades_flow": "NOT_PROVIDED_BY_THIS_ROUTE",
+        "OI": "Positive field/unit documentation, observation clock still missing",
+        "funding": "Positive current annualized/interval/type distinction",
+        "future_map": "NONE",
+        "economic_identity": "Contract type improves native filtering; crypto/crossvenue identity still incomplete"
+      },
+      "lineage_dedup": "v1/v2/REST/docs/UI/OLP and nested global/listing aggregates are one primary lineage with shared quota; funding benchmarks do not create independent position-source votes.",
+      "next_actual_route": "GET https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/v2/stats",
+      "next_status": "PROPOSED_ONLY_REQUIRES_SEPARATE_ROOT_PROVIDER_WHOLE_NATIVE_ADMISSIONS"
+    },
+    {
+      "id": "DECIBEL",
+      "native_primary": "DECIBEL_APTOS_NATIVE_PROTOCOL_STATE_VIA_APTOSLABS_NODE",
+      "disposition": "NEW_CONDITIONAL_OPEN_POSITION_LIQ_PRICE_DOC_LEAD_PLUS_NATIVE_MARKET_IDENTITY",
+      "primary_urls": [
+        "https://docs.decibel.trade/llms.txt",
+        "https://docs.decibel.trade/quickstart/market-data"
+      ],
+      "primary_document_attempts": [
+        6,
+        9
+      ],
+      "primary_version": "APIv1; account_positions replaces deprecated user_positions",
+      "unique_added_value": "Official index explicitly documents all OPEN perp positions for an account including liquidation price/margin; native market address distinguishes spot/perp. No whole-position census is proved.",
+      "origin_not_fallback_for_same_BingX_fact": true,
+      "access": {
+        "public_market_terminology": "No OAuth/JWT for guide endpoints, BUT a node API key is required",
+        "header": "Authorization: Bearer <NODE_API_KEY>",
+        "free_or_no_expiring_trial": "UNKNOWN; no qualifying free key entitlement read",
+        "account_positions_auth": "Exact auth/scope not established from index alone",
+        "registration_keys_paid_or_trial_setup_performed": false,
+        "Worker_access": "NOT_TESTED; HTTPS/Bearer capability documented but live access/quota unproved",
+        "hold": "No new key creation/registration/guessed key permitted."
+      },
+      "quota": {
+        "rate_scope": null,
+        "per_second": null,
+        "per_month": null,
+        "node_plan_scope": "UNKNOWN; AptosLabs hosting may share account/key quota",
+        "not_independent_per_endpoint_grant": true
+      },
+      "open_vs_closed": {
+        "route": "/api/v1/account_positions",
+        "semantics": "Official index: open perp positions for one account, optional one perp market address",
+        "vendor_liquidation_price": "Explicitly named in index; field schema/type/estimation method not read",
+        "closed_trades_and_history": "Separate history endpoints; not future positions",
+        "whole_market_census": false,
+        "admitted_account_addresses": 0,
+        "search_indexed_public_portfolios": "Ignored; not retained or admitted as an account set"
+      },
+      "units": {
+        "position_size": null,
+        "position_notional": null,
+        "position_liq_price_denomination": null,
+        "raw_book_size": null,
+        "market_precision": "Index points to market configuration/formatting; exact decimal conversion not read",
+        "funding": "Guide labels funding_rate_bps; period/annualization not qualified",
+        "do_not_infer_Aptos_decimals_or_USDC_position_notional": true
+      },
+      "clocks": {
+        "position_generation": null,
+        "position_stable_ID": null,
+        "market_data_generation": null,
+        "not_from_fetch_time": true,
+        "not_from_UI_clock_or_doc_sample": true
+      },
+      "identity": {
+        "native_ID": "market_addr from /api/v1/markets",
+        "asset_type": "Perp and spot distinguished; same base has different addresses",
+        "native_fields_read": [
+          "market_name",
+          "market_addr",
+          "max_leverage"
+        ],
+        "market_mode": "Official index identifies Open/ReduceOnly/CloseOnly",
+        "canonical_underlying_or_BingX_binding": "UNKNOWN",
+        "quote_settlement_and_crossvenue_basis": "NOT_QUALIFIED"
+      },
+      "documented_routes": {
+        "markets": "GET /api/v1/markets",
+        "perp_prices": "GET /api/v1/prices?market=<native-market-address>",
+        "orderbook": "GET /api/v1/orderbook?market=<native-market-address>",
+        "trades": "GET /api/v1/trades?market=<native-market-address>&limit=20&offset=0",
+        "positions_path": "/api/v1/account_positions",
+        "positions_exact_query_schema": null
+      },
+      "utility": {
+        "future_map": "Priority prospective OPEN-position source, blocked by account scope/key/ID/clock/unit gaps",
+        "liquidity": "Native address-specific book; sizes unqualified",
+        "OI_funding": "Prices/asset-context routes documented; clocks/units not fully qualified",
+        "flow": "Native recent trades route; no actual rows",
+        "economic_identity": "Strong native product address separation; independent underlying binding absent"
+      },
+      "failed_primary_schema": "https://docs.decibel.trade/api-reference/account/get-account-positions.md",
+      "failed_schema_no_retry": true,
+      "lineage_dedup": "Decibel REST/WS/SDK/Move and AptosLabs hosting serve one Decibel native lineage; hosting is not another independent vendor. No new quota assumed for each route.",
+      "next_actual_route": "GET https://api.mainnet.aptoslabs.com/decibel/api/v1/markets",
+      "next_status": "HOLD_UNTIL_EXISTING_ROOT_ADMITTED_NODE_KEY_ENTITLEMENT_QUOTA_AND_SEPARATE_ACTUAL_ADMISSIONS; no signup or key guess"
+    },
+    {
+      "id": "NADO",
+      "native_primary": "NADO_INK_NATIVE_PROTOCOL_DOCUMENTARY_OVERVIEW",
+      "disposition": "PARKED_PROTOCOL_ONLY_NO_SELECTED_API_SOURCE_QUALIFICATION",
+      "primary_url": "https://docs.nado.xyz/",
+      "primary_document_attempt": 5,
+      "material_fact": "Official overview places native spot/perpetual CLOB and unified portfolio margin on Ink; mentions USDT0 collateral/vault, not proof of raw position denomination.",
+      "access": {
+        "free_permanent": "UNKNOWN",
+        "auth": "UNKNOWN",
+        "Worker_access": "UNKNOWN",
+        "quotas": "UNKNOWN"
+      },
+      "open_vs_closed": {
+        "native_OPEN_position_route": null,
+        "vendor_liq_price_field": null,
+        "future_model_zones": null,
+        "whole_census": false
+      },
+      "units_clocks_ids": {
+        "quantity": null,
+        "price": null,
+        "position_ID": null,
+        "generation_clock": null,
+        "asset_binding": null,
+        "USDT0_to_USDT_basis": "UNKNOWN_NO_FACTOR1"
+      },
+      "utility": "Potential additional native Ink state; overview alone does not establish machine-readable useful data. Do not inflate selected API/free counts.",
+      "failed_new_index": "https://docs.nado.xyz/llms.txt",
+      "no_retry": true,
+      "lineage_dedup": "Common code/schema ancestry is not proof of independent or duplicated positions; no Vertex/Nado cross-venue coverage vote claimed.",
+      "next_actual_route": null,
+      "next_status": "NEEDS_EXACT_OFFICIAL_API_SCHEMA_REFERENCE_BEFORE_ANY_NATIVE_ROUTE_PROPOSAL",
+      "all550": "NOT_CHECKED"
+    }
+  ],
+  "no_own_model_or_zone_invented": true,
+  "no_new_routes_or_bindings_enabled": true,
+  "no_BTC_ETH_benchmark_or_account_discovery": true,
+  "old_F572_accounting": {
+    "spent": 2,
+    "unused": 4,
+    "not_six_SPENT": true,
+    "not_native_carry": true
+  },
+  "old_unknown_reserves_caps9pauses2deferrals_preserved": true
+}
