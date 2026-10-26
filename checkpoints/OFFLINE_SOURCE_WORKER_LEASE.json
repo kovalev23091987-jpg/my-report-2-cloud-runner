@@ -6,7 +6,7 @@
   "expires_ts": 1793025403000,
   "expected_main": "3f09d0c9f4bdc578b3197eac9c86387d34560f04",
   "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
-  "released": false,
+  "released": true,
   "root_lease_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793023617000",
   "root_expires_ts": 1793028717000,
   "guard_git_blobs": {
@@ -32,10 +32,48 @@
     "id": "ROOT_F598_BINGX_HYPE_USDT_PERPETUAL_TRANSITIVE_BRIDGE_1SEARCH2READ_20261026",
     "search_max": 1,
     "open_max": 2,
-    "search_spent": 0,
-    "open_spent": 0,
-    "state": "NEW_UNUSED",
+    "search_spent": 1,
+    "open_spent": 2,
+    "state": "CLOSED_EXHAUSTED_NO_REARM",
     "old_grants_rearmed": false,
-    "attempts": []
+    "attempts": [
+      {
+        "kind": "targeted_search",
+        "q": "site:bingx.com \"HYPE\" \"Hyperliquid\" \"perpetual\" listing",
+        "state": "SUCCESS_RESULTS_NO_PRIMARY_LISTING_MATCH"
+      },
+      {
+        "kind": "new_primary_BingX_read",
+        "ref": "turn142view1:9",
+        "purpose": "Official trading information page for exact HYPE-USDT perpetual product details",
+        "state": "SUCCESS_GENERIC_CLIENT_SHELL_NO_PROJECT"
+      },
+      {
+        "kind": "new_primary_BingX_read",
+        "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/HYPE-USDT",
+        "purpose": "Exact native-pair contract rules route using official observed route structure; inspect any full project identity",
+        "state": "SUCCESS_EXACT_PATH_CLIENT_SHELL_NO_PROJECT"
+      }
+    ],
+    "searches_with_any_result": 1,
+    "primary_listing_search_matches": 0,
+    "primary_read_successes": 2,
+    "primary_reads_closing_project_bridge": 0,
+    "failed_read_attempts": 0,
+    "native_source_qualification_calls": 0
+  },
+  "status": "RELEASED",
+  "released_ts": 1793024806000,
+  "released_utc": "2026-10-26 14:26:46 UTC",
+  "release_authority_main": "599758937d1c34748963c4967109ce6d6e8ab654",
+  "all13_FULL_unchanged": true,
+  "release_reason": "F598 exact native uniqueness proved, missing primary product/project edge UNKNOWN; package frozen, no native IO. Own lease release only, no business pause.",
+  "frozen_manifest": {
+    "manifest_path": "pump-report/handoffs/sources/F598_PACKAGE_EXACT_HYPE_PERPETUAL_BRIDGE_FINAL_V1.json",
+    "manifest_sha256": "cd3884a4c65da82330b432f5bf74fdb9ec4c097d2d845ed8ce1728a7ca0535d4",
+    "manifest_bytes": 2621,
+    "files": 8,
+    "payload_bytes": 14285,
+    "frozen_utc": "2026-10-26 14:26:46 UTC"
   }
 }
