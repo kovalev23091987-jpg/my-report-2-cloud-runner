@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_PUBLIC_HEALTH_ONLY_READ_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_ONE_ATTEMPT_PUBLIC_GET_HTTP403_FLAGS_UNCONFIRMED",
   "authority_main": "55f8388267398f3778ec5f378e0a6a3aaff3c8b0",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793023617000",
@@ -29,5 +29,18 @@
   "CONTROL_native_runs_upper": 0,
   "LOOKUP_native_runs_upper": 0,
   "no_flag_or_schedule_mutations": true,
-  "retained_LOOKUP12_CONTROL6_METADATA2_spent": true
+  "retained_LOOKUP12_CONTROL6_METADATA2_spent": true,
+  "actual": {
+    "attempts": 1,
+    "http_status": 403,
+    "admin_HTTP": 1,
+    "source_market_HTTP": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "native_CONTROL_runs": 0,
+    "native_LOOKUP_runs": 0,
+    "unknown_worker_health_body": "NOT_READ_SUCCESSFULLY",
+    "no_inference_AUTO_disabled": true,
+    "automatic_retry": false
+  }
 }
