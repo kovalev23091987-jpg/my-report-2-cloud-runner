@@ -1,0 +1,68 @@
+{
+  "schema": "F604_NEW_PRIMARY_BINDING_PROOFS_V1",
+  "search": {
+    "spent": 2,
+    "returned_sha256": "1481c353521092db89d94ee94789ee1754de43e64efc1f1dade6bae2cf4203a4",
+    "primary_hit": "turn162search0",
+    "no_market_values_retained": true
+  },
+  "reads": [
+    {
+      "id": "BINGX_EXACT_API_ID",
+      "url": "https://www.coingecko.com/en/exchanges/bingx_futures",
+      "ref": "turn164view0",
+      "mode": "targeted find API ID",
+      "returned_sha256": "73accdec3a6aaa1a39dbfde51ba9b238fc2c72f9898f54bf699d2879584ea0aa",
+      "identity_lines": [
+        "272-288"
+      ],
+      "proof": "Explicit API ID field bingx_futures; not inferred from slug.",
+      "family_source": "Primary page Perpetuals markets with USDT and USDC; do not classify entire exchange as USDT-M."
+    },
+    {
+      "id": "KEYLESS_POLICY",
+      "url": "https://docs.coingecko.com/docs/keyless-public-api",
+      "ref": "turn163view0",
+      "returned_sha256": "6d11738a2a17f2250dec8ee7692911750d3d286b6d308f68f71b2776de5c51ce",
+      "lines": [
+        "19-29",
+        "46-60",
+        "67-70",
+        "164-166"
+      ]
+    },
+    {
+      "id": "CREDIT_FAQ_NEW_TAIL",
+      "url": "https://www.coingecko.com/en/api/pricing",
+      "ref": "turn166view0",
+      "requested_line": 1000,
+      "returned_sha256": "cf13ec2d865afb3eedf96bb5216a51da40aca588b4395a10d282cfaf763f30ee",
+      "lines": [
+        "830-836",
+        "851-853"
+      ],
+      "not_reread": "F603 returned only through672; this read begins777."
+    },
+    {
+      "id": "DEMO_KEYLESS_EXACT_ROUTE",
+      "url": "https://docs.coingecko.com/demo/reference/endpoint-overview",
+      "ref": "turn165view0",
+      "returned_sha256": "c7cc1900b5bfea8c8782ab2c61c9100830a502ed0bd6ab32905d13c251cbe0c8",
+      "lines": [
+        "18-20",
+        "124-131"
+      ],
+      "proof": "Exact derivative exchange/{id} endpoint is in Demo/Keyless list."
+    }
+  ],
+  "retained_not_reread": {
+    "schema": "F603_PRIMARY_PROOFS_V1.json / DEMO_DERIVATIVE_BATCH",
+    "fields_lines": [
+      "384-449",
+      "502-518",
+      "591-607"
+    ],
+    "auth_quota": "F603 freeDemo100/min10k/month and error accounting retained",
+    "native550": "F589 selected550 baseline plus ROOT accepted exact native tuples"
+  }
+}

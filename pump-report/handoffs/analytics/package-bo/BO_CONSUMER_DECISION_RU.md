@@ -1,0 +1,42 @@
+# BO — F603 и неизменённый consumer live70
+
+PASS_STATIC_NO_CODE_NEEDED для текущего документарного F603: сейчас нет пригодных новых OI/funding-фактов, требующих изменения кода. Это не утверждение о полной поддержке будущего CoinGecko OI-USD или его funding в карточке. Найдены два конкретных ограничения на будущее: USD отсутствует в OI consumer whitelist; dedicated funding line разрешена только для официального BingX.
+
+Использован F603 только после FINAL_FROZEN26октября16:31:47UTC: manifestcba10047b0c55d59ce72b0b99f594e6de3ed51826b67cc91334a3f69205a41dc, profilec42720eaeb9dc99d2b636d1851a0582c283729eeff606a9da184122e2544fcd7, все9payloadSHA совпали. F603 доказывает схему /derivatives/exchanges/{id}, base/target→coin_id/target_coin_id и единицу open_interest_usd. Фактических строк0, common550NOT_CHECKED550; точный CoinGecko BingX derivative exchange ID=null; OI/funding as-of, funding scale/period и доступ конкретного аккаунта неизвестны. ID для spot/Binance-example не подставлялся.
+
+Точный live70: implementation08ab5e3f4b58cbbce2d5278ca956810fcf1f4f25cda23b033444f087846893a7, artifactb8f0315b2abf7e818705b52d0f7a26146992af79f82a670ffe5f7022c9b2aab5.8выбранных consumer/source-entry/profile файлов побайтно совпали с immutable70artifact/pin. Доказательство и точные SHA/строки — BO_CONSUMER_CODE_AND_F603_PROOF.json. Новый server readback не выполнялся.
+
+| Что получено / требуется | Неизменённый consumer / card | Решение сейчас |
+|---|---|---|
+|coin_id и target_coin_id для base/target|Это provider attribution, не готовая BingX canonical binding или execution-unit proof|Сохранить документированный путь metadata. До реальной уникальной строки/venue/nativecontract bridge не повышать ни одну из550 в matched|
+|last_traded|Документирован last-trade clock; он не означает OI/funding as-of|Не ставить его в event_ts OI/funding. received_ts/частота кеша также не заменяют metric clock|
+|OI point в USD|createFact допускает свободную строку unit, но context:78 whitelist только CONTRACTS/BASE_ASSET/USDT. USD в optional_context не попадёт; отдельной OI card line нет|HOLD; USD не переименовывать вUSDT. После всех доказательств возможен узкий optional USD-point consumer change по ROOT решению|
+|Изменение OI|Существующий context сохраняет один OI_SNAPSHOT; delta не рассчитывает. Capsule содержит open_interest point, не OI_delta|Один snapshot не становится изменением/направлением. До двух сопоставимых original snapshots изменения не публиковать|
+|Funding scale/period/as-of UNKNOWN|Generic context требует RATE_FRACTION_PER_ACTUAL_PERIOD, finite rate/percent,0<period_ms≤24h и свежий fact. Эти поля F603 не доказал|Не создавать USABLE funding по примеру/sample или предположению8h|
+|Будущий квалифицированный CoinGecko funding|Generic context может сохранить такой внешний факт с реальной source/venue. Card дополнительно требует BINGX_OFFICIAL_PUBLIC_API+BINGX+OBSERVED, fact_id и FUNDING_SNAPSHOT|При source=COINGECKO dedicated BingX line остаётся пустой. Не маскировать vendor под official BingX; новая внешняя card line требует отдельного ROOT решения|
+|Дополнительный факт отсутствует/непригоден|Optional context вызывается после обязательного плана; unusable пропускается. Narrative выбирает stage/activity/trade/map, не OI/FUNDING fillers|Основная пригодная идея не блокируется, новые предупреждения о пустых полях в карточку не добавляются|
+
+Что именно проверяет код
+
+contracts/index.mjs:49–59 проверяет структурный envelope/status/value/clock types и factUsable;73 проверяет instrument_id относительно input. Он не доказывает, что canonical mapping, единица или per-metric clock правдиво установлены источником. В createFact есть default venue=BINGX — внешний adapter обязан передавать фактическую venue явно, а не наследовать default. Generic context usable (:4,:74–83) проверяет kind, factUsable, event≤received и age; semantic proof metric clock/source binding нужен ДО статусаUSABLE. Он не ограничивает OI/funding одним источником/venue и сам не сверяет provenance-смысл source payload.
+
+Для OI требуется finite value≥0 и одна из текущих единиц. В профильном окне freshness open_interest120000ms, funding300000ms; received≤analysis_ts, event≤received≤analysis_ts, expires≥analysis_ts. expires считается от доказанного event_ts, а не от нового чтения кеша. Unknown metric time означает отсутствие готового факта. После canonical binding допустим INCOMPLETE/value=null/event=null/expires=null с внутренней причиной; до binding не создавать факт с выдуманным instrument_id.
+
+Funding generic context (:80–83) хранит rate и фактический period; card presentation:9–18 добавляет строгие official-source/evidence/findings/fact_id/TTL guards. Поэтому при полностью квалифицированном внешнем funding context и карточка имеют разные возможности. Feature capsule:23–34,70–72 требует исходные clocks/evidence и хранит OI-point/funding-rate/period; не генерирует изменение OI. В renderer index:55–80 нет произвольного вывода всех findings. Internal OI_SNAPSHOT limitation не становится новым filler в карточке.
+
+Минимальные доказательства перед числовым использованием
+
+- Identity: точная actual exchange ID/venue, native symbol, perpetual/expiry type, base и target с их РАЗНЫМИ ролями, quote/margin/family; непустые global IDs и независимая связь с разрешённым crypto asset. Никаких symbol-only/numeric-prefix/ASCII shortcuts. Для BingX-native метрики нужен именно BingX derivative row; для separate-venue context — явная исходная venue/nativeinstrument и принятая ROOT cross-venue asset binding, без заявления о BingX-позициях/платежах.
+- OI point: finite nonnegative provider-reported USD notional, scope одной фактической exchange/contract, source/evidence/receipt, доказанный OI as-of и оригинальное received time. Vendor USD-definition/coverage сохраняются; неизвестная counting convention не превращается в число контрактов, сторону позиций или независимое подтверждение того же upstream. Текущий USD whitelist gap остаётся.
+- OI delta: два ранее сохранённых сопоставимых snapshots с разными metric as-of, одна provider/upstream/nativecontract/canonical identity, одинаковая единица/методика/охват. Для USD-delta учесть, что изменение оценки может быть связано с ценой; не называть его чистым приростом контрактов. Нулевой/неизвестный знаменатель не даёт бесконечный процент; delta не выводится из last_traded/24h volume.
+- Funding: доказанные numeric scale→fraction, actual period_ms, rate kind (quote/estimate/settled, не смешивать), применимый период/settlement semantics, per-metric as-of, received/evidence и исходная venue. Не угадывать percent/fraction/8h по размеру примера. Optional funding не является направлением будущей цены или вероятностью.
+
+Минимальное предложение и следующий affected case
+
+BO_MINIMAL_CONSUMER_INPUT_PROPOSAL.json — спецификация полей, не новая ROOT schema, runtime config или admission. Текущая ветвь остаётся metadata/HOLD; отсутствующее не заменяется нулём. Generic Fact envelope и quiet omission достаточны сейчас.
+
+Если SOURCE позднее отдельно закроет actual row+identity+metric clock+units+access и ROOT выберет полезный OI-USD point, минимальный локальный consumer change — разрешить unit=USD в OI whitelist context. Существующая feature capsule уже переносит единицу из optional_context, сохраняя source provenance; ROOT envelope менять не требуется. Новая OI card line и внешняя funding card line в это предложение не входят. Runner:133 сейчас явно запрашивает trades/funding; добавление whitelist само не подключит маршрут. SOURCE route и ROOT композиция/дневной/месячный/native budget требуют собственного решения, без третьего скрытого optional запроса или новой bucket-квоты.
+
+Тогда ровно один будущий connected affected case после конкретного изменения может проверить qualifiedUSDpoint→context/capsule без delta, вариант с unknown OI clock→quiet omission и qualifiedexternalfunding→context при сохранённом отсутствии officialBingX card line. Mandatory ready/card остаются по прежнему плану. В BO этот case не создан/не запущен; source clocks UNKNOWN не заменялись искусственным production proof. До квалификации и изменения consumer повторный тест не нужен.
+
+Node/tests/old suites/source-search/sourceAPI/nativeSQL/MCP/TG/deploy0; код/стратегия/ROOTформат/source ownership не менялись. GitHub authority/own CAS — отдельный control-plane. BN/BM/BL frozen сохраняются. Native13spent,14/CONTROL7/METADATA3 не разрешены; все старые расходы/unknowns/резервы/9пауз/2OWNERdeferrals сохранены. Live70 наблюдает ROOT независимо от BO.
