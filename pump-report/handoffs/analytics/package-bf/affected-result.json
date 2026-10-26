@@ -1,0 +1,59 @@
+{
+  "schema": "BF_ONE_CONNECTED_ARTIFICIAL_CASE_ACTUAL_V1",
+  "status": "PASS",
+  "fixture": "ARTIFICIAL_QUOTES_ONLY_WITH_REAL_REVIEWED_NATIVE_REGISTRY",
+  "case_count": 1,
+  "node_invocations": 1,
+  "source_getOptional_calls": 1,
+  "existing_explainOptionalFacts_calls": 1,
+  "fake_broker_attempts": 2,
+  "real_HTTP": 0,
+  "MCP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "Worker_deploy": 0,
+  "full_analytics_engine_calls": 0,
+  "qualifier_or_parser_called_directly": 0,
+  "old_suite_replays": 0,
+  "preimport_hashes_verified": 28,
+  "registry_binding": {
+    "all_native_identities_resolved": 552,
+    "selected_profile_bindings": 550,
+    "selected_seed_bindings": 11,
+    "selected_lazy_bindings": 539,
+    "excluded": [
+      "BTC",
+      "ETH"
+    ],
+    "identical_profile": true,
+    "base_registry_unchanged": true,
+    "other_entry_fields_unchanged": true,
+    "resolveCatalogDecision_same_function": true,
+    "summary_same_function_and_value": true,
+    "qualification_class": "OFFLINE_BINDING_ONLY_NOT_550_HTTP_COVERAGE",
+    "binding_inventory_sha256": "bc033d14f2253472108cf13219f5e5ef538818b76aed8e11e4c00601ad0b8b43"
+  },
+  "funding": {
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "status": "USABLE",
+    "rate": -0.01,
+    "period_ms": 7200000,
+    "event_ts": 1793015999000,
+    "received_ts": 1793015999900,
+    "payment_event_ts": null,
+    "unit_qualification_basis": "ADAPTER_BASED_INFERENCE",
+    "finding_text": "Фандинг BINGX_OFFICIAL_PUBLIC_API / BINGX: -1% за 2 ч; это контекст, а не направление будущей цены.",
+    "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:funding:ARTIFICIAL_BF_RECEIPT_2"
+  },
+  "fake_routes": [
+    "/openApi/swap/v2/quote/trades",
+    "/openApi/swap/v2/quote/premiumIndex"
+  ],
+  "OI_attempts": 0,
+  "static_hooks": {
+    "worker_bound_factory": true,
+    "runner_trades_funding_pair": true,
+    "existing_ready_gate": true,
+    "optional_upper2": true
+  }
+}
