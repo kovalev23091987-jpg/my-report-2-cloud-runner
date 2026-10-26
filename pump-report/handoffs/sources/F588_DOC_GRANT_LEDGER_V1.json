@@ -1,0 +1,41 @@
+{
+  "id": "ROOT_F588_ONE_UNIT_PREMISE_1SEARCH3READ_20261026",
+  "search_max": 1,
+  "open_max": 3,
+  "search_spent": 1,
+  "open_spent": 3,
+  "state": "EXHAUSTED_SPENT_NON_REFUNDABLE",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "primary_doc_open",
+      "url": "https://docs.delta.exchange/#get-tickers-for-products",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "search",
+      "q": "site:docs.delta.exchange \"funding_rate\" \"percent\"",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "primary_cached_page_find",
+      "url": "https://docs.delta.exchange/#get-tickers-for-products",
+      "patterns": [
+        "funding_rate",
+        "percentage"
+      ],
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "primary_doc_find",
+      "url": "https://docs-global.delta.exchange/",
+      "pattern": "funding_rate",
+      "purpose": "Check globalDelta schemaafterdocs.delta nowservesIndia;noAPIcall",
+      "state": "SPENT_FAILED_INTERNAL_ERROR_NO_MATCH"
+    }
+  ],
+  "search_remaining": 0,
+  "open_remaining": 0,
+  "closed_unit_premise": false,
+  "actual_market_SQL_TG_Worker": 0
+}

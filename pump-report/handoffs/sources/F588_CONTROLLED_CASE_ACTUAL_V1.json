@@ -1,0 +1,46 @@
+{
+  "schema": "F588_ONE_CONTROLLED_CONNECTED_CASE_ACTUAL_V1",
+  "fixture": "SYNTHETIC_ONLY_NOT_NATIVE_UNIT_PROOF",
+  "status": "PASS",
+  "source_native_IO": 0,
+  "SQL": 0,
+  "Telegram": 0,
+  "real_original_replay": false,
+  "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+  "calls": [
+    {
+      "url": "https://open-api.bingx.com/openApi/swap/v2/quote/trades?limit=100&symbol=DOOD-USDT",
+      "method": "GET",
+      "provider": "BINGX"
+    },
+    {
+      "url": "https://open-api.bingx.com/openApi/swap/v2/quote/premiumIndex?symbol=DOOD-USDT",
+      "method": "GET",
+      "provider": "BINGX"
+    }
+  ],
+  "unknown_profile_calls": 0,
+  "unexpected_routes": [],
+  "funding": {
+    "status": "USABLE",
+    "unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+    "event_ts": 1793009999000,
+    "next_funding_ts": 1793013600000,
+    "payment_event_ts": null,
+    "period_ms": 3600000,
+    "raw_decimal": "-0.0100",
+    "basis": "ADAPTER_BASED_INFERENCE"
+  },
+  "unknown_funding": {
+    "status": "NOT_CHECKED",
+    "reason": "FUNDING_RATE_UNIT_UNQUALIFIED"
+  },
+  "no_period": {
+    "qualified": false,
+    "reason": "FUNDING_PERIOD_UNKNOWN",
+    "period_ms": null
+  },
+  "affected_cases": 1,
+  "fake_broker_attempts": 2,
+  "OI_attempts": 0
+}

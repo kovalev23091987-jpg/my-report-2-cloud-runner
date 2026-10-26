@@ -9,6 +9,9 @@ import {parseRecentTrades, RECENT_TRADE_SEMANTICS} from './recent-trades.mjs';
 import {collectHyperliquidPositions} from './hyperliquid-observed-positions.mjs';
 import {collectOrderlyPositions, orderlyRouteConfigured} from './orderly-observed-positions.mjs';
 
+import {qualifyBingxFundingQuote} from './funding-qualification.mjs';
+export {BINGX_FUNDING_QUOTE_PROFILE_V1, qualifyBingxFundingQuote} from './funding-qualification.mjs';
+
 export const SOURCE_VERSION = 'pump-report-sources-v1';
 export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
   core_price_fallback_max: 1, optional_open_interest: 1, optional_funding: 1,
@@ -322,8 +325,14 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     } catch (error) { return finish(failed(entry, 'candles', error), {purpose: 'HISTORICAL_OUTCOME', complete: false,
       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
   }
-  async function getOptional({instrument, deadline_ts} = {}) {
+  async function getOptional({instrument, deadline_ts, requested_kinds} = {}) {
     const entry = resolve(instrument), facts = {}, at = now();
+    const allKinds = ['trades', 'open_interest', 'funding'];
+    if (requested_kinds !== undefined && (!Array.isArray(requested_kinds)
+      || requested_kinds.length > SOURCE_HTTP_PLAN.optional_total_max
+      || requested_kinds.some(kind => !allKinds.includes(kind))
+      || new Set(requested_kinds).size !== requested_kinds.length)) fail('OPTIONAL_KIND_SELECTION_INVALID');
+    const kinds = requested_kinds === undefined ? allKinds : [...requested_kinds];
     if (!Number.isSafeInteger(profile.liquidation_deadline_ms) || profile.liquidation_deadline_ms <= 0) fail('OPTIONAL_DEADLINE_PROFILE_INVALID');
     const validDeadline = deadline_ts === undefined || typeof deadline_ts === 'number' && timestamp(deadline_ts) !== null;
     const deadline = validDeadline ? Math.min(deadline_ts ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms) : null;
@@ -346,49 +355,56 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
       return {facts, coverage, deadline_ts: deadline, deadline_status: !validDeadline ? 'INVALID' : exhausted() ? 'TIMEOUT' : 'WITHIN_BOUND'};
     };
     if (ownerInstrumentExcluded(instrument)) {
-      for (const kind of ['trades', 'open_interest', 'funding']) facts[kind] = absent(entry, kind, 'OWNER_ASSET_DELIVERY_EXCLUDED', 'NOT_CHECKED');
+      for (const kind of allKinds) facts[kind] = absent(entry, kind, 'OWNER_ASSET_DELIVERY_EXCLUDED', 'NOT_CHECKED');
       return finish();
     }
     if (!validDeadline || exhausted()) {
-      for (const kind of ['trades', 'open_interest', 'funding']) facts[kind] = absent(entry, kind,
+      for (const kind of allKinds) facts[kind] = absent(entry, kind,
         validDeadline ? 'OPTIONAL_STAGE_DEADLINE_EXPIRED' : 'INVALID_OPTIONAL_DEADLINE', 'NOT_CHECKED');
       return finish();
     }
-    // Every attempted broker request consumes a slot even when it fails or is
-    // denied. These per-kind maxima are alternatives within the same upper2.
+    for (const kind of allKinds) if (!kinds.includes(kind)) facts[kind] = absent(entry, kind, 'OPTIONAL_KIND_NOT_REQUESTED', 'NOT_CHECKED');
+    // Attempts consume slots even on failure/denial. Selected kinds remain
+    // alternatives within the unchanged upper2; unqualified facts cost no HTTP.
     let attempts = 0;
-    if (attempts >= upper) facts.trades = absent(entry, 'trades', 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED');
-    else {
-      attempts++;
-      try {
-        const response = await request('trades', {instrument, params: {limit: RECENT_TRADE_SEMANTICS.limit}, ttl_ms: profile.freshness_ms.trades, deadline_ts: deadline});
-        const parsed = decode(response, () => parseRecentTrades(response.data, {instrument: entry.instrument, received_ts: response.received_ts}));
-        facts.trades = fact(entry, 'trades', parsed.value, parsed.unit, parsed.event_ts, response,
-          {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage,
-            extra: {unit_evidence_ref: RECENT_TRADE_SEMANTICS.evidence_ref, base_quantity_qualified: false}});
-      } catch (error) { facts.trades = optionalFailure('trades', error); }
-    }
-    for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
+    for (const kind of kinds) {
       if (exhausted()) { facts[kind] = absent(entry, kind, 'OPTIONAL_STAGE_DEADLINE_EXPIRED', 'NOT_CHECKED'); continue; }
       const qualification = entry.qualifications[kind];
-      const usableQualification = proof(qualification) && (kind === 'open_interest'
-        ? ['CONTRACTS', 'BASE_ASSET', 'USDT'].includes(qualification.unit)
-        : text(qualification.rate_clock_field) && qualification.rate_clock_field !== 'updateTime');
-      if (!usableQualification) { facts[kind] = absent(entry, kind,
-        kind === 'open_interest' ? 'OPEN_INTEREST_UNIT_UNQUALIFIED' : 'FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED', 'NOT_CHECKED'); continue; }
+      const fundingProof = kind === 'funding' ? qualifyBingxFundingQuote(qualification, instrument) : null;
+      const usableQualification = kind === 'trades' || (kind === 'funding' ? fundingProof.qualified
+        : proof(qualification) && ['CONTRACTS', 'BASE_ASSET', 'USDT'].includes(qualification.unit));
+      if (!usableQualification) {
+        facts[kind] = absent(entry, kind, kind === 'funding' ? fundingProof.reason : 'OPEN_INTEREST_UNIT_UNQUALIFIED', 'NOT_CHECKED');
+        continue;
+      }
       if (attempts >= upper) { facts[kind] = absent(entry, kind, 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED'); continue; }
       attempts++;
       try {
-        const response = await request(kind, {instrument, ttl_ms: profile.freshness_ms[kind], deadline_ts: deadline});
-        const parsed = decode(response, () => parse(response.data, instrument, entry.qualifications[kind]));
-        facts[kind] = fact(entry, kind, parsed.value, kind === 'funding' ? 'RATE_FRACTION_PER_ACTUAL_PERIOD' : parsed.unit,
-          parsed.event_ts, response, {qualified: parsed.qualified, reason: parsed.reason,
-            extra: {unit_evidence_ref: proof(entry.qualifications[kind]) ? entry.qualifications[kind].evidence_ref : null,
-              native_value_decimal: parsed.native_value_decimal ?? null, native_metadata_update_ts: parsed.native_metadata_update_ts ?? null}});
+        const response = await request(kind, {instrument,
+          ...(kind === 'trades' ? {params: {limit: RECENT_TRADE_SEMANTICS.limit}} : {}),
+          ttl_ms: profile.freshness_ms[kind], deadline_ts: deadline});
+        if (kind === 'trades') {
+          const parsed = decode(response, () => parseRecentTrades(response.data, {instrument: entry.instrument, received_ts: response.received_ts}));
+          facts.trades = fact(entry, kind, parsed.value, parsed.unit, parsed.event_ts, response,
+            {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage,
+              extra: {unit_evidence_ref: RECENT_TRADE_SEMANTICS.evidence_ref, base_quantity_qualified: false}});
+        } else {
+          const parse = kind === 'funding' ? parseFunding : parseOpenInterest;
+          const parsed = decode(response, () => parse(response.data, instrument, qualification));
+          facts[kind] = fact(entry, kind, parsed.value, parsed.unit, parsed.event_ts, response,
+            {qualified: parsed.qualified, reason: parsed.reason, coverage: parsed.coverage ?? null,
+              extra: {unit_evidence_ref: parsed.unit_evidence_ref ?? (proof(qualification) ? qualification.evidence_ref : null),
+                native_value_decimal: parsed.native_value_decimal ?? null,
+                native_metadata_update_ts: parsed.native_metadata_update_ts ?? null,
+                ...(kind === 'funding' ? {native_rate_quote_update_ts: parsed.native_rate_quote_update_ts,
+                  funding_quote_kind: parsed.funding_quote_kind, clock_semantics: parsed.clock_semantics,
+                  funding_payment_event_ts: null, unit_qualification_basis: parsed.unit_qualification_basis} : {})}});
+        }
       } catch (error) { facts[kind] = optionalFailure(kind, error); }
     }
     return finish();
   }
+
   async function getLiquidations({instrument, reference_price, deadline_ts} = {}) {
     const entry = resolve(instrument), at = now(), deadline = Math.min(timestamp(deadline_ts) ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms);
     const finish = result => { note(instrument, 'liquidations', {status: result.status, reason: result.reason, checked_sources: result.checked_sources,

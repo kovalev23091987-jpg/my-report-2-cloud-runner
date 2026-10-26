@@ -1,6 +1,7 @@
 // Pure wire-shape checks adapted from PR639 bingx-perpetual-market.mjs.
 // Qualification belongs to the independently supplied identity registry.
 import {CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS} from '../contracts/index.mjs';
+import {qualifyBingxFundingQuote, FUNDING_RATE_QUOTE_SNAPSHOT} from './funding-qualification.mjs';
 import {nativeRelativeRequested, nativeRelativeCandleQualified} from './native-relative-qualification.mjs';
 export const ROUTES = Object.freeze({
   catalog: '/openApi/swap/v2/quote/contracts',
@@ -187,11 +188,25 @@ export function parseOpenInterest(body, instrument, qualification) {
 export function parseFunding(body, instrument, qualification) {
   const row = selectRow(body, instrument.native_symbol), rate = numeric(row.lastFundingRate);
   if (rate === null) fail('BINGX_FUNDING_RATE_INVALID');
-  const period = Number.isInteger(row.fundingIntervalHours) && row.fundingIntervalHours > 0 && row.fundingIntervalHours <= 24 ? row.fundingIntervalHours * 3600000 : null;
-  // updateTime in the saved response is metadata time, not the rate's event clock.
-  const known = proof(qualification) && text(qualification.rate_clock_field) && qualification.rate_clock_field !== 'updateTime';
-  return {value: {rate, period_ms: period, next_funding_ts: timestamp(row.nextFundingTime)},
-    event_ts: known ? timestamp(row[qualification.rate_clock_field]) : null, qualified: known && period !== null,
-    reason: !known ? 'FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED' : period === null ? 'FUNDING_PERIOD_UNKNOWN' : null,
-    native_metadata_update_ts: timestamp(row.updateTime)};
+  const checked = qualifyBingxFundingQuote(qualification, instrument);
+  const hours = checked.period_qualified ? numeric(row.fundingIntervalHours) : null;
+  const period = hours !== null && Number.isInteger(hours) && hours > 0 && hours <= 24 ? hours * 3600000 : null;
+  // Supported-consumer quote time is not a settled funding/payment event.
+  // Neither the next scheduled funding time nor receipt time substitutes for it.
+  const quoteTime = checked.clock_qualified ? timestamp(row.updateTime) : null;
+  const reason = checked.reason ?? (period === null ? 'FUNDING_PERIOD_UNKNOWN'
+    : quoteTime === null ? 'FUNDING_QUOTE_SNAPSHOT_CLOCK_MISSING' : null);
+  return {value: {rate: checked.unit_qualified ? rate : null, period_ms: period,
+      next_funding_ts: timestamp(row.nextFundingTime), funding_quote_kind: FUNDING_RATE_QUOTE_SNAPSHOT,
+      rate_snapshot_ts: quoteTime, funding_payment_event_ts: null},
+    unit: checked.unit_qualified && period !== null ? 'RATE_FRACTION_PER_ACTUAL_PERIOD' : null,
+    event_ts: quoteTime, qualified: reason === null, reason,
+    raw_rate_decimal: String(row.lastFundingRate), native_value_decimal: String(row.lastFundingRate),
+    native_rate_quote_update_ts: quoteTime, native_metadata_update_ts: null,
+    funding_quote_kind: FUNDING_RATE_QUOTE_SNAPSHOT, clock_semantics: 'RATE_QUOTE_SNAPSHOT',
+    funding_payment_event_ts: null, unit_evidence_ref: checked.unit_evidence_ref,
+    unit_qualification_basis: checked.unit_qualification_basis,
+    coverage: {...checked, quote_clock_field: 'updateTime', clock_semantics: 'RATE_QUOTE_SNAPSHOT',
+      rate_event_clock_proven: false, funding_payment_event_ts: null,
+      period_source: 'SAME_RESPONSE_ROW', period_field: 'fundingIntervalHours'}};
 }

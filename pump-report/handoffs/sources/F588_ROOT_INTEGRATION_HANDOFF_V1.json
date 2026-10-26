@@ -1,0 +1,74 @@
+{
+  "schema": "F588_ROOT_EXACT_INTEGRATION_HANDOFF_V1",
+  "SOURCE_owned_runtime_files": [
+    "pump-report/sources/funding-qualification.mjs",
+    "pump-report/sources/bingx.mjs",
+    "pump-report/sources/index.mjs"
+  ],
+  "SOURCE_owned_test": "pump-report/tests/sources/funding-quote-connected.test.mjs",
+  "imports_from_sources_index": [
+    "createPumpSources",
+    "BINGX_FUNDING_QUOTE_PROFILE_V1",
+    "qualifyBingxFundingQuote"
+  ],
+  "direct_helper_exports": [
+    "FUNDING_RATE_QUOTE_SNAPSHOT",
+    "BINGX_FUNDING_QUOTE_PATH",
+    "CCXT_BINGX_FUNDING_TRACE_REF"
+  ],
+  "qualifier_API": "qualifyBingxFundingQuote(profile,instrument)→{qualified,reason,unit_qualified,clock_qualified,period_qualified,proofrefs,ADAPTER_BASED_INFERENCE,vendor_guaranteesfalse}",
+  "parser_API": "parseFunding(body,instrument,profile); same signature, strongerproofparts;rawdecimalpreserved;payment_eventnull",
+  "getOptional_API": "getOptional({instrument,deadline_ts,requested_kinds?}); orderedunique subsettrades/open_interest/funding length≤2;omissionretainsold3alternativesunderupper2",
+  "ROOT_owned_minimal_paths": [
+    "pump-report/runtime/worker.mjs",
+    "pump-report/runtime/runner.mjs"
+  ],
+  "ROOT_snippet": "import {createPumpSources, BINGX_FUNDING_QUOTE_PROFILE_V1,\n  qualifyBingxFundingQuote} from '../sources/index.mjs';\n\n// CURRENT template is intentionally unit-incomplete and causes zero funding HTTP.\n// Only a separately reviewed complete unit proof may replace that UNKNOWN part.\nconst fundingQuoteProfile = BINGX_FUNDING_QUOTE_PROFILE_V1;\nconst baseRegistry = createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY);\nconst attachFundingProfile = raw => {\n  if (!raw) return raw;\n  const entry = structuredClone(raw), i = entry.instrument;\n  if (entry.family === 'USDT_M' && i.venue === 'BINGX'\n    && i.market_type === 'PERPETUAL' && i.quote === 'USDT' && i.settle === 'USDT') {\n    entry.qualifications = {...entry.qualifications, funding: structuredClone(fundingQuoteProfile)};\n  }\n  return entry;\n};\nconst identityRegistry = {...baseRegistry,\n  instruments: baseRegistry.instruments.map(attachFundingProfile),\n  resolve: query => attachFundingProfile(baseRegistry.resolve(query))};\n// Preserve resolveCatalogDecision/summary and closures; never structuredClone baseRegistry itself.\nconst sources = createPumpSources({broker, identityRegistry, profile, clock});\n\n// runtime/runner.mjs: keep existing analysis.ready gate and all budgets.\nconst optional = await sources.getOptional({instrument, run_id, mode,\n  facts: core.facts, deadline_ts, requested_kinds: ['trades', 'funding']});\n",
+  "critical_resolver_note": "createReviewedNativeScopeRegistry.instruments materializesseed13only;539lazyentriesincludingDOODcomeviaresolve. WrapBOTHpaths,notonly.map(instruments). Preserveotherresolvermethods.",
+  "unit_completion_after_proof": {
+    "part": "unit_proof_parts.unified_fraction",
+    "required": {
+      "status": "VERIFIED",
+      "unit": "RATE_FRACTION",
+      "evidence_ref": "ACTUAL_REVIEWED_PRIMARY_UNIT_PROOF_REQUIRED"
+    },
+    "do_not_copy_controlled_test_proof": true,
+    "unit_basis": "ADAPTER_BASED_INFERENCE"
+  },
+  "coverage": {
+    "potential_semantic_scope": "Selected550sameBingXUSDT_Mfamily withsameproviderroute;ownerBTCETHexclusion remains",
+    "current_generic_unit_proof_qualified": 0,
+    "new_native_funding_facts": 0,
+    "controlled_case_instruments": 1,
+    "availability_freshness_period_checked": "Peractualinstrumentresponse,notimpliedbygenericproof",
+    "existing_DOOD_trades": "RealSENT241original1000rowsUSABLEatsavedanalysis;notnewF588marketIO"
+  },
+  "budget": {
+    "optional_total_max": 2,
+    "trades_upper": 1,
+    "funding_upper": 1,
+    "OI_requested": false,
+    "core_existing_BINGX_upper": 10,
+    "future_candidate_TG_upper": 1,
+    "map_upper": 1,
+    "additional_background_routes": 0,
+    "automatic_retries": 0,
+    "source_admissions_created": 0
+  },
+  "compatibility": [
+    "Legacyfundingqualificationwithonlyrate_clock_field/evidence_ref isnotcompleteprofileandcannotactivate. Existinglivefundingunqualifiedunchanged;oldsyntheticfixturesmayneedexplicitprofilemigration inROOTintegration. Thoseacceptedtestsnotrerun.",
+    "Legacy native_metadata_update_ts staysnullfornewfunding;native_rate_quote_update_ts+clock_semantics carriesquotetime.",
+    "SOURCE_VERSION/contractversion unchanged;newmodulemustbeincludedbyROOTbundle dependencyclosure. No deployment done."
+  ],
+  "not_edited_by_SOURCE": [
+    "runtime",
+    "registry",
+    "contracts",
+    "profile",
+    "analytics",
+    "budget",
+    "delivery"
+  ],
+  "native_admission_required": true,
+  "ROOT_runtime_snippet_not_applied": true
+}
