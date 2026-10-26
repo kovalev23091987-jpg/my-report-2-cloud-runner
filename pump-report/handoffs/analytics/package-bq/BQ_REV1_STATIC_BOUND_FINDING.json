@@ -1,0 +1,20 @@
+{
+  "schema": "BQ_REV1_STATIC_BOUND_FINDING_V1",
+  "status": "CONCRETE_STATIC_BOUND_GAP_BEFORE_NODE",
+  "module": "pump-report/runtime/candidate-diagnostics.mjs",
+  "sha256": "820f25cdbdf32b97409ffa83bf28cca033bd964263831283a9f787bb68acbc81",
+  "line": 6,
+  "exact_expression": "const id=v=>typeof v==='string'&&/^BINGX:USDT_M:[0-9]+:[^\\\\u0000-\\\\u001f\\\\u007f]{1,100}$/u.test(v)?v:null;",
+  "finding": "The [0-9]+ native-ID part has no length bound. A syntactically accepted ID with N decimal digits is returned verbatim, so finite array caps alone do not bound diagnostic JSON bytes.",
+  "reproducer_descriptor": {
+    "instrument_id_pattern": "BINGX:USDT_M: + '9'.repeat(N) + ':新幣-USDT'",
+    "N": "arbitrarily large; no upper bound in predicate",
+    "source_clock_or_strategy_needed": false
+  },
+  "minimal_ROOT_owner_fix": "Bound numeric native ID or total identifier bytes/length while preserving valid Unicode/native ID semantics; freeze new exact SHA before affected qualification. ANALYTICS does not edit ROOT file.",
+  "actual_native_IDs_claimed_oversized": false,
+  "Node": 0,
+  "tests": 0,
+  "raw_private_or_real_market_data": false,
+  "first_revision_preserved": true
+}

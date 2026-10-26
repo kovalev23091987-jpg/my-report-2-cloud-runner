@@ -1,0 +1,165 @@
+{
+  "schema": "PACKAGE_BQ_CANDIDATE_DIAGNOSTICS_FINAL_V1",
+  "status": "PASS",
+  "frozen_at": "2026-10-26T17:34:48.153682+00:00",
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1793035294000",
+  "own_expires_ts": 1793036494000,
+  "freeze_before_own_expiry": true,
+  "authority_main": "b52e410815cc7f10a455b4773b4e92069c4d0793",
+  "ROOT_frozen_rev2": {
+    "pump-report/runtime/candidate-diagnostics.mjs": "c0d9cb420b8761338083ef9ad4c9d2d727972aa7ee9e602ac6d0587e7166ca9e",
+    "pump-report/runtime/runner.mjs": "8b157fc79a3a7d2208293c8fe12a09f7e1c499c99f94b5e0c302bb0fb659aee2",
+    "pump-report/runtime/automatic-summary.mjs": "84ae4da4fbd81da1f9ce2cb5f419b042491cfc80d04283b08f88eeb7430b51dc"
+  },
+  "revision1": {
+    "diagnostics_sha256": "820f25cdbdf32b97409ffa83bf28cca033bd964263831283a9f787bb68acbc81",
+    "status": "STATIC_NUMERIC_ID_BOUND_GAP_FIXED_BY_ROOT",
+    "Node": 0
+  },
+  "revision2": {
+    "status": "PASS",
+    "Node": 1,
+    "logical_cases": 1,
+    "paired_runner_executions": 2,
+    "selector_order_BASE_EXTRA_semantics_equal": true,
+    "old_summary_fields_equal": true,
+    "source_interface_calls_equal": true,
+    "store_interface_calls_equal": true,
+    "baseline_store_calls": {
+      "get": 35,
+      "set": 5,
+      "atomic": 26,
+      "atomicPair": 0,
+      "boundedArray": 3,
+      "scanPrefix": 8,
+      "removeWorkPointer": 0
+    },
+    "diagnostic_store_calls": {
+      "get": 35,
+      "set": 5,
+      "atomic": 26,
+      "atomicPair": 0,
+      "boundedArray": 3,
+      "scanPrefix": 8,
+      "removeWorkPointer": 0
+    },
+    "source_stub_calls_per_variant": {
+      "catalog": 1,
+      "discovery": 1,
+      "deep_overview": 2,
+      "core": 2,
+      "analysis_stub": 2,
+      "source_assess": 6
+    },
+    "whitelist_and_unicode_pass": true,
+    "ID21digits_rejected": true,
+    "null_vs_empty_pass": true,
+    "bounds": {
+      "steps": 4,
+      "leaders": 5,
+      "checked": 8,
+      "deferred": 5,
+      "all_truncation_flags": true
+    },
+    "worstcase_diagnostic_bytes": [
+      33888,
+      41288
+    ],
+    "byte_bound": 66560
+  },
+  "real_engine": 0,
+  "market_HTTP": 0,
+  "native_SQL": 0,
+  "TG": 0,
+  "builds_by_ANALYTICS": 0,
+  "deploy_by_ANALYTICS": 0,
+  "priority_or_strategy_changes": 0,
+  "past_DOOD_cause_proved": false,
+  "BP_release_confirmed": {
+    "commit": "bf16bb299cb2a1617df9b1f98c6e38d4326d776c",
+    "FULL_UTC": "2026-10-26 17:15:53 UTC",
+    "before_expiry": true
+  },
+  "old_frozen_evidence": "Preserved byexisting acceptedhash; no duplicateoldaudit/replay outside explicitly necessarypairedloopdelta",
+  "limitations": [
+    "MemoryStore interface call comparison, not actual D1ACK/read-row/serialized-write billing proof",
+    "Two explicit NOTREADY analysis stubs per variant, no true signal/engine/source market execution",
+    "No build/deploy/native14 or historicalDOOD cause proof",
+    "Existing old summary semantics preserved, new candidate diagnostics add bounded identities only"
+  ],
+  "result_sha256": "bf4a8e9ab09031c01a4b4f7bdb5ffc2d0ac83cb31dbcdee30cd1ede4e88ccb92",
+  "files": [
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_AFFECTED_RESULT.json",
+      "sha256": "bf4a8e9ab09031c01a4b4f7bdb5ffc2d0ac83cb31dbcdee30cd1ede4e88ccb92",
+      "bytes": 1992,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_EXECUTION_ADMISSION.json",
+      "sha256": "29f702b74e7e8ff2766a099060029e92ec6bdddbf9e0d3aee981c68d3865b98b",
+      "bytes": 3656,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_FROZEN_INPUTS_REV2.json",
+      "sha256": "1114a4f917f1596415a4be77a28d538bd0bed94a1428d4f277019e9d76ca1520",
+      "bytes": 22401,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_ARTIFICIAL_FIXTURE.json",
+      "sha256": "67fb38e2223fa51a7002ebdf129115a719afaa1f3a05d5b25e84333654d76e2c",
+      "bytes": 4628,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_EXPECTED_INVARIANT_MATRIX.json",
+      "sha256": "9a6738e2f892f64f5c4b88592ad403b184cbb45a849bbbe05e339338ee3f9369",
+      "bytes": 2760,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_REV1_STATIC_BOUND_FINDING.json",
+      "sha256": "814b35b49aa47db0a56c018b54f919e47ce50f8625eded250042200370c16e7d",
+      "bytes": 1192,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_AUTHORITY_RECEIPT.json",
+      "sha256": "f9487252f33da05b481acf7c5d226534f6d5a0dc74378377e6a5014272917c53",
+      "bytes": 4351,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/BQ_RUNNER_DIAGNOSTIC_ONLY.diff",
+      "sha256": "6c85f88c212195f0878fd377aac340180150a8026c101ae578a40da94a862bdf",
+      "bytes": 3715,
+      "private": false
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/.private/bq-connected-once.mjs",
+      "sha256": "900deb9630f1c79d84a18a3a70b7d9d7045cdbacada50623cf0ca9323ab02792",
+      "bytes": 18881,
+      "private": true
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/.private/paired-full-before-asserts.json",
+      "sha256": "9e746377fdeaca711f20a89e691521727aaa5aaeabebbc5960f2e2434c614c2a",
+      "bytes": 35875,
+      "private": true
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/.private/safe-summary-artificial.json",
+      "sha256": "dbec489ad70f9d4a91d9b1ac098e8305c279a02d1f773c66a5435b93e9feb493",
+      "bytes": 6211,
+      "private": true
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bq/.private/projection-boundaries-artificial.json",
+      "sha256": "077903a1eaf9db2c5f50ae281a4ab40ce0690edf4272945a338a7b5bf18cf04c",
+      "bytes": 27265,
+      "private": true
+    }
+  ]
+}
