@@ -1,0 +1,72 @@
+{
+  "schema": "F609_HISTORICAL_FAILURE_ENTITLEMENT_RECEIPT_V1",
+  "post_refresh_actual": {
+    "schema": "ROOT_BYKARANTELI_REFRESHED_CONNECTION_READ_ACTUAL_V1",
+    "status": "STOPPED_TOOL_NOT_FOUND",
+    "attempted_ts": 1793013686301,
+    "received_ts": 1793013689597,
+    "actual_client_attempts": 1,
+    "successful_data_responses": 0,
+    "request": {
+      "tool": "mcp__codex_apps__bykaranteli_get_coverage",
+      "args": {}
+    },
+    "error_class": "MCP_UNKNOWN_TOOL",
+    "error_code": -32001,
+    "auth_state": "NOT_ESTABLISHED_BY_THIS_RESPONSE",
+    "DOOD_map_attempts": 0,
+    "upstream_HTTP": "UNKNOWN_NOT_ZERO",
+    "no_retry_or_alternate_wrapper_attempted": true
+  },
+  "post_refresh_attempt_UTC": "2026-10-26T11:21:26.301000+00:00",
+  "earlier_admission": {
+    "schema": "ROOT_BYKARANTELI_PUBLIC_MCP_QUALIFICATION_ADMISSION_V1",
+    "status": "CLOSED_STOPPED_UNAUTHORIZED_ONE_CLIENT_ATTEMPT",
+    "admitted_ts": 1793012393663,
+    "requests": [
+      {
+        "id": "COVERAGE",
+        "tool": "mcp__codex_apps__bykaranteli_get_coverage",
+        "args": {},
+        "max_attempts": 1,
+        "purpose": "Provider-level live coverage registry first; not assume full LiqMap symbol universe"
+      },
+      {
+        "id": "DOOD_CONTROL",
+        "tool": "mcp__codex_apps__bykaranteli_get_liqmap",
+        "args": {
+          "symbol": "DOODUSDT",
+          "timeframe": "24h"
+        },
+        "max_attempts": 1,
+        "purpose": "One format/availability control only; not handconfiguration of550 or proof of full coverage"
+      }
+    ],
+    "free_entitlement_basis": "Current vendor-connected tool metadata explicitly serves24h without account key/Free; does not prove keyless Worker REST entitlement",
+    "unused_attempt_expired": true
+  },
+  "F589_prior_metadata_conflict": {
+    "description": "Installed MCP wrappers advertise free/keyless24h. Current official program documentation requires a verified-account key.",
+    "resolution": "Use keyed Worker REST; do not spoof browser/session/Fetch Metadata or probe keyless aliases.",
+    "metadata_is_actual_auth_proof": false,
+    "Worker_key_present": "UNKNOWN",
+    "account_plan": "UNKNOWN"
+  },
+  "full_historical_tool_descriptor_or_inputSchema_in_these_records": false,
+  "evidence_files": [
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_BYKARANTELI_POST_REFRESH_ACTUAL.json",
+      "sha256": "4cb74cad5e5ae413db8faf599cfda202e0808c99ffa70569c80842647bbb1376"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_BYKARANTELI_PUBLIC_QUALIFICATION_ADMISSION.json",
+      "sha256": "d000954eea4eedc048681df82cb611c805c200110896db13e9fdb6ec221cab9e"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F589_PROVIDER_ROUTE_FINDINGS_V1.json",
+      "sha256": "51ecd12bc7af8b1f3f3609d5e64ba9f361c963fa8e9370c1f0faf774aaf372c9"
+    }
+  ],
+  "old_private_originals_not_read": true,
+  "old_attempts_not_rearmed": true
+}
