@@ -6,7 +6,7 @@
   "expires_ts": 1793023864000,
   "expected_main": "55f8388267398f3778ec5f378e0a6a3aaff3c8b0",
   "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
-  "released": false,
+  "released": true,
   "root_lease_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793023617000",
   "root_expires_ts": 1793028717000,
   "guard_git_blobs": {
@@ -32,12 +32,61 @@
     "id": "ROOT_F597_NATIVE_HL_PRICE_CURRENCY_BINGX_HYPE_ID_2SEARCH4READ_20261026",
     "search_max": 2,
     "open_max": 4,
-    "search_spent": 0,
-    "open_spent": 0,
-    "state": "NEW_UNUSED",
+    "search_spent": 2,
+    "open_spent": 4,
+    "state": "CLOSED_EXHAUSTED_NO_REARM",
     "old_grants_rearmed": false,
-    "attempts": []
+    "attempts": [
+      {
+        "kind": "search",
+        "q": "site:hyperliquid.gitbook.io hyperliquid perpetuals prices denominated USDC quote",
+        "state": "SUCCESS_PRIMARY_RESULTS"
+      },
+      {
+        "kind": "search",
+        "q": "site:bingx.com HYPE Hyperliquid listing official",
+        "state": "NO_BINGX_RESULT_IN_RETURNED_SEARCH"
+      },
+      {
+        "kind": "new_primary_read",
+        "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications",
+        "state": "SUCCESS"
+      },
+      {
+        "kind": "new_primary_read",
+        "url": "https://bingx.com/en/price/hyperliquid",
+        "state": "SUCCESS"
+      },
+      {
+        "kind": "new_primary_read",
+        "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/robust-price-indices",
+        "purpose": "Mark price construction and currency preservation for HYPE USDC quote",
+        "state": "SUCCESS"
+      },
+      {
+        "kind": "new_primary_read",
+        "ref": "turn142view1:100",
+        "purpose": "Exact BingX Hyperliquid futures instrument link beyond generic ticker",
+        "state": "SUCCESS_GENERIC_ROUTE_NO_EXACT_INSTRUMENT"
+      }
+    ],
+    "primary_read_successes": 4,
+    "failed_reads": 0,
+    "empty_searches": 1,
+    "new_source_qualification_calls": 0
   },
   "rebound_from_commit": "d2d20276f27388b73c03bd91612b6aa212d867ef",
-  "rebind_reason": "Fresh ROOT rollover; same F597 scope and original own expiry; no grant reset/extension"
+  "rebind_reason": "Fresh ROOT rollover; same F597 scope and original own expiry; no grant reset/extension",
+  "status": "RELEASED",
+  "released_ts": 1793023834000,
+  "released_utc": "2026-10-26 14:10:34 UTC",
+  "release_reason": "F597 partial primary proof chain frozen; only own lease release no business pause",
+  "frozen_manifest": {
+    "manifest_path": "pump-report/handoffs/sources/F597_PACKAGE_HYPE_NATIVE_CURRENCY_EXACT_ID_PROOFS_FINAL_V1.json",
+    "manifest_sha256": "3753f52adf2293a27c9b8773e828cd15b7b781a5f4e3c05f78009f0c0aa2b876",
+    "manifest_bytes": 2104,
+    "files": 7,
+    "payload_bytes": 15756,
+    "frozen_utc": "2026-10-26 14:10:34 UTC"
+  }
 }
