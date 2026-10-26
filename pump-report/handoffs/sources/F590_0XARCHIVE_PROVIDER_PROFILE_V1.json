@@ -1,0 +1,190 @@
+{
+  "schema": "F590_0XARCHIVE_PROVIDER_PROFILE_PROPOSAL_V1",
+  "status": "DOCUMENTED_TRANSPORT_PROFILE_PREPARED_NOT_ENABLED",
+  "configuration_unit": "ONE_PROVIDER_AND_SEMANTIC_PROFILE_WITH_AUTOMATIC_NATIVE_ID_BINDINGS",
+  "production_activation": false,
+  "provider": "0XARCHIVE",
+  "upstream_group": "0XARCHIVE_SHARED_COUNTER_NO_WRAPPER_MULTIPLICATION",
+  "primary_evidence": [
+    {
+      "url": "https://docs.0xarchive.io/",
+      "read": "FULL_PRIMARY_RESULT",
+      "claim": "REST API key;MCP OAuth without separate APIkey"
+    },
+    {
+      "url": "https://docs.0xarchive.io/rest-api/hyperliquid",
+      "read": "FULL_PRIMARY_RESULT",
+      "claim": "Exact core namespace;different families require distinct namespaces"
+    },
+    {
+      "url": "https://docs.0xarchive.io/rate-limits",
+      "read": "FULL_PRIMARY_RESULT",
+      "claim": "Free includes projectedlevelroutes;50k monthlycredits/15reqs3concurrent/30dayhistory;credit/rateheaders"
+    },
+    {
+      "url": "https://docs.0xarchive.io/core-concepts/credits",
+      "read": "FULL_PRIMARY_RESULT",
+      "claim": "instruments/symbols1credit;othernonrowmetered1credit;liquidationrows1000/creditminimum1"
+    },
+    {
+      "url": "https://docs.0xarchive.io/rest-api/liquidation-levels",
+      "read": "FULL_PRIMARY_RESULT",
+      "claim": "Exactsnapshot/historymethods,params,USDunits,model/baseclocks,MCPnames,notall-symbolbulk"
+    },
+    {
+      "url": "https://docs.0xarchive.io/api-reference/hyperliquid",
+      "read": "PARTIAL_ONLY_NAVIGATION_RETURNED",
+      "claim": "No complete catalogue query/response schema claimed"
+    }
+  ],
+  "free_access": {
+    "plan": "FREE_DOCUMENTED_ALL_RELEVANT_ROUTES",
+    "monthly_credits": 50000,
+    "rate_req_per_second": 15,
+    "concurrent_queries": 3,
+    "history_rolling_days": 30,
+    "max_history_request_days": 30,
+    "actual_balance": "UNKNOWN",
+    "actual_reset_clock": "UNKNOWN",
+    "REST": "EXISTING_API_KEY_REQUIRED;header X-API-Key;no newkeycreation authorized",
+    "MCP": "OAUTH_SESSION_REQUIRED_NO_SEPARATE_API_KEY",
+    "existing_OAuth_session_and_free_account": "UNKNOWN_NOT_PROBED",
+    "without_new_account_or_key": "CONDITIONAL_ONLY_IF_EXISTING_VALID_OAUTH_SESSION_OR_EXISTING_API_KEY;anonymousfreeaccessnotestablished",
+    "signup_key_creation_paid_fallback": "DISABLED"
+  },
+  "catalogue": {
+    "REST_symbols": {
+      "method": "GET",
+      "url": "https://api.0xarchive.io/v1/symbols",
+      "route_basis": "Publishedexactpath on projectedlevelsprimarypage",
+      "credit_per_request": 1,
+      "query_contract": "UNKNOWN_NOT_FULLY_READ",
+      "array_and_completion_fields": "UNKNOWN",
+      "pagination": "UNKNOWN;do not guess cursor/limit/filter",
+      "purpose": "per-symbol/data-type coverage;nativefamily and coverage_by_type,not canonicalassetidentity"
+    },
+    "MCP_core": {
+      "tool": "mcp__codex_apps__0xarchive2_get_instruments",
+      "args": {},
+      "metadata_basis": "Installedtooldeclaration retainedF589;notnativeAPIresult",
+      "returns": "records,count,optionalnextCursor;perpsANDspot perdescription",
+      "REST_credits_for_instruments_request": 1,
+      "MCP_total_credits": "UNKNOWN_WRAPPER_UPSTREAM_FANOUT_NOT_DOCUMENTED",
+      "pagination_problem": "Toolarguments have no cursor although response maynextCursor;fullcatalogueUNKNOWNifcontinuationappears"
+    },
+    "MCP_HIP3": {
+      "tool": "mcp__codex_apps__0xarchive2_get_hip3_instruments",
+      "args": {},
+      "metadata_basis": "Retainedinstalleddeclaration;notcalled",
+      "REST_credits_for_instruments_request": 1,
+      "MCP_total_credits": "UNKNOWN",
+      "pagination": "Same no cursorinput issue;do notinventcontinuation"
+    },
+    "native_full_universe": "NOT_CHECKED",
+    "canonical_crypto_classification": "UNKNOWN_PER_ROW",
+    "map_schema_coverage": "Requireexactprojectedlevelscoverage,notgenericfirstrecord ortrade/liquidationhistorycoverage",
+    "all550_overlap": "UNKNOWN"
+  },
+  "snapshots": {
+    "core": {
+      "method": "GET",
+      "url_template": "https://api.0xarchive.io/v1/hyperliquid/liquidations/{EXACT_CORE_SYMBOL}/levels",
+      "query": {
+        "range_pct": 1,
+        "buckets": 10
+      },
+      "omit": [
+        "at forlatest",
+        "side toretainbothsides"
+      ],
+      "MCP_tool": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+      "MCP_args_template": {
+        "coin": "QUALIFIED_EXACT_CORE_SYMBOL",
+        "range_pct": 1,
+        "buckets": 10
+      }
+    },
+    "HIP3": {
+      "method": "GET",
+      "url_template": "https://api.0xarchive.io/v1/hyperliquid/hip3/liquidations/{ENCODED_EXACT_CASE_SENSITIVE_BUILDER_SYMBOL}/levels",
+      "query": {
+        "range_pct": 1,
+        "buckets": 10
+      },
+      "MCP_tool": "mcp__codex_apps__0xarchive2_get_hip3_liquidation_levels",
+      "MCP_args_template": {
+        "coin": "QUALIFIED_EXACT_BUILDER_SYMBOL",
+        "range_pct": 1,
+        "buckets": 10
+      }
+    },
+    "API_contract_header": {
+      "0xArchive-Version": "2026-10-01"
+    },
+    "REST_credit_per_snapshot": 1,
+    "credit_basis": "Creditspage:unmeteredroute1;evenifliquidationrowfamilyapplied,<=200requestedbuckets<1000/credit⇒1. No per-bucket multiplication.",
+    "MCP_total_credits": "UNKNOWN_BEYOND_DOCUMENTED_REST_OPERATION;no wrapperfanoutassumption",
+    "max_buckets": 200,
+    "exact_profile_buckets": 10,
+    "model_kind": "EXTERNAL_MODEL",
+    "native_venue": "HYPERLIQUID_CORE_OR_HIP3",
+    "BingX_observed_positions": false,
+    "units": {
+      "price": "USD_PRICE_FROM_NATIVE_MODEL",
+      "long_notional": "USD",
+      "short_notional": "USD",
+      "long_count": "POSITION_COUNT",
+      "short_count": "POSITION_COUNT",
+      "conversion_to_BingX_USDT": "UNKNOWN_UNTIL_QUALIFIED_NO_EXACT_ORDER_PRICE_USE"
+    },
+    "clocks": {
+      "computed": "data.snapshot_ts UTC;about5min since2026-08-13",
+      "base_state": "data.block_number identifiesolderexchange-state;typically30–65min older;do notinventexacttimestampfromblock",
+      "core_roll_forward": "fills up to snapshot_ts;marks sampledabout60s",
+      "HIP3_roll_forward": "none;positions remainbase-state;marks everyfewseconds",
+      "unapplied": "isolatedmarginchanges,funding,newlyactiveaccounts untilnextbase",
+      "received": "transportonly",
+      "expiry": "ROOTcontextprofiledecision retainingbothclocks;no fresh120sobservedpositionsclaim",
+      "old45min": "historicalbefore13Aug;notcurrentrejectionbasis"
+    },
+    "response_qualification": [
+      "success/data/meta + exactnativeID/context",
+      "retain source raw/histogram,source_bin_width,flagged_notional",
+      "bucketcenterisnotexplicitlowerupper;onlyderiveedgesifdocumentedbinspacing/widthqualified",
+      "wholebooktotals arenot sumofvisiblewindow;do notdoublecount",
+      "no smaller requestedbins implyingfiner sourceprecision",
+      "missing sourceclock/unit/identity→UNKNOWN;empty/404notzeroexposure/UNSUPPORTED",
+      "nativevenue priceunit retained;no modelintensity-toUSD or BingXpositionclaim"
+    ],
+    "all_symbol_bulk_map": "NOT_DOCUMENTED;currentdocumentedmethodsper-symbol",
+    "stream": "NO_PROJECTED_LEVELS_WEBSOCKET_ROUTE_DOCUMENTED;realizedliquidationstreamnotreplacement"
+  },
+  "history": {
+    "core_path": "/v1/hyperliquid/liquidations/{symbol}/levels/history",
+    "HIP3_path": "/v1/hyperliquid/hip3/liquidations/{symbol}/levels/history",
+    "params": {
+      "limit": 1,
+      "summary": true
+    },
+    "purpose": "Optionalboundedprovenanceonly,notrequirednewhistoryaudit",
+    "pagination": "meta.next_cursor exclusive snapshot_ts;limit1..100;ascending",
+    "history_pages_admitted_here": 0,
+    "credits": "1 for proposedlimit1;eachpagechargedseparately;MCPwrapperunknown"
+  },
+  "cache": {
+    "proposed_max_snapshot_retention_ms": 300000,
+    "proposed_only_not_active": true,
+    "rule": "Retain original snapshot_ts/baseblock/received/expiry;effectivevalidity min(ROOTconsumerqualification,modelage,cachelimit). Same snapshot_ts isnotnewfact. Key provider+nativefamily+caseexactID+query+version;one upstreamquota.",
+    "catalogue_cache": "Onlycompleteprovenimmutablecataloguebody withversion/asof/hash;TTL needsROOTexplicitqualification;no currentcataloguecacheclaim"
+  },
+  "qualification": {
+    "transport_docs": "VERIFIED",
+    "unit_model_clocks_docs": "VERIFIED_FOR_EXTERNAL_MODEL_CONTEXT",
+    "catalogue_full_pagination": "UNKNOWN",
+    "existing_access": "UNKNOWN",
+    "canonical_join550": "UNKNOWN_ALL550",
+    "actual_fresh_fact": "NOT_CHECKED",
+    "consumer_usefulness": "NOT_CHECKED",
+    "current_qualified_routes": 0
+  }
+}
