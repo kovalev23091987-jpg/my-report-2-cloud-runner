@@ -1,0 +1,39 @@
+{
+  "schema": "F579_BOUNDED_PRIMARY_API_DEDUP_V1",
+  "scanned_files": 4128,
+  "max_file_bytes": 1400000,
+  "API_pattern_hits": {
+    "ASTER_API": [
+      "checkpoints/LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_20261012.json",
+      "checkpoints/n05-poloniex-qualification-38069554249/poloniex-summary.json",
+      "checkpoints/htx-compact-4h/ASTER-USDT.manifest.json",
+      "checkpoints/source-worker-htx4h-native-turnover-20261019/cohort-inputs.json"
+    ],
+    "APEX_OMNI_API": [],
+    "EDGEX_API": [
+      "pump-report/handoffs/sources/U3_FULL_934_SCOPE_SELECTION_V1.json",
+      "checkpoints/pump-report-20261025/ROOT_CRYPTO_SCOPE_SELECTION_934_V1.json",
+      "checkpoints/pump-report-20261025/CRYPTO_SCOPE_550_RU.md"
+    ]
+  },
+  "known_excluded": [
+    "Pacifica",
+    "Extended"
+  ],
+  "prior_path": "pump-report/handoffs/sources/F570_RETAINED_INVENTORY_DEDUP_V1.json",
+  "prior_sha256": "9d950f5d2d03f281700f5a11e6bcdaac127abfe3597281774243171b1252aca8",
+  "new_replacements_proposed": [
+    "ApeX Omni",
+    "edgeX"
+  ],
+  "not_worldwide_novelty_claim": true,
+  "no_private_market_captures": true,
+  "aster_prior": {
+    "path": "checkpoints/LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_20261012.json",
+    "url": "https://asterdex.github.io/aster-api-website/futures/account%26trades/",
+    "role": "Signed account positionRisk liquidationPrice, not public third-party data"
+  },
+  "aster_new_scope": "Public realized-funding/OI market path only; no repeat signed account route",
+  "edgex_hits_are_asset_identity_news_only": true,
+  "backpack_not_selected_due_prior_native_paths": true
+}
