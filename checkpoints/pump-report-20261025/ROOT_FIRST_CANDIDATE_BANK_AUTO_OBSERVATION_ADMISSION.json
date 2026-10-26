@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_PRODUCTION_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_NATIVE_BANK_OBSERVED",
   "authority_main": "c52f632c8224b5145e3c89207554bdb92f365fc3",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793004911853",
@@ -34,5 +34,25 @@
   "purpose": "One saved normal AUTO/current implementation, optional exact stored candidate input and shared resources bank. No new market run/analysis/send. Verify actual persistent allocation/candidate_quota after normal schedule.",
   "positive_native_reservation_before_business_reads": true,
   "old_limits_unknowns_reserves9pauses2deferrals_preserved": true,
-  "not_before_ts": 1793005860000
+  "not_before_ts": 1793005860000,
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-first-candidate-bank-auto-observation-20261026-one",
+    "usage": {
+      "requests": 9,
+      "rows_read": 44,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 44,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "completed_ts": 1793005931735,
+  "private_result_file": "pump-report/.private/observations/first-candidate-bank-auto-result.json",
+  "private_result_sha256": "b3481f88239f2f5f56b77c0b294b1aee0d9afba52f511c68952eb72cef498e3e",
+  "actual_proof": "checkpoints/pump-report-20261025/ROOT_FIRST_NORMAL_AUTO_CANDIDATE_BANK_NATIVE_ACCEPTANCE.json",
+  "no_automatic_retry": true
 }

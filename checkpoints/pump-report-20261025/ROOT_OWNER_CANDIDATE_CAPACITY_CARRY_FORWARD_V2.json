@@ -1,7 +1,7 @@
 {
   "schema": "ROOT_OWNER_CANDIDATE_CAPACITY_CARRY_FORWARD_V2",
   "owner_confirmed": "2026-10-26",
-  "status": "DEPLOYED_AUTO_RESUMED_AWAIT_FIRST_SAVED_NORMAL_RUN",
+  "status": "DEPLOYED_AND_FIRST_NORMAL_AUTO_NATIVE_CONFIRMED",
   "scan_cadence_ms": 300000,
   "window": "10:00–20:00 Europe/Moscow",
   "candidate_selection": "TZ prequeue near/confirmed growth or retained active wave; exact growth/current wave/mandatory data/plan qualification before AUTO publication. Empty queue never generates checks.",
@@ -64,7 +64,11 @@
     "native_proof": false
   },
   "server_implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
-  "native_confirmation_pending": true,
+  "native_confirmation_pending": false,
   "today_remaining_preliminary_base_per_hour": 1,
-  "native_receipts_proof": "checkpoints/pump-report-20261025/ROOT_CANDIDATE_BANK_SAFE_MAINTENANCE_ACTUAL.json"
+  "native_receipts_proof": "checkpoints/pump-report-20261025/ROOT_CANDIDATE_BANK_SAFE_MAINTENANCE_ACTUAL.json",
+  "current_hour_capacity_native": 1,
+  "remaining_hour_periods_native": 8,
+  "native_acceptance": "checkpoints/pump-report-20261025/ROOT_FIRST_NORMAL_AUTO_CANDIDATE_BANK_NATIVE_ACCEPTANCE.json",
+  "carry_behavior_validation": "Localconnectedtests/staticreview;no forcedquietnativehour"
 }
