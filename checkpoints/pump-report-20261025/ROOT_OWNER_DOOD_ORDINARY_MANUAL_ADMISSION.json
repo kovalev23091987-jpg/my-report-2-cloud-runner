@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_OWNER_ORDINARY_MANUAL_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_REAL_OWNER_MANUAL",
   "authority_main": "ba4a74aefbe9890cf3bf62e5110fbc423acd10e0",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793004911853",
@@ -33,7 +33,7 @@
     "max_POST_attempts": 1,
     "no_retry": true
   },
-  "manual_scope": "ONE genuine owner requested ordinary manual; no old finite capture_id and no extra startup acceptance. Existing native MANUAL count<=3/day enforced unchanged.",
+  "manual_scope": "Genuine owner ordinary manual; no old capture_id/rearm. Native manual_count protects remaining reserved manual capacity; it is not a hard3runs/day ceiling. All actual HTTP/native caps unchanged.",
   "native_envelope": {
     "rows_read": 5000,
     "rows_written": 300,
@@ -42,5 +42,24 @@
   },
   "full_readback_file": "checkpoints/pump-report-20261025/ROOT_LIVE65_MANUAL_READBACK.json",
   "full_readback_sha256": "9adb9f4e13d2bbaeb9b1229a8cd552476cf12a86ac2858ecffeb5107bc39dd8a",
-  "old_caps_spends_unknowns_futureAUTO_manuals_delivery_outcomes_9pauses2deferrals_preserved": true
+  "old_caps_spends_unknowns_futureAUTO_manuals_delivery_outcomes_9pauses2deferrals_preserved": true,
+  "actual_proof": "checkpoints/pump-report-20261025/ROOT_OWNER_DOOD_ORDINARY_MANUAL_ACTUAL.json",
+  "actual_HTTP": 5,
+  "actual_Telegram": 0,
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:MANUAL:75d9c031-a9c7-4ccb-a075-7fe1e57a2192",
+    "usage": {
+      "requests": 127,
+      "rows_read": 163,
+      "rows_written": 50,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 163,
+      "rows_written": 50
+    },
+    "original_envelope_never_reduced": true
+  },
+  "actual_reply_sha256": "280cd8f7725b50f25120e77ec3a24c1a5ffb32f3ccddbfe6734eba3067a945c8"
 }

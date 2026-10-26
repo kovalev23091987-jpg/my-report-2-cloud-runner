@@ -1,0 +1,182 @@
+{
+  "schema": "F585_PRIMARY_SUPPORTED_SEMANTICS_V1",
+  "authority_main": "c52f632c8224b5145e3c89207554bdb92f365fc3",
+  "original_TZ_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "docs": [
+    {
+      "id": "HL_CONTRACT_SPECS",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications",
+      "retrieval_window_utc": [
+        "2026-10-26T09:00:20Z",
+        "2026-10-26T09:01:26Z"
+      ],
+      "returned_lines": [
+        3,
+        23
+      ],
+      "short_literals": [
+        "USDC margining, USDT denominated linear contracts",
+        "1 unit of underlying spot asset"
+      ],
+      "supported": "First-party generic crypto-perp specification separates collateral from price denomination and defines underlying units. Only named USDC-price exceptions are PURR/HYPE. Scope to current first-dex SOL only after exact listing binding.",
+      "limits": "Not project/network identity or API positionValue unit proof; no source clock."
+    },
+    {
+      "id": "HL_OFFICIAL_SDK_POSITION_SIGN",
+      "url": "https://raw.githubusercontent.com/hyperliquid-dex/hyperliquid-python-sdk/master/hyperliquid/exchange.py",
+      "human_url": "https://github.com/hyperliquid-dex/hyperliquid-python-sdk/blob/master/hyperliquid/exchange.py",
+      "retrieval_window_utc": [
+        "2026-10-26T09:00:20Z",
+        "2026-10-26T09:01:26Z"
+      ],
+      "returned_target_lines": [
+        245,
+        281
+      ],
+      "short_literals": [
+        "szi = float(item[\"szi\"])",
+        "sz = abs(szi)",
+        "is_buy = True if szi < 0 else False",
+        "reduce_only=True"
+      ],
+      "supported": "SDK closes the signed position with its absolute amount and opposite buy/sell order. Inference: negative is short, positive long; size remains native underlying units.",
+      "limits": "Mutable master observed now; no exact commit SHA obtained. Source code inspected, not installed/imported/executed; no order calls."
+    },
+    {
+      "id": "HL_MARK_LIQUIDATION_BASIS",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/robust-price-indices",
+      "retrieval_window_utc": [
+        "2026-10-26T09:00:20Z",
+        "2026-10-26T09:01:26Z"
+      ],
+      "returned_lines": [
+        3,
+        13
+      ],
+      "short_literals": [
+        "used for margining, liquidations, triggering TP/SL, and computing unrealized pnl"
+      ],
+      "supported": "Mark is the liquidation/margin reference; external index and book inputs are combined. Updates approximately every3s according to validators.",
+      "limits": "Cadence is not a per-response mark timestamp, cache-age guarantee or guarantee of future BingX basis."
+    },
+    {
+      "id": "HL_PERPETUAL_ASSETS_IDENTITY_NEGATIVE",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/perpetual-assets",
+      "retrieval_window_utc": [
+        "2026-10-26T09:00:20Z",
+        "2026-10-26T09:01:26Z"
+      ],
+      "returned_lines": [
+        1,
+        5
+      ],
+      "short_literals": [],
+      "supported": "Page discusses broad listing count/process/leverage. It has no SOL entry, project ID, network, asset contract or oracle-feed identifier.",
+      "limits": "Documentary absence here, not market unsupported or proof no first-party identity exists elsewhere."
+    }
+  ],
+  "tool_receipts": {
+    "search_sha256": "3edce53dcae97b93d41546ae0be930c06d4e3d7bf12243b1cf8f641a496d074a",
+    "open12_returned_text_sha256": "4d7437859b497b5beac67a70d71806e55104d9f0e9b6f52e28034dd43d3fbfad",
+    "open34_returned_text_sha256": "0c61693839bcd8a78d51aaafc73fcf08bb13a460934204ee78b8be708fe0da61",
+    "hash_scope": "Tool-returned text, not original page/SDK full-file bytes; no full page/source copied"
+  },
+  "excluded_search_results": "Third-party repos/issues returned by search were not relied on or opened",
+  "semantics": [
+    {
+      "field": "contract_size_native",
+      "status": "CLOSED_DOCUMENTARY",
+      "value": "ONE_NATIVE_UNDERLYING_SPOT_UNIT",
+      "proof_refs": [
+        "HL_CONTRACT_SPECS"
+      ],
+      "cross_venue_quantity_conversion": false
+    },
+    {
+      "field": "szi_sign",
+      "status": "CLOSED_BY_FIRST_PARTY_SDK_LOGIC_INFERENCE",
+      "positive": "LONG",
+      "negative": "SHORT",
+      "zero": "No nonzero position",
+      "proof_refs": [
+        "HL_OFFICIAL_SDK_POSITION_SIGN"
+      ],
+      "not_a_trade_side_inference": true
+    },
+    {
+      "field": "szi_unit",
+      "status": "CLOSED_NATIVE_UNDERLYING_UNIT_CHAIN",
+      "value": "HYPERLIQUID_NATIVE_UNDERLYING_SPOT_UNITS",
+      "proof_refs": [
+        "HL_CONTRACT_SPECS",
+        "HL_OFFICIAL_SDK_POSITION_SIGN"
+      ],
+      "limit": "Does not identify that underlying with BingX SOL yet; no notional derived"
+    },
+    {
+      "field": "first_dex_SOL_price_quote",
+      "status": "CLOSED_DOCUMENTARY_CONDITIONAL_ON_EXACT_NATIVE_LISTING",
+      "value": "USDT_PER_NATIVE_UNDERLYING_UNIT",
+      "proof_refs": [
+        "HL_CONTRACT_SPECS"
+      ],
+      "excluded_USDC_price_exceptions": [
+        "PURR",
+        "HYPE"
+      ],
+      "not_all_HIP3_dexes": true
+    },
+    {
+      "field": "collateral_and_settlement",
+      "status": "CLOSED_DOCUMENTARY_SCOPE",
+      "value": "USDC_MARGIN_QUANTO_PNL_DENOMINATION",
+      "proof_refs": [
+        "HL_CONTRACT_SPECS"
+      ],
+      "not_USDC_USDT_parity": true
+    },
+    {
+      "field": "liquidationPx_basis_and_price_unit",
+      "status": "SUPPORTED_PRIMARY_SOURCE_CHAIN_INFERENCE",
+      "value": "CURRENT_ACCOUNT_LIQUIDATION_THRESHOLD_IN_MARK_PRICE_BASIS_USDT_PER_NATIVE_UNDERLYING",
+      "proof_refs": [
+        "HL_CONTRACT_SPECS",
+        "HL_MARK_LIQUIDATION_BASIS",
+        "F584_ROOT_PERPETUALS_SCHEMA"
+      ],
+      "limit": "Price field currency is inferred from contract denomination and liquidation mark basis, not a literal per-field currency declaration. Cross-margin threshold can change."
+    },
+    {
+      "field": "positionValue_currency",
+      "status": "UNKNOWN_NONBLOCKING_OPTIONAL_MAGNITUDE",
+      "value": null,
+      "reason": "Four documents do not define this API field's accounting denomination. Collateral/PnL and price denomination differ; cannot label by name or assume amount=abs(szi)*liquidationPx.",
+      "producer_behavior": "Leave route.position_value absent; magnitude=null; zones consumer permits null amount"
+    },
+    {
+      "field": "global_SOL_identity",
+      "status": "UNKNOWN_CONCRETE_EVIDENCE_GAP",
+      "value": null,
+      "reason": "First-party contract specs identify an oracle underlying generically; assets page has no SOL/project/network row; retained/default meta routes name only. BingX native100028 has provider-scoped identity. No common project/network/contract/feed anchor in inspected materials.",
+      "not_unsupported": true
+    },
+    {
+      "field": "HL_mark_event_ts",
+      "status": "UNKNOWN_CONCRETE_SCHEMA_GAP",
+      "value": null,
+      "reason": "Known metaAndAssetCtxs example has markPx but no metric event timestamp; update cadence approximately3s is not a timestamp. Account payload.time cannot be borrowed for an unrelated mark response.",
+      "not_receipt_time": true
+    }
+  ],
+  "supersedes_F584_unknowns": [
+    "nativecontractunit",
+    "szi sign",
+    "native size unit",
+    "first-dexSOLpricequote",
+    "liquidationmarkbasis",
+    "mandatoryseparateFXassumption"
+  ],
+  "current_qualified_routes_added": 0,
+  "code_changes": 0,
+  "native_IO": 0
+}

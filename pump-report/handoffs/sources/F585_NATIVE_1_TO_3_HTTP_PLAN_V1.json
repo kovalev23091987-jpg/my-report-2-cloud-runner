@@ -1,0 +1,119 @@
+{
+  "schema": "F585_CONDITIONAL_NATIVE_1_TO_3_HTTP_PLAN_V1",
+  "status": "CONCRETE_SOURCE_QUALIFICATION_PACKET_DESIGNED_NOT_EXECUTED",
+  "authority_main": "c52f632c8224b5145e3c89207554bdb92f365fc3",
+  "ROOT_only_future_admission": true,
+  "requests": [
+    {
+      "id": "HL_META_CONTEXT",
+      "method": "POST",
+      "url": "https://api.hyperliquid.xyz/info",
+      "json_body": {
+        "type": "metaAndAssetCtxs"
+      },
+      "max_attempts": 1,
+      "provider": "HYPERLIQUID",
+      "purpose": "One first-party request closes CURRENT defaultdex listing tuple and obtains exact alignedSOL context/mark schema",
+      "checks": [
+        "Two response arrays correctly paired, unique universe.nameSOL; never fixed index5",
+        "Record mainnet/defaultdex/coin tuple as source-native market identity; no global project claim",
+        "Check no newdelisted/malformedtuple; retain collateral token and limits",
+        "Find genuine mark eventclock if present; absent remainsUNKNOWN",
+        "Do not turn response receive timestamp into markclock"
+      ],
+      "does_not_close": "No project/network identity in known schema. This request cannot honestly be promised to prove globalSOL; it closes native routing/listing and actual context fields.",
+      "body_sha256": "9a26c1b41f6b8d71dc6345fcb0591dec99008431f3ecab38f249ad285b510cff"
+    },
+    {
+      "id": "HL_ACCOUNT_STATE",
+      "method": "POST",
+      "url": "https://api.hyperliquid.xyz/info",
+      "json_body": {
+        "type": "clearinghouseState",
+        "user": "0x6ba889db7f923622d3548f621ecc2054b80c1817",
+        "dex": ""
+      },
+      "max_attempts": 1,
+      "provider": "HYPERLIQUID",
+      "purpose": "Current oneadmittedaccount native futureliquidation threshold/side/size/status with originaltime",
+      "checks": [
+        "Use exact native_samples[0] account admitted FORDESIGN only; no discovery",
+        "assetPositions[].position + siblingtypeoneWay,≤1000rows;0or1exactSOL row",
+        "Native payload.time valid/fresh; accountsubset only",
+        "Unknown/null liquidationPx isnotzero/UNSUPPORTED; no fallbackwallet",
+        "Retain rawdecimal privately; share only hashes/clock/units/status",
+        "No positionValue currency claim; magnitude null"
+      ],
+      "body_sha256": "12f7ee92571874aa97a3dfa565f5e84a8903058b751aeaf099203aa33f6337c7"
+    },
+    {
+      "id": "BX_SOL_REFERENCE",
+      "method": "GET",
+      "url": "https://open-api.bingx.com/openApi/swap/v1/ticker/price?symbol=SOL-USDT",
+      "max_attempts": 1,
+      "provider": "BINGX",
+      "purpose": "Exact native100028 quote for composite pair, only after all binding/clock prerequisites or reuse fresh existingfact",
+      "checks": [
+        "Use fresh≤30s sameinstrument samecyclefact with originalclock if alreadyavailable:0newHTTP",
+        "If no canonicalunderlyingproof or no genuine Hmarkclock, skip thisthirdrequest",
+        "Positive price/native time fresh; no source-onlyfallback beyondmax3",
+        "HTTP/parsefailure recordsfailure/unknown;neverrefund/retry"
+      ],
+      "body_sha256": null
+    }
+  ],
+  "shared_deadline_ms": 10000,
+  "per_request_timeout": "min(10000,remaining shareddeadline)",
+  "redirects": "ERROR",
+  "request_body_bytes_max": 4096,
+  "response_bytes_max": 2000000,
+  "accounts_max": 1,
+  "pagination": 0,
+  "automatic_retry": 0,
+  "provider_fallback": 0,
+  "market_current_calls": 0,
+  "private_raw_exported": false,
+  "order_and_early_stop": [
+    "HL_META_CONTEXT first; exact currentSOL absent→stop1 withnativevenue-scopedcoverage",
+    "HL_ACCOUNT_STATE onlyifusefulcurrentSOLnativeobservation; targetmissing/null/nozone→stop2",
+    "BX_SOL_REFERENCE onlyifglobalidentity and Hnativeclock qualified;otherwise skip,do not spendunusedslot",
+    "No route ispublished asusable whenonlynativefactsobserved"
+  ],
+  "coverage_ceiling": {
+    "nativeSOLmarkets": 1,
+    "account_subset": 1,
+    "qualified_BingX_maps_current": 0,
+    "qualified_after_packet": "0or1 onlyifremainingcanonical/time/basisproofs independentlyclosed;notpromised",
+    "rest549": "NOT_CHECKED"
+  },
+  "cost": {
+    "cold_HTTP_max": 3,
+    "cold_by_provider": {
+      "HYPERLIQUID": 2,
+      "BINGX": 1
+    },
+    "minimum_useful_metadata_HTTP": 1,
+    "after_firsttwo_native_HTTP": 2,
+    "warm_HTTP": "0/1/2 dependingexactcachedbody+freshnativeclocks;nocacheclockrefresh",
+    "FX_HTTP": 0,
+    "BOOK_HTTP": 0,
+    "Telegram": 0,
+    "nativeSQL_R_W_upper": null,
+    "provider_current_minute_day_month_remaining": null,
+    "old_weight_lead": {
+      "metaAndAssetCtxs": 22,
+      "clearinghouseState": 2,
+      "not_current_quota_or_grant": true
+    },
+    "qualification_vs_profile": "Separate ROOT bounded qualification needed:ordinarymapmax1 doesnotcover2HLrequests. No cap rearm/CONTROL/extraMANUAL/LOOKUPmarketabuse.",
+    "whole_account_budget": "UseROOTactualcurrentledger,protect3manuals/nextcycles/futurehours;oldissuedfloor/unknownsnonrefundable"
+  },
+  "exact_identity_next_API": {
+    "request_id": "HL_META_CONTEXT",
+    "closes": "Current first-party source-routing tuple andSOL context row. Source marketID shouldnamespace(mainnet,defaultdex,coin),notclaimuniverseindexstable.",
+    "cannot_close": "Current documentedmetadata has no project/network/contract anchor; canonicalcrossvenuejoin muststayfalse untilindependent first-partyprojectproof orcuratedevidence accepted. No blind worldaudit proposed."
+  },
+  "no_implementation_claim": true,
+  "source_code_changes": 0,
+  "tests": 0
+}
