@@ -1,0 +1,210 @@
+{
+  "schema": "F594_THREE_PROVIDER_FREE_CONTEXT_COMPARISON_V1",
+  "status": "DOCS_VERIFIED_CONDITIONAL_FREE_PROFILES_NO_LIVE_ACCESS_PROOF",
+  "selection": "COINVERSA_FREE_BULK_DISCOVERY_FUNDING_CONTEXT_PRIMARY;MIDASFLOW_FREE_REALIZED_FLOW_SECONDARY;COINFUTY_HOLD_UNKNOWN",
+  "providers": [
+    {
+      "id": "COINVERSA_PULSE",
+      "decision": "SELECT_DOCUMENTED_FREE_BULK_CONTEXT_NOT_ACTIVE",
+      "free_evidence": "PublishedREADMEFreeAPI30req/min1000/day;sourceFREElabelslist_markets/list_assets/plan.",
+      "account": "Existingauthorizedcvsa_key/OAuthrequired;no keylesstier;currentaccount/key/remainingUNKNOWN;14dayProtrialnotfreepermanentproof",
+      "limits": {
+        "Free_requests_minute": 30,
+        "Free_requests_day": 1000,
+        "Free_month_cap": "Notlisted;notclaiminfinite",
+        "reset_timezone": "UNKNOWN",
+        "headers": [
+          "X-RateLimit-Limit",
+          "X-RateLimit-Remaining",
+          "X-RateLimit-Reset seconds-to-reset",
+          "X-RateLimit-Tier",
+          "X-RateLimit-Daily-Remaining"
+        ],
+        "current_remaining": "UNKNOWN"
+      },
+      "API_base": "https://api.coinversa.ai/api/public/v1",
+      "authentication": "RESTX-API-Keyexistingsecret;hostedOAuthhttps://mcp.coinversa.ai/mcp;no newkey/signup",
+      "methods": [
+        {
+          "name": "pulse_my_plan",
+          "tool": "mcp__codex_apps__coinversa_pulse_pulse_my_plan",
+          "args": {
+            "useToonFormat": false
+          },
+          "REST": "GET /api/public/v1/plan",
+          "entitlement": "FREE",
+          "logical_API_reads_success": 1,
+          "source_lines": [
+            2503,
+            2511
+          ]
+        },
+        {
+          "name": "list_markets",
+          "tool": "mcp__codex_apps__coinversa_pulse_list_markets",
+          "args": {
+            "useToonFormat": false
+          },
+          "REST": "GET /api/public/v1/pulse/market-overview",
+          "entitlement": "FREE",
+          "scope": "Allnative+buildermarketswhen dexomitted",
+          "logical_API_reads_success": 1,
+          "source_lines": [
+            754,
+            771
+          ],
+          "pagination": "No cursor/limit argument in handler. Checktruncated/totalCount/rows/completion;do notinventpages/full550."
+        },
+        {
+          "name": "list_assets",
+          "tool": "mcp__codex_apps__coinversa_pulse_list_assets",
+          "args": {
+            "crossMarketOnly": false,
+            "useToonFormat": false
+          },
+          "REST": "GET /api/public/v1/assets",
+          "entitlement": "FREE",
+          "logical_API_reads_success": 1,
+          "source_lines": [
+            775,
+            795
+          ],
+          "use": "Providerexposuretaxonomy/synonyms,candidateidentityhintsnotBingXcanonicalproof"
+        }
+      ],
+      "cost": {
+        "meter": "APIrequestsnotweightedcredits",
+        "published_stdio_client": "MAX_RETRIES2=>up to3HTTPattempts perplainhandleron429/timeout/reset;30sperattempt+backoff;success1.",
+        "source_lines": [
+          193,
+          195,
+          252,
+          351
+        ],
+        "hosted_MCP_internal_retry_fanout": "UNKNOWN;README sayshostednotbuiltfromthisrepository;paritytoolsnottransportproof",
+        "direct_REST_with_ROOT_retries0": "1clientHTTPrequestpermethod;noaccountgrantedhere",
+        "backend_underlying_RPC_HTTP": "UNKNOWN",
+        "two_wrappers": "coinversa_pulse/coinversa_pulse_mcp sharevendor/quota when samekey;notindependentallowances"
+      },
+      "useful_blocks": {
+        "funding": "FREEbulkcataloguedeclaresrawhourlydecimalfundingRate;source599–605;percent=rate*100;notBingXfunding",
+        "OI": "CataloguehasOI;route-specificOIunitUNKNOWNuntilactualschema;do notinheritUSDfromhistoricalOIroute",
+        "flow": "Detailedcohorts/risk/historymostlypaid;catalogue24hvolume notsignedflow",
+        "future_map": "RetainedProdenialpreserved;noFREEfuturemaproutequalified"
+      },
+      "currency_clock": {
+        "native_collateral": "USDC/USDH/USDE/USDT0perdex;keepnativevenue/currency",
+        "external_context": "NotexcludedsolelyfornonUSDTdenomination;BingXtargetremainsUSDTM550",
+        "funding_period": "Rawhourlydecimalperpublishedsource;actualpayloadclock/period/freshnessUNKNOWN",
+        "catalogue_source_ts": "UNKNOWN;receivedisnotnativeevent"
+      },
+      "independence": "Distinctvendorquota fromBingX/MidasFlow/0xArchive;stillsharedHyperliquidprimarydata with0x/directHL,notindependentmarketvotes.",
+      "actual550_join": "UNKNOWN",
+      "active_routes": 0
+    },
+    {
+      "id": "MIDASFLOW",
+      "decision": "SECONDARY_DOCUMENTED_FREE_REALIZED_LIQUIDATION_CONTEXT_ONLY_NOT_ACTIVE",
+      "free_evidence": "PrimaryAPIreference200weightedunits/day;GET/v1/liquidationsFree1unit.",
+      "limits": {
+        "Free_daily_weighted_units": 200,
+        "requests_per_minute": "UNKNOWN",
+        "daily_reset_clock": "UNKNOWN",
+        "live_config": "Docsdefaultsconfigurable;usageendpointweightsauthoritativeonlyafterseparateadmission",
+        "API_MCP_same_key_same_quota": true,
+        "current_remaining": "UNKNOWN"
+      },
+      "authentication": "Existingmf_live_BearerkeyorOAuth;nosignup/keycreation;credentialsnotinspected",
+      "API_host": "https://mcp.midasflow.ai",
+      "methods": [
+        {
+          "name": "account_usage",
+          "tool": "mcp__codex_apps__midasflow_account",
+          "args": {
+            "kind": "usage"
+          },
+          "REST": "GET /v1/usage",
+          "Free_units_documented": 1,
+          "use": "Currentquotaandendpoint_weights,notperformed"
+        },
+        {
+          "name": "marketwide_realized_liquidations",
+          "tool": "mcp__codex_apps__midasflow_get_whales",
+          "args": {
+            "kind": "liquidations",
+            "exchange": "all",
+            "symbol": "",
+            "window": 60
+          },
+          "REST_path": "GET /v1/liquidations",
+          "REST_query_schema": "NOT_FULLY_READ;useexactMCPschemaonlywhenadmitted",
+          "Free_units_documented": 1,
+          "semantics": "Realizedforcedliquidationprints,bandednotional;marketwidetopmoversnotcomplete550flow",
+          "window_seconds": "1–300permetadata",
+          "catalogue_complete": "UNKNOWN"
+        },
+        {
+          "name": "coarsened_flow",
+          "tool": "mcp__codex_apps__midasflow_get_flow",
+          "args_template": {
+            "kind": "vpin",
+            "symbol": "EXACT_PROVIDER_SYMBOL"
+          },
+          "REST_path": "GET /v1/flow",
+          "Free_units_documented": 2,
+          "scope": "FreecoarsenedCVDdirection/sweepstateonly;fullmicrostructurepaid;notfullsignedUSDflow"
+        }
+      ],
+      "paid_exclusions": {
+        "funding_OI": "PRO /v1/funding/{symbol},/v1/derivatives",
+        "future_heatmap": "VIP /v1/heatmap/{symbol}3units;notFREE",
+        "squeeze": "PROmodelproximitynotobservedpositions",
+        "candles_orderbook": "PRO;no freeBingXmandatoryfallback"
+      },
+      "free_signal_lag": "About15minforFreeSignalEventfeed;do notapplythatastestedlagofliquidationroute.",
+      "currency_clock": "Rawnotionalbanded,exactcurrency/scale/per-eventclockofliquidationpayloadUNKNOWN;SignalEventtimestampisepochsecondsbutdifferentpayloadmustnotinheritit.",
+      "catalogue_bulk": "No documentedcompletecoinlist inreadpage;onefreeflowfeedcanfilterknowncandidateslocallybutnotprove550coverage",
+      "MCP_retry_or_fold_cost": "UNKNOWN;avoidfoldedscore/booktools;docsweighted1route != verifiedhostedtransportupper",
+      "actual550_join": "UNKNOWN",
+      "active_routes": 0
+    },
+    {
+      "id": "COINFUTY_DERIVATIVES",
+      "decision": "HOLD_UNKNOWN_FREE_ACCESS_QUOTA_NOT_PROVEN",
+      "metadata": "Freefuturesdata/USD/UTCclaims;fundingpercentpersettlementinterval;onecoinfunding/exchangebreakdown;discoverybulk",
+      "primary_docs": "coinfuty.comreadfailed;targetedsearchnoresults",
+      "free_plan": "UNKNOWN_IN_PRIMARY_DOCS",
+      "limits_period_credits": "UNKNOWN",
+      "credentials": "UNKNOWN_NOT_INSPECTED",
+      "methods": [
+        {
+          "tool": "mcp__codex_apps__coinfuty_derivatives_get_coins_markets",
+          "args": {
+            "limit": 100,
+            "order": "desc",
+            "sort": "oi"
+          },
+          "cap": "default20/max100;symbolsfilteravailable",
+          "pagination": "Nooffset/cursorintoolmetadata;top100notfullcatalogue550"
+        },
+        {
+          "tool": "mcp__codex_apps__coinfuty_derivatives_get_funding_rates",
+          "args_template": {
+            "symbol": "EXACT_COIN"
+          },
+          "native_meaning": "Metadata%peractualsettlementinterval;do notapplyBingXfractionprofilewithoutownunitqualification"
+        }
+      ],
+      "cost_per_MCP_and_upstream": "UNKNOWN",
+      "two_wrappers": "coinfuty_derivatives and derivatives_2 samebrandnotnewquota",
+      "future_map": "Installedcapabilitiesdescribeoccurredliquidations;no futuremapcapabilityproven",
+      "usefulness": "Potentialderivativecrosscheckonly;oldroledeclarationnotactualflow",
+      "actual550_join": "UNKNOWN",
+      "active_routes": 0
+    }
+  ],
+  "shared_rule": "Catalogue/bulkonce→exactidentitybatchjoin550→perrowunit/clock/coverage→optionalconsumer. Nomanual500configs. Freemethoddocproofnotcurrentaccountaccessproof.",
+  "current_qualified_new_routes": 0,
+  "current_operational_FREE_fallback": "NOT_PROVEN_UNTIL_SEPARATE_ACTUAL_ADMISSION",
+  "no_FREE_future_map_from_these3_qualified": true
+}

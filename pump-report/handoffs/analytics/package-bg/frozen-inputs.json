@@ -1,0 +1,129 @@
+{
+  "schema": "BG_FROZEN_INPUTS_V1",
+  "files": [
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "sha256": "d749653d74d3ebec27819c3ec3174819bb000130d5399987e5f5d3d996ca5bfd",
+      "bytes": 9526,
+      "dependencies": [
+        "pump-report/contracts/index.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/day-growth.mjs",
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "bytes": 3782,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/profile/start-v1.mjs",
+        "pump-report/analytics/math.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "sha256": "9d18bfa4014d6de4731662fb6b940ae625db8d6b4a88fdd1fce2de79d4c91e76",
+      "bytes": 16903,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/profile/start-v1.mjs",
+        "pump-report/analytics/math.mjs",
+        "pump-report/analytics/movement.mjs",
+        "pump-report/analytics/liquidity.mjs",
+        "pump-report/analytics/zones.mjs",
+        "pump-report/analytics/context.mjs",
+        "pump-report/analytics/day-growth.mjs",
+        "pump-report/analytics/manual-text.mjs",
+        "pump-report/analytics/presentation.mjs",
+        "pump-report/analytics/outcome.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/liquidity.mjs",
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "bytes": 3326,
+      "dependencies": [
+        "pump-report/contracts/index.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/manual-text.mjs",
+      "sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f",
+      "bytes": 6627,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/analytics/presentation.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "bytes": 4477,
+      "dependencies": [
+        "pump-report/contracts/index.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "sha256": "bd6dec2b1e4ec6ffd0158fca5e984fac209960a3045e0b798a81a2ef38982379",
+      "bytes": 26802,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/analytics/math.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "bytes": 9914,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/analytics/math.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/presentation.mjs",
+      "sha256": "73e3d6cd311407b2a80f1686e766f14f3bd3e410ff9f9adba61ebbb11b1552fc",
+      "bytes": 11867,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/analytics/math.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "bytes": 7668,
+      "dependencies": [
+        "pump-report/contracts/index.mjs",
+        "pump-report/analytics/math.mjs"
+      ]
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "bytes": 6230,
+      "dependencies": []
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bf/consumer-result.json",
+      "sha256": "956c02479df39d91dd1744e4239703bb9d8bdb053172c3b852bba47e6961157a",
+      "bytes": 4868,
+      "dependencies": [],
+      "fixture": "EXISTING_FROZEN_BF_ARTIFICIAL_NOT_RERUN"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bf/source-result.json",
+      "sha256": "32dcae6e8580682c412f52267e6b0d55de8da7a5c9375f2283898d778c850295",
+      "bytes": 11506,
+      "dependencies": [],
+      "fixture": "EXISTING_FROZEN_BF_ARTIFICIAL_NOT_RERUN"
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+      "bytes": 1774,
+      "dependencies": []
+    }
+  ],
+  "scope": "Only renderer imports after separate ROOT admission; analytics/index declarations imported but analyzePump never called; no fullengine fixtures"
+}

@@ -1,0 +1,92 @@
+--- a/pump-report/analytics/context.mjs
++++ b/pump-report/analytics/context.mjs
+@@ -78,7 +78,9 @@
+     if(kind==='open_interest'&&finite(f.value)&&f.value>=0&&['CONTRACTS','BASE_ASSET','USDT'].includes(f.unit)){
+       retain(kind,f,f.value);add('OI_SNAPSHOT','Открытый интерес '+source(f)+': '+number(f.value)+' '+f.unit+'; один срез не показывает изменение или сторону позиций.',f);}
+     if(kind==='funding'&&f.unit==='RATE_FRACTION_PER_ACTUAL_PERIOD'&&finite(f.value?.rate)&&finite(f.value.rate*100)&&positive(f.value?.period_ms)&&f.value.period_ms<=86400000){
+-      retain(kind,f,{rate:f.value.rate,period_ms:f.value.period_ms});add('FUNDING_SNAPSHOT','Фандинг '+source(f)+': '+number(f.value.rate*100)+'% за '+number(f.value.period_ms/3600000)+' ч; это контекст, а не направление будущей цены.',f);}
++      retain(kind,f,{rate:f.value.rate,period_ms:f.value.period_ms});
++      Object.assign(optional_context.funding,{kind:f.kind,status:f.status,instrument_id:f.instrument_id,expires_ts:f.expires_ts,evidence_ref:f.evidence_ref});
++      add('FUNDING_SNAPSHOT','Фандинг '+source(f)+': '+number(f.value.rate*100)+'% за '+number(f.value.period_ms/3600000)+' ч; это контекст, а не направление будущей цены.',f);}
+   }
+   return out;
+ }
+--- a/pump-report/analytics/presentation.mjs
++++ b/pump-report/analytics/presentation.mjs
+@@ -1,4 +1,4 @@
+-import {positive,validTime,finite} from '../contracts/index.mjs';
++import {positive,validTime,finite,factUsable} from '../contracts/index.mjs';
+ import {pct,growthAtLeast} from './math.mjs';
+ 
+ const text=x=>typeof x==='string'&&x.trim().length>0;
+@@ -6,6 +6,17 @@
+ const clock=(ts,compact=false)=>new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',...(compact?{}:{second:'2-digit'}),hourCycle:'h23'}).format(ts).replace(',','');
+ export const FUTURE_EVENT_TEXT='Будущее событие для статистики — +10% за 4 часа: вероятность пока не оценена. Отсчёт от исходной цены отчёта.';
+ export const USER_NARRATIVE_VERSION='pump-user-narrative-v1-tz2-20261025';
++export function fundingContextLine(result,profile){
++  const f=result.optional_context?.funding,at=result.analysis_ts,ttl=profile?.freshness_ms?.funding;
++  if(!f||f.kind!=='funding'||f.instrument_id!==result.instrument?.instrument_id||!factUsable(f,at)||
++    f.event_ts>f.received_ts||!positive(ttl)||at-f.event_ts>ttl||f.unit!=='RATE_FRACTION_PER_ACTUAL_PERIOD'||
++    f.source!=='BINGX_OFFICIAL_PUBLIC_API'||f.venue!=='BINGX'||f.origin!=='OBSERVED'||!text(f.evidence_ref)||
++    !result.fact_ids?.includes(f.fact_id)||!result.findings?.some(x=>x.code==='FUNDING_SNAPSHOT'&&x.fact_ids?.includes(f.fact_id)))return null;
++  const rate=f.value?.rate,period=f.value?.period_ms;
++  if(!finite(rate)||!finite(rate*100)||!positive(period)||period>86400000)return null;
++  const percent=rate*100;
++  return 'Фандинг BingX: '+(percent<0?'−':'')+number(Math.abs(percent))+'% за '+number(period/3600000)+' ч.';
++}
+ export function planExitLines(plan,{compact=false}={}){
+   const exit=plan.exit_zone,price=value=>Number(value.toPrecision(10)).toString();
+   const prefix='Фиксация всей позиции: '+price(exit.lower)+'–'+price(exit.upper);
+--- a/pump-report/analytics/index.mjs
++++ b/pump-report/analytics/index.mjs
+@@ -7,7 +7,7 @@
+ import {explainOptionalFacts, explainMapPlan} from './context.mjs';
+ import {consumeObservedDayGrowth} from './day-growth.mjs';
+ import {explainManualAnalysis} from './manual-text.mjs';
+-import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines} from './presentation.mjs';
++import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines,fundingContextLine} from './presentation.mjs';
+ export {evaluateOutcome} from './outcome.mjs';
+ 
+ export const RULES_VERSION='pump-analytics-v4-first-qualification-20261025';
+@@ -52,12 +52,14 @@
+   const limits=z.limitations?.length?(compact?'; ограничения: ':'; ограничения источника: ')+unique(z.limitations.map(k=>knownLimits[k]??'дополнительные ограничения источника')).slice(0,2).map(t=>compact?shortLabel(t,26):t).join(', ')+(compact&&z.limitations.length>2?'; др.':''):'';
+   return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source,compact?18:32)+(z.venue?' / '+shortLabel(z.venue,compact?14:24):'')+model+'; данные '+time+' МСК ('+age+' с назад)'+limits;
+ }
+-function render(result){
++export function renderPumpCard(result,profile=START_PROFILE){
+   const p=result.plan,narrative=result.user_narrative,selected=narrative.reasons.map(f=>wellFormed(f.text));
+-  function make(compact){
++  const funding=fundingContextLine(result,profile);
++  function make(compact,includeFunding=true){
+   const mode=presentationModeLines(result),lines=[label(result.instrument.native_symbol)+' · '+mode[0],...mode.slice(1),growthProofLine(result.growth_proof,compact),FUTURE_EVENT_TEXT,...(selected.length?[selected.join(' ')]:[]),
+     'Покупка на откате: '+p.entry_zones.map(z=>px(z.lower)+'–'+px(z.upper)+' ('+(z.basis_level.kind==='HIGH'?'прежняя вершина':'прежний минимум')+' '+px(z.basis_level.price)+'; '+(z.confirmation_status==='CONFIRMED_RECLAIM'?'возврат подтверждён':'предварительная область')+')').join('; ')+'.',
+     ...planExitLines(p,{compact})];
++  if(funding&&includeFunding)lines.push(funding);
+   if(narrative.limitation)lines.push(narrative.limitation);
+   const map=result.liquidations;
+   if(map.map_mode==='WITHOUT_MAP')lines.push('Карта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.');
+@@ -69,8 +71,13 @@
+   // Compact the unchanged map format, retaining every selected main reason
+   // and every mandatory plan, mode, growth, provenance and warning field.
+   const notice='Краткая версия; полные сведения — в анализе.',card=make(true)+'\n'+notice;
+-  if(card.length>4096)throw Error('CARD_LENGTH_INVARIANT');
+-  return card;
++  if(card.length<=4096)return card;
++  // Optional context must not make an otherwise renderable plan disappear.
++  if(funding){
++    const without=make(false,false);if(without.length<=4096)return without;
++    const compactWithout=make(true,false)+'\n'+notice;if(compactWithout.length<=4096)return compactWithout;
++  }
++  throw Error('CARD_LENGTH_INVARIANT');
+ }
+ function analyzeCore(input, profile){
+   assertInput(input);
+@@ -128,7 +135,7 @@
+   const mapContext=explainMapPlan(result.plan,result.liquidations);
+   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
+   result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
+-  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids,...(result.plan.exit_zone.intermediate_highs??[]).map(p=>p.fact_id)]);result.user_narrative=selectUserNarrative(result);result.card_text=render(result);
++  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids,...(result.plan.exit_zone.intermediate_highs??[]).map(p=>p.fact_id)]);result.user_narrative=selectUserNarrative(result);result.card_text=renderPumpCard(result,profile);
+   return result;
+ }
+ 

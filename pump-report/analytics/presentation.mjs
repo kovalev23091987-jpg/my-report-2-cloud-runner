@@ -1,4 +1,4 @@
-import {positive,validTime,finite} from '../contracts/index.mjs';
+import {positive,validTime,finite,factUsable} from '../contracts/index.mjs';
 import {pct,growthAtLeast} from './math.mjs';
 
 const text=x=>typeof x==='string'&&x.trim().length>0;
@@ -6,6 +6,17 @@ const number=n=>Number(n.toPrecision(8)).toString();
 const clock=(ts,compact=false)=>new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',...(compact?{}:{second:'2-digit'}),hourCycle:'h23'}).format(ts).replace(',','');
 export const FUTURE_EVENT_TEXT='Будущее событие для статистики — +10% за 4 часа: вероятность пока не оценена. Отсчёт от исходной цены отчёта.';
 export const USER_NARRATIVE_VERSION='pump-user-narrative-v1-tz2-20261025';
+export function fundingContextLine(result,profile){
+  const f=result.optional_context?.funding,at=result.analysis_ts,ttl=profile?.freshness_ms?.funding;
+  if(!f||f.kind!=='funding'||f.instrument_id!==result.instrument?.instrument_id||!factUsable(f,at)||
+    f.event_ts>f.received_ts||!positive(ttl)||at-f.event_ts>ttl||f.unit!=='RATE_FRACTION_PER_ACTUAL_PERIOD'||
+    f.source!=='BINGX_OFFICIAL_PUBLIC_API'||f.venue!=='BINGX'||f.origin!=='OBSERVED'||!text(f.evidence_ref)||
+    !result.fact_ids?.includes(f.fact_id)||!result.findings?.some(x=>x.code==='FUNDING_SNAPSHOT'&&x.fact_ids?.includes(f.fact_id)))return null;
+  const rate=f.value?.rate,period=f.value?.period_ms;
+  if(!finite(rate)||!finite(rate*100)||!positive(period)||period>86400000)return null;
+  const percent=rate*100;
+  return 'Фандинг BingX: '+(percent<0?'−':'')+number(Math.abs(percent))+'% за '+number(period/3600000)+' ч.';
+}
 export function planExitLines(plan,{compact=false}={}){
   const exit=plan.exit_zone,price=value=>Number(value.toPrecision(10)).toString();
   const prefix='Фиксация всей позиции: '+price(exit.lower)+'–'+price(exit.upper);

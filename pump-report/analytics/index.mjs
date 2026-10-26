@@ -7,7 +7,7 @@ import {selectZones} from './zones.mjs';
 import {explainOptionalFacts, explainMapPlan} from './context.mjs';
 import {consumeObservedDayGrowth} from './day-growth.mjs';
 import {explainManualAnalysis} from './manual-text.mjs';
-import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines} from './presentation.mjs';
+import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines,fundingContextLine} from './presentation.mjs';
 export {evaluateOutcome} from './outcome.mjs';
 
 export const RULES_VERSION='pump-analytics-v4-first-qualification-20261025';
@@ -52,12 +52,14 @@ function mapLine(z,at,compact=false){
   const limits=z.limitations?.length?(compact?'; ограничения: ':'; ограничения источника: ')+unique(z.limitations.map(k=>knownLimits[k]??'дополнительные ограничения источника')).slice(0,2).map(t=>compact?shortLabel(t,26):t).join(', ')+(compact&&z.limitations.length>2?'; др.':''):'';
   return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source,compact?18:32)+(z.venue?' / '+shortLabel(z.venue,compact?14:24):'')+model+'; данные '+time+' МСК ('+age+' с назад)'+limits;
 }
-function render(result){
+export function renderPumpCard(result,profile=START_PROFILE){
   const p=result.plan,narrative=result.user_narrative,selected=narrative.reasons.map(f=>wellFormed(f.text));
-  function make(compact){
+  const funding=fundingContextLine(result,profile);
+  function make(compact,includeFunding=true){
   const mode=presentationModeLines(result),lines=[label(result.instrument.native_symbol)+' · '+mode[0],...mode.slice(1),growthProofLine(result.growth_proof,compact),FUTURE_EVENT_TEXT,...(selected.length?[selected.join(' ')]:[]),
     'Покупка на откате: '+p.entry_zones.map(z=>px(z.lower)+'–'+px(z.upper)+' ('+(z.basis_level.kind==='HIGH'?'прежняя вершина':'прежний минимум')+' '+px(z.basis_level.price)+'; '+(z.confirmation_status==='CONFIRMED_RECLAIM'?'возврат подтверждён':'предварительная область')+')').join('; ')+'.',
     ...planExitLines(p,{compact})];
+  if(funding&&includeFunding)lines.push(funding);
   if(narrative.limitation)lines.push(narrative.limitation);
   const map=result.liquidations;
   if(map.map_mode==='WITHOUT_MAP')lines.push('Карта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.');
@@ -69,8 +71,13 @@ function render(result){
   // Compact the unchanged map format, retaining every selected main reason
   // and every mandatory plan, mode, growth, provenance and warning field.
   const notice='Краткая версия; полные сведения — в анализе.',card=make(true)+'\n'+notice;
-  if(card.length>4096)throw Error('CARD_LENGTH_INVARIANT');
-  return card;
+  if(card.length<=4096)return card;
+  // Optional context must not make an otherwise renderable plan disappear.
+  if(funding){
+    const without=make(false,false);if(without.length<=4096)return without;
+    const compactWithout=make(true,false)+'\n'+notice;if(compactWithout.length<=4096)return compactWithout;
+  }
+  throw Error('CARD_LENGTH_INVARIANT');
 }
 function analyzeCore(input, profile){
   assertInput(input);
@@ -128,7 +135,7 @@ function analyzeCore(input, profile){
   const mapContext=explainMapPlan(result.plan,result.liquidations);
   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
   result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
-  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids,...(result.plan.exit_zone.intermediate_highs??[]).map(p=>p.fact_id)]);result.user_narrative=selectUserNarrative(result);result.card_text=render(result);
+  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids,...(result.plan.exit_zone.intermediate_highs??[]).map(p=>p.fact_id)]);result.user_narrative=selectUserNarrative(result);result.card_text=renderPumpCard(result,profile);
   return result;
 }
 

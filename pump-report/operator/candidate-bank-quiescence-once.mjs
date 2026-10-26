@@ -80,9 +80,10 @@ try{
   // Reuse the bounded saved-AUTO reader in this same admitted reservation.
   // It reads the executor itself; do not issue a second executor lookup.
   const saved_auto=admission.read_saved_auto===true?await readSavedAutoObservation({store:native.store,implementation_sha256:admission.implementation_sha256,expected_recipient_sha256:admission.expected_recipient_sha256}):null;
+  const saved_candidate=admission.read_latest_auto_candidate===true&&saved_auto?await readSavedAutoCandidateObservation({store:native.store,observation:saved_auto,implementation_sha256:admission.implementation_sha256}):null;
   const executor=saved_auto?saved_auto.private_evidence.executor:await native.store.get('pump:executor');
   const resources=await native.store.get('pump:resources');
-  evidence.observation={status:executor?.owner?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,resources,...(saved_auto?{saved_auto}:{}),observed_ts:Date.now(),first_genuine_same_original_SENT_observed:saved_auto?.first_genuine_same_original_SENT_observed===true,market_HTTP:0,Telegram:0};
+  evidence.observation={status:executor?.owner?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,resources,...(saved_auto?{saved_auto}:{}),...(saved_candidate?{saved_candidate}:{}),observed_ts:Date.now(),first_genuine_same_original_SENT_observed:saved_auto?.first_genuine_same_original_SENT_observed===true,market_HTTP:0,Telegram:0};
   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';
 }catch(error){
   evidence.error=String(error.code??error.message??'OBSERVATION_FAILED').slice(0,160);evidence.state='FAILED_OR_UNKNOWN_NO_AUTO_RETRY';

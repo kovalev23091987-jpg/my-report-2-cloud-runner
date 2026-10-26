@@ -78,7 +78,9 @@ export function explainOptionalFacts(facts,at,profile){
     if(kind==='open_interest'&&finite(f.value)&&f.value>=0&&['CONTRACTS','BASE_ASSET','USDT'].includes(f.unit)){
       retain(kind,f,f.value);add('OI_SNAPSHOT','Открытый интерес '+source(f)+': '+number(f.value)+' '+f.unit+'; один срез не показывает изменение или сторону позиций.',f);}
     if(kind==='funding'&&f.unit==='RATE_FRACTION_PER_ACTUAL_PERIOD'&&finite(f.value?.rate)&&finite(f.value.rate*100)&&positive(f.value?.period_ms)&&f.value.period_ms<=86400000){
-      retain(kind,f,{rate:f.value.rate,period_ms:f.value.period_ms});add('FUNDING_SNAPSHOT','Фандинг '+source(f)+': '+number(f.value.rate*100)+'% за '+number(f.value.period_ms/3600000)+' ч; это контекст, а не направление будущей цены.',f);}
+      retain(kind,f,{rate:f.value.rate,period_ms:f.value.period_ms});
+      Object.assign(optional_context.funding,{kind:f.kind,status:f.status,instrument_id:f.instrument_id,expires_ts:f.expires_ts,evidence_ref:f.evidence_ref});
+      add('FUNDING_SNAPSHOT','Фандинг '+source(f)+': '+number(f.value.rate*100)+'% за '+number(f.value.period_ms/3600000)+' ч; это контекст, а не направление будущей цены.',f);}
   }
   return out;
 }
