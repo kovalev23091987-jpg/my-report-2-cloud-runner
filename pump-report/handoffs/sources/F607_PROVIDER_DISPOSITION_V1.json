@@ -1,0 +1,93 @@
+{
+  "schema": "F607_TWO_NEW_LINEAGE_DISPOSITION_V1",
+  "evidence_scope": "Documentation only; no provider API result or access entitlement tested.",
+  "decision": "HOLD_NO_NATIVE_ACTION_READY",
+  "providers": [
+    {
+      "id": "SATORI_FINANCE",
+      "novelty": "No prior matches in searched current+legacy workspace MD/JSON/TXT before browse",
+      "useful_fact": "Batch native pair metadata, possible prerequisite for venue price/book/trade consumers; not a future map",
+      "semantic_boundary": "Private user position list is not public exposure census; public metadata cannot create future levels",
+      "documented_batch": {
+        "method": "GET",
+        "relative_path": "/api/third/info/pairs",
+        "array": "data",
+        "query_params": "None documented",
+        "identity_fields": [
+          "id",
+          "symbol",
+          "pair",
+          "tradeCoinId",
+          "tradeCoinName",
+          "settleCoinId",
+          "settleCoinName",
+          "swapCoinId",
+          "swapCoinName"
+        ],
+        "other_fields": [
+          "isDelivery",
+          "faceMultiplier",
+          "tradeDecimal",
+          "settleDecimal"
+        ],
+        "completion_count_pagination": "Not documented; sample list not full catalogue proof"
+      },
+      "access": {
+        "category": "Public Query; published curl has no auth headers",
+        "published_absolute_example": "https://zk-test.satori.finance/api/third/info/pairs",
+        "environment": "TESTNET_ONLY_EXAMPLE",
+        "production_base": "NOT_ESTABLISHED_DO_NOT_SUBSTITUTE_GUESSED_HOST",
+        "permanent_free_production_entitlement": "NOT_ESTABLISHED",
+        "request_weight_minute_day_month_remaining": "UNKNOWN_NOT_UNLIMITED"
+      },
+      "units_clocks": {
+        "settlement": "Per-row field; sample USD is not a universal currency or USDT parity",
+        "faceMultiplier": "Field name/sample do not prove execution/OI size semantics",
+        "source_asof": "No qualified per-row source clock",
+        "freshness": "Metadata docs/example not current market membership"
+      },
+      "F605_bridge": "Only native source numeric IDs/names; no CGID or exact native contract/address bridge established. No symbol-only join or missing field synthesis.",
+      "cost_proposal": {
+        "physical_HTTP_upper_for_one_response": 1,
+        "source_weight_credits_day_month": "UNKNOWN",
+        "status": "NOT_READY_NOT_ADMITTED_NOT_EXECUTED",
+        "need_before_any_future_native": "Exact production base/current version, free machine entitlement and limits, completeness contract and canonical bridge; separate direct owner exception required after24/24"
+      },
+      "future_maps_CORE_routes": 0
+    },
+    {
+      "id": "RABBITX",
+      "novelty": "No prior matches in same wide workspace pre-browse check",
+      "research_result": "Found docs repo and directory; README says Coming soon. Current venue publisher affiliation/version/base/free public batch contract not established.",
+      "schema": "No exact current public market/positions schema read; index.md not read within grant",
+      "not_relied_on": [
+        "Unofficial Python-client search sample",
+        "Unverified pages.dev lookalikes",
+        "Third-party TVL/activity as proof of service lifecycle"
+      ],
+      "free_entitlement_limits_units_clocks_canonical_IDs": "UNKNOWN",
+      "future_vs_past": "No public future liquidation map or all-position census established",
+      "cost_proposal": {
+        "ready_requests": 0,
+        "weight_day_month": "UNKNOWN",
+        "minimum_missing": "A currently authoritative official production documentation link with exact public batch routes/auth/limits and schema/clock/identity evidence; no live probe to guess it"
+      },
+      "future_maps_CORE_routes": 0
+    }
+  ],
+  "coverage550": "UNCHANGED_NOT_CHECKED_NO_NEW_CANONICAL_BINDINGS",
+  "F605_preserved": {
+    "EXACT": 519,
+    "UNKNOWN": 31,
+    "no_transfer_of_coverage": true
+  },
+  "qualification": {
+    "spent": 24,
+    "cap": 24,
+    "remaining": 0,
+    "new_API_MCP_SDK_calls": 0
+  },
+  "new_accounts_keys_SQL_TG_deploy": 0,
+  "no_inferred_local_model": true,
+  "no_unused_helper_code": true
+}
