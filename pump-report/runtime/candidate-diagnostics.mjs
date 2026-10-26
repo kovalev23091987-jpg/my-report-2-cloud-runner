@@ -3,7 +3,7 @@ import {candidatePriority} from './candidate-priority.mjs';
 const arr=v=>Array.isArray(v)?v:null;
 const nat=v=>Number.isSafeInteger(v)&&v>=0?v:null;
 const finite=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
-const id=v=>typeof v==='string'&&/^BINGX:USDT_M:[0-9]+:[^\u0000-\u001f\u007f]{1,100}$/u.test(v)?v:null;
+const id=v=>typeof v==='string'&&/^BINGX:USDT_M:[0-9]{1,20}:[^\u0000-\u001f\u007f]{1,100}$/u.test(v)?v:null;
 const key=v=>typeof v==='string'&&/^pump:analysis:[a-f0-9]{64}$/.test(v)?v:null;
 const row=r=>r&&typeof r==='object'?{
   instrument_id:id(r.instrument_id),rank:nat(r.rank),score:finite(r.score),
