@@ -1,0 +1,77 @@
+{
+  "schema": "F584_ONE_EXACT_FUTURE_NATIVE_HTTP_ENVELOPE_V1",
+  "status": "DESIGN_ONLY_NOT_EXECUTE_OR_NATIVE_ADMISSION",
+  "purpose": "Onepublicaccountcurrentnativefield/clock/presenceacquisition;notqualifiedBingXmap/COREreplay",
+  "request": {
+    "provider": "HYPERLIQUID",
+    "family": "LIQUIDATIONS",
+    "method": "POST",
+    "url": "https://api.hyperliquid.xyz/info",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "json_body": {
+      "type": "clearinghouseState",
+      "user": "0x6ba889db7f923622d3548f621ecc2054b80c1817",
+      "dex": ""
+    },
+    "canonical_JSON_body": "{\"type\":\"clearinghouseState\",\"user\":\"0x6ba889db7f923622d3548f621ecc2054b80c1817\",\"dex\":\"\"}",
+    "body_sha256": "12f7ee92571874aa97a3dfa565f5e84a8903058b751aeaf099203aa33f6337c7",
+    "body_bytes": 90,
+    "authentication": "NONE",
+    "redirect": "ERROR",
+    "timeout_ms": 10000,
+    "max_response_bytes": 2000000,
+    "max_attempts": 1,
+    "retries": 0,
+    "pagination": 0,
+    "account_count": 1
+  },
+  "account_provenance": {
+    "public_retained_path": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json",
+    "pointer": "/native_samples/0/address",
+    "source_sha256": "771264214be141b4aa85a1238cd47214fc36d9f3b71f487f3b96d7a52404035a",
+    "address_sha256": "e1f5d1cce30fc1fcf6d67d5c56006d5b187fd11c2d0de51e907e3198aea1a0b9",
+    "ROOT_authorization": "F584 designonly",
+    "account_ref": "HL_RETAINED_SAMPLE0_F584"
+  },
+  "target_intent": {
+    "bingx_instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+    "bingx_asset_id": "BINGX_UNDERLYING:SOL",
+    "native_coin": "SOL",
+    "dex": "",
+    "canonical_identity_qualified": false,
+    "hyperliquid_stable_market_id": null
+  },
+  "inspect_after_response": [
+    "NativeHTTPstatus/bodyhash/byteboundandoriginalreceiveclock",
+    "assetPositions array≤1000;targetcoinSOLmatches0or1;duplicateSOLreject;positiontypeoneWay",
+    "Retain native szi/liquidationPx/positionValue asrawdecimalprivate;no amount/side/currency guesses",
+    "Nativepayload.time validate againstreceived/now;no receipt-as-event;accountTTL120s onlyunderacceptedclockqualification",
+    "IfnoSOLrow ornull liquidationPx, boundedobservedabsence/unavailable—notzeroorUNSUPPORTED",
+    "Storeprivateoriginalonce;publichandoffonlymetadatahashes/clocks/status",
+    "Do notsetBingXasset_id fornativezone whilecanonicalunknown;sideUNKNOWN,unitUNKNOWN,magnitude null;usablefalse"
+  ],
+  "new_qualified_550_map_coverage_max": 0,
+  "new_native_account_observation_max": 1,
+  "budget": {
+    "HTTP_cold": 1,
+    "HTTP_identicalbody_freshcache": 0,
+    "provider_weight_retained_estimate": 2,
+    "current_providerquota_remaining": null,
+    "current_native_SQL_cost": null,
+    "current_native_R_W_cost": null,
+    "whole_native_admission_required": true,
+    "no_SQL_LOOKUP_market_reuse": true,
+    "no_extra_startup_MANUAL_CONTROL": true,
+    "unknown_spend_nonrefundable": true
+  },
+  "blocked_qualified_zone_requirements": [
+    "Independentunderlyingproof",
+    "signedsizeandliqsemantics/currency",
+    "Explicitfreshpricebasis+quoteconversion",
+    "QualifiedmarketIDandregistryroute",
+    "ROOTproviderpolicyproductionHLscope+exactwhole/nativegrant"
+  ]
+}

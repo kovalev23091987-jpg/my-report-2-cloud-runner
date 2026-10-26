@@ -1,0 +1,117 @@
+{
+  "schema": "F584_MINIMAL_PRODUCER_AND_PRICE_BASIS_PLAN_V1",
+  "state": "ONE_NATIVE_OBSERVATION_DESIGNED;QUALIFIED_MAP_NOT_PROVEN",
+  "code_changes": 0,
+  "tests": 0,
+  "market_SQL_TG_Worker_IO": 0,
+  "no_strategy_gate_move": true,
+  "no_pacing_change": true,
+  "pacing_owner_notice": "ROOT ownsunusedcandidatecarryforward base2:0used→4followinghour whilefuturehoursprotected;SOURCEimplementation0",
+  "minimal_next": "ROOT may separatelyadmitexactoneHTTPenvelope toobservecurrentnativeaccountfacts if useful. Itdoesnotrequirepretendingcanonicalidentity/FXclosed. Existingproducerroutecallmustnotbeclaimedactivateduntilrequiredmarketid/inputproofs supplied.",
+  "producer_paths": [
+    {
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "lines": [
+        22,
+        31,
+        37,
+        49,
+        54,
+        74,
+        87,
+        100,
+        127,
+        133,
+        139
+      ],
+      "finding": "Canonical,side,currencyandmappingguards alreadyseparate.NativequantityunitstaysUNKNOWN. No directfetch,externalIO isROOTbroker."
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "function": "getLiquidations",
+      "finding": "ReuseconnectedF556 pathafterexactroutebindings;allcurrentroutesempty"
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "finding": "Usablezonesonly;unqualifiednativediagnosticnotpreciseBingXzone"
+    }
+  ],
+  "route_input_plan": {
+    "coin": "SOL",
+    "asset_id_intent": "BINGX_UNDERLYING:SOL",
+    "market_id": null,
+    "admitted_accounts": "exactonebodyaccount+opaqueaccountref;designadmittedonly",
+    "identity_binding": null,
+    "position_semantics": null,
+    "price_quote": null,
+    "price_quote_evidence_ref": null,
+    "position_value": null,
+    "price_mapping": null,
+    "canonical_cross_venue_identity_qualified": false,
+    "do_not_call_existing_route_with_null_market_id": "collectHyperliquidPositions refuses0HTTP;ROOT sourceacquisitiontransportmaycaptureexactaccountresponsebeforequalifiedrouteactivation"
+  },
+  "price_mapping_real_cost": {
+    "F556_extra_HTTP_implemented": 0,
+    "why": "Mapperconsumescallerproofrefs/multiplier/event/expiry;doesnotproduceit. Oneaccountresponsecannotclosepricemap.",
+    "existing_fresh_CORE_price_reuse": "0additionalBX onlyifsameexactSOLpricefactfresh≤30s withoriginalclock;allF583savedexpired",
+    "exact_additional_reference_requests": [
+      {
+        "id": "HL_NATIVE_BOOK_REFERENCE",
+        "method": "POST",
+        "url": "https://api.hyperliquid.xyz/info",
+        "json_body": {
+          "type": "l2Book",
+          "coin": "SOL"
+        },
+        "HTTP": 1,
+        "role": "NativeHLbestbid/ask+sourceclock diagnostic candidate;notliquidationmarkbasisguarantee",
+        "qualification": "Retainedexistingrecorder route lead only;notread/executed/currentadmitted;quoteunit/marketidentity/clocksemanticsstillrequireproof"
+      },
+      {
+        "id": "BINGX_CURRENT_SOL_REFERENCE",
+        "method": "GET",
+        "url": "https://open-api.bingx.com/openApi/swap/v1/ticker/price?symbol=SOL-USDT",
+        "HTTP": 1,
+        "role": "ExistingqualifiedBingX100028price/time;neededifnofreshsamecycleprice",
+        "fallback": "Existingbrokeratmostonequalifiedtickerfallbackcountsadditional1,notzero"
+      },
+      {
+        "id": "HL_META_CONTEXT_IF_NEEDED",
+        "method": "POST",
+        "url": "https://api.hyperliquid.xyz/info",
+        "json_body": {
+          "type": "metaAndAssetCtxs"
+        },
+        "HTTP": 1,
+        "role": "Metadata/currentmark-oraclecontext diagnostics;ROOTdocconfirmsuniverse+contexts+collateralToken",
+        "qualification": "No provenmetricnativeeventclock inreturnedcontext;receiptcannotbeused;notautomaticallyusable30spricebasis",
+        "optional_not_in_one_state_envelope": true
+      }
+    ],
+    "FX": {
+      "source_quote_liquidation": null,
+      "target_quote": "USDT",
+      "direct_source_quote_proof": "UNKNOWN",
+      "qualified_current_FX_route": null,
+      "exact_qualified_FX_request": null,
+      "reason": "No provenliqpricecurrencyandnoqualifiedFXsourceinretainedone-routepacket;cannotinventaURL/pair/tokenmapping. IfsourcequoteUSDCisindependentlyproved,USDC→USDT stillneedsqualifiedsame-timeFXorindependentexplicitconversionproof. Thatwouldbeadditionalrequest(s),notincludedinstate1.",
+      "extra_HTTP_count": null
+    },
+    "cold_state_plus_two_reference_HTTP_minimum": 3,
+    "with_optional_meta_context": 4,
+    "FX_HTTP_and_primary_price_fallback_additional": true,
+    "upper_bound_for_qualified_BingX_zone": null,
+    "why_upper_unknown": "Semanticidentity/currencybasisproofnotclosed;unqualifiedFXroute/countunknown. 3/4HTTPdiagnosticsdoesnotguaranteequalifiedzone.",
+    "warm_cost": "state1 plusallmissingfreshqualifiedreference/FX;0onlyactualidenticalfreshbodycache;no sourceclockrefresh",
+    "no_blind_request_batch": true
+  },
+  "minimal_next_root_decision": "Choosewhether1state-onlyobservationmeaningfullyaddsactualnativeevidence. Toactivateconsumerroute,firstsupplymissingindependentcanonical/unit/pricecurrencyproof;newHTTPalonecannotclosethose. Additionalbasis/FXpacketneedsitsownexactqualifiedprovider/wholeadmission.",
+  "scope_limits": [
+    "No worldsearch",
+    "No newproviderchosenforFX",
+    "No accountdiscovery",
+    "No mapcensus",
+    "NoclaimoneHTTPqualifiedBingXzone",
+    "Oldreport/9pauses/2OWNERdeferrals/caps/unknowns/reservespreserved"
+  ]
+}

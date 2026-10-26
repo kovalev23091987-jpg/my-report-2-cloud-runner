@@ -1,0 +1,17 @@
+# F584 — один сохранённый Hyperliquid account / SOL
+
+Пакет подготовлен на main 101313e398a2914ee7059a31ef5b5029d7118afb. Код, тесты, market/SQL/Worker/TG IO — 0. SOURCE Firecrawl attempt1 завершился Insufficient credits без страницы и остаётся SPENT. ROOT отдельно успешно прочитал тот же официальный URL в08:49UTC; его материал включён с явным происхождением. Другие страницы и поиск —0.
+
+Документ закрывает форму запроса и ответа, а не торговую квалификацию. Правильный путь — assetPositions[].position; type:oneWay находится рядом. В F583 была ошибочная формулировка oneWay.position. Код F556 уже использует правильные поля, поэтому исправление кода не нужно; замороженный F583 не переписан.
+
+Закрыты exact BingX SOL nativeID100028/USDT_M и происхождение одного публичного сохранённого аккаунта для ПРОЕКТИРОВАНИЯ. Старые perp metadata содержат SOL вuniverse[5]; это исторический индекс массива, не доказанный стабильный market ID. collateralToken0 связывается с USDC index0 в сохранённых spot metadata; это подтверждает историческую связь collateral, но не валюту liquidationPx/positionValue и не соответствие SOL-проектов.
+
+UNKNOWN остаются same-underlying SOL, unit/sign szi, валюта liquidationPx/positionValue, независимый price basis и FX. Пример, rawUsd, szDecimals и одинаковый тикер эти пункты не доказывают. Верхний payload.time — clock состояния аккаунта; parser ожидает Unixms, но документ не обещает per-position update. Свежесть требует нового фактического ответа; receipt не обновляет исходный возраст.
+
+Подготовлен точный DESIGN-ONLY конверт: POST https://api.hyperliquid.xyz/info, clearinghouseState, ровно native_samples[0], dex пустаястрока, bodySHA 12f7ee92571874aa97a3dfa565f5e84a8903058b751aeaf099203aa33f6337c7,90B,timeout10s,response≤2MB,1attempt,0retry/0pagination. Публичный адрес взят из уже сохранённого публичного proof; raw состояния/позиции/цены не экспортированы. ROOT может отдельно допустить этот1HTTP для нового native наблюдения. Это конкретный полезный пакет проверки фактов, а не полный HOLD из-за Firecrawl. Он не разрешён данным документом и не увеличивает квалифицированный охват карты.
+
+F556 не скачивает basis/FX: priceMapping проверяет предоставленные caller поля и refs. Поэтому1state не означает1HTTP за пригодную BingX-зону. Для диагностики сравнимых цен в плане выписаны точные дополнительные HL l2Book и BingX SOL ticker/price: ещё1+1HTTP без свежих повторно используемых фактов, итого минимум3. Если нужен metaAndAssetCtxs — ещё1, но sourceclock контекста этим не доказан. Qualified FX-route не выбран и sourcequote ещё UNKNOWN; верхний расход полного преобразования неизвестен. Его нельзя объявлять4или включать вstate1. Ни один из этих дополнительных запросов не выполнен и не допущен.
+
+Готовый qualified route пока не активировать: canonicalflag=false, market_id/identity_binding/position_semantics/price_quote/price_mapping остаютсяnull. Текущий collector сnullmarket_id корректно откажет доHTTP; ROOT может использовать отдельно допущенный acquisition transport для оригинала без обхода guards. Когда независимые proofs появятся, переиспользуются F556 producer и selectZones; nativeTTL120s, convertedexpiry=min(nativeexpiry,mappingexpiry,mappingevent+30s). Один account — subset, не весь рынок, null не ноль.
+
+ROOT владеет переносом неиспользованных candidate places (база2,0использовано→4 в следующийчас) с защитой будущих часов; SOURCE pacing не менял. Все прежние spent/unknown/reserves/3manuals/9пауз/2OWNERdeferrals и пауза старого отчёта сохранены.
