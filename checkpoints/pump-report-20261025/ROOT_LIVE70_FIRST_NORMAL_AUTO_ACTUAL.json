@@ -1,0 +1,77 @@
+{
+  "schema": "ROOT_LIVE70_FIRST_NORMAL_AUTO_ACTUAL_V1",
+  "private_result_sha256": "f654cfbafb5dbb4de2b38332eb2ea5f3b5020205a276da44405f40a0eaf5ba19",
+  "event": {
+    "eventTimestamp": 1793031346488,
+    "cron": "*/5 7-16 * * *",
+    "scheduledTime": 1793031345793,
+    "outcome": "ok",
+    "scriptName": "my-report-2-hub",
+    "scriptVersion": {
+      "id": "bb7cdbc6-b74b-4346-9f17-ba905c2aaea7"
+    },
+    "exceptions": [],
+    "safe_operational_messages": [
+      [
+        "PUMP_AUTO_SUMMARY",
+        "{\"schema\":\"PUMP_AUTO_SUMMARY_V1\",\"mode\":\"AUTO\",\"run_id\":\"60685073-cb5c-4a55-b508-7634090d9600\",\"implementation_pin\":\"08ab5e3f4b58cbbce2d5278ca956810fcf1f4f25cda23b033444f087846893a7\",\"status\":\"INCOMPLETE\",\"discovery_result\":\"INCOMPLETE_COVERAGE_OR_RESOURCES\",\"counts\":{\"checked_entries\":1,\"analysis_results\":1,\"ready_results\":0,\"ready_auto_eligible_results\":0,\"manual_results\":0,\"budget_deferred_entries\":1,\"source_pending\":9,\"catalog_unresolved\":249},\"phase_flags\":{\"executor_busy\":false,\"analysis_result_seen\":true,\"budget_defer_seen\":true,\"delivery_result_seen\":false},\"reason_codes\":[\"SOURCE_EVIDENCE_PENDING\",\"UNIVERSE_QUALIFICATION_INCOMPLETE\",\"SOURCE_BUDGET_DEFERRED\",\"PROTECTED_DAY_RESERVE\",\"SURPLUS_LOGICAL_GRANT_LIMIT\",\"CURRENT_ACTIVITY_NOT_CONFIRMED\"],\"reason_codes_truncated\":false,\"unlisted_reason_occurrences\":0,\"delivery\":{\"complete_result_envelope\":true,\"reported_occurrences\":0,\"occurrences_by_state\":{},\"refs\":[],\"refs_truncated\":false}}"
+      ]
+    ],
+    "wallTime": 75216,
+    "cpuTime": 466
+  },
+  "summary": {
+    "schema": "PUMP_AUTO_SUMMARY_V1",
+    "mode": "AUTO",
+    "run_id": "60685073-cb5c-4a55-b508-7634090d9600",
+    "implementation_pin": "08ab5e3f4b58cbbce2d5278ca956810fcf1f4f25cda23b033444f087846893a7",
+    "status": "INCOMPLETE",
+    "discovery_result": "INCOMPLETE_COVERAGE_OR_RESOURCES",
+    "counts": {
+      "checked_entries": 1,
+      "analysis_results": 1,
+      "ready_results": 0,
+      "ready_auto_eligible_results": 0,
+      "manual_results": 0,
+      "budget_deferred_entries": 1,
+      "source_pending": 9,
+      "catalog_unresolved": 249
+    },
+    "phase_flags": {
+      "executor_busy": false,
+      "analysis_result_seen": true,
+      "budget_defer_seen": true,
+      "delivery_result_seen": false
+    },
+    "reason_codes": [
+      "SOURCE_EVIDENCE_PENDING",
+      "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "SOURCE_BUDGET_DEFERRED",
+      "PROTECTED_DAY_RESERVE",
+      "SURPLUS_LOGICAL_GRANT_LIMIT",
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ],
+    "reason_codes_truncated": false,
+    "unlisted_reason_occurrences": 0,
+    "delivery": {
+      "complete_result_envelope": true,
+      "reported_occurrences": 0,
+      "occurrences_by_state": {},
+      "refs": [],
+      "refs_truncated": false
+    }
+  },
+  "qualified_current_pin": true,
+  "conditional_extra_admission_evidence": {
+    "prior_samehour_live69_1905": "EVEN_DAY_CANDIDATE_ALLOCATION_BEFORE_ANALYSIS",
+    "current_live70_1915": "ONE_ANALYSIS_THEN_SURPLUS_LOGICAL_GRANT_LIMIT",
+    "native_grant_record_reread": false,
+    "logical_inference_from_code_and_normal_results": true
+  },
+  "same_original_SENT_proof": false,
+  "operator_Worker_invocations": 0,
+  "operator_native_SQL": 0,
+  "operator_market_HTTP": 0,
+  "operator_Telegram": 0,
+  "admin_HTTP_WS": "UNKNOWN_NONZERO_RETAINED"
+}

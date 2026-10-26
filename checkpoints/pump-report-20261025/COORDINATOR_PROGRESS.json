@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_COORDINATOR_PROGRESS_V1",
-  "recorded_at": "2026-10-26 16:13:13 UTC",
+  "recorded_at": "2026-10-26 16:18:23 UTC",
   "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
   "stage": "LIVE70_CONDITIONAL_SURPLUS_AUTO_DELIVERY_ON_FIRST_CURRENT_SENT_OPEN",
   "code_main": "f3f8cc6e848c5152aac92a4a5bf1a3fdcfb748fc",
@@ -338,7 +338,7 @@
   "automatic_enabled": true,
   "overall_completion_pct": null,
   "current_work": {
-    "ROOT": "Live70 installed FULL, AUTO1/DL1 restored19:12:32MSK; observe one normal19:15AUTO without forcedsignal. Exact13 consumed8Q127R4W0unknown; no14.",
+    "ROOT": "Live70 first normal19:15 candidate analysed, READY0/CURRENT_ACTIVITY_NOT_CONFIRMED; next extra protected by1/run. Continue genuine launch acceptance, no forcedsend.",
     "SOURCES": "F603 primary free batch OI/funding/canonical opportunity, bounded2search4reads; no sourceAPI orlastqualification attempt.",
     "ANALYTICS": "BN exactlyone replay actual18:00KIMCHI original with immutable69 inputclock/previouswave, no thresholdedits/nativecalls.",
     "no_native_market_TG_during_preparation": true
@@ -775,12 +775,24 @@
   "owner_launch_priority": "checkpoints/pump-report-20261025/ROOT_OWNER_LAUNCH_STRATEGY_FIRST_20261026.json",
   "latest_integration": "ROOT_AUTO_SUMMARY_ONE_PRIVACY_CASE_PASS_LOG_ONLY_GUARD_PASS_FULL69_INSTALLED",
   "latest_saved_auto_observation": {
-    "proof": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_AND_DAY_BUDGET_ACTUAL_V2.json",
-    "run_id": "8169859d-4721-442b-a08e-8a4e9dfc2fd9",
-    "checked": 8,
-    "provider_HTTP": 34,
-    "full_TZ": false,
-    "SENT": 0
+    "proof": "checkpoints/pump-report-20261025/ROOT_LIVE70_FIRST_NORMAL_AUTO_ACTUAL.json",
+    "run_id": "60685073-cb5c-4a55-b508-7634090d9600",
+    "implementation": "08ab5e3f4b58cbbce2d5278ca956810fcf1f4f25cda23b033444f087846893a7",
+    "eventTimestamp": 1793031346488,
+    "checked": 1,
+    "analysis": 1,
+    "READY": 0,
+    "delivery_occurrences": 0,
+    "reason_codes": [
+      "SOURCE_EVIDENCE_PENDING",
+      "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "SOURCE_BUDGET_DEFERRED",
+      "PROTECTED_DAY_RESERVE",
+      "SURPLUS_LOGICAL_GRANT_LIMIT",
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ],
+    "native_persisted_record_read": false,
+    "platform_summary_observed": true
   },
   "production_CORE_unique": 10,
   "production_CORE_NOT_CHECKED": 540,
@@ -851,15 +863,22 @@
     "next": "HOLD_NO_NEW_REQUEST"
   },
   "last_normal_schedule_observation": {
-    "proof": "checkpoints/pump-report-20261025/ROOT_NEXT_HOUR_NORMAL_AUTO_ACTUAL.json",
-    "run_id": "1372a2e6-3736-448e-b32d-846e37bafc80",
-    "eventTimestamp": 1793026846584,
+    "proof": "checkpoints/pump-report-20261025/ROOT_LIVE70_FIRST_NORMAL_AUTO_ACTUAL.json",
+    "run_id": "60685073-cb5c-4a55-b508-7634090d9600",
+    "implementation": "08ab5e3f4b58cbbce2d5278ca956810fcf1f4f25cda23b033444f087846893a7",
+    "eventTimestamp": 1793031346488,
     "checked": 1,
     "analysis": 1,
     "READY": 0,
     "delivery_occurrences": 0,
-    "source_pending": 9,
-    "catalog_unresolved": 249
+    "reason_codes": [
+      "SOURCE_EVIDENCE_PENDING",
+      "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "SOURCE_BUDGET_DEFERRED",
+      "PROTECTED_DAY_RESERVE",
+      "SURPLUS_LOGICAL_GRANT_LIMIT",
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ]
   },
   "production_CORE_basis": "LAST_ACCEPTED_SAVED_PROOF_NOT_CURRENT_ALL550",
   "conditional_surplus": {
@@ -930,6 +949,7 @@
       "deployed": false
     },
     "LOOKUP13_spent": true,
-    "live_proof": "checkpoints/pump-report-20261025/ROOT_CAPACITY_AUTO_ON_READBACK.json"
+    "live_proof": "checkpoints/pump-report-20261025/ROOT_CAPACITY_AUTO_ON_READBACK.json",
+    "first_normal_extra_admission_observed": true
   }
 }
