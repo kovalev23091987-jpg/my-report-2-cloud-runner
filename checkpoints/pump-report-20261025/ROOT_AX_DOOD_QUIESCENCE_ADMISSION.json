@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_MAINTENANCE_QUIESCENCE_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_QUIESCENT",
   "authority_main": "b2b424331ebc9a17430c431f7a2e0fb700234966",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_INTEGRATION:1793004911853",
@@ -33,5 +33,22 @@
   "Telegram": 0,
   "purpose": "Exactly one existing executor/resources lookup after AUTOoff before AX supported deeper entries fix; no market/TG",
   "positive_native_reservation_before_business_reads": true,
-  "old_limits_unknowns_reserves9pauses2deferrals_preserved": true
+  "old_limits_unknowns_reserves9pauses2deferrals_preserved": true,
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-ax-dood-maintenance-quiescence-20261026-one",
+    "usage": {
+      "requests": 6,
+      "rows_read": 48,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 48,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "67d69b8998479d3ec7962e34b85acccfab87ac95ae4e37566c9400bd7eaab022",
+  "completed_ts": 1793008059949
 }
