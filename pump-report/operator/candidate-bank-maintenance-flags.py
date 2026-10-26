@@ -41,7 +41,7 @@ try:
  byname={b['name']:b for b in before['bindings']};assert len(byname)==21
  assert byname['PUMP_REPORT_ENABLED']=={'name':'PUMP_REPORT_ENABLED','type':'plain_text','text':'1' if a['from_auto'] else '0'}
  assert byname['PUMP_REPORT_DELIVERY_ENABLED']=={'name':'PUMP_REPORT_DELIVERY_ENABLED','type':'plain_text','text':'1'}
- initial=health();assert initial['implementation_sha256']==a['implementation_sha256'] and initial['automatic_enabled']==a['from_auto'] and initial['delivery_enabled']
+ initial=health();proof['initial_health_observed']=initial;assert initial['implementation_sha256']==a['implementation_sha256'] and initial['automatic_enabled']==a['from_auto'] and initial['delivery_enabled']
  schedules=get('/schedules');assert [s['cron']for s in schedules['schedules']]==['*/5 7-16 * * *']
  settings={'bindings':[{'name':b['name'],'type':'inherit'}if b['name']!='PUMP_REPORT_ENABLED'else{'name':'PUMP_REPORT_ENABLED','type':'plain_text','text':'1'if a['to_auto']else'0'}for b in before['bindings']]}
  if before.get('annotations'):settings['annotations']={k:v for k,v in before['annotations'].items()if k in ['workers/message','workers/tag']}
@@ -58,7 +58,8 @@ try:
  for part in msg.iter_parts():
   name=part.get_param('name',header='content-disposition')or part.get_filename();assert name not in modules;modules[name]=part.get_payload(decode=True)
  assert set(modules)==set(artifact['modules'])and all(modules[n]==s.encode()for n,s in artifact['modules'].items())
- final=health();assert final['implementation_sha256']==a['implementation_sha256']and final['automatic_enabled']==a['to_auto']and final['delivery_enabled']
+ proof.update(FULL_exact_module_bytes=True,module_count=len(modules),source_readback_ts=int(time.time()*1000),bindings_count=21,other20bindings_exact=True)
+ final=health();proof['last_health_observed']=final;assert final['implementation_sha256']==a['implementation_sha256']and final['automatic_enabled']==a['to_auto']and final['delivery_enabled'],'HEALTH_PIN_OR_FLAGS_READBACK_MISMATCH'
  proof.update(state='CONFIRMED_FULL',readback_ts=int(time.time()*1000),artifact_sha256=a['artifact_sha256'],implementation_sha256=a['implementation_sha256'],FULL_exact_module_bytes=True,module_count=len(modules),bindings_count=21,other20bindings_exact=True,new_business_cron='*/5 7-16 * * *',health=final)
 except Exception as error:
  proof['error']=str(error)[:180];raise
