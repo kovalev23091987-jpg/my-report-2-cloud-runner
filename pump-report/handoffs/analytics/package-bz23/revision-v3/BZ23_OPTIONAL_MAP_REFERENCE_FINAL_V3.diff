@@ -1,0 +1,70 @@
+--- baseline/feature-capsule.v2.mjs
++++ analytics/feature-capsule.mjs
+@@ -161,8 +161,9 @@
+ }
+ 
+ // This is a bounded projection of supplied originals, never a global liveness
+-// scan or a deletion admission. Missing/oversized reference inventories fail
+-// closed; time, HIT, terminal state and summary cursors cannot close an edge.
++// scan or a deletion admission. Core/selected references remain strict; raw
++// optional map overflow stays explicitly incomplete and requires originals.
++// Time, HIT, terminal state and summary cursors cannot close an edge.
+ export async function projectProtectedReferences({analysis_key,analysis,input,card=null,journal=null,signal=null,summary_head=null,ordered_items=[],members=[],summary_records=[],external_audit_refs=[],owner_original_refs=[]}={}){
+   if(!text(analysis_key)||!analysis||!input)throw Error('PROTECTED_ORIGINALS_REQUIRED');
+   if(analysis_key!=='pump:analysis:'+await capsuleDigest(analysis))throw Error('PROTECTED_ANALYSIS_CONTENT_HASH_REQUIRED');
+@@ -191,10 +192,6 @@
+   }
+   for(const area of [...list(analysis.plan?.entry_zones??[],3),...(analysis.plan?.exit_zone?[analysis.plan.exit_zone]:[])])for(const id of strings(area.basis_fact_ids??[],16))add(analysis_key,id,'ORIGINAL_PLAN_BASIS_FACT');
+   for(const z of [...list(analysis.liquidations?.zones_up??[],3),...list(analysis.liquidations?.zones_down??[],3)])zoneProofs(z);
+-  const suppliedZones=input.liquidations?.zones??[];
+-  if(!Array.isArray(suppliedZones))throw Error('CAPSULE_ARRAY_BOUND_REQUIRED');
+-  if(suppliedZones.length>CAPSULE_BOUNDS.refs){reasons.add('SUPPLIED_INPUT_MAP_REFERENCE_INVENTORY_INCOMPLETE');reasons.add('ORIGINALS_REQUIRED_FOR_REFERENCE_OVERFLOW');}
+-  for(const z of suppliedZones.slice(0,CAPSULE_BOUNDS.refs))zoneProofs(z);
+   if(card){
+     const ck='pump:card:'+card.card_id;add('SUPPLIED_CARD',ck,'DELIVERY_OR_AUDIT_ORIGINAL');external(ck,card.analysis?.source_input_key);
+     if(card.receipt)external(ck,ck+'#receipt');
+@@ -222,6 +219,41 @@
+   }
+   for(const ref of strings(external_audit_refs,64))external('EXTERNAL_AUDIT_OR_MODEL',ref);
+   for(const ref of strings(owner_original_refs,64)){external('OWNER_PROTECTED_ORIGINAL',ref);reasons.add('OWNER_PROTECTED_ORIGINAL');}
+-  return bounded({schema:'pump-protected-reference-projection-v2-20261025',scope:'SUPPLIED_ORIGINALS_ONLY_NOT_GLOBAL_REFERENCE_CLOSURE',edges,reasons:[...reasons],
+-    inventory_complete_for_global_cleanup:false,originals_required:true,delete_allowed:false,approved_delete_ttl_ms:null,archive_reader_verified:false});
+-}
++  const projection={schema:'pump-protected-reference-projection-v2-20261025',scope:'SUPPLIED_ORIGINALS_ONLY_NOT_GLOBAL_REFERENCE_CLOSURE',edges,reasons:[...reasons],
++    inventory_complete_for_global_cleanup:false,originals_required:true,delete_allowed:false,approved_delete_ttl_ms:null,archive_reader_verified:false};
++  const suppliedZones=input.liquidations?.zones??[];
++  if(Array.isArray(suppliedZones)&&suppliedZones.length===0)return bounded(projection);
++  // Every strict core/card/journal/summary/audit/owner edge has priority. Reserve
++  // the incomplete markers once; each optional unique edge costs only its own
++  // UTF8 JSON bytes plus the array comma. Never serialize an expanding prefix.
++  const incomplete=['SUPPLIED_INPUT_MAP_REFERENCE_INVENTORY_INCOMPLETE','ORIGINALS_REQUIRED_FOR_REFERENCE_OVERFLOW'];
++  const encoder=new TextEncoder(),size=value=>encoder.encode(JSON.stringify(value)).byteLength;
++  let bytes=size(projection);
++  if(bytes>CAPSULE_BOUNDS.bytes)throw Error('CAPSULE_BYTE_BOUND_EXCEEDED');
++  bytes+=size([...new Set([...reasons,...incomplete])])-size(projection.reasons);
++  if(bytes>CAPSULE_BOUNDS.bytes){
++    // The valid core may fit without space for extra reason strings. A shorter
++    // scope marks the unscanned map without losing core edges or adding bytes.
++    projection.scope='SUPPLIED_ORIGINALS_ONLY_MAP_REFS_INCOMPLETE';return bounded(projection);
++  }
++  const markIncomplete=()=>{for(const reason of incomplete)reasons.add(reason);};
++  if(!Array.isArray(suppliedZones))markIncomplete();
++  else{
++    if(suppliedZones.length>CAPSULE_BOUNDS.refs)markIncomplete();
++    optionalZones:for(let i=0;i<Math.min(suppliedZones.length,CAPSULE_BOUNDS.refs);i++){
++      const z=suppliedZones[i];
++      if(!z||typeof z!=='object'||Array.isArray(z)){markIncomplete();continue;}
++      for(const ref of [z.evidence_ref,z.identity_evidence_ref,z.model_evidence_ref,z.price_mapping_evidence_ref,z.price_comparability?.evidence_ref,z.relative_scale?.evidence_ref]){
++        if(ref===null||ref===undefined||typeof ref==='string'&&!ref.trim())continue;
++        if(!text(ref)){markIncomplete();continue;}
++        const kind=ref.startsWith('pump:')?'STATE_OR_RECEIPT_REFERENCE':'UNRESOLVED_EXTERNAL_ORIGINAL',key=JSON.stringify([analysis_key,ref,kind]);
++        if(seen.has(key))continue;
++        if(edges.length>=CAPSULE_BOUNDS.refs){markIncomplete();break optionalZones;}
++        const edge={from:analysis_key,to:ref,kind,protected:true},extra=size(edge)+(edges.length?1:0);
++        if(bytes+extra>CAPSULE_BOUNDS.bytes){markIncomplete();break optionalZones;}
++        seen.add(key);edges.push(edge);bytes+=extra;
++      }
++    }
++  }
++  projection.reasons=[...reasons];return bounded(projection);
++}
