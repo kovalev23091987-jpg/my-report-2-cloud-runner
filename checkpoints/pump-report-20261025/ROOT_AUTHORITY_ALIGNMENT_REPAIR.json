@@ -1,0 +1,15 @@
+{
+  "schema": "ROOT_NARROW_AUTHORITY_ALIGNMENT_REPAIR_V1",
+  "authority_main": "499c7db9460d3eeca2e89f5c352e3a46f892ed28",
+  "root_owner": "CODEX:PUMP_LAUNCH_RECOVERY_20261027:1793112106309",
+  "corrected_ts": 1793112484893,
+  "cause": "Root-value span matcher was not anchored to a line start; expired observation was additionally written inside phase.active_working_state. No runtime/test/native IO executed after mismatch was detected.",
+  "only_divergent_active_field": "previous_own_expired_observation",
+  "other3_FULL_equal": true,
+  "repair": "Copy exact other3 active state into phase and write expired observation only at anchored root key; lease owner/expiry/scopes and all old data remain.",
+  "all4_prechecked_equal": true,
+  "market_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "production_mutations": 0
+}
