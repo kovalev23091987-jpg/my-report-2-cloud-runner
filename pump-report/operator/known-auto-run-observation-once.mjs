@@ -39,7 +39,7 @@ if(program.status!=='ACTIVATED_RECURRING_PROGRAM_ACTIVE'||sha(artifactBytes)!==p
 const proofBytes=fs.readFileSync(admission.full_readback_file),proof=JSON.parse(proofBytes);
 if(sha(proofBytes)!==admission.full_readback_sha256||proof.FULL_exact_module_bytes!==true||proof.implementation_sha256!==admission.implementation_sha256||
   proof.artifact_sha256!==program.artifact_sha256||proof.module_count!==artifact.manifest.module_count||
-  !Number.isSafeInteger(proof.readback_ts)||proof.readback_ts>now||now-proof.readback_ts>300000||proof.health?.automatic_enabled!==true||proof.health?.delivery_enabled!==true)throw Error('FRESH_FULL_LIVE_READBACK_REQUIRED');
+  !Number.isSafeInteger(proof.readback_ts)||proof.readback_ts>now||now-proof.readback_ts>300000||proof.schema!=='ROOT_PRODUCTION_CONTROL_PLANE_READBACK_V1'||proof.control_plane?.automatic_enabled!==true||proof.control_plane?.delivery_enabled!==true||proof.control_plane?.provider_stage!=='PRODUCTION_QUALIFIED'||proof.control_plane?.DATA_DB_id!=='057a2847-2cc4-4e52-8534-1be1596d21d5')throw Error('FRESH_FULL_LIVE_READBACK_REQUIRED');
 const credential=fs.readFileSync('/Users/mac/Library/Preferences/.wrangler/config/default.toml','utf8');
 const token=credential.match(/^oauth_token\s*=\s*"([^"]+)"/m)?.[1],expiry=credential.match(/^expiration_time\s*=\s*"([^"]+)"/m)?.[1];
 if(!token||!expiry||!Number.isFinite(Date.parse(expiry))||Date.parse(expiry)<=now+300000)throw Error('REFRESH_WRANGLER_BEFORE_OBSERVATION');
