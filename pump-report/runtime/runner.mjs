@@ -86,7 +86,6 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     return key;
   }
   async function indexAnalysis(analysis,input,key){
-    if(retained_features&&analysis.ready)await retained_features.remember(key);
     await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
     const wave=analysis.next_wave??analysis.previous_wave??null;
     if(wave)await store.set('pump:wave:'+instrumentKey(input.instrument),wave);
@@ -101,6 +100,8 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         ...analysisQueueEvidence(analysis,input,profile),entry_zones:(analysis.plan?.entry_zones??[]).map(z=>({lower:z.lower,upper:z.upper}))};
       return {state:queue,result:true};
     });
+    // Persist wave/latest/watch queue before fallible heavy feature projection.
+    if(retained_features&&analysis.ready)await retained_features.remember(key);
     await observations.remember(analysis,input,key);
   }
   async function checkInstrument(instrument,{run_id,mode,publish=true,assert_execution=async()=>{}}){
