@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793129488000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793129488000,
@@ -27,5 +27,55 @@
     "checkpoints/report2-owner-paused-20261024/pause-save-receipt.json": "7b270b68a39ca6052507c63fffad5da851f02a4d",
     "checkpoints/report2-owner-paused-20261024/resume-queues.json": "916d1594afd7b0f78a8bad9312e71deb37fc23a7",
     "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923"
-  }
+  },
+  "released": true,
+  "released_ts": 1793130112000,
+  "release_main": "462c65087efdba2f703c767ea6a7beaeed319a27",
+  "release_authority": {
+    "main": "462c65087efdba2f703c767ea6a7beaeed319a27",
+    "clock": {
+      "current_time": "2026-10-27 19:41:37 UTC"
+    },
+    "all17_full": true,
+    "all4_equal": true,
+    "parent": "CODEX:PUMP_FULL_TZ_REMAINDER_20261027:1793129376658",
+    "parent_expires_ts": 1793132076658,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "guard_git_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+      "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "6d93077b50890015ce165b672c206e4612fc4615",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "d4491e30abdc1dc5680badb52f8387b374ca841c",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "f523e6d1a74bcdb5068a010caf78901bea2b29b0",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "a04b774781923bbfdbd596e09404099bbdbb03f7",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "e8466b12915de23d4daa3efd0c735bd090a1595f",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "c3810e5aee3ef9ee9f29e473284979b670acbe3c",
+      "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "28fee66593a04d257d3a839702c1731362347491",
+      "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+      "checkpoints/REPORT2_OWNER_PAUSED_RESUME_HANDOFF_20261024.json": "e6a167a88084b7c2f1bc1238d1f2b8d3ad1e6f91",
+      "checkpoints/report2-owner-paused-20261024/pause-save-receipt.json": "7b270b68a39ca6052507c63fffad5da851f02a4d",
+      "checkpoints/report2-owner-paused-20261024/resume-queues.json": "916d1594afd7b0f78a8bad9312e71deb37fc23a7",
+      "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923"
+    }
+  },
+  "handoff_path": "pump-report/handoffs/analytics/package-bz19/BZ19_ROOT_HANDOFF_RU.md",
+  "handoff_sha256": "6c9fe3fa6c8f285d167d6108c4d4363669b7632532c2a0dad53364ff41f23c67",
+  "review_manifest_sha256": "7a37c03acf72072d841ff38e52806671184726e72a56772bb03fda02d8cac374",
+  "prepared_module": "pump-report/analytics/outcome-presentation.mjs",
+  "prepared_module_sha256": "8037ce89880455de841a053960a9ba609f1315687b077ec5bcfd0320aa23bfb2",
+  "verdict": "Finite 719row existing traceability delta, no old-audit or acceptedtest replay. Separated CODE_GAP/native_evidence/empirical/ownerdeferred with exactTZ IDs. ROOT owns bounded savedoutcome reader/route; pure formatSavedOutcomeView prepared to exact ROOT PUMP_SAVED_OUTCOME_VIEW_V1 statuses/immutablebinding, unexecuted/notintegrated/notdeployed. No unequivocal new strategy/plan threshold algorithm gap manufactured; oldO/Q/P/R codegaps corrected in delta only. No parkedhooks/deferrals unfrozen.",
+  "actual_executions": {
+    "Node": 0,
+    "engine": 0,
+    "tests": 0,
+    "provider": 0,
+    "Cloudflare": 0,
+    "nativeSQL": 0,
+    "Telegram": 0,
+    "runtime_edits": 0
+  },
+  "first_genuine_AUTO_SENT": "OPEN"
 }
