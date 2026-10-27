@@ -1,0 +1,44 @@
+{
+  "schema": "ROOT_20261027_CONFIG_READ_ACTUAL_V1",
+  "authority_main": "f2ded8456f8f421007f5db66b314b4757ab20206",
+  "admission_ref": "checkpoints/pump-report-20261025/ROOT_20261027_CONFIG_READ_ADMISSION.json",
+  "status": "COMPLETED",
+  "attempts": 4,
+  "observed_ts": 1793082453121,
+  "rows": [
+    {
+      "suffix": "my-report-2-hub/settings",
+      "status": 200,
+      "binding_count": 21,
+      "flags": {
+        "PUMP_REPORT_DELIVERY_ENABLED": "1",
+        "PUMP_REPORT_ENABLED": "1"
+      }
+    },
+    {
+      "suffix": "my-report-2-hub/schedules",
+      "status": 200,
+      "schedules": [
+        {
+          "cron": "*/5 7-16 * * *"
+        }
+      ]
+    },
+    {
+      "suffix": "my-report-2-free-history/schedules",
+      "status": 200,
+      "schedules": []
+    },
+    {
+      "suffix": "my-report-2-liq-forecast-history/schedules",
+      "status": 200,
+      "schedules": []
+    }
+  ],
+  "market_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "Workers_invocations": 0,
+  "configuration_changed": false,
+  "new_AUTO_SENT_proven": false
+}
