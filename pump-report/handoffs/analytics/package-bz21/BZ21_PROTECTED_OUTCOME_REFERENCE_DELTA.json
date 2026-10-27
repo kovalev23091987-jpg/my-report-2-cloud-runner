@@ -1,0 +1,238 @@
+{
+  "schema": "BZ21_MINIMAL_PROTECTED_OUTCOME_REFERENCES_V1",
+  "status": "REQUIREMENT_DELTA_NOT_TTL_OR_DELETE_APPROVAL",
+  "authority_main": "9c81091eb124ad03adfae2196a7d35bc790e4efe",
+  "baseline": {
+    "dataset_matrix": "pump-report/handoffs/analytics/package-s/retention-consumer-map.json",
+    "dataset_rows": 35,
+    "sha256": "5ca1963cd98b59e18cca173190b988f9df73942a55b9152be7d40ddbcfa2785a",
+    "edges_sha256": "253952cf150bb1053063c5555e91e16d0bb89f72158c1b9837dd1854ce72b7c1"
+  },
+  "global_retention": {
+    "approved_delete_ttl_ms": null,
+    "automatic_delete_enabled": false,
+    "delete_allowed": false,
+    "reference_closure_proven": false
+  },
+  "horizon_is_not_TTL": true,
+  "rows": [
+    {
+      "id": "BZ21-R01",
+      "baseline_ids": [
+        "S01",
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "key": "pump:analysis:<SHA256(exact analysis)>",
+      "protected_fields": [
+        "exact analysis bytes/digest; instrument+asset+wave+run/mode/purpose; analysis_ts/P0/rules/profile/ready",
+        "exact input/facts/source clocks/evidence_ref, saved_ts/evidence_class/implementation pin",
+        "plan/basis fact ids/card_text/absence reasons"
+      ],
+      "consumers": [
+        "saved-outcome readSavedOutcome digest/input identity",
+        "outcome-journal sync frozen anchor",
+        "retained-capsules original/input SHA and saved-capsule audit",
+        "card.source_input_key, manual result, external retained owner/audit refs"
+      ],
+      "window": "Known-at T0 and original 4h evaluation; later readback/rebuild/unknown-send resolution may outlive it",
+      "retention_requirement": "Keep exact hashed original+input while any journal/card/signal/capsule/audit/manual reference requires dereference. Counter-only or lossy projection is not replacement; verified archive reader/closure are separate future acceptance.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R02",
+      "baseline_ids": [
+        "S13",
+        "S14",
+        "S15"
+      ],
+      "key": "pump:journal:<instrument_id>:<wave_id>",
+      "protected_fields": [
+        "analyses analysis_id/digest/origin/recorded_ts/features_known_ts",
+        "publications event/card/receipt/state/possible_send/clocks",
+        "frozen_anchor immutable=true, analysis_id/sha/origin/selection; terminal state/event/known/evidence"
+      ],
+      "consumers": [
+        "selectOutcomeAnchor/no reanchor/no future features",
+        "saved-outcome frozen-key/origin/immutable binding",
+        "UNSENT FIRST_READY/UNKNOWN later resolution; saved-capsule audit"
+      ],
+      "window": "Wave selection and terminal closure plus pending/unknown publication or audit lifetime",
+      "retention_requirement": "Protect referenced ready analyses and possible-send/card receipts as well as selected frozen anchor. Missing immutable/terminal proof is not repaired by deletion or fabricated metadata.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R03",
+      "baseline_ids": [
+        "S17",
+        "S18"
+      ],
+      "key": "pump:card:<card_id> and delivery-wave/work refs",
+      "protected_fields": [
+        "exact text/text_hash/recipient/source_input_key/created/expires/state",
+        "send_started_ts/attempts/claim/backoff; message_id and bound receipt",
+        "delivery-wave primary/card_by_hash/update refs"
+      ],
+      "consumers": [
+        "delivery no-resend/dedup and recovery",
+        "journal publication/first possible or confirmed send",
+        "saved original/card receipt acceptance and capsule audit"
+      ],
+      "window": "Mandatory-fact publication lifetime differs from unresolved UNKNOWN/SENDING/SENT proof retention",
+      "retention_requirement": "No expiration by expired card.expires_ts alone. Protect any possible-send, confirmed receipt, primary/history dedup and owner original refs; new viewer not reading card does not remove other consumers.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R04",
+      "baseline_ids": [
+        "S19"
+      ],
+      "key": "pump:signal:<instrument_id>:<wave_id>",
+      "protected_fields": [
+        "analysis_key, signal_id, exact immutable origin, instrument/asset, plan",
+        "T0/P0/deadline/rules/profile/mode/map/purpose/evidence/ready",
+        "publication, original_card_id/publication_event_id"
+      ],
+      "consumers": [
+        "runner checkOutcomes",
+        "saved-outcome selected-original/identity/clock/map binding",
+        "outcome-journal record, retained capsule writer"
+      ],
+      "window": "Original T0..T0+4h and deferred next-business-window observation/readback",
+      "retention_requirement": "Keep while outcome pending/unknown, summary replay/audit or user lookup refers to it. Never replace analysis_key with latest analysis to shorten retention.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R05",
+      "baseline_ids": [
+        "S20",
+        "S21"
+      ],
+      "key": "pump:outcome:<signal_id>",
+      "protected_fields": [
+        "signal/wave/T0/P0/target/deadline/rules/mode/map",
+        "HIT/MISS/UNKNOWN, exact hit_ts or bounded interval; reasons",
+        "coverage complete/no_hit_period_covered/exact no_hit_basis/covered_until_ts",
+        "drawdowns/after-invalidation, entry/exit/order/contact interval and excursion lower bound; execution=false/profit=null"
+      ],
+      "consumers": [
+        "saved-outcome admissible HIT/MISS/UNKNOWN and formatter",
+        "summary/materialized contributions and adverse known/unknown",
+        "outcome capsule/audit and immutable summary records"
+      ],
+      "window": "Only original 4h labels; maturity and readback can occur later",
+      "retention_requirement": "Do not keep status alone: basis and clocks establish MISS/HIT admissibility. Per-wave scenario numeric labels are not reconstructible from aggregate counts. UNKNOWN cannot be deleted as resolved loss.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R06",
+      "baseline_ids": [
+        "S16",
+        "S22",
+        "S24",
+        "S25",
+        "S26"
+      ],
+      "key": "Existing work-index journal/outcomes; summary ordered/head/member; materialized V3 replay/maturity refs",
+      "protected_fields": [
+        "target pointers/completion evidence and pending allocations",
+        "ordered source seq/member/head pending and source_cursor",
+        "per-record replay receipt, instrument binding, per-wave state revision/contribution/witness refs",
+        "maturity pending/current/due/scan refs and aggregate revision"
+      ],
+      "consumers": [
+        "bounded journal/outcome work, summary catch-up",
+        "createMaterializedV3Store atomic wave+aggregate and queue ACK",
+        "duplicate/conflict/maturity protection"
+      ],
+      "window": "Until exact replay/maturity transition/queue evidence is durably acknowledged and referenced consumers reconciled",
+      "retention_requirement": "Update old S25/S26 production-v2 labels to current production-v3 namespace as a mapping delta, not migration. Cursor alone is not GC watermark; ACK of one view is not global reference closure.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R07",
+      "baseline_ids": [
+        "S23",
+        "S25",
+        "S26"
+      ],
+      "key": "pump:summary-record:<hash>; pump:materialized-wave:production-v3:<wave_key>; pump:materialized-summary:production-v3",
+      "protected_fields": [
+        "immutable origin/publication/outcome record and content hash/recorded_ts",
+        "cohort dimensions mode/publication/map/rules/profile/evidence/purpose exclusions",
+        "counts/denominators/unknowns/adverse-known counts, source_cursor, per-wave selected witnesses/record receipts"
+      ],
+      "consumers": [
+        "summary() current/catch-up/readout",
+        "replay dedup and replacing old per-wave contribution",
+        "saved-capsule audit and future separately qualified calibration"
+      ],
+      "window": "Across independent-wave cohort and rebuild horizon; no approved retention duration supplied",
+      "retention_requirement": "Global/cohort scalars do not replace exact original, wave witnesses, record receipt or numeric per-wave outcome. Zero/unknown and excluded acceptance records retain their distinct meanings.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    },
+    {
+      "id": "BZ21-R08",
+      "baseline_ids": [
+        "S27",
+        "S28",
+        "S29",
+        "S31"
+      ],
+      "key": "feature/outcome capsule v2; summary-capsule-link; protected-refs v2; retained manual/audit/owner refs",
+      "protected_fields": [
+        "analysis/input/plan/implementation digests and known-at feature provenance",
+        "feature/outcome key+digest, original outcome/pub hashes and exact record link",
+        "protected edges/reasons, unresolved external source evidence and owner original refs"
+      ],
+      "consumers": [
+        "retained-capsules and saved-capsule audit",
+        "existing manually retained original/result and permitted outcome lookup"
+      ],
+      "window": "As long as a retained linked original/audit/owner-protected reference exists; parked hooks are not activated",
+      "retention_requirement": "Projection is supplied-original scope only: delete_allowed=false, originals_required=true, global_reference_closure=false. External unresolved refs remain protected; no new model/pair collector is created.",
+      "approved_delete_ttl_ms": null,
+      "automatic_delete_enabled": false,
+      "delete_allowed": false,
+      "reference_closure_proven": false
+    }
+  ],
+  "protected_edges": [
+    "original <-> journal.frozen_anchor/ready analyses <-> signal.analysis_key",
+    "journal publication <-> card.source_input_key/text/receipt",
+    "signal -> outcome same immutable identity/time/map/rules",
+    "outcome/origin/publication -> immutable summary record -> ordered source and V3 per-wave/aggregate/receipts/maturity",
+    "summary record -> capsule link -> feature/outcome capsules -> original/input/evidence/protected edges"
+  ],
+  "non_actions": [
+    "No TTL approved or changed; 4h not TTL",
+    "No delete/GC/archive/migration/capacity operation or 200protocol change",
+    "No ENTRY-followup/cadence/readers reinstated; bounded saved-outcome viewer is separate",
+    "No empirical calibration/prospective-pair hooks activated",
+    "No code/tests/Node/build/native/provider/TG operation"
+  ],
+  "pending_install_receipts": "ROOT install14/new75ff675pin2988 not reviewed by this reference-only delta; separate exact receipts required."
+}
+
