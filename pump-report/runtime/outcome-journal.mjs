@@ -29,7 +29,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
   }});
   const resourcesAvailable=()=>!store.admission||typeof store.usage!=='function'||(store.usage().rows_read+100<=store.admission.max_rows_read&&store.usage().rows_written+25<=store.admission.max_rows_written);
   const materialized=createMaterializedV3Store({store,clock,resourcesAvailable});
-  async function remember(analysis,input,analysis_id){
+  async function remember(analysis,input,analysis_id,{defer_index=false}={}){
     if(!analysis.wave_id)return;
     const key=waveKey(analysis),at=clock();
     if(!analysis.ready){
@@ -37,7 +37,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       return;
     }
     const sha=await textHash(JSON.stringify(analysis));if(!analysis_id.endsWith(sha))throw Error('ANALYSIS_CONTENT_HASH_REQUIRED');
-    await journalWork.ensureReady();
+    if(!defer_index)await journalWork.ensureReady();
     const used=new Set(analysis.fact_ids??[]),known=[...Object.values(input.facts??{}).filter(f=>used.has(f.fact_id)).map(f=>f.received_ts),...(analysis.liquidations?.zones_up??[]).map(z=>z.received_ts),...(analysis.liquidations?.zones_down??[]).map(z=>z.received_ts)].filter(Number.isSafeInteger);
     const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,run_purpose:input.run_purpose??analysis.run_purpose??'UNCLASSIFIED',ready:true};
     const row={analysis_id,analysis_sha256:sha,recorded_ts:at,features_known_ts:known.length?Math.max(...known):null,origin};
@@ -47,7 +47,7 @@ export function createOutcomeJournal({store,profile,clock=Date.now,evidence_clas
       if(previous&&(!equal(previous.origin,row.origin)||previous.analysis_sha256!==sha))throw Error('IMMUTABLE_ANALYSIS_JOURNAL_CONFLICT');
       if(!previous)j.analyses.push(row);return {state:j,result:!j.frozen_anchor};
     });
-    if(pending)await journalWork.add(key);
+    if(pending&&!defer_index)await journalWork.add(key);
   }
   async function publication(card_id){
     const card=await store.get('pump:card:'+card_id);if(!card?.analysis?.source_input_key||!['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))return null;

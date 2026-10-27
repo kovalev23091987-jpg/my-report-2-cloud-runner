@@ -141,6 +141,9 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     // The immutable facts and plan must exist before publication. Derived
     // features, journal and candidate bookkeeping must not spend their TTL.
     const analysis_key=await saveAnalysisOriginal(analysis,input);let delivered=null,card_id=null,bookkeeping_error=null;
+    // The anchor's actual recorded_ts must precede the publication event.
+    // Persist only its row now; derived work-index operations follow dispatch.
+    if(analysis.ready)await observations.remember(analysis,input,analysis_key,{defer_index:true});
     try {
     const publicationRefusal=ownerPublicationRefusal(analysis);
     if(publish&&analysis.ready&&publicationRefusal)delivered={state:'SUPPRESSED',reason:publicationRefusal};
@@ -176,7 +179,10 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       if(retained_features&&saved.analysis.ready)await retained_features.remember(key);
       await observations.remember(saved.analysis,saved.input,key);
     }
-    if(['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))await observations.publication(card_id);
+    if(['SENT','UNKNOWN','ERROR','STALE'].includes(card.state)){
+      const registered=await observations.publication(card_id);
+      if(registered?.status==='QUARANTINED')throw Object.assign(Error('PUBLICATION_JOURNAL_QUARANTINED'),{code:'PUBLICATION_JOURNAL_QUARANTINED'});
+    }
     if(['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card.state))await delivery.acknowledge(card_id);
   }
   async function checkOutcomes({run_id}){
