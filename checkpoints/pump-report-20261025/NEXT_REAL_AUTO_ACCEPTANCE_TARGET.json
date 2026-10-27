@@ -1,0 +1,26 @@
+{
+  "schema": "BZ14_NEXT_REAL_AUTO_ACCEPTANCE_TARGET_V1",
+  "status": "PREPARED_NO_NATIVE_SIGNAL_PROOF",
+  "target": {
+    "artifact_sha256": "48269a31a51b29535031108bfa5414be0c2d634a0ef08d12373e77c03c0658c2",
+    "implementation_pin": "0a21641150808f4acaddb3bc18ed45805f3ae6eb7b5eee0a9bef7104ccab6e95",
+    "rules_version": "pump-analytics-v5-cold-structural-20261027"
+  },
+  "install_proof": "checkpoints/pump-report-20261025/ROOT_FAIRNESS_INSTALL_FULL.json",
+  "auto_proof": "checkpoints/pump-report-20261025/ROOT_FAIRNESS_AUTO_ON_FULL.json",
+  "auto_full_ts": 1793123031411,
+  "next_business": "2026-10-28T10:00:00+03:00",
+  "acceptance_contract": "Reuse BZ9/BZ11 field-level tri-state conditions; supersede only expected artifact/pin target. Frozen prior payloads remain unchanged.",
+  "required_inputs": [
+    "actual completed AUTO run and exact run/original/input identity",
+    "original input implementation pin and exact SHA",
+    "card source_input_key, original identity, exact text and text SHA",
+    "positive Telegram ACK, message id, recipient, receipt clocks",
+    "actual retained_waves read separately; analysis.next_wave is not persistence evidence"
+  ],
+  "first_genuine_AUTO_SENT": "OPEN",
+  "new_IO_admission": false,
+  "scheduler_created": false,
+  "automation_created": false
+}
+
