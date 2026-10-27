@@ -63,7 +63,16 @@ const sql=new DatabaseSync(':memory:');
 sql.exec('CREATE TABLE report2_runner_budget_ledger_shadow(reservation_id TEXT PRIMARY KEY,day_utc TEXT,reserve_rows_read INTEGER,reserve_rows_written INTEGER,state TEXT,started_ts INTEGER,measured_rows_read INTEGER,measured_rows_written INTEGER,unknown_ops INTEGER,source_run_id TEXT,measured_requests INTEGER,completed_ts INTEGER); CREATE INDEX idx_report2_runner_budget_day ON report2_runner_budget_ledger_shadow(day_utc); CREATE TABLE pump_report_state_v1(state_key TEXT PRIMARY KEY,value_json TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0,updated_ts INTEGER NOT NULL);');
 const initial=await makeStore(),insert=sql.prepare('INSERT INTO pump_report_state_v1 VALUES(?,?,0,?)');for(const [k,v]of initial.rows)insert.run(k,JSON.stringify(v),Date.now());
 let localQueries=0;
-const db={prepare(query){return {bind(...params){return {async all(){localQueries++;const st=sql.prepare(query);st.setAllowBareNamedParameters(true);const named=Object.fromEntries(params.map((v,i)=>[String(i+1),v]));if(st.columns().length)return {success:true,results:st.all(named),meta:{rows_read:1,rows_written:0,changes:0}};const r=st.run(named);return {success:true,results:[],meta:{rows_read:1,rows_written:Number(r.changes),changes:Number(r.changes)}};}}}}};
+const db={prepare(query){
+ return {bind(...params){
+  return {async all(){
+   localQueries++;const st=sql.prepare(query);st.setAllowBareNamedParameters(true);
+   const named=Object.fromEntries(params.map((v,i)=>[String(i+1),v]));
+   if(st.columns().length)return {success:true,results:st.all(named),meta:{rows_read:1,rows_written:0,changes:0}};
+   const r=st.run(named);return {success:true,results:[],meta:{rows_read:1,rows_written:Number(r.changes),changes:Number(r.changes)}};
+  }};
+ }};
+}};
 const env={DATA_DB:db,PUMP_CONTROL_KEY:'ARTIFICIAL_PRIVATE_KEY',PUMP_REPORT_ENABLED:'1',PUMP_REPORT_DELIVERY_ENABLED:'1',TELEGRAM_CHAT_ID:'ARTIFICIAL_NEVER_SENT',TELEGRAM_BOT_TOKEN:'ARTIFICIAL_NEVER_USED'};
 const worker=createPumpWorker(),call=body=>new Request('https://artificial.invalid/pump/outcome',{method:'POST',headers:{'x-pump-control-key':env.PUMP_CONTROL_KEY,'content-type':'application/json'},body:JSON.stringify(body)});
 const badAuth=await worker.fetch(new Request('https://artificial.invalid/pump/outcome',{method:'POST'}),env,{});assert.equal(badAuth.status,401);assert.equal(localQueries,0);arms++;
