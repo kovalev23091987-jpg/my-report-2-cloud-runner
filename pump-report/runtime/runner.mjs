@@ -1,3 +1,4 @@
+import {BudgetRefusal} from './budget.mjs';
 import {INPUT_SCHEMA,emptyMap,factUsable,positive,ownerInstrumentExcluded,ownerPublicationRefusal} from '../contracts/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {automaticWindowOpen,textHash} from './delivery.mjs';
@@ -112,20 +113,25 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await assert_execution();
     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id});
     if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail},delivery:null};
-    let checked_result=null;
+    let checked_result=null,failure_stage='SOURCE_WINDOW';
     try {
     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
     // overview1 + day1 + price(primary/fallback)2 + candles/book2 + optional2
     // + forced delivery price/book2 =10 BingX attempts. Map/TG are separate.
     await await_source_window({provider:'BINGX',cost:10,deadline_ts:clock()+60001,before_wait:assert_execution});
     await assert_execution();
+    failure_stage='SOURCE_OVERVIEW';
     const overview=await sources.getOverview({run_id,instruments:[instrument]});
     const overviewFacts=overview.observations?.[0]?.facts??{};
+    failure_stage='DAY_GROWTH';
     const day=typeof sources.getDayGrowth==='function'?await sources.getDayGrowth({instrument,run_id,mode}):null;
+    failure_stage='SOURCE_CORE';
     const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));
     let input={schema_version:INPUT_SCHEMA,run_id,mode,run_purpose,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts,...(day?.facts??{})},liquidations:emptyMap(),previous_wave};
+    failure_stage='ANALYTICS_INITIAL';
     let analysis=analyzePump(input,profile);
     if(analysis.ready){
+      failure_stage='OPTIONAL_ENRICHMENT';
       await assert_execution();
       // One absolute deadline for all supplemental work. Retain half of the
       // shortest mandatory fact's remaining life for saving and the existing
@@ -138,15 +144,19 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
       const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts,deadline_ts,requested_kinds:['trades','funding']});
       input.facts={...input.facts,...optional.facts};
+      failure_stage='ANALYTICS_FINAL';
       input.analysis_ts=clock();analysis=analyzePump(input,profile);
     }
     // The immutable facts and plan must exist before publication. Derived
     // features, journal and candidate bookkeeping must not spend their TTL.
+    failure_stage='SAVE_ORIGINAL';
     const analysis_key=await saveAnalysisOriginal(analysis,input);let delivered=null,card_id=null,bookkeeping_error=null;
     // The anchor's actual recorded_ts must precede the publication event.
     // Persist only its row now; derived work-index operations follow dispatch.
+    failure_stage='JOURNAL_ANCHOR';
     if(analysis.ready)await observations.remember(analysis,input,analysis_key,{defer_index:true});
     try {
+    failure_stage='PUBLICATION';
     const publicationRefusal=ownerPublicationRefusal(analysis);
     if(publish&&analysis.ready&&publicationRefusal)delivered={state:'SUPPRESSED',reason:publicationRefusal};
     if(publish&&analysis.ready&&!publicationRefusal&&(mode==='MANUAL'||analysis.automatic_eligible)){
@@ -159,12 +169,15 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
     }
     } finally {
-      try{await indexAnalysis(analysis,input,analysis_key);}
+      try{failure_stage='ANALYSIS_INDEX';await indexAnalysis(analysis,input,analysis_key);}
       catch(error){if(!delivered)throw error;bookkeeping_error=error.code??'POST_PUBLICATION_INDEX_FAILED';}
     }
     if(card_id&&!bookkeeping_error){try{await recordPublished(card_id,{analysis_registered:true});}catch(error){bookkeeping_error=error.code??'POST_PUBLICATION_REGISTRATION_FAILED';}}
     checked_result={analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(bookkeeping_error?{bookkeeping_error}:{}),...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
     return checked_result;
+    } catch(error) {
+      if(error&&typeof error==='object'){error.pump_candidate_admitted=admitted?.allowed===true;error.pump_candidate_failure_stage=failure_stage;}
+      throw error;
     } finally {
       if(admitted?.surplus_grant_id){
         try{await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id});}
@@ -269,7 +282,12 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
         budget.setMode('AUTO');const instrument=await selectAutomatic(catalog,result);if(!instrument)break;
         try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(checked.bookkeeping_error)break;if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
-        catch(error){result.errors.push({instrument_id:instrument.instrument_id,reason:error.code??'CANDIDATE_ERROR'});await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id])queue[instrument.instrument_id].next_check_ts=clock()+profile.candidate_recheck_ms;return {state:queue,result:true};});}
+        catch(error){
+          const failedAdmitted=error?.pump_candidate_admitted===true&&!(error instanceof BudgetRefusal)&&!/EXECUTOR|AUTOMATIC_WINDOW|PROTECTED_DAY|MONTH_EXHAUSTED|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|SHARED_NATIVE|SOURCE_WINDOW/.test(error?.code??'');
+          const stage=['SOURCE_WINDOW','SOURCE_OVERVIEW','DAY_GROWTH','SOURCE_CORE','ANALYTICS_INITIAL','OPTIONAL_ENRICHMENT','ANALYTICS_FINAL','SAVE_ORIGINAL','JOURNAL_ANCHOR','PUBLICATION','ANALYSIS_INDEX'].includes(error?.pump_candidate_failure_stage)?error.pump_candidate_failure_stage:null;
+          result.errors.push({instrument_id:instrument.instrument_id,reason:error?.code??'CANDIDATE_ERROR',...(stage?{failure_stage:stage}:{}),...(error instanceof Error?{error_type:['Error','TypeError','RangeError','SyntaxError'].includes(error.name)?error.name:'OTHER_ERROR'}:{}),failed_admitted_attempt:failedAdmitted});
+          await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id]){const at=clock();queue[instrument.instrument_id].next_check_ts=at+profile.candidate_recheck_ms;if(failedAdmitted)queue[instrument.instrument_id].last_failed_admitted_attempt_ts=at;}return {state:queue,result:true};});
+        }
       }
       const bookkeeping_errors=[...result.checked,...result.manual.map(row=>row.result)].filter(row=>row.bookkeeping_error);
       if(bookkeeping_errors.length){result.status='INCOMPLETE';result.errors.push(...bookkeeping_errors.map(row=>({analysis_key:row.analysis_key,reason:row.bookkeeping_error,delivery_state:row.delivery?.state??null})));}

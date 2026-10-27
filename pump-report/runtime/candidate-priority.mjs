@@ -3,7 +3,9 @@ import {START_PROFILE} from '../profile/start-v1.mjs';
 // Queue preferences are bounded; waiting age grows without a ceiling so an
 // otherwise eligible coin cannot monopolize every future turn.
 export function candidatePriority(row,now,{profile=START_PROFILE}={}){
-  const since=row.last_checked_ts??row.first_seen;
+  const baseSince=row.last_checked_ts??row.first_seen;
+  const failed=row.last_failed_admitted_attempt_ts;
+  const since=Number.isSafeInteger(failed)&&failed>=0&&failed<=now?Math.max(Number.isSafeInteger(baseSince)&&baseSince>=0&&baseSince<=now?baseSince:0,failed):baseSince;
   const age=Number.isSafeInteger(since)&&since<=now?(now-since)/60000:0;
   const fresh=Number.isSafeInteger(row.movement_event_ts)&&row.movement_event_ts<=now?Math.max(0,1-(now-row.movement_event_ts)/profile.wave_max_age_ms):0;
   const priceFresh=Number.isSafeInteger(row.price_expires_ts)&&row.price_expires_ts>=now;

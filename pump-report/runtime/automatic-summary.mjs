@@ -60,6 +60,7 @@ export function autoRunSummary(r, pin) {
       catalog_unresolved:nat(errors.find(x => x?.reason === 'UNIVERSE_QUALIFICATION_INCOMPLETE')?.unqualified)
     },
     candidate_diagnostics:candidateRunDiagnostics(r),
+    candidate_failures:errors.filter(x=>x?.failure_stage&&typeof x.instrument_id==='string').slice(0,4).map(x=>({instrument_id:x.instrument_id,failure_stage:member(x.failure_stage,new Set(['SOURCE_WINDOW','SOURCE_OVERVIEW','DAY_GROWTH','SOURCE_CORE','ANALYTICS_INITIAL','OPTIONAL_ENRICHMENT','ANALYTICS_FINAL','SAVE_ORIGINAL','JOURNAL_ANCHOR','PUBLICATION','ANALYSIS_INDEX']),'OTHER_STAGE'),error_type:member(x.error_type,new Set(['Error','TypeError','RangeError','SyntaxError']),'OTHER_ERROR'),failed_admitted_attempt:x.failed_admitted_attempt===true})),
     phase_flags:{
       executor_busy:r?.status === 'EXECUTOR_BUSY',
       analysis_result_seen:analyses === null || analyses === undefined ? null : analyses.length > 0,
