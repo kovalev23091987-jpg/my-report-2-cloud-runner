@@ -7,7 +7,7 @@ export const PRODUCTION_PLAN=Object.freeze({
   evidence_ref:'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json',
   capture_id:'pump-first-production-manual-20261026-one',
   capture_ids:['pump-first-production-manual-20261026-one','pump-first-production-manual-20261026-two','pump-first-production-manual-20261026-three'],
-  manual_checks:3,manual_capture_http_max:13,telegram_daily_cap:27,telegram_monthly_cap:837,
+  manual_checks:3,manual_capture_http_max:13,telegram_daily_cap:47,telegram_monthly_cap:1457,
   planned_load_fraction:0.8,
   candidate_pacing:Object.freeze({version:'pump-even-day-deep-v2',period_ms:3600000,start_hour:10,end_hour:20,time_zone:'Europe/Moscow'}),
   // Prepared only. Activation requires an exact separate owner policy decision
