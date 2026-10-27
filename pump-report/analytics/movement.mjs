@@ -1,5 +1,6 @@
 import {positive, finite, validTime, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, candleNativeComparisonKey, OWNER_MIN_PLAN_POTENTIAL_PCT} from '../contracts/index.mjs';
 import {median, sum, pct, growthAtLeast, windowRows, completeInterval} from './math.mjs';
+import {proposeColdStructuralBase} from './cold-first-structural-base.mjs';
 
 export function growthWindows(rows, ticker, profile, observedDay=null) {
   const end=rows.at(-1)?.close_ts, out=[];
@@ -173,8 +174,22 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
     volume_basis:basis,current_to_impulse_volume_ratio:null,current_to_impulse_volume_ratio_reason:'IMPULSE_VOLUME_ZERO_OR_UNKNOWN',reasons:['IMPULSE_VOLUME_ZERO_OR_UNKNOWN']};
   const continuityStart=previous?.covered_until_ts??impulse.start_ts;
   if(!completeInterval(rows,continuityStart,end))return {...base,state:previous?.state??null,next_wave:previous?{...previous}:null,reasons:['WAVE_PATH_INCOMPLETE']};
-  const invalidation=previous?.invalidation_price??impulse.low;
-  const observedCancel=price<invalidation||rows.some(r=>r.open_ts>=Math.max(impulse.end_ts,continuityStart)&&r.low<invalidation);
+  // PROTOTYPE: a verified first cold classification may use the first
+  // confirmed post-breach base. A terminal permits only a distinct seed already
+  // admitted by the existing post-terminal selector; the old wave is preserved.
+  const originalInvalidation=previous?.invalidation_price??impulse.low;
+  const originalCancel=price<originalInvalidation||rows.some(r=>r.open_ts>=Math.max(impulse.end_ts,continuityStart)&&r.low<originalInvalidation);
+  let cold=null;
+  if((p===null||terminal||expired)&&originalCancel){
+    const seedWaveRows=rows.filter(r=>r.close_ts>=impulse.start_ts),seedPeak=Math.max(...seedWaveRows.map(r=>r.high));
+    const seedPeakRow=seedWaveRows.find(r=>r.high===seedPeak);
+    const seedLevels=pivots.filter(r=>r.known_ts<=seedPeakRow.close_ts&&r.price<seedPeak&&r.price>impulse.low).sort((a,b)=>b.price-a.price);
+    const proposal=proposeColdStructuralBase({input,rows,pivots,impulse,price,reclaim_level:seedLevels[0]?.price??impulse.open,profile});
+    if(proposal.status==='STRUCTURAL_CANDIDATE')cold=proposal.boundary;
+  }
+  const invalidation=cold?.invalidation_price??originalInvalidation;
+  const invalidationStart=cold?.invalidation_observation_start??Math.max(impulse.end_ts,continuityStart);
+  const observedCancel=cold?price<invalidation||rows.some(r=>r.open_ts>=invalidationStart&&r.low<invalidation):originalCancel;
   if(!observedCancel&&(!recent||!basis||!recent.every(r=>finite(r[field]))||!finite(sum(recent.map(r=>r[field])))||sum(recent.map(r=>r[field]))<=0))return {...base,state:previous?'WEAKENING':null,next_wave:previous?{...previous,state:'WEAKENING',covered_until_ts:end}:null,reasons:['CURRENT_VOLUME_REQUIRED']};
   let qualification=previous?.qualification??[],qualificationKnown=previous?.qualification_known_ts??(qualification.length?previous.created_ts:null);
   // The first observation can be a manual review below AUTO thresholds. Latch
@@ -184,13 +199,13 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
   }
   const qualified=validTime(qualificationKnown)&&qualificationKnown<=now&&qualification.some(w=>validTime(w.end_ts)&&w.end_ts<=qualificationKnown&&w.passed===true&&positive(w.start_price)&&positive(w.end_price)&&
     growthAtLeast(w.end_price,w.start_price,w.window_ms===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct));
-  const created=previous?.created_ts??now,wave_id=previous?.wave_id??('PUMP:'+input.instrument.instrument_id+':'+impulse.start_ts);
+  const created=previous?.created_ts??cold?.created_ts??now,wave_id=previous?.wave_id??cold?.wave_id??('PUMP:'+input.instrument.instrument_id+':'+impulse.start_ts);
   const waveRows=rows.filter(r=>r.close_ts>=impulse.start_ts),peak=Math.max(previous?.peak_price??0,...waveRows.map(r=>r.high));
   const peakRow=waveRows.find(r=>r.high===peak)??{close_ts:previous.peak_event_ts},afterPeak=waveRows.filter(r=>r.close_ts>peakRow.close_ts);
   const fall=100*(1-price/peak),minutes=Math.max(1,(end-peakRow.close_ts)/60000),normalSpeed=(impulse.normal_range/peak*100)/(profile.impulse_window_ms/60000);
   const sharp=fall/minutes>normalSpeed*profile.sharp_speed_multiple||['SHARP_PULLBACK_UNCONFIRMED','SHARP_PULLBACK_RECLAIMED'].includes(previous?.state);
   const levels=pivots.filter(r=>r.known_ts<=peakRow.close_ts&&r.price<peak&&r.price>impulse.low).sort((a,b)=>b.price-a.price);
-  const reclaim=previous?.reclaim_level??levels[0]?.price??impulse.open;
+  const reclaim=previous?.reclaim_level??cold?.reclaim_level??levels[0]?.price??impulse.open;
   const breached=afterPeak.some(r=>r.low<reclaim)||previous?.reclaim_breached===true;
   const last=rows.slice(-profile.reclaim_closed_bars),returned=breached&&last.length===profile.reclaim_closed_bars&&last.every(r=>r.close>reclaim);
   const cancelled=observedCancel;
@@ -200,7 +215,8 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
   if(cancelled)state='CANCELLED';
   const next_wave={wave_id,instrument_id:input.instrument.instrument_id,created_ts:created,expires_ts:created+profile.wave_max_age_ms,qualification,qualification_known_ts:qualificationKnown,
     impulse:{...impulse},state,reclaim_level:reclaim,reclaim_breached:breached,invalidation_price:invalidation,current_volume:recent?sum(recent.map(r=>r[field]??0)):null,
-    covered_until_ts:end,peak_price:peak,peak_event_ts:peakRow.close_ts,confirmed_pivots:pivots,cancelled_ts:cancelled?now:null};
+    covered_until_ts:end,peak_price:peak,peak_event_ts:peakRow.close_ts,confirmed_pivots:pivots,cancelled_ts:cancelled?now:null,
+    ...((cold??previous?.cold_first_structural_base)?{cold_first_structural_base:structuredClone(cold??previous.cold_first_structural_base)}:{})};
   const currentRatio=positive(impulse.volume)&&finite(next_wave.current_volume/impulse.volume)?next_wave.current_volume/impulse.volume:null;
   return {...base,active:!cancelled,state,wave_id,automatic_eligible:qualified&&!cancelled,qualification,next_wave,peak_price:peak,reclaim_level:reclaim,
     volume_basis:basis,current_volume:next_wave.current_volume,current_to_impulse_volume_ratio:currentRatio,current_to_impulse_volume_ratio_reason:currentRatio===null?'CURRENT_TO_IMPULSE_RATIO_NOT_FINITE':null,
