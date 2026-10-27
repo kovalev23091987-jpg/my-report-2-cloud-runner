@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_MINIMAL_CODE_QUIESCENCE_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "a45e71354eb7c2438e42839ff5619561eab6c55e",
   "own_lease": {
     "owner": "CODEX:PUMP_FAIRNESS_INSTALL12_20261027:1793122714049",
@@ -52,5 +52,21 @@
     }
   },
   "actual_IO_forbidden_until": "Directhumanapproval, newcurrentownCAS/freshall17FULL, existingOAuthrefresh ifexpired, positiveexactAUTOoffFULLcurrentcodeproof<=5min, issued/expirymax15minwithinown",
-  "purpose": "Exactdirectowner12: minimalexecutorquiescence/sharednativeledgeronly, no savedhistory/resources/market/Telegram. Qualified0a install onlyifpositive."
+  "purpose": "Exactdirectowner12: minimalexecutorquiescence/sharednativeledgeronly, no savedhistory/resources/market/Telegram. Qualified0a install onlyifpositive.",
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-failure-fairness-maintenance-20261027-one-owner-extra",
+    "usage": {
+      "requests": 5,
+      "rows_read": 129,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 129,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "149cb6bb98d6ebe63ea68a76db5f426c2d1e10c2d45520449224c165de306189"
 }
