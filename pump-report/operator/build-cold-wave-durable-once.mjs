@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {buildArtifact} from '../runtime/build.mjs';
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const a=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),lease=JSON.parse(fs.readFileSync('checkpoints/CLOUD_PHASE_STATE_20261004.json','utf8')).lease;
+if(a.status!=='ADMITTED_ONE_OFFLINE_BUILD_AFTER_HISTORICAL_COHORT'||a.max_builds!==1||Date.now()>=a.expires_ts||a.expires_ts>a.own_lease.expires_ts||lease.owner!==a.own_lease.owner||lease.released)throw Error('BUILD_ADMISSION');
+if(sha(fs.readFileSync('pump-report/runtime/build.mjs'))!==a.builder_sha256)throw Error('BUILDER_CHANGED');
+const q=fs.readFileSync(a.cohort_result_path),result=JSON.parse(q);
+if(sha(q)!==a.cohort_result_sha256||result.status!=='PASS'||result.real_engine_calls!==6||result.pure_helper_calls!==15||result.accepted_baseline_replayed!==false)throw Error('EXACT_HISTORICAL_COHORT_PASS_REQUIRED');
+const b=fs.readFileSync(a.base_artifact);if(sha(b)!==a.base_artifact_sha256)throw Error('BASE_CHANGED');const base=JSON.parse(b),overrides={...base.modules};
+if(base.manifest.module_count!==72||base.manifest.implementation_pin.sha256!==a.base_live_pin)throw Error('BASE_PIN');
+const w=fs.readFileSync(a.wave_result_path),wave=JSON.parse(w);if(sha(w)!==a.wave_result_sha256||wave.status!=='PASS'||wave.engine_calls!==4||wave.runner_checks!==2||wave.mock_sends!==1)throw Error('EXACT_WAVE_DURABILITY_PASS_REQUIRED');
+const modelNames=['analytics/cold-first-structural-base.mjs','analytics/index.mjs','analytics/movement.mjs','runtime/runner.mjs'];
+if(JSON.stringify(Object.keys(a.proposed_sources).sort())!==JSON.stringify(modelNames))throw Error('EXACT_MODEL_FILES_REQUIRED');
+for(const [name,entry]of Object.entries(a.proposed_sources)){const source=fs.readFileSync(entry.path,'utf8');if(sha(source)!==entry.sha256)throw Error('FROZEN_MODEL_CHANGED:'+name);overrides[name]=source;}
+if(!overrides['analytics/index.mjs'].includes('pump-analytics-v5-cold-structural-20261027'))throw Error('DECLARED_RULE_VERSION_REQUIRED');
+fs.writeFileSync(a.output+'.attempt',JSON.stringify({started_ts:Date.now(),authority_main:a.authority_main}),{flag:'wx',mode:0o600});
+const legacy=a.output+'.legacy-base';fs.writeFileSync(legacy,base.modules['legacy-worker.mjs'],{flag:'wx',mode:0o600});
+const manifest=buildArtifact({legacy_path:legacy,output_path:a.output,module_overrides:overrides}),artifact=JSON.parse(fs.readFileSync(a.output));
+const changed=Object.keys(artifact.modules).filter(n=>artifact.modules[n]!==base.modules[n]).sort(),expected=[...modelNames,'runtime/implementation-pin.mjs'].sort();
+if(manifest.module_count!==73||JSON.stringify(changed)!==JSON.stringify(expected)||JSON.stringify(artifact.metadata)!==JSON.stringify(base.metadata))throw Error('EXACT_COLD_DELTA_REQUIRED');
+for(const [name,h]of Object.entries(a.tested_model_graph_sha256))if(name!=='runtime/implementation-pin.mjs'&&sha(artifact.modules[name])!==h)throw Error('BUILT_GRAPH_DIFFERS_FROM_TESTED_GRAPH:'+name);
+const untouched=Object.keys(base.modules).filter(n=>artifact.modules[n]===base.modules[n]);if(untouched.length!==68)throw Error('BASE_NOT_PRESERVED');
+const proof={schema:'ROOT_COLD_STRUCTURAL_ARTIFACT_V1',status:'COLD_AND_WAVE_DURABILITY_QUALIFIED_BUILT_NOT_INSTALLED',authority_main:a.authority_main,built_ts:Date.now(),artifact_path:a.output,artifact_sha256:sha(fs.readFileSync(a.output)),implementation_sha256:manifest.implementation_pin.sha256,module_count:73,changed:changed.map(name=>({name,sha256:sha(artifact.modules[name])})),unchanged_modules:68,tested_nonself_module_bytes_exact:true,only_pin_self_module_generated_after_cohort:true,legacy_metadata_profile_TG47_sourcecaps_nativecaps_TTL_unchanged:true,rules_version:'pump-analytics-v5-cold-structural-20261027',cohort_result_sha256:a.cohort_result_sha256,wave_result_sha256:a.wave_result_sha256,builds:1,market_HTTP:0,native_SQL:0,Telegram:0,deployed:false};
+fs.writeFileSync(a.proof_path,JSON.stringify(proof,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(proof));

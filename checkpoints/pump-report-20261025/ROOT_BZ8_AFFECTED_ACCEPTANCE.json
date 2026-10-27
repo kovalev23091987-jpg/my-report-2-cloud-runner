@@ -1,0 +1,45 @@
+{
+  "schema": "BZ8_ROOT_CONNECTED_AFFECTED_RESULT_V1",
+  "status": "PASS",
+  "started_ts": 1793113085524,
+  "manifest_sha256": "46303c983bc47025e4057bdbc2b2289a1157e4cad80044edf501473d3c014f1a",
+  "graph_sha256": "9e0f634899daa7359e82f7a523763695ec2bcd993a899c3a4a242f1df6a0af02",
+  "evidence_class": "ARTIFICIAL_CONNECTED_MEMORY_STORE_MOCK_ACK",
+  "historical_source_facts_unchanged": true,
+  "accepted_cohorts_or_AIN_anchor_case_replayed": false,
+  "http": 0,
+  "native_sql": 0,
+  "telegram": 0,
+  "builds": 0,
+  "deploys": 0,
+  "production_writes": 0,
+  "delivery_revalidation": "MOCK_VALID_NOT_NATIVE_PRICE_BOOK",
+  "events": [
+    "MOCK_POSITIVE_ACK",
+    "LATEST_WRITE",
+    "WAVE_WRITE",
+    "FEATURE_THROW",
+    "LATEST_WRITE",
+    "WAVE_WRITE"
+  ],
+  "minimum_potential": 11.26669629531596,
+  "first": {
+    "source_original_exact": true,
+    "mock_saved_card_and_positive_receipt_exact": true,
+    "wave_latest_survived_feature_throw": true
+  },
+  "next": {
+    "evidence_class": "ARTIFICIAL_CONTINUATION",
+    "same_previous_wave_base_id_lifetime_qualification_plan": true,
+    "asof_delta_ms": 1,
+    "second_send": false
+  },
+  "finished_ts": 1793113085621,
+  "engine_calls": 4,
+  "runner_checks": 2,
+  "mock_sends": 1,
+  "private_result_sha256": "959d6fe32645eef125c077fa027053e5504544f46050eefd6289980bb5803a2a",
+  "guarantee_boundary": "Only after successful postdispatch wave/latest/queue writes; crash or failed wave write before that is not closed.",
+  "current_actual_AUTO_SENT_proven": false,
+  "deployed": false
+}
