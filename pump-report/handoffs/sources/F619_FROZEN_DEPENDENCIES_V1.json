@@ -1,0 +1,106 @@
+{
+  "schema": "F619_FROZEN_ACTUAL_INTAKE_DEPENDENCIES_V1",
+  "status": "PREPARED_NO_ACTUAL_FILE_ADMISSION_NO_NODE",
+  "prepared_utc": "2026-10-27T06:56:58.270932+00:00",
+  "files": [
+    {
+      "path": "pump-report/tests/sources/F619-actual-catalog-intake-once.mjs",
+      "bytes": 12766,
+      "sha256": "2137486e76450e8cc6de2ac3ad980e1612841513966b2f9033382a73d437fed9"
+    },
+    {
+      "path": "pump-report/sources/catalog-snapshot-review.mjs",
+      "bytes": 9425,
+      "sha256": "a134c25efabb57128dcd1454beb8aa4317cb7200bdc6340de822bfeb55e49074"
+    },
+    {
+      "path": "pump-report/sources/captured-bulk-price-coverage.mjs",
+      "bytes": 10471,
+      "sha256": "d3d2d2016e942a46e43a793fcdd935f08941b3bf5806fed9df8a750d2503e463"
+    },
+    {
+      "path": "pump-report/sources/saved-nontarget-decisions.mjs",
+      "bytes": 4948,
+      "sha256": "047bc88522f641ffc0f5d98d058494e0345f2c60713241e5484a5164fb59933b"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 6230,
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08"
+    },
+    {
+      "path": "pump-report/runtime/catalog-snapshot.mjs",
+      "bytes": 3119,
+      "sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8"
+    },
+    {
+      "path": "pump-report/runtime/text-hash.mjs",
+      "bytes": 206,
+      "sha256": "bffa6795f58925a43e1f14c08a7167fbf1fb8dbe1f44cadc1a9c9bb6c63c7677"
+    },
+    {
+      "path": "pump-report/registry/native-nontarget380-data.mjs",
+      "bytes": 348740,
+      "sha256": "11ca070b31b79d0a8c32f19f11c1b388473fd17ca0c444f13c30dd96024d7118"
+    },
+    {
+      "path": "pump-report/registry/native-reactivated53-data.mjs",
+      "bytes": 73090,
+      "sha256": "aba8084747a1f92aab1c5bdb0983c462f4fe78a83bc3cc738a0abf41aff92657"
+    },
+    {
+      "path": "pump-report/registry/native-usdkrw1-data.mjs",
+      "bytes": 1738,
+      "sha256": "0c6bbec412e5225fd9d42762f0934d7749159a4078d7becbc411304502a12758"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json",
+      "bytes": 1792804,
+      "sha256": "a1d1d8b96f6cf7106ba4224e1fbf4fe52059f4448cc4667e0332976b692eb66c"
+    }
+  ],
+  "paths": {
+    "consumer": "pump-report/sources/catalog-snapshot-review.mjs",
+    "canonical": "pump-report/sources/captured-bulk-price-coverage.mjs",
+    "selected_scope": "pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json"
+  },
+  "negative_parts": [
+    {
+      "path": "pump-report/registry/native-nontarget380-data.mjs",
+      "export": "NON_TARGET_BUNDLE",
+      "records": 380
+    },
+    {
+      "path": "pump-report/registry/native-reactivated53-data.mjs",
+      "export": "REACTIVATED_NEGATIVE_BUNDLE",
+      "records": 53
+    },
+    {
+      "path": "pump-report/registry/native-usdkrw1-data.mjs",
+      "export": "USDKRW_NEGATIVE_BUNDLE",
+      "records": 1
+    }
+  ],
+  "complete_frozen_negative_records": 434,
+  "network_guard": {
+    "path": "/private/tmp/pump-e-native-http-forbidden.mjs",
+    "bytes": 90,
+    "sha256": "7a57d4036d30146735628cb4013f69721fa7cb6794932362f3a2155e36cb6783"
+  },
+  "ROOT_observer_reference_only_not_imported": {
+    "path": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
+    "bytes": 10026,
+    "sha256": "f17fe7bc5cb158365fa753b2c0d905eb203b78f682fac3891796bf50017500d3",
+    "actual_schema": "PUMP_NATIVE_SAVED_AUTO_OBSERVATION_ACTUAL_V1",
+    "snapshot_branch": "catalog_snapshot.private_evidence.snapshot",
+    "F619_does_not_import_or_execute_this_operator": true
+  },
+  "producer_context_only": {
+    "live72_pin_at_preparation": "690fae17addd12ee60e111738b255dce267f6cf2af6827d506c4bd724d51f031",
+    "pin_required_from_future_ROOT_admission_not_default": true
+  },
+  "raw_capture_in_dependencies": false,
+  "old1278_or_F618_harness_imported": false,
+  "production_imported": false,
+  "shared_CAPS_or_registry_modified": false
+}

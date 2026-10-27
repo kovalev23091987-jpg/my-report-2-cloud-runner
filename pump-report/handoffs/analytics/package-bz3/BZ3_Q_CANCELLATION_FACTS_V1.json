@@ -1,0 +1,37 @@
+{
+  "schema": "BZ3_Q_EXACT_CANCELLATION_CONDITION_V1",
+  "rule": "price<impulse.low OR a supplied closed row open>=impulse.end has low<impulse.low",
+  "previous_wave": null,
+  "invalidation_equals_selected_impulse_low": true,
+  "current_price_below_invalidation": false,
+  "current_price_above_invalidation": true,
+  "last_closed_close_above_invalidation": true,
+  "breaches": [
+    {
+      "open_MSK": "2026-10-27T09:57:00+03:00",
+      "close_MSK": "2026-10-27T09:58:00+03:00",
+      "low_below_invalidation_pct": 2.2275590551181113
+    },
+    {
+      "open_MSK": "2026-10-27T09:58:00+03:00",
+      "close_MSK": "2026-10-27T09:59:00+03:00",
+      "low_below_invalidation_pct": 0.4716535433070823
+    },
+    {
+      "open_MSK": "2026-10-27T10:04:00+03:00",
+      "close_MSK": "2026-10-27T10:05:00+03:00",
+      "low_below_invalidation_pct": 0.28976377952756316
+    }
+  ],
+  "all_breaches_known_before_asof": true,
+  "current_recovery_above_low_does_not_reset_latched_historical_breach": true,
+  "wave_reclaim_breached": true,
+  "last_closed_above_reclaim": true,
+  "current_price_above_reclaim": true,
+  "saved_details_last_close_above_reclaim": true,
+  "saved_details_current_price_above_reclaim": true,
+  "same_short_candidate_normal_range_known": true,
+  "saved_plan": null,
+  "no_alternate_plan_or_READY_constructed": true,
+  "Node_engine_tests_IO": 0
+}
