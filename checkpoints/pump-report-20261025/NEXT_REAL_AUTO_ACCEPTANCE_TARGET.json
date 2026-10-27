@@ -1,14 +1,14 @@
 {
-  "schema": "ROOT_RECOVERY13_NEXT_REAL_AUTO_ACCEPTANCE_TARGET_V1",
+  "schema": "ROOT_OUTCOME14_NEXT_REAL_AUTO_ACCEPTANCE_TARGET_V1",
   "status": "PREPARED_NO_NATIVE_SIGNAL_PROOF",
   "target": {
-    "artifact_sha256": "6f22b3c6f5ab281e78b87a0c0ec4de3562801efebe0f89f1a3c0502cd6fb370e",
-    "implementation_pin": "1deb93e453d490adec4fd520484989c8cd618f1b107a85e75bd35cf36c438ca3",
+    "artifact_sha256": "ff675daea75e751ecc104f293c2dc4d2d076b1f5fd638940671335483d7e31b2",
+    "implementation_pin": "2988e3fe8e5278d1b40baa25053a2a49e899d5414ead750181e1ed6bbf9aa5cc",
     "rules_version": "pump-analytics-v5-cold-structural-20261027"
   },
-  "install_proof": "checkpoints/pump-report-20261025/ROOT_RECOVERY13_INSTALL_FULL.json",
-  "auto_proof": "checkpoints/pump-report-20261025/ROOT_RECOVERY13_AUTO_ON_FULL.json",
-  "auto_full_ts": 1793127001903,
+  "install_proof": "checkpoints/pump-report-20261025/ROOT_OUTCOME14_INSTALL_FULL.json",
+  "auto_proof": "checkpoints/pump-report-20261025/ROOT_OUTCOME14_AUTO_ON_FULL.json",
+  "auto_full_ts": 1793132403358,
   "next_business": "2026-10-28T10:00:00+03:00",
   "acceptance_contract": "Reuse BZ9/BZ11 field-level tri-state conditions; supersede only expected artifact/pin target. Frozen prior payloads remain unchanged.",
   "required_inputs": [
@@ -34,6 +34,31 @@
       "install_proof": "checkpoints/pump-report-20261025/ROOT_FAIRNESS_INSTALL_FULL.json",
       "auto_proof": "checkpoints/pump-report-20261025/ROOT_FAIRNESS_AUTO_ON_FULL.json",
       "auto_full_ts": 1793123031411,
+      "next_business": "2026-10-28T10:00:00+03:00",
+      "acceptance_contract": "Reuse BZ9/BZ11 field-level tri-state conditions; supersede only expected artifact/pin target. Frozen prior payloads remain unchanged.",
+      "required_inputs": [
+        "actual completed AUTO run and exact run/original/input identity",
+        "original input implementation pin and exact SHA",
+        "card source_input_key, original identity, exact text and text SHA",
+        "positive Telegram ACK, message id, recipient, receipt clocks",
+        "actual retained_waves read separately; analysis.next_wave is not persistence evidence"
+      ],
+      "first_genuine_AUTO_SENT": "OPEN",
+      "new_IO_admission": false,
+      "scheduler_created": false,
+      "automation_created": false
+    },
+    {
+      "schema": "ROOT_RECOVERY13_NEXT_REAL_AUTO_ACCEPTANCE_TARGET_V1",
+      "status": "PREPARED_NO_NATIVE_SIGNAL_PROOF",
+      "target": {
+        "artifact_sha256": "6f22b3c6f5ab281e78b87a0c0ec4de3562801efebe0f89f1a3c0502cd6fb370e",
+        "implementation_pin": "1deb93e453d490adec4fd520484989c8cd618f1b107a85e75bd35cf36c438ca3",
+        "rules_version": "pump-analytics-v5-cold-structural-20261027"
+      },
+      "install_proof": "checkpoints/pump-report-20261025/ROOT_RECOVERY13_INSTALL_FULL.json",
+      "auto_proof": "checkpoints/pump-report-20261025/ROOT_RECOVERY13_AUTO_ON_FULL.json",
+      "auto_full_ts": 1793127001903,
       "next_business": "2026-10-28T10:00:00+03:00",
       "acceptance_contract": "Reuse BZ9/BZ11 field-level tri-state conditions; supersede only expected artifact/pin target. Frozen prior payloads remain unchanged.",
       "required_inputs": [
