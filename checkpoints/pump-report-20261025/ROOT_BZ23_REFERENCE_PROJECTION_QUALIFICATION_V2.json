@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_BZ23_REFERENCE_PROJECTION_AND_COMPATIBILITY_QUALIFICATION_V2",
-  "status": "QUALIFIED_OFFLINE_NOT_DEPLOYED",
+  "status": "PARTIAL_CASE_PASS_F645_CONCRETE_REPAIR_REQUIRED_NOT_DEPLOYABLE",
   "authority_main": "6d3da10b0e1be6754a4383a7ede6170011497591",
   "original_f644_contract_sha256": "9d50b9ecabd8406b4b4eacd1370c0e181cf34a63742d775a8581212e0d014e6b",
   "analytics_manifest": {
@@ -65,5 +65,13 @@
     "overflow_behavior_verified_by_actual_case_hardcoded_257zones": true,
     "not_claimed_execution_on_f0fb_fixture": true,
     "repeat_case_not_required_no_semantic_input_change": true
+  },
+  "independent_counterexample": {
+    "source": "F645 static review",
+    "scope": "257 valid supplied raw zones with distinct evidence_ref",
+    "failure": "Global256edge cap throws before incomplete projection can return; duplicate-reference257 V2 case did not cover distinct refs",
+    "actual_V2_case_remains_PASS_with_limited_scope": true,
+    "new_V3_fix_required": true,
+    "no_deployment_occurred": true
   }
 }
