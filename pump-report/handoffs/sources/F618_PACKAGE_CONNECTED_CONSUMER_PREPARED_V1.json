@@ -1,0 +1,83 @@
+{
+  "schema": "F618_PACKAGE_CONNECTED_CONSUMER_PREPARED_V1",
+  "status": "PREPARED_AWAITING_ROOT_EXACT_NODE_ADMISSION",
+  "frozen_utc": "2026-10-27T05:21:19.204921+00:00",
+  "authority_main": "f2ded8456f8f421007f5db66b314b4757ab20206",
+  "own_acquire_commit": "0d7e924bf92a464074421b1f5c1beda734323de3",
+  "own_FULL": {
+    "utc": "2026-10-27 05:11:30 UTC",
+    "exact_server_bytes": true,
+    "head_matches": true
+  },
+  "own_original_expires_ts": 1793079936000,
+  "harness_sha256": "48e79647894630054cce65f7949060717f89af67493dc0368bcc0ec73900a12e",
+  "input_manifest_sha256": "6c45dade24ea9acb206248ac96aaebee7653bfc27f984f4ef510fd0f03bf98f5",
+  "consumer_sha256": "a134c25efabb57128dcd1454beb8aa4317cb7200bdc6340de822bfeb55e49074",
+  "Node_invocations_so_far": 0,
+  "logical_cases_executed": 0,
+  "planned_Node_invocations": 1,
+  "planned_logical_cases": 1,
+  "planned_writer_reader_consumer": [
+    1,
+    1,
+    1
+  ],
+  "HTTP_SQL_engine_TG_build_deploy": 0,
+  "historical_name_matches": [
+    {
+      "label": "HISTORICAL_NAME_MATCH",
+      "requested_literal": "AIN",
+      "native_contract_id": "101418",
+      "native_symbol": "AIN-USDT",
+      "native_asset": "AIN",
+      "currency": "USDT",
+      "status": 1,
+      "classification": "NOT_CHECKED_NO_NEW_DECISION"
+    },
+    {
+      "label": "HISTORICAL_NAME_MATCH",
+      "requested_literal": "Q",
+      "native_contract_id": "101574",
+      "native_symbol": "Q-USDT",
+      "native_asset": "Q",
+      "currency": "USDT",
+      "status": 1,
+      "classification": "NOT_CHECKED_NO_NEW_DECISION"
+    }
+  ],
+  "new_classification_or_registry_activation": false,
+  "current_global_N": null,
+  "source_qualification_spent": 24,
+  "source_qualification_remaining": 0,
+  "payload_file_count": 5,
+  "package_files_including_manifest": 6,
+  "files": [
+    {
+      "path": "pump-report/tests/sources/F618-catalog-consumer-connected-once.mjs",
+      "bytes": 14337,
+      "sha256": "48e79647894630054cce65f7949060717f89af67493dc0368bcc0ec73900a12e"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F618_FROZEN_INPUTS_V1.json",
+      "bytes": 7265,
+      "sha256": "6c45dade24ea9acb206248ac96aaebee7653bfc27f984f4ef510fd0f03bf98f5"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F618_PREPARATION_AUTHORITY_V1.json",
+      "bytes": 2261,
+      "sha256": "881fd7e5f1d88fa8e4616856cdda03901d8eb672524c00a83765864dcb8911e9"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F618_EXACT_NODE_ADMISSION_REQUIREMENTS_V1.json",
+      "bytes": 4373,
+      "sha256": "d152e42b92ebab059122b1e1160be764bf444cadb65976c70877f410c28fc8e3"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F618_HANDOFF_RU.md",
+      "bytes": 4142,
+      "sha256": "e9d14641384c0f9665a1fb0259a51fad7f4c512fe3f854e5cc3fa36de2014c3b"
+    }
+  ],
+  "private_raw_in_public_package": false,
+  "qualification_gate": "Exact ROOT admission + fresh compatible SOURCE CAS/FULL and frozen inputs required; no pre-approved Node."
+}

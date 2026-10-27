@@ -1,0 +1,67 @@
+{
+  "schema": "BY_FROZEN_INPUT_MANIFEST_V1",
+  "status": "PREPARED_NOT_EXECUTED",
+  "evidence_class": "ARTIFICIAL",
+  "facts_policy": "Every original fact value/unit/status/event/received/expiry retained. Original analysis as-of unchanged. No later/earlier clock, future leakage, or synthetic source fact.",
+  "files": [
+    {
+      "path": "pump-report/.private/handoffs/sources/F610/original-input-exact.json",
+      "bytes": 529640,
+      "sha256": "14e18a8cd4c880de9916bcc55d2fa2e71b4d544f2ddbd8fb4f1f5310218a6d16"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F610_PACKAGE_ORIGINAL_DOOD_FACTS_AUTO_BOUNDARY_FINAL_V1.json",
+      "bytes": 3709,
+      "sha256": "04267cde0213566069b40536231a927f4679a1ee0b375d9a87bd169ae7d0ac61"
+    },
+    {
+      "path": "pump-report/.private/native-20261026/pump-catalog-snapshot-prepared-artifact.json",
+      "bytes": 2521223,
+      "sha256": "6a1b27dad3a35324b73589593864cbcf1cd99bdca7239d993cd398177eeaeaf4"
+    }
+  ],
+  "counterfactual_changes": {
+    "mode": "AUTO",
+    "run_id": "BY_AUTO_COLD_ORIGINAL_DOOD241_COUNTERFACTUAL",
+    "previous_wave": null,
+    "project_candidate_wave_active_overview_history": "EMPTY",
+    "reported_change_pct": {
+      "value": 20,
+      "evidence_class": "ARTIFICIAL",
+      "placement": "Separate first DISCOVERY observation carrier only; ticker_24h remains exact original with change_pct null",
+      "historical_provider_value": "NOT_RETAINED"
+    },
+    "budget": {
+      "evidence_class": "ARTIFICIAL",
+      "MemoryStore_project_day": 400,
+      "MemoryStore_BINGX_day": 400,
+      "MemoryStore_BINGX_month": 400,
+      "actual_ledger_mutations": 0
+    },
+    "source_boundary": "Saved original facts, only requested stages; no live provider HTTP",
+    "liquidations": "Real runner emptyMap before optional; original map only if READY requests it",
+    "optional_facts": "Original trades/OI/funding only if real runner requests them after READY"
+  },
+  "bounds": {
+    "Node_invocations": 1,
+    "AUTO_execute": 1,
+    "MANUAL_execute": 0,
+    "real_engine_calls_upper_bound": 3,
+    "MOCK_send_upper_bound": 1,
+    "sourceHTTP": 0,
+    "nativeSQL": 0,
+    "actual_Telegram": 0,
+    "build": 0,
+    "deploy": 0,
+    "automatic_rerun": false
+  },
+  "protected_existing_constraints": [
+    "Source24/24 spent; no25",
+    "oldLOOKUP13; no14",
+    "manual3",
+    "caps/unknowns/issued floors/reserves unchanged",
+    "9 pauses",
+    "2 OWNER deferrals",
+    "no thresholds, source priority, runtime, registry, or profile changes"
+  ]
+}
