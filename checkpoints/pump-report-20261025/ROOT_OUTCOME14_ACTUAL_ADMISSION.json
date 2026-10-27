@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_MINIMAL_CODE_QUIESCENCE_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "8e99ef660bdc07ba8479927fd946d0e77b16f9c2",
   "own_lease": {
     "owner": "CODEX:PUMP_OUTCOME_COVERAGE_INSTALL14_20261027:1793132073000",
@@ -48,5 +48,23 @@
   "operator_path": "pump-report/operator/outcome14-minimal-quiescence-once.mjs",
   "exception_path": "pump-report/operator/outcome14-maintenance-sql-exception.mjs",
   "exception_sha256": "3f862b8fdff68bc6042718b594ed3b9cd7c1b629aed5727238a6b962b278c263",
-  "reason": "Direct contextual human approval of immediate prepared package. No refund/rearm old13, no15. Positive governor required before executor read."
+  "reason": "Direct contextual human approval of immediate prepared package. No refund/rearm old13, no15. Positive governor required before executor read.",
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-outcome-coverage-maintenance-20261027-one-owner-extra",
+    "usage": {
+      "requests": 5,
+      "rows_read": 131,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 131,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "completed_ts": 1793132328737,
+  "private_result_sha256": "d1a96e41f8f3750124ead089c6831678aa4a41f27c4310a74db4a822b63824cd",
+  "no_retry": true
 }

@@ -1,0 +1,27 @@
+{
+  "schema": "ROOT_OUTCOME14_NEXT_BUSINESS_ACCEPTANCE_PREPARATION_V1",
+  "status": "PREPARED_NOT_ADMITTED",
+  "prepared_ts": 1793132403358,
+  "ordinary_next_business": "2026-10-28T10:00:00+03:00",
+  "current_target": "checkpoints/pump-report-20261025/NEXT_REAL_AUTO_ACCEPTANCE_TARGET.json",
+  "operator": "pump-report/operator/recent-completed-auto-observation-once.mjs",
+  "fallback_operator": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
+  "reuse_qualified_operator_no_test_repeat": true,
+  "authority_requirement": "Fresh main/guards/all4 and NEW own bounded CAS/FULL, ordinary UTC28 LOOKUP cap actual positive governor; oldUTC27 extras never carried. ExistingOAuth ordinary refresh ifexpired. Fresh READ_ONLY FULL current75 AUTO1DL1 within5min.",
+  "scope": "One connected bounded read of saved completed AUTO/selected candidate/exact original/card/receipt/outcome whereavailable. No market collection or Telegram sends, no forced signal or scheduler change.",
+  "maximum_SQL": 16,
+  "rows_read": 500,
+  "rows_written": 30,
+  "after_boundary": "Only actual ordinary run after current75 installation; don't count manualDOOD241 or controlled fixtures.",
+  "acceptance": {
+    "required": [
+      "actual AUTO run/original input pin and SHA",
+      "same card text SHA/source_input_key/recipient",
+      "positive Telegram ACK/message_id durable readback",
+      "actual retained wave, frozen anchor and bound outcome whenavailable"
+    ],
+    "tri_state": "PASS / FAIL / NOT_OBSERVED; absent card cannot be represented as successful delivery"
+  },
+  "actual_IO_executed": 0,
+  "new_automation_created": false
+}
