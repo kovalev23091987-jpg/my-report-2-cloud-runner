@@ -1,0 +1,29 @@
+{
+  "schema": "BZ6_ROOT_OFFLINE_EXECUTION_ADMISSION_V1",
+  "status": "ADMITTED",
+  "authorized_executor": "ROOT",
+  "manifest_sha256": "d090b1926de2850d999134ed338ecd8fcf882b083450ef7c46fcd6964c24ee55",
+  "root_owner": "CODEX:PUMP_SOURCES_AND_AUTO_20261027:1793090202170",
+  "issued_ts": 1793093777220,
+  "expires_ts": 1793093867220,
+  "fresh_authority": {
+    "main_sha": "1aa284119b007f53b340bdca51946ed4cc3e9e3d",
+    "all17_read": true,
+    "all4_equal": true,
+    "parent_phase_window_fence_generation_valid": true,
+    "own_cas_full_valid": true,
+    "evidence_path_and_sha256": "checkpoints/pump-report-20261025/ROOT_BZ6_FRESH_AUTHORITY.json#sha256=9f77d24d03c9b66ca66a50a6f505762df05247c33028aef95fd95cc1146f82b8"
+  },
+  "maximum_real_engine_calls": 6,
+  "maximum_pure_helper_calls": 15,
+  "allowed_io": {
+    "http": 0,
+    "api": 0,
+    "native_sql": 0,
+    "telegram": 0,
+    "builds": 0,
+    "deploys": 0,
+    "production_writes": 0
+  },
+  "note": "This template is deliberately unusable. ROOT creates a separate factual admission with <=90 second execution window only after fresh authority and review. It does not grant native/API/Telegram IO."
+}
