@@ -1,0 +1,45 @@
+--- baseline/feature-capsule.before.mjs
++++ analytics/feature-capsule.mjs
+@@ -169,15 +169,32 @@
+   const edges=[],reasons=new Set(['REFERENCE_CLOSURE_NOT_ESTABLISHED','EXTERNAL_REFERENCE_RESOLUTION_NOT_IMPLEMENTED','CURSOR_IS_NOT_GC_WATERMARK']),seen=new Set();
+   const add=(from,to,kind)=>{if(!text(from)||!text(to))throw Error('PROTECTED_REFERENCE_INVALID');const k=JSON.stringify([from,to,kind]);if(!seen.has(k)){if(edges.length>=CAPSULE_BOUNDS.refs)throw Error('PROTECTED_REFERENCE_BOUND_EXCEEDED');seen.add(k);edges.push({from,to,kind,protected:true});}};
+   const external=(from,to)=>{if(text(to))add(from,to,to.startsWith('pump:')?'STATE_OR_RECEIPT_REFERENCE':'UNRESOLVED_EXTERNAL_ORIGINAL');};
++  const proofRef=(from,to)=>{if(to===null||to===undefined||typeof to==='string'&&!to.trim())return;if(!text(to))throw Error('CAPSULE_REFERENCE_INVALID');external(from,to);};
++  const zoneProofs=z=>{for(const field of ['evidence_ref','identity_evidence_ref','model_evidence_ref','price_mapping_evidence_ref'])proofRef(analysis_key,z?.[field]);proofRef(analysis_key,z?.price_comparability?.evidence_ref);proofRef(analysis_key,z?.relative_scale?.evidence_ref);};
+   add('SUPPLIED_ORIGINAL',analysis_key,'ORIGINAL_ANALYSIS_INPUT');
++  proofRef(analysis_key,analysis.instrument?.identity_evidence_ref);
++  proofRef(analysis_key,input.instrument?.identity_evidence_ref);
+   if(input.run_purpose==='ACCEPTANCE_TEST'||analysis.run_purpose==='ACCEPTANCE_TEST')reasons.add('OWNER_PROTECTED_ACCEPTANCE_ORIGINAL');
+-  for(const [kind,f]of Object.entries(input.facts??{})){
++  for(const [kind,f]of list(Object.entries(input.facts??{}),CAPSULE_BOUNDS.facts)){
+     if(['market_context','relative_strength','benchmark'].includes(kind))continue;
+     if(text(f?.fact_id))add(analysis_key,f.fact_id,'INTRA_ORIGINAL_FACT');
+     external(analysis_key,f?.evidence_ref);
++    if(!['price','ticker_24h','candles','orderbook','growth_24h','trades','open_interest','funding'].includes(kind))continue;
++    proofRef(analysis_key,f?.identity_evidence_ref);
++    if(['trades','open_interest','funding'].includes(kind))proofRef(analysis_key,f?.unit_evidence_ref);
++    if(['candles','growth_24h'].includes(kind)){proofRef(analysis_key,f?.coverage?.time_evidence_ref);proofRef(analysis_key,f?.coverage?.owner_decision_ref);}
++    if(kind==='growth_24h')proofRef(analysis_key,f?.derived_from?.time_evidence_ref);
++    if(kind==='orderbook')proofRef(analysis_key,f?.coverage?.quantity_evidence_ref);
++    if(kind==='trades')for(const field of ['response_bound_evidence_ref','id_mapping_evidence_ref','unit_and_maker_evidence_ref'])proofRef(analysis_key,f?.coverage?.[field]);
++    if(kind==='funding')for(const field of ['evidence_ref','unit_evidence_ref','native_to_unified_evidence_ref','clock_evidence_ref','period_evidence_ref'])proofRef(analysis_key,f?.coverage?.[field]);
++    if(kind==='candles')for(const row of list(f?.value??[],1440)){proofRef(analysis_key,row?.time_evidence_ref);proofRef(analysis_key,row?.volume_evidence_ref);}
+   }
+   for(const area of [...list(analysis.plan?.entry_zones??[],3),...(analysis.plan?.exit_zone?[analysis.plan.exit_zone]:[])])for(const id of strings(area.basis_fact_ids??[],16))add(analysis_key,id,'ORIGINAL_PLAN_BASIS_FACT');
+-  for(const z of [...list(analysis.liquidations?.zones_up??[],3),...list(analysis.liquidations?.zones_down??[],3)])external(analysis_key,z.evidence_ref);
++  for(const z of [...list(analysis.liquidations?.zones_up??[],3),...list(analysis.liquidations?.zones_down??[],3)])zoneProofs(z);
++  const suppliedZones=input.liquidations?.zones??[];
++  if(!Array.isArray(suppliedZones))throw Error('CAPSULE_ARRAY_BOUND_REQUIRED');
++  if(suppliedZones.length>CAPSULE_BOUNDS.refs){reasons.add('SUPPLIED_INPUT_MAP_REFERENCE_INVENTORY_INCOMPLETE');reasons.add('ORIGINALS_REQUIRED_FOR_REFERENCE_OVERFLOW');}
++  for(const z of suppliedZones.slice(0,CAPSULE_BOUNDS.refs))zoneProofs(z);
+   if(card){
+     const ck='pump:card:'+card.card_id;add('SUPPLIED_CARD',ck,'DELIVERY_OR_AUDIT_ORIGINAL');external(ck,card.analysis?.source_input_key);
+     if(card.receipt)external(ck,ck+'#receipt');
+@@ -206,5 +223,5 @@
+   for(const ref of strings(external_audit_refs,64))external('EXTERNAL_AUDIT_OR_MODEL',ref);
+   for(const ref of strings(owner_original_refs,64)){external('OWNER_PROTECTED_ORIGINAL',ref);reasons.add('OWNER_PROTECTED_ORIGINAL');}
+   return bounded({schema:'pump-protected-reference-projection-v2-20261025',scope:'SUPPLIED_ORIGINALS_ONLY_NOT_GLOBAL_REFERENCE_CLOSURE',edges,reasons:[...reasons],
+-    inventory_complete_for_global_cleanup:false,delete_allowed:false,approved_delete_ttl_ms:null,archive_reader_verified:false});
+-}
++    inventory_complete_for_global_cleanup:false,originals_required:true,delete_allowed:false,approved_delete_ttl_ms:null,archive_reader_verified:false});
++}

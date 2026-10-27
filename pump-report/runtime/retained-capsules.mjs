@@ -1,11 +1,22 @@
 import {prepareFeatureCapsule,prepareOutcomeCapsule,readFeatureCapsule,projectProtectedReferences,capsuleDigest} from '../analytics/feature-capsule.mjs';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const digest=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+const sameLinkCore=(current,next)=>current?.schema==='pump-summary-capsule-link-v2-20261025'
+  &&same({...current,protected_refs:null},{...next,protected_refs:null})
+  &&digest(current.protected_refs?.sha256)
+  &&current.protected_refs.key==='pump:protected-refs:v2:'+current.protected_refs.sha256
+  &&Object.keys(current.protected_refs).length===2;
 export function createRetainedCapsuleWriter({store,implementation_sha256,evidence_class}){
   if(!store?.atomic||!digest(implementation_sha256)||typeof evidence_class!=='string')throw Error('PINNED_RETAINED_CAPSULE_CONTEXT_REQUIRED');
-  async function immutable(key,value){
-    await store.atomic(key,current=>{if(current&&!same(current,value))throw Error('IMMUTABLE_RETAINED_CAPSULE_CONFLICT');return {state:current??value,result:true};});
-    const readback=await store.get(key);if(!same(readback,value))throw Error('RETAINED_CAPSULE_READBACK_FAILED');return readback;
+  async function immutable(key,value,{preserve_link_refs=false}={}){
+    const retained=await store.atomic(key,current=>{
+      // A later, more complete reference projection cannot rewrite an already
+      // immutable summary link. Only its structurally bound reference pointer
+      // may differ; every original/feature/outcome/core field must stay exact.
+      if(current&&!same(current,value)&&!(preserve_link_refs&&sameLinkCore(current,value)))throw Error('IMMUTABLE_RETAINED_CAPSULE_CONFLICT');
+      return {state:current??value,result:current??value};
+    });
+    const readback=await store.get(key);if(!same(readback,retained))throw Error('RETAINED_CAPSULE_READBACK_FAILED');return readback;
   }
   async function original(analysis_key){
     const saved=await store.get(analysis_key);if(!saved?.analysis||!saved.input)throw Error('RETAINED_ORIGINAL_ANALYSIS_REQUIRED');
@@ -39,7 +50,7 @@ export function createRetainedCapsuleWriter({store,implementation_sha256,evidenc
     const card=cardKey?await store.get(cardKey):null;
     const refs=await projection({saved:row.saved,analysis_key:signal.analysis_key,signal,record:summary_record,card});
     const link={schema:'pump-summary-capsule-link-v2-20261025',summary_record_id:summary_record.record_id,analysis_key:signal.analysis_key,feature_key:row.prepared.key,feature_sha256:row.prepared.sha256,outcome_key:prepared.key,outcome_sha256:prepared.sha256,protected_refs:refs,originals_required:true,global_reference_closure:false};
-    await immutable('pump:summary-capsule-link:v2:'+summary_record.record_id.slice(-64),link);return {status:'SAVED',...link};
+    const retained=await immutable('pump:summary-capsule-link:v2:'+summary_record.record_id.slice(-64),link,{preserve_link_refs:true});return {status:'SAVED',...retained};
   }
   return {remember,record,implementation_sha256,evidence_class};
 }

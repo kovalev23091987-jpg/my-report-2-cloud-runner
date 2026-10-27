@@ -1,0 +1,189 @@
+{
+  "schema": "BZ23_FIXED_SUPPLIED_PROOF_FIXTURE_V2",
+  "status": "READY_FIXED_SUPPLIED_PATHS",
+  "source_contract_sha256": "9d50b9ecabd8406b4b4eacd1370c0e181cf34a63742d775a8581212e0d014e6b",
+  "fact_paths": [
+    {
+      "kind": "price",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "ticker_24h",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "candles",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "orderbook",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "growth_24h",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "trades",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "trades",
+      "path": [
+        "unit_evidence_ref"
+      ]
+    },
+    {
+      "kind": "open_interest",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "open_interest",
+      "path": [
+        "unit_evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "identity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "unit_evidence_ref"
+      ]
+    },
+    {
+      "kind": "candles",
+      "path": [
+        "coverage",
+        "time_evidence_ref"
+      ]
+    },
+    {
+      "kind": "growth_24h",
+      "path": [
+        "coverage",
+        "time_evidence_ref"
+      ]
+    },
+    {
+      "kind": "candles",
+      "path": [
+        "coverage",
+        "owner_decision_ref"
+      ]
+    },
+    {
+      "kind": "growth_24h",
+      "path": [
+        "coverage",
+        "owner_decision_ref"
+      ]
+    },
+    {
+      "kind": "growth_24h",
+      "path": [
+        "derived_from",
+        "time_evidence_ref"
+      ]
+    },
+    {
+      "kind": "orderbook",
+      "path": [
+        "coverage",
+        "quantity_evidence_ref"
+      ]
+    },
+    {
+      "kind": "trades",
+      "path": [
+        "coverage",
+        "response_bound_evidence_ref"
+      ]
+    },
+    {
+      "kind": "trades",
+      "path": [
+        "coverage",
+        "id_mapping_evidence_ref"
+      ]
+    },
+    {
+      "kind": "trades",
+      "path": [
+        "coverage",
+        "unit_and_maker_evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "coverage",
+        "evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "coverage",
+        "unit_evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "coverage",
+        "native_to_unified_evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "coverage",
+        "clock_evidence_ref"
+      ]
+    },
+    {
+      "kind": "funding",
+      "path": [
+        "coverage",
+        "period_evidence_ref"
+      ]
+    }
+  ],
+  "candle_row_fields": [
+    "time_evidence_ref",
+    "volume_evidence_ref"
+  ],
+  "LIQ_fields": [
+    "evidence_ref",
+    "identity_evidence_ref",
+    "model_evidence_ref",
+    "price_mapping_evidence_ref"
+  ],
+  "LIQ_nested_fields": [
+    "price_comparability",
+    "relative_scale"
+  ],
+  "max_candle_rows": 1440,
+  "max_analysis_zones_per_side": 3,
+  "input_zone_scan_bound": 256,
+  "input_zone_overflow": "EXPLICIT_INCOMPLETE_ORIGINALS_REQUIRED_NOT_SIGNAL_GATE"
+}
