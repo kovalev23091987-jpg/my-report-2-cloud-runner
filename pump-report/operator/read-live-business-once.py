@@ -78,11 +78,15 @@ for name in ['my-report-2-hub', 'my-report-2-free-history', 'my-report-2-liq-for
     crons[name] = [r['cron'] for r in result['result']['schedules']]
 assert crons == {'my-report-2-hub': ['*/5 7-16 * * *'], 'my-report-2-free-history': [], 'my-report-2-liq-forecast-history': []}
 assert int(time.time() * 1000) < a['expires_ts']
-script = "const r=await fetch('https://my-report-2-hub.kovalev23091987.workers.dev/pump/health',{redirect:'manual',signal:AbortSignal.timeout(30000)});if(r.status!==200)throw Error('HEALTH_HTTP');process.stdout.write(JSON.stringify(await r.json()));"
 calls += 1
-response = subprocess.run([a['node_executable'], '--input-type=module', '-e', script], capture_output=True, text=True, timeout=35)
-assert response.returncode == 0, 'HEALTH_READ_FAILED'
-health = json.loads(response.stdout)
+health_body = Path(str(attempt_path) + '.health.json')
+assert not health_body.exists()
+response = subprocess.run(['curl', '--silent', '--show-error', '--max-time', '30', '--output', str(health_body),
+                           '--write-out', '%{http_code}', 'https://my-report-2-hub.kovalev23091987.workers.dev/pump/health'],
+                          capture_output=True, text=True, timeout=35)
+Path(str(attempt_path) + '.health-stderr.txt').write_text(response.stderr)
+assert response.returncode == 0 and response.stdout == '200', 'HEALTH_READ_FAILED'
+health = json.loads(health_body.read_text())
 assert health['implementation_sha256'] == a['implementation_sha256']
 assert health['automatic_enabled'] and health['delivery_enabled'] and health['provider_stage'] == 'PRODUCTION_QUALIFIED'
 proof = {'schema': 'ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK_V1', 'authority_main': a['authority_main'],
@@ -90,7 +94,8 @@ proof = {'schema': 'ROOT_PRODUCTION_EXACT_DEPLOYMENT_READBACK_V1', 'authority_ma
          'implementation_sha256': a['implementation_sha256'], 'module_count': len(modules),
          'FULL_exact_module_bytes': True, 'health': health, 'bindings_count': 21, 'all3_schedules': crons,
          'read_only_admin_HTTP': calls, 'health_Worker_invocations': 1, 'market_HTTP': 0, 'native_SQL': 0,
-         'Telegram': 0, 'no_configuration_change': True}
+         'Telegram': 0, 'no_configuration_change': True, 'health_transport': 'curl',
+         'health_body_sha256': hashlib.sha256(health_body.read_bytes()).hexdigest()}
 with proof_path.open('x') as handle:
     json.dump(proof, handle, indent=2)
     handle.write('\n')
