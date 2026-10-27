@@ -12,11 +12,12 @@ assert a['maximum_attempts']==1 and now<a['expires_ts']<=a['own_lease']['expires
 assert a['expires_ts']-a['issued_ts']<=900000 and a['market_HTTP']==a['native_SQL']==a['Telegram']==0
 assert a['action'] in ['PAUSE_AUTO','INSTALL','RESUME_AUTO'] and a['admin_HTTP_max']==11
 assert hashlib.sha256(Path(__file__).read_bytes()).hexdigest()==a['operator_sha256']
-def artifact(path,expected):
+def artifact(path,expected,count):
  b=Path(path).read_bytes();assert hashlib.sha256(b).hexdigest()==expected;v=json.loads(b)
- assert v['manifest']['module_count']==72;return v
-before_artifact=artifact(a['before_artifact_file'],a['before_artifact_sha256'])
-after_artifact=artifact(a['after_artifact_file'],a['after_artifact_sha256'])
+ assert isinstance(count,int)and 1<=count<=128 and v['manifest']['module_count']==count==len(v['modules']);return v
+before_count=a.get('before_module_count',72);after_count=a.get('after_module_count',72)
+before_artifact=artifact(a['before_artifact_file'],a['before_artifact_sha256'],before_count)
+after_artifact=artifact(a['after_artifact_file'],a['after_artifact_sha256'],after_count)
 assert before_artifact['manifest']['implementation_pin']['sha256']==a['before_pin']
 assert after_artifact['manifest']['implementation_pin']['sha256']==a['after_pin']
 from_auto=a['action']=='PAUSE_AUTO';to_auto=a['action']=='RESUME_AUTO'
@@ -79,7 +80,7 @@ try:
   assert {k:v for k,v in bindings.items()if k!='PUMP_REPORT_ENABLED'}=={k:v for k,v in after_bindings.items()if k!='PUMP_REPORT_ENABLED'}
   assert {k:v for k,v in before.items()if k not in ['bindings','annotations']}=={k:v for k,v in after.items()if k not in ['bindings','annotations']}
  assert crons==after_crons
- proof.update(state='CONFIRMED_FULL',readback_ts=int(time.time()*1000),artifact_sha256=a['after_artifact_sha256'],implementation_sha256=a['after_pin'],module_count=72,FULL_exact_module_bytes=True,bindings_count=21,all3_schedules=after_crons,other20bindings_exact=True,control_plane={'automatic_enabled':to_auto,'delivery_enabled':True,'provider_stage':'PRODUCTION_QUALIFIED','DATA_DB_id':'057a2847-2cc4-4e52-8534-1be1596d21d5','basis':'Actual exact72 code and live Cloudflare settings; not a public health response'})
+ proof.update(state='CONFIRMED_FULL',readback_ts=int(time.time()*1000),artifact_sha256=a['after_artifact_sha256'],implementation_sha256=a['after_pin'],module_count=after_count,FULL_exact_module_bytes=True,bindings_count=21,all3_schedules=after_crons,other20bindings_exact=True,control_plane={'automatic_enabled':to_auto,'delivery_enabled':True,'provider_stage':'PRODUCTION_QUALIFIED','DATA_DB_id':'057a2847-2cc4-4e52-8534-1be1596d21d5','basis':'Actual exact admitted artifact code and live Cloudflare settings; not a public health response'})
 except Exception as e:proof['error']=str(e)[:180];raise
 finally:
  proof.update(completed_ts=int(time.time()*1000),read_only_and_mutation_admin_HTTP_attempted=calls,no_auto_retry=True)
