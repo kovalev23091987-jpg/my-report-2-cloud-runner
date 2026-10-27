@@ -1,0 +1,63 @@
+{
+  "schema": "F626_MINIMAL_QUEUE_PROPOSAL_AND_EXPECTED_REGRESSIONS_V1",
+  "status": "PROPOSAL_ONLY_NO_CODE_RANKING_THRESHOLD_CHANGE",
+  "proven_gaps": [
+    {
+      "id": "AGE_DOMINANCE",
+      "proof": "Unbounded minutes versus other preference sum<=60. Actual AIN waiting928.60785 contributes99.967842% of928.906566 score, ahead of SYN84.120628.",
+      "minimum_proposal": "Bound/normalize waiting bonus to declared finite preference scale; preserve fairness evidence and next_check. Exact ranking function/ceiling must be explicitly chosen by ROOT before implementation; no numeric replacement applied here."
+    },
+    {
+      "id": "MOVEMENT_CLOCK_LATCH",
+      "proof": "Discovery retains any existing nonnullmovement_event_ts; later analysis overwrites same field with wave.impulse.end_ts.",
+      "minimum_proposal": "Retain separate analysed impulse clock and last proved new discovery movement clock; update the latter only for new qualifying fresh source-event movement, not last_seen/wallclock or unchanged high24h. Do not reset first_seen/last_checked fairness. Do not let old impulse overwrite newer valid movement evidence."
+    },
+    {
+      "id": "QUALITY_WINDOW_VS_COOLDOWN",
+      "proof": "Nextcheck300000ms; all mandatory factTTL<=90000ms, min coreexpiry earlier by>=210000ms. Usablebook strengthens gap>=285000ms. Observed20leaders qualitybonus0.",
+      "minimum_proposal": "Define queue evidence-quality versus current fact freshness separately, meaningful at next eligible turn; preserve strict actual CORE factUsable/TTL for READY. Policy semantics/window chosen by ROOT, no TTL extension or data refresh in this package."
+    }
+  ],
+  "expected_queue_cases": [
+    {
+      "id": "R1_OVERNIGHT_AGE_BOUND",
+      "setup": "Eligible old stale-evidence row with900+waiting versus fresh/near/confirmed row; existing formula baseline dominates old.",
+      "expected": "Baseline arithmetic documented; proposed age contribution stays within declared cap/scale and other priorities can affect order. No unannounced numeric parameter or added HTTP."
+    },
+    {
+      "id": "R2_EXISTING_ROW_NEW_MOVEMENT",
+      "setup": "Existing nonnull old movement clock, independently new qualifying source-event price movement under existing prequeue criteria.",
+      "expected": "Discovery movement clock advances to that original source event; first_seen/last_checked unchanged; old analysed impulse clock kept separately, not a rewrite of source facts."
+    },
+    {
+      "id": "R3_FLAT_POLL_IS_NOT_MOVEMENT",
+      "setup": "Repeated fresh receipt/last_seen with unchanged prices or merely high rolling24h.",
+      "expected": "No fake movement freshness reset; future/unknown event time rejected. No aliases/market-source substitution."
+    },
+    {
+      "id": "R4_QUALITY_AFTER_COOLDOWN",
+      "setup": "Recorded confirmed3 core with15sbook/30sprice/90scandles, next_check+5min.",
+      "expected": "Baseline quality0 at due is demonstrated. Any new historical-quality signal is explicitly named/aged, while expired actual facts still fail CORE/READY; no freshness retiming."
+    },
+    {
+      "id": "R5_SAVED_FLOW_AND_TRUNCATION",
+      "setup": "Two retained decisions: BEAT→TAG DEFERRED; AIN→SYN DEFERRED; Q top3/2 in first and absent truncatedtop5 in second.",
+      "expected": "Baseline recorded flow and budget-break behavior reproduced with0actualIO. Exact Q rank in truncated trace remainsUNKNOWN; conditional reconstruction not promoted to observed. Proposed order differences declared before run."
+    },
+    {
+      "id": "R6_HISTORICAL_REPORT_COHORT",
+      "setup": "F625 exact4 input cohort under acceptedbaseline/proposed queue artifact.",
+      "expected": "Pure analytics/readiness/geometry/source clocks unchanged for queue-only patch. Changed selection never means READY before CORE; actual sourceHTTP/SQL/TG0 in regression."
+    }
+  ],
+  "execution_by_SOURCE": {
+    "Node": 0,
+    "engine": 0,
+    "API": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "new_source_connections": 0,
+    "code_ranking_threshold_edits": 0
+  },
+  "preservation": "Alloldcaps/spends/unknowns/holds/manual3/futurebase/9pauses/2OWNERdeferrals; Source24no25. Carryroom stopped."
+}

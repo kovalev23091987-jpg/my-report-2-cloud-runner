@@ -1,0 +1,51 @@
+{
+  "schema": "ROOT_F626_STATIC_REVIEW_V1",
+  "status": "ACCEPTED_STATIC_MECHANISM_GAPS_NO_PATCH_DEPLOYED",
+  "authority_main": "3dcb6ec1afb6cc297aec6d95df7f635eedd3d308",
+  "package_manifest_sha256": "787257ac6c9c922bbc462422fa1f745e3b9584fef708e4762db770e9cb6a80c9",
+  "source_payloads": [
+    {
+      "path": "pump-report/handoffs/sources/F626_ACCEPTED2AE_QUEUE_EVIDENCE_V1.json",
+      "bytes": 17530,
+      "sha256": "feb10a11548f5080e1de7b11b7b69ea393eb25b148ba75f6f008833220fb3bfe"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F626_SELECTION_ARITHMETIC_V1.csv",
+      "bytes": 4566,
+      "sha256": "e321adde2a8fbd6687b354e869356e42f0d913a5a666ad269bee64ac79f78732"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F626_MINIMAL_PROPOSAL_AND_REGRESSION_CASES_V1.json",
+      "bytes": 4205,
+      "sha256": "da9a1217bb071a4d7ef5b902d3a76cc7e2e4ac5f445ad61e40c3c3ad11385858"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F626_QUEUE_VERDICT_RU.md",
+      "bytes": 7473,
+      "sha256": "a4acdd3dbfd63c4650cabb7adfa2bbc070ef205a866bb9733eb0b46f5f2cfa62"
+    }
+  ],
+  "findings": [
+    "UNBOUNDED_AGE_DOMINATES_OTHER_THREE_BOUNDED_TERMS",
+    "NONNULL_DISCOVERY_MOVEMENT_CLOCK_NOT_REFRESHED",
+    "CORE_FACT_QUALITY_EXPIRES_BEFORE_NEXT_ELIGIBLE_RECHECK"
+  ],
+  "actual_arithmetic_rows": 20,
+  "maximum_numeric_error": 0,
+  "current_Q_READY_inference_from_queue": false,
+  "current_TG_cap_exhaustion_inferred_from_old_runs": false,
+  "requires_before_any_queue_patch": "Declare finite ranking and clock semantics; one affected saved queue regression plus preservation of analytics geometry. Do not extend fact TTL or retime old source facts.",
+  "root_priority": "Install historically qualified BZ6 model and prove same-original AUTO delivery first.",
+  "source_late_release": {
+    "ok": true,
+    "head": "83534205f5c10dd465cafd90519a0813451ec14b",
+    "utc": "2026-10-27 09:36:47 UTC",
+    "timely": false,
+    "released_ts_late_ms": 3914
+  },
+  "old_costs_unknowns_holds_caps_preserved": true,
+  "code_changed": false,
+  "market_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0
+}
