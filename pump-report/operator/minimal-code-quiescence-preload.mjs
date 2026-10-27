@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const expected=fileURLToPath(new URL('./minimal-code-quiescence-once.mjs',import.meta.url));
+if(path.resolve(process.argv[1]??'')!==expected||createHash('sha256').update(fs.readFileSync(expected)).digest('hex')!=="cd0817cc2b57d733119ebc4e4b3e99df7527edabf813c975c5e1e7856a7a71c4")throw Error('EXACT_MINIMAL_QUIESCENCE_OPERATOR_REQUIRED');
+const core=new URL('../handoffs/sources/F629-private-d1-stdio-relay-core.mjs',import.meta.url);
+if(createHash('sha256').update(fs.readFileSync(core)).digest('hex')!=='897e504e95035628f0f0a8a86f844ffd5972d101a8f28808051157870526dde3')throw Error('EXACT_QUALIFIED_CORE_REQUIRED');
+if(!process.stdin.isTTY)throw Error('TTY_REQUIRED');
+const {createF629Relay}=await import(core.href),wasRaw=process.stdin.isRaw===true;process.stdin.setRawMode(true);
+const restore=()=>{try{process.stdin.setRawMode(wasRaw);}catch{}process.stdin.pause();process.stdin.unref();};
+const relay=createF629Relay({input:process.stdin,output:process.stdout,onFatal:()=>{process.exitCode=1;restore();}});
+globalThis.fetch=relay.fetch;process.once('exit',()=>{relay.close();restore();});process.once('SIGINT',()=>{relay.close();restore();process.exitCode=130;});process.once('SIGTERM',()=>{relay.close();restore();process.exitCode=143;});
