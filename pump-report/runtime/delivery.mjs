@@ -27,7 +27,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     if(knownHashId!==undefined&&!(typeof knownHashId==='string'&&/^PUMP:[a-f0-9]{64}$/.test(knownHashId)))throw new BudgetRefusal('INVALID_DELIVERY_HASH_POINTER');
     // A fresh immutable original can replace a confirmed unsent same-text
     // primary. Known hash targets otherwise keep their existing identity.
-    const recovery=knownHashId&&previousCard?.card_id===previousWave?.primary_card_id&&['STALE','ERROR'].includes(previousCard.state)&&freshOriginal;
+    const recovery=knownHashId!==undefined&&knownHashId===previousCard?.card_id&&previousCard?.card_id===previousWave?.primary_card_id&&['STALE','ERROR'].includes(previousCard.state)&&freshOriginal;
     const id=recovery?'PUMP:'+await textHash(identity+'|'+analysis.source_input_key):knownHashId??'PUMP:'+await textHash(identity);
     const card={delivery_schema:'PUMP_DELIVERY_V2',card_id:id,text:analysis.card_text,text_hash:hash,recipient:String(recipient),mode,analysis,created_ts:clock(),expires_ts,state:'READY',message_id:null,owner:null,claim_until:null,send_started_ts:null,attempts:0};
     // Save immutable content before the wave pointer. A lost queue ACK is
@@ -41,7 +41,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
       current??={primary_card_id:null,updates:[],card_by_hash:{}};
       const knownPrevious=previousCard?.card_id===current.primary_card_id;
       const replaceUnsent=knownPrevious&&['STALE','ERROR'].includes(previousCard.state);
-      const recoverSameHash=replaceUnsent&&freshOriginal&&id!==current.card_by_hash[hash];
+      const recoverSameHash=replaceUnsent&&freshOriginal&&current.card_by_hash[hash]===previousCard.card_id&&id!==current.card_by_hash[hash];
       if(current.card_by_hash[hash]&&!recoverSameHash)return {state:current,result:{duplicate:true,card_id:current.card_by_hash[hash]}};
       const substantialUpdate=knownPrevious&&previousCard.state==='SENT'&&['PLAN_INVALIDATED','ENTRY_ZONE_REPLACED','EXIT_ZONE_REPLACED'].includes(update_kind);
       if(current.primary_card_id&&!replaceUnsent&&!substantialUpdate)return {state:current,result:{duplicate:true,card_id:current.primary_card_id,reason:'NO_CONFIRMED_REPLACEMENT_OR_UPDATE'}};
