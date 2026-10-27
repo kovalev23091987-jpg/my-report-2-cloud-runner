@@ -8,6 +8,8 @@ import {START_PROFILE} from '../profile/start-v1.mjs';
 import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal,isBingxNativeSymbol} from '../contracts/index.mjs';
 import {parseManualInput} from './manual-input.mjs';
 import {manualResponseText} from './manual-response.mjs';
+import {readSavedOutcome,validOutcomeAnalysisKey} from './saved-outcome.mjs';
+import {formatSavedOutcomeView} from '../analytics/outcome-presentation.mjs';
 import {createUnifiedBudget,createRequestBroker} from './budget.mjs';
 import {createDelivery,automaticWindowOpen,textHash} from './delivery.mjs';
 import {reserveNativeRun,finalizeNativeRun,NATIVE_POLICY} from './native-budget.mjs';
@@ -157,7 +159,7 @@ export function createPumpWorker(legacy={}){
       const production=PROVIDER_STAGE==='PRODUCTION_QUALIFIED',captureField=Object.hasOwn(body,'capture_id');
       const captureRequested=production&&url.pathname==='/pump/manual'&&captureField&&productionCaptureId(body.capture_id)&&body.request_id===body.capture_id;
       if(captureField&&!captureRequested||production&&url.pathname==='/pump/manual'&&productionCaptureId(body.request_id)&&!captureRequested)return json({error:'EXACT_PRODUCTION_MANUAL_CAPTURE_REQUIRED'},400);
-      if(production&&(!['/pump/manual','/pump/run','/pump/manual-result','/pump/summary','/pump/statistics-audit'].includes(url.pathname)||['grant_id','probe_id','diagnostic_id','kind'].some(k=>Object.hasOwn(body,k))))return json({error:'QUALIFICATION_ROUTE_NOT_PRODUCTION'},400);
+      if(production&&(!['/pump/manual','/pump/run','/pump/manual-result','/pump/outcome','/pump/summary','/pump/statistics-audit'].includes(url.pathname)||['grant_id','probe_id','diagnostic_id','kind'].some(k=>Object.hasOwn(body,k))))return json({error:'QUALIFICATION_ROUTE_NOT_PRODUCTION'},400);
       if(production&&url.pathname==='/pump/run'&&env.PUMP_REPORT_ENABLED!=='1')return json({error:'AUTOMATIC_REPORT_DISABLED'},503);
       const launchCapture=captureRequested;
       const probe=url.pathname==='/pump/source-probe';
@@ -170,7 +172,7 @@ export function createPumpWorker(legacy={}){
       const savedAudit=url.pathname==='/pump/statistics-audit';
       const savedAuditSingle=PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'&&savedAudit;
       if(PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'&&(!savedAuditSingle||body.grant_id!==SAVED_STATISTICS_AUDIT_ID||Object.keys(body).some(k=>k!=='grant_id')))return json({error:'EXACT_SAVED_STATISTICS_AUDIT_REQUIRED'},400);
-      const lookup=['/pump/manual-result','/pump/summary','/pump/statistics-audit'].includes(url.pathname);
+      const lookup=['/pump/manual-result','/pump/outcome','/pump/summary','/pump/statistics-audit'].includes(url.pathname);
       if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!['/pump/manual','/pump/run'].includes(url.pathname))return json({error:'NOT_FOUND'},404);
       if(PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&(!feasibilityCheck||body.grant_id!==SOURCE_FEASIBILITY_ID||Object.keys(body).some(k=>k!=='grant_id')))return json({error:'EXACT_SOURCE_FEASIBILITY_OPERATION_REQUIRED'},400);
       if(feasibilityCheck&&PROVIDER_STAGE!=='SOURCE_FEASIBILITY_SINGLE')return json({error:'SOURCE_FEASIBILITY_NOT_ADMITTED'},400);
@@ -186,6 +188,7 @@ export function createPumpWorker(legacy={}){
       if(probe&&!['clock','catalog','price','ticker','candles','orderbook'].includes(body.kind))return json({error:'INVALID_PROBE_KIND'},400);
       if(probe&&!['clock','catalog'].includes(body.kind)&&!isBingxNativeSymbol(body.symbol))return json({error:'INVALID_PROBE_SYMBOL'},400);
       if(url.pathname==='/pump/manual-result'&&!(typeof body.request_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(body.request_id)))return json({error:'INVALID_REQUEST_ID'},400);
+      if(url.pathname==='/pump/outcome'&&(!validOutcomeAnalysisKey(body.analysis_key)||Object.keys(body).some(key=>key!=='analysis_key')))return json({error:'EXACT_OUTCOME_ANALYSIS_KEY_REQUIRED'},400);
       if(url.pathname==='/pump/summary'&&body.max_records!==undefined&&(!Number.isInteger(body.max_records)||body.max_records<1||body.max_records>40))return json({error:'SUMMARY_LIMIT_1_TO_40'},400);
       if(savedAudit&&!savedAuditSingle&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'SAVED_STATISTICS_AUDIT_NOT_ADMITTED'},400);
       if(savedAudit&&!savedAuditSingle&&(Object.keys(body).some(k=>!['after','limit','plan_id'].includes(k))||!Number.isSafeInteger(body.after??0)||(body.after??0)<0||!Number.isSafeInteger(body.limit??10)||(body.limit??10)<1||(body.limit??10)>10||!/^[a-f0-9]{64}$/.test(body.plan_id??'')))return json({error:'SAVED_AUDIT_BOUND_AND_PLAN_REQUIRED'},400);
@@ -241,6 +244,10 @@ export function createPumpWorker(legacy={}){
         }else if(url.pathname==='/pump/manual')result=await runtime.runner.execute({mode:'MANUAL',symbol:body.symbol??body.text,context_symbol:body.context_symbol??null,run_id,publish:body.publish!==false,request_id:body.request_id??crypto.randomUUID()});
         else if(url.pathname==='/pump/run')result=await runtime.runner.execute({mode:'AUTO',run_id,publish:body.publish!==false});
         else if(url.pathname==='/pump/manual-result')result={status:'RESULT',result:await runtime.runner.getManualResult(body.request_id)};
+        else if(url.pathname==='/pump/outcome'){
+          const view=await readSavedOutcome({store:runtime.store,analysis_key:body.analysis_key});
+          result={...view,outcome_response_text:formatSavedOutcomeView(view)};
+        }
         else if(savedAuditSingle){
           const plan=await saveProspectiveAuditPlan({store:runtime.store,split_ts:Date.now()+14*86400000});
           result=await createSavedStatisticsAudit({store:runtime.store})({after:0,limit:1,plan_id:plan.plan_id});
