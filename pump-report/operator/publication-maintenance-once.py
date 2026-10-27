@@ -23,7 +23,7 @@ from_auto=a['action']=='PAUSE_AUTO';to_auto=a['action']=='RESUME_AUTO'
 if a['action']!='INSTALL':assert a['before_artifact_sha256']==a['after_artifact_sha256']
 else:
  b=Path(a['quiescence_file']).read_bytes();assert hashlib.sha256(b).hexdigest()==a['quiescence_sha256'];q=json.loads(b)
- assert q['state']=='FINALIZED' and q['observation']['status']=='QUIESCENT_CODE_UPDATE_ALLOWED' and not q['observation']['executor'].get('owner')
+ assert q['state']=='FINALIZED' and q['observation']['status']=='QUIESCENT_CODE_UPDATE_ALLOWED' and not (q['observation']['executor']or{}).get('owner')
  assert now-q['observation']['observed_ts']<=300000 and q['implementation_sha256']==a['before_pin']
 config=Path('/Users/mac/Library/Preferences/.wrangler/config/default.toml').read_text()
 token=re.search(r'^oauth_token\s*=\s*"([^\"]+)"',config,re.M).group(1)
@@ -54,7 +54,7 @@ def readback(expected,auto):
  settings=get('my-report-2-hub/settings');bindings={b['name']:b for b in settings['bindings']};assert len(bindings)==len(settings['bindings'])==21
  assert bindings['PUMP_REPORT_ENABLED']=={'name':'PUMP_REPORT_ENABLED','type':'plain_text','text':'1'if auto else'0'}
  assert bindings['PUMP_REPORT_DELIVERY_ENABLED']=={'name':'PUMP_REPORT_DELIVERY_ENABLED','type':'plain_text','text':'1'}
- assert bindings['DATA_DB']['id']=='057a2847-2cc4-4e52-8534-1be1596d21d5'
+ assert (bindings['DATA_DB'].get('id')or bindings['DATA_DB'].get('database_id'))=='057a2847-2cc4-4e52-8534-1be1596d21d5'
  names=['my-report-2-hub','my-report-2-free-history','my-report-2-liq-forecast-history']
  crons={n:[s['cron']for s in get(n+'/schedules')['schedules']]for n in names}
  assert crons==dict(zip(names,[['*/5 7-16 * * *'],[],[]]))
