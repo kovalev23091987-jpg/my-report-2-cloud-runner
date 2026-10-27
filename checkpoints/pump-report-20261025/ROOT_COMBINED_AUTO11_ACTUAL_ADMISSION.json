@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_RECENT_COMPLETED_AUTO_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "d3f87697cf284d9501e1f7a383e381c1a69842f4",
   "own_lease": {
     "owner": "CODEX:PUMP_AUTO_ACCEPTANCE11_20261027:1793119200650",
@@ -70,6 +70,23 @@
     "exact_owner_approval_required": true,
     "one_named_attempt_wx": true
   },
-  "native11_executed": false,
-  "purpose": "DirecthumanapprovedoneUTC27extra11; boundedlastcompletedordinaryAUTO same-original/card/receipt/wave acceptance only."
+  "native11_executed": true,
+  "purpose": "DirecthumanapprovedoneUTC27extra11; boundedlastcompletedordinaryAUTO same-original/card/receipt/wave acceptance only.",
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-combined-auto-acceptance-20261027-one-owner-extra",
+    "usage": {
+      "requests": 8,
+      "rows_read": 128,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 128,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "c409ce6446327a7edde504378accd182513f35b344b99605777c4dbab59587b8",
+  "completed_ts": 1793119324543
 }
