@@ -32,7 +32,7 @@ export async function readSavedOutcome({store,analysis_key,clock=Date.now}){
   const signal=await get(signal_id),anchor=journal?.frozen_anchor;
   if(!anchor||!signal)return finish('ANCHOR_PENDING','SAVED_FROZEN_OUTCOME_ANCHOR_NOT_AVAILABLE',{
     anchor_analysis_key:validOutcomeAnalysisKey(anchor?.analysis_id)?anchor.analysis_id:null});
-  if(!validOutcomeAnalysisKey(anchor.analysis_id)||signal.analysis_key!==anchor.analysis_id||!same(signal.origin,anchor.origin))return quarantine('FROZEN_ANCHOR_SIGNAL_CONFLICT');
+  if(anchor.immutable!==true||!validOutcomeAnalysisKey(anchor.analysis_id)||signal.analysis_key!==anchor.analysis_id||!same(signal.origin,anchor.origin))return quarantine('FROZEN_ANCHOR_SIGNAL_CONFLICT');
   if(anchor.analysis_id!==analysis_key)return finish('OTHER_ANCHOR','THIS_WAVE_IS_MEASURED_FROM_ANOTHER_SAVED_ORIGINAL',{anchor_analysis_key:anchor.analysis_id});
   const o=signal.origin,expected={instrument_id:a.instrument.instrument_id,asset_id:a.instrument.asset_id,wave_id:a.wave_id,
     signal_id,t0:a.analysis_ts,reference_price:a.reference_price,rules_version:a.rules_version,profile_version:a.profile_version,mode:a.mode};
