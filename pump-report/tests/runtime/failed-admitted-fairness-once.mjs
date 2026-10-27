@@ -27,7 +27,7 @@ globalThis.fetch=()=>{throw Error('NO_REAL_NETWORK_IN_FAIRNESS_CASE');};
 
 async function run(makeRunner,kind){
  let now=T,allowed=0,sourceCalls=[],engineCalls=0,firstResult;
- const store=new MemoryStore();
+ const store=new MemoryStore();if(kind==='NATIVE_UNKNOWN')store.usage=()=>({unknown_ops:1});
  const queue=Object.fromEntries(rows.map(r=>[r.instrument_id,{instrument_id:r.instrument_id,first_seen:r.first_seen,last_checked_ts:r.last_checked_ts,next_check_ts:r.next_check_ts,movement_event_ts:r.movement_event_ts,preliminary_growth:r.preliminary_growth_pct,reported_day_growth:r.reported_day_growth_pct,active_wave:r.active_wave,entry_zones:[]} ]));
  await store.set('pump:candidate-queue',queue);await store.set('pump:resources',actual.project_resources);
  const terminal={wave_id:'ARTIFICIAL_TERMINAL_UNCHANGED',state:'CANCELLED',created_ts:T-18000000,expires_ts:T-3600000};
@@ -45,7 +45,7 @@ async function run(makeRunner,kind){
  let mode='AUTO';
  const budget={setMode:m=>{mode=m;},admitCandidate:async()=>{allowed++;return kind==='NOT_ADMITTED'||allowed%2===0?{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:'ARTIFICIAL_STOP_AFTER_ONE_ATTEMPT'}:{allowed:true};},summary:()=>({mode,total:0,lanes:{hot:0},limits:{manual_http_run_reserve:0,http_per_run:164,lanes:{hot:164}}})};
  const delivery={pending:async()=>[],drain:async()=>[],dispatch:async()=>{assert.fail('NO_SEND_IN_FAILURE_CASE');}};
- const runner=makeRunner({store,sources,budget,delivery,profile:START_PROFILE,clock:()=>now,analyzePump:()=>{engineCalls++;assert.fail('NO_ANALYSIS_FROM_ARTIFICIAL_FAILURE');},evaluateOutcome:()=>{assert.fail('NO_OUTCOME_FROM_ARTIFICIAL_FAILURE');}});
+ const runner=makeRunner({store,sources,budget,delivery,profile:START_PROFILE,clock:()=>now,await_source_window:async()=>{if(kind==='SOURCE_WINDOW')throw Error('ARTIFICIAL_SOURCE_WINDOW_FAILURE');},analyzePump:()=>{engineCalls++;assert.fail('NO_ANALYSIS_FROM_ARTIFICIAL_FAILURE');},evaluateOutcome:()=>{assert.fail('NO_OUTCOME_FROM_ARTIFICIAL_FAILURE');}});
  firstResult=await runner.execute({mode:'AUTO',run_id:'ARTIFICIAL_FAILURE_FIRST',publish:false});
  const afterFirst=await store.get('pump:candidate-queue');
  assert.equal(afterFirst[rows[0].instrument_id].last_checked_ts,rows[0].last_checked_ts,'failure is not a completed analysis');
@@ -66,8 +66,10 @@ const proposal=await run(proposedRunner,'LOCAL');
 assert.deepEqual(proposal.sourceCalls,[rows[0].instrument_id,rows[1].instrument_id]);assert.equal(proposal.failed_ts,T);
 const globalFailure=await run(proposedRunner,'GLOBAL');assert.equal(globalFailure.failed_ts,null);
 const noAdmission=await run(proposedRunner,'NOT_ADMITTED');assert.equal(noAdmission.failed_ts,null);assert.equal(noAdmission.sourceCalls.length,0);
+const nativeUnknown=await run(proposedRunner,'NATIVE_UNKNOWN');assert.equal(nativeUnknown.failed_ts,null);
+const sourceWindow=await run(proposedRunner,'SOURCE_WINDOW');assert.equal(sourceWindow.failed_ts,null);assert.equal(sourceWindow.sourceCalls.length,0);
 const summary=autoRunSummary(proposal.firstResult,'1'.repeat(64));
 assert.deepEqual(summary.candidate_failures,[{instrument_id:rows[0].instrument_id,failure_stage:'SOURCE_CORE',error_type:'Error',failed_admitted_attempt:true}]);
 assert.equal(summary.counts.analysis_results,0);assert.equal(summary.delivery.reported_occurrences,0);
-const result={schema:'ROOT_FAILED_ADMITTED_FAIRNESS_AFFECTED_CASE_V1',status:'PASS',cases:1,arms:4,original_snapshot_sha256:admit.private_snapshot_sha256,observed_run_id:actual.known_run_id,source_evidence:'OBSERVED_QUEUE_PROJECTION_PLUS_EXPLICIT_ARTIFICIAL_FAILURE_AND_PRICES',historical_SI_exception_claimed:false,baseline_selected:baseline.sourceCalls,proposal_selected:proposal.sourceCalls,global_budget_failure_not_penalized:globalFailure.failed_ts===null,nonadmitted_not_penalized:noAdmission.failed_ts===null,last_checked_source_clocks_terminal_state_and_all_resource_records_preserved:true,safe_failure_stage_in_summary:true,engine_calls:0,real_HTTP:0,native_SQL:0,Telegram:0,production_deployed:false};
+const result={schema:'ROOT_FAILED_ADMITTED_FAIRNESS_AFFECTED_CASE_V1',status:'PASS',cases:1,arms:6,original_snapshot_sha256:admit.private_snapshot_sha256,observed_run_id:actual.known_run_id,source_evidence:'OBSERVED_QUEUE_PROJECTION_PLUS_EXPLICIT_ARTIFICIAL_FAILURE_AND_PRICES',historical_SI_exception_claimed:false,baseline_selected:baseline.sourceCalls,proposal_selected:proposal.sourceCalls,global_budget_failure_not_penalized:globalFailure.failed_ts===null,nonadmitted_not_penalized:noAdmission.failed_ts===null,native_unknown_and_source_window_not_penalized:nativeUnknown.failed_ts===null&&sourceWindow.failed_ts===null,last_checked_source_clocks_terminal_state_and_all_resource_records_preserved:true,safe_failure_stage_in_summary:true,engine_calls:0,real_HTTP:0,native_SQL:0,Telegram:0,production_deployed:false};
 fs.writeFileSync(admit.proof_path,JSON.stringify(result,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(result));
