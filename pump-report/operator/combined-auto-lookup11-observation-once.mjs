@@ -41,9 +41,8 @@ const proofBytes=fs.readFileSync(admission.full_readback_file),proof=JSON.parse(
 if(sha(proofBytes)!==admission.full_readback_sha256||proof.FULL_exact_module_bytes!==true||proof.implementation_sha256!==admission.implementation_sha256||
   proof.artifact_sha256!==program.artifact_sha256||proof.module_count!==artifact.manifest.module_count||
   !Number.isSafeInteger(proof.readback_ts)||proof.readback_ts>now||now-proof.readback_ts>300000||proof.schema!=='ROOT_PRODUCTION_CONTROL_PLANE_READBACK_V1'||proof.control_plane?.automatic_enabled!==true||proof.control_plane?.delivery_enabled!==true||proof.control_plane?.provider_stage!=='PRODUCTION_QUALIFIED'||proof.control_plane?.DATA_DB_id!=='057a2847-2cc4-4e52-8534-1be1596d21d5')throw Error('FRESH_FULL_LIVE_READBACK_REQUIRED');
-const credential=fs.readFileSync('/Users/mac/Library/Preferences/.wrangler/config/default.toml','utf8');
-const token=credential.match(/^oauth_token\s*=\s*"([^"]+)"/m)?.[1],expiry=credential.match(/^expiration_time\s*=\s*"([^"]+)"/m)?.[1];
-if(!token||!expiry||!Number.isFinite(Date.parse(expiry))||Date.parse(expiry)<=now+300000)throw Error('REFRESH_WRANGLER_BEFORE_OBSERVATION');
+const relayCoreSHA='897e504e95035628f0f0a8a86f844ffd5972d101a8f28808051157870526dde3';
+if(admission.transport?.method!=='EXISTING_CLOUDFLARE_MCP_PRIVATE_STDIO'||globalThis.__PUMP_EXISTING_CF_MCP_RELAY_CORE_SHA256!==relayCoreSHA)throw Error('EXACT_AUTHENTICATED_MCP_RELAY_PRELOAD_REQUIRED');
 const maintenanceSQL=createAuto11MaintenanceSqlException(admission,now);
 const privateRoot=path.join(root,'pump-report/.private/observations'),inside=p=>path.resolve(p).startsWith(privateRoot+path.sep);
 const attemptPath=path.resolve(attemptArg),resultPath=path.resolve(resultArg);
@@ -69,7 +68,7 @@ try{
     calls++;
     const transformed=maintenanceSQL(sql,params);
     const r=await fetch('https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/d1/database/057a2847-2cc4-4e52-8534-1be1596d21d5/query',{
-      method:'POST',headers:{Authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(transformed),redirect:'manual',signal:AbortSignal.timeout(20000)});
+      method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(transformed),redirect:'manual',signal:AbortSignal.timeout(20000)});
     if(r.status!==200)throw Error('D1_API_HTTP_'+r.status);
     const chunks=[];let size=0;for await(const bytes of r.body){size+=bytes.length;totalBytes+=bytes.length;if(size>8388608||totalBytes>12582912)throw Error('OBSERVATION_RESPONSE_BOUND');chunks.push(bytes);}
     const envelope=JSON.parse(Buffer.concat(chunks).toString('utf8'));
