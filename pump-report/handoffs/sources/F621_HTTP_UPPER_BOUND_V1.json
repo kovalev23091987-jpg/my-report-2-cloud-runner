@@ -1,0 +1,132 @@
+{
+  "schema": "F621_STATIC_SOURCE_HTTP_UPPER_V1",
+  "authority_main": "888d10299bbcc639dda23fe6b1a23fd3124f3d09",
+  "authority_code": [
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "git_blob": "6db3df2a51216a1d5ffda9d053fa53022ae4c8a9"
+    },
+    {
+      "path": "pump-report/runtime/worker.mjs",
+      "git_blob": "a062124153c44336e83303d705316919d1bfd091"
+    },
+    {
+      "path": "pump-report/runtime/delivery.mjs",
+      "git_blob": "cc437b2d527d1f11307305979a56be4aeddff254"
+    },
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "git_blob": "2fa5ed93174934793479b82ae5b28236efb0a67b"
+    },
+    {
+      "path": "pump-report/runtime/production-policy.mjs",
+      "git_blob": "04a7df6d90d7eda4efc90bbb6b77dbde125badd9"
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "git_blob": "6d0d92eea33cee376c5566c663c096341c2dc1d5"
+    },
+    {
+      "path": "pump-report/sources/bingx.mjs",
+      "git_blob": "9c406a87ee75cda9c00b3f8600d95ab4246bcff8"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6"
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de"
+    },
+    {
+      "path": "pump-report/runtime/provider-policy.mjs",
+      "git_blob": "7270572633e57245c4b18ece98b7750172b919e2"
+    },
+    {
+      "path": "pump-report/runtime/telegram-send.mjs",
+      "git_blob": "f445102e2a9b1f2dd8ce05bdc64407c36769411b"
+    },
+    {
+      "path": "pump-report/sources/day-growth.mjs",
+      "git_blob": "54a7147bd5de7f74c5c8ee9e0658970181a01bdd"
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "git_blob": "3dae6990ea23830e9585c1b0592cf93d731adde3"
+    }
+  ],
+  "scope": "ONE_COLD_CANDIDATE_NOT_WHOLE_RUN_OR_DAY",
+  "components": [
+    {
+      "phase": "candidate_overview",
+      "BINGX_attempts_max": 1
+    },
+    {
+      "phase": "closed_day_growth",
+      "BINGX_attempts_max": 1
+    },
+    {
+      "phase": "core_price_primary_plus_allowed_fallback",
+      "BINGX_attempts_max": 2
+    },
+    {
+      "phase": "core_candles",
+      "BINGX_attempts_max": 1
+    },
+    {
+      "phase": "core_orderbook",
+      "BINGX_attempts_max": 1
+    },
+    {
+      "phase": "optional_trades_funding_shared_upper",
+      "BINGX_attempts_max": 2
+    },
+    {
+      "phase": "existing_forced_DELIVERY_price_book",
+      "BINGX_attempts_max": 2
+    }
+  ],
+  "BINGX_attempts_max": 10,
+  "TELEGRAM_attempts_max": 1,
+  "unassigned_optional_map_upper": 1,
+  "candidate_total_upper": 12,
+  "BINGX_caps": {
+    "minute": 10,
+    "second": 1,
+    "day": 900,
+    "month": 27900
+  },
+  "run_HTTP_cap": 164,
+  "manual_checks_reserve": 3,
+  "forced_DELIVERY": {
+    "call": "getCore({purpose:DELIVERY,force_refresh:true,only_facts:[price,orderbook]})",
+    "price_primary_max": 1,
+    "price_fallback": false,
+    "book_max": 1,
+    "positive_cache_ttl_ms": 0,
+    "negative_cache_or_budget_refusal_can_prevent_HTTP": true,
+    "second_duplicate_refresh_not_allowed_under_same_upper": true
+  },
+  "pacing": {
+    "provider_queue": "SERIALIZES_COMPLETE_BROKER_WORK",
+    "minimum_interval_ms": 1000,
+    "awaitProviderWindow_cost10": "FORECAST_ONLY_NOT_EXCLUSIVE_SLOT_RESERVATION",
+    "atomic_reserve_required_for_each_attempt": true,
+    "default_request_deadline_ms": 10000,
+    "end_to_end_delivery_latency_guaranteed": false,
+    "native_reservation_finalization_and_storage_can_outlive_slack": true
+  },
+  "AIN_retained_receipts": {
+    "BINGX_total": 8,
+    "discovery": 2,
+    "other_CORE": 6,
+    "DELIVERY": 0,
+    "hypothetical_refresh_would_have_succeeded": "NOT_CHECKED_NO_RETROACTIVE_ADMISSION"
+  },
+  "preserved": {
+    "qualification": "24spent0remaining_no25",
+    "all_old_costs_unknowns_reserves_9pauses_2OWNERdeferrals": true,
+    "new_recurring_routes": 0,
+    "new_fresh_CORE_or_maps_claims": 0
+  }
+}
