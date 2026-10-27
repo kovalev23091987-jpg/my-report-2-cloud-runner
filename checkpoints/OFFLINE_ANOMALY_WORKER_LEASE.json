@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793125646000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793125646000,
@@ -27,5 +27,53 @@
     "checkpoints/report2-owner-paused-20261024/pause-save-receipt.json": "7b270b68a39ca6052507c63fffad5da851f02a4d",
     "checkpoints/report2-owner-paused-20261024/resume-queues.json": "916d1594afd7b0f78a8bad9312e71deb37fc23a7",
     "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923"
-  }
+  },
+  "released": true,
+  "released_ts": 1793125949000,
+  "release_main": "8bce0c83b954274fd9d422546183c3fb1022ff96",
+  "release_authority": {
+    "main": "8bce0c83b954274fd9d422546183c3fb1022ff96",
+    "clock": {
+      "current_time": "2026-10-27 18:32:14 UTC"
+    },
+    "all17_full": true,
+    "all4_equal": true,
+    "ok": true,
+    "parent": "CODEX:PUMP_AUTO_MANUAL_PARITY_20261027:1793124667397",
+    "parent_expires_ts": 1793127067397,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "guard_git_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+      "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "6b10831311c8e6f228c8cebe61ff420bdebe48b5",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "cca6ded8fb1a7fa1a72307ed498115d568114e27",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "bfd3173efb351573f3acdfc3fbdba3d877898cc4",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "37ea55166b061dd9f4a45ae1ea58d9452d1f6592",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "aa8f8135bc9745822cb2e96e1b23a3c37b65414f",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "13e3cd067af91e7a95b7529bc97eb3da3ad1c5f9",
+      "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "08de8322eec5bba8a9ad0afac530566442625154",
+      "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+      "checkpoints/REPORT2_OWNER_PAUSED_RESUME_HANDOFF_20261024.json": "e6a167a88084b7c2f1bc1238d1f2b8d3ad1e6f91",
+      "checkpoints/report2-owner-paused-20261024/pause-save-receipt.json": "7b270b68a39ca6052507c63fffad5da851f02a4d",
+      "checkpoints/report2-owner-paused-20261024/resume-queues.json": "916d1594afd7b0f78a8bad9312e71deb37fc23a7",
+      "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923"
+    }
+  },
+  "handoff_path": "pump-report/handoffs/analytics/package-bz16/BZ16_SAME_TEXT_RECOVERY_STATIC_HANDOFF_RU.md",
+  "handoff_sha256": "67de425eec3b4d14d0c3e524ee26576759994b02247ce53bb891b2ecb6b337f0",
+  "review_manifest_sha256": "29c8332bf3b39e2bcc560ea1104250ebfbbfb39ad5689d5a4dc089c10f7fa9e1",
+  "verdict": "NEW static historical-knownhash/currentprimary mismatch permits old original replay after two known unsent errors. Timestamp freshOriginal alone insufficient for older different-text B arriving after A, ordinary replaceUnsent permits timestamp rollback. Recommend knownhash==currentprimary guards before id and in CAS. ROOT owns code/repair qualification; no helper tests or duplicate affected run.",
+  "actual_executions": {
+    "Node": 0,
+    "engine": 0,
+    "tests": 0,
+    "API": 0,
+    "nativeSQL": 0,
+    "Telegram": 0,
+    "runtime_edits": 0
+  },
+  "first_genuine_AUTO_SENT": "OPEN"
 }
