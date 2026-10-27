@@ -22,7 +22,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     const previousWave=await store.get(waveKey);
     const previousCard=previousWave?.primary_card_id?await store.get('pump:card:'+previousWave.primary_card_id):null;
     const validOriginal=key=>typeof key==='string'&&/^pump:analysis:[a-f0-9]{64}$/.test(key);
-    const freshOriginal=validOriginal(analysis.source_input_key)&&validOriginal(previousCard?.analysis?.source_input_key)&&analysis.source_input_key!==previousCard.analysis.source_input_key;
+    const freshOriginal=validOriginal(analysis.source_input_key)&&validOriginal(previousCard?.analysis?.source_input_key)&&analysis.source_input_key!==previousCard.analysis.source_input_key&&Number.isSafeInteger(analysis.analysis_ts)&&Number.isSafeInteger(previousCard.analysis.analysis_ts)&&analysis.analysis_ts>previousCard.analysis.analysis_ts&&analysis.analysis_ts<=clock();
     const knownHashId=previousWave?.card_by_hash?.[hash];
     if(knownHashId!==undefined&&!(typeof knownHashId==='string'&&/^PUMP:[a-f0-9]{64}$/.test(knownHashId)))throw new BudgetRefusal('INVALID_DELIVERY_HASH_POINTER');
     // A fresh immutable original can replace a confirmed unsent same-text
