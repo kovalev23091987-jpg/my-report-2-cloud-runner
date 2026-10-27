@@ -1,3 +1,19 @@
+# Текущая точка — установлен пакет75, 27 октября 2026
+
+Действующая сборка: pin `2988e3fe8e5278d1b40baa25053a2a49e899d5414ead750181e1ed6bbf9aa5cc`, artifact SHA256 `ff675daea75e751ecc104f293c2dc4d2d076b1f5fd638940671335483d7e31b2`. Полное серверное чтение подтвердило все75модулей. `ROOT_OUTCOME14_INSTALL_FULL.json` SHA256 `31ea2df506df9d1ae9702f81166eaea89b43b138d7ade6cc25b76b28303aefaf`; `ROOT_OUTCOME14_AUTO_ON_FULL.json` SHA256 `c5bee54a8421297fe7ef4af02434ded2a8d92c77fec7bfb70744f682fa5a4b2c`. AUTO1/Telegram1, все21binding сохранены, основной cron */5 7-16 * * *, два других Worker cron пусты. Business program и следующий AUTO target обновлены на75; старая доставка recovery сохранена.
+
+Команда владельца «Доделывай же ты без остановки, я же прошу тебя.» принята как согласие на непосредственно ожидавшее конкретное предложение установки и одной проверки№14. Это ограниченное контекстное разрешение, а не повышение обычных caps. Проверка14 FINALIZED:5SQL/131R/4W/0SQLunknown, executor.owner=null. UTC27:cap10+4разовых согласованных допусков,spent14,remaining0;№15 не разрешён. Известный инженерный нижний итог1446SQL/3448R/724W исключает ordinaryAUTO/whole-accountday UNKNOWN. Исторические расходы, providerunknown2, резервы и удержания сохранены. Refresh существующегоOAuth однимwhoami; новые ключи/login/scope не создавались.
+
+При первой передаче controller ошибочно передан IIFE вместо async arrow: ошибка сохранена, admincost UNKNOWN. Отдельный bounded READ_ONLY5 подтвердил неизменённую live1deb/AUTO1 до корректной установки; pause/install/resume по11logicaladmincalls. Knownlogicaladmin38 плюс неизвестные физические/admin/OAuth расходы не выдаются за0. MarketHTTP0/Telegram0 при обслуживании.
+
+Установлено: authenticated POST /pump/outcome по точному immutable original, старыйLOOKUPcap10, максимум4бизнес-PK reads; никакого рынка/пересчёта/автоматических статистических сообщений. HIT/MISS/UNKNOWN и отсутствие результата различаются, иной anchor не получает чужой исход. Source index выдаёт full selected coverage только по include_universe:true; pure sources/coverage.mjs остаётся operator-only и не вWorkergraph. Offline550fixture и outcome23arms не являются живым CORE550, AUTO или HIT/MISS.
+
+Первая настоящая цепочка текущего AUTO original→тотжеcard/text→recipient/ACK→message_id/readback и реальный исход остаются OPEN. Следующее обычное окно — **28октября с10:00МСК**, без ночного принуждения. `ROOT_NEXT_BUSINESS_ACCEPTANCE_PREPARATION.json` только подготовка чтения, не допуск: нужны freshmain/all17/all4/NEWownCAS/FULL, фактический ordinaryUTC28budget, свежий FULL и при необходимости обычный refresh существующегоOAuth. Старые extras27Oct не переносятся.
+
+FullTZостаток10групп — CURRENT_FULL_TZ_REMAINDER_20261027.json и RU.md. F64217source + BZ218analytics referenceгрупп дополняют исходную35datasetматрицу. Конкретные недостающие supplied identity/unit/clock proofedges переданы F644/BZ23; это отдельная offlineподготовка, не установленный код и не глобальная closure. TTL/deleteauthority не меняются,200surpluscap не переопределён,2OWNERdeferrals/9пауз/старыйотчёт/Actions сохраняются. Поиск и новые подключения по последнемуSTOP не возобновляются.
+
+Ниже — историческая сохранённая точка ДО установки14. Её прежние «14неразрешён/75неустановлен» и pin1deb описывают только то время.
+
 # Новая точка полного ТЗ — 27 октября, подготовленный пакет75
 
 Действующий сервер по-прежнему **1deb / 73 модуля / AUTO1 / Telegram1**. Принятое исправление доставки остаётся установленным. Первая реальная текущая AUTO-доставка не подтверждена; ближайшее рабочее окно — 28 октября с 10:00 МСК.
