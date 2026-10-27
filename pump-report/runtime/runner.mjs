@@ -111,6 +111,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await assert_execution();
     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id});
     if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail},delivery:null};
+    let checked_result=null;
     try {
     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
     // overview1 + day1 + price(primary/fallback)2 + candles/book2 + optional2
@@ -161,9 +162,13 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       catch(error){if(!delivered)throw error;bookkeeping_error=error.code??'POST_PUBLICATION_INDEX_FAILED';}
     }
     if(card_id&&!bookkeeping_error){try{await recordPublished(card_id,{analysis_registered:true});}catch(error){bookkeeping_error=error.code??'POST_PUBLICATION_REGISTRATION_FAILED';}}
-    return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(bookkeeping_error?{bookkeeping_error}:{}),...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
+    checked_result={analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(bookkeeping_error?{bookkeeping_error}:{}),...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
+    return checked_result;
     } finally {
-      if(admitted?.surplus_grant_id)await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id});
+      if(admitted?.surplus_grant_id){
+        try{await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id});}
+        catch(error){if(!checked_result?.delivery)throw error;const reason=error.code??'POST_PUBLICATION_CANDIDATE_CLOSE_FAILED';checked_result.bookkeeping_error??=reason;checked_result.candidate_close_error=reason;}
+      }
     }
   }
   async function recordPublished(card_id,{analysis_registered=false}={}){
