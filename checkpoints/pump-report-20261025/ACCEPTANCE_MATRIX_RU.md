@@ -1,4 +1,4 @@
-Актуальная точка27октября2026: пакет75 установлен FULL, pin2988/AUTO1/DL1. Проверка14 FINALIZED5SQL131R4W;UTC27spent14/remaining0. Реальная текущая AUTO-доставка/исход OPEN. См. CURRENT_FULL_TZ_REMAINDER_20261027_RU.md и ROOT_OUTCOME14_AUTO_ON_FULL.json; три чата проверяют сохранённые receipts. Ниже историческая матрица26октября: прежние числа и версии относятся к своему времени, дословный реестр719 не переписан.
+Актуальная точка28октябряМСК: установлен75/pin2988/AUTO1/DL1, first genuineAUTO/исход OPEN. Квалифицированный referencepacketV3 ещё не упакован/не установлен; F645/ROOTграничные замечания закрыты V3case+F646. См.LAUNCH_CURRENT_RU.md, CURRENT_FULL_TZ_REMAINDER_20261027.json и ROOT_THREE_CHAT_REFERENCE_PACKET_ACCEPTANCE_V3.json. Ниже историческая матрица26октября с прежними версиями/числами; дословныйреестр719 не переписан.
 
 # Фактическая приёмка Памп-отчёта
 
