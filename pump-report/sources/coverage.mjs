@@ -3,6 +3,7 @@ const time=x=>Number.isSafeInteger(x)&&x>0;
 const kinds=['core','growth_24h','liquidations'];
 const code=x=>typeof x==='string'&&/^[A-Z0-9_:.-]{1,160}$/.test(x)?x:null;
 const hash=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
+const notChecked=o=>/^NOT_CHECKED(?:_|$)/.test(o?.status_at_capture??'');
 export function normalizeSourceCoverage({registry,as_of_ts,observations=[],reports=[],summary=null,universe={},delivery_policy={}}){
   if(!Array.isArray(registry)||!time(as_of_ts))throw Error('COVERAGE_REGISTRY_AND_ASOF_REQUIRED');
   const instruments=registry.map(e=>e.instrument??e),ids=new Set(instruments.map(i=>i.instrument_id));
@@ -10,22 +11,33 @@ export function normalizeSourceCoverage({registry,as_of_ts,observations=[],repor
   if(delivery_policy.excluded_asset_ids!==undefined&&(!Array.isArray(delivery_policy.excluded_asset_ids)||delivery_policy.excluded_asset_ids.some(id=>typeof id!=='string'||!id)))throw Error('OWNER_DELIVERY_ASSET_IDS_REQUIRED');
   const excluded=new Set(delivery_policy.excluded_asset_ids??[]);
   if(excluded.size&&(typeof delivery_policy.evidence_ref!=='string'||!delivery_policy.evidence_ref.trim()))throw Error('OWNER_DELIVERY_EXCLUSION_EVIDENCE_REQUIRED');
-  const latest=new Map();
+  const latest=new Map(),everChecked=new Set(),everUsable=new Set();
   for(const o of observations){
     if(!ids.has(o.instrument_id)||!kinds.includes(o.kind)||!time(o.capture_ts)||o.capture_ts>as_of_ts||!o.receipt_ref||!hash(o.artifact_sha256))throw Error('COVERAGE_OBSERVATION_EVIDENCE_REQUIRED');
     for(const k of ['event_ts','received_ts','expires_ts','freshness_upper_bound_ts'])if(o[k]!=null&&!time(o[k]))throw Error('COVERAGE_CLOCK_INVALID');
     if(o.event_ts!=null&&o.received_ts!=null&&o.event_ts>o.received_ts||o.expires_ts!=null&&o.event_ts!=null&&o.expires_ts<o.event_ts)throw Error('COVERAGE_CLOCK_ORDER_INVALID');
     const key=o.instrument_id+'|'+o.kind,old=latest.get(key);
+    if(!notChecked(o)){everChecked.add(key);if(o.status_at_capture==='USABLE')everUsable.add(key);}
     if(old?.capture_ts===o.capture_ts&&old.receipt_ref!==o.receipt_ref)throw Error('AMBIGUOUS_COVERAGE_OBSERVATION');
     if(!old||o.capture_ts>=old.capture_ts)latest.set(key,o);
   }
-  function cell(o){
+  function cell(o,key){
     if(!o)return{ever_checked:false,ever_usable_at_capture:null,current_fresh:false,not_checked:true,absent:false,unqualified:null,expired:null,current_state:'NOT_CHECKED',reason_codes:['NOT_CHECKED'],event_ts:null,received_ts:null,expires_ts:null,capture_ts:null,receipt_ref:null,artifact_sha256:null};
+    // A budget/qualification refusal may have a reservation receipt. It is
+    // evidence of a skipped check, not an observed source response. Preserve
+    // earlier actual checks separately from the latest attempt's state.
+    if(notChecked(o))return{...cell(null),ever_checked:everChecked.has(key),
+      ever_usable_at_capture:everChecked.has(key)?everUsable.has(key):null,status_at_capture:o.status_at_capture,
+      reason_codes:[...new Set(['NOT_CHECKED',...(o.reason_codes??[]).map(code).filter(Boolean)])],
+      event_ts:o.event_ts??null,received_ts:o.received_ts??null,expires_ts:o.expires_ts??null,
+      capture_ts:o.capture_ts,receipt_ref:o.receipt_ref,artifact_sha256:o.artifact_sha256,
+      freshness_upper_bound_ts:o.freshness_upper_bound_ts??null,freshness_basis:o.freshness_basis??null,
+      clock_missing_reason:o.clock_missing_reason??null,evidence_role:'SKIPPED_CHECK_METADATA'};
     const expiry=o.expires_ts??o.freshness_upper_bound_ts??null,expired=expiry===null?null:as_of_ts>expiry;
     const unqualified=o.qualified===false,absent=o.status_at_capture==='ABSENT';
     const fresh=o.status_at_capture==='USABLE'&&o.qualified===true&&time(o.event_ts)&&time(o.received_ts)&&time(o.expires_ts)&&o.received_ts<=as_of_ts&&!expired;
     const state=unqualified?'UNQUALIFIED':absent?'ABSENT':expired?'STALE':fresh?'CURRENT_FRESH':'FRESHNESS_UNKNOWN';
-    return{ever_checked:true,ever_usable_at_capture:o.status_at_capture==='USABLE',status_at_capture:o.status_at_capture,
+    return{ever_checked:true,ever_usable_at_capture:everUsable.has(key),status_at_capture:o.status_at_capture,
       current_fresh:fresh,not_checked:false,absent,unqualified,expired,current_state:state,
       reason_codes:[...new Set([...(o.reason_codes??[]).map(code).filter(Boolean),...(expired?['SOURCE_EXPIRED_AT_ASOF']:[])])],
       event_ts:o.event_ts??null,received_ts:o.received_ts??null,expires_ts:o.expires_ts??null,
@@ -34,7 +46,7 @@ export function normalizeSourceCoverage({registry,as_of_ts,observations=[],repor
   }
   const rows=instruments.map(i=>({instrument_id:i.instrument_id,asset_id:i.asset_id,native_symbol:i.native_symbol,
     crypto_classification:'VERIFIED_CRYPTO',owner_delivery_excluded:excluded.has(i.asset_id),delivery_eligible_verified:!excluded.has(i.asset_id),
-    sources:Object.fromEntries(kinds.map(k=>[k,cell(latest.get(i.instrument_id+'|'+k))]))}));
+    sources:Object.fromEntries(kinds.map(k=>[k,cell(latest.get(i.instrument_id+'|'+k),i.instrument_id+'|'+k)]))}));
   const aggregate=scope=>Object.fromEntries(kinds.map(k=>{const cells=scope.map(r=>r.sources[k]);return[k,{denominator_verified:scope.length,
     ever_checked:cells.filter(c=>c.ever_checked).length,current_fresh:cells.filter(c=>c.current_fresh).length,
     not_checked:cells.filter(c=>c.not_checked).length,absent:cells.filter(c=>c.absent).length,
@@ -58,7 +70,7 @@ export function normalizeSourceCoverage({registry,as_of_ts,observations=[],repor
     owner_delivery_excluded_asset_ids:[...excluded],owner_delivery_policy_ref:delivery_policy.evidence_ref??null,
     owner_excluded_gold_backed:universe.owner_excluded_gold_backed??null,universe_counts_as_of:universe.as_of_ts??null,
     unknown_identities_outside_verified_denominator:true,rows,totals,deliverable_totals,axes_overlap:true,
-    axes_note:'Unqualified and expired can overlap; not_checked is not absent. Do not sum these axes as exclusive buckets.',
+    axes_note:'Historical checks and latest not_checked can overlap; unqualified and expired can overlap. Not_checked is not absent. Do not sum these axes as exclusive buckets.',
     ready_without_map_manual_sent_count:ready.filter(r=>r.production_count_eligible).length,
     production_ready_without_map_manual_sent_count:ready.filter(r=>r.production_count_eligible).length,
     acceptance_test_ready_without_map_manual_sent_count:ready.filter(r=>r.report_classification==='ACCEPTANCE_TEST').length,

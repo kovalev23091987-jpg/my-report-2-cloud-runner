@@ -456,11 +456,33 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         coverage: {request_outcome: code, response_checked: Boolean(response), evidence_ref: response?.receipt_id ?? null, actual_cost_authority: 'BROKER', spent_or_unknown_not_refunded: true}});
     }
   }
-  function getCoverage() {
+  function getCoverage({include_universe=false}={}) {
+    if (typeof include_universe !== 'boolean') fail('COVERAGE_UNIVERSE_FLAG_BOOLEAN_REQUIRED');
     const instruments = [...coverageRows.values()].map(plain), maps = instruments.map(row => row.liquidations).filter(Boolean);
     const checked = maps.filter(map => map.coverage?.response_checked === true);
     const targetChecked = checked.filter(map => map.coverage?.target_checked_in_this_page !== false);
+    // Enumerate locally verified selected identities, including untouched rows.
+    // Wiring and captured status grant neither qualification nor current data.
+    const captured = value => ({status_at_capture: value?.status ?? 'NOT_CHECKED',
+      reason: value?.reason ?? (value ? null : 'NO_SAVED_OBSERVATION'),
+      not_checked: !value || /^NOT_CHECKED(?:_|$)/.test(value.status), current_fresh: null});
+    const selectedRows = include_universe ? [...registry.values()].filter(entry => !ownerInstrumentExcluded(entry.instrument)).map(entry => {
+      const i = entry.instrument, row = coverageRows.get(i.instrument_id), core = row?.core?.facts ?? {}, optional = row?.optional ?? {};
+      return {instrument_id: i.instrument_id, asset_id: i.asset_id, native_symbol: i.native_symbol, blocks: {
+        1: {producer_wired: true, facts: {price: captured(core.price ?? row?.overview), candles: captured(core.candles), growth_24h: captured(row?.growth_24h)}},
+        2: {producer_wired: true, facts: {trades: captured(optional.trades)}},
+        3: {producer_wired: true, facts: {orderbook: captured(core.orderbook)}},
+        4: {producer_wired: true, facts: {open_interest: captured(optional.open_interest), funding: captured(optional.funding)}},
+        5: {producer_wired: false, status_at_capture: 'REMOVED_BY_OWNER', reason: 'OWNER_REMOVED_MARKET_COMPARISON'},
+        6: {producer_wired: true, facts: {liquidations: captured(row?.liquidations)},
+          configured_route_count: Array.isArray(entry.liquidations?.routes) ? entry.liquidations.routes.length : 0}
+      }};
+    }) : null;
     return {version: SOURCE_VERSION, contract_version: CONTRACT_VERSION, catalog: plain(catalogCoverage), instruments,
+      ...(include_universe ? {selected_registry_coverage: {schema: 'PUMP_SELECTED_REGISTRY_BLOCK_COVERAGE_V1', denominator: selectedRows.length,
+        scope: 'LOCAL_VERIFIED_SELECTED_REGISTRY_NOT_CURRENT_EXCHANGE_MEMBERSHIP', current_global_crypto_N: null,
+        current_full_CORE_proven: false, coverage_grants_IO_or_qualification: false,
+        block7_state: 'NOT_ACTIVATED_BY_TZ', rows: selectedRows}} : {}),
       totals: {registry_verified_instruments: registry.size, core_checked: instruments.filter(row => row.core && Object.values(row.core.facts).some(value => value.status !== 'NOT_CHECKED')).length,
         overview_price_usable: instruments.filter(row => row.overview?.status === 'USABLE').length,
         core_usable: instruments.filter(row => row.core?.status === 'USABLE' && row.core.selected_facts?.length === 3).length,
