@@ -1,0 +1,87 @@
+{
+  "schema": "ROOT_THREE_CHAT_SAME_TEXT_RECOVERY_OFFLINE_ACCEPTANCE_V3",
+  "status": "READY_REVIEWED_BUILT_NOT_INSTALLED_OWNER13_PENDING",
+  "recorded_ts": 1793126309053,
+  "authority_main": "061c54c23e931025f2e5d727b3e64f8f3e870cf4",
+  "artifact": {
+    "schema": "ROOT_SAME_TEXT_UNSENT_RECOVERY_ARTIFACT_V3",
+    "status": "QUALIFIED_BUILT_NOT_INSTALLED",
+    "authority_main": "d78d24508e058345d88a6806c58a23f51cac9dd6",
+    "built_ts": 1793126085889,
+    "artifact_path": "pump-report/.private/native-20261026/pump-same-text-unsent-recovery-v3-73-artifact.json",
+    "artifact_sha256": "6f22b3c6f5ab281e78b87a0c0ec4de3562801efebe0f89f1a3c0502cd6fb370e",
+    "implementation_sha256": "1deb93e453d490adec4fd520484989c8cd618f1b107a85e75bd35cf36c438ca3",
+    "module_count": 73,
+    "changed": [
+      {
+        "name": "runtime/delivery.mjs",
+        "sha256": "4dcdede755e44956dca0b1972bd4e4058dd2ba53dc09e3055edd6c19e14ca0e2"
+      },
+      {
+        "name": "runtime/implementation-pin.mjs",
+        "sha256": "cbbde46cd0db5c582349ccda1bbe54bdc2b81266dc889372fd181d208ba12690"
+      }
+    ],
+    "unchanged_modules": 71,
+    "original_metadata_analytics_strategy_TTL_provider_manual3_caps_holds_unchanged": true,
+    "case_result_sha256": "f63299d1c020fa61a1b43c95f7a3e2569cf86199a21b5715cc02321f265065e4",
+    "builds": 1,
+    "native_SQL": 0,
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "deployed": false
+  },
+  "affected_case": {
+    "path": "checkpoints/pump-report-20261025/ROOT_SAME_TEXT_UNSENT_RECOVERY_AFFECTED_CASE_V3.json",
+    "sha256": "f63299d1c020fa61a1b43c95f7a3e2569cf86199a21b5715cc02321f265065e4",
+    "status": "PASS",
+    "case_count": 1,
+    "arms": 12,
+    "actual_native_SQL": 0,
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "installer": {
+    "template": "pump-report/operator/cloudflare-same-text-control.template.js",
+    "exact_changed_modules": [
+      "runtime/delivery.mjs",
+      "runtime/implementation-pin.mjs"
+    ],
+    "unchanged_modules": 71,
+    "proof": "checkpoints/pump-report-20261025/ROOT_SAME_TEXT_SPARSE_CONTROL_QUALIFICATION_V3.json",
+    "proof_sha256": "bc88ed22670924882c6137dc969cb83334700abc81cb80fa92e7ba697c10e7af",
+    "status": "PASS",
+    "actual_CF_HTTP": 0,
+    "mock_calls": 11
+  },
+  "reviews": {
+    "SOURCE_F638": {
+      "path": "pump-report/handoffs/sources/F638_PACKAGE_FINAL_DELIVERY_RECOVERY_V1.json",
+      "sha256": "c80ac67378ab059b580a506906db1c3060fb97acefe3a38d63d65840bff72bad",
+      "status": "STATIC_PASS_WITH_LIMITS_TWO_REQUESTED_REPLAY_SCENARIOS",
+      "release_commit": "6001b57fe4af4debfad9b1ba413e6936ca891788",
+      "release_FULL_utc": "2026-10-27T18:37:28Z"
+    },
+    "ANALYTICS_BZ17": {
+      "path": "pump-report/handoffs/analytics/package-bz17/BZ17_REVIEW_MANIFEST.json",
+      "sha256": "8073820ca248b706212a2681f5f3468fa305d41dc79ef021c4fcb4d88366a95c",
+      "status": "PASS_TWO_BZ16_COUNTEREXAMPLES_CLOSED_STATIC_NO_NEW_BLOCKER",
+      "release_FULL": {
+        "sha": "26b64d88bed04f3e3f4fad23d784224cfc12665f",
+        "clock": {
+          "current_time": "2026-10-27 18:37:38 UTC"
+        },
+        "blob": "1980e710baaf8c4edf7a1a52bc6f4c0076e00ee4",
+        "exact_bytes": true,
+        "actual_ref_match": true
+      }
+    },
+    "ANALYTICS_BZ16": "2_CONCRETE_COUNTEREXAMPLES_FIXED_PRIOR_V1_NOT_INSTALLED"
+  },
+  "owner_proposal": "checkpoints/pump-report-20261025/ROOT_SAME_TEXT_RECOVERY_INSTALL13_OWNER_PROPOSAL.json",
+  "first_genuine_current_AUTO_SENT": "OPEN",
+  "all_native_provider_Telegram_IO_this_package": 0,
+  "oldspends_unknowns_holds_reserves_caps_preserved": true,
+  "pre_review_artifacts_not_installed": true,
+  "whole_TZ_complete": false
+}

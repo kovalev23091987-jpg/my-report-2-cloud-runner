@@ -1,7 +1,7 @@
 {
   "schema": "ROOT_SAME_TEXT_RECOVERY_INSTALL13_OWNER_PROPOSAL_V1",
-  "status": "CONCRETE_PACKAGE_PREPARED_FINAL_REVIEWS_AND_OWNER_EXTRA13_PENDING",
-  "authority_main": "b7733a87d2f407a2f26dbba1158df189d078aa6c",
+  "status": "READY_REVIEWED_AWAITING_OWNER_EXTRA13",
+  "authority_main": "061c54c23e931025f2e5d727b3e64f8f3e870cf4",
   "prepared_ts": 1793126169481,
   "TZv2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
   "unified_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
@@ -65,8 +65,27 @@
     "mock_calls": 11
   },
   "reviews": {
-    "SOURCE_F638": "PENDING_FINAL_STATIC",
-    "ANALYTICS_BZ17": "PENDING_FINAL_STATIC",
+    "SOURCE_F638": {
+      "path": "pump-report/handoffs/sources/F638_PACKAGE_FINAL_DELIVERY_RECOVERY_V1.json",
+      "sha256": "c80ac67378ab059b580a506906db1c3060fb97acefe3a38d63d65840bff72bad",
+      "status": "STATIC_PASS_WITH_LIMITS_TWO_REQUESTED_REPLAY_SCENARIOS",
+      "release_commit": "6001b57fe4af4debfad9b1ba413e6936ca891788",
+      "release_FULL_utc": "2026-10-27T18:37:28Z"
+    },
+    "ANALYTICS_BZ17": {
+      "path": "pump-report/handoffs/analytics/package-bz17/BZ17_REVIEW_MANIFEST.json",
+      "sha256": "8073820ca248b706212a2681f5f3468fa305d41dc79ef021c4fcb4d88366a95c",
+      "status": "PASS_TWO_BZ16_COUNTEREXAMPLES_CLOSED_STATIC_NO_NEW_BLOCKER",
+      "release_FULL": {
+        "sha": "26b64d88bed04f3e3f4fad23d784224cfc12665f",
+        "clock": {
+          "current_time": "2026-10-27 18:37:38 UTC"
+        },
+        "blob": "1980e710baaf8c4edf7a1a52bc6f4c0076e00ee4",
+        "exact_bytes": true,
+        "actual_ref_match": true
+      }
+    },
     "ANALYTICS_BZ16": "2_CONCRETE_COUNTEREXAMPLES_FIXED_PRIOR_V1_NOT_INSTALLED"
   },
   "requested_single_exception": {
@@ -95,5 +114,6 @@
     "recordactualcost/pin/businessprogrampointer/nextrealAUTOacceptance"
   ],
   "other_constraints": "Allbudgetsunknownsholdsmanual3futurebase24extra/TG47day1457month/10–20MSK/oldpauses/2OWNERdeferralspreserved. NoSourceconnectionsorsearch. NoactualcurrentAUTOproof; nextordinarywindow28Oct10MSK.",
-  "production_install_admitted": false
+  "production_install_admitted": false,
+  "final_reviewed_ts": 1793126309053
 }
