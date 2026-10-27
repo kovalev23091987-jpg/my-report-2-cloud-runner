@@ -36,10 +36,10 @@ async function run(makeRunner,kind){
  // They are artificial transport fixtures, never asserted as market evidence.
  const oldSlot=Math.floor(T/60000)*60000-60000;
  await store.set('pump:overview-index',[oldSlot]);
- await store.set('pump:overview:'+oldSlot,rows.map(r=>({id:r.instrument_id,last:100/(1+r.preliminary_growth_pct/100),event_ts:oldSlot,status:'FRESH'})));
+ await store.set('pump:overview:'+oldSlot,rows.map(r=>({id:r.instrument_id,last:100/(1+r.preliminary_growth_pct/100),event_ts:oldSlot,status:'USABLE'})));
  const sources={
   getCatalog:async()=>({instruments,unqualified:[],coverage:{status:'CHECKED'}}),
-  getOverview:async({instruments:list})=>({observations:list.map(i=>({instrument:i,reported_change_pct:rows.find(r=>r.instrument_id===i.instrument_id).reported_day_growth_pct,facts:{price:{status:'FRESH',instrument_id:i.instrument_id,value:100,unit:'USDT_PER_BASE',event_ts:now,received_ts:now,expires_ts:now+30000}}})),coverage:{status:'CHECKED'}}),
+  getOverview:async({instruments:list})=>({observations:list.map(i=>({instrument:i,reported_change_pct:rows.find(r=>r.instrument_id===i.instrument_id).reported_day_growth_pct,facts:{price:{status:'USABLE',instrument_id:i.instrument_id,value:100,unit:'USDT_PER_BASE',event_ts:now,received_ts:now,expires_ts:now+30000}}})),coverage:{status:'CHECKED'}}),
   getCore:async({instrument})=>{sourceCalls.push(instrument.instrument_id);if(kind==='GLOBAL')throw new BudgetRefusal('PROVIDER_BACKOFF');throw Object.assign(Error('ARTIFICIAL_SOURCE_CORE_FAILURE'),{code:'ARTIFICIAL_SOURCE_CORE_FAILURE'});}
  };
  let mode='AUTO';
@@ -61,7 +61,7 @@ async function run(makeRunner,kind){
 }
 
 const baseline=await run(baselineRunner,'LOCAL');
-assert.deepEqual(baseline.sourceCalls,[rows[0].instrument_id,rows[0].instrument_id]);
+assert.deepEqual(baseline.sourceCalls,[rows[0].instrument_id,rows[0].instrument_id],JSON.stringify(baseline.firstResult));
 const proposal=await run(proposedRunner,'LOCAL');
 assert.deepEqual(proposal.sourceCalls,[rows[0].instrument_id,rows[1].instrument_id]);assert.equal(proposal.failed_ts,T);
 const globalFailure=await run(proposedRunner,'GLOBAL');assert.equal(globalFailure.failed_ts,null);
