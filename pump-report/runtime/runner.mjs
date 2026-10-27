@@ -80,9 +80,12 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     if(diagnostics){if(diagnostics.candidate_selection.length<4)diagnostics.candidate_selection.push(captureDecision(candidates,picked,now,profile));else diagnostics.candidate_selection_truncated=true;}
     return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
   }
-  async function rememberAnalysis(analysis,input){
+  async function saveAnalysisOriginal(analysis,input){
     const fingerprint=await textHash(JSON.stringify(analysis)),key='pump:analysis:'+fingerprint;
     await store.atomic(key,current=>{if(retained_features&&current&&(JSON.stringify(current.analysis)!==JSON.stringify(analysis)||JSON.stringify(current.input)!==JSON.stringify(input)))throw Error('IMMUTABLE_ANALYSIS_INPUT_CONFLICT');return {state:current??{analysis,input,saved_ts:clock(),...(retained_features?{implementation_sha256:retained_features.implementation_sha256,evidence_class:retained_features.evidence_class}:{})},result:true};});
+    return key;
+  }
+  async function indexAnalysis(analysis,input,key){
     if(retained_features&&analysis.ready)await retained_features.remember(key);
     await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
     const wave=analysis.next_wave??analysis.previous_wave??null;
@@ -99,7 +102,6 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       return {state:queue,result:true};
     });
     await observations.remember(analysis,input,key);
-    return key;
   }
   async function checkInstrument(instrument,{run_id,mode,publish=true,assert_execution=async()=>{}}){
     if(ownerInstrumentExcluded(instrument))return {status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:instrument.base,delivery:null};
@@ -136,7 +138,10 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       input.facts={...input.facts,...optional.facts};
       input.analysis_ts=clock();analysis=analyzePump(input,profile);
     }
-    const analysis_key=await rememberAnalysis(analysis,input);let delivered=null;
+    // The immutable facts and plan must exist before publication. Derived
+    // features, journal and candidate bookkeeping must not spend their TTL.
+    const analysis_key=await saveAnalysisOriginal(analysis,input);let delivered=null,card_id=null,bookkeeping_error=null;
+    try {
     const publicationRefusal=ownerPublicationRefusal(analysis);
     if(publish&&analysis.ready&&publicationRefusal)delivered={state:'SUPPRESSED',reason:publicationRefusal};
     if(publish&&analysis.ready&&!publicationRefusal&&(mode==='MANUAL'||analysis.automatic_eligible)){
@@ -144,17 +149,33 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       const expires=Math.min(...['price','orderbook','candles'].map(key=>input.facts[key]?.expires_ts??0));
       if(expires>clock()){
         const card=await delivery.enqueue({...analysis,source_input_key:analysis_key},{mode,expires_ts:expires,update_kind:analysis.update_kind??null});
+        card_id=card.card_id;
         delivered=await delivery.dispatch(card.card_id);
-        await recordPublished(card.card_id);
       }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
     }
-    return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
+    } finally {
+      try{await indexAnalysis(analysis,input,analysis_key);}
+      catch(error){if(!delivered)throw error;bookkeeping_error=error.code??'POST_PUBLICATION_INDEX_FAILED';}
+    }
+    if(card_id&&!bookkeeping_error){try{await recordPublished(card_id,{analysis_registered:true});}catch(error){bookkeeping_error=error.code??'POST_PUBLICATION_REGISTRATION_FAILED';}}
+    return {analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(bookkeeping_error?{bookkeeping_error}:{}),...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
     } finally {
       if(admitted?.surplus_grant_id)await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id});
     }
   }
-  async function recordPublished(card_id){
+  async function recordPublished(card_id,{analysis_registered=false}={}){
     const card=await store.get('pump:card:'+card_id);if(!card)return;
+    // A prior executor may have stopped after the receipt and before indexing.
+    // Recover only the journal from its original; never replace newer wave or
+    // candidate state, retime facts, or send the terminal card again.
+    if(!analysis_registered&&['SENT','UNKNOWN','ERROR','STALE'].includes(card.state)&&card.analysis?.source_input_key){
+      const key=card.analysis.source_input_key,saved=await store.get(key);
+      if(!saved?.analysis||!saved.input||key!=='pump:analysis:'+await textHash(JSON.stringify(saved.analysis)))throw Error('ORIGINAL_PUBLICATION_ANALYSIS_REQUIRED');
+      const {source_input_key,...analysis}=card.analysis;
+      if(JSON.stringify(analysis)!==JSON.stringify(saved.analysis))throw Error('ORIGINAL_PUBLICATION_ANALYSIS_CONFLICT');
+      if(retained_features&&saved.analysis.ready)await retained_features.remember(key);
+      await observations.remember(saved.analysis,saved.input,key);
+    }
     if(['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))await observations.publication(card_id);
     if(['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card.state))await delivery.acknowledge(card_id);
   }
@@ -231,13 +252,16 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
           if(ownerInstrumentExcluded(job.symbol))answer={status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:job.symbol};
           else if(matches.length!==1)answer={status:matches.length?'AMBIGUOUS_SYMBOL':'INSTRUMENT_NOT_QUALIFIED',symbol:job.symbol,candidates:matches.map(i=>i.native_symbol)};
           else try{answer=await checkInstrument(matches[0],{run_id,mode:'MANUAL',publish:job.publish,assert_execution});}catch(error){answer={status:'ERROR',reason:error.code??'MANUAL_ANALYSIS_ERROR'};}
-          await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});continue;
+          await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});if(answer.bookkeeping_error)break;continue;
         }
         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
         budget.setMode('AUTO');const instrument=await selectAutomatic(catalog,result);if(!instrument)break;
-        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
+        try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(checked.bookkeeping_error)break;if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
         catch(error){result.errors.push({instrument_id:instrument.instrument_id,reason:error.code??'CANDIDATE_ERROR'});await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id])queue[instrument.instrument_id].next_check_ts=clock()+profile.candidate_recheck_ms;return {state:queue,result:true};});}
       }
+      const bookkeeping_errors=[...result.checked,...result.manual.map(row=>row.result)].filter(row=>row.bookkeeping_error);
+      if(bookkeeping_errors.length){result.status='INCOMPLETE';result.errors.push(...bookkeeping_errors.map(row=>({analysis_key:row.analysis_key,reason:row.bookkeeping_error,delivery_state:row.delivery?.state??null})));}
+      else {
       // Repair a receipt-backed signal after a prior process stopped between
       // the durable SENT acknowledgement and outcome registration.
       const deliveryIds=await delivery.pending({limit:20});for(const id of deliveryIds)await recordPublished(id);
@@ -245,6 +269,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       result.delivery=await delivery.drain();
       for(const item of result.delivery)await recordPublished(item.card_id);
       if(automaticWindowOpen(clock())){await observations.syncTerminal();result.outcomes=await checkOutcomes({run_id});}
+      }
       if(result.coverage?.status==='INCOMPLETE'||result.errors.length)result.status='INCOMPLETE';
       const ready=result.checked.filter(r=>r.analysis?.ready&&r.analysis.automatic_eligible).length;
       result.discovery_result=result.status==='INCOMPLETE'?'INCOMPLETE_COVERAGE_OR_RESOURCES':ready?'READY_IDEAS_FOUND':'NO_READY_IDEAS_IN_CHECKED_SCOPE';
