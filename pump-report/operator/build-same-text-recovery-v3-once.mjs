@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {buildArtifact} from '../runtime/build.mjs';
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const a=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),own=JSON.parse(fs.readFileSync('checkpoints/CLOUD_PHASE_STATE_20261004.json','utf8')).lease;
+if(a.status!=='ADMITTED_ONE_SAME_TEXT_RECOVERY_BUILD'||a.max_builds!==1||Date.now()>=a.expires_ts||a.expires_ts>own.expires_ts||own.owner!==a.own_lease.owner||own.released)throw Error('BUILD_ADMISSION');
+if(sha(fs.readFileSync('pump-report/runtime/build.mjs'))!==a.builder_sha256)throw Error('BUILDER_CHANGED');
+const r=fs.readFileSync(a.case_result_path),q=JSON.parse(r);if(sha(r)!==a.case_result_sha256||q.status!=='PASS'||q.case_count!==1||q.arms!==12||q.engine_calls!==0||q.native_SQL!==0||q.Telegram!==0)throw Error('AFFECTED_CASE_PASS_REQUIRED');
+const bytes=fs.readFileSync(a.base_artifact),base=JSON.parse(bytes);if(sha(bytes)!==a.base_artifact_sha256||base.manifest.module_count!==73||base.manifest.implementation_pin.sha256!==a.base_live_pin)throw Error('EXACT_BASE_REQUIRED');
+const names=['runtime/delivery.mjs'];
+if(JSON.stringify(Object.keys(a.proposed_sources).sort())!==JSON.stringify(names))throw Error('EXACT_DELIVERY_SOURCE');
+const modules={...base.modules};for(const [name,e]of Object.entries(a.proposed_sources)){const s=fs.readFileSync(e.path,'utf8');if(sha(s)!==e.sha256)throw Error('SOURCE_CHANGED:'+name);modules[name]=s;}
+fs.writeFileSync(a.output+'.attempt',JSON.stringify({started_ts:Date.now(),authority_main:a.authority_main}),{flag:'wx',mode:0o600});
+const legacy=a.output+'.legacy';fs.writeFileSync(legacy,base.modules['legacy-worker.mjs'],{flag:'wx',mode:0o600});
+const manifest=buildArtifact({legacy_path:legacy,output_path:a.output,module_overrides:modules}),artifact=JSON.parse(fs.readFileSync(a.output));
+const changed=Object.keys(artifact.modules).filter(n=>artifact.modules[n]!==base.modules[n]).sort();
+if(manifest.module_count!==73||JSON.stringify(changed)!==JSON.stringify([...names,'runtime/implementation-pin.mjs'].sort())||JSON.stringify(base.metadata)!==JSON.stringify(artifact.metadata))throw Error('EXACT_TWO_DELTA_REQUIRED');
+for(const n of names)if(sha(artifact.modules[n])!==a.proposed_sources[n].sha256)throw Error('TESTED_SOURCE_DIFFERS');
+const proof={schema:'ROOT_SAME_TEXT_UNSENT_RECOVERY_ARTIFACT_V3',status:'QUALIFIED_BUILT_NOT_INSTALLED',authority_main:a.authority_main,built_ts:Date.now(),artifact_path:a.output,artifact_sha256:sha(fs.readFileSync(a.output)),implementation_sha256:manifest.implementation_pin.sha256,module_count:73,changed:changed.map(n=>({name:n,sha256:sha(artifact.modules[n])})),unchanged_modules:71,original_metadata_analytics_strategy_TTL_provider_manual3_caps_holds_unchanged:true,case_result_sha256:a.case_result_sha256,builds:1,native_SQL:0,market_HTTP:0,Telegram:0,deployed:false};
+fs.writeFileSync(a.proof_path,JSON.stringify(proof,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(proof));
