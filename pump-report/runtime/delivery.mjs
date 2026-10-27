@@ -17,7 +17,18 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     if(mode==='AUTO'&&!analysis.automatic_eligible)throw new BudgetRefusal('AUTOMATIC_GROWTH_NOT_QUALIFIED');
     if(!['AUTO','MANUAL'].includes(mode)||!Number.isSafeInteger(expires_ts)||expires_ts<=clock())throw new BudgetRefusal('CARD_VALIDITY_REQUIRED');
     await work.ensureReady();
-    const hash=await textHash(analysis.card_text),id='PUMP:'+await textHash(analysis.instrument.instrument_id+'|'+analysis.wave_id+'|'+hash);
+    const hash=await textHash(analysis.card_text),identity=analysis.instrument.instrument_id+'|'+analysis.wave_id+'|'+hash;
+    const waveKey='pump:delivery-wave:'+analysis.instrument.instrument_id+':'+analysis.wave_id;
+    const previousWave=await store.get(waveKey);
+    const previousCard=previousWave?.primary_card_id?await store.get('pump:card:'+previousWave.primary_card_id):null;
+    const validOriginal=key=>typeof key==='string'&&/^pump:analysis:[a-f0-9]{64}$/.test(key);
+    const freshOriginal=validOriginal(analysis.source_input_key)&&validOriginal(previousCard?.analysis?.source_input_key)&&analysis.source_input_key!==previousCard.analysis.source_input_key;
+    const knownHashId=previousWave?.card_by_hash?.[hash];
+    if(knownHashId!==undefined&&!(typeof knownHashId==='string'&&/^PUMP:[a-f0-9]{64}$/.test(knownHashId)))throw new BudgetRefusal('INVALID_DELIVERY_HASH_POINTER');
+    // A fresh immutable original can replace a confirmed unsent same-text
+    // primary. Known hash targets otherwise keep their existing identity.
+    const recovery=knownHashId&&previousCard?.card_id===previousWave?.primary_card_id&&['STALE','ERROR'].includes(previousCard.state)&&freshOriginal;
+    const id=recovery?'PUMP:'+await textHash(identity+'|'+analysis.source_input_key):knownHashId??'PUMP:'+await textHash(identity);
     const card={delivery_schema:'PUMP_DELIVERY_V2',card_id:id,text:analysis.card_text,text_hash:hash,recipient:String(recipient),mode,analysis,created_ts:clock(),expires_ts,state:'READY',message_id:null,owner:null,claim_until:null,send_started_ts:null,attempts:0};
     // Save immutable content before the wave pointer. A lost queue ACK is
     // repaired by the next enqueue, while a sent card remains immutable.
@@ -26,20 +37,18 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
       return {state:current??card,result:true};
     });
     const saved=await store.get('pump:card:'+id);if(saved?.text!==card.text||saved.text_hash!==hash)throw new BudgetRefusal('SAVED_CARD_READBACK_FAILED');
-    const waveKey='pump:delivery-wave:'+analysis.instrument.instrument_id+':'+analysis.wave_id;
-    const previousWave=await store.get(waveKey);
-    const previousCard=previousWave?.primary_card_id?await store.get('pump:card:'+previousWave.primary_card_id):null;
     const decision=await store.atomic(waveKey,current=>{
       current??={primary_card_id:null,updates:[],card_by_hash:{}};
-      if(current.card_by_hash[hash])return {state:current,result:{duplicate:true,card_id:current.card_by_hash[hash]}};
       const knownPrevious=previousCard?.card_id===current.primary_card_id;
       const replaceUnsent=knownPrevious&&['STALE','ERROR'].includes(previousCard.state);
+      const recoverSameHash=replaceUnsent&&freshOriginal&&id!==current.card_by_hash[hash];
+      if(current.card_by_hash[hash]&&!recoverSameHash)return {state:current,result:{duplicate:true,card_id:current.card_by_hash[hash]}};
       const substantialUpdate=knownPrevious&&previousCard.state==='SENT'&&['PLAN_INVALIDATED','ENTRY_ZONE_REPLACED','EXIT_ZONE_REPLACED'].includes(update_kind);
       if(current.primary_card_id&&!replaceUnsent&&!substantialUpdate)return {state:current,result:{duplicate:true,card_id:current.primary_card_id,reason:'NO_CONFIRMED_REPLACEMENT_OR_UPDATE'}};
       const claim={card_id:id,hash,update_kind,ts:clock()};if(!current.primary_card_id||replaceUnsent)current.primary_card_id=id;else current.updates.push(claim);current.card_by_hash[hash]=id;
       return {state:current,result:{duplicate:false,card_id:id}};
     });
-    if(decision.card_id!==id)await store.atomic('pump:card:'+id,current=>({state:{...current,state:'SUPPRESSED',reason:'NO_SUBSTANTIAL_PLAN_CHANGE'},result:true}));
+    if(decision.card_id!==id)await store.atomic('pump:card:'+id,current=>({state:current?.state==='READY'&&current.attempts===0?{...current,state:'SUPPRESSED',reason:'NO_SUBSTANTIAL_PLAN_CHANGE'}:current,result:true}));
     await work.add(decision.card_id);
     return {...decision,text_hash:hash};
   }
