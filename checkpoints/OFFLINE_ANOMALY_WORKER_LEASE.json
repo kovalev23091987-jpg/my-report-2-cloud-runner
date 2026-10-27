@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793134356000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793134356000,
@@ -27,5 +27,58 @@
     "checkpoints/report2-owner-paused-20261024/pause-save-receipt.json": "7b270b68a39ca6052507c63fffad5da851f02a4d",
     "checkpoints/report2-owner-paused-20261024/resume-queues.json": "916d1594afd7b0f78a8bad9312e71deb37fc23a7",
     "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923"
-  }
+  },
+  "released": true,
+  "released_ts": 1793134812000,
+  "release_expected_main": "36b024258d49e6d5429f7697d6d3b82835738a13",
+  "release_authority": {
+    "main": "36b024258d49e6d5429f7697d6d3b82835738a13",
+    "all17_full": true,
+    "all4_equal": true,
+    "parent": "CODEX:PUMP_OPTIONAL_MAP_REFERENCE_REPAIR_V3_20261027:1793134306000",
+    "parent_expires_ts": 1793136106000,
+    "window_owner_paused": false,
+    "fence_active": false,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "guard_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+      "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "79fa152cc0bcf9072ca4771649ef936b28dcefa0",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "45038b8b77ff953977c1965f6459c6e3211205b9",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "f790b6f7ea647fcb4d0847c740c0f9414151b35a",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "4ddca950d7f0ca76164b72828b4a2ce53bbc696e",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "987853e510d9a2be34dbb8c3011b3aeaeb9b2714",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "9b9921957992a8ad05e469af09ec310e8638c961",
+      "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "6eb5e5cefe7c7812c83d58956a845cbc41937466",
+      "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+      "checkpoints/REPORT2_OWNER_PAUSED_RESUME_HANDOFF_20261024.json": "e6a167a88084b7c2f1bc1238d1f2b8d3ad1e6f91",
+      "checkpoints/report2-owner-paused-20261024/pause-save-receipt.json": "7b270b68a39ca6052507c63fffad5da851f02a4d",
+      "checkpoints/report2-owner-paused-20261024/resume-queues.json": "916d1594afd7b0f78a8bad9312e71deb37fc23a7",
+      "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923"
+    }
+  },
+  "verdict": "BZ23_V3_FINAL_PREPARED_UNEXECUTED_NOT_DEPLOYABLE_ONE_ROOT_CASE_AND_F646_REQUIRED",
+  "manifest_path": "pump-report/handoffs/analytics/package-bz23/revision-v3/BZ23_V3_FINAL_PREPARED_MANIFEST.json",
+  "manifest_sha256": "8580937789f59e1c771867b184d2c2c3d2640e89536c2d7fa64e32340d2b3112",
+  "handoff_path": "pump-report/handoffs/analytics/package-bz23/revision-v3/BZ23_V3_FINAL_PREPARED_HANDOFF_RU.md",
+  "handoff_sha256": "30c12e8c7479214b5bfdeec1d6886c81ab10b0d2175c42566b0205525113316c",
+  "code_sha256": "51bbe3753a85a7aa496a8748f7a62435d0f880c8720dc5015e4944d86c35fe7f",
+  "test_sha256": "def1dd40fbcd3165eaa8e40df8bed25b001835c32d4b9ff5fbb159e62e8c19f8",
+  "V2_narrow_PASS_preserved": true,
+  "V2_accepted_test_repeated": false,
+  "initial_V3_freeze": "PRESERVED_SUPERSEDED_UNEXECUTED_BY_REASON_HEADROOM_CORRECTION",
+  "analytics_executions": {
+    "Node": 0,
+    "tests": 0,
+    "build": 0,
+    "nativeSQL": 0,
+    "provider": 0,
+    "Cloudflare": 0,
+    "Telegram": 0
+  },
+  "only_own_lease_released": true,
+  "seconds_before_expiry": 264
 }
