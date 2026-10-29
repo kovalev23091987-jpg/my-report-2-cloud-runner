@@ -1,0 +1,243 @@
+{
+  "schema": "F650_SAVED_CATALOG_PK_CAPTURE_CONTRACT_V1",
+  "status": "READY_FOR_ROOT_ADMITTED_SAVED_CAPTURE_NOT_EXECUTED_BY_SOURCE",
+  "authority": {
+    "main": "7c7b009bd33998e90e65876396734e742f5afa3f",
+    "all17_FULL": true,
+    "all4_exact": true,
+    "ROOT_owner": "CODEX:PUMP_PRICE_STRUCTURE_INSTALL_AND_REAL_AUTO_20261029:1793254185000",
+    "ROOT_expiry_UTC": "2026-10-29T07:39:45.000Z",
+    "own_owner": "CODEX:SOURCES:01a171fd:1793254467000",
+    "own_expiry_UTC": "2026-10-29T06:26:27.000Z",
+    "own_acquisition_FULL": {
+      "head": "0edcf220e8deba33ac32ef08bc9fcd6a1b8de768",
+      "FULL_exact": true,
+      "current_ref_exact": true,
+      "readback_UTC": "2026-10-29 06:14:36 UTC"
+    }
+  },
+  "conclusion": "One existing PK can return the complete retained contracts body. There is no separately persisted full normalized-catalog PK in the reviewed runtime. An optional second known-run PK can bind runtime catalog counters to the same receipt; it cannot return missing normalized row identities.",
+  "capture_plan": [
+    {
+      "priority": 1,
+      "table": "pump_report_state_v1",
+      "key_column": "state_key",
+      "value_column": "value_json",
+      "exact_key": "pump:catalog:last-observed:v1",
+      "maximum_PK_rows": 1,
+      "existing_reader": "pump-report/operator/saved-catalog-snapshot.mjs:readSavedCatalogSnapshot",
+      "native_admission": "ROOT-only fresh LOOKUP with read_catalog_snapshot=true/positive native envelope; this contract grants no IO.",
+      "market_HTTP": 0
+    },
+    {
+      "priority": 2,
+      "optional": true,
+      "table": "pump_report_state_v1",
+      "exact_key_template": "pump:run:<EXACT_ALREADY_KNOWN_RUN_ID>",
+      "example_from_F647": "pump:run:447a3146-e5b1-4b51-b5b1-8f65f087051f",
+      "maximum_PK_rows": 1,
+      "purpose": "Read catalog_coverage/source_evidence_coverage/owner exclusions for an exact known run only if needed and not already in retained ROOT packet.",
+      "binding": "Require catalog_coverage.evidence_ref===snapshot.receipt_id and received_ts===snapshot.received_ts before attributing its550/548/539 counters to this snapshot. The snapshot stores no run_id. Otherwise keep the snapshots separate.",
+      "no_prefix_scan_or_pointer_discovery_in_this_1_to_2_read_plan": true
+    }
+  ],
+  "saved_record": {
+    "schema": "PUMP_RETAINED_CATALOG_SNAPSHOT_V1",
+    "provider": "BINGX",
+    "family": "USDT_M",
+    "route": "/openApi/swap/v2/quote/contracts",
+    "required_fields": [
+      "schema",
+      "provider",
+      "family",
+      "route",
+      "received_ts",
+      "source_event_ts",
+      "saved_ts",
+      "receipt_id",
+      "implementation_sha256",
+      "evidence_class",
+      "serialization_basis",
+      "row_count",
+      "body_utf8_bytes",
+      "body_sha256",
+      "body"
+    ],
+    "serialization_basis": "BROKER_PARSED_JSON_STRINGIFY_UTF8_NOT_WIRE_BYTES",
+    "bounds": {
+      "rows_min": 1,
+      "rows_max": 2000,
+      "body_JSON_UTF8_bytes_max": 2097152,
+      "whole_record_JSON_UTF8_bytes_max": 1900000,
+      "broker_response_body_bytes_max": 2000000
+    },
+    "native_get_semantics": "Existing D1Store.get is one exact key SELECT LIMIT1. Row count is PK-bounded; byte limits are enforced by producer before write and reader after get, not by an SQL length predicate in get(). ROOT capture must fit its existing transport envelope or report an explicit body omission; no cap increase is authorized here.",
+    "clocks": "source_event_ts=null. received_ts<=saved_ts<=observation_ts; saved/observation time does not refresh source data. No time TTL is stored on this record.",
+    "digest": "body_sha256 is SHA256 of the producer's JSON.stringify(parsed body), not network wire bytes. Preserve entire snapshot/private packet bytes and capture SHA; reader verifies body hash/bytes/row_count.",
+    "producer_binding": "Record implementation_sha256/evidence_class refer to its original producer. After install, an old record may legitimately differ from the current live pin. Existing observer reports CATALOG_OTHER_IMPLEMENTATION_NOT_CURRENT_PROOF and still includes private_evidence.snapshot; do not rewrite its pin or treat it as current proof.",
+    "existence_and_completeness": "Current record presence/content not read by SOURCE. Writer skips unbound/empty/>2000rows/>byte-bound ingress and leaves prior record; last-observed key is last successfully retained record, not proof of the latest attempted catalog or current membership."
+  },
+  "native_row_payload": {
+    "location": "snapshot.body.data[]",
+    "preserve_complete_private_body": true,
+    "minimum_identity_membership_fields": [
+      "contractId with original number/string type",
+      "symbol",
+      "asset",
+      "currency",
+      "status with original type"
+    ],
+    "purpose": "Use exact native_contract_id/symbol/asset/currency/status tuples, duplicate/missing checks, original capture clocks and frozen producer registry. status must be numeric1 for current normalizer eligibility; status1 alone is not crypto classification.",
+    "additional_fields": "The producer retains ALL native row keys/values, without a taxonomy whitelist. Capture their actual field-name inventory and any category/asset-class/underlying fields verbatim if present. Their presence/value is UNKNOWN until the saved body is read; this contract does not invent names, enums or qualified semantics.",
+    "privacy": "Full body and raw row values stay only in ROOT private captured packet. Git handoff contains packet refs/hashes, tuple dispositions and sourced conclusions, no raw body."
+  },
+  "normalized_catalog": {
+    "persisted_full_PK": null,
+    "ephemeral_result": "sources.getCatalog returns {instruments,unqualified:[{native_symbol,reason}],coverage}; the full result is not store.set anywhere in the reviewed path. CatalogCoverage/coverageRows/overviewPrices are in-memory.",
+    "saved_run": "pump:run:<id> saves catalog_coverage counters/receipt/registry_rejected/missing/owner exclusions, not the full normalized instruments/unqualified arrays.",
+    "derivative_option": "From the one retained full body plus the exact producer artifact's registry/negative-decision modules, ROOT/SOURCE can prepare a bounded DERIVED_FROM_SAVED_CAPTURE tuple join without new market calls. Label it derived, not a previously stored normalized result or new identity/native qualification.",
+    "producer_rules_order": [
+      "invalid row/symbol or duplicate symbol",
+      "USDT settlement/suffix",
+      "numeric online status1",
+      "explicit owner gold exclusion",
+      "registry/negative decision conflict",
+      "known exact saved non-target tuple",
+      "missing positive crypto identity",
+      "exact contractId/native asset mismatch"
+    ],
+    "duplicate_semantics": "Current getCatalog invalidates all occurrences of a duplicate symbol, including earlier accepted rows. Additional diagnostic duplicate-ID checks must be labelled if they differ from that exact runtime normalization."
+  },
+  "membership_548_vs_frozen550": {
+    "frozen_positive_identity_scope": "Retained13+reviewed539=552 positive saved identities; BTC/ETH2 excluded gives550 saved delivery scope. The earlier actual catalog qualified550 includedBTC/ETH, so delivery548/deep539+9 is a different set. Do not transfer old541 deep count.",
+    "necessary_join": "Compare every raw exact tuple against ALL frozen producer positive identities and explicit negative tuples, then apply owner delivery exclusion. Report absent-from-capture, inactive, non-USDT, native tuple conflict, duplicate and exact selected match separately.",
+    "claim_bound": "Only full untruncated body can identify exact missing/new tuples for that capture. Membership is as of original received_ts, not capture-read time or global cryptoN. A subset cannot prove the full current universe; registry_missing_from_catalog alone is not the full frozen550 membership audit.",
+    "new_unqualified": "Rows without positive crypto identity proof remain UNKNOWN/NOT_CHECKED; the263 counter alone contains no row IDs/reason breakdown. Do not label new FX/RWA/stocks/metals/gold as crypto from ticker/route/name/language; use existing explicit proof or keep excluded pending qualification."
+  },
+  "classification_proof_locations": {
+    "positive": "Frozen producer registry carries instrument.classification_status=VERIFIED_CRYPTO and identity_evidence_ref; reviewed additions also have binding_review.proposal_id/decision/decision_ref/classification_evidence_ref/catalog_file_sha256/economic_scope_file_sha256. This is per-tuple saved economic inference/evidence, not a universal native taxonomy enum.",
+    "negative": "Exact saved non-target bundles carry native5field tuple, scope_reason, proof.original_classification_basis, catalog/economic source hashes and explicit inference flag. Only exact match authorizes known non-target classification; changed/new tuple stays UNKNOWN.",
+    "category_values_in_contracts": "No reviewed production code qualifies coinType/category/assetClass as a universal positive crypto proof. Full raw snapshot retains such fields if supplied, but their actual presence and semantics are not established by this static task.",
+    "metadata_PK_not_a_full_catalog": {
+      "exact_key": "pump:metadata-qualification:pump-bingx-crypto-metadata-signed-20261025-one",
+      "saved_fields": [
+        "status=METADATA_REPLY_UNQUALIFIED",
+        "run_id",
+        "http_status",
+        "receipt_id",
+        "received_ts",
+        "normalized_response_sha256",
+        "row_count",
+        "row_keys",
+        "taxonomy_enum_qualified=false",
+        "native_contract_bridge_qualified=false"
+      ],
+      "full_rows_saved": false,
+      "recommended_extra_PK_read_for_new_classification": false
+    },
+    "language": "All languages allowed; language/ticker resemblance is not economic identity proof."
+  },
+  "cache_non_targets_for_this_capture": {
+    "catalog_ttl_ms": 0,
+    "positive_cache_exact_key": "pump:cache:BINGX:pump-report-sources-v1:BINGX:USDT_M:https://open-api.bingx.com/openApi/swap/v2/quote/contracts:https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+    "current_positive_catalog_cache_expected": false,
+    "reason": "Broker gets/writes positive cache only when ttl_ms>0; getCatalog uses default0. In-flight map is volatile, not a durable normalized catalog.",
+    "negative_cache_exact_key": "pump:negative-cache:BINGX:pump-report-sources-v1:BINGX:USDT_M:https://open-api.bingx.com/openApi/swap/v2/quote/contracts:https://open-api.bingx.com/openApi/swap/v2/quote/contracts",
+    "negative_meaning": "Exact route-unavailable metadata/result/backoff, not asset classification or a successful contracts inventory. Do not spend the second read expecting a normalized full catalog here."
+  },
+  "capture_output_required": [
+    "exact private packet path/SHA and observation timestamp",
+    "actual native ACK/governor receipt/SQL R W unknowns and positive capture admission",
+    "full snapshot plus snapshot JSON/body hashes and all binding flags, or explicit omission/truncation",
+    "expected current live pin AND original snapshot producer pin separately",
+    "optional exact matching known_run catalog counters without extra discovery",
+    "complete native row-key inventory and bounded tuple/category-field evidence for subsequent review"
+  ],
+  "existing_offline_helper": {
+    "path": "pump-report/sources/catalog-snapshot-review.mjs",
+    "status": "F616_OFFLINE_PREPARATION_NOT_PRODUCTION_IMPORT",
+    "scope": "Already accepts pinned snapshot/selected550/negative decisions and returns safe tuple dispositions; economic_classification=NOT_CHECKED_BY_THIS_CONSUMER, current_globalN=null. Reading this helper is not executing/qualifying it; do not rerun an old accepted case."
+  },
+  "reviewed_files": [
+    {
+      "path": "pump-report/runtime/catalog-snapshot.mjs",
+      "sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8",
+      "git_blob_sha1": "1fc5ed9055078802e95176e0e22b490ab80f5b97",
+      "bytes": 3119
+    },
+    {
+      "path": "pump-report/operator/saved-catalog-snapshot.mjs",
+      "sha256": "643de7ce595018e1fd7a7f5f165048ff8500daef94071c71b616eba4240c92ed",
+      "git_blob_sha1": "aa3e401123f28da4735d2cca8537cc18e3320bf0",
+      "bytes": 2880
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "sha256": "bca4655def64a90768ee6e685e95e2fc1b37c8caff95c73aaded4aa7872843a9",
+      "git_blob_sha1": "4dbd36e95758ec29be5a35c5b1e44a045c522e3d",
+      "bytes": 42356
+    },
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+      "git_blob_sha1": "2fa5ed93174934793479b82ae5b28236efb0a67b",
+      "bytes": 35320
+    },
+    {
+      "path": "pump-report/runtime/worker.mjs",
+      "sha256": "92dea6720d54f987df78e07cce34c8e350cc2d33f0b412136ee2366a75d5550a",
+      "git_blob_sha1": "40e10b6651e680ed62a1bf606b3a2ce96254f281",
+      "bytes": 34121
+    },
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "sha256": "41e3e6733b77588c0e8452a1acdd7501399ab99263d7016867fa106e2133cea4",
+      "git_blob_sha1": "274f58516aeb55f3d57dc394e338e660040cf9ef",
+      "bytes": 29640
+    },
+    {
+      "path": "pump-report/sources/saved-nontarget-decisions.mjs",
+      "sha256": "047bc88522f641ffc0f5d98d058494e0345f2c60713241e5484a5164fb59933b",
+      "git_blob_sha1": "401e3593a0aaca4ed47eba34098ef25cb1cd8129",
+      "bytes": 4948
+    },
+    {
+      "path": "pump-report/sources/catalog-snapshot-review.mjs",
+      "sha256": "a134c25efabb57128dcd1454beb8aa4317cb7200bdc6340de822bfeb55e49074",
+      "git_blob_sha1": "4658cb3a579b2afbec175291ca1705acc835c9ad",
+      "bytes": 9425
+    },
+    {
+      "path": "pump-report/registry/native-reviewed550.mjs",
+      "sha256": "6fe133b2e59e18f7479e87cd82b9bb1d0eed4e9383ac90cc3f8e2d6cb3766f45",
+      "git_blob_sha1": "689e56e13085b407c4724e802cc4b961822d4b12",
+      "bytes": 4801
+    }
+  ],
+  "SOURCE_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "builds": 0,
+    "native_SQL": 0,
+    "provider_market_HTTP": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "source_search": 0,
+    "new_connections": 0,
+    "runtime_code_edits": 0,
+    "new_chats_subagents_automations": 0,
+    "administrative_GitHub_guard_ownCAS_FULL_only": true
+  },
+  "invariants": {
+    "old_spends_unknowns_holds_manual3_caps_9pauses_2OWNERdeferrals_preserved": true,
+    "NOT_CHECKED_UNKNOWN_not_UNSUPPORTED": true,
+    "no_source_qualification25_or_CONTROL_METADATA_rearm": true,
+    "new_native_or_capture_permission_granted": false,
+    "global_cryptoN_proven": false
+  },
+  "own_release": {
+    "required_FULL_margin_ms": 60000,
+    "actual_receipt": "Exact contract SHA will be bound in own release commit and final response. No lease is held waiting for future savedpacket/AUTO."
+  }
+}
