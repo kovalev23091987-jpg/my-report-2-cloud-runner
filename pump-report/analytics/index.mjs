@@ -11,7 +11,7 @@ import {explainManualAnalysis} from './manual-text.mjs';
 import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines,fundingContextLine} from './presentation.mjs';
 export {evaluateOutcome} from './outcome.mjs';
 
-export const RULES_VERSION='pump-analytics-v7-initial-seed-20261029';
+export const RULES_VERSION='pump-analytics-v7-targets-20261029';
 const clip=(s,n)=>{let out='';for(const point of s){if(out.length+point.length>n)break;out+=point;}return out;};
 const wellFormed=s=>s.replace(/\p{Cs}/gu,'�');
 const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);
@@ -125,7 +125,7 @@ function analyzeCore(input, profile){
   if(result.liquidity.status!=='USABLE')return {...result,status:result.liquidity.status==='INSUFFICIENT'?'REJECTED':'WAITING',reasons:unique([...result.reasons,result.liquidity.reason])};
   const structure=consumePriceStructure(input,rows,movement.pivots,profile);
   result.price_structure_diagnostic=structure.diagnostic;
-  const decision=constructPlanDecision({...movement,pivots:structure.pivots},result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile,at);
+  const decision=constructPlanDecision({...movement,pivots:structure.pivots,target_context:{core_qualified:usable.candles,core_fact:facts.candles,core_rows:rows,history_qualified:structure.diagnostic.status==='USABLE',history_fact:facts.price_structure}},result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile,at);
   result.plan=decision.plan;result.plan_diagnostic=decision.diagnostic;
   if(result.plan&&structure.diagnostic.status==='USABLE')result.price_structure_diagnostic={...structure.diagnostic,used_for_plan:
     [...result.plan.entry_zones,result.plan.exit_zone].some(area=>area.basis_fact_ids.includes(structure.diagnostic.fact_id))||

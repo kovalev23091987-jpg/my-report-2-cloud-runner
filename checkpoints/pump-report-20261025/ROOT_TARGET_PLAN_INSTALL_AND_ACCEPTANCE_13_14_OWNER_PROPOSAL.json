@@ -1,0 +1,85 @@
+{
+  "schema": "ROOT_TARGET_PLAN_INSTALL_AND_ACCEPTANCE_13_14_OWNER_PROPOSAL_V1",
+  "status": "CONCRETE_PREPARED_FINAL_PEER_REVIEW_PENDING_OWNER_NOT_YET_ASKED",
+  "artifact_sha256": "a799fe2fb70b3a2b71332acc5ba89d80352851394767e58bd16569f81fc21154",
+  "implementation_sha256": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
+  "qualification_manifest": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_QUALIFIED_ARTIFACT_V1.json",
+  "remaining_case": {
+    "path": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_REMAINING_CASE_V2.json",
+    "sha256": "002537b10cfd9697adb34385c875023fd04ebba9b490e46d4db8ebd74ad24f25"
+  },
+  "direct_owner_strategy_approval": "ROOT_OWNER_TARGET_COMPARISON_APPROVAL.json",
+  "native_authority_granted": false,
+  "request": {
+    "install_exact_artifact": true,
+    "extra_LOOKUP_count": 2,
+    "UTC_day": "2026-10-29",
+    "operations": [
+      {
+        "number": 13,
+        "run_id": "pump-target-plan-install-20261029-extra13",
+        "mode": "LOOKUP",
+        "purpose": "Paused executor quiescence only before installation",
+        "implementation_sha256": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+        "max_SQL": 16,
+        "max_rows_read": 500,
+        "max_rows_written": 30,
+        "maximum_executor_reads": 6,
+        "wait_ms": 20000,
+        "failed_IO_retried": false
+      },
+      {
+        "number": 14,
+        "run_id": "pump-target-plan-auto-acceptance-20261029-extra14",
+        "mode": "LOOKUP",
+        "purpose": "Read last two current saved AUTO analyses and exact saved Telegram original/text/recipient/receipt after actual new resume",
+        "implementation_sha256": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
+        "max_SQL": 16,
+        "max_rows_read": 500,
+        "max_rows_written": 30,
+        "max_business_SQL": 11,
+        "reservation_finalization_SQL": 4,
+        "forced_run": false
+      }
+    ],
+    "maximum_combined_SQL": 32,
+    "maximum_combined_rows_read": 1000,
+    "maximum_combined_rows_written": 60,
+    "market_HTTP_by_checks": 0,
+    "Telegram_by_checks": 0,
+    "LOOKUP_default_cap_remains": 10,
+    "consumed_ordinary10_plus_owner11_12": 12,
+    "allowed_count_after": 14,
+    "no_other_counter_or_mode_relabelling": true
+  },
+  "deployment_flow": {
+    "ordinary_existing_OAuth_refresh_max_CLI": 1,
+    "new_key_scope_connection": false,
+    "logical_CF_admin_request_max": 43,
+    "physical_CF_HTTP": "UNKNOWN_NONZERO_RETAINED",
+    "actions": [
+      "Fresh authority/own/admissions; current76 FULL read5",
+      "PAUSE_AUTO settings only, FULL11",
+      "One admitted13, at most6executorPKreads; ifnotfree doNOTinstall",
+      "Exact reviewedΔ5 content install, FULL11",
+      "Update exact business artifact pointer only afteractualFULL, RESUME_AUTO/FULL11",
+      "After ordinary newbusinessAUTO, fresh FULL5 and one14; noforcedmarket/message"
+    ],
+    "brief_pause_for_install": true,
+    "old_report_other2crons_not_resumed": true
+  },
+  "unchanged": [
+    "Growth20%24h OR10%5/15/60m",
+    "Volume/liquidity and independent fullpositionplan>=10%",
+    "Reserve3manual/BingX900day27900month164run80percent/TG47day1457month",
+    "All prior spends/unknowns/issuedfloors/CLOSEDholds",
+    "Optional liquidation map explicitly absent whenmissing, no invented levels",
+    "NoBTCETHcomparison/alerts/FX/RWA/stocks/metals; oldreport/9pauses/2OWNERdeferrals"
+  ],
+  "reason_for_separate_owner_approval": {
+    "file": "pump-report/AGENTS.md",
+    "quote": "Все старые расходы, unknowns, резервы и caps сохраняются",
+    "ordinary10_and_extra11_12_spent": true
+  },
+  "limits": "Prepared code and mock SENT do not prove native READY, genuine AUTO delivery, current account-day totals or full TZ. №14 reports actual receipt or exact refusal; no fabricated signal."
+}

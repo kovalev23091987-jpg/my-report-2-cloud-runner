@@ -232,6 +232,92 @@ export function constructPlan(movement, price, liquidity, fact_id, tick, profile
   return constructPlanDecision(movement,price,liquidity,fact_id,tick,profile,as_of_ts).plan;
 }
 
+// Target comparison never receives entry prices, potential or the owner10%.
+export function selectJustifiedPlanTarget(movement,price,halfWidth,profile,as_of_ts){
+  const ctx=movement.target_context,wave=movement.next_wave,seed=movement.impulse;
+  const fail=reason=>({allowed:false,reason});
+  if(!ctx||movement.active!==true||!wave||!seed||!validTime(seed.start_ts)||!validTime(as_of_ts)||
+    !validTime(wave.created_ts)||wave.created_ts>as_of_ts||
+    !validTime(wave.expires_ts)||wave.expires_ts<=as_of_ts||['CANCELLED','EXPIRED'].includes(wave.state))return fail('TARGET_CONTEXT_OR_WAVE_NOT_ACTIVE');
+  const cap=1440,step=profile.candle_interval_ms,radius=profile.pivot_radius_bars,base=wave.invalidation_price;
+  const factOk=(f,core=false)=>f&&typeof f.fact_id==='string'&&f.fact_id.length>0&&f.fact_id.length<=512&&(f.status==='USABLE'||core&&ctx.core_qualified===true&&f.status==='INCOMPLETE')&&
+    validTime(f.event_ts)&&validTime(f.received_ts)&&validTime(f.expires_ts)&&f.event_ts<=f.received_ts&&f.received_ts<=as_of_ts&&f.expires_ts>=as_of_ts;
+  const rowsOk=rows=>Array.isArray(rows)&&rows.length>0&&rows.length<=cap&&rows.every((r,n)=>
+    validTime(r.open_ts)&&validTime(r.close_ts)&&r.close_ts-r.open_ts===step&&r.close_ts<=as_of_ts&&
+    [r.open,r.high,r.low,r.close].every(positive)&&r.low<=Math.min(r.open,r.close)&&r.high>=Math.max(r.open,r.close)&&
+    (n===0||rows[n-1].close_ts===r.open_ts));
+  if(!positive(base)||!positive(step)||!Number.isSafeInteger(radius)||radius<1||!factOk(ctx.core_fact,true)||!rowsOk(ctx.core_rows)||!ctx.core_rows.every(r=>r.closed===true))return fail('TARGET_CORE_CONTEXT_UNBOUND');
+  const core=ctx.core_rows;let end=core.at(-1).close_ts;
+  let history=null,hrows=[];
+  if(ctx.history_qualified===true&&factOk(ctx.history_fact)&&Array.isArray(ctx.history_fact.value)&&ctx.history_fact.value.length<=cap){
+    const f=ctx.history_fact;
+    const converted=f.value.map(r=>Array.isArray(r)&&r.length===5?{open_ts:r[0],close_ts:r[0]+step,open:r[1],high:r[2],low:r[3],close:r[4]}:null);
+    if(converted.every(Boolean)&&rowsOk(converted)&&converted.at(-1).close_ts===f.event_ts&&f.coverage?.window_start===converted[0].open_ts){
+      const byTime=new Map(converted.map(r=>[r.open_ts,r]));
+      if(core.every(r=>!byTime.has(r.open_ts)||['open','high','low','close'].every(k=>r[k]===byTime.get(r.open_ts)[k]))){history=f;hrows=converted;}
+    }
+  }
+  // Fresh OHLC confirmation, never trust an unbound retained fact_id. Event
+  // and known clocks stay the original closed-bar clocks on explicit rebinding.
+  const withFact=(rows,f)=>confirmedPivots(rows,radius).map(p=>({...p,fact_id:f.fact_id,evidence_ref:f.evidence_ref??null}));
+  const hp=history?withFact(hrows,history):[],pool=new Map();
+  for(const p of [...hp,...withFact(core,ctx.core_fact)])pool.set(p.kind+':'+p.event_ts+':'+p.price,p);
+  const pivots=[...pool.values()].filter(p=>p.event_ts<=p.known_ts&&p.known_ts<=as_of_ts),highs=pivots.filter(p=>p.kind==='HIGH'),lows=pivots.filter(p=>p.kind==='LOW');
+  const observed=[...new Map([...hrows,...core].map(r=>[r.open_ts,r])).values()].sort((a,b)=>a.open_ts-b.open_ts);
+  end=observed.at(-1).close_ts;
+  const intact=p=>completeInterval(observed,p.known_ts,end)&&price>=p.price&&!observed.some(r=>r.open_ts>=p.known_ts&&r.low<p.price);
+  const waveHigh=highs.filter(p=>p.event_ts>=seed.start_ts).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts)[0]??null;
+  const near=highs.filter(p=>p.price-halfWidth>price&&p.price-halfWidth>base+2*halfWidth).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0]??null;
+  const anchor=wave.cold_first_structural_base?.structural_anchor_ts??seed.start_ts;
+  const floor=hp.filter(p=>p.kind==='LOW'&&p.known_ts<=anchor&&Math.abs(p.price-base)<=halfWidth)
+    .sort((a,b)=>b.known_ts-a.known_ts||b.event_ts-a.event_ts)[0]??null;
+  const floorBound=Boolean(floor&&completeInterval(observed,floor.known_ts,end)&&price>=floor.price-halfWidth&&
+    !observed.some(r=>r.open_ts>=floor.known_ts&&r.low<floor.price-halfWidth));
+  const outer=floorBound?hp.filter(p=>p.kind==='HIGH'&&p.known_ts<=floor.event_ts&&
+    p.price-halfWidth>Math.max(price,base+2*halfWidth,waveHigh?waveHigh.price+halfWidth:0)&&
+    !hp.some(q=>q.kind==='HIGH'&&q.event_ts>p.event_ts&&q.known_ts<=floor.event_ts&&q.price>p.price))
+    .sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts):[];
+  const candidates=[];
+  const add=(kind,p)=>{if(p&&p.price-halfWidth>base+2*halfWidth&&!candidates.some(c=>c.pivot.price===p.price&&c.pivot.event_ts===p.event_ts))candidates.push({kind,pivot:p});};
+  add('HISTORICAL_OUTER_RANGE',outer.at(-1));add('HISTORICAL_NEAREST_OUTER',outer[0]);
+  if(waveHigh&&(waveHigh.price+halfWidth>price||!near))add('CURRENT_WAVE_CEILING',waveHigh);
+  add('NEAREST_CONFIRMED_HIGH',near);
+  if(!candidates.length)return fail('NO_BOUND_JUSTIFIED_TARGET');
+  const assess=p=>{
+    if(price>=p.price+halfWidth)return {high:p,status:'CURRENT_PRICE_ABOVE',blocking:false,low_before:null,low_after:null};
+    const before=lows.filter(q=>q.known_ts<=p.event_ts).sort((a,b)=>b.event_ts-a.event_ts)[0]??null;
+    const after=lows.filter(q=>q.event_ts>p.event_ts&&q.known_ts<=as_of_ts).sort((a,b)=>a.event_ts-b.event_ts)[0]??null;
+    if(!before||!after||!completeInterval(observed,after.known_ts,end))return {high:p,status:'UNRESOLVED_STRUCTURE',blocking:true,low_before:before,low_after:after};
+    const minor=after.price>=before.price&&intact(before)&&intact(after);
+    return {high:p,status:minor?'MINOR_HIGHER_LOW_REACTION':'MATERIAL_LOWER_LOW_OR_REBREACH',blocking:!minor,low_before:before,low_after:after};
+  };
+  let chosen=candidates[0],obstacles=[];
+  for(let iteration=0;iteration<=highs.length;iteration++){
+    obstacles=highs.filter(p=>p.price>base+halfWidth&&p.price+halfWidth<chosen.pivot.price-halfWidth)
+      .sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts).map(assess);
+    const blocker=obstacles.find(o=>o.blocking);
+    if(!blocker)break;
+    chosen={kind:'NEARER_STRUCTURAL_BARRIER',pivot:blocker.high};
+    if(iteration===highs.length)return fail('TARGET_OBSTACLE_REDUCTION_UNBOUND');
+  }
+  const refs=[...new Set([chosen.pivot.fact_id,...(chosen.kind.startsWith('HISTORICAL_')&&floor?[floor.fact_id]:[]),
+    ...obstacles.flatMap(o=>[o.high.fact_id,o.low_before?.fact_id,o.low_after?.fact_id]).filter(Boolean)])];
+  const evidence={version:'JUSTIFIED_TARGETS_V1',selected_kind:chosen.kind,selected:chosen.pivot,
+    historical_floor:chosen.kind.startsWith('HISTORICAL_')?floor:null,history_fact_id:history?.fact_id??null,
+    historical_role_bound:floorBound,qualified_historical_ceilings:outer.length,
+    candidates:candidates.map(c=>({kind:c.kind,pivot:c.pivot})),obstacle_count:obstacles.length,
+    current_above_count:obstacles.filter(o=>o.status==='CURRENT_PRICE_ABOVE').length,
+    minor_reaction_count:obstacles.filter(o=>o.status==='MINOR_HIGHER_LOW_REACTION').length,
+    minor_is_not_passed_or_guaranteed:true,selection_before_entry_and_potential:true};
+  const intermediate=obstacles.map(o=>({...o.high,obstacle_status:o.status,low_before:o.low_before,low_after:o.low_after}));
+  if(refs.length>16||new TextEncoder().encode(JSON.stringify({evidence,intermediate,refs})).byteLength>65536)return fail('TARGET_EVIDENCE_BOUND_EXCEEDED');
+  const explanation=chosen.kind.startsWith('HISTORICAL_')?'Возврат к подтверждённой верхней границе связанного прежнего диапазона; защищённое основание сохранено.':
+    chosen.kind==='CURRENT_WAVE_CEILING'?'Возврат к подтверждённой вершине текущей волны после будущего входа.':
+    chosen.kind==='NEARER_STRUCTURAL_BARRIER'?'Более дальняя цель ограничена подтверждённым сопротивлением: структура за ним не доказана.':'Ближайшее подтверждённое сопротивление выше текущей цены.';
+  return {allowed:true,pivot:chosen.pivot,kind:chosen.kind,refs,intermediate,evidence,explanation};
+}
+
+
 export function constructPlanDecision(movement, price, liquidity, fact_id, tick, profile, as_of_ts=null) {
   const {pivots,impulse,normal_range}=movement;
   const diagnostic={version:'pump-plan-diagnostic-v1-20261029',stage:'PLAN',code:null,required_minimum_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,
@@ -243,20 +329,30 @@ export function constructPlanDecision(movement, price, liquidity, fact_id, tick,
   const halfWidth=Math.max(positive(tick)?tick:0,normal_range*profile.entry_zone_normal_range_fraction);
   const invalidation=movement.next_wave.invalidation_price;
   diagnostic.half_width=halfWidth;
-  let resistance=pivots.filter(p=>p.kind==='HIGH'&&p.price-halfWidth>price).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0],returnTarget=false;
   const knownPivot=p=>positive(p.price)&&validTime(p.event_ts)&&validTime(p.known_ts)&&p.event_ts<=p.known_ts&&p.known_ts<=as_of_ts&&typeof p.fact_id==='string'&&p.fact_id.length>0;
-  if(!resistance){
-    const wave=movement.next_wave;
-    if(movement.active!==true||!validTime(as_of_ts)||!validTime(impulse.start_ts)||!validTime(wave.created_ts)||wave.created_ts>as_of_ts||
-      !validTime(wave.expires_ts)||wave.expires_ts<=as_of_ts||['CANCELLED','EXPIRED'].includes(wave.state))return refuse('RETURN_TARGET_WAVE_NOT_ACTIVE');
-    resistance=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.event_ts>=impulse.start_ts).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts)[0];
-    returnTarget=true;
+  let resistance=null,returnTarget=false,targetSelection=null;
+  if(movement.target_context){
+    targetSelection=selectJustifiedPlanTarget(movement,price,halfWidth,profile,as_of_ts);
+    if(!targetSelection.allowed)return refuse(targetSelection.reason);
+    resistance=targetSelection.pivot;returnTarget=targetSelection.kind!=='NEAREST_CONFIRMED_HIGH';
+    diagnostic.target_assessment=targetSelection.evidence;
+  }else{
+    // Legacy direct pure-plan callers retain their existing no-context path.
+    resistance=pivots.filter(p=>p.kind==='HIGH'&&p.price-halfWidth>price).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0];
+    if(!resistance){
+      const wave=movement.next_wave;
+      if(movement.active!==true||!validTime(as_of_ts)||!validTime(impulse.start_ts)||!validTime(wave.created_ts)||wave.created_ts>as_of_ts||
+        !validTime(wave.expires_ts)||wave.expires_ts<=as_of_ts||['CANCELLED','EXPIRED'].includes(wave.state))return refuse('RETURN_TARGET_WAVE_NOT_ACTIVE');
+      resistance=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.event_ts>=impulse.start_ts).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts)[0];
+      returnTarget=true;
+    }
   }
   if(!resistance)return refuse('NO_KNOWN_TARGET');
-  const exit_zone={lower:resistance.price-halfWidth,upper:resistance.price+halfWidth,basis_fact_ids:[resistance.fact_id??fact_id],basis_level:resistance,
-    explanation:returnTarget?'Возврат к прежней подтверждённой вершине '+resistance.price+' после будущего отката к области входа; фиксация всей позиции.':'Ближайшая подтверждённая вершина '+resistance.price+' выше текущей цены; фиксация всей позиции.'};
+  const exit_zone={lower:resistance.price-halfWidth,upper:resistance.price+halfWidth,basis_fact_ids:targetSelection?.refs??[resistance.fact_id??fact_id],basis_level:resistance,
+    explanation:targetSelection?targetSelection.explanation:(returnTarget?'Возврат к прежней подтверждённой вершине '+resistance.price+' после будущего отката к области входа; фиксация всей позиции.':'Ближайшая подтверждённая вершина '+resistance.price+' выше текущей цены; фиксация всей позиции.'),
+    ...(targetSelection?{target_assessment:targetSelection.evidence,intermediate_highs:targetSelection.intermediate}:{})};
   const support=pivots.filter(p=>p.price<price&&p.price-halfWidth>invalidation&&(!returnTarget||knownPivot(p))).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts),entries=[];
-  diagnostic.target={kind:returnTarget?'RETURN_TO_CONFIRMED_HIGH':'ABOVE_CURRENT_RESISTANCE',lower:exit_zone.lower,upper:exit_zone.upper,basis_level:resistance};
+  diagnostic.target={kind:targetSelection?.kind??(returnTarget?'RETURN_TO_CONFIRMED_HIGH':'ABOVE_CURRENT_RESISTANCE'),lower:exit_zone.lower,upper:exit_zone.upper,basis_level:resistance};
   diagnostic.support_candidates=support.length;
   for(const p of support){
     const upper=p.price+halfWidth;if(upper>=price)continue;
@@ -277,7 +373,7 @@ export function constructPlanDecision(movement, price, liquidity, fact_id, tick,
     if(entries.length>=profile.maximum_entry_zones)break;}
   if(!entries.length)return refuse(!support.length?'NO_ENTRY_ABOVE_INVALIDATION':diagnostic.entry_candidates_below_current?'NO_ENTRY_MEETS_OWNER_MINIMUM':'NO_ENTRY_BELOW_CURRENT_PRICE');
   if(exit_zone.lower<=Math.max(...entries.map(e=>e.upper)))return refuse('TARGET_NOT_ABOVE_ENTRY');
-  if(returnTarget){
+  if(returnTarget&&!targetSelection){
     const lowestEntryUpper=Math.min(...entries.map(e=>e.upper));
     exit_zone.intermediate_highs=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.price>lowestEntryUpper&&p.price<exit_zone.lower)
       .sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts).map(p=>({...p}));

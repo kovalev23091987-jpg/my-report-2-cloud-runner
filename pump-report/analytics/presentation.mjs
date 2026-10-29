@@ -20,6 +20,11 @@ export function fundingContextLine(result,profile){
 export function planExitLines(plan,{compact=false}={}){
   const exit=plan.exit_zone,price=value=>Number(value.toPrecision(10)).toString();
   const prefix='Фиксация всей позиции: '+price(exit.lower)+'–'+price(exit.upper);
+  if(exit.target_assessment?.version==='JUSTIFIED_TARGETS_V1'){
+    const levels=[...new Set((exit.intermediate_highs??[]).map(p=>p.price))].sort((a,b)=>a-b),shown=levels.slice(0,3);
+    const context=levels.length?'Подтверждённые уровни внутри сценария: '+shown.map(price).join(', ')+(shown.length<levels.length?' и ещё '+(levels.length-shown.length):'')+'. Они не считаются автоматически пройденными после будущего входа; достижение цели не гарантировано.':'Достижение цели после будущего входа не гарантировано.';
+    return [prefix+' — '+exit.explanation,context];
+  }
   if(!Array.isArray(exit.intermediate_highs))return [prefix+' — ближайшая подтверждённая вершина выше цены.'];
   const levels=[...new Set(exit.intermediate_highs.map(p=>p.price))].sort((a,b)=>a-b),shown=compact?levels.slice(0,3):levels;
   const context=levels.length?'Промежуточные подтверждённые вершины для входов плана: '+shown.map(price).join(', ')+(shown.length<levels.length?' и ещё '+(levels.length-shown.length):'')+'. Прохождение этих уровней и достижение цели не гарантированы.':'Достижение цели после будущего входа не гарантировано.';
