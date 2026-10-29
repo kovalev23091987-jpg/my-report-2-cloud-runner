@@ -58,6 +58,14 @@ try{
   const before=JSON.stringify(x.input);
   assert(r.pure_cause_calls<a.max_pure_cause_calls);r.pure_cause_calls++;
   const cause=provePostBreachCause(x.input,x.rows,profile);
+  if(cause&&Number.isSafeInteger(x.expected_breach_close)){
+    const witness=x.rows.find(row=>row.close_ts===x.expected_breach_close);
+    assert(witness,v.id);assert.equal(cause.terminal_event_ts,x.expected_breach_close,v.id);
+    assert.equal(cause.breach_open_ts,witness.open_ts);assert.equal(cause.breach_close_ts,witness.close_ts);assert.equal(cause.breach_low,witness.low);
+    assert.equal(cause.protected_base,x.input.previous_wave.invalidation_price);assert.equal(cause.prior_cancelled_ts,x.input.previous_wave.cancelled_ts);
+    assert.equal(cause.proof_received_ts,x.input.facts.candles.received_ts);assert.equal(cause.rearm_decided_ts,x.input.analysis_ts);
+    assert.equal(cause.cause_fact_id,x.input.facts.candles.fact_id);assert.equal(cause.cause_evidence_ref,x.input.facts.candles.evidence_ref);
+  }
   if(Object.hasOwn(expected,'proved_cause')){assert.equal(cause,expected.proved_cause,v.id);results.push({id:v.id,status:'PASS',cause_proved:Boolean(cause)});continue;}
   const key=sha(JSON.stringify({input:x.input,rows:x.rows,price:x.price}));
   let out=cache.get(key);
@@ -109,6 +117,9 @@ try{
  assert.equal(sha(fs.readFileSync(a.private_actual14)),a.private_actual14_sha256);
  const actualInput=structuredClone(original.input),oldResult=engine(actualInput);
  assert.equal(oldResult.wave_id,original.analysis.wave_id);assert.equal(oldResult.wave_state,'CANCELLED');assert.equal(oldResult.ready,false);
+ assert.equal(oldResult.next_wave.created_ts,original.analysis.next_wave.created_ts);
+ assert.equal(oldResult.next_wave.expires_ts,original.analysis.next_wave.expires_ts);
+ assert.deepEqual(oldResult.next_wave.impulse,original.analysis.next_wave.impulse);
  const nextInput=structuredClone(original.input);nextInput.previous_wave=structuredClone(original.analysis.next_wave);
  const rearm=engine(nextInput);
  if(rearm.next_wave?.post_breach_rearm){assert.notEqual(rearm.wave_id,nextInput.previous_wave.wave_id);assert.equal(rearm.next_wave.created_ts,nextInput.analysis_ts);assert.equal(rearm.next_wave.expires_ts,rearm.next_wave.impulse.end_ts+profile.wave_max_age_ms);}
