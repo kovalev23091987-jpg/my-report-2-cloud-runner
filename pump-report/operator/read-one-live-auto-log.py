@@ -9,7 +9,7 @@ assert hashlib.sha256(Path(a['wrangler_path']).read_bytes()).hexdigest()==a['wra
 fd=os.open(a['private_raw'],os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
 raw=os.fdopen(fd,'wb');events=[];total=0;buffer='';decoder=json.JSONDecoder();stop='DEADLINE'
 env=dict(os.environ,CI='1',WRANGLER_SEND_METRICS='false',CLOUDFLARE_ACCOUNT_ID='70ee0af85191ea470e74c7383fdec772')
-p=subprocess.Popen([a['node_path'],a['wrangler_path'],'tail',a['worker'],'--format','json','--search','PUMP_','--sampling-rate','1'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env,start_new_session=True)
+p=subprocess.Popen([a['node_path'],a['wrangler_path'],'tail',a['worker'],'--format','json','--search','PUMP_'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env,start_new_session=True)
 sel=selectors.DefaultSelector();sel.register(p.stdout,selectors.EVENT_READ);deadline=time.monotonic()+a['duration_seconds']
 try:
  while time.monotonic()<deadline and len(events)<6:
