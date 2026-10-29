@@ -1,0 +1,172 @@
+{
+  "schema": "F654_QUEUE_DIFF_STATIC_SOURCE_SQL_CAPACITY_NOTE_V1",
+  "status": "PASS_STATIC_BOUNDED_GOVERNOR_UNCHANGED_NOT_PHYSICAL_CAPACITY_ACCEPTANCE",
+  "authority_main": "d800a7f463ef666de737a63d0d9a0fa108fe2267",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793260181000",
+  "parent_owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
+  "files": {
+    "pump-report/runtime/runner.mjs": {
+      "sha256": "cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be",
+      "git_blob": "deafaf519381fbc3a195c9d2a4042f2b631ce9bf",
+      "bytes": 31139
+    },
+    "pump-report/runtime/candidate-priority.mjs": {
+      "sha256": "3950f9b86ebfd133c3696bb323cb5d942399a3375c2fd0c4a0eb9ab79a1f8f3a",
+      "git_blob": "2753ed550e394e86dd56c9f0436c83a44d33f425",
+      "bytes": 4854
+    },
+    "pump-report/runtime/store.mjs": {
+      "sha256": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+      "git_blob": "8722da2c998e5b544e6c463af9e08e191171737e",
+      "bytes": 10994
+    },
+    "pump-report/runtime/native-budget.mjs": {
+      "sha256": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+      "git_blob": "b46f58f78221f8465d45e51e38a0a4aeedbda4ca",
+      "bytes": 8632
+    },
+    "pump-report/runtime/budget.mjs": {
+      "sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+      "git_blob": "2fa5ed93174934793479b82ae5b28236efb0a67b",
+      "bytes": 35320
+    },
+    "pump-report/runtime/production-policy.mjs": {
+      "sha256": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+      "git_blob": "5d3cbfb40b4519b6c73bcbabee17e2f0e04a18d9",
+      "bytes": 4253
+    },
+    "pump-report/profile/start-v1.mjs": {
+      "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+      "git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de",
+      "bytes": 1774
+    }
+  },
+  "line_refs": {
+    "priorQueueSnapshot=await": 57,
+    "slice(0,4)": 63,
+    "for(const id of legacy)": 64,
+    "probe&&JSON.stringify": 74,
+    "await store.atomic('pump:candidate-queue'": 65,
+    "await store.atomicPair": 105,
+    "states:[wave??currentWave": 109,
+    "await store.atomic('pump:active-instruments'": 111
+  },
+  "artifact": {
+    "sha256": "ffe873357d508196aa168514ec6e4fe979fe79d80487903381a6d76c88db66cf",
+    "implementation_pin": "0e9dc66373dedaaa87e1e62731ad083deb09d20aff7ba72b6f47e32ffc0e9fd1",
+    "module_count": 76,
+    "changed": [
+      {
+        "name": "runtime/runner.mjs",
+        "sha256": "cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be"
+      },
+      {
+        "name": "runtime/candidate-priority.mjs",
+        "sha256": "3950f9b86ebfd133c3696bb323cb5d942399a3375c2fd0c4a0eb9ab79a1f8f3a"
+      },
+      {
+        "name": "runtime/implementation-pin.mjs",
+        "sha256": "62d441274cd2ceb3fbc6fcfcc4133e3275f34383c0fbc2665257e01b0e720a33"
+      }
+    ],
+    "unchanged": 73,
+    "same_module_names": true
+  },
+  "static_scope": {
+    "updateDiscovery": {
+      "additional_reads": "1 exact queue PK +0..4 exact saved wave PK =1..5SQL, declared1..5R,0W per AUTO invocation.",
+      "hard_bound": "Unique legacy IDs filtered to current compact catalog, sorted by prior probe time, slice(0,4), sequential exact PK gets. No prefix/history/provider scan.",
+      "writes": "Hydration merged into pre-existing queue atomic CAS. Probe only merged when current per-ID queue JSON equals captured prior; changed queue does not accept stale probe. No extra write or atomic call for hydration.",
+      "existing_queue_CAS_retries": "Still up to5 iterations /10SQL; hydration does not add another CAS loop."
+    },
+    "indexAnalysis": {
+      "normal_existing_rows_old": {
+        "wave_set_SQL": 1,
+        "queue_CAS_SQL": 2,
+        "total_SQL": 3,
+        "declared_R": 4,
+        "declared_W": 3
+      },
+      "normal_pair_new": {
+        "SELECT_SQL": 1,
+        "replacement_SQL": 1,
+        "total_SQL": 2,
+        "declared_R": 6,
+        "declared_W": 4
+      },
+      "normal_delta": {
+        "SQL": -1,
+        "declared_R": 2,
+        "declared_W": 1
+      },
+      "contended_pair_max": {
+        "iterations": 5,
+        "total_SQL": 10,
+        "declared_R": 30,
+        "declared_W": 20,
+        "reason": "Each attempt SELECT2R + guarded pair replacement4R4W. Actual D1 meta is measured separately; these are sums of declared preflight costs."
+      },
+      "old_existing_wave_and_queue_update_five_attempts_branch": {
+        "total_SQL": 11,
+        "declared_R": 12,
+        "declared_W": 7,
+        "other_old_insert_branches": "Missing queue uses INSERT write2 instead of UPDATE write1; do not generalize7W to every old branch."
+      },
+      "wave_absent_note": "Old skipped wave.set, so old normal existing queue2SQL2R1W; new pair still2SQL6R4W and may persist null wave row. No blanket SQL reduction or write neutrality claimed.",
+      "no_change_note": "Existing pair short-circuits unchanged existing two rows after SELECT; changed/created rows and retries use the bounds above.",
+      "ordering": "Wave+queue pair precedes derived active array update; interrupted derived hint cannot split saved wave from queue metadata."
+    },
+    "source_and_clocks": {
+      "no_new_provider_calls": true,
+      "no_per_coin_market_request_for_hydration": true,
+      "no_price_or_source_clock_reaging": true,
+      "wave_expiry": "Exact created+existing4h profile, saved wave state; legacy UNKNOWN retained until factual exact PK read, null produces NONE; no guessed expiry.",
+      "strategy_thresholds_unchanged": true,
+      "price_refresh_does_not_extend_wave": true
+    },
+    "native_governor": {
+      "max_requests": 800,
+      "max_rows_read": 5000,
+      "max_rows_written": 300,
+      "finalization_protection": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1
+      },
+      "caps_or_policy_changed": false,
+      "budget_store_native_policy_modules_unchanged": true,
+      "metering": "Every get/atomic/atomicPair statement goes through D1Store.query and native metadata ACK checks; requests, rows, unknown status and protected finalization are checked before/after IO. No bypass/retry loop beyond existing5; low headroom can refuse earlier.",
+      "limits_of_acceptance": "This is a bounded code/delta review. Existing profile525R95W/core +30R15W/delivery remains unchanged; this review does not prove an entire run with arbitrary contention/all candidates fits that forecast or physical storage/throughput. Measured metadata remains actual cost authority; no cap increase or new storage trial."
+    }
+  },
+  "ROOT_one_affected_case": {
+    "path": "checkpoints/pump-report-20261025/ROOT_QUEUE_WAVE_CONNECTED_CASE_V1_REPAIR.json",
+    "local_sha256": "0748b1ea3a2878e8d6257790fd82d650b03375c0c2707012a5fc36d08a9ad41f",
+    "status_read": "PASS",
+    "case_count": 1,
+    "builds": 1,
+    "fixture_waves_not_current_DB_proof": true,
+    "source_did_not_repeat": true,
+    "actual_native_Cloudflare_market_TG": 0,
+    "installed_not_proven_by_SOURCE": true
+  },
+  "F654_budget_remains": {
+    "manifest": "pump-report/handoffs/sources/F654_VEIL_PRE_CORE_BUDGET_BLOCKER_STATIC_V1.json",
+    "sha256": "2659cc4de9bad9255a0727b251251d022aad1295b5686dec94e4e71bf5e0bd31",
+    "planned_arithmetic": "46+12+40+216+226+108=648>638; queue fix does not remove this separate exact budget guard.",
+    "caps_holds_unknown_not_refunded": true
+  },
+  "SOURCE_execution": {
+    "Node": 0,
+    "module_imports": 0,
+    "tests": 0,
+    "builds": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0,
+    "physical_capacity_trials": 0
+  },
+  "preserved": "All costs/unknowns/closedholds/logicalgrants/futurebase/manual3/caps/9pauses/2OWNERdeferrals. No AUTO/SENT/physicalcapacity/globalclosure claim."
+}
