@@ -22,7 +22,7 @@ export function consumePriceStructure(input,coreRows,corePivots,profile){
     !validTime(c.window_start)||c.window_end!==f.event_ts||c.window_end-c.window_start!==PRICE_STRUCTURE_BOUNDS.window_ms)return ignore('PRICE_STRUCTURE_COVERAGE_UNQUALIFIED');
   if(!d||d.additional_request!==false||d.original_receipt_id!==f.evidence_ref||d.original_received_ts!==f.received_ts||
     d.source_route!=='/openApi/swap/v3/quote/klines'||c.source_route!==d.source_route||d.interval_ms!==PRICE_STRUCTURE_BOUNDS.interval_ms||d.time_basis!==CANDLE_CCXT_TIME_BASIS||d.time_evidence_ref!==c.time_evidence_ref||
-    !g||g.kind!=='growth_24h'||g.unit!==GROWTH_24H_UNIT||g.status!=='USABLE'||
+    !g||!text(g.fact_id)||!text(d.parent_fact_id)||g.kind!=='growth_24h'||g.unit!==GROWTH_24H_UNIT||g.status!=='USABLE'||
     ['instrument_id','asset_id','market_type','quote','settle','venue','source','primary_provider','origin','identity_evidence_ref'].some(field=>g[field]!==f[field])||
     d.parent_fact_id!==g.fact_id||g.evidence_ref!==f.evidence_ref||g.event_ts!==f.event_ts||g.received_ts!==f.received_ts||g.expires_ts!==f.expires_ts)return ignore('PRICE_STRUCTURE_SHARED_REQUEST_UNBOUND');
   if(['complete','time_qualified','time_basis','time_evidence_ref','owner_decision_ref','interval_ms','window_start','window_end','expected_rows'].some(field=>g.coverage?.[field]!==c[field])||

@@ -39,7 +39,25 @@ function planProjection(plan){
   return {entry_zones:list(plan.entry_zones,3).map(area),exit_zone:area(plan.exit_zone),invalidation:pick(plan.invalidation,['kind','price']),
     position_limit_usdt:plan.position_limit_usdt??null,potential_pct:pick(plan.potential_pct,['minimum','maximum','basis']),automatic_orders:false};
 }
-function initialFeatures(a,input){
+function planProvenance(a,input){
+  const base=[input.facts.candles,input.facts.orderbook],history=input.facts.price_structure,diagnostic=a.price_structure_diagnostic;
+  const areas=[...list(a.plan?.entry_zones??[],3),...(a.plan?.exit_zone?[a.plan.exit_zone]:[])];
+  const ids=[...new Set(areas.flatMap(area=>strings(area.basis_fact_ids??[],16)))];
+  const history_used=diagnostic?.used_for_plan===true||text(history?.fact_id)&&ids.includes(history.fact_id);
+  // Legacy originals retain exact bytes; new-context analyses resolve every
+  // declared entry/exit basis, including an absent required source.
+  if(!history_used&&!Object.hasOwn(a,'price_structure_diagnostic'))return {facts:base,history_used:false};
+  if(history_used)for(const id of [diagnostic?.fact_id,history?.fact_id])if(text(id)&&!ids.includes(id))ids.push(id);
+  const facts=[...base],seen=new Set(base.map(f=>f?.fact_id));
+  for(const id of ids)if(!seen.has(id)){
+    seen.add(id);const matches=Object.values(input.facts).filter(f=>f?.fact_id===id);
+    facts.push(matches.length===1?matches[0]:undefined);
+  }
+  // Missing history/basis evidence leaves the scalar absent, never fake-bound.
+  if(history_used&&(!history||!text(history.fact_id)))facts.push(undefined);
+  return {facts,history_used};
+}
+function initialFeatures(a,input,planSources){
   const f=input.facts,at=a.analysis_ts,out=[],add=(name,value,unit,fs,reason)=>out.push(feature(name,value,unit,fs,at,reason));
   const core=[f.price,f.candles],book=[f.orderbook],trades=[f.trades],oi=[f.open_interest],funding=[f.funding];
   add('wave_state',a.wave_state,'STATE',core);
@@ -78,7 +96,7 @@ function initialFeatures(a,input){
   const distance=(zs,side)=>zs?.length?Math.min(...zs.map(z=>100*(side==='up'?z.lower/a.reference_price-1:1-z.upper/a.reference_price))):null;
   add('map_nearest_up_distance_pct',distance(a.liquidations?.zones_up,'up'),'PERCENT',[f.price,...mapSources],'NO_QUALIFIED_UPPER_MAP_ZONE');
   add('map_nearest_down_distance_pct',distance(a.liquidations?.zones_down,'down'),'PERCENT',[f.price,...mapSources],'NO_QUALIFIED_LOWER_MAP_ZONE');
-  add('plan_minimum_potential_pct',a.plan?.potential_pct?.minimum,'PERCENT',[f.candles,f.orderbook]);
+  add('plan_minimum_potential_pct',a.plan?.potential_pct?.minimum,'PERCENT',planSources.facts);
   return out;
 }
 function tradeProjection(a,f){
@@ -99,9 +117,10 @@ export async function prepareFeatureCapsule({analysis,input,analysis_key,impleme
   if(!['OBSERVED','ARTIFICIAL','NON_NATIVE','BACKFILLED','UNCLASSIFIED'].includes(evidence_class))throw Error('CAPSULE_EVIDENCE_CLASS_INVALID');
   const analysis_sha256=await capsuleDigest(analysis);
   if(analysis_key!=='pump:analysis:'+analysis_sha256)throw Error('CAPSULE_ANALYSIS_CONTENT_HASH_REQUIRED');
-  const facts=Object.entries(input.facts).filter(([kind])=>['price','candles','orderbook','ticker_24h','growth_24h','trades','open_interest','funding'].includes(kind));
+  const planSources=planProvenance(analysis,input);
+  const facts=Object.entries(input.facts).filter(([kind])=>['price','candles','orderbook','ticker_24h','growth_24h','trades','open_interest','funding','price_structure'].includes(kind));
   list(facts,CAPSULE_BOUNDS.facts);
-  const features=initialFeatures(analysis,input);list(features,CAPSULE_BOUNDS.features);
+  const features=initialFeatures(analysis,input,planSources);list(features,CAPSULE_BOUNDS.features);
   if(!text(analysis.rules_version)||!text(analysis.profile_version)||!analysis.plan)throw Error('CAPSULE_ORIGINAL_RULES_AND_PLAN_REQUIRED');
   const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,
     reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,run_purpose:input.run_purpose??analysis.run_purpose??'UNCLASSIFIED',ready:true};
