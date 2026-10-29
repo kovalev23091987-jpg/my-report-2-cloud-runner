@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_SELECTED_ANALYSIS_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "4fc48d5c51eaeac1d13deb94ddef873e953d27b3",
   "own_lease": {
     "owner": "CODEX:PUMP_REAL_AUTO_RECONCILIATION_20261029:1793250725000",
@@ -39,5 +39,17 @@
   "day_utc": "2026-10-29",
   "native_lookup_policy": "Ordinary default10, actual shared governor must reserve positively before business reads; no carried UTC27extra or assume UTC29usagezero.",
   "purpose": "Concrete dependent observation: Q/AIN actually checked and REJECTED28Oct according to retained queue; read2exact latest/original/run bindings +<=1card+resources. No market, recomputation, Telegram or whole-day/whole-history claim.",
-  "old_spends_unknowns_holds_reserves_preserved": true
+  "old_spends_unknowns_holds_reserves_preserved": true,
+  "actual_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-oct29-selected-qa-originals-two",
+    "usage": {
+      "requests": 11,
+      "rows_read": 12,
+      "rows_written": 4,
+      "unknown_ops": 0
+    }
+  },
+  "private_result_path": "pump-report/.private/observations/oct29-selected-qa-two-result.json",
+  "private_result_sha256": "a78b90495a491e0d3699b31d5301cc6b717a09070eb73d350a10773fbf08e9b9"
 }
