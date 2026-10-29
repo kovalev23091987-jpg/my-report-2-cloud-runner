@@ -16,6 +16,7 @@ export function queueWaveState(row,now,profile=START_PROFILE){
   if(row.wave_tracking_version!==QUEUE_WAVE_VERSION)return 'UNKNOWN';
   if(row.wave_tracking_status==='NONE')return 'NONE';
   if(row.wave_tracking_status!=='BOUND'||typeof row.wave_id!=='string'||!row.wave_id||
+    typeof row.wave_state!=='string'||
     !Number.isSafeInteger(row.wave_created_ts)||row.wave_created_ts<0||row.wave_created_ts>now||
     !Number.isSafeInteger(row.wave_expires_ts)||row.wave_expires_ts!==row.wave_created_ts+profile.wave_max_age_ms||
     !Number.isSafeInteger(row.wave_metadata_ts)||row.wave_metadata_ts<row.wave_created_ts||row.wave_metadata_ts>now)return 'UNKNOWN';
