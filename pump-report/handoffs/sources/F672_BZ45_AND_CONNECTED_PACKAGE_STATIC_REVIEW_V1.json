@@ -1,0 +1,150 @@
+{
+  "schema": "F672_BZ45_AND_CONNECTED_PACKAGE_STATIC_REVIEW_V1",
+  "status": "PASS_STATIC_FINAL_BZ45_BZ46_AND_EXACT78_CONNECTED_PACKAGE_NOT_INSTALLED",
+  "authority_main": "1c5a8a7c80bdcb6e651c3ba064a0982a6fc4096d",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793279886000",
+  "own_acquire_head": "da3d2a223b782018a37fe4d78ba73f5e5b03b968",
+  "review_UTC": "2026-10-29 13:34:42 UTC",
+  "working_deadline_ts": 1793280906000,
+  "start_release_by_ts": 1793280786000,
+  "own_expires_ts": 1793281386000,
+  "minimum_FULL_release_margin_seconds": 300,
+  "freeze_sha256": "2441661a4dc37ac2599713fff22c741ab2a46d6fdd94b5708f705ed7fa13467c",
+  "frozen5_product_factory_and3_ROOT_dependencies_hashes_match": true,
+  "first_review": {
+    "source_helper_sha256": "cf300f76ac6cd555982735183ee71f24c6aafaf3559df1c0bbd35c9015c396ee",
+    "movement_sha256": "98915f77b2d5f970554ce89d7684b7692ed5069c764f377f53308b6202d0dc3c",
+    "accepted_static": [
+      "Currentfact identity/kind/observed/status/freshness and receipt/asof clocks are checked; normalized rows exactOHLC match closed source rows; duplicate raw closed timestamps refuse.",
+      "Required path begins at protected observation boundary and is contiguous through supplied tail; earliest row LOW<protectedbase must close<=savedcancel. Current receipt can follow priorcancel, while newseed.end<=receipt is shared-clock validated.",
+      "Only after previousCANCELLED and not expired, select earliest intact postcause seed with unchanged qualifiedcandidate generation. Currentactive cancellation remains one oldwave transition. Missing cause/path retains oldterminal boundary.",
+      "Distinctwave id/created=asof/anchor=seed.end/expiryanchor+4h. No cold rescue of broken newseed; qualification reset from currentwindows. Continuation keeps oldorigin/anchor/expiry. Malformednewmarker explicitly preserves nonnullprevious.",
+      "ConstructPlan/target suffix and all oldtargetselection unchanged; index only RULES_VERSIONv8. Shared F671queueUNKNOWN and seed.end<=receipt fixes match exactfrozen dependencies."
+    ],
+    "finding": {
+      "priority": "P2",
+      "path": "pump-report/analytics/post-breach-wave.mjs",
+      "lines": [
+        30,
+        39
+      ],
+      "issue": "Cold protectedbase branch accepts a partial/unrecognized cold_first_structural_base with scalarclock fields; no cold.kind or base_pivot price/known binding. Thus a changedbase p.invalidation_price!=p.impulse.low may gain event-rearm without a typed knownpriorbase.",
+      "counterexample_UNEXECUTED": "Keep valid oldCANCELLED/qualified clocks/currentcompletefact/path. Set changedbase96 vs impulse.low95 and a scalaronly cold object matchingwaveid/invalidation/start/structuralanchor/oldreceived/firstasof, but omit kind/base_pivot. Current helper accepts it and finds low94. Missing cold object would correctly returnnull.",
+      "minimal_ROOT_action": "Require recognized COLD_FIRST_STRUCTURAL_BASE_V1 and known LOW pivot price==protectedinvalidation, valid event<=known with known==invalidation_observation_start, retaining existing oldreceipt/firstasof checks. Invalid/partial legacy cold must returnnull for conservativefallback. Canonicalactual14IDOL has fields; no newstrategythreshold/call required.",
+      "SOURCE_execution": 0,
+      "status": "RESOLVED_STATIC_IN_BZ46_EC1B"
+    },
+    "repaired_source_helper_sha256": "ec1b8f0641e7c13f836e98a945ca6fe03a937b5569eec33ebff969753e75f9c4",
+    "repaired_factory_sha256": "2addae14385b877ff164566381014879118f158183b86af2a900050c26e41fe9",
+    "patch_manifest": "pump-report/handoffs/analytics/package-bz46/BZ46_COLD_CAUSE_NARROW_PATCH_V1.json",
+    "old14_expected_preserved_new2_causeonly": true
+  },
+  "qualification": {
+    "status": "PASS_ROOT_CONNECTED_V2_WITH_STARTUP_FAILURE_PRESERVED",
+    "case_path": "checkpoints/pump-report-20261025/ROOT_POST_BREACH_CONNECTED_CASE_V2.json",
+    "case_sha256": "24ebdef55923cc9cec336f6ff145cec2c9a9e350c30a89b62d353895843b32b5",
+    "case_harness_sha256": "2fef22219f3a3235669d715a018e0f7ec769209faa4cb3751022a8e940c5aee7",
+    "ROOT_total_Node": 2,
+    "parse_failure_Node1_build_engine0_preserved": true,
+    "parse_failure_sha256": "e8b5eaca98e39e9dccc7366f3122a189d5e1ddd3a92a6fa3fa6aab954b5680d2",
+    "variable_only_repair_3refs_static_confirmed": true,
+    "successful_Node": 1,
+    "builds": 1,
+    "engine_calls": 3,
+    "pure_movement": 11,
+    "pure_cause": 16,
+    "guard_checks": 5,
+    "queue_checks": 7,
+    "mock_CF": 11,
+    "mock_Telegram": 1,
+    "real_IO": 0,
+    "old_accepted_suites_replayed": 0,
+    "native15_16_granted": false
+  },
+  "SOURCE_cost": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "CF": 0,
+    "provider": 0,
+    "Telegram": 0
+  },
+  "prior_F671": {
+    "status": "PARTIAL_BZ45_CODE_NOT_REVIEWED",
+    "release_head": "d555199beec33a5cfb712eedd10d7296369d52fb",
+    "FULL_margin_seconds": 598,
+    "working_deadline_overrun_seconds": 2,
+    "preserved": true
+  },
+  "preserved": "All prior spends/unknowns/issuedfloors/CLOSEDholds/manual3/caps9pauses2OWNERdeferrals and olderF666/F667 timingdeviations. CurrentLIVE930 unchanged. No Source code/ROOTanalytics edits/newnativeadmissions/oldacceptedcase9/11 or F671wholeaudit replay.",
+  "preliminary_generator_review": {
+    "sha256": "a84d32ce47f250e556b5fae0f0deb0d422b66855e4f2659c849d5b09ac890342",
+    "case_sha256": "c4f6e927f5cca0b0c1c380bb84fe43ea0ef2847a4e183c90fca3f5285255cb7c",
+    "static_status": "NO_ADDITIONAL_BLOCKING_FINDING_IN_READ_SCOPE",
+    "before_pin930": true,
+    "named_extra15_16_counts14_15_to15_16": true,
+    "default_LOOKUP10_and_500R30W16SQL_preserved": true,
+    "accepted_selected_run_helper2eff_frozen": true,
+    "controller_generated_exact_before_after_maps_and_pin": true,
+    "no_native15_16_grant": true
+  },
+  "final_guard_main": "0084ef43eb7029cf8167739499c1aa7295a8481e",
+  "final_artifact_static": {
+    "artifact_sha256": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+    "pin": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+    "matches_case": true,
+    "module_count": 78,
+    "all_old76_names_preserved": true,
+    "metadata_same": true,
+    "changed": [
+      "analytics/cold-first-structural-base.mjs",
+      "analytics/index.mjs",
+      "analytics/movement.mjs",
+      "analytics/post-breach-wave.mjs",
+      "contracts/index.mjs",
+      "contracts/wave-lifetime.mjs",
+      "runtime/candidate-priority.mjs",
+      "runtime/implementation-pin.mjs"
+    ],
+    "same_before_modules": 70,
+    "protected_count": 31,
+    "protected_all_unchanged": true,
+    "post_breach_ec1b_exact": true,
+    "generated": [
+      {
+        "path": "pump-report/operator/post-breach-owner15-16-sql-exception.mjs",
+        "sha256": "3f495273ab59f48336f61596efc53e62eefaeb16be48c5f64f1ee830e89edc72",
+        "matches_case": true
+      },
+      {
+        "path": "pump-report/operator/post-breach-install15-quiescence-once.mjs",
+        "sha256": "27aa54e359bfcb216e41d913996c1ab3b596a7d13693c306636e12993f44f9ba",
+        "matches_case": true
+      },
+      {
+        "path": "pump-report/operator/post-breach-acceptance16-once.mjs",
+        "sha256": "00965189e8124698513bb684a767c9c11eabf6a5699d5aed9241cdb48018ef66",
+        "matches_case": true
+      },
+      {
+        "path": "pump-report/operator/cloudflare-post-breach-control.template.js",
+        "sha256": "c73eb9e8bad4470fe6fff3988677d6fb5c781de69eb3733365440dbf5eee7ab6",
+        "matches_case": true
+      }
+    ],
+    "controller_frozen_after_pin_artifact_map": true,
+    "controller_actual_quiescence_guard_retained": true,
+    "acceptance16_uses_selected_run": true
+  },
+  "final_observed_limits": {
+    "IDOL_original_remains_CANCELLED_readyfalse": true,
+    "counterfactual_same_facts_newwave_readyfalse_best_minimum_pct": 2.0139370279835145,
+    "artificial_positive_and_mock_receipt_not_native": true,
+    "currentLIVE930_not_changed": true,
+    "full_TZ_complete": false,
+    "genuine_AUTO_SENT": false
+  }
+}
