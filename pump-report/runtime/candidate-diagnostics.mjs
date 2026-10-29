@@ -17,7 +17,7 @@ const row=r=>r&&typeof r==='object'?{
 // A bounded annotation from the same budget snapshot; never an admission input.
 export function surplusLimitProjection(d){
   if(d?.schema!=='PUMP_SURPLUS_LIMIT_DIAGNOSTIC_V1'||nat(d.observed_ts)===null||d.observed_ts>8640000000000000||
-    typeof d.utc_day!=='string'||d.utc_day!==new Date(d.observed_ts).toISOString().slice(0,10)||
+    typeof d.utc_day!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d.utc_day)||d.utc_day!==new Date(d.observed_ts).toISOString().slice(0,10)||
     !['retained_count','day_count','run_count'].every(k=>nat(d[k])!==null&&d[k]<=200)||
     d.day_count>d.retained_count||d.run_count>d.retained_count||
     d.limits?.retained!==200||nat(d.limits?.day)===null||d.limits.day<1||d.limits.day>24||d.limits?.run!==1)return null;

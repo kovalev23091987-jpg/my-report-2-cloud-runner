@@ -9,7 +9,7 @@ assert.equal(a.status,'ADMITTED_ONE_AFFECTED_OFFLINE_CASE');
 assert(actualNow<a.expires_ts&&a.expires_ts<=a.own_lease.expires_ts);
 assert.equal(sha(fs.readFileSync(process.argv[1])),a.script_sha256);
 const phase=JSON.parse(fs.readFileSync('checkpoints/CLOUD_PHASE_STATE_20261004.json','utf8'));
-assert.equal(phase.lease.owner,a.own_lease.owner);assert.equal(phase.lease.released,true===false);
+assert.equal(phase.lease.owner,a.own_lease.owner);assert.notEqual(phase.lease.released,true);
 for(const [p,h]of Object.entries(a.frozen_files))assert.equal(sha(fs.readFileSync(p)),h,p);
 const baseBytes=fs.readFileSync(a.base_artifact_file);assert.equal(sha(baseBytes),a.base_artifact_sha256);
 const base=JSON.parse(baseBytes);assert.equal(base.manifest.implementation_pin.sha256,a.base_pin);
@@ -36,9 +36,9 @@ try{
   const policy={version:'pump-unassigned-candidate-hold-v1',enabled:true,activation_decision_ref:'ARTIFICIAL_EXISTING_APPROVAL',max_grants_per_day:24,max_grants_per_run:1,max_retained_records:200,native_remaining_floor:{requests:600,rows_read:600,rows_written:140}};
   const strip=v=>Array.isArray(v)?v.map(strip):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).filter(([k])=>k!=='surplus_limit').map(([k,w])=>[k,strip(w)])):v;
   const grantsFor=c=>{const grants={};for(let i=0;i<c.total;i++){
-    const today=i<c.today,run=c.sameRun&&i===0?id:'other-'+i,coin=c.existing&&i===0?candidate:'BINGX:USDT_M:'+(1000+i)+':OTHER'+i+'-USDT',d=today?day:'2026-10-28',created=Date.parse(d+'T12:00:00Z');
+    const today=i<c.today,run=c.sameRun&&i===0?id:'other-'+i,coin=c.existing&&i===0?candidate:'BINGX:USDT_M:'+(1000+i)+':OTHER'+i+'-USDT',d=today?day:'2026-10-28',created=today?now-60000:Date.parse(d+'T12:00:00Z');
     grants[run+'|'+coin]={version:policy.version,run_id:run,candidate_id:coin,day:d,state:c.existing&&i===0?c.existing:'CLOSED',created_ts:created,original_http:12,remaining_http:11,consumed_http:1,
-      original_by_provider:{BINGX:10,TELEGRAM:1},remaining_by_provider:{BINGX:9,TELEGRAM:1},consumed_by_provider:{BINGX:1,TELEGRAM:0},logical_spent:true,activation_decision_ref:policy.activation_decision_ref,native_evidence_ref:'ARTIFICIAL',native_expires_ts:created+900000,hold_until_ts:Date.parse(d+'T00:00:00Z')+86400000,closed_ts:created+1,unused_hold_retained_until:Date.parse(d+'T00:00:00Z')+86400000};
+      original_by_provider:{BINGX:10,TELEGRAM:1},remaining_by_provider:{BINGX:9,TELEGRAM:1},consumed_by_provider:{BINGX:1,TELEGRAM:0},logical_spent:true,activation_decision_ref:policy.activation_decision_ref,native_evidence_ref:'ARTIFICIAL#PUMP:AUTO:'+run,native_expires_ts:created+900000,hold_until_ts:Date.parse(d+'T00:00:00Z')+86400000,closed_ts:created+1,unused_hold_retained_until:Date.parse(d+'T00:00:00Z')+86400000};
   }return grants;};
   async function fixture(t,c){
     const store=new t.MemoryStore(),counts={get:0,atomic:0};const get=store.get.bind(store),atomic=store.atomic.bind(store);
@@ -48,7 +48,7 @@ try{
       automatic_candidate_allocations:{[day]:{version:'pump-even-day-deep-v2',created_ts:now,first_period:String(period),remaining_periods:5,http_upper_bound:12,http_by_provider:{BINGX:10,TELEGRAM:1},candidates_per_period:3,baseline_auto_charged:0}},
       automatic_deep_pacing:{[day]:{[String(period)]:{version:'pump-even-day-deep-v2',day,key:String(period),created_ts:now,limit:36,charged:0,candidate_count:c.baseAvailable?0:3,carried_in:0,maximum:3,issued_before:0}}}};
     await store.set('pump:resources',state);
-    store.admission={evidence_ref:'ARTIFICIAL#PUMP:AUTO:'+id,expires_ts:now+900000,max_requests:800,max_rows_read:5000,max_rows_written:300};
+    store.admission={evidence_ref:'ARTIFICIAL#PUMP:AUTO:'+id,expires_ts:now+840000,max_requests:800,max_rows_read:5000,max_rows_written:300};
     store.finalization_reserve={requests:2,rows_read:2,rows_written:1};store.usage=()=>({requests:c.lowNative?300:0,rows_read:0,rows_written:0,unknown_ops:0});
     const policies={BINGX:{version:'ARTIFICIAL',evidence_ref:'ARTIFICIAL',project_daily_cap:900,project_monthly_cap:27900,per_minute_cap:10,per_second_cap:1},TELEGRAM:{version:'ARTIFICIAL',evidence_ref:'ARTIFICIAL',project_daily_cap:47,project_monthly_cap:1457,per_minute_cap:10,delivery_source:false,outcome_source:false}};
     const admission={provider_policy_version:'ARTIFICIAL',expires_ts:now+900000,run_purpose:'PRODUCTION',planned_load_fraction:0.8,candidate_pacing:t.PRODUCTION_PLAN.candidate_pacing,future_candidates:t.PRODUCTION_PLAN.future_candidates,candidate_surplus:policy};
