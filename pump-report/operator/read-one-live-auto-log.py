@@ -4,7 +4,8 @@ from pathlib import Path
 a=json.loads(Path(sys.argv[1]).read_text());now=int(time.time()*1000)
 own=json.loads(Path('checkpoints/CLOUD_PHASE_STATE_20261004.json').read_text())['lease']
 assert a['status']=='ADMITTED_NOT_SPENT' and a['CLI_invocations']==1 and now<a['expires_ts']<=own['expires_ts'] and a['own_lease']['owner']==own['owner'] and not own.get('released')
-assert a['duration_seconds']<=180 and a['raw_bytes_max']==2097152 and a['worker']=='my-report-2-hub'
+assert now>=a.get('execute_not_before_ts',0) and now+a['duration_seconds']*1000+15000<=a['expires_ts']
+assert a['duration_seconds']<=480 and a['raw_bytes_max']==2097152 and a['worker']=='my-report-2-hub'
 assert hashlib.sha256(Path(a['wrangler_path']).read_bytes()).hexdigest()==a['wrangler_sha256']
 fd=os.open(a['private_raw'],os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
 raw=os.fdopen(fd,'wb');events=[];total=0;buffer='';decoder=json.JSONDecoder();stop='DEADLINE'
