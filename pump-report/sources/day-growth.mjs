@@ -1,4 +1,4 @@
-import {assertInstrument, createFact, CANDLE_CCXT_TIME_BASIS, GROWTH_24H_UNIT, GROWTH_24H_WINDOW_MS} from '../contracts/index.mjs';
+import {assertInstrument, createFact, CANDLE_CCXT_TIME_BASIS, GROWTH_24H_UNIT, GROWTH_24H_WINDOW_MS, PRICE_STRUCTURE_UNIT, PRICE_STRUCTURE_BOUNDS} from '../contracts/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {ROUTES, object, text, positive, timestamp, assertEnvelope, requestUrl, fail} from './bingx.mjs';
 import {nativeRelativeCandleQualified} from './native-relative-qualification.mjs';
@@ -39,7 +39,7 @@ export function parseDayGrowth(body, {instrument, qualification, start_ts, end_t
     if (t + STEP > received_ts) {capturedOpen++; continue;}
     // Quantity is intentionally irrelevant to this price-only window. Never
     // infer an absolute unit or substitute volume for unavailable prices.
-    included.set(t, {open, close});
+    included.set(t, {open, high, low, close});
   }
   const gaps = [];
   for (let t = start_ts; t < end_ts; t += STEP) if (!included.has(t)) gaps.push(t);
@@ -49,8 +49,15 @@ export function parseDayGrowth(body, {instrument, qualification, start_ts, end_t
     complete: included.size === ROWS && gaps.length === 0});
   if (!coverage.complete) return {value: null, event_ts: null, qualified: false,
     reason: !coverage.start_boundary_present || !coverage.end_boundary_present ? 'DAY_WINDOW_BOUNDARY_MISSING' : 'DAY_WINDOW_GRID_INCOMPLETE', coverage};
+  // Additional price-only context from this same qualified response. The
+  // existing day scalar and the separate CORE volume window stay unchanged.
+  const price_structure_rows = [];
+  for (let t = start_ts; t < end_ts; t += STEP) {
+    const row = included.get(t);
+    price_structure_rows.push([t, row.open, row.high, row.low, row.close]);
+  }
   return {value: {open: included.get(start_ts).open, last: included.get(end_ts - STEP).close,
-    start_ts, end_ts, window_ms: DAY_WINDOW_MS}, event_ts: end_ts, qualified: true, reason: null, coverage};
+    start_ts, end_ts, window_ms: DAY_WINDOW_MS}, event_ts: end_ts, qualified: true, reason: null, coverage, price_structure_rows};
 }
 
 // resolveEntry must be ROOT's existing independent registry resolver. The
@@ -67,7 +74,7 @@ export function createDayGrowthLoader({broker, resolveEntry, clock = Date.now, p
     if (entry?.then || !entry?.instrument || identityKeys.some(k => entry.instrument[k] !== instrument[k])) fail('DAY_INDEPENDENT_REGISTRY_IDENTITY_MISMATCH');
     assertInstrument(entry.instrument);
     const qualification = entry.qualifications?.candles;
-    const finish = ({value = null, event_ts = null, status = 'INCOMPLETE', reason, coverage = null, response = null} = {}) => {
+    const finish = ({value = null, event_ts = null, status = 'INCOMPLETE', reason, coverage = null, response = null, price_structure_rows = null} = {}) => {
       const received = response?.received_ts ?? now(), expires_ts = event_ts === null ? null : event_ts + profile.freshness_ms.candles;
       if (status === 'USABLE' && expires_ts < now()) {status = 'STALE'; reason = 'DAY_SOURCE_FACT_STALE';}
       const fact = createFact({fact_id: `${VERSION}:${instrument.instrument_id}:${response?.receipt_id ?? 'NO_RECEIPT'}`,
@@ -81,7 +88,30 @@ export function createDayGrowthLoader({broker, resolveEntry, clock = Date.now, p
           original_received_ts: response.received_ts, open_field: 'first.open', last_field: 'last.close',
           start_field: 'first.time', end_field: 'last.time+60000', time_basis: CANDLE_CCXT_TIME_BASIS,
           time_evidence_ref: qualification.time.evidence_ref, absolute_quantity: null}});
-      return {facts: {growth_24h: fact}, coverage: {status, reason, ...coverage, cost_authority: 'ROOT_BROKER',
+      // No second request or independent receipt/clock. Oversized additional
+      // context is omitted explicitly without changing the already valid scalar.
+      let structureValue = null, structureStatus = status, structureReason = reason ?? null, structureBytes = null;
+      if (status === 'USABLE') {
+        if (!Array.isArray(price_structure_rows) || price_structure_rows.length !== PRICE_STRUCTURE_BOUNDS.rows || coverage?.complete !== true) {
+          structureStatus = 'INCOMPLETE'; structureReason = 'PRICE_STRUCTURE_COMPLETE_ROWS_REQUIRED';
+        } else {
+          structureBytes = new TextEncoder().encode(JSON.stringify(price_structure_rows)).byteLength;
+          if (structureBytes > PRICE_STRUCTURE_BOUNDS.bytes) {
+            structureStatus = 'INCOMPLETE'; structureReason = 'PRICE_STRUCTURE_BYTE_BOUND_EXCEEDED';
+          } else structureValue = price_structure_rows;
+        }
+      }
+      const priceStructure = createFact({...fact,
+        fact_id: `${VERSION}:${instrument.instrument_id}:price_structure:${response?.receipt_id ?? 'NO_RECEIPT'}`,
+        kind: 'price_structure', value: structureValue, unit: PRICE_STRUCTURE_UNIT,
+        status: structureStatus, reason: structureReason,
+        coverage: {...coverage, quantity_used: false, absolute_quantity: null, price_only: true,
+          row_columns: ['open_ts', 'open', 'high', 'low', 'close'],
+          serialized_value_utf8_bytes: structureBytes, maximum_value_utf8_bytes: PRICE_STRUCTURE_BOUNDS.bytes},
+        derived_from: event_ts === null ? null : {...fact.derived_from,
+          kind: 'SAME_OBSERVED_CLOSED_DAY_OHLC_PRICE_ONLY', parent_fact_id: fact.fact_id,
+          additional_request: false}});
+      return {facts: {growth_24h: fact, price_structure: priceStructure}, coverage: {status, reason, ...coverage, cost_authority: 'ROOT_BROKER',
         receipt_ids: response?.receipt_id ? [response.receipt_id] : []}};
     };
     if (!nativeRelativeCandleQualified(qualification, instrument, STEP)) return finish({status: 'NOT_CHECKED',

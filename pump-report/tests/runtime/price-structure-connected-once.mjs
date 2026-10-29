@@ -25,6 +25,9 @@ const stable=a=>({ready:a.ready,status:a.status,reasons:a.reasons,automatic_elig
 const qb=analyze(q.input),ab=analyze(ain.input);
 assert.deepEqual(stable(qb),stable(q.analysis),'ACTUAL_Q_CORE_ONLY_DECISION_UNCHANGED');
 assert.deepEqual(stable(ab),stable(ain.analysis),'ACTUAL_AIN_CORE_ONLY_DECISION_UNCHANGED');
+assert.equal(qb.plan_diagnostic.code,'NO_ENTRY_MEETS_OWNER_MINIMUM');
+assert(qb.plan_diagnostic.best_candidate_minimum_potential_pct>6.3&&qb.plan_diagnostic.best_candidate_minimum_potential_pct<6.5);
+assert.equal(ab.plan_diagnostic.stage,'MOVEMENT');assert.equal(ab.plan_diagnostic.code,'PLAN_INVALIDATED');
 
 // These earlier rows are deliberately synthetic, never a reconstruction of Q.
 // The observed CORE tail is copied without modifying its OHLC or volume.
@@ -53,14 +56,20 @@ assert.equal(history.event_ts,originalDay.event_ts);assert.equal(history.receive
 assert.equal(history.cache_hit,true);assert.equal(history.evidence_ref,'SYNTHETIC_OHLC_CONTEXT_NOT_REAL_Q');
 assert(history.value.every(row=>row.length===5),'PRICE_ONLY_NO_QUANTITY');
 const historyBytes=Buffer.byteLength(JSON.stringify(history.value));assert(historyBytes<=PRICE_STRUCTURE_BOUNDS.bytes);
-const enriched=structuredClone(q.input);enriched.facts.price_structure=history;
+// Bind both synthetic facts to their same mock receipt. Actual controls above
+// retain their original facts and have not been rewritten or recomputed as truth.
+const control=structuredClone(q.input);control.facts.growth_24h=loaded.facts.growth_24h;
+const coreControl=analyze(control);
+const enriched=structuredClone(control);enriched.facts.price_structure=history;
 const ready=analyze(enriched);
 assert.equal(ready.ready,true,'SYNTHETIC_ADDITIONAL_CONFIRMED_PRICE_TARGET_SUPPORTS_PLAN');
-assert.equal(ready.automatic_eligible,qb.automatic_eligible);assert.equal(ready.wave_state,qb.wave_state);
-assert.deepEqual(ready.next_wave,qb.next_wave,'HISTORY_CANNOT_REANCHOR_OR_EXTEND_WAVE');
-assert.deepEqual(ready.activity,qb.activity,'HISTORY_CANNOT_CHANGE_VOLUME');
-assert.deepEqual(ready.growth_windows,qb.growth_windows);assert.deepEqual(ready.liquidity,qb.liquidity);
+assert.equal(ready.automatic_eligible,coreControl.automatic_eligible);assert.equal(ready.wave_state,coreControl.wave_state);
+assert.deepEqual(ready.next_wave,coreControl.next_wave,'HISTORY_CANNOT_REANCHOR_OR_EXTEND_WAVE');
+assert.deepEqual(ready.activity,coreControl.activity,'HISTORY_CANNOT_CHANGE_VOLUME');
+assert.deepEqual(ready.growth_windows,coreControl.growth_windows);assert.deepEqual(ready.liquidity,coreControl.liquidity);
 assert(ready.plan.potential_pct.minimum>=10);assert(ready.plan.exit_zone.basis_fact_ids.includes(history.fact_id));
+for(const area of [...ready.plan.entry_zones,ready.plan.exit_zone])assert(area.basis_level.event_ts<=area.basis_level.known_ts&&area.basis_level.known_ts<=enriched.analysis_ts,'NO_FUTURE_KNOWN_AT_PLAN_LEVEL');
+assert(ready.findings.find(row=>row.code==='STRUCTURAL_PLAN').fact_ids.includes(history.fact_id),'USED_HISTORY_PLAN_PROVENANCE_REQUIRED');
 assert(/Карта|карт[аы]/u.test(ready.card_text),'NO_MAP_MUST_REMAIN_EXPLICIT');
 
 const corruptions={
@@ -75,12 +84,20 @@ const corruptions={
 };
 for(const [name,mutate] of Object.entries(corruptions)){
   const input=structuredClone(enriched);mutate(input.facts.price_structure);const rejected=analyze(input);
-  assert.deepEqual(stable(rejected),stable(qb),name+':OPTIONAL_REJECTION_MUST_FALL_BACK_TO_IDENTICAL_CORE_DECISION');
+  assert.deepEqual(stable(rejected),stable(coreControl),name+':OPTIONAL_REJECTION_MUST_FALL_BACK_TO_IDENTICAL_CORE_DECISION');
 }
 const cancelled=structuredClone(ain.input);cancelled.facts.price_structure=history;
 assert.deepEqual(stable(analyze(cancelled)),stable(ab),'HISTORY_CANNOT_REVIVE_CANCELLED_AIN');
+const missingCore=structuredClone(enriched);missingCore.facts.orderbook.status='ABSENT';missingCore.facts.orderbook.value=null;
+assert.equal(analyze(missingCore).ready,false,'HISTORY_CANNOT_REPLACE_MANDATORY_LIQUIDITY');
 const missing=structuredClone(body);missing.data.splice(500,1);const incomplete=await load(missing);
 assert.equal(incomplete.facts.growth_24h.value,null);assert.notEqual(incomplete.facts.price_structure?.status,'USABLE');
+const overflow=structuredClone(body);overflow.data=overflow.data.map(row=>({...row,open:0.000012345678901234567,high:0.000012345678901234569,low:0.000012345678901234560,close:0.000012345678901234565}));
+Object.assign(overflow.data[0],{open:day.open,high:day.open+1});Object.assign(overflow.data.at(-1),{close:day.last,high:day.last+1});
+const tooLarge=await load(overflow);
+assert.deepEqual(tooLarge.facts.growth_24h.value,day,'OVERSIZED_CONTEXT_CANNOT_DISABLE_VALID_DAY_SCALAR');
+assert.equal(tooLarge.facts.price_structure.status,'INCOMPLETE');assert.equal(tooLarge.facts.price_structure.value,null);
+assert.equal(tooLarge.facts.price_structure.reason,'PRICE_STRUCTURE_BYTE_BOUND_EXCEEDED');
 
 const store=new MemoryStore(),sourceKey='pump:analysis:'+await textHash(JSON.stringify(ready));
 await store.set(sourceKey,{analysis:ready,input:enriched,immutable:true});
@@ -137,7 +154,8 @@ assert(Date.now()<admission.expires_ts);assert(engineCalls<=admission.max_engine
 const proof={schema:'ROOT_PRICE_STRUCTURE_CONNECTED_CASE_V1',status:'PASS',case_count:1,authority_main:admission.authority_main,
   old_actual_originals_unchanged:true,old_Q_AIN_core_decisions_unchanged:true,synthetic_history_is_not_actual_Q:true,
   positive_synthetic_history_ready:true,corrupt_history_fallback_arms:Object.keys(corruptions),cancelled_wave_not_revived:true,
-  wave_growth_volume_liquidity_gates_unchanged:true,source_mock_requests:sourceMockCalls,engine_calls:engineCalls,history_rows:1440,history_UTF8_bytes:historyBytes,
+  wave_growth_volume_liquidity_gates_unchanged:true,producer_overflow_only_context_rejected:true,source_mock_requests:sourceMockCalls,engine_calls:engineCalls,history_rows:1440,history_UTF8_bytes:historyBytes,
+  history_fact_UTF8_bytes:Buffer.byteLength(JSON.stringify(history)),enriched_input_UTF8_bytes:Buffer.byteLength(JSON.stringify(enriched)),enriched_original_UTF8_bytes:Buffer.byteLength(JSON.stringify({analysis:ready,input:enriched})),
   synthetic_delivery_exact_saved_text_ACK_readback:true,sender_mock_calls:senderMockCalls,
   artifact_path:admission.artifact_output,artifact_sha256:sha(artifactBytes),implementation_sha256:manifest.implementation_pin.sha256,module_count:manifest.module_count,
   changed_modules:changed.map(name=>({name,sha256:sha(artifact.modules[name])})),unchanged_modules:manifest.module_count-changed.length,
