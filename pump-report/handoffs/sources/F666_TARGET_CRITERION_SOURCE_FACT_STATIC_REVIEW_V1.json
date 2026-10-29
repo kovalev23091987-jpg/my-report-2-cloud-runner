@@ -1,0 +1,148 @@
+{
+  "schema": "F666_TARGET_CRITERION_SOURCE_FACT_STATIC_REVIEW_V1",
+  "status": "STATIC_CODE_REVIEW_C1_C3_IMPROVED_C2_DEFECT_REMAINS",
+  "authority_main": "8e5fe668543cd1e264fbe87d6f49b762864dbd64",
+  "own_acquire_head": "6c658a85a2157c1bb03814eeb14244a5f31f5732",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793271305000",
+  "root_owner": "CODEX:PUMP_QUEUE_CONFIRMATION_AND_SEED_REVIEW_20261029:1793267492819",
+  "review_UTC": "2026-10-29 11:01:58 UTC",
+  "contract": {
+    "path": "pump-report/handoffs/analytics/package-bz39/BZ39_TARGET_CRITERION_CONTRACT_RU.md",
+    "sha256": "61f14a3327644656deadff733c6b51ec5bbae3eaca70ce835d634c43c8d74c9d",
+    "bytes": 9124,
+    "scope": "Contract draft only, not a runtime-qualified target strategy"
+  },
+  "contract_findings": [
+    {
+      "id": "C1_PREQUALIFY_STRUCTURAL_ROLE",
+      "status": "CODE_IMPROVES_GEOMETRIC_PREQUALIFICATION",
+      "priority": "P2",
+      "problem": "Historical role is prioritized absolutely and defined as last HIGH before latest matching LOW. Contract does not explicitly exclude ceiling below/equal current price or protected seed/invalidation geometry before role priority. A micro HIGH can therefore dominate a suitable wave HIGH and cause later plan/min10 rejection. A time-nearest preseed HIGH alone does not prove a relevant range ceiling.",
+      "minimal_change": "Before ranking, require each role's target region to be a geometrically admissible exit above current price/protected scenario using existing zone geometry, and require positive evidence that historical HIGH is the ceiling of the linked relevant swing range. Otherwise omit unbound/inadmissible historical role, consider still-qualified wave/nearest roles. Keep ranking independent of10; never switch to another target after min10 failure merely to pass. Do not impose an arbitrary highest historical peak.",
+      "not_a_new_threshold": true
+    },
+    {
+      "id": "C2_MINOR_REQUIRES_INTACT_OBSERVED_PATH",
+      "status": "CODE_DEFECT_REMAINS_PRIOR_LOW_NOT_CHECKED",
+      "priority": "P2",
+      "problem": "First subsequent confirmed LOW>=prior LOW does not establish that either base remains intact until analysis. A later lower low/breach can invalidate that relation. A complete ordered pivot list is not a continuous OHLC path; missing pivots are not evidence that no break occurred.",
+      "minimal_change": "MINOR requires qualified preknown prior LOW and subsequent LOW with correct event/known order plus complete observed OHLC for the protected interval through analysis and no observed later break/lower-low. Observed break/lower-low stays material; missing path or provenance stays unresolved and limits farther role. Use existing halfWidth/geometry only, no new tolerance or fabricated break/retest.",
+      "artificial_unexecuted_counterexample": "prior LOW100 -> obstacle HIGH110 -> first subsequent LOW105 -> later confirmed LOW95 -> analysis price106. All known<=analysis and continuous data. First105>=100 alone cannot label HIGH110 minor after later95. These are illustrative controlled numbers, not market facts."
+    },
+    {
+      "id": "C3_PREVIOUS_FACT_ID_NOT_ORIGINAL_PROOF",
+      "status": "CODE_REBINDS_TARGET_PIVOTS_TO_CURRENT_FACTS",
+      "priority": "P2",
+      "problem": "Contract permits pivots from saved previous-wave original, but actual stored wave carries old fact_id without immutable-original pointer. Existing price-structure pool dedup starts with core/previous pivots and may skip a current-history duplicate with same kind/event/price, retaining old provenance. Old fact_id alone is not current qualified source proof.",
+      "actual_example": "Retained INIT input has previous_wave CANCELLED,57 confirmed pivots,no analysis_key/original_key/source_input_key/immutable_original_key/origin pointer, two candle fact IDs absent from current qualified input. IDOL previous_wave null. See exact metadata below.",
+      "minimal_change": "For NEW plan targets/bases/obstacles require explicit current qualified CORE/history facts and covered observed OHLC, or an actual accessible immutable original reference plus matching qualified fact. For matching old/current pivots, rebind PLAN-ONLY evidence to independently confirmed current source or omit unbound role. Do not mutate stored wave/originals or solve historical global reference closure as part of this change.",
+      "fact_id_presence_alone_is_not_qualification": true
+    }
+  ],
+  "known_producer_boundaries": [
+    "confirmedPivots radius2 uses consecutive neighbors and reports event=row.close_ts,known=right-radius close_ts. Every used pivot must event<=known<=analysis. Prior LOW used as preknown obstacle base must be known before HIGH event; subsequent LOW event must follow HIGH and be known by analysis. Never infer a preknown break/retest from later-confirmed pivots.",
+    "Historical intact-base claims require complete observed CLOSED OHLC from relevant base through current end (and declared source coverage), not just no lows in a sparse filtered pivot array. Unknown/unobserved path cannot become intact.",
+    "Existing consumePriceStructure validates exact instrument/USABLE source+clocks/1440-grid/same day receipt/CORE overlap then supplies plan-only pivots. Optional context must stay optional: invalid/absent history removes that historical justification and cannot silently replace mandatory CORE, reset wave or create new source freshness.",
+    "Current price above a HIGH proves only contemporaneous position, not a confirmed prior breakout/retest or guaranteed passage after a later entry. Presentation must preserve that distinction and keep obstacle facts/limitations.",
+    "Basis fact references in new exit/obstacle/entry graph must point to actual observed qualified source material; no foreign exchange relabel, exact dollar volume or new inferred map/units."
+  ],
+  "actual_existing_original_metadata": {
+    "packet_sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+    "original_ref_metadata": [
+      {
+        "instrument_id": "BINGX:USDT_M:101138:INIT-USDT",
+        "analysis_key": "pump:analysis:39ef87a6355220e2b631b93f07688fd9ed84d079a850bc0eb648d3472356f2b1",
+        "analysis_ts": 1793265120249,
+        "previous_wave_present": true,
+        "previous_wave_state": "CANCELLED",
+        "wave_original_pointer_fields_present": [],
+        "confirmed_pivots_count": 57,
+        "distinct_old_fact_ids_not_in_current_input": [
+          "pump-report-sources-v1:BINGX:USDT_M:101138:INIT-USDT:candles:44dcd8d1-68a3-4e3f-bb1c-ab6df72f813a",
+          "pump-report-sources-v1:BINGX:USDT_M:101138:INIT-USDT:candles:64984e91-76a8-4601-a5c0-658601f83164"
+        ],
+        "current_core_fact_id": "pump-report-sources-v1:BINGX:USDT_M:101138:INIT-USDT:candles:08584b45-1112-4123-9981-a16e92cc07e4",
+        "current_history_fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101138:INIT-USDT:price_structure:b623d9af-ed36-4414-aeba-98ffff4bfd0d",
+        "context_status": "USABLE"
+      },
+      {
+        "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+        "analysis_key": "pump:analysis:4150bf418dcea8df33c764a3b14420867b469646edac6750d9fd5dc13228d550",
+        "analysis_ts": 1793264969642,
+        "previous_wave_present": false,
+        "previous_wave_state": null,
+        "wave_original_pointer_fields_present": [],
+        "confirmed_pivots_count": 0,
+        "distinct_old_fact_ids_not_in_current_input": [],
+        "current_core_fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:ccb2778d-f561-4784-8f61-f90e5fe54c43",
+        "current_history_fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:7264d327-ee0d-4bbc-8898-e7bf866b5d35",
+        "context_status": "USABLE"
+      }
+    ]
+  },
+  "positive_contract_parts": [
+    "Target role/obstacle comparison precedes min10; no threshold-driven search for a farther profitable target.",
+    "Current-wave/nearest role fallback and explicit material/unresolved obstacle limitation are specified; no newscore/threshold/window/source.",
+    "USABLE price_structure requires own complete current24h qualified context; future/referenced-only pivots excluded. Existing OHLC time/quantity limitations preserved.",
+    "Missing future liquidation map remains optional; core20/10growth,volume2,liquidity,independent plan min10 and preserved originals unchanged."
+  ],
+  "code_review": {
+    "status": "COHERENT_LOCAL_SNAPSHOT_REVIEWED_NOT_RUNTIME_QUALIFIED",
+    "coherent_snapshot": true,
+    "files": {
+      "pump-report/handoffs/analytics/package-bz39/proposed/analytics/movement.mjs": {
+        "sha256": "3cf525052492679c12071c4eda77b1448691d4b5c5bb088ff652ff8ab656f1d6",
+        "bytes": 39466,
+        "matches_descriptor": true
+      },
+      "pump-report/handoffs/analytics/package-bz39/proposed/analytics/index.mjs": {
+        "sha256": "fa0a1e13fcad7201d2083bc536da048a3addcb645828d7a15e01438c373d7ddb",
+        "bytes": 18165,
+        "matches_descriptor": true
+      },
+      "pump-report/handoffs/analytics/package-bz39/proposed/analytics/presentation.mjs": {
+        "sha256": "7ef43971b2b185e8cb4da9960c10ade59558a24b90ff764128e567d5842281b1",
+        "bytes": 12612,
+        "matches_descriptor": true
+      },
+      "pump-report/handoffs/analytics/package-bz39/BZ39_PATCH_PREIMAGES_V1.json": {
+        "sha256": "a9b52c9d50ca13f560398ced79c3f5021a8696cf18836061c06943bb67154cc4",
+        "bytes": 1538
+      },
+      "pump-report/handoffs/analytics/package-bz39/BZ39_TARGET_CRITERION_CONTRACT_RU.md": {
+        "sha256": "c53f5bd46201067113d2a731b649da49c33344863eb8f0442715b5e0644c1b38",
+        "bytes": 11682
+      },
+      "pump-report/handoffs/analytics/package-bz39/BZ39_JUSTIFIED_TARGETS_PROPOSAL.patch": {
+        "sha256": "ef2731cda3db6788b21b9106248dd58640b5348e5baec8ca127808445eeb46aa",
+        "bytes": 17511
+      }
+    },
+    "scope": "Final coherent snapshot read11:12:45UTC; earlier57d0/1fa versions changed during review and are not conflated.",
+    "findings": [
+      "C1 improved: historical outer candidates geometrically exceed price/protected base/current wave before ranking; min10 stays outside selection.",
+      "C3 improved: fresh confirmed pivots recomputed from qualified current CORE/history, no old previous fact_id trusted; index passes core_qualified and history qualification.",
+      "C2 remains: minor=after.price>=before.price&&intact(after) checks only subsequent LOW, not prior preknown LOW. Add complete observed intact(before) guard or mark material/unresolved. Counterexample: priorLOW100 known3; breachLOW95 event5 known7; HIGH110 event6 known8; subsequentLOW105 event9 known11; analysis12 price106. LOW95 is neither preknown before HIGH nor event-after HIGH; code picks prior100 and after105, calls minor although prior100 was broken. Artificial/unexecuted vector, no market claim."
+    ]
+  },
+  "deadline": {
+    "no_code_by_UTC": "2026-10-29T11:09:05.000Z",
+    "own_expires_UTC": "2026-10-29T11:15:05.000Z",
+    "FULL_release_minimum_margin_seconds": 120,
+    "policy": "No lease waiting after14min without code; close scope and publish contract limits if code not supplied. Pending code is not implicitly accepted.",
+    "code_received_before_no_code_deadline": true
+  },
+  "cost": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "Cloudflare_native_HTTP": 0,
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "new_sources": 0
+  },
+  "preserved": "Only own handoff/ownlease. No ROOT/analytics code or main edits. All oldspendsunknownsholdsissuedfloorsmanual3/caps9pauses2OWNERdeferrals preserved."
+}
