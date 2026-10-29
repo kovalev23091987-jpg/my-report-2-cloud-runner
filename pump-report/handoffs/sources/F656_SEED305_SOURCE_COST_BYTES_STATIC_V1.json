@@ -1,0 +1,245 @@
+{
+  "schema": "F656_SEED305_EXACT_ARTIFACT_SOURCE_COST_BYTES_STATIC_V1",
+  "status": "PASS_STATIC_EXACT_ARTIFACT_WITH_ARTIFICIAL_SIZE_EVIDENCE",
+  "authority_main": "c0c64e67711fa5b417596cd56a443c8320e17469",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793262375000",
+  "parent_owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
+  "artifact": {
+    "new_artifact_sha256": "841f2a3c850d01257f3f4041ec7a2931c8779691156402c47faed8ace739e8a0",
+    "new_pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+    "modules": 76,
+    "same_module_names": true,
+    "changed": [
+      {
+        "name": "sources/index.mjs",
+        "sha256": "97cd320d9f5e64047fd5b8ace37fa0ba172cbd256c1b6df2bfcea51fb78541ae",
+        "bytes": 42367,
+        "git_blob": "6e68af536c215034bdc85747e4d41d5cb2c84992"
+      },
+      {
+        "name": "profile/start-v1.mjs",
+        "sha256": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521",
+        "bytes": 1791,
+        "git_blob": "d61f2fa57141dc042ab1e2a9055b26703ac57da8"
+      },
+      {
+        "name": "runtime/implementation-pin.mjs",
+        "sha256": "b2f537762cdb8d32289b73ae91e4c9f195824eda18c3c189423b6a55fd937677",
+        "bytes": 7555,
+        "git_blob": "f0ec227f0fd09f37e904b8bba9a1c51ec98d3eba"
+      }
+    ],
+    "unchanged": 73,
+    "source_only_comment": true,
+    "profile_diff": [
+      "--- \n",
+      "+++ \n",
+      "@@ -1,4 +1,4 @@\n",
+      " export const START_PROFILE = Object.freeze({",
+      "-  version: 'pump-report-start-v1',",
+      "+  version: 'pump-report-start-v2-seed4h-20261029',",
+      "   status: 'PROPOSED_ENGINEERING_PROFILE_NOT_PROFIT_VALIDATED',",
+      "   automatic_growth: {day_pct: 20, short_pct: 10, short_windows_ms: [300000, 900000, 3600000]},",
+      "@@ -11,5 +11,5 @@\n",
+      "   elevated_volume_ratio: 2,",
+      "   wave_max_age_ms: 14400000,",
+      "-  wave_search_ms: 3600000,",
+      "+  wave_search_ms: 14400000,",
+      "   impulse_window_ms: 300000,",
+      "   sharp_speed_multiple: 2,"
+    ],
+    "source_diff": [
+      "--- \n",
+      "+++ \n",
+      "@@ -166,5 +166,5 @@\n",
+      "     if (step !== 60000) fail('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');",
+      "     // The oldest searched impulse needs its own preceding full baseline:",
+      "-    // wave search60m + impulse5m + baseline60m =125 closed minutes.",
+      "+    // Configured search + impulse + preceding baseline; no extra HTTP request.",
+      "     const durations = [profile.wave_search_ms, profile.impulse_window_ms, profile.volume_baseline_ms,",
+      "       ...profile.automatic_growth.short_windows_ms];"
+    ],
+    "unchanged_data_cost_modules": {
+      "sources/bingx.mjs": "d0df081365f35c0f8c238c79cc71cafb0cc4bead6123fd691ce28b966d0ffd02",
+      "sources/day-growth.mjs": "ae3051009290114cde7c71d7304c18e31cd0a0c3739e85967106f8ace37b5c7f",
+      "runtime/budget.mjs": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+      "runtime/candidate-surplus.mjs": "c860ebd4c51f021293b618c36bc7646038ac1beba655c96fa058626a2a30762f",
+      "runtime/production-policy.mjs": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+      "runtime/provider-policy.mjs": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded",
+      "runtime/store.mjs": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+      "runtime/native-budget.mjs": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+      "analytics/feature-capsule.mjs": "6f3ad60c9f235512bd762133c56f5e662fe9b78cbc8eec0cf76b76dc44942ec9",
+      "analytics/movement.mjs": "c236d79705e813e31a729988d6808c0aacfc7b4fe9453d1065f29f7f98aea716",
+      "runtime/runner.mjs": "cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be"
+    }
+  },
+  "previous_queue_artifact": {
+    "sha256": "ffe873357d508196aa168514ec6e4fe979fe79d80487903381a6d76c88db66cf",
+    "pin": "0e9dc66373dedaaa87e1e62731ad083deb09d20aff7ba72b6f47e32ffc0e9fd1"
+  },
+  "freeze_binding": {
+    "artifact_files_hashes_verified": true,
+    "case_artifact_pin_hashes_agree": true,
+    "server_main_profile_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de",
+    "server_main_sources_blob": "4dbd36e95758ec29be5a35c5b1e44a045c522e3d",
+    "server_main_still_queue_baseline_at_this_SHA": true,
+    "meaning": "Review target is exact immutable artifact override bytes; ROOT confirms old profile/source remain onmain until exact overrides integrated at acceptance. Not an unexpected code defect; final integration/activation must preserve exact reviewed hashes.",
+    "ROOT_exact_override_integration_intent_confirmed": true
+  },
+  "checks": {
+    "delta": {
+      "status": "PASS",
+      "only3modules": true,
+      "source_executable_text_equal_when_comment_lines_removed": true,
+      "profile_changed_fields": [
+        "version",
+        "wave_search_ms"
+      ],
+      "new_profile_version": "pump-report-start-v2-seed4h-20261029",
+      "old_search_ms": 3600000,
+      "new_search_ms": 14400000,
+      "new_fact_or_schema": false,
+      "all_other73modules_identical": true
+    },
+    "source_count": {
+      "status": "PASS_STATIC_AND_ROOT_MOCK",
+      "formula": "ceil(max(60m shortgrowth,240m seed+5m impulse+60m baseline)/1m)=305",
+      "same_one_CORE_klines_request": true,
+      "CORE_total_mock_requests_old_new": [
+        3,
+        3
+      ],
+      "wire_native305_proven": false,
+      "no_additional_provider_route_or_connection": true,
+      "request_cache": "Full canonical URL includes start/end/limit, so old125 URL is not a305 cache entry. Existing original receipt/TTL and cache semantics retained.",
+      "collector_bound_rows": 1440,
+      "parser_bound_rows": 1440,
+      "capsule_candle_reference_row_bound": 1440,
+      "no_hard125_in_inspected_paths": true
+    },
+    "data": {
+      "status": "PASS_STATIC",
+      "parser": "Existing parseCandles validates object OHLC, finite/nonnegative row.volume, native1m time/grid/duplicate/open bar exclusion. Qualified volume_native requires exact frozen instrument/route/field/interval proof, SAME_NATIVE_REPORTED_QUANTITY; absoluteBASE/USDT quantity remains unqualified, multiplier unknown.",
+      "context": "Existing1440day price-only context/parent unchanged. Wider CORE may overlap305 rather than125 rows; existing consumer compares all overlapping OHLC without importing volume into price context.",
+      "short_history": "Same contiguous-tail/older-prefix/internal-gap behavior and usable5/15/60 windows remain. expected_rows305 is not automatically mandatory completeness for a new coin. SHORT_HISTORY/baseline missing remains explicit; no synthetic old volume or baseline.",
+      "clocks_and_strategy": "No change growth20/10, elevatedvolume2, current3m/5m activity, planmin10, original4hretained lifetime or receipt/source clocks. Wider search is engineering seed scope, not proof every seed within4h is current/READY.",
+      "TZ": "Original TZv2 section6 permits broad preliminary queue and requires fresh activity/scenario; primary4h horizon does not impose a hard1h seed-history limit. No literal1h TZ prohibition found."
+    },
+    "cost_and_caps": {
+      "status": "PASS_UNCHANGED_CODE",
+      "HTTP_caps": {
+        "BINGX_day": 900,
+        "BINGX_month": 27900,
+        "per_minute": 10,
+        "per_second": 1,
+        "project_per_run": 164
+      },
+      "manual_checks": 3,
+      "manual_protected": {
+        "BINGX": 51,
+        "TELEGRAM": 3
+      },
+      "whole_candidate_upper": 12,
+      "native_caps": {
+        "requests": 800,
+        "rows_read": 5000,
+        "rows_written": 300
+      },
+      "native_finalization": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1
+      },
+      "planned_fraction": 0.8,
+      "protected_fixed_total": 102,
+      "grants_unknowns_and_old_spends_retained": true,
+      "interpretation": "Request count unchanged; normalized bytes/CPU/storage are not thereby free or accepted. Actual charged metadata stays cost authority. No source25/metadata3/newbilling/cap increase/refund."
+    },
+    "bytes": {
+      "status": "MEASURED_ARTIFICIAL_SHAPES_NOT_NATIVE305_OR_WORST_CASE",
+      "broker_response_cap": 2000000,
+      "broker_cap_unchanged": true,
+      "broker_enforcement": "Content-length and streamed actual body bytes fail SOURCE_BODY_LIMIT above cap, before parse.305<=1440 satisfies row bound, not a universal byte-size guarantee.",
+      "row_ratio305to125": 2.44,
+      "reference_closure": "Row iteration bound1440 unchanged.305 rows do not imply305new distinct references: current repeated receipt/qualification refs deduplicate by existing code. Actual capsule serialization/reference bounds must still hold.",
+      "not_proven": [
+        "Actual native305 reply/body bytes",
+        "Whole production input maximum across all instruments",
+        "Sustainable storage/throughput/CPU or physical capacity",
+        "Actual AUTO305 READY or SENT"
+      ],
+      "owner_physical_capacity_deferral_preserved": true,
+      "ROOT_completed_measurement": {
+        "path": "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_SERIALIZATION_ACTUAL.json",
+        "sha256": "58c099fcbb9b1a1712940e0bb324810365f22ae76cd4ab881a6c8a54cbd423c5",
+        "bytes": 976,
+        "FULL_server_equals_local": true,
+        "schema": "ROOT_305_ARTIFICIAL_PAYLOAD_SIZE_V1",
+        "status": "MEASURED_ARTIFICIAL_SHAPE_NOT_ACTUAL305_OR_PHYSICAL_CAPACITY",
+        "authority_main": "c0c64e67711fa5b417596cd56a443c8320e17469",
+        "probe_sha256": "cee03893fed19a94beed163e8b248f81cab91065040c170e0ff3ba35754a6726",
+        "sizes": [
+          {
+            "instrument_id": "BINGX:USDT_M:104258:VEIL-USDT",
+            "rows": 305,
+            "input_UTF8_bytes": 286960,
+            "original_shape_UTF8_bytes": 301516,
+            "candle_value_UTF8_bytes": 204506
+          },
+          {
+            "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+            "rows": 305,
+            "input_UTF8_bytes": 304904,
+            "original_shape_UTF8_bytes": 319412,
+            "candle_value_UTF8_bytes": 205787
+          }
+        ],
+        "maximum_original_bytes": 319412,
+        "physical_capacity_or_worst_case_proven": false,
+        "synthetic_history_not_market_evidence": true,
+        "profile_source_caps_budget_unchanged": true,
+        "engine": 0,
+        "build": 0,
+        "source_HTTP": 0,
+        "native_SQL": 0,
+        "Telegram": 0,
+        "construction_boundary": "ROOT explicitly identifies size-only extension by180 duplicated old rows. Not a valid/new305 closed-grid market history and not a rerun of the engine/accepted case.",
+        "SOURCE_did_not_repeat_measurement": true
+      },
+      "remaining_limits": "Samples include the retained input/original shape and are below the operator's existing response limits; broker2MB specifically bounds raw provider response, not arbitrary normalized/original values. No universal all-instrument byte bound, native305 reply, capsule/CPU throughput or physical capacity acceptance follows. Existing runtime bounds and actual ACK metadata remain authoritative."
+    },
+    "ROOT_case": {
+      "path": "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_CONNECTED_CASE_V1_REPAIR.json",
+      "sha256": "7fd5ece22136686f043a3b6287497b5f7178711e6e87b5f70bf8e384fc87ac79",
+      "bytes": 2237,
+      "server_FULL_read": true,
+      "status": "PASS",
+      "case_count": 1,
+      "fixture_class": "SYNTHETIC_OLDER_SEED_NO_MARKET_READINESS_PROOF",
+      "synthetic_ready_plan_min_pct": 40.80652694329381,
+      "engine_calls_in_PASS_attempt": 3,
+      "prior_harness_failure_engine_calls": 2,
+      "total_engine_calls_across_attempts": 5,
+      "builds": 1,
+      "all_source_MOCK_requests": 6,
+      "cancelled_original_not_revived_or_extended": true,
+      "SOURCE_did_not_repeat": true,
+      "actual_provider_native_CF_TG": 0
+    }
+  },
+  "source_preferred_path": "Existing dynamic CORE305. New1440volumehistory fact/consumer alternative discarded for now.",
+  "activation_boundary": "SOURCE static PASS covers exact artifact semantics/request counts/unchanged guards and two explicitly ARTIFICIAL_SIZE_ONLY samples. ROOT must integrate exact frozen overrides and retain separate actual native/provider/install/FULL admissions. This is no native admission or actual305/SENT proof.",
+  "SOURCE_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "build": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0
+  },
+  "preserved": "Oldsource/nativecostsunknowns/closedgrants/holds/manual3/futurebase/caps/9pauses/2OWNERdeferrals; previous SOURCE60sec release-margin violation stays recorded.",
+  "serialization_supplement_main": "e1ff314956815fb0380a3ef8791bf87fda581dc6"
+}

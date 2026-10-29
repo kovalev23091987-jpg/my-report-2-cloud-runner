@@ -1,0 +1,134 @@
+{
+  "schema": "F657_OWNER_APPROVED_LOOKUP11_ACTUAL_SCOPE_FINAL_V1",
+  "status": "ACCEPTED_PURPOSE_AND_NATIVE_RECEIPT_NO_SENT_IN_READ_SCOPE",
+  "authority_main": "bf839e9a355b2e48f3a90a5a4e7be96f32f3b02b",
+  "supplement_finalized_admission_main": "af6bfa9c4bd6964ab45e99c10df7efa7bd9d6997",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793264247000",
+  "raw": {
+    "path": "pump-report/.private/observations/oct29-current-auto-delivery11-result.json",
+    "sha256": "952a21de1c8454f82c241ef1c96f7e6e857de1ca4aade78a1749c628c6f520a2",
+    "bytes": 2450,
+    "actual_authority_main": "9990e4a96ca33ed6c8eb353ee8106dea8225c49c",
+    "attempt_path": "pump-report/.private/observations/oct29-current-auto-delivery11-attempt.json",
+    "attempt_sha256": "d3a87387ef2d52ff9fed8d398da8536eafb2da34aa5261c078443742aeb56f76",
+    "attempt_result_hash_matches": true,
+    "no_auto_retry": true
+  },
+  "accepted_grant": {
+    "admission_path": "checkpoints/pump-report-20261025/ROOT_OWNER_APPROVED_AUTO_DELIVERY11_ADMISSION.json",
+    "finalized_admission_sha256": "f3f4757836be50a9a18dd5894317c8e17ebeb9ee6c0b2eece40b43468fe32dc3",
+    "finalized_server_FULL_equals_local": true,
+    "status": "APPROVED_BY_DIRECT_OWNER",
+    "mode": "LOOKUP",
+    "schema": "OWNER_ONE_CURRENT_AUTO_DELIVERY_LOOKUP11_V1",
+    "approval_message_sha256": "1971ca693c6d928c8d8078565c523cf5dc73f10ab8ed21341f8d2c933850357d",
+    "owner_thread_id": "01a171f7-596e-7dc0-a82f-3e92f57f4ef6",
+    "owner_reply": "Разрешаю одну проверку №11",
+    "question_ref": "call_1935940848b74c44abc6d27844da7a9e",
+    "day_utc": "2026-10-29",
+    "exact_run_id": "pump-auto-delivery-20261029-one-owner-extra-11",
+    "previous_run_count": 10,
+    "additional_runs": 1,
+    "maximum_count_after": 11,
+    "rows_read": 500,
+    "rows_written": 30,
+    "max_queries": 16,
+    "approved_ts": 1793264023000,
+    "expires_ts": 1793264263000,
+    "purpose": "Directownerapprovedoneextra11: readcurrentAUTOcard recipient/sameTEXT/ACK/message_id/original/readback only; no debugrun/queue/catalog/resources, no provider/TGsend, no reportpause. Existingcapsunknownsfuture/manual3 unchanged.",
+    "approval_authority": "Direct owner approval confirmed by ROOT task and recorded exact reply/messageSHA/thread/question metadata; SOURCE did not independently fetch the ROOT chat message.",
+    "approved_before_attempt_and_unexpired": true,
+    "old_preexecution_admission_sha256": "925a3fb3578a2425b7862684053383cc6d25dcd5e23ac09740eada3debdbcdfa",
+    "old_preexecution_status": "ADMITTED_NOT_SPENT",
+    "old_snapshot_not_reusable": true,
+    "admission_effective_status": "SPENT_FINALIZED",
+    "approval_status": "APPROVED_BY_DIRECT_OWNER"
+  },
+  "binding": {
+    "actual_admission_status": "SPENT_FINALIZED",
+    "approved_before_attempt": true,
+    "FULL_sha256": "b9e699a60c79e8cfb47d21b84aae6bb1697071d173705ee25715de19b39f0152",
+    "FULL_hash_matches": true,
+    "FULL_fresh_at_attempt": true,
+    "FULL_pin_matches": true,
+    "observed_MSK": "2026-10-29T11:53:57.364000+03:00",
+    "completed_MSK": "2026-10-29T11:53:58.298000+03:00",
+    "cutoff_MSK": "2026-10-29T11:35:47.821000+03:00",
+    "all_optional_flags_false": true
+  },
+  "native_actual": {
+    "reservation_id": "PUMP:LOOKUP:pump-auto-delivery-20261029-one-owner-extra-11",
+    "state": "FINALIZED",
+    "SQL": 5,
+    "rows_read": 42,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "actual_api_attempts": 5,
+    "client_ceiling": {
+      "queries": 16,
+      "rows_read": 500,
+      "rows_written": 30
+    },
+    "shared_original_reservation": {
+      "rows_read": 500,
+      "rows_written": 30,
+      "original_never_reduced": true
+    },
+    "original_reserve_not_refunded": true
+  },
+  "observation": {
+    "status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+    "current_pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+    "scope": {
+      "cards_read": 4,
+      "limit": 20,
+      "after_key": "pump:card:",
+      "next_after_key": "pump:card:PUMP:7505b17ae7bb53dcc63ee96978539b3345e18cc4aa8f6ea54b675e45d3c8510b",
+      "page_exhausted": true,
+      "whole_history_claimed": false,
+      "whole_market_claimed": false,
+      "executor_context_requested": false,
+      "confirmed_not_before_ts": 1793262947821
+    },
+    "executor_status": "NOT_READ_DELIVERY_ONLY",
+    "selected_card": null,
+    "selected_original": null,
+    "matched_same_original_SENT": false,
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "exact_result": "At11:53:57.364MSK, one card-prefix page returned4/20 rows and was exhausted. No matching SENT AUTO PRODUCTION card with confirmed_ts>=29Oct11:35:47.821MSK/currentpin was selected. Thus only one card-page business query ran; reservation/finalization4queries =>5total. No executor/run/queue/catalog/resources/candidate/original/outcome reads.",
+  "limitations": [
+    "Page negative is no SENT in captured scope/time; not whole-market or whole-day noREADY.",
+    "No original was exported: no evidence that native305 CORE failed or succeeded, no candidate/refusal/plan/market-source inspection.",
+    "No actual recipient/sameTEXT/ACK/inputlink matched because no qualifying card was selected; only configured purpose/predicates and native grant accepted.",
+    "No lookup or DELIVERY_CHECK availability inferred from absence; unused-page capacity and low actualcost never refund the grant."
+  ],
+  "exhaustion": {
+    "ordinary_LOOKUP10": "SPENT",
+    "explicit_owner_extra11": "SPENT_FINALIZED",
+    "known_own_combined_lookup_usage": {
+      "SQL": 80,
+      "rows_read": 236,
+      "rows_written": 44,
+      "unknown_ops": 0,
+      "not_whole_account_or_business_day_total": true
+    },
+    "default10_unchanged": true,
+    "DELIVERY_CHECK": "NOT_EXECUTED_NOT_REPURPOSED",
+    "further_native_IO": "No new SOURCE/native calls; any additional numbered owner12 operation requires separate authority, not this grant."
+  },
+  "business": "Backend profilev2 AUTO1DL1 continues independently. Release of engineering own lease does not pause cron, change hourly quota or force a signal; no waiting/newautomation.",
+  "SOURCE_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "build": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0
+  },
+  "preserved": "Allpriorchargesunknownsreservesclosedholds/manual3/futurebase/caps/9pauses/2OWNERdeferrals; no SOURCE code/runtime changes."
+}
