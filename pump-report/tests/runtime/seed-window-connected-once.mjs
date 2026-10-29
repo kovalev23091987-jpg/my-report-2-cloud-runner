@@ -40,7 +40,7 @@ async function load(profile){
   return {ok:true,status:200,data,received_ts:T,receipt_id:'ARTIFICIAL_SEED_WINDOW_'+mockRequests,cache_hit:false};
  }}});
  const core=await sources.getCore({instrument,run_id:'ARTIFICIAL_SEED_WINDOW',mode:'AUTO'});
- const ticker=createFact({fact_id:'ARTIFICIAL_24H_PRICE',instrument_id:instrument.instrument_id,kind:'ticker_24h',value:{open:90,last:112},unit:'USDT_PER_BASE',
+ const ticker=createFact({fact_id:'ARTIFICIAL_24H_PRICE',instrument_id:instrument.instrument_id,kind:'ticker_24h',value:{open:90,last:112},unit:'USDT_ROLLING_24H',
   event_ts:T,received_ts:T,expires_ts:T+30000,source:'ARTIFICIAL_ONLY',primary_provider:'ARTIFICIAL_ONLY',venue:'BINGX',status:'USABLE',origin:'OBSERVED',evidence_ref:'ARTIFICIAL_ONLY'});
  const input={schema_version:INPUT_SCHEMA,run_id:'ARTIFICIAL_SEED_WINDOW',run_purpose:'PRODUCTION',mode:'AUTO',analysis_ts:T,instrument,facts:{...core.facts,ticker_24h:ticker},previous_wave:null,liquidations:emptyMap('ABSENT','ARTIFICIAL_NO_MAP')};
  return {input,core,requests,analysis:analyzePump(input,profile)};
@@ -104,5 +104,5 @@ const proof={schema:'ROOT_SEED_WINDOW_CONNECTED_CASE_V1',status:'PASS',case_coun
  artifact_path:a.artifact_output,artifact_sha256:sha(artifactBytes),implementation_sha256:manifest.implementation_pin.sha256,module_count:76,
  changed_modules:changed.map(name=>({name,sha256:sha(artifact.modules[name])})),unchanged_modules:73,
  controller_exact3_override_mock_FULL_PASS:true,mock_control_calls:mockControlCalls,mock_control_mutations:mockMutations,
- actual_native_SQL:0,actual_Cloudflare_HTTP:0,market_HTTP:0,Telegram:0,real_AUTO_delivery_proven:false,engine_calls:3,builds:1,installed:false};
+ actual_native_SQL:0,actual_Cloudflare_HTTP:0,market_HTTP:0,Telegram:0,real_AUTO_delivery_proven:false,engine_calls:3,prior_harness_failure_engine_calls:2,total_engine_calls_across_attempts:5,builds:1,installed:false};
 fs.writeFileSync(a.output,JSON.stringify(proof,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(proof));
