@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_POSTLAUNCH_SAFE_RETURN_QUALIFIED_CONTROLLER_V1",
-  "status": "CONTROLLER_QUALIFIED_OFFLINE_PENDING_TWO_STATIC_REVIEWS_NOT_ACTUAL_ROLLBACK",
+  "status": "CONTROLLER_QUALIFIED_AND_TWO_STATIC_REVIEWS_DATA_COMPATIBLE_ACTUAL_RETURN_NOT_READY_NO_DFD_OBSERVER_OR_ADMISSIONS",
   "authority_main": "7aa9cfad4e4a9523de16418f9d74e6fe5b4b860b",
   "owner_scope": "Preserve working Telegram delivery; check coherent update package before installation.",
   "forward": {
@@ -51,5 +51,41 @@
   "storage_migration_or_deletion": false,
   "known_return_limitation": "Restores original265 behavior, including older late-history CLOSED limitation and absence of new surplus-cause annotation. It is a recovery option to preserve delivery, not retention of new fixes.",
   "native_ACK_or_PARTI_outcome_proven": false,
-  "whole_account_budget_known": false
+  "whole_account_budget_known": false,
+  "peer_reviews": [
+    {
+      "path": "pump-report/handoffs/sources/F677_SAFE_RETURN_FINAL_V1.json",
+      "sha256": "784e6cd3dffe40e917cdb72f748108bdab6682a8e0e9c0a1b925b7970566d157",
+      "status": "PASS_STATIC_CONTROLLER_WITH_EXPLICIT_EXECUTION_REQUIREMENTS"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bz51/BZ51_SAVED_DATA_REVERSE_COMPATIBILITY_STATIC_V1.json",
+      "sha256": "7018e27bee42b674260670da4e1a5efbaeeef4aec18339deae42b546522a07bc",
+      "status": "PASS_STATIC_SAVED_DATA_COMPATIBLE_WITH_KNOWN_FUNCTIONAL_REVERSION"
+    }
+  ],
+  "current_data_compatibility": {
+    "originals_card_receipt_journal_outcomes_preserved": true,
+    "T0_P0_deadline_message_id_unchanged": true,
+    "no_required_new_persisted_schema": true,
+    "no_database_rollback_or_migration": true,
+    "old_optional_diagnostic_field_ignored_not_deleted": true,
+    "implementation_pin_remains_original_record_provenance": true
+  },
+  "prepared_controller_is_not_complete_native_recovery_package": true,
+  "helper_releases": {
+    "SOURCE": {
+      "released": true,
+      "ref": "c84fb35ef4923fd60e0ae1ab4a127f8f348fbb3a",
+      "FULL_utc": "2026-10-29T19:33:35Z",
+      "margin_seconds": 422
+    },
+    "ANALYTICS": {
+      "released": true,
+      "FULL_utc": "2026-10-29T19:30:50Z",
+      "margin_seconds": 559,
+      "receipt": "pump-report/handoffs/analytics/package-bz51/BZ51_RELEASE_FULL_RECEIPT_V1.json",
+      "receipt_sha256": "a1adaa7dca162f775c236574b202776632b57bc722f2d22ab0802320b06a4359"
+    }
+  }
 }
