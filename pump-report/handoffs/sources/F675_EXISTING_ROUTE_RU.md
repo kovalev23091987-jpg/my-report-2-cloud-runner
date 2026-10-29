@@ -1,0 +1,23 @@
+# F675 — один сохранённый маршрут будущих ликвидаций
+
+Выбран **Hyperliquid clearinghouseState, один ранее сохранённый аккаунт, SOL → BingX BINGX:USDT_M:100028:SOL-USDT**. Статус — **PREPARED / HOLD**, разрешения на IO и активации нет. Это наблюдаемый условный порог ликвидации позиции аккаунта (OBSERVED_POSITION), не внешняя модель всего рынка и не прошедшая ликвидация.
+
+Свежая authority: main `6ce83ec5623ecca33d060ca3d30c6d8d924af9dd`,17 guards FULL18:50:09UTC, all4 equal, тот же ROOT owner, fence inactive; собственная CAS/FULL от18:35:28UTC действительна до19:05:18UTC. Рабочий deadline18:55:18UTC; FULL release должен иметь запас≥300s.
+
+Цепочка в актуальном коде: sources/index.mjs:418–443 → collectHyperliquidPositions:120–162 → normalizeHyperliquidAccount:49–116 → analytics/zones.mjs:31–43. Код и три saved proof повторно сверены по exact Gitblob на main `6ce83ec5623ecca33d060ca3d30c6d8d924af9dd`, его точные Gitblob/SHA256 и proof pointers F583/F585/F622 — в JSON. ROOT consumer только прочитан. Пустые routes дают NOT_CHECKED до broker. Нет оснований для SOURCE code patch: имеющиеся identity/clock/price gates правильно удерживают непригодную зону.
+
+BingX сторона сохранена как VERIFIED_CRYPTO native100028. **Общая идентичность с HL не доказана:** нужен независимый exact market/project-or-oracle anchor, затем canonical flag и exact evidence. SOL=SOL не доказательство. F585 поддерживает sign szi и native contract/mark семантику; denomination USDT не означает parity USDC/USDT. Отдельный свежий перенос HL threshold → BingX price basis отсутствует. payload.time — clock аккаунта120s; mapped price живёт не дольше nativeexpiry, mappingexpiry и mappingevent+30s. positionValue currency UNKNOWN: magnitude=null, никаких size×liqPx и сумм рынка.
+
+Почему этот маршрут: F622 уже выделяет exact допустимый SOL и ранее известный аккаунт, producer и consumer соединены, нужен максимум один state response. У Swole есть EXTERNAL_MODEL adapter, но сохранённый actual proof ограничен устаревшим и неквалифицированным BTC, исключённым владельцем; пригодного alt binding в проверенной цепочке нет. Повтор BTC и выдуманный selector SOL не предлагаются. Другие источники не переаудированы.
+
+**Один bounded proposal:** POST https://api.hyperliquid.xyz/info, body clearinghouseState + точный прежний аккаунт, first dex без нового dex;1account/≤1HTTP,0retry/pagination/discovery,4096B request/2MB response, deadline10s. Адрес не читался и не публиковался: ROOT разрешает прежний opaque locator. До IO закрыть identity/basis, допуск аккаунта, provider/shared/native budget и transport policy; если хотя бы одного proof нет — HOLD/0HTTP. Один state reply сам не закрывает независимую price mapping, дополнительных basis/BingX запросов здесь нет.
+
+Стоимость:1 cold sourceHTTP максимум,0 если prerequisites не пройдены либо broker доказал свежий exact-body cache; исторический provider weight2 не текущий quota grant. SOURCE SQL0/TG0/CF0. Старая F583 native envelope16SQL/5000R/300W — только design ceiling: ROOT должен доказать callsite/rows/bytes/reserve/finalize/readback, иначе не выполнять. qualification24/CONTROL6/METADATA2/UTC29LOOKUP16 исчерпаны, no25/no17; переименовывать пробу в MANUAL/AUTO нельзя. Пакет не выдаёт новый допуск и не предписывает ночной сбор.
+
+Нужен один bounded original reply с receipt/hash, payload.time и ≤1000 assetPositions,≤1 точный SOL oneWay, signed nonzero szi и positive liquidationPx. Null/missing/stale/future/duplicate — явный отказ или PARTIAL. Отсутствие SOL означает отсутствие только в данном аккаунте на этот clock. Зона может стать BingX-usable лишь с независимыми identity/semantics/quote/current mapping proof. Необязательная magnitude остаётся null.
+
+Покрытие сейчас0/550; будущий пакет проверит максимум1instrument/1account/1zone, квалификация даст0или1, остальные549 NOT_CHECKED, не UNSUPPORTED. Полный рынок, CORE coverage, эмпирическое улучшение и модельная карта этим не доказаны. Сохраняются manual3, Telegram47/1457, все caps/reserves/issued/CLOSED/unknowns,9пауз,2OWNERdeferrals и предыдущие отклонения сроков. Пригодный основной сигнал не зависит от карты.
+
+Новых code/tests/build/engine/marketHTTP/SQL/TG/CF/OAuth/search/connections/сообщений другим чатам нет. Private16 не искался/не читался/не передавался. Выполнено статическое чтение и административная проверка байтов/JSON; PASS тестов и native acceptance не заявлены. Детальный проверяемый proposal: `F675_EXISTING_HL_SOL_ROUTE_QUALIFICATION_PROPOSAL_V1.json`.
+
+Последнее прямое уточнение владельца: работать только с сохранёнными вариантами. Новые источники/поиск/подключения не допускаются; exact project/oracle anchor и current price basis остаются UNKNOWN,0coverage и без обещания активации.
