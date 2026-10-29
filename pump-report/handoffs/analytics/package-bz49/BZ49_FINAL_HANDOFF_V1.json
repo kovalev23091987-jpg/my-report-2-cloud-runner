@@ -1,0 +1,39 @@
+{
+  "schema": "BZ49_FINAL_HANDOFF_V1",
+  "status": "CONCRETE_INSTALLED_ROOT_BUDGET_DEFECT_FOUND_EXACT5_DRAFT_STATIC_REVIEWED_UNEXECUTED",
+  "installed": "pin265/78/f8d remains unchanged; relevant installed public FULL hashes matched to snapshots/current unchanged analytics/source code",
+  "primary_finding_sha256": "7bdd7de293321b04dba188b9126117879b3151c402d6946de3e552008676944a",
+  "current_guard_and_diagnostic_review_sha256": "6c2acfa3c13a2fbe30e27e4c35f4a74968737e2b2483697988394c0dbb42d02f",
+  "current_ready_patch": "ROOT_budget.closed-stats-exact5.diff",
+  "current_proposed_ROOT_budget_sha256": "c2ffa92d691acb6bb7e517fa483b010b688960e91054313e53ab8007ab3838bd",
+  "superseded_do_not_integrate": [
+    "ROOT_budget.statistics-outcome.diff",
+    "ROOT_budget.statistics-outcome.proposed.mjs.txt"
+  ],
+  "consumer": "runner.checkOutcomes -> sources.getOutcomeHistory(originalinstrument,T0,deadline) -> broker -> budget.reserve; journal signal work/view retains original wave identity",
+  "defect": "Same instrument closed surplus earlier in next normal run: generic closed-candidate replay guard also blocks statistics history on cache miss. This can defer recovery repeatedly; UNKNOWN remains pending, not MISS. No claim of actual PARTI occurrence.",
+  "fix_contract": "Only STATISTICS mode + statistics lane + BINGX + USDT_M + CORE bypasses that one guard. Existing historical source caller/route/window binding and all caps/manual/future/native/window guards unchanged. CLOSED logical spent, remaining holds, closed set and repeat AUTO refusal remain. Fresh history incurs separate cost.",
+  "existing_correct_chain": [
+    "Immutable original analysis T0/reference_price -> frozen anchor/signal -> deadline T0+14400000/target+10; no next-day retiming.",
+    "Next ordinary business hours only; historical source fetches exact prior window/identity/venue with historical event clocks.",
+    "Kernel excludes after-deadline witnesses and leaves boundary ambiguity/missing coverage UNKNOWN.",
+    "Old wave expiry/replacement does not delete signal/journal/work/outcome keys.",
+    "Saved view binds original hash/origin/target/deadline and is read-only; no saved result -> NOT_CHECKED after maturity, not MISS."
+  ],
+  "native_and_private_boundary": "Exact actual PARTI T0/P0 and outcome/ACK not read. Human approximate19:07 is not substituted as exact origin. private16 restriction retained; no search/read/share. Actual outcome REMAINDER04 and saved native view REMAINDER01 remain evidence-open.",
+  "diagnostic_addendum": "PASS_STATIC narrow annotation-only producer/budget/runner/deferred/summary diff; retained200/day24/run1 decision equivalent, unknown/CLOSED/counters preserved, ISOday/reasons/count whitelist bounded. Original fd588 diagnostic script statically reviewed; ROOT must supersede admission/frozen hashes and include new statistics branch before its one combined affected execution. No executed PASS inferred.",
+  "activity": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "builds": 0,
+    "SQL": 0,
+    "market": 0,
+    "CF": 0,
+    "TG": 0,
+    "product_ROOT_files_edited_by_ANALYTICS": 0,
+    "private16_access": 0
+  },
+  "next_ROOT": "Integrate/review exact five-field guard; one separately admitted combined affected case with closed-statistics charge vs AUTO replay and preserved holds plus diagnostic equivalence; do not replay accepted suites or perform night market IO."
+}

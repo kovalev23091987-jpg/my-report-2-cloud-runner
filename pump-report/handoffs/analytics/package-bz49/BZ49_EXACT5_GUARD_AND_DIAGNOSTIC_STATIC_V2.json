@@ -1,0 +1,75 @@
+{
+  "schema": "BZ49_EXACT5_GUARD_AND_DIAGNOSTIC_STATIC_V2",
+  "status": "PASS_STATIC_ROOT_DRAFT_GUARD_CONTRACT_AND_DIAGNOSTICS_UNEXECUTED",
+  "supersedes_mode_only_proposal": [
+    "ROOT_budget.statistics-outcome.diff",
+    "ROOT_budget.statistics-outcome.proposed.mjs.txt"
+  ],
+  "primary_finding_sha256": "7bdd7de293321b04dba188b9126117879b3151c402d6946de3e552008676944a",
+  "guard_before_sha256": "a6f9d8357d742854c781e56a5816084e594cebbc41eef488fa820a00a92ead47",
+  "guard_after_sha256": "c2ffa92d691acb6bb7e517fa483b010b688960e91054313e53ab8007ab3838bd",
+  "ROOT_draft_budget_exactly_one_guard_change": true,
+  "exact_internal_call_contract": {
+    "consumer": "runner.checkOutcomes (mature original) -> getOutcomeHistory -> source request(candles) -> real broker.reserve",
+    "mode": "STATISTICS",
+    "lane": "statistics",
+    "provider": "BINGX",
+    "family": "USDT_M",
+    "purpose": "CORE",
+    "candidate_id": "same saved instrument.instrument_id",
+    "URL": "Existing GET https://open-api.bingx.com/openApi/swap/v3/quote/klines; source loader binds symbol to registry identity and original startTime/endTime, 1m and bounded limit",
+    "grant": "No new grant. activeSurplus stays null; closed set and durable CLOSED hold retained. Existing route/method, day/month/run/native/pacing/cost/finalization guards still apply."
+  },
+  "scope_limit": "Five fields classify the existing trusted internal caller; this is not a new externally callable statistics endpoint or Telegram/send permission. CORE purpose alone is not an exception; all five fields required.",
+  "affected_vectors_UNEXECUTED": [
+    {
+      "id": "same_closed_instrument_next_working_day",
+      "input": "Mature fixed evening origin; exact history cache missing; same instrument closed a surplus grant during next business run; normal source request with all5 fields",
+      "expected": "one separately charged historical BINGX statistics request if existing limits admit; CLOSED state/holds/logical spent unchanged; fixed original window passed to evaluator/view"
+    },
+    {
+      "id": "closed_repeat_AUTO",
+      "input": "Same closed id with AUTO/hot/CORE, before and after history request",
+      "expected": "SURPLUS_CANDIDATE_ALREADY_CLOSED; no refund/rearm"
+    },
+    {
+      "id": "closed_other_contexts",
+      "input": "Any of MANUAL/hot, wrong lane, TELEGRAM, wrong family, DELIVERY purpose",
+      "expected": "Existing closed guard refuses; no network"
+    },
+    {
+      "id": "statistics_caps_preserved",
+      "input": "All5 but insufficient protected day/month/statistics/native or outside work hours",
+      "expected": "Existing later guard refuses; no network/counter refund"
+    },
+    {
+      "id": "old_origin_not_tomorrow_price",
+      "input": "ARTIFICIAL T0=2026-10-29 19:07:00.123MSK,P0=100,target110,deadline23:07:00.123; recovery next normal business day",
+      "expected": "Use same T0/P0/target/deadline. Closed witness wholly after deadline ignored; crossing boundary high ambiguous; insufficient history UNKNOWN, not MISS. This is an example, not actual PARTI."
+    }
+  ],
+  "diagnostic_review": {
+    "main": "b0f4b1d8e74621336c519fdd8fc2a64df2263c82",
+    "producer_sha256": "6a4bc16a9cf93c89ef028c84110dabf2f25a031b07e51fe3285cceff04e92175",
+    "runner_sha256": "081606a89849529f46baf017300380625656270bdab9f012f8995c9b33244c31",
+    "projection_sha256": "6c30380cda81324dd19a5b76538acfbb4b857afb0a8018851dd5fb3bb225f8cb",
+    "finding": "No blocking static diagnostic defect. Original retained>=200/day>=limit/run>0 predicate equivalent, annotations only. Budget/runner propagate surplus_limit without using it for admission. Deferred row saved by execute and consumed by existing bounded autoRunSummary projection; whitelist strips raw extras and rejects inconsistent counters/reasons/day. No state/hold mutation added by diagnostic diff.",
+    "prepared_case_sha256": "fd588cf58d368ebd77425ca2b40bd18efb5c3b5af464549b74ef0e83d71a272b",
+    "case_scope": "Static source review only:10 old/new admission-state comparisons with resource/storecall equality;8 rejection projections+one extra-field strip; real mocked runner.execute ->saved DEFERRED->summary;build1 and engine0. It needs updated frozen hashes and explicit new statistics branch before any execution; old diagnostics-only admission superseded by ROOT.",
+    "not_claimed": "No executed PASS or deployed artifact inferred. Generic old/new equality must exclude intentionally fixed STATISTICS branch; compare preserved CLOSED holds and fresh charge separately."
+  },
+  "activity": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "builds": 0,
+    "nativeSQL": 0,
+    "market": 0,
+    "CF": 0,
+    "TG": 0,
+    "product_ROOT_files_edited": 0,
+    "private16_access": 0
+  },
+  "handoff": "ROOT owns integration/factual admission and exact frozen combined case. No accepted suite replay requested."
+}

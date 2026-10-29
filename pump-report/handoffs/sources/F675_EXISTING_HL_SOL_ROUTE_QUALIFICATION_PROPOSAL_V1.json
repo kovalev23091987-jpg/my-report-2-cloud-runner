@@ -1,0 +1,299 @@
+{
+  "schema": "F675_EXISTING_HL_SOL_ROUTE_QUALIFICATION_PROPOSAL_V1",
+  "status": "PREPARED_HOLD_IDENTITY_PRICE_BASIS_AND_NEW_FACTUAL_ADMISSION_NO_ACTIVATION",
+  "created_utc": "2026-10-29T18:44:40Z",
+  "authority": {
+    "acquire_main": "5f9e6bbc499f80f0c8c382f99688ac77f94dd63a",
+    "refreshed_main": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+    "fresh17_FULL_utc": "2026-10-29T18:50:09.166902+00:00",
+    "all4_equal": true,
+    "fence_active": false,
+    "source_owner": "CODEX:SOURCES:01a171fd:1793298918000",
+    "source_acquire_head": "efbfcf77b93cf70e8656b7170ab321fc2374f7e6",
+    "source_expires_ts": 1793300718000,
+    "internal_working_deadline_ts": 1793300118000,
+    "minimum_FULL_release_margin_ms": 300000,
+    "root_owner": "CODEX:PUMP_POSTLAUNCH_BLOCKS_OUTCOMES_20261029:1793298664886",
+    "root_expires_ts": 1793304064886,
+    "guard_git_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "2705ee0973712bbc63e2d9bfd323dfed1624a82f",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "157106286211da35b2c98f81f85a55c38c3dc450",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "2d130618331caa0546ef7283f905e028329208e2",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "0ce068a19c941c347ca4bb7f374426951e9b2686",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "d01559b212f302be54206010de6476336fb7ffe3",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+      "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "801142459f36ea503e9c3f18a804e7755680e6a5",
+      "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "6eb5e5cefe7c7812c83d58956a845cbc41937466",
+      "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+      "pump-report/CONTRACT_RU.md": "ee07ed10ae10032674fd6953c2da8d3a0b554619",
+      "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+      "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
+      "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894"
+    },
+    "current_code_and_proof_blobs_unchanged_on_refreshed_main": 6
+  },
+  "selected_route": {
+    "id": "HYPERLIQUID_ONE_RETAINED_SOL_ACCOUNT_STATE",
+    "basis_type": "OBSERVED_POSITION",
+    "provider": "HYPERLIQUID",
+    "selection": "ONE_EXISTING_ROUTE_FROM_F622_SELECTED_ROUTES_2",
+    "why": "F556 producer and consumer already connected. F583/F622 bind one retained account hint to one exact owner-eligible BingX target. No new service/account discovery. Best concrete target-specific option in the narrowly inspected saved chain; no empirical usefulness or full-market superiority claim.",
+    "external_model_map": false,
+    "realized_liquidations": false,
+    "ordinary_price_levels": false,
+    "currently_active": false
+  },
+  "trace": [
+    {
+      "stage": "adapter",
+      "path": "pump-report/sources/index.mjs",
+      "lines": [
+        418,
+        443
+      ],
+      "fact": "getLiquidations resolves registry routes. Without verified Swole/configured Orderly it selects HYPERLIQUID and calls the existing broker wrapper. Empty routes produce NOT_CHECKED/NO_VERIFIED_LIQUIDATION_ROUTE before provider IO."
+    },
+    {
+      "stage": "producer",
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "lines": [
+        120,
+        162
+      ],
+      "fact": "Finite admitted account list; exact clearinghouseState POST; no direct fetch/discovery/retry. Current shared optional map HTTP cap remains1; proposal selects1 account only."
+    },
+    {
+      "stage": "identity",
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "lines": [
+        22,
+        28
+      ],
+      "fact": "sameUnderlying requires canonical_cross_venue_identity_qualified===true, VERIFIED_SAME_UNDERLYING proof, exact BingX instrument/asset/identity evidence and exact HL coin+market. Saved F585 leaves this bridge UNKNOWN; SOL ticker equality is not sufficient."
+    },
+    {
+      "stage": "proof_and_normalizer",
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "lines": [
+        37,
+        116
+      ],
+      "fact": "Independent semantics, quote and fresh explicit price basis/conversion needed. Native clock is payload.time;120s account-state TTL; converted zone expires at min(nativeexpiry,mappingexpiry,mappingevent+30s). Missing identity/mapping gives usable=false, asset_id null if identity unknown; no implicit multiplier1."
+    },
+    {
+      "stage": "consumer",
+      "path": "pump-report/analytics/zones.mjs",
+      "lines": [
+        31,
+        43
+      ],
+      "fact": "selectZones requires usable, exact asset, original valid clocks, USDT comparable price and proof for external venue. Accepts OBSERVED_POSITION with magnitude null. Rejected zones do not become a map; analytics path is read-only in this package."
+    },
+    {
+      "stage": "activation_blocker",
+      "fact": "Runtime routes[]/qualifiedmaps0 per current ROOT task; F622 says production policy does not activate HL. No SOURCE edit can supply missing factual identity/basis/current provider/whole-native admission. ROOT-owned policy/registry remain unchanged."
+    }
+  ],
+  "target": {
+    "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+    "asset_id": "BINGX_UNDERLYING:SOL",
+    "native_symbol": "SOL-USDT",
+    "market_type": "PERPETUAL",
+    "base": "SOL",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT",
+    "bingx_identity_status": "SAVED_PROVIDER_SCOPED_VERIFIED_CRYPTO_F583_NOT_FRESH_CROSS_VENUE_BRIDGE",
+    "bingx_identity_evidence_ref": "PUMP_SAVED_NATIVE100028_SOL_CRYPTO_DOCS_V1:sha256:2f931d6fab2b3afcdfe62c2fcb7280bceb23dd5ea3fb5fb4977f6f8c9be36ea7",
+    "hl_coin_hint": "SOL",
+    "hl_market_id": null,
+    "hl_to_bingx_same_underlying": "UNKNOWN",
+    "canonical_cross_venue_identity_qualified": false,
+    "current_price_mapping": null
+  },
+  "evidence": [
+    {
+      "path": "pump-report/handoffs/sources/F622_SELECTED_FREE_ROUTES_V1.json",
+      "pointer": "selected_routes[2]",
+      "ref": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+      "git_blob": "cc259e53be8c3e8a21907b9437cd4313ce80797d",
+      "sha256": "52cc52b0aa6704904479e8bf7e459ada383c1b7ae14647a45c679aad7b0343b0"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F585_PRIMARY_SEMANTICS_V1.json",
+      "pointer": "semantics/global_SOL_identity and HL_mark_event_ts",
+      "ref": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+      "git_blob": "977f0ea73bbe5237fdb8985e8693a0a0d60a332f",
+      "sha256": "c1d32a7c770ac0b3511394add305e68aabe4c2dbd3c605513d41c362e9f5568a"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F583_ONE_EXTRA_ROUTE_PROPOSAL_V1.json",
+      "pointer": "target_bingx, retained_source, canonical_identity, cost",
+      "ref": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+      "git_blob": "bf0aad0847f7f76f87d6a79322c09cb764be97b3",
+      "sha256": "a625cdb0655d1f1ff32c35bfd513cc6b75ea3ad97e4933148cfea344656ca627"
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "ref": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+      "git_blob": "6e68af536c215034bdc85747e4d41d5cb2c84992",
+      "sha256": "97cd320d9f5e64047fd5b8ace37fa0ba172cbd256c1b6df2bfcea51fb78541ae"
+    },
+    {
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "ref": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+      "git_blob": "47f044d8eec5ab52e2cb6a4f2ceb95af4a873e13",
+      "sha256": "e3070458333381de055f237f22aaab5b0150290d031f862adcdd69392b027b65"
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "ref": "6ce83ec5623ecca33d060ca3d30c6d8d924af9dd",
+      "git_blob": "02542b09ff5f157d701c79489369bce68456ca41",
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6"
+    }
+  ],
+  "documentary_semantics": {
+    "signed_szi": "F585 official SDK logic inference: positive LONG, negative SHORT; underlying native quantity only; no BASE conversion granted.",
+    "first_dex_contract": "F585 generic first-party spec: USDT price denomination distinct from USDC margin. Applies to SOL only after exact native listing binding, not arbitrary HIP3 dex.",
+    "liquidationPx": "Current cross-margin account conditional threshold on HL mark basis; can change with account state. Not executed liquidation and not a guaranteed future event.",
+    "positionValue": "Currency UNKNOWN; leave magnitude=null and strength unknown; never abs(szi)*liquidationPx.",
+    "clock": "payload.time is account-response Unixms; not per-position generation. Mark refresh cadence is not timestamp proof; received/Date/cache never substitute."
+  },
+  "not_selected": {
+    "swole": "Existing EXTERNAL_MODEL normalizer exists. Saved actual BTC sample:4 modeled bins, expired, bare identity/venue/quote/mapping unqualified. BTC owner-excluded; no exact eligible-alt route proven in inspected saved evidence. No BTC reprobe or invented SOL selector proposed.",
+    "orderly": "Existing OBSERVED_POSITION producer retained; no new route/account or re-audit proposed."
+  },
+  "proposal": {
+    "kind": "ONE_CONDITIONAL_STATE_PACKET_PROPOSAL_NOT_AN_ADMISSION",
+    "grant_issued": false,
+    "execute_now": false,
+    "request": {
+      "method": "POST",
+      "url": "https://api.hyperliquid.xyz/info",
+      "body_template": {
+        "type": "clearinghouseState",
+        "user": "EXACT_EXISTING_RETAINED_ACCOUNT_RESOLVED_ONLY_BY_ROOT"
+      },
+      "dex": "OMITTED_FIRST_DEX_ONLY",
+      "opaque_account_locator": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json:native_samples[0]",
+      "locator_read_in_F675": false,
+      "actual_address_exported": false,
+      "accounts_max": 1,
+      "http_attempts_max": 1,
+      "retries": 0,
+      "pagination": 0,
+      "new_wallet_discovery": 0,
+      "new_sources": 0,
+      "searches": 0,
+      "documentation_reads": 0,
+      "request_bytes_max": 4096,
+      "response_bytes_max": 2000000,
+      "total_deadline_ms": 10000
+    },
+    "pre_IO_required": [
+      "Exact independent HL market/project-or-oracle underlying anchor bound to saved BingX native100028; no ticker join. If absent: HOLD and0HTTP; this task found no such proof.",
+      "Explicit ROOT finite existing-account admission and stable opaque account_ref; no account discovery or private16 access.",
+      "Independent signed-position/current-liquidation semantics and exact first-dex price denomination accepted; positionValue optional left null.",
+      "For a BingX-usable zone, independently qualified current HL threshold to BingX price basis mapping and source event/expiry, age<=30s, no default1 or USDC/USDT parity. One clearinghouseState reply cannot supply that separate proof.",
+      "ROOT pins current code/template/body-hash cache, request/response limits and broker guards; no direct transport workaround or unadmitted runtime flag.",
+      "Fresh positive provider allowance plus shared/whole native and per-run budgets, exact SQL callsite/rows/JSON-byte preflight. Exhausted qualification24, CONTROL6, METADATA2 and UTC29 LOOKUP16 remain exhausted; no25/no17 and no relabeling as MANUAL/AUTO. A separately explicit authorized budget exception or future lawful allowance is required; date reset alone does not invent it.",
+      "Only ordinary10:00–20:00MSK window after all prerequisites; current nighttime scope issues0market/SQL/TG/CF IO."
+    ],
+    "required_response": {
+      "envelope": "One broker response with immutable receipt_id, actual received_ts, native status, original byte/hash provenance and bounded body; raw/account stays private under ROOT; public result only safe qualification metadata.",
+      "payload": "Object with payload.time safe epoch-ms, assetPositions array<=1000; exact target coin SOL, at most1 row, type oneWay, finite nonzero signed szi, finite positive liquidationPx. Preserve original time and raw decimal.",
+      "no_target": "Fresh bounded no-target or zero size is absence only within this one account at this source time; not unsupported and not whole-market absence.",
+      "null_liquidation": "PARTIAL/LIQUIDATION_PX_UNAVAILABLE, never price0; don't retry.",
+      "invalid_or_stale": "Reject future/missing/expired native clock, duplicate coin row, schema/bounds failure; do not freshen using receipt.",
+      "output": "OBSERVED_POSITION/venueHYPERLIQUID, subset limitations and position/account provenance; qualified USDT comparable threshold only with all independent proofs. magnitude=null accepted with unknown strength; market map remains PARTIAL."
+    },
+    "cost": {
+      "source_market_HTTP_upper": 1,
+      "source_market_HTTP_cold": 1,
+      "source_market_HTTP_lower": 0,
+      "zero_cost_lower_condition": "Failed prerequisites OR actually verified fresh exact-body cache; no assumption cache exists.",
+      "additional_BingX_HTTP_in_this_proposal": 0,
+      "additional_basis_fetches_granted": 0,
+      "additional_accounts": 0,
+      "provider_weight": "Historical retained clearinghouseState weight2 only; current minute/day/month allowance UNKNOWN, must be positively admitted.",
+      "cash": "Saved public-anonymous route; no paid plan/key/signup requested; current allowance not newly checked.",
+      "direct_SOURCE_SQL": 0,
+      "ROOT_native_design_ceiling": {
+        "SQL_requests": 16,
+        "rows_read": 5000,
+        "rows_written": 300,
+        "origin": "F583 historical design upper only; NOT measured, NOT granted, NOT proved to fit current implementation"
+      },
+      "ROOT_SQL_actual": null,
+      "ROOT_SQL_gate": "Do not execute until exact implementation preflight proves all governor/reserve/finalize/persist/readback calls and byte limits fit admitted bounds. If not proved:0HTTP and HOLD, no larger cap invented.",
+      "Telegram": 0,
+      "CF_auth_or_deploy": 0,
+      "automatic_subscription": 0,
+      "retries": 0,
+      "spent_or_unknown_refund": false
+    },
+    "coverage": {
+      "current_selected_registry_denominator": 550,
+      "current_qualified_future_routes": 0,
+      "current_HL_to_BingX_canonical_overlap": 0,
+      "current_external_model_maps": 0,
+      "packet_max_target_checked": 1,
+      "packet_max_qualified_instruments": 1,
+      "packet_max_zones": 1,
+      "one_packet_qualified_increment": "0or1 only if every prerequisite and fresh native field passes; no guaranteed position still exists.",
+      "remaining549": "NOT_CHECKED_NOT_UNSUPPORTED",
+      "CORE_increase": 0,
+      "whole_market_positions_known": false,
+      "global_crypto_denominator": null,
+      "empirical_signal_improvement": "NOT_PROVEN; optional observed-threshold context only, no probabilities or full-market notional."
+    },
+    "usefulness_acceptance": "One independent qualified current conditional HL threshold can add distance/side and account provenance to SOL context. Both producer and existing consumer already preserve subset, mutable threshold and unknown magnitude. Without same-underlying/current mapping there is no usable BingX information to publish; optional map absence never blocks main ready signal."
+  },
+  "preserve": {
+    "manual_full_reports_daily": 3,
+    "Telegram_daily": 47,
+    "Telegram_monthly": 1457,
+    "BingX_daily": 900,
+    "BingX_monthly": 27900,
+    "BingX_per_report": 164,
+    "planned_budget_fraction": 0.8,
+    "ordinary_native_rows_read": 5000,
+    "ordinary_native_rows_written": 300,
+    "ordinary_native_SQL_requests": 800,
+    "shared_native_rows_read": 3500000,
+    "shared_native_rows_written": 70000,
+    "qualification24_CONTROL6_METADATA2_LOOKUP16": "EXHAUSTED_NO_NEW_GRANT",
+    "issued_floors_CLOSED_holds_unknowns": "PRESERVED_NO_REFUND",
+    "account_wide_actual_remaining": "UNKNOWN_NOT_ZERO",
+    "legacy_pauses": 9,
+    "OWNER_deferrals": 2,
+    "old_actions_crons": "PAUSED",
+    "private16": "NOT_SEARCHED_NOT_READ_NOT_RELAYED",
+    "prior_timing_deviations": "F666 margin92<120;F667 internaldeadline+101sec;F671 +2sec retained, not cured by F675."
+  },
+  "execution": {
+    "source_code_patch": false,
+    "ROOT_files_changed": false,
+    "routes_activated": 0,
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "builds": 0,
+    "engines": 0,
+    "market_HTTP": 0,
+    "SQL": 0,
+    "Telegram": 0,
+    "CF": 0,
+    "OAuth": 0,
+    "new_source_search": 0,
+    "new_connections": 0,
+    "other_chat_messages": 0,
+    "validation": "Administrative static source/proof read and byte/hash/JSON verification only; no PASS or native acceptance claimed. No source defect established; factual gaps require proposal branch.",
+    "administrative_GitHub_transport": "GitHub connector transport403; existing gh account fallback, no new login/key/scopes; public17guards FULL and six code/proof blobs checked."
+  },
+  "owner_latest_steering": "Only retained variants; no new sources/search/connections. Exact project/oracle anchor and current basis remain UNKNOWN;0coverage, no activation promise."
+}

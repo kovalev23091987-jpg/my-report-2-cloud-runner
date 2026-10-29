@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_POSTLAUNCH_CONNECTED_QUALIFICATION_MANIFEST_V1",
-  "status": "QUALIFIED_OFFLINE_PENDING_TWO_FINAL_REVIEWS_NOT_INSTALLED",
+  "status": "QUALIFIED_OFFLINE_TWO_FINAL_STATIC_PASSES_READY_NOT_INSTALLED",
   "evidence_class": "ARTIFICIAL_OFFLINE_ACCEPTANCE_TEST",
   "authority_main": "6589b207d2af15ad679d46c20d5709b29d3f4f5b",
   "own_lease_owner": "CODEX:PUMP_POSTLAUNCH_BLOCKS_OUTCOMES_20261029:1793298664886",
@@ -105,5 +105,72 @@
     "whole-account spending",
     "new native17 admission",
     "production deployment"
-  ]
+  ],
+  "runtime_peer_reviews": [
+    {
+      "path": "pump-report/handoffs/sources/F676_AFTERLAUNCH_STATIC_FINAL_HANDOFF_V1.json",
+      "sha256": "7893963d67aa7575d90cc45dc6a79b2c0751956af7e881c80b93b6800e79e499",
+      "status": "PASS_STATIC"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bz50/BZ50_FINAL_NARROW_ACCEPTANCE_V1.json",
+      "sha256": "fd3b3365385e70412aa40ff2453a259b55c3993979dfa8f970cd78958b7402db",
+      "status": "PASS_STATIC"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bz50/BZ50_FINAL_COMBINED_STATIC_ACCEPTANCE_V2.json",
+      "sha256": "867d8722b89326c1df86fe8b9a393c28106cdacdd129513e7de7be1fe9d18860",
+      "status": "PASS_STATIC_RUNTIME_AND_INSTALL_TRANSITION"
+    }
+  ],
+  "install_operator": {
+    "files": {
+      "pump-report/operator/cloudflare-postlaunch-control.template.js": "a17978f9f32b398ff406ffdb852a58dd57d43cab6b72f7ffac64e7e178ae29e2",
+      "pump-report/operator/postlaunch-owner17-sql-exception.mjs": "07193528623a85ce4572a945a0069bffccf703766d12d9a76b64fdc5ba83a072",
+      "pump-report/operator/postlaunch-install17-quiescence-once.mjs": "f2b309e2325dd81e58843563a7ade9e8bd35408fcd0316a40d3b25035a9feb89",
+      "pump-report/operator/postlaunch-install-operator-mock-once.mjs": "ad5e02046a88312e1f461fa9981c9ab6a5c831003afdca8545a671fe0ea44350"
+    },
+    "case": "checkpoints/pump-report-20261025/ROOT_POSTLAUNCH_INSTALL_OPERATOR_MOCK_CASE_V2.json",
+    "case_sha256": "a91cd63e1d016f9bd1f9dca7943c74c7f8bfc4ec5535d251400e1b5d1a5ee1c4",
+    "status": "PASS_OFFLINE_AND_TWO_STATIC_INSTALL_REVIEWS",
+    "actual_Node": 2,
+    "build": 0,
+    "syntax_passes": 2,
+    "gate_constructors": 5,
+    "gate_transforms": 2,
+    "mock_CF_requests": 11,
+    "preserved_harness_failure": "ROOT_POSTLAUNCH_INSTALL_OPERATOR_MOCK_CASE_V1.json: path import missing before any gate/CF; corrected only harness; syntax2 not replayed",
+    "real_IO": 0,
+    "static_reviews": [
+      {
+        "path": "pump-report/handoffs/sources/F676_AFTERLAUNCH_STATIC_FINAL_HANDOFF_V1.json",
+        "sha256": "7893963d67aa7575d90cc45dc6a79b2c0751956af7e881c80b93b6800e79e499"
+      },
+      {
+        "path": "pump-report/handoffs/analytics/package-bz50/BZ50_INSTALL_TRANSITION_STATIC_ADDENDUM_V1.json",
+        "sha256": "0307970961648d9132f179df6caec3a6e0e1f890cd9490b7e50064031b4ce835"
+      }
+    ],
+    "plan_bounds_clarification": "--describe10 is computed normal upper: reserve2 + executorPK<=6 + finalize2. Execute/admission hard ceiling16. SOURCE acknowledged distinction and withdrew mismatch note in direct coordinator message29Oct19:15UTC; no executable change or rerun."
+  },
+  "aggregate_all_current_package_actuals": {
+    "Node": 5,
+    "build": 1,
+    "budget_comparisons": 10,
+    "runner_comparisons": 1,
+    "projection_guards": 9,
+    "late_before_and_after": 2,
+    "evaluateOutcome_calls": 5,
+    "closed_candidate_guards": 8,
+    "mock_source_fetches": 1,
+    "analyzePump_calls": 0,
+    "market_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "operator_syntax_checks": 2,
+    "named_gate_constructor_calls": 5,
+    "named_sql_transform_calls": 2,
+    "mock_CF_requests": 11
+  }
 }

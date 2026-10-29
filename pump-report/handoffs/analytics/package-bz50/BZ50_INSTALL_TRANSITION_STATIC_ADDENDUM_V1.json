@@ -1,0 +1,76 @@
+{
+  "schema": "BZ50_INSTALL_TRANSITION_STATIC_ADDENDUM_V1",
+  "status": "PASS_STATIC_PREPARED78_TO78_INSTALL_NOT_APPROVED_NOT_ADMITTED_NOT_EXECUTED",
+  "review_main": "51b6d1c4346b55949f2cbb94f802808a72dde4ba",
+  "operator_sha256": {
+    "cloudflare-postlaunch-control.template.js": "a17978f9f32b398ff406ffdb852a58dd57d43cab6b72f7ffac64e7e178ae29e2",
+    "postlaunch-owner17-sql-exception.mjs": "07193528623a85ce4572a945a0069bffccf703766d12d9a76b64fdc5ba83a072",
+    "postlaunch-install17-quiescence-once.mjs": "f2b309e2325dd81e58843563a7ade9e8bd35408fcd0316a40d3b25035a9feb89"
+  },
+  "public_mockV2_sha256": "a91cd63e1d016f9bd1f9dca7943c74c7f8bfc4ec5535d251400e1b5d1a5ee1c4",
+  "mockV2": "PASS",
+  "preserved_mockV1": {
+    "sha256": "42ac70154b3e6aef497f8c925c1c84426258c7ce5217e12e8ec2e7c297cfc01c",
+    "status": "FAILED_PRESERVED_NO_AUTO_RETRY",
+    "error": "ROOT harness missing path import before gate/mockCF; syntax2 already completed",
+    "Node": 1,
+    "build": 0,
+    "syntax_checks": 2,
+    "gate_calls": 0,
+    "mock_CF": 0
+  },
+  "mockV2_actual": {
+    "Node": 1,
+    "build": 0,
+    "syntax_checks": 0,
+    "gate_calls": 5,
+    "SQL_transforms": 2,
+    "mock_CF": 11,
+    "real_IO": 0
+  },
+  "operator_subpackage_total": {
+    "Node": 2,
+    "build": 0,
+    "syntax_checks": 2,
+    "gate_calls": 5,
+    "SQL_transforms": 2,
+    "mock_CF": 11,
+    "real_IO": 0
+  },
+  "before_after_exact_maps_independently_checked": {
+    "frozenBeforePin": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+    "frozenBeforeArtifact": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+    "frozenAfterPin": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+    "frozenAfterArtifact": "1b4403a02c6d93a3555c5e1a0ce623c1e907a0edd52ce563878791cb7eba4378",
+    "frozenBeforeMap": "17cca1be1afb8d541bcd72953322c537ccabb2cecae87346c184e0d9de157e31",
+    "frozenAfterMap": "6a0c9387f60cd12882b64d331cf72638f52432e5db1b15263ca40c96bb9becfb",
+    "frozenTargetIndex": "f1aaf18e882a6c8829104f0370abd842c3438d45e71d6ce945bffabbb5384186",
+    "frozenRunnerProposal": "081606a89849529f46baf017300380625656270bdab9f012f8995c9b33244c31"
+  },
+  "transition": {
+    "before_modules": 78,
+    "after_modules": 78,
+    "changed_module_names": [
+      "runtime/budget.mjs",
+      "runtime/candidate-diagnostics.mjs",
+      "runtime/candidate-surplus.mjs",
+      "runtime/implementation-pin.mjs",
+      "runtime/runner.mjs"
+    ],
+    "unchanged": 73,
+    "added": 0,
+    "removed": 0,
+    "bindings": 21,
+    "schedules": 3
+  },
+  "controller_contract": "Exact frozen before/after pins/artifacts/maps, five override hashes and both78 pins validated. Actual final quiescence <=5min with null executor and correct before pin required before INSTALL and again before mutation. Full multipart+settings+3schedules before/after,11calls, one exact PUT, other bindings/settings retained.",
+  "native17_gate_contract": "One exact named LOOKUP17 from count16, UTC29, correct before265 and target1b artifact,500R/30W/16queries, fresh explicit OWNER_APPROVED envelope, original reservation cap10 preimage, one rewrite only and replay refused; no18 grant.",
+  "quiescence_wrapper_contract": "Fresh explicit own/native17 admission and paused FULL before265 required; executor-only max6PK reads/20s. All saved AUTO/outcome/candidate/exact-run branches disabled. Default LOOKUP/day10 and full original reservation remain. Failure/unknown no blind retry.",
+  "guard_limits": "Static code and ARTIFICIAL mock proof only; not actual quiescence/FULL/config/cost receipt. Existing physical admin HTTP unknowns unchanged.",
+  "direct_owner17_approved": false,
+  "real_native17_or_CF_admission": false,
+  "deployment_performed": false,
+  "helper_Node_import_engine_tests_build_native_market_CF_TG": 0,
+  "private16_access": 0,
+  "product_ROOT_files_edited": 0
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "BZ49_INSTALLED_LATE_OUTCOME_FINDING_V1",
+  "status": "CONCRETE_ROOT_OWNED_SCOPE_GUARD_DEFECT_PROPOSAL_ONLY",
+  "installed_pin": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+  "installed_artifact_sha256": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+  "installed_budget_sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+  "installed_runner_sha256": "386d17be497b374e5d2fc0a71566b4b340b2ad8eda172f11926f65e5733c0ce5",
+  "unchanged_installed_chain_modules_verified": {
+    "analytics/outcome.mjs": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+    "analytics/anchors.mjs": "b2c34fdde0dcdf90a1e8b79c900f3f9313440470e737745ba94a2e0102dc6fdf",
+    "analytics/math.mjs": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+    "analytics/outcome-presentation.mjs": "8037ce89880455de841a053960a9ba609f1315687b077ec5bcfd0320aa23bfb2",
+    "runtime/outcome-journal.mjs": "6b5e3b31faa95e03c01d1b3433eacda6b3a6412d6b494dfad6326ddfe134ef54",
+    "runtime/saved-outcome.mjs": "c1a00c50e20f6aece6b9ac2150dca469697ca9a2070ba0a5f2781be82510b7d4",
+    "runtime/work-index.mjs": "b5514b625407c98764d36f376dfb38440e4711d48b6405e69cb68a60df7db7a0",
+    "runtime/store.mjs": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+    "runtime/worker.mjs": "92dea6720d54f987df78e07cce34c8e350cc2d33f0b412136ee2366a75d5550a",
+    "sources/index.mjs": "97cd320d9f5e64047fd5b8ace37fa0ba172cbd256c1b6df2bfcea51fb78541ae",
+    "sources/bingx.mjs": "d0df081365f35c0f8c238c79cc71cafb0cc4bead6123fd691ce28b966d0ffd02",
+    "profile/start-v1.mjs": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521"
+  },
+  "defect": {
+    "id": "STATISTICS_HISTORY_BLOCKED_BY_CLOSED_SURPLUS_CANDIDATE",
+    "trigger": [
+      "Next normal business run has a matured immutable evening signal and no exact historical-response cache.",
+      "Same instrument was admitted via a surplus grant earlier in this run; checkInstrument finally calls budget.closeCandidate.",
+      "closeCandidate puts instrument in closedSurplusCandidates and leaves CLOSED hold retained.",
+      "checkOutcomes sets STATISTICS and getOutcomeHistory forwards same instrument_id as candidate_id.",
+      "budget.reserve checks closed set before lane/purpose and throws SURPLUS_CANDIDATE_ALREADY_CLOSED, even on statistics lane."
+    ],
+    "effect": "Source failed history becomes no rows; evaluator saves UNKNOWN, work remains ACTIVE. Not false MISS or shifted horizon, but historical recovery can be repeatedly deferred when same instrument is surplus-checked again. No claim this occurred for actual PARTI.",
+    "consumer": "runtime/runner.mjs checkOutcomes -> sources/index.mjs getOutcomeHistory/request -> runtime/budget.mjs reserve",
+    "blocking_for_code_completion": true
+  },
+  "minimal_ROOT_proposal": {
+    "file": "pump-report/runtime/budget.mjs",
+    "before_sha256_current_diagnostic": "a6f9d8357d742854c781e56a5816084e594cebbc41eef488fa820a00a92ead47",
+    "after_sha256_proposal": "0c9e7eaac2dd3d3a1aaf35186db6486637860026ef777c62b725c312c4929bf1",
+    "exact_replacement_before": "if(candidate_id&&closedSurplusCandidates.has(candidate_id))throw new BudgetRefusal('SURPLUS_CANDIDATE_ALREADY_CLOSED');",
+    "exact_replacement_after": "if(candidate_id&&closedSurplusCandidates.has(candidate_id)&&!(mode==='STATISTICS'&&lane==='statistics'))throw new BudgetRefusal('SURPLUS_CANDIDATE_ALREADY_CLOSED');",
+    "ROOT_file_edited": false,
+    "scope": "Bypass only this closed-candidate replay guard for mode STATISTICS AND lane statistics. Keep set membership, activeSurplus, CLOSED hold, prior counters and every later reservation/cap/window/native guard intact. Fresh permitted statistics request incurs normal new cost; no surplus grant reopened/refunded."
+  },
+  "already_correct": {
+    "immutable_T0_P0_origin": "journal remembers analysis.analysis_ts/reference_price; frozen anchor selected from immutable original; sync preserves signal origin, deadline=T0+horizon4h",
+    "night": "worker scheduled and runner.checkOutcomes gate automaticWindowOpen; no new market request until ordinary work hours",
+    "old_wave_expiry_or_replacement": "journal/signal/outcome/work references include original wave and are independent of active pump:wave pointer; storage get has no auto TTL",
+    "history": "getOutcomeHistory requests saved instrument and exact original start/end; same registry identity/venue; rounded boundary rows preserved, event clocks not refreshed",
+    "event_window": "kernel restricts hit witnesses to T0..deadline; after-deadline bars ignored; ambiguous crossing minute cannot prove HIT",
+    "missing": "mature empty/partial history -> UNKNOWN; no saved outcome -> NOT_CHECKED view; UNKNOWN not completed and can retry on later allowed run",
+    "saved_view": "readSavedOutcome exact saved original/hash/origin/deadline/target bound; never selects new anchor or collects data"
+  },
+  "actual_original_limits": {
+    "owner_confirmed_human_AUTO_receipt_around_19_07_MSK": true,
+    "actual_exact_T0_P0_target_deadline": "NOT_READ_FROM_ALLOWED_PUBLIC_ORIGINAL; approximate UI19:07 is not substituted",
+    "private16_searched_or_read": false,
+    "actual_native_outcome_or_ACK_readback_verified": false
+  },
+  "ROOT_integration_note": "This functional statistics-only fix is separate from diagnostics-only decision/state equality. If ROOT chooses integration, admit one affected counterexample; do not expect blanket old/new equality for this newly corrected statistics branch. No existing suite replay required.",
+  "activity": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "builds": 0,
+    "nativeSQL": 0,
+    "market": 0,
+    "CF": 0,
+    "TG": 0,
+    "production_files_edited": 0
+  }
+}
