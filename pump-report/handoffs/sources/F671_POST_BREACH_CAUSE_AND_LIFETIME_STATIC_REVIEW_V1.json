@@ -1,0 +1,308 @@
+{
+  "schema": "F671_POST_BREACH_CAUSE_AND_LIFETIME_STATIC_REVIEW_V1",
+  "status": "PARTIAL_STATIC_CAUSE_CHECKLIST_AND_SHARED_GUARDS_PASS_BZ45_CODE_REVIEW_PENDING",
+  "authority_main": "1d251f6a2a659de675425c7c65dd4753891306b2",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793278150000",
+  "own_acquire_head": "618710c07b7ec605ba72c92176936375dd73d8ae",
+  "review_UTC": "2026-10-29 13:13:46 UTC",
+  "working_deadline_ts": 1793279650000,
+  "own_expires_ts": 1793280250000,
+  "required_FULL_release_margin_seconds": 300,
+  "owner_authority": {
+    "approval": "checkpoints/pump-report-20261025/ROOT_OWNER_POST_BREACH_DISTINCT_WAVE_APPROVAL.json",
+    "sha256": "aecc21c65cdee86de5fa801dd81ccf777f98101920a704330487f18866e6d377",
+    "proposal_sha256": "cefdd197fe60c8ab80926084a11a20db6812f3d70ff03ebfb0c08586b237b504",
+    "reply_to": "call_f25dc00bebf44266a8ed0df096f527b7",
+    "scope": "Distinct seed wholly after proven closed breach, original CANCELLED/history preserved, new expiryseed.end+4h, no historical sending or threshold/cap/native grant."
+  },
+  "source_packet": {
+    "path": "pump-report/.private/observations/oct29-target-plan-acceptance14-result.json",
+    "sha256": "96ef9124d3b20301dddb1dafead6db47f30760ea18f5bbc6c4ce95f16c1d9eaf",
+    "bytes": 1745264,
+    "immutable": true,
+    "selected_original_path": "$.latest_candidates[1].private_evidence.original",
+    "current930_only": true,
+    "not_current_new_market_observation": true
+  },
+  "actual_IDOL_evidence": {
+    "prior_wave_path": "$.latest_candidates[1].private_evidence.original.input.previous_wave",
+    "prior_wave_id": "PUMP:BINGX:USDT_M:101334:IDOL-USDT:COLD_BASE_V1:1793266980000:1793268240000:1793268360000",
+    "invalidation_price": 0.013643,
+    "base_pivot": {
+      "event_ts": 1793268240000,
+      "confirmation_known_ts": 1793268360000,
+      "old_source_fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:1ec2a8f5-7bd3-400f-aa17-a49f485b773f"
+    },
+    "prior_first_input_asof_ts": 1793268412953,
+    "prior_source_received_ts": 1793268411772,
+    "invalidation_observation_start": 1793268360000,
+    "prior_covered_until_ts": 1793268360000,
+    "current_fact": {
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3fd34a36-4ce9-4763-b416-dbd130c07a6a",
+      "evidence_ref": "3fd34a36-4ce9-4763-b416-dbd130c07a6a",
+      "event_ts": 1793275980000,
+      "received_ts": 1793275990806,
+      "expires_ts": 1793276070000,
+      "coverage_start": 1793257680000,
+      "coverage_end": 1793275980000,
+      "closed_rows": 305
+    },
+    "continuous_from_protected_boundary": true,
+    "nonbreaching_prefix_closed_bars": 2,
+    "first_closed_breach": {
+      "open_ts": 1793268480000,
+      "close_ts": 1793268540000,
+      "closed": true,
+      "open": 0.013754,
+      "high": 0.013758,
+      "low": 0.013477,
+      "close": 0.013591
+    },
+    "base_radius2_rebind_supported_by_current_rows": true,
+    "new_cause_fact_id_must_be_current": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3fd34a36-4ce9-4763-b416-dbd130c07a6a",
+    "old_cancelled_ts": 1793275993145,
+    "old_cancelled_wave_id_preserved": true,
+    "times_MSK": {
+      "base_event": "2026-10-29T13:04:00+03:00",
+      "base_known": "2026-10-29T13:06:00+03:00",
+      "old_first_input_asof": "2026-10-29T13:06:52.953000+03:00",
+      "old_covered_until": "2026-10-29T13:06:00+03:00",
+      "breach_open": "2026-10-29T13:08:00+03:00",
+      "breach_close": "2026-10-29T13:09:00+03:00",
+      "current_fact_received": "2026-10-29T15:13:10.806000+03:00",
+      "analysis_decision": "2026-10-29T15:13:13.145000+03:00"
+    },
+    "limits": "One stored original proves a closed breach in its supplied contiguous path. It does not prove currentREADY/newseed/SENT/fullrun/market. Prior base oldfactid remains historical provenance; current cause/feature refs must use supplied currentfact/evidence."
+  },
+  "required_factual_fields": {
+    "identity": [
+      "current input instrument_id/venue BINGX/USDT_M/base/quote/settle and prior.wave.instrument_id exact",
+      "current CORE candles fact_id/evidence_ref, OBSERVED/USABLE, source/venue, event_ts/received_ts/expires_ts",
+      "prior_wave_id/state/created/expires/cancelled and explicit invalidation_price/protected_base origin"
+    ],
+    "protected_boundary": [
+      "Known structural base or supported invalidation boundary; never substitute impulse.low for changed coldbase",
+      "base event/confirmation-known clocks, prior first_input_asof/source_received and known base price before first breach",
+      "cause_path_start_ts = validated old invalidation_observation_start or a supported last-unbroken covered boundary; missing legacy boundary is unknown"
+    ],
+    "path": [
+      "Normalized closed exact1min rows with positive coherent OHLC, no duplicates/future/unclosed bars",
+      "Complete contiguous path from supported cause_path_start_ts through first breaching bar; all earlier rows in path do not breach",
+      "Full continuation through new seed/baseline-required rows/current observed end; no prefix-gap-as-first-event assumption",
+      "Breach predicate is unchanged existing invalidation on LOW<protected_base of a closed bar; current price-only breach is insufficient for closed-cause rearm"
+    ],
+    "clocks": [
+      "breach_open_ts < breach_close_ts <= current CORE event_ts <= proof_received_ts <= rearm_decided_ts=current initial analysis_ts",
+      "Structural pivot known_ts denotes closed-bar confirmation, not an earlier bot network receipt",
+      "Old prior_cancelled_ts stays its actual old decision; it may be before the CURRENT reconstruction proof_received_ts. Do not require currentreceipt<=oldcancel or rewrite oldcancel tocurrentasof.",
+      "Record current proof receipt and rearm decision separately. No retroactive knowledge, market event, creation or sending at breach.close."
+    ],
+    "new_seed": [
+      "New seed.start>=breach.close and full seed interval postcause; different start/id from prior impulse; no overlap with breachbar",
+      "Existing own same-native relative-volume basis/baseline/positive impulse and current independent growth qualification; do not borrow prior qualification array/known clock",
+      "Current24h growth window may begin before newseed under unchanged20%/24h rule; do not silently require every qualification window after breach.",
+      "New created_ts=current decision; lifetime_anchor_ts=new impulse.end; expires=anchor+14400000; require expires>current initial asof or reject as already expired",
+      "Continuations preserve created/anchor/expiry/initial cause receipt; later asof does not add4h"
+    ],
+    "history_binding": [
+      "Current runtime saveAnalysisOriginal persists immutable analysis+input before indexAnalysis updates wave/latest/queue. New original must retain input.previous_wave as the exact oldCANCELLED snapshot, while new next_wave has a distinct id and predecessor link.",
+      "A mutable current pump:wave pointer is not the old original history. No in-place mutation of input.previous_wave, previous markers, old cancelled_ts, old input/card text or protected original references.",
+      "The source review does not execute retention/storage tests or lift old OWNER deferrals."
+    ]
+  },
+  "schema_boundary": {
+    "proposed_marker_version": "POST_BREACH_NEW_WAVE_V1",
+    "fields": [
+      "lifetime_anchor_ts",
+      "post_breach_rearm.version",
+      "prior_wave_id",
+      "prior_cancelled_ts",
+      "terminal_event_ts",
+      "proof_received_ts",
+      "rearm_decided_ts",
+      "cause_fact_id",
+      "cause_evidence_ref",
+      "breach_open_ts",
+      "breach_close_ts",
+      "breach_low",
+      "protected_base",
+      "cause_path_start_ts"
+    ],
+    "construction_vs_continuation": "Analytics construction must bind actual current rows/identity/firstcause/newseed and current factrefs. Generic waveLifetimeValid(w,at,profile) validates stored schema/clock/lifetime, not actual source OHLC. A retained newwave may keep its original causefactid on later inputs; do not falsely treat it as the current input factref.",
+    "legacy": "No marker retains exact created+4h legacy equality. Partial/conflicting newmarkers must fail closed rather than silently fall into legacy. Missing/unsupported legacy cause and noncontiguous proof retain conservative prior cancellation boundary.",
+    "runtime_sites": [
+      {
+        "path": "pump-report/analytics/movement.mjs",
+        "line": 128,
+        "reason": "usablePrevious legacy expires==created+4h; newtype must be recognized without moving oldwave lifetime"
+      },
+      {
+        "path": "pump-report/analytics/cold-first-structural-base.mjs",
+        "line": 12,
+        "reason": "firstConstructionScope legacy lifetime/terminal boundary must preservelegacy and explicitnewanchor"
+      },
+      {
+        "path": "pump-report/runtime/candidate-priority.mjs",
+        "line": 6,
+        "reason": "queueWaveMetadata legacy equality and anchor projection"
+      },
+      {
+        "path": "pump-report/runtime/candidate-priority.mjs",
+        "line": 15,
+        "reason": "queueWaveState strict anchor-aware expiry/UNKNOWN malformed metadata"
+      },
+      {
+        "path": "pump-report/runtime/runner.mjs",
+        "line": 100,
+        "reason": "Immutable analysis/input originals, atomicPair retained wave+queue; no mutation of input.previous_wave or oldcancelled original"
+      }
+    ],
+    "queue_projection": "New queue metadata must carry explicit lifetime kind/anchor/clock sufficient to validate expiry. Legacy and NONE projections must explicitly clear anchor/type fields to null because priorqueue is spread. Partialanchor/version mismatch -> UNKNOWN, never extra LIVE TTL. Priority hints never signal admission.",
+    "history": "First active oldwave cancellation is saved normally in that call. New distinctwave only when input.previous_wave is CANCELLED in a subsequent call. Its immutable original keeps oldcancelled snapshot as input, new wave links predecessor; old analysis/input/card/history not overwritten."
+  },
+  "counterexamples_UNEXECUTED": [
+    {
+      "id": "C1",
+      "input": "Current price underbase but no closed candle LOW breach",
+      "expected": "Old cancellation may apply; no proven closed-event postbreach rearm cause"
+    },
+    {
+      "id": "C2",
+      "input": "Current rows start after protected boundary /gap before earliest observed breach",
+      "expected": "Cannot call earliest supplied breach first; conservative terminal fallback"
+    },
+    {
+      "id": "C3",
+      "input": "Oldchanged coldbase0.013643 replaced by old impulse.low0.013721",
+      "expected": "Reject cause binding; cannot choose more convenient level"
+    },
+    {
+      "id": "C4",
+      "input": "Baseconfirmation/firstknown after alleged breach, wronginstrument, oldfactid substituted ascurrent",
+      "expected": "Reject source/cause provenance; no hindsight base"
+    },
+    {
+      "id": "C5",
+      "input": "Oldcancel15:13, fresh reconstruction receipt16:00, provenevent13:09",
+      "expected": "Allowed clock ordering if source/path valid; preserve oldcancel; no receipt<=oldcancel requirement"
+    },
+    {
+      "id": "C6",
+      "input": "Seedstarts before13:09 butends after",
+      "expected": "Reject not whollypostbreach even if volume/growth high"
+    },
+    {
+      "id": "C7",
+      "input": "Newpostbreachseedend13:30 aftercause13:09, initialdecision17:00",
+      "expected": "Expiry17:30, only30min remain; repeated17:10 check not21:10; after17:30 expired"
+    },
+    {
+      "id": "C8",
+      "input": "Anchor without newmarker or marker withoutanchor /wrongseedend /legacywithstale newanchor",
+      "expected": "Partialtype fails; legacy projection explicitlyclearsstale fields"
+    },
+    {
+      "id": "C9",
+      "input": "Newseed borrows oldwave qualification or oldwaveid",
+      "expected": "Reject distinctness; current qualification must use freshinput and ownclock"
+    },
+    {
+      "id": "C10",
+      "input": "Queue refresh price/currentmembership while at>=newexpiry",
+      "expected": "No renewedLIVE/entry proximity/eligibility from hints; expiry remains anchored"
+    },
+    {
+      "id": "C11",
+      "input": "Legacy EXPIRED/CANCELLED/null path without supportedcause",
+      "expected": "Keep original postterminal behavior; no automatic legacy migration/revival"
+    },
+    {
+      "id": "C12",
+      "input": "Same oldactive input immediately cancelled then samecall constructsnewwave",
+      "expected": "Save cancellation first; distinct construction only subsequent CANCELLED input"
+    },
+    {
+      "id": "C13",
+      "input": "A postbreach wave is later cancelled; its marker still references its own predecessor protected_base",
+      "expected": "Next wave cause must use immediate predecessor's OWN invalidation/base/path and immediate priorwaveid, not reuse ancestor cause/base/qualification/receipt. Unknown current proof falls back."
+    },
+    {
+      "id": "C14",
+      "input": "Non-null prior wave carries partial/malformed newmarker or mismatched newanchor/expiry",
+      "expected": "Explicit conservative refusal preserves oldp and its clocks, never p→null→fresh seed/creatednow. Validnewprev retains originalanchor/expiry."
+    },
+    {
+      "id": "C15",
+      "input": "Causecloses13:09, marker currentcandle receipt13:10, newseed13:25–13:30, created15:15",
+      "expected": "Reject impossible currentfact receipt before seed.end, without imposing receipt<=oldcancelled."
+    }
+  ],
+  "code_review": {
+    "status": "BZ45_FROZEN_MANIFEST_SEEN_FULL_PRODUCT_CODE_NOT_REVIEWED_BEFORE_WORKING_CUTOFF",
+    "manifest_path": "pump-report/handoffs/analytics/package-bz45/BZ45_FROZEN_IMPLEMENTATION_V1.json",
+    "manifest_sha256": "2441661a4dc37ac2599713fff22c741ab2a46d6fdd94b5708f705ed7fa13467c",
+    "manifest_status": "FROZEN_UNEXECUTED_NOT_BUILT_NOT_DEPLOYED",
+    "first_manifest_inventory_UTC": "2026-10-29 13:12:25 UTC",
+    "manifest_identity_read_UTC": "2026-10-29 13:13:14 UTC",
+    "not_claimed": "No SOURCE whole BZ45 PASS, no analytics implementation/vector signoff, no build/runtime/nativeREADY/SENT. Remaining work is a bounded review of the now-frozen BZ45 implementation and vectors.",
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "build": 0,
+    "new_IO_admissions": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "provider": 0,
+    "Telegram": 0
+  },
+  "preserved": "Threshold20/10,volume2,liquidity700–3000,wholepositionmin10,optionalmap/pending/BTCETH/FXRWA, allunitcaps/manual3/issuedfloors/CLOSEDholds/costsunknowns,oldreportother2crons9pauses2OWNERdeferrals, F666/F667 timing deviations. No new source/search/connection/trading.",
+  "shared_draft_review": {
+    "status": "SHARED_CLOCK_AND_QUEUE_STATIC_PASS_UNEXECUTED",
+    "lifetime_sha256": "67fec7701ae125f9e4a193135e8603f6a51758d76401a81c5529f08fcffb0669",
+    "contracts_index_sha256": "3e354d19bef8d860bccbe97991100a4b5d45a933f8316195c9193a2845418b8d",
+    "queue_sha256": "f4802ba3cc935bef5d86548f2a5757bdf68efff8c9720879d546ace911b56298",
+    "lifetime_notes": "Legacy exactcreated+age with no markers; partial markers refuse; newanchor==impulse.end, seedstart>=breachclose, expiryanchor+age, created==rearm_decided, event<=proof_received<=created, priorcancel<=created independently. No false receipt<=oldcancel guard; source identity/path remains analytics duty.",
+    "finding": {
+      "priority": "P2",
+      "path": "pump-report/runtime/candidate-priority.mjs",
+      "lines": [
+        12,
+        65
+      ],
+      "paired_merge_path": "pump-report/runtime/runner.mjs:112",
+      "issue": "queueWaveMetadata returnsnull for an invalid/partial anchored wave, analysisQueueEvidence spreads{}, and indexAnalysis spreads over priorqueue. Old BOUND/LIVE id/created/expiry/state can survive beside a different current retained wave, violating current pair metadata and preventing UNKNOWN rehydration.",
+      "counterexample_UNEXECUTED": "Prior queue is valid legacy BOUND/LIVE. New current wave has lifetime_anchor_ts but missing post_breach_rearm, so waveLifetimeValid=false. Metadata returnsnull and{}; merge retains old wave_tracking_status BOUND/old waveid/expiry. queueWaveState reads that old valid legacy metadata asLIVE rather thanUNKNOWN.",
+      "minimal_ROOT_action": "Return explicit UNKNOWN metadata with cleared current waveid/lifetime/anchor/type fields for invalid wave; distinguish NONE only for actualnull. No provider/SQL/sourcecap changes. Validlegacy andNONE already explicitly clearanchor/type null.",
+      "status": "RESOLVED_STATIC_EXPLICIT_UNKNOWN_IN_DC9D"
+    },
+    "Node": 0,
+    "tests": 0,
+    "repaired_queue_sha256": "dc9d97ee27ae234c4d7998d7c3ad1aab93ea0ccc87ddb5dec328d667d264c4f0",
+    "after_projection_byte_identical": true,
+    "clock_receipt_finding": {
+      "priority": "P2",
+      "path": "pump-report/contracts/wave-lifetime.mjs",
+      "sha256": "67fec7701ae125f9e4a193135e8603f6a51758d76401a81c5529f08fcffb0669",
+      "lines": [
+        19,
+        27,
+        29
+      ],
+      "issue": "Current geometry checks breach<=receipt<=decision and seed.end==anchor<=created, but not seed.end<=current candle proof_received_ts. A proof receipt13:10 with newseed13:25–13:30 and decision15:15 passes these independent inequalities although current candle receipt cannot already contain a seed closing13:30.",
+      "minimal_ROOT_action": "Require impulse.end_ts/lifetime_anchor_ts <= post_breach_rearm.proof_received_ts; retain independence of fresh proof receipt and old prior_cancelled_ts. Analytics still proves actual rows/identity.",
+      "status": "RESOLVED_STATIC_SEED_END_LE_RECEIPT_IN_58535"
+    },
+    "repaired_lifetime_sha256": "58535ee9f19bb35546edc3b9f07d9105e99faa91e9781909c0f123496a0b8f43",
+    "clock_repair_exact_one_condition": true,
+    "final_frozen": {
+      "lifetime": "58535ee9f19bb35546edc3b9f07d9105e99faa91e9781909c0f123496a0b8f43",
+      "contracts_index": "3e354d19bef8d860bccbe97991100a4b5d45a933f8316195c9193a2845418b8d",
+      "queue": "dc9d97ee27ae234c4d7998d7c3ad1aab93ea0ccc87ddb5dec328d667d264c4f0",
+      "static_status": "PASS_SCOPED_UNEXECUTED",
+      "both_P2_resolved": true
+    }
+  },
+  "checklist_initial_sha256": "a5cfc0a1164d238cd789fa57e7332382b29ed3adbf5682c945da6948cfe0e08c",
+  "final_authority_main": "5f981642aa215b94aaeb937f1eabe3a41d49de05"
+}
