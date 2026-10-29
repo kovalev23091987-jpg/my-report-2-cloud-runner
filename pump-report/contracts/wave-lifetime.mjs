@@ -26,5 +26,5 @@ export function waveLifetimeValid(wave,at,profile){
     text(p.cause_fact_id)&&text(p.cause_evidence_ref)&&
     s&&time(s.start_ts)&&time(s.end_ts)&&s.start_ts>=p.terminal_event_ts&&
     Number.isSafeInteger(profile.impulse_window_ms)&&profile.impulse_window_ms>0&&
-    s.end_ts-s.start_ts===profile.impulse_window_ms&&s.end_ts===wave.lifetime_anchor_ts);
+    s.end_ts-s.start_ts===profile.impulse_window_ms&&s.end_ts===wave.lifetime_anchor_ts&&s.end_ts<=p.proof_received_ts);
 }
