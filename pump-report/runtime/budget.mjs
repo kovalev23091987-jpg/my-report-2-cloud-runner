@@ -77,7 +77,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
   };
   async function reserve({provider,family='CORE',purpose='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1}) {
     assertWorkWindow();
-    if(candidate_id&&closedSurplusCandidates.has(candidate_id))throw new BudgetRefusal('SURPLUS_CANDIDATE_ALREADY_CLOSED');
+    if(candidate_id&&closedSurplusCandidates.has(candidate_id)&&!(mode==='STATISTICS'&&lane==='statistics'&&provider==='BINGX'&&family==='USDT_M'&&purpose==='CORE'))throw new BudgetRefusal('SURPLUS_CANDIDATE_ALREADY_CLOSED');
     const policy=providerPolicy(provider),now=clock();
     if(!request_id||!integer(cost)||cost<1||!Object.hasOwn(run.lanes,lane)||!['CORE','DELIVERY','DISCOVERY'].includes(purpose))throw new BudgetRefusal('INVALID_HTTP_RESERVATION');
     if(admission.max_http_attempts!==undefined&&(!integer(admission.max_http_attempts)||admission.max_http_attempts<1||admission.max_http_attempts>limits.http_per_run||run.total+cost>admission.max_http_attempts))throw new BudgetRefusal('EXACT_OPERATION_HTTP_EXHAUSTED');
