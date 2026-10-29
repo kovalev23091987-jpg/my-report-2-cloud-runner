@@ -1,0 +1,20 @@
+--- a/pump-report/analytics/movement.mjs
++++ b/pump-report/analytics/movement.mjs
+@@ -144,11 +144,16 @@
+     if(v&&v.ratio!==null&&v.ratio>=profile.elevated_volume_ratio&&v.return_pct>0)candidates.push(v);}
+   // A retained impulse keeps its original baseline and lifetime.
+   const terminal=p?.instrument_id===input.instrument.instrument_id&&['CANCELLED','EXPIRED'].includes(p.state);
+   const terminalTs=terminal?(p.cancelled_ts??p.expires_ts):expired?p.expires_ts:null;
+   const eligibleCandidates=terminalTs===null?candidates:candidates.filter(v=>v.start_ts>=terminalTs);
+-  const impulse=previous?.impulse??eligibleCandidates.sort((a,b)=>b.ratio-a.ratio||a.end_ts-b.end_ts)[0]??null;
++  // First observation prefers the earliest intact initial seed as of now.
++  // If none is intact, retain the original selector and cold-base path.
++  const initialImpulse=p===null?eligibleCandidates.slice().sort((a,b)=>a.start_ts-b.start_ts||a.end_ts-b.end_ts)
++    .find(v=>completeInterval(rows,v.start_ts,end)&&price>=v.low&&
++      !rows.some(r=>r.open_ts>=v.end_ts&&r.low<v.low))??null:null;
++  const impulse=initialImpulse??previous?.impulse??eligibleCandidates.sort((a,b)=>b.ratio-a.ratio||a.end_ts-b.end_ts)[0]??null;
+   const facts=[input.facts.candles.fact_id],pivotMap=new Map();
+   for(const pivot of [...(previous?.confirmed_pivots??[]),...confirmedPivots(rows,profile.pivot_radius_bars).map(p=>({...p,fact_id:facts[0]}))]){
+     if(validTime(pivot.known_ts)&&pivot.known_ts<=now&&positive(pivot.price))pivotMap.set(pivot.kind+':'+pivot.event_ts+':'+pivot.price,pivot);
+   }
+   const pivots=[...pivotMap.values()];

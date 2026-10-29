@@ -1,0 +1,163 @@
+{
+  "schema": "F661_FRESH_HINT_QUEUE_TIER_PATCH_PROPOSAL_V1",
+  "status": "READY_MINIMAL_PATCH_PROPOSAL_NOT_APPLIED_NOT_RUNTIME_QUALIFIED",
+  "authority_main": "e48f0f3e92f70374148ad423937f53e54fd79e1c",
+  "own_acquire_head": "9eca1f7ce2474af5b908e95c55ba40b9ec6008bc",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793267658000",
+  "root_owner": "CODEX:PUMP_QUEUE_CONFIRMATION_AND_SEED_REVIEW_20261029:1793267492819",
+  "prepared_UTC": "2026-10-29 10:00:44 UTC",
+  "problem": "F660 saved decision: near-only MAGMA score2500 from27Oct first_seen precedes fresh stronger hints/live watch. Existing0.8prequeue and unbounded waiting age share one order. Proposal improves assignment of an already free admission; it does not make a near hint an eligible signal or bypass planned646>638.",
+  "patch": {
+    "path": "pump-report/handoffs/sources/F661_FRESH_HINT_QUEUE_TIER_PROPOSAL.patch",
+    "sha256": "e598be415eeb696ce3914391e5d00a1b1cf1bd184a7f6e23bb15ff8c3c858e1b",
+    "bytes": 1525,
+    "changed_file": "pump-report/runtime/runner.mjs",
+    "hunk": "selectAutomatic lines86-99 only",
+    "preimage_sha256": "cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be",
+    "preimage_git_blob": "deafaf519381fbc3a195c9d2a4042f2b631ce9bf",
+    "preimage_bytes": 31139,
+    "proposed_postimage_sha256": "386d17be497b374e5d2fc0a71566b4b340b2ad8eda172f11926f65e5733c0ce5",
+    "proposed_postimage_bytes": 31581,
+    "method": "Administrative unique exact two-line span replacement in memory and Python difflib unified diff; runtime file never written. No git apply/import/Node/test executed."
+  },
+  "unchanged_preimages": [
+    {
+      "path": "pump-report/runtime/candidate-priority.mjs",
+      "sha256": "3950f9b86ebfd133c3696bb323cb5d942399a3375c2fd0c4a0eb9ab79a1f8f3a",
+      "git_blob": "2753ed550e394e86dd56c9f0436c83a44d33f425",
+      "bytes": 4854
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "sha256": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521",
+      "git_blob": "d61f2fa57141dc042ab1e2a9055b26703ac57da8",
+      "bytes": 1791
+    }
+  ],
+  "apply_rule": "ROOT applies only to exact runner preimage SHA/Git blob above. Check proposed postimage SHA before qualification. Different preimage => stop and inspect; no fuzzy automatic application. SOURCES has not applied it to runtime/main.",
+  "semantics": {
+    "first_tier": "Existing queueWatchActive(row,now,profile) OR (Number.isSafeInteger(price_expires_ts) AND price_expires_ts>=now AND (finite reported_day_growth>=profile.automatic_growth.day_pct OR finite preliminary_growth>=profile.automatic_growth.short_pct)). Existing profile20/10, no new constants.",
+    "watch": "Uses the unchanged queueWatchActive policy, including its preserved LIVE or permitted UNKNOWN+active legacy behavior. INIT fixture supplies exact bound live next_wave. No new wave validity/expiry/hydration rule is introduced.",
+    "freshness": "Only strong-light-hint branch requires nonexpired finite integer light-price expiry. Expired/missing expiry cannot promote high stale numbers. Equality expiry==now follows existing freshness convention. Valid watch may remain first tier even if light price is stale; CORE still validates facts later.",
+    "within_tier": "Unchanged candidatePriority score descending, then first_seen ascending. No age reset/cap or refund. Old MAGMA waiting score remains2500 in tier0.",
+    "membership_and_find": "Existing0.8prequeue candidate filter stays byte-for-byte unchanged. Existing catalog.instruments.some(... !ownerInstrumentExcluded && assess_source_evidence.eligible) find stays byte-for-byte unchanged and skips unavailable/missing catalog/source-ineligible leaders. Near-only fallback remains when no eligible tier1 row.",
+    "hints_not_strategy": "Reported24h ticker/preliminary light history remain unconfirmed hints. A tier1 row has not passed actual closed20day/10short growth, volume, liquidity, independent plan>=10, fresh facts or delivery gates. All these code paths remain unchanged.",
+    "cost": "No new HTTP/SQL/engine/provider/broker call from comparator. Same WHOLE12 candidate forecast, same free-slot accounting. Proposed ordering does not bypass646>638, refund unused CLOSEDholds or spent base/surplus floors."
+  },
+  "frozen_inputs": {
+    "path": "pump-report/handoffs/sources/F661_FROZEN_QUEUE_CASE_INPUTS_V1.json",
+    "sha256": "c6c594165ea8fd147df7eea8b1fc1543d0211ebac817999890b45c36c63e7d39",
+    "bytes": 10795,
+    "actual_decision_leaders": 5,
+    "candidate_original_input_pointers": 2,
+    "private_packet_sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+    "raw_bytes": 1606842,
+    "full_historical_queue_snapshot_available": false,
+    "scope": "Verbatim actual diagnostic projection + exact aliases + separately labelled controlled neutral fields and same-packet INIT/IDOL next_wave completion. No raw prices/candles/private bodies copied into Git. Candidate input manifest points into hash-pinned private raw; no replay requested."
+  },
+  "static_expected_order_not_executed": {
+    "at": 1793266257380,
+    "old_actual": [
+      "MAGMA",
+      "GPSOL",
+      "VEIL",
+      "INIT",
+      "IDOL"
+    ],
+    "proposed_fixture_order": [
+      "VEIL",
+      "INIT",
+      "IDOL",
+      "MAGMA",
+      "GPSOL"
+    ],
+    "reason": "VEIL fresh reported77.17, INIT live bound CALM_PULLBACK, IDOL fresh64.25 are tier1, keeping recorded score order40.923/36.769/34.936. MAGMA7.17/8.38 is near-only tier0; GPSOL39.31 with expired price remains tier0. No result asserted as runtime PASS."
+  },
+  "future_one_ROOT_affected_qualification": {
+    "status": "PROPOSED_NOT_EXECUTED_NOT_AN_ADMISSION",
+    "one_Node_process": 1,
+    "one_connected_case": true,
+    "source_processes_now": 0,
+    "entrypoint": "Use actual patched createPumpRunner.execute AUTO path, unchanged real selector/comparator. Reuse ready-empty manual/outcome/delivery-index MemoryStore harness. Do not export/copy selector or substitute a separately implemented sort.",
+    "clock": 1793266257380,
+    "harness": "Seed MemoryStore queue with fixture_rows. Same fixed in-window clock. Frozen current272 registry identities already in current841f2a artifact supply catalog objects; source eligibility/catalog masks below are controlled, never claimed as current availability or identity qualification. Mock getCatalog and getOverview only; overview observations[] preserves frozen queue so no invented price values are needed. Existing ready-empty manual/outcome/delivery paths permit one selector per execute.",
+    "stop_before_deep": "Controlled budget.admitCandidate records candidate_id and returns DEFERRED/PROTECTED_DAY_RESERVE/WHOLE_CANDIDATE_PLANNED_ALLOCATION. It deliberately admits no candidate. getCore/analyzePump/evaluateOutcome/send throw if called; delivery pending/drain empty. Assert selected id from real run.candidate_selection and recorded admitCandidate. Thus ordering is measured without READY/strategy/engine/held-refund/IO. All stages share one finite case with fresh local run ids only.",
+    "stages": [
+      {
+        "n": 1,
+        "delta": "Base fixture. Catalog contains MAGMA/VEIL/INIT/IDOL; GPSOL absent. All four exact source identities eligible.",
+        "expected_selected": "VEIL",
+        "assert": "Tier1 order VEIL INIT IDOL precedes old MAGMA/GPSOL ages; within-tier scores unchanged. Stale GPSOL39.31 not tier1."
+      },
+      {
+        "n": 2,
+        "delta": "Persist all stage1 queue fields; set only VEIL assess_source_evidence eligible=false.",
+        "expected_selected": "INIT",
+        "assert": "Source-ineligible strong leader skipped by original find. Bound live INIT wins although hints18.25/5.97 are below20/10."
+      },
+      {
+        "n": 3,
+        "delta": "Keep stage2 mask. Set INIT wave_state=CANCELLED and price_expires_ts=now-1; keep its historical fields/active boolean otherwise.",
+        "expected_selected": "IDOL",
+        "assert": "Existing queueWatchActive respects cancelled wave; IDOL fresh strong day remains tier1. Do not change wave validity helper."
+      },
+      {
+        "n": 4,
+        "delta": "Keep prior changes. Set IDOL reported_day_growth=20, preliminary_growth=0, price_expires_ts=now.",
+        "expected_selected": "IDOL",
+        "assert": "Existing day threshold equality and expiry equality enter first tier; still only a hint."
+      },
+      {
+        "n": 5,
+        "delta": "Set IDOL reported_day_growth=7.17, preliminary_growth=10, keep expiry=now.",
+        "expected_selected": "IDOL",
+        "assert": "Existing short threshold equality enters first tier without day hint."
+      },
+      {
+        "n": 6,
+        "delta": "Set only IDOL price_expires_ts=now-1, retaining its high10 short hint.",
+        "expected_selected": "MAGMA",
+        "assert": "Expired hint cannot remain tier1. Eligible near-only MAGMA fallback survives. Its old first_seen and score are retained."
+      },
+      {
+        "n": 7,
+        "delta": "Set GPSOL price_expires_ts=now+30000 so it becomes a controlled high-age tier1 leader, but keep GPSOL absent from catalog.",
+        "expected_selected": "MAGMA",
+        "assert": "Original find skips missing catalog GPSOL; this synthetic freshness is explicitly controlled, not a current GPSOL claim."
+      },
+      {
+        "n": 8,
+        "delta": "Add exact frozen registry GPSOL object to controlled catalog but set its assess_source_evidence eligible=false.",
+        "expected_selected": "MAGMA",
+        "assert": "Original find also skips source-ineligible high-age tier1 GPSOL; no unsupported classification/delete decision created."
+      }
+    ],
+    "common_assertions": [
+      "Every execute returns no checked analysis/READY/SENT and no engine/getCore/send call; intentional budget denial preserved.",
+      "Snapshots of held balances/unknowns/plannedlimit/issuedfloors remain unchanged; local MemoryStore queue delta fields are the ONLY listed scenario changes.",
+      "Runner postimage differs from preimage only by patch; profile0.8/20/10, original candidate filter, score/helper and exact catalog/source find are unchanged.",
+      "Fixture stages are controlled selection qualification using saved diagnostic fields. They do not refresh source clocks or replay two retained original analyses.",
+      "No provider/Cloudflare/nativeSQL/Telegram/network/build/controller IO, no new native13 grant or source qualifications. ROOT supplies separate offline admission before any future execution."
+    ],
+    "boundary": "This is a finite future case recipe, not a test run or claim that qualification already passed. ROOT may use existing compatible harness plumbing, preserving the real execute/selector and these frozen assertions."
+  },
+  "prior_evidence": {
+    "F660_path": "pump-report/handoffs/sources/F660_ACTUAL_DIAGNOSIS12_SOURCES_BUDGET_QUEUE_REVIEW_V1.json",
+    "sha256": "63dc64abe92a5cf3db5cf2cf548a2fbd19ee3ce561a40bca84f8ca2a0c5429e7",
+    "not_reaudited": true,
+    "F658_not_repeated": true
+  },
+  "cost_now": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0,
+    "new_grants": 0
+  },
+  "preserved": "All oldcharges/unknowns/closedholds/issuedfloors/manual3/futurebase/caps80percent/9pauses/2OWNERdeferrals, strategy gates and paid-source prohibitions. SOURCE only proposal .patch/inputs/manifest, own lease. ROOT owns runtime application/qualification/integration."
+}

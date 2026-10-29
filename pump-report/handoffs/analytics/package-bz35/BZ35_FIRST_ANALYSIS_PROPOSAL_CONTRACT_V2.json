@@ -1,0 +1,63 @@
+{
+  "schema": "BZ35_FIRST_ANALYSIS_PROPOSAL_CONTRACT_V2",
+  "status": "READY_PROPOSAL_NOT_APPLIED_NOT_ENGINE_QUALIFIED",
+  "supersedes_rejected_V1_patch_sha256": "d4a74cacec4bb04c9a5aadbc25e419996c8f392a6cf56e76acdf91faeb0eccf5",
+  "V1_rejection": "ROOT found that impulse=null with no intact initial candidate disabled existing first-null COLD_FIRST_STRUCTURAL_BASE; V2 restores complete original fallback. V1 behavior proposal must not be applied.",
+  "target": "pump-report/analytics/movement.mjs",
+  "preimage_sha256": "c236d79705e813e31a729988d6808c0aacfc7b4fe9453d1065f29f7f98aea716",
+  "proposed_sha256": "cac3e131a7f2981c27a1a9469d0b08da233c60fb7c7e759f1f39d68e085d003c",
+  "patch_sha256": "abf56a9aa46f50d275c3a53e740bde37c3062cfd06a7b476bbb77f75611ee10b",
+  "exact_replacement_count": 1,
+  "selection": "Only previous_wave===null computes earliest qualified intact initial seed; use it if present; otherwise use complete original previous?.impulse??strongesteligible??null fallback.",
+  "original_fallback_expression": "previous?.impulse??eligibleCandidates.sort((a,b)=>b.ratio-a.ratio||a.end_ts-b.end_ts)[0]??null",
+  "same_fallback_literal_present": true,
+  "p_nonnull_path": "initialImpulse=null; original expression unchanged; no initial scan. Covers active/cancelled/expired/undefined.",
+  "p_null_no_intact_path": "Original strongesteligible/null fallback; old continuity/invalidation and COLD_FIRST_STRUCTURAL_BASE run unchanged, including viable first post-breach base/reclaim guards.",
+  "p_null_intact_present_path": "Prefer earliest qualified intact initial seed by start/end chronology, before potential/targets; original seed low and baseline retained.",
+  "source_candidates_thresholds_windows_basis_unchanged": true,
+  "no_FULL_baseline_new_gate": true,
+  "no_target_min10_readiness_rules_changed": true,
+  "created_expiry_terminal_clocks_unchanged": true,
+  "no_original_analysis_rewrite_or_old_wave_revival": true,
+  "shared_first_null_AUTO_and_MANUAL": true,
+  "private_case_binding": {
+    "packet_sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+    "analysis_key": "pump:analysis:4150bf418dcea8df33c764a3b14420867b469646edac6750d9fd5dc13228d550",
+    "old_selected_seed": [
+      1793261280000,
+      1793261580000
+    ],
+    "expected_preferred_seed": [
+      1793254200000,
+      1793254500000
+    ],
+    "expected_preferred_ratio": 2.332643025195846,
+    "expected_preferred_low": 0.01235,
+    "expectation_basis": "Authorized descriptive arithmetic only, not a new engine/readiness verdict"
+  },
+  "TZ_basis": "Unified spec section7: preserve starting-wave volume baseline; volume elevated on impulse, not continually during calm pullback. Section6: maintain current suitable wave/pullback. Strongest historical ratio is not prescribed. Earliest-intact preference is an explicit FIRST_ANALYSIS policy clarification proposed for ROOT review.",
+  "version_proposal": {
+    "current": "pump-analytics-v6-price-structure-20261029",
+    "proposed": "pump-analytics-v7-initial-seed-20261029",
+    "reason": "Initial seed selection changes and must be distinguishable in future original wave/outcome provenance.",
+    "current_rules_file": "pump-report/analytics/index.mjs",
+    "change_in_this_package": false,
+    "ROOT_action": "After separately admitted affected qualification, update rules version and regenerate implementation pin/artifact with queued changes. Do not relabel retained originals/capsules."
+  },
+  "ROOT_one_connected_affected_case": [
+    "Actual saved IDOL old CANCELLED vs preferred earlier intact seed, complete strategy verdict only by ROOT engine",
+    "Actual INIT previous non-null selection unchanged; targets/min10 unchanged",
+    "Narrow existing first-null cold fallback guard; no broad accepted-audit repeat",
+    "Queue F661 real direct competition/no budget bypass; build once after case PASS under ROOT admission"
+  ],
+  "Node": 0,
+  "product_imports": 0,
+  "engine": 0,
+  "tests": 0,
+  "builds": 0,
+  "native_SQL": 0,
+  "new_market": 0,
+  "Cloudflare": 0,
+  "Telegram": 0,
+  "verification": "Exact source preimage and single text replacement plus retained fallback literal; no product imports or JS execution."
+}

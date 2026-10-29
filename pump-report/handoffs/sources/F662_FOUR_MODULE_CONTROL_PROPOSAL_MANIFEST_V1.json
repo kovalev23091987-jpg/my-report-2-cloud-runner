@@ -1,0 +1,263 @@
+{
+  "schema": "F662_EXACT_FOUR_MODULE_CONTROLLER_TEMPLATE_PROPOSAL_V1",
+  "status": "READY_STATIC_PROPOSAL_NOT_APPLIED_NOT_QUALIFIED_NOT_ADMITTED",
+  "authority_main": "48058cdd3c7b89783d4c14b39bd675566061ba61",
+  "own_acquire_head": "f35f27e5e68796ed903a442046b18a7137a27851",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793268567000",
+  "root_owner": "CODEX:PUMP_QUEUE_CONFIRMATION_AND_SEED_REVIEW_20261029:1793267492819",
+  "prepared_UTC": "2026-10-29 10:18:38 UTC",
+  "deliverables": {
+    "pump-report/handoffs/sources/F662_FOUR_MODULE_INSTALL_CONTROL_PROPOSAL.template.js": {
+      "sha256": "b9a470be6ce9f3661dfb085196cea3143370398d0c2247a94b8827b33ab4d98b",
+      "bytes": 11928
+    },
+    "pump-report/handoffs/sources/F662_QUEUE_WAVE_CONTROL_TO_FOUR_MODULE_PROPOSAL.patch": {
+      "sha256": "540d27b645b044c34df100addc864a8b1b0cfb0d9aa1addd2da107872bae8a29",
+      "bytes": 6772
+    }
+  },
+  "strict_controller_preimage": {
+    "path": "pump-report/operator/cloudflare-queue-wave-control.template.js",
+    "sha256": "94cca382c094403b11866579d53a48e92dc8bd13e01ef5ada570955d08ba5077",
+    "git_blob": "8748fa3e85e6885ec6c28893f73fd3076a5d515d",
+    "bytes": 8092,
+    "main_git_blob": "8748fa3e85e6885ec6c28893f73fd3076a5d515d",
+    "apply_rule": "ROOT only: compare exact preimage SHA94cca before using provided patch; do not fuzz apply to a different controller. Full proposal.template.js is same postimage. No operator file was changed by SOURCE."
+  },
+  "accepted_reference": {
+    "seed_template": {
+      "path": "pump-report/operator/cloudflare-seed-window-control.template.js",
+      "sha256": "ba1e02166b614c360ff0720e1f72e7e60b2626fe32c76cd3ea1499a850c65b9e",
+      "git_blob": "2578f49b38cef0b3794db0410c4f65def62cdb2c",
+      "bytes": 8089
+    },
+    "accepted_install": {
+      "path": "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_INSTALL_ADMISSION.json",
+      "sha256": "99efbc251c8446ecdbbdece6c66a71d5ad7e03a109b5053fb00cec8a87083540",
+      "maximum_calls": 11,
+      "old_admission_not_reusable": true
+    },
+    "accepted_FULL": {
+      "path": "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_AUTO_ON_FULL.json",
+      "sha256": "a2e1d34a58b36d9614b1b707ae5f74c5ad0dcbbb9fc19a8fea990e21a4877267",
+      "modules": 76,
+      "bindings": 21,
+      "other20_exact": true,
+      "all3_schedules_preserved": true,
+      "old_saved_proof_not_fresh_install_authority": true
+    }
+  },
+  "frozen_base": {
+    "artifact_sha256": "841f2a3c850d01257f3f4041ec7a2931c8779691156402c47faed8ace739e8a0",
+    "implementation_pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+    "modules": 76,
+    "canonical_all76_source_hash_map_sha256": "f4016347be04eeb483b924fe47ed7cf0ed0a766aa2e581fb1885eea207f14b6b",
+    "canonical_nonself75_source_hash_map_sha256": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+    "all76_saved_FULL_hashes_equal_artifact": true,
+    "hash_basis": "UTF8 complete module source strings; canonical map is sorted JSON without whitespace. Nonself75 map SHA equals existing bundled implementation pin. Administrative static hash computation only, no build/import."
+  },
+  "allowed_install_delta": [
+    {
+      "module": "runtime/runner.mjs",
+      "before_sha256": "cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be",
+      "required_after_sha256": "386d17be497b374e5d2fc0a71566b4b340b2ad8eda172f11926f65e5733c0ce5",
+      "after_status": "Exact F661 proposed source bytes; not a newly built artifact claim",
+      "change": "F661 tier comparator only"
+    },
+    {
+      "module": "analytics/movement.mjs",
+      "before_sha256": "c236d79705e813e31a729988d6808c0aacfc7b4fe9453d1065f29f7f98aea716",
+      "required_after_sha256": null,
+      "after_status": "PENDING BZ35V2 frozen qualified source, then actual artifact/config",
+      "change": "First null seed with fallback legacy; ROOT/ANALYTICS must bind exact accepted V2 bytes, SOURCE does not invent them"
+    },
+    {
+      "module": "analytics/index.mjs",
+      "before_sha256": "17ae77aed020151ce6817f19a8c4be9fe85eb82c9cc00239460bd8cca7d740ee",
+      "required_after_sha256": null,
+      "after_status": "Pending exact rulesv7 string and actual bytes",
+      "change": "Only replace the one old pump-analytics-v6-price-structure-20261029 literal with a configured pump-analytics-v7-... tag; all other bytes equal old index"
+    },
+    {
+      "module": "runtime/implementation-pin.mjs",
+      "before_sha256": "b2f537762cdb8d32289b73ae91e4c9f195824eda18c3c189423b6a55fd937677",
+      "required_after_sha256": null,
+      "after_status": "Pending generated actual pin module",
+      "change": "Generated exact JSON export for new nonself75 source hash map"
+    }
+  ],
+  "new_after_artifact": {
+    "status": "NOT_BUILT_PENDING_ROOT_FREEZE",
+    "artifact_sha256": null,
+    "implementation_pin": null,
+    "full_after76_source_hash_map": null,
+    "after_rules_version": null,
+    "BZ35V2_movement_sha256": null,
+    "no_placeholder_hash_is_claimed_as_fact": true
+  },
+  "controller_install_contract": {
+    "positive_admission": "INSTALL preflight requires ROOT_PRODUCTION_CONTROL_PLANE_ADMISSION_V1, status ADMITTED_NOT_SPENT, maximum_attempts1, admin_HTTP_max11 plus existing valid issued/expiry/own window. This config check is not evidence that actual authorization exists. ROOT still must read fresh guards, own CAS/FULL and obtain separate actual IO admissions.",
+    "base_binding": "before_pin==27258... and before_artifact_sha256==841f2a...; canonical full before76 map digest must match frozen f4016347... . Live multipart read must match every expected before source SHA.",
+    "delta": "Both module maps contain exactly76 valid hashes and exactly identical names. Set of differing hashes equals exactly four allowed names above; override keyset equals same4. Every override byte SHA equals frozen after map, and all72 other hashes stay before. No additions/removals or observability modules/settings.",
+    "runner_binding": "After runner SHA must equal exact F661 proposed386d17... . If ROOT changes those bytes during qualification, this hard binding must be deliberately revised/refrozen; no generic wildcard runner override.",
+    "index_binding": "Compare actual before index source string to installed index with ONLY one exact rules-version substitution, v7 tag from explicit config. Extra import/log/helper/logic/settings change fails RULES_VERSION_ONLY_INDEX_CHANGE.",
+    "pin_binding": "Recompute nonself75 source map digest to before/after configured pin. Parse implementation-pin.mjs only as exact export const IMPLEMENTATION_PIN=<JSON>; newline form, no eval/import. Require exact schema/sha/modules/excluded-self fields and full equality to actual source hash map.",
+    "quiescence": "Fresh actual FINALIZED/QUIESCENT_CODE_UPDATE_ALLOWED for exact before272 and executor_owner=null, integer observed_ts<=now, age<=300000ms, checked before first CF request and again immediately before mutation. Stale/future/caller-boolean substitute not accepted. A suitable actual quiescence receipt is NOT provided or authorized by F662.",
+    "source_upload": "Existing accepted sparse-source method: recover all before sources from FULL read, overlay exactly4 strings, verify every assembled after source SHA, then PUT content with metadata containing ONLY main_module worker-entry.mjs. No whole artifact body rebuilding or extra module/runtime wrapper in controller.",
+    "settings_and_crons": "INSTALL expects AUTO0 and DL1 before/after, DATA_DB exact057a...; before+after full settings canonical equality protects ALL21 bindings and hence other20, including existing provider/caps/log settings. All3 schedule lists compare exactly before/after: hub */5 7-16 * * *, other2[]. No PATCH settings/schedule write in INSTALL.",
+    "other_actions": "Existing READ_ONLY/PAUSE_AUTO/RESUME_AUTO source paths are left unchanged apart from shared helper definitions. The new strict4 validation is entered only for INSTALL. F662 qualifies/prepares only this new INSTALL boundary; existing non-INSTALL approvals are not revived.",
+    "failure": "Inherited finite request bound and FAILED_OR_UNKNOWN_NO_RETRY. No automatic retry/rollback/enable from a missing ACK or failed FULL. Unknown physical transport cost remains UNKNOWN_NONZERO_RETAINED. No market health request, SQL or Telegram.",
+    "artifact_hash_limit": "CF multipart FULL proves module source bytes against frozen maps. The artifact_sha256 label is supplied by ROOT config; controller does not derive a local JSON artifact-file digest from CF multipart. ROOT MUST separately verify actual after artifact file bytes/digest, manifest and exact4 sources before constructing config. Do not claim a supplied label alone proves artifact-file bytes."
+  },
+  "future_ROOT_required_config_fields": {
+    "not_an_admission": true,
+    "already_frozen": {
+      "before_pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+      "before_artifact_sha256": "841f2a3c850d01257f3f4041ec7a2931c8779691156402c47faed8ace739e8a0",
+      "before_modules_count": 76,
+      "before_map_digest": "f4016347be04eeb483b924fe47ed7cf0ed0a766aa2e581fb1885eea207f14b6b",
+      "admin_HTTP_max": 11,
+      "main_module": "worker-entry.mjs"
+    },
+    "must_be_filled_from_real_after_build": [
+      "after_artifact_sha256",
+      "after_pin",
+      "all76 after_modules_sha256",
+      "install_module_overrides exactly4 actual strings",
+      "after_rules_version exact v7",
+      "frozen accepted BZ35V2 movement SHA/proof"
+    ],
+    "must_be_fresh_actual_authority": [
+      "authority_main/current guards/current own_lease",
+      "positive exact one-action admission status/time/maximum_attempts",
+      "fresh actual AUTO0 FULL",
+      "fresh actual FINALIZED executor-null quiescence for272 with separately authorized SQL/IO"
+    ],
+    "validation_before_constructing": "Verify actual base file841 and after fileSHA, manifest count76/main_module/pin, exact name equality, diff4, accepted F661/BZ35V2/rulesv7 source hashes and pin-generator result. Empty/null/pending values remain unusable; no example fake64 SHA/status is supplied."
+  },
+  "INSTALL_call_plan": {
+    "kind": "Static plan for cloudflare.request MOCK invocations; zero executed by SOURCE",
+    "successful_total": 11,
+    "before_reads": 5,
+    "mutation": 1,
+    "after_reads": 5,
+    "route_prefix": "/accounts/70ee0af85191ea470e74c7383fdec772/workers/scripts/",
+    "calls": [
+      {
+        "n": 1,
+        "method": "GET",
+        "suffix": "my-report-2-hub",
+        "purpose": "Complete multipart source: before76 FULL"
+      },
+      {
+        "n": 2,
+        "method": "GET",
+        "suffix": "my-report-2-hub/settings",
+        "purpose": "Before settings and21 exact bindings; AUTO0/DL1/DATA_DB"
+      },
+      {
+        "n": 3,
+        "method": "GET",
+        "suffix": "my-report-2-hub/schedules",
+        "purpose": "Before hub cron */5 7-16 * * *"
+      },
+      {
+        "n": 4,
+        "method": "GET",
+        "suffix": "my-report-2-free-history/schedules",
+        "purpose": "Before legacy history cron[]"
+      },
+      {
+        "n": 5,
+        "method": "GET",
+        "suffix": "my-report-2-liq-forecast-history/schedules",
+        "purpose": "Before legacy LIQ cron[]"
+      },
+      {
+        "n": 6,
+        "method": "PUT",
+        "suffix": "my-report-2-hub/content",
+        "purpose": "metadata main_module + all76 source parts; exactly4 overrides"
+      },
+      {
+        "n": 7,
+        "method": "GET",
+        "suffix": "my-report-2-hub",
+        "purpose": "Complete multipart source: after76 FULL"
+      },
+      {
+        "n": 8,
+        "method": "GET",
+        "suffix": "my-report-2-hub/settings",
+        "purpose": "After settings/21bindings exact before equality"
+      },
+      {
+        "n": 9,
+        "method": "GET",
+        "suffix": "my-report-2-hub/schedules",
+        "purpose": "After hub cron unchanged"
+      },
+      {
+        "n": 10,
+        "method": "GET",
+        "suffix": "my-report-2-free-history/schedules",
+        "purpose": "After history[] unchanged"
+      },
+      {
+        "n": 11,
+        "method": "GET",
+        "suffix": "my-report-2-liq-forecast-history/schedules",
+        "purpose": "After LIQ[] unchanged"
+      }
+    ],
+    "SQL": 0,
+    "provider_market": 0,
+    "Telegram": 0,
+    "settings_mutations": 0,
+    "schedule_mutations": 0,
+    "physical_HTTP_note": "11 is explicit mock/controller invocation count, not proof of hidden underlying connector HTTP retries. Actual physical admin HTTP remains separately measured/unknown as inherited."
+  },
+  "one_future_ROOT_affected_qualification": {
+    "status": "NOT_EXECUTED_REQUIRES_REAL_AFTER_BUILD_AND_ROOT_OFFLINE_ADMISSION",
+    "source_Node": 0,
+    "source_tests": 0,
+    "root_proposed_Node_processes": 1,
+    "root_case": "One finite connected exact4 INSTALL mock using frozen real before76 and newly built real after76 sources. Do not rerun accepted native11-case/controller suite.",
+    "steps": [
+      "Freeze proposal.template.js SHA and both actual artifact files; exact delta4 and accepted source qualifications first.",
+      "Construct config from real after artifact, no placeholder hashes. Mock complete before/after multipart sources, actual21-binding settings and all3 schedules with distinct preserved sentinels.",
+      "Call the real proposed controller for INSTALL once. Mock cloudflare.request must receive exactly ordered5GET/1PUT/5GET plan, with content-only upload and76 module parts; no settings/schedule mutation, no health/log/provider request.",
+      "Assert returned CONFIRMED_FULL only when all76 after SHA, new recomputed pin, exact21/other20/settings and all3cron equality pass, calls11, mutation acknowledged, no_auto_retry true. Parse uploaded body for exact4 changed/72 identical and index-only-v7 binding.",
+      "Within the SAME affected case, optional pure preflight rejects for null after-artifact, wrong current map, extra/removed/forbidden module may run only with mock asserting0CF calls; avoid replay of old accepted cases. No new native/market/strategy/READY/SENT claim."
+    ],
+    "not_actual_deploy_authority": true
+  },
+  "untouched": {
+    "operator_preimage": true,
+    "runtime_modules": true,
+    "profile": true,
+    "settings_bindings_crons": true,
+    "old_saved_source_cases_not_replayed": true,
+    "persistent_logs_not_enabled": true,
+    "paid_or_new_connections": false
+  },
+  "scope_limits": [
+    "F661 priority is not a budget bypass:646>638 remains guarded.",
+    "Root log examples are not immutable-original proofs; no new qualification claim from DACITY/VEIL/INIT log rows.",
+    "No LOOKUP13 exception or actual deployment admitted; native12 is spent. F662 contains no usable IO grant.",
+    "All oldspends/unknowns/holds/issuedfloors/manual3/futurebase/caps80percent/9pauses/2OWNERdeferrals remain."
+  ],
+  "cost_now": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "Cloudflare_native_HTTP": 0,
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "new_IO_grants": 0,
+    "GitHub_authority_and_own_CAS_administration_separate": true
+  }
+}
