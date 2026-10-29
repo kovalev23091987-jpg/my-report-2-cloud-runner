@@ -1,0 +1,181 @@
+{
+  "schema": "F652_COMPLETED_AUTO_PACKET_SOURCE_STATIC_REVIEW_V1",
+  "status": "PASS_STATIC_IN_DECLARED_KNOWN_RUN_SCOPE",
+  "blocking_findings": [],
+  "authority_main": "3947a80b26a0a82f0622bcc06e7550405949574b",
+  "freeze_main": "9f37e37556e075d0ceddc2628d1c4af44daa861c",
+  "proof_main": "dc25df7cdbd1901c256ef514ee43a993fb66db9c",
+  "fresh_same_code_main": "dc25df7cdbd1901c256ef514ee43a993fb66db9c",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793256712000",
+  "parent_owner": "CODEX:PUMP_PRICE_STRUCTURE_INSTALL_AND_REAL_AUTO_20261029:1793254185000",
+  "reviewed_files": {
+    "pump-report/operator/completed-auto-packet.mjs": {
+      "sha256": "6c0c4944da5869b6fbca3ae7ee7403875078079d9b20f4e43e53947843eafed9",
+      "bytes": 5616,
+      "local_FULL_equals_frozen_GitHub": true
+    },
+    "pump-report/operator/completed-auto-packet-observation-once.mjs": {
+      "sha256": "51967e87b6ecb4b7f04467b0e456d4211bb0e0dc6ac9a5210425d20e69dda24f",
+      "bytes": 10231,
+      "local_FULL_equals_frozen_GitHub": true
+    },
+    "pump-report/tests/runtime/completed-auto-packet-once.mjs": {
+      "sha256": "da363f0d20f27d48f28512999519b4654df1f87666a81eb9c48656f6050cc8c9",
+      "bytes": 7610,
+      "local_FULL_equals_frozen_GitHub": true
+    },
+    "pump-report/operator/saved-catalog-snapshot.mjs": {
+      "sha256": "643de7ce595018e1fd7a7f5f165048ff8500daef94071c71b616eba4240c92ed",
+      "bytes": 2880,
+      "local_FULL_equals_frozen_GitHub": true
+    },
+    "pump-report/operator/saved-auto-observation.mjs": {
+      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74",
+      "bytes": 5494,
+      "local_FULL_equals_frozen_GitHub": true
+    },
+    "pump-report/operator/saved-auto-candidate-observation.mjs": {
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893",
+      "bytes": 3072,
+      "local_FULL_equals_frozen_GitHub": true
+    },
+    "pump-report/operator/saved-outcome-observation.mjs": {
+      "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f",
+      "bytes": 3316,
+      "local_FULL_equals_frozen_GitHub": true
+    }
+  },
+  "line_evidence": {
+    "pump-report/operator/completed-auto-packet.mjs": {
+      "selector_observed_ts": 10,
+      "const maximum=": 21,
+      "live_run_not_read=true": 33,
+      "read_saved_outcome": 49,
+      "read_catalog_snapshot": 50,
+      "maximum_business_reads": 52
+    },
+    "pump-report/operator/completed-auto-packet-observation-once.mjs": {
+      "native_query_cap!==16": 35,
+      "candidate_instrument_ids.every": 36,
+      "CURRENT_EXACT_BUSINESS_ARTIFACT": 40,
+      "FRESH_FULL_LIVE_READBACK": 44,
+      "calls>=16": 68,
+      "reserveNativeRun": 64,
+      "finalizationStarted=true": 80
+    },
+    "pump-report/tests/runtime/completed-auto-packet-once.mjs": {
+      "assert.equal(reads.length,12)": 35,
+      "Unicode_catalog_preserved": 50
+    },
+    "pump-report/operator/saved-catalog-snapshot.mjs": {
+      "store.get(CATALOG": 9,
+      "snapshot_bytes_clocks_bound": 23,
+      "implementation_bound": 27,
+      "result.status=!": 29
+    }
+  },
+  "findings": {
+    "catalog_flag": {
+      "status": "PASS",
+      "admission": "Optional boolean validated; true dispatches exactly one existing readSavedCatalogSnapshot and assigns its unchanged envelope to packet.catalog_snapshot.",
+      "F651_compatible": "Packet itself is observer input: catalog_snapshot.private_evidence.snapshot has existing F616/F651 envelope; no remapping or re-aging."
+    },
+    "snapshot_binding": {
+      "status": "PASS",
+      "exact_PK": "pump:catalog:last-observed:v1",
+      "producer_pin": "Original snapshot implementation pin compared to admitted current artifact pin. Other implementation is explicit CATALOG_OTHER_IMPLEMENTATION_NOT_CURRENT_PROOF, not native current proof.",
+      "clocks": "Original received_ts/saved_ts/receipt_id/body_sha256/source_event_ts:null preserved; observed_ts is separate lookup clock; receive age not reset.",
+      "bounds": "One retained record, <=2000 rows, parsed-body bytes<=2097152/full-record<=1900000 and digest/schema/route/family/receipt/clock order checks; no current globalN/CORE claim."
+    },
+    "Unicode": {
+      "status": "PASS_FOR_ALL_CATALOG_ROWS",
+      "basis": "Observer returns snapshot body unchanged; no symbol filter, case conversion or ASCII gate on catalog rows. ROOT case checks Chinese symbol survives.",
+      "known_selection_limit": "CLI candidate_instrument_ids for the two explicit requested IDs retain ASCII pattern. This does not filter catalog/checked fallback; this PASS is for declared two known IDs, not new Unicode-ID admission extension."
+    },
+    "query_budget": {
+      "status": "PASS_STATIC",
+      "SENT_business_reads": {
+        "executor": 1,
+        "resources": 1,
+        "selected_run": 1,
+        "selected_original": 1,
+        "physical_card_page": 1,
+        "selected_card_PK": 1,
+        "candidate_queue": 1,
+        "retained_wave": 1,
+        "saved_outcome_max": 3,
+        "catalog_snapshot": 1,
+        "total": 12
+      },
+      "no_SENT_business_reads_upper_bound": 8,
+      "reservation_SQL": 2,
+      "finalization_SQL": 2,
+      "maximum_total_SQL": 16,
+      "enforcement": "DB adapter increments attempts before fetch and refuses calls>=16; shared native LOOKUP remains500R/30W/max10day. Query cap is not proof of actual D1 row cost; original shared ledger/unknown/reserves still apply.",
+      "guard_cap_reservation": "Shared native reserve insert+PK readback and final UPDATE+PK readback =4, no duplication of executor/run/original business reads in card observer."
+    },
+    "inflight": {
+      "status": "PASS",
+      "basis": "Actual captured executor object reused, never fabricated released/completed. When its live run differs, live run get returns null without native read; scope.live_run_outside_scope_not_read=true, while selected known_run is retained separately."
+    },
+    "selected_originals": {
+      "status": "PASS",
+      "basis": "One SENT original prioritized; no SENT permits <=2. Analysis requests outside prefetched selected original map throw instead of extra native reads."
+    },
+    "wave_outcome": {
+      "status": "PASS",
+      "basis": "Explicit flags honored; retained wave at most1 with same_wave_id diagnostic, no substitute for original.next_wave. Outcome gets journal/signal then outcome<=3 only after same-original delivery binding; no bound SENT =>0 outcome native reads."
+    },
+    "read_clocks": {
+      "status": "PASS_WITH_EXPLICIT_SNAPSHOT_SCOPE",
+      "basis": "selector_observed_ts follows first executor/resources reads; executor_snapshot_ts preserves that selector clock and scope flags executor/selected-run reuse. Nested observer read_started_ts is sub-observer start, not a fresh executor/run fetch. Original persisted source/run clocks remain unchanged.",
+      "limit": "No per-PK transport time interval or atomic multi-key snapshot claimed."
+    },
+    "root_offline_proof": {
+      "status": "READ_ONLY_ACCEPTED_NOT_REPEATED",
+      "path": "checkpoints/pump-report-20261025/ROOT_COMPLETED_AUTO_PACKET_CASE_V1.json",
+      "sha256": "80533fffeab6a2d548d0241baf8e82aafb373cbb28cfd683eee08b99b998bbfe",
+      "FULL_GitHub_read": true,
+      "local_same_SHA_verified": true,
+      "case_count": 1,
+      "fixture_class": "ARTIFICIAL_VALIDATOR_SHAPES_NO_MARKET_PROOF",
+      "worst12plus4": 16,
+      "engine": 0,
+      "build": 0,
+      "native": 0,
+      "market": 0,
+      "TG": 0
+    }
+  },
+  "live_program": {
+    "status": "UNCHANGED_BY_OPERATOR_REVIEW",
+    "modules": 76,
+    "implementation_sha256": "ca0ac26fb8ff0847b61a4c9a1fb2dd34a7dffc44bcc7c30fecf5840ddec98d91",
+    "artifact_sha256": "d91c4e4554ca6c92f7142a14c8a7be17e8e7f687fdc4ce6eca4f648038b7e5df",
+    "artifact_local_hash_verified": true,
+    "shared_native_modules_equal_local": true,
+    "native_budget_sha256": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+    "store_sha256": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf"
+  },
+  "SOURCE_execution": {
+    "Node": 0,
+    "module_imports": 0,
+    "tests": 0,
+    "builds": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "Cloudflare_HTTP": 0,
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "new_connections": 0
+  },
+  "not_claimed": [
+    "Actual AUTO or SENT observed",
+    "Current catalog cohort counts or current global cryptoN",
+    "Fresh market data or current CORE",
+    "New native/provider admission or budget refund",
+    "Atomic multi-key snapshot or storage-capacity acceptance"
+  ],
+  "preserved": "Qualifications24/CONTROL6/METADATA2, original costs/unknowns/holds/reserves/manual3/caps/9pauses/2OWNERdeferrals; no changes.",
+  "next": "ROOT may use exact frozen operator under separate actual admitted one lookup. SOURCE does not execute, re-run accepted cases or wait until10MSK under own lease."
+}
