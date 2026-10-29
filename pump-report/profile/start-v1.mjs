@@ -1,5 +1,5 @@
 export const START_PROFILE = Object.freeze({
-  version: 'pump-report-start-v1',
+  version: 'pump-report-start-v2-seed4h-20261029',
   status: 'PROPOSED_ENGINEERING_PROFILE_NOT_PROFIT_VALIDATED',
   automatic_growth: {day_pct: 20, short_pct: 10, short_windows_ms: [300000, 900000, 3600000]},
   horizon_ms: 14400000,
@@ -10,7 +10,7 @@ export const START_PROFILE = Object.freeze({
   activity_windows_ms: [180000, 300000],
   elevated_volume_ratio: 2,
   wave_max_age_ms: 14400000,
-  wave_search_ms: 3600000,
+  wave_search_ms: 14400000,
   impulse_window_ms: 300000,
   sharp_speed_multiple: 2,
   reclaim_closed_bars: 1,

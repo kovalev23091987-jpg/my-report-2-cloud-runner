@@ -165,7 +165,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
     const step = profile.candle_interval_ms;
     if (step !== 60000) fail('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');
     // The oldest searched impulse needs its own preceding full baseline:
-    // wave search60m + impulse5m + baseline60m =125 closed minutes.
+    // Configured search + impulse + preceding baseline; no extra HTTP request.
     const durations = [profile.wave_search_ms, profile.impulse_window_ms, profile.volume_baseline_ms,
       ...profile.automatic_growth.short_windows_ms];
     if (durations.some(ms => !Number.isSafeInteger(ms) || ms <= 0)) fail('CORE_CANDLE_WINDOW_PROFILE_INVALID');
