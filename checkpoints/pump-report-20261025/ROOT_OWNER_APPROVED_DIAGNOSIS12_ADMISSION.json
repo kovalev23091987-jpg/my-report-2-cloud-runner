@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_CURRENT_ANALYSIS_PACKET_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "6135fde90ee75b73c942d2a44c73e7e1c9e1c494",
   "own_lease": {
     "owner": "CODEX:PUMP_LIVE_AUTO_LOG_AND_LAUNCH_ACCEPTANCE_20261029:1793264922444",
@@ -56,5 +56,27 @@
     "sha256": "ea74c15b7fc81bde89b86a6464dd073bceca76dc5670e55337680a78e3115154",
     "status": "PASS_STATIC_CODE_WITH_FRESH_IO_PREREQUISITES",
     "fresh_FULL_prerequisite_satisfied": true
+  },
+  "actual": {
+    "private_path": "pump-report/.private/observations/oct29-current-analysis-diagnosis12-result.json",
+    "sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+    "state": "FINALIZED",
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-auto-diagnosis-20261029-one-owner-extra-12",
+      "usage": {
+        "requests": 13,
+        "rows_read": 59,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 59,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+    "first_current_AUTO_SENT": false
   }
 }
