@@ -1,0 +1,495 @@
+{
+  "schema": "F660_ACTUAL_DIAGNOSIS12_SOURCE_BUDGET_QUEUE_REVIEW_V1",
+  "status": "SOURCE_PASS_BUDGET_REPRODUCED_QUEUE_PROPOSAL_ONLY",
+  "authority_main": "eebda2f9e4b855f7f2deeae9bbe6205de617cde7",
+  "own_acquire_head": "00209e57cefe435786081a1e04a06a9fea274473",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793266566000",
+  "input": {
+    "private_path": "pump-report/.private/observations/oct29-current-analysis-diagnosis12-result.json",
+    "sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+    "bytes": 1606842,
+    "pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+    "native12_ROOT_cost": {
+      "status": "FINALIZED",
+      "SQL": 13,
+      "R": 59,
+      "W": 4,
+      "unknown_ops": 0
+    },
+    "raw_not_published": true
+  },
+  "code": {
+    "pump-report/runtime/budget.mjs": {
+      "sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+      "same_as_local": true,
+      "main_git_blob": "2fa5ed93174934793479b82ae5b28236efb0a67b"
+    },
+    "pump-report/runtime/candidate-surplus.mjs": {
+      "sha256": "c860ebd4c51f021293b618c36bc7646038ac1beba655c96fa058626a2a30762f",
+      "same_as_local": true,
+      "main_git_blob": "65a0564126e32ac08f24ff2f1a2ef27b1de01d53"
+    },
+    "pump-report/runtime/future-candidate-reserve.mjs": {
+      "sha256": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+      "same_as_local": true,
+      "main_git_blob": "e59e0390c6e6f8a22848295feea31c866d50eb2d"
+    },
+    "pump-report/runtime/discovery-reserve.mjs": {
+      "sha256": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2",
+      "same_as_local": true,
+      "main_git_blob": "99a3f3c5ef776162585c8f2da361e452b4c95fb4"
+    },
+    "pump-report/runtime/runner.mjs": {
+      "sha256": "cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be",
+      "same_as_local": true,
+      "main_git_blob": "deafaf519381fbc3a195c9d2a4042f2b631ce9bf"
+    },
+    "pump-report/runtime/candidate-priority.mjs": {
+      "sha256": "3950f9b86ebfd133c3696bb323cb5d942399a3375c2fd0c4a0eb9ab79a1f8f3a",
+      "same_as_local": true,
+      "main_git_blob": "2753ed550e394e86dd56c9f0436c83a44d33f425"
+    },
+    "pump-report/runtime/production-policy.mjs": {
+      "sha256": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+      "same_as_local": true,
+      "main_git_blob": "5d3cbfb40b4519b6c73bcbabee17e2f0e04a18d9"
+    },
+    "pump-report/profile/start-v1.mjs": {
+      "sha256": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521",
+      "same_as_local": true,
+      "main_git_blob": "d61f2fa57141dc042ab1e2a9055b26703ac57da8"
+    }
+  },
+  "originals": [
+    {
+      "instrument": "BINGX:USDT_M:101138:INIT-USDT",
+      "key": "pump:analysis:39ef87a6355220e2b631b93f07688fd9ed84d079a850bc0eb648d3472356f2b1",
+      "run_id": "3e59320c-dc3c-4bdd-81b3-339915630844",
+      "pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+      "analysis_ts": 1793265120249,
+      "saved_ts": 1793265120414,
+      "observed_ts": 1793266419259,
+      "status": "REJECTED",
+      "ready": false,
+      "reasons": [
+        "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+      ],
+      "checks": {
+        "symbol": "INIT-USDT",
+        "times": {
+          "price": {
+            "age_ms": 8249,
+            "receive_to_analysis_ms": 6231,
+            "ttl_remaining_ms": 21751
+          },
+          "candles": {
+            "age_ms": 60249,
+            "receive_to_analysis_ms": 2208,
+            "ttl_remaining_ms": 29751
+          },
+          "orderbook": {
+            "age_ms": 913,
+            "receive_to_analysis_ms": 827,
+            "ttl_remaining_ms": 14087
+          },
+          "growth_24h": {
+            "age_ms": 60249,
+            "receive_to_analysis_ms": 3886,
+            "ttl_remaining_ms": 29751
+          },
+          "price_structure": {
+            "age_ms": 60249,
+            "receive_to_analysis_ms": 3886,
+            "ttl_remaining_ms": 29751
+          }
+        },
+        "CORE_checks": {
+          "closed_all": true,
+          "contiguous": true,
+          "width_one_min": true,
+          "base_qty_nonnull": 0,
+          "quote_turnover_nonnull": 0,
+          "native_quantity_nonnull": 305,
+          "native_unit_values": [
+            "UNKNOWN"
+          ],
+          "comparison_keys": [
+            "BINGX|USDT_M|BINGX:USDT_M:101138:INIT-USDT|/openApi/swap/v3/quote/klines|volume|60000"
+          ]
+        },
+        "context_rows": 1440,
+        "context_contiguous": true,
+        "context_width5_all": true,
+        "context_CORE_overlap_equal_rows": 305,
+        "distinct_source_receipt_ids": [
+          "08584b45-1112-4123-9981-a16e92cc07e4",
+          "299ea6ee-dd56-4540-a6e0-1028e4e09f7b",
+          "5e5cc7a9-b9dc-439d-95ba-5e6fdbfec7eb",
+          "b623d9af-ed36-4414-aeba-98ffff4bfd0d"
+        ],
+        "original_observed_age_ms": 1299010
+      },
+      "facts": {
+        "price": {
+          "status": "USABLE",
+          "unit": "USDT_PER_BASE",
+          "event_ts": 1793265112000,
+          "received_ts": 1793265114018,
+          "expires_ts": 1793265142000,
+          "reason": null,
+          "evidence_ref": "299ea6ee-dd56-4540-a6e0-1028e4e09f7b",
+          "usable_at_analysis": true
+        },
+        "ticker_24h": {
+          "status": "INCOMPLETE",
+          "unit": "USDT_ROLLING_24H",
+          "event_ts": 1793265112000,
+          "received_ts": 1793265114018,
+          "expires_ts": 1793265142000,
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "evidence_ref": "299ea6ee-dd56-4540-a6e0-1028e4e09f7b",
+          "usable_at_analysis": false
+        },
+        "candles": {
+          "status": "USABLE",
+          "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+          "event_ts": 1793265060000,
+          "received_ts": 1793265118041,
+          "expires_ts": 1793265150000,
+          "reason": null,
+          "evidence_ref": "08584b45-1112-4123-9981-a16e92cc07e4",
+          "rows": 305,
+          "usable_at_analysis": true
+        },
+        "orderbook": {
+          "status": "USABLE",
+          "unit": "USDT_PRICE_BASE_QUANTITY",
+          "event_ts": 1793265119336,
+          "received_ts": 1793265119422,
+          "expires_ts": 1793265134336,
+          "reason": null,
+          "evidence_ref": "5e5cc7a9-b9dc-439d-95ba-5e6fdbfec7eb",
+          "usable_at_analysis": true
+        },
+        "growth_24h": {
+          "status": "USABLE",
+          "unit": "USDT_CLOSED_ROLLING_24H",
+          "event_ts": 1793265060000,
+          "received_ts": 1793265116363,
+          "expires_ts": 1793265150000,
+          "reason": null,
+          "evidence_ref": "b623d9af-ed36-4414-aeba-98ffff4bfd0d",
+          "usable_at_analysis": true
+        },
+        "price_structure": {
+          "status": "USABLE",
+          "unit": "USDT_OHLC_MINUTE_PRICE_ONLY",
+          "event_ts": 1793265060000,
+          "received_ts": 1793265116363,
+          "expires_ts": 1793265150000,
+          "reason": null,
+          "evidence_ref": "b623d9af-ed36-4414-aeba-98ffff4bfd0d",
+          "rows": 1440,
+          "usable_at_analysis": true
+        }
+      }
+    },
+    {
+      "instrument": "BINGX:USDT_M:101334:IDOL-USDT",
+      "key": "pump:analysis:4150bf418dcea8df33c764a3b14420867b469646edac6750d9fd5dc13228d550",
+      "run_id": "96a10752-9169-4511-9fcd-27214d24bec5",
+      "pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+      "analysis_ts": 1793264969642,
+      "saved_ts": 1793264969907,
+      "observed_ts": 1793266420133,
+      "status": "REJECTED",
+      "ready": false,
+      "reasons": [
+        "PLAN_INVALIDATED"
+      ],
+      "checks": {
+        "symbol": "IDOL-USDT",
+        "times": {
+          "price": {
+            "age_ms": 11642,
+            "receive_to_analysis_ms": 8646,
+            "ttl_remaining_ms": 18358
+          },
+          "candles": {
+            "age_ms": 29642,
+            "receive_to_analysis_ms": 3137,
+            "ttl_remaining_ms": 60358
+          },
+          "orderbook": {
+            "age_ms": 1526,
+            "receive_to_analysis_ms": 1496,
+            "ttl_remaining_ms": 13474
+          },
+          "growth_24h": {
+            "age_ms": 29642,
+            "receive_to_analysis_ms": 5541,
+            "ttl_remaining_ms": 60358
+          },
+          "price_structure": {
+            "age_ms": 29642,
+            "receive_to_analysis_ms": 5541,
+            "ttl_remaining_ms": 60358
+          }
+        },
+        "CORE_checks": {
+          "closed_all": true,
+          "contiguous": true,
+          "width_one_min": true,
+          "base_qty_nonnull": 0,
+          "quote_turnover_nonnull": 0,
+          "native_quantity_nonnull": 305,
+          "native_unit_values": [
+            "UNKNOWN"
+          ],
+          "comparison_keys": [
+            "BINGX|USDT_M|BINGX:USDT_M:101334:IDOL-USDT|/openApi/swap/v3/quote/klines|volume|60000"
+          ]
+        },
+        "context_rows": 1440,
+        "context_contiguous": true,
+        "context_width5_all": true,
+        "context_CORE_overlap_equal_rows": 305,
+        "distinct_source_receipt_ids": [
+          "3496749c-58d5-483d-a080-fc38c784eb1d",
+          "7264d327-ee0d-4bbc-8898-e7bf866b5d35",
+          "ba4c4f57-61e0-4dd7-a624-79afe714d244",
+          "ccb2778d-f561-4784-8f61-f90e5fe54c43"
+        ],
+        "original_observed_age_ms": 1450491
+      },
+      "facts": {
+        "price": {
+          "status": "USABLE",
+          "unit": "USDT_PER_BASE",
+          "event_ts": 1793264958000,
+          "received_ts": 1793264960996,
+          "expires_ts": 1793264988000,
+          "reason": null,
+          "evidence_ref": "3496749c-58d5-483d-a080-fc38c784eb1d",
+          "usable_at_analysis": true
+        },
+        "ticker_24h": {
+          "status": "INCOMPLETE",
+          "unit": "USDT_ROLLING_24H",
+          "event_ts": 1793264958000,
+          "received_ts": 1793264960996,
+          "expires_ts": 1793264988000,
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "evidence_ref": "3496749c-58d5-483d-a080-fc38c784eb1d",
+          "usable_at_analysis": false
+        },
+        "candles": {
+          "status": "USABLE",
+          "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+          "event_ts": 1793264940000,
+          "received_ts": 1793264966505,
+          "expires_ts": 1793265030000,
+          "reason": null,
+          "evidence_ref": "ccb2778d-f561-4784-8f61-f90e5fe54c43",
+          "rows": 305,
+          "usable_at_analysis": true
+        },
+        "orderbook": {
+          "status": "USABLE",
+          "unit": "USDT_PRICE_BASE_QUANTITY",
+          "event_ts": 1793264968116,
+          "received_ts": 1793264968146,
+          "expires_ts": 1793264983116,
+          "reason": null,
+          "evidence_ref": "ba4c4f57-61e0-4dd7-a624-79afe714d244",
+          "usable_at_analysis": true
+        },
+        "growth_24h": {
+          "status": "USABLE",
+          "unit": "USDT_CLOSED_ROLLING_24H",
+          "event_ts": 1793264940000,
+          "received_ts": 1793264964101,
+          "expires_ts": 1793265030000,
+          "reason": null,
+          "evidence_ref": "7264d327-ee0d-4bbc-8898-e7bf866b5d35",
+          "usable_at_analysis": true
+        },
+        "price_structure": {
+          "status": "USABLE",
+          "unit": "USDT_OHLC_MINUTE_PRICE_ONLY",
+          "event_ts": 1793264940000,
+          "received_ts": 1793264964101,
+          "expires_ts": 1793265030000,
+          "reason": null,
+          "evidence_ref": "7264d327-ee0d-4bbc-8898-e7bf866b5d35",
+          "rows": 1440,
+          "usable_at_analysis": true
+        }
+      }
+    }
+  ],
+  "source_findings": [
+    "Both retained exact-reader BOUND immutable originals are OBSERVED AUTO/PRODUCTION current272. Each has305 actual closed contiguous minute CORE rows, zero gaps, all close<=analysis, and1440 contiguous closed price-only context rows. All305 CORE OHLC overlap exactly with same day context. Two observed samples, not globalN/all548/worstphysical capacity proof.",
+    "At analysis INIT price/candles/book ages8249/60249/913ms, TTLremaining21751/29751/14087ms; IDOL11642/29642/1526ms and18358/60358/13474ms. Later observation ages1299010/1450491ms do not refresh facts. INIT analysis12:12:00.249MSK; IDOL12:09:29.642MSK.",
+    "Only same native relative quantity qualified: volume_native nonnull305; volume_base/turnover_quote null305; native_quantity_unit UNKNOWN; exact per-instrument BINGX USDT_M /klines volume60000 comparison key. No absolute base/USD/turnover claim. CCXT_CONSUMER_OPEN_TIME under saved owner semantic decision, not independent vendor guarantee.",
+    "Four distinct existing provider receipt IDs per original: overview(price+ticker), day klines, CORE klines, book. One primary provider BingX. Price reused overview. growth24h+1440 price_structure share same day receipt/received clock, additional_request=false. Matching CLOSED surplus grant consumed4 and retains8. Raw provider ACK/body and full original business-run SQL receipts absent; references are not whole-account/network cost closure.",
+    "Ticker rolling24h remains INCOMPLETE/ROLLING_24H_OPEN_UNQUALIFIED; separate closed growth24h USABLE. Map NOT_CHECKED/OPTIONAL_MAP_NOT_REQUESTED with no zones; no map gate/unsupported inference. Optional trades/OI/funding absent after rejected analysis.",
+    "INIT REJECTED INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED; IDOL REJECTED PLAN_INVALIDATED. Source305/1440 delivery does not prove READY/SENT or strategy re-evaluation."
+  ],
+  "MAGMA_run": {
+    "id": "f8940f3c-c598-4fe9-8a8f-af09fe147e14",
+    "selection_ts": 1793266257380,
+    "selection_MSK": "2026-10-29T12:30:57.380000+03:00",
+    "executor_release_MSK": "2026-10-29T12:31:00.284000+03:00",
+    "outcome": "DEFERRED/PROTECTED_DAY_RESERVE/WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+    "HTTP": 2,
+    "confirmed_discovery_receipts": 2,
+    "checked": 0,
+    "MAGMA_CORE_HTTP": 0,
+    "MAGMA_deep_slot_spent_proven": false,
+    "final_snapshot_mode": "STATISTICS is end-of-run mode; checkInstrument sets AUTO before candidate admission."
+  },
+  "clock_boundary": {
+    "packet_start_MSK": "2026-10-29T12:33:36.304000+03:00",
+    "packet_end_MSK": "2026-10-29T12:33:41.539000+03:00",
+    "resources_read_window_UTC": [
+      "2026-10-29T09:33:36.304Z",
+      "2026-10-29T09:33:38.587Z"
+    ],
+    "atomic_refusal_snapshot": false,
+    "limit": "Resources were read sequentially about3min after selection12:30:57.380/release12:31:00.284MSK and lack own captured revision/updated_ts. Following arithmetic reconstructs LATER captured state using same in-hour schedule counts; it agrees with actual denial but is not atomic refusal-time counters. All9 holds had already CLOSED by12:12:02.251."
+  },
+  "budget": {
+    "snapshot": {
+      "global_day": 134,
+      "BINGX_day": 134,
+      "BINGX_month": 1618,
+      "automatic_charged": 132,
+      "limit": 638,
+      "limit_formula": "floor((900-102-0)*0.8)=638",
+      "outstanding": 0,
+      "retained_old_unknowns": 2
+    },
+    "fixed": {
+      "manual_BINGX": 51,
+      "manual_TELEGRAM": 3,
+      "manual_total": 54,
+      "manual_checks": 3,
+      "delivery": 24,
+      "outcomes": 24,
+      "total": 102
+    },
+    "holds": {
+      "current_day_CLOSED": 9,
+      "original": 108,
+      "consumed": 36,
+      "remaining": 72,
+      "remaining_BINGX": 54,
+      "remaining_TELEGRAM": 9,
+      "until_UTC": "2026-10-30T00:00:00Z",
+      "until_MSK": "2026-10-30T03:00:00+03:00",
+      "grant_cap": 24,
+      "unused_logical_grants": 15,
+      "old_other_day_CLOSED_not_current_holds": true
+    },
+    "future": {
+      "light_ticks_1235_to1955": 89,
+      "light_HTTP": 178,
+      "hour_slots_13_to19": 7,
+      "frozen_base_candidates_per_hour": 3,
+      "first_candidate_HTTP": 84,
+      "extra_two_HTTP": 168,
+      "total_future_base": 252
+    },
+    "base_issued": {
+      "hour10": 3,
+      "hour11": 3,
+      "hour12": 3,
+      "total": 9,
+      "current_hour_maximum": 3,
+      "current_hour_charged_HTTP": 10
+    },
+    "candidate_upper": {
+      "total": 12,
+      "BINGX": 10,
+      "TELEGRAM": 1,
+      "unassigned_map": 1,
+      "reason": "Whole potentially READY path must fit before CORE; prior two rejects consumed4 but cannot price every next candidate at4."
+    },
+    "arithmetic": {
+      "planned": {
+        "expression": "132+12+72+178+84+168",
+        "total": 646,
+        "limit": 638,
+        "excess": 8
+      },
+      "global_day": {
+        "expression": "134+12+72+102+178+84+168",
+        "total": 750,
+        "limit": 900
+      },
+      "BINGX_day": {
+        "expression": "134+10+54+99+178+70+140",
+        "total": 685,
+        "limit": 900
+      },
+      "BINGX_month": {
+        "expression": "1618+10+54+99+178+70+140",
+        "total": 2169,
+        "limit": 27900
+      },
+      "TELEGRAM_day": {
+        "expression": "0+1+9+3+7+14",
+        "total": 34,
+        "limit": 47
+      },
+      "run_upper": {
+        "expression": "2+12",
+        "total": 14,
+        "limit": 164
+      }
+    },
+    "double_count_review": "No demonstrated double counting: consumed36 already charged, unused72 added => original108. Future84+168=7hours*3candidates*12, covering distinct future slots; current12h3 slots already issued. Fixed102 was excluded BEFORE80percent plan creation and is included only in independent global/provider checks, not added inside646. Issued floors and holds do not refund. Native/pacing/surplus floor checks are later than failing planned gate; do not blame unknown SQL capacity or provider900.",
+    "resumption": "Light scans alone keep in-hour646 constant: charged rises2 while futurelight falls2. Conditional13:00 projection, if ONLY six expected light scans and no other changes: charged144+candidate12+held72+futurelight166+futurebase216=610<=638;3 new base places accrue. This is conditional arithmetic, not a new admission or promised run/READY. Actual provider/native/window/clock gates still apply. No cap raise/refund proposed."
+  },
+  "queue": {
+    "symbol": "MAGMA-USDT",
+    "reported_day": 7.17,
+    "preliminary": 8.381992842343177,
+    "near_day": 16,
+    "near_short": 8,
+    "hard_day": 20,
+    "hard_short": 10,
+    "active_wave": false,
+    "first_seen": 1793116254706,
+    "first_seen_MSK": "2026-10-27T18:50:54.706000+03:00",
+    "last_checked": null,
+    "waiting_minutes": 2500.0445666666665,
+    "score": 2500.0445666666665,
+    "movement_freshness": 0,
+    "entry_proximity": 0,
+    "confirmed_fraction": 0,
+    "finding": "8.38>=8 admits early prequeue,7.17<16. Old first_seen27Oct dominates bounded preference bonuses. Selection and WHOLE12 admission precede qualified closed growth/CORE. Thus near-only rows CAN spend scarce deep logical slots/HTTP before hard20/10 proof; MAGMA did NOT do so in this actual budget-blocked run. Unconfirmed overview hint is not proof closed short/day growth is below hard thresholds.",
+    "proposal": {
+      "status": "ROOT_OWNED_NOT_IMPLEMENTED_NOT_QUALIFIED",
+      "file": "pump-report/runtime/runner.mjs",
+      "location": "selectAutomatic lines88-91",
+      "change": "Keep0.8 prequeue, existing thresholds, first_seen, no-refund/costs. Add comparator tier1 for valid queueWatchActive OR reported_day_growth>=existing day20 OR preliminary_growth>=existing short10; tier0 remaining near-only. Sort tier descending then unchanged score/first_seen, unchanged exact source-eligibility find. Tier is light hint/watch priority only, never hard-growth proof or new signal gate. Requires ROOT/analytics review and one affected connected case before deployment; F660 performs none.",
+      "saved_effect": "MAGMA near-only goes after live INIT and stronger VEIL/IDOL hints if still source-eligible. Stale GPSOL also has high day hint; this tier proposal alone does not solve stale rows or prove GPSOL current availability.",
+      "test_scope_proposed": "Longwaiting near-only vs fresh>=100percent hint/livewatch, source-ineligible leader, near-only fallback; unchanged actual closed growth rejection and no-refund."
+    }
+  },
+  "cost": {
+    "F660_Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0,
+    "F658_repeated": 0
+  },
+  "preserved": "All oldspends/unknowns/issuedfloors/holds/manual3/futurebase/caps80percent/9pauses2OWNERdeferrals. No main/runtime/profile/settings edits; source own handoff only. Native12 is ROOT spent historical, no native13 admission."
+}
