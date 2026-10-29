@@ -1,0 +1,25 @@
+# BZ29 — STATIC PASS точному queue diff; actual ON отказ подтверждён original
+
+Финальный addendum: main093dee716e69d78383fb5cbe726a37afd6bb491d, candidate-priority SHA3950f9b86ebfd133c3696bb323cb5d942399a3375c2fd0c4a0eb9ab79a1f8f3a (добавлен typeof wave_state, invalid→UNKNOWN), runnercf4aa без изменений. Финальный STATIC PASS. Artifactffe873357d508196aa168514ec6e4fe979fe79d80487903381a6d76c88db66cf/pin0e9dc66373dedaaa87e1e62731ad083deb09d20aff7ba72b6f47e32ffc0e9fd1 проверен по сохранённым байтам:76modules, ровно2business+generatedpin изменились,73same vs d91c4e45. Generated artifact pin62d441 — отдельный generated module, не утверждается совпадение с локальным stub. ROOT initial harness FAIL(2vs1internalreads/build0) не скрыт; narrow repaired proof0748b1ea3a2878e8d6257790fd82d650b03375c0c2707012a5fc36d08a9ad41f PASS/build1/controllerMock11, actualIO0. Подробно `BZ29_FINAL_EXACT_BYTES_REVIEW_V1.json`. Это не native install/realAUTO acceptance; helper ничего не перезапускал.
+
+Проверен main `8894e2b59844fbd77dbf818de75bb3537fc408e1` (parent19d49afc), ровно2 source changes:
+
+- `runtime/candidate-priority.mjs`: SHA256 `90d442ab48b14c785b71dc36fea04e7f9e538c0ec299d9ab9c08a47c73757254`.
+- `runtime/runner.mjs`: SHA256 `cf4aa2a54424883a13f13514e094c4006c0aa6fd4e3925d11ef225153e47a2be`.
+
+STATIC PASS: вместо догадки last_checked+4h используются точные metadata и bounded legacy hydration<=4 PK. В hydration входят и active-array hints, и queue.active=true; новое DBwave после старой частичной записи сохраняется LIVE. Полный snapshot-match queue защищает от наложения старой expired metadata на более новую строку. Для новых записей wave+queue идут существующим atomicPair; производный active-array может отстать. UNKNOWN остаётся возможным watch; timestamp probe и least-probed-first не дают первым4UNKNOWN навсегда вытеснить остальные.
+
+NONE/EXPIRED снимают watch, а selectAutomatic повторяет проверку времени: expiry между discovery и selection учитывается. LIVE pullback сохраняется без нового роста; новый prequeue growth допускает даже expired row как обычного кандидата. Cached distance становится null, proximity0; оригинальные зоны не удаляются. MANUAL без queue entry не создаёт entry. SaveOriginal/publication, analytics movement/seed/reclaim/порог10/profile/caps не менялись.
+
+Граница SQL: добавлены1queuePK+<=4wavePK; existing discovery queue CAS переиспользован. Штатный D1Store atomic/atomicPair допускает5attempts — строгая цифра «CAS<=3SQL при любой конкуренции» этим diff не доказана. Pair меняет row-cost envelope относительно старых wave.set+queue.atomic. ROOT ещё выполняет одну affected проверку/build/controller и actual admission; helper Node/import/engine/tests/build/native/CF/provider/TG=0. Принятые старые кейсы не повторялись. Это static PASS, не install/native или реальная отправка.
+
+Actual F5 SHA `e9c7d26513dbcc23e2ba204098b9d6df2a8dd31188e26aed968adf20f34f5c5f`: run6275f4d0 checked0; VEIL deferred **до CORE** по WHOLE_CANDIDATE_PLANNED_ALLOCATION. Старые JCT/BULLA/APR active watch показаны diagnostics, их текущие wave PK там не захвачены. F5 не является original ON.
+
+Теперь отдельно получен actual lookup6 SHA `0df36660050b049d9339bda7ae83ae946c8558d79a6661dc44e622d7ec2361e4`: run9cf8cdfa, analysis `ea73f249045d28e1792e62d5ea9dfea982770a24b12ea6d9a02d217405b52db7`. Исходный JS JSON token SHA analysis в run.checked и immutable original совпал с ключом; input/run/instrument/clock/current76pin ca0ac/evidenceOBSERVED связаны, без пересчёта engine. Analysis29Oct10:07:02.265Москва, AUTO/PRODUCTION/v6, ready=false, automatic_eligible=false, REJECTED **WAVE_LIFETIME_EXPIRED**. Предыдущая wave истекла28Oct16:01:56.252. Growth24h+21.703854% проходит, 5/15/60 не проходят; один growth не оживляет старую волну. Сохранённый movement не нашёл нового подходящего impulse; новый seed не подбирался в review.
+
+CORE price/candles/book USABLE и свежи на original known-at;125closed minutes, native-relative volume (не USD/base). ЛиквидностьUSABLE до3000USDT, spread0.057257%. Same-request price-only1440contextUSABLE/62713B, additional_request=false, но plan context NOT_EVALUATED/CORE_ANALYSIS_NOT_READY: отказ произошёл раньше, stageMOVEMENT. Plan/card_text/delivery=null, notification ANALYSIS_NOT_READY. Это не нехватка зон/не доказанный недостаточный плановый потенциал/не сбой Telegram. Optional map/trades/OI/funding не причина. EVAA после ON deferred по SURPLUS_LOGICAL_GRANT_LIMIT отдельно от причины ON.
+
+Точные clocks/coverage/provenance/ограничения сохранены в `BZ29_ACTUAL_ON_READONLY_FINDINGS_V1.json`, SHA256 `3074e5a3fcc556272fd2dd51fff7ab91d5ba0c681367f4783e69c77e72f9232e`. ROOTlookup6 FINALIZED8SQL22R4W0unknown, новые provider/TG0; helper0. Current retained-wave PK/ACK/outcome этого original не захвачены. Порог/стратегия/часы/расходы/unknowns/holds/issued floors/manual3/резервы/9пауз/2OWNERdeferrals сохранены; первый genuine AUTO SENT и fullTZ OPEN.
+
+BZ28 точные пути и SHA перечислены в `BZ29_EXACT_QUEUE_DIFF_STATIC_REVIEW_V1.json`; исходные файлы не менялись. Своя bounded аренда освобождается заранее, отдельная FULL квитанция рядом.
+

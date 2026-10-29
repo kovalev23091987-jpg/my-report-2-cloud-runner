@@ -1,0 +1,245 @@
+{
+  "schema": "F654_VEIL_ACTUAL_PRE_CORE_BUDGET_BLOCKER_STATIC_V1",
+  "status": "EXACT_BLOCKER_CONFIRMED_NO_ARITHMETIC_PATCH_JUSTIFIED",
+  "authority_main": "218c3766698d2b1d7bd423efa54c20820858a413",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793259756000",
+  "ROOT_owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
+  "raw": {
+    "F5": {
+      "path": "pump-report/.private/observations/oct29-current-auto-packet-five-result.json",
+      "sha256": "e9c7d26513dbcc23e2ba204098b9d6df2a8dd31188e26aed968adf20f34f5c5f",
+      "bytes": 1234104,
+      "known_run_id": "6275f4d0-dce1-429c-b5ad-313fc5ae72ce",
+      "path_basis": "Top-level known_run, not private_evidence",
+      "selected_instrument": "BINGX:USDT_M:104258:VEIL-USDT",
+      "selection_ts": 1793259056473,
+      "selection_MSK": "2026-10-29T10:30:56.473+03:00",
+      "checked": 0,
+      "run_HTTP": 2,
+      "run_HTTP_kind": "BINGX discovery catalog+ticker, both confirmed200; no VEIL CORE/analysis/delivery executed",
+      "actual_lookup": {
+        "SQL": 9,
+        "rows_read": 20,
+        "rows_written": 4,
+        "unknown_ops": 0
+      }
+    },
+    "F6": {
+      "path": "pump-report/.private/observations/oct29-known-on-run-six-result.json",
+      "sha256": "0df36660050b049d9339bda7ae83ae946c8558d79a6661dc44e622d7ec2361e4",
+      "known_run_id": "9cf8cdfa-99bc-4ea0-9c43-595a77ca5623",
+      "run_HTTP": 6,
+      "kind": "2 discovery +4 CORE-purpose receipts, of which candidate counter3; no blanket current CORE qualification inferred.",
+      "subsequent_EVAA_deferral": "SURPLUS_LOGICAL_GRANT_LIMIT",
+      "actual_lookup": {
+        "SQL": 8,
+        "rows_read": 22,
+        "rows_written": 4,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "code": {
+    "frozen_live_artifact_sha256": "d91c4e4554ca6c92f7142a14c8a7be17e8e7f687fdc4ce6eca4f648038b7e5df",
+    "implementation_pin": "ca0ac26fb8ff0847b61a4c9a1fb2dd34a7dffc44bcc7c30fecf5840ddec98d91",
+    "files": {
+      "pump-report/runtime/budget.mjs": {
+        "sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+        "git_blob": "2fa5ed93174934793479b82ae5b28236efb0a67b",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/candidate-surplus.mjs": {
+        "sha256": "c860ebd4c51f021293b618c36bc7646038ac1beba655c96fa058626a2a30762f",
+        "git_blob": "65a0564126e32ac08f24ff2f1a2ef27b1de01d53",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/production-policy.mjs": {
+        "sha256": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+        "git_blob": "5d3cbfb40b4519b6c73bcbabee17e2f0e04a18d9",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/discovery-reserve.mjs": {
+        "sha256": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2",
+        "git_blob": "99a3f3c5ef776162585c8f2da361e452b4c95fb4",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/future-candidate-reserve.mjs": {
+        "sha256": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+        "git_blob": "e59e0390c6e6f8a22848295feea31c866d50eb2d",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/runner.mjs": {
+        "sha256": "41e3e6733b77588c0e8452a1acdd7501399ab99263d7016867fa106e2133cea4",
+        "git_blob": "274f58516aeb55f3d57dc394e338e660040cf9ef",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/worker.mjs": {
+        "sha256": "92dea6720d54f987df78e07cce34c8e350cc2d33f0b412136ee2366a75d5550a",
+        "git_blob": "40e10b6651e680ed62a1bf606b3a2ce96254f281",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/runtime/provider-policy.mjs": {
+        "sha256": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded",
+        "git_blob": "7270572633e57245c4b18ece98b7750172b919e2",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/sources/index.mjs": {
+        "sha256": "bca4655def64a90768ee6e685e95e2fc1b37c8caff95c73aaded4aa7872843a9",
+        "git_blob": "4dbd36e95758ec29be5a35c5b1e44a045c522e3d",
+        "artifact_FULL_equals_frozen_main": true
+      },
+      "pump-report/profile/start-v1.mjs": {
+        "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+        "git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de",
+        "artifact_FULL_equals_frozen_main": true
+      }
+    },
+    "pending_local_runner": "Local ROOT runner differs from live/frozen main; this budget diagnosis uses exact218c/frozen artifact runner. Queue patch review is separate.",
+    "branch": [
+      "runner.checkInstrument sets AUTO mode and checks source-evidence, then calls budget.admitCandidate BEFORE source-window/overview/day-growth/CORE.",
+      "budget.mjs:189 checks global day; :191 compares plan.charged + current whole candidate + surplusHeld + surplusBaseExtra + futureDiscovery + futureCandidateReserve to saved plan.limit.",
+      "The exact early return detail is WHOLE_CANDIDATE_PLANNED_ALLOCATION. candidatePacing/provider checks and surplusGrant creation are later; this refusal does not enter surplus fallback because fallback requires EVEN_DAY_CANDIDATE_ALLOCATION."
+    ]
+  },
+  "captured_resources": {
+    "project_day": 48,
+    "BINGX_day": 48,
+    "BINGX_month": 1532,
+    "TELEGRAM_day_key": null,
+    "TELEGRAM_month": 3,
+    "TELEGRAM_missing_key_not_whole_account_zero": true,
+    "plan": {
+      "schema": "PUMP_PLANNED_AUTOMATIC_DAY_V1",
+      "day": "2026-10-29",
+      "created_ts": 1793257247945,
+      "baseline_charged": 0,
+      "protected_at_creation": 102,
+      "fraction": 0.8,
+      "limit": 638,
+      "charged": 46
+    },
+    "allocation": {
+      "version": "pump-even-day-deep-v2",
+      "created_ts": 1793257247945,
+      "first_period": "1793257200000",
+      "remaining_periods": 10,
+      "http_upper_bound": 12,
+      "http_by_provider": {
+        "BINGX": 10,
+        "TELEGRAM": 1
+      },
+      "candidates_per_period": 3,
+      "baseline_auto_charged": 0
+    },
+    "pacing": {
+      "1793257200000": {
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-29",
+        "key": "1793257200000",
+        "created_ts": 1793257252711,
+        "limit": 36,
+        "charged": 12,
+        "candidate_count": 3,
+        "carried_in": 0,
+        "maximum": 3,
+        "issued_before": 0
+      }
+    },
+    "outstanding_requests": 0,
+    "retained_unknown_count": 2,
+    "unknown_refs": [
+      "c1929857-728a-4f9b-8667-961035ebc4ff",
+      "2c3c934d-f7ac-48e3-8883-8ef42bf5f3b4"
+    ],
+    "all_surplus_grants": 58,
+    "all_states_CLOSED": true,
+    "old_CLOSED_records": 53,
+    "current_day_CLOSED_grants": 5,
+    "current_day_grant_original_http": 60,
+    "current_day_grant_consumed_http": 20,
+    "current_day_grant_remaining_held_http": 40,
+    "current_day_remaining_provider": {
+      "BINGX": 30,
+      "TELEGRAM": 5
+    },
+    "closed_current_holds_release_only_after_original_day_end": 1793318400000,
+    "logical_grants_never_refunded": true,
+    "old_CLOSED_records_not_day29_active_hold": true,
+    "run_summary_mode_STATISTICS": "Mutable budget mode at end of same AUTO run; not evidence of separate STATISTICS run."
+  },
+  "arithmetic": {
+    "basis": "Administrative arithmetic using captured F5 state/current same-hour scheduled intervals; no budget function executed, no atomic failure-time state or new IO inferred.",
+    "future_light_slots": 113,
+    "future_light_HTTP": 226,
+    "future_hourly_periods": 9,
+    "future_minimum_one_candidate_HTTP": 108,
+    "base_extra_two_candidates_HTTP": 216,
+    "future_all_base_HTTP": 324,
+    "planned_components": {
+      "charged": 46,
+      "current_candidate": 12,
+      "CLOSED_current_day_holds": 40,
+      "base_extra": 216,
+      "future_light": 226,
+      "future_minimum_candidate": 108
+    },
+    "planned_sum": 648,
+    "planned_limit": 638,
+    "excess": 10,
+    "remaining_before_current_candidate": 2,
+    "global_day_sum_including_manual_delivery_outcome": 752,
+    "global_cap": 900,
+    "BINGX_day_sum": 683,
+    "BINGX_day_cap": 900,
+    "BINGX_month_sum": 2167,
+    "BINGX_month_cap": 27900,
+    "TELEGRAM_day_sum_using_code_missing_key_default0": 36,
+    "TELEGRAM_day_cap": 47,
+    "TELEGRAM_month_sum": 39,
+    "TELEGRAM_month_cap": 1457,
+    "provider_checks_not_reached_in_failed_call": true
+  },
+  "protected": {
+    "manual_checks": 3,
+    "manual_BINGX": 51,
+    "manual_TELEGRAM": 3,
+    "global_manual": 54,
+    "delivery_HTTP": 24,
+    "outcomes_HTTP": 24,
+    "fixed_total": 102,
+    "plan_fraction": 0.8,
+    "plan_limit_formula": "floor((900 -102 -baseline0) *0.8) =638",
+    "retained_hourly_base_candidates": 3,
+    "hourly_whole_cost": 12,
+    "BINGX_per_candidate": 10,
+    "TELEGRAM_per_candidate": 1,
+    "unassigned_map_capacity_per_candidate": 1,
+    "private_raw_49notglobal_day_entitlement": "Actual day48 does not override planned allocation/future work/holds."
+  },
+  "minimal_correction": {
+    "budget_arithmetic_bug_proven": false,
+    "budget_code_change_recommended": false,
+    "do_not": [
+      "Refund/reopen CLOSED grants or erase logical spent count",
+      "Drop UNKNOWN or original charges",
+      "Reduce existing3/hour protection or manual3",
+      "Raise planned fraction/day/month/caps",
+      "Assume actual past4HTTP is worst-case future full12"
+    ],
+    "delivery_relevance": "Stale queue can consume scarce admitted attempts, but is not the only or exact cause of F5 VEIL refusal. Queue expiry fix cannot turn648<=638. Review it separately; readiness/plan/source TTL/actual Telegram require their independent proofs.",
+    "future_note": "Hourly future-reserve interval changes can alter later capacity. This is a planning fact, not a promise of next-hour admission/READY/SENT or a reason to force a run."
+  },
+  "SOURCE_execution": {
+    "Node": 0,
+    "module_imports": 0,
+    "tests": 0,
+    "builds": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0,
+    "new_sources": 0
+  },
+  "preserved": "All quotas/caps/unknowns/old grants/holds/manual3/reserves/9pauses/2OWNERdeferrals. F653 F651 comparison remains deferred."
+}
