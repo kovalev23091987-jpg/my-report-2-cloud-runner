@@ -6,7 +6,7 @@ import {parseManualInput} from './manual-input.mjs';
 import {createOutcomeJournal,createOutcomeWorkIndex} from './outcome-journal.mjs';
 import {createWorkIndex} from './work-index.mjs';
 import {productionRecord} from '../contracts/run-purpose.mjs';
-import {candidatePriority,analysisQueueEvidence} from './candidate-priority.mjs';
+import {candidatePriority,analysisQueueEvidence,queueWaveMetadata,queueWaveState,queueWatchActive} from './candidate-priority.mjs';
 import {captureDecision} from './candidate-diagnostics.mjs';
 import {PRODUCTION_PLAN} from './production-policy.mjs';
 
@@ -54,6 +54,14 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     for(const ts of recent)history.push({ts,rows:await store.get('pump:overview:'+ts)??[]});
     await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);
     const active=await store.get('pump:active-instruments')??[];
+    const priorQueueSnapshot=await store.get('pump:candidate-queue')??{},hydrated=new Map();
+    // Migrate at most four old watch rows per ordinary invocation, using exact
+    // saved PKs before any candidate admission or market request. No age guess:
+    // a prior interrupted writer may have saved a newer wave than its queue row.
+    const legacy=[...new Set([...active,...Object.keys(priorQueueSnapshot).filter(id=>priorQueueSnapshot[id].active_wave===true)])]
+      .filter(id=>compact.some(row=>row.id===id)&&queueWaveState(priorQueueSnapshot[id]??{},now,profile)==='UNKNOWN')
+      .sort((a,b)=>(priorQueueSnapshot[a]?.wave_probe_checked_ts??0)-(priorQueueSnapshot[b]?.wave_probe_checked_ts??0)||a.localeCompare(b)).slice(0,4);
+    for(const id of legacy){const wave=await store.get('pump:wave:'+id);hydrated.set(id,{prior:JSON.stringify(priorQueueSnapshot[id]??null),metadata:queueWaveMetadata(wave,id,now,profile)});}
     await store.atomic('pump:candidate-queue',queue=>{
       queue??={};
       for(const row of compact){
@@ -62,9 +70,12 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         const near=prequeueNear(row.reported_change_pct,change);
         if(!near&&!active.includes(row.id)&&!queue[row.id])continue;
         const observed=overview.observations.find(o=>o.instrument.instrument_id===row.id)?.facts?.price;
-        const priorQueue=queue[row.id]??{},zones=priorQueue.entry_zones??[],usable=factUsable(observed,now)&&positive(observed.value);
+        let priorQueue=queue[row.id]??{};const probe=hydrated.get(row.id);
+        if(probe&&JSON.stringify(queue[row.id]??null)===probe.prior)priorQueue={...priorQueue,...(probe.metadata??{}),wave_probe_checked_ts:now};
+        const watch=queueWatchActive({...priorQueue,active_wave:priorQueue.active_wave===true||active.includes(row.id)},now,profile);
+        const zones=['EXPIRED','NONE'].includes(queueWaveState(priorQueue,now,profile))?[]:priorQueue.entry_zones??[],usable=factUsable(observed,now)&&positive(observed.value);
         const distance=usable&&zones.length?Math.min(...zones.map(z=>observed.value<z.lower?100*(z.lower-observed.value)/observed.value:observed.value>z.upper?100*(observed.value-z.upper)/observed.value:0)):null;
-        queue[row.id]={...priorQueue,instrument_id:row.id,first_seen:priorQueue.first_seen??now,last_seen:now,preliminary_growth:change,reported_day_growth:row.reported_change_pct,active_wave:active.includes(row.id),next_check_ts:priorQueue.next_check_ts??now,
+        queue[row.id]={...priorQueue,instrument_id:row.id,first_seen:priorQueue.first_seen??now,last_seen:now,preliminary_growth:change,reported_day_growth:row.reported_change_pct,active_wave:watch,next_check_ts:priorQueue.next_check_ts??now,
           price_expires_ts:usable?observed.expires_ts:null,entry_distance_pct:distance,
           movement_event_ts:priorQueue.movement_event_ts??(near&&usable?row.event_ts:null)};
       }
@@ -74,7 +85,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   }
   async function selectAutomatic(catalog,diagnostics){
     const queue=await store.get('pump:candidate-queue')??{},now=clock();
-    const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now&&(r.active_wave===true||prequeueNear(r.reported_day_growth,r.preliminary_growth)));
+    const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now&&(queueWatchActive(r,now,profile)||prequeueNear(r.reported_day_growth,r.preliminary_growth)));
     const score=r=>candidatePriority(r,now,{profile}).score;
     candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
     const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)&&assess_source_evidence(i).eligible));
@@ -89,17 +100,17 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
   async function indexAnalysis(analysis,input,key){
     await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
     const wave=analysis.next_wave??analysis.previous_wave??null;
-    if(wave)await store.set('pump:wave:'+instrumentKey(input.instrument),wave);
+    // Queue expiry and retained wave advance together. The active array is only
+    // a derived hint and can safely lag this atomic pair after an interruption.
+    await store.atomicPair(['pump:wave:'+instrumentKey(input.instrument),'pump:candidate-queue'],([currentWave,queue])=>{
+      queue??={};const id=instrumentKey(input.instrument);
+      if(input.mode!=='MANUAL'||queue[id])queue[id]={...(queue[id]??{first_seen:clock(),instrument_id:id}),last_checked_ts:clock(),next_check_ts:clock()+profile.candidate_recheck_ms,last_status:analysis.status,active_wave:Boolean(wave&&!['CANCELLED','EXPIRED'].includes(analysis.wave_state)&&(wave.expires_ts??0)>clock()),
+        ...analysisQueueEvidence(analysis,input,profile),entry_zones:(analysis.plan?.entry_zones??[]).map(z=>({lower:z.lower,upper:z.upper}))};
+      return {states:[wave??currentWave,queue],result:true};
+    });
     await store.atomic('pump:active-instruments',current=>{
       const set=new Set(current??[]);if(wave&&analysis.wave_state!=='CANCELLED'&&(wave.expires_ts??0)>clock()){if(input.mode==='AUTO'||set.has(instrumentKey(input.instrument)))set.add(instrumentKey(input.instrument));}else set.delete(instrumentKey(input.instrument));
       return {state:[...set],result:true};
-    });
-    await store.atomic('pump:candidate-queue',queue=>{
-      queue??={};const id=instrumentKey(input.instrument);
-      if(input.mode==='MANUAL'&&!queue[id])return {state:queue,result:true};
-      queue[id]={...(queue[id]??{first_seen:clock(),instrument_id:id}),last_checked_ts:clock(),next_check_ts:clock()+profile.candidate_recheck_ms,last_status:analysis.status,active_wave:Boolean(wave&&!['CANCELLED','EXPIRED'].includes(analysis.wave_state)&&(wave.expires_ts??0)>clock()),
-        ...analysisQueueEvidence(analysis,input,profile),entry_zones:(analysis.plan?.entry_zones??[]).map(z=>({lower:z.lower,upper:z.upper}))};
-      return {state:queue,result:true};
     });
     // Persist wave/latest/watch queue before fallible heavy feature projection.
     if(retained_features&&analysis.ready)await retained_features.remember(key);
