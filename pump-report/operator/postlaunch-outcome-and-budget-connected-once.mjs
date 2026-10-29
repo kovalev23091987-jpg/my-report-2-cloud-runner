@@ -15,7 +15,7 @@ const baseBytes=fs.readFileSync(a.base_artifact_file);assert.equal(sha(baseBytes
 const base=JSON.parse(baseBytes);assert.equal(base.manifest.implementation_pin.sha256,a.base_pin);
 fs.mkdirSync(a.output_dir,{recursive:true,mode:0o700});
 const attempt=path.join(a.output_dir,'attempt.json'),fd=fs.openSync(attempt,'wx',0o600);
-const proof={schema:'ROOT_POSTLAUNCH_OUTCOME_AND_BUDGET_AFFECTED_CASE_V1',state:'ATTEMPTED',authority_main:a.authority_main,evidence_class:'ARTIFICIAL_OFFLINE_ACCEPTANCE_TEST',Node:1,build:0,engine:0,budget_comparisons:0,runner_comparisons:0,projection_guards:0,closed_candidate_guards:0,evaluateOutcome_calls:0,late_history_comparisons:0,mock_source_fetches:0,market_HTTP:0,Telegram:0,native_SQL:0,Cloudflare:0,deployed:false};
+const proof={schema:'ROOT_POSTLAUNCH_OUTCOME_AND_BUDGET_AFFECTED_CASE_V1',state:'ATTEMPTED',authority_main:a.authority_main,evidence_class:'ARTIFICIAL_OFFLINE_ACCEPTANCE_TEST',Node:1,build:0,analyzePump_calls:0,budget_comparisons:0,runner_comparisons:0,projection_guards:0,closed_candidate_guards:0,evaluateOutcome_calls:0,late_history_comparisons:0,mock_source_fetches:0,market_HTTP:0,Telegram:0,native_SQL:0,Cloudflare:0,deployed:false};
 const save=()=>{fs.ftruncateSync(fd,0);fs.writeSync(fd,JSON.stringify(proof,null,2)+'\n',0,'utf8');fs.fsyncSync(fd);};save();
 const originalFetch=globalThis.fetch;globalThis.fetch=async()=>{throw Error('REAL_HTTP_FORBIDDEN');};
 try{
@@ -146,7 +146,7 @@ try{
     const outcomes=await runner.checkOutcomes({run_id:id});assert.equal(outcomes.length,1);assert.equal(outcomes[0].status,label==='before'?'UNKNOWN':'HIT');
     assert.equal(sourceFetches,label==='before'?0:1);assert.equal(JSON.stringify(await f.store.get(analysisKey)),frozenOriginal);
     const view=await t.readSavedOutcome({store:f.store,analysis_key:analysisKey,clock:()=>now});
-    assert.equal(view.status,'RESULT');assert.equal(view.outcome.status,label==='before'?'UNKNOWN':'HIT');assert.equal(view.outcome.t0,t0);assert.equal(view.outcome.deadline_ts,deadline);assert.equal(view.outcome.target_price,110.00000000000001);
+    assert.equal(view.status,'RESULT');assert.equal(view.outcome.status,label==='before'?'UNKNOWN':'HIT');assert.equal(view.outcome.t0,t0);assert.equal(view.outcome.deadline_ts,deadline);assert.equal(view.outcome.target_price,110);
     const after=await f.store.get('pump:resources');assert.deepEqual(after.automatic_surplus_grants,closedBefore.automatic_surplus_grants);assert.deepEqual(after.unknown,closedBefore.unknown);assert.equal(after.days['2026-10-28'],closedBefore.days['2026-10-28']);
     assert.equal(after.days[day],closedBefore.days[day]+sourceFetches);assert.equal(f.budget.summary().lanes.statistics,sourceFetches);
     if(label==='after'){
