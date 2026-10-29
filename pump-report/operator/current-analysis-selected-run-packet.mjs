@@ -4,6 +4,10 @@ import {readSavedAutoCandidateObservation} from './saved-auto-candidate-observat
 // Separate successor: preserve the qualified original reader unchanged.
 // A new in-flight executor must not displace the run of a bound saved original.
 export async function readCurrentSelectedRunAnalysisPacket({store,admission,clock=Date.now}){
+  const started=clock();
+  if(!Number.isSafeInteger(started)||started<0||!Number.isSafeInteger(admission?.after_install_ts)||admission.after_install_ts<=0||
+    admission.after_install_ts>started||!/^[a-f0-9]{64}$/.test(admission?.implementation_sha256??'')||
+    !/^[a-f0-9]{64}$/.test(admission?.expected_recipient_sha256??''))throw Error('EXACT_CURRENT_PACKET_SCOPE_REQUIRED');
   const executor=await store.get('pump:executor'),resources=await store.get('pump:resources'),queue=await store.get('pump:candidate-queue');
   if(queue!==null&&(typeof queue!=='object'||Array.isArray(queue)||Object.keys(queue).length>2000))throw Error('CANDIDATE_QUEUE_BOUND');
   const selected=Object.values(queue??{}).filter(r=>typeof r?.instrument_id==='string'&&r.instrument_id.startsWith('BINGX:USDT_M:')&&r.instrument_id.length<=256&&Number.isSafeInteger(r.last_checked_ts)&&r.last_checked_ts>=admission.after_install_ts&&r.last_checked_ts<=clock()).sort((a,b)=>b.last_checked_ts-a.last_checked_ts||a.instrument_id.localeCompare(b.instrument_id)).slice(0,2);
