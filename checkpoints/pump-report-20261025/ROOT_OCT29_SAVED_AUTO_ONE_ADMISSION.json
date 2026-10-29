@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_RECENT_COMPLETED_AUTO_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "12d52903a187498d0dda9ab09a97d6c74b19fb6d",
   "own_lease": {
     "owner": "CODEX:PUMP_REAL_AUTO_RECONCILIATION_20261029:1793250725000",
@@ -39,5 +39,22 @@
   "day_utc": "2026-10-29",
   "native_lookup_policy": "Ordinary default10, actual shared governor must reserve positively before business reads; no carried UTC27extra or assume UTC29usagezero.",
   "purpose": "First actual saved latest ordinary AUTO since installed75 after28Octbusinessday. Read last released executor/resources/run, <=2 originals and <=1 matching SENT card/receipt, queue Q/AIN only optional selection priority not source universe gate. No market/send/recompute, no whole-day assertion if onlylatest inspected.",
-  "old_spends_unknowns_holds_reserves_preserved": true
+  "old_spends_unknowns_holds_reserves_preserved": true,
+  "actual_native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-oct29-saved-recent-auto-one",
+    "usage": {
+      "requests": 8,
+      "rows_read": 8,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 8,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "3767db7e3816c883fe447875db10e9858529eb58f25b09dca88e790f29210698",
+  "no_retry": true
 }
