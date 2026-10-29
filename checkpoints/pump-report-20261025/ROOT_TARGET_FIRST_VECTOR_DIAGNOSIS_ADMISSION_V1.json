@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_FIRST_TARGET_VECTOR_DIAGNOSIS_ADMISSION_V1",
-  "status": "ADMITTED_ONE_FIRST_VECTOR_DIAGNOSIS_NO_ENGINE_OR_BUILD",
+  "status": "SPENT_ONE_CALL_TEST_ADAPTER_NAN_IDENTIFIED",
   "authority_main": "beb9403bc78a8f3e217000bad06739655ba4084a",
   "own_lease": {
     "owner": "CODEX:PUMP_TARGET_PLAN_CONNECTED_ACCEPTANCE_20261029:1793272731389",
@@ -31,5 +31,20 @@
     "pump-report/tests/runtime/target-plan-connected-once.mjs": "0484bc0536c7cc339d90ede7a7aaa39391151779f521137f9080496b3c51ae58",
     "pump-report/handoffs/analytics/package-bz39/BZ39_UNEXECUTED_ARTIFICIAL_PLAN_VECTORS_V1.json": "0f694bfe72d559f66141aaf7c573105de417e96cf10f8bef5a9cc703977fd49c"
   },
-  "reason": "Preserve first failed synthetic target vector exact outcome/reason; initial harness discarded assert actual/expected. Reuse already-built exact snapshot, no rebuild/no replay of accepted actual-engine phases or prior fullcase."
+  "reason": "Preserve first failed synthetic target vector exact outcome/reason; initial harness discarded assert actual/expected. Reuse already-built exact snapshot, no rebuild/no replay of accepted actual-engine phases or prior fullcase.",
+  "actual": {
+    "Node": 1,
+    "pure_selector_calls": 1,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "result": {
+    "path": "checkpoints/pump-report-20261025/ROOT_TARGET_FIRST_VECTOR_DIAGNOSIS_V1.json",
+    "sha256": "c68e32a168670ac0c90fe6502aa568b7582c04b41911bae321811b1d78b3c149"
+  },
+  "cause": "ROOT materializer used absent created_at_index/expires_after_asof_ms; actual frozen factory uses created_ts=asof/expiry=created+profile.wave_max_age. Product correctly rejected NaN wave clocks.",
+  "reuse_allowed": false
 }
