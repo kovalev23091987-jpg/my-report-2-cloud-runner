@@ -87,7 +87,12 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     const queue=await store.get('pump:candidate-queue')??{},now=clock();
     const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now&&(queueWatchActive(r,now,profile)||prequeueNear(r.reported_day_growth,r.preliminary_growth)));
     const score=r=>candidatePriority(r,now,{profile}).score;
-    candidates.sort((a,b)=>score(b)-score(a)||a.first_seen-b.first_seen);
+    // Light hints prioritize work; closed growth still requires CORE validation.
+    const tier=r=>queueWatchActive(r,now,profile)||
+      Number.isSafeInteger(r.price_expires_ts)&&r.price_expires_ts>=now&&(
+        Number.isFinite(r.reported_day_growth)&&r.reported_day_growth>=profile.automatic_growth.day_pct||
+        Number.isFinite(r.preliminary_growth)&&r.preliminary_growth>=profile.automatic_growth.short_pct)?1:0;
+    candidates.sort((a,b)=>tier(b)-tier(a)||score(b)-score(a)||a.first_seen-b.first_seen);
     const picked=candidates.find(r=>catalog.instruments.some(i=>i.instrument_id===r.instrument_id&&!ownerInstrumentExcluded(i)&&assess_source_evidence(i).eligible));
     if(diagnostics){if(diagnostics.candidate_selection.length<4)diagnostics.candidate_selection.push(captureDecision(candidates,picked,now,profile));else diagnostics.candidate_selection_truncated=true;}
     return picked?catalog.instruments.find(i=>i.instrument_id===picked.instrument_id):null;
