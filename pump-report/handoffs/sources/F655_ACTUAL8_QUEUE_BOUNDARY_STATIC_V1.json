@@ -1,0 +1,180 @@
+{
+  "schema": "F655_ACTUAL8_QUEUE_BOUNDARY_STATIC_V1",
+  "status": "OBSERVED_QUEUE_FIX_BOUNDARY_NOT_ORIGINAL_OR_DELIVERY_ACCEPTANCE",
+  "authority_main": "b1a1be5452dca5afa56189aedb6dbf3e13177e79",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793261155000",
+  "raw": {
+    "path": "pump-report/.private/observations/oct29-post-queue-auto-eight-result.json",
+    "sha256": "f3a30ebf4c785de92db7c3abe10dcb5a27d1f421a231742b7134966dfbb5f475",
+    "bytes": 88726,
+    "observer_implementation": "0e9dc66373dedaaa87e1e62731ad083deb09d20aff7ba72b6f47e32ffc0e9fd1",
+    "native_lookup": {
+      "FINALIZED": true,
+      "SQL": 7,
+      "rows_read": 27,
+      "rows_written": 4,
+      "unknown_ops": 0
+    }
+  },
+  "selector": {
+    "basis": "LATEST_CLOSED_POST_INSTALL_GRANT_EXCLUDING_LIVE_EXECUTOR",
+    "after_install_ts": 1793260498374,
+    "grant_rows": 58,
+    "selected_run_id": null,
+    "live_executor": {
+      "owner": "ecef9e55-6d41-4244-8956-0cd472a8a45a",
+      "run_id": "53cb9461-e1ce-4ac5-b41a-99b6ea1c9adb",
+      "expires_ts": 1793261098501
+    },
+    "selector_observed_ts": 1793261013565,
+    "known_run_id": null,
+    "known_run": null,
+    "known_candidates": 0,
+    "executor_unexpired_at_capture": true,
+    "verdict": "Business executor is IN_FLIGHT53cb9461-e1ce-4ac5-b41a-99b6ea1c9adb. No postinstall CLOSEDsurplus run selected; KNOWN_RUN_NOT_SAVED describes selector scope, not absence/failure of AUTO business. No broken-selector retry by SOURCE."
+  },
+  "Q": {
+    "F5_exists": true,
+    "F5_active_wave": true,
+    "F8_active_wave": false,
+    "tracking": "BOUND",
+    "state": "CALM_PULLBACK",
+    "wave_created_MSK": "2026-10-28T19:02:00.680000+03:00",
+    "wave_expires_MSK": "2026-10-28T23:02:00.680000+03:00",
+    "wave_window_ms": 14400000,
+    "expired_at_capture": true,
+    "expiry_not_extended_by_price": true,
+    "probe_after_FULL": true,
+    "compared_fields": {
+      "first_seen": {
+        "F5": 1793029549705,
+        "F8": 1793029549705,
+        "equal": true
+      },
+      "last_checked_ts": {
+        "F5": 1793203322222,
+        "F8": 1793203322222,
+        "equal": true
+      },
+      "priority_evidence_ts": {
+        "F5": 1793203320680,
+        "F8": 1793203320680,
+        "equal": true
+      },
+      "core_expires_ts": {
+        "F5": 1793203334590,
+        "F8": 1793203334590,
+        "equal": true
+      },
+      "movement_event_ts": {
+        "F5": 1793201880000,
+        "F8": 1793201880000,
+        "equal": true
+      },
+      "next_check_ts": {
+        "F5": 1793203622222,
+        "F8": 1793203622222,
+        "equal": true
+      }
+    },
+    "entry_zones": [],
+    "entry_distance_pct": null,
+    "CORE_metadata_fresh_at_capture": false
+  },
+  "VEIL": {
+    "last_checked_MSK": "2026-10-29T11:01:54.457000+03:00",
+    "status": "REJECTED",
+    "CORE_metadata_count": 3,
+    "CORE_metadata_expires_MSK": "2026-10-29T11:02:09.008000+03:00",
+    "CORE_metadata_fresh_at_capture": false,
+    "wave_tracking": "NONE",
+    "last_original_exported": false
+  },
+  "boundary": {
+    "Q": "F5active true ->F8false; exact retained wave created28Oct19:02:00.680MSK/expires23:02:00.680MSK (4h), original6oldpriority/source/checked clocks unchanged, probe after FULL; refreshed price did not extend wave.",
+    "qualification": "BOUND queue metadata is observed. No separate retained-wave/original exported here, so not independent full primary-wave reconstruction, READY or signal proof.",
+    "VEIL": "Queue lastchecked29Oct11:01:54.457MSK REJECTED/confirmed_core_count3/NONE. Original/reasons/units unavailable inF8; COREexpires11:02:09.008MSK before lookup11:03:33.565. No READY/currentCORE/SENT inference."
+  },
+  "resources_intermediate": {
+    "day_project": 68,
+    "BINGX_day": 68,
+    "plan": {
+      "schema": "PUMP_PLANNED_AUTOMATIC_DAY_V1",
+      "day": "2026-10-29",
+      "created_ts": 1793257247945,
+      "baseline_charged": 0,
+      "protected_at_creation": 102,
+      "fraction": 0.8,
+      "limit": 638,
+      "charged": 66
+    },
+    "pacing": {
+      "1793257200000": {
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-29",
+        "key": "1793257200000",
+        "created_ts": 1793257252711,
+        "limit": 36,
+        "charged": 12,
+        "candidate_count": 3,
+        "carried_in": 0,
+        "maximum": 3,
+        "issued_before": 0
+      },
+      "1793260800000": {
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-29",
+        "key": "1793260800000",
+        "created_ts": 1793260852970,
+        "limit": 36,
+        "charged": 8,
+        "candidate_count": 3,
+        "carried_in": 0,
+        "maximum": 3,
+        "issued_before": 3
+      }
+    },
+    "all_grants": 58,
+    "CLOSED": 58,
+    "held_records": 5,
+    "held_remaining_http": 40,
+    "outstanding_requests": 0,
+    "unknown_count": 2
+  },
+  "limits": {
+    "lookup_SQL": 7,
+    "lookup_total_bound": 16,
+    "lookup_rows_read": 27,
+    "lookup_read_envelope": 500,
+    "lookup_rows_written": 4,
+    "lookup_write_envelope": 30,
+    "current_hour_issued": 3,
+    "current_hour_charged": 8,
+    "current_hour_final": false,
+    "source_whole_run_native_usage": "NOT_EXPORTED_IN_THIS_PACKET",
+    "max_native_run": "800Q/5000R/300W unchanged; finalization2Q2R1W protected",
+    "all58grant_records_retained": true,
+    "CLOSED_current_day5remaining40": true,
+    "old_unknown2retained": true,
+    "not_final_business_cost_or_whole_day_usage": true
+  },
+  "not_proven": [
+    "Selected samepin original",
+    "READY/analysis refusal reason",
+    "Attempted publication or same-original SENT",
+    "Current book/CORE/future map coverage",
+    "Final pacing or final native usage of in-flight run"
+  ],
+  "SOURCE_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "build": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0
+  },
+  "next": "ROOT supplied actual9 exactknownrun for separate fresh scoped original review; no additional market requests or selector retry."
+}
