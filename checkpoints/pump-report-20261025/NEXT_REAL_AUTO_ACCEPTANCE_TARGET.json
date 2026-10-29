@@ -1,15 +1,15 @@
 {
   "schema": "ROOT_PRICE_STRUCTURE76_NEXT_REAL_AUTO_ACCEPTANCE_TARGET_V1",
-  "status": "PREPARED_NO_NATIVE_SIGNAL_PROOF",
+  "status": "LIVE_930_AUTO1_DELIVERY1_GENUINE_SAVED_CHAIN_OPEN",
   "target": {
-    "artifact_sha256": "d91c4e4554ca6c92f7142a14c8a7be17e8e7f687fdc4ce6eca4f648038b7e5df",
-    "implementation_pin": "ca0ac26fb8ff0847b61a4c9a1fb2dd34a7dffc44bcc7c30fecf5840ddec98d91",
-    "rules_version": "pump-analytics-v6-price-structure-20261029"
+    "artifact_sha256": "a799fe2fb70b3a2b71332acc5ba89d80352851394767e58bd16569f81fc21154",
+    "implementation_pin": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
+    "rules_version": "pump-analytics-v7-targets-20261029"
   },
-  "install_proof": "checkpoints/pump-report-20261025/ROOT_PRICE_STRUCTURE_INSTALLED_FULL.json",
-  "auto_proof": "checkpoints/pump-report-20261025/ROOT_PRICE_STRUCTURE_AUTO_ON_FULL.json",
-  "auto_full_ts": 1793254741177,
-  "next_business": "2026-10-29T10:00:00+03:00",
+  "install_proof": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_INSTALL_FULL.json",
+  "auto_proof": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_AUTO_ON_FULL.json",
+  "auto_full_ts": 1793275566938,
+  "next_business": "Next ordinary5min tick after actualresume: 2026-10-29T15:10:00+03:00; not forced",
   "acceptance_contract": "Reuse BZ9/BZ11 field-level tri-state conditions; supersede only expected artifact/pin target. Frozen prior payloads remain unchanged.",
   "required_inputs": [
     "actual completed AUTO run and exact run/original/input identity",
@@ -19,7 +19,7 @@
     "actual retained_waves read separately; analysis.next_wave is not persistence evidence"
   ],
   "first_genuine_AUTO_SENT": "OPEN",
-  "new_IO_admission": false,
+  "new_IO_admission": "Owner14approved, notspent; freshFULL/admission before sameoriginal saved result read",
   "scheduler_created": false,
   "automation_created": false,
   "previous_targets": [
@@ -97,6 +97,17 @@
       "new_IO_admission": false,
       "scheduler_created": false,
       "automation_created": false
+    },
+    {
+      "target": {
+        "artifact_sha256": "d91c4e4554ca6c92f7142a14c8a7be17e8e7f687fdc4ce6eca4f648038b7e5df",
+        "implementation_pin": "ca0ac26fb8ff0847b61a4c9a1fb2dd34a7dffc44bcc7c30fecf5840ddec98d91",
+        "rules_version": "pump-analytics-v6-price-structure-20261029"
+      },
+      "install_proof": "checkpoints/pump-report-20261025/ROOT_PRICE_STRUCTURE_INSTALLED_FULL.json",
+      "auto_proof": "checkpoints/pump-report-20261025/ROOT_PRICE_STRUCTURE_AUTO_ON_FULL.json",
+      "auto_full_ts": 1793254741177,
+      "reason": "Historical target superseded by actual installed930; not current proof"
     }
   ]
 }
