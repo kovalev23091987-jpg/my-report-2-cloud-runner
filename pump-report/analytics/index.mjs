@@ -1,7 +1,8 @@
 import {assertInput, ANALYSIS_SCHEMA, CONTRACT_VERSION, factUsable, finite, positive, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS, candleNativeComparisonKey,OWNER_MIN_PLAN_POTENTIAL_PCT,ownerPublicationRefusal} from '../contracts/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
 import {closedCandles, unique} from './math.mjs';
-import {analyzeMovement, constructPlan, describeMovementDetails} from './movement.mjs';
+import {analyzeMovement, constructPlanDecision, describeMovementDetails} from './movement.mjs';
+import {consumePriceStructure} from './price-structure.mjs';
 import {measureLiquidity} from './liquidity.mjs';
 import {selectZones} from './zones.mjs';
 import {explainOptionalFacts, explainMapPlan} from './context.mjs';
@@ -10,7 +11,7 @@ import {explainManualAnalysis} from './manual-text.mjs';
 import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines,fundingContextLine} from './presentation.mjs';
 export {evaluateOutcome} from './outcome.mjs';
 
-export const RULES_VERSION='pump-analytics-v5-cold-structural-20261027';
+export const RULES_VERSION='pump-analytics-v6-price-structure-20261029';
 const clip=(s,n)=>{let out='';for(const point of s){if(out.length+point.length>n)break;out+=point;}return out;};
 const wellFormed=s=>s.replace(/\p{Cs}/gu,'�');
 const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);
@@ -85,6 +86,7 @@ function analyzeCore(input, profile){
   const result={schema_version:ANALYSIS_SCHEMA,contract_version:CONTRACT_VERSION,rules_version:RULES_VERSION,profile_version:profile?.version??null,run_id:input.run_id,mode:input.mode,run_purpose:typeof input.run_purpose==='string'?input.run_purpose:null,
     instrument:{...instrument},analysis_ts:at,reference_price:null,wave_id:null,wave_state:null,previous_wave:input.previous_wave??null,next_wave:null,current_threshold_passed:false,
     automatic_eligible:false,ready:false,status:'WAITING',reasons:[],findings:[],plan:null,liquidity:null,liquidations:null,
+    price_structure_diagnostic:{status:'NOT_EVALUATED',reason:'CORE_ANALYSIS_NOT_READY',used_for_plan:false},plan_diagnostic:null,
     probability:{value_pct:null,event:'PRICE_PLUS_10_PERCENT_WITHIN_4_HOURS',reason:'NOT_CALIBRATED'},notification_eligibility:{eligible:false,reason:'ANALYSIS_NOT_READY',required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:null,comparison:null},fact_ids:[],card_text:null};
   if(!profileReady(profile))return {...result,reasons:['ANALYTICS_PROFILE_REQUIRED']};
   const usable={};
@@ -111,7 +113,7 @@ function analyzeCore(input, profile){
     reasons:unique([...result.reasons,...movement.reasons]),fact_ids:[facts.price.fact_id,facts.candles.fact_id,...(ticker?[ticker.fact_id]:[]),...(day.usable?[day.fact_id]:[])]});
   result.growth_proof=selectGrowthProof(result,profile);
   result.liquidations=selectZones(input.liquidations,instrument,result.reference_price,movement.normal_range,at,profile);
-  if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';return result;}
+  if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';result.plan_diagnostic={stage:'MOVEMENT',code:movement.reasons[0]??'MOVEMENT_NOT_ACTIVE',required_minimum_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,best_candidate_minimum_potential_pct:null};return result;}
   const stateText=movementStateText(result);if(stateText)result.findings.push({code:movement.state,text:stateText,fact_ids:[facts.candles.fact_id]});
   const activityFinding=currentActivityFinding(result,[facts.candles.fact_id]);if(activityFinding)result.findings.push(activityFinding);
   result.findings.push(...movementDetailFindings(result,[facts.candles.fact_id]));
@@ -121,7 +123,13 @@ function analyzeCore(input, profile){
   result.liquidity={...measureLiquidity(facts.orderbook.value,instrument,profile),fact_id:facts.orderbook.fact_id,source_ts:facts.orderbook.event_ts};
   result.fact_ids.push(facts.orderbook.fact_id);
   if(result.liquidity.status!=='USABLE')return {...result,status:result.liquidity.status==='INSUFFICIENT'?'REJECTED':'WAITING',reasons:unique([...result.reasons,result.liquidity.reason])};
-  result.plan=constructPlan(movement,result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile,at);
+  const structure=consumePriceStructure(input,rows,movement.pivots,profile);
+  result.price_structure_diagnostic=structure.diagnostic;
+  const decision=constructPlanDecision({...movement,pivots:structure.pivots},result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile,at);
+  result.plan=decision.plan;result.plan_diagnostic=decision.diagnostic;
+  if(result.plan&&structure.diagnostic.status==='USABLE')result.price_structure_diagnostic={...structure.diagnostic,used_for_plan:
+    [...result.plan.entry_zones,result.plan.exit_zone].some(area=>area.basis_fact_ids.includes(structure.diagnostic.fact_id))||
+    (result.plan.exit_zone.intermediate_highs??[]).some(p=>p.fact_id===structure.diagnostic.fact_id)};
   if(!result.plan)return {...result,status:'REJECTED',reasons:unique([...result.reasons,'INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED'])};
   const potentialReason=ownerPublicationRefusal(result),minimum=result.plan.potential_pct?.minimum;
   result.notification_eligibility={eligible:potentialReason===null,reason:potentialReason,required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:finite(minimum)?minimum:null,
@@ -134,7 +142,8 @@ function analyzeCore(input, profile){
   result.findings.push(...context.findings);result.fact_ids.push(...context.fact_ids);
   const mapContext=explainMapPlan(result.plan,result.liquidations);
   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
-  result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
+  result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id,
+    ...(result.price_structure_diagnostic.used_for_plan?[result.price_structure_diagnostic.fact_id]:[])]});
   result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids,...(result.plan.exit_zone.intermediate_highs??[]).map(p=>p.fact_id)]);result.user_narrative=selectUserNarrative(result);result.card_text=renderPumpCard(result,profile);
   return result;
 }

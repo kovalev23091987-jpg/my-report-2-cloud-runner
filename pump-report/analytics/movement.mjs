@@ -224,23 +224,43 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
 }
 
 export function constructPlan(movement, price, liquidity, fact_id, tick, profile, as_of_ts=null) {
+  return constructPlanDecision(movement,price,liquidity,fact_id,tick,profile,as_of_ts).plan;
+}
+
+export function constructPlanDecision(movement, price, liquidity, fact_id, tick, profile, as_of_ts=null) {
   const {pivots,impulse,normal_range}=movement;
-  if(!impulse||!positive(normal_range)||!positive(liquidity.position_limit_usdt))return null;
+  const diagnostic={version:'pump-plan-diagnostic-v1-20261029',stage:'PLAN',code:null,required_minimum_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,
+    half_width:null,invalidation_price:movement.next_wave?.invalidation_price??null,target:null,support_candidates:0,
+    entry_candidates_below_current:0,entry_candidates_meeting_minimum:0,best_candidate_minimum_potential_pct:null,
+    fixed_invalidation_potential_supremum_pct:null,accepted_entry_count:0};
+  const refuse=code=>({plan:null,diagnostic:{...diagnostic,code}});
+  if(!impulse||!positive(normal_range)||!positive(liquidity.position_limit_usdt))return refuse('PLAN_INPUT_NOT_USABLE');
   const halfWidth=Math.max(positive(tick)?tick:0,normal_range*profile.entry_zone_normal_range_fraction);
   const invalidation=movement.next_wave.invalidation_price;
+  diagnostic.half_width=halfWidth;
   let resistance=pivots.filter(p=>p.kind==='HIGH'&&p.price-halfWidth>price).sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts)[0],returnTarget=false;
   const knownPivot=p=>positive(p.price)&&validTime(p.event_ts)&&validTime(p.known_ts)&&p.event_ts<=p.known_ts&&p.known_ts<=as_of_ts&&typeof p.fact_id==='string'&&p.fact_id.length>0;
   if(!resistance){
     const wave=movement.next_wave;
     if(movement.active!==true||!validTime(as_of_ts)||!validTime(impulse.start_ts)||!validTime(wave.created_ts)||wave.created_ts>as_of_ts||
-      !validTime(wave.expires_ts)||wave.expires_ts<=as_of_ts||['CANCELLED','EXPIRED'].includes(wave.state))return null;
+      !validTime(wave.expires_ts)||wave.expires_ts<=as_of_ts||['CANCELLED','EXPIRED'].includes(wave.state))return refuse('RETURN_TARGET_WAVE_NOT_ACTIVE');
     resistance=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.event_ts>=impulse.start_ts).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts)[0];
     returnTarget=true;
   }
-  if(!resistance)return null;
+  if(!resistance)return refuse('NO_KNOWN_TARGET');
   const exit_zone={lower:resistance.price-halfWidth,upper:resistance.price+halfWidth,basis_fact_ids:[resistance.fact_id??fact_id],basis_level:resistance,
     explanation:returnTarget?'Возврат к прежней подтверждённой вершине '+resistance.price+' после будущего отката к области входа; фиксация всей позиции.':'Ближайшая подтверждённая вершина '+resistance.price+' выше текущей цены; фиксация всей позиции.'};
   const support=pivots.filter(p=>p.price<price&&p.price-halfWidth>invalidation&&(!returnTarget||knownPivot(p))).sort((a,b)=>b.price-a.price||a.known_ts-b.known_ts),entries=[];
+  diagnostic.target={kind:returnTarget?'RETURN_TO_CONFIRMED_HIGH':'ABOVE_CURRENT_RESISTANCE',lower:exit_zone.lower,upper:exit_zone.upper,basis_level:resistance};
+  diagnostic.support_candidates=support.length;
+  for(const p of support){
+    const upper=p.price+halfWidth;if(upper>=price)continue;
+    diagnostic.entry_candidates_below_current++;
+    const potential=100*(exit_zone.lower/upper-1);if(!finite(potential))continue;
+    diagnostic.best_candidate_minimum_potential_pct=diagnostic.best_candidate_minimum_potential_pct===null?potential:Math.max(diagnostic.best_candidate_minimum_potential_pct,potential);
+    if(potential>=OWNER_MIN_PLAN_POTENTIAL_PCT)diagnostic.entry_candidates_meeting_minimum++;
+  }
+  if(positive(invalidation+2*halfWidth))diagnostic.fixed_invalidation_potential_supremum_pct=100*(exit_zone.lower/(invalidation+2*halfWidth)-1);
   for(const p of support){
     const lower=p.price-halfWidth,upper=p.price+halfWidth;if(upper>=price)continue;
     const minimumPotential=100*(exit_zone.lower/upper-1);
@@ -250,15 +270,16 @@ export function constructPlan(movement, price, liquidity, fact_id, tick, profile
     entries.push({lower,upper,basis_fact_ids:[p.fact_id??fact_id],basis_level:p,explanation:(p.kind==='HIGH'?'Прежняя подтверждённая вершина':'Прежний подтверждённый минимум')+' '+p.price+'; уровень был известен до анализа.',
       confirmation_level:reclaimed?movement.reclaim_level:null,confirmation_status:reclaimed?'CONFIRMED_RECLAIM':'PRELIMINARY_AREA'});
     if(entries.length>=profile.maximum_entry_zones)break;}
-  if(!entries.length)return null;
-  if(exit_zone.lower<=Math.max(...entries.map(e=>e.upper)))return null;
+  if(!entries.length)return refuse(!support.length?'NO_ENTRY_ABOVE_INVALIDATION':diagnostic.entry_candidates_below_current?'NO_ENTRY_MEETS_OWNER_MINIMUM':'NO_ENTRY_BELOW_CURRENT_PRICE');
+  if(exit_zone.lower<=Math.max(...entries.map(e=>e.upper)))return refuse('TARGET_NOT_ABOVE_ENTRY');
   if(returnTarget){
     const lowestEntryUpper=Math.min(...entries.map(e=>e.upper));
     exit_zone.intermediate_highs=pivots.filter(p=>p.kind==='HIGH'&&knownPivot(p)&&p.price>lowestEntryUpper&&p.price<exit_zone.lower)
       .sort((a,b)=>a.price-b.price||a.known_ts-b.known_ts).map(p=>({...p}));
   }
   const min=100*(exit_zone.lower/Math.max(...entries.map(e=>e.upper))-1),max=100*(exit_zone.upper/Math.min(...entries.map(e=>e.lower))-1);
-  return {entry_zones:entries,exit_zone,invalidation:{kind:'PRICE_BELOW',price:invalidation,explanation:'Цена ниже сохранённой границы основания волны.'},
+  const plan={entry_zones:entries,exit_zone,invalidation:{kind:'PRICE_BELOW',price:invalidation,explanation:'Цена ниже сохранённой границы основания волны.'},
     position_limit_usdt:liquidity.position_limit_usdt,potential_pct:{minimum:min,maximum:max,basis:'GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT'},
     desired_plan_potential_pct:profile.desired_plan_potential_pct,desired_potential_status:min>=profile.desired_plan_potential_pct?'MEETS_DESIRED':max>=profile.desired_plan_potential_pct?'PARTLY_MEETS_DESIRED':'BELOW_DESIRED',automatic_orders:false};
+  return {plan,diagnostic:{...diagnostic,code:'PLAN_BUILT',accepted_entry_count:entries.length}};
 }
