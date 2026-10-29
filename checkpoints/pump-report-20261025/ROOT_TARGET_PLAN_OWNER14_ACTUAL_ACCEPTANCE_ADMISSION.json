@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_CURRENT_ANALYSIS_PACKET_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "355828ae6f40079aa6391d87b2c58e35142d5cc0",
   "own_lease": {
     "owner": "CODEX:PUMP_TARGET_PLAN_CONNECTED_ACCEPTANCE_20261029:1793272731389",
@@ -57,5 +57,24 @@
     "approved_ts": 1793274970529,
     "expires_ts": 1793276747761
   },
-  "purpose": "One approved saved current ordinaryAUTO packet/latest2 original bindings/card receipt, no market/reanalysis/send. Wholemarket/day notclaimed."
+  "purpose": "One approved saved current ordinaryAUTO packet/latest2 original bindings/card receipt, no market/reanalysis/send. Wholemarket/day notclaimed.",
+  "completed_ts": 1793276167474,
+  "actual_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-target-plan-auto-acceptance-20261029-extra14",
+    "usage": {
+      "requests": 13,
+      "rows_read": 91,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 91,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "actual_public_proof": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_OWNER14_SAVED_AUTO_ACTUAL.json",
+  "private_result_sha256": "96ef9124d3b20301dddb1dafead6db47f30760ea18f5bbc6c4ce95f16c1d9eaf",
+  "no_retry": true
 }
