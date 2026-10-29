@@ -128,7 +128,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     budget.setMode(mode);
     await assert_execution();
     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id});
-    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail},delivery:null};
+    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{})},delivery:null};
     let checked_result=null,failure_stage='SOURCE_WINDOW';
     try {
     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:

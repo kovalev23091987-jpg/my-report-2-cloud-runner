@@ -73,8 +73,11 @@ export function surplusNativeCapacity(store,run_id,policy,now){
 export function makeSurplusGrant({state,run_id,candidate_id,policy,native,now,http_upper_bound,http_by_provider}){
   const key=surplusGrantKey(run_id,candidate_id),grants=surplusGrants(state),day=new Date(now).toISOString().slice(0,10),old=grants[key];
   if(old)return old.state==='OPEN'?{allowed:true,grant_id:key,grant:old,idempotent:true}:{allowed:false,detail:'SURPLUS_LOGICAL_GRANT_ALREADY_SPENT'};
-  if(Object.keys(grants).length>=policy.max_retained_records||Object.values(grants).filter(g=>g.day===day).length>=policy.max_grants_per_day||
-    Object.values(grants).some(g=>g.run_id===run_id))return {allowed:false,detail:'SURPLUS_LOGICAL_GRANT_LIMIT'};
+  const retained_count=Object.keys(grants).length,day_count=Object.values(grants).filter(g=>g.day===day).length,run_count=Object.values(grants).filter(g=>g.run_id===run_id).length;
+  if(retained_count>=policy.max_retained_records||day_count>=policy.max_grants_per_day||run_count>0)return {allowed:false,detail:'SURPLUS_LOGICAL_GRANT_LIMIT',
+    surplus_limit:{schema:'PUMP_SURPLUS_LIMIT_DIAGNOSTIC_V1',observed_ts:now,utc_day:day,retained_count,day_count,run_count,
+      limits:{retained:policy.max_retained_records,day:policy.max_grants_per_day,run:policy.max_grants_per_run},
+      reasons:[...(retained_count>=policy.max_retained_records?['RETAINED_RECORD_LIMIT']:[]),...(day_count>=policy.max_grants_per_day?['UTC_DAY_GRANT_LIMIT']:[]),...(run_count>0?['SAME_RUN_GRANT_LIMIT']:[])]}};
   const until=Date.parse(day+'T00:00:00Z')+86400000;
   if(native.expires_ts>until)return {allowed:false,detail:'SURPLUS_NATIVE_DAY_BOUNDARY_REQUIRED'};
   const grant={version:SURPLUS_VERSION,run_id,candidate_id,day,state:'OPEN',created_ts:now,

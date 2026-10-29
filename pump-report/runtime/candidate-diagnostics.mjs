@@ -14,6 +14,18 @@ const row=r=>r&&typeof r==='object'?{
   first_seen:nat(r.first_seen),last_checked_ts:nat(r.last_checked_ts),next_check_ts:nat(r.next_check_ts),
   movement_event_ts:nat(r.movement_event_ts),price_expires_ts:nat(r.price_expires_ts)
 }:null;
+// A bounded annotation from the same budget snapshot; never an admission input.
+export function surplusLimitProjection(d){
+  if(d?.schema!=='PUMP_SURPLUS_LIMIT_DIAGNOSTIC_V1'||nat(d.observed_ts)===null||d.observed_ts>8640000000000000||
+    typeof d.utc_day!=='string'||d.utc_day!==new Date(d.observed_ts).toISOString().slice(0,10)||
+    !['retained_count','day_count','run_count'].every(k=>nat(d[k])!==null&&d[k]<=200)||
+    d.day_count>d.retained_count||d.run_count>d.retained_count||
+    d.limits?.retained!==200||nat(d.limits?.day)===null||d.limits.day<1||d.limits.day>24||d.limits?.run!==1)return null;
+  const reasons=[...(d.retained_count>=d.limits.retained?['RETAINED_RECORD_LIMIT']:[]),...(d.day_count>=d.limits.day?['UTC_DAY_GRANT_LIMIT']:[]),...(d.run_count>0?['SAME_RUN_GRANT_LIMIT']:[])];
+  if(!reasons.length||JSON.stringify(d.reasons)!==JSON.stringify(reasons))return null;
+  return {schema:d.schema,observed_ts:d.observed_ts,utc_day:d.utc_day,retained_count:d.retained_count,day_count:d.day_count,run_count:d.run_count,
+    limits:{retained:200,day:d.limits.day,run:1},reasons};
+}
 export function decisionProjection(d){
   if(!d||typeof d!=='object')return null;
   const leaders=arr(d.leaders);
@@ -34,14 +46,15 @@ export function captureDecision(candidates,picked,now,profile){
 }
 export function candidateRunDiagnostics(r){
   const checked=arr(r?.checked),deferred=arr(r?.deferred),decisions=arr(r?.candidate_selection);
-  const ref=x=>{const a=x?.analysis;return {
+  const ref=x=>{const a=x?.analysis,diagnostic=x?.source_coverage?.detail==='SURPLUS_LOGICAL_GRANT_LIMIT'?surplusLimitProjection(x.source_coverage.surplus_limit):null;return {
     instrument_id:id(a?.instrument?.instrument_id??x?.instrument_id),
     analysis_key:key(x?.analysis_key),analysis_ts:nat(a?.analysis_ts),
     ready:typeof a?.ready==='boolean'?a.ready:null,
     automatic_eligible:typeof a?.automatic_eligible==='boolean'?a.automatic_eligible:null,
     current_threshold_passed:typeof a?.current_threshold_passed==='boolean'?a.current_threshold_passed:null,
     allocation_kind:x?.candidate_quota?.kind==='UNASSIGNED_SURPLUS'?'UNASSIGNED_SURPLUS':
-      Number.isSafeInteger(x?.candidate_quota?.period_start)?'BASE_OR_CARRY':null};};
+      Number.isSafeInteger(x?.candidate_quota?.period_start)?'BASE_OR_CARRY':null,
+    ...(diagnostic?{surplus_limit:diagnostic}:{})};};
   return {schema:'PUMP_AUTO_CANDIDATE_DIAGNOSTICS_V1',
     checked:checked?checked.slice(0,8).map(ref):null,checked_truncated:checked?checked.length>8:null,
     deferred:deferred?deferred.slice(0,5).map(ref):null,deferred_truncated:deferred?deferred.length>5:null,

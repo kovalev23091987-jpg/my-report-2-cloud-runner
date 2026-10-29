@@ -212,7 +212,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
         const checked=known?{allowed:true}:assess(current,{ignore_pacing:true});if(!checked.allowed)return {state:current,result:checked};
         const native=surplusNativeCapacity(store,run_id,policy,clock());if(!native.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:native.detail}};
         const s=makeSurplusGrant({state:current,run_id,candidate_id,policy,native,now:clock(),http_upper_bound,http_by_provider});
-        if(!s.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:s.detail}};
+        if(!s.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:s.detail,...(s.surplus_limit?{surplus_limit:s.surplus_limit}:{})}};
         current.automatic_surplus_grants??={};current.automatic_surplus_grants[s.grant_id]??=s.grant;
         return {state:current,result:{allowed:true,scope:'CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD',surplus_grant_id:s.grant_id,candidate_quota:{kind:'UNASSIGNED_SURPLUS',logical_spent:true,never_refunded:true,idempotent:s.idempotent,http_upper_bound}}};
       });
