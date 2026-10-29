@@ -1,0 +1,29 @@
+--- BZ45/pump-report/analytics/post-breach-wave.mjs
++++ BZ46/pump-report/analytics/post-breach-wave.mjs
+@@ -1,5 +1,6 @@
+ import {positive, finite, validTime} from '../contracts/index.mjs';
+ import {waveLifetimeValid,POST_BREACH_WAVE_VERSION} from '../contracts/wave-lifetime.mjs';
++import {COLD_RULE_VERSION} from './cold-first-structural-base.mjs';
+ 
+ export const POST_BREACH_REARM_VERSION=POST_BREACH_WAVE_VERSION;
+ const text=x=>typeof x==='string'&&x.length>0&&x.length<=512;
+@@ -30,12 +31,17 @@
+   const cold=p.cold_first_structural_base;
+   let start=p.impulse.end_ts;
+   if(cold){
+-    if(cold.wave_id!==p.wave_id||cold.invalidation_price!==p.invalidation_price||
++    const pivot=cold.base_pivot;
++    if(cold.kind!==COLD_RULE_VERSION||pivot?.kind!=='LOW'||pivot.price!==p.invalidation_price||
++      !validTime(pivot.event_ts)||!validTime(pivot.known_ts)||pivot.event_ts>pivot.known_ts||
++      pivot.known_ts!==cold.invalidation_observation_start||
++      !text(cold.source_fact_id)||pivot.fact_id!==cold.source_fact_id||
++      cold.wave_id!==p.wave_id||cold.invalidation_price!==p.invalidation_price||
+       !validTime(cold.invalidation_observation_start)||cold.structural_anchor_ts!==cold.invalidation_observation_start||
+       cold.invalidation_observation_start<p.impulse.end_ts||
+       !validTime(cold.first_input_asof_ts)||cold.first_input_asof_ts>p.cancelled_ts||
+       !validTime(cold.source_received_ts)||cold.source_received_ts>cold.first_input_asof_ts||
+-      cold.invalidation_observation_start>cold.source_received_ts)return null;
++      cold.invalidation_observation_start>cold.source_received_ts||pivot.known_ts>cold.source_received_ts)return null;
+     start=cold.invalidation_observation_start;
+   }else if(p.invalidation_price!==p.impulse.low)return null;
+   if(start>p.cancelled_ts)return null;
