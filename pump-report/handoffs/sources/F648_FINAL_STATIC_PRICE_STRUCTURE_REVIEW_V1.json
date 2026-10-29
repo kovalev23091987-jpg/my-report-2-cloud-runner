@@ -1,0 +1,147 @@
+{
+  "schema": "F648_FINAL_STATIC_PRICE_STRUCTURE_REVIEW_V1",
+  "status": "FAIL_REPAIR_REQUIRED_V1_ARTIFACT_NOT_DEPLOYABLE",
+  "completed_UTC": "2026-10-29 05:54:55 UTC",
+  "authority": {
+    "guard_main": "c1afda00c4caa0c2afb28d0302b1ef4c36cfa590",
+    "all17_FULL": true,
+    "all4_exact": true,
+    "ROOT_owner": "CODEX:PUMP_REAL_AUTO_RECONCILIATION_20261029:1793250725000",
+    "ROOT_expires_UTC": "2026-10-29T06:12:05.000Z",
+    "own_owner": "CODEX:SOURCES:01a171fd:1793252808000",
+    "own_expiry_UTC": "2026-10-29T05:58:48.000Z",
+    "own_acquire": {
+      "head": "60ab3fba0da07c1b860e7d7029ada3a9a856de3c",
+      "FULL_exact": true,
+      "current_ref_exact": true,
+      "readback_UTC": "2026-10-29 05:46:57 UTC"
+    }
+  },
+  "reviewed_freeze": "62370f4e720ecbe19c8612317c54ebfe30922915",
+  "initial_case_controller_freeze": "c1afda00c4caa0c2afb28d0302b1ef4c36cfa590",
+  "files": {
+    "pump-report/sources/day-growth.mjs": "ae3051009290114cde7c71d7304c18e31cd0a0c3739e85967106f8ace37b5c7f",
+    "pump-report/analytics/price-structure.mjs": "c175b093fdcf37162e7c65ff18776562d165a9822aaf89db118b1161c7e46e4d",
+    "pump-report/analytics/movement.mjs": "c236d79705e813e31a729988d6808c0aacfc7b4fe9453d1065f29f7f98aea716",
+    "pump-report/analytics/index.mjs": "17ae77aed020151ce6817f19a8c4be9fe85eb82c9cc00239460bd8cca7d740ee",
+    "pump-report/tests/runtime/price-structure-connected-once.mjs": "1cfb1f41c46530cfd5f493cf1217320555af5e42124da8b42e4dc9ff76fa6db2",
+    "pump-report/operator/cloudflare-price-structure-control.template.js": "95bce77d39141cb61b802a7c360b8e6116827239a861e799e2c7ff90fb43e9cf",
+    "pump-report/analytics/feature-capsule.mjs": "51bbe3753a85a7aa496a8748f7a62435d0f880c8720dc5015e4944d86c35fe7f",
+    "pump-report/runtime/retained-capsules.mjs": "688aaec7d1414dd1699a08c9d60b0b529bb2a5496db8d9cae6c62bc71faeaed8"
+  },
+  "checks": [
+    {
+      "verdict": "PASS_STATIC_LIMITED",
+      "area": "Producer",
+      "finding": "Same qualified1440 response creates compact five-column price-only context; no second HTTP, same exact identity/receipt/event/received/expires/cache, no quantity guesses. Growth scalar/request and CORE125 stay unchanged. Value array cap131072UTF8; oversize disables only optional context. Full fact/original envelope is outside that array cap."
+    },
+    {
+      "verdict": "PASS_STATIC_LIMITED_EXCEPT_BLOCKER_1",
+      "area": "Consumer",
+      "finding": "Checks exact unit/OBSERVED/BINGX source+provider/identity, original clocks/expiry, full grid/OHLC, same day companion receipt and coverage, scalar boundary equality, byte cap and exact overlapping CORE OHLC. Confirmed historical pivots have event<=known<=analysis, and only the plan-level pool receives them. Core movement/wave/activity/liquidity are not rewritten; invalid history falls back. Parent IDs lack an explicit nonempty check."
+    },
+    {
+      "verdict": "PASS_STATIC_LIMITED",
+      "area": "Cost/controller delta",
+      "finding": "INSTALL allowlist is exactly8 module overrides. Before/after complete multipart module hash equality,21settings bindings and all3schedule reads; INSTALL settings unchanged. Mock cost5reads+1PUT+5reads=11, not actual native admission/quiescence. Existing READ_ONLY other20bindings_exact=false is not a positive20binding comparison."
+    },
+    {
+      "verdict": "PASS_STATIC_LIMITED_NOT_GLOBAL_CLOSURE",
+      "area": "Reference edges",
+      "finding": "Projection retains every supplied fact_id and receipt plus plan basis refs. Existing shared day clock/owner/identity proof refs remain supplied via growth24/instrument; globals/deleteTTL/archive permissions remain false/null. This is not full feature capsule provenance of every newly used plan basis; ROOT/ANALYTICS reported that separate gap below."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "F648.1",
+      "priority": "REPAIR_BEFORE_INSTALL",
+      "discovered_by": "SOURCES_F648_STATIC",
+      "path": "pump-report/analytics/price-structure.mjs",
+      "lines": [
+        25,
+        27
+      ],
+      "finding": "Missing companion/parent IDs compare equal. Starting with an otherwise valid producer pair, delete input.facts.growth_24h.fact_id and input.facts.price_structure.derived_from.parent_fact_id. d.parent_fact_id!==g.fact_id is false because both are undefined; the consumer has no text(g.fact_id) or text(d.parent_fact_id) guard. Remaining valid fields can still return USABLE historical pivots, so the claimed parent-fact reference is unbound.",
+      "executed_by_SOURCE": false,
+      "native_occurrence_claimed": false,
+      "minimal_fix": "Reject unless both IDs are nonempty bounded text before equality. ROOT accepted; ANALYTICS owns the fix."
+    },
+    {
+      "id": "F648.2",
+      "priority": "REPAIR_BEFORE_INSTALL",
+      "discovered_by": "ANALYTICS_REPORTED_AND_ACCEPTED_BY_ROOT",
+      "area": "feature capsule provenance",
+      "finding": "New used historical plan basis needs the price_structure source_facts header and complete used-plan-basis binding. ROOT explicitly reports the V1 capsule provenance gap and requests a minimal repair; this manifest does not claim the repair was already reviewed or executed."
+    }
+  ],
+  "V1_qualification_preserved": {
+    "proof": {
+      "main": "ce4a6d7b8f133d3b0c3e1cf028121b8e4e03093e",
+      "path": "checkpoints/pump-report-20261025/ROOT_PRICE_STRUCTURE_CONNECTED_CASE_BUILD_V1.json",
+      "sha256": "affd9d6cfb680ce081b8ede1ed250897179bc7a2b904e0ce91d142cbea70ce30",
+      "exact_file_hash_verified": true
+    },
+    "status": "PASS_IN_EXECUTED_SCOPE_ONLY",
+    "case_count": 1,
+    "builds": 1,
+    "engine_calls": 14,
+    "source_mock_requests": 3,
+    "mock_controller_requests": 11,
+    "mock_controller_mutations": 1,
+    "history_value_UTF8_bytes": 107102,
+    "history_fact_UTF8_bytes": 109352,
+    "enriched_input_UTF8_bytes": 215083,
+    "enriched_original_UTF8_bytes": 254165,
+    "artifact": {
+      "path": "pump-report/.private/native-20261029/pump-price-structure-v1-76-artifact.json",
+      "sha256": "21eb23cf08a3b0034d0001f245b2ab48468697d2ac15b3b3dffe8d18e4935f72",
+      "implementation_pin": "c7329e81cfded3289d0a5500e27dcf58806d2f2ef784bf061ba59d30d52e0161",
+      "modules": 76,
+      "changed": 8,
+      "unchanged": 68,
+      "install_allowed": false
+    },
+    "boundaries": [
+      "Synthetic history READY is not actualQ READY; exact Q/AIN originals and CORE-only decisions remain historical facts.",
+      "The current cancelledAIN arm injects cross-ID Q history; it proves fallback in that arm, not compatibility of a valid AIN history. This is a qualification limitation, not a third proven code defect.",
+      "Reported full bytes describe that fixture, not physical sustainable-capacity proof or permission to exceed an existing row/native envelope.",
+      "Neither blocking parent-ID case nor complete new capsule used-basis binding was closed by V1 PASS."
+    ],
+    "actual_native_SQL": 0,
+    "actual_Cloudflare_HTTP": 0,
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "real_AUTO_delivery_proven": false,
+    "SOURCE_reran_case": false
+  },
+  "next": "ROOT does not install V1. Await exact two repaired consumer/capsule SHAs, then only one new narrow admitted ROOT case/rebuild for the discovered boundaries, no V1 replay. F648 ends now with timely own release; further SOURCE review requires a new compatible lease.",
+  "SOURCE_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "builds": 0,
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "source_search": 0,
+    "new_connections": 0,
+    "source_or_analytics_code_edits": 0,
+    "new_chats_subagents_automations": 0,
+    "administrative_GitHub_guard_and_ownCAS_IO_only": true
+  },
+  "invariants": {
+    "live75_pin": "2988e3fe8e5278d1b40baa25053a2a49e899d5414ead750181e1ed6bbf9aa5cc",
+    "live75_artifact": "ff675daea75e751ecc104f293c2dc4d2d076b1f5fd638940671335483d7e31b2",
+    "AUTO": 1,
+    "DL": 1,
+    "production_mutated_by_SOURCE": false,
+    "old_spends_unknowns_holds_manual3_caps_9pauses_2OWNERdeferrals_preserved": true,
+    "source_qualification24_CONTROL6_METADATA2_not_rearmed": true,
+    "full_TZ_complete": false
+  },
+  "own_release": {
+    "required_margin_ms": 60000,
+    "actual_FULL_receipt": "Exact manifest SHA will be bound in own release commit and final response; no future release success presumed."
+  }
+}
