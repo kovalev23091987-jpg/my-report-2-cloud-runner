@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_COMPLETED_AUTO_PACKET_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "af46acf1a0c6ad3d2cdd293a20f956cc76ad183d",
   "own_lease": {
     "owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
@@ -48,5 +48,27 @@
     "worst_business_reads": 12,
     "reserve_finalize_queries": 4
   },
-  "purpose": "Exact actual ordinary AUTO afterqueue76/11MSKfreshhour quota; latestclosedrun original/card/sametextACK ifany; 2knownqueueIDs VEIL/Q, actualretainedwave notanalysisnext substitution. No market/recompute/send. Check each originalpin; selector may chooseolderclosedrun."
+  "purpose": "Exact actual ordinary AUTO afterqueue76/11MSKfreshhour quota; latestclosedrun original/card/sametextACK ifany; 2knownqueueIDs VEIL/Q, actualretainedwave notanalysisnext substitution. No market/recompute/send. Check each originalpin; selector may chooseolderclosedrun.",
+  "actual": {
+    "private_path": "pump-report/.private/observations/oct29-post-queue-auto-eight-result.json",
+    "sha256": "f3a30ebf4c785de92db7c3abe10dcb5a27d1f421a231742b7134966dfbb5f475",
+    "state": "FINALIZED",
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-oct29-post-queue-auto-eight",
+      "usage": {
+        "requests": 7,
+        "rows_read": 27,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 27,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "status": "KNOWN_RUN_NOT_SAVED",
+    "genuine_AUTO_SENT": false
+  }
 }

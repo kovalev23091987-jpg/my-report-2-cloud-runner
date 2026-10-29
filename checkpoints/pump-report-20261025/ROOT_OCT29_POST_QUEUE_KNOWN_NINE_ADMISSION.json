@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_KNOWN_AUTO_OBSERVATION_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "e9225a0d8707d33b7599a240d194f82b9d2dee48",
   "own_lease": {
     "owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
@@ -49,5 +49,27 @@
     "reserve_finalize_queries": 4
   },
   "purpose": "Exact saved base-only11MSK run53cb... identifiedactualexecutor inlookup8; last selector hadnoCLOSEDsurpluspointer whileinflight. Read original/refusal andcardifselected, no market/recompute/send.",
-  "known_auto_run_id": "53cb9461-e1ce-4ac5-b41a-99b6ea1c9adb"
+  "known_auto_run_id": "53cb9461-e1ce-4ac5-b41a-99b6ea1c9adb",
+  "actual": {
+    "private_path": "pump-report/.private/observations/oct29-post-queue-known-nine-result.json",
+    "sha256": "a9bbd66e1cb323a52fe0541e98f4ba2897fdbe5334e64308a490943e9ab5398d",
+    "state": "FINALIZED",
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-oct29-post-queue-known-nine",
+      "usage": {
+        "requests": 9,
+        "rows_read": 30,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 30,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "status": "NO_SELECTED_SENT_CARD_IN_KNOWN_RUN",
+    "genuine_AUTO_SENT": false
+  }
 }

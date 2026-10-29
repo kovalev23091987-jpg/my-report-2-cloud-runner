@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_CURRENT_AUTO_DELIVERY_LOOKUP_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED",
   "authority_main": "9990e4a96ca33ed6c8eb353ee8106dea8225c49c",
   "own_lease": {
     "owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
@@ -52,5 +52,27 @@
   },
   "purpose": "Directownerapprovedoneextra11: readcurrentAUTOcard recipient/sameTEXT/ACK/message_id/original/readback only; no debugrun/queue/catalog/resources, no provider/TGsend, no reportpause. Existingcapsunknownsfuture/manual3 unchanged.",
   "operator_sha256": "caeef52498eb1dedaf302021b5aa45dcdbfb1a30443eafb22f742c93c5c5c2d4",
-  "one_time_gate_sha256": "e948780d04680823e7e168d2a76de19da1ce7a3a72ac43cb7bbab7f090949d36"
+  "one_time_gate_sha256": "e948780d04680823e7e168d2a76de19da1ce7a3a72ac43cb7bbab7f090949d36",
+  "actual": {
+    "private_path": "pump-report/.private/observations/oct29-current-auto-delivery11-result.json",
+    "sha256": "952a21de1c8454f82c241ef1c96f7e6e857de1ca4aade78a1749c628c6f520a2",
+    "state": "FINALIZED",
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-auto-delivery-20261029-one-owner-extra-11",
+      "usage": {
+        "requests": 5,
+        "rows_read": 42,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 42,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+    "genuine_AUTO_SENT": false
+  }
 }
