@@ -1,0 +1,129 @@
+{
+  "schema": "BZ47_FINAL_STATIC_ACCEPTANCE_V1",
+  "status": "PASS_STATIC_READY_PACKAGE_NOT_DEPLOYED_NO_NATIVE15_16_AUTHORITY",
+  "authority_main": "60b72a54a11829f2f63964cee13e7ff98419a999",
+  "result_sha256": "24ebdef55923cc9cec336f6ff145cec2c9a9e350c30a89b62d353895843b32b5",
+  "artifact_sha256": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+  "implementation_pin_independently_recomputed": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+  "module_count": 78,
+  "changed_modules": [
+    "analytics/cold-first-structural-base.mjs",
+    "analytics/index.mjs",
+    "analytics/movement.mjs",
+    "analytics/post-breach-wave.mjs",
+    "contracts/index.mjs",
+    "contracts/wave-lifetime.mjs",
+    "runtime/candidate-priority.mjs",
+    "runtime/implementation-pin.mjs"
+  ],
+  "unchanged_before_modules": 70,
+  "manifest_all_module_bytes_and_hashes_verified": true,
+  "pin_self_module_and_exclusion_verified": true,
+  "exact_changed_source_hashes": {
+    "analytics/movement.mjs": "98915f77b2d5f970554ce89d7684b7692ed5069c764f377f53308b6202d0dc3c",
+    "analytics/cold-first-structural-base.mjs": "1df8de4604e761355171027b4854758a7f2d8474f9bd1963fd8813dbb02af567",
+    "analytics/post-breach-wave.mjs": "ec1b8f0641e7c13f836e98a945ca6fe03a937b5569eec33ebff969753e75f9c4",
+    "analytics/index.mjs": "f1aaf18e882a6c8829104f0370abd842c3438d45e71d6ce945bffabbb5384186",
+    "contracts/wave-lifetime.mjs": "58535ee9f19bb35546edc3b9f07d9105e99faa91e9781909c0f123496a0b8f43",
+    "contracts/index.mjs": "3e354d19bef8d860bccbe97991100a4b5d45a933f8316195c9193a2845418b8d",
+    "runtime/candidate-priority.mjs": "dc9d97ee27ae234c4d7998d7c3ad1aab93ea0ccc87ddb5dec328d667d264c4f0"
+  },
+  "metadata_preserved": true,
+  "targets_suffix_identical_930": true,
+  "index_only_rules_version_changed": true,
+  "rules_version": "pump-analytics-v8-post-breach-20261029",
+  "contract_version": "pump-report-contract-v1.4-post-breach-lifetime",
+  "ROOT_V2_actual": {
+    "Node": 1,
+    "builds": 1,
+    "engine_calls": 3,
+    "pure_movement_calls": 11,
+    "pure_cause_calls": 16,
+    "guard_checks": 5,
+    "queue_checks": 7,
+    "mock_CF_requests": 11,
+    "mock_Telegram": 1
+  },
+  "prior_parse_failure": {
+    "sha256": "e8b5eaca98e39e9dccc7366f3122a189d5e1ddd3a92a6fa3fa6aab954b5680d2",
+    "Node": 1,
+    "builds": 0,
+    "engine": 0,
+    "preserved": true,
+    "v2_only_artifact_variable_rename": true
+  },
+  "ROOT_aggregate_post_breach": {
+    "Node": 2,
+    "builds": 1,
+    "engine": 3
+  },
+  "SPENT_V2_admission_sha256": "11b9f8b1a4695bd180eeb65c969b029ef96400819cce72b6a4175bc637e00567",
+  "admission_frozen_file_count_verified": 17,
+  "attempt_sha256": "a72cfec1d45a91226b1f54177d285058b5ecb56a5d9f071ba840408b158f0c5b",
+  "attempt_binds_same_result": true,
+  "vector_count_PASS": 16,
+  "new_cold_counterexamples_rejected": true,
+  "continuation_late_observation_anchor_expiry_equal": true,
+  "seed_lifetime_ms": 14400000,
+  "old_IDOL": {
+    "status": "CANCELLED",
+    "ready": false,
+    "source_packet_sha256": "96ef9124d3b20301dddb1dafead6db47f30760ea18f5bbc6c4ce95f16c1d9eaf",
+    "original_created_expiry_cancel": {
+      "created_ts": 1793267280000,
+      "expires_ts": 1793281680000,
+      "cancelled_ts": 1793275993145
+    },
+    "verification": "Source input/result old TTL equal; V2 case explicitly asserted full old impulse/created/expiry without mutation."
+  },
+  "counterfactual_IDOL": {
+    "evidence_class": "EXPLICIT_COUNTERFACTUAL_NOT_NATIVE",
+    "post_breach": true,
+    "ready": false,
+    "best_candidate_minimum_potential_pct": 2.0139370279835145,
+    "reason": [
+      "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+    ]
+  },
+  "ARTIFICIAL_positive": {
+    "minimum_potential_pct": 15.148609779482246,
+    "new_journal_expiry_from_seed": true,
+    "old_journal_preserved": true,
+    "same_text_memory_receipt_assertions_completed": true,
+    "scope": "Memory assertions in exact PASS case; no independent native card/text/message-id or Telegram proof."
+  },
+  "generated_exact_files": {
+    "pump-report/operator/post-breach-owner15-16-sql-exception.mjs": "3f495273ab59f48336f61596efc53e62eefaeb16be48c5f64f1ee830e89edc72",
+    "pump-report/operator/post-breach-install15-quiescence-once.mjs": "27aa54e359bfcb216e41d913996c1ab3b596a7d13693c306636e12993f44f9ba",
+    "pump-report/operator/post-breach-acceptance16-once.mjs": "00965189e8124698513bb684a767c9c11eabf6a5699d5aed9241cdb48018ef66",
+    "pump-report/operator/cloudflare-post-breach-control.template.js": "c73eb9e8bad4470fe6fff3988677d6fb5c781de69eb3733365440dbf5eee7ab6"
+  },
+  "controller_before_after_pin_artifact_maps_and_exact_delta_verified": true,
+  "old13_14_and_selected_helper_sha256_unchanged": {
+    "target-plan-owner13-14-sql-exception.mjs": "9724c6eee2427d15db41f19b5efc6593ac0fa2fc8e69374a6d655ed09f0e373e",
+    "target-plan-install13-quiescence-once.mjs": "0a29262651e164964110bdc2391a79e77753292b55c4f3c2b77fa097d3eafe71",
+    "target-plan-acceptance14-once.mjs": "4eeb093466a7ff7900878bcc54283bf14eab4b2e33888bab8029fa6b7fb48c0d",
+    "cloudflare-target-plan-control.template.js": "d6a5b90494051a2aa91cf813c53a1abb8234f8b4cf800156eeeba84958bff143",
+    "current-analysis-selected-run-packet.mjs": "2eff0933318c9eadab86b2e3c7220da943376b9edfe3a1e26cd78ccb57defdd4"
+  },
+  "selected_run_helper_wiring": "Exact unchanged2eff helper in future16 wrapper only; old14 wrapper unchanged. No native16 execution.",
+  "real_native15_16_permission": false,
+  "deployment_performed_by_reviewed_case": false,
+  "first_genuine_AUTO_SENT": false,
+  "full_TZ_complete": false,
+  "helper_activity": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "builds": 0,
+    "SQL": 0,
+    "native": 0,
+    "Cloudflare": 0,
+    "provider": 0,
+    "Telegram": 0,
+    "product_ROOT_files_edited": 0,
+    "originals_mutated": 0
+  },
+  "scope": "Final exact ready-package acceptance only. No strategy replay or new test. Suitable for ROOT concrete owner installation/15+16 proposal; no approval inferred."
+}

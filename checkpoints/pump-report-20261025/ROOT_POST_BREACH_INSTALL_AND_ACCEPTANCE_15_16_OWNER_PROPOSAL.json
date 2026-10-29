@@ -1,0 +1,74 @@
+{
+  "schema": "ROOT_POST_BREACH_INSTALL_AND_ACCEPTANCE_15_16_OWNER_PROPOSAL_V1",
+  "status": "READY_EXACT_ARTIFACT_QUALIFIED_AND_PEER_REVIEWED_NO_REAL15_16_AUTHORITY",
+  "artifact_sha256": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+  "implementation_sha256": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+  "module_count": 78,
+  "manifest": "checkpoints/pump-report-20261025/ROOT_POST_BREACH_QUALIFIED_ARTIFACT_V1.json",
+  "policy_already_approved": true,
+  "policy_approval_ref": "checkpoints/pump-report-20261025/ROOT_OWNER_POST_BREACH_DISTINCT_WAVE_APPROVAL.json",
+  "run_ids": [
+    "pump-post-breach-install-20261029-extra15",
+    "pump-post-breach-auto-acceptance-20261029-extra16"
+  ],
+  "UTC_day": "2026-10-29",
+  "ordinary_lookup_cap_unchanged": 10,
+  "UTC29_LOOKUP_already_used": 14,
+  "extra_number_by_run": [
+    15,
+    16
+  ],
+  "max_new_runs": 2,
+  "each_max_SQL": 16,
+  "each_max_rows_read": 500,
+  "each_max_rows_written": 30,
+  "combined_planned_upper": {
+    "SQL": 32,
+    "rows_read": 1000,
+    "rows_written": 60
+  },
+  "purpose15": "Pause AUTO only, read actual bounded executor state; install only after actual free FINALIZED evidence",
+  "purpose16": "Read saved ordinary AUTO originals, their exact selected run and same-text Telegram receipt if present; no market/reanalysis/send",
+  "generated_files": [
+    {
+      "path": "pump-report/operator/post-breach-owner15-16-sql-exception.mjs",
+      "sha256": "3f495273ab59f48336f61596efc53e62eefaeb16be48c5f64f1ee830e89edc72"
+    },
+    {
+      "path": "pump-report/operator/post-breach-install15-quiescence-once.mjs",
+      "sha256": "27aa54e359bfcb216e41d913996c1ab3b596a7d13693c306636e12993f44f9ba"
+    },
+    {
+      "path": "pump-report/operator/post-breach-acceptance16-once.mjs",
+      "sha256": "00965189e8124698513bb684a767c9c11eabf6a5699d5aed9241cdb48018ef66"
+    },
+    {
+      "path": "pump-report/operator/cloudflare-post-breach-control.template.js",
+      "sha256": "c73eb9e8bad4470fe6fff3988677d6fb5c781de69eb3733365440dbf5eee7ab6"
+    }
+  ],
+  "controlplane": {
+    "planned_new_logical_CF_requests": 43,
+    "preapproval_read_spent": 5,
+    "remaining": 38,
+    "phases": {
+      "PAUSE_AUTO": 11,
+      "INSTALL": 11,
+      "RESUME_AUTO": 11,
+      "ACCEPTANCE_READ_ONLY": 5
+    },
+    "ordinary_existing_OAuth_refresh_CLI_max": 1,
+    "physical_admin_HTTP": "UNKNOWN_NONZERO_RETAINED",
+    "old43_and_Auth6_failed_7_success_retained": true
+  },
+  "market_HTTP_by_service_checks": 0,
+  "Telegram_by_service_checks": 0,
+  "old_report_other2crons_actions_9pauses_and2OWNERdeferrals_unchanged": true,
+  "all21bindings_and3schedules_preserved": true,
+  "restore_regular_new_AUTO_after_install": true,
+  "regular_AUTO_and_TG_previously_authorized_not_forced": true,
+  "whole_account_day_closed": false,
+  "no17_authority": true,
+  "no_real_IO_until_direct_owner_extra15_16_approval_and_fresh_actual_admissions": true,
+  "preservation": "Growth20/10,volume2,liquidity700–3000/fullpositionmin10,optionalmapexplicit,noBTCETH/FXRWA,manual3,provider900/27900/164/80pct,TG47/1457, oldspendsunknownsissuedfloors/CLOSEDholds."
+}
