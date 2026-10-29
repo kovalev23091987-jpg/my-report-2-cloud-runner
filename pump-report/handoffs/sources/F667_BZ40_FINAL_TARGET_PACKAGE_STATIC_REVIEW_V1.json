@@ -1,0 +1,176 @@
+{
+  "schema": "F667_BZ40_AND_FINAL_TARGET_PACKAGE_STATIC_REVIEW_V1",
+  "status": "C2_STATIC_PASS_FINAL_ROOT_CASE_PENDING",
+  "authority_main": "ca3491de3e30675f2f72b38ee52e5becb4ab5aba",
+  "own_acquire_head": "65c04cd1b6e64be9ff5bc0c596d97f1bf173519a",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793272856000",
+  "root_owner": "CODEX:PUMP_TARGET_PLAN_CONNECTED_ACCEPTANCE_20261029:1793272731389",
+  "review_UTC": "2026-10-29 11:26:05 UTC",
+  "internal_finish_deadline_UTC": "2026-10-29T11:35:56.000Z",
+  "own_expires_UTC": "2026-10-29T11:45:56.000Z",
+  "required_FULL_release_margin_seconds": 300,
+  "C2_expected_narrow_fix": {
+    "status": "PASS_STATIC_EXACT_589ABE_SOURCE",
+    "previous_reviewed_movement_sha256": "3cf525052492679c12071c4eda77b1448691d4b5c5bb088ff652ff8ab656f1d6",
+    "previous_condition": "after.price>=before.price&&intact(after)",
+    "expected_condition": "after.price>=before.price&&intact(before)&&intact(after)",
+    "scope": "Only require prior confirmed LOW intact as well as subsequent LOW. Existing intact function requires complete closed OHLC from known_ts to observed end, currentprice>=LOW and no observed later low below it. No new threshold/source/seed/entry/potential rule.",
+    "counterexample": "Unexecuted: priorLOW100 known3, breachLOW95 event5 known7, HIGH110 event6 known8, subsequentLOW105 event9 known11, analysis12 price106.95 is not in preknown-before or event-after candidate pair; intact(before100) must fail on observed95 and prevent false MINOR. Unknown/incomplete path must not pass intact.",
+    "new_movement_sha256": "589abe087ccf60192625a8ab15f685d1b992190c8c148ffce5d8259e505e6453",
+    "exact_one_line_replacement_verified": true,
+    "index_and_presentation_unchanged": true
+  },
+  "controller_draft": {
+    "path": "pump-report/operator/cloudflare-target-plan-control.template.js",
+    "sha256": "d6a5b90494051a2aa91cf813c53a1abb8234f8b4cf800156eeeba84958bff143",
+    "bytes": 11935,
+    "WIP_only": true,
+    "status": "WIP_NOT_QUALIFIED_NOT_IO_ADMITTED",
+    "diff_scope": "Expected five existing modules: runner,movement,index,presentation,generated pin; fixed76names, exactindexfa0 targetcontext instead of oldversion-onlyguard. All existing current272/841/fullmap, sparse content upload, pin-source checks and11-call path retained. No actual after artifact/case proof yet."
+  },
+  "final_package_review": {
+    "status": "PENDING_EXACT_ROOT_FINAL_ARTIFACT_AND_CONNECTED_CASE",
+    "case_not_rerun": true,
+    "new_artifact_sha256": null,
+    "new_pin": null,
+    "helper735_case_proof": null
+  },
+  "previous_deviation": {
+    "F666_release_head": "8917eabe0f84ae0564700bea0dac5df2365d71c5",
+    "FULL_UTC": "2026-10-29 11:13:33 UTC",
+    "margin_seconds": 92,
+    "required_seconds": 120,
+    "compliant": false,
+    "preserved_not_rehabilitated": true
+  },
+  "cost": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "Cloudflare_native_HTTP": 0,
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "new_sources": 0
+  },
+  "limits": "Own source handoff/lease only. No main/runtime/operator/foreignlease edits. Any static pass is not native13/14/install/READY/SENT authority; actual currentlive remains separately governed. Preservealloldspendsunknownsholdsissuedfloorsmanual3caps9pauses2OWNERdeferrals. Close byinternal15min, do notwaitunderlease afterdeadline.",
+  "BZ40_source_freeze": {
+    "path": "pump-report/handoffs/analytics/package-bz40/BZ40_READY_SOURCE_FREEZE_V1.json",
+    "sha256": "21eee1fbe9a66497df603e86d51b74ba589048626e14f1945c890bb6095d16dd",
+    "status": "READY_UNEXECUTED_C2_CORRECTION_NOT_APPLIED",
+    "all_frozen_files_match": true,
+    "files": {
+      "pump-report/handoffs/analytics/package-bz40/BZ40_AUTHORITY_FREEZE_V1.json": {
+        "sha256": "43014d35bc550fe546b57eb9e7486b61ec18d853f4a8f6c3d82745041cf5f7f4",
+        "bytes": 3969
+      },
+      "pump-report/handoffs/analytics/package-bz40/BZ40_C2_CONTRACT_V1.json": {
+        "sha256": "ab7c17c591413ada47bfc8047695b872ef5ae14ddb2e7cf7a8b85ccd53137aaa",
+        "bytes": 2431
+      },
+      "pump-report/handoffs/analytics/package-bz40/BZ40_JUSTIFIED_TARGETS_C2_PROPOSAL.patch": {
+        "sha256": "6ac868a29a913bd72b66344df08118df7e982feef6e06557b7d4abb1d7ed8f8a",
+        "bytes": 17527
+      },
+      "pump-report/handoffs/analytics/package-bz40/BZ40_READY_SOURCE_FREEZE_V1.json": {
+        "sha256": "21eee1fbe9a66497df603e86d51b74ba589048626e14f1945c890bb6095d16dd",
+        "bytes": 2332
+      },
+      "pump-report/handoffs/analytics/package-bz40/BZ40_UNEXECUTED_PRIOR_LOW_BREACH_VECTOR_V1.json": {
+        "sha256": "3ed7bd10854ccdf96b080a7702c4dda9449ab570e3b55239d58d27b0eb5e4b2c",
+        "bytes": 1876
+      },
+      "pump-report/handoffs/analytics/package-bz40/proposed/analytics/index.mjs": {
+        "sha256": "fa0a1e13fcad7201d2083bc536da048a3addcb645828d7a15e01438c373d7ddb",
+        "bytes": 18165
+      },
+      "pump-report/handoffs/analytics/package-bz40/proposed/analytics/movement.mjs": {
+        "sha256": "589abe087ccf60192625a8ab15f685d1b992190c8c148ffce5d8259e505e6453",
+        "bytes": 39482
+      },
+      "pump-report/handoffs/analytics/package-bz40/proposed/analytics/presentation.mjs": {
+        "sha256": "7ef43971b2b185e8cb4da9960c10ade59558a24b90ff764128e567d5842281b1",
+        "bytes": 12612
+      }
+    },
+    "old_BZ39_preserved": true
+  },
+  "prior_breach_vector": {
+    "schema": "BZ40_UNEXECUTED_PRIOR_LOW_BREACH_VECTOR_V1",
+    "status": "EXPLICIT_ARTIFICIAL_UNEXECUTED",
+    "scope": "Obstacle-classification-stage counterexample, not a fully qualified market/engine fixture",
+    "time_units": "ordered symbolic candle-close slots, original event/known ordering preserved",
+    "pivots": [
+      {
+        "kind": "LOW",
+        "price": 100,
+        "event_slot": 1,
+        "known_slot": 3
+      },
+      {
+        "kind": "LOW",
+        "price": 95,
+        "event_slot": 5,
+        "known_slot": 7
+      },
+      {
+        "kind": "HIGH",
+        "price": 110,
+        "event_slot": 6,
+        "known_slot": 8
+      },
+      {
+        "kind": "LOW",
+        "price": 105,
+        "event_slot": 9,
+        "known_slot": 11
+      }
+    ],
+    "analysis_slot": 12,
+    "current_price": 106,
+    "closed_path_points": [
+      {
+        "close_slot": 5,
+        "low": 95
+      },
+      {
+        "close_slot": 11,
+        "low": 105
+      },
+      {
+        "close_slot": 12,
+        "low": 106
+      }
+    ],
+    "path_precondition": "Supply full contiguous closed rows in ROOT controlled fixture; no extra source qualification implied by this short descriptor",
+    "why_old_failed": "LOW95 known7 is not yet known before HIGH event6, and its event5 is before HIGH. The old pair picks prior100 and subsequent105, sees105>=100 and intact(after), but forgets prior100 was broken at event5.",
+    "expected_checks": {
+      "prior_selected_price": 100,
+      "subsequent_selected_price": 105,
+      "intact_before": false,
+      "intact_after": true,
+      "old_minor_boolean": true,
+      "corrected_minor_boolean": false,
+      "classification": "MATERIAL_LOWER_LOW_OR_REBREACH",
+      "no_far_target_from_false_minor": true,
+      "nearer_target_or_refusal": "ROOT whole-plan outcome, not predicted here"
+    },
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "builds": 0,
+    "native": 0,
+    "Cloudflare": 0,
+    "market": 0,
+    "Telegram": 0
+  },
+  "prior_breach_vector_review": "Descriptor has symbolic time and only3 path points, explicitly ARTIFICIAL UNEXECUTED. ROOT case must supply full contiguous OHLC with confirmed radius2 pivots, not use missing points as intact. Static new condition rejects prior100 broken95 even while after105 remains intact; no full-plan/READY prediction made.",
+  "C2_static_findings": [
+    "intact(before) and intact(after) both require complete observed closed path from known clock to current observed end, current price not below LOW and no lower observed bar. Missing path fails completeInterval rather than becoming intact.",
+    "When prior100 broken95 occurred beforeHIGH110 but LOW95 only known after HIGH event, old pair misses95. New before-intact observes that actual row and prevents false MINOR. This is direct code reasoning, not an executed case.",
+    "Only the16-byte expression extension is different from old3cf movement. Indexfa0/presentation7ef and prior C1 geometry/current-fact target pivot rebinding remain byte-identical. No new threshold/source/entry/seed/volume rule."
+  ]
+}

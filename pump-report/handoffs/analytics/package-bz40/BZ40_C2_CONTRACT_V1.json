@@ -1,0 +1,51 @@
+{
+  "schema": "BZ40_C2_CONTRACT_V1",
+  "status": "ONE_LINE_SOURCE_CORRECTION_READY_UNEXECUTED",
+  "supersedes_defective_BZ39_source_freeze_sha256": "95db5a657f16e7688e53e10799f57163149c7a0c9822ea53266cc3c4c6238219",
+  "old_BZ39_payload_preserved": true,
+  "original_criterion_sha256": "c53f5bd46201067113d2a731b649da49c33344863eb8f0442715b5e0644c1b38",
+  "single_code_change": {
+    "before": "const minor=after.price>=before.price&&intact(after);",
+    "after": "const minor=after.price>=before.price&&intact(before)&&intact(after);"
+  },
+  "corrected_contract": "MINOR requires after.price>=before.price AND complete intact closed path for BOTH priorLOW and subsequentLOW through analysis, including current price. A priorLOW breach before HIGH event remains material even if the breached LOW pivot was not yet known at HIGH time. No historical original is rewritten.",
+  "other_source_and_policy_changes": false,
+  "index_and_presentation_byte_identical_to_BZ39": true,
+  "delta_from_LIVE_remains": 5,
+  "rules_version_unchanged": "pump-analytics-v7-targets-20261029",
+  "source_hashes": {
+    "movement.mjs": {
+      "old_BZ39_sha256": "3cf525052492679c12071c4eda77b1448691d4b5c5bb088ff652ff8ab656f1d6",
+      "new_sha256": "589abe087ccf60192625a8ab15f685d1b992190c8c148ffce5d8259e505e6453",
+      "bytes": 39482,
+      "changed": true
+    },
+    "index.mjs": {
+      "old_BZ39_sha256": "fa0a1e13fcad7201d2083bc536da048a3addcb645828d7a15e01438c373d7ddb",
+      "new_sha256": "fa0a1e13fcad7201d2083bc536da048a3addcb645828d7a15e01438c373d7ddb",
+      "bytes": 18165,
+      "changed": false
+    },
+    "presentation.mjs": {
+      "old_BZ39_sha256": "7ef43971b2b185e8cb4da9960c10ade59558a24b90ff764128e567d5842281b1",
+      "new_sha256": "7ef43971b2b185e8cb4da9960c10ade59558a24b90ff764128e567d5842281b1",
+      "bytes": 12612,
+      "changed": false
+    }
+  },
+  "patch_sha256": "6ac868a29a913bd72b66344df08118df7e982feef6e06557b7d4abb1d7ed8f8a",
+  "countervector_sha256": "3ed7bd10854ccdf96b080a7702c4dda9449ab570e3b55239d58d27b0eb5e4b2c",
+  "prior_six_vectors_sha256_unchanged": "0f694bfe72d559f66141aaf7c573105de417e96cf10f8bef5a9cc703977fd49c",
+  "all_vectors_and_source_unexecuted": true,
+  "ROOT_only_one_connected_case_after_separate_admission": true,
+  "LIVE272_not_changed": true,
+  "Node": 0,
+  "imports": 0,
+  "engine": 0,
+  "tests": 0,
+  "builds": 0,
+  "native": 0,
+  "Cloudflare": 0,
+  "market": 0,
+  "Telegram": 0
+}
