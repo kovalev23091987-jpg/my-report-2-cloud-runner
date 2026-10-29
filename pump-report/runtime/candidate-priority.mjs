@@ -5,11 +5,12 @@ export const QUEUE_WAVE_VERSION='pump-queue-wave-v1';
 // A refreshed price and membership in the old active array do not extend a wave.
 // Legacy rows remain unknown until the exact retained wave has been read.
 export function queueWaveMetadata(wave,instrument_id,at,profile=START_PROFILE){
-  if(wave===null)return {wave_tracking_version:QUEUE_WAVE_VERSION,wave_tracking_status:'NONE',wave_id:null,wave_created_ts:null,wave_expires_ts:null,wave_state:null,wave_metadata_ts:at,wave_lifetime_kind:null,wave_lifetime_anchor_ts:null};
+  const cleared={wave_tracking_version:QUEUE_WAVE_VERSION,wave_id:null,wave_created_ts:null,wave_expires_ts:null,wave_state:null,wave_metadata_ts:at,wave_lifetime_kind:null,wave_lifetime_anchor_ts:null};
+  if(wave===null)return {...cleared,wave_tracking_status:'NONE'};
   const valid=wave?.instrument_id===instrument_id&&typeof wave.wave_id==='string'&&wave.wave_id.length>0&&
     Number.isSafeInteger(wave.created_ts)&&wave.created_ts>=0&&wave.created_ts<=at&&Number.isSafeInteger(wave.expires_ts)&&
     waveLifetimeValid(wave,at,profile)&&typeof wave.state==='string';
-  if(!valid)return null;
+  if(!valid)return {...cleared,wave_tracking_status:'UNKNOWN'};
   return {wave_tracking_version:QUEUE_WAVE_VERSION,wave_tracking_status:'BOUND',wave_id:wave.wave_id,wave_created_ts:wave.created_ts,
     wave_expires_ts:wave.expires_ts,wave_state:wave.state,wave_metadata_ts:at,
     wave_lifetime_kind:Object.hasOwn(wave,'lifetime_anchor_ts')?POST_BREACH_WAVE_VERSION:null,
