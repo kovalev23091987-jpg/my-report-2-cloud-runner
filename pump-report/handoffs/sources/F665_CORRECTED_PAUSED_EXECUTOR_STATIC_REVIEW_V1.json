@@ -1,0 +1,195 @@
+{
+  "schema": "F665_CORRECTED_PAUSED_EXECUTOR_STATIC_REVIEW_V1",
+  "status": "PASS_STATIC_EXACT_LOCAL735_PENDING_ROOT_CONNECTED_QUALIFICATION",
+  "authority_main": "8e5fe668543cd1e264fbe87d6f49b762864dbd64",
+  "own_acquire_head": "70a428038e0707566dc31908001d52108dac072b",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793270922000",
+  "review_UTC": "2026-10-29 10:50:45 UTC",
+  "reviewed_source": {
+    "path": "pump-report/operator/paused-executor-bounded.mjs",
+    "sha256": "73527177e50cce3c0fd45f9a44f88fe76ddb08570bc8495056b4d70e6dbab9d1",
+    "bytes": 1386,
+    "git_blob_if_committed": "71fb71941a5c5db47da6fffe99425f44ac1b7b1f",
+    "source_snapshot": "// Repeated READS of an observed busy executor are bounded within one grant.\n// Transport errors propagate immediately; no failed request is retried.\nexport async function readPausedExecutorBounded({store,maximum_reads,wait_ms,clock=Date.now,sleep=ms=>new Promise(r=>setTimeout(r,ms))}){\n if(!Number.isSafeInteger(maximum_reads)||maximum_reads<1||maximum_reads>6||wait_ms!==20000)throw Error('BOUNDED_EXECUTOR_READ_SCOPE_REQUIRED');\n let executor=null,reads=0,busy=false;\n for(;reads<maximum_reads;){\n  executor=await store.get('pump:executor');reads++;\n  // A missing PK is null. Any present JSON value must explicitly describe\n  // an unowned executor or a nonempty owner; malformed state is never free.\n  if(executor===null)busy=false;\n  else if(typeof executor==='object'&&!Array.isArray(executor)&&Object.hasOwn(executor,'owner')&&executor.owner===null)busy=false;\n  else if(typeof executor==='object'&&!Array.isArray(executor)&&Object.hasOwn(executor,'owner')&&typeof executor.owner==='string'&&executor.owner.trim().length>0)busy=true;\n  else throw Error('EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY');\n  if(!busy)break;\n  if(reads<maximum_reads)await sleep(wait_ms);\n }\n return{status:busy?'IN_FLIGHT_DO_NOT_DEPLOY':'QUIESCENT_CODE_UPDATE_ALLOWED',executor,observed_ts:clock(),executor_PK_reads:reads,business_history_not_read:true,resources_not_read:true,market_HTTP:0,Telegram:0};\n}\n",
+    "scope": "ROOT local corrected bytes; not asserted present in authority main and not runtime-qualified by this static review."
+  },
+  "static_findings": [
+    "Exactly two free forms: executor===null (legitimate missing PK) or non-array object with OWN owner property equal null. Extra released-row run_id/released_ts fields are preserved; no new requirement changes existing release contract.",
+    "Non-array object with OWN nonempty trimmed string owner is busy. Busy flag is explicit, so truthiness no longer promotes malformed values to free. Missing owner, blank/whitespace owner, non-string owner, arrays, falsy primitives and undefined throw before any successful status.",
+    "reads increments after each successful get('pump:executor'), loop reads<maximum_reads and maximum_reads integer1..6; only successful busy results may cause another read. Maximum5 sleeps of exactly20000ms, total scheduled wait<=100000ms. No writes, resources/history read, provider/market/Telegram call.",
+    "await store.get is outside try/catch; rejected transport promise immediately propagates. No retry/second get or sleep occurs after that error. A rejected sleep also propagates. No fallback success status after errors.",
+    "Null/no-owner distinction matches the frozen producer/store contract already established: D1Store.get missing row=>null, MemoryStore missing=>null, runner.acquire can start with null and release writes own owner:null. Undefined or malformed stored JSON is not equivalent to a missing PK.",
+    "Returned status is selected from validated busy boolean: after6 busy reads IN_FLIGHT_DO_NOT_DEPLOY; quiescence only after explicit free observation. No expired nonempty owner is silently treated as free."
+  ],
+  "future_ROOT_one_case_vectors": {
+    "status": "PURE_UNEXECUTED_RECIPE_NOT_AN_ADMISSION",
+    "maximum_reads": 6,
+    "wait_ms": 20000,
+    "clock_return_ms": 1793270922000,
+    "setup": "One future ROOT connected qualification after final target-package freeze, under its own offline admission. Read exact source path and require SHA735271... before import. Use controlled get queue and a recording sleep stub, no real sleeping/network/native store. No old22-gate case or accepted F664 case is rerun.",
+    "malformed_count": 8,
+    "malformed": [
+      {
+        "id": "M1_MISSING_OWNER",
+        "js_value": "({})",
+        "purpose": "Own owner property absent",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M2_EMPTY_OWNER",
+        "js_value": "({owner:''})",
+        "purpose": "Empty string cannot mean free",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M3_WHITESPACE_OWNER",
+        "js_value": "({owner:' \\t\\n'})",
+        "purpose": "Trimmed empty string cannot mean busy or free",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M4_NUMERIC_OWNER",
+        "js_value": "({owner:0})",
+        "purpose": "Falsy number cannot mean free",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M5_ARRAY",
+        "js_value": "[]",
+        "purpose": "Array is not executor object",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M6_BOOLEAN",
+        "js_value": "false",
+        "purpose": "Falsy primitive cannot mean free",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M7_UNDEFINED",
+        "js_value": "undefined",
+        "purpose": "Unexpected undefined is not the store missing-PK null",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      },
+      {
+        "id": "M8_INHERITED_OWNER",
+        "js_value": "Object.create({owner:null})",
+        "purpose": "Inherited null owner is not explicit own owner",
+        "sequence_length": 1,
+        "expected": {
+          "rejects": "EXECUTOR_STATE_INVALID_DO_NOT_DEPLOY",
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "quiescence_result_returned": false
+        }
+      }
+    ],
+    "valid_scenario_count": 2,
+    "valid_scenarios": [
+      {
+        "id": "V1_ABSENT_PK",
+        "get_sequence_js": "[null]",
+        "expected": {
+          "status": "QUIESCENT_CODE_UPDATE_ALLOWED",
+          "executor": null,
+          "executor_PK_reads": 1,
+          "get_calls": 1,
+          "sleep_calls": 0,
+          "observed_ts": 1793270922000
+        },
+        "coverage": "Legitimate missing-PK null"
+      },
+      {
+        "id": "V2_BUSY_THEN_EXPLICIT_RELEASE",
+        "get_sequence_js": "[{owner:'CONTROLLED_BUSY'}, {owner:null,run_id:'CONTROLLED_RELEASE',released_ts:1793270921999}]",
+        "expected": {
+          "status": "QUIESCENT_CODE_UPDATE_ALLOWED",
+          "executor": {
+            "owner": null,
+            "run_id": "CONTROLLED_RELEASE",
+            "released_ts": 1793270921999
+          },
+          "executor_PK_reads": 2,
+          "get_calls": 2,
+          "sleep_values_ms": [
+            20000
+          ],
+          "observed_ts": 1793270922000
+        },
+        "coverage": "Nonempty string remains busy for one poll; explicit own owner:null then releases. Covers busy and object-null within one valid sequence."
+      }
+    ],
+    "common_assertions": [
+      "Every get key exactly pump:executor; unexpected third read fails fixture.",
+      "Malformed scenario rejects immediately, returns no proof/status and never sleeps. No operator/native grant or finalized quiescence is inferred from validation error.",
+      "Valid results preserve actual executor object/null and explicit clock, business_history_not_read/resources_not_read true, market_HTTP0/Telegram0.",
+      "No set/atomic/query/HTTP/TG/engine/build call; fixtures are controlled values, not observed production executor state."
+    ],
+    "transport_scope": "No additional failed-transport vector is requested here: no-retry is directly visible in exact code and old accepted transport case is not repeated. ROOT may include only a newly required affected boundary in its combined qualification."
+  },
+  "no_runtime_qualification_claim": {
+    "vectors_executed_here": 0,
+    "source_Node": 0,
+    "imports": 0,
+    "old_de3_defect_erased": false,
+    "old_gate_PASS_upgraded": false,
+    "local735_connected_case_status": "PENDING_ROOT_FINAL_TARGET_PACKAGE_CASE"
+  },
+  "deployment_boundary": "This fixes malformed-state handling by static inspection only. It supplies no actual executor observation, fresh FULL, native allowance, SQL13/14/install authorization or current package pin binding. Final target/obstacle package and its controller/grants remain separately frozen and qualified by ROOT.",
+  "cost": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "cases": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "Cloudflare_native_HTTP": 0,
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "new_grants": 0
+  },
+  "preserved": "Oldspendsunknownsholdsissuedfloors/manual3/caps/futurebase9pauses2OWNERdeferrals unchanged. Only this own handoff and ownlease edited. Roothelper/main unchanged by SOURCE; no lease kept while waiting for BZ39."
+}
