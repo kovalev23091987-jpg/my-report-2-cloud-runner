@@ -11,7 +11,7 @@ import {explainManualAnalysis} from './manual-text.mjs';
 import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines,fundingContextLine} from './presentation.mjs';
 export {evaluateOutcome} from './outcome.mjs';
 
-export const RULES_VERSION='pump-analytics-v7-targets-20261029';
+export const RULES_VERSION='pump-analytics-v8-post-breach-20261029';
 const clip=(s,n)=>{let out='';for(const point of s){if(out.length+point.length>n)break;out+=point;}return out;};
 const wellFormed=s=>s.replace(/\p{Cs}/gu,'�');
 const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);

@@ -1,6 +1,8 @@
 import {positive, finite, validTime, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, candleNativeComparisonKey, OWNER_MIN_PLAN_POTENTIAL_PCT} from '../contracts/index.mjs';
 import {median, sum, pct, growthAtLeast, windowRows, completeInterval} from './math.mjs';
 import {proposeColdStructuralBase} from './cold-first-structural-base.mjs';
+import {waveLifetimeValid} from '../contracts/wave-lifetime.mjs';
+import {provePostBreachCause,selectPostBreachSeed} from './post-breach-wave.mjs';
 
 export function growthWindows(rows, ticker, profile, observedDay=null) {
   const end=rows.at(-1)?.close_ts, out=[];
@@ -127,7 +129,7 @@ function qualificationClockValid(p,at){
 }
 function usablePrevious(p,input,profile) {
   return p&&p.instrument_id===input.instrument.instrument_id&&typeof p.wave_id==='string'&&validTime(p.created_ts)&&p.created_ts<=input.analysis_ts&&
-    validTime(p.expires_ts)&&p.expires_ts===p.created_ts+profile.wave_max_age_ms&&p.expires_ts>input.analysis_ts&&!['CANCELLED','EXPIRED'].includes(p.state)&&
+    waveLifetimeValid(p,input.analysis_ts,profile)&&p.expires_ts>input.analysis_ts&&!['CANCELLED','EXPIRED'].includes(p.state)&&
     qualificationClockValid(p,input.analysis_ts)&&
     p.impulse&&positive(p.impulse.baseline_median)&&positive(p.impulse.normal_range)&&validTime(p.impulse.end_ts)&&p.impulse.end_ts<=p.created_ts;
 }
@@ -144,14 +146,16 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
     if(v&&v.ratio!==null&&v.ratio>=profile.elevated_volume_ratio&&v.return_pct>0)candidates.push(v);}
   // A retained impulse keeps its original baseline and lifetime.
   const terminal=p?.instrument_id===input.instrument.instrument_id&&['CANCELLED','EXPIRED'].includes(p.state);
-  const terminalTs=terminal?(p.cancelled_ts??p.expires_ts):expired?p.expires_ts:null;
+  const postBreachCause=terminal&&!expired?provePostBreachCause(input,rows,profile):null;
+  const postBreachSeed=selectPostBreachSeed(candidates,postBreachCause,rows,price,now,profile);
+  const terminalTs=expired||terminal&&p.state==='EXPIRED'?p.expires_ts:postBreachCause?.terminal_event_ts??(terminal?(p.cancelled_ts??p.expires_ts):null);
   const eligibleCandidates=terminalTs===null?candidates:candidates.filter(v=>v.start_ts>=terminalTs);
   // First observation prefers the earliest intact initial seed as of now.
   // If none is intact, retain the original selector and cold-base path.
   const initialImpulse=p===null?eligibleCandidates.slice().sort((a,b)=>a.start_ts-b.start_ts||a.end_ts-b.end_ts)
     .find(v=>completeInterval(rows,v.start_ts,end)&&price>=v.low&&
       !rows.some(r=>r.open_ts>=v.end_ts&&r.low<v.low))??null:null;
-  const impulse=initialImpulse??previous?.impulse??eligibleCandidates.sort((a,b)=>b.ratio-a.ratio||a.end_ts-b.end_ts)[0]??null;
+  const impulse=postBreachCause?postBreachSeed:initialImpulse??previous?.impulse??eligibleCandidates.sort((a,b)=>b.ratio-a.ratio||a.end_ts-b.end_ts)[0]??null;
   const facts=[input.facts.candles.fact_id],pivotMap=new Map();
   for(const pivot of [...(previous?.confirmed_pivots??[]),...confirmedPivots(rows,profile.pivot_radius_bars).map(p=>({...p,fact_id:facts[0]}))]){
     if(validTime(pivot.known_ts)&&pivot.known_ts<=now&&positive(pivot.price))pivotMap.set(pivot.kind+':'+pivot.event_ts+':'+pivot.price,pivot);
@@ -159,6 +163,11 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
   const pivots=[...pivotMap.values()];
   const base={windows,current_threshold_passed,automatic_eligible:false,wave_id:previous?.wave_id??null,state:null,impulse,pivots,normal_range:impulse?.normal_range??null,
     active:false,reasons:[],next_wave:null};
+  if(p&&(Object.hasOwn(p,'lifetime_anchor_ts')||Object.hasOwn(p,'post_breach_rearm'))&&
+    (p.instrument_id!==input.instrument.instrument_id||!waveLifetimeValid(p,now,profile)||!terminal&&!expired&&!previous))
+    return {...base,wave_id:p.wave_id,state:p.state,reasons:['WAVE_LIFETIME_METADATA_INVALID'],next_wave:structuredClone(p)};
+  if(postBreachCause&&!postBreachSeed)return {...base,wave_id:p.wave_id,state:p.state,
+    reasons:['POST_BREACH_INTACT_SEED_REQUIRED'],next_wave:structuredClone(p)};
   if(expired&&!candidates.some(v=>v.start_ts>=p.expires_ts))return {...base,wave_id:p.wave_id,state:'EXPIRED',reasons:['WAVE_LIFETIME_EXPIRED'],next_wave:{...p,state:'EXPIRED'}};
   if(terminal&&!eligibleCandidates.length)return {...base,wave_id:p.wave_id,state:p.state,reasons:[p.state==='CANCELLED'?'PLAN_INVALIDATED':'WAVE_LIFETIME_EXPIRED'],next_wave:{...p}};
   if(p?.instrument_id===input.instrument.instrument_id&&!expired&&!terminal&&Array.isArray(p.qualification)&&!qualificationClockValid(p,now))return {...base,wave_id:p.wave_id,state:p.state??null,
@@ -185,7 +194,7 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
   const originalInvalidation=previous?.invalidation_price??impulse.low;
   const originalCancel=price<originalInvalidation||rows.some(r=>r.open_ts>=Math.max(impulse.end_ts,continuityStart)&&r.low<originalInvalidation);
   let cold=null;
-  if((p===null||terminal||expired)&&originalCancel){
+  if(!postBreachCause&&(p===null||terminal||expired)&&originalCancel){
     const seedWaveRows=rows.filter(r=>r.close_ts>=impulse.start_ts),seedPeak=Math.max(...seedWaveRows.map(r=>r.high));
     const seedPeakRow=seedWaveRows.find(r=>r.high===seedPeak);
     const seedLevels=pivots.filter(r=>r.known_ts<=seedPeakRow.close_ts&&r.price<seedPeak&&r.price>impulse.low).sort((a,b)=>b.price-a.price);
@@ -204,7 +213,11 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
   }
   const qualified=validTime(qualificationKnown)&&qualificationKnown<=now&&qualification.some(w=>validTime(w.end_ts)&&w.end_ts<=qualificationKnown&&w.passed===true&&positive(w.start_price)&&positive(w.end_price)&&
     growthAtLeast(w.end_price,w.start_price,w.window_ms===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct));
-  const created=previous?.created_ts??cold?.created_ts??now,wave_id=previous?.wave_id??cold?.wave_id??('PUMP:'+input.instrument.instrument_id+':'+impulse.start_ts);
+  const created=previous?.created_ts??cold?.created_ts??now;
+  const wave_id=previous?.wave_id??(postBreachCause?'PUMP:'+input.instrument.instrument_id+':POST_BREACH_V1:'+impulse.start_ts+':'+postBreachCause.terminal_event_ts:
+    cold?.wave_id??('PUMP:'+input.instrument.instrument_id+':'+impulse.start_ts));
+  const postBreachRearm=previous?.post_breach_rearm??postBreachCause;
+  const lifetimeAnchor=previous?.lifetime_anchor_ts??(postBreachCause?impulse.end_ts:null);
   const waveRows=rows.filter(r=>r.close_ts>=impulse.start_ts),peak=Math.max(previous?.peak_price??0,...waveRows.map(r=>r.high));
   const peakRow=waveRows.find(r=>r.high===peak)??{close_ts:previous.peak_event_ts},afterPeak=waveRows.filter(r=>r.close_ts>peakRow.close_ts);
   const fall=100*(1-price/peak),minutes=Math.max(1,(end-peakRow.close_ts)/60000),normalSpeed=(impulse.normal_range/peak*100)/(profile.impulse_window_ms/60000);
@@ -218,7 +231,8 @@ export function analyzeMovement(input, rows, price, ticker, profile, observedDay
   if(recent&&previous&&['CALM_PULLBACK','SHARP_PULLBACK_RECLAIMED'].includes(previous.state)&&recent.at(-1).close>recent[0].open&&sum(recent.map(r=>r[field]??0))>(previous.current_volume??Infinity))state='RESUMING';
   if(recent&&!sharp&&sum(recent.map(r=>r[field]??0))>=impulse.volume&&recent.at(-1).close<=recent[0].open)state='WEAKENING';
   if(cancelled)state='CANCELLED';
-  const next_wave={wave_id,instrument_id:input.instrument.instrument_id,created_ts:created,expires_ts:created+profile.wave_max_age_ms,qualification,qualification_known_ts:qualificationKnown,
+  const next_wave={wave_id,instrument_id:input.instrument.instrument_id,created_ts:created,expires_ts:(lifetimeAnchor??created)+profile.wave_max_age_ms,qualification,qualification_known_ts:qualificationKnown,
+    ...(postBreachRearm?{lifetime_anchor_ts:lifetimeAnchor,post_breach_rearm:structuredClone(postBreachRearm)}:{}),
     impulse:{...impulse},state,reclaim_level:reclaim,reclaim_breached:breached,invalidation_price:invalidation,current_volume:recent?sum(recent.map(r=>r[field]??0)):null,
     covered_until_ts:end,peak_price:peak,peak_event_ts:peakRow.close_ts,confirmed_pivots:pivots,cancelled_ts:cancelled?now:null,
     ...((cold??previous?.cold_first_structural_base)?{cold_first_structural_base:structuredClone(cold??previous.cold_first_structural_base)}:{})};

@@ -1,4 +1,5 @@
-// PROTOTYPE ONLY. No production imports, IO, clock override, mutation or READY.
+import {waveLifetimeValid} from '../contracts/wave-lifetime.mjs';
+// Structural helper only: no IO, clock override, mutation or READY.
 export const COLD_RULE_VERSION='COLD_FIRST_STRUCTURAL_BASE_V1';
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
 const positive=value=>finite(value)&&value>0;
@@ -14,7 +15,7 @@ function firstConstructionScope(input,impulse,profile){
   if(p===null)return {kind:'VERIFIED_NULL_FIRST_WAVE'};
   if(!p||p.instrument_id!==input.instrument?.instrument_id||!text(p.wave_id)||
     !time(p.created_ts)||p.created_ts>at||!time(p.expires_ts)||
-    p.expires_ts!==p.created_ts+profile.wave_max_age_ms||
+    !waveLifetimeValid(p,at,profile)||
     !p.impulse||!time(p.impulse.start_ts)||!time(p.impulse.end_ts)||
     p.impulse.end_ts-p.impulse.start_ts!==profile.impulse_window_ms||p.impulse.end_ts>p.created_ts||
     !positive(p.impulse.low)||!positive(p.impulse.volume)||!positive(p.impulse.return_pct)||
