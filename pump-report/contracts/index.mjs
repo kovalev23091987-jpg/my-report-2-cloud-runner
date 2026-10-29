@@ -1,6 +1,6 @@
 export const INPUT_SCHEMA = 'PUMP_REPORT_INPUT_V1';
 export const ANALYSIS_SCHEMA = 'PUMP_REPORT_ANALYSIS_V1';
-export const CONTRACT_VERSION = 'pump-report-contract-v1.2-quote-notional';
+export const CONTRACT_VERSION = 'pump-report-contract-v1.3-price-structure';
 export const TZ_SHA256 = '0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc';
 export const FACT_STATUSES = Object.freeze(['USABLE', 'INCOMPLETE', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED']);
 export const MAP_STATUSES = Object.freeze(['USABLE', 'PARTIAL', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED', 'NOT_CHECKED_BUDGET', 'TIMEOUT']);
@@ -15,6 +15,10 @@ export const TRADE_BASE_QUANTITY_UNIT='USDT_PRICE_BASE_QUANTITY';
 export const TRADE_QUOTE_NOTIONAL_UNIT='USDT_PRICE_QUOTE_NOTIONAL';
 export const GROWTH_24H_UNIT='USDT_CLOSED_ROLLING_24H';
 export const GROWTH_24H_WINDOW_MS=86400000;
+// Optional price-only context from the existing exact day request. Quantity,
+// wave qualification and cancellation retain their independent CORE basis.
+export const PRICE_STRUCTURE_UNIT='USDT_OHLC_MINUTE_PRICE_ONLY';
+export const PRICE_STRUCTURE_BOUNDS=Object.freeze({rows:1440,bytes:131072,interval_ms:60000,window_ms:86400000});
 // Owner amendments on 25 October apply to every new publication, including
 // previously queued cards. Identity qualification remains a separate concern.
 export const OWNER_MIN_PLAN_POTENTIAL_PCT=10;
@@ -69,7 +73,10 @@ export function assertInput(input) {
   assertInstrument(input.instrument);
   if (!input.facts || typeof input.facts !== 'object') throw Error('FACTS_REQUIRED');
   if (input.liquidations && !MAP_STATUSES.includes(input.liquidations.status)) throw Error('INVALID_MAP_STATUS');
-  for (const fact of Object.values(input.facts)) {
+  for (const [kind, fact] of Object.entries(input.facts)) {
+    // This supplementary dataset is validated by its plan-only consumer; a
+    // rejected history never weakens or blocks the mandatory CORE facts.
+    if (kind === 'price_structure') continue;
     if (fact != null && fact.instrument_id !== input.instrument.instrument_id) throw Error('CROSS_INSTRUMENT_FACT');
   }
   return input;
