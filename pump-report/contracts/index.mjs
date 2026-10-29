@@ -1,6 +1,7 @@
 export const INPUT_SCHEMA = 'PUMP_REPORT_INPUT_V1';
 export const ANALYSIS_SCHEMA = 'PUMP_REPORT_ANALYSIS_V1';
-export const CONTRACT_VERSION = 'pump-report-contract-v1.3-price-structure';
+export const CONTRACT_VERSION = 'pump-report-contract-v1.4-post-breach-lifetime';
+export {POST_BREACH_WAVE_VERSION,waveLifetimeValid} from './wave-lifetime.mjs';
 export const TZ_SHA256 = '0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc';
 export const FACT_STATUSES = Object.freeze(['USABLE', 'INCOMPLETE', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED']);
 export const MAP_STATUSES = Object.freeze(['USABLE', 'PARTIAL', 'ABSENT', 'STALE', 'ERROR', 'NOT_CHECKED', 'NOT_CHECKED_BUDGET', 'TIMEOUT']);
