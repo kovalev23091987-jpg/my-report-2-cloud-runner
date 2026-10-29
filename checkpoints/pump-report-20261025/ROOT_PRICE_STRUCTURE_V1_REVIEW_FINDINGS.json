@@ -1,0 +1,27 @@
+{
+  "schema": "ROOT_PRICE_STRUCTURE_V1_REVIEW_FINDINGS_V1",
+  "status": "V1_NOT_INSTALLABLE_REPAIRS_REQUIRED",
+  "authority_main": "ce4a6d7b8f133d3b0c3e1cf028121b8e4e03093e",
+  "first_case_PASS_preserved": true,
+  "first_artifact_installed": false,
+  "findings": [
+    {
+      "id": "F648_MISSING_PARENT_IDS",
+      "file": "pump-report/analytics/price-structure.mjs",
+      "counterexample": "g.fact_id and derived.parent_fact_id both absent; undefined equality incorrectly accepts binding",
+      "fix": "Require both non-empty bounded identifiers before equality"
+    },
+    {
+      "id": "BZ24_PLAN_CAPSULE_PROVENANCE",
+      "file": "pump-report/analytics/feature-capsule.mjs",
+      "counterexample": "plan minimum feature ignores used history sources; history header omitted",
+      "fix": "Bound feature to all used plan basis facts and include bounded price_structure header; missing evidence stays null/unbound"
+    }
+  ],
+  "new_narrow_case": "pump-report/tests/runtime/price-structure-provenance-fix-once.mjs",
+  "old_14arm_case_and_V3_projection_not_repeated": true,
+  "live75_unchanged": true,
+  "actual_native_SQL": 0,
+  "market_HTTP": 0,
+  "Telegram": 0
+}
