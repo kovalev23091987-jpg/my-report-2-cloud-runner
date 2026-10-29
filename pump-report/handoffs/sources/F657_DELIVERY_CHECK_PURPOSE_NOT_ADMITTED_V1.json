@@ -1,0 +1,131 @@
+{
+  "schema": "F657_DELIVERY_CHECK_PURPOSE_BOUNDARY_NOT_ADMITTED_V1",
+  "status": "NOT_ADMITTED",
+  "authority_main": "1c799068c75e4e3af994f0b6092a1860b8671d59",
+  "wrapper_freeze_main": "0e9be7a85c278c7f942e470b88e7b7f67805fc84",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793263155000",
+  "parent_owner": "CODEX:PUMP_ACTUAL_AUTO_QUEUE_EXPIRY_20261029:1793259655000",
+  "decision": {
+    "ROOT_direct_steering": "Do not activate prepared DELIVERY_CHECK wrapper; do not treat separate counter as production-read admission. ROOT prepares explicit named UTC29 OWNER one-extra LOOKUP11 delivery-only proposal after offline qualification.",
+    "SOURCE_native_admission_created": false,
+    "actual_DELIVERY_CHECK_executed": false,
+    "wrapper_activated": false,
+    "ordinary_LOOKUP_default10_unchanged": true,
+    "prior_ordinary10_known_own_usage": {
+      "SQL": 75,
+      "rows_read": 194,
+      "rows_written": 40,
+      "unknown_ops": 0,
+      "not_whole_account_day_total": true
+    },
+    "no_ordinary11_authorized_by_this_review": true
+  },
+  "existing_authority_boundary": {
+    "AGENTS": "pump-report/AGENTS.md requires positive provider/whole-budget/SQL/runtime admissions before corresponding IO and preserves all spent/unknown/reserves/caps. ROOT owns actual delivery acceptance, but counter availability and prepared code are not themselves factual operation admission.",
+    "documented_worker": "runtime/worker.mjs183 requires fixed TELEGRAM_DIAGNOSTIC_ID and QUALIFICATION_ONLY for deliveryCheck. Lines202/218 select DELIVERY_CHECK for that technical fixed-text operation, enqueue/dispatch/readback with trading_signal:false. Current PRODUCTION_QUALIFIED does not admit that endpoint.",
+    "native_policy": "runtime/native-budget.mjs has independent DELIVERY_CHECK1/day counter and default fullNATIVE_POLICY5000R300W, while LOOKUP500R30W has cap10. These mechanical counters do not establish permission to relabel a post-cap production status lookup.",
+    "existing_production_reader": "candidate-bank-auto-observation-once.mjs17/77/78 uses LOOKUP for readSavedAutoObservation and currentAUTO receipt/original inspection. No fresh positive production DELIVERY_CHECK admission was supplied.",
+    "scope_conclusion": "Found qualification-only fixedtechnical boundary; no further old-approval/whole-project audit performed. Follow ROOT NOT_ADMITTED decision; no native reservation attempted.",
+    "not_claimed": "Cannot claim DELIVERY_CHECK day counter unused without actual reservation. No such SQL lookup made."
+  },
+  "prepared_wrapper_static_scope": {
+    "files": {
+      "pump-report/runtime/native-budget.mjs": {
+        "sha256": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+        "git_blob": "b46f58f78221f8465d45e51e38a0a4aeedbda4ca",
+        "bytes": 8632
+      },
+      "pump-report/runtime/worker.mjs": {
+        "sha256": "92dea6720d54f987df78e07cce34c8e350cc2d33f0b412136ee2366a75d5550a",
+        "git_blob": "40e10b6651e680ed62a1bf606b3a2ce96254f281",
+        "bytes": 34121
+      },
+      "pump-report/operator/delivery-only-observation-once.mjs": {
+        "sha256": "658f6138ec13fcf3f4bba0dd9f01ac345eb56f3935493f9cf61f1104f57bb546",
+        "git_blob": "3b2c4779f991edf4f6a9bcd132cc8b352005f223",
+        "bytes": 10343
+      },
+      "pump-report/operator/saved-auto-observation.mjs": {
+        "sha256": "df1e859e4a7c3ba7670acd6d19a85691dcd404a99e0ca06effc0ac2bd348e1c8",
+        "git_blob": "bdfb99dafd2f08f4f98fed2f9fd0920e639c357e",
+        "bytes": 6000
+      },
+      "checkpoints/pump-report-20261025/ROOT_DELIVERY_ONLY_SCOPE_CASE_V1.json": {
+        "sha256": "0ad675a4627c17e7ea0a0715c030bc16a7a1097718c103d930f4675d35f61a8c",
+        "git_blob": "cbf92b842d8779e39c547b055e702fc3602d858e",
+        "bytes": 654
+      },
+      "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_AUTO_ON_FULL.json": {
+        "sha256": "a2e1d34a58b36d9614b1b707ae5f74c5ad0dcbbb9fc19a8fea990e21a4877267",
+        "git_blob": "e7028b86760e1f4c37f9e3e18a920f59bad1b6b1",
+        "bytes": 9344
+      }
+    },
+    "line_refs": {
+      "pump-report/runtime/worker.mjs": {
+        "if(deliveryCheck&&": 183,
+        "mode=feasibilityCheck": 202,
+        "}else if(deliveryCheck)": 218
+      },
+      "pump-report/runtime/native-budget.mjs": {
+        "LOOKUP_ENVELOPE=": 11,
+        "const envelope=": 20,
+        "delivery_check_count<1": 41
+      },
+      "pump-report/operator/delivery-only-observation-once.mjs": {
+        "mode:'DELIVERY_CHECK'": 10,
+        "include_executor:false": 77,
+        "native.store.admission=": 74
+      },
+      "pump-report/operator/saved-auto-observation.mjs": {
+        "include_executor=true": 10,
+        "const page=": 17
+      }
+    },
+    "only_business_reads": [
+      "Bounded card-prefix page<=20",
+      "At most one selected SENT AUTO PRODUCTION card PK",
+      "Only that card's source_input_key original PK"
+    ],
+    "maximum_business_SQL": 3,
+    "without_matching_card_business_SQL": 1,
+    "executor_run_queue_catalog_resources_reads": 0,
+    "outcome_reads": 0,
+    "same_original_and_recipient": "Existing validator still checks current original pin, exact card/original/hash/text, recipient hash, message_id/ACK/readback and source expiry. New helper flaginclude_executor=false and confirmed_not_before_ts narrows this wrapper; defaults preserve prior executor behavior.",
+    "scope_case": {
+      "path": "checkpoints/pump-report-20261025/ROOT_DELIVERY_ONLY_SCOPE_CASE_V1.json",
+      "sha256": "0ad675a4627c17e7ea0a0715c030bc16a7a1097718c103d930f4675d35f61a8c",
+      "status": "PASS_MOCK_SCOPE_ONLY_NOT_ADMISSION",
+      "cases": 1,
+      "native_SQL": 0,
+      "engine": 0,
+      "build": 0,
+      "Telegram": 0,
+      "SOURCE_did_not_repeat": true
+    },
+    "client_and_shared_limits": "Wrapper declares16SQL/500R30W client ceiling after initial shared reservation, keeps original5000R300W reservation/future/manual/finalization guards and no refund. This technical subset does not change NOT_ADMITTED purpose status.",
+    "no_scope_expansion": "No candidate refusal/source debugging, knownrun/history, queue/catalog/resources, outcome, provider request or Telegram send under this category. A no-card page is only absence in that bounded scope, never noAUTO anywhere and never automatic retry."
+  },
+  "current_business": {
+    "implementation_sha256": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+    "artifact_sha256": "841f2a3c850d01257f3f4041ec7a2931c8779691156402c47faed8ace739e8a0",
+    "FULL_path": "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_AUTO_ON_FULL.json",
+    "FULL_sha256": "a2e1d34a58b36d9614b1b707ae5f74c5ad0dcbbb9fc19a8fea990e21a4877267",
+    "AUTO": true,
+    "delivery_enabled": true,
+    "scope": "Saved actual FULL reference, not a fresh Cloudflare GET by SOURCE. Backend recurring business continues independently of engineering review/check availability; no pause requested."
+  },
+  "next": "Review only ROOT's new concrete LOOKUP11 proposal when supplied. This handoff neither requests nor grants additional native IO, changes caps, reuses past owner exceptions, or invokes the prepared wrapper.",
+  "SOURCE_execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "build": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare_HTTP": 0,
+    "Telegram": 0
+  },
+  "preserved": "Default10 and alloldcostsunknownsgrantsclosedholds/manual3/futurecapacity/9pauses/2OWNERdeferrals; no newchats/subagents/automations or sourcequalification."
+}
