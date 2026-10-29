@@ -71,7 +71,7 @@ for(const kind of ['LIVE_PARTIAL','UNKNOWN','NEW_GROWTH','PAIR_INTERRUPT']){
  assert(result.waveReads<=6,'MAX4_LEGACY_PK_PLUS_CORE_AND_PAIR_READS');
 }
 const explicit=await run(createPumpRunner,'EXPLICIT_EXPIRED');assert.equal(explicit.sourceCalls[0],oid);
-assert.equal(explicit.waveReads,1,'EXPLICIT_METADATA_NEEDS_NO_LEGACY_WAVE_READ');
+assert.equal(explicit.waveReads,2,'ONLY_CORE_AND_MEMORY_ATOMIC_PAIR_READ_NO_LEGACY_WAVE_READ');
 assert.equal(sha(fs.readFileSync(a.actual_packet)),a.frozen_files[a.actual_packet]);
 assert.equal(sha(fs.readFileSync(a.actual_on_packet)),a.frozen_files[a.actual_on_packet]);
 
