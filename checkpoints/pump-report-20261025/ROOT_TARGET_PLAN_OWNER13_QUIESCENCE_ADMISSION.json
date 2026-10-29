@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_MINIMAL_CODE_QUIESCENCE_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_FINALIZED_5SQL77R4W_NO_REUSE",
   "authority_main": "aeab57fb9da17b8f45e98d87b141dc3edc6e825c",
   "own_lease": {
     "owner": "CODEX:PUMP_TARGET_PLAN_CONNECTED_ACCEPTANCE_20261029:1793272731389",
@@ -59,5 +59,21 @@
     "expires_ts": 1793275930609
   },
   "purpose": "Only actual paused executor read and native governance. No market/TG/history/index/catalog; distinct owner13 fully bounded. Brief not-before lets a previously-started ordinary AUTO drain without consuming extraSQL.",
-  "peer_static_review": "SOURCEF668+B Z42 exactoperators/casePASS"
+  "peer_static_review": "SOURCEF668+B Z42 exactoperators/casePASS",
+  "actual": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-target-plan-install-20261029-extra13",
+    "usage": {
+      "requests": 5,
+      "rows_read": 77,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 77,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "reuse_allowed": false
 }
