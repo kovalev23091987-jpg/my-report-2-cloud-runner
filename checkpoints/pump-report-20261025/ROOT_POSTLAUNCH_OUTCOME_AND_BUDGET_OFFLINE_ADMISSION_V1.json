@@ -1,6 +1,6 @@
 {
   "schema": "ROOT_POSTLAUNCH_OUTCOME_AND_BUDGET_OFFLINE_ADMISSION_V1",
-  "status": "ADMITTED_ONE_AFFECTED_OFFLINE_CASE",
+  "status": "SPENT_PARTIAL_PASS_THEN_ARTIFICIAL_FIXTURE_BINDING_FAILURE_NO_RETRY",
   "authority_main": "3a85d5fef38144cbf7b1c4d689a3a61431710185",
   "own_lease": {
     "owner": "CODEX:PUMP_POSTLAUNCH_BLOCKS_OUTCOMES_20261029:1793298664886",
@@ -48,5 +48,15 @@
   "late_history_comparisons_max": 2,
   "closed_candidate_guards_max": 8,
   "mock_source_fetches_max": 1,
-  "mock_telegram_fixture_no_send": true
+  "mock_telegram_fixture_no_send": true,
+  "actual": {
+    "Node": 1,
+    "build": 1,
+    "budget_comparisons": 10,
+    "runner_comparisons": 1,
+    "projection_guards": 9,
+    "evaluateOutcome_calls": 1,
+    "late_history_comparisons_completed": 0,
+    "reason": "Artificial originalInput omitted run_id; saved-outcome guard correctly returned QUARANTINED. Product immutable guard unchanged."
+  }
 }
