@@ -1,0 +1,81 @@
+{
+  "schema": "BZ52_UTC30_ORDINARY_ADAPTER_STATIC_V1",
+  "status": "PASS_STATIC_ORDINARY_DATE_ADAPTER_PUBLIC_CUTOVER_PENDING",
+  "review_main": "fbedf1857926e56b9a6772368fe4790391db00db",
+  "inputs": {
+    "pump-report/operator/postlaunch-install-ordinary-quiescence-once.mjs": {
+      "sha256": "dab08fc856244a04d01360aa35494c46bda4a823870a5dd24b9bf1771c0544e8",
+      "git_blob": "b51fa15ccb3289060c2e6de0d8cf9c37f94bab9e"
+    },
+    "pump-report/operator/postlaunch-ordinary-sql-policy.mjs": {
+      "sha256": "d9269108502351790fc6a7186fdb44debb774c45d869bfc0b50b4ce8b116a503",
+      "git_blob": "2e0889565f9ee952d87a13218008937bf15eb42c"
+    },
+    "checkpoints/pump-report-20261025/ROOT_POSTLAUNCH_OCT30_ORDINARY_ADAPTER_CASE_V1.json": {
+      "sha256": "33f511d787417a56e3d60ba382bbb1e834130cd2ec003bcdac2639dbb08500c5",
+      "git_blob": "0d5c2c0739cf403f596c326df50b8696fee6c709"
+    }
+  },
+  "base_operator_sha256": "f2b309e2325dd81e58843563a7ade9e8bd35408fcd0316a40d3b25035a9feb89",
+  "operator_delta": "--- UTC29_named17_f2b309\n+++ UTC30_ordinary_dab08f\n@@ -1,4 +1,4 @@\n-import {createPostlaunchNamedSqlException} from './postlaunch-owner17-sql-exception.mjs';\n+import {createPostlaunchOrdinarySqlPolicy} from './postlaunch-ordinary-sql-policy.mjs';\n import {readPausedExecutorBounded} from './paused-executor-bounded.mjs';\n import fs from 'node:fs';\n import path from 'node:path';\n@@ -17,12 +17,12 @@\n     optional_latest_auto_candidate_PK_reads:1,explicit_read_latest_auto_candidate_admission_required:true,\n     optional_saved_auto_business_queries_max:5,explicit_read_saved_auto_admission_required:true,\n     exact_admission_required:true,mode:'LOOKUP',old_CONTROL_and_startup_manual_not_used:true,positive_native_admission_before_SQL:true,\n-    writes:'Existing shared native reservation/finalization only; business state read-only',maximum_executor_PK_reads:6,executor_busy_wait_ms:20000,maximum_business_queries:6,total_native_queries_max:10,extra_number:17,network_SQL_TG_executed:0}));\n+    writes:'Existing shared native reservation/finalization only; business state read-only',maximum_executor_PK_reads:6,executor_busy_wait_ms:20000,maximum_business_queries:6,total_native_queries_max:10,ordinary_lookup_daily_cap:10,network_SQL_TG_executed:0}));\n   process.exit(0);\n }\n if(args[0]!=='--execute'||args.length!==4)throw Error('USE --describe OR --execute ADMISSION ATTEMPT PRIVATE_RESULT');\n const [admissionPath,attemptArg,resultArg]=args.slice(1),admission=JSON.parse(fs.readFileSync(admissionPath,'utf8')),now=Date.now();\n-const maintenanceSQL=createPostlaunchNamedSqlException(admission,now);\n+const maintenanceSQL=createPostlaunchOrdinarySqlPolicy(admission,now);\n if(admission.schema!=='PUMP_MINIMAL_CODE_QUIESCENCE_ADMISSION_V1'||admission.status!=='ADMITTED_NOT_SPENT'||admission.maximum_attempts!==1||\n   !/^[a-f0-9]{40}$/.test(admission.authority_main??'')||admission.fresh_all4_own_CAS_FULL_verified!==true||\n   admission.provider_whole_native_admitted!==true||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts>now+900000||\n@@ -35,7 +35,7 @@\n   (admission.read_exact_activity_run_id!==undefined&&admission.read_exact_activity_run_id!==EXACT_ACTIVITY_RUN_ID)||\n   !(now<admission.expires_ts&&admission.expires_ts<=admission.own_lease?.expires_ts&&admission.own_lease.acquired_ts<=now)||\n   !/^[A-Za-z0-9:._-]{1,160}$/.test(admission.run_id??'')||admission.native_query_cap!==16||admission.market_HTTP!==0||admission.Telegram!==0)throw Error('POSITIVE_EXACT_OBSERVATION_ADMISSION_REQUIRED');\n-if(admission.lookup_single_exception.extra_number!==17||admission.maximum_executor_reads!==6||admission.executor_wait_ms!==20000||admission.read_saved_auto!==false||admission.read_saved_outcome!==false||admission.read_latest_auto_candidate!==false||admission.read_exact_activity_run_id!==undefined)throw Error('MINIMAL_EXECUTOR_ONLY_SCOPE_REQUIRED');\n+if(admission.maximum_executor_reads!==6||admission.executor_wait_ms!==20000||admission.read_saved_auto!==false||admission.read_saved_outcome!==false||admission.read_latest_auto_candidate!==false||admission.read_exact_activity_run_id!==undefined)throw Error('MINIMAL_EXECUTOR_ONLY_SCOPE_REQUIRED');\n const program=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'),'utf8'));\n const artifactBytes=fs.readFileSync(program.private_artifact_file),artifact=JSON.parse(artifactBytes);\n if(program.status!=='ACTIVATED_RECURRING_PROGRAM_ACTIVE'||sha(artifactBytes)!==program.artifact_sha256||\n@@ -82,7 +82,7 @@\n   }}}}}};\n   native=await reserveNativeRun({db,run_id:admission.run_id,mode:'LOOKUP',run_purpose:'PRODUCTION',policy:{...NATIVE_POLICY,evidence_ref:'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'},future_schedule:DISCOVERY_PLAN});\n   native.store.admission={...native.store.admission,max_rows_read:500,max_rows_written:30,max_requests:16};native.store.max_requests=16;\n-  evidence.original_shared_reservation_never_reduced=true;evidence.owner_extra_number=17;\n+  evidence.original_shared_reservation_never_reduced=true;evidence.owner_extra_number=null;evidence.ordinary_lookup_day_utc=admission.ordinary_lookup_day_utc;\n   evidence.observation=await readPausedExecutorBounded({store:native.store,maximum_reads:6,wait_ms:20000});\n   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';\n }catch(error){\n",
+  "producer_consumer_links": [
+    {
+      "producer": "UTC30 ordinary admission + one named run_id",
+      "consumer": "pump-report/operator/postlaunch-ordinary-sql-policy.mjs:1",
+      "source": "1: export const POSTLAUNCH_ORDINARY_RUN_ID='pump-postlaunch-install-20261030-ordinary-once';\n2: export function createPostlaunchOrdinarySqlPolicy(admission,now=Date.now()){\n3:  const day='2026-10-30',id=POSTLAUNCH_ORDINARY_RUN_ID;\n4:  if(admission.lookup_single_exception!==undefined||admission.ordinary_lookup_day_utc!==day||new Date(now).toISOString().slice(0,10)!==day||\n5:   admission.owner_approval_ref!=='checkpoints/pump-report-20261025/ROOT_OWNER_POSTLAUNCH_INSTALL_ONE_CHECK_APPROVAL_20261030.json'||\n6:   admission.mode!=='LOOKUP'||admission.run_id!==id||admission.native_query_cap!==16||\n7:   admission.implementation_sha256!=='265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854'||\n8:   admission.target_artifact_sha256!=='1b4403a02c6d93a3555c5e1a0ce623c1e907a0edd52ce563878791cb7eba4378')throw Error('EXACT_CURRENT_DAY_ORDINARY_POSTLAUNCH_LOOKUP_REQUIRED');\n9:  let applied=false;",
+      "finding": "Rejects any lookup_single_exception and wrongUTCday/approvalref/mode/run/before265/target1b44/nativecap. ExpiredUTC29named17 not imported or consumed."
+    },
+    {
+      "producer": "unchanged native reservation ledger SQL,500R30W and lookup_count<10",
+      "consumer": "pump-report/operator/postlaunch-ordinary-sql-policy.mjs:10",
+      "source": "10:  return(sql,params)=>{\n11:   if(!sql.startsWith('INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow('))return{sql,params};\n12:   const clause='AND (?16=0 OR lookup_count<?17)';\n13:   if(applied||params[0]!=='PUMP:LOOKUP:'+id||params[1]!==day||params[2]!==500||params[3]!==30||params[15]!==1||params[16]!==10||sql.split(clause).length!==2)throw Error('UNCHANGED_ORDINARY_LOOKUP_TEN_CAP_REQUIRED');\n14:   applied=true;return{sql,params};\n15:  };",
+      "finding": "Exact preimage required once; returns identical sql and params; replay/appliedlargercap rejected. Other statements returned unchanged. No daily ceiling uplift or counter reset."
+    },
+    {
+      "producer": "positive admission + freshpaused FULL of exact business artifact",
+      "consumer": "pump-report/operator/postlaunch-install-ordinary-quiescence-once.mjs:25",
+      "source": "25: const maintenanceSQL=createPostlaunchOrdinarySqlPolicy(admission,now);\n26: if(admission.schema!=='PUMP_MINIMAL_CODE_QUIESCENCE_ADMISSION_V1'||admission.status!=='ADMITTED_NOT_SPENT'||admission.maximum_attempts!==1||\n27:   !/^[a-f0-9]{40}$/.test(admission.authority_main??'')||admission.fresh_all4_own_CAS_FULL_verified!==true||\n28:   admission.provider_whole_native_admitted!==true||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts>now+900000||\n29:   !Number.isSafeInteger(admission.own_lease?.acquired_ts)||!Number.isSafeInteger(admission.own_lease?.expires_ts)||\n30:   admission.own_lease.expires_ts-admission.own_lease.acquired_ts>5400000||\n31:   !/^[a-f0-9]{64}$/.test(admission.expected_recipient_sha256??'')||\n32:   (admission.read_saved_outcome!==undefined&&typeof admission.read_saved_outcome!=='boolean')||\n33:   (admission.read_latest_auto_candidate!==undefined&&typeof admission.read_latest_auto_candidate!=='boolean')||\n34:   (admission.read_saved_auto!==undefined&&typeof admission.read_saved_auto!=='boolean')||\n35:   (admission.read_exact_activity_run_id!==undefined&&admission.read_exact_activity_run_id!==EXACT_ACTIVITY_RUN_ID)||\n36:   !(now<admission.expires_ts&&admission.expires_ts<=admission.own_lease?.expires_ts&&admission.own_lease.acquired_ts<=now)||\n37:   !/^[A-Za-z0-9:._-]{1,160}$/.test(admission.run_id??'')||admission.native_query_cap!==16||admission.market_HTTP!==0||admission.Telegram!==0)throw Error('POSITIVE_EXACT_OBSERVATION_ADMISSION_REQUIRED');\n38: if(admission.maximum_executor_reads!==6||admission.executor_wait_ms!==20000||admission.read_saved_auto!==false||admission.read_saved_outcome!==false||admission.read_latest_auto_candidate!==false||admission.read_exact_activity_run_id!==undefined)throw Error('MINIMAL_EXECUTOR_ONLY_SCOPE_REQUIRED');\n39: const program=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'),'utf8'));\n40: const artifactBytes=fs.readFileSync(program.private_artifact_file),artifact=JSON.parse(artifactBytes);\n41: if(program.status!=='ACTIVATED_RECURRING_PROGRAM_ACTIVE'||sha(artifactBytes)!==program.artifact_sha256||\n42:   program.implementation_sha256!==admission.implementation_sha256||artifact.manifest.implementation_pin.sha256!==admission.implementation_sha256)throw Error('CURRENT_EXACT_BUSINESS_ARTIFACT_REQUIRED');\n43: const proofBytes=fs.readFileSync(admission.full_readback_file),proof=JSON.parse(proofBytes);\n44: const pausedControl=proof.schema==='ROOT_PRODUCTION_CONTROL_PLANE_READBACK_V1'?proof.control_plane:proof.health;\n45: if(sha(proofBytes)!==admission.full_readback_sha256||proof.FULL_exact_module_bytes!==true||proof.implementation_sha256!==admission.implementation_sha256||\n46:   proof.artifact_sha256!==program.artifact_sha256||proof.module_count!==artifact.manifest.module_count||\n47:   !Number.isSafeInteger(proof.readback_ts)||proof.readback_ts>now||now-proof.readback_ts>300000||pausedControl?.automatic_enabled!==false||pausedControl?.delivery_enabled!==true||\n48:   proof.schema==='ROOT_PRODUCTION_CONTROL_PLANE_READBACK_V1'&&pausedControl.DATA_DB_id!=='057a2847-2cc4-4e52-8534-1be1596d21d5')throw Error('FRESH_FULL_LIVE_READBACK_REQUIRED');",
+      "finding": "Same own/freshness/status/schema/recipient/hard16/6PK20s guards. Saved AUTO/outcome/latestcandidate/exactactivity branches disabled. Fullreadback artifact/pin,78modules,AUTO0 delivery1/known DB,<=5min remain."
+    },
+    {
+      "producer": "compiled artifact native-budget reserveNativeRun",
+      "consumer": "pump-report/operator/postlaunch-install-ordinary-quiescence-once.mjs:68",
+      "source": "68:   const {reserveNativeRun,finalizeNativeRun,NATIVE_POLICY,LOOKUP_ENVELOPE}=await import(pathToFileURL(path.join(snapshot,'runtime/native-budget.mjs')));\n69:   if(LOOKUP_ENVELOPE.rows_read!==500||LOOKUP_ENVELOPE.rows_written!==30||LOOKUP_ENVELOPE.max_runs_day!==10)throw Error('OBSERVATION_LOOKUP_ENVELOPE_CHANGED');\n70:   const {DISCOVERY_PLAN}=await import(pathToFileURL(path.join(snapshot,'runtime/discovery-reserve.mjs')));\n71:   const db={prepare(sql){return {bind(...params){return {async all(){\n72:     if(Date.now()>=admission.expires_ts||calls>=16)throw Error('OBSERVATION_IO_BOUND_REACHED');\n73:     calls++;\n74:     const request=maintenanceSQL(sql,params);\n75:     const r=await fetch('https://api.cloudflare.com/client/v4/accounts/70ee0af85191ea470e74c7383fdec772/d1/database/057a2847-2cc4-4e52-8534-1be1596d21d5/query',{\n76:       method:'POST',headers:{Authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(request),redirect:'manual',signal:AbortSignal.timeout(20000)});\n77:     if(r.status!==200)throw Error('D1_API_HTTP_'+r.status);\n78:     const chunks=[];let size=0;for await(const bytes of r.body){size+=bytes.length;totalBytes+=bytes.length;if(size>8388608||totalBytes>12582912)throw Error('OBSERVATION_RESPONSE_BOUND');chunks.push(bytes);}\n79:     const envelope=JSON.parse(Buffer.concat(chunks).toString('utf8'));\n80:     if(envelope.success!==true||!Array.isArray(envelope.result)||envelope.result.length!==1)throw Error('D1_QUERY_ACK_UNBOUND');\n81:     return envelope.result[0];\n82:   }}}}}};\n83:   native=await reserveNativeRun({db,run_id:admission.run_id,mode:'LOOKUP',run_purpose:'PRODUCTION',policy:{...NATIVE_POLICY,evidence_ref:'checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json'},future_schedule:DISCOVERY_PLAN});\n84:   native.store.admission={...native.store.admission,max_rows_read:500,max_rows_written:30,max_requests:16};native.store.max_requests=16;\n85:   evidence.original_shared_reservation_never_reduced=true;evidence.owner_extra_number=null;evidence.ordinary_lookup_day_utc=admission.ordinary_lookup_day_utc;\n86:   evidence.observation=await readPausedExecutorBounded({store:native.store,maximum_reads:6,wait_ms:20000});\n87:   finalizationStarted=true;evidence.native_receipt=await finalizeNativeRun(native);evidence.state='FINALIZED';\n88: }catch(error){",
+      "finding": "LOOKUP envelope remains500R30W/maxday10. Fulloriginalsharedreservation not reduced. Runtime transport hard16; readPausedExecutorBounded6/20s; finalizeNativeRun retained. --describe10 is calculated ordinary SQL upper path,16 is broaderhardcap."
+    }
+  ],
+  "ROOT_affected_case": {
+    "path": "checkpoints/pump-report-20261025/ROOT_POSTLAUNCH_OCT30_ORDINARY_ADAPTER_CASE_V1.json",
+    "sha256": "33f511d787417a56e3d60ba382bbb1e834130cd2ec003bcdac2639dbb08500c5",
+    "receipt": {
+      "schema": "ROOT_POSTLAUNCH_OCT30_ORDINARY_ADAPTER_CASE_V1",
+      "state": "PASS",
+      "evidence_class": "ARTIFICIAL_OFFLINE_ACCEPTANCE_TEST",
+      "Node": 1,
+      "build": 0,
+      "engine": 0,
+      "syntax_checks": 2,
+      "constructors": 9,
+      "sql_policy_calls": 3,
+      "market_HTTP": 0,
+      "native_SQL": 0,
+      "Cloudflare": 0,
+      "Telegram": 0,
+      "old_runtime_controller_cases_replayed": false,
+      "ordinary_ten_cap_and_original_SQL_unchanged": true,
+      "dated17_rejected": true,
+      "artifact_unchanged": true,
+      "finished_ts": 1793337170550
+    }
+  },
+  "new_qualified_Worker_artifact": false,
+  "same_frozen_artifact_sha256": "1b4403a02c6d93a3555c5e1a0ce623c1e907a0edd52ce563878791cb7eba4378",
+  "same_frozen_pin": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+  "actual_cutover_proof_pending": true,
+  "actual_native_count_or_wholeaccount_day_not_inferred_from_newUTCday": true,
+  "private16_search_read_transmit": 0,
+  "helper_Node_import_tests_engine_build_native_market_CF_OAuth_TG": 0,
+  "product_ROOT_edits": 0,
+  "old_accepted_cases_replayed": 0,
+  "actualPARTIoutcome_not_claimed": true
+}
