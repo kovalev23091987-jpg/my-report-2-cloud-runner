@@ -1,0 +1,776 @@
+{
+  "schema": "F701_SAVED_PER_INSTRUMENT_COVERAGE_V1",
+  "authority_main": "18f10cddd492ff0074d542b492333be2356dee14",
+  "basis": "DERIVED_STATIC_EXACT_TUPLE_JOIN_OF_ONE_BOUND_SAVED_CATALOG_AND_FRESH_MAIN_SAVED_PROOFS_NOT_RUNTIME_REPLAY",
+  "inventory_file": "F701_COVERAGE_1311.csv",
+  "rows": 1311,
+  "profiles": {
+    "CRYPTO_WITH_UNIT_PROOF": {
+      "facts": {
+        "price": {
+          "role": "MANDATORY",
+          "expected_unit": "USDT_PER_NATIVE_BASE",
+          "evidence": "EXACT_IDENTITY_PLUS_SAVED_NORMALIZER_CONTRACT",
+          "actual": "NOT_CHECKED_PER_TUPLE_AT_CATALOG_RECEIPT",
+          "event_clock": "ACTUAL_NATIVE_EVENT_REQUIRED",
+          "ttl_ms": 30000
+        },
+        "candles": {
+          "role": "MANDATORY_CLOSED_GROWTH_AND_MOVEMENT",
+          "semantic_proof": "OWNER_APPROVED_CCXT_OPEN_TIME_AND_SAME_NATIVE_FIELD",
+          "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+          "native_quantity_unit": "UNKNOWN",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "ttl_ms": 90000,
+          "independent_vendor_time_guarantee": false
+        },
+        "volume": {
+          "role": "MANDATORY",
+          "comparison": "SAME_NATIVE_REPORTED_QUANTITY_WITH_MATCHED_5M_SEED_AND_1H_BASELINE",
+          "absolute_BASE_or_USDT_amount_qualified": false,
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY"
+        },
+        "growth24h": {
+          "role": "CONDITIONAL_ALTERNATIVE_GROWTH_PROOF_NOT_UNIVERSAL_REQUIRED_HISTORY",
+          "route": "CLOSED_KLINES_EXACT24H",
+          "rolling_ticker_is_not_exact_proof": true,
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY"
+        },
+        "orderbook": {
+          "role": "MANDATORY_LIQUIDITY",
+          "semantic_proof": "ROW_NATIVE_COIN_UNIT_REF_REQUIRED",
+          "expected_unit": "USDT_PRICE_BASE_QUANTITY",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "native_event_and_two_sided_COIN_arrays_required": true,
+          "ttl_ms": 15000
+        },
+        "plan": {
+          "role": "MANDATORY",
+          "actual": "NOT_ANALYZED_IN_F701",
+          "static_unit_or_overlay_does_not_prove_plan": true
+        },
+        "trades": {
+          "role": "OPTIONAL",
+          "semantics": "UNIQUE_RECENT_EXECUTIONS_QUOTE_USDT_WITH_AGGRESSOR_PROOF",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "ttl_ms": 30000,
+          "window_ms": 30000
+        },
+        "funding": {
+          "role": "OPTIONAL",
+          "semantic_proof": "REVIEWED_FUNDING_QUOTE_PROFILE_ADAPTER_BASED_INFERENCE",
+          "expected_unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+          "clock": "SOURCE_UPDATE_TIME_NOT_RECEIPT_REBIRTH;ACTUAL_PERIOD_REQUIRED",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "ttl_ms": 300000
+        },
+        "open_interest": {
+          "role": "OPTIONAL",
+          "semantic_proof": "HOLD_NATIVE_UNIT_MULTIPLIER_AND_CLOCK_PROOF",
+          "actual": "NOT_CHECKED",
+          "current_requests": 0
+        },
+        "future_liquidations": {
+          "role": "OPTIONAL_NONBLOCKING",
+          "actual": "NOT_CHECKED_NO_QUALIFIED_ROUTE",
+          "qualified_routes": 0,
+          "empty_routes_is_not_UNSUPPORTED": true
+        },
+        "precision_multiplier": {
+          "actual": "UNKNOWN_NOT_TRADING",
+          "tick_step_or_contract_multiplier_not_inferred": true
+        }
+      },
+      "scope": "Saved semantic eligibility only; actual whole CORE unproven"
+    },
+    "CRYPTO_UNIT_HOLD": {
+      "facts": {
+        "price": {
+          "role": "MANDATORY",
+          "expected_unit": "USDT_PER_NATIVE_BASE",
+          "evidence": "EXACT_IDENTITY_PLUS_SAVED_NORMALIZER_CONTRACT",
+          "actual": "NOT_CHECKED_PER_TUPLE_AT_CATALOG_RECEIPT",
+          "event_clock": "ACTUAL_NATIVE_EVENT_REQUIRED",
+          "ttl_ms": 30000
+        },
+        "candles": {
+          "role": "MANDATORY_CLOSED_GROWTH_AND_MOVEMENT",
+          "semantic_proof": "OWNER_APPROVED_CCXT_OPEN_TIME_AND_SAME_NATIVE_FIELD",
+          "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+          "native_quantity_unit": "UNKNOWN",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "ttl_ms": 90000,
+          "independent_vendor_time_guarantee": false
+        },
+        "volume": {
+          "role": "MANDATORY",
+          "comparison": "SAME_NATIVE_REPORTED_QUANTITY_WITH_MATCHED_5M_SEED_AND_1H_BASELINE",
+          "absolute_BASE_or_USDT_amount_qualified": false,
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY"
+        },
+        "growth24h": {
+          "role": "CONDITIONAL_ALTERNATIVE_GROWTH_PROOF_NOT_UNIVERSAL_REQUIRED_HISTORY",
+          "route": "CLOSED_KLINES_EXACT24H",
+          "rolling_ticker_is_not_exact_proof": true,
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY"
+        },
+        "orderbook": {
+          "role": "MANDATORY_LIQUIDITY",
+          "semantic_proof": "ROW_NATIVE_COIN_UNIT_REF_REQUIRED",
+          "expected_unit": "USDT_PRICE_BASE_QUANTITY",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "native_event_and_two_sided_COIN_arrays_required": true,
+          "ttl_ms": 15000
+        },
+        "plan": {
+          "role": "MANDATORY",
+          "actual": "NOT_ANALYZED_IN_F701",
+          "static_unit_or_overlay_does_not_prove_plan": true
+        },
+        "trades": {
+          "role": "OPTIONAL",
+          "semantics": "UNIQUE_RECENT_EXECUTIONS_QUOTE_USDT_WITH_AGGRESSOR_PROOF",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "ttl_ms": 30000,
+          "window_ms": 30000
+        },
+        "funding": {
+          "role": "OPTIONAL",
+          "semantic_proof": "REVIEWED_FUNDING_QUOTE_PROFILE_ADAPTER_BASED_INFERENCE",
+          "expected_unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+          "clock": "SOURCE_UPDATE_TIME_NOT_RECEIPT_REBIRTH;ACTUAL_PERIOD_REQUIRED",
+          "actual": "NOT_CHECKED_FOR_THIS_INVENTORY",
+          "ttl_ms": 300000
+        },
+        "open_interest": {
+          "role": "OPTIONAL",
+          "semantic_proof": "HOLD_NATIVE_UNIT_MULTIPLIER_AND_CLOCK_PROOF",
+          "actual": "NOT_CHECKED",
+          "current_requests": 0
+        },
+        "future_liquidations": {
+          "role": "OPTIONAL_NONBLOCKING",
+          "actual": "NOT_CHECKED_NO_QUALIFIED_ROUTE",
+          "qualified_routes": 0,
+          "empty_routes_is_not_UNSUPPORTED": true
+        },
+        "precision_multiplier": {
+          "actual": "UNKNOWN_NOT_TRADING",
+          "tick_step_or_contract_multiplier_not_inferred": true
+        }
+      },
+      "override": {
+        "orderbook": "HOLD_NATIVE_CORE_UNIT_EVIDENCE_REQUIRED",
+        "deep_IO": "DEFERRED;DISCOVERY_NOT_EXCLUDED"
+      }
+    },
+    "HOLD_IDENTITY": {
+      "all_mandatory_optional": "HOLD_EXACT_IDENTITY_BEFORE_FACT_ATTRIBUTION",
+      "unsupported_claimed": false
+    },
+    "OUT_OF_TARGET_AT_SAVED_CAPTURE": {
+      "all_mandatory_optional": "OUT_OF_SCOPE_AT_SAVED_RECEIPT_NOT_UNSUPPORTED"
+    }
+  },
+  "historical_observations": {
+    "OBS_IDOL": {
+      "native_symbol": "IDOL-USDT",
+      "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+      "analysis_msk": "2026-10-30T11:04:31.487000+03:00",
+      "source_projection": "checkpoints/pump-report-20261025/ROOT_RECENT_THREE_SIGNAL_STRATEGY_AUDIT_V1.json#signals/IDOL-USDT",
+      "facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347460000,
+          "received_ts": 1793347461788,
+          "expires_ts": 1793347490000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793347460000,
+          "received_ts": 1793347461788,
+          "expires_ts": 1793347490000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347465628,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347466808,
+          "received_ts": 1793347466908,
+          "expires_ts": 1793347481808,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347463623,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347463623,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793347468075,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347468609,
+          "received_ts": 1793347469176,
+          "expires_ts": 1793347498609,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347200000,
+          "received_ts": 1793347470939,
+          "expires_ts": 1793347500000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        }
+      ],
+      "current_validity": "HISTORICAL_EXPIRED_NOT_REFRESHED",
+      "actual_unit_headers_in_this_safe_fact_projection": null,
+      "unit_header_limitation": "Safe source_facts omits unit headers; use semantic profiles as evidence prerequisites, never invent missing observed units.",
+      "funding_observed_unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+      "funding_observed_period_ms": 14400000,
+      "OI": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "future_map": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "qualified_route_count": 0
+      }
+    },
+    "OBS_SOPH": {
+      "native_symbol": "SOPH-USDT",
+      "instrument_id": "BINGX:USDT_M:101302:SOPH-USDT",
+      "analysis_msk": "2026-10-30T11:02:05.053000+03:00",
+      "source_projection": "checkpoints/pump-report-20261025/ROOT_RECENT_THREE_SIGNAL_STRATEGY_AUDIT_V1.json#signals/SOPH-USDT",
+      "facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347311000,
+          "received_ts": 1793347314463,
+          "expires_ts": 1793347341000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793347311000,
+          "received_ts": 1793347314463,
+          "expires_ts": 1793347341000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347318348,
+          "expires_ts": 1793347350000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347320008,
+          "received_ts": 1793347320106,
+          "expires_ts": 1793347335008,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347316623,
+          "expires_ts": 1793347350000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347316623,
+          "expires_ts": 1793347350000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793347321252,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347321132,
+          "received_ts": 1793347322173,
+          "expires_ts": 1793347351132,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347200000,
+          "received_ts": 1793347323916,
+          "expires_ts": 1793347500000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        }
+      ],
+      "current_validity": "HISTORICAL_EXPIRED_NOT_REFRESHED",
+      "actual_unit_headers_in_this_safe_fact_projection": null,
+      "unit_header_limitation": "Safe source_facts omits unit headers; use semantic profiles as evidence prerequisites, never invent missing observed units.",
+      "funding_observed_unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+      "funding_observed_period_ms": 14400000,
+      "OI": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "future_map": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "qualified_route_count": 0
+      }
+    },
+    "OBS_MAGMA": {
+      "native_symbol": "MAGMA-USDT",
+      "instrument_id": "BINGX:USDT_M:102176:MAGMA-USDT",
+      "analysis_msk": "2026-10-30T10:03:01.755000+03:00",
+      "source_projection": "checkpoints/pump-report-20261025/ROOT_RECENT_THREE_SIGNAL_STRATEGY_AUDIT_V1.json#signals/MAGMA-USDT",
+      "facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343774000,
+          "received_ts": 1793343776016,
+          "expires_ts": 1793343804000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793343774000,
+          "received_ts": 1793343776016,
+          "expires_ts": 1793343804000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343777843,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343778769,
+          "received_ts": 1793343778835,
+          "expires_ts": 1793343793769,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343776968,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343776968,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793343780055,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": "LATEST_RETURNED_TRADE_SAMPLE_PARTIAL",
+          "event_ts": 1793343779862,
+          "received_ts": 1793343780538,
+          "expires_ts": 1793343809862,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "STALE",
+          "reason": "SOURCE_FACT_STALE",
+          "event_ts": 1793332800000,
+          "received_ts": 1793343781489,
+          "expires_ts": 1793333100000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        }
+      ],
+      "current_validity": "HISTORICAL_EXPIRED_NOT_REFRESHED",
+      "actual_unit_headers_in_this_safe_fact_projection": null,
+      "unit_header_limitation": "Safe source_facts omits unit headers; use semantic profiles as evidence prerequisites, never invent missing observed units.",
+      "funding_observed_unit": null,
+      "funding_observed_period_ms": null,
+      "OI": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "future_map": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "qualified_route_count": 0
+      }
+    }
+  },
+  "catalog": {
+    "exact_private_container_sha256": "d697bfbfba16026884214d529404d99f121ae4f6b463ab27725c1fe85aa229e7",
+    "authorized_field": "saved_catalog.private_evidence.snapshot",
+    "body_sha256_original_reported": "f115053a695db427c5f17506c801612123c84b80998a68afbdeb21af67814bd6",
+    "body_hash_basis": "EXISTING_SAVED_READER_BOUND_ACK;NOT_REBUILT_JS_JSON_STRINGIFY",
+    "received_ts": 1793346950291,
+    "saved_ts": 1793346951821,
+    "observed_ts": 1793347056723,
+    "source_event_ts": null,
+    "received_MSK": "2026-10-30T10:55:50.291000+03:00",
+    "original_producer_pin": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+    "receipt_id": "1389bf04-6792-469d-b510-dc4a6a00fd16",
+    "native_source_response_bound": true,
+    "no_current_membership_or_live_freshness_claim": true
+  },
+  "reconciliation": {
+    "derived_counts": {
+      "KNOWN_CRYPTO": 549,
+      "delivery_eligible": 547,
+      "deep_unit_eligible": 538,
+      "UNCLASSIFIED_HOLD": 40,
+      "unit_pending": 9,
+      "NON_USDT": 49,
+      "OWNER_GOLD_EXCLUDED": 2,
+      "KNOWN_NON_TARGET_EXACT_TUPLE": 434,
+      "INACTIVE": 237
+    },
+    "expected_saved_summary": {
+      "KNOWN_CRYPTO": 549,
+      "delivery_eligible": 547,
+      "deep_unit_eligible": 538,
+      "unit_pending": 9,
+      "UNCLASSIFIED_HOLD": 40,
+      "NON_USDT": 49,
+      "INACTIVE": 237,
+      "OWNER_GOLD_EXCLUDED": 2,
+      "KNOWN_NON_TARGET_EXACT_TUPLE": 434
+    },
+    "counts_match": true,
+    "unique_native_symbols": 1311,
+    "raw_rows": 1311,
+    "exclusive_dispositions_total": 1311,
+    "unit_pending_symbols": [
+      "1000000BABYDOGE-USDT",
+      "1000000MOG-USDT",
+      "10000NEX-USDT",
+      "10000SATS-USDT",
+      "1000BONK-USDT",
+      "1000CAT-USDT",
+      "1000CHEEMS-USDT",
+      "1000PEPE-USDT",
+      "1000SHIB-USDT"
+    ],
+    "active_unclassified_symbols": [
+      "1000XEC-USDT",
+      "ETHW-USDT",
+      "GANG-USDT",
+      "GTA6-USDT",
+      "JAGENT-USDT",
+      "NCCOALUMINIUM2USD-USDT",
+      "NCCOLEAD2USD-USDT",
+      "NCCOXAUINR2USD-USDT",
+      "NCCOZINC2USD-USDT",
+      "NCFXUSD2ILS-USDT",
+      "NCFXUSD2INR-USDT",
+      "NCFXUSD2RUB-USDT",
+      "NCFXUSD2TWD-USDT",
+      "NCSINIFTY52USD-USDT",
+      "NCSINIFTYBK2USD-USDT",
+      "NCSKADP2USD-USDT",
+      "NCSKAMT2USD-USDT",
+      "NCSKBHP2USD-USDT",
+      "NCSKBOTZ2USD-USDT",
+      "NCSKCLS2USD-USDT",
+      "NCSKCVS2USD-USDT",
+      "NCSKDISK2USD-USDT",
+      "NCSKDVN2USD-USDT",
+      "NCSKEIDO2USD-USDT",
+      "NCSKEQT2USD-USDT",
+      "NCSKFIX2USD-USDT",
+      "NCSKHLT2USD-USDT",
+      "NCSKITA2USD-USDT",
+      "NCSKJPL2USD-USDT",
+      "NCSKKEYS2USD-USDT",
+      "NCSKKMI2USD-USDT",
+      "NCSKMMM2USD-USDT",
+      "NCSKMRSH2USD-USDT",
+      "NCSKP2USD-USDT",
+      "NCSKPH2USD-USDT",
+      "NCSKRIO2USD-USDT",
+      "NCSKTGT2USD-USDT",
+      "NCSKXNDU2USD-USDT",
+      "PRIORS-USDT",
+      "RLS-USDT"
+    ],
+    "registry_missing_from_snapshot": [
+      "GPSOL-USDT",
+      "TERMMAX-USDT",
+      "VELODROME-USDT"
+    ],
+    "original_run_catalog_receipt": "a64a3b55-3b9f-466f-a003-ab13cbcb76a3",
+    "original_run_catalog_received_ts": 1793343647956,
+    "original_bulk_price_receipt": "44df4ada-11b4-49d6-9db6-aa4b64fab572",
+    "aggregate_price_expected": 547,
+    "aggregate_price_checked": 547,
+    "original_run_and_later_catalog_receipts_are_same": false,
+    "bulk_price_per_tuple_attribution": "NOT_RECONSTRUCTED_FROM_AGGREGATE_COUNTERS",
+    "current_global_crypto_N": null,
+    "current_CORE_all": false,
+    "current_538_fresh_CORE_claim": false
+  },
+  "source_files": [
+    {
+      "path": "pump-report/registry/index.mjs",
+      "sha256": "56fb530b6cbcec49bfe4dc6912ff466272d1896ee3869cad1d5fa9d68d980005",
+      "git_blob_sha": "0f4888224ac1dc34ae98bb395c4a08a2fa0d44d0",
+      "bytes": 27554,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/native-reviewed550.mjs",
+      "sha256": "6fe133b2e59e18f7479e87cd82b9bb1d0eed4e9383ac90cc3f8e2d6cb3766f45",
+      "git_blob_sha": "689e56e13085b407c4724e802cc4b961822d4b12",
+      "bytes": 4801,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/native-reviewed550-data.mjs",
+      "sha256": "23f109dd0da3a4f17fc1ff6cd0ee233f250972d2cfba05adda6278a5a8203617",
+      "git_blob_sha": "44d598bf283a33989df88badb912d2d7c8995ff4",
+      "bytes": 91735,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/native-execution-qualifications.mjs",
+      "sha256": "15698655488ba9cd5e2f992e11fe875e20184822215b05732cd530b43621a5ad",
+      "git_blob_sha": "5b40fc0791fd8e20e0022bbc6613a6aca38d91d9",
+      "bytes": 1961,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/funding-quote-profile.mjs",
+      "sha256": "2c784ba354ef78ec257267db834417081bc4e7040a1b5b5f03dad5df0a8dd858",
+      "git_blob_sha": "699dbbbe36b8e4d66386e69a6ec9dd5c32714c54",
+      "bytes": 2653,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/native-nontarget380-data.mjs",
+      "sha256": "11ca070b31b79d0a8c32f19f11c1b388473fd17ca0c444f13c30dd96024d7118",
+      "git_blob_sha": "11fc9f468714e0c555830f0b018914525c243071",
+      "bytes": 348740,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/native-reactivated53-data.mjs",
+      "sha256": "aba8084747a1f92aab1c5bdb0983c462f4fe78a83bc3cc738a0abf41aff92657",
+      "git_blob_sha": "efb0c4422fde92d12d68514887d06d419e6a4bd6",
+      "bytes": 73090,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/registry/native-usdkrw1-data.mjs",
+      "sha256": "0c6bbec412e5225fd9d42762f0934d7749159a4078d7becbc411304502a12758",
+      "git_blob_sha": "6b08f80813a7929d314474bf13aba39c9bee0f34",
+      "bytes": 1738,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/native-coin-unit-reviewed-data.mjs",
+      "sha256": "e6066d883ad6c82f705a03cf9dbe2a14aa1f090ce5a959e871bd65cd84ab6e49",
+      "git_blob_sha": "a3e78998afcb2536ef2b72a0f26993b5649c88c0",
+      "bytes": 83411,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/native-coin-unit-review.mjs",
+      "sha256": "9c4b24df9b3df7a16301e077ff9429cbc7cb46ff62334d63663f8b0def3446d4",
+      "git_blob_sha": "07aee42f7618e13d69178393933ea565c8b74cea",
+      "bytes": 2015,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/native-relative-qualification.mjs",
+      "sha256": "c9ab4bd23cf10376a3abd7b66490679121362286efdc82ed95d19fdf29ca753f",
+      "git_blob_sha": "0a69ee98e858386a2783c5157709b51ca002a021",
+      "bytes": 3126,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/funding-qualification.mjs",
+      "sha256": "38a0c42d75d6b2bd1984dd0a90f48f6dbe4df1ab61b51d8d50071c47a8a0f34f",
+      "git_blob_sha": "46b0fd193b8c605373c9fd424ad7f3782b4dad50",
+      "bytes": 3991,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/runtime/source-evidence-admission.mjs",
+      "sha256": "38f89263a81407686b3494608c4103f42b8d6cefe953dfd2110b5229b6dd92fc",
+      "git_blob_sha": "83a79bcaf1fe88df2b642c91cccf2eb89412e747",
+      "bytes": 930,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "sha256": "516fc3c63b0046433ae8a6b3e17d07e3e9b1638ecda9589568021dead406954c",
+      "git_blob_sha": "46321e517136d72619d0f502e9eeaf6d04934949",
+      "bytes": 42738,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/bingx.mjs",
+      "sha256": "d0df081365f35c0f8c238c79cc71cafb0cc4bead6123fd691ce28b966d0ffd02",
+      "git_blob_sha": "9c406a87ee75cda9c00b3f8600d95ab4246bcff8",
+      "bytes": 15000,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/sources/recent-trades.mjs",
+      "sha256": "b9a317ec8d003701118a3cffaf152b07b0e9abf8e8a525a1a12ab642d22f11ba",
+      "git_blob_sha": "5b3810fdcb69a16969168b3ee91f06ebab44146a",
+      "bytes": 6705,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_MAGMA_ACTUAL_BLOCK_STRATEGY_AUDIT_V1.json",
+      "sha256": "8e93c54df729f8c29db8f350458be5180e5247d4f22302f4878ba60ddc15b6fc",
+      "git_blob_sha": "090daacc9e02f4f17f3aa8ca569038aeab2716c4",
+      "bytes": 25618,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_RECENT_THREE_SIGNAL_STRATEGY_AUDIT_V1.json",
+      "sha256": "e1f16d25acc704923694f7c0b8448ae7aaadd44cb6c900198687fe1dc398afaa",
+      "git_blob_sha": "513892037ea9c341f16c47d7aa077d13b93c19ec",
+      "bytes": 46905,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F658_SAVED_ACTUAL_CATALOG_HANDOFF_V1.json",
+      "sha256": "2ca5cb7de888c5f54401bcf3489cc2ee8cc060c5f363f872487fc49e798cc066",
+      "git_blob_sha": "7b09cf2c54862ecb9986bfb93d30eccf181d5818",
+      "bytes": 13497,
+      "scope": "PUBLIC_SOURCE_OR_SAFE_PROJECTION"
+    },
+    {
+      "path": "pump-report/.private/observations/magma-saved-strategy-audit.full.json",
+      "sha256": "d697bfbfba16026884214d529404d99f121ae4f6b463ab27725c1fe85aa229e7",
+      "git_blob_sha": "022e4dc4845fe9d71034b84a5331d1eb34b28a69",
+      "bytes": 2918853,
+      "scope": "HASH_CONTAINER_AND_DECODE_SAVED_CATALOG_FIELD_ONLY"
+    }
+  ],
+  "fact_profiles_are_not_native_receipts": true,
+  "full_CORE_539_overlay_promoted": false,
+  "current_OI_request_count": 0,
+  "current_future_map_route_count": 0,
+  "provider_or_native_IO": 0,
+  "Node_import_tests": 0,
+  "budget_reset": false,
+  "protected_pauses": 9,
+  "OWNER_deferrals": 2,
+  "inventory_sha256": "5162c2d20015c7da02c49dc9290c263b883e3f81febe1da155f281a7b11ef6ff"
+}
