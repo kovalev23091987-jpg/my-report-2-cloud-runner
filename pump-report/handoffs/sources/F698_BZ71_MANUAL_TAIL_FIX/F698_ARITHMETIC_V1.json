@@ -1,0 +1,215 @@
+{
+  "schema": "F698_BOUNDED_NATIVE_ARITHMETIC_V1",
+  "status": "STATIC_MODEL_NOT_RUNTIME_PASS",
+  "model": {
+    "G": "one get: 1Q1Rhint0Whint",
+    "A": "atomic at most5 attempts: <=10Q10Rhint10Whint conservative existing model",
+    "P": "atomicPair at most5 attempts: <=10Q30Rhint20Whint (each read2/write4R,4W)",
+    "S": "set:1Q2Rhint2Whint",
+    "D": "removeWorkPointer:1Q1Rhint2Whint",
+    "physical_native_cost_proven": false
+  },
+  "queued_manual": {
+    "claim_existing_G": [
+      1,
+      1,
+      0
+    ],
+    "claim_job_A": [
+      10,
+      10,
+      10
+    ],
+    "completion_set_result_S": [
+      1,
+      2,
+      2
+    ],
+    "completion_job_A": [
+      10,
+      10,
+      10
+    ],
+    "work_complete_initialized_no_pending": {
+      "ensure_ready_head_G": [
+        1,
+        1,
+        0
+      ],
+      "member_G": [
+        1,
+        1,
+        0
+      ],
+      "target_G": [
+        1,
+        1,
+        0
+      ],
+      "evidence_G": [
+        1,
+        1,
+        0
+      ],
+      "completed_callback_result_G": [
+        1,
+        1,
+        0
+      ],
+      "member_DONE_A": [
+        10,
+        10,
+        10
+      ],
+      "remove_pointer_D": [
+        1,
+        1,
+        2
+      ],
+      "sum": [
+        16,
+        16,
+        12
+      ]
+    },
+    "head_pending_recover_active": {
+      "head_target_member_G3": [
+        3,
+        3,
+        0
+      ],
+      "atomicPair_P": [
+        10,
+        30,
+        20
+      ],
+      "final_head_G": [
+        1,
+        1,
+        0
+      ],
+      "sum": [
+        14,
+        34,
+        20
+      ],
+      "replaces_normal_head_G": [
+        1,
+        1,
+        0
+      ],
+      "additional_delta": [
+        13,
+        33,
+        20
+      ],
+      "assumption": "initialized/legacy_imported proved by immediately preceding page; recover one pending record, CAS<=5; corruption throws"
+    },
+    "claim_plus_completion_normal": [
+      38,
+      39,
+      34
+    ],
+    "additional_pending_recovery": [
+      13,
+      33,
+      20
+    ],
+    "required_hold": [
+      51,
+      72,
+      54
+    ],
+    "maximum_claimed_jobs_per_native_AUTO_invocation": 1,
+    "claim_scope": "one selected pending.items[0] id; no page4/migration under completion hold",
+    "direct_MANUAL_double_counted": false
+  },
+  "run_and_end": {
+    "RUN_AUTO_unchanged": [
+      41,
+      42,
+      42
+    ],
+    "raw_READY_and_recovery_reference": [
+      20,
+      20,
+      20
+    ],
+    "surplus_close": [
+      10,
+      10,
+      10
+    ],
+    "run_row": [
+      1,
+      2,
+      2
+    ],
+    "executor_release": [
+      10,
+      10,
+      10
+    ],
+    "end_subfloor_after_raw_and_close": [
+      11,
+      12,
+      12
+    ],
+    "completion_can_spend_end_token": false,
+    "queued_run_plus_manual_hold": [
+      92,
+      114,
+      96
+    ],
+    "CANDIDATE_SEND_unchanged": [
+      94,
+      115,
+      102
+    ],
+    "native_finalize_separate": [
+      2,
+      2,
+      1
+    ],
+    "combined_listed_required": [
+      188,
+      231,
+      199
+    ],
+    "remaining_to_ordinary_envelope_before_other_prefix": {
+      "Q": 612,
+      "Rhint": 4769,
+      "Whint": 101
+    },
+    "warning": "Other prefix/source/cache/enqueue/optional costs are additional actual expenses. Not a whole-invocation fit proof."
+  },
+  "R3": {
+    "RECOVER_ONE_before": [
+      200,
+      700,
+      110
+    ],
+    "settlement_atomic_A": [
+      10,
+      10,
+      10
+    ],
+    "settlement_readback_G": [
+      1,
+      1,
+      0
+    ],
+    "delta": [
+      11,
+      11,
+      10
+    ],
+    "RECOVER_ONE_after": [
+      211,
+      711,
+      120
+    ],
+    "semantic_implementation_owner": "ANALYTICS BZ71 R3; F698 changes forecast constant only"
+  },
+  "future_qualification": "One ROOT admitted connected case; actual staged SQLite trace, contention/queued invalid rows/end floor/provider and finalize checks; no old cases replay"
+}

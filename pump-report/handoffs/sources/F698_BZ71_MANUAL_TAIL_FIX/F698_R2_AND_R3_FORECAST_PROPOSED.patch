@@ -1,0 +1,118 @@
+--- a/pump-report/runtime/runner.mjs
++++ b/pump-report/runtime/runner.mjs
+@@ -36,16 +36,20 @@
+     await manualWork.add(request_id);
+     return {status:'QUEUED',request_id};
+   }
+-  async function claimManual(executor_owner){
+-    const page=await manualWork.page({limit:4});if(!page.ready)throw Error('WORK_INDEX_MIGRATING');
+-    for(const {id} of page.items){const existing=await store.get('pump:manual:'+id);if(existing?.status==='COMPLETE'){await manualWork.complete(id,{evidence_key:manualResultKey(id)});continue;}
+-      const job=await store.atomic('pump:manual:'+id,current=>{
++  async function claimManual(executor_owner,{native_ticket=null,request_id=null}={}){
++    const db=native_ticket?native_tail.queuedManualStore(native_ticket):store;
++    const work=native_ticket?createWorkIndex({store:db,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async saved=>saved.status==='COMPLETE'&&await db.get(manualResultKey(saved.request_id))!==null}):manualWork;
++    // Native AUTO already selected one initialized pointer. Do not page four
++    // rows or migrate another index while spending the completion envelope.
++    const page=native_ticket?{ready:true,items:[{id:request_id}]}:await manualWork.page({limit:4});if(!page.ready)throw Error('WORK_INDEX_MIGRATING');
++    for(const {id} of page.items){const existing=await db.get('pump:manual:'+id);if(existing?.status==='COMPLETE'){await work.complete(id,{evidence_key:manualResultKey(id)});continue;}
++      const job=await db.atomic('pump:manual:'+id,current=>{
+       if(current?.status!=='PENDING'&&!(current?.status==='PROCESSING'&&current.executor_owner!==executor_owner))return {state:current,result:null};
+       return {state:{...current,status:'PROCESSING',executor_owner,started_ts:clock()},result:current};
+     });if(job)return job;}return null;
+   }
+-  async function finishManual(job,result){
+-    const db=native_tail?native_tail.endStore():store;
++  async function finishManual(job,result,{native_ticket=null}={}){
++    const db=native_ticket?native_tail.queuedManualStore(native_ticket):native_tail?native_tail.endStore():store;
+     const work=native_tail?createWorkIndex({store:db,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async saved=>saved.status==='COMPLETE'&&await db.get(manualResultKey(saved.request_id))!==null}):manualWork;
+     await db.set(manualResultKey(job.request_id),result);
+     await db.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));
+@@ -356,22 +360,34 @@
+       const unresolved=(catalog.unqualified??[]).filter(row=>['CRYPTO_ASSET_IDENTITY_UNQUALIFIED','CATALOG_REGISTRY_IDENTITY_MISMATCH','MISSING_OR_DUPLICATE_NATIVE_SYMBOL','INVALID_CATALOG_ROW'].includes(row.reason));
+       if(unresolved.length){result.status='INCOMPLETE';result.errors.push({reason:'UNIVERSE_QUALIFICATION_INCOMPLETE',unqualified:unresolved.length});}
+       if(mode==='AUTO'&&catalog.instruments.length)result.coverage=await updateDiscovery(catalog,run_id);
+-      let job;
++      let job,queuedManualAttempts=0;
+       for(;;){
+         try{await assert_execution();}catch{result.status='INCOMPLETE';result.errors.push('EXECUTOR_LEASE_EXPIRED');break;}
+         const pending=await manualWork.page({limit:1,advance:false});if(!pending.ready){result.status='INCOMPLETE';result.errors.push('WORK_INDEX_MIGRATING');break;}
+-        const hasManual=pending.scanned>0;
++        const queuedNative=!!native_tail&&mode==='AUTO',hasManual=queuedNative?pending.items.length>0:pending.scanned>0;
++        if(queuedNative&&hasManual&&queuedManualAttempts>=1){result.status='INCOMPLETE';result.errors.push('QUEUED_MANUAL_CARRIED_ONE_PER_NATIVE_RUN');break;}
+         budget.setMode(hasManual?'MANUAL':mode);
+         if(!capacity()){result.status='INCOMPLETE';result.errors.push('RUN_RESOURCES_DEFERRED');break;}
+-        job=await claimManual(owner);
++        let manualTicket=null;
++        if(queuedNative&&hasManual){
++          try{manualTicket=native_tail.claimQueuedManual({request_id:pending.items[0].id});}
++          catch(error){
++            if(!['NATIVE_SQL_QUERY_COUNT_PROTECTED','NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED','NATIVE_STAGE_ACTUAL_ADMISSION_REQUIRED'].includes(error?.code)||store.usage().unknown_ops>0)throw error;
++            result.status='INCOMPLETE';result.errors.push('QUEUED_MANUAL_TAIL_DEFERRED');break;
++          }
++          queuedManualAttempts++;
++        }
++        try{
++        job=queuedNative&&!hasManual?null:await claimManual(owner,{native_ticket:manualTicket,request_id:manualTicket?pending.items[0].id:null});
+         if(job){
+           const matches=catalog.instruments.filter(i=>symbolKey(i.native_symbol)===job.symbol||i.base.toUpperCase()===job.symbol);
+           let answer;
+           if(ownerInstrumentExcluded(job.symbol))answer={status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:job.symbol};
+           else if(matches.length!==1)answer={status:matches.length?'AMBIGUOUS_SYMBOL':'INSTRUMENT_NOT_QUALIFIED',symbol:job.symbol,candidates:matches.map(i=>i.native_symbol)};
+           else try{answer=await checkInstrument(matches[0],{run_id,mode:'MANUAL',publish:job.publish,assert_execution});}catch(error){answer={status:'ERROR',reason:error.code??'MANUAL_ANALYSIS_ERROR'};}
+-          await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});if(answer.bookkeeping_error)break;continue;
++          await finishManual(job,answer,{native_ticket:manualTicket});result.manual.push({request_id:job.request_id,result:answer});if(answer.bookkeeping_error)break;continue;
+         }
++        }finally{if(manualTicket)native_tail.releaseQueuedManual(manualTicket);}
+         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
+         budget.setMode('AUTO');const instrument=await selectAutomatic(catalog,result);if(!instrument)break;
+         try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(checked.bookkeeping_error)break;if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
+--- a/pump-report/runtime/native-tail-guard.mjs
++++ b/pump-report/runtime/native-tail-guard.mjs
+@@ -2,11 +2,12 @@
+ export const NATIVE_TAIL_PLANS=Object.freeze({
+   RUN_AUTO:{requests:41,rows_read:42,rows_written:42},
+   RUN_MANUAL:{requests:120,rows_read:180,rows_written:120},
++  QUEUED_MANUAL:{requests:51,rows_read:72,rows_written:54},
+   CANDIDATE_SEND:{requests:94,rows_read:115,rows_written:102},
+   CANDIDATE_UNSENT:{requests:41,rows_read:62,rows_written:52},
+   REMEMBER:{requests:36,rows_read:36,rows_written:30},
+   RECORD:{requests:59,rows_read:59,rows_written:50},
+-  RECOVER_ONE:{requests:200,rows_read:700,rows_written:110},
++  RECOVER_ONE:{requests:211,rows_read:711,rows_written:120},
+   OUTCOME_ONE:{requests:160,rows_read:600,rows_written:100}
+ });
+ export const NATIVE_RECOVERY_PREFIX='pump:native-tail-recovery:v1:ready:';
+@@ -16,7 +17,7 @@
+ export function createNativeTailGuard({store,run_id,mode,clock=Date.now}={}){
+   if(!store?.reserveStage||!store?.withStage||!store.admission?.evidence_ref?.endsWith(':'+run_id)||
+     store.usage?.().unknown_ops!==0||store.admission.expires_ts<=clock())throw new BudgetRefusal('ACTUAL_NATIVE_TAIL_ADMISSION_REQUIRED');
+-  const owned=new WeakMap();let runToken=null,projectionToken=null,projectionBusy=false,checked=0,repairCount=0,outcomeCount=0;
++  const owned=new WeakMap(),queuedManual=new WeakMap();let queuedManualClaims=0,runToken=null,projectionToken=null,projectionBusy=false,checked=0,repairCount=0,outcomeCount=0;
+   const expiry=()=>store.admission.expires_ts;
+   const claim=(phase,id,plan,min_time_ms=0)=>store.reserveStage({run_id,phase,workload_id:id,envelope:plan,expires_ts:expiry(),min_time_ms});
+   const release=t=>{if(t&&store.usage().unknown_ops===0)store.releaseStage(t);};
+@@ -55,6 +56,24 @@
+         if(current&&current.analysis_key!==analysis_key)throw new BudgetRefusal('NATIVE_RECOVERY_ORIGINAL_CONFLICT');
+         return {state:current??{schema:'PUMP_NATIVE_TAIL_RECOVERY_V1',analysis_key,producer_run_id:analysis.run_id,created_ts:clock(),card_id:null},result:true};
+       });return key;
++    },
++    claimQueuedManual({request_id}={}){
++      if(mode!=='AUTO'||!runToken||queuedManualClaims>=1||typeof request_id!=='string'||!request_id||request_id.length>512)
++        throw new BudgetRefusal('BOUNDED_QUEUED_MANUAL_STAGE_REQUIRED');
++      const token=claim('QUEUED_MANUAL_REQUIRED',request_id,NATIVE_TAIL_PLANS.QUEUED_MANUAL,2000);
++      const ticket=Object.freeze({});queuedManual.set(ticket,{token,request_id});queuedManualClaims++;
++      return ticket;
++    },
++    queuedManualStore(ticket){
++      const row=queuedManual.get(ticket);if(!row)throw new BudgetRefusal('QUEUED_MANUAL_STAGE_NOT_OWNED');
++      return store.withStage(row.token);
++    },
++    releaseQueuedManual(ticket){
++      const row=queuedManual.get(ticket);if(!row)throw new BudgetRefusal('QUEUED_MANUAL_STAGE_NOT_OWNED');
++      const status=store.stageStatus(row.token);
++      // Retain failed/pending/unknown obligations and the primary exception.
++      if(status.failed||status.pending||store.usage().unknown_ops>0)return {status:'QUEUED_MANUAL_HOLD_RETAINED'};
++      store.releaseStage(row.token);queuedManual.delete(ticket);return {status:'QUEUED_MANUAL_STAGE_CLOSED'};
+     },
+     claimCandidate({analysis_key,may_send}){
+       const token=claim('CANDIDATE_REQUIRED',analysis_key,may_send?NATIVE_TAIL_PLANS.CANDIDATE_SEND:NATIVE_TAIL_PLANS.CANDIDATE_UNSENT,may_send?20000:2000);

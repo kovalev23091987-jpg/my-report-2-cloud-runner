@@ -1,0 +1,77 @@
+{
+  "schema": "F698_PAYLOAD_MANIFEST_V1",
+  "status": "PROPOSED_UNEXECUTED",
+  "payload": [
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/BASE_PIN_V1.json",
+      "bytes": 429,
+      "sha256": "018a7f003cc01e1b4ecb84077e0c99c97f495df6d18572a68021e21e2b5b296d",
+      "git_blob_sha": "96b22acaf86fb9eeb4e127e05719766d0faad4ac"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/F698_ARITHMETIC_V1.json",
+      "bytes": 3903,
+      "sha256": "b322568741dceff4df6f6cba299cd705cfda2c6339b9487cc1b68e81ba1dba36",
+      "git_blob_sha": "c8d3e6730872ff4048500f4850c93a4fbd8907db"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/F698_HANDOFF_RU.md",
+      "bytes": 7347,
+      "sha256": "569c664ddbcdb3d900e68ec001d833be38331e484d60e12cf30da77770f724c0",
+      "git_blob_sha": "e386bdf7dd25c0168cb052670e99aa8174652113"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/F698_ONE_CASE_WITNESSES_RU.md",
+      "bytes": 2509,
+      "sha256": "d6176b16dc4d3d5a5458761c3fad12f8e228012c934040dce6d21c9f6539c2cc",
+      "git_blob_sha": "d57d07aada6f41a3ffe1d594e95341224f06cf52"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/F698_R2_AND_R3_FORECAST_PROPOSED.patch",
+      "bytes": 9839,
+      "sha256": "5fdd42aa65023b2e30489b4572d674222f4a49777d23a563917b97e1e51fdae4",
+      "git_blob_sha": "960adf0352d8dcb90e084683684136654e35d137"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/base/native-tail-guard.mjs",
+      "bytes": 7948,
+      "sha256": "852562e38b8ee65cc9de3bab048670f0459e92cbc599a959f7ed4796f23f4fef",
+      "git_blob_sha": "b2437db52cedc8f75bedbe2a3a4f0b7a6eefe510"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/base/runner.mjs",
+      "bytes": 38623,
+      "sha256": "a045f6b8203465f46c2e0da61099afe5b5bb2ba024eac2ddc632f1d7406ee93f",
+      "git_blob_sha": "bb487a0d2b2346b6351db926e193e74867f5d6a8"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/case/F698_queued_manual_case.mjs",
+      "bytes": 8971,
+      "sha256": "76f36d6834f7586193c8ce87b631a1e6351379d81ca2f4b312a34751fb4070ae",
+      "git_blob_sha": "880b48e973f297fe0070199a91baf809ca8ab8c2"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/proposed/pump-report/runtime/native-tail-guard.mjs",
+      "bytes": 9208,
+      "sha256": "33e427c53d93e792d39d81479a4c527db05dd902593503ded8151fac0bf1dee9",
+      "git_blob_sha": "3404ea684d5f89c1034d9a29e819b31945aaa49d"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F698_BZ71_MANUAL_TAIL_FIX/proposed/pump-report/runtime/runner.mjs",
+      "bytes": 40261,
+      "sha256": "7561b06145ddee9233a42818eb5072456df62e9095bb74d07ee7da7b172ed990",
+      "git_blob_sha": "5e80d70f603bc8c903440ff1355ae2ba719dfcc2"
+    }
+  ],
+  "runtime_tests_executed": 0,
+  "canonical_changes": 0,
+  "native_provider_IO": 0,
+  "scope": "R2 only plus exactly R3 forecast11/11/10; ANALYTICS owns other fixes",
+  "callable": "case/F698_queued_manual_case.mjs",
+  "callable_phases": 4,
+  "missing_executed_witnesses": [
+    "all four prepared phases",
+    "bounded CAS contention",
+    "concurrent pending head recovery"
+  ]
+}
