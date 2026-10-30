@@ -1,0 +1,409 @@
+{
+  "schema": "F682_RECEIPT_ATTRIBUTION_V1",
+  "base_main": "759aebb720d94d9f4ca99599d5e5d57604d46154",
+  "run_id": "4ec20570-d784-489b-aa05-0b5b8a86db74",
+  "input": {
+    "path": "checkpoints/pump-report-20261025/ROOT_MAGMA_RUN_SAFE_RECEIPT_ATTRIBUTION_V1.json",
+    "sha256": "2694d1b4b04d861f04fc07bdfaacf7732ba94f4e41f520421639a69b1f03c203",
+    "git_blob": "6251d2e83613d6356b47405b26889c9e4e192e3c",
+    "sha256_verified": true,
+    "basis": "Actual saved original AUTO run only; typed budget receipts and exact normalized fact evidence_ref matches, no URLs/headers/body/recipient",
+    "no_raw_or_private16_read": true
+  },
+  "authority": {
+    "fresh17_FULL": true,
+    "all4_equal": true,
+    "root_owner": "CODEX:PUMP_RECENT_SIGNAL_QUALITY_20261030:1793348312000",
+    "root_expires_ts": 1793351912000,
+    "fence_active": false,
+    "own_acquire_head": "50220ca221c6c83f34fa00e73eb177e4f4e23b18",
+    "work_deadline_ts": 1793350437000
+  },
+  "accounting_rule": "Sum the union of original request_id, not the number of facts, report blocks, coverage rows or candidate counters. CONFIRMED HTTP200 is a charged transport receipt, not proof that every fact was usable.",
+  "closed_audit_row": {
+    "previous": "per-block attribution unknown",
+    "now": "CLOSED_FOR_EXACT_MAGMA_INPUTS_IN_THIS_RUN",
+    "result": "6 unique confirmed BingX input costs bound exactly to 8 fact kinds; source-group matrix below is additive by receipt, functional block uses overlap.",
+    "limits": "Not closed for all assets/day or every provider operation: 2 CORE receipts lack exact fact/candidate binding; delivery symbol/route and actual cache-hit counts are not exposed."
+  },
+  "totals": {
+    "receipt_count": 19,
+    "unique_request_ids": 19,
+    "duplicates": 0,
+    "confirmed_cost": 19,
+    "BINGX": 18,
+    "TELEGRAM": 1,
+    "BINGX_CORE": 14,
+    "BINGX_DISCOVERY": 2,
+    "BINGX_DELIVERY": 2,
+    "all_cost_one": true,
+    "all_confirmed": true,
+    "all_http_status_200": true,
+    "run_unknown": 0,
+    "run_unknown_is_not_historical_unknown_clearance": true,
+    "partition_reconciled": true
+  },
+  "disjoint_partition": [
+    {
+      "label": "MAGMA_EXACT_FACT_INPUTS",
+      "request_ids": [
+        "ffddc426-ad46-4886-a9ab-08cf1dd72edc",
+        "a38107b7-e349-4eaa-b4d5-5c15e7ee798b",
+        "000afa83-c7de-423e-bc8e-98824ecfa533",
+        "4354fcc4-1c6c-4b25-b7fe-917ffa6410cf",
+        "faa7706e-4eb8-42f2-8178-751b5e02686d",
+        "2edc0279-fb74-4d9f-8e1d-2fc19128007c"
+      ],
+      "confirmed_cost": 6,
+      "certainty": "EXACT_FACT_EVIDENCE_REF",
+      "detail": "6 unique BINGX CORE receipts for 8 fact kinds; count each receipt once."
+    },
+    {
+      "label": "BEAM-USDT_SAVED_CORE_GROUP",
+      "request_ids": [
+        "abeabde1-6753-47b1-bad0-c581770c6910",
+        "6590194d-a4d0-4efc-b8bb-0d45e9ebfaf9",
+        "e92f47d9-2a92-484d-b8bf-c9be9ffb525d"
+      ],
+      "confirmed_cost": 3,
+      "certainty": "EXACT_SAVED_CORE_GROUP",
+      "detail": "3 receipt IDs; group is not the whole candidate source cost, and HTTP200 is not fact usability."
+    },
+    {
+      "label": "Q-USDT_SAVED_CORE_GROUP",
+      "request_ids": [
+        "ff274cf6-e254-43de-8fd5-bfee9d5f0ff8",
+        "3d7c2e4a-119b-4ce9-bed6-52c58bfd7acd",
+        "d4b0243a-c149-4f5d-be76-0def150c0985"
+      ],
+      "confirmed_cost": 3,
+      "certainty": "EXACT_SAVED_CORE_GROUP",
+      "detail": "3 receipt IDs; group is not the whole candidate source cost, and HTTP200 is not fact usability."
+    },
+    {
+      "label": "SHARED_DISCOVERY",
+      "request_ids": [
+        "a64a3b55-3b9f-466f-a003-ab13cbcb76a3",
+        "44df4ada-11b4-49d6-9db6-aa4b64fab572"
+      ],
+      "confirmed_cost": 2,
+      "certainty": "EXACT_TYPED_PURPOSE",
+      "detail": "Shared run discovery; no per-asset split."
+    },
+    {
+      "label": "RUN_DELIVERY_BINGX",
+      "request_ids": [
+        "4f77e98e-2833-495f-ad83-458849ed4057",
+        "3e0a6a82-6238-4a52-910b-8c293d007824"
+      ],
+      "confirmed_cost": 2,
+      "certainty": "EXACT_TYPED_PURPOSE",
+      "detail": "Keep separate from immutable signal source facts; no exact symbol/route binding in this projection."
+    },
+    {
+      "label": "TELEGRAM_DELIVERY",
+      "request_ids": [
+        "TELEGRAM:PUMP:a8c029e743fd64b9be7a375ebaddfe02776c905b6df072912aad821dc4945ffa"
+      ],
+      "confirmed_cost": 1,
+      "certainty": "EXACT_TYPED_PROVIDER_FAMILY",
+      "detail": "One charged send receipt in saved original run; no new send."
+    },
+    {
+      "label": "CORE_NOT_EXACTLY_BOUND_TO_FACT_OR_CANDIDATE",
+      "request_ids": [
+        "f4011d03-8755-4a4c-8058-92a2ae2c5e58",
+        "dc0600f2-c2a3-43dd-9d58-a6fc1b0dd366"
+      ],
+      "confirmed_cost": 2,
+      "certainty": "EXACT_RESIDUAL_ONLY",
+      "detail": "2 BINGX CORE receipts; do not assign symbol or day-growth request ID using timestamp/order alone."
+    }
+  ],
+  "MAGMA_additive_billable_input_groups": [
+    {
+      "request_id": "ffddc426-ad46-4886-a9ab-08cf1dd72edc",
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "purpose": "CORE",
+      "cost": 1,
+      "state": "CONFIRMED",
+      "http_status": 200,
+      "fact_kinds": [
+        "price",
+        "ticker_24h"
+      ],
+      "interpretation": "Price used; ticker_24h INCOMPLETE and unused. Same receipt, one cost."
+    },
+    {
+      "request_id": "a38107b7-e349-4eaa-b4d5-5c15e7ee798b",
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "purpose": "CORE",
+      "cost": 1,
+      "state": "CONFIRMED",
+      "http_status": 200,
+      "fact_kinds": [
+        "growth_24h",
+        "price_structure"
+      ],
+      "interpretation": "Growth and price_structure share one receipt."
+    },
+    {
+      "request_id": "000afa83-c7de-423e-bc8e-98824ecfa533",
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "purpose": "CORE",
+      "cost": 1,
+      "state": "CONFIRMED",
+      "http_status": 200,
+      "fact_kinds": [
+        "candles"
+      ],
+      "interpretation": "One original input receipt; downstream analytical reuse has no separate provider receipt."
+    },
+    {
+      "request_id": "4354fcc4-1c6c-4b25-b7fe-917ffa6410cf",
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "purpose": "CORE",
+      "cost": 1,
+      "state": "CONFIRMED",
+      "http_status": 200,
+      "fact_kinds": [
+        "orderbook"
+      ],
+      "interpretation": "One original input receipt; downstream analytical reuse has no separate provider receipt."
+    },
+    {
+      "request_id": "faa7706e-4eb8-42f2-8178-751b5e02686d",
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "purpose": "CORE",
+      "cost": 1,
+      "state": "CONFIRMED",
+      "http_status": 200,
+      "fact_kinds": [
+        "trades"
+      ],
+      "interpretation": "One original input receipt; downstream analytical reuse has no separate provider receipt."
+    },
+    {
+      "request_id": "2edc0279-fb74-4d9f-8e1d-2fc19128007c",
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "purpose": "CORE",
+      "cost": 1,
+      "state": "CONFIRMED",
+      "http_status": 200,
+      "fact_kinds": [
+        "funding"
+      ],
+      "interpretation": "Paid original request, funding STALE and unused; no refund."
+    }
+  ],
+  "functional_block_costs": [
+    {
+      "block": "Price / reported ticker",
+      "receipt_ids": [
+        "ffddc426-ad46-4886-a9ab-08cf1dd72edc"
+      ],
+      "charged_unique_cost": 1,
+      "limits": "Price usable; unqualified rolling ticker not used. Two facts do not create two charges."
+    },
+    {
+      "block": "24h growth / price structure",
+      "receipt_ids": [
+        "a38107b7-e349-4eaa-b4d5-5c15e7ee798b"
+      ],
+      "charged_unique_cost": 1,
+      "limits": "Shared input; count once."
+    },
+    {
+      "block": "Candle movement / relative volume / analytical levels and plan",
+      "receipt_ids": [
+        "000afa83-c7de-423e-bc8e-98824ecfa533",
+        "a38107b7-e349-4eaa-b4d5-5c15e7ee798b"
+      ],
+      "charged_unique_cost": 2,
+      "nonadditive": true,
+      "limits": "These are already counted input receipts. Analytical reuse has no extra provider receipt; do not add this row to the two source groups."
+    },
+    {
+      "block": "Book / spread / depth / execution sizes",
+      "receipt_ids": [
+        "4354fcc4-1c6c-4b25-b7fe-917ffa6410cf"
+      ],
+      "charged_unique_cost": 1,
+      "limits": "Several size calculations share one book receipt."
+    },
+    {
+      "block": "Trades",
+      "receipt_ids": [
+        "faa7706e-4eb8-42f2-8178-751b5e02686d"
+      ],
+      "charged_unique_cost": 1,
+      "limits": "Paid partial sample, not full-market coverage."
+    },
+    {
+      "block": "Funding",
+      "receipt_ids": [
+        "2edc0279-fb74-4d9f-8e1d-2fc19128007c"
+      ],
+      "charged_unique_cost": 1,
+      "limits": "STALE/unused does not return its spent cost."
+    },
+    {
+      "block": "OI",
+      "receipt_ids": [],
+      "charged_unique_cost": 0,
+      "limits": "Not requested, not proved unsupported. No third optional slot."
+    },
+    {
+      "block": "LIQ",
+      "receipt_ids": [],
+      "charged_unique_cost": 0,
+      "limits": "No verified route; run liquidation charges zero. No guarantee of free qualified map coverage."
+    },
+    {
+      "block": "BTC/ETH comparison",
+      "receipt_ids": [],
+      "charged_unique_cost": 0,
+      "limits": "REMOVED_BY_OWNER; do not restore."
+    }
+  ],
+  "core_group_boundary": {
+    "MAGMA_coverage_receipts": 3,
+    "MAGMA_exact_all_source_receipts": 6,
+    "explanation": "getCore coverage lists selected core facts only; it omits separate day-growth and optional stages. A coverage group is not the entire candidate bill.",
+    "BEAM_saved_CORE_group_cost": 3,
+    "Q_saved_CORE_group_cost": 3,
+    "unbound_CORE_cost": 2,
+    "Q_candles_status": "NOT_CHECKED/BINGX_RATE_LIMITED",
+    "Q_rule": "Its paid CORE group remains charged despite candle refusal. Safe data has no vendor business code/headers, so no precise backoff-cause inference."
+  },
+  "run_candidate_counters": {
+    "saved": {
+      "BINGX:USDT_M:100294:BEAM-USDT": 3,
+      "BINGX:USDT_M:102176:MAGMA-USDT": 7,
+      "BINGX:USDT_M:101574:Q-USDT": 3
+    },
+    "meaning": "Reservation counters keyed by candidate_id, across request stages; they are a different projection of the same receipts and must not be added.",
+    "code": "pump-report/runtime/budget.mjs:78-100,136-137; pump-report/sources/index.mjs:96-99,246-287; pump-report/runtime/runner.mjs:139-164",
+    "qualification": "candidate_id is not in saved durable receipt rows. Overview wrapper requests can have null candidate_id while getCore reuses their price. This explains why neither 3/7/3 nor the 3-item coverage groups are a complete exact per-block bill. Do not force residual IDs into BEAM/Q using time ordering."
+  },
+  "cache": {
+    "actual_positive_cache_hits": null,
+    "actual_negative_cache_hits": null,
+    "actual_coalesced_loads": null,
+    "reason": "These flags/counts are absent from the safe projection; no fake cache-hit ratio or zero-cost source coverage.",
+    "known": "Exact shared evidence_ref proves same originating receipt; this is reuse of paid data, not by itself proof of a broker cache hit. Original run receipts are charged once. A repeated fact reference is not a new receipt.",
+    "code": "pump-report/runtime/budget.mjs:269-279,303-305; pump-report/sources/index.mjs:125,269-287",
+    "current_rule": "Broker checks in-flight/negative/positive cache before reserving new request. Reuse preserves originating response and native fact clock; stale funding is not made fresh."
+  },
+  "economical_coverage": {
+    "known": "This saved original run charged 2 shared discovery +14 BingX CORE +2 BingX delivery +1 Telegram. MAGMA used exactly two optional attempts, trades1+funding1. Readiness/deadline and qualification control optional work. Failures consume slots; unqualified OI costs no attempted HTTP.",
+    "code": "pump-report/runtime/runner.mjs:149-164; pump-report/sources/index.mjs:359-413; pump-report/profile/start-v1.mjs:31-39",
+    "no_third_optional_slot": true,
+    "no_frequency_reduction": true,
+    "no_new_source_or_call": true,
+    "limits": "One run/three candidate counters is not a fixed candidate rate or all-universe coverage. Cost depends on qualified candidates, cache/clock validity, retries/refusals, delivery, outcome work and provider pacing."
+  },
+  "observed_counter_snapshot": {
+    "BINGX": {
+      "day_20261030": 63,
+      "month_202610": 2004,
+      "backoff_until": 1793343909085
+    },
+    "TELEGRAM": {
+      "day_20261030": 1,
+      "month_202610": 5,
+      "backoff_until": null
+    },
+    "SWOLECHARTS": {
+      "day_20261030": null,
+      "month_202610": 1,
+      "backoff_until": null
+    },
+    "BINGX_WEB_METADATA": {
+      "day_20261030": null,
+      "month_202610": 2,
+      "backoff_until": null
+    }
+  },
+  "budget_preservation": {
+    "BINGX": {
+      "day_cap": 900,
+      "month_cap": 27900,
+      "minute_cap": 10,
+      "second_cap": 1,
+      "planned_day_fraction": 0.8
+    },
+    "TELEGRAM": {
+      "day_cap": 47,
+      "month_cap": 1457
+    },
+    "full_manual_checks_reserved_per_day": 3,
+    "run_http_cap": 164,
+    "saved_run_limits": {
+      "http_per_run": 164,
+      "project_http_day": 900,
+      "lanes": {
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "deep_per_candidate": 50,
+      "liquidations_per_run": 8,
+      "manual_http_run_reserve": 24,
+      "d1_reads_day": 3500000,
+      "d1_writes_day": 70000,
+      "next_full_reads": 59000,
+      "next_full_writes": 920
+    },
+    "saved_protected_reserves": {
+      "http_by_provider": {
+        "BINGX": 51,
+        "TELEGRAM": 3,
+        "SWOLECHARTS": 0,
+        "BINGX_WEB_METADATA": 0
+      },
+      "delivery_http": 24,
+      "outcomes_http": 24
+    },
+    "rule": "Counters are at saved observation, not fresh available capacity or new admission. Preserve all spent, outstanding, UNKNOWN, CLOSED grants, holds and protected future delivery/outcomes/manual/discovery/candidate reserves. Do not subtract holds twice or refund unused/unusable data. Run unknown0 does not reset historical unknowns. No budget changes.",
+    "not_whole_day_or_account": true
+  },
+  "daily_sustainability": {
+    "proven": false,
+    "why": [
+      "Single bounded run contains no complete day/month denominator, future candidate distribution or full-universe sample.",
+      "No full cache-use/cadence/window-lifetime trace, all-day pacing/backoff or retry/refusal history.",
+      "Remaining daily/monthly counter arithmetic ignores protected future work and live obligations; it is not spend permission.",
+      "Saved candidate quota maximum3/issued3 is one period's state, not a permanent per-cycle/day promise."
+    ],
+    "no_fixed_candidate_count_extrapolation": true,
+    "no_daily_capacity_claim": true,
+    "no_storage_capacity_deferral_removed": true
+  },
+  "validation": {
+    "method": "Administrative Python/hash/JSON checks and independent static code review only; no engine execution or Node tests.",
+    "checks": [
+      "Input exact SHA256 matches ROOT pin.",
+      "19 request IDs unique; all cost1/CONFIRMED/HTTP200.",
+      "Disjoint 7-group partition covers all19 exactly once.",
+      "Provider totals18+1 and purposes14+2+2+1 reconcile.",
+      "MAGMA six exact receipt matches cover eight fact kinds without double charge."
+    ]
+  },
+  "source_new_operations": {
+    "market_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "search": 0,
+    "new_connections": 0,
+    "product_changes": 0
+  },
+  "preserved": "Old report paused,9 pauses,2 OWNER deferrals, original clocks, caps, reserves and prior timing deviations remain. This is evidence attribution, not new native acceptance or full-TZ completion."
+}
