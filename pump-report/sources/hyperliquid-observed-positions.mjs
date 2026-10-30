@@ -107,7 +107,9 @@ export function normalizeHyperliquidAccount(payload, {route, instrument, account
       evidence_ref: mappingKnown ? route.price_mapping.evidence_ref : null,
       from_market_id: route.market_id, to_instrument_id: instrument.instrument_id,
       from_currency: quoteKnown ? route.price_quote : null, to_currency: 'USDT',
-      multiplier: mappingKnown ? Number(route.price_mapping.multiplier_to_bingx) : null},
+      multiplier: mappingKnown ? Number(route.price_mapping.multiplier_to_bingx) : null,
+      event_ts: mappingKnown ? route.price_mapping.event_ts : null,
+      expires_ts: mappingKnown ? route.price_mapping.expires_ts : null},
     position_ids: [position_id], overlap_group: position_id,
     coverage: {...coverage, position_size_derived_to_BASE: false}, limitations,
     usable: blockers.length === 0, bingx_order_eligible: blockers.length === 0};
