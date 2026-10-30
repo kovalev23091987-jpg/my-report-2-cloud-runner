@@ -1,0 +1,134 @@
+--- a/current-generation/files/src/market-snapshot-batch.mjs
++++ b/current-generation/files/src/market-snapshot-batch.mjs
+@@ -8,7 +8,9 @@
+ const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
+ 
+ function encoded(rows){const payload=JSON.stringify(rows);return {payload,bytes:Buffer.byteLength(payload)};}
+-export function packSnapshotShards({bucket,actor,generation,source_timestamps={},received_ts,rows,status='COMPLETE'}={}){
++export function packSnapshotShards({bucket,actor,generation,source_timestamps={},received_ts,rows,status='COMPLETE',history_context=null}={}){
++  if(history_context!==null)return packBingxHistoryShards({bucket,actor,generation,source_timestamps,received_ts,rows,status,history_context});
++  if(rows?.some(r=>r?.venue==='BINGX'||r?.row_schema==='BINGX_NATIVE_METRICS_ROW_V1'))historyFailure('REQUIRED_ROOT_BINDING');
+   if(!Number.isSafeInteger(bucket)||!actor||!generation||!Number.isFinite(received_ts)||!Array.isArray(rows))throw new Error('SNAPSHOT_INPUT_INVALID');
+   const ordered=[...rows].sort((a,b)=>String(a.contract).localeCompare(String(b.contract)));
+   const shards=[];let current=[];
+@@ -66,3 +68,120 @@
+   if(Number(measurement.subrequests)>allowedSubrequests||Number(measurement.rows_written)>10000/288)return {enabled:false,status:'BLOCKED_RUNTIME_LIMIT',reason:'MEASURED_BUDGET_EXCEEDED'};
+   return {enabled:true,status:'ADMITTED_MEASURED'};
+ }
++
++// B04 data-integrity binding. ROOT must independently qualify these external pins.
++// A matching hash or this private token is NOT native admission/authentication.
++const bingxBindings=new WeakMap(),SLOT=300000,ROW_SCHEMA='BINGX_NATIVE_METRICS_ROW_V1';
++const exactText=v=>typeof v==='string'&&v.length>0&&v.length<=256&&v===v.trim()&&!/[\s\p{C}]/u.test(v);
++const hex=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
++const stamp=v=>Number.isSafeInteger(v)&&v>0;
++const metricNames=['price','oi','turnover_24h','funding_rate'];
++const decimal=v=>typeof v==='string'&&v.length<=128&&/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(v)&&Number.isFinite(Number(v));
++function historyFailure(reason){throw Error('BINGX_HISTORY:'+reason);}
++function identityTuple(entry){
++ const i=entry?.instrument_identity,b=i?.asset_binding;
++ if(!i||i.schema!=='BINGX_CRYPTO_PERPETUAL_INSTRUMENT_V1'||i.venue!=='BINGX'||i.market!=='FUTURES'||i.product!=='PERPETUAL'||!['USDT_M','COIN_M'].includes(i.family)||i.crypto_eligibility!=='VERIFIED_CRYPTO_PERPETUAL'||i.underlying_class!=='CRYPTO_ASSET')historyFailure('EXACT_CRYPTO_PERPETUAL_IDENTITY_REQUIRED');
++ const fields=['native_symbol','base','quote','settle','margin','identity_revision'];
++ if(!fields.every(k=>exactText(i[k]))||i.contract!==i.native_symbol||['PAXG','XAUT'].includes(i.base.toUpperCase())||i.native_contract_id!==null&&!exactText(i.native_contract_id)||i.family==='USDT_M'&&i.native_contract_id===null||!['LINEAR','INVERSE'].includes(i.linear_inverse)||i.price_unit!=='QUOTE_PER_NATIVE_BASE')historyFailure('EXACT_NATIVE_INSTRUMENT_REQUIRED');
++ if(![null,'BASE_ASSET','CONTRACTS'].includes(i.quantity_unit)||i.contract_size_decimal!==null&&(!decimal(i.contract_size_decimal)||Number(i.contract_size_decimal)<=0)||![null,'BASE_PER_CONTRACT','QUOTE_PER_CONTRACT'].includes(i.contract_size_unit)||i.token_multiplier_decimal!==null&&(!decimal(i.token_multiplier_decimal)||Number(i.token_multiplier_decimal)<=0))historyFailure('NATIVE_UNITS_REQUIRED');
++ if(!b||!['VENUE_SCOPED','VERIFIED_TOKEN'].includes(b.status)||!['canonical_asset_id','chain_id','token_address','token_epoch','proof_ref'].every(k=>b[k]===null||exactText(b[k]))||b.status==='VENUE_SCOPED'&&(['canonical_asset_id','chain_id','token_address','token_epoch'].some(k=>b[k]!==null)||i.token_multiplier_decimal!==null)||b.status==='VERIFIED_TOKEN'&&!['canonical_asset_id','token_epoch','proof_ref'].every(k=>exactText(b[k])))historyFailure('TOKEN_BINDING_REQUIRED');
++ if(!hex(i.catalog_payload_sha256)||!exactText(i.crypto_eligibility_proof_ref)||!exactText(entry.unit_revision))historyFailure('CLASSIFICATION_AND_UNIT_PROVENANCE_REQUIRED');
++ const specs=entry.metric_specs;
++ if(!specs||!metricNames.every(k=>specs[k]&&Object.hasOwn(specs[k],'unit')&&Object.hasOwn(specs[k],'basis')))historyFailure('PER_METRIC_UNIT_CONTRACT_REQUIRED');
++ if(specs.price.unit!=='QUOTE_PER_NATIVE_BASE'||!['LAST','MID','MARK','INDEX'].includes(specs.price.basis)||![null,'CONTRACTS','BASE_ASSET','QUOTE_ASSET'].includes(specs.oi.unit)||specs.oi.basis!=='NATIVE_OPEN_INTEREST'||![null,'QUOTE_ASSET'].includes(specs.turnover_24h.unit)||specs.turnover_24h.basis!=='PROVIDER_ROLLING_24H'||specs.funding_rate.unit!=='RATE_PER_ACTUAL_PERIOD'||specs.funding_rate.basis!=='NATIVE_FUNDING_RATE')historyFailure('PER_METRIC_UNIT_CONTRACT_INVALID');
++ // Catalogue body, capture times, registry revision and proof locators are provenance.
++ // Stable instrument + token/epoch/scale + unit revision changes are identity.
++ return [i.venue,i.market,i.product,i.family,i.native_symbol,i.native_contract_id,i.base,i.quote,i.settle,i.margin,i.linear_inverse,i.quantity_unit,i.contract_size_decimal,i.contract_size_unit,i.price_unit,i.identity_revision,b.status,b.canonical_asset_id,b.chain_id,b.token_address,b.token_epoch,i.token_multiplier_decimal,entry.unit_revision,metricNames.map(k=>[k,specs[k].unit,specs[k].basis])];
++}
++export function bindBingxHistoryRegistry(input){
++ if(bingxBindings.has(input))return input;
++ const e=input?.expected;
++ if(!e||e.venue!=='BINGX'||!exactText(e.actor)||e.actor==='HUB_PUBLIC_COLLECTOR'||e.schema_version!==SNAPSHOT_SCHEMA||!Array.isArray(e.accepted_generations)||!e.accepted_generations.length||e.accepted_generations.length>3||new Set(e.accepted_generations).size!==e.accepted_generations.length||!e.accepted_generations.every(exactText)||!input.current||!Array.isArray(input.compatible)||input.compatible.length>2)historyFailure('REQUIRED_ROOT_BINDING');
++ const registries=new Map();let current=null;
++ for(const d of [input.current,...input.compatible]){
++  if(typeof d?.registry_json!=='string'||Buffer.byteLength(d.registry_json)>2*1024*1024||!hex(d.expected_sha256)||!exactText(d.git_blob_locator)||sha(d.registry_json)!==d.expected_sha256)historyFailure('EXTERNAL_REGISTRY_PIN_MISMATCH');
++  let r;try{r=JSON.parse(d.registry_json);}catch{historyFailure('REGISTRY_JSON_INVALID');}
++  if(r.schema!=='BINGX_HISTORY_REGISTRY_V1'||r.venue!==e.venue||r.actor!==e.actor||r.snapshot_schema!==e.schema_version||r.row_schema!==ROW_SCHEMA||!exactText(r.registry_revision)||!Array.isArray(r.instruments)||!r.instruments.length||r.instruments.length>20000||registries.has(d.expected_sha256))historyFailure('REGISTRY_SCOPE_INVALID');
++  const instruments=new Map(),symbols=new Set();
++  for(const entry of r.instruments){const tuple=identityTuple(entry),ref='BINGX_HISTORY_INSTRUMENT_V1:'+sha(JSON.stringify(tuple)),symbol=JSON.stringify([entry.instrument_identity.family,entry.instrument_identity.native_symbol]);if(instruments.has(ref)||symbols.has(symbol))historyFailure('DUPLICATE_REGISTRY_INSTRUMENT');symbols.add(symbol);instruments.set(ref,{entry,tuple});}
++  const record={digest:d.expected_sha256,revision:r.registry_revision,instruments};registries.set(d.expected_sha256,record);if(current===null)current=record;
++ }
++ const token=Object.freeze({venue:e.venue,actor:e.actor,schema_version:e.schema_version,accepted_generations:Object.freeze([...e.accepted_generations]),current_registry_sha256:current.digest,current_instruments:current.instruments.size,registry_count:registries.size,native_authenticated:false,native_admission:false});
++ bingxBindings.set(token,{expected:{...e,accepted_generations:[...e.accepted_generations]},registries,current});return token;
++}
++export function bingxHistoryInstrumentRefs(context){const c=bingxBindings.get(context);if(!c)historyFailure('REQUIRED_ROOT_BINDING');return[...c.current.instruments.keys()];}
++export function normalizeBingxHistoryRow(row,{context,registry_sha256=context?.current_registry_sha256,bucket,received_ts,decision_ts}={}){
++ const c=bingxBindings.get(context),r=c?.registries.get(registry_sha256),binding=r?.instruments.get(row?.instrument_ref);
++ if(!binding||row.row_schema!==ROW_SCHEMA||row.venue!=='BINGX'||row.contract!==binding.entry.instrument_identity.native_symbol||row.family!==binding.entry.instrument_identity.family)historyFailure('EXACT_REGISTRY_ROW_REQUIRED');
++ if(!stamp(bucket)||bucket%SLOT!==0||!stamp(row.captured_ts)||row.captured_ts<bucket||row.captured_ts>bucket+SLOT||!stamp(received_ts)||received_ts<row.captured_ts||received_ts>bucket+SLOT||!stamp(decision_ts)||received_ts>decision_ts)historyFailure('ORIGINAL_CAPTURE_CLOCK_REQUIRED');
++ const metrics={};
++ for(const name of metricNames){
++  const m=row.metrics?.[name],spec=binding.entry.metric_specs[name];
++  if(!m||!Object.hasOwn(m,'value_decimal')||m.value_decimal!==null&&!decimal(m.value_decimal)||m.unit!==null&&m.unit!==spec.unit||m.basis!==null&&m.basis!==spec.basis||m.source_ts!==null&&!stamp(m.source_ts)||m.received_ts!==null&&!stamp(m.received_ts)||m.source_ts!==null&&(m.received_ts===null||m.source_ts>m.received_ts)||m.received_ts!==null&&m.received_ts>row.captured_ts)historyFailure('METRIC_VALUE_UNIT_OR_CLOCK_INVALID');
++  if(m.payload_sha256!==null&&!hex(m.payload_sha256)||m.proof_ref!==null&&!exactText(m.proof_ref)||m.value_decimal!==null&&(!hex(m.payload_sha256)||!exactText(m.proof_ref)))historyFailure('METRIC_ORIGINAL_PROVENANCE_REQUIRED');
++  const value=m.value_decimal===null?null:Number(m.value_decimal);
++  if(value!==null&&(name==='price'?value<=0:name!=='funding_rate'&&value<0))historyFailure('METRIC_SIGN_INVALID');
++  const start=m.window_start_ts??null,end=m.window_end_ts??null,period=m.period_ms??null;
++  if((start!==null||end!==null)&&(!stamp(start)||!stamp(end)||start>=end||end>row.captured_ts)||period!==null&&(!Number.isSafeInteger(period)||period<=0||period>86400000))historyFailure('METRIC_WINDOW_INVALID');
++  const timed=m.source_ts!==null&&m.received_ts!==null&&Math.abs(m.source_ts-bucket)<=SLOT;
++  const windowKnown=name!=='turnover_24h'||start!==null&&end===m.source_ts&&end-start===86400000;
++  const periodKnown=name!=='funding_rate'||period!==null;
++  metrics[name]={value_decimal:m.value_decimal,value,payload_sha256:m.payload_sha256,proof_ref:m.proof_ref,unit:m.unit,basis:m.basis,source_ts:m.source_ts,received_ts:m.received_ts,window_start_ts:start,window_end_ts:end,period_ms:period,usable:value!==null&&spec.unit!==null&&m.unit===spec.unit&&m.basis===spec.basis&&timed&&windowKnown&&periodKnown};
++ }
++ return{row_schema:ROW_SCHEMA,venue:'BINGX',contract:row.contract,contract_code:row.contract,family:row.family,instrument_ref:row.instrument_ref,registry_sha256,snapshot_bucket:bucket,snapshot_received_ts:received_ts,captured_ts:row.captured_ts,observed_ts:row.captured_ts,metrics,price:metrics.price.usable?metrics.price.value:null,oi_contracts:metrics.oi.usable&&metrics.oi.unit==='CONTRACTS'?metrics.oi.value:null,oi_value_usdt:null,turnover_24h_usdt:metrics.turnover_24h.usable&&binding.entry.instrument_identity.quote==='USDT'?metrics.turnover_24h.value:null,funding_rate:metrics.funding_rate.usable?metrics.funding_rate.value:null,funding_interval_hours:metrics.funding_rate.period_ms===null?null:metrics.funding_rate.period_ms/3600000,native_admission:false};
++}
++function packBingxHistoryShards(args){
++ const context=bindBingxHistoryRegistry(args.history_context),c=bingxBindings.get(context),{bucket,actor,generation,received_ts,status='COMPLETE'}=args;
++ if(actor!==context.actor||!context.accepted_generations.includes(generation)||status!=='COMPLETE'||!Array.isArray(args.rows)||args.rows.length!==c.current.instruments.size)historyFailure('EXACT_PRODUCER_COHORT_REQUIRED');
++ const rows=args.rows.map(row=>normalizeBingxHistoryRow(row,{context,bucket,received_ts,decision_ts:received_ts}));
++ if(new Set(rows.map(r=>r.instrument_ref)).size!==rows.length)historyFailure('DUPLICATE_BATCH_INSTRUMENT');
++ const ordered=rows.sort((a,b)=>a.instrument_ref.localeCompare(b.instrument_ref)),shards=[];let current=[];
++ const flush=()=>{if(!current.length)return;const b=encoded(current);shards.push({bucket,actor,generation,schema_version:SNAPSHOT_SCHEMA,shard:shards.length,received_ts,status,payload_hash:sha(b.payload),payload:b.payload,contracts:current.length,payload_bytes:b.bytes});current=[];};
++ for(const row of ordered){if(encoded([row]).bytes>MAX_PAYLOAD_BYTES)historyFailure('SINGLE_ROW_BYTES_EXCEEDED');if(current.length>=MAX_CONTRACTS_PER_SHARD||encoded([...current,row]).bytes>MAX_PAYLOAD_BYTES)flush();current.push(row);}flush();
++ if(shards.length>24||shards.reduce((s,r)=>s+r.payload_bytes,0)>2*1024*1024)historyFailure('COHORT_READ_BOUND_EXCEEDED');
++ const meta={venue:'BINGX',row_schema:ROW_SCHEMA,registry_sha256:c.current.digest,registry_revision:c.current.revision,expected_shards:shards.length,universe_total:rows.length};
++ return shards.map(s=>({...s,source_timestamps:meta}));
++}
++
++export function verifyBingxHistoryBucket(shards,{context,decision_ts}={}){
++ const c=bingxBindings.get(context);if(!c)historyFailure('REQUIRED_ROOT_BINDING');
++ if(!Array.isArray(shards)||!shards.length||shards.length>24)historyFailure('BUCKET_SHARD_BOUND');
++ const ordered=[...shards].sort((a,b)=>a.shard-b.shard),head=ordered[0];
++ if(typeof head.source_timestamps_json!=='string'||Buffer.byteLength(head.source_timestamps_json)>4096)historyFailure('METADATA_BOUND');
++ let meta;try{meta=JSON.parse(head.source_timestamps_json);}catch{historyFailure('METADATA_JSON');}
++ const registry=c.registries.get(meta?.registry_sha256);
++ if(meta?.venue!=='BINGX'||meta.row_schema!==ROW_SCHEMA||!registry||meta.registry_revision!==registry.revision||meta.expected_shards!==ordered.length||meta.universe_total!==registry.instruments.size)historyFailure('BOUNDED_COMPATIBLE_REGISTRY_REQUIRED');
++ const rows=[];let bytes=0;
++ for(const [index,s]of ordered.entries()){
++  if(s.shard!==index||s.bucket!==head.bucket||s.actor!==context.actor||s.generation!==head.generation||!context.accepted_generations.includes(s.generation)||s.schema_version!==context.schema_version||s.status!=='COMPLETE'||s.source_timestamps_json!==head.source_timestamps_json||typeof s.payload!=='string'||s.payload_bytes!==Buffer.byteLength(s.payload)||s.payload_bytes>MAX_PAYLOAD_BYTES||!hex(s.payload_hash)||sha(s.payload)!==s.payload_hash)historyFailure('BATCH_HASH_SCOPE_OR_SHARDS_INVALID');
++  let parsed;try{parsed=JSON.parse(s.payload);}catch{historyFailure('BATCH_PAYLOAD_JSON');}
++  if(!Array.isArray(parsed)||!parsed.length||parsed.length>MAX_CONTRACTS_PER_SHARD||s.contract_count!==parsed.length)historyFailure('BATCH_ROW_COUNT_INVALID');
++  bytes+=s.payload_bytes;if(bytes>2*1024*1024)historyFailure('BUCKET_BYTES_BOUND');
++  for(const row of parsed)rows.push(normalizeBingxHistoryRow(row,{context,registry_sha256:registry.digest,bucket:s.bucket,received_ts:s.received_ts,decision_ts}));
++ }
++ if(rows.length!==registry.instruments.size||new Set(rows.map(r=>r.instrument_ref)).size!==rows.length)historyFailure('EXACT_COMPLETE_COHORT_REQUIRED');
++ // New listings/registry body changes preserve unchanged instruments only under
++ // these explicit compatible manifests. No symbol join or HTX fallback.
++ const compatible=rows.filter(row=>c.current.instruments.has(row.instrument_ref));
++ return{rows:compatible,bucket:head.bucket,generation:head.generation,registry_sha256:registry.digest,bytes,original_cohort_rows:rows.length,current_compatible_rows:compatible.length};
++}
++export function compareBingxHistoryPoint({current,prior,context,window,now_ts}={}){
++ const empty={available:false,price_change_pct:null,oi_change_pct:null,funding_change_pct_points:null,turnover_24h_change_pct:null,state:'insufficient',native_admission:false};
++ const periods={'5m':[300000,60000],'15m':[900000,120000],'1h':[3600000,300000],'4h':[14400000,300000],'24h':[86400000,300000]},bounds=periods[window];
++ if(!bingxBindings.has(context)||!bounds||!stamp(now_ts)||!current||!prior)return{...empty,reason:'EXACT_CURRENT_AND_PRIOR_BINDING_REQUIRED'};
++ try{
++  const a=normalizeBingxHistoryRow(current,{context,registry_sha256:context.current_registry_sha256,bucket:current.snapshot_bucket,received_ts:current.snapshot_received_ts,decision_ts:now_ts});
++  const b=normalizeBingxHistoryRow(prior,{context,registry_sha256:prior.registry_sha256,bucket:prior.snapshot_bucket,received_ts:prior.snapshot_received_ts,decision_ts:now_ts});
++  if(a.instrument_ref!==b.instrument_ref||current.registry_sha256!==context.current_registry_sha256)return{...empty,reason:'STABLE_INSTRUMENT_REVISION_MISMATCH'};
++  const result={...empty,reference_ts:b.metrics.price.source_ts,reference_time:b.metrics.price.source_ts===null?null:new Date(b.metrics.price.source_ts).toISOString(),instrument_ref:a.instrument_ref,venue:'BINGX',window,prior_discovery:null,metric_windows:{}};
++  for(const [name,key]of [['price','price_change_pct'],['oi','oi_change_pct'],['turnover_24h','turnover_24h_change_pct'],['funding_rate','funding_change_pct_points']]){
++   const x=a.metrics[name],y=b.metrics[name],actual=x.source_ts===null||y.source_ts===null?null:x.source_ts-y.source_ts;
++   const valid=x.usable&&y.usable&&x.unit===y.unit&&x.basis===y.basis&&actual!==null&&actual>0&&Math.abs(actual-bounds[0])<=bounds[1]&&now_ts-x.source_ts>=0&&now_ts-x.source_ts<=SLOT&&Math.abs(y.source_ts-(now_ts-bounds[0]))<=bounds[1]&&(name!=='funding_rate'||x.period_ms===y.period_ms);
++   result.metric_windows[name]={status:valid?'QUALIFIED_SNAPSHOT_INTERVAL':'UNKNOWN',current_source_ts:x.source_ts,prior_source_ts:y.source_ts,current_received_ts:x.received_ts,prior_received_ts:y.received_ts,actual_window_ms:actual,unit:x.unit,basis:x.basis,period_ms:x.period_ms};
++   if(valid&&name!=='funding_rate'&&y.value===0)result.metric_windows[name].status='UNDEFINED_ZERO_BASE';
++   if(valid&&(name==='funding_rate'||y.value!==0)){result[key]=name==='funding_rate'?(x.value-y.value)*100:(x.value/y.value-1)*100;if(!Number.isFinite(result[key]))result[key]=null;}
++  }
++  result.available=['price_change_pct','oi_change_pct','turnover_24h_change_pct','funding_change_pct_points'].some(k=>result[k]!==null);
++  result.reason=result.available?null:'NO_QUALIFIED_METRIC_SNAPSHOT_INTERVAL';return result;
++ }catch(error){return{...empty,reason:String(error.message).slice(0,160)};}
++}
