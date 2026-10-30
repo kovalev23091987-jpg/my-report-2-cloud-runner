@@ -1,0 +1,60 @@
+{
+  "schema": "BZ76_BOUNDED_LOGICAL_CLOSURE_INTERFACES_V1",
+  "status": "PROPOSED_NOT_IMPLEMENTED_NOT_NATIVE_ADMISSION",
+  "scope": "SUPPLIED_FROZEN_PAGE_ONLY",
+  "bounds": {
+    "roots": 4,
+    "total_store_read_queries": 128,
+    "prefix_scans": 1,
+    "scan_limit": 4,
+    "read_value_bytes": 524288,
+    "total_read_bytes": 2000000,
+    "edges": 1024,
+    "external_IO": 0
+  },
+  "listed_forecast": {
+    "Q": 151,
+    "R_hint": 174,
+    "W_hint": 30,
+    "governor_prefix_and_finalize_not_included": true,
+    "physical_cost_guaranteed": false
+  },
+  "always": {
+    "global_reference_closure": false,
+    "delete_allowed": false,
+    "originals_required": true,
+    "approved_delete_ttl_ms": null
+  },
+  "ownership": {
+    "ANALYTICS": "pure capsule/dialect/protected-reference validation and report criteria proposals",
+    "ROOT": "runtime/store/root-page reader/queues/nativeadmission/copypackreader/checkpoint/any futuregovernor codec; production implementation ownedROOT",
+    "SOURCES": "existing receipt/unit/clock/identity evidence adapters only throughROOT; no newprovider/search/connection"
+  },
+  "proposed_only_keys": [
+    "pump:retention-page-proposal:v1:<pageSHA>",
+    "pump:retention-commit-proposal:v1:<pageSHA>"
+  ],
+  "existing_only_rotation": [
+    "work-index ready:<seq16> after exact completed validator",
+    "native-tail-recovery ready:<analysisSHA> after raw registration and requested SAVED projections"
+  ],
+  "never_rotate_or_delete_now": [
+    "original analysis/input",
+    "feature v2/v3 and feature pointer",
+    "card/ACK/SENT/UNKNOWN",
+    "journal/frozenanchor",
+    "signal/raw outcome/summary record/summaryordered/member",
+    "materialized perwave/recordreceipt/firstlabel/split",
+    "sourceclock/opaque evidence",
+    "pump:resources spentCLOSED/UNKNOWN/outstanding",
+    "native ledger/reservation/issued floors"
+  ],
+  "unimplemented_blockers": [
+    "No complete incoming-root/owner/external consumer registry =>no global closure",
+    "Opaque receiptUUID has no immutable response locator in broker; latestcache is insufficient",
+    "Existing get lacks bounded rawbytes/revision reader; Source/head arrays andindex migration stay boundedfailclosed",
+    "No approved per-family deleteTTL/startclock/archive reader; no originals deletion",
+    "Governor archive requires sameCAS anti-reissue marker codec and explicit200-map semantic version; no active map pruning",
+    "Actual implementation/controlled affectedcase/nativeadmission not executed;2OWNERdeferrals unchanged"
+  ]
+}
