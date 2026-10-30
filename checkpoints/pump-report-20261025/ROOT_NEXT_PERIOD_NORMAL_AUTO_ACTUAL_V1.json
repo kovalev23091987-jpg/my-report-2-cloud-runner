@@ -1,0 +1,65 @@
+{
+  "schema": "ROOT_NEXT_PERIOD_NORMAL_AUTO_ACTUAL_V1",
+  "state": "FINALIZED",
+  "implementation_sha256": "1941e629f35a0b429caa159c283f0bdeecb488c5c23be33c2b88a3840e59e355",
+  "run_id": "a1febfa1-fb66-42b4-8701-5a88310811f2",
+  "run_status": "INCOMPLETE",
+  "selection_times": [
+    1793358658136,
+    1793358722828
+  ],
+  "checked": [
+    {
+      "symbol": "VEIL-USDT",
+      "ready": false,
+      "status": "REJECTED",
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "delivery": null,
+      "bookkeeping_error": null
+    }
+  ],
+  "errors": [
+    {
+      "reason": "SOURCE_EVIDENCE_PENDING",
+      "count": 9
+    },
+    {
+      "reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "unqualified": 38
+    },
+    "SOURCE_BUDGET_DEFERRED"
+  ],
+  "deferred": [
+    {
+      "instrument_id": "BINGX:USDT_M:101418:AIN-USDT",
+      "status": "DEFERRED",
+      "source_coverage": {
+        "status": "NOT_CHECKED",
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+      },
+      "delivery": null
+    }
+  ],
+  "new_current_pin_same_original_SENT": false,
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-next-period-normal-auto-20261030-once",
+    "usage": {
+      "requests": 9,
+      "rows_read": 66,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 66,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "raw_or_recipient_exported": false
+}
