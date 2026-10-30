@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_IDOL_SAVED_DELAY_ADMISSION_V1",
-  "status": "ADMITTED_NOT_SPENT",
+  "status": "SPENT_CONFIRMED_FINALIZED",
   "authority_main": "fcd765e04437fc75edfb5fd9826105695291d6ed",
   "own_lease": {
     "owner": "CODEX:PUMP_IDOL_DELAY_AND_LIQ_PUBLICATION_20261030:1793350424000",
@@ -39,5 +39,27 @@
   "purpose": "Owner asks exact57minute difference. Savedfirst10:07original/refusal vs earliestREADY/journal/cards only; no market/reanalysis/send/pause/deploy; sharedordinarycap10 and alloldcostsunknownholds retained",
   "private_original_only_under_ROOT": true,
   "no_private16_access": true,
-  "actual_result_private_ROOT_only": "pump-report/.private/observations/idol-saved-delay.full.json"
+  "actual_result_private_ROOT_only": "pump-report/.private/observations/idol-saved-delay.full.json",
+  "actual": {
+    "state": "FINALIZED",
+    "SQL": 9,
+    "rows_read": 46,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "first_ready": true,
+    "first_card": "STALE_PUBLICATION_WINDOW_CLOSED",
+    "expired_by_ms": 339,
+    "earliest_ready_ts": 1793344028015
+  },
+  "current_own_UTC30": {
+    "LOOKUP_runs": 4,
+    "SQL": 41,
+    "rows_read": 127,
+    "rows_written": 16,
+    "unknown_ops": 0,
+    "not_whole_account": true
+  },
+  "reusable": false
 }

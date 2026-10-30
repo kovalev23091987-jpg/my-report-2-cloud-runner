@@ -1,0 +1,137 @@
+{
+  "schema": "ROOT_IDOL_FIRST_READY_AND_DELAY_ACTUAL_V1",
+  "basis": "New actual saved first-run/original/journal/card records, plus previously bound SENT245",
+  "implementation_sha256": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+  "first_run_id": "3096f8e8-a9a1-45f6-8fe8-2bcc78829f61",
+  "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+  "wave_id": "PUMP:BINGX:USDT_M:101334:IDOL-USDT:1793329320000",
+  "first_analysis": {
+    "analysis_ts": 1793344028015,
+    "ready": true,
+    "automatic_eligible": true,
+    "reasons": [],
+    "state": "CALM_PULLBACK",
+    "minimum_plan_potential_pct": 10.029518893818313,
+    "source_original_hash_bound": true
+  },
+  "earliest_ready_ts": 1793344028015,
+  "cards": [
+    {
+      "state": "STALE",
+      "reason": "PUBLICATION_WINDOW_CLOSED",
+      "created_ts": 1793344030390,
+      "expires_ts": 1793344037019,
+      "updated_ts": 1793344037358,
+      "send_started_ts": null,
+      "attempts": 1,
+      "message_id": null
+    },
+    {
+      "state": "SENT",
+      "reason": null,
+      "created_ts": 1793347473277,
+      "expires_ts": 1793347481808,
+      "updated_ts": 1793347481718,
+      "send_started_ts": 1793347480158,
+      "attempts": 1,
+      "message_id": "245"
+    }
+  ],
+  "first_failure": {
+    "reason": "PUBLICATION_WINDOW_CLOSED",
+    "expired_by_ms": 339,
+    "Telegram_HTTP_attempted": false,
+    "expiry_basis": "Original mandatory orderbook event_ts + 15000ms",
+    "first_ready_was_not_strategy_refusal": true,
+    "source_clocks": {
+      "price": {
+        "event_ts": 1793344012000,
+        "received_ts": 1793344015493,
+        "expires_ts": 1793344042000,
+        "status": "USABLE"
+      },
+      "candles": {
+        "event_ts": 1793343960000,
+        "received_ts": 1793344020495,
+        "expires_ts": 1793344050000,
+        "status": "USABLE"
+      },
+      "orderbook": {
+        "event_ts": 1793344022019,
+        "received_ts": 1793344022120,
+        "expires_ts": 1793344037019,
+        "status": "USABLE"
+      }
+    }
+  },
+  "first_ready_to_confirmed_delivery_minutes": 57.5583,
+  "intermediate_cycle_diagnosis": {
+    "status": "NOT_FULLY_PROVEN_IN_THIS_PACKET",
+    "known_current_first_run_nextcandidate_refusal": [
+      {
+        "instrument_id": "BINGX:USDT_M:100294:BEAM-USDT",
+        "status": "DEFERRED",
+        "source_coverage": {
+          "status": "NOT_CHECKED",
+          "reason": "PROTECTED_DAY_RESERVE",
+          "detail": "SURPLUS_LOGICAL_GRANT_LIMIT",
+          "surplus_limit": {
+            "schema": "PUMP_SURPLUS_LIMIT_DIAGNOSTIC_V1",
+            "observed_ts": 1793344049126,
+            "utc_day": "2026-10-30",
+            "retained_count": 77,
+            "day_count": 1,
+            "run_count": 1,
+            "limits": {
+              "retained": 200,
+              "day": 24,
+              "run": 1
+            },
+            "reasons": [
+              "SAME_RUN_GRANT_LIMIT"
+            ]
+          }
+        },
+        "delivery": null
+      }
+    ],
+    "not_claimed_same_refusal_all_intermediate_cycles": true,
+    "remaining_question": "Why no new successful IDOL attempt until11:04; need bounded intermediatecycle evidence, not invented market gate"
+  },
+  "retained_origin_closed_by_new_packet": {
+    "first_original_analysis_key": "pump:analysis:290f701cc6ad1087e489f8ff72cfc947ffbd60b0d754bd82557eab3893059360",
+    "old_candles_fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:9d8404fd-4b4b-4c64-9717-86837acc498c",
+    "IDOL_high_014417_native_bar_and_confirmation_match": true,
+    "volume_native_independently_summed": 5229251.7,
+    "baseline_12windows_median_independently_summed": 866125.8,
+    "ratio_independently_calculated": 6.03751983834219,
+    "retained_ratio_matches": true,
+    "old_slices_present_in_first_original": true,
+    "not_proof_all_capsule_reference_closures": true
+  },
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-idol-saved-delay-20261030-one",
+    "usage": {
+      "requests": 9,
+      "rows_read": 46,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 46,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "own_UTC30_service_known": {
+    "LOOKUP_runs": 4,
+    "SQL": 41,
+    "rows_read": 127,
+    "rows_written": 16,
+    "unknown_ops": 0,
+    "not_whole_account": true
+  }
+}
