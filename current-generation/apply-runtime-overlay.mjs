@@ -92,6 +92,7 @@ const files=[
  'src/analytics-lease.mjs',
  'src/unified-budget.mjs',
  'src/run-health.mjs',
+ 'src/bingx-perpetual-market.mjs',
  'src/market-snapshot-batch.mjs',
  'src/market-history-reader.mjs',
  'src/v3-early-sidecar.mjs',

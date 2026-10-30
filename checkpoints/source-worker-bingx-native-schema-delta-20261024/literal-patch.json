@@ -1,0 +1,50 @@
+{
+  "schema": "SOURCE_BINGX_NATIVE_SCHEMA_LITERAL_DELTA_V1",
+  "target": "current-generation/files/src/bingx-perpetual-market.mjs",
+  "baseline_frozen": "479d39906d542189f43b91e15521bd323aac8c02",
+  "before_bytes": 20966,
+  "before_sha256": "129bbde37c64c7ffeac185bcbd29a787853c0952e2e2279a35b1cb1ce759002d",
+  "after_bytes": 22508,
+  "after_sha256": "88c9dce0920459753db2a3e16f51f672e99268bcf0892867cba40fa8aa99121b",
+  "edits": [
+    {
+      "before": "const symbol=(x,f)=>text(x)&&!/[\\s&=?#\\u0000-\\u001f]/.test(x)&&x.endsWith(f==='USDT_M'?'-USDT':'-USD')?x:fail('EXACT_NATIVE_SYMBOL_REQUIRED');",
+      "after": "// USDT_M identifies the existing swap API route family, never a settlement default.\nconst symbol=(x,f)=>text(x)&&!/[\\s&=?#\\u0000-\\u001f]/.test(x)&&(f==='USDT_M'?/-(?:USDT|USDC)$/.test(x):x.endsWith('-USD'))?x:fail('EXACT_NATIVE_SYMBOL_REQUIRED');\nconst nativeQuote=(s,f)=>{symbol(s,f);return s.slice(s.lastIndexOf('-')+1);};"
+    },
+    {
+      "before": "  symbol(i.native_symbol,family(i.family));",
+      "after": "  symbol(i.native_symbol,family(i.family));\n  if(i.quote!==nativeQuote(i.native_symbol,i.family)||(i.family==='USDT_M'&&i.settle!==i.quote))fail('NATIVE_QUOTE_SETTLEMENT_IDENTITY_MISMATCH');"
+    },
+    {
+      "before": "    const quote=f==='USDT_M'?'USDT':'USD';\n    if(f==='USDT_M'&&settle!==null&&settle!=='USDT')fail('SETTLEMENT_FAMILY_MISMATCH');",
+      "after": "    const quote=nativeQuote(s,f);\n    if(f==='USDT_M'&&(settle===null||settle!==quote))fail('NATIVE_SYMBOL_CURRENCY_MISMATCH');"
+    },
+    {
+      "before": "quote_volume_unit:i.family==='USDT_M'?'USDT':null",
+      "after": "quote_volume_unit:i.family==='USDT_M'&&i.quote==='USDT'?'USDT':null"
+    },
+    {
+      "before": "raw_time_fields:{time:row.time??null,timestamp:row.timestamp??null,closeTime:row.closeTime??null,T:row.T??null}",
+      "after": "raw_time_fields:{time:row.time??null,timestamp:row.timestamp??null,closeTime:row.closeTime??null,T:row.T??null,updateTime:row.updateTime??null}"
+    },
+    {
+      "before": "    result.source_clock_reason='NO_DOCUMENTED_MARK_OR_RATE_SOURCE_CLOCK';",
+      "after": "    // New actual swap/v2 capture: explicit hours is period metadata, not a price clock.\n    result.funding_interval_hours_raw=row.fundingIntervalHours??null;\n    result.funding_update_time=i.family==='USDT_M'?wireMs(row.updateTime):null;\n    if(result.funding_update_time!==null&&result.funding_update_time>result.received_ts)fail('FUTURE_FUNDING_METADATA_CLOCK');\n    const hours=row.fundingIntervalHours;\n    if(i.family==='USDT_M'&&typeof hours==='number'&&Number.isInteger(hours)&&hours>0&&hours<=24){result.funding_period_ms=hours*3600000;result.funding_period_origin='NATIVE_EXPLICIT_FUNDING_INTERVAL_HOURS';}\n    else result.funding_period_origin=null;\n    result.mark_price_source_ts=null;result.index_price_source_ts=null;result.funding_rate_source_ts=null;\n    result.funding_update_clock_scope='NATIVE_METADATA_UPDATE_TIME_NOT_PRICE_OR_RATE_FRESHNESS';\n    result.source_clock_reason='MARK_INDEX_RATE_CLOCK_UNQUALIFIED_UPDATE_TIME_SEPARATE';"
+    },
+    {
+      "before": "      funding:{funding_rate:premium?.last_funding_rate_decimal??null,period_ms:null,source_ts:null,next_funding_time:premium?.next_funding_time??null},",
+      "after": "      funding:{funding_rate:premium?.last_funding_rate_decimal??null,period_ms:premium?.funding_period_ms??null,period_origin:premium?.funding_period_origin??null,period_received_ts:premium?.received_ts??null,source_ts:null,native_update_time:premium?.funding_update_time??null,native_update_clock_scope:premium?.funding_update_clock_scope??null,next_funding_time:premium?.next_funding_time??null},"
+    },
+    {
+      "before": "const seen=new Set();const identities=body.data.map(row=>{",
+      "after": "const seen=new Set();const identities=body.data.map((row,rowIndex)=>{"
+    },
+    {
+      "before": "catalog_payload_sha256:provenance.payload_sha256,native_launch_ts:",
+      "after": "catalog_payload_sha256:provenance.payload_sha256,catalog_row_index:rowIndex,native_launch_ts:"
+    }
+  ],
+  "forward_and_inverse_FULL_exact": true,
+  "native_bodies_in_patch": false,
+  "applied_to_shared_runtime": false
+}

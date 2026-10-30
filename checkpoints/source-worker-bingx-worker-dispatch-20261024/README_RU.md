@@ -1,0 +1,15 @@
+# Worker: изолированный BingX completed-capture dispatch
+
+TEXT_ONLY / PREPARED_UNEXECUTED. Полный candidate Worker построен ровно поверх combined636/0dd323; shared/runtime/main не менялись. Базовые HTX тела функций сохранены побайтно после раннего dispatch.
+
+futuresSnapshot получает env и явный venue/independent params.instrument_identity. BINGX проходит только через внутренний FUNCTION-reader; нет handler/identity/правильного carrier → PARTIAL/BINGX_PRIMARY_NOT_CONNECTED/venueBINGX без legacy HTX I/O. Публичные JSON/boolean не устанавливают функцию. Реальный Sourcebc5a assembler component возвращается без обёртки FULFILLED, source clocks/PARTIAL/NO_GRANT не повышаются. DeepCheck и HTTP default вызовы передают root env-reader; контракт не берёт expected identity из returned component.
+
+Уточнение инвентаря: в точном Worker0dd323 два прямых snapshot call expressions и export futuresSnapshotForTest; третьего вызова внутри Worker нет. Есть три reference boundaries: MID reference, routed executable reference, execution receipt. Все3 source blocks и их independent expected params identity оставлены побайтно; ROOT добавляет LAST-hook только после этой заморозки.
+
+htxUniverseScan при PRIMARY=BINGX возвращает раньше4HTXHTTP/historySQL/persistence. FUNCTION-only universe reader получает existing ROOT B04 descriptor; bounded actual registry JSON hash, actor/venue/schema и expected identities проверяются до принятия typed PARTIAL rows. Missing/bad reader/binding/result → NOT_CLOSED, cryptoNNULL, nativefalse, без legacy HTTP/SQL. Функция не создаёт ни reader, ни native parent, ни grant.
+
+Это не полная изоляция всего DeepCheck: параллельные spotSnapshot/futuresTrajectory, signed-tape и refresh-пути остаются отдельной работой ROOT. Здесь не заявлен overall Worker HTXIO0/cutover/native connection/ENTRY/SENT. Actual owned reader и внешне аутентифицированные expected identity/registry/parent ещё должен связать ROOT.
+
+Один новый callable: runBingxWorkerVenueDispatchConnected({repo_root,baseline_repo_root}), 1CONTROLLED group/17 named variants PREPARED_UNEXECUTED, не17PASS/NodeSPEC. FULL ownmanifest + whole baseline/candidate Worker + purebc5a module + literal forward/inverse + exact actual function bodies/real caller expressions ДО app imports. Только extracted functions/caller expressions, не whole Worker/private618. Fixtures/reader/transport/DB sentinels явноCONTROLLED; old18/schema12/636 не исполняются. Все returned/throw frames удерживаются до assert/next; partial_result в preimport/cleanup, nestedfinally fetch restore.
+
+central-rebind.json указывает точные места ROOT-derived case/pin/recipe/span/manifest после собственных LAST и nonoverlap worker edits. Оригиналы SOURCE/THIRD не менять и не переносить старую квалификацию на другой whole Worker. Node/import/syntax/tests/provider/CF/SQL/MAIN/manual/TG0; raw bodies не экспортировались. Field-map bc5a для THIRD: /private/tmp/report2-source-bc5a-assembler-fields-for-THIRD-20261024.json; отдельного source PR нет, только local immutable handoff.

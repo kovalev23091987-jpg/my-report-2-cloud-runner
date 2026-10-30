@@ -1,0 +1,74 @@
+{
+  "schema": "BINGX_PRODUCER_INDIVIDUAL_IMPORT_CLOSURE_V1",
+  "status": "PREPARED_UNEXECUTED_NOT_INSTALLED",
+  "files": [
+    {
+      "path": "current-generation/files/src/market-snapshot-batch.mjs",
+      "role": "market_snapshot_batch",
+      "bytes": 28267,
+      "sha256": "ceafc8cba053095e7f26b07b7fac3f5d811e5bb85710b7284d903c65a3a538a3",
+      "git_blob": "e9013e4e914d3e2770fa9fece1ec76d6284bb149"
+    },
+    {
+      "path": "current-generation/files/src/market-history-reader.mjs",
+      "role": "market_history_reader",
+      "bytes": 31312,
+      "sha256": "5c847e50ab123f2b4b6768ba0cf3249b8bd3178d36f41cc93c70fb41a06034af",
+      "git_blob": "5a518dbc2045380922159d6408291da23a17ff51"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "role": "worker_history_text",
+      "bytes": 636968,
+      "sha256": "d0a081181e2f3f8cdea3955a778fb8c187af57565611706913fd0bf27b4adca3",
+      "git_blob": "2c15fe7b687e708715305d908e77025ee89a9c60"
+    },
+    {
+      "path": "current-generation/files/src/bingx-perpetual-market.mjs",
+      "role": "source_assembler",
+      "bytes": 22508,
+      "sha256": "88c9dce0920459753db2a3e16f51f672e99268bcf0892867cba40fa8aa99121b",
+      "git_blob": "29cbc737522eb24eb9c843179e9bc9e11c01148b"
+    },
+    {
+      "path": "anomaly-research/bingx-observation-producer-20261024/producer-individual-case.proposed.mjs",
+      "role": "affected_callable",
+      "bytes": 12449,
+      "sha256": "4b6e5032fe53622b8c83dae870fe8dc27fd69018e2c6d41021d9610132f48935",
+      "git_blob": "ff27d2621180a55f7b3c94957925d1f1b6fde936"
+    },
+    {
+      "path": "anomaly-research/bingx-observation-producer-20261024/target-bindings.json",
+      "role": "author_target_bindings",
+      "bytes": 4234,
+      "sha256": "e86158d100d465089599b817136c04b1807e135ce05b1d4ef8e2ce1ff3a443a0",
+      "git_blob": "8483a44a34fd2275cd0088de254e77a83b3eaf05"
+    },
+    {
+      "path": "anomaly-research/bingx-observation-producer-20261024/composition-recipe.json",
+      "role": "author_composition_recipe",
+      "bytes": 4657,
+      "sha256": "ae1441707a310b0642ca90e903d80ff8fa0f958ab3e7449baea92432d6217df3",
+      "git_blob": "5bdc1f291dcb5428e813240bb2fa7bb6f57dc41e"
+    }
+  ],
+  "literal_application_edges": [
+    {
+      "from": "market-history-reader.mjs",
+      "to": "./market-snapshot-batch.mjs",
+      "use": "private context bind/full bucket verifier/identity resolver/context fingerprint; comparison re-export retained"
+    },
+    {
+      "from": "affected_callable",
+      "to": "market_snapshot_batch,market_history_reader,source_assembler",
+      "use": "dynamic imports only after complete external-pinned closure readback"
+    },
+    {
+      "from": "affected_callable",
+      "to": "worker_history_text",
+      "use": "full text read only; exact two history functions extracted; whole Worker NOT imported"
+    }
+  ],
+  "runtime_requires_ROOT_composition": true,
+  "central_bound_copy_allowed": "Rebind files path/bytes/SHA to final composed app/Worker/callable, retain author original; pass external SHA and binding_path. No changed business case or old-case replay."
+}
