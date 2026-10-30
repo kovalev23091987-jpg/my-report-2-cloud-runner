@@ -1,0 +1,101 @@
+{
+  "schema": "ROOT_PUBLICATION_RECOVERY_INSTALL_READINESS_V1",
+  "status": "OFFLINE_QUALIFIED_FINAL_STATIC_REVIEW_PENDING_NOT_NATIVE_ADMITTED",
+  "before": {
+    "implementation_sha256": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+    "artifact_sha256": "1b4403a02c6d93a3555c5e1a0ce623c1e907a0edd52ce563878791cb7eba4378",
+    "module_count": 78
+  },
+  "after": {
+    "schema": "ROOT_PUBLICATION_RECOVERY_ARTIFACT_V1",
+    "status": "QUALIFIED_BUILT_NOT_INSTALLED",
+    "authority_main": "e6f92f6c406b5ce0cd28b53ccf7813bc55d0e255",
+    "built_ts": 1793354467347,
+    "artifact_path": "pump-report/.private/publication-recovery-20261030/artifact-v1.json",
+    "artifact_sha256": "2a1154eeccaa453d96c7b1a471722f8767ae2f71704fb820ccdbc79ceaefcca4",
+    "implementation_sha256": "1941e629f35a0b429caa159c283f0bdeecb488c5c23be33c2b88a3840e59e355",
+    "module_count": 78,
+    "changed": [
+      {
+        "name": "analytics/presentation.mjs",
+        "sha256": "a664dd6514fda80740138b0b68a6444961867cb7b842f91278185b393e3aeaa5"
+      },
+      {
+        "name": "analytics/zones.mjs",
+        "sha256": "30a24a34f1c357e03411753aedeb86947394993fcc7fb4a795263014b80eacbf"
+      },
+      {
+        "name": "runtime/delivery.mjs",
+        "sha256": "ff6d9e119b6e7a291280375273d3edefe7bbdab3508110cea77cb389a7ea2ad0"
+      },
+      {
+        "name": "runtime/implementation-pin.mjs",
+        "sha256": "0668936646b85d14bfcf633a7ec4f3fc8895f1431dbd18226d3a080a3b56290a"
+      },
+      {
+        "name": "runtime/runner.mjs",
+        "sha256": "df22e4a0c898ed236e4db25af9d00808b8873a0c8255b6b9c158d282afe36b94"
+      },
+      {
+        "name": "runtime/telegram-send.mjs",
+        "sha256": "4c0bdcc2af170c3894cdd3e6753fec8c0b54df3ca007b3ada66c9691d5804d4d"
+      },
+      {
+        "name": "runtime/worker.mjs",
+        "sha256": "0037e842775f099098d6dcd599262972c73474bb116da847ba627ef55010ef83"
+      },
+      {
+        "name": "sources/hyperliquid-observed-positions.mjs",
+        "sha256": "e6315d844a183fecdc78bda293a248b19796d8ebd4a88a10b1ce3448dacf8c58"
+      },
+      {
+        "name": "sources/liquidations.mjs",
+        "sha256": "d2014941a4c93ad472932180b4bb06114398b02d93bc2955da8f65c943a17002"
+      }
+    ],
+    "unchanged_modules": 69,
+    "qualification_sha256": "da6e5802ea2ae0b5994065e75c1aa1c55c14ae6fd0f4ba87fb4a985668c07f94",
+    "builds": 1,
+    "native_SQL": 0,
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "deployed": false,
+    "old_TTL_strategy_caps_source_clocks_unchanged": true
+  },
+  "changed_module_count": 9,
+  "unchanged_module_count": 69,
+  "root_controlled_qualifications": [
+    "ROOT_PUBLICATION_PREFLIGHT_MAP_CONNECTED_QUALIFICATION_V1.json",
+    "ROOT_PUBLICATION_RECOVERY_CONTROL_MOCK_V1.json",
+    "ROOT_PUBLICATION_RECOVERY_ORDINARY_ADAPTER_V1.json"
+  ],
+  "independent_runtime_reviews": [
+    "F685_PASS_STATIC",
+    "BZ59_PASS_STATIC"
+  ],
+  "independent_operational_reviews_pending": [
+    "F686",
+    "BZ60"
+  ],
+  "owner_scope": "Existing direct instruction to complete TZ in existing3chats, preserve working Telegram and test before install; late pullbacks allowed, qualified maps fresh at publication, core withoutmap allowed. No new route/search/connection. No strategy or cap change.",
+  "proposed_actual_install_sequence": [
+    "Fresh compatible own bounded CAS scope and FULL all4; no foreign lease edits",
+    "One admitted existing OAuth refresh if needed; no newlogin/key/scope",
+    "Admitted CF PAUSE_AUTO only11 calls with full old78/settings3crons, delivery stays1",
+    "One actual ordinary LOOKUP sharedguard max10/day,16SQL500R30W, pausedexecutor max6reads20s, no market/TG",
+    "Admitted INSTALL11calls only after actual QUIESCENT currentpin/fresh<=5min",
+    "Admitted RESUME_AUTO11calls plus finalREAD_ONLY5calls new78/fullsettings3crons",
+    "Record actual program pin/artifact and saved AUTO/receipt using a separately admitted bounded observation; no forced message"
+  ],
+  "planned_actual_CF_logical_HTTP": 38,
+  "physical_admin_HTTP": "UNKNOWN_NONZERO_RETAINED",
+  "ordinary_LOOKUP_daily_cap_unchanged": 10,
+  "own_known_prior_LOOKUP": 5,
+  "whole_account_remaining": "UNKNOWN_NOT_ZERO_SHARED_NATIVE_GUARD_REQUIRED",
+  "expired_UTC29_extra17_reused": false,
+  "old_caps_unknowns_CLOSED_holds_reserves_manual3_9pauses_2OWNERdeferrals_preserved": true,
+  "rollback_prepared": "Exact reverse frozen9/78 controller mockPASS restores base byteforbyte; actual rollback requires fresh actualquiescence and positive currentadmission, not automatically admitted by mock",
+  "new_sources_or_paid_or_trading": false,
+  "production_modified_by_document": false,
+  "full_TZ_complete": false
+}

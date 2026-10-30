@@ -2155,12 +2155,12 @@
     "run_id": "pump-postlaunch-install-20261030-ordinary-once"
   },
   "latest_native_totals_UTC30_known": {
-    "LOOKUP_runs": 4,
-    "SQL": 41,
-    "rows_read": 127,
-    "rows_written": 16,
+    "LOOKUP_runs": 5,
+    "SQL": 49,
+    "rows_read": 167,
+    "rows_written": 20,
     "unknown_ops": 0,
-    "CF_REST": 53,
+    "CF_REST": 58,
     "observability_queries": 1,
     "existing_OAuth_CLI": 3,
     "physical_admin_HTTP": "UNKNOWN_NONZERO_RETAINED",
@@ -2276,6 +2276,135 @@
     "first_ready": true,
     "expired_by_ms": 339,
     "no_first_send": true,
-    "subsequent57min_cause_not_yet_proven": true
+    "subsequent57min_cause_not_yet_proven": false,
+    "intermediate_exact_runs": 4,
+    "intermediate_proof": "checkpoints/pump-report-20261025/ROOT_IDOL_INTERMEDIATE_QUEUE_DELAY_ACTUAL_V1.json",
+    "intermediate_sha256": "5442dbc56863953a7dedcb0f72abda764da2942772f8d2c0ed9347a3aaeae494",
+    "cause": "Ready expired339ms beforeHTTP, thenordinaryqueue andprotectedbudget until next3hourlyslots. Not strategy waiting57min; not everyintermediatecycle read."
+  },
+  "latest_publication_recovery": {
+    "artifact": {
+      "schema": "ROOT_PUBLICATION_RECOVERY_ARTIFACT_V1",
+      "status": "QUALIFIED_BUILT_NOT_INSTALLED",
+      "authority_main": "e6f92f6c406b5ce0cd28b53ccf7813bc55d0e255",
+      "built_ts": 1793354467347,
+      "artifact_path": "pump-report/.private/publication-recovery-20261030/artifact-v1.json",
+      "artifact_sha256": "2a1154eeccaa453d96c7b1a471722f8767ae2f71704fb820ccdbc79ceaefcca4",
+      "implementation_sha256": "1941e629f35a0b429caa159c283f0bdeecb488c5c23be33c2b88a3840e59e355",
+      "module_count": 78,
+      "changed": [
+        {
+          "name": "analytics/presentation.mjs",
+          "sha256": "a664dd6514fda80740138b0b68a6444961867cb7b842f91278185b393e3aeaa5"
+        },
+        {
+          "name": "analytics/zones.mjs",
+          "sha256": "30a24a34f1c357e03411753aedeb86947394993fcc7fb4a795263014b80eacbf"
+        },
+        {
+          "name": "runtime/delivery.mjs",
+          "sha256": "ff6d9e119b6e7a291280375273d3edefe7bbdab3508110cea77cb389a7ea2ad0"
+        },
+        {
+          "name": "runtime/implementation-pin.mjs",
+          "sha256": "0668936646b85d14bfcf633a7ec4f3fc8895f1431dbd18226d3a080a3b56290a"
+        },
+        {
+          "name": "runtime/runner.mjs",
+          "sha256": "df22e4a0c898ed236e4db25af9d00808b8873a0c8255b6b9c158d282afe36b94"
+        },
+        {
+          "name": "runtime/telegram-send.mjs",
+          "sha256": "4c0bdcc2af170c3894cdd3e6753fec8c0b54df3ca007b3ada66c9691d5804d4d"
+        },
+        {
+          "name": "runtime/worker.mjs",
+          "sha256": "0037e842775f099098d6dcd599262972c73474bb116da847ba627ef55010ef83"
+        },
+        {
+          "name": "sources/hyperliquid-observed-positions.mjs",
+          "sha256": "e6315d844a183fecdc78bda293a248b19796d8ebd4a88a10b1ce3448dacf8c58"
+        },
+        {
+          "name": "sources/liquidations.mjs",
+          "sha256": "d2014941a4c93ad472932180b4bb06114398b02d93bc2955da8f65c943a17002"
+        }
+      ],
+      "unchanged_modules": 69,
+      "qualification_sha256": "da6e5802ea2ae0b5994065e75c1aa1c55c14ae6fd0f4ba87fb4a985668c07f94",
+      "builds": 1,
+      "native_SQL": 0,
+      "market_HTTP": 0,
+      "Telegram": 0,
+      "deployed": false,
+      "old_TTL_strategy_caps_source_clocks_unchanged": true
+    },
+    "coupled_qualification": "checkpoints/pump-report-20261025/ROOT_PUBLICATION_PREFLIGHT_MAP_CONNECTED_QUALIFICATION_V1.json",
+    "mock": {
+      "schema": "ROOT_PUBLICATION_RECOVERY_CONTROL_MOCK_V1",
+      "status": "PASS",
+      "evidence_class": "CONTROLLED_OFFLINE_NOT_NATIVE",
+      "affected_cases": 1,
+      "Node_processes": 1,
+      "builds": 0,
+      "engine_calls": 0,
+      "mock_CF_requests": 76,
+      "controller_calls": 14,
+      "negative_guards": 6,
+      "market_HTTP": 0,
+      "native_SQL": 0,
+      "actual_Cloudflare": 0,
+      "Telegram": 0,
+      "production_modified": false,
+      "actual_rollback_authorized": false,
+      "artifact_sha256": "2a1154eeccaa453d96c7b1a471722f8767ae2f71704fb820ccdbc79ceaefcca4",
+      "implementation_sha256": "1941e629f35a0b429caa159c283f0bdeecb488c5c23be33c2b88a3840e59e355",
+      "module_count": 78,
+      "changed_modules": [
+        "analytics/presentation.mjs",
+        "analytics/zones.mjs",
+        "runtime/delivery.mjs",
+        "runtime/implementation-pin.mjs",
+        "runtime/runner.mjs",
+        "runtime/telegram-send.mjs",
+        "runtime/worker.mjs",
+        "sources/hyperliquid-observed-positions.mjs",
+        "sources/liquidations.mjs"
+      ],
+      "unchanged_modules": 69,
+      "all21bindings_and3schedules_preserved": true,
+      "forward_exact_delta_qualified": true,
+      "return_exact_original_bytes_qualified": true,
+      "mutable_admission_cannot_change_frozen_artifact": true,
+      "completed_ts": 1793354621994
+    },
+    "ordinary_adapter": {
+      "schema": "ROOT_PUBLICATION_RECOVERY_ORDINARY_ADAPTER_CASE_V1",
+      "state": "PASS",
+      "evidence_class": "ARTIFICIAL_OFFLINE_ACCEPTANCE_TEST",
+      "Node": 1,
+      "build": 0,
+      "engine": 0,
+      "syntax_checks": 2,
+      "constructors": 9,
+      "sql_policy_calls": 3,
+      "market_HTTP": 0,
+      "native_SQL": 0,
+      "Cloudflare": 0,
+      "Telegram": 0,
+      "old_runtime_controller_cases_replayed": false,
+      "ordinary_ten_cap_and_original_SQL_unchanged": true,
+      "dated17_rejected": true,
+      "artifact_unchanged": true,
+      "finished_ts": 1793354780223
+    },
+    "source_review": "F685_PASS_STATIC",
+    "analytics_review": "BZ59_PASS_STATIC",
+    "operational_reviews_pending": [
+      "F686",
+      "BZ60"
+    ],
+    "live_unchanged": true,
+    "installed": false
   }
 }

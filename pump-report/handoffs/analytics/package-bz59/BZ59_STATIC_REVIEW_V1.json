@@ -1,0 +1,131 @@
+{
+  "schema": "BZ59_PUBLICATION_PREFLIGHT_MAP_STATIC_REVIEW_V1",
+  "verdict": "PASS_STATIC_EXACT_SOURCE_QUALIFIED_CONTROLLED_NOT_NATIVE",
+  "authority_main": "e6f92f6c406b5ce0cd28b53ccf7813bc55d0e255",
+  "reviewed_main": "e6f92f6c406b5ce0cd28b53ccf7813bc55d0e255",
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1793354134000",
+  "lease_active_commit": "f5a850c3c4b12cb59ab12b03c05286e92239415a",
+  "lease_full": {
+    "commit": "f5a850c3c4b12cb59ab12b03c05286e92239415a",
+    "git_blob": "2c7a74902dbfee61b583c3300706e5e9941f5423"
+  },
+  "files": {
+    "checkpoints/pump-report-20261025/ROOT_PUBLICATION_PREFLIGHT_MAP_CONNECTED_QUALIFICATION_V1.json": {
+      "git_blob": "4309ff1a25e200c294b1f53ef7994785fd723b13",
+      "qualification_sha256": null,
+      "sha256": "da6e5802ea2ae0b5994065e75c1aa1c55c14ae6fd0f4ba87fb4a985668c07f94"
+    },
+    "pump-report/runtime/worker.mjs": {
+      "git_blob": "93c112ab1de520674873ed34c729761cf843687b",
+      "qualification_sha256": "0037e842775f099098d6dcd599262972c73474bb116da847ba627ef55010ef83",
+      "sha256": "0037e842775f099098d6dcd599262972c73474bb116da847ba627ef55010ef83"
+    },
+    "pump-report/runtime/delivery.mjs": {
+      "git_blob": "3a68884ce4b68e4c10de91a53094e73a9f671fbd",
+      "qualification_sha256": "ff6d9e119b6e7a291280375273d3edefe7bbdab3508110cea77cb389a7ea2ad0",
+      "sha256": "ff6d9e119b6e7a291280375273d3edefe7bbdab3508110cea77cb389a7ea2ad0"
+    },
+    "pump-report/runtime/runner.mjs": {
+      "git_blob": "8a9e71825e13fffe1b48ce5dc32d10eaa339c457",
+      "qualification_sha256": "df22e4a0c898ed236e4db25af9d00808b8873a0c8255b6b9c158d282afe36b94",
+      "sha256": "df22e4a0c898ed236e4db25af9d00808b8873a0c8255b6b9c158d282afe36b94"
+    },
+    "pump-report/runtime/telegram-send.mjs": {
+      "git_blob": "2e986fce185523a10d90d9eeef00f4c4c4f89604",
+      "qualification_sha256": "4c0bdcc2af170c3894cdd3e6753fec8c0b54df3ca007b3ada66c9691d5804d4d",
+      "sha256": "4c0bdcc2af170c3894cdd3e6753fec8c0b54df3ca007b3ada66c9691d5804d4d"
+    },
+    "pump-report/analytics/zones.mjs": {
+      "git_blob": "fc7489a8695f3efcafe3ca9a2b3a1c643fdc5b24",
+      "qualification_sha256": "30a24a34f1c357e03411753aedeb86947394993fcc7fb4a795263014b80eacbf",
+      "sha256": "30a24a34f1c357e03411753aedeb86947394993fcc7fb4a795263014b80eacbf"
+    }
+  },
+  "checks": [
+    {
+      "id": "PRE_SAVE_FORCED_DELIVERY2",
+      "status": "PASS",
+      "evidence": "worker42-59; runner166-194",
+      "detail": "One existing getCore DELIVERY force_refresh price+orderbook occurs before SAVE_ORIGINAL; final input replaces only facts supplied by source, analysis_ts is a new computation clock; source fact clocks are not rewritten."
+    },
+    {
+      "id": "PREPARATION_CAPABILITY",
+      "status": "PASS",
+      "evidence": "delivery13-27,71-90; worker65-69",
+      "detail": "Private per-createDelivery WeakMap has frozen object identity token only for accepted preparation. Token is deleted at dispatch entry, including skip/conflict paths. Snapshots returned via distinct structuredClone. Dispatch compares exact prepared analysis and analysis-key hash; worker compares prepared input byte serialization with persisted input and persisted analysis hash. JSON/foreign/reused token cannot confer cached-input authority."
+    },
+    {
+      "id": "IMMUTABLE_NEW_ORIGINAL",
+      "status": "PASS",
+      "evidence": "runner100-103,174-194; delivery44-67",
+      "detail": "New final analysis/input saved before anchor/card/send. Same original cannot silently replace persisted content with retained writer enabled. Fresh same-text recovery only replaces STALE/ERROR, requires strictly later analysis_ts and different valid original key; SENT/UNKNOWN retain identity and no resend. No mutation or extension of old original/card."
+    },
+    {
+      "id": "PLAN_MANDATORY_TTL",
+      "status": "PASS",
+      "evidence": "worker36-40,61-74; runner190; delivery81,94; telegram-send7,18-23",
+      "detail": "Existing analyzePump rechecks core/candles, price move limit and entry/exit overlap; card expiry is min original mandatory price/book/candles deadlines. Cached prepared input does not bypass factUsable/current time reanalysis."
+    },
+    {
+      "id": "MAP_ORIGINAL_LINEAGE_AT_SEND",
+      "status": "PASS",
+      "evidence": "worker73; zones85-149; telegram-send8-23",
+      "detail": "Both revalidate and final sender validate original rendered card.analysis zones, all selected parents/components, source native expiry plus mapping event/expiry. Final synchronous map/expiry/window guard follows budget.reserve and worker store awaits; no further await occurs before fetch call. >=15000ms remaining map lifetime required, same as HTTP timeout."
+    },
+    {
+      "id": "WITHOUT_MAP",
+      "status": "PASS",
+      "evidence": "worker50-58; zones93-96",
+      "detail": "Invalid/short WITH_MAP is omitted in new pre-save input and analyzePump renders new explicit WITHOUT_MAP. It does not stretch map clocks or block a core idea merely because map is absent. Existing plan overlap/other core gates still apply; expiry during reserve refuses HTTP rather than editing saved card."
+    },
+    {
+      "id": "ACK_CLOCKS",
+      "status": "PASS",
+      "evidence": "telegram-send25-29; delivery100-107",
+      "detail": "HTTP call and parsed ACK clock basis explicitly recorded, no wire-time claim. fresh_at_ACK is independently computed and can be false for late ACK; it does not refresh source event/expires_ts or falsify HTTP-start map guard."
+    },
+    {
+      "id": "COST_UNKNOWN_DUPLICATE",
+      "status": "PASS",
+      "evidence": "telegram-send13-30; delivery12,18-21,72-98,109-114",
+      "detail": "Charged reserve finalized network_attempted:false on final guard refusal and not refunded. Ambiguous transport remains UNKNOWN and terminal; only explicit429 known refusal retries. SENT/UNKNOWN duplicate preparations skip source refresh and dispatcher skip prevents HTTP. Existing before-HTTP definite refusal is ERROR, allowing new immutable recovery."
+    },
+    {
+      "id": "T0_P0_4H_LATE_PULLBACK",
+      "status": "PASS_SCOPE_LIMIT",
+      "evidence": "runner146-177,181,245-249; no analytics engine/journal/outcome changes in reviewed integration",
+      "detail": "Fresh final original gets its own real final analysis_ts/reference_price before journal anchor/send; old T0/P0/outcome not modified. Outcome consumes saved signal.t0/deadline_ts, no receipt reset. No new seed-end+4h age gate or unlimited TTL extension introduced. Static integration assessment does not independently requalify unchanged journal/engine."
+    }
+  ],
+  "qualification_evidence": {
+    "path": "checkpoints/pump-report-20261025/ROOT_PUBLICATION_PREFLIGHT_MAP_CONNECTED_QUALIFICATION_V1.json",
+    "status": "PASS_CONTROLLED_MEMORY_NOT_NATIVE",
+    "processes_total": 2,
+    "failed_fixture_process_spent": 1,
+    "successful_repair_processes": 1,
+    "fixture_failure": "retained writer stub missing record; ROOT repaired fixture using actual createRetainedCapsuleWriter",
+    "controlled_transport_calls": 2,
+    "root_test_replayed_by_reviewer": false,
+    "root_auto_review_rejections_preserved": 2,
+    "source_sha_match": true
+  },
+  "reviewer_execution": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "CF": 0,
+    "Telegram": 0,
+    "production_edits": 0,
+    "outbound_messages": 0
+  },
+  "limits": [
+    "Static source review plus ROOT controlled-memory evidence; no independent runtime execution.",
+    "Prepared code is not production acceptance; live DFD78 / artifact1b44 remains distinct.",
+    "No raw original/recipient/private16 read or shared.",
+    "Preserve every prior spend/unknown/CLOSED hold/reserve, manual3,9pauses,2OWNERdeferrals; no source route activation."
+  ]
+}
