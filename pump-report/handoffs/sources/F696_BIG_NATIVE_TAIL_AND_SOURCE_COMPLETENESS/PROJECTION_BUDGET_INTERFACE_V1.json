@@ -1,0 +1,24 @@
+{
+  "schema": "F696_PROJECTION_BUDGET_INTERFACE_V1",
+  "owner_decision": "ROOT supplied run(info,work) interface; ANALYTICS owns writer wrapper; SOURCE owns actualstore guard andprojectionStore",
+  "constructor": "createRetainedCapsuleWriter({store:native_tail.projectionStore,projection_budget:native_tail.projection_budget,...})",
+  "hook": "projection_budget.run({kind:'REMEMBER'|'RECORD',analysis_key,summary_record_id?},async work)",
+  "public_only": "Wrap public remember/record once; do not wrap internal original or nested helper. Do not call work if known before-work reservation refused.",
+  "returns": "Actual oldresult unchanged, or explicit DEFERRED_NATIVE_PROJECTION only on known pre-work envelope/time/busy refusal. All work exceptions, corrupt/readback/unknown propagate.",
+  "ownership": "ProjectionStore forwards only while its run hook owns a live actualD1Store opaque token. Base/othercomponentstore cannot consume thathold. Tokens bound actualstore/run/phase/workload/expiry andnever serialized. Sameguard instance passed sender/runner/writer.",
+  "plans": {
+    "REMEMBER": {
+      "requests": 36,
+      "rows_read": 36,
+      "rows_written": 30
+    },
+    "RECORD": {
+      "requests": 59,
+      "rows_read": 59,
+      "rows_written": 50
+    }
+  },
+  "admission": "Forecast/localhold isnot new IO permission; preexisting actualnativeadmission/unknown/account/shared/daycaps remain. Actual metadata andinflight counted; no physicalrowpromise.",
+  "deferred": "Raw READY journal+durablerecovery pointer committedbeforeprojection forSENT andcardnullUNSENT; no deliveryACK until requiredrawregistration plus requested projection actuallyfinish. Repair savedoriginal/card/receipt only; no dispatch.",
+  "dependency": "Coordinated ANALYTICS writer proposal must implement hook beforeROOT uses projectionStore. SOURCE didnot edit ownedwriter/analytics."
+}

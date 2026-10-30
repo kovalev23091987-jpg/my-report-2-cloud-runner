@@ -1,0 +1,109 @@
+{
+  "schema": "F696_EXISTING_FACT_ROUTE_NORMALIZER_CONSUMER_COST_V1",
+  "facts": [
+    {
+      "fact": "identity/catalog",
+      "route": "existing GET contracts; frozennative registry550",
+      "normalizer_consumer": "sources getCatalog/registry native-reviewed550/native-execution",
+      "qualification": "verified USDT-M identity+livecatalog matching; saved552identities owner550 notfreshmembership",
+      "cost": "1bulk discovery HTTP, notper550; snapshot2SQL additional",
+      "mandatory": true
+    },
+    {
+      "fact": "price",
+      "route": "BingX /swap/v1/ticker/price; bounded v2 ticker fallback",
+      "normalizer_consumer": "parsePrice -> facts.price -> movement/plan/card",
+      "qualification": "USDT per independently nativequalifiedbase; nativeeventtime, TTL30s; receipt/cache notclockreset",
+      "cost": "primary1 +fallback<=1 withinB10; preflightprice1 alreadycounted",
+      "mandatory": true
+    },
+    {
+      "fact": "closedgrowth 5/15/60m andseed search",
+      "route": "/swap/v3/quote/klines existingclosedrows",
+      "normalizer_consumer": "parseCandles/closedCandles/windowRows -> analyzeMovement",
+      "qualification": "CCXT open-time basis; closedwindows exact, nativequantityrelative samecontractfield; missingwindowsUNKNOWN",
+      "cost": "1candles HTTP reusedforgrowth/volume, no perindicatorHTTP",
+      "mandatory": true
+    },
+    {
+      "fact": "closed24hgrowth",
+      "route": "existing getDayGrowth /closedhistorical klines",
+      "normalizer_consumer": "sources/day-growth -> analytics/day-growth",
+      "qualification": "nativeexactclosed24hwindow, no24htickerpreview substitution",
+      "cost": "<=1dayhistory HTTP perselectedcandidate",
+      "mandatory": true
+    },
+    {
+      "fact": "volume/seed4h",
+      "route": "sameclosedcandles +native relativequalification",
+      "normalizer_consumer": "movement/seedbaseline +v3suppliedwindow reconfirmation",
+      "qualification": "relative SAME_NATIVE_REPORTED_QUANTITY only; unknown nativeunit notBASE/USD; originalseed/baselinewindow mustpresent",
+      "cost": "0additionalHTTP beyondcandles",
+      "mandatory": true
+    },
+    {
+      "fact": "book/liquidity",
+      "route": "/swap/v2/quote/depth verifiedbidsCoin/asksCoin",
+      "normalizer_consumer": "parseOrderbook/measureLiquidity -> spread/slippage/positionlimit/plan",
+      "qualification": "explicitCOINBASE_ASSET qualifiedexecution units only, nativeclock TTL15s; no densityasfutureLIQ",
+      "cost": "1COREbook +1preflightbook alreadyinsideB10",
+      "mandatory": true
+    },
+    {
+      "fact": "trades",
+      "route": "existing /swap/v2/quote/trades limit500",
+      "normalizer_consumer": "parseRecentTrades -> trade context optional",
+      "qualification": "uniqueIDs/aggressor/unitresponsebound/samplewindow; observedquoteUSDT notinventedbase/fullexchangevolume",
+      "cost": "optional1 insideunchangedoptional2",
+      "mandatory": false
+    },
+    {
+      "fact": "funding",
+      "route": "existing /swap/v2/quote/premiumIndex",
+      "normalizer_consumer": "funding-qualification +parseFunding -> optional_context",
+      "qualification": "reviewedquoteRATE_FRACTION/updateTime/fundingIntervalHours supportedconsumerbasis; actualrowclock/periodneeded; notpaymentcashflow",
+      "cost": "optional1 insideoptional2; no secondproviderduplicate",
+      "mandatory": false
+    },
+    {
+      "fact": "OI",
+      "route": "existing /swap/v2/quote/openInterest route retained",
+      "normalizer_consumer": "parseOpenInterest -> optional_context onlyafterunitproof",
+      "qualification": "runner explicitlyrequests trades/funding; retained13 havezeroOIqualifications,539overlayaddsrelativecandles/executionbookonly,fundingoverlaydoesnotaddOI. ReferenceBASE_ASSET not currentunit/multiplier/nativeclockqualification. UNKNOWN/NOT_CHECKED, notunsupported",
+      "cost": "CURRENT0HTTP; futurecost1 onlybyREPLACING oneoptional slot afterqualifiedexistingproof; never13thHTTP",
+      "mandatory": false
+    },
+    {
+      "fact": "futureLIQ",
+      "route": "existingnormalizersSwole/HLpositions/Orderlydormant",
+      "normalizer_consumer": "verifiedSwoleRoute/collectHyperliquidPositions/Orderly -> selectZones",
+      "qualification": "currentretained13+539routes arrays[]; existingadapters arenot activatedroutes. Preserve model/observedtype, independentidentity/pricecurrencybasis/originalclocks, F688HLHOLD; currentnoqualifiedmapdoesnotblockmandatoryidea",
+      "cost": "CURRENT0HTTP; mapreservation<=1 whenseparatelyqualifiedroute; cannotappendtoquote11",
+      "mandatory": false
+    }
+  ],
+  "OI_evidence": "Staticread retainedregistryJSON13 OIproofs[]; reviewed539 constructor andnativeexecutionqualification onlycandles/orderbook; fundingoverlayonlyfunding. No newnativeunitproof claimed.",
+  "costed_composition": {
+    "candidate_BingX_max": 10,
+    "decomposition": "selectedoverview1+closedday1+COREpriceprimary/fallback<=2+candles1+book1+optional2+DELIVERYpricebook2=10",
+    "Telegram_max": 1,
+    "map_unassigned_max": 1,
+    "allocation_max": 12,
+    "quote11": "OnlyNEWsurplus afterbaseexhausted with sourceownedopaque frozenroutes[] token: B10TG1, noMAP. ExistingOPEN12 not repriced, issued/CLOSED/UNKNOWNholds/futureallocation12 preserved.",
+    "discovery": "catalog+bulkoverview separatelycharged/protectedfutureticks, nothiddeninsidecandidatequote",
+    "complement": [
+      "Use existingqualified trades+funding in2slots; no all3 list.",
+      "If futureOIqualification supplied viaexisting savedproof, alternatives[trades,OI]or[funding,OI] still<=2; no routeactivationinF696.",
+      "Fallbacksreplace exactsamefact/meaning; foreignvenue or delayedHLcannotbe substitutedforBingXmandatoryfact ormap. Unknownunits/clocksremainUNKNOWN."
+    ]
+  },
+  "reuse_refs": [
+    "F550_ACTUAL_SOURCE_FEASIBILITY_MATRIX_V1.json",
+    "F560_SELECTED_COST_FUTURE_CAPACITY_V1.json",
+    "F562_SOURCE_SELECTION_MATRIX_V1.json",
+    "F688_HL_SOL_HOLD savedproposal",
+    "F691_FULL_STAGED_HANDOFF_V1.json"
+  ],
+  "new_source_search_HTTP_connections_activation": 0,
+  "full550_nativecoverage_claim": false
+}

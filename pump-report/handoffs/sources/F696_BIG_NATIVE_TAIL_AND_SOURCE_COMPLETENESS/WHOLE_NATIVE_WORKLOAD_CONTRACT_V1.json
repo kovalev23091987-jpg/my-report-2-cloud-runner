@@ -1,0 +1,85 @@
+{
+  "schema": "F696_WHOLE_WORKLOAD_NATIVE_CONTRACT_V1",
+  "caps": {
+    "Q": 800,
+    "R": 5000,
+    "W": 300,
+    "dayR": 3500000,
+    "dayW": 70000
+  },
+  "primitives": {
+    "get": "1Q1Rhint0W",
+    "singleAtomic": "nochange1Q; firstwrite2Q; <=5CAS10Q10Rhint10Whint",
+    "atomicPair": "nochange1Q2R; firstwrite2Q6Rhint4Whint; <=5CAS10Q30Rhint20Whint",
+    "set": "1Q2Rhint2Whint",
+    "finalize": "protectedonce2Q2Rhint1Whint"
+  },
+  "plans": {
+    "RUN_AUTO": {
+      "requests": 41,
+      "rows_read": 42,
+      "rows_written": 42
+    },
+    "RUN_MANUAL": {
+      "requests": 120,
+      "rows_read": 180,
+      "rows_written": 120
+    },
+    "CANDIDATE_SEND": {
+      "requests": 94,
+      "rows_read": 115,
+      "rows_written": 102
+    },
+    "CANDIDATE_UNSENT": {
+      "requests": 41,
+      "rows_read": 62,
+      "rows_written": 52
+    },
+    "REMEMBER": {
+      "requests": 36,
+      "rows_read": 36,
+      "rows_written": 30
+    },
+    "RECORD": {
+      "requests": 59,
+      "rows_read": 59,
+      "rows_written": 50
+    },
+    "RECOVER_ONE": {
+      "requests": 200,
+      "rows_read": 700,
+      "rows_written": 110
+    },
+    "OUTCOME_ONE": {
+      "requests": 160,
+      "rows_read": 600,
+      "rows_written": 100
+    }
+  },
+  "AUTO_required_listed_sum": {
+    "Q": 137,
+    "R_hint": 159,
+    "W_hint": 145
+  },
+  "AUTO_decomposition": "RUN41/42/42 = READYrawjournal+recoverypointer2A(20/20/20),surpluscloseA(10/10/10),runrowS/executorreleaseA(11/12/12). CANDIDATE_SEND94/115/102 = dispatch5A+3G(53/53/50) +latestS/wavequeueP/activeA/rawjournalA/recoverypointerupdateA(41/62/52). Finalize2/2/1 once. EarlierF69365 wasafterHTTP-only, notthisfullpath.",
+  "manual": "RUN_MANUAL120/180/120 explicitly includesREADY,manualfinish/result/workindexcompletion andheadrecoveryheadroom; noautomaticreuseofAUTOendplan. Candidatephase still94/115/102; allspents/finalizationmustfitactualremaining300W; failuresleavejob/ACK/originalrecoverable ratherthanclaimfullcapacity.",
+  "not_in_required_tail": [
+    "Source/cache/catalog/discovery/engineoriginalsave/enqueueworkindexbeforeTG billedinactualprefix, actualstoreholdsprotectremaining; cannotstartTGunlesscandidateholdandpost-reservebeforeTelegramcheckbothfit.",
+    "Projectionremember/record eachownactualheldplan, notborrowparent/end. Rawcorruption/readback/unknownthrow; onlyknownpre-workrefusalDEFERRED.",
+    "OptionalRECOVERY1 orOUTCOME1 claimedseparately; sourcehistoryHTTPifactuallyneeded stilloldbroker/providerledger/SQLspend. Prefix/caches/actualmetaandconcurrentpendingallcount."
+  ],
+  "finite_continuations": {
+    "candidate_attempts_per_invocation": 1,
+    "recovery_records_per_invocation": 1,
+    "recovery_scan_limit": 1,
+    "cursor": "exactderivedcursor1G+1S, wrap<=1additional scan; DONEpointerdeleteonlyafterrequiredregistration/projection",
+    "outcome_page_limit": 1,
+    "fold_records": 1,
+    "maturity_limit": 1,
+    "legacy_index_migration": "existing<=4imports perinitialize remainsboundedbyactualstageenvelope; ifnotfitpartialoriginals/indexremainforlaternewadmission, no20batchasoneop"
+  },
+  "concurrency": "queryclaimsfullhint+requestbeforeawait; knownACKreplaceshintwithactualmetadata; remainingstageadjustedbyactualdelta. Basequerychecksallheld+pending+finalize. No ambientactive phase; explicitopaque scopedstoretoken inbudget/delivery. ProjectionStore privateactive tokenonlyduringhook and rejectsconcurrententry.",
+  "physical_limit": "ForecastR/W hints are not physicalSQL rowcostguarantees. Unexpectedmetadataexceedsstagefreezesstage/failclosed, retainswholeledger reservation; unknown_opsblocksfinalize. No storage/expiry/throughput/capacity tests orwholeaccountacceptance.",
+  "case": "One prepared ROOT connectedcase with4 controllednativeinvocations: ACKyield, savedrepair,READY_UNSENT,manualend; mandatoryadapterfaultphases concurrent/unknown/foreignexpiry. None executed; RootSQLiteadapter/commonfixtures required.",
+  "qualification_status": "PREPARED_NOT_EXECUTED_NO_PASS"
+}
