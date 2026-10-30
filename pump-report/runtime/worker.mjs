@@ -5,6 +5,7 @@ import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
 import {createReviewedNativeScopeRegistry} from '../registry/native-reviewed550.mjs';
 import {withReviewedFundingQuoteRegistry} from '../registry/funding-quote-profile.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
+import {assessPublicationMap} from '../analytics/zones.mjs';
 import {factUsable,ownerInstrumentExcluded,ownerPublicationRefusal,isBingxNativeSymbol} from '../contracts/index.mjs';
 import {parseManualInput} from './manual-input.mjs';
 import {manualResponseText} from './manual-response.mjs';
@@ -24,7 +25,7 @@ import {PROVIDER_STAGE,PROVIDER_POLICY_VERSION,PROVIDER_POLICIES,QUALIFICATION_E
 import {createAnonymousDisplayInfoRequestFactory,createSubtleSha256} from '../sources/bingx-anonymous-display-info-request.mjs';
 import {DISCOVERY_PLAN} from './discovery-reserve.mjs';
 import {createSourceEvidenceAdmission} from './source-evidence-admission.mjs';
-import {sendSavedTelegram} from './telegram-send.mjs';
+import {sendSavedTelegram,TELEGRAM_HTTP_TIMEOUT_MS} from './telegram-send.mjs';
 import {createCatalogSnapshotWriter} from './catalog-snapshot.mjs';
 
 export const PUMP_VERSION='pump-report-v1.10-native-source-evidence-admission';
@@ -32,21 +33,45 @@ export const TELEGRAM_DIAGNOSTIC_TEXT='Памп-отчёт: проверка д�
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const replyCode=error=>/^[A-Z0-9_:.-]{1,160}$/.test(error?.code??'')?error.code:'PUMP_RUNTIME_ERROR';
 
-export async function revalidatePumpCard({card,store,sources,clock=Date.now,profile=START_PROFILE}){
+const publicationOverlap=(a,b)=>a&&b&&a.lower<=b.upper&&b.lower<=a.upper;
+function publicationPlanMatches(before,checked,profile){
+  const move=Math.abs((checked.reference_price/before.reference_price-1)*100);
+  return Boolean(checked.ready&&move<=profile.publication_recheck_max_price_move_pct&&
+    before.plan?.entry_zones?.some(a=>checked.plan?.entry_zones?.some(b=>publicationOverlap(a,b)))&&publicationOverlap(before.plan?.exit_zone,checked.plan?.exit_zone));
+}
+export async function preparePumpPublication({analysis,input,sources,clock=Date.now,profile=START_PROFILE}){
+  if(!analysis?.ready||ownerPublicationRefusal(analysis)||analysis.run_id!==input?.run_id||analysis.mode!==input.mode||
+    JSON.stringify(analysis.instrument)!==JSON.stringify(input.instrument))throw Error('PUBLICATION_INPUT_BINDING_REQUIRED');
+  if(input.mode==='AUTO'&&!automaticWindowOpen(clock()))return {accepted:false,analysis,input,reason:'PUBLICATION_WINDOW_CLOSED'};
+  const fresh=await sources.getCore({instrument:analysis.instrument,run_id:analysis.run_id,mode:analysis.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});
+  let next={...input,facts:{...input.facts,...fresh.facts},analysis_ts:clock(),previous_wave:analysis.next_wave??input.previous_wave};
+  next.publication_preflight={version:'pump-publication-preflight-v1',known_ts:next.analysis_ts,purpose:'DELIVERY',
+    price_fact_id:next.facts.price?.fact_id??null,orderbook_fact_id:next.facts.orderbook?.fact_id??null};
+  let checked=analyzePump(next,profile),map=assessPublicationMap(checked,{at:next.analysis_ts,profile});
+  // A short/unknown remaining map lifetime must not block the independent core
+  // idea or be stretched to fit transport. Save a new explicit WITHOUT_MAP original.
+  if(checked.ready&&checked.liquidations?.map_mode==='WITH_MAP'&&(!map.valid||map.effective_deadline_ts-next.analysis_ts<TELEGRAM_HTTP_TIMEOUT_MS)){
+    next.publication_map_omission={reason:!map.valid?map.reason:'MAP_VALIDITY_TOO_SHORT_FOR_PUBLICATION',
+      effective_deadline_ts:map.effective_deadline_ts,selected_zone_count:checked.liquidations.qualified_zone_count};
+    next.liquidations={...next.liquidations,status:'NOT_CHECKED',reason:next.publication_map_omission.reason,zones:[]};
+    checked=analyzePump(next,profile);
+  }
+  return {accepted:publicationPlanMatches(analysis,checked,profile),analysis:checked,input:next,reason:'PLAN_OR_PRICE_CHANGED'};
+}
+export async function revalidatePumpCard({card,store,sources,clock=Date.now,profile=START_PROFILE,prepared_input=null}){
   const refusal=ownerPublicationRefusal(card.analysis);if(refusal)return {valid:false,reason:refusal};
   if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock()))return {valid:false,reason:'CARD_OR_WINDOW_EXPIRED'};
   if(!card.analysis.ready||!card.analysis.plan)return {valid:false,reason:'PLAN_NOT_READY'};
   const saved=await store.get(card.analysis.source_input_key);if(!saved?.input)return {valid:false,reason:'ORIGINAL_INPUT_NOT_SAVED'};
-  const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id:card.analysis.run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});
+  if(prepared_input&&(JSON.stringify(prepared_input)!==JSON.stringify(saved.input)||
+    card.analysis.source_input_key!=='pump:analysis:'+await textHash(JSON.stringify(saved.analysis))))return {valid:false,reason:'PREPARED_INPUT_NOT_ORIGINAL'};
+  const fresh=prepared_input?{facts:prepared_input.facts}:await sources.getCore({instrument:card.analysis.instrument,run_id:card.analysis.run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});
   const facts={...saved.input.facts,...fresh.facts};if(!['price','orderbook'].every(key=>factUsable(facts[key],clock())))return {valid:false,reason:'MANDATORY_FACT_RECHECK_FAILED'};
   // The same engine qualifies the retained candle tail, including an honest
   // INCOMPLETE older path. Fresh price/book alone never make candles usable.
   const checked=analyzePump({...saved.input,facts,analysis_ts:clock(),previous_wave:card.analysis.next_wave??saved.input.previous_wave},profile);
-  const move=Math.abs((checked.reference_price/card.analysis.reference_price-1)*100);
-  const overlap=(a,b)=>a&&b&&a.lower<=b.upper&&b.lower<=a.upper;
-  const entry=card.analysis.plan.entry_zones?.some(a=>checked.plan?.entry_zones?.some(b=>overlap(a,b)));
-  const exit=overlap(card.analysis.plan.exit_zone,checked.plan?.exit_zone);
-  return {valid:Boolean(checked.ready&&move<=profile.publication_recheck_max_price_move_pct&&entry&&exit),reason:'PLAN_OR_PRICE_CHANGED'};
+  const map=assessPublicationMap(card.analysis,{at:clock(),profile});
+  return {valid:publicationPlanMatches(card.analysis,checked,profile)&&map.valid,reason:map.valid?'PLAN_OR_PRICE_CHANGED':map.reason};
 }
 
 const captureFailure=code=>Object.assign(Error(code),{code});
@@ -129,9 +154,9 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
   const identityRegistry=withReviewedFundingQuoteRegistry(createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY));
   const on_catalog_snapshot=production?createCatalogSnapshotWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED',clock}):null;
   const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock,on_catalog_snapshot});
-  const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
+  const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),prepare:context=>preparePumpPublication({...context,sources,clock}),revalidate:async (card,context)=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
-    return revalidatePumpCard({card,store,sources,clock});
+    return revalidatePumpCard({card,store,sources,clock,prepared_input:context?.prepared_input??null});
   },send:async ({text,recipient,card_id})=>{
     const savedCard=await store.get('pump:card:'+card_id);
     const refusal=ownerPublicationRefusal(savedCard?.analysis);if(refusal&&savedCard?.analysis?.kind!=='DELIVERY_DIAGNOSTIC')throw Object.assign(Error(refusal),{code:refusal,send_attempted:false});

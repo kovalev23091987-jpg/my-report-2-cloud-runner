@@ -7,9 +7,25 @@ export {textHash} from './text-hash.mjs';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const positiveMessageId=id=>Number.isSafeInteger(Number(id))&&Number(id)>0&&/^[1-9][0-9]*$/.test(String(id));
 
-export function createDelivery({store,send,recipient,clock=Date.now,revalidate,claim_ms=30000}){
+export function createDelivery({store,send,recipient,clock=Date.now,revalidate,prepare=null,claim_ms=30000}){
   if(!store?.atomic||!send||!recipient||!revalidate)throw Error('DELIVERY_CONTEXT_REQUIRED');
   const terminal=card=>['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card?.state);
+  // Tokens are issued only after the actual private preparation callback. They
+  // cannot be supplied through JSON, reused, or transferred to another analysis.
+  const preparations=new WeakMap();
+  async function preparePublication({analysis,input}){
+    if(!prepare)return null;
+    const wave=await store.get('pump:delivery-wave:'+analysis.instrument.instrument_id+':'+analysis.wave_id);
+    const prior=wave?.primary_card_id?await store.get('pump:card:'+wave.primary_card_id):null;
+    const update=prior?.state==='SENT'&&['PLAN_INVALIDATED','ENTRY_ZONE_REPLACED','EXIT_ZONE_REPLACED'].includes(analysis.update_kind);
+    if(prior&&!['STALE','ERROR'].includes(prior.state)&&!update)return {skipped:true};
+    const result=await prepare({analysis,input});
+    if(!result||result.skipped)return result;
+    if(!result.input||!result.analysis)throw new BudgetRefusal('PUBLICATION_PREPARATION_REQUIRED');
+    const snapshot=structuredClone({input:result.input,analysis:result.analysis}),token=result.accepted?Object.freeze({}):null;
+    if(token)preparations.set(token,snapshot);
+    return {...result,input:structuredClone(snapshot.input),analysis:structuredClone(snapshot.analysis),preparation_token:token};
+  }
   const work=createWorkIndex({store,kind:'delivery',targetKey:id=>'pump:card:'+id,completed:card=>terminal(card)&&(card.analysis?.kind==='DELIVERY_DIAGNOSTIC'||card.publication_registered===true)&&(card.state!=='SENT'||positiveMessageId(card.message_id)&&card.receipt?.text_hash===card.text_hash&&card.receipt?.recipient===card.recipient)});
   async function enqueue(analysis,{mode,expires_ts,update_kind=null}={}){
     const refusal=ownerPublicationRefusal(analysis);if(refusal&&analysis?.kind!=='DELIVERY_DIAGNOSTIC')throw new BudgetRefusal(refusal);
@@ -52,7 +68,9 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     await work.add(decision.card_id);
     return {...decision,text_hash:hash};
   }
-  async function dispatch(card_id){
+  async function dispatch(card_id,{preparation_token=null}={}){
+    const prepared=preparation_token&&preparations.get(preparation_token);
+    if(preparation_token){preparations.delete(preparation_token);if(!prepared)throw new BudgetRefusal('PUBLICATION_PREPARATION_TOKEN_NOT_OWNED');}
     const owner=crypto.randomUUID(),now=clock();
     const card=await store.atomic('pump:card:'+card_id,current=>{
       if(!current)return {state:current,result:{skip:'CARD_NOT_FOUND'}};
@@ -66,7 +84,11 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
       return {state:current,result:structuredClone(current)};
     });
     if(card.skip)return {state:card.skip,card_id,...(card.reason?{reason:card.reason}:{})};
-    let fresh;try{fresh=await revalidate(card);}catch{await finish(card,{state:'ERROR',reason:'RECHECK_FAILED_BEFORE_SEND'});return {state:'ERROR',card_id};}
+    let fresh;try{
+      if(prepared){const {source_input_key,...a}=card.analysis;
+        if(!same(a,prepared.analysis)||source_input_key!=='pump:analysis:'+await textHash(JSON.stringify(prepared.analysis)))throw new BudgetRefusal('PUBLICATION_PREPARATION_ORIGINAL_CONFLICT');}
+      fresh=await revalidate(card,prepared?{prepared_input:prepared.input}:undefined);
+    }catch{await finish(card,{state:'ERROR',reason:'RECHECK_FAILED_BEFORE_SEND'});return {state:'ERROR',card_id};}
     if(!fresh?.valid){await finish(card,{state:'STALE',reason:fresh?.reason??'SCENARIO_RECHECK_FAILED'});return {state:'STALE',card_id};}
     if(await textHash(card.text)!==card.text_hash){await finish(card,{state:'ERROR',reason:'SAVED_TEXT_HASH_MISMATCH'});throw new BudgetRefusal('SAVED_TEXT_HASH_MISMATCH');}
     if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock())){await finish(card,{state:'STALE',reason:'PUBLICATION_WINDOW_CLOSED'});return {state:'STALE',card_id};}
@@ -78,6 +100,7 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     if(reply?.ok===true&&reply.body?.ok===true&&positiveMessageId(id)&&String(message.chat?.id)===card.recipient&&(!Object.hasOwn(message,'text')||message.text===card.text)){
       const receipt={message_id:String(id),recipient:card.recipient,card_id,text_hash:card.text_hash,confirmed_ts:clock(),telegram_date:message.date??null};
       if(Number.isSafeInteger(reply.http_started_ts)&&Number.isSafeInteger(reply.http_ack_received_ts))Object.assign(receipt,{http_started_ts:reply.http_started_ts,http_ack_received_ts:reply.http_ack_received_ts,http_clock_basis:reply.http_clock_basis??null});
+      if(reply.liquidation_freshness)receipt.liquidation_freshness=reply.liquidation_freshness;
       await finish(card,{state:'SENT',message_id:String(id),receipt});
       const saved=await store.get('pump:card:'+card_id);
       if(saved?.state!=='SENT'||!same(saved.receipt,receipt)||saved.text!==card.text||saved.text_hash!==card.text_hash)throw new BudgetRefusal('TELEGRAM_RECEIPT_READBACK_FAILED');
@@ -99,5 +122,5 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,c
     for(const id of ids){try{results.push(await dispatch(id));}catch(error){if(/NATIVE_SQL|STATE_CAS|STATE_PAIR/.test(error.code??error.message??'')||store.usage?.().unknown_ops>0)throw error;results.push({card_id:id,state:'ERROR',reason:error.code??'DELIVERY_ERROR'});}}
     return results;
   }
-  return {enqueue,dispatch,drain,pending,acknowledge};
+  return {preparePublication,enqueue,dispatch,drain,pending,acknowledge};
 }

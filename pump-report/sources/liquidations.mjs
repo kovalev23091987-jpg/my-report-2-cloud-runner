@@ -21,12 +21,16 @@ export function normalizeSwoleMap(payload, {route, instrument, received_ts, now,
     checked_sources: ['SWOLECHARTS'], coverage: {source_ts: event_ts, scope: route.coverage ?? null}};
   if (payload.has_data !== true || !object(payload.levels)) fail('SWOLE_MAP_SHAPE_REQUIRED');
   const mapping = route.price_mapping;
+  const mapping_event_ts = timestamp(mapping?.event_ts), mapping_expires_ts = timestamp(mapping?.expires_ts);
   const mappingKnown = proof(mapping) && positive(mapping.multiplier_to_bingx) !== null
     && mapping.from_quote === route.price_quote && mapping.to_quote === 'USDT'
     && mapping.from_market_id === route.market_id && mapping.to_instrument_id === instrument.instrument_id
-    && timestamp(mapping.event_ts) !== null && mapping.event_ts <= now && mapping.event_ts <= received_ts
-    && now - mapping.event_ts <= profile.freshness_ms.price
-    && timestamp(mapping.expires_ts) !== null && mapping.expires_ts >= now;
+    && mapping_event_ts !== null && mapping_event_ts <= now && mapping_event_ts <= received_ts
+    && now - mapping_event_ts <= profile.freshness_ms.price
+    && mapping_expires_ts !== null && mapping_expires_ts >= now;
+  // A mapped zone cannot outlive its original model or the price conversion.
+  const zone_expires_ts = mappingKnown
+    ? Math.min(expires_ts, mapping_expires_ts, mapping_event_ts + profile.freshness_ms.price) : expires_ts;
   const magnitude = route.magnitude;
   // A field called "usd" is not independent evidence of dollar notional.
   const scaleKnown = proof(magnitude) && magnitude.kind === 'RELATIVE' && text(magnitude.scale_id)
@@ -55,8 +59,10 @@ export function normalizeSwoleMap(payload, {route, instrument, received_ts, now,
         price_currency: mappingKnown ? 'USDT' : route.price_quote, model_id: route.model_id ?? 'SWOLECHARTS_LIQUIDATION_HEATMAP', model_version: payload.model_version,
         price_comparability: {status: mappingKnown ? 'VERIFIED' : 'UNKNOWN', evidence_ref: mappingKnown ? mapping.evidence_ref : null,
           from_market_id: route.market_id, to_instrument_id: instrument.instrument_id, from_currency: route.price_quote,
-          to_currency: 'USDT', multiplier: mappingKnown ? Number(mapping.multiplier_to_bingx) : null},
-        event_ts, received_ts, expires_ts, basis_type: 'EXTERNAL_MODEL',
+          to_currency: 'USDT', multiplier: mappingKnown ? Number(mapping.multiplier_to_bingx) : null,
+          event_ts: mappingKnown ? mapping_event_ts : null,
+          expires_ts: mappingKnown ? mapping_expires_ts : null},
+        event_ts, received_ts, expires_ts: zone_expires_ts, native_expires_ts: expires_ts, basis_type: 'EXTERNAL_MODEL',
         magnitude_value: intensity, magnitude_unit: scaleKnown ? 'RELATIVE_INTENSITY' : null,
         relative_scale: scaleKnown ? {scale_id: magnitude.scale_id, model_version: payload.model_version, source_field: magnitude.field, evidence_ref: magnitude.evidence_ref} : null,
         coverage: route.coverage ?? {scope: 'PROVIDER_RETURNED_BINS_ONLY', range: payload.range ?? null},
