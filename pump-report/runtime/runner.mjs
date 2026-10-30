@@ -163,6 +163,14 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       failure_stage='ANALYTICS_FINAL';
       input.analysis_ts=clock();analysis=analyzePump(input,profile);
     }
+    // Spend the existing DELIVERY price/book refresh before freezing the final
+    // original. The one-use preparation is bound to that exact stored input.
+    let preparation=null;
+    if(publish&&analysis.ready&&!ownerPublicationRefusal(analysis)&&(mode==='MANUAL'||analysis.automatic_eligible)&&delivery.preparePublication){
+      failure_stage='PUBLICATION_PREFLIGHT';await assert_execution();
+      preparation=await delivery.preparePublication({analysis,input});
+      if(preparation&&!preparation.skipped){analysis=preparation.analysis;input=preparation.input;}
+    }
     // The immutable facts and plan must exist before publication. Derived
     // features, journal and candidate bookkeeping must not spend their TTL.
     failure_stage='SAVE_ORIGINAL';
@@ -173,15 +181,17 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     if(analysis.ready)await observations.remember(analysis,input,analysis_key,{defer_index:true});
     try {
     failure_stage='PUBLICATION';
+    const preflightRefused=preparation&&!preparation.skipped&&preparation.accepted!==true;
     const publicationRefusal=ownerPublicationRefusal(analysis);
+    if(preflightRefused)delivered={state:'STALE',reason:preparation.reason??'PUBLICATION_PREFLIGHT_REFUSED'};
     if(publish&&analysis.ready&&publicationRefusal)delivered={state:'SUPPRESSED',reason:publicationRefusal};
-    if(publish&&analysis.ready&&!publicationRefusal&&(mode==='MANUAL'||analysis.automatic_eligible)){
+    if(publish&&analysis.ready&&!publicationRefusal&&!preflightRefused&&(mode==='MANUAL'||analysis.automatic_eligible)){
       await assert_execution();
       const expires=Math.min(...['price','orderbook','candles'].map(key=>input.facts[key]?.expires_ts??0));
       if(expires>clock()){
         const card=await delivery.enqueue({...analysis,source_input_key:analysis_key},{mode,expires_ts:expires,update_kind:analysis.update_kind??null});
         card_id=card.card_id;
-        delivered=await delivery.dispatch(card.card_id);
+        delivered=await delivery.dispatch(card.card_id,{preparation_token:preparation?.preparation_token??null});
       }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
     }
     } finally {
@@ -301,7 +311,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
         catch(error){
           const nativeKnown=typeof store.usage!=='function'||store.usage().unknown_ops===0;
           const failedAdmitted=nativeKnown&&error?.pump_candidate_admitted===true&&error?.pump_candidate_failure_stage!=='SOURCE_WINDOW'&&!(error instanceof BudgetRefusal)&&!/EXECUTOR|AUTOMATIC_WINDOW|PROTECTED_DAY|MONTH_EXHAUSTED|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|SHARED_NATIVE|SOURCE_WINDOW/.test(error?.code??'');
-          const stage=['SOURCE_WINDOW','SOURCE_OVERVIEW','DAY_GROWTH','SOURCE_CORE','ANALYTICS_INITIAL','OPTIONAL_ENRICHMENT','ANALYTICS_FINAL','SAVE_ORIGINAL','JOURNAL_ANCHOR','PUBLICATION','ANALYSIS_INDEX'].includes(error?.pump_candidate_failure_stage)?error.pump_candidate_failure_stage:null;
+          const stage=['SOURCE_WINDOW','SOURCE_OVERVIEW','DAY_GROWTH','SOURCE_CORE','ANALYTICS_INITIAL','OPTIONAL_ENRICHMENT','ANALYTICS_FINAL','PUBLICATION_PREFLIGHT','SAVE_ORIGINAL','JOURNAL_ANCHOR','PUBLICATION','ANALYSIS_INDEX'].includes(error?.pump_candidate_failure_stage)?error.pump_candidate_failure_stage:null;
           result.errors.push({instrument_id:instrument.instrument_id,reason:error?.code??'CANDIDATE_ERROR',...(stage?{failure_stage:stage}:{}),...(error instanceof Error?{error_type:['Error','TypeError','RangeError','SyntaxError'].includes(error.name)?error.name:'OTHER_ERROR'}:{}),failed_admitted_attempt:failedAdmitted});
           await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id]){const at=clock();queue[instrument.instrument_id].next_check_ts=at+profile.candidate_recheck_ms;if(failedAdmitted)queue[instrument.instrument_id].last_failed_admitted_attempt_ts=at;}return {state:queue,result:true};});
         }

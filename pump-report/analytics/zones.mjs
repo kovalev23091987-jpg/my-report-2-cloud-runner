@@ -3,10 +3,10 @@ import {unique} from './math.mjs';
 
 const provider=z=>z.primary_provider??z.source;
 const currency=z=>z.price_currency??z.price_quote??null;
-const lineage=z=>({zone_id:z.zone_id,source:z.source,primary_provider:provider(z),venue:z.venue,market_id:z.market_id,evidence_ref:z.evidence_ref,
+const lineage=z=>({zone_id:z.zone_id,asset_id:z.asset_id,native_expires_ts:z.native_expires_ts??null,source:z.source,primary_provider:provider(z),venue:z.venue,market_id:z.market_id,evidence_ref:z.evidence_ref,
   event_ts:z.event_ts,received_ts:z.received_ts,expires_ts:z.expires_ts,basis_type:z.basis_type,model_id:z.model_id??null,model_version:z.model_version??z.relative_scale?.model_version??null,
   position_ids:[...(z.position_ids??[])],overlap_group:z.overlap_group??null,lower:z.lower,upper:z.upper,magnitude_value:z.magnitude_value??null,magnitude_unit:z.magnitude_unit??null,
-  relative_scale:z.relative_scale??null,coverage:z.coverage??null,limitations:[...(z.limitations??[])],price_currency:currency(z),price_comparability:z.price_comparability??null});
+  relative_scale:z.relative_scale??null,coverage:z.coverage??null,limitations:[...(z.limitations??[])],price_currency:currency(z),price_comparability:z.price_comparability?{...z.price_comparability}:null});
 const overlap=(a,b)=>a.lower<=b.upper&&b.lower<=a.upper;
 const compareId=(a,b)=>String(a)<String(b)?-1:String(a)>String(b)?1:0;
 function sameEconomicObject(a,b){
@@ -77,4 +77,74 @@ export function selectZones(map, instrument, reference, normalRange, at, profile
   const up=choose('UP'),down=choose('DOWN'),any=up.length+down.length>0,partial=map?.status!=='USABLE'||rejected.length>0||!up.length||!down.length;
   return {status:any?(partial?'PARTIAL':'USABLE'):(rows.length?'ABSENT':map?.status??'NOT_CHECKED'),reason:any?(partial?map?.reason??'PARTIAL_QUALIFIED_MAP':null):map?.reason??'NO_QUALIFIED_ZONES',
     zones_up:up,zones_down:down,coverage:map?.coverage??null,rejected_zones:rejected,checked_sources:[...(map?.checked_sources??[])],map_mode:any?'WITH_MAP':'WITHOUT_MAP',qualified_zone_count:qualified.length};
+}
+
+// Structural bound from getLiquidations: one Swole response has at most
+// 1000 LONG + 1000 SHORT rows; Hyperliquid <=2 and Orderly emits no zones.
+export const PUBLICATION_MAP_MAX_COMPONENTS=2000;
+export function assessPublicationMap(analysis,{at,profile}={}){
+  const map=analysis?.liquidations,mode=map?.map_mode??'UNKNOWN';
+  let components_checked=0,deadline=null;
+  const result=(valid,reason)=>({valid,reason,map_mode:mode,effective_deadline_ts:valid?deadline:null,components_checked});
+  const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+  const text=v=>typeof v==='string'&&v.trim().length>0;
+  const integer=v=>Number.isSafeInteger(v)&&v>=0;
+  if(!integer(at))return result(false,'PUBLICATION_MAP_CLOCK_REQUIRED');
+  if(!object(map)||!Array.isArray(map.zones_up)||!Array.isArray(map.zones_down))return result(false,'PUBLICATION_MAP_SHAPE_INVALID');
+  const sides=[['UP',map.zones_up],['DOWN',map.zones_down]];
+  if(mode==='WITHOUT_MAP')return result(map.zones_up.length+map.zones_down.length===0,map.zones_up.length+map.zones_down.length===0?null:'PUBLICATION_MAP_MODE_CONFLICT');
+  if(mode!=='WITH_MAP'||map.zones_up.length+map.zones_down.length===0)return result(false,'PUBLICATION_MAP_MODE_CONFLICT');
+  const limit=profile?.maximum_liquidation_zones_per_side,fresh=profile?.freshness_ms,i=analysis?.instrument,reference=analysis?.reference_price;
+  if(!Number.isSafeInteger(limit)||limit<1||limit>3||!fresh||!['price','observed_positions','model_map'].every(k=>Number.isSafeInteger(fresh[k])&&fresh[k]>0))return result(false,'PUBLICATION_MAP_PROFILE_REQUIRED');
+  if(!object(i)||!text(i.instrument_id)||!text(i.asset_id)||i.venue!=='BINGX'||i.market_type!=='PERPETUAL'||i.quote!=='USDT'||i.settle!=='USDT'||!positive(reference))return result(false,'PUBLICATION_MAP_IDENTITY_MISMATCH');
+  let total=0;
+  // Check the complete shape before inspecting any prefix of components.
+  for(const [,zones]of sides){
+    if(zones.length>limit)return result(false,'PUBLICATION_MAP_ZONE_BOUND_EXCEEDED');
+    for(const z of zones){
+      if(!object(z)||!Array.isArray(z.components)||z.components.length===0)return result(false,'PUBLICATION_MAP_LINEAGE_REQUIRED');
+      total+=z.components.length;
+      if(total>PUBLICATION_MAP_MAX_COMPONENTS)return result(false,'PUBLICATION_MAP_COMPONENT_BOUND_EXCEEDED');
+    }
+  }
+  const include=t=>{deadline=deadline===null?t:Math.min(deadline,t);};
+  function check(z,side,parent=null){
+    if(!object(z)||!text(z.zone_id)||!text(z.source)||!text(provider(z))||!text(z.venue)||!text(z.market_id)||!text(z.evidence_ref)||
+      !['OBSERVED_POSITION','EXTERNAL_MODEL'].includes(z.basis_type)||!positive(z.lower)||!positive(z.upper)||z.lower>z.upper)return 'PUBLICATION_ZONE_NOT_QUALIFIED';
+    if(z.asset_id!==i.asset_id||currency(z)!=='USDT'||z.instrument_id!==undefined&&z.instrument_id!==i.instrument_id)return 'PUBLICATION_MAP_IDENTITY_MISMATCH';
+    if(parent&&(z.venue!==parent.venue||z.market_id!==parent.market_id||provider(z)!==provider(parent)||z.basis_type!==parent.basis_type))return 'PUBLICATION_MAP_LINEAGE_MISMATCH';
+    // Dedup preserves the losing original's bounds, so do not require every
+    // component interval to equal or fit inside the coherent parent interval.
+    if(!parent&&((z.side!==undefined&&z.side!==side)||(side==='UP'?z.lower<=reference:z.upper>=reference)))return 'PUBLICATION_MAP_SIDE_MISMATCH';
+    if(!parent&&z.usable!==true)return 'PUBLICATION_ZONE_NOT_QUALIFIED';
+    const ttl=z.basis_type==='OBSERVED_POSITION'?fresh.observed_positions:fresh.model_map;
+    if(!integer(z.event_ts)||!integer(z.received_ts)||!integer(z.expires_ts)||z.event_ts>z.received_ts||z.received_ts>at||z.expires_ts<z.event_ts||!Number.isSafeInteger(z.event_ts+ttl))return 'PUBLICATION_ZONE_CLOCK_UNBOUND';
+    const until=Math.min(z.expires_ts,z.event_ts+ttl);
+    if(at>=until)return 'PUBLICATION_ZONE_EXPIRED';
+    include(until);
+    if(z.native_expires_ts!==null&&z.native_expires_ts!==undefined){
+      if(!integer(z.native_expires_ts)||z.native_expires_ts<z.event_ts||z.expires_ts>z.native_expires_ts)return 'PUBLICATION_ZONE_NATIVE_EXPIRY_CONFLICT';
+      include(z.native_expires_ts);
+    }
+    const mapping=z.price_comparability;
+    if(z.venue!=='BINGX'||mapping!==null&&mapping!==undefined){
+      if(!object(mapping)||mapping.status!=='VERIFIED'||!text(mapping.evidence_ref)||mapping.from_market_id!==z.market_id||mapping.to_instrument_id!==i.instrument_id||
+        !text(mapping.from_currency)||mapping.to_currency!=='USDT'||!positive(mapping.multiplier))return 'PUBLICATION_MAPPING_NOT_QUALIFIED';
+      if(!integer(mapping.event_ts)||!integer(mapping.expires_ts)||mapping.event_ts>z.received_ts||mapping.event_ts>at||mapping.expires_ts<mapping.event_ts||!Number.isSafeInteger(mapping.event_ts+fresh.price))return 'PUBLICATION_MAPPING_CLOCK_UNBOUND';
+      const mappingUntil=Math.min(mapping.expires_ts,mapping.event_ts+fresh.price);
+      if(at>=mappingUntil)return 'PUBLICATION_MAPPING_EXPIRED';
+      include(mappingUntil);
+    }
+    return null;
+  }
+  for(const [side,zones]of sides)for(const z of zones){
+    const parentReason=check(z,side);
+    if(parentReason)return result(false,parentReason);
+    for(const c of z.components){
+      components_checked++;
+      const reason=check(c,side,z);
+      if(reason)return result(false,reason);
+    }
+  }
+  return result(true,null);
 }
