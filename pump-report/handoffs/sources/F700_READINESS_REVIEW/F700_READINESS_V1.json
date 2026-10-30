@@ -1,0 +1,360 @@
+{
+  "schema": "F700_STATIC_QUALIFIED_READINESS_V1",
+  "verdict": "ACCEPTED_CODE_AND_CONTROLLED_PROOF_READINESS_FOR_REVIEWABLE_INSTALL_PACKET",
+  "authority_main": "d8bf990e75abb6c5fafd263f71b25219d220e520",
+  "concrete_new_blockers": [],
+  "prepared": {
+    "modules": 83,
+    "changed_vs_working78": 19,
+    "added": 5,
+    "unchanged": 64,
+    "implementation_sha256": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+    "artifact_sha256": "8522aac0753fcfd471fd99d6920c30f0ab89ecf689f2726f9bb1986e715633a6",
+    "module_map_sha256": "85f920a697df1ab635c9048d9a265bf4907b08d2af60de5e19eb9c6dd8483bc4"
+  },
+  "working_server": {
+    "pin": "1941e629f35a0b429caa159c283f0bdeecb488c5c23be33c2b88a3840e59e355",
+    "artifact_sha256": "2a1154eeccaa453d96c7b1a471722f8767ae2f71704fb820ccdbc79ceaefcca4",
+    "modules": 78,
+    "AUTO": 1,
+    "DELIVERY": 1,
+    "schedule": "*/5 7-16 * * *"
+  },
+  "R2": {
+    "plan": {
+      "requests": 51,
+      "rows_read_hint": 72,
+      "rows_written_hint": 54
+    },
+    "separate_before_claim": true,
+    "at_most_one_queued_claim": true,
+    "completion_cannot_borrow_RUN_AUTO": true,
+    "controlled_SEND_usage": {
+      "requests": 368,
+      "rows_read": 336,
+      "rows_written": 118,
+      "unknown_ops": 0
+    }
+  },
+  "R3": {
+    "before": [
+      200,
+      700,
+      110
+    ],
+    "delta_once": [
+      11,
+      11,
+      10
+    ],
+    "after": [
+      211,
+      711,
+      120
+    ]
+  },
+  "qualification": {
+    "receipt_status": "PASS_CONTROLLED_ONLY",
+    "Node_processes": 1,
+    "attempts": 1,
+    "full_controlled_proof_sha256": "5935312c9811b505ae52d0d14776a0618d2f3fafdffd40f40f2f84eb0eff9c63",
+    "runtime_usage": {
+      "requests": 206,
+      "rows_read": 162,
+      "rows_written": 68,
+      "unknown_ops": 0
+    },
+    "projection": {
+      "schema": "ROOT_BIG_CONNECTED_PROJECTION_RESULT_V1",
+      "status": "PASS_CONTROLLED_ONLY",
+      "low_budget_callbacks_deferred_before_IO": true,
+      "raw_first_READY_denominators": 2,
+      "known_ACK_orphan_PA_retained": true,
+      "bounded_saved_recovery_refs": 2,
+      "later_summary_first_label_and_split_frozen": true,
+      "unknown_ACKs": 1,
+      "unknown_keeps_RESERVATION_and_work_ref": true,
+      "immutable_originals_unchanged": true,
+      "projection_calls": 40,
+      "guard_hooks": 7,
+      "controlled_SQL_counters": {
+        "attempted": 120,
+        "executed": 120,
+        "acknowledged": 119,
+        "administrative_statements": 128,
+        "maxStatements": 6000
+      },
+      "real_Telegram": 0,
+      "native_IO": 0,
+      "source_IO": 0,
+      "fixture_transport_calls": 1,
+      "physical_capacity_proven": false
+    },
+    "terminal_READY_UNSENT": {
+      "denominator_before": 1,
+      "denominator_after": 1,
+      "clocks_not_extended": true
+    },
+    "unknown_ACK": true,
+    "R5_failed_hold": true
+  },
+  "build": {
+    "status": "QUALIFIED_BUILT_NOT_INSTALLED",
+    "builds": 1,
+    "qualification_sha256": "5935312c9811b505ae52d0d14776a0618d2f3fafdffd40f40f2f84eb0eff9c63"
+  },
+  "control": {
+    "status": "PASS",
+    "mock_CF_requests": 22,
+    "all21bindings_and3schedules_preserved": true,
+    "exact_forward": true,
+    "exact_return": true,
+    "mutable_admission_cannot_change_frozen_artifact": true,
+    "production_modified": false
+  },
+  "caps": {
+    "native": [
+      800,
+      5000,
+      300
+    ],
+    "d1_day": [
+      3500000,
+      70000
+    ],
+    "http_per_run": 164,
+    "BINGX": [
+      900,
+      27900,
+      10,
+      1
+    ],
+    "TELEGRAM": [
+      47,
+      1457
+    ],
+    "manual_checks": 3,
+    "planned_fraction": 0.8,
+    "future_allocation": 12,
+    "future_BINGX": 10,
+    "future_TG": 1,
+    "optional_max": 2,
+    "old_spends_unknowns_CLOSED_holds_preserved": true
+  },
+  "sources": {
+    "BINGX_candidate_max": 10,
+    "delivery_TG_max": 1,
+    "unassigned_map_max": 1,
+    "allocation": 12,
+    "empty_route_NEW_surplus_operation_quote": 11,
+    "old_grants_repriced": false,
+    "discovery_separate": true,
+    "current_OI_HTTP": 0,
+    "current_future_map_routes": 0,
+    "OI_status": "NOT_CHECKED_WITHOUT_UNIT_PROOF_NOT_UNSUPPORTED",
+    "map_nonblocking": true,
+    "optional_selected": [
+      "trades",
+      "funding"
+    ],
+    "new_routes_or_source_search": 0
+  },
+  "limitations": [
+    "Controlled SQLite logical rows are not physical D1 rows/whole-account capacity/latency/throughput proof.",
+    "Fresh live settings/module hashes/current shared budget/executor quiescence and install/readback admissions remain required.",
+    "Ordinary LOOKUP10 spent; extra11 needs separate owner consent, not granted by this review.",
+    "OAuth5 expired and old native/provider/CF costs/unknowns remain; no refreshed auth or IO granted.",
+    "One deep candidate, one recovery reference and one outcome per native invocation can carry queues; no full550/cadence completion claim.",
+    "Prepared83 is not working1941; postinstall actual acceptance pending; full_TZ_complete=false.",
+    "Frozen legacy-worker is an artifact module supplied from exact working78 preimage, not a public pump-report/legacy-worker.mjs file. No substitute local legacy copy is approved."
+  ],
+  "reviewer_executions": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "Cloudflare": 0,
+    "Telegram": 0
+  },
+  "old_pauses": 9,
+  "OWNER_deferrals": 2,
+  "code_hash_checks": [
+    {
+      "path": "pump-report/runtime/native-tail-guard.mjs",
+      "sha256": "1bfe47b6315da9a763de10852b29a611abaec17c74c3f88f6ba359c7e3b0b4ae",
+      "git_blob_sha": "46468c518ae74413283fddd7a2a9761d6e428efd",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/store.mjs",
+      "sha256": "80334d1f2b6bc664ed5b75a9d9ed1e2ec56522ff1bdd2638a8cb6c82efa327e8",
+      "git_blob_sha": "70eb11a33419acb0363a860ba254edaf8f9749cd",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/native-budget.mjs",
+      "sha256": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+      "git_blob_sha": "b46f58f78221f8465d45e51e38a0a4aeedbda4ca",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "sha256": "dd3be8d0852e951332d3b3be8e6d80889d83f779f198589305b38d1d45bb8f23",
+      "git_blob_sha": "0d79f6e577a95fdc527022dbeccc66828877c7a5",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/production-policy.mjs",
+      "sha256": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+      "git_blob_sha": "5d3cbfb40b4519b6c73bcbabee17e2f0e04a18d9",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/provider-policy.mjs",
+      "sha256": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded",
+      "git_blob_sha": "7270572633e57245c4b18ece98b7750172b919e2",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/sources/candidate-route-cost.mjs",
+      "sha256": "11974700d11861f882467b5123fe1ef052a1b50c1c4c0afc7f57a86827b40c6f",
+      "git_blob_sha": "93bc94581f952db204fc2f0615fc674d1a80b684",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/sources/index.mjs",
+      "sha256": "516fc3c63b0046433ae8a6b3e17d07e3e9b1638ecda9589568021dead406954c",
+      "git_blob_sha": "46321e517136d72619d0f502e9eeaf6d04934949",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "sha256": "6cc5cd3342e345831842dfa4b717570e837723e24ca9073ed717fe16d96c6ff0",
+      "git_blob_sha": "12b6ee687da9095b32dcfedf5dd4d8a06df89f35",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/worker.mjs",
+      "sha256": "d58d73d976503e95149c35a668f305560483d26a701083ad07219fc1ee146a6a",
+      "git_blob_sha": "bc91341f612cb4cdb8b205a54043e92672a0326a",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/implementation-pin.mjs",
+      "sha256": "a9a1480fe379cd9e840e841fd061f1ab4c5ccc4a7b74b711f105135b07554a9e",
+      "git_blob_sha": "bbe53162e844e88d8f1c8cf20014d26644d20819",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/analytics/capsule-version-reader.mjs",
+      "sha256": "f80cb3b8d85fe8675307cd6b05b968103fbc0e4b378675e8fbf4098ca3a4de7a",
+      "git_blob_sha": "c89c0709facf3fafd85a0279a1dc8466aa0a7cf4",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/analytics/cohort-audit.mjs",
+      "sha256": "91d8a5bebf80333adee2e9610f449622e4097cd004fddc1030cb23feaa01e0f6",
+      "git_blob_sha": "f74646074d974a84e491d7bce2f1addc483fc850",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/analytics/feature-capsule-v2.mjs",
+      "sha256": "6f3ad60c9f235512bd762133c56f5e662fe9b78cbc8eec0cf76b76dc44942ec9",
+      "git_blob_sha": "dd3358d6ee010b19e5cd8c98efc243334323b740",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/analytics/feature-capsule.mjs",
+      "sha256": "7574a14b3bf3047141e1dd05f5cf512242c8e34b9d27c258f4898bef5137eb09",
+      "git_blob_sha": "3d43355c73c60afcf54cc1589c5ec4e7a4333b8c",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/analytics/saved-capsule-audit.mjs",
+      "sha256": "bee2af9b83d846ee93f44731944a69beedaa8beefed4691a0d62cbf30fa87c8d",
+      "git_blob_sha": "7ff2bc8cb5980fd8ea6cdbeb49dd80b502426f44",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/candidate-cost-quote-bridge.mjs",
+      "sha256": "d99d8ad46985307bbdf502c24dc0ee4cab26268c3a1ecc2bfbe03c6c3a817791",
+      "git_blob_sha": "504871cd3161c29cd9b0152a0ae23c57c596abba",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/delivery.mjs",
+      "sha256": "b82766822f677a91fb6f37ef8400b57561864cd0682a098883862bea90f76d56",
+      "git_blob_sha": "d4fbe1f04cf7cbd8ce416525a09b3a17ff2741fc",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/outcome-journal.mjs",
+      "sha256": "46fbc923cc2aa2271df83dde54b77dc2f96fcc1c3fd9d5333408d87411bfc2e3",
+      "git_blob_sha": "0906825108540bd522bb4c1b2cb8f58e717ab1c6",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/retained-capsules.mjs",
+      "sha256": "c36a1410e185bd658c7d187144301aea830f15dff3b9eb323be136425a454894",
+      "git_blob_sha": "2c1b421bd19e8e3449ea816fcce04a7bcee32d33",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/saved-statistics-audit.mjs",
+      "sha256": "82bfc081c00f98e288a2a5f9a2013b2407e438caf5a9511bcfcb7f9b19a63deb",
+      "git_blob_sha": "7b99bc20acfcc3782e17512ad427eb33ab4193f7",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/runtime/telegram-send.mjs",
+      "sha256": "48adcf41445ea82ae651035ffce5e15e56b9f16e6ce3eec09139a4dc6eec5662",
+      "git_blob_sha": "3d2d41f840ddf67f10e3c841b5611954b8d1df00",
+      "exact_server": true,
+      "exact_graph": true
+    },
+    {
+      "path": "pump-report/operator/cloudflare-big-native-tail-forward.template.js",
+      "sha256": "255bf9f4d496cd534a611884b325af96fbc4f41d3d60dfd5d21c36fc2a716cda",
+      "git_blob_sha": "3fbb3ea4e8f1bc17baa69bfdc4f29bc3818fdbd7",
+      "exact_server": true,
+      "exact_graph": null
+    },
+    {
+      "path": "pump-report/operator/cloudflare-big-native-tail-return.template.js",
+      "sha256": "9ae5d0f46a6d684ed6535ba87756a3da07441cb936de577f2fe51ea371f42689",
+      "git_blob_sha": "58cd9dca3dec7bb9e59a11bf14e8babd44b2310b",
+      "exact_server": true,
+      "exact_graph": null
+    }
+  ],
+  "proof_git_blobs": {
+    "ROOT_BIG_NATIVE_TAIL_CONNECTED_QUALIFICATION_V1.json": "3c18a64477604f8dc02e916c6cdc633e0bbf5f64",
+    "ROOT_BIG_NATIVE_TAIL_QUALIFIED_ARTIFACT_V1.json": "29e57762aebcff7d2e420db812f22d095416434a",
+    "ROOT_BIG_EXACT_CONTROL_MOCK_V1.json": "dfff463831bf5024559303a68ce4ea3b246643be",
+    "ROOT_BIG_PROTECTED_GRAPH_STATIC_V1.json": "d6292e71fd1bc89a0746a810363d60b565aaec9f"
+  }
+}
